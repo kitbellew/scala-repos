@@ -182,9 +182,10 @@ class StreamingContextSuite
   test("start failure should stop internal components") {
     ssc = new StreamingContext(conf, batchDuration)
     val inputStream = addInputStream(ssc)
-    val updateFunc = (values: Seq[Int], state: Option[Int]) => {
-      Some(values.sum + state.getOrElse(0))
-    }
+    val updateFunc =
+      (values: Seq[Int], state: Option[Int]) => {
+        Some(values.sum + state.getOrElse(0))
+      }
     inputStream.map(x => (x, 1)).updateStateByKey[Int](updateFunc)
     // Require that the start fails because checkpoint directory was not set
     intercept[Exception] {
@@ -208,8 +209,8 @@ class StreamingContextSuite
     addInputStream(ssc).foreachRDD { rdd =>
       jobGroupFound = sc.getLocalProperty(SparkContext.SPARK_JOB_GROUP_ID)
       jobDescFound = sc.getLocalProperty(SparkContext.SPARK_JOB_DESCRIPTION)
-      jobInterruptFound =
-        sc.getLocalProperty(SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL)
+      jobInterruptFound = sc.getLocalProperty(
+        SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL)
       allFound = true
     }
     ssc.start()
@@ -393,8 +394,8 @@ class StreamingContextSuite
     assert(ssc.getState() === StreamingContextState.ACTIVE)
 
     ssc.stop()
-    val sourcesAfterStop =
-      StreamingContextSuite.getSources(ssc.env.metricsSystem)
+    val sourcesAfterStop = StreamingContextSuite.getSources(
+      ssc.env.metricsSystem)
     val streamingSourceAfterStop = StreamingContextSuite.getStreamingSource(ssc)
     assert(ssc.getState() === StreamingContextState.STOPPED)
     assert(!sourcesAfterStop.contains(streamingSourceAfterStop))
@@ -712,8 +713,9 @@ class StreamingContextSuite
         batchDuration)
       addInputStream(ssc).register()
       ssc.start()
-      val returnedSsc =
-        StreamingContext.getActiveOrCreate(checkpointPath, creatingFunction _)
+      val returnedSsc = StreamingContext.getActiveOrCreate(
+        checkpointPath,
+        creatingFunction _)
       assert(!newContextCreated, "new context created instead of returning")
       assert(
         returnedSsc.eq(ssc),
@@ -755,8 +757,9 @@ class StreamingContextSuite
 
     // getActiveOrCreate should recover context with checkpoint path, and recover old configuration
     testGetActiveOrCreate {
-      ssc =
-        StreamingContext.getActiveOrCreate(checkpointPath, creatingFunction _)
+      ssc = StreamingContext.getActiveOrCreate(
+        checkpointPath,
+        creatingFunction _)
       assert(ssc != null, "no context created")
       assert(!newContextCreated, "old context not recovered")
       assert(ssc.conf.get("someKey") === "someValue")
@@ -869,8 +872,9 @@ class StreamingContextSuite
     }
     ssc.stop()
     val e = intercept[SparkException] {
-      ssc =
-        StreamingContext.getOrCreate(checkpointDirectory, creatingFunction _)
+      ssc = StreamingContext.getOrCreate(
+        checkpointDirectory,
+        creatingFunction _)
     }
     // StreamingContext.validate changes the message, so use "contains" here
     assert(
@@ -921,8 +925,9 @@ class StreamingContextSuite
 
   def createCorruptedCheckpoint(): String = {
     val checkpointDirectory = Utils.createTempDir().getAbsolutePath()
-    val fakeCheckpointFile =
-      Checkpoint.checkpointFile(checkpointDirectory, Time(1000))
+    val fakeCheckpointFile = Checkpoint.checkpointFile(
+      checkpointDirectory,
+      Time(1000))
     FileUtils.write(new File(fakeCheckpointFile.toString()), "blablabla")
     assert(Checkpoint.getCheckpointFiles(checkpointDirectory).nonEmpty)
     checkpointDirectory
@@ -939,16 +944,17 @@ class TestReceiver
   var receivingThreadOption: Option[Thread] = None
 
   def onStart() {
-    val thread = new Thread() {
-      override def run() {
-        logInfo("Receiving started")
-        while (!isStopped) {
-          store(TestReceiver.counter.getAndIncrement)
+    val thread =
+      new Thread() {
+        override def run() {
+          logInfo("Receiving started")
+          while (!isStopped) {
+            store(TestReceiver.counter.getAndIncrement)
+          }
+          logInfo(
+            "Receiving stopped at count value of " + TestReceiver.counter.get())
         }
-        logInfo(
-          "Receiving stopped at count value of " + TestReceiver.counter.get())
       }
-    }
     receivingThreadOption = Some(thread)
     thread.start()
   }
@@ -971,17 +977,18 @@ class SlowTestReceiver(totalRecords: Int, recordsPerSecond: Int)
   var receivingThreadOption: Option[Thread] = None
 
   def onStart() {
-    val thread = new Thread() {
-      override def run() {
-        logInfo("Receiving started")
-        for (i <- 1 to totalRecords) {
-          Thread.sleep(1000 / recordsPerSecond)
-          store(i)
+    val thread =
+      new Thread() {
+        override def run() {
+          logInfo("Receiving started")
+          for (i <- 1 to totalRecords) {
+            Thread.sleep(1000 / recordsPerSecond)
+            store(i)
+          }
+          SlowTestReceiver.receivedAllRecords = true
+          logInfo(s"Received all $totalRecords records")
         }
-        SlowTestReceiver.receivedAllRecords = true
-        logInfo(s"Received all $totalRecords records")
       }
-    }
     receivingThreadOption = Some(thread)
     thread.start()
   }
@@ -1002,8 +1009,9 @@ object SlowTestReceiver {
 /** Streaming application for testing DStream and RDD creation sites */
 package object testPackage extends Assertions {
   def test() {
-    val conf =
-      new SparkConf().setMaster("local").setAppName("CreationSite test")
+    val conf = new SparkConf()
+      .setMaster("local")
+      .setAppName("CreationSite test")
     val ssc = new StreamingContext(conf, Milliseconds(100))
     try {
       val inputStream = ssc.receiverStream(new TestReceiver)
@@ -1053,8 +1061,8 @@ private object StreamingContextSuite extends PrivateMethodTester {
   private def getSources(metricsSystem: MetricsSystem): ArrayBuffer[Source] = {
     metricsSystem.invokePrivate(_sources())
   }
-  private val _streamingSource =
-    PrivateMethod[StreamingSource]('streamingSource)
+  private val _streamingSource = PrivateMethod[StreamingSource](
+    'streamingSource)
   private def getStreamingSource(
       streamingContext: StreamingContext): StreamingSource = {
     streamingContext.invokePrivate(_streamingSource())

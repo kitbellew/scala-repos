@@ -24,8 +24,7 @@ class FileVirtualFile(val file: File) extends VirtualFile {
 }
 
 object FileVirtualFile extends (File => FileVirtualFile) {
-  def apply(f: File): FileVirtualFile =
-    new FileVirtualFile(f)
+  def apply(f: File): FileVirtualFile = new FileVirtualFile(f)
 
   /** Tests whether the given file has the specified extension.
     *  Extension contain the '.', so a typical value for `ext` would be ".js".
@@ -64,8 +63,7 @@ class FileVirtualTextFile(f: File)
 }
 
 object FileVirtualTextFile extends (File => FileVirtualTextFile) {
-  def apply(f: File): FileVirtualTextFile =
-    new FileVirtualTextFile(f)
+  def apply(f: File): FileVirtualTextFile = new FileVirtualTextFile(f)
 
   /** Reads the entire content of a file as a UTF-8 string. */
   def readFileToString(file: File): String = {
@@ -98,13 +96,11 @@ class FileVirtualBinaryFile(f: File)
   override def inputStream: InputStream =
     new BufferedInputStream(new FileInputStream(file))
 
-  override def content: Array[Byte] =
-    readFileToByteArray(file)
+  override def content: Array[Byte] = readFileToByteArray(file)
 }
 
 object FileVirtualBinaryFile extends (File => FileVirtualBinaryFile) {
-  def apply(f: File): FileVirtualBinaryFile =
-    new FileVirtualBinaryFile(f)
+  def apply(f: File): FileVirtualBinaryFile = new FileVirtualBinaryFile(f)
 
   /** Reads the entire content of a file as byte array. */
   def readFileToByteArray(file: File): Array[Byte] = {
@@ -143,8 +139,7 @@ class FileVirtualJSFile(f: File)
 }
 
 object FileVirtualJSFile extends (File => FileVirtualJSFile) {
-  def apply(f: File): FileVirtualJSFile =
-    new FileVirtualJSFile(f)
+  def apply(f: File): FileVirtualJSFile = new FileVirtualJSFile(f)
 
   def relative(
       f: File,
@@ -178,8 +173,7 @@ class FileVirtualScalaJSIRFile(f: File)
 object FileVirtualScalaJSIRFile extends (File => FileVirtualScalaJSIRFile) {
   import FileVirtualFile._
 
-  def apply(f: File): FileVirtualScalaJSIRFile =
-    new FileVirtualScalaJSIRFile(f)
+  def apply(f: File): FileVirtualScalaJSIRFile = new FileVirtualScalaJSIRFile(f)
 
   def relative(
       f: File,
@@ -189,6 +183,5 @@ object FileVirtualScalaJSIRFile extends (File => FileVirtualScalaJSIRFile) {
     }
   }
 
-  def isScalaJSIRFile(file: File): Boolean =
-    hasExtension(file, ".sjsir")
+  def isScalaJSIRFile(file: File): Boolean = hasExtension(file, ".sjsir")
 }

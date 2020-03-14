@@ -171,8 +171,7 @@ trait Mapper[A <: Mapper[A]]
   /**
     * Get the fields (in order) for displaying a form
     */
-  def formFields: List[MappedField[_, A]] =
-    getSingleton.formFields(this)
+  def formFields: List[MappedField[_, A]] = getSingleton.formFields(this)
 
   def allFields: scala.collection.Seq[BaseField] = formFields
 
@@ -190,8 +189,7 @@ trait Mapper[A <: Mapper[A]]
     */
   def flatMapFieldTitleForm[T](
       func: (NodeSeq, Box[NodeSeq], NodeSeq) => scala.collection.Seq[T])
-      : List[T] =
-    getSingleton.flatMapFieldTitleForm(this, func)
+      : List[T] = getSingleton.flatMapFieldTitleForm(this, func)
 
   /**
     * flat map the fields titles and forms to generate a list
@@ -199,8 +197,7 @@ trait Mapper[A <: Mapper[A]]
     */
   def flatMapFieldTitleForm2[T](
       func: (NodeSeq, MappedField[_, A], NodeSeq) => scala.collection.Seq[T])
-      : List[T] =
-    getSingleton.flatMapFieldTitleForm2(this, func)
+      : List[T] = getSingleton.flatMapFieldTitleForm2(this, func)
 
   /**
     * Present the model as a form and execute the function on submission of the form

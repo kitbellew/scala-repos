@@ -14,11 +14,12 @@ class SourceTrackingMonitor(logger: Logger, which: String) extends Monitor {
   def handle(exc: Throwable): Boolean = {
     // much like ChannelStatsHandler.exceptionCaught,
     // we don't want these noisy IOExceptions leaking into the logs.
-    val level = exc match {
-      case _: IOException => Level.FINE
-      case f: HasLogLevel => f.logLevel
-      case _              => Level.SEVERE
-    }
+    val level =
+      exc match {
+        case _: IOException => Level.FINE
+        case f: HasLogLevel => f.logLevel
+        case _              => Level.SEVERE
+      }
     val unrolled = unrollCauses(exc)
     val msg =
       if (unrolled.isEmpty)

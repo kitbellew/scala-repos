@@ -12,8 +12,8 @@ import Util._
 class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
   val name = "insertCompiler"
 
-  override protected[this] lazy val logger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[CodeGen]))
+  override protected[this] lazy val logger =
+    new SlickLogger(LoggerFactory.getLogger(classOf[CodeGen]))
 
   def apply(state: CompilerState) =
     state.map { tree =>

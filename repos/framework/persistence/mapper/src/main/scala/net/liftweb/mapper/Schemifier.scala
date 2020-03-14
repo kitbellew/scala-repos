@@ -420,32 +420,33 @@ object Schemifier extends Loggable {
     val byName = new HashMap[String, List[String]]()
 
     val md = connection.getMetaData
-    val q = using(
-      md.getIndexInfo(
-        null,
-        getDefaultSchemaName(connection),
-        actualTableNames(table._dbTableNameLC),
-        false,
-        false)) { rs =>
-      def quad(rs: ResultSet): List[(String, String, Int)] = {
-        if (!rs.next)
-          Nil
-        else {
-          if (rs.getString(3).equalsIgnoreCase(table._dbTableNameLC)) {
-            // Skip index statistics
-            if (rs.getShort(7) != DatabaseMetaData.tableIndexStatistic) {
-              (
-                rs.getString(6).toLowerCase,
-                rs.getString(9).toLowerCase,
-                rs.getInt(8)) :: quad(rs)
-            } else
-              quad(rs)
-          } else
+    val q =
+      using(
+        md.getIndexInfo(
+          null,
+          getDefaultSchemaName(connection),
+          actualTableNames(table._dbTableNameLC),
+          false,
+          false)) { rs =>
+        def quad(rs: ResultSet): List[(String, String, Int)] = {
+          if (!rs.next)
             Nil
+          else {
+            if (rs.getString(3).equalsIgnoreCase(table._dbTableNameLC)) {
+              // Skip index statistics
+              if (rs.getShort(7) != DatabaseMetaData.tableIndexStatistic) {
+                (
+                  rs.getString(6).toLowerCase,
+                  rs.getString(9).toLowerCase,
+                  rs.getInt(8)) :: quad(rs)
+              } else
+                quad(rs)
+            } else
+              Nil
+          }
         }
+        quad(rs)
       }
-      quad(rs)
-    }
     // val q = quad(rs)
     // q.foreach{case (name, col, pos) => byColumn.get(col) match {case Some(li) => byColumn(col) = (name, col, pos) :: li case _ => byColumn(col) = List((name, col, pos))}}
     q.foreach {
@@ -455,9 +456,10 @@ object Schemifier extends Loggable {
           case _        => byName(name) = List(col)
         }
     }
-    val indexedFields: List[List[String]] = byName.map {
-      case (name, value) => value.sortWith(_ < _)
-    }.toList
+    val indexedFields: List[List[String]] =
+      byName.map {
+        case (name, value) => value.sortWith(_ < _)
+      }.toList
     //rs.close
 
     val single = table.mappedFields
@@ -484,17 +486,20 @@ object Schemifier extends Loggable {
         .map(_.indexDesc)
         .comma + " )"
 
-      val createStatement = index match {
-        case i: net.liftweb.mapper.Index[_] =>
-          "CREATE INDEX " + standardCreationStatement
-        case i: UniqueIndex[_] =>
-          "CREATE UNIQUE INDEX " + standardCreationStatement
-        case GenericIndex(createFunc, _, _) =>
-          createFunc(table._dbTableNameLC, columns.map(_.field._dbColumnNameLC))
-        case _ =>
-          logger.error("Invalid index: " + index);
-          ""
-      }
+      val createStatement =
+        index match {
+          case i: net.liftweb.mapper.Index[_] =>
+            "CREATE INDEX " + standardCreationStatement
+          case i: UniqueIndex[_] =>
+            "CREATE UNIQUE INDEX " + standardCreationStatement
+          case GenericIndex(createFunc, _, _) =>
+            createFunc(
+              table._dbTableNameLC,
+              columns.map(_.field._dbColumnNameLC))
+          case _ =>
+            logger.error("Invalid index: " + index);
+            ""
+        }
 
       val fn = columns.map(_.field._dbColumnNameLC.toLowerCase).sortWith(_ < _)
       if (!indexedFields.contains(fn)) {

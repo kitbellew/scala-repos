@@ -257,12 +257,11 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     * @since 2.0.0
     */
   def startStream(): ContinuousQuery = {
-    val dataSource =
-      DataSource(
-        df.sqlContext,
-        className = source,
-        options = extraOptions.toMap,
-        partitionColumns = normalizedParCols.getOrElse(Nil))
+    val dataSource = DataSource(
+      df.sqlContext,
+      className = source,
+      options = extraOptions.toMap,
+      partitionColumns = normalizedParCols.getOrElse(Nil))
 
     df.sqlContext.sessionState.continuousQueryManager.startQuery(
       extraOptions.getOrElse("queryName", StreamExecution.nextName),
@@ -285,8 +284,8 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
 
   private def insertInto(tableIdent: TableIdentifier): Unit = {
     assertNotBucketed()
-    val partitions =
-      normalizedParCols.map(_.map(col => col -> (None: Option[String])).toMap)
+    val partitions = normalizedParCols.map(
+      _.map(col => col -> (None: Option[String])).toMap)
     val overwrite = mode == SaveMode.Overwrite
 
     // A partitioned relation's schema can be different from the input logicalPlan, since
@@ -414,17 +413,16 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
         throw new AnalysisException(s"Table $tableIdent already exists.")
 
       case _ =>
-        val cmd =
-          CreateTableUsingAsSelect(
-            tableIdent,
-            source,
-            temporary = false,
-            partitioningColumns.map(_.toArray).getOrElse(Array.empty[String]),
-            getBucketSpec,
-            mode,
-            extraOptions.toMap,
-            df.logicalPlan
-          )
+        val cmd = CreateTableUsingAsSelect(
+          tableIdent,
+          source,
+          temporary = false,
+          partitioningColumns.map(_.toArray).getOrElse(Array.empty[String]),
+          getBucketSpec,
+          mode,
+          extraOptions.toMap,
+          df.logicalPlan
+        )
         df.sqlContext.executePlan(cmd).toRdd
     }
   }

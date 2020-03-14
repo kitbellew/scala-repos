@@ -20,19 +20,19 @@ class RetryStreamTest extends FunSuite {
   test("RetryStream reset works correctly") {
     // create a stream with only 2 elements. Make sure we can enumerate 100 entries
     val test = RetryStream()
-    val first100 = 1
-      .to(100)
-      .map { _ =>
-        test.next()
-      }
-      .toList
+    val first100 =
+      1.to(100)
+        .map { _ =>
+          test.next()
+        }
+        .toList
     test.reset()
-    val second100 = 1
-      .to(100)
-      .map { _ =>
-        test.next()
-      }
-      .toList
+    val second100 =
+      1.to(100)
+        .map { _ =>
+          test.next()
+        }
+        .toList
     assert(first100 == second100)
   }
 }

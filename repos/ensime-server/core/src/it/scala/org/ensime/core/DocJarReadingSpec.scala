@@ -11,9 +11,10 @@ class DocJarReadingSpec extends EnsimeSpec with SharedEnsimeConfigFixture {
 
   "DocJarReading" should "serve entries from jar files" in withEnsimeConfig {
     c =>
-      val reader = new DocJarReading {
-        def config = c
-      }
+      val reader =
+        new DocJarReading {
+          def config = c
+        }
 
       val content = reader.docJarContent(
         "scala-library-" + c.scalaVersion + "-javadoc.jar",

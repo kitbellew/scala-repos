@@ -29,11 +29,12 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val testActor = TestProbe()
 
       val measureBetweenEvery = 5
-      val printInfo = (interval: Duration) ⇒ {
-        testActor.ref ! interval
-        info(
-          s"Measured interval between $measureBetweenEvery elements was: $interval")
-      }
+      val printInfo =
+        (interval: Duration) ⇒ {
+          testActor.ref ! interval
+          info(
+            s"Measured interval between $measureBetweenEvery elements was: $interval")
+        }
 
       val n = 20
       val testRuns = 1 to 2
@@ -62,10 +63,11 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val testActor = TestProbe()
 
       val n = 50
-      val printInfo = (d: FiniteDuration) ⇒ {
-        testActor.ref ! d
-        info(s"Processing $n elements took $d")
-      }
+      val printInfo =
+        (d: FiniteDuration) ⇒ {
+          testActor.ref ! d
+          info(s"Processing $n elements took $d")
+        }
 
       val testRuns = 1 to 3
 
@@ -115,17 +117,17 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val probe = TestProbe()
 
       // making sure the types come out as expected
-      val flow: Flow[Int, String, _] =
-        Flow[Int]
-          .timed(
-            _.map(_.toDouble).map(_.toInt).map(_.toString),
-            duration ⇒ probe.ref ! duration)
-          .map { s: String ⇒
-            s + "!"
-          }
+      val flow: Flow[Int, String, _] = Flow[Int]
+        .timed(
+          _.map(_.toDouble).map(_.toInt).map(_.toString),
+          duration ⇒ probe.ref ! duration)
+        .map { s: String ⇒
+          s + "!"
+        }
 
-      val (flowIn: Subscriber[Int], flowOut: Publisher[String]) =
-        flow.runWith(Source.asSubscriber[Int], Sink.asPublisher[String](false))
+      val (flowIn: Subscriber[Int], flowOut: Publisher[String]) = flow.runWith(
+        Source.asSubscriber[Int],
+        Sink.asPublisher[String](false))
 
       val c1 = TestSubscriber.manualProbe[String]()
       val c2 = flowOut.subscribe(c1)

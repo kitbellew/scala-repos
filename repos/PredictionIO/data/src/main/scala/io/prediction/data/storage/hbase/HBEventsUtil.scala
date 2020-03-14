@@ -310,10 +310,11 @@ object HBEventsUtil {
       case (Some(et), Some(eid)) => {
         val start = PartialRowKey(et, eid, startTime.map(_.getMillis)).toBytes
         // if no untilTime, stop when reach next bytes of entityTypeAndId
-        val stop = PartialRowKey(
-          et,
-          eid,
-          untilTime.map(_.getMillis).orElse(Some(-1))).toBytes
+        val stop =
+          PartialRowKey(
+            et,
+            eid,
+            untilTime.map(_.getMillis).orElse(Some(-1))).toBytes
 
         if (reversed.getOrElse(false)) {
           // Reversed order.
@@ -359,21 +360,23 @@ object HBEventsUtil {
 
     entityType.foreach { et =>
       val compType = new BinaryComparator(Bytes.toBytes(et))
-      val filterType = new SingleColumnValueFilter(
-        eBytes,
-        colNames("entityType"),
-        CompareOp.EQUAL,
-        compType)
+      val filterType =
+        new SingleColumnValueFilter(
+          eBytes,
+          colNames("entityType"),
+          CompareOp.EQUAL,
+          compType)
       filters.addFilter(filterType)
     }
 
     entityId.foreach { eid =>
       val compId = new BinaryComparator(Bytes.toBytes(eid))
-      val filterId = new SingleColumnValueFilter(
-        eBytes,
-        colNames("entityId"),
-        CompareOp.EQUAL,
-        compId)
+      val filterId =
+        new SingleColumnValueFilter(
+          eBytes,
+          colNames("entityId"),
+          CompareOp.EQUAL,
+          compId)
       filters.addFilter(filterId)
     }
 
@@ -382,11 +385,12 @@ object HBEventsUtil {
       val eventFilters = new FilterList(FilterList.Operator.MUST_PASS_ONE)
       eventsList.foreach { e =>
         val compEvent = new BinaryComparator(Bytes.toBytes(e))
-        val filterEvent = new SingleColumnValueFilter(
-          eBytes,
-          colNames("event"),
-          CompareOp.EQUAL,
-          compEvent)
+        val filterEvent =
+          new SingleColumnValueFilter(
+            eBytes,
+            colNames("event"),
+            CompareOp.EQUAL,
+            compEvent)
         eventFilters.addFilter(filterEvent)
       }
       if (!eventFilters.getFilters().isEmpty) {
@@ -400,8 +404,9 @@ object HBEventsUtil {
         filters.addFilter(filter)
       } else {
         tetOpt.foreach { tet =>
-          val filter =
-            createBinaryFilter("targetEntityType", Bytes.toBytes(tet))
+          val filter = createBinaryFilter(
+            "targetEntityType",
+            Bytes.toBytes(tet))
           // the entire row will be skipped if the column is not found.
           filter.setFilterIfMissing(true)
           filters.addFilter(filter)

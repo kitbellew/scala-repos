@@ -242,15 +242,16 @@ trait Solving extends Logic {
                 //  1 < i < n
                 val s1 = newLiteral()
                 /\(-convertSym(x1), s1)
-                val snMinus = mid.foldLeft(s1) {
-                  case (siMinus, sym) =>
-                    val xi = convertSym(sym)
-                    val si = newLiteral()
-                    /\(-xi, si)
-                    /\(-siMinus, si)
-                    /\(-xi, -siMinus)
-                    si
-                }
+                val snMinus =
+                  mid.foldLeft(s1) {
+                    case (siMinus, sym) =>
+                      val xi = convertSym(sym)
+                      val si = newLiteral()
+                      /\(-xi, si)
+                      /\(-siMinus, si)
+                      /\(-xi, -siMinus)
+                      si
+                  }
                 /\(-convertSym(xn), -snMinus)
               } else {
                 ops.map(convertSym).combinations(2).foreach {
@@ -284,12 +285,13 @@ trait Solving extends Logic {
         def unapply(f: Prop): Option[Array[Clause]] =
           f match {
             case Or(fv) =>
-              val cl = fv.foldLeft(Option(clause())) {
-                case (Some(clause), ToLiteral(lit)) =>
-                  Some(clause + lit)
-                case (_, _) =>
-                  None
-              }
+              val cl =
+                fv.foldLeft(Option(clause())) {
+                  case (Some(clause), ToLiteral(lit)) =>
+                    Some(clause + lit)
+                  case (_, _) =>
+                    None
+                }
               cl.map(Array(_))
             case True => Some(Array()) // empty, no clauses needed
             case False =>
@@ -308,12 +310,13 @@ trait Solving extends Logic {
             case ToDisjunction(clauses) =>
               Some(Solvable(clauses, symbolMapping))
             case And(fv) =>
-              val clauses = fv.foldLeft(Option(mutable.ArrayBuffer[Clause]())) {
-                case (Some(cnf), ToDisjunction(clauses)) =>
-                  Some(cnf ++= clauses)
-                case (_, _) =>
-                  None
-              }
+              val clauses =
+                fv.foldLeft(Option(mutable.ArrayBuffer[Clause]())) {
+                  case (Some(cnf), ToDisjunction(clauses)) =>
+                    Some(cnf ++= clauses)
+                  case (_, _) =>
+                    None
+                }
               clauses.map(c => Solvable(c.toArray, symbolMapping))
             case _ => None
           }

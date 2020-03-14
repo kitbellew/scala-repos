@@ -99,9 +99,10 @@ final class Slave(
     val eventHandler = new RemoteEventHandler
 
     val colorSupport = data.loggerColorSupport.asInstanceOf[js.Array[Boolean]]
-    val loggers = for {
-      (withColor, i) <- colorSupport.zipWithIndex
-    } yield new RemoteLogger(i, withColor)
+    val loggers =
+      for {
+        (withColor, i) <- colorSupport.zipWithIndex
+      } yield new RemoteLogger(i, withColor)
 
     def cont(tasks: Array[Task]) = {
       val result = Try(js.JSON.stringify(tasks2TaskInfos(tasks, runner)))

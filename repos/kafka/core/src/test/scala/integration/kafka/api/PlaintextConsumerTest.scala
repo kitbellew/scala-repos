@@ -55,10 +55,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     this.consumerConfig.setProperty(
       ConsumerConfig.MAX_POLL_RECORDS_CONFIG,
       maxPollRecords.toString)
-    val consumer0 = new KafkaConsumer(
-      this.consumerConfig,
-      new ByteArrayDeserializer(),
-      new ByteArrayDeserializer())
+    val consumer0 =
+      new KafkaConsumer(
+        this.consumerConfig,
+        new ByteArrayDeserializer(),
+        new ByteArrayDeserializer())
     consumer0.assign(List(tp).asJava)
 
     consumeAndVerifyRecords(
@@ -72,10 +73,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   def testAutoCommitOnClose() {
     this.consumerConfig
       .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
-    val consumer0 = new KafkaConsumer(
-      this.consumerConfig,
-      new ByteArrayDeserializer(),
-      new ByteArrayDeserializer())
+    val consumer0 =
+      new KafkaConsumer(
+        this.consumerConfig,
+        new ByteArrayDeserializer(),
+        new ByteArrayDeserializer())
 
     val numRecords = 10000
     sendRecords(numRecords)
@@ -105,10 +107,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   def testAutoCommitOnCloseAfterWakeup() {
     this.consumerConfig
       .setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
-    val consumer0 = new KafkaConsumer(
-      this.consumerConfig,
-      new ByteArrayDeserializer(),
-      new ByteArrayDeserializer())
+    val consumer0 =
+      new KafkaConsumer(
+        this.consumerConfig,
+        new ByteArrayDeserializer(),
+        new ByteArrayDeserializer())
 
     val numRecords = 10000
     sendRecords(numRecords)
@@ -279,8 +282,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   @Test
   def testExpandingTopicSubscriptions() {
     val otherTopic = "other"
-    val subscriptions =
-      Set(new TopicPartition(topic, 0), new TopicPartition(topic, 1))
+    val subscriptions = Set(
+      new TopicPartition(topic, 0),
+      new TopicPartition(topic, 1))
     val expandedSubscriptions = subscriptions ++ Set(
       new TopicPartition(otherTopic, 0),
       new TopicPartition(otherTopic, 1))
@@ -323,8 +327,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       new TopicPartition(topic, 1),
       new TopicPartition(otherTopic, 0),
       new TopicPartition(otherTopic, 1))
-    val shrunkenSubscriptions =
-      Set(new TopicPartition(topic, 0), new TopicPartition(topic, 1))
+    val shrunkenSubscriptions = Set(
+      new TopicPartition(topic, 0),
+      new TopicPartition(topic, 1))
     this.consumers(0).subscribe(List(topic, otherTopic).asJava)
     TestUtils.waitUntilTrue(
       () => {
@@ -513,10 +518,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   def testFetchInvalidOffset() {
     this.consumerConfig
       .setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "none");
-    val consumer0 = new KafkaConsumer(
-      this.consumerConfig,
-      new ByteArrayDeserializer(),
-      new ByteArrayDeserializer())
+    val consumer0 =
+      new KafkaConsumer(
+        this.consumerConfig,
+        new ByteArrayDeserializer(),
+        new ByteArrayDeserializer())
 
     // produce one record
     val totalRecords = 2
@@ -548,17 +554,19 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     this.consumerConfig.setProperty(
       ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG,
       maxFetchBytes.toString)
-    val consumer0 = new KafkaConsumer(
-      this.consumerConfig,
-      new ByteArrayDeserializer(),
-      new ByteArrayDeserializer())
+    val consumer0 =
+      new KafkaConsumer(
+        this.consumerConfig,
+        new ByteArrayDeserializer(),
+        new ByteArrayDeserializer())
 
     // produce a record that is larger than the configured fetch size
-    val record = new ProducerRecord[Array[Byte], Array[Byte]](
-      tp.topic(),
-      tp.partition(),
-      "key".getBytes,
-      new Array[Byte](maxFetchBytes + 1))
+    val record =
+      new ProducerRecord[Array[Byte], Array[Byte]](
+        tp.topic(),
+        tp.partition(),
+        "key".getBytes,
+        new Array[Byte](maxFetchBytes + 1))
     this.producers(0).send(record)
 
     // consuming a too-large record should fail
@@ -583,10 +591,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     this.consumerConfig.setProperty(
       ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG,
       classOf[RoundRobinAssignor].getName)
-    val consumer0 = new KafkaConsumer(
-      this.consumerConfig,
-      new ByteArrayDeserializer(),
-      new ByteArrayDeserializer())
+    val consumer0 =
+      new KafkaConsumer(
+        this.consumerConfig,
+        new ByteArrayDeserializer(),
+        new ByteArrayDeserializer())
 
     // create two new topics, each having 2 partitions
     val topic1 = "topic1"
@@ -748,10 +757,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,
       "org.apache.kafka.test.MockProducerInterceptor")
     producerProps.put("mock.interceptor.append", appendStr)
-    val testProducer = new KafkaProducer[String, String](
-      producerProps,
-      new StringSerializer,
-      new StringSerializer)
+    val testProducer =
+      new KafkaProducer[String, String](
+        producerProps,
+        new StringSerializer,
+        new StringSerializer)
 
     // produce records
     val numRecords = 10
@@ -790,10 +800,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     this.consumerConfig.setProperty(
       ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
       "org.apache.kafka.test.MockConsumerInterceptor")
-    val testConsumer = new KafkaConsumer[String, String](
-      this.consumerConfig,
-      new StringDeserializer(),
-      new StringDeserializer())
+    val testConsumer =
+      new KafkaConsumer[String, String](
+        this.consumerConfig,
+        new StringDeserializer(),
+        new StringDeserializer())
     testConsumer.assign(List(tp).asJava)
     testConsumer.seek(tp, 0)
 
@@ -844,10 +855,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
 
     // produce records
     val numRecords = 100
-    val testProducer = new KafkaProducer[String, String](
-      this.producerConfig,
-      new StringSerializer,
-      new StringSerializer)
+    val testProducer =
+      new KafkaProducer[String, String](
+        this.producerConfig,
+        new StringSerializer,
+        new StringSerializer)
     (0 until numRecords)
       .map { i =>
         testProducer.send(
@@ -865,20 +877,22 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     this.consumerConfig.setProperty(
       ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
       "org.apache.kafka.test.MockConsumerInterceptor")
-    val testConsumer = new KafkaConsumer[String, String](
-      this.consumerConfig,
-      new StringDeserializer(),
-      new StringDeserializer())
-    val rebalanceListener = new ConsumerRebalanceListener {
-      override def onPartitionsAssigned(
-          partitions: util.Collection[TopicPartition]) = {
-        // keep partitions paused in this test so that we can verify the commits based on specific seeks
-        testConsumer.pause(partitions)
-      }
+    val testConsumer =
+      new KafkaConsumer[String, String](
+        this.consumerConfig,
+        new StringDeserializer(),
+        new StringDeserializer())
+    val rebalanceListener =
+      new ConsumerRebalanceListener {
+        override def onPartitionsAssigned(
+            partitions: util.Collection[TopicPartition]) = {
+          // keep partitions paused in this test so that we can verify the commits based on specific seeks
+          testConsumer.pause(partitions)
+        }
 
-      override def onPartitionsRevoked(
-          partitions: util.Collection[TopicPartition]) = {}
-    }
+        override def onPartitionsRevoked(
+            partitions: util.Collection[TopicPartition]) = {}
+      }
     changeConsumerSubscriptionAndValidateAssignment(
       testConsumer,
       List(topic),
@@ -888,8 +902,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     testConsumer.seek(tp2, 20)
 
     // change subscription to trigger rebalance
-    val commitCountBeforeRebalance =
-      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue()
+    val commitCountBeforeRebalance = MockConsumerInterceptor.ON_COMMIT_COUNT
+      .intValue()
     changeConsumerSubscriptionAndValidateAssignment(
       testConsumer,
       List(topic, topic2),
@@ -908,8 +922,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         .intValue() > commitCountBeforeRebalance)
 
     // verify commits are intercepted on close
-    val commitCountBeforeClose =
-      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue()
+    val commitCountBeforeClose = MockConsumerInterceptor.ON_COMMIT_COUNT
+      .intValue()
     testConsumer.close()
     assertTrue(
       MockConsumerInterceptor.ON_COMMIT_COUNT
@@ -930,10 +944,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,
       "org.apache.kafka.test.MockProducerInterceptor")
     producerProps.put("mock.interceptor.append", appendStr)
-    val testProducer = new KafkaProducer[Array[Byte], Array[Byte]](
-      producerProps,
-      new ByteArraySerializer(),
-      new ByteArraySerializer())
+    val testProducer =
+      new KafkaProducer[Array[Byte], Array[Byte]](
+        producerProps,
+        new ByteArraySerializer(),
+        new ByteArraySerializer())
 
     // producing records should succeed
     testProducer.send(
@@ -947,10 +962,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     this.consumerConfig.setProperty(
       ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
       "org.apache.kafka.test.MockConsumerInterceptor")
-    val testConsumer = new KafkaConsumer[Array[Byte], Array[Byte]](
-      this.consumerConfig,
-      new ByteArrayDeserializer(),
-      new ByteArrayDeserializer())
+    val testConsumer =
+      new KafkaConsumer[Array[Byte], Array[Byte]](
+        this.consumerConfig,
+        new ByteArrayDeserializer(),
+        new ByteArrayDeserializer())
     testConsumer.assign(List(tp).asJava)
     testConsumer.seek(tp, 0)
 
@@ -1048,8 +1064,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     val expandedConsumers =
       consumers ++ Buffer[KafkaConsumer[Array[Byte], Array[Byte]]](
         timeoutConsumer)
-    val timeoutPoller =
-      subscribeConsumerAndStartPolling(timeoutConsumer, List(topic, topic1))
+    val timeoutPoller = subscribeConsumerAndStartPolling(
+      timeoutConsumer,
+      List(topic, topic1))
     val expandedPollers =
       consumerPollers ++ Buffer[ConsumerAssignmentPoller](timeoutPoller)
 
@@ -1064,9 +1081,10 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     if (closeConsumer)
       timeoutConsumer.close()
 
-    val maxSessionTimeout = this.serverConfig
-      .getProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp)
-      .toLong
+    val maxSessionTimeout =
+      this.serverConfig
+        .getProperty(KafkaConfig.GroupMaxSessionTimeoutMsProp)
+        .toLong
     validateGroupAssignment(
       consumerPollers,
       subscriptions,

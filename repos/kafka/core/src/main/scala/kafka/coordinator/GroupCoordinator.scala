@@ -142,8 +142,8 @@ class GroupCoordinator(
         if (memberId != JoinGroupRequest.UNKNOWN_MEMBER_ID) {
           responseCallback(joinError(memberId, Errors.UNKNOWN_MEMBER_ID.code))
         } else {
-          group =
-            groupManager.addGroup(new GroupMetadata(groupId, protocolType))
+          group = groupManager.addGroup(
+            new GroupMetadata(groupId, protocolType))
           doJoinGroup(
             group,
             memberId,
@@ -232,11 +232,12 @@ class GroupCoordinator(
                 // for the current generation.
                 responseCallback(
                   JoinGroupResult(
-                    members = if (memberId == group.leaderId) {
-                      group.currentMemberMetadata
-                    } else {
-                      Map.empty
-                    },
+                    members =
+                      if (memberId == group.leaderId) {
+                        group.currentMemberMetadata
+                      } else {
+                        Map.empty
+                      },
                     memberId = memberId,
                     generationId = group.generationId,
                     subProtocol = group.protocol,
@@ -722,12 +723,13 @@ class GroupCoordinator(
 
     // reschedule the next heartbeat expiration deadline
     val newHeartbeatDeadline = member.latestHeartbeat + member.sessionTimeoutMs
-    val delayedHeartbeat = new DelayedHeartbeat(
-      this,
-      group,
-      member,
-      newHeartbeatDeadline,
-      member.sessionTimeoutMs)
+    val delayedHeartbeat =
+      new DelayedHeartbeat(
+        this,
+        group,
+        member,
+        newHeartbeatDeadline,
+        member.sessionTimeoutMs)
     heartbeatPurgatory.tryCompleteElseWatch(delayedHeartbeat, Seq(memberKey))
   }
 
@@ -748,13 +750,14 @@ class GroupCoordinator(
       callback: JoinCallback) = {
     // use the client-id with a random id suffix as the member-id
     val memberId = clientId + "-" + group.generateMemberIdSuffix
-    val member = new MemberMetadata(
-      memberId,
-      group.groupId,
-      clientId,
-      clientHost,
-      sessionTimeoutMs,
-      protocols)
+    val member =
+      new MemberMetadata(
+        memberId,
+        group.groupId,
+        clientId,
+        clientHost,
+        sessionTimeoutMs,
+        protocols)
     member.awaitingJoinCallback = callback
     group.add(member.memberId, member)
     maybePrepareRebalance(group)
@@ -847,11 +850,12 @@ class GroupCoordinator(
         for (member <- group.allMemberMetadata) {
           assert(member.awaitingJoinCallback != null)
           val joinResult = JoinGroupResult(
-            members = if (member.memberId == group.leaderId) {
-              group.currentMemberMetadata
-            } else {
-              Map.empty
-            },
+            members =
+              if (member.memberId == group.leaderId) {
+                group.currentMemberMetadata
+              } else {
+                Map.empty
+              },
             memberId = member.memberId,
             generationId = group.generationId,
             subProtocol = group.protocol,
@@ -918,8 +922,11 @@ object GroupCoordinator {
   val NoLeader = ""
   val NoMembers = List[MemberSummary]()
   val EmptyGroup = GroupSummary(NoState, NoProtocolType, NoProtocol, NoMembers)
-  val DeadGroup =
-    GroupSummary(Dead.toString, NoProtocolType, NoProtocol, NoMembers)
+  val DeadGroup = GroupSummary(
+    Dead.toString,
+    NoProtocolType,
+    NoProtocol,
+    NoMembers)
 
   def apply(
       config: KafkaConfig,
@@ -940,12 +947,13 @@ object GroupCoordinator {
       groupMinSessionTimeoutMs = config.groupMinSessionTimeoutMs,
       groupMaxSessionTimeoutMs = config.groupMaxSessionTimeoutMs)
 
-    val groupManager = new GroupMetadataManager(
-      config.brokerId,
-      offsetConfig,
-      replicaManager,
-      zkUtils,
-      time)
+    val groupManager =
+      new GroupMetadataManager(
+        config.brokerId,
+        offsetConfig,
+        replicaManager,
+        zkUtils,
+        time)
     new GroupCoordinator(
       config.brokerId,
       groupConfig,

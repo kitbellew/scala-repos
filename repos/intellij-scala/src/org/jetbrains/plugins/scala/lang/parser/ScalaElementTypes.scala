@@ -188,13 +188,13 @@ object ScalaElementTypes {
   val LITERAL = new ScalaElementType("Literal")
   //  String literals
   val STRING_LITERAL = new ScalaElementType("String Literal")
-  val INTERPOLATED_STRING_LITERAL = new ScalaElementType(
-    "Interpolated String Literal")
+  val INTERPOLATED_STRING_LITERAL =
+    new ScalaElementType("Interpolated String Literal")
   //Not only String, but quasiquote too
-  val INTERPOLATED_PREFIX_PATTERN_REFERENCE = new ScalaElementType(
-    "Interpolated Prefix Pattern Reference")
-  val INTERPOLATED_PREFIX_LITERAL_REFERENCE = new ScalaElementType(
-    "Interpolated Prefix Literal Reference")
+  val INTERPOLATED_PREFIX_PATTERN_REFERENCE =
+    new ScalaElementType("Interpolated Prefix Pattern Reference")
+  val INTERPOLATED_PREFIX_LITERAL_REFERENCE =
+    new ScalaElementType("Interpolated Prefix Literal Reference")
   // Boolean literals
   val BOOLEAN_LITERAL = new ScalaElementType("Boolean Literal")
 
@@ -263,8 +263,8 @@ object ScalaElementTypes {
   val LITERAL_PATTERN = new ScalaElementType("literal pattern")
   val INTERPOLATION_PATTERN = new ScalaElementType("interpolation pattern")
   val REFERENCE_PATTERN = new ScReferencePatternElementType
-  val STABLE_REFERENCE_PATTERN = new ScalaElementType(
-    "stable reference pattern")
+  val STABLE_REFERENCE_PATTERN =
+    new ScalaElementType("stable reference pattern")
   val PATTERN_IN_PARENTHESIS = new ScalaElementType("pattern in parenthesis")
 
   /************************************** TYPE PATTERNS ********************************/

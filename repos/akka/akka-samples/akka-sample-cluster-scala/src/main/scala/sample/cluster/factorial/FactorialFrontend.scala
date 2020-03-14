@@ -17,8 +17,9 @@ class FactorialFrontend(upToN: Int, repeat: Boolean)
     extends Actor
     with ActorLogging {
 
-  val backend =
-    context.actorOf(FromConfig.props(), name = "factorialBackendRouter")
+  val backend = context.actorOf(
+    FromConfig.props(),
+    name = "factorialBackendRouter")
 
   override def preStart(): Unit = {
     sendJobs()

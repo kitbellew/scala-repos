@@ -78,16 +78,13 @@ class VecTime(
     times.map(v => f(l2t(v)))
 
   def flatMap[@spec(Boolean, Int, Long, Double) B: ST](
-      f: DateTime => Vec[B]): Vec[B] =
-    VecImpl.flatMap(this)(f)
+      f: DateTime => Vec[B]): Vec[B] = VecImpl.flatMap(this)(f)
 
   def foldLeft[@spec(Boolean, Int, Long, Double) B: ST](init: B)(
-      f: (B, DateTime) => B) =
-    times.foldLeft(init)((a, b) => f(a, l2t(b)))
+      f: (B, DateTime) => B) = times.foldLeft(init)((a, b) => f(a, l2t(b)))
 
   def scanLeft[@spec(Boolean, Int, Long, Double) B: ST](init: B)(
-      f: (B, DateTime) => B) =
-    times.scanLeft(init)((a, b) => f(a, l2t(b)))
+      f: (B, DateTime) => B) = times.scanLeft(init)((a, b) => f(a, l2t(b)))
 
   def filterFoldLeft[@spec(Boolean, Int, Long, Double) B: ST](
       pred: (DateTime) => Boolean)(init: B)(f: (B, DateTime) => B) =
@@ -112,8 +109,7 @@ class VecTime(
 
   def rolling[@spec(Boolean, Int, Long, Double) B: ST](
       winSz: Int,
-      f: (Vec[DateTime]) => B) =
-    times.rolling(winSz, vl2vt _ andThen f)
+      f: (Vec[DateTime]) => B) = times.rolling(winSz, vl2vt _ andThen f)
 
   def slice(from: Int, until: Int, stride: Int) =
     vl2vt(times.slice(from, until, stride))
@@ -188,9 +184,10 @@ object VecTime {
     }
 
     // calculate offset for each subsequent vec of bytes
-    val sz = vecs.foldLeft(0) {
-      case (o, v) => o + v.length
-    }
+    val sz =
+      vecs.foldLeft(0) {
+        case (o, v) => o + v.length
+      }
 
     val databuf = Array.ofDim[Long](sz)
 

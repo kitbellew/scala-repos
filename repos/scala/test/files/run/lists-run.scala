@@ -76,12 +76,13 @@ object Test_multiset {
     assert(
       {
         val intersection = xs intersect ys
-        val unconsumed = xs.foldLeft(intersection) { (rest, e) =>
-          if (!rest.isEmpty && e == rest.head)
-            rest.tail
-          else
-            rest
-        }
+        val unconsumed =
+          xs.foldLeft(intersection) { (rest, e) =>
+            if (!rest.isEmpty && e == rest.head)
+              rest.tail
+            else
+              rest
+          }
         unconsumed.isEmpty
       },
       "maintain order"

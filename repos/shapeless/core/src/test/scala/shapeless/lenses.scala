@@ -86,8 +86,8 @@ trait LensTests {
 
     val personStreetLens1 = streetLens compose addressLens
     val personStreetLens2 = compose(streetLens, addressLens)
-    val personStreetLens3 =
-      (streetLens :: addressLens :: HNil).reduceLeft(compose)
+    val personStreetLens3 = (streetLens :: addressLens :: HNil)
+      .reduceLeft(compose)
 
     val street1 = personStreetLens1.get(person)
     typed[String](street1)
@@ -727,22 +727,25 @@ class OpticTests {
     val rv(z) = t1
     assertTypedEquals[Int](3, z)
 
-    val x2 = t2 match {
-      case llv(x2) => Some(x2)
-      case _       => None
-    }
+    val x2 =
+      t2 match {
+        case llv(x2) => Some(x2)
+        case _       => None
+      }
     assertTypedEquals[Option[Int]](None, x2)
 
-    val y2 = t2 match {
-      case lrv(y2) => Some(y2)
-      case _       => None
-    }
+    val y2 =
+      t2 match {
+        case lrv(y2) => Some(y2)
+        case _       => None
+      }
     assertTypedEquals[Option[Int]](None, y2)
 
-    val z2 = t2 match {
-      case rv(z2) => Some(z2)
-      case _      => None
-    }
+    val z2 =
+      t2 match {
+        case rv(z2) => Some(z2)
+        case _      => None
+      }
     assertTypedEquals[Option[Int]](None, z2)
 
     val llvrv = llv ~ lrv ~ rv

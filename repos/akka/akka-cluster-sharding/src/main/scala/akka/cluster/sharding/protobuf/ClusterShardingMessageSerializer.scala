@@ -65,8 +65,8 @@ private[akka] class ClusterShardingMessageSerializer(
   private val GetShardStatsManifest = "DA"
   private val ShardStatsManifest = "DB"
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       EntityStateManifest -> entityStateFromBinary,
       EntityStartedManifest -> entityStartedFromBinary,
       EntityStoppedManifest -> entityStoppedFromBinary,
@@ -211,12 +211,13 @@ private[akka] class ClusterShardingMessageSerializer(
     }
 
   private def coordinatorStateToProto(state: State): sm.CoordinatorState = {
-    val regions = state.regions
-      .map {
-        case (regionRef, _) ⇒ Serialization.serializedActorPath(regionRef)
-      }
-      .toVector
-      .asJava
+    val regions =
+      state.regions
+        .map {
+          case (regionRef, _) ⇒ Serialization.serializedActorPath(regionRef)
+        }
+        .toVector
+        .asJava
 
     val builder = sm.CoordinatorState.newBuilder()
 
@@ -260,9 +261,10 @@ private[akka] class ClusterShardingMessageSerializer(
           acc.updated(regionRef, acc(regionRef) :+ shardId)
       }
 
-    val proxies: Set[ActorRef] = state.getRegionProxiesList.asScala.map {
-      resolveActorRef
-    }(breakOut)
+    val proxies: Set[ActorRef] =
+      state.getRegionProxiesList.asScala.map {
+        resolveActorRef
+      }(breakOut)
     val unallocatedShards: Set[String] =
       state.getUnallocatedShardsList.asScala.toSet
 

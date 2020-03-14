@@ -35,12 +35,13 @@ class AdaptiveGradientTest extends OptimizeTestBase {
           reg % 1e3 abs,
           1,
           1000)
-      val f = new BatchDiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double], r: IndexedSeq[Int]) = {
-          (sum((x - 3.0) :^ 2.0), (x * 2.0) - 6.0)
+      val f =
+        new BatchDiffFunction[DenseVector[Double]] {
+          def calculate(x: DenseVector[Double], r: IndexedSeq[Int]) = {
+            (sum((x - 3.0) :^ 2.0), (x * 2.0) - 6.0)
+          }
+          val fullRange = 0 to 1
         }
-        val fullRange = 0 to 1
-      }
 
       val result = sgd.minimize(f, init)
       val targetValue = 3 / (sgd.regularizationConstant / 2 + 1)
@@ -68,12 +69,13 @@ class AdaptiveGradientTest extends OptimizeTestBase {
           1e-7,
           1,
           600)
-      val f = new BatchDiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double], r: IndexedSeq[Int]) = {
-          (sum((x - 3.0) :^ 2.0), (x * 2.0) - 6.0)
+      val f =
+        new BatchDiffFunction[DenseVector[Double]] {
+          def calculate(x: DenseVector[Double], r: IndexedSeq[Int]) = {
+            (sum((x - 3.0) :^ 2.0), (x * 2.0) - 6.0)
+          }
+          val fullRange = 0 to 1
         }
-        val fullRange = 0 to 1
-      }
 
       val result = sgd.minimize(f, init)
       val targetValue =

@@ -22,9 +22,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
   test(
     "A -> B: Exception returned to A from B should include downstream address of B") {
-    val hre = new Service[String, String] {
-      def apply(request: String) = Future.exception(new HasRemoteInfo {})
-    }
+    val hre =
+      new Service[String, String] {
+        def apply(request: String) = Future.exception(new HasRemoteInfo {})
+      }
 
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val server = stringServer.serve(address, hre)
@@ -57,12 +58,13 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     // Make sure this is defined
     val calledC = new Promise[Unit]()
 
-    val serviceC = new Service[String, String] {
-      def apply(request: String) = {
-        calledC.setDone()
-        Future.exception(new HasRemoteInfo {})
+    val serviceC =
+      new Service[String, String] {
+        def apply(request: String) = {
+          calledC.setDone()
+          Future.exception(new HasRemoteInfo {})
+        }
       }
-    }
 
     val addressC = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val serverC = stringServer.serve(addressC, serviceC)
@@ -71,35 +73,36 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       Name.bound(Address(serverC.boundAddress.asInstanceOf[InetSocketAddress])),
       "C")
     val addressB = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val serviceB = new Service[String, String] {
-      def apply(request: String) = {
-        val e = intercept[HasRemoteInfo] {
-          Trace.letId(traceId, true) {
-            Await.result(clientB(request), 1.second)
+    val serviceB =
+      new Service[String, String] {
+        def apply(request: String) = {
+          val e = intercept[HasRemoteInfo] {
+            Trace.letId(traceId, true) {
+              Await.result(clientB(request), 1.second)
+            }
           }
-        }
 
-        // Make sure the remote info upstream addr is pulled from the local context
-        assert(
-          e.remoteInfo == RemoteInfo.Available(
-            RemoteInfo.Upstream.addr,
-            Some(ClientId("A")),
-            Some(serverC.boundAddress),
-            Some(ClientId("C")),
-            traceId))
+          // Make sure the remote info upstream addr is pulled from the local context
+          assert(
+            e.remoteInfo == RemoteInfo.Available(
+              RemoteInfo.Upstream.addr,
+              Some(ClientId("A")),
+              Some(serverC.boundAddress),
+              Some(ClientId("C")),
+              traceId))
 
-        // The upstream addr isn't available for us to check, but we'll do a sanity check that it's not
-        // Server C's address and is actually filled in.
-        e.remoteInfo match {
-          case RemoteInfo.Available(Some(u), _, _, _, _) =>
-            assert(u != serverC.boundAddress)
-          case _ =>
-            fail(
-              "Exception remote info did not have upstream address filled in!")
+          // The upstream addr isn't available for us to check, but we'll do a sanity check that it's not
+          // Server C's address and is actually filled in.
+          e.remoteInfo match {
+            case RemoteInfo.Available(Some(u), _, _, _, _) =>
+              assert(u != serverC.boundAddress)
+            case _ =>
+              fail(
+                "Exception remote info did not have upstream address filled in!")
+          }
+          Future.exception(e)
         }
-        Future.exception(e)
       }
-    }
     val serverB = stringServer.serve(addressB, serviceB)
 
     val clientA = stringClient.newService(
@@ -124,9 +127,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
     val traceId = Trace.id
 
-    val serviceC = new Service[String, String] {
-      def apply(request: String) = Future.exception(new HasRemoteInfo {})
-    }
+    val serviceC =
+      new Service[String, String] {
+        def apply(request: String) = Future.exception(new HasRemoteInfo {})
+      }
     val addressC = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val serverC = stringServer.serve(addressC, serviceC)
 
@@ -134,10 +138,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       Name.bound(Address(serverC.boundAddress.asInstanceOf[InetSocketAddress])),
       "C")
     val addressB = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-    val serviceB = new Service[String, String] {
-      def apply(request: String) =
-        clientB(request)
-    }
+    val serviceB =
+      new Service[String, String] {
+        def apply(request: String) = clientB(request)
+      }
     val serverB = stringServer.serveAndAnnounce("B", addressB, serviceB)
 
     val clientA = stringClient.newService(
@@ -165,12 +169,13 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     "Finagle client should handle pending request after a host is deleted from cluster") {
     val constRes = new Promise[String]
     val arrivalLatch = new CountDownLatch(1)
-    val service = new Service[String, String] {
-      def apply(request: String) = {
-        arrivalLatch.countDown()
-        constRes
+    val service =
+      new Service[String, String] {
+        def apply(request: String) = {
+          arrivalLatch.countDown()
+          constRes
+        }
       }
-    }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
 
     val server = ServerBuilder()
@@ -198,9 +203,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
   test(
     "Finagle client should queue requests while waiting for cluster to initialize") {
-    val echo = new Service[String, String] {
-      def apply(request: String) = Future.value(request)
-    }
+    val echo =
+      new Service[String, String] {
+        def apply(request: String) = Future.value(request)
+      }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val server = ServerBuilder()
       .codec(StringCodec)
@@ -225,9 +231,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     }
 
     // make cluster available, now queued requests should be processed
-    val thread = new Thread {
-      override def run = cluster.add(server.boundAddress)
-    }
+    val thread =
+      new Thread {
+        override def run = cluster.add(server.boundAddress)
+      }
 
     cluster.ready.map { _ =>
       0 until 5 foreach { i =>
@@ -240,9 +247,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
   test(
     "ClientBuilder should be properly instrumented on service application failure") {
-    val never = new Service[String, String] {
-      def apply(request: String) = new Promise[String]
-    }
+    val never =
+      new Service[String, String] {
+        def apply(request: String) = new Promise[String]
+      }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val server = ServerBuilder()
       .codec(StringCodec)
@@ -269,8 +277,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     Await.ready(server.close(), 1.second)
 
     val requestFailures = mem.counters(Seq("client", "failures"))
-    val requeues =
-      mem.counters.get(Seq("client", "retries", "requeues"))
+    val requeues = mem.counters.get(Seq("client", "retries", "requeues"))
     assert(requestFailures == 1)
     assert(requeues == None)
   }
@@ -298,10 +305,9 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       }
     }
 
-    val serviceCreationFailures =
-      mem.counters(Seq("client", "service_creation", "failures"))
-    val requeues =
-      mem.counters.get(Seq("client", "retries", "requeues"))
+    val serviceCreationFailures = mem.counters(
+      Seq("client", "service_creation", "failures"))
+    val requeues = mem.counters.get(Seq("client", "retries", "requeues"))
 
     // initial write exception and no requeues
     assert(serviceCreationFailures == 1)
@@ -309,9 +315,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
   }
 
   test("ClientBuilder should be properly instrumented on success") {
-    val always = new Service[String, String] {
-      def apply(request: String) = Future.value("pong");
-    }
+    val always =
+      new Service[String, String] {
+        def apply(request: String) = Future.value("pong");
+      }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val server = ServerBuilder()
       .codec(StringCodec)
@@ -342,9 +349,10 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
   test(
     "ClientBuilderClient.ofCodec should be properly instrumented on success") {
-    val always = new Service[String, String] {
-      def apply(request: String) = Future.value("pong");
-    }
+    val always =
+      new Service[String, String] {
+        def apply(request: String) = Future.value("pong");
+      }
     val address = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val server = ServerBuilder()
       .codec(StringCodec)

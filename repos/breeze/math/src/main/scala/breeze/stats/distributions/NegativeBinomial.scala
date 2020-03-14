@@ -9,10 +9,11 @@ import breeze.numerics._
   * @author dlwh
   */
 case class NegativeBinomial(r: Double, p: Double) extends DiscreteDistr[Int] {
-  private val gen = for {
-    lambda <- Gamma(r, p / (1 - p))
-    i <- Poisson(lambda)
-  } yield i
+  private val gen =
+    for {
+      lambda <- Gamma(r, p / (1 - p))
+      i <- Poisson(lambda)
+    } yield i
   def draw() = gen.draw()
 
   def probabilityOf(x: Int) = exp(logProbabilityOf(x))

@@ -70,8 +70,9 @@ class ScalaRedundantConversionInspection
     val descriptor = {
       val range = new TextRange(offset, element.getTextLength)
 
-      val message =
-        "Casting '%s' to '%s' is redundant".format(left.getText, conversionType)
+      val message = "Casting '%s' to '%s' is redundant".format(
+        left.getText,
+        conversionType)
 
       new ProblemDescriptorImpl(
         element,

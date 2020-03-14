@@ -73,8 +73,9 @@ private[v1] object AllStagesResource {
       stageUiData: StageUIData,
       includeDetails: Boolean): StageData = {
 
-    val taskLaunchTimes =
-      stageUiData.taskData.values.map(_.taskInfo.launchTime).filter(_ > 0)
+    val taskLaunchTimes = stageUiData.taskData.values
+      .map(_.taskInfo.launchTime)
+      .filter(_ > 0)
 
     val firstTaskLaunchedTime: Option[Date] =
       if (taskLaunchTimes.nonEmpty) {
@@ -83,35 +84,38 @@ private[v1] object AllStagesResource {
         None
       }
 
-    val taskData = if (includeDetails) {
-      Some(stageUiData.taskData.map {
-        case (k, v) => k -> convertTaskData(v)
-      })
-    } else {
-      None
-    }
-    val executorSummary = if (includeDetails) {
-      Some(stageUiData.executorSummary.map {
-        case (k, summary) =>
-          k -> new ExecutorStageSummary(
-            taskTime = summary.taskTime,
-            failedTasks = summary.failedTasks,
-            succeededTasks = summary.succeededTasks,
-            inputBytes = summary.inputBytes,
-            outputBytes = summary.outputBytes,
-            shuffleRead = summary.shuffleRead,
-            shuffleWrite = summary.shuffleWrite,
-            memoryBytesSpilled = summary.memoryBytesSpilled,
-            diskBytesSpilled = summary.diskBytesSpilled
-          )
-      })
-    } else {
-      None
-    }
+    val taskData =
+      if (includeDetails) {
+        Some(stageUiData.taskData.map {
+          case (k, v) => k -> convertTaskData(v)
+        })
+      } else {
+        None
+      }
+    val executorSummary =
+      if (includeDetails) {
+        Some(stageUiData.executorSummary.map {
+          case (k, summary) =>
+            k -> new ExecutorStageSummary(
+              taskTime = summary.taskTime,
+              failedTasks = summary.failedTasks,
+              succeededTasks = summary.succeededTasks,
+              inputBytes = summary.inputBytes,
+              outputBytes = summary.outputBytes,
+              shuffleRead = summary.shuffleRead,
+              shuffleWrite = summary.shuffleWrite,
+              memoryBytesSpilled = summary.memoryBytesSpilled,
+              diskBytesSpilled = summary.diskBytesSpilled
+            )
+        })
+      } else {
+        None
+      }
 
-    val accumulableInfo = stageUiData.accumulables.values.map {
-      convertAccumulableInfo
-    }.toSeq
+    val accumulableInfo =
+      stageUiData.accumulables.values.map {
+        convertAccumulableInfo
+      }.toSeq
 
     new StageData(
       status = status,
@@ -179,9 +183,10 @@ private[v1] object AllStagesResource {
       allTaskData: Iterable[TaskUIData],
       quantiles: Array[Double]): TaskMetricDistributions = {
 
-    val rawMetrics = allTaskData.flatMap {
-      _.taskMetrics
-    }.toSeq
+    val rawMetrics =
+      allTaskData.flatMap {
+        _.taskMetrics
+      }.toSeq
 
     def metricQuantiles(f: InternalTaskMetrics => Double): IndexedSeq[Double] =
       Distribution(rawMetrics.map { d =>

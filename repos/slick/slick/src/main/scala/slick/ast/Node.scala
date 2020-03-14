@@ -64,8 +64,7 @@ trait Node extends Dumpable {
   /** Apply a side-effecting function to all direct children from left to right. Note that
     * {{{ n.childrenForeach(f) }}} is equivalent to {{{ n.children.foreach(f) }}} but can be
     * implemented more efficiently in `Node` subclasses. */
-  def childrenForeach[R](f: Node => R): Unit =
-    children.foreach(f)
+  def childrenForeach[R](f: Node => R): Unit = children.foreach(f)
 
   /** The current type of this node. */
   def nodeType: Type = {
@@ -114,25 +113,28 @@ trait Node extends Dumpable {
       typeChildren: Boolean): Self
 
   def getDumpInfo = {
-    val (objName, mainInfo) = this match {
-      case p: Product =>
-        val cln = DumpInfo.simpleNameFor(getClass)
-        val n =
-          if (cln.endsWith("$"))
-            cln.substring(0, cln.length - 1)
-          else
-            cln.replaceFirst(".*\\$", "")
-        val args =
-          p.productIterator.filterNot(_.isInstanceOf[Node]).mkString(", ")
-        (n, args)
-      case _ => (super.toString, "")
-    }
+    val (objName, mainInfo) =
+      this match {
+        case p: Product =>
+          val cln = DumpInfo.simpleNameFor(getClass)
+          val n =
+            if (cln.endsWith("$"))
+              cln.substring(0, cln.length - 1)
+            else
+              cln.replaceFirst(".*\\$", "")
+          val args = p.productIterator
+            .filterNot(_.isInstanceOf[Node])
+            .mkString(", ")
+          (n, args)
+        case _ => (super.toString, "")
+      }
     val t = peekType
-    val ch = this match {
-      // Omit path details unless dumpPaths is set
-      case Path(l @ (_ :: _ :: _)) if !GlobalConfig.dumpPaths => Vector.empty
-      case _                                                  => childNames.zip(children.toSeq).toVector
-    }
+    val ch =
+      this match {
+        // Omit path details unless dumpPaths is set
+        case Path(l @ (_ :: _ :: _)) if !GlobalConfig.dumpPaths => Vector.empty
+        case _                                                  => childNames.zip(children.toSeq).toVector
+      }
     DumpInfo(
       objName,
       mainInfo,
@@ -255,8 +257,9 @@ object LiteralNode {
   def apply[T](v: T)(implicit tp: ScalaBaseType[T]): LiteralNode = apply(tp, v)
   def unapply(n: LiteralNode): Option[Any] = Some(n.value)
 
-  private[slick] val nullOption =
-    LiteralNode(ScalaBaseType.nullType.optionType, None)
+  private[slick] val nullOption = LiteralNode(
+    ScalaBaseType.nullType.optionType,
+    None)
 }
 
 trait BinaryNode extends Node {
@@ -606,15 +609,18 @@ final case class Join(
     val on2 = on.infer(
       scope + (leftGen -> left2Type.elementType) + (rightGen -> right2Type.elementType),
       typeChildren)
-    val (joinedLeftType, joinedRightType) = jt match {
-      case JoinType.LeftOption =>
-        (left2Type.elementType, OptionType(right2Type.elementType))
-      case JoinType.RightOption =>
-        (OptionType(left2Type.elementType), right2Type.elementType)
-      case JoinType.OuterOption =>
-        (OptionType(left2Type.elementType), OptionType(right2Type.elementType))
-      case _ => (left2Type.elementType, right2Type.elementType)
-    }
+    val (joinedLeftType, joinedRightType) =
+      jt match {
+        case JoinType.LeftOption =>
+          (left2Type.elementType, OptionType(right2Type.elementType))
+        case JoinType.RightOption =>
+          (OptionType(left2Type.elementType), right2Type.elementType)
+        case JoinType.OuterOption =>
+          (
+            OptionType(left2Type.elementType),
+            OptionType(right2Type.elementType))
+        case _ => (left2Type.elementType, right2Type.elementType)
+      }
     withChildren(ConstArray[Node](left2, right2, on2)) :@ (if (!hasType)
                                                              CollectionType(
                                                                left2Type.cons,
@@ -662,8 +668,9 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val from2 = from.infer(scope, typeChildren)
     val from2Type = from2.nodeType.asCollectionType
-    val select2 =
-      select.infer(scope + (generator -> from2Type.elementType), typeChildren)
+    val select2 = select.infer(
+      scope + (generator -> from2Type.elementType),
+      typeChildren)
     val withCh =
       if ((from2 eq from) && (select2 eq select))
         this

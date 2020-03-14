@@ -103,16 +103,18 @@ trait NormalizationSpecs[M[+_]]
       val summary1 = dag.Morph1(Summary, load("/hom/numbersHet"))(line)
       val summary2 = dag.Morph1(Summary, load("/hom/numbers"))(line)
 
-      val model1 = dag.Join(
-        DerefObject,
-        Cross(None),
-        summary1,
-        Const(CString("model1"))(line))(line)
-      val model2 = dag.Join(
-        DerefObject,
-        Cross(None),
-        summary2,
-        Const(CString("model1"))(line))(line)
+      val model1 =
+        dag.Join(
+          DerefObject,
+          Cross(None),
+          summary1,
+          Const(CString("model1"))(line))(line)
+      val model2 =
+        dag.Join(
+          DerefObject,
+          Cross(None),
+          summary2,
+          Const(CString("model1"))(line))(line)
 
       val summaries = dag.IUI(true, model1, model2)(line)
 

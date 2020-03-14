@@ -87,13 +87,13 @@ object Test extends ScaladocModelTest {
     assert(incoming.length == 2) // F and G
     assert(outgoing.head._2.length == 3) // B, C and T
 
-    val (outgoingSuperclass, outgoingImplicit) =
-      outgoing.head._2.partition(_.isNormalNode)
+    val (outgoingSuperclass, outgoingImplicit) = outgoing.head._2
+      .partition(_.isNormalNode)
     assert(outgoingSuperclass.length == 2) // B and C
     assert(outgoingImplicit.length == 1, outgoingImplicit) // T
 
-    val (incomingSubclass, incomingImplicit) =
-      incoming.partition(_._1.isNormalNode)
+    val (incomingSubclass, incomingImplicit) = incoming.partition(
+      _._1.isNormalNode)
     assert(incomingSubclass.length == 2) // F and G
     assert(incomingImplicit.length == 0)
 

@@ -62,8 +62,8 @@ class SetupScalaSdkNotificationProvider(
 }
 
 object SetupScalaSdkNotificationProvider {
-  private val ProviderKey =
-    Key.create[EditorNotificationPanel]("Setup Scala SDK")
+  private val ProviderKey = Key.create[EditorNotificationPanel](
+    "Setup Scala SDK")
 
   private def createPanel(
       project: Project,

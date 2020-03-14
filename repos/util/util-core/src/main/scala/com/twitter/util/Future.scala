@@ -62,8 +62,8 @@ object Future {
   /**
     * A failed `Future` analogous to `Predef.???`.
     */
-  val ??? : Future[Nothing] =
-    Future.exception(new NotImplementedError("an implementation is missing"))
+  val ??? : Future[Nothing] = Future.exception(
+    new NotImplementedError("an implementation is missing"))
 
   private val SomeReturnUnit = Some(Return.Unit)
   private val NotApplied: Future[Nothing] = new NoFuture
@@ -127,9 +127,10 @@ object Future {
       return Future.Done
 
     val p = new Promise[Unit]
-    val task = timer.schedule(howlong.fromNow) {
-      p.setDone()
-    }
+    val task =
+      timer.schedule(howlong.fromNow) {
+        p.setDone()
+      }
     p.setInterruptHandler {
       case e =>
         if (p.updateIfEmpty(Throw(e)))
@@ -1560,8 +1561,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * ''Note'': On timeout, the underlying future is interrupted.
     */
   def raiseWithin(timeout: Duration, exc: Throwable)(
-      implicit timer: Timer): Future[A] =
-    raiseWithin(timer, timeout, exc)
+      implicit timer: Timer): Future[A] = raiseWithin(timer, timeout, exc)
 
   /**
     * Returns a new Future that will error if this Future does not return in time.
@@ -1612,9 +1612,10 @@ abstract class Future[+A] extends Awaitable[A] {
       return this
 
     val p = Promise.interrupts[A](this)
-    val task = timer.schedule(timeout.fromNow) {
-      p.updateIfEmpty(Throw(exc))
-    }
+    val task =
+      timer.schedule(timeout.fromNow) {
+        p.updateIfEmpty(Throw(exc))
+      }
     respond { r =>
       task.cancel()
       p.updateIfEmpty(r)
@@ -1921,10 +1922,12 @@ abstract class Future[+A] extends Awaitable[A] {
     new Offer[Try[A]] {
       def prepare() =
         transform { res: Try[A] =>
-          val tx = new Tx[Try[A]] {
-            def ack(): Future[Tx.Result[Try[A]]] = Future.value(Tx.Commit(res))
-            def nack(): Unit = ()
-          }
+          val tx =
+            new Tx[Try[A]] {
+              def ack(): Future[Tx.Result[Try[A]]] =
+                Future.value(Tx.Commit(res))
+              def nack(): Unit = ()
+            }
 
           Future.value(tx)
         }

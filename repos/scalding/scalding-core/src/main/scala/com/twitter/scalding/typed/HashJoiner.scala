@@ -42,9 +42,10 @@ class HashJoiner[K, V, W, R](
       val key = left.head.getObject(0).asInstanceOf[K]
 
       // It is safe to iterate over the right side again and again
-      val rightIterable = new Iterable[W] {
-        def iterator = rightGetter(key, jc.getIterator(1).asScala, Nil)
-      }
+      val rightIterable =
+        new Iterable[W] {
+          def iterator = rightGetter(key, jc.getIterator(1).asScala, Nil)
+        }
 
       left.flatMap { kv =>
         val leftV = kv.getObject(1).asInstanceOf[V] // get just the Vs

@@ -204,8 +204,8 @@ class StreamingContext private[streaming] (
 
   private[streaming] val waiter = new ContextWaiter
 
-  private[streaming] val progressListener = new StreamingJobProgressListener(
-    this)
+  private[streaming] val progressListener =
+    new StreamingJobProgressListener(this)
 
   private[streaming] val uiTab: Option[StreamingTab] =
     if (conf.getBoolean("spark.ui.enabled", true)) {
@@ -478,12 +478,14 @@ class StreamingContext private[streaming] (
       conf.setInt(
         FixedLengthBinaryInputFormat.RECORD_LENGTH_PROPERTY,
         recordLength)
-      val br =
-        fileStream[LongWritable, BytesWritable, FixedLengthBinaryInputFormat](
-          directory,
-          FileInputDStream.defaultFilter: Path => Boolean,
-          newFilesOnly = true,
-          conf)
+      val br = fileStream[
+        LongWritable,
+        BytesWritable,
+        FixedLengthBinaryInputFormat](
+        directory,
+        FileInputDStream.defaultFilter: Path => Boolean,
+        newFilesOnly = true,
+        conf)
       val data = br.map {
         case (k, v) =>
           val bytes = v.getBytes
@@ -648,8 +650,9 @@ class StreamingContext private[streaming] (
             }
             StreamingContext.setActiveContext(this)
           }
-          shutdownHookRef = ShutdownHookManager.addShutdownHook(
-            StreamingContext.SHUTDOWN_HOOK_PRIORITY)(stopOnShutdown)
+          shutdownHookRef =
+            ShutdownHookManager.addShutdownHook(
+              StreamingContext.SHUTDOWN_HOOK_PRIORITY)(stopOnShutdown)
           // Registering Streaming Metrics at the start of the StreamingContext
           assert(env.metricsSystem != null)
           env.metricsSystem.registerSource(streamingSource)
@@ -694,8 +697,9 @@ class StreamingContext private[streaming] (
     *                         started.
     */
   def stop(
-      stopSparkContext: Boolean =
-        conf.getBoolean("spark.streaming.stopSparkContextByDefault", true)
+      stopSparkContext: Boolean = conf.getBoolean(
+        "spark.streaming.stopSparkContextByDefault",
+        true)
   ): Unit =
     synchronized {
       stop(stopSparkContext, false)
@@ -765,8 +769,9 @@ class StreamingContext private[streaming] (
   }
 
   private def stopOnShutdown(): Unit = {
-    val stopGracefully =
-      conf.getBoolean("spark.streaming.stopGracefullyOnShutdown", false)
+    val stopGracefully = conf.getBoolean(
+      "spark.streaming.stopGracefullyOnShutdown",
+      false)
     logInfo(s"Invoking stop(stopGracefully=$stopGracefully) from shutdown hook")
     // Do not stop SparkContext, let its own shutdown hook stop it
     stop(stopSparkContext = false, stopGracefully = stopGracefully)

@@ -136,8 +136,9 @@ class AFTSurvivalRegressionSuite
     exponential.setSeed(seed)
 
     val rnd = new Random(seed)
-    val x = Array.fill[Array[Double]](nPoints)(
-      Array.fill[Double](numFeatures)(rnd.nextDouble()))
+    val x =
+      Array.fill[Array[Double]](nPoints)(
+        Array.fill[Double](numFeatures)(rnd.nextDouble()))
 
     x.foreach { v =>
       var i = 0

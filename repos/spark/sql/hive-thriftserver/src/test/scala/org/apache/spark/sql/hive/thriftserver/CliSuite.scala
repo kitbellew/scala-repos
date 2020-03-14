@@ -140,8 +140,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
       Await.result(foundAllExpectedAnswers.future, timeout)
     } catch {
       case cause: Throwable =>
-        val message =
-          s"""
+        val message = s"""
            |=======================
            |CliSuite failure output
            |=======================
@@ -163,11 +162,10 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
   }
 
   test("Simple commands") {
-    val dataFilePath =
-      Thread
-        .currentThread()
-        .getContextClassLoader
-        .getResource("data/files/small_kv.txt")
+    val dataFilePath = Thread
+      .currentThread()
+      .getContextClassLoader
+      .getResource("data/files/small_kv.txt")
 
     runCliWithin(3.minute)(
       "CREATE TABLE hive_test(key INT, val STRING);"
@@ -212,16 +210,14 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
   }
 
   test("Commands using SerDe provided in --jars") {
-    val jarFile =
-      "../hive/src/test/resources/hive-hcatalog-core-0.13.1.jar"
-        .split("/")
-        .mkString(File.separator)
+    val jarFile = "../hive/src/test/resources/hive-hcatalog-core-0.13.1.jar"
+      .split("/")
+      .mkString(File.separator)
 
-    val dataFilePath =
-      Thread
-        .currentThread()
-        .getContextClassLoader
-        .getResource("data/files/small_kv.txt")
+    val dataFilePath = Thread
+      .currentThread()
+      .getContextClassLoader
+      .getResource("data/files/small_kv.txt")
 
     runCliWithin(3.minute, Seq("--jars", s"$jarFile"))(
       """CREATE TABLE t1(key string, val string)

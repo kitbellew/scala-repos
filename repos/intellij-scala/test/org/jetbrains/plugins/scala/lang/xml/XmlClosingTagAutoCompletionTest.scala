@@ -63,8 +63,7 @@ class XmlClosingTagAutoCompletionTest
   }
 
   def testBigXml() {
-    val text =
-      ("""
+    val text = ("""
       |<lift:TD.list all_id="all_todos">
       |  <div id="all_todos">
       |    <div>Exclude done
@@ -90,8 +89,7 @@ class XmlClosingTagAutoCompletionTest
       |</lift:TD.list>
       """).stripMargin.replace("\r", "")
 
-    val assumedStub =
-      """
+    val assumedStub = """
       |<lift:TD.list all_id="all_todos">
       |  <div id="all_todos">
       |    <div>Exclude done
@@ -121,15 +119,13 @@ class XmlClosingTagAutoCompletionTest
   }
 
   def testXmlPattern1() {
-    val text =
-      ("""
+    val text = ("""
       | xml match {
       |   case <aaa""" + CARET_MARKER + """
       |}
       """).stripMargin.replace("\r", "")
 
-    val assumedStub =
-      """
+    val assumedStub = """
         | xml match {
         |   case <aaa></aaa>
         |}
@@ -139,15 +135,13 @@ class XmlClosingTagAutoCompletionTest
   }
 
   def testXmlPaternWithEmptyTag1() {
-    val text =
-      ("""
+    val text = ("""
       | xml match {
       |   case <aaa""" + CARET_MARKER + """
       |}
       """).stripMargin.replace("\r", "")
 
-    val assumedStub =
-      """
+    val assumedStub = """
         | xml match {
         |   case <aaa/>
         |}
@@ -157,16 +151,14 @@ class XmlClosingTagAutoCompletionTest
   }
 
   def testXmlPattern2() {
-    val text =
-      ("""
+    val text = ("""
       | xml match {
       |   case <a></a> =>
       |   case <aaa""" + CARET_MARKER + """
       | }
       """).stripMargin.replace("\r", "")
 
-    val assumedStub =
-      """
+    val assumedStub = """
         | xml match {
         |   case <a></a> =>
         |   case <aaa></aaa>
@@ -177,16 +169,14 @@ class XmlClosingTagAutoCompletionTest
   }
 
   def testXmlPatternWithEmpryTag2() {
-    val text =
-      ("""
+    val text = ("""
       | xml match {
       |   case <a></a> =>
       |   case <aaa""" + CARET_MARKER + """
       | }
       """).stripMargin.replace("\r", "")
 
-    val assumedStub =
-      """
+    val assumedStub = """
         | xml match {
         |   case <a></a> =>
         |   case <aaa/>
@@ -203,8 +193,7 @@ class XmlClosingTagAutoCompletionTest
   }
 
   def testSwallowGtAfterEmptyTagEndInXmlPattern() {
-    val header =
-      """
+    val header = """
         |val xml = <aaa attr="<aaa//>" />
         |xml match { 
         |   case <aaa/""".stripMargin.replace("\r", "")

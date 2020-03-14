@@ -54,12 +54,13 @@ object ExtractSuperUtil {
         case 1 => action
         case _ =>
           val selection = classes(0)
-          val processor = new PsiElementProcessor[PsiClass] {
-            def execute(aClass: PsiClass): Boolean = {
-              action
-              false
+          val processor =
+            new PsiElementProcessor[PsiClass] {
+              def execute(aClass: PsiClass): Boolean = {
+                action
+                false
+              }
             }
-          }
           NavigationUtil
             .getPsiElementPopup(
               classes,
@@ -109,19 +110,23 @@ object ExtractSuperUtil {
     val name = typeToExtend.name
     val text = name + parameters
     val oldExtBlock = clazz.extendsBlock
-    val templParents = oldExtBlock.templateParents match {
-      case Some(tp: ScTemplateParents) =>
-        val tpText = s"${tp.getText} with $text"
-        val (_, newTp) = ScalaPsiElementFactory.createClassTemplateParents(
-          tpText,
-          clazz.getManager)
-        tp.replace(newTp).asInstanceOf[ScTemplateParents]
-      case None =>
-        val (extKeyword, newTp) = ScalaPsiElementFactory
-          .createClassTemplateParents(text, clazz.getManager)
-        oldExtBlock.addRangeBefore(extKeyword, newTp, oldExtBlock.getFirstChild)
-        oldExtBlock.templateParents.get
-    }
+    val templParents =
+      oldExtBlock.templateParents match {
+        case Some(tp: ScTemplateParents) =>
+          val tpText = s"${tp.getText} with $text"
+          val (_, newTp) = ScalaPsiElementFactory.createClassTemplateParents(
+            tpText,
+            clazz.getManager)
+          tp.replace(newTp).asInstanceOf[ScTemplateParents]
+        case None =>
+          val (extKeyword, newTp) = ScalaPsiElementFactory
+            .createClassTemplateParents(text, clazz.getManager)
+          oldExtBlock.addRangeBefore(
+            extKeyword,
+            newTp,
+            oldExtBlock.getFirstChild)
+          oldExtBlock.templateParents.get
+      }
     templParents.typeElementsWithoutConstructor.foreach {
       case s: ScSimpleTypeElement if s.reference.exists(_.refName == name) =>
         s.reference.foreach(_.bindToElement(typeToExtend))
@@ -167,10 +172,12 @@ object ExtractSuperUtil {
     if (pckg.containsClassNamed(targetClassName))
       return s"Class with name $targetClassName already exists in the package $targetPackageName"
 
-    val dir: PsiDirectory =
-      ExtractSuperUtil.getDirUnderSameSourceRoot(sourceClass, dirs)
-    val cantCreateFile: String =
-      RefactoringMessageUtil.checkCanCreateFile(dir, targetClassName + ".scala")
+    val dir: PsiDirectory = ExtractSuperUtil.getDirUnderSameSourceRoot(
+      sourceClass,
+      dirs)
+    val cantCreateFile: String = RefactoringMessageUtil.checkCanCreateFile(
+      dir,
+      targetClassName + ".scala")
     if (cantCreateFile != null)
       return cantCreateFile
 

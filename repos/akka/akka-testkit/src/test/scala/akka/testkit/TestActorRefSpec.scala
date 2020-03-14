@@ -337,8 +337,9 @@ class TestActorRefSpec
     }
 
     "allow creation of a TestActorRef with a default supervisor and specified name with Props" in {
-      val ref =
-        TestActorRef[WorkerActor](Props[WorkerActor], "specificPropsActor")
+      val ref = TestActorRef[WorkerActor](
+        Props[WorkerActor],
+        "specificPropsActor")
       ref.underlyingActor.name should be("specificPropsActor")
     }
 

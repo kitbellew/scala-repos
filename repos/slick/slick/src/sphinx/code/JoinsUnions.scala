@@ -31,10 +31,11 @@ object JoinsUnions extends App {
   val coffees = TableQuery[Coffees]
 
   //#implicitCross
-  val monadicCrossJoin = for {
-    c <- coffees
-    s <- suppliers
-  } yield (c.name, s.name)
+  val monadicCrossJoin =
+    for {
+      c <- coffees
+      s <- suppliers
+    } yield (c.name, s.name)
   // compiles to SQL:
   //   select x2."COF_NAME", x3."SUP_NAME"
   //     from "COFFEES" x2, "SUPPLIERS" x3
@@ -42,10 +43,11 @@ object JoinsUnions extends App {
   println(monadicCrossJoin.result.statements.head)
 
   //#implicitInner
-  val monadicInnerJoin = for {
-    c <- coffees
-    s <- suppliers if c.supID === s.id
-  } yield (c.name, s.name)
+  val monadicInnerJoin =
+    for {
+      c <- coffees
+      s <- suppliers if c.supID === s.id
+    } yield (c.name, s.name)
   // compiles to SQL:
   //   select x2."COF_NAME", x3."SUP_NAME"
   //     from "COFFEES" x2, "SUPPLIERS" x3
@@ -54,40 +56,45 @@ object JoinsUnions extends App {
   println(monadicInnerJoin.result.statements.head)
 
   //#explicit
-  val crossJoin = for {
-    (c, s) <- coffees join suppliers
-  } yield (c.name, s.name)
+  val crossJoin =
+    for {
+      (c, s) <- coffees join suppliers
+    } yield (c.name, s.name)
   // compiles to SQL (simplified):
   //   select x2."COF_NAME", x3."SUP_NAME" from "COFFEES" x2
   //     inner join "SUPPLIERS" x3
 
-  val innerJoin = for {
-    (c, s) <- coffees join suppliers on (_.supID === _.id)
-  } yield (c.name, s.name)
+  val innerJoin =
+    for {
+      (c, s) <- coffees join suppliers on (_.supID === _.id)
+    } yield (c.name, s.name)
   // compiles to SQL (simplified):
   //   select x2."COF_NAME", x3."SUP_NAME" from "COFFEES" x2
   //     inner join "SUPPLIERS" x3
   //     on x2."SUP_ID" = x3."SUP_ID"
 
-  val leftOuterJoin = for {
-    (c, s) <- coffees joinLeft suppliers on (_.supID === _.id)
-  } yield (c.name, s.map(_.name))
+  val leftOuterJoin =
+    for {
+      (c, s) <- coffees joinLeft suppliers on (_.supID === _.id)
+    } yield (c.name, s.map(_.name))
   // compiles to SQL (simplified):
   //   select x2."COF_NAME", x3."SUP_NAME" from "COFFEES" x2
   //     left outer join "SUPPLIERS" x3
   //     on x2."SUP_ID" = x3."SUP_ID"
 
-  val rightOuterJoin = for {
-    (c, s) <- coffees joinRight suppliers on (_.supID === _.id)
-  } yield (c.map(_.name), s.name)
+  val rightOuterJoin =
+    for {
+      (c, s) <- coffees joinRight suppliers on (_.supID === _.id)
+    } yield (c.map(_.name), s.name)
   // compiles to SQL (simplified):
   //   select x2."COF_NAME", x3."SUP_NAME" from "COFFEES" x2
   //     right outer join "SUPPLIERS" x3
   //     on x2."SUP_ID" = x3."SUP_ID"
 
-  val fullOuterJoin = for {
-    (c, s) <- coffees joinFull suppliers on (_.supID === _.id)
-  } yield (c.map(_.name), s.map(_.name))
+  val fullOuterJoin =
+    for {
+      (c, s) <- coffees joinFull suppliers on (_.supID === _.id)
+    } yield (c.map(_.name), s.map(_.name))
   // compiles to SQL (simplified):
   //   select x2."COF_NAME", x3."SUP_NAME" from "COFFEES" x2
   //     full outer join "SUPPLIERS" x3
@@ -100,23 +107,26 @@ object JoinsUnions extends App {
   println(fullOuterJoin.result.statements.head)
 
   //#zip
-  val zipJoinQuery = for {
-    (c, s) <- coffees zip suppliers
-  } yield (c.name, s.name)
+  val zipJoinQuery =
+    for {
+      (c, s) <- coffees zip suppliers
+    } yield (c.name, s.name)
 
-  val zipWithJoin = for {
-    res <- coffees.zipWith(
-      suppliers,
-      (c: Coffees, s: Suppliers) => (c.name, s.name))
-  } yield res
+  val zipWithJoin =
+    for {
+      res <- coffees.zipWith(
+        suppliers,
+        (c: Coffees, s: Suppliers) => (c.name, s.name))
+    } yield res
   //#zip
   //println(zipJoinQuery.result.statements.head)
   //println(zipWithJoin.result.statements.head)
 
   //#zipWithIndex
-  val zipWithIndexJoin = for {
-    (c, idx) <- coffees.zipWithIndex
-  } yield (c.name, idx)
+  val zipWithIndexJoin =
+    for {
+      (c, idx) <- coffees.zipWithIndex
+    } yield (c.name, idx)
   //#zipWithIndex
   //println(zipWithIndexJoin.result.statements.head)
 

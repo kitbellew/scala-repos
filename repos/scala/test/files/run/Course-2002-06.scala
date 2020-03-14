@@ -90,8 +90,7 @@ class PostScript(filename: String, _width: Double, _height: Double)
   /** Convert mm into 72th of inch.*/
   def mm2ps(x: Double): Double = round(x * 72.0 / 25.4);
 
-  def round(x: Double): Double =
-    Math.floor(x * 100.0 + 0.5) / 100.0;
+  def round(x: Double): Double = Math.floor(x * 100.0 + 0.5) / 100.0;
 
   def scaleAndCenter(frm: Frame, ratio: Double): Frame = {
     val currentRatio = frm.edgeX.norm / frm.edgeY.norm;
@@ -162,10 +161,11 @@ object M0 {
       painter: Painter): Painter = { frame: Frame =>
     {
       val newOrigin = frame.coordMap(origin);
-      val newFrame = new Frame(
-        newOrigin,
-        frame.coordMap(newX) - newOrigin,
-        frame.coordMap(newY) - newOrigin);
+      val newFrame =
+        new Frame(
+          newOrigin,
+          frame.coordMap(newX) - newOrigin,
+          frame.coordMap(newY) - newOrigin);
       painter(newFrame)
     }
   }
@@ -247,10 +247,11 @@ object M0 {
     val canvas: Graphics = new PostScript(psfile, 2, 2);
 
     // the identity frame
-    val identFrame = new Frame(
-      new Vector(0.0, 0.0),
-      new Vector(1.0, 0.0),
-      new Vector(0.0, 1.0));
+    val identFrame =
+      new Frame(
+        new Vector(0.0, 0.0),
+        new Vector(1.0, 0.0),
+        new Vector(0.0, 1.0));
 
     // Create a basic painter...
     val p: Painter = house(canvas);

@@ -132,17 +132,20 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
       callback: RpcResponseCallback): Unit = {
     val rpcCallContext =
       new RemoteNettyRpcCallContext(nettyEnv, callback, message.senderAddress)
-    val rpcMessage =
-      RpcMessage(message.senderAddress, message.content, rpcCallContext)
+    val rpcMessage = RpcMessage(
+      message.senderAddress,
+      message.content,
+      rpcCallContext)
     postMessage(message.receiver.name, rpcMessage, (e) => callback.onFailure(e))
   }
 
   /** Posts a message sent by a local endpoint. */
   def postLocalMessage(message: RequestMessage, p: Promise[Any]): Unit = {
-    val rpcCallContext =
-      new LocalNettyRpcCallContext(message.senderAddress, p)
-    val rpcMessage =
-      RpcMessage(message.senderAddress, message.content, rpcCallContext)
+    val rpcCallContext = new LocalNettyRpcCallContext(message.senderAddress, p)
+    val rpcMessage = RpcMessage(
+      message.senderAddress,
+      message.content,
+      rpcCallContext)
     postMessage(message.receiver.name, rpcMessage, (e) => p.tryFailure(e))
   }
 
@@ -177,12 +180,13 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     }
     if (shouldCallOnStop) {
       // We don't need to call `onStop` in the `synchronized` block
-      val error = if (stopped) {
-        new RpcEnvStoppedException()
-      } else {
-        new SparkException(
-          s"Could not find $endpointName or it has been stopped.")
-      }
+      val error =
+        if (stopped) {
+          new RpcEnvStoppedException()
+        } else {
+          new SparkException(
+            s"Could not find $endpointName or it has been stopped.")
+        }
       callbackIfStopped(error)
     }
   }
@@ -217,8 +221,9 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     val numThreads = nettyEnv.conf.getInt(
       "spark.rpc.netty.dispatcher.numThreads",
       math.max(2, Runtime.getRuntime.availableProcessors()))
-    val pool =
-      ThreadUtils.newDaemonFixedThreadPool(numThreads, "dispatcher-event-loop")
+    val pool = ThreadUtils.newDaemonFixedThreadPool(
+      numThreads,
+      "dispatcher-event-loop")
     for (i <- 0 until numThreads) {
       pool.execute(new MessageLoop)
     }

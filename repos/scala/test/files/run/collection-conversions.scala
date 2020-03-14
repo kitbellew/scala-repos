@@ -10,10 +10,11 @@ object Test {
       tag: ClassTag[A],
       tag2: ClassTag[B]) = {
     print("  :" + msg + ": ")
-    val isArray = obj match {
-      case x: Array[Int] => true
-      case _             => false
-    }
+    val isArray =
+      obj match {
+        case x: Array[Int] => true
+        case _             => false
+      }
     val expectedEquals =
       if (isArray)
         obj

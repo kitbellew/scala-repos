@@ -69,8 +69,8 @@ class ScalaBlock(
   def isIncomplete = isIncomplete(myNode)
 
   def getChildAttributes(newChildIndex: Int): ChildAttributes = {
-    val scalaSettings =
-      mySettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
+    val scalaSettings = mySettings.getCustomSettings(
+      classOf[ScalaCodeStyleSettings])
     val indentSize = mySettings.getIndentSize(ScalaFileType.SCALA_FILE_TYPE)
     val parent = getNode.getPsi
     val braceShifted =
@@ -263,8 +263,8 @@ class ScalaBlock(
 
   def suggestedWrap: Wrap = {
     if (_suggestedWrap == null) {
-      val settings =
-        getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
+      val settings = getSettings.getCustomSettings(
+        classOf[ScalaCodeStyleSettings])
       _suggestedWrap = ScalaWrapManager.suggestedWrap(this, settings)
     }
     _suggestedWrap

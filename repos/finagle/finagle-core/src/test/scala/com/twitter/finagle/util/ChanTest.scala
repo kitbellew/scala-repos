@@ -21,20 +21,22 @@ class ChanTest extends FunSuite {
       b.await()
     }
 
-    val t0 = new Thread {
-      override def run() {
-        p ! this
+    val t0 =
+      new Thread {
+        override def run() {
+          p ! this
+        }
       }
-    }
 
-    val t1 = new Thread {
-      override def run() {
-        l.await()
-        p ! this
-        b.await()
-        b.await()
+    val t1 =
+      new Thread {
+        override def run() {
+          l.await()
+          p ! this
+          b.await()
+          b.await()
+        }
       }
-    }
 
     t0.start();
     t1.start()

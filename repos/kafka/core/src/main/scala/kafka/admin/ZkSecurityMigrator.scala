@@ -118,16 +118,17 @@ object ZkSecurityMigrator extends Logging {
       throw new IllegalArgumentException("Incorrect configuration")
     }
 
-    val zkAcl: Boolean = options.valueOf(zkAclOpt) match {
-      case "secure" =>
-        info("zookeeper.acl option is secure")
-        true
-      case "unsecure" =>
-        info("zookeeper.acl option is unsecure")
-        false
-      case _ =>
-        CommandLineUtils.printUsageAndDie(parser, usageMessage)
-    }
+    val zkAcl: Boolean =
+      options.valueOf(zkAclOpt) match {
+        case "secure" =>
+          info("zookeeper.acl option is secure")
+          true
+        case "unsecure" =>
+          info("zookeeper.acl option is unsecure")
+          false
+        case _ =>
+          CommandLineUtils.printUsageAndDie(parser, usageMessage)
+      }
     val zkUrl = options.valueOf(zkUrlOpt)
     val zkSessionTimeout = options.valueOf(zkSessionTimeoutOpt).intValue
     val zkConnectionTimeout = options.valueOf(zkConnectionTimeoutOpt).intValue

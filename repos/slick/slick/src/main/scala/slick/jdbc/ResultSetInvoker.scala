@@ -21,9 +21,10 @@ abstract class ResultSetInvoker[+R] extends Invoker[R] { self =>
     if (rs eq null)
       CloseableIterator.empty
     else {
-      val pr = new PositionedResult(rs) {
-        def close() = rs.close()
-      }
+      val pr =
+        new PositionedResult(rs) {
+          def close() = rs.close()
+        }
       new PositionedResultIterator[R](pr, maxRows, true) {
         def extractValue(pr: PositionedResult) = self.extractValue(pr)
       }

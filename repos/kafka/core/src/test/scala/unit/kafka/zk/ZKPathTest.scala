@@ -30,8 +30,10 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testCreatePersistentPathThrowsException {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils
+          .createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnectWithInvalidRoot,
       zkSessionTimeoutMs,
@@ -49,8 +51,9 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testCreatePersistentPath {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils.createConsumerProperties(zkConnect, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnect,
       zkSessionTimeoutMs,
@@ -68,8 +71,10 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testMakeSurePersistsPathExistsThrowsException {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils
+          .createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnectWithInvalidRoot,
       zkSessionTimeoutMs,
@@ -87,8 +92,9 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testMakeSurePersistsPathExists {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils.createConsumerProperties(zkConnect, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnect,
       zkSessionTimeoutMs,
@@ -106,8 +112,10 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testCreateEphemeralPathThrowsException {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils
+          .createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnectWithInvalidRoot,
       zkSessionTimeoutMs,
@@ -125,8 +133,9 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testCreateEphemeralPathExists {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils.createConsumerProperties(zkConnect, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnect,
       zkSessionTimeoutMs,
@@ -144,8 +153,10 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testCreatePersistentSequentialThrowsException {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils
+          .createConsumerProperties(zkConnectWithInvalidRoot, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnectWithInvalidRoot,
       zkSessionTimeoutMs,
@@ -163,8 +174,9 @@ class ZKPathTest extends ZooKeeperTestHarness {
 
   @Test
   def testCreatePersistentSequentialExists {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils.createConsumerProperties(zkConnect, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnect,
       zkSessionTimeoutMs,

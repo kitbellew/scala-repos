@@ -79,8 +79,9 @@ object PathTransition extends AnimationStatics {
       * The targeted node's rotation matrix is set to keep node perpendicular to the path's tangent along the geometric
       * path.
       */
-    val OrthogonalToTangent = new OrientationType(
-      jfxa.PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT)
+    val OrthogonalToTangent =
+      new OrientationType(
+        jfxa.PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT)
     @deprecated(
       "Use OrthogonalToTangent; ORTHOGONAL_TO_TANGENT will be removed in a future release",
       "8.0.60-R10")

@@ -52,14 +52,14 @@ object ReachingDefintionsCollector {
         fragment.map(_.getContainingFile.getName).mkString("(", ", ", ")")
       throw new RuntimeException(message)
     }
-    val cfg =
-      cfowner.getControlFlow(policy =
-        ExtractMethodControlFlowPolicy
-      ) //todo: make cache more right to not get PsiInvalidAccess
-    val engine = new DfaEngine(
-      cfg,
-      ReachingDefinitionsInstance,
-      ReachingDefinitionsLattice)
+    val cfg = cfowner.getControlFlow(policy =
+      ExtractMethodControlFlowPolicy
+    ) //todo: make cache more right to not get PsiInvalidAccess
+    val engine =
+      new DfaEngine(
+        cfg,
+        ReachingDefinitionsInstance,
+        ReachingDefinitionsLattice)
     val dfaResult = engine.performDFA
 
     // instructions in given fragment
@@ -84,51 +84,54 @@ object ReachingDefintionsCollector {
             .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
         case _ => false
       }
-    val isInstanceMethod = element match {
-      case fun: ScFunction => fun.isInstance
-      case m: PsiMethod    => !m.hasModifierPropertyScala("static")
-      case _               => false
-    }
-    val isSynthetic = element match {
-      case _: SyntheticNamedElement => true
-      case fun: ScFunction          => fun.isSynthetic
-      case _                        => false
-    }
+    val isInstanceMethod =
+      element match {
+        case fun: ScFunction => fun.isInstance
+        case m: PsiMethod    => !m.hasModifierPropertyScala("static")
+        case _               => false
+      }
+    val isSynthetic =
+      element match {
+        case _: SyntheticNamedElement => true
+        case fun: ScFunction          => fun.isSynthetic
+        case _                        => false
+      }
     import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory.{
       createDeclarationFromText,
       createExpressionWithContextFromText
     }
-    val resolvesAtNewPlace = element match {
-      case _: PsiMethod | _: ScFun =>
-        checkResolve(
-          createExpressionWithContextFromText(
-            element.name + " _",
+    val resolvesAtNewPlace =
+      element match {
+        case _: PsiMethod | _: ScFun =>
+          checkResolve(
+            createExpressionWithContextFromText(
+              element.name + " _",
+              place.getContext,
+              place).getFirstChild)
+        case _: ScObject =>
+          checkResolve(
+            createExpressionWithContextFromText(
+              element.name,
+              place.getContext,
+              place))
+        case _: ScTypeAlias | _: ScTypeDefinition =>
+          val decl = createDeclarationFromText(
+            s"val dummyVal: ${element.name}",
             place.getContext,
-            place).getFirstChild)
-      case _: ScObject =>
-        checkResolve(
-          createExpressionWithContextFromText(
-            element.name,
-            place.getContext,
-            place))
-      case _: ScTypeAlias | _: ScTypeDefinition =>
-        val decl = createDeclarationFromText(
-          s"val dummyVal: ${element.name}",
-          place.getContext,
-          place)
-          .asInstanceOf[ScValueDeclaration]
-        decl.typeElement match {
-          case Some(st: ScSimpleTypeElement) =>
-            st.reference.exists(checkResolve)
-          case _ => false
-        }
-      case _ =>
-        checkResolve(
-          createExpressionWithContextFromText(
-            element.name,
-            place.getContext,
-            place))
-    }
+            place)
+            .asInstanceOf[ScValueDeclaration]
+          decl.typeElement match {
+            case Some(st: ScSimpleTypeElement) =>
+              st.reference.exists(checkResolve)
+            case _ => false
+          }
+        case _ =>
+          checkResolve(
+            createExpressionWithContextFromText(
+              element.name,
+              place.getContext,
+              place))
+      }
     isInstanceMethod || isSynthetic || resolvesAtNewPlace
   }
 

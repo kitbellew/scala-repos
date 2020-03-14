@@ -25,9 +25,10 @@ trait Cyclic5 {
 trait IterableTemplate {
   type Elem
   type Constr <: IterableTemplate
-  type ConstrOf[A] = Constr {
-    type Elem = A
-  }
+  type ConstrOf[A] =
+    Constr {
+      type Elem = A
+    }
 
   def iterator: Iterator[Elem]
 

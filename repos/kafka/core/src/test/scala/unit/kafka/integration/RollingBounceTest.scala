@@ -32,8 +32,8 @@ class RollingBounceTest extends ZooKeeperTestHarness {
   override def setUp() {
     super.setUp()
     // controlled.shutdown.enable is true by default
-    val configs =
-      (0 until 4).map(i => TestUtils.createBrokerConfig(i, zkConnect))
+    val configs = (0 until 4).map(i =>
+      TestUtils.createBrokerConfig(i, zkConnect))
     configs(3).put("controlled.shutdown.retry.backoff.ms", "100")
 
     // start all the servers
@@ -101,8 +101,10 @@ class RollingBounceTest extends ZooKeeperTestHarness {
       servers((startIndex + 1) % 4).shutdown()
       prevLeader = (startIndex + 1) % 4
     }
-    var newleader =
-      waitUntilLeaderIsElectedOrChanged(zkUtils, topic, partitionId)
+    var newleader = waitUntilLeaderIsElectedOrChanged(
+      zkUtils,
+      topic,
+      partitionId)
     // Ensure the new leader is different from the old
     assertTrue(
       "Leader transition did not happen for " + topic,

@@ -87,21 +87,23 @@ class NaiveBayesModel private[spark] (
   // Bernoulli scoring requires log(condprob) if 1, log(1-condprob) if 0.
   // This precomputes log(1.0 - exp(theta)) and its sum which are used for the linear algebra
   // application of this condition (in predict function).
-  private val (thetaMinusNegTheta, negThetaSum) = modelType match {
-    case Multinomial => (None, None)
-    case Bernoulli =>
-      val negTheta = thetaMatrix.map(value => math.log(1.0 - math.exp(value)))
-      val ones = new DenseVector(Array.fill(thetaMatrix.numCols) {
-        1.0
-      })
-      val thetaMinusNegTheta = thetaMatrix.map { value =>
-        value - math.log(1.0 - math.exp(value))
-      }
-      (Option(thetaMinusNegTheta), Option(negTheta.multiply(ones)))
-    case _ =>
-      // This should never happen.
-      throw new UnknownError(s"Invalid modelType: $modelType.")
-  }
+  private val (thetaMinusNegTheta, negThetaSum) =
+    modelType match {
+      case Multinomial => (None, None)
+      case Bernoulli =>
+        val negTheta = thetaMatrix.map(value => math.log(1.0 - math.exp(value)))
+        val ones =
+          new DenseVector(Array.fill(thetaMatrix.numCols) {
+            1.0
+          })
+        val thetaMinusNegTheta = thetaMatrix.map { value =>
+          value - math.log(1.0 - math.exp(value))
+        }
+        (Option(thetaMinusNegTheta), Option(negTheta.multiply(ones)))
+      case _ =>
+        // This should never happen.
+        throw new UnknownError(s"Invalid modelType: $modelType.")
+    }
 
   @Since("1.0.0")
   override def predict(testData: RDD[Vector]): RDD[Double] = {
@@ -235,8 +237,9 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       val dataRDD = sqlContext.read.parquet(dataPath(path))
       // Check schema explicitly since erasure makes it hard to use match-case for checking.
       checkSchema[Data](dataRDD.schema)
-      val dataArray =
-        dataRDD.select("labels", "pi", "theta", "modelType").take(1)
+      val dataArray = dataRDD
+        .select("labels", "pi", "theta", "modelType")
+        .take(1)
       assert(
         dataArray.length == 1,
         s"Unable to load NaiveBayesModel data from: ${dataPath(path)}")
@@ -304,23 +307,24 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
     val (loadedClassName, version, metadata) = loadMetadata(sc, path)
     val classNameV1_0 = SaveLoadV1_0.thisClassName
     val classNameV2_0 = SaveLoadV2_0.thisClassName
-    val (model, numFeatures, numClasses) = (loadedClassName, version) match {
-      case (className, "1.0") if className == classNameV1_0 =>
-        val (numFeatures, numClasses) =
-          ClassificationModel.getNumFeaturesClasses(metadata)
-        val model = SaveLoadV1_0.load(sc, path)
-        (model, numFeatures, numClasses)
-      case (className, "2.0") if className == classNameV2_0 =>
-        val (numFeatures, numClasses) =
-          ClassificationModel.getNumFeaturesClasses(metadata)
-        val model = SaveLoadV2_0.load(sc, path)
-        (model, numFeatures, numClasses)
-      case _ =>
-        throw new Exception(
-          s"NaiveBayesModel.load did not recognize model with (className, format version):" +
-            s"($loadedClassName, $version).  Supported:\n" +
-            s"  ($classNameV1_0, 1.0)")
-    }
+    val (model, numFeatures, numClasses) =
+      (loadedClassName, version) match {
+        case (className, "1.0") if className == classNameV1_0 =>
+          val (numFeatures, numClasses) = ClassificationModel
+            .getNumFeaturesClasses(metadata)
+          val model = SaveLoadV1_0.load(sc, path)
+          (model, numFeatures, numClasses)
+        case (className, "2.0") if className == classNameV2_0 =>
+          val (numFeatures, numClasses) = ClassificationModel
+            .getNumFeaturesClasses(metadata)
+          val model = SaveLoadV2_0.load(sc, path)
+          (model, numFeatures, numClasses)
+        case _ =>
+          throw new Exception(
+            s"NaiveBayesModel.load did not recognize model with (className, format version):" +
+              s"($loadedClassName, $version).  Supported:\n" +
+              s"  ($classNameV1_0, 1.0)")
+      }
     assert(
       model.pi.length == numClasses,
       s"NaiveBayesModel.load expected $numClasses classes," +
@@ -398,27 +402,31 @@ class NaiveBayes private (
     */
   @Since("0.9.0")
   def run(data: RDD[LabeledPoint]): NaiveBayesModel = {
-    val requireNonnegativeValues: Vector => Unit = (v: Vector) => {
-      val values = v match {
-        case sv: SparseVector => sv.values
-        case dv: DenseVector  => dv.values
+    val requireNonnegativeValues: Vector => Unit =
+      (v: Vector) => {
+        val values =
+          v match {
+            case sv: SparseVector => sv.values
+            case dv: DenseVector  => dv.values
+          }
+        if (!values.forall(_ >= 0.0)) {
+          throw new SparkException(
+            s"Naive Bayes requires nonnegative feature values but found $v.")
+        }
       }
-      if (!values.forall(_ >= 0.0)) {
-        throw new SparkException(
-          s"Naive Bayes requires nonnegative feature values but found $v.")
-      }
-    }
 
-    val requireZeroOneBernoulliValues: Vector => Unit = (v: Vector) => {
-      val values = v match {
-        case sv: SparseVector => sv.values
-        case dv: DenseVector  => dv.values
+    val requireZeroOneBernoulliValues: Vector => Unit =
+      (v: Vector) => {
+        val values =
+          v match {
+            case sv: SparseVector => sv.values
+            case dv: DenseVector  => dv.values
+          }
+        if (!values.forall(v => v == 0.0 || v == 1.0)) {
+          throw new SparkException(
+            s"Bernoulli naive Bayes requires 0 or 1 feature values but found $v.")
+        }
       }
-      if (!values.forall(v => v == 0.0 || v == 1.0)) {
-        throw new SparkException(
-          s"Bernoulli naive Bayes requires 0 or 1 feature values but found $v.")
-      }
-    }
 
     // Aggregates term frequencies per label.
     // TODO: Calling combineByKey and collect creates two stages, we can implement something
@@ -453,9 +461,10 @@ class NaiveBayes private (
       case (_, (n, _)) =>
         numDocuments += n
     }
-    val numFeatures = aggregated.head match {
-      case (_, (_, v)) => v.size
-    }
+    val numFeatures =
+      aggregated.head match {
+        case (_, (_, v)) => v.size
+      }
 
     val labels = new Array[Double](numLabels)
     val pi = new Array[Double](numLabels)
@@ -467,14 +476,15 @@ class NaiveBayes private (
       case (label, (n, sumTermFreqs)) =>
         labels(i) = label
         pi(i) = math.log(n + lambda) - piLogDenom
-        val thetaLogDenom = modelType match {
-          case Multinomial =>
-            math.log(sumTermFreqs.values.sum + numFeatures * lambda)
-          case Bernoulli => math.log(n + 2.0 * lambda)
-          case _         =>
-            // This should never happen.
-            throw new UnknownError(s"Invalid modelType: $modelType.")
-        }
+        val thetaLogDenom =
+          modelType match {
+            case Multinomial =>
+              math.log(sumTermFreqs.values.sum + numFeatures * lambda)
+            case Bernoulli => math.log(n + 2.0 * lambda)
+            case _         =>
+              // This should never happen.
+              throw new UnknownError(s"Invalid modelType: $modelType.")
+          }
         var j = 0
         while (j < numFeatures) {
           theta(i)(j) = math.log(sumTermFreqs(j) + lambda) - thetaLogDenom

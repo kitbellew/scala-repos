@@ -1476,8 +1476,7 @@ object KafkaConfig {
         "Unknown configuration \"%s\".".format(name))
   }
 
-  def fromProps(props: Properties): KafkaConfig =
-    fromProps(props, true)
+  def fromProps(props: Properties): KafkaConfig = fromProps(props, true)
 
   def fromProps(props: Properties, doLog: Boolean): KafkaConfig =
     new KafkaConfig(props, doLog)
@@ -1506,10 +1505,10 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   /** ********* Zookeeper Configuration ***********/
   val zkConnect: String = getString(KafkaConfig.ZkConnectProp)
   val zkSessionTimeoutMs: Int = getInt(KafkaConfig.ZkSessionTimeoutMsProp)
-  val zkConnectionTimeoutMs: Int =
-    Option(getInt(KafkaConfig.ZkConnectionTimeoutMsProp))
-      .map(_.toInt)
-      .getOrElse(getInt(KafkaConfig.ZkSessionTimeoutMsProp))
+  val zkConnectionTimeoutMs: Int = Option(
+    getInt(KafkaConfig.ZkConnectionTimeoutMsProp))
+    .map(_.toInt)
+    .getOrElse(getInt(KafkaConfig.ZkSessionTimeoutMsProp))
   val zkSyncTimeMs: Int = getInt(KafkaConfig.ZkSyncTimeMsProp)
   val zkEnableSecureAcls: Boolean = getBoolean(
     KafkaConfig.ZkEnableSecureAclsProp)
@@ -1533,22 +1532,21 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   /** ********* Socket Server Configuration ***********/
   val hostName = getString(KafkaConfig.HostNameProp)
   val port = getInt(KafkaConfig.PortProp)
-  val advertisedHostName =
-    Option(getString(KafkaConfig.AdvertisedHostNameProp)).getOrElse(hostName)
-  val advertisedPort: java.lang.Integer =
-    Option(getInt(KafkaConfig.AdvertisedPortProp)).getOrElse(port)
+  val advertisedHostName = Option(getString(KafkaConfig.AdvertisedHostNameProp))
+    .getOrElse(hostName)
+  val advertisedPort: java.lang.Integer = Option(
+    getInt(KafkaConfig.AdvertisedPortProp)).getOrElse(port)
 
   val socketSendBufferBytes = getInt(KafkaConfig.SocketSendBufferBytesProp)
   val socketReceiveBufferBytes = getInt(
     KafkaConfig.SocketReceiveBufferBytesProp)
   val socketRequestMaxBytes = getInt(KafkaConfig.SocketRequestMaxBytesProp)
   val maxConnectionsPerIp = getInt(KafkaConfig.MaxConnectionsPerIpProp)
-  val maxConnectionsPerIpOverrides: Map[String, Int] =
-    getMap(
-      KafkaConfig.MaxConnectionsPerIpOverridesProp,
-      getString(KafkaConfig.MaxConnectionsPerIpOverridesProp)).map {
-      case (k, v) => (k, v.toInt)
-    }
+  val maxConnectionsPerIpOverrides: Map[String, Int] = getMap(
+    KafkaConfig.MaxConnectionsPerIpOverridesProp,
+    getString(KafkaConfig.MaxConnectionsPerIpOverridesProp)).map {
+    case (k, v) => (k, v.toInt)
+  }
   val connectionsMaxIdleMs = getLong(KafkaConfig.ConnectionsMaxIdleMsProp)
 
   /***************** rack configuration **************/
@@ -1569,8 +1567,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     KafkaConfig.NumRecoveryThreadsPerDataDirProp)
   val logFlushSchedulerIntervalMs = getLong(
     KafkaConfig.LogFlushSchedulerIntervalMsProp)
-  val logFlushOffsetCheckpointIntervalMs = getInt(
-    KafkaConfig.LogFlushOffsetCheckpointIntervalMsProp).toLong
+  val logFlushOffsetCheckpointIntervalMs =
+    getInt(KafkaConfig.LogFlushOffsetCheckpointIntervalMsProp).toLong
   val logCleanupIntervalMs = getLong(KafkaConfig.LogCleanupIntervalMsProp)
   val logCleanupPolicy = getString(KafkaConfig.LogCleanupPolicyProp)
   val offsetsRetentionMinutes = getInt(KafkaConfig.OffsetsRetentionMinutesProp)
@@ -1593,15 +1591,15 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val logIndexSizeMaxBytes = getInt(KafkaConfig.LogIndexSizeMaxBytesProp)
   val logIndexIntervalBytes = getInt(KafkaConfig.LogIndexIntervalBytesProp)
   val logDeleteDelayMs = getLong(KafkaConfig.LogDeleteDelayMsProp)
-  val logRollTimeMillis: java.lang.Long =
-    Option(getLong(KafkaConfig.LogRollTimeMillisProp))
-      .getOrElse(60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeHoursProp))
+  val logRollTimeMillis: java.lang.Long = Option(
+    getLong(KafkaConfig.LogRollTimeMillisProp))
+    .getOrElse(60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeHoursProp))
   val logRollTimeJitterMillis: java.lang.Long = Option(
     getLong(KafkaConfig.LogRollTimeJitterMillisProp))
     .getOrElse(60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeJitterHoursProp))
-  val logFlushIntervalMs: java.lang.Long =
-    Option(getLong(KafkaConfig.LogFlushIntervalMsProp))
-      .getOrElse(getLong(KafkaConfig.LogFlushSchedulerIntervalMsProp))
+  val logFlushIntervalMs: java.lang.Long = Option(
+    getLong(KafkaConfig.LogFlushIntervalMsProp))
+    .getOrElse(getLong(KafkaConfig.LogFlushSchedulerIntervalMsProp))
   val logRetentionTimeMillis = getLogRetentionTimeMillis
   val minInSyncReplicas = getInt(KafkaConfig.MinInSyncReplicasProp)
   val logPreAllocateEnable: java.lang.Boolean = getBoolean(
@@ -1611,8 +1609,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val logMessageFormatVersionString = getString(
     KafkaConfig.LogMessageFormatVersionProp)
   val logMessageFormatVersion = ApiVersion(logMessageFormatVersionString)
-  val logMessageTimestampType =
-    TimestampType.forName(getString(KafkaConfig.LogMessageTimestampTypeProp))
+  val logMessageTimestampType = TimestampType.forName(
+    getString(KafkaConfig.LogMessageTimestampTypeProp))
   val logMessageTimestampDifferenceMaxMs = getLong(
     KafkaConfig.LogMessageTimestampDifferenceMaxMsProp)
 
@@ -1739,13 +1737,13 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     val millisInMinute = 60L * 1000L
     val millisInHour = 60L * millisInMinute
 
-    val millis: java.lang.Long =
-      Option(getLong(KafkaConfig.LogRetentionTimeMillisProp)).getOrElse(
-        Option(getInt(KafkaConfig.LogRetentionTimeMinutesProp)) match {
-          case Some(mins) => millisInMinute * mins
-          case None =>
-            getInt(KafkaConfig.LogRetentionTimeHoursProp) * millisInHour
-        })
+    val millis: java.lang.Long = Option(
+      getLong(KafkaConfig.LogRetentionTimeMillisProp))
+      .getOrElse(Option(getInt(KafkaConfig.LogRetentionTimeMinutesProp)) match {
+        case Some(mins) => millisInMinute * mins
+        case None =>
+          getInt(KafkaConfig.LogRetentionTimeHoursProp) * millisInHour
+      })
 
     if (millis < 0)
       return -1

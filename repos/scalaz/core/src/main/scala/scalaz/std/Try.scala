@@ -11,8 +11,7 @@ trait TryFunctions {
       case Failure(t) => failure(t)
     }
 
-  def toDisjunction[A](t: Try[A]): Throwable \/ A =
-    cata(t)(\/.right, \/.left)
+  def toDisjunction[A](t: Try[A]): Throwable \/ A = cata(t)(\/.right, \/.left)
 
   def fromDisjunction[T <: Throwable, A](d: T \/ A): Try[A] =
     d.fold(Failure.apply, Success.apply)

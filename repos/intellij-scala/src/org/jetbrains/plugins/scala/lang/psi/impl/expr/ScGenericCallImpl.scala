@@ -32,10 +32,11 @@ class ScGenericCallImpl(node: ASTNode)
     * Utility method to get generics for apply methods of concrecte class.
     */
   private def processType(tp: ScType, isShape: Boolean): ScType = {
-    val curr = getContext match {
-      case call: ScMethodCall => call
-      case _                  => this
-    }
+    val curr =
+      getContext match {
+        case call: ScMethodCall => call
+        case _                  => this
+      }
     val isUpdate = curr.getContext.isInstanceOf[ScAssignStmt] &&
       curr.getContext.asInstanceOf[ScAssignStmt].getLExpression == curr
     val methodName =
@@ -68,14 +69,15 @@ class ScGenericCallImpl(node: ASTNode)
       }
     val typeArgs: Seq[ScTypeElement] = this.arguments
     import org.jetbrains.plugins.scala.lang.psi.types.Compatibility.Expression._
-    val processor = new MethodResolveProcessor(
-      referencedExpr,
-      methodName,
-      args,
-      typeArgs,
-      Seq.empty /* todo: ? */,
-      isShapeResolve = isShape,
-      enableTupling = true)
+    val processor =
+      new MethodResolveProcessor(
+        referencedExpr,
+        methodName,
+        args,
+        typeArgs,
+        Seq.empty /* todo: ? */,
+        isShapeResolve = isShape,
+        enableTupling = true)
     processor.processType(tp, referencedExpr, ResolveState.initial)
     val candidates = processor.candidates
     if (candidates.length != 1)
@@ -129,18 +131,20 @@ class ScGenericCallImpl(node: ASTNode)
   }
 
   def shapeType: TypeResult[ScType] = {
-    val typeResult: TypeResult[ScType] = referencedExpr match {
-      case ref: ScReferenceExpression => ref.shapeType
-      case expr                       => expr.getNonValueType(TypingContext.empty)
-    }
+    val typeResult: TypeResult[ScType] =
+      referencedExpr match {
+        case ref: ScReferenceExpression => ref.shapeType
+        case expr                       => expr.getNonValueType(TypingContext.empty)
+      }
     shapeType(typeResult)
   }
 
   def shapeMultiType: Array[TypeResult[ScType]] = {
-    val typeResult: Array[TypeResult[ScType]] = referencedExpr match {
-      case ref: ScReferenceExpression => ref.shapeMultiType
-      case expr                       => Array(expr.getNonValueType(TypingContext.empty))
-    }
+    val typeResult: Array[TypeResult[ScType]] =
+      referencedExpr match {
+        case ref: ScReferenceExpression => ref.shapeMultiType
+        case expr                       => Array(expr.getNonValueType(TypingContext.empty))
+      }
     typeResult.map(shapeType(_))
   }
 
@@ -152,10 +156,11 @@ class ScGenericCallImpl(node: ASTNode)
   }
 
   def multiType: Array[TypeResult[ScType]] = {
-    val typeResult: Array[TypeResult[ScType]] = referencedExpr match {
-      case ref: ScReferenceExpression => ref.multiType
-      case expr                       => Array(expr.getNonValueType(TypingContext.empty))
-    }
+    val typeResult: Array[TypeResult[ScType]] =
+      referencedExpr match {
+        case ref: ScReferenceExpression => ref.multiType
+        case expr                       => Array(expr.getNonValueType(TypingContext.empty))
+      }
     typeResult.map(convertReferencedType)
   }
 

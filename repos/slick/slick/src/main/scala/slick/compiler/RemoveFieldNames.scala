@@ -16,43 +16,45 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
       ClientSideOp.mapResultSetMapping(n, true) { rsm =>
         val CollectionType(_, NominalType(top, StructType(fdefs))) =
           rsm.from.nodeType
-        val requiredSyms = rsm.map
-          .collect[TermSymbol](
-            {
-              case Select(Ref(s), f) if s == rsm.generator => f
-            },
-            stopOnMatch = true)
-          .toSeq
-          .distinct
-          .zipWithIndex
-          .toMap
+        val requiredSyms =
+          rsm.map
+            .collect[TermSymbol](
+              {
+                case Select(Ref(s), f) if s == rsm.generator => f
+              },
+              stopOnMatch = true)
+            .toSeq
+            .distinct
+            .zipWithIndex
+            .toMap
         logger.debug("Required symbols: " + requiredSyms.mkString(", "))
         val rsm2 = rsm.nodeMapServerSide(
           false,
           { n =>
-            val refTSyms = n
-              .collect[TypeSymbol] {
-                case Select(_ :@ NominalType(s, _), _)                      => s
-                case Union(_, _ :@ CollectionType(_, NominalType(s, _)), _) => s
-                case Comprehension(
-                      _,
-                      _ :@ CollectionType(_, NominalType(s, _)),
-                      _,
-                      _,
-                      _,
-                      _,
-                      _,
-                      _,
-                      _,
-                      _) if alwaysKeepSubqueryNames =>
-                  s
-              }
-              .toSet
-            val allTSyms = n
-              .collect[TypeSymbol] {
-                case p: Pure => p.identity
-              }
-              .toSet
+            val refTSyms =
+              n.collect[TypeSymbol] {
+                  case Select(_ :@ NominalType(s, _), _) => s
+                  case Union(_, _ :@ CollectionType(_, NominalType(s, _)), _) =>
+                    s
+                  case Comprehension(
+                        _,
+                        _ :@ CollectionType(_, NominalType(s, _)),
+                        _,
+                        _,
+                        _,
+                        _,
+                        _,
+                        _,
+                        _,
+                        _) if alwaysKeepSubqueryNames =>
+                    s
+                }
+                .toSet
+            val allTSyms =
+              n.collect[TypeSymbol] {
+                  case p: Pure => p.identity
+                }
+                .toSet
             val unrefTSyms = allTSyms -- refTSyms
             n.replaceInvalidate {
                 case Pure(StructNode(ConstArray.empty), pts) =>
@@ -77,17 +79,16 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                           .map(_._2))
                   (Pure(sel, pts), pts)
                 case Pure(StructNode(ch), pts) if pts == top =>
-                  val sel =
-                    StructNode(
-                      ConstArray
-                        .from(ch
-                          .map {
-                            case (s, n) =>
-                              (requiredSyms.getOrElse(s, Int.MaxValue), (s, n))
-                          }
-                          .toSeq
-                          .sortBy(_._1))
-                        .map(_._2))
+                  val sel = StructNode(
+                    ConstArray
+                      .from(ch
+                        .map {
+                          case (s, n) =>
+                            (requiredSyms.getOrElse(s, Int.MaxValue), (s, n))
+                        }
+                        .toSeq
+                        .sortBy(_._1))
+                      .map(_._2))
                   (Pure(sel, pts), pts)
               }
               .infer()

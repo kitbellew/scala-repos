@@ -41,8 +41,9 @@ class UntypedProducerTest
         Props[SampleUntypedReplyingProducer],
         name = "sample-untyped-replying-producer")
 
-      val message =
-        CamelMessage("test", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "test",
+        Map(CamelMessage.MessageExchangeId -> "123"))
       val future = producer.ask(message)(timeout)
 
       val expected = CamelMessage(
@@ -61,8 +62,9 @@ class UntypedProducerTest
         Props[SampleUntypedReplyingProducer],
         name = "sample-untyped-replying-producer-failure")
 
-      val message =
-        CamelMessage("fail", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "fail",
+        Map(CamelMessage.MessageExchangeId -> "123"))
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         val future = producer.ask(message)(timeout).failed
 

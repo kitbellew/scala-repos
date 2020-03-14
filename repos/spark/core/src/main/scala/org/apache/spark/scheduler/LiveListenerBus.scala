@@ -60,37 +60,38 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
   // A counter that represents the number of events produced and consumed in the queue
   private val eventLock = new Semaphore(0)
 
-  private val listenerThread = new Thread(name) {
-    setDaemon(true)
-    override def run(): Unit =
-      Utils.tryOrStopSparkContext(sparkContext) {
-        LiveListenerBus.withinListenerThread.withValue(true) {
-          while (true) {
-            eventLock.acquire()
-            self.synchronized {
-              processingEvent = true
-            }
-            try {
-              val event = eventQueue.poll
-              if (event == null) {
-                // Get out of the while loop and shutdown the daemon thread
-                if (!stopped.get) {
-                  throw new IllegalStateException(
-                    "Polling `null` from eventQueue means" +
-                      " the listener bus has been stopped. So `stopped` must be true")
-                }
-                return
-              }
-              postToAll(event)
-            } finally {
+  private val listenerThread =
+    new Thread(name) {
+      setDaemon(true)
+      override def run(): Unit =
+        Utils.tryOrStopSparkContext(sparkContext) {
+          LiveListenerBus.withinListenerThread.withValue(true) {
+            while (true) {
+              eventLock.acquire()
               self.synchronized {
-                processingEvent = false
+                processingEvent = true
+              }
+              try {
+                val event = eventQueue.poll
+                if (event == null) {
+                  // Get out of the while loop and shutdown the daemon thread
+                  if (!stopped.get) {
+                    throw new IllegalStateException(
+                      "Polling `null` from eventQueue means" +
+                        " the listener bus has been stopped. So `stopped` must be true")
+                  }
+                  return
+                }
+                postToAll(event)
+              } finally {
+                self.synchronized {
+                  processingEvent = false
+                }
               }
             }
           }
         }
-      }
-  }
+    }
 
   /**
     * Start sending events to attached listeners.

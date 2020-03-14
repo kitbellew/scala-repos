@@ -37,24 +37,26 @@ import scalafx.scene.web._
 
 object WebDemo extends JFXApp {
 
-  val browser = new WebView {
-    hgrow = Priority.Always
-    vgrow = Priority.Always
-    onAlert = (e: WebEvent[_]) => println("onAlert: " + e)
-    onStatusChanged = (e: WebEvent[_]) => println("onStatusChanged: " + e)
-    onResized = (e: WebEvent[_]) => println("onResized: " + e)
-    onVisibilityChanged = (e: WebEvent[_]) =>
-      println("onVisibilityChanged: " + e)
-  }
+  val browser =
+    new WebView {
+      hgrow = Priority.Always
+      vgrow = Priority.Always
+      onAlert = (e: WebEvent[_]) => println("onAlert: " + e)
+      onStatusChanged = (e: WebEvent[_]) => println("onStatusChanged: " + e)
+      onResized = (e: WebEvent[_]) => println("onResized: " + e)
+      onVisibilityChanged = (e: WebEvent[_]) =>
+        println("onVisibilityChanged: " + e)
+    }
 
   val engine = browser.engine
   engine.load("http://www.scalafx.org/")
 
-  val txfUrl = new TextField {
-    text = engine.location.value
-    hgrow = Priority.Always
-    vgrow = Priority.Never
-  }
+  val txfUrl =
+    new TextField {
+      text = engine.location.value
+      hgrow = Priority.Always
+      vgrow = Priority.Never
+    }
   txfUrl.onAction = handle {
     engine.load(txfUrl.text.get)
   }

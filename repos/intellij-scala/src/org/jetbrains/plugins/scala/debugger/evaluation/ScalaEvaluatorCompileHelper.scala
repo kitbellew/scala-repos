@@ -34,23 +34,24 @@ class ScalaEvaluatorCompileHelper(project: Project)
 
   private val tempFiles = mutable.Set[File]()
 
-  private val listener = new DebuggerManagerAdapter {
-    override def sessionAttached(session: DebuggerSession): Unit = {
-      if (EvaluatorCompileHelper.needCompileServer && project.hasScala) {
-        CompileServerLauncher.ensureServerRunning(project)
+  private val listener =
+    new DebuggerManagerAdapter {
+      override def sessionAttached(session: DebuggerSession): Unit = {
+        if (EvaluatorCompileHelper.needCompileServer && project.hasScala) {
+          CompileServerLauncher.ensureServerRunning(project)
+        }
+      }
+
+      override def sessionDetached(session: DebuggerSession) = {
+        clearTempFiles()
+
+        if (!ScalaCompileServerSettings
+              .getInstance()
+              .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer) {
+          CompileServerLauncher.ensureNotRunning(project)
+        }
       }
     }
-
-    override def sessionDetached(session: DebuggerSession) = {
-      clearTempFiles()
-
-      if (!ScalaCompileServerSettings
-            .getInstance()
-            .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer) {
-        CompileServerLauncher.ensureNotRunning(project)
-      }
-    }
-  }
 
   override def projectOpened(): Unit = {
     if (!ApplicationManager.getApplication.isUnitTestMode) {
@@ -131,24 +132,28 @@ private class ServerConnector(
 
   val errors = ListBuffer[String]()
 
-  val client = new Client {
-    override def message(
-        kind: Kind,
-        text: String,
-        source: Option[File],
-        line: Option[Long],
-        column: Option[Long]): Unit = {
-      if (kind == Kind.ERROR)
-        errors += text
+  val client =
+    new Client {
+      override def message(
+          kind: Kind,
+          text: String,
+          source: Option[File],
+          line: Option[Long],
+          column: Option[Long]): Unit = {
+        if (kind == Kind.ERROR)
+          errors += text
+      }
+      override def deleted(module: File): Unit = {}
+      override def progress(text: String, done: Option[Float]): Unit = {}
+      override def isCanceled: Boolean = false
+      override def debug(text: String): Unit = {}
+      override def processed(source: File): Unit = {}
+      override def trace(exception: Throwable): Unit = {}
+      override def generated(
+          source: File,
+          module: File,
+          name: String): Unit = {}
     }
-    override def deleted(module: File): Unit = {}
-    override def progress(text: String, done: Option[Float]): Unit = {}
-    override def isCanceled: Boolean = false
-    override def debug(text: String): Unit = {}
-    override def processed(source: File): Unit = {}
-    override def trace(exception: Throwable): Unit = {}
-    override def generated(source: File, module: File, name: String): Unit = {}
-  }
 
   @tailrec
   private def classfiles(
@@ -164,8 +169,8 @@ private class ServerConnector(
   def compile(): Either[Array[(File, String)], Seq[String]] = {
     val project = module.getProject
 
-    val compilationProcess =
-      new RemoteServerRunner(project).buildProcess(arguments, client)
+    val compilationProcess = new RemoteServerRunner(project)
+      .buildProcess(arguments, client)
     var result: Either[Array[(File, String)], Seq[String]] = Right(
       Seq("Compilation failed"))
     compilationProcess.addTerminationCallback {

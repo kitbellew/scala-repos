@@ -91,8 +91,11 @@ object ServerProvider {
     */
   implicit lazy val defaultServerProvider: ServerProvider = {
     val classLoader = this.getClass.getClassLoader
-    val config =
-      Configuration.load(classLoader, System.getProperties, Map.empty, true)
+    val config = Configuration.load(
+      classLoader,
+      System.getProperties,
+      Map.empty,
+      true)
     fromConfiguration(classLoader, config)
   }
 

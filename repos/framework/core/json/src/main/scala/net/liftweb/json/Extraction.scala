@@ -267,10 +267,11 @@ object Extraction {
         if (constructor.choices.size == 1)
           constructor.choices.head // optimized common case
         else {
-          val argNames = json match {
-            case JObject(fs) => fs.map(_.name)
-            case x           => Nil
-          }
+          val argNames =
+            json match {
+              case JObject(fs) => fs.map(_.name)
+              case x           => Nil
+            }
           constructor
             .bestMatching(argNames)
             .getOrElse(fail(
@@ -291,16 +292,16 @@ object Extraction {
                     None)
                   .map(_._1)
                   .toSet
-              val jsonFields = o.obj.map { f =>
-                val JField(n, v) =
-                  (serializer.deserializer orElse Map(f -> f))(f)
-                (n, (n, v))
-              }.toMap
+              val jsonFields =
+                o.obj.map { f =>
+                  val JField(n, v) =
+                    (serializer.deserializer orElse Map(f -> f))(f)
+                  (n, (n, v))
+                }.toMap
 
-              val fieldsToSet =
-                Reflection
-                  .fields(a.getClass)
-                  .filterNot(f => constructorArgNames.contains(f._1))
+              val fieldsToSet = Reflection
+                .fields(a.getClass)
+                .filterNot(f => constructorArgNames.contains(f._1))
 
               fieldsToSet.foreach {
                 case (name, typeInfo) =>
@@ -318,8 +319,10 @@ object Extraction {
                               else
                                 t
                           })
-                      val value =
-                        extract0(v, typeInfo.clazz, typeArgs.getOrElse(Nil))
+                      val value = extract0(
+                        v,
+                        typeInfo.clazz,
+                        typeArgs.getOrElse(Nil))
                       Reflection.setField(a, n, value)
                   }
               }
@@ -409,13 +412,14 @@ object Extraction {
         root: JValue,
         m: Mapping,
         constructor: Array[_] => Any) = {
-      val array: Array[_] = root match {
-        case JArray(arr)      => arr.map(build(_, m)).toArray
-        case JNothing | JNull => Array[AnyRef]()
-        case x =>
-          fail(
-            "Expected collection but got " + x + " for root " + root + " and mapping " + m)
-      }
+      val array: Array[_] =
+        root match {
+          case JArray(arr)      => arr.map(build(_, m)).toArray
+          case JNothing | JNull => Array[AnyRef]()
+          case x =>
+            fail(
+              "Expected collection but got " + x + " for root " + root + " and mapping " + m)
+        }
 
       constructor(array)
     }

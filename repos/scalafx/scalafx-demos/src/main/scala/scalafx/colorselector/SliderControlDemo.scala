@@ -48,89 +48,98 @@ object SliderControlDemo extends JFXApp {
 
   val sliderControl = new SliderControl("X")
 
-  val txfInputValue = new TextField {
-    alignmentInParent = Pos.BaselineLeft
-    promptText = "Enter the value"
-    hgrow = Priority.Never
-    onAction = handle {
-      sliderControl.value = text.get.toDouble
+  val txfInputValue =
+    new TextField {
+      alignmentInParent = Pos.BaselineLeft
+      promptText = "Enter the value"
+      hgrow = Priority.Never
+      onAction = handle {
+        sliderControl.value = text.get.toDouble
+      }
     }
-  }
 
-  val lblOutputValue = new Label {
-    alignmentInParent = Pos.BaselineLeft
-    text <== sliderControl.realValue.asString("%03.0f")
-  }
+  val lblOutputValue =
+    new Label {
+      alignmentInParent = Pos.BaselineLeft
+      text <== sliderControl.realValue.asString("%03.0f")
+    }
 
-  val chbSelected = new CheckBox {
-    alignmentInParent = Pos.BaselineLeft
-    selected <==> sliderControl.selectedControl
-  }
+  val chbSelected =
+    new CheckBox {
+      alignmentInParent = Pos.BaselineLeft
+      selected <==> sliderControl.selectedControl
+    }
 
-  val chbEnabled = new CheckBox {
-    alignmentInParent = Pos.BaselineLeft
-    selected <==> sliderControl.disable
-  }
+  val chbEnabled =
+    new CheckBox {
+      alignmentInParent = Pos.BaselineLeft
+      selected <==> sliderControl.disable
+    }
 
-  val pnlControls = new GridPane {
-    add(
-      new Label {
-        text = "Input Value"
-      },
-      0,
-      0)
-    add(txfInputValue, 1, 0)
-    add(
-      new Label {
-        text = "Output Value"
-      },
-      2,
-      0)
-    add(lblOutputValue, 3, 0)
-    add(
-      new Label {
-        text = "Selected"
-      },
-      0,
-      1)
-    add(chbSelected, 1, 1)
-    add(
-      new Label {
-        text = "Disabled"
-      },
-      2,
-      1)
-    add(chbEnabled, 3, 1)
-    padding = insets
-  }
+  val pnlControls =
+    new GridPane {
+      add(
+        new Label {
+          text = "Input Value"
+        },
+        0,
+        0)
+      add(txfInputValue, 1, 0)
+      add(
+        new Label {
+          text = "Output Value"
+        },
+        2,
+        0)
+      add(lblOutputValue, 3, 0)
+      add(
+        new Label {
+          text = "Selected"
+        },
+        0,
+        1)
+      add(chbSelected, 1, 1)
+      add(
+        new Label {
+          text = "Disabled"
+        },
+        2,
+        1)
+      add(chbEnabled, 3, 1)
+      padding = insets
+    }
   GridPane.setHgrow(txfInputValue, Priority.Never)
   GridPane.setValignment(txfInputValue, VPos.Baseline)
   GridPane.setVgrow(txfInputValue, Priority.Never)
   GridPane.setHgrow(lblOutputValue, Priority.Never)
   GridPane.setValignment(lblOutputValue, VPos.Baseline)
   GridPane.setVgrow(lblOutputValue, Priority.Never)
-  val ccOdd = new ColumnConstraints {
-    halignment = HPos.Right
-    hgrow = Priority.Never
-  }
-  val ccEven = new ColumnConstraints {
-    halignment = HPos.Left
-    hgrow = Priority.Sometimes
-  }
+  val ccOdd =
+    new ColumnConstraints {
+      halignment = HPos.Right
+      hgrow = Priority.Never
+    }
+  val ccEven =
+    new ColumnConstraints {
+      halignment = HPos.Left
+      hgrow = Priority.Sometimes
+    }
   pnlControls.columnConstraints = List(ccOdd, ccEven, ccOdd, ccEven)
 
-  val box = new VBox(5.0) {
-    children = List(sliderControl, pnlControls)
-  }
+  val box =
+    new VBox(5.0) {
+      children = List(sliderControl, pnlControls)
+    }
   VBox.setVgrow(sliderControl, Priority.Never)
   VBox.setVgrow(pnlControls, Priority.Always)
 
-  val mainScene = new Scene {
-    fill = Color.LightGray
-    content = new AnchorPane {
-      children = List(box)
+  val mainScene =
+    new Scene {
+      fill = Color.LightGray
+      content = new AnchorPane {
+        children = List(box)
+      }
     }
-  }
   box.prefWidth <== mainScene.width
   box.prefHeight <== mainScene.height
 

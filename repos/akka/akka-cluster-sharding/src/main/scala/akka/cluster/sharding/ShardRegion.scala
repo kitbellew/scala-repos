@@ -401,8 +401,8 @@ class ShardRegion(
 
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] =
-    immutable.SortedSet.empty(ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
+    ageOrdering)
 
   var regions = Map.empty[ActorRef, Set[ShardId]]
   var regionByShard = Map.empty[ShardId, ActorRef]
@@ -420,8 +420,11 @@ class ShardRegion(
     }
 
   import context.dispatcher
-  val retryTask =
-    context.system.scheduler.schedule(retryInterval, retryInterval, self, Retry)
+  val retryTask = context.system.scheduler.schedule(
+    retryInterval,
+    retryInterval,
+    self,
+    Retry)
   var retryCount = 0
 
   // subscribe to MemberEvent, re-subscribe when restart
@@ -502,8 +505,9 @@ class ShardRegion(
       case HostShard(shard) ⇒
         log.debug("Host Shard [{}] ", shard)
         regionByShard = regionByShard.updated(shard, self)
-        regions =
-          regions.updated(self, regions.getOrElse(self, Set.empty) + shard)
+        regions = regions.updated(
+          self,
+          regions.getOrElse(self, Set.empty) + shard)
 
         //Start the shard, if already started this does nothing
         getShard(shard)
@@ -520,8 +524,9 @@ class ShardRegion(
           case _ ⇒
         }
         regionByShard = regionByShard.updated(shard, ref)
-        regions =
-          regions.updated(ref, regions.getOrElse(ref, Set.empty) + shard)
+        regions = regions.updated(
+          ref,
+          regions.getOrElse(ref, Set.empty) + shard)
 
         if (ref != self)
           context.watch(ref)

@@ -14,10 +14,11 @@ trait Foo[A <: AnyRef] {
 }
 
 object Foo {
-  type Aux[A <: AnyRef, B] = Foo[A] {
-    type Repr = B;
-    type M[X] = Int
-  }
+  type Aux[A <: AnyRef, B] =
+    Foo[A] {
+      type Repr = B;
+      type M[X] = Int
+    }
 
 }
 

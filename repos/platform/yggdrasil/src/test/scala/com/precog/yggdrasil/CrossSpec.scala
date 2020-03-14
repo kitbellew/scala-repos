@@ -51,21 +51,23 @@ trait CrossSpec[M[+_]]
         case v => v
       }
 
-    val expected: Stream[JValue] = for {
-      lv <- l.data
-      rv <- r.data
-    } yield {
-      JObject(
-        JField("left", removeUndefined(lv)) :: JField(
-          "right",
-          removeUndefined(rv)) :: Nil)
-    }
+    val expected: Stream[JValue] =
+      for {
+        lv <- l.data
+        rv <- r.data
+      } yield {
+        JObject(
+          JField("left", removeUndefined(lv)) :: JField(
+            "right",
+            removeUndefined(rv)) :: Nil)
+      }
 
-    val result = ltable.cross(rtable)(
-      InnerObjectConcat(
-        WrapObject(Leaf(SourceLeft), "left"),
-        WrapObject(Leaf(SourceRight), "right"))
-    )
+    val result =
+      ltable.cross(rtable)(
+        InnerObjectConcat(
+          WrapObject(Leaf(SourceLeft), "left"),
+          WrapObject(Leaf(SourceRight), "right"))
+      )
 
     val jsonResult: M[Stream[JValue]] = toJson(result)
     jsonResult.copoint must_== expected

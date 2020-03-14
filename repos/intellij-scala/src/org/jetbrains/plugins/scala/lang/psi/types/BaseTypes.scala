@@ -174,10 +174,12 @@ object BaseTypes {
       val t = iterator.next()
       ScType.extractClass(t) match {
         case Some(c) =>
-          val isBest = all.get(c) match {
-            case None     => true
-            case Some(ts) => ts.find(t1 => !Conformance.conforms(t1, t)) == None
-          }
+          val isBest =
+            all.get(c) match {
+              case None => true
+              case Some(ts) =>
+                ts.find(t1 => !Conformance.conforms(t1, t)) == None
+            }
           if (isBest)
             res += ((c, t))
           all.addBinding(c, t)

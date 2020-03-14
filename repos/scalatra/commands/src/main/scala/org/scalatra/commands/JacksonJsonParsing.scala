@@ -14,10 +14,11 @@ trait JacksonJsonParsing
   override protected def bindCommand[T <: CommandType](newCommand: T)(implicit
       request: HttpServletRequest,
       mf: Manifest[T]): T = {
-    val requestFormat = request.contentType match {
-      case Some(contentType) => mimeTypes.getOrElse(contentType, format)
-      case None              => format
-    }
+    val requestFormat =
+      request.contentType match {
+        case Some(contentType) => mimeTypes.getOrElse(contentType, format)
+        case None              => format
+      }
 
     requestFormat match {
       case "json" | "xml" =>

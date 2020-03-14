@@ -47,10 +47,11 @@ private[feature] trait Word2VecBase
     * Default: 100
     * @group param
     */
-  final val vectorSize = new IntParam(
-    this,
-    "vectorSize",
-    "the dimension of codes after transforming from words")
+  final val vectorSize =
+    new IntParam(
+      this,
+      "vectorSize",
+      "the dimension of codes after transforming from words")
   setDefault(vectorSize -> 100)
 
   /** @group getParam */
@@ -60,10 +61,11 @@ private[feature] trait Word2VecBase
     * The window size (context words from [-window, window]) default 5.
     * @group expertParam
     */
-  final val windowSize = new IntParam(
-    this,
-    "windowSize",
-    "the window size (context words from [-window, window])")
+  final val windowSize =
+    new IntParam(
+      this,
+      "windowSize",
+      "the window size (context words from [-window, window])")
   setDefault(windowSize -> 5)
 
   /** @group expertGetParam */
@@ -74,10 +76,11 @@ private[feature] trait Word2VecBase
     * Default: 1
     * @group param
     */
-  final val numPartitions = new IntParam(
-    this,
-    "numPartitions",
-    "number of partitions for sentences of words")
+  final val numPartitions =
+    new IntParam(
+      this,
+      "numPartitions",
+      "number of partitions for sentences of words")
   setDefault(numPartitions -> 1)
 
   /** @group getParam */
@@ -89,11 +92,12 @@ private[feature] trait Word2VecBase
     * Default: 5
     * @group param
     */
-  final val minCount = new IntParam(
-    this,
-    "minCount",
-    "the minimum number of times a token must " +
-      "appear to be included in the word2vec model's vocabulary")
+  final val minCount =
+    new IntParam(
+      this,
+      "minCount",
+      "the minimum number of times a token must " +
+        "appear to be included in the word2vec model's vocabulary")
   setDefault(minCount -> 5)
 
   /** @group getParam */

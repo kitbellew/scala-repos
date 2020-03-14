@@ -28,8 +28,7 @@ class Date private (private val date: js.Date)
     this(year, month, date, hrs, min, 0)
 
   @Deprecated
-  def this(year: Int, month: Int, date: Int) =
-    this(year, month, date, 0, 0, 0)
+  def this(year: Int, month: Int, date: Int) = this(year, month, date, 0, 0, 0)
 
   def this(date: Long) = this(new js.Date(date))
 
@@ -166,6 +165,5 @@ object Date {
     js.Date.UTC(year + 1900, month, date, hrs, min, sec).toLong
 
   @Deprecated
-  def parse(string: String): Long =
-    new Date(new js.Date(string)).getTime.toLong
+  def parse(string: String): Long = new Date(new js.Date(string)).getTime.toLong
 }

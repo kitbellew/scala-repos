@@ -98,8 +98,7 @@ sealed abstract class Heap[A] {
 
   def toUnsortedList: List[A] = toUnsortedStream.toList
 
-  def toStream: Stream[A] =
-    std.stream.unfold(this)(_.uncons)
+  def toStream: Stream[A] = std.stream.unfold(this)(_.uncons)
 
   def toList: List[A] = toStream.toList
 
@@ -167,24 +166,20 @@ sealed abstract class Heap[A] {
   /**Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
     * in this heap that do not satisfy the given predicate, and the second element is the remainder
     * of the elements. O(n log n) */
-  def break(p: A => Boolean): (Heap[A], Heap[A]) =
-    span(x => !p(x))
+  def break(p: A => Boolean): (Heap[A], Heap[A]) = span(x => !p(x))
 
   /**Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
     * in this heap that satisfy the given predicate and the second element is the remainder of the elements.
     * O(n log n)*/
-  def span(p: A => Boolean): (Heap[A], Heap[A]) =
-    splitWithList(_.span(p))
+  def span(p: A => Boolean): (Heap[A], Heap[A]) = splitWithList(_.span(p))
 
   /**Returns a heap consisting of the longest prefix of least elements of this heap that satisfy the predicate.
     * O(n log n) */
-  def takeWhile(p: A => Boolean) =
-    withList(_.takeWhile(p))
+  def takeWhile(p: A => Boolean) = withList(_.takeWhile(p))
 
   /**Returns a heap consisting of the longest prefix of least elements of this heap that do not
     * satisfy the predicate. O(n log n) */
-  def dropWhile(p: A => Boolean) =
-    withList(_.dropWhile(p))
+  def dropWhile(p: A => Boolean) = withList(_.dropWhile(p))
 
   /**Remove duplicate entries from the heap. O(n log n)*/
   def nub: Heap[A] =
@@ -503,10 +498,11 @@ object Heap extends HeapInstances {
 }
 
 sealed abstract class HeapInstances {
-  implicit val heapInstance = new Foldable[Heap] with Foldable.FromFoldr[Heap] {
-    def foldRight[A, B](fa: Heap[A], z: => B)(f: (A, => B) => B) =
-      fa.foldRight(z)(f)
-  }
+  implicit val heapInstance =
+    new Foldable[Heap] with Foldable.FromFoldr[Heap] {
+      def foldRight[A, B](fa: Heap[A], z: => B)(f: (A, => B) => B) =
+        fa.foldRight(z)(f)
+    }
 
   implicit def heapMonoid[A]: Monoid[Heap[A]] =
     new Monoid[Heap[A]] {

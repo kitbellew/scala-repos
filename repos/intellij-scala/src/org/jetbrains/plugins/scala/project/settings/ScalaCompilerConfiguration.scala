@@ -54,10 +54,11 @@ class ScalaCompilerConfiguration(project: Project)
     customProfiles.find(_.getSettings.getState == settings.getState) match {
       case Some(profile) => profile.addModuleName(module.getName)
       case None =>
-        val profileNames = customProfiles.iterator
-          .map(_.getName)
-          .filter(_.startsWith(source))
-          .toSet
+        val profileNames =
+          customProfiles.iterator
+            .map(_.getName)
+            .filter(_.startsWith(source))
+            .toSet
         @tailrec def firstFreeName(i: Int): String = {
           val name = source + " " + i
           if (profileNames.contains(name))
@@ -115,12 +116,14 @@ class ScalaCompilerConfiguration(project: Project)
 
     customProfiles = configurationElement.getChildren("profile").asScala.map {
       profileElement =>
-        val profile = new ScalaCompilerSettingsProfile(
-          profileElement.getAttributeValue("name"))
+        val profile =
+          new ScalaCompilerSettingsProfile(
+            profileElement.getAttributeValue("name"))
 
-        val settings = new ScalaCompilerSettings(
-          XmlSerializer
-            .deserialize(profileElement, classOf[ScalaCompilerSettingsState]))
+        val settings =
+          new ScalaCompilerSettings(
+            XmlSerializer
+              .deserialize(profileElement, classOf[ScalaCompilerSettingsState]))
         profile.setSettings(settings)
 
         val moduleNames = profileElement

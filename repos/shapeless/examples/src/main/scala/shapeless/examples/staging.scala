@@ -27,17 +27,19 @@ object StagedTypeClassExample extends App {
   }
 
   object TupleConsumer {
-    implicit val intString = new TupleConsumer[Int, String] {
-      def apply(t: (Int, String)) = t._1 + t._2
-    }
+    implicit val intString =
+      new TupleConsumer[Int, String] {
+        def apply(t: (Int, String)) = t._1 + t._2
+      }
 
-    implicit val booleanDouble = new TupleConsumer[Boolean, Double] {
-      def apply(t: (Boolean, Double)) =
-        (if (t._1)
-           "+"
-         else
-           "-") + t._2
-    }
+    implicit val booleanDouble =
+      new TupleConsumer[Boolean, Double] {
+        def apply(t: (Boolean, Double)) =
+          (if (t._1)
+             "+"
+           else
+             "-") + t._2
+      }
   }
 
   def consumeTuple[A, B](t: (A, B))(implicit tc: TupleConsumer[A, B]): String =
@@ -47,8 +49,7 @@ object StagedTypeClassExample extends App {
     val tpt1 = mkTypeTree(rawTuple._1)
     val tpt2 = mkTypeTree(rawTuple._2)
 
-    val fnTree =
-      q"""
+    val fnTree = q"""
         (t: (Any, Any)) =>
           shapeless.examples.StagedTypeClassExample.consumeTuple(t.asInstanceOf[($tpt1, $tpt2)])
        """

@@ -137,8 +137,9 @@ package object project {
     }
 
     def createLibraryFromJar(urls: Seq[String], name: String): Library = {
-      val lib =
-        ProjectLibraryTable.getInstance(module.getProject).createLibrary(name)
+      val lib = ProjectLibraryTable
+        .getInstance(module.getProject)
+        .createLibrary(name)
       val model = lib.getModifiableModel
       urls.foreach(url => model.addRoot(url, OrderRootType.CLASSES))
       model.commit()

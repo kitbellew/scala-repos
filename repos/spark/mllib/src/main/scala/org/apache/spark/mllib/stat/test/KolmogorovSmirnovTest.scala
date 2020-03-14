@@ -78,8 +78,10 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
         searchOneSampleCandidates(partDiffs) // candidates: local extrema
       }
       .collect()
-    val ksStat =
-      searchOneSampleStatistic(localData, n) // result: global extreme
+    val ksStat = searchOneSampleStatistic(
+      localData,
+      n
+    ) // result: global extreme
     evalOneSampleP(ksStat, n.toLong)
   }
 
@@ -137,10 +139,11 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
   private def searchOneSampleCandidates(partDiffs: Iterator[(Double, Double)])
       : Iterator[(Double, Double, Double)] = {
     val initAcc = (Double.MaxValue, Double.MinValue, 0.0)
-    val pResults = partDiffs.foldLeft(initAcc) {
-      case ((pMin, pMax, pCt), (dl, dp)) =>
-        (math.min(pMin, dl), math.max(pMax, dp), pCt + 1)
-    }
+    val pResults =
+      partDiffs.foldLeft(initAcc) {
+        case ((pMin, pMax, pCt), (dl, dp)) =>
+          (math.min(pMin, dl), math.max(pMax, dp), pCt + 1)
+      }
     val results =
       if (pResults == initAcc)
         Array[(Double, Double, Double)]()
@@ -164,14 +167,15 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
     val initAcc = (Double.MinValue, 0.0)
     // adjust differences based on the number of elements preceding it, which should provide
     // the correct distance between empirical CDF and CDF
-    val results = localData.foldLeft(initAcc) {
-      case ((prevMax, prevCt), (minCand, maxCand, ct)) =>
-        val adjConst = prevCt / n
-        val dist1 = math.abs(minCand + adjConst)
-        val dist2 = math.abs(maxCand + adjConst)
-        val maxVal = Array(prevMax, dist1, dist2).max
-        (maxVal, prevCt + ct)
-    }
+    val results =
+      localData.foldLeft(initAcc) {
+        case ((prevMax, prevCt), (minCand, maxCand, ct)) =>
+          val adjConst = prevCt / n
+          val dist1 = math.abs(minCand + adjConst)
+          val dist2 = math.abs(maxCand + adjConst)
+          val maxVal = Array(prevMax, dist1, dist2).max
+          (maxVal, prevCt + ct)
+      }
     results._1
   }
 

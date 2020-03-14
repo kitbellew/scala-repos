@@ -35,13 +35,13 @@ object RunServer extends Logging {
       .map(kv => s"${kv._1}=${kv._2}")
       .mkString(",")
 
-    val sparkHome =
-      ca.common.sparkHome.getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
+    val sparkHome = ca.common.sparkHome
+      .getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
 
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
 
-    val driverClassPathIndex =
-      ca.common.sparkPassThrough.indexOf("--driver-class-path")
+    val driverClassPathIndex = ca.common.sparkPassThrough
+      .indexOf("--driver-class-path")
     val driverClassPathPrefix =
       if (driverClassPathIndex != -1) {
         Seq(ca.common.sparkPassThrough(driverClassPathIndex + 1))
@@ -51,13 +51,13 @@ object RunServer extends Logging {
     val extraClasspaths =
       driverClassPathPrefix ++ WorkflowUtils.thirdPartyClasspaths
 
-    val deployModeIndex =
-      ca.common.sparkPassThrough.indexOf("--deploy-mode")
-    val deployMode = if (deployModeIndex != -1) {
-      ca.common.sparkPassThrough(deployModeIndex + 1)
-    } else {
-      "client"
-    }
+    val deployModeIndex = ca.common.sparkPassThrough.indexOf("--deploy-mode")
+    val deployMode =
+      if (deployModeIndex != -1) {
+        ca.common.sparkPassThrough(deployModeIndex + 1)
+      } else {
+        "client"
+      }
 
     val mainJar =
       if (ca.build.uberJar) {
@@ -74,10 +74,11 @@ object RunServer extends Logging {
         }
       }
 
-    val jarFiles = (em.files ++ Option(
-      new File(ca.common.pioHome.get, "plugins")
-        .listFiles()).getOrElse(Array.empty[File]).map(_.getAbsolutePath))
-      .mkString(",")
+    val jarFiles =
+      (em.files ++ Option(
+        new File(ca.common.pioHome.get, "plugins")
+          .listFiles()).getOrElse(Array.empty[File]).map(_.getAbsolutePath))
+        .mkString(",")
 
     val sparkSubmit =
       Seq(Seq(sparkHome, "bin", "spark-submit").mkString(File.separator)) ++
@@ -144,12 +145,11 @@ object RunServer extends Logging {
 
     info(s"Submission command: ${sparkSubmit.mkString(" ")}")
 
-    val proc =
-      Process(
-        sparkSubmit,
-        None,
-        "CLASSPATH" -> "",
-        "SPARK_YARN_USER_ENV" -> pioEnvVars).run()
+    val proc = Process(
+      sparkSubmit,
+      None,
+      "CLASSPATH" -> "",
+      "SPARK_YARN_USER_ENV" -> pioEnvVars).run()
     Runtime.getRuntime.addShutdownHook(new Thread(new Runnable {
       def run(): Unit = {
         proc.destroy()

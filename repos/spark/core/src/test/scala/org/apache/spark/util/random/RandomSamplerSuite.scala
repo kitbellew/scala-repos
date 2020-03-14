@@ -143,14 +143,15 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
       data1: => Iterator[Int],
       data2: => Iterator[Int],
       m: Int = 5): Double = {
-    val t = Array
-      .fill[Double](m) {
-        val (c1, c2) = cumulants(
-          data1.take(sampleSize).toArray,
-          data2.take(sampleSize).toArray)
-        KSD(c1, c2)
-      }
-      .sorted
+    val t =
+      Array
+        .fill[Double](m) {
+          val (c1, c2) = cumulants(
+            data1.take(sampleSize).toArray,
+            data2.take(sampleSize).toArray)
+          KSD(c1, c2)
+        }
+        .sorted
     // return the median KS statistic
     t(m / 2)
   }

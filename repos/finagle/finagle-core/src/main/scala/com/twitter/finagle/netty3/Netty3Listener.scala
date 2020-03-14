@@ -92,9 +92,10 @@ object Netty3Listener {
       // At this point, no new channels may be created; drain existing
       // ones.
       val snap = activeChannels.asScala
-      val closing = new DefaultChannelGroupFuture(
-        activeChannels,
-        snap.map(_.getCloseFuture).asJava)
+      val closing =
+        new DefaultChannelGroupFuture(
+          activeChannels,
+          snap.map(_.getCloseFuture).asJava)
 
       val p = new Promise[Unit]
       closing.addListener(new ChannelGroupFutureListener {
@@ -185,16 +186,17 @@ object Netty3Listener {
     val ChannelFactory(cf) = params[ChannelFactory]
     val Netty3Timer(nettyTimer) = params[Netty3Timer]
     val Listener.Backlog(backlog) = params[Listener.Backlog]
-    val Transport.BufferSizes(sendBufSize, recvBufSize) =
-      params[Transport.BufferSizes]
-    val Transport.Liveness(readTimeout, writeTimeout, keepAlive) =
-      params[Transport.Liveness]
+    val Transport
+      .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
+    val Transport.Liveness(readTimeout, writeTimeout, keepAlive) = params[
+      Transport.Liveness]
     val Transport.TLSServerEngine(engine) = params[Transport.TLSServerEngine]
-    val snooper = params[Transport.Verbose] match {
-      case Transport.Verbose(true) =>
-        Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
-      case _ => None
-    }
+    val snooper =
+      params[Transport.Verbose] match {
+        case Transport.Verbose(true) =>
+          Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
+        case _ => None
+      }
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
 
     val opts = new mutable.HashMap[String, Object]()
@@ -347,21 +349,23 @@ case class Netty3Listener[In, Out](
       serveTransport: Transport[In, Out] => Unit): ListeningServer =
     new ListeningServer with CloseAwaitably {
       val serverLabel = ServerRegistry.nameOf(addr) getOrElse name
-      val scopedStatsReceiver = statsReceiver match {
-        case ServerStatsReceiver if serverLabel.nonEmpty =>
-          statsReceiver.scope(serverLabel)
-        case sr => sr
-      }
+      val scopedStatsReceiver =
+        statsReceiver match {
+          case ServerStatsReceiver if serverLabel.nonEmpty =>
+            statsReceiver.scope(serverLabel)
+          case sr => sr
+        }
 
       val closer = new Closer(timer)
 
-      val newBridge = () =>
-        new ServerBridge(
-          serveTransport,
-          logger,
-          scopedStatsReceiver,
-          closer.activeChannels
-        )
+      val newBridge =
+        () =>
+          new ServerBridge(
+            serveTransport,
+            logger,
+            scopedStatsReceiver,
+            closer.activeChannels
+          )
       val bootstrap = new ServerBootstrap(channelFactory)
       bootstrap.setOptions(bootstrapOptions.asJava)
       bootstrap.setPipelineFactory(
@@ -419,8 +423,8 @@ private[netty3] class ServerBridge[In, Out](
     val channel = e.getChannel
     channels.add(channel)
 
-    val transport =
-      Transport.cast[In, Out](new ChannelTransport[Any, Any](channel))
+    val transport = Transport.cast[In, Out](
+      new ChannelTransport[Any, Any](channel))
     serveTransport(transport)
     super.channelOpen(ctx, e)
   }

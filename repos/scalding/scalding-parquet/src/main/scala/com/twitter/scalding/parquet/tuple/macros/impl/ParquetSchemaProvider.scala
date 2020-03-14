@@ -67,8 +67,10 @@ object ParquetSchemaProvider {
             if tpe.erasure =:= typeOf[List[Any]] || tpe.erasure =:= typeOf[
               Set[_]] =>
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
-          val innerFieldsType =
-            matchField(innerType, "element", isOption = false)
+          val innerFieldsType = matchField(
+            innerType,
+            "element",
+            isOption = false)
           q"_root_.org.apache.parquet.schema.ConversionPatterns.listType($repetition, $fieldName, ${createListGroupType(innerFieldsType)})"
         case tpe if tpe.erasure =:= typeOf[Map[_, Any]] =>
           val List(keyType, valueType) = tpe.asInstanceOf[TypeRefApi].args

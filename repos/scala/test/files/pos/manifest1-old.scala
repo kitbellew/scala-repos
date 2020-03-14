@@ -14,9 +14,10 @@ object Test {
     type T = String;
     val x: T
   }
-  val c = new C {
-    val x = "abc"
-  }
+  val c =
+    new C {
+      val x = "abc"
+    }
   foo(c.x)
   abstract class D {
     type T;
@@ -24,11 +25,12 @@ object Test {
     val x: T
   }
   val stringm = implicitly[Manifest[String]]
-  val d: D = new D {
-    type T = String;
-    val m = stringm;
-    val x = "x"
-  }
+  val d: D =
+    new D {
+      type T = String;
+      val m = stringm;
+      val x = "x"
+    }
   import d.m
   foo(d.x)
 }

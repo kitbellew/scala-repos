@@ -22,13 +22,15 @@ class RestHelperSpec extends WebSpec(RestHelperSpecBoot.boot _) {
     val testOptionsUrl = "http://foo.com/api/info"
     val testFutureUrl = "http://foo.com/api/futured"
 
-    val testOptionsReq = new MockHttpServletRequest(testOptionsUrl) {
-      method = "OPTIONS"
-    }
+    val testOptionsReq =
+      new MockHttpServletRequest(testOptionsUrl) {
+        method = "OPTIONS"
+      }
 
-    val testFutureReq = new MockHttpServletRequest(testFutureUrl) {
-      method = "GET"
-    }
+    val testFutureReq =
+      new MockHttpServletRequest(testFutureUrl) {
+        method = "GET"
+      }
 
     "set OPTIONS method" withReqFor testOptionsReq in { req =>
       req.options_? must_== true

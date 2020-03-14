@@ -63,11 +63,12 @@ class EndToEndTest
     val serverTrans = new QueueTransport[Message, Message](q1, q0)
 
     val server = ServerDispatcher.newRequestResponse(serverTrans, svc)
-    val session = new ClientSession(
-      clientTrans,
-      FailureDetector.NullConfig,
-      "test",
-      NullStatsReceiver)
+    val session =
+      new ClientSession(
+        clientTrans,
+        FailureDetector.NullConfig,
+        "test",
+        NullStatsReceiver)
     val client = ClientDispatcher.newRequestResponse(session)
 
     val f = client(Request(Path.empty, Buf.Empty))
@@ -95,8 +96,9 @@ class EndToEndTest
     Dtab.unwind {
       Dtab.local ++= Dtab.read("/foo=>/bar; /web=>/$/inet/twitter.com/80")
       for (n <- 0 until 2) {
-        val rsp =
-          Await.result(client(Request(Path.empty, Buf.Empty)), 30.seconds)
+        val rsp = Await.result(
+          client(Request(Path.empty, Buf.Empty)),
+          30.seconds)
         val Buf.Utf8(str) = rsp.body
         assert(
           str == "Dtab(2)\n\t/foo => /bar\n\t/web => /$/inet/twitter.com/80\n")
@@ -182,14 +184,15 @@ class EndToEndTest
   test("requeue nacks") {
     val n = new AtomicInteger(0)
 
-    val service = new Service[Request, Response] {
-      def apply(req: Request): Future[Response] = {
-        if (n.getAndIncrement() == 0)
-          Future.exception(Failure.rejected("better luck next time"))
-        else
-          Future.value(Response.empty)
+    val service =
+      new Service[Request, Response] {
+        def apply(req: Request): Future[Response] = {
+          if (n.getAndIncrement() == 0)
+            Future.exception(Failure.rejected("better luck next time"))
+          else
+            Future.value(Response.empty)
+        }
       }
-    }
 
     val a, b = Mux.serve("localhost:*", service)
     val client = Mux.newService(
@@ -208,12 +211,13 @@ class EndToEndTest
   }
 
   test("gracefully reject sessions") {
-    val factory = new ServiceFactory[Request, Response] {
-      def apply(conn: ClientConnection): Future[Service[Request, Response]] =
-        Future.exception(new Exception)
+    val factory =
+      new ServiceFactory[Request, Response] {
+        def apply(conn: ClientConnection): Future[Service[Request, Response]] =
+          Future.exception(new Exception)
 
-      def close(deadline: Time): Future[Unit] = Future.Done
-    }
+        def close(deadline: Time): Future[Unit] = Future.Done
+      }
 
     val server = Mux.serve("localhost:*", factory)
     val client = Mux.newService(server)
@@ -394,10 +398,11 @@ EOF
 
   test("measures payload sizes") {
     val sr = new InMemoryStatsReceiver
-    val service = new Service[Request, Response] {
-      def apply(req: Request) =
-        Future.value(Response(req.body.concat(req.body)))
-    }
+    val service =
+      new Service[Request, Response] {
+        def apply(req: Request) =
+          Future.value(Response(req.body.concat(req.body)))
+      }
     val server = Mux.server
       .withLabel("server")
       .withStatsReceiver(sr)

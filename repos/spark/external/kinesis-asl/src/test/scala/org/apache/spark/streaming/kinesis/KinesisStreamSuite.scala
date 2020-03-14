@@ -52,8 +52,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
 
   // Dummy parameters for API testing
   private val dummyEndpointUrl = defaultEndpointUrl
-  private val dummyRegionName =
-    RegionUtils.getRegionByEndpoint(dummyEndpointUrl).getName()
+  private val dummyRegionName = RegionUtils
+    .getRegionByEndpoint(dummyEndpointUrl)
+    .getName()
   private val dummyAWSAccessKey = "dummyAccessKey"
   private val dummyAWSSecretKey = "dummySecretKey"
 
@@ -143,8 +144,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     )
     assert(inputStream.isInstanceOf[KinesisInputDStream[Array[Byte]]])
 
-    val kinesisStream =
-      inputStream.asInstanceOf[KinesisInputDStream[Array[Byte]]]
+    val kinesisStream = inputStream
+      .asInstanceOf[KinesisInputDStream[Array[Byte]]]
     val time = Time(1000)
 
     // Generate block info data for testing
@@ -181,9 +182,10 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     nonEmptyRDD.partitions.foreach {
       _ shouldBe a[KinesisBackedBlockRDDPartition]
     }
-    val partitions = nonEmptyRDD.partitions.map {
-      _.asInstanceOf[KinesisBackedBlockRDDPartition]
-    }.toSeq
+    val partitions =
+      nonEmptyRDD.partitions.map {
+        _.asInstanceOf[KinesisBackedBlockRDDPartition]
+      }.toSeq
     assert(partitions.map {
       _.seqNumberRanges
     } === Seq(seqNumRanges1, seqNumRanges2))
@@ -332,12 +334,13 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     // Verify that the generated RDDs are KinesisBackedBlockRDDs, and collect the data in each batch
     kinesisStream.foreachRDD((rdd: RDD[Array[Byte]], time: Time) => {
       val kRdd = rdd.asInstanceOf[KinesisBackedBlockRDD[Array[Byte]]]
-      val data = rdd
-        .map { bytes =>
-          new String(bytes).toInt
-        }
-        .collect()
-        .toSeq
+      val data =
+        rdd
+          .map { bytes =>
+            new String(bytes).toInt
+          }
+          .collect()
+          .toSeq
       collectedData.synchronized {
         collectedData(time) = (kRdd.arrayOfseqNumberRanges, data)
       }

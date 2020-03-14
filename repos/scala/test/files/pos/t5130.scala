@@ -13,9 +13,10 @@ trait A2 {
 }
 
 object Test {
-  val v1 = new A {
-    def c = ()
-  }
+  val v1 =
+    new A {
+      def c = ()
+    }
   val v2 = new A with A2 {}
   val v3: A {
     def c: Unit
@@ -28,18 +29,20 @@ object Test {
   def d3: A {
     def c: Unit
   } = null
-  var x1 = new A {
-    def c = ()
-  }
+  var x1 =
+    new A {
+      def c = ()
+    }
   var x2 = new A with A2 {}
   var x3: A {
     def c: Unit
   } = null
 
   def main(args: Array[String]): Unit = {
-    val mv1 = new A {
-      def c = ()
-    }
+    val mv1 =
+      new A {
+        def c = ()
+      }
     val mv2 = new A with A2 {}
     val mv3: A {
       def c: Unit

@@ -70,8 +70,9 @@ class ZookeeperConsumerConnectorTest
     val sentMessages1 = sendMessages(servers, nMessages, "batch1")
 
     // create a consumer
-    val consumerConfig1 = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, group, consumer1))
+    val consumerConfig1 =
+      new ConsumerConfig(
+        TestUtils.createConsumerProperties(zkConnect, group, consumer1))
     val zkConsumerConnector1 =
       new ZookeeperConsumerConnector(consumerConfig1, true)
     val topicMessageStreams1 = zkConsumerConnector1.createMessageStreams(
@@ -103,8 +104,8 @@ class ZookeeperConsumerConnectorTest
       header: String): List[String] = {
     var messages: List[String] = Nil
     for (server <- servers) {
-      val producer: kafka.producer.Producer[Int, String] =
-        TestUtils.createProducer(
+      val producer: kafka.producer.Producer[Int, String] = TestUtils
+        .createProducer(
           TestUtils.getBrokerListStrFromServers(servers),
           encoder = classOf[StringEncoder].getName,
           keyEncoder = classOf[IntEncoder].getName)

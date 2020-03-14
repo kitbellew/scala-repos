@@ -22,8 +22,7 @@ trait T {
 // Should not throw
 class D extends B with T {
   val sum = x + y + z + b1 + b2 + t1 + t2
-  override def toString =
-    "sum = " + sum
+  override def toString = "sum = " + sum
 
 }
 

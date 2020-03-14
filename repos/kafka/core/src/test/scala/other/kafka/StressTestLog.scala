@@ -45,12 +45,13 @@ object StressTestLog {
       LogConfig.SegmentIndexBytesProp,
       1024 * 1024: java.lang.Integer)
 
-    val log = new Log(
-      dir = dir,
-      config = LogConfig(logProprties),
-      recoveryPoint = 0L,
-      scheduler = time.scheduler,
-      time = time)
+    val log =
+      new Log(
+        dir = dir,
+        config = LogConfig(logProprties),
+        recoveryPoint = 0L,
+        scheduler = time.scheduler,
+        time = time)
     val writer = new WriterThread(log)
     writer.start()
     val reader = new ReaderThread(log)
@@ -94,8 +95,8 @@ object StressTestLog {
   class WriterThread(val log: Log) extends WorkerThread {
     @volatile var offset = 0
     override def work() {
-      val logAppendInfo =
-        log.append(TestUtils.singleMessageSet(offset.toString.getBytes))
+      val logAppendInfo = log.append(
+        TestUtils.singleMessageSet(offset.toString.getBytes))
       require(
         logAppendInfo.firstOffset == offset && logAppendInfo.lastOffset == offset)
       offset += 1

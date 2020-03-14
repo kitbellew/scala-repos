@@ -107,10 +107,11 @@ private[puzzle] final class PuzzleApi(
         case None =>
           fufail(s"Can't vote for non existing puzzle ${a1.puzzleId}")
         case Some(p1) =>
-          val p2 = a1.vote match {
-            case Some(from) => p1 withVote (_.change(from, v))
-            case None       => p1 withVote (_ add v)
-          }
+          val p2 =
+            a1.vote match {
+              case Some(from) => p1 withVote (_.change(from, v))
+              case None       => p1 withVote (_ add v)
+            }
           val a2 = a1.copy(vote = v.some)
           attemptColl.update(
             BSONDocument("_id" -> a2.id),

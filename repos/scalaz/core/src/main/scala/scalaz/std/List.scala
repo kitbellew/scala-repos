@@ -139,11 +139,9 @@ trait ListInstances extends ListInstances0 {
           case _ :: t => a :: cojoin(t)
         }
 
-      override def any[A](fa: List[A])(p: A => Boolean): Boolean =
-        fa.exists(p)
+      override def any[A](fa: List[A])(p: A => Boolean): Boolean = fa.exists(p)
 
-      override def all[A](fa: List[A])(p: A => Boolean): Boolean =
-        fa.forall(p)
+      override def all[A](fa: List[A])(p: A => Boolean): Boolean = fa.forall(p)
 
       def tailrecM[A, B](f: A => List[A \/ B])(a: A): List[B] = {
         val bs = List.newBuilder[B]
@@ -258,8 +256,7 @@ trait ListFunctions {
     takeWhileM(as)((a: A) => Monad[M].map(p(a))((b) => !b))
 
   final def filterM[A, M[_]: Applicative](as: List[A])(
-      p: A => M[Boolean]): M[List[A]] =
-    Applicative[M].filterM(as)(p)
+      p: A => M[Boolean]): M[List[A]] = Applicative[M].filterM(as)(p)
 
   /** Run `p(a)`s left-to-right until it yields a true value,
     * answering `Some(that)`, or `None` if nothing matched `p`.
@@ -324,8 +321,8 @@ trait ListFunctions {
     as match {
       case Nil => Monad[M].point(Nil)
       case h :: t =>
-        val stateP = (i: A) =>
-          StateT[M, A, Boolean](s => Monad[M].map(p(s, i))(i ->))
+        val stateP =
+          (i: A) => StateT[M, A, Boolean](s => Monad[M].map(p(s, i))(i ->))
         Monad[M].bind(spanM[A, StateT[M, A, ?]](t)(stateP).eval(h)) {
           case (x, y) =>
             Monad[M].map(groupWhenM(y)(p))(g =>

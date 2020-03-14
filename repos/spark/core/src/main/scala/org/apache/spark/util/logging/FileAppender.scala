@@ -36,14 +36,15 @@ private[spark] class FileAppender(
     false // has the appender been asked to stopped
 
   // Thread that reads the input stream and writes to file
-  private val writingThread = new Thread("File appending thread for " + file) {
-    setDaemon(true)
-    override def run() {
-      Utils.logUncaughtExceptions {
-        appendStreamToFile()
+  private val writingThread =
+    new Thread("File appending thread for " + file) {
+      setDaemon(true)
+      override def run() {
+        Utils.logUncaughtExceptions {
+          appendStreamToFile()
+        }
       }
     }
-  }
   writingThread.start()
 
   /**
@@ -129,28 +130,30 @@ private[spark] object FileAppender extends Logging {
     val rollingInterval = conf.get(INTERVAL_PROPERTY, INTERVAL_DEFAULT)
 
     def createTimeBasedAppender(): FileAppender = {
-      val validatedParams: Option[(Long, String)] = rollingInterval match {
-        case "daily" =>
-          logInfo(s"Rolling executor logs enabled for $file with daily rolling")
-          Some(24 * 60 * 60 * 1000L, "--yyyy-MM-dd")
-        case "hourly" =>
-          logInfo(
-            s"Rolling executor logs enabled for $file with hourly rolling")
-          Some(60 * 60 * 1000L, "--yyyy-MM-dd--HH")
-        case "minutely" =>
-          logInfo(
-            s"Rolling executor logs enabled for $file with rolling every minute")
-          Some(60 * 1000L, "--yyyy-MM-dd--HH-mm")
-        case IntParam(seconds) =>
-          logInfo(
-            s"Rolling executor logs enabled for $file with rolling $seconds seconds")
-          Some(seconds * 1000L, "--yyyy-MM-dd--HH-mm-ss")
-        case _ =>
-          logWarning(
-            s"Illegal interval for rolling executor logs [$rollingInterval], " +
-              s"rolling logs not enabled")
-          None
-      }
+      val validatedParams: Option[(Long, String)] =
+        rollingInterval match {
+          case "daily" =>
+            logInfo(
+              s"Rolling executor logs enabled for $file with daily rolling")
+            Some(24 * 60 * 60 * 1000L, "--yyyy-MM-dd")
+          case "hourly" =>
+            logInfo(
+              s"Rolling executor logs enabled for $file with hourly rolling")
+            Some(60 * 60 * 1000L, "--yyyy-MM-dd--HH")
+          case "minutely" =>
+            logInfo(
+              s"Rolling executor logs enabled for $file with rolling every minute")
+            Some(60 * 1000L, "--yyyy-MM-dd--HH-mm")
+          case IntParam(seconds) =>
+            logInfo(
+              s"Rolling executor logs enabled for $file with rolling $seconds seconds")
+            Some(seconds * 1000L, "--yyyy-MM-dd--HH-mm-ss")
+          case _ =>
+            logWarning(
+              s"Illegal interval for rolling executor logs [$rollingInterval], " +
+                s"rolling logs not enabled")
+            None
+        }
       validatedParams
         .map {
           case (interval, pattern) =>

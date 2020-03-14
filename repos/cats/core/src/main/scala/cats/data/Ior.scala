@@ -197,15 +197,12 @@ private[data] sealed abstract class IorInstances0 {
   implicit def iorInstances[A]: Traverse[A Ior ?] with Functor[A Ior ?] =
     new Traverse[A Ior ?] with Functor[A Ior ?] {
       def traverse[F[_]: Applicative, B, C](fa: A Ior B)(
-          f: B => F[C]): F[A Ior C] =
-        fa.traverse(f)
+          f: B => F[C]): F[A Ior C] = fa.traverse(f)
       def foldLeft[B, C](fa: A Ior B, b: C)(f: (C, B) => C): C =
         fa.foldLeft(b)(f)
       def foldRight[B, C](fa: A Ior B, lc: Eval[C])(
-          f: (B, Eval[C]) => Eval[C]): Eval[C] =
-        fa.foldRight(lc)(f)
-      override def map[B, C](fa: A Ior B)(f: B => C): A Ior C =
-        fa.map(f)
+          f: (B, Eval[C]) => Eval[C]): Eval[C] = fa.foldRight(lc)(f)
+      override def map[B, C](fa: A Ior B)(f: B => C): A Ior C = fa.map(f)
     }
 }
 

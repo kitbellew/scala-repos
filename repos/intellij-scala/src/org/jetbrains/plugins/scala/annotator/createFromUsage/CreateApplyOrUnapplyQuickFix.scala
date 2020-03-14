@@ -28,12 +28,13 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory._
 abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
     extends IntentionAction {
   override val getText = {
-    val classKind = td match {
-      case _: ScObject => "object"
-      case _: ScTrait  => "trait"
-      case _: ScClass  => "class"
-      case _           => ""
-    }
+    val classKind =
+      td match {
+        case _: ScObject => "object"
+        case _: ScTrait  => "trait"
+        case _: ScClass  => "class"
+        case _           => ""
+      }
     s"$getFamilyName in $classKind ${td.name}"
   }
 
@@ -84,8 +85,8 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
     IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
 
     inWriteAction {
-      val entity =
-        createEntity(td.extendsBlock, methodText).asInstanceOf[ScFunction]
+      val entity = createEntity(td.extendsBlock, methodText)
+        .asInstanceOf[ScFunction]
 
       ScalaPsiUtil.adjustTypes(entity)
 

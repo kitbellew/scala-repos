@@ -8,9 +8,10 @@ import reporters.{Reporter => CompilerReporter}
 private[tests] trait PresentationCompilerInstance extends TestSettings {
   protected val settings = new Settings
 
-  protected val compilerReporter: CompilerReporter = new InteractiveReporter {
-    override def compiler = PresentationCompilerInstance.this.compiler
-  }
+  protected val compilerReporter: CompilerReporter =
+    new InteractiveReporter {
+      override def compiler = PresentationCompilerInstance.this.compiler
+    }
 
   protected def createGlobal: Global = new Global(settings, compilerReporter)
 

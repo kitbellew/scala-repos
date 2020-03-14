@@ -71,8 +71,7 @@ object CacheIvy {
   import Cache._
   implicit def wrapHL[W, H, T <: HList](implicit
       f: W => H :+: T,
-      cache: InputCache[H :+: T]): InputCache[W] =
-    Cache.wrapIn(f, cache)
+      cache: InputCache[H :+: T]): InputCache[W] = Cache.wrapIn(f, cache)
 
   lazy val excludeMap: Format[Map[ModuleID, Set[String]]] = implicitly
   lazy val updateIC: InputCache[
@@ -272,18 +271,20 @@ object CacheIvy {
   private[this] final val FullValue = 2
 
   import CrossVersion.{Binary, Disabled, Full}
-  private[this] val crossFromInt = (i: Int) =>
-    i match {
-      case BinaryValue => new Binary(idFun);
-      case FullValue   => new Full(idFun);
-      case _           => Disabled
-    }
-  private[this] val crossToInt = (c: CrossVersion) =>
-    c match {
-      case Disabled  => 0;
-      case b: Binary => BinaryValue;
-      case f: Full   => FullValue
-    }
+  private[this] val crossFromInt =
+    (i: Int) =>
+      i match {
+        case BinaryValue => new Binary(idFun);
+        case FullValue   => new Full(idFun);
+        case _           => Disabled
+      }
+  private[this] val crossToInt =
+    (c: CrossVersion) =>
+      c match {
+        case Disabled  => 0;
+        case b: Binary => BinaryValue;
+        case f: Full   => FullValue
+      }
 
   implicit def moduleIDFormat(implicit
       sf: Format[String],
@@ -397,12 +398,11 @@ object CacheIvy {
   }
   import L3._
 
-  implicit lazy val chainedIC: InputCache[ChainedResolver] =
-    InputCache.lzy(wrapIn)
-  implicit lazy val resolverIC: InputCache[Resolver] =
-    unionInputCache[
-      Resolver,
-      ChainedResolver :+: MavenRepository :+: MavenCache :+: FileRepository :+: URLRepository :+: SshRepository :+: SftpRepository :+: RawRepository :+: HNil]
+  implicit lazy val chainedIC: InputCache[ChainedResolver] = InputCache.lzy(
+    wrapIn)
+  implicit lazy val resolverIC: InputCache[Resolver] = unionInputCache[
+    Resolver,
+    ChainedResolver :+: MavenRepository :+: MavenCache :+: FileRepository :+: URLRepository :+: SshRepository :+: SftpRepository :+: RawRepository :+: HNil]
   implicit def moduleIC: InputCache[ModuleID] = wrapIn
   implicitly[InputCache[Seq[Configuration]]]
 

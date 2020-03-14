@@ -40,15 +40,16 @@ private[spark] class TaskResultGetter(
   private val THREADS = sparkEnv.conf.getInt("spark.resultGetter.threads", 4)
 
   // Exposed for testing.
-  protected val getTaskResultExecutor: ExecutorService =
-    ThreadUtils.newDaemonFixedThreadPool(THREADS, "task-result-getter")
+  protected val getTaskResultExecutor: ExecutorService = ThreadUtils
+    .newDaemonFixedThreadPool(THREADS, "task-result-getter")
 
   // Exposed for testing.
-  protected val serializer = new ThreadLocal[SerializerInstance] {
-    override def initialValue(): SerializerInstance = {
-      sparkEnv.closureSerializer.newInstance()
+  protected val serializer =
+    new ThreadLocal[SerializerInstance] {
+      override def initialValue(): SerializerInstance = {
+        sparkEnv.closureSerializer.newInstance()
+      }
     }
-  }
 
   def enqueueSuccessfulTask(
       taskSetManager: TaskSetManager,
@@ -58,47 +59,49 @@ private[spark] class TaskResultGetter(
       override def run(): Unit =
         Utils.logUncaughtExceptions {
           try {
-            val (result, size) = serializer
-              .get()
-              .deserialize[TaskResult[_]](serializedData) match {
-              case directResult: DirectTaskResult[_] =>
-                if (!taskSetManager.canFetchMoreResults(
-                      serializedData.limit())) {
-                  return
-                }
-                // deserialize "value" without holding any lock so that it won't block other threads.
-                // We should call it here, so that when it's called again in
-                // "TaskSetManager.handleSuccessfulTask", it does not need to deserialize the value.
-                directResult.value()
-                (directResult, serializedData.limit())
-              case IndirectTaskResult(blockId, size) =>
-                if (!taskSetManager.canFetchMoreResults(size)) {
-                  // dropped by executor if size is larger than maxResultSize
+            val (result, size) =
+              serializer
+                .get()
+                .deserialize[TaskResult[_]](serializedData) match {
+                case directResult: DirectTaskResult[_] =>
+                  if (!taskSetManager.canFetchMoreResults(
+                        serializedData.limit())) {
+                    return
+                  }
+                  // deserialize "value" without holding any lock so that it won't block other threads.
+                  // We should call it here, so that when it's called again in
+                  // "TaskSetManager.handleSuccessfulTask", it does not need to deserialize the value.
+                  directResult.value()
+                  (directResult, serializedData.limit())
+                case IndirectTaskResult(blockId, size) =>
+                  if (!taskSetManager.canFetchMoreResults(size)) {
+                    // dropped by executor if size is larger than maxResultSize
+                    sparkEnv.blockManager.master.removeBlock(blockId)
+                    return
+                  }
+                  logDebug(
+                    "Fetching indirect task result for TID %s".format(tid))
+                  scheduler.handleTaskGettingResult(taskSetManager, tid)
+                  val serializedTaskResult = sparkEnv.blockManager
+                    .getRemoteBytes(blockId)
+                  if (!serializedTaskResult.isDefined) {
+                    /* We won't be able to get the task result if the machine that ran the task failed
+                     * between when the task ended and when we tried to fetch the result, or if the
+                     * block manager had to flush the result. */
+                    scheduler.handleFailedTask(
+                      taskSetManager,
+                      tid,
+                      TaskState.FINISHED,
+                      TaskResultLost)
+                    return
+                  }
+                  val deserializedResult = serializer
+                    .get()
+                    .deserialize[DirectTaskResult[_]](
+                      serializedTaskResult.get.toByteBuffer)
                   sparkEnv.blockManager.master.removeBlock(blockId)
-                  return
-                }
-                logDebug("Fetching indirect task result for TID %s".format(tid))
-                scheduler.handleTaskGettingResult(taskSetManager, tid)
-                val serializedTaskResult =
-                  sparkEnv.blockManager.getRemoteBytes(blockId)
-                if (!serializedTaskResult.isDefined) {
-                  /* We won't be able to get the task result if the machine that ran the task failed
-                   * between when the task ended and when we tried to fetch the result, or if the
-                   * block manager had to flush the result. */
-                  scheduler.handleFailedTask(
-                    taskSetManager,
-                    tid,
-                    TaskState.FINISHED,
-                    TaskResultLost)
-                  return
-                }
-                val deserializedResult = serializer
-                  .get()
-                  .deserialize[DirectTaskResult[_]](
-                    serializedTaskResult.get.toByteBuffer)
-                sparkEnv.blockManager.master.removeBlock(blockId)
-                (deserializedResult, size)
-            }
+                  (deserializedResult, size)
+              }
 
             // Set the task result size in the accumulator updates received from the executors.
             // We need to do this here on the driver because if we did this on the executors then

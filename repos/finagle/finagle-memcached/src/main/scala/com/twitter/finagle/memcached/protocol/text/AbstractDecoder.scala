@@ -12,19 +12,20 @@ import org.jboss.netty.channel._
 import org.jboss.netty.handler.codec.frame.FrameDecoder
 
 object AbstractDecoder {
-  private val Delimiter =
-    ChannelBuffers.wrappedBuffer("\r\n".getBytes(Charsets.Utf8))
+  private val Delimiter = ChannelBuffers.wrappedBuffer(
+    "\r\n".getBytes(Charsets.Utf8))
   private val DelimiterLength = Delimiter.capacity
-  private val FindCRLF = new ChannelBufferIndexFinder() {
-    def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
-      val enoughBytesForDelimeter = guessedIndex + Delimiter.readableBytes
-      if (buffer.writerIndex < enoughBytesForDelimeter)
-        return false
+  private val FindCRLF =
+    new ChannelBufferIndexFinder() {
+      def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
+        val enoughBytesForDelimeter = guessedIndex + Delimiter.readableBytes
+        if (buffer.writerIndex < enoughBytesForDelimeter)
+          return false
 
-      buffer.getByte(guessedIndex) == '\r' &&
-      buffer.getByte(guessedIndex + 1) == '\n'
+        buffer.getByte(guessedIndex) == '\r' &&
+        buffer.getByte(guessedIndex + 1) == '\n'
+      }
     }
-  }
 }
 
 abstract class AbstractDecoder extends FrameDecoder {

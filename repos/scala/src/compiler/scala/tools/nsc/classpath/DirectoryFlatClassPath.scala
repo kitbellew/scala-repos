@@ -41,11 +41,12 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
 
   override private[nsc] def packages(inPackage: String): Seq[PackageEntry] = {
     val dirForPackage = getDirectory(inPackage)
-    val nestedDirs: Array[File] = dirForPackage match {
-      case None => Array.empty
-      case Some(directory) =>
-        directory.listFiles(DirectoryFileLookup.packageDirectoryFileFilter)
-    }
+    val nestedDirs: Array[File] =
+      dirForPackage match {
+        case None => Array.empty
+        case Some(directory) =>
+          directory.listFiles(DirectoryFileLookup.packageDirectoryFileFilter)
+      }
     val prefix = PackageNameUtils.packagePrefix(inPackage)
     val entries = nestedDirs map { file =>
       PackageEntryImpl(prefix + file.getName)
@@ -55,10 +56,11 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
 
   protected def files(inPackage: String): Seq[FileEntryType] = {
     val dirForPackage = getDirectory(inPackage)
-    val files: Array[File] = dirForPackage match {
-      case None            => Array.empty
-      case Some(directory) => directory.listFiles(fileFilter)
-    }
+    val files: Array[File] =
+      dirForPackage match {
+        case None            => Array.empty
+        case Some(directory) => directory.listFiles(fileFilter)
+      }
     val entries = files map { file =>
       val wrappedFile = new scala.reflect.io.File(file)
       createFileEntry(new PlainFile(wrappedFile))
@@ -68,10 +70,11 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
 
   override private[nsc] def list(inPackage: String): FlatClassPathEntries = {
     val dirForPackage = getDirectory(inPackage)
-    val files: Array[File] = dirForPackage match {
-      case None            => Array.empty
-      case Some(directory) => directory.listFiles()
-    }
+    val files: Array[File] =
+      dirForPackage match {
+        case None            => Array.empty
+        case Some(directory) => directory.listFiles()
+      }
     val packagePrefix = PackageNameUtils.packagePrefix(inPackage)
     val packageBuf = collection.mutable.ArrayBuffer.empty[PackageEntry]
     val fileBuf = collection.mutable.ArrayBuffer.empty[FileEntryType]
@@ -129,9 +132,10 @@ case class DirectoryFlatClassPath(dir: File)
 
 object DirectoryFlatClassPath {
 
-  private val classFileFilter = new FileFilter {
-    override def accept(pathname: File): Boolean = pathname.isClass
-  }
+  private val classFileFilter =
+    new FileFilter {
+      override def accept(pathname: File): Boolean = pathname.isClass
+    }
 }
 
 case class DirectoryFlatSourcePath(dir: File)
@@ -171,8 +175,9 @@ case class DirectoryFlatSourcePath(dir: File)
 
 object DirectoryFlatSourcePath {
 
-  private val sourceFileFilter = new FileFilter {
-    override def accept(pathname: File): Boolean =
-      endsScalaOrJava(pathname.getName)
-  }
+  private val sourceFileFilter =
+    new FileFilter {
+      override def accept(pathname: File): Boolean =
+        endsScalaOrJava(pathname.getName)
+    }
 }

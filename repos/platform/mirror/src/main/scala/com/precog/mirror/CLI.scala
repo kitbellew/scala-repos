@@ -54,10 +54,11 @@ object CLI extends App with EvaluatorModule {
     def gen: Stream[JValue] = {
       val line = Console.readLine
       if (line != null) {
-        val result = JParser.parseFromString(line) match {
-          case Success(jv) => jv
-          case Failure(t)  => throw t
-        }
+        val result =
+          JParser.parseFromString(line) match {
+            case Success(jv) => jv
+            case Failure(t)  => throw t
+          }
         result #:: gen
       } else {
         Stream.empty

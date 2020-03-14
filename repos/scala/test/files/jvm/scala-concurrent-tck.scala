@@ -893,10 +893,11 @@ trait BlockContexts extends TestBase {
   // test BlockContext inside BlockContext.withBlockContext
   def testPushCustom(): Unit = {
     val orig = BlockContext.current
-    val customBC = new BlockContext() {
-      override def blockOn[T](thunk: => T)(implicit permission: CanAwait): T =
-        orig.blockOn(thunk)
-    }
+    val customBC =
+      new BlockContext() {
+        override def blockOn[T](thunk: => T)(implicit permission: CanAwait): T =
+          orig.blockOn(thunk)
+      }
 
     val bc = getBlockContext({
       BlockContext.withBlockContext(customBC) {
@@ -910,10 +911,11 @@ trait BlockContexts extends TestBase {
   // test BlockContext after a BlockContext.push
   def testPopCustom(): Unit = {
     val orig = BlockContext.current
-    val customBC = new BlockContext() {
-      override def blockOn[T](thunk: => T)(implicit permission: CanAwait): T =
-        orig.blockOn(thunk)
-    }
+    val customBC =
+      new BlockContext() {
+        override def blockOn[T](thunk: => T)(implicit permission: CanAwait): T =
+          orig.blockOn(thunk)
+      }
 
     val bc = getBlockContext({
       BlockContext.withBlockContext(customBC) {}
@@ -990,9 +992,10 @@ trait CustomExecutionContext extends TestBase {
 
   def defaultEC = ExecutionContext.global
 
-  val inEC = new java.lang.ThreadLocal[Int]() {
-    override def initialValue = 0
-  }
+  val inEC =
+    new java.lang.ThreadLocal[Int]() {
+      override def initialValue = 0
+    }
 
   def enterEC() = inEC.set(inEC.get + 1)
   def leaveEC() = inEC.set(inEC.get - 1)
@@ -1007,16 +1010,17 @@ trait CustomExecutionContext extends TestBase {
 
     override def execute(runnable: Runnable) = {
       _count.incrementAndGet()
-      val wrapper = new Runnable() {
-        override def run() = {
-          enterEC()
-          try {
-            runnable.run()
-          } finally {
-            leaveEC()
+      val wrapper =
+        new Runnable() {
+          override def run() = {
+            enterEC()
+            try {
+              runnable.run()
+            } finally {
+              leaveEC()
+            }
           }
         }
-      }
       delegate.execute(wrapper)
     }
 
@@ -1109,36 +1113,36 @@ trait CustomExecutionContext extends TestBase {
 }
 
 trait ExecutionContextPrepare extends TestBase {
-  val theLocal = new ThreadLocal[String] {
-    override protected def initialValue(): String = ""
-  }
+  val theLocal =
+    new ThreadLocal[String] {
+      override protected def initialValue(): String = ""
+    }
 
   class PreparingExecutionContext extends ExecutionContext {
     def delegate = ExecutionContext.global
 
-    override def execute(runnable: Runnable): Unit =
-      delegate.execute(runnable)
+    override def execute(runnable: Runnable): Unit = delegate.execute(runnable)
 
     override def prepare(): ExecutionContext = {
       // save object stored in ThreadLocal storage
       val localData = theLocal.get
       new PreparingExecutionContext {
         override def execute(runnable: Runnable): Unit = {
-          val wrapper = new Runnable {
-            override def run(): Unit = {
-              // now we're on the new thread
-              // put localData into theLocal
-              theLocal.set(localData)
-              runnable.run()
+          val wrapper =
+            new Runnable {
+              override def run(): Unit = {
+                // now we're on the new thread
+                // put localData into theLocal
+                theLocal.set(localData)
+                runnable.run()
+              }
             }
-          }
           delegate.execute(wrapper)
         }
       }
     }
 
-    override def reportFailure(t: Throwable): Unit =
-      delegate.reportFailure(t)
+    override def reportFailure(t: Throwable): Unit = delegate.reportFailure(t)
   }
 
   implicit val ec = new PreparingExecutionContext

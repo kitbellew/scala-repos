@@ -41,8 +41,8 @@ object DesktopShardServer
   val caveatMessage = None
 
   val actorSystem = ActorSystem("desktopExecutorActorSystem")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   def platformFor(

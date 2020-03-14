@@ -50,8 +50,8 @@ class TightRequestTimeoutSpec
     with Matchers
     with BeforeAndAfterAll
     with ScalaFutures {
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString(
+    """
     akka.loggers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.stdout-loglevel = ERROR
@@ -76,9 +76,10 @@ class TightRequestTimeoutSpec
       val p = TestProbe()
       system.eventStream.subscribe(p.ref, classOf[Logging.Error])
 
-      val response = Http()
-        .singleRequest(HttpRequest(uri = s"http://$hostname:$port/"))
-        .futureValue
+      val response =
+        Http()
+          .singleRequest(HttpRequest(uri = s"http://$hostname:$port/"))
+          .futureValue
       response.status should ===(
         StatusCodes.ServiceUnavailable
       ) // the timeout response

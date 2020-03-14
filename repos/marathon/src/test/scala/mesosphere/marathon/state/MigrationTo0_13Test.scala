@@ -156,29 +156,34 @@ class MigrationTo0_13Test
   }
 
   class Fixture {
-    lazy val uuidGenerator =
-      Generators.timeBasedGenerator(EthernetAddress.fromInterface())
+    lazy val uuidGenerator = Generators.timeBasedGenerator(
+      EthernetAddress.fromInterface())
     lazy val state = new InMemoryStore
     lazy val metrics = new Metrics(new MetricRegistry)
     lazy val legacyTaskStore = new LegacyTaskStore(state)
-    lazy val entityStore = new MarathonStore[MarathonTaskState](
-      store = state,
-      metrics = metrics,
-      newState = () =>
-        MarathonTaskState(
-          MarathonTask.newBuilder().setId(UUID.randomUUID().toString).build()),
-      prefix = TaskRepository.storePrefix)
+    lazy val entityStore =
+      new MarathonStore[MarathonTaskState](
+        store = state,
+        metrics = metrics,
+        newState = () =>
+          MarathonTaskState(
+            MarathonTask
+              .newBuilder()
+              .setId(UUID.randomUUID().toString)
+              .build()),
+        prefix = TaskRepository.storePrefix)
     lazy val taskRepo = {
       val metrics = new Metrics(new MetricRegistry)
       new TaskRepository(entityStore, metrics)
     }
-    lazy val frameworkIdStore = new MarathonStore[FrameworkId](
-      store = state,
-      metrics = metrics,
-      newState = () => new FrameworkId(UUID.randomUUID().toString),
-      prefix =
-        "" // don't set the prefix so we don't have to use PersistentStore for testing
-    )
+    lazy val frameworkIdStore =
+      new MarathonStore[FrameworkId](
+        store = state,
+        metrics = metrics,
+        newState = () => new FrameworkId(UUID.randomUUID().toString),
+        prefix =
+          "" // don't set the prefix so we don't have to use PersistentStore for testing
+      )
 
     lazy val migration = new MigrationTo0_13(taskRepo, state)
 

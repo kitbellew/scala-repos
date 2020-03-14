@@ -39,8 +39,9 @@ class Producer[K, V](
     extends Logging {
 
   private val hasShutdown = new AtomicBoolean(false)
-  private val queue = new LinkedBlockingQueue[KeyedMessage[K, V]](
-    config.queueBufferingMaxMessages)
+  private val queue =
+    new LinkedBlockingQueue[KeyedMessage[K, V]](
+      config.queueBufferingMaxMessages)
 
   private var sync: Boolean = true
   private var producerSendThread: ProducerSendThread[K, V] = null
@@ -60,8 +61,8 @@ class Producer[K, V](
       producerSendThread.start()
   }
 
-  private val producerTopicStats =
-    ProducerTopicStatsRegistry.getProducerTopicStats(config.clientId)
+  private val producerTopicStats = ProducerTopicStatsRegistry
+    .getProducerTopicStats(config.clientId)
 
   KafkaMetricsReporter.startReporters(config.props)
   AppInfo.registerInfo()
@@ -105,26 +106,27 @@ class Producer[K, V](
 
   private def asyncSend(messages: Seq[KeyedMessage[K, V]]) {
     for (message <- messages) {
-      val added = config.queueEnqueueTimeoutMs match {
-        case 0 =>
-          queue.offer(message)
-        case _ =>
-          try {
-            config.queueEnqueueTimeoutMs < 0 match {
-              case true =>
-                queue.put(message)
-                true
-              case _ =>
-                queue.offer(
-                  message,
-                  config.queueEnqueueTimeoutMs,
-                  TimeUnit.MILLISECONDS)
+      val added =
+        config.queueEnqueueTimeoutMs match {
+          case 0 =>
+            queue.offer(message)
+          case _ =>
+            try {
+              config.queueEnqueueTimeoutMs < 0 match {
+                case true =>
+                  queue.put(message)
+                  true
+                case _ =>
+                  queue.offer(
+                    message,
+                    config.queueEnqueueTimeoutMs,
+                    TimeUnit.MILLISECONDS)
+              }
+            } catch {
+              case e: InterruptedException =>
+                false
             }
-          } catch {
-            case e: InterruptedException =>
-              false
-          }
-      }
+        }
       if (!added) {
         producerTopicStats
           .getProducerTopicStats(message.topic)

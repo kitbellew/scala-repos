@@ -568,9 +568,10 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           assertEquals(true, column("Option_java_sql_Blob").nullable)
         }
         _ <- ifCap(jcap.defaultValueMetaData) {
-          val typeTest = model.tables
-            .filter(_.name.table.toUpperCase == "NO_DEFAULT_TEST")
-            .head
+          val typeTest =
+            model.tables
+              .filter(_.name.table.toUpperCase == "NO_DEFAULT_TEST")
+              .head
           def column(name: String) =
             typeTest.columns.filter(_.name.toUpperCase == name.toUpperCase).head
           def columnDefault(name: String) =

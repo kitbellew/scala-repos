@@ -160,10 +160,11 @@ trait EhCacheComponents {
   def configuration: Configuration
   def applicationLifecycle: ApplicationLifecycle
 
-  lazy val ehCacheManager: CacheManager = new CacheManagerProvider(
-    environment,
-    configuration,
-    applicationLifecycle).get
+  lazy val ehCacheManager: CacheManager =
+    new CacheManagerProvider(
+      environment,
+      configuration,
+      applicationLifecycle).get
 
   /**
     * Use this to create with the given name.
@@ -184,8 +185,8 @@ class EhCacheModule extends Module {
   import scala.collection.JavaConversions._
 
   def bindings(environment: Environment, configuration: Configuration) = {
-    val defaultCacheName =
-      configuration.underlying.getString("play.cache.defaultCache")
+    val defaultCacheName = configuration.underlying.getString(
+      "play.cache.defaultCache")
     val bindCaches =
       configuration.underlying.getStringList("play.cache.bindCaches").toSeq
 

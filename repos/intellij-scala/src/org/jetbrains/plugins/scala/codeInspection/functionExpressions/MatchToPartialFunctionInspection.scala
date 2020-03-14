@@ -91,19 +91,22 @@ class MatchToPartialFunctionInspection
     def dummyCaseClauses = "{case _ => }"
 
     val call = PsiTreeUtil.getParentOfType(argExpr, classOf[MethodInvocation])
-    val arg = argExpr match {
-      case _ childOf (x childOf (_: ScArgumentExprList)) => x
-      case _ childOf (x childOf (_: ScInfixExpr))        => x
-      case _                                             => argExpr
-    }
+    val arg =
+      argExpr match {
+        case _ childOf (x childOf (_: ScArgumentExprList)) => x
+        case _ childOf (x childOf (_: ScInfixExpr))        => x
+        case _                                             => argExpr
+      }
     if (call == null || !call.argumentExpressions.contains(arg))
       return true
-    val (refText, oldResolve) = call match {
-      case ScInfixExpr(qual, r, _) =>
-        (s"${qual.getText}.${r.refName}", r.resolve())
-      case ScMethodCall(r: ScReferenceExpression, _) => (r.getText, r.resolve())
-      case _                                         => return true
-    }
+    val (refText, oldResolve) =
+      call match {
+        case ScInfixExpr(qual, r, _) =>
+          (s"${qual.getText}.${r.refName}", r.resolve())
+        case ScMethodCall(r: ScReferenceExpression, _) =>
+          (r.getText, r.resolve())
+        case _ => return true
+      }
 
     val newCall = ScalaPsiElementFactory.createExpressionWithContextFromText(
       refText + dummyCaseClauses,
@@ -152,10 +155,9 @@ class MatchToPartialFunctionQuickFix(
       fExpr.getParent match {
         case (argList: ScArgumentExprList) childOf (call: ScMethodCall)
             if argList.exprs.size == 1 =>
-          val newMethCall =
-            ScalaPsiElementFactory.createExpressionFromText(
-              call.getInvokedExpr.getText + " " + newBlock.getText,
-              fExpr.getManager)
+          val newMethCall = ScalaPsiElementFactory.createExpressionFromText(
+            call.getInvokedExpr.getText + " " + newBlock.getText,
+            fExpr.getManager)
           call.replace(newMethCall)
         case block @ ScBlock(`fExpr`) =>
           block.replace(newBlock)
@@ -172,10 +174,11 @@ class MatchToPartialFunctionQuickFix(
         val arg = expr.resolve()
         if (arg == null)
           return Nil
-        val refs = ReferencesSearch
-          .search(arg, new LocalSearchScope(matchStmt))
-          .findAll()
-          .asScala
+        val refs =
+          ReferencesSearch
+            .search(arg, new LocalSearchScope(matchStmt))
+            .findAll()
+            .asScala
         for {
           (clause, index) <- matchStmt.caseClauses.zipWithIndex
           if refs.exists(ref =>

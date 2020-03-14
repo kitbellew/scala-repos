@@ -17,8 +17,7 @@ class Character(private val value: scala.Char) extends Comparable[Character] {
   override def compareTo(that: Character): Int =
     Character.compare(charValue, that.charValue)
 
-  override def toString(): String =
-    Character.toString(value)
+  override def toString(): String = Character.toString(value)
 
   override def hashCode(): Int = value.##
 
@@ -283,8 +282,7 @@ object Character {
   def isSpace(c: scala.Char): scala.Boolean =
     c == '\t' || c == '\n' || c == '\f' || c == '\r' || c == ' '
 
-  def isWhitespace(c: scala.Char): scala.Boolean =
-    isWhitespace(c.toInt)
+  def isWhitespace(c: scala.Char): scala.Boolean = isWhitespace(c.toInt)
 
   def isWhitespace(codePoint: scala.Int): scala.Boolean = {
     def isSeparator(tpe: Int): scala.Boolean =
@@ -300,8 +298,7 @@ object Character {
     }
   }
 
-  def isSpaceChar(ch: scala.Char): scala.Boolean =
-    isSpaceChar(ch.toInt)
+  def isSpaceChar(ch: scala.Char): scala.Boolean = isSpaceChar(ch.toInt)
 
   def isSpaceChar(codePoint: Int): scala.Boolean =
     isSpaceCharImpl(getType(codePoint))
@@ -332,8 +329,7 @@ object Character {
 
   // --- End of UTF-16 surrogate pairs handling ---
 
-  def isLowerCase(c: scala.Char): scala.Boolean =
-    isLowerCase(c.toInt)
+  def isLowerCase(c: scala.Char): scala.Boolean = isLowerCase(c.toInt)
 
   def isLowerCase(c: Int): scala.Boolean = {
     if (c < 256)
@@ -353,8 +349,7 @@ object Character {
     getTypeGE256(c) == LOWERCASE_LETTER
   }
 
-  def isUpperCase(c: scala.Char): scala.Boolean =
-    isUpperCase(c.toInt)
+  def isUpperCase(c: scala.Char): scala.Boolean = isUpperCase(c.toInt)
 
   def isUpperCase(c: Int): scala.Boolean = {
     ('\u2160' <= c && c <= '\u216F') || ('\u24B6' <= c && c <= '\u24CF') ||
@@ -370,8 +365,7 @@ object Character {
   @inline def isSupplementaryCodePoint(codePoint: Int): scala.Boolean =
     codePoint >= MIN_SUPPLEMENTARY_CODE_POINT && codePoint <= MAX_CODE_POINT
 
-  def isTitleCase(c: scala.Char): scala.Boolean =
-    isTitleCase(c.toInt)
+  def isTitleCase(c: scala.Char): scala.Boolean = isTitleCase(c.toInt)
 
   def isTitleCase(cp: Int): scala.Boolean =
     if (cp < 256)
@@ -382,8 +376,7 @@ object Character {
   @inline private[this] def isTitleCaseImpl(tpe: Int): scala.Boolean =
     tpe == TITLECASE_LETTER
 
-  def isDigit(c: scala.Char): scala.Boolean =
-    isDigit(c.toInt)
+  def isDigit(c: scala.Char): scala.Boolean = isDigit(c.toInt)
 
   def isDigit(cp: Int): scala.Boolean =
     if (cp < 256)
@@ -394,8 +387,7 @@ object Character {
   @inline private[this] def isDigitImpl(tpe: Int): scala.Boolean =
     tpe == DECIMAL_DIGIT_NUMBER
 
-  def isDefined(c: scala.Char): scala.Boolean =
-    isDefined(c.toInt)
+  def isDefined(c: scala.Char): scala.Boolean = isDefined(c.toInt)
 
   def isDefined(c: scala.Int): scala.Boolean = {
     if (c < 0)
@@ -415,11 +407,9 @@ object Character {
     tpe == TITLECASE_LETTER || tpe == MODIFIER_LETTER || tpe == OTHER_LETTER
   }
 
-  def isLetterOrDigit(c: scala.Char): scala.Boolean =
-    isLetterOrDigit(c.toInt)
+  def isLetterOrDigit(c: scala.Char): scala.Boolean = isLetterOrDigit(c.toInt)
 
-  def isLetterOrDigit(cp: Int): scala.Boolean =
-    isLetterOrDigitImpl(getType(cp))
+  def isLetterOrDigit(cp: Int): scala.Boolean = isLetterOrDigitImpl(getType(cp))
 
   @inline private[this] def isLetterOrDigitImpl(tpe: Int): scala.Boolean =
     isDigitImpl(tpe) || isLetterImpl(tpe)
@@ -523,8 +513,7 @@ object Character {
     tpe == FORMAT
   }
 
-  def isMirrored(c: scala.Char): scala.Boolean =
-    isMirrored(c.toInt)
+  def isMirrored(c: scala.Char): scala.Boolean = isMirrored(c.toInt)
 
   def isMirrored(codePoint: Int): scala.Boolean = {
     val idx = Arrays.binarySearch(isMirroredIndices, codePoint) + 1
@@ -559,8 +548,7 @@ object Character {
   @inline def toString(c: scala.Char): String =
     js.Dynamic.global.String.fromCharCode(c.toInt).asInstanceOf[String]
 
-  @inline def compare(x: scala.Char, y: scala.Char): Int =
-    x - y
+  @inline def compare(x: scala.Char, y: scala.Char): Int = x - y
 
   // Based on Unicode 7.0.0
 

@@ -39,15 +39,16 @@ object time {
     def day: Duration = days
   }
 
-  private val ZeroRichWholeNumber = new RichWholeNumber(0) {
-    override def nanoseconds: Duration = Duration.Zero
-    override def microseconds: Duration = Duration.Zero
-    override def milliseconds: Duration = Duration.Zero
-    override def seconds: Duration = Duration.Zero
-    override def minutes: Duration = Duration.Zero
-    override def hours: Duration = Duration.Zero
-    override def days: Duration = Duration.Zero
-  }
+  private val ZeroRichWholeNumber =
+    new RichWholeNumber(0) {
+      override def nanoseconds: Duration = Duration.Zero
+      override def microseconds: Duration = Duration.Zero
+      override def milliseconds: Duration = Duration.Zero
+      override def seconds: Duration = Duration.Zero
+      override def minutes: Duration = Duration.Zero
+      override def hours: Duration = Duration.Zero
+      override def days: Duration = Duration.Zero
+    }
 
   implicit def intToTimeableNumber(i: Int): RichWholeNumber =
     if (i == 0)

@@ -77,12 +77,13 @@ object DataSet {
       lines.foldLeft((Int.MaxValue, List.empty[(CC[F], K)])) {
         case ((dim, res), fields) =>
           val bldr = cbf()
-          val vd = (maps zip fields).foldLeft(0) {
-            case (acc, (f, s)) =>
-              val vars = f(s)
-              bldr ++= vars
-              acc + vars.size
-          }
+          val vd =
+            (maps zip fields).foldLeft(0) {
+              case (acc, (f, s)) =>
+                val vars = f(s)
+                bldr ++= vars
+                acc + vars.size
+            }
           (math.min(dim, vd), (bldr.result(), out._2(fields(out._1))) :: res)
       }
 
@@ -247,11 +248,11 @@ object Variable {
         }
         def result() = {
           val real = defaultBuilder.result()
-          val occurences = values.foldLeft(Map.empty[List[F], Int]) {
-            (acc, v) =>
+          val occurences =
+            values.foldLeft(Map.empty[List[F], Int]) { (acc, v) =>
               val k = real(v)
               acc + (k -> (acc.getOrElse(k, 0) + 1))
-          }
+            }
           val mostCommon = occurences.maxBy(_._2)._1
 
           { s =>
@@ -331,12 +332,14 @@ object CrossValidation {
 
     def rSquared(results: List[Result[V, F]]): F = {
       val mean = results.foldLeft(field.zero)(_ + _.output) / results.size
-      val sumSq = results.foldLeft(field.zero) { (acc, result) =>
-        acc + (result.output - mean) ** 2
-      }
-      val error = results.foldLeft(field.zero) { (acc, result) =>
-        acc + (result.output - result.predicted) ** 2
-      }
+      val sumSq =
+        results.foldLeft(field.zero) { (acc, result) =>
+          acc + (result.output - mean) ** 2
+        }
+      val error =
+        results.foldLeft(field.zero) { (acc, result) =>
+          acc + (result.output - result.predicted) ** 2
+        }
       field.one - error / sumSq
     }
 

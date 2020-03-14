@@ -176,9 +176,10 @@ object Test {
     assert(sub.subsymbol == 'symsub)
     assert(sub.basesymbol == 'symbase)
 
-    val anon = new Sub {
-      def subsubsymbol = 'symsubsub
-    }
+    val anon =
+      new Sub {
+        def subsubsymbol = 'symsubsub
+      }
     assert(anon.subsubsymbol == 'symsubsub)
     assert(anon.subsymbol == 'symsub)
     assert(anon.basesymbol == 'symbase)
@@ -193,9 +194,10 @@ object Test {
   }
 
   def testTraits {
-    val fromTrait = new AnyRef with Signs {
-      def traitsymbol = 'traitSymbol
-    }
+    val fromTrait =
+      new AnyRef with Signs {
+        def traitsymbol = 'traitSymbol
+      }
 
     assert(fromTrait.traitsymbol == 'traitSymbol)
     assert(fromTrait.ind == 'indication)

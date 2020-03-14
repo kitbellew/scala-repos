@@ -37,9 +37,10 @@ class RouteeCreationSpec extends AkkaSpec {
           case "one" ⇒ testActor forward "two"
         }
       })))
-      val gotit = receiveWhile(messages = N) {
-        case "two" ⇒ lastSender.toString
-      }
+      val gotit =
+        receiveWhile(messages = N) {
+          case "two" ⇒ lastSender.toString
+        }
       expectNoMsg(100.millis)
       if (gotit.size != N) {
         fail(s"got only ${gotit.size} from [${gotit mkString ", "}]")

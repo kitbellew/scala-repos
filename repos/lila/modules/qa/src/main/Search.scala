@@ -26,16 +26,17 @@ final class Search(collection: Coll) {
         "search" -> search,
         "filter" -> filter)
 
-    val ResultMaker = new BSONCommandResultMaker[Result] {
+    val ResultMaker =
+      new BSONCommandResultMaker[Result] {
 
-      /**
-        * Deserializes the given response into an instance of Result.
-        */
-      def apply(document: BSONDocument): Either[CommandError, Result] =
-        CommandError.checkOk(document, Some("search")) toLeft {
-          document.getAs[List[BSONDocument]]("results") getOrElse Nil
-        }
-    }
+        /**
+          * Deserializes the given response into an instance of Result.
+          */
+        def apply(document: BSONDocument): Either[CommandError, Result] =
+          CommandError.checkOk(document, Some("search")) toLeft {
+            document.getAs[List[BSONDocument]]("results") getOrElse Nil
+          }
+      }
   }
 
   def apply(q: String): Fu[List[Question]] =

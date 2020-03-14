@@ -47,8 +47,7 @@ object Ran {
     }
 
   def ranToAdjoint[F[_], G[_], A](r: Ran[G, Id, A])(
-      implicit A: Adjunction[F, G]): F[A] =
-    r(a => A.unit(a))
+      implicit A: Adjunction[F, G]): F[A] = r(a => A.unit(a))
 
   def composedAdjointToRan[F[_], G[_], H[_], A](
       h: H[F[A]])(implicit A: Adjunction[F, G], H: Functor[H]): Ran[G, H, A] =
@@ -57,8 +56,7 @@ object Ran {
     }
 
   /** This is the natural transformation that defines a right Kan extension. */
-  def gran[G[_], H[_], A](r: Ran[G, H, G[A]]): H[A] =
-    r(a => a)
+  def gran[G[_], H[_], A](r: Ran[G, H, G[A]]): H[A] = r(a => a)
 }
 
 /** The left Kan extension of `H` along `G` */
@@ -132,8 +130,7 @@ object Lan extends LanInstances {
     }
 
   def lanToAdjoint[F[_], G[_], A](lan: Lan[F, Id, A])(
-      implicit A: Adjunction[F, G]): G[A] =
-    A.leftAdjunct(lan.v)(lan.f)
+      implicit A: Adjunction[F, G]): G[A] = A.leftAdjunct(lan.v)(lan.f)
 
   def composedAdjointToLan[F[_], G[_], H[_], A](h: H[G[A]])(
       implicit A: Adjunction[F, G]): Lan[F, H, A] =

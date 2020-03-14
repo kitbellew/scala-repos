@@ -31,8 +31,9 @@ class GuavaCacheTest extends AbstractFutureCacheTest {
   }
 
   test("GuavaCache#fromCache is interrupt safe") {
-    val fCache =
-      GuavaCache.fromCache((_: String) => new Promise[Int], mkCache())
+    val fCache = GuavaCache.fromCache(
+      (_: String) => new Promise[Int],
+      mkCache())
     interruptSafe(fCache)
   }
 

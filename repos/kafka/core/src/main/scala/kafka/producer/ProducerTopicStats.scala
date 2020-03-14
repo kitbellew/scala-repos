@@ -26,17 +26,24 @@ import java.util.concurrent.TimeUnit
   "0.10.0.0")
 @threadsafe
 class ProducerTopicMetrics(metricId: ClientIdTopic) extends KafkaMetricsGroup {
-  val tags = metricId match {
-    case ClientIdAndTopic(clientId, topic) =>
-      Map("clientId" -> clientId, "topic" -> topic)
-    case ClientIdAllTopics(clientId) => Map("clientId" -> clientId)
-  }
+  val tags =
+    metricId match {
+      case ClientIdAndTopic(clientId, topic) =>
+        Map("clientId" -> clientId, "topic" -> topic)
+      case ClientIdAllTopics(clientId) => Map("clientId" -> clientId)
+    }
 
-  val messageRate =
-    newMeter("MessagesPerSec", "messages", TimeUnit.SECONDS, tags)
+  val messageRate = newMeter(
+    "MessagesPerSec",
+    "messages",
+    TimeUnit.SECONDS,
+    tags)
   val byteRate = newMeter("BytesPerSec", "bytes", TimeUnit.SECONDS, tags)
-  val droppedMessageRate =
-    newMeter("DroppedMessagesPerSec", "drops", TimeUnit.SECONDS, tags)
+  val droppedMessageRate = newMeter(
+    "DroppedMessagesPerSec",
+    "drops",
+    TimeUnit.SECONDS,
+    tags)
 }
 
 /**
@@ -50,9 +57,10 @@ class ProducerTopicStats(clientId: String) {
   private val valueFactory = (k: ClientIdTopic) => new ProducerTopicMetrics(k)
   private val stats =
     new Pool[ClientIdTopic, ProducerTopicMetrics](Some(valueFactory))
-  private val allTopicsStats = new ProducerTopicMetrics(
-    new ClientIdAllTopics(clientId)
-  ) // to differentiate from a topic named AllTopics
+  private val allTopicsStats =
+    new ProducerTopicMetrics(
+      new ClientIdAllTopics(clientId)
+    ) // to differentiate from a topic named AllTopics
 
   def getProducerAllTopicsStats(): ProducerTopicMetrics = allTopicsStats
 

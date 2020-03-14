@@ -30,8 +30,8 @@ package object reflect {
   private[reflect] val ConstructorDefault = "$lessinit$greater$default"
   private[reflect] val ModuleFieldName = "MODULE$"
   private[reflect] val ClassLoaders = Vector(getClass.getClassLoader)
-  private[this] val paranamer = new CachingParanamer(
-    new BytecodeReadingParanamer)
+  private[this] val paranamer =
+    new CachingParanamer(new BytecodeReadingParanamer)
 
   object ParanamerReader extends ParameterNameReader {
     def lookupParameterNames(constructor: JConstructor[_]): Seq[String] =

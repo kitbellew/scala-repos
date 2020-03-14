@@ -92,17 +92,18 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
   def parametersInitialProducer(): Unit = {
     // mutates a parameter local (not possible in scala, but in bytecode)
     import Opcodes._
-    val m = genMethod(descriptor = "(I)I")(
-      Label(0),
-      VarOp(ILOAD, 1),
-      Jump(IFNE, Label(1)),
-      Op(ICONST_1),
-      VarOp(ISTORE, 1),
-      Label(1),
-      VarOp(ILOAD, 1),
-      Op(IRETURN),
-      Label(2)
-    )
+    val m =
+      genMethod(descriptor = "(I)I")(
+        Label(0),
+        VarOp(ILOAD, 1),
+        Jump(IFNE, Label(1)),
+        Op(ICONST_1),
+        VarOp(ISTORE, 1),
+        Label(1),
+        VarOp(ILOAD, 1),
+        Op(IRETURN),
+        Label(2)
+      )
     m.maxLocals = 2
     m.maxStack = 1
     val a = new ProdConsAnalyzer(m, "C")
@@ -118,8 +119,9 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
 
   @Test
   def branching(): Unit = {
-    val List(m) = compileMethods(noOptCompiler)(
-      "def f(x: Int) = { var a = x; if (a == 0) a = 12; a }")
+    val List(m) =
+      compileMethods(noOptCompiler)(
+        "def f(x: Int) = { var a = x; if (a == 0) a = 12; a }")
     val a = new ProdConsAnalyzer(m, "C")
 
     val List(ret) = findInstr(m, "IRETURN")
@@ -157,8 +159,9 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
 
   @Test
   def unInitLocal(): Unit = {
-    val List(m) = compileMethods(noOptCompiler)(
-      "def f(b: Boolean) = { if (b) { var a = 0; println(a) }; 1 }")
+    val List(m) =
+      compileMethods(noOptCompiler)(
+        "def f(b: Boolean) = { if (b) { var a = 0; println(a) }; 1 }")
     val a = new ProdConsAnalyzer(m, "C")
 
     val List(store) = findInstr(m, "ISTORE")
@@ -194,15 +197,16 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
   @Test
   def multiProducer(): Unit = {
     import Opcodes._
-    val m = genMethod(descriptor = "(I)I")(
-      VarOp(ILOAD, 1),
-      VarOp(ILOAD, 1),
-      Op(DUP2),
-      Op(IADD),
-      Op(SWAP),
-      VarOp(ISTORE, 1),
-      Op(IRETURN)
-    )
+    val m =
+      genMethod(descriptor = "(I)I")(
+        VarOp(ILOAD, 1),
+        VarOp(ILOAD, 1),
+        Op(DUP2),
+        Op(IADD),
+        Op(SWAP),
+        VarOp(ISTORE, 1),
+        Op(IRETURN)
+      )
     m.maxLocals = 2
     m.maxStack = 4
     val a = new ProdConsAnalyzer(m, "C")
@@ -239,11 +243,12 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
   @Test
   def iincProdCons(): Unit = {
     import Opcodes._
-    val m = genMethod(descriptor = "(I)I")(
-      Incr(IINC, 1, 1), // producer and consumer of local variable 1
-      VarOp(ILOAD, 1),
-      Op(IRETURN)
-    )
+    val m =
+      genMethod(descriptor = "(I)I")(
+        Incr(IINC, 1, 1), // producer and consumer of local variable 1
+        VarOp(ILOAD, 1),
+        Op(IRETURN)
+      )
     m.maxLocals = 2
     m.maxStack = 1
     val a = new ProdConsAnalyzer(m, "C")
@@ -289,20 +294,21 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
   @Test
   def cyclicProdCons(): Unit = {
     import Opcodes._
-    val m = genMethod(descriptor = "(I)I")(
-      Label(1),
-      VarOp(ILOAD, 1),
-      IntOp(BIPUSH, 10),
-      Op(IADD), // consumer of the above ILOAD
-      Op(ICONST_0),
-      Jump(IF_ICMPNE, Label(2)),
-      VarOp(ILOAD, 1),
-      VarOp(ISTORE, 1),
-      Jump(GOTO, Label(1)),
-      Label(2),
-      IntOp(BIPUSH, 9),
-      Op(IRETURN)
-    )
+    val m =
+      genMethod(descriptor = "(I)I")(
+        Label(1),
+        VarOp(ILOAD, 1),
+        IntOp(BIPUSH, 10),
+        Op(IADD), // consumer of the above ILOAD
+        Op(ICONST_0),
+        Jump(IF_ICMPNE, Label(2)),
+        VarOp(ILOAD, 1),
+        VarOp(ISTORE, 1),
+        Jump(GOTO, Label(1)),
+        Label(2),
+        IntOp(BIPUSH, 9),
+        Op(IRETURN)
+      )
     m.maxLocals = 2
     m.maxStack = 2
     val a = new ProdConsAnalyzer(m, "C")

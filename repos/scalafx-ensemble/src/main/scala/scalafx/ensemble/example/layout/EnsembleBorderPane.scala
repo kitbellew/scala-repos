@@ -49,47 +49,52 @@ class EnsembleBorderPane extends EnsembleExample {
 
   def getContent = {
     // Top content using a rectangle
-    val topRectangle = new Rectangle() {
-      width = 400
-      height = 20
-      fill = Color.DarkSeaGreen
-      stroke = Color.Black
-    }
+    val topRectangle =
+      new Rectangle() {
+        width = 400
+        height = 20
+        fill = Color.DarkSeaGreen
+        stroke = Color.Black
+      }
 
     // Left content using VBox
-    val leftVBox = new VBox {
-      spacing = 10
-      children = List(
-        Label("Left Hand"),
-        Label("Choice One"),
-        Label("Choice Two"),
-        Label("Choice Three"))
-    }
+    val leftVBox =
+      new VBox {
+        spacing = 10
+        children = List(
+          Label("Left Hand"),
+          Label("Choice One"),
+          Label("Choice Two"),
+          Label("Choice Three"))
+      }
 
     // Center content using Anchor Pane
     val centerLabel = Label("We're in the center area.")
-    val imageButton = new ImageView {
-      image = new Image(
-        this.getClass
-          .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
-    }
+    val imageButton =
+      new ImageView {
+        image = new Image(
+          this.getClass
+            .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+      }
     AnchorPane.setTopAnchor(centerLabel, 10.0)
     AnchorPane.setTopAnchor(imageButton, 40.0)
     AnchorPane.setLeftAnchor(centerLabel, 80.0)
     AnchorPane.setLeftAnchor(imageButton, 80.0)
-    val centerAnchorPane = new AnchorPane {
-      children = List(centerLabel, imageButton)
-    }
+    val centerAnchorPane =
+      new AnchorPane {
+        children = List(centerLabel, imageButton)
+      }
 
     // Right content using VBox
-    val rightVBox = new VBox {
-      spacing = 10
-      children = List(
-        Label("Right Hand"),
-        Label("Thing A"),
-        Label("Thing B"),
-        Label("Thing C"))
-    }
+    val rightVBox =
+      new VBox {
+        spacing = 10
+        children = List(
+          Label("Right Hand"),
+          Label("Thing A"),
+          Label("Thing B"),
+          Label("Thing C"))
+      }
 
     // Right content
     val bottomLabel = Label("I am a status message. I am at the bottom")

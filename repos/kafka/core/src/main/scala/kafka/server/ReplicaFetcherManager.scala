@@ -34,12 +34,13 @@ class ReplicaFetcherManager(
   override def createFetcherThread(
       fetcherId: Int,
       sourceBroker: BrokerEndPoint): AbstractFetcherThread = {
-    val threadName = threadNamePrefix match {
-      case None =>
-        "ReplicaFetcherThread-%d-%d".format(fetcherId, sourceBroker.id)
-      case Some(p) =>
-        "%s:ReplicaFetcherThread-%d-%d".format(p, fetcherId, sourceBroker.id)
-    }
+    val threadName =
+      threadNamePrefix match {
+        case None =>
+          "ReplicaFetcherThread-%d-%d".format(fetcherId, sourceBroker.id)
+        case Some(p) =>
+          "%s:ReplicaFetcherThread-%d-%d".format(p, fetcherId, sourceBroker.id)
+      }
     new ReplicaFetcherThread(
       threadName,
       fetcherId,

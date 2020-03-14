@@ -69,8 +69,7 @@ trait Counter2Like[
     update(i._1, i._2, v)
   }
 
-  def update(k1: K1, k2: K2, v: V) =
-    innerGetOrElseUpdate(k1, data)(k2) = v
+  def update(k1: K1, k2: K2, v: V) = innerGetOrElseUpdate(k1, data)(k2) = v
 
   private[linalg] def innerGetOrElseUpdate[M](
       k: K1,
@@ -167,8 +166,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
 
   /** Aggregates the counts in the given items. */
   def apply[K1, K2, V: Semiring: Zero](
-      values: (K1, K2, V)*): Counter2[K1, K2, V] =
-    apply(values.iterator)
+      values: (K1, K2, V)*): Counter2[K1, K2, V] = apply(values.iterator)
 
   /** Aggregates the counts in the given items. */
   def apply[K1, K2, V: Semiring: Zero](
@@ -261,35 +259,33 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
         new Counter[K1, V] {
           def default = from.default
 
-          override val data = new scala.collection.mutable.Map[K1, V] {
-            override def apply(k1: K1) =
-              from(k1, col)
+          override val data =
+            new scala.collection.mutable.Map[K1, V] {
+              override def apply(k1: K1) = from(k1, col)
 
-            override def update(k1: K1, v: V) =
-              from(k1, col) = v
+              override def update(k1: K1, v: V) = from(k1, col) = v
 
-            override def -=(k1: K1) = {
-              from.data(k1)(col) = from.default
-              this
+              override def -=(k1: K1) = {
+                from.data(k1)(col) = from.default
+                this
+              }
+
+              override def +=(tup: (K1, V)) = {
+                from.data(tup._1)(col) = (tup._2)
+                this
+              }
+
+              override def iterator =
+                for ((k1, map) <- from.data.iterator;
+                     v <- map.get(col))
+                  yield (k1, v)
+
+              override def get(k1: K1) = from.data.get(k1).map(_(col))
+
+              override def keySet = from.data.keySet
+
+              override def size = from.data.size
             }
-
-            override def +=(tup: (K1, V)) = {
-              from.data(tup._1)(col) = (tup._2)
-              this
-            }
-
-            override def iterator =
-              for ((k1, map) <- from.data.iterator;
-                   v <- map.get(col))
-                yield (k1, v)
-
-            override def get(k1: K1) =
-              from.data.get(k1).map(_(col))
-
-            override def keySet = from.data.keySet
-
-            override def size = from.data.size
-          }
         }
     }
 

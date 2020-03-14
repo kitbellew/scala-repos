@@ -49,8 +49,7 @@ class VecAny[T: ST](values: Array[T]) extends Vec[T] { self =>
     Vec(util.Concat.append[T, B, C](toArray, v.toArray))
 
   def foldLeft[@spec(Boolean, Int, Long, Double) B: ST](init: B)(
-      f: (B, T) => B): B =
-    VecImpl.foldLeft(this)(init)(f)
+      f: (B, T) => B): B = VecImpl.foldLeft(this)(init)(f)
 
   def foldLeftWhile[@spec(Boolean, Int, Long, Double) B: ST](init: B)(
       f: (B, T) => B)(cond: (B, T) => Boolean): B =
@@ -66,8 +65,7 @@ class VecAny[T: ST](values: Array[T]) extends Vec[T] { self =>
 
   def rolling[@spec(Boolean, Int, Long, Double) B: ST](
       winSz: Int,
-      f: Vec[T] => B): Vec[B] =
-    VecImpl.rolling(this)(winSz, f)
+      f: Vec[T] => B): Vec[B] = VecImpl.rolling(this)(winSz, f)
 
   def map[@spec(Boolean, Int, Long, Double) B: ST](f: T => B): Vec[B] =
     VecImpl.map(this)(f)
@@ -81,8 +79,7 @@ class VecAny[T: ST](values: Array[T]) extends Vec[T] { self =>
   def zipMap[
       @spec(Int, Long, Double) B: ST,
       @spec(Boolean, Int, Long, Double) C: ST](other: Vec[B])(
-      f: (T, B) => C): Vec[C] =
-    VecImpl.zipMap(this, other)(f)
+      f: (T, B) => C): Vec[C] = VecImpl.zipMap(this, other)(f)
 
   def slice(from: Int, until: Int, stride: Int = 1) = {
     val b = math.max(from, 0)

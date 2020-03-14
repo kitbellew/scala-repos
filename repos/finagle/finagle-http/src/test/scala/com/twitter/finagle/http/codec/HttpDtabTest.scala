@@ -11,10 +11,11 @@ import org.scalatest.junit.{AssertionsForJUnit, JUnitRunner}
 class HttpDtabTest extends FunSuite with AssertionsForJUnit {
   val okDests = Vector("/$/inet/10.0.0.1/9000", "/foo/bar", "/")
   val okPrefixes = Vector("/foo", "/")
-  val okDentries = for {
-    prefix <- okPrefixes
-    dest <- okDests
-  } yield Dentry(Path.read(prefix), NameTree.read(dest))
+  val okDentries =
+    for {
+      prefix <- okPrefixes
+      dest <- okDests
+    } yield Dentry(Path.read(prefix), NameTree.read(dest))
 
   val okDtabs =
     Dtab.empty +: (okDentries.permutations map (ds => Dtab(ds))).toIndexedSeq
@@ -169,10 +170,11 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
     )
     val allHeaders = dtabHeaders :+ (("Accept", "application/json"))
 
-    val message = allHeaders.foldLeft(newMsg()) { (m, h) =>
-      m.headers.set(h._1, h._2)
-      m
-    }
+    val message =
+      allHeaders.foldLeft(newMsg()) { (m, h) =>
+        m.headers.set(h._1, h._2)
+        m
+      }
 
     val foundHeaders = HttpDtab.strip(message)
 

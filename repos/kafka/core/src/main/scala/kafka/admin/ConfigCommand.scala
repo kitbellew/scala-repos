@@ -87,10 +87,11 @@ object ConfigCommand {
   }
 
   def warnOnMaxMessagesChange(configs: Properties): Unit = {
-    val maxMessageBytes = configs.get(LogConfig.MaxMessageBytesProp) match {
-      case n: String => n.toInt
-      case _         => -1
-    }
+    val maxMessageBytes =
+      configs.get(LogConfig.MaxMessageBytesProp) match {
+        case n: String => n.toInt
+        case _         => -1
+      }
     if (maxMessageBytes > Defaults.MaxMessageSize) {
       error(TopicCommand.longMessageSizeWarning(maxMessageBytes))
       TopicCommand.askToProceed
@@ -106,8 +107,10 @@ object ConfigCommand {
         zkUtils.getAllEntitiesWithConfig(entityType)
 
     for (entityName <- entityNames) {
-      val configs =
-        AdminUtils.fetchEntityConfig(zkUtils, entityType, entityName)
+      val configs = AdminUtils.fetchEntityConfig(
+        zkUtils,
+        entityType,
+        entityName)
       println(
         "Configs for %s:%s are %s"
           .format(
@@ -119,8 +122,9 @@ object ConfigCommand {
 
   private[admin] def parseConfigsToBeAdded(
       opts: ConfigCommandOptions): Properties = {
-    val configsToBeAdded =
-      opts.options.valuesOf(opts.addConfig).map(_.split("""\s*=\s*"""))
+    val configsToBeAdded = opts.options
+      .valuesOf(opts.addConfig)
+      .map(_.split("""\s*=\s*"""))
     require(
       configsToBeAdded.forall(config => config.length == 2),
       "Invalid entity config: all configs to be added must be in the format \"key=val\".")
@@ -139,8 +143,9 @@ object ConfigCommand {
   private[admin] def parseConfigsToBeDeleted(
       opts: ConfigCommandOptions): Seq[String] = {
     if (opts.options.has(opts.deleteConfig)) {
-      val configsToBeDeleted =
-        opts.options.valuesOf(opts.deleteConfig).map(_.trim())
+      val configsToBeDeleted = opts.options
+        .valuesOf(opts.deleteConfig)
+        .map(_.trim())
       val propsToBeDeleted = new Properties
       configsToBeDeleted.foreach(propsToBeDeleted.setProperty(_, ""))
       configsToBeDeleted
@@ -158,10 +163,12 @@ object ConfigCommand {
       .withRequiredArg
       .describedAs("urls")
       .ofType(classOf[String])
-    val alterOpt =
-      parser.accepts("alter", "Alter the configuration for the entity.")
-    val describeOpt =
-      parser.accepts("describe", "List configs for the given entity.")
+    val alterOpt = parser.accepts(
+      "alter",
+      "Alter the configuration for the entity.")
+    val describeOpt = parser.accepts(
+      "describe",
+      "List configs for the given entity.")
     val entityType = parser
       .accepts("entity-type", "Type of entity (topics/clients)")
       .withRequiredArg

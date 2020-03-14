@@ -75,8 +75,9 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       methodName: String,
       signature: Char,
       context: EvaluationContext) = {
-    val suitableMethods =
-      objectRef.referenceType().methodsByName(methodName, "()" + signature)
+    val suitableMethods = objectRef
+      .referenceType()
+      .methodsByName(methodName, "()" + signature)
     if (suitableMethods.size() > 0) {
       companionObject.invokeEmptyArgsMethod(
         objectRef,
@@ -254,8 +255,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 }
 
 object NonStrictCollectionsRenderer {
-  private val EMPTY_ARGS =
-    util.Collections.unmodifiableList(new util.ArrayList[Value]())
+  private val EMPTY_ARGS = util.Collections.unmodifiableList(
+    new util.ArrayList[Value]())
 
   //it considers only part of cases so it is not intended to be used outside
   private def invokeEmptyArgsMethod(

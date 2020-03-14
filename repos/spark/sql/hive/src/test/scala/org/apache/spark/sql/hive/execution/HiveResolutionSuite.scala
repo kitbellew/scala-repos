@@ -85,8 +85,8 @@ class HiveResolutionSuite extends HiveComparisonTest {
       .toDF()
       .registerTempTable("caseSensitivityTest")
 
-    val query =
-      sql("SELECT a, b, A, B, n.a, n.b, n.A, n.B FROM caseSensitivityTest")
+    val query = sql(
+      "SELECT a, b, A, B, n.a, n.b, n.A, n.B FROM caseSensitivityTest")
     assert(
       query.schema.fields
         .map(_.name) === Seq("a", "b", "A", "B", "a", "b", "A", "B"),

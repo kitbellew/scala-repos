@@ -11,8 +11,8 @@ import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
 class Hotspot extends Jvm {
-  private[this] val epoch =
-    Time.fromMilliseconds(ManagementFactory.getRuntimeMXBean().getStartTime())
+  private[this] val epoch = Time.fromMilliseconds(
+    ManagementFactory.getRuntimeMXBean().getStartTime())
 
   private[this] type Counter = {
     def getName(): String
@@ -24,8 +24,8 @@ class Hotspot extends Jvm {
     def getInternalCounters(pat: String): java.util.List[Counter]
   }
 
-  private[this] val DiagnosticBean =
-    ObjectName.getInstance("com.sun.management:type=HotSpotDiagnostic")
+  private[this] val DiagnosticBean = ObjectName.getInstance(
+    "com.sun.management:type=HotSpotDiagnostic")
 
   private[this] val jvm: VMManagement = {
     val fld =
@@ -99,31 +99,36 @@ class Hotspot extends Jvm {
 
   def snap: Snapshot = {
     val cs = counters("")
-    val heap = for {
-      invocations <- cs.get("sun.gc.collector.0.invocations").map(long)
-      capacity <- cs.get("sun.gc.generation.0.space.0.capacity").map(long)
-      used <- cs.get("sun.gc.generation.0.space.0.used").map(long)
-    } yield {
-      val allocated = invocations * capacity + used
-      // This is a somewhat poor estimate, since for example the
-      // capacity can change over time.
+    val heap =
+      for {
+        invocations <- cs.get("sun.gc.collector.0.invocations").map(long)
+        capacity <- cs.get("sun.gc.generation.0.space.0.capacity").map(long)
+        used <- cs.get("sun.gc.generation.0.space.0.used").map(long)
+      } yield {
+        val allocated = invocations * capacity + used
+        // This is a somewhat poor estimate, since for example the
+        // capacity can change over time.
 
-      val tenuringThreshold =
-        cs.get("sun.gc.policy.tenuringThreshold").map(long)
+        val tenuringThreshold = cs
+          .get("sun.gc.policy.tenuringThreshold")
+          .map(long)
 
-      val ageHisto = for {
-        thresh <- tenuringThreshold.toSeq
-        i <- 1L to thresh
-        bucket <- cs.get("sun.gc.generation.0.agetable.bytes.%02d".format(i))
-      } yield long(bucket)
+        val ageHisto =
+          for {
+            thresh <- tenuringThreshold.toSeq
+            i <- 1L to thresh
+            bucket <- cs.get(
+              "sun.gc.generation.0.agetable.bytes.%02d".format(i))
+          } yield long(bucket)
 
-      Heap(allocated, tenuringThreshold getOrElse -1, ageHisto)
-    }
+        Heap(allocated, tenuringThreshold getOrElse -1, ageHisto)
+      }
 
-    val timestamp = for {
-      freq <- cs.get("sun.os.hrt.frequency").map(long)
-      ticks <- cs.get("sun.os.hrt.ticks").map(long)
-    } yield epoch + ticksToDuration(ticks, freq)
+    val timestamp =
+      for {
+        freq <- cs.get("sun.os.hrt.frequency").map(long)
+        ticks <- cs.get("sun.os.hrt.ticks").map(long)
+      } yield epoch + ticksToDuration(ticks, freq)
 
     // TODO: include causes for GCs?
     Snapshot(
@@ -184,18 +189,20 @@ class Hotspot extends Jvm {
       count = safepointsReached)
   }
 
-  val edenPool: Pool = new Pool {
-    def state(): PoolState = {
-      val cs = counters("")
-      val state = for {
-        invocations <- cs.get("sun.gc.collector.0.invocations").map(long)
-        capacity <- cs.get("sun.gc.generation.0.space.0.capacity").map(long)
-        used <- cs.get("sun.gc.generation.0.space.0.used").map(long)
-      } yield PoolState(invocations, capacity.bytes, used.bytes)
+  val edenPool: Pool =
+    new Pool {
+      def state(): PoolState = {
+        val cs = counters("")
+        val state =
+          for {
+            invocations <- cs.get("sun.gc.collector.0.invocations").map(long)
+            capacity <- cs.get("sun.gc.generation.0.space.0.capacity").map(long)
+            used <- cs.get("sun.gc.generation.0.space.0.used").map(long)
+          } yield PoolState(invocations, capacity.bytes, used.bytes)
 
-      state getOrElse NilJvm.edenPool.state()
+        state getOrElse NilJvm.edenPool.state()
+      }
     }
-  }
 
   def metaspaceUsage: Option[Jvm.MetaspaceUsage] = {
     val cs = counters("")

@@ -24,8 +24,10 @@ import scala.tools.cmd._
   */
 trait DemoSpec extends Spec with Meta.StdOpts with Interpolation {
   lazy val referenceSpec = DemoSpec
-  lazy val programInfo =
-    Spec.Info("demo", "Usage: demo [<options>]", "scala.tools.cmd.Demo")
+  lazy val programInfo = Spec.Info(
+    "demo",
+    "Usage: demo [<options>]",
+    "scala.tools.cmd.Demo")
 
   help("""Usage: demo [<options>]""")
   heading("Unary options:")

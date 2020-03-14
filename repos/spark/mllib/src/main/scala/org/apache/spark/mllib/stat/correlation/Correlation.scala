@@ -97,8 +97,9 @@ private[stat] object Correlations {
 private[mllib] object CorrelationNames {
 
   // Note: after new types of correlations are implemented, please update this map.
-  val nameToObjectMap =
-    Map(("pearson", PearsonCorrelation), ("spearman", SpearmanCorrelation))
+  val nameToObjectMap = Map(
+    ("pearson", PearsonCorrelation),
+    ("spearman", SpearmanCorrelation))
   val defaultCorrName: String = "pearson"
 
 }

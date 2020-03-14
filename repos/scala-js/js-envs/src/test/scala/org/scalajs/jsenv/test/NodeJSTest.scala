@@ -16,17 +16,19 @@ class NodeJSTest extends TimeoutComTests {
     val argcs = 1 to 3
     val strings = counts.map("%" * _)
 
-    val strlists = for {
-      count <- argcs
-      string <- strings
-    } yield List.fill(count)(string)
+    val strlists =
+      for {
+        count <- argcs
+        string <- strings
+      } yield List.fill(count)(string)
 
-    val codes = for {
-      strlist <- strlists
-    } yield {
-      val args = strlist.map(s => s""""$s"""").mkString(", ")
-      s"console.log($args);\n"
-    }
+    val codes =
+      for {
+        strlist <- strlists
+      } yield {
+        val args = strlist.map(s => s""""$s"""").mkString(", ")
+        s"console.log($args);\n"
+      }
 
     val result = strlists.map(_.mkString(" ") + "\n").mkString("")
 

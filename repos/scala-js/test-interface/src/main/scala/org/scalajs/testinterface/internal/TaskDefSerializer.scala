@@ -18,10 +18,11 @@ object TaskDefSerializer {
   }
 
   def deserialize(obj: js.Dynamic): TaskDef = {
-    val selectors = obj.selectors
-      .asInstanceOf[js.Array[js.Dynamic]]
-      .map(SelectorSerializer.deserialize _)
-      .toArray
+    val selectors =
+      obj.selectors
+        .asInstanceOf[js.Array[js.Dynamic]]
+        .map(SelectorSerializer.deserialize _)
+        .toArray
 
     new TaskDef(
       obj.fullyQualifiedName.asInstanceOf[String],

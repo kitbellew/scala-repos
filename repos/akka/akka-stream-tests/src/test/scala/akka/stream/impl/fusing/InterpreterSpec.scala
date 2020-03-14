@@ -633,8 +633,7 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     override def onUpstreamFinish(ctx: Context[Any]): TerminationDirective =
       ctx.fail(akka.stream.testkit.Utils.TE("Cannot happen"))
 
-    override def postStop(): Unit =
-      onPostStop()
+    override def postStop(): Unit = onPostStop()
   }
 
 }

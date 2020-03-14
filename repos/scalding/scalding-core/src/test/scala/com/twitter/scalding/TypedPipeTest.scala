@@ -429,14 +429,15 @@ class TypedPipeWithOnCompleteTest extends WordSpec with Matchers {
       }
       .sink[String](TypedText.tsv[String]("output")) { outbuf =>
         "have the correct output" in {
-          val correct = inputText
-            .split("\\s+")
-            .map(_.toUpperCase)
-            .groupBy(x => x)
-            .filter(_._2.size > 1)
-            .keys
-            .toList
-            .sorted
+          val correct =
+            inputText
+              .split("\\s+")
+              .map(_.toUpperCase)
+              .groupBy(x => x)
+              .filter(_._2.size > 1)
+              .keys
+              .toList
+              .sorted
           val sortedL = outbuf.toList.sorted
           assert(sortedL == correct)
         }
@@ -677,12 +678,14 @@ class TypedPipeCrossTest extends WordSpec with Matchers {
 }
 
 class TJoinTakeJob(args: Args) extends Job(args) {
-  val items0 = TextLine("in0").flatMap { s =>
-    (1 to 10).map((_, s))
-  }.group
-  val items1 = TextLine("in1").map { s =>
-    (s.toInt, ())
-  }.group
+  val items0 =
+    TextLine("in0").flatMap { s =>
+      (1 to 10).map((_, s))
+    }.group
+  val items1 =
+    TextLine("in1").map { s =>
+      (s.toInt, ())
+    }.group
 
   items0
     .join(items1.take(1))
@@ -732,9 +735,10 @@ class TypedGroupAllTest extends WordSpec with Matchers {
         .source(TextLine("in"), input)
         .typedSink(TypedText.tsv[String]("out")) { outbuf =>
           val sortedL = outbuf.toList
-          val correct = input.map {
-            _._2
-          }.sorted
+          val correct =
+            input.map {
+              _._2
+            }.sorted
           (idx + ": create sorted output") in {
             sortedL shouldBe correct
           }
@@ -825,9 +829,10 @@ class TypedJoinWCTest extends WordSpec with Matchers {
           (k, (m1.getOrElse(k, z1), m2.getOrElse(k, z2)))
         }.toMap
       }
-      val correct = outerjoin(count(in0), 0, count(in1), 0).toList.map { tup =>
-        (tup._1, tup._2._1, tup._2._2)
-      }.sorted
+      val correct =
+        outerjoin(count(in0), 0, count(in1), 0).toList.map { tup =>
+          (tup._1, tup._2._1, tup._2._2)
+        }.sorted
 
       JobTest(new TJoinWordCount(_))
         .source(TextLine("in0"), in0)
@@ -1105,12 +1110,13 @@ class TypedLookupJobTest extends WordSpec with Matchers {
       .typedSink(TypedText.tsv[(Int, String)]("output")) { outBuf =>
         "correctly TypedPipe.hashLookup" in {
           val data = mk.groupBy(_._1)
-          val correct = (-1 to 100)
-            .flatMap { k =>
-              data.get(k).getOrElse(List((k, "")))
-            }
-            .toList
-            .sorted
+          val correct =
+            (-1 to 100)
+              .flatMap { k =>
+                data.get(k).getOrElse(List((k, "")))
+              }
+              .toList
+              .sorted
           outBuf should have size (correct.size)
           outBuf.toList.sorted shouldBe correct
         }
@@ -1151,12 +1157,13 @@ class TypedLookupReduceJobTest extends WordSpec with Matchers {
               val (k, v) = kvs.maxBy(_._2)
               (k, v)
             }
-          val correct = (-1 to 100)
-            .map { k =>
-              data.get(k).getOrElse((k, ""))
-            }
-            .toList
-            .sorted
+          val correct =
+            (-1 to 100)
+              .map { k =>
+                data.get(k).getOrElse((k, ""))
+              }
+              .toList
+              .sorted
           outBuf should have size (correct.size)
           outBuf.toList.sorted shouldBe correct
         }
@@ -1290,22 +1297,23 @@ class TypedMultiJoinJobTest extends WordSpec with Matchers {
           val d1 = groupMax(mk1)
           val d2 = groupMax(mk2)
 
-          val correct = (d0.keySet ++ d1.keySet ++ d2.keySet).toList
-            .flatMap { k =>
-              (for {
-                v0s <- d0.get(k)
-                v1 <- d1.get(k)
-                v2 <- d2.get(k)
-              } yield (v0s, (k, v1, v2)))
-            }
-            .flatMap {
-              case (v0s, (k, v1, v2)) =>
-                v0s.map {
-                  (k, _, v1, v2)
-                }
-            }
-            .toList
-            .sorted
+          val correct =
+            (d0.keySet ++ d1.keySet ++ d2.keySet).toList
+              .flatMap { k =>
+                (for {
+                  v0s <- d0.get(k)
+                  v1 <- d1.get(k)
+                  v2 <- d2.get(k)
+                } yield (v0s, (k, v1, v2)))
+              }
+              .flatMap {
+                case (v0s, (k, v1, v2)) =>
+                  v0s.map {
+                    (k, _, v1, v2)
+                  }
+              }
+              .toList
+              .sorted
 
           outBuf should have size (correct.size)
           outBuf.toList.sorted shouldBe correct
@@ -1318,11 +1326,12 @@ class TypedMultiJoinJobTest extends WordSpec with Matchers {
 
 class TypedMultiSelfJoinJob(args: Args) extends Job(args) {
   val zero = TypedPipe.from(TypedText.tsv[(Int, Int)]("input0"))
-  val one = TypedPipe
-    .from(TypedText.tsv[(Int, Int)]("input1"))
-    // forceToReducers makes sure the first and the second part of
-    .group
-    .forceToReducers
+  val one =
+    TypedPipe
+      .from(TypedText.tsv[(Int, Int)]("input1"))
+      // forceToReducers makes sure the first and the second part of
+      .group
+      .forceToReducers
 
   val cogroup = zero.group
     .join(one.max)
@@ -1373,22 +1382,23 @@ class TypedMultiSelfJoinJobTest extends WordSpec with Matchers {
           val d1 = group(mk1)(_ max _)
           val d2 = group(mk1)(_ min _)
 
-          val correct = (d0.keySet ++ d1.keySet ++ d2.keySet).toList
-            .flatMap { k =>
-              (for {
-                v0s <- d0.get(k)
-                v1 <- d1.get(k)
-                v2 <- d2.get(k)
-              } yield (v0s, (k, v1, v2)))
-            }
-            .flatMap {
-              case (v0s, (k, v1, v2)) =>
-                v0s.map {
-                  (k, _, v1, v2)
-                }
-            }
-            .toList
-            .sorted
+          val correct =
+            (d0.keySet ++ d1.keySet ++ d2.keySet).toList
+              .flatMap { k =>
+                (for {
+                  v0s <- d0.get(k)
+                  v1 <- d1.get(k)
+                  v2 <- d2.get(k)
+                } yield (v0s, (k, v1, v2)))
+              }
+              .flatMap {
+                case (v0s, (k, v1, v2)) =>
+                  v0s.map {
+                    (k, _, v1, v2)
+                  }
+              }
+              .toList
+              .sorted
 
           outBuf should have size (correct.size)
           outBuf.toList.sorted shouldBe correct
@@ -1681,8 +1691,10 @@ class TypedSketchJoinJobTest extends WordSpec with Matchers {
 
   "A TypedSketchJoinJob" should {
     "get the same result as an inner join" in {
-      val (sk, inner) =
-        runJobWithArguments(new TypedSketchJoinJob(_), 10, x => 1)
+      val (sk, inner) = runJobWithArguments(
+        new TypedSketchJoinJob(_),
+        10,
+        x => 1)
       sk shouldBe inner
     }
 
@@ -1711,8 +1723,10 @@ class TypedSketchJoinJobTest extends WordSpec with Matchers {
     }
 
     "still work with only one reducer" in {
-      val (sk, inner) =
-        runJobWithArguments(new TypedSketchJoinJob(_), 1, x => 1)
+      val (sk, inner) = runJobWithArguments(
+        new TypedSketchJoinJob(_),
+        1,
+        x => 1)
       sk shouldBe inner
     }
 
@@ -1736,8 +1750,10 @@ class TypedSketchLeftJoinJobTest extends WordSpec with Matchers {
 
   "A TypedSketchLeftJoinJob" should {
     "get the same result as a left join" in {
-      val (sk, left) =
-        runJobWithArguments(new TypedSketchLeftJoinJob(_), 10, x => 1)
+      val (sk, left) = runJobWithArguments(
+        new TypedSketchLeftJoinJob(_),
+        10,
+        x => 1)
       sk shouldBe left
     }
 
@@ -1766,8 +1782,10 @@ class TypedSketchLeftJoinJobTest extends WordSpec with Matchers {
     }
 
     "still work with only one reducer" in {
-      val (sk, inner) =
-        runJobWithArguments(new TypedSketchJoinJob(_), 1, x => 1)
+      val (sk, inner) = runJobWithArguments(
+        new TypedSketchJoinJob(_),
+        1,
+        x => 1)
       sk shouldBe inner
     }
 

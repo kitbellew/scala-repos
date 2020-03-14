@@ -76,8 +76,9 @@ trait PrecogLibModule[M[+_]]
       class EnrichmentMapper(ctx: MorphContext) extends CMapperM[M] {
         import Extractor.Error
 
-        private type Result[+A] =
-          Validation[NonEmptyList[HttpClientError \/ Error], A]
+        private type Result[+A] = Validation[
+          NonEmptyList[HttpClientError \/ Error],
+          A]
         private val httpError: HttpClientError => HttpClientError \/ Error =
           -\/(_)
         private val jsonError: Error => HttpClientError \/ Error = \/-(_)
@@ -146,10 +147,11 @@ trait PrecogLibModule[M[+_]]
             chunks0 map {
               case (row, members) =>
                 val url = urls(row)
-                val opts = options.toJValue(row) match {
-                  case JObject(elems) => elems ++ baseOpts
-                  case _              => baseOpts
-                }
+                val opts =
+                  options.toJValue(row) match {
+                    case JObject(elems) => elems ++ baseOpts
+                    case _              => baseOpts
+                  }
                 ((url, opts), members)
             }
 
@@ -182,8 +184,9 @@ trait PrecogLibModule[M[+_]]
                       } else
                         Stream.empty
 
-                    val sparseData =
-                      sparseStream(0, data map (RValue.fromJValue(_)))
+                    val sparseData = sparseStream(
+                      0,
+                      data map (RValue.fromJValue(_)))
                     Success(Slice.fromRValues(sparseData))
                   }
                 }
@@ -194,15 +197,16 @@ trait PrecogLibModule[M[+_]]
                   body = Some(Request.Body("application/json", requestBody)))
 
                 client.execute(request).run map { responseE =>
-                  val validation = for {
-                    response <- httpError <-: responseE.validation
-                    body <- httpError <-: response.ok.validation
-                    json <- jsonError <-: (Error.thrown(_)) <-: JParser
-                      .parseFromString(body)
-                    data <- jsonError <-: (json \ "data")
-                      .validated[List[JValue]]
-                    result <- jsonError <-: populate(data)
-                  } yield result
+                  val validation =
+                    for {
+                      response <- httpError <-: responseE.validation
+                      body <- httpError <-: response.ok.validation
+                      json <- jsonError <-: (Error.thrown(_)) <-: JParser
+                        .parseFromString(body)
+                      data <- jsonError <-: (json \ "data")
+                        .validated[List[JValue]]
+                      result <- jsonError <-: populate(data)
+                    } yield result
                   validation leftMap (NonEmptyList(_))
                 }
               }

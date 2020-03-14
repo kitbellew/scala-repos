@@ -67,8 +67,8 @@ class HistoryServerSuite
     with ResetSystemProperties {
 
   private val logDir = new File("src/test/resources/spark-events")
-  private val expRoot = new File(
-    "src/test/resources/HistoryServerExpectations/")
+  private val expRoot =
+    new File("src/test/resources/HistoryServerExpectations/")
 
   private var provider: FsHistoryProvider = null
   private var server: HistoryServer = null
@@ -163,17 +163,18 @@ class HistoryServerSuite
         // the REST API returns the last modified time of EVENT LOG file for this field.
         // It is not applicable to hard-code this dynamic field in a static expected file,
         // so here we skip checking the lastUpdated field's value (setting it as "").
-        val json = if (jsonOrg.indexOf("lastUpdated") >= 0) {
-          val subStrings = jsonOrg.split(",")
-          for (i <- subStrings.indices) {
-            if (subStrings(i).indexOf("lastUpdated") >= 0) {
-              subStrings(i) = "\"lastUpdated\":\"\""
+        val json =
+          if (jsonOrg.indexOf("lastUpdated") >= 0) {
+            val subStrings = jsonOrg.split(",")
+            for (i <- subStrings.indices) {
+              if (subStrings(i).indexOf("lastUpdated") >= 0) {
+                subStrings(i) = "\"lastUpdated\":\"\""
+              }
             }
+            subStrings.mkString(",")
+          } else {
+            jsonOrg
           }
-          subStrings.mkString(",")
-        } else {
-          jsonOrg
-        }
 
         val exp = IOUtils.toString(
           new FileInputStream(
@@ -202,15 +203,16 @@ class HistoryServerSuite
   // Test that the files are downloaded correctly, and validate them.
   def doDownloadTest(appId: String, attemptId: Option[Int]): Unit = {
 
-    val url = attemptId match {
-      case Some(id) =>
-        new URL(s"${generateURL(s"applications/$appId")}/$id/logs")
-      case None =>
-        new URL(s"${generateURL(s"applications/$appId")}/logs")
-    }
+    val url =
+      attemptId match {
+        case Some(id) =>
+          new URL(s"${generateURL(s"applications/$appId")}/$id/logs")
+        case None =>
+          new URL(s"${generateURL(s"applications/$appId")}/logs")
+      }
 
-    val (code, inputStream, error) =
-      HistoryServerSuite.connectAndGetInputStream(url)
+    val (code, inputStream, error) = HistoryServerSuite
+      .connectAndGetInputStream(url)
     code should be(HttpServletResponse.SC_OK)
     inputStream should not be None
     error should be(None)
@@ -247,19 +249,19 @@ class HistoryServerSuite
     badAppId._1 should be(HttpServletResponse.SC_NOT_FOUND)
     badAppId._3 should be(Some("unknown app: foobar"))
 
-    val badStageId =
-      getContentAndCode("applications/local-1422981780767/stages/12345")
+    val badStageId = getContentAndCode(
+      "applications/local-1422981780767/stages/12345")
     badStageId._1 should be(HttpServletResponse.SC_NOT_FOUND)
     badStageId._3 should be(Some("unknown stage: 12345"))
 
-    val badStageAttemptId =
-      getContentAndCode("applications/local-1422981780767/stages/1/1")
+    val badStageAttemptId = getContentAndCode(
+      "applications/local-1422981780767/stages/1/1")
     badStageAttemptId._1 should be(HttpServletResponse.SC_NOT_FOUND)
     badStageAttemptId._3 should be(
       Some("unknown attempt for stage 1.  Found attempts: [0]"))
 
-    val badStageId2 =
-      getContentAndCode("applications/local-1422981780767/stages/flimflam")
+    val badStageId2 = getContentAndCode(
+      "applications/local-1422981780767/stages/flimflam")
     badStageId2._1 should be(HttpServletResponse.SC_NOT_FOUND)
     // will take some mucking w/ jersey to get a better error msg in this case
 
@@ -300,8 +302,8 @@ class HistoryServerSuite
 
     // this test dir is explicitly deleted on successful runs; retained for diagnostics when
     // not
-    val logDir =
-      Utils.createDirectory(System.getProperty("java.io.tmpdir", "logs"))
+    val logDir = Utils.createDirectory(
+      System.getProperty("java.io.tmpdir", "logs"))
 
     // a new conf is used with the background thread set and running at its fastest
     // allowed refresh rate (1Hz)
@@ -374,12 +376,13 @@ class HistoryServerSuite
     val d = sc.parallelize(1 to 10)
     d.count()
     val stdInterval = interval(100 milliseconds)
-    val appId = eventually(timeout(20 seconds), stdInterval) {
-      val json = getContentAndCode("applications", port)._2.get
-      val apps = parse(json).asInstanceOf[JArray].arr
-      apps should have size 1
-      (apps.head \ "id").extract[String]
-    }
+    val appId =
+      eventually(timeout(20 seconds), stdInterval) {
+        val json = getContentAndCode("applications", port)._2.get
+        val apps = parse(json).asInstanceOf[JArray].arr
+        apps should have size 1
+        (apps.head \ "id").extract[String]
+      }
 
     val appIdRoot = buildURL(appId, "")
     val rootAppPage = HistoryServerSuite.getUrl(appIdRoot)
@@ -422,8 +425,8 @@ class HistoryServerSuite
             .filter(app => {
               (app \ "attempts") match {
                 case attempts: JArray =>
-                  val state =
-                    (attempts.children.head \ "completed").asInstanceOf[JBool]
+                  val state = (attempts.children.head \ "completed")
+                    .asInstanceOf[JBool]
                   state.value == completed
                 case _ => false
               }
@@ -523,9 +526,10 @@ class HistoryServerSuite
 
   def generateExpectation(name: String, path: String): Unit = {
     val json = getUrl(path)
-    val file = new File(
-      expRoot,
-      HistoryServerSuite.sanitizePath(name) + "_expectation.json")
+    val file =
+      new File(
+        expRoot,
+        HistoryServerSuite.sanitizePath(name) + "_expectation.json")
     val out = new FileWriter(file)
     out.write(json)
     out.close()

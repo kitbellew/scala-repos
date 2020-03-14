@@ -25,8 +25,10 @@ object TaskTest extends SpecLite {
       cur: (=> Int) => Task[Int]): Task[Int] =
     (0 to N).map(cur(_)).foldLeft(seed(0))(Task.taskInstance.lift2(_ + _))
 
-  val options =
-    List[(=> Int) => Task[Int]](n => Task.now(n), Task.delay _, Task.apply _)
+  val options = List[(=> Int) => Task[Int]](
+    n => Task.now(n),
+    Task.delay _,
+    Task.apply _)
   val combinations = (options tuple options)
 
   "left associated binds" ! check {
@@ -290,8 +292,9 @@ object TaskTest extends SpecLite {
         t3v.set(3)
       }
 
-      val t = fork(
-        Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
+      val t =
+        fork(Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(
+          es3)
 
       t.unsafePerformSyncAttempt mustMatch {
         case -\/(e) =>
@@ -330,8 +333,9 @@ object TaskTest extends SpecLite {
         t3v.set(3)
       }
 
-      val t = fork(
-        Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
+      val t =
+        fork(Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(
+          es3)
 
       t.unsafePerformSyncAttempt mustMatch {
         case -\/(e) =>
@@ -351,8 +355,7 @@ object TaskTest extends SpecLite {
       import ju.concurrent.CyclicBarrier
 
       //Ensure at least 6 different threads are available.
-      implicit val es6 =
-        Executors.newFixedThreadPool(6)
+      implicit val es6 = Executors.newFixedThreadPool(6)
       val barrier = new CyclicBarrier(6);
 
       val seenThreadNames = scala.collection.JavaConversions
@@ -367,8 +370,9 @@ object TaskTest extends SpecLite {
             now(('a' + i).toChar)
           }
 
-      val r = Nondeterminism[Task].nmap6(t(0), t(1), t(2), t(3), t(4), t(5))(
-        List(_, _, _, _, _, _))
+      val r =
+        Nondeterminism[Task].nmap6(t(0), t(1), t(2), t(3), t(4), t(5))(
+          List(_, _, _, _, _, _))
       val chars = List('a', 'b', 'c', 'd', 'e', 'f')
       r.unsafePerformSync must_== chars
       //Ensure we saw 6 distinct threads.
@@ -379,10 +383,11 @@ object TaskTest extends SpecLite {
 
       val es = Executors.newFixedThreadPool(1)
 
-      val t = fork {
-        Thread.sleep(3000);
-        now(1)
-      }(es)
+      val t =
+        fork {
+          Thread.sleep(3000);
+          now(1)
+        }(es)
 
       t.unsafePerformSyncAttemptFor(100) mustMatch {
         case -\/(ex: TimeoutException) => true

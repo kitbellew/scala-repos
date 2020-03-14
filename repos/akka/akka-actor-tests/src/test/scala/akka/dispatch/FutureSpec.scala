@@ -138,23 +138,26 @@ class FutureSpec
     }
     "completed with an exception" must {
       val message = "Expected Exception"
-      val future = Promise[String]()
-        .complete(Failure(new RuntimeException(message)))
-        .future
+      val future =
+        Promise[String]()
+          .complete(Failure(new RuntimeException(message)))
+          .future
       behave like futureWithException[RuntimeException](_(future, message))
     }
     "completed with an InterruptedException" must {
       val message = "Boxed InterruptedException"
-      val future = Promise[String]()
-        .complete(Failure(new InterruptedException(message)))
-        .future
+      val future =
+        Promise[String]()
+          .complete(Failure(new InterruptedException(message)))
+          .future
       behave like futureWithException[RuntimeException](_(future, message))
     }
     "completed with a NonLocalReturnControl" must {
       val result = "test value"
-      val future = Promise[String]()
-        .complete(Failure(new NonLocalReturnControl[String]("test", result)))
-        .future
+      val future =
+        Promise[String]()
+          .complete(Failure(new NonLocalReturnControl[String]("test", result)))
+          .future
       behave like futureWithResult(_(future, result))
     }
 
@@ -344,17 +347,19 @@ class FutureSpec
 
           val future0 = actor ? "Hello"
 
-          val future1 = for {
-            a ← future0.mapTo[Int] // returns 5
-            b ← (actor ? a).mapTo[String] // returns "10"
-            c ← (actor ? 7).mapTo[String] // returns "14"
-          } yield b + "-" + c
+          val future1 =
+            for {
+              a ← future0.mapTo[Int] // returns 5
+              b ← (actor ? a).mapTo[String] // returns "10"
+              c ← (actor ? 7).mapTo[String] // returns "14"
+            } yield b + "-" + c
 
-          val future2 = for {
-            a ← future0.mapTo[Int]
-            b ← (actor ? a).mapTo[Int]
-            c ← (actor ? 7).mapTo[String]
-          } yield b + "-" + c
+          val future2 =
+            for {
+              a ← future0.mapTo[Int]
+              b ← (actor ? a).mapTo[Int]
+              c ← (actor ? 7).mapTo[String]
+            } yield b + "-" + c
 
           Await.result(future1, timeout.duration) should ===("10-14")
           assert(checkType(future1, classTag[String]))
@@ -374,17 +379,19 @@ class FutureSpec
             }
           }))
 
-          val future1 = for {
-            Res(a: Int) ← actor ? Req("Hello")
-            Res(b: String) ← actor ? Req(a)
-            Res(c: String) ← actor ? Req(7)
-          } yield b + "-" + c
+          val future1 =
+            for {
+              Res(a: Int) ← actor ? Req("Hello")
+              Res(b: String) ← actor ? Req(a)
+              Res(c: String) ← actor ? Req(7)
+            } yield b + "-" + c
 
-          val future2 = for {
-            Res(a: Int) ← actor ? Req("Hello")
-            Res(b: Int) ← actor ? Req(a)
-            Res(c: Int) ← actor ? Req(7)
-          } yield b + "-" + c
+          val future2 =
+            for {
+              Res(a: Int) ← actor ? Req("Hello")
+              Res(b: Int) ← actor ? Req(a)
+              Res(c: Int) ← actor ? Req(7)
+            } yield b + "-" + c
 
           Await.result(future1, timeout.duration) should ===("10-14")
           intercept[NoSuchElementException] {
@@ -595,10 +602,11 @@ class FutureSpec
         import scala.collection.mutable.ArrayBuffer
         def test(testNumber: Int) {
           val fs = (0 to 1000) map (i ⇒ Future(i))
-          val f = Future.fold(fs)(ArrayBuffer.empty[AnyRef]) {
-            case (l, i) if i % 2 == 0 ⇒ l += i.asInstanceOf[AnyRef]
-            case (l, _) ⇒ l
-          }
+          val f =
+            Future.fold(fs)(ArrayBuffer.empty[AnyRef]) {
+              case (l, i) if i % 2 == 0 ⇒ l += i.asInstanceOf[AnyRef]
+              case (l, _) ⇒ l
+            }
           val result = Await.result(f.mapTo[ArrayBuffer[Int]], 10000 millis).sum
 
           assert(result === 250500)
@@ -1056,10 +1064,11 @@ class FutureSpec
   implicit def arbFutureAction: Arbitrary[FutureAction] =
     Arbitrary {
 
-      val genIntAction = for {
-        n ← arbitrary[Int]
-        a ← Gen.oneOf(IntAdd(n), IntSub(n), IntMul(n), IntDiv(n))
-      } yield a
+      val genIntAction =
+        for {
+          n ← arbitrary[Int]
+          a ← Gen.oneOf(IntAdd(n), IntSub(n), IntMul(n), IntDiv(n))
+        } yield a
 
       val genMapAction = genIntAction map (MapAction(_))
 

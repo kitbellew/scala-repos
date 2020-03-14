@@ -52,22 +52,23 @@ object BuildCapabilitiesTable extends App {
     JdbcCapabilities.all -> "slick.jdbc.JdbcCapabilities$@"
   )
 
-  val capabilities = for {
-    (caps, linkBase) <- profileCapabilities
-    cap <- caps.toVector.sortBy(c =>
-      if (c.toString.endsWith(".other"))
-        ""
-      else
-        c.toString)
-  } yield (
-    cap,
-    linkBase + cap.toString
-      .replaceFirst(".*\\.", "") + ":slick.basic.Capability")
+  val capabilities =
+    for {
+      (caps, linkBase) <- profileCapabilities
+      cap <- caps.toVector.sortBy(c =>
+        if (c.toString.endsWith(".other"))
+          ""
+        else
+          c.toString)
+    } yield (
+      cap,
+      linkBase + cap.toString
+        .replaceFirst(".*\\.", "") + ":slick.basic.Capability")
 
   val out = new FileOutputStream(args(0))
   try {
-    val wr = new PrintWriter(
-      new BufferedWriter(new OutputStreamWriter(out, "UTF-8")))
+    val wr =
+      new PrintWriter(new BufferedWriter(new OutputStreamWriter(out, "UTF-8")))
     wr.println(
       "Capability," + profileNames.map(n => s":api:`$n`").mkString(","))
     for ((cap, link) <- capabilities) {

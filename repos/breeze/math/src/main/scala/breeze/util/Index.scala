@@ -64,8 +64,7 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
   }
 
   /** Override Iterable's linear-scan indexOf to use our apply method. */
-  def indexOf(t: T): Int =
-    apply(t)
+  def indexOf(t: T): Int = apply(t)
 
   /** Returns the indexed items along with their indicies */
   def pairs: Iterator[(T, Int)]
@@ -85,8 +84,7 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
     }
   }
 
-  protected lazy val defaultHashCode =
-    (17 /: this)(_ * 41 + _.hashCode)
+  protected lazy val defaultHashCode = (17 /: this)(_ * 41 + _.hashCode)
 
   override def hashCode = defaultHashCode
 
@@ -161,11 +159,9 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
   /** Map from object back to int index */
   private val indices = new util.HashMap[T, Int]().asScala
 
-  override def size =
-    indices.size
+  override def size = indices.size
 
-  override def apply(t: T): Int =
-    indices.getOrElse(t, -1)
+  override def apply(t: T): Int = indices.getOrElse(t, -1)
 
   override def unapply(pos: Int): Option[T] =
     if (pos >= 0 && pos < objects.length)
@@ -173,17 +169,14 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
     else
       None
 
-  override def contains(t: T) =
-    indices contains t
+  override def contains(t: T) = indices contains t
 
-  override def indexOpt(t: T): Option[Int] =
-    indices.get(t)
+  override def indexOpt(t: T): Option[Int] = indices.get(t)
 
   override def get(pos: Int) =
     objects(pos); // throws IndexOutOfBoundsException as required
 
-  override def iterator =
-    objects.iterator
+  override def iterator = objects.iterator
 
   /** Returns the position of T, adding it to the index if it's not there. */
   override def index(t: T) = {
@@ -388,11 +381,12 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   * @author dlwh
   */
 final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
-  private val offsets: Array[Int] = indices
-    .unfold(0) { (n, i) =>
-      n + i.size
-    }
-    .toArray
+  private val offsets: Array[Int] =
+    indices
+      .unfold(0) { (n, i) =>
+        n + i.size
+      }
+      .toArray
 
   /** If you know which component, and which index in that component,
     * you can quickly get its mapped value with this function.

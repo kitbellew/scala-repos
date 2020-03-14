@@ -29,11 +29,12 @@ class OWLQNTest extends OptimizeTestBase {
     val lbfgs = new OWLQN[Int, DenseVector[Double]](100, 4)
 
     def optimizeThis(init: DenseVector[Double]) = {
-      val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
-          (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
+      val f =
+        new DiffFunction[DenseVector[Double]] {
+          def calculate(x: DenseVector[Double]) = {
+            (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
+          }
         }
-      }
 
       val result = lbfgs.minimize(f, init)
       result
@@ -47,11 +48,12 @@ class OWLQNTest extends OptimizeTestBase {
     val lbfgs = new OWLQN[Int, DenseVector[Double]](100, 4, 1.0)
 
     def optimizeThis(init: DenseVector[Double]) = {
-      val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
-          ((math.pow(norm(x - 3.0, 2), 2)), (x * 2.0) - 6.0)
+      val f =
+        new DiffFunction[DenseVector[Double]] {
+          def calculate(x: DenseVector[Double]) = {
+            ((math.pow(norm(x - 3.0, 2), 2)), (x * 2.0) - 6.0)
+          }
         }
-      }
 
       val result = lbfgs.minimize(f, init)
       val closeish = norm(result - 2.5, 2) < 1e-4
@@ -70,11 +72,12 @@ class OWLQNTest extends OptimizeTestBase {
     val lbfgs = new OWLQN[Int, SparseVector[Double]](100, 4, 1.0)
 
     def optimizeThis(init: SparseVector[Double]) = {
-      val f = new DiffFunction[SparseVector[Double]] {
-        def calculate(x: SparseVector[Double]) = {
-          ((math.pow(norm(x - 3.0, 2), 2)), (x * 2.0) - 6.0)
+      val f =
+        new DiffFunction[SparseVector[Double]] {
+          def calculate(x: SparseVector[Double]) = {
+            ((math.pow(norm(x - 3.0, 2), 2)), (x * 2.0) - 6.0)
+          }
         }
-      }
 
       val result = lbfgs.minimize(f, init)
       val closeish = norm(result - 2.5, 2) < 1e-4

@@ -24,15 +24,16 @@ object ParserUtilsBenchmark {
   private val size = 100000
   private val rnd = new Random(69230L) // just to give us consistent values
 
-  private val numbers: Seq[ChannelBuffer] = Seq.fill(size) {
-    ChannelBuffers.copiedBuffer(rnd.nextInt().toString, Charsets.Utf8)
-  }
-  private val strings: Seq[ChannelBuffer] = Seq.fill(size) {
-    ChannelBuffers.copiedBuffer(rnd.nextString(5), Charsets.Utf8)
-  }
+  private val numbers: Seq[ChannelBuffer] =
+    Seq.fill(size) {
+      ChannelBuffers.copiedBuffer(rnd.nextInt().toString, Charsets.Utf8)
+    }
+  private val strings: Seq[ChannelBuffer] =
+    Seq.fill(size) {
+      ChannelBuffers.copiedBuffer(rnd.nextString(5), Charsets.Utf8)
+    }
 
-  private val _inputs =
-    (numbers ++ strings).toIndexedSeq
+  private val _inputs = (numbers ++ strings).toIndexedSeq
 
   @State(Scope.Thread)
   class Position {

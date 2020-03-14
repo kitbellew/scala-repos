@@ -18,9 +18,10 @@ trait Failter {
     prob = newProb
   }))
 
-  protected val probGauge = stats.provideGauge("probability") {
-    prob.toFloat
-  }
+  protected val probGauge =
+    stats.provideGauge("probability") {
+      prob.toFloat
+    }
   protected val rejectedStat = stats.counter("rejected")
   protected val passedStat = stats.counter("passed")
 

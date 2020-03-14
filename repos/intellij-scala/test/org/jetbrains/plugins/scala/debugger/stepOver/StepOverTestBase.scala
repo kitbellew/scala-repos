@@ -14,8 +14,9 @@ import scala.io.Source
   */
 abstract class StepOverTestBase extends ScalaDebuggerTestCase {
   def doStepOver(): Unit = {
-    val stepOverCommand =
-      getDebugProcess.createStepOverCommand(suspendContext, false)
+    val stepOverCommand = getDebugProcess.createStepOverCommand(
+      suspendContext,
+      false)
     getDebugProcess.getManagerThread.invokeAndWait(stepOverCommand)
   }
 

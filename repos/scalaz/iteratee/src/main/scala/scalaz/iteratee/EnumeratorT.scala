@@ -34,15 +34,16 @@ trait EnumeratorT[E, F[_]] { self =>
       F: Monad[F],
       G: Monad[G]): F[G[EnumeratorT[B, F]]] = {
     import scalaz.syntax.semigroup._
-    val iter = fold[G[EnumeratorT[B, F]], F, G[EnumeratorT[B, F]]](
-      G.point(EnumeratorT.empty[B, F])) {
-      case (acc, concat) =>
-        G.bind(acc) { en =>
-          G.map(concat) { append =>
-            en |+| append
+    val iter =
+      fold[G[EnumeratorT[B, F]], F, G[EnumeratorT[B, F]]](
+        G.point(EnumeratorT.empty[B, F])) {
+        case (acc, concat) =>
+          G.bind(acc) { en =>
+            G.map(concat) { append =>
+              en |+| append
+            }
           }
-        }
-    }
+      }
 
     (iter &= self.map(f)).run
   }
@@ -60,8 +61,7 @@ trait EnumeratorT[E, F[_]] { self =>
   def drainTo[M[_]](implicit
       M: Monad[F],
       P: PlusEmpty[M],
-      Z: Applicative[M]): F[M[E]] =
-    (IterateeT.consume[E, F, M] &= self).run
+      Z: Applicative[M]): F[M[E]] = (IterateeT.consume[E, F, M] &= self).run
 
   def reduced[B](b: B)(f: (B, E) => B)(
       implicit M: Monad[F]): EnumeratorT[B, F] =
@@ -259,8 +259,7 @@ trait EnumeratorTFunctions {
   def enumArray[E, F[_]: Monad](
       a: Array[E],
       min: Int = 0,
-      max: Option[Int] = None): EnumeratorT[E, F] =
-    enumIndexedSeq(a, min, max)
+      max: Option[Int] = None): EnumeratorT[E, F] = enumIndexedSeq(a, min, max)
 
   def repeat[E, F[_]: Monad](e: E): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {

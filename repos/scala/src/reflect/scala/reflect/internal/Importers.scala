@@ -92,10 +92,11 @@ trait Importers { to: SymbolTable =>
         val mytypeParams = their.typeParams map importSymbol
         new LazyPolyType(mytypeParams) with FlagAgnosticCompleter {
           override def complete(my: to.Symbol): Unit = {
-            val theirCore = their.info match {
-              case from.PolyType(_, core) => core
-              case core                   => core
-            }
+            val theirCore =
+              their.info match {
+                case from.PolyType(_, core) => core
+                case core                   => core
+              }
             my setInfo GenPolyType(mytypeParams, importType(theirCore))
             my setAnnotations (their.annotations map importAnnotationInfo)
             markAllCompleted(my)
@@ -119,56 +120,62 @@ trait Importers { to: SymbolTable =>
         my.referenced = op(their.referenced)
         my
       }
-      val my = their match {
-        case their: from.MethodSymbol =>
-          linkReferenced(
-            myowner.newMethod(myname.toTermName, mypos, myflags),
-            their,
-            importSymbol)
-        case their: from.ModuleSymbol =>
-          val ret = linkReferenced(
-            myowner.newModuleSymbol(myname.toTermName, mypos, myflags),
-            their,
-            importSymbol)
-          ret.associatedFile = their.associatedFile
-          ret
-        case their: from.FreeTermSymbol =>
-          newFreeTermSymbol(
-            myname.toTermName,
-            their.value,
-            their.flags,
-            their.origin) setInfo importType(their.info)
-        case their: from.FreeTypeSymbol =>
-          newFreeTypeSymbol(myname.toTypeName, their.flags, their.origin)
-        case their: from.TermSymbol =>
-          linkReferenced(
-            myowner.newValue(myname.toTermName, mypos, myflags),
-            their,
-            importSymbol)
-        case their: from.TypeSkolem =>
-          val origin = their.unpackLocation match {
-            case null                  => null
-            case theirloc: from.Tree   => importTree(theirloc)
-            case theirloc: from.Symbol => importSymbol(theirloc)
-          }
-          myowner.newTypeSkolemSymbol(myname.toTypeName, origin, mypos, myflags)
-        case their: from.ModuleClassSymbol =>
-          val my = myowner.newModuleClass(myname.toTypeName, mypos, myflags)
-          symMap.weakUpdate(their, my)
-          my.sourceModule = importSymbol(their.sourceModule)
-          my
-        case their: from.ClassSymbol =>
-          val my = myowner.newClassSymbol(myname.toTypeName, mypos, myflags)
-          symMap.weakUpdate(their, my)
-          if (their.thisSym != their) {
-            my.typeOfThis = importType(their.typeOfThis)
-            my.thisSym setName importName(their.thisSym.name)
-          }
-          my.associatedFile = their.associatedFile
-          my
-        case their: from.TypeSymbol =>
-          myowner.newTypeSymbol(myname.toTypeName, mypos, myflags)
-      }
+      val my =
+        their match {
+          case their: from.MethodSymbol =>
+            linkReferenced(
+              myowner.newMethod(myname.toTermName, mypos, myflags),
+              their,
+              importSymbol)
+          case their: from.ModuleSymbol =>
+            val ret = linkReferenced(
+              myowner.newModuleSymbol(myname.toTermName, mypos, myflags),
+              their,
+              importSymbol)
+            ret.associatedFile = their.associatedFile
+            ret
+          case their: from.FreeTermSymbol =>
+            newFreeTermSymbol(
+              myname.toTermName,
+              their.value,
+              their.flags,
+              their.origin) setInfo importType(their.info)
+          case their: from.FreeTypeSymbol =>
+            newFreeTypeSymbol(myname.toTypeName, their.flags, their.origin)
+          case their: from.TermSymbol =>
+            linkReferenced(
+              myowner.newValue(myname.toTermName, mypos, myflags),
+              their,
+              importSymbol)
+          case their: from.TypeSkolem =>
+            val origin =
+              their.unpackLocation match {
+                case null                  => null
+                case theirloc: from.Tree   => importTree(theirloc)
+                case theirloc: from.Symbol => importSymbol(theirloc)
+              }
+            myowner.newTypeSkolemSymbol(
+              myname.toTypeName,
+              origin,
+              mypos,
+              myflags)
+          case their: from.ModuleClassSymbol =>
+            val my = myowner.newModuleClass(myname.toTypeName, mypos, myflags)
+            symMap.weakUpdate(their, my)
+            my.sourceModule = importSymbol(their.sourceModule)
+            my
+          case their: from.ClassSymbol =>
+            val my = myowner.newClassSymbol(myname.toTypeName, mypos, myflags)
+            symMap.weakUpdate(their, my)
+            if (their.thisSym != their) {
+              my.typeOfThis = importType(their.typeOfThis)
+              my.thisSym setName importName(their.thisSym.name)
+            }
+            my.associatedFile = their.associatedFile
+            my
+          case their: from.TypeSymbol =>
+            myowner.newTypeSymbol(myname.toTypeName, mypos, myflags)
+        }
       symMap.weakUpdate(their, my)
       markFlagsCompleted(my)(mask = AllFlags)
       my setInfo recreatedSymbolCompleter(my, their)
@@ -315,8 +322,10 @@ trait Importers { to: SymbolTable =>
               newPackageScope(myclazz)
             else
               newScope
-          val myclazzTpe =
-            ClassInfoType(parents map importType, myscope, myclazz)
+          val myclazzTpe = ClassInfoType(
+            parents map importType,
+            myscope,
+            myclazz)
           myclazz setInfo GenPolyType(
             myclazz.typeParams,
             myclazzTpe
@@ -337,9 +346,10 @@ trait Importers { to: SymbolTable =>
         case from.AntiPolyType(pre, targs) =>
           AntiPolyType(importType(pre), targs map importType)
         case their: from.TypeVar =>
-          val myconstr = new TypeConstraint(
-            their.constr.loBounds map importType,
-            their.constr.hiBounds map importType)
+          val myconstr =
+            new TypeConstraint(
+              their.constr.loBounds map importType,
+              their.constr.hiBounds map importType)
           myconstr.inst = importType(their.constr.inst)
           TypeVar(
             importType(their.origin),

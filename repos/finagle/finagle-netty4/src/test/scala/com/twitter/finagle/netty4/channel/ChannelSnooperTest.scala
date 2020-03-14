@@ -18,21 +18,22 @@ class ChannelSnooperTest extends FunSuite with MockitoSugar {
 
   test("ByteBufSnooper decodes and prints inbound and outbound messages") {
     var messageCount = 0
-    val bbs = new ByteBufSnooper("bbs") {
-      override def dump(
-          printer: (Channel, String) => Unit,
-          ch: Channel,
-          buf: ByteBuf): Unit = {
-        messageCount += 1
-        assert(buf == msgBuffer)
-        super.dump(
-          { (_: Channel, m: String) =>
-            assert(msg == m)
-          },
-          ch,
-          buf)
+    val bbs =
+      new ByteBufSnooper("bbs") {
+        override def dump(
+            printer: (Channel, String) => Unit,
+            ch: Channel,
+            buf: ByteBuf): Unit = {
+          messageCount += 1
+          assert(buf == msgBuffer)
+          super.dump(
+            { (_: Channel, m: String) =>
+              assert(msg == m)
+            },
+            ch,
+            buf)
+        }
       }
-    }
 
     bbs.channelRead(mock[ChannelHandlerContext], msgBuffer)
     bbs.write(mock[ChannelHandlerContext], msgBuffer, mock[ChannelPromise])
@@ -53,19 +54,20 @@ class ChannelSnooperTest extends FunSuite with MockitoSugar {
     when(ch.remoteAddress()).thenReturn(new InetSocketAddress(80))
     when(ch.id).thenReturn(cid)
 
-    val scs = new SimpleChannelSnooper("scs") {
-      override def printInbound(ch: Channel, message: String): Unit =
-        inboundCount += 1
+    val scs =
+      new SimpleChannelSnooper("scs") {
+        override def printInbound(ch: Channel, message: String): Unit =
+          inboundCount += 1
 
-      override def printOutbound(ch: Channel, message: String): Unit =
-        outboundCount += 1
+        override def printOutbound(ch: Channel, message: String): Unit =
+          outboundCount += 1
 
-      override def printer(message: String, exc: Throwable): Unit =
-        exnCount += 1
+        override def printer(message: String, exc: Throwable): Unit =
+          exnCount += 1
 
-      override def printEvent(ch: Channel, eventName: String): Unit =
-        eventCount += 1
-    }
+        override def printEvent(ch: Channel, eventName: String): Unit =
+          eventCount += 1
+      }
   }
 
   test("SimpleChannelSnooper prints incoming and outgoing messages") {

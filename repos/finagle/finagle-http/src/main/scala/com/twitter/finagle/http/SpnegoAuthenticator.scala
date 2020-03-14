@@ -145,8 +145,9 @@ object SpnegoAuthenticator {
         _serverPrincipalType: Oid = JAAS.Krb5PrincipalType
     ) extends ClientSource
         with JAAS {
-      val serverPrincipal =
-        manager.createName(_serverPrincipal, _serverPrincipalType)
+      val serverPrincipal = manager.createName(
+        _serverPrincipal,
+        _serverPrincipalType)
 
       def init(
           context: GSSContext,
@@ -179,8 +180,10 @@ object SpnegoAuthenticator {
         with JAAS {
       def accept(context: GSSContext, negotiation: Token): Future[Negotiated] =
         pool {
-          val token =
-            context.acceptSecContext(negotiation, 0, negotiation.length)
+          val token = context.acceptSecContext(
+            negotiation,
+            0,
+            negotiation.length)
           val established =
             if (context.isEstablished)
               Some(context)
@@ -247,26 +250,29 @@ object SpnegoAuthenticator {
     def authenticated(req: Req, context: GSSContext): Authenticated[Req]
   }
 
-  implicit val httpResponseSupport = new RspSupport[Response] {
-    def status(rsp: Response) = rsp.status
-    def wwwAuthenticateHeader(rsp: Response) =
-      Option(rsp.headers.get(Fields.WwwAuthenticate))
-    def wwwAuthenticateHeader(rsp: Response, auth: String) =
-      rsp.headers.set(Fields.WwwAuthenticate, auth)
-    def unauthorized(version: Version) = Response(version, Status.Unauthorized)
-  }
+  implicit val httpResponseSupport =
+    new RspSupport[Response] {
+      def status(rsp: Response) = rsp.status
+      def wwwAuthenticateHeader(rsp: Response) =
+        Option(rsp.headers.get(Fields.WwwAuthenticate))
+      def wwwAuthenticateHeader(rsp: Response, auth: String) =
+        rsp.headers.set(Fields.WwwAuthenticate, auth)
+      def unauthorized(version: Version) =
+        Response(version, Status.Unauthorized)
+    }
 
-  implicit val httpRequestSupport = new ReqSupport[Request] {
-    def authorizationHeader(req: Request) =
-      Option(req.headers.get(Fields.Authorization))
-    def authorizationHeader(req: Request, token: Token) =
-      AuthHeader(Some(token)).foreach { header =>
-        req.headers.set(Fields.Authorization, header)
-      }
-    def protocolVersion(req: Request) = req.version
-    def authenticated(req: Request, context: GSSContext) =
-      Authenticated.Http(req, context)
-  }
+  implicit val httpRequestSupport =
+    new ReqSupport[Request] {
+      def authorizationHeader(req: Request) =
+        Option(req.headers.get(Fields.Authorization))
+      def authorizationHeader(req: Request, token: Token) =
+        AuthHeader(Some(token)).foreach { header =>
+          req.headers.set(Fields.Authorization, header)
+        }
+      def protocolVersion(req: Request) = req.version
+      def authenticated(req: Request, context: GSSContext) =
+        Authenticated.Http(req, context)
+    }
 
   sealed abstract class Client[Req: ReqSupport, Rsp: RspSupport]
       extends Filter[Req, Rsp, Req, Rsp] {
@@ -293,10 +299,9 @@ object SpnegoAuthenticator {
           val credentialFuture = credentialOption.getOrElse(credSrc.load())
           credentialFuture.flatMap { context =>
             // look for any Token data in the challenge, and attempt to initialize
-            val challengeToken =
-              rsps.wwwAuthenticateHeader(rsp).collect {
-                case AuthHeader(token) => token
-              }
+            val challengeToken = rsps.wwwAuthenticateHeader(rsp).collect {
+              case AuthHeader(token) => token
+            }
             credSrc.init(context, challengeToken).flatMap { nextToken =>
               // loop to reattempt the request, mutated with the next token data
               reqs.authorizationHeader(req, nextToken)

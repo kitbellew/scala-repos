@@ -122,8 +122,8 @@ object HttpConfiguration {
   def fromConfiguration(configuration: Configuration) = {
     val config = PlayConfig(configuration)
     val context = {
-      val ctx =
-        config.getDeprecated[String]("play.http.context", "application.context")
+      val ctx = config
+        .getDeprecated[String]("play.http.context", "application.context")
       if (!ctx.startsWith("/")) {
         throw configuration.globalError("play.http.context must start with a /")
       }
@@ -177,8 +177,8 @@ object HttpConfiguration {
     )
   }
 
-  private val httpConfigurationCache =
-    Application.instanceCache[HttpConfiguration]
+  private val httpConfigurationCache = Application
+    .instanceCache[HttpConfiguration]
 
   /**
     * Don't use this - only exists for transition from global state

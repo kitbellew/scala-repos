@@ -359,16 +359,17 @@ class SetMapConsistencyTest {
     what ++= "creation"
     for (i <- 0 until n) {
       if (!check) {
-        val temp = map2 match {
-          case b: BoxImmutableMap[_, _] =>
-            b.m match {
-              case hx: ci.HashMap.HashTrieMap[_, _] =>
-                val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
-                Some((h.bitmap.toHexString, h.elems.mkString, h.size))
-              case _ => None
-            }
-          case _ => None
-        }
+        val temp =
+          map2 match {
+            case b: BoxImmutableMap[_, _] =>
+              b.m match {
+                case hx: ci.HashMap.HashTrieMap[_, _] =>
+                  val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
+                  Some((h.bitmap.toHexString, h.elems.mkString, h.size))
+                case _ => None
+              }
+            case _ => None
+          }
         throw new Exception(
           s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} because ${map1.keys
             .map(map2 has _)
@@ -414,21 +415,22 @@ class SetMapConsistencyTest {
       val g1 = map1.get(gn1, keys(j))
       val g2 = map2.get(gn2, keys(j))
       if (g1 != g2) {
-        val temp = map2 match {
-          case b: BoxImmutableMap[_, _] =>
-            b.m match {
-              case hx: ci.HashMap.HashTrieMap[_, _] =>
-                val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
-                val y = (ci.HashMap.empty[A, Int] ++ h)
-                  .asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
-                Some(
-                  (
-                    (h.bitmap.toHexString, h.elems.mkString, h.size),
-                    (y.bitmap.toHexString, y.elems.mkString, y.size)))
-              case _ => None
-            }
-          case _ => None
-        }
+        val temp =
+          map2 match {
+            case b: BoxImmutableMap[_, _] =>
+              b.m match {
+                case hx: ci.HashMap.HashTrieMap[_, _] =>
+                  val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
+                  val y = (ci.HashMap.empty[A, Int] ++ h)
+                    .asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
+                  Some(
+                    (
+                      (h.bitmap.toHexString, h.elems.mkString, h.size),
+                      (y.bitmap.toHexString, y.elems.mkString, y.size)))
+                case _ => None
+              }
+            case _ => None
+          }
         throw new Exception(
           s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} on get of ${keys(
             j)} (#$j) on step $i: $g1 != $g2 using methods $gn1 and $gn2 resp.; in full\n$map1\n$map2\n$temp")
@@ -656,11 +658,12 @@ class SetMapConsistencyTest {
     }
 
     assert {
-      val arm2 = new AnyRefMap[String, String](x =>
-        if (x == null)
-          "null"
-        else
-          x)
+      val arm2 =
+        new AnyRefMap[String, String](x =>
+          if (x == null)
+            "null"
+          else
+            x)
       arm2 += ("cod" -> "fish", "Rarity" -> "unicorn")
       val hm2 = (new HashMap[String, String]) ++= arm2
       List(null, "cod", "sparrow", "Rarity").forall(i =>
@@ -680,8 +683,9 @@ class SetMapConsistencyTest {
   @Test
   def extraFilterTests() {
     type M = scala.collection.Map[Int, Boolean]
-    val manyKVs =
-      (0 to 1000).map(i => i * i * i).map(x => x -> ((x * x * x) < 0))
+    val manyKVs = (0 to 1000)
+      .map(i => i * i * i)
+      .map(x => x -> ((x * x * x) < 0))
     val rn = new scala.util.Random(42)
     def mhm: M = {
       val m = new cm.HashMap[Int, Boolean];

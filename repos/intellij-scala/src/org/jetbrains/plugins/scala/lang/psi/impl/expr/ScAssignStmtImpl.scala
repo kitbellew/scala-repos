@@ -108,16 +108,17 @@ class ScAssignStmtImpl(node: ASTNode)
               case f: PsiField                    => None
               case fun: ScFunction
                   if ScalaPsiUtil.isViableForAssignmentFunction(fun) =>
-                val processor = new MethodResolveProcessor(
-                  ref,
-                  fun.name + "_=",
-                  getRExpression
-                    .map(expr => List(Seq(new Expression(expr))))
-                    .getOrElse(Nil),
-                  Nil,
-                  ref.getPrevTypeInfoParams,
-                  isShapeResolve = shapeResolve,
-                  kinds = StdKinds.methodsOnly)
+                val processor =
+                  new MethodResolveProcessor(
+                    ref,
+                    fun.name + "_=",
+                    getRExpression
+                      .map(expr => List(Seq(new Expression(expr))))
+                      .getOrElse(Nil),
+                    Nil,
+                    ref.getPrevTypeInfoParams,
+                    isShapeResolve = shapeResolve,
+                    kinds = StdKinds.methodsOnly)
                 r.fromType match {
                   case Some(tp) => processor.processType(tp, ref)
                   case None =>

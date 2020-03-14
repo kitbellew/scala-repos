@@ -198,81 +198,35 @@ object Permission {
       case WrittenByPermission(_, WrittenByAny)         => Set()
     }
 
-  val decomposerV1Base: Decomposer[Permission] = new Decomposer[Permission] {
-    override def decompose(p: Permission): JValue = {
-      JObject(
-        "accessType" -> accessType(p).serialize,
-        "path" -> p.path.serialize,
-        "ownerAccountIds" -> ownerAccountIds(p).serialize
-      )
-    }
-  }
-
-  val extractorV1Base: Extractor[Permission] = new Extractor[Permission] {
-    private def writtenByPermission(
-        obj: JValue,
-        pathV: Validation[Error, Path])(
-        f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
-      (obj \? "ownerAccountIds") map { ids =>
-        Apply[({
-          type l[a] = Validation[Error, a]
-        })#l].zip.zip(pathV, ids.validated[Set[AccountId]]) flatMap {
-          case (path, accountIds) =>
-            if (accountIds.isEmpty)
-              success(f(path, WrittenByAny))
-            else if (accountIds.size == 1)
-              success(f(path, WrittenByAccount(accountIds.head)))
-            else
-              failure(Invalid(
-                "Cannot extract read permission for more than one account ID."))
-        }
-      } getOrElse {
-        pathV map {
-          f(_: Path, WrittenByAny)
-        }
+  val decomposerV1Base: Decomposer[Permission] =
+    new Decomposer[Permission] {
+      override def decompose(p: Permission): JValue = {
+        JObject(
+          "accessType" -> accessType(p).serialize,
+          "path" -> p.path.serialize,
+          "ownerAccountIds" -> ownerAccountIds(p).serialize
+        )
       }
     }
 
-    override def validated(obj: JValue) = {
-      val pathV = obj.validated[Path]("path")
-      obj.validated[String]("accessType").map(_.toLowerCase.trim) flatMap {
-        case "write" =>
-          (obj \? "ownerAccountIds") map { ids =>
-            (pathV |@| ids.validated[Set[AccountId]]) { (path, accountIds) =>
-              WritePermission(path, WriteAs(accountIds))
-            }
-          } getOrElse {
-            pathV map {
-              WritePermission(_: Path, WriteAsAny)
-            }
-          }
-
-        case "read" =>
-          writtenByPermission(obj, pathV) {
-            ReadPermission.apply _
-          }
-        case "reduce" =>
-          writtenByPermission(obj, pathV) {
-            ReducePermission.apply _
-          }
-        case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) {
-            DeletePermission.apply _
-          }
-        case other => failure(Invalid("Unrecognized permission type: " + other))
-      }
-    }
-  }
-
-  val extractorV0: Extractor[Permission] = new Extractor[Permission] {
-    private def writtenByPermission(
-        obj: JValue,
-        pathV: Validation[Error, Path])(
-        f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
-      obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
-        opt map { id =>
-          pathV map {
-            f(_: Path, WrittenByAccount(id))
+  val extractorV1Base: Extractor[Permission] =
+    new Extractor[Permission] {
+      private def writtenByPermission(
+          obj: JValue,
+          pathV: Validation[Error, Path])(
+          f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
+        (obj \? "ownerAccountIds") map { ids =>
+          Apply[({
+            type l[a] = Validation[Error, a]
+          })#l].zip.zip(pathV, ids.validated[Set[AccountId]]) flatMap {
+            case (path, accountIds) =>
+              if (accountIds.isEmpty)
+                success(f(path, WrittenByAny))
+              else if (accountIds.size == 1)
+                success(f(path, WrittenByAccount(accountIds.head)))
+              else
+                failure(Invalid(
+                  "Cannot extract read permission for more than one account ID."))
           }
         } getOrElse {
           pathV map {
@@ -280,40 +234,91 @@ object Permission {
           }
         }
       }
-    }
 
-    override def validated(obj: JValue) = {
-      val pathV = obj.validated[Path]("path")
-      obj.validated[String]("type").map(_.toLowerCase.trim) flatMap {
-        case "write" =>
-          obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
-            opt map { id =>
-              pathV map {
-                WritePermission(_: Path, WriteAs(Set(id)))
+      override def validated(obj: JValue) = {
+        val pathV = obj.validated[Path]("path")
+        obj.validated[String]("accessType").map(_.toLowerCase.trim) flatMap {
+          case "write" =>
+            (obj \? "ownerAccountIds") map { ids =>
+              (pathV |@| ids.validated[Set[AccountId]]) { (path, accountIds) =>
+                WritePermission(path, WriteAs(accountIds))
               }
             } getOrElse {
               pathV map {
                 WritePermission(_: Path, WriteAsAny)
               }
             }
-          }
 
-        case "read" =>
-          writtenByPermission(obj, pathV) {
-            ReadPermission.apply _
-          }
-        case "reduce" =>
-          writtenByPermission(obj, pathV) {
-            ReducePermission.apply _
-          }
-        case "owner" | "delete" =>
-          writtenByPermission(obj, pathV) {
-            DeletePermission.apply _
-          }
-        case other => failure(Invalid("Unrecognized permission type: " + other))
+          case "read" =>
+            writtenByPermission(obj, pathV) {
+              ReadPermission.apply _
+            }
+          case "reduce" =>
+            writtenByPermission(obj, pathV) {
+              ReducePermission.apply _
+            }
+          case "owner" | "delete" =>
+            writtenByPermission(obj, pathV) {
+              DeletePermission.apply _
+            }
+          case other =>
+            failure(Invalid("Unrecognized permission type: " + other))
+        }
       }
     }
-  }
+
+  val extractorV0: Extractor[Permission] =
+    new Extractor[Permission] {
+      private def writtenByPermission(
+          obj: JValue,
+          pathV: Validation[Error, Path])(
+          f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
+        obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
+          opt map { id =>
+            pathV map {
+              f(_: Path, WrittenByAccount(id))
+            }
+          } getOrElse {
+            pathV map {
+              f(_: Path, WrittenByAny)
+            }
+          }
+        }
+      }
+
+      override def validated(obj: JValue) = {
+        val pathV = obj.validated[Path]("path")
+        obj.validated[String]("type").map(_.toLowerCase.trim) flatMap {
+          case "write" =>
+            obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
+              opt map { id =>
+                pathV map {
+                  WritePermission(_: Path, WriteAs(Set(id)))
+                }
+              } getOrElse {
+                pathV map {
+                  WritePermission(_: Path, WriteAsAny)
+                }
+              }
+            }
+
+          case "read" =>
+            writtenByPermission(obj, pathV) {
+              ReadPermission.apply _
+            }
+          case "reduce" =>
+            writtenByPermission(obj, pathV) {
+              ReducePermission.apply _
+            }
+          case "owner" | "delete" =>
+            writtenByPermission(obj, pathV) {
+              DeletePermission.apply _
+            }
+          case other =>
+            failure(Invalid("Unrecognized permission type: " + other))
+        }
+      }
+    }
 
   implicit val decomposer = decomposerV1Base.versioned(Some("1.0".v))
   implicit val extractor =

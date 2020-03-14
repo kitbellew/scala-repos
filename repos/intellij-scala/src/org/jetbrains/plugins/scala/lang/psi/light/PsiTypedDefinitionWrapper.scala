@@ -144,13 +144,14 @@ object PsiTypedDefinitionWrapper {
     }
 
     builder.append(" ")
-    val name = role match {
-      case SIMPLE_ROLE => b.getName
-      case GETTER      => "get" + b.getName.capitalize
-      case IS_GETTER   => "is" + b.getName.capitalize
-      case SETTER      => "set" + b.getName.capitalize
-      case EQ          => b.getName + "_$eq"
-    }
+    val name =
+      role match {
+        case SIMPLE_ROLE => b.getName
+        case GETTER      => "get" + b.getName.capitalize
+        case IS_GETTER   => "is" + b.getName.capitalize
+        case SETTER      => "set" + b.getName.capitalize
+        case EQ          => b.getName + "_$eq"
+      }
     builder.append(name)
     if (role != SETTER && role != EQ) {
       builder.append("()")

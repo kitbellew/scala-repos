@@ -51,16 +51,16 @@ object MarathonSchedulerDriver {
     config.mesosAuthenticationPrincipal.get
       .foreach(frameworkInfoBuilder.setPrincipal)
 
-    val credential: Option[Credential] =
-      config.mesosAuthenticationPrincipal.get.map { principal =>
+    val credential: Option[Credential] = config.mesosAuthenticationPrincipal.get
+      .map { principal =>
         val credentialBuilder = Credential
           .newBuilder()
           .setPrincipal(principal)
 
         config.mesosAuthenticationSecretFile.get.foreach { secretFile =>
           try {
-            val secretBytes =
-              ByteString.readFrom(new FileInputStream(secretFile))
+            val secretBytes = ByteString.readFrom(
+              new FileInputStream(secretFile))
             credentialBuilder.setSecret(secretBytes.toStringUtf8)
           } catch {
             case cause: Throwable =>
@@ -78,22 +78,23 @@ object MarathonSchedulerDriver {
     log.debug("Start creating new driver")
 
     val implicitAcknowledgements = false
-    val newDriver: MesosSchedulerDriver = credential match {
-      case Some(cred) =>
-        new MesosSchedulerDriver(
-          newScheduler,
-          frameworkInfo,
-          config.mesosMaster(),
-          implicitAcknowledgements,
-          cred)
+    val newDriver: MesosSchedulerDriver =
+      credential match {
+        case Some(cred) =>
+          new MesosSchedulerDriver(
+            newScheduler,
+            frameworkInfo,
+            config.mesosMaster(),
+            implicitAcknowledgements,
+            cred)
 
-      case None =>
-        new MesosSchedulerDriver(
-          newScheduler,
-          frameworkInfo,
-          config.mesosMaster(),
-          implicitAcknowledgements)
-    }
+        case None =>
+          new MesosSchedulerDriver(
+            newScheduler,
+            frameworkInfo,
+            config.mesosMaster(),
+            implicitAcknowledgements)
+      }
 
     log.debug("Finished creating new driver", newDriver)
 

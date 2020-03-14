@@ -66,11 +66,9 @@ object M0 {
     else
       sqrtIter0(improve0(guess, x), x);
 
-  def improve0(guess: Double, x: Double) =
-    (guess + x / guess) / 2;
+  def improve0(guess: Double, x: Double) = (guess + x / guess) / 2;
 
-  def isGoodEnough0(guess: Double, x: Double) =
-    abs(square(guess) - x) < 0.001;
+  def isGoodEnough0(guess: Double, x: Double) = abs(square(guess) - x) < 0.001;
 
   def sqrt0(x: Double) = sqrtIter0(1.0, x);
 
@@ -87,8 +85,7 @@ object M0 {
       else
         sqrtIter1(improve1(guess, x), x);
 
-    def improve1(guess: Double, x: Double) =
-      (guess + x / guess) / 2;
+    def improve1(guess: Double, x: Double) = (guess + x / guess) / 2;
 
     def isGoodEnough1(guess: Double, x: Double) =
       abs(square(guess) - x) < 0.001;
@@ -109,11 +106,9 @@ object M0 {
       else
         sqrtIter2(improve2(guess));
 
-    def improve2(guess: Double) =
-      (guess + x / guess) / 2;
+    def improve2(guess: Double) = (guess + x / guess) / 2;
 
-    def isGoodEnough2(guess: Double) =
-      abs(square(guess) - x) < 0.001;
+    def isGoodEnough2(guess: Double) = abs(square(guess) - x) < 0.001;
 
     sqrtIter2(1.0)
   }

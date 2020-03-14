@@ -165,10 +165,11 @@ package scala.collection.immutable.redblacktree {
           }
       }
 
-    property("update adds elements") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        treeContains(newTree, generateKey(tree, parm))
-    }
+    property("update adds elements") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          treeContains(newTree, generateKey(tree, parm))
+      }
   }
 
   object TestModify extends RedBlackTreeTest {
@@ -186,13 +187,14 @@ package scala.collection.immutable.redblacktree {
         case (key, _) => update(tree, key, newValue, true)
       } getOrElse tree
 
-    property("update modifies values") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        nodeAt(tree, parm) forall {
-          case (key, _) =>
-            iterator(newTree) contains (key, newValue)
-        }
-    }
+    property("update modifies values") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          nodeAt(tree, parm) forall {
+            case (key, _) =>
+              iterator(newTree) contains (key, newValue)
+          }
+      }
   }
 
   object TestDelete extends RedBlackTreeTest with RedBlackTreeInvariants {
@@ -209,13 +211,14 @@ package scala.collection.immutable.redblacktree {
         case (key, _) => delete(tree, key)
       } getOrElse tree
 
-    property("delete removes elements") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        nodeAt(tree, parm) forall {
-          case (key, _) =>
-            !treeContains(newTree, key)
-        }
-    }
+    property("delete removes elements") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          nodeAt(tree, parm) forall {
+            case (key, _) =>
+              !treeContains(newTree, key)
+          }
+      }
   }
 
   object TestRange extends RedBlackTreeTest with RedBlackTreeInvariants {
@@ -246,26 +249,29 @@ package scala.collection.immutable.redblacktree {
       rangeImpl(tree, from, to)
     }
 
-    property("range boundaries respected") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        val from = parm._1 flatMap (nodeAt(tree, _) map (_._1))
-        val to = parm._2 flatMap (nodeAt(tree, _) map (_._1))
-        ("lower boundary" |: (from forall (key =>
-          keysIterator(newTree) forall (key <=)))) &&
-        ("upper boundary" |: (to forall (key =>
-          keysIterator(newTree) forall (key >))))
-    }
+    property("range boundaries respected") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          val from = parm._1 flatMap (nodeAt(tree, _) map (_._1))
+          val to = parm._2 flatMap (nodeAt(tree, _) map (_._1))
+          ("lower boundary" |: (from forall (key =>
+            keysIterator(newTree) forall (key <=)))) &&
+          ("upper boundary" |: (to forall (key =>
+            keysIterator(newTree) forall (key >))))
+      }
 
-    property("range returns all elements") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        val from = parm._1 flatMap (nodeAt(tree, _) map (_._1))
-        val to = parm._2 flatMap (nodeAt(tree, _) map (_._1))
-        val filteredTree = (keysIterator(tree)
-          .filter(key => from forall (key >=))
-          .filter(key => to forall (key <))
-          .toList)
-        filteredTree == keysIterator(newTree).toList
-    }
+    property("range returns all elements") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          val from = parm._1 flatMap (nodeAt(tree, _) map (_._1))
+          val to = parm._2 flatMap (nodeAt(tree, _) map (_._1))
+          val filteredTree =
+            (keysIterator(tree)
+              .filter(key => from forall (key >=))
+              .filter(key => to forall (key <))
+              .toList)
+          filteredTree == keysIterator(newTree).toList
+      }
   }
 
   object TestDrop extends RedBlackTreeTest with RedBlackTreeInvariants {
@@ -278,10 +284,11 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] = drop(tree, parm)
 
-    property("drop") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        iterator(tree).drop(parm).toList == iterator(newTree).toList
-    }
+    property("drop") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          iterator(tree).drop(parm).toList == iterator(newTree).toList
+      }
   }
 
   object TestTake extends RedBlackTreeTest with RedBlackTreeInvariants {
@@ -294,10 +301,11 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] = take(tree, parm)
 
-    property("take") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        iterator(tree).take(parm).toList == iterator(newTree).toList
-    }
+    property("take") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          iterator(tree).take(parm).toList == iterator(newTree).toList
+      }
   }
 
   object TestSlice extends RedBlackTreeTest with RedBlackTreeInvariants {
@@ -313,11 +321,12 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] = slice(tree, parm._1, parm._2)
 
-    property("slice") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        iterator(tree).slice(parm._1, parm._2).toList == iterator(
-          newTree).toList
-    }
+    property("slice") =
+      forAll(genInput) {
+        case (tree, parm, newTree) =>
+          iterator(tree).slice(parm._1, parm._2).toList == iterator(
+            newTree).toList
+      }
   }
 }
 

@@ -173,8 +173,8 @@ object Thrift
     protected type Out = Array[Byte]
 
     val param.Framed(framed) = params[param.Framed]
-    protected val param.ProtocolFactory(protocolFactory) =
-      params[param.ProtocolFactory]
+    protected val param
+      .ProtocolFactory(protocolFactory) = params[param.ProtocolFactory]
     override protected lazy val Stats(stats) = params[Stats]
 
     protected def newTransporter(): Transporter[In, Out] = {
@@ -245,8 +245,7 @@ object Thrift
       new DefaultLoadBalancingParams(this)
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withSessionQualifier: SessionQualificationParams[Client] =
       new SessionQualificationParams(this)
     override val withAdmissionControl: ClientAdmissionControlParams[Client] =
@@ -278,8 +277,7 @@ object Thrift
           ThriftClientRequest,
           Array[Byte],
           ThriftClientRequest,
-          Array[Byte]]): Client =
-      super.filtered(filter)
+          Array[Byte]]): Client = super.filtered(filter)
   }
 
   val client: Thrift.Client = Client()
@@ -287,8 +285,7 @@ object Thrift
   def newService(
       dest: Name,
       label: String
-  ): Service[ThriftClientRequest, Array[Byte]] =
-    client.newService(dest, label)
+  ): Service[ThriftClientRequest, Array[Byte]] = client.newService(dest, label)
 
   def newClient(
       dest: Name,
@@ -340,8 +337,8 @@ object Thrift
     protected type Out = Array[Byte]
 
     val param.Framed(framed) = params[param.Framed]
-    protected val param.ProtocolFactory(protocolFactory) =
-      params[param.ProtocolFactory]
+    protected val param
+      .ProtocolFactory(protocolFactory) = params[param.ProtocolFactory]
 
     protected def newListener(): Listener[In, Out] = {
       val pipeline =
@@ -361,14 +358,12 @@ object Thrift
     protected def newDispatcher(
         transport: Transport[In, Out],
         service: Service[Array[Byte], Array[Byte]]
-    ) =
-      new SerialServerDispatcher(transport, service)
+    ) = new SerialServerDispatcher(transport, service)
 
     def withProtocolFactory(protocolFactory: TProtocolFactory): Server =
       configured(param.ProtocolFactory(protocolFactory))
 
-    def withBufferedTransport(): Server =
-      configured(param.Framed(false))
+    def withBufferedTransport(): Server = configured(param.Framed(false))
 
     // Java-friendly forwarders
     // See https://issues.scala-lang.org/browse/SI-8905

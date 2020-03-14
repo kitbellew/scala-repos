@@ -10,8 +10,8 @@ import Task._
 import sbt.internal.util.Types._
 
 object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
-  property("sort") = forAll(TaskListGen, MaxWorkersGen) {
-    (list: List[Int], workers: Int) =>
+  property("sort") =
+    forAll(TaskListGen, MaxWorkersGen) { (list: List[Int], workers: Int) =>
       val a = list.toArray
       val sorted = a.toArray
       java.util.Arrays.sort(sorted)
@@ -26,7 +26,7 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
               1)
         checkResult(result.toList, sorted.toList)
       }
-  }
+    }
   final def sortDirect(a: Seq[Int]): Seq[Int] = {
     if (a.length < 2)
       a

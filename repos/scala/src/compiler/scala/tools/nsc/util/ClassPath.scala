@@ -310,16 +310,17 @@ class DirectoryClassPath(
       // Optimization: We assume the file was not changed since `dir` called
       // `Path.apply` and categorized existent files as `Directory`
       // or `File`.
-      val isDirectory = f match {
-        case pf: io.PlainFile =>
-          pf.givenPath match {
-            case _: io.Directory => true
-            case _: io.File      => false
-            case _               => f.isDirectory
-          }
-        case _ =>
-          f.isDirectory
-      }
+      val isDirectory =
+        f match {
+          case pf: io.PlainFile =>
+            pf.givenPath match {
+              case _: io.Directory => true
+              case _: io.File      => false
+              case _               => f.isDirectory
+            }
+          case _ =>
+            f.isDirectory
+        }
       if (!isDirectory && validClassFile(f.name))
         classBuf += ClassRep(Some(f), None)
       else if (isDirectory && validPackage(f.name))
@@ -353,8 +354,7 @@ class MergedClassPath[T](
 
   def this(
       entries: TraversableOnce[ClassPath[T]],
-      context: ClassPathContext[T]) =
-    this(entries.toIndexedSeq, context)
+      context: ClassPathContext[T]) = this(entries.toIndexedSeq, context)
 
   def name = entries.head.name
   def asURLs = (entries flatMap (_.asURLs)).toList
@@ -413,10 +413,11 @@ class MergedClassPath[T](
   }
 
   private def addPackage(to: ClassPath[T], pkg: ClassPath[T]) = {
-    val newEntries: IndexedSeq[ClassPath[T]] = to match {
-      case cp: MergedClassPath[_] => cp.entries :+ pkg
-      case _                      => IndexedSeq(to, pkg)
-    }
+    val newEntries: IndexedSeq[ClassPath[T]] =
+      to match {
+        case cp: MergedClassPath[_] => cp.entries :+ pkg
+        case _                      => IndexedSeq(to, pkg)
+      }
     new MergedClassPath[T](newEntries, context)
   }
 

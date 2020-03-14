@@ -50,30 +50,33 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
           case (b, m) => assert(b <= m)
         }
 
-      val manyBackoffs = Backoff
-        .exponentialJittered(5.millis, 120.millis, rng)
-        .take(100)
-        .force
-        .toSeq
+      val manyBackoffs =
+        Backoff
+          .exponentialJittered(5.millis, 120.millis, rng)
+          .take(100)
+          .force
+          .toSeq
       assert(100 == manyBackoffs.size)
     }
   }
 
-  private[this] val decorrelatedGen = for {
-    startMs <- Gen.choose(1L, 1000L)
-    maxMs <- Gen.choose(startMs, startMs * 2)
-    seed <- Gen.choose(Long.MinValue, Long.MaxValue)
-  } yield (startMs, maxMs, seed)
+  private[this] val decorrelatedGen =
+    for {
+      startMs <- Gen.choose(1L, 1000L)
+      maxMs <- Gen.choose(startMs, startMs * 2)
+      seed <- Gen.choose(Long.MinValue, Long.MaxValue)
+    } yield (startMs, maxMs, seed)
 
   test("decorrelatedJittered") {
     forAll(decorrelatedGen) {
       case (startMs: Long, maxMs: Long, seed: Long) =>
         val rng = Rng(seed)
-        val backoffs = Backoff
-          .decorrelatedJittered(startMs.millis, maxMs.millis, rng)
-          .take(10)
-          .force
-          .toSeq
+        val backoffs =
+          Backoff
+            .decorrelatedJittered(startMs.millis, maxMs.millis, rng)
+            .take(10)
+            .force
+            .toSeq
 
         // 5ms and then randos between 5ms and 3x the previous value (capped at `maximum`)
         assert(startMs.millis == backoffs.head)
@@ -145,11 +148,16 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("from function") {
     forAll { seed: Long =>
       val fRng, rng = Rng(seed)
-      val f: () => Duration = () => {
-        Duration.fromNanoseconds(fRng.nextLong(10))
-      }
-      val backoffs =
-        Backoff.fromFunction(f).take(10).force.toSeq.map(_.inNanoseconds)
+      val f: () => Duration =
+        () => {
+          Duration.fromNanoseconds(fRng.nextLong(10))
+        }
+      val backoffs = Backoff
+        .fromFunction(f)
+        .take(10)
+        .force
+        .toSeq
+        .map(_.inNanoseconds)
       backoffs.foreach { b =>
         assert(b == rng.nextLong(10))
       }

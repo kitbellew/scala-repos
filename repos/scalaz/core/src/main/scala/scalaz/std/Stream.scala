@@ -9,114 +9,115 @@ trait StreamInstances {
     with Unzip[Stream]
     with Align[Stream]
     with IsEmpty[Stream]
-    with Cobind[Stream] = new Traverse[Stream]
-    with MonadPlus[Stream]
-    with BindRec[Stream]
-    with Zip[Stream]
-    with Unzip[Stream]
-    with Align[Stream]
-    with IsEmpty[Stream]
-    with Cobind[Stream] {
-    override def cojoin[A](a: Stream[A]) = a.tails.toStream.init
-    def cobind[A, B](fa: Stream[A])(f: Stream[A] => B): Stream[B] =
-      map(cojoin(fa))(f)
-    def traverseImpl[G[_], A, B](fa: Stream[A])(f: A => G[B])(
-        implicit G: Applicative[G]): G[Stream[B]] = {
-      val seed: G[Stream[B]] = G.point(Stream[B]())
+    with Cobind[Stream] =
+    new Traverse[Stream]
+      with MonadPlus[Stream]
+      with BindRec[Stream]
+      with Zip[Stream]
+      with Unzip[Stream]
+      with Align[Stream]
+      with IsEmpty[Stream]
+      with Cobind[Stream] {
+      override def cojoin[A](a: Stream[A]) = a.tails.toStream.init
+      def cobind[A, B](fa: Stream[A])(f: Stream[A] => B): Stream[B] =
+        map(cojoin(fa))(f)
+      def traverseImpl[G[_], A, B](fa: Stream[A])(f: A => G[B])(
+          implicit G: Applicative[G]): G[Stream[B]] = {
+        val seed: G[Stream[B]] = G.point(Stream[B]())
 
-      foldRight(fa, seed) { (x, ys) =>
-        G.apply2(f(x), ys)((b, bs) => b #:: bs)
-      }
-    }
-
-    override def length[A](fa: Stream[A]) = fa.length
-    override def index[A](fa: Stream[A], i: Int) = {
-      var n = 0
-      var k: Option[A] = None
-      val it = fa.iterator
-      while (it.hasNext && k.isEmpty) {
-        val z = it.next()
-        if (n == i)
-          k = Some(z)
-        n = n + 1
+        foldRight(fa, seed) { (x, ys) =>
+          G.apply2(f(x), ys)((b, bs) => b #:: bs)
+        }
       }
 
-      k
-    }
+      override def length[A](fa: Stream[A]) = fa.length
+      override def index[A](fa: Stream[A], i: Int) = {
+        var n = 0
+        var k: Option[A] = None
+        val it = fa.iterator
+        while (it.hasNext && k.isEmpty) {
+          val z = it.next()
+          if (n == i)
+            k = Some(z)
+          n = n + 1
+        }
 
-    override def foldLeft[A, B](fa: Stream[A], z: B)(f: (B, A) => B): B =
-      fa.foldLeft(z)(f)
-
-    override def foldMap[A, B](fa: Stream[A])(f: A => B)(
-        implicit M: Monoid[B]) =
-      this.foldRight(fa, M.zero)((a, b) => M.append(f(a), b))
-
-    override def foldRight[A, B](fa: Stream[A], z: => B)(f: (A, => B) => B): B =
-      if (fa.isEmpty)
-        z
-      else
-        f(fa.head, foldRight(fa.tail, z)(f))
-
-    override def toStream[A](fa: Stream[A]) = fa
-
-    override def zipWithL[A, B, C](fa: Stream[A], fb: Stream[B])(
-        f: (A, Option[B]) => C) =
-      if (fa.isEmpty)
-        Stream.Empty
-      else {
-        val bTail =
-          if (fb.isEmpty)
-            Stream.Empty
-          else
-            fb.tail
-        Stream.cons(f(fa.head, fb.headOption), zipWithL(fa.tail, bTail)(f))
+        k
       }
 
-    override def zipWithR[A, B, C](fa: Stream[A], fb: Stream[B])(
-        f: (Option[A], B) => C) =
-      zipWithL(fb, fa)((b, a) => f(a, b))
+      override def foldLeft[A, B](fa: Stream[A], z: B)(f: (B, A) => B): B =
+        fa.foldLeft(z)(f)
 
-    override def filter[A](fa: Stream[A])(p: A => Boolean): Stream[A] =
-      fa filter p
+      override def foldMap[A, B](fa: Stream[A])(f: A => B)(
+          implicit M: Monoid[B]) =
+        this.foldRight(fa, M.zero)((a, b) => M.append(f(a), b))
 
-    def bind[A, B](fa: Stream[A])(f: A => Stream[B]) = fa flatMap f
-    def empty[A]: Stream[A] = scala.Stream.empty
-    def plus[A](a: Stream[A], b: => Stream[A]) = a #::: b
-    def isEmpty[A](s: Stream[A]) = s.isEmpty
-    def point[A](a: => A) = scala.Stream(a)
-    def zip[A, B](a: => Stream[A], b: => Stream[B]) = {
-      val _a = a
-      if (_a.isEmpty)
-        Stream.Empty
-      else
-        _a zip b
-    }
-    def unzip[A, B](a: Stream[(A, B)]) = a.unzip
-
-    def alignWith[A, B, C](
-        f: A \&/ B => C): (Stream[A], Stream[B]) => Stream[C] =
-      (a, b) =>
-        if (b.isEmpty)
-          a.map(x => f(\&/.This(x)))
-        else if (a.isEmpty)
-          b.map(x => f(\&/.That(x)))
+      override def foldRight[A, B](fa: Stream[A], z: => B)(
+          f: (A, => B) => B): B =
+        if (fa.isEmpty)
+          z
         else
-          f(\&/.Both(a.head, b.head)) #:: alignWith(f)(a.tail, b.tail)
+          f(fa.head, foldRight(fa.tail, z)(f))
 
-    def tailrecM[A, B](f: A => Stream[A \/ B])(a: A): Stream[B] = {
-      def go(s: Stream[A \/ B]): Stream[B] = {
-        @annotation.tailrec
-        def rec(abs: Stream[A \/ B]): Stream[B] =
-          abs match {
-            case \/-(b) #:: tail => b #:: go(tail)
-            case -\/(a) #:: tail => rec(f(a) #::: tail)
-            case Stream.Empty    => Stream.Empty
-          }
-        rec(s)
+      override def toStream[A](fa: Stream[A]) = fa
+
+      override def zipWithL[A, B, C](fa: Stream[A], fb: Stream[B])(
+          f: (A, Option[B]) => C) =
+        if (fa.isEmpty)
+          Stream.Empty
+        else {
+          val bTail =
+            if (fb.isEmpty)
+              Stream.Empty
+            else
+              fb.tail
+          Stream.cons(f(fa.head, fb.headOption), zipWithL(fa.tail, bTail)(f))
+        }
+
+      override def zipWithR[A, B, C](fa: Stream[A], fb: Stream[B])(
+          f: (Option[A], B) => C) = zipWithL(fb, fa)((b, a) => f(a, b))
+
+      override def filter[A](fa: Stream[A])(p: A => Boolean): Stream[A] =
+        fa filter p
+
+      def bind[A, B](fa: Stream[A])(f: A => Stream[B]) = fa flatMap f
+      def empty[A]: Stream[A] = scala.Stream.empty
+      def plus[A](a: Stream[A], b: => Stream[A]) = a #::: b
+      def isEmpty[A](s: Stream[A]) = s.isEmpty
+      def point[A](a: => A) = scala.Stream(a)
+      def zip[A, B](a: => Stream[A], b: => Stream[B]) = {
+        val _a = a
+        if (_a.isEmpty)
+          Stream.Empty
+        else
+          _a zip b
       }
-      go(f(a))
+      def unzip[A, B](a: Stream[(A, B)]) = a.unzip
+
+      def alignWith[A, B, C](
+          f: A \&/ B => C): (Stream[A], Stream[B]) => Stream[C] =
+        (a, b) =>
+          if (b.isEmpty)
+            a.map(x => f(\&/.This(x)))
+          else if (a.isEmpty)
+            b.map(x => f(\&/.That(x)))
+          else
+            f(\&/.Both(a.head, b.head)) #:: alignWith(f)(a.tail, b.tail)
+
+      def tailrecM[A, B](f: A => Stream[A \/ B])(a: A): Stream[B] = {
+        def go(s: Stream[A \/ B]): Stream[B] = {
+          @annotation.tailrec
+          def rec(abs: Stream[A \/ B]): Stream[B] =
+            abs match {
+              case \/-(b) #:: tail => b #:: go(tail)
+              case -\/(a) #:: tail => rec(f(a) #::: tail)
+              case Stream.Empty    => Stream.Empty
+            }
+          rec(s)
+        }
+        go(f(a))
+      }
     }
-  }
 
   import Tags.Zip
 

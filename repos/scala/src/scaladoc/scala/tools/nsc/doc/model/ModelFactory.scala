@@ -51,12 +51,13 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
   private var universe: Universe = null
 
   def makeModel: Option[Universe] = {
-    val universe = new Universe { thisUniverse =>
-      thisFactory.universe = thisUniverse
-      val settings = thisFactory.settings
-      val rootPackage = modelCreation.createRootPackage
-      lazy val dotRunner = new DotRunner(settings)
-    }
+    val universe =
+      new Universe { thisUniverse =>
+        thisFactory.universe = thisUniverse
+        val settings = thisFactory.settings
+        val rootPackage = modelCreation.createRootPackage
+        lazy val dotRunner = new DotRunner(settings)
+      }
     _modelFinished = true
     // complete the links between model entities, everything that couldn't have been done before
     universe.rootPackage.completeModel()
@@ -438,8 +439,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         dtpl: DocTemplateImpl,
         conv: ImplicitConversionImpl): Unit = {
       if (implicitlyConvertibleClassesCache == null)
-        implicitlyConvertibleClassesCache =
-          mutable.ListBuffer[(DocTemplateImpl, ImplicitConversionImpl)]()
+        implicitlyConvertibleClassesCache = mutable
+          .ListBuffer[(DocTemplateImpl, ImplicitConversionImpl)]()
       implicitlyConvertibleClassesCache += ((dtpl, conv))
     }
 
@@ -682,8 +683,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
     override def qualifiedName = optimize(inTemplate.qualifiedName + "#" + name)
     lazy val definitionName = {
-      val qualifiedName = conversion.fold(
-        inDefinitionTemplates.head.qualifiedName)(_.conversionQualifiedName)
+      val qualifiedName =
+        conversion.fold(inDefinitionTemplates.head.qualifiedName)(
+          _.conversionQualifiedName)
       optimize(qualifiedName + "#" + name)
     }
     def isUseCase = useCaseOf.isDefined
@@ -773,8 +775,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
   trait HigherKindedImpl extends HigherKinded {
     def sym: Symbol
     def inTpl: TemplateImpl
-    def typeParams =
-      sym.typeParams map (makeTypeParam(_, inTpl))
+    def typeParams = sym.typeParams map (makeTypeParam(_, inTpl))
   }
   /* ============== MAKER METHODS ============== */
 
@@ -854,8 +855,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           import Streamable._
           Path(settings.docRootContent.value) match {
             case f: File => {
-              val rootComment = closing(f.inputStream())(is =>
-                parse(slurp(is), "", NoPosition, inTpl))
+              val rootComment =
+                closing(f.inputStream())(is =>
+                  parse(slurp(is), "", NoPosition, inTpl))
               Some(rootComment)
             }
             case _ => None
@@ -1008,13 +1010,14 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       else if (bSym.isMethod && !bSym.hasAccessorFlag && !bSym.isConstructor && !bSym.isModule) {
         val cSym = { // This unsightly hack closes issue #4086.
           if (bSym == definitions.Object_synchronized) {
-            val cSymInfo = (bSym.info: @unchecked) match {
-              case PolyType(ts, MethodType(List(bp), mt)) =>
-                val cp = bp.cloneSymbol
-                  .setPos(bp.pos)
-                  .setInfo(definitions.byNameType(bp.info))
-                PolyType(ts, MethodType(List(cp), mt))
-            }
+            val cSymInfo =
+              (bSym.info: @unchecked) match {
+                case PolyType(ts, MethodType(List(bp), mt)) =>
+                  val cp = bp.cloneSymbol
+                    .setPos(bp.pos)
+                    .setInfo(definitions.byNameType(bp.info))
+                  PolyType(ts, MethodType(List(cp), mt))
+              }
             bSym.cloneSymbol.setPos(bSym.pos).setInfo(cSymInfo)
           } else
             bSym
@@ -1117,17 +1120,17 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     val aSym = annot.symbol
     new EntityImpl(aSym, makeTemplate(aSym.owner))
       with scala.tools.nsc.doc.model.Annotation {
-      lazy val annotationClass =
-        makeTemplate(annot.symbol)
+      lazy val annotationClass = makeTemplate(annot.symbol)
       val arguments = {
-        val paramsOpt: Option[List[ValueParam]] = annotationClass match {
-          case aClass: DocTemplateEntity with Class =>
-            val constr = aClass.constructors collectFirst {
-              case c: MemberImpl if c.sym == annot.original.symbol => c
-            }
-            constr flatMap (_.valueParams.headOption)
-          case _ => None
-        }
+        val paramsOpt: Option[List[ValueParam]] =
+          annotationClass match {
+            case aClass: DocTemplateEntity with Class =>
+              val constr = aClass.constructors collectFirst {
+                case c: MemberImpl if c.sym == annot.original.symbol => c
+              }
+              constr flatMap (_.valueParams.headOption)
+            case _ => None
+          }
         val argTrees = annot.args map makeTree
         paramsOpt match {
           case Some(params) =>
@@ -1200,8 +1203,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           }
         } else
           None
-      def resultType =
-        makeTypeInTemplateContext(aSym.tpe, inTpl, aSym)
+      def resultType = makeTypeInTemplateContext(aSym.tpe, inTpl, aSym)
       def isImplicit = aSym.isImplicit
     }
 

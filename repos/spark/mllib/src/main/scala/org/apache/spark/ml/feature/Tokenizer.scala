@@ -78,11 +78,12 @@ class RegexTokenizer(override val uid: String)
     * Default: 1, to avoid returning empty strings
     * @group param
     */
-  val minTokenLength: IntParam = new IntParam(
-    this,
-    "minTokenLength",
-    "minimum token length (>= 0)",
-    ParamValidators.gtEq(0))
+  val minTokenLength: IntParam =
+    new IntParam(
+      this,
+      "minTokenLength",
+      "minimum token length (>= 0)",
+      ParamValidators.gtEq(0))
 
   /** @group setParam */
   def setMinTokenLength(value: Int): this.type = set(minTokenLength, value)
@@ -123,10 +124,11 @@ class RegexTokenizer(override val uid: String)
     * Default: true
     * @group param
     */
-  final val toLowercase: BooleanParam = new BooleanParam(
-    this,
-    "toLowercase",
-    "whether to convert all characters to lowercase before tokenizing.")
+  final val toLowercase: BooleanParam =
+    new BooleanParam(
+      this,
+      "toLowercase",
+      "whether to convert all characters to lowercase before tokenizing.")
 
   /** @group setParam */
   def setToLowercase(value: Boolean): this.type = set(toLowercase, value)

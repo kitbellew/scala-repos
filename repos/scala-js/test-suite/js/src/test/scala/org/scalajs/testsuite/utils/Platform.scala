@@ -23,8 +23,7 @@ object Platform {
   // Members that are only accessible from testSuite/js
   // (i.e. do no link on the JVM).
 
-  def areTypedArraysSupported: Boolean =
-    runtime.Bits.areTypedArraysSupported
+  def areTypedArraysSupported: Boolean = runtime.Bits.areTypedArraysSupported
 
   def executingInRhino: Boolean = sysProp("rhino")
   def executingInNodeJS: Boolean = sysProp("nodejs")

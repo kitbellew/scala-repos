@@ -31,28 +31,30 @@ object CompilerData {
     val target = chunk.representativeTarget
     val module = target.getModule
 
-    val compilerJars = if (SettingsManager.hasScalaSdk(module)) {
-      compilerJarsIn(module).flatMap {
-        case jars: CompilerJars =>
-          val absentJars = jars.files.filter(!_.exists)
-          Either.cond(
-            absentJars.isEmpty,
-            Some(jars),
-            "Scala compiler JARs not found (module '" + chunk
-              .representativeTarget()
-              .getModule
-              .getName + "'): "
-              + absentJars.map(_.getPath).mkString(", ")
-          )
+    val compilerJars =
+      if (SettingsManager.hasScalaSdk(module)) {
+        compilerJarsIn(module).flatMap {
+          case jars: CompilerJars =>
+            val absentJars = jars.files.filter(!_.exists)
+            Either.cond(
+              absentJars.isEmpty,
+              Some(jars),
+              "Scala compiler JARs not found (module '" + chunk
+                .representativeTarget()
+                .getModule
+                .getName + "'): "
+                + absentJars.map(_.getPath).mkString(", ")
+            )
+        }
+      } else {
+        Right(None)
       }
-    } else {
-      Right(None)
-    }
 
     compilerJars.flatMap { jars =>
-      val incrementalityType = SettingsManager
-        .getProjectSettings(project.getProject)
-        .getIncrementalityType
+      val incrementalityType =
+        SettingsManager
+          .getProjectSettings(project.getProject)
+          .getIncrementalityType
       javaHome(context, module).map(CompilerData(jars, _, incrementalityType))
     }
   }
@@ -72,9 +74,10 @@ object CompilerData {
           if (globalSettings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
                 .get(context) != null) {
             Option(globalSettings.getCompileServerSdk).flatMap { sdkName =>
-              val libraries = model.getGlobal.getLibraryCollection
-                .getLibraries(JpsJavaSdkType.INSTANCE)
-                .asScala
+              val libraries =
+                model.getGlobal.getLibraryCollection
+                  .getLibraries(JpsJavaSdkType.INSTANCE)
+                  .asScala
               libraries.find(_.getName == sdkName).map(_.getProperties)
             }
           } else {
@@ -117,23 +120,26 @@ object CompilerData {
     val files =
       sdk.getProperties.asInstanceOf[LibrarySettings].getCompilerClasspath
 
-    val library = find(files, "scala-library", ".jar") match {
-      case Left(error) =>
-        Left(error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
-      case right => right
-    }
-
-    library.flatMap { libraryJar =>
-      val compiler = find(files, "scala-compiler", ".jar") match {
+    val library =
+      find(files, "scala-library", ".jar") match {
         case Left(error) =>
           Left(
             error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
         case right => right
       }
 
+    library.flatMap { libraryJar =>
+      val compiler =
+        find(files, "scala-compiler", ".jar") match {
+          case Left(error) =>
+            Left(
+              error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
+          case right => right
+        }
+
       compiler.flatMap { compilerJar =>
-        val extraJars =
-          files.filterNot(file => file == libraryJar || file == compilerJar)
+        val extraJars = files.filterNot(file =>
+          file == libraryJar || file == compilerJar)
 
         val reflectJarError = {
           readProperty(compilerJar, "compiler.properties", "version.number")

@@ -71,22 +71,24 @@ object UnboxedBenchmark extends App {
       len: Long,
       converter: ResultConverter[JdbcResultConverterDomain, _])
       : PositionedResultIterator[Any] = {
-    val fakeRS = new DelegateResultSet(null) {
-      var count: Long = 0
-      var lastIndex: Int = 0
-      override def next() = {
-        count += 1
-        count <= len
+    val fakeRS =
+      new DelegateResultSet(null) {
+        var count: Long = 0
+        var lastIndex: Int = 0
+        override def next() = {
+          count += 1
+          count <= len
+        }
+        override def getInt(columnIndex: Int): Int = {
+          lastIndex = columnIndex
+          columnIndex
+        }
+        override def wasNull(): Boolean = lastIndex >= 3
       }
-      override def getInt(columnIndex: Int): Int = {
-        lastIndex = columnIndex
-        columnIndex
+    val pr =
+      new PositionedResult(fakeRS) {
+        def close() {}
       }
-      override def wasNull(): Boolean = lastIndex >= 3
-    }
-    val pr = new PositionedResult(fakeRS) {
-      def close() {}
-    }
     new PositionedResultIterator[Any](pr, 0, true) {
       def extractValue(pr: PositionedResult) = converter.read(rs)
     }

@@ -66,8 +66,8 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
       // This will be used to delete old checkpoint files
       timeToCheckpointFile ++= currentCheckpointFiles
       // Remember the time of the oldest checkpoint RDD in current state
-      timeToOldestCheckpointFileTime(time) =
-        currentCheckpointFiles.keys.min(Time.ordering)
+      timeToOldestCheckpointFileTime(time) = currentCheckpointFiles.keys.min(
+        Time.ordering)
     }
   }
 
@@ -83,8 +83,8 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
         // Find all the checkpointed RDDs (i.e. files) that are older than `lastCheckpointFileTime`
         // This is because checkpointed RDDs older than this are not going to be needed
         // even after master fails, as the checkpoint data of `time` does not refer to those files
-        val filesToDelete =
-          timeToCheckpointFile.filter(_._1 < lastCheckpointFileTime)
+        val filesToDelete = timeToCheckpointFile.filter(
+          _._1 < lastCheckpointFileTime)
         logDebug("Files to delete:\n" + filesToDelete.mkString(","))
         filesToDelete.foreach {
           case (time, file) =>

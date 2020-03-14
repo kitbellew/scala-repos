@@ -46,8 +46,10 @@ trait NormalizationHelperModule[M[+_]]
     trait NormalizationHelper {
       import TransSpecModule._
 
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JObjectUnfixedT, JType.JUniverseT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JObjectUnfixedT,
+        JType.JUniverseT)
 
       case class Stats(mean: BigDecimal, stdDev: BigDecimal)
       case class RowValueWithStats(rowValue: BigDecimal, stats: Stats)
@@ -62,17 +64,18 @@ trait NormalizationHelperModule[M[+_]]
       // Ported over from Switzer's exponential smoothing branch.
       // Need to put in common place!
       def unifyNumColumns(cols: Iterable[Column]): NumColumn = {
-        val cols0: Array[NumColumn] = cols.collect({
-          case (col: LongColumn) =>
-            new Map1Column(col) with NumColumn {
-              def apply(row: Int) = BigDecimal(col(row))
-            }
-          case (col: DoubleColumn) =>
-            new Map1Column(col) with NumColumn {
-              def apply(row: Int) = BigDecimal(col(row))
-            }
-          case (col: NumColumn) => col
-        })(collection.breakOut)
+        val cols0: Array[NumColumn] =
+          cols.collect({
+            case (col: LongColumn) =>
+              new Map1Column(col) with NumColumn {
+                def apply(row: Int) = BigDecimal(col(row))
+              }
+            case (col: DoubleColumn) =>
+              new Map1Column(col) with NumColumn {
+                def apply(row: Int) = BigDecimal(col(row))
+              }
+            case (col: NumColumn) => col
+          })(collection.breakOut)
 
         new UnionLotsColumn[NumColumn](cols0) with NumColumn {
           def apply(row: Int): BigDecimal = {
@@ -177,8 +180,8 @@ trait NormalizationHelperModule[M[+_]]
                 ctype.isNumeric
             }
 
-            val groupedCols: Map[CPath, Map[ColumnRef, Column]] =
-              numericCols.groupBy {
+            val groupedCols: Map[CPath, Map[ColumnRef, Column]] = numericCols
+              .groupBy {
                 case (ColumnRef(selector, _), _) => selector
               }
 
@@ -198,14 +201,15 @@ trait NormalizationHelperModule[M[+_]]
                   val mean = singleSummary(suffix).mean
                   val stdDev = singleSummary(suffix).stdDev
 
-                  val newColumn = new Map1Column(col) with NumColumn {
-                    def value(row: Int) =
-                      RowValueWithStats(
-                        col(row).addContext,
-                        Stats(mean.addContext, stdDev.addContext))
+                  val newColumn =
+                    new Map1Column(col) with NumColumn {
+                      def value(row: Int) =
+                        RowValueWithStats(
+                          col(row).addContext,
+                          Stats(mean.addContext, stdDev.addContext))
 
-                    def apply(row: Int) = f(value(row))
-                  }
+                      def apply(row: Int) = f(value(row))
+                    }
 
                   (ColumnRef(selector, ctype), newColumn)
                 }
@@ -244,8 +248,9 @@ trait NormalizationHelperModule[M[+_]]
           }
         }
 
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Cross, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Cross,
+        alignCustom _)
 
       def morph1Apply(summary: Result): Morph1Apply
 

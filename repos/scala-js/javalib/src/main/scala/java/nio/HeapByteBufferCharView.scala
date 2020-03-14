@@ -21,12 +21,10 @@ private[nio] final class HeapByteBufferCharView private (
   def isDirect(): Boolean = false
 
   @noinline
-  def slice(): CharBuffer =
-    GenHeapBufferView(this).generic_slice()
+  def slice(): CharBuffer = GenHeapBufferView(this).generic_slice()
 
   @noinline
-  def duplicate(): CharBuffer =
-    GenHeapBufferView(this).generic_duplicate()
+  def duplicate(): CharBuffer = GenHeapBufferView(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): CharBuffer =
@@ -46,16 +44,13 @@ private[nio] final class HeapByteBufferCharView private (
   }
 
   @noinline
-  def get(): Char =
-    GenBuffer(this).generic_get()
+  def get(): Char = GenBuffer(this).generic_get()
 
   @noinline
-  def put(c: Char): CharBuffer =
-    GenBuffer(this).generic_put(c)
+  def put(c: Char): CharBuffer = GenBuffer(this).generic_put(c)
 
   @noinline
-  def get(index: Int): Char =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Char = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, c: Char): CharBuffer =
@@ -70,12 +65,10 @@ private[nio] final class HeapByteBufferCharView private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): CharBuffer =
-    GenHeapBufferView(this).generic_compact()
+  def compact(): CharBuffer = GenHeapBufferView(this).generic_compact()
 
   @noinline
-  def order(): ByteOrder =
-    GenHeapBufferView(this).generic_order()
+  def order(): ByteOrder = GenHeapBufferView(this).generic_order()
 
   // Private API
 

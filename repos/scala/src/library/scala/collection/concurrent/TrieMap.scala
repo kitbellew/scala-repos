@@ -444,29 +444,30 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
         else {
           val pos = Integer.bitCount(bmp & (flag - 1))
           val sub = cn.array(pos)
-          val res = sub match {
-            case in: INode[K, V] =>
-              if (startgen eq in.gen)
-                in.rec_remove(k, v, hc, lev + 5, this, startgen, ct)
-              else {
-                if (GCAS(cn, cn.renewed(startgen, ct), ct))
-                  rec_remove(k, v, hc, lev, parent, startgen, ct)
-                else
-                  null
-              }
-            case sn: SNode[K, V] =>
-              if (sn.hc == hc && equal(
-                    sn.k,
-                    k,
-                    ct) && (v == null || sn.v == v)) {
-                val ncn = cn.removedAt(pos, flag, gen).toContracted(lev)
-                if (GCAS(cn, ncn, ct))
-                  Some(sn.v)
-                else
-                  null
-              } else
-                None
-          }
+          val res =
+            sub match {
+              case in: INode[K, V] =>
+                if (startgen eq in.gen)
+                  in.rec_remove(k, v, hc, lev + 5, this, startgen, ct)
+                else {
+                  if (GCAS(cn, cn.renewed(startgen, ct), ct))
+                    rec_remove(k, v, hc, lev, parent, startgen, ct)
+                  else
+                    null
+                }
+              case sn: SNode[K, V] =>
+                if (sn.hc == hc && equal(
+                      sn.k,
+                      k,
+                      ct) && (v == null || sn.v == v)) {
+                  val ncn = cn.removedAt(pos, flag, gen).toContracted(lev)
+                  if (GCAS(cn, ncn, ct))
+                    Some(sn.v)
+                  else
+                    null
+                } else
+                  None
+            }
 
           if (res == None || (res eq null))
             res

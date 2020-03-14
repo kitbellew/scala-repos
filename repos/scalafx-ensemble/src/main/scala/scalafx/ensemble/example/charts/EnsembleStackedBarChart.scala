@@ -54,18 +54,21 @@ class EnsembleStackedBarChart extends EnsembleExample {
     def xyData(ys: Seq[Number]) =
       ObservableBuffer(years zip ys map (xy => XYChart.Data(xy._1, xy._2)))
 
-    val series1 = new XYChart.Series[String, Number] {
-      name = "Region 1"
-      data = xyData(Seq(567d, 1292d, 1292d))
-    }
-    val series2 = new XYChart.Series[String, Number] {
-      name = "Region 2"
-      data = xyData(Seq(956, 1665, 2559))
-    }
-    val series3 = new XYChart.Series[String, Number] {
-      name = "Region 3"
-      data = xyData(Seq(1154, 1927, 2774))
-    }
+    val series1 =
+      new XYChart.Series[String, Number] {
+        name = "Region 1"
+        data = xyData(Seq(567d, 1292d, 1292d))
+      }
+    val series2 =
+      new XYChart.Series[String, Number] {
+        name = "Region 2"
+        data = xyData(Seq(956, 1665, 2559))
+      }
+    val series3 =
+      new XYChart.Series[String, Number] {
+        name = "Region 3"
+        data = xyData(Seq(1154, 1927, 2774))
+      }
 
     new StackedBarChart[String, Number](xAxis, yAxis) {
       data() ++= Seq(series1, series2, series3)

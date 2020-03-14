@@ -55,21 +55,22 @@ class OperatorAndBacktickedSearcher
     }
     toProcess.foreach {
       case (elem, name) =>
-        val processor = new TextOccurenceProcessor {
-          def execute(element: PsiElement, offsetInElement: Int): Boolean = {
-            val references = inReadAction(element.getReferences)
-            for (ref <- references
-                 if ref.getRangeInElement.contains(offsetInElement)) {
-              inReadAction {
-                if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
-                  if (!consumer.process(ref))
-                    return false
+        val processor =
+          new TextOccurenceProcessor {
+            def execute(element: PsiElement, offsetInElement: Int): Boolean = {
+              val references = inReadAction(element.getReferences)
+              for (ref <- references
+                   if ref.getRangeInElement.contains(offsetInElement)) {
+                inReadAction {
+                  if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
+                    if (!consumer.process(ref))
+                      return false
+                  }
                 }
               }
+              true
             }
-            true
           }
-        }
         val helper: PsiSearchHelper =
           new ScalaPsiSearchHelper(manager.asInstanceOf[PsiManagerEx])
         try {
@@ -99,10 +100,11 @@ class OperatorAndBacktickedSearcher
         return true
       val collectProcessor: CommonProcessors.CollectProcessor[VirtualFile] =
         new CommonProcessors.CollectProcessor[VirtualFile]
-      val checker = new Condition[Integer] {
-        def value(integer: Integer): Boolean =
-          (integer.intValue & searchContext) != 0
-      }
+      val checker =
+        new Condition[Integer] {
+          def value(integer: Integer): Boolean =
+            (integer.intValue & searchContext) != 0
+        }
       inReadAction {
         FileBasedIndex.getInstance.processFilesContainingAllKeys(
           IdIndex.NAME,
@@ -111,8 +113,8 @@ class OperatorAndBacktickedSearcher
           checker,
           collectProcessor)
       }
-      val index: FileIndexFacade =
-        FileIndexFacade.getInstance(manager.getProject)
+      val index: FileIndexFacade = FileIndexFacade.getInstance(
+        manager.getProject)
       ContainerUtil.process(
         collectProcessor.getResults,
         new ReadActionProcessor[VirtualFile] {

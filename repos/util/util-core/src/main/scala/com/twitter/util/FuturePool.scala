@@ -41,9 +41,10 @@ object FuturePool {
     * A [[FuturePool]] that really isn't; it executes tasks immediately
     * without waiting.  This can be useful in unit tests.
     */
-  val immediatePool: FuturePool = new FuturePool {
-    def apply[T](f: => T): Future[T] = Future(f)
-  }
+  val immediatePool: FuturePool =
+    new FuturePool {
+      def apply[T](f: => T): Future[T] = Future(f)
+    }
 
   private lazy val defaultExecutor = Executors.newCachedThreadPool(
     new NamedPoolThreadFactory("UnboundedFuturePool", makeDaemons = true)
@@ -95,30 +96,31 @@ class ExecutorServiceFuturePool protected[this] (
   def apply[T](f: => T): Future[T] = {
     val runOk = new AtomicBoolean(true)
     val p = new Promise[T]
-    val task = new Runnable {
-      private[this] val saved = Local.save()
+    val task =
+      new Runnable {
+        private[this] val saved = Local.save()
 
-      def run(): Unit = {
-        // Make an effort to skip work in the case the promise
-        // has been cancelled or already defined.
-        if (!runOk.compareAndSet(true, false))
-          return
+        def run(): Unit = {
+          // Make an effort to skip work in the case the promise
+          // has been cancelled or already defined.
+          if (!runOk.compareAndSet(true, false))
+            return
 
-        val current = Local.save()
-        Local.restore(saved)
+          val current = Local.save()
+          Local.restore(saved)
 
-        try p.updateIfEmpty(Try(f))
-        catch {
-          case nlrc: NonLocalReturnControl[_] =>
-            val fnlrc = new FutureNonLocalReturnControl(nlrc)
-            p.updateIfEmpty(Throw(fnlrc))
-            throw fnlrc
-          case e: Throwable =>
-            p.updateIfEmpty(Throw(new ExecutionException(e)))
-            throw e
-        } finally Local.restore(current)
+          try p.updateIfEmpty(Try(f))
+          catch {
+            case nlrc: NonLocalReturnControl[_] =>
+              val fnlrc = new FutureNonLocalReturnControl(nlrc)
+              p.updateIfEmpty(Throw(fnlrc))
+              throw fnlrc
+            case e: Throwable =>
+              p.updateIfEmpty(Throw(new ExecutionException(e)))
+              throw e
+          } finally Local.restore(current)
+        }
       }
-    }
 
     // This is safe: the only thing that can call task.run() is
     // executor, the only thing that can raise an interrupt is the

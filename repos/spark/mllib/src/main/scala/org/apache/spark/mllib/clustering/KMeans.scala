@@ -252,27 +252,29 @@ class KMeans private (
     val initStartTime = System.nanoTime()
 
     // Only one run is allowed when initialModel is given
-    val numRuns = if (initialModel.nonEmpty) {
-      if (runs > 1)
-        logWarning(
-          "Ignoring runs; one run is allowed when initialModel is given.")
-      1
-    } else {
-      runs
-    }
-
-    val centers = initialModel match {
-      case Some(kMeansCenters) => {
-        Array(kMeansCenters.clusterCenters.map(s => new VectorWithNorm(s)))
+    val numRuns =
+      if (initialModel.nonEmpty) {
+        if (runs > 1)
+          logWarning(
+            "Ignoring runs; one run is allowed when initialModel is given.")
+        1
+      } else {
+        runs
       }
-      case None => {
-        if (initializationMode == KMeans.RANDOM) {
-          initRandom(data)
-        } else {
-          initKMeansParallel(data)
+
+    val centers =
+      initialModel match {
+        case Some(kMeansCenters) => {
+          Array(kMeansCenters.clusterCenters.map(s => new VectorWithNorm(s)))
+        }
+        case None => {
+          if (initializationMode == KMeans.RANDOM) {
+            initRandom(data)
+          } else {
+            initKMeansParallel(data)
+          }
         }
       }
-    }
     val initTimeInSeconds = (System.nanoTime() - initStartTime) / 1e9
     logInfo(
       s"Initialization with $initializationMode took " + "%.3f".format(
@@ -313,8 +315,9 @@ class KMeans private (
 
           points.foreach { point =>
             (0 until runs).foreach { i =>
-              val (bestCenter, cost) =
-                KMeans.findClosest(thisActiveCenters(i), point)
+              val (bestCenter, cost) = KMeans.findClosest(
+                thisActiveCenters(i),
+                point)
               costAccums(i) += cost
               val sum = sums(i)(bestCenter)
               axpy(1.0, point.vector, sum)
@@ -388,9 +391,10 @@ class KMeans private (
   private def initRandom(
       data: RDD[VectorWithNorm]): Array[Array[VectorWithNorm]] = {
     // Sample all the cluster centers in one pass to avoid repeated scans
-    val sample = data
-      .takeSample(true, runs * k, new XORShiftRandom(this.seed).nextInt())
-      .toSeq
+    val sample =
+      data
+        .takeSample(true, runs * k, new XORShiftRandom(this.seed).nextInt())
+        .toSeq
     Array.tabulate(runs)(r =>
       sample
         .slice(r * k, (r + 1) * k)
@@ -446,27 +450,28 @@ class KMeans private (
             }
         }
         .persist(StorageLevel.MEMORY_AND_DISK)
-      val sumCosts = costs
-        .aggregate(new Array[Double](runs))(
-          seqOp = (s, v) => {
-            // s += v
-            var r = 0
-            while (r < runs) {
-              s(r) += v(r)
-              r += 1
+      val sumCosts =
+        costs
+          .aggregate(new Array[Double](runs))(
+            seqOp = (s, v) => {
+              // s += v
+              var r = 0
+              while (r < runs) {
+                s(r) += v(r)
+                r += 1
+              }
+              s
+            },
+            combOp = (s0, s1) => {
+              // s0 += s1
+              var r = 0
+              while (r < runs) {
+                s0(r) += s1(r)
+                r += 1
+              }
+              s0
             }
-            s
-          },
-          combOp = (s0, s1) => {
-            // s0 += s1
-            var r = 0
-            while (r < runs) {
-              s0(r) += s1(r)
-              r += 1
-            }
-            s0
-          }
-        )
+          )
 
       bcNewCenters.unpersist(blocking = false)
       preCosts.unpersist(blocking = false)
@@ -515,9 +520,10 @@ class KMeans private (
 
     val finalCenters = (0 until runs).par.map { r =>
       val myCenters = centers(r).toArray
-      val myWeights = (0 until myCenters.length)
-        .map(i => weightMap.getOrElse((r, i), 0.0))
-        .toArray
+      val myWeights =
+        (0 until myCenters.length)
+          .map(i => weightMap.getOrElse((r, i), 0.0))
+          .toArray
       LocalKMeans.kMeansPlusPlus(r, myCenters, myWeights, k, 30)
     }
 
@@ -644,8 +650,7 @@ object KMeans {
     */
   private[mllib] def pointCost(
       centers: TraversableOnce[VectorWithNorm],
-      point: VectorWithNorm): Double =
-    findClosest(centers, point)._2
+      point: VectorWithNorm): Double = findClosest(centers, point)._2
 
   /**
     * Returns the squared Euclidean distance between two vectors computed by

@@ -199,11 +199,12 @@ object WorksheetUiConstructor {
   def fixUnboundMaxSize(comp: JComponent, isSquare: Boolean = true) {
     val preferredSize = comp.getPreferredSize
 
-    val size = if (isSquare) {
-      val sqSize = Math.max(preferredSize.width, preferredSize.height)
-      new Dimension(sqSize, sqSize)
-    } else
-      new Dimension(preferredSize.width, preferredSize.height)
+    val size =
+      if (isSquare) {
+        val sqSize = Math.max(preferredSize.width, preferredSize.height)
+        new Dimension(sqSize, sqSize)
+      } else
+        new Dimension(preferredSize.width, preferredSize.height)
 
     comp setMaximumSize size
   }
@@ -214,9 +215,10 @@ object WorksheetUiConstructor {
 
   def createSplitter() = {
     val separator = new JSeparator(SwingConstants.VERTICAL)
-    val size = new Dimension(
-      separator.getPreferredSize.width,
-      separator.getMaximumSize.height)
+    val size =
+      new Dimension(
+        separator.getPreferredSize.width,
+        separator.getMaximumSize.height)
     separator setMaximumSize size
 
     separator

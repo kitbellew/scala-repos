@@ -26,6 +26,5 @@ object SecureJava {
   def fromBytes(bytes: Array[Byte]): SecureJava =
     new SecureJava(new SecureRandom(bytes))
 
-  def apply(): SecureJava =
-    new SecureJava(new SecureRandom())
+  def apply(): SecureJava = new SecureJava(new SecureRandom())
 }

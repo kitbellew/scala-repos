@@ -113,8 +113,9 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
     if (elementType != ScalaTokenTypes.tIDENTIFIER)
       return
     val call = PsiTreeUtil.getContextOfType(position, classOf[ScMethodCall])
-    val args =
-      PsiTreeUtil.getContextOfType(position, classOf[ScArgumentExprList])
+    val args = PsiTreeUtil.getContextOfType(
+      position,
+      classOf[ScArgumentExprList])
     if (call == null || args == null)
       return
     val index = args.invocationCount - 1
@@ -122,8 +123,9 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
       case ref: ScReferenceExpression =>
         ref.qualifier match {
           case Some(s: ScSuperReference) =>
-            val function =
-              PsiTreeUtil.getContextOfType(ref, classOf[ScFunction])
+            val function = PsiTreeUtil.getContextOfType(
+              ref,
+              classOf[ScFunction])
             if (function != null && function.name == ref.refName) {
               val variants = ref.getSimpleVariants(
                 implicits = false,
@@ -179,8 +181,9 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
       position,
       classOf[ScTemplateDefinition]) match {
       case c: ScClass =>
-        val args =
-          PsiTreeUtil.getContextOfType(position, classOf[ScArgumentExprList])
+        val args = PsiTreeUtil.getContextOfType(
+          position,
+          classOf[ScArgumentExprList])
         val constructor = args.getContext.asInstanceOf[ScConstructor]
         val index = constructor.arguments.indexOf(args)
         val typeElement = constructor.typeElement

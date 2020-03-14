@@ -62,23 +62,20 @@ import Free._
   */
 sealed abstract class Free[S[_], A] extends Product with Serializable {
 
-  final def map[B](f: A => B): Free[S, B] =
-    flatMap(a => Pure(f(a)))
+  final def map[B](f: A => B): Free[S, B] = flatMap(a => Pure(f(a)))
 
   /**
     * Bind the given continuation to the result of this computation.
     * All left-associated binds are reassociated to the right.
     */
-  final def flatMap[B](f: A => Free[S, B]): Free[S, B] =
-    Gosub(this, f)
+  final def flatMap[B](f: A => Free[S, B]): Free[S, B] = Gosub(this, f)
 
   /**
     * Catamorphism. Run the first given function if Pure, otherwise,
     * the second given function.
     */
   final def fold[B](r: A => B, s: S[Free[S, A]] => B)(
-      implicit S: Functor[S]): B =
-    resume.fold(s, r)
+      implicit S: Functor[S]): B = resume.fold(s, r)
 
   /** Takes one evaluation step in the Free monad, re-associating left-nested binds in the process. */
   @tailrec

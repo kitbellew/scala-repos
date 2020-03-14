@@ -114,11 +114,12 @@ class Formatter(
   /**
     * Calendar to use for time zone display in date-time formatting.
     */
-  val calendar = if (timezone.isDefined) {
-    new GregorianCalendar(TimeZone.getTimeZone(timezone.get))
-  } else {
-    new GregorianCalendar
-  }
+  val calendar =
+    if (timezone.isDefined) {
+      new GregorianCalendar(TimeZone.getTimeZone(timezone.get))
+    } else {
+      new GregorianCalendar
+    }
   dateFormat.setCalendar(calendar)
 
   /**
@@ -169,8 +170,9 @@ class Formatter(
       lines ++= splitOnNewlines
 
       if (record.getThrown ne null) {
-        val traceLines =
-          Formatter.formatStackTrace(record.getThrown, truncateStackTracesAt)
+        val traceLines = Formatter.formatStackTrace(
+          record.getThrown,
+          truncateStackTracesAt)
         lines += record.getThrown.toString
         if (traceLines.nonEmpty)
           lines ++= traceLines

@@ -45,11 +45,12 @@ object ShapeTest extends App {
 
   val l1 = new Line(p1, p2)
 
-  val l = new ShapeFoo { // ** //
-    type T = Line // ** //
-    override def print() {
-      Console.println("in LineFoo")
-    } // ** //
-  }
+  val l =
+    new ShapeFoo { // ** //
+      type T = Line // ** //
+      override def print() {
+        Console.println("in LineFoo")
+      } // ** //
+    }
   l.show(l1) // ** //
 }

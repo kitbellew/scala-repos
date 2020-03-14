@@ -106,8 +106,9 @@ class NettyBlockTransferSecuritySuite
     val blockManager = mock[BlockDataManager]
     val blockId = ShuffleBlockId(0, 1, 2)
     val blockString = "Hello, world!"
-    val blockBuffer = new NioManagedBuffer(
-      ByteBuffer.wrap(blockString.getBytes(StandardCharsets.UTF_8)))
+    val blockBuffer =
+      new NioManagedBuffer(
+        ByteBuffer.wrap(blockString.getBytes(StandardCharsets.UTF_8)))
     when(blockManager.getBlockData(blockId)).thenReturn(blockBuffer)
 
     val securityManager0 = new SecurityManager(conf0)
@@ -120,18 +121,19 @@ class NettyBlockTransferSecuritySuite
       new NettyBlockTransferService(conf1, securityManager1, numCores = 1)
     exec1.init(blockManager)
 
-    val result = fetchBlock(exec0, exec1, "1", blockId) match {
-      case Success(buf) =>
-        val actualString = CharStreams.toString(
-          new InputStreamReader(
-            buf.createInputStream(),
-            StandardCharsets.UTF_8))
-        actualString should equal(blockString)
-        buf.release()
-        Success(())
-      case Failure(t) =>
-        Failure(t)
-    }
+    val result =
+      fetchBlock(exec0, exec1, "1", blockId) match {
+        case Success(buf) =>
+          val actualString = CharStreams.toString(
+            new InputStreamReader(
+              buf.createInputStream(),
+              StandardCharsets.UTF_8))
+          actualString should equal(blockString)
+          buf.release()
+          Success(())
+        case Failure(t) =>
+          Failure(t)
+      }
     exec0.close()
     exec1.close()
     result

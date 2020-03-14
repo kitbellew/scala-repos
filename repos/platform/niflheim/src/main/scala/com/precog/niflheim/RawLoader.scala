@@ -185,8 +185,8 @@ private[niflheim] object RawLoader {
   }
 
   def load(id: Long, f: File): (Seq[JValue], Seq[Long], Boolean) = {
-    val reader = new BufferedReader(
-      new InputStreamReader(new FileInputStream(f), utf8))
+    val reader =
+      new BufferedReader(new InputStreamReader(new FileInputStream(f), utf8))
     try {
       val header = reader.readLine()
       if (header == null)

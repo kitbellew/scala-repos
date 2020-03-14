@@ -34,15 +34,13 @@ class ConvertExpressionToSAMInspectionTest
     InspectionBundle.message("convert.expression.to.sam")
 
   def testThreadRunnable(): Unit = {
-    val code =
-      s"""
+    val code = s"""
          |new Thread(${START}new Runnable $END{
          |override def run() = println()
          |}
       """.stripMargin
     check(code)
-    val text =
-      s"""
+    val text = s"""
          |new Thread(new Runnable {
          |override def run() = println()
          |})
@@ -52,15 +50,13 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testValueDefinition(): Unit = {
-    val code =
-      s"""
+    val code = s"""
         |val y: Runnable = ${START}new Runnable $END{
         |  override def run(): Unit = ???
         |}
       """.stripMargin
     check(code)
-    val text =
-      """
+    val text = """
         |val y: Runnable = new Runnable {
         |  override def run(): Unit = ???
         |}
@@ -70,8 +66,7 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testValueDefinitionNoDeclaredType(): Unit = {
-    val text =
-      """
+    val text = """
         |val y = new Runnable {
         |  override def run(): Unit = println()
         |}
@@ -80,8 +75,7 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testNoParenFunction(): Unit = {
-    val code =
-      s"""
+    val code = s"""
         |trait A {
         |  def foo(): String
         |}
@@ -91,8 +85,7 @@ class ConvertExpressionToSAMInspectionTest
         |})
       """.stripMargin
     check(code)
-    val text =
-      """
+    val text = """
         |trait A {
         |  def foo(): String
         |}
@@ -101,8 +94,7 @@ class ConvertExpressionToSAMInspectionTest
         |  override def foo(): String = "something"
         |})
       """.stripMargin
-    def res =
-      """
+    def res = """
         |trait A {
         |  def foo(): String
         |}
@@ -113,8 +105,7 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testParameterless(): Unit = {
-    val code =
-      """
+    val code = """
         |trait A {
         |  def foo: String
         |}
@@ -127,8 +118,7 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testTwoFunctions(): Unit = {
-    val code =
-      """
+    val code = """
         |trait A {
         |  def foo(): String
         |  def bar(): Int = 2
@@ -143,8 +133,7 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testInner(): Unit = {
-    val code =
-      s"""
+    val code = s"""
         |new Thread(${START}new Runnable $END{
         |  def run() {
         |    def foo(i: Int) = i
@@ -154,8 +143,7 @@ class ConvertExpressionToSAMInspectionTest
         |})
       """.stripMargin
     check(code)
-    val text =
-      s"""
+    val text = s"""
          |new Thread(new Runnable {
          |  def run() {
          |    def foo(i: Int) = i
@@ -164,8 +152,7 @@ class ConvertExpressionToSAMInspectionTest
          |  }
          |})
       """.stripMargin
-    val res =
-      s"""
+    val res = s"""
          |new Thread(() => {
          |  def foo(i: Int) = i
          |
@@ -176,8 +163,7 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testMultiLine(): Unit = {
-    val code =
-      s"""
+    val code = s"""
         |new Thread(${START}new Runnable $END{
         |  override def run(): Unit = {
         |    val i = 2 + 3
@@ -187,8 +173,7 @@ class ConvertExpressionToSAMInspectionTest
         |})
       """.stripMargin
     check(code)
-    val text =
-      s"""
+    val text = s"""
          |new Thread(new Runnable {
          |  override def run(): Unit = {
          |    val i = 2 + 3
@@ -197,8 +182,7 @@ class ConvertExpressionToSAMInspectionTest
          |  }
          |})
        """.stripMargin
-    val res =
-      """
+    val res = """
         |new Thread(() => {
         |  val i = 2 + 3
         |  val z = 2
@@ -209,23 +193,20 @@ class ConvertExpressionToSAMInspectionTest
   }
 
   def testByNameAndDefaultParams(): Unit = {
-    val code =
-      s"""trait SAM { def test(s: ⇒ String, x: Int = 0): Unit }
+    val code = s"""trait SAM { def test(s: ⇒ String, x: Int = 0): Unit }
          |
          |val sm: SAM = ${START}new SAM $END{
          |  override def test(s: => String, x: Int = 1): Unit = println(s)
          |}
       """.stripMargin
     check(code)
-    val text =
-      """trait SAM { def test(s: ⇒ String, x: Int = 0): Unit }
+    val text = """trait SAM { def test(s: ⇒ String, x: Int = 0): Unit }
         |
         |val sm: SAM = new SAM {
         |  override def test(s: => String, x: Int = 1): Unit = println(s)
         |}
       """.stripMargin
-    def res =
-      """trait SAM { def test(s: ⇒ String, x: Int = 0): Unit }
+    def res = """trait SAM { def test(s: ⇒ String, x: Int = 0): Unit }
         |
         |val sm: SAM = (s: String, x: Int) => println(s)
       """.stripMargin

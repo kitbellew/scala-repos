@@ -28,10 +28,9 @@ object Parsing {
       val needleSize = needle.size
       val fullJump = needleSize
       val jumpBadCharecter: (Byte => Int) = {
-        val map =
-          Map(
-            needle.dropRight(1).reverse.zipWithIndex.reverse: _*
-          ) //remove the last
+        val map = Map(
+          needle.dropRight(1).reverse.zipWithIndex.reverse: _*
+        ) //remove the last
         byte => map.get(byte).map(_ + 1).getOrElse(fullJump)
       }
 
@@ -107,18 +106,19 @@ object Parsing {
                   Future.successful(Done(Done(a, e), inputOrEmpty(rest))),
                 k => {
                   val (result, suffix) = scan(Nil, all, 0)
-                  val fed = result
-                    .filter(!_.content.isEmpty)
-                    .foldLeft(Future.successful(Array[Byte]() -> Cont(k))) {
-                      (p, m) =>
-                        p.flatMap(i =>
-                          i._2.fold1(
-                            (a, e) =>
-                              Future.successful(
-                                (i._1 ++ m.content, Done(a, e))),
-                            k => Future.successful((i._1, k(Input.El(m)))),
-                            (err, e) => throw new Exception())(dec))(dec)
-                    }
+                  val fed =
+                    result
+                      .filter(!_.content.isEmpty)
+                      .foldLeft(Future.successful(Array[Byte]() -> Cont(k))) {
+                        (p, m) =>
+                          p.flatMap(i =>
+                            i._2.fold1(
+                              (a, e) =>
+                                Future.successful(
+                                  (i._1 ++ m.content, Done(a, e))),
+                              k => Future.successful((i._1, k(Input.El(m)))),
+                              (err, e) => throw new Exception())(dec))(dec)
+                      }
                   fed.flatMap {
                     case (ss, i) =>
                       i.fold1(

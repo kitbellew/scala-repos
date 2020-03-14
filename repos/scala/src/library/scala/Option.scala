@@ -256,8 +256,7 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *  @return `true` if the option has an element that is equal (as
     *  determined by `==`) to `elem`, `false` otherwise.
     */
-  final def contains[A1 >: A](elem: A1): Boolean =
-    !isEmpty && this.get == elem
+  final def contains[A1 >: A](elem: A1): Boolean = !isEmpty && this.get == elem
 
   /** Returns true if this option is nonempty '''and''' the predicate
     * $p returns true when applied to this $option's value.
@@ -265,8 +264,7 @@ sealed abstract class Option[+A] extends Product with Serializable {
     *
     *  @param  p   the predicate to test
     */
-  @inline final def exists(p: A => Boolean): Boolean =
-    !isEmpty && p(this.get)
+  @inline final def exists(p: A => Boolean): Boolean = !isEmpty && p(this.get)
 
   /** Returns true if this option is empty '''or''' the predicate
     * $p returns true when applied to this $option's value.

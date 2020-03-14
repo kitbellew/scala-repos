@@ -105,9 +105,10 @@ sealed abstract class Tree[A] {
 
   /** Breadth-first traversal. */
   def levels: Stream[Stream[A]] = {
-    val f = (s: Stream[Tree[A]]) => {
-      Foldable[Stream].foldMap(s)((_: Tree[A]).subForest)
-    }
+    val f =
+      (s: Stream[Tree[A]]) => {
+        Foldable[Stream].foldMap(s)((_: Tree[A]).subForest)
+      }
     Stream.iterate(Stream(this))(
       f) takeWhile (!_.isEmpty) map (_ map (_.rootLabel))
   }
@@ -128,11 +129,9 @@ sealed abstract class Tree[A] {
     (Node(rootLabel._1, fst), Node(rootLabel._2, snd))
   }
 
-  def foldNode[Z](f: A => Stream[Tree[A]] => Z): Z =
-    f(rootLabel)(subForest)
+  def foldNode[Z](f: A => Stream[Tree[A]] => Z): Z = f(rootLabel)(subForest)
 
-  def map[B](f: A => B): Tree[B] =
-    Node(f(rootLabel), subForest map (_ map f))
+  def map[B](f: A => B): Tree[B] = Node(f(rootLabel), subForest map (_ map f))
 
   def flatMap[B](f: A => Tree[B]): Tree[B] = {
     val r: Tree[B] = f(rootLabel)
@@ -161,60 +160,62 @@ sealed abstract class TreeInstances {
     with Monad[Tree]
     with Comonad[Tree]
     with Align[Tree]
-    with Zip[Tree] = new Traverse1[Tree]
-    with Monad[Tree]
-    with Comonad[Tree]
-    with Align[Tree]
-    with Zip[Tree] {
-    def point[A](a: => A): Tree[A] = Tree.Leaf(a)
-    def cobind[A, B](fa: Tree[A])(f: Tree[A] => B): Tree[B] = fa cobind f
-    def copoint[A](p: Tree[A]): A = p.rootLabel
-    override def map[A, B](fa: Tree[A])(f: A => B) = fa map f
-    def bind[A, B](fa: Tree[A])(f: A => Tree[B]): Tree[B] = fa flatMap f
-    def traverse1Impl[G[_]: Apply, A, B](fa: Tree[A])(
-        f: A => G[B]): G[Tree[B]] = fa traverse1 f
-    override def foldRight[A, B](fa: Tree[A], z: => B)(f: (A, => B) => B): B =
-      fa.foldRight(z)(f)
-    override def foldMapRight1[A, B](fa: Tree[A])(z: A => B)(
-        f: (A, => B) => B) =
-      (fa.flatten.reverse: @unchecked) match {
-        case h #:: t => t.foldLeft(z(h))((b, a) => f(a, b))
+    with Zip[Tree] =
+    new Traverse1[Tree]
+      with Monad[Tree]
+      with Comonad[Tree]
+      with Align[Tree]
+      with Zip[Tree] {
+      def point[A](a: => A): Tree[A] = Tree.Leaf(a)
+      def cobind[A, B](fa: Tree[A])(f: Tree[A] => B): Tree[B] = fa cobind f
+      def copoint[A](p: Tree[A]): A = p.rootLabel
+      override def map[A, B](fa: Tree[A])(f: A => B) = fa map f
+      def bind[A, B](fa: Tree[A])(f: A => Tree[B]): Tree[B] = fa flatMap f
+      def traverse1Impl[G[_]: Apply, A, B](fa: Tree[A])(
+          f: A => G[B]): G[Tree[B]] = fa traverse1 f
+      override def foldRight[A, B](fa: Tree[A], z: => B)(f: (A, => B) => B): B =
+        fa.foldRight(z)(f)
+      override def foldMapRight1[A, B](fa: Tree[A])(z: A => B)(
+          f: (A, => B) => B) =
+        (fa.flatten.reverse: @unchecked) match {
+          case h #:: t => t.foldLeft(z(h))((b, a) => f(a, b))
+        }
+      override def foldLeft[A, B](fa: Tree[A], z: B)(f: (B, A) => B): B =
+        fa.flatten.foldLeft(z)(f)
+      override def foldMapLeft1[A, B](fa: Tree[A])(z: A => B)(
+          f: (B, A) => B): B =
+        fa.flatten match {
+          case h #:: t => t.foldLeft(z(h))(f)
+        }
+      override def foldMap[A, B](fa: Tree[A])(f: A => B)(
+          implicit F: Monoid[B]): B = fa foldMap f
+      def alignWith[A, B, C](f: (\&/[A, B]) ⇒ C) = {
+        def align(ta: Tree[A], tb: Tree[B]): Tree[C] =
+          Tree.Node(
+            f(\&/(ta.rootLabel, tb.rootLabel)),
+            Align[Stream].alignWith[Tree[A], Tree[B], Tree[C]]({
+              case \&/.This(sta) ⇒
+                sta map { a ⇒
+                  f(\&/.This(a))
+                }
+              case \&/.That(stb) ⇒
+                stb map { b ⇒
+                  f(\&/.That(b))
+                }
+              case \&/(sta, stb) ⇒ align(sta, stb)
+            })(ta.subForest, tb.subForest)
+          )
+        align _
       }
-    override def foldLeft[A, B](fa: Tree[A], z: B)(f: (B, A) => B): B =
-      fa.flatten.foldLeft(z)(f)
-    override def foldMapLeft1[A, B](fa: Tree[A])(z: A => B)(f: (B, A) => B): B =
-      fa.flatten match {
-        case h #:: t => t.foldLeft(z(h))(f)
-      }
-    override def foldMap[A, B](fa: Tree[A])(f: A => B)(
-        implicit F: Monoid[B]): B = fa foldMap f
-    def alignWith[A, B, C](f: (\&/[A, B]) ⇒ C) = {
-      def align(ta: Tree[A], tb: Tree[B]): Tree[C] =
+      def zip[A, B](aa: => Tree[A], bb: => Tree[B]) = {
+        val a = aa
+        val b = bb
         Tree.Node(
-          f(\&/(ta.rootLabel, tb.rootLabel)),
-          Align[Stream].alignWith[Tree[A], Tree[B], Tree[C]]({
-            case \&/.This(sta) ⇒
-              sta map { a ⇒
-                f(\&/.This(a))
-              }
-            case \&/.That(stb) ⇒
-              stb map { b ⇒
-                f(\&/.That(b))
-              }
-            case \&/(sta, stb) ⇒ align(sta, stb)
-          })(ta.subForest, tb.subForest)
+          (a.rootLabel, b.rootLabel),
+          Zip[Stream].zipWith(a.subForest, b.subForest)(zip(_, _))
         )
-      align _
+      }
     }
-    def zip[A, B](aa: => Tree[A], bb: => Tree[B]) = {
-      val a = aa
-      val b = bb
-      Tree.Node(
-        (a.rootLabel, b.rootLabel),
-        Zip[Stream].zipWith(a.subForest, b.subForest)(zip(_, _))
-      )
-    }
-  }
 
   implicit def treeEqual[A](implicit A0: Equal[A]): Equal[Tree[A]] =
     new TreeEqual[A] {
@@ -280,8 +281,7 @@ object Tree extends TreeInstances {
   }
 
   def unfoldForest[A, B](s: Stream[A])(
-      f: A => (B, () => Stream[A])): Stream[Tree[B]] =
-    s.map(unfoldTree(_)(f))
+      f: A => (B, () => Stream[A])): Stream[Tree[B]] = s.map(unfoldTree(_)(f))
 
   def unfoldTree[A, B](v: A)(f: A => (B, () => Stream[A])): Tree[B] =
     f(v) match {

@@ -84,9 +84,10 @@ trait Order[F] extends Equal[F] { self =>
   def orderLaw = new OrderLaw {}
 
   ////
-  val orderSyntax = new scalaz.syntax.OrderSyntax[F] {
-    def F = Order.this
-  }
+  val orderSyntax =
+    new scalaz.syntax.OrderSyntax[F] {
+      def F = Order.this
+    }
 }
 
 object Order {
@@ -94,21 +95,22 @@ object Order {
 
   ////
 
-  implicit val orderInstance: Divisible[Order] = new Divisible[Order] {
-    def contramap[A, B](r: Order[A])(f: B => A) = r.contramap(f)
+  implicit val orderInstance: Divisible[Order] =
+    new Divisible[Order] {
+      def contramap[A, B](r: Order[A])(f: B => A) = r.contramap(f)
 
-    override def conquer[A] = order((_, _) => Ordering.EQ)
+      override def conquer[A] = order((_, _) => Ordering.EQ)
 
-    override def divide[A, B, C](fa: Order[A], fb: Order[B])(f: C => (A, B)) =
-      order[C] { (c1, c2) =>
-        val (a1, b1) = f(c1)
-        val (a2, b2) = f(c2)
-        fa.order(a1, a2) match {
-          case Ordering.EQ => fb.order(b1, b2)
-          case o           => o
+      override def divide[A, B, C](fa: Order[A], fb: Order[B])(f: C => (A, B)) =
+        order[C] { (c1, c2) =>
+          val (a1, b1) = f(c1)
+          val (a2, b2) = f(c2)
+          fa.order(a1, a2) match {
+            case Ordering.EQ => fb.order(b1, b2)
+            case o           => o
+          }
         }
-      }
-  }
+    }
 
   def fromScalaOrdering[A](implicit O: SOrdering[A]): Order[A] =
     new Order[A] {

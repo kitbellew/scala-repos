@@ -8,11 +8,9 @@ import org.junit.Assert
 class InexactComparisonCriteria private (val fDelta: AnyRef)
     extends ComparisonCriteria {
 
-  def this(delta: Double) =
-    this(delta: java.lang.Double)
+  def this(delta: Double) = this(delta: java.lang.Double)
 
-  def this(delta: Float) =
-    this(delta: java.lang.Float)
+  def this(delta: Float) = this(delta: java.lang.Float)
 
   override protected def assertElementsEqual(
       expected: AnyRef,

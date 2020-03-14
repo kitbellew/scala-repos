@@ -35,29 +35,45 @@ private[sql] class JSONOptions(
     extends Logging
     with Serializable {
 
-  val samplingRatio =
-    parameters.get("samplingRatio").map(_.toDouble).getOrElse(1.0)
-  val primitivesAsString =
-    parameters.get("primitivesAsString").map(_.toBoolean).getOrElse(false)
-  val floatAsBigDecimal =
-    parameters.get("floatAsBigDecimal").map(_.toBoolean).getOrElse(false)
-  val allowComments =
-    parameters.get("allowComments").map(_.toBoolean).getOrElse(false)
-  val allowUnquotedFieldNames =
-    parameters.get("allowUnquotedFieldNames").map(_.toBoolean).getOrElse(false)
-  val allowSingleQuotes =
-    parameters.get("allowSingleQuotes").map(_.toBoolean).getOrElse(true)
-  val allowNumericLeadingZeros =
-    parameters.get("allowNumericLeadingZeros").map(_.toBoolean).getOrElse(false)
-  val allowNonNumericNumbers =
-    parameters.get("allowNonNumericNumbers").map(_.toBoolean).getOrElse(true)
-  val allowBackslashEscapingAnyCharacter =
-    parameters
-      .get("allowBackslashEscapingAnyCharacter")
-      .map(_.toBoolean)
-      .getOrElse(false)
-  val compressionCodec =
-    parameters.get("compression").map(CompressionCodecs.getCodecClassName)
+  val samplingRatio = parameters
+    .get("samplingRatio")
+    .map(_.toDouble)
+    .getOrElse(1.0)
+  val primitivesAsString = parameters
+    .get("primitivesAsString")
+    .map(_.toBoolean)
+    .getOrElse(false)
+  val floatAsBigDecimal = parameters
+    .get("floatAsBigDecimal")
+    .map(_.toBoolean)
+    .getOrElse(false)
+  val allowComments = parameters
+    .get("allowComments")
+    .map(_.toBoolean)
+    .getOrElse(false)
+  val allowUnquotedFieldNames = parameters
+    .get("allowUnquotedFieldNames")
+    .map(_.toBoolean)
+    .getOrElse(false)
+  val allowSingleQuotes = parameters
+    .get("allowSingleQuotes")
+    .map(_.toBoolean)
+    .getOrElse(true)
+  val allowNumericLeadingZeros = parameters
+    .get("allowNumericLeadingZeros")
+    .map(_.toBoolean)
+    .getOrElse(false)
+  val allowNonNumericNumbers = parameters
+    .get("allowNonNumericNumbers")
+    .map(_.toBoolean)
+    .getOrElse(true)
+  val allowBackslashEscapingAnyCharacter = parameters
+    .get("allowBackslashEscapingAnyCharacter")
+    .map(_.toBoolean)
+    .getOrElse(false)
+  val compressionCodec = parameters
+    .get("compression")
+    .map(CompressionCodecs.getCodecClassName)
   private val parseMode = parameters.getOrElse("mode", "PERMISSIVE")
 
   // Parse mode flags

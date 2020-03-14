@@ -121,11 +121,10 @@ object ScroogeOrderedBuf {
           elementB: ctx.TermName): ctx.Tree =
         ProductLike.compare(c)(elementA, elementB)(elementData)
 
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        elementData
-          .map(_._3.lazyOuterVariables)
-          .reduceLeftOption(_ ++ _)
-          .getOrElse(Map())
+      override val lazyOuterVariables: Map[String, ctx.Tree] = elementData
+        .map(_._3.lazyOuterVariables)
+        .reduceLeftOption(_ ++ _)
+        .getOrElse(Map())
 
       override def length(element: Tree) =
         ProductLike.length(c)(element)(elementData)

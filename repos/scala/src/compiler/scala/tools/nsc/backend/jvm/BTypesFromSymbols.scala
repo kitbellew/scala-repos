@@ -43,8 +43,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
   val inliner: Inliner[this.type] = new Inliner(this)
 
-  val inlinerHeuristics: InlinerHeuristics[this.type] = new InlinerHeuristics(
-    this)
+  val inlinerHeuristics: InlinerHeuristics[this.type] =
+    new InlinerHeuristics(this)
 
   val closureOptimizer: ClosureOptimizer[this.type] = new ClosureOptimizer(this)
 
@@ -320,15 +320,16 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     //   trait T
     //   class C extends T
     //   class D extends C with T
-    val interfaces = erasure.minimizeParents(allParents) match {
-      case superClass :: ifs if !isInterfaceOrTrait(superClass.typeSymbol) =>
-        ifs
-      case ifs =>
-        // minimizeParents removes the superclass if it's redundant, for example:
-        //  trait A
-        //  class C extends Object with A  // minimizeParents removes Object
-        ifs
-    }
+    val interfaces =
+      erasure.minimizeParents(allParents) match {
+        case superClass :: ifs if !isInterfaceOrTrait(superClass.typeSymbol) =>
+          ifs
+        case ifs =>
+          // minimizeParents removes the superclass if it's redundant, for example:
+          //  trait A
+          //  class C extends Object with A  // minimizeParents removes Object
+          ifs
+      }
     interfaces.map(_.typeSymbol)
   }
 
@@ -384,8 +385,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           // Java enums have the `ACC_ABSTRACT` flag if they have a deferred method.
           // We cannot trust `hasAbstractFlag`: the ClassfileParser adds `ABSTRACT` and `SEALED` to all
           // Java enums for exhaustiveness checking.
-          val hasAbstractMethod =
-            classSym.info.decls.exists(s => s.isMethod && s.isDeferred)
+          val hasAbstractMethod = classSym.info.decls.exists(s =>
+            s.isMethod && s.isDeferred)
           if (hasAbstractMethod)
             ACC_ABSTRACT
           else
@@ -475,17 +476,17 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
      * We collect them here.
      */
     val nestedClassSymbols = {
-      val linkedClass =
-        exitingPickler(
-          classSym.linkedClassOfClass
-        ) // linkedCoC does not work properly in late phases
+      val linkedClass = exitingPickler(
+        classSym.linkedClassOfClass
+      ) // linkedCoC does not work properly in late phases
 
       // The lambdalift phase lifts all nested classes to the enclosing class, so if we collect
       // member classes right after lambdalift, we obtain all nested classes, including local and
       // anonymous ones.
       val nestedClasses = {
-        val allNested = exitingPhase(currentRun.lambdaliftPhase)(
-          memberClassesForInnerClassTable(classSym))
+        val allNested =
+          exitingPhase(currentRun.lambdaliftPhase)(
+            memberClassesForInnerClassTable(classSym))
         val nested = {
           // Classes nested in value classes are nested in the companion at this point. For InnerClass /
           // EnclosingMethod, we use the value class as the outer class. So we remove nested classes
@@ -579,8 +580,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         true
     })
 
-    val nestedClasses =
-      nestedClassSymbolsNoJavaModuleClasses.map(classBTypeFromSymbol)
+    val nestedClasses = nestedClassSymbolsNoJavaModuleClasses.map(
+      classBTypeFromSymbol)
 
     val nestedInfo = buildNestedInfo(classSym)
 
@@ -708,8 +709,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         case Right(classNode) =>
           inlineInfoFromClassfile(classNode)
         case Left(missingClass) =>
-          EmptyInlineInfo.copy(warning =
-            Some(ClassNotFoundWhenBuildingInlineInfoFromSymbol(missingClass)))
+          EmptyInlineInfo.copy(warning = Some(
+            ClassNotFoundWhenBuildingInlineInfoFromSymbol(missingClass)))
       }
     }
   }

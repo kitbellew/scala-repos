@@ -195,8 +195,10 @@ abstract class Storm(
       stormDag: Dag[Storm],
       node: StormNode)(implicit topologyBuilder: TopologyBuilder) = {
     val nodeName = stormDag.getNodeName(node)
-    val usePreferLocalDependency =
-      getOrElse(stormDag, node, DEFAULT_FM_PREFER_LOCAL_DEPENDENCY)
+    val usePreferLocalDependency = getOrElse(
+      stormDag,
+      node,
+      DEFAULT_FM_PREFER_LOCAL_DEPENDENCY)
     logger.info(
       s"[$nodeName] usePreferLocalDependency: ${usePreferLocalDependency.get}")
 
@@ -226,52 +228,57 @@ abstract class Storm(
       jobID: JobId,
       stormDag: Dag[Storm],
       node: StormNode)(implicit topologyBuilder: TopologyBuilder) = {
-    val (spout, parOpt) = node.members.collect {
-      case Source(SpoutSource(s, parOpt)) => (s, parOpt)
-    }.head
+    val (spout, parOpt) =
+      node.members.collect {
+        case Source(SpoutSource(s, parOpt)) => (s, parOpt)
+      }.head
     val nodeName = stormDag.getNodeName(node)
 
-    val tormentaSpout = node.members.reverse
-      .foldLeft(spout.asInstanceOf[Spout[(Timestamp, Any)]]) { (spout, p) =>
-        p match {
-          case Source(_) =>
-            spout // The source is still in the members list so drop it
-          case OptionMappedProducer(_, op) =>
-            spout.flatMap {
-              case (time, t) =>
-                op.apply(t).map { x =>
-                  (time, x)
-                }
-            }
-          case NamedProducer(_, _)      => spout
-          case IdentityKeyedProducer(_) => spout
-          case AlsoProducer(_, _)       => spout
-          case _ =>
-            sys.error("not possible, given the above call to span.\n" + p)
+    val tormentaSpout =
+      node.members.reverse
+        .foldLeft(spout.asInstanceOf[Spout[(Timestamp, Any)]]) { (spout, p) =>
+          p match {
+            case Source(_) =>
+              spout // The source is still in the members list so drop it
+            case OptionMappedProducer(_, op) =>
+              spout.flatMap {
+                case (time, t) =>
+                  op.apply(t).map { x =>
+                    (time, x)
+                  }
+              }
+            case NamedProducer(_, _)      => spout
+            case IdentityKeyedProducer(_) => spout
+            case AlsoProducer(_, _)       => spout
+            case _ =>
+              sys.error("not possible, given the above call to span.\n" + p)
+          }
         }
-      }
 
-    val countersForSpout: Seq[(Group, Name)] =
-      JobCounters.getCountersForJob(jobID).getOrElse(Nil)
+    val countersForSpout: Seq[(Group, Name)] = JobCounters
+      .getCountersForJob(jobID)
+      .getOrElse(Nil)
 
     val metrics = getOrElse(stormDag, node, DEFAULT_SPOUT_STORM_METRICS)
 
-    val registerAllMetrics = new Function1[TopologyContext, Unit] {
-      def apply(context: TopologyContext) = {
-        // Register metrics passed in SpoutStormMetrics option.
-        metrics.metrics().foreach { x: StormMetric[IMetric] =>
-          context.registerMetric(x.name, x.metric, x.interval.inSeconds)
+    val registerAllMetrics =
+      new Function1[TopologyContext, Unit] {
+        def apply(context: TopologyContext) = {
+          // Register metrics passed in SpoutStormMetrics option.
+          metrics.metrics().foreach { x: StormMetric[IMetric] =>
+            context.registerMetric(x.name, x.metric, x.interval.inSeconds)
+          }
+          // Register summingbird counter metrics.
+          StormStatProvider.registerMetrics(jobID, context, countersForSpout)
+          SummingbirdRuntimeStats.addPlatformStatProvider(StormStatProvider)
         }
-        // Register summingbird counter metrics.
-        StormStatProvider.registerMetrics(jobID, context, countersForSpout)
-        SummingbirdRuntimeStats.addPlatformStatProvider(StormStatProvider)
       }
-    }
     val stormSpout = tormentaSpout.openHook(registerAllMetrics).getSpout
-    val parallelism = getOrElse(
-      stormDag,
-      node,
-      parOpt.getOrElse(DEFAULT_SOURCE_PARALLELISM)).parHint
+    val parallelism =
+      getOrElse(
+        stormDag,
+        node,
+        parOpt.getOrElse(DEFAULT_SOURCE_PARALLELISM)).parHint
     topologyBuilder.setSpout(nodeName, stormSpout, parallelism)
   }
 
@@ -279,9 +286,10 @@ abstract class Storm(
       jobID: JobId,
       stormDag: Dag[Storm],
       node: StormNode)(implicit topologyBuilder: TopologyBuilder) = {
-    val summer: Summer[Storm, K, V] = node.members.collect {
-      case c: Summer[Storm, K, V] => c
-    }.head
+    val summer: Summer[Storm, K, V] =
+      node.members.collect {
+        case c: Summer[Storm, K, V] => c
+      }.head
     implicit val semigroup = summer.semigroup
     implicit val batcher = summer.store.mergeableBatcher
     val nodeName = stormDag.getNodeName(node)
@@ -312,12 +320,16 @@ abstract class Storm(
     val ackOnEntry = getOrElse(stormDag, node, DEFAULT_ACK_ON_ENTRY)
     logger.info(s"[$nodeName] ackOnEntry : ${ackOnEntry.get}")
 
-    val maxEmitPerExecute =
-      getOrElse(stormDag, node, DEFAULT_MAX_EMIT_PER_EXECUTE)
+    val maxEmitPerExecute = getOrElse(
+      stormDag,
+      node,
+      DEFAULT_MAX_EMIT_PER_EXECUTE)
     logger.info(s"[$nodeName] maxEmitPerExecute : ${maxEmitPerExecute.get}")
 
-    val maxExecutePerSec =
-      getOrElse(stormDag, node, DEFAULT_MAX_EXECUTE_PER_SEC)
+    val maxExecutePerSec = getOrElse(
+      stormDag,
+      node,
+      DEFAULT_MAX_EXECUTE_PER_SEC)
     logger.info(s"[$nodeName] maxExecutePerSec : $maxExecutePerSec")
 
     val storeBaseFMOp = {
@@ -329,8 +341,7 @@ abstract class Storm(
 
     val flatmapOp: FlatMapOperation[
       (ExecutorKeyType, (Option[ExecutorValueType], ExecutorValueType)),
-      ExecutorOutputType] =
-      FlatMapOperation.apply(storeBaseFMOp)
+      ExecutorOutputType] = FlatMapOperation.apply(storeBaseFMOp)
 
     val sinkBolt = BaseBolt(
       jobID,
@@ -356,14 +367,13 @@ abstract class Storm(
 
     val parallelism =
       getOrElse(stormDag, node, DEFAULT_SUMMER_PARALLELISM).parHint
-    val declarer =
-      topologyBuilder
-        .setBolt(
-          nodeName,
-          sinkBolt,
-          parallelism
-        )
-        .addConfigurations(tickConfig)
+    val declarer = topologyBuilder
+      .setBolt(
+        nodeName,
+        sinkBolt,
+        parallelism
+      )
+      .addConfigurations(tickConfig)
     val dependenciesNames = stormDag.dependenciesOf(node).collect {
       case x: StormNode => stormDag.getNodeName(x)
     }
@@ -432,8 +442,9 @@ abstract class Storm(
      * planning
      */
     val dagOptimizer = new DagOptimizer[Storm] {}
-    val stormTail =
-      dagOptimizer.optimize(tail, dagOptimizer.ValueFlatMapToFlatMap)
+    val stormTail = dagOptimizer.optimize(
+      tail,
+      dagOptimizer.ValueFlatMapToFlatMap)
     val stormDag = OnlinePlan(stormTail.asInstanceOf[TailProducer[Storm, T]])
     implicit val topologyBuilder = new TopologyBuilder
     implicit val config = genConfig(stormDag)

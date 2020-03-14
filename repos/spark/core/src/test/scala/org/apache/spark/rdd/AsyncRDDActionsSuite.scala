@@ -230,12 +230,13 @@ class AsyncRDDActionsSuite
 
   private def testAsyncAction[R](action: RDD[Int] => FutureAction[R]): Unit = {
     val executionContextInvoked = Promise[Unit]
-    val fakeExecutionContext = new ExecutionContext {
-      override def execute(runnable: Runnable): Unit = {
-        executionContextInvoked.success(())
+    val fakeExecutionContext =
+      new ExecutionContext {
+        override def execute(runnable: Runnable): Unit = {
+          executionContextInvoked.success(())
+        }
+        override def reportFailure(t: Throwable): Unit = ()
       }
-      override def reportFailure(t: Throwable): Unit = ()
-    }
     val starter = Smuggle(new Semaphore(0))
     starter.drainPermits()
     val rdd = sc.parallelize(1 to 100, 4).mapPartitions { itr =>

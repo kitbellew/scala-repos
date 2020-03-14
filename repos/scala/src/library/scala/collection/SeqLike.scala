@@ -220,8 +220,9 @@ trait SeqLike[+A, +Repr]
 
     private[this] def init() = {
       val m = mutable.HashMap[A, Int]()
-      val (es, is) = (thisCollection map (e =>
-        (e, m.getOrElseUpdate(e, m.size))) sortBy (_._2)).unzip
+      val (es, is) =
+        (thisCollection map (e =>
+          (e, m.getOrElseUpdate(e, m.size))) sortBy (_._2)).unzip
 
       (es.toBuffer, is.toArray)
     }
@@ -277,8 +278,9 @@ trait SeqLike[+A, +Repr]
       val m = mutable.HashMap[A, Int]()
 
       // e => (e, weight(e))
-      val (es, is) = (thisCollection map (e =>
-        (e, m.getOrElseUpdate(e, m.size))) sortBy (_._2)).unzip
+      val (es, is) =
+        (thisCollection map (e =>
+          (e, m.getOrElseUpdate(e, m.size))) sortBy (_._2)).unzip
       val cs = new Array[Int](m.size)
       is foreach (i => cs(i) += 1)
       val ns = new Array[Int](cs.length)
@@ -469,8 +471,7 @@ trait SeqLike[+A, +Repr]
     *                  followed by all elements of `that`.
     */
   override def union[B >: A, That](that: GenSeq[B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That =
-    this ++ that
+      implicit bf: CanBuildFrom[Repr, B, That]): That = this ++ that
 
   /** Computes the multiset difference between this $coll and another sequence.
     *
@@ -539,9 +540,10 @@ trait SeqLike[+A, +Repr]
   }
 
   private def occCounts[B](sq: Seq[B]): mutable.Map[B, Int] = {
-    val occ = new mutable.HashMap[B, Int] {
-      override def default(k: B) = 0
-    }
+    val occ =
+      new mutable.HashMap[B, Int] {
+        override def default(k: B) = 0
+      }
     for (y <- sq)
       occ(y) += 1
     occ

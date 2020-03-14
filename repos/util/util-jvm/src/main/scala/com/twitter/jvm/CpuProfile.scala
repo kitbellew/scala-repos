@@ -170,11 +170,12 @@ object CpuProfile {
       frequency: Int,
       state: Thread.State): Future[CpuProfile] = {
     val p = new Promise[CpuProfile]
-    val thr = new Thread("CpuProfile") {
-      override def run() {
-        p.setValue(record(howlong, frequency, state))
+    val thr =
+      new Thread("CpuProfile") {
+        override def run() {
+          p.setValue(record(howlong, frequency, state))
+        }
       }
-    }
     thr.start()
     p
   }

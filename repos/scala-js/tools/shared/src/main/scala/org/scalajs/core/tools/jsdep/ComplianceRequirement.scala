@@ -27,10 +27,11 @@ object ComplianceRequirement {
       manifests: Traversable[JSDependencyManifest]
   ): Traversable[ComplianceRequirement] = {
 
-    val flatTups = for {
-      manifest <- manifests
-      semantics <- manifest.compliantSemantics
-    } yield (semantics, manifest.origin)
+    val flatTups =
+      for {
+        manifest <- manifests
+        semantics <- manifest.compliantSemantics
+      } yield (semantics, manifest.origin)
 
     for {
       (semantics, tups) <- flatTups.groupBy(_._1)

@@ -186,9 +186,10 @@ trait CValueGenerators extends ArbitraryBigDecimal {
     }
 
   def assemble(parts: Seq[(JPath, JValue)]): JValue = {
-    val result = parts.foldLeft[JValue](JUndefined) {
-      case (acc, (selector, jv)) => acc.unsafeInsert(selector, jv)
-    }
+    val result =
+      parts.foldLeft[JValue](JUndefined) {
+        case (acc, (selector, jv)) => acc.unsafeInsert(selector, jv)
+      }
 
     if (result != JUndefined || parts.isEmpty)
       result
@@ -267,8 +268,8 @@ trait ArbitrarySValue extends SValueGenerators {
 
   implicit val listLongOrder = scalaz.std.list.listOrder[Long]
 
-  implicit val SEventIdentityOrder: Order[SEvent] =
-    Order[List[Long]].contramap((_: SEvent)._1.toList)
+  implicit val SEventIdentityOrder: Order[SEvent] = Order[List[Long]]
+    .contramap((_: SEvent)._1.toList)
   implicit val SEventOrdering = SEventIdentityOrder.toScalaOrdering
 
   implicit val SEventChunkGen: Gen[Vector[SEvent]] = chunk(3, 3, 2)

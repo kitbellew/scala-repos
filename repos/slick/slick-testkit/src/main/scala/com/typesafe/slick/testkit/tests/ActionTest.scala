@@ -40,36 +40,39 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
 
     val aSetup = ts.schema.create andThen (ts ++= Seq(2, 3, 1, 5, 4))
 
-    val aNotPinned = for {
-      p1 <- IsPinned
-      s1 <- GetSession
-      l <- ts.length.result
-      p2 <- IsPinned
-      s2 <- GetSession
-      _ = p1 shouldBe false
-      _ = p2 shouldBe false
-      _ = s1 shouldNotBe s2
-    } yield ()
-
-    val aFused = for {
-      ((s1, l), s2) <- GetSession zip ts.length.result zip GetSession
-      _ = s1 shouldBe s2
-    } yield ()
-
-    val aPinned = for {
-      _ <- (for {
+    val aNotPinned =
+      for {
         p1 <- IsPinned
         s1 <- GetSession
         l <- ts.length.result
         p2 <- IsPinned
         s2 <- GetSession
-        _ = p1 shouldBe true
-        _ = p2 shouldBe true
+        _ = p1 shouldBe false
+        _ = p2 shouldBe false
+        _ = s1 shouldNotBe s2
+      } yield ()
+
+    val aFused =
+      for {
+        ((s1, l), s2) <- GetSession zip ts.length.result zip GetSession
         _ = s1 shouldBe s2
-      } yield ()).withPinnedSession
-      p3 <- IsPinned
-      _ = p3 shouldBe false
-    } yield ()
+      } yield ()
+
+    val aPinned =
+      for {
+        _ <- (for {
+          p1 <- IsPinned
+          s1 <- GetSession
+          l <- ts.length.result
+          p2 <- IsPinned
+          s2 <- GetSession
+          _ = p1 shouldBe true
+          _ = p2 shouldBe true
+          _ = s1 shouldBe s2
+        } yield ()).withPinnedSession
+        p3 <- IsPinned
+        _ = p3 shouldBe false
+      } yield ()
 
     aSetup andThen aNotPinned andThen aFused andThen aPinned
   }
@@ -100,8 +103,8 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
 
   def testDeepRecursion =
     if (tdb == StandardTestDBs.H2Disk) {
-      val a1 =
-        DBIO.sequence((1 to 5000).toSeq.map(i => LiteralColumn(i).result))
+      val a1 = DBIO.sequence(
+        (1 to 5000).toSeq.map(i => LiteralColumn(i).result))
       val a2 = DBIO.sequence(
         (1 to 20).toSeq.map(i =>
           if (i % 2 == 0)

@@ -12,18 +12,20 @@ private[pickling] object Compat {
   def genPickler_impl[T: c.WeakTypeTag](
       c: Context): c.Expr[Pickler[T] with Generated] = {
     val c0: c.type = c
-    val bundle = new {
-      val c: c0.type = c0
-    } with PicklingMacros
+    val bundle =
+      new {
+        val c: c0.type = c0
+      } with PicklingMacros
     c.Expr[Pickler[T] with Generated](bundle.genPickler[T])
   }
 
   def genPicklerUnpickler_impl[T: c.WeakTypeTag](
       c: Context): c.Expr[AbstractPicklerUnpickler[T] with Generated] = {
     val c0: c.type = c
-    val bundle = new {
-      val c: c0.type = c0
-    } with PicklingMacros
+    val bundle =
+      new {
+        val c: c0.type = c0
+      } with PicklingMacros
     c.Expr[AbstractPicklerUnpickler[T] with Generated](
       bundle.genPicklerUnpickler[T])
   }
@@ -31,9 +33,10 @@ private[pickling] object Compat {
   def genUnpickler_impl[T: c.WeakTypeTag](
       c: Context): c.Expr[Unpickler[T] with Generated] = {
     val c0: c.type = c
-    val bundle = new {
-      val c: c0.type = c0
-    } with PicklingMacros
+    val bundle =
+      new {
+        val c: c0.type = c0
+      } with PicklingMacros
     c.Expr[Unpickler[T] with Generated](bundle.genUnPickler[T])
   }
 }

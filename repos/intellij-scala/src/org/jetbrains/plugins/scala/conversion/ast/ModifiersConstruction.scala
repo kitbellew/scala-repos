@@ -17,12 +17,11 @@ object ModifierType extends Enumeration {
   val ABSTRACT, PUBLIC, PROTECTED, PRIVATE, PACKAGE_LOCAL, ANNOTATION, OVERRIDE,
       INNER, VOLATILE, TRANSIENT, NATIVE, THROW, SerialVersionUID, FINAL = Value
 
-  val accessModifiers =
-    Seq(
-      ModifierType.PUBLIC,
-      ModifierType.PRIVATE,
-      ModifierType.PROTECTED,
-      ModifierType.PACKAGE_LOCAL)
+  val accessModifiers = Seq(
+    ModifierType.PUBLIC,
+    ModifierType.PRIVATE,
+    ModifierType.PROTECTED,
+    ModifierType.PACKAGE_LOCAL)
 
   override def toString(): String = {
     Value match {

@@ -47,20 +47,21 @@ trait EvaluatorModule
   private type SEvent = (Identities, JValue)
   private type Dataset = Seq[SEvent]
 
-  private implicit val SEOrder: Order[SEvent] = new Order[SEvent] {
-    def order(left: SEvent, right: SEvent): Ordering = {
-      val (leftIds, leftValue) = left
-      val (rightIds, rightValue) = right
+  private implicit val SEOrder: Order[SEvent] =
+    new Order[SEvent] {
+      def order(left: SEvent, right: SEvent): Ordering = {
+        val (leftIds, leftValue) = left
+        val (rightIds, rightValue) = right
 
-      val idOrder = leftIds zip rightIds map {
-        case (li, ri) => Ordering.fromInt(li - ri)
-      } reduceOption {
-        _ |+| _
-      } getOrElse Ordering.EQ
+        val idOrder = leftIds zip rightIds map {
+          case (li, ri) => Ordering.fromInt(li - ri)
+        } reduceOption {
+          _ |+| _
+        } getOrElse Ordering.EQ
 
-      idOrder |+| JValue.order.order(leftValue, rightValue)
+        idOrder |+| JValue.order.order(leftValue, rightValue)
+      }
     }
-  }
 
   // TODO more specific sequence types
   def eval(expr: Expr)(fs: String => Seq[JValue]): Seq[JValue] = {
@@ -187,13 +188,14 @@ trait EvaluatorModule
             }
           }
 
-          val resultOpt =
-            wrappedResults.reduceLeftOption[(Dataset, Provenance)]({
+          val resultOpt = wrappedResults
+            .reduceLeftOption[(Dataset, Provenance)]({
               case ((left, leftProv), (right, rightProv)) => {
-                val back = handleBinary(left, leftProv, right, rightProv) {
-                  case (JObject(leftFields), JObject(rightFields)) =>
-                    JObject(leftFields ++ rightFields)
-                }
+                val back =
+                  handleBinary(left, leftProv, right, rightProv) {
+                    case (JObject(leftFields), JObject(rightFields)) =>
+                      JObject(leftFields ++ rightFields)
+                  }
 
                 // would have failed to type check otherwise
                 val prov =
@@ -225,13 +227,14 @@ trait EvaluatorModule
             }
           }
 
-          val resultOpt =
-            wrappedValues.reduceLeftOption[(Dataset, Provenance)]({
+          val resultOpt = wrappedValues
+            .reduceLeftOption[(Dataset, Provenance)]({
               case ((left, leftProv), (right, rightProv)) => {
-                val back = handleBinary(left, leftProv, right, rightProv) {
-                  case (JArray(leftValues), JArray(rightValues)) =>
-                    JArray(leftValues ++ rightValues)
-                }
+                val back =
+                  handleBinary(left, leftProv, right, rightProv) {
+                    case (JArray(leftValues), JArray(rightValues)) =>
+                      JArray(leftValues ++ rightValues)
+                  }
 
                 // would have failed to type check otherwise
                 val prov =
@@ -326,13 +329,14 @@ trait EvaluatorModule
         }
 
         case Cond(_, pred, left, right) => {
-          val packed = handleBinary(
-            loopForJoin(env, restrict)(pred),
-            pred.provenance,
-            loopForJoin(env, restrict)(left),
-            left.provenance) {
-            case (b: JBool, right) => JArray(b :: right :: Nil)
-          }
+          val packed =
+            handleBinary(
+              loopForJoin(env, restrict)(pred),
+              pred.provenance,
+              loopForJoin(env, restrict)(left),
+              left.provenance) {
+              case (b: JBool, right) => JArray(b :: right :: Nil)
+            }
 
           handleBinary(
             packed,
@@ -371,19 +375,19 @@ trait EvaluatorModule
         }
 
         case Union(_, left, right) => {
-          val leftSorted =
-            loop(env, restrict)(left).sorted(SEOrder.toScalaOrdering)
-          val rightSorted =
-            loop(env, restrict)(right).sorted(SEOrder.toScalaOrdering)
+          val leftSorted = loop(env, restrict)(left)
+            .sorted(SEOrder.toScalaOrdering)
+          val rightSorted = loop(env, restrict)(right)
+            .sorted(SEOrder.toScalaOrdering)
 
           mergeAlign(leftSorted, rightSorted)(SEOrder.order)
         }
 
         case Intersect(_, left, right) => {
-          val leftSorted =
-            loop(env, restrict)(left).sorted(SEOrder.toScalaOrdering)
-          val rightSorted =
-            loop(env, restrict)(right).sorted(SEOrder.toScalaOrdering)
+          val leftSorted = loop(env, restrict)(left)
+            .sorted(SEOrder.toScalaOrdering)
+          val rightSorted = loop(env, restrict)(right)
+            .sorted(SEOrder.toScalaOrdering)
 
           zipAlign(leftSorted, rightSorted)(SEOrder.order) map {
             case (se, _) => se
@@ -391,10 +395,10 @@ trait EvaluatorModule
         }
 
         case Difference(_, left, right) => {
-          val leftSorted =
-            loop(env, restrict)(left).sorted(SEOrder.toScalaOrdering)
-          val rightSorted =
-            loop(env, restrict)(right).sorted(SEOrder.toScalaOrdering)
+          val leftSorted = loop(env, restrict)(left)
+            .sorted(SEOrder.toScalaOrdering)
+          val rightSorted = loop(env, restrict)(right)
+            .sorted(SEOrder.toScalaOrdering)
 
           biasLeftAlign(leftSorted, rightSorted)(SEOrder.order)
         }
@@ -607,9 +611,10 @@ trait EvaluatorModule
 
       val orderRight = orderFromIndices(indicesRight)
 
-      val leftMergeKey = 0 until linearLeft.length map {
-        Left(_)
-      } toList
+      val leftMergeKey =
+        0 until linearLeft.length map {
+          Left(_)
+        } toList
 
       val rightMergeKey = linearRight.zipWithIndex collect {
         case (p, i) if !posLeft(p) => Right(i)
@@ -629,17 +634,19 @@ trait EvaluatorModule
         else
           right sorted orderRight.toScalaOrdering // must be stable!
 
-      val joined = zipAlign(leftSorted, rightSorted) {
-        case ((idsLeft, _), (idsRight, _)) => {
-          val zipped = (indicesLeft map idsLeft) zip (indicesRight map idsRight)
+      val joined =
+        zipAlign(leftSorted, rightSorted) {
+          case ((idsLeft, _), (idsRight, _)) => {
+            val zipped =
+              (indicesLeft map idsLeft) zip (indicesRight map idsRight)
 
-          zipped map {
-            case (x, y) => Ordering.fromInt(x - y)
-          } reduce {
-            _ |+| _
+            zipped map {
+              case (x, y) => Ordering.fromInt(x - y)
+            } reduce {
+              _ |+| _
+            }
           }
         }
-      }
 
       joined collect {
         case ((idsLeft, leftV), (idsRight, rightV))

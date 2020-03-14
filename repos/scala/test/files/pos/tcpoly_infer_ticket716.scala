@@ -2,9 +2,10 @@ trait Functor[F[_]] {
   def fmap[A, B](fun: A => B, arg: F[A]): F[B]
 }
 object Functor {
-  implicit val ListFunctor: Functor[List] = new Functor[List] {
-    def fmap[A, B](f: A => B, arg: List[A]): List[B] = arg map f
-  }
+  implicit val ListFunctor: Functor[List] =
+    new Functor[List] {
+      def fmap[A, B](f: A => B, arg: List[A]): List[B] = arg map f
+    }
 
   final class OOFunctor[F[_], A](arg: F[A])(implicit ftr: Functor[F]) {
     def fmap[B](fun: A => B): F[B] = ftr.fmap(fun, arg)

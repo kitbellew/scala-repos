@@ -188,28 +188,29 @@ private[columnar] object ColumnBuilder {
       initialSize: Int = 0,
       columnName: String = "",
       useCompression: Boolean = false): ColumnBuilder = {
-    val builder: ColumnBuilder = dataType match {
-      case NullType                 => new NullColumnBuilder
-      case BooleanType              => new BooleanColumnBuilder
-      case ByteType                 => new ByteColumnBuilder
-      case ShortType                => new ShortColumnBuilder
-      case IntegerType | DateType   => new IntColumnBuilder
-      case LongType | TimestampType => new LongColumnBuilder
-      case FloatType                => new FloatColumnBuilder
-      case DoubleType               => new DoubleColumnBuilder
-      case StringType               => new StringColumnBuilder
-      case BinaryType               => new BinaryColumnBuilder
-      case dt: DecimalType if dt.precision <= Decimal.MAX_LONG_DIGITS =>
-        new CompactDecimalColumnBuilder(dt)
-      case dt: DecimalType    => new DecimalColumnBuilder(dt)
-      case struct: StructType => new StructColumnBuilder(struct)
-      case array: ArrayType   => new ArrayColumnBuilder(array)
-      case map: MapType       => new MapColumnBuilder(map)
-      case udt: UserDefinedType[_] =>
-        return apply(udt.sqlType, initialSize, columnName, useCompression)
-      case other =>
-        throw new Exception(s"not suppported type: $other")
-    }
+    val builder: ColumnBuilder =
+      dataType match {
+        case NullType                 => new NullColumnBuilder
+        case BooleanType              => new BooleanColumnBuilder
+        case ByteType                 => new ByteColumnBuilder
+        case ShortType                => new ShortColumnBuilder
+        case IntegerType | DateType   => new IntColumnBuilder
+        case LongType | TimestampType => new LongColumnBuilder
+        case FloatType                => new FloatColumnBuilder
+        case DoubleType               => new DoubleColumnBuilder
+        case StringType               => new StringColumnBuilder
+        case BinaryType               => new BinaryColumnBuilder
+        case dt: DecimalType if dt.precision <= Decimal.MAX_LONG_DIGITS =>
+          new CompactDecimalColumnBuilder(dt)
+        case dt: DecimalType    => new DecimalColumnBuilder(dt)
+        case struct: StructType => new StructColumnBuilder(struct)
+        case array: ArrayType   => new ArrayColumnBuilder(array)
+        case map: MapType       => new MapColumnBuilder(map)
+        case udt: UserDefinedType[_] =>
+          return apply(udt.sqlType, initialSize, columnName, useCompression)
+        case other =>
+          throw new Exception(s"not suppported type: $other")
+      }
 
     builder.initialize(initialSize, columnName, useCompression)
     builder

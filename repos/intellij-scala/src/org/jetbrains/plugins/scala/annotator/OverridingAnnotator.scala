@@ -99,10 +99,10 @@ trait OverridingAnnotator {
       holder: AnnotationHolder,
       isInSources: Boolean) {
     v.declaredElements.foreach(td => {
-      val valsSignaturesWithSelfType: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = true)
-      val valsSignatures: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = false)
+      val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = true)
+      val valsSignatures: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = false)
       checkStructural(v, valsSignatures, isInSources)
       checkOverrideMembers(
         td,
@@ -120,10 +120,10 @@ trait OverridingAnnotator {
       holder: AnnotationHolder,
       isInSources: Boolean) {
     v.declaredElements.foreach(td => {
-      val valsSignaturesWithSelfType: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = true)
-      val valsSignatures: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = false)
+      val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = true)
+      val valsSignatures: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = false)
       checkStructural(v, valsSignatures, isInSources)
       checkOverrideMembers(
         td,
@@ -139,8 +139,9 @@ trait OverridingAnnotator {
   def checkOverrideClassParameters(
       v: ScClassParameter,
       holder: AnnotationHolder) {
-    val supersWithSelfType =
-      ScalaPsiUtil.superValsSignatures(v, withSelfType = true)
+    val supersWithSelfType = ScalaPsiUtil.superValsSignatures(
+      v,
+      withSelfType = true)
     val supers = ScalaPsiUtil.superValsSignatures(v, withSelfType = false)
     checkOverrideMembers(
       v,

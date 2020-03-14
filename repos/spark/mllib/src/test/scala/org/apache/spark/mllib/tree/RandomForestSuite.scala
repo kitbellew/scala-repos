@@ -35,8 +35,9 @@ import org.apache.spark.util.Utils
   */
 class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
   def binaryClassificationTestWithContinuousFeatures(strategy: Strategy) {
-    val arr =
-      EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 50, 1000)
+    val arr = EnsembleTestHelper.generateOrderedLabeledPoints(
+      numFeatures = 50,
+      1000)
     val rdd = sc.parallelize(arr)
     val numTrees = 1
 
@@ -62,12 +63,13 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
     "Binary classification with continuous features:" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val strategy = new Strategy(
-      algo = Classification,
-      impurity = Gini,
-      maxDepth = 2,
-      numClasses = 2,
-      categoricalFeaturesInfo = categoricalFeaturesInfo)
+    val strategy =
+      new Strategy(
+        algo = Classification,
+        impurity = Gini,
+        maxDepth = 2,
+        numClasses = 2,
+        categoricalFeaturesInfo = categoricalFeaturesInfo)
     binaryClassificationTestWithContinuousFeatures(strategy)
   }
 
@@ -75,19 +77,21 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
     "Binary classification with continuous features and node Id cache :" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val strategy = new Strategy(
-      algo = Classification,
-      impurity = Gini,
-      maxDepth = 2,
-      numClasses = 2,
-      categoricalFeaturesInfo = categoricalFeaturesInfo,
-      useNodeIdCache = true)
+    val strategy =
+      new Strategy(
+        algo = Classification,
+        impurity = Gini,
+        maxDepth = 2,
+        numClasses = 2,
+        categoricalFeaturesInfo = categoricalFeaturesInfo,
+        useNodeIdCache = true)
     binaryClassificationTestWithContinuousFeatures(strategy)
   }
 
   def regressionTestWithContinuousFeatures(strategy: Strategy) {
-    val arr =
-      EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 50, 1000)
+    val arr = EnsembleTestHelper.generateOrderedLabeledPoints(
+      numFeatures = 50,
+      1000)
     val rdd = sc.parallelize(arr)
     val numTrees = 1
 
@@ -113,13 +117,14 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
     "Regression with continuous features:" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val strategy = new Strategy(
-      algo = Regression,
-      impurity = Variance,
-      maxDepth = 2,
-      maxBins = 10,
-      numClasses = 2,
-      categoricalFeaturesInfo = categoricalFeaturesInfo)
+    val strategy =
+      new Strategy(
+        algo = Regression,
+        impurity = Variance,
+        maxDepth = 2,
+        maxBins = 10,
+        numClasses = 2,
+        categoricalFeaturesInfo = categoricalFeaturesInfo)
     regressionTestWithContinuousFeatures(strategy)
   }
 
@@ -127,14 +132,15 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
     "Regression with continuous features and node Id cache :" +
       " comparing DecisionTree vs. RandomForest(numTrees = 1)") {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val strategy = new Strategy(
-      algo = Regression,
-      impurity = Variance,
-      maxDepth = 2,
-      maxBins = 10,
-      numClasses = 2,
-      categoricalFeaturesInfo = categoricalFeaturesInfo,
-      useNodeIdCache = true)
+    val strategy =
+      new Strategy(
+        algo = Regression,
+        impurity = Variance,
+        maxDepth = 2,
+        maxBins = 10,
+        numClasses = 2,
+        categoricalFeaturesInfo = categoricalFeaturesInfo,
+        useNodeIdCache = true)
     regressionTestWithContinuousFeatures(strategy)
   }
 
@@ -151,12 +157,11 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
         numFeaturesPerNode: Int): Unit = {
       val seeds = Array(123, 5354, 230, 349867, 23987)
       val maxMemoryUsage: Long = 128 * 1024L * 1024L
-      val metadata =
-        DecisionTreeMetadata.buildMetadata(
-          rdd,
-          strategy,
-          numTrees,
-          featureSubsetStrategy)
+      val metadata = DecisionTreeMetadata.buildMetadata(
+        rdd,
+        strategy,
+        numTrees,
+        featureSubsetStrategy)
       seeds.foreach { seed =>
         val failString = s"Failed on test with:" +
           s"numTrees=$numTrees, featureSubsetStrategy=$featureSubsetStrategy," +
@@ -172,12 +177,8 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
           nodesForGroup: Map[Int, Array[Node]],
           treeToNodeToIndexInfo: Map[
             Int,
-            Map[Int, RandomForest.NodeIndexInfo]]) =
-          RandomForest.selectNodesToSplit(
-            nodeQueue,
-            maxMemoryUsage,
-            metadata,
-            rng)
+            Map[Int, RandomForest.NodeIndexInfo]]) = RandomForest
+          .selectNodesToSplit(nodeQueue, maxMemoryUsage, metadata, rng)
 
         assert(nodesForGroup.size === numTrees, failString)
         assert(
@@ -237,12 +238,13 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("Binary classification with continuous features: subsampling features") {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val strategy = new Strategy(
-      algo = Classification,
-      impurity = Gini,
-      maxDepth = 2,
-      numClasses = 2,
-      categoricalFeaturesInfo = categoricalFeaturesInfo)
+    val strategy =
+      new Strategy(
+        algo = Classification,
+        impurity = Gini,
+        maxDepth = 2,
+        numClasses = 2,
+        categoricalFeaturesInfo = categoricalFeaturesInfo)
     binaryClassificationTestWithContinuousFeaturesAndSubsampledFeatures(
       strategy)
   }
@@ -250,13 +252,14 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
   test(
     "Binary classification with continuous features and node Id cache: subsampling features") {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
-    val strategy = new Strategy(
-      algo = Classification,
-      impurity = Gini,
-      maxDepth = 2,
-      numClasses = 2,
-      categoricalFeaturesInfo = categoricalFeaturesInfo,
-      useNodeIdCache = true)
+    val strategy =
+      new Strategy(
+        algo = Classification,
+        impurity = Gini,
+        maxDepth = 2,
+        numClasses = 2,
+        categoricalFeaturesInfo = categoricalFeaturesInfo,
+        useNodeIdCache = true)
     binaryClassificationTestWithContinuousFeaturesAndSubsampledFeatures(
       strategy)
   }
@@ -271,12 +274,13 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val categoricalFeaturesInfo = Map(0 -> 3, 2 -> 2, 4 -> 4)
     val input = sc.parallelize(arr)
 
-    val strategy = new Strategy(
-      algo = Classification,
-      impurity = Gini,
-      maxDepth = 5,
-      numClasses = 3,
-      categoricalFeaturesInfo = categoricalFeaturesInfo)
+    val strategy =
+      new Strategy(
+        algo = Classification,
+        impurity = Gini,
+        maxDepth = 5,
+        numClasses = 3,
+        categoricalFeaturesInfo = categoricalFeaturesInfo)
     val model = RandomForest.trainClassifier(
       input,
       strategy,
@@ -288,13 +292,14 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("subsampling rate in RandomForest") {
     val arr = EnsembleTestHelper.generateOrderedLabeledPoints(5, 20)
     val rdd = sc.parallelize(arr)
-    val strategy = new Strategy(
-      algo = Classification,
-      impurity = Gini,
-      maxDepth = 2,
-      numClasses = 2,
-      categoricalFeaturesInfo = Map.empty[Int, Int],
-      useNodeIdCache = true)
+    val strategy =
+      new Strategy(
+        algo = Classification,
+        impurity = Gini,
+        maxDepth = 2,
+        numClasses = 2,
+        categoricalFeaturesInfo = Map.empty[Int, Int],
+        useNodeIdCache = true)
 
     val rf1 = RandomForest.trainClassifier(
       rdd,

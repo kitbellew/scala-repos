@@ -60,11 +60,9 @@ case class Game(
       case Black => blackPlayer
     }
 
-  def player(playerId: String): Option[Player] =
-    players find (_.id == playerId)
+  def player(playerId: String): Option[Player] = players find (_.id == playerId)
 
-  def player(user: User): Option[Player] =
-    players find (_ isUser user)
+  def player(user: User): Option[Player] = players find (_ isUser user)
 
   def player(c: Color.type => Color): Player = player(c(Color))
 
@@ -271,9 +269,10 @@ case class Game(
   def correspondenceClock: Option[CorrespondenceClock] =
     daysPerTurn map { days =>
       val increment = days * 24 * 60 * 60
-      val secondsLeft = lastMoveTimeDate.fold(increment) { lmd =>
-        (lmd.getSeconds + increment - nowSeconds).toInt max 0
-      }
+      val secondsLeft =
+        lastMoveTimeDate.fold(increment) { lmd =>
+          (lmd.getSeconds + increment - nowSeconds).toInt max 0
+        }
       CorrespondenceClock(
         increment = increment,
         whiteTime = turnColor.fold(secondsLeft, increment),
@@ -608,8 +607,8 @@ object Game {
       turns = game.turns,
       startedAtTurn = game.startedAtTurn,
       clock = game.clock,
-      castleLastMoveTime =
-        CastleLastMoveTime.init.copy(castles = game.board.history.castles),
+      castleLastMoveTime = CastleLastMoveTime.init.copy(castles =
+        game.board.history.castles),
       daysPerTurn = daysPerTurn,
       mode = mode,
       variant = variant,

@@ -25,8 +25,7 @@ private[json] object Impl extends AbstractJSONImpl {
 
   def serialize(x: Repr): String = js.JSON.stringify(x)
 
-  def serialize(x: Repr, writer: Writer): Unit =
-    writer.write(serialize(x))
+  def serialize(x: Repr, writer: Writer): Unit = writer.write(serialize(x))
 
   def deserialize(str: String): Repr = js.JSON.parse(str)
 

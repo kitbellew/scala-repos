@@ -153,25 +153,27 @@ class HealthCheckActor(
       val taskId = result.taskId
       val health = taskHealth.getOrElse(taskId, Health(taskId))
 
-      val newHealth = result match {
-        case Healthy(_, _, _) =>
-          health.update(result)
-        case Unhealthy(_, _, _, _) =>
-          taskTracker.tasksByAppSync.task(taskId) match {
-            case Some(task) =>
-              if (ignoreFailures(task, health)) {
-                // Don't update health
-                health
-              } else {
-                eventBus.publish(FailedHealthCheck(app.id, taskId, healthCheck))
-                checkConsecutiveFailures(task, health)
+      val newHealth =
+        result match {
+          case Healthy(_, _, _) =>
+            health.update(result)
+          case Unhealthy(_, _, _, _) =>
+            taskTracker.tasksByAppSync.task(taskId) match {
+              case Some(task) =>
+                if (ignoreFailures(task, health)) {
+                  // Don't update health
+                  health
+                } else {
+                  eventBus.publish(
+                    FailedHealthCheck(app.id, taskId, healthCheck))
+                  checkConsecutiveFailures(task, health)
+                  health.update(result)
+                }
+              case None =>
+                log.error(s"Couldn't find task $taskId")
                 health.update(result)
-              }
-            case None =>
-              log.error(s"Couldn't find task $taskId")
-              health.update(result)
-          }
-      }
+            }
+        }
 
       taskHealth += (taskId -> newHealth)
 

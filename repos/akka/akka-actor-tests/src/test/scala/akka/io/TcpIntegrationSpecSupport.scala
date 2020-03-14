@@ -34,13 +34,13 @@ trait TcpIntegrationSpecSupport { _: AkkaSpec ⇒
       connectCommander.send(
         IO(Tcp),
         Connect(endpoint, options = connectOptions))
-      val Connected(`endpoint`, localAddress) =
-        connectCommander.expectMsgType[Connected]
+      val Connected(`endpoint`, localAddress) = connectCommander
+        .expectMsgType[Connected]
       val clientHandler = TestProbe()
       connectCommander.sender() ! Register(clientHandler.ref)
 
-      val Connected(`localAddress`, `endpoint`) =
-        bindHandler.expectMsgType[Connected]
+      val Connected(`localAddress`, `endpoint`) = bindHandler
+        .expectMsgType[Connected]
       val serverHandler = TestProbe()
       bindHandler.sender() ! Register(serverHandler.ref)
 

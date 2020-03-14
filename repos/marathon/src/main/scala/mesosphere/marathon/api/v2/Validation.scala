@@ -31,8 +31,10 @@ object Validation {
     new Validator[Iterable[T]] {
       override def apply(seq: Iterable[T]): Result = {
 
-        val violations =
-          seq.map(item => (item, validator(item))).zipWithIndex.collect {
+        val violations = seq
+          .map(item => (item, validator(item)))
+          .zipWithIndex
+          .collect {
             case ((item, f: Failure), pos: Int) =>
               GroupViolation(item, "not valid", Some(s"($pos)"), f.violations)
           }
@@ -110,10 +112,11 @@ object Validation {
         })
       case g: GroupViolation =>
         g.children.flatMap { c =>
-          val dot = g.value match {
-            case _: Iterable[_] => false
-            case _              => true
-          }
+          val dot =
+            g.value match {
+              case _: Iterable[_] => false
+              case _              => true
+            }
 
           val desc = parentDesc.map { p =>
             Some(concatPath(p, g.description, prependSlash))

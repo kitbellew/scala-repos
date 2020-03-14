@@ -42,10 +42,11 @@ class ConstructorResolveProcessor(
   override def execute(element: PsiElement, state: ResolveState): Boolean = {
     val named = element.asInstanceOf[PsiNamedElement]
     val fromType = getFromType(state)
-    val subst = fromType match {
-      case Some(tp) => getSubst(state).followUpdateThisType(tp)
-      case _        => getSubst(state)
-    }
+    val subst =
+      fromType match {
+        case Some(tp) => getSubst(state).followUpdateThisType(tp)
+        case _        => getSubst(state)
+      }
 
     def nameShadow0: Option[String] = Option(state.get(ResolverEnv.nameKey))
     if (nameAndKindMatch(named, state)) {
@@ -95,14 +96,15 @@ class ConstructorResolveProcessor(
               fromType = fromType,
               isAccessible = accessible))
         case ta: ScTypeAliasDefinition =>
-          lazy val r = new ScalaResolveResult(
-            ta,
-            subst,
-            getImports(state),
-            nameShadow0,
-            boundClass = getBoundClass(state),
-            fromType = fromType,
-            isAccessible = true)
+          lazy val r =
+            new ScalaResolveResult(
+              ta,
+              subst,
+              getImports(state),
+              nameShadow0,
+              boundClass = getBoundClass(state),
+              fromType = fromType,
+              isAccessible = true)
           val tp = ta
             .aliasedType(TypingContext.empty)
             .getOrElse({

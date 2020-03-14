@@ -215,8 +215,8 @@ private object PoolSlot {
       case FromConnection(OnNext(response: HttpResponse)) ⇒
         val requestContext = inflightRequests.head
         inflightRequests = inflightRequests.tail
-        val (entity, whenCompleted) =
-          HttpEntity.captureTermination(response.entity)
+        val (entity, whenCompleted) = HttpEntity.captureTermination(
+          response.entity)
         val delivery = ResponseDelivery(
           ResponseContext(requestContext, Success(response withEntity entity)))
         import fm.executionContext
@@ -258,9 +258,10 @@ private object PoolSlot {
         } else {
           inflightRequests.map { rc ⇒
             if (rc.retriesLeft == 0) {
-              val reason = error.fold[Throwable](
-                new UnexpectedDisconnectException("Unexpected disconnect"))(
-                conforms)
+              val reason =
+                error.fold[Throwable](
+                  new UnexpectedDisconnectException("Unexpected disconnect"))(
+                  conforms)
               connInport ! ActorPublisherMessage.Cancel
               ResponseDelivery(ResponseContext(rc, Failure(reason)))
             } else

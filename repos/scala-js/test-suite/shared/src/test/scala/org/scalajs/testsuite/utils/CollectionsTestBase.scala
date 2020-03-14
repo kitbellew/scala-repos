@@ -22,8 +22,7 @@ trait CollectionsTestBase {
     override def compareTo(o: CustomComparable): Int =
       (v % 8).compareTo(o.v % 8)
 
-    override def toString(): String =
-      s"CustomComparable($v)"
+    override def toString(): String = s"CustomComparable($v)"
   }
 
   def testCollectionUnmodifiability[E](

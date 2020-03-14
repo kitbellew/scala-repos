@@ -105,9 +105,10 @@ trait ScalaResultsHandlingSpec
       Results.Ok.sendEntity(
         HttpEntity.Streamed(Source.single(ByteString("abc")), None, None))
     ) { port =>
-      val response = BasicHttpClient.makeRequests(port, checkClosed = true)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-      )(0)
+      val response =
+        BasicHttpClient.makeRequests(port, checkClosed = true)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+        )(0)
       response.status must_== 200
       response.headers.get(TRANSFER_ENCODING) must beNone
       response.headers.get(CONTENT_LENGTH) must beNone
@@ -118,9 +119,10 @@ trait ScalaResultsHandlingSpec
     "close the HTTP 1.1 connection when requested" in withServer(
       Results.Ok.withHeaders(CONNECTION -> "close")
     ) { port =>
-      val response = BasicHttpClient.makeRequests(port, checkClosed = true)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-      )(0)
+      val response =
+        BasicHttpClient.makeRequests(port, checkClosed = true)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+        )(0)
       response.status must_== 200
       response.headers.get(CONNECTION) must beSome("close")
     }
@@ -128,14 +130,15 @@ trait ScalaResultsHandlingSpec
     "close the HTTP 1.0 connection when requested" in withServer(
       Results.Ok.withHeaders(CONNECTION -> "close")
     ) { port =>
-      val response = BasicHttpClient.makeRequests(port, checkClosed = true)(
-        BasicRequest(
-          "GET",
-          "/",
-          "HTTP/1.0",
-          Map("Connection" -> "keep-alive"),
-          "")
-      )(0)
+      val response =
+        BasicHttpClient.makeRequests(port, checkClosed = true)(
+          BasicRequest(
+            "GET",
+            "/",
+            "HTTP/1.0",
+            Map("Connection" -> "keep-alive"),
+            "")
+        )(0)
       response.status must_== 200
       response.headers.get(CONNECTION).map(_.toLowerCase(ENGLISH)) must beOneOf(
         None,
@@ -165,15 +168,16 @@ trait ScalaResultsHandlingSpec
     "honour the keep alive header for HTTP 1.0" in withServer(
       Results.Ok
     ) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest(
-          "GET",
-          "/",
-          "HTTP/1.0",
-          Map("Connection" -> "keep-alive"),
-          ""),
-        BasicRequest("GET", "/", "HTTP/1.0", Map(), "")
-      )
+      val responses =
+        BasicHttpClient.makeRequests(port)(
+          BasicRequest(
+            "GET",
+            "/",
+            "HTTP/1.0",
+            Map("Connection" -> "keep-alive"),
+            ""),
+          BasicRequest("GET", "/", "HTTP/1.0", Map(), "")
+        )
       responses(0).status must_== 200
       responses(0).headers.get(CONNECTION) must beSome.like {
         case s => s.toLowerCase(ENGLISH) must_== "keep-alive"
@@ -184,10 +188,11 @@ trait ScalaResultsHandlingSpec
     "keep alive HTTP 1.1 connections" in withServer(
       Results.Ok
     ) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), ""),
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-      )
+      val responses =
+        BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map(), ""),
+          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+        )
       responses(0).status must_== 200
       responses(1).status must_== 200
     }
@@ -207,10 +212,11 @@ trait ScalaResultsHandlingSpec
     "keep chunked connections alive by default" in withServer(
       Results.Ok.chunked(Source(List("a", "b", "c")))
     ) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), ""),
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-      )
+      val responses =
+        BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map(), ""),
+          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+        )
       responses(0).status must_== 200
       responses(1).status must_== 200
     }
@@ -231,9 +237,10 @@ trait ScalaResultsHandlingSpec
           None)
       )
     ) { port =>
-      val response = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-      )(0)
+      val response =
+        BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+        )(0)
 
       response.status must_== 200
       response.body must beRight
@@ -245,9 +252,10 @@ trait ScalaResultsHandlingSpec
     "Strip malformed cookies" in withServer(
       Results.Ok
     ) { port =>
-      val response = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map("Cookie" -> """£"""), "")
-      )(0)
+      val response =
+        BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/", "HTTP/1.1", Map("Cookie" -> """£"""), "")
+        )(0)
 
       response.status must_== 200
       response.body must beLeft
@@ -256,9 +264,10 @@ trait ScalaResultsHandlingSpec
     "reject HTTP 1.0 requests for chunked results" in withServer(
       Results.Ok.chunked(Source(List("a", "b", "c")))
     ) { port =>
-      val response = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.0", Map(), "")
-      )(0)
+      val response =
+        BasicHttpClient.makeRequests(port)(
+          BasicRequest("GET", "/", "HTTP/1.0", Map(), "")
+        )(0)
       response.status must_== HTTP_VERSION_NOT_SUPPORTED
       response.body must beLeft(
         "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
@@ -267,11 +276,12 @@ trait ScalaResultsHandlingSpec
     "return a 500 error on response with null header" in withServer(
       Results.Ok("some body").withHeaders("X-Null" -> null)
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
 
       response.status must_== 500
       response.body must beLeft("")
@@ -285,11 +295,12 @@ trait ScalaResultsHandlingSpec
           "aaa" -> "bbb\fccc",
           "ddd" -> "eee\u000bfff"
         )) { header =>
-        val response = BasicHttpClient
-          .makeRequests(port)(
-            BasicRequest("GET", "/", "HTTP/1.1", Map(header), "")
-          )
-          .head
+        val response =
+          BasicHttpClient
+            .makeRequests(port)(
+              BasicRequest("GET", "/", "HTTP/1.1", Map(header), "")
+            )
+            .head
 
         response.status must_== 400
         response.body must beLeft
@@ -324,11 +335,12 @@ trait ScalaResultsHandlingSpec
         header = ResponseHeader(NO_CONTENT),
         body = HttpEntity.Strict(ByteString("foo"), None))
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
       response.body must beLeft("")
     }
 
@@ -337,22 +349,24 @@ trait ScalaResultsHandlingSpec
         header = ResponseHeader(NOT_MODIFIED),
         body = HttpEntity.Strict(ByteString("foo"), None))
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
       response.body must beLeft("")
     }
 
     "not have a message body, nor Content-Length, when a 204 response is returned" in withServer(
       Results.NoContent
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beNone
     }
@@ -360,11 +374,12 @@ trait ScalaResultsHandlingSpec
     "not have a message body, but may have a Content-Length, when a 204 response with an explicit Content-Length is returned" in withServer(
       Results.NoContent.withHeaders("Content-Length" -> "0")
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("PUT", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beOneOf(
         None,
@@ -375,11 +390,12 @@ trait ScalaResultsHandlingSpec
     "not have a message body, nor a Content-Length, when a 304 response is returned" in withServer(
       Results.NotModified
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beNone
     }
@@ -387,11 +403,12 @@ trait ScalaResultsHandlingSpec
     "not have a message body, but may have a Content-Length, when a 304 response with an explicit Content-Length is returned" in withServer(
       Results.NotModified.withHeaders("Content-Length" -> "0")
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
       response.body must beLeft("")
       response.headers.get(CONTENT_LENGTH) must beOneOf(
         None,
@@ -403,11 +420,12 @@ trait ScalaResultsHandlingSpec
       // both colon and space characters are not allowed in a header's field name
       Results.Ok.withHeaders("BadFieldName: " -> "SomeContent")
     ) { port =>
-      val response = BasicHttpClient
-        .makeRequests(port)(
-          BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-        )
-        .head
+      val response =
+        BasicHttpClient
+          .makeRequests(port)(
+            BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
+          )
+          .head
       response.status must_== Status.INTERNAL_SERVER_ERROR
       (response.headers -- Set(
         CONNECTION,

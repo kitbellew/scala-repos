@@ -15,18 +15,17 @@ import org.scalatra.util.RicherString._
 
 object SwaggerSerializers {
   import org.scalatra.swagger.AllowableValues._
-  private val simpleTypes =
-    Set(
-      "int32",
-      "int64",
-      "float",
-      "double",
-      "string",
-      "byte",
-      "boolean",
-      "date",
-      "date-time",
-      "array")
+  private val simpleTypes = Set(
+    "int32",
+    "int64",
+    "float",
+    "double",
+    "string",
+    "byte",
+    "boolean",
+    "date",
+    "date-time",
+    "array")
   private def isSimpleType(name: String) = simpleTypes contains name
 
   private def str(jv: JValue): Option[String] =
@@ -188,15 +187,16 @@ object SwaggerSerializers {
           newSerializer :: SwaggerFormats.this.customSerializers
       }
 
-    override val dateFormat = new DateFormat {
-      def format(d: JDate) = new DateTime(d).toString(Iso8601Date)
-      def parse(s: String) =
-        try {
-          Option(Iso8601Date.parseDateTime(s).toDate)
-        } catch {
-          case _: Throwable ⇒ None
-        }
-    }
+    override val dateFormat =
+      new DateFormat {
+        def format(d: JDate) = new DateTime(d).toString(Iso8601Date)
+        def parse(s: String) =
+          try {
+            Option(Iso8601Date.parseDateTime(s).toDate)
+          } catch {
+            case _: Throwable ⇒ None
+          }
+      }
   }
 
   private[swagger] val formats: SwaggerFormats = new SwaggerFormats {}
@@ -250,10 +250,11 @@ object SwaggerSerializers {
       value \ "$ref") getOrElse karmaIsABitch
     if (isSimpleType(t)) {
       if (t == "array") {
-        val items = value \ "items" match {
-          case JNothing => None
-          case jv       => Some(readDataType(jv))
-        }
+        val items =
+          value \ "items" match {
+            case JNothing => None
+            case jv       => Some(readDataType(jv))
+          }
         value \ "uniqueItems" match {
           case JBool(true) =>
             items map (DataType.GenSet(_)) getOrElse DataType.GenSet()
@@ -318,8 +319,9 @@ object SwaggerSerializers {
                   case JBool(value) => value
                   case _            => false
                 },
-                description =
-                  (json \ "description").getAs[String].flatMap(_.blankOption),
+                description = (json \ "description")
+                  .getAs[String]
+                  .flatMap(_.blankOption),
                 allowableValues = json.extract[AllowableValues],
                 items = None
               )
@@ -337,13 +339,14 @@ object SwaggerSerializers {
         (
           {
             case json: JObject =>
-              val properties = json \ "properties" match {
-                case JObject(entries) => {
-                  for ((key, value) <- entries)
-                    yield key -> value.extract[ModelProperty]
+              val properties =
+                json \ "properties" match {
+                  case JObject(entries) => {
+                    for ((key, value) <- entries)
+                      yield key -> value.extract[ModelProperty]
+                  }
+                  case _ => Nil
                 }
-                case _ => Nil
-              }
 
               Model(
                 (json \ "id").getAsOrElse(""),

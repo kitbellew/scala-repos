@@ -17,8 +17,8 @@ class KleisliTests extends CatsSuite {
       FB: Eq[F[B]]): Eq[Kleisli[F, A, B]] =
     Eq.by[Kleisli[F, A, B], A => F[B]](_.run)
 
-  implicit val iso =
-    CartesianTests.Isomorphisms.invariant[Kleisli[Option, Int, ?]]
+  implicit val iso = CartesianTests.Isomorphisms
+    .invariant[Kleisli[Option, Int, ?]]
 
   checkAll(
     "Kleisli[Option, Int, Int]",
@@ -128,8 +128,8 @@ class KleisliTests extends CatsSuite {
   }
 
   {
-    implicit val kleisliSemigroup =
-      Kleisli.kleisliSemigroup[Option, Int, String]
+    implicit val kleisliSemigroup = Kleisli
+      .kleisliSemigroup[Option, Int, String]
     checkAll(
       "Kleisli[Option, Int, String]",
       GroupLaws[Kleisli[Option, Int, String]].semigroup)
@@ -191,9 +191,10 @@ class KleisliTests extends CatsSuite {
     val opt = Kleisli { (x: Int) =>
       Option(x.toDouble)
     }
-    val optToList = new (Option ~> List) {
-      def apply[A](fa: Option[A]): List[A] = fa.toList
-    }
+    val optToList =
+      new (Option ~> List) {
+        def apply[A](fa: Option[A]): List[A] = fa.toList
+      }
     val list = opt.transform(optToList)
 
     val is = 0.to(10).toList

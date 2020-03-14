@@ -7,14 +7,14 @@ import scala.collection.JavaConverters._
 object VersionUtil {
   lazy val baseVersion = settingKey[String](
     "The base version number from which all others are derived")
-  lazy val baseVersionSuffix =
-    settingKey[String]("Identifies the kind of version to build")
+  lazy val baseVersionSuffix = settingKey[String](
+    "Identifies the kind of version to build")
   lazy val copyrightString = settingKey[String]("Copyright string.")
   lazy val versionProperties = settingKey[Versions]("Version properties.")
-  lazy val generateVersionPropertiesFile =
-    taskKey[File]("Generating version properties file.")
-  lazy val generateBuildCharacterPropertiesFile =
-    taskKey[File]("Generating buildcharacter.properties file.")
+  lazy val generateVersionPropertiesFile = taskKey[File](
+    "Generating version properties file.")
+  lazy val generateBuildCharacterPropertiesFile = taskKey[File](
+    "Generating buildcharacter.properties file.")
 
   lazy val globalVersionSettings = Seq[Setting[_]](
     // Set the version properties globally (they are the same for all projects)
@@ -74,8 +74,8 @@ object VersionUtil {
     * job uses "SHA-SNAPSHOT". An empty suffix is used for releases. All other suffix values are treated as RC /
     * milestone builds. The special suffix value "SPLIT" is used to split the real suffix off from `baseVersion`
     * instead and then apply the usual logic. */
-  private lazy val versionPropertiesImpl: Def.Initialize[Versions] =
-    Def.setting {
+  private lazy val versionPropertiesImpl: Def.Initialize[Versions] = Def
+    .setting {
 
       val (base, suffix) = {
         val (b, s) = (baseVersion.value, baseVersionSuffix.value)
@@ -97,27 +97,31 @@ object VersionUtil {
       }
 
       val date = executeTool("get-scala-commit-date")
-      val sha =
-        executeTool("get-scala-commit-sha")
-          .substring(0, 7) // The script produces 10 digits at the moment
+      val sha = executeTool("get-scala-commit-sha")
+        .substring(0, 7) // The script produces 10 digits at the moment
 
-      val (canonicalV, mavenV, osgiV, release) = suffix match {
-        case "SNAPSHOT" =>
-          (s"$base-$date-$sha", s"$base-SNAPSHOT", s"$base.v$date-$sha", false)
-        case "SHA-SNAPSHOT" =>
-          (
-            s"$base-$date-$sha",
-            s"$base-$sha-SNAPSHOT",
-            s"$base.v$date-$sha",
-            false)
-        case "" => (s"$base", s"$base", s"$base.v$date-VFINAL-$sha", true)
-        case suffix =>
-          (
-            s"$base-$suffix",
-            s"$base-$suffix",
-            s"$base.v$date-$suffix-$sha",
-            true)
-      }
+      val (canonicalV, mavenV, osgiV, release) =
+        suffix match {
+          case "SNAPSHOT" =>
+            (
+              s"$base-$date-$sha",
+              s"$base-SNAPSHOT",
+              s"$base.v$date-$sha",
+              false)
+          case "SHA-SNAPSHOT" =>
+            (
+              s"$base-$date-$sha",
+              s"$base-$sha-SNAPSHOT",
+              s"$base.v$date-$sha",
+              false)
+          case "" => (s"$base", s"$base", s"$base.v$date-VFINAL-$sha", true)
+          case suffix =>
+            (
+              s"$base-$suffix",
+              s"$base-$suffix",
+              s"$base.v$date-$suffix-$sha",
+              true)
+        }
 
       Versions(canonicalV, mavenV, osgiV, sha, date, release)
     }

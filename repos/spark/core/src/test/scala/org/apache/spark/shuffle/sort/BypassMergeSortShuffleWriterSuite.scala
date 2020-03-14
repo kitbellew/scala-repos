@@ -145,14 +145,15 @@ class BypassMergeSortShuffleWriterSuite
   }
 
   test("write empty iterator") {
-    val writer = new BypassMergeSortShuffleWriter[Int, Int](
-      blockManager,
-      blockResolver,
-      shuffleHandle,
-      0, // MapId
-      taskContext,
-      conf
-    )
+    val writer =
+      new BypassMergeSortShuffleWriter[Int, Int](
+        blockManager,
+        blockResolver,
+        shuffleHandle,
+        0, // MapId
+        taskContext,
+        conf
+      )
     writer.write(Iterator.empty)
     writer.stop( /* success = */ true)
     assert(writer.getPartitionLengths.sum === 0)
@@ -169,14 +170,15 @@ class BypassMergeSortShuffleWriterSuite
   test("write with some empty partitions") {
     def records: Iterator[(Int, Int)] =
       Iterator((1, 1), (5, 5)) ++ (0 until 100000).iterator.map(x => (2, 2))
-    val writer = new BypassMergeSortShuffleWriter[Int, Int](
-      blockManager,
-      blockResolver,
-      shuffleHandle,
-      0, // MapId
-      taskContext,
-      conf
-    )
+    val writer =
+      new BypassMergeSortShuffleWriter[Int, Int](
+        blockManager,
+        blockResolver,
+        shuffleHandle,
+        0, // MapId
+        taskContext,
+        conf
+      )
     writer.write(records)
     writer.stop( /* success = */ true)
     assert(temporaryFilesCreated.nonEmpty)
@@ -208,14 +210,15 @@ class BypassMergeSortShuffleWriterSuite
           }
         }
 
-    val writer = new BypassMergeSortShuffleWriter[Int, Int](
-      blockManager,
-      blockResolver,
-      shuffleHandle,
-      0, // MapId
-      taskContext,
-      conf
-    )
+    val writer =
+      new BypassMergeSortShuffleWriter[Int, Int](
+        blockManager,
+        blockResolver,
+        shuffleHandle,
+        0, // MapId
+        taskContext,
+        conf
+      )
 
     intercept[SparkException] {
       writer.write(records)
@@ -232,14 +235,15 @@ class BypassMergeSortShuffleWriterSuite
   }
 
   test("cleanup of intermediate files after errors") {
-    val writer = new BypassMergeSortShuffleWriter[Int, Int](
-      blockManager,
-      blockResolver,
-      shuffleHandle,
-      0, // MapId
-      taskContext,
-      conf
-    )
+    val writer =
+      new BypassMergeSortShuffleWriter[Int, Int](
+        blockManager,
+        blockResolver,
+        shuffleHandle,
+        0, // MapId
+        taskContext,
+        conf
+      )
     intercept[SparkException] {
       writer.write((0 until 100000).iterator.map(i => {
         if (i == 99990) {

@@ -195,61 +195,63 @@ trait WikiService {
                 }
               }
 
-            val patch = using(new java.io.ByteArrayOutputStream()) { out =>
-              val formatter = new DiffFormatter(out)
-              formatter.setRepository(git.getRepository)
-              formatter.format(diffs.asJava)
-              new String(out.toByteArray, "UTF-8")
-            }
+            val patch =
+              using(new java.io.ByteArrayOutputStream()) { out =>
+                val formatter = new DiffFormatter(out)
+                formatter.setRepository(git.getRepository)
+                formatter.format(diffs.asJava)
+                new String(out.toByteArray, "UTF-8")
+              }
 
             val p = new Patch()
             p.parse(new ByteArrayInputStream(patch.getBytes("UTF-8")))
             if (!p.getErrors.isEmpty) {
               throw new PatchFormatException(p.getErrors())
             }
-            val revertInfo = (p.getFiles.asScala.map { fh =>
-              fh.getChangeType match {
-                case DiffEntry.ChangeType.MODIFY => {
-                  val source = getWikiPage(
-                    owner,
-                    repository,
-                    fh.getNewPath
-                      .stripSuffix(".md")).map(_.content).getOrElse("")
-                  val applied = PatchUtil.apply(source, patch, fh)
-                  if (applied != null) {
-                    Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                  } else
-                    Nil
-                }
-                case DiffEntry.ChangeType.ADD => {
-                  val applied = PatchUtil.apply("", patch, fh)
-                  if (applied != null) {
-                    Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                  } else
-                    Nil
-                }
-                case DiffEntry.ChangeType.DELETE => {
-                  Seq(RevertInfo("DELETE", fh.getNewPath, ""))
-                }
-                case DiffEntry.ChangeType.RENAME => {
-                  val applied = PatchUtil.apply("", patch, fh)
-                  if (applied != null) {
-                    Seq(
-                      RevertInfo("DELETE", fh.getOldPath, ""),
-                      RevertInfo("ADD", fh.getNewPath, applied))
-                  } else {
-                    Seq(RevertInfo("DELETE", fh.getOldPath, ""))
+            val revertInfo =
+              (p.getFiles.asScala.map { fh =>
+                fh.getChangeType match {
+                  case DiffEntry.ChangeType.MODIFY => {
+                    val source = getWikiPage(
+                      owner,
+                      repository,
+                      fh.getNewPath
+                        .stripSuffix(".md")).map(_.content).getOrElse("")
+                    val applied = PatchUtil.apply(source, patch, fh)
+                    if (applied != null) {
+                      Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                    } else
+                      Nil
                   }
+                  case DiffEntry.ChangeType.ADD => {
+                    val applied = PatchUtil.apply("", patch, fh)
+                    if (applied != null) {
+                      Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                    } else
+                      Nil
+                  }
+                  case DiffEntry.ChangeType.DELETE => {
+                    Seq(RevertInfo("DELETE", fh.getNewPath, ""))
+                  }
+                  case DiffEntry.ChangeType.RENAME => {
+                    val applied = PatchUtil.apply("", patch, fh)
+                    if (applied != null) {
+                      Seq(
+                        RevertInfo("DELETE", fh.getOldPath, ""),
+                        RevertInfo("ADD", fh.getNewPath, applied))
+                    } else {
+                      Seq(RevertInfo("DELETE", fh.getOldPath, ""))
+                    }
+                  }
+                  case _ => Nil
                 }
-                case _ => Nil
-              }
-            }).flatten
+              }).flatten
 
             if (revertInfo.nonEmpty) {
               val builder = DirCache.newInCore.builder()
               val inserter = git.getRepository.newObjectInserter()
-              val headId =
-                git.getRepository.resolve(Constants.HEAD + "^{commit}")
+              val headId = git.getRepository.resolve(
+                Constants.HEAD + "^{commit}")
 
               JGitUtil.processTree(git, headId) { (path, tree) =>
                 if (revertInfo.find(x => x.filePath == path).isEmpty) {

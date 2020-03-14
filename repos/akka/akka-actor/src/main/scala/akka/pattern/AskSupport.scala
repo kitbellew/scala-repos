@@ -761,10 +761,11 @@ private[akka] object PromiseActorRef {
     val scheduler = provider.guardian.underlying.system.scheduler
     val a = new PromiseActorRef(provider, result, messageClassName)
     implicit val ec = a.internalCallingThreadExecutionContext
-    val f = scheduler.scheduleOnce(timeout.duration) {
-      result tryComplete Failure(new AskTimeoutException(
-        s"""Ask timed out on [$targetName] after [${timeout.duration.toMillis} ms]. Sender[$sender] sent message of type "${a.messageClassName}"."""))
-    }
+    val f =
+      scheduler.scheduleOnce(timeout.duration) {
+        result tryComplete Failure(new AskTimeoutException(
+          s"""Ask timed out on [$targetName] after [${timeout.duration.toMillis} ms]. Sender[$sender] sent message of type "${a.messageClassName}"."""))
+      }
     result.future onComplete { _ ⇒
       try a.stop()
       finally f.cancel()

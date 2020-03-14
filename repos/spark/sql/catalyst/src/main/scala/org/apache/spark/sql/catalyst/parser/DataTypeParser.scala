@@ -113,9 +113,10 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
 }
 
 private[sql] object DataTypeParser {
-  lazy val dataTypeParser = new DataTypeParser {
-    override val lexical = new SqlLexical
-  }
+  lazy val dataTypeParser =
+    new DataTypeParser {
+      override val lexical = new SqlLexical
+    }
 
   def parse(dataTypeString: String): DataType =
     dataTypeParser.toDataType(dataTypeString)

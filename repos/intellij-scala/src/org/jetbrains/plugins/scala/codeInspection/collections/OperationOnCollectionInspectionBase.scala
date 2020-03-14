@@ -32,8 +32,10 @@ object OperationOnCollectionInspectionBase {
   val inspectionId = InspectionBundle.message("operation.on.collection.id")
   val inspectionName = InspectionBundle.message("operation.on.collection.name")
 
-  val likeOptionClassesDefault =
-    Array("scala.Option", "scala.Some", "scala.None")
+  val likeOptionClassesDefault = Array(
+    "scala.Option",
+    "scala.Some",
+    "scala.None")
   val likeCollectionClassesDefault = Array(
     "scala.collection._",
     "scala.Array",
@@ -156,46 +158,49 @@ abstract class OperationOnCollectionInspectionBase
         }
         setPatternLists(patternListKey)(newArray)
       }
-      val panel = ToolbarDecorator
-        .createDecorator(patternJBList)
-        .setAddAction(new AnActionButtonRunnable {
-          def addPattern(pattern: String) {
-            if (pattern == null)
-              return
-            val index: Int =
-              -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
-            if (index < 0)
-              return
-            JListCompatibility.add(listModel, index, pattern)
-            resetValues()
-            patternJBList.setSelectedValue(pattern, true)
-            ScrollingUtil.ensureIndexIsVisible(patternJBList, index, 0)
-            IdeFocusManager.getGlobalInstance.requestFocus(patternJBList, false)
-          }
+      val panel =
+        ToolbarDecorator
+          .createDecorator(patternJBList)
+          .setAddAction(new AnActionButtonRunnable {
+            def addPattern(pattern: String) {
+              if (pattern == null)
+                return
+              val index: Int =
+                -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
+              if (index < 0)
+                return
+              JListCompatibility.add(listModel, index, pattern)
+              resetValues()
+              patternJBList.setSelectedValue(pattern, true)
+              ScrollingUtil.ensureIndexIsVisible(patternJBList, index, 0)
+              IdeFocusManager.getGlobalInstance
+                .requestFocus(patternJBList, false)
+            }
 
-          def run(button: AnActionButton) {
-            val validator: InputValidator =
-              ScalaProjectSettingsUtil.getPatternValidator
-            val inputMessage = inputMessages(patternListKey)
-            val inputTitle = inputTitles(patternListKey)
-            val newPattern: String = Messages.showInputDialog(
-              parent,
-              inputMessage,
-              inputTitle,
-              Messages.getWarningIcon,
-              "",
-              validator)
-            addPattern(newPattern)
-          }
-        })
-        .setRemoveAction(new AnActionButtonRunnable {
-          def run(t: AnActionButton) {
-            patternJBList.getSelectedIndices.foreach(listModel.removeElementAt)
-            resetValues()
-          }
-        })
-        .disableUpDownActions
-        .createPanel
+            def run(button: AnActionButton) {
+              val validator: InputValidator =
+                ScalaProjectSettingsUtil.getPatternValidator
+              val inputMessage = inputMessages(patternListKey)
+              val inputTitle = inputTitles(patternListKey)
+              val newPattern: String = Messages.showInputDialog(
+                parent,
+                inputMessage,
+                inputTitle,
+                Messages.getWarningIcon,
+                "",
+                validator)
+              addPattern(newPattern)
+            }
+          })
+          .setRemoveAction(new AnActionButtonRunnable {
+            def run(t: AnActionButton) {
+              patternJBList.getSelectedIndices.foreach(
+                listModel.removeElementAt)
+              resetValues()
+            }
+          })
+          .disableUpDownActions
+          .createPanel
 
       val title = panelTitles(patternListKey)
       val border = BorderFactory.createTitledBorder(title)

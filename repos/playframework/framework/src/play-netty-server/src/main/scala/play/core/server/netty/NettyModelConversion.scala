@@ -202,36 +202,40 @@ private[server] class NettyModelConversion(
       requestHeader: RequestHeader,
       httpVersion: HttpVersion)(implicit mat: Materializer): HttpResponse = {
 
-    val responseStatus = result.header.reasonPhrase match {
-      case Some(phrase) => new HttpResponseStatus(result.header.status, phrase)
-      case None         => HttpResponseStatus.valueOf(result.header.status)
-    }
+    val responseStatus =
+      result.header.reasonPhrase match {
+        case Some(phrase) =>
+          new HttpResponseStatus(result.header.status, phrase)
+        case None => HttpResponseStatus.valueOf(result.header.status)
+      }
 
-    val connectionHeader =
-      ServerResultUtils.determineConnectionHeader(requestHeader, result)
+    val connectionHeader = ServerResultUtils.determineConnectionHeader(
+      requestHeader,
+      result)
     val skipEntity = requestHeader.method == HttpMethod.HEAD.name()
 
-    val response: HttpResponse = result.body match {
+    val response: HttpResponse =
+      result.body match {
 
-      case any if skipEntity =>
-        ServerResultUtils.cancelEntity(any)
-        new DefaultFullHttpResponse(
-          httpVersion,
-          responseStatus,
-          Unpooled.EMPTY_BUFFER)
+        case any if skipEntity =>
+          ServerResultUtils.cancelEntity(any)
+          new DefaultFullHttpResponse(
+            httpVersion,
+            responseStatus,
+            Unpooled.EMPTY_BUFFER)
 
-      case HttpEntity.Strict(data, _) =>
-        new DefaultFullHttpResponse(
-          httpVersion,
-          responseStatus,
-          byteStringToByteBuf(data))
+        case HttpEntity.Strict(data, _) =>
+          new DefaultFullHttpResponse(
+            httpVersion,
+            responseStatus,
+            byteStringToByteBuf(data))
 
-      case HttpEntity.Streamed(stream, _, _) =>
-        createStreamedResponse(stream, httpVersion, responseStatus)
+        case HttpEntity.Streamed(stream, _, _) =>
+          createStreamedResponse(stream, httpVersion, responseStatus)
 
-      case HttpEntity.Chunked(chunks, _) =>
-        createChunkedResponse(chunks, httpVersion, responseStatus)
-    }
+        case HttpEntity.Chunked(chunks, _) =>
+          createChunkedResponse(chunks, httpVersion, responseStatus)
+      }
 
     // Set response headers
     val headers = ServerResultUtils.splitSetCookieHeaders(result.header.headers)
@@ -288,10 +292,11 @@ private[server] class NettyModelConversion(
             s"Exception occurred while setting response's headers to $prettyHeaders. Action taken is to set the response's status to ${HttpResponseStatus.INTERNAL_SERVER_ERROR} and discard all headers."
           logger.error(msg, e)
         }
-        val response = new DefaultFullHttpResponse(
-          httpVersion,
-          HttpResponseStatus.INTERNAL_SERVER_ERROR,
-          Unpooled.EMPTY_BUFFER)
+        val response =
+          new DefaultFullHttpResponse(
+            httpVersion,
+            HttpResponseStatus.INTERNAL_SERVER_ERROR,
+            Unpooled.EMPTY_BUFFER)
         HttpHeaders.setContentLength(response, 0)
         response.headers().add(DATE, dateHeader)
         response.headers().add(CONNECTION, "close")
@@ -318,8 +323,8 @@ private[server] class NettyModelConversion(
 
     val publisher = chunks.runWith(Sink.asPublisher(false))
 
-    val httpContentPublisher =
-      SynchronousMappedStreams.map[HttpChunk, HttpContent](
+    val httpContentPublisher = SynchronousMappedStreams
+      .map[HttpChunk, HttpContent](
         publisher,
         {
           case HttpChunk.Chunk(bytes) =>
@@ -334,10 +339,11 @@ private[server] class NettyModelConversion(
         }
       )
 
-    val response = new DefaultStreamedHttpResponse(
-      httpVersion,
-      responseStatus,
-      httpContentPublisher)
+    val response =
+      new DefaultStreamedHttpResponse(
+        httpVersion,
+        responseStatus,
+        httpContentPublisher)
     HttpHeaders.setTransferEncodingChunked(response)
     response
   }
@@ -382,8 +388,8 @@ private[server] class NettyModelConversion(
           if cachedSeconds == currentTimeSeconds =>
         dateHeaderString
       case _ =>
-        val dateHeaderString =
-          ResponseHeader.httpDateFormat.print(currentTimeMillis)
+        val dateHeaderString = ResponseHeader.httpDateFormat.print(
+          currentTimeMillis)
         cachedDateHeader = currentTimeSeconds -> dateHeaderString
         dateHeaderString
     }

@@ -156,8 +156,8 @@ object SimpleConsumerShell extends Logging {
         false
     val noWaitAtEndOfLog = options.has(noWaitAtEndOfLogOpt)
 
-    val messageFormatterClass =
-      Class.forName(options.valueOf(messageFormatterOpt))
+    val messageFormatterClass = Class.forName(
+      options.valueOf(messageFormatterOpt))
     val formatterArgs = CommandLineUtils.parseKeyValueArgs(
       options.valuesOf(messageFormatterArgOpt))
 
@@ -172,13 +172,14 @@ object SimpleConsumerShell extends Logging {
     val brokerList = options.valueOf(brokerListOpt)
     ToolsUtils.validatePortOrDie(parser, brokerList)
     val metadataTargetBrokers = ClientUtils.parseBrokerList(brokerList)
-    val topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic),
-        metadataTargetBrokers,
-        clientId,
-        maxWaitMs)
-      .topicsMetadata
+    val topicsMetadata =
+      ClientUtils
+        .fetchTopicMetadata(
+          Set(topic),
+          metadataTargetBrokers,
+          clientId,
+          maxWaitMs)
+        .topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
       System.err.println(
         ("Error: no valid topic metadata for topic: %s, " + "what we get from server is only: %s")
@@ -188,8 +189,8 @@ object SimpleConsumerShell extends Logging {
 
     // validating partition id
     val partitionsMetadata = topicsMetadata(0).partitionsMetadata
-    val partitionMetadataOpt =
-      partitionsMetadata.find(p => p.partitionId == partitionId)
+    val partitionMetadataOpt = partitionsMetadata.find(p =>
+      p.partitionId == partitionId)
     if (!partitionMetadataOpt.isDefined) {
       System.err.println(
         "Error: partition %d does not exist for topic %s"
@@ -226,12 +227,13 @@ object SimpleConsumerShell extends Logging {
       System.exit(1)
     }
     if (startingOffset < 0) {
-      val simpleConsumer = new SimpleConsumer(
-        fetchTargetBroker.host,
-        fetchTargetBroker.port,
-        ConsumerConfig.SocketTimeout,
-        ConsumerConfig.SocketBufferSize,
-        clientId)
+      val simpleConsumer =
+        new SimpleConsumer(
+          fetchTargetBroker.host,
+          fetchTargetBroker.port,
+          ConsumerConfig.SocketTimeout,
+          ConsumerConfig.SocketBufferSize,
+          clientId)
       try {
         startingOffset = simpleConsumer.earliestOrLatestOffset(
           TopicAndPartition(topic, partitionId),
@@ -250,8 +252,9 @@ object SimpleConsumerShell extends Logging {
     }
 
     // initializing formatter
-    val formatter =
-      messageFormatterClass.newInstance().asInstanceOf[MessageFormatter]
+    val formatter = messageFormatterClass
+      .newInstance()
+      .asInstanceOf[MessageFormatter]
     formatter.init(formatterArgs)
 
     val replicaString =
@@ -269,12 +272,13 @@ object SimpleConsumerShell extends Logging {
           fetchTargetBroker.host,
           fetchTargetBroker.port,
           startingOffset))
-    val simpleConsumer = new SimpleConsumer(
-      fetchTargetBroker.host,
-      fetchTargetBroker.port,
-      10000,
-      64 * 1024,
-      clientId)
+    val simpleConsumer =
+      new SimpleConsumer(
+        fetchTargetBroker.host,
+        fetchTargetBroker.port,
+        10000,
+        64 * 1024,
+        clientId)
     val thread = Utils.newThread(
       "kafka-simpleconsumer-shell",
       new Runnable() {

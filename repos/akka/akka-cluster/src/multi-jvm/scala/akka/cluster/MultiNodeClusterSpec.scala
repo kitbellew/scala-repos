@@ -358,11 +358,12 @@ trait MultiNodeClusterSpec
   /**
     * Sort the roles in the address order used by the cluster node ring.
     */
-  implicit val clusterOrdering: Ordering[RoleName] = new Ordering[RoleName] {
-    import Member.addressOrdering
-    def compare(x: RoleName, y: RoleName) =
-      addressOrdering.compare(address(x), address(y))
-  }
+  implicit val clusterOrdering: Ordering[RoleName] =
+    new Ordering[RoleName] {
+      import Member.addressOrdering
+      def compare(x: RoleName, y: RoleName) =
+        addressOrdering.compare(address(x), address(y))
+    }
 
   def roleName(addr: Address): Option[RoleName] = roles.find(address(_) == addr)
 

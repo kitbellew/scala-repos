@@ -359,13 +359,11 @@ object LookupEventBusSpec {
     override protected def classify(event: Int): String = event.toString
     override protected def compareSubscribers(
         a: Procedure[Int],
-        b: Procedure[Int]): Int =
-      akka.util.Helpers.compareIdentityHash(a, b)
+        b: Procedure[Int]): Int = akka.util.Helpers.compareIdentityHash(a, b)
     override protected def mapSize = 32
     override protected def publish(
         event: Int,
-        subscriber: Procedure[Int]): Unit =
-      subscriber(event)
+        subscriber: Procedure[Int]): Unit = subscriber(event)
   }
 }
 

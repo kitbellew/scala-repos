@@ -60,8 +60,10 @@ class CoreModuleImpl @Inject() (
   private[this] lazy val actorsModule =
     new ActorsModule(shutdownHookModule, actorSystem)
 
-  override lazy val leadershipModule =
-    LeadershipModule(actorsModule.actorRefFactory, zk, leader)
+  override lazy val leadershipModule = LeadershipModule(
+    actorsModule.actorRefFactory,
+    zk,
+    leader)
 
   // TASKS
 
@@ -99,40 +101,42 @@ class CoreModuleImpl @Inject() (
       leadershipModule
     )
 
-  override lazy val launcherModule = new LauncherModule(
-    // infrastructure
-    clock,
-    metrics,
-    marathonConf,
-    // external guicedependencies
-    taskTrackerModule.taskCreationHandler,
-    marathonSchedulerDriverHolder,
-    // internal core dependencies
-    StopOnFirstMatchingOfferMatcher(
-      offerMatcherReconcilerModule.offerMatcherReconciler,
-      offerMatcherManagerModule.globalOfferMatcher
+  override lazy val launcherModule =
+    new LauncherModule(
+      // infrastructure
+      clock,
+      metrics,
+      marathonConf,
+      // external guicedependencies
+      taskTrackerModule.taskCreationHandler,
+      marathonSchedulerDriverHolder,
+      // internal core dependencies
+      StopOnFirstMatchingOfferMatcher(
+        offerMatcherReconcilerModule.offerMatcherReconciler,
+        offerMatcherManagerModule.globalOfferMatcher
+      )
     )
-  )
 
-  override lazy val appOfferMatcherModule = new LaunchQueueModule(
-    marathonConf,
-    leadershipModule,
-    clock,
-    // internal core dependencies
-    offerMatcherManagerModule.subOfferMatcherManager,
-    maybeOfferReviver,
-    // external guice dependencies
-    appRepository,
-    taskTrackerModule.taskTracker,
-    taskOpFactory
-  )
+  override lazy val appOfferMatcherModule =
+    new LaunchQueueModule(
+      marathonConf,
+      leadershipModule,
+      clock,
+      // internal core dependencies
+      offerMatcherManagerModule.subOfferMatcherManager,
+      maybeOfferReviver,
+      // external guice dependencies
+      appRepository,
+      taskTrackerModule.taskTracker,
+      taskOpFactory
+    )
 
   // PLUGINS
 
   override lazy val pluginModule = new PluginModule(marathonConf)
 
-  override lazy val authModule: AuthModule = new AuthModule(
-    pluginModule.pluginManager)
+  override lazy val authModule: AuthModule =
+    new AuthModule(pluginModule.pluginManager)
 
   // FLOW CONTROL GLUE
 

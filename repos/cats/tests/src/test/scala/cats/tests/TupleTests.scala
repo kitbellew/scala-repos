@@ -23,13 +23,15 @@ class TupleTests extends CatsSuite {
     // Provide some "non-standard" Show instances to make sure the tuple2 is actually use the Show instances for the
     // relevant types instead of blindly calling toString
     case class Foo(x: Int)
-    implicit val fooShow: Show[Foo] = new Show[Foo] {
-      override def show(f: Foo): String = s"foo.x = ${f.x}"
-    }
+    implicit val fooShow: Show[Foo] =
+      new Show[Foo] {
+        override def show(f: Foo): String = s"foo.x = ${f.x}"
+      }
     case class Bar(y: Int)
-    implicit val barShow: Show[Bar] = new Show[Bar] {
-      override def show(f: Bar): String = s"bar.y = ${f.y}"
-    }
+    implicit val barShow: Show[Bar] =
+      new Show[Bar] {
+        override def show(f: Bar): String = s"bar.y = ${f.y}"
+      }
 
     val foo = Foo(1)
     val bar = Bar(2)

@@ -228,8 +228,7 @@ trait TraversableLike[+A, +Repr]
     *                of this $coll followed by all elements of `that`.
     */
   def ++:[B >: A, That](that: Traversable[B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That =
-    (that ++ seq)(breakOut)
+      implicit bf: CanBuildFrom[Repr, B, That]): That = (that ++ seq)(breakOut)
 
   def map[B, That](f: A => B)(
       implicit bf: CanBuildFrom[Repr, B, That]): That = {

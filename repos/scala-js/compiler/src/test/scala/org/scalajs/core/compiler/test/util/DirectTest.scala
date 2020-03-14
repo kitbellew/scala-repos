@@ -32,9 +32,10 @@ abstract class DirectTest {
         scalaJSLibPath) ++
         extraArgs ++ args.toList)
 
-    lazy val global: Global = new Global(settings, newReporter(settings)) {
-      override lazy val plugins = newScalaJSPlugin(global) :: Nil
-    }
+    lazy val global: Global =
+      new Global(settings, newReporter(settings)) {
+        override lazy val plugins = newScalaJSPlugin(global) :: Nil
+      }
 
     global
   }

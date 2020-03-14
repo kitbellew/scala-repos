@@ -39,15 +39,16 @@ class HASkipListView[S <: Sys[S], A](private val l: HASkipList[S, A])(
       implicit tx: S#Tx): (Box, NodeBox) = {
     val sz = n.size
     val szm = sz - 1
-    val keys = IndexedSeq.tabulate(sz) { i =>
-      val key = n.key(i)
-      (
-        key,
-        if (isRight && i == szm)
-          "M"
-        else
-          key.toString)
-    }
+    val keys =
+      IndexedSeq.tabulate(sz) { i =>
+        val key = n.key(i)
+        (
+          key,
+          if (isRight && i == szm)
+            "M"
+          else
+            key.toString)
+      }
     val chbo =
       if (n.isLeaf)
         None
@@ -57,13 +58,14 @@ class HASkipListView[S <: Sys[S], A](private val l: HASkipList[S, A])(
           buildBoxMap(nb.down(i), isRight && (i == szm))))
       }
     val b = NodeBox(n, keys, chbo.map(_.map(_._2)))
-    val bb = chbo match {
-      case Some(chbt) =>
-        val chb = chbt.map(_._1)
-        val h = Horiz(bs = chb)
-        Vert(bs = IndexedSeq[Box](b, h))
-      case None => b
-    }
+    val bb =
+      chbo match {
+        case Some(chbt) =>
+          val chb = chbt.map(_._1)
+          val h = Horiz(bs = chb)
+          Vert(bs = IndexedSeq[Box](b, h))
+        case None => b
+      }
 
     (bb, b)
   }

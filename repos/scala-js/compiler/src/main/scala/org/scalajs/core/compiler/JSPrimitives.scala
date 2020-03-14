@@ -16,9 +16,10 @@ import scala.collection.mutable
 abstract class JSPrimitives {
   val global: Global
 
-  type ThisJSGlobalAddons = JSGlobalAddons {
-    val global: JSPrimitives.this.global.type
-  }
+  type ThisJSGlobalAddons =
+    JSGlobalAddons {
+      val global: JSPrimitives.this.global.type
+    }
 
   val jsAddons: ThisJSGlobalAddons
 
@@ -107,6 +108,5 @@ abstract class JSPrimitives {
     addPrimitive(Runtime_linkingInfo, LINKING_INFO)
   }
 
-  def isJavaScriptPrimitive(code: Int): Boolean =
-    code >= 300 && code < 360
+  def isJavaScriptPrimitive(code: Int): Boolean = code >= 300 && code < 360
 }

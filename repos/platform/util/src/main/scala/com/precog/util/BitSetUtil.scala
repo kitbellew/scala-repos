@@ -66,8 +66,7 @@ object BitSetUtil {
     def |=(other: BitSet) = bs.or(other)
     def ++=(other: BitSet) = bs.or(other)
 
-    def isEmpty(): Boolean =
-      bs.nextSetBit(0) < 0
+    def isEmpty(): Boolean = bs.nextSetBit(0) < 0
 
     def min(): Int = {
       val n = bs.nextSetBit(0)

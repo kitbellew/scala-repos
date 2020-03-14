@@ -19,8 +19,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
 
   test("Select tasks to kill for a single group by works") {
     Given("app with hostname group_by and 20 tasks even distributed on 2 hosts")
-    val app = AppDefinition(constraints =
-      Set(makeConstraint("hostname", Operator.GROUP_BY, "")))
+    val app = AppDefinition(constraints = Set(
+      makeConstraint("hostname", Operator.GROUP_BY, "")))
     val tasks = 0.to(19).map(num => makeTaskWithHost(s"$num", s"srv${num % 2}"))
 
     When("10 tasks should be selected to kill")
@@ -36,8 +36,8 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
   test("Select only tasks to kill for an unbalanced distribution") {
     Given(
       "app with hostname group_by and 30 tasks uneven distributed on 2 hosts")
-    val app = AppDefinition(constraints =
-      Set(makeConstraint("hostname", Operator.GROUP_BY, "")))
+    val app = AppDefinition(constraints = Set(
+      makeConstraint("hostname", Operator.GROUP_BY, "")))
     val tasks = 0.to(19).map(num => makeTaskWithHost(s"$num", s"srv1")) ++
       20.to(29).map(num => makeTaskWithHost(s"$num", s"srv2"))
 
@@ -166,8 +166,10 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     val sameRack = Set(task1_rack1, task2_rack1)
     val uniqueRack = Set(task1_rack1, task3_rack2)
 
-    val clusterByRackId =
-      makeConstraint("rackid", Constraint.Operator.CLUSTER, "")
+    val clusterByRackId = makeConstraint(
+      "rackid",
+      Constraint.Operator.CLUSTER,
+      "")
     val uniqueRackId = makeConstraint("rackid", Constraint.Operator.UNIQUE, "")
 
     val clusterFreshRackMet = Constraints.meetsConstraint(
@@ -299,8 +301,10 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
 
     var sameRack = Iterable.empty[Task]
 
-    val group2ByRack =
-      makeConstraint("rackid", Constraint.Operator.GROUP_BY, "2")
+    val group2ByRack = makeConstraint(
+      "rackid",
+      Constraint.Operator.GROUP_BY,
+      "2")
 
     val groupByFreshRackMet = Constraints.meetsConstraint(
       sameRack,
@@ -371,8 +375,10 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
 
     var groupRack = Iterable.empty[Task]
 
-    val groupByRack =
-      makeConstraint("rackid", Constraint.Operator.GROUP_BY, "3")
+    val groupByRack = makeConstraint(
+      "rackid",
+      Constraint.Operator.GROUP_BY,
+      "3")
 
     val clusterFreshRackMet = Constraints.meetsConstraint(
       groupRack,
@@ -437,8 +443,10 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     var groupHost = Iterable.empty[Task]
     val attributes: Set[Attribute] = Set()
 
-    val groupByHost =
-      makeConstraint("hostname", Constraint.Operator.GROUP_BY, "2")
+    val groupByHost = makeConstraint(
+      "hostname",
+      Constraint.Operator.GROUP_BY,
+      "2")
 
     val groupByFreshHostMet = Constraints.meetsConstraint(
       groupHost,

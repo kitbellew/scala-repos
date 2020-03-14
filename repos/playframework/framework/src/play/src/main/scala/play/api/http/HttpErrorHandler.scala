@@ -247,8 +247,8 @@ class DefaultHttpErrorHandler(
       request: RequestHeader,
       exception: Throwable): Future[Result] = {
     try {
-      val usefulException =
-        HttpErrorHandlerExceptions.throwableToUsefulException(
+      val usefulException = HttpErrorHandlerExceptions
+        .throwableToUsefulException(
           sourceMapper,
           environment.mode == Mode.Prod,
           exception)

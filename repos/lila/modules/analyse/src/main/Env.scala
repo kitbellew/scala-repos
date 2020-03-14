@@ -23,10 +23,11 @@ final class Env(
 
   private[analyse] lazy val analysisColl = db(CollectionAnalysis)
 
-  lazy val analyser = new Analyser(
-    indexer = indexer,
-    roundSocket = roundSocket,
-    bus = system.lilaBus)
+  lazy val analyser =
+    new Analyser(
+      indexer = indexer,
+      roundSocket = roundSocket,
+      bus = system.lilaBus)
 
   lazy val annotator = new Annotator(NetDomain)
 }

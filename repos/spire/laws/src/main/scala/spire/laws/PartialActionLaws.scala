@@ -60,8 +60,9 @@ trait PartialActionLaws[G, A] extends Laws {
     new ActionProperties(
       name = "semigroupAction",
       sl = _.semigroupoid(G0),
-      parents =
-        Seq(leftSemigroupoidPartialAction, rightSemigroupoidPartialAction)
+      parents = Seq(
+        leftSemigroupoidPartialAction,
+        rightSemigroupoidPartialAction)
     )
 
   def groupoidPartialAction(implicit G: PartialAction[A, G], G0: Groupoid[G]) =

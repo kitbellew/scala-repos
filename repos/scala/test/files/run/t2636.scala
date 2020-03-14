@@ -30,20 +30,22 @@ object Test {
     val p1: Foo = arr
     def a1 = p1(0) = "b"
 
-    val p2: Foo2 = new {
-      def update(x: Int, value: String) = {
-        p1(1) = "o";
-        1
+    val p2: Foo2 =
+      new {
+        def update(x: Int, value: String) = {
+          p1(1) = "o";
+          1
+        }
       }
-    }
     def a2 = p2(0) = "c"
 
-    val p3: Foo3 = new {
-      def update(x: Int, value: String) = {
-        p1(2) = "b";
-        Array(1)
+    val p3: Foo3 =
+      new {
+        def update(x: Int, value: String) = {
+          p1(2) = "b";
+          Array(1)
+        }
       }
-    }
     def a3 = p3(10) = "hi mom"
 
     a1;

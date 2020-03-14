@@ -160,8 +160,7 @@ object Monitor extends Monitor {
     *  [[Local]] monitor fails to handle the exception, it is handled by
     * the [[RootMonitor]].
     */
-  def handle(exc: Throwable): Boolean =
-    (get orElse RootMonitor).handle(exc)
+  def handle(exc: Throwable): Boolean = (get orElse RootMonitor).handle(exc)
 
   private[this] val AlwaysFalse = scala.Function.const(false) _
 

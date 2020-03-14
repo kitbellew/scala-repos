@@ -23,16 +23,18 @@ abstract class Adjunction[F[_], G[_]](implicit
   def rightAdjunct[A, B](a: F[A])(f: A => G[B]): B = counit(F.map(a)(f))
 
   /** Adjoint functors annihilate each other. */
-  implicit val zapFG: Zap[F, G] = new Zap[F, G] {
-    def zapWith[A, B, C](a: F[A], b: G[B])(f: (A, B) => C): C =
-      f.tupled(counit(F.map(F.strengthR(a, b))(p => G.strengthL(p._1, p._2))))
-  }
+  implicit val zapFG: Zap[F, G] =
+    new Zap[F, G] {
+      def zapWith[A, B, C](a: F[A], b: G[B])(f: (A, B) => C): C =
+        f.tupled(counit(F.map(F.strengthR(a, b))(p => G.strengthL(p._1, p._2))))
+    }
 
   /** Adjoint functors annihilate each other. */
-  implicit val zapGF: Zap[G, F] = new Zap[G, F] {
-    def zapWith[A, B, C](a: G[A], b: F[B])(f: (A, B) => C): C =
-      f.tupled(counit(F.map(F.strengthL(a, b))(p => G.strengthR(p._1, p._2))))
-  }
+  implicit val zapGF: Zap[G, F] =
+    new Zap[G, F] {
+      def zapWith[A, B, C](a: G[A], b: F[B])(f: (A, B) => C): C =
+        f.tupled(counit(F.map(F.strengthL(a, b))(p => G.strengthR(p._1, p._2))))
+    }
 
   /** Every adjunction is representable. */
   implicit val representable: Representable[G, F[Unit]] =
@@ -42,10 +44,11 @@ abstract class Adjunction[F[_], G[_]](implicit
     }
 
   /** Every adjunction gives rise to a monad. */
-  implicit val monad: Monad[λ[α => G[F[α]]]] = new Monad[λ[α => G[F[α]]]] {
-    def point[A](a: => A) = unit(a)
-    def bind[A, B](a: G[F[A]])(f: A => G[F[B]]) = G.map(a)(rightAdjunct(_)(f))
-  }
+  implicit val monad: Monad[λ[α => G[F[α]]]] =
+    new Monad[λ[α => G[F[α]]]] {
+      def point[A](a: => A) = unit(a)
+      def bind[A, B](a: G[F[A]])(f: A => G[F[B]]) = G.map(a)(rightAdjunct(_)(f))
+    }
 
   /** Every adjunction gives rise to a comonad. */
   implicit val comonad: Comonad[λ[α => F[G[α]]]] =
@@ -92,8 +95,7 @@ sealed abstract class AdjunctionInstances {
 
   implicit def compositeAdjunction[F[_], P[_], G[_], Q[_]](implicit
       A1: F -| G,
-      A2: P -| Q): λ[α => P[F[α]]] -| λ[α => G[Q[α]]] =
-    A1 compose A2
+      A2: P -| Q): λ[α => P[F[α]]] -| λ[α => G[Q[α]]] = A1 compose A2
 
   import Id._
   import std.tuple._
@@ -136,8 +138,7 @@ sealed abstract class AdjunctionInstances {
       : Adjunction[Writer[E, ?], Reader[E, ?]] =
     new Adjunction[Writer[E, ?], Reader[E, ?]] {
       override def leftAdjunct[A, B](a: => A)(
-          f: Writer[E, A] => B): Reader[E, B] =
-        Reader(e => f(Writer(e, a)))
+          f: Writer[E, A] => B): Reader[E, B] = Reader(e => f(Writer(e, a)))
       override def rightAdjunct[A, B](w: Writer[E, A])(
           f: A => Reader[E, B]): B = {
         val (e, a) = w.run

@@ -70,9 +70,10 @@ class Kalman(N: Int) {
 
     val sum = samples.sum
     val mean = sum / samples.length
-    val diff = (samples map { x =>
-      (x - mean) * (x - mean)
-    }).sum
+    val diff =
+      (samples map { x =>
+        (x - mean) * (x - mean)
+      }).sum
     diff / (samples.length - 1)
   }
 
@@ -109,9 +110,10 @@ class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
     case (_, i) => i <= N
   })
   private[this] val normalized = {
-    val sum = (windows map {
-      case (w, _) => w
-    }).sum
+    val sum =
+      (windows map {
+        case (w, _) => w
+      }).sum
     windows map {
       case (w, i) => (w.toDouble / sum, i)
     }

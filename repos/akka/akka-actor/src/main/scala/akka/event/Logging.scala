@@ -115,10 +115,11 @@ trait LoggingBus extends ActorEventBus {
       ErrorLevel
     }
     try {
-      val defaultLoggers = system.settings.Loggers match {
-        case Nil ⇒ classOf[DefaultLogger].getName :: Nil
-        case loggers ⇒ loggers
-      }
+      val defaultLoggers =
+        system.settings.Loggers match {
+          case Nil ⇒ classOf[DefaultLogger].getName :: Nil
+          case loggers ⇒ loggers
+        }
       val myloggers =
         for {
           loggerName ← defaultLoggers
@@ -314,38 +315,42 @@ class DummyClassForStringSources
   * </ul>
   */
 object LogSource {
-  implicit val fromString: LogSource[String] = new LogSource[String] {
-    def genString(s: String) = s
-    override def genString(s: String, system: ActorSystem) =
-      s + "(" + system + ")"
-    override def getClazz(s: String) = classOf[DummyClassForStringSources]
-  }
+  implicit val fromString: LogSource[String] =
+    new LogSource[String] {
+      def genString(s: String) = s
+      override def genString(s: String, system: ActorSystem) =
+        s + "(" + system + ")"
+      override def getClazz(s: String) = classOf[DummyClassForStringSources]
+    }
 
-  implicit val fromActor: LogSource[Actor] = new LogSource[Actor] {
-    def genString(a: Actor) = fromActorRef.genString(a.self)
-    override def genString(a: Actor, system: ActorSystem) =
-      fromActorRef.genString(a.self, system)
-  }
+  implicit val fromActor: LogSource[Actor] =
+    new LogSource[Actor] {
+      def genString(a: Actor) = fromActorRef.genString(a.self)
+      override def genString(a: Actor, system: ActorSystem) =
+        fromActorRef.genString(a.self, system)
+    }
 
-  implicit val fromActorRef: LogSource[ActorRef] = new LogSource[ActorRef] {
-    def genString(a: ActorRef) = a.path.toString
-    override def genString(a: ActorRef, system: ActorSystem) =
-      try {
-        a.path.toStringWithAddress(
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
-      } catch {
-        // it can fail if the ActorSystem (remoting) is not completely started yet
-        case NonFatal(_) ⇒ a.path.toString
-      }
-  }
+  implicit val fromActorRef: LogSource[ActorRef] =
+    new LogSource[ActorRef] {
+      def genString(a: ActorRef) = a.path.toString
+      override def genString(a: ActorRef, system: ActorSystem) =
+        try {
+          a.path.toStringWithAddress(
+            system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
+        } catch {
+          // it can fail if the ActorSystem (remoting) is not completely started yet
+          case NonFatal(_) ⇒ a.path.toString
+        }
+    }
 
   // this one unfortunately does not work as implicit, because existential types have some weird behavior
-  val fromClass: LogSource[Class[_]] = new LogSource[Class[_]] {
-    def genString(c: Class[_]): String = Logging.simpleName(c)
-    override def genString(c: Class[_], system: ActorSystem): String =
-      genString(c) + "(" + system + ")"
-    override def getClazz(c: Class[_]): Class[_] = c
-  }
+  val fromClass: LogSource[Class[_]] =
+    new LogSource[Class[_]] {
+      def genString(c: Class[_]): String = Logging.simpleName(c)
+      override def genString(c: Class[_], system: ActorSystem): String =
+        genString(c) + "(" + system + ")"
+      override def getClazz(c: Class[_]): Class[_] = c
+    }
   implicit def fromAnyClass[T]: LogSource[Class[T]] =
     fromClass.asInstanceOf[LogSource[Class[T]]]
 
@@ -535,8 +540,11 @@ object Logging {
     }
 
   // these type ascriptions/casts are necessary to avoid CCEs during construction while retaining correct type
-  val AllLogLevels: immutable.Seq[LogLevel] =
-    Vector(ErrorLevel, WarningLevel, InfoLevel, DebugLevel)
+  val AllLogLevels: immutable.Seq[LogLevel] = Vector(
+    ErrorLevel,
+    WarningLevel,
+    InfoLevel,
+    DebugLevel)
 
   /**
     * Obtain LoggingAdapter for the given actor system and source object. This

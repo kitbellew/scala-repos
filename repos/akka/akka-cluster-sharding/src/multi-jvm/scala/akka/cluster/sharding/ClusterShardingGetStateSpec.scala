@@ -176,14 +176,16 @@ abstract class ClusterShardingGetStateSpec
               .actorSelection(path)
               .tell(ShardRegion.GetShardRegionState, probe.ref)
           }
-          val states = probe.receiveWhile(messages = regions.size) {
-            case msg: ShardRegion.CurrentShardRegionState ⇒ msg
-          }
-          val allEntityIds = for {
-            state ← states
-            shard ← state.shards
-            entityId ← shard.entityIds
-          } yield entityId
+          val states =
+            probe.receiveWhile(messages = regions.size) {
+              case msg: ShardRegion.CurrentShardRegionState ⇒ msg
+            }
+          val allEntityIds =
+            for {
+              state ← states
+              shard ← state.shards
+              entityId ← shard.entityIds
+            } yield entityId
 
           allEntityIds.toSet === Set("1", "2", "3", "4")
         }

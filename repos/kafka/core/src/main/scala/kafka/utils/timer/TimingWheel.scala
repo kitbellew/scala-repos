@@ -105,9 +105,10 @@ private[timer] class TimingWheel(
     queue: DelayQueue[TimerTaskList]) {
 
   private[this] val interval = tickMs * wheelSize
-  private[this] val buckets = Array.tabulate[TimerTaskList](wheelSize) { _ =>
-    new TimerTaskList(taskCounter)
-  }
+  private[this] val buckets =
+    Array.tabulate[TimerTaskList](wheelSize) { _ =>
+      new TimerTaskList(taskCounter)
+    }
 
   private[this] var currentTime =
     startMs - (startMs % tickMs) // rounding down to multiple of tickMs

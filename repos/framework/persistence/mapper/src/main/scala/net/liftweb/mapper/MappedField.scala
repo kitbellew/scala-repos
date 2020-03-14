@@ -650,8 +650,9 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
       List(in.toLowerCase)
 
   def dbColumnName = {
-    val columnName =
-      MapperRules.columnName(fieldOwner.connectionIdentifier, name)
+    val columnName = MapperRules.columnName(
+      fieldOwner.connectionIdentifier,
+      name)
     if (DB.reservedWords.contains(columnName.toLowerCase))
       columnName + "_c"
     else
@@ -714,14 +715,15 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
       validators match {
         case Nil => ()
         case x :: rest =>
-          val errors = x match {
-            case pf: PartialFunction[FieldType, List[FieldError]] =>
-              if (pf.isDefinedAt(cv))
-                pf(cv)
-              else
-                Nil
-            case f => f(cv)
-          }
+          val errors =
+            x match {
+              case pf: PartialFunction[FieldType, List[FieldError]] =>
+                if (pf.isDefinedAt(cv))
+                  pf(cv)
+                else
+                  Nil
+              case f => f(cv)
+            }
 
           (errors, x) match {
             case (Nil, _) => runValidations(rest)

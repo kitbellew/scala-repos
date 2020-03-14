@@ -341,8 +341,13 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
   // the list of completion aware objects which should be consulted
   // for top level unqualified, it's too noisy to let much in.
-  private lazy val topLevelBase: List[CompletionAware] =
-    List(ids, rootClass, predef, scalalang, javalang, literals)
+  private lazy val topLevelBase: List[CompletionAware] = List(
+    ids,
+    rootClass,
+    predef,
+    scalalang,
+    javalang,
+    literals)
   private def topLevel = topLevelBase ++ imported
   private def topLevelThreshold = 50
 

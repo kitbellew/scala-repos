@@ -36,10 +36,11 @@ object MonoidTest extends SpecLite {
   }
 
   "unfold" in {
-    val ss = std.stream.unfold(1) {
-      case x if x < 10 => Some((x.toString, x * 2))
-      case _           => None
-    }
+    val ss =
+      std.stream.unfold(1) {
+        case x if x < 10 => Some((x.toString, x * 2))
+        case _           => None
+      }
     ss.toList must_=== (List("1", "2", "4", "8"))
   }
 

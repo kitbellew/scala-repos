@@ -350,12 +350,11 @@ class ParameterDirectivesSpec
   }
 
   "The 'parameterSeq' directive should" - {
-    val completeAsList =
-      parameterSeq { params ⇒
-        val sorted = params.sorted
-        complete(
-          s"${sorted.size}: [${sorted.map(e ⇒ e._1 + " -> " + e._2).mkString(", ")}]")
-      }
+    val completeAsList = parameterSeq { params ⇒
+      val sorted = params.sorted
+      complete(
+        s"${sorted.size}: [${sorted.map(e ⇒ e._1 + " -> " + e._2).mkString(", ")}]")
+    }
 
     "extract parameters with different keys" in {
       Get("/?a=b&e=f&c=d") ~> completeAsList ~> check {

@@ -54,8 +54,7 @@ object FakesSpec extends PlaySpecification {
         .build()
 
     "Define Content-Type header based on body" in new WithApplication(app) {
-      val xml =
-        <foo>
+      val xml = <foo>
           <bar>
             baz
           </bar>
@@ -69,8 +68,7 @@ object FakesSpec extends PlaySpecification {
     }
 
     "Not override explicit Content-Type header" in new WithApplication(app) {
-      val xml =
-        <foo>
+      val xml = <foo>
           <bar>
             baz
           </bar>

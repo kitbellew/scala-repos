@@ -22,11 +22,12 @@ class OpenSum1Test extends FunSuite {
   test("main") {
     import outer._
 
-    val f: Person = new Firefighter(
-      name = "Jeff",
-      age = 45,
-      since = 1990
-    )
+    val f: Person =
+      new Firefighter(
+        name = "Jeff",
+        age = 45,
+        since = 1990
+      )
 
     val pickle = f.pickle
     assert(

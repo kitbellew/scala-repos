@@ -49,15 +49,17 @@ object ContentEncoding {
         JObject("encoding" -> ce.id.serialize)
     }
 
-  val extractorV1: Extractor[ContentEncoding] = new Extractor[ContentEncoding] {
-    override def validated(obj: JValue): Validation[Error, ContentEncoding] = {
-      obj.validated[String]("encoding").flatMap {
-        case "uncompressed" => Success(RawUTF8Encoding)
-        case "base64"       => Success(Base64Encoding)
-        case invalid        => Failure(Invalid("Unknown encoding " + invalid))
+  val extractorV1: Extractor[ContentEncoding] =
+    new Extractor[ContentEncoding] {
+      override def validated(
+          obj: JValue): Validation[Error, ContentEncoding] = {
+        obj.validated[String]("encoding").flatMap {
+          case "uncompressed" => Success(RawUTF8Encoding)
+          case "base64"       => Success(Base64Encoding)
+          case invalid        => Failure(Invalid("Unknown encoding " + invalid))
+        }
       }
     }
-  }
 
   implicit val decomposer = decomposerV1.versioned(Some("1.0".v))
   implicit val extractor = extractorV1.versioned(Some("1.0".v))
@@ -100,41 +102,43 @@ object FileContent {
       FileContent(data, mimeType, Base64Encoding)
     }
 
-  val DecomposerV0: Decomposer[FileContent] = new Decomposer[FileContent] {
-    def decompose(v: FileContent) =
-      JObject(
-        "data" -> JString(v.encoding.encode(v.data)),
-        "mimeType" -> v.mimeType.jv,
-        "encoding" -> v.encoding.jv
-      )
-  }
+  val DecomposerV0: Decomposer[FileContent] =
+    new Decomposer[FileContent] {
+      def decompose(v: FileContent) =
+        JObject(
+          "data" -> JString(v.encoding.encode(v.data)),
+          "mimeType" -> v.mimeType.jv,
+          "encoding" -> v.encoding.jv
+        )
+    }
 
-  val ExtractorV0: Extractor[FileContent] = new Extractor[FileContent] {
-    def validated(jv: JValue) = {
-      jv match {
-        case JObject(fields) =>
-          (fields
-            .get("encoding")
-            .toSuccess(Invalid("File data object missing encoding field."))
-            .flatMap(_.validated[ContentEncoding]) |@|
-            fields
-              .get("mimeType")
-              .toSuccess(Invalid("File data object missing MIME type."))
-              .flatMap(_.validated[MimeType]) |@|
-            fields
-              .get("data")
-              .toSuccess(Invalid("File data object missing data field."))
-              .flatMap(_.validated[String])) {
-            (encoding, mimeType, contentString) =>
-              FileContent(encoding.decode(contentString), mimeType, encoding)
-          }
+  val ExtractorV0: Extractor[FileContent] =
+    new Extractor[FileContent] {
+      def validated(jv: JValue) = {
+        jv match {
+          case JObject(fields) =>
+            (fields
+              .get("encoding")
+              .toSuccess(Invalid("File data object missing encoding field."))
+              .flatMap(_.validated[ContentEncoding]) |@|
+              fields
+                .get("mimeType")
+                .toSuccess(Invalid("File data object missing MIME type."))
+                .flatMap(_.validated[MimeType]) |@|
+              fields
+                .get("data")
+                .toSuccess(Invalid("File data object missing data field."))
+                .flatMap(_.validated[String])) {
+              (encoding, mimeType, contentString) =>
+                FileContent(encoding.decode(contentString), mimeType, encoding)
+            }
 
-        case _ =>
-          Failure(Invalid(
-            "File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
+          case _ =>
+            Failure(Invalid(
+              "File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
+        }
       }
     }
-  }
 
   implicit val decomposer = DecomposerV0
   implicit val extractor = ExtractorV0

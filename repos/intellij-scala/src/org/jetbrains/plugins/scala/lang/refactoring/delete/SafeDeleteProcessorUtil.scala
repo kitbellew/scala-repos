@@ -77,38 +77,41 @@ object SafeDeleteProcessorUtil {
           }
           LOG.assertTrue(element.getTextRange != null)
 
-          val shouldDelete = element match {
-            case ref: ScStableCodeReferenceElement =>
-              val results = ref.multiResolve(false)
-              def isSyntheticObject(e: PsiElement) =
-                e.asOptionOf[ScObject].exists(_.isSyntheticObject)
-              val nonSyntheticTargets =
-                results.map(_.getElement).filterNot(isSyntheticObject)
-              nonSyntheticTargets.toSet subsetOf allElementsToDelete.toSet
-            case _ => true
-          }
+          val shouldDelete =
+            element match {
+              case ref: ScStableCodeReferenceElement =>
+                val results = ref.multiResolve(false)
+                def isSyntheticObject(e: PsiElement) =
+                  e.asOptionOf[ScObject].exists(_.isSyntheticObject)
+                val nonSyntheticTargets = results
+                  .map(_.getElement)
+                  .filterNot(isSyntheticObject)
+                nonSyntheticTargets.toSet subsetOf allElementsToDelete.toSet
+              case _ => true
+            }
 
-          val usagesToAdd = if (shouldDelete) {
-            val isInImport = PsiTreeUtil
-              .getParentOfType(element, classOf[ScImportStmt]) != null
-            if (isInImport)
-              Seq(
-                new SafeDeleteReferenceJavaDeleteUsageInfo(
-                  element,
-                  psiClass,
-                  true
-                )
-              ) // delete without review
-            else
-              Seq(
-                new SafeDeleteReferenceJavaDeleteUsageInfo(
-                  element,
-                  psiClass,
-                  false
-                )
-              ) // delete with review
-          } else
-            Seq() // don't delete
+          val usagesToAdd =
+            if (shouldDelete) {
+              val isInImport = PsiTreeUtil
+                .getParentOfType(element, classOf[ScImportStmt]) != null
+              if (isInImport)
+                Seq(
+                  new SafeDeleteReferenceJavaDeleteUsageInfo(
+                    element,
+                    psiClass,
+                    true
+                  )
+                ) // delete without review
+              else
+                Seq(
+                  new SafeDeleteReferenceJavaDeleteUsageInfo(
+                    element,
+                    psiClass,
+                    false
+                  )
+                ) // delete with review
+            } else
+              Seq() // don't delete
 
           usages.addAll(usagesToAdd)
         }
@@ -126,8 +129,8 @@ object SafeDeleteProcessorUtil {
       usages: util.Collection[UsageInfo]) {
     val owner: PsiTypeParameterListOwner = typeParameter.getOwner
     if (owner != null) {
-      val index: Int =
-        owner.getTypeParameterList.getTypeParameterIndex(typeParameter)
+      val index: Int = owner.getTypeParameterList.getTypeParameterIndex(
+        typeParameter)
       referenceSearch(owner).forEach(new Processor[PsiReference] {
         def process(reference: PsiReference): Boolean = {
           reference match {
@@ -153,8 +156,8 @@ object SafeDeleteProcessorUtil {
       psiMethod: PsiMethod,
       allElementsToDelete: Array[PsiElement],
       usages: util.List[UsageInfo]): Condition[PsiElement] = {
-    val references: util.Collection[PsiReference] = referenceSearch(
-      psiMethod).findAll
+    val references: util.Collection[PsiReference] =
+      referenceSearch(psiMethod).findAll
     if (psiMethod.isConstructor) {
       return findConstructorUsages(
         psiMethod,
@@ -164,8 +167,8 @@ object SafeDeleteProcessorUtil {
     }
     val overridingElements: Array[PsiNamedElement] =
       ScalaOverridingMemberSearcher.search(psiMethod)
-    val overridingMethods: Array[PsiNamedElement] =
-      overridingElements.filterNot(x => allElementsToDelete.contains(x))
+    val overridingMethods: Array[PsiNamedElement] = overridingElements
+      .filterNot(x => allElementsToDelete.contains(x))
     for (reference <- references) {
       val element: PsiElement = reference.getElement
       if (!isInside(element, allElementsToDelete) && !isInside(
@@ -184,8 +187,8 @@ object SafeDeleteProcessorUtil {
         : util.HashMap[PsiNamedElement, util.Collection[PsiReference]] =
       new util.HashMap[PsiNamedElement, util.Collection[PsiReference]]
     for (overridingMethod <- overridingMethods) {
-      val overridingReferences: util.Collection[PsiReference] = referenceSearch(
-        overridingMethod).findAll
+      val overridingReferences: util.Collection[PsiReference] =
+        referenceSearch(overridingMethod).findAll
       methodToReferences.put(overridingMethod, overridingReferences)
     }
     val validOverriding: util.Set[PsiElement] = {
@@ -246,8 +249,8 @@ object SafeDeleteProcessorUtil {
     do {
       passConstructors.clear()
       for (method <- newConstructors) {
-        val references: util.Collection[PsiReference] =
-          constructorsToRefs.get(method)
+        val references: util.Collection[PsiReference] = constructorsToRefs.get(
+          method)
         for (reference <- references) {
           val overridingConstructor: PsiMethod =
             getOverridingConstructorOfSuperCall(reference.getElement)
@@ -490,8 +493,8 @@ object SafeDeleteProcessorUtil {
   def findParameterUsages(
       parameter: PsiParameter,
       usages: util.List[UsageInfo]) {
-    val method: PsiMethod =
-      parameter.getDeclarationScope.asInstanceOf[PsiMethod]
+    val method: PsiMethod = parameter.getDeclarationScope
+      .asInstanceOf[PsiMethod]
     val index: Int = method.getParameterList.getParameterIndex(parameter)
     referenceSearch(method).forEach(new Processor[PsiReference] {
       def process(reference: PsiReference): Boolean = {
@@ -572,8 +575,8 @@ object SafeDeleteProcessorUtil {
     referenceSearch(parameter).forEach(new Processor[PsiReference] {
       def process(reference: PsiReference): Boolean = {
         val element: PsiElement = reference.getElement
-        val docTag: PsiDocTag =
-          PsiTreeUtil.getParentOfType(element, classOf[PsiDocTag])
+        val docTag: PsiDocTag = PsiTreeUtil
+          .getParentOfType(element, classOf[PsiDocTag])
         if (docTag != null) {
           usages.add(
             new SafeDeleteReferenceJavaDeleteUsageInfo(docTag, parameter, true))

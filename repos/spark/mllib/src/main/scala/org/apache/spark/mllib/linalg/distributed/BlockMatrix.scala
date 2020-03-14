@@ -200,8 +200,9 @@ class BlockMatrix @Since("1.3.0") (
       numColBlocks,
       suggestedNumPartitions = blocks.partitions.length)
 
-  private lazy val blockInfo =
-    blocks.mapValues(block => (block.numRows, block.numCols)).cache()
+  private lazy val blockInfo = blocks
+    .mapValues(block => (block.numRows, block.numCols))
+    .cache()
 
   /** Estimates the dimensions of the matrix. */
   private def estimateDim(): Unit = {
@@ -471,23 +472,25 @@ class BlockMatrix @Since("1.3.0") (
   private[distributed] def simulateMultiply(
       other: BlockMatrix,
       partitioner: GridPartitioner): (BlockDestinations, BlockDestinations) = {
-    val leftMatrix =
-      blockInfo.keys.collect() // blockInfo should already be cached
+    val leftMatrix = blockInfo.keys
+      .collect() // blockInfo should already be cached
     val rightMatrix = other.blocks.keys.collect()
-    val leftDestinations = leftMatrix.map {
-      case (rowIndex, colIndex) =>
-        val rightCounterparts = rightMatrix.filter(_._1 == colIndex)
-        val partitions =
-          rightCounterparts.map(b => partitioner.getPartition((rowIndex, b._2)))
-        ((rowIndex, colIndex), partitions.toSet)
-    }.toMap
-    val rightDestinations = rightMatrix.map {
-      case (rowIndex, colIndex) =>
-        val leftCounterparts = leftMatrix.filter(_._2 == rowIndex)
-        val partitions =
-          leftCounterparts.map(b => partitioner.getPartition((b._1, colIndex)))
-        ((rowIndex, colIndex), partitions.toSet)
-    }.toMap
+    val leftDestinations =
+      leftMatrix.map {
+        case (rowIndex, colIndex) =>
+          val rightCounterparts = rightMatrix.filter(_._1 == colIndex)
+          val partitions = rightCounterparts.map(b =>
+            partitioner.getPartition((rowIndex, b._2)))
+          ((rowIndex, colIndex), partitions.toSet)
+      }.toMap
+    val rightDestinations =
+      rightMatrix.map {
+        case (rowIndex, colIndex) =>
+          val leftCounterparts = leftMatrix.filter(_._2 == rowIndex)
+          val partitions = leftCounterparts.map(b =>
+            partitioner.getPartition((b._1, colIndex)))
+          ((rowIndex, colIndex), partitions.toSet)
+      }.toMap
     (leftDestinations, rightDestinations)
   }
 
@@ -516,8 +519,9 @@ class BlockMatrix @Since("1.3.0") (
         numRowBlocks,
         other.numColBlocks,
         math.max(blocks.partitions.length, other.blocks.partitions.length))
-      val (leftDestinations, rightDestinations) =
-        simulateMultiply(other, resultPartitioner)
+      val (leftDestinations, rightDestinations) = simulateMultiply(
+        other,
+        resultPartitioner)
       // Each block of A must be multiplied with the corresponding blocks in the columns of B.
       val flatA = blocks.flatMap {
         case ((blockRowIndex, blockColIndex), block) =>
@@ -542,14 +546,15 @@ class BlockMatrix @Since("1.3.0") (
               case (leftRowIndex, leftColIndex, leftBlock) =>
                 b.filter(_._1 == leftColIndex).map {
                   case (rightRowIndex, rightColIndex, rightBlock) =>
-                    val C = rightBlock match {
-                      case dense: DenseMatrix => leftBlock.multiply(dense)
-                      case sparse: SparseMatrix =>
-                        leftBlock.multiply(sparse.toDense)
-                      case _ =>
-                        throw new SparkException(
-                          s"Unrecognized matrix type ${rightBlock.getClass}.")
-                    }
+                    val C =
+                      rightBlock match {
+                        case dense: DenseMatrix => leftBlock.multiply(dense)
+                        case sparse: SparseMatrix =>
+                          leftBlock.multiply(sparse.toDense)
+                        case _ =>
+                          throw new SparkException(
+                            s"Unrecognized matrix type ${rightBlock.getClass}.")
+                      }
                     ((leftRowIndex, rightColIndex), C.toBreeze)
                 }
             }

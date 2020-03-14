@@ -15,8 +15,9 @@ class Ticket1978ConfigSpec
 
   "SSL Remoting" must {
     "be able to parse these extra Netty config elements" in {
-      val settings = new SSLSettings(
-        system.settings.config.getConfig("akka.remote.netty.ssl.security"))
+      val settings =
+        new SSLSettings(
+          system.settings.config.getConfig("akka.remote.netty.ssl.security"))
 
       settings.SSLKeyStore should ===(Some("keystore"))
       settings.SSLKeyStorePassword should ===(Some("changeme"))

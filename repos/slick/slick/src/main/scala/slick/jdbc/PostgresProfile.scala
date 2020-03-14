@@ -152,8 +152,8 @@ trait PostgresProfile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size =
-          sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym.flatMap(
+          _.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR")(l =>
           if (l.varying)
             s"VARCHAR(${l.length})"
@@ -228,8 +228,9 @@ trait PostgresProfile extends JdbcProfile {
       val update = "update " + tableName + " set " + softNames
         .map(n => s"$n=?")
         .mkString(",") + " where " + pkNames.map(n => s"$n=?").mkString(" and ")
-      val nonAutoIncNames =
-        nonAutoIncSyms.map(fs => quoteIdentifier(fs.name)).mkString(",")
+      val nonAutoIncNames = nonAutoIncSyms
+        .map(fs => quoteIdentifier(fs.name))
+        .mkString(",")
       val nonAutoIncVars = nonAutoIncSyms.map(_ => "?").mkString(",")
       val cond = pkNames.map(n => s"$n=?").mkString(" and ")
       val insert =

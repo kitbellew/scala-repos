@@ -233,12 +233,14 @@ private[ann] object AffineLayerModel {
       numOut: Int,
       seed: Long = 11L): (BDM[Double], BDV[Double]) = {
     val rand: XORShiftRandom = new XORShiftRandom(seed)
-    val weights = BDM.fill[Double](numOut, numIn) {
-      (rand.nextDouble * 4.8 - 2.4) / numIn
-    }
-    val bias = BDV.fill[Double](numOut) {
-      (rand.nextDouble * 4.8 - 2.4) / numIn
-    }
+    val weights =
+      BDM.fill[Double](numOut, numIn) {
+        (rand.nextDouble * 4.8 - 2.4) / numIn
+      }
+    val bias =
+      BDV.fill[Double](numOut) {
+        (rand.nextDouble * 4.8 - 2.4) / numIn
+      }
     (weights, bias)
   }
 }
@@ -425,8 +427,7 @@ private[ann] class FunctionalLayer(val activationFunction: ActivationFunction)
   override def getInstance(weights: Vector, position: Int): LayerModel =
     getInstance(0L)
 
-  override def getInstance(seed: Long): LayerModel =
-    FunctionalLayerModel(this)
+  override def getInstance(seed: Long): LayerModel = FunctionalLayerModel(this)
 }
 
 /**
@@ -591,11 +592,12 @@ private[ml] object FeedForwardTopology {
     val layers = new Array[Layer]((layerSizes.length - 1) * 2)
     for (i <- 0 until layerSizes.length - 1) {
       layers(i * 2) = new AffineLayer(layerSizes(i), layerSizes(i + 1))
-      layers(i * 2 + 1) = if (softmax && i == layerSizes.length - 2) {
-        new FunctionalLayer(new SoftmaxFunction())
-      } else {
-        new FunctionalLayer(new SigmoidFunction())
-      }
+      layers(i * 2 + 1) =
+        if (softmax && i == layerSizes.length - 2) {
+          new FunctionalLayer(new SoftmaxFunction())
+        } else {
+          new FunctionalLayer(new SigmoidFunction())
+        }
     }
     FeedForwardTopology(layers)
   }
@@ -628,12 +630,13 @@ private[ml] class FeedForwardModel private (
     val outputs = forward(data)
     val deltas = new Array[BDM[Double]](layerModels.length)
     val L = layerModels.length - 1
-    val (newE, newError) = layerModels.last match {
-      case flm: FunctionalLayerModel => flm.error(outputs.last, target)
-      case _ =>
-        throw new UnsupportedOperationException(
-          "Non-functional layer not supported at the top")
-    }
+    val (newE, newError) =
+      layerModels.last match {
+        case flm: FunctionalLayerModel => flm.error(outputs.last, target)
+        case _ =>
+          throw new UnsupportedOperationException(
+            "Non-functional layer not supported at the top")
+      }
     deltas(L) = new BDM[Double](0, 0)
     deltas(L - 1) = newE
     for (i <- (L - 2) to (0, -1)) {
@@ -778,36 +781,39 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
     * @return RDD of double (always zero) and vector that contains the stacked vectors
     */
   def stack(data: RDD[(Vector, Vector)]): RDD[(Double, Vector)] = {
-    val stackedData = if (stackSize == 1) {
-      data.map { v =>
-        (
-          0.0,
-          Vectors.fromBreeze(BDV
-            .vertcat(v._1.toBreeze.toDenseVector, v._2.toBreeze.toDenseVector)))
-      }
-    } else {
-      data.mapPartitions { it =>
-        it.grouped(stackSize).map { seq =>
-          val size = seq.size
-          val bigVector =
-            new Array[Double](inputSize * size + outputSize * size)
-          var i = 0
-          seq.foreach {
-            case (in, out) =>
-              System
-                .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
-              System.arraycopy(
-                out.toArray,
-                0,
-                bigVector,
-                inputSize * size + i * outputSize,
-                outputSize)
-              i += 1
+    val stackedData =
+      if (stackSize == 1) {
+        data.map { v =>
+          (
+            0.0,
+            Vectors.fromBreeze(
+              BDV.vertcat(
+                v._1.toBreeze.toDenseVector,
+                v._2.toBreeze.toDenseVector)))
+        }
+      } else {
+        data.mapPartitions { it =>
+          it.grouped(stackSize).map { seq =>
+            val size = seq.size
+            val bigVector =
+              new Array[Double](inputSize * size + outputSize * size)
+            var i = 0
+            seq.foreach {
+              case (in, out) =>
+                System
+                  .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
+                System.arraycopy(
+                  out.toArray,
+                  0,
+                  bigVector,
+                  inputSize * size + i * outputSize,
+                  outputSize)
+                i += 1
+            }
+            (0.0, Vectors.dense(bigVector))
           }
-          (0.0, Vectors.dense(bigVector))
         }
       }
-    }
     stackedData
   }
 
@@ -862,8 +868,9 @@ private[ml] class FeedForwardTrainer(
   private var dataStacker = new DataStacker(_stackSize, inputSize, outputSize)
   private var _gradient: Gradient = new ANNGradient(topology, dataStacker)
   private var _updater: Updater = new ANNUpdater()
-  private var optimizer: Optimizer =
-    LBFGSOptimizer.setConvergenceTol(1e-4).setNumIterations(100)
+  private var optimizer: Optimizer = LBFGSOptimizer
+    .setConvergenceTol(1e-4)
+    .setNumIterations(100)
 
   /**
     * Returns weights

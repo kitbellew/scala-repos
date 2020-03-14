@@ -56,9 +56,10 @@ package object shapeless {
   }
 
   // Quantifiers
-  type ∃[P[_]] = P[T] forSome {
-    type T
-  }
+  type ∃[P[_]] =
+    P[T] forSome {
+      type T
+    }
   type ∀[P[_]] = ¬[∃[({
     type λ[X] = ¬[P[X]]
   })#λ]]
@@ -146,34 +147,38 @@ package shapeless {
       // Run our own custom implicit search that isn't allowed to find
       // the thing we are enclosed in
       val sCtx = tCtx.makeImplicit(false)
-      val is = new analyzer.ImplicitSearch(
-        tree = application,
-        pt = tpe,
-        isView = false,
-        context0 = sCtx,
-        pos0 = c.enclosingPosition.asInstanceOf[global.Position]
-      ) {
-        override def searchImplicit(
-            implicitInfoss: List[List[analyzer.ImplicitInfo]],
-            isLocalToCallsite: Boolean
-        ): analyzer.SearchResult = {
-          val filteredInput = implicitInfoss.map { infos =>
-            infos.filter { info =>
-              val sym = info.sym.accessedOrSelf
-              sym.owner != owner.owner || (!sym.isVal && !sym.isLazy)
+      val is =
+        new analyzer.ImplicitSearch(
+          tree = application,
+          pt = tpe,
+          isView = false,
+          context0 = sCtx,
+          pos0 = c.enclosingPosition.asInstanceOf[global.Position]
+        ) {
+          override def searchImplicit(
+              implicitInfoss: List[List[analyzer.ImplicitInfo]],
+              isLocalToCallsite: Boolean
+          ): analyzer.SearchResult = {
+            val filteredInput = implicitInfoss.map { infos =>
+              infos.filter { info =>
+                val sym = info.sym.accessedOrSelf
+                sym.owner != owner.owner || (!sym.isVal && !sym.isLazy)
+              }
             }
+            super.searchImplicit(filteredInput, isLocalToCallsite)
           }
-          super.searchImplicit(filteredInput, isLocalToCallsite)
         }
-      }
       val best = is.bestImplicit
       if (best.isFailure) {
-        val errorMsg = tpe.typeSymbolDirect match {
-          case analyzer.ImplicitNotFoundMsg(msg) =>
-            msg.format(TermName("evidence").asInstanceOf[global.TermName], tpe)
-          case _ =>
-            s"Could not find an implicit value of type $tpe to cache"
-        }
+        val errorMsg =
+          tpe.typeSymbolDirect match {
+            case analyzer.ImplicitNotFoundMsg(msg) =>
+              msg.format(
+                TermName("evidence").asInstanceOf[global.TermName],
+                tpe)
+            case _ =>
+              s"Could not find an implicit value of type $tpe to cache"
+          }
         c.abort(c.enclosingPosition, errorMsg)
       } else {
         best.tree.asInstanceOf[Tree]

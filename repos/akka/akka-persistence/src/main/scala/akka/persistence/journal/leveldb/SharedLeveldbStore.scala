@@ -29,25 +29,26 @@ class SharedLeveldbStore extends {
       //      AsyncWriteProxy message protocol
       val atomicWriteCount = messages.count(_.isInstanceOf[AtomicWrite])
       val prepared = Try(preparePersistentBatch(messages))
-      val writeResult = (prepared match {
-        case Success(prep) ⇒
-          // in case the asyncWriteMessages throws
-          try asyncWriteMessages(prep)
-          catch {
-            case NonFatal(e) ⇒ Future.failed(e)
-          }
-        case f @ Failure(_) ⇒
-          // exception from preparePersistentBatch => rejected
-          Future.successful(messages.collect {
-            case a: AtomicWrite ⇒ f
-          })
-      }).map { results ⇒
-        if (results.nonEmpty && results.size != atomicWriteCount)
-          throw new IllegalStateException(
-            "asyncWriteMessages returned invalid number of results. " +
-              s"Expected [${prepared.get.size}], but got [${results.size}]")
-        results
-      }
+      val writeResult =
+        (prepared match {
+          case Success(prep) ⇒
+            // in case the asyncWriteMessages throws
+            try asyncWriteMessages(prep)
+            catch {
+              case NonFatal(e) ⇒ Future.failed(e)
+            }
+          case f @ Failure(_) ⇒
+            // exception from preparePersistentBatch => rejected
+            Future.successful(messages.collect {
+              case a: AtomicWrite ⇒ f
+            })
+        }).map { results ⇒
+          if (results.nonEmpty && results.size != atomicWriteCount)
+            throw new IllegalStateException(
+              "asyncWriteMessages returned invalid number of results. " +
+                s"Expected [${prepared.get.size}], but got [${results.size}]")
+          results
+        }
 
       writeResult.pipeTo(sender())
 

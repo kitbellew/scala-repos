@@ -61,8 +61,7 @@ class MultipartTest extends FunSuite {
       buf,
       contentType,
       fileName,
-      contentTransferEncoding) =
-      multipart.files("groups").head
+      contentTransferEncoding) = multipart.files("groups").head
     val attr = multipart.attributes("type").head
 
     assert(buf == foo)
@@ -80,8 +79,7 @@ class MultipartTest extends FunSuite {
       file,
       contentType,
       fileName,
-      contentTransferEncoding) =
-      multipart.files("groups").head
+      contentTransferEncoding) = multipart.files("groups").head
     val attr = multipart.attributes("type").head
 
     assert(

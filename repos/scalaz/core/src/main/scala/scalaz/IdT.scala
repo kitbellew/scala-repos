@@ -1,8 +1,7 @@
 package scalaz
 
 final case class IdT[F[_], A](run: F[A]) {
-  def map[B](f: A => B)(implicit F: Functor[F]) =
-    new IdT[F, B](F.map(run)(f))
+  def map[B](f: A => B)(implicit F: Functor[F]) = new IdT[F, B](F.map(run)(f))
 
   def flatMap[B](f: A => IdT[F, B])(implicit F: Bind[F]) =
     new IdT[F, B](F.bind(run)(f andThen ((_: IdT[F, B]).run)))
@@ -148,12 +147,10 @@ private object IdTHoist extends Hoist[IdT] {
 
   def hoist[M[_]: Monad, N[_]](f: M ~> N) =
     new (IdT[M, ?] ~> IdT[N, ?]) {
-      def apply[A](fa: IdT[M, A]): IdT[N, A] =
-        new IdT[N, A](f(fa.run))
+      def apply[A](fa: IdT[M, A]): IdT[N, A] = new IdT[N, A](f(fa.run))
     }
 
-  implicit def apply[G[_]: Monad]: Monad[IdT[G, ?]] =
-    IdT.idTMonad[G]
+  implicit def apply[G[_]: Monad]: Monad[IdT[G, ?]] = IdT.idTMonad[G]
 }
 
 // vim: set ts=4 sw=4 et:

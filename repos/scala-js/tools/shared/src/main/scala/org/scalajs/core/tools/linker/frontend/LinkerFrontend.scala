@@ -39,8 +39,8 @@ final class LinkerFrontend(
   private[this] val linker: BaseLinker =
     new BaseLinker(semantics, esLevel, withSourceMap)
 
-  private[this] val optOptimizer: Option[GenIncOptimizer] =
-    optimizerFactory.map(_(semantics, esLevel, withSourceMap))
+  private[this] val optOptimizer: Option[GenIncOptimizer] = optimizerFactory
+    .map(_(semantics, esLevel, withSourceMap))
 
   private[this] val refiner: Refiner = new Refiner
 
@@ -50,18 +50,20 @@ final class LinkerFrontend(
       symbolRequirements: SymbolRequirement,
       logger: Logger): LinkingUnit = {
 
-    val preOptimizerRequirements = optOptimizer.fold(symbolRequirements) {
-      optimizer => symbolRequirements ++ optimizer.symbolRequirements
-    }
+    val preOptimizerRequirements =
+      optOptimizer.fold(symbolRequirements) { optimizer =>
+        symbolRequirements ++ optimizer.symbolRequirements
+      }
 
-    val linkResult = logger.time("Basic Linking") {
-      linker.linkInternal(
-        irFiles,
-        logger,
-        preOptimizerRequirements,
-        config.bypassLinkingErrors,
-        config.checkIR)
-    }
+    val linkResult =
+      logger.time("Basic Linking") {
+        linker.linkInternal(
+          irFiles,
+          logger,
+          preOptimizerRequirements,
+          config.bypassLinkingErrors,
+          config.checkIR)
+      }
 
     optOptimizer.fold(linkResult) { optimizer =>
       if (linkResult.isComplete) {
@@ -79,9 +81,10 @@ final class LinkerFrontend(
       symbolRequirements: SymbolRequirement,
       optimizer: GenIncOptimizer,
       logger: Logger): LinkingUnit = {
-    val optimized = logger.time("Inc. optimizer") {
-      optimizer.update(unit, logger)
-    }
+    val optimized =
+      logger.time("Inc. optimizer") {
+        optimizer.update(unit, logger)
+      }
 
     logger.time("Refiner") {
       refiner.refine(optimized, symbolRequirements, logger)
@@ -110,8 +113,7 @@ object LinkerFrontend {
       copy(bypassLinkingErrors = bypassLinkingErrors)
     }
 
-    def withCheckIR(checkIR: Boolean): Config =
-      copy(checkIR = checkIR)
+    def withCheckIR(checkIR: Boolean): Config = copy(checkIR = checkIR)
 
     private def copy(
         bypassLinkingErrors: Boolean = bypassLinkingErrors,

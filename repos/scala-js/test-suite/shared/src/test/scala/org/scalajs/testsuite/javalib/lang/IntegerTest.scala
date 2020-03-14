@@ -428,8 +428,7 @@ class IntegerTest {
   }
 
   @Test def compareTo(): Unit = {
-    def compare(x: Int, y: Int): Int =
-      new Integer(x).compareTo(new Integer(y))
+    def compare(x: Int, y: Int): Int = new Integer(x).compareTo(new Integer(y))
 
     assertTrue(compare(0, 5) < 0)
     assertTrue(compare(10, 9) > 0)

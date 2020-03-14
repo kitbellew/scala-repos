@@ -52,8 +52,8 @@ object Comet {
       val cb: ByteString = ByteString.fromString(callback)
       def applyOn[A](
           inner: Iteratee[Html, A]): Iteratee[E, Iteratee[Html, A]] = {
-        val fedWithInitialChunk =
-          Iteratee.flatten(Enumerator(initialChunk) |>> inner)
+        val fedWithInitialChunk = Iteratee.flatten(
+          Enumerator(initialChunk) |>> inner)
         val eToScript = Enumeratee.map[E](toHtml(callback, _))
         eToScript.applyOn(fedWithInitialChunk)
       }
@@ -125,15 +125,16 @@ object Comet {
   }
 
   private def toHtml[A](callbackName: String, message: A): Html = {
-    val javascriptMessage = message match {
-      case str: String =>
-        "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"
-      case json: JsValue =>
-        Json.stringify(json)
-      case other =>
-        throw new IllegalStateException(
-          "Illegal type found: only String or JsValue elements are valid")
-    }
+    val javascriptMessage =
+      message match {
+        case str: String =>
+          "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"
+        case json: JsValue =>
+          Json.stringify(json)
+        case other =>
+          throw new IllegalStateException(
+            "Illegal type found: only String or JsValue elements are valid")
+      }
     Html(
       s"""<script type="text/javascript">${callbackName}(${javascriptMessage});</script>""")
   }

@@ -39,9 +39,10 @@ case class EnsimeConfig(
     (referenceSourceRoots ++ subprojects.flatMap(_.referenceSourceRoots)).toSet
 
   // some marshalling libs (e.g. spray-json) might not like extra vals
-  val modules = subprojects.map { module =>
-    (module.name, module)
-  }.toMap
+  val modules =
+    subprojects.map { module =>
+      (module.name, module)
+    }.toMap
 
   def runtimeClasspath: Set[File] =
     compileClasspath ++ modules.values.flatMap(_.runtimeDeps) ++ targetClasspath

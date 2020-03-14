@@ -81,33 +81,36 @@ object Test {
   }
 
   def orElseTest() {
-    val pf0 = new PartialFunction[Unit, Unit] {
-      def apply(u: Unit) {
-        println("0:apply")
+    val pf0 =
+      new PartialFunction[Unit, Unit] {
+        def apply(u: Unit) {
+          println("0:apply")
+        }
+        def isDefinedAt(u: Unit) = {
+          println("0:isDefinedAt");
+          false
+        }
       }
-      def isDefinedAt(u: Unit) = {
-        println("0:isDefinedAt");
-        false
+    val pf1 =
+      new PartialFunction[Unit, Unit] {
+        def apply(u: Unit) {
+          println("1:apply")
+        }
+        def isDefinedAt(u: Unit) = {
+          println("1:isDefinedAt");
+          false
+        }
       }
-    }
-    val pf1 = new PartialFunction[Unit, Unit] {
-      def apply(u: Unit) {
-        println("1:apply")
+    val pf2 =
+      new PartialFunction[Unit, Unit] {
+        def apply(u: Unit) {
+          println("2:apply")
+        }
+        def isDefinedAt(u: Unit) = {
+          println("2:isDefinedAt");
+          true
+        }
       }
-      def isDefinedAt(u: Unit) = {
-        println("1:isDefinedAt");
-        false
-      }
-    }
-    val pf2 = new PartialFunction[Unit, Unit] {
-      def apply(u: Unit) {
-        println("2:apply")
-      }
-      def isDefinedAt(u: Unit) = {
-        println("2:isDefinedAt");
-        true
-      }
-    }
 
     val chained = pf0 orElse pf1 orElse pf2
     chained(())

@@ -19,15 +19,13 @@ trait OptionInstances extends OptionInstances1 {
 
       def pure[A](x: A): Option[A] = Some(x)
 
-      override def map[A, B](fa: Option[A])(f: A => B): Option[B] =
-        fa.map(f)
+      override def map[A, B](fa: Option[A])(f: A => B): Option[B] = fa.map(f)
 
       def flatMap[A, B](fa: Option[A])(f: A => Option[B]): Option[B] =
         fa.flatMap(f)
 
       override def map2[A, B, Z](fa: Option[A], fb: Option[B])(
-          f: (A, B) => Z): Option[Z] =
-        fa.flatMap(a => fb.map(b => f(a, b)))
+          f: (A, B) => Z): Option[Z] = fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: Option[A])(f: Option[A] => B): Option[B] =
         if (fa.isDefined)
@@ -61,8 +59,7 @@ trait OptionInstances extends OptionInstances1 {
       override def forall[A](fa: Option[A])(p: A => Boolean): Boolean =
         fa.forall(p)
 
-      override def isEmpty[A](fa: Option[A]): Boolean =
-        fa.isEmpty
+      override def isEmpty[A](fa: Option[A]): Boolean = fa.isEmpty
     }
 
   implicit def optionMonoid[A](implicit ev: Semigroup[A]): Monoid[Option[A]] =

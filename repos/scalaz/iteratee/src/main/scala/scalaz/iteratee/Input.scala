@@ -9,23 +9,17 @@ sealed abstract class Input[E] {
 
   def fold[Z](empty: => Z, el: (=> E) => Z, eof: => Z): Z
 
-  def apply[Z](empty: => Z, el: (=> E) => Z, eof: => Z) =
-    fold(empty, el, eof)
+  def apply[Z](empty: => Z, el: (=> E) => Z, eof: => Z) = fold(empty, el, eof)
 
-  def el: LazyOption[E] =
-    apply(lazyNone[E], lazySome(_), lazyNone[E])
+  def el: LazyOption[E] = apply(lazyNone[E], lazySome(_), lazyNone[E])
 
-  def elOr(e: => E) =
-    el.getOrElse(e)
+  def elOr(e: => E) = el.getOrElse(e)
 
-  def isEmpty: Boolean =
-    apply(true, _ => false, false)
+  def isEmpty: Boolean = apply(true, _ => false, false)
 
-  def isEl: Boolean =
-    apply(false, _ => true, false)
+  def isEl: Boolean = apply(false, _ => true, false)
 
-  def isEof: Boolean =
-    apply(false, _ => false, true)
+  def isEof: Boolean = apply(false, _ => false, true)
 
   def map[X](f: (=> E) => X): Input[X] =
     fold(emptyInput, e => elInput(f(e)), eofInput)
@@ -43,21 +37,17 @@ sealed abstract class Input[E] {
           emptyInput,
       eofInput)
 
-  def foreach(f: (=> E) => Unit) =
-    fold((), e => f(e), ())
+  def foreach(f: (=> E) => Unit) = fold((), e => f(e), ())
 
-  def forall(p: (=> E) => Boolean): Boolean =
-    fold(true, p, true)
+  def forall(p: (=> E) => Boolean): Boolean = fold(true, p, true)
 
-  def exists(p: (=> E) => Boolean): Boolean =
-    fold(false, p, false)
+  def exists(p: (=> E) => Boolean): Boolean = fold(false, p, false)
 
   override final def toString = fold("Empty", el => el.toString, "EOF")
 }
 
 object Input extends InputInstances with InputFunctions {
-  def apply[E](e: => E): Input[E] =
-    elInput(e)
+  def apply[E](e: => E): Input[E] = elInput(e)
 
   object Empty {
     def apply[E]: Input[E] =

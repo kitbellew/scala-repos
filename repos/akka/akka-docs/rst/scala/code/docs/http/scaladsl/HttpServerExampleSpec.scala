@@ -37,15 +37,14 @@ class HttpServerExampleSpec
     implicit val executionContext = system.dispatcher
 
     val serverSource
-        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
-      Http().bind(interface = "localhost", port = 8080)
-    val bindingFuture: Future[Http.ServerBinding] =
-      serverSource
-        .to(Sink.foreach { connection => // foreach materializes the source
-          println("Accepted new connection from " + connection.remoteAddress)
-          // ... and then actually handle the connection
-        })
-        .run()
+        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] = Http()
+      .bind(interface = "localhost", port = 8080)
+    val bindingFuture: Future[Http.ServerBinding] = serverSource
+      .to(Sink.foreach { connection => // foreach materializes the source
+        println("Accepted new connection from " + connection.remoteAddress)
+        // ... and then actually handle the connection
+      })
+      .run()
   }
 
   "binding-failure-high-level-example" in compileOnlySpec {
@@ -64,8 +63,10 @@ class HttpServerExampleSpec
 
     // let's say the OS won't allow us to bind to 80.
     val (host, port) = ("localhost", 80)
-    val bindingFuture: Future[ServerBinding] =
-      Http().bindAndHandle(handler, host, port)
+    val bindingFuture: Future[ServerBinding] = Http().bindAndHandle(
+      handler,
+      host,
+      port)
 
     bindingFuture.onFailure {
       case ex: Exception =>
@@ -76,8 +77,8 @@ class HttpServerExampleSpec
 
   // mock values:
   val handleConnections
-      : Sink[Http.IncomingConnection, Future[Http.ServerBinding]] =
-    Sink.ignore.mapMaterializedValue(_ => Future.failed(new Exception("")))
+      : Sink[Http.IncomingConnection, Future[Http.ServerBinding]] = Sink.ignore
+    .mapMaterializedValue(_ => Future.failed(new Exception("")))
 
   "binding-failure-handling" in compileOnlySpec {
     implicit val system = ActorSystem()
@@ -112,14 +113,15 @@ class HttpServerExampleSpec
     val (host, port) = ("localhost", 8080)
     val serverSource = Http().bind(host, port)
 
-    val failureMonitor: ActorRef =
-      system.actorOf(MyExampleMonitoringActor.props)
+    val failureMonitor: ActorRef = system.actorOf(
+      MyExampleMonitoringActor.props)
 
-    val reactToTopLevelFailures = Flow[IncomingConnection]
-      .watchTermination()((_, termination) =>
-        termination.onFailure {
-          case cause => failureMonitor ! cause
-        })
+    val reactToTopLevelFailures =
+      Flow[IncomingConnection]
+        .watchTermination()((_, termination) =>
+          termination.onFailure {
+            case cause => failureMonitor ! cause
+          })
 
     serverSource
       .via(reactToTopLevelFailures)
@@ -186,16 +188,15 @@ class HttpServerExampleSpec
         HttpResponse(404, entity = "Unknown resource!")
     }
 
-    val bindingFuture: Future[Http.ServerBinding] =
-      serverSource
-        .to(Sink.foreach { connection =>
-          println("Accepted new connection from " + connection.remoteAddress)
+    val bindingFuture: Future[Http.ServerBinding] = serverSource
+      .to(Sink.foreach { connection =>
+        println("Accepted new connection from " + connection.remoteAddress)
 
-          connection handleWithSyncHandler requestHandler
-        // this is equivalent to
-        // connection handleWith { Flow[HttpRequest] map requestHandler }
-        })
-        .run()
+        connection handleWithSyncHandler requestHandler
+      // this is equivalent to
+      // connection handleWith { Flow[HttpRequest] map requestHandler }
+      })
+      .run()
   }
 
   "low-level-server-example" in compileOnlySpec {
@@ -229,8 +230,10 @@ class HttpServerExampleSpec
             HttpResponse(404, entity = "Unknown resource!")
         }
 
-        val bindingFuture =
-          Http().bindAndHandleSync(requestHandler, "localhost", 8080)
+        val bindingFuture = Http().bindAndHandleSync(
+          requestHandler,
+          "localhost",
+          8080)
         println(
           s"Server online at http://localhost:8080/\nPress RETURN to stop...")
         StdIn.readLine() // let it run until user presses return

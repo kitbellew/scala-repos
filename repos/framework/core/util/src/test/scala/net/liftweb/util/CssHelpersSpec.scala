@@ -28,8 +28,7 @@ class CssHelpersSpec extends Specification {
 
   "CSSParser" should {
     "leave most CSS alone" in {
-      val baseCss =
-        """
+      val baseCss = """
       #booyan {
         text-indent: 1em;
         -moz-columns: 3;
@@ -43,8 +42,7 @@ class CssHelpersSpec extends Specification {
     }
 
     "leave relative CSS urls alone" in {
-      val baseCss =
-        """
+      val baseCss = """
       #booyan {
         background: url(boom);
         background-image: url('boom?bam,sloop#"shap%20bap');
@@ -60,8 +58,7 @@ class CssHelpersSpec extends Specification {
     }
 
     "prefix root-relative CSS urls with the specified prefix" in {
-      val baseCss =
-        """
+      val baseCss = """
       |#booyan {
       |  background: url(/boom);
       |  background-image: url('/boom?bam,"sloop#shap%20bap');

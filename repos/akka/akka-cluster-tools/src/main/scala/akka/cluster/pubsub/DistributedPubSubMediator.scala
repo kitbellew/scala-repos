@@ -562,11 +562,14 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     self,
     GossipTick)
   val pruneInterval: FiniteDuration = removedTimeToLive / 2
-  val pruneTask =
-    context.system.scheduler.schedule(pruneInterval, pruneInterval, self, Prune)
+  val pruneTask = context.system.scheduler.schedule(
+    pruneInterval,
+    pruneInterval,
+    self,
+    Prune)
 
-  var registry: Map[Address, Bucket] =
-    Map.empty.withDefault(a ⇒ Bucket(a, 0L, TreeMap.empty))
+  var registry: Map[Address, Bucket] = Map.empty.withDefault(a ⇒
+    Bucket(a, 0L, TreeMap.empty))
   var nodes: Set[Address] = Set.empty
 
   // the version is a timestamp because it is also used when pruning removed entries
@@ -601,18 +604,19 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def receive = {
 
     case Send(path, msg, localAffinity) ⇒
-      val routees = registry(selfAddress).content.get(path) match {
-        case Some(valueHolder) if localAffinity ⇒
-          (for {
-            routee ← valueHolder.routee
-          } yield routee).toVector
-        case _ ⇒
-          (for {
-            (_, bucket) ← registry
-            valueHolder ← bucket.content.get(path)
-            routee ← valueHolder.routee
-          } yield routee).toVector
-      }
+      val routees =
+        registry(selfAddress).content.get(path) match {
+          case Some(valueHolder) if localAffinity ⇒
+            (for {
+              routee ← valueHolder.routee
+            } yield routee).toVector
+          case _ ⇒
+            (for {
+              (_, bucket) ← registry
+              valueHolder ← bucket.content.get(path)
+              routee ← valueHolder.routee
+            } yield routee).toVector
+        }
 
       if (routees.nonEmpty)
         Router(routingLogic, routees).route(wrapIfNeeded(msg), sender())
@@ -750,12 +754,13 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     case _: MemberEvent ⇒ // not of interest
 
     case Count ⇒
-      val count = registry.map {
-        case (owner, bucket) ⇒
-          bucket.content.count {
-            case (_, valueHolder) ⇒ valueHolder.ref.isDefined
-          }
-      }.sum
+      val count =
+        registry.map {
+          case (owner, bucket) ⇒
+            bucket.content.count {
+              case (_, valueHolder) ⇒ valueHolder.ref.isDefined
+            }
+        }.sum
       sender() ! count
   }
 
@@ -771,12 +776,13 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def publishToEachGroup(path: String, msg: Any): Unit = {
     val prefix = path + '/'
     val lastKey = path + '0' // '0' is the next char of '/'
-    val groups = (for {
-      (_, bucket) ← registry.toSeq
-      key ← bucket.content.range(prefix, lastKey).keys
-      valueHolder ← bucket.content.get(key)
-      ref ← valueHolder.routee
-    } yield (key, ref)).groupBy(_._1).values
+    val groups =
+      (for {
+        (_, bucket) ← registry.toSeq
+        key ← bucket.content.range(prefix, lastKey).keys
+        valueHolder ← bucket.content.get(key)
+        ref ← valueHolder.routee
+      } yield (key, ref)).groupBy(_._1).values
 
     val wrappedMsg = SendToOneSubscriber(msg)
     groups foreach { group ⇒
@@ -839,8 +845,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         else {
           // exceeded the maxDeltaElements, pick the elements with lowest versions
           val sortedContent = deltaContent.toVector.sortBy(_._2.version)
-          val chunk =
-            sortedContent.take(maxDeltaElements - (count - sortedContent.size))
+          val chunk = sortedContent.take(
+            maxDeltaElements - (count - sortedContent.size))
           bucket.copy(
             content = TreeMap.empty[String, ValueHolder] ++ chunk,
             version = chunk.last._2.version)
@@ -929,11 +935,12 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
       system.deadLetters
     else {
       val name = system.settings.config.getString("akka.cluster.pub-sub.name")
-      val dispatcher = system.settings.config
-        .getString("akka.cluster.pub-sub.use-dispatcher") match {
-        case "" ⇒ Dispatchers.DefaultDispatcherId
-        case id ⇒ id
-      }
+      val dispatcher =
+        system.settings.config
+          .getString("akka.cluster.pub-sub.use-dispatcher") match {
+          case "" ⇒ Dispatchers.DefaultDispatcherId
+          case id ⇒ id
+        }
       system.systemActorOf(
         DistributedPubSubMediator.props(settings).withDispatcher(dispatcher),
         name)

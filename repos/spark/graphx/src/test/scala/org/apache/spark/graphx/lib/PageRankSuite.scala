@@ -82,8 +82,10 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
       val staticRanks1 =
         starGraph.staticPageRank(numIter = 1, resetProb).vertices
-      val staticRanks2 =
-        starGraph.staticPageRank(numIter = 2, resetProb).vertices.cache()
+      val staticRanks2 = starGraph
+        .staticPageRank(numIter = 2, resetProb)
+        .vertices
+        .cache()
 
       // Static PageRank should only take 2 iterations to converge
       val notMatching = staticRanks1
@@ -132,17 +134,18 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
         .cache()
 
       // Static PageRank should only take 2 iterations to converge
-      val notMatching = staticRanks1
-        .innerZipJoin(staticRanks2) { (vid, pr1, pr2) =>
-          if (pr1 != pr2)
-            1
-          else
-            0
-        }
-        .map {
-          case (vid, test) => test
-        }
-        .sum
+      val notMatching =
+        staticRanks1
+          .innerZipJoin(staticRanks2) { (vid, pr1, pr2) =>
+            if (pr1 != pr2)
+              1
+            else
+              0
+          }
+          .map {
+            case (vid, test) => test
+          }
+          .sum
       assert(notMatching === 0)
 
       val staticErrors = staticRanks2.map {
@@ -156,8 +159,10 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
       }
       assert(staticErrors.sum === 0)
 
-      val dynamicRanks =
-        starGraph.personalizedPageRank(0, 0, resetProb).vertices.cache()
+      val dynamicRanks = starGraph
+        .personalizedPageRank(0, 0, resetProb)
+        .vertices
+        .cache()
       assert(compareRanks(staticRanks2, dynamicRanks) < errorTol)
 
       // We have one outbound edge from 1 to 0
@@ -165,8 +170,10 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
         .staticPersonalizedPageRank(1, numIter = 2, resetProb)
         .vertices
         .cache()
-      val otherDynamicRanks =
-        starGraph.personalizedPageRank(1, 0, resetProb).vertices.cache()
+      val otherDynamicRanks = starGraph
+        .personalizedPageRank(1, 0, resetProb)
+        .vertices
+        .cache()
       assert(compareRanks(otherDynamicRanks, otherStaticRanks2) < errorTol)
     }
   } // end of test Star PersonalPageRank
@@ -181,8 +188,10 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
       val errorTol = 1.0e-5
       val gridGraph = GraphGenerators.gridGraph(sc, rows, cols).cache()
 
-      val staticRanks =
-        gridGraph.staticPageRank(numIter, resetProb).vertices.cache()
+      val staticRanks = gridGraph
+        .staticPageRank(numIter, resetProb)
+        .vertices
+        .cache()
       val dynamicRanks = gridGraph.pageRank(tol, resetProb).vertices.cache()
       val referenceRanks = VertexRDD(
         sc.parallelize(GridPageRank(rows, cols, numIter, resetProb))).cache()

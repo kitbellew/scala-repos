@@ -161,13 +161,14 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         print("class ")
       print(processName(c.name))
       val it = c.infoType
-      val classType = it match {
-        case PolyType(typeRef, symbols) =>
-          PolyTypeWithCons(typeRef, symbols, defaultConstructor)
-        case ClassInfoType(a, b) if c.isCase =>
-          ClassInfoTypeWithCons(a, b, defaultConstructor)
-        case _ => it
-      }
+      val classType =
+        it match {
+          case PolyType(typeRef, symbols) =>
+            PolyTypeWithCons(typeRef, symbols, defaultConstructor)
+          case ClassInfoType(a, b) if c.isCase =>
+            ClassInfoTypeWithCons(a, b, defaultConstructor)
+          case _ => it
+        }
       printType(classType)
       print(" {")
       //Print class selftype
@@ -233,10 +234,11 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
           ms.name + ": " + toString(ms.infoType)(TypeFlags(true))
         case _ => "^___^"
       })
-      val implicitWord = mt.paramSymbols.headOption match {
-        case Some(p) if p.isImplicit => "implicit "
-        case _                       => ""
-      }
+      val implicitWord =
+        mt.paramSymbols.headOption match {
+          case Some(p) if p.isImplicit => "implicit "
+          case _                       => ""
+        }
 
       // Print parameter clauses
       print(paramEntries.mkString("(" + implicitWord, ", ", ")"))
@@ -464,8 +466,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case AnnotatedWithSelfType(typeRef, symbol, attribTreeRefs) =>
         toString(typeRef, sep)
       case ExistentialType(typeRef, symbols) => {
-        val refs =
-          symbols.map(toString).filter(!_.startsWith("_")).map("type " + _)
+        val refs = symbols
+          .map(toString)
+          .filter(!_.startsWith("_"))
+          .map("type " + _)
         toString(typeRef, sep) + (if (refs.size > 0)
                                     refs.mkString(" forSome {", "; ", "}")
                                   else
@@ -486,8 +490,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def toString(symbol: Symbol): String =
     symbol match {
       case symbol: TypeSymbol => {
-        val attrs = (for (a <- symbol.attributes)
-          yield toString(a)).mkString(" ")
+        val attrs =
+          (for (a <- symbol.attributes)
+            yield toString(a)).mkString(" ")
         val atrs =
           if (attrs.length > 0)
             attrs.trim + " "

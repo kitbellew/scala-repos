@@ -95,8 +95,9 @@ class TreeNodeSuite extends SparkFunSuite {
   test("pre-order transform") {
     val actual = new ArrayBuffer[String]()
     val expected = Seq("+", "1", "*", "2", "-", "3", "4")
-    val expression =
-      Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
+    val expression = Add(
+      Literal(1),
+      Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
     expression transformDown {
       case b: BinaryOperator =>
         actual.append(b.symbol);
@@ -112,8 +113,9 @@ class TreeNodeSuite extends SparkFunSuite {
   test("post-order transform") {
     val actual = new ArrayBuffer[String]()
     val expected = Seq("1", "2", "3", "4", "-", "*", "+")
-    val expression =
-      Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
+    val expression = Add(
+      Literal(1),
+      Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
     expression transformUp {
       case b: BinaryOperator =>
         actual.append(b.symbol);
@@ -159,8 +161,9 @@ class TreeNodeSuite extends SparkFunSuite {
   test("foreach up") {
     val actual = new ArrayBuffer[String]()
     val expected = Seq("1", "2", "3", "4", "-", "*", "+")
-    val expression =
-      Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
+    val expression = Add(
+      Literal(1),
+      Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
     expression foreachUp {
       case b: BinaryOperator => actual.append(b.symbol);
       case l: Literal        => actual.append(l.toString);
@@ -170,16 +173,16 @@ class TreeNodeSuite extends SparkFunSuite {
   }
 
   test("find") {
-    val expression =
-      Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
+    val expression = Add(
+      Literal(1),
+      Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
     // Find the top node.
     var actual: Option[Expression] = expression.find {
       case add: Add => true
       case other    => false
     }
-    var expected: Option[Expression] =
-      Some(
-        Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4)))))
+    var expected: Option[Expression] = Some(
+      Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4)))))
     assert(expected === actual)
 
     // Find the first children.
@@ -216,19 +219,17 @@ class TreeNodeSuite extends SparkFunSuite {
   }
 
   test("collectFirst") {
-    val expression =
-      Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
+    val expression = Add(
+      Literal(1),
+      Multiply(Literal(2), Subtract(Literal(3), Literal(4))))
 
     // Collect the top node.
     {
       val actual = expression.collectFirst {
         case add: Add => add
       }
-      val expected =
-        Some(
-          Add(
-            Literal(1),
-            Multiply(Literal(2), Subtract(Literal(3), Literal(4)))))
+      val expected = Some(
+        Add(Literal(1), Multiply(Literal(2), Subtract(Literal(3), Literal(4)))))
       assert(expected === actual)
     }
 

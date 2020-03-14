@@ -77,8 +77,8 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       }
     }
 
-    val summarizer2 =
-      (new MultivariateOnlineSummarizer).add(Vectors.dense(1.0, -2.0, 0.0, 4.0))
+    val summarizer2 = (new MultivariateOnlineSummarizer)
+      .add(Vectors.dense(1.0, -2.0, 0.0, 4.0))
     withClue(
       "Merging a new summarizer with different dimensions should throw exception.") {
       intercept[IllegalArgumentException] {
@@ -235,8 +235,8 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
         (new MultivariateOnlineSummarizer).add(Vectors.dense(0.0, -1.0, -3.0)))
     assert(summarizer2.count === 1)
 
-    val summarizer3 =
-      (new MultivariateOnlineSummarizer).merge(new MultivariateOnlineSummarizer)
+    val summarizer3 = (new MultivariateOnlineSummarizer)
+      .merge(new MultivariateOnlineSummarizer)
     assert(summarizer3.count === 0)
 
     assert(

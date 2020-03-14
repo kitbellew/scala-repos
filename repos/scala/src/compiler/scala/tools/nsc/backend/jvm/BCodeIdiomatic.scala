@@ -28,9 +28,10 @@ abstract class BCodeIdiomatic extends SubComponent {
   import bTypes._
   import coreBTypes._
 
-  val classfileVersion: Int = settings.target.value match {
-    case "jvm-1.8" => asm.Opcodes.V1_8
-  }
+  val classfileVersion: Int =
+    settings.target.value match {
+      case "jvm-1.8" => asm.Opcodes.V1_8
+    }
 
   val majorVersion: Int = (classfileVersion & 0xFF)
   val emitStackMapFrame = (majorVersion >= 50)
@@ -225,19 +226,20 @@ abstract class BCodeIdiomatic extends SubComponent {
      * can-multi-thread
      */
     def genConcat(elemType: BType, pos: Position): Unit = {
-      val paramType = elemType match {
-        case ct: ClassBType if ct.isSubtypeOf(StringRef).get => StringRef
-        case ct: ClassBType if ct.isSubtypeOf(jlStringBufferRef).get =>
-          jlStringBufferRef
-        case ct: ClassBType if ct.isSubtypeOf(jlCharSequenceRef).get =>
-          jlCharSequenceRef
-        // Don't match for `ArrayBType(CHAR)`, even though StringBuilder has such an overload:
-        // `"a" + Array('b')` should NOT be "ab", but "a[C@...".
-        case _: RefBType => ObjectRef
-        // jlStringBuilder does not have overloads for byte and short, but we can just use the int version
-        case BYTE | SHORT       => INT
-        case pt: PrimitiveBType => pt
-      }
+      val paramType =
+        elemType match {
+          case ct: ClassBType if ct.isSubtypeOf(StringRef).get => StringRef
+          case ct: ClassBType if ct.isSubtypeOf(jlStringBufferRef).get =>
+            jlStringBufferRef
+          case ct: ClassBType if ct.isSubtypeOf(jlCharSequenceRef).get =>
+            jlCharSequenceRef
+          // Don't match for `ArrayBType(CHAR)`, even though StringBuilder has such an overload:
+          // `"a" + Array('b')` should NOT be "ab", but "a[C@...".
+          case _: RefBType => ObjectRef
+          // jlStringBuilder does not have overloads for byte and short, but we can just use the int version
+          case BYTE | SHORT       => INT
+          case pt: PrimitiveBType => pt
+        }
       val bt = MethodBType(List(paramType), jlStringBuilderRef)
       invokevirtual(JavaStringBuilderClassName, "append", bt.descriptor, pos)
     }
@@ -269,15 +271,16 @@ abstract class BCodeIdiomatic extends SubComponent {
       )
 
       def pickOne(opcs: Array[Int]) { // TODO index on to.sort
-        val chosen = (to: @unchecked) match {
-          case BYTE   => opcs(0)
-          case SHORT  => opcs(1)
-          case CHAR   => opcs(2)
-          case INT    => opcs(3)
-          case LONG   => opcs(4)
-          case FLOAT  => opcs(5)
-          case DOUBLE => opcs(6)
-        }
+        val chosen =
+          (to: @unchecked) match {
+            case BYTE   => opcs(0)
+            case SHORT  => opcs(1)
+            case CHAR   => opcs(2)
+            case INT    => opcs(3)
+            case LONG   => opcs(4)
+            case FLOAT  => opcs(5)
+            case DOUBLE => opcs(6)
+          }
         if (chosen != -1) {
           emit(chosen)
         }
@@ -580,8 +583,8 @@ abstract class BCodeIdiomatic extends SubComponent {
 
       val isDenseEnough: Boolean = {
         /* Calculate in long to guard against overflow. TODO what overflow? */
-        val keyRangeD: Double =
-          (keyMax.asInstanceOf[Long] - keyMin + 1).asInstanceOf[Double]
+        val keyRangeD: Double = (keyMax.asInstanceOf[Long] - keyMin + 1)
+          .asInstanceOf[Double]
         val klenD: Double = keys.length
         val kdensity: Double = (klenD / keyRangeD)
 

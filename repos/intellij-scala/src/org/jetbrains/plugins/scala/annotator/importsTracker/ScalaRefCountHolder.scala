@@ -134,8 +134,8 @@ class ScalaRefCountHolder private () {
 }
 
 object ScalaRefCountHolder {
-  private val SCALA_REF_COUNT_HOLDER_IN_FILE_KEY: Key[ScalaRefCountHolder] =
-    Key.create("scala.ref.count.holder.in.file.key")
+  private val SCALA_REF_COUNT_HOLDER_IN_FILE_KEY: Key[ScalaRefCountHolder] = Key
+    .create("scala.ref.count.holder.in.file.key")
 
   def getInstance(file: PsiFile): ScalaRefCountHolder = {
     val myFile = /*Option(file.getViewProvider getPsi ScalaFileType.SCALA_LANGUAGE) getOrElse file

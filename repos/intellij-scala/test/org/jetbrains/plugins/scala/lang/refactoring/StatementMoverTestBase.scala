@@ -22,8 +22,9 @@ abstract class StatementMoverTestBase extends SimpleTestCase {
 
     val offset = preparedCode.indexOf("|")
 
-    val cleanCode =
-      preparedCode.replaceAll("\\|", "").replaceFirst("(?-m)\n?$", "\n")
+    val cleanCode = preparedCode
+      .replaceAll("\\|", "")
+      .replaceFirst("(?-m)\n?$", "\n")
     val file = cleanCode.parse
     val editor = new EditorMock(cleanCode, offset)
 

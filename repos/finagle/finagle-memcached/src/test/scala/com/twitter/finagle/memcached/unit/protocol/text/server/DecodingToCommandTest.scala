@@ -29,15 +29,14 @@ class DecodingToCommandTest extends FunSuite {
     val dataSize = data.length.toString
 
     Time.withCurrentTimeFrozen { _ =>
-      val expireTimeTableData =
-        Table(
-          "expectedTime" -> "allowedDelta",
-          ExpectedTimeTable(0, Time.epoch) -> 0.seconds,
-          ExpectedTimeTable(
-            200.seconds.fromNow.inSeconds,
-            200.seconds.fromNow) -> 1.seconds,
-          ExpectedTimeTable(200, 200.seconds.fromNow) -> 1.seconds
-        )
+      val expireTimeTableData = Table(
+        "expectedTime" -> "allowedDelta",
+        ExpectedTimeTable(0, Time.epoch) -> 0.seconds,
+        ExpectedTimeTable(
+          200.seconds.fromNow.inSeconds,
+          200.seconds.fromNow) -> 1.seconds,
+        ExpectedTimeTable(200, 200.seconds.fromNow) -> 1.seconds
+      )
 
       forAll(expireTimeTableData) {
         (expectedTime: ExpectedTimeTable, allowedDelta: Duration) =>
@@ -64,16 +63,17 @@ class DecodingToCommandTest extends FunSuite {
     import context._
 
     Seq(None, Some("slabs"), Some("items")).foreach { arg =>
-      val cmd = arg match {
-        case None =>
-          Seq("stats") map {
-            Buf.Utf8(_)
-          }
-        case Some(s) =>
-          Seq("stats", s) map {
-            Buf.Utf8(_)
-          }
-      }
+      val cmd =
+        arg match {
+          case None =>
+            Seq("stats") map {
+              Buf.Utf8(_)
+            }
+          case Some(s) =>
+            Seq("stats", s) map {
+              Buf.Utf8(_)
+            }
+        }
       val buffer = Tokens(cmd)
       val command = decodingToCommand.decode(null, null, buffer)
       assert(command.getClass == classOf[Stats])

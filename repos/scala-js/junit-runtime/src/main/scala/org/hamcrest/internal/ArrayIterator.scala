@@ -18,8 +18,7 @@ class ArrayIterator private (array: Array[_], private var currentIndex: Int = 0)
     )
   }
 
-  override def hasNext: Boolean =
-    currentIndex < array.length
+  override def hasNext: Boolean = currentIndex < array.length
 
   override def next(): AnyRef = {
     val _currentIndex = currentIndex

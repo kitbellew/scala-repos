@@ -121,8 +121,8 @@ private[spark] class PythonWorkerFactory(
         new ServerSocket(0, 1, InetAddress.getByAddress(Array(127, 0, 0, 1)))
 
       // Create and start the worker
-      val pb = new ProcessBuilder(
-        Arrays.asList(pythonExec, "-m", "pyspark.worker"))
+      val pb =
+        new ProcessBuilder(Arrays.asList(pythonExec, "-m", "pyspark.worker"))
       val workerEnv = pb.environment()
       workerEnv.putAll(envVars.asJava)
       workerEnv.put("PYTHONPATH", pythonPath)

@@ -85,8 +85,7 @@ class Node[a <% Ordered[a]](elem: a, l: Tree[a], r: Tree[a]) extends Tree[a] {
       new Node(elem, l insert x, r)
     else
       new Node(elem, l, r insert x)
-  def elements: List[a] =
-    l.elements ::: List(elem) ::: r.elements
+  def elements: List[a] = l.elements ::: List(elem) ::: r.elements
 }
 
 case class Str(elem: String) extends Ordered[Str] {

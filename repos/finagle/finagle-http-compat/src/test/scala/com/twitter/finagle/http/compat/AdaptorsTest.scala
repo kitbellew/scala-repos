@@ -40,74 +40,80 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   val arbKeys = Gen.oneOf("Foo", "Bar", "Foo-Bar", "Bar-Baz")
 
-  val arbUri = for {
-    scheme <- Gen.oneOf("http", "https")
-    hostLen <- Gen.choose(1, 20)
-    pathLen <- Gen.choose(1, 20)
-    tld <- Gen.oneOf(".net", ".com", "org", ".edu")
-    host = util.Random.alphanumeric.take(hostLen).mkString
-    path = util.Random.alphanumeric.take(pathLen).mkString
-  } yield (new URI(scheme, host + tld, "/" + path, null)).toASCIIString
+  val arbUri =
+    for {
+      scheme <- Gen.oneOf("http", "https")
+      hostLen <- Gen.choose(1, 20)
+      pathLen <- Gen.choose(1, 20)
+      tld <- Gen.oneOf(".net", ".com", "org", ".edu")
+      host = util.Random.alphanumeric.take(hostLen).mkString
+      path = util.Random.alphanumeric.take(pathLen).mkString
+    } yield (new URI(scheme, host + tld, "/" + path, null)).toASCIIString
 
-  val arbHeader = for {
-    key <- arbKeys
-    len <- Gen.choose(0, 100)
-  } yield (key, util.Random.alphanumeric.take(len).mkString)
+  val arbHeader =
+    for {
+      key <- arbKeys
+      len <- Gen.choose(0, 100)
+    } yield (key, util.Random.alphanumeric.take(len).mkString)
 
-  val arbResponse = for {
-    code <- Gen.chooseNum(100, 510)
-    version <- Gen.oneOf(Version.Http10, Version.Http11)
-    chunked <- arbitrary[Boolean]
-    headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
-    body <- arbitrary[String]
-  } yield {
-    if (chunked) {
-      val res = Response(version, Status(code), Reader.fromBuf(Buf.Utf8(body)))
-      headers foreach {
-        case (k, v) => res.headerMap.add(k, v)
+  val arbResponse =
+    for {
+      code <- Gen.chooseNum(100, 510)
+      version <- Gen.oneOf(Version.Http10, Version.Http11)
+      chunked <- arbitrary[Boolean]
+      headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
+      body <- arbitrary[String]
+    } yield {
+      if (chunked) {
+        val res = Response(
+          version,
+          Status(code),
+          Reader.fromBuf(Buf.Utf8(body)))
+        headers foreach {
+          case (k, v) => res.headerMap.add(k, v)
+        }
+        res.headerMap.set(Fields.TransferEncoding, "chunked")
+        (res, body)
+      } else {
+        val res = Response(version, Status(code))
+        headers foreach {
+          case (k, v) => res.headerMap.add(k, v)
+        }
+        res.contentString = body
+        (res, body)
       }
-      res.headerMap.set(Fields.TransferEncoding, "chunked")
-      (res, body)
-    } else {
-      val res = Response(version, Status(code))
+    }
+
+  val arbRequest =
+    for {
+      method <- arbMethod
+      uri <- arbUri
+      version <- Gen.oneOf(Version.Http10, Version.Http11)
+      chunked <- arbitrary[Boolean]
+      headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
+      body <- arbitrary[String]
+    } yield {
+      val reqIn = Request(version, method, uri)
       headers foreach {
-        case (k, v) => res.headerMap.add(k, v)
+        case (k, v) => reqIn.headers.add(k, v)
       }
-      res.contentString = body
-      (res, body)
+      val req = Request(
+        reqIn.httpRequest,
+        BufReader(Buf.Utf8(body)),
+        new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+      if (chunked) {
+        req.headers.set(Fields.TransferEncoding, "chunked")
+        req.setChunked(chunked)
+      } else
+        req.contentString = body
+      (req, body)
     }
-  }
 
-  val arbRequest = for {
-    method <- arbMethod
-    uri <- arbUri
-    version <- Gen.oneOf(Version.Http10, Version.Http11)
-    chunked <- arbitrary[Boolean]
-    headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
-    body <- arbitrary[String]
-  } yield {
-    val reqIn = Request(version, method, uri)
-    headers foreach {
-      case (k, v) => reqIn.headers.add(k, v)
-    }
-    val req = Request(
-      reqIn.httpRequest,
-      BufReader(Buf.Utf8(body)),
-      new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-    if (chunked) {
-      req.headers.set(Fields.TransferEncoding, "chunked")
-      req.setChunked(chunked)
-    } else
-      req.contentString = body
-    (req, body)
-  }
-
-  val arbNettyVersion =
-    Gen.oneOf(
-      HttpVersion.HTTP_1_0,
-      HttpVersion.HTTP_1_1,
-      new HttpVersion("SECURE-HTTP/1.4", true)
-    )
+  val arbNettyVersion = Gen.oneOf(
+    HttpVersion.HTTP_1_0,
+    HttpVersion.HTTP_1_1,
+    new HttpVersion("SECURE-HTTP/1.4", true)
+  )
 
   val arbNettyResponse =
     for {

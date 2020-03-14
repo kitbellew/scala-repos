@@ -39,21 +39,21 @@ class TypeAliasUsagesSearcher
       @NotNull parameters: ReferencesSearch.SearchParameters,
       @NotNull consumer: Processor[PsiReference]) {
     val target: PsiElement = parameters.getElementToSearch
-    val ta = target match {
-      case named: PsiNamedElement =>
-        inReadAction(ScalaPsiUtil.nameContext(named)) match {
-          case ta: ScTypeAliasDefinition => ta
-          case _                         => return
-        }
-      case _ => return
-    }
+    val ta =
+      target match {
+        case named: PsiNamedElement =>
+          inReadAction(ScalaPsiUtil.nameContext(named)) match {
+            case ta: ScTypeAliasDefinition => ta
+            case _                         => return
+          }
+        case _ => return
+      }
     val name: String = ta.name
     if (name == null || StringUtil.isEmptyOrSpaces(name))
       return
-    val scope: SearchScope =
-      inReadAction(
-        parameters.getEffectiveSearchScope
-      ) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
+    val scope: SearchScope = inReadAction(
+      parameters.getEffectiveSearchScope
+    ) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
     val collector: SearchRequestCollector = parameters.getOptimizer
     val session: SearchSession = collector.getSearchSession
     collector.searchWord(

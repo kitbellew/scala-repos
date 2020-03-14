@@ -24,8 +24,7 @@ import com.twitter.util.{Duration, Monitor}
 
 trait RedisRichClient { self: Client[Command, Reply] =>
 
-  def newRichClient(dest: String): redis.Client =
-    redis.Client(newService(dest))
+  def newRichClient(dest: String): redis.Client = redis.Client(newService(dest))
 
   def newRichClient(dest: Name, label: String): redis.Client =
     redis.Client(newService(dest, label))
@@ -81,8 +80,7 @@ object Redis extends Client[Command, Reply] {
       new DefaultLoadBalancingParams(this)
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withSessionQualifier: SessionQualificationParams[Client] =
       new SessionQualificationParams(this)
     override val withAdmissionControl: ClientAdmissionControlParams[Client] =

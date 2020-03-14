@@ -217,27 +217,30 @@ class ContainerTest extends MarathonSpec with Matchers {
   test("ConstructFromProto") {
     val f = fixture()
 
-    val containerInfo = Protos.ExtendedContainerInfo.newBuilder
-      .setType(mesos.ContainerInfo.Type.DOCKER)
-      .addAllVolumes(f.volumes.map(VolumeSerializer.toProto).asJava)
-      .setDocker(DockerSerializer.toProto(f.container.docker.get))
-      .build
+    val containerInfo =
+      Protos.ExtendedContainerInfo.newBuilder
+        .setType(mesos.ContainerInfo.Type.DOCKER)
+        .addAllVolumes(f.volumes.map(VolumeSerializer.toProto).asJava)
+        .setDocker(DockerSerializer.toProto(f.container.docker.get))
+        .build
 
     val container = ContainerSerializer.fromProto(containerInfo)
     assert(container == f.container)
 
-    val containerInfo2 = Protos.ExtendedContainerInfo.newBuilder
-      .setType(mesos.ContainerInfo.Type.DOCKER)
-      .setDocker(DockerSerializer.toProto(f.container2.docker.get))
-      .build
+    val containerInfo2 =
+      Protos.ExtendedContainerInfo.newBuilder
+        .setType(mesos.ContainerInfo.Type.DOCKER)
+        .setDocker(DockerSerializer.toProto(f.container2.docker.get))
+        .build
 
     val container2 = ContainerSerializer.fromProto(containerInfo2)
     assert(container2 == f.container2)
 
-    val containerInfo3 = Protos.ExtendedContainerInfo.newBuilder
-      .setType(mesos.ContainerInfo.Type.DOCKER)
-      .setDocker(DockerSerializer.toProto(f.container3.docker.get))
-      .build
+    val containerInfo3 =
+      Protos.ExtendedContainerInfo.newBuilder
+        .setType(mesos.ContainerInfo.Type.DOCKER)
+        .setDocker(DockerSerializer.toProto(f.container3.docker.get))
+        .build
 
     val container3 = ContainerSerializer.fromProto(containerInfo3)
     assert(container3 == f.container3)
@@ -258,8 +261,7 @@ class ContainerTest extends MarathonSpec with Matchers {
   }
 
   test("Reading JSON with volumes") {
-    val json3 =
-      """
+    val json3 = """
       {
         "type": "DOCKER",
         "docker": {
@@ -311,8 +313,7 @@ class ContainerTest extends MarathonSpec with Matchers {
   }
 
   test("Reading JSON with privileged, networking and parameters") {
-    val json6 =
-      """
+    val json6 = """
       {
         "type": "DOCKER",
         "docker": {
@@ -332,8 +333,7 @@ class ContainerTest extends MarathonSpec with Matchers {
   }
 
   test("Reading JSON with multiple parameters with the same name") {
-    val json7 =
-      """
+    val json7 = """
       {
         "type": "DOCKER",
         "docker": {
@@ -356,8 +356,9 @@ class ContainerTest extends MarathonSpec with Matchers {
 
   test("""FromJSON with Mesos ContainerInfo should parse successfully""") {
     val f = new Fixture
-    val appDef =
-      Json.parse(f.mesosContainerWithPersistentVolumeJsonStr).as[AppDefinition]
+    val appDef = Json
+      .parse(f.mesosContainerWithPersistentVolumeJsonStr)
+      .as[AppDefinition]
     val expectedContainer = f.mesosContainerWithPersistentVolume
 
     appDef.container should equal(Some(expectedContainer))

@@ -17,38 +17,42 @@ object ScentrySpec extends Specification with Mockito {
   "The scentry" should {
 
     var invalidateCalled = false
-    val context = new ScalatraFilter {
-      private[this] val sessionMap = scala.collection.mutable
-        .HashMap[String, Any](Scentry.scentryAuthKey -> "6789")
-      val mockSession = smartMock[HttpSession]
-      override def session(implicit request: HttpServletRequest) = mockSession
-      mockSession.getAttribute(anyString) answers { k =>
-        sessionMap.getOrElse(k.asInstanceOf[String], null).asInstanceOf[AnyRef]
+    val context =
+      new ScalatraFilter {
+        private[this] val sessionMap = scala.collection.mutable
+          .HashMap[String, Any](Scentry.scentryAuthKey -> "6789")
+        val mockSession = smartMock[HttpSession]
+        override def session(implicit request: HttpServletRequest) = mockSession
+        mockSession.getAttribute(anyString) answers { k =>
+          sessionMap
+            .getOrElse(k.asInstanceOf[String], null)
+            .asInstanceOf[AnyRef]
+        }
+        mockSession.setAttribute(anyString, anyObject) answers {
+          (kv, wtfIsThis) =>
+            val Array(k: String, v: Any) = kv
+            sessionMap(k) = v
+        }
+        mockSession.invalidate() answers { k =>
+          invalidateCalled = true
+          sessionMap.clear()
+        }
       }
-      mockSession.setAttribute(anyString, anyObject) answers {
-        (kv, wtfIsThis) =>
-          val Array(k: String, v: Any) = kv
-          sessionMap(k) = v
-      }
-      mockSession.invalidate() answers { k =>
-        invalidateCalled = true
-        sessionMap.clear()
-      }
-    }
 
     implicit val req = mock[HttpServletRequest]
 
     implicit val res = mock[HttpServletResponse].smart
 
-    val theScentry = new Scentry[User](
-      context,
-      {
-        case User(id) => id
-      },
-      {
-        case s: String => User(s)
-      },
-      new SessionAuthStore(context))
+    val theScentry =
+      new Scentry[User](
+        context,
+        {
+          case User(id) => id
+        },
+        {
+          case s: String => User(s)
+        },
+        new SessionAuthStore(context))
     var beforeFetchCalled = false
     var afterFetchCalled = false
     var beforeSetUserCalled = false
@@ -68,67 +72,69 @@ object ScentrySpec extends Specification with Mockito {
       defaultUnauthenticatedCalled = true
     }
 
-    val s = new ScentryStrategy[User] {
-      protected val app = context
-      def authenticate()(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = {
-        successStrategyCalled = true
-        Some(User("12345"))
+    val s =
+      new ScentryStrategy[User] {
+        protected val app = context
+        def authenticate()(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = {
+          successStrategyCalled = true
+          Some(User("12345"))
+        }
+        override def beforeFetch[IdType](id: IdType)(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = beforeFetchCalled = true
+        override def afterFetch(user: User)(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = afterFetchCalled = true
+        override def beforeSetUser(user: User)(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = beforeSetUserCalled = true
+        override def afterSetUser(user: User)(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = afterSetUserCalled = true
+        override def beforeLogout(user: User)(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = beforeLogoutCalled = true
+        override def afterLogout(user: User)(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = afterLogoutCalled = true
+        override def beforeAuthenticate(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = beforeAuthenticateCalled = true
+        override def afterAuthenticate(winningStrategy: String, user: User)(
+            implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = afterAuthenticateCalled = true
+        override def unauthenticated()(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) {
+          unauthenticatedSuccessCalled = true
+        }
       }
-      override def beforeFetch[IdType](id: IdType)(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = beforeFetchCalled = true
-      override def afterFetch(user: User)(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = afterFetchCalled = true
-      override def beforeSetUser(user: User)(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = beforeSetUserCalled = true
-      override def afterSetUser(user: User)(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = afterSetUserCalled = true
-      override def beforeLogout(user: User)(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = beforeLogoutCalled = true
-      override def afterLogout(user: User)(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = afterLogoutCalled = true
-      override def beforeAuthenticate(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = beforeAuthenticateCalled = true
-      override def afterAuthenticate(winningStrategy: String, user: User)(
-          implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = afterAuthenticateCalled = true
-      override def unauthenticated()(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) {
-        unauthenticatedSuccessCalled = true
-      }
-    }
 
-    val sUnsuccess = new ScentryStrategy[User] {
-      protected val app = context
-      def authenticate()(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = {
-        failingStrategyCalled = true
-        None
+    val sUnsuccess =
+      new ScentryStrategy[User] {
+        protected val app = context
+        def authenticate()(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = {
+          failingStrategyCalled = true
+          None
+        }
+        override def beforeAuthenticate(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = beforeAuthenticateCalled = true
+        override def afterAuthenticate(winningStrategy: String, user: User)(
+            implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) = afterAuthenticateCalled = true
+        override def unauthenticated()(implicit
+            request: HttpServletRequest,
+            response: HttpServletResponse) {
+          unauthenticatedCalled = true
+        }
       }
-      override def beforeAuthenticate(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = beforeAuthenticateCalled = true
-      override def afterAuthenticate(winningStrategy: String, user: User)(
-          implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) = afterAuthenticateCalled = true
-      override def unauthenticated()(implicit
-          request: HttpServletRequest,
-          response: HttpServletResponse) {
-        unauthenticatedCalled = true
-      }
-    }
     "allow registration of global strategies" in {
       Scentry.register("Bogus", (_: ScalatraBase) => s)
       Scentry

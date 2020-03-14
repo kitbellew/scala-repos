@@ -25,11 +25,11 @@ import com.twitter.summingbird.batch._
 
 object SerializationLaws extends Properties("SerializationLaws") {
 
-  implicit val batchId: Arbitrary[BatchID] =
-    Arbitrary(Arbitrary.arbitrary[Long].map(BatchID(_)))
+  implicit val batchId: Arbitrary[BatchID] = Arbitrary(
+    Arbitrary.arbitrary[Long].map(BatchID(_)))
 
-  implicit val timestamp: Arbitrary[Timestamp] =
-    Arbitrary(Arbitrary.arbitrary[Long].map(Timestamp(_)))
+  implicit val timestamp: Arbitrary[Timestamp] = Arbitrary(
+    Arbitrary.arbitrary[Long].map(Timestamp(_)))
 
   implicit def batchSer: KSerializer[BatchID] = new BatchIDSerializer
   implicit def timestampSer: KSerializer[Timestamp] = new TimestampSerializer

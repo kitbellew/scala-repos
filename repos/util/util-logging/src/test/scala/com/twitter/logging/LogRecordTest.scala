@@ -32,9 +32,10 @@ class LogRecordTest extends FunSuite {
 }
 
 abstract class LogRecordTestHelper(formats: JRecord => String) {
-  val formatter = new Formatter {
-    override def format(r: JRecord): String = formats(r)
-  }
+  val formatter =
+    new Formatter {
+      override def format(r: JRecord): String = formats(r)
+    }
   val handler = new StringHandler(formatter)
   val logger = Logger.get("")
   logger.addHandler(handler)

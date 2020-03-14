@@ -140,8 +140,7 @@ object CofreeTest extends SpecLite {
     type CofreeZipStream[A] = CofreeZip[Stream, A]
 
     implicit def CofreeZipStreamArb[A: Arbitrary]
-        : Arbitrary[CofreeZipStream[A]] =
-      Tags.Zip.subst(CofreeStreamArb[A])
+        : Arbitrary[CofreeZipStream[A]] = Tags.Zip.subst(CofreeStreamArb[A])
 
     checkAll("CofreeZipStream", ScalazProperties.apply.laws[CofreeZipStream])
   }
@@ -173,12 +172,13 @@ object CofreeTest extends SpecLite {
   "no stack overflow unfoldC, mapBranching" in {
     import syntax.foldable._
     val n = 100
-    val list = Cofree
-      .unfoldC(1)(a => Option(a + 1))
-      .mapBranching(NaturalTransformation.refl)
-      .toStream
-      .take(n)
-      .toList
+    val list =
+      Cofree
+        .unfoldC(1)(a => Option(a + 1))
+        .mapBranching(NaturalTransformation.refl)
+        .toStream
+        .take(n)
+        .toList
     list must_=== (1 to n).toList
   }
 

@@ -74,13 +74,14 @@ object IsStripMargin {
     expr match {
       case MethodRepr(_, Some(lit: ScLiteral), Some(ref), args)
           if lit.isMultiLineString && ref.refName == STRIP_MARGIN =>
-        val marginChar = args match {
-          case Nil => '|'
-          case Seq(argLit: ScLiteral)
-              if argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR =>
-            argLit.getValue.asInstanceOf[Char]
-          case _ => '|'
-        }
+        val marginChar =
+          args match {
+            case Nil => '|'
+            case Seq(argLit: ScLiteral)
+                if argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR =>
+              argLit.getValue.asInstanceOf[Char]
+            case _ => '|'
+          }
         Some(lit, marginChar)
       case _ => None
     }

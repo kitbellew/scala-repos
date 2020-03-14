@@ -33,8 +33,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
           (InetSocketAddress, EndpointMap) => Unit) => Unit
   ) {
     val serverSet = mock[ServerSet]
-    val monitorCaptor =
-      ArgumentCaptor.forClass(classOf[HostChangeMonitor[ServiceInstance]])
+    val monitorCaptor = ArgumentCaptor.forClass(
+      classOf[HostChangeMonitor[ServiceInstance]])
 
     val cluster = new ZookeeperServerSetCluster(serverSet, endpointName)
     cluster.thread.join()
@@ -50,13 +50,16 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
           name -> new Endpoint(addr.getHostName, addr.getPort)
       }
 
-      val serviceInstance = new ServiceInstance(
-        new Endpoint(socketAddr.getHostName, socketAddr.getPort),
-        additionalEndpoints.asJava,
-        Status.ALIVE
-      )
-      val serviceInstances =
-        ImmutableSet.builder[ServiceInstance].add(serviceInstance).build()
+      val serviceInstance =
+        new ServiceInstance(
+          new Endpoint(socketAddr.getHostName, socketAddr.getPort),
+          additionalEndpoints.asJava,
+          Status.ALIVE
+        )
+      val serviceInstances = ImmutableSet
+        .builder[ServiceInstance]
+        .add(serviceInstance)
+        .build()
 
       clusterMonitor.onChange(serviceInstances)
     }

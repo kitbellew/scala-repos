@@ -149,8 +149,7 @@ import Terms._;
 object Programs {
 
   case class Clause(lhs: Term, rhs: List[Term]) {
-    def tyvars =
-      (lhs.tyvars ::: (rhs flatMap (t => t.tyvars))).distinct;
+    def tyvars = (lhs.tyvars ::: (rhs flatMap (t => t.tyvars))).distinct;
     def newInstance = {
       var s: Subst = List();
       for (a <- tyvars) {
@@ -311,10 +310,11 @@ object Prolog {
           if (solutions.isEmpty) {
             Console.println("no")
           } else {
-            val s: Subst = solutions.head
-              .filter(b => tvs contains b.name)
-              .map(b => Binding(b.name, b.term map solutions.head))
-              .reverse;
+            val s: Subst =
+              solutions.head
+                .filter(b => tvs contains b.name)
+                .map(b => Binding(b.name, b.term map solutions.head))
+                .reverse;
             if (s.isEmpty)
               Console.println("yes")
             else

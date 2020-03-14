@@ -279,8 +279,9 @@ object ConsumerPerformance {
       .describedAs("count")
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(1)
-    val useNewConsumerOpt =
-      parser.accepts("new-consumer", "Use the new consumer implementation.")
+    val useNewConsumerOpt = parser.accepts(
+      "new-consumer",
+      "Use the new consumer implementation.")
     val consumerConfigOpt = parser
       .accepts("consumer.config", "Consumer config properties file.")
       .withRequiredArg

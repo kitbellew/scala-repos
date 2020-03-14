@@ -49,8 +49,7 @@ object AtLeastOnceDeliveryFailureSpec {
 
     var state = Vector.empty[Int]
 
-    def contains(i: Int): Boolean =
-      state.contains(i)
+    def contains(i: Int): Boolean = state.contains(i)
 
     def add(i: Int): Unit = {
       state :+= i
@@ -58,8 +57,7 @@ object AtLeastOnceDeliveryFailureSpec {
         probe ! Done(state)
     }
 
-    def shouldFail(rate: Double) =
-      random.nextDouble() < rate
+    def shouldFail(rate: Double) = random.nextDouble() < rate
   }
 
   class ChaosSender(destination: ActorRef, val probe: ActorRef)
@@ -67,12 +65,12 @@ object AtLeastOnceDeliveryFailureSpec {
       with ChaosSupport
       with ActorLogging
       with AtLeastOnceDelivery {
-    val config =
-      context.system.settings.config.getConfig("akka.persistence.sender.chaos")
-    val liveProcessingFailureRate =
-      config.getDouble("live-processing-failure-rate")
-    val replayProcessingFailureRate =
-      config.getDouble("replay-processing-failure-rate")
+    val config = context.system.settings.config
+      .getConfig("akka.persistence.sender.chaos")
+    val liveProcessingFailureRate = config.getDouble(
+      "live-processing-failure-rate")
+    val replayProcessingFailureRate = config.getDouble(
+      "replay-processing-failure-rate")
 
     override def redeliverInterval = 500.milliseconds
 
@@ -165,8 +163,9 @@ object AtLeastOnceDeliveryFailureSpec {
   }
 
   class ChaosApp(probe: ActorRef) extends Actor with ActorLogging {
-    val destination =
-      context.actorOf(Props(classOf[ChaosDestination], probe), "destination")
+    val destination = context.actorOf(
+      Props(classOf[ChaosDestination], probe),
+      "destination")
     var snd = createSender()
     var acks = Set.empty[Int]
 

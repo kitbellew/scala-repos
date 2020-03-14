@@ -114,15 +114,16 @@ final class Binarizer(override val uid: String)
     val inputType = schema($(inputCol)).dataType
     val outputColName = $(outputCol)
 
-    val outCol: StructField = inputType match {
-      case DoubleType =>
-        BinaryAttribute.defaultAttr.withName(outputColName).toStructField()
-      case _: VectorUDT =>
-        new StructField(outputColName, new VectorUDT, true)
-      case other =>
-        throw new IllegalArgumentException(
-          s"Data type $other is not supported.")
-    }
+    val outCol: StructField =
+      inputType match {
+        case DoubleType =>
+          BinaryAttribute.defaultAttr.withName(outputColName).toStructField()
+        case _: VectorUDT =>
+          new StructField(outputColName, new VectorUDT, true)
+        case other =>
+          throw new IllegalArgumentException(
+            s"Data type $other is not supported.")
+      }
 
     if (schema.fieldNames.contains(outputColName)) {
       throw new IllegalArgumentException(

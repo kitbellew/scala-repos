@@ -33,14 +33,15 @@ class CleanWorksheetAction() extends AnAction with TopComponentAction {
 
     val editor: Editor =
       FileEditorManager.getInstance(project).getSelectedTextEditor
-    val file: VirtualFile =
-      CommonDataKeys.VIRTUAL_FILE.getData(e.getDataContext)
+    val file: VirtualFile = CommonDataKeys.VIRTUAL_FILE.getData(
+      e.getDataContext)
 
     if (editor == null || file == null)
       return
 
-    val psiFile: PsiFile =
-      PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
+    val psiFile: PsiFile = PsiDocumentManager
+      .getInstance(project)
+      .getPsiFile(editor.getDocument)
     val viewer = WorksheetViewerInfo.getViewer(editor)
 
     if (psiFile == null || viewer == null)

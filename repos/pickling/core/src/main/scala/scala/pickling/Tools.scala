@@ -101,9 +101,8 @@ class Tools[C <: Context](val c: C) {
       tpe: Type,
       mirror: Mirror,
       excludeSelf: Boolean): List[Type] = {
-    val subtypes =
-      allStaticallyKnownConcreteSubclasses(tpe, mirror).filter(subtpe =>
-        subtpe.typeSymbol != tpe.typeSymbol)
+    val subtypes = allStaticallyKnownConcreteSubclasses(tpe, mirror).filter(
+      subtpe => subtpe.typeSymbol != tpe.typeSymbol)
     val selfTpe =
       if (isRelevantSubclass(tpe.typeSymbol, tpe.typeSymbol))
         List(tpe)
@@ -127,10 +126,11 @@ class Tools[C <: Context](val c: C) {
     // given `class C; class D[T] extends C` we of course cannot return the infinite number of `D[X]` types
     // but what we can probably do is to additionally look up custom picklers/unpicklers of for specific `D[X]`
     val baseSym = tpe.typeSymbol.asType
-    val baseTargs = tpe match {
-      case TypeRef(_, _, args) => args;
-      case _                   => Nil
-    }
+    val baseTargs =
+      tpe match {
+        case TypeRef(_, _, args) => args;
+        case _                   => Nil
+      }
 
     def sourcepathScan(): List[Symbol] = {
       val subclasses = MutableList[Symbol]()
@@ -157,17 +157,16 @@ class Tools[C <: Context](val c: C) {
           if (sym.isFinal || sym.isModuleClass) {
             Nil
           } else if (treatAsSealed(sym)) {
-            val syms: List[ClassSymbol] =
-              directSubclasses(sym)
-                .map {
-                  case csym: ClassSymbol  => csym
-                  case msym: ModuleSymbol => msym.moduleClass.asClass
-                  case osym =>
-                    throw new Exception(
-                      s"unexpected known direct subclass: $osym <: $sym")
-                }
-                .toList
-                .flatMap(loop)
+            val syms: List[ClassSymbol] = directSubclasses(sym)
+              .map {
+                case csym: ClassSymbol  => csym
+                case msym: ModuleSymbol => msym.moduleClass.asClass
+                case osym =>
+                  throw new Exception(
+                    s"unexpected known direct subclass: $osym <: $sym")
+              }
+              .toList
+              .flatMap(loop)
             syms
           } else {
             hierarchyIsSealed = false
@@ -394,10 +393,11 @@ abstract class Macro extends RichTypes { self =>
   val tools = new Tools[c.type](c)
   import tools._
 
-  val shareAnalyzer = new ShareAnalyzer[c.universe.type](c.universe) {
-    def shareEverything = self.shareEverything
-    def shareNothing = self.shareNothing
-  }
+  val shareAnalyzer =
+    new ShareAnalyzer[c.universe.type](c.universe) {
+      def shareEverything = self.shareEverything
+      def shareNothing = self.shareNothing
+    }
 
   val irs = new ir.IRs[c.universe.type](c.universe)
   import irs._
@@ -568,8 +568,7 @@ abstract class Macro extends RichTypes { self =>
     // 1) private[this] fields
     // 2) inherited private[this] fields
     // 3) overridden fields
-    val wrappedBody =
-      q"""
+    val wrappedBody = q"""
         val $ownerSymbol = implicitly[scala.pickling.FastTypeTag[${owner.asClass.toType.erasure}]].tpe
         val $firSymbol = $ownerSymbol.member(scala.reflect.runtime.universe.newTermName(${fir.name}))
         if ($firSymbol.isTerm) ${body(q"im.reflectField($firSymbol.asTerm)")}

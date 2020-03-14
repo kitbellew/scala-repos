@@ -36,10 +36,11 @@ trait ParquetTupleSource extends FileSource with HasFilterPredicate {
 
   override def hdfsScheme = {
 
-    val scheme = withFilter match {
-      case Some(fp) => new ParquetTupleScheme(fp, fields)
-      case None     => new ParquetTupleScheme(fields)
-    }
+    val scheme =
+      withFilter match {
+        case Some(fp) => new ParquetTupleScheme(fp, fields)
+        case None     => new ParquetTupleScheme(fields)
+      }
 
     HadoopSchemeInstance(scheme.asInstanceOf[Scheme[_, _, _, _, _]])
   }

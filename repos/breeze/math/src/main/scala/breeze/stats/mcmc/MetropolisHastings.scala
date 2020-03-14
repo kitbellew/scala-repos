@@ -172,19 +172,22 @@ case class ThreadedBufferedRand[T](
 
   @volatile private var stopWorker = false
 
-  private val worker = new Thread {
-    override def run() {
-      while (!stopWorker) {
-        val buff = usedArrayQueue.poll(1, java.util.concurrent.TimeUnit.SECONDS)
-        if (buff != null) {
-          cfor(0)(i => i < bufferSize, i => i + 1)(i => {
-            buff(i) = wrapped.draw()
-          })
-          newArrayQueue.put(buff)
+  private val worker =
+    new Thread {
+      override def run() {
+        while (!stopWorker) {
+          val buff = usedArrayQueue.poll(
+            1,
+            java.util.concurrent.TimeUnit.SECONDS)
+          if (buff != null) {
+            cfor(0)(i => i < bufferSize, i => i + 1)(i => {
+              buff(i) = wrapped.draw()
+            })
+            newArrayQueue.put(buff)
+          }
         }
       }
     }
-  }
   worker.setDaemon(true)
   worker.setName("worker thread for " + this)
   worker.start()

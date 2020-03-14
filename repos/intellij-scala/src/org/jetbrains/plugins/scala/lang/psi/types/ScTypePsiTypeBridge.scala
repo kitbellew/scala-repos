@@ -53,11 +53,12 @@ trait ScTypePsiTypeBridge {
             else
               types.AnyRef
           case c if c != null =>
-            val clazz = c match {
-              case o: ScObject =>
-                ScalaPsiUtil.getCompanionModule(o).getOrElse(o)
-              case _ => c
-            }
+            val clazz =
+              c match {
+                case o: ScObject =>
+                  ScalaPsiUtil.getCompanionModule(o).getOrElse(o)
+                case _ => c
+              }
             if (classType.isRaw && visitedRawTypes.contains(clazz))
               return types.Any
             val tps = clazz.getTypeParameters

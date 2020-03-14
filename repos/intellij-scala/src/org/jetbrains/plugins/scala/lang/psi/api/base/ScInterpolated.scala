@@ -35,11 +35,12 @@ trait ScInterpolated extends ScalaPsiElement {
       ScalaTokenTypes.tINTERPOLATED_STRING,
       ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING)
     val res = ListBuffer[PsiReference]()
-    val children: Array[PsiElement] = this match {
-      case ip: ScInterpolationPattern => ip.args.children.toArray
-      case sl: ScInterpolatedStringLiteral =>
-        Option(sl.getFirstChild.getNextSibling).toArray
-    }
+    val children: Array[PsiElement] =
+      this match {
+        case ip: ScInterpolationPattern => ip.args.children.toArray
+        case sl: ScInterpolatedStringLiteral =>
+          Option(sl.getFirstChild.getNextSibling).toArray
+      }
     for (child <- children) {
       if (accepted.contains(child.getNode.getElementType))
         res += new ScInterpolatedStringPartReference(child.getNode)
@@ -54,12 +55,11 @@ trait ScInterpolated extends ScalaPsiElement {
         "\"\"\""
       else
         "\""
-    val parts =
-      getStringParts(this).mkString(
-        quote,
-        s"$quote, $quote",
-        quote
-      ) //making list of string literals
+    val parts = getStringParts(this).mkString(
+      quote,
+      s"$quote, $quote",
+      quote
+    ) //making list of string literals
     val params = getInjections.map(_.getText).mkString("(", ",", ")")
     if (getContext == null)
       None

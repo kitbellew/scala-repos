@@ -83,36 +83,40 @@ object Announcer {
       _.asInstanceOf[T]
     }
 
-  private[this] val _announcements =
-    mutable.Set[(InetSocketAddress, List[String])]()
+  private[this] val _announcements = mutable
+    .Set[(InetSocketAddress, List[String])]()
   def announcements =
     synchronized {
       _announcements.toSet
     }
 
   def announce(addr: InetSocketAddress, forum: String): Future[Announcement] = {
-    val announcement = forum.split("!", 2) match {
-      case Array(scheme, name) =>
-        announcers.find(_.scheme == scheme) match {
-          case Some(announcer) => announcer.announce(addr, name)
-          case None            => Future.exception(new AnnouncerNotFoundException(scheme))
-        }
+    val announcement =
+      forum.split("!", 2) match {
+        case Array(scheme, name) =>
+          announcers.find(_.scheme == scheme) match {
+            case Some(announcer) => announcer.announce(addr, name)
+            case None =>
+              Future.exception(new AnnouncerNotFoundException(scheme))
+          }
 
-      case _ =>
-        Future.exception(new AnnouncerForumInvalid(forum))
-    }
+        case _ =>
+          Future.exception(new AnnouncerForumInvalid(forum))
+      }
 
     announcement map { ann =>
-      val lastForums = ann match {
-        case a: ProxyAnnouncement => a.forums
-        case _                    => Nil
-      }
+      val lastForums =
+        ann match {
+          case a: ProxyAnnouncement => a.forums
+          case _                    => Nil
+        }
 
-      val proxyAnnouncement = new ProxyAnnouncement {
-        val self = ann
-        def unannounce() = ann.unannounce()
-        val forums = forum :: lastForums
-      }
+      val proxyAnnouncement =
+        new ProxyAnnouncement {
+          val self = ann
+          def unannounce() = ann.unannounce()
+          val forums = forum :: lastForums
+        }
 
       synchronized {
         _announcements -= ((addr, lastForums))

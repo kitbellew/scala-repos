@@ -32,8 +32,7 @@ import cats.std.list._
   /**
     * Given `fa` and `n`, apply `fa` `n` times to construct an `F[List[A]]` value.
     */
-  def replicateA[A](n: Int, fa: F[A]): F[List[A]] =
-    sequence(List.fill(n)(fa))
+  def replicateA[A](n: Int, fa: F[A]): F[List[A]] = sequence(List.fill(n)(fa))
 
   /**
     * Two sequentially dependent Applicatives can be composed.
@@ -50,8 +49,7 @@ import cats.std.list._
     }
 
   def traverse[A, G[_], B](value: G[A])(f: A => F[B])(
-      implicit G: Traverse[G]): F[G[B]] =
-    G.traverse(value)(f)(this)
+      implicit G: Traverse[G]): F[G[B]] = G.traverse(value)(f)(this)
 
   def sequence[G[_], A](as: G[F[A]])(implicit G: Traverse[G]): F[G[A]] =
     G.sequence(as)(this)

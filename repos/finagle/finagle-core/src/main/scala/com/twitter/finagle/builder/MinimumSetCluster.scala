@@ -21,13 +21,15 @@ class MinimumSetCluster[T](
   private[this] val censoredAdd = statsReceiver.counter("censored_add")
   private[this] val censoredRem = statsReceiver.counter("censored_rem")
 
-  private[this] val missingGauge = statsReceiver.addGauge("missing") {
-    (supplementary.snap._1 diff minimum.toSeq).size
-  }
+  private[this] val missingGauge =
+    statsReceiver.addGauge("missing") {
+      (supplementary.snap._1 diff minimum.toSeq).size
+    }
 
-  private[this] val additionalGauge = statsReceiver.addGauge("additional") {
-    (minimum.toSeq diff supplementary.snap._1).size
-  }
+  private[this] val additionalGauge =
+    statsReceiver.addGauge("additional") {
+      (minimum.toSeq diff supplementary.snap._1).size
+    }
 
   def snap: (Seq[T], Future[Spool[Cluster.Change[T]]]) = {
     val (supplementaryCluster, supplementaryUpdates) = supplementary.snap

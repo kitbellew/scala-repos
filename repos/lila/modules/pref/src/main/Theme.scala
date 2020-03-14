@@ -19,9 +19,10 @@ sealed trait ThemeObject {
 
   lazy val listString = list mkString " "
 
-  lazy val allByName = list map { c =>
-    c.name -> c
-  } toMap
+  lazy val allByName =
+    list map { c =>
+      c.name -> c
+    } toMap
 
   def apply(name: String) = (allByName get name) | default
 

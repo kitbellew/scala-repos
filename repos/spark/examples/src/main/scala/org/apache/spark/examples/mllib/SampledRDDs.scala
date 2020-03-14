@@ -39,21 +39,22 @@ object SampledRDDs {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("SampledRDDs") {
-      head(
-        "SampledRDDs: an example app for randomly generated and sampled RDDs.")
-      opt[String]("input")
-        .text(
-          s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
-        .action((x, c) => c.copy(input = x))
-      note(
-        """
+    val parser =
+      new OptionParser[Params]("SampledRDDs") {
+        head(
+          "SampledRDDs: an example app for randomly generated and sampled RDDs.")
+        opt[String]("input")
+          .text(
+            s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
+          .action((x, c) => c.copy(input = x))
+        note(
+          """
         |For example, the following command runs this app:
         |
         | bin/spark-submit --class org.apache.spark.examples.mllib.SampledRDDs \
         |  examples/target/scala-*/spark-examples-*.jar
         """.stripMargin)
-    }
+      }
 
     parser.parse(args, defaultParams).map { params =>
       run(params)
@@ -80,11 +81,13 @@ object SampledRDDs {
     val expectedSampleSize = (numExamples * fraction).toInt
     println(
       s"Sampling RDD using fraction $fraction.  Expected sample size = $expectedSampleSize.")
-    val sampledRDD =
-      examples.sample(withReplacement = true, fraction = fraction)
+    val sampledRDD = examples.sample(
+      withReplacement = true,
+      fraction = fraction)
     println(s"  RDD.sample(): sample has ${sampledRDD.count()} examples")
-    val sampledArray =
-      examples.takeSample(withReplacement = true, num = expectedSampleSize)
+    val sampledArray = examples.takeSample(
+      withReplacement = true,
+      num = expectedSampleSize)
     println(s"  RDD.takeSample(): sample has ${sampledArray.length} examples")
 
     println()
@@ -99,8 +102,9 @@ object SampledRDDs {
 
     //  Subsample, and count examples per label in sampled data. (approximate)
     val fractions = keyCounts.keys.map((_, fraction)).toMap
-    val sampledByKeyRDD =
-      keyedRDD.sampleByKey(withReplacement = true, fractions = fractions)
+    val sampledByKeyRDD = keyedRDD.sampleByKey(
+      withReplacement = true,
+      fractions = fractions)
     val keyCountsB = sampledByKeyRDD.countByKey()
     val sizeB = keyCountsB.values.sum
     println(
@@ -108,8 +112,9 @@ object SampledRDDs {
         " ==> Approx Sample")
 
     //  Subsample, and count examples per label in sampled data. (approximate)
-    val sampledByKeyRDDExact =
-      keyedRDD.sampleByKeyExact(withReplacement = true, fractions = fractions)
+    val sampledByKeyRDDExact = keyedRDD.sampleByKeyExact(
+      withReplacement = true,
+      fractions = fractions)
     val keyCountsBExact = sampledByKeyRDDExact.countByKey()
     val sizeBExact = keyCountsBExact.values.sum
     println(
@@ -121,16 +126,18 @@ object SampledRDDs {
     println(s"Key\tOrig\tApprox Sample\tExact Sample")
     keyCounts.keys.toSeq.sorted.foreach { key =>
       val origFrac = keyCounts(key) / numExamples.toDouble
-      val approxFrac = if (sizeB != 0) {
-        keyCountsB.getOrElse(key, 0L) / sizeB.toDouble
-      } else {
-        0
-      }
-      val exactFrac = if (sizeBExact != 0) {
-        keyCountsBExact.getOrElse(key, 0L) / sizeBExact.toDouble
-      } else {
-        0
-      }
+      val approxFrac =
+        if (sizeB != 0) {
+          keyCountsB.getOrElse(key, 0L) / sizeB.toDouble
+        } else {
+          0
+        }
+      val exactFrac =
+        if (sizeBExact != 0) {
+          keyCountsBExact.getOrElse(key, 0L) / sizeBExact.toDouble
+        } else {
+          0
+        }
       println(s"$key\t$origFrac\t$approxFrac\t$exactFrac")
     }
 

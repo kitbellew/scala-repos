@@ -70,8 +70,9 @@ object FileUtils {
           case (file, fileChanges) =>
             readFile(file, cs) match {
               case Right(contents) =>
-                val newContents =
-                  FileEditHelper.applyEdits(fileChanges.toList, contents)
+                val newContents = FileEditHelper.applyEdits(
+                  fileChanges.toList,
+                  contents)
                 (file, newContents)
               case Left(e) => throw e
             }
@@ -107,21 +108,20 @@ object FileUtils {
       }
       .groupBy(_.file)
     try {
-      val diffContents =
-        editsByFile
-          .map {
-            case (file, fileChanges) =>
-              readFile(file, cs) match {
-                case Right(contents) =>
-                  FileEditHelper.diffFromTextEdits(
-                    fileChanges,
-                    contents,
-                    file,
-                    file)
-                case Left(e) => throw e
-              }
-          }
-          .mkString("\n")
+      val diffContents = editsByFile
+        .map {
+          case (file, fileChanges) =>
+            readFile(file, cs) match {
+              case Right(contents) =>
+                FileEditHelper.diffFromTextEdits(
+                  fileChanges,
+                  contents,
+                  file,
+                  file)
+              case Left(e) => throw e
+            }
+        }
+        .mkString("\n")
 
       Right({
         val diffFile = java.io.File.createTempFile("ensime-diff-", ".tmp").canon

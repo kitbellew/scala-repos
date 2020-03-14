@@ -161,11 +161,12 @@ class RecordTests {
   def testFromMap2 {
     import test._
 
-    type T = FieldType[intField1.type, Int] :: FieldType[
-      stringField1.type,
-      String] :: FieldType[boolField1.type, Boolean] :: FieldType[
-      doubleField1.type,
-      Double] :: HNil
+    type T =
+      FieldType[intField1.type, Int] :: FieldType[
+        stringField1.type,
+        String] :: FieldType[boolField1.type, Boolean] :: FieldType[
+        doubleField1.type,
+        Double] :: HNil
 
     val in = Map(
       intField1 -> 4,

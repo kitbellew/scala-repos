@@ -30,11 +30,12 @@ object ProjectTests extends TestSuite {
       files.map(_.getPath) ++ dirs.flatMap(listFiles)
     }
 
-    val pythonFiles: Seq[String] = listFiles(new java.io.File(path.toString))
-      .filter(path =>
-        path.toString.endsWith(".py") && !ignored.exists(path.endsWith))
-      .map(_.toString)
-      .toSeq
+    val pythonFiles: Seq[String] =
+      listFiles(new java.io.File(path.toString))
+        .filter(path =>
+          path.toString.endsWith(".py") && !ignored.exists(path.endsWith))
+        .map(_.toString)
+        .toSeq
 
     val grouped = Await
       .result(

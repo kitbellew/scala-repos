@@ -151,8 +151,9 @@ class SparkHadoopUtil extends Logging {
       val threadStats = getFileSystemThreadStatistics()
       val getBytesReadMethod = getFileSystemThreadStatisticsMethod(
         "getBytesRead")
-      val f = () =>
-        threadStats.map(getBytesReadMethod.invoke(_).asInstanceOf[Long]).sum
+      val f =
+        () =>
+          threadStats.map(getBytesReadMethod.invoke(_).asInstanceOf[Long]).sum
       val baselineBytesRead = f()
       Some(() => f() - baselineBytesRead)
     } catch {
@@ -177,8 +178,11 @@ class SparkHadoopUtil extends Logging {
       val threadStats = getFileSystemThreadStatistics()
       val getBytesWrittenMethod = getFileSystemThreadStatisticsMethod(
         "getBytesWritten")
-      val f = () =>
-        threadStats.map(getBytesWrittenMethod.invoke(_).asInstanceOf[Long]).sum
+      val f =
+        () =>
+          threadStats
+            .map(getBytesWrittenMethod.invoke(_).asInstanceOf[Long])
+            .sum
       val baselineBytesWritten = f()
       Some(() => f() - baselineBytesWritten)
     } catch {
@@ -198,9 +202,8 @@ class SparkHadoopUtil extends Logging {
 
   private def getFileSystemThreadStatisticsMethod(
       methodName: String): Method = {
-    val statisticsDataClass =
-      Utils.classForName(
-        "org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
+    val statisticsDataClass = Utils.classForName(
+      "org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
     statisticsDataClass.getDeclaredMethod(methodName)
   }
 
@@ -222,8 +225,9 @@ class SparkHadoopUtil extends Logging {
       fs: FileSystem,
       baseStatus: FileStatus): Seq[FileStatus] = {
     def recurse(status: FileStatus): Seq[FileStatus] = {
-      val (directories, leaves) =
-        fs.listStatus(status.getPath).partition(_.isDirectory)
+      val (directories, leaves) = fs
+        .listStatus(status.getPath)
+        .partition(_.isDirectory)
       leaves ++ directories.flatMap(f => listLeafStatuses(fs, f))
     }
 
@@ -241,8 +245,9 @@ class SparkHadoopUtil extends Logging {
       fs: FileSystem,
       baseStatus: FileStatus): Seq[FileStatus] = {
     def recurse(status: FileStatus): Seq[FileStatus] = {
-      val (directories, files) =
-        fs.listStatus(status.getPath).partition(_.isDirectory)
+      val (directories, files) = fs
+        .listStatus(status.getPath)
+        .partition(_.isDirectory)
       val leaves =
         if (directories.isEmpty)
           Seq(status)
@@ -322,10 +327,9 @@ class SparkHadoopUtil extends Logging {
       credentials: Credentials): Long = {
     val now = System.currentTimeMillis()
 
-    val renewalInterval =
-      sparkConf.getLong(
-        "spark.yarn.token.renewal.interval",
-        (24 hours).toMillis)
+    val renewalInterval = sparkConf.getLong(
+      "spark.yarn.token.renewal.interval",
+      (24 hours).toMillis)
 
     credentials.getAllTokens.asScala
       .filter(_.getKind == DelegationTokenIdentifier.HDFS_DELEGATION_KIND)
@@ -360,11 +364,10 @@ class SparkHadoopUtil extends Logging {
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
-        val key =
-          matched.substring(
-            13,
-            matched.length() - 1
-          ) // remove ${hadoopconf- .. }
+        val key = matched.substring(
+          13,
+          matched.length() - 1
+        ) // remove ${hadoopconf- .. }
         val eval = Option[String](hadoopConf.get(key))
           .map { value =>
             logDebug("Substituted " + matched + " with " + value)

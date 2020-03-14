@@ -68,8 +68,8 @@ object InMemoryCache {
   */
 class InMemoryCache(templatesCount: Int)
     extends TemplateCache[(Locale, List[String]), NodeSeq] {
-  private val cache: LRU[(Locale, List[String]), NodeSeq] = new LRU(
-    templatesCount)
+  private val cache: LRU[(Locale, List[String]), NodeSeq] =
+    new LRU(templatesCount)
 
   def get(key: T): Box[NodeSeq] = {
     cache.synchronized {

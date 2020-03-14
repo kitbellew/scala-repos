@@ -493,24 +493,25 @@ class TaskMetricsSuite extends SparkFunSuite {
     val acc1 = new Accumulator(0, IntAccumulatorParam, Some("a"))
     val acc2 = new Accumulator(0, IntAccumulatorParam, Some("b"))
     val acc3 = new Accumulator(0, IntAccumulatorParam, Some("c"))
-    val acc4 = new Accumulator(
-      0,
-      IntAccumulatorParam,
-      Some("d"),
-      internal = true,
-      countFailedValues = true)
+    val acc4 =
+      new Accumulator(
+        0,
+        IntAccumulatorParam,
+        Some("d"),
+        internal = true,
+        countFailedValues = true)
     tm.registerAccumulator(acc1)
     tm.registerAccumulator(acc2)
     tm.registerAccumulator(acc3)
     tm.registerAccumulator(acc4)
     acc1 += 1
     acc2 += 2
-    val newUpdates = tm
-      .accumulatorUpdates()
-      .map { a =>
-        (a.id, a)
-      }
-      .toMap
+    val newUpdates =
+      tm.accumulatorUpdates()
+        .map { a =>
+          (a.id, a)
+        }
+        .toMap
     assert(newUpdates.contains(acc1.id))
     assert(newUpdates.contains(acc2.id))
     assert(newUpdates.contains(acc3.id))

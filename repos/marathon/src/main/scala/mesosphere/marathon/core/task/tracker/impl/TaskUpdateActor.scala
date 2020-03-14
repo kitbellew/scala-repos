@@ -40,8 +40,9 @@ object TaskUpdateActor {
       metrics.name(MetricPrefixes.SERVICE, classOf[TaskUpdateActor], name)
 
     /** the number of ops that are for tasks that already have an op ready */
-    val numberOfQueuedOps =
-      metrics.gauge(name("delayed-ops"), new AtomicIntGauge)
+    val numberOfQueuedOps = metrics.gauge(
+      name("delayed-ops"),
+      new AtomicIntGauge)
 
     /** the number of currently processed ops */
     val numberOfActiveOps = metrics.gauge(name("ready-ops"), new AtomicIntGauge)
@@ -71,10 +72,9 @@ private[impl] class TaskUpdateActor(
   private[this] val log = LoggerFactory.getLogger(getClass)
 
   // this has to be a mutable field because we need to access it in postStop()
-  private[impl] var operationsByTaskId =
-    Map
-      .empty[Task.Id, Queue[TaskOpProcessor.Operation]]
-      .withDefaultValue(Queue.empty)
+  private[impl] var operationsByTaskId = Map
+    .empty[Task.Id, Queue[TaskOpProcessor.Operation]]
+    .withDefaultValue(Queue.empty)
 
   override def preStart(): Unit = {
     metrics.numberOfActiveOps.setValue(0)
@@ -100,8 +100,8 @@ private[impl] class TaskUpdateActor(
     LoggingReceive {
       case ProcessTaskOp(
             op @ TaskOpProcessor.Operation(deadline, _, taskId, _)) =>
-        val oldQueue: Queue[TaskOpProcessor.Operation] =
-          operationsByTaskId(taskId)
+        val oldQueue: Queue[TaskOpProcessor.Operation] = operationsByTaskId(
+          taskId)
         val newQueue = oldQueue :+ op
         operationsByTaskId += taskId -> newQueue
         metrics.numberOfQueuedOps.increment()

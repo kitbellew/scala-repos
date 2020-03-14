@@ -14,8 +14,8 @@ class RubyMemCacheClientTest extends FunSuite with MockitoSugar {
     val client1 = mock[Client]
     val client2 = mock[Client]
     val client3 = mock[Client]
-    val rubyMemCacheClient = new RubyMemCacheClient(
-      Seq(client1, client2, client3))
+    val rubyMemCacheClient =
+      new RubyMemCacheClient(Seq(client1, client2, client3))
   }
 
   test("pick the correct node") {

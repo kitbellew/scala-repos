@@ -33,10 +33,11 @@ import akka.dispatch.{Future, ExecutionContext}
 import scalaz._
 
 trait JValueByteChunkTranscoders {
-  private implicit val seqJValueMonoid = new Monoid[Seq[JValue]] {
-    def zero = Seq.empty[JValue]
-    def append(xs: Seq[JValue], ys: => Seq[JValue]) = xs ++ ys
-  }
+  private implicit val seqJValueMonoid =
+    new Monoid[Seq[JValue]] {
+      def zero = Seq.empty[JValue]
+      def append(xs: Seq[JValue], ys: => Seq[JValue]) = xs ++ ys
+    }
 
   implicit def JValueByteChunkTranscoder(implicit M: Monad[Future]) =
     new AsyncHttpTranscoder[JValue, ByteChunk] {
@@ -50,8 +51,8 @@ trait JValueByteChunkTranscoders {
         fres.flatMap { res =>
           res.content match {
             case Some(bc) =>
-              val fv: Future[Validation[Seq[Throwable], JValue]] =
-                JsonUtil.parseSingleFromByteChunk(bc)
+              val fv: Future[Validation[Seq[Throwable], JValue]] = JsonUtil
+                .parseSingleFromByteChunk(bc)
               fv.map(v => res.copy(content = v.toOption))
             case None =>
               M.point(res.copy(content = None))

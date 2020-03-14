@@ -92,8 +92,7 @@ abstract class PrepJSInterop
 
     /** Nicer syntax for `allEnclosingOwners isnt kind`. */
     private object noEnclosingOwner { // scalastyle:ignore
-      @inline def is(kind: OwnerKind): Boolean =
-        allEnclosingOwners isnt kind
+      @inline def is(kind: OwnerKind): Boolean = allEnclosingOwners isnt kind
     }
 
     private def enterOwner[A](kind: OwnerKind)(body: => A): A = {
@@ -374,23 +373,25 @@ abstract class PrepJSInterop
           // Fix for issue with calls to js.Dynamic.x()
           // Rewrite (obj: js.Dynamic).x(...) to obj.applyDynamic("x")(...)
           case Select(Select(trg, jsnme.x), nme.apply) if isJSDynamic(trg) =>
-            val newTree = atPos(tree.pos) {
-              Apply(
-                Select(super.transform(trg), newTermName("applyDynamic")),
-                List(Literal(Constant("x")))
-              )
-            }
+            val newTree =
+              atPos(tree.pos) {
+                Apply(
+                  Select(super.transform(trg), newTermName("applyDynamic")),
+                  List(Literal(Constant("x")))
+                )
+              }
             typer.typed(newTree, Mode.FUNmode, tree.tpe)
 
           // Fix for issue with calls to js.Dynamic.x()
           // Rewrite (obj: js.Dynamic).x to obj.selectDynamic("x")
           case Select(trg, jsnme.x) if isJSDynamic(trg) =>
-            val newTree = atPos(tree.pos) {
-              Apply(
-                Select(super.transform(trg), newTermName("selectDynamic")),
-                List(Literal(Constant("x")))
-              )
-            }
+            val newTree =
+              atPos(tree.pos) {
+                Apply(
+                  Select(super.transform(trg), newTermName("selectDynamic")),
+                  List(Literal(Constant("x")))
+                )
+              }
             typer.typed(newTree, Mode.FUNmode, tree.tpe)
 
           case _ => super.transform(tree)
@@ -485,10 +486,11 @@ abstract class PrepJSInterop
       * js.Any
       */
     private def transformJSAny(implDef: ImplDef) = {
-      val sym = implDef match {
-        case _: ModuleDef => implDef.symbol.moduleClass
-        case _            => implDef.symbol
-      }
+      val sym =
+        implDef match {
+          case _: ModuleDef => implDef.symbol.moduleClass
+          case _            => implDef.symbol
+        }
 
       lazy val badParent = sym.info.parents find { t =>
         /* We have to allow scala.Dynamic to be able to define js.Dynamic
@@ -932,8 +934,7 @@ abstract class PrepJSInterop
 
   }
 
-  def isJSAny(sym: Symbol): Boolean =
-    sym.tpe.typeSymbol isSubClass JSAnyClass
+  def isJSAny(sym: Symbol): Boolean = sym.tpe.typeSymbol isSubClass JSAnyClass
 
   /** Checks that a setter has the right signature.
     *
@@ -1091,8 +1092,9 @@ abstract class PrepJSInterop
     //     <defaultName>
     //
     val nextNameTree = Select(This(thisSym), jsnme.nextName)
-    val nullCompTree =
-      Apply(Select(nextNameTree, nme.NE), Literal(Constant(null)) :: Nil)
+    val nullCompTree = Apply(
+      Select(nextNameTree, nme.NE),
+      Literal(Constant(null)) :: Nil)
     val hasNextTree = Select(nextNameTree, jsnme.hasNext)
     val condTree = Apply(Select(nullCompTree, nme.ZAND), hasNextTree :: Nil)
     val nameTree = If(
@@ -1107,8 +1109,8 @@ abstract class PrepJSInterop
   }
 
   private lazy val ScalaEnumClass = getRequiredClass("scala.Enumeration")
-  private lazy val WasPublicBeforeTyperClass =
-    getRequiredClass("scala.scalajs.js.annotation.WasPublicBeforeTyper")
+  private lazy val WasPublicBeforeTyperClass = getRequiredClass(
+    "scala.scalajs.js.annotation.WasPublicBeforeTyper")
 
   /** checks if the primary constructor of the ClassDef `cldef` does not
     *  take any arguments
@@ -1165,8 +1167,7 @@ object PrepJSInterop {
     @inline def is(that: OwnerKind): Boolean =
       (this.baseKinds & that.baseKinds) != 0
 
-    @inline def isnt(that: OwnerKind): Boolean =
-      !this.is(that)
+    @inline def isnt(that: OwnerKind): Boolean = !this.is(that)
   }
 
   private object OwnerKind {

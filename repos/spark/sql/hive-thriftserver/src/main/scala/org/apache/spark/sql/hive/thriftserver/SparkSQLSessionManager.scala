@@ -47,8 +47,8 @@ private[hive] class SparkSQLSessionManager(
       invoke(classOf[SessionManager], this, "initOperationLogRootDir")
     }
 
-    val backgroundPoolSize =
-      hiveConf.getIntVar(ConfVars.HIVE_SERVER2_ASYNC_EXEC_THREADS)
+    val backgroundPoolSize = hiveConf.getIntVar(
+      ConfVars.HIVE_SERVER2_ASYNC_EXEC_THREADS)
     setSuperField(
       this,
       "backgroundOperationPool",
@@ -70,25 +70,25 @@ private[hive] class SparkSQLSessionManager(
       sessionConf: java.util.Map[String, String],
       withImpersonation: Boolean,
       delegationToken: String): SessionHandle = {
-    val sessionHandle =
-      super.openSession(
-        protocol,
-        username,
-        passwd,
-        ipAddress,
-        sessionConf,
-        withImpersonation,
-        delegationToken)
+    val sessionHandle = super.openSession(
+      protocol,
+      username,
+      passwd,
+      ipAddress,
+      sessionConf,
+      withImpersonation,
+      delegationToken)
     val session = super.getSession(sessionHandle)
     HiveThriftServer2.listener.onSessionCreated(
       session.getIpAddress,
       sessionHandle.getSessionId.toString,
       session.getUsername)
-    val ctx = if (hiveContext.hiveThriftServerSingleSession) {
-      hiveContext
-    } else {
-      hiveContext.newSession()
-    }
+    val ctx =
+      if (hiveContext.hiveThriftServerSingleSession) {
+        hiveContext
+      } else {
+        hiveContext.newSession()
+      }
     ctx.setConf("spark.sql.hive.version", HiveContext.hiveExecutionVersion)
     sparkSqlOperationManager.sessionToContexts += sessionHandle -> ctx
     sessionHandle

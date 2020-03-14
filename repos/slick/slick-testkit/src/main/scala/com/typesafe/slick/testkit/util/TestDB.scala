@@ -38,8 +38,8 @@ object TestDB {
     val jdbcMeta = new Capability("test.jdbcMeta")
 
     /** Supports JDBC metadata getClientInfoProperties method */
-    val jdbcMetaGetClientInfoProperties = new Capability(
-      "test.jdbcMetaGetClientInfoProperties")
+    val jdbcMetaGetClientInfoProperties =
+      new Capability("test.jdbcMetaGetClientInfoProperties")
 
     /** Supports JDBC metadata getFunctions method */
     val jdbcMetaGetFunctions = new Capability("test.jdbcMetaGetFunctions")
@@ -230,11 +230,12 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
         .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
   def createSingleSessionDatabase(implicit
       session: profile.Backend#Session,
-      executor: AsyncExecutor = AsyncExecutor.default())
-      : profile.Backend#Database = {
-    val wrappedConn = new DelegateConnection(session.conn) {
-      override def close(): Unit = ()
-    }
+      executor: AsyncExecutor = AsyncExecutor
+        .default()): profile.Backend#Database = {
+    val wrappedConn =
+      new DelegateConnection(session.conn) {
+        override def close(): Unit = ()
+      }
     profile.backend.Database.forSource(
       new JdbcDataSource {
         def createConnection(): Connection = wrappedConn
@@ -245,10 +246,11 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
   final def blockingRunOnSession[R](
       f: ExecutionContext => DBIOAction[R, NoStream, Nothing])(
       implicit session: profile.Backend#Session): R = {
-    val ec = new ExecutionContext {
-      def execute(runnable: Runnable): Unit = runnable.run()
-      def reportFailure(t: Throwable): Unit = throw t
-    }
+    val ec =
+      new ExecutionContext {
+        def execute(runnable: Runnable): Unit = runnable.run()
+        def reportFailure(t: Throwable): Unit = throw t
+      }
     val db = createSingleSessionDatabase(
       session,
       new AsyncExecutor {
@@ -288,15 +290,14 @@ abstract class ExternalJdbcTestDB(confName: String)
   override def isEnabled = super.isEnabled && config.getBoolean("enabled")
 
   override lazy val testClasses
-      : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] =
-    TestkitConfig
-      .getStrings(config, "testClasses")
-      .map(
-        _.map(n =>
-          Class
-            .forName(n)
-            .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
-      .getOrElse(super.testClasses)
+      : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = TestkitConfig
+    .getStrings(config, "testClasses")
+    .map(
+      _.map(n =>
+        Class
+          .forName(n)
+          .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
+    .getOrElse(super.testClasses)
 
   def databaseFor(path: String) =
     database.forConfig(path, config, loadCustomDriver().getOrElse(null))

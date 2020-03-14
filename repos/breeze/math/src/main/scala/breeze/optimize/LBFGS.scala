@@ -85,10 +85,11 @@ class LBFGS[T](convergenceCheck: ConvergenceCheck[T], m: Int)(
     val grad = state.grad
 
     val ff = LineSearch.functionFromSearchDirection(f, x, dir)
-    val search = new StrongWolfeLineSearch(
-      maxZoomIter = 10,
-      maxLineSearchIter = 10
-    ) // TODO: Need good default values here.
+    val search =
+      new StrongWolfeLineSearch(
+        maxZoomIter = 10,
+        maxLineSearchIter = 10
+      ) // TODO: Need good default values here.
     val alpha = search.minimize(
       ff,
       if (state.iter == 0.0)
@@ -124,17 +125,18 @@ object LBFGS {
     def historyLength = memStep.length
 
     def *(grad: T) = {
-      val diag = if (historyLength > 0) {
-        val prevStep = memStep.head
-        val prevGradStep = memGradDelta.head
-        val sy = prevStep dot prevGradStep
-        val yy = prevGradStep dot prevGradStep
-        if (sy < 0 || sy.isNaN)
-          throw new NaNHistory
-        sy / yy
-      } else {
-        1.0
-      }
+      val diag =
+        if (historyLength > 0) {
+          val prevStep = memStep.head
+          val prevGradStep = memGradDelta.head
+          val sy = prevStep dot prevGradStep
+          val yy = prevGradStep dot prevGradStep
+          if (sy < 0 || sy.isNaN)
+            throw new NaNHistory
+          sy / yy
+        } else {
+          1.0
+        }
 
       val dir = space.copy(grad)
       val as = new Array[Double](m)

@@ -11,8 +11,7 @@ object M0 {
   def addRational(r: Rational, s: Rational): Rational =
     new Rational(r.numer * s.denom + s.numer * r.denom, r.denom * s.denom);
 
-  def makeString(r: Rational) =
-    r.numer + "/" + r.denom;
+  def makeString(r: Rational) = r.numer + "/" + r.denom;
 
   val x = new Rational(1, 2);
   val y = new Rational(1, 3);
@@ -31,8 +30,7 @@ object M1 {
     def denom = y;
     def add(r: Rational) =
       new Rational(numer * r.denom + r.numer * denom, denom * r.denom);
-    def mul(r: Rational) =
-      new Rational(numer * r.numer, denom * r.denom);
+    def mul(r: Rational) = new Rational(numer * r.numer, denom * r.denom);
     override def toString() = numer + "/" + denom;
   }
 
@@ -62,10 +60,8 @@ object M2 {
       new Rational(numer * r.denom + r.numer * denom, denom * r.denom);
     def sub(r: Rational) =
       new Rational(numer * r.denom - r.numer * denom, denom * r.denom);
-    def mul(r: Rational) =
-      new Rational(numer * r.numer, denom * r.denom);
-    def div(r: Rational) =
-      new Rational(numer * r.denom, denom * r.numer);
+    def mul(r: Rational) = new Rational(numer * r.numer, denom * r.denom);
+    def div(r: Rational) = new Rational(numer * r.denom, denom * r.numer);
     override def toString() = numer + "/" + denom;
   }
 
@@ -125,10 +121,8 @@ object M4 {
       new Rational(numer * r.denom + r.numer * denom, denom * r.denom);
     def -(r: Rational) =
       new Rational(numer * r.denom - r.numer * denom, denom * r.denom);
-    def *(r: Rational) =
-      new Rational(numer * r.numer, denom * r.denom);
-    def /(r: Rational) =
-      new Rational(numer * r.denom, denom * r.numer);
+    def *(r: Rational) = new Rational(numer * r.numer, denom * r.denom);
+    def /(r: Rational) = new Rational(numer * r.denom, denom * r.numer);
     override def toString() = numer + "/" + denom;
   }
 
@@ -373,10 +367,8 @@ object M9 {
       new Rational(numer * r.denom + r.numer * denom, denom * r.denom);
     def sub(r: Rational) =
       new Rational(numer * r.denom - r.numer * denom, denom * r.denom);
-    def mul(r: Rational) =
-      new Rational(numer * r.numer, denom * r.denom);
-    def equal(r: Rational) =
-      new Rational(numer * r.denom, denom * r.numer);
+    def mul(r: Rational) = new Rational(numer * r.numer, denom * r.denom);
+    def equal(r: Rational) = new Rational(numer * r.denom, denom * r.numer);
     def asString = numer.toString().concat("/").concat(denom.toString());
     override def toString() = asString;
   }

@@ -67,8 +67,8 @@ class GraphMatValueSpec extends AkkaSpec {
         }
 
         // Exposes the materialized value as a stream value
-        val foldFeedbackSource: Source[Future[Int], Future[Int]] =
-          Source.fromGraph(GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
+        val foldFeedbackSource: Source[Future[Int], Future[Int]] = Source
+          .fromGraph(GraphDSL.create(foldSink) { implicit b ⇒ fold ⇒
             Source(1 to 10) ~> fold
             SourceShape(b.materializedValue)
           })
@@ -112,8 +112,9 @@ class GraphMatValueSpec extends AkkaSpec {
                 SourceShape(zip.out)
             })
 
-          val (((f1, f2), (f3, f4)), result) =
-            compositeSource2.toMat(Sink.head)(Keep.both).run()
+          val (((f1, f2), (f3, f4)), result) = compositeSource2
+            .toMat(Sink.head)(Keep.both)
+            .run()
 
           Await.result(result, 3.seconds) should ===(55555555)
           Await.result(f1, 3.seconds) should ===(55)
@@ -124,8 +125,8 @@ class GraphMatValueSpec extends AkkaSpec {
         }
 
         "work also when the source’s module is copied" in {
-          val foldFlow: Flow[Int, Int, Future[Int]] =
-            Flow.fromGraph(GraphDSL.create(foldSink) { implicit builder ⇒ fold ⇒
+          val foldFlow: Flow[Int, Int, Future[Int]] = Flow.fromGraph(
+            GraphDSL.create(foldSink) { implicit builder ⇒ fold ⇒
               FlowShape(
                 fold.in,
                 builder.materializedValue.mapAsync(4)(identity).outlet)
@@ -137,8 +138,8 @@ class GraphMatValueSpec extends AkkaSpec {
         }
 
         "work also when the source’s module is copied and the graph is extended before using the matValSrc" in {
-          val foldFlow: Flow[Int, Int, Future[Int]] =
-            Flow.fromGraph(GraphDSL.create(foldSink) { implicit builder ⇒ fold ⇒
+          val foldFlow: Flow[Int, Int, Future[Int]] = Flow.fromGraph(
+            GraphDSL.create(foldSink) { implicit builder ⇒ fold ⇒
               val map = builder.add(Flow[Future[Int]].mapAsync(4)(identity))
               builder.materializedValue ~> map
               FlowShape(fold.in, map.outlet)
@@ -151,11 +152,12 @@ class GraphMatValueSpec extends AkkaSpec {
 
         "perform side-effecting transformations even when not used as source" in {
           var done = false
-          val g = GraphDSL.create() { implicit b ⇒
-            import GraphDSL.Implicits._
-            Source.empty.mapMaterializedValue(_ ⇒ done = true) ~> Sink.ignore
-            ClosedShape
-          }
+          val g =
+            GraphDSL.create() { implicit b ⇒
+              import GraphDSL.Implicits._
+              Source.empty.mapMaterializedValue(_ ⇒ done = true) ~> Sink.ignore
+              ClosedShape
+            }
           val r = RunnableGraph.fromGraph(GraphDSL.create(Sink.ignore) {
             implicit b ⇒ (s) ⇒
               b.add(g)

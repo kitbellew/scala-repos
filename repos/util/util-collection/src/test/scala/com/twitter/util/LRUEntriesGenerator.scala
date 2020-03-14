@@ -10,11 +10,12 @@ object LRUEntriesGenerator {
     * and having any arbitrarily typed values.
     */
   def apply[V: Arbitrary]: Gen[List[(String, V)]] = {
-    val gen = for {
-      size <- Gen.choose(1, 200)
-      uniqueKeys <- Gen.listOfN(size, Gen.identifier).map(_.toSet)
-      vals <- Gen.listOfN(uniqueKeys.size, arbitrary[V])
-    } yield uniqueKeys.toList.zip(vals)
+    val gen =
+      for {
+        size <- Gen.choose(1, 200)
+        uniqueKeys <- Gen.listOfN(size, Gen.identifier).map(_.toSet)
+        vals <- Gen.listOfN(uniqueKeys.size, arbitrary[V])
+      } yield uniqueKeys.toList.zip(vals)
     gen suchThat (_.nonEmpty)
   }
 }

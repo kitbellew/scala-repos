@@ -58,14 +58,15 @@ object GuiceInjectorBuilderSpec extends Specification {
     }
 
     "support various bindings" in {
-      val injector = new GuiceInjectorBuilder()
-        .bindings(
-          new EnvironmentModule,
-          Seq(new ConfigurationModule),
-          new AModule,
-          Seq(new BModule))
-        .bindings(bind[C].to[C1], Seq(bind[D].to[D1]))
-        .injector
+      val injector =
+        new GuiceInjectorBuilder()
+          .bindings(
+            new EnvironmentModule,
+            Seq(new ConfigurationModule),
+            new AModule,
+            Seq(new BModule))
+          .bindings(bind[C].to[C1], Seq(bind[D].to[D1]))
+          .injector
 
       injector.instanceOf[Environment] must beAnInstanceOf[Environment]
       injector.instanceOf[Configuration] must beAnInstanceOf[Configuration]
@@ -76,14 +77,15 @@ object GuiceInjectorBuilderSpec extends Specification {
     }
 
     "override bindings" in {
-      val injector = new GuiceInjectorBuilder()
-        .in(Mode.Dev)
-        .configure("a" -> 1)
-        .bindings(new EnvironmentModule, new ConfigurationModule)
-        .overrides(
-          bind[Environment] to Environment.simple(),
-          new SetConfigurationModule(Configuration("b" -> 2)))
-        .injector
+      val injector =
+        new GuiceInjectorBuilder()
+          .in(Mode.Dev)
+          .configure("a" -> 1)
+          .bindings(new EnvironmentModule, new ConfigurationModule)
+          .overrides(
+            bind[Environment] to Environment.simple(),
+            new SetConfigurationModule(Configuration("b" -> 2)))
+          .injector
 
       val env = injector.instanceOf[Environment]
       val conf = injector.instanceOf[Configuration]
@@ -93,17 +95,18 @@ object GuiceInjectorBuilderSpec extends Specification {
     }
 
     "disable modules" in {
-      val injector = new GuiceInjectorBuilder()
-        .bindings(
-          new EnvironmentModule,
-          new ConfigurationModule,
-          new AModule,
-          new BModule,
-          bind[C].to[C1],
-          bind[D] to new D1)
-        .disable[EnvironmentModule]
-        .disable(classOf[AModule], classOf[CModule]) // C won't be disabled
-        .injector
+      val injector =
+        new GuiceInjectorBuilder()
+          .bindings(
+            new EnvironmentModule,
+            new ConfigurationModule,
+            new AModule,
+            new BModule,
+            bind[C].to[C1],
+            bind[D] to new D1)
+          .disable[EnvironmentModule]
+          .disable(classOf[AModule], classOf[CModule]) // C won't be disabled
+          .injector
 
       injector.instanceOf[Environment] must throwA[
         com.google.inject.ConfigurationException]
@@ -117,13 +120,14 @@ object GuiceInjectorBuilderSpec extends Specification {
     }
 
     "configure binder" in {
-      val injector = new GuiceInjectorBuilder()
-        .requireExplicitBindings()
-        .bindings(
-          bind[A].to[A1],
-          bind[B].to[B1]
-        )
-        .injector
+      val injector =
+        new GuiceInjectorBuilder()
+          .requireExplicitBindings()
+          .bindings(
+            bind[A].to[A1],
+            bind[B].to[B1]
+          )
+          .injector
       injector.instanceOf[A] must beAnInstanceOf[A1]
       injector.instanceOf[B] must beAnInstanceOf[B1]
       injector

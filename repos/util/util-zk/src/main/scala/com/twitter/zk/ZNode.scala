@@ -54,17 +54,19 @@ trait ZNode {
     ZNode.Data(this, stat, bytes)
 
   /** The 'basename' of the ZNode path. */
-  lazy val name: String = path.lastIndexOf('/') match {
-    case i if (i == -1 || i == path.length - 1) => ""
-    case i                                      => path.substring(i + 1)
-  }
+  lazy val name: String =
+    path.lastIndexOf('/') match {
+      case i if (i == -1 || i == path.length - 1) => ""
+      case i                                      => path.substring(i + 1)
+    }
 
   /** The parent node.  The root node is its own parent. */
   lazy val parent: ZNode = ZNode(zkClient, parentPath)
-  lazy val parentPath: String = path.lastIndexOf('/') match {
-    case i if (i <= 0) => "/"
-    case i             => path.substring(0, i)
-  }
+  lazy val parentPath: String =
+    path.lastIndexOf('/') match {
+      case i if (i <= 0) => "/"
+      case i             => path.substring(0, i)
+    }
 
   /** The absolute path of a child */
   def childPath(child: String): String =
@@ -131,92 +133,95 @@ trait ZNode {
     }
 
   /** Provides access to this node's children. */
-  val getChildren: ZOp[ZNode.Children] = new ZOp[ZNode.Children] {
-    import LiftableFuture._
+  val getChildren: ZOp[ZNode.Children] =
+    new ZOp[ZNode.Children] {
+      import LiftableFuture._
 
-    /** Get this ZNode with its metadata and children */
-    def apply(): Future[ZNode.Children] =
-      zkClient.retrying { zk =>
-        val result = new ChildrenCallbackPromise(ZNode.this)
-        zk.getChildren(path, false, result, null)
-        result
-      }
-
-    /**
-      * Get a ZNode with its metadata and children; and install a watch for changes.
-      *
-      * The returned ZNode.Watch encapsulates the return value from a ZNode operation and the
-      * watch that will fire when a ZNode operation completes.  If the ZNode does not exist, the
-      * result will be a Throw containing a KeeperException.NoNodeExists, though the watch will
-      * fire when an event occurs.  If any other errors occur when fetching the ZNode, the returned
-      * Future will error without returning a Watch.
-      */
-    def watch() =
-      zkClient.retrying { zk =>
-        val result = new ChildrenCallbackPromise(ZNode.this)
-        val update = new EventPromise
-        zk.getChildren(path, update, result, null)
-        result.liftNoNode map {
-          ZNode.Watch(_, update)
+      /** Get this ZNode with its metadata and children */
+      def apply(): Future[ZNode.Children] =
+        zkClient.retrying { zk =>
+          val result = new ChildrenCallbackPromise(ZNode.this)
+          zk.getChildren(path, false, result, null)
+          result
         }
-      }
-  }
+
+      /**
+        * Get a ZNode with its metadata and children; and install a watch for changes.
+        *
+        * The returned ZNode.Watch encapsulates the return value from a ZNode operation and the
+        * watch that will fire when a ZNode operation completes.  If the ZNode does not exist, the
+        * result will be a Throw containing a KeeperException.NoNodeExists, though the watch will
+        * fire when an event occurs.  If any other errors occur when fetching the ZNode, the returned
+        * Future will error without returning a Watch.
+        */
+      def watch() =
+        zkClient.retrying { zk =>
+          val result = new ChildrenCallbackPromise(ZNode.this)
+          val update = new EventPromise
+          zk.getChildren(path, update, result, null)
+          result.liftNoNode map {
+            ZNode.Watch(_, update)
+          }
+        }
+    }
 
   /** Provides access to this node's data. */
-  val getData: ZOp[ZNode.Data] = new ZOp[ZNode.Data] {
-    import LiftableFuture._
+  val getData: ZOp[ZNode.Data] =
+    new ZOp[ZNode.Data] {
+      import LiftableFuture._
 
-    /** Get this node's data */
-    def apply(): Future[ZNode.Data] =
-      zkClient.retrying { zk =>
-        val result = new DataCallbackPromise(ZNode.this)
-        zk.getData(path, false, result, null)
-        result
-      }
-
-    /**
-      * Get this node's metadata and data; and install a watch for changes.
-      *
-      * The returned ZNode.Watch encapsulates the return value from a ZNode operation and the
-      * watch that will fire when a ZNode operation completes.  If the ZNode does not exist, the
-      * result will be a Throw containing a KeeperException.NoNodeExists, though the watch will
-      * fire when an event occurs.  If any other errors occur when fetching the ZNode, the returned
-      * Future will error without returning a Watch.
-      */
-    def watch() =
-      zkClient.retrying { zk =>
-        val result = new DataCallbackPromise(ZNode.this)
-        val update = new EventPromise
-        zk.getData(path, update, result, null)
-        result.liftNoNode map {
-          ZNode.Watch(_, update)
+      /** Get this node's data */
+      def apply(): Future[ZNode.Data] =
+        zkClient.retrying { zk =>
+          val result = new DataCallbackPromise(ZNode.this)
+          zk.getData(path, false, result, null)
+          result
         }
-      }
-  }
+
+      /**
+        * Get this node's metadata and data; and install a watch for changes.
+        *
+        * The returned ZNode.Watch encapsulates the return value from a ZNode operation and the
+        * watch that will fire when a ZNode operation completes.  If the ZNode does not exist, the
+        * result will be a Throw containing a KeeperException.NoNodeExists, though the watch will
+        * fire when an event occurs.  If any other errors occur when fetching the ZNode, the returned
+        * Future will error without returning a Watch.
+        */
+      def watch() =
+        zkClient.retrying { zk =>
+          val result = new DataCallbackPromise(ZNode.this)
+          val update = new EventPromise
+          zk.getData(path, update, result, null)
+          result.liftNoNode map {
+            ZNode.Watch(_, update)
+          }
+        }
+    }
 
   /** Provides access to this node's metadata. */
-  val exists: ZOp[ZNode.Exists] = new ZOp[ZNode.Exists] {
-    import LiftableFuture._
+  val exists: ZOp[ZNode.Exists] =
+    new ZOp[ZNode.Exists] {
+      import LiftableFuture._
 
-    /** Get this node's metadata. */
-    def apply() =
-      zkClient.retrying { zk =>
-        val result = new ExistsCallbackPromise(ZNode.this)
-        zk.exists(path, false, result, null)
-        result
-      }
-
-    /** Get this node's metadata and watch for updates */
-    def watch() =
-      zkClient.retrying { zk =>
-        val result = new ExistsCallbackPromise(ZNode.this)
-        val update = new EventPromise
-        zk.exists(path, update, result, null)
-        result.liftNoNode.map {
-          ZNode.Watch(_, update)
+      /** Get this node's metadata. */
+      def apply() =
+        zkClient.retrying { zk =>
+          val result = new ExistsCallbackPromise(ZNode.this)
+          zk.exists(path, false, result, null)
+          result
         }
-      }
-  }
+
+      /** Get this node's metadata and watch for updates */
+      def watch() =
+        zkClient.retrying { zk =>
+          val result = new ExistsCallbackPromise(ZNode.this)
+          val update = new EventPromise
+          zk.exists(path, update, result, null)
+          result.liftNoNode.map {
+            ZNode.Watch(_, update)
+          }
+        }
+    }
 
   /**
     * Continuously watch all nodes in this subtree for child updates.

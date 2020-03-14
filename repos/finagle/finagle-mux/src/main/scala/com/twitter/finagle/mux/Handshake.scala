@@ -27,9 +27,10 @@ private[finagle] object Handshake {
     * than mux `Message` types to more easily allow for features that need to
     * operate on the raw byte frame (e.g. compression, checksums, etc).
     */
-  type Negotiator = (
-      Headers,
-      Transport[ChannelBuffer, ChannelBuffer]) => Transport[Message, Message]
+  type Negotiator =
+    (
+        Headers,
+        Transport[ChannelBuffer, ChannelBuffer]) => Transport[Message, Message]
 
   /**
     * Returns Some(value) if `key` exists in `headers`, otherwise None.
@@ -63,9 +64,10 @@ private[finagle] object Handshake {
     * A noop negotiator returns a transport that ignores the headers and
     * encodes / decodes mux messages.
     */
-  val NoopNegotiator: Negotiator = (_, trans) => {
-    trans.map(Message.encode, Message.decode)
-  }
+  val NoopNegotiator: Negotiator =
+    (_, trans) => {
+      trans.map(Message.encode, Message.decode)
+    }
 
   /**
     * In order to simplify the rollout of handshakes, we need to make
@@ -114,8 +116,8 @@ private[finagle] object Handshake {
     // enc/dec messages without having to worry about any special session
     // features.
     val msgTrans = trans.map(Message.encode, Message.decode)
-    val handshake: Future[Transport[Message, Message]] =
-      canTinit(msgTrans).transform {
+    val handshake: Future[Transport[Message, Message]] = canTinit(msgTrans)
+      .transform {
         // We can start the official Tinit/Rinit handshake
         case Return(true) =>
           msgTrans.write(Message.Tinit(TinitTag, version, headers)).before {
@@ -176,8 +178,9 @@ private[finagle] object Handshake {
     // Since the handshake happens at the start of a session, we can safely enc/dec
     // messages without having to worry about any special features (e.g. fragments).
     val msgTrans = trans.map(Message.encode, Message.decode)
-    val handshake: Future[Transport[Message, Message]] =
-      msgTrans.read().transform {
+    val handshake: Future[Transport[Message, Message]] = msgTrans
+      .read()
+      .transform {
         // A Tinit with a matching version
         case Return(Message.Tinit(tag, ver, clientHeaders)) if ver == version =>
           val hdrs = headers(clientHeaders)

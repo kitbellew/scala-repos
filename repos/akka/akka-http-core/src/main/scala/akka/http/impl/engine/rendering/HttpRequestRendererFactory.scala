@@ -174,17 +174,18 @@ private[http] class HttpRequestRendererFactory(
     def renderStreamed(
         body: Source[ByteString, Any]): RequestRenderingOutput = {
       val headerPart = Source.single(r.get)
-      val stream = ctx.sendEntityTrigger match {
-        case None ⇒ headerPart ++ body
-        case Some(future) ⇒
-          val barrier = Source
-            .fromFuture(future)
-            .drop(1)
-            .asInstanceOf[Source[ByteString, Any]]
-          (headerPart ++ barrier ++ body).recoverWith {
-            case HttpResponseParser.OneHundredContinueError ⇒ Source.empty
-          }
-      }
+      val stream =
+        ctx.sendEntityTrigger match {
+          case None ⇒ headerPart ++ body
+          case Some(future) ⇒
+            val barrier = Source
+              .fromFuture(future)
+              .drop(1)
+              .asInstanceOf[Source[ByteString, Any]]
+            (headerPart ++ barrier ++ body).recoverWith {
+              case HttpResponseParser.OneHundredContinueError ⇒ Source.empty
+            }
+        }
       RequestRenderingOutput.Streamed(stream)
     }
 

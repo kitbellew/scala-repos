@@ -29,10 +29,11 @@ object CompletionProcessor {
   case class QualifiedName(name: String, isNamedParameter: Boolean)
 
   def getQualifiedName(result: ScalaResolveResult): QualifiedName = {
-    val name = result.isRenamed match {
-      case Some(str) => str
-      case None      => result.name
-    }
+    val name =
+      result.isRenamed match {
+        case Some(str) => str
+        case None      => result.name
+      }
     val isNamedParameter = result.isNamedParameter
 
     QualifiedName(name, isNamedParameter)
@@ -95,17 +96,17 @@ class CompletionProcessor(
       case _                                  =>
     }
 
-    lazy val substitutor: ScSubstitutor =
-      Option(state.get(ScSubstitutor.key)).getOrElse(ScSubstitutor.empty)
+    lazy val substitutor: ScSubstitutor = Option(state.get(ScSubstitutor.key))
+      .getOrElse(ScSubstitutor.empty)
     lazy val isRenamed: Option[String] = Option(state.get(ResolverEnv.nameKey))
     lazy val implFunction: Option[PsiNamedElement] = Option(
       state.get(CachesUtil.IMPLICIT_FUNCTION))
-    lazy val isNamedParameter: Boolean =
-      Option(state.get(CachesUtil.NAMED_PARAM_KEY)).exists(_.booleanValue())
+    lazy val isNamedParameter: Boolean = Option(
+      state.get(CachesUtil.NAMED_PARAM_KEY)).exists(_.booleanValue())
     val fromType: Option[ScType] = Option(
       state.get(BaseProcessor.FROM_TYPE_KEY))
-    val importsUsed: Set[ImportUsed] =
-      Option(state.get(ImportUsed.key)).getOrElse(Set.empty)
+    val importsUsed: Set[ImportUsed] = Option(state.get(ImportUsed.key))
+      .getOrElse(Set.empty)
     val prefixCompletion: Boolean = Option(
       state.get(ScalaCompletionUtil.PREFIX_COMPLETION_KEY)).getOrElse(false)
 
@@ -159,19 +160,8 @@ class CompletionProcessor(
         return true //do not add constructor
       case td: ScTypeDefinition =>
         if (kindMatches(td)) {
-          val result = new ScalaResolveResult(
-            td,
-            substitutor,
-            nameShadow = isRenamed,
-            implicitFunction = implFunction,
-            fromType = fromType,
-            importsUsed = importsUsed,
-            prefixCompletion = prefixCompletion)
-          _addResult(result)
-        }
-        ScalaPsiUtil.getCompanionModule(td) match {
-          case Some(td: ScTypeDefinition) if kindMatches(td) =>
-            val result = new ScalaResolveResult(
+          val result =
+            new ScalaResolveResult(
               td,
               substitutor,
               nameShadow = isRenamed,
@@ -179,6 +169,19 @@ class CompletionProcessor(
               fromType = fromType,
               importsUsed = importsUsed,
               prefixCompletion = prefixCompletion)
+          _addResult(result)
+        }
+        ScalaPsiUtil.getCompanionModule(td) match {
+          case Some(td: ScTypeDefinition) if kindMatches(td) =>
+            val result =
+              new ScalaResolveResult(
+                td,
+                substitutor,
+                nameShadow = isRenamed,
+                implicitFunction = implFunction,
+                fromType = fromType,
+                importsUsed = importsUsed,
+                prefixCompletion = prefixCompletion)
             _addResult(result)
           case _ =>
         }
@@ -186,37 +189,40 @@ class CompletionProcessor(
         if (kindMatches(element)) {
           element match {
             case method: PsiMethod =>
-              val result = new ScalaResolveResult(
-                named,
-                substitutor,
-                nameShadow = isRenamed,
-                implicitFunction = implFunction,
-                isNamedParameter = isNamedParameter,
-                fromType = fromType,
-                importsUsed = importsUsed,
-                prefixCompletion = prefixCompletion)
+              val result =
+                new ScalaResolveResult(
+                  named,
+                  substitutor,
+                  nameShadow = isRenamed,
+                  implicitFunction = implFunction,
+                  isNamedParameter = isNamedParameter,
+                  fromType = fromType,
+                  importsUsed = importsUsed,
+                  prefixCompletion = prefixCompletion)
               _addResult(result)
             case bindingPattern: ScBindingPattern =>
-              val result = new ScalaResolveResult(
-                named,
-                substitutor,
-                nameShadow = isRenamed,
-                implicitFunction = implFunction,
-                isNamedParameter = isNamedParameter,
-                fromType = fromType,
-                importsUsed = importsUsed,
-                prefixCompletion = prefixCompletion)
+              val result =
+                new ScalaResolveResult(
+                  named,
+                  substitutor,
+                  nameShadow = isRenamed,
+                  implicitFunction = implFunction,
+                  isNamedParameter = isNamedParameter,
+                  fromType = fromType,
+                  importsUsed = importsUsed,
+                  prefixCompletion = prefixCompletion)
               _addResult(result)
             case _ =>
-              val result = new ScalaResolveResult(
-                named,
-                substitutor,
-                nameShadow = isRenamed,
-                implicitFunction = implFunction,
-                isNamedParameter = isNamedParameter,
-                fromType = fromType,
-                importsUsed = importsUsed,
-                prefixCompletion = prefixCompletion)
+              val result =
+                new ScalaResolveResult(
+                  named,
+                  substitutor,
+                  nameShadow = isRenamed,
+                  implicitFunction = implFunction,
+                  isNamedParameter = isNamedParameter,
+                  fromType = fromType,
+                  importsUsed = importsUsed,
+                  prefixCompletion = prefixCompletion)
               _addResult(result)
           }
         }

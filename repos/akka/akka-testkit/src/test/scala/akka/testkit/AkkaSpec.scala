@@ -19,8 +19,8 @@ import org.scalactic.ConversionCheckedTripleEquals
 import org.scalatest.concurrent.ScalaFutures
 
 object AkkaSpec {
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString(
+    """
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"
@@ -46,10 +46,11 @@ object AkkaSpec {
   def getCallerName(clazz: Class[_]): String = {
     val s = (Thread.currentThread.getStackTrace map (_.getClassName) drop 1)
       .dropWhile(_ matches "(java.lang.Thread|.*AkkaSpec.?$)")
-    val reduced = s.lastIndexWhere(_ == clazz.getName) match {
-      case -1 ⇒ s
-      case z ⇒ s drop (z + 1)
-    }
+    val reduced =
+      s.lastIndexWhere(_ == clazz.getName) match {
+        case -1 ⇒ s
+        case z ⇒ s drop (z + 1)
+      }
     reduced.head.replaceFirst(""".*\.""", "").replaceAll("[^a-zA-Z_0-9]", "_")
   }
 

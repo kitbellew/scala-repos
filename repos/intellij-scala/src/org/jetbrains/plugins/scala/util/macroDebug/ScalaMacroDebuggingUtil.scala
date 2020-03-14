@@ -41,8 +41,8 @@ object ScalaMacroDebuggingUtil {
   private[this] val SYNTHETIC_SOURCE_ATTRIBUTE =
     new FileAttribute("SyntheticMacroCode", 1, false)
   private[this] val SOURCE_CACHE = mutable.HashMap[String, PsiFile]()
-  private[this] val SYNTHETIC_OFFSETS_MAP =
-    mutable.HashMap[String, List[(Int, Int, Int)]]()
+  private[this] val SYNTHETIC_OFFSETS_MAP = mutable
+    .HashMap[String, List[(Int, Int, Int)]]()
   private[this] val UPDATE_QUEUE = mutable.HashSet[String]()
   private[this] val MARKERS_CACHE = mutable.HashMap[String, Int]()
   private[this] val PREIMAGE_CACHE = mutable.HashMap[PsiFile, PsiFile]()
@@ -194,14 +194,15 @@ object ScalaMacroDebuggingUtil {
   def expandMacros(project: Project) {
     val sourceEditor =
       FileEditorManager.getInstance(project).getSelectedTextEditor
-    val macroEditor = WorksheetEditorPrinter
-      .newMacrosheetUiFor(
-        sourceEditor,
-        PsiDocumentManager
-          .getInstance(project)
-          .getPsiFile(sourceEditor.getDocument)
-          .getVirtualFile)
-      .getViewerEditor
+    val macroEditor =
+      WorksheetEditorPrinter
+        .newMacrosheetUiFor(
+          sourceEditor,
+          PsiDocumentManager
+            .getInstance(project)
+            .getPsiFile(sourceEditor.getDocument)
+            .getVirtualFile)
+        .getViewerEditor
     val macrosheetFile = PsiDocumentManager
       .getInstance(project)
       .getPsiFile(macroEditor.getDocument)
@@ -221,8 +222,7 @@ object ScalaMacroDebuggingUtil {
           project,
           new Runnable {
             override def run() {
-              val macroExpansion =
-                """
+              val macroExpansion = """
                 |val eval$1: String = "world"
                 |print("hello ")
                 |print(eval$1)
@@ -235,8 +235,9 @@ object ScalaMacroDebuggingUtil {
                   PsiManager.getInstance(project))
               var statement = macroCall.getParent.addAfter(expansion, macroCall)
               macroCall.delete()
-              statement =
-                CodeStyleManager.getInstance(project).reformat(statement)
+              statement = CodeStyleManager
+                .getInstance(project)
+                .reformat(statement)
             }
           }
         )

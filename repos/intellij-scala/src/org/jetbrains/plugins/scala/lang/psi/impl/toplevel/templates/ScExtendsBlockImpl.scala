@@ -84,14 +84,15 @@ class ScExtendsBlockImpl private (
   def empty = getNode.getFirstChildNode == null
 
   def selfType = {
-    val res = wrap(selfTypeElement) flatMap { ste =>
-      wrap(ste.typeElement) flatMap { te =>
-        te.getType(TypingContext.empty)
+    val res =
+      wrap(selfTypeElement) flatMap { ste =>
+        wrap(ste.typeElement) flatMap { te =>
+          te.getType(TypingContext.empty)
+        }
+      } match {
+        case Success(t, _) => Some(t)
+        case _             => None
       }
-    } match {
-      case Success(t, _) => Some(t)
-      case _             => None
-    }
     res
   }
 
@@ -345,14 +346,16 @@ class ScExtendsBlockImpl private (
   }
 
   def members = {
-    val bodyMembers: Seq[ScMember] = templateBody match {
-      case None                       => Seq.empty
-      case Some(body: ScTemplateBody) => body.members
-    }
-    val earlyMembers = earlyDefinitions match {
-      case None            => Seq.empty
-      case Some(earlyDefs) => earlyDefs.members
-    }
+    val bodyMembers: Seq[ScMember] =
+      templateBody match {
+        case None                       => Seq.empty
+        case Some(body: ScTemplateBody) => body.members
+      }
+    val earlyMembers =
+      earlyDefinitions match {
+        case None            => Seq.empty
+        case Some(earlyDefs) => earlyDefs.members
+      }
 
     bodyMembers ++ earlyMembers
   }
@@ -412,12 +415,14 @@ class ScExtendsBlockImpl private (
         getParentByStub.getContext,
         getParentByStub)
       val extBlock = templDef.extendsBlock
-      val kExtends = extBlock.children
-        .find(_.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
-        .get
-      val kWith = extBlock.children
-        .find(_.getNode.getElementType == ScalaTokenTypes.kWITH)
-        .get
+      val kExtends =
+        extBlock.children
+          .find(_.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
+          .get
+      val kWith =
+        extBlock.children
+          .find(_.getNode.getElementType == ScalaTokenTypes.kWITH)
+          .get
       val firstElem =
         if (templateParents.isEmpty)
           kExtends

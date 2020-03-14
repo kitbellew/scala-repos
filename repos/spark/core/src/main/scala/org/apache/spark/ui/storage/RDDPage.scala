@@ -45,14 +45,17 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val parameterBlockPrevPageSize = request.getParameter("block.prevPageSize")
 
     val blockPage = Option(parameterBlockPage).map(_.toInt).getOrElse(1)
-    val blockSortColumn =
-      Option(parameterBlockSortColumn).getOrElse("Block Name")
-    val blockSortDesc =
-      Option(parameterBlockSortDesc).map(_.toBoolean).getOrElse(false)
-    val blockPageSize =
-      Option(parameterBlockPageSize).map(_.toInt).getOrElse(100)
-    val blockPrevPageSize =
-      Option(parameterBlockPrevPageSize).map(_.toInt).getOrElse(blockPageSize)
+    val blockSortColumn = Option(parameterBlockSortColumn).getOrElse(
+      "Block Name")
+    val blockSortDesc = Option(parameterBlockSortDesc)
+      .map(_.toBoolean)
+      .getOrElse(false)
+    val blockPageSize = Option(parameterBlockPageSize)
+      .map(_.toInt)
+      .getOrElse(100)
+    val blockPrevPageSize = Option(parameterBlockPrevPageSize)
+      .map(_.toInt)
+      .getOrElse(blockPageSize)
 
     val rddId = parameterId.toInt
     val rddStorageInfo = AllRDDResource
@@ -81,13 +84,14 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     }
     val blockTableHTML =
       try {
-        val _blockTable = new BlockPagedTable(
-          UIUtils.prependBaseUri(
-            parent.basePath) + s"/storage/rdd/?id=${rddId}",
-          rddStorageInfo.partitions.get,
-          blockPageSize,
-          blockSortColumn,
-          blockSortDesc)
+        val _blockTable =
+          new BlockPagedTable(
+            UIUtils.prependBaseUri(
+              parent.basePath) + s"/storage/rdd/?id=${rddId}",
+            rddStorageInfo.partitions.get,
+            blockPageSize,
+            blockSortColumn,
+            blockSortDesc)
         _blockTable.table(page)
       } catch {
         case e @ (_: IllegalArgumentException | _: IndexOutOfBoundsException) =>
@@ -219,8 +223,9 @@ private[ui] class BlockDataSource(
     desc: Boolean)
     extends PagedDataSource[BlockTableRowData](pageSize) {
 
-  private val data =
-    rddPartitions.map(blockRow).sorted(ordering(sortColumn, desc))
+  private val data = rddPartitions
+    .map(blockRow)
+    .sorted(ordering(sortColumn, desc))
 
   override def dataSize: Int = data.size
 
@@ -243,45 +248,46 @@ private[ui] class BlockDataSource(
   private def ordering(
       sortColumn: String,
       desc: Boolean): Ordering[BlockTableRowData] = {
-    val ordering = sortColumn match {
-      case "Block Name" =>
-        new Ordering[BlockTableRowData] {
-          override def compare(
-              x: BlockTableRowData,
-              y: BlockTableRowData): Int =
-            Ordering.String.compare(x.blockName, y.blockName)
-        }
-      case "Storage Level" =>
-        new Ordering[BlockTableRowData] {
-          override def compare(
-              x: BlockTableRowData,
-              y: BlockTableRowData): Int =
-            Ordering.String.compare(x.storageLevel, y.storageLevel)
-        }
-      case "Size in Memory" =>
-        new Ordering[BlockTableRowData] {
-          override def compare(
-              x: BlockTableRowData,
-              y: BlockTableRowData): Int =
-            Ordering.Long.compare(x.memoryUsed, y.memoryUsed)
-        }
-      case "Size on Disk" =>
-        new Ordering[BlockTableRowData] {
-          override def compare(
-              x: BlockTableRowData,
-              y: BlockTableRowData): Int =
-            Ordering.Long.compare(x.diskUsed, y.diskUsed)
-        }
-      case "Executors" =>
-        new Ordering[BlockTableRowData] {
-          override def compare(
-              x: BlockTableRowData,
-              y: BlockTableRowData): Int =
-            Ordering.String.compare(x.executors, y.executors)
-        }
-      case unknownColumn =>
-        throw new IllegalArgumentException(s"Unknown column: $unknownColumn")
-    }
+    val ordering =
+      sortColumn match {
+        case "Block Name" =>
+          new Ordering[BlockTableRowData] {
+            override def compare(
+                x: BlockTableRowData,
+                y: BlockTableRowData): Int =
+              Ordering.String.compare(x.blockName, y.blockName)
+          }
+        case "Storage Level" =>
+          new Ordering[BlockTableRowData] {
+            override def compare(
+                x: BlockTableRowData,
+                y: BlockTableRowData): Int =
+              Ordering.String.compare(x.storageLevel, y.storageLevel)
+          }
+        case "Size in Memory" =>
+          new Ordering[BlockTableRowData] {
+            override def compare(
+                x: BlockTableRowData,
+                y: BlockTableRowData): Int =
+              Ordering.Long.compare(x.memoryUsed, y.memoryUsed)
+          }
+        case "Size on Disk" =>
+          new Ordering[BlockTableRowData] {
+            override def compare(
+                x: BlockTableRowData,
+                y: BlockTableRowData): Int =
+              Ordering.Long.compare(x.diskUsed, y.diskUsed)
+          }
+        case "Executors" =>
+          new Ordering[BlockTableRowData] {
+            override def compare(
+                x: BlockTableRowData,
+                y: BlockTableRowData): Int =
+              Ordering.String.compare(x.executors, y.executors)
+          }
+        case unknownColumn =>
+          throw new IllegalArgumentException(s"Unknown column: $unknownColumn")
+      }
     if (desc) {
       ordering.reverse
     } else {

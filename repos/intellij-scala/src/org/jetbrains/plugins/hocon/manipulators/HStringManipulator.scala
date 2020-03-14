@@ -22,10 +22,11 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
     val strType = str.stringType
     val oldText = str.getText
 
-    val escapedContent = strType match {
-      case MultilineString => newContent
-      case _               => StringUtil.escapeStringCharacters(newContent)
-    }
+    val escapedContent =
+      strType match {
+        case MultilineString => newContent
+        case _               => StringUtil.escapeStringCharacters(newContent)
+      }
 
     val needsQuoting = strType == UnquotedString &&
       (newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(
@@ -43,14 +44,15 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
       else
         unquotedText
 
-    val newString = str.elementType match {
-      case StringValue =>
-        HoconPsiElementFactory.createStringValue(quotedText, str.getManager)
-      case KeyPart =>
-        HoconPsiElementFactory.createKeyPart(quotedText, str.getManager)
-      case IncludeTarget =>
-        HoconPsiElementFactory.createIncludeTarget(quotedText, str.getManager)
-    }
+    val newString =
+      str.elementType match {
+        case StringValue =>
+          HoconPsiElementFactory.createStringValue(quotedText, str.getManager)
+        case KeyPart =>
+          HoconPsiElementFactory.createKeyPart(quotedText, str.getManager)
+        case IncludeTarget =>
+          HoconPsiElementFactory.createIncludeTarget(quotedText, str.getManager)
+      }
     str.getFirstChild.replace(newString.getFirstChild)
 
     str

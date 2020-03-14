@@ -88,8 +88,8 @@ private[streaming] class ReceiverSchedulingPolicy {
     val hostToExecutors = executors.groupBy(_.host)
     val scheduledLocations =
       Array.fill(receivers.length)(new mutable.ArrayBuffer[TaskLocation])
-    val numReceiversOnExecutor =
-      mutable.HashMap[ExecutorCacheTaskLocation, Int]()
+    val numReceiversOnExecutor = mutable
+      .HashMap[ExecutorCacheTaskLocation, Int]()
     // Set the initial value to 0
     executors.foreach(e => numReceiversOnExecutor(e) = 0)
 
@@ -102,9 +102,8 @@ private[streaming] class ReceiverSchedulingPolicy {
           case Some(executorsOnHost) =>
             // preferredLocation is a known host. Select an executor that has the least receivers in
             // this host
-            val leastScheduledExecutor =
-              executorsOnHost.minBy(executor =>
-                numReceiversOnExecutor(executor))
+            val leastScheduledExecutor = executorsOnHost.minBy(executor =>
+              numReceiversOnExecutor(executor))
             scheduledLocations(i) += leastScheduledExecutor
             numReceiversOnExecutor(leastScheduledExecutor) =
               numReceiversOnExecutor(leastScheduledExecutor) + 1
@@ -127,8 +126,8 @@ private[streaming] class ReceiverSchedulingPolicy {
     for (scheduledLocationsForOneReceiver <- scheduledLocations.filter(
            _.isEmpty)) {
       // Select the executor that has the least receivers
-      val (leastScheduledExecutor, numReceivers) =
-        numReceiversOnExecutor.minBy(_._2)
+      val (leastScheduledExecutor, numReceivers) = numReceiversOnExecutor.minBy(
+        _._2)
       scheduledLocationsForOneReceiver += leastScheduledExecutor
       numReceiversOnExecutor(leastScheduledExecutor) = numReceivers + 1
     }

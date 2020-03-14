@@ -26,31 +26,32 @@ class IndexScript(universe: doc.Universe) extends Page {
   }
 
   val packages = {
-    val pairs = allPackagesWithTemplates.toIterable
-      .map(_ match {
-        case (pack, templates) => {
-          val merged = mergeByQualifiedName(templates)
+    val pairs =
+      allPackagesWithTemplates.toIterable
+        .map(_ match {
+          case (pack, templates) => {
+            val merged = mergeByQualifiedName(templates)
 
-          val ary = merged.keys.toList
-            .sortBy(_.toLowerCase)
-            .map(key => {
-              val pairs = merged(key).flatMap { t: DocTemplateEntity =>
-                Seq(
-                  kindToString(t) -> relativeLinkTo(t),
-                  "kind" -> kindToString(t),
-                  "members" -> membersToJSON(
-                    t.members.filter(!_.isShadowedOrAmbiguousImplicit)),
-                  "shortDescription" -> shortDesc(t)
-                )
-              }
+            val ary = merged.keys.toList
+              .sortBy(_.toLowerCase)
+              .map(key => {
+                val pairs = merged(key).flatMap { t: DocTemplateEntity =>
+                  Seq(
+                    kindToString(t) -> relativeLinkTo(t),
+                    "kind" -> kindToString(t),
+                    "members" -> membersToJSON(
+                      t.members.filter(!_.isShadowedOrAmbiguousImplicit)),
+                    "shortDescription" -> shortDesc(t)
+                  )
+                }
 
-              JSONObject(Map(pairs: _*) + ("name" -> key))
-            })
+                JSONObject(Map(pairs: _*) + ("name" -> key))
+              })
 
-          pack.qualifiedName -> JSONArray(ary)
-        }
-      })
-      .toSeq
+            pack.qualifiedName -> JSONArray(ary)
+          }
+        })
+        .toSeq
 
     JSONObject(Map(pairs: _*))
   }

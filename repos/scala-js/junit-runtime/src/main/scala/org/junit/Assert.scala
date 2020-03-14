@@ -14,14 +14,12 @@ object Assert {
       fail(message)
   }
 
-  def assertTrue(condition: Boolean): Unit =
-    assertTrue(null, condition)
+  def assertTrue(condition: Boolean): Unit = assertTrue(null, condition)
 
   def assertFalse(message: String, condition: Boolean): Unit =
     assertTrue(message, !condition)
 
-  def assertFalse(condition: Boolean): Unit =
-    assertFalse(null, condition)
+  def assertFalse(condition: Boolean): Unit = assertFalse(null, condition)
 
   def fail(message: String): Unit =
     if (message eq null)
@@ -29,8 +27,7 @@ object Assert {
     else
       throw new AssertionError(message)
 
-  def fail(): Unit =
-    fail(null)
+  def fail(): Unit = fail(null)
 
   def assertEquals(message: String, expected: Any, actual: Any): Unit = {
     if (!equalsRegardingNull(expected, actual)) {
@@ -273,16 +270,14 @@ object Assert {
   def assertNotNull(message: String, obj: AnyRef): Unit =
     assertTrue(message, obj != null)
 
-  def assertNotNull(obj: AnyRef): Unit =
-    assertNotNull(null, obj)
+  def assertNotNull(obj: AnyRef): Unit = assertNotNull(null, obj)
 
   def assertNull(message: String, obj: AnyRef): Unit = {
     if (obj != null)
       failNotNull(message, obj)
   }
 
-  def assertNull(obj: AnyRef): Unit =
-    assertNull(null, obj)
+  def assertNull(obj: AnyRef): Unit = assertNull(null, obj)
 
   private def failNotNull(message: String, actual: AnyRef): Unit = {
     val formatted =

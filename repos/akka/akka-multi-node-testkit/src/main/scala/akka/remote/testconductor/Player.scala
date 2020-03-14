@@ -122,8 +122,8 @@ trait Player { this: TestConductorExt ⇒
           "Server timed out while waiting for barrier " + b);
       }
       try {
-        implicit val timeout =
-          Timeout(barrierTimeout + Settings.QueryTimeout.duration)
+        implicit val timeout = Timeout(
+          barrierTimeout + Settings.QueryTimeout.duration)
         Await.result(
           client ? ToServer(EnterBarrier(b, Option(barrierTimeout))),
           Duration.Inf)
@@ -191,14 +191,15 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
 
   val settings = TestConductor().Settings
 
-  val handler = new PlayerHandler(
-    controllerAddr,
-    settings.ClientReconnects,
-    settings.ReconnectBackoff,
-    settings.ClientSocketWorkerPoolSize,
-    self,
-    Logging(context.system, classOf[PlayerHandler].getName),
-    context.system.scheduler)(context.dispatcher)
+  val handler =
+    new PlayerHandler(
+      controllerAddr,
+      settings.ClientReconnects,
+      settings.ReconnectBackoff,
+      settings.ClientSocketWorkerPoolSize,
+      self,
+      Logging(context.system, classOf[PlayerHandler].getName),
+      context.system.scheduler)(context.dispatcher)
 
   startWith(Connecting, Data(None, None))
 
@@ -243,11 +244,12 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
       stay
     case Event(ToServer(msg), d @ Data(Some(channel), None)) ⇒
       channel.write(msg)
-      val token = msg match {
-        case EnterBarrier(barrier, timeout) ⇒ Some(barrier -> sender())
-        case GetAddress(node) ⇒ Some(node.name -> sender())
-        case _ ⇒ None
-      }
+      val token =
+        msg match {
+          case EnterBarrier(barrier, timeout) ⇒ Some(barrier -> sender())
+          case GetAddress(node) ⇒ Some(node.name -> sender())
+          case _ ⇒ None
+        }
       stay using d.copy(runningOp = token)
     case Event(ToServer(op), Data(channel, Some((token, _)))) ⇒
       log.error("cannot write {} while waiting for {}", op, token)

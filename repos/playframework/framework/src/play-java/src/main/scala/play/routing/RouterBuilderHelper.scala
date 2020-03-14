@@ -47,11 +47,12 @@ private[routing] object RouterBuilderHelper {
                 // Bind params if required
                 val params = groups.zip(route.params).map {
                   case (param, routeParam) =>
-                    val rawParam = if (routeParam.decode) {
-                      UriEncoding.decodePathSegment(param, "utf-8")
-                    } else {
-                      param
-                    }
+                    val rawParam =
+                      if (routeParam.decode) {
+                        UriEncoding.decodePathSegment(param, "utf-8")
+                      } else {
+                        param
+                      }
                     routeParam.pathBindable.bind(routeParam.name, rawParam)
                 }
 
@@ -64,35 +65,37 @@ private[routing] object RouterBuilderHelper {
                     case (values, _) => values
                   }
 
-                val action = maybeParams match {
-                  case Left(error)   => Action(Results.BadRequest(error))
-                  case Right(params) =>
-                    // Convert to a Scala action
-                    val parser = HandlerInvokerFactory.javaBodyParserToScala {
-                      // If testing an embedded application we may not have a Guice injector, therefore we can't rely on
-                      // it to instantiate the default body parser, we have to instantiate it ourselves.
-                      val app =
-                        Play.privateMaybeApplication.get // throw exception if no current app
-                      new play.mvc.BodyParser.Default(
-                        new JavaHttpErrorHandlerDelegate(app.errorHandler),
-                        app.injector.instanceOf[HttpConfiguration])
-                    }
-                    Action.async(parser) { request =>
-                      val ctx = JavaHelpers.createJavaContext(request)
-                      try {
-                        Context.current.set(ctx)
-                        route.actionMethod
-                          .invoke(route.action, params: _*) match {
-                          case result: Result =>
-                            Future.successful(result.asScala)
-                          case promise: CompletionStage[Result] =>
-                            FutureConverters.toScala(promise).map(_.asScala)
-                        }
-                      } finally {
-                        Context.current.remove()
+                val action =
+                  maybeParams match {
+                    case Left(error)   => Action(Results.BadRequest(error))
+                    case Right(params) =>
+                      // Convert to a Scala action
+                      val parser = HandlerInvokerFactory.javaBodyParserToScala {
+                        // If testing an embedded application we may not have a Guice injector, therefore we can't rely on
+                        // it to instantiate the default body parser, we have to instantiate it ourselves.
+                        val app =
+                          Play.privateMaybeApplication.get // throw exception if no current app
+                        new play.mvc.BodyParser.Default(
+                          new JavaHttpErrorHandlerDelegate(app.errorHandler),
+                          app.injector.instanceOf[HttpConfiguration])
                       }
-                    }
-                }
+                      Action.async(parser) {
+                        request =>
+                          val ctx = JavaHelpers.createJavaContext(request)
+                          try {
+                            Context.current.set(ctx)
+                            route.actionMethod
+                              .invoke(route.action, params: _*) match {
+                              case result: Result =>
+                                Future.successful(result.asScala)
+                              case promise: CompletionStage[Result] =>
+                                FutureConverters.toScala(promise).map(_.asScala)
+                            }
+                          } finally {
+                            Context.current.remove()
+                          }
+                      }
+                  }
 
                 Some(action)
               } else

@@ -29,12 +29,13 @@ object ScalaEvaluatorBuilder extends EvaluatorBuilder {
         .getInstance()
         .build(codeFragment, position) //java builder (e.g. SCL-6117)
 
-    val scalaFragment = codeFragment match {
-      case sf: ScalaCodeFragment => sf
-      case _ =>
-        throw EvaluationException(
-          ScalaBundle.message("non-scala.code.fragment"))
-    }
+    val scalaFragment =
+      codeFragment match {
+        case sf: ScalaCodeFragment => sf
+        case _ =>
+          throw EvaluationException(
+            ScalaBundle.message("non-scala.code.fragment"))
+      }
 
     val project = codeFragment.getProject
 
@@ -101,32 +102,34 @@ private[evaluation] class ScalaEvaluatorBuilder(
       case needsCompilation(message) =>
         throw new NeedCompilationException(message)
       case expr: ScExpression =>
-        val innerEval = expr match {
-          case lit: ScLiteral             => literalEvaluator(lit)
-          case mc: ScMethodCall           => scMethodCallEvaluator(mc)
-          case ref: ScReferenceExpression => refExpressionEvaluator(ref)
-          case t: ScThisReference =>
-            thisOrSuperEvaluator(t.reference, isSuper = false)
-          case t: ScSuperReference =>
-            thisOrSuperEvaluator(t.reference, isSuper = true)
-          case tuple: ScTuple => tupleEvaluator(tuple)
-          case newTd: ScNewTemplateDefinition =>
-            newTemplateDefinitionEvaluator(newTd)
-          case inf: ScInfixExpr           => infixExpressionEvaluator(inf)
-          case ScParenthesisedExpr(inner) => evaluatorFor(inner)
-          case p: ScPrefixExpr            => prefixExprEvaluator(p)
-          case p: ScPostfixExpr           => postfixExprEvaluator(p)
-          case stmt: ScIfStmt             => ifStmtEvaluator(stmt)
-          case ws: ScWhileStmt            => whileStmtEvaluator(ws)
-          case doSt: ScDoStmt             => doStmtEvaluator(doSt)
-          case block: ScBlock             => blockExprEvaluator(block)
-          case call: ScGenericCall        => methodCallEvaluator(call, Nil, Map.empty)
-          case stmt: ScAssignStmt         => assignmentEvaluator(stmt)
-          case stmt: ScTypedStmt          => evaluatorFor(stmt.expr)
-          case e =>
-            throw EvaluationException(
-              s"This type of expression is not supported: ${e.getText}")
-        }
+        val innerEval =
+          expr match {
+            case lit: ScLiteral             => literalEvaluator(lit)
+            case mc: ScMethodCall           => scMethodCallEvaluator(mc)
+            case ref: ScReferenceExpression => refExpressionEvaluator(ref)
+            case t: ScThisReference =>
+              thisOrSuperEvaluator(t.reference, isSuper = false)
+            case t: ScSuperReference =>
+              thisOrSuperEvaluator(t.reference, isSuper = true)
+            case tuple: ScTuple => tupleEvaluator(tuple)
+            case newTd: ScNewTemplateDefinition =>
+              newTemplateDefinitionEvaluator(newTd)
+            case inf: ScInfixExpr           => infixExpressionEvaluator(inf)
+            case ScParenthesisedExpr(inner) => evaluatorFor(inner)
+            case p: ScPrefixExpr            => prefixExprEvaluator(p)
+            case p: ScPostfixExpr           => postfixExprEvaluator(p)
+            case stmt: ScIfStmt             => ifStmtEvaluator(stmt)
+            case ws: ScWhileStmt            => whileStmtEvaluator(ws)
+            case doSt: ScDoStmt             => doStmtEvaluator(doSt)
+            case block: ScBlock             => blockExprEvaluator(block)
+            case call: ScGenericCall =>
+              methodCallEvaluator(call, Nil, Map.empty)
+            case stmt: ScAssignStmt => assignmentEvaluator(stmt)
+            case stmt: ScTypedStmt  => evaluatorFor(stmt.expr)
+            case e =>
+              throw EvaluationException(
+                s"This type of expression is not supported: ${e.getText}")
+          }
         postProcessExpressionEvaluator(expr, innerEval)
       case pd: ScPatternDefinition  => patternDefinitionEvaluator(pd)
       case vd: ScVariableDefinition => variableDefinitionEvaluator(vd)
@@ -137,8 +140,9 @@ private[evaluation] class ScalaEvaluatorBuilder(
   }
 
   def fragmentEvaluator(fragment: ScalaCodeFragment): Evaluator = {
-    val childrenEvaluators =
-      fragment.children.filter(!_.isInstanceOf[ScImportStmt]).collect {
+    val childrenEvaluators = fragment.children
+      .filter(!_.isInstanceOf[ScImportStmt])
+      .collect {
         case e @ (_: ScBlockStatement | _: ScMember) => evaluatorFor(e)
       }
     new BlockStatementEvaluator(childrenEvaluators.toArray)

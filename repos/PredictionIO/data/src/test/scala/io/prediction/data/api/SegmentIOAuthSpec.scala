@@ -17,57 +17,65 @@ class SegmentIOAuthSpec extends Specification {
   val system = ActorSystem("EventServiceSpecSystem")
   sequential
   isolated
-  val eventClient = new LEvents {
-    override def init(appId: Int, channelId: Option[Int]): Boolean = true
+  val eventClient =
+    new LEvents {
+      override def init(appId: Int, channelId: Option[Int]): Boolean = true
 
-    override def futureInsert(event: Event, appId: Int, channelId: Option[Int])(
-        implicit ec: ExecutionContext): Future[String] =
-      Future successful "event_id"
+      override def futureInsert(
+          event: Event,
+          appId: Int,
+          channelId: Option[Int])(
+          implicit ec: ExecutionContext): Future[String] =
+        Future successful "event_id"
 
-    override def futureFind(
-        appId: Int,
-        channelId: Option[Int],
-        startTime: Option[DateTime],
-        untilTime: Option[DateTime],
-        entityType: Option[String],
-        entityId: Option[String],
-        eventNames: Option[Seq[String]],
-        targetEntityType: Option[Option[String]],
-        targetEntityId: Option[Option[String]],
-        limit: Option[Int],
-        reversed: Option[Boolean])(
-        implicit ec: ExecutionContext): Future[Iterator[Event]] =
-      Future successful List.empty[Event].iterator
+      override def futureFind(
+          appId: Int,
+          channelId: Option[Int],
+          startTime: Option[DateTime],
+          untilTime: Option[DateTime],
+          entityType: Option[String],
+          entityId: Option[String],
+          eventNames: Option[Seq[String]],
+          targetEntityType: Option[Option[String]],
+          targetEntityId: Option[Option[String]],
+          limit: Option[Int],
+          reversed: Option[Boolean])(
+          implicit ec: ExecutionContext): Future[Iterator[Event]] =
+        Future successful List.empty[Event].iterator
 
-    override def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
-        implicit ec: ExecutionContext): Future[Option[Event]] =
-      Future successful None
+      override def futureGet(
+          eventId: String,
+          appId: Int,
+          channelId: Option[Int])(
+          implicit ec: ExecutionContext): Future[Option[Event]] =
+        Future successful None
 
-    override def remove(appId: Int, channelId: Option[Int]): Boolean = true
+      override def remove(appId: Int, channelId: Option[Int]): Boolean = true
 
-    override def futureDelete(
-        eventId: String,
-        appId: Int,
-        channelId: Option[Int])(
-        implicit ec: ExecutionContext): Future[Boolean] =
-      Future successful true
+      override def futureDelete(
+          eventId: String,
+          appId: Int,
+          channelId: Option[Int])(
+          implicit ec: ExecutionContext): Future[Boolean] =
+        Future successful true
 
-    override def close(): Unit = {}
-  }
+      override def close(): Unit = {}
+    }
   val appId = 0
-  val accessKeysClient = new AccessKeys {
-    override def insert(k: AccessKey): Option[String] = null
-    override def getByAppid(appid: Int): Seq[AccessKey] = null
-    override def update(k: AccessKey): Unit = {}
-    override def delete(k: String): Unit = {}
-    override def getAll(): Seq[AccessKey] = null
+  val accessKeysClient =
+    new AccessKeys {
+      override def insert(k: AccessKey): Option[String] = null
+      override def getByAppid(appid: Int): Seq[AccessKey] = null
+      override def update(k: AccessKey): Unit = {}
+      override def delete(k: String): Unit = {}
+      override def getAll(): Seq[AccessKey] = null
 
-    override def get(k: String): Option[AccessKey] =
-      k match {
-        case "abc" ⇒ Some(AccessKey(k, appId, Seq.empty))
-        case _ ⇒ None
-      }
-  }
+      override def get(k: String): Option[AccessKey] =
+        k match {
+          case "abc" ⇒ Some(AccessKey(k, appId, Seq.empty))
+          case _ ⇒ None
+        }
+    }
 
   val channelsClient = Storage.getMetaDataChannels()
   val eventServiceActor = system.actorOf(

@@ -3,9 +3,10 @@ case class Success[+T](t: T) extends ParseResult[T]
 
 abstract class Nonterminal[Output] {
 
-  type SubNonterminal = Nonterminal[T] forSome {
-    type T <: Output
-  }
+  type SubNonterminal =
+    Nonterminal[T] forSome {
+      type T <: Output
+    }
 
   def parse: ParseResult[Output]
 

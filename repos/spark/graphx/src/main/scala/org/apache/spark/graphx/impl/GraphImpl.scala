@@ -110,8 +110,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       .withPartitionsRDD(
         edges
           .map { e =>
-            val part: PartitionID =
-              partitionStrategy.getPartition(e.srcId, e.dstId, numPartitions)
+            val part: PartitionID = partitionStrategy
+              .getPartition(e.srcId, e.dstId, numPartitions)
             (part, (e.srcId, e.dstId, e.attr))
           }
           .partitionBy(new HashPartitioner(numPartitions))
@@ -197,12 +197,14 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
 
   override def mask[VD2: ClassTag, ED2: ClassTag](
       other: Graph[VD2, ED2]): Graph[VD, ED] = {
-    val newVerts = vertices.innerJoin(other.vertices) { (vid, v, w) =>
-      v
-    }
-    val newEdges = replicatedVertexView.edges.innerJoin(other.edges) {
-      (src, dst, v, w) => v
-    }
+    val newVerts =
+      vertices.innerJoin(other.vertices) { (vid, v, w) =>
+        v
+      }
+    val newEdges =
+      replicatedVertexView.edges.innerJoin(other.edges) { (src, dst, v, w) =>
+        v
+      }
     new GraphImpl(newVerts, replicatedVertexView.withEdges(newEdges))
   }
 
@@ -229,12 +231,13 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       vertices,
       tripletFields.useSrc,
       tripletFields.useDst)
-    val view = activeSetOpt match {
-      case Some((activeSet, _)) =>
-        replicatedVertexView.withActiveSet(activeSet)
-      case None =>
-        replicatedVertexView
-    }
+    val view =
+      activeSetOpt match {
+        case Some((activeSet, _)) =>
+          replicatedVertexView.withActiveSet(activeSet)
+        case None =>
+          replicatedVertexView
+      }
     val activeDirectionOpt = activeSetOpt.map(_._2)
 
     // Map and combine.
@@ -422,13 +425,9 @@ object GraphImpl {
       edgeStorageLevel: StorageLevel,
       vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] = {
     val edgesCached = edges.withTargetStorageLevel(edgeStorageLevel).cache()
-    val vertices =
-      VertexRDD
-        .fromEdges(
-          edgesCached,
-          edgesCached.partitions.length,
-          defaultVertexAttr)
-        .withTargetStorageLevel(vertexStorageLevel)
+    val vertices = VertexRDD
+      .fromEdges(edgesCached, edgesCached.partitions.length, defaultVertexAttr)
+      .withTargetStorageLevel(vertexStorageLevel)
     fromExistingRDDs(vertices, edgesCached)
   }
 

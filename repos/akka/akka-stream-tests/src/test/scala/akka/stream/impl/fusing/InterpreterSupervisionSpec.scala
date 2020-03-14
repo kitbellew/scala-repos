@@ -13,9 +13,10 @@ import akka.stream.stage.SyncDirective
 import akka.testkit.AkkaSpec
 
 object InterpreterSupervisionSpec {
-  val TE = new Exception("TEST") with NoStackTrace {
-    override def toString = "TE"
-  }
+  val TE =
+    new Exception("TEST") with NoStackTrace {
+      override def toString = "TE"
+    }
 
   class RestartTestStage extends PushPullStage[Int, Int] {
     var sum = 0
@@ -250,14 +251,15 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "restart when onPush throws" in {
-      val stage = new RestartTestStage {
-        override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
-          if (elem <= 0)
-            throw TE
-          else
-            super.onPush(elem, ctx)
+      val stage =
+        new RestartTestStage {
+          override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
+            if (elem <= 0)
+              throw TE
+            else
+              super.onPush(elem, ctx)
+          }
         }
-      }
 
       new OneBoundedSetup[Int](
         Seq(
@@ -281,14 +283,15 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "restart when onPush throws after ctx.push" in {
-      val stage = new RestartTestStage {
-        override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
-          val ret = ctx.push(elem)
-          if (elem <= 0)
-            throw TE
-          ret
+      val stage =
+        new RestartTestStage {
+          override def onPush(elem: Int, ctx: Context[Int]): SyncDirective = {
+            val ret = ctx.push(elem)
+            if (elem <= 0)
+              throw TE
+            ret
+          }
         }
-      }
 
       new OneBoundedSetup[Int](
         Seq(
@@ -316,13 +319,14 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "fail when onPull throws" in {
-      val stage = new RestartTestStage {
-        override def onPull(ctx: Context[Int]): SyncDirective = {
-          if (sum < 0)
-            throw TE
-          super.onPull(ctx)
+      val stage =
+        new RestartTestStage {
+          override def onPull(ctx: Context[Int]): SyncDirective = {
+            if (sum < 0)
+              throw TE
+            super.onPull(ctx)
+          }
         }
-      }
 
       new OneBoundedSetup[Int](
         Seq(

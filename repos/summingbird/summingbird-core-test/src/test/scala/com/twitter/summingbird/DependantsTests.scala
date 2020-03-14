@@ -168,9 +168,10 @@ object DependantsTest extends Properties("Dependants") {
       val dependants = Dependants(prod)
 
       (!dependants.allTails.isEmpty) && {
-        val alsoCount = dependants.nodes.collect {
-          case AlsoProducer(_, _) => 1
-        }.sum
+        val alsoCount =
+          dependants.nodes.collect {
+            case AlsoProducer(_, _) => 1
+          }.sum
         (dependants.allTails.size <= (alsoCount + 1))
       }
   }
@@ -178,9 +179,10 @@ object DependantsTest extends Properties("Dependants") {
   property("Sources + transitive dependants are all the nodes") = forAll {
     (prod: Producer[Memory, _]) =>
       val allNodes = Producer.entireGraphOf(prod)
-      val sources = allNodes.collect {
-        case s @ Source(_) => s
-      }.toSet
+      val sources =
+        allNodes.collect {
+          case s @ Source(_) => s
+        }.toSet
       val dependants = Dependants(prod)
       val sAndDown = (sources ++ sources.flatMap {
         dependants.transitiveDependantsOf(_)
@@ -210,14 +212,15 @@ object DependantsTest extends Properties("Dependants") {
       val dependants = Dependants(prod)
       dependants.nodes.forall { n =>
         val depTillWrite = dependants.transitiveDependantsTillOutput(n)
-        val writerDependencies = depTillWrite
-          .collect {
-            case t: TailProducer[_, _] => t
-          }
-          .flatMap { n =>
-            n :: Producer.transitiveDependenciesOf(n)
-          }
-          .toSet
+        val writerDependencies =
+          depTillWrite
+            .collect {
+              case t: TailProducer[_, _] => t
+            }
+            .flatMap { n =>
+              n :: Producer.transitiveDependenciesOf(n)
+            }
+            .toSet
 
         depTillWrite
           .collectFirst {

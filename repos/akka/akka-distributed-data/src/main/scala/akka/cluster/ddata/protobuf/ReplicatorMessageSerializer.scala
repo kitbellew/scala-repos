@@ -137,8 +137,7 @@ private[akka] object ReplicatorMessageSerializer {
         }
       }
 
-    override def toString: String =
-      elements.mkString("[", ",", "]")
+    override def toString: String = elements.mkString("[", ",", "]")
   }
 }
 
@@ -151,19 +150,22 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     with BaseSerializer {
   import ReplicatorMessageSerializer.SmallCache
 
-  private val cacheTimeToLive = system.settings.config
-    .getDuration(
-      "akka.cluster.distributed-data.serializer-cache-time-to-live",
-      TimeUnit.MILLISECONDS)
-    .millis
-  private val readCache = new SmallCache[Read, Array[Byte]](
-    4,
-    cacheTimeToLive,
-    m ⇒ readToProto(m).toByteArray)
-  private val writeCache = new SmallCache[Write, Array[Byte]](
-    4,
-    cacheTimeToLive,
-    m ⇒ writeToProto(m).toByteArray)
+  private val cacheTimeToLive =
+    system.settings.config
+      .getDuration(
+        "akka.cluster.distributed-data.serializer-cache-time-to-live",
+        TimeUnit.MILLISECONDS)
+      .millis
+  private val readCache =
+    new SmallCache[Read, Array[Byte]](
+      4,
+      cacheTimeToLive,
+      m ⇒ readToProto(m).toByteArray)
+  private val writeCache =
+    new SmallCache[Write, Array[Byte]](
+      4,
+      cacheTimeToLive,
+      m ⇒ writeToProto(m).toByteArray)
   system.scheduler.schedule(cacheTimeToLive, cacheTimeToLive / 2) {
     readCache.evict()
     writeCache.evict()
@@ -186,8 +188,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   val StatusManifest = "M"
   val GossipManifest = "N"
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       GetManifest -> getFromBinary,
       GetSuccessManifest -> getSuccessFromBinary,
       NotFoundManifest -> notFoundFromBinary,
@@ -299,12 +301,13 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def getToProto(get: Get[_]): dm.Get = {
-    val consistencyValue = get.consistency match {
-      case ReadLocal ⇒ 1
-      case ReadFrom(n, _) ⇒ n
-      case _: ReadMajority ⇒ 0
-      case _: ReadAll ⇒ -1
-    }
+    val consistencyValue =
+      get.consistency match {
+        case ReadLocal ⇒ 1
+        case ReadFrom(n, _) ⇒ n
+        case _: ReadMajority ⇒ 0
+        case _: ReadAll ⇒ -1
+      }
 
     val b = dm.Get
       .newBuilder()
@@ -325,12 +328,13 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
       else
         None
     val timeout = Duration(get.getTimeout, TimeUnit.MILLISECONDS)
-    val consistency = get.getConsistency match {
-      case 0 ⇒ ReadMajority(timeout)
-      case -1 ⇒ ReadAll(timeout)
-      case 1 ⇒ ReadLocal
-      case n ⇒ ReadFrom(n, timeout)
-    }
+    val consistency =
+      get.getConsistency match {
+        case 0 ⇒ ReadMajority(timeout)
+        case -1 ⇒ ReadAll(timeout)
+        case 1 ⇒ ReadLocal
+        case n ⇒ ReadFrom(n, timeout)
+      }
     Get(key, consistency, request)
   }
 
@@ -352,8 +356,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
         Some(otherMessageFromProto(getSuccess.getRequest))
       else
         None
-    val data =
-      otherMessageFromProto(getSuccess.getData).asInstanceOf[ReplicatedData]
+    val data = otherMessageFromProto(getSuccess.getData)
+      .asInstanceOf[ReplicatedData]
     GetSuccess(key, request)(data)
   }
 
@@ -375,8 +379,9 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def getFailureToProto(getFailure: GetFailure[_]): dm.GetFailure = {
-    val b =
-      dm.GetFailure.newBuilder().setKey(otherMessageToProto(getFailure.key))
+    val b = dm.GetFailure
+      .newBuilder()
+      .setKey(otherMessageToProto(getFailure.key))
     getFailure.request.foreach(o ⇒ b.setRequest(otherMessageToProto(o)))
     b.build()
   }
@@ -427,8 +432,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
 
   private def changedFromBinary(bytes: Array[Byte]): Changed[_] = {
     val changed = dm.Changed.parseFrom(bytes)
-    val data =
-      otherMessageFromProto(changed.getData).asInstanceOf[ReplicatedData]
+    val data = otherMessageFromProto(changed.getData)
+      .asInstanceOf[ReplicatedData]
     val key = otherMessageFromProto(changed.getKey).asInstanceOf[KeyR]
     Changed(key)(data)
   }
@@ -480,8 +485,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
         val removed = uniqueAddressFromProto(pruningEntry.getRemovedAddress)
         removed -> state
       }(breakOut)
-    val data =
-      otherMessageFromProto(dataEnvelope.getData).asInstanceOf[ReplicatedData]
+    val data = otherMessageFromProto(dataEnvelope.getData)
+      .asInstanceOf[ReplicatedData]
     DataEnvelope(data, pruning)
   }
 

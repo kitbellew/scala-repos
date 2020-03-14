@@ -10,16 +10,16 @@ object Test extends Properties("Mutable TreeSet") {
 
   val denseGenerator = Gen.listOfN(1000, Gen.chooseNum(0, 200))
 
-  property("Insertion doesn't allow duplicates values.") = forAll(generator) {
-    (s: List[Int]) =>
+  property("Insertion doesn't allow duplicates values.") =
+    forAll(generator) { (s: List[Int]) =>
       {
         val t = mutable.TreeSet[Int](s: _*)
         t == s.toSet
       }
-  }
+    }
 
-  property("Verification of size method validity") = forAll(generator) {
-    (s: List[Int]) =>
+  property("Verification of size method validity") =
+    forAll(generator) { (s: List[Int]) =>
       {
         val t = mutable.TreeSet[Int](s: _*)
         for (a <- s) {
@@ -27,10 +27,10 @@ object Test extends Properties("Mutable TreeSet") {
         }
         t.size == 0
       }
-  }
+    }
 
-  property("All inserted elements are removed") = forAll(generator) {
-    (s: List[Int]) =>
+  property("All inserted elements are removed") =
+    forAll(generator) { (s: List[Int]) =>
       {
         val t = mutable.TreeSet[Int](s: _*)
         for (a <- s) {
@@ -38,14 +38,15 @@ object Test extends Properties("Mutable TreeSet") {
         }
         t == Set()
       }
-  }
-
-  property("Elements are sorted.") = forAll(generator) { (s: List[Int]) =>
-    {
-      val t = mutable.TreeSet[Int](s: _*)
-      t.toList == s.distinct.sorted
     }
-  }
+
+  property("Elements are sorted.") =
+    forAll(generator) { (s: List[Int]) =>
+      {
+        val t = mutable.TreeSet[Int](s: _*)
+        t.toList == s.distinct.sorted
+      }
+    }
 
   property(
     "Implicit CanBuildFrom resolution succeeds as well as the \"same-result-type\" principle.") =

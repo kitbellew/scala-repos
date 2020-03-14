@@ -69,9 +69,10 @@ abstract class TreeBuilder {
         case p if p.isDefined => p.end
         case _                => startPos
       }
-    val continu = atPos(o2p(body.pos pointOrElse default)) {
-      Apply(Ident(lname), Nil)
-    }
+    val continu =
+      atPos(o2p(body.pos pointOrElse default)) {
+        Apply(Ident(lname), Nil)
+      }
     val rhs = If(cond, Block(List(body), continu), Literal(Constant(())))
     LabelDef(lname, Nil, rhs)
   }
@@ -121,15 +122,16 @@ abstract class TreeBuilder {
       TypeTree(),
       catchExpr)
     val catchFn = Ident(catchDef.name)
-    val body = atPos(catchExpr.pos.makeTransparent)(
-      Block(
-        List(catchDef),
-        If(
-          Apply(Select(catchFn, nme.isDefinedAt), List(Ident(binder))),
-          Apply(Select(catchFn, nme.apply), List(Ident(binder))),
-          Throw(Ident(binder))
-        )
-      ))
+    val body =
+      atPos(catchExpr.pos.makeTransparent)(
+        Block(
+          List(catchDef),
+          If(
+            Apply(Select(catchFn, nme.isDefinedAt), List(Ident(binder))),
+            Apply(Select(catchFn, nme.apply), List(Ident(binder))),
+            Throw(Ident(binder))
+          )
+        ))
     makeCaseDef(pat, EmptyTree, body)
   }
 

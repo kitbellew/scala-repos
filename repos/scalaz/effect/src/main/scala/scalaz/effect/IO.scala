@@ -67,8 +67,7 @@ sealed abstract class IO[A] {
       })
 
   /** Lift this action to a given IO-like monad. */
-  def liftIO[M[_]](implicit m: MonadIO[M]): M[A] =
-    m.liftIO(this)
+  def liftIO[M[_]](implicit m: MonadIO[M]): M[A] = m.liftIO(this)
 
   /** Executes the handler if an exception is raised. */
   def except(handler: Throwable => IO[A]): IO[A] =
@@ -161,15 +160,13 @@ sealed abstract class IOInstances0 extends IOInstances1 {
   implicit def IOMonoid[A](implicit A: Monoid[A]): Monoid[IO[A]] =
     Monoid.liftMonoid[IO, A](ioMonad, A)
 
-  implicit val ioMonadIO: MonadIO[IO] = new MonadIO[IO]
-    with IOLiftIO
-    with IOMonad
+  implicit val ioMonadIO: MonadIO[IO] =
+    new MonadIO[IO] with IOLiftIO with IOMonad
 }
 
 sealed abstract class IOInstances extends IOInstances0 {
-  implicit val ioMonadCatchIO: MonadCatchIO[IO] = new IOMonadCatchIO
-    with IOLiftIO
-    with IOMonad
+  implicit val ioMonadCatchIO: MonadCatchIO[IO] =
+    new IOMonadCatchIO with IOLiftIO with IOMonad
 
   implicit val ioCatchable: Catchable[IO] =
     new Catchable[IO] {
@@ -195,8 +192,7 @@ private trait IOMonadCatchIO extends MonadCatchIO[IO] {
 }
 
 object IO extends IOInstances {
-  def apply[A](a: => A): IO[A] =
-    io(rw => return_(rw -> a))
+  def apply[A](a: => A): IO[A] = io(rw => return_(rw -> a))
 
   /** Reads a character from standard input. */
   def getChar: IO[Char] = IO(readChar())
@@ -242,8 +238,7 @@ object IO extends IOInstances {
         ()
       }))
 
-  type RunInBase[M[_], Base[_]] =
-    Forall[λ[α => M[α] => Base[M[α]]]]
+  type RunInBase[M[_], Base[_]] = Forall[λ[α => M[α] => Base[M[α]]]]
 
   /** Construct an IO action from a world-transition function. */
   def io[A](f: Tower[IvoryTower] => Trampoline[(Tower[IvoryTower], A)]): IO[A] =
@@ -265,8 +260,7 @@ object IO extends IOInstances {
     })
 
   def controlIO[M[_], A](f: RunInBase[M, IO] => IO[M[A]])(
-      implicit M: MonadControlIO[M]): M[A] =
-    M.join(M.liftControlIO(f))
+      implicit M: MonadControlIO[M]): M[A] = M.join(M.liftControlIO(f))
 
   /**
     * Register a finalizer in the current region. When the region terminates,
@@ -320,10 +314,8 @@ object IO extends IOInstances {
         }((rw, a)))
 
   /** An IO action is an ST action. */
-  implicit def IOToST[A](io: IO[A]): ST[IvoryTower, A] =
-    st(io(_).run)
+  implicit def IOToST[A](io: IO[A]): ST[IvoryTower, A] = st(io(_).run)
 
   /** An IO action that does nothing. */
-  val ioUnit: IO[Unit] =
-    IO(())
+  val ioUnit: IO[Unit] = IO(())
 }

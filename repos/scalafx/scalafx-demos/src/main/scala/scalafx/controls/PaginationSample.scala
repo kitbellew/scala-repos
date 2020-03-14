@@ -43,10 +43,11 @@ object PaginationSample extends JFXApp {
   private def createPage(pageIndex: Int): VBox = {
 
     def getPage(i: Int) = {
-      val link = new Hyperlink {
-        text = "Item " + (i + 1)
-        visited = true
-      }
+      val link =
+        new Hyperlink {
+          text = "Item " + (i + 1)
+          visited = true
+        }
       new VBox {
         children = List(
           link,
@@ -72,10 +73,11 @@ object PaginationSample extends JFXApp {
     }
   }
 
-  val pagination = new Pagination(28, 0) {
-    style = "-fx-border-color:red;"
-    pageFactory = (pageIndex: Int) => createPage(pageIndex)
-  }
+  val pagination =
+    new Pagination(28, 0) {
+      style = "-fx-border-color:red;"
+      pageFactory = (pageIndex: Int) => createPage(pageIndex)
+    }
   val anchor = this.getAnchorPage(pagination)
 
   stage = new PrimaryStage {

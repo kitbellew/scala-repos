@@ -178,11 +178,12 @@ trait Unapplies extends ast.TreeDSL {
     */
   def caseModuleUnapplyMeth(cdef: ClassDef): DefDef = {
     val tparams = constrTparamsInvariant(cdef)
-    val method = constrParamss(cdef) match {
-      case xs :: _ if xs.nonEmpty && isRepeatedParamType(xs.last.tpt) =>
-        nme.unapplySeq
-      case _ => nme.unapply
-    }
+    val method =
+      constrParamss(cdef) match {
+        case xs :: _ if xs.nonEmpty && isRepeatedParamType(xs.last.tpt) =>
+          nme.unapplySeq
+        case _ => nme.unapply
+      }
     val cparams = List(
       ValDef(
         Modifiers(PARAM | SYNTHETIC),
@@ -216,11 +217,12 @@ trait Unapplies extends ast.TreeDSL {
         FALSE
       else
         REF(NoneModule)
-    val body = nullSafe(
-      {
-        case Ident(x) => caseClassUnapplyReturnValue(x, cdef)
-      },
-      ifNull)(Ident(unapplyParamName))
+    val body =
+      nullSafe(
+        {
+          case Ident(x) => caseClassUnapplyReturnValue(x, cdef)
+        },
+        ifNull)(Ident(unapplyParamName))
 
     atPos(cdef.pos.focus)(
       DefDef(caseMods, method, tparams, List(cparams), resultType, body)
@@ -278,25 +280,27 @@ trait Unapplies extends ast.TreeDSL {
       }
 
       val tparams = constrTparamsInvariant(cdef)
-      val paramss = classParamss match {
-        case Nil => Nil
-        case ps :: pss =>
-          ps.map(makeCopyParam(_, putDefault = true)) :: mmap(pss)(
-            makeCopyParam(_, putDefault = false))
-      }
+      val paramss =
+        classParamss match {
+          case Nil => Nil
+          case ps :: pss =>
+            ps.map(makeCopyParam(_, putDefault = true)) :: mmap(pss)(
+              makeCopyParam(_, putDefault = false))
+        }
 
       val classTpe = classType(cdef, tparams)
       val argss = mmap(paramss)(toIdent)
       val body: Tree = New(classTpe, argss)
-      val copyDefDef = atPos(cdef.pos.focus)(
-        DefDef(
-          Modifiers(SYNTHETIC),
-          nme.copy,
-          tparams,
-          paramss,
-          TypeTree(),
-          body)
-      )
+      val copyDefDef =
+        atPos(cdef.pos.focus)(
+          DefDef(
+            Modifiers(SYNTHETIC),
+            nme.copy,
+            tparams,
+            paramss,
+            TypeTree(),
+            body)
+        )
       Some(copyDefDef)
     }
   }

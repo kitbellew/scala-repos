@@ -83,10 +83,10 @@ case class LogConfig(props: java.util.Map[_, _])
   val preallocate = getBoolean(LogConfig.PreAllocateEnableProp)
   val messageFormatVersion = ApiVersion(
     getString(LogConfig.MessageFormatVersionProp))
-  val messageTimestampType =
-    TimestampType.forName(getString(LogConfig.MessageTimestampTypeProp))
-  val messageTimestampDifferenceMaxMs = getLong(
-    LogConfig.MessageTimestampDifferenceMaxMsProp).longValue
+  val messageTimestampType = TimestampType.forName(
+    getString(LogConfig.MessageTimestampTypeProp))
+  val messageTimestampDifferenceMaxMs =
+    getLong(LogConfig.MessageTimestampDifferenceMaxMsProp).longValue
 
   def randomSegmentJitter: Long =
     if (segmentJitterMs == 0)

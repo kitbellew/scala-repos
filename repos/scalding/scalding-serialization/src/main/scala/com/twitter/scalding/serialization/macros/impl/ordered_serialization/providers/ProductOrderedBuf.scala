@@ -254,9 +254,10 @@ object ProductOrderedBuf {
     // `_.isDefined` check in `validType`
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     def symbolFor(subType: Type): Type = {
-      val superType = validTypes.find { t =>
-        subType.erasure <:< t
-      }.get
+      val superType =
+        validTypes.find { t =>
+          subType.erasure <:< t
+        }.get
       subType.baseType(superType.typeSymbol)
     }
 
@@ -326,8 +327,9 @@ object ProductOrderedBuf {
           elementB: ctx.TermName): ctx.Tree =
         ProductLike.compare(c)(elementA, elementB)(elementData)
 
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        elementData.map(_._3.lazyOuterVariables).reduce(_ ++ _)
+      override val lazyOuterVariables: Map[String, ctx.Tree] = elementData
+        .map(_._3.lazyOuterVariables)
+        .reduce(_ ++ _)
 
       override def length(element: Tree) =
         ProductLike.length(c)(element)(elementData)

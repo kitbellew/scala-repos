@@ -34,12 +34,11 @@ class HealthCheckWorkerActorTest
       socket.accept().close()
     }
 
-    val task =
-      MarathonTestHelper
-        .runningTask("test_id")
-        .withAgentInfo(
-          _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
-        .withNetworking(Task.HostPorts(socketPort))
+    val task = MarathonTestHelper
+      .runningTask("test_id")
+      .withAgentInfo(
+        _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
+      .withNetworking(Task.HostPorts(socketPort))
 
     val ref = TestActorRef[HealthCheckWorkerActor](
       Props(classOf[HealthCheckWorkerActor]))
@@ -69,12 +68,11 @@ class HealthCheckWorkerActorTest
       socket.accept().close()
     }
 
-    val task =
-      MarathonTestHelper
-        .runningTask("test_id")
-        .withAgentInfo(
-          _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
-        .withNetworking(Task.HostPorts(socketPort))
+    val task = MarathonTestHelper
+      .runningTask("test_id")
+      .withAgentInfo(
+        _.copy(host = InetAddress.getLocalHost.getCanonicalHostName))
+      .withNetworking(Task.HostPorts(socketPort))
 
     val ref = TestActorRef[HealthCheckWorkerActor](
       Props(classOf[HealthCheckWorkerActor]))

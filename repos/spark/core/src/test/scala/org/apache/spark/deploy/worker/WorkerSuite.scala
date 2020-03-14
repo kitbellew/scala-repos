@@ -79,18 +79,23 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedExecutors (small number of executors)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedExecutors", 2.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
-    val worker = new Worker(
-      rpcEnv,
-      50000,
-      20,
-      1234 * 5,
-      Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
-      "Worker",
-      "/tmp",
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
       conf,
       new SecurityManager(conf))
+    val worker =
+      new Worker(
+        rpcEnv,
+        50000,
+        20,
+        1234 * 5,
+        Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
+        "Worker",
+        "/tmp",
+        conf,
+        new SecurityManager(conf))
     // initialize workers
     for (i <- 0 until 5) {
       worker.executors += s"app1/$i" -> createExecutorRunner(i)
@@ -114,18 +119,23 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedExecutors (more executors)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedExecutors", 30.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
-    val worker = new Worker(
-      rpcEnv,
-      50000,
-      20,
-      1234 * 5,
-      Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
-      "Worker",
-      "/tmp",
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
       conf,
       new SecurityManager(conf))
+    val worker =
+      new Worker(
+        rpcEnv,
+        50000,
+        20,
+        1234 * 5,
+        Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
+        "Worker",
+        "/tmp",
+        conf,
+        new SecurityManager(conf))
     // initialize workers
     for (i <- 0 until 50) {
       worker.executors += s"app1/$i" -> createExecutorRunner(i)
@@ -158,18 +168,23 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedDrivers (small number of drivers)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedDrivers", 2.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
-    val worker = new Worker(
-      rpcEnv,
-      50000,
-      20,
-      1234 * 5,
-      Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
-      "Worker",
-      "/tmp",
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
       conf,
       new SecurityManager(conf))
+    val worker =
+      new Worker(
+        rpcEnv,
+        50000,
+        20,
+        1234 * 5,
+        Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
+        "Worker",
+        "/tmp",
+        conf,
+        new SecurityManager(conf))
     // initialize workers
     for (i <- 0 until 5) {
       val driverId = s"driverId-$i"
@@ -195,18 +210,23 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedDrivers (more drivers)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedDrivers", 30.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
-    val worker = new Worker(
-      rpcEnv,
-      50000,
-      20,
-      1234 * 5,
-      Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
-      "Worker",
-      "/tmp",
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
       conf,
       new SecurityManager(conf))
+    val worker =
+      new Worker(
+        rpcEnv,
+        50000,
+        20,
+        1234 * 5,
+        Array.fill(1)(RpcAddress("1.2.3.4", 1234)),
+        "Worker",
+        "/tmp",
+        conf,
+        new SecurityManager(conf))
     // initialize workers
     for (i <- 0 until 50) {
       val driverId = s"driverId-$i"

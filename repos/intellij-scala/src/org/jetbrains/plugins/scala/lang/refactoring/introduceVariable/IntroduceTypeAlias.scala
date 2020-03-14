@@ -65,8 +65,8 @@ import org.jetbrains.plugins.scala.util.{JListCompatibility, ScalaUtils}
 trait IntroduceTypeAlias {
   this: ScalaIntroduceVariableHandler =>
 
-  val INTRODUCE_TYPEALIAS_REFACTORING_NAME =
-    ScalaBundle.message("introduce.type.alias.title")
+  val INTRODUCE_TYPEALIAS_REFACTORING_NAME = ScalaBundle.message(
+    "introduce.type.alias.title")
 
   def invokeTypeElement(
       project: Project,
@@ -92,8 +92,8 @@ trait IntroduceTypeAlias {
             editor,
             INTRODUCE_TYPEALIAS_REFACTORING_NAME))
 
-      val currentDataObject =
-        editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
+      val currentDataObject = editor.getUserData(
+        IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
 
       if (currentDataObject.possibleScopes == null) {
         currentDataObject.setPossibleScopes(
@@ -137,18 +137,19 @@ trait IntroduceTypeAlias {
             typeElement
           }
 
-        val updatedMainScope = mainScope match {
-          case simpleScope: SimpleScopeItem if fromInplace =>
-            val newScope = simpleScope.revalidate(enteredName)
-            val mainScopeIdx =
-              currentDataObject.possibleScopes.indexOf(mainScope)
-            currentDataObject.possibleScopes(mainScopeIdx) = newScope
-            newScope
-          case simpleScope: SimpleScopeItem =>
-            mainScope
-          case packageScope: PackageScopeItem =>
-            mainScope
-        }
+        val updatedMainScope =
+          mainScope match {
+            case simpleScope: SimpleScopeItem if fromInplace =>
+              val newScope = simpleScope.revalidate(enteredName)
+              val mainScopeIdx = currentDataObject.possibleScopes.indexOf(
+                mainScope)
+              currentDataObject.possibleScopes(mainScopeIdx) = newScope
+              newScope
+            case simpleScope: SimpleScopeItem =>
+              mainScope
+            case packageScope: PackageScopeItem =>
+              mainScope
+          }
 
         val dialog = getDialogForTypes(
           project,
@@ -199,14 +200,13 @@ trait IntroduceTypeAlias {
 
           val introduceRunnable: Computable[(
               SmartPsiElementPointer[PsiElement],
-              SmartPsiElementPointer[PsiElement])] =
-            introduceTypeAlias(
-              file,
-              editor,
-              typeElement,
-              allOccurrences,
-              suggestedNames(0),
-              scopeItem)
+              SmartPsiElementPointer[PsiElement])] = introduceTypeAlias(
+            file,
+            editor,
+            typeElement,
+            allOccurrences,
+            suggestedNames(0),
+            scopeItem)
 
           CommandProcessor.getInstance.executeCommand(
             project,
@@ -222,11 +222,12 @@ trait IntroduceTypeAlias {
                     case _ => null
                   }
 
-                val mtypeElement = computable._2.getElement match {
-                  case typeElement: ScTypeElement =>
-                    typeElement
-                  case _ => null
-                }
+                val mtypeElement =
+                  computable._2.getElement match {
+                    case typeElement: ScTypeElement =>
+                      typeElement
+                    case _ => null
+                  }
 
                 if (mtypeElement != null && mtypeElement.isValid) {
                   editor.getCaretModel.moveToOffset(mtypeElement.getTextOffset)
@@ -241,14 +242,13 @@ trait IntroduceTypeAlias {
                       .doPostponedOperationsAndUnblockDocument(
                         editor.getDocument)
 
-                    val typeAliasIntroducer =
-                      ScalaInplaceTypeAliasIntroducer(
-                        namedElement,
-                        namedElement,
-                        editor,
-                        namedElement.getName,
-                        namedElement.getName,
-                        scopeItem)
+                    val typeAliasIntroducer = ScalaInplaceTypeAliasIntroducer(
+                      namedElement,
+                      namedElement,
+                      editor,
+                      namedElement.getName,
+                      namedElement.getName,
+                      scopeItem)
 
                     typeAliasIntroducer.performInplaceRefactoring(
                       suggestedNamesSet)
@@ -267,9 +267,8 @@ trait IntroduceTypeAlias {
         if ((StartMarkAction.canStart(
               project) != null) && (currentScope != null)) {
           currentDataObject.isCallModalDialogInProgress = true
-          val templateState: TemplateState =
-            TemplateManagerImpl.getTemplateState(
-              InjectedLanguageUtil.getTopLevelEditor(editor))
+          val templateState: TemplateState = TemplateManagerImpl
+            .getTemplateState(InjectedLanguageUtil.getTopLevelEditor(editor))
 
           if (templateState != null) {
             templateState.cancelTemplate()
@@ -358,35 +357,40 @@ trait IntroduceTypeAlias {
       editor.getCaretModel.getOffset)
     editor.putUserData(ScalaIntroduceVariableHandler.REVERT_INFO, revertInfo)
 
-    val parent = scope match {
-      case simpleScope: SimpleScopeItem =>
-        simpleScope.fileEncloser
-      case packageScope: PackageScopeItem =>
-        packageScope.fileEncloser match {
-          case suggestedDirectory: PsiDirectory =>
-            createAndGetPackageObjectBody(
-              typeElement,
-              suggestedDirectory,
-              packageScope.needDirectoryCreating,
-              scope.getName)
-          case _ =>
-            packageScope.fileEncloser
-        }
-    }
+    val parent =
+      scope match {
+        case simpleScope: SimpleScopeItem =>
+          simpleScope.fileEncloser
+        case packageScope: PackageScopeItem =>
+          packageScope.fileEncloser match {
+            case suggestedDirectory: PsiDirectory =>
+              createAndGetPackageObjectBody(
+                typeElement,
+                suggestedDirectory,
+                packageScope.needDirectoryCreating,
+                scope.getName)
+            case _ =>
+              packageScope.fileEncloser
+          }
+      }
 
-    val typeAlias =
-      addTypeAliasDefinition(typeName, occurrences.getAllOccurrences(0), parent)
+    val typeAlias = addTypeAliasDefinition(
+      typeName,
+      occurrences.getAllOccurrences(0),
+      parent)
     if (editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO) != null) {
       editor
         .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
         .setTypeAlias(typeAlias)
     }
 
-    val typeElementIdx =
-      occurrences.getUsualOccurrences.indexWhere(_ == typeElement)
+    val typeElementIdx = occurrences.getUsualOccurrences.indexWhere(
+      _ == typeElement)
 
-    val usualOccurrences =
-      replaceTypeElements(occurrences.getUsualOccurrences, typeName, typeAlias)
+    val usualOccurrences = replaceTypeElements(
+      occurrences.getUsualOccurrences,
+      typeName,
+      typeAlias)
     replaceTypeElements(occurrences.getExtendedOccurrences, typeName, typeAlias)
 
     val className =
@@ -401,11 +405,12 @@ trait IntroduceTypeAlias {
       className + "." + typeName,
       typeAlias)
 
-    val resultTypeElement = if (typeElementIdx == -1) {
-      replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
-    } else {
-      usualOccurrences.apply(typeElementIdx)
-    }
+    val resultTypeElement =
+      if (typeElementIdx == -1) {
+        replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
+      } else {
+        usualOccurrences.apply(typeElementIdx)
+      }
 
     (
       SmartPointerManager
@@ -424,17 +429,18 @@ trait IntroduceTypeAlias {
       occurrences_ : OccurrenceData,
       scope: ScopeItem) = {
 
-    val writeAction = new Runnable() {
-      def run() {
-        runRefactoringForTypeInside(
-          file,
-          editor,
-          typeElement,
-          typeName,
-          occurrences_,
-          scope)
+    val writeAction =
+      new Runnable() {
+        def run() {
+          runRefactoringForTypeInside(
+            file,
+            editor,
+            typeElement,
+            typeName,
+            occurrences_,
+            scope)
+        }
       }
-    }
 
     ScalaUtils.runWriteAction(
       writeAction,
@@ -625,27 +631,28 @@ trait IntroduceTypeAlias {
       suggestedDirectory: PsiDirectory,
       needCreateDirectory: Boolean,
       inNewDirectoryName: String): ScTemplateBody = {
-    val newDirectoryName = if (needCreateDirectory) {
-      inNewDirectoryName
-    } else {
-      "package"
-    }
+    val newDirectoryName =
+      if (needCreateDirectory) {
+        inNewDirectoryName
+      } else {
+        "package"
+      }
 
     val currentDirectory = suggestedDirectory
-    val newDir = if (needCreateDirectory) {
-      currentDirectory.createSubdirectory(newDirectoryName)
-    } else {
-      currentDirectory
-    }
+    val newDir =
+      if (needCreateDirectory) {
+        currentDirectory.createSubdirectory(newDirectoryName)
+      } else {
+        currentDirectory
+      }
 
-    val packageObject: ScTypeDefinition =
-      ScalaDirectoryService
-        .createClassFromTemplate(
-          newDir,
-          newDirectoryName,
-          "Package Object",
-          askToDefineVariables = false)
-        .asInstanceOf[ScTypeDefinition]
+    val packageObject: ScTypeDefinition = ScalaDirectoryService
+      .createClassFromTemplate(
+        newDir,
+        newDirectoryName,
+        "Package Object",
+        askToDefineVariables = false)
+      .asInstanceOf[ScTypeDefinition]
 
     PsiTreeUtil.getChildOfType(
       PsiTreeUtil.getChildOfType(packageObject, classOf[ScExtendsBlock]),
@@ -660,12 +667,13 @@ trait IntroduceTypeAlias {
       mainScope: ScopeItem): ScalaIntroduceTypeAliasDialog = {
 
     // Add occurrences highlighting
-    val occurrences = mainScope match {
-      case simpleScope: SimpleScopeItem =>
-        simpleScope.usualOccurrences
-      case packageScope: PackageScopeItem =>
-        Array[ScTypeElement]()
-    }
+    val occurrences =
+      mainScope match {
+        case simpleScope: SimpleScopeItem =>
+          simpleScope.usualOccurrences
+        case packageScope: PackageScopeItem =>
+          Array[ScTypeElement]()
+      }
 
     if (occurrences.length > 1)
       occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
@@ -673,13 +681,14 @@ trait IntroduceTypeAlias {
         occurrences.map(_.getTextRange),
         editor)
 
-    val dialog = new ScalaIntroduceTypeAliasDialog(
-      project,
-      typeElement,
-      possibleScopes,
-      mainScope,
-      this,
-      editor)
+    val dialog =
+      new ScalaIntroduceTypeAliasDialog(
+        project,
+        typeElement,
+        possibleScopes,
+        mainScope,
+        this,
+        editor)
     dialog.show()
     if (!dialog.isOK) {
       if (occurrences.length > 1) {
@@ -695,6 +704,6 @@ trait IntroduceTypeAlias {
 }
 
 object IntroduceTypeAlias {
-  val REVERT_TYPE_ALIAS_INFO: Key[IntroduceTypeAliasData] = new Key(
-    "RevertTypeAliasInfo")
+  val REVERT_TYPE_ALIAS_INFO: Key[IntroduceTypeAliasData] =
+    new Key("RevertTypeAliasInfo")
 }

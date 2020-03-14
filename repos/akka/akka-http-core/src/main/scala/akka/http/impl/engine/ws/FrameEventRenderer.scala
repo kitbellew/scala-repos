@@ -69,11 +69,12 @@ private[http] class FrameEventRenderer
     import Protocol._
 
     val length = header.length
-    val (lengthBits, extraLengthBytes) = length match {
-      case x if x < 126 ⇒ (x.toInt, 0)
-      case x if x <= 0xFFFF ⇒ (126, 2)
-      case _ ⇒ (127, 8)
-    }
+    val (lengthBits, extraLengthBytes) =
+      length match {
+        case x if x < 126 ⇒ (x.toInt, 0)
+        case x if x <= 0xFFFF ⇒ (126, 2)
+        case _ ⇒ (127, 8)
+      }
 
     val maskBytes =
       if (header.mask.isDefined)

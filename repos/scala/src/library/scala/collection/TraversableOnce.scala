@@ -133,14 +133,15 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     */
   def collectFirst[B](pf: PartialFunction[A, B]): Option[B] = {
     // TODO 2.12 -- move out alternate implementations into child classes
-    val i: Iterator[A] = self match {
-      case it: Iterator[A] => it
-      case _: GenIterable[_] =>
-        self.toIterator // If it might be parallel, be sure to .seq or use iterator!
-      case _ => // Not parallel, not iterable--just traverse
-        self.foreach(pf.runWith(b => return Some(b)))
-        return None
-    }
+    val i: Iterator[A] =
+      self match {
+        case it: Iterator[A] => it
+        case _: GenIterable[_] =>
+          self.toIterator // If it might be parallel, be sure to .seq or use iterator!
+        case _ => // Not parallel, not iterable--just traverse
+          self.foreach(pf.runWith(b => return Some(b)))
+          return None
+      }
     // Presumably the fastest way to get in and out of a partial function is for a sentinel function to return itself
     // (Tested to be lower-overhead than runWith.  Would be better yet to not need to (formally) allocate it--change in 2.12.)
     val sentinel: Function1[A, Any] =
@@ -301,8 +302,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
   def copyToArray[B >: A](xs: Array[B], start: Int): Unit =
     copyToArray(xs, start, xs.length - start)
 
-  def copyToArray[B >: A](xs: Array[B]): Unit =
-    copyToArray(xs, 0, xs.length)
+  def copyToArray[B >: A](xs: Array[B]): Unit = copyToArray(xs, 0, xs.length)
 
   def toArray[B >: A: ClassTag]: Array[B] = {
     if (isTraversableAgain) {

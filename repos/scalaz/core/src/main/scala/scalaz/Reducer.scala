@@ -25,11 +25,9 @@ sealed abstract class Reducer[C, M] {
   /** Faster `append(unit(c), m)`. */
   def cons(c: C, m: M): M
 
-  def zero: M =
-    monoid.zero
+  def zero: M = monoid.zero
 
-  def append(a1: M, a2: => M): M =
-    monoid.append(a1, a2)
+  def append(a1: M, a2: => M): M = monoid.append(a1, a2)
 
   /** Distribute `C`s to `M` and `N`. */
   def compose[N](r: Reducer[C, N]): Reducer[C, (M, N)] = {
@@ -76,8 +74,7 @@ object Reducer extends ReducerInstances {
     * sharing than `UnitReducer.apply`.
     */
   def apply[C, M](u: C => M, cs: C => M => M, sc: M => C => M)(
-      implicit mm: Monoid[M]): Reducer[C, M] =
-    reducer(u, cs, sc)
+      implicit mm: Monoid[M]): Reducer[C, M] = reducer(u, cs, sc)
 }
 
 sealed abstract class ReducerInstances {

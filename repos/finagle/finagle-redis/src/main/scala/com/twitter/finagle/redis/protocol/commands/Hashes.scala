@@ -119,10 +119,11 @@ case class HMSet(key: ChannelBuffer, fv: Map[ChannelBuffer, ChannelBuffer])
     extends StrictKeyCommand {
   def command = Commands.HMSET
 
-  val fvList: Seq[ChannelBuffer] = fv.flatMap {
-    case (f, v) =>
-      f :: v :: Nil
-  }(collection.breakOut)
+  val fvList: Seq[ChannelBuffer] =
+    fv.flatMap {
+      case (f, v) =>
+        f :: v :: Nil
+    }(collection.breakOut)
 
   def toChannelBuffer =
     RedisCodec.toUnifiedFormat(Seq(CommandBytes.HMSET, key) ++ fvList)
@@ -135,18 +136,19 @@ object HMSet {
       "HMSET requires a hash key and at least one field and value")
 
     val key = ChannelBuffers.wrappedBuffer(args(0))
-    val fv = args
-      .drop(1)
-      .grouped(2)
-      .map {
-        case field :: value :: Nil =>
-          (
-            ChannelBuffers.wrappedBuffer(field),
-            ChannelBuffers.wrappedBuffer(value))
-        case _ =>
-          throw ClientError("Unexpected uneven pair of elements in HMSET")
-      }
-      .toMap
+    val fv =
+      args
+        .drop(1)
+        .grouped(2)
+        .map {
+          case field :: value :: Nil =>
+            (
+              ChannelBuffers.wrappedBuffer(field),
+              ChannelBuffers.wrappedBuffer(value))
+          case _ =>
+            throw ClientError("Unexpected uneven pair of elements in HMSET")
+        }
+        .toMap
 
     new HMSet(key, fv)
   }
@@ -160,17 +162,21 @@ case class HScan(
 ) extends Command {
   def command = Commands.HSCAN
   def toChannelBuffer = {
-    val bufs =
-      Seq(CommandBytes.HSCAN, key, StringToChannelBuffer(cursor.toString))
-    val withCount = count match {
-      case Some(count) =>
-        bufs ++ Seq(Count.COUNT_CB, StringToChannelBuffer(count.toString))
-      case None => bufs
-    }
-    val withPattern = pattern match {
-      case Some(pattern) => withCount ++ Seq(Pattern.PATTERN_CB, pattern)
-      case None          => withCount
-    }
+    val bufs = Seq(
+      CommandBytes.HSCAN,
+      key,
+      StringToChannelBuffer(cursor.toString))
+    val withCount =
+      count match {
+        case Some(count) =>
+          bufs ++ Seq(Count.COUNT_CB, StringToChannelBuffer(count.toString))
+        case None => bufs
+      }
+    val withPattern =
+      pattern match {
+        case Some(pattern) => withCount ++ Seq(Pattern.PATTERN_CB, pattern)
+        case None          => withCount
+      }
     RedisCodec.toUnifiedFormat(withPattern)
   }
 }

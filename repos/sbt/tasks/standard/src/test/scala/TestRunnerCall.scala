@@ -6,8 +6,8 @@ import TaskGen._
 import Task._
 
 object TaskRunnerCallTest extends Properties("TaskRunner Call") {
-  property("calculates fibonacci") = forAll(MaxTasksGen, MaxWorkersGen) {
-    (i: Int, workers: Int) =>
+  property("calculates fibonacci") =
+    forAll(MaxTasksGen, MaxWorkersGen) { (i: Int, workers: Int) =>
       (i > 0) ==> {
         val f = fibDirect(i)
         ("Workers: " + workers) |: ("i: " + i) |: ("fib(i): " + f) |: {
@@ -15,7 +15,7 @@ object TaskRunnerCallTest extends Properties("TaskRunner Call") {
           checkResult(result, f)
         }
       }
-  }
+    }
   final def fibTask(i: Int) = {
     require(i > 0)
     lazy val next: (Int, Int, Int) => Task[Int] =

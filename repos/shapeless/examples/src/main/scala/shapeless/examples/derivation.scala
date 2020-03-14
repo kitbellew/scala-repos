@@ -67,26 +67,25 @@ object TypeClassesDemo {
     //implicitly[Show[ADT]]
     //implicitly[Show[ADT2]]
 
-    val adt: ADT =
-      IndirectADTRec(
-        "top",
-        List(
-          Ctor("child"),
-          ExtCtor(true),
-          ADTRec(ExtCtor(false)),
-          CtorRec(Ctor("otherchild")),
-          IndirectADTRec(
-            "treeChild",
-            List(
-              Ctor("grandchild"),
-              Ctor("otherGrandchild"),
-              ExtIndirectADTRec("blah", Option(Ctor("wibble"))),
-              RefMutual(Some(RefADT(Ctor("mutual")))),
-              Show2Dep(23)
-            )
+    val adt: ADT = IndirectADTRec(
+      "top",
+      List(
+        Ctor("child"),
+        ExtCtor(true),
+        ADTRec(ExtCtor(false)),
+        CtorRec(Ctor("otherchild")),
+        IndirectADTRec(
+          "treeChild",
+          List(
+            Ctor("grandchild"),
+            Ctor("otherGrandchild"),
+            ExtIndirectADTRec("blah", Option(Ctor("wibble"))),
+            RefMutual(Some(RefADT(Ctor("mutual")))),
+            Show2Dep(23)
           )
         )
       )
+    )
 
     val out = adt.show
     val exp =
@@ -143,13 +142,15 @@ object TypeClassesDemoAux {
   object Show {
     def apply[T](implicit st: Lazy[Show[T]]): Show[T] = st.value
 
-    implicit val showString: Show[String] = new Show[String] {
-      def show(t: String) = t
-    }
+    implicit val showString: Show[String] =
+      new Show[String] {
+        def show(t: String) = t
+      }
 
-    implicit val showBoolean: Show[Boolean] = new Show[Boolean] {
-      def show(t: Boolean) = t.toString
-    }
+    implicit val showBoolean: Show[Boolean] =
+      new Show[Boolean] {
+        def show(t: Boolean) = t.toString
+      }
 
     implicit def showList[A](implicit showA: Show[A]): Show[List[A]] =
       new Show[List[A]] {
@@ -208,9 +209,10 @@ object TypeClassesDemoAux {
   }
 
   object Show2 {
-    implicit val show2Int: Show2[Int] = new Show2[Int] {
-      def show2(i: Int) = i.toString
-    }
+    implicit val show2Int: Show2[Int] =
+      new Show2[Int] {
+        def show2(i: Int) = i.toString
+      }
 
     implicit def deriveHNil: Show2[HNil] =
       new Show2[HNil] {

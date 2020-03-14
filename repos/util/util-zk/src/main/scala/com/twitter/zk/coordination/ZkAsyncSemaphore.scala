@@ -47,8 +47,8 @@ class ZkAsyncSemaphore(
 
   private[this] val pathSeparator = "/"
   private[this] val permitPrefix = "permit-"
-  private[this] val permitNodePathPrefix =
-    Seq(path, permitPrefix).mkString(pathSeparator)
+  private[this] val permitNodePathPrefix = Seq(path, permitPrefix).mkString(
+    pathSeparator)
   private[this] val futureSemaphoreNode = createSemaphoreNode()
   private[this] val waitq =
     new ConcurrentLinkedQueue[(Promise[ZkSemaphorePermit], ZNode)]
@@ -269,11 +269,12 @@ class ZkAsyncSemaphore(
       val (numPermitsInMax, numBelieversOfMax) = permitsToBelievers.maxBy {
         case (_, believers) => believers
       }
-      val cardinalityOfMax = permitsToBelievers.values
-        .filter({
-          _ == numBelieversOfMax
-        })
-        .size
+      val cardinalityOfMax =
+        permitsToBelievers.values
+          .filter({
+            _ == numBelieversOfMax
+          })
+          .size
 
       if (cardinalityOfMax == 1) {
         // Consensus
@@ -309,6 +310,6 @@ object ZkAsyncSemaphore {
   case class LackOfConsensusException(msg: String) extends Exception(msg)
   case class PermitMismatchException(msg: String) extends Exception(msg)
   case class PermitNodeException(msg: String) extends Exception(msg)
-  private val MaxWaitersExceededException =
-    Future.exception(new RejectedExecutionException("Max waiters exceeded"))
+  private val MaxWaitersExceededException = Future.exception(
+    new RejectedExecutionException("Max waiters exceeded"))
 }

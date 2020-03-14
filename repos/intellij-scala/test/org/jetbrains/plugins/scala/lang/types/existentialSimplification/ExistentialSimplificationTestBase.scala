@@ -69,13 +69,17 @@ abstract class ExistentialSimplificationTestBase
         val res = ScType.presentableText(ttypez.simplify())
         val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
         val text = lastPsi.getText
-        val output = lastPsi.getNode.getElementType match {
-          case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
-          case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
-            text.substring(2, text.length - 2).trim
-          case _ =>
-            assertTrue("Test result must be in last comment statement.", false)
-        }
+        val output =
+          lastPsi.getNode.getElementType match {
+            case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+            case ScalaTokenTypes.tBLOCK_COMMENT |
+                ScalaTokenTypes.tDOC_COMMENT =>
+              text.substring(2, text.length - 2).trim
+            case _ =>
+              assertTrue(
+                "Test result must be in last comment statement.",
+                false)
+          }
         assertEquals(output, res)
       case Success(_, _) =>
         assert(

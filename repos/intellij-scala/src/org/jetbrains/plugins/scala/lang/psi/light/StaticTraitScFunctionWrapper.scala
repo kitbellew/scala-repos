@@ -74,8 +74,9 @@ object StaticTraitScFunctionWrapper {
         qualName.length() - 6) + " This") +: function.parameters.map {
         case param =>
           val builder = new StringBuilder
-          val paramAnnotations =
-            JavaConversionUtil.annotations(param).mkString(" ")
+          val paramAnnotations = JavaConversionUtil
+            .annotations(param)
+            .mkString(" ")
           if (!paramAnnotations.isEmpty)
             builder.append(paramAnnotations).append(" ")
           param.getRealParameterType(TypingContext.empty) match {

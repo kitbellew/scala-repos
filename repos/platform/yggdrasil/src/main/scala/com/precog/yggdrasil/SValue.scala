@@ -66,10 +66,11 @@ sealed trait SValue {
         (selector.nodes: @unchecked) match {
           case JPathField(name) :: Nil => Some(SObject(obj + (name -> value)))
           case JPathField(name) :: xs =>
-            val child = xs.head match {
-              case JPathField(_) => SObject.Empty
-              case JPathIndex(_) => SArray.Empty
-            }
+            val child =
+              xs.head match {
+                case JPathField(_) => SObject.Empty
+                case JPathIndex(_) => SArray.Empty
+              }
 
             obj
               .getOrElse(name, child)
@@ -82,10 +83,11 @@ sealed trait SValue {
           case JPathIndex(i) :: Nil =>
             Some(SArray(arr.padTo(i + 1, SNull).updated(i, value)))
           case JPathIndex(i) :: xs =>
-            val child = xs.head match {
-              case JPathField(_) => SObject.Empty
-              case JPathIndex(_) => SArray.Empty
-            }
+            val child =
+              xs.head match {
+                case JPathField(_) => SObject.Empty
+                case JPathIndex(_) => SArray.Empty
+              }
 
             arr
               .lift(i)
@@ -107,70 +109,73 @@ sealed trait SValue {
 
   def structure: Seq[(JPath, CType)] = {
     import SValue._
-    val s = this match {
-      case SObject(m) =>
-        if (m.isEmpty)
-          List((JPath(), CEmptyObject))
-        else {
-          m.toSeq.flatMap {
-            case (name, value) =>
-              value.structure map {
-                case (path, ctype) => (JPathField(name) \ path, ctype)
-              }
+    val s =
+      this match {
+        case SObject(m) =>
+          if (m.isEmpty)
+            List((JPath(), CEmptyObject))
+          else {
+            m.toSeq.flatMap {
+              case (name, value) =>
+                value.structure map {
+                  case (path, ctype) => (JPathField(name) \ path, ctype)
+                }
+            }
           }
-        }
 
-      case SArray(a) =>
-        if (a.isEmpty)
-          List((JPath(), CEmptyArray))
-        else {
-          a.zipWithIndex.flatMap {
-            case (value, index) =>
-              value.structure map {
-                case (path, ctype) => (JPathIndex(index) \ path, ctype)
-              }
+        case SArray(a) =>
+          if (a.isEmpty)
+            List((JPath(), CEmptyArray))
+          else {
+            a.zipWithIndex.flatMap {
+              case (value, index) =>
+                value.structure map {
+                  case (path, ctype) => (JPathIndex(index) \ path, ctype)
+                }
+            }
           }
-        }
 
-      case SString(_)     => List((JPath(), CString))
-      case STrue | SFalse => List((JPath(), CBoolean))
-      case SDecimal(_)    => List((JPath(), CNum))
-      case SNull          => List((JPath(), CNull))
-      case SUndefined     => List((JPath(), CUndefined))
-    }
+        case SString(_)     => List((JPath(), CString))
+        case STrue | SFalse => List((JPath(), CBoolean))
+        case SDecimal(_)    => List((JPath(), CNum))
+        case SNull          => List((JPath(), CNull))
+        case SUndefined     => List((JPath(), CUndefined))
+      }
 
     s.sorted
   }
 
   lazy val shash: Long = structure.hashCode
 
-  lazy val toJValue: JValue = this match {
-    case SObject(obj) =>
-      JObject(obj.map({
-        case (k, v) => JField(k, v.toJValue)
-      })(collection.breakOut))
-    case SArray(arr) => JArray(arr.map(_.toJValue)(collection.breakOut): _*)
-    case SString(s)  => JString(s)
-    case STrue       => JBool(true)
-    case SFalse      => JBool(false)
-    case SDecimal(n) => JNum(n)
-    case SNull       => JNull
-    case SUndefined  => JUndefined
-  }
+  lazy val toJValue: JValue =
+    this match {
+      case SObject(obj) =>
+        JObject(obj.map({
+          case (k, v) => JField(k, v.toJValue)
+        })(collection.breakOut))
+      case SArray(arr) => JArray(arr.map(_.toJValue)(collection.breakOut): _*)
+      case SString(s)  => JString(s)
+      case STrue       => JBool(true)
+      case SFalse      => JBool(false)
+      case SDecimal(n) => JNum(n)
+      case SNull       => JNull
+      case SUndefined  => JUndefined
+    }
 
-  lazy val toRValue: RValue = this match {
-    case SObject(obj) =>
-      RObject(obj.map({
-        case (k, v) => (k, v.toRValue)
-      }))
-    case SArray(arr) => RArray(arr.map(_.toRValue)(collection.breakOut): _*)
-    case SString(s)  => CString(s)
-    case STrue       => CBoolean(true)
-    case SFalse      => CBoolean(false)
-    case SDecimal(n) => CNum(n)
-    case SNull       => CNull
-    case SUndefined  => CUndefined
-  }
+  lazy val toRValue: RValue =
+    this match {
+      case SObject(obj) =>
+        RObject(obj.map({
+          case (k, v) => (k, v.toRValue)
+        }))
+      case SArray(arr) => RArray(arr.map(_.toRValue)(collection.breakOut): _*)
+      case SString(s)  => CString(s)
+      case STrue       => CBoolean(true)
+      case SFalse      => CBoolean(false)
+      case SDecimal(n) => CNum(n)
+      case SNull       => CNull
+      case SUndefined  => CUndefined
+    }
 }
 
 trait SValueInstances {
@@ -208,23 +213,25 @@ trait SValueInstances {
 
   implicit def order: Order[SValue] =
     new Order[SValue] {
-      private val objectOrder = (o1: Map[String, SValue]) =>
-        (o2: Map[String, SValue]) => {
-          (o1.size ?|? o2.size) |+|
-            (o1.toSeq.sortBy(_._1) zip o2.toSeq.sortBy(_._1))
-              .foldLeft[Ordering](EQ) {
-                case (ord, ((k1, v1), (k2, v2))) =>
-                  ord |+| (k1 ?|? k2) |+| (v1 ?|? v2)
-              }
-        }
+      private val objectOrder =
+        (o1: Map[String, SValue]) =>
+          (o2: Map[String, SValue]) => {
+            (o1.size ?|? o2.size) |+|
+              (o1.toSeq.sortBy(_._1) zip o2.toSeq.sortBy(_._1))
+                .foldLeft[Ordering](EQ) {
+                  case (ord, ((k1, v1), (k2, v2))) =>
+                    ord |+| (k1 ?|? k2) |+| (v1 ?|? v2)
+                }
+          }
 
-      private val arrayOrder = (o1: Vector[SValue]) =>
-        (o2: Vector[SValue]) => {
-          (o1.length ?|? o2.length) |+|
-            (o1 zip o2).foldLeft[Ordering](EQ) {
-              case (ord, (v1, v2)) => ord |+| (v1 ?|? v2)
-            }
-        }
+      private val arrayOrder =
+        (o1: Vector[SValue]) =>
+          (o2: Vector[SValue]) => {
+            (o1.length ?|? o2.length) |+|
+              (o1 zip o2).foldLeft[Ordering](EQ) {
+                case (ord, (v1, v2)) => ord |+| (v1 ?|? v2)
+              }
+          }
 
       private val stringOrder = (Order[String].order _).curried
       private val boolOrder = (Order[Boolean].order _).curried
@@ -245,19 +252,21 @@ trait SValueInstances {
 
   implicit def equal: Equal[SValue] =
     new Equal[SValue] {
-      private val objectEqual = (o1: Map[String, SValue]) =>
-        (o2: Map[String, SValue]) =>
-          (o1.size == o2.size) &&
-            (o1.toSeq.sortBy(_._1) zip o2.toSeq.sortBy(_._1)).foldLeft(true) {
-              case (eql, ((k1, v1), (k2, v2))) => eql && k1 == k2 && v1 === v2
-            }
+      private val objectEqual =
+        (o1: Map[String, SValue]) =>
+          (o2: Map[String, SValue]) =>
+            (o1.size == o2.size) &&
+              (o1.toSeq.sortBy(_._1) zip o2.toSeq.sortBy(_._1)).foldLeft(true) {
+                case (eql, ((k1, v1), (k2, v2))) => eql && k1 == k2 && v1 === v2
+              }
 
-      private val arrayEqual = (o1: Vector[SValue]) =>
-        (o2: Vector[SValue]) =>
-          (o1.length == o2.length) &&
-            (o1 zip o2).foldLeft(true) {
-              case (eql, (v1, v2)) => eql && v1 === v2
-            }
+      private val arrayEqual =
+        (o1: Vector[SValue]) =>
+          (o2: Vector[SValue]) =>
+            (o1.length == o2.length) &&
+              (o1 zip o2).foldLeft(true) {
+                case (eql, (v1, v2)) => eql && v1 === v2
+              }
 
       private val stringEqual = (Equal[String].equal _).curried
       private val boolEqual = (Equal[Boolean].equal _).curried

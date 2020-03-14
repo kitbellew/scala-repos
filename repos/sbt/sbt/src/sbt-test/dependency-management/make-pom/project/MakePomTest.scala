@@ -61,11 +61,12 @@ object MakePomTest extends Build {
       withRepositories(pomXML) { repositoriesElement =>
         val repositories = repositoriesElement \ "repository"
         val writtenRepositories = repositories.map(read).distinct
-        val mavenStyleRepositories = ivyRepositories.collect {
-          case x: MavenRepository
-              if (x.name != "public") && (x.name != "jcenter") =>
-            normalize(x)
-        } distinct;
+        val mavenStyleRepositories =
+          ivyRepositories.collect {
+            case x: MavenRepository
+                if (x.name != "public") && (x.name != "jcenter") =>
+              normalize(x)
+          } distinct;
 
         lazy val explain =
           (("Written:" +: writtenRepositories) ++ ("Declared:" +: mavenStyleRepositories))

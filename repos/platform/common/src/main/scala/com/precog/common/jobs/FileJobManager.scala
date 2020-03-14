@@ -77,8 +77,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
   val fs = this
 
   import Cache._
-  private[this] val cache: SimpleCache[JobId, FileJobState] =
-    Cache.simple[JobId, FileJobState](
+  private[this] val cache: SimpleCache[JobId, FileJobState] = Cache
+    .simple[JobId, FileJobState](
       ExpireAfterAccess(Duration(5, "minutes")),
       OnRemoval({ (jobId, job, reason) =>
         if (reason != RemovalCause.REPLACED) {
@@ -156,9 +156,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       loadJob(jobId).map(_.job)
     }
 
-  private val jobFileFilter = new FilenameFilter {
-    def accept(dir: File, name: String) = name.endsWith(JOB_SUFFIX)
-  }
+  private val jobFileFilter =
+    new FilenameFilter {
+      def accept(dir: File, name: String) = name.endsWith(JOB_SUFFIX)
+    }
 
   def listJobs(apiKey: APIKey): M[Seq[Job]] =
     M.point {
@@ -200,8 +201,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       channel: ChannelId,
       since: Option[MessageId]): M[Seq[Message]] =
     M.point {
-      val posts =
-        cache.get(jobId).flatMap(_.messages.get(channel)).getOrElse(Nil)
+      val posts = cache
+        .get(jobId)
+        .flatMap(_.messages.get(channel))
+        .getOrElse(Nil)
       since map { mId =>
         posts.takeWhile(_.id != mId).reverse
       } getOrElse posts.reverse
@@ -305,10 +308,11 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         val input = new DataInputStream(new FileInputStream(resultFile(file)))
 
         try {
-          val mime = input.readUTF match {
-            case ""         => None
-            case mimestring => MimeTypes.parseMimeTypes(mimestring).headOption
-          }
+          val mime =
+            input.readUTF match {
+              case ""         => None
+              case mimestring => MimeTypes.parseMimeTypes(mimestring).headOption
+            }
 
           val length = input.readInt
           val data = new Array[Byte](length)
@@ -343,13 +347,16 @@ case class FileJobState(
 object FileJobState {
   val test = implicitly[Decomposer[Option[Status]]]
 
-  implicit val fileJobStateIso =
-    Iso.hlist(FileJobState.apply _, FileJobState.unapply _)
+  implicit val fileJobStateIso = Iso.hlist(
+    FileJobState.apply _,
+    FileJobState.unapply _)
 
   val schemaV1 = "job" :: "status" :: "messages" :: HNil
 
-  implicit val fjsDecomposerV1: Decomposer[FileJobState] =
-    decomposerV(schemaV1, Some("1.0".v))
-  implicit val fjsExtractorV1: Extractor[FileJobState] =
-    extractorV(schemaV1, Some("1.0".v))
+  implicit val fjsDecomposerV1: Decomposer[FileJobState] = decomposerV(
+    schemaV1,
+    Some("1.0".v))
+  implicit val fjsExtractorV1: Extractor[FileJobState] = extractorV(
+    schemaV1,
+    Some("1.0".v))
 }

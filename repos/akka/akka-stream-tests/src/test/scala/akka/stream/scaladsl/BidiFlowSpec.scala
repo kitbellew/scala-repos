@@ -86,8 +86,10 @@ class BidiFlowSpec extends AkkaSpec {
 
     "work when reversed" in {
       // just reversed from the case above; observe that Flow inverts itself automatically by being on the left side
-      val f =
-        Flow[Int].map(_.toString).join(inverse.reversed).join(bidi.reversed)
+      val f = Flow[Int]
+        .map(_.toString)
+        .join(inverse.reversed)
+        .join(bidi.reversed)
       val result = Source(List(1, 2, 3)).via(f).limit(10).runWith(Sink.seq)
       Await.result(result, 1.second) should ===(Seq("5", "6", "7"))
     }
@@ -114,15 +116,16 @@ class BidiFlowSpec extends AkkaSpec {
           flow ~> merge
           FlowShape(flow.in, merge.out)
       })
-      val right =
-        Flow.fromGraph(GraphDSL.create(Sink.head[immutable.Seq[Long]]) {
-          implicit b ⇒ sink ⇒
-            val flow = b.add(Flow[Long].grouped(10))
-            flow ~> sink
-            FlowShape(flow.in, b.add(Source.single(ByteString("10"))).out)
+      val right = Flow.fromGraph(
+        GraphDSL.create(Sink.head[immutable.Seq[Long]]) { implicit b ⇒ sink ⇒
+          val flow = b.add(Flow[Long].grouped(10))
+          flow ~> sink
+          FlowShape(flow.in, b.add(Source.single(ByteString("10"))).out)
         })
-      val ((l, m), r) =
-        left.joinMat(bidiMat)(Keep.both).joinMat(right)(Keep.both).run()
+      val ((l, m), r) = left
+        .joinMat(bidiMat)(Keep.both)
+        .joinMat(right)(Keep.both)
+        .run()
       Await.result(l, 1.second) should ===(1)
       Await.result(m, 1.second) should ===(42)
       Await.result(r, 1.second).toSet should ===(Set(3L, 12L))
@@ -130,8 +133,10 @@ class BidiFlowSpec extends AkkaSpec {
 
     "suitably override attribute handling methods" in {
       import Attributes._
-      val b: BidiFlow[Int, Long, ByteString, String, NotUsed] =
-        bidi.withAttributes(name("")).async.named("")
+      val b: BidiFlow[Int, Long, ByteString, String, NotUsed] = bidi
+        .withAttributes(name(""))
+        .async
+        .named("")
     }
 
   }

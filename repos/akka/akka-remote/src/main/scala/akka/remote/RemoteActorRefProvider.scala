@@ -142,14 +142,15 @@ private[akka] class RemoteActorRefProvider(
   protected def createDeployer: RemoteDeployer =
     new RemoteDeployer(settings, dynamicAccess)
 
-  private val local = new LocalActorRefProvider(
-    systemName,
-    settings,
-    eventStream,
-    dynamicAccess,
-    deployer,
-    Some(deadLettersPath ⇒
-      new RemoteDeadLetterActorRef(this, deadLettersPath, eventStream)))
+  private val local =
+    new LocalActorRefProvider(
+      systemName,
+      settings,
+      eventStream,
+      dynamicAccess,
+      deployer,
+      Some(deadLettersPath ⇒
+        new RemoteDeadLetterActorRef(this, deadLettersPath, eventStream)))
 
   @volatile
   private var _log = local.log
@@ -195,13 +196,14 @@ private[akka] class RemoteActorRefProvider(
 
     val internals = Internals(
       remoteDaemon = {
-        val d = new RemoteSystemDaemon(
-          system,
-          local.rootPath / "remote",
-          rootGuardian,
-          remotingTerminator,
-          log,
-          untrustedMode = remoteSettings.UntrustedMode)
+        val d =
+          new RemoteSystemDaemon(
+            system,
+            local.rootPath / "remote",
+            rootGuardian,
+            remotingTerminator,
+            log,
+            untrustedMode = remoteSettings.UntrustedMode)
         local.registerExtraNames(Map(("remote", d)))
         d
       },
@@ -361,9 +363,10 @@ private[akka] class RemoteActorRefProvider(
                     e)
               }
               val localAddress = transport.localAddressForRemote(addr)
-              val rpath = (RootActorPath(
-                addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
-                .withUid(path.uid)
+              val rpath =
+                (RootActorPath(
+                  addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
+                  .withUid(path.uid)
               new RemoteActorRef(
                 transport,
                 localAddress,
@@ -444,8 +447,7 @@ private[akka] class RemoteActorRefProvider(
   @deprecated("use actorSelection instead of actorFor", "2.2")
   override private[akka] def actorFor(
       ref: InternalActorRef,
-      path: Iterable[String]): InternalActorRef =
-    local.actorFor(ref, path)
+      path: Iterable[String]): InternalActorRef = local.actorFor(ref, path)
 
   def rootGuardianAt(address: Address): ActorRef =
     if (hasAddress(address))

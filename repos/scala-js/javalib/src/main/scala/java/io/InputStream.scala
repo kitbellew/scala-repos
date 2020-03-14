@@ -51,8 +51,7 @@ abstract class InputStream extends Closeable {
 
   def mark(readlimit: Int): Unit = ()
 
-  def reset(): Unit =
-    throw new IOException("Reset not supported")
+  def reset(): Unit = throw new IOException("Reset not supported")
 
   def markSupported(): Boolean = false
 

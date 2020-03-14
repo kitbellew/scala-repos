@@ -225,15 +225,17 @@ case class Scan(
   def command = Commands.SCAN
   def toChannelBuffer = {
     val bufs = Seq(CommandBytes.SCAN, StringToChannelBuffer(cursor.toString))
-    val withCount = count match {
-      case Some(count) =>
-        bufs ++ Seq(Count.COUNT_CB, StringToChannelBuffer(count.toString))
-      case None => bufs
-    }
-    val withPattern = pattern match {
-      case Some(pattern) => withCount ++ Seq(Pattern.PATTERN_CB, pattern)
-      case None          => withCount
-    }
+    val withCount =
+      count match {
+        case Some(count) =>
+          bufs ++ Seq(Count.COUNT_CB, StringToChannelBuffer(count.toString))
+        case None => bufs
+      }
+    val withPattern =
+      pattern match {
+        case Some(pattern) => withCount ++ Seq(Pattern.PATTERN_CB, pattern)
+        case None          => withCount
+      }
     RedisCodec.toUnifiedFormat(withPattern)
   }
 }

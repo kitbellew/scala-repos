@@ -192,16 +192,17 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       start: Int,
       end: Int) =
     new RefactoringEnvironment(file.getPath, start, end) {
-      val refactoring = new Rename with GlobalIndexes {
-        val global = RefactoringImpl.this
-        val invalidSet = toBeRemoved.synchronized {
-          toBeRemoved.toSet
+      val refactoring =
+        new Rename with GlobalIndexes {
+          val global = RefactoringImpl.this
+          val invalidSet = toBeRemoved.synchronized {
+            toBeRemoved.toSet
+          }
+          val cuIndexes = this.global.activeUnits().map { u =>
+            CompilationUnitIndex(u.body)
+          }
+          val index = GlobalIndex(cuIndexes.toList)
         }
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
-        }
-        val index = GlobalIndex(cuIndexes.toList)
-      }
       val result = performRefactoring(procId, tpe, name)
     }.result
 
@@ -213,13 +214,14 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       start: Int,
       end: Int) =
     new RefactoringEnvironment(file.getPath, start, end) {
-      val refactoring = new ExtractMethod with GlobalIndexes {
-        val global = RefactoringImpl.this
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
+      val refactoring =
+        new ExtractMethod with GlobalIndexes {
+          val global = RefactoringImpl.this
+          val cuIndexes = this.global.activeUnits().map { u =>
+            CompilationUnitIndex(u.body)
+          }
+          val index = GlobalIndex(cuIndexes.toList)
         }
-        val index = GlobalIndex(cuIndexes.toList)
-      }
       val result = performRefactoring(procId, tpe, name)
     }.result
 
@@ -231,13 +233,14 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       start: Int,
       end: Int) =
     new RefactoringEnvironment(file.getPath, start, end) {
-      val refactoring = new ExtractLocal with GlobalIndexes {
-        val global = RefactoringImpl.this
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
+      val refactoring =
+        new ExtractLocal with GlobalIndexes {
+          val global = RefactoringImpl.this
+          val cuIndexes = this.global.activeUnits().map { u =>
+            CompilationUnitIndex(u.body)
+          }
+          val index = GlobalIndex(cuIndexes.toList)
         }
-        val index = GlobalIndex(cuIndexes.toList)
-      }
       val result = performRefactoring(procId, tpe, name)
     }.result
 
@@ -248,22 +251,26 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       start: Int,
       end: Int) =
     new RefactoringEnvironment(file.getPath, start, end) {
-      val refactoring = new InlineLocal with GlobalIndexes {
-        val global = RefactoringImpl.this
-        val cuIndexes = this.global.activeUnits().map { u =>
-          CompilationUnitIndex(u.body)
+      val refactoring =
+        new InlineLocal with GlobalIndexes {
+          val global = RefactoringImpl.this
+          val cuIndexes = this.global.activeUnits().map { u =>
+            CompilationUnitIndex(u.body)
+          }
+          val index = GlobalIndex(cuIndexes.toList)
         }
-        val index = GlobalIndex(cuIndexes.toList)
-      }
-      val result =
-        performRefactoring(procId, tpe, new refactoring.RefactoringParameters())
+      val result = performRefactoring(
+        procId,
+        tpe,
+        new refactoring.RefactoringParameters())
     }.result
 
   protected def doOrganizeImports(procId: Int, tpe: RefactorType, file: File) =
     new RefactoringEnvironment(file.getPath, 0, 0) {
-      val refactoring = new OrganizeImports {
-        val global = RefactoringImpl.this
-      }
+      val refactoring =
+        new OrganizeImports {
+          val global = RefactoringImpl.this
+        }
 
       val result = performRefactoring(
         procId,
@@ -299,9 +306,10 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
       tpe: RefactorType,
       qualName: String,
       file: File) = {
-    val refactoring = new AddImportStatement {
-      val global = RefactoringImpl.this
-    }
+    val refactoring =
+      new AddImportStatement {
+        val global = RefactoringImpl.this
+      }
 
     val af = AbstractFile.getFile(file.getPath)
     val modifications = refactoring.addImport(af, qualName)

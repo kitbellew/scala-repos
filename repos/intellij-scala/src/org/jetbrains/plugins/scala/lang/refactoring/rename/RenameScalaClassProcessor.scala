@@ -161,16 +161,17 @@ class ScalaClassRenameDialog(
 
   override def createCenterPanel(): JComponent = {
 
-    val companionType: Option[String] = psiElement match {
-      case clazz: ScTypeDefinition =>
-        ScalaPsiUtil.getBaseCompanionModule(clazz) match {
-          case Some(_: ScObject) => Some("object")
-          case Some(_: ScTrait)  => Some("trait")
-          case Some(_: ScClass)  => Some("class")
-          case _                 => None
-        }
-      case _ => None
-    }
+    val companionType: Option[String] =
+      psiElement match {
+        case clazz: ScTypeDefinition =>
+          ScalaPsiUtil.getBaseCompanionModule(clazz) match {
+            case Some(_: ScObject) => Some("object")
+            case Some(_: ScTrait)  => Some("trait")
+            case Some(_: ScClass)  => Some("class")
+            case _                 => None
+          }
+        case _ => None
+      }
 
     if (companionType.isDefined) {
       chbRenameCompanion.setText(

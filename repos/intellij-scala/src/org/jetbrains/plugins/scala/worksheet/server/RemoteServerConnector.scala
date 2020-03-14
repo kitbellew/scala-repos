@@ -73,37 +73,39 @@ class RemoteServerConnector(
       new MyTranslatingClient(callback, project, originalFile, consumer)
 
     try {
-      val worksheetProcess = runType match {
-        case InProcessServer | OutOfProcessServer =>
-          new RemoteServerRunner(project).buildProcess(arguments, client)
-        case NonServer =>
-          val eventClient = new ClientEventProcessor(client)
+      val worksheetProcess =
+        runType match {
+          case InProcessServer | OutOfProcessServer =>
+            new RemoteServerRunner(project).buildProcess(arguments, client)
+          case NonServer =>
+            val eventClient = new ClientEventProcessor(client)
 
-          val encodedArgs = arguments map {
-            case "" => Base64Converter.encode("#STUB#" getBytes "UTF-8")
-            case s  => Base64Converter.encode(s getBytes "UTF-8")
-          }
+            val encodedArgs = arguments map {
+              case "" => Base64Converter.encode("#STUB#" getBytes "UTF-8")
+              case s  => Base64Converter.encode(s getBytes "UTF-8")
+            }
 
-          val errorHandler = new ErrorHandler {
-            override def error(message: String): Unit =
-              Notifications.Bus notify {
-                new Notification(
-                  "scala",
-                  "Cannot run worksheet",
-                  s"<html><body>${message.replace("\n", "<br>")}</body></html>",
-                  NotificationType.ERROR
-                )
+            val errorHandler =
+              new ErrorHandler {
+                override def error(message: String): Unit =
+                  Notifications.Bus notify {
+                    new Notification(
+                      "scala",
+                      "Cannot run worksheet",
+                      s"<html><body>${message.replace("\n", "<br>")}</body></html>",
+                      NotificationType.ERROR
+                    )
+                  }
               }
-          }
 
-          new NonServerRunner(project, Some(errorHandler)).buildProcess(
-            encodedArgs,
-            (text: String) => {
-              val event =
-                Event.fromBytes(Base64Converter.decode(text.getBytes("UTF-8")))
-              eventClient.process(event)
-            })
-      }
+            new NonServerRunner(project, Some(errorHandler)).buildProcess(
+              encodedArgs,
+              (text: String) => {
+                val event = Event.fromBytes(
+                  Base64Converter.decode(text.getBytes("UTF-8")))
+                eventClient.process(event)
+              })
+        }
 
       if (worksheetProcess == null)
         return ExitCode.ABORT
@@ -160,15 +162,16 @@ object RemoteServerConnector {
       val lines = text split "\n"
       val linesLength = lines.length
 
-      val differ = if (linesLength > 2) {
-        val i = lines(
-          linesLength - 2) indexOf WorksheetSourceProcessor.END_GENERATED_MARKER
-        if (i > -1)
-          i + length
-        else
+      val differ =
+        if (linesLength > 2) {
+          val i = lines(
+            linesLength - 2) indexOf WorksheetSourceProcessor.END_GENERATED_MARKER
+          if (i > -1)
+            i + length
+          else
+            0
+        } else
           0
-      } else
-        0
 
       val finalText =
         if (differ == 0)
@@ -192,14 +195,15 @@ object RemoteServerConnector {
       val line1 = line.map(i => i - 4).map(_.toInt)
       val column1 = column.map(_ + 1 - differ).map(_.toInt)
 
-      val category = kind match {
-        case BuildMessage.Kind.INFO => CompilerMessageCategory.INFORMATION
-        case BuildMessage.Kind.ERROR =>
-          hasErrors = true
-          CompilerMessageCategory.ERROR
-        case BuildMessage.Kind.PROGRESS => CompilerMessageCategory.STATISTICS
-        case BuildMessage.Kind.WARNING  => CompilerMessageCategory.WARNING
-      }
+      val category =
+        kind match {
+          case BuildMessage.Kind.INFO => CompilerMessageCategory.INFORMATION
+          case BuildMessage.Kind.ERROR =>
+            hasErrors = true
+            CompilerMessageCategory.ERROR
+          case BuildMessage.Kind.PROGRESS => CompilerMessageCategory.STATISTICS
+          case BuildMessage.Kind.WARNING  => CompilerMessageCategory.WARNING
+        }
 
       consumer.message(
         new CompilerMessageImpl(

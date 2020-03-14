@@ -558,8 +558,8 @@ class HDFSFileCatalog(
     extends FileCatalog
     with Logging {
 
-  private val hadoopConf = new Configuration(
-    sqlContext.sparkContext.hadoopConfiguration)
+  private val hadoopConf =
+    new Configuration(sqlContext.sparkContext.hadoopConfiguration)
 
   var leafFiles = mutable.LinkedHashMap.empty[Path, FileStatus]
   var leafDirToChildrenFiles = mutable.Map.empty[Path, Array[FileStatus]]
@@ -596,10 +596,9 @@ class HDFSFileCatalog(
     }
 
     if (partitionPruningPredicates.nonEmpty) {
-      val predicate =
-        partitionPruningPredicates
-          .reduceOption(expressions.And)
-          .getOrElse(Literal(true))
+      val predicate = partitionPruningPredicates
+        .reduceOption(expressions.And)
+        .getOrElse(Literal(true))
 
       val boundPredicate = InterpretedPredicate.create(predicate.transform {
         case a: AttributeReference =>
@@ -714,8 +713,9 @@ class HDFSFileCatalog(
     * DataFrame will have the column of `something`.
     */
   private def basePaths: Set[Path] = {
-    val userDefinedBasePath =
-      parameters.get("basePath").map(basePath => Set(new Path(basePath)))
+    val userDefinedBasePath = parameters
+      .get("basePath")
+      .map(basePath => Set(new Path(basePath)))
     userDefinedBasePath
       .getOrElse {
         // If the user does not provide basePath, we will just use paths.
@@ -780,12 +780,14 @@ private[sql] object HadoopFsRelation extends Logging {
       val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
       val statuses =
         if (pathFilter != null) {
-          val (dirs, files) =
-            fs.listStatus(status.getPath, pathFilter).partition(_.isDirectory)
+          val (dirs, files) = fs
+            .listStatus(status.getPath, pathFilter)
+            .partition(_.isDirectory)
           files ++ dirs.flatMap(dir => listLeafFiles(fs, dir))
         } else {
-          val (dirs, files) =
-            fs.listStatus(status.getPath).partition(_.isDirectory)
+          val (dirs, files) = fs
+            .listStatus(status.getPath)
+            .partition(_.isDirectory)
           files ++ dirs.flatMap(dir => listLeafFiles(fs, dir))
         }
       statuses.filterNot(status => shouldFilterOut(status.getPath.getName))

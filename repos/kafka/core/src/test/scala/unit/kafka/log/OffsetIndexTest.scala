@@ -55,8 +55,9 @@ class OffsetIndexTest extends JUnitSuite {
     // append some random values
     val base = idx.baseOffset.toInt + 1
     val size = idx.maxEntries
-    val vals: Seq[(Long, Int)] =
-      monotonicSeq(base, size).map(_.toLong).zip(monotonicSeq(0, size))
+    val vals: Seq[(Long, Int)] = monotonicSeq(base, size)
+      .map(_.toLong)
+      .zip(monotonicSeq(0, size))
     vals.foreach { x =>
       idx.append(x._1, x._2)
     }
@@ -143,10 +144,11 @@ class OffsetIndexTest extends JUnitSuite {
 
   @Test
   def truncate() {
-    val idx = new OffsetIndex(
-      file = nonExistantTempFile(),
-      baseOffset = 0L,
-      maxIndexSize = 10 * 8)
+    val idx =
+      new OffsetIndex(
+        file = nonExistantTempFile(),
+        baseOffset = 0L,
+        maxIndexSize = 10 * 8)
     idx.truncate()
     for (i <- 1 until 10)
       idx.append(i, i)

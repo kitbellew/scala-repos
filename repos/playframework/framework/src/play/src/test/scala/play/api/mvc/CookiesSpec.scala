@@ -124,14 +124,15 @@ object CookiesSpec extends Specification {
       )
     }
     "return one cookie for each name" in {
-      val cookies = FakeRequest()
-        .withCookies(
-          Cookie("foo", "foo1"),
-          Cookie("foo", "foo2"),
-          Cookie("bar", "bar"),
-          Cookie("baz", "baz")
-        )
-        .cookies
+      val cookies =
+        FakeRequest()
+          .withCookies(
+            Cookie("foo", "foo1"),
+            Cookie("foo", "foo2"),
+            Cookie("bar", "bar"),
+            Cookie("baz", "baz")
+          )
+          .cookies
       cookies.toSet must_== Set(
         Cookie("foo", "foo2"),
         Cookie("bar", "bar"),

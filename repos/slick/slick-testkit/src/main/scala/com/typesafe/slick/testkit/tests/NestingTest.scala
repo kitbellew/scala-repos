@@ -33,42 +33,48 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
       case (a, b, c, d) => ((a, b), (c, d))
     }
 
-    val q1a = (for {
-      (a, b) <- ts.map(t => (t.a, t.b))
-      c <- ts.map(t => t.c)
-    } yield a ~ b ~ c ~ 5).sortBy(t => t._3 ~ t._1)
+    val q1a =
+      (for {
+        (a, b) <- ts.map(t => (t.a, t.b))
+        c <- ts.map(t => t.c)
+      } yield a ~ b ~ c ~ 5).sortBy(t => t._3 ~ t._1)
 
-    val q1c = (for {
-      a ~ b <- ts.map(t => (t.a, t.b))
-      c <- ts.map(t => t.c)
-    } yield (a, b, c, LiteralColumn(5))).sortBy(t => t._3 ~ t._1)
+    val q1c =
+      (for {
+        a ~ b <- ts.map(t => (t.a, t.b))
+        c <- ts.map(t => t.c)
+      } yield (a, b, c, LiteralColumn(5))).sortBy(t => t._3 ~ t._1)
 
-    val q1d = (for {
-      (a, b) <- ts.map(t => (t.a, t.b))
-      c <- ts.map(t => t.c)
-    } yield ((a, b), (c, 5))).sortBy(t => t._2._1 ~ t._1._1)
+    val q1d =
+      (for {
+        (a, b) <- ts.map(t => (t.a, t.b))
+        c <- ts.map(t => t.c)
+      } yield ((a, b), (c, 5))).sortBy(t => t._2._1 ~ t._1._1)
 
     val res2 = Set((1, "1", 8), (2, "2", 10))
 
-    val q2a = for {
-      a ~ b ~ c <- ts.filter(_.a === 1).map(t => t.a ~ t.b ~ 4) unionAll ts
-        .filter(_.a === 2)
-        .map(t => t.a ~ t.b ~ 5)
-    } yield a ~ b ~ (c * 2)
+    val q2a =
+      for {
+        a ~ b ~ c <- ts.filter(_.a === 1).map(t => t.a ~ t.b ~ 4) unionAll ts
+          .filter(_.a === 2)
+          .map(t => t.a ~ t.b ~ 5)
+      } yield a ~ b ~ (c * 2)
 
-    val q2b = for {
-      (a, b, c) <- ts
-        .filter(_.a === 1)
-        .map(t => (t.a, t.b, LiteralColumn(4))) unionAll ts
-        .filter(_.a === 2)
-        .map(t => (t.a, t.b, LiteralColumn(5)))
-    } yield a ~ b ~ (c * 2)
+    val q2b =
+      for {
+        (a, b, c) <- ts
+          .filter(_.a === 1)
+          .map(t => (t.a, t.b, LiteralColumn(4))) unionAll ts
+          .filter(_.a === 2)
+          .map(t => (t.a, t.b, LiteralColumn(5)))
+      } yield a ~ b ~ (c * 2)
 
-    val q2c = for {
-      (a, b, c) <- ts.filter(_.a === 1).map(t => (t.a, t.b, 4)) unionAll ts
-        .filter(_.a === 2)
-        .map(t => (t.a, t.b, 5))
-    } yield a ~ b ~ (c * 2)
+    val q2c =
+      for {
+        (a, b, c) <- ts.filter(_.a === 1).map(t => (t.a, t.b, 4)) unionAll ts
+          .filter(_.a === 2)
+          .map(t => (t.a, t.b, 5))
+      } yield a ~ b ~ (c * 2)
 
     seq(
       ts.schema.create,
@@ -130,8 +136,8 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     )
 
     // Get plain values out
-    val q1b =
-      q1.map(_.map(x => (x.a, x.b, x.c)).getOrElse((0, "", None: Option[Int])))
+    val q1b = q1.map(
+      _.map(x => (x.a, x.b, x.c)).getOrElse((0, "", None: Option[Int])))
     val q2b = q2.map(_.get)
     val q3b = q3.filter(_.isDefined).map(_.get)
     val q4b = q4.map(_.getOrElse(None: Option[Int]))
@@ -352,12 +358,14 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
       Chord("m7b5", "11"),
       Chord("aug7", "9"),
       Chord("dim7", ""))
-    val minorChords = for {
-      chord <- chords if chord.name.startsWith("m7")
-    } yield (chord.name.getOrElse(""), chord.popularOptions.getOrElse(""))
-    val otherChords = for {
-      chord <- chords if !chord.name.startsWith("m7")
-    } yield (chord.name.getOrElse(""), chord.popularOptions.getOrElse(""))
+    val minorChords =
+      for {
+        chord <- chords if chord.name.startsWith("m7")
+      } yield (chord.name.getOrElse(""), chord.popularOptions.getOrElse(""))
+    val otherChords =
+      for {
+        chord <- chords if !chord.name.startsWith("m7")
+      } yield (chord.name.getOrElse(""), chord.popularOptions.getOrElse(""))
     DBIO.seq(
       chords.schema.create,
       chords ++= allChords,

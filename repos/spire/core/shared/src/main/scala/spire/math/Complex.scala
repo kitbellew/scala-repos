@@ -98,12 +98,13 @@ object Complex extends ComplexInstances {
     var x = 1
     val last = n - 1
     while (x < last) {
-      val c = x match {
-        case `north` => i[T]
-        case `west`  => -one[T]
-        case `south` => -i[T]
-        case _       => polar(f.one, (t.pi * 2 * x) / n)
-      }
+      val c =
+        x match {
+          case `north` => i[T]
+          case `west`  => -one[T]
+          case `south` => -i[T]
+          case _       => polar(f.one, (t.pi * 2 * x) / n)
+        }
       roots(x) = c
       sum += c
       x += 1
@@ -436,8 +437,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
 
   def underlying: Object = this
 
-  def isWhole: Boolean =
-    anyIsZero(imag) && anyIsWhole(real)
+  def isWhole: Boolean = anyIsZero(imag) && anyIsWhole(real)
 
   override final def isValidInt: Boolean =
     anyIsZero(imag) && anyIsValidInt(real)
@@ -460,11 +460,9 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
         anyIsZero(imag) && real == that
     }
 
-  def ===(that: Complex[_]): Boolean =
-    real == that.real && imag == that.imag
+  def ===(that: Complex[_]): Boolean = real == that.real && imag == that.imag
 
-  def =!=(that: Complex[_]): Boolean =
-    !(this === that)
+  def =!=(that: Complex[_]): Boolean = !(this === that)
 
   override def toString: String = s"($real + ${imag}i)"
 
@@ -727,8 +725,7 @@ trait ComplexInstances1 extends ComplexInstances0 {
 
 trait ComplexInstances extends ComplexInstances1 {
   implicit def ComplexAlgebra[@sp(Float, Double) A: Fractional: Trig: IsReal]
-      : ComplexAlgebra[A] =
-    new ComplexAlgebra[A]
+      : ComplexAlgebra[A] = new ComplexAlgebra[A]
 
   implicit def ComplexEq[A: Eq]: Eq[Complex[A]] = new ComplexEq[A]
 }

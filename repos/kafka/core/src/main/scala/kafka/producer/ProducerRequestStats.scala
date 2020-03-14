@@ -26,21 +26,23 @@ import kafka.common.{ClientIdAllBrokers, ClientIdBroker, ClientIdAndBroker}
   "0.10.0.0")
 class ProducerRequestMetrics(metricId: ClientIdBroker)
     extends KafkaMetricsGroup {
-  val tags = metricId match {
-    case ClientIdAndBroker(clientId, brokerHost, brokerPort) =>
-      Map(
-        "clientId" -> clientId,
-        "brokerHost" -> brokerHost,
-        "brokerPort" -> brokerPort.toString)
-    case ClientIdAllBrokers(clientId) => Map("clientId" -> clientId)
-  }
+  val tags =
+    metricId match {
+      case ClientIdAndBroker(clientId, brokerHost, brokerPort) =>
+        Map(
+          "clientId" -> clientId,
+          "brokerHost" -> brokerHost,
+          "brokerPort" -> brokerPort.toString)
+      case ClientIdAllBrokers(clientId) => Map("clientId" -> clientId)
+    }
 
-  val requestTimer = new KafkaTimer(
-    newTimer(
-      "ProducerRequestRateAndTimeMs",
-      TimeUnit.MILLISECONDS,
-      TimeUnit.SECONDS,
-      tags))
+  val requestTimer =
+    new KafkaTimer(
+      newTimer(
+        "ProducerRequestRateAndTimeMs",
+        TimeUnit.MILLISECONDS,
+        TimeUnit.SECONDS,
+        tags))
   val requestSizeHist = newHistogram("ProducerRequestSize", biased = true, tags)
   val throttleTimeStats = newTimer(
     "ProducerRequestThrottleRateAndTimeMs",
@@ -57,12 +59,12 @@ class ProducerRequestMetrics(metricId: ClientIdBroker)
   "This class has been deprecated and will be removed in a future release.",
   "0.10.0.0")
 class ProducerRequestStats(clientId: String) {
-  private val valueFactory = (k: ClientIdBroker) =>
-    new ProducerRequestMetrics(k)
+  private val valueFactory =
+    (k: ClientIdBroker) => new ProducerRequestMetrics(k)
   private val stats =
     new Pool[ClientIdBroker, ProducerRequestMetrics](Some(valueFactory))
-  private val allBrokersStats = new ProducerRequestMetrics(
-    new ClientIdAllBrokers(clientId))
+  private val allBrokersStats =
+    new ProducerRequestMetrics(new ClientIdAllBrokers(clientId))
 
   def getProducerRequestAllBrokersStats(): ProducerRequestMetrics =
     allBrokersStats

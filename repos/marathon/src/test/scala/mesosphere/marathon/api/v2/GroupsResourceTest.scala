@@ -33,8 +33,9 @@ class GroupsResourceTest
       Some(Group.empty))
 
     val app = AppDefinition(id = "/test/app".toRootPath, cmd = Some("test cmd"))
-    val update =
-      GroupUpdate(id = Some("/test".toRootPath), apps = Some(Set(app)))
+    val update = GroupUpdate(
+      id = Some("/test".toRootPath),
+      apps = Some(Set(app)))
 
     When("Doing a dry run update")
     val body = Json.stringify(Json.toJson(update)).getBytes
@@ -92,14 +93,21 @@ class GroupsResourceTest
     createWithPath.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"the root group is updated")
-    val updateRoot =
-      groupsResource.updateRoot(false, false, body.getBytes("UTF-8"), req)
+    val updateRoot = groupsResource.updateRoot(
+      false,
+      false,
+      body.getBytes("UTF-8"),
+      req)
     Then("we receive a NotAuthenticated response")
     updateRoot.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"the group is updated")
-    val update =
-      groupsResource.update("", false, false, body.getBytes("UTF-8"), req)
+    val update = groupsResource.update(
+      "",
+      false,
+      false,
+      body.getBytes("UTF-8"),
+      req)
     Then("we receive a NotAuthenticated response")
     update.getStatus should be(auth.NotAuthenticatedStatus)
 
@@ -143,14 +151,21 @@ class GroupsResourceTest
     createWithPath.getStatus should be(auth.UnauthorizedStatus)
 
     When(s"the root group is updated")
-    val updateRoot =
-      groupsResource.updateRoot(false, false, body.getBytes("UTF-8"), req)
+    val updateRoot = groupsResource.updateRoot(
+      false,
+      false,
+      body.getBytes("UTF-8"),
+      req)
     Then("we receive a Not Authorized response")
     updateRoot.getStatus should be(auth.UnauthorizedStatus)
 
     When(s"the group is updated")
-    val update =
-      groupsResource.update("", false, false, body.getBytes("UTF-8"), req)
+    val update = groupsResource.update(
+      "",
+      false,
+      false,
+      body.getBytes("UTF-8"),
+      req)
     Then("we receive a Not Authorized response")
     update.getStatus should be(auth.UnauthorizedStatus)
 
@@ -197,8 +212,10 @@ class GroupsResourceTest
       Some(Group(PathId.empty)))
 
     When("The versions are queried")
-    val rootVersionsResponse =
-      groupsResource.group("versions", embed, auth.request)
+    val rootVersionsResponse = groupsResource.group(
+      "versions",
+      embed,
+      auth.request)
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
@@ -218,8 +235,10 @@ class GroupsResourceTest
       Some(Group("/foo/bla/blub".toRootPath)))
 
     When("The versions are queried")
-    val rootVersionsResponse =
-      groupsResource.group("/foo/bla/blub/versions", embed, auth.request)
+    val rootVersionsResponse = groupsResource.group(
+      "/foo/bla/blub/versions",
+      embed,
+      auth.request)
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
@@ -258,8 +277,8 @@ class GroupsResourceTest
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     When("creating a group with the same path existing app")
-    val body =
-      Json.stringify(Json.toJson(GroupUpdate(id = Some("/group".toRootPath))))
+    val body = Json.stringify(
+      Json.toJson(GroupUpdate(id = Some("/group".toRootPath))))
 
     Then("we get a 409")
     intercept[ConflictingChangeException] {

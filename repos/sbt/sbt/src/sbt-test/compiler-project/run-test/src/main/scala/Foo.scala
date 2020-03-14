@@ -16,9 +16,11 @@ class Foo {
   settings.classpath.value = location(classOf[Holder])
   settings.bootclasspath.value = settings.bootclasspath.value + / + location(
     classOf[Product]) + / + location(classOf[Settings])
-  val inter = new Interpreter(settings) {
-    override protected def parentClassLoader = Foo.this.getClass.getClassLoader
-  }
+  val inter =
+    new Interpreter(settings) {
+      override protected def parentClassLoader =
+        Foo.this.getClass.getClassLoader
+    }
   def eval(code: String): Any = {
     val h = new Holder
     inter.bind("$r_", h.getClass.getName, h)

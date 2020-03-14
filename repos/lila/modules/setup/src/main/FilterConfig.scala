@@ -66,30 +66,31 @@ object FilterConfig {
   import reactivemongo.bson._
   import lila.db.BSON
 
-  private[setup] implicit val filterConfigBSONHandler = new BSON[FilterConfig] {
+  private[setup] implicit val filterConfigBSONHandler =
+    new BSON[FilterConfig] {
 
-    def reads(r: BSON.Reader): FilterConfig =
-      FilterConfig(
-        variant = r intsD "v" flatMap {
-          chess.variant.Variant(_)
-        },
-        mode = r intsD "m" flatMap {
-          Mode(_)
-        },
-        speed = r intsD "s" flatMap {
-          Speed(_)
-        },
-        ratingRange =
-          r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
-      )
+      def reads(r: BSON.Reader): FilterConfig =
+        FilterConfig(
+          variant = r intsD "v" flatMap {
+            chess.variant.Variant(_)
+          },
+          mode = r intsD "m" flatMap {
+            Mode(_)
+          },
+          speed = r intsD "s" flatMap {
+            Speed(_)
+          },
+          ratingRange =
+            r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
+        )
 
-    def writes(w: BSON.Writer, o: FilterConfig) =
-      BSONDocument(
-        "v" -> o.variant.map(_.id),
-        "m" -> o.mode.map(_.id),
-        "s" -> o.speed.map(_.id),
-        "e" -> o.ratingRange.toString)
-  }
+      def writes(w: BSON.Writer, o: FilterConfig) =
+        BSONDocument(
+          "v" -> o.variant.map(_.id),
+          "m" -> o.mode.map(_.id),
+          "s" -> o.speed.map(_.id),
+          "e" -> o.ratingRange.toString)
+    }
 
   private[setup] val tube = lila.db.BsTube(filterConfigBSONHandler)
 }

@@ -99,10 +99,11 @@ private[kestrel] class CommandToEncoding extends OneToOneEncoder {
           Seq(SET, key, ZERO, Buf.Utf8(expiry.inSeconds.toString)),
           value)
       case Get(queueName, timeout) =>
-        val key = timeout match {
-          case Some(t) => queueName.concat(encodeTimeout(t))
-          case None    => queueName
-        }
+        val key =
+          timeout match {
+            case Some(t) => queueName.concat(encodeTimeout(t))
+            case None    => queueName
+          }
         Tokens(Seq(GET, key))
       case Open(queueName, timeout) =>
         val key = keyWithSuffix(queueName, OPEN, timeout)

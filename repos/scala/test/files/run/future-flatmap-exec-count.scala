@@ -7,8 +7,7 @@ object Test {
   }
 
   def test() = {
-    def await(f: Future[Any]) =
-      Await.result(f, duration.Duration.Inf)
+    def await(f: Future[Any]) = Await.result(f, duration.Duration.Inf)
 
     val ec = new TestExecutionContext(ExecutionContext.Implicits.global)
 
@@ -25,20 +24,22 @@ object Test {
       println("flatmapping")
       val p = Promise[Int]()
       val fp = p.future
-      val flatMapped = fp.flatMap({ (x: Int) =>
-        Future.successful(2 * x)
-      })(ec)
+      val flatMapped =
+        fp.flatMap({ (x: Int) =>
+          Future.successful(2 * x)
+        })(ec)
       p.success(0)
       await(flatMapped)
     }
 
     {
       println("recovering")
-      val recovered = Future
-        .failed(new Throwable())
-        .recoverWith {
-          case _ => Future.successful(2)
-        }(ec)
+      val recovered =
+        Future
+          .failed(new Throwable())
+          .recoverWith {
+            case _ => Future.successful(2)
+          }(ec)
       await(recovered)
     }
   }

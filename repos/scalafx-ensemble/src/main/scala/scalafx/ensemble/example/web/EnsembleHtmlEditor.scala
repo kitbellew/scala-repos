@@ -47,16 +47,18 @@ class EnsembleHtmlEditor extends EnsembleExample {
             pulvinar. Integer congue faucibus dapibus. Integer id nisl ut elit aliquam sagittis
             gravida eu dolor. Etiam sit amet ipsum sem.</body></html>"""
 
-    val htmlEditor = new HTMLEditor {
-      prefHeight = 250
-      hgrow = Priority.Always
-      vgrow = Priority.Always
-      htmlText = initialText
-    }
+    val htmlEditor =
+      new HTMLEditor {
+        prefHeight = 250
+        hgrow = Priority.Always
+        vgrow = Priority.Always
+        htmlText = initialText
+      }
 
-    val htmlLabel = new Label {
-      wrapText = true
-    }
+    val htmlLabel =
+      new Label {
+        wrapText = true
+      }
 
     new VBox {
       spacing = 5

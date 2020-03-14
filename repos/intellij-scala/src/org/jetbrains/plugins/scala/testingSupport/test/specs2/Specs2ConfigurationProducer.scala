@@ -49,10 +49,11 @@ with AbstractTestConfigurationProducer {
 
     if (element.isInstanceOf[PsiPackage] || element
           .isInstanceOf[PsiDirectory]) {
-      val name = element match {
-        case p: PsiPackage   => p.getName
-        case d: PsiDirectory => d.getName
-      }
+      val name =
+        element match {
+          case p: PsiPackage   => p.getName
+          case d: PsiDirectory => d.getName
+        }
       return Some(
         (
           element,
@@ -64,8 +65,10 @@ with AbstractTestConfigurationProducer {
               .message("test.in.scope.specs2.presentable.text", name))))
     }
 
-    val parent: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
 
     if (parent == null)
       return None
@@ -73,8 +76,8 @@ with AbstractTestConfigurationProducer {
     val settings = RunManager
       .getInstance(location.getProject)
       .createRunConfiguration(parent.name, confFactory)
-    val runConfiguration =
-      settings.getConfiguration.asInstanceOf[Specs2RunConfiguration]
+    val runConfiguration = settings.getConfiguration
+      .asInstanceOf[Specs2RunConfiguration]
     val (testClass, testName) = getLocationClassAndTest(location)
     if (testClass == null)
       return None
@@ -121,8 +124,10 @@ with AbstractTestConfigurationProducer {
         element,
         configuration)
     }
-    val parent: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
     if (parent == null)
       return false
     val suiteClasses = suitePaths
@@ -171,8 +176,10 @@ with AbstractTestConfigurationProducer {
   def getLocationClassAndTest(
       location: Location[_ <: PsiElement]): (ScTypeDefinition, String) = {
     val element = location.getPsiElement
-    val testClassDef: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    val testClassDef: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
     if (testClassDef == null)
       return (null, null)
 

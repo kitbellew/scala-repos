@@ -12,8 +12,7 @@ class XHandler(xMap: Map[Class[_ <: Throwable], String], dVal: String) {
   def handlers: List[Throwable => Boolean] =
     xMap.keys.map(kCls => ((t: Throwable) => kCls == t.getClass)).toList
 
-  def mapping: Class[_ <: Throwable] => String =
-    xMap.withDefaultValue(dVal)
+  def mapping: Class[_ <: Throwable] => String = xMap.withDefaultValue(dVal)
 }
 
 /**
@@ -71,8 +70,7 @@ object RichXHandler {
 
   def apply(
       xMap: Map[Class[_ <: Throwable], String] = mapping,
-      dVal: String = Default) =
-    new XHandler(xMap, dVal)
+      dVal: String = Default) = new XHandler(xMap, dVal)
 
   def apply(t: Throwable): String =
     mapping

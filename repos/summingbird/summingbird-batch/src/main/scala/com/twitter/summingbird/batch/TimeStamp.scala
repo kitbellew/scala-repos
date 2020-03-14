@@ -49,8 +49,8 @@ object Timestamp {
   def now: Timestamp = Timestamp(System.currentTimeMillis)
 
   implicit def fromDate(d: Date) = Timestamp(d.getTime)
-  implicit val orderingOnTimestamp: Ordering[Timestamp] =
-    Ordering.by(_.milliSinceEpoch)
+  implicit val orderingOnTimestamp: Ordering[Timestamp] = Ordering.by(
+    _.milliSinceEpoch)
   implicit val maxTSMonoid: Monoid[Timestamp] =
     Monoid.from(Timestamp.Min)(orderingOnTimestamp.max(_, _))
 
@@ -93,19 +93,20 @@ object Timestamp {
   // This is a right semigroup, that given any two Timestamps just take the one on the right.
   // The reason we did this is because we don't want to give a stronger contract to the semigroup
   // than the store actually respects
-  val rightSemigroup = new Semigroup[Timestamp] {
-    def plus(a: Timestamp, b: Timestamp) = b
-    override def sumOption(ti: TraversableOnce[Timestamp]) =
-      if (ti.isEmpty)
-        None
-      else {
-        val iter = ti.toIterator
-        var last: Timestamp = iter.next
-        while (iter.hasNext) {
-          last = iter.next
+  val rightSemigroup =
+    new Semigroup[Timestamp] {
+      def plus(a: Timestamp, b: Timestamp) = b
+      override def sumOption(ti: TraversableOnce[Timestamp]) =
+        if (ti.isEmpty)
+          None
+        else {
+          val iter = ti.toIterator
+          var last: Timestamp = iter.next
+          while (iter.hasNext) {
+            last = iter.next
+          }
+          Some(last)
         }
-        Some(last)
-      }
-  }
+    }
 
 }

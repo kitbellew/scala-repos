@@ -115,12 +115,15 @@ class ActorCreationPerfSpec
   val BlockingTimeKey = ActorCreationKey / "synchronous-part"
   val TotalTimeKey = ActorCreationKey / "total"
 
-  val warmUp: Int =
-    Integer.getInteger("akka.test.actor.ActorPerfSpec.warmUp", 50000)
-  val nrOfActors: Int =
-    Integer.getInteger("akka.test.actor.ActorPerfSpec.numberOfActors", 100000)
-  val nrOfRepeats: Int =
-    Integer.getInteger("akka.test.actor.ActorPerfSpec.numberOfRepeats", 3)
+  val warmUp: Int = Integer.getInteger(
+    "akka.test.actor.ActorPerfSpec.warmUp",
+    50000)
+  val nrOfActors: Int = Integer.getInteger(
+    "akka.test.actor.ActorPerfSpec.numberOfActors",
+    100000)
+  val nrOfRepeats: Int = Integer.getInteger(
+    "akka.test.actor.ActorPerfSpec.numberOfRepeats",
+    3)
 
   def runWithCounterInside(
       metricName: String,
@@ -129,8 +132,9 @@ class ActorCreationPerfSpec
       propsCreator: () ⇒ Props) {
     val hist = histogram(BlockingTimeKey / metricName)
 
-    val driver =
-      system.actorOf(Props(classOf[TimingDriver], hist), scenarioName)
+    val driver = system.actorOf(
+      Props(classOf[TimingDriver], hist),
+      scenarioName)
     driver ! IsAlive
     expectMsg(Alive)
 
@@ -212,14 +216,15 @@ class ActorCreationPerfSpec
       val avgMem = averageGauge(ActorCreationKey / name / "avg-mem-per-actor")
 
       for (i ← 1 to nrOfRepeats) {
-        val heapUsed = timedWithKnownOps(
-          TotalTimeKey / s"creating-$nrOfActors-actors" / name,
-          ops = nrOfActors) {
-          runWithoutCounter(
-            s"${scenarioName}_driver_outside_$i",
-            nrOfActors,
-            propsCreator)
-        }
+        val heapUsed =
+          timedWithKnownOps(
+            TotalTimeKey / s"creating-$nrOfActors-actors" / name,
+            ops = nrOfActors) {
+            runWithoutCounter(
+              s"${scenarioName}_driver_outside_$i",
+              nrOfActors,
+              propsCreator)
+          }
 
         avgMem.add(
           heapUsed.used / nrOfActors

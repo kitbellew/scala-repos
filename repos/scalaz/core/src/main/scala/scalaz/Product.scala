@@ -108,8 +108,7 @@ private trait ProductFoldable[F[_], G[_]]
   implicit def G: Foldable[G]
 
   override def foldRight[A, B](fa: (F[A], G[A]), z: => B)(
-      f: (A, => B) => B): B =
-    F.foldRight(fa._1, G.foldRight(fa._2, z)(f))(f)
+      f: (A, => B) => B): B = F.foldRight(fa._1, G.foldRight(fa._2, z)(f))(f)
 
   override def foldMap[A, B](fa: (F[A], G[A]))(f: A => B)(
       implicit M: Monoid[B]): B =
@@ -137,8 +136,7 @@ private trait ProductFoldable1L[F[_], G[_]]
   }
 
   override def foldMapLeft1[A, B](fa: (F[A], G[A]))(z: A => B)(
-      f: (B, A) => B): B =
-    G.foldLeft(fa._2, F.foldMapLeft1(fa._1)(z)(f))(f)
+      f: (B, A) => B): B = G.foldLeft(fa._2, F.foldMapLeft1(fa._1)(z)(f))(f)
 }
 
 private trait ProductFoldable1R[F[_], G[_]]
@@ -179,8 +177,7 @@ private trait ProductFoldable1[F[_], G[_]]
     S.append(F.foldMap1(fa._1)(f), G.foldMap1(fa._2)(f))
 
   override def foldMapLeft1[A, B](fa: (F[A], G[A]))(z: A => B)(
-      f: (B, A) => B): B =
-    G.foldLeft(fa._2, F.foldMapLeft1(fa._1)(z)(f))(f)
+      f: (B, A) => B): B = G.foldLeft(fa._2, F.foldMapLeft1(fa._1)(z)(f))(f)
 }
 
 private trait ProductTraverse[F[_], G[_]]
@@ -211,8 +208,7 @@ private trait ProductTraverse1L[F[_], G[_]]
   }
 
   override def traverseImpl[X[_]: Applicative, A, B](a: (F[A], G[A]))(
-      f: A => X[B]): X[(F[B], G[B])] =
-    super[ProductTraverse].traverseImpl(a)(f)
+      f: A => X[B]): X[(F[B], G[B])] = super[ProductTraverse].traverseImpl(a)(f)
 }
 
 private trait ProductTraverse1R[F[_], G[_]]
@@ -230,8 +226,7 @@ private trait ProductTraverse1R[F[_], G[_]]
   }
 
   override def traverseImpl[X[_]: Applicative, A, B](a: (F[A], G[A]))(
-      f: A => X[B]): X[(F[B], G[B])] =
-    super[ProductTraverse].traverseImpl(a)(f)
+      f: A => X[B]): X[(F[B], G[B])] = super[ProductTraverse].traverseImpl(a)(f)
 }
 
 private trait ProductTraverse1[F[_], G[_]]
@@ -247,8 +242,7 @@ private trait ProductTraverse1[F[_], G[_]]
     Apply[X].tuple2(F.traverse1(a._1)(f), G.traverse1(a._2)(f))
 
   override def traverseImpl[X[_]: Applicative, A, B](a: (F[A], G[A]))(
-      f: A => X[B]): X[(F[B], G[B])] =
-    super[ProductTraverse].traverseImpl(a)(f)
+      f: A => X[B]): X[(F[B], G[B])] = super[ProductTraverse].traverseImpl(a)(f)
 }
 
 private trait ProductDistributive[F[_], G[_]]

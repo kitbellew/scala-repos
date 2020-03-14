@@ -21,15 +21,16 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
     }
     val ts = TableQuery[T]
 
-    val as1 = for {
-      _ <- ts.schema.create
-      _ <- ts += (1, Array[Byte](1, 2, 3))
-      _ <- ts += (2, Array[Byte](4, 5))
-      r1 <- ts.result.map(_.map {
-        case (id, data) => (id, data.mkString)
-      }.toSet)
-      _ = r1 shouldBe Set((1, "123"), (2, "45"))
-    } yield ()
+    val as1 =
+      for {
+        _ <- ts.schema.create
+        _ <- ts += (1, Array[Byte](1, 2, 3))
+        _ <- ts += (2, Array[Byte](4, 5))
+        r1 <- ts.result.map(_.map {
+          case (id, data) => (id, data.mkString)
+        }.toSet)
+        _ = r1 shouldBe Set((1, "123"), (2, "45"))
+      } yield ()
     if (implicitly[ColumnType[Array[Byte]]].hasLiteralForm) {
       as1 >> ts
         .filter(_.data === Array[Byte](4, 5))
@@ -73,12 +74,13 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
       }
       val ts = TableQuery[T]
 
-      val a1 = (
-        ts.schema.create >>
-          (ts += (1, new SerialBlob(Array[Byte](1, 2, 3)))) >>
-          (ts += (2, new SerialBlob(Array[Byte](4, 5)))) >>
-          ts.result
-      ).transactionally
+      val a1 =
+        (
+          ts.schema.create >>
+            (ts += (1, new SerialBlob(Array[Byte](1, 2, 3)))) >>
+            (ts += (2, new SerialBlob(Array[Byte](4, 5)))) >>
+            ts.result
+        ).transactionally
       val p1 = db.stream(a1).mapResult {
         case (id, data) => (id, data.getBytes(1, data.length.toInt).mkString)
       }
@@ -163,11 +165,9 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
     )
   }
 
-  def testDate =
-    roundtrip("date_t1", Date.valueOf("2012-12-24"))
+  def testDate = roundtrip("date_t1", Date.valueOf("2012-12-24"))
 
-  def testTime =
-    roundtrip("time_t1", Time.valueOf("17:53:48"))
+  def testTime = roundtrip("time_t1", Time.valueOf("17:53:48"))
 
   def testTimestamp = {
     roundtrip[Timestamp](
@@ -182,8 +182,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
     }
   }
 
-  def testUUID =
-    roundtrip[UUID]("uuid_t1", UUID.randomUUID())
+  def testUUID = roundtrip[UUID]("uuid_t1", UUID.randomUUID())
 
   def testOverrideIdentityType = {
     class T1(tag: Tag) extends Table[Int](tag, "t1") {

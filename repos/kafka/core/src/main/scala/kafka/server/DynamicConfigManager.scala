@@ -90,23 +90,27 @@ class DynamicConfigManager(
           }
           require(map("version") == 1)
 
-          val entityType = map.get("entity_type") match {
-            case Some(ConfigType.Topic)  => ConfigType.Topic
-            case Some(ConfigType.Client) => ConfigType.Client
-            case _ =>
-              throw new IllegalArgumentException(
-                "Config change notification must have 'entity_type' set to either 'client' or 'topic'." +
-                  " Received: " + json)
-          }
+          val entityType =
+            map.get("entity_type") match {
+              case Some(ConfigType.Topic)  => ConfigType.Topic
+              case Some(ConfigType.Client) => ConfigType.Client
+              case _ =>
+                throw new IllegalArgumentException(
+                  "Config change notification must have 'entity_type' set to either 'client' or 'topic'." +
+                    " Received: " + json)
+            }
 
-          val entity = map.get("entity_name") match {
-            case Some(value: String) => value
-            case _ =>
-              throw new IllegalArgumentException(
-                "Config change notification does not specify 'entity_name'. Received: " + json)
-          }
-          val entityConfig =
-            AdminUtils.fetchEntityConfig(zkUtils, entityType, entity)
+          val entity =
+            map.get("entity_name") match {
+              case Some(value: String) => value
+              case _ =>
+                throw new IllegalArgumentException(
+                  "Config change notification does not specify 'entity_name'. Received: " + json)
+            }
+          val entityConfig = AdminUtils.fetchEntityConfig(
+            zkUtils,
+            entityType,
+            entity)
           logger.info(
             s"Processing override for entityType: $entityType, entity: $entity with config: $entityConfig")
           configHandlers(entityType).processConfigChanges(entity, entityConfig)
@@ -122,11 +126,12 @@ class DynamicConfigManager(
     }
   }
 
-  private val configChangeListener = new ZkNodeChangeNotificationListener(
-    zkUtils,
-    ZkUtils.EntityConfigChangesPath,
-    AdminUtils.EntityConfigChangeZnodePrefix,
-    ConfigChangedNotificationHandler)
+  private val configChangeListener =
+    new ZkNodeChangeNotificationListener(
+      zkUtils,
+      ZkUtils.EntityConfigChangesPath,
+      AdminUtils.EntityConfigChangeZnodePrefix,
+      ConfigChangedNotificationHandler)
 
   /**
     * Begin watching for config changes

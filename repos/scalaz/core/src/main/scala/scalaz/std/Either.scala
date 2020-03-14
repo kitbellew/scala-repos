@@ -77,20 +77,21 @@ sealed trait EitherInstances0 {
 }
 
 trait EitherInstances extends EitherInstances0 {
-  implicit val eitherInstance = new Bitraverse[Either] {
-    override def bimap[A, B, C, D](fab: Either[A, B])(f: A => C, g: B => D) =
-      fab match {
-        case Left(a)  => Left(f(a))
-        case Right(b) => Right(g(b))
-      }
+  implicit val eitherInstance =
+    new Bitraverse[Either] {
+      override def bimap[A, B, C, D](fab: Either[A, B])(f: A => C, g: B => D) =
+        fab match {
+          case Left(a)  => Left(f(a))
+          case Right(b) => Right(g(b))
+        }
 
-    def bitraverseImpl[G[_]: Applicative, A, B, C, D](
-        fab: Either[A, B])(f: A => G[C], g: B => G[D]) =
-      fab match {
-        case Left(a)  => Applicative[G].map(f(a))(b => Left(b))
-        case Right(b) => Applicative[G].map(g(b))(d => Right(d))
-      }
-  }
+      def bitraverseImpl[G[_]: Applicative, A, B, C, D](
+          fab: Either[A, B])(f: A => G[C], g: B => G[D]) =
+        fab match {
+          case Left(a)  => Applicative[G].map(f(a))(b => Left(b))
+          case Right(b) => Applicative[G].map(g(b))(d => Right(d))
+        }
+    }
 
   /** Right biased monad */
   implicit def eitherMonad[L]: Traverse[Either[L, ?]]
@@ -113,8 +114,7 @@ trait EitherInstances extends EitherInstances0 {
           case Left(a)      => f(a)
         }
 
-      def raiseError[A](e: L) =
-        Left(e)
+      def raiseError[A](e: L) = Left(e)
 
       def point[A](a: => A) = Right(a)
 

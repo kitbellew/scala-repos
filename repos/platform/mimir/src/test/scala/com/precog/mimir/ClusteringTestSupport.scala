@@ -42,17 +42,19 @@ trait ClusteringTestSupport {
     def genPoint(x: => Double): Array[Double] = Array.fill(dimension)(x)
 
     val s = math.pow(2 * k, 1.0 / dimension)
-    val centers = (1 to k)
-      .map({ _ =>
-        genPoint(nextDouble * s)
-      })
-      .toArray
-    val points = (1 to n)
-      .map({ _ =>
-        val c = nextInt(k)
-        genPoint(nextGaussian) + centers(c)
-      })
-      .toArray
+    val centers =
+      (1 to k)
+        .map({ _ =>
+          genPoint(nextDouble * s)
+        })
+        .toArray
+    val points =
+      (1 to n)
+        .map({ _ =>
+          val c = nextInt(k)
+          genPoint(nextGaussian) + centers(c)
+        })
+        .toArray
 
     GeneratedPointSet(points, centers)
   }

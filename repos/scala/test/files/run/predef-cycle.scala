@@ -1,14 +1,16 @@
 class Force {
-  val t1 = new Thread {
-    override def run() {
-      scala.`package`
+  val t1 =
+    new Thread {
+      override def run() {
+        scala.`package`
+      }
     }
-  }
-  val t2 = new Thread {
-    override def run() {
-      scala.Predef
+  val t2 =
+    new Thread {
+      override def run() {
+        scala.Predef
+      }
     }
-  }
   t1.start()
   t2.start()
   t1.join()

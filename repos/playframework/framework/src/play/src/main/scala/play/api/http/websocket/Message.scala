@@ -40,8 +40,7 @@ case class CloseMessage(
     extends Message
 
 object CloseMessage {
-  def apply(statusCode: Int): CloseMessage =
-    CloseMessage(Some(statusCode), "")
+  def apply(statusCode: Int): CloseMessage = CloseMessage(Some(statusCode), "")
   def apply(statusCode: Int, reason: String): CloseMessage =
     CloseMessage(Some(statusCode), reason)
 }

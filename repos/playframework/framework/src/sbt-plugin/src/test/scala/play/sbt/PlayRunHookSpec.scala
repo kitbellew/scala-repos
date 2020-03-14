@@ -50,13 +50,17 @@ object PlayRunHookSpec extends Specification {
 
       val dummyHooks = Seq.fill(3)(createDummyHooks)
 
-      val firstFailure = new PlayRunHook {
-        override def beforeStarted(): Unit = throw new HookFirstMockException()
-      }
+      val firstFailure =
+        new PlayRunHook {
+          override def beforeStarted(): Unit =
+            throw new HookFirstMockException()
+        }
 
-      val lastFailure = new PlayRunHook {
-        override def beforeStarted(): Unit = throw new HookSecondMockException()
-      }
+      val lastFailure =
+        new PlayRunHook {
+          override def beforeStarted(): Unit =
+            throw new HookSecondMockException()
+        }
 
       val hooks = firstFailure +: dummyHooks :+ lastFailure
 

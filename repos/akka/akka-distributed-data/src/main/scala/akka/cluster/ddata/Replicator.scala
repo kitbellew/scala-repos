@@ -52,10 +52,11 @@ object ReplicatorSettings {
     * the default configuration `akka.cluster.distributed-data`.
     */
   def apply(config: Config): ReplicatorSettings = {
-    val dispatcher = config.getString("use-dispatcher") match {
-      case "" ⇒ Dispatchers.DefaultDispatcherId
-      case id ⇒ id
-    }
+    val dispatcher =
+      config.getString("use-dispatcher") match {
+        case "" ⇒ Dispatchers.DefaultDispatcherId
+        case id ⇒ id
+      }
     new ReplicatorSettings(
       role = roleOption(config.getString("role")),
       gossipInterval =
@@ -124,10 +125,11 @@ final class ReplicatorSettings(
     copy(maxDeltaElements = maxDeltaElements)
 
   def withDispatcher(dispatcher: String): ReplicatorSettings = {
-    val d = dispatcher match {
-      case "" ⇒ Dispatchers.DefaultDispatcherId
-      case id ⇒ id
-    }
+    val d =
+      dispatcher match {
+        case "" ⇒ Dispatchers.DefaultDispatcherId
+        case id ⇒ id
+      }
     copy(dispatcher = d)
   }
 
@@ -595,8 +597,8 @@ object Replicator {
             val prunedData = dataWithRemovedNodePruning.prune(from, to)
             copy(
               data = prunedData,
-              pruning =
-                pruning.updated(from, PruningState(to, PruningPerformed)))
+              pruning = pruning
+                .updated(from, PruningState(to, PruningPerformed)))
           case _ ⇒ this
         }
 
@@ -610,8 +612,9 @@ object Replicator {
           for ((key, thisValue) ← pruning) {
             mergedRemovedNodePruning.get(key) match {
               case None ⇒
-                mergedRemovedNodePruning =
-                  mergedRemovedNodePruning.updated(key, thisValue)
+                mergedRemovedNodePruning = mergedRemovedNodePruning.updated(
+                  key,
+                  thisValue)
               case Some(thatValue) ⇒
                 mergedRemovedNodePruning = mergedRemovedNodePruning.updated(
                   key,
@@ -899,8 +902,8 @@ final class Replicator(settings: ReplicatorSettings)
     self,
     ClockTick)
 
-  val serializer =
-    SerializationExtension(context.system).serializerFor(classOf[DataEnvelope])
+  val serializer = SerializationExtension(context.system)
+    .serializerFor(classOf[DataEnvelope])
   val maxPruningDisseminationNanos = maxPruningDissemination.toNanos
 
   // cluster nodes, doesn't contain selfAddress
@@ -928,10 +931,12 @@ final class Replicator(settings: ReplicatorSettings)
   var statusCount = 0L
   var statusTotChunks = 0
 
-  val subscribers = new mutable.HashMap[String, mutable.Set[ActorRef]]
-    with mutable.MultiMap[String, ActorRef]
-  val newSubscribers = new mutable.HashMap[String, mutable.Set[ActorRef]]
-    with mutable.MultiMap[String, ActorRef]
+  val subscribers =
+    new mutable.HashMap[String, mutable.Set[ActorRef]]
+      with mutable.MultiMap[String, ActorRef]
+  val newSubscribers =
+    new mutable.HashMap[String, mutable.Set[ActorRef]]
+      with mutable.MultiMap[String, ActorRef]
   var subscriptionKeys = Map.empty[String, KeyR]
 
   override def preStart(): Unit = {
@@ -997,11 +1002,12 @@ final class Replicator(settings: ReplicatorSettings)
     val localValue = getData(key.id)
     log.debug("Received Get for key [{}], local data [{}]", key, localValue)
     if (isLocalGet(consistency)) {
-      val reply = localValue match {
-        case Some(DataEnvelope(DeletedData, _)) ⇒ DataDeleted(key)
-        case Some(DataEnvelope(data, _)) ⇒ GetSuccess(key, req)(data)
-        case None ⇒ NotFound(key, req)
-      }
+      val reply =
+        localValue match {
+          case Some(DataEnvelope(DeletedData, _)) ⇒ DataDeleted(key)
+          case Some(DataEnvelope(data, _)) ⇒ GetSuccess(key, req)(data)
+          case None ⇒ NotFound(key, req)
+        }
       sender() ! reply
     } else
       context.actorOf(
@@ -1101,9 +1107,10 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def receiveGetKeyIds(): Unit = {
-    val keys: Set[String] = dataEntries.collect {
-      case (key, (DataEnvelope(data, _), _)) if data != DeletedData ⇒ key
-    }(collection.breakOut)
+    val keys: Set[String] =
+      dataEntries.collect {
+        case (key, (DataEnvelope(data, _), _)) if data != DeletedData ⇒ key
+      }(collection.breakOut)
     sender() ! GetKeyIdsResult(keys)
   }
 
@@ -1378,8 +1385,9 @@ final class Replicator(settings: ReplicatorSettings)
       context stop self
     else if (matchingRole(m)) {
       nodes -= m.address
-      removedNodes =
-        removedNodes.updated(m.uniqueAddress, allReachableClockTime)
+      removedNodes = removedNodes.updated(
+        m.uniqueAddress,
+        allReachableClockTime)
       unreachable -= m.address
     }
   }
@@ -1415,19 +1423,21 @@ final class Replicator(settings: ReplicatorSettings)
 
   def initRemovedNodePruning(): Unit = {
     // initiate pruning for removed nodes
-    val removedSet: Set[UniqueAddress] = removedNodes.collect {
-      case (r, t)
-          if ((allReachableClockTime - t) > maxPruningDisseminationNanos) ⇒
-        r
-    }(collection.breakOut)
+    val removedSet: Set[UniqueAddress] =
+      removedNodes.collect {
+        case (r, t)
+            if ((allReachableClockTime - t) > maxPruningDisseminationNanos) ⇒
+          r
+      }(collection.breakOut)
 
     if (removedSet.nonEmpty) {
       for ((key, (envelope, _)) ← dataEntries;
            removed ← removedSet) {
 
         def init(): Unit = {
-          val newEnvelope =
-            envelope.initRemovedNodePruning(removed, selfUniqueAddress)
+          val newEnvelope = envelope.initRemovedNodePruning(
+            removed,
+            selfUniqueAddress)
           log.debug("Initiated pruning of [{}] for data key [{}]", removed, key)
           setData(key, newEnvelope)
         }
@@ -1460,8 +1470,9 @@ final class Replicator(settings: ReplicatorSettings)
               if owner == selfUniqueAddress
                 && (nodes.isEmpty || nodes.forall(seen)) ⇒
             val newEnvelope = envelope.prune(removed)
-            pruningPerformed =
-              pruningPerformed.updated(removed, allReachableClockTime)
+            pruningPerformed = pruningPerformed.updated(
+              removed,
+              allReachableClockTime)
             log.debug(
               "Perform pruning of [{}] from [{}] to [{}]",
               key,
@@ -1569,10 +1580,10 @@ private[akka] abstract class ReadWriteAggregator extends Actor {
   def nodes: Set[Address]
 
   import context.dispatcher
-  var sendToSecondarySchedule =
-    context.system.scheduler.scheduleOnce(timeout / 5, self, SendToSecondary)
-  var timeoutSchedule =
-    context.system.scheduler.scheduleOnce(timeout, self, ReceiveTimeout)
+  var sendToSecondarySchedule = context.system.scheduler
+    .scheduleOnce(timeout / 5, self, SendToSecondary)
+  var timeoutSchedule = context.system.scheduler
+    .scheduleOnce(timeout, self, ReceiveTimeout)
 
   var remaining = nodes
 
@@ -1583,8 +1594,9 @@ private[akka] abstract class ReadWriteAggregator extends Actor {
     if (primarySize >= nodes.size)
       (nodes, Set.empty[Address])
     else {
-      val (p, s) =
-        scala.util.Random.shuffle(nodes.toVector).splitAt(primarySize)
+      val (p, s) = scala.util.Random
+        .shuffle(nodes.toVector)
+        .splitAt(primarySize)
       (p, s.take(MaxSecondaryNodes))
     }
   }
@@ -1632,17 +1644,18 @@ private[akka] class WriteAggregator(
 
   override def timeout: FiniteDuration = consistency.timeout
 
-  override val doneWhenRemainingSize = consistency match {
-    case WriteTo(n, _) ⇒ nodes.size - (n - 1)
-    case _: WriteAll ⇒ 0
-    case _: WriteMajority ⇒
-      val N = nodes.size + 1
-      val w = N / 2 + 1 // write to at least (N/2+1) nodes
-      N - w
-    case WriteLocal ⇒
-      throw new IllegalArgumentException(
-        "ReadLocal not supported by WriteAggregator")
-  }
+  override val doneWhenRemainingSize =
+    consistency match {
+      case WriteTo(n, _) ⇒ nodes.size - (n - 1)
+      case _: WriteAll ⇒ 0
+      case _: WriteMajority ⇒
+        val N = nodes.size + 1
+        val w = N / 2 + 1 // write to at least (N/2+1) nodes
+        N - w
+      case WriteLocal ⇒
+        throw new IllegalArgumentException(
+          "ReadLocal not supported by WriteAggregator")
+    }
 
   val writeMsg = Write(key.id, envelope)
 
@@ -1719,17 +1732,18 @@ private[akka] class ReadAggregator(
   override def timeout: FiniteDuration = consistency.timeout
 
   var result = localValue
-  override val doneWhenRemainingSize = consistency match {
-    case ReadFrom(n, _) ⇒ nodes.size - (n - 1)
-    case _: ReadAll ⇒ 0
-    case _: ReadMajority ⇒
-      val N = nodes.size + 1
-      val r = N / 2 + 1 // read from at least (N/2+1) nodes
-      N - r
-    case ReadLocal ⇒
-      throw new IllegalArgumentException(
-        "ReadLocal not supported by ReadAggregator")
-  }
+  override val doneWhenRemainingSize =
+    consistency match {
+      case ReadFrom(n, _) ⇒ nodes.size - (n - 1)
+      case _: ReadAll ⇒ 0
+      case _: ReadMajority ⇒
+        val N = nodes.size + 1
+        val r = N / 2 + 1 // read from at least (N/2+1) nodes
+        N - r
+      case ReadLocal ⇒
+        throw new IllegalArgumentException(
+          "ReadLocal not supported by ReadAggregator")
+    }
 
   val readMsg = Read(key.id)
 

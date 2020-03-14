@@ -241,8 +241,7 @@ object BSON {
 
     import scalaz.Functor
     def map[M[_]: Functor, A, B <: BSONValue](a: M[A])(
-        implicit writer: BSONWriter[A, B]): M[B] =
-      a map writer.write
+        implicit writer: BSONWriter[A, B]): M[B] = a map writer.write
   }
 
   val writer = new Writer

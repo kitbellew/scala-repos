@@ -45,10 +45,11 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
       //case for selecting extends block
       case ext: ScExtendsBlock =>
         val start: Int = e.getTextRange.getStartOffset
-        var end: Int = ext.templateBody match {
-          case Some(x) => x.getTextRange.getStartOffset
-          case None    => e.getTextRange.getEndOffset
-        }
+        var end: Int =
+          ext.templateBody match {
+            case Some(x) => x.getTextRange.getStartOffset
+            case None    => e.getTextRange.getEndOffset
+          }
         result.add(new TextRange(start, end))
         def isEmptyChar(c: Char): Boolean = c == ' ' || c == '\n'
         while (isEmptyChar(ext.getContainingFile.getText.charAt(end - 1)))
@@ -74,22 +75,23 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
             for (fRange <- ranges
                  if fRange.getEndOffset == qual.getTextRange.getEndOffset) {
               //cancatenating ranges
-              val tRange = new TextRange(
-                if (fRange.getStartOffset != fRange.getEndOffset)
-                  fRange.getStartOffset
-                else {
-                  //if we have dummy range we must find td letter to concatenate ranges
-                  var end = fRange.getEndOffset
-                  var flag = true
-                  while (flag) {
-                    editorText.charAt(end) match {
-                      case ' ' | '.' | '\n' => end += 1
-                      case _                => flag = false
+              val tRange =
+                new TextRange(
+                  if (fRange.getStartOffset != fRange.getEndOffset)
+                    fRange.getStartOffset
+                  else {
+                    //if we have dummy range we must find td letter to concatenate ranges
+                    var end = fRange.getEndOffset
+                    var flag = true
+                    while (flag) {
+                      editorText.charAt(end) match {
+                        case ' ' | '.' | '\n' => end += 1
+                        case _                => flag = false
+                      }
                     }
-                  }
-                  end
-                },
-                offset)
+                    end
+                  },
+                  offset)
               result.add(tRange)
             }
             //adding dummy range for recursion

@@ -185,8 +185,7 @@ final case class DynamicCell[T](f: () => T) extends Cell[T] {
   /**
     * The cell's value and most recent change time
     */
-  def currentValue: (T, Long) =
-    f() -> System.nanoTime()
+  def currentValue: (T, Long) = f() -> System.nanoTime()
 
   /**
     * If the predicate cell changes, the Dependent will be notified.

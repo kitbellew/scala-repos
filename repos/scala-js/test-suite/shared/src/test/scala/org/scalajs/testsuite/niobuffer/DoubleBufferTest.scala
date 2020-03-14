@@ -22,8 +22,7 @@ abstract class DoubleBufferTest extends BaseBufferTest {
   class WrappedDoubleBufferFactory
       extends Factory
       with BufferFactory.WrappedBufferFactory {
-    def baseWrap(array: Array[Double]): DoubleBuffer =
-      DoubleBuffer.wrap(array)
+    def baseWrap(array: Array[Double]): DoubleBuffer = DoubleBuffer.wrap(array)
 
     def baseWrap(array: Array[Double], offset: Int, length: Int): DoubleBuffer =
       DoubleBuffer.wrap(array, offset, length)

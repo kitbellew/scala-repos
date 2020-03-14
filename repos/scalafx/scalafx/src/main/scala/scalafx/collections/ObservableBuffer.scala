@@ -258,8 +258,8 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
   *
   */
 class ObservableBuffer[T](
-    override val delegate: jfxc.ObservableList[T] =
-      jfxc.FXCollections.observableArrayList[T])
+    override val delegate: jfxc.ObservableList[T] = jfxc.FXCollections
+      .observableArrayList[T])
     extends mutable.Buffer[T]
     with mutable.BufferLike[T, ObservableBuffer[T]]
     with GenericTraversableTemplate[T, ObservableBuffer]
@@ -588,31 +588,32 @@ class ObservableBuffer[T](
     */
   def onChange[T1 >: T](
       op: (ObservableBuffer[T], Seq[Change[T1]]) => Unit): Subscription = {
-    val listener = new jfxc.ListChangeListener[T1] {
-      def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) {
-        var changes = ArrayBuffer.empty[Change[T1]]
-        while (c.next()) {
-          if (c.wasPermutated()) {
-            changes += Reorder(
-              c.getFrom,
-              c.getTo,
-              { x =>
-                c.getPermutation(x)
-              })
-          } else if (c.wasUpdated()) {
-            changes += Update(c.getFrom, c.getTo)
-          } else {
-            if (c.wasRemoved()) {
-              changes += Remove(c.getFrom, c.getRemoved)
-            }
-            if (c.wasAdded()) {
-              changes += Add(c.getFrom, c.getAddedSubList)
+    val listener =
+      new jfxc.ListChangeListener[T1] {
+        def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) {
+          var changes = ArrayBuffer.empty[Change[T1]]
+          while (c.next()) {
+            if (c.wasPermutated()) {
+              changes += Reorder(
+                c.getFrom,
+                c.getTo,
+                { x =>
+                  c.getPermutation(x)
+                })
+            } else if (c.wasUpdated()) {
+              changes += Update(c.getFrom, c.getTo)
+            } else {
+              if (c.wasRemoved()) {
+                changes += Remove(c.getFrom, c.getRemoved)
+              }
+              if (c.wasAdded()) {
+                changes += Add(c.getFrom, c.getAddedSubList)
+              }
             }
           }
+          op(ObservableBuffer.this, changes)
         }
-        op(ObservableBuffer.this, changes)
       }
-    }
 
     delegate.addListener(listener)
 
@@ -631,11 +632,12 @@ class ObservableBuffer[T](
     * @return A `subscription` object
     */
   def onChange[T1 >: T](op: => Unit): Subscription = {
-    val listener = new jfxc.ListChangeListener[T1] {
-      def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) {
-        op
+    val listener =
+      new jfxc.ListChangeListener[T1] {
+        def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) {
+          op
+        }
       }
-    }
 
     delegate.addListener(listener)
 

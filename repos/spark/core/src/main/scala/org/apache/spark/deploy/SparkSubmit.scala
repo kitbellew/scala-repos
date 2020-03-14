@@ -101,8 +101,8 @@ object SparkSubmit {
 
   // scalastyle:off println
   // Exposed for testing
-  private[spark] var exitFn: Int => Unit = (exitCode: Int) =>
-    System.exit(exitCode)
+  private[spark] var exitFn: Int => Unit =
+    (exitCode: Int) => System.exit(exitCode)
   private[spark] var printStream: PrintStream = System.err
   private[spark] def printWarning(str: String): Unit =
     printStream.println("Warning: " + str)
@@ -256,30 +256,32 @@ object SparkSubmit {
     var childMainClass = ""
 
     // Set the cluster manager
-    val clusterManager: Int = args.master match {
-      case "yarn" => YARN
-      case "yarn-client" | "yarn-cluster" =>
-        printWarning(
-          s"Master ${args.master} is deprecated since 2.0." +
-            " Please use master \"yarn\" with specified deploy mode instead.")
-        YARN
-      case m if m.startsWith("spark") => STANDALONE
-      case m if m.startsWith("mesos") => MESOS
-      case m if m.startsWith("local") => LOCAL
-      case _ =>
-        printErrorAndExit(
-          "Master must either be yarn or start with spark, mesos, local")
-        -1
-    }
+    val clusterManager: Int =
+      args.master match {
+        case "yarn" => YARN
+        case "yarn-client" | "yarn-cluster" =>
+          printWarning(
+            s"Master ${args.master} is deprecated since 2.0." +
+              " Please use master \"yarn\" with specified deploy mode instead.")
+          YARN
+        case m if m.startsWith("spark") => STANDALONE
+        case m if m.startsWith("mesos") => MESOS
+        case m if m.startsWith("local") => LOCAL
+        case _ =>
+          printErrorAndExit(
+            "Master must either be yarn or start with spark, mesos, local")
+          -1
+      }
 
     // Set the deploy mode; default is client mode
-    var deployMode: Int = args.deployMode match {
-      case "client" | null => CLIENT
-      case "cluster"       => CLUSTER
-      case _ =>
-        printErrorAndExit("Deploy mode must be either client or cluster");
-        -1
-    }
+    var deployMode: Int =
+      args.deployMode match {
+        case "client" | null => CLIENT
+        case "cluster"       => CLUSTER
+        case _ =>
+          printErrorAndExit("Deploy mode must be either client or cluster");
+          -1
+      }
 
     // Because the deprecated way of specifying "yarn-cluster" and "yarn-client" encapsulate both
     // the master and deploy mode, we have some logic to infer the master and deploy mode
@@ -438,15 +440,15 @@ object SparkSubmit {
 
       // Distribute the SparkR package.
       // Assigns a symbol link name "sparkr" to the shipped package.
-      args.archives =
-        mergeFileLists(args.archives, sparkRPackageURI + "#sparkr")
+      args.archives = mergeFileLists(
+        args.archives,
+        sparkRPackageURI + "#sparkr")
 
       // Distribute the R package archive containing all the built R packages.
       if (!RUtils.rPackages.isEmpty) {
-        val rPackageFile =
-          RPackageUtils.zipRLibraries(
-            new File(RUtils.rPackages.get),
-            R_PACKAGE_ARCHIVE)
+        val rPackageFile = RPackageUtils.zipRLibraries(
+          new File(RUtils.rPackages.get),
+          R_PACKAGE_ARCHIVE)
         if (!rPackageFile.exists()) {
           printErrorAndExit("Failed to zip all the built R packages.")
         }
@@ -810,8 +812,9 @@ object SparkSubmit {
     // explicitly sets `spark.submit.pyFiles` in his/her default properties file.
     sysProps.get("spark.submit.pyFiles").foreach { pyFiles =>
       val resolvedPyFiles = Utils.resolveURIs(pyFiles)
-      val formattedPyFiles =
-        PythonRunner.formatPaths(resolvedPyFiles).mkString(",")
+      val formattedPyFiles = PythonRunner
+        .formatPaths(resolvedPyFiles)
+        .mkString(",")
       sysProps("spark.submit.pyFiles") = formattedPyFiles
     }
 
@@ -1166,8 +1169,10 @@ private[spark] object SparkSubmitUtils {
       artifacts: Seq[MavenCoordinate],
       ivyConfName: String): Unit = {
     artifacts.foreach { mvn =>
-      val ri =
-        ModuleRevisionId.newInstance(mvn.groupId, mvn.artifactId, mvn.version)
+      val ri = ModuleRevisionId.newInstance(
+        mvn.groupId,
+        mvn.artifactId,
+        mvn.version)
       val dd = new DefaultDependencyDescriptor(ri, false, false)
       dd.addDependencyConfiguration(ivyConfName, ivyConfName)
       // scalastyle:off println
@@ -1290,9 +1295,10 @@ private[spark] object SparkSubmitUtils {
         // leads to confusion with Ivy when the files can no longer be found at the repository
         // declared in that file/
         val mdId = md.getModuleRevisionId
-        val previousResolution = new File(
-          ivySettings.getDefaultCache,
-          s"${mdId.getOrganisation}-${mdId.getName}-$ivyConfName.xml")
+        val previousResolution =
+          new File(
+            ivySettings.getDefaultCache,
+            s"${mdId.getOrganisation}-${mdId.getName}-$ivyConfName.xml")
         if (previousResolution.exists)
           previousResolution.delete
 

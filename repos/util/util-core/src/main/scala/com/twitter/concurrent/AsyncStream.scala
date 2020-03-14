@@ -738,8 +738,7 @@ object AsyncStream {
   /**
     * Transformation (or lift) from [[Future]] into `AsyncStream`.
     */
-  def fromFuture[A](f: Future[A]): AsyncStream[A] =
-    FromFuture(f)
+  def fromFuture[A](f: Future[A]): AsyncStream[A] = FromFuture(f)
 
   /**
     * Transformation (or lift) from [[Option]] into `AsyncStream`.
@@ -764,12 +763,10 @@ object AsyncStream {
     * Lift from [[Future]] into `AsyncStream` and then flatten.
     */
   private[concurrent] def embed[A](
-      fas: Future[AsyncStream[A]]): AsyncStream[A] =
-    Embed(fas)
+      fas: Future[AsyncStream[A]]): AsyncStream[A] = Embed(fas)
 
   /**
     * Java friendly [[AsyncStream.flatten]].
     */
-  def flattens[A](as: AsyncStream[AsyncStream[A]]): AsyncStream[A] =
-    as.flatten
+  def flattens[A](as: AsyncStream[AsyncStream[A]]): AsyncStream[A] = as.flatten
 }

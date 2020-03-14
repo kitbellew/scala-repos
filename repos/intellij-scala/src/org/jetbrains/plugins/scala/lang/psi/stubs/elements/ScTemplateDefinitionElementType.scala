@@ -43,10 +43,11 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
       else
         null
     val signs = psi.functions.map(_.name).toArray
-    val isPO = psi match {
-      case td: ScTypeDefinition => td.isPackageObject
-      case _                    => false
-    }
+    val isPO =
+      psi match {
+        case td: ScTypeDefinition => td.isPackageObject
+        case _                    => false
+      }
     val isSFC = psi.isScriptFileClass
 
     val isDepr =

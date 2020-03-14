@@ -55,12 +55,13 @@ private[ml] trait VectorIndexerParams
     * (default = 20)
     * @group param
     */
-  val maxCategories = new IntParam(
-    this,
-    "maxCategories",
-    "Threshold for the number of values a categorical feature can take (>= 2)." +
-      " If a feature is found to have > maxCategories values, then it is declared continuous.",
-    ParamValidators.gtEq(2))
+  val maxCategories =
+    new IntParam(
+      this,
+      "maxCategories",
+      "Threshold for the number of values a categorical feature can take (>= 2)." +
+        " If a feature is found to have > maxCategories values, then it is declared continuous.",
+      ParamValidators.gtEq(2))
 
   setDefault(maxCategories -> 20)
 
@@ -321,11 +322,10 @@ class VectorIndexerModel private[ml] (
     while (featureIndex < numFeatures) {
       if (categoryMaps.contains(featureIndex)) {
         // categorical feature
-        val featureValues: Array[String] =
-          categoryMaps(featureIndex).toArray
-            .sortBy(_._1)
-            .map(_._1)
-            .map(_.toString)
+        val featureValues: Array[String] = categoryMaps(featureIndex).toArray
+          .sortBy(_._1)
+          .map(_._1)
+          .map(_.toString)
         if (featureValues.length == 2) {
           attrs(featureIndex) = new BinaryAttribute(
             index = Some(featureIndex),
@@ -422,11 +422,12 @@ class VectorIndexerModel private[ml] (
 
     // If the input metadata specifies numFeatures, compare with expected numFeatures.
     val origAttrGroup = AttributeGroup.fromStructField(schema($(inputCol)))
-    val origNumFeatures: Option[Int] = if (origAttrGroup.attributes.nonEmpty) {
-      Some(origAttrGroup.attributes.get.length)
-    } else {
-      origAttrGroup.numAttributes
-    }
+    val origNumFeatures: Option[Int] =
+      if (origAttrGroup.attributes.nonEmpty) {
+        Some(origAttrGroup.attributes.get.length)
+      } else {
+        origAttrGroup.numAttributes
+      }
     require(
       origNumFeatures.forall(_ == numFeatures),
       "VectorIndexerModel expected" +

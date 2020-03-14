@@ -35,9 +35,10 @@ class B {
     def bippy(): List[Mom]
   }
 
-  val x: Bippy = new AnyRef {
-    type Mom = String
-    def bar(x: Int) = 55
-    def bippy() = List(bar(55))
-  }
+  val x: Bippy =
+    new AnyRef {
+      type Mom = String
+      def bar(x: Int) = 55
+      def bippy() = List(bar(55))
+    }
 }

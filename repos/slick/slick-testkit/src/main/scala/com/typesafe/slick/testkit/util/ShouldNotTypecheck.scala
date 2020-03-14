@@ -22,13 +22,14 @@ object ShouldNotTypecheck {
     import ctx.universe._
 
     val Expr(Literal(Constant(codeStr: String))) = code
-    val (expPat, expMsg) = expected match {
-      case null => (null, "Expected some error.")
-      case Expr(Literal(Constant(s: String))) =>
-        (
-          Pattern.compile(s, Pattern.CASE_INSENSITIVE | Pattern.DOTALL),
-          "Expected error matching: " + s)
-    }
+    val (expPat, expMsg) =
+      expected match {
+        case null => (null, "Expected some error.")
+        case Expr(Literal(Constant(s: String))) =>
+          (
+            Pattern.compile(s, Pattern.CASE_INSENSITIVE | Pattern.DOTALL),
+            "Expected error matching: " + s)
+      }
 
     try ctx.typecheck(ctx.parse("{ " + codeStr + " }"))
     catch {

@@ -22,8 +22,11 @@ class DeadlineSpanMapTest extends FunSuite {
       val timer = new MockTimer
       val map =
         new DeadlineSpanMap(logger, 1.milliseconds, NullStatsReceiver, timer)
-      val traceId =
-        TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
+      val traceId = TraceId(
+        Some(SpanId(123)),
+        Some(SpanId(123)),
+        SpanId(123),
+        None)
 
       val span =
         map.update(traceId)(_.setServiceName("service").setName("name"))

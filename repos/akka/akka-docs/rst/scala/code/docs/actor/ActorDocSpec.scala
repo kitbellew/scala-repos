@@ -287,8 +287,9 @@ class ActorDocSpec extends AkkaSpec("""
       }
       //#import-context
 
-      val first =
-        system.actorOf(Props(classOf[FirstActor], this), name = "first")
+      val first = system.actorOf(
+        Props(classOf[FirstActor], this),
+        name = "first")
       system.stop(first)
     }
   }
@@ -363,29 +364,30 @@ class ActorDocSpec extends AkkaSpec("""
 
     val a: {
       def actorRef: ActorRef
-    } = new AnyRef {
-      val applicationContext = this
+    } =
+      new AnyRef {
+        val applicationContext = this
 
-      //#creating-indirectly
-      import akka.actor.IndirectActorProducer
+        //#creating-indirectly
+        import akka.actor.IndirectActorProducer
 
-      class DependencyInjector(applicationContext: AnyRef, beanName: String)
-          extends IndirectActorProducer {
+        class DependencyInjector(applicationContext: AnyRef, beanName: String)
+            extends IndirectActorProducer {
 
-        override def actorClass = classOf[Actor]
-        override def produce =
+          override def actorClass = classOf[Actor]
+          override def produce =
+            //#obtain-fresh-Actor-instance-from-DI-framework
+            new Echo(beanName)
+
+          def this(beanName: String) = this("", beanName)
           //#obtain-fresh-Actor-instance-from-DI-framework
-          new Echo(beanName)
+        }
 
-        def this(beanName: String) = this("", beanName)
-        //#obtain-fresh-Actor-instance-from-DI-framework
+        val actorRef = system.actorOf(
+          Props(classOf[DependencyInjector], applicationContext, "hello"),
+          "helloBean")
+        //#creating-indirectly
       }
-
-      val actorRef = system.actorOf(
-        Props(classOf[DependencyInjector], applicationContext, "hello"),
-        "helloBean")
-      //#creating-indirectly
-    }
     val actorRef = {
       import scala.language.reflectiveCalls
       a.actorRef
@@ -575,8 +577,10 @@ class ActorDocSpec extends AkkaSpec("""
     import scala.concurrent.Await
 
     try {
-      val stopped: Future[Boolean] =
-        gracefulStop(actorRef, 5 seconds, Manager.Shutdown)
+      val stopped: Future[Boolean] = gracefulStop(
+        actorRef,
+        5 seconds,
+        Manager.Shutdown)
       Await.result(stopped, 6 seconds)
       // the actor has been stopped
     } catch {

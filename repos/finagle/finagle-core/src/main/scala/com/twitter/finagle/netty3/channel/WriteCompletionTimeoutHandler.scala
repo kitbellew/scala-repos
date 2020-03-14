@@ -15,16 +15,17 @@ private[finagle] class WriteCompletionTimeoutHandler(
     timeout: Duration)
     extends SimpleChannelDownstreamHandler {
   override def writeRequested(ctx: ChannelHandlerContext, e: MessageEvent) {
-    val task = timer.schedule(Time.now + timeout) {
-      val channel = ctx.getChannel
-      Channels.fireExceptionCaught(
-        channel,
-        new WriteTimedOutException(
-          if (channel != null)
-            channel.getRemoteAddress
-          else
-            null))
-    }
+    val task =
+      timer.schedule(Time.now + timeout) {
+        val channel = ctx.getChannel
+        Channels.fireExceptionCaught(
+          channel,
+          new WriteTimedOutException(
+            if (channel != null)
+              channel.getRemoteAddress
+            else
+              null))
+      }
     e.getFuture.addListener(new ChannelFutureListener {
       override def operationComplete(f: ChannelFuture): Unit =
         if (!f.isCancelled) { // on success or failure

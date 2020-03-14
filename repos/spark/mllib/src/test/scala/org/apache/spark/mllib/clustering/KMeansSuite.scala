@@ -307,8 +307,12 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     for (initMode <- Seq(RANDOM, K_MEANS_PARALLEL)) {
       // Two iterations are sufficient no matter where the initial centers are.
-      val model =
-        KMeans.train(rdd, k = 2, maxIterations = 2, runs = 1, initMode)
+      val model = KMeans.train(
+        rdd,
+        k = 2,
+        maxIterations = 2,
+        runs = 1,
+        initMode)
 
       val predicts = model.predict(rdd).collect()
 
@@ -363,12 +367,13 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
 object KMeansSuite extends SparkFunSuite {
   def createModel(dim: Int, k: Int, isSparse: Boolean): KMeansModel = {
-    val singlePoint = isSparse match {
-      case true =>
-        Vectors.sparse(dim, Array.empty[Int], Array.empty[Double])
-      case _ =>
-        Vectors.dense(Array.fill[Double](dim)(0.0))
-    }
+    val singlePoint =
+      isSparse match {
+        case true =>
+          Vectors.sparse(dim, Array.empty[Int], Array.empty[Double])
+        case _ =>
+          Vectors.dense(Array.fill[Double](dim)(0.0))
+      }
     new KMeansModel(Array.fill[Vector](k)(singlePoint))
   }
 

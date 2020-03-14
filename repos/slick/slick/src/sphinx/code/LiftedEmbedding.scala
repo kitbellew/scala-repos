@@ -318,10 +318,11 @@ object LiftedEmbedding extends App {
     };
     {
       //#aggregation3
-      val q = (for {
-        c <- coffees
-        s <- c.supplier
-      } yield (c, s)).groupBy(_._1.supID)
+      val q =
+        (for {
+          c <- coffees
+          s <- c.supplier
+        } yield (c, s)).groupBy(_._1.supID)
 
       val q2 = q.map {
         case (supID, css) =>
@@ -382,8 +383,9 @@ object LiftedEmbedding extends App {
           "Stefan",
           "Zeiger")
       //#insert3b
-      val userWithIdRes =
-        Await.result(db.run(users.schema.create >> userWithId), Duration.Inf)
+      val userWithIdRes = Await.result(
+        db.run(users.schema.create >> userWithId),
+        Duration.Inf)
       println(userWithIdRes)
 
       //#insert4
@@ -417,9 +419,10 @@ object LiftedEmbedding extends App {
     };
     {
       //#update1
-      val q = for {
-        c <- coffees if c.name === "Espresso"
-      } yield c.price
+      val q =
+        for {
+          c <- coffees if c.name === "Espresso"
+        } yield c.price
       val updateAction = q.update(10.49)
 
       // Get the statement without having to specify an updated value:
@@ -468,17 +471,19 @@ object LiftedEmbedding extends App {
 
       {
         //#template1
-        val userNameByID = for {
-          id <- Parameters[Int]
-          u <- users if u.id === id
-        } yield u.first
+        val userNameByID =
+          for {
+            id <- Parameters[Int]
+            u <- users if u.id === id
+          } yield u.first
 
         val nameAction = userNameByID(2).result.head
 
-        val userNameByIDRange = for {
-          (min, max) <- Parameters[(Int, Int)]
-          u <- users if u.id >= min && u.id < max
-        } yield u.first
+        val userNameByIDRange =
+          for {
+            (min, max) <- Parameters[(Int, Int)]
+            u <- users if u.id >= min && u.id < max
+          } yield u.first
 
         val namesAction = userNameByIDRange(2, 5).result
         //#template1
@@ -497,11 +502,12 @@ object LiftedEmbedding extends App {
       val dayOfWeek = SimpleFunction.unary[Date, Int]("day_of_week")
 
       // Use the lifted function in a query to group by day of week
-      val q1 = for {
-        (dow, q) <- salesPerDay
-          .map(s => (dayOfWeek(s.day), s.count))
-          .groupBy(_._1)
-      } yield (dow, q.map(_._2).sum)
+      val q1 =
+        for {
+          (dow, q) <- salesPerDay
+            .map(s => (dayOfWeek(s.day), s.count))
+            .groupBy(_._1)
+        } yield (dow, q.map(_._2).sum)
       //#simplefunction1
 
       //#simplefunction2

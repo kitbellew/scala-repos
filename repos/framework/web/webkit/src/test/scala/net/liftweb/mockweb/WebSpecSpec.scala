@@ -77,9 +77,10 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
       new MockHttpServletRequest("http://foo.com/test/this?foo=bar", "/test")
 
     // Create a new session for use in the tests
-    val testSession = MockWeb.testS(testUrl) {
-      S.session
-    }
+    val testSession =
+      MockWeb.testS(testUrl) {
+        S.session
+      }
 
     object TestVar extends SessionVar[String]("Empty")
 

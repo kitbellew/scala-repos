@@ -54,24 +54,26 @@ object CatalystTypeConverters {
 
   private def getConverterForType(
       dataType: DataType): CatalystTypeConverter[Any, Any, Any] = {
-    val converter = dataType match {
-      case udt: UserDefinedType[_] => UDTConverter(udt)
-      case arrayType: ArrayType    => ArrayConverter(arrayType.elementType)
-      case mapType: MapType        => MapConverter(mapType.keyType, mapType.valueType)
-      case structType: StructType  => StructConverter(structType)
-      case StringType              => StringConverter
-      case DateType                => DateConverter
-      case TimestampType           => TimestampConverter
-      case dt: DecimalType         => new DecimalConverter(dt)
-      case BooleanType             => BooleanConverter
-      case ByteType                => ByteConverter
-      case ShortType               => ShortConverter
-      case IntegerType             => IntConverter
-      case LongType                => LongConverter
-      case FloatType               => FloatConverter
-      case DoubleType              => DoubleConverter
-      case dataType: DataType      => IdentityConverter(dataType)
-    }
+    val converter =
+      dataType match {
+        case udt: UserDefinedType[_] => UDTConverter(udt)
+        case arrayType: ArrayType    => ArrayConverter(arrayType.elementType)
+        case mapType: MapType =>
+          MapConverter(mapType.keyType, mapType.valueType)
+        case structType: StructType => StructConverter(structType)
+        case StringType             => StringConverter
+        case DateType               => DateConverter
+        case TimestampType          => TimestampConverter
+        case dt: DecimalType        => new DecimalConverter(dt)
+        case BooleanType            => BooleanConverter
+        case ByteType               => ByteConverter
+        case ShortType              => ShortConverter
+        case IntegerType            => IntConverter
+        case LongType               => LongConverter
+        case FloatType              => FloatConverter
+        case DoubleType             => DoubleConverter
+        case dataType: DataType     => IdentityConverter(dataType)
+      }
     converter.asInstanceOf[CatalystTypeConverter[Any, Any, Any]]
   }
 
@@ -172,8 +174,8 @@ object CatalystTypeConverters {
           new GenericArrayData(s.map(elementConverter.toCatalyst).toArray)
         case i: JavaIterable[_] =>
           val iter = i.iterator
-          val convertedIterable =
-            scala.collection.mutable.ArrayBuffer.empty[Any]
+          val convertedIterable = scala.collection.mutable.ArrayBuffer
+            .empty[Any]
           while (iter.hasNext) {
             val item = iter.next()
             convertedIterable += elementConverter.toCatalyst(item)
@@ -355,11 +357,12 @@ object CatalystTypeConverters {
   private class DecimalConverter(dataType: DecimalType)
       extends CatalystTypeConverter[Any, JavaBigDecimal, Decimal] {
     override def toCatalystImpl(scalaValue: Any): Decimal = {
-      val decimal = scalaValue match {
-        case d: BigDecimal     => Decimal(d)
-        case d: JavaBigDecimal => Decimal(d)
-        case d: Decimal        => d
-      }
+      val decimal =
+        scalaValue match {
+          case d: BigDecimal     => Decimal(d)
+          case d: JavaBigDecimal => Decimal(d)
+          case d: Decimal        => d
+        }
       if (decimal.changePrecision(dataType.precision, dataType.scale)) {
         decimal
       } else {

@@ -28,24 +28,28 @@ import com.twitter.conversions.string._
 class FormatterTest extends WordSpec {
   val basicFormatter = new Formatter
 
-  val utcFormatter = new Formatter(
-    timezone = Some("UTC")
-  )
+  val utcFormatter =
+    new Formatter(
+      timezone = Some("UTC")
+    )
 
-  val fullPackageFormatter = new Formatter(
-    timezone = Some("UTC"),
-    useFullPackageNames = true
-  )
+  val fullPackageFormatter =
+    new Formatter(
+      timezone = Some("UTC"),
+      useFullPackageNames = true
+    )
 
-  val prefixFormatter = new Formatter(
-    timezone = Some("UTC"),
-    prefix = "%2$s <HH:mm> %1$.4s "
-  )
+  val prefixFormatter =
+    new Formatter(
+      timezone = Some("UTC"),
+      prefix = "%2$s <HH:mm> %1$.4s "
+    )
 
-  val truncateFormatter = new Formatter(
-    timezone = Some("UTC"),
-    truncateAt = 30
-  )
+  val truncateFormatter =
+    new Formatter(
+      timezone = Some("UTC"),
+      truncateAt = 30
+    )
 
   val record1 = new javalog.LogRecord(Level.ERROR, "boo.")
   record1.setLoggerName("com.example.jobs.BadJob")
@@ -55,9 +59,10 @@ class FormatterTest extends WordSpec {
   record2.setLoggerName("com.example.jobs.BadJob")
   record2.setMillis(1206769996722L)
 
-  val record3 = new javalog.LogRecord(
-    Level.CRITICAL,
-    "Something terrible happened that may take a very long time to explain because I write crappy log messages.")
+  val record3 =
+    new javalog.LogRecord(
+      Level.CRITICAL,
+      "Something terrible happened that may take a very long time to explain because I write crappy log messages.")
   record3.setLoggerName("net.lag.whiskey.Train")
   record3.setMillis(1206769996722L)
 

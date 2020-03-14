@@ -29,12 +29,13 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
         if ref.refName == "map" && checkResolve(
           ref,
           getLikeCollectionClasses) =>
-      val isInBlock = call.getParent match {
-        case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
-            _: ScalaFile =>
-          true
-        case _ => false
-      }
+      val isInBlock =
+        call.getParent match {
+          case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
+              _: ScalaFile =>
+            true
+          case _ => false
+        }
       val fixes =
         if (isInBlock)
           Seq(

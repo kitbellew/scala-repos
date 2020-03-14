@@ -84,8 +84,7 @@ class C7 extends C6[Int] {
       x1: Val[Int],
       x2: ValAny[Int],
       x3: ValStr[Int],
-      x4: ValA[Int]) =
-    super.f1(x1, x2, x3, x4)
+      x4: ValA[Int]) = super.f1(x1, x2, x3, x4)
 }
 
 object Test {

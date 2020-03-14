@@ -97,13 +97,14 @@ trait ClusteringLibSpecs[M[+_]]
         case _ => sys.error("not supported")
       }
 
-    val clusters: Array[Array[Double]] = clusterMap.values
-      .map({ sval =>
-        val arr = getPoint(sval)
-        arr must haveSize(dimension)
-        arr.toArray
-      })
-      .toArray
+    val clusters: Array[Array[Double]] =
+      clusterMap.values
+        .map({ sval =>
+          val arr = getPoint(sval)
+          arr must haveSize(dimension)
+          arr.toArray
+        })
+        .toArray
 
     val cost = kMediansCost(points, clusters)
 
@@ -144,10 +145,11 @@ trait ClusteringLibSpecs[M[+_]]
       val k = 5
       val clusterIds = (1 to k).map("cluster" + _).toSet
 
-      val input = dag.Morph2(
-        KMediansClustering,
-        dag.Const(CNum(4.4))(line),
-        dag.Const(CLong(k))(line))(line)
+      val input =
+        dag.Morph2(
+          KMediansClustering,
+          dag.Const(CNum(4.4))(line),
+          dag.Const(CLong(k))(line))(line)
 
       val result = testEval(input)
 
@@ -355,10 +357,11 @@ trait ClusteringLibSpecs[M[+_]]
   def createDAG(pointsDataSet: String, modelDataSet: String) = {
     val points = dag.AbsoluteLoad(Const(CString(pointsDataSet))(line))(line)
 
-    val input = dag.Morph2(
-      AssignClusters,
-      points,
-      dag.AbsoluteLoad(Const(CString(modelDataSet))(line))(line))(line)
+    val input =
+      dag.Morph2(
+        AssignClusters,
+        points,
+        dag.AbsoluteLoad(Const(CString(modelDataSet))(line))(line))(line)
 
     dag.Join(
       JoinObject,
@@ -392,12 +395,13 @@ trait ClusteringLibSpecs[M[+_]]
         val rvalue = clusterMap((model("clusterId"): @unchecked) match {
           case SString(s) => s
         })
-        val res = (rvalue: @unchecked) match {
-          case RArray(values) =>
-            values collect {
-              case CNum(x) => x
-            }
-        }
+        val res =
+          (rvalue: @unchecked) match {
+            case RArray(values) =>
+              values collect {
+                case CNum(x) => x
+              }
+          }
 
         arr must_== res
     }
@@ -413,9 +417,10 @@ trait ClusteringLibSpecs[M[+_]]
 
       val clusters = makeClusters(centers)
 
-      val clusterMap = clusters match {
-        case RObject(xs) => xs
-      }
+      val clusterMap =
+        clusters match {
+          case RObject(xs) => xs
+        }
 
       val model1 = RObject(Map("model1" -> clusters))
       val assignments = assign(points, centers)
@@ -457,12 +462,14 @@ trait ClusteringLibSpecs[M[+_]]
       val clustersA = makeClusters(centersA)
       val clustersB = makeClusters(centersB)
 
-      val clusterMapA = clustersA match {
-        case RObject(xs) => xs
-      }
-      val clusterMapB = clustersB match {
-        case RObject(xs) => xs
-      }
+      val clusterMapA =
+        clustersA match {
+          case RObject(xs) => xs
+        }
+      val clusterMapB =
+        clustersB match {
+          case RObject(xs) => xs
+        }
 
       val models = RObject(Map("model1" -> clustersA, "model2" -> clustersB))
 
@@ -527,9 +534,10 @@ trait ClusteringLibSpecs[M[+_]]
 
       val clusters = makeClusters(centers)
 
-      val clusterMap = clusters match {
-        case RObject(xs) => xs
-      }
+      val clusterMap =
+        clusters match {
+          case RObject(xs) => xs
+        }
 
       val model = RObject(Map("model1" -> clusters))
 
@@ -560,11 +568,12 @@ trait ClusteringLibSpecs[M[+_]]
     }
 
     "assign correctly with multiple rows of schema with overlapping modelIds" in {
-      val input = dag.Morph2(
-        AssignClusters,
-        dag.AbsoluteLoad(Const(CString("/hom/clusteringData"))(line))(line),
-        dag.AbsoluteLoad(Const(CString("/hom/clusteringModel"))(line))(line)
-      )(line)
+      val input =
+        dag.Morph2(
+          AssignClusters,
+          dag.AbsoluteLoad(Const(CString("/hom/clusteringData"))(line))(line),
+          dag.AbsoluteLoad(Const(CString("/hom/clusteringModel"))(line))(line)
+        )(line)
 
       val result0 = testEval(input)
 

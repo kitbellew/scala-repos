@@ -89,9 +89,10 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     def deleteOne() {
       val sf = inputs(sfidx)
       deleted = sf.content(pos) :: deleted
-      val sf1 = new BatchSourceFile(
-        sf.file,
-        sf.content.take(pos) ++ sf.content.drop(pos + 1))
+      val sf1 =
+        new BatchSourceFile(
+          sf.file,
+          sf.content.take(pos) ++ sf.content.drop(pos + 1))
       inputs(sfidx) = sf1
       askReload(sf1)
     }
@@ -152,15 +153,16 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
       }
     }
     for (i <- 0 until randomBatchesPerSourceFile()) {
-      val changes = Vector.fill( /**/ randomChangesPerBatch()) {
+      val changes =
+        Vector.fill( /**/ randomChangesPerBatch()) {
 
-        /**/
-        new Change(
-          sfidx,
-          randomPositionIn(inputs(sfidx)),
-          randomNumChars(),
-          rand.nextBoolean())
-      }
+          /**/
+          new Change(
+            sfidx,
+            randomPositionIn(inputs(sfidx)),
+            randomNumChars(),
+            rand.nextBoolean())
+        }
       doTest(sfidx, changes, testPositions, otherTest) match {
         case Some(errortrace) =>
           println(errortrace)

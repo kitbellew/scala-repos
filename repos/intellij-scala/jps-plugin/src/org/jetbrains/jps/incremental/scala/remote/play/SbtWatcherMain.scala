@@ -24,20 +24,21 @@ object SbtWatcherMain {
   }
 
   private def handle(arguments: Seq[String], out: PrintStream) {
-    val messageConsumer = new MessageConsumer {
-      override def consume(message: String) {
-        out.write(
-          Base64Converter
-            .encode(
-              MessageEvent(
-                BuildMessage.Kind.INFO,
-                message,
-                None,
-                None,
-                None).toBytes)
-            .getBytes)
+    val messageConsumer =
+      new MessageConsumer {
+        override def consume(message: String) {
+          out.write(
+            Base64Converter
+              .encode(
+                MessageEvent(
+                  BuildMessage.Kind.INFO,
+                  message,
+                  None,
+                  None,
+                  None).toBytes)
+              .getBytes)
+        }
       }
-    }
 
     arguments.head match {
       case START =>

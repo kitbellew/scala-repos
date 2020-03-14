@@ -120,11 +120,12 @@ class IngestServiceHandler(
     }
   }
 
-  private[this] val processingSelectors = new DefaultIngestProcessingSelectors(
-    maxFields,
-    batchSize,
-    ingestTmpDir,
-    ingestStore)
+  private[this] val processingSelectors =
+    new DefaultIngestProcessingSelectors(
+      maxFields,
+      batchSize,
+      ingestTmpDir,
+      ingestStore)
 
   def chooseProcessing(
       apiKey: APIKey,
@@ -232,23 +233,24 @@ class IngestServiceHandler(
                 else
                   StopOnFirstError
 
-              val durabilityM = request.method match {
-                case HttpMethods.POST =>
-                  createJob map { jobId =>
-                    (GlobalDurability(jobId), postMode)
-                  }
-                case HttpMethods.PUT =>
-                  createJob map { jobId =>
-                    (GlobalDurability(jobId), AccessMode.Replace)
-                  }
-                case HttpMethods.PATCH =>
-                  right[Future, String, (Durability, WriteMode)](
-                    Promise.successful((LocalDurability, AccessMode.Append)))
-                case _ =>
-                  left[Future, String, (Durability, WriteMode)](
-                    Promise.successful(
-                      "HTTP method " + request.method + " not supported for data ingest."))
-              }
+              val durabilityM =
+                request.method match {
+                  case HttpMethods.POST =>
+                    createJob map { jobId =>
+                      (GlobalDurability(jobId), postMode)
+                    }
+                  case HttpMethods.PUT =>
+                    createJob map { jobId =>
+                      (GlobalDurability(jobId), AccessMode.Replace)
+                    }
+                  case HttpMethods.PATCH =>
+                    right[Future, String, (Durability, WriteMode)](
+                      Promise.successful((LocalDurability, AccessMode.Append)))
+                  case _ =>
+                    left[Future, String, (Durability, WriteMode)](
+                      Promise.successful(
+                        "HTTP method " + request.method + " not supported for data ingest."))
+                }
 
               durabilityM flatMap {
                 case (durability, storeMode) =>
@@ -270,8 +272,8 @@ class IngestServiceHandler(
                         message) map { _ =>
                         HttpResponse[JValue](
                           BadRequest,
-                          content =
-                            Some(JObject("errors" -> JArray(JString(reason)))))
+                          content = Some(
+                            JObject("errors" -> JArray(JString(reason)))))
                       }
 
                     case StreamingResult(ingested, None) =>

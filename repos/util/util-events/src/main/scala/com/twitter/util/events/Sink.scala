@@ -101,18 +101,19 @@ object Sink {
   /**
     * A sink that ignores all input.
     */
-  val Null: Sink = new Sink {
-    override def event(
-        etype: Type,
-        longVal: Long,
-        objectVal: Object,
-        doubleVal: Double,
-        traceIdVal: Long,
-        spanIdVal: Long
-    ): Unit = ()
+  val Null: Sink =
+    new Sink {
+      override def event(
+          etype: Type,
+          longVal: Long,
+          objectVal: Object,
+          doubleVal: Double,
+          traceIdVal: Long,
+          spanIdVal: Long
+      ): Unit = ()
 
-    override def events: Iterator[Event] = Iterator.empty
-  }
+      override def events: Iterator[Event] = Iterator.empty
+    }
 
   /**
     * An unsized sink. Convenient for testing.

@@ -27,51 +27,53 @@ class ServerMediator(project: Project) extends ProjectComponent {
   private val settings = ScalaCompileServerSettings.getInstance
 
   private val connection = project.getMessageBus.connect
-  private val serverLauncher = new BuildManagerListener {
-    override def beforeBuildProcessStarted(
-        project: Project,
-        uuid: UUID): Unit = {}
+  private val serverLauncher =
+    new BuildManagerListener {
+      override def beforeBuildProcessStarted(
+          project: Project,
+          uuid: UUID): Unit = {}
 
-    override def buildStarted(
-        project: Project,
-        sessionId: UUID,
-        isAutomake: Boolean): Unit = {
-      if (settings.COMPILE_SERVER_ENABLED && isScalaProject) {
-        invokeAndWait {
-          CompileServerManager.instance(project).configureWidget()
-        }
-
-        if (CompileServerLauncher.needRestart(project)) {
-          CompileServerLauncher.instance.stop()
-        }
-
-        if (!CompileServerLauncher.instance.running) {
+      override def buildStarted(
+          project: Project,
+          sessionId: UUID,
+          isAutomake: Boolean): Unit = {
+        if (settings.COMPILE_SERVER_ENABLED && isScalaProject) {
           invokeAndWait {
-            CompileServerLauncher.instance.tryToStart(project)
+            CompileServerManager.instance(project).configureWidget()
+          }
+
+          if (CompileServerLauncher.needRestart(project)) {
+            CompileServerLauncher.instance.stop()
+          }
+
+          if (!CompileServerLauncher.instance.running) {
+            invokeAndWait {
+              CompileServerLauncher.instance.tryToStart(project)
+            }
           }
         }
       }
-    }
 
-    override def buildFinished(
-        project: Project,
-        sessionId: UUID,
-        isAutomake: Boolean): Unit = {}
-  }
+      override def buildFinished(
+          project: Project,
+          sessionId: UUID,
+          isAutomake: Boolean): Unit = {}
+    }
 
   connection.subscribe(BuildManagerListener.TOPIC, serverLauncher)
 
-  private val checkSettingsTask = new CompileTask {
-    def execute(context: CompileContext): Boolean = {
-      if (isScalaProject) {
-        if (!checkCompilationSettings())
-          false
-        else
+  private val checkSettingsTask =
+    new CompileTask {
+      def execute(context: CompileContext): Boolean = {
+        if (isScalaProject) {
+          if (!checkCompilationSettings())
+            false
+          else
+            true
+        } else
           true
-      } else
-        true
+      }
     }
-  }
 
   CompilerManager.getInstance(project).addBeforeTask(checkSettingsTask)
 
@@ -83,8 +85,11 @@ class ServerMediator(project: Project) extends ProjectComponent {
         val test = extension.getCompilerOutputUrlForTests
         production == test
       }
-    val modulesWithClashes =
-      ModuleManager.getInstance(project).getModules.toSeq.filter(hasClashes)
+    val modulesWithClashes = ModuleManager
+      .getInstance(project)
+      .getModules
+      .toSeq
+      .filter(hasClashes)
 
     var result = true
 
@@ -112,13 +117,14 @@ class ServerMediator(project: Project) extends ProjectComponent {
             modulesWithClashes.foreach { module =>
               val model =
                 ModuleRootManager.getInstance(module).getModifiableModel
-              val extension =
-                model.getModuleExtension(classOf[CompilerModuleExtension])
+              val extension = model.getModuleExtension(
+                classOf[CompilerModuleExtension])
 
-              val outputUrlParts = extension.getCompilerOutputUrl match {
-                case null => Seq.empty
-                case url  => url.split("/").toSeq
-              }
+              val outputUrlParts =
+                extension.getCompilerOutputUrl match {
+                  case null => Seq.empty
+                  case url  => url.split("/").toSeq
+                }
               val nameForTests =
                 if (outputUrlParts.lastOption.contains("classes"))
                   "test-classes"

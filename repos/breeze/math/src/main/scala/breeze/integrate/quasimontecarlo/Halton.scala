@@ -27,11 +27,14 @@ object Halton {
      * Reads a file from the classpath to an array int's.
      * The file should be stored as text, with integers separated by a ',' and perhaps arbitrary whitespace, including newlines.
      */
-    val fileStream =
-      this.getClass().getClassLoader().getResourceAsStream(filename)
+    val fileStream = this
+      .getClass()
+      .getClassLoader()
+      .getResourceAsStream(filename)
     val lines = scala.io.Source.fromInputStream(fileStream).getLines()
-    val nums =
-      lines.flatMap(x => x.split(',')).map(x => x.replaceAll("\\s+", ""))
+    val nums = lines
+      .flatMap(x => x.split(','))
+      .map(x => x.replaceAll("\\s+", ""))
     nums.map(x => x.toInt).toArray
   }
 
@@ -68,11 +71,12 @@ class BaseUniformHaltonGenerator(val dimension: Int)
   private val bases = java.util.Arrays.copyOfRange(Halton.PRIMES, 0, dimension)
 
   private var count: Long = 0
-  private val counters: Array[UnboxedIntVector] = List
-    .fill(dimension)({
-      new UnboxedIntVector(16)
-    })
-    .toArray
+  private val counters: Array[UnboxedIntVector] =
+    List
+      .fill(dimension)({
+        new UnboxedIntVector(16)
+      })
+      .toArray
   val permutations: Array[Array[Long]] =
     (0 to dimension)
       .map(i => {

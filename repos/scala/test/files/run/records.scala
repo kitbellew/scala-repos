@@ -5,20 +5,23 @@ trait C {
 }
 
 object Test {
-  type T = C {
-    def f: Int
-    def g: String
-  }
+  type T =
+    C {
+      def f: Int
+      def g: String
+    }
 
-  val x: T = new C {
-    def f = 1
-    def g = "hello"
-  }
+  val x: T =
+    new C {
+      def f = 1
+      def g = "hello"
+    }
 
-  val y = new C {
-    def f = 2
-    def g = " world"
-  }
+  val y =
+    new C {
+      def f = 2
+      def g = " world"
+    }
 
   val z: T = y
 

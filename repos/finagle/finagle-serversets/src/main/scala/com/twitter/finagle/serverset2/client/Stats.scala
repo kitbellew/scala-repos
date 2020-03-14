@@ -24,25 +24,30 @@ private[serverset2] trait StatsClient extends ZooKeeperClient {
     }
   }
 
-  protected val EphemeralFilter = new StatFilter {
-    val name = "ephemeral"
-  }
+  protected val EphemeralFilter =
+    new StatFilter {
+      val name = "ephemeral"
+    }
 
-  protected val MultiFilter = new StatFilter {
-    val name = "multi"
-  }
+  protected val MultiFilter =
+    new StatFilter {
+      val name = "multi"
+    }
 
-  protected val ReadFilter = new StatFilter {
-    val name = "read"
-  }
+  protected val ReadFilter =
+    new StatFilter {
+      val name = "read"
+    }
 
-  protected val WatchFilter = new StatFilter {
-    val name = "watch"
-  }
+  protected val WatchFilter =
+    new StatFilter {
+      val name = "watch"
+    }
 
-  protected val WriteFilter = new StatFilter {
-    val name = "write"
-  }
+  protected val WriteFilter =
+    new StatFilter {
+      val name = "write"
+    }
 
   protected val underlying: ZooKeeperClient
   protected val stats: StatsReceiver
@@ -141,12 +146,12 @@ private[serverset2] trait EventStats {
   private[this] lazy val createdCounter = stats.counter(Created.name)
   private[this] lazy val dataChangedCounter = stats.counter(DataChanged.name)
   private[this] lazy val deletedCounter = stats.counter(Deleted.name)
-  private[this] lazy val childrenChangedCounter =
-    stats.counter(ChildrenChanged.name)
-  private[this] lazy val dataWatchRemovedCounter =
-    stats.counter(DataWatchRemoved.name)
-  private[this] lazy val childWatchRemovedCounter =
-    stats.counter(ChildWatchRemoved.name)
+  private[this] lazy val childrenChangedCounter = stats.counter(
+    ChildrenChanged.name)
+  private[this] lazy val dataWatchRemovedCounter = stats.counter(
+    DataWatchRemoved.name)
+  private[this] lazy val childWatchRemovedCounter = stats.counter(
+    ChildWatchRemoved.name)
 
   protected def EventFilter(event: NodeEvent): NodeEvent = {
     event match {

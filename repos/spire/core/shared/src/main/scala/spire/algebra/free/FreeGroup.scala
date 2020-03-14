@@ -54,10 +54,11 @@ final class FreeGroup[A] private (val terms: Vector[Either[A, A]])
     if (terms.isEmpty)
       "e"
     else {
-      val init = terms.head match {
-        case Left(h)  => s"($h).inverse"
-        case Right(h) => h.toString
-      }
+      val init =
+        terms.head match {
+          case Left(h)  => s"($h).inverse"
+          case Right(h) => h.toString
+        }
       val tail = terms.tail.map {
         case Left(x)  => s" |-| $x"
         case Right(x) => s" |+| $x"

@@ -58,26 +58,28 @@ class SetterMethodSearcher
       project: Project)(implicit
       consumer: Processor[PsiReference],
       scope: SearchScope) = {
-    val processor = new TextOccurenceProcessor {
-      def execute(elem: PsiElement, offsetInElement: Int): Boolean = {
-        inReadAction {
-          elem match {
-            case Parent(Parent(assign: ScAssignStmt)) =>
-              assign.resolveAssignment match {
-                case Some(res) if res.element.getNavigationElement == element =>
-                  Option(assign.getLExpression).foreach {
-                    case ref: ScReferenceElement =>
-                      if (!consumer.process(ref))
-                        return false
-                  }
-                case _ =>
-              }
-            case _ =>
+    val processor =
+      new TextOccurenceProcessor {
+        def execute(elem: PsiElement, offsetInElement: Int): Boolean = {
+          inReadAction {
+            elem match {
+              case Parent(Parent(assign: ScAssignStmt)) =>
+                assign.resolveAssignment match {
+                  case Some(res)
+                      if res.element.getNavigationElement == element =>
+                    Option(assign.getLExpression).foreach {
+                      case ref: ScReferenceElement =>
+                        if (!consumer.process(ref))
+                          return false
+                    }
+                  case _ =>
+                }
+              case _ =>
+            }
+            true
           }
-          true
         }
       }
-    }
     val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(project)
     helper.processElementsWithWord(
       processor,
@@ -93,28 +95,29 @@ class SetterMethodSearcher
       project: Project)(implicit
       consumer: Processor[PsiReference],
       scope: SearchScope) = {
-    val processor = new TextOccurenceProcessor {
-      def execute(elem: PsiElement, offsetInElement: Int): Boolean = {
-        inReadAction {
-          elem match {
-            case ref: PsiReference =>
-              ref.resolve() match {
-                case fakeMethod: FakePsiMethod
-                    if fakeMethod.navElement == element =>
-                  if (!consumer.process(ref))
-                    return false
-                case wrapper: PsiTypedDefinitionWrapper
-                    if wrapper.typedDefinition == element =>
-                  if (!consumer.process(ref))
-                    return false
-                case _ =>
-              }
-            case _ =>
+    val processor =
+      new TextOccurenceProcessor {
+        def execute(elem: PsiElement, offsetInElement: Int): Boolean = {
+          inReadAction {
+            elem match {
+              case ref: PsiReference =>
+                ref.resolve() match {
+                  case fakeMethod: FakePsiMethod
+                      if fakeMethod.navElement == element =>
+                    if (!consumer.process(ref))
+                      return false
+                  case wrapper: PsiTypedDefinitionWrapper
+                      if wrapper.typedDefinition == element =>
+                    if (!consumer.process(ref))
+                      return false
+                  case _ =>
+                }
+              case _ =>
+            }
           }
+          true
         }
-        true
       }
-    }
     val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(project)
     helper.processElementsWithWord(
       processor,

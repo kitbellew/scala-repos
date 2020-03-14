@@ -32,15 +32,19 @@ private[finagle] object TimerStats {
     var nextAtMillis =
       Time.now.inMilliseconds + tickDuration.inMilliseconds
 
-    val timerTask = new netty.TimerTask {
-      override def run(timeout: netty.Timeout): Unit = {
-        val nowMillis = Time.now.inMilliseconds
-        val deltaMillis = nowMillis - nextAtMillis
-        nextAtMillis = nowMillis + tickDuration.inMilliseconds
-        deviation.add(deltaMillis)
-        hwt.newTimeout(this, tickDuration.inMilliseconds, TimeUnit.MILLISECONDS)
+    val timerTask =
+      new netty.TimerTask {
+        override def run(timeout: netty.Timeout): Unit = {
+          val nowMillis = Time.now.inMilliseconds
+          val deltaMillis = nowMillis - nextAtMillis
+          nextAtMillis = nowMillis + tickDuration.inMilliseconds
+          deviation.add(deltaMillis)
+          hwt.newTimeout(
+            this,
+            tickDuration.inMilliseconds,
+            TimeUnit.MILLISECONDS)
+        }
       }
-    }
     hwt.newTimeout(
       timerTask,
       tickDuration.inMilliseconds,
@@ -64,8 +68,8 @@ private[finagle] object TimerStats {
     // this represents HashedWheelTimer's pending queue of tasks
     // that have yet to be scheduled into a bucket
     val queuedTimeouts: Try[util.Queue[_]] = Try {
-      val timeoutsField =
-        classOf[netty.HashedWheelTimer].getDeclaredField("timeouts")
+      val timeoutsField = classOf[netty.HashedWheelTimer]
+        .getDeclaredField("timeouts")
       timeoutsField.setAccessible(true)
       timeoutsField.get(hwt).asInstanceOf[util.Queue[_]]
     }
@@ -78,18 +82,18 @@ private[finagle] object TimerStats {
     }
 
     // the `Field` for `HashedWheelBucket.head`
-    val bucketHeadField: Try[Field] =
-      buckets.map { bs =>
-        val headField = bs.head.getClass.getDeclaredField("head")
-        headField.setAccessible(true)
-        headField
-      }
+    val bucketHeadField: Try[Field] = buckets.map { bs =>
+      val headField = bs.head.getClass.getDeclaredField("head")
+      headField.setAccessible(true)
+      headField
+    }
 
     def bucketTimeouts(hashedWheelBucket: Object): Int = {
       bucketHeadField
         .map { headField =>
-          val head =
-            headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
+          val head = headField.get(
+            hashedWheelBucket
+          ) // this is a HashedWheelTimeout
           if (head == null) {
             0
           } else {
@@ -112,23 +116,27 @@ private[finagle] object TimerStats {
         bs.map(bucketTimeouts).sum
       }
 
-    val timerTask = new netty.TimerTask {
-      override def run(timeout: netty.Timeout): Unit = {
-        val startAt = System.nanoTime()
-        for {
-          qTimeouts <- queuedTimeouts
-          wTimeouts <- wheelTimeouts
-        } {
-          pendingTimeouts.add(qTimeouts.size() + wTimeouts)
-        }
+    val timerTask =
+      new netty.TimerTask {
+        override def run(timeout: netty.Timeout): Unit = {
+          val startAt = System.nanoTime()
+          for {
+            qTimeouts <- queuedTimeouts
+            wTimeouts <- wheelTimeouts
+          } {
+            pendingTimeouts.add(qTimeouts.size() + wTimeouts)
+          }
 
-        val elapsedMicros =
-          TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startAt)
-        if (log.isLoggable(Level.TRACE))
-          log.trace(s"hashedWheelTimerInternals.run took $elapsedMicros us")
-        hwt.newTimeout(this, nextRunAt().inMilliseconds, TimeUnit.MILLISECONDS)
+          val elapsedMicros = TimeUnit.NANOSECONDS.toMicros(
+            System.nanoTime() - startAt)
+          if (log.isLoggable(Level.TRACE))
+            log.trace(s"hashedWheelTimerInternals.run took $elapsedMicros us")
+          hwt.newTimeout(
+            this,
+            nextRunAt().inMilliseconds,
+            TimeUnit.MILLISECONDS)
+        }
       }
-    }
     hwt.newTimeout(timerTask, nextRunAt().inMilliseconds, TimeUnit.MILLISECONDS)
   }
 }

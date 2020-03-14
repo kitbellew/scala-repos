@@ -31,13 +31,14 @@ class Timer(
 
   private[this] val delayQueue = new DelayQueue[TimerTaskList]()
   private[this] val taskCounter = new AtomicInteger(0)
-  private[this] val timingWheel = new TimingWheel(
-    tickMs = tickMs,
-    wheelSize = wheelSize,
-    startMs = startMs,
-    taskCounter = taskCounter,
-    delayQueue
-  )
+  private[this] val timingWheel =
+    new TimingWheel(
+      tickMs = tickMs,
+      wheelSize = wheelSize,
+      startMs = startMs,
+      taskCounter = taskCounter,
+      delayQueue
+    )
 
   // Locks used to protect data structures while ticking
   private[this] val readWriteLock = new ReentrantReadWriteLock()
@@ -61,8 +62,8 @@ class Timer(
     }
   }
 
-  private[this] val reinsert = (timerTaskEntry: TimerTaskEntry) =>
-    addTimerTaskEntry(timerTaskEntry)
+  private[this] val reinsert =
+    (timerTaskEntry: TimerTaskEntry) => addTimerTaskEntry(timerTaskEntry)
 
   /*
    * Advances the clock if there is an expired bucket. If there isn't any expired bucket when called,

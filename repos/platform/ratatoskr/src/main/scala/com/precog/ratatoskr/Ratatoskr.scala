@@ -164,88 +164,89 @@ object KafkaTools extends Command {
 
   def run(args: Array[String]) {
     val config = new Config
-    val parser = new OptionParser("yggutils kafka") {
-      opt(
-        "r",
-        "range",
-        "<start:stop>",
-        "show message range, e.g.: 5:10 :100 10:",
-        { s: String =>
-          val range = MessageRange.parse(s)
-          config.range =
-            range.getOrElse(sys.error("Invalid range specification: " + s))
-        }
-      )
-      intOpt(
-        "i",
-        "trackInterval",
-        "When running a usage report, stats will be emitted every <interval> messages. Default = 50000",
-        { (i: Int) =>
-          config.trackInterval = i
-        })
-      opt(
-        "l",
-        "local",
-        "dump local kafka file(s)", {
-          config.operation = Some(DumpLocal)
-        })
-      opt(
-        "c",
-        "central",
-        "dump central kafka file(s)", {
-          config.operation = Some(DumpCentral)
-        })
-      opt(
-        "u",
-        "unparsed",
-        "dump raw JSON from kafka file(s)", {
-          config.operation = Some(DumpRaw)
-        })
-      opt(
-        "z",
-        "usageReport",
-        "Run a usage report on the given file(s)", {
-          config.operation = Some(UsageReport)
-        })
-      opt(
-        "a",
-        "trackArchives",
-        "For the usage report, reset size for a given account when archive messages are encountered", {
-          config.cumulative = false
-        })
-      opt(
-        "k",
-        "lookupDatabase",
-        "accounts database name",
-        "Use this database for email lookups in usage reports",
-        { (s: String) =>
-          config.lookupDatabase = Some(s)
-        })
-      opt(
-        "v2",
-        "centralToLocal",
-        "convert central kafka file(s) to local kafka format (.local is appended to the new filenames)", {
-          config.operation = Some(ConvertCentral)
-        }
-      )
-      opt(
-        "f",
-        "reportFormat",
-        "The format to use for usage reports. Either csv or json (default)",
-        { (s: String) =>
-          s.toLowerCase match {
-            case format @ ("csv" | "json") => config.reportFormat = format
-            case other                     => sys.error("Invalid report format: " + other)
+    val parser =
+      new OptionParser("yggutils kafka") {
+        opt(
+          "r",
+          "range",
+          "<start:stop>",
+          "show message range, e.g.: 5:10 :100 10:",
+          { s: String =>
+            val range = MessageRange.parse(s)
+            config.range = range.getOrElse(
+              sys.error("Invalid range specification: " + s))
           }
-        }
-      )
-      arglist(
-        "<files>",
-        "The files to process",
-        { (s: String) =>
-          config.files = config.files :+ (new File(s))
-        })
-    }
+        )
+        intOpt(
+          "i",
+          "trackInterval",
+          "When running a usage report, stats will be emitted every <interval> messages. Default = 50000",
+          { (i: Int) =>
+            config.trackInterval = i
+          })
+        opt(
+          "l",
+          "local",
+          "dump local kafka file(s)", {
+            config.operation = Some(DumpLocal)
+          })
+        opt(
+          "c",
+          "central",
+          "dump central kafka file(s)", {
+            config.operation = Some(DumpCentral)
+          })
+        opt(
+          "u",
+          "unparsed",
+          "dump raw JSON from kafka file(s)", {
+            config.operation = Some(DumpRaw)
+          })
+        opt(
+          "z",
+          "usageReport",
+          "Run a usage report on the given file(s)", {
+            config.operation = Some(UsageReport)
+          })
+        opt(
+          "a",
+          "trackArchives",
+          "For the usage report, reset size for a given account when archive messages are encountered", {
+            config.cumulative = false
+          })
+        opt(
+          "k",
+          "lookupDatabase",
+          "accounts database name",
+          "Use this database for email lookups in usage reports",
+          { (s: String) =>
+            config.lookupDatabase = Some(s)
+          })
+        opt(
+          "v2",
+          "centralToLocal",
+          "convert central kafka file(s) to local kafka format (.local is appended to the new filenames)", {
+            config.operation = Some(ConvertCentral)
+          }
+        )
+        opt(
+          "f",
+          "reportFormat",
+          "The format to use for usage reports. Either csv or json (default)",
+          { (s: String) =>
+            s.toLowerCase match {
+              case format @ ("csv" | "json") => config.reportFormat = format
+              case other                     => sys.error("Invalid report format: " + other)
+            }
+          }
+        )
+        arglist(
+          "<files>",
+          "The files to process",
+          { (s: String) =>
+            config.files = config.files :+ (new File(s))
+          })
+      }
     if (parser.parse(args)) {
       process(config)
     } else {
@@ -352,21 +353,23 @@ object KafkaTools extends Command {
       ArrayBuffer.empty
 
     def trackState(state: ReportState): Unit = {
-      val byAccount: Map[AccountId, Long] =
-        state.pathSize.groupBy(_._1.elements.head).map {
+      val byAccount: Map[AccountId, Long] = state.pathSize
+        .groupBy(_._1.elements.head)
+        .map {
           case (account, sizes) => (account, sizes.map(_._2).sum)
         }
 
       import state.index
 
-      val timestamp = lastTimestamp match {
-        case ts @ ExactTime(_, `index`) => ts
-        case _ =>
-          Interpolated(index).unsafeTap { temp =>
-            //println("Adding %s to pending timestamps".format(temp))
-            pendingTimes ::= temp
-          }
-      }
+      val timestamp =
+        lastTimestamp match {
+          case ts @ ExactTime(_, `index`) => ts
+          case _ =>
+            Interpolated(index).unsafeTap { temp =>
+              //println("Adding %s to pending timestamps".format(temp))
+              pendingTimes ::= temp
+            }
+        }
 
       trackedAccounts = trackedAccounts ++ (byAccount.keySet -- trackedAccounts)
       slices += (timestamp -> byAccount)
@@ -382,33 +385,34 @@ object KafkaTools extends Command {
          Some(ExactTime(msg.timestamp.getMillis, state.index))
        } else {
          // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
-         val timestamps = (msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
-           _.value \ "timestamp"))
-           .flatMap {
-             case JString(date) =>
-               // Dirty hack for trying variations of ISO8601 in use by customers
-               List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
-                 .flatMap { date =>
-                   List(date, date + ".000Z")
-                 }
-             case _ => None
-           }
-           .flatMap { date =>
-             try {
-               val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
-               if (ts.getMillis > lastTimestamp.time) {
-                 //println("Assigning new timestamp: " + ts)
-                 Some(ts)
-               } else {
-                 //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
-                 None
-               }
-             } catch {
-               case t =>
-                 //println("Error on datetime parse: " + t)
-                 None
+         val timestamps =
+           (msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
+             _.value \ "timestamp"))
+             .flatMap {
+               case JString(date) =>
+                 // Dirty hack for trying variations of ISO8601 in use by customers
+                 List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
+                   .flatMap { date =>
+                     List(date, date + ".000Z")
+                   }
+               case _ => None
              }
-           }
+             .flatMap { date =>
+               try {
+                 val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
+                 if (ts.getMillis > lastTimestamp.time) {
+                   //println("Assigning new timestamp: " + ts)
+                   Some(ts)
+                 } else {
+                   //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
+                   None
+                 }
+               } catch {
+                 case t =>
+                   //println("Error on datetime parse: " + t)
+                   None
+               }
+             }
 
          //println("Deducing timestamp from " + timestamps)
 
@@ -479,45 +483,46 @@ object KafkaTools extends Command {
 
       //println("Got lookup DB:" + accountLookup)
 
-      val finalState = config.files.foldLeft(ReportState(0L, Map.empty)) {
-        case (state, file) =>
-          val ms = new FileMessageSet(file, false)
+      val finalState =
+        config.files.foldLeft(ReportState(0L, Map.empty)) {
+          case (state, file) =>
+            val ms = new FileMessageSet(file, false)
 
-          ms.iterator
-            .grouped(1000)
-            .flatMap {
-              _.toSeq.par.map(parseEventMessage)
-            }
-            .foldLeft(state) {
-              case (state @ ReportState(index, currentPathSize), parsed) =>
-                parsed match {
-                  case Success(imessage: IngestMessage) =>
-                    processIngest(config.trackInterval, state, imessage)
+            ms.iterator
+              .grouped(1000)
+              .flatMap {
+                _.toSeq.par.map(parseEventMessage)
+              }
+              .foldLeft(state) {
+                case (state @ ReportState(index, currentPathSize), parsed) =>
+                  parsed match {
+                    case Success(imessage: IngestMessage) =>
+                      processIngest(config.trackInterval, state, imessage)
 
-                  case Success(ArchiveMessage(_, path, _, _, _)) =>
-                    if (config.cumulative) {
-                      state.inc
-                    } else {
-                      trackState(state)
-
-                      if (path.length > 0) {
-                        //println("Deleting from path " + path)
-                        ReportState(index + 1, currentPathSize + (path -> 0L))
-                          .unsafeTap { newState =>
-                            trackState(newState)
-                          }
-                      } else {
+                    case Success(ArchiveMessage(_, path, _, _, _)) =>
+                      if (config.cumulative) {
                         state.inc
-                      }
-                    }
+                      } else {
+                        trackState(state)
 
-                  case other =>
-                    println("## Skipping undesired data: " + other)
-                    //RawFormat.dump(0, msg)
-                    state.inc
-                }
-            }
-      }
+                        if (path.length > 0) {
+                          //println("Deleting from path " + path)
+                          ReportState(index + 1, currentPathSize + (path -> 0L))
+                            .unsafeTap { newState =>
+                              trackState(newState)
+                            }
+                        } else {
+                          state.inc
+                        }
+                      }
+
+                    case other =>
+                      println("## Skipping undesired data: " + other)
+                      //RawFormat.dump(0, msg)
+                      state.inc
+                  }
+              }
+        }
 
       trackState(finalState)
 
@@ -530,8 +535,8 @@ object KafkaTools extends Command {
             .mkString(","))
         slices.foreach {
           case (index, byAccount) =>
-            val accountTotals =
-              trackedAccounts.sorted.map(byAccount.getOrElse(_, 0L))
+            val accountTotals = trackedAccounts.sorted.map(
+              byAccount.getOrElse(_, 0L))
             (index match {
               case ExactTime(time, _) => Some(time)
               case i: Interpolated    => interpolationMap.get(i)
@@ -723,43 +728,44 @@ object ZookeeperTools extends Command {
 
   def run(args: Array[String]) {
     val config = new Config
-    val parser = new OptionParser("yggutils zk") {
-      opt(
-        "z",
-        "zookeeper",
-        "The zookeeper host:port",
-        { s: String =>
-          config.zkConn = s
-        })
-      opt(
-        "c",
-        "checkpoints",
-        "Show bifrost checkpoint state with prefix",
-        { s: String =>
-          config.showCheckpoints = Some(s)
-        })
-      opt(
-        "a",
-        "agents",
-        "Show ingest agent state with prefix",
-        { s: String =>
-          config.showAgents = Some(s)
-        })
-      opt(
-        "uc",
-        "update_checkpoints",
-        "Update agent state. Format = path:json",
-        { s: String =>
-          config.updateCheckpoint = Some(s)
-        })
-      opt(
-        "ua",
-        "update_agents",
-        "Update agent state. Format = path:json",
-        { s: String =>
-          config.updateAgent = Some(s)
-        })
-    }
+    val parser =
+      new OptionParser("yggutils zk") {
+        opt(
+          "z",
+          "zookeeper",
+          "The zookeeper host:port",
+          { s: String =>
+            config.zkConn = s
+          })
+        opt(
+          "c",
+          "checkpoints",
+          "Show bifrost checkpoint state with prefix",
+          { s: String =>
+            config.showCheckpoints = Some(s)
+          })
+        opt(
+          "a",
+          "agents",
+          "Show ingest agent state with prefix",
+          { s: String =>
+            config.showAgents = Some(s)
+          })
+        opt(
+          "uc",
+          "update_checkpoints",
+          "Update agent state. Format = path:json",
+          { s: String =>
+            config.updateCheckpoint = Some(s)
+          })
+        opt(
+          "ua",
+          "update_agents",
+          "Update agent state. Format = path:json",
+          { s: String =>
+            config.updateAgent = Some(s)
+          })
+      }
     if (parser.parse(args)) {
       val conn: ZkConnection = new ZkConnection(config.zkConn)
       val client: ZkClient = new ZkClient(conn)
@@ -792,10 +798,11 @@ object ZookeeperTools extends Command {
       if (!client.exists(path))
         client.createPersistent(path, true)
 
-      val updater = new DataUpdater[Array[Byte]] {
-        def update(cur: Array[Byte]): Array[Byte] =
-          data.serialize.renderCompact.getBytes
-      }
+      val updater =
+        new DataUpdater[Array[Byte]] {
+          def update(cur: Array[Byte]): Array[Byte] =
+            data.serialize.renderCompact.getBytes
+        }
 
       client.updateDataSerialized(path, updater)
       println("Checkpoint updated: %s with %s".format(path, data))
@@ -805,10 +812,11 @@ object ZookeeperTools extends Command {
       if (!client.exists(path))
         client.createPersistent(path, true)
 
-      val updater = new DataUpdater[Array[Byte]] {
-        def update(cur: Array[Byte]): Array[Byte] =
-          data.serialize.renderCompact.getBytes
-      }
+      val updater =
+        new DataUpdater[Array[Byte]] {
+          def update(cur: Array[Byte]): Array[Byte] =
+            data.serialize.renderCompact.getBytes
+        }
 
       client.updateDataSerialized(path, updater)
       println("Checkpoint updated: %s with %s".format(path, data))
@@ -859,8 +867,9 @@ object ZookeeperTools extends Command {
       ListBuffer[(String, String)]()
     } else {
       children.asScala map { child =>
-        val bytes =
-          client.readData(path + "/" + child).asInstanceOf[Array[Byte]]
+        val bytes = client
+          .readData(path + "/" + child)
+          .asInstanceOf[Array[Byte]]
         (child, new String(bytes))
       }
     }
@@ -891,45 +900,46 @@ object IngestTools extends Command {
 
   def run(args: Array[String]) {
     val config = new Config
-    val parser = new OptionParser("yggutils ingest_status") {
-      intOpt(
-        "s",
-        "limit",
-        "<sync-limit-messages>",
-        "if sync is greater than the specified limit an error will occur",
-        { s: Int =>
-          config.limit = s
-        })
-      intOpt(
-        "l",
-        "lag",
-        "<time-lag-minutes>",
-        "if update lag is greater than the specified value an error will occur",
-        { l: Int =>
-          config.lag = l
-        })
-      opt(
-        "z",
-        "zookeeper",
-        "The zookeeper host:port",
-        { s: String =>
-          config.zkConn = s
-        })
-      opt(
-        "c",
-        "shardpath",
-        "The bifrost's ZK path",
-        { s: String =>
-          config.shardZkPath = s
-        })
-      opt(
-        "r",
-        "relaypath",
-        "The relay's ZK path",
-        { s: String =>
-          config.relayZkPath = s
-        })
-    }
+    val parser =
+      new OptionParser("yggutils ingest_status") {
+        intOpt(
+          "s",
+          "limit",
+          "<sync-limit-messages>",
+          "if sync is greater than the specified limit an error will occur",
+          { s: Int =>
+            config.limit = s
+          })
+        intOpt(
+          "l",
+          "lag",
+          "<time-lag-minutes>",
+          "if update lag is greater than the specified value an error will occur",
+          { l: Int =>
+            config.lag = l
+          })
+        opt(
+          "z",
+          "zookeeper",
+          "The zookeeper host:port",
+          { s: String =>
+            config.zkConn = s
+          })
+        opt(
+          "c",
+          "shardpath",
+          "The bifrost's ZK path",
+          { s: String =>
+            config.shardZkPath = s
+          })
+        opt(
+          "r",
+          "relaypath",
+          "The relay's ZK path",
+          { s: String =>
+            config.relayZkPath = s
+          })
+      }
     if (parser.parse(args)) {
       val conn = new ZkConnection(config.zkConn)
       val client = new ZkClient(conn)
@@ -1047,48 +1057,49 @@ object ImportTools extends Command with Logging {
 
   def run(args: Array[String]) {
     val config = new Config
-    val parser = new OptionParser("yggutils import") {
-      opt(
-        "t",
-        "token",
-        "<api key>",
-        "authorizing API key",
-        { s: String =>
-          config.apiKey = s
-        })
-      opt(
-        "o",
-        "owner",
-        "<account id>",
-        "Owner account ID to insert data under",
-        { s: String =>
-          config.accountId = s
-        })
-      opt(
-        "s",
-        "storage",
-        "<storage root>",
-        "directory containing data files",
-        { s: String =>
-          config.storageRoot = new File(s)
-        })
-      opt(
-        "a",
-        "archive",
-        "<archive root>",
-        "directory containing archived data files",
-        { s: String =>
-          config.archiveRoot = new File(s)
-        })
-      arglist(
-        "<json input> ...",
-        "json input file mappings {db}={input}",
-        { s: String =>
-          val parts = s.split("=")
-          val t = (parts(0) -> parts(1))
-          config.input = config.input :+ t
-        })
-    }
+    val parser =
+      new OptionParser("yggutils import") {
+        opt(
+          "t",
+          "token",
+          "<api key>",
+          "authorizing API key",
+          { s: String =>
+            config.apiKey = s
+          })
+        opt(
+          "o",
+          "owner",
+          "<account id>",
+          "Owner account ID to insert data under",
+          { s: String =>
+            config.accountId = s
+          })
+        opt(
+          "s",
+          "storage",
+          "<storage root>",
+          "directory containing data files",
+          { s: String =>
+            config.storageRoot = new File(s)
+          })
+        opt(
+          "a",
+          "archive",
+          "<archive root>",
+          "directory containing archived data files",
+          { s: String =>
+            config.archiveRoot = new File(s)
+          })
+        arglist(
+          "<json input> ...",
+          "json input file mappings {db}={input}",
+          { s: String =>
+            val parts = s.split("=")
+            val t = (parts(0) -> parts(1))
+            config.input = config.input :+ t
+          })
+      }
 
     if (parser.parse(args)) {
       process(config)
@@ -1106,10 +1117,10 @@ object ImportTools extends Command with Logging {
     val authorities = Authorities(config.accountId)
 
     implicit val actorSystem = ActorSystem("yggutilImport")
-    implicit val defaultAsyncContext =
-      ExecutionContext.defaultExecutionContext(actorSystem)
-    implicit val M = new FutureMonad(
-      ExecutionContext.defaultExecutionContext(actorSystem))
+    implicit val defaultAsyncContext = ExecutionContext.defaultExecutionContext(
+      actorSystem)
+    implicit val M =
+      new FutureMonad(ExecutionContext.defaultExecutionContext(actorSystem))
 
     class YggConfig(val config: Configuration) extends BaseConfig {
       val cookThreshold = config[Int]("precog.jdbm.maxSliceSize", 20000)
@@ -1118,8 +1129,9 @@ object ImportTools extends Command with Logging {
       val quiescenceTimeout = Duration(300, "seconds")
     }
 
-    val yggConfig = new YggConfig(
-      Configuration.parse("precog.storage.root = " + config.storageRoot))
+    val yggConfig =
+      new YggConfig(
+        Configuration.parse("precog.storage.root = " + config.storageRoot))
 
     val chefs = (1 to 8).map { _ =>
       actorSystem.actorOf(
@@ -1128,13 +1140,14 @@ object ImportTools extends Command with Logging {
             VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
             VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
     }
-    val masterChef =
-      actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+    val masterChef = actorSystem.actorOf(
+      Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
-    val accountFinder = new StaticAccountFinder[Future](
-      config.accountId,
-      config.apiKey,
-      Some("/"))
+    val accountFinder =
+      new StaticAccountFinder[Future](
+        config.accountId,
+        config.apiKey,
+        Some("/"))
 
     logger.info("Starting APIKeyFinder")
     //// ****** WARNING ****** ////
@@ -1152,12 +1165,13 @@ object ImportTools extends Command with Logging {
       val jobManager = new InMemoryJobManager[Future]
       val permissionsFinder =
         new PermissionsFinder(apiKeyFinder, accountFinder, new Instant(0L))
-      val resourceBuilder = new ResourceBuilder(
-        actorSystem,
-        yggConfig.clock,
-        masterChef,
-        yggConfig.cookThreshold,
-        yggConfig.storageTimeout)
+      val resourceBuilder =
+        new ResourceBuilder(
+          actorSystem,
+          yggConfig.clock,
+          masterChef,
+          yggConfig.cookThreshold,
+          yggConfig.storageTimeout)
 
       logger.info("Starting Projections Actor")
       val projectionsActor = actorSystem.actorOf(
@@ -1296,37 +1310,38 @@ object CSVTools extends Command {
 
   def run(args: Array[String]) {
     val config = new Config
-    val parser = new OptionParser("yggutils csv") {
-      opt(
-        "d",
-        "delimeter",
-        "field delimeter",
-        { s: String =>
-          if (s.length == 1) {
-            config.delimeter = s.charAt(0)
-          } else {
-            sys.error("Invalid delimeter")
-          }
-        })
-      opt(
-        "t",
-        "mapTimestamps",
-        "Map timestamps to expected format.", {
-          config.teaseTimestamps = true
-        })
-      opt(
-        "v",
-        "verbose",
-        "Map timestamps to expected format.", {
-          config.verbose = true
-        })
-      arg(
-        "<csv_file>",
-        "csv file to convert (headers required)",
-        { s: String =>
-          config.input = s
-        })
-    }
+    val parser =
+      new OptionParser("yggutils csv") {
+        opt(
+          "d",
+          "delimeter",
+          "field delimeter",
+          { s: String =>
+            if (s.length == 1) {
+              config.delimeter = s.charAt(0)
+            } else {
+              sys.error("Invalid delimeter")
+            }
+          })
+        opt(
+          "t",
+          "mapTimestamps",
+          "Map timestamps to expected format.", {
+            config.teaseTimestamps = true
+          })
+        opt(
+          "v",
+          "verbose",
+          "Map timestamps to expected format.", {
+            config.verbose = true
+          })
+        arg(
+          "<csv_file>",
+          "csv file to convert (headers required)",
+          { s: String =>
+            config.input = s
+          })
+      }
     if (parser.parse(args)) {
       process(config)
     } else {
@@ -1359,77 +1374,78 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
 
   def run(args: Array[String]) {
     val config = new Config
-    val parser = new OptionParser("yggutils csv") {
-      opt(
-        "l",
-        "list",
-        "List API keys", {
-          config.list = true
-        })
+    val parser =
+      new OptionParser("yggutils csv") {
+        opt(
+          "l",
+          "list",
+          "List API keys", {
+            config.list = true
+          })
 //      opt("c","children","List children of API key", { s: String => config.listChildren = Some(s) })
-      opt(
-        "n",
-        "new",
-        "New customer account at path",
-        { s: String =>
-          config.accountId = Some(s)
-        })
-      opt(
-        "r",
-        "root",
-        "Show root API key", {
-          config.showRoot = true
-        })
-      opt(
-        "c",
-        "create",
-        "Create root API key", {
-          config.createRoot = true;
-          config.showRoot = true
-        })
-      opt(
-        "a",
-        "name",
-        "Human-readable name for new API key",
-        { s: String =>
-          config.newAPIKeyName = s
-        })
-      opt(
-        "x",
-        "delete",
-        "Delete API key",
-        { s: String =>
-          config.delete = Some(s)
-        })
-      opt(
-        "d",
-        "database",
-        "APIKey database name (ie: beta_auth_v1)",
-        { s: String =>
-          config.database = s
-        })
-      opt(
-        "t",
-        "tokens",
-        "APIKeys collection name",
-        { s: String =>
-          config.collection = s
-        })
-      opt(
-        "a",
-        "archive",
-        "Collection for deleted API keys",
-        { s: String =>
-          config.deleted = Some(s)
-        })
-      opt(
-        "s",
-        "servers",
-        "Mongo server config",
-        { s: String =>
-          config.servers = s
-        })
-    }
+        opt(
+          "n",
+          "new",
+          "New customer account at path",
+          { s: String =>
+            config.accountId = Some(s)
+          })
+        opt(
+          "r",
+          "root",
+          "Show root API key", {
+            config.showRoot = true
+          })
+        opt(
+          "c",
+          "create",
+          "Create root API key", {
+            config.createRoot = true;
+            config.showRoot = true
+          })
+        opt(
+          "a",
+          "name",
+          "Human-readable name for new API key",
+          { s: String =>
+            config.newAPIKeyName = s
+          })
+        opt(
+          "x",
+          "delete",
+          "Delete API key",
+          { s: String =>
+            config.delete = Some(s)
+          })
+        opt(
+          "d",
+          "database",
+          "APIKey database name (ie: beta_auth_v1)",
+          { s: String =>
+            config.database = s
+          })
+        opt(
+          "t",
+          "tokens",
+          "APIKeys collection name",
+          { s: String =>
+            config.collection = s
+          })
+        opt(
+          "a",
+          "archive",
+          "Collection for deleted API keys",
+          { s: String =>
+            config.deleted = Some(s)
+          })
+        opt(
+          "s",
+          "servers",
+          "Mongo server config",
+          { s: String =>
+            config.servers = s
+          })
+      }
     if (parser.parse(args)) {
       process(config)
     } else {
@@ -1438,18 +1454,19 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
   }
 
   def process(config: Config) {
-    val job = for {
-      (apiKeys, stoppable) <- apiKeyManager(config)
-      actions = (config.list).option(list(apiKeys)).toSeq ++
-        (config.showRoot).option(showRoot(apiKeys)).toSeq ++
+    val job =
+      for {
+        (apiKeys, stoppable) <- apiKeyManager(config)
+        actions = (config.list).option(list(apiKeys)).toSeq ++
+          (config.showRoot).option(showRoot(apiKeys)).toSeq ++
 //              config.listChildren.map(listChildren(_, apiKeys)) ++
-        config.accountId.map(p => create(p, config.newAPIKeyName, apiKeys)) ++
-        config.delete.map(delete(_, apiKeys))
-      _ <- Future.sequence(actions)
-      _ <- Stoppable.stop(stoppable)
-    } yield {
-      defaultActorSystem.shutdown
-    }
+          config.accountId.map(p => create(p, config.newAPIKeyName, apiKeys)) ++
+          config.delete.map(delete(_, apiKeys))
+        _ <- Future.sequence(actions)
+        _ <- Stoppable.stop(stoppable)
+      } yield {
+        defaultActorSystem.shutdown
+      }
 
     Await.result(job, Duration(30, "seconds"))
   }
@@ -1460,23 +1477,24 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     implicit val timeout = config.mongoSettings.timeout
     val database = mongo.database(config.database)
 
-    val dbStop =
-      Stoppable.fromFuture(database.disconnect.fallbackTo(Future(())) flatMap {
-        _ => mongo.close
+    val dbStop = Stoppable.fromFuture(
+      database.disconnect.fallbackTo(Future(())) flatMap { _ =>
+        mongo.close
       })
 
-    val rootKey: Future[APIKeyRecord] = if (config.createRoot) {
-      MongoAPIKeyManager.createRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys,
-        config.mongoSettings.grants
-      )
-    } else {
-      MongoAPIKeyManager.findRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys
-      )
-    }
+    val rootKey: Future[APIKeyRecord] =
+      if (config.createRoot) {
+        MongoAPIKeyManager.createRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys,
+          config.mongoSettings.grants
+        )
+      } else {
+        MongoAPIKeyManager.findRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys
+        )
+      }
 
     rootKey map { k =>
       (

@@ -120,10 +120,11 @@ object ActorContextSpec {
           case Throw(ex) ⇒
             throw ex
           case MkChild(name, mon, replyTo) ⇒
-            val child = name match {
-              case None ⇒ ctx.spawnAnonymous(Props(subject(mon)))
-              case Some(n) ⇒ ctx.spawn(Props(subject(mon)), n)
-            }
+            val child =
+              name match {
+                case None ⇒ ctx.spawnAnonymous(Props(subject(mon)))
+                case Some(n) ⇒ ctx.spawn(Props(subject(mon)), n)
+              }
             replyTo ! Created(child)
             Same
           case SetTimeout(d, replyTo) ⇒
@@ -241,12 +242,15 @@ class ActorContextSpec
               subj ! MkChild(name, monitor, self)
             }
             .expectMultipleMessages(500.millis, 2) { (msgs, subj) ⇒
-              val child = msgs match {
-                case Created(child) :: ChildEvent(GotSignal(PreStart)) :: Nil ⇒
-                  child
-                case ChildEvent(GotSignal(PreStart)) :: Created(child) :: Nil ⇒
-                  child
-              }
+              val child =
+                msgs match {
+                  case Created(child) :: ChildEvent(
+                        GotSignal(PreStart)) :: Nil ⇒
+                    child
+                  case ChildEvent(GotSignal(PreStart)) :: Created(
+                        child) :: Nil ⇒
+                    child
+                }
               (subj, child)
             }
 
@@ -348,8 +352,9 @@ class ActorContextSpec
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self) {
             case (subj, child) ⇒
-              val log =
-                muteExpectedException[Exception]("KABOOM2", occurrences = 1)
+              val log = muteExpectedException[Exception](
+                "KABOOM2",
+                occurrences = 1)
               child ! Throw(ex)
               (subj, child, log)
           }

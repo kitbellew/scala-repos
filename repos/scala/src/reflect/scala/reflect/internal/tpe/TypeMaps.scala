@@ -129,12 +129,13 @@ private[internal] trait TypeMaps {
       tp match {
         case tr @ TypeRef(pre, sym, args) =>
           val pre1 = this(pre)
-          val args1 = (
-            if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
-              mapOverArgs(args, sym.typeParams)
-            else
-              args mapConserve this
-          )
+          val args1 =
+            (
+              if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
+                mapOverArgs(args, sym.typeParams)
+              else
+                args mapConserve this
+            )
           if ((pre1 eq pre) && (args1 eq args))
             tp
           else
@@ -346,8 +347,7 @@ private[internal] trait TypeMaps {
         args1
     }
 
-    def mapOver(tree: Tree): Tree =
-      mapOver(tree, () => return UnmappableTree)
+    def mapOver(tree: Tree): Tree = mapOver(tree, () => return UnmappableTree)
 
     /** Map a tree that is part of an annotation argument.
       *  If the tree cannot be mapped, then invoke giveup().
@@ -682,8 +682,7 @@ private[internal] trait TypeMaps {
         // It's easy to get here when working on hardcore type machinery (not to
         // mention when not doing so, see above) so let's provide a standout error.
         def own_s(s: Symbol) = s.nameString + " in " + s.owner.nameString
-        def explain =
-          sm"""|   sought  ${own_s(lhsSym)}
+        def explain = sm"""|   sought  ${own_s(lhsSym)}
                | classSym  ${own_s(rhsSym)}
                |  tparams  ${rhsSym.typeParams map own_s mkString ", "}
                |"""
@@ -801,10 +800,11 @@ private[internal] trait TypeMaps {
 
     private def thisTypeAsSeen(tp: ThisType): Type = {
       def loop(pre: Type, clazz: Symbol): Type = {
-        val pre1 = pre match {
-          case SuperType(thistpe, _) => thistpe
-          case _                     => pre
-        }
+        val pre1 =
+          pre match {
+            case SuperType(thistpe, _) => thistpe
+            case _                     => pre
+          }
         if (skipPrefixOf(pre, clazz))
           mapOver(tp) // TODO - is mapOver necessary here?
         else if (!matchesPrefixAndClass(pre, clazz)(tp.sym))

@@ -37,10 +37,11 @@ case class Aggregator[K, V, C](
   def combineValuesByKey(
       iter: Iterator[_ <: Product2[K, V]],
       context: TaskContext): Iterator[(K, C)] = {
-    val combiners = new ExternalAppendOnlyMap[K, V, C](
-      createCombiner,
-      mergeValue,
-      mergeCombiners)
+    val combiners =
+      new ExternalAppendOnlyMap[K, V, C](
+        createCombiner,
+        mergeValue,
+        mergeCombiners)
     combiners.insertAll(iter)
     updateMetrics(context, combiners)
     combiners.iterator
@@ -49,10 +50,11 @@ case class Aggregator[K, V, C](
   def combineCombinersByKey(
       iter: Iterator[_ <: Product2[K, C]],
       context: TaskContext): Iterator[(K, C)] = {
-    val combiners = new ExternalAppendOnlyMap[K, C, C](
-      identity,
-      mergeCombiners,
-      mergeCombiners)
+    val combiners =
+      new ExternalAppendOnlyMap[K, C, C](
+        identity,
+        mergeCombiners,
+        mergeCombiners)
     combiners.insertAll(iter)
     updateMetrics(context, combiners)
     combiners.iterator

@@ -72,8 +72,9 @@ class StreamTestKitDocSpec extends AkkaSpec {
     val sourceUnderTest = Source.tick(0.seconds, 200.millis, Tick)
 
     val probe = TestProbe()
-    val cancellable =
-      sourceUnderTest.to(Sink.actorRef(probe.ref, "completed")).run()
+    val cancellable = sourceUnderTest
+      .to(Sink.actorRef(probe.ref, "completed"))
+      .run()
 
     probe.expectMsg(1.second, Tick)
     probe.expectNoMsg(100.millis)
@@ -146,10 +147,11 @@ class StreamTestKitDocSpec extends AkkaSpec {
   "test source and a sink" in {
     import system.dispatcher
     //#test-source-and-sink
-    val flowUnderTest = Flow[Int].mapAsyncUnordered(2) { sleep =>
-      pattern.after(10.millis * sleep, using = system.scheduler)(
-        Future.successful(sleep))
-    }
+    val flowUnderTest =
+      Flow[Int].mapAsyncUnordered(2) { sleep =>
+        pattern.after(10.millis * sleep, using = system.scheduler)(
+          Future.successful(sleep))
+      }
 
     val (pub, sub) = TestSource
       .probe[Int]

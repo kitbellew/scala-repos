@@ -236,8 +236,8 @@ class SolvingTest {
     }.toIterable
   }
 
-  implicit val SolutionOrd: Ordering[TestSolver.TestSolver.Solution] =
-    Ordering.by(_.model)
+  implicit val SolutionOrd: Ordering[TestSolver.TestSolver.Solution] = Ordering
+    .by(_.model)
 
   def formatSolution(solution: Solution): String = {
     formatModel(solution.model)
@@ -288,11 +288,12 @@ class SolvingTest {
     val solvable = propToSolvable(Or(pSym, Not(qSym)))
     val solutions = findAllModelsFor(solvable)
     val expanded = solutions.flatMap(expandUnassigned).sorted
-    val expected = Seq(
-      Map(pSym -> false, qSym -> false),
-      Map(pSym -> true, qSym -> false),
-      Map(pSym -> true, qSym -> true)
-    ).sorted
+    val expected =
+      Seq(
+        Map(pSym -> false, qSym -> false),
+        Map(pSym -> true, qSym -> false),
+        Map(pSym -> true, qSym -> true)
+      ).sorted
 
     assertEquals(expected, expanded)
   }

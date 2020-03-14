@@ -19,10 +19,11 @@ import play.api.libs.ws.WSSignatureCalculator
 case class OAuth(info: ServiceInfo, use10a: Boolean = true) {
 
   private val provider = {
-    val p = new CommonsHttpOAuthProvider(
-      info.requestTokenURL,
-      info.accessTokenURL,
-      info.authorizationURL)
+    val p =
+      new CommonsHttpOAuthProvider(
+        info.requestTokenURL,
+        info.accessTokenURL,
+        info.authorizationURL)
     p.setOAuth10a(use10a)
     p
   }

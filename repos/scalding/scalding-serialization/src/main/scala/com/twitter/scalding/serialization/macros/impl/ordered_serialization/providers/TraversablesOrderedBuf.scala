@@ -112,16 +112,18 @@ object TraversablesOrderedBuf {
 
     // When dealing with a map we have 2 type args, and need to generate the tuple type
     // it would correspond to if we .toList the Map.
-    val innerType = if (outerType.asInstanceOf[TypeRefApi].args.size == 2) {
-      val (tpe1, tpe2) = (
-        outerType.asInstanceOf[TypeRefApi].args(0),
-        outerType.asInstanceOf[TypeRefApi].args(1))
-      val containerType = typeOf[Tuple2[Any, Any]].asInstanceOf[TypeRef]
-      import compat._
-      TypeRef.apply(containerType.pre, containerType.sym, List(tpe1, tpe2))
-    } else {
-      outerType.asInstanceOf[TypeRefApi].args.head
-    }
+    val innerType =
+      if (outerType.asInstanceOf[TypeRefApi].args.size == 2) {
+        val (tpe1, tpe2) =
+          (
+            outerType.asInstanceOf[TypeRefApi].args(0),
+            outerType.asInstanceOf[TypeRefApi].args(1))
+        val containerType = typeOf[Tuple2[Any, Any]].asInstanceOf[TypeRef]
+        import compat._
+        TypeRef.apply(containerType.pre, containerType.sym, List(tpe1, tpe2))
+      } else {
+        outerType.asInstanceOf[TypeRefApi].args.head
+      }
 
     val innerTypes = outerType.asInstanceOf[TypeRefApi].args
 
@@ -237,9 +239,10 @@ object TraversablesOrderedBuf {
         val firstVal = freshT("firstVal")
         val travBuilder = freshT("travBuilder")
         val iter = freshT("iter")
-        val extractionTree = maybeArray match {
-          case IsArray =>
-            q"""val $travBuilder = new Array[..$innerTypes]($len)
+        val extractionTree =
+          maybeArray match {
+            case IsArray =>
+              q"""val $travBuilder = new Array[..$innerTypes]($len)
             var $iter = 0
             while($iter < $len) {
               $travBuilder($iter) = ${innerBuf.get(inputStream)}
@@ -247,8 +250,8 @@ object TraversablesOrderedBuf {
             }
             $travBuilder : $outerType
             """
-          case NotArray =>
-            q"""val $travBuilder = $companionSymbol.newBuilder[..$innerTypes]
+            case NotArray =>
+              q"""val $travBuilder = $companionSymbol.newBuilder[..$innerTypes]
             $travBuilder.sizeHint($len)
             var $iter = 0
             while($iter < $len) {
@@ -257,7 +260,7 @@ object TraversablesOrderedBuf {
             }
             $travBuilder.result : $outerType
             """
-        }
+          }
         q"""
         val $len: Int = $inputStream.readPosVarInt
         if($len > 0) {

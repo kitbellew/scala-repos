@@ -6,9 +6,10 @@ object IntThing extends Thing {
   type A = Int
 }
 object ThingHolder {
-  type Alias[AIn] = Thing {
-    type A = AIn
-  }
+  type Alias[AIn] =
+    Thing {
+      type A = AIn
+    }
 }
 
 // The following erroneously failed with  error: method f overrides nothing.

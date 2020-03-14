@@ -184,24 +184,25 @@ private[testutil] trait AbstractComparator extends Assertions {
       }
     }
 
-    val strParameters = (m.getParameterTypes.size, m.isVarArgs) match {
-      case (0, _)    => ""
-      case (1, true) => classParameterToString(m.getParameterTypes.last, true)
-      case (_, true) =>
-        m.getParameterTypes.init
-          .map(classParameterToString(_))
-          .mkString("", ", ", ", ") +
-          classParameterToString(m.getParameterTypes.last, true)
-      case (_, false) =>
-        m.getParameterTypes.map(classParameterToString(_)).mkString(", ")
-    }
+    val strParameters =
+      (m.getParameterTypes.size, m.isVarArgs) match {
+        case (0, _)    => ""
+        case (1, true) => classParameterToString(m.getParameterTypes.last, true)
+        case (_, true) =>
+          m.getParameterTypes.init
+            .map(classParameterToString(_))
+            .mkString("", ", ", ", ") +
+            classParameterToString(m.getParameterTypes.last, true)
+        case (_, false) =>
+          m.getParameterTypes.map(classParameterToString(_)).mkString(", ")
+      }
 
     classParameterToString(
       m.getReturnType) + " " + m.getName + "(" + strParameters + ")"
   }
 
-  private val nameComparator: (Method, Method) => Boolean = (m1, m2) =>
-    m1.getName < m2.getName
+  private val nameComparator: (Method, Method) => Boolean =
+    (m1, m2) => m1.getName < m2.getName
 
   /**
     * Returns a List with public methods (static or not) of a class.

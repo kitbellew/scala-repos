@@ -52,11 +52,9 @@ class SbtProjectSettings extends ExternalProjectSettings {
   override def setUseAutoImport(useAutoImport: Boolean): Unit =
     useOurOwnAutoImport = useAutoImport
 
-  override def isUseAutoImport: Boolean =
-    useOurOwnAutoImport
+  override def isUseAutoImport: Boolean = useOurOwnAutoImport
 }
 
 object SbtProjectSettings {
-  def default: SbtProjectSettings =
-    new SbtProjectSettings
+  def default: SbtProjectSettings = new SbtProjectSettings
 }

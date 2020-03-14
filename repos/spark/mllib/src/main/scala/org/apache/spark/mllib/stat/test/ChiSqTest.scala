@@ -50,12 +50,13 @@ private[stat] object ChiSqTest extends Logging {
   case class Method(name: String, chiSqFunc: (Double, Double) => Double)
 
   // Pearson's chi-squared test: http://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test
-  val PEARSON = new Method(
-    "pearson",
-    (observed: Double, expected: Double) => {
-      val dev = observed - expected
-      dev * dev / expected
-    })
+  val PEARSON =
+    new Method(
+      "pearson",
+      (observed: Double, expected: Double) => {
+        val dev = observed - expected
+        dev * dev / expected
+      })
 
   // Null hypothesis for the two different types of chi-squared tests to be included in the result.
   object NullHypothesis extends Enumeration {
@@ -100,8 +101,8 @@ private[stat] object ChiSqTest extends Logging {
       val pairCounts = data
         .mapPartitions { iter =>
           val distinctLabels = mutable.HashSet.empty[Double]
-          val allDistinctFeatures: Map[Int, mutable.HashSet[Double]] =
-            Map((startCol until endCol).map(col =>
+          val allDistinctFeatures: Map[Int, mutable.HashSet[Double]] = Map(
+            (startCol until endCol).map(col =>
               (col, mutable.HashSet.empty[Double])): _*)
           var i = 1
           iter.flatMap {
@@ -156,8 +157,9 @@ private[stat] object ChiSqTest extends Logging {
               val j = labels(label)
               contingency(i, j) += pairCounts((col, feature, label))
           }
-          results(col) =
-            chiSquaredMatrix(Matrices.fromBreeze(contingency), methodName)
+          results(col) = chiSquaredMatrix(
+            Matrices.fromBreeze(contingency),
+            methodName)
       }
       batch += 1
     }
@@ -214,28 +216,29 @@ private[stat] object ChiSqTest extends Logging {
         obsSum / expSum
 
     // compute chi-squared statistic
-    val statistic = obsArr.zip(expArr).foldLeft(0.0) {
-      case (stat, (obs, exp)) =>
-        if (exp == 0.0) {
-          if (obs == 0.0) {
-            throw new IllegalArgumentException(
-              "Chi-squared statistic undefined for input vectors due"
-                + " to 0.0 values in both observed and expected.")
-          } else {
-            return new ChiSqTestResult(
-              0.0,
-              size - 1,
-              Double.PositiveInfinity,
-              PEARSON.name,
-              NullHypothesis.goodnessOfFit.toString)
+    val statistic =
+      obsArr.zip(expArr).foldLeft(0.0) {
+        case (stat, (obs, exp)) =>
+          if (exp == 0.0) {
+            if (obs == 0.0) {
+              throw new IllegalArgumentException(
+                "Chi-squared statistic undefined for input vectors due"
+                  + " to 0.0 values in both observed and expected.")
+            } else {
+              return new ChiSqTestResult(
+                0.0,
+                size - 1,
+                Double.PositiveInfinity,
+                PEARSON.name,
+                NullHypothesis.goodnessOfFit.toString)
+            }
           }
-        }
-        if (scale == 1.0) {
-          stat + method.chiSqFunc(obs, exp)
-        } else {
-          stat + method.chiSqFunc(obs, exp * scale)
-        }
-    }
+          if (scale == 1.0) {
+            stat + method.chiSqFunc(obs, exp)
+          } else {
+            stat + method.chiSqFunc(obs, exp * scale)
+          }
+      }
     val df = size - 1
     val pValue =
       1.0 - new ChiSquaredDistribution(df).cumulativeProbability(statistic)

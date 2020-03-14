@@ -92,10 +92,11 @@ object MongoDB {
     */
   def use[T](name: ConnectionIdentifier)(f: (DB) => T): T = {
 
-    val db = getDb(name) match {
-      case Some(mongo) => mongo
-      case _           => throw new MongoException("Mongo not found: " + name.toString)
-    }
+    val db =
+      getDb(name) match {
+        case Some(mongo) => mongo
+        case _           => throw new MongoException("Mongo not found: " + name.toString)
+      }
 
     f(db)
   }
@@ -106,12 +107,13 @@ object MongoDB {
     */
   def use[T](f: (DB) => T): T = {
 
-    val db = getDb(DefaultConnectionIdentifier) match {
-      case Some(mongo) => mongo
-      case _ =>
-        throw new MongoException(
-          "Mongo not found: " + DefaultConnectionIdentifier.toString)
-    }
+    val db =
+      getDb(DefaultConnectionIdentifier) match {
+        case Some(mongo) => mongo
+        case _ =>
+          throw new MongoException(
+            "Mongo not found: " + DefaultConnectionIdentifier.toString)
+      }
 
     f(db)
   }
@@ -122,12 +124,13 @@ object MongoDB {
     */
   def useCollection[T](name: ConnectionIdentifier, collectionName: String)(
       f: (DBCollection) => T): T = {
-    val coll = getCollection(name, collectionName) match {
-      case Some(collection) => collection
-      case _ =>
-        throw new MongoException(
-          "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + name.toString)
-    }
+    val coll =
+      getCollection(name, collectionName) match {
+        case Some(collection) => collection
+        case _ =>
+          throw new MongoException(
+            "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + name.toString)
+      }
 
     f(coll)
   }
@@ -158,10 +161,11 @@ object MongoDB {
     "3.0")
   def useSession[T](name: ConnectionIdentifier)(f: (DB) => T): T = {
 
-    val db = getDb(name) match {
-      case Some(mongo) => mongo
-      case _           => throw new MongoException("Mongo not found: " + name.toString)
-    }
+    val db =
+      getDb(name) match {
+        case Some(mongo) => mongo
+        case _           => throw new MongoException("Mongo not found: " + name.toString)
+      }
 
     // start the request
     db.requestStart
@@ -181,12 +185,13 @@ object MongoDB {
     "3.0")
   def useSession[T](f: (DB) => T): T = {
 
-    val db = getDb(DefaultConnectionIdentifier) match {
-      case Some(mongo) => mongo
-      case _ =>
-        throw new MongoException(
-          "Mongo not found: " + DefaultConnectionIdentifier.toString)
-    }
+    val db =
+      getDb(DefaultConnectionIdentifier) match {
+        case Some(mongo) => mongo
+        case _ =>
+          throw new MongoException(
+            "Mongo not found: " + DefaultConnectionIdentifier.toString)
+      }
 
     // start the request
     db.requestStart

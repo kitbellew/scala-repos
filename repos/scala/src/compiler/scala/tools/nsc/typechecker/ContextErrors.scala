@@ -231,30 +231,31 @@ trait ContextErrors {
         // members present, then display along with the expected members. This is done here because
         // this is the last point where we still have access to the original tree, rather than just
         // the found/req types.
-        val foundType: Type = req.dealiasWiden match {
-          case RefinedType(parents, decls)
-              if !decls.isEmpty && found.typeSymbol.isAnonOrRefinementClass =>
-            val retyped = typed(tree.duplicate.clearType())
-            val foundDecls = retyped.tpe.decls filter (sym =>
-              !sym.isConstructor && !sym.isSynthetic)
-            if (foundDecls.isEmpty || (found.typeSymbol eq NoSymbol))
+        val foundType: Type =
+          req.dealiasWiden match {
+            case RefinedType(parents, decls)
+                if !decls.isEmpty && found.typeSymbol.isAnonOrRefinementClass =>
+              val retyped = typed(tree.duplicate.clearType())
+              val foundDecls = retyped.tpe.decls filter (sym =>
+                !sym.isConstructor && !sym.isSynthetic)
+              if (foundDecls.isEmpty || (found.typeSymbol eq NoSymbol))
+                found
+              else {
+                // The members arrive marked private, presumably because there was no
+                // expected type and so they're considered members of an anon class.
+                foundDecls foreach (_.makePublic)
+                // TODO: if any of the found parents match up with required parents after normalization,
+                // print the error so that they match. The major beneficiary there would be
+                // java.lang.Object vs. AnyRef.
+                refinedType(
+                  found.parents,
+                  found.typeSymbol.owner,
+                  foundDecls,
+                  tree.pos)
+              }
+            case _ =>
               found
-            else {
-              // The members arrive marked private, presumably because there was no
-              // expected type and so they're considered members of an anon class.
-              foundDecls foreach (_.makePublic)
-              // TODO: if any of the found parents match up with required parents after normalization,
-              // print the error so that they match. The major beneficiary there would be
-              // java.lang.Object vs. AnyRef.
-              refinedType(
-                found.parents,
-                found.typeSymbol.owner,
-                foundDecls,
-                tree.pos)
-            }
-          case _ =>
-            found
-        }
+          }
         assert(!foundType.isErroneous && !req.isErroneous, (foundType, req))
 
         issueNormalTypeError(
@@ -327,8 +328,7 @@ trait ContextErrors {
           tree,
           "lower bound " + lowB + " does not conform to upper bound " + highB)
 
-      def HiddenSymbolWithError[T <: Tree](tree: T): T =
-        setError(tree)
+      def HiddenSymbolWithError[T <: Tree](tree: T): T = setError(tree)
 
       def SymbolEscapesScopeError[T <: Tree](tree: T, badSymbol: Symbol): T = {
         val modifierString =
@@ -550,20 +550,22 @@ trait ContextErrors {
           pt: Type,
           withTupleAddendum: Boolean) = {
         def issue(what: String) = {
-          val addendum: String = fun match {
-            case Function(params, _) if withTupleAddendum =>
-              val funArity = params.length
-              val example = analyzer.exampleTuplePattern(params map (_.name))
-              (pt baseType FunctionClass(1)) match {
-                case TypeRef(_, _, arg :: _)
-                    if arg.typeSymbol == TupleClass(funArity) && funArity > 1 =>
-                  sm"""|
+          val addendum: String =
+            fun match {
+              case Function(params, _) if withTupleAddendum =>
+                val funArity = params.length
+                val example = analyzer.exampleTuplePattern(params map (_.name))
+                (pt baseType FunctionClass(1)) match {
+                  case TypeRef(_, _, arg :: _)
+                      if arg.typeSymbol == TupleClass(
+                        funArity) && funArity > 1 =>
+                    sm"""|
                        |Note: The expected type requires a one-argument function accepting a $funArity-Tuple.
                        |      Consider a pattern matching anonymous function, `{ case $example =>  ... }`"""
-                case _ => ""
-              }
-            case _ => ""
-          }
+                  case _ => ""
+                }
+              case _ => ""
+            }
           issueNormalTypeError(vparam, what + addendum)
         }
         if (vparam.mods.isSynthetic)
@@ -844,11 +846,12 @@ trait ContextErrors {
       }
 
       def CaseClassConstructorError(tree: Tree, baseMessage: String) = {
-        val addendum = directUnapplyMember(tree.symbol.info) match {
-          case sym if hasMultipleNonImplicitParamLists(sym) =>
-            s"\nNote: ${sym.defString} exists in ${tree.symbol}, but it cannot be used as an extractor due to its second non-implicit parameter list"
-          case _ => ""
-        }
+        val addendum =
+          directUnapplyMember(tree.symbol.info) match {
+            case sym if hasMultipleNonImplicitParamLists(sym) =>
+              s"\nNote: ${sym.defString} exists in ${tree.symbol}, but it cannot be used as an extractor due to its second non-implicit parameter list"
+            case _ => ""
+          }
         issueNormalTypeError(tree, baseMessage + addendum)
         setError(tree)
       }
@@ -958,10 +961,11 @@ trait ContextErrors {
           else
             None
         )
-        val addendum = addendums.flatten match {
-          case Nil => ""
-          case xs  => xs.mkString("\n  ", "\n  ", "")
-        }
+        val addendum =
+          addendums.flatten match {
+            case Nil => ""
+            case xs  => xs.mkString("\n  ", "\n  ", "")
+          }
 
         issueSymbolTypeError(sym0, sym1 + " is defined twice" + addendum)
       }
@@ -1070,8 +1074,9 @@ trait ContextErrors {
             if (relevancyThreshold == -1)
               None
             else {
-              var relevantElements =
-                realex.getStackTrace().take(relevancyThreshold + 1)
+              var relevantElements = realex
+                .getStackTrace()
+                .take(relevancyThreshold + 1)
               def isMacroInvoker(este: StackTraceElement) =
                 este.isNativeMethod || (este.getClassName != null && (este.getClassName contains "fastTrack"))
               var threshold =
@@ -1532,10 +1537,12 @@ trait ContextErrors {
             // evades all the handlers on its way and successfully reaches `isCyclicOrErroneous` in Implicits
             throw ex
           case c @ CyclicReference(sym, info: TypeCompleter) =>
-            val error = new NormalTypeErrorFromCyclicReference(
-              tree,
-              typer
-                .cyclicReferenceMessage(sym, info.tree) getOrElse ex.getMessage)
+            val error =
+              new NormalTypeErrorFromCyclicReference(
+                tree,
+                typer.cyclicReferenceMessage(
+                  sym,
+                  info.tree) getOrElse ex.getMessage)
             issueTypeError(error)
           case _ =>
             contextNamerErrorGen.issue(TypeErrorWithUnderlyingTree(tree, ex))
@@ -1584,17 +1591,18 @@ trait ContextErrors {
             "case class " + prevSym.name
           else
             "" + prevSym
-        val where = if (currentSym.isTopLevel != prevSym.isTopLevel) {
-          val inOrOut =
-            if (prevSym.isTopLevel)
-              "outside of"
-            else
-              "in"
-          " %s package object %s".format(
-            inOrOut,
-            "" + prevSym.effectiveOwner.name)
-        } else
-          ""
+        val where =
+          if (currentSym.isTopLevel != prevSym.isTopLevel) {
+            val inOrOut =
+              if (prevSym.isTopLevel)
+                "outside of"
+              else
+                "in"
+            " %s package object %s".format(
+              inOrOut,
+              "" + prevSym.effectiveOwner.name)
+          } else
+            ""
 
         issueSymbolTypeError(
           currentSym,
@@ -1608,45 +1616,46 @@ trait ContextErrors {
         issueNormalTypeError(tree, "_root_ cannot be imported")
 
       def SymbolValidationError(sym: Symbol, errKind: SymValidateErrors.Value) {
-        val msg = errKind match {
-          case ImplicitConstr =>
-            "`implicit' modifier not allowed for constructors"
+        val msg =
+          errKind match {
+            case ImplicitConstr =>
+              "`implicit' modifier not allowed for constructors"
 
-          case ImplicitNotTermOrClass =>
-            "`implicit' modifier can be used only for values, variables, methods and classes"
+            case ImplicitNotTermOrClass =>
+              "`implicit' modifier can be used only for values, variables, methods and classes"
 
-          case ImplicitAtToplevel =>
-            "`implicit' modifier cannot be used for top-level objects"
+            case ImplicitAtToplevel =>
+              "`implicit' modifier cannot be used for top-level objects"
 
-          case OverrideClass =>
-            "`override' modifier not allowed for classes"
+            case OverrideClass =>
+              "`override' modifier not allowed for classes"
 
-          case SealedNonClass =>
-            "`sealed' modifier can be used only for classes"
+            case SealedNonClass =>
+              "`sealed' modifier can be used only for classes"
 
-          case AbstractNonClass =>
-            "`abstract' modifier can be used only for classes; it should be omitted for abstract members"
+            case AbstractNonClass =>
+              "`abstract' modifier can be used only for classes; it should be omitted for abstract members"
 
-          case OverrideConstr =>
-            "`override' modifier not allowed for constructors"
+            case OverrideConstr =>
+              "`override' modifier not allowed for constructors"
 
-          case AbstractOverride =>
-            "`abstract override' modifier only allowed for members of traits"
+            case AbstractOverride =>
+              "`abstract override' modifier only allowed for members of traits"
 
-          case AbstractOverrideOnTypeMember =>
-            "`abstract override' modifier not allowed for type members"
+            case AbstractOverrideOnTypeMember =>
+              "`abstract override' modifier not allowed for type members"
 
-          case LazyAndEarlyInit =>
-            "`lazy' definitions may not be initialized early"
+            case LazyAndEarlyInit =>
+              "`lazy' definitions may not be initialized early"
 
-          case ByNameParameter =>
-            "pass-by-name arguments not allowed for case class parameters"
+            case ByNameParameter =>
+              "pass-by-name arguments not allowed for case class parameters"
 
-          case AbstractVar =>
-            "only classes can have declared but undefined members" + abstractVarMessage(
-              sym)
+            case AbstractVar =>
+              "only classes can have declared but undefined members" + abstractVarMessage(
+                sym)
 
-        }
+          }
         issueSymbolTypeError(sym, msg)
       }
 
@@ -1676,12 +1685,13 @@ trait ContextErrors {
           tree: Tree,
           name: Name,
           kind: DuplicatesErrorKinds.Value) = {
-        val msg = kind match {
-          case RenamedTwice =>
-            "is renamed twice"
-          case AppearsTwice =>
-            "appears twice as a target of a renaming"
-        }
+        val msg =
+          kind match {
+            case RenamedTwice =>
+              "is renamed twice"
+            case AppearsTwice =>
+              "appears twice as a target of a renaming"
+          }
 
         issueNormalTypeError(tree, name.decode + " " + msg)
       }
@@ -1816,11 +1826,12 @@ trait ContextErrors {
         name: Name,
         pos: Int,
         otherName: Option[Name])(implicit context: Context) = {
-      val annex = otherName match {
-        case Some(oName) =>
-          "\nNote that '" + oName + "' is not a parameter name of the invoked method."
-        case None => ""
-      }
+      val annex =
+        otherName match {
+          case Some(oName) =>
+            "\nNote that '" + oName + "' is not a parameter name of the invoked method."
+          case None => ""
+        }
       issueNormalTypeError(
         arg,
         "parameter '" + name + "' is already specified at parameter position " + pos + annex)

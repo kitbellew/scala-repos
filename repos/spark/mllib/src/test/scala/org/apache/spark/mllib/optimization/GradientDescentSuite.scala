@@ -97,8 +97,8 @@ class GradientDescentSuite
     }
 
     val dataRDD = sc.parallelize(data, 2).cache()
-    val initialWeightsWithIntercept =
-      Vectors.dense(initialWeights.toArray :+ 1.0)
+    val initialWeightsWithIntercept = Vectors.dense(
+      initialWeights.toArray :+ 1.0)
 
     val (_, loss) = GradientDescent.runMiniBatchSGD(
       dataRDD,
@@ -197,8 +197,8 @@ class GradientDescentSuite
     }
 
     val dataRDD = sc.parallelize(data, 2).cache()
-    val initialWeightsWithIntercept =
-      Vectors.dense(initialWeights.toArray :+ 1.0)
+    val initialWeightsWithIntercept = Vectors.dense(
+      initialWeights.toArray :+ 1.0)
 
     val (_, loss) = GradientDescent.runMiniBatchSGD(
       dataRDD,

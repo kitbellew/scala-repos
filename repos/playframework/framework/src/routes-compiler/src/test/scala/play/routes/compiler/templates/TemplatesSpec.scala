@@ -41,8 +41,9 @@ object TemplatesSpec extends Specification {
             Parameter("foo", "String", None, None),
             Parameter("bar", "String", None, None)))
       )
-      val localNames =
-        reverseLocalNames(routes.head, reverseParametersJavascript(routes))
+      val localNames = reverseLocalNames(
+        routes.head,
+        reverseParametersJavascript(routes))
       val constraints = javascriptParameterConstraints(routes.head, localNames)
 
       constraints.get must startWith("foo0 == ")

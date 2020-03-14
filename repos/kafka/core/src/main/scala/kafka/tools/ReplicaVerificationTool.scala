@@ -137,8 +137,8 @@ object ReplicaVerificationTool extends Logging {
       clientId,
       maxWaitMs)
     val brokerMap = topicsMetadataResponse.brokers.map(b => (b.id, b)).toMap
-    val filteredTopicMetadata =
-      topicsMetadataResponse.topicsMetadata.filter(topicMetadata =>
+    val filteredTopicMetadata = topicsMetadataResponse.topicsMetadata.filter(
+      topicMetadata =>
         if (topicWhiteListFiler.isTopicAllowed(
               topicMetadata.topic,
               excludeInternalTopics = false))
@@ -191,17 +191,18 @@ object ReplicaVerificationTool extends Logging {
           })
     debug("Leaders per broker: " + leadersPerBroker)
 
-    val replicaBuffer = new ReplicaBuffer(
-      expectedReplicasPerTopicAndPartition,
-      leadersPerBroker,
-      topicAndPartitionsPerBroker.size,
-      brokerMap,
-      initialOffsetTime,
-      reportInterval)
+    val replicaBuffer =
+      new ReplicaBuffer(
+        expectedReplicasPerTopicAndPartition,
+        leadersPerBroker,
+        topicAndPartitionsPerBroker.size,
+        brokerMap,
+        initialOffsetTime,
+        reportInterval)
     // create all replica fetcher threads
     val verificationBrokerId = topicAndPartitionsPerBroker.head._1
-    val fetcherThreads: Iterable[ReplicaFetcher] =
-      topicAndPartitionsPerBroker.map {
+    val fetcherThreads: Iterable[ReplicaFetcher] = topicAndPartitionsPerBroker
+      .map {
         case (brokerId, topicAndPartitions) =>
           new ReplicaFetcher(
             name = "ReplicaFetcher-" + brokerId,
@@ -256,8 +257,8 @@ private class ReplicaBuffer(
   private val fetchOffsetMap = new Pool[TopicAndPartition, Long]
   private val messageSetCache =
     new Pool[TopicAndPartition, Pool[Int, FetchResponsePartitionData]]
-  private val fetcherBarrier = new AtomicReference(
-    new CountDownLatch(expectedNumFetchers))
+  private val fetcherBarrier =
+    new AtomicReference(new CountDownLatch(expectedNumFetchers))
   private val verificationBarrier = new AtomicReference(new CountDownLatch(1))
   @volatile private var lastReportTime = SystemTime.milliseconds
   private var maxLag: Long = -1L
@@ -296,12 +297,13 @@ private class ReplicaBuffer(
   private def setInitialOffsets() {
     for ((brokerId, topicAndPartitions) <- leadersPerBroker) {
       val broker = brokerMap(brokerId)
-      val consumer = new SimpleConsumer(
-        broker.host,
-        broker.port,
-        10000,
-        100000,
-        ReplicaVerificationTool.clientId)
+      val consumer =
+        new SimpleConsumer(
+          broker.host,
+          broker.port,
+          10000,
+          100000,
+          ReplicaVerificationTool.clientId)
       val initialOffsetMap: Map[TopicAndPartition, PartitionOffsetRequestInfo] =
         topicAndPartitions
           .map(topicAndPartition =>
@@ -444,12 +446,13 @@ private class ReplicaFetcher(
     minBytes: Int,
     doVerification: Boolean)
     extends ShutdownableThread(name) {
-  val simpleConsumer = new SimpleConsumer(
-    sourceBroker.host,
-    sourceBroker.port,
-    socketTimeout,
-    socketBufferSize,
-    ReplicaVerificationTool.clientId)
+  val simpleConsumer =
+    new SimpleConsumer(
+      sourceBroker.host,
+      sourceBroker.port,
+      socketTimeout,
+      socketBufferSize,
+      ReplicaVerificationTool.clientId)
   val fetchRequestBuilder = new FetchRequestBuilder()
     .clientId(ReplicaVerificationTool.clientId)
     .replicaId(Request.DebuggingConsumerId)

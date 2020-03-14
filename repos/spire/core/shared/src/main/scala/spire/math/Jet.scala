@@ -623,8 +623,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
         case (x, y) => x == y
       }
 
-  def =!=(that: Jet[_]): Boolean =
-    !(this === that)
+  def =!=(that: Jet[_]): Boolean = !(this === that)
 
   override def toString: String = {
     "(%s + [%s]h)".format(real.toString, infinitesimal.mkString(", "))

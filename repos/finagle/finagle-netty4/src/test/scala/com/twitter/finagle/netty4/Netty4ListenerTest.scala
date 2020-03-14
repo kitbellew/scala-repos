@@ -94,12 +94,13 @@ class Netty4ListenerTest
 
     @volatile var observedRequest: Option[String] = None
 
-    val service = new Service[String, String] {
-      def apply(request: String) = {
-        observedRequest = Some(request)
-        Future.value("hi2u")
+    val service =
+      new Service[String, String] {
+        def apply(request: String) = {
+          observedRequest = Some(request)
+          Future.value("hi2u")
+        }
       }
-    }
 
     val serveTransport =
       (t: Transport[String, String]) => new SerialServerDispatcher(t, service)
@@ -136,10 +137,12 @@ class Netty4ListenerTest
         new NullTransport
       }
     )
-    val server1 = listener.listen(
-      new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(nopDispatch)
-    val server2 = listener.listen(
-      new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(nopDispatch)
+    val server1 =
+      listener.listen(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(
+        nopDispatch)
+    val server2 =
+      listener.listen(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(
+        nopDispatch)
 
     val (client1, client2) = (new Socket(), new Socket())
 

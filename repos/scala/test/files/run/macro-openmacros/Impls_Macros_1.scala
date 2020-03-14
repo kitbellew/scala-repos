@@ -6,8 +6,8 @@ object Macros {
     // so we don't need any partests to clean up after us!
     val dir = c.enclosingUnit.source.file.file.getCanonicalFile.getParentFile
     def normalizePaths(s: String) = {
-      val base =
-        (dir.getCanonicalPath + java.io.File.separator).replace('\\', '/')
+      val base = (dir.getCanonicalPath + java.io.File.separator)
+        .replace('\\', '/')
       var regex = """\Q%s\E""" format base
       val isWin = System.getProperty("os.name", "") startsWith "Windows"
       if (isWin)

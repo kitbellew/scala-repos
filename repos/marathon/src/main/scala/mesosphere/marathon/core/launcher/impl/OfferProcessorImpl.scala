@@ -41,21 +41,18 @@ private[launcher] class OfferProcessorImpl(
   private[this] val saveTasksToLaunchTimeout =
     conf.saveTasksToLaunchTimeout().millis
 
-  private[this] val incomingOffersMeter =
-    metrics.meter(
-      metrics.name(MetricPrefixes.SERVICE, getClass, "incomingOffers"))
-  private[this] val matchTimeMeter =
-    metrics.timer(metrics.name(MetricPrefixes.SERVICE, getClass, "matchTime"))
-  private[this] val matchErrorsMeter =
-    metrics.meter(metrics.name(MetricPrefixes.SERVICE, getClass, "matchErrors"))
-  private[this] val savingTasksTimeMeter =
-    metrics.timer(metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasks"))
-  private[this] val savingTasksTimeoutMeter =
-    metrics.meter(
-      metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasksTimeouts"))
-  private[this] val savingTasksErrorMeter =
-    metrics.meter(
-      metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasksErrors"))
+  private[this] val incomingOffersMeter = metrics.meter(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "incomingOffers"))
+  private[this] val matchTimeMeter = metrics.timer(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "matchTime"))
+  private[this] val matchErrorsMeter = metrics.meter(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "matchErrors"))
+  private[this] val savingTasksTimeMeter = metrics.timer(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasks"))
+  private[this] val savingTasksTimeoutMeter = metrics.meter(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasksTimeouts"))
+  private[this] val savingTasksErrorMeter = metrics.meter(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "savingTasksErrors"))
 
   override def processOffer(offer: Offer): Future[Unit] = {
     incomingOffersMeter.mark()
@@ -155,18 +152,19 @@ private[launcher] class OfferProcessorImpl(
         : Future[Option[TaskOpWithSource]] = {
       val taskId = taskOpWithSource.taskId
 
-      val persistedOp = taskOpWithSource.op.maybeNewTask match {
-        case Some(newTask) =>
-          log.info(
-            s"Save ${taskOpWithSource.taskId} " +
-              s"after applying the effects of ${taskOpWithSource.op.getClass.getSimpleName}"
-          )
-          taskCreationHandler.created(newTask)
-        case None =>
-          log.info(
-            s"Remove ${taskOpWithSource.taskId} because of ${taskOpWithSource.op.getClass.getSimpleName}")
-          taskCreationHandler.terminated(taskId)
-      }
+      val persistedOp =
+        taskOpWithSource.op.maybeNewTask match {
+          case Some(newTask) =>
+            log.info(
+              s"Save ${taskOpWithSource.taskId} " +
+                s"after applying the effects of ${taskOpWithSource.op.getClass.getSimpleName}"
+            )
+            taskCreationHandler.created(newTask)
+          case None =>
+            log.info(
+              s"Remove ${taskOpWithSource.taskId} because of ${taskOpWithSource.op.getClass.getSimpleName}")
+            taskCreationHandler.terminated(taskId)
+        }
 
       persistedOp
         .map(_ => Some(taskOpWithSource))

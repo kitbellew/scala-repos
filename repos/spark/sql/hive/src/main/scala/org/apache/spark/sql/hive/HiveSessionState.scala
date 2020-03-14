@@ -34,16 +34,17 @@ import org.apache.spark.sql.internal.{SessionState, SQLConf}
 private[hive] class HiveSessionState(ctx: HiveContext)
     extends SessionState(ctx) {
 
-  override lazy val conf: SQLConf = new SQLConf {
-    override def caseSensitiveAnalysis: Boolean =
-      getConf(SQLConf.CASE_SENSITIVE, false)
-  }
+  override lazy val conf: SQLConf =
+    new SQLConf {
+      override def caseSensitiveAnalysis: Boolean =
+        getConf(SQLConf.CASE_SENSITIVE, false)
+    }
 
   /**
     * A metadata catalog that points to the Hive metastore.
     */
-  override lazy val catalog = new HiveMetastoreCatalog(ctx.metadataHive, ctx)
-    with OverrideCatalog
+  override lazy val catalog =
+    new HiveMetastoreCatalog(ctx.metadataHive, ctx) with OverrideCatalog
 
   /**
     * Internal catalog for managing functions registered by the user.

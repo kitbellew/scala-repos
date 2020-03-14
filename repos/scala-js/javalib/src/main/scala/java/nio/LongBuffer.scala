@@ -3,14 +3,12 @@ package java.nio
 object LongBuffer {
   private final val HashSeed = -1709696158 // "java.nio.LongBuffer".##
 
-  def allocate(capacity: Int): LongBuffer =
-    wrap(new Array[Long](capacity))
+  def allocate(capacity: Int): LongBuffer = wrap(new Array[Long](capacity))
 
   def wrap(array: Array[Long], offset: Int, length: Int): LongBuffer =
     HeapLongBuffer.wrap(array, 0, array.length, offset, length, false)
 
-  def wrap(array: Array[Long]): LongBuffer =
-    wrap(array, 0, array.length)
+  def wrap(array: Array[Long]): LongBuffer = wrap(array, 0, array.length)
 }
 
 abstract class LongBuffer private[nio] (
@@ -44,28 +42,22 @@ abstract class LongBuffer private[nio] (
   def get(dst: Array[Long], offset: Int, length: Int): LongBuffer =
     GenBuffer(this).generic_get(dst, offset, length)
 
-  def get(dst: Array[Long]): LongBuffer =
-    get(dst, 0, dst.length)
+  def get(dst: Array[Long]): LongBuffer = get(dst, 0, dst.length)
 
   @noinline
-  def put(src: LongBuffer): LongBuffer =
-    GenBuffer(this).generic_put(src)
+  def put(src: LongBuffer): LongBuffer = GenBuffer(this).generic_put(src)
 
   @noinline
   def put(src: Array[Long], offset: Int, length: Int): LongBuffer =
     GenBuffer(this).generic_put(src, offset, length)
 
-  final def put(src: Array[Long]): LongBuffer =
-    put(src, 0, src.length)
+  final def put(src: Array[Long]): LongBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean =
-    GenBuffer(this).generic_hasArray()
+  @inline final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Long] =
-    GenBuffer(this).generic_array()
+  @inline final def array(): Array[Long] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int =
-    GenBuffer(this).generic_arrayOffset()
+  @inline final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): LongBuffer
 

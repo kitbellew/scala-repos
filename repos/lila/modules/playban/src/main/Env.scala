@@ -8,9 +8,10 @@ import lila.common.PimpedConfig._
 
 final class Env(config: Config, isRematch: String => Boolean, db: lila.db.Env) {
 
-  private val settings = new {
-    val CollectionPlayban = config getString "collection.playban"
-  }
+  private val settings =
+    new {
+      val CollectionPlayban = config getString "collection.playban"
+    }
   import settings._
 
   lazy val api = new PlaybanApi(coll = coll, isRematch = isRematch)

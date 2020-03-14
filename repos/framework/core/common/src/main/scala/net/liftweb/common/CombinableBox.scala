@@ -45,8 +45,7 @@ object CombinableBox {
       in: Boxable[A]): CombinableBox[A, HNil] = in.asBox
 
   implicit def boxCombinationToCombinableBox[A, B <: HList](
-      in: Result[A :+: B]): CombinableBox[A, B] =
-    CombinableBox(in)
+      in: Result[A :+: B]): CombinableBox[A, B] = CombinableBox(in)
 
   implicit def resultToBox[A](result: Result[A]): Box[A] =
     result match {

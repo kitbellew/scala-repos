@@ -245,10 +245,11 @@ case class Divide(left: Expression, right: Expression)
   override def decimalMethod: String = "$div"
   override def nullable: Boolean = true
 
-  private lazy val div: (Any, Any) => Any = dataType match {
-    case ft: FractionalType => ft.fractional.asInstanceOf[Fractional[Any]].div
-    case it: IntegralType   => it.integral.asInstanceOf[Integral[Any]].quot
-  }
+  private lazy val div: (Any, Any) => Any =
+    dataType match {
+      case ft: FractionalType => ft.fractional.asInstanceOf[Fractional[Any]].div
+      case it: IntegralType   => it.integral.asInstanceOf[Integral[Any]].quot
+    }
 
   override def eval(input: InternalRow): Any = {
     val input2 = right.eval(input)
@@ -270,17 +271,19 @@ case class Divide(left: Expression, right: Expression)
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval1 = left.gen(ctx)
     val eval2 = right.gen(ctx)
-    val isZero = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval2.value}.isZero()"
-    } else {
-      s"${eval2.value} == 0"
-    }
+    val isZero =
+      if (dataType.isInstanceOf[DecimalType]) {
+        s"${eval2.value}.isZero()"
+      } else {
+        s"${eval2.value} == 0"
+      }
     val javaType = ctx.javaType(dataType)
-    val divide = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval1.value}.$decimalMethod(${eval2.value})"
-    } else {
-      s"($javaType)(${eval1.value} $symbol ${eval2.value})"
-    }
+    val divide =
+      if (dataType.isInstanceOf[DecimalType]) {
+        s"${eval1.value}.$decimalMethod(${eval2.value})"
+      } else {
+        s"($javaType)(${eval1.value} $symbol ${eval2.value})"
+      }
     s"""
       ${eval2.code}
       boolean ${ev.isNull} = false;
@@ -308,10 +311,11 @@ case class Remainder(left: Expression, right: Expression)
   override def decimalMethod: String = "remainder"
   override def nullable: Boolean = true
 
-  private lazy val integral = dataType match {
-    case i: IntegralType   => i.integral.asInstanceOf[Integral[Any]]
-    case i: FractionalType => i.asIntegral.asInstanceOf[Integral[Any]]
-  }
+  private lazy val integral =
+    dataType match {
+      case i: IntegralType   => i.integral.asInstanceOf[Integral[Any]]
+      case i: FractionalType => i.asIntegral.asInstanceOf[Integral[Any]]
+    }
 
   override def eval(input: InternalRow): Any = {
     val input2 = right.eval(input)
@@ -333,17 +337,19 @@ case class Remainder(left: Expression, right: Expression)
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val eval1 = left.gen(ctx)
     val eval2 = right.gen(ctx)
-    val isZero = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval2.value}.isZero()"
-    } else {
-      s"${eval2.value} == 0"
-    }
+    val isZero =
+      if (dataType.isInstanceOf[DecimalType]) {
+        s"${eval2.value}.isZero()"
+      } else {
+        s"${eval2.value} == 0"
+      }
     val javaType = ctx.javaType(dataType)
-    val remainder = if (dataType.isInstanceOf[DecimalType]) {
-      s"${eval1.value}.$decimalMethod(${eval2.value})"
-    } else {
-      s"($javaType)(${eval1.value} $symbol ${eval2.value})"
-    }
+    val remainder =
+      if (dataType.isInstanceOf[DecimalType]) {
+        s"${eval1.value}.$decimalMethod(${eval2.value})"
+      } else {
+        s"($javaType)(${eval1.value} $symbol ${eval2.value})"
+      }
     s"""
       ${eval2.code}
       boolean ${ev.isNull} = false;

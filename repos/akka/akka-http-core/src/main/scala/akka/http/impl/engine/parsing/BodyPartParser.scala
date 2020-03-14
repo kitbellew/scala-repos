@@ -59,15 +59,17 @@ private[http] final class BodyPartParser(
   private[this] val boyerMoore = new BoyerMoore(needle)
 
   // TODO: prevent re-priming header parser from scratch
-  private[this] val headerParser = HttpHeaderParser(settings) { errorInfo ⇒
-    if (illegalHeaderWarnings)
-      log.warning(
-        errorInfo.withSummaryPrepended("Illegal multipart header").formatPretty)
-  }
+  private[this] val headerParser =
+    HttpHeaderParser(settings) { errorInfo ⇒
+      if (illegalHeaderWarnings)
+        log.warning(
+          errorInfo
+            .withSummaryPrepended("Illegal multipart header")
+            .formatPretty)
+    }
 
-  private[this] var output =
-    collection.immutable.Queue
-      .empty[Output] // FIXME this probably is too wasteful
+  private[this] var output = collection.immutable.Queue
+    .empty[Output] // FIXME this probably is too wasteful
   private[this] var state: ByteString ⇒ StateResult = tryParseInitialBoundary
   private[this] var terminated = false
 

@@ -11,9 +11,10 @@ trait StdAttachments {
     *  After a macro application has been successfully expanded, this attachment is destroyed.
     */
   type UnaffiliatedMacroContext = scala.reflect.macros.contexts.Context
-  type MacroContext = UnaffiliatedMacroContext {
-    val universe: self.global.type
-  }
+  type MacroContext =
+    UnaffiliatedMacroContext {
+      val universe: self.global.type
+    }
   case class MacroRuntimeAttachment(
       delayed: Boolean,
       typerContext: Context,

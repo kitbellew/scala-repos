@@ -20,8 +20,9 @@ trait Literals { l =>
     * Parses whitespace, including newlines.
     * This is the default for most things
     */
-  val WL0 = P(NoTrace((Basic.WSChars | Literals.Comment | Basic.Newline).rep))(
-    sourcecode.Name("WL"))
+  val WL0 =
+    P(NoTrace((Basic.WSChars | Literals.Comment | Basic.Newline).rep))(
+      sourcecode.Name("WL"))
   val WL = P(NoCut(WL0))
 
   val Semi = P(WS ~ Basic.Semi)
@@ -77,11 +78,12 @@ trait Literals { l =>
     class InterpCtx(interp: Option[P0]) {
       val Literal = P(
         ("-".? ~ (Float | Int)) | Bool | String | "'" ~/ (Char | Symbol) | Null)
-      val Interp = interp match {
-        case None => P(Fail)
-        case Some(p) =>
-          P("$" ~ Identifiers.PlainIdNoDollar | ("${" ~ p ~ WL ~ "}") | "$$")
-      }
+      val Interp =
+        interp match {
+          case None => P(Fail)
+          case Some(p) =>
+            P("$" ~ Identifiers.PlainIdNoDollar | ("${" ~ p ~ WL ~ "}") | "$$")
+        }
 
       val TQ = P("\"\"\"")
 

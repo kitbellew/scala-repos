@@ -25,8 +25,7 @@ trait Applicative[F[_]] extends Apply[F] { self =>
   final def pure[A](a: => A): F[A] = point(a)
 
   // derived functions
-  override def map[A, B](fa: F[A])(f: A => B): F[B] =
-    ap(fa)(point(f))
+  override def map[A, B](fa: F[A])(f: A => B): F[B] = ap(fa)(point(f))
 
   override def apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C): F[C] =
     ap2(fa, fb)(point(f))
@@ -34,11 +33,9 @@ trait Applicative[F[_]] extends Apply[F] { self =>
   // impls of sequence, traverse, etc
 
   def traverse[A, G[_], B](value: G[A])(f: A => F[B])(
-      implicit G: Traverse[G]): F[G[B]] =
-    G.traverse(value)(f)(this)
+      implicit G: Traverse[G]): F[G[B]] = G.traverse(value)(f)(this)
 
-  def sequence[A, G[_]: Traverse](as: G[F[A]]): F[G[A]] =
-    traverse(as)(a => a)
+  def sequence[A, G[_]: Traverse](as: G[F[A]]): F[G[A]] = traverse(as)(a => a)
 
   import std.list._
 
@@ -131,9 +128,10 @@ trait Applicative[F[_]] extends Apply[F] { self =>
   def applicativeLaw = new ApplicativeLaw {}
 
   ////
-  val applicativeSyntax = new scalaz.syntax.ApplicativeSyntax[F] {
-    def F = Applicative.this
-  }
+  val applicativeSyntax =
+    new scalaz.syntax.ApplicativeSyntax[F] {
+      def F = Applicative.this
+    }
 }
 
 object Applicative {

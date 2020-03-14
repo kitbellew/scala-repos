@@ -7,8 +7,8 @@ trait CommitStatusComponent extends TemplateComponent { self: Profile =>
   import profile.simple._
   import self._
 
-  implicit val commitStateColumnType =
-    MappedColumnType.base[CommitState, String](b => b.name, i => CommitState(i))
+  implicit val commitStateColumnType = MappedColumnType
+    .base[CommitState, String](b => b.name, i => CommitState(i))
 
   lazy val CommitStatuses = TableQuery[CommitStatuses]
   class CommitStatuses(tag: Tag)
@@ -107,8 +107,8 @@ object CommitState {
     }
   }
 
-  implicit val getResult: GetResult[CommitState] =
-    GetResult(r => CommitState(r.<<))
-  implicit val getResultOpt: GetResult[Option[CommitState]] =
-    GetResult(r => r.<<?[String].map(CommitState(_)))
+  implicit val getResult: GetResult[CommitState] = GetResult(r =>
+    CommitState(r.<<))
+  implicit val getResultOpt: GetResult[Option[CommitState]] = GetResult(r =>
+    r.<<?[String].map(CommitState(_)))
 }

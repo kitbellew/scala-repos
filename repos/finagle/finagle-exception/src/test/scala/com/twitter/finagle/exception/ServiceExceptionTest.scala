@@ -28,11 +28,12 @@ private[exception] class TestServiceException(
   throwable.setStackTrace(Array(ste, ste))
 
   private def constructServiceException = {
-    var se = new ServiceException(
-      serviceName,
-      throwable,
-      time.getOrElse(Time.now),
-      traceId.getOrElse(0L))
+    var se =
+      new ServiceException(
+        serviceName,
+        throwable,
+        time.getOrElse(Time.now),
+        traceId.getOrElse(0L))
     clientAddress foreach (ca => se = se.withClient(ca))
     sourceAddress foreach (sa => se = se.withSource(sa))
     cardinality foreach (c => se = se.incremented(c))
@@ -157,8 +158,11 @@ private[exception] class TestServiceException(
         }
         case "peer" =>
           assert(jsonValue.isTextual)
-          hasClient =
-            verifyOption(jsonValue.textValue, clientAddress, "peer", hasClient)
+          hasClient = verifyOption(
+            jsonValue.textValue,
+            clientAddress,
+            "peer",
+            hasClient)
         case "sourceAddress" =>
           assert(jsonValue.isTextual)
           hasSource = verifyOption(
@@ -203,93 +207,101 @@ private[exception] class TestServiceException(
 
 class ServiceExceptionTest extends FunSuite {
   test("with no endpoint reporting serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
   test(
     "with no endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L),
-      cardinality = Some(12))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L),
+        cardinality = Some(12))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
   test(
     "with client endpoint reporting serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L),
-      clientAddress = Some("myendpoint"))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L),
+        clientAddress = Some("myendpoint"))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
   test(
     "with client endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L),
-      clientAddress = Some("myendpoint"),
-      cardinality = Some(9))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L),
+        clientAddress = Some("myendpoint"),
+        cardinality = Some(9))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
   test(
     "with source endpoint reporting serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L),
-      sourceAddress = Some("myendpoint"))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L),
+        sourceAddress = Some("myendpoint"))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
   test(
     "with source endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L),
-      sourceAddress = Some("myendpoint"),
-      cardinality = Some(7))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L),
+        sourceAddress = Some("myendpoint"),
+        cardinality = Some(7))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
   test(
     "with both client and source endpoint reporting serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L),
-      clientAddress = Some("myClientAddress"),
-      sourceAddress = Some("mySourceAddress"))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L),
+        clientAddress = Some("myClientAddress"),
+        sourceAddress = Some("mySourceAddress"))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
   test(
     "with both client and source endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
-    val tse = new TestServiceException(
-      "service16",
-      "my cool message",
-      Some(Time.now),
-      Some(124564L),
-      clientAddress = Some("myClientAddress"),
-      sourceAddress = Some("mySourceAddress"),
-      cardinality = Some(8))
+    val tse =
+      new TestServiceException(
+        "service16",
+        "my cool message",
+        Some(Time.now),
+        Some(124564L),
+        clientAddress = Some("myClientAddress"),
+        sourceAddress = Some("mySourceAddress"),
+        cardinality = Some(8))
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 }

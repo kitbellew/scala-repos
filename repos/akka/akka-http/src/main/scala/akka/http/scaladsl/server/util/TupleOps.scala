@@ -46,9 +46,10 @@ object TupleOps {
     type Out
     def apply(prefix: P, suffix: S): Out
   }
-  type JoinAux[P, S, O] = Join[P, S] {
-    type Out = O
-  }
+  type JoinAux[P, S, O] =
+    Join[P, S] {
+      type Out = O
+    }
   object Join extends LowLevelJoinImplicits {
     // O(1) shortcut for the Join[Unit, T] case to avoid O(n) runtime in this case
     implicit def join0P[T]: JoinAux[Unit, T, T] =
@@ -61,8 +62,7 @@ object TupleOps {
       implicit def step[T, A](implicit
           append: AppendOne[T, A]): BinaryPolyFunc.Case[T, A, Fold.type] {
         type Out = append.Out
-      } =
-        at[T, A](append(_, _))
+      } = at[T, A](append(_, _))
     }
   }
   sealed abstract class LowLevelJoinImplicits {

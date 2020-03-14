@@ -141,20 +141,21 @@ class SymbolTableForUnitTesting extends SymbolTable {
     }
     phasesArray
   }
-  lazy val treeInfo = new scala.reflect.internal.TreeInfo {
-    val global: SymbolTableForUnitTesting.this.type =
-      SymbolTableForUnitTesting.this
-  }
+  lazy val treeInfo =
+    new scala.reflect.internal.TreeInfo {
+      val global: SymbolTableForUnitTesting.this.type =
+        SymbolTableForUnitTesting.this
+    }
 
   val currentFreshNameCreator = new reflect.internal.util.FreshNameCreator
 
   phase = SomePhase
 
   type RuntimeClass = java.lang.Class[_]
-  implicit val RuntimeClassTag: ClassTag[RuntimeClass] =
-    ClassTag[RuntimeClass](classOf[RuntimeClass])
-  implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[GlobalMirror])
-  implicit val TreeCopierTag: ClassTag[TreeCopier] =
-    ClassTag[TreeCopier](classOf[TreeCopier])
+  implicit val RuntimeClassTag: ClassTag[RuntimeClass] = ClassTag[RuntimeClass](
+    classOf[RuntimeClass])
+  implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[GlobalMirror])
+  implicit val TreeCopierTag: ClassTag[TreeCopier] = ClassTag[TreeCopier](
+    classOf[TreeCopier])
 }

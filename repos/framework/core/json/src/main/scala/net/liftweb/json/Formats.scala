@@ -95,8 +95,8 @@ trait Formats { self: Formats =>
       clazz: Class[_]): Option[FieldSerializer[_]] = {
     import ClassDelta._
 
-    val ord =
-      Ordering[Int].on[(Class[_], FieldSerializer[_])](x => delta(x._1, clazz))
+    val ord = Ordering[Int].on[(Class[_], FieldSerializer[_])](x =>
+      delta(x._1, clazz))
     fieldSerializers filter (_._1.isAssignableFrom(clazz)) match {
       case Nil => None
       case xs  => Some((xs min ord)._2)
@@ -260,30 +260,32 @@ case class FullTypeHints(hints: List[Class[_]]) extends TypeHints {
 /** Default date format is UTC time.
   */
 object DefaultFormats extends DefaultFormats {
-  val losslessDate = new ThreadLocal(
-    new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+  val losslessDate =
+    new ThreadLocal(
+      new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
   val UTC = TimeZone.getTimeZone("UTC")
 }
 
 trait DefaultFormats extends Formats {
   import java.text.{ParseException, SimpleDateFormat}
 
-  val dateFormat = new DateFormat {
-    def parse(s: String) =
-      try {
-        Some(formatter.parse(s))
-      } catch {
-        case e: ParseException => None
+  val dateFormat =
+    new DateFormat {
+      def parse(s: String) =
+        try {
+          Some(formatter.parse(s))
+        } catch {
+          case e: ParseException => None
+        }
+
+      def format(d: Date) = formatter.format(d)
+
+      private def formatter = {
+        val f = dateFormatter
+        f.setTimeZone(DefaultFormats.UTC)
+        f
       }
-
-    def format(d: Date) = formatter.format(d)
-
-    private def formatter = {
-      val f = dateFormatter
-      f.setTimeZone(DefaultFormats.UTC)
-      f
     }
-  }
 
   protected def dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
 

@@ -38,8 +38,8 @@ private[hive] object SparkSQLEnv extends Logging {
     if (hiveContext == null) {
       val sparkConf = new SparkConf(loadDefaults = true)
       val maybeSerializer = sparkConf.getOption("spark.serializer")
-      val maybeKryoReferenceTracking =
-        sparkConf.getOption("spark.kryo.referenceTracking")
+      val maybeKryoReferenceTracking = sparkConf.getOption(
+        "spark.kryo.referenceTracking")
       // If user doesn't specify the appName, we want to get [SparkSQL::localHostName] instead of
       // the default appName [SparkSQLCLIDriver] in cli or beeline.
       val maybeAppName = sparkConf

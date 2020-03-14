@@ -120,8 +120,10 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       " value") {
 
     val json = """{"string": "query string"}"""
-    val query =
-      JsonExtractor.extract(JsonExtractorOption.Gson, json, classOf[ScalaQuery])
+    val query = JsonExtractor.extract(
+      JsonExtractorOption.Gson,
+      json,
+      classOf[ScalaQuery])
 
     query should be(ScalaQuery("query string", null, null))
   }
@@ -140,8 +142,10 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = """{"q": "query string"}"""
 
-    val query =
-      JsonExtractor.extract(JsonExtractorOption.Gson, json, classOf[JavaQuery])
+    val query = JsonExtractor.extract(
+      JsonExtractorOption.Gson,
+      json,
+      classOf[JavaQuery])
 
     query should be(new JavaQuery("query string"))
   }
@@ -150,8 +154,10 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
     val json = """{"q": "query string"}"""
 
-    val query =
-      JsonExtractor.extract(JsonExtractorOption.Both, json, classOf[JavaQuery])
+    val query = JsonExtractor.extract(
+      JsonExtractorOption.Both,
+      json,
+      classOf[JavaQuery])
 
     query should be(new JavaQuery("query string"))
   }
@@ -292,8 +298,9 @@ class JsonExtractorSuite extends FunSuite with Matchers {
 
   test("Scala Param to Json using option Json4sNative") {
     val param = ("algo", AlgorithmParams("parameter"))
-    val json =
-      JsonExtractor.paramToJson(JsonExtractorOption.Json4sNative, param)
+    val json = JsonExtractor.paramToJson(
+      JsonExtractorOption.Json4sNative,
+      param)
 
     json should be("""{"algo":{"a":"parameter"}}""")
   }
@@ -319,10 +326,9 @@ class JsonExtractorSuite extends FunSuite with Matchers {
   }
 
   test("Scala Params to Json using option Both") {
-    val params =
-      Seq(
-        ("algo", AlgorithmParams("parameter")),
-        ("algo2", AlgorithmParams("parameter2")))
+    val params = Seq(
+      ("algo", AlgorithmParams("parameter")),
+      ("algo2", AlgorithmParams("parameter2")))
     val json = JsonExtractor.paramsToJson(JsonExtractorOption.Both, params)
 
     json should be(
@@ -330,22 +336,21 @@ class JsonExtractorSuite extends FunSuite with Matchers {
   }
 
   test("Scala Params to Json using option Json4sNative") {
-    val params =
-      Seq(
-        ("algo", AlgorithmParams("parameter")),
-        ("algo2", AlgorithmParams("parameter2")))
-    val json =
-      JsonExtractor.paramsToJson(JsonExtractorOption.Json4sNative, params)
+    val params = Seq(
+      ("algo", AlgorithmParams("parameter")),
+      ("algo2", AlgorithmParams("parameter2")))
+    val json = JsonExtractor.paramsToJson(
+      JsonExtractorOption.Json4sNative,
+      params)
 
     json should be(
       org.json4s.native.Serialization.write(params)(Utils.json4sDefaultFormats))
   }
 
   test("Mixed Java and Scala Params to Json using option Both") {
-    val params =
-      Seq(
-        ("scala", AlgorithmParams("parameter")),
-        ("java", new JavaParams("parameter2")))
+    val params = Seq(
+      ("scala", AlgorithmParams("parameter")),
+      ("java", new JavaParams("parameter2")))
     val json = JsonExtractor.paramsToJson(JsonExtractorOption.Both, params)
 
     json should be(
@@ -353,12 +358,14 @@ class JsonExtractorSuite extends FunSuite with Matchers {
   }
 
   test("Serializing Scala EngineParams works using option Json4sNative") {
-    val ep = new EngineParams(
-      dataSourceParams = ("ds", DataSourceParams("dsp")),
-      algorithmParamsList = Seq(("a0", AlgorithmParams("ap"))))
+    val ep =
+      new EngineParams(
+        dataSourceParams = ("ds", DataSourceParams("dsp")),
+        algorithmParamsList = Seq(("a0", AlgorithmParams("ap"))))
 
-    val json =
-      JsonExtractor.engineParamsToJson(JsonExtractorOption.Json4sNative, ep)
+    val json = JsonExtractor.engineParamsToJson(
+      JsonExtractorOption.Json4sNative,
+      ep)
 
     json should be(
       """{"dataSourceParams":{"ds":{"a":"dsp"}},"preparatorParams":{"":{}},""" +
@@ -366,10 +373,12 @@ class JsonExtractorSuite extends FunSuite with Matchers {
   }
 
   test("Serializing Java EngineParams works using option Gson") {
-    val ep = new EngineParams(
-      dataSourceParams = ("ds", new JavaParams("dsp")),
-      algorithmParamsList =
-        Seq(("a0", new JavaParams("ap")), ("a1", new JavaParams("ap2"))))
+    val ep =
+      new EngineParams(
+        dataSourceParams = ("ds", new JavaParams("dsp")),
+        algorithmParamsList = Seq(
+          ("a0", new JavaParams("ap")),
+          ("a1", new JavaParams("ap2"))))
 
     val json = JsonExtractor.engineParamsToJson(JsonExtractorOption.Gson, ep)
 
@@ -379,10 +388,12 @@ class JsonExtractorSuite extends FunSuite with Matchers {
   }
 
   test("Serializing Java EngineParams works using option Both") {
-    val ep = new EngineParams(
-      dataSourceParams = ("ds", new JavaParams("dsp")),
-      algorithmParamsList =
-        Seq(("a0", new JavaParams("ap")), ("a1", new JavaParams("ap2"))))
+    val ep =
+      new EngineParams(
+        dataSourceParams = ("ds", new JavaParams("dsp")),
+        algorithmParamsList = Seq(
+          ("a0", new JavaParams("ap")),
+          ("a1", new JavaParams("ap2"))))
 
     val json = JsonExtractor.engineParamsToJson(JsonExtractorOption.Both, ep)
 

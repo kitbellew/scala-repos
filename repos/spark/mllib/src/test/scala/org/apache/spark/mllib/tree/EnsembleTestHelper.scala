@@ -75,12 +75,13 @@ object EnsembleTestHelper {
       case (prediction, point) =>
         point.label - prediction
     }
-    val metric = metricName match {
-      case "mse" =>
-        errors.map(err => err * err).sum / errors.size
-      case "mae" =>
-        errors.map(math.abs).sum / errors.size
-    }
+    val metric =
+      metricName match {
+        case "mse" =>
+          errors.map(err => err * err).sum / errors.size
+        case "mae" =>
+          errors.map(math.abs).sum / errors.size
+      }
 
     assert(
       metric <= required,
@@ -92,15 +93,16 @@ object EnsembleTestHelper {
       numInstances: Int): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](numInstances)
     for (i <- 0 until numInstances) {
-      val label = if (i < numInstances / 10) {
-        0.0
-      } else if (i < numInstances / 2) {
-        1.0
-      } else if (i < numInstances * 0.9) {
-        0.0
-      } else {
-        1.0
-      }
+      val label =
+        if (i < numInstances / 10) {
+          0.0
+        } else if (i < numInstances / 2) {
+          1.0
+        } else if (i < numInstances * 0.9) {
+          0.0
+        } else {
+          1.0
+        }
       val features = Array.fill[Double](numFeatures)(i.toDouble)
       arr(i) = new LabeledPoint(label, Vectors.dense(features))
     }

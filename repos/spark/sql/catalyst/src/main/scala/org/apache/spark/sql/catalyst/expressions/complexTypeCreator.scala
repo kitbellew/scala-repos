@@ -178,8 +178,8 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName expects an even number of arguments.")
     } else {
-      val invalidNames =
-        nameExprs.filterNot(e => e.foldable && e.dataType == StringType)
+      val invalidNames = nameExprs.filterNot(e =>
+        e.foldable && e.dataType == StringType)
       if (invalidNames.nonEmpty) {
         TypeCheckResult.TypeCheckFailure(
           s"Only foldable StringType expressions are allowed to appear at odd position , got :" +

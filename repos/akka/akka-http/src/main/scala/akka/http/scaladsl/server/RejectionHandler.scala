@@ -226,19 +226,20 @@ object RejectionHandler {
                 "")))
       }
       .handleAll[AuthenticationFailedRejection] { rejections ⇒
-        val rejectionMessage = rejections.head.cause match {
-          case CredentialsMissing ⇒
-            "The resource requires authentication, which was not supplied with the request"
-          case CredentialsRejected ⇒ "The supplied authentication is invalid"
-        }
+        val rejectionMessage =
+          rejections.head.cause match {
+            case CredentialsMissing ⇒
+              "The resource requires authentication, which was not supplied with the request"
+            case CredentialsRejected ⇒ "The supplied authentication is invalid"
+          }
         // Multiple challenges per WWW-Authenticate header are allowed per spec,
         // however, it seems many browsers will ignore all challenges but the first.
         // Therefore, multiple WWW-Authenticate headers are rendered, instead.
         //
         // See https://code.google.com/p/chromium/issues/detail?id=103220
         // and https://bugzilla.mozilla.org/show_bug.cgi?id=669675
-        val authenticateHeaders =
-          rejections.map(r ⇒ `WWW-Authenticate`(r.challenge))
+        val authenticateHeaders = rejections.map(r ⇒
+          `WWW-Authenticate`(r.challenge))
         complete((Unauthorized, authenticateHeaders, rejectionMessage))
       }
       .handleAll[UnacceptedResponseContentTypeRejection] { rejections ⇒
@@ -303,8 +304,8 @@ object RejectionHandler {
     */
   def applyTransformations(
       rejections: immutable.Seq[Rejection]): immutable.Seq[Rejection] = {
-    val (transformations, rest) =
-      rejections.partition(_.isInstanceOf[TransformationRejection])
+    val (transformations, rest) = rejections.partition(
+      _.isInstanceOf[TransformationRejection])
     (rest.distinct /: transformations
       .asInstanceOf[Seq[TransformationRejection]]) {
       case (remaining, transformation) ⇒ transformation.transform(remaining)

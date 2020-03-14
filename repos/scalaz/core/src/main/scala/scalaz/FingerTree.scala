@@ -1032,9 +1032,10 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       (v, pr, m, sf) => {
         //F.ap(traverseFinger(sf)(f))(F.ap(m.traverseTree(n => traverseNode(n)(f)))(F.map(traverseFinger(pr)(f))(pr => mkDeep(pr)_)))
         //the implementation below seems most efficient. The straightforward implementation using F.map3 leads to an explosion of traverseTree calls
-        val fmap2 = F.apply2(
-          traverseFinger(pr)(f),
-          m.traverseTree(n => traverseNode(n)(f)))((a, b) => mkDeep(a)(b) _)
+        val fmap2 =
+          F.apply2(
+            traverseFinger(pr)(f),
+            m.traverseTree(n => traverseNode(n)(f)))((a, b) => mkDeep(a)(b) _)
         F.ap(traverseFinger(sf)(f))(fmap2)
       }
     )
@@ -1223,8 +1224,7 @@ object FingerTree extends FingerTreeInstances {
     new Node[V, A] {
       def fold[B](
           two: (V, => A, => A) => B,
-          three: (V, => A, => A, => A) => B) =
-        two(v, a1, a2)
+          three: (V, => A, => A, => A) => B) = two(v, a1, a2)
       val measure = v
     }
 
@@ -1233,8 +1233,7 @@ object FingerTree extends FingerTreeInstances {
     new Node[V, A] {
       def fold[B](
           two: (V, => A, => A) => B,
-          three: (V, => A, => A, => A) => B) =
-        three(v, a1, a2, a3)
+          three: (V, => A, => A, => A) => B) = three(v, a1, a2, a3)
       val measure = v
     }
 
@@ -1258,8 +1257,7 @@ object FingerTree extends FingerTreeInstances {
       def fold[B](b: => B, f: (=> A, => S[A]) => B) = f(a, sa)
     }
 
-  def one[V, A](a: A)(implicit measure: Reducer[A, V]) =
-    One(measure.unit(a), a)
+  def one[V, A](a: A)(implicit measure: Reducer[A, V]) = One(measure.unit(a), a)
 
   def two[V, A](a1: A, a2: A)(implicit measure: Reducer[A, V]) =
     Two(measure.snoc(measure.unit(a1), a2), a1, a2)
@@ -1330,8 +1328,7 @@ object FingerTree extends FingerTreeInstances {
           b: V => B,
           f: (V, A) => B,
           d: (V, Finger[V, A], => FingerTree[V, Node[V, A]], Finger[V, A]) => B)
-          : B =
-        d(v, pr, mz, sf)
+          : B = d(v, pr, mz, sf)
     }
 
   def deepL[V, A](
@@ -1421,8 +1418,7 @@ object IndSeq extends IndSeqInstances {
 
 sealed abstract class IndSeqInstances {
 
-  implicit def indSeqEqual[A: Equal]: Equal[IndSeq[A]] =
-    Equal.equalBy(_.self)
+  implicit def indSeqEqual[A: Equal]: Equal[IndSeq[A]] = Equal.equalBy(_.self)
 
   implicit val indSeqInstance
       : MonadPlus[IndSeq] with Traverse[IndSeq] with IsEmpty[IndSeq] =
@@ -1431,37 +1427,29 @@ sealed abstract class IndSeqInstances {
       with IsEmpty[IndSeq]
       with IsomorphismFoldable[IndSeq, FingerTree[Int, ?]] {
       def G = implicitly
-      override val naturalTrans = new (IndSeq ~> FingerTree[Int, ?]) {
-        def apply[A](a: IndSeq[A]) =
-          a.self
-      }
+      override val naturalTrans =
+        new (IndSeq ~> FingerTree[Int, ?]) {
+          def apply[A](a: IndSeq[A]) = a.self
+        }
       def traverseImpl[G[_], A, B](fa: IndSeq[A])(f: A => G[B])(
           implicit G: Applicative[G]) = {
         import std.anyVal._
         implicit val r = UnitReducer((_: B) => 1)
         G.map(fa.self.traverseTree(f))(new IndSeq(_))
       }
-      override def length[A](fa: IndSeq[A]) =
-        fa.length
+      override def length[A](fa: IndSeq[A]) = fa.length
       override def index[A](fa: IndSeq[A], i: Int) =
         if (0 <= i && i < fa.length)
           Some(fa(i))
         else
           None
-      override def isEmpty[A](fa: IndSeq[A]) =
-        fa.self.isEmpty
-      override def empty[A](fa: IndSeq[A]) =
-        fa.self.isEmpty
-      def point[A](a: => A) =
-        IndSeq(a)
-      def bind[A, B](fa: IndSeq[A])(f: A => IndSeq[B]) =
-        fa flatMap f
-      override def map[A, B](fa: IndSeq[A])(f: A => B) =
-        fa map f
-      def plus[A](a: IndSeq[A], b: => IndSeq[A]) =
-        a ++ b
-      def empty[A] =
-        IndSeq.apply()
+      override def isEmpty[A](fa: IndSeq[A]) = fa.self.isEmpty
+      override def empty[A](fa: IndSeq[A]) = fa.self.isEmpty
+      def point[A](a: => A) = IndSeq(a)
+      def bind[A, B](fa: IndSeq[A])(f: A => IndSeq[B]) = fa flatMap f
+      override def map[A, B](fa: IndSeq[A])(f: A => B) = fa map f
+      def plus[A](a: IndSeq[A], b: => IndSeq[A]) = a ++ b
+      def empty[A] = IndSeq.apply()
     }
 }
 
@@ -1511,8 +1499,8 @@ object OrdSeq {
 
   def apply[A: Order](as: A*): OrdSeq[A] = {
     val z: OrdSeq[A] = {
-      val keyer: Reducer[A, LastOption[A]] =
-        UnitReducer((a: A) => Tags.Last(some(a)))
+      val keyer: Reducer[A, LastOption[A]] = UnitReducer((a: A) =>
+        Tags.Last(some(a)))
       ordSeq(empty[LastOption[A], A](keyer))
     }
     as.foldLeft(z)((x, y) => x insert y)

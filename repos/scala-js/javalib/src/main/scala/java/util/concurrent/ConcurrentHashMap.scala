@@ -11,11 +11,9 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     with ConcurrentMap[K, V]
     with Serializable { self =>
 
-  def this(initialCapacity: Int) =
-    this()
+  def this(initialCapacity: Int) = this()
 
-  def this(initialCapacity: Int, loadFactor: Float) =
-    this()
+  def this(initialCapacity: Int, loadFactor: Float) = this()
 
   def this(initialCapacity: Int, loadFactor: Float, concurrencyLevel: Int) =
     this()
@@ -105,8 +103,7 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     }
   }
 
-  override def clear(): Unit =
-    inner.clear()
+  override def clear(): Unit = inner.clear()
 
   override def keySet(): ConcurrentHashMap.KeySetView[K, V] =
     new ConcurrentHashMap.KeySetView[K, V](this)
@@ -146,8 +143,7 @@ class ConcurrentHashMap[K >: Null, V >: Null]
   def keys(): Enumeration[K] =
     asJavaEnumeration(inner.keys.iterator.map(_.inner))
 
-  def elements(): Enumeration[V] =
-    asJavaEnumeration(inner.values.iterator)
+  def elements(): Enumeration[V] = asJavaEnumeration(inner.values.iterator)
 }
 
 object ConcurrentHashMap {
@@ -195,8 +191,7 @@ object ConcurrentHashMap {
       toFill
     }
 
-    def add(e: K): Boolean =
-      throw new UnsupportedOperationException()
+    def add(e: K): Boolean = throw new UnsupportedOperationException()
 
     def remove(o: Any): Boolean = chm.remove(o) != null
 
@@ -206,11 +201,9 @@ object ConcurrentHashMap {
     def addAll(c: Collection[_ <: K]): Boolean =
       throw new UnsupportedOperationException()
 
-    def removeAll(c: Collection[_]): Boolean =
-      removeWhere(c.contains(_))
+    def removeAll(c: Collection[_]): Boolean = removeWhere(c.contains(_))
 
-    def retainAll(c: Collection[_]): Boolean =
-      removeWhere(!c.contains(_))
+    def retainAll(c: Collection[_]): Boolean = removeWhere(!c.contains(_))
 
     def clear(): Unit = chm.clear()
 

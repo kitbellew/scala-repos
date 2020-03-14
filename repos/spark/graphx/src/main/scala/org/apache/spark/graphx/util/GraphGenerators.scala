@@ -76,8 +76,9 @@ object GraphGenerators extends Logging {
     val seed1 = seedRand.nextInt()
     val seed2 = seedRand.nextInt()
 
-    val vertices: RDD[(VertexId, Long)] =
-      sc.parallelize(0 until numVertices, evalNumEParts).map { src =>
+    val vertices: RDD[(VertexId, Long)] = sc
+      .parallelize(0 until numVertices, evalNumEParts)
+      .map { src =>
         (src, sampleLogNormal(mu, sigma, numVertices, seed = (seed1 ^ src)))
       }
 
@@ -162,11 +163,11 @@ object GraphGenerators extends Logging {
     // let N = requestedNumVertices
     // the number of vertices is 2^n where n=ceil(log2[N])
     // This ensures that the 4 quadrants are the same size at all recursion levels
-    val numVertices = math
-      .round(
-        math
+    val numVertices =
+      math
+        .round(math
           .pow(2.0, math.ceil(math.log(requestedNumVertices) / math.log(2.0))))
-      .toInt
+        .toInt
     val numEdgesUpperBound =
       math.pow(2.0, 2 * ((math.log(numVertices) / math.log(2.0)) - 1)).toInt
     if (numEdgesUpperBound < numEdges) {
@@ -291,28 +292,28 @@ object GraphGenerators extends Logging {
     // Convert row column address into vertex ids (row major order)
     def sub2ind(r: Int, c: Int): VertexId = r * cols + c
 
-    val vertices: RDD[(VertexId, (Int, Int))] =
-      sc.parallelize(0 until rows).flatMap { r =>
+    val vertices: RDD[(VertexId, (Int, Int))] = sc
+      .parallelize(0 until rows)
+      .flatMap { r =>
         (0 until cols).map(c => (sub2ind(r, c), (r, c)))
       }
-    val edges: RDD[Edge[Double]] =
-      vertices
-        .flatMap {
-          case (vid, (r, c)) =>
-            (if (r + 1 < rows) {
-               Seq((sub2ind(r, c), sub2ind(r + 1, c)))
+    val edges: RDD[Edge[Double]] = vertices
+      .flatMap {
+        case (vid, (r, c)) =>
+          (if (r + 1 < rows) {
+             Seq((sub2ind(r, c), sub2ind(r + 1, c)))
+           } else {
+             Seq.empty
+           }) ++
+            (if (c + 1 < cols) {
+               Seq((sub2ind(r, c), sub2ind(r, c + 1)))
              } else {
                Seq.empty
-             }) ++
-              (if (c + 1 < cols) {
-                 Seq((sub2ind(r, c), sub2ind(r, c + 1)))
-               } else {
-                 Seq.empty
-               })
-        }
-        .map {
-          case (src, dst) => Edge(src, dst, 1.0)
-        }
+             })
+      }
+      .map {
+        case (src, dst) => Edge(src, dst, 1.0)
+      }
     Graph(vertices, edges)
   } // end of gridGraph
 
@@ -326,8 +327,9 @@ object GraphGenerators extends Logging {
     * being the center vertex.
     */
   def starGraph(sc: SparkContext, nverts: Int): Graph[Int, Int] = {
-    val edges: RDD[(VertexId, VertexId)] =
-      sc.parallelize(1 until nverts).map(vid => (vid, 0))
+    val edges: RDD[(VertexId, VertexId)] = sc
+      .parallelize(1 until nverts)
+      .map(vid => (vid, 0))
     Graph.fromEdgeTuples(edges, 1)
   } // end of starGraph
 

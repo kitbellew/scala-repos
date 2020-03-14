@@ -57,11 +57,12 @@ private[play] final class NonBlockingMutex {
   @tailrec
   private def schedule(op: Op): Unit = {
     val prevState = state.get
-    val newState = prevState match {
-      case null =>
-        Vector.empty // This is very cheap because Vector.empty is only allocated once
-      case pending => pending :+ op
-    }
+    val newState =
+      prevState match {
+        case null =>
+          Vector.empty // This is very cheap because Vector.empty is only allocated once
+        case pending => pending :+ op
+      }
     if (state.compareAndSet(prevState, newState)) {
       prevState match {
         case null =>
@@ -87,13 +88,14 @@ private[play] final class NonBlockingMutex {
   @tailrec
   private def dequeueNextOpToExecute(): Option[Op] = {
     val prevState = state.get
-    val (newState, nextOp) = prevState match {
-      case null =>
-        throw new IllegalStateException(
-          "When executing, must have a queue of pending elements")
-      case pending if pending.isEmpty => (null, None)
-      case pending                    => (pending.tail, Some(pending.head))
-    }
+    val (newState, nextOp) =
+      prevState match {
+        case null =>
+          throw new IllegalStateException(
+            "When executing, must have a queue of pending elements")
+        case pending if pending.isEmpty => (null, None)
+        case pending                    => (pending.tail, Some(pending.head))
+      }
     if (state.compareAndSet(prevState, newState))
       nextOp
     else

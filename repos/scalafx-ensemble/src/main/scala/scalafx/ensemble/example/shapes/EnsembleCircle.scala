@@ -36,24 +36,26 @@ import scalafx.scene.shape.Circle
 class EnsembleCircle extends EnsembleExample {
   def getContent = {
 
-    val circle1 = new Circle {
-      centerX = 200
-      centerY = 200
-      radius = 50
-      stroke = Color.Black
-      strokeWidth = 3
-      strokeDashArray ++= Seq(15d, 10d)
-      fill = null
-    }
+    val circle1 =
+      new Circle {
+        centerX = 200
+        centerY = 200
+        radius = 50
+        stroke = Color.Black
+        strokeWidth = 3
+        strokeDashArray ++= Seq(15d, 10d)
+        fill = null
+      }
 
-    val circle2 = new Circle {
-      centerX = 200
-      centerY = 200
-      radius = 50
-      stroke = Color.Brown
-      strokeWidth = 2
-      fill = Color.DarkKhaki
-    }
+    val circle2 =
+      new Circle {
+        centerX = 200
+        centerY = 200
+        radius = 50
+        stroke = Color.Brown
+        strokeWidth = 2
+        fill = Color.DarkKhaki
+      }
 
     new HBox {
       spacing = 25

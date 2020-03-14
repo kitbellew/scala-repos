@@ -71,10 +71,11 @@ class EnsembleHorizontalListView extends EnsembleExample {
       "Row 20"
     )
 
-    val listView = new ListView[String] {
-      items = ObservableBuffer(seq)
-      orientation = Orientation.HORIZONTAL
-    }
+    val listView =
+      new ListView[String] {
+        items = ObservableBuffer(seq)
+        orientation = Orientation.HORIZONTAL
+      }
 
     new StackPane {
       padding = Insets(10)

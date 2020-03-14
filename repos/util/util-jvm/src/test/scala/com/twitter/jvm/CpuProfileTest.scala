@@ -17,18 +17,20 @@ class CpuProfileTest extends FunSuite {
     val start = Time.now
     def nextTime: Time = start + iter.next().milliseconds * 10
 
-    val t = new Thread("CpuProfileTest") {
-      override def run() {
-        Thread.sleep(10000)
+    val t =
+      new Thread("CpuProfileTest") {
+        override def run() {
+          Thread.sleep(10000)
+        }
       }
-    }
     t.setDaemon(true)
     t.start()
 
     // Profile for 100ms at 100 Hz => 10ms period; produces 10 samples.
-    val profile: CpuProfile = Time.withTimeFunction(nextTime) { _ =>
-      CpuProfile.record(100.milliseconds, 100, Thread.State.TIMED_WAITING)
-    }
+    val profile: CpuProfile =
+      Time.withTimeFunction(nextTime) { _ =>
+        CpuProfile.record(100.milliseconds, 100, Thread.State.TIMED_WAITING)
+      }
 
     assert(profile.count == 10)
     assert(profile.missed == 0)

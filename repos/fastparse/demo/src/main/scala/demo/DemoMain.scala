@@ -11,8 +11,7 @@ import scala.scalajs.js.annotation.JSExport
 object DemoMain {
   @JSExport
   def scalaparser(container: html.Div) = {
-    val example =
-      """
+    val example = """
         |package scalaparser
         |
         |/**
@@ -83,38 +82,41 @@ object DemoMain {
   }
   def helper(container: html.Div, parser: Parser[_], default: String) = {
     import scalatags.JsDom.all._
-    val inputBox = textarea(
-      width := "45%",
-      float.left,
-      fontFamily := "monospace",
-      fontSize := 16,
-      default
-    ).render
+    val inputBox =
+      textarea(
+        width := "45%",
+        float.left,
+        fontFamily := "monospace",
+        fontSize := 16,
+        default
+      ).render
 
     val outputBox = div(width := "45%", float.right, overflowX.scroll).render
 
     def recalc() = {
       inputBox.rows = inputBox.value.lines.length
-      val details = parser.parse(inputBox.value) match {
-        case s: Parsed.Success[_] =>
-          table(
-            width := "100%",
-            tr(td("Success!")),
-            tr(td("value:"), td(code(s.value.toString)))
-          )
+      val details =
+        parser.parse(inputBox.value) match {
+          case s: Parsed.Success[_] =>
+            table(
+              width := "100%",
+              tr(td("Success!")),
+              tr(td("value:"), td(code(s.value.toString)))
+            )
 
-        case Parsed.Failure(lastParser, index, extra) =>
-          val pretty = fastparse.Utils
-            .literalize(extra.input.slice(index, index + 15))
-            .toString
-          table(
-            width := "100%",
-            tr(td("Failure!")),
-            tr(td("at index:"), td(code(index))),
-            tr(td("found:"), td("...", code(pretty))),
-            tr(td("expected:"), td(code(lastParser.toString)))
-          )
-      }
+          case Parsed.Failure(lastParser, index, extra) =>
+            val pretty =
+              fastparse.Utils
+                .literalize(extra.input.slice(index, index + 15))
+                .toString
+            table(
+              width := "100%",
+              tr(td("Failure!")),
+              tr(td("at index:"), td(code(index))),
+              tr(td("found:"), td("...", code(pretty))),
+              tr(td("expected:"), td(code(lastParser.toString)))
+            )
+        }
       outputBox.innerHTML = ""
       outputBox.appendChild(details.render)
     }

@@ -55,9 +55,8 @@ class PlannerSuite extends SharedSQLContext {
     val planner = sqlContext.sessionState.planner
     import planner._
     val plannedOption = Aggregation(query).headOption
-    val planned =
-      plannedOption.getOrElse(fail(
-        s"Could query play aggregation query $query. Is it an aggregation query?"))
+    val planned = plannedOption.getOrElse(fail(
+      s"Could query play aggregation query $query. Is it an aggregation query?"))
     val aggregations = planned.collect {
       case n if n.nodeName contains "Aggregate" => n
     }
@@ -105,8 +104,8 @@ class PlannerSuite extends SharedSQLContext {
           .createDataFrame(rowRDD, schema)
           .registerTempTable("testLimit")
 
-        val planned = sql(
-          """
+        val planned =
+          sql("""
             |SELECT l.a, l.b
             |FROM testData2 l JOIN (SELECT * FROM testLimit LIMIT 1) r ON (l.a = r.key)
           """.stripMargin).queryExecution.sparkPlan
@@ -192,8 +191,9 @@ class PlannerSuite extends SharedSQLContext {
       sqlContext.registerDataFrameAsTable(df, "testPushed")
 
       withTempTable("testPushed") {
-        val exp = sql(
-          "select * from testPushed where key = 15").queryExecution.sparkPlan
+        val exp =
+          sql(
+            "select * from testPushed where key = 15").queryExecution.sparkPlan
         assert(
           exp.toString.contains(
             "PushedFilters: [IsNotNull(key), EqualTo(key,15)]"))
@@ -209,8 +209,11 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   test("terminal limit -> project -> sort should use TakeOrderedAndProject") {
-    val query =
-      testData.select('key, 'value).sort('key).select('value, 'key).limit(2)
+    val query = testData
+      .select('key, 'value)
+      .sort('key)
+      .select('value, 'key)
+      .limit(2)
     val planned = query.queryExecution.executedPlan
     assert(planned.isInstanceOf[execution.TakeOrderedAndProject])
     assert(planned.output === testData.select('value, 'key).logicalPlan.output)
@@ -225,16 +228,19 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   test("TakeOrderedAndProject can appear in the middle of plans") {
-    val query =
-      testData.select('key, 'value).sort('key).limit(2).filter('key === 3)
+    val query = testData
+      .select('key, 'value)
+      .sort('key)
+      .limit(2)
+      .filter('key === 3)
     val planned = query.queryExecution.executedPlan
     assert(planned.find(_.isInstanceOf[TakeOrderedAndProject]).isDefined)
   }
 
   test("CollectLimit can appear in the middle of a plan when caching is used") {
     val query = testData.select('key, 'value).limit(2).cache()
-    val planned =
-      query.queryExecution.optimizedPlan.asInstanceOf[InMemoryRelation]
+    val planned = query.queryExecution.optimizedPlan
+      .asInstanceOf[InMemoryRelation]
     assert(planned.child.isInstanceOf[CollectLimit])
   }
 
@@ -247,31 +253,33 @@ class PlannerSuite extends SharedSQLContext {
       // Disable broadcast join
       withSQLConf(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "-1") {
         {
-          val numExchanges = sql(
-            """
+          val numExchanges =
+            sql(
+              """
               |SELECT *
               |FROM
               |  normal JOIN small ON (normal.key = small.key)
               |  JOIN tiny ON (small.key = tiny.key)
             """.stripMargin
-          ).queryExecution.executedPlan.collect {
-            case exchange: ShuffleExchange => exchange
-          }.length
+            ).queryExecution.executedPlan.collect {
+              case exchange: ShuffleExchange => exchange
+            }.length
           assert(numExchanges === 5)
         }
 
         {
           // This second query joins on different keys:
-          val numExchanges = sql(
-            """
+          val numExchanges =
+            sql(
+              """
               |SELECT *
               |FROM
               |  normal JOIN small ON (normal.key = small.key)
               |  JOIN tiny ON (normal.key = tiny.key)
             """.stripMargin
-          ).queryExecution.executedPlan.collect {
-            case exchange: ShuffleExchange => exchange
-          }.length
+            ).queryExecution.executedPlan.collect {
+              case exchange: ShuffleExchange => exchange
+            }.length
           assert(numExchanges === 5)
         }
 
@@ -280,8 +288,10 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   test("collapse adjacent repartitions") {
-    val doubleRepartitioned =
-      testData.repartition(10).repartition(20).coalesce(5)
+    val doubleRepartitioned = testData
+      .repartition(10)
+      .repartition(20)
+      .coalesce(5)
     def countRepartitions(plan: LogicalPlan): Int =
       plan.collect {
         case r: Repartition => r
@@ -345,8 +355,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case e: ShuffleExchange => true
@@ -369,8 +379,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
   }
 
@@ -389,8 +399,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case e: ShuffleExchange => true
@@ -413,8 +423,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case e: ShuffleExchange => true
@@ -440,8 +450,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(outputOrdering, outputOrdering)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case e: ShuffleExchange => true
@@ -459,8 +469,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildOrdering = Seq(Seq(orderingB)),
       requiredChildDistribution = Seq(UnspecifiedDistribution)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case s: Sort => true
@@ -480,8 +490,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildOrdering = Seq(Seq(orderingA)),
       requiredChildDistribution = Seq(UnspecifiedDistribution)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case s: Sort => true
@@ -501,8 +511,8 @@ class PlannerSuite extends SharedSQLContext {
       requiredChildOrdering = Seq(Seq(orderingA, orderingB)),
       requiredChildDistribution = Seq(UnspecifiedDistribution)
     )
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case s: Sort => true
@@ -527,8 +537,8 @@ class PlannerSuite extends SharedSQLContext {
       None
     )
 
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case e: ShuffleExchange => true
@@ -554,8 +564,8 @@ class PlannerSuite extends SharedSQLContext {
       None
     )
 
-    val outputPlan =
-      EnsureRequirements(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = EnsureRequirements(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
           case e: ShuffleExchange => true
@@ -589,8 +599,8 @@ class PlannerSuite extends SharedSQLContext {
       shuffle,
       shuffle)
 
-    val outputPlan =
-      ReuseExchange(sqlContext.sessionState.conf).apply(inputPlan)
+    val outputPlan = ReuseExchange(sqlContext.sessionState.conf)
+      .apply(inputPlan)
     if (outputPlan.collect {
           case e: ReusedExchange => true
         }.size != 1) {
@@ -611,8 +621,8 @@ class PlannerSuite extends SharedSQLContext {
       ShuffleExchange(finalPartitioning, inputPlan),
       ShuffleExchange(finalPartitioning, inputPlan))
 
-    val outputPlan2 =
-      ReuseExchange(sqlContext.sessionState.conf).apply(inputPlan2)
+    val outputPlan2 = ReuseExchange(sqlContext.sessionState.conf)
+      .apply(inputPlan2)
     if (outputPlan2.collect {
           case e: ReusedExchange => true
         }.size != 2) {

@@ -216,9 +216,10 @@ private[json] object Meta {
               mkConstructor(t)
           case aType: GenericArrayType =>
             // Couldn't find better way to reconstruct proper array type:
-            val raw = java.lang.reflect.Array
-              .newInstance(rawClassOf(aType.getGenericComponentType), 0: Int)
-              .getClass
+            val raw =
+              java.lang.reflect.Array
+                .newInstance(rawClassOf(aType.getGenericComponentType), 0: Int)
+                .getClass
             (
               Col(
                 TypeInfo(raw, None),

@@ -20,8 +20,7 @@ sealed abstract class Coyoneda[F[_], A] { coyo =>
   import Coyoneda.{Aux, apply}
 
   /** Converts to `F[A]` given that `F` is a functor */
-  final def run(implicit F: Functor[F]): F[A] =
-    F.map(fi)(k)
+  final def run(implicit F: Functor[F]): F[A] = F.map(fi)(k)
 
   /** Alias for `run`. */
   @inline final def unlift(implicit F: Functor[F]): F[A] = run
@@ -35,11 +34,9 @@ sealed abstract class Coyoneda[F[_], A] { coyo =>
   /** Simple function composition. Allows map fusion without touching
     * the underlying `F`.
     */
-  final def map[B](f: A => B): Aux[F, B, I] =
-    apply(fi)(f compose k)
+  final def map[B](f: A => B): Aux[F, B, I] = apply(fi)(f compose k)
 
-  final def trans[G[_]](f: F ~> G): Aux[G, A, I] =
-    apply(f(fi))(k)
+  final def trans[G[_]](f: F ~> G): Aux[G, A, I] = apply(f(fi))(k)
 
   import Id._
 
@@ -52,8 +49,7 @@ sealed abstract class Coyoneda[F[_], A] { coyo =>
     }
 
   /** `Coyoneda` is a monad in an endofunctor category */
-  def flatMap[G[_]](f: F ~> Coyoneda[G, ?]): Coyoneda[G, A] =
-    f(fi).map(k)
+  def flatMap[G[_]](f: F ~> Coyoneda[G, ?]): Coyoneda[G, A] = f(fi).map(k)
 
   /** `Coyoneda` is a comonad in an endofunctor category */
   def extend[G[_]](f: Coyoneda[F, ?] ~> G): Coyoneda[G, A] =
@@ -65,9 +61,10 @@ object Coyoneda extends CoyonedaInstances {
   /** Lift the `I` type member to a parameter.  It is usually more
     * convenient to use `Aux` than a structural type.
     */
-  type Aux[F[_], A, B] = Coyoneda[F, A] {
-    type I = B
-  }
+  type Aux[F[_], A, B] =
+    Coyoneda[F, A] {
+      type I = B
+    }
 
   /** `F[A]` converts to `Coyoneda[F,A]` for any `F` */
   def lift[F[_], A](fa: F[A]): Coyoneda[F, A] = apply(fa)(identity[A])
@@ -267,8 +264,7 @@ private trait CoyonedaFoldable[F[_]] extends Foldable[Coyoneda[F, ?]] {
   override final def foldMap[A, B: Monoid](fa: Coyoneda[F, A])(f: A => B) =
     F.foldMap(fa.fi)(fa.k andThen f)
   override final def foldRight[A, B](fa: Coyoneda[F, A], z: => B)(
-      f: (A, => B) => B) =
-    F.foldRight(fa.fi, z)((i, b) => f(fa.k(i), b))
+      f: (A, => B) => B) = F.foldRight(fa.fi, z)((i, b) => f(fa.k(i), b))
   override final def foldLeft[A, B](fa: Coyoneda[F, A], z: B)(f: (B, A) => B) =
     F.foldLeft(fa.fi, z)((b, i) => f(b, fa.k(i)))
 }

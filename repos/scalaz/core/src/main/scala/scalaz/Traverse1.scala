@@ -39,16 +39,14 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
 
   // derived functions
   override def traverseImpl[G[_]: Applicative, A, B](fa: F[A])(
-      f: A => G[B]): G[F[B]] =
-    traverse1Impl(fa)(f)
+      f: A => G[B]): G[F[B]] = traverse1Impl(fa)(f)
 
   override def foldMap1[A, B](fa: F[A])(f: A => B)(
       implicit F: Semigroup[B]): B =
     foldLeft1(traverse1Impl[Id, A, B](fa)(f))(F.append(_, _))
 
   def traverse1[G[_], A, B](fa: F[A])(f: A => G[B])(
-      implicit a: Apply[G]): G[F[B]] =
-    traverse1Impl(fa)(f)
+      implicit a: Apply[G]): G[F[B]] = traverse1Impl(fa)(f)
 
   final def traverse1U[A, GB](fa: F[A])(f: A => GB)(
       implicit G: Unapply[Apply, GB]): G.M[F[G.A]] =
@@ -120,9 +118,10 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
   def traverse1Law = new Traverse1Law {}
 
   ////
-  val traverse1Syntax = new scalaz.syntax.Traverse1Syntax[F] {
-    def F = Traverse1.this
-  }
+  val traverse1Syntax =
+    new scalaz.syntax.Traverse1Syntax[F] {
+      def F = Traverse1.this
+    }
 }
 
 object Traverse1 {

@@ -44,8 +44,7 @@ object SwaggerSupportSyntax {
         throw new ScalatraException(
           "Splats are not supported for swagger path inference")
 
-      def addNamed(name: String): Builder =
-        copy(path = path + "{" + name + "}")
+      def addNamed(name: String): Builder = copy(path = path + "{" + name + "}")
 
       def addOptional(name: String): Builder =
         copy(path = path + "{" + name + "}")
@@ -106,8 +105,7 @@ object SwaggerSupportSyntax {
 
       def addStatic(text: String): Builder = copy(path = path + text)
 
-      def addParam(name: String): Builder =
-        copy(path = path + "{" + name + "}")
+      def addParam(name: String): Builder = copy(path = path + "{" + name + "}")
 
       def optional(builder: Builder => Builder): Builder =
         try builder(this)
@@ -294,9 +292,10 @@ object SwaggerSupportSyntax {
     def defaultValue(value: T): this.type = {
       if (_required.isEmpty)
         optional
-      _defaultValue = allCatch.withApply(_ => None) {
-        value.toString.blankOption
-      }
+      _defaultValue =
+        allCatch.withApply(_ => None) {
+          value.toString.blankOption
+        }
       this
     }
   }
@@ -761,8 +760,9 @@ trait SwaggerSupport
       val responseClass =
         route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
           DataType]) getOrElse DataType.Void
-      val summary = (route.metadata
-        .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
+      val summary =
+        (route.metadata
+          .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
       val nick =
         route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])

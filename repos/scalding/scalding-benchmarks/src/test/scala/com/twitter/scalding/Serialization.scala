@@ -100,8 +100,8 @@ object SerializationBenchmark
           k.fromBytes(b).asInstanceOf[T])
     }
 
-  val longArrayByte: Gen[Array[Byte]] =
-    collection[Byte, Array](sizes.map(s => (s / 8) * 8))
+  val longArrayByte: Gen[Array[Byte]] = collection[Byte, Array](
+    sizes.map(s => (s / 8) * 8))
 
   // This is here to make sure the compiler cannot optimize away reads
   var effectInt: Int = 0

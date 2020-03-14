@@ -65,11 +65,12 @@ class TimerTest {
   @Test
   def testAlreadyExpiredTask(): Unit = {
     val startTime = System.currentTimeMillis()
-    val timer = new Timer(
-      taskExecutor = executor,
-      tickMs = 1,
-      wheelSize = 3,
-      startMs = startTime)
+    val timer =
+      new Timer(
+        taskExecutor = executor,
+        tickMs = 1,
+        wheelSize = 3,
+        startMs = startTime)
     val output = new ArrayBuffer[Int]()
 
     val latches = (-5 until 0).map { i =>
@@ -94,11 +95,12 @@ class TimerTest {
   @Test
   def testTaskExpiration(): Unit = {
     val startTime = System.currentTimeMillis()
-    val timer = new Timer(
-      taskExecutor = executor,
-      tickMs = 1,
-      wheelSize = 3,
-      startMs = startTime)
+    val timer =
+      new Timer(
+        taskExecutor = executor,
+        tickMs = 1,
+        wheelSize = 3,
+        startMs = startTime)
     val output = new ArrayBuffer[Int]()
 
     val tasks = new ArrayBuffer[TestTask]()

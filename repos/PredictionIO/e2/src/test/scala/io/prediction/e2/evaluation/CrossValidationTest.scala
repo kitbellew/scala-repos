@@ -45,10 +45,11 @@ class CrossValidationTest
   val dataCount = labeledPoints.size
   val evalKs = (1 to dataCount)
   val emptyParams = new CrossValidationTest.EmptyEvaluationParams()
-  type Fold = (
-      CrossValidationTest.TrainingData,
-      CrossValidationTest.EmptyEvaluationParams,
-      RDD[(CrossValidationTest.Query, CrossValidationTest.ActualResult)])
+  type Fold =
+    (
+        CrossValidationTest.TrainingData,
+        CrossValidationTest.EmptyEvaluationParams,
+        RDD[(CrossValidationTest.Query, CrossValidationTest.ActualResult)])
 
   def toTestTrain(dataSplit: Fold): (Seq[LabeledPoint], Seq[LabeledPoint]) = {
     val trainingData = dataSplit._1.labeledPoints

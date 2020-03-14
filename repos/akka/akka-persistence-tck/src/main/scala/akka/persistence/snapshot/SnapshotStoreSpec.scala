@@ -14,8 +14,8 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.Config
 
 object SnapshotStoreSpec {
-  val config =
-    ConfigFactory.parseString("akka.persistence.publish-plugin-commands = on")
+  val config = ConfigFactory.parseString(
+    "akka.persistence.publish-plugin-commands = on")
 }
 
 /**
@@ -46,8 +46,7 @@ abstract class SnapshotStoreSpec(config: Config)
     metadata = writeSnapshots()
   }
 
-  def snapshotStore: ActorRef =
-    extension.snapshotStoreFor(null)
+  def snapshotStore: ActorRef = extension.snapshotStoreFor(null)
 
   def writeSnapshots(): Seq[SnapshotMetadata] = {
     1 to 5 map { i ⇒
@@ -133,9 +132,8 @@ abstract class SnapshotStoreSpec(config: Config)
         LoadSnapshotResult(Some(SelectedSnapshot(metadata(2), s"s-3")), 13))
     }
     "delete a single snapshot identified by sequenceNr in snapshot metadata" in {
-      val md =
-        metadata(2).copy(timestamp =
-          0L) // don't care about timestamp for delete of single snap
+      val md = metadata(2).copy(timestamp =
+        0L) // don't care about timestamp for delete of single snap
       val cmd = DeleteSnapshot(md)
       val sub = TestProbe()
 
@@ -213,9 +211,10 @@ abstract class SnapshotStoreSpec(config: Config)
     "save and overwrite snapshot with same sequence number" in {
       val md = metadata(4)
       snapshotStore.tell(SaveSnapshot(md, s"s-5-modified"), senderProbe.ref)
-      val md2 = senderProbe.expectMsgPF() {
-        case SaveSnapshotSuccess(md2) ⇒ md2
-      }
+      val md2 =
+        senderProbe.expectMsgPF() {
+          case SaveSnapshotSuccess(md2) ⇒ md2
+        }
       md2.sequenceNr should be(md.sequenceNr)
       snapshotStore.tell(
         LoadSnapshot(

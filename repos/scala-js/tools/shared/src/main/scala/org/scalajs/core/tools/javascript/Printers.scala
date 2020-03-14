@@ -101,14 +101,11 @@ object Printers {
       print(' ')
     }
 
-    protected def printArgs(args: List[Tree]): Unit =
-      printRow(args, '(', ')')
+    protected def printArgs(args: List[Tree]): Unit = printRow(args, '(', ')')
 
-    def printStat(tree: Tree): Unit =
-      printTree(tree, isStat = true)
+    def printStat(tree: Tree): Unit = printTree(tree, isStat = true)
 
-    protected def print(tree: Tree): Unit =
-      printTree(tree, isStat = false)
+    protected def print(tree: Tree): Unit = printTree(tree, isStat = false)
 
     def printTree(tree: Tree, isStat: Boolean): Unit = {
       tree match {
@@ -558,8 +555,7 @@ object Printers {
       }
     }
 
-    protected def print(ident: Ident): Unit =
-      printEscapeJS(ident.name, out)
+    protected def print(ident: Ident): Unit = printEscapeJS(ident.name, out)
 
     private final def print(propName: PropertyName): Unit =
       propName match {
@@ -567,11 +563,9 @@ object Printers {
         case ident: Ident       => print(ident)
       }
 
-    protected def print(s: String): Unit =
-      out.write(s)
+    protected def print(s: String): Unit = out.write(s)
 
-    protected def print(c: Int): Unit =
-      out.write(c)
+    protected def print(c: Int): Unit = out.write(c)
 
     // Make it public
     override def println(): Unit = super.println()

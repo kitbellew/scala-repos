@@ -100,8 +100,11 @@ case class ScAbstractType(
     r match {
       case _ if falseUndef => (false, uSubst)
       case rt =>
-        var t: (Boolean, ScUndefinedSubstitutor) =
-          Conformance.conformsInner(upper, r, Set.empty, uSubst)
+        var t: (Boolean, ScUndefinedSubstitutor) = Conformance.conformsInner(
+          upper,
+          r,
+          Set.empty,
+          uSubst)
         if (!t._1)
           return (false, uSubst)
         t = Conformance.conformsInner(r, lower, Set.empty, t._2)

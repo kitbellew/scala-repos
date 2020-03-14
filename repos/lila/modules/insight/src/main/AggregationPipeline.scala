@@ -67,24 +67,27 @@ private final class AggregationPipeline {
       "v" -> SumValue(1),
       "ids" -> AddToSet("_id")
     ).some
-  private val regroupStacked = GroupField("_id.dimension")(
-    "nb" -> SumField("v"),
-    "ids" -> First("ids"),
-    "stack" -> PushMulti("metric" -> "_id.metric", "v" -> "v")).some
-  private val sliceIds = Project(
-    BSONDocument(
-      "_id" -> true,
-      "v" -> true,
-      "nb" -> true,
-      "ids" -> BSONDocument("$slice" -> BSONArray("$ids", 4))
-    )).some
-  private val sliceStackedIds = Project(
-    BSONDocument(
-      "_id" -> true,
-      "nb" -> true,
-      "stack" -> true,
-      "ids" -> BSONDocument("$slice" -> BSONArray("$ids", 4))
-    )).some
+  private val regroupStacked =
+    GroupField("_id.dimension")(
+      "nb" -> SumField("v"),
+      "ids" -> First("ids"),
+      "stack" -> PushMulti("metric" -> "_id.metric", "v" -> "v")).some
+  private val sliceIds =
+    Project(
+      BSONDocument(
+        "_id" -> true,
+        "v" -> true,
+        "nb" -> true,
+        "ids" -> BSONDocument("$slice" -> BSONArray("$ids", 4))
+      )).some
+  private val sliceStackedIds =
+    Project(
+      BSONDocument(
+        "_id" -> true,
+        "nb" -> true,
+        "stack" -> true,
+        "ids" -> BSONDocument("$slice" -> BSONArray("$ids", 4))
+      )).some
 
   def apply(
       question: Question[_],

@@ -293,12 +293,13 @@ object FieldSpec extends Specification {
           val formXml = mandatory.toForm
           formXml must beLike {
             case Full(fprime) =>
-              val f = ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
-                ns.filter {
-                  case e: Elem =>
-                    e.attribute("selected").map(_.text) == Some("selected")
-                  case _ => false
-                }) andThen "* [value]" #> ".*"))(fprime)
+              val f =
+                ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
+                  ns.filter {
+                    case e: Elem =>
+                      e.attribute("selected").map(_.text) == Some("selected")
+                    case _ => false
+                  }) andThen "* [value]" #> ".*"))(fprime)
               val ret: Boolean = Helpers.compareXml(f, fp)
               ret must_== true
           }
@@ -407,8 +408,8 @@ object FieldSpec extends Specification {
   "DateTimeField with custom format" should {
     val rec = CustomFormatDateTimeRecord.createRecord
     val dt = Calendar.getInstance
-    val dtStr =
-      rec.customFormatDateTimeField.formats.dateFormat.format(dt.getTime)
+    val dtStr = rec.customFormatDateTimeField.formats.dateFormat
+      .format(dt.getTime)
     passConversionTests(
       dt,
       rec.customFormatDateTimeField,
@@ -577,14 +578,16 @@ object FieldSpec extends Specification {
 
   "LocaleField" should {
     val rec = FieldTypeTestRecord.createRecord
-    val example = java.util.Locale.getDefault.toString match {
-      case "en_US" => "en_GB"
-      case _       => "en_US"
-    }
-    val example2 = java.util.Locale.getDefault.toString match {
-      case "es_ES" => "en_NZ"
-      case _       => "es_ES"
-    }
+    val example =
+      java.util.Locale.getDefault.toString match {
+        case "en_US" => "en_GB"
+        case _       => "en_US"
+      }
+    val example2 =
+      java.util.Locale.getDefault.toString match {
+        case "es_ES" => "en_NZ"
+        case _       => "es_ES"
+      }
     passBasicTests(
       example,
       example2,
@@ -822,14 +825,16 @@ object FieldSpec extends Specification {
 
   "TimeZoneField" should {
     val rec = FieldTypeTestRecord.createRecord
-    val example = java.util.TimeZone.getDefault.getID match {
-      case "America/New_York" => "Europe/London"
-      case _                  => "America/New_York"
-    }
-    val example2 = java.util.TimeZone.getDefault.getID match {
-      case "America/Chicago" => "Europe/Paris"
-      case _                 => "America/Chicago"
-    }
+    val example =
+      java.util.TimeZone.getDefault.getID match {
+        case "America/New_York" => "Europe/London"
+        case _                  => "America/New_York"
+      }
+    val example2 =
+      java.util.TimeZone.getDefault.getID match {
+        case "America/Chicago" => "Europe/Paris"
+        case _                 => "America/Chicago"
+      }
     passBasicTests(
       example,
       example2,

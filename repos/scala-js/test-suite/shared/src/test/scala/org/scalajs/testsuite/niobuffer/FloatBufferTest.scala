@@ -15,15 +15,13 @@ abstract class FloatBufferTest extends BaseBufferTest {
   type Factory = BufferFactory.FloatBufferFactory
 
   class AllocFloatBufferFactory extends Factory {
-    def allocBuffer(capacity: Int): FloatBuffer =
-      FloatBuffer.allocate(capacity)
+    def allocBuffer(capacity: Int): FloatBuffer = FloatBuffer.allocate(capacity)
   }
 
   class WrappedFloatBufferFactory
       extends Factory
       with BufferFactory.WrappedBufferFactory {
-    def baseWrap(array: Array[Float]): FloatBuffer =
-      FloatBuffer.wrap(array)
+    def baseWrap(array: Array[Float]): FloatBuffer = FloatBuffer.wrap(array)
 
     def baseWrap(array: Array[Float], offset: Int, length: Int): FloatBuffer =
       FloatBuffer.wrap(array, offset, length)

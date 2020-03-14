@@ -124,18 +124,19 @@ trait Checkable {
   private def uncheckedOk(tp: Type) = tp hasAnnotation UncheckedClass
 
   private def typeArgsInTopLevelType(tp: Type): List[Type] = {
-    val tps = tp match {
-      case RefinedType(parents, _) => parents flatMap typeArgsInTopLevelType
-      case TypeRef(_, ArrayClass, arg :: Nil) =>
-        if (arg.typeSymbol.isAbstractType)
-          arg :: Nil
-        else
-          typeArgsInTopLevelType(arg)
-      case TypeRef(pre, sym, args) => typeArgsInTopLevelType(pre) ++ args
-      case ExistentialType(tparams, underlying) =>
-        tparams.map(_.tpe) ++ typeArgsInTopLevelType(underlying)
-      case _ => Nil
-    }
+    val tps =
+      tp match {
+        case RefinedType(parents, _) => parents flatMap typeArgsInTopLevelType
+        case TypeRef(_, ArrayClass, arg :: Nil) =>
+          if (arg.typeSymbol.isAbstractType)
+            arg :: Nil
+          else
+            typeArgsInTopLevelType(arg)
+        case TypeRef(pre, sym, args) => typeArgsInTopLevelType(pre) ++ args
+        case ExistentialType(tparams, underlying) =>
+          tparams.map(_.tpe) ++ typeArgsInTopLevelType(underlying)
+        case _ => Nil
+      }
     tps filterNot isUnwarnableTypeArg
   }
 

@@ -49,14 +49,15 @@ object Test extends App {
     final val ASSIGN: Char = 'g'
 
     def acceptClosingAngle(in: Char) {
-      val closers: PartialFunction[Char, Char] = x =>
-        x match {
-          case GTGTGTEQ => GTGTEQ
-          case GTGTGT   => GTGT
-          case GTGTEQ   => GTEQ
-          case GTGT     => GT
-          case GTEQ     => ASSIGN
-        }
+      val closers: PartialFunction[Char, Char] =
+        x =>
+          x match {
+            case GTGTGTEQ => GTGTEQ
+            case GTGTGT   => GTGT
+            case GTGTEQ   => GTEQ
+            case GTGT     => GT
+            case GTEQ     => ASSIGN
+          }
       if (closers isDefinedAt in)
         println(closers(in))
       else
@@ -79,14 +80,15 @@ object Test extends App {
     final val ASSIGN = 'g'
 
     def acceptClosingAngle(in: Char) {
-      val closers: PartialFunction[Char, Char] = x =>
-        x match {
-          case GTGTGTEQ => GTGTEQ
-          case GTGTGT   => GTGT
-          case GTGTEQ   => GTEQ
-          case GTGT     => GT
-          case GTEQ     => ASSIGN
-        }
+      val closers: PartialFunction[Char, Char] =
+        x =>
+          x match {
+            case GTGTGTEQ => GTGTEQ
+            case GTGTGT   => GTGT
+            case GTGTEQ   => GTEQ
+            case GTGT     => GT
+            case GTEQ     => ASSIGN
+          }
       if (closers isDefinedAt in)
         println(closers(in))
       else
@@ -138,17 +140,18 @@ object Test extends App {
     final val ASSIGN = 7
 
     def acceptClosingAngle(in: Int) {
-      val closers: PartialFunction[Int, Int] = x =>
-        {
-          println("hai!");
-          (x + 1)
-        } match {
-          case GTGTGTEQ => GTGTEQ
-          case GTGTGT   => GTGT
-          case GTGTEQ   => GTEQ
-          case GTGT     => GT
-          case GTEQ     => ASSIGN
-        }
+      val closers: PartialFunction[Int, Int] =
+        x =>
+          {
+            println("hai!");
+            (x + 1)
+          } match {
+            case GTGTGTEQ => GTGTEQ
+            case GTGTGT   => GTGT
+            case GTGTEQ   => GTEQ
+            case GTGT     => GT
+            case GTEQ     => ASSIGN
+          }
       if (closers isDefinedAt in)
         println(closers(in))
       else

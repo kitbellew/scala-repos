@@ -217,11 +217,12 @@ trait MappedForeignKey[
   /**
     * A validation function that checks that obj is nonempty
     */
-  val valHasObj = (value: Long) =>
-    if (obj.isEmpty)
-      List(FieldError(this, scala.xml.Text("Required field: " + name)))
-    else
-      Nil
+  val valHasObj =
+    (value: Long) =>
+      if (obj.isEmpty)
+        List(FieldError(this, scala.xml.Text("Required field: " + name)))
+      else
+        Nil
 }
 
 abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
@@ -354,10 +355,11 @@ abstract class MappedStringForeignKey[
       "NULL"
 
   def set(v: Box[O]): T = {
-    val toSet: String = v match {
-      case Full(i) => i.primaryKeyField.get
-      case _       => null
-    }
+    val toSet: String =
+      v match {
+        case Full(i) => i.primaryKeyField.get
+        case _       => null
+      }
 
     this(toSet)
   }

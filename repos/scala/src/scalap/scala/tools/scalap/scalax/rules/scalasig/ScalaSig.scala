@@ -49,9 +49,10 @@ object ScalaSigParser {
       .orElse(classFile.annotation(SCALA_LONG_SIG_ANNOTATION))
       .map {
         case Annotation(_, elements) =>
-          val bytesElem = elements
-            .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
-            .get
+          val bytesElem =
+            elements
+              .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
+              .get
           val bytes = getBytes(bytesElem)
           val length = ByteCodecs.decode(bytes)
 

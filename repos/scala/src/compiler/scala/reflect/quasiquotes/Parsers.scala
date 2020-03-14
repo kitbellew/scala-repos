@@ -77,8 +77,8 @@ trait Parsers { self: Quasiquotes =>
 
       def isHole(name: Name): Boolean = holeMap.contains(name)
 
-      override implicit lazy val fresh: FreshNameCreator = new FreshNameCreator(
-        nme.QUASIQUOTE_PREFIX)
+      override implicit lazy val fresh: FreshNameCreator =
+        new FreshNameCreator(nme.QUASIQUOTE_PREFIX)
 
       // Do not check for tuple arity. The placeholders can support arbitrary tuple sizes.
       override def makeSafeTupleTerm(trees: List[Tree], offset: Offset): Tree =
@@ -86,45 +86,46 @@ trait Parsers { self: Quasiquotes =>
       override def makeSafeTupleType(trees: List[Tree], offset: Offset): Tree =
         treeBuilder.makeTupleType(trees)
 
-      override val treeBuilder = new ParserTreeBuilder {
-        override implicit def fresh: FreshNameCreator = parser.fresh
+      override val treeBuilder =
+        new ParserTreeBuilder {
+          override implicit def fresh: FreshNameCreator = parser.fresh
 
-        // q"(..$xs)"
-        override def makeTupleTerm(trees: List[Tree]): Tree =
-          TuplePlaceholder(trees)
+          // q"(..$xs)"
+          override def makeTupleTerm(trees: List[Tree]): Tree =
+            TuplePlaceholder(trees)
 
-        // tq"(..$xs)"
-        override def makeTupleType(trees: List[Tree]): Tree =
-          TupleTypePlaceholder(trees)
+          // tq"(..$xs)"
+          override def makeTupleType(trees: List[Tree]): Tree =
+            TupleTypePlaceholder(trees)
 
-        // q"{ $x }"
-        override def makeBlock(stats: List[Tree]): Tree =
-          method match {
-            case nme.apply =>
-              stats match {
-                // we don't want to eagerly flatten trees with placeholders as they
-                // might have to be wrapped into a block depending on their value
-                case (head @ Ident(name)) :: Nil if isHole(name) =>
-                  Block(Nil, head)
-                case _ => gen.mkBlock(stats, doFlatten = true)
-              }
-            case nme.unapply => gen.mkBlock(stats, doFlatten = false)
-            case other       => global.abort("unreachable")
-          }
+          // q"{ $x }"
+          override def makeBlock(stats: List[Tree]): Tree =
+            method match {
+              case nme.apply =>
+                stats match {
+                  // we don't want to eagerly flatten trees with placeholders as they
+                  // might have to be wrapped into a block depending on their value
+                  case (head @ Ident(name)) :: Nil if isHole(name) =>
+                    Block(Nil, head)
+                  case _ => gen.mkBlock(stats, doFlatten = true)
+                }
+              case nme.unapply => gen.mkBlock(stats, doFlatten = false)
+              case other       => global.abort("unreachable")
+            }
 
-        // tq"$a => $b"
-        override def makeFunctionTypeTree(
-            argtpes: List[Tree],
-            restpe: Tree): Tree = FunctionTypePlaceholder(argtpes, restpe)
+          // tq"$a => $b"
+          override def makeFunctionTypeTree(
+              argtpes: List[Tree],
+              restpe: Tree): Tree = FunctionTypePlaceholder(argtpes, restpe)
 
-        // make q"val (x: T) = rhs" be equivalent to q"val x: T = rhs" for sake of bug compatibility (SI-8211)
-        override def makePatDef(mods: Modifiers, pat: Tree, rhs: Tree) =
-          pat match {
-            case TuplePlaceholder(inParensPat :: Nil) =>
-              super.makePatDef(mods, inParensPat, rhs)
-            case _ => super.makePatDef(mods, pat, rhs)
-          }
-      }
+          // make q"val (x: T) = rhs" be equivalent to q"val x: T = rhs" for sake of bug compatibility (SI-8211)
+          override def makePatDef(mods: Modifiers, pat: Tree, rhs: Tree) =
+            pat match {
+              case TuplePlaceholder(inParensPat :: Nil) =>
+                super.makePatDef(mods, inParensPat, rhs)
+              case _ => super.makePatDef(mods, pat, rhs)
+            }
+        }
       import treeBuilder.{global => _, unit => _}
 
       // q"def foo($x)"

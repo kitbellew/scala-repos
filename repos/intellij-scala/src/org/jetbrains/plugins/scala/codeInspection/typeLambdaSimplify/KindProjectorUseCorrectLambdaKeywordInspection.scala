@@ -31,9 +31,10 @@ class KindProjectorUseCorrectLambdaKeywordInspection
       holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case param: ScParameterizedTypeElement
         if ScalaPsiUtil.kindProjectorPluginEnabled(param) =>
-      val useGreekLambda = ScalaCodeStyleSettings
-        .getInstance(param.getProject)
-        .REPLACE_LAMBDA_WITH_GREEK_LETTER
+      val useGreekLambda =
+        ScalaCodeStyleSettings
+          .getInstance(param.getProject)
+          .REPLACE_LAMBDA_WITH_GREEK_LETTER
       param.children.foreach {
         case simple: ScSimpleTypeElement =>
           simple.getText match {

@@ -31,8 +31,8 @@ class ShortestPathsSuite extends SparkFunSuite with LocalSparkContext {
         (4, Map(1 -> 2, 4 -> 0)),
         (5, Map(1 -> 1, 4 -> 1)),
         (6, Map(1 -> 3, 4 -> 1)))
-      val edgeSeq =
-        Seq((1, 2), (1, 5), (2, 3), (2, 5), (3, 4), (4, 5), (4, 6)).flatMap {
+      val edgeSeq = Seq((1, 2), (1, 5), (2, 3), (2, 5), (3, 4), (4, 5), (4, 6))
+        .flatMap {
           case e => Seq(e, e.swap)
         }
       val edges = sc.parallelize(edgeSeq).map {

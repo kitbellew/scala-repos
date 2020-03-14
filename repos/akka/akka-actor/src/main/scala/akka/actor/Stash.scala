@@ -142,9 +142,8 @@ private[akka] trait StashSupport {
 
   /* The capacity of the stash. Configured in the actor's mailbox or dispatcher config.
    */
-  private val capacity: Int =
-    context.system.mailboxes
-      .stashCapacity(context.props.dispatcher, context.props.mailbox)
+  private val capacity: Int = context.system.mailboxes
+    .stashCapacity(context.props.dispatcher, context.props.mailbox)
 
   /**
     * INTERNAL API.

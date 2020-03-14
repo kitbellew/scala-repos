@@ -82,13 +82,11 @@ class DeMorganLawIntentionTest extends ScalaIntentionTestBase {
   }
 
   def test11() {
-    val text =
-      """
+    val text = """
         |val % = true
         |!(!(%) &<caret>& !(%))
       """
-    val resultText =
-      """
+    val resultText = """
         |val % = true
         |% |<caret>| %
       """
@@ -97,13 +95,11 @@ class DeMorganLawIntentionTest extends ScalaIntentionTestBase {
   }
 
   def test12() {
-    val text =
-      """
+    val text = """
         |val % = true
         |% |<caret>| %
       """
-    val resultText =
-      """
+    val resultText = """
         |val % = true
         |!(!(%) &<caret>& !(%))
       """
@@ -112,13 +108,11 @@ class DeMorganLawIntentionTest extends ScalaIntentionTestBase {
   }
 
   def test13() {
-    val text =
-      """
+    val text = """
         |val b = true
         |(true equals b) |<caret>| true
       """
-    val resultText =
-      """
+    val resultText = """
         |val b = true
         |!(!(true equals b) &<caret>& false)
       """
@@ -127,13 +121,11 @@ class DeMorganLawIntentionTest extends ScalaIntentionTestBase {
   }
 
   def test14() {
-    val text =
-      """
+    val text = """
         |val b = true
         |!(!(true equals b) &<caret>& false)
       """
-    val resultText =
-      """
+    val resultText = """
         |val b = true
         |(true equals b) |<caret>| true
       """
@@ -142,13 +134,11 @@ class DeMorganLawIntentionTest extends ScalaIntentionTestBase {
   }
 
   def test15() {
-    val text =
-      """
+    val text = """
         |val % = true
         |(%) |<caret>| (%)
       """
-    val resultText =
-      """
+    val resultText = """
         |val % = true
         |!(!(%) &<caret>& !(%))
       """

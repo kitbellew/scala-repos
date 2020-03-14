@@ -69,29 +69,31 @@ object PlayRun {
       val scope = resolvedScoped.value.scope
       val interaction = playInteractionMode.value
 
-      val reloadCompile = () =>
-        PlayReload.compile(
-          () => Project.runTask(playReload in scope, state).map(_._2).get,
-          () =>
-            Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
-          () =>
-            Project
-              .runTask(streamsManager in scope, state)
-              .map(_._2)
-              .get
-              .toEither
-              .right
-              .toOption
-        )
+      val reloadCompile =
+        () =>
+          PlayReload.compile(
+            () => Project.runTask(playReload in scope, state).map(_._2).get,
+            () =>
+              Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
+            () =>
+              Project
+                .runTask(streamsManager in scope, state)
+                .map(_._2)
+                .get
+                .toEither
+                .right
+                .toOption
+          )
 
-      val runSbtTask: String => AnyRef = (task: String) => {
-        val parser = Act.scopedKeyParser(state)
-        val Right(sk) = complete.DefaultParsers.result(parser, task)
-        val result = Project
-          .runTask(sk.asInstanceOf[Def.ScopedKey[Task[AnyRef]]], state)
-          .map(_._2)
-        result.flatMap(_.toEither.right.toOption).orNull
-      }
+      val runSbtTask: String => AnyRef =
+        (task: String) => {
+          val parser = Act.scopedKeyParser(state)
+          val Right(sk) = complete.DefaultParsers.result(parser, task)
+          val result = Project
+            .runTask(sk.asInstanceOf[Def.ScopedKey[Task[AnyRef]]], state)
+            .map(_._2)
+          result.flatMap(_.toEither.right.toOption).orNull
+        }
 
       lazy val devModeServer = Reloader.startDevMode(
         runHooks.value,
@@ -129,11 +131,12 @@ object PlayRun {
           // If we have both Watched.Configuration and Watched.ContinuousState
           // attributes and if Watched.ContinuousState.count is 1 then we assume
           // we're in ~ run mode
-          val maybeContinuous = for {
-            watched <- state.get(Watched.Configuration)
-            watchState <- state.get(Watched.ContinuousState)
-            if watchState.count == 1
-          } yield watched
+          val maybeContinuous =
+            for {
+              watched <- state.get(Watched.Configuration)
+              watchState <- state.get(Watched.ContinuousState)
+              if watchState.count == 1
+            } yield watched
 
           maybeContinuous match {
             case Some(watched) =>
@@ -175,15 +178,16 @@ object PlayRun {
     val sourcesFinder = PathFinder {
       watched watchPaths state
     }
-    val watchState =
-      ws.getOrElse(state get ContinuousState getOrElse WatchState.empty)
+    val watchState = ws.getOrElse(
+      state get ContinuousState getOrElse WatchState.empty)
 
     val (triggered, newWatchState, newState) =
       try {
-        val (triggered, newWatchState) = SourceModificationWatch.watch(
-          sourcesFinder,
-          watched.pollInterval,
-          watchState)(shouldTerminate)
+        val (triggered, newWatchState) =
+          SourceModificationWatch.watch(
+            sourcesFinder,
+            watched.pollInterval,
+            watchState)(shouldTerminate)
         (triggered, newWatchState, state)
       } catch {
         case e: Exception =>
@@ -205,10 +209,11 @@ object PlayRun {
           .right
           .map { _ =>
             val duration = System.currentTimeMillis - start
-            val formatted = duration match {
-              case ms if ms < 1000 => ms + "ms"
-              case seconds         => (seconds / 1000) + "s"
-            }
+            val formatted =
+              duration match {
+                case ms if ms < 1000 => ms + "ms"
+                case seconds         => (seconds / 1000) + "s"
+              }
             println(
               "[" + Colors.green("success") + "] Compiled in " + formatted)
           }
@@ -236,17 +241,17 @@ object PlayRun {
 
   val playRunProdCommand = Command.args("runProd", "<port>")(testProd)
 
-  val playTestProdCommand = Command.args("testProd", "<port>") {
-    (state: State, args: Seq[String]) =>
+  val playTestProdCommand =
+    Command.args("testProd", "<port>") { (state: State, args: Seq[String]) =>
       state.log.warn(
         "The testProd command is deprecated, and will be removed in a future version of Play.")
       state.log.warn(
         "To test your application using production mode, run 'runProd' instead.")
       testProd(state, args)
-  }
+    }
 
-  val playStartCommand = Command.args("start", "<port>") {
-    (state: State, args: Seq[String]) =>
+  val playStartCommand =
+    Command.args("start", "<port>") { (state: State, args: Seq[String]) =>
       state.log.warn(
         "The start command is deprecated, and will be removed in a future version of Play.")
       state.log.warn(
@@ -255,7 +260,7 @@ object PlayRun {
         "To test your application using production mode, run 'testProd' instead.")
 
       testProd(state, args)
-  }
+    }
 
   private def testProd(state: State, args: Seq[String]): State = {
 
@@ -266,8 +271,8 @@ object PlayRun {
 
     val filter = Set("--no-exit-sbt")
     val filtered = args.filterNot(filter)
-    val devSettings =
-      Seq.empty[(String, String)] // there are no dev settings in a prod website
+    val devSettings = Seq
+      .empty[(String, String)] // there are no dev settings in a prod website
 
     // Parse HTTP port argument
     val (properties, httpPort, httpsPort, httpAddress) = Reloader.filterArgs(
@@ -286,17 +291,18 @@ object PlayRun {
         println()
         state.fail
       case Right(_) =>
-        val stagingBin = Some(
-          extracted.get(stagingDirectory in Universal) / "bin" / extracted.get(
-            executableScriptName)).map { f =>
-          if (System
-                .getProperty("os.name")
-                .toLowerCase(java.util.Locale.ENGLISH)
-                .contains("win"))
-            f.getAbsolutePath + ".bat"
-          else
-            f.getAbsolutePath
-        }.get
+        val stagingBin =
+          Some(
+            extracted.get(stagingDirectory in Universal) / "bin" / extracted
+              .get(executableScriptName)).map { f =>
+            if (System
+                  .getProperty("os.name")
+                  .toLowerCase(java.util.Locale.ENGLISH)
+                  .contains("win"))
+              f.getAbsolutePath + ".bat"
+            else
+              f.getAbsolutePath
+          }.get
         val javaProductionOptions = Project
           .runTask(javaOptions in Production, state)
           .get
@@ -345,8 +351,8 @@ object PlayRun {
 
   }
 
-  val playStopProdCommand = Command.args("stopProd", "") {
-    (state: State, args: Seq[String]) =>
+  val playStopProdCommand =
+    Command.args("stopProd", "") { (state: State, args: Seq[String]) =>
       val extracted = Project.extract(state)
 
       val pidFile = extracted.get(stagingDirectory in Universal) / "RUNNING_PID"
@@ -365,5 +371,5 @@ object PlayRun {
       } else {
         state.copy(remainingCommands = Seq.empty)
       }
-  }
+    }
 }

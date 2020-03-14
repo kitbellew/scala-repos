@@ -36,10 +36,11 @@ class IfFilter extends ElementFilter {
           case clause: ScCaseClause =>
             if (clause.guard.isDefined)
               return false
-            var position = clause.funType match {
-              case Some(elem) => elem.getStartOffsetInParent
-              case None       => clause.getTextLength
-            }
+            var position =
+              clause.funType match {
+                case Some(elem) => elem.getStartOffsetInParent
+                case None       => clause.getTextLength
+              }
             val text = clause.getText
             while (text(position - 1).isWhitespace)
               position -= 1

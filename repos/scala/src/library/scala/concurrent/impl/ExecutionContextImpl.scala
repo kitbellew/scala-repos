@@ -155,8 +155,9 @@ private[concurrent] object ExecutionContextImpl {
       maxNoOfThreads)
 
     // The thread factory must provide additional threads to support managed blocking.
-    val maxExtraThreads =
-      getInt("scala.concurrent.context.maxExtraThreads", "256")
+    val maxExtraThreads = getInt(
+      "scala.concurrent.context.maxExtraThreads",
+      "256")
 
     val uncaughtExceptionHandler: Thread.UncaughtExceptionHandler =
       new Thread.UncaughtExceptionHandler {
@@ -164,11 +165,12 @@ private[concurrent] object ExecutionContextImpl {
           reporter(cause)
       }
 
-    val threadFactory = new ExecutionContextImpl.DefaultThreadFactory(
-      daemonic = true,
-      maxThreads = maxNoOfThreads + maxExtraThreads,
-      prefix = "scala-execution-context-global",
-      uncaught = uncaughtExceptionHandler)
+    val threadFactory =
+      new ExecutionContextImpl.DefaultThreadFactory(
+        daemonic = true,
+        maxThreads = maxNoOfThreads + maxExtraThreads,
+        prefix = "scala-execution-context-global",
+        uncaught = uncaughtExceptionHandler)
 
     new ForkJoinPool(
       desiredParallelism,
@@ -176,10 +178,11 @@ private[concurrent] object ExecutionContextImpl {
       uncaughtExceptionHandler,
       true) {
       override def execute(runnable: Runnable): Unit = {
-        val fjt: ForkJoinTask[_] = runnable match {
-          case t: ForkJoinTask[_] => t
-          case r                  => new ExecutionContextImpl.AdaptedForkJoinTask(r)
-        }
+        val fjt: ForkJoinTask[_] =
+          runnable match {
+            case t: ForkJoinTask[_] => t
+            case r                  => new ExecutionContextImpl.AdaptedForkJoinTask(r)
+          }
         Thread.currentThread match {
           case fjw: ForkJoinWorkerThread if fjw.getPool eq this => fjt.fork()
           case _                                                => super.execute(fjt)

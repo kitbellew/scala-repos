@@ -69,23 +69,24 @@ class MesosSchedulerBackendSuite
     val driver = mock[SchedulerDriver]
     when(driver.start()).thenReturn(Protos.Status.DRIVER_RUNNING)
 
-    val backend = new MesosSchedulerBackend(taskScheduler, sc, "master") {
-      override protected def createSchedulerDriver(
-          masterUrl: String,
-          scheduler: Scheduler,
-          sparkUser: String,
-          appName: String,
-          conf: SparkConf,
-          webuiUrl: Option[String] = None,
-          checkpoint: Option[Boolean] = None,
-          failoverTimeout: Option[Double] = None,
-          frameworkId: Option[String] = None): SchedulerDriver = {
-        markRegistered()
-        assert(webuiUrl.isDefined)
-        assert(webuiUrl.get.equals("http://webui"))
-        driver
+    val backend =
+      new MesosSchedulerBackend(taskScheduler, sc, "master") {
+        override protected def createSchedulerDriver(
+            masterUrl: String,
+            scheduler: Scheduler,
+            sparkUser: String,
+            appName: String,
+            conf: SparkConf,
+            webuiUrl: Option[String] = None,
+            checkpoint: Option[Boolean] = None,
+            failoverTimeout: Option[Double] = None,
+            frameworkId: Option[String] = None): SchedulerDriver = {
+          markRegistered()
+          assert(webuiUrl.isDefined)
+          assert(webuiUrl.get.equals("http://webui"))
+          driver
+        }
       }
-    }
 
     backend.start()
   }
@@ -119,14 +120,16 @@ class MesosSchedulerBackendSuite
       mesosSchedulerBackend.createResource("cpus", 4),
       mesosSchedulerBackend.createResource("mem", 1024))
     // uri is null.
-    val (executorInfo, _) =
-      mesosSchedulerBackend.createExecutorInfo(resources, "test-id")
+    val (executorInfo, _) = mesosSchedulerBackend.createExecutorInfo(
+      resources,
+      "test-id")
     val executorResources = executorInfo.getResourcesList
-    val cpus = executorResources.asScala
-      .find(_.getName.equals("cpus"))
-      .get
-      .getScalar
-      .getValue
+    val cpus =
+      executorResources.asScala
+        .find(_.getName.equals("cpus"))
+        .get
+        .getScalar
+        .getValue
 
     assert(cpus === mesosExecutorCores)
   }
@@ -159,15 +162,17 @@ class MesosSchedulerBackendSuite
       mesosSchedulerBackend.createResource("cpus", 4),
       mesosSchedulerBackend.createResource("mem", 1024))
     // uri is null.
-    val (executorInfo, _) =
-      mesosSchedulerBackend.createExecutorInfo(resources, "test-id")
+    val (executorInfo, _) = mesosSchedulerBackend.createExecutorInfo(
+      resources,
+      "test-id")
     assert(executorInfo.getCommand.getValue ===
       s" /mesos-home/bin/spark-class ${classOf[MesosExecutorBackend].getName}")
 
     // uri exists.
     conf.set("spark.executor.uri", "hdfs:///test-app-1.0.0.tgz")
-    val (executorInfo1, _) =
-      mesosSchedulerBackend.createExecutorInfo(resources, "test-id")
+    val (executorInfo1, _) = mesosSchedulerBackend.createExecutorInfo(
+      resources,
+      "test-id")
     assert(executorInfo1.getCommand.getValue ===
       s"cd test-app-1*;  ./bin/spark-class ${classOf[MesosExecutorBackend].getName}")
   }
@@ -286,13 +291,14 @@ class MesosSchedulerBackendSuite
         mesosOffers.get(2).getHostname,
         (minCpu - backend.mesosExecutorCores).toInt
       ))
-    val taskDesc = new TaskDescription(
-      1L,
-      0,
-      "s1",
-      "n1",
-      0,
-      ByteBuffer.wrap(new Array[Byte](0)))
+    val taskDesc =
+      new TaskDescription(
+        1L,
+        0,
+        "s1",
+        "n1",
+        0,
+        ByteBuffer.wrap(new Array[Byte](0)))
     when(taskScheduler.resourceOffers(expectedWorkerOffers))
       .thenReturn(Seq(Seq(taskDesc)))
     when(taskScheduler.CPUS_PER_TASK).thenReturn(2)
@@ -406,13 +412,14 @@ class MesosSchedulerBackendSuite
         2 // Deducting 1 for executor
       ))
 
-    val taskDesc = new TaskDescription(
-      1L,
-      0,
-      "s1",
-      "n1",
-      0,
-      ByteBuffer.wrap(new Array[Byte](0)))
+    val taskDesc =
+      new TaskDescription(
+        1L,
+        0,
+        "s1",
+        "n1",
+        0,
+        ByteBuffer.wrap(new Array[Byte](0)))
     when(taskScheduler.resourceOffers(expectedWorkerOffers))
       .thenReturn(Seq(Seq(taskDesc)))
     when(taskScheduler.CPUS_PER_TASK).thenReturn(1)

@@ -197,14 +197,14 @@ trait RouteTest
         type Out = RouteTestResult
         def apply(request: HttpRequest, route: Route): Out = {
           val routeTestResult = new RouteTestResult(timeout.duration)
-          val effectiveRequest =
-            request.withEffectiveUri(
-              securedConnection = defaultHostInfo.securedConnection,
-              defaultHostHeader = defaultHostInfo.host)
-          val ctx = new RequestContextImpl(
-            effectiveRequest,
-            routingLog.requestLog(effectiveRequest),
-            routingSettings)
+          val effectiveRequest = request.withEffectiveUri(
+            securedConnection = defaultHostInfo.securedConnection,
+            defaultHostHeader = defaultHostInfo.host)
+          val ctx =
+            new RequestContextImpl(
+              effectiveRequest,
+              routingLog.requestLog(effectiveRequest),
+              routingSettings)
           val sealedExceptionHandler = ExceptionHandler.seal(exceptionHandler)
           val semiSealedRoute = // sealed for exceptions but not for rejections
             Directives.handleExceptions(sealedExceptionHandler)(route)

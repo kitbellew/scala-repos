@@ -73,10 +73,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     }
   } //58468
 
-  val listResourceJValue =
-    readJson(
-      "api-docs.json"
-    ) // merge (("basePath" -> ("http://localhost:" + port)):JValue)
+  val listResourceJValue = readJson(
+    "api-docs.json"
+  ) // merge (("basePath" -> ("http://localhost:" + port)):JValue)
 
   val petOperationsJValue = readJson(
     "pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
@@ -91,8 +90,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         file
       else
         "/" + file
-    val rdr =
-      Source.fromInputStream(getClass.getResourceAsStream(f)).bufferedReader()
+    val rdr = Source
+      .fromInputStream(getClass.getResourceAsStream(f))
+      .bufferedReader()
     JsonParser.parse(rdr)
   }
 
@@ -313,10 +313,11 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     def verifyField(act: JValue, exp: JValue, fn: String): MatchResult[Any] = {
       fn match {
         case "responseMessages" =>
-          val af = act \ fn match {
-            case JArray(res) => res
-            case _           => Nil
-          }
+          val af =
+            act \ fn match {
+              case JArray(res) => res
+              case _           => Nil
+            }
           val JArray(ef) = exp \ fn
           val r = af map { v =>
             val mm = verifyFields(

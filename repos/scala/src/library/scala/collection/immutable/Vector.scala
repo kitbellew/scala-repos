@@ -333,10 +333,11 @@ final class Vector[+A] private[immutable] (
           if (depth > 1) {
             val newBlockIndex = blockIndex + shift
             val newFocus = focus + shift
-            val s = new Vector(
-              startIndex - 1 + shift,
-              endIndex + shift,
-              newBlockIndex)
+            val s =
+              new Vector(
+                startIndex - 1 + shift,
+                endIndex + shift,
+                newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(0, shiftBlocks) // shift right by n blocks
@@ -356,10 +357,11 @@ final class Vector[+A] private[immutable] (
             //assert(newBlockIndex == 0)
             //assert(newFocus == 0)
 
-            val s = new Vector(
-              startIndex - 1 + shift,
-              endIndex + shift,
-              newBlockIndex)
+            val s =
+              new Vector(
+                startIndex - 1 + shift,
+                endIndex + shift,
+                newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(0, shiftBlocks) // shift right by n elements
@@ -449,10 +451,11 @@ final class Vector[+A] private[immutable] (
           if (depth > 1) {
             val newBlockIndex = blockIndex - shift
             val newFocus = focus - shift
-            val s = new Vector(
-              startIndex - shift,
-              endIndex + 1 - shift,
-              newBlockIndex)
+            val s =
+              new Vector(
+                startIndex - shift,
+                endIndex + 1 - shift,
+                newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(shiftBlocks, 0) // shift left by n blocks
@@ -472,10 +475,11 @@ final class Vector[+A] private[immutable] (
             //assert(newBlockIndex == 0)
             //assert(newFocus == 0)
 
-            val s = new Vector(
-              startIndex - shift,
-              endIndex + 1 - shift,
-              newBlockIndex)
+            val s =
+              new Vector(
+                startIndex - shift,
+                endIndex + 1 - shift,
+                newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(shiftBlocks, 0) // shift right by n elements
@@ -805,8 +809,7 @@ final class VectorBuilder[A]()
     this
   }
 
-  override def ++=(xs: TraversableOnce[A]): this.type =
-    super.++=(xs)
+  override def ++=(xs: TraversableOnce[A]): this.type = super.++=(xs)
 
   def result: Vector[A] = {
     val size = blockIndex + lo

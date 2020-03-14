@@ -119,16 +119,17 @@ abstract class GenBCode extends BCodeSyncAndTry {
         arrivalPos == Int.MaxValue
       }
     }
-    private val i3comparator = new java.util.Comparator[Item3] {
-      override def compare(a: Item3, b: Item3) = {
-        if (a.arrivalPos < b.arrivalPos)
-          -1
-        else if (a.arrivalPos == b.arrivalPos)
-          0
-        else
-          1
+    private val i3comparator =
+      new java.util.Comparator[Item3] {
+        override def compare(a: Item3, b: Item3) = {
+          if (a.arrivalPos < b.arrivalPos)
+            -1
+          else if (a.arrivalPos == b.arrivalPos)
+            0
+          else
+            1
+        }
       }
-    }
     private val poison3 = Item3(Int.MaxValue, null, null, null, null)
     private val q3 = new java.util.PriorityQueue[Item3](1000, i3comparator)
 
@@ -223,8 +224,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
 
         // ----------- hand over to pipeline-2
 
-        val item2 =
-          Item2(arrivalPos, mirrorC, plainC, beanC, outF)
+        val item2 = Item2(arrivalPos, mirrorC, plainC, beanC, outF)
 
         q2 add item2 // at the very end of this method so that no Worker2 thread starts mutating before we're done.
 
@@ -386,8 +386,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
       mirrorCodeGen = new JMirrorBuilder
       beanInfoCodeGen = new JBeanInfoBuilder
 
-      val needsOutfileForSymbol =
-        bytecodeWriter.isInstanceOf[ClassBytecodeWriter]
+      val needsOutfileForSymbol = bytecodeWriter
+        .isInstanceOf[ClassBytecodeWriter]
       buildAndSendToDisk(needsOutfileForSymbol)
 
       // closing output files.

@@ -93,10 +93,11 @@ class RuntimeTypesTest {
   @Test def scala_Null_casts_to_scala_Null_should_fail_for_everything_else_but_null()
       : Unit = {
     assumeTrue(hasCompliantAsInstanceOfs)
-    val msg = Try("a".asInstanceOf[Null]) match {
-      case Failure(thr: ClassCastException) => thr.getMessage
-      case _                                => "not failed"
-    }
+    val msg =
+      Try("a".asInstanceOf[Null]) match {
+        case Failure(thr: ClassCastException) => thr.getMessage
+        case _                                => "not failed"
+      }
     assertEquals("a is not an instance of scala.runtime.Null$", msg)
   }
 

@@ -13,10 +13,11 @@ import scala.concurrent.ExecutionContext
   * Furthermore, it might be useful in testing.
   */
 object CallerThreadExecutionContext {
-  lazy val executor: Executor = new Executor {
-    override def execute(command: Runnable): Unit = command.run()
-  }
+  lazy val executor: Executor =
+    new Executor {
+      override def execute(command: Runnable): Unit = command.run()
+    }
 
-  implicit lazy val callerThreadExecutionContext =
-    ExecutionContext.fromExecutor(executor)
+  implicit lazy val callerThreadExecutionContext = ExecutionContext
+    .fromExecutor(executor)
 }

@@ -70,8 +70,9 @@ trait GZIPStringEncoder extends StringEncoder {
 
   override def decode(str: String): Array[Byte] = {
     val baos = new ByteArrayOutputStream
-    val gis = new GZIPInputStream(
-      new ByteArrayInputStream(Base64StringEncoder.decode(str)))
+    val gis =
+      new GZIPInputStream(
+        new ByteArrayInputStream(Base64StringEncoder.decode(str)))
     try {
       StreamIO.copy(gis, baos)
     } finally {

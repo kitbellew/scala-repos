@@ -85,10 +85,11 @@ class ServiceTest extends FunSuite with MockitoSugar {
     val exc = new Exception
     val service = mock[Service[String, String]]
     when(service.close(any)) thenReturn Future.Done
-    val factory = new ServiceFactory[String, String] {
-      def apply(conn: ClientConnection) = Future.value(service)
-      def close(deadline: Time) = Future.Done
-    }
+    val factory =
+      new ServiceFactory[String, String] {
+        def apply(conn: ClientConnection) = Future.value(service)
+        def close(deadline: Time) = Future.Done
+      }
 
     verify(service, times(0)).close(any)
 
@@ -110,24 +111,25 @@ class ServiceTest extends FunSuite with MockitoSugar {
     var factoryCloseCalled = false
     var statusCalled = false
 
-    val underlyingFactory = new ServiceFactory[Unit, Unit] {
-      def apply(conn: ClientConnection) =
-        Future.value(new Service[Unit, Unit] {
-          def apply(request: Unit): Future[Unit] = Future.Unit
-          override def close(deadline: Time) = {
-            serviceCloseCalled = true
-            Future.Done
-          }
-        })
-      override def close(deadline: Time) = {
-        factoryCloseCalled = true
-        Future.Done
+    val underlyingFactory =
+      new ServiceFactory[Unit, Unit] {
+        def apply(conn: ClientConnection) =
+          Future.value(new Service[Unit, Unit] {
+            def apply(request: Unit): Future[Unit] = Future.Unit
+            override def close(deadline: Time) = {
+              serviceCloseCalled = true
+              Future.Done
+            }
+          })
+        override def close(deadline: Time) = {
+          factoryCloseCalled = true
+          Future.Done
+        }
+        override def status: Status = {
+          statusCalled = true
+          Status.Open
+        }
       }
-      override def status: Status = {
-        statusCalled = true
-        Status.Open
-      }
-    }
   }
 
   test(
@@ -153,12 +155,11 @@ class ServiceTest extends FunSuite with MockitoSugar {
   test(
     "FactoryToService module delegates isAvailable / close to underlying factory")(
     new Ctx {
-      val stack =
-        FactoryToService.module.toStack(
-          Stack.Leaf(Stack.Role("role"), underlyingFactory))
+      val stack = FactoryToService.module.toStack(
+        Stack.Leaf(Stack.Role("role"), underlyingFactory))
 
-      val factory =
-        stack.make(Stack.Params.empty + FactoryToService.Enabled(true))
+      val factory = stack.make(
+        Stack.Params.empty + FactoryToService.Enabled(true))
 
       factory.status
       factory.close()
@@ -170,12 +171,11 @@ class ServiceTest extends FunSuite with MockitoSugar {
   test(
     "FactoryToService around module closes underlying service after request, does not close underlying factory")(
     new Ctx {
-      val stack =
-        FactoryToService.module.toStack(
-          Stack.Leaf(Stack.Role("role"), underlyingFactory))
+      val stack = FactoryToService.module.toStack(
+        Stack.Leaf(Stack.Role("role"), underlyingFactory))
 
-      val factory =
-        stack.make(Stack.Params.empty + FactoryToService.Enabled(true))
+      val factory = stack.make(
+        Stack.Params.empty + FactoryToService.Enabled(true))
 
       val service = new FactoryToService(factory)
       Await.result(service(Unit))
@@ -187,12 +187,11 @@ class ServiceTest extends FunSuite with MockitoSugar {
   test(
     "FactoryToService around module delegates isAvailable / close to underlying factory")(
     new Ctx {
-      val stack =
-        FactoryToService.module.toStack(
-          Stack.Leaf(Stack.Role("role"), underlyingFactory))
+      val stack = FactoryToService.module.toStack(
+        Stack.Leaf(Stack.Role("role"), underlyingFactory))
 
-      val factory =
-        stack.make(Stack.Params.empty + FactoryToService.Enabled(true))
+      val factory = stack.make(
+        Stack.Params.empty + FactoryToService.Enabled(true))
 
       val service = new FactoryToService(factory)
       service.status

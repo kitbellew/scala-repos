@@ -9,8 +9,7 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
 
   def this(out: OutputStream, autoFlush: Boolean) =
     this(new OutputStreamWriter(out), autoFlush)
-  def this(out: OutputStream) =
-    this(out, false)
+  def this(out: OutputStream) = this(out, false)
 
   /* The following constructors, although implemented, will not link, since
    * File, FileOutputStream and BufferedOutputStream are not implemented.
@@ -30,8 +29,7 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
   private var closed: Boolean = false
   private var errorFlag: Boolean = false
 
-  def flush(): Unit =
-    ensureOpenAndTrapIOExceptions(out.flush())
+  def flush(): Unit = ensureOpenAndTrapIOExceptions(out.flush())
 
   def close(): Unit =
     trapIOExceptions {
@@ -66,8 +64,7 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
   protected[io] def setError(): Unit = errorFlag = true
   protected[io] def clearError(): Unit = errorFlag = false
 
-  override def write(c: Int): Unit =
-    ensureOpenAndTrapIOExceptions(out.write(c))
+  override def write(c: Int): Unit = ensureOpenAndTrapIOExceptions(out.write(c))
 
   override def write(buf: Array[Char], off: Int, len: Int): Unit =
     ensureOpenAndTrapIOExceptions(out.write(buf, off, len))
@@ -139,8 +136,7 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
     println()
   }
 
-  def printf(fmt: String, args: Array[Object]): PrintWriter =
-    format(fmt, args)
+  def printf(fmt: String, args: Array[Object]): PrintWriter = format(fmt, args)
 
   // Not implemented:
   //def printf(l: java.util.Locale, fmt: String, args: Array[Object]): PrintWriter = ???

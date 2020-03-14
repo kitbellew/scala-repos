@@ -45,10 +45,11 @@ object Cached {
 
       c.prefix.tree match {
         case q"new Cached(..$params)" if params.length == 3 =>
-          val synch: Boolean = params.head match {
-            case q"synchronized = $v" => c.eval[Boolean](c.Expr(v))
-            case q"$v"                => c.eval[Boolean](c.Expr(v))
-          }
+          val synch: Boolean =
+            params.head match {
+              case q"synchronized = $v" => c.eval[Boolean](c.Expr(v))
+              case q"$v"                => c.eval[Boolean](c.Expr(v))
+            }
           val modCount: ModCount.Value = modCountParam(params(1))
           val psiElement = params(2)
           (synch, modCount, psiElement)
@@ -84,16 +85,17 @@ object Cached {
             q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
           else
             EmptyTree
-        val fields = if (hasParameters) {
-          q"""
+        val fields =
+          if (hasParameters) {
+            q"""
             private val $mapName = _root_.com.intellij.util.containers.ContainerUtil.
                 newConcurrentMap[(..${flatParams
-            .map(_.tpt)}), ($retTp, _root_.scala.Long)]()
+              .map(_.tpt)}), ($retTp, _root_.scala.Long)]()
 
             ..$analyzeCachesField
           """
-        } else {
-          q"""
+          } else {
+            q"""
             new _root_.scala.volatile()
             private var $cacheVarName: _root_.scala.Option[$retTp] = _root_.scala.None
             new _root_.scala.volatile()
@@ -101,7 +103,7 @@ object Cached {
 
             ..$analyzeCachesField
           """
-        }
+          }
 
         def getValuesFromMap: c.universe.Tree = q"""
             var ($cacheVarName, $modCountVarName) = _root_.scala.Option($mapName.get(..$paramNames)) match {
@@ -120,16 +122,17 @@ object Cached {
           } else
             q""
 
-        val functionContents = q"""
+        val functionContents =
+          q"""
             ..$getValuesIfHasParams
             if (cacheHasExpired($cacheVarName, $modCountVarName)) {
               val cacheFunResult = $cachedFunName()
               $cacheVarName = _root_.scala.Some(cacheFunResult)
               $modCountVarName = currModCount
               ..${if (hasParameters)
-          putValuesIntoMap
-        else
-          EmptyTree}
+            putValuesIntoMap
+          else
+            EmptyTree}
             }
             $cacheVarName.get
           """
@@ -153,15 +156,17 @@ object Cached {
         val actualCalculation =
           transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
 
-        val currModCount = modCount match {
-          case ModCount.getBlockModificationCount =>
-            q"val currModCount = $cachesUtilFQN.enclosingModificationOwner($psiElement).getModificationCount"
-          case ModCount.getOutOfCodeBlockModificationCount =>
-            q"val currModCount = $scalaPsiManagerFQN.instance($psiElement.getProject).getModificationCount"
-          case _ =>
-            q"val currModCount = $psiElement.getManager.getModificationTracker.${TermName(modCount.toString)}"
-        }
-        val updatedRhs = q"""
+        val currModCount =
+          modCount match {
+            case ModCount.getBlockModificationCount =>
+              q"val currModCount = $cachesUtilFQN.enclosingModificationOwner($psiElement).getModificationCount"
+            case ModCount.getOutOfCodeBlockModificationCount =>
+              q"val currModCount = $scalaPsiManagerFQN.instance($psiElement.getProject).getModificationCount"
+            case _ =>
+              q"val currModCount = $psiElement.getManager.getModificationTracker.${TermName(modCount.toString)}"
+          }
+        val updatedRhs =
+          q"""
           def $cachedFunName(): $retTp = {
             $actualCalculation
           }
@@ -169,13 +174,18 @@ object Cached {
           ..$currModCount
           def cacheHasExpired(opt: Option[Any], cacheCount: Long) = opt.isEmpty || currModCount != cacheCount
           ${if (analyzeCaches)
-          q"$cacheStatsName.aboutToEnterCachedArea()"
-        else
-          EmptyTree}
+            q"$cacheStatsName.aboutToEnterCachedArea()"
+          else
+            EmptyTree}
           $functionContentsInSynchronizedBlock
         """
-        val updatedDef =
-          DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
+        val updatedDef = DefDef(
+          mods,
+          name,
+          tpParams,
+          paramss,
+          retTp,
+          updatedRhs)
         val res = q"""
           ..$fields
           $updatedDef

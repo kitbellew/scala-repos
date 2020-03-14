@@ -99,9 +99,10 @@ trait ZeroVeryLowPriority { this: Zero.type =>
     refDefault.asInstanceOf[Zero[T]]
   }
 
-  protected val refDefault = new Zero[AnyRef] {
-    override def zero: AnyRef = null
-  }
+  protected val refDefault =
+    new Zero[AnyRef] {
+      override def zero: AnyRef = null
+    }
 }
 
 trait ZeroLowPriority extends ZeroVeryLowPriority { this: Zero.type =>

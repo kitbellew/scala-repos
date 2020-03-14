@@ -334,8 +334,9 @@ object ValidationSpec extends Specification {
     }
 
     "validate multiple string values and multiple validation errors" in {
-      val constraints =
-        List(Constraints.maxLength(10), Constraints.minLength(1))
+      val constraints = List(
+        Constraints.maxLength(10),
+        Constraints.minLength(1))
       val values = Seq(Some(""), Some("12345678910"), Some("valid"))
       val expected = Invalid(
         List(

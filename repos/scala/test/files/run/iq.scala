@@ -55,8 +55,8 @@ object iq {
      */
     Console.println("q5[5]: " + q5(5))
 
-    val q5c: Queue[Int] =
-      Queue.empty.enqueue(List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+    val q5c: Queue[Int] = Queue.empty.enqueue(
+      List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
 
     /* Testing ==
      *  Expected: q5 == q9: true

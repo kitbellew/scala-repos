@@ -129,8 +129,8 @@ class CamelMessage(
     * using the `getCamelContext` method, and is available on the [[akka.camel.CamelExtension]].
     */
   def getBodyAs[T](clazz: Class[T], camelContext: CamelContext): T = {
-    val result =
-      camelContext.getTypeConverter.mandatoryConvertTo[T](clazz, body)
+    val result = camelContext.getTypeConverter
+      .mandatoryConvertTo[T](clazz, body)
     // to be able to re-read a StreamCache we must "undo" the side effect by resetting the StreamCache
     resetStreamCache()
     result

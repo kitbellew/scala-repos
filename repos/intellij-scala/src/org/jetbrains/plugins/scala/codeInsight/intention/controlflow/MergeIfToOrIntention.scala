@@ -29,8 +29,10 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null)
       return false
 
@@ -53,20 +55,23 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
     if (innerThenBranch == null)
       return false
 
-    val comparator = new util.Comparator[PsiElement]() {
-      def compare(element1: PsiElement, element2: PsiElement): Int = {
-        (element1, element2) match {
-          case _ if element1 == element2 => 0
-          case (block1: ScBlockExpr, block2: ScBlockExpr)
-              if block1.exprs.size != block2.exprs.size =>
-            1
-          case (block1: ScBlockExpr, block2: ScBlockExpr) if block1 == block2 =>
-            0
-          case (expr1: ScExpression, expr2: ScExpression) if expr1 == expr2 => 0
-          case _                                                            => 1
+    val comparator =
+      new util.Comparator[PsiElement]() {
+        def compare(element1: PsiElement, element2: PsiElement): Int = {
+          (element1, element2) match {
+            case _ if element1 == element2 => 0
+            case (block1: ScBlockExpr, block2: ScBlockExpr)
+                if block1.exprs.size != block2.exprs.size =>
+              1
+            case (block1: ScBlockExpr, block2: ScBlockExpr)
+                if block1 == block2 =>
+              0
+            case (expr1: ScExpression, expr2: ScExpression) if expr1 == expr2 =>
+              0
+            case _ => 1
+          }
         }
       }
-    }
 
     PsiEquivalenceUtil.areElementsEquivalent(
       thenBranch,
@@ -76,8 +81,10 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 

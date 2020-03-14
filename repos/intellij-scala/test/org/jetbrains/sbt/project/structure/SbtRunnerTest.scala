@@ -16,32 +16,23 @@ import org.junit.Assert._
   */
 class SbtRunnerTest extends UsefulTestCase {
 
-  def testSbtLaunch_0_12_4(): Unit =
-    doTestSbtLauncherVersionDetection("0.12.4")
+  def testSbtLaunch_0_12_4(): Unit = doTestSbtLauncherVersionDetection("0.12.4")
 
-  def testSbtLaunch_0_13_0(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.0")
+  def testSbtLaunch_0_13_0(): Unit = doTestSbtLauncherVersionDetection("0.13.0")
 
-  def testSbtLaunch_0_13_1(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.1")
+  def testSbtLaunch_0_13_1(): Unit = doTestSbtLauncherVersionDetection("0.13.1")
 
-  def testSbtLaunch_0_13_2(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.2")
+  def testSbtLaunch_0_13_2(): Unit = doTestSbtLauncherVersionDetection("0.13.2")
 
-  def testSbtLaunch_0_13_5(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.5")
+  def testSbtLaunch_0_13_5(): Unit = doTestSbtLauncherVersionDetection("0.13.5")
 
-  def testSbtLaunch_0_13_6(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.6")
+  def testSbtLaunch_0_13_6(): Unit = doTestSbtLauncherVersionDetection("0.13.6")
 
-  def testSbtLaunch_0_13_7(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.7")
+  def testSbtLaunch_0_13_7(): Unit = doTestSbtLauncherVersionDetection("0.13.7")
 
-  def testSbtLaunch_0_13_8(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.8")
+  def testSbtLaunch_0_13_8(): Unit = doTestSbtLauncherVersionDetection("0.13.8")
 
-  def testSbtLaunch_0_13_9(): Unit =
-    doTestSbtLauncherVersionDetection("0.13.9")
+  def testSbtLaunch_0_13_9(): Unit = doTestSbtLauncherVersionDetection("0.13.9")
 
   def testMockLauncherWithoutSbtBootProperties(): Unit = {
     val expectedVersion = "1.0.0"
@@ -74,8 +65,7 @@ class SbtRunnerTest extends UsefulTestCase {
       TestUtils.getIvyCachePath) / "org.scala-sbt" / "sbt-launch" / "jars" / s"sbt-launch-$sbtVersion.jar"
 
   private def generateMockLauncher(implementationVersion: String): File = {
-    val manifestContents =
-      s"""|Manifest-Version: 1.0
+    val manifestContents = s"""|Manifest-Version: 1.0
           |Implementation-Vendor: com.example
           |Implementation-Title: launcher
           |Implementation-Version: $implementationVersion

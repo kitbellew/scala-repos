@@ -38,8 +38,8 @@ class NonServerRunner(
       listener: String => Unit): CompilationProcess = {
     val sdk =
       Option(ProjectRootManager.getInstance(project).getProjectSdk) getOrElse {
-        val all =
-          ProjectJdkTable.getInstance.getSdksOfType(JavaSdk.getInstance())
+        val all = ProjectJdkTable.getInstance.getSdksOfType(
+          JavaSdk.getInstance())
 
         if (all.isEmpty) {
           error("No JDK available")
@@ -77,16 +77,17 @@ class NonServerRunner(
             val p = builder.start()
             myProcess = Some(p)
 
-            val reader = new BufferedReader(
-              new InputStreamReader(p.getInputStream))
+            val reader =
+              new BufferedReader(new InputStreamReader(p.getInputStream))
             new MyBase64StreamReader(reader, listener)
 
-            val processWaitFor = new ProcessWaitFor(
-              p,
-              new TaskExecutor {
-                override def executeTask(task: Runnable): Future[_] =
-                  BaseOSProcessHandler.ExecutorServiceHolder.submit(task)
-              })
+            val processWaitFor =
+              new ProcessWaitFor(
+                p,
+                new TaskExecutor {
+                  override def executeTask(task: Runnable): Future[_] =
+                    BaseOSProcessHandler.ExecutorServiceHolder.submit(task)
+                })
 
             processWaitFor.setTerminationCallback(new Consumer[Integer] {
               override def consume(t: Integer) {

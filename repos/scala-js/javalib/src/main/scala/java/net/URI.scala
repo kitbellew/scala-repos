@@ -760,13 +760,14 @@ object URI {
   }
 
   /** matches any character not in unreserved, punct, escaped or other */
-  private val userInfoQuoteRe = new RegExp(
-    // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
-    // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=%]
-    "[\u0000- \"#/<>?@\\[-\\^`{-}" +
-      "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
-      "%(?![0-9a-f]{2})",
-    "ig")
+  private val userInfoQuoteRe =
+    new RegExp(
+      // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
+      // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=%]
+      "[\u0000- \"#/<>?@\\[-\\^`{-}" +
+        "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
+        "%(?![0-9a-f]{2})",
+      "ig")
 
   /** Quote any character not in unreserved, punct, escaped or other */
   private def quoteUserInfo(str: String) = {
@@ -777,13 +778,14 @@ object URI {
   /** matches any character not in unreserved, punct, escaped, other or equal
     *  to '/' or '@'
     */
-  private val pathQuoteRe = new RegExp(
-    // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
-    // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=%@/]
-    "[\u0000- \"#<>?\\[-\\^`{-}" +
-      "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
-      "%(?![0-9a-f]{2})",
-    "ig")
+  private val pathQuoteRe =
+    new RegExp(
+      // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
+      // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=%@/]
+      "[\u0000- \"#<>?\\[-\\^`{-}" +
+        "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
+        "%(?![0-9a-f]{2})",
+      "ig")
 
   /** Quote any character not in unreserved, punct, escaped, other or equal
     *  to '/' or '@'
@@ -800,13 +802,14 @@ object URI {
     *  in IPv6 addresses, but technically speaking they are in reserved
     *  due to RFC2732).
     */
-  private val authorityQuoteRe = new RegExp(
-    // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
-    // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=%@\[\]]
-    "[\u0000- \"#/<>?\\^`{-}" +
-      "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
-      "%(?![0-9a-f]{2})",
-    "ig")
+  private val authorityQuoteRe =
+    new RegExp(
+      // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
+      // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=%@\[\]]
+      "[\u0000- \"#/<>?\\^`{-}" +
+        "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
+        "%(?![0-9a-f]{2})",
+      "ig")
 
   /** Quote any character not in unreserved, punct, escaped, other or equal
     *  to '@'
@@ -817,13 +820,14 @@ object URI {
   }
 
   /** matches any character not in unreserved, reserved, escaped or other */
-  private val illegalQuoteRe = new RegExp(
-    // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
-    // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=?/\\[\\]%]
-    "[\u0000- \"#<>@\\^`{-}" +
-      "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
-      "%(?![0-9a-f]{2})",
-    "ig")
+  private val illegalQuoteRe =
+    new RegExp(
+      // !other = [\u0000-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]
+      // Char class is: [:!other:^a-z0-9-_.!~*'(),;:$&+=?/\\[\\]%]
+      "[\u0000- \"#<>@\\^`{-}" +
+        "\u007f-\u00a0\u1680\u2000-\u200a\u202f\u205f\u3000\u2028\u2029]|" +
+        "%(?![0-9a-f]{2})",
+      "ig")
 
   /** Quote any character not in unreserved, reserved, escaped or other */
   private def quoteIllegal(str: String) = {
@@ -860,9 +864,9 @@ object URI {
           // we need to do a CI compare for the next two characters
           assert(x.length > i + 2, "Invalid escape in URI")
           assert(y.length > i + 2, "Invalid escape in URI")
-          val cmp =
-            x.substring(i + 1, i + 3)
-              .compareToIgnoreCase(y.substring(i + 1, i + 3))
+          val cmp = x
+            .substring(i + 1, i + 3)
+            .compareToIgnoreCase(y.substring(i + 1, i + 3))
           if (cmp != 0)
             cmp
           else

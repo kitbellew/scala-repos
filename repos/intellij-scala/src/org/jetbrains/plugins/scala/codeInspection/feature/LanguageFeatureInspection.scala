@@ -176,8 +176,9 @@ private class ImportFeatureFlagFix(e: PsiElement, name: String, flag: String)
 
   def doApplyFix(project: Project) {
     val elem = getElement
-    val importsHolder =
-      ScalaImportTypeFix.getImportHolder(elem, elem.getProject)
+    val importsHolder = ScalaImportTypeFix.getImportHolder(
+      elem,
+      elem.getProject)
     importsHolder.addImportForPath(flag, elem)
   }
 }

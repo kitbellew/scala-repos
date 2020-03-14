@@ -21,14 +21,13 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
         case _                                                    => None
       }
 
-    val route =
-      Route.seal {
-        path("secured") {
-          authenticateBasic(realm = "secure site", myUserPassAuthenticator) {
-            userName => complete(s"The user is '$userName'")
-          }
+    val route = Route.seal {
+      path("secured") {
+        authenticateBasic(realm = "secure site", myUserPassAuthenticator) {
+          userName => complete(s"The user is '$userName'")
         }
       }
+    }
 
     // tests:
     Get("/secured") ~> route ~> check {
@@ -64,14 +63,13 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
         s"$id-admin"
     }
 
-    val route =
-      Route.seal {
-        path("secured") {
-          authenticateBasicPF(realm = "secure site", myUserPassAuthenticator) {
-            userName => complete(s"The user is '$userName'")
-          }
+    val route = Route.seal {
+      path("secured") {
+        authenticateBasicPF(realm = "secure site", myUserPassAuthenticator) {
+          userName => complete(s"The user is '$userName'")
         }
       }
+    }
 
     // tests:
     Get("/secured") ~> route ~> check {
@@ -119,16 +117,15 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
         fetchUser(id)
     }
 
-    val route =
-      Route.seal {
-        path("secured") {
-          authenticateBasicPFAsync(
-            realm = "secure site",
-            myUserPassAuthenticator) { user =>
-            complete(s"The user is '${user.id}'")
-          }
+    val route = Route.seal {
+      path("secured") {
+        authenticateBasicPFAsync(
+          realm = "secure site",
+          myUserPassAuthenticator) { user =>
+          complete(s"The user is '${user.id}'")
         }
       }
+    }
 
     // tests:
     Get("/secured") ~> route ~> check {
@@ -172,16 +169,13 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
         case _ => Future.successful(None)
       }
 
-    val route =
-      Route.seal {
-        path("secured") {
-          authenticateBasicAsync(
-            realm = "secure site",
-            myUserPassAuthenticator) { userName =>
-            complete(s"The user is '$userName'")
-          }
+    val route = Route.seal {
+      path("secured") {
+        authenticateBasicAsync(realm = "secure site", myUserPassAuthenticator) {
+          userName => complete(s"The user is '$userName'")
         }
       }
+    }
 
     // tests:
     Get("/secured") ~> route ~> check {
@@ -225,14 +219,13 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
         }
       }
 
-    val route =
-      Route.seal {
-        path("secured") {
-          authenticateOrRejectWithChallenge(myUserPassAuthenticator _) {
-            userName => complete("Authenticated!")
-          }
+    val route = Route.seal {
+      path("secured") {
+        authenticateOrRejectWithChallenge(myUserPassAuthenticator _) {
+          userName => complete("Authenticated!")
         }
       }
+    }
 
     // tests:
     Get("/secured") ~> route ~> check {
@@ -264,20 +257,18 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
 
     // check if user is authorized to perform admin actions:
     val admins = Set("Peter")
-    def hasAdminPermissions(user: User): Boolean =
-      admins.contains(user.name)
+    def hasAdminPermissions(user: User): Boolean = admins.contains(user.name)
 
-    val route =
-      Route.seal {
-        authenticateBasic(realm = "secure site", myUserPassAuthenticator) {
-          user =>
-            path("peters-lair") {
-              authorize(hasAdminPermissions(user)) {
-                complete(s"'${user.name}' visited Peter's lair")
-              }
+    val route = Route.seal {
+      authenticateBasic(realm = "secure site", myUserPassAuthenticator) {
+        user =>
+          path("peters-lair") {
+            authorize(hasAdminPermissions(user)) {
+              complete(s"'${user.name}' visited Peter's lair")
             }
-        }
+          }
       }
+    }
 
     // tests:
     val johnsCred = BasicHttpCredentials("John", "p4ssw0rd")
@@ -312,17 +303,16 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     def hasAdminPermissions(user: User): Future[Boolean] =
       Future.successful(admins.contains(user.name))
 
-    val route =
-      Route.seal {
-        authenticateBasic(realm = "secure site", myUserPassAuthenticator) {
-          user =>
-            path("peters-lair") {
-              authorizeAsync(_ => hasAdminPermissions(user)) {
-                complete(s"'${user.name}' visited Peter's lair")
-              }
+    val route = Route.seal {
+      authenticateBasic(realm = "secure site", myUserPassAuthenticator) {
+        user =>
+          path("peters-lair") {
+            authorizeAsync(_ => hasAdminPermissions(user)) {
+              complete(s"'${user.name}' visited Peter's lair")
             }
-        }
+          }
       }
+    }
 
     // tests:
     val johnsCred = BasicHttpCredentials("John", "p4ssw0rd")
@@ -342,15 +332,14 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "0extractCredentials" in {
-    val route =
-      extractCredentials { creds =>
-        complete {
-          creds match {
-            case Some(c) => "Credentials: " + c
-            case _       => "No credentials"
-          }
+    val route = extractCredentials { creds =>
+      complete {
+        creds match {
+          case Some(c) => "Credentials: " + c
+          case _       => "No credentials"
         }
       }
+    }
 
     // tests:
     val johnsCred = BasicHttpCredentials("John", "p4ssw0rd")

@@ -63,8 +63,8 @@ trait SyntheticMethods extends ast.TreeDSL {
     else
       Nil
   }
-  private lazy val renamedCaseAccessors =
-    perRunCaches.newMap[Symbol, mutable.Map[TermName, TermName]]()
+  private lazy val renamedCaseAccessors = perRunCaches
+    .newMap[Symbol, mutable.Map[TermName, TermName]]()
 
   /** Does not force the info of `caseclazz` */
   final def caseAccessorName(caseclazz: Symbol, paramName: TermName) =
@@ -92,14 +92,15 @@ trait SyntheticMethods extends ast.TreeDSL {
     if (!syntheticsOk)
       return templ
 
-    val synthesizer = new ClassMethodSynthesis(
-      clazz0,
-      newTyper(
-        if (reporter.hasErrors)
-          context makeSilent false
-        else
-          context)
-    )
+    val synthesizer =
+      new ClassMethodSynthesis(
+        clazz0,
+        newTyper(
+          if (reporter.hasErrors)
+            context makeSilent false
+          else
+            context)
+      )
     import synthesizer._
 
     if (clazz0 == AnyValClass || isPrimitiveValueClass(clazz0))
@@ -319,9 +320,10 @@ trait SyntheticMethods extends ast.TreeDSL {
               Ident(accumulator),
               hashcodeImplementation(acc))
           ))
-        val finish = callStaticsMethod("finalizeHash")(
-          Ident(accumulator),
-          Literal(Constant(arity)))
+        val finish =
+          callStaticsMethod("finalizeHash")(
+            Ident(accumulator),
+            Literal(Constant(arity)))
 
         Block(valdef :: mixes, finish)
       }
@@ -461,11 +463,12 @@ trait SyntheticMethods extends ast.TreeDSL {
             freshAccessorName
           else
             nameSuffixedByParamIndex
-        val newAcc = deriveMethod(ddef.symbol, name => newName) { newAcc =>
-          newAcc.makePublic
-          newAcc resetFlag (ACCESSOR | PARAMACCESSOR | OVERRIDE)
-          ddef.rhs.duplicate
-        }
+        val newAcc =
+          deriveMethod(ddef.symbol, name => newName) { newAcc =>
+            newAcc.makePublic
+            newAcc resetFlag (ACCESSOR | PARAMACCESSOR | OVERRIDE)
+            ddef.rhs.duplicate
+          }
         // TODO: shouldn't the next line be: `original resetFlag CASEACCESSOR`?
         ddef.symbol resetFlag CASEACCESSOR
         lb += logResult("case accessor new")(newAcc)

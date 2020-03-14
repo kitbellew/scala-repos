@@ -10,9 +10,10 @@ object Test extends App {
 
   println(c.copy(y = 20, x = 7283)("enwa", b = false)(l = -1, s = new Object))
 
-  val res = c.copy[Int, String, Object](y = -3, x = 66)("lkdjen", false)(
-    new Object,
-    100)
+  val res =
+    c.copy[Int, String, Object](y = -3, x = 66)("lkdjen", false)(
+      new Object,
+      100)
   println(res)
   println(res.l)
 }

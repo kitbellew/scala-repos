@@ -100,11 +100,12 @@ trait TimeMillisSpecs[M[+_]]
 
   "converting a millis value to an ISO time string (homogeneous case)" should {
     "return the correct time string" in {
-      val input = Join(
-        BuiltInFunction2Op(MillisToISO),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/millisSinceEpoch"))(line))(line),
-        Const(CString("-10:00"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(MillisToISO),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/hom/millisSinceEpoch"))(line))(line),
+          Const(CString("-10:00"))(line))(line)
 
       val result = testEval(input)
 
@@ -129,11 +130,12 @@ trait TimeMillisSpecs[M[+_]]
 
   "converting a millis value to an ISO time string (heterogeneous set)" should {
     "return the correct time string" in {
-      val input = Join(
-        BuiltInFunction2Op(MillisToISO),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/millisSinceEpoch"))(line))(line),
-        Const(CString("-10:00"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(MillisToISO),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/het/millisSinceEpoch"))(line))(line),
+          Const(CString("-10:00"))(line))(line)
 
       val result = testEval(input)
 

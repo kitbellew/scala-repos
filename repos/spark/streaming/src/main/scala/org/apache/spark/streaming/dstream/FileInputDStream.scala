@@ -178,8 +178,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
   /** Clear the old time-to-files mappings along with old RDDs */
   protected[streaming] override def clearMetadata(time: Time) {
     batchTimeToSelectedFiles.synchronized {
-      val oldFiles =
-        batchTimeToSelectedFiles.filter(_._1 < (time - rememberDuration))
+      val oldFiles = batchTimeToSelectedFiles.filter(
+        _._1 < (time - rememberDuration))
       batchTimeToSelectedFiles --= oldFiles.keys
       recentlySelectedFiles --= oldFiles.values.flatten
       logInfo(
@@ -212,12 +212,14 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       logDebug(
         s"Getting new files for time $currentTime, " +
           s"ignoring files older than $modTimeIgnoreThreshold")
-      val filter = new PathFilter {
-        def accept(path: Path): Boolean =
-          isNewFile(path, currentTime, modTimeIgnoreThreshold)
-      }
-      val newFiles =
-        fs.listStatus(directoryPath, filter).map(_.getPath.toString)
+      val filter =
+        new PathFilter {
+          def accept(path: Path): Boolean =
+            isNewFile(path, currentTime, modTimeIgnoreThreshold)
+        }
+      val newFiles = fs
+        .listStatus(directoryPath, filter)
+        .map(_.getPath.toString)
       val timeTaken = clock.getTimeMillis() - lastNewFileFindingTime
       logInfo("Finding new files took " + timeTaken + " ms")
       logDebug("# cached file times = " + fileToModTime.size)
@@ -291,16 +293,17 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
   /** Generate one RDD from an array of files */
   private def filesToRDD(files: Seq[String]): RDD[(K, V)] = {
     val fileRDDs = files.map { file =>
-      val rdd = serializableConfOpt.map(_.value) match {
-        case Some(config) =>
-          context.sparkContext.newAPIHadoopFile(
-            file,
-            fm.runtimeClass.asInstanceOf[Class[F]],
-            km.runtimeClass.asInstanceOf[Class[K]],
-            vm.runtimeClass.asInstanceOf[Class[V]],
-            config)
-        case None => context.sparkContext.newAPIHadoopFile[K, V, F](file)
-      }
+      val rdd =
+        serializableConfOpt.map(_.value) match {
+          case Some(config) =>
+            context.sparkContext.newAPIHadoopFile(
+              file,
+              fm.runtimeClass.asInstanceOf[Class[F]],
+              km.runtimeClass.asInstanceOf[Class[K]],
+              vm.runtimeClass.asInstanceOf[Class[V]],
+              config)
+          case None => context.sparkContext.newAPIHadoopFile[K, V, F](file)
+        }
       if (rdd.partitions.isEmpty) {
         logError(
           "File " + file + " has no data in it. Spark Streaming can only ingest " +

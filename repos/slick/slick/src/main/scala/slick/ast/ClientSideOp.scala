@@ -69,14 +69,15 @@ final case class ResultSetMapping(generator: TermSymbol, from: Node, map: Node)
     copy(generator = gen(0))
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val from2 = from.infer(scope, typeChildren)
-    val (map2, newType) = from2.nodeType match {
-      case CollectionType(cons, elem) =>
-        val map2 = map.infer(scope + (generator -> elem), typeChildren)
-        (map2, CollectionType(cons, map2.nodeType))
-      case t =>
-        val map2 = map.infer(scope + (generator -> t), typeChildren)
-        (map2, map2.nodeType)
-    }
+    val (map2, newType) =
+      from2.nodeType match {
+        case CollectionType(cons, elem) =>
+          val map2 = map.infer(scope + (generator -> elem), typeChildren)
+          (map2, CollectionType(cons, map2.nodeType))
+        case t =>
+          val map2 = map.infer(scope + (generator -> t), typeChildren)
+          (map2, map2.nodeType)
+      }
     withChildren(ConstArray[Node](from2, map2)) :@ (if (!hasType)
                                                       newType
                                                     else

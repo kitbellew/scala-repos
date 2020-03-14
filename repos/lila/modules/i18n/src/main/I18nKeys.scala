@@ -24,8 +24,8 @@ final class I18nKeys(translator: Translator) {
 
   val `playWithAFriend` = new Key("playWithAFriend")
   val `playWithTheMachine` = new Key("playWithTheMachine")
-  val `toInviteSomeoneToPlayGiveThisUrl` = new Key(
-    "toInviteSomeoneToPlayGiveThisUrl")
+  val `toInviteSomeoneToPlayGiveThisUrl` =
+    new Key("toInviteSomeoneToPlayGiveThisUrl")
   val `gameOver` = new Key("gameOver")
   val `waitingForOpponent` = new Key("waitingForOpponent")
   val `waiting` = new Key("waiting")
@@ -49,8 +49,8 @@ final class I18nKeys(translator: Translator) {
   val `raceFinished` = new Key("raceFinished")
   val `variantEnding` = new Key("variantEnding")
   val `newOpponent` = new Key("newOpponent")
-  val `yourOpponentWantsToPlayANewGameWithYou` = new Key(
-    "yourOpponentWantsToPlayANewGameWithYou")
+  val `yourOpponentWantsToPlayANewGameWithYou` =
+    new Key("yourOpponentWantsToPlayANewGameWithYou")
   val `joinTheGame` = new Key("joinTheGame")
   val `whitePlays` = new Key("whitePlays")
   val `blackPlays` = new Key("blackPlays")
@@ -60,8 +60,8 @@ final class I18nKeys(translator: Translator) {
   val `forceResignation` = new Key("forceResignation")
   val `forceDraw` = new Key("forceDraw")
   val `talkInChat` = new Key("talkInChat")
-  val `theFirstPersonToComeOnThisUrlWillPlayWithYou` = new Key(
-    "theFirstPersonToComeOnThisUrlWillPlayWithYou")
+  val `theFirstPersonToComeOnThisUrlWillPlayWithYou` =
+    new Key("theFirstPersonToComeOnThisUrlWillPlayWithYou")
   val `whiteCreatesTheGame` = new Key("whiteCreatesTheGame")
   val `blackCreatesTheGame` = new Key("blackCreatesTheGame")
   val `whiteJoinsTheGame` = new Key("whiteJoinsTheGame")
@@ -70,8 +70,8 @@ final class I18nKeys(translator: Translator) {
   val `blackResigned` = new Key("blackResigned")
   val `whiteLeftTheGame` = new Key("whiteLeftTheGame")
   val `blackLeftTheGame` = new Key("blackLeftTheGame")
-  val `shareThisUrlToLetSpectatorsSeeTheGame` = new Key(
-    "shareThisUrlToLetSpectatorsSeeTheGame")
+  val `shareThisUrlToLetSpectatorsSeeTheGame` =
+    new Key("shareThisUrlToLetSpectatorsSeeTheGame")
   val `theComputerAnalysisHasFailed` = new Key("theComputerAnalysisHasFailed")
   val `viewTheComputerAnalysis` = new Key("viewTheComputerAnalysis")
   val `requestAComputerAnalysis` = new Key("requestAComputerAnalysis")
@@ -181,12 +181,12 @@ final class I18nKeys(translator: Translator) {
   val `exportGames` = new Key("exportGames")
   val `ratingRange` = new Key("ratingRange")
   val `giveNbSeconds` = new Key("giveNbSeconds")
-  val `premoveEnabledClickAnywhereToCancel` = new Key(
-    "premoveEnabledClickAnywhereToCancel")
-  val `thisPlayerUsesChessComputerAssistance` = new Key(
-    "thisPlayerUsesChessComputerAssistance")
-  val `thisPlayerArtificiallyIncreasesTheirRating` = new Key(
-    "thisPlayerArtificiallyIncreasesTheirRating")
+  val `premoveEnabledClickAnywhereToCancel` =
+    new Key("premoveEnabledClickAnywhereToCancel")
+  val `thisPlayerUsesChessComputerAssistance` =
+    new Key("thisPlayerUsesChessComputerAssistance")
+  val `thisPlayerArtificiallyIncreasesTheirRating` =
+    new Key("thisPlayerArtificiallyIncreasesTheirRating")
   val `opening` = new Key("opening")
   val `openingExplorer` = new Key("openingExplorer")
   val `takeback` = new Key("takeback")
@@ -302,8 +302,8 @@ final class I18nKeys(translator: Translator) {
   val `onlinePlayers` = new Key("onlinePlayers")
   val `activeToday` = new Key("activeToday")
   val `activePlayers` = new Key("activePlayers")
-  val `bewareTheGameIsRatedButHasNoClock` = new Key(
-    "bewareTheGameIsRatedButHasNoClock")
+  val `bewareTheGameIsRatedButHasNoClock` =
+    new Key("bewareTheGameIsRatedButHasNoClock")
   val `training` = new Key("training")
   val `yourPuzzleRatingX` = new Key("yourPuzzleRatingX")
   val `findTheBestMoveForWhite` = new Key("findTheBestMoveForWhite")
@@ -334,17 +334,17 @@ final class I18nKeys(translator: Translator) {
   val `retryThisPuzzle` = new Key("retryThisPuzzle")
   val `thisPuzzleIsCorrect` = new Key("thisPuzzleIsCorrect")
   val `thisPuzzleIsWrong` = new Key("thisPuzzleIsWrong")
-  val `youHaveNbSecondsToMakeYourFirstMove` = new Key(
-    "youHaveNbSecondsToMakeYourFirstMove")
+  val `youHaveNbSecondsToMakeYourFirstMove` =
+    new Key("youHaveNbSecondsToMakeYourFirstMove")
   val `nbGamesInPlay` = new Key("nbGamesInPlay")
-  val `automaticallyProceedToNextGameAfterMoving` = new Key(
-    "automaticallyProceedToNextGameAfterMoving")
+  val `automaticallyProceedToNextGameAfterMoving` =
+    new Key("automaticallyProceedToNextGameAfterMoving")
   val `autoSwitch` = new Key("autoSwitch")
   val `openingId` = new Key("openingId")
   val `yourOpeningRatingX` = new Key("yourOpeningRatingX")
   val `findNbStrongMoves` = new Key("findNbStrongMoves")
-  val `thisMoveGivesYourOpponentTheAdvantage` = new Key(
-    "thisMoveGivesYourOpponentTheAdvantage")
+  val `thisMoveGivesYourOpponentTheAdvantage` =
+    new Key("thisMoveGivesYourOpponentTheAdvantage")
   val `openingFailed` = new Key("openingFailed")
   val `openingSolved` = new Key("openingSolved")
   val `recentlyPlayedOpenings` = new Key("recentlyPlayedOpenings")
@@ -405,23 +405,23 @@ final class I18nKeys(translator: Translator) {
   val `chessClock` = new Key("chessClock")
   val `tenthsOfSeconds` = new Key("tenthsOfSeconds")
   val `never` = new Key("never")
-  val `whenTimeRemainingLessThanTenSeconds` = new Key(
-    "whenTimeRemainingLessThanTenSeconds")
+  val `whenTimeRemainingLessThanTenSeconds` =
+    new Key("whenTimeRemainingLessThanTenSeconds")
   val `horizontalGreenProgressBars` = new Key("horizontalGreenProgressBars")
   val `soundWhenTimeGetsCritical` = new Key("soundWhenTimeGetsCritical")
   val `gameBehavior` = new Key("gameBehavior")
-  val `premovesPlayingDuringOpponentTurn` = new Key(
-    "premovesPlayingDuringOpponentTurn")
+  val `premovesPlayingDuringOpponentTurn` =
+    new Key("premovesPlayingDuringOpponentTurn")
   val `takebacksWithOpponentApproval` = new Key("takebacksWithOpponentApproval")
   val `promoteToQueenAutomatically` = new Key("promoteToQueenAutomatically")
-  val `claimDrawOnThreefoldRepetitionAutomatically` = new Key(
-    "claimDrawOnThreefoldRepetitionAutomatically")
+  val `claimDrawOnThreefoldRepetitionAutomatically` =
+    new Key("claimDrawOnThreefoldRepetitionAutomatically")
   val `privacy` = new Key("privacy")
   val `letOtherPlayersFollowYou` = new Key("letOtherPlayersFollowYou")
   val `letOtherPlayersChallengeYou` = new Key("letOtherPlayersChallengeYou")
   val `sound` = new Key("sound")
-  val `soundControlInTheTopBarOfEveryPage` = new Key(
-    "soundControlInTheTopBarOfEveryPage")
+  val `soundControlInTheTopBarOfEveryPage` =
+    new Key("soundControlInTheTopBarOfEveryPage")
   val `yourPreferencesHaveBeenSaved` = new Key("yourPreferencesHaveBeenSaved")
   val `none` = new Key("none")
   val `fast` = new Key("fast")
@@ -433,8 +433,8 @@ final class I18nKeys(translator: Translator) {
   val `always` = new Key("always")
   val `inCasualGamesOnly` = new Key("inCasualGamesOnly")
   val `whenPremoving` = new Key("whenPremoving")
-  val `whenTimeRemainingLessThanThirtySeconds` = new Key(
-    "whenTimeRemainingLessThanThirtySeconds")
+  val `whenTimeRemainingLessThanThirtySeconds` =
+    new Key("whenTimeRemainingLessThanThirtySeconds")
   val `difficultyEasy` = new Key("difficultyEasy")
   val `difficultyNormal` = new Key("difficultyNormal")
   val `difficultyHard` = new Key("difficultyHard")
@@ -446,8 +446,8 @@ final class I18nKeys(translator: Translator) {
   val `timeline` = new Key("timeline")
   val `seeAllTournaments` = new Key("seeAllTournaments")
   val `starting` = new Key("starting")
-  val `allInformationIsPublicAndOptional` = new Key(
-    "allInformationIsPublicAndOptional")
+  val `allInformationIsPublicAndOptional` =
+    new Key("allInformationIsPublicAndOptional")
   val `yourCityRegionOrDepartment` = new Key("yourCityRegionOrDepartment")
   val `biographyDescription` = new Key("biographyDescription")
   val `maximumNbCharacters` = new Key("maximumNbCharacters")
@@ -532,8 +532,8 @@ final class I18nKeys(translator: Translator) {
   val `keyGoToStartOrEnd` = new Key("keyGoToStartOrEnd")
   val `keyShowOrHideComments` = new Key("keyShowOrHideComments")
   val `keyEnterOrExitVariation` = new Key("keyEnterOrExitVariation")
-  val `keyYouCanDrawArrowsCirclesAndScrollToMove` = new Key(
-    "keyYouCanDrawArrowsCirclesAndScrollToMove")
+  val `keyYouCanDrawArrowsCirclesAndScrollToMove` =
+    new Key("keyYouCanDrawArrowsCirclesAndScrollToMove")
   val `newTournament` = new Key("newTournament")
   val `tournamentHomeTitle` = new Key("tournamentHomeTitle")
   val `tournamentHomeDescription` = new Key("tournamentHomeDescription")
@@ -541,14 +541,14 @@ final class I18nKeys(translator: Translator) {
   val `tournamentDoesNotExist` = new Key("tournamentDoesNotExist")
   val `tournamentMayHaveBeenCanceled` = new Key("tournamentMayHaveBeenCanceled")
   val `returnToTournamentsHomepage` = new Key("returnToTournamentsHomepage")
-  val `weeklyPerfTypeRatingDistribution` = new Key(
-    "weeklyPerfTypeRatingDistribution")
+  val `weeklyPerfTypeRatingDistribution` =
+    new Key("weeklyPerfTypeRatingDistribution")
   val `nbPerfTypePlayersThisWeek` = new Key("nbPerfTypePlayersThisWeek")
   val `yourPerfTypeRatingisRating` = new Key("yourPerfTypeRatingisRating")
-  val `youAreBetterThanPercentOfPerfTypePlayers` = new Key(
-    "youAreBetterThanPercentOfPerfTypePlayers")
-  val `youDoNotHaveAnEstablishedPerfTypeRating` = new Key(
-    "youDoNotHaveAnEstablishedPerfTypeRating")
+  val `youAreBetterThanPercentOfPerfTypePlayers` =
+    new Key("youAreBetterThanPercentOfPerfTypePlayers")
+  val `youDoNotHaveAnEstablishedPerfTypeRating` =
+    new Key("youDoNotHaveAnEstablishedPerfTypeRating")
 
   def keys =
     List(

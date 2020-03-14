@@ -41,8 +41,8 @@ object Utils {
     * @param model Model object.
     */
   def save(id: String, model: Any): Unit = {
-    val tmpdir =
-      sys.env.getOrElse("PIO_FS_TMPDIR", System.getProperty("java.io.tmpdir"))
+    val tmpdir = sys.env
+      .getOrElse("PIO_FS_TMPDIR", System.getProperty("java.io.tmpdir"))
     val modelFile = tmpdir + File.separator + id
     (new File(tmpdir)).mkdirs
     val fos = new FileOutputStream(modelFile)
@@ -59,8 +59,8 @@ object Utils {
     * @param id Used as the filename of the file.
     */
   def load(id: String): Any = {
-    val tmpdir =
-      sys.env.getOrElse("PIO_FS_TMPDIR", System.getProperty("java.io.tmpdir"))
+    val tmpdir = sys.env
+      .getOrElse("PIO_FS_TMPDIR", System.getProperty("java.io.tmpdir"))
     val modelFile = tmpdir + File.separator + id
     val src = Source.fromFile(modelFile)(scala.io.Codec.ISO8859)
     val kryo = KryoInstantiator.newKryoInjection

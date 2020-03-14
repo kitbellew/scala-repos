@@ -68,18 +68,19 @@ class BlockManagerReplicationSuite
       new NettyBlockTransferService(conf, securityMgr, numCores = 1)
     val memManager =
       new StaticMemoryManager(conf, Long.MaxValue, maxMem, numCores = 1)
-    val store = new BlockManager(
-      name,
-      rpcEnv,
-      master,
-      serializer,
-      conf,
-      memManager,
-      mapOutputTracker,
-      shuffleManager,
-      transfer,
-      securityMgr,
-      0)
+    val store =
+      new BlockManager(
+        name,
+        rpcEnv,
+        master,
+        serializer,
+        conf,
+        memManager,
+        mapOutputTracker,
+        shuffleManager,
+        transfer,
+        securityMgr,
+        0)
     memManager.setMemoryStore(store.memoryStore)
     store.initialize("app-id")
     allStores += store
@@ -128,9 +129,10 @@ class BlockManagerReplicationSuite
     val stores = (1 to numStores - 1).map { i =>
       makeBlockManager(1000, s"store$i")
     }
-    val storeIds = stores.map {
-      _.blockManagerId
-    }.toSet
+    val storeIds =
+      stores.map {
+        _.blockManagerId
+      }.toSet
     assert(
       master.getPeers(stores(0).blockManagerId).toSet ===
         storeIds.filterNot {
@@ -255,12 +257,13 @@ class BlockManagerReplicationSuite
         blockId: String,
         level: StorageLevel): Set[BlockManagerId] = {
       stores.head.putSingle(blockId, new Array[Byte](blockSize), level)
-      val locations = master
-        .getLocations(blockId)
-        .sortBy {
-          _.executorId
-        }
-        .toSet
+      val locations =
+        master
+          .getLocations(blockId)
+          .sortBy {
+            _.executorId
+          }
+          .toSet
       stores.foreach {
         _.removeBlock(blockId)
       }
@@ -339,24 +342,26 @@ class BlockManagerReplicationSuite
 
     // Add a failable block manager with a mock transfer service that does not
     // allow receiving of blocks. So attempts to use it as a replication target will fail.
-    val failableTransfer =
-      mock(classOf[BlockTransferService]) // this wont actually work
+    val failableTransfer = mock(
+      classOf[BlockTransferService]
+    ) // this wont actually work
     when(failableTransfer.hostName).thenReturn("some-hostname")
     when(failableTransfer.port).thenReturn(1000)
     val memManager =
       new StaticMemoryManager(conf, Long.MaxValue, 10000, numCores = 1)
-    val failableStore = new BlockManager(
-      "failable-store",
-      rpcEnv,
-      master,
-      serializer,
-      conf,
-      memManager,
-      mapOutputTracker,
-      shuffleManager,
-      failableTransfer,
-      securityMgr,
-      0)
+    val failableStore =
+      new BlockManager(
+        "failable-store",
+        rpcEnv,
+        master,
+        serializer,
+        conf,
+        memManager,
+        mapOutputTracker,
+        shuffleManager,
+        failableTransfer,
+        securityMgr,
+        0)
     memManager.setMemoryStore(failableStore.memoryStore)
     failableStore.initialize("app-id")
     allStores += failableStore // so that this gets stopped after test
@@ -385,8 +390,12 @@ class BlockManagerReplicationSuite
     def replicateAndGetNumCopies(
         blockId: String,
         replicationFactor: Int): Int = {
-      val storageLevel =
-        StorageLevel(true, true, false, true, replicationFactor)
+      val storageLevel = StorageLevel(
+        true,
+        true,
+        false,
+        true,
+        replicationFactor)
       initialStores.head.putSingle(
         blockId,
         new Array[Byte](blockSize),
@@ -459,8 +468,11 @@ class BlockManagerReplicationSuite
 
     storageLevels.foreach { storageLevel =>
       // Put the block into one of the stores
-      val blockId = new TestBlockId(
-        "block-with-" + storageLevel.description.replace(" ", "-").toLowerCase)
+      val blockId =
+        new TestBlockId(
+          "block-with-" + storageLevel.description
+            .replace(" ", "-")
+            .toLowerCase)
       stores(0).putSingle(blockId, new Array[Byte](blockSize), storageLevel)
 
       // Assert that master know two locations for the block
@@ -520,8 +532,9 @@ class BlockManagerReplicationSuite
               testStore.removeBlock(s"dummy-block-$i")
             }
 
-            val newBlockStatusOption =
-              master.getBlockStatus(blockId).get(testStore.blockManagerId)
+            val newBlockStatusOption = master
+              .getBlockStatus(blockId)
+              .get(testStore.blockManagerId)
 
             // Assert that the block status in the master either does not exist (block removed
             // from every store) or has zero memory usage for this store

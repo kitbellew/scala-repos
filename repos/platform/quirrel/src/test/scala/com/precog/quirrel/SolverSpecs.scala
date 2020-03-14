@@ -644,9 +644,10 @@ object SolverSpecs
   }
 
   def solve(str: String, id: Symbol): Option[Expr] = {
-    val f = solve(parseSingle(LineStream(str)), Map[Formal, Expr]()) {
-      case TicVar(_, id2) => id.toString == id2
-    }
+    val f =
+      solve(parseSingle(LineStream(str)), Map[Formal, Expr]()) {
+        case TicVar(_, id2) => id.toString == id2
+      }
     f(someFunction)
   }
 

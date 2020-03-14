@@ -67,10 +67,11 @@ private[fpm] class LocalPrefixSpan(
           counts(x) += 1L
       }
     }
-    val freqItems = counts.toSeq.filter {
-      case (_, count) =>
-        count >= minCount
-    }.sorted
+    val freqItems =
+      counts.toSeq.filter {
+        case (_, count) =>
+          count >= minCount
+      }.sorted
     // project and recursively call genFreqPatterns
     freqItems.toIterator.flatMap {
       case (item, count) =>

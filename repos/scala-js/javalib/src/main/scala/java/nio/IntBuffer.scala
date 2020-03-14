@@ -5,19 +5,16 @@ import scala.scalajs.js.typedarray._
 object IntBuffer {
   private final val HashSeed = 39599817 // "java.nio.IntBuffer".##
 
-  def allocate(capacity: Int): IntBuffer =
-    wrap(new Array[Int](capacity))
+  def allocate(capacity: Int): IntBuffer = wrap(new Array[Int](capacity))
 
   def wrap(array: Array[Int], offset: Int, length: Int): IntBuffer =
     HeapIntBuffer.wrap(array, 0, array.length, offset, length, false)
 
-  def wrap(array: Array[Int]): IntBuffer =
-    wrap(array, 0, array.length)
+  def wrap(array: Array[Int]): IntBuffer = wrap(array, 0, array.length)
 
   // Extended API
 
-  def wrap(array: Int32Array): IntBuffer =
-    TypedArrayIntBuffer.wrap(array)
+  def wrap(array: Int32Array): IntBuffer = TypedArrayIntBuffer.wrap(array)
 }
 
 abstract class IntBuffer private[nio] (
@@ -51,28 +48,22 @@ abstract class IntBuffer private[nio] (
   def get(dst: Array[Int], offset: Int, length: Int): IntBuffer =
     GenBuffer(this).generic_get(dst, offset, length)
 
-  def get(dst: Array[Int]): IntBuffer =
-    get(dst, 0, dst.length)
+  def get(dst: Array[Int]): IntBuffer = get(dst, 0, dst.length)
 
   @noinline
-  def put(src: IntBuffer): IntBuffer =
-    GenBuffer(this).generic_put(src)
+  def put(src: IntBuffer): IntBuffer = GenBuffer(this).generic_put(src)
 
   @noinline
   def put(src: Array[Int], offset: Int, length: Int): IntBuffer =
     GenBuffer(this).generic_put(src, offset, length)
 
-  final def put(src: Array[Int]): IntBuffer =
-    put(src, 0, src.length)
+  final def put(src: Array[Int]): IntBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean =
-    GenBuffer(this).generic_hasArray()
+  @inline final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Int] =
-    GenBuffer(this).generic_array()
+  @inline final def array(): Array[Int] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int =
-    GenBuffer(this).generic_arrayOffset()
+  @inline final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): IntBuffer
 

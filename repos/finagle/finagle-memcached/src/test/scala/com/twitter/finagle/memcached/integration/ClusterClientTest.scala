@@ -663,8 +663,8 @@ class ClusterClientTest
     }
 
   def updateCachePoolConfigData(size: Int) {
-    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(
-      cachePoolSize = size)
+    val cachePoolConfig: CachePoolConfig =
+      new CachePoolConfig(cachePoolSize = size)
     val output = new ByteArrayOutputStream
     CachePoolConfig.jsonCodec.serialize(cachePoolConfig, output)
     zookeeperClient.get().setData(zkPath, output.toByteArray, -1)

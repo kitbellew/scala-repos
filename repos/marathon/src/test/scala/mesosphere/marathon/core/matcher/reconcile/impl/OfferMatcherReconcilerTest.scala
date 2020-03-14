@@ -38,8 +38,10 @@ class OfferMatcherReconcilerTest
     Given("an offer with volume")
     val appId = PathId("/test")
     val taskId = Task.Id.forApp(appId)
-    val localVolumeIdLaunched =
-      LocalVolumeId(appId, "persistent-volume-launched", "uuidLaunched")
+    val localVolumeIdLaunched = LocalVolumeId(
+      appId,
+      "persistent-volume-launched",
+      "uuidLaunched")
     val offer = MarathonTestHelper.offerWithVolumes(
       taskId.idString,
       localVolumeIdLaunched)
@@ -54,15 +56,14 @@ class OfferMatcherReconcilerTest
       f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
 
     Then("all resources are destroyed and unreserved")
-    val expectedOps =
-      Iterable(
-        TaskOp.UnreserveAndDestroyVolumes(
-          taskId,
-          oldTask = None,
-          maybeNewTask = None,
-          resources = offer.getResourcesList.asScala.to[Seq]
-        )
+    val expectedOps = Iterable(
+      TaskOp.UnreserveAndDestroyVolumes(
+        taskId,
+        oldTask = None,
+        maybeNewTask = None,
+        resources = offer.getResourcesList.asScala.to[Seq]
       )
+    )
 
     // for the nicer error message with diff indication
     matchedTaskOps.ops.mkString("\n") should be(expectedOps.mkString("\n"))
@@ -74,8 +75,10 @@ class OfferMatcherReconcilerTest
     Given("an offer with volume")
     val appId = PathId("/test")
     val taskId = Task.Id.forApp(appId)
-    val localVolumeIdLaunched =
-      LocalVolumeId(appId, "persistent-volume-launched", "uuidLaunched")
+    val localVolumeIdLaunched = LocalVolumeId(
+      appId,
+      "persistent-volume-launched",
+      "uuidLaunched")
     val offer = MarathonTestHelper.offerWithVolumes(
       taskId.idString,
       localVolumeIdLaunched)
@@ -111,8 +114,10 @@ class OfferMatcherReconcilerTest
     Given("an offer with volume")
     val appId = PathId("/test")
     val taskId = Task.Id.forApp(appId)
-    val localVolumeIdLaunched =
-      LocalVolumeId(appId, "persistent-volume-launched", "uuidLaunched")
+    val localVolumeIdLaunched = LocalVolumeId(
+      appId,
+      "persistent-volume-launched",
+      "uuidLaunched")
     val offer = MarathonTestHelper.offerWithVolumes(
       taskId.idString,
       localVolumeIdLaunched)
@@ -149,8 +154,10 @@ class OfferMatcherReconcilerTest
     Given("an offer with volume")
     val appId = PathId("/test")
     val taskId = Task.Id.forApp(appId)
-    val localVolumeIdLaunched =
-      LocalVolumeId(appId, "persistent-volume-launched", "uuidLaunched")
+    val localVolumeIdLaunched = LocalVolumeId(
+      appId,
+      "persistent-volume-launched",
+      "uuidLaunched")
     val offer = MarathonTestHelper.offerWithVolumes(
       taskId.idString,
       localVolumeIdLaunched)

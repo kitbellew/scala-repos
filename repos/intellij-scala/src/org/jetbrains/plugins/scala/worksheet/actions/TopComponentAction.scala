@@ -29,11 +29,12 @@ trait TopComponentAction extends TopComponentDisplayable {
   def actionIcon: Icon
 
   def getActionButton = {
-    val button = new ActionButton(
-      this,
-      getTemplatePresentation,
-      ActionPlaces.EDITOR_TOOLBAR,
-      ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE)
+    val button =
+      new ActionButton(
+        this,
+        getTemplatePresentation,
+        ActionPlaces.EDITOR_TOOLBAR,
+        ActionToolbar.DEFAULT_MINIMUM_BUTTON_SIZE)
     button setToolTipText genericText
     button
   }

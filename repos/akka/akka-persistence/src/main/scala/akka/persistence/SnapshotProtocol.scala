@@ -19,8 +19,8 @@ final case class SnapshotMetadata(
 //#snapshot-metadata
 
 object SnapshotMetadata {
-  implicit val ordering: Ordering[SnapshotMetadata] =
-    Ordering.fromLessThan[SnapshotMetadata] { (a, b) ⇒
+  implicit val ordering: Ordering[SnapshotMetadata] = Ordering
+    .fromLessThan[SnapshotMetadata] { (a, b) ⇒
       if (a eq b)
         false
       else if (a.persistenceId != b.persistenceId)

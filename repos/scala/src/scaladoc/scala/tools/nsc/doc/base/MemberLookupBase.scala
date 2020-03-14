@@ -65,43 +65,44 @@ trait MemberLookupBase {
 
     val syms = (fromRoot +: fromParents) find (!_.isEmpty) getOrElse Nil
 
-    val links = syms flatMap {
-      case (sym, site) => internalLink(sym, site)
-    } match {
-      case Nil =>
-        // (3) Look at external links
-        syms.flatMap {
-          case (sym, owner) =>
-            // reconstruct the original link
-            def linkName(sym: Symbol) = {
-              def nameString(s: Symbol) =
-                s.nameString + (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
-                                  "$"
-                                else
-                                  "")
-              val packageSuffix =
-                if (sym.hasPackageFlag)
-                  ".package"
-                else
-                  ""
+    val links =
+      syms flatMap {
+        case (sym, site) => internalLink(sym, site)
+      } match {
+        case Nil =>
+          // (3) Look at external links
+          syms.flatMap {
+            case (sym, owner) =>
+              // reconstruct the original link
+              def linkName(sym: Symbol) = {
+                def nameString(s: Symbol) =
+                  s.nameString + (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
+                                    "$"
+                                  else
+                                    "")
+                val packageSuffix =
+                  if (sym.hasPackageFlag)
+                    ".package"
+                  else
+                    ""
 
-              sym.ownerChain.reverse
-                .filterNot(isRoot(_))
-                .map(nameString(_))
-                .mkString(".") + packageSuffix
-            }
+                sym.ownerChain.reverse
+                  .filterNot(isRoot(_))
+                  .map(nameString(_))
+                  .mkString(".") + packageSuffix
+              }
 
-            if (sym.isClass || sym.isModule || sym.isTrait || sym.hasPackageFlag)
-              findExternalLink(sym, linkName(sym))
-            else if (owner.isClass || owner.isModule || owner.isTrait || owner.hasPackageFlag)
-              findExternalLink(
-                sym,
-                linkName(owner) + "@" + externalSignature(sym))
-            else
-              None
-        }
-      case links => links
-    }
+              if (sym.isClass || sym.isModule || sym.isTrait || sym.hasPackageFlag)
+                findExternalLink(sym, linkName(sym))
+              else if (owner.isClass || owner.isModule || owner.isTrait || owner.hasPackageFlag)
+                findExternalLink(
+                  sym,
+                  linkName(owner) + "@" + externalSignature(sym))
+              else
+                None
+          }
+        case links => links
+      }
     links match {
       case Nil =>
         if (warnNoLink)
@@ -155,31 +156,33 @@ trait MemberLookupBase {
     //  - if the search doesn't return any members, we backtrack on the last decision
     //     * we look for terms with the last member's name
     //     * we look for types with the same name, all the way up
-    val result = members match {
-      case Nil => Nil
-      case mbrName :: Nil =>
-        var syms = lookupInTemplate(pos, mbrName, container, OnlyType) map (
-          (
-            _,
-            container))
-        if (syms.isEmpty)
-          syms = lookupInTemplate(pos, mbrName, container, OnlyTerm) map (
+    val result =
+      members match {
+        case Nil => Nil
+        case mbrName :: Nil =>
+          var syms = lookupInTemplate(pos, mbrName, container, OnlyType) map (
             (
               _,
               container))
-        syms
+          if (syms.isEmpty)
+            syms = lookupInTemplate(pos, mbrName, container, OnlyTerm) map (
+              (
+                _,
+                container))
+          syms
 
-      case tplName :: rest =>
-        def completeSearch(syms: List[Symbol]) =
-          syms flatMap (lookupInTemplate(pos, rest, _))
+        case tplName :: rest =>
+          def completeSearch(syms: List[Symbol]) =
+            syms flatMap (lookupInTemplate(pos, rest, _))
 
-        completeSearch(
-          lookupInTemplate(pos, tplName, container, OnlyTerm)) match {
-          case Nil =>
-            completeSearch(lookupInTemplate(pos, tplName, container, OnlyType))
-          case syms => syms
-        }
-    }
+          completeSearch(
+            lookupInTemplate(pos, tplName, container, OnlyTerm)) match {
+            case Nil =>
+              completeSearch(
+                lookupInTemplate(pos, tplName, container, OnlyType))
+            case syms => syms
+          }
+      }
     //println("lookupInTemplate(" + members + ", " + container + ") => " + result)
     result
   }
@@ -236,8 +239,9 @@ trait MemberLookupBase {
       if ((query.charAt(index) == '.' || query.charAt(index) == '#') &&
           ((index == 0) || (query.charAt(index - 1) != '\\'))) {
 
-        val member =
-          query.substring(last_index, index).replaceAll("\\\\([#\\.])", "$1")
+        val member = query
+          .substring(last_index, index)
+          .replaceAll("\\\\([#\\.])", "$1")
         // we want to allow javadoc-style links [[#member]] -- which requires us to remove empty members from the first
         // elemnt in the list
         if ((member != "") || (!members.isEmpty))

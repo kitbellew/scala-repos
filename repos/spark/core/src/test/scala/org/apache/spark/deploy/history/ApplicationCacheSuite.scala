@@ -198,22 +198,23 @@ class ApplicationCacheSuite
       completed: Boolean,
       started: Long,
       ended: Long): SparkUI = {
-    val info = new ApplicationInfo(
-      name,
-      name,
-      Some(1),
-      Some(1),
-      Some(1),
-      Some(64),
-      Seq(
-        new AttemptInfo(
-          attemptId,
-          new Date(started),
-          new Date(ended),
-          new Date(ended),
-          ended - started,
-          "user",
-          completed)))
+    val info =
+      new ApplicationInfo(
+        name,
+        name,
+        Some(1),
+        Some(1),
+        Some(1),
+        Some(64),
+        Seq(
+          new AttemptInfo(
+            attemptId,
+            new Date(started),
+            new Date(ended),
+            new Date(ended),
+            ended - started,
+            "user",
+            completed)))
     val ui = mock[SparkUI]
     when(ui.getApplicationInfoList).thenReturn(List(info).iterator)
     when(ui.getAppName).thenReturn(name)
@@ -433,10 +434,11 @@ class ApplicationCacheSuite
     val clock = new ManualClock(0)
     val size = 5
     // only two entries are retained, so we expect evictions to occur on lookups
-    implicit val cache: ApplicationCache = new TestApplicationCache(
-      operations,
-      retainedApplications = size,
-      clock = clock)
+    implicit val cache: ApplicationCache =
+      new TestApplicationCache(
+        operations,
+        retainedApplications = size,
+        clock = clock)
 
     val attempt1 = Some("01")
 

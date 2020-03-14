@@ -14,18 +14,15 @@ abstract class NameTranslatingStatsReceiver(
     extends StatsReceiver {
   def this(self: StatsReceiver) = this(self, "<namespacePrefix>")
 
-  override def toString: String =
-    s"$self/$namespacePrefix"
+  override def toString: String = s"$self/$namespacePrefix"
 
   protected[this] def translate(name: Seq[String]): Seq[String]
   val repr = self.repr
   override def isNull: Boolean = self.isNull
 
-  def counter(name: String*): Counter =
-    self.counter(translate(name): _*)
+  def counter(name: String*): Counter = self.counter(translate(name): _*)
 
-  def stat(name: String*): Stat =
-    self.stat(translate(name): _*)
+  def stat(name: String*): Stat = self.stat(translate(name): _*)
 
   def addGauge(name: String*)(f: => Float): Gauge =
     self.addGauge(translate(name): _*)(f)

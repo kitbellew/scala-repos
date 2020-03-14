@@ -118,30 +118,33 @@ abstract class ParallelSeqCheck[T](collName: String)
           }).reduceLeft(_ && _)
     }
 
-  property("prefixLengths must be equal") = forAll(collectionPairs) {
-    case (s, coll) =>
-      (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex)
-        yield {
-          ("operator " + ind) |: s.prefixLength(pred) == coll.prefixLength(pred)
-        }).reduceLeft(_ && _)
-  }
+  property("prefixLengths must be equal") =
+    forAll(collectionPairs) {
+      case (s, coll) =>
+        (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex)
+          yield {
+            ("operator " + ind) |: s.prefixLength(pred) == coll.prefixLength(
+              pred)
+          }).reduceLeft(_ && _)
+    }
 
-  property("indexWheres must be equal") = forAll(collectionPairsWithLengths) {
-    case (s, coll, len) =>
-      (for ((pred, ind) <- indexWherePredicates.zipWithIndex)
-        yield {
-          val sind = s.indexWhere(pred, len)
-          val cind = coll.indexWhere(pred, len)
-          if (sind != cind) {
-            println("from: " + s)
-            println("and: " + coll)
-            println("at: " + len)
-            println(sind)
-            println(cind)
-          }
-          ("operator " + ind) |: sind == cind
-        }).reduceLeft(_ && _)
-  }
+  property("indexWheres must be equal") =
+    forAll(collectionPairsWithLengths) {
+      case (s, coll, len) =>
+        (for ((pred, ind) <- indexWherePredicates.zipWithIndex)
+          yield {
+            val sind = s.indexWhere(pred, len)
+            val cind = coll.indexWhere(pred, len)
+            if (sind != cind) {
+              println("from: " + s)
+              println("and: " + coll)
+              println("at: " + len)
+              println(sind)
+              println(cind)
+            }
+            ("operator " + ind) |: sind == cind
+          }).reduceLeft(_ && _)
+    }
 
   property("lastIndexWheres must be equal") =
     forAll(collectionPairsWithLengths) {
@@ -159,28 +162,31 @@ abstract class ParallelSeqCheck[T](collName: String)
           }).reduceLeft(_ && _)
     }
 
-  property("reverses must be equal") = forAll(collectionPairs) {
-    case (s, coll) =>
-      (s.length == 0 && s.getClass == classOf[collection.immutable.Range]) || {
-        val sr = s.reverse
-        val cr = coll.reverse
-        if (sr != cr) {
-          println("from: " + s)
-          println("and: " + coll)
-          println(sr)
-          println(cr)
+  property("reverses must be equal") =
+    forAll(collectionPairs) {
+      case (s, coll) =>
+        (s.length == 0 && s.getClass == classOf[
+          collection.immutable.Range]) || {
+          val sr = s.reverse
+          val cr = coll.reverse
+          if (sr != cr) {
+            println("from: " + s)
+            println("and: " + coll)
+            println(sr)
+            println(cr)
+          }
+          sr == cr
         }
-        sr == cr
-      }
-  }
+    }
 
-  property("reverseMaps must be equal") = forAll(collectionPairs) {
-    case (s, coll) =>
-      (for ((f, ind) <- reverseMapFunctions.zipWithIndex)
-        yield {
-          ("operator " + ind) |: s.reverseMap(f) == coll.reverseMap(f)
-        }).reduceLeft(_ && _)
-  }
+  property("reverseMaps must be equal") =
+    forAll(collectionPairs) {
+      case (s, coll) =>
+        (for ((f, ind) <- reverseMapFunctions.zipWithIndex)
+          yield {
+            ("operator " + ind) |: s.reverseMap(f) == coll.reverseMap(f)
+          }).reduceLeft(_ && _)
+    }
 
   property("sameElements must be equal") =
     forAll(collectionPairsWithModifiedWithLengths) {
@@ -254,32 +260,34 @@ abstract class ParallelSeqCheck[T](collName: String)
           }).reduceLeft(_ && _)
     }
 
-  property("endsWiths must be equal") = forAll(collectionPairsWithModified) {
-    case (s, coll, collmodif) =>
-      ("ends with self" |: s.endsWith(s) == coll.endsWith(s)) &&
-        ("ends with tail" |: (s.length == 0 || s.endsWith(s.tail) == coll
-          .endsWith(coll.tail))) &&
-        ("with each other" |: coll.endsWith(s)) &&
-        ("modified" |: s.startsWith(collmodif) == coll.endsWith(collmodif)) &&
-        (for (sq <- startEndSeqs)
-          yield {
-            val sew = s.endsWith(sq)
-            val cew = coll.endsWith(fromSeq(sq))
-            if (sew != cew) {
-              println("from: " + s)
-              println("and: " + coll)
-              println(sew)
-              println(cew)
-            }
-            ("seq " + sq) |: sew == cew
-          }).reduceLeft(_ && _)
-  }
+  property("endsWiths must be equal") =
+    forAll(collectionPairsWithModified) {
+      case (s, coll, collmodif) =>
+        ("ends with self" |: s.endsWith(s) == coll.endsWith(s)) &&
+          ("ends with tail" |: (s.length == 0 || s.endsWith(s.tail) == coll
+            .endsWith(coll.tail))) &&
+          ("with each other" |: coll.endsWith(s)) &&
+          ("modified" |: s.startsWith(collmodif) == coll.endsWith(collmodif)) &&
+          (for (sq <- startEndSeqs)
+            yield {
+              val sew = s.endsWith(sq)
+              val cew = coll.endsWith(fromSeq(sq))
+              if (sew != cew) {
+                println("from: " + s)
+                println("and: " + coll)
+                println(sew)
+                println(cew)
+              }
+              ("seq " + sq) |: sew == cew
+            }).reduceLeft(_ && _)
+    }
 
-  property("unions must be equal") = forAll(collectionPairsWithModified) {
-    case (s, coll, collmodif) =>
-      ("modified" |: s.union(collmodif.seq) == coll.union(collmodif)) &&
-        ("empty" |: s.union(Nil) == coll.union(fromSeq(Nil)))
-  }
+  property("unions must be equal") =
+    forAll(collectionPairsWithModified) {
+      case (s, coll, collmodif) =>
+        ("modified" |: s.union(collmodif.seq) == coll.union(collmodif)) &&
+          ("empty" |: s.union(Nil) == coll.union(fromSeq(Nil)))
+    }
 
   // This is failing with my views patch: array index out of bounds in the array iterator.
   // Couldn't see why this and only this was impacted, could use a second pair of eyes.
@@ -288,74 +296,87 @@ abstract class ParallelSeqCheck[T](collName: String)
   // Curiously, this wasn't detected before.
   //
   if (!isCheckingViews)
-    property("patches must be equal") = forAll(collectionTripletsWith2Indices) {
-      case (s, coll, pat, from, repl) =>
-        ("with seq" |: s
-          .patch(from, pat, repl) == coll.patch(from, pat, repl)) &&
-          ("with par" |: s
-            .patch(from, pat, repl) == coll.patch(from, fromSeq(pat), repl)) &&
-          ("with empty" |: s
-            .patch(from, Nil, repl) == coll.patch(from, fromSeq(Nil), repl)) &&
-          ("with one" |: (s.length == 0 || s.patch(from, List(s(0)), 1) == coll
-            .patch(from, fromSeq(List(coll(0))), 1)))
-    }
+    property("patches must be equal") =
+      forAll(collectionTripletsWith2Indices) {
+        case (s, coll, pat, from, repl) =>
+          ("with seq" |: s
+            .patch(from, pat, repl) == coll.patch(from, pat, repl)) &&
+            ("with par" |: s.patch(from, pat, repl) == coll.patch(
+              from,
+              fromSeq(pat),
+              repl)) &&
+            ("with empty" |: s.patch(from, Nil, repl) == coll.patch(
+              from,
+              fromSeq(Nil),
+              repl)) &&
+            ("with one" |: (s.length == 0 || s.patch(
+              from,
+              List(s(0)),
+              1) == coll.patch(from, fromSeq(List(coll(0))), 1)))
+      }
 
   if (!isCheckingViews)
-    property("updates must be equal") = forAll(collectionPairsWithLengths) {
-      case (s, coll, len) =>
-        val pos =
-          if (len >= s.length)
-            s.length - 1
-          else
-            len
-        if (s.length > 0) {
-          val supd = s.updated(pos, s(0))
-          val cupd = coll.updated(pos, coll(0))
-          if (supd != cupd) {
-            println("from: " + s)
-            println("and: " + coll)
-            println(supd)
-            println(cupd)
-          }
-          "from first" |: (supd == cupd)
-        } else
-          "trivially" |: true
+    property("updates must be equal") =
+      forAll(collectionPairsWithLengths) {
+        case (s, coll, len) =>
+          val pos =
+            if (len >= s.length)
+              s.length - 1
+            else
+              len
+          if (s.length > 0) {
+            val supd = s.updated(pos, s(0))
+            val cupd = coll.updated(pos, coll(0))
+            if (supd != cupd) {
+              println("from: " + s)
+              println("and: " + coll)
+              println(supd)
+              println(cupd)
+            }
+            "from first" |: (supd == cupd)
+          } else
+            "trivially" |: true
+      }
+
+  property("prepends must be equal") =
+    forAll(collectionPairs) {
+      case (s, coll) =>
+        s.length == 0 || s(0) +: s == coll(0) +: coll
     }
 
-  property("prepends must be equal") = forAll(collectionPairs) {
-    case (s, coll) =>
-      s.length == 0 || s(0) +: s == coll(0) +: coll
-  }
+  property("appends must be equal") =
+    forAll(collectionPairs) {
+      case (s, coll) =>
+        s.length == 0 || s :+ s(0) == coll :+ coll(0)
+    }
 
-  property("appends must be equal") = forAll(collectionPairs) {
-    case (s, coll) =>
-      s.length == 0 || s :+ s(0) == coll :+ coll(0)
-  }
+  property("padTos must be equal") =
+    forAll(collectionPairsWithLengths) {
+      case (s, coll, len) =>
+        val someValue = sampleValue
+        val sdoub = s.padTo(len * 2, someValue)
+        val cdoub = coll.padTo(len * 2, someValue)
+        if (sdoub != cdoub) {
+          println("from: " + s)
+          println("and: " + coll)
+          println(sdoub)
+          println(cdoub)
+        }
+        ("smaller" |: s
+          .padTo(len / 2, someValue) == coll.padTo(len / 2, someValue)) &&
+        ("bigger" |: sdoub == cdoub)
+    }
 
-  property("padTos must be equal") = forAll(collectionPairsWithLengths) {
-    case (s, coll, len) =>
-      val someValue = sampleValue
-      val sdoub = s.padTo(len * 2, someValue)
-      val cdoub = coll.padTo(len * 2, someValue)
-      if (sdoub != cdoub) {
-        println("from: " + s)
-        println("and: " + coll)
-        println(sdoub)
-        println(cdoub)
-      }
-      ("smaller" |: s
-        .padTo(len / 2, someValue) == coll.padTo(len / 2, someValue)) &&
-      ("bigger" |: sdoub == cdoub)
-  }
-
-  property("corresponds must be equal") = forAll(collectionPairsWithModified) {
-    case (s, coll, modified) =>
-      val modifcut = modified.toSeq.slice(0, modified.length)
-      ("self" |: s.corresponds(s)(_ == _) == coll.corresponds(coll)(_ == _)) &&
-      ("modified" |: s.corresponds(modified.seq)(_ == _) == coll.corresponds(
-        modified)(_ == _)) &&
-      ("modified2" |: s.corresponds(modifcut)(_ == _) == coll.corresponds(
-        modifcut)(_ == _))
-  }
+  property("corresponds must be equal") =
+    forAll(collectionPairsWithModified) {
+      case (s, coll, modified) =>
+        val modifcut = modified.toSeq.slice(0, modified.length)
+        ("self" |: s.corresponds(s)(_ == _) == coll.corresponds(coll)(
+          _ == _)) &&
+        ("modified" |: s.corresponds(modified.seq)(_ == _) == coll.corresponds(
+          modified)(_ == _)) &&
+        ("modified2" |: s.corresponds(modifcut)(_ == _) == coll.corresponds(
+          modifcut)(_ == _))
+    }
 
 }

@@ -78,8 +78,8 @@ object SyntheticMembersInjector {
   val LOG = Logger.getInstance(getClass)
 
   private val CLASS_NAME = "org.intellij.scala.syntheticMemberInjector"
-  val EP_NAME: ExtensionPointName[SyntheticMembersInjector] =
-    ExtensionPointName.create(CLASS_NAME)
+  val EP_NAME: ExtensionPointName[SyntheticMembersInjector] = ExtensionPointName
+    .create(CLASS_NAME)
   val injectedExtensions = { proj: Project =>
     try {
       LibraryInjectorLoader
@@ -101,11 +101,12 @@ object SyntheticMembersInjector {
         source.getProject).toSet
       template <- injector.injectFunctions(source)
     } try {
-      val context = source match {
-        case o: ScObject if o.isSyntheticObject =>
-          ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
-        case _ => source
-      }
+      val context =
+        source match {
+          case o: ScObject if o.isSyntheticObject =>
+            ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
+          case _ => source
+        }
       val function = ScalaPsiElementFactory.createMethodWithContext(
         template,
         context,
@@ -130,11 +131,12 @@ object SyntheticMembersInjector {
         source.getProject).toSet
       template <- injector.injectInners(source)
     } try {
-      val context = (source match {
-        case o: ScObject if o.isSyntheticObject =>
-          ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
-        case _ => source
-      }).extendsBlock
+      val context =
+        (source match {
+          case o: ScObject if o.isSyntheticObject =>
+            ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
+          case _ => source
+        }).extendsBlock
       val td = ScalaPsiElementFactory.createTypeDefinitionWithContext(
         template,
         context,
@@ -173,11 +175,12 @@ object SyntheticMembersInjector {
       injector <- EP_NAME.getExtensions
       supers <- injector.injectSupers(source)
     } try {
-      val context = source match {
-        case o: ScObject if o.isSyntheticObject =>
-          ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
-        case _ => source
-      }
+      val context =
+        source match {
+          case o: ScObject if o.isSyntheticObject =>
+            ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
+          case _ => source
+        }
       buffer += ScalaPsiElementFactory.createTypeElementFromText(
         supers,
         context,

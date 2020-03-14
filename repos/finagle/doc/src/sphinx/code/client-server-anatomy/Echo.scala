@@ -29,8 +29,7 @@ object Echo extends Client[String, String] with Server[String, String] {
 
     protected def copy1(
         stack: Stack[ServiceFactory[String, String]],
-        params: Stack.Params): Client =
-      copy(stack, params)
+        params: Stack.Params): Client = copy(stack, params)
 
     //#transporter
     protected def newTransporter(): Transporter[String, String] =
@@ -88,17 +87,19 @@ object SimpleListenerExample {
   def main(args: Array[String]): Unit = {
     val address = new java.net.InetSocketAddress("localhost", 8080)
     //#simplelisten
-    val service = new Service[String, String] {
-      def apply(request: String) = Future.value(request)
-    }
-    val serveTransport = (t: Transport[String, String]) =>
-      new SerialServerDispatcher(t, service)
+    val service =
+      new Service[String, String] {
+        def apply(request: String) = Future.value(request)
+      }
+    val serveTransport =
+      (t: Transport[String, String]) => new SerialServerDispatcher(t, service)
     val listener = Netty3Listener[String, String](
       StringServerPipeline,
       StackServer.defaultParams)
-    val server = listener.listen(address) {
-      serveTransport(_)
-    }
+    val server =
+      listener.listen(address) {
+        serveTransport(_)
+      }
     //#simplelisten
 
     Await.ready(Future.never)
@@ -108,9 +109,10 @@ object SimpleListenerExample {
 object EchoServerExample {
   def main(args: Array[String]): Unit = {
     //#serveruse
-    val service = new Service[String, String] {
-      def apply(request: String) = Future.value(request)
-    }
+    val service =
+      new Service[String, String] {
+        def apply(request: String) = Future.value(request)
+      }
     val server = Echo.serve(":8080", service)
     Await.result(server)
     //#serveruse
@@ -129,12 +131,13 @@ object BasicClient {
       new SerialClientDispatcher(transport)
     }
 
-  val client = new Service[String, String] {
-    def apply(req: String) =
-      bridge flatMap { svc =>
-        svc(req) ensure svc.close()
-      }
-  }
+  val client =
+    new Service[String, String] {
+      def apply(req: String) =
+        bridge flatMap { svc =>
+          svc(req) ensure svc.close()
+        }
+    }
   //#explicitbridge
 }
 
@@ -149,15 +152,17 @@ object BasicClientExample extends App {
 
 object Filters {
   //#filters
-  val retry = new RetryExceptionsFilter[String, String](
-    retryPolicy = RetryPolicy.tries(3),
-    timer = DefaultTimer.twitter
-  )
+  val retry =
+    new RetryExceptionsFilter[String, String](
+      retryPolicy = RetryPolicy.tries(3),
+      timer = DefaultTimer.twitter
+    )
 
-  val timeout = new TimeoutFilter[String, String](
-    timeout = 3.seconds,
-    timer = DefaultTimer.twitter
-  )
+  val timeout =
+    new TimeoutFilter[String, String](
+      timeout = 3.seconds,
+      timer = DefaultTimer.twitter
+    )
 
   val maskCancel = new MaskCancelFilter[String, String]
   //#filters

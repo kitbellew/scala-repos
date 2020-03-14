@@ -100,10 +100,11 @@ private[persistence] trait InmemMessages {
     }
 
   def highestSequenceNr(pid: String): Long = {
-    val snro = for {
-      ms ← messages.get(pid)
-      m ← ms.lastOption
-    } yield m.sequenceNr
+    val snro =
+      for {
+        ms ← messages.get(pid)
+        m ← ms.lastOption
+      } yield m.sequenceNr
     snro.getOrElse(0L)
   }
 

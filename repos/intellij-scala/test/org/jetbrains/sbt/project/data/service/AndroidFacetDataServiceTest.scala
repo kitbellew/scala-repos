@@ -49,8 +49,9 @@ class AndroidFacetDataServiceTest extends ProjectDataServiceTestCase {
   private def doTestFacetSetup(proguardConfig: Seq[String]): Unit = {
     importProjectData(generateProject(proguardConfig))
 
-    val module =
-      ModuleManager.getInstance(getProject).findModuleByName("Module 1")
+    val module = ModuleManager
+      .getInstance(getProject)
+      .findModuleByName("Module 1")
     assert(module != null)
 
     val facet = FacetManager.getInstance(module).getFacetByType(AndroidFacet.ID)
@@ -80,28 +81,28 @@ class AndroidFacetDataServiceTest extends ProjectDataServiceTestCase {
     }
   }
 
-  def testWithoutProguard(): Unit =
-    doTestFacetSetup(Seq.empty)
+  def testWithoutProguard(): Unit = doTestFacetSetup(Seq.empty)
 
   def testWithProguard(): Unit =
     doTestFacetSetup(Seq("-some-option", "-another-option"))
 
   def testModuleIsNull(): Unit = {
-    val testProject = new project {
-      name := getProject.getName
-      ideDirectoryPath := getProject.getBasePath
-      linkedProjectPath := getProject.getBasePath
-      arbitraryNodes += new AndroidFacetNode(
-        "",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        false,
-        Seq.empty)
-    }.build.toDataNode
+    val testProject =
+      new project {
+        name := getProject.getName
+        ideDirectoryPath := getProject.getBasePath
+        linkedProjectPath := getProject.getBasePath
+        arbitraryNodes += new AndroidFacetNode(
+          "",
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          false,
+          Seq.empty)
+      }.build.toDataNode
     importProjectData(testProject)
   }
 }

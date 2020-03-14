@@ -10,8 +10,9 @@ package com.twitter.finagle
   * exactly one stream. The session terminates together with the stream.
   */
 package object stream {
-  implicit val streamRequestType = new RequestType[StreamRequest] {
-    def canonize(req: StreamRequest) = req
-    def specialize(req: StreamRequest) = req
-  }
+  implicit val streamRequestType =
+    new RequestType[StreamRequest] {
+      def canonize(req: StreamRequest) = req
+      def specialize(req: StreamRequest) = req
+    }
 }

@@ -32,8 +32,7 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     buffer += i
   private def mergeCombiners[T](
       buf1: ArrayBuffer[T],
-      buf2: ArrayBuffer[T]): ArrayBuffer[T] =
-    buf1 ++= buf2
+      buf2: ArrayBuffer[T]): ArrayBuffer[T] = buf1 ++= buf2
 
   private def createExternalMap[T] = {
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
@@ -100,8 +99,9 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     map.insertAll(Seq((1, 10), (2, 20), (3, 30), (1, 100), (2, 200), (1, 1000)))
     val it = map.iterator
     assert(it.hasNext)
-    val result =
-      it.toSet[(Int, ArrayBuffer[Int])].map(kv => (kv._1, kv._2.toSet))
+    val result = it
+      .toSet[(Int, ArrayBuffer[Int])]
+      .map(kv => (kv._1, kv._2.toSet))
     assert(
       result === Set[(Int, Set[Int])](
         (1, Set[Int](10, 100, 1000)),
@@ -257,11 +257,10 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     */
   private def testSimpleSpilling(codec: Option[String] = None): Unit = {
     val size = 1000
-    val conf =
-      createSparkConf(
-        loadDefaults = true,
-        codec
-      ) // Load defaults for Spark home
+    val conf = createSparkConf(
+      loadDefaults = true,
+      codec
+    ) // Load defaults for Spark home
     conf.set("spark.shuffle.manager", "hash") // avoid using external sorter
     conf.set(
       "spark.shuffle.spill.numElementsForceSpillThreshold",
@@ -378,8 +377,8 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     val it = map.iterator
     while (it.hasNext) {
       val kv = it.next()
-      val expectedValue =
-        ArrayBuffer[String](collisionPairsMap.getOrElse(kv._1, kv._1))
+      val expectedValue = ArrayBuffer[String](
+        collisionPairsMap.getOrElse(kv._1, kv._1))
       assert(kv._2.equals(expectedValue))
       count += 1
     }

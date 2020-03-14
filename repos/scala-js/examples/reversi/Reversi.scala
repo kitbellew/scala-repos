@@ -96,8 +96,9 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     val boardCanvas = jQuery(
       "<canvas width='" + BoardSizePx + "' height='" + BoardSizePx + "'></canvas>")
     val domCanvas = boardCanvas.get(0).asInstanceOf[HTMLCanvasElement]
-    val context =
-      domCanvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
+    val context = domCanvas
+      .getContext("2d")
+      .asInstanceOf[CanvasRenderingContext2D]
 
     playground.append(jQuery("<div>").append(boardCanvas))
 
@@ -256,8 +257,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
       diry: Int): List[Square] = {
 
     val allInDir = allSquaresInDirection(x, y, dirx, diry)
-    val (toFlip, remaining) =
-      allInDir.span(_.owner == currentPlayer.opponent)
+    val (toFlip, remaining) = allInDir.span(_.owner == currentPlayer.opponent)
 
     val success = remaining.headOption.exists(_.owner == currentPlayer)
     if (success)

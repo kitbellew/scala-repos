@@ -9,10 +9,11 @@ class Serving extends LServing[Query, PredictedResult] {
       predictedResults: Seq[PredictedResult]): PredictedResult =
     predictedResults.headOption
       .map { result ⇒
-        val preparedItems = result.itemScores
-          .sortBy {
-            case ItemScore(item, score, year) ⇒ year
-          }(Ordering.Option[Int].reverse)
+        val preparedItems =
+          result.itemScores
+            .sortBy {
+              case ItemScore(item, score, year) ⇒ year
+            }(Ordering.Option[Int].reverse)
         new PredictedResult(preparedItems)
       }
       .getOrElse(new PredictedResult(Array.empty[ItemScore]))

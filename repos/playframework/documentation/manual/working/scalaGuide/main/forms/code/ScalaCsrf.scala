@@ -59,8 +59,8 @@ object ScalaCsrf extends PlaySpecification {
         //#get-token
         Ok(token.map(_.value).getOrElse(""))
       })
-      val result =
-        addAndGetToken(FakeRequest().withSession("csrfToken" -> originalToken))
+      val result = addAndGetToken(
+        FakeRequest().withSession("csrfToken" -> originalToken))
       contentAsString(result) must be like {
         case t => Crypto.compareSignedTokens(originalToken, t) must_== true
       }
@@ -73,8 +73,9 @@ object ScalaCsrf extends PlaySpecification {
 
     "allow rendering a token in a query string" in new WithApplication() {
       val originalToken = Crypto.generateSignedToken
-      val result = tokenFormAction(app)(
-        FakeRequest().withSession("csrfToken" -> originalToken))
+      val result =
+        tokenFormAction(app)(
+          FakeRequest().withSession("csrfToken" -> originalToken))
       val body = contentAsString(result)
       body must find("action=\"/items\\?csrfToken=[a-f0-9]+-\\d+-([a-f0-9]+)\"")
         .withGroup(Crypto.extractSignedToken(originalToken).get)
@@ -82,8 +83,9 @@ object ScalaCsrf extends PlaySpecification {
 
     "allow rendering a token in a hidden field" in new WithApplication() {
       val originalToken = Crypto.generateSignedToken
-      val result = tokenFormAction(app)(
-        FakeRequest().withSession("csrfToken" -> originalToken))
+      val result =
+        tokenFormAction(app)(
+          FakeRequest().withSession("csrfToken" -> originalToken))
       val body = contentAsString(result)
       body must find("value=\"[a-f0-9]+-\\d+-([a-f0-9]+)\"").withGroup(
         Crypto.extractSignedToken(originalToken).get)
@@ -127,8 +129,8 @@ object ScalaCsrf extends PlaySpecification {
         }
       //#csrf-add-token
 
-      val body =
-        await(form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
+      val body = await(
+        form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
       Crypto.extractSignedToken(body.utf8String) must beSome
     }
 
@@ -178,8 +180,8 @@ object ScalaCsrf extends PlaySpecification {
           .withCookies(Cookie("foo", "bar"))
           .withHeaders(
             CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
-      val body =
-        await(form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
+      val body = await(
+        form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
       Crypto.extractSignedToken(body.utf8String) must beSome
     }
 

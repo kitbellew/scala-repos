@@ -32,13 +32,14 @@ class CommandUtilsSuite
     val appId = "12345-worker321-9876"
     val sparkHome = sys.props
       .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
-    val cmd = new Command(
-      "mainClass",
-      Seq(),
-      Map(),
-      Seq(),
-      Seq("libraryPathToB"),
-      Seq())
+    val cmd =
+      new Command(
+        "mainClass",
+        Seq(),
+        Map(),
+        Seq(),
+        Seq("libraryPathToB"),
+        Seq())
     val builder = CommandUtils.buildProcessBuilder(
       cmd,
       new SecurityManager(new SparkConf),
@@ -57,13 +58,14 @@ class CommandUtilsSuite
     val secret = "This is the secret sauce"
     // set auth secret
     conf.set(SecurityManager.SPARK_AUTH_SECRET_CONF, secret)
-    val command = new Command(
-      "mainClass",
-      Seq(),
-      Map(),
-      Seq(),
-      Seq("lib"),
-      Seq("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF + "=" + secret))
+    val command =
+      new Command(
+        "mainClass",
+        Seq(),
+        Map(),
+        Seq(),
+        Seq("lib"),
+        Seq("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF + "=" + secret))
 
     // auth is not set
     var cmd = CommandUtils invokePrivate buildLocalCommand(

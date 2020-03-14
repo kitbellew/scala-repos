@@ -6,11 +6,9 @@ final class StrongOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
     implicit val F: Strong[F])
     extends Ops[F[A, B]] {
   ////
-  final def first[C]: F[(A, C), (B, C)] =
-    F.first(self)
+  final def first[C]: F[(A, C), (B, C)] = F.first(self)
 
-  final def second[C]: F[(C, A), (C, B)] =
-    F.second(self)
+  final def second[C]: F[(C, A), (C, B)] = F.second(self)
 
   ////
 }

@@ -124,37 +124,38 @@ case class ConcatWs(children: Seq[Expression])
       val idxInVararg = ctx.freshName("idxInVararg")
 
       val evals = children.map(_.gen(ctx))
-      val (varargCount, varargBuild) = children.tail
-        .zip(evals.tail)
-        .map {
-          case (child, eval) =>
-            child.dataType match {
-              case StringType =>
-                (
-                  "", // we count all the StringType arguments num at once below.
-                  s"$array[$idxInVararg ++] = ${eval.isNull} ? (UTF8String) null : ${eval.value};")
-              case _: ArrayType =>
-                val size = ctx.freshName("n")
-                (
-                  s"""
+      val (varargCount, varargBuild) =
+        children.tail
+          .zip(evals.tail)
+          .map {
+            case (child, eval) =>
+              child.dataType match {
+                case StringType =>
+                  (
+                    "", // we count all the StringType arguments num at once below.
+                    s"$array[$idxInVararg ++] = ${eval.isNull} ? (UTF8String) null : ${eval.value};")
+                case _: ArrayType =>
+                  val size = ctx.freshName("n")
+                  (
+                    s"""
               if (!${eval.isNull}) {
                 $varargNum += ${eval.value}.numElements();
               }
             """,
-                  s"""
+                    s"""
             if (!${eval.isNull}) {
               final int $size = ${eval.value}.numElements();
               for (int j = 0; j < $size; j ++) {
                 $array[$idxInVararg ++] = ${ctx.getValue(
-                    eval.value,
-                    StringType,
-                    "j")};
+                      eval.value,
+                      StringType,
+                      "j")};
               }
             }
             """)
-            }
-        }
-        .unzip
+              }
+          }
+          .unzip
 
       evals.map(_.code).mkString("\n") +
         s"""
@@ -339,11 +340,12 @@ case class StringTranslate(
       ctx,
       ev,
       (src, matching, replace) => {
-        val check = if (matchingExpr.foldable && replaceExpr.foldable) {
-          s"$termDict == null"
-        } else {
-          s"!$matching.equals($termLastMatching) || !$replace.equals($termLastReplace)"
-        }
+        val check =
+          if (matchingExpr.foldable && replaceExpr.foldable) {
+            s"$termDict == null"
+          } else {
+            s"!$matching.equals($termLastMatching) || !$replace.equals($termLastReplace)"
+          }
         s"""if ($check) {
         // Not all of them is literal or matching or replace value changed
         $termLastMatching = $matching.clone();
@@ -653,17 +655,18 @@ case class FormatString(children: Expression*)
     val argListGen = children.tail.map(x => (x.dataType, x.gen(ctx)))
     val argListCode = argListGen.map(_._2.code + "\n")
 
-    val argListString = argListGen.foldLeft("")((s, v) => {
-      val nullSafeString =
-        if (ctx.boxedType(v._1) != ctx.javaType(v._1)) {
-          // Java primitives get boxed in order to allow null values.
-          s"(${v._2.isNull}) ? (${ctx.boxedType(v._1)}) null : " +
-            s"new ${ctx.boxedType(v._1)}(${v._2.value})"
-        } else {
-          s"(${v._2.isNull}) ? null : ${v._2.value}"
-        }
-      s + "," + nullSafeString
-    })
+    val argListString =
+      argListGen.foldLeft("")((s, v) => {
+        val nullSafeString =
+          if (ctx.boxedType(v._1) != ctx.javaType(v._1)) {
+            // Java primitives get boxed in order to allow null values.
+            s"(${v._2.isNull}) ? (${ctx.boxedType(v._1)}) null : " +
+              s"new ${ctx.boxedType(v._1)}(${v._2.value})"
+          } else {
+            s"(${v._2.isNull}) ? null : ${v._2.value}"
+          }
+        s + "," + nullSafeString
+      })
 
     val form = ctx.freshName("formatter")
     val formatter = classOf[java.util.Formatter].getName

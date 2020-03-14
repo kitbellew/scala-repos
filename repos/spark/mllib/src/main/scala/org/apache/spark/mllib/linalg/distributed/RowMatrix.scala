@@ -139,12 +139,13 @@ class RowMatrix @Since("1.0.0") (
         (n * ((n + 1) / 2))
 
     // Compute the upper triangular part of the gram matrix.
-    val GU = rows.treeAggregate(new BDV[Double](new Array[Double](nt)))(
-      seqOp = (U, v) => {
-        BLAS.spr(1.0, v, U.data)
-        U
-      },
-      combOp = (U1, U2) => U1 += U2)
+    val GU =
+      rows.treeAggregate(new BDV[Double](new Array[Double](nt)))(
+        seqOp = (U, v) => {
+          BLAS.spr(1.0, v, U.data)
+          U
+        },
+        combOp = (U1, U2) => U1 += U2)
 
     RowMatrix.triuToFull(n, GU.data)
   }
@@ -247,64 +248,66 @@ class RowMatrix @Since("1.0.0") (
       val LocalARPACK, LocalLAPACK, DistARPACK = Value
     }
 
-    val computeMode = mode match {
-      case "auto" =>
-        if (k > 5000) {
-          logWarning(
-            s"computing svd with k=$k and n=$n, please check necessity")
-        }
-
-        // TODO: The conditions below are not fully tested.
-        if (n < 100 || (k > n / 2 && n <= 15000)) {
-          // If n is small or k is large compared with n, we better compute the Gramian matrix first
-          // and then compute its eigenvalues locally, instead of making multiple passes.
-          if (k < n / 3) {
-            SVDMode.LocalARPACK
-          } else {
-            SVDMode.LocalLAPACK
+    val computeMode =
+      mode match {
+        case "auto" =>
+          if (k > 5000) {
+            logWarning(
+              s"computing svd with k=$k and n=$n, please check necessity")
           }
-        } else {
-          // If k is small compared with n, we use ARPACK with distributed multiplication.
-          SVDMode.DistARPACK
-        }
-      case "local-svd"  => SVDMode.LocalLAPACK
-      case "local-eigs" => SVDMode.LocalARPACK
-      case "dist-eigs"  => SVDMode.DistARPACK
-      case _ =>
-        throw new IllegalArgumentException(s"Do not support mode $mode.")
-    }
+
+          // TODO: The conditions below are not fully tested.
+          if (n < 100 || (k > n / 2 && n <= 15000)) {
+            // If n is small or k is large compared with n, we better compute the Gramian matrix first
+            // and then compute its eigenvalues locally, instead of making multiple passes.
+            if (k < n / 3) {
+              SVDMode.LocalARPACK
+            } else {
+              SVDMode.LocalLAPACK
+            }
+          } else {
+            // If k is small compared with n, we use ARPACK with distributed multiplication.
+            SVDMode.DistARPACK
+          }
+        case "local-svd"  => SVDMode.LocalLAPACK
+        case "local-eigs" => SVDMode.LocalARPACK
+        case "dist-eigs"  => SVDMode.DistARPACK
+        case _ =>
+          throw new IllegalArgumentException(s"Do not support mode $mode.")
+      }
 
     // Compute the eigen-decomposition of A' * A.
-    val (sigmaSquares: BDV[Double], u: BDM[Double]) = computeMode match {
-      case SVDMode.LocalARPACK =>
-        require(
-          k < n,
-          s"k must be smaller than n in local-eigs mode but got k=$k and n=$n.")
-        val G = computeGramianMatrix().toBreeze.asInstanceOf[BDM[Double]]
-        EigenValueDecomposition.symmetricEigs(v => G * v, n, k, tol, maxIter)
-      case SVDMode.LocalLAPACK =>
-        // breeze (v0.10) svd latent constraint, 7 * n * n + 4 * n < Int.MaxValue
-        require(n < 17515, s"$n exceeds the breeze svd capability")
-        val G = computeGramianMatrix().toBreeze.asInstanceOf[BDM[Double]]
-        val brzSvd.SVD(uFull: BDM[Double], sigmaSquaresFull: BDV[Double], _) =
-          brzSvd(G)
-        (sigmaSquaresFull, uFull)
-      case SVDMode.DistARPACK =>
-        if (rows.getStorageLevel == StorageLevel.NONE) {
-          logWarning(
-            "The input data is not directly cached, which may hurt performance if its"
-              + " parent RDDs are also uncached.")
-        }
-        require(
-          k < n,
-          s"k must be smaller than n in dist-eigs mode but got k=$k and n=$n.")
-        EigenValueDecomposition.symmetricEigs(
-          multiplyGramianMatrixBy,
-          n,
-          k,
-          tol,
-          maxIter)
-    }
+    val (sigmaSquares: BDV[Double], u: BDM[Double]) =
+      computeMode match {
+        case SVDMode.LocalARPACK =>
+          require(
+            k < n,
+            s"k must be smaller than n in local-eigs mode but got k=$k and n=$n.")
+          val G = computeGramianMatrix().toBreeze.asInstanceOf[BDM[Double]]
+          EigenValueDecomposition.symmetricEigs(v => G * v, n, k, tol, maxIter)
+        case SVDMode.LocalLAPACK =>
+          // breeze (v0.10) svd latent constraint, 7 * n * n + 4 * n < Int.MaxValue
+          require(n < 17515, s"$n exceeds the breeze svd capability")
+          val G = computeGramianMatrix().toBreeze.asInstanceOf[BDM[Double]]
+          val brzSvd.SVD(uFull: BDM[Double], sigmaSquaresFull: BDV[Double], _) =
+            brzSvd(G)
+          (sigmaSquaresFull, uFull)
+        case SVDMode.DistARPACK =>
+          if (rows.getStorageLevel == StorageLevel.NONE) {
+            logWarning(
+              "The input data is not directly cached, which may hurt performance if its"
+                + " parent RDDs are also uncached.")
+          }
+          require(
+            k < n,
+            s"k must be smaller than n in dist-eigs mode but got k=$k and n=$n.")
+          EigenValueDecomposition.symmetricEigs(
+            multiplyGramianMatrixBy,
+            n,
+            k,
+            tol,
+            maxIter)
+      }
 
     val sigmas: BDV[Double] = brzSqrt(sigmaSquares)
 
@@ -467,9 +470,10 @@ class RowMatrix @Since("1.0.0") (
     */
   @Since("1.0.0")
   def computeColumnSummaryStatistics(): MultivariateStatisticalSummary = {
-    val summary = rows.treeAggregate(new MultivariateOnlineSummarizer)(
-      (aggregator, data) => aggregator.add(data),
-      (aggregator1, aggregator2) => aggregator1.merge(aggregator2))
+    val summary =
+      rows.treeAggregate(new MultivariateOnlineSummarizer)(
+        (aggregator, data) => aggregator.add(data),
+        (aggregator1, aggregator2) => aggregator1.merge(aggregator2))
     updateNumRows(summary.count)
     summary
   }
@@ -571,11 +575,12 @@ class RowMatrix @Since("1.0.0") (
           " however there is no correctness guarantee.")
     }
 
-    val gamma = if (threshold < 1e-6) {
-      Double.PositiveInfinity
-    } else {
-      10 * math.log(numCols()) / threshold
-    }
+    val gamma =
+      if (threshold < 1e-6) {
+        Double.PositiveInfinity
+      } else {
+        10 * math.log(numCols()) / threshold
+      }
 
     columnSimilaritiesDIMSUM(
       computeColumnSummaryStatistics().normL2.toArray,
@@ -613,18 +618,19 @@ class RowMatrix @Since("1.0.0") (
       breeze.linalg.qr.reduced(stackedR).r
     }
     val finalR = Matrices.fromBreeze(combinedR.toDenseMatrix)
-    val finalQ = if (computeQ) {
-      try {
-        val invR = inv(combinedR)
-        this.multiply(Matrices.fromBreeze(invR))
-      } catch {
-        case err: MatrixSingularException =>
-          logWarning("R is not invertible and return Q as null")
-          null
+    val finalQ =
+      if (computeQ) {
+        try {
+          val invR = inv(combinedR)
+          this.multiply(Matrices.fromBreeze(invR))
+        } catch {
+          case err: MatrixSingularException =>
+            logWarning("R is not invertible and return Q as null")
+            null
+        }
+      } else {
+        null
       }
-    } else {
-      null
-    }
     QRDecomposition(finalQ, finalR)
   }
 

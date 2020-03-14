@@ -47,29 +47,32 @@ trait RepositorySettingsControllerBase extends ControllerBase {
       description: Option[String],
       isPrivate: Boolean)
 
-  val optionsForm = mapping(
-    "repositoryName" -> trim(
-      label(
-        "Repository Name",
-        text(required, maxlength(40), identifier, renameRepositoryName))),
-    "description" -> trim(label("Description", optional(text()))),
-    "isPrivate" -> trim(label("Repository Type", boolean()))
-  )(OptionsForm.apply)
+  val optionsForm =
+    mapping(
+      "repositoryName" -> trim(
+        label(
+          "Repository Name",
+          text(required, maxlength(40), identifier, renameRepositoryName))),
+      "description" -> trim(label("Description", optional(text()))),
+      "isPrivate" -> trim(label("Repository Type", boolean()))
+    )(OptionsForm.apply)
 
   // for default branch
   case class DefaultBranchForm(defaultBranch: String)
 
-  val defaultBranchForm = mapping(
-    "defaultBranch" -> trim(
-      label("Default Branch", text(required, maxlength(100))))
-  )(DefaultBranchForm.apply)
+  val defaultBranchForm =
+    mapping(
+      "defaultBranch" -> trim(
+        label("Default Branch", text(required, maxlength(100))))
+    )(DefaultBranchForm.apply)
 
   // for collaborator addition
   case class CollaboratorForm(userName: String)
 
-  val collaboratorForm = mapping(
-    "userName" -> trim(label("Username", text(required, collaborator)))
-  )(CollaboratorForm.apply)
+  val collaboratorForm =
+    mapping(
+      "userName" -> trim(label("Username", text(required, collaborator)))
+    )(CollaboratorForm.apply)
 
   // for web hook url addition
   case class WebHookForm(
@@ -87,9 +90,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   // for transfer ownership
   case class TransferOwnerShipForm(newOwner: String)
 
-  val transferForm = mapping(
-    "newOwner" -> trim(label("New owner", text(required, transferUser)))
-  )(TransferOwnerShipForm.apply)
+  val transferForm =
+    mapping(
+      "newOwner" -> trim(label("New owner", text(required, transferUser)))
+    )(TransferOwnerShipForm.apply)
 
   /**
     * Redirect to the Options page.
@@ -181,12 +185,13 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     } else {
       val protection = ApiBranchProtection(
         getProtectedBranchInfo(repository.owner, repository.name, branch))
-      val lastWeeks = getRecentStatuesContexts(
-        repository.owner,
-        repository.name,
-        org.joda.time.LocalDateTime.now.minusWeeks(1).toDate).toSet
-      val knownContexts =
-        (lastWeeks ++ protection.status.contexts).toSeq.sortBy(identity)
+      val lastWeeks =
+        getRecentStatuesContexts(
+          repository.owner,
+          repository.name,
+          org.joda.time.LocalDateTime.now.minusWeeks(1).toDate).toSet
+      val knownContexts = (lastWeeks ++ protection.status.contexts).toSeq
+        .sortBy(identity)
       html.branchprotection(
         repository,
         branch,
@@ -297,8 +302,11 @@ trait RepositorySettingsControllerBase extends ControllerBase {
 
         val url = params("url")
         val token = Some(params("token"))
-        val dummyWebHookInfo =
-          WebHook(repository.owner, repository.name, url, token)
+        val dummyWebHookInfo = WebHook(
+          repository.owner,
+          repository.name,
+          url,
+          token)
         val dummyPayload = {
           val ownerAccount = getAccountByUserName(repository.owner).get
           val commits =

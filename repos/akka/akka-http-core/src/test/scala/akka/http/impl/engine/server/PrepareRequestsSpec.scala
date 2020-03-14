@@ -22,43 +22,40 @@ import scala.concurrent.duration._
 
 class PrepareRequestsSpec extends AkkaSpec {
 
-  val chunkedStart =
-    ParserOutput.RequestStart(
-      HttpMethods.GET,
-      Uri("http://example.com/"),
-      HttpProtocols.`HTTP/1.1`,
-      List(),
-      StreamedEntityCreator[ParserOutput, RequestEntity] { entityChunks ⇒
-        val chunks = entityChunks.collect {
-          case EntityChunk(chunk) ⇒ chunk
-          case EntityStreamError(info) ⇒ throw EntityStreamException(info)
-        }
-        HttpEntity.Chunked(
-          ContentTypes.`application/octet-stream`,
-          HttpEntity.limitableChunkSource(chunks))
-      },
-      expect100Continue = true,
-      closeRequested = false
-    )
+  val chunkedStart = ParserOutput.RequestStart(
+    HttpMethods.GET,
+    Uri("http://example.com/"),
+    HttpProtocols.`HTTP/1.1`,
+    List(),
+    StreamedEntityCreator[ParserOutput, RequestEntity] { entityChunks ⇒
+      val chunks = entityChunks.collect {
+        case EntityChunk(chunk) ⇒ chunk
+        case EntityStreamError(info) ⇒ throw EntityStreamException(info)
+      }
+      HttpEntity.Chunked(
+        ContentTypes.`application/octet-stream`,
+        HttpEntity.limitableChunkSource(chunks))
+    },
+    expect100Continue = true,
+    closeRequested = false
+  )
 
-  val chunkPart =
-    ParserOutput.EntityChunk(HttpEntity.ChunkStreamPart(ByteString("abc")))
+  val chunkPart = ParserOutput.EntityChunk(
+    HttpEntity.ChunkStreamPart(ByteString("abc")))
 
-  val chunkRequestComplete =
-    ParserOutput.MessageEnd
+  val chunkRequestComplete = ParserOutput.MessageEnd
 
-  val strictRequest =
-    ParserOutput.RequestStart(
-      HttpMethods.GET,
-      Uri("http://example.com/"),
-      HttpProtocols.`HTTP/1.1`,
-      List(),
-      StrictEntityCreator(
-        HttpEntity
-          .Strict(ContentTypes.`application/octet-stream`, ByteString("body"))),
-      true,
-      false
-    )
+  val strictRequest = ParserOutput.RequestStart(
+    HttpMethods.GET,
+    Uri("http://example.com/"),
+    HttpProtocols.`HTTP/1.1`,
+    List(),
+    StrictEntityCreator(
+      HttpEntity
+        .Strict(ContentTypes.`application/octet-stream`, ByteString("body"))),
+    true,
+    false
+  )
 
   "The PrepareRequest stage" should {
 

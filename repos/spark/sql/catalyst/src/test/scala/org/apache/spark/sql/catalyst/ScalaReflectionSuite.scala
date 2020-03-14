@@ -224,8 +224,14 @@ class ScalaReflectionSuite extends SparkFunSuite {
 
   test("convert PrimitiveData to catalyst") {
     val data = PrimitiveData(1, 1, 1, 1, 1, 1, true)
-    val convertedData =
-      InternalRow(1, 1.toLong, 1.toDouble, 1.toFloat, 1.toShort, 1.toByte, true)
+    val convertedData = InternalRow(
+      1,
+      1.toLong,
+      1.toDouble,
+      1.toFloat,
+      1.toShort,
+      1.toByte,
+      true)
     val dataType = schemaFor[PrimitiveData].dataType
     assert(
       CatalystTypeConverters.createToCatalystConverter(dataType)(
@@ -297,8 +303,10 @@ class ScalaReflectionSuite extends SparkFunSuite {
     ("constructorFor", () => constructorFor[ComplexData]),
     (
       "extractorsFor", {
-        val inputObject =
-          BoundReference(0, dataTypeForComplexData, nullable = false)
+        val inputObject = BoundReference(
+          0,
+          dataTypeForComplexData,
+          nullable = false)
         () => extractorsFor[ComplexData](inputObject)
       }),
     (

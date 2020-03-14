@@ -155,8 +155,8 @@ class SnapshotSpec
       expectMsg("done")
     }
     "recover state starting from the most recent snapshot matching criteria" in {
-      val recovery =
-        Recovery(fromSnapshot = SnapshotSelectionCriteria(maxSequenceNr = 2))
+      val recovery = Recovery(
+        fromSnapshot = SnapshotSelectionCriteria(maxSequenceNr = 2))
       val persistentActor = system.actorOf(
         Props(
           classOf[LoadSnapshotTestPersistentActor],
@@ -233,13 +233,14 @@ class SnapshotSpec
 
       persistentActor1 ! "done"
 
-      val metadata = expectMsgPF() {
-        case SnapshotOffer(
-              md @ SnapshotMetadata(`persistenceId`, 4, _),
-              state) ⇒
-          state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
-          md
-      }
+      val metadata =
+        expectMsgPF() {
+          case SnapshotOffer(
+                md @ SnapshotMetadata(`persistenceId`, 4, _),
+                state) ⇒
+            state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
+            md
+        }
       expectMsg(RecoveryCompleted)
       expectMsg("done")
 

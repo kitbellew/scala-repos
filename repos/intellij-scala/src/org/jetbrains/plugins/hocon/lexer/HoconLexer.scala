@@ -66,11 +66,9 @@ class HoconLexer extends LexerBase {
         None
   }
 
-  def forceState(state: State): State => State =
-    _ => state
+  def forceState(state: State): State => State = _ => state
 
-  def always: State => Boolean =
-    _ => true
+  def always: State => Boolean = _ => true
 
   def onContents(state: State) =
     state match {
@@ -86,11 +84,9 @@ class HoconLexer extends LexerBase {
       case _               => state
     }
 
-  def isAnyOf(states: State*): State => Boolean =
-    states.contains
+  def isAnyOf(states: State*): State => Boolean = states.contains
 
-  def isNoneOf(states: State*): State => Boolean =
-    !states.contains(_)
+  def isNoneOf(states: State*): State => Boolean = !states.contains(_)
 
   val notSubstitution = isAnyOf(Initial, Value)
 
@@ -243,8 +239,9 @@ class HoconLexer extends LexerBase {
     val seq = input.subSequence(tokenStart, endOffset)
     if (seq.length > 0) {
 
-      val TokenMatch(newToken, length, newState) =
-        matchers.iterator.flatMap(_.matchToken(seq, stateAfter)).next()
+      val TokenMatch(newToken, length, newState) = matchers.iterator
+        .flatMap(_.matchToken(seq, stateAfter))
+        .next()
 
       tokenEnd = tokenStart + length
       token = newToken

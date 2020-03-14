@@ -128,8 +128,9 @@ class ClientQuotaManager(
       case qve: QuotaViolationException =>
         // Compute the delay
         val clientMetric = metrics.metrics().get(clientRateMetricName(clientId))
-        throttleTimeMs =
-          throttleTime(clientMetric, getQuotaMetricConfig(quota(clientId)))
+        throttleTimeMs = throttleTime(
+          clientMetric,
+          getQuotaMetricConfig(quota(clientId)))
         clientSensors.throttleTimeSensor.record(throttleTimeMs)
         // If delayed, add the element to the delayQueue
         delayQueue.add(new ThrottledResponse(time, throttleTimeMs, callback))
@@ -152,8 +153,9 @@ class ClientQuotaManager(
   private def throttleTime(
       clientMetric: KafkaMetric,
       config: MetricConfig): Int = {
-    val rateMetric: Rate =
-      measurableAsRate(clientMetric.metricName(), clientMetric.measurable())
+    val rateMetric: Rate = measurableAsRate(
+      clientMetric.metricName(),
+      clientMetric.measurable())
     val quota = config.quota()
     val difference = clientMetric.value() - quota.bound
     // Use the precise window used by the rate calculation

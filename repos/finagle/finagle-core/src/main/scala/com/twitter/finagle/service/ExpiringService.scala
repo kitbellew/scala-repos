@@ -24,8 +24,7 @@ object ExpiringService {
     * @param lifeTime max lifetime of a connection.
     */
   case class Param(idleTime: Duration, lifeTime: Duration) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
     implicit val param = Stack.Param(Param(Duration.Top, Duration.Top))

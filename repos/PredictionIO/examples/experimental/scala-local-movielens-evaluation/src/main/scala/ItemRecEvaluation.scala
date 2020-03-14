@@ -35,33 +35,37 @@ object ItemRecEvaluation1 {
       evalParams = Some(new EvalParams(queryN = 10))
     )
 
-    val pp = new PreparatorParams(
-      actions = Map("rate" -> None),
-      seenActions = Set("rate"),
-      conflict = "latest")
+    val pp =
+      new PreparatorParams(
+        actions = Map("rate" -> None),
+        seenActions = Set("rate"),
+        conflict = "latest")
 
-    val ncMahoutAlgoParams = new NCItemBasedAlgorithmParams(
-      booleanData = true,
-      itemSimilarity = "LogLikelihoodSimilarity",
-      weighted = false,
-      threshold = 4.9e-324,
-      nearestN = 10,
-      unseenOnly = false,
-      freshness = 0,
-      freshnessTimeUnit = 86400)
+    val ncMahoutAlgoParams =
+      new NCItemBasedAlgorithmParams(
+        booleanData = true,
+        itemSimilarity = "LogLikelihoodSimilarity",
+        weighted = false,
+        threshold = 4.9e-324,
+        nearestN = 10,
+        unseenOnly = false,
+        freshness = 0,
+        freshnessTimeUnit = 86400)
 
-    val engineParams = new EngineParams(
-      dataSourceParams = dsp,
-      preparatorParams = pp,
-      algorithmParamsList = Seq(("ncMahoutItemBased", ncMahoutAlgoParams)))
+    val engineParams =
+      new EngineParams(
+        dataSourceParams = dsp,
+        preparatorParams = pp,
+        algorithmParamsList = Seq(("ncMahoutItemBased", ncMahoutAlgoParams)))
 
-    val evaluatorParams = new ItemRecEvaluatorParams(
-      ratingParams = new BinaryRatingParams(
-        actionsMap = Map("rate" -> None),
-        goodThreshold = 3),
-      measureType = MeasureType.PrecisionAtK,
-      measureK = 10
-    )
+    val evaluatorParams =
+      new ItemRecEvaluatorParams(
+        ratingParams = new BinaryRatingParams(
+          actionsMap = Map("rate" -> None),
+          goodThreshold = 3),
+        measureType = MeasureType.PrecisionAtK,
+        measureK = 10
+      )
 
     Workflow.runEngine(
       params = WorkflowParams(batch = "MLC: ItemRec Evaluation1", verbose = 0),

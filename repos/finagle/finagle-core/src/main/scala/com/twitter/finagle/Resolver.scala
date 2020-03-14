@@ -107,13 +107,14 @@ private[finagle] class InetResolver(
   type HostPortMetadata = (String, Int, Addr.Metadata)
 
   val scheme = "inet"
-  private[this] val statsReceiver =
-    unscopedStatsReceiver.scope("inet").scope("dns")
+  private[this] val statsReceiver = unscopedStatsReceiver
+    .scope("inet")
+    .scope("dns")
   private[this] val latencyStat = statsReceiver.stat("lookup_ms")
   private[this] val successes = statsReceiver.counter("successes")
   private[this] val failures = statsReceiver.counter("failures")
-  private[this] val dnsLookupFailures =
-    statsReceiver.counter("dns_lookup_failures")
+  private[this] val dnsLookupFailures = statsReceiver.counter(
+    "dns_lookup_failures")
   private val log = Logger.getLogger(getClass.getName)
   private val timer = DefaultTimer.twitter
 
@@ -156,9 +157,10 @@ private[finagle] class InetResolver(
       .flatMap { seq: Seq[Try[Seq[Address]]] =>
         // Filter out all successes. If there was at least 1 success, consider
         // the entire operation a success
-        val results = seq.collect {
-          case Return(subset) => subset
-        }.flatten
+        val results =
+          seq.collect {
+            case Return(subset) => subset
+          }.flatten
 
         // Consider any result a success. Ignore partial failures.
         if (results.nonEmpty) {
@@ -188,15 +190,16 @@ private[finagle] class InetResolver(
       }
       pollIntervalOpt match {
         case Some(pollInterval) =>
-          val updater = new Updater[Unit] {
-            val one = Seq(())
-            // Just perform one update at a time.
-            protected def preprocess(elems: Seq[Unit]) = one
-            protected def handle(unit: Unit) {
-              // This always runs in a thread pool; it's okay to block.
-              u() = Await.result(toAddr(hosts))
+          val updater =
+            new Updater[Unit] {
+              val one = Seq(())
+              // Just perform one update at a time.
+              protected def preprocess(elems: Seq[Unit]) = one
+              protected def handle(unit: Unit) {
+                // This always runs in a thread pool; it's okay to block.
+                u() = Await.result(toAddr(hosts))
+              }
             }
-          }
           timer.schedule(pollInterval.fromNow, pollInterval) {
             FuturePool.unboundedPool(updater(()))
           }
@@ -251,8 +254,8 @@ private[finagle] class FixedInetResolver(
   override val scheme = FixedInetResolver.scheme
 
   // fallback to InetResolver.resolveHost if no override was provided
-  val resolveFn: (String => Future[Seq[InetAddress]]) =
-    resolveOverride.getOrElse(super.resolveHost)
+  val resolveFn: (String => Future[Seq[InetAddress]]) = resolveOverride
+    .getOrElse(super.resolveHost)
 
   // A size-bounded FutureCache backed by a LoaderCache
   private[this] val cache = CacheBuilder
@@ -395,18 +398,19 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     if (name startsWith "/")
       Name(name)
     else {
-      val (resolver, arg) = lex(name) match {
-        case (Eq :: _) | (Bang :: _) =>
-          throw new ResolverAddressInvalid(name)
+      val (resolver, arg) =
+        lex(name) match {
+          case (Eq :: _) | (Bang :: _) =>
+            throw new ResolverAddressInvalid(name)
 
-        case El(scheme) :: Bang :: name =>
-          resolvers.find(_.scheme == scheme) match {
-            case Some(resolver) => (resolver, delex(name))
-            case None           => throw new ResolverNotFoundException(scheme)
-          }
+          case El(scheme) :: Bang :: name =>
+            resolvers.find(_.scheme == scheme) match {
+              case Some(resolver) => (resolver, delex(name))
+              case None           => throw new ResolverNotFoundException(scheme)
+            }
 
-        case ts => (inetResolver, delex(ts))
-      }
+          case ts => (inetResolver, delex(ts))
+        }
 
       Name.Bound(resolver.bind(arg), name)
     }
@@ -419,10 +423,11 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     * @see [[Resolvers.evalLabeled]] for Java support
     */
   def evalLabeled(addr: String): (Name, String) = {
-    val (label, rest) = lex(addr) match {
-      case El(n) :: Eq :: rest => (n, rest)
-      case rest                => ("", rest)
-    }
+    val (label, rest) =
+      lex(addr) match {
+        case El(n) :: Eq :: rest => (n, rest)
+        case rest                => ("", rest)
+      }
 
     (eval(delex(rest)), label)
   }
@@ -443,13 +448,11 @@ object Resolvers {
   /**
     * @see [[Resolver.eval]]
     */
-  def eval(name: String): Name =
-    Resolver.eval(name)
+  def eval(name: String): Name = Resolver.eval(name)
 
   /**
     * @see [[Resolver.evalLabeled]]
     */
-  def evalLabeled(addr: String): (Name, String) =
-    Resolver.evalLabeled(addr)
+  def evalLabeled(addr: String): (Name, String) = Resolver.evalLabeled(addr)
 
 }

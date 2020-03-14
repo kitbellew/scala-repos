@@ -25,8 +25,7 @@ import org.junit.Assert
 class JavaHighlightingTest extends ScalaFixtureTestCase {
 
   def testProtected() = {
-    val scala =
-      """
+    val scala = """
         |class MeaningOfLifeSpec {
         |  val c = new UltimateQuestion {}
         |  def meaningOfLifeScala() {
@@ -47,8 +46,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
 
   def testTraitIsAbstract(): Unit = {
     val scalaCode = "trait MooSCL4289"
-    val javaCode =
-      """
+    val javaCode = """
         |public class TestSCL4289 {
         |    public static void main(String[] args) {
         |        new MooSCL4289();
@@ -61,14 +59,12 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testCallByNameParameterNoPrimitives(): Unit = {
-    val scala =
-      """
+    val scala = """
         |object MooSCL8823 {
         |  def ensure(f: => Unit): Unit = ???
         |}
       """.stripMargin
-    val java =
-      """
+    val java = """
         |import scala.runtime.AbstractFunction0;
         |import scala.runtime.BoxedUnit;
         |
@@ -87,8 +83,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testValueTypes(): Unit = {
-    val scala =
-      """
+    val scala = """
         |class Order(val limitPrice: Price, val qty: Quantity)
         |class Prices(val prices: java.util.List[Price])
         |
@@ -134,8 +129,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testOptionApply(): Unit = {
-    val java =
-      """
+    val java = """
         |import scala.Option;
         |
         |public abstract class OptionApply {
@@ -156,15 +150,13 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testAccessBacktick(): Unit = {
-    val scala =
-      """
+    val scala = """
         |import scala.beans.BeanProperty
         |
         |case class TestAccessBacktick(@BeanProperty `type`:String)
       """.stripMargin
 
-    val java =
-      """
+    val java = """
         |public class TestJavaAAA {
         |    public static void main(String[] args) {
         |        TestAccessBacktick t = new TestAccessBacktick("42");
@@ -183,8 +175,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
 
   def testMultipleThrowStatements(): Unit = {
     val scala = ""
-    val java =
-      """
+    val java = """
         |import scala.concurrent.Await;
         |import scala.concurrent.Future;
         |import scala.concurrent.duration.Duration;
@@ -257,8 +248,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
 
   def testCaseClassImplement() = {
     val scala = "case class CaseClass()"
-    val java =
-      """
+    val java = """
         |public class CaseClassExtended extends CaseClass {
         |
         |}
@@ -269,8 +259,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testOverrideDefaultWithStaticSCL8861(): Unit = {
-    def scala =
-      """
+    def scala = """
         |class TestKit2SCL8861 extends TestKitBase2SCL8861
         |
         |object TestKit2SCL8861 {
@@ -282,8 +271,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |  def awaitCond(interval: String = ???) = ???
         |}
       """.stripMargin
-    val java =
-      """
+    val java = """
         |public class SCL8861 extends TestKit2SCL8861 {
         |
         |}
@@ -292,8 +280,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testClassParameter(): Unit = {
-    val scala =
-      """
+    val scala = """
         |class ScalaClass (var name: String, var surname: String)
         |
         |object Start {
@@ -310,8 +297,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |}
       """.stripMargin
 
-    val java =
-      """
+    val java = """
         |public class JavaClass extends ScalaClass {
         |  private int age;
         |
@@ -335,8 +321,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testSCL3390ParamAccessor(): Unit = {
-    val scalaCode =
-      """
+    val scalaCode = """
         |object ScalaClient {
         |  def main(args: Array[String]) {
         |    new Sub(1).x
@@ -347,8 +332,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |
         |class Sub(x: Int) extends Super(x)
       """.stripMargin
-    val javaCode =
-      """
+    val javaCode = """
         |public class JavaClientSCL3390 {
         |    public static void main(String[] args) {
         |        new Sub(1).x();
@@ -361,8 +345,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testSCL3498ExistentialTypesFromJava(): Unit = {
-    val javaCode =
-      """
+    val javaCode = """
         |public @interface Transactional {
         |    Class<? extends Throwable>[] noRollbackFor() default {};
         |}
@@ -407,8 +390,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testGenericsPlainInnerClass(): Unit = {
-    val scalaCode =
-      """
+    val scalaCode = """
         |trait FSM[S, D] {
         |  final class TransformHelper {}
         |  final def transform(): TransformHelper = ???
@@ -417,8 +399,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |
         |abstract class Base[S, D] extends FSM[S, D]
       """.stripMargin
-    val javaCode =
-      """
+    val javaCode = """
         |public class SCL8866A extends Base<String, String> {}
       """.stripMargin
     assertNoErrors(
@@ -426,8 +407,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testOverrideScalaFromJavaUpperBound(): Unit = {
-    val scalaCode =
-      """
+    val scalaCode = """
         |trait SCL5852WrapsSomething[T] {
         |  def wrap[A <: T](toWrap: A): A
         |}
@@ -450,8 +430,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testGenericsParameterizedInnerClass(): Unit = {
-    val scalaCode =
-      """
+    val scalaCode = """
         |abstract class FSM[S, D] {
         |  class TransformHelper[T]
         |  def transform(): TransformHelper[Int] = ???
@@ -461,8 +440,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |  override def transform(): TransformHelper[Int] = ???
         |}
       """.stripMargin
-    val javaCode =
-      """
+    val javaCode = """
         |public class SCL8866B extends Base {
         |
         |}
@@ -471,8 +449,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testDefaultConstructorArguments(): Unit = {
-    val scalaCode =
-      """
+    val scalaCode = """
         |class MooSCL7582(j: Int)(d: Int = j)
       """.stripMargin
     val javaCode =
@@ -490,8 +467,7 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   def testSpecializedFields(): Unit = {
     val scalaCode =
       "class SpecClass[@specialized(Int) T](val t: T, val s: String)"
-    val javaCode =
-      """
+    val javaCode = """
         |public class Pair extends SpecClass<Integer> {
         |    public Pair(SpecClass<Integer> i) {
         |        super(i.t, "");
@@ -502,14 +478,12 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testConstructorReturnTypeNull(): Unit = {
-    val scalaCode =
-      """
+    val scalaCode = """
         |class Scala(val s: String) {
         |  def this(i: Integer) = this(i.toString)
         |}
       """.stripMargin
-    val javaCode =
-      """
+    val javaCode = """
         |import java.util.stream.Stream;
         |
         |public class SCL9412 {
@@ -523,14 +497,12 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
   }
 
   def testHigherKinded(): Unit = {
-    val scalaCode =
-      """
+    val scalaCode = """
         |class BarSCL9661A[F, T[F]]() extends scala.AnyRef {
         |  def foo(t: T[F]): T[F] = t
         |}
       """.stripMargin
-    val javaCode =
-      """
+    val javaCode = """
         |import java.util.*;
         |
         |public class SCL9661A {

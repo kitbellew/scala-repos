@@ -50,8 +50,7 @@ sealed trait Expr[T, N[_]] {
         Id,
         ({
           type E[t] = Expr[t, N]
-        })#E]): N[T] =
-    Expr.evaluate(idToExp, this)
+        })#E]): N[T] = Expr.evaluate(idToExp, this)
 }
 case class Const[T, N[_]](value: N[T]) extends Expr[T, N] {
   override def evaluate(

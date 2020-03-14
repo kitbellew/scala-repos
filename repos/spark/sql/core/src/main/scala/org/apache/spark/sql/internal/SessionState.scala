@@ -112,14 +112,15 @@ private[sql] class SessionState(ctx: SQLContext) {
     * Prepares a planned [[SparkPlan]] for execution by inserting shuffle operations and internal
     * row format conversions as needed.
     */
-  lazy val prepareForExecution = new RuleExecutor[SparkPlan] {
-    override val batches: Seq[Batch] = Seq(
-      Batch("Subquery", Once, PlanSubqueries(SessionState.this)),
-      Batch("Add exchange", Once, EnsureRequirements(conf)),
-      Batch("Whole stage codegen", Once, CollapseCodegenStages(conf)),
-      Batch("Reuse duplicated exchanges", Once, ReuseExchange(conf))
-    )
-  }
+  lazy val prepareForExecution =
+    new RuleExecutor[SparkPlan] {
+      override val batches: Seq[Batch] = Seq(
+        Batch("Subquery", Once, PlanSubqueries(SessionState.this)),
+        Batch("Add exchange", Once, EnsureRequirements(conf)),
+        Batch("Whole stage codegen", Once, CollapseCodegenStages(conf)),
+        Batch("Reuse duplicated exchanges", Once, ReuseExchange(conf))
+      )
+    }
 
   /**
     * An interface to register custom [[org.apache.spark.sql.util.QueryExecutionListener]]s

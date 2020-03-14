@@ -134,8 +134,10 @@ class CoordinateMatrix @Since("1.0.0") (
     val n = numCols()
     val numRowBlocks = math.ceil(m.toDouble / rowsPerBlock).toInt
     val numColBlocks = math.ceil(n.toDouble / colsPerBlock).toInt
-    val partitioner =
-      GridPartitioner(numRowBlocks, numColBlocks, entries.partitions.length)
+    val partitioner = GridPartitioner(
+      numRowBlocks,
+      numColBlocks,
+      entries.partitions.length)
 
     val blocks: RDD[((Int, Int), Matrix)] = entries
       .map { entry =>
@@ -152,12 +154,14 @@ class CoordinateMatrix @Since("1.0.0") (
       .groupByKey(partitioner)
       .map {
         case ((blockRowIndex, blockColIndex), entry) =>
-          val effRows = math
-            .min(m - blockRowIndex.toLong * rowsPerBlock, rowsPerBlock)
-            .toInt
-          val effCols = math
-            .min(n - blockColIndex.toLong * colsPerBlock, colsPerBlock)
-            .toInt
+          val effRows =
+            math
+              .min(m - blockRowIndex.toLong * rowsPerBlock, rowsPerBlock)
+              .toInt
+          val effCols =
+            math
+              .min(n - blockColIndex.toLong * colsPerBlock, colsPerBlock)
+              .toInt
           (
             (blockRowIndex, blockColIndex),
             SparseMatrix.fromCOO(effRows, effCols, entry))

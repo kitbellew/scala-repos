@@ -131,13 +131,15 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
 
   /** Assign new TypeSymbols to a subtree that needs to be copied into multiple places. */
   def assignFreshSymbols(n: Node): Node = {
-    val typeSyms = n.collect {
-      case n: TypeGenerator => n.identity
-    }.toSet
-    val repl = typeSyms.map {
-      case ts: TableIdentitySymbol => ts -> new AnonTableIdentitySymbol
-      case ts                      => ts -> new AnonTypeSymbol
-    }.toMap
+    val typeSyms =
+      n.collect {
+        case n: TypeGenerator => n.identity
+      }.toSet
+    val repl =
+      typeSyms.map {
+        case ts: TableIdentitySymbol => ts -> new AnonTableIdentitySymbol
+        case ts                      => ts -> new AnonTypeSymbol
+      }.toMap
     def replaceTS(t: Type): Type =
       (t match {
         case NominalType(ts, v) =>
@@ -148,9 +150,9 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
     n.replace(
         {
           case n: TableNode =>
-            n.copy(identity =
-              repl(n.identity).asInstanceOf[TableIdentitySymbol])(
-              n.profileTable) :@ replaceTS(n.nodeType)
+            n.copy(identity = repl(n.identity)
+              .asInstanceOf[TableIdentitySymbol])(n.profileTable) :@ replaceTS(
+              n.nodeType)
           case n: Pure    => n.copy(identity = repl(n.identity))
           case n: GroupBy => n.copy(identity = repl(n.identity))
         },

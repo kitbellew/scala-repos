@@ -249,11 +249,10 @@ trait Crudify {
       /**
         * Rewrite the request and emit the type-safe parameter
         */
-      override val rewrite: LocRewrite =
-        Full(NamedPF(name) {
-          case RewriteRequest(pp, _, _) if hasParamFor(pp, viewPath) =>
-            (RewriteResponse(viewPath), findForParam(pp.wholePath.last))
-        })
+      override val rewrite: LocRewrite = Full(NamedPF(name) {
+        case RewriteRequest(pp, _, _) if hasParamFor(pp, viewPath) =>
+          (RewriteResponse(viewPath), findForParam(pp.wholePath.last))
+      })
 
       override def calcTemplate = Full(viewTemplate)
 
@@ -297,11 +296,10 @@ trait Crudify {
       /**
         * Rewrite the request and emit the type-safe parameter
         */
-      override val rewrite: LocRewrite =
-        Full(NamedPF(name) {
-          case RewriteRequest(pp, _, _) if hasParamFor(pp, editPath) =>
-            (RewriteResponse(editPath), findForParam(pp.wholePath.last))
-        })
+      override val rewrite: LocRewrite = Full(NamedPF(name) {
+        case RewriteRequest(pp, _, _) if hasParamFor(pp, editPath) =>
+          (RewriteResponse(editPath), findForParam(pp.wholePath.last))
+      })
 
       override def calcTemplate = Full(editTemplate)
 
@@ -424,11 +422,10 @@ trait Crudify {
       /**
         * Rewrite the request and emit the type-safe parameter
         */
-      override val rewrite: LocRewrite =
-        Full(NamedPF(name) {
-          case RewriteRequest(pp, _, _) if hasParamFor(pp, deletePath) =>
-            (RewriteResponse(deletePath), findForParam(pp.wholePath.last))
-        })
+      override val rewrite: LocRewrite = Full(NamedPF(name) {
+        case RewriteRequest(pp, _, _) if hasParamFor(pp, deletePath) =>
+          (RewriteResponse(deletePath), findForParam(pp.wholePath.last))
+      })
 
       override def calcTemplate = Full(deleteTemplate)
 
@@ -759,13 +756,14 @@ trait Crudify {
       ".next" #> crudAllNext(first, list)
   }
 
-  lazy val locSnippets = new DispatchLocSnippets {
-    val dispatch: PartialFunction[String, NodeSeq => NodeSeq] = {
-      case "crud.all"    => doCrudAll
-      case "crud.create" => crudDoForm(create, S.?("Created"))
-    }
+  lazy val locSnippets =
+    new DispatchLocSnippets {
+      val dispatch: PartialFunction[String, NodeSeq => NodeSeq] = {
+        case "crud.all"    => doCrudAll
+        case "crud.create" => crudDoForm(create, S.?("Created"))
+      }
 
-  }
+    }
 
   /**
     * This method can be used to obscure the primary key.  This is more secure

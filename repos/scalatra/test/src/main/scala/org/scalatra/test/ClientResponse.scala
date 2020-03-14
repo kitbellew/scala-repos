@@ -25,25 +25,26 @@ abstract class ClientResponse {
 
   def status = statusLine.code
 
-  val header = new DefaultMap[String, String] {
-    def get(key: String) = {
-      headers.get(key) match {
-        case Some(values) => Some(values.head)
-        case _            => None
+  val header =
+    new DefaultMap[String, String] {
+      def get(key: String) = {
+        headers.get(key) match {
+          case Some(values) => Some(values.head)
+          case _            => None
+        }
+      }
+
+      override def apply(key: String) = {
+        get(key) match {
+          case Some(value) => value
+          case _           => null
+        }
+      }
+
+      def iterator = {
+        headers.keys.map(name => (name -> this(name))).iterator
       }
     }
-
-    override def apply(key: String) = {
-      get(key) match {
-        case Some(value) => value
-        case _           => null
-      }
-    }
-
-    def iterator = {
-      headers.keys.map(name => (name -> this(name))).iterator
-    }
-  }
 
   def charset = {
     header

@@ -28,11 +28,12 @@ final class Env(
   def filter(ctx: UserContext): Fu[FilterConfig] =
     ctx.me.fold(AnonConfigRepo filter ctx.req)(UserConfigRepo.filter)
 
-  lazy val processor = new Processor(
-    lobby = hub.actor.lobby,
-    fishnetPlayer = fishnetPlayer,
-    router = hub.actor.router,
-    onStart = onStart)
+  lazy val processor =
+    new Processor(
+      lobby = hub.actor.lobby,
+      fishnetPlayer = fishnetPlayer,
+      router = hub.actor.router,
+      onStart = onStart)
 
   private[setup] lazy val userConfigColl = db(CollectionUserConfig)
   private[setup] lazy val anonConfigColl = db(CollectionAnonConfig)

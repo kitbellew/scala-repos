@@ -21,8 +21,7 @@ object HashMapFactory {
 }
 
 class HashMapFactory extends AbstractMapFactory {
-  override def implementationName: String =
-    "java.util.HashMap"
+  override def implementationName: String = "java.util.HashMap"
 
   override def empty[K: ClassTag, V: ClassTag]: ju.HashMap[K, V] =
     new ju.HashMap[K, V]

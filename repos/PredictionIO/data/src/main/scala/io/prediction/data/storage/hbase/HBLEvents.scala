@@ -57,8 +57,8 @@ class HBLEvents(
       client.admin.createNamespace(nameDesc)
     }
 
-    val tableName =
-      TableName.valueOf(HBEventsUtil.tableName(namespace, appId, channelId))
+    val tableName = TableName.valueOf(
+      HBEventsUtil.tableName(namespace, appId, channelId))
     if (!client.admin.tableExists(tableName)) {
       info(
         s"The table ${tableName.getNameAsString()} doesn't exist yet." +
@@ -72,8 +72,8 @@ class HBLEvents(
   }
 
   override def remove(appId: Int, channelId: Option[Int] = None): Boolean = {
-    val tableName =
-      TableName.valueOf(HBEventsUtil.tableName(namespace, appId, channelId))
+    val tableName = TableName.valueOf(
+      HBEventsUtil.tableName(namespace, appId, channelId))
     try {
       if (client.admin.tableExists(tableName)) {
         info(s"Removing table ${tableName.getNameAsString()}...")
@@ -182,11 +182,12 @@ class HBLEvents(
       val eventsIter = scanner.iterator()
 
       // Get all events if None or Some(-1)
-      val results: Iterator[Result] = limit match {
-        case Some(-1) => eventsIter
-        case None     => eventsIter
-        case Some(x)  => eventsIter.take(x)
-      }
+      val results: Iterator[Result] =
+        limit match {
+          case Some(-1) => eventsIter
+          case None     => eventsIter
+          case Some(x)  => eventsIter.take(x)
+        }
 
       val eventsIt = results.map {
         resultToEvent(_, appId)

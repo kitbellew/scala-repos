@@ -230,8 +230,8 @@ class CachedTableSuite
   }
 
   test("Self-join cached") {
-    val unCachedAnswer =
-      sql("SELECT * FROM testData a JOIN testData b ON a.key = b.key").collect()
+    val unCachedAnswer = sql(
+      "SELECT * FROM testData a JOIN testData b ON a.key = b.key").collect()
     sqlContext.cacheTable("testData")
     checkAnswer(
       sql("SELECT * FROM testData a JOIN testData b ON a.key = b.key"),
@@ -468,8 +468,8 @@ class CachedTableSuite
       sqlContext.cacheTable("t1")
       sqlContext.cacheTable("t2")
 
-      val query =
-        sql("SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
+      val query = sql(
+        "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
@@ -489,8 +489,8 @@ class CachedTableSuite
       sqlContext.cacheTable("t1")
       sqlContext.cacheTable("t2")
 
-      val query =
-        sql("SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
+      val query = sql(
+        "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)
@@ -509,8 +509,8 @@ class CachedTableSuite
       sqlContext.cacheTable("t1")
       sqlContext.cacheTable("t2")
 
-      val query =
-        sql("SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
+      val query = sql(
+        "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 1)
       assert(
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 12)
@@ -532,8 +532,8 @@ class CachedTableSuite
       sqlContext.cacheTable("t1")
       sqlContext.cacheTable("t2")
 
-      val query =
-        sql("SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
+      val query = sql(
+        "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a")
       verifyNumExchanges(query, 2)
       checkAnswer(
         query,
@@ -568,9 +568,8 @@ class CachedTableSuite
       sqlContext.cacheTable("t1")
       sqlContext.cacheTable("t2")
 
-      val query =
-        sql(
-          "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a and t1.value = t2.b")
+      val query = sql(
+        "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a and t1.value = t2.b")
       verifyNumExchanges(query, 1)
       assert(
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)

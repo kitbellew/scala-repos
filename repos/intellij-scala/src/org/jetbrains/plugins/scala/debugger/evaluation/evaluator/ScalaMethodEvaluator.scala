@@ -105,8 +105,10 @@ case class ScalaMethodEvaluator(
           signature.getName(debugProcess)
         else
           null
-      var mName: String =
-        DebuggerUtilsEx.methodName(referenceType.name, methodName, sign)
+      var mName: String = DebuggerUtilsEx.methodName(
+        referenceType.name,
+        methodName,
+        sign)
       def findMethod(referenceType: ReferenceType): Method = {
         import scala.collection.JavaConversions._
         def sortedMethodCandidates: List[Method] = {

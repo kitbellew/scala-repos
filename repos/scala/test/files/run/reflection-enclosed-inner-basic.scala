@@ -45,8 +45,10 @@ object Test extends App {
     val sym = b.info.decl(TypeName(name)).asClass
     println(sym)
     val ctor = sym.info.decl(termNames.CONSTRUCTOR).asMethod
-    val ctorMirror =
-      cm.reflect(new B).reflectClass(sym).reflectConstructor(ctor)
+    val ctorMirror = cm
+      .reflect(new B)
+      .reflectClass(sym)
+      .reflectConstructor(ctor)
     val instance = ctorMirror()
     println(instance)
     testMethodInvocation(instance)

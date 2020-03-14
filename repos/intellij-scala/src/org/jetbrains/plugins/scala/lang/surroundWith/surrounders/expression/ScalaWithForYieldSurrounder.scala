@@ -24,20 +24,22 @@ class ScalaWithForYieldSurrounder extends ScalaExpressionSurrounder {
   override def getTemplateDescription = "for / yield"
 
   override def getSurroundSelectionRange(withForNode: ASTNode): TextRange = {
-    val element: PsiElement = withForNode.getPsi match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
-          case Some(y) => y
-          case _       => return x.getTextRange
-        }
-      case x => x
-    }
+    val element: PsiElement =
+      withForNode.getPsi match {
+        case x: ScParenthesisedExpr =>
+          x.expr match {
+            case Some(y) => y
+            case _       => return x.getTextRange
+          }
+        case x => x
+      }
 
     val forStmt = element.asInstanceOf[ScForStatement]
 
-    val enums = (forStmt.enumerators: @unchecked) match {
-      case Some(x) => x.getNode
-    }
+    val enums =
+      (forStmt.enumerators: @unchecked) match {
+        case Some(x) => x.getNode
+      }
 
     val offset = enums.getTextRange.getStartOffset
     forStmt.getNode.removeChild(enums)

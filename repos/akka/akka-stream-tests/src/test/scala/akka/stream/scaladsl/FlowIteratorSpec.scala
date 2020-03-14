@@ -27,14 +27,15 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
   implicit def mmaterializer = super.materializer
 
   "produce onError when iterator throws" in {
-    val iterable = new immutable.Iterable[Int] {
-      override def iterator: Iterator[Int] =
-        (1 to 3).iterator.map(x ⇒
-          if (x == 2)
-            throw new IllegalStateException("not two")
-          else
-            x)
-    }
+    val iterable =
+      new immutable.Iterable[Int] {
+        override def iterator: Iterator[Int] =
+          (1 to 3).iterator.map(x ⇒
+            if (x == 2)
+              throw new IllegalStateException("not two")
+            else
+              x)
+      }
     val p = Source(iterable).runWith(Sink.asPublisher(false))
     val c = TestSubscriber.manualProbe[Int]()
     p.subscribe(c)
@@ -52,10 +53,11 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
   }
 
   "produce onError when Source construction throws" in {
-    val iterable = new immutable.Iterable[Int] {
-      override def iterator: Iterator[Int] =
-        throw new IllegalStateException("no good iterator")
-    }
+    val iterable =
+      new immutable.Iterable[Int] {
+        override def iterator: Iterator[Int] =
+          throw new IllegalStateException("no good iterator")
+      }
     val p = Source(iterable).runWith(Sink.asPublisher(false))
     val c = TestSubscriber.manualProbe[Int]()
     p.subscribe(c)
@@ -64,14 +66,15 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
   }
 
   "produce onError when hasNext throws" in {
-    val iterable = new immutable.Iterable[Int] {
-      override def iterator: Iterator[Int] =
-        new Iterator[Int] {
-          override def hasNext: Boolean =
-            throw new IllegalStateException("no next")
-          override def next(): Int = -1
-        }
-    }
+    val iterable =
+      new immutable.Iterable[Int] {
+        override def iterator: Iterator[Int] =
+          new Iterator[Int] {
+            override def hasNext: Boolean =
+              throw new IllegalStateException("no next")
+            override def next(): Int = -1
+          }
+      }
     val p = Source(iterable).runWith(Sink.asPublisher(false))
     val c = TestSubscriber.manualProbe[Int]()
     p.subscribe(c)

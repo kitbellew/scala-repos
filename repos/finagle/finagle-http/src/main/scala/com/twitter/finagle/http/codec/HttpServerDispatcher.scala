@@ -40,18 +40,19 @@ class HttpServerDispatcher(
     m match {
       case badReq: BadHttpRequest =>
         eos.setDone()
-        val response = badReq.exception match {
-          case ex: TooLongFrameException =>
-            // this is very brittle :(
-            if (ex.getMessage().startsWith("An HTTP line is larger than "))
-              Response(from(badReq.httpVersion), Status.RequestURITooLong)
-            else
-              Response(
-                from(badReq.httpVersion),
-                Status.RequestHeaderFieldsTooLarge)
-          case _ =>
-            Response(from(badReq.httpVersion), Status.BadRequest)
-        }
+        val response =
+          badReq.exception match {
+            case ex: TooLongFrameException =>
+              // this is very brittle :(
+              if (ex.getMessage().startsWith("An HTTP line is larger than "))
+                Response(from(badReq.httpVersion), Status.RequestURITooLong)
+              else
+                Response(
+                  from(badReq.httpVersion),
+                  Status.RequestHeaderFieldsTooLarge)
+            case _ =>
+              Response(from(badReq.httpVersion), Status.BadRequest)
+          }
         // The connection in unusable so we close it here.
         // Note that state != Idle while inside dispatch
         // so state will be set to Closed but trans.close
@@ -63,19 +64,21 @@ class HttpServerDispatcher(
         Future.value(response)
 
       case reqIn: HttpRequest =>
-        val reader = if (reqIn.isChunked) {
-          val coll = Transport.collate(trans, readChunk)
-          coll.proxyTo(eos)
-          coll: Reader
-        } else {
-          eos.setDone()
-          BufReader(ChannelBufferBuf.Owned(reqIn.getContent))
-        }
+        val reader =
+          if (reqIn.isChunked) {
+            val coll = Transport.collate(trans, readChunk)
+            coll.proxyTo(eos)
+            coll: Reader
+          } else {
+            eos.setDone()
+            BufReader(ChannelBufferBuf.Owned(reqIn.getContent))
+          }
 
-        val addr = trans.remoteAddress match {
-          case ia: InetSocketAddress => ia
-          case _                     => new InetSocketAddress(0)
-        }
+        val addr =
+          trans.remoteAddress match {
+            case ia: InetSocketAddress => ia
+            case _                     => new InetSocketAddress(0)
+          }
 
         val req = Request(reqIn, reader, addr)
         service(req).handle {

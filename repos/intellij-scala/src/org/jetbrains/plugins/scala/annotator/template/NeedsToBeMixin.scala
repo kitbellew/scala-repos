@@ -32,11 +32,12 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
       typeAware: Boolean) {
     if (element.isInstanceOf[ScTrait])
       return
-    val signaturesIterator = TypeDefinitionMembers
-      .getSignatures(element)
-      .allFirstSeq()
-      .flatMap(_.map(_._2))
-      .iterator
+    val signaturesIterator =
+      TypeDefinitionMembers
+        .getSignatures(element)
+        .allFirstSeq()
+        .flatMap(_.map(_._2))
+        .iterator
 
     while (signaturesIterator.hasNext) {
       val signature = signaturesIterator.next()
@@ -71,14 +72,15 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
                 } match {
                   case Some(_) => //do nothing
                   case None =>
-                    val place: PsiElement = element match {
-                      case td: ScTypeDefinition => td.nameId
-                      case t: ScNewTemplateDefinition =>
-                        t.extendsBlock.templateParents
-                          .flatMap(_.typeElements.headOption)
-                          .orNull
-                      case _ => null
-                    }
+                    val place: PsiElement =
+                      element match {
+                        case td: ScTypeDefinition => td.nameId
+                        case t: ScNewTemplateDefinition =>
+                          t.extendsBlock.templateParents
+                            .flatMap(_.typeElements.headOption)
+                            .orNull
+                        case _ => null
+                      }
                     if (place != null) {
                       holder.createErrorAnnotation(
                         place,

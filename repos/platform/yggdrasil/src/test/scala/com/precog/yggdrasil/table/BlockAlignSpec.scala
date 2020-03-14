@@ -72,18 +72,19 @@ trait BlockAlignSpec[M[+_]]
       case (v, i) if i % 2 == 0 && i % 3 == 0 => v
     }
 
-    val finalResults = for {
-      results <- Table.align(
-        fromJson(lstream),
-        SourceKey.Single,
-        fromJson(rstream),
-        SourceKey.Single)
-      leftResult <- results._1.toJson
-      rightResult <- results._2.toJson
-      leftResult2 <- results._1.toJson
-    } yield {
-      (leftResult, rightResult, leftResult2)
-    }
+    val finalResults =
+      for {
+        results <- Table.align(
+          fromJson(lstream),
+          SourceKey.Single,
+          fromJson(rstream),
+          SourceKey.Single)
+        leftResult <- results._1.toJson
+        rightResult <- results._2.toJson
+        leftResult2 <- results._1.toJson
+      } yield {
+        (leftResult, rightResult, leftResult2)
+      }
 
     val (leftResult, rightResult, leftResult2) = finalResults.copoint
 
@@ -142,8 +143,8 @@ trait BlockAlignSpec[M[+_]]
   }
 
   def alignAcrossBoundaries = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe(
+      """[
       {
         "value":{
           "sp7hpv":{ },
@@ -351,21 +352,23 @@ trait BlockAlignSpec[M[+_]]
         alignOnL: TransSpec1,
         rtable: Table,
         alignOnR: TransSpec1) = {
-      val (ljsondirect, rjsondirect) = (for {
-        aligned <- Table.align(ltable, alignOnL, rtable, alignOnR)
-        ljson <- aligned._1.toJson
-        rjson <- aligned._2.toJson
-      } yield {
-        (ljson, rjson)
-      }).copoint
+      val (ljsondirect, rjsondirect) =
+        (for {
+          aligned <- Table.align(ltable, alignOnL, rtable, alignOnR)
+          ljson <- aligned._1.toJson
+          rjson <- aligned._2.toJson
+        } yield {
+          (ljson, rjson)
+        }).copoint
 
-      val (ljsonreversed, rjsonreversed) = (for {
-        aligned <- Table.align(rtable, alignOnR, ltable, alignOnL)
-        ljson <- aligned._1.toJson
-        rjson <- aligned._2.toJson
-      } yield {
-        (ljson, rjson)
-      }).copoint
+      val (ljsonreversed, rjsonreversed) =
+        (for {
+          aligned <- Table.align(rtable, alignOnR, ltable, alignOnL)
+          ljson <- aligned._1.toJson
+          rjson <- aligned._2.toJson
+        } yield {
+          (ljson, rjson)
+        }).copoint
 
       (ljsonreversed.toList must_== rjsondirect.toList) and
         (rjsonreversed.toList must_== ljsondirect.toList)
@@ -374,8 +377,8 @@ trait BlockAlignSpec[M[+_]]
     def test0 = {
       val lsortedOn = DerefArrayStatic(Leaf(Source), CPathIndex(1))
       val rsortedOn = DerefArrayStatic(Leaf(Source), CPathIndex(1))
-      val JArray(ljson) =
-        JParser.parseUnsafe("""[
+      val JArray(ljson) = JParser.parseUnsafe(
+        """[
         [[3],{ "000000":-1 },-1],
         [[4],{ "000000":0 },0],
         [[5],{ "000000":0 },0],
@@ -384,8 +387,8 @@ trait BlockAlignSpec[M[+_]]
         [[1],{ "000000":2147483647 },2147483647]
       ]""")
 
-      val JArray(rjson) =
-        JParser.parseUnsafe("""[
+      val JArray(rjson) = JParser.parseUnsafe(
+        """[
         [[1],{ "000000":-2147483648 },-2147483648],
         [[6],{ "000000":-1904025337 },-1904025337],
         [[2],{ "000000":-1456034303 },-1456034303],
@@ -488,14 +491,14 @@ trait BlockAlignSpec[M[+_]]
           "000000"
         ))
 
-      val JArray(rjson) =
-        JParser.parseUnsafe("""[
+      val JArray(rjson) = JParser.parseUnsafe(
+        """[
         [[6],{ "000000":7 },{ "a":7, "b":42 }],
         [[12],{ "000000":7 },{ "a":7 }],
         [[7],{ "000000":17 },{ "a":17, "c":77 }]
       ]""")
-      val JArray(rjson2) =
-        JParser.parseUnsafe("""[
+      val JArray(rjson2) = JParser.parseUnsafe(
+        """[
         [[0],{ "000000":42 },{ "a":42 }],
         [[1],{ "000000":42 },{ "a":42 }],
         [[13],{ "000000":42 },{ "a":42 }],
@@ -529,9 +532,10 @@ object BlockAlignSpec
     with BlockAlignSpec[YId]
     with YIdInstances {
   type YggConfig = IdSourceConfig
-  val yggConfig = new IdSourceConfig {
-    val idSource = new FreshAtomicIdSource
-  }
+  val yggConfig =
+    new IdSourceConfig {
+      val idSource = new FreshAtomicIdSource
+    }
 
   "align" should {
     "a simple example" in alignSimple

@@ -36,8 +36,9 @@ case class JavaArrayType(arg: ScType) extends ValueType {
   def getParameterizedType(
       project: Project,
       scope: GlobalSearchScope): Option[ScType] = {
-    val arrayClasses =
-      ScalaPsiManager.instance(project).getCachedClasses(scope, "scala.Array")
+    val arrayClasses = ScalaPsiManager
+      .instance(project)
+      .getCachedClasses(scope, "scala.Array")
     var arrayClass: PsiClass = null
     for (clazz <- arrayClasses) {
       clazz match {
@@ -266,15 +267,19 @@ class ScParameterizedType private (
       case (ScParameterizedType(ScAbstractType(tpt, lower, upper), args), _) =>
         if (falseUndef)
           return (false, uSubst)
-        val subst = new ScSubstitutor(
-          Map(tpt.args.zip(args).map {
-            case (tpt: ScTypeParameterType, tp: ScType) =>
-              ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-          }: _*),
-          Map.empty,
-          None)
-        var t: (Boolean, ScUndefinedSubstitutor) =
-          Conformance.conformsInner(subst.subst(upper), r, Set.empty, uSubst)
+        val subst =
+          new ScSubstitutor(
+            Map(tpt.args.zip(args).map {
+              case (tpt: ScTypeParameterType, tp: ScType) =>
+                ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
+            }: _*),
+            Map.empty,
+            None)
+        var t: (Boolean, ScUndefinedSubstitutor) = Conformance.conformsInner(
+          subst.subst(upper),
+          r,
+          Set.empty,
+          uSubst)
         if (!t._1)
           return (false, uSubst)
         t = Conformance.conformsInner(r, subst.subst(lower), Set.empty, t._2)

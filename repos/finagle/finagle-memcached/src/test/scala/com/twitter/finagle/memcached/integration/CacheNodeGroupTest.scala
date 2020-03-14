@@ -60,8 +60,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     addShards(List(0, 1, 2, 3, 4))
 
     // set cache pool config node data
-    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(
-      cachePoolSize = 5)
+    val cachePoolConfig: CachePoolConfig =
+      new CachePoolConfig(cachePoolSize = 5)
     val output: ByteArrayOutputStream = new ByteArrayOutputStream
     CachePoolConfig.jsonCodec.serialize(cachePoolConfig, output)
     zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
@@ -247,8 +247,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
   }
 
   private def updateCachePoolConfigData(size: Int) {
-    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(
-      cachePoolSize = size)
+    val cachePoolConfig: CachePoolConfig =
+      new CachePoolConfig(cachePoolSize = size)
     val output: ByteArrayOutputStream = new ByteArrayOutputStream
     CachePoolConfig.jsonCodec.serialize(cachePoolConfig, output)
     zookeeperClient.get().setData(zkPath, output.toByteArray, -1)

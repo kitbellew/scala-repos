@@ -49,22 +49,25 @@ object ByteBufferMessageSet {
       buffer.rewind()
       buffer
     } else {
-      val magicAndTimestamp = wrapperMessageTimestamp match {
-        case Some(ts) => MagicAndTimestamp(messages.head.magic, ts)
-        case None     => MessageSet.magicAndLargestTimestamp(messages)
-      }
+      val magicAndTimestamp =
+        wrapperMessageTimestamp match {
+          case Some(ts) => MagicAndTimestamp(messages.head.magic, ts)
+          case None     => MessageSet.magicAndLargestTimestamp(messages)
+        }
       var offset = -1L
-      val messageWriter = new MessageWriter(
-        math.min(
-          math.max(MessageSet.messageSetSize(messages) / 2, 1024),
-          1 << 16))
+      val messageWriter =
+        new MessageWriter(
+          math.min(
+            math.max(MessageSet.messageSetSize(messages) / 2, 1024),
+            1 << 16))
       messageWriter.write(
         codec = compressionCodec,
         timestamp = magicAndTimestamp.timestamp,
         timestampType = timestampType,
         magicValue = magicAndTimestamp.magic) { outputStream =>
-        val output = new DataOutputStream(
-          CompressionFactory(compressionCodec, outputStream))
+        val output =
+          new DataOutputStream(
+            CompressionFactory(compressionCodec, outputStream))
         try {
           for (message <- messages) {
             offset = offsetAssigner.nextAbsoluteOffset()
@@ -86,8 +89,8 @@ object ByteBufferMessageSet {
           output.close()
         }
       }
-      val buffer =
-        ByteBuffer.allocate(messageWriter.size + MessageSet.LogOverhead)
+      val buffer = ByteBuffer.allocate(
+        messageWriter.size + MessageSet.LogOverhead)
       writeMessage(buffer, messageWriter, offset)
       buffer.rewind()
       buffer
@@ -117,8 +120,9 @@ object ByteBufferMessageSet {
       if (wrapperMessage.payload == null)
         throw new KafkaException(s"Message payload is null: $wrapperMessage")
       val inputStream = new ByteBufferBackedInputStream(wrapperMessage.payload)
-      val compressed = new DataInputStream(
-        CompressionFactory(wrapperMessage.compressionCodec, inputStream))
+      val compressed =
+        new DataInputStream(
+          CompressionFactory(wrapperMessage.compressionCodec, inputStream))
       var lastInnerOffset = -1L
 
       val messageAndOffsets =
@@ -151,10 +155,11 @@ object ByteBufferMessageSet {
         val buffer = ByteBuffer.wrap(bufferArray)
 
         // Override the timestamp if necessary
-        val newMessage = new Message(
-          buffer,
-          wrapperMessageTimestampOpt,
-          wrapperMessageTimestampTypeOpt)
+        val newMessage =
+          new Message(
+            buffer,
+            wrapperMessageTimestampOpt,
+            wrapperMessageTimestampTypeOpt)
 
         // Inner message and wrapper message must have same magic value
         if (newMessage.magic != wrapperMessage.magic)

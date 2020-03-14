@@ -84,13 +84,14 @@ class ReplicatorPruningSpec
         initialStateMode = InitialStateAsEvents,
         classOf[MemberUp])
       val thirdUniqueAddress = {
-        val member = memberProbe
-          .fishForMessage(3.seconds) {
-            case MemberUp(m) if m.address == node(third).address ⇒ true
-            case _ ⇒ false
-          }
-          .asInstanceOf[MemberUp]
-          .member
+        val member =
+          memberProbe
+            .fishForMessage(3.seconds) {
+              case MemberUp(m) if m.address == node(third).address ⇒ true
+              case _ ⇒ false
+            }
+            .asInstanceOf[MemberUp]
+            .member
         member.uniqueAddress
       }
 

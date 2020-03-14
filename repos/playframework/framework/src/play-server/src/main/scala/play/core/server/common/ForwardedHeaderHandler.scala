@@ -239,14 +239,15 @@ private[server] object ForwardedHeaderHandler {
       val config = PlayConfig(configuration.getOrElse(Configuration.reference))
         .get[PlayConfig]("play.http.forwarded")
 
-      val version = config.get[String]("version") match {
-        case "x-forwarded" => Xforwarded
-        case "rfc7239"     => Rfc7239
-        case _ =>
-          throw config.reportError(
-            "version",
-            "Forwarded header version must be either x-forwarded or rfc7239")
-      }
+      val version =
+        config.get[String]("version") match {
+          case "x-forwarded" => Xforwarded
+          case "rfc7239"     => Rfc7239
+          case _ =>
+            throw config.reportError(
+              "version",
+              "Forwarded header version must be either x-forwarded or rfc7239")
+        }
 
       ForwardedHeaderHandlerConfig(
         version,

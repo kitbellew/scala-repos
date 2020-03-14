@@ -49,14 +49,12 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         cases: List[List[TreeMaker]],
         pt: Type,
         matchFailGenOverride: Option[Tree => Tree],
-        unchecked: Boolean): Option[Tree] =
-      None
+        unchecked: Boolean): Option[Tree] = None
 
     // for catch (no need to customize match failure)
     def emitTypeSwitch(
         bindersAndCases: List[(Symbol, List[TreeMaker])],
-        pt: Type): Option[List[CaseDef]] =
-      None
+        pt: Type): Option[List[CaseDef]] = None
 
     abstract class TreeMaker {
       def pos: Position
@@ -134,8 +132,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         extends TreeMaker {
       val pos = NoPosition
 
-      val localSubstitution =
-        Substitution(prevBinder, gen.mkAttributedStableRef(nextBinder))
+      val localSubstitution = Substitution(
+        prevBinder,
+        gen.mkAttributedStableRef(nextBinder))
       def chainBefore(next: Tree)(casegen: Casegen): Tree = substitution(next)
       override def toString = "S" + localSubstitution
     }
@@ -184,8 +183,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
 
       def emitVars = storedBinders.nonEmpty
 
-      private lazy val (stored, substed) =
-        (subPatBinders, subPatRefs).zipped.partition {
+      private lazy val (stored, substed) = (subPatBinders, subPatRefs).zipped
+        .partition {
           case (sym, _) => storedBinders(sym)
         }
 
@@ -234,9 +233,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             in
           else {
             // only store binders actually used
-            val (subPatBindersStored, subPatRefsStored) = stored.filter {
-              case (b, _) => usedBinders(b)
-            }.unzip
+            val (subPatBindersStored, subPatRefsStored) =
+              stored.filter {
+                case (b, _) => usedBinders(b)
+              }.unzip
             Block(
               map2(subPatBindersStored.toList, subPatRefsStored.toList)(
                 ValDef(_, _)),
@@ -283,14 +283,15 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         |}""".stripMargin)
 
       def chainBefore(next: Tree)(casegen: Casegen): Tree = {
-        val condAndNext = extraCond match {
-          case Some(cond) =>
-            casegen.ifThenElseZero(
-              substitution(cond),
-              bindSubPats(substitution(next)))
-          case _ =>
-            bindSubPats(substitution(next))
-        }
+        val condAndNext =
+          extraCond match {
+            case Some(cond) =>
+              casegen.ifThenElseZero(
+                substitution(cond),
+                bindSubPats(substitution(next)))
+            case _ =>
+              bindSubPats(substitution(next))
+          }
         atPos(extractor.pos)(
           if (extractorReturnsBoolean)
             casegen.flatMapCond(extractor, CODE.UNIT, nextBinder, condAndNext)
@@ -734,14 +735,16 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             scrut match {
               case Typed(tree, tpt) =>
                 val suppressExhaustive = tpt.tpe hasAnnotation UncheckedClass
-                val supressUnreachable = tree match {
-                  case Ident(name)
-                      if name startsWith nme.CHECK_IF_REFUTABLE_STRING =>
-                    true // SI-7183 don't warn for withFilter's that turn out to be irrefutable.
-                  case _ => false
-                }
-                val suppression =
-                  Suppression(suppressExhaustive, supressUnreachable)
+                val supressUnreachable =
+                  tree match {
+                    case Ident(name)
+                        if name startsWith nme.CHECK_IF_REFUTABLE_STRING =>
+                      true // SI-7183 don't warn for withFilter's that turn out to be irrefutable.
+                    case _ => false
+                  }
+                val suppression = Suppression(
+                  suppressExhaustive,
+                  supressUnreachable)
                 val hasSwitchAnnotation = treeInfo.isSwitchAnnotation(tpt.tpe)
                 // matches with two or fewer cases need not apply for switchiness (if-then-else will do)
                 // `case 1 | 2` is considered as two cases.
@@ -800,9 +803,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
 
             val (cases, toHoist) = optimizeCases(scrutSym, casesNoSubstOnly, pt)
 
-            val matchRes = codegen.matcher(scrut, scrutSym, pt)(
-              cases map combineExtractors,
-              synthCatchAll)
+            val matchRes =
+              codegen.matcher(scrut, scrutSym, pt)(
+                cases map combineExtractors,
+                synthCatchAll)
 
             if (toHoist isEmpty)
               matchRes

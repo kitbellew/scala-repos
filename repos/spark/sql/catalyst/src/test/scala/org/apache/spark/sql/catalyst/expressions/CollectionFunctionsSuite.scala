@@ -34,8 +34,9 @@ class CollectionFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     val m0 = Literal.create(
       Map("a" -> "a", "b" -> "b"),
       MapType(StringType, StringType))
-    val m1 =
-      Literal.create(Map[String, String](), MapType(StringType, StringType))
+    val m1 = Literal.create(
+      Map[String, String](),
+      MapType(StringType, StringType))
     val m2 = Literal.create(Map("a" -> "a"), MapType(StringType, StringType))
 
     checkEvaluation(Size(m0), 2)

@@ -37,14 +37,13 @@ object ALSSuite {
       implicitPrefs: Boolean,
       negativeWeights: Boolean)
       : (java.util.List[Rating], Array[Double], Array[Double]) = {
-    val (sampledRatings, trueRatings, truePrefs) =
-      generateRatings(
-        users,
-        products,
-        features,
-        samplingRate,
-        implicitPrefs,
-        negativeWeights)
+    val (sampledRatings, trueRatings, truePrefs) = generateRatings(
+      users,
+      products,
+      features,
+      samplingRate,
+      implicitPrefs,
+      negativeWeights)
     (
       sampledRatings.asJava,
       trueRatings.toArray,
@@ -79,14 +78,15 @@ object ALSSuite {
     val (trueRatings, truePrefs) =
       if (implicitPrefs) {
         // Generate raw values from [0,9], or if negativeWeights, from [-2,7]
-        val raw = new BDM(
-          users,
-          products,
-          Array.fill(users * products)(
-            (if (negativeWeights)
-               -2
-             else
-               0) + rand.nextInt(10).toDouble))
+        val raw =
+          new BDM(
+            users,
+            products,
+            Array.fill(users * products)(
+              (if (negativeWeights)
+                 -2
+               else
+                 0) + rand.nextInt(10).toDouble))
         val prefs =
           new BDM(
             users,

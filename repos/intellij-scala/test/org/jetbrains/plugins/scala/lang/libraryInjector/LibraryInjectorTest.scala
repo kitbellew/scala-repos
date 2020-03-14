@@ -36,8 +36,9 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
   case class ZDir(name: String, files: Seq[Zipable]) extends Zipable {
     override def zip(toDir: File): File = {
       val file = new File(toDir, LIBRARY_NAME)
-      val zfs = new ZipOutputStream(
-        new BufferedOutputStream(new FileOutputStream(file)))
+      val zfs =
+        new ZipOutputStream(
+          new BufferedOutputStream(new FileOutputStream(file)))
       def doZip(zipable: Zipable): Unit = {
         zipable match {
           case ZDir(zname, zfiles) =>
@@ -126,8 +127,7 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
         |class Implementation extends SyntheticMembersInjector { val foo = new Foo }
       """.stripMargin
 
-    val fooClass =
-      """
+    val fooClass = """
         |package com.foo.bar
         |class Foo
       """.stripMargin

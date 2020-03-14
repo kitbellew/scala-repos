@@ -58,10 +58,11 @@ class SimpleLucene(path: File, analyzers: Map[String, Analyzer])
       new Analyzer.TokenStreamComponents(source, filtered)
     }
   }
-  private val analyzer = new PerFieldAnalyzerWrapper(
-    new LowercaseAnalyzer,
-    analyzers.asJava
-  )
+  private val analyzer =
+    new PerFieldAnalyzerWrapper(
+      new LowercaseAnalyzer,
+      analyzers.asJava
+    )
   private val config = new IndexWriterConfig(LuceneVersion, analyzer)
   //  config.setRAMBufferSizeMB(512)
 

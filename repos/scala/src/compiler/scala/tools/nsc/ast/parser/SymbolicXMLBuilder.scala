@@ -197,10 +197,11 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
 
   /** @todo: attributes */
   def makeXMLpat(pos: Position, n: String, args: Seq[Tree]): Tree = {
-    val (prepat, labpat) = splitPrefix(n) match {
-      case (Some(pre), rest) => (const(pre), const(rest))
-      case _                 => (wild, const(n))
-    }
+    val (prepat, labpat) =
+      splitPrefix(n) match {
+        case (Some(pre), rest) => (const(pre), const(rest))
+        case _                 => (wild, const(n))
+      }
     mkXML(
       pos,
       isPattern = true,
@@ -238,8 +239,11 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
 
   /** could optimize if args.length == 0, args.length == 1 AND args(0) is <: Node. */
   def makeXMLseq(pos: Position, args: Seq[Tree]) = {
-    val buffer =
-      ValDef(NoMods, _buf, TypeTree(), New(_scala_xml_NodeBuffer, ListOfNil))
+    val buffer = ValDef(
+      NoMods,
+      _buf,
+      TypeTree(),
+      New(_scala_xml_NodeBuffer, ListOfNil))
     val applies = args filterNot isEmptyText map (t =>
       Apply(Select(Ident(_buf), _plus), List(t)))
 
@@ -273,20 +277,21 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
           New(_scala_xml_NamespaceBinding, LL(const(pre), t, Ident(_tmpscope)))
         )
 
-      val uri1 = attrMap(z) match {
-        case Apply(
-              Select(
-                New(
-                  Select(
-                    Select(Select(Ident(nme.ROOTPKG), nme.scala_), nme.xml),
-                    tpnme.Text)),
-                nme.CONSTRUCTOR),
-              List(uri @ Literal(Constant(_)))) =>
-          mkAssign(uri)
-        case Select(_, nme.Nil) =>
-          mkAssign(const(null)) // allow for xmlns="" -- bug #1626
-        case x => mkAssign(x)
-      }
+      val uri1 =
+        attrMap(z) match {
+          case Apply(
+                Select(
+                  New(
+                    Select(
+                      Select(Select(Ident(nme.ROOTPKG), nme.scala_), nme.xml),
+                      tpnme.Text)),
+                  nme.CONSTRUCTOR),
+                List(uri @ Literal(Constant(_)))) =>
+            mkAssign(uri)
+          case Select(_, nme.Nil) =>
+            mkAssign(const(null)) // allow for xmlns="" -- bug #1626
+          case x => mkAssign(x)
+        }
       attrMap -= z
       uri1
     }
@@ -295,17 +300,19 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
     val namespaces: List[Tree] =
       for (z <- attrMap.keys.toList; if z startsWith "xmlns")
         yield {
-          val ns = splitPrefix(z) match {
-            case (Some(_), rest) => rest
-            case _               => null
-          }
+          val ns =
+            splitPrefix(z) match {
+              case (Some(_), rest) => rest
+              case _               => null
+            }
           handleNamespaceBinding(ns, z)
         }
 
-    val (pre, newlabel) = splitPrefix(qname) match {
-      case (Some(p), x) => (p, x)
-      case (None, x)    => (null, x)
-    }
+    val (pre, newlabel) =
+      splitPrefix(qname) match {
+        case (Some(p), x) => (p, x)
+        case (None, x)    => (null, x)
+      }
 
     def mkAttributeTree(pre: String, key: String, value: Tree) =
       atPos(pos.makeTransparent) {
@@ -333,15 +340,21 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
           case _                 => handleUnprefixedAttribute(k, v)
         }
 
-    lazy val scopeDef =
-      ValDef(NoMods, _scope, _scala_xml_NamespaceBinding, Ident(_tmpscope))
+    lazy val scopeDef = ValDef(
+      NoMods,
+      _scope,
+      _scala_xml_NamespaceBinding,
+      Ident(_tmpscope))
     lazy val tmpScopeDef = ValDef(
       Modifiers(MUTABLE),
       _tmpscope,
       _scala_xml_NamespaceBinding,
       Ident(_scope))
-    lazy val metadataDef =
-      ValDef(Modifiers(MUTABLE), _md, _scala_xml_MetaData, _scala_xml_Null)
+    lazy val metadataDef = ValDef(
+      Modifiers(MUTABLE),
+      _md,
+      _scala_xml_MetaData,
+      _scala_xml_Null)
     val makeSymbolicAttrs =
       if (!attributes.isEmpty)
         Ident(_md)

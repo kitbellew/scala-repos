@@ -3,9 +3,10 @@ package tests
 object Child1 extends Base {
   override val /*caret*/ foo = 1
 
-  val x = new Base {
-    override def /*caret*/ foo() = 3
-  }
+  val x =
+    new Base {
+      override def /*caret*/ foo() = 3
+    }
   x.foo /*caret*/ ()
 }
 

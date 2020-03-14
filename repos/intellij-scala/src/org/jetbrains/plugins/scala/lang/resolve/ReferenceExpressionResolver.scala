@@ -111,8 +111,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         reference.refName
 
     if (name == ScImplicitlyConvertible.IMPLICIT_REFERENCE_NAME) {
-      val data =
-        reference.getUserData(ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
+      val data = reference.getUserData(
+        ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
       if (data != null)
         return Array(data)
     }
@@ -144,9 +144,10 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
             if (!smartProcessor)
               super.candidatesS
             else {
-              val iterator = reference.shapeResolve
-                .map(_.asInstanceOf[ScalaResolveResult])
-                .iterator
+              val iterator =
+                reference.shapeResolve
+                  .map(_.asInstanceOf[ScalaResolveResult])
+                  .iterator
               while (iterator.hasNext) {
                 levelSet.add(iterator.next())
               }
@@ -157,8 +158,9 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
 
       var result: Array[ResolveResult] = Array.empty
       if (shapesOnly) {
-        result =
-          reference.doResolve(reference, processor(smartProcessor = false))
+        result = reference.doResolve(
+          reference,
+          processor(smartProcessor = false))
       } else {
         val candidatesS =
           processor(smartProcessor =
@@ -170,21 +172,23 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           // so shape resolve return this wrong result
           // however there is implicit conversion with right argument
           // this is ugly, but it can improve performance
-          result =
-            reference.doResolve(reference, processor(smartProcessor = false))
+          result = reference.doResolve(
+            reference,
+            processor(smartProcessor = false))
         } else {
           result = candidatesS.toArray
         }
       }
       if (result.isEmpty && reference.isAssignmentOperator) {
-        val assignProcessor = new MethodResolveProcessor(
-          reference,
-          reference.refName.init,
-          List(argumentsOf(reference)),
-          Nil,
-          prevInfoTypeParams,
-          isShapeResolve = shapesOnly,
-          enableTupling = true)
+        val assignProcessor =
+          new MethodResolveProcessor(
+            reference,
+            reference.refName.init,
+            List(argumentsOf(reference)),
+            Nil,
+            prevInfoTypeParams,
+            isShapeResolve = shapesOnly,
+            enableTupling = true)
         result = reference.doResolve(reference, assignProcessor)
         result.map(r =>
           r.asInstanceOf[ScalaResolveResult]

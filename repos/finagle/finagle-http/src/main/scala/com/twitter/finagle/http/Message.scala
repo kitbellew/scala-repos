@@ -425,8 +425,7 @@ abstract class Message extends HttpMessageProxy {
     * Get InputStream for content.  Caller must close.  (Java interface.  Scala
     * users should use withInputStream.)
     */
-  def getInputStream(): InputStream =
-    new ChannelBufferInputStream(getContent)
+  def getInputStream(): InputStream = new ChannelBufferInputStream(getContent)
 
   /** Use content as Reader.  (Scala interface.  Java usrs can use getReader().) */
   def withReader[T](f: Reader => T): T = {
@@ -437,8 +436,7 @@ abstract class Message extends HttpMessageProxy {
   }
 
   /** Get Reader for content.  (Java interface.  Scala users should use withReader.) */
-  def getReader(): Reader =
-    new InputStreamReader(getInputStream())
+  def getReader(): Reader = new InputStreamReader(getInputStream())
 
   /** Append string to content. */
   def write(string: String) {
@@ -487,8 +485,8 @@ abstract class Message extends HttpMessageProxy {
   def withOutputStream[T](f: OutputStream => T): T = {
     // Use buffer size of 1024.  Netty default is 256, which seems too small.
     // Netty doubles buffers on resize.
-    val outputStream = new ChannelBufferOutputStream(
-      ChannelBuffers.dynamicBuffer(1024))
+    val outputStream =
+      new ChannelBufferOutputStream(ChannelBuffers.dynamicBuffer(1024))
     val result = f(outputStream) // throws
     outputStream.close()
     write(outputStream.buffer)
@@ -534,6 +532,5 @@ object Message {
   private val HttpDateFormat = FastDateFormat.getInstance(
     "EEE, dd MMM yyyy HH:mm:ss",
     TimeZone.getTimeZone("GMT"))
-  def httpDateFormat(date: Date): String =
-    HttpDateFormat.format(date) + " GMT"
+  def httpDateFormat(date: Date): String = HttpDateFormat.format(date) + " GMT"
 }

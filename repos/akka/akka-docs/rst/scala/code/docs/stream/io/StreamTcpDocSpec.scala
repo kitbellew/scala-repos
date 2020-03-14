@@ -26,8 +26,10 @@ class StreamTcpDocSpec extends AkkaSpec {
   "simple server connection" in {
     {
       //#echo-server-simple-bind
-      val binding: Future[ServerBinding] =
-        Tcp().bind("127.0.0.1", 8888).to(Sink.ignore).run()
+      val binding: Future[ServerBinding] = Tcp()
+        .bind("127.0.0.1", 8888)
+        .to(Sink.ignore)
+        .run()
 
       binding.map { b =>
         b.unbind() onComplete {
@@ -41,8 +43,8 @@ class StreamTcpDocSpec extends AkkaSpec {
       //#echo-server-simple-handle
       import akka.stream.scaladsl.Framing
 
-      val connections: Source[IncomingConnection, Future[ServerBinding]] =
-        Tcp().bind(host, port)
+      val connections: Source[IncomingConnection, Future[ServerBinding]] = Tcp()
+        .bind(host, port)
       connections runForeach { connection =>
         println(s"New connection from: ${connection.remoteAddress}")
 
@@ -64,11 +66,10 @@ class StreamTcpDocSpec extends AkkaSpec {
 
   "initial server banner echo server" in {
     val localhost = TestUtils.temporaryServerAddress()
-    val connections =
-      Tcp().bind(
-        localhost.getHostName,
-        localhost.getPort
-      ) // TODO getHostString in Java7
+    val connections = Tcp().bind(
+      localhost.getHostName,
+      localhost.getPort
+    ) // TODO getHostString in Java7
     val serverProbe = TestProbe()
 
     import akka.stream.scaladsl.Framing
@@ -125,11 +126,10 @@ class StreamTcpDocSpec extends AkkaSpec {
       val connection = Tcp().outgoingConnection(localhost)
       //#repl-client
 
-      val replParser =
-        Flow[String]
-          .takeWhile(_ != "q")
-          .concat(Source.single("BYE"))
-          .map(elem => ByteString(s"$elem\n"))
+      val replParser = Flow[String]
+        .takeWhile(_ != "q")
+        .concat(Source.single("BYE"))
+        .map(elem => ByteString(s"$elem\n"))
 
       val repl = Flow[ByteString]
         .via(

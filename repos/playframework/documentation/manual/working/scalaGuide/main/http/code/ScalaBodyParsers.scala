@@ -103,8 +103,9 @@ package scalaguide.http.scalabodyparsers {
               Ok("Saved the request content to " + request.body)
             }
           //#body-parser-limit-file
-          val result =
-            call(save, helloRequest.withSession("username" -> "player"))
+          val result = call(
+            save,
+            helloRequest.withSession("username" -> "player"))
           status(result) must_== OK
         }
       }
@@ -154,15 +155,15 @@ package scalaguide.http.scalabodyparsers {
 
         val csv: BodyParser[Seq[Seq[String]]] = BodyParser { req =>
           // A flow that splits the stream into CSV lines
-          val sink
-              : Sink[ByteString, Future[Seq[Seq[String]]]] = Flow[ByteString]
-          // We split by the new line character, allowing a maximum of 1000 characters per line
-            .via(
-              Framing.delimiter(ByteString("\n"), 1000, allowTruncation = true))
-            // Turn each line to a String and split it by commas
-            .map(_.utf8String.trim.split(",").toSeq)
-            // Now we fold it into a list
-            .toMat(Sink.fold(Seq.empty[Seq[String]])(_ :+ _))(Keep.right)
+          val sink: Sink[ByteString, Future[Seq[Seq[String]]]] =
+            Flow[ByteString]
+            // We split by the new line character, allowing a maximum of 1000 characters per line
+              .via(Framing
+                .delimiter(ByteString("\n"), 1000, allowTruncation = true))
+              // Turn each line to a String and split it by commas
+              .map(_.utf8String.trim.split(",").toSeq)
+              // Now we fold it into a list
+              .toMat(Sink.fold(Seq.empty[Seq[String]])(_ :+ _))(Keep.right)
 
           // Convert the body to a Right either
           Accumulator(sink).map(Right.apply)

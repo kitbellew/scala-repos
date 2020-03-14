@@ -75,45 +75,48 @@ object InfiniteRecursionIssue205Tester extends JFXApp {
   val extraRow = new Person("Desmond", "Jones")
   characters += extraRow
 
-  val tableView = new TableView[Person](characters) {
-    columns ++= List(
-      new TableColumn[Person, String] {
-        text = "First Name"
-        cellValueFactory = {
-          _.value.firstName
+  val tableView =
+    new TableView[Person](characters) {
+      columns ++= List(
+        new TableColumn[Person, String] {
+          text = "First Name"
+          cellValueFactory = {
+            _.value.firstName
+          }
+          prefWidth = 180
+        },
+        new TableColumn[Person, String]() {
+          text = "Last Name"
+          cellValueFactory = {
+            _.value.lastName
+          }
+          prefWidth = 180
         }
-        prefWidth = 180
-      },
-      new TableColumn[Person, String]() {
-        text = "Last Name"
-        cellValueFactory = {
-          _.value.lastName
-        }
-        prefWidth = 180
-      }
-    )
-  }
-
-  val scrollToButton = new Button {
-    text = "scrollTo(item) - #205"
-    onAction = (ae: ActionEvent) => {
-      // This line would cause infinite recursion before fix
-      tableView.scrollTo(extraRow)
+      )
     }
 
-  }
-
-  val snapshotButton = new Button {
-    text = "snapshot  - #214"
-    onAction = (ae: ActionEvent) => {
-      def callback(result: SnapshotResult): Unit = {
-        println("callback(" + result + ")")
+  val scrollToButton =
+    new Button {
+      text = "scrollTo(item) - #205"
+      onAction = (ae: ActionEvent) => {
+        // This line would cause infinite recursion before fix
+        tableView.scrollTo(extraRow)
       }
-      // This line would cause infinite recursion before fix (also issue #214)
-      tableView.snapshot(callback, null, null)
+
     }
 
-  }
+  val snapshotButton =
+    new Button {
+      text = "snapshot  - #214"
+      onAction = (ae: ActionEvent) => {
+        def callback(result: SnapshotResult): Unit = {
+          println("callback(" + result + ")")
+        }
+        // This line would cause infinite recursion before fix (also issue #214)
+        tableView.snapshot(callback, null, null)
+      }
+
+    }
 
   stage = new PrimaryStage {
     title = "Simple Table View"

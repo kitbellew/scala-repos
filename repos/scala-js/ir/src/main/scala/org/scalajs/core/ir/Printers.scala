@@ -867,8 +867,7 @@ object Printers {
       }
     }
 
-    def printRefType(tpe: ReferenceType): Unit =
-      print(tpe.asInstanceOf[Type])
+    def printRefType(tpe: ReferenceType): Unit = print(tpe.asInstanceOf[Type])
 
     def print(tpe: Type): Unit =
       tpe match {
@@ -907,8 +906,7 @@ object Printers {
           print(')')
       }
 
-    protected def print(ident: Ident): Unit =
-      printEscapeJS(ident.name, out)
+    protected def print(ident: Ident): Unit = printEscapeJS(ident.name, out)
 
     private final def print(propName: PropertyName): Unit =
       propName match {
@@ -916,11 +914,9 @@ object Printers {
         case ident: Ident       => print(ident)
       }
 
-    protected def print(s: String): Unit =
-      out.write(s)
+    protected def print(s: String): Unit = out.write(s)
 
-    protected def print(c: Int): Unit =
-      out.write(c)
+    protected def print(c: Int): Unit = out.write(c)
 
     protected def print(optimizerHints: OptimizerHints)(
         implicit dummy: DummyImplicit): Unit = {
@@ -1080,11 +1076,9 @@ object Printers {
       print(end)
     }
 
-    protected def print(s: String): Unit =
-      out.write(s)
+    protected def print(s: String): Unit = out.write(s)
 
-    protected def print(c: Int): Unit =
-      out.write(c)
+    protected def print(c: Int): Unit = out.write(c)
 
     def complete(): Unit = ()
   }

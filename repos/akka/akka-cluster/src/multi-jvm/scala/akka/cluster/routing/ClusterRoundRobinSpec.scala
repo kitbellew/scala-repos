@@ -108,8 +108,9 @@ abstract class ClusterRoundRobinSpec
     with DefaultTimeout {
   import ClusterRoundRobinMultiJvmSpec._
 
-  lazy val router1 =
-    system.actorOf(FromConfig.props(Props[SomeActor]), "router1")
+  lazy val router1 = system.actorOf(
+    FromConfig.props(Props[SomeActor]),
+    "router1")
   lazy val router2 = system.actorOf(
     ClusterRouterPool(
       RoundRobinPool(nrOfInstances = 0),
@@ -120,8 +121,9 @@ abstract class ClusterRoundRobinSpec
         useRole = None)).props(Props[SomeActor]),
     "router2"
   )
-  lazy val router3 =
-    system.actorOf(FromConfig.props(Props[SomeActor]), "router3")
+  lazy val router3 = system.actorOf(
+    FromConfig.props(Props[SomeActor]),
+    "router3")
   lazy val router4 = system.actorOf(FromConfig.props(), "router4")
   lazy val router5 = system.actorOf(
     RoundRobinPool(nrOfInstances = 0).props(Props[SomeActor]),
@@ -382,9 +384,10 @@ abstract class ClusterRoundRobinSpec
         val notUsedAddress =
           ((roles map address).toSet diff routeeAddresses).head
         val downAddress = routeeAddresses.find(_ != address(first)).get
-        val downRouteeRef = routees.collectFirst {
-          case ActorRefRoutee(ref) if ref.path.address == downAddress ⇒ ref
-        }.get
+        val downRouteeRef =
+          routees.collectFirst {
+            case ActorRefRoutee(ref) if ref.path.address == downAddress ⇒ ref
+          }.get
 
         cluster.down(downAddress)
         expectMsgType[Terminated](15.seconds).actor should ===(downRouteeRef)

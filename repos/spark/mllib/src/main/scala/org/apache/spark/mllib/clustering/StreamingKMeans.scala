@@ -93,15 +93,17 @@ class StreamingKMeansModel @Since("1.2.0") (
       .aggregateByKey((Vectors.zeros(dim), 0L))(mergeContribs, mergeContribs)
       .collect()
 
-    val discount = timeUnit match {
-      case StreamingKMeans.BATCHES => decayFactor
-      case StreamingKMeans.POINTS =>
-        val numNewPoints = pointStats.view.map {
-          case (_, (_, n)) =>
-            n
-        }.sum
-        math.pow(decayFactor, numNewPoints)
-    }
+    val discount =
+      timeUnit match {
+        case StreamingKMeans.BATCHES => decayFactor
+        case StreamingKMeans.POINTS =>
+          val numNewPoints =
+            pointStats.view.map {
+              case (_, (_, n)) =>
+                n
+            }.sum
+          math.pow(decayFactor, numNewPoints)
+      }
 
     // apply discount to weights
     BLAS.scal(discount, Vectors.dense(clusterWeights))
@@ -119,11 +121,12 @@ class StreamingKMeansModel @Since("1.2.0") (
         BLAS.axpy(lambda / count, sum, centroid)
 
         // display the updated cluster centers
-        val display = clusterCenters(label).size match {
-          case x if x > 100 =>
-            centroid.toArray.take(100).mkString("[", ",", "...")
-          case _ => centroid.toArray.mkString("[", ",", "]")
-        }
+        val display =
+          clusterCenters(label).size match {
+            case x if x > 100 =>
+              centroid.toArray.take(100).mkString("[", ",", "...")
+            case _ => centroid.toArray.mkString("[", ",", "]")
+          }
 
         logInfo(
           s"Cluster $label updated with weight $updatedWeight and centroid: $display")

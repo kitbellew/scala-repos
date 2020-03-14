@@ -85,8 +85,7 @@ object Trees {
 
   class Block private (val stats: List[Tree])(implicit val pos: Position)
       extends Tree {
-    override def toString(): String =
-      stats.mkString("Block(", ",", ")")
+    override def toString(): String = stats.mkString("Block(", ",", ")")
   }
 
   object Block {
@@ -103,8 +102,7 @@ object Trees {
       }
     }
 
-    def apply(stats: Tree*)(implicit pos: Position): Tree =
-      apply(stats.toList)
+    def apply(stats: Tree*)(implicit pos: Position): Tree = apply(stats.toList)
 
     def unapply(block: Block): Some[List[Tree]] = Some(block.stats)
   }

@@ -126,24 +126,24 @@ private[sql] class ExchangeCoordinator(
     // If minNumPostShufflePartitions is defined, it is possible that we need to use a
     // value less than advisoryTargetPostShuffleInputSize as the target input size of
     // a post shuffle task.
-    val targetPostShuffleInputSize = minNumPostShufflePartitions match {
-      case Some(numPartitions) =>
-        val totalPostShuffleInputSize =
-          mapOutputStatistics.map(_.bytesByPartitionId.sum).sum
-        // The max at here is to make sure that when we have an empty table, we
-        // only have a single post-shuffle partition.
-        // There is no particular reason that we pick 16. We just need a number to
-        // prevent maxPostShuffleInputSize from being set to 0.
-        val maxPostShuffleInputSize =
-          math.max(
+    val targetPostShuffleInputSize =
+      minNumPostShufflePartitions match {
+        case Some(numPartitions) =>
+          val totalPostShuffleInputSize =
+            mapOutputStatistics.map(_.bytesByPartitionId.sum).sum
+          // The max at here is to make sure that when we have an empty table, we
+          // only have a single post-shuffle partition.
+          // There is no particular reason that we pick 16. We just need a number to
+          // prevent maxPostShuffleInputSize from being set to 0.
+          val maxPostShuffleInputSize = math.max(
             math
               .ceil(totalPostShuffleInputSize / numPartitions.toDouble)
               .toLong,
             16)
-        math.min(maxPostShuffleInputSize, advisoryTargetPostShuffleInputSize)
+          math.min(maxPostShuffleInputSize, advisoryTargetPostShuffleInputSize)
 
-      case None => advisoryTargetPostShuffleInputSize
-    }
+        case None => advisoryTargetPostShuffleInputSize
+      }
 
     logInfo(
       s"advisoryTargetPostShuffleInputSize: $advisoryTargetPostShuffleInputSize, " +
@@ -218,10 +218,10 @@ private[sql] class ExchangeCoordinator(
           new JHashMap[ShuffleExchange, ShuffledRowRDD](numExchanges)
 
         // Submit all map stages
-        val shuffleDependencies =
-          ArrayBuffer[ShuffleDependency[Int, InternalRow, InternalRow]]()
-        val submittedStageFutures =
-          ArrayBuffer[SimpleFutureAction[MapOutputStatistics]]()
+        val shuffleDependencies = ArrayBuffer[
+          ShuffleDependency[Int, InternalRow, InternalRow]]()
+        val submittedStageFutures = ArrayBuffer[
+          SimpleFutureAction[MapOutputStatistics]]()
         var i = 0
         while (i < numExchanges) {
           val exchange = exchanges(i)
@@ -258,10 +258,9 @@ private[sql] class ExchangeCoordinator(
         var k = 0
         while (k < numExchanges) {
           val exchange = exchanges(k)
-          val rdd =
-            exchange.preparePostShuffleRDD(
-              shuffleDependencies(k),
-              partitionStartIndices)
+          val rdd = exchange.preparePostShuffleRDD(
+            shuffleDependencies(k),
+            partitionStartIndices)
           newPostShuffleRDDs.put(exchange, rdd)
 
           k += 1

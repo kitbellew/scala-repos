@@ -11,8 +11,7 @@ trait FutureInstances1 {
       implicit ec: ExecutionContext): Nondeterminism[Future]
     with Cobind[Future]
     with MonadError[Future, Throwable]
-    with Catchable[Future] =
-    new FutureInstance
+    with Catchable[Future] = new FutureInstance
 
   implicit def futureSemigroup[A](implicit
       m: Semigroup[A],
@@ -64,11 +63,9 @@ private class FutureInstance(implicit ec: ExecutionContext)
   }
 
   override def mapBoth[A, B, C](a: Future[A], b: Future[B])(
-      f: (A, B) => C): Future[C] =
-    (a zip b).map(f.tupled)
+      f: (A, B) => C): Future[C] = (a zip b).map(f.tupled)
 
-  override def both[A, B](a: Future[A], b: Future[B]): Future[(A, B)] =
-    a zip b
+  override def both[A, B](a: Future[A], b: Future[B]): Future[(A, B)] = a zip b
 
   override def gather[A](fs: Seq[Future[A]]): Future[List[A]] =
     Future.sequence(fs.toList)
@@ -84,11 +81,9 @@ private class FutureInstance(implicit ec: ExecutionContext)
       case e => -\/(e)
     }
 
-  def fail[A](e: Throwable): Future[A] =
-    Future.failed(e)
+  def fail[A](e: Throwable): Future[A] = Future.failed(e)
 
-  def raiseError[A](e: Throwable): Future[A] =
-    fail(e)
+  def raiseError[A](e: Throwable): Future[A] = fail(e)
 
   def handleError[A](fa: Future[A])(f: Throwable => Future[A]): Future[A] =
     fa.recoverWith(PartialFunction(f))

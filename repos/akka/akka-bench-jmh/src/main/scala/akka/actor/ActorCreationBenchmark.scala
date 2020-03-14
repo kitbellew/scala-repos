@@ -41,8 +41,7 @@ class ActorCreationBenchmark {
 
   @Benchmark
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
-  def synchronousStarting =
-    system.actorOf(props, name)
+  def synchronousStarting = system.actorOf(props, name)
 }
 
 class MyActor extends Actor {

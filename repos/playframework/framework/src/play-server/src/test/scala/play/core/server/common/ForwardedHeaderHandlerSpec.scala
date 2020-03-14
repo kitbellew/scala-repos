@@ -533,10 +533,12 @@ class ForwardedHeaderHandlerSpec extends Specification {
       Some(Configuration.from(config)))
     configuration.forwardedHeaders(headers).map { forwardedEntry =>
       val errorOrConnection = configuration.parseEntry(forwardedEntry)
-      val trusted = errorOrConnection match {
-        case Left(_)           => None
-        case Right(connection) => Some(configuration.isTrustedProxy(connection))
-      }
+      val trusted =
+        errorOrConnection match {
+          case Left(_) => None
+          case Right(connection) =>
+            Some(configuration.isTrustedProxy(connection))
+        }
       (forwardedEntry, errorOrConnection, trusted)
     }
   }

@@ -60,8 +60,8 @@ class PerformanceSpec
           }
         }
 
-      val iterations =
-        system.settings.config.getInt("akka.typed.PerformanceSpec.iterations")
+      val iterations = system.settings.config
+        .getInt("akka.typed.PerformanceSpec.iterations")
 
       def `01 when warming up`(): Unit =
         sync(runTest("01")(behavior(1, 1, iterations, "dispatcher-1")))

@@ -116,10 +116,12 @@ case class Dag[P <: Platform[P]](
     nodes: List[Node[P]],
     nodeToName: Map[Node[P], String] = Map[Node[P], String](),
     nameToNode: Map[String, Node[P]] = Map[String, Node[P]](),
-    dependenciesOfM: Map[Node[P], List[Node[P]]] =
-      Map[Node[P], List[Node[P]]](),
-    dependantsOfM: Map[Node[P], List[Node[P]]] =
-      Map[Node[P], List[Node[P]]]()) {
+    dependenciesOfM: Map[Node[P], List[Node[P]]] = Map[
+      Node[P],
+      List[Node[P]]](),
+    dependantsOfM: Map[Node[P], List[Node[P]]] = Map[
+      Node[P],
+      List[Node[P]]]()) {
 
   lazy val producerDependants = Dependants(tail)
 
@@ -227,24 +229,25 @@ object Dag {
       }
     }
     val producerToNode = buildProducerToNodeLookUp(registry)
-    val dag = registry.foldLeft(
-      Dag(
-        originalTail,
-        producerToPriorityNames,
-        tail,
-        producerToNode,
-        registry)) { (curDag, stormNode) =>
-      // Here we are building the Dag's connection topology.
-      // We visit every producer and connect the Node's represented by its dependant and dependancies.
-      // Producers which live in the same node will result in a NOP in connect.
-      stormNode.members.foldLeft(curDag) { (innerDag, dependantProducer) =>
-        Producer
-          .dependenciesOf(dependantProducer)
-          .foldLeft(innerDag) { (dag, dep) =>
-            dag.connect(dep, dependantProducer)
-          }
+    val dag =
+      registry.foldLeft(
+        Dag(
+          originalTail,
+          producerToPriorityNames,
+          tail,
+          producerToNode,
+          registry)) { (curDag, stormNode) =>
+        // Here we are building the Dag's connection topology.
+        // We visit every producer and connect the Node's represented by its dependant and dependancies.
+        // Producers which live in the same node will result in a NOP in connect.
+        stormNode.members.foldLeft(curDag) { (innerDag, dependantProducer) =>
+          Producer
+            .dependenciesOf(dependantProducer)
+            .foldLeft(innerDag) { (dag, dep) =>
+              dag.connect(dep, dependantProducer)
+            }
+        }
       }
-    }
 
     def tryGetName(
         name: String,
@@ -271,16 +274,18 @@ object Dag {
         usedNames: Set[String]): (Map[Node[P], String], Set[String]) = {
       dag.dependenciesOf(dep).foldLeft((outerNodeToName, usedNames)) {
         case ((nodeToName, taken), n) =>
-          val name =
-            tryGetName(nodeToName(dep) + "-" + n.shortName(sanitizeName), taken)
-          val useName = nodeToName.get(n) match {
-            case None => name
-            case Some(otherName) =>
-              if (otherName.split("-").size > name.split("-").size)
-                name
-              else
-                otherName
-          }
+          val name = tryGetName(
+            nodeToName(dep) + "-" + n.shortName(sanitizeName),
+            taken)
+          val useName =
+            nodeToName.get(n) match {
+              case None => name
+              case Some(otherName) =>
+                if (otherName.split("-").size > name.split("-").size)
+                  name
+                else
+                  otherName
+            }
           genNames(n, dag, nodeToName + (n -> useName), taken + useName)
       }
     }
@@ -292,20 +297,21 @@ object Dag {
     }
 
     //start with the true tail
-    val (nodeToName, _) = (dag.tailN :: allTails(dag))
-      .foldLeft((Map[Node[P], String](), Set[String]())) {
-        case ((nodeToName, usedNames), curTail) =>
-          if (!nodeToName.contains(curTail)) {
-            val tailN = tryGetName("Tail", usedNames)
-            genNames(
-              curTail,
-              dag,
-              nodeToName + (curTail -> tailN),
-              usedNames + tailN)
-          } else {
-            (nodeToName, usedNames)
-          }
-      }
+    val (nodeToName, _) =
+      (dag.tailN :: allTails(dag))
+        .foldLeft((Map[Node[P], String](), Set[String]())) {
+          case ((nodeToName, usedNames), curTail) =>
+            if (!nodeToName.contains(curTail)) {
+              val tailN = tryGetName("Tail", usedNames)
+              genNames(
+                curTail,
+                dag,
+                nodeToName + (curTail -> tailN),
+                usedNames + tailN)
+            } else {
+              (nodeToName, usedNames)
+            }
+        }
 
     val nameToNode = nodeToName.map((t) => (t._2, t._1))
     dag.copy(nodeToName = nodeToName, nameToNode = nameToNode)

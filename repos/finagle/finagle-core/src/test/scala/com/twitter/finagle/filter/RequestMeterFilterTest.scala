@@ -16,9 +16,10 @@ import org.scalatest.mock.MockitoSugar
 @RunWith(classOf[JUnitRunner])
 class RequestMeterFilterTest extends FunSuite with MockitoSugar {
 
-  val echoSvc = new Service[Int, Int] {
-    def apply(req: Int) = Future(req)
-  }
+  val echoSvc =
+    new Service[Int, Int] {
+      def apply(req: Int) = Future(req)
+    }
 
   test("return service execution after getting a permit") {
     val timer = new MockTimer
@@ -78,9 +79,10 @@ class RequestMeterFilterTest extends FunSuite with MockitoSugar {
   test("service failures are not wrapped as rejected") {
     val timer = new MockTimer
     val exc = new Exception("app exc")
-    val excSvc = new Service[Int, Int] {
-      def apply(req: Int) = Future.exception(exc)
-    }
+    val excSvc =
+      new Service[Int, Int] {
+        def apply(req: Int) = Future.exception(exc)
+      }
     Time.withCurrentTimeFrozen { ctl =>
       val meter = AsyncMeter.perSecond(1, 1)(timer)
       val svc = new RequestMeterFilter(meter) andThen excSvc

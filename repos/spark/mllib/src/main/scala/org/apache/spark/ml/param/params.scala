@@ -55,8 +55,7 @@ class Param[T](
       parent: Identifiable,
       name: String,
       doc: String,
-      isValid: T => Boolean) =
-    this(parent.uid, name, doc, isValid)
+      isValid: T => Boolean) = this(parent.uid, name, doc, isValid)
 
   def this(parent: String, name: String, doc: String) =
     this(parent, name, doc, ParamValidators.alwaysTrue[T])
@@ -77,10 +76,11 @@ class Param[T](
     */
   private[param] def validate(value: T): Unit = {
     if (!isValid(value)) {
-      val valueToString = value match {
-        case v: Array[_] => v.mkString("[", ",", "]")
-        case _           => value.toString
-      }
+      val valueToString =
+        value match {
+          case v: Array[_] => v.mkString("[", ",", "]")
+          case _           => value.toString
+        }
       throw new IllegalArgumentException(
         s"$parent parameter $name given invalid value $valueToString.")
     }
@@ -267,8 +267,7 @@ class DoubleParam(
       parent: Identifiable,
       name: String,
       doc: String,
-      isValid: Double => Boolean) =
-    this(parent.uid, name, doc, isValid)
+      isValid: Double => Boolean) = this(parent.uid, name, doc, isValid)
 
   def this(parent: Identifiable, name: String, doc: String) =
     this(parent.uid, name, doc)
@@ -337,8 +336,7 @@ class IntParam(
       parent: Identifiable,
       name: String,
       doc: String,
-      isValid: Int => Boolean) =
-    this(parent.uid, name, doc, isValid)
+      isValid: Int => Boolean) = this(parent.uid, name, doc, isValid)
 
   def this(parent: Identifiable, name: String, doc: String) =
     this(parent.uid, name, doc)
@@ -375,8 +373,7 @@ class FloatParam(
       parent: Identifiable,
       name: String,
       doc: String,
-      isValid: Float => Boolean) =
-    this(parent.uid, name, doc, isValid)
+      isValid: Float => Boolean) = this(parent.uid, name, doc, isValid)
 
   def this(parent: Identifiable, name: String, doc: String) =
     this(parent.uid, name, doc)
@@ -445,8 +442,7 @@ class LongParam(
       parent: Identifiable,
       name: String,
       doc: String,
-      isValid: Long => Boolean) =
-    this(parent.uid, name, doc, isValid)
+      isValid: Long => Boolean) = this(parent.uid, name, doc, isValid)
 
   def this(parent: Identifiable, name: String, doc: String) =
     this(parent.uid, name, doc)
@@ -652,13 +648,14 @@ trait Params extends Identifiable with Serializable {
     */
   def explainParam(param: Param[_]): String = {
     shouldOwn(param)
-    val valueStr = if (isDefined(param)) {
-      val defaultValueStr = getDefault(param).map("default: " + _)
-      val currentValueStr = get(param).map("current: " + _)
-      (defaultValueStr ++ currentValueStr).mkString("(", ", ", ")")
-    } else {
-      "(undefined)"
-    }
+    val valueStr =
+      if (isDefined(param)) {
+        val defaultValueStr = getDefault(param).map("default: " + _)
+        val currentValueStr = get(param).map("current: " + _)
+        (defaultValueStr ++ currentValueStr).mkString("(", ", ", ")")
+      } else {
+        "(undefined)"
+      }
     s"${param.name}: ${param.doc} $valueStr"
   }
 

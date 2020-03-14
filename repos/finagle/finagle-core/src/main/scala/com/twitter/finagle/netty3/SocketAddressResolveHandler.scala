@@ -10,28 +10,29 @@ private[finagle] trait SocketAddressResolver
     extends (String => Either[Throwable, InetAddress])
 
 private[finagle] object SocketAddressResolver {
-  val random = new SocketAddressResolver {
-    def apply(hostName: String): Either[Throwable, InetAddress] = {
-      try {
-        // NOTE: Important InetAddress and DNS cache policy
-        // InetAddress implementation caches DNS resolutions but doesn't respect DNS TTL responses.
-        // To control TTL, we need to configure networkaddress.cache.ttl security property.
-        // However, do not completely disable cache. That may cause significant performance issue.
-        val addresses = InetAddress.getAllByName(hostName)
+  val random =
+    new SocketAddressResolver {
+      def apply(hostName: String): Either[Throwable, InetAddress] = {
+        try {
+          // NOTE: Important InetAddress and DNS cache policy
+          // InetAddress implementation caches DNS resolutions but doesn't respect DNS TTL responses.
+          // To control TTL, we need to configure networkaddress.cache.ttl security property.
+          // However, do not completely disable cache. That may cause significant performance issue.
+          val addresses = InetAddress.getAllByName(hostName)
 
-        if (addresses.nonEmpty) {
-          val index = Rng.threadLocal.nextInt(addresses.length)
-          Right(addresses(index))
-        } else {
-          // Shouldn't reach here.
-          Left(new UnknownHostException(hostName))
+          if (addresses.nonEmpty) {
+            val index = Rng.threadLocal.nextInt(addresses.length)
+            Right(addresses(index))
+          } else {
+            // Shouldn't reach here.
+            Left(new UnknownHostException(hostName))
+          }
+        } catch {
+          case t: Throwable =>
+            Left(t)
         }
-      } catch {
-        case t: Throwable =>
-          Left(t)
       }
     }
-  }
 }
 
 private[finagle] class SocketAddressResolveHandler(
@@ -50,12 +51,13 @@ private[finagle] class SocketAddressResolveHandler(
               case Right(address) =>
                 val resolvedSocketAddress =
                   new InetSocketAddress(address, socketAddress.getPort)
-                val resolvedEvent = new DownstreamChannelStateEvent(
-                  de.getChannel,
-                  de.getFuture,
-                  de.getState,
-                  resolvedSocketAddress
-                )
+                val resolvedEvent =
+                  new DownstreamChannelStateEvent(
+                    de.getChannel,
+                    de.getFuture,
+                    de.getState,
+                    resolvedSocketAddress
+                  )
                 SocketAddressResolveHandler.super
                   .connectRequested(ctx, resolvedEvent)
               case Left(t) =>

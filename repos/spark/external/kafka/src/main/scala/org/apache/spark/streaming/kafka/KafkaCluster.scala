@@ -108,18 +108,19 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
     val topics = topicAndPartitions.map(_.topic)
     val response = getPartitionMetadata(topics).right
     val answer = response.flatMap { tms: Set[TopicMetadata] =>
-      val leaderMap = tms.flatMap { tm: TopicMetadata =>
-        tm.partitionsMetadata.flatMap { pm: PartitionMetadata =>
-          val tp = TopicAndPartition(tm.topic, pm.partitionId)
-          if (topicAndPartitions(tp)) {
-            pm.leader.map { l =>
-              tp -> (l.host -> l.port)
+      val leaderMap =
+        tms.flatMap { tm: TopicMetadata =>
+          tm.partitionsMetadata.flatMap { pm: PartitionMetadata =>
+            val tp = TopicAndPartition(tm.topic, pm.partitionId)
+            if (topicAndPartitions(tp)) {
+              pm.leader.map { l =>
+                tp -> (l.host -> l.port)
+              }
+            } else {
+              None
             }
-          } else {
-            None
           }
-        }
-      }.toMap
+        }.toMap
 
       if (leaderMap.keys.size == topicAndPartitions.size) {
         Right(leaderMap)
@@ -154,8 +155,8 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
     val errs = new Err
     withBrokers(Random.shuffle(config.seedBrokers), errs) { consumer =>
       val resp: TopicMetadataResponse = consumer.send(req)
-      val respErrs =
-        resp.topicsMetadata.filter(m => m.errorCode != ErrorMapping.NoError)
+      val respErrs = resp.topicsMetadata.filter(m =>
+        m.errorCode != ErrorMapping.NoError)
 
       if (respErrs.isEmpty) {
         return Right(resp.topicsMetadata.toSet)
@@ -209,17 +210,18 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       maxNumOffsets: Int
   ): Either[Err, Map[TopicAndPartition, Seq[LeaderOffset]]] = {
     findLeaders(topicAndPartitions).right.flatMap { tpToLeader =>
-      val leaderToTp: Map[(String, Int), Seq[TopicAndPartition]] =
-        flip(tpToLeader)
+      val leaderToTp: Map[(String, Int), Seq[TopicAndPartition]] = flip(
+        tpToLeader)
       val leaders = leaderToTp.keys
       var result = Map[TopicAndPartition, Seq[LeaderOffset]]()
       val errs = new Err
       withBrokers(leaders, errs) { consumer =>
-        val partitionsToGetOffsets: Seq[TopicAndPartition] =
-          leaderToTp((consumer.host, consumer.port))
-        val reqMap = partitionsToGetOffsets.map { tp: TopicAndPartition =>
-          tp -> PartitionOffsetRequestInfo(before, maxNumOffsets)
-        }.toMap
+        val partitionsToGetOffsets: Seq[TopicAndPartition] = leaderToTp(
+          (consumer.host, consumer.port))
+        val reqMap =
+          partitionsToGetOffsets.map { tp: TopicAndPartition =>
+            tp -> PartitionOffsetRequestInfo(before, maxNumOffsets)
+          }.toMap
         val req = OffsetRequest(reqMap)
         val resp = consumer.getOffsetsBefore(req)
         val respMap = resp.partitionErrorAndOffsets
@@ -296,8 +298,10 @@ class KafkaCluster(val kafkaParams: Map[String, String]) extends Serializable {
       consumerApiVersion: Short
   ): Either[Err, Map[TopicAndPartition, OffsetMetadataAndError]] = {
     var result = Map[TopicAndPartition, OffsetMetadataAndError]()
-    val req =
-      OffsetFetchRequest(groupId, topicAndPartitions.toSeq, consumerApiVersion)
+    val req = OffsetFetchRequest(
+      groupId,
+      topicAndPartitions.toSeq,
+      consumerApiVersion)
     val errs = new Err
     withBrokers(Random.shuffle(config.seedBrokers), errs) { consumer =>
       val resp = consumer.fetchOffsets(req)

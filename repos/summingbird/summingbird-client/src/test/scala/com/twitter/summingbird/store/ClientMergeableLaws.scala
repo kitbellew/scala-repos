@@ -25,8 +25,10 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       online: Store[(K, BatchID), V])(implicit
       val batcher: Batcher,
       semi: Semigroup[V]) {
-    val mergeable =
-      ClientMergeable(offline, MergeableStore.fromStoreNoMulti(online), 10)
+    val mergeable = ClientMergeable(
+      offline,
+      MergeableStore.fromStoreNoMulti(online),
+      10)
   }
 
   def jstore[K, V]: Store[K, V] =
@@ -48,14 +50,15 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       }
       toMerge.forall {
         case (k, (v1, v2)) =>
-          val tup = for {
-            prior <- machine.mergeable.readable
-              .multiGetBatch(BatchID(1), Set(k))(k)
-            mergePrior <- machine.mergeable.merge((k, BatchID(1)), v1)
-            mergeAfter <- machine.mergeable.merge((k, BatchID(1)), v2)
-            last <- machine.mergeable.readable
-              .multiGetBatch(BatchID(1), Set(k))(k)
-          } yield (prior, mergePrior, mergeAfter, last)
+          val tup =
+            for {
+              prior <- machine.mergeable.readable
+                .multiGetBatch(BatchID(1), Set(k))(k)
+              mergePrior <- machine.mergeable.merge((k, BatchID(1)), v1)
+              mergeAfter <- machine.mergeable.merge((k, BatchID(1)), v2)
+              last <- machine.mergeable.readable
+                .multiGetBatch(BatchID(1), Set(k))(k)
+            } yield (prior, mergePrior, mergeAfter, last)
 
           Await.result(tup.map {
             case x @ (None, None, Some(o3), Some(last)) =>
@@ -134,26 +137,29 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
     // Initialize key 0 with some data:
     machine.offline.put((0, Some((BatchID(0), 1))))
     val prior1 = merge.merge(((0, BatchID(1)), 3))
-    val first = Await.result(prior1) match {
-      case Some(1) => true
-      case x =>
-        println("first:" + x)
-        false
-    }
+    val first =
+      Await.result(prior1) match {
+        case Some(1) => true
+        case x =>
+          println("first:" + x)
+          false
+      }
     val prior2 = merge.merge(((0, BatchID(1)), 7))
-    val second = Await.result(prior2) match {
-      case Some(4) => true
-      case x =>
-        println("secord:" + x)
-        false
-    }
+    val second =
+      Await.result(prior2) match {
+        case Some(4) => true
+        case x =>
+          println("secord:" + x)
+          false
+      }
     val last = merge.readable.multiGetBatch(BatchID(1), Set(0)).apply(0)
-    val third = Await.result(last) match {
-      case Some(11) => true
-      case x =>
-        println("third:" + x)
-        false
-    }
+    val third =
+      Await.result(last) match {
+        case Some(11) => true
+        case x =>
+          println("third:" + x)
+          false
+      }
     first && second && third
   }
 }

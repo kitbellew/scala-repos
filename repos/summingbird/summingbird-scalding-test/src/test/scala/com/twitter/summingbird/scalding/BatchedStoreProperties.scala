@@ -126,8 +126,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                     _),
                   _)) => {
             //readInterval should start from the last written interval in the store
-            val start: Timestamp =
-              batcher.earliestTimeOf(testStore.initBatch.next)
+            val start: Timestamp = batcher.earliestTimeOf(
+              testStore.initBatch.next)
             implicitly[Ordering[Timestamp]].equiv(readIntervalLower, start)
           }
           case Right(_) => false
@@ -184,11 +184,12 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           mode: Mode) =>
         val (inputWithTimeStamp, batcher, testStore) =
           inputWithTimeStampAndBatcherAndStore
-        val mergeResult = testStore.merge(
-          diskPipeFactory,
-          implicitly[Semigroup[Int]],
-          commutativity,
-          10)((interval, mode))
+        val mergeResult =
+          testStore.merge(
+            diskPipeFactory,
+            implicitly[Semigroup[Int]],
+            commutativity,
+            10)((interval, mode))
         mergeResult.isRight ==> {
           val Right(
             (
@@ -242,12 +243,13 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                 ExclusiveUpper(_)) = time
 
               //shrink the endTime so it does not cover a whole batch
-              val onDiskEndTime: Long = Gen
-                .choose(
-                  startRequestedTime.milliSinceEpoch,
-                  nextBatchEnding.milliSinceEpoch)
-                .sample
-                .get
+              val onDiskEndTime: Long =
+                Gen
+                  .choose(
+                    startRequestedTime.milliSinceEpoch,
+                    nextBatchEnding.milliSinceEpoch)
+                  .sample
+                  .get
 
               val readTime: Interval[Timestamp] =
                 if (startRequestedTime == nextBatchEnding)
@@ -266,11 +268,12 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
             }
           }
 
-          val mergeResult = testStore.merge(
-            diskPipeFactory,
-            implicitly[Semigroup[Int]],
-            commutativity,
-            10)((interval, mode))
+          val mergeResult =
+            testStore.merge(
+              diskPipeFactory,
+              implicitly[Semigroup[Int]],
+              commutativity,
+              10)((interval, mode))
 
           mergeResult match {
             case Left(l) => {

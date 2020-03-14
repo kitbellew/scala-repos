@@ -72,15 +72,17 @@ private[akka] trait MetricsKit extends MetricsKitOps {
       if (settings.Reporters.contains("graphite")) {
         note(
           s"MetricsKit: Graphite reporter enabled, sending metrics to: ${settings.GraphiteReporter.Host}:${settings.GraphiteReporter.Port}")
-        val address = new InetSocketAddress(
-          settings.GraphiteReporter.Host,
-          settings.GraphiteReporter.Port)
+        val address =
+          new InetSocketAddress(
+            settings.GraphiteReporter.Host,
+            settings.GraphiteReporter.Port)
         val graphite = new GraphiteClient(address)
-        val akkaGraphiteReporter = new AkkaGraphiteReporter(
-          registry,
-          settings.GraphiteReporter.Prefix,
-          graphite,
-          settings.GraphiteReporter.Verbose)
+        val akkaGraphiteReporter =
+          new AkkaGraphiteReporter(
+            registry,
+            settings.GraphiteReporter.Prefix,
+            graphite,
+            settings.GraphiteReporter.Verbose)
 
         if (settings.GraphiteReporter.ScheduledReportInterval > Duration.Zero) {
           akkaGraphiteReporter.start(
@@ -218,20 +220,22 @@ private[akka] object MetricsKit {
 
   val MemMetricsFilter = new RegexMetricFilter(""".*\.mem\..*""".r)
 
-  val FileDescriptorMetricsFilter = new RegexMetricFilter(
-    """.*\.file-descriptors\..*""".r)
+  val FileDescriptorMetricsFilter =
+    new RegexMetricFilter(""".*\.file-descriptors\..*""".r)
 
-  val KnownOpsInTimespanCounterFilter = new MetricFilter {
-    override def matches(name: String, metric: Metric) =
-      classOf[KnownOpsInTimespanTimer].isInstance(metric)
-  }
+  val KnownOpsInTimespanCounterFilter =
+    new MetricFilter {
+      override def matches(name: String, metric: Metric) =
+        classOf[KnownOpsInTimespanTimer].isInstance(metric)
+    }
 
-  val GcMetricsFilter = new MetricFilter {
-    val keyPattern = """.*\.gc\..*""".r.pattern
+  val GcMetricsFilter =
+    new MetricFilter {
+      val keyPattern = """.*\.gc\..*""".r.pattern
 
-    override def matches(name: String, metric: Metric) =
-      keyPattern.matcher(name).matches()
-  }
+      override def matches(name: String, metric: Metric) =
+        keyPattern.matcher(name).matches()
+    }
 }
 
 /** Provides access to custom Akka `com.codahale.metrics.Metric`, with named methods. */
@@ -265,8 +269,8 @@ private[akka] class MetricsKitSettings(config: Config) {
         v ⇒ !v.trim.isEmpty,
         "akka.test.metrics.reporter.graphite.host was used but was empty!")
     val Port = config.getInt("akka.test.metrics.reporter.graphite.port")
-    val Verbose =
-      config.getBoolean("akka.test.metrics.reporter.graphite.verbose")
+    val Verbose = config.getBoolean(
+      "akka.test.metrics.reporter.graphite.verbose")
 
     val ScheduledReportInterval = config.getMillisDuration(
       "akka.test.metrics.reporter.graphite.scheduled-report-interval")
@@ -275,8 +279,8 @@ private[akka] class MetricsKitSettings(config: Config) {
   object ConsoleReporter {
     val ScheduledReportInterval = config.getMillisDuration(
       "akka.test.metrics.reporter.console.scheduled-report-interval")
-    val Verbose =
-      config.getBoolean("akka.test.metrics.reporter.console.verbose")
+    val Verbose = config.getBoolean(
+      "akka.test.metrics.reporter.console.verbose")
   }
 
 }

@@ -70,13 +70,14 @@ trait LibraryModule extends Binder {
     def lib2 = Set(math.roundTo)
     def libReduction = Set(reductions.count)
 
-    lazy val expandGlob = new Morphism1Like {
-      val namespace = Vector("std", "fs")
-      val name = "expandGlob"
-      val opcode = 0x0001
-      val rowLevel = true
-      val tpe = UnaryOperationType(JType.JUniverseT, JType.JUniverseT)
-    }
+    lazy val expandGlob =
+      new Morphism1Like {
+        val namespace = Vector("std", "fs")
+        val name = "expandGlob"
+        val opcode = 0x0001
+        val rowLevel = true
+        val tpe = UnaryOperationType(JType.JUniverseT, JType.JUniverseT)
+      }
 
     object math {
       val Namespace = Vector("std", "math")

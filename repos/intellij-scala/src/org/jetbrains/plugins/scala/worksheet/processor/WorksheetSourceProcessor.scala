@@ -42,8 +42,7 @@ object WorksheetSourceProcessor {
 
   private val PRINT_ARRAY_NAME = "print$$$Worksheet$$$Array$$$"
 
-  private val PRINT_ARRAY_TEXT =
-    s"""
+  private val PRINT_ARRAY_TEXT = s"""
       |def $PRINT_ARRAY_NAME(an: Any): String = {
       |  an match {
       |    case arr: Array[_] => scala.collection.mutable.WrappedArray.make(arr).toString().stripPrefix("Wrapped")
@@ -105,8 +104,10 @@ object WorksheetSourceProcessor {
           }
       } getOrElse dflt
 
-    val macroPrinterName =
-      withCompilerVersion("MacroPrinter210", "MacroPrinter211", "MacroPrinter")
+    val macroPrinterName = withCompilerVersion(
+      "MacroPrinter210",
+      "MacroPrinter211",
+      "MacroPrinter")
 
     val runPrinterName = "worksheet$$run$$printer"
 
@@ -121,8 +122,9 @@ object WorksheetSourceProcessor {
     val startText = ""
 
     val classRes = new StringBuilder(s"final class $classPrologue { \n")
-    val objectRes = new StringBuilder(
-      s"def main($runPrinterName: Any) ${withCompilerVersion("", " : Unit = ", "")} { \n val $instanceName = new $name \n")
+    val objectRes =
+      new StringBuilder(
+        s"def main($runPrinterName: Any) ${withCompilerVersion("", " : Unit = ", "")} { \n val $instanceName = new $name \n")
 
     var resCount = 0
     var assignCount = 0
@@ -185,22 +187,24 @@ object WorksheetSourceProcessor {
     }
 
     @inline def appendDeclaration(psi: ScalaPsiElement) {
-      val txt = psi match {
-        case valDef: ScPatternDefinition
-            if !valDef.getModifierList.has(ScalaTokenTypes.kLAZY) =>
-          "lazy " + valDef.getText
-        case a => a.getText
-      }
+      val txt =
+        psi match {
+          case valDef: ScPatternDefinition
+              if !valDef.getModifierList.has(ScalaTokenTypes.kLAZY) =>
+            "lazy " + valDef.getText
+          case a => a.getText
+        }
 
       classRes append txt append insertNlsFromWs(psi)
     }
 
     @inline def appendPsiComment(comment: PsiComment) {
       val range = comment.getTextRange
-      val backOffset = comment.getPrevSibling match {
-        case ws: PsiWhiteSpace if countNls(ws.getText) > 0 => 0
-        case _                                             => 1
-      }
+      val backOffset =
+        comment.getPrevSibling match {
+          case ws: PsiWhiteSpace if countNls(ws.getText) > 0 => 0
+          case _                                             => 1
+        }
 
       ifDocument map { document =>
         document.getLineNumber(range.getEndOffset) - document.getLineNumber(
@@ -353,11 +357,12 @@ object WorksheetSourceProcessor {
 
     insertUntouched(preDeclarations)
 
-    val rootChildren = root match {
-      case file: PsiFile => file.getChildren
-      case null          => srcFile.getChildren
-      case other         => other.getNode.getChildren(null) map (_.getPsi)
-    }
+    val rootChildren =
+      root match {
+        case file: PsiFile => file.getChildren
+        case null          => srcFile.getChildren
+        case other         => other.getNode.getChildren(null) map (_.getPsi)
+      }
 
     rootChildren foreach {
       case tpe: ScTypeAlias =>
@@ -379,11 +384,12 @@ object WorksheetSourceProcessor {
       case tpeDef: ScTypeDefinition =>
         withPrecomputeLines(
           tpeDef, {
-            val keyword = tpeDef match {
-              case _: ScClass => "class"
-              case _: ScTrait => "trait"
-              case _          => "module"
-            }
+            val keyword =
+              tpeDef match {
+                case _: ScClass => "class"
+                case _: ScTrait => "trait"
+                case _          => "module"
+              }
 
             objectRes append withPrint(s"defined $keyword ${tpeDef.name}")
           }
@@ -417,20 +423,22 @@ object WorksheetSourceProcessor {
 
         val lineNum = psiToLineNumbers(varDef)
 
-        val txt = (varDef.typeElement, varDef.expr) match {
-          case (Some(tpl: ScTypeElement), Some(expr)) =>
-            "var " + (typeElement2Types(tpl) zip varDef.declaredElements map {
-              case (tpe, el) => el.name + ": " + tpe.getText
-            }).mkString("(", ",", ")") + " = { " + expr.getText + ";}"
-          case (_, Some(expr)) =>
-            "var " + varDef.declaredElements
-              .map {
-                case tpePattern: ScTypedPattern => writeTypedPatter(tpePattern)
-                case a                          => a.name
-              }
-              .mkString("(", ",", ")") + " = { " + expr.getText + ";}"
-          case _ => varDef.getText
-        }
+        val txt =
+          (varDef.typeElement, varDef.expr) match {
+            case (Some(tpl: ScTypeElement), Some(expr)) =>
+              "var " + (typeElement2Types(tpl) zip varDef.declaredElements map {
+                case (tpe, el) => el.name + ": " + tpe.getText
+              }).mkString("(", ",", ")") + " = { " + expr.getText + ";}"
+            case (_, Some(expr)) =>
+              "var " + varDef.declaredElements
+                .map {
+                  case tpePattern: ScTypedPattern =>
+                    writeTypedPatter(tpePattern)
+                  case a => a.name
+                }
+                .mkString("(", ",", ")") + " = { " + expr.getText + ";}"
+            case _ => varDef.getText
+          }
 
         classRes append txt append ";"
         varDef.declaredNames foreach {
@@ -489,9 +497,10 @@ object WorksheetSourceProcessor {
   }
 
   private def isForObject(file: ScalaFile) = {
-    val isEclipseMode = ScalaProjectSettings
-      .getInstance(file.getProject)
-      .isUseEclipseCompatibility
+    val isEclipseMode =
+      ScalaProjectSettings
+        .getInstance(file.getProject)
+        .isUseEclipseCompatibility
 
     @tailrec
     def isObjectOk(psi: PsiElement): Boolean =

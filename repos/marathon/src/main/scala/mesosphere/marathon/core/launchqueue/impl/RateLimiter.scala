@@ -39,8 +39,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
 
   private[this] def setNewDelay(app: AppDefinition, message: String)(
       calcDelay: Option[Delay] => Option[Delay]): Timestamp = {
-    val maybeDelay: Option[Delay] =
-      taskLaunchDelays.get(app.id -> app.versionInfo.lastConfigChangeVersion)
+    val maybeDelay: Option[Delay] = taskLaunchDelays.get(
+      app.id -> app.versionInfo.lastConfigChangeVersion)
     calcDelay(maybeDelay) match {
       case Some(newDelay) =>
         import mesosphere.util.DurationToHumanReadable

@@ -39,8 +39,8 @@ final class CrosstableApi(coll: Coll) {
     game.userIds.distinct.sorted match {
       case List(u1, u2) =>
         val result = Result(game.id, game.winnerUserId)
-        val bsonResult =
-          Crosstable.crosstableBSONHandler.writeResult(result, u1)
+        val bsonResult = Crosstable.crosstableBSONHandler
+          .writeResult(result, u1)
         val bson = BSONDocument(
           "$inc" -> BSONDocument(
             Crosstable.BSONFields.nbGames -> BSONInteger(1),

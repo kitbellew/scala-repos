@@ -230,17 +230,18 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
   }
 
   test("block push errors are reported") {
-    val listener = new TestBlockGeneratorListener {
-      @volatile var errorReported = false
-      override def onPushBlock(
-          blockId: StreamBlockId,
-          arrayBuffer: mutable.ArrayBuffer[_]): Unit = {
-        throw new SparkException("test")
+    val listener =
+      new TestBlockGeneratorListener {
+        @volatile var errorReported = false
+        override def onPushBlock(
+            blockId: StreamBlockId,
+            arrayBuffer: mutable.ArrayBuffer[_]): Unit = {
+          throw new SparkException("test")
+        }
+        override def onError(message: String, throwable: Throwable): Unit = {
+          errorReported = true
+        }
       }
-      override def onError(message: String, throwable: Throwable): Unit = {
-        errorReported = true
-      }
-    }
     blockGenerator = new BlockGenerator(listener, 0, conf)
     blockGenerator.start()
     assert(listener.errorReported === false)
@@ -256,11 +257,12 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     * so that the main thread can advance the clock that allows the stopping to proceed.
     */
   private def stopBlockGenerator(blockGenerator: BlockGenerator): Thread = {
-    val thread = new Thread() {
-      override def run(): Unit = {
-        blockGenerator.stop()
+    val thread =
+      new Thread() {
+        override def run(): Unit = {
+          blockGenerator.stop()
+        }
       }
-    }
     thread.start()
     thread
   }

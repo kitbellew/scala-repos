@@ -92,9 +92,10 @@ object BifunctorUsage extends App {
   // bifunctor, we can get a bimap that operates on every item in the
   // list.
   val bff = Functor[List] bicompose Bifunctor[\/]
-  val bfres = bff.bimap(List("asdf".left, 2.right, "qwer".left, 4.right))(
-    _.toUpperCase,
-    _ + 1)
+  val bfres =
+    bff.bimap(List("asdf".left, 2.right, "qwer".left, 4.right))(
+      _.toUpperCase,
+      _ + 1)
   assert(bfres === List("ASDF".left, 3.right, "QWER".left, 5.right))
 
   //

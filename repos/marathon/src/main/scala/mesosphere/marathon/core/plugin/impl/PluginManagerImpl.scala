@@ -29,8 +29,8 @@ private[plugin] class PluginManagerImpl(
     extends PluginManager {
   private[this] val log: Logger = LoggerFactory.getLogger(getClass)
 
-  private[this] var pluginHolders: List[PluginHolder[_]] =
-    List.empty[PluginHolder[_]]
+  private[this] var pluginHolders: List[PluginHolder[_]] = List
+    .empty[PluginHolder[_]]
 
   val classLoader: URLClassLoader =
     new URLClassLoader(urls.toArray, this.getClass.getClassLoader)
@@ -53,18 +53,19 @@ private[plugin] class PluginManagerImpl(
           plugin
         case _ => plugin
       }
-    val serviceLoader =
-      ServiceLoader.load(ct.runtimeClass.asInstanceOf[Class[T]], classLoader)
+    val serviceLoader = ServiceLoader.load(
+      ct.runtimeClass.asInstanceOf[Class[T]],
+      classLoader)
     val providers = serviceLoader.iterator().asScala.toSeq
-    val plugins =
-      definitions.plugins.filter(_.plugin == ct.runtimeClass.getName).map {
-        definition =>
-          providers
-            .find(_.getClass.getName == definition.implementation)
-            .map(plugin =>
-              PluginReference(configure(plugin, definition), definition))
-            .getOrElse(throw new WrongConfigurationException(
-              s"Plugin not found: $definition"))
+    val plugins = definitions.plugins
+      .filter(_.plugin == ct.runtimeClass.getName)
+      .map { definition =>
+        providers
+          .find(_.getClass.getName == definition.implementation)
+          .map(plugin =>
+            PluginReference(configure(plugin, definition), definition))
+          .getOrElse(throw new WrongConfigurationException(
+            s"Plugin not found: $definition"))
       }
     log.info(s"Found ${plugins.size} plugins.")
     PluginHolder(ct, plugins)
@@ -115,14 +116,15 @@ object PluginManagerImpl {
   }
 
   private[plugin] def apply(conf: MarathonConf): PluginManagerImpl = {
-    val configuredPluginManager = for {
-      dirName <- conf.pluginDir
-      confName <- conf.pluginConf
-    } yield {
-      val sources = IO.listFiles(dirName)
-      val descriptor = parse(confName)
-      new PluginManagerImpl(conf, descriptor, sources.map(_.toURI.toURL))
-    }
+    val configuredPluginManager =
+      for {
+        dirName <- conf.pluginDir
+        confName <- conf.pluginConf
+      } yield {
+        val sources = IO.listFiles(dirName)
+        val descriptor = parse(confName)
+        new PluginManagerImpl(conf, descriptor, sources.map(_.toURI.toURL))
+      }
 
     configuredPluginManager.get.getOrElse(
       new PluginManagerImpl(conf, PluginDefinitions(Seq.empty), Seq.empty))

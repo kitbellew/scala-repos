@@ -7,8 +7,7 @@ final class BitraverseOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
     extends Ops[F[A, B]] {
   ////
   final def bitraverse[G[_], C, D](f: A => G[C], g: B => G[D])(
-      implicit ap: Applicative[G]): G[F[C, D]] =
-    F.bitraverseImpl(self)(f, g)
+      implicit ap: Applicative[G]): G[F[C, D]] = F.bitraverseImpl(self)(f, g)
 
   final def bitraverseU[GC, GD](f: A => GC, g: B => GD)(
       implicit G1: UnapplyProduct[Applicative, GC, GD]): G1.M[F[G1.A, G1.B]] =
@@ -19,8 +18,7 @@ final class BitraverseOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
   final def bisequence[G[_], A1, B1](implicit
       G: Applicative[G],
       eva: A === G[A1],
-      evb: B === G[B1]): G[F[A1, B1]] =
-    bitraverse(fa => eva(fa), fb => evb(fb))
+      evb: B === G[B1]): G[F[A1, B1]] = bitraverse(fa => eva(fa), fb => evb(fb))
 
   final def bisequenceU[GC, GD](implicit
       eva: A === GC,
@@ -43,8 +41,7 @@ trait ToBitraverseOps
     with ToBifoldableOps {
 
   implicit def ToBitraverseOps[F[_, _], A, B](v: F[A, B])(
-      implicit F0: Bitraverse[F]) =
-    new BitraverseOps[F, A, B](v)
+      implicit F0: Bitraverse[F]) = new BitraverseOps[F, A, B](v)
 
   implicit def ToBitraverseVFromKleisliLike[G[_], F[G[_], _, _], A, B](
       v: F[G, A, B])(implicit F0: Bitraverse[F[G, ?, ?]]) =

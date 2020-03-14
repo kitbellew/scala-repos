@@ -22,8 +22,9 @@ private[cluster] object Gossip {
 
   private val leaderMemberStatus = Set[MemberStatus](Up, Leaving)
   private val convergenceMemberStatus = Set[MemberStatus](Up, Leaving)
-  val convergenceSkipUnreachableWithMemberStatus =
-    Set[MemberStatus](Down, Exiting)
+  val convergenceSkipUnreachableWithMemberStatus = Set[MemberStatus](
+    Down,
+    Exiting)
   val removeUnreachableWithMemberStatus = Set[MemberStatus](Down, Exiting)
 
 }

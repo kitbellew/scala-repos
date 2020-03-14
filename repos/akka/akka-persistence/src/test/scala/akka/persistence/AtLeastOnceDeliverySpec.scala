@@ -213,8 +213,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs (TimingTest) in {
         val probe = TestProbe()
         val probeA = TestProbe()
-        val destinations =
-          Map("A" -> system.actorOf(destinationProps(probeA.ref)).path)
+        val destinations = Map(
+          "A" -> system.actorOf(destinationProps(probeA.ref)).path)
         val snd = system.actorOf(
           senderProps(
             probe.ref,
@@ -235,8 +235,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
         val probe = TestProbe()
         val probeA = TestProbe()
         val dst = system.actorOf(destinationProps(probeA.ref))
-        val destinations =
-          Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
+        val destinations = Map(
+          "A" -> system.actorOf(unreliableProps(3, dst)).path)
         val snd = system.actorOf(
           senderProps(
             probe.ref,
@@ -278,8 +278,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations =
-        Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
+      val destinations = Map(
+        "A" -> system.actorOf(unreliableProps(3, dst)).path)
       val snd = system.actorOf(
         senderProps(
           probe.ref,
@@ -322,8 +322,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations =
-        Map("A" -> system.actorOf(unreliableProps(2, dst)).path)
+      val destinations = Map(
+        "A" -> system.actorOf(unreliableProps(2, dst)).path)
       val snd = system.actorOf(
         senderProps(
           probe.ref,
@@ -370,8 +370,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations =
-        Map("A" -> system.actorOf(unreliableProps(3, dst)).path)
+      val destinations = Map(
+        "A" -> system.actorOf(unreliableProps(3, dst)).path)
       val snd = system.actorOf(
         senderProps(
           probe.ref,
@@ -435,11 +435,12 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       probe.expectMsg(ReqAck)
       probe.expectMsg(ReqAck)
       probe.expectMsg(ReqAck)
-      val unconfirmed = probe
-        .receiveWhile(5.seconds) {
-          case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
-        }
-        .flatten
+      val unconfirmed =
+        probe
+          .receiveWhile(5.seconds) {
+            case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
+          }
+          .flatten
       unconfirmed.map(_.destination).toSet should ===(
         Set(probeA.ref.path, probeB.ref.path))
       unconfirmed.map(_.message).toSet should be(
@@ -505,8 +506,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
-      val destinations =
-        Map("A" -> system.actorOf(unreliableProps(2, dst)).path)
+      val destinations = Map(
+        "A" -> system.actorOf(unreliableProps(2, dst)).path)
 
       val snd = system.actorOf(
         senderProps(

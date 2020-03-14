@@ -92,15 +92,16 @@ object EventHandler extends ListenerManagement {
   lazy val EventHandlerDispatcher =
     Dispatchers.newExecutorBasedEventDrivenDispatcher(ID).build
 
-  val level: Int = config.getString("akka.event-handler-level", "INFO") match {
-    case "ERROR"   => ErrorLevel
-    case "WARNING" => WarningLevel
-    case "INFO"    => InfoLevel
-    case "DEBUG"   => DebugLevel
-    case unknown =>
-      throw new ConfigurationException(
-        "Configuration option 'akka.event-handler-level' is invalid [" + unknown + "]")
-  }
+  val level: Int =
+    config.getString("akka.event-handler-level", "INFO") match {
+      case "ERROR"   => ErrorLevel
+      case "WARNING" => WarningLevel
+      case "INFO"    => InfoLevel
+      case "DEBUG"   => DebugLevel
+      case unknown =>
+        throw new ConfigurationException(
+          "Configuration option 'akka.event-handler-level' is invalid [" + unknown + "]")
+    }
 
   /**
     * Shuts down all event handler listeners including the event handle dispatcher.
@@ -238,10 +239,11 @@ object EventHandler extends ListenerManagement {
     }
   }
 
-  val defaultListeners = config.getList("akka.event-handlers") match {
-    case Nil       => "akka.event.EventHandler$DefaultListener" :: Nil
-    case listeners => listeners
-  }
+  val defaultListeners =
+    config.getList("akka.event-handlers") match {
+      case Nil       => "akka.event.EventHandler$DefaultListener" :: Nil
+      case listeners => listeners
+    }
   defaultListeners foreach { listenerName =>
     try {
       ReflectiveAccess.getClassFor[Actor](listenerName) match {

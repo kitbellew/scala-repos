@@ -92,17 +92,18 @@ class VM(
     req.enable()
   }
 
-  private val fileToUnits =
-    mutable.HashMap[String, mutable.HashSet[ReferenceType]]()
+  private val fileToUnits = mutable
+    .HashMap[String, mutable.HashSet[ReferenceType]]()
   private val process = vm.process()
-  private val monitor = mode match {
-    case VmAttach(_, _) => Nil
-    case VmStart(_) =>
-      List(
-        new MonitorOutput(process.getErrorStream, broadcaster),
-        new MonitorOutput(process.getInputStream, broadcaster)
-      )
-  }
+  private val monitor =
+    mode match {
+      case VmAttach(_, _) => Nil
+      case VmStart(_) =>
+        List(
+          new MonitorOutput(process.getErrorStream, broadcaster),
+          new MonitorOutput(process.getInputStream, broadcaster)
+        )
+    }
   private val savedObjects =
     new mutable.HashMap[DebugObjectId, ObjectReference]()
 

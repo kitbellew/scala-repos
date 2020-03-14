@@ -81,8 +81,8 @@ class StackClientTest
     // use dest when no label is set
     client.newService("inet!127.0.0.1:8080")
     eventually {
-      val counter =
-        sr.counters(Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
+      val counter = sr.counters(
+        Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
       assert(
         counter == 1,
         s"The instance should be to the loadbalancer once instead of $counter times.")
@@ -120,17 +120,19 @@ class StackClientTest
     val ctx = new Ctx {}
 
     val ex = new RuntimeException("lol")
-    val alwaysFail = new Module0[ServiceFactory[String, String]] {
-      val role = Stack.Role("lol")
-      val description = "lool"
+    val alwaysFail =
+      new Module0[ServiceFactory[String, String]] {
+        val role = Stack.Role("lol")
+        val description = "lool"
 
-      def make(next: ServiceFactory[String, String]) =
-        ServiceFactory.apply(() => Future.exception(ex))
-    }
+        def make(next: ServiceFactory[String, String]) =
+          ServiceFactory.apply(() => Future.exception(ex))
+      }
 
-    val alwaysFailStack = new StackBuilder(stack.nilStack[String, String])
-      .push(alwaysFail)
-      .result
+    val alwaysFailStack =
+      new StackBuilder(stack.nilStack[String, String])
+        .push(alwaysFail)
+        .result
     val stk = ctx.client.stack.concat(alwaysFailStack)
 
     def newClient(
@@ -181,19 +183,20 @@ class StackClientTest
 
     var closed = false
 
-    val underlyingFactory = new ServiceFactory[Unit, Unit] {
-      def apply(conn: ClientConnection) =
-        Future.value(new Service[Unit, Unit] {
-          def apply(request: Unit): Future[Unit] = Future.Unit
+    val underlyingFactory =
+      new ServiceFactory[Unit, Unit] {
+        def apply(conn: ClientConnection) =
+          Future.value(new Service[Unit, Unit] {
+            def apply(request: Unit): Future[Unit] = Future.Unit
 
-          override def close(deadline: Time) = {
-            closed = true
-            Future.Done
-          }
-        })
+            override def close(deadline: Time) = {
+              closed = true
+              Future.Done
+            }
+          })
 
-      def close(deadline: Time) = Future.Done
-    }
+        def close(deadline: Time) = Future.Done
+      }
 
     val stack = StackClient
       .newStack[Unit, Unit]
@@ -224,19 +227,20 @@ class StackClientTest
 
     var closed = false
 
-    val underlyingFactory = new ServiceFactory[Unit, Unit] {
-      def apply(conn: ClientConnection) =
-        Future.value(new Service[Unit, Unit] {
-          def apply(request: Unit): Future[Unit] = Future.Unit
+    val underlyingFactory =
+      new ServiceFactory[Unit, Unit] {
+        def apply(conn: ClientConnection) =
+          Future.value(new Service[Unit, Unit] {
+            def apply(request: Unit): Future[Unit] = Future.Unit
 
-          override def close(deadline: Time) = {
-            closed = true
-            Future.Done
-          }
-        })
+            override def close(deadline: Time) = {
+              closed = true
+              Future.Done
+            }
+          })
 
-      def close(deadline: Time) = Future.Done
-    }
+        def close(deadline: Time) = Future.Done
+      }
 
     val stack = StackClient
       .newStack[Unit, Unit]
@@ -274,23 +278,24 @@ class StackClientTest
     var runSideEffect = (_: Int) => false
     var sideEffect = () => ()
 
-    val stubLB = new ServiceFactory[String, String] {
-      def apply(conn: ClientConnection) =
-        Future.value(new Service[String, String] {
-          def apply(request: String): Future[String] = {
-            count += 1
-            if (runSideEffect(count))
-              sideEffect()
-            Future.exception(WriteException(new Exception("boom")))
-          }
+    val stubLB =
+      new ServiceFactory[String, String] {
+        def apply(conn: ClientConnection) =
+          Future.value(new Service[String, String] {
+            def apply(request: String): Future[String] = {
+              count += 1
+              if (runSideEffect(count))
+                sideEffect()
+              Future.exception(WriteException(new Exception("boom")))
+            }
 
-          override def close(deadline: Time) = Future.Done
-        })
+            override def close(deadline: Time) = Future.Done
+          })
 
-      def close(deadline: Time) = Future.Done
+        def close(deadline: Time) = Future.Done
 
-      override def status = _status
-    }
+        override def status = _status
+      }
 
     val sr = new InMemoryStatsReceiver
     val client = stringClient.configured(param.Stats(sr))
@@ -342,13 +347,14 @@ class StackClientTest
 
   test("service acquisition requeues use a separate fixed budget")(
     new RequeueCtx {
-      override val stubLB = new ServiceFactory[String, String] {
-        def apply(conn: ClientConnection) =
-          Future.exception(
-            Failure.rejected("unable to establish session")
-          )
-        def close(deadline: Time) = Future.Done
-      }
+      override val stubLB =
+        new ServiceFactory[String, String] {
+          def apply(conn: ClientConnection) =
+            Future.exception(
+              Failure.rejected("unable to establish session")
+            )
+          def close(deadline: Time) = Future.Done
+        }
 
       intercept[Failure] {
         Await.result(cl(), 5.seconds)
@@ -359,13 +365,14 @@ class StackClientTest
 
   test("service acquisition requeues respect Failure.Restartable")(
     new RequeueCtx {
-      override val stubLB = new ServiceFactory[String, String] {
-        def apply(conn: ClientConnection) =
-          Future.exception(
-            Failure("don't restart this!")
-          )
-        def close(deadline: Time) = Future.Done
-      }
+      override val stubLB =
+        new ServiceFactory[String, String] {
+          def apply(conn: ClientConnection) =
+            Future.exception(
+              Failure("don't restart this!")
+            )
+          def close(deadline: Time) = Future.Done
+        }
 
       intercept[Failure] {
         Await.result(cl(), 5.seconds)
@@ -391,12 +398,13 @@ class StackClientTest
     class CountFactory extends ServiceFactory[Unit, Unit] {
       var count = 0
 
-      val service = new Service[Unit, Unit] {
-        def apply(request: Unit): Future[Unit] = {
-          count = count + 1
-          Future.exception(WriteException(null))
+      val service =
+        new Service[Unit, Unit] {
+          def apply(request: Unit): Future[Unit] = {
+            count = count + 1
+            Future.exception(WriteException(null))
+          }
         }
-      }
 
       def apply(conn: ClientConnection) = Future.value(service)
       def close(deadline: Time) = Future.Done
@@ -473,19 +481,19 @@ class StackClientTest
   test("StackBasedClient.configured is a StackClient") {
     // compilation test
     val client: StackBasedClient[String, String] = stringClient
-    val client2: StackBasedClient[String, String] =
-      client.configured(param.Label("foo"))
-    val client3: StackBasedClient[String, String] =
-      client.configured[param.Label]((param.Label("foo"), param.Label.param))
+    val client2: StackBasedClient[String, String] = client.configured(
+      param.Label("foo"))
+    val client3: StackBasedClient[String, String] = client
+      .configured[param.Label]((param.Label("foo"), param.Label.param))
   }
 
   test("StackClient.configured is a StackClient") {
     // compilation test
     val client: StackClient[String, String] = stringClient
-    val client2: StackClient[String, String] =
-      client.configured(param.Label("foo"))
-    val client3: StackClient[String, String] =
-      client.configured[param.Label]((param.Label("foo"), param.Label.param))
+    val client2: StackClient[String, String] = client.configured(
+      param.Label("foo"))
+    val client3: StackClient[String, String] = client.configured[param.Label](
+      (param.Label("foo"), param.Label.param))
   }
 
   test("StackClient binds to a local service via exp.Address.ServiceFactory") {
@@ -509,13 +517,14 @@ class StackClientTest
     val addr = exp.Address(sf)
     val name = Name.bound(addr)
 
-    val reverseFilter = new SimpleFilter[String, String] {
-      def apply(str: String, svc: Service[String, String]) =
-        svc(str.reverse)
-    }
+    val reverseFilter =
+      new SimpleFilter[String, String] {
+        def apply(str: String, svc: Service[String, String]) = svc(str.reverse)
+      }
 
-    val svc =
-      stringClient.filtered(reverseFilter).newRichClient(name, "test_client")
+    val svc = stringClient
+      .filtered(reverseFilter)
+      .newRichClient(name, "test_client")
     assert(Await.result(svc.ping(), 1.second) == "ping".reverse)
   }
 

@@ -97,8 +97,9 @@ class DebugManager(
 
   def addPendingBreakpoint(bp: Breakpoint): Unit = {
     val file = bp.file
-    val breaks =
-      pendingBreaksBySourceName.getOrElse(file.getName, mutable.HashSet())
+    val breaks = pendingBreaksBySourceName.getOrElse(
+      file.getName,
+      mutable.HashSet())
     breaks.add(bp)
     pendingBreaksBySourceName(file.getName) = breaks
   }
@@ -291,12 +292,13 @@ class DebugManager(
   def handleDebugAttachReq(hostname: String, port: String): RpcResponse = {
     disposeCurrentVM()
     try {
-      val vm = new VM(
-        VmAttach(hostname, port),
-        vmOptions(),
-        self,
-        broadcaster,
-        sourceMap)
+      val vm =
+        new VM(
+          VmAttach(hostname, port),
+          vmOptions(),
+          self,
+          broadcaster,
+          sourceMap)
       maybeVM = Some(vm)
       vm.start()
       DebugVmSuccess()

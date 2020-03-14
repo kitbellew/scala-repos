@@ -10,8 +10,11 @@ trait IgnoredSpecTest extends ScalaTestTestCase {
     "IgnoredTestSpec",
     "An IgnoredTestSpec",
     "should be ignored and have proper suffix !!! IGNORED !!!")
-  val succeededTestPath: List[String] =
-    List("[root]", "IgnoredTestSpec", "An IgnoredTestSpec", "should run tests")
+  val succeededTestPath: List[String] = List(
+    "[root]",
+    "IgnoredTestSpec",
+    "An IgnoredTestSpec",
+    "should run tests")
 
   def testIgnoredTest(): Unit = {
     addFileToProject(

@@ -183,8 +183,7 @@ trait TraitView[This <: android.view.View]
   }
 
   def <<[LP <: ViewGroupLayoutParams[_, _]](
-      implicit defaultLayoutParam: This => LP): LP =
-    defaultLayoutParam(basis)
+      implicit defaultLayoutParam: This => LP): LP = defaultLayoutParam(basis)
 
   // TODO: Make the return type as Option[TraitViewGroup[_]]
   protected def parentViewGroupIfExists[LP <: ViewGroupLayoutParams[_, _]](

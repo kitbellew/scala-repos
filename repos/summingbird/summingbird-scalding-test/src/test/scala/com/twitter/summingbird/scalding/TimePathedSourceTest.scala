@@ -81,9 +81,10 @@ object TimePathSourceLaws extends Properties("Time path source") {
   property(
     "if the reqRange + embiggen is inside the avail range, return should == requested") =
     forAll { (data: TestData) =>
-      val retData = BTimePathedSource.minify(
-        genEmbiggen(data.embiggen),
-        genVertractor(data.availableRange))(data.requestedRange)
+      val retData =
+        BTimePathedSource.minify(
+          genEmbiggen(data.embiggen),
+          genVertractor(data.availableRange))(data.requestedRange)
       if (rangeWithEmbgginContained(
             data.requestedRange,
             data.embiggen,
@@ -96,9 +97,10 @@ object TimePathSourceLaws extends Properties("Time path source") {
   property(
     "If not a complete subset, but overlapping we can imply a few prerequisites") =
     forAll { (data: TestData) =>
-      val retData = BTimePathedSource.minify(
-        genEmbiggen(data.embiggen),
-        genVertractor(data.availableRange))(data.requestedRange)
+      val retData =
+        BTimePathedSource.minify(
+          genEmbiggen(data.embiggen),
+          genVertractor(data.availableRange))(data.requestedRange)
       retData match {
         case None => true
         case Some(range) =>
@@ -111,9 +113,10 @@ object TimePathSourceLaws extends Properties("Time path source") {
   property(
     "If the return is none, then the ranges should be disjoint or one is None") =
     forAll { (data: TestData) =>
-      val retData = BTimePathedSource.minify(
-        genEmbiggen(data.embiggen),
-        genVertractor(data.availableRange))(data.requestedRange)
+      val retData =
+        BTimePathedSource.minify(
+          genEmbiggen(data.embiggen),
+          genVertractor(data.availableRange))(data.requestedRange)
       retData match {
         case None =>
           (

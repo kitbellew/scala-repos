@@ -59,11 +59,12 @@ trait Observable extends SFXDelegate[jfxb.Observable] {
     * @return $SUBRET
     */
   def onInvalidate(op: Observable => Unit): Subscription = {
-    val listener = new jfxb.InvalidationListener {
-      def invalidated(observable: jfxb.Observable) {
-        op(Observable.this)
+    val listener =
+      new jfxb.InvalidationListener {
+        def invalidated(observable: jfxb.Observable) {
+          op(Observable.this)
+        }
       }
-    }
 
     delegate.addListener(listener)
 
@@ -82,11 +83,12 @@ trait Observable extends SFXDelegate[jfxb.Observable] {
     * @return $SUBRET
     */
   def onInvalidate(op: => Unit): Subscription = {
-    val listener = new jfxb.InvalidationListener {
-      def invalidated(observable: jfxb.Observable) {
-        op
+    val listener =
+      new jfxb.InvalidationListener {
+        def invalidated(observable: jfxb.Observable) {
+          op
+        }
       }
-    }
 
     delegate.addListener(listener)
 

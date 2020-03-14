@@ -141,8 +141,10 @@ object vsplit extends UFunc {
 
         cforRange(0 until n) { k =>
           val offsetInOriginalMatrix = k * newRows
-          val chunk =
-            DenseMatrix.create(newRows, v.cols, new Array[T](v.cols * newRows))
+          val chunk = DenseMatrix.create(
+            newRows,
+            v.cols,
+            new Array[T](v.cols * newRows))
           cforRange2(0 until newRows, 0 until v.cols) { (i, j) =>
             chunk(i, j) = v(i + offsetInOriginalMatrix, j)
           }

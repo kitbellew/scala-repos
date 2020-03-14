@@ -28,12 +28,13 @@ object CodeGenTools {
       throwsExceptions: Array[String] = null,
       handlers: List[ExceptionHandler] = Nil,
       localVars: List[LocalVariable] = Nil)(body: Instruction*): MethodNode = {
-    val node = new MethodNode(
-      flags,
-      name,
-      descriptor,
-      genericSignature,
-      throwsExceptions)
+    val node =
+      new MethodNode(
+        flags,
+        name,
+        descriptor,
+        genericSignature,
+        throwsExceptions)
     applyToMethod(node, Method(body.toList, handlers, localVars))
     node
   }
@@ -71,8 +72,9 @@ object CodeGenTools {
     val settings = new Settings(showError)
     val args =
       (CommandLineParser tokenize defaultArgs) ++ (CommandLineParser tokenize extraArgs)
-    val (_, nonSettingsArgs) =
-      settings.processArguments(args, processAll = true)
+    val (_, nonSettingsArgs) = settings.processArguments(
+      args,
+      processAll = true)
     if (nonSettingsArgs.nonEmpty)
       showError("invalid compiler flags: " + nonSettingsArgs.mkString(" "))
     new Global(settings, new StoreReporter)
@@ -107,10 +109,9 @@ object CodeGenTools {
   def checkReport(
       compiler: Global,
       allowMessage: StoreReporter#Info => Boolean = _ => false): Unit = {
-    val disallowed =
-      reporter(compiler).infos.toList.filter(
-        !allowMessage(_)
-      ) // toList prevents an infer-non-wildcard-existential warning.
+    val disallowed = reporter(compiler).infos.toList.filter(
+      !allowMessage(_)
+    ) // toList prevents an infer-non-wildcard-existential warning.
     if (disallowed.nonEmpty) {
       val msg = disallowed.mkString("\n")
       assert(
@@ -319,9 +320,10 @@ object CodeGenTools {
         query.drop(1)
       else
         query
-    val insns = method.instructions.iterator.asScala
-      .filter(i => textify(i) contains instrPart)
-      .toList
+    val insns =
+      method.instructions.iterator.asScala
+        .filter(i => textify(i) contains instrPart)
+        .toList
     if (useNext)
       insns.map(_.getNext)
     else

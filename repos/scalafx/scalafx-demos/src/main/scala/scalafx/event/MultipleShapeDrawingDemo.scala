@@ -53,9 +53,10 @@ object MultipleShapeDrawingDemo extends JFXApp {
 
   /** Handles drawing of rectangles */
   object RectangleInteractor extends ShapeDrawInteractor {
-    val rectangle = new Rectangle {
-      fill = Color.web("RED", 0.5)
-    }
+    val rectangle =
+      new Rectangle {
+        fill = Color.web("RED", 0.5)
+      }
 
     /** Update the shape using current `start` and `end` points. */
     override def update() {
@@ -68,9 +69,10 @@ object MultipleShapeDrawingDemo extends JFXApp {
 
   /** Handles drawing of ellipses */
   object EllipseInteractor extends ShapeDrawInteractor {
-    val ellipse = new Ellipse {
-      fill = Color.web("GREEN", 0.5)
-    }
+    val ellipse =
+      new Ellipse {
+        fill = Color.web("GREEN", 0.5)
+      }
 
     /** Update the shape using current `start` and `end` points. */
     override def update() {
@@ -83,10 +85,11 @@ object MultipleShapeDrawingDemo extends JFXApp {
 
   /** Handles drawing of lines */
   object LineInteractor extends ShapeDrawInteractor {
-    val line = new Line {
-      stroke = Color.web("BLUE", 0.5)
-      strokeWidth = 3
-    }
+    val line =
+      new Line {
+        stroke = Color.web("BLUE", 0.5)
+        strokeWidth = 3
+      }
 
     /** Update the shape using current `start` and `end` points. */
     override def update() {
@@ -97,14 +100,15 @@ object MultipleShapeDrawingDemo extends JFXApp {
     }
   }
 
-  val drawingPane = new Pane {
-    // For simplicity of the demo, just add all shapes to canvas, single instance of each type.
-    // Initially, they have zero area so they will not be visible.
-    children ++= Seq(
-      RectangleInteractor.rectangle,
-      EllipseInteractor.ellipse,
-      LineInteractor.line)
-  }
+  val drawingPane =
+    new Pane {
+      // For simplicity of the demo, just add all shapes to canvas, single instance of each type.
+      // Initially, they have zero area so they will not be visible.
+      children ++= Seq(
+        RectangleInteractor.rectangle,
+        EllipseInteractor.ellipse,
+        LineInteractor.line)
+    }
 
   stage = new PrimaryStage {
     title = "Multiple Shape Drawing Demo"
@@ -156,12 +160,13 @@ object MultipleShapeDrawingDemo extends JFXApp {
               .selectedToggle()
               .asInstanceOf[javafx.scene.control.ToggleButton]
               .id()
-            val selectedHandler = handlerId match {
-              case "rectangle" => Some(RectangleInteractor.handler)
-              case "ellipse"   => Some(EllipseInteractor.handler)
-              case "line"      => Some(LineInteractor.handler)
-              case _           => None
-            }
+            val selectedHandler =
+              handlerId match {
+                case "rectangle" => Some(RectangleInteractor.handler)
+                case "ellipse"   => Some(EllipseInteractor.handler)
+                case "line"      => Some(LineInteractor.handler)
+                case _           => None
+              }
             // Selected corresponding handler
             mouseHandlerSubscription = selectedHandler match {
               case Some(h) => Some(drawingPane.handleEvent(MouseEvent.Any)(h))

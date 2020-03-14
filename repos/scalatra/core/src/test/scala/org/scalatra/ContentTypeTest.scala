@@ -142,9 +142,10 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
     class RequestActor extends Actor {
       def receive = {
         case i: Int =>
-          val res = get("/concurrent/" + i) {
-            response
-          }
+          val res =
+            get("/concurrent/" + i) {
+              response
+            }
           sender ! (i, res.mediaType)
       }
     }
@@ -155,8 +156,9 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
           system.actorOf(Props(new RequestActor)) ? i
         }
     for (future <- futures) {
-      val (i: Int, mediaType: Option[String]) =
-        Await.result(future.mapTo[(Int, Option[String])], 5 seconds)
+      val (i: Int, mediaType: Option[String]) = Await.result(
+        future.mapTo[(Int, Option[String])],
+        5 seconds)
       mediaType should be(Some(i.toString))
     }
   }

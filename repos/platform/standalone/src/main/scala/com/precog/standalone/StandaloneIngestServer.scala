@@ -60,15 +60,17 @@ trait StandaloneIngestServer
     val apiKey = config[String]("security.masterAccount.apiKey")
 
     val apiKeyFinder = new StaticAPIKeyFinder[Future](apiKey)
-    val accountFinder = new StaticAccountFinder[Future](
-      config[String]("security.masterAccount.accountId"),
-      apiKey,
-      Some("/"))
+    val accountFinder =
+      new StaticAccountFinder[Future](
+        config[String]("security.masterAccount.accountId"),
+        apiKey,
+        Some("/"))
     val permissionsFinder =
       new PermissionsFinder(apiKeyFinder, accountFinder, clock.instant())
-    val jobManager = new InMemoryJobManager[({
-      type λ[+α] = EitherT[Future, String, α]
-    })#λ]()
+    val jobManager =
+      new InMemoryJobManager[({
+        type λ[+α] = EitherT[Future, String, α]
+      })#λ]()
 
     val (eventStore, stoppable) =
       KafkaEventStore(config.detach("eventStore"), permissionsFinder) valueOr {

@@ -87,8 +87,7 @@ trait Importer[E] {
   def getModifiableRootModel(module: Module): ModifiableRootModel =
     modelsProvider.getModifiableRootModel(module)
 
-  def getModules: Array[Module] =
-    modelsProvider.getModules
+  def getModules: Array[Module] = modelsProvider.getModules
 
   // FIXME: should be implemented in External System
   def getModifiableLibraryModelEx(

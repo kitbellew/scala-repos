@@ -10,19 +10,17 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
 
   // configuration //
 
-  val scalaIgnore =
-    Set(
-      "equals",
-      "hashCode",
-      "notify",
-      "notifyAll",
-      "wait",
-      "toString",
-      "getClass",
-      "shape")
+  val scalaIgnore = Set(
+    "equals",
+    "hashCode",
+    "notify",
+    "notifyAll",
+    "wait",
+    "toString",
+    "getClass",
+    "shape")
 
-  val javaIgnore =
-    Set("adapt") // the scaladsl -> javadsl bridge
+  val javaIgnore = Set("adapt") // the scaladsl -> javadsl bridge
 
   val `scala -> java aliases` =
     ("apply" -> "create") ::
@@ -236,13 +234,14 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
   def runSpec(sMethods: List[Method], jMethods: List[Method]) {
     var warnings = 0
 
-    val results = for {
-      s ← sMethods
-      j ← jMethods
-      result = delegationCheck(s, j)
-    } yield {
-      result
-    }
+    val results =
+      for {
+        s ← sMethods
+        j ← jMethods
+        result = delegationCheck(s, j)
+      } yield {
+        result
+      }
 
     for {
       row ← results.groupBy(_.s)

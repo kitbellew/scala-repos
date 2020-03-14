@@ -30,12 +30,13 @@ abstract class InspectionTestCase[T <: LocalInspectionTool: ClassTag]
     fixture.enableInspections(inspection)
 
     fixture.doHighlighting().asScala.flatMap { it =>
-      val severity = it.getSeverity match {
-        case HighlightSeverity.ERROR        => Error
-        case HighlightSeverity.WARNING      => Warning
-        case HighlightSeverity.WEAK_WARNING => WeakWarning
-        case _                              => Information
-      }
+      val severity =
+        it.getSeverity match {
+          case HighlightSeverity.ERROR        => Error
+          case HighlightSeverity.WARNING      => Warning
+          case HighlightSeverity.WEAK_WARNING => WeakWarning
+          case _                              => Information
+        }
       if (severity == Information)
         Seq.empty
       else

@@ -113,8 +113,9 @@ class CSRFAction(
       val newToken = tokenProvider.generateToken
 
       // The request
-      val requestWithNewToken =
-        tagRequest(request, Token(config.tokenName, newToken))
+      val requestWithNewToken = tagRequest(
+        request,
+        Token(config.tokenName, newToken))
 
       // Once done, add it to the result
       next(requestWithNewToken).map(result =>
@@ -280,8 +281,9 @@ class CSRFAction(
         case -1           => None
         case nextBoundary =>
           // Progress past the CRLF at the end of the boundary
-          val nextCrlf =
-            prefixedBody.indexOfSlice(crlf, nextBoundary + boundaryLine.size)
+          val nextCrlf = prefixedBody.indexOfSlice(
+            crlf,
+            nextBoundary + boundaryLine.size)
           if (nextCrlf == -1) {
             None
           } else {
@@ -291,8 +293,9 @@ class CSRFAction(
             headers.toMap match {
               case Multipart.PartInfoMatcher(name) if name == tokenName =>
                 // This part is the token, find the next boundary
-                val endOfData =
-                  prefixedBody.indexOfSlice(boundaryLine, startOfPartData)
+                val endOfData = prefixedBody.indexOfSlice(
+                  boundaryLine,
+                  startOfPartData)
                 if (endOfData == -1) {
                   None
                 } else {
@@ -588,8 +591,10 @@ case class CSRFCheck @Inject() (
       extends Action[A] {
     def parser = wrapped.parser
     def apply(untaggedRequest: Request[A]) = {
-      val request =
-        CSRFAction.tagRequestFromHeader(untaggedRequest, config, tokenSigner)
+      val request = CSRFAction.tagRequestFromHeader(
+        untaggedRequest,
+        config,
+        tokenSigner)
 
       // Maybe bypass
       if (!CSRFAction.requiresCsrfCheck(request, config) || !config
@@ -605,19 +610,20 @@ case class CSRFCheck @Inject() (
               .getHeaderToken(request, config)
               // Or from body if not found
               .orElse({
-                val form = request.body match {
-                  case body: play.api.mvc.AnyContent
-                      if body.asFormUrlEncoded.isDefined =>
-                    body.asFormUrlEncoded.get
-                  case body: play.api.mvc.AnyContent
-                      if body.asMultipartFormData.isDefined =>
-                    body.asMultipartFormData.get.asFormUrlEncoded
-                  case body: Map[_, _] =>
-                    body.asInstanceOf[Map[String, Seq[String]]]
-                  case body: play.api.mvc.MultipartFormData[_] =>
-                    body.asFormUrlEncoded
-                  case _ => Map.empty[String, Seq[String]]
-                }
+                val form =
+                  request.body match {
+                    case body: play.api.mvc.AnyContent
+                        if body.asFormUrlEncoded.isDefined =>
+                      body.asFormUrlEncoded.get
+                    case body: play.api.mvc.AnyContent
+                        if body.asMultipartFormData.isDefined =>
+                      body.asMultipartFormData.get.asFormUrlEncoded
+                    case body: Map[_, _] =>
+                      body.asInstanceOf[Map[String, Seq[String]]]
+                    case body: play.api.mvc.MultipartFormData[_] =>
+                      body.asFormUrlEncoded
+                    case _ => Map.empty[String, Seq[String]]
+                  }
                 form.get(config.tokenName).flatMap(_.headOption)
               })
               // Execute if it matches
@@ -684,16 +690,19 @@ case class CSRFAddToken @Inject() (
       extends Action[A] {
     def parser = wrapped.parser
     def apply(untaggedRequest: Request[A]) = {
-      val request =
-        CSRFAction.tagRequestFromHeader(untaggedRequest, config, crypto)
+      val request = CSRFAction.tagRequestFromHeader(
+        untaggedRequest,
+        config,
+        crypto)
 
       if (CSRFAction.getTokenToValidate(request, config, crypto).isEmpty) {
         // No token in header and we have to create one if not found, so create a new token
         val newToken = tokenProvider.generateToken
 
         // The request
-        val requestWithNewToken =
-          CSRFAction.tagRequest(request, Token(config.tokenName, newToken))
+        val requestWithNewToken = CSRFAction.tagRequest(
+          request,
+          Token(config.tokenName, newToken))
 
         // Once done, add it to the result
         import play.api.libs.iteratee.Execution.Implicits.trampoline

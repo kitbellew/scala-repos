@@ -298,12 +298,13 @@ abstract class SurviveNetworkInstabilitySpec
       enterBarrier("watcher-created")
 
       runOn(second) {
-        val sysMsgBufferSize = system
-          .asInstanceOf[ExtendedActorSystem]
-          .provider
-          .asInstanceOf[RemoteActorRefProvider]
-          .remoteSettings
-          .SysMsgBufferSize
+        val sysMsgBufferSize =
+          system
+            .asInstanceOf[ExtendedActorSystem]
+            .provider
+            .asInstanceOf[RemoteActorRefProvider]
+            .remoteSettings
+            .SysMsgBufferSize
         val refs =
           Vector.fill(sysMsgBufferSize + 1)(system.actorOf(Props[Echo])).toSet
         system.actorSelection(node(third) / "user" / "watcher") ! Targets(refs)

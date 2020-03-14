@@ -39,8 +39,8 @@ class OfferMatcherReconciliationModule(
   private[this] def offersWantedObserver: Observer[Boolean] =
     offersWantedSubject
 
-  private[this] lazy val offersWantedForReconciliationActor =
-    leadershipModule.startWhenLeader(
+  private[this] lazy val offersWantedForReconciliationActor = leadershipModule
+    .startWhenLeader(
       OffersWantedForReconciliationActor.props(
         reviveOffersConfig,
         clock,

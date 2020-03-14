@@ -46,18 +46,22 @@ private[ui] class LogPage(parent: WorkerWebUI)
       .map(_.toInt)
       .getOrElse(defaultBytes)
 
-    val logDir = (appId, executorId, driverId) match {
-      case (Some(a), Some(e), None) =>
-        s"${workDir.getPath}/$appId/$executorId/"
-      case (None, None, Some(d)) =>
-        s"${workDir.getPath}/$driverId/"
-      case _ =>
-        throw new Exception(
-          "Request must specify either application or driver identifiers")
-    }
+    val logDir =
+      (appId, executorId, driverId) match {
+        case (Some(a), Some(e), None) =>
+          s"${workDir.getPath}/$appId/$executorId/"
+        case (None, None, Some(d)) =>
+          s"${workDir.getPath}/$driverId/"
+        case _ =>
+          throw new Exception(
+            "Request must specify either application or driver identifiers")
+      }
 
-    val (logText, startByte, endByte, logLength) =
-      getLog(logDir, logType, offset, byteLength)
+    val (logText, startByte, endByte, logLength) = getLog(
+      logDir,
+      logType,
+      offset,
+      byteLength)
     val pre =
       s"==== Bytes $startByte-$endByte of $logLength of $logDir$logType ====\n"
     pre + logText
@@ -74,28 +78,34 @@ private[ui] class LogPage(parent: WorkerWebUI)
       .map(_.toInt)
       .getOrElse(defaultBytes)
 
-    val (logDir, params, pageName) = (appId, executorId, driverId) match {
-      case (Some(a), Some(e), None) =>
-        (s"${workDir.getPath}/$a/$e/", s"appId=$a&executorId=$e", s"$a/$e")
-      case (None, None, Some(d)) =>
-        (s"${workDir.getPath}/$d/", s"driverId=$d", d)
-      case _ =>
-        throw new Exception(
-          "Request must specify either application or driver identifiers")
-    }
+    val (logDir, params, pageName) =
+      (appId, executorId, driverId) match {
+        case (Some(a), Some(e), None) =>
+          (s"${workDir.getPath}/$a/$e/", s"appId=$a&executorId=$e", s"$a/$e")
+        case (None, None, Some(d)) =>
+          (s"${workDir.getPath}/$d/", s"driverId=$d", d)
+        case _ =>
+          throw new Exception(
+            "Request must specify either application or driver identifiers")
+      }
 
-    val (logText, startByte, endByte, logLength) =
-      getLog(logDir, logType, offset, byteLength)
-    val linkToMaster = <p><a href={
-      worker.activeMasterWebUiUrl
-    }>Back to Master</a></p>
-    val range = <span>Bytes {
-      startByte.toString
-    } - {
-      endByte.toString
-    } of {
-      logLength
-    }</span>
+    val (logText, startByte, endByte, logLength) = getLog(
+      logDir,
+      logType,
+      offset,
+      byteLength)
+    val linkToMaster =
+      <p><a href={
+        worker.activeMasterWebUiUrl
+      }>Back to Master</a></p>
+    val range =
+      <span>Bytes {
+        startByte.toString
+      } - {
+        endByte.toString
+      } of {
+        logLength
+      }</span>
 
     val backButton =
       if (startByte > 0) {
@@ -192,14 +202,16 @@ private[ui] class LogPage(parent: WorkerWebUI)
     }
 
     try {
-      val files =
-        RollingFileAppender.getSortedRolledOverFiles(logDirectory, logType)
+      val files = RollingFileAppender.getSortedRolledOverFiles(
+        logDirectory,
+        logType)
       logDebug(
         s"Sorted log files of type $logType in $logDirectory:\n${files.mkString("\n")}")
 
-      val totalLength = files.map {
-        _.length
-      }.sum
+      val totalLength =
+        files.map {
+          _.length
+        }.sum
       val offset = offsetOption.getOrElse(totalLength - byteLength)
       val startIndex = {
         if (offset < 0) {

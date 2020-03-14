@@ -599,14 +599,15 @@ abstract class ActorModelSpec(config: String)
         Thread.interrupted() // CallingThreadDispatcher may necessitate this
         val f6 = a ? Reply("bar2")
 
-        val c = system.scheduler.scheduleOnce(2.seconds) {
-          import collection.JavaConverters._
-          Thread.getAllStackTraces().asScala foreach {
-            case (thread, stack) ⇒
-              println(s"$thread:")
-              stack foreach (s ⇒ println(s"\t$s"))
+        val c =
+          system.scheduler.scheduleOnce(2.seconds) {
+            import collection.JavaConverters._
+            Thread.getAllStackTraces().asScala foreach {
+              case (thread, stack) ⇒
+                println(s"$thread:")
+                stack foreach (s ⇒ println(s"\t$s"))
+            }
           }
-        }
         assert(Await.result(f1, timeout.duration) === "foo")
         assert(Await.result(f2, timeout.duration) === "bar")
         assert(Await.result(f4, timeout.duration) === "foo2")

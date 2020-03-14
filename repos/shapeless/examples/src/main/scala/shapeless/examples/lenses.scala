@@ -38,8 +38,10 @@ object LenseExamples extends App {
   val postcodeLens = lens[Person].address.postcode
 
   // Starting value
-  val person =
-    Person("Joe Grey", 37, Address("Southover Street", "Brighton", "BN2 9UA"))
+  val person = Person(
+    "Joe Grey",
+    37,
+    Address("Southover Street", "Brighton", "BN2 9UA"))
 
   // Atomic lenses ...
 
@@ -77,8 +79,9 @@ object LenseExamples extends App {
   // Create a product lens spanning Person and Address
   val nameAgeCityLens = nameLens ~ ageLens ~ cityLens
 
-  val nac1 =
-    nameAgeCityLens.get(person) // Inferred type is the expected tuple type
+  val nac1 = nameAgeCityLens.get(
+    person
+  ) // Inferred type is the expected tuple type
   typed[(String, Int, String)](nac1)
   assert(nac1 == ("Joe Grey", 37, "Brighton"))
   println(nac1)

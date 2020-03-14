@@ -196,8 +196,8 @@ class FlowSplitAfterSpec extends AkkaSpec {
       upstreamSubscription.sendNext(1)
 
       val substream = subscriber.expectNext()
-      val substreamPuppet =
-        StreamPuppet(substream.runWith(Sink.asPublisher(false)))
+      val substreamPuppet = StreamPuppet(
+        substream.runWith(Sink.asPublisher(false)))
 
       substreamPuppet.request(10)
       substreamPuppet.expectNext(1)
@@ -238,8 +238,8 @@ class FlowSplitAfterSpec extends AkkaSpec {
       upstreamSubscription.sendNext(1)
 
       val substream1 = subscriber.expectNext()
-      val substreamPuppet1 =
-        StreamPuppet(substream1.runWith(Sink.asPublisher(false)))
+      val substreamPuppet1 = StreamPuppet(
+        substream1.runWith(Sink.asPublisher(false)))
 
       substreamPuppet1.request(10)
       substreamPuppet1.expectNext(1)
@@ -258,8 +258,8 @@ class FlowSplitAfterSpec extends AkkaSpec {
       substreamPuppet1.expectNext(6)
       substreamPuppet1.expectComplete()
       val substream2 = subscriber.expectNext()
-      val substreamPuppet2 =
-        StreamPuppet(substream2.runWith(Sink.asPublisher(false)))
+      val substreamPuppet2 = StreamPuppet(
+        substream2.runWith(Sink.asPublisher(false)))
       substreamPuppet2.request(10)
       upstreamSubscription.sendNext(7)
       substreamPuppet2.expectNext(7)

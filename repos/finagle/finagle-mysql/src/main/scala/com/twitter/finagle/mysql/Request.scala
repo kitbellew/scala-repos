@@ -113,10 +113,11 @@ case class HandshakeResponse(
   import Capability._
   override val seq: Short = 1
 
-  lazy val hashPassword = password match {
-    case Some(p) => encryptPassword(p, salt)
-    case None    => Array[Byte]()
-  }
+  lazy val hashPassword =
+    password match {
+      case Some(p) => encryptPassword(p, salt)
+      case None    => Array[Byte]()
+    }
 
   def toPacket = {
     val fixedBodySize = 34
@@ -246,20 +247,21 @@ class ExecuteRequest(
 
     // parameters are appended to the end of the packet
     // only if the statement has new parameters.
-    val composite = if (hasNewParams) {
-      val types = BufferWriter(new Array[Byte](params.size * 2))
-      params foreach {
-        writeTypeCode(_, types)
+    val composite =
+      if (hasNewParams) {
+        val types = BufferWriter(new Array[Byte](params.size * 2))
+        params foreach {
+          writeTypeCode(_, types)
+        }
+        Buffer(
+          bw,
+          Buffer(nullBitmap),
+          Buffer(Array(newParamsBound)),
+          types,
+          values)
+      } else {
+        Buffer(bw, Buffer(nullBitmap), Buffer(Array(newParamsBound)), values)
       }
-      Buffer(
-        bw,
-        Buffer(nullBitmap),
-        Buffer(Array(newParamsBound)),
-        types,
-        values)
-    } else {
-      Buffer(bw, Buffer(nullBitmap), Buffer(Array(newParamsBound)), values)
-    }
     Packet(seq, composite)
   }
 }

@@ -25,16 +25,14 @@ class AbsentLocalFile(url: String, path: String) extends VirtualFile {
   def refresh(
       asynchronous: Boolean,
       recursive: Boolean,
-      postRunnable: Runnable) =
-    throw new UnsupportedOperationException()
+      postRunnable: Runnable) = throw new UnsupportedOperationException()
 
   def getTimeStamp = throw new UnsupportedOperationException()
 
   def getOutputStream(
       requestor: AnyRef,
       newModificationStamp: Long,
-      newTimeStamp: Long) =
-    throw new UnsupportedOperationException()
+      newTimeStamp: Long) = throw new UnsupportedOperationException()
 
   def isDirectory = throw new UnsupportedOperationException()
 
@@ -70,8 +68,7 @@ object AbsentLocalFileSystem extends VirtualFileSystem {
       requestor: AnyRef,
       virtualFile: VirtualFile,
       newParent: VirtualFile,
-      copyName: String) =
-    throw new UnsupportedOperationException()
+      copyName: String) = throw new UnsupportedOperationException()
 
   def refresh(asynchronous: Boolean) = throw new UnsupportedOperationException()
 
@@ -80,8 +77,7 @@ object AbsentLocalFileSystem extends VirtualFileSystem {
   def createChildDirectory(
       requestor: AnyRef,
       vDir: VirtualFile,
-      dirName: String) =
-    throw new UnsupportedOperationException()
+      dirName: String) = throw new UnsupportedOperationException()
 
   def removeVirtualFileListener(virtualFileListener: VirtualFileListener) =
     throw new UnsupportedOperationException()

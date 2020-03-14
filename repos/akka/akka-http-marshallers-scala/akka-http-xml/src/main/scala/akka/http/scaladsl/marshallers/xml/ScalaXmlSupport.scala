@@ -31,9 +31,10 @@ trait ScalaXmlSupport {
       .forContentTypes(ranges: _*)
       .mapWithCharset { (bytes, charset) ⇒
         if (bytes.length > 0) {
-          val reader = new InputStreamReader(
-            new ByteArrayInputStream(bytes),
-            charset.nioCharset)
+          val reader =
+            new InputStreamReader(
+              new ByteArrayInputStream(bytes),
+              charset.nioCharset)
           XML
             .withSAXParser(createSAXParser())
             .load(reader): NodeSeq // blocking call! Ideally we'd have a `loadToFuture`
@@ -49,8 +50,11 @@ trait ScalaXmlSupport {
     ScalaXmlSupport.createSaferSAXParser()
 }
 object ScalaXmlSupport extends ScalaXmlSupport {
-  val nodeSeqMediaTypes: immutable.Seq[MediaType.NonBinary] =
-    List(`text/xml`, `application/xml`, `text/html`, `application/xhtml+xml`)
+  val nodeSeqMediaTypes: immutable.Seq[MediaType.NonBinary] = List(
+    `text/xml`,
+    `application/xml`,
+    `text/html`,
+    `application/xhtml+xml`)
   val nodeSeqContentTypeRanges: immutable.Seq[ContentTypeRange] =
     nodeSeqMediaTypes.map(ContentTypeRange(_))
 

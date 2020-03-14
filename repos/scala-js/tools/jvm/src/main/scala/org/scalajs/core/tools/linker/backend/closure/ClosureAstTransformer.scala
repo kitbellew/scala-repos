@@ -372,13 +372,14 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   @inline
   private def mkUnaryOp(op: UnaryOp.Code, lhs: Node): Node = {
     import ir.Trees.JSUnaryOp._
-    val tok = (op: @switch) match {
-      case !        => Token.NOT
-      case ~        => Token.BITNOT
-      case +        => Token.POS
-      case -        => Token.NEG
-      case `typeof` => Token.TYPEOF
-    }
+    val tok =
+      (op: @switch) match {
+        case !        => Token.NOT
+        case ~        => Token.BITNOT
+        case +        => Token.POS
+        case -        => Token.NEG
+        case `typeof` => Token.TYPEOF
+      }
 
     new Node(tok, lhs)
   }
@@ -386,34 +387,35 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   @inline
   private def mkBinaryOp(op: BinaryOp.Code, lhs: Node, rhs: Node): Node = {
     import ir.Trees.JSBinaryOp._
-    val tok = (op: @switch) match {
-      case === => Token.SHEQ
-      case !== => Token.SHNE
+    val tok =
+      (op: @switch) match {
+        case === => Token.SHEQ
+        case !== => Token.SHNE
 
-      case + => Token.ADD
-      case - => Token.SUB
-      case * => Token.MUL
-      case / => Token.DIV
-      case % => Token.MOD
+        case + => Token.ADD
+        case - => Token.SUB
+        case * => Token.MUL
+        case / => Token.DIV
+        case % => Token.MOD
 
-      case |   => Token.BITOR
-      case &   => Token.BITAND
-      case ^   => Token.BITXOR
-      case <<  => Token.LSH
-      case >>  => Token.RSH
-      case >>> => Token.URSH
+        case |   => Token.BITOR
+        case &   => Token.BITAND
+        case ^   => Token.BITXOR
+        case <<  => Token.LSH
+        case >>  => Token.RSH
+        case >>> => Token.URSH
 
-      case <  => Token.LT
-      case <= => Token.LE
-      case >  => Token.GT
-      case >= => Token.GE
+        case <  => Token.LT
+        case <= => Token.LE
+        case >  => Token.GT
+        case >= => Token.GE
 
-      case || => Token.OR
-      case && => Token.AND
+        case || => Token.OR
+        case && => Token.AND
 
-      case `in`         => Token.IN
-      case `instanceof` => Token.INSTANCEOF
-    }
+        case `in`         => Token.IN
+        case `instanceof` => Token.INSTANCEOF
+      }
 
     new Node(tok, lhs, rhs)
   }
@@ -423,8 +425,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   class TransformException private (msg: String, e: Throwable)
       extends RuntimeException(msg, e) {
 
-    def this(tree: Tree, e: Throwable) =
-      this(TransformException.mkMsg(tree), e)
+    def this(tree: Tree, e: Throwable) = this(TransformException.mkMsg(tree), e)
 
     def this(msg: String) = this(msg, null)
   }

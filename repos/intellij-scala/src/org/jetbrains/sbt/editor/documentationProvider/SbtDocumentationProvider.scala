@@ -66,12 +66,13 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
       keyDefinition.fold(Seq.empty[ScExpression])(getKeyDefinitionArgs)
     val argStrings = keyDefinitionArgs.flatMap(argToString)
 
-    val doc = keyDefinitionArgs.headOption match {
-      case Some(_: ScLiteral) => getDocForNewKeyDefinition(argStrings)
-      case Some(_: ScReferenceExpressionImpl) =>
-        getDocForKeyReference(argStrings)
-      case _ => None
-    }
+    val doc =
+      keyDefinitionArgs.headOption match {
+        case Some(_: ScLiteral) => getDocForNewKeyDefinition(argStrings)
+        case Some(_: ScReferenceExpressionImpl) =>
+          getDocForKeyReference(argStrings)
+        case _ => None
+      }
 
     doc.getOrElse("")
   }

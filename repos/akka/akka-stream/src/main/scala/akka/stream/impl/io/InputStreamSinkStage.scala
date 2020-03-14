@@ -45,55 +45,57 @@ final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration)
 
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes): (GraphStageLogic, InputStream) = {
-    val maxBuffer = inheritedAttributes
-      .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-      .max
+    val maxBuffer =
+      inheritedAttributes
+        .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
+        .max
     require(maxBuffer > 0, "Buffer size must be greater than 0")
 
     val dataQueue =
       new LinkedBlockingDeque[StreamToAdapterMessage](maxBuffer + 2)
 
-    val logic = new GraphStageLogic(shape) with StageWithCallback {
+    val logic =
+      new GraphStageLogic(shape) with StageWithCallback {
 
-      private val callback: AsyncCallback[AdapterToStageMessage] =
-        getAsyncCallback {
-          case ReadElementAcknowledgement ⇒ sendPullIfAllowed()
-          case Close ⇒ completeStage()
-        }
+        private val callback: AsyncCallback[AdapterToStageMessage] =
+          getAsyncCallback {
+            case ReadElementAcknowledgement ⇒ sendPullIfAllowed()
+            case Close ⇒ completeStage()
+          }
 
-      override def wakeUp(msg: AdapterToStageMessage): Unit =
-        callback.invoke(msg)
+        override def wakeUp(msg: AdapterToStageMessage): Unit =
+          callback.invoke(msg)
 
-      private def sendPullIfAllowed(): Unit =
-        if (dataQueue.remainingCapacity() > 1 && !hasBeenPulled(in))
+        private def sendPullIfAllowed(): Unit =
+          if (dataQueue.remainingCapacity() > 1 && !hasBeenPulled(in))
+            pull(in)
+
+        override def preStart() = {
+          dataQueue.add(Initialized)
           pull(in)
-
-      override def preStart() = {
-        dataQueue.add(Initialized)
-        pull(in)
-      }
-
-      setHandler(
-        in,
-        new InHandler {
-          override def onPush(): Unit = {
-            //1 is buffer for Finished or Failed callback
-            require(dataQueue.remainingCapacity() > 1)
-            dataQueue.add(Data(grab(in)))
-            if (dataQueue.remainingCapacity() > 1)
-              sendPullIfAllowed()
-          }
-          override def onUpstreamFinish(): Unit = {
-            dataQueue.add(Finished)
-            completeStage()
-          }
-          override def onUpstreamFailure(ex: Throwable): Unit = {
-            dataQueue.add(Failed(ex))
-            failStage(ex)
-          }
         }
-      )
-    }
+
+        setHandler(
+          in,
+          new InHandler {
+            override def onPush(): Unit = {
+              //1 is buffer for Finished or Failed callback
+              require(dataQueue.remainingCapacity() > 1)
+              dataQueue.add(Data(grab(in)))
+              if (dataQueue.remainingCapacity() > 1)
+                sendPullIfAllowed()
+            }
+            override def onUpstreamFinish(): Unit = {
+              dataQueue.add(Finished)
+              completeStage()
+            }
+            override def onUpstreamFailure(ex: Throwable): Unit = {
+              dataQueue.add(Failed(ex))
+              failStage(ex)
+            }
+          }
+        )
+      }
     (logic, new InputStreamAdapter(dataQueue, logic.wakeUp, readTimeout))
   }
 }
@@ -111,8 +113,8 @@ private[akka] class InputStreamAdapter(
   var isInitialized = false
   var isActive = true
   var isStageAlive = true
-  val subscriberClosedException = new IOException(
-    "Reactive stream is terminated, no reads are possible")
+  val subscriberClosedException =
+    new IOException("Reactive stream is terminated, no reads are possible")
   var detachedChunk: Option[ByteString] = None
 
   @scala.throws(classOf[IOException])

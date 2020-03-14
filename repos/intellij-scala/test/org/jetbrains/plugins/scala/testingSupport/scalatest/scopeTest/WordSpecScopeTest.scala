@@ -23,10 +23,16 @@ trait WordSpecScopeTest extends WordSpecGenerator {
       "WordSpecTest should Run single test",
       "WordSpecTest should ignore other tests")
 
-    val path1 =
-      List("[root]", "WordSpecTest", "WordSpecTest", "Run single test")
-    val path2 =
-      List("[root]", "WordSpecTest", "WordSpecTest", "ignore other tests")
+    val path1 = List(
+      "[root]",
+      "WordSpecTest",
+      "WordSpecTest",
+      "Run single test")
+    val path2 = List(
+      "[root]",
+      "WordSpecTest",
+      "WordSpecTest",
+      "ignore other tests")
     runTestByLocation(
       3,
       10,

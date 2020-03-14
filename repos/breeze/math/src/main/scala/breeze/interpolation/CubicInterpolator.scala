@@ -31,9 +31,10 @@ class CubicInterpolator(x_coords: Vector[Double], y_coords: Vector[Double])
         lambda(i + 1) // one cell to right from the diagonal
       case _ => 0
     }
-  private val b = DenseVector.tabulate(X.length - 2) {
-    case i => 6 * (d(i + 1) - d(i)) / (h(i) + h(i + 1))
-  }
+  private val b =
+    DenseVector.tabulate(X.length - 2) {
+      case i => 6 * (d(i + 1) - d(i)) / (h(i) + h(i + 1))
+    }
   private val mp = M \ b
   private def m(i: Int) =
     i match {
@@ -41,12 +42,13 @@ class CubicInterpolator(x_coords: Vector[Double], y_coords: Vector[Double])
       case i if i == X.length - 1 => 0
       case i                      => mp(i - 1)
     }
-  private val A = DenseMatrix.tabulate(X.length - 1, 4) {
-    case (k, 0) => Y(k)
-    case (k, 1) => d(k) - h(k) / 6 * (2 * m(k) + m(k + 1))
-    case (k, 2) => m(k) / 2
-    case (k, 3) => (m(k + 1) - m(k)) / 6 / h(k)
-  }
+  private val A =
+    DenseMatrix.tabulate(X.length - 1, 4) {
+      case (k, 0) => Y(k)
+      case (k, 1) => d(k) - h(k) / 6 * (2 * m(k) + m(k + 1))
+      case (k, 2) => m(k) / 2
+      case (k, 3) => (m(k + 1) - m(k)) / 6 / h(k)
+    }
 
   override protected def interpolate(x: Double): Double = {
     val index = bisearch(x) - 1

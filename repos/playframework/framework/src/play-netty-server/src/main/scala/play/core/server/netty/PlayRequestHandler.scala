@@ -50,12 +50,13 @@ private[play] class PlayRequestHandler(val server: NettyServer)
   private var lastResponseSent: Future[Unit] = Future.successful(())
 
   // todo: make forwarded header handling a filter
-  private lazy val modelConversion = new NettyModelConversion(
-    new ForwardedHeaderHandler(
-      ForwardedHeaderHandler.ForwardedHeaderHandlerConfig(
-        server.applicationProvider.get.toOption.map(_.configuration))
+  private lazy val modelConversion =
+    new NettyModelConversion(
+      new ForwardedHeaderHandler(
+        ForwardedHeaderHandler.ForwardedHeaderHandlerConfig(
+          server.applicationProvider.get.toOption.map(_.configuration))
+      )
     )
-  )
 
   /**
     * Handle the given request.
@@ -79,8 +80,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         request,
         channel.remoteAddress().asInstanceOf[InetSocketAddress],
         Option(channel.pipeline().get(classOf[SslHandler])))
-      val result =
-        errorHandler(server.applicationProvider.current).onClientError(
+      val result = errorHandler(server.applicationProvider.current)
+        .onClientError(
           requestHeader,
           statusCode,
           if (message == null)
@@ -92,23 +93,24 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         result.map(_.withHeaders(HeaderNames.CONNECTION -> "close")))
     }
 
-    val (requestHeader, resultOrHandler) = tryRequest match {
+    val (requestHeader, resultOrHandler) =
+      tryRequest match {
 
-      case Failure(exception: TooLongFrameException) =>
-        clientError(Status.REQUEST_URI_TOO_LONG, exception.getMessage)
-      case Failure(exception) =>
-        clientError(Status.BAD_REQUEST, exception.getMessage)
-      case Success(untagged) =>
-        server.getHandlerFor(untagged) match {
+        case Failure(exception: TooLongFrameException) =>
+          clientError(Status.REQUEST_URI_TOO_LONG, exception.getMessage)
+        case Failure(exception) =>
+          clientError(Status.BAD_REQUEST, exception.getMessage)
+        case Success(untagged) =>
+          server.getHandlerFor(untagged) match {
 
-          case Left(directResult) =>
-            untagged -> Left(directResult)
+            case Left(directResult) =>
+              untagged -> Left(directResult)
 
-          case Right((taggedRequestHeader, handler, application)) =>
-            taggedRequestHeader -> Right((handler, application))
-        }
+            case Right((taggedRequestHeader, handler, application)) =>
+              taggedRequestHeader -> Right((handler, application))
+          }
 
-    }
+      }
 
     resultOrHandler match {
 
@@ -141,8 +143,9 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         val factory =
           new WebSocketServerHandshakerFactory(wsUrl, "*", true, bufferLimit)
 
-        val executed = Future(ws(requestHeader))(
-          play.api.libs.concurrent.Execution.defaultContext)
+        val executed =
+          Future(ws(requestHeader))(
+            play.api.libs.concurrent.Execution.defaultContext)
 
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         executed
@@ -154,8 +157,9 @@ private[play] class PlayRequestHandler(val server: NettyServer)
               handleAction(action, requestHeader, request, Some(app))
             case Right(flow) =>
               import app.materializer
-              val processor =
-                WebSocketHandler.messageFlowToFrameProcessor(flow, bufferLimit)
+              val processor = WebSocketHandler.messageFlowToFrameProcessor(
+                flow,
+                bufferLimit)
               Future.successful(
                 new DefaultWebSocketHttpResponse(
                   request.getProtocolVersion,
@@ -296,12 +300,13 @@ private[play] class PlayRequestHandler(val server: NettyServer)
 
     val body = modelConversion.convertRequestBody(request)
     val bodyParser = action(requestHeader)
-    val resultFuture = body match {
-      case None =>
-        bodyParser.run()
-      case Some(source) =>
-        bodyParser.run(source)
-    }
+    val resultFuture =
+      body match {
+        case None =>
+          bodyParser.run()
+        case Some(source) =>
+          bodyParser.run(source)
+      }
 
     resultFuture
       .recoverWith {
@@ -311,10 +316,12 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       }
       .map {
         case result =>
-          val cleanedResult =
-            ServerResultUtils.cleanFlashCookie(requestHeader, result)
-          val validated =
-            ServerResultUtils.validateResult(requestHeader, cleanedResult)
+          val cleanedResult = ServerResultUtils.cleanFlashCookie(
+            requestHeader,
+            result)
+          val validated = ServerResultUtils.validateResult(
+            requestHeader,
+            cleanedResult)
           modelConversion.convertResult(
             validated,
             requestHeader,

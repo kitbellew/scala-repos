@@ -54,9 +54,10 @@ trait LowPriorityFieldConversions {
     * higher priority.
     */
   implicit def productToFields(f: Product) = {
-    val fields = new Fields(f.productIterator.map {
-      anyToFieldArg
-    }.toSeq: _*)
+    val fields =
+      new Fields(f.productIterator.map {
+        anyToFieldArg
+      }.toSeq: _*)
     f.productIterator.foreach {
       _ match {
         case field: Field[_] => fields.setComparator(field.id, field.ord)
@@ -175,19 +176,19 @@ trait FieldConversions extends LowPriorityFieldConversions {
       val leftSetSyms = leftSet.map { f =>
         Symbol(f.toString)
       }
-      val (_, reversedRename) = asList(right)
-        .map { f =>
-          Symbol(f.toString)
-        }
-        .foldLeft((leftSetSyms, List[Symbol]())) { (takenRename, name) =>
-          val (taken, renames) = takenRename
-          val newName = newSymbol(taken, name)
-          (taken + newName, newName :: renames)
-        }
-      val newRight =
-        fields(
-          reversedRename.reverse
-        ) // We pushed in as a stack, so we need to reverse
+      val (_, reversedRename) =
+        asList(right)
+          .map { f =>
+            Symbol(f.toString)
+          }
+          .foldLeft((leftSetSyms, List[Symbol]())) { (takenRename, name) =>
+            val (taken, renames) = takenRename
+            val newName = newSymbol(taken, name)
+            (taken + newName, newName :: renames)
+          }
+      val newRight = fields(
+        reversedRename.reverse
+      ) // We pushed in as a stack, so we need to reverse
       (newRight, RichPipe(rightPipe).rename(right -> newRight))
     }
   }
@@ -219,9 +220,10 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * exception before scheduling the job, I guess this is okay.
     */
   implicit def parseAnySeqToFields[T <: TraversableOnce[Any]](anyf: T) = {
-    val fields = new Fields(anyf.toSeq.map {
-      anyToFieldArg
-    }: _*)
+    val fields =
+      new Fields(anyf.toSeq.map {
+        anyToFieldArg
+      }: _*)
     anyf.foreach {
       _ match {
         case field: Field[_] => fields.setComparator(field.id, field.ord)

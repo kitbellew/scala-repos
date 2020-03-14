@@ -24,33 +24,34 @@ final class Env(
 
   lazy val tv = new Tv(tvActor)
 
-  private val tvActor =
-    system.actorOf(
-      Props(classOf[TvActor], hub.actor.renderer, hub.socket.round, lightUser),
-      name = "tv")
+  private val tvActor = system.actorOf(
+    Props(classOf[TvActor], hub.actor.renderer, hub.socket.round, lightUser),
+    name = "tv")
 
-  private lazy val streaming = new Streaming(
-    system = system,
-    renderer = hub.actor.renderer,
-    streamerList = streamerList,
-    keyword = Keyword,
-    googleApiKey = GoogleApiKey)
+  private lazy val streaming =
+    new Streaming(
+      system = system,
+      renderer = hub.actor.renderer,
+      streamerList = streamerList,
+      keyword = Keyword,
+      googleApiKey = GoogleApiKey)
 
-  lazy val streamerList = new StreamerList(new {
-    import reactivemongo.bson._
-    private val coll = db("flag")
-    def get =
-      coll.find(BSONDocument("_id" -> "streamer")).one[BSONDocument].map {
-        ~_.flatMap(_.getAs[String]("text"))
-      }
-    def set(text: String) =
-      coll
-        .update(
-          BSONDocument("_id" -> "streamer"),
-          BSONDocument("text" -> text),
-          upsert = true)
-        .void
-  })
+  lazy val streamerList =
+    new StreamerList(new {
+      import reactivemongo.bson._
+      private val coll = db("flag")
+      def get =
+        coll.find(BSONDocument("_id" -> "streamer")).one[BSONDocument].map {
+          ~_.flatMap(_.getAs[String]("text"))
+        }
+      def set(text: String) =
+        coll
+          .update(
+            BSONDocument("_id" -> "streamer"),
+            BSONDocument("text" -> text),
+            upsert = true)
+          .void
+    })
 
   object isStreamer {
     private val cache = lila.memo.MixedCache.single[Set[String]](

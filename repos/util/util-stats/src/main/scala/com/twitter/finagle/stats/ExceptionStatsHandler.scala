@@ -26,11 +26,12 @@ object ExceptionStatsHandler {
   ): Seq[Seq[String]] = {
     val exceptionChain = Throwables.mkString(t)
 
-    val suffixes = if (rollup) {
-      exceptionChain.inits.toSeq
-    } else {
-      Seq(exceptionChain, Nil)
-    }
+    val suffixes =
+      if (rollup) {
+        exceptionChain.inits.toSeq
+      } else {
+        Seq(exceptionChain, Nil)
+      }
 
     labels.flatMap { prefix =>
       suffixes.map { suffix =>
@@ -63,8 +64,7 @@ class CategorizingExceptionStatsHandler(
   import ExceptionStatsHandler._
 
   private[this] val underlying: ExceptionStatsHandler = {
-    val mkLabel: Throwable => String =
-      t => categorizer(t).getOrElse(Failures)
+    val mkLabel: Throwable => String = t => categorizer(t).getOrElse(Failures)
     new MultiCategorizingExceptionStatsHandler(
       mkLabel,
       _ => Set.empty,
@@ -140,10 +140,11 @@ private[finagle] class MultiCategorizingExceptionStatsHandler(
       else
         flags.toSeq.map(Seq(parentLabel, _))
 
-    val labels: Seq[Seq[String]] = mkSource(t) match {
-      case Some(service) => flagLabels :+ Seq(SourcedFailures, service)
-      case None          => flagLabels
-    }
+    val labels: Seq[Seq[String]] =
+      mkSource(t) match {
+        case Some(service) => flagLabels :+ Seq(SourcedFailures, service)
+        case None          => flagLabels
+      }
 
     val paths: Seq[Seq[String]] = statPaths(t, labels, rollup)
 

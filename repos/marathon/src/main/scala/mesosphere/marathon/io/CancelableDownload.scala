@@ -29,25 +29,26 @@ final class CancelableDownload(
     canceled = true
   }
 
-  lazy val get: Future[CancelableDownload] = Future {
-    log.info(s"Download started from $url to path $path")
-    IO.using(url.openStream()) { in =>
-      tempItem.store { out =>
-        IO.transfer(in, out, close = false, !canceled)
+  lazy val get: Future[CancelableDownload] =
+    Future {
+      log.info(s"Download started from $url to path $path")
+      IO.using(url.openStream()) { in =>
+        tempItem.store { out =>
+          IO.transfer(in, out, close = false, !canceled)
+        }
       }
-    }
-    if (!canceled) {
-      log.info(s"Download finished from $url to path $path")
-      tempItem.moveTo(path)
-    } else {
-      log.info(
-        s"Cancel download of $url. Remove temporary storage item $tempItem")
-      tempItem.delete()
-      throw new CanceledActionException(
-        s"Download of $path from $url has been canceled")
-    }
-    this
-  }(ThreadPoolContext.ioContext)
+      if (!canceled) {
+        log.info(s"Download finished from $url to path $path")
+        tempItem.moveTo(path)
+      } else {
+        log.info(
+          s"Cancel download of $url. Remove temporary storage item $tempItem")
+        tempItem.delete()
+        throw new CanceledActionException(
+          s"Download of $path from $url has been canceled")
+      }
+      this
+    }(ThreadPoolContext.ioContext)
 
   override def hashCode(): Int = url.hashCode()
   override def equals(other: Any): Boolean =

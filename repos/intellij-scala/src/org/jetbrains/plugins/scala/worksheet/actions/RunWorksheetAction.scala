@@ -97,8 +97,9 @@ object RunWorksheetAction {
       return
     }
 
-    val psiFile =
-      PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
+    val psiFile = PsiDocumentManager
+      .getInstance(project)
+      .getPsiFile(editor.getDocument)
     WorksheetProcessManager.stop(psiFile.getVirtualFile)
 
     psiFile match {
@@ -233,22 +234,24 @@ object RunWorksheetAction {
 
     val editor = EditorHelper openInEditor file
 
-    val worksheetPrinter =
-      WorksheetEditorPrinter.newWorksheetUiFor(editor, virtualFile)
+    val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
+      editor,
+      virtualFile)
 
-    val myProcessListener: ProcessAdapter = new ProcessAdapter {
-      override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
-        val text = event.getText
-        if (ConsoleViewContentType.NORMAL_OUTPUT == ConsoleViewContentType
-              .getConsoleViewType(outputType)) {
-          worksheetPrinter processLine text
+    val myProcessListener: ProcessAdapter =
+      new ProcessAdapter {
+        override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
+          val text = event.getText
+          if (ConsoleViewContentType.NORMAL_OUTPUT == ConsoleViewContentType
+                .getConsoleViewType(outputType)) {
+            worksheetPrinter processLine text
+          }
+        }
+
+        override def processTerminated(event: ProcessEvent): Unit = {
+          worksheetPrinter.flushBuffer()
         }
       }
-
-      override def processTerminated(event: ProcessEvent): Unit = {
-        worksheetPrinter.flushBuffer()
-      }
-    }
 
     worksheetPrinter.scheduleWorksheetUpdate()
     handler.addProcessListener(myProcessListener)

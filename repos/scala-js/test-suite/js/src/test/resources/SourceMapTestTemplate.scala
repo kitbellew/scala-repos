@@ -62,19 +62,20 @@ class SourceMapTest {
         val topSte = trace2.head
         assertTrue(normFileName(topSte).contains("/SourceMapTest.scala"))
 
-        val throwSte = if (topSte.getLineNumber == 19) {
-          // line where `case class TestException is written` above
-          val throwSte = trace2.tail.head
-          assertTrue(normFileName(throwSte).contains("/SourceMapTest.scala"))
-          throwSte
-        } else {
-          /* In fullOpt, it may happen that the constructor of
-           * TestException is inlined, in which case there is no trace of
-           * it anymore. The first stack element in SourceMapTest.scala is
-           * therefore the one we're interested in.
-           */
-          topSte
-        }
+        val throwSte =
+          if (topSte.getLineNumber == 19) {
+            // line where `case class TestException is written` above
+            val throwSte = trace2.tail.head
+            assertTrue(normFileName(throwSte).contains("/SourceMapTest.scala"))
+            throwSte
+          } else {
+            /* In fullOpt, it may happen that the constructor of
+             * TestException is inlined, in which case there is no trace of
+             * it anymore. The first stack element in SourceMapTest.scala is
+             * therefore the one we're interested in.
+             */
+            topSte
+          }
 
         assertEquals(lineNo, throwSte.getLineNumber)
     }
@@ -446,17 +447,18 @@ class Json extends Writer2 {
         /**/
         ch = s.charAt(pos) /**/
         /**/
-        chKind = /***/ if (ch < 255) {
+        chKind =
+          /***/ if (ch < 255) {
 
-          /**/
-          /**/ /***/
-          charKind(ch)
-        } else {
+            /**/
+            /**/ /***/
+            charKind(ch)
+          } else {
 
-          /**/
-          /**/ /***/
-          Other
-        } /**/
+            /**/
+            /**/ /***/
+            Other
+          } /**/
         pos += 1
         if (ch == '\n'.toInt) {
           chLinePos += 1
@@ -500,25 +502,27 @@ class Json extends Writer2 {
     def handleDigit() {
       val first = chMark
       getDigits()
-      val k1 = if (ch == '.'.toInt) {
-        chNext()
-        getDigits()
-        BIGNUMBER
-      } else {
-        NUMBER
-      }
-      val k2 = if (ch == 'E'.toInt || ch == 'e'.toInt) {
-        chNext()
-        if (ch == '+'.toInt) {
+      val k1 =
+        if (ch == '.'.toInt) {
           chNext()
-        } else if (ch == '-'.toInt) {
-          chNext()
+          getDigits()
+          BIGNUMBER
+        } else {
+          NUMBER
         }
-        getDigits()
-        FLOATNUMBER
-      } else {
-        k1
-      }
+      val k2 =
+        if (ch == 'E'.toInt || ch == 'e'.toInt) {
+          chNext()
+          if (ch == '+'.toInt) {
+            chNext()
+          } else if (ch == '-'.toInt) {
+            chNext()
+          }
+          getDigits()
+          FLOATNUMBER
+        } else {
+          k1
+        }
 
       /**/
       tokenKind = k2 /**/
@@ -716,34 +720,36 @@ class Json extends Writer2 {
     }
     def getJson(): JsValue = {
       val kind: Int = tokenKind
-      val result: JsValue = kind match {
-        case ID =>
-          val result: JsValue = tokenValue match {
-            case "true"  => JsTrue
-            case "false" => JsFalse
-            case "null"  => JsNull
-            case _       => tokenError("Not true, false, or null")
-          }
+      val result: JsValue =
+        kind match {
+          case ID =>
+            val result: JsValue =
+              tokenValue match {
+                case "true"  => JsTrue
+                case "false" => JsFalse
+                case "null"  => JsNull
+                case _       => tokenError("Not true, false, or null")
+              }
 
-          tokenNext()
-          result
+            tokenNext()
+            result
 
-        case STRING =>
-          val result = tokenValue
-          tokenNext()
-          JsString(result)
+          case STRING =>
+            val result = tokenValue
+            tokenNext()
+            JsString(result)
 
-        case NUMBER      => handleNumber("NUMBER", _.toLong)
-        case BIGNUMBER   => handleNumber("BIGNUMBER", _.toDouble)
-        case FLOATNUMBER => handleNumber("FLOATNUMBER", _.toDouble)
-        case COLON       => handleUnexpected(":")
-        case COMMA       => handleUnexpected(",")
-        case LOBJ        => handleObject()
-        case ROBJ        => handleUnexpected("}")
-        case LARR        => handleArray()
-        case RARR        => handleUnexpected("]")
-        case EOF         => handleEof()
-      }
+          case NUMBER      => handleNumber("NUMBER", _.toLong)
+          case BIGNUMBER   => handleNumber("BIGNUMBER", _.toDouble)
+          case FLOATNUMBER => handleNumber("FLOATNUMBER", _.toDouble)
+          case COLON       => handleUnexpected(":")
+          case COMMA       => handleUnexpected(",")
+          case LOBJ        => handleObject()
+          case ROBJ        => handleUnexpected("}")
+          case LARR        => handleArray()
+          case RARR        => handleUnexpected("]")
+          case EOF         => handleEof()
+        }
       result
     }
     def parse(): JsValue = {

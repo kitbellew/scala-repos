@@ -21,10 +21,11 @@ object ScalateSupport {
     "/WEB-INF/scalate/layouts/default"
   )
   private def setLayoutStrategy(engine: TemplateEngine) = {
-    val layouts = for {
-      base <- ScalateSupport.DefaultLayouts
-      extension <- TemplateEngine.templateTypes
-    } yield ("%s.%s".format(base, extension))
+    val layouts =
+      for {
+        base <- ScalateSupport.DefaultLayouts
+        extension <- TemplateEngine.templateTypes
+      } yield ("%s.%s".format(base, extension))
     engine.layoutStrategy = new DefaultLayoutStrategy(engine, layouts: _*)
   }
 
@@ -80,10 +81,11 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     def contextKey(config: ConfigT): String = {
       val ctxId = config.getServletContext.hashCode.toString
 
-      val ctxKey = config.getServletContext.getContextPath match {
-        case ""   => "ROOT"
-        case path => path.substring(1)
-      }
+      val ctxKey =
+        config.getServletContext.getContextPath match {
+          case ""   => "ROOT"
+          case path => path.substring(1)
+        }
 
       f"$ctxId/$ctxKey"
     }
@@ -318,9 +320,10 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
   protected def findTemplate(
       path: String,
       extensionSet: Set[String] = templateEngine.extensions): Option[String] = {
-    val finder = new TemplateFinder(templateEngine) {
-      override lazy val extensions = extensionSet
-    }
+    val finder =
+      new TemplateFinder(templateEngine) {
+        override lazy val extensions = extensionSet
+      }
     finder.findTemplate(("/" + path).replaceAll("//", "/")) orElse
       finder.findTemplate("/%s/%s".format(path, defaultIndexName))
   }

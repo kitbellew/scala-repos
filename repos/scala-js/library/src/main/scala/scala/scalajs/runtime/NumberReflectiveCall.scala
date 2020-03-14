@@ -17,8 +17,7 @@ class NumberReflectiveCall(value: Double) {
   def floatValue(): Float = value.toFloat
   def doubleValue(): Double = value
 
-  def compareTo(that: JDouble): Int =
-    new JDouble(value).compareTo(that)
+  def compareTo(that: JDouble): Int = new JDouble(value).compareTo(that)
   def compareTo(that: JInteger): Int =
     new JDouble(value).compareTo(new JDouble(that.doubleValue()))
   def compareTo(that: AnyRef): Int =

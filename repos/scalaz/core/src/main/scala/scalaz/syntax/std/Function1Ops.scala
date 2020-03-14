@@ -8,8 +8,7 @@ final class Function1Ops[T, R](val self: T => R) extends AnyVal {
 
   def on[X](f: (R, R) => X, t1: T, t2: T): X = f(self(t1), self(t2))
 
-  def arrow[A[_, _]](implicit a: Arrow[A]): A[T, R] =
-    a.arr(self)
+  def arrow[A[_, _]](implicit a: Arrow[A]): A[T, R] = a.arr(self)
 
   def kleisli[Z[_]](implicit z: Applicative[Z]): Kleisli[Z, T, R] =
     Kleisli.kleisli((t: T) => z.point(self(t)))
@@ -26,8 +25,7 @@ final class Function1Ops[T, R](val self: T => R) extends AnyVal {
 
   def byName: (=> T) => R = t => self(t)
 
-  def endo(implicit ev: R === T): Endo[T] =
-    Endo.endo(ev.onF(self))
+  def endo(implicit ev: R === T): Endo[T] = Endo.endo(ev.onF(self))
 
   def comparing(implicit o: Order[R]): (T, T) => Ordering =
     (t1, t2) => o.order(self(t1), self(t2))
@@ -35,8 +33,7 @@ final class Function1Ops[T, R](val self: T => R) extends AnyVal {
   def equaling(implicit e: Equal[R]): (T, T) => Boolean =
     (t1, t2) => e.equal(self(t1), self(t2))
 
-  def succState(implicit e: Enum[T]): State[T, R] =
-    e.succState(self)
+  def succState(implicit e: Enum[T]): State[T, R] = e.succState(self)
 
   def succStateZeroM[Y](
       k: R => State[T, Y])(implicit e: Enum[T], m: Monoid[T]): Y =
@@ -51,8 +48,7 @@ final class Function1Ops[T, R](val self: T => R) extends AnyVal {
   def succStateMin[Y](k: R => Y)(implicit e: Enum[T]): Option[Y] =
     e.succStateMin(self, k)
 
-  def predState(implicit e: Enum[T]): State[T, R] =
-    e.predState(self)
+  def predState(implicit e: Enum[T]): State[T, R] = e.predState(self)
 
   def predStateZeroM[Y](
       k: R => State[T, Y])(implicit e: Enum[T], m: Monoid[T]): Y =

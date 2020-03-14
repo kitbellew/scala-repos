@@ -21,18 +21,21 @@ class Netty4ChannelInitializerTest
     with Eventually
     with IntegrationPatience {
 
-  val writeDiscardHandler = new ChannelOutboundHandlerAdapter {
-    override def write(
-        ctx: ChannelHandlerContext,
-        msg: scala.Any,
-        promise: ChannelPromise): Unit = ()
-  }
+  val writeDiscardHandler =
+    new ChannelOutboundHandlerAdapter {
+      override def write(
+          ctx: ChannelHandlerContext,
+          msg: scala.Any,
+          promise: ChannelPromise): Unit = ()
+    }
 
-  val nop = new ChannelHandler {
-    def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = ()
-    def handlerRemoved(ctx: ChannelHandlerContext): Unit = ()
-    def handlerAdded(ctx: ChannelHandlerContext): Unit = ()
-  }
+  val nop =
+    new ChannelHandler {
+      def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit =
+        ()
+      def handlerRemoved(ctx: ChannelHandlerContext): Unit = ()
+      def handlerAdded(ctx: ChannelHandlerContext): Unit = ()
+    }
 
   trait Ctx {
     val sr = new InMemoryStatsReceiver

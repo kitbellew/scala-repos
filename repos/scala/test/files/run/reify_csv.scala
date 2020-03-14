@@ -21,12 +21,13 @@ object Test extends App {
       .drop(1)
       .toList
 
-  val fields = csv.head
-    .split(";")
-    .map {
-      _.trim()
-    }
-    .toList
+  val fields =
+    csv.head
+      .split(";")
+      .map {
+        _.trim()
+      }
+      .toList
   println(fields)
 
   reify({

@@ -40,8 +40,8 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   def connectionIdentifier: ConnectionIdentifier
 
   // class name has a $ at the end.
-  private lazy val _collectionName =
-    getClass.getName.replaceAllLiterally("$", "")
+  private lazy val _collectionName = getClass.getName
+    .replaceAllLiterally("$", "")
 
   /*
    * Collection names should begin with letters or an underscore and may include

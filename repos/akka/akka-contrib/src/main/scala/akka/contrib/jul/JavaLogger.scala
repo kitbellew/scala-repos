@@ -24,9 +24,10 @@ import akka.event.LoggerMessageQueueSemantics
 trait JavaLogging {
 
   @transient
-  protected lazy val log = new JavaLoggingAdapter {
-    def logger = logging.Logger.getLogger(JavaLogging.this.getClass.getName)
-  }
+  protected lazy val log =
+    new JavaLoggingAdapter {
+      def logger = logging.Logger.getLogger(JavaLogging.this.getClass.getName)
+    }
 }
 
 /**

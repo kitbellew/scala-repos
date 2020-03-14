@@ -45,8 +45,8 @@ trait GlobalSettings {
       .fold[HttpErrorHandler](DefaultHttpErrorHandler)(_.errorHandler)
   }
 
-  private val jchrhCache =
-    Application.instanceCache[JavaCompatibleHttpRequestHandler]
+  private val jchrhCache = Application
+    .instanceCache[JavaCompatibleHttpRequestHandler]
   private def defaultRequestHandler: Option[DefaultHttpRequestHandler] = {
     Play.privateMaybeApplication.map(jchrhCache)
   }
@@ -123,9 +123,10 @@ trait GlobalSettings {
     */
   def doFilter(next: RequestHeader => Handler): (RequestHeader => Handler) = {
     (request: RequestHeader) =>
-      val context = Play.privateMaybeApplication.fold("") { app =>
-        httpConfigurationCache(app).context.stripSuffix("/")
-      }
+      val context =
+        Play.privateMaybeApplication.fold("") { app =>
+          httpConfigurationCache(app).context.stripSuffix("/")
+        }
       val inContext = context.isEmpty || request.path == context || request.path
         .startsWith(context + "/")
       next(request) match {
@@ -213,8 +214,9 @@ object GlobalSettings {
   def apply(
       configuration: Configuration,
       environment: Environment): GlobalSettings.Deprecated = {
-    val globalClass =
-      configuration.getString("application.global").getOrElse("Global")
+    val globalClass = configuration
+      .getString("application.global")
+      .getOrElse("Global")
 
     def javaGlobal: Option[play.GlobalSettings] =
       try {

@@ -8,8 +8,7 @@ import akka.testkit.AkkaSpec
 
 object ClusterDocSpec {
 
-  val config =
-    """
+  val config = """
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.netty.tcp.port = 0
     """

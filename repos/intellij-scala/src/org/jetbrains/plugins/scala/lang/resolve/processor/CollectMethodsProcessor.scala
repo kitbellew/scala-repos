@@ -23,10 +23,11 @@ class CollectMethodsProcessor(place: PsiElement, name: String)
         case null => None
         case x    => Some(x)
       }
-    val implType: Option[ScType] = state.get(CachesUtil.IMPLICIT_TYPE) match {
-      case null => None
-      case x    => Some(x)
-    }
+    val implType: Option[ScType] =
+      state.get(CachesUtil.IMPLICIT_TYPE) match {
+        case null => None
+        case x    => Some(x)
+      }
     if (nameAndKindMatch(named, state)) {
       val accessible = isAccessible(named, ref)
       if (accessibility && !accessible)

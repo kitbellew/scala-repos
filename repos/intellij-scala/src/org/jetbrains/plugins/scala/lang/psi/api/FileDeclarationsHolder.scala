@@ -49,12 +49,13 @@ trait FileDeclarationsHolder
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    val isScriptProcessed = this match {
-      case scalaFile: ScalaFile
-          if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile =>
-        true
-      case _ => false
-    }
+    val isScriptProcessed =
+      this match {
+        case scalaFile: ScalaFile
+            if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile =>
+          true
+        case _ => false
+      }
 
     if (isScriptProcessed && !super[ScDeclarationSequenceHolder]
           .processDeclarations(processor, state, lastParent, place))
@@ -121,10 +122,11 @@ trait FileDeclarationsHolder
                      processor)) {
           //we will add only packages
           //only packages resolve, no classes from default package
-          val name = processor match {
-            case rp: ResolveProcessor => rp.ScalaNameHint.getName(state)
-            case _                    => null
-          }
+          val name =
+            processor match {
+              case rp: ResolveProcessor => rp.ScalaNameHint.getName(state)
+              case _                    => null
+            }
           if (name == null) {
             val packages = defaultPackage.getSubPackages(scope)
             val iterator = packages.iterator
@@ -171,15 +173,17 @@ trait FileDeclarationsHolder
       }
     }
 
-    val checkPredefinedClassesAndPackages = processor match {
-      case r: ResolveProcessor => r.checkPredefinedClassesAndPackages()
-      case _                   => true
-    }
+    val checkPredefinedClassesAndPackages =
+      processor match {
+        case r: ResolveProcessor => r.checkPredefinedClassesAndPackages()
+        case _                   => true
+      }
 
-    val checkWildcardImports = processor match {
-      case r: ResolveProcessor => r.checkWildcardImports()
-      case _                   => true
-    }
+    val checkWildcardImports =
+      processor match {
+        case r: ResolveProcessor => r.checkWildcardImports()
+        case _                   => true
+      }
 
     def checkObjects(objects: Seq[String], precedence: Int): Boolean = {
       val attachedQualifiers = new mutable.HashSet[String]()

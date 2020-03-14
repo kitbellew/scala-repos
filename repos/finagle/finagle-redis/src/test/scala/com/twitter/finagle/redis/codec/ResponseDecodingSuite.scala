@@ -114,8 +114,8 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   }
 
   test("Correctly decode multi word bulk reply") {
-    val decoding =
-      decomposeSingleElemDecoding(codec(wrap("$8\r\nfoo\r\nbar\r\n")))
+    val decoding = decomposeSingleElemDecoding(
+      codec(wrap("$8\r\nfoo\r\nbar\r\n")))
     assert(decoding._1 == "foo\r\nbar", decoding._2)
   }
 
@@ -387,14 +387,16 @@ final class ResponseDecodingSuite extends RedisResponseTest {
       reply: List[AnyRef]): (String, String) =
     reply match {
       case fooR :: booR :: Nil => {
-        val fooMsg = fooR match {
-          case BulkReply(msg) => CBToString(msg)
-          case _              => "Expected Bulk Reply"
-        }
-        val barMsg = booR match {
-          case BulkReply(msg) => CBToString(msg)
-          case _              => "Expected Bulk Reply"
-        }
+        val fooMsg =
+          fooR match {
+            case BulkReply(msg) => CBToString(msg)
+            case _              => "Expected Bulk Reply"
+          }
+        val barMsg =
+          booR match {
+            case BulkReply(msg) => CBToString(msg)
+            case _              => "Expected Bulk Reply"
+          }
         (fooMsg, barMsg)
       }
       case _ => fail("Expected two element in list")

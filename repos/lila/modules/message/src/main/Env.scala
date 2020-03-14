@@ -28,12 +28,13 @@ final class Env(
 
   lazy val forms = new DataForm(security = security)
 
-  lazy val api = new Api(
-    unreadCache = unreadCache,
-    shutup = shutup,
-    maxPerPage = ThreadMaxPerPage,
-    blocks = blocks,
-    bus = system.lilaBus)
+  lazy val api =
+    new Api(
+      unreadCache = unreadCache,
+      shutup = shutup,
+      maxPerPage = ThreadMaxPerPage,
+      blocks = blocks,
+      bus = system.lilaBus)
 
   lazy val security =
     new MessageSecurity(follows = follows, blocks = blocks, getPref = getPref)

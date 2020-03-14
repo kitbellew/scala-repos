@@ -176,13 +176,14 @@ case class ScExistentialType(
       return Equivalence.equivInner(simplified, r, undefinedSubst, falseUndef)
     quantified match {
       case ScParameterizedType(a: ScAbstractType, args) if !falseUndef =>
-        val subst = new ScSubstitutor(
-          Map(a.tpt.args.zip(args).map {
-            case (tpt: ScTypeParameterType, tp: ScType) =>
-              ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
-          }: _*),
-          Map.empty,
-          None)
+        val subst =
+          new ScSubstitutor(
+            Map(a.tpt.args.zip(args).map {
+              case (tpt: ScTypeParameterType, tp: ScType) =>
+                ((tpt.param.name, ScalaPsiUtil.getPsiElementId(tpt.param)), tp)
+            }: _*),
+            Map.empty,
+            None)
         val upper: ScType =
           subst.subst(a.upper) match {
             case ScParameterizedType(u, _) =>
@@ -379,9 +380,8 @@ case class ScExistentialType(
           components,
           signatureMap.map {
             case (s, sctype) =>
-              val pTypes: List[Seq[() => ScType]] =
-                s.substitutedTypes.map(_.map(f =>
-                  () => updateRecursive(f(), newSet, variance)))
+              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
+                _.map(f => () => updateRecursive(f(), newSet, variance)))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0)
                   TypeParameter.EMPTY_ARRAY
@@ -421,21 +421,22 @@ case class ScExistentialType(
       case ScProjectionType(_, _, _) => tp
       case JavaArrayType(_)          => tp
       case ScParameterizedType(designator, typeArgs) =>
-        val parameteresIterator = designator match {
-          case tpt: ScTypeParameterType =>
-            tpt.args.map(_.param).iterator
-          case undef: ScUndefinedType =>
-            undef.tpt.args.map(_.param).iterator
-          case tp: ScType =>
-            ScType.extractClass(tp) match {
-              case Some(owner) =>
-                owner match {
-                  case td: ScTypeDefinition => td.typeParameters.iterator
-                  case _                    => owner.getTypeParameters.iterator
-                }
-              case _ => return tp
-            }
-        }
+        val parameteresIterator =
+          designator match {
+            case tpt: ScTypeParameterType =>
+              tpt.args.map(_.param).iterator
+            case undef: ScUndefinedType =>
+              undef.tpt.args.map(_.param).iterator
+            case tp: ScType =>
+              ScType.extractClass(tp) match {
+                case Some(owner) =>
+                  owner match {
+                    case td: ScTypeDefinition => td.typeParameters.iterator
+                    case _                    => owner.getTypeParameters.iterator
+                  }
+                case _ => return tp
+              }
+          }
         val typeArgsIterator = typeArgs.iterator
         val newTypeArgs = new ArrayBuffer[ScType]()
         while (parameteresIterator.hasNext && typeArgsIterator.hasNext) {
@@ -520,8 +521,10 @@ case class ScExistentialType(
         ScMethodType(
           updateRecursive(returnType, rejected, variance),
           params.map(param =>
-            param.copy(paramType =
-              updateRecursive(param.paramType, rejected, -variance))),
+            param.copy(paramType = updateRecursive(
+              param.paramType,
+              rejected,
+              -variance))),
           isImplicit)(m.project, m.scope)
       case ScAbstractType(tpt, lower, upper) =>
         ScAbstractType(
@@ -602,18 +605,19 @@ case class ScExistentialType(
       }
       res
     }
-    val res = updateRecursive(this, HashSet.empty, 1) {
-      case (variance, arg, tp) =>
-        variance match {
-          case 1 if !hasWildcards(arg.upperBound) =>
-            updated = true
-            arg.upperBound
-          case -1 if !hasWildcards(arg.lowerBound) =>
-            updated = true
-            arg.lowerBound
-          case _ => tp
-        }
-    }
+    val res =
+      updateRecursive(this, HashSet.empty, 1) {
+        case (variance, arg, tp) =>
+          variance match {
+            case 1 if !hasWildcards(arg.upperBound) =>
+              updated = true
+              arg.upperBound
+            case -1 if !hasWildcards(arg.lowerBound) =>
+              updated = true
+              arg.lowerBound
+            case _ => tp
+          }
+      }
     if (updated) {
       res match {
         case ex: ScExistentialType if ex != this => ex.simplify()
@@ -631,8 +635,8 @@ case class ScExistentialType(
     def typeParamsDepth(typeParams: List[ScTypeParameterType]): Int = {
       typeParams.map {
         case typeParam =>
-          val boundsDepth =
-            typeParam.lower.v.typeDepth.max(typeParam.upper.v.typeDepth)
+          val boundsDepth = typeParam.lower.v.typeDepth
+            .max(typeParam.upper.v.typeDepth)
           if (typeParam.args.nonEmpty) {
             (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
           } else
@@ -643,8 +647,8 @@ case class ScExistentialType(
     val quantDepth = quantified.typeDepth
     if (wildcards.nonEmpty) {
       (wildcards.map { wildcard =>
-        val boundsDepth =
-          wildcard.lowerBound.typeDepth.max(wildcard.upperBound.typeDepth)
+        val boundsDepth = wildcard.lowerBound.typeDepth.max(
+          wildcard.upperBound.typeDepth)
         if (wildcard.args.nonEmpty) {
           (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
         } else
@@ -707,9 +711,10 @@ case class ScExistentialArgument(
       uSubst: ScUndefinedSubstitutor,
       falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
     var undefinedSubst = uSubst
-    val s = (exist.args zip args).foldLeft(ScSubstitutor.empty) { (s, p) =>
-      s bindT ((p._1.name, null), p._2)
-    }
+    val s =
+      (exist.args zip args).foldLeft(ScSubstitutor.empty) { (s, p) =>
+        s bindT ((p._1.name, null), p._2)
+      }
     val t = Equivalence.equivInner(
       lowerBound,
       s.subst(exist.lowerBound),

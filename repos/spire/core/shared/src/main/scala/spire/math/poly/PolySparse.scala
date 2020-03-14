@@ -37,8 +37,7 @@ case class PolySparse[@sp(Double) C] private[spire] (
     else
       exp(exp.length - 1)
 
-  def termsIterator: Iterator[Term[C]] =
-    new TermIterator
+  def termsIterator: Iterator[Term[C]] = new TermIterator
 
   class TermIterator extends Iterator[Term[C]] {
     private[this] var i: Int = 0
@@ -134,8 +133,7 @@ case class PolySparse[@sp(Double) C] private[spire] (
     fastExp(bits, e >>> lb, lb, bits(lb - 1))
   }
 
-  def isZero: Boolean =
-    exp.isEmpty
+  def isZero: Boolean = exp.isEmpty
 
   def apply(x: C)(implicit ring: Semiring[C]): C =
     if (isZero) {

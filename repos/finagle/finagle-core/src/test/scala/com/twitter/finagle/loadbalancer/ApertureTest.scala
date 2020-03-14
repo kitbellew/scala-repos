@@ -23,8 +23,8 @@ private trait ApertureTesting {
     protected def statsReceiver = NullStatsReceiver
     protected val minAperture = 1
 
-    protected[this] val maxEffortExhausted =
-      statsReceiver.counter("max_effort_exhausted")
+    protected[this] val maxEffortExhausted = statsReceiver.counter(
+      "max_effort_exhausted")
 
     def applyn(n: Int): Unit = {
       val factories = Await.result(Future.collect(Seq.fill(n)(apply())))
@@ -238,9 +238,10 @@ private class LoadBandTest extends FunSuite with ApertureTesting {
 
       for (i <- 0 to 1000) {
         counts.clear()
-        val factories = Seq.fill(c) {
-          Await.result(bal.apply())
-        }
+        val factories =
+          Seq.fill(c) {
+            Await.result(bal.apply())
+          }
         for (f <- counts if f.n > 0) {
           avgLoad.update(f.p)
         }

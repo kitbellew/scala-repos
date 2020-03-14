@@ -14,9 +14,10 @@ object TimeMode {
 
   val ids = all map (_.id)
 
-  val byId = all map { v =>
-    (v.id, v)
-  } toMap
+  val byId =
+    all map { v =>
+      (v.id, v)
+    } toMap
 
   def apply(id: Int): Option[TimeMode] = byId get id
 

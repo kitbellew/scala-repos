@@ -39,9 +39,10 @@ object Test extends InteractiveTest {
 
   private class ScaladocEnabledGlobal
       extends Global(settings, compilerReporter) {
-    override lazy val analyzer = new {
-      val global: ScaladocEnabledGlobal.this.type = ScaladocEnabledGlobal.this
-    } with InteractiveScaladocAnalyzer
+    override lazy val analyzer =
+      new {
+        val global: ScaladocEnabledGlobal.this.type = ScaladocEnabledGlobal.this
+      } with InteractiveScaladocAnalyzer
   }
 
   override def createGlobal: Global = new ScaladocEnabledGlobal
@@ -72,8 +73,8 @@ object Test extends InteractiveTest {
 
     val originalTyper = new String(typerUnit.toCharArray)
 
-    val (prefix, postfix) =
-      originalTyper.splitAt(originalTyper.indexOf("import global._"))
+    val (prefix, postfix) = originalTyper.splitAt(
+      originalTyper.indexOf("import global._"))
     val changedTyper = prefix + " a\n " + postfix
 
     val usedMem =

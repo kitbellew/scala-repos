@@ -29,8 +29,10 @@ class DataSource(val dsp: DataSourceParams)
   override def readTraining(sc: SparkContext): TrainingData = {
     val eventsDb = Storage.getPEvents()
     val gendersMap = Map("Male" -> 0.0, "Female" -> 1.0)
-    val educationMap =
-      Map("No School" -> 0.0, "High School" -> 1.0, "College" -> 2.0)
+    val educationMap = Map(
+      "No School" -> 0.0,
+      "High School" -> 1.0,
+      "College" -> 2.0)
     val labeledPoints: RDD[LabeledPoint] = eventsDb
       .aggregateProperties(
         appId = dsp.appId,

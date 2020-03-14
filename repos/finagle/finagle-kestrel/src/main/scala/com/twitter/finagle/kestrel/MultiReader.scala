@@ -43,15 +43,17 @@ private[finagle] object MultiReaderHelper {
 
     // number of read handles
     @volatile var numReadHandles = 0
-    val numReadHandlesGauge = statsReceiver.addGauge("num_read_handles") {
-      numReadHandles
-    }
+    val numReadHandlesGauge =
+      statsReceiver.addGauge("num_read_handles") {
+        numReadHandles
+      }
 
     // outstanding reads
     val outstandingReads = new AtomicInteger(0)
-    val outstandingReadsGauge = statsReceiver.addGauge("outstanding_reads") {
-      outstandingReads.get
-    }
+    val outstandingReadsGauge =
+      statsReceiver.addGauge("outstanding_reads") {
+        outstandingReads.get
+      }
 
     // counters
     val msgStatsReceiver = statsReceiver.scope("messages")
@@ -98,17 +100,19 @@ private[finagle] object MultiReaderHelper {
         return
       }
 
-      val queues = handles.map {
-        _.messages
-      }.toSeq
-      val errors = handles.map { h =>
-        h.error map { e =>
-          logger.warning(
-            s"Read handle ${_root_.java.lang.System.identityHashCode(h)} " +
-              s"encountered exception : ${e.getMessage}")
-          h
-        }
-      }.toSeq
+      val queues =
+        handles.map {
+          _.messages
+        }.toSeq
+      val errors =
+        handles.map { h =>
+          h.error map { e =>
+            logger.warning(
+              s"Read handle ${_root_.java.lang.System.identityHashCode(h)} " +
+                s"encountered exception : ${e.getMessage}")
+            h
+          }
+        }.toSeq
 
       // We sequence here to ensure that `close` gets priority over reads.
       Offer
@@ -494,8 +498,12 @@ final case class ClusterMultiReaderConfig private[kestrel] (
   */
 abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     config: MultiReaderConfig[Req, Rep]) {
-  type ClientBuilderBase =
-    ClientBuilder[Req, Rep, Nothing, ClientConfig.Yes, ClientConfig.Yes]
+  type ClientBuilderBase = ClientBuilder[
+    Req,
+    Rep,
+    Nothing,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
 
   private[this] val logger = DefaultLogger
 
@@ -557,10 +565,11 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     withConfig(_.copy(_statsReceiver = statsReceiver))
 
   private[this] def buildReadHandleVar(): Var[Try[Set[ReadHandle]]] = {
-    val baseClientBuilder = config.clientBuilder match {
-      case Some(clientBuilder) => clientBuilder
-      case None                => defaultClientBuilder
-    }
+    val baseClientBuilder =
+      config.clientBuilder match {
+        case Some(clientBuilder) => clientBuilder
+        case None                => defaultClientBuilder
+      }
 
     // Use a mutable Map so that we can modify it in-place on cluster change.
     val currentHandles = mutable.Map.empty[Address, ReadHandle]
@@ -578,11 +587,12 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
 
           val client = createClient(factory)
 
-          val handle = (config.retryBackoffs, config.timer) match {
-            case (Some(backoffs), Some(timer)) =>
-              client.readReliably(config.queueName, timer, backoffs())
-            case _ => client.readReliably(config.queueName)
-          }
+          val handle =
+            (config.retryBackoffs, config.timer) match {
+              case (Some(backoffs), Some(timer)) =>
+                client.readReliably(config.queueName, timer, backoffs())
+              case _ => client.readReliably(config.queueName)
+            }
 
           handle.error foreach {
             case NonFatal(cause) =>
@@ -628,13 +638,12 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
 abstract class MultiReaderBuilderMemcacheBase[Builder] private[kestrel] (
     config: MultiReaderConfig[Command, Response])
     extends MultiReaderBuilder[Command, Response, Builder](config) {
-  type MemcacheClientBuilder =
-    ClientBuilder[
-      Command,
-      Response,
-      Nothing,
-      ClientConfig.Yes,
-      ClientConfig.Yes]
+  type MemcacheClientBuilder = ClientBuilder[
+    Command,
+    Response,
+    Nothing,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
 
   protected[kestrel] def defaultClientBuilder: MemcacheClientBuilder =
     ClientBuilder()
@@ -645,8 +654,7 @@ abstract class MultiReaderBuilderMemcacheBase[Builder] private[kestrel] (
       .daemon(true)
 
   protected[kestrel] def createClient(
-      factory: ServiceFactory[Command, Response]): Client =
-    Client(factory)
+      factory: ServiceFactory[Command, Response]): Client = Client(factory)
 }
 
 @deprecated("Use MultiReaderBuilderMemcache instead", "6.15.1")
@@ -687,8 +695,7 @@ class MultiReaderBuilderMemcache private[kestrel] (
     extends MultiReaderBuilderMemcacheBase[MultiReaderBuilderMemcache](config) {
 
   protected[kestrel] def copy(config: MultiReaderConfig[Command, Response])
-      : MultiReaderBuilderMemcache =
-    new MultiReaderBuilderMemcache(config)
+      : MultiReaderBuilderMemcache = new MultiReaderBuilderMemcache(config)
 }
 
 /**
@@ -701,18 +708,16 @@ class MultiReaderBuilderThrift private[kestrel] (
       ThriftClientRequest,
       Array[Byte],
       MultiReaderBuilderThrift](config) {
-  type ThriftClientBuilder =
-    ClientBuilder[
-      ThriftClientRequest,
-      Array[Byte],
-      Nothing,
-      ClientConfig.Yes,
-      ClientConfig.Yes]
+  type ThriftClientBuilder = ClientBuilder[
+    ThriftClientRequest,
+    Array[Byte],
+    Nothing,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
 
   protected[kestrel] def copy(
       config: MultiReaderConfig[ThriftClientRequest, Array[Byte]])
-      : MultiReaderBuilderThrift =
-    new MultiReaderBuilderThrift(config)
+      : MultiReaderBuilderThrift = new MultiReaderBuilderThrift(config)
 
   protected[kestrel] def defaultClientBuilder: ThriftClientBuilder =
     ClientBuilder()

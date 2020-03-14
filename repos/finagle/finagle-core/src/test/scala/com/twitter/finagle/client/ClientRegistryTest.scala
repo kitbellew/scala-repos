@@ -173,14 +173,15 @@ class ClientRegistryTest
 
     val factory = ServiceFactory.const(mockSvc)
 
-    val stack = new StackBuilder(
-      Stack.Leaf(
-        new Stack.Head {
-          def role: Stack.Role = headRole
-          def description: String = "the head!!"
-          def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
-        },
-        factory))
+    val stack =
+      new StackBuilder(
+        Stack.Leaf(
+          new Stack.Head {
+            def role: Stack.Role = headRole
+            def description: String = "the head!!"
+            def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
+          },
+          factory))
     val stackable: Stackable[ServiceFactory[Int, Int]] =
       new Stack.Module1[TestParam, ServiceFactory[Int, Int]] {
         def make(
@@ -208,8 +209,8 @@ class ClientRegistryTest
         "fancy")
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
-      val factory =
-        (RegistryEntryLifecycle.module[Int, Int] +: stk).make(params)
+      val factory = (RegistryEntryLifecycle.module[Int, Int] +: stk)
+        .make(params)
       val expected = {
         Set(
           Entry(Seq("client", "fancy", "foo", "/$/fail", "name", "p1"), "999"),

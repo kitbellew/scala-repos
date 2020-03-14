@@ -163,10 +163,11 @@ class SyslogFormatter(
       level: javalog.Level,
       date: String,
       name: String): String = {
-    val syslogLevel = level match {
-      case x: Level         => SyslogHandler.severityForLogLevel(x.value)
-      case x: javalog.Level => SyslogHandler.severityForLogLevel(x.intValue)
-    }
+    val syslogLevel =
+      level match {
+        case x: Level         => SyslogHandler.severityForLogLevel(x.value)
+        case x: javalog.Level => SyslogHandler.severityForLogLevel(x.intValue)
+      }
     serverName match {
       case None =>
         "<%d>%s %s %s: ".format(priority | syslogLevel, date, hostname, name)
@@ -184,9 +185,10 @@ class SyslogFormatter(
 object SyslogFuture {
   private val executor = Executors.newSingleThreadExecutor(
     new NamedPoolThreadFactory("TWITTER-UTIL-SYSLOG", true /*daemon*/ ))
-  private val noop = new Runnable {
-    def run() {}
-  }
+  private val noop =
+    new Runnable {
+      def run() {}
+    }
 
   def apply(action: => Unit) =
     executor.submit(new Runnable {

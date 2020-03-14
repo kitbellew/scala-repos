@@ -19,9 +19,11 @@ class Foo {
   settings.bootclasspath.value =
     settings.bootclasspath.value + / + classpath("boot", loader).getOrElse(
       error("Error: could not find boot classpath"))
-  val inter = new Interpreter(settings) {
-    override protected def parentClassLoader = Foo.this.getClass.getClassLoader
-  }
+  val inter =
+    new Interpreter(settings) {
+      override protected def parentClassLoader =
+        Foo.this.getClass.getClassLoader
+    }
   def eval(code: String): Any = {
     val h = new Holder
     inter.bind("$r_", h.getClass.getName, h)

@@ -34,10 +34,11 @@ class ScalaCalleeMethodsTreeStructure(
       descriptor: HierarchyNodeDescriptor): Array[AnyRef] = {
     val enclosingElement: PsiMember =
       descriptor.asInstanceOf[CallHierarchyNodeDescriptor].getEnclosingElement
-    val method: PsiMethod = enclosingElement match {
-      case method: PsiMethod => method
-      case _                 => return ArrayUtil.EMPTY_OBJECT_ARRAY
-    }
+    val method: PsiMethod =
+      enclosingElement match {
+        case method: PsiMethod => method
+        case _                 => return ArrayUtil.EMPTY_OBJECT_ARRAY
+      }
     val methods: ArrayBuffer[PsiMethod] = new ArrayBuffer[PsiMethod]
     method match {
       case fun: ScFunctionDefinition =>
@@ -66,28 +67,29 @@ class ScalaCalleeMethodsTreeStructure(
       methodToDescriptorMap.get(calledMethod) match {
         case Some(d) => d.incrementUsageCount()
         case _ =>
-          val d = new CallHierarchyNodeDescriptor(
-            myProject,
-            descriptor,
-            calledMethod,
-            false,
-            false)
+          val d =
+            new CallHierarchyNodeDescriptor(
+              myProject,
+              descriptor,
+              calledMethod,
+              false,
+              false)
           methodToDescriptorMap.put(calledMethod, d)
           result += d
       }
     }
-    val overridingMethods: Array[PsiMethod] =
-      OverridingMethodsSearch
-        .search(method, method.getUseScope, true)
-        .toArray(PsiMethod.EMPTY_ARRAY)
+    val overridingMethods: Array[PsiMethod] = OverridingMethodsSearch
+      .search(method, method.getUseScope, true)
+      .toArray(PsiMethod.EMPTY_ARRAY)
     for (overridingMethod <- overridingMethods
          if isInScope(baseClass, overridingMethod, myScopeType)) {
-      val node: CallHierarchyNodeDescriptor = new CallHierarchyNodeDescriptor(
-        myProject,
-        descriptor,
-        overridingMethod,
-        false,
-        false)
+      val node: CallHierarchyNodeDescriptor =
+        new CallHierarchyNodeDescriptor(
+          myProject,
+          descriptor,
+          overridingMethod,
+          false,
+          false)
       if (!result.contains(node))
         result += node
     }

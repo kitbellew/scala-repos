@@ -32,8 +32,7 @@ object Retries {
     * @see [[RetryExceptionsFilter]]
     */
   private[twitter] case class Policy(retryPolicy: RetryPolicy[Try[Nothing]]) {
-    def mk(): (Policy, Stack.Param[Policy]) =
-      (this, Policy.param)
+    def mk(): (Policy, Stack.Param[Policy]) = (this, Policy.param)
   }
   private[twitter] object Policy {
     implicit val param = Stack.Param(Policy(RetryPolicy.Never))
@@ -57,8 +56,7 @@ object Retries {
     def this(retryBudget: RetryBudget) =
       this(retryBudget, Budget.emptyBackoffSchedule)
 
-    def mk(): (Budget, Stack.Param[Budget]) =
-      (this, Budget)
+    def mk(): (Budget, Stack.Param[Budget]) = (this, Budget)
   }
 
   object Budget extends Stack.Param[Budget] {
@@ -176,11 +174,12 @@ object Retries {
               timerP.timer,
               next)
           } else {
-            val retryFilter = new RetryExceptionsFilter[Req, Rep](
-              retryPolicy,
-              timerP.timer,
-              statsRecv,
-              retryBudget)
+            val retryFilter =
+              new RetryExceptionsFilter[Req, Rep](
+                retryPolicy,
+                timerP.timer,
+                statsRecv,
+                retryBudget)
             // note that we wrap the budget, since the retry filter wraps this
             val requeueFilter = newRequeueFilter(
               retryBudget,
@@ -235,8 +234,7 @@ object Retries {
         statsReceiver.addGauge("budget") {
           retryBudget.balance
         }
-      private[this] val notOpenCounter =
-        statsReceiver.counter("not_open")
+      private[this] val notOpenCounter = statsReceiver.counter("not_open")
 
       private[this] val serviceFn: Service[Req, Rep] => Service[Req, Rep] =
         service => filters.andThen(service)

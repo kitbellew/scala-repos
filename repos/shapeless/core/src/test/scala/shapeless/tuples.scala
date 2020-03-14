@@ -113,10 +113,18 @@ class TupleTests {
   val m2iExist: M2[Int, _] = new M2[Int, Unit] {}
   val m2sExist: M2[String, _] = new M2[String, Unit] {}
   val m2dExist: M2[Double, _] = new M2[Double, Unit] {}
-  val m2eim2esm2eim2eem2edList =
-    List(m2iExist, m2sExist, m2iExist, m2iExist, m2dExist)
-  val m2eim2esm2eim2eem2edArray =
-    Array(m2iExist, m2sExist, m2iExist, m2iExist, m2dExist)
+  val m2eim2esm2eim2eem2edList = List(
+    m2iExist,
+    m2sExist,
+    m2iExist,
+    m2iExist,
+    m2dExist)
+  val m2eim2esm2eim2eem2edArray = Array(
+    m2iExist,
+    m2sExist,
+    m2iExist,
+    m2iExist,
+    m2dExist)
   val m2eim2esm2eim2eem2ed = (m2iExist, m2sExist, m2iExist, m2iExist, m2dExist)
 
   object mkString extends (Any -> String)(_.toString)
@@ -408,8 +416,8 @@ class TupleTests {
 
     implicitly[Unifier.Aux[(Int, String, Int, Int), YYYY]]
 
-    val uapap =
-      implicitly[Unifier.Aux[(Apple, Pear, Apple, Pear), (PWS, PWS, PWS, PWS)]]
+    val uapap = implicitly[
+      Unifier.Aux[(Apple, Pear, Apple, Pear), (PWS, PWS, PWS, PWS)]]
     val unified1 = uapap(apap)
     typed[FFFF](unified1)
     val unified2 = apap.unify
@@ -815,30 +823,31 @@ class TupleTests {
     typed[Long](at6)
     assertEquals(5L, at6)
 
-    val sn2 = (
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      18,
-      19,
-      20,
-      21
-    )
+    val sn2 =
+      (
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      )
 
     val at21 = sn2(_21)
     typed[Int](at21)
@@ -877,30 +886,31 @@ class TupleTests {
     typed[Long](at6)
     assertEquals(5L, at6)
 
-    val sn2 = (
-      0,
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      18,
-      19,
-      20,
-      21
-    )
+    val sn2 =
+      (
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      )
 
     val at21 = sn2(21)
     typed[Int](at21)

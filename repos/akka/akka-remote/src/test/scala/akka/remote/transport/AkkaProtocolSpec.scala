@@ -75,13 +75,17 @@ class AkkaProtocolSpec
 
   val codec = AkkaPduProtobufCodec
 
-  val testMsg = WireFormats.SerializedMessage
-    .newBuilder()
-    .setSerializerId(0)
-    .setMessage(PByteString.copyFromUtf8("foo"))
-    .build
-  val testEnvelope =
-    codec.constructMessage(localAkkaAddress, testActor, testMsg, None)
+  val testMsg =
+    WireFormats.SerializedMessage
+      .newBuilder()
+      .setSerializerId(0)
+      .setMessage(PByteString.copyFromUtf8("foo"))
+      .build
+  val testEnvelope = codec.constructMessage(
+    localAkkaAddress,
+    testActor,
+    testMsg,
+    None)
   val testMsgPdu: ByteString = codec.constructPayload(testEnvelope)
 
   def testHeartbeat = InboundPayload(codec.constructHeartbeat)
@@ -185,11 +189,12 @@ class AkkaProtocolSpec
 
       awaitCond(failureDetector.called)
 
-      val wrappedHandle = expectMsgPF() {
-        case InboundAssociation(h: AkkaProtocolHandle) ⇒
-          h.handshakeInfo.uid should ===(33)
-          h
-      }
+      val wrappedHandle =
+        expectMsgPF() {
+          case InboundAssociation(h: AkkaProtocolHandle) ⇒
+            h.handshakeInfo.uid should ===(33)
+            h
+        }
 
       wrappedHandle.readHandlerPromise.success(
         ActorHandleEventListener(testActor))
@@ -320,12 +325,13 @@ class AkkaProtocolSpec
       // Send the correct cookie
       reader ! testAssociate(uid = 33, Some("abcde"))
 
-      val wrappedHandle = expectMsgPF() {
-        case InboundAssociation(h: AkkaProtocolHandle) ⇒
-          h.handshakeInfo.uid should ===(33)
-          h.handshakeInfo.cookie should ===(Some("abcde"))
-          h
-      }
+      val wrappedHandle =
+        expectMsgPF() {
+          case InboundAssociation(h: AkkaProtocolHandle) ⇒
+            h.handshakeInfo.uid should ===(33)
+            h.handshakeInfo.cookie should ===(Some("abcde"))
+            h
+        }
 
       wrappedHandle.readHandlerPromise.success(
         ActorHandleEventListener(testActor))
@@ -386,14 +392,15 @@ class AkkaProtocolSpec
 
       reader ! testAssociate(uid = 33, cookie = None)
 
-      val wrappedHandle = Await.result(statusPromise.future, 3.seconds) match {
-        case h: AssociationHandle ⇒
-          h.remoteAddress should ===(remoteAkkaAddress)
-          h.localAddress should ===(localAkkaAddress)
-          h
+      val wrappedHandle =
+        Await.result(statusPromise.future, 3.seconds) match {
+          case h: AssociationHandle ⇒
+            h.remoteAddress should ===(remoteAkkaAddress)
+            h.localAddress should ===(localAkkaAddress)
+            h
 
-        case _ ⇒ fail()
-      }
+          case _ ⇒ fail()
+        }
 
       wrappedHandle.readHandlerPromise.success(
         ActorHandleEventListener(testActor))
@@ -425,14 +432,15 @@ class AkkaProtocolSpec
 
       reader ! testAssociate(uid = 33, cookie = None)
 
-      val wrappedHandle = Await.result(statusPromise.future, 3.seconds) match {
-        case h: AssociationHandle ⇒
-          h.remoteAddress should ===(remoteAkkaAddress)
-          h.localAddress should ===(localAkkaAddress)
-          h
+      val wrappedHandle =
+        Await.result(statusPromise.future, 3.seconds) match {
+          case h: AssociationHandle ⇒
+            h.remoteAddress should ===(remoteAkkaAddress)
+            h.localAddress should ===(localAkkaAddress)
+            h
 
-        case _ ⇒ fail()
-      }
+          case _ ⇒ fail()
+        }
 
       wrappedHandle.readHandlerPromise.success(
         ActorHandleEventListener(testActor))
@@ -464,14 +472,15 @@ class AkkaProtocolSpec
 
       stateActor ! testAssociate(uid = 33, cookie = None)
 
-      val wrappedHandle = Await.result(statusPromise.future, 3.seconds) match {
-        case h: AssociationHandle ⇒
-          h.remoteAddress should ===(remoteAkkaAddress)
-          h.localAddress should ===(localAkkaAddress)
-          h
+      val wrappedHandle =
+        Await.result(statusPromise.future, 3.seconds) match {
+          case h: AssociationHandle ⇒
+            h.remoteAddress should ===(remoteAkkaAddress)
+            h.localAddress should ===(localAkkaAddress)
+            h
 
-        case _ ⇒ fail()
-      }
+          case _ ⇒ fail()
+        }
 
       wrappedHandle.readHandlerPromise.success(
         ActorHandleEventListener(testActor))
@@ -506,14 +515,15 @@ class AkkaProtocolSpec
 
       stateActor ! testAssociate(uid = 33, cookie = None)
 
-      val wrappedHandle = Await.result(statusPromise.future, 3.seconds) match {
-        case h: AssociationHandle ⇒
-          h.remoteAddress should ===(remoteAkkaAddress)
-          h.localAddress should ===(localAkkaAddress)
-          h
+      val wrappedHandle =
+        Await.result(statusPromise.future, 3.seconds) match {
+          case h: AssociationHandle ⇒
+            h.remoteAddress should ===(remoteAkkaAddress)
+            h.localAddress should ===(localAkkaAddress)
+            h
 
-        case _ ⇒ fail()
-      }
+          case _ ⇒ fail()
+        }
 
       stateActor ! Disassociated(AssociationHandle.Unknown)
 

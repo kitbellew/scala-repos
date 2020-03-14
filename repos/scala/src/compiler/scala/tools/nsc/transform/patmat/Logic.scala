@@ -239,10 +239,11 @@ trait Logic extends Debugging {
             val ops = fv.map(simplifyProp) - True // ignore `True`
 
             // build up Set in order to remove duplicates
-            val opsFlattened = ops.flatMap {
-              case And(fv) => fv
-              case f       => Set(f)
-            }.toSeq
+            val opsFlattened =
+              ops.flatMap {
+                case And(fv) => fv
+                case f       => Set(f)
+              }.toSeq
 
             if (hasImpureAtom(opsFlattened) || opsFlattened.contains(False)) {
               False
@@ -257,10 +258,11 @@ trait Logic extends Debugging {
             // recurse for nested Or (pulls all Ors up)
             val ops = fv.map(simplifyProp) - False // ignore `False`
 
-            val opsFlattened = ops.flatMap {
-              case Or(fv) => fv
-              case f      => Set(f)
-            }.toSeq
+            val opsFlattened =
+              ops.flatMap {
+                case Or(fv) => fv
+                case f      => Set(f)
+              }.toSeq
 
             if (hasImpureAtom(opsFlattened) || opsFlattened.contains(True)) {
               True
@@ -542,8 +544,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       // once we go to run-time checks (on Const's), convert them to checkable types
       // TODO: there seems to be bug for singleton domains (variable does not show up in model)
       lazy val domain: Option[Set[Const]] = {
-        val subConsts =
-          enumerateSubtypes(staticTp, grouped = false).headOption.map { tps =>
+        val subConsts = enumerateSubtypes(staticTp, grouped = false).headOption
+          .map { tps =>
             tps.toSet[Type].map { tp =>
               val domainC = TypeConst(tp)
               registerEquality(domainC)
@@ -723,8 +725,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
         _ map symForEqualsTo
       }
 
-      lazy val symForStaticTp: Option[Sym] =
-        symForEqualsTo.get(TypeConst(staticTpCheckable))
+      lazy val symForStaticTp: Option[Sym] = symForEqualsTo.get(
+        TypeConst(staticTpCheckable))
 
       // don't access until all potential equalities have been registered using registerEquality
       private lazy val equalitySyms = {
@@ -880,11 +882,12 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
     object ValueConst extends ValueConstExtractor {
       def fromType(tp: Type) = {
         assert(tp.isInstanceOf[SingletonType])
-        val toString = tp match {
-          case ConstantType(c)                  => c.escapedStringValue
-          case _ if tp.typeSymbol.isModuleClass => tp.typeSymbol.name.toString
-          case _                                => tp.toString
-        }
+        val toString =
+          tp match {
+            case ConstantType(c)                  => c.escapedStringValue
+            case _ if tp.typeSymbol.isModuleClass => tp.typeSymbol.name.toString
+            case _                                => tp.toString
+          }
         Const.unique(tp, new ValueConst(tp, tp.widen, toString))
       }
       def apply(p: Tree) = {

@@ -20,16 +20,16 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
     "be instantiable" in {
       val es = Executors.newCachedThreadPool()
       try {
-        val executor: Executor with ExecutionContext =
-          ExecutionContext.fromExecutor(es)
+        val executor: Executor with ExecutionContext = ExecutionContext
+          .fromExecutor(es)
         executor should not be (null)
 
         val executorService: ExecutorService with ExecutionContext =
           ExecutionContext.fromExecutorService(es)
         executorService should not be (null)
 
-        val jExecutor: ExecutionContextExecutor =
-          ExecutionContext.fromExecutor(es)
+        val jExecutor: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+          es)
         jExecutor should not be (null)
 
         val jExecutorService: ExecutionContextExecutorService =
@@ -240,15 +240,16 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
     "execute 'throughput' number of tasks per sweep" in {
       val submissions = new AtomicInteger(0)
       val counter = new AtomicInteger(0)
-      val underlying = new ExecutionContext {
-        override def execute(r: Runnable) {
-          submissions.incrementAndGet();
-          ExecutionContext.global.execute(r)
+      val underlying =
+        new ExecutionContext {
+          override def execute(r: Runnable) {
+            submissions.incrementAndGet();
+            ExecutionContext.global.execute(r)
+          }
+          override def reportFailure(t: Throwable) {
+            ExecutionContext.global.reportFailure(t)
+          }
         }
-        override def reportFailure(t: Throwable) {
-          ExecutionContext.global.reportFailure(t)
-        }
-      }
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()
@@ -292,15 +293,16 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
     "relinquish thread when suspended" in {
       val submissions = new AtomicInteger(0)
       val counter = new AtomicInteger(0)
-      val underlying = new ExecutionContext {
-        override def execute(r: Runnable) {
-          submissions.incrementAndGet();
-          ExecutionContext.global.execute(r)
+      val underlying =
+        new ExecutionContext {
+          override def execute(r: Runnable) {
+            submissions.incrementAndGet();
+            ExecutionContext.global.execute(r)
+          }
+          override def reportFailure(t: Throwable) {
+            ExecutionContext.global.reportFailure(t)
+          }
         }
-        override def reportFailure(t: Throwable) {
-          ExecutionContext.global.reportFailure(t)
-        }
-      }
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
       sec.suspend()

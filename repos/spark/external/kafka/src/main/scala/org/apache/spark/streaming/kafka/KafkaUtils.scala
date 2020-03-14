@@ -214,15 +214,16 @@ object KafkaUtils {
       kc: KafkaCluster,
       offsetRanges: Array[OffsetRange]): Unit = {
     val topics = offsetRanges.map(_.topicAndPartition).toSet
-    val result = for {
-      low <- kc.getEarliestLeaderOffsets(topics).right
-      high <- kc.getLatestLeaderOffsets(topics).right
-    } yield {
-      offsetRanges.filterNot { o =>
-        low(o.topicAndPartition).offset <= o.fromOffset &&
-        o.untilOffset <= high(o.topicAndPartition).offset
+    val result =
+      for {
+        low <- kc.getEarliestLeaderOffsets(topics).right
+        high <- kc.getLatestLeaderOffsets(topics).right
+      } yield {
+        offsetRanges.filterNot { o =>
+          low(o.topicAndPartition).offset <= o.fromOffset &&
+          o.untilOffset <= high(o.topicAndPartition).offset
+        }
       }
-    }
     val badRanges = KafkaCluster.checkErrors(result)
     if (!badRanges.isEmpty) {
       throw new SparkException(
@@ -236,19 +237,20 @@ object KafkaUtils {
       topics: Set[String]
   ): Map[TopicAndPartition, Long] = {
     val reset = kafkaParams.get("auto.offset.reset").map(_.toLowerCase)
-    val result = for {
-      topicPartitions <- kc.getPartitions(topics).right
-      leaderOffsets <- (if (reset == Some("smallest")) {
-                          kc.getEarliestLeaderOffsets(topicPartitions)
-                        } else {
-                          kc.getLatestLeaderOffsets(topicPartitions)
-                        }).right
-    } yield {
-      leaderOffsets.map {
-        case (tp, lo) =>
-          (tp, lo.offset)
+    val result =
+      for {
+        topicPartitions <- kc.getPartitions(topics).right
+        leaderOffsets <- (if (reset == Some("smallest")) {
+                            kc.getEarliestLeaderOffsets(topicPartitions)
+                          } else {
+                            kc.getLatestLeaderOffsets(topicPartitions)
+                          }).right
+      } yield {
+        leaderOffsets.map {
+          case (tp, lo) =>
+            (tp, lo.offset)
+        }
       }
-    }
     KafkaCluster.checkErrors(result)
   }
 
@@ -327,14 +329,16 @@ object KafkaUtils {
   ): RDD[R] =
     sc.withScope {
       val kc = new KafkaCluster(kafkaParams)
-      val leaderMap = if (leaders.isEmpty) {
-        leadersForRanges(kc, offsetRanges)
-      } else {
-        // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
-        leaders.map {
-          case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
+      val leaderMap =
+        if (leaders.isEmpty) {
+          leadersForRanges(kc, offsetRanges)
+        } else {
+          // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
+          leaders.map {
+            case (tp: TopicAndPartition, Broker(host, port)) =>
+              (tp, (host, port))
+          }
         }
-      }
       val cleanedHandler = sc.clean(messageHandler)
       checkOffsets(kc, offsetRanges)
       new KafkaRDD[K, V, KD, VD, R](
@@ -534,8 +538,8 @@ object KafkaUtils {
       kafkaParams: Map[String, String],
       topics: Set[String]
   ): InputDStream[(K, V)] = {
-    val messageHandler = (mmd: MessageAndMetadata[K, V]) =>
-      (mmd.key, mmd.message)
+    val messageHandler =
+      (mmd: MessageAndMetadata[K, V]) => (mmd.key, mmd.message)
     val kc = new KafkaCluster(kafkaParams)
     val fromOffsets = getFromOffsets(kc, kafkaParams, topics)
     new DirectKafkaInputDStream[K, V, KD, VD, (K, V)](
@@ -719,13 +723,14 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       offsetRanges: JList[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker]): JavaRDD[Array[Byte]] = {
-    val messageHandler = (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) =>
-      new PythonMessageAndMetadata(
-        mmd.topic,
-        mmd.partition,
-        mmd.offset,
-        mmd.key(),
-        mmd.message())
+    val messageHandler =
+      (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) =>
+        new PythonMessageAndMetadata(
+          mmd.topic,
+          mmd.partition,
+          mmd.offset,
+          mmd.key(),
+          mmd.message())
     val rdd = createRDD(jsc, kafkaParams, offsetRanges, leaders, messageHandler)
       .mapPartitions(picklerIterator)
     new JavaRDD(rdd)
@@ -771,16 +776,20 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       topics: JSet[String],
       fromOffsets: JMap[TopicAndPartition, JLong]): JavaDStream[Array[Byte]] = {
-    val messageHandler = (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) =>
-      new PythonMessageAndMetadata(
-        mmd.topic,
-        mmd.partition,
-        mmd.offset,
-        mmd.key(),
-        mmd.message())
-    val stream =
-      createDirectStream(jssc, kafkaParams, topics, fromOffsets, messageHandler)
-        .mapPartitions(picklerIterator)
+    val messageHandler =
+      (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) =>
+        new PythonMessageAndMetadata(
+          mmd.topic,
+          mmd.partition,
+          mmd.offset,
+          mmd.key(),
+          mmd.message())
+    val stream = createDirectStream(
+      jssc,
+      kafkaParams,
+      topics,
+      fromOffsets,
+      messageHandler).mapPartitions(picklerIterator)
     new JavaDStream(stream)
   }
 
@@ -792,23 +801,24 @@ private[kafka] class KafkaUtilsPythonHelper {
       messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
       : DStream[V] = {
 
-    val currentFromOffsets = if (!fromOffsets.isEmpty) {
-      val topicsFromOffsets = fromOffsets.keySet().asScala.map(_.topic)
-      if (topicsFromOffsets != topics.asScala.toSet) {
-        throw new IllegalStateException(
-          s"The specified topics: ${topics.asScala.toSet.mkString(" ")} " +
-            s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
+    val currentFromOffsets =
+      if (!fromOffsets.isEmpty) {
+        val topicsFromOffsets = fromOffsets.keySet().asScala.map(_.topic)
+        if (topicsFromOffsets != topics.asScala.toSet) {
+          throw new IllegalStateException(
+            s"The specified topics: ${topics.asScala.toSet.mkString(" ")} " +
+              s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
+        }
+        Map(fromOffsets.asScala.mapValues {
+          _.longValue()
+        }.toSeq: _*)
+      } else {
+        val kc = new KafkaCluster(Map(kafkaParams.asScala.toSeq: _*))
+        KafkaUtils.getFromOffsets(
+          kc,
+          Map(kafkaParams.asScala.toSeq: _*),
+          Set(topics.asScala.toSeq: _*))
       }
-      Map(fromOffsets.asScala.mapValues {
-        _.longValue()
-      }.toSeq: _*)
-    } else {
-      val kc = new KafkaCluster(Map(kafkaParams.asScala.toSeq: _*))
-      KafkaUtils.getFromOffsets(
-        kc,
-        Map(kafkaParams.asScala.toSeq: _*),
-        Set(topics.asScala.toSeq: _*))
-    }
 
     KafkaUtils.createDirectStream[
       Array[Byte],
@@ -831,15 +841,14 @@ private[kafka] class KafkaUtilsPythonHelper {
 
   def createTopicAndPartition(
       topic: String,
-      partition: JInt): TopicAndPartition =
-    TopicAndPartition(topic, partition)
+      partition: JInt): TopicAndPartition = TopicAndPartition(topic, partition)
 
   def createBroker(host: String, port: JInt): Broker = Broker(host, port)
 
   def offsetRangesOfKafkaRDD(rdd: RDD[_]): JList[OffsetRange] = {
     val parentRDDs = rdd.getNarrowAncestors
-    val kafkaRDDs =
-      parentRDDs.filter(rdd => rdd.isInstanceOf[KafkaRDD[_, _, _, _, _]])
+    val kafkaRDDs = parentRDDs.filter(rdd =>
+      rdd.isInstanceOf[KafkaRDD[_, _, _, _, _]])
 
     require(
       kafkaRDDs.length == 1,

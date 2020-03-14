@@ -72,8 +72,8 @@ class PhiAccrualFailureDetector(
       threshold = config.getDouble("threshold"),
       maxSampleSize = config.getInt("max-sample-size"),
       minStdDeviation = config.getMillisDuration("min-std-deviation"),
-      acceptableHeartbeatPause =
-        config.getMillisDuration("acceptable-heartbeat-pause"),
+      acceptableHeartbeatPause = config.getMillisDuration(
+        "acceptable-heartbeat-pause"),
       firstHeartbeatEstimate = config.getMillisDuration("heartbeat-interval"))
 
   require(threshold > 0.0, "failure-detector.threshold must be > 0")
@@ -108,8 +108,9 @@ class PhiAccrualFailureDetector(
       history: HeartbeatHistory,
       timestamp: Option[Long])
 
-  private val state = new AtomicReference[State](
-    State(history = firstHeartbeat, timestamp = None))
+  private val state =
+    new AtomicReference[State](
+      State(history = firstHeartbeat, timestamp = None))
 
   override def isAvailable: Boolean = isAvailable(clock())
 
@@ -123,20 +124,21 @@ class PhiAccrualFailureDetector(
     val timestamp = clock()
     val oldState = state.get
 
-    val newHistory = oldState.timestamp match {
-      case None ⇒
-        // this is heartbeat from a new resource
-        // add starter records for this new resource
-        firstHeartbeat
-      case Some(latestTimestamp) ⇒
-        // this is a known connection
-        val interval = timestamp - latestTimestamp
-        // don't use the first heartbeat after failure for the history, since a long pause will skew the stats
-        if (isAvailable(timestamp))
-          oldState.history :+ interval
-        else
-          oldState.history
-    }
+    val newHistory =
+      oldState.timestamp match {
+        case None ⇒
+          // this is heartbeat from a new resource
+          // add starter records for this new resource
+          firstHeartbeat
+        case Some(latestTimestamp) ⇒
+          // this is a known connection
+          val interval = timestamp - latestTimestamp
+          // don't use the first heartbeat after failure for the history, since a long pause will skew the stats
+          if (isAvailable(timestamp))
+            oldState.history :+ interval
+          else
+            oldState.history
+      }
 
     val newState = oldState.copy(
       history = newHistory,

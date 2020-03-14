@@ -25,8 +25,9 @@ class MemcachedTest
     with IntegrationPatience {
   test("Memcached.Client has expected stack and params") {
     val markDeadFor = Backoff.const(1.second)
-    val failureAccrualPolicy =
-      FailureAccrualPolicy.consecutiveFailures(20, markDeadFor)
+    val failureAccrualPolicy = FailureAccrualPolicy.consecutiveFailures(
+      20,
+      markDeadFor)
     val client = Memcached.client
       .configured(FailureAccrualFactory.Param(() => failureAccrualPolicy))
       .configured(Transporter.ConnectTimeout(100.milliseconds))
@@ -40,8 +41,8 @@ class MemcachedTest
 
     val params = client.params
 
-    val FailureAccrualFactory.Param.Configured(policy) =
-      params[FailureAccrualFactory.Param]
+    val FailureAccrualFactory.Param
+      .Configured(policy) = params[FailureAccrualFactory.Param]
     assert(policy() == failureAccrualPolicy)
     assert(markDeadFor.take(10).force.toSeq === (0 until 10 map { _ =>
       1.second

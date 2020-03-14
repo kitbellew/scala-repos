@@ -305,10 +305,11 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
           else
             path
 
-        val uri = (if (url.matches("^(http|HTTP)(s|S)?:.*"))
-                     new URI(url)
-                   else
-                     new URI("http://" + url)).normalize()
+        val uri =
+          (if (url.matches("^(http|HTTP)(s|S)?:.*"))
+             new URI(url)
+           else
+             new URI("http://" + url)).normalize()
         new URI(
           scheme(uri),
           uri.getUserInfo,
@@ -373,13 +374,13 @@ private[openid] object Discovery {
   }
 
   class HtmlResolver extends Resolver {
-    private val providerRegex = new Regex(
-      """<link[^>]+openid2[.]provider[^>]+>""")
+    private val providerRegex =
+      new Regex("""<link[^>]+openid2[.]provider[^>]+>""")
     private val serverRegex = new Regex("""<link[^>]+openid[.]server[^>]+>""")
-    private val localidRegex = new Regex(
-      """<link[^>]+openid2[.]local_id[^>]+>""")
-    private val delegateRegex = new Regex(
-      """<link[^>]+openid[.]delegate[^>]+>""")
+    private val localidRegex =
+      new Regex("""<link[^>]+openid2[.]local_id[^>]+>""")
+    private val delegateRegex =
+      new Regex("""<link[^>]+openid[.]delegate[^>]+>""")
 
     def resolve(response: WSResponse) = {
       val serverUrl: Option[String] = providerRegex

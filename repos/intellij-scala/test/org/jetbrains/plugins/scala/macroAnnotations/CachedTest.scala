@@ -56,20 +56,23 @@ class CachedTest extends CachedTestBase {
 
     def setUpThreads(): (Thread, Thread) = {
       Foo.allThreadsStartedLock.lock()
-      val thread1 = new Thread(new Runnable {
-        override def run(): Unit = Foo.runSynchronized()
-      })
-      val thread2 = new Thread(new Runnable {
-        override def run(): Unit = Foo.runSynchronized()
-      })
+      val thread1 =
+        new Thread(new Runnable {
+          override def run(): Unit = Foo.runSynchronized()
+        })
+      val thread2 =
+        new Thread(new Runnable {
+          override def run(): Unit = Foo.runSynchronized()
+        })
 
-      val eh = new UncaughtExceptionHandler {
-        override def uncaughtException(t: Thread, e: Throwable): Unit =
-          e match {
-            case _: AssertionError => Foo.assertsFailed += 1
-            case _                 =>
-          }
-      }
+      val eh =
+        new UncaughtExceptionHandler {
+          override def uncaughtException(t: Thread, e: Throwable): Unit =
+            e match {
+              case _: AssertionError => Foo.assertsFailed += 1
+              case _                 =>
+            }
+        }
       thread1.setUncaughtExceptionHandler(eh)
       thread2.setUncaughtExceptionHandler(eh)
 

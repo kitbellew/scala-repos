@@ -93,39 +93,37 @@ object Flaggable {
   implicit val ofString: Flaggable[String] = mandatory(identity)
 
   // Pairs of Flaggable conversions for types with corresponding Java boxed types.
-  implicit val ofBoolean: Flaggable[Boolean] = new Flaggable[Boolean] {
-    override def default = Some(true)
-    def parse(s: String) = s.toBoolean
-  }
+  implicit val ofBoolean: Flaggable[Boolean] =
+    new Flaggable[Boolean] {
+      override def default = Some(true)
+      def parse(s: String) = s.toBoolean
+    }
 
-  implicit val ofJavaBoolean: Flaggable[JBoolean] = new Flaggable[JBoolean] {
-    override def default = Some(JBoolean.TRUE)
-    def parse(s: String) = JBoolean.valueOf(s.toBoolean)
-  }
+  implicit val ofJavaBoolean: Flaggable[JBoolean] =
+    new Flaggable[JBoolean] {
+      override def default = Some(JBoolean.TRUE)
+      def parse(s: String) = JBoolean.valueOf(s.toBoolean)
+    }
 
   implicit val ofInt: Flaggable[Int] = mandatory(_.toInt)
-  implicit val ofJavaInteger: Flaggable[JInteger] =
-    mandatory { s: String =>
-      JInteger.valueOf(s.toInt)
-    }
+  implicit val ofJavaInteger: Flaggable[JInteger] = mandatory { s: String =>
+    JInteger.valueOf(s.toInt)
+  }
 
   implicit val ofLong: Flaggable[Long] = mandatory(_.toLong)
-  implicit val ofJavaLong: Flaggable[JLong] =
-    mandatory { s: String =>
-      JLong.valueOf(s.toInt)
-    }
+  implicit val ofJavaLong: Flaggable[JLong] = mandatory { s: String =>
+    JLong.valueOf(s.toInt)
+  }
 
   implicit val ofFloat: Flaggable[Float] = mandatory(_.toFloat)
-  implicit val ofJavaFloat: Flaggable[JFloat] =
-    mandatory { s: String =>
-      JFloat.valueOf(s.toInt)
-    }
+  implicit val ofJavaFloat: Flaggable[JFloat] = mandatory { s: String =>
+    JFloat.valueOf(s.toInt)
+  }
 
   implicit val ofDouble: Flaggable[Double] = mandatory(_.toDouble)
-  implicit val ofJavaDouble: Flaggable[JDouble] =
-    mandatory { s: String =>
-      JDouble.valueOf(s.toInt)
-    }
+  implicit val ofJavaDouble: Flaggable[JDouble] = mandatory { s: String =>
+    JDouble.valueOf(s.toInt)
+  }
 
   // Conversions for common non-primitive types and collections.
   implicit val ofDuration: Flaggable[Duration] = mandatory(Duration.parse(_))
@@ -156,10 +154,11 @@ object Flaggable {
           addr.getPort)
     }
 
-  implicit val ofFile: Flaggable[File] = new Flaggable[File] {
-    override def parse(v: String): File = new File(v)
-    override def show(file: File) = file.toString
-  }
+  implicit val ofFile: Flaggable[File] =
+    new Flaggable[File] {
+      override def parse(v: String): File = new File(v)
+      override def show(file: File) = file.toString
+    }
 
   implicit def ofTuple[T: Flaggable, U: Flaggable]: Flaggable[(T, U)] =
     new Flaggable[(T, U)] {
@@ -205,13 +204,14 @@ object Flaggable {
     assert(!vflag.default.isDefined)
 
     def parse(in: String): Map[K, V] = {
-      val tuples = in.split(',').foldLeft(Seq.empty[String]) {
-        case (acc, s) if !s.contains('=') =>
-          // In order to support comma-separated values, we concatenate
-          // consecutive tokens that don't contain equals signs.
-          acc.init :+ (acc.last + ',' + s)
-        case (acc, s) => acc :+ s
-      }
+      val tuples =
+        in.split(',').foldLeft(Seq.empty[String]) {
+          case (acc, s) if !s.contains('=') =>
+            // In order to support comma-separated values, we concatenate
+            // consecutive tokens that don't contain equals signs.
+            acc.init :+ (acc.last + ',' + s)
+          case (acc, s) => acc :+ s
+        }
 
       tuples.map { tup =>
         tup.split("=") match {
@@ -329,12 +329,13 @@ class Flag[T: Flaggable] private[app] (
     }
 
   private[this] def setLocalValue(value: Option[T]): Unit = {
-    val updatedMap: Map[Flag[_], Any] = (localFlagValues(), value) match {
-      case (Some(map), Some(v)) => map + (this -> v)
-      case (Some(map), None)    => map - this
-      case (None, Some(v))      => Map(this -> v)
-      case (None, None)         => Map.empty[Flag[_], Any]
-    }
+    val updatedMap: Map[Flag[_], Any] =
+      (localFlagValues(), value) match {
+        case (Some(map), Some(v)) => map + (this -> v)
+        case (Some(map), None)    => map - this
+        case (None, Some(v))      => Map(this -> v)
+        case (None, None)         => Map.empty[Flag[_], Any]
+      }
     if (updatedMap.isEmpty)
       localFlagValues.clear()
     else
@@ -362,18 +363,19 @@ class Flag[T: Flaggable] private[app] (
   @volatile private[this] var _parsingDone = false
   protected[this] def parsingDone = _parsingDone
 
-  private lazy val default: Option[T] = defaultOrUsage match {
-    case Right(_) => None
-    case Left(d) =>
-      try {
-        Some(d())
-      } catch {
-        case e: Throwable =>
-          throw new RuntimeException(
-            s"Could not run default function for flag $name",
-            e)
-      }
-  }
+  private lazy val default: Option[T] =
+    defaultOrUsage match {
+      case Right(_) => None
+      case Left(d) =>
+        try {
+          Some(d())
+        } catch {
+          case e: Throwable =>
+            throw new RuntimeException(
+              s"Could not run default function for flag $name",
+              e)
+        }
+    }
 
   private def valueOrDefault: Option[T] =
     getValue match {
@@ -460,10 +462,11 @@ class Flag[T: Flaggable] private[app] (
   }
 
   def usageString: String = {
-    val defaultOrUsageStr = defaultOrUsage match {
-      case Left(_)      => runDefaultString
-      case Right(usage) => usage
-    }
+    val defaultOrUsageStr =
+      defaultOrUsage match {
+        case Left(_)      => runDefaultString
+        case Right(usage) => usage
+      }
     s"  -$name='$defaultOrUsageStr': $help"
   }
 

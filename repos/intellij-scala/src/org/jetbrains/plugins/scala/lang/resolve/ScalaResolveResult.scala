@@ -173,10 +173,11 @@ class ScalaResolveResult(
       .hashCode() * 31 * 31 + implicitFunction.hashCode() * 31 * 31
 
   override def toString = {
-    val name = element match {
-      case named: ScNamedElement => named.name
-      case it                    => it.toString
-    }
+    val name =
+      element match {
+        case named: ScNamedElement => named.name
+        case it                    => it.toString
+      }
     s"""$name [${problems.mkString(", ")}]"""
   }
 
@@ -220,23 +221,24 @@ class ScalaResolveResult(
             case _              => getPackageName(element.getParent)
           }
         }
-        val q = clazz match {
-          case td: ScTypeDefinition =>
-            if (td.containingClass != null)
-              return OTHER_MEMBERS
-            getPackageName(td)
-          case p: PsiClass =>
-            if (p.getContainingClass != null)
-              return OTHER_MEMBERS
-            val qualifier = p.getQualifiedName
-            if (qualifier == null)
-              return OTHER_MEMBERS
-            val index: Int = qualifier.lastIndexOf('.')
-            if (index == -1)
-              return OTHER_MEMBERS
-            qualifier.substring(0, index)
-          case _ =>
-        }
+        val q =
+          clazz match {
+            case td: ScTypeDefinition =>
+              if (td.containingClass != null)
+                return OTHER_MEMBERS
+              getPackageName(td)
+            case p: PsiClass =>
+              if (p.getContainingClass != null)
+                return OTHER_MEMBERS
+              val qualifier = p.getQualifiedName
+              if (qualifier == null)
+                return OTHER_MEMBERS
+              val index: Int = qualifier.lastIndexOf('.')
+              if (index == -1)
+                return OTHER_MEMBERS
+              qualifier.substring(0, index)
+            case _ =>
+          }
         if (q == "java.lang")
           JAVA_LANG
         else if (q == "scala")
@@ -262,10 +264,11 @@ class ScalaResolveResult(
               getActualElement,
               false,
               classOf[PsiClass])
-            val clazz: PsiClass = clazzStub match {
-              case clazz: PsiClass => clazz
-              case _               => null
-            }
+            val clazz: PsiClass =
+              clazzStub match {
+                case clazz: PsiClass => clazz
+                case _               => null
+              }
             //val clazz = PsiTreeUtil.getParentOfType(result.getActualElement, classOf[PsiClass])
             if (clazz == null)
               return OTHER_MEMBERS
@@ -298,8 +301,8 @@ class ScalaResolveResult(
         return OTHER_MEMBERS
       }
       val importsUsedSeq = importsUsed.toSeq
-      val importUsed: ImportUsed =
-        importsUsedSeq.apply(importsUsedSeq.length - 1)
+      val importUsed: ImportUsed = importsUsedSeq.apply(
+        importsUsedSeq.length - 1)
       // TODO this conflates imported functions and imported implicit views. ScalaResolveResult should really store
       //      these separately.
       importUsed match {

@@ -99,10 +99,11 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       // replace each reference to a variable originally bound by a collapsed test by a reference to the hoisted variable
       val reused = new mutable.HashMap[TreeMaker, ReusedCondTreeMaker]
       var okToCall = false
-      val reusedOrOrig = (tm: TreeMaker) => {
-        assert(okToCall);
-        reused.getOrElse(tm, tm)
-      }
+      val reusedOrOrig =
+        (tm: TreeMaker) => {
+          assert(okToCall);
+          reused.getOrElse(tm, tm)
+        }
 
       // maybe collapse: replace shared prefix of tree makers by a ReusingCondTreeMaker
       // once this has been computed, we'll know which tree makers are reused,
@@ -174,8 +175,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         res: Tree,
         val pos: Position)
         extends TreeMaker {
-      lazy val localSubstitution =
-        Substitution(List(prevBinder), List(CODE.REF(nextBinder)))
+      lazy val localSubstitution = Substitution(
+        List(prevBinder),
+        List(CODE.REF(nextBinder)))
       lazy val storedCond = freshSym(pos, BooleanTpe, "rc") setFlag MUTABLE
       lazy val treesToHoist: List[Tree] = {
         nextBinder setFlag MUTABLE
@@ -216,21 +218,22 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             Nil
           else
             List((droppedBinder, REF(mostRecentReusedMaker.nextBinder)))
-        val (from, to) = sharedPrefix.flatMap { dropped =>
-          dropped.reuses.map(test => toReused(test.treeMaker)).foreach {
-            case reusedMaker: ReusedCondTreeMaker =>
-              mostRecentReusedMaker = reusedMaker
-            case _ =>
-          }
+        val (from, to) =
+          sharedPrefix.flatMap { dropped =>
+            dropped.reuses.map(test => toReused(test.treeMaker)).foreach {
+              case reusedMaker: ReusedCondTreeMaker =>
+                mostRecentReusedMaker = reusedMaker
+              case _ =>
+            }
 
-          // TODO: have super-trait for retrieving the variable that's operated on by a tree maker
-          // and thus assumed in scope, either because it binds it or because it refers to it
-          dropped.treeMaker match {
-            case dropped: FunTreeMaker =>
-              mapToStored(dropped.nextBinder)
-            case _ => Nil
-          }
-        }.unzip
+            // TODO: have super-trait for retrieving the variable that's operated on by a tree maker
+            // and thus assumed in scope, either because it binds it or because it refers to it
+            dropped.treeMaker match {
+              case dropped: FunTreeMaker =>
+                mapToStored(dropped.nextBinder)
+              case _ => Nil
+            }
+          }.unzip
         val rerouteToReusedBinders = Substitution(from, to)
 
         val collapsedDroppedSubst =
@@ -239,12 +242,13 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         collapsedDroppedSubst.foldLeft(rerouteToReusedBinders)(_ >> _)
       }
 
-      lazy val lastReusedTreeMaker = sharedPrefix.reverse
-        .flatMap(tm => tm.reuses map (test => toReused(test.treeMaker)))
-        .collectFirst {
-          case x: ReusedCondTreeMaker => x
-        }
-        .head
+      lazy val lastReusedTreeMaker =
+        sharedPrefix.reverse
+          .flatMap(tm => tm.reuses map (test => toReused(test.treeMaker)))
+          .collectFirst {
+            case x: ReusedCondTreeMaker => x
+          }
+          .head
 
       def chainBefore(next: Tree)(casegen: Casegen): Tree = {
         // TODO: finer-grained duplication -- MUST duplicate though, or we'll get VerifyErrors since sharing trees confuses lambdalift,
@@ -357,13 +361,14 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             else
               Apply(Ident(defaultLabel), Nil)
 
-          val guardedBody = same.foldRight(jumpToDefault) {
-            // the last case may be unguarded (we know it's the last one since fold's accum == jumpToDefault)
-            // --> replace jumpToDefault by the unguarded case's body
-            case (CaseDef(_, EmptyTree, b), `jumpToDefault`) => b
-            case (cd @ CaseDef(_, g, b), els) if isGuardedCase(cd) =>
-              If(g, b, els)
-          }
+          val guardedBody =
+            same.foldRight(jumpToDefault) {
+              // the last case may be unguarded (we know it's the last one since fold's accum == jumpToDefault)
+              // --> replace jumpToDefault by the unguarded case's body
+              case (CaseDef(_, EmptyTree, b), `jumpToDefault`) => b
+              case (cd @ CaseDef(_, g, b), els) if isGuardedCase(cd) =>
+                If(g, b, els)
+            }
 
           // if the cases that we're going to collapse bind variables,
           // must replace them by the single binder introduced by the collapsed case
@@ -386,10 +391,11 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
 
               // the patterns in same are equal (according to caseEquals)
               // we can thus safely pick the first one arbitrarily, provided we correct binding
-              val origPatWithoutBind = commonPattern match {
-                case Bind(b, orig) => orig
-                case o             => o
-              }
+              val origPatWithoutBind =
+                commonPattern match {
+                  case Bind(b, orig) => orig
+                  case o             => o
+                }
               // need to replace `defaultSym` as well -- it's used in `defaultBody` (see `jumpToDefault` above)
               val unifiedBody = guardedBody.substituteSymbols(
                 defaultSym :: binders,
@@ -575,16 +581,18 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               }
           }
 
-          val caseDefsWithGuards = sequence(caseDefs) match {
-            case None      => return Nil
-            case Some(cds) => cds
-          }
+          val caseDefsWithGuards =
+            sequence(caseDefs) match {
+              case None      => return Nil
+              case Some(cds) => cds
+            }
 
           // a switch with duplicate cases yields a verify error,
           // and a switch with duplicate cases and guards cannot soundly be rewritten to an unguarded switch
           // (even though the verify error would disappear, the behaviour would change)
-          val allReachable = unreachableCase(caseDefsWithGuards) map (cd =>
-            reportUnreachable(cd.body.pos)) isEmpty
+          val allReachable =
+            unreachableCase(caseDefsWithGuards) map (cd =>
+              reportUnreachable(cd.body.pos)) isEmpty
 
           if (!allReachable)
             Nil
@@ -800,12 +808,13 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         pt: Type): (List[List[TreeMaker]], List[Tree]) = {
       // TODO: do CSE on result of doDCE(prevBinder, cases, pt)
       val optCases = doCSE(prevBinder, cases, pt)
-      val toHoist = (
-        for (treeMakers <- optCases)
-          yield treeMakers.collect {
-            case tm: ReusedCondTreeMaker => tm.treesToHoist
-          }
-      ).flatten.flatten.toList
+      val toHoist =
+        (
+          for (treeMakers <- optCases)
+            yield treeMakers.collect {
+              case tm: ReusedCondTreeMaker => tm.treesToHoist
+            }
+        ).flatten.flatten.toList
       (optCases, toHoist)
     }
   }

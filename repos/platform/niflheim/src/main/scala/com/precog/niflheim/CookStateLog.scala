@@ -120,8 +120,9 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
   def completeCook(blockId: Long) = {
     assert(pendingCookIds0 contains blockId)
 
-    val completeTxKey =
-      txLog.put(TXLogEntry.toBytes(CompleteCook(blockId)), true)
+    val completeTxKey = txLog.put(
+      TXLogEntry.toBytes(CompleteCook(blockId)),
+      true)
 
     // Remove the entry from pending map and advance the mark to the
     // lowest remaining txKey, or the txKey of the completion if there
@@ -162,10 +163,11 @@ object TXLogEntry extends Logging {
   }
 
   def toBytes(entry: TXLogEntry): Array[Array[Byte]] = {
-    val (tpe, size) = entry match {
-      case StartCook(blockId)    => (0x1, 42)
-      case CompleteCook(blockId) => (0x2, 42)
-    }
+    val (tpe, size) =
+      entry match {
+        case StartCook(blockId)    => (0x1, 42)
+        case CompleteCook(blockId) => (0x2, 42)
+      }
 
     val record = new Array[Byte](size)
     val buffer = ByteBuffer.wrap(record)

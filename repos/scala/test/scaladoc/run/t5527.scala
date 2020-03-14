@@ -149,9 +149,10 @@ object Test extends DirectTest {
   override def newCompiler(args: String*): Global = {
     // we want the Scaladoc compiler here, because it keeps DocDef nodes in the tree
     val settings = new Settings(_ => ())
-    val command = new ScalaDoc.Command(
-      (CommandLineParser tokenize extraSettings) ++ args.toList,
-      settings)
+    val command =
+      new ScalaDoc.Command(
+        (CommandLineParser tokenize extraSettings) ++ args.toList,
+        settings)
     new DocFactory(new ConsoleReporter(settings), settings).compiler
   }
 

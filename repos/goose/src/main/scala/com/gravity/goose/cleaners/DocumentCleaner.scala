@@ -173,16 +173,18 @@ trait DocumentCleaner {
     */
   private def removeNodesViaRegEx(doc: Document, pattern: Pattern): Document = {
     try {
-      val naughtyList: Elements =
-        doc.getElementsByAttributeValueMatching("id", pattern)
+      val naughtyList: Elements = doc.getElementsByAttributeValueMatching(
+        "id",
+        pattern)
 
       trace(naughtyList.size + " ID elements found against pattern: " + pattern)
 
       for (node <- naughtyList) {
         removeNode(node)
       }
-      val naughtyList3: Elements =
-        doc.getElementsByAttributeValueMatching("class", pattern)
+      val naughtyList3: Elements = doc.getElementsByAttributeValueMatching(
+        "class",
+        pattern)
       trace(
         naughtyList3.size + " CLASS elements found against pattern: " + pattern)
 
@@ -250,8 +252,8 @@ trait DocumentCleaner {
 
     for (div <- divs) {
       try {
-        val divToPElementsMatcher: Matcher =
-          divToPElementsPattern.matcher(div.html.toLowerCase)
+        val divToPElementsMatcher: Matcher = divToPElementsPattern.matcher(
+          div.html.toLowerCase)
         if (divToPElementsMatcher.find == false) {
           replaceElementsWithPara(doc, div)
           badDivs += 1;
@@ -399,14 +401,16 @@ object DocumentCleaner extends Logging {
   val queryNaughtyIDs = "[id~=(" + regExRemoveNodes + ")]"
   val queryNaughtyClasses = "[class~=(" + regExRemoveNodes + ")]"
   val queryNaughtyNames = "[name~=(" + regExRemoveNodes + ")]"
-  val tabsAndNewLinesReplacements =
-    ReplaceSequence.create("\n", "\n\n").append("\t").append("^\\s+$")
+  val tabsAndNewLinesReplacements = ReplaceSequence
+    .create("\n", "\n\n")
+    .append("\t")
+    .append("^\\s+$")
 
   /**
     * regex to detect if there are block level elements inside of a div element
     */
-  val divToPElementsPattern: Pattern =
-    Pattern.compile("<(a|blockquote|dl|div|img|ol|p|pre|table|ul)")
+  val divToPElementsPattern: Pattern = Pattern.compile(
+    "<(a|blockquote|dl|div|img|ol|p|pre|table|ul)")
 
   val blockElemementTags = TagsEvaluator(
     "a",

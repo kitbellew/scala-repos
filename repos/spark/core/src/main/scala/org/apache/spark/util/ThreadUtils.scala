@@ -30,8 +30,8 @@ import com.google.common.util.concurrent.{MoreExecutors, ThreadFactoryBuilder}
 
 private[spark] object ThreadUtils {
 
-  private val sameThreadExecutionContext =
-    ExecutionContext.fromExecutorService(MoreExecutors.sameThreadExecutor())
+  private val sameThreadExecutionContext = ExecutionContext.fromExecutorService(
+    MoreExecutors.sameThreadExecutor())
 
   /**
     * An `ExecutionContextExecutor` that runs each task in the thread that invokes `execute/submit`.
@@ -70,13 +70,14 @@ private[spark] object ThreadUtils {
       maxThreadNumber: Int,
       keepAliveSeconds: Int = 60): ThreadPoolExecutor = {
     val threadFactory = namedThreadFactory(prefix)
-    val threadPool = new ThreadPoolExecutor(
-      maxThreadNumber, // corePoolSize: the max number of threads to create before queuing the tasks
-      maxThreadNumber, // maximumPoolSize: because we use LinkedBlockingDeque, this one is not used
-      keepAliveSeconds,
-      TimeUnit.SECONDS,
-      new LinkedBlockingQueue[Runnable],
-      threadFactory)
+    val threadPool =
+      new ThreadPoolExecutor(
+        maxThreadNumber, // corePoolSize: the max number of threads to create before queuing the tasks
+        maxThreadNumber, // maximumPoolSize: because we use LinkedBlockingDeque, this one is not used
+        keepAliveSeconds,
+        TimeUnit.SECONDS,
+        new LinkedBlockingQueue[Runnable],
+        threadFactory)
     threadPool.allowCoreThreadTimeOut(true)
     threadPool
   }
@@ -137,16 +138,17 @@ private[spark] object ThreadUtils {
     @volatile var exception: Option[Throwable] = None
     @volatile var result: T = null.asInstanceOf[T]
 
-    val thread = new Thread(threadName) {
-      override def run(): Unit = {
-        try {
-          result = body
-        } catch {
-          case NonFatal(e) =>
-            exception = Some(e)
+    val thread =
+      new Thread(threadName) {
+        override def run(): Unit = {
+          try {
+            result = body
+          } catch {
+            case NonFatal(e) =>
+              exception = Some(e)
+          }
         }
       }
-    }
     thread.setDaemon(isDaemon)
     thread.start()
     thread.join()
@@ -168,11 +170,12 @@ private[spark] object ThreadUtils {
 
         // Combine the two stack traces, with a place holder just specifying that there
         // was a helper method used, without any further details of the helper
-        val placeHolderStackElem = new StackTraceElement(
-          s"... run in separate thread using ${ThreadUtils.getClass.getName.stripSuffix("$")} ..",
-          " ",
-          "",
-          -1)
+        val placeHolderStackElem =
+          new StackTraceElement(
+            s"... run in separate thread using ${ThreadUtils.getClass.getName.stripSuffix("$")} ..",
+            " ",
+            "",
+            -1)
         val finalStackTrace =
           extraStackTrace ++ Seq(placeHolderStackElem) ++ baseStackTrace
 
@@ -189,12 +192,13 @@ private[spark] object ThreadUtils {
     */
   def newForkJoinPool(prefix: String, maxThreadNumber: Int): SForkJoinPool = {
     // Custom factory to set thread names
-    val factory = new SForkJoinPool.ForkJoinWorkerThreadFactory {
-      override def newThread(pool: SForkJoinPool) =
-        new SForkJoinWorkerThread(pool) {
-          setName(prefix + "-" + super.getName)
-        }
-    }
+    val factory =
+      new SForkJoinPool.ForkJoinWorkerThreadFactory {
+        override def newThread(pool: SForkJoinPool) =
+          new SForkJoinWorkerThread(pool) {
+            setName(prefix + "-" + super.getName)
+          }
+      }
     new SForkJoinPool(
       maxThreadNumber,
       factory,

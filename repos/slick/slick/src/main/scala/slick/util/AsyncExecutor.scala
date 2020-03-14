@@ -37,18 +37,19 @@ object AsyncExecutor extends Logging {
         if (!state.compareAndSet(0, 1))
           throw new IllegalStateException(
             "Cannot initialize ExecutionContext; AsyncExecutor already shut down")
-        val queue = queueSize match {
-          case 0  => new SynchronousQueue[Runnable]
-          case -1 => new LinkedBlockingQueue[Runnable]
-          case n =>
-            new ManagedArrayBlockingQueue[Runnable](n * 2) {
-              def accept(r: Runnable, size: Int) =
-                r match {
-                  case pr: PrioritizedRunnable if pr.highPriority => true
-                  case _                                          => size < n
-                }
-            }
-        }
+        val queue =
+          queueSize match {
+            case 0  => new SynchronousQueue[Runnable]
+            case -1 => new LinkedBlockingQueue[Runnable]
+            case n =>
+              new ManagedArrayBlockingQueue[Runnable](n * 2) {
+                def accept(r: Runnable, size: Int) =
+                  r match {
+                    case pr: PrioritizedRunnable if pr.highPriority => true
+                    case _                                          => size < n
+                  }
+              }
+          }
         val tf = new DaemonThreadFactory(name + "-")
         executor = new ThreadPoolExecutor(
           numThreads,
@@ -82,8 +83,9 @@ object AsyncExecutor extends Logging {
   }
 
   private class DaemonThreadFactory(namePrefix: String) extends ThreadFactory {
-    private[this] val group = Option(System.getSecurityManager)
-      .fold(Thread.currentThread.getThreadGroup)(_.getThreadGroup)
+    private[this] val group =
+      Option(System.getSecurityManager)
+        .fold(Thread.currentThread.getThreadGroup)(_.getThreadGroup)
     private[this] val threadNumber = new AtomicInteger(1)
 
     def newThread(r: Runnable): Thread = {
@@ -98,16 +100,18 @@ object AsyncExecutor extends Logging {
 
   /** An Executor which spawns a new daemon thread for each command. It is useful for wrapping
     * synchronous `close` calls for asynchronous `shutdown` operations. */
-  private[slick] val shutdownExecutor: Executor = new Executor {
-    def execute(command: Runnable): Unit = {
-      val t = new Thread(command)
-      t.setName("shutdownExecutor")
-      t.setDaemon(true)
-      t.start()
+  private[slick] val shutdownExecutor: Executor =
+    new Executor {
+      def execute(command: Runnable): Unit = {
+        val t = new Thread(command)
+        t.setName("shutdownExecutor")
+        t.setDaemon(true)
+        t.start()
+      }
     }
-  }
 
-  val loggingReporter: Throwable => Unit = (t: Throwable) => {
-    logger.warn("Execution of asynchronous I/O action failed", t)
-  }
+  val loggingReporter: Throwable => Unit =
+    (t: Throwable) => {
+      logger.warn("Execution of asynchronous I/O action failed", t)
+    }
 }

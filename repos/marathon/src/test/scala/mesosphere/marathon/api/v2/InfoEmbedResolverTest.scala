@@ -14,8 +14,8 @@ class InfoEmbedResolverTest
   for (prefix <- prefixes) {
     test(s"resolve ${prefix}lastTaskFailure") {
       When(s"embed=${prefix}lastTaskFailure")
-      val resolved =
-        InfoEmbedResolver.resolveApp(Set(s"${prefix}lastTaskFailure"))
+      val resolved = InfoEmbedResolver.resolveApp(
+        Set(s"${prefix}lastTaskFailure"))
       Then("it should resolve correctly")
       resolved should be(Set(AppInfo.Embed.LastTaskFailure))
     }
@@ -63,8 +63,8 @@ class InfoEmbedResolverTest
 
   test("Combining embed options works") {
     When(s"embed=lastTaskFailure and embed=counts")
-    val resolved =
-      InfoEmbedResolver.resolveApp(Set("lastTaskFailure", "counts"))
+    val resolved = InfoEmbedResolver.resolveApp(
+      Set("lastTaskFailure", "counts"))
     Then("it should resolve correctly")
     resolved should be(Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Counts))
   }

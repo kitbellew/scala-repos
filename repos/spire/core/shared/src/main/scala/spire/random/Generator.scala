@@ -192,8 +192,7 @@ abstract class Generator {
   /**
     * Generates a random double in [0.0, 1.0).
     */
-  def nextDouble(): Double =
-    (nextLong() >>> 11) * 1.1102230246251565e-16
+  def nextDouble(): Double = (nextLong() >>> 11) * 1.1102230246251565e-16
 
   /**
     * Generates a random double in [0.0, n).
@@ -424,8 +423,7 @@ abstract class Generator {
   def nextGaussian(mean: Double, stddev: Double): Double =
     nextGaussian() * stddev + mean
 
-  def fillGaussians(arr: Array[Double]): Unit =
-    fillGaussians(arr, 0.0, 1.0)
+  def fillGaussians(arr: Array[Double]): Unit = fillGaussians(arr, 0.0, 1.0)
 
   def fillGaussians(arr: Array[Double], mean: Double, stddev: Double): Unit = {
     var i = 0
@@ -470,8 +468,7 @@ abstract class IntBasedGenerator extends Generator { self =>
 }
 
 abstract class LongBasedGenerator extends Generator { self =>
-  def nextInt(): Int =
-    (nextLong() >>> 32).toInt
+  def nextInt(): Int = (nextLong() >>> 32).toInt
 
   override def fillInts(arr: Array[Int]): Unit = {
     var i = 0

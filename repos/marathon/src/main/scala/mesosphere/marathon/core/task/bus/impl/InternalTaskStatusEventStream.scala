@@ -27,7 +27,6 @@ private[bus] class InternalTaskStatusEventStream
 
   override protected def publish(
       event: TaskStatusUpdate,
-      subscriber: Observer[TaskStatusUpdate]): Unit =
-    subscriber.onNext(event)
+      subscriber: Observer[TaskStatusUpdate]): Unit = subscriber.onNext(event)
   override protected def classify(event: TaskStatusUpdate): PathId = event.appId
 }

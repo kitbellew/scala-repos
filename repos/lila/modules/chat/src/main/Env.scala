@@ -12,20 +12,22 @@ final class Env(
     shutup: ActorSelection,
     system: ActorSystem) {
 
-  private val settings = new {
-    val CollectionChat = config getString "collection.chat"
-    val MaxLinesPerChat = config getInt "max_lines"
-    val NetDomain = config getString "net.domain"
-    val ActorName = config getString "actor.name"
-  }
+  private val settings =
+    new {
+      val CollectionChat = config getString "collection.chat"
+      val MaxLinesPerChat = config getInt "max_lines"
+      val NetDomain = config getString "net.domain"
+      val ActorName = config getString "actor.name"
+    }
   import settings._
 
-  lazy val api = new ChatApi(
-    coll = chatColl,
-    flood = flood,
-    shutup = shutup,
-    maxLinesPerChat = MaxLinesPerChat,
-    netDomain = NetDomain)
+  lazy val api =
+    new ChatApi(
+      coll = chatColl,
+      flood = flood,
+      shutup = shutup,
+      maxLinesPerChat = MaxLinesPerChat,
+      netDomain = NetDomain)
 
   system.actorOf(Props(new FrontActor(api)), name = ActorName)
 

@@ -30,17 +30,19 @@ class TruncatedNewtonMinimizerTest extends OptimizeTestBase {
     def optimizeThis(init: DenseVector[Double], _reg: Double) = {
       val reg = _reg.abs % 10
       val targetValue = 3 / (reg / 2 + 1)
-      val lbfgs = new TruncatedNewtonMinimizer[
-        DenseVector[Double],
-        EmpiricalHessian[DenseVector[Double]]](
-        100,
-        tolerance = 1e-8,
-        l2Regularization = reg)
-      val f = new DiffFunction[DenseVector[Double]] {
-        def calculate(x: DenseVector[Double]) = {
-          (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
+      val lbfgs =
+        new TruncatedNewtonMinimizer[
+          DenseVector[Double],
+          EmpiricalHessian[DenseVector[Double]]](
+          100,
+          tolerance = 1e-8,
+          l2Regularization = reg)
+      val f =
+        new DiffFunction[DenseVector[Double]] {
+          def calculate(x: DenseVector[Double]) = {
+            (norm((x - 3.0) :^ 2.0, 1), (x * 2.0) - 6.0)
+          }
         }
-      }
 
       val empF = SecondOrderFunction.empirical(f)
       val result = lbfgs.minimize(empF, init)
@@ -57,16 +59,18 @@ class TruncatedNewtonMinimizerTest extends OptimizeTestBase {
   }
 
   test("optimize a simple multivariate gaussian with counters") {
-    val lbfgs = new TruncatedNewtonMinimizer[
-      Counter[String, Double],
-      EmpiricalHessian[Counter[String, Double]]](100)
+    val lbfgs =
+      new TruncatedNewtonMinimizer[
+        Counter[String, Double],
+        EmpiricalHessian[Counter[String, Double]]](100)
 
     def optimizeThis(init: Counter[String, Double]) = {
-      val f = new DiffFunction[Counter[String, Double]] {
-        def calculate(x: Counter[String, Double]) = {
-          (((x - 3.0) dot (x - 3.0)), (x * 2.0) - 6.0)
+      val f =
+        new DiffFunction[Counter[String, Double]] {
+          def calculate(x: Counter[String, Double]) = {
+            (((x - 3.0) dot (x - 3.0)), (x * 2.0) - 6.0)
+          }
         }
-      }
 
       val empF = SecondOrderFunction.empirical(f)
       val result = lbfgs.minimize(empF, init)

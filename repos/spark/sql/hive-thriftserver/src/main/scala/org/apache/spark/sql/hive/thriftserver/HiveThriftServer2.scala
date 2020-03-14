@@ -70,8 +70,9 @@ object HiveThriftServer2 extends Logging {
     listener = new HiveThriftServer2Listener(server, sqlContext.conf)
     sqlContext.sparkContext.addSparkListener(listener)
     uiTab =
-      if (sqlContext.sparkContext.getConf
-            .getBoolean("spark.ui.enabled", true)) {
+      if (sqlContext.sparkContext.getConf.getBoolean(
+            "spark.ui.enabled",
+            true)) {
         Some(new ThriftServerTab(sqlContext.sparkContext))
       } else {
         None
@@ -80,8 +81,8 @@ object HiveThriftServer2 extends Logging {
 
   def main(args: Array[String]) {
     Utils.initDaemon(log)
-    val optionsProcessor = new HiveServerServerOptionsProcessor(
-      "HiveThriftServer2")
+    val optionsProcessor =
+      new HiveServerServerOptionsProcessor("HiveThriftServer2")
     if (!optionsProcessor.process(args)) {
       System.exit(-1)
     }
@@ -103,8 +104,9 @@ object HiveThriftServer2 extends Logging {
         new HiveThriftServer2Listener(server, SparkSQLEnv.hiveContext.conf)
       SparkSQLEnv.sparkContext.addSparkListener(listener)
       uiTab =
-        if (SparkSQLEnv.sparkContext.getConf
-              .getBoolean("spark.ui.enabled", true)) {
+        if (SparkSQLEnv.sparkContext.getConf.getBoolean(
+              "spark.ui.enabled",
+              true)) {
           Some(new ThriftServerTab(SparkSQLEnv.sparkContext))
         } else {
           None
@@ -179,10 +181,10 @@ object HiveThriftServer2 extends Logging {
     private var onlineSessionNum: Int = 0
     private val sessionList = new mutable.LinkedHashMap[String, SessionInfo]
     private val executionList = new mutable.LinkedHashMap[String, ExecutionInfo]
-    private val retainedStatements =
-      conf.getConf(SQLConf.THRIFTSERVER_UI_STATEMENT_LIMIT)
-    private val retainedSessions =
-      conf.getConf(SQLConf.THRIFTSERVER_UI_SESSION_LIMIT)
+    private val retainedStatements = conf.getConf(
+      SQLConf.THRIFTSERVER_UI_STATEMENT_LIMIT)
+    private val retainedSessions = conf.getConf(
+      SQLConf.THRIFTSERVER_UI_SESSION_LIMIT)
     private var totalRunning = 0
 
     def getOnlineSessionNum: Int =
@@ -249,11 +251,12 @@ object HiveThriftServer2 extends Logging {
         groupId: String,
         userName: String = "UNKNOWN"): Unit =
       synchronized {
-        val info = new ExecutionInfo(
-          statement,
-          sessionId,
-          System.currentTimeMillis,
-          userName)
+        val info =
+          new ExecutionInfo(
+            statement,
+            sessionId,
+            System.currentTimeMillis,
+            userName)
         info.state = ExecutionState.STARTED
         executionList.put(id, info)
         trimExecutionIfNecessary()
@@ -322,11 +325,12 @@ private[hive] class HiveThriftServer2(hiveContext: HiveContext)
     setSuperField(this, "cliService", sparkSqlCliService)
     addService(sparkSqlCliService)
 
-    val thriftCliService = if (isHTTPTransportMode(hiveConf)) {
-      new ThriftHttpCLIService(sparkSqlCliService)
-    } else {
-      new ThriftBinaryCLIService(sparkSqlCliService)
-    }
+    val thriftCliService =
+      if (isHTTPTransportMode(hiveConf)) {
+        new ThriftHttpCLIService(sparkSqlCliService)
+      } else {
+        new ThriftBinaryCLIService(sparkSqlCliService)
+      }
 
     setSuperField(this, "thriftCLIService", thriftCliService)
     addService(thriftCliService)

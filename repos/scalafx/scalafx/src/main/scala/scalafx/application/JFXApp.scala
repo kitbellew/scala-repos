@@ -75,8 +75,7 @@ object JFXApp {
   /**
     * Regular expression for parsing name/value parameters.
     */
-  private val keyValue =
-    """^--([A-Za-z_][^=]*?)=(.*)$""".r
+  private val keyValue = """^--([A-Za-z_][^=]*?)=(.*)$""".r
 
   object Parameters {
     implicit def sfxParameters2jfx(p: Parameters): Application.Parameters =
@@ -126,8 +125,8 @@ object JFXApp {
   private[application] class ParametersImpl(arguments: Seq[String])
       extends Parameters {
 
-    private var namedArguments: mutable.Map[String, String] =
-      mutable.Map.empty[String, String]
+    private var namedArguments: mutable.Map[String, String] = mutable.Map
+      .empty[String, String]
     private var unnamedArguments = Buffer.empty[String]
     private var filled = false
 
@@ -155,11 +154,12 @@ object JFXApp {
       unnamedArguments
     }
 
-    lazy val delegate = new jfxa.Application.Parameters {
-      def getRaw = raw
-      def getNamed = named
-      def getUnnamed = unnamed
-    }
+    lazy val delegate =
+      new jfxa.Application.Parameters {
+        def getRaw = raw
+        def getNamed = named
+        def getUnnamed = unnamed
+      }
 
   }
 
@@ -197,11 +197,12 @@ object JFXApp {
     def raw = Seq.empty[String]
     def named = Map.empty[String, String]
     def unnamed = Seq.empty[String]
-    lazy val delegate = new jfxa.Application.Parameters {
-      def getRaw = raw
-      def getNamed = named
-      def getUnnamed = unnamed
-    }
+    lazy val delegate =
+      new jfxa.Application.Parameters {
+        def getRaw = raw
+        def getNamed = named
+        def getUnnamed = unnamed
+      }
   }
 
   /** Simple helper class for construction of primary application stages.

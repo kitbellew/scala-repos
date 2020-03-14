@@ -53,8 +53,8 @@ private[remote] class AkkaProtocolSettings(config: Config) {
       None
 
   val HandshakeTimeout: FiniteDuration = {
-    val enabledTransports =
-      config.getStringList("akka.remote.enabled-transports")
+    val enabledTransports = config.getStringList(
+      "akka.remote.enabled-transports")
     if (enabledTransports.contains("akka.remote.netty.tcp"))
       config.getMillisDuration("akka.remote.netty.tcp.connection-timeout")
     else if (enabledTransports.contains("akka.remote.netty.ssl"))
@@ -149,9 +149,10 @@ private[transport] class AkkaProtocolManager(
 
   // The AkkaProtocolTransport does not handle the recovery of associations, this task is implemented in the
   // remoting itself. Hence the strategy Stop.
-  override val supervisorStrategy = OneForOneStrategy() {
-    case NonFatal(_) ⇒ Stop
-  }
+  override val supervisorStrategy =
+    OneForOneStrategy() {
+      case NonFatal(_) ⇒ Stop
+    }
 
   private def actorNameFor(remoteAddress: Address): String =
     "akkaProtocol-" + AddressUrlEncoder(remoteAddress) + "-" + nextId()
@@ -597,13 +598,14 @@ private[transport] class ProtocolStateActor(
       handleTimers(wrappedHandle)
 
     case Event(DisassociateUnderlying(info: DisassociateInfo), _) ⇒
-      val handle = stateData match {
-        case ListenerReady(_, wrappedHandle) ⇒ wrappedHandle
-        case AssociatedWaitHandler(_, wrappedHandle, _) ⇒ wrappedHandle
-        case msg ⇒
-          throw new AkkaProtocolException(
-            s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(msg)}]")
-      }
+      val handle =
+        stateData match {
+          case ListenerReady(_, wrappedHandle) ⇒ wrappedHandle
+          case AssociatedWaitHandler(_, wrappedHandle, _) ⇒ wrappedHandle
+          case msg ⇒
+            throw new AkkaProtocolException(
+              s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(msg)}]")
+        }
       sendDisassociate(handle, info)
       stop()
 
@@ -691,20 +693,22 @@ private[transport] class ProtocolStateActor(
           AssociatedWaitHandler(handlerFuture, wrappedHandle, queue)) ⇒
       // Invalidate exposed but still unfinished promise. The underlying association disappeared, so after
       // registration immediately signal a disassociate
-      val disassociateNotification = reason match {
-        case FSM.Failure(info: DisassociateInfo) ⇒ Disassociated(info)
-        case _ ⇒ Disassociated(Unknown)
-      }
+      val disassociateNotification =
+        reason match {
+          case FSM.Failure(info: DisassociateInfo) ⇒ Disassociated(info)
+          case _ ⇒ Disassociated(Unknown)
+        }
       handlerFuture foreach {
         _ notify disassociateNotification
       }
       wrappedHandle.disassociate()
 
     case StopEvent(reason, _, ListenerReady(handler, wrappedHandle)) ⇒
-      val disassociateNotification = reason match {
-        case FSM.Failure(info: DisassociateInfo) ⇒ Disassociated(info)
-        case _ ⇒ Disassociated(Unknown)
-      }
+      val disassociateNotification =
+        reason match {
+          case FSM.Failure(info: DisassociateInfo) ⇒ Disassociated(info)
+          case _ ⇒ Disassociated(Unknown)
+        }
       handler notify disassociateNotification
       wrappedHandle.disassociate()
 

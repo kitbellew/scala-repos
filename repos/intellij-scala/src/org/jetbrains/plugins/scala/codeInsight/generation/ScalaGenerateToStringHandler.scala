@@ -57,17 +57,18 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
     * Determines whether toString can be generated for the class.
     */
   override def isValidFor(editor: Editor, file: PsiFile): Boolean = {
-    lazy val isSuitableClass = GenerationUtil.elementOfTypeAtCaret(
-      editor,
-      file,
-      classOf[ScClass],
-      classOf[ScObject],
-      classOf[ScTrait]) match {
-      case Some(c: ScClass) if !c.isCase  => true
-      case Some(c: ScObject) if !c.isCase => true
-      case Some(c: ScTrait)               => true
-      case _                              => false
-    }
+    lazy val isSuitableClass =
+      GenerationUtil.elementOfTypeAtCaret(
+        editor,
+        file,
+        classOf[ScClass],
+        classOf[ScObject],
+        classOf[ScTrait]) match {
+        case Some(c: ScClass) if !c.isCase  => true
+        case Some(c: ScObject) if !c.isCase => true
+        case Some(c: ScTrait)               => true
+        case _                              => false
+      }
     file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType && isSuitableClass
   }
 
@@ -79,10 +80,11 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
   private def createToString(
       aType: ScTypeDefinition,
       project: Project): Option[ScFunction] = {
-    val typeName = aType match {
-      case _: ScObject if aType.name.last == '$' => aType.name.dropRight(1)
-      case _                                     => aType.name
-    }
+    val typeName =
+      aType match {
+        case _: ScObject if aType.name.last == '$' => aType.name.dropRight(1)
+        case _                                     => aType.name
+      }
 
     showWizard(aType, project).map { result =>
       val (fields, withFieldNames) = result

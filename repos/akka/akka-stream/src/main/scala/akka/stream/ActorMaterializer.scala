@@ -107,8 +107,7 @@ object ActorMaterializer {
     * Defaults the actor name prefix used to name actors running the processing steps to `"flow"`.
     * The actor names are built up of `namePrefix-flowNumber-flowStepNumber-stepName`.
     */
-  def create(context: ActorRefFactory): ActorMaterializer =
-    apply()(context)
+  def create(context: ActorRefFactory): ActorMaterializer = apply()(context)
 
   /**
     * Java API: Creates a ActorMaterializer which will execute every step of a transformation
@@ -139,16 +138,17 @@ object ActorMaterializer {
     apply(Option(settings), Option(namePrefix))(context)
 
   private def actorSystemOf(context: ActorRefFactory): ActorSystem = {
-    val system = context match {
-      case s: ExtendedActorSystem ⇒ s
-      case c: ActorContext ⇒ c.system
-      case null ⇒
-        throw new IllegalArgumentException(
-          "ActorRefFactory context must be defined")
-      case _ ⇒
-        throw new IllegalArgumentException(
-          s"ActorRefFactory context must be a ActorSystem or ActorContext, got [${context.getClass.getName}]")
-    }
+    val system =
+      context match {
+        case s: ExtendedActorSystem ⇒ s
+        case c: ActorContext ⇒ c.system
+        case null ⇒
+          throw new IllegalArgumentException(
+            "ActorRefFactory context must be defined")
+        case _ ⇒
+          throw new IllegalArgumentException(
+            s"ActorRefFactory context must be a ActorSystem or ActorContext, got [${context.getClass.getName}]")
+      }
     system
   }
 
@@ -308,14 +308,12 @@ object ActorMaterializerSettings {
   /**
     * Create [[ActorMaterializerSettings]] from the settings of an [[akka.actor.ActorSystem]] (Java).
     */
-  def create(system: ActorSystem): ActorMaterializerSettings =
-    apply(system)
+  def create(system: ActorSystem): ActorMaterializerSettings = apply(system)
 
   /**
     * Create [[ActorMaterializerSettings]] from a Config subsection (Java).
     */
-  def create(config: Config): ActorMaterializerSettings =
-    apply(config)
+  def create(config: Config): ActorMaterializerSettings = apply(config)
 
   private val defaultMaxFixedBufferSize = 1000
 }
@@ -572,8 +570,7 @@ object StreamSubscriptionTimeoutSettings {
   /**
     * Create settings from a Config subsection (Java).
     */
-  def create(config: Config): StreamSubscriptionTimeoutSettings =
-    apply(config)
+  def create(config: Config): StreamSubscriptionTimeoutSettings = apply(config)
 
   /**
     * Create settings from a Config subsection (Scala).

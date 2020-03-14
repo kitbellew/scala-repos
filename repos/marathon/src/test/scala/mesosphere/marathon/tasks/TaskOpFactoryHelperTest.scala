@@ -33,8 +33,9 @@ class TaskOpFactoryHelperTest
 
     Given("a task and a taskInfo")
     val task = MarathonTestHelper.mininimalTask("123")
-    val taskInfo =
-      MarathonTestHelper.makeOneCPUTask(task.taskId.idString).build()
+    val taskInfo = MarathonTestHelper
+      .makeOneCPUTask(task.taskId.idString)
+      .build()
 
     When("We create a launch operation")
     val launch = f.helper.launch(taskInfo, task)

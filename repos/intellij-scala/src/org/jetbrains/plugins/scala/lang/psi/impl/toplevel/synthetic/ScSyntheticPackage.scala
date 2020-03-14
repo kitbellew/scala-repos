@@ -97,16 +97,17 @@ object ScSyntheticPackage {
     import com.intellij.psi.stubs.StubIndex
 
     import scala.collection.JavaConversions._
-    val packages = StubIndex
-      .getElements(
-        ScalaIndexKeys.PACKAGE_FQN_KEY
-          .asInstanceOf[StubIndexKey[Any, ScPackageContainer]],
-        fqn.hashCode(),
-        project,
-        GlobalSearchScope.allScope(project),
-        classOf[ScPackageContainer]
-      )
-      .toSeq
+    val packages =
+      StubIndex
+        .getElements(
+          ScalaIndexKeys.PACKAGE_FQN_KEY
+            .asInstanceOf[StubIndexKey[Any, ScPackageContainer]],
+          fqn.hashCode(),
+          project,
+          GlobalSearchScope.allScope(project),
+          classOf[ScPackageContainer]
+        )
+        .toSeq
 
     if (packages.isEmpty) {
       StubIndex

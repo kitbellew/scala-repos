@@ -51,26 +51,24 @@ object FunctorDemo extends App {
   assert(f1 == expectedFoo)
 
   // Any ADT has a Functor ... even with recursion
-  val tree =
+  val tree = Node(
+    Leaf("quux"),
     Node(
-      Leaf("quux"),
-      Node(
-        Leaf("foo"),
-        Leaf("wibble")
-      )
+      Leaf("foo"),
+      Leaf("wibble")
     )
+  )
 
   val t0 = transform(tree)(_.length)
   val t1 = tree.map(_.length) // they also have Functor syntax ...
 
-  val expectedTree =
+  val expectedTree = Node(
+    Leaf(4),
     Node(
-      Leaf(4),
-      Node(
-        Leaf(3),
-        Leaf(6)
-      )
+      Leaf(3),
+      Leaf(6)
     )
+  )
   assert(t0 == expectedTree)
   assert(t1 == expectedTree)
 }

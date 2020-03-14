@@ -18,17 +18,19 @@ class BlockParseTest extends SimpleTestCase {
   def parseBlock(s: String): PsiElement = {
     val fileFactory = PsiFileFactory.getInstance(fixture.getProject)
     val context = parseText("")
-    val holder: FileElement = DummyHolderFactory
-      .createHolder(context.getManager, context)
-      .getTreeElement
-    val builder: ScalaPsiBuilderImpl = new ScalaPsiBuilderImpl(
-      PsiBuilderFactory.getInstance.createBuilder(
-        context.getProject,
-        holder,
-        new ScalaLexer,
-        ScalaFileType.SCALA_LANGUAGE,
-        s)
-    )
+    val holder: FileElement =
+      DummyHolderFactory
+        .createHolder(context.getManager, context)
+        .getTreeElement
+    val builder: ScalaPsiBuilderImpl =
+      new ScalaPsiBuilderImpl(
+        PsiBuilderFactory.getInstance.createBuilder(
+          context.getProject,
+          holder,
+          new ScalaLexer,
+          ScalaFileType.SCALA_LANGUAGE,
+          s)
+      )
     BlockExpr.parse(builder)
     val node = builder.getTreeBuilt
     holder.rawAddChildren(node.asInstanceOf[TreeElement])

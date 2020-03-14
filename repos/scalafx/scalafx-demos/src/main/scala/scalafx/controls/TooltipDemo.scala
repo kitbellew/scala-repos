@@ -44,25 +44,29 @@ object TooltipDemo extends JFXApp {
 
   val myTooltip = new Tooltip
 
-  val btnTooltip = new Button {
-    text = "Mouse over me to see Tooltip"
-    tooltip = myTooltip
-    alignmentInParent = Pos.Center
-  }
+  val btnTooltip =
+    new Button {
+      text = "Mouse over me to see Tooltip"
+      tooltip = myTooltip
+      alignmentInParent = Pos.Center
+    }
 
-  val controlsPane = new VBox {
-    spacing = 5
-    fillWidth = true
-    alignment = Pos.Center
-    alignmentInParent = Pos.TopCenter
-    hgrow = Priority.Always
-    children =
-      List(new TooltipControls(myTooltip), new PopupControlControls(myTooltip))
-  }
+  val controlsPane =
+    new VBox {
+      spacing = 5
+      fillWidth = true
+      alignment = Pos.Center
+      alignmentInParent = Pos.TopCenter
+      hgrow = Priority.Always
+      children = List(
+        new TooltipControls(myTooltip),
+        new PopupControlControls(myTooltip))
+    }
 
-  val mainPane = new VBox {
-    children = List(btnTooltip, controlsPane)
-  }
+  val mainPane =
+    new VBox {
+      children = List(btnTooltip, controlsPane)
+    }
 
   stage = new JFXApp.PrimaryStage {
     title = "Tooltip Test"
@@ -81,57 +85,63 @@ object TooltipDemo extends JFXApp {
 class TooltipControls(target: Tooltip)
     extends PropertiesNodes[Tooltip](target, "Tooltip Properties") {
 
-  val lblActivated = new Label {
-    text <== when(target.activated) choose "Activated" otherwise "Deactivated"
-  }
+  val lblActivated =
+    new Label {
+      text <== when(target.activated) choose "Activated" otherwise "Deactivated"
+    }
 
   val originalContentDisplay = target.contentDisplay()
-  val chbContentDisplay = new ChoiceBox[jfxsc.ContentDisplay] {
-    items = ObservableBuffer(
-      ContentDisplay.Bottom,
-      ContentDisplay.Center,
-      ContentDisplay.GraphicOnly,
-      ContentDisplay.Left,
-      ContentDisplay.Right,
-      ContentDisplay.TextOnly,
-      ContentDisplay.Top
-    )
-    value <==> target.contentDisplay
-  }
+  val chbContentDisplay =
+    new ChoiceBox[jfxsc.ContentDisplay] {
+      items = ObservableBuffer(
+        ContentDisplay.Bottom,
+        ContentDisplay.Center,
+        ContentDisplay.GraphicOnly,
+        ContentDisplay.Left,
+        ContentDisplay.Right,
+        ContentDisplay.TextOnly,
+        ContentDisplay.Top
+      )
+      value <==> target.contentDisplay
+    }
 
   val originalText = target.text()
-  val txfText = new TextField {
-    text <==> target.text
-  }
+  val txfText =
+    new TextField {
+      text <==> target.text
+    }
 
   val originalTextAlignment = target.textAlignment()
-  val chbTextAlignment = new ChoiceBox[jfxst.TextAlignment] {
-    items = ObservableBuffer(
-      TextAlignment.Center,
-      TextAlignment.Justify,
-      TextAlignment.Left,
-      TextAlignment.Right)
-    value <==> target.textAlignment
-  }
+  val chbTextAlignment =
+    new ChoiceBox[jfxst.TextAlignment] {
+      items = ObservableBuffer(
+        TextAlignment.Center,
+        TextAlignment.Justify,
+        TextAlignment.Left,
+        TextAlignment.Right)
+      value <==> target.textAlignment
+    }
 
   val originalTextOverrun = target.textOverrun()
-  val chbTextOverrun = new ChoiceBox[jfxsc.OverrunStyle] {
-    items = ObservableBuffer(
-      OverrunStyle.CenterEllipsis,
-      OverrunStyle.CenterWordEllipsis,
-      OverrunStyle.Clip,
-      OverrunStyle.Ellipsis,
-      OverrunStyle.LeadingEllipsis,
-      OverrunStyle.LeadingWordEllipsis,
-      OverrunStyle.WordEllipsis
-    )
-    value <==> target.textOverrun
-  }
+  val chbTextOverrun =
+    new ChoiceBox[jfxsc.OverrunStyle] {
+      items = ObservableBuffer(
+        OverrunStyle.CenterEllipsis,
+        OverrunStyle.CenterWordEllipsis,
+        OverrunStyle.Clip,
+        OverrunStyle.Ellipsis,
+        OverrunStyle.LeadingEllipsis,
+        OverrunStyle.LeadingWordEllipsis,
+        OverrunStyle.WordEllipsis
+      )
+      value <==> target.textOverrun
+    }
 
   val originalWrap = target.wrapText()
-  val chbWrap = new CheckBox {
-    selected <==> target.wrapText
-  }
+  val chbWrap =
+    new CheckBox {
+      selected <==> target.wrapText
+    }
 
   override protected def resetProperties() {
     target.contentDisplay = originalContentDisplay

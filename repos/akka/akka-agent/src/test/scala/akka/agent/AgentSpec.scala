@@ -81,10 +81,11 @@ class AgentSpec extends AkkaSpec {
       val readTimeout = 5 seconds
 
       val agent = Agent(5)
-      val f1 = (i: Int) ⇒ {
-        Await.ready(readLatch, readTimeout)
-        i + 5
-      }
+      val f1 =
+        (i: Int) ⇒ {
+          Await.ready(readLatch, readTimeout)
+          i + 5
+        }
       agent send f1
       val read = agent()
       readLatch.countDown()
@@ -173,9 +174,7 @@ class AgentSpec extends AkkaSpec {
 
     "be able to be used in a 'map' for comprehension" in {
       val agent1 = Agent(5)
-      val agent2 =
-        for (value ← agent1)
-          yield value * 2
+      val agent2 = for (value ← agent1) yield value * 2
 
       agent1() should ===(5)
       agent2() should ===(10)
@@ -185,10 +184,11 @@ class AgentSpec extends AkkaSpec {
       val agent1 = Agent(1)
       val agent2 = Agent(2)
 
-      val agent3 = for {
-        value1 ← agent1
-        value2 ← agent2
-      } yield value1 + value2
+      val agent3 =
+        for {
+          value1 ← agent1
+          value2 ← agent2
+        } yield value1 + value2
 
       agent1() should ===(1)
       agent2() should ===(2)

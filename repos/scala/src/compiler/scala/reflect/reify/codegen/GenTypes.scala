@@ -47,8 +47,9 @@ trait GenTypes {
             mirrorMirrorSelect(nme.EmptyPackageClass))
         case tpe @ ThisType(clazz) if clazz.isModuleClass && clazz.isStatic =>
           val module = reify(clazz.sourceModule)
-          val moduleClass =
-            Select(Select(module, nme.asModule), nme.moduleClass)
+          val moduleClass = Select(
+            Select(module, nme.asModule),
+            nme.moduleClass)
           mirrorBuildCall(nme.ThisType, moduleClass)
         case tpe @ ThisType(sym) =>
           reifyBuildCall(nme.ThisType, sym)

@@ -195,24 +195,25 @@ object Duration {
     *
     * '''''Use `eq` when checking an input of a method against this value.'''''
     */
-  val Undefined: Infinite = new Infinite {
-    override def toString = "Duration.Undefined"
-    override def equals(other: Any) = false
-    override def +(other: Duration): Duration = this
-    override def -(other: Duration): Duration = this
-    override def *(factor: Double): Duration = this
-    override def /(factor: Double): Duration = this
-    override def /(other: Duration): Double = Double.NaN
-    def compare(other: Duration) =
-      if (other eq this)
-        0
-      else
-        1
-    def unary_- : Duration = this
-    def toUnit(unit: TimeUnit): Double = Double.NaN
-    private def readResolve(): AnyRef =
-      Undefined // Instructs deserialization to use this same instance
-  }
+  val Undefined: Infinite =
+    new Infinite {
+      override def toString = "Duration.Undefined"
+      override def equals(other: Any) = false
+      override def +(other: Duration): Duration = this
+      override def -(other: Duration): Duration = this
+      override def *(factor: Double): Duration = this
+      override def /(factor: Double): Duration = this
+      override def /(other: Duration): Double = Double.NaN
+      def compare(other: Duration) =
+        if (other eq this)
+          0
+        else
+          1
+      def unary_- : Duration = this
+      def toUnit(unit: TimeUnit): Double = Double.NaN
+      private def readResolve(): AnyRef =
+        Undefined // Instructs deserialization to use this same instance
+    }
 
   sealed abstract class Infinite extends Duration {
     def +(other: Duration): Duration =
@@ -275,38 +276,40 @@ object Duration {
     * but itself. This value closely corresponds to Double.PositiveInfinity,
     * matching its semantics in arithmetic operations.
     */
-  val Inf: Infinite = new Infinite {
-    override def toString = "Duration.Inf"
-    def compare(other: Duration) =
-      other match {
-        case x if x eq Undefined => -1 // Undefined != Undefined
-        case x if x eq this =>
-          0 // `case Inf` will include null checks in the byte code
-        case _ => 1
-      }
-    def unary_- : Duration = MinusInf
-    def toUnit(unit: TimeUnit): Double = Double.PositiveInfinity
-    private def readResolve(): AnyRef =
-      Inf // Instructs deserialization to use this same instance
-  }
+  val Inf: Infinite =
+    new Infinite {
+      override def toString = "Duration.Inf"
+      def compare(other: Duration) =
+        other match {
+          case x if x eq Undefined => -1 // Undefined != Undefined
+          case x if x eq this =>
+            0 // `case Inf` will include null checks in the byte code
+          case _ => 1
+        }
+      def unary_- : Duration = MinusInf
+      def toUnit(unit: TimeUnit): Double = Double.PositiveInfinity
+      private def readResolve(): AnyRef =
+        Inf // Instructs deserialization to use this same instance
+    }
 
   /**
     * Infinite duration: less than any other and not equal to any other
     * but itself. This value closely corresponds to Double.NegativeInfinity,
     * matching its semantics in arithmetic operations.
     */
-  val MinusInf: Infinite = new Infinite {
-    override def toString = "Duration.MinusInf"
-    def compare(other: Duration) =
-      if (other eq this)
-        0
-      else
-        -1
-    def unary_- : Duration = Inf
-    def toUnit(unit: TimeUnit): Double = Double.NegativeInfinity
-    private def readResolve(): AnyRef =
-      MinusInf // Instructs deserialization to use this same instance
-  }
+  val MinusInf: Infinite =
+    new Infinite {
+      override def toString = "Duration.MinusInf"
+      def compare(other: Duration) =
+        if (other eq this)
+          0
+        else
+          -1
+      def unary_- : Duration = Inf
+      def toUnit(unit: TimeUnit): Double = Double.NegativeInfinity
+      private def readResolve(): AnyRef =
+        MinusInf // Instructs deserialization to use this same instance
+    }
 
   // Java Factories
 

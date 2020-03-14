@@ -29,10 +29,11 @@ class Suite(name: String)(qs: List[String]) extends PerfTestSuite {
 object Run {
   def main(args: Array[String]): Unit = {
     val cwd = new java.io.File(".").getCanonicalFile
-    val db = cwd.getName match {
-      case "jprofiler" => "jprofiler.db"
-      case _           => "jprofiler/jprofiler.db"
-    }
+    val db =
+      cwd.getName match {
+        case "jprofiler" => "jprofiler.db"
+        case _           => "jprofiler/jprofiler.db"
+      }
 
     val args2 = args.toList ++ List("--root-dir", db)
     val config =

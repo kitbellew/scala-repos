@@ -63,15 +63,15 @@ object Acl {
         val aclMap = m.asInstanceOf[Map[String, Any]]
         //the acl json version.
         require(aclMap(VersionKey) == CurrentVersion)
-        val aclSet: List[Map[String, Any]] =
-          aclMap(AclsKey).asInstanceOf[List[Map[String, Any]]]
+        val aclSet: List[Map[String, Any]] = aclMap(AclsKey)
+          .asInstanceOf[List[Map[String, Any]]]
         aclSet.foreach(item => {
-          val principal: KafkaPrincipal =
-            KafkaPrincipal.fromString(item(PrincipalKey).asInstanceOf[String])
+          val principal: KafkaPrincipal = KafkaPrincipal.fromString(
+            item(PrincipalKey).asInstanceOf[String])
           val permissionType: PermissionType = PermissionType.fromString(
             item(PermissionTypeKey).asInstanceOf[String])
-          val operation: Operation =
-            Operation.fromString(item(OperationKey).asInstanceOf[String])
+          val operation: Operation = Operation.fromString(
+            item(OperationKey).asInstanceOf[String])
           val host: String = item(HostsKey).asInstanceOf[String]
           acls += new Acl(principal, permissionType, host, operation)
         })

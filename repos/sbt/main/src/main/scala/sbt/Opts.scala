@@ -40,11 +40,13 @@ object Opts {
     import Path._
     val sonatypeReleases = Resolver.sonatypeRepo("releases")
     val sonatypeSnapshots = Resolver.sonatypeRepo("snapshots")
-    val sonatypeStaging = new MavenRepository(
-      "sonatype-staging",
-      "https://oss.sonatype.org/service/local/staging/deploy/maven2")
-    val mavenLocalFile =
-      Resolver.file("Local Repository", userHome / ".m2" / "repository" asFile)
+    val sonatypeStaging =
+      new MavenRepository(
+        "sonatype-staging",
+        "https://oss.sonatype.org/service/local/staging/deploy/maven2")
+    val mavenLocalFile = Resolver.file(
+      "Local Repository",
+      userHome / ".m2" / "repository" asFile)
   }
 }
 

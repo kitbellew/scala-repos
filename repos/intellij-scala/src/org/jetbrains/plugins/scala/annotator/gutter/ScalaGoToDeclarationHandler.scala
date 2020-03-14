@@ -69,37 +69,38 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
       val ref = file.findReferenceAt(sourceElement.getTextRange.getStartOffset)
       if (ref == null)
         return null
-      val targets = ref match {
-        case resRef: ResolvableReferenceElement =>
-          resRef.bind() match {
-            case Some(x) =>
-              /**
-                * Extra targets:
-                *
-                * actualElement              type alias used to access a constructor.
-                *                            See also [[org.jetbrains.plugins.scala.findUsages.TypeAliasUsagesSearcher]]
-                * innerResolveResult#element apply method
-                */
-              val all =
-                Seq(x.getActualElement, x.element) ++ x.innerResolveResult.map(
-                  _.getElement)
-              x.element match {
-                case f: ScFunction if f.isSynthetic =>
-                  Seq(x.getActualElement).flatMap(goToTargets)
-                case c: PsiMethod if c.isConstructor =>
-                  val clazz = c.containingClass
-                  if (clazz == x.getActualElement)
-                    Seq(x.element).flatMap(goToTargets)
-                  else
+      val targets =
+        ref match {
+          case resRef: ResolvableReferenceElement =>
+            resRef.bind() match {
+              case Some(x) =>
+                /**
+                  * Extra targets:
+                  *
+                  * actualElement              type alias used to access a constructor.
+                  *                            See also [[org.jetbrains.plugins.scala.findUsages.TypeAliasUsagesSearcher]]
+                  * innerResolveResult#element apply method
+                  */
+                val all =
+                  Seq(x.getActualElement, x.element) ++ x.innerResolveResult
+                    .map(_.getElement)
+                x.element match {
+                  case f: ScFunction if f.isSynthetic =>
+                    Seq(x.getActualElement).flatMap(goToTargets)
+                  case c: PsiMethod if c.isConstructor =>
+                    val clazz = c.containingClass
+                    if (clazz == x.getActualElement)
+                      Seq(x.element).flatMap(goToTargets)
+                    else
+                      all.distinct flatMap goToTargets
+                  case _ =>
                     all.distinct flatMap goToTargets
-                case _ =>
-                  all.distinct flatMap goToTargets
-              }
-            case None => return null
-          }
-        case r =>
-          Set(r.resolve()) flatMap goToTargets
-      }
+                }
+              case None => return null
+            }
+          case r =>
+            Set(r.resolve()) flatMap goToTargets
+        }
       return targets.toArray
     }
     null

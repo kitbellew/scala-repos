@@ -812,8 +812,9 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
           while (c < a.cols) {
             var r = 0
             while (r < a.rows) {
-              ad(a.linearIndex(r, c)) =
-                op(ad(a.linearIndex(r, c)), bd(b.linearIndex(r, c)))
+              ad(a.linearIndex(r, c)) = op(
+                ad(a.linearIndex(r, c)),
+                bd(b.linearIndex(r, c)))
               r += 1
             }
             c += 1
@@ -860,8 +861,9 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
           while (c < a.cols) {
             var r = 0
             while (r < a.rows) {
-              ad(a.linearIndex(r, c)) =
-                op(ad(a.linearIndex(r, c)), bd(b.linearIndex(r, c)))
+              ad(a.linearIndex(r, c)) = op(
+                ad(a.linearIndex(r, c)),
+                bd(b.linearIndex(r, c)))
               r += 1
             }
             c += 1

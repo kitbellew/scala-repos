@@ -97,8 +97,12 @@ class LBFGSB(
         cauchyPoint - x
       else {
         //step3:compute a search direction d_k by the primal method
-        val subspaceMin =
-          subspaceMinimization(state.history, cauchyPoint, x, c, g)
+        val subspaceMin = subspaceMinimization(
+          state.history,
+          cauchyPoint,
+          x,
+          c,
+          g)
         subspaceMin - x
       };
 
@@ -111,10 +115,11 @@ class LBFGSB(
       direction: DenseVector[Double]): Double = {
     val x = state.x
     val ff = LineSearch.functionFromSearchDirection(f, x, direction)
-    val wolfeRuleSearch = new StrongWolfeLineSearch(
-      maxZoomIter,
-      maxLineSearchIter
-    ) // TODO: Need good default values here.
+    val wolfeRuleSearch =
+      new StrongWolfeLineSearch(
+        maxZoomIter,
+        maxLineSearchIter
+      ) // TODO: Need good default values here.
     wolfeRuleSearch.minimize(ff, 1.0)
   }
 
@@ -160,11 +165,12 @@ class LBFGSB(
       if (0 == gi) {
         (i, Double.MaxValue)
       } else {
-        val ti = if (gi < 0) {
-          (x(i) - upperBounds(i)) / gi
-        } else {
-          (x(i) - lowerBounds(i)) / gi
-        }
+        val ti =
+          if (gi < 0) {
+            (x(i) - upperBounds(i)) / gi
+          } else {
+            (x(i) - lowerBounds(i)) / gi
+          }
         d(i) =
           if (0 == ti)
             0
@@ -182,8 +188,10 @@ class LBFGSB(
     var fSecondDerivative = (-1.0 * theta) * fDerivative - p.dot(M * p)
     var dtMin = -(fDerivative / fSecondDerivative)
     var oldT = 0.0
-    val sortedIndeces =
-      t.map(x => x._1).toArray.sortWith((ia, ib) => t(ia)._2 < t(ib)._2)
+    val sortedIndeces = t
+      .map(x => x._1)
+      .toArray
+      .sortWith((ia, ib) => t(ia)._2 < t(ib)._2)
 
     var i = sortedIndeces.indexWhere(idx => 0 != t(idx)._2)
     var b = sortedIndeces(i)
@@ -244,15 +252,16 @@ class LBFGSB(
       freeVarIndex: Array[Int]) = {
     var starAlpha = 1.0
     for ((vIdx, i) <- freeVarIndex.zipWithIndex) {
-      starAlpha = if (0 < du(i)) {
-        math.max(
-          starAlpha,
-          math.min(upperBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
-      } else {
-        math.max(
-          starAlpha,
-          math.min(lowerBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
-      }
+      starAlpha =
+        if (0 < du(i)) {
+          math.max(
+            starAlpha,
+            math.min(upperBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
+        } else {
+          math.max(
+            starAlpha,
+            math.min(lowerBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
+        }
     }
 
     starAlpha
@@ -330,10 +339,10 @@ class LBFGSB(
         )
       } else { //m <= k discard the oldest yk and sk
         history.copy(
-          yHistory =
-            DenseMatrix.horzcat(yHistory(::, 1 until m), newY.toDenseMatrix.t),
-          sHistory =
-            DenseMatrix.horzcat(sHistory(::, 1 until m), newS.toDenseMatrix.t)
+          yHistory = DenseMatrix
+            .horzcat(yHistory(::, 1 until m), newY.toDenseMatrix.t),
+          sHistory = DenseMatrix
+            .horzcat(sHistory(::, 1 until m), newS.toDenseMatrix.t)
         )
       }
 

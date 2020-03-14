@@ -149,10 +149,10 @@ object Infos {
     private var isExported: Boolean = false
 
     private val methodsCalled = mutable.Map.empty[String, mutable.Set[String]]
-    private val methodsCalledStatically =
-      mutable.Map.empty[String, mutable.Set[String]]
-    private val staticMethodsCalled =
-      mutable.Map.empty[String, mutable.Set[String]]
+    private val methodsCalledStatically = mutable.Map
+      .empty[String, mutable.Set[String]]
+    private val staticMethodsCalled = mutable.Map
+      .empty[String, mutable.Set[String]]
     private val instantiatedClasses = mutable.Set.empty[String]
     private val accessedModules = mutable.Set.empty[String]
     private val usedInstanceTests = mutable.Set.empty[String]
@@ -259,8 +259,8 @@ object Infos {
         isAbstract = isAbstract,
         isExported = isExported,
         methodsCalled = methodsCalled.toMap.mapValues(_.toList),
-        methodsCalledStatically =
-          methodsCalledStatically.toMap.mapValues(_.toList),
+        methodsCalledStatically = methodsCalledStatically.toMap.mapValues(
+          _.toList),
         staticMethodsCalled = staticMethodsCalled.toMap.mapValues(_.toList),
         instantiatedClasses = instantiatedClasses.toList,
         accessedModules = accessedModules.toList,

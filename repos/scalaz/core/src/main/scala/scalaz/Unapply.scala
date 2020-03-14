@@ -298,9 +298,10 @@ sealed abstract class Unapply_0 extends Unapply_1 {
 }
 
 object Unapply extends Unapply_0 {
-  type AuxA[TC[_[_]], MA, A0] = Unapply[TC, MA] {
-    type A = A0
-  }
+  type AuxA[TC[_[_]], MA, A0] =
+    Unapply[TC, MA] {
+      type A = A0
+    }
 
   /** Fetch a well-typed `Unapply` for the given typeclass and type. */
   def apply[TC[_[_]], MA](implicit U: Unapply[TC, MA]): U.type {
@@ -484,8 +485,7 @@ object UnapplyProduct {
     implicit def mkSingletonOf[T <: {
       type A;
       type M[_]
-    }](implicit t: T): SingletonOf[T, t.type] =
-      SingletonOf(t)
+    }](implicit t: T): SingletonOf[T, t.type] = SingletonOf(t)
   }
 
   implicit def unapply[

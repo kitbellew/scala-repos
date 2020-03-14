@@ -67,30 +67,31 @@ object DoubleNegationUtil {
   }
 
   def removeDoubleNegation(expr: ScExpression): ScExpression = {
-    val text: String = stripParentheses(expr) match {
-      case ScPrefixExpr(_, operand) => invertedNegationText(operand)
-      case infix @ ScInfixExpr(left, _, right) =>
-        val hasNegLeft = hasNegation(left)
-        val hasNegRight = hasNegation(right)
-        val hasNegInfix = hasNegation(infix)
-        val builder = new mutable.StringBuilder()
-        builder.append(
-          if (hasNegLeft)
-            invertedNegationText(left)
-          else
-            left.getText)
-        builder.append(
-          if (hasNegLeft && hasNegInfix && hasNegRight)
-            " != "
-          else
-            " == ")
-        builder.append(
-          if (hasNegRight)
-            invertedNegationText(right)
-          else
-            right.getText)
-        builder.toString()
-    }
+    val text: String =
+      stripParentheses(expr) match {
+        case ScPrefixExpr(_, operand) => invertedNegationText(operand)
+        case infix @ ScInfixExpr(left, _, right) =>
+          val hasNegLeft = hasNegation(left)
+          val hasNegRight = hasNegation(right)
+          val hasNegInfix = hasNegation(infix)
+          val builder = new mutable.StringBuilder()
+          builder.append(
+            if (hasNegLeft)
+              invertedNegationText(left)
+            else
+              left.getText)
+          builder.append(
+            if (hasNegLeft && hasNegInfix && hasNegRight)
+              " != "
+            else
+              " == ")
+          builder.append(
+            if (hasNegRight)
+              invertedNegationText(right)
+            else
+              right.getText)
+          builder.toString()
+      }
     ScalaPsiElementFactory.createExpressionFromText(text, expr.getManager)
   }
 

@@ -59,8 +59,8 @@ private[reflect] object ScalaSigReader {
   }
 
   def findClass(clazz: Class[_]): ClassSymbol = {
-    val sig =
-      findScalaSig(clazz).getOrElse(fail("Can't find ScalaSig for " + clazz))
+    val sig = findScalaSig(clazz).getOrElse(
+      fail("Can't find ScalaSig for " + clazz))
     findClass(sig, clazz).getOrElse(
       fail("Can't find " + clazz + " from parsed ScalaSig"))
   }
@@ -152,9 +152,10 @@ private[reflect] object ScalaSigReader {
   private def findArgTypeForField(
       s: MethodSymbol,
       typeArgIdx: Int): Class[_] = {
-    val t = s.infoType match {
-      case NullaryMethodType(TypeRefType(_, _, args)) => args(typeArgIdx)
-    }
+    val t =
+      s.infoType match {
+        case NullaryMethodType(TypeRefType(_, _, args)) => args(typeArgIdx)
+      }
 
     def findPrimitive(t: Type): Symbol =
       t match {

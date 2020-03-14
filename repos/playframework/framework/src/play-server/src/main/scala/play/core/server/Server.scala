@@ -145,15 +145,16 @@ object Server {
       config: ServerConfig = ServerConfig(port = Some(0), mode = Mode.Test))(
       routes: PartialFunction[RequestHeader, Handler])(block: Port => T)(
       implicit provider: ServerProvider): T = {
-    val application = new BuiltInComponentsFromContext(
-      ApplicationLoader.Context(
-        Environment.simple(path = config.rootDir, mode = config.mode),
-        None,
-        new DefaultWebCommands(),
-        Configuration(ConfigFactory.load())
-      )) {
-      def router = Router.from(routes)
-    }.application
+    val application =
+      new BuiltInComponentsFromContext(
+        ApplicationLoader.Context(
+          Environment.simple(path = config.rootDir, mode = config.mode),
+          None,
+          new DefaultWebCommands(),
+          Configuration(ConfigFactory.load())
+        )) {
+        def router = Router.from(routes)
+      }.application
     withApplication(application, config)(block)
   }
 
@@ -166,15 +167,16 @@ private[play] object JavaServerHelper {
       httpPort: Option[Integer],
       sslPort: Option[Integer]): Server = {
     val r = router
-    val application = new BuiltInComponentsFromContext(
-      ApplicationLoader.Context(
-        Environment.simple(mode = mode),
-        None,
-        new DefaultWebCommands(),
-        Configuration(ConfigFactory.load())
-      )) {
-      def router = r
-    }.application
+    val application =
+      new BuiltInComponentsFromContext(
+        ApplicationLoader.Context(
+          Environment.simple(mode = mode),
+          None,
+          new DefaultWebCommands(),
+          Configuration(ConfigFactory.load())
+        )) {
+        def router = r
+      }.application
     Play.start(application)
     val serverConfig = ServerConfig(
       mode = mode,

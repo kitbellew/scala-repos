@@ -7,11 +7,9 @@ class LinkedHashSet[E]
     with Set[E]
     with Cloneable
     with Serializable {
-  def this(initialCapacity: Int, loadFactor: Float) =
-    this()
+  def this(initialCapacity: Int, loadFactor: Float) = this()
 
-  def this(initialCapacity: Int) =
-    this()
+  def this(initialCapacity: Int) = this()
 
   def this(c: java.util.Collection[_ <: E]) = {
     this()

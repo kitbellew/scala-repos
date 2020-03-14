@@ -51,20 +51,19 @@ private class ClientEndpoint(
     with Logging {
 
   // A scheduled executor used to send messages at the specified time.
-  private val forwardMessageThread =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor("client-forward-message")
+  private val forwardMessageThread = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("client-forward-message")
   // Used to provide the implicit parameter of `Future` methods.
-  private val forwardMessageExecutionContext =
-    ExecutionContext.fromExecutor(
-      forwardMessageThread,
-      t =>
-        t match {
-          case ie: InterruptedException => // Exit normally
-          case e: Throwable =>
-            logError(e.getMessage, e)
-            System.exit(SparkExitCode.UNCAUGHT_EXCEPTION)
-        }
-    )
+  private val forwardMessageExecutionContext = ExecutionContext.fromExecutor(
+    forwardMessageThread,
+    t =>
+      t match {
+        case ie: InterruptedException => // Exit normally
+        case e: Throwable =>
+          logError(e.getMessage, e)
+          System.exit(SparkExitCode.UNCAUGHT_EXCEPTION)
+      }
+  )
 
   private val lostMasters = new HashSet[RpcAddress]
   private var activeMasterEndpoint: RpcEndpointRef = null
@@ -94,23 +93,25 @@ private class ClientEndpoint(
           .getOrElse(Seq.empty)
         val sparkJavaOpts = Utils.sparkJavaOpts(conf)
         val javaOpts = sparkJavaOpts ++ extraJavaOpts
-        val command = new Command(
-          mainClass,
-          Seq(
-            "{{WORKER_URL}}",
-            "{{USER_JAR}}",
-            driverArgs.mainClass) ++ driverArgs.driverOptions,
-          sys.env,
-          classPathEntries,
-          libraryPathEntries,
-          javaOpts)
+        val command =
+          new Command(
+            mainClass,
+            Seq(
+              "{{WORKER_URL}}",
+              "{{USER_JAR}}",
+              driverArgs.mainClass) ++ driverArgs.driverOptions,
+            sys.env,
+            classPathEntries,
+            libraryPathEntries,
+            javaOpts)
 
-        val driverDescription = new DriverDescription(
-          driverArgs.jarUrl,
-          driverArgs.memory,
-          driverArgs.cores,
-          driverArgs.supervise,
-          command)
+        val driverDescription =
+          new DriverDescription(
+            driverArgs.jarUrl,
+            driverArgs.memory,
+            driverArgs.cores,
+            driverArgs.supervise,
+            command)
         ayncSendToMasterAndForwardReply[SubmitDriverResponse](
           RequestSubmitDriver(driverDescription))
 
@@ -144,9 +145,8 @@ private class ClientEndpoint(
     logInfo("... waiting before polling master for driver state")
     Thread.sleep(5000)
     logInfo("... polling master for driver state")
-    val statusResponse =
-      activeMasterEndpoint.askWithRetry[DriverStatusResponse](
-        RequestDriverStatus(driverId))
+    val statusResponse = activeMasterEndpoint
+      .askWithRetry[DriverStatusResponse](RequestDriverStatus(driverId))
     statusResponse.found match {
       case false =>
         logError(s"ERROR: Cluster master did not recognize $driverId")
@@ -251,13 +251,12 @@ object Client {
     conf.set("spark.rpc.askTimeout", "10")
     Logger.getRootLogger.setLevel(driverArgs.logLevel)
 
-    val rpcEnv =
-      RpcEnv.create(
-        "driverClient",
-        Utils.localHostName(),
-        0,
-        conf,
-        new SecurityManager(conf))
+    val rpcEnv = RpcEnv.create(
+      "driverClient",
+      Utils.localHostName(),
+      0,
+      conf,
+      new SecurityManager(conf))
 
     val masterEndpoints = driverArgs.masters
       .map(RpcAddress.fromSparkURL)

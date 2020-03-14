@@ -87,14 +87,16 @@ trait ScalaSettings
     "Specify where to find user class files.",
     defaultClasspath) withAbbreviation "-cp"
   val d = OutputSetting(outputDirs, ".")
-  val nospecialization =
-    BooleanSetting("-no-specialization", "Ignore @specialize annotations.")
+  val nospecialization = BooleanSetting(
+    "-no-specialization",
+    "Ignore @specialize annotations.")
 
   // Would be nice to build this dynamically from scala.languageFeature.
   // The two requirements: delay error checking until you have symbols, and let compiler command build option-specific help.
   object languageFeatures extends MultiChoiceEnumeration {
-    val dynamics =
-      Choice("dynamics", "Allow direct or indirect subclasses of scala.Dynamic")
+    val dynamics = Choice(
+      "dynamics",
+      "Allow direct or indirect subclasses of scala.Dynamic")
     val postfixOps = Choice(
       "postfixOps",
       "Allow postfix operator notation, such as `1 to 10 toList'")
@@ -185,8 +187,9 @@ trait ScalaSettings
     "Warn about constructs whose behavior may have changed since version.",
     initial = NoScalaVersion,
     default = Some(AnyScalaVersion))
-  val nouescape =
-    BooleanSetting("-Xno-uescape", "Disable handling of \\u unicode escapes.")
+  val nouescape = BooleanSetting(
+    "-Xno-uescape",
+    "Disable handling of \\u unicode escapes.")
   val Xnojline = BooleanSetting("-Xnojline", "Do not use JLine for editing.")
   val Xverify = BooleanSetting(
     "-Xverify",
@@ -195,10 +198,13 @@ trait ScalaSettings
     "-Xplugin",
     "paths",
     "Load a plugin from each classpath.")
-  val disable =
-    MultiStringSetting("-Xplugin-disable", "plugin", "Disable plugins by name.")
-  val showPlugins =
-    BooleanSetting("-Xplugin-list", "Print a synopsis of loaded plugins.")
+  val disable = MultiStringSetting(
+    "-Xplugin-disable",
+    "plugin",
+    "Disable plugins by name.")
+  val showPlugins = BooleanSetting(
+    "-Xplugin-list",
+    "Print a synopsis of loaded plugins.")
   val require = MultiStringSetting(
     "-Xplugin-require",
     "plugin",
@@ -209,10 +215,12 @@ trait ScalaSettings
     "Path to search for plugin archives.",
     Defaults.scalaPluginPath)
   val Xprint = PhasesSetting("-Xprint", "Print out program after")
-  val Xprintpos =
-    BooleanSetting("-Xprint-pos", "Print tree positions, as offsets.")
-  val printtypes =
-    BooleanSetting("-Xprint-types", "Print tree types (debugging option).")
+  val Xprintpos = BooleanSetting(
+    "-Xprint-pos",
+    "Print tree positions, as offsets.")
+  val printtypes = BooleanSetting(
+    "-Xprint-types",
+    "Print tree types (debugging option).")
   val prompt = BooleanSetting(
     "-Xprompt",
     "Display a prompt after each error (debugging option).")
@@ -239,8 +247,9 @@ trait ScalaSettings
     "object",
     "Show internal representation of object.",
     "")
-  val showPhases =
-    BooleanSetting("-Xshow-phases", "Print a synopsis of compiler phases.")
+  val showPhases = BooleanSetting(
+    "-Xshow-phases",
+    "Print a synopsis of compiler phases.")
   val sourceReader = StringSetting(
     "-Xsource-reader",
     "classname",
@@ -251,8 +260,9 @@ trait ScalaSettings
     "classname",
     "Specify a custom reporter for compiler messages.",
     "scala.tools.nsc.reporters.ConsoleReporter")
-  val strictInference =
-    BooleanSetting("-Xstrict-inference", "Don't infer known-unsound types")
+  val strictInference = BooleanSetting(
+    "-Xstrict-inference",
+    "Don't infer known-unsound types")
   val source = ScalaVersionSetting(
     "-Xsource",
     "version",
@@ -268,8 +278,9 @@ trait ScalaSettings
 
   // XML parsing options
   object XxmlSettings extends MultiChoiceEnumeration {
-    val coalescing =
-      Choice("coalescing", "Convert PCData to Text and coalesce sibling nodes")
+    val coalescing = Choice(
+      "coalescing",
+      "Convert PCData to Text and coalesce sibling nodes")
     def isCoalescing = Xxml contains coalescing
   }
   val Xxml = MultiChoiceSetting(
@@ -294,14 +305,16 @@ trait ScalaSettings
   val overrideObjects = BooleanSetting(
     "-Yoverride-objects",
     "Allow member objects to be overridden.")
-  val overrideVars =
-    BooleanSetting("-Yoverride-vars", "Allow vars to be overridden.")
+  val overrideVars = BooleanSetting(
+    "-Yoverride-vars",
+    "Allow vars to be overridden.")
   val Yhelp = BooleanSetting("-Y", "Print a synopsis of private options.")
   val breakCycles = BooleanSetting(
     "-Ybreak-cycles",
     "Attempt to break cycles encountered during typing")
-  val browse =
-    PhasesSetting("-Ybrowse", "Browse the abstract syntax tree after")
+  val browse = PhasesSetting(
+    "-Ybrowse",
+    "Browse the abstract syntax tree after")
   val check = PhasesSetting("-Ycheck", "Check the tree at the end of")
   val Yshow = PhasesSetting(
     "-Yshow",
@@ -309,10 +322,12 @@ trait ScalaSettings
   val Ycompacttrees = BooleanSetting(
     "-Ycompact-trees",
     "Use compact tree printer when displaying trees.")
-  val noCompletion =
-    BooleanSetting("-Yno-completion", "Disable tab-completion in the REPL.")
-  val debug =
-    BooleanSetting("-Ydebug", "Increase the quantity of debugging output.")
+  val noCompletion = BooleanSetting(
+    "-Yno-completion",
+    "Disable tab-completion in the REPL.")
+  val debug = BooleanSetting(
+    "-Ydebug",
+    "Increase the quantity of debugging output.")
   val termConflict = ChoiceSetting(
     "-Yresolve-term-conflict",
     "strategy",
@@ -329,8 +344,9 @@ trait ScalaSettings
   val noimports = BooleanSetting(
     "-Yno-imports",
     "Compile without importing scala.*, java.lang.*, or Predef.")
-  val nopredef =
-    BooleanSetting("-Yno-predef", "Compile without importing Predef.")
+  val nopredef = BooleanSetting(
+    "-Yno-predef",
+    "Compile without importing Predef.")
   val noAdaptedArgs = BooleanSetting(
     "-Yno-adapted-args",
     "Do not adapt an argument list (either by inserting () or creating a tuple) to match the receiver.")
@@ -373,8 +389,9 @@ trait ScalaSettings
     "-Ystop-after",
     "Stop after") withAbbreviation ("-stop") // backward compat
   val stopBefore = PhasesSetting("-Ystop-before", "Stop before")
-  val Yrangepos =
-    BooleanSetting("-Yrangepos", "Use range positions for syntax trees.")
+  val Yrangepos = BooleanSetting(
+    "-Yrangepos",
+    "Use range positions for syntax trees.")
   val Ymemberpos = StringSetting(
     "-Yshow-member-pos",
     "output style",
@@ -649,10 +666,12 @@ trait ScalaSettings
     "Trace all macro-related activities: compilation, generation of synthetics, classloading, expansion, exceptions.")
   val Yposdebug = BooleanSetting("-Ypos-debug", "Trace position validation.")
   val Yreifydebug = BooleanSetting("-Yreify-debug", "Trace reification.")
-  val Ytyperdebug =
-    BooleanSetting("-Ytyper-debug", "Trace all type assignments.")
-  val Ypatmatdebug =
-    BooleanSetting("-Ypatmat-debug", "Trace pattern matching translation.")
+  val Ytyperdebug = BooleanSetting(
+    "-Ytyper-debug",
+    "Trace all type assignments.")
+  val Ypatmatdebug = BooleanSetting(
+    "-Ypatmat-debug",
+    "Trace pattern matching translation.")
   val YpatmatExhaustdepth = IntSetting(
     "-Ypatmat-exhaust-depth",
     "off",
@@ -664,20 +683,22 @@ trait ScalaSettings
           Int.MaxValue
         else
           str.toInt))
-  val Yquasiquotedebug =
-    BooleanSetting("-Yquasiquote-debug", "Trace quasiquote-related activities.")
+  val Yquasiquotedebug = BooleanSetting(
+    "-Yquasiquote-debug",
+    "Trace quasiquote-related activities.")
 
   /** Groups of Settings.
     */
   val future = BooleanSetting(
     "-Xfuture",
     "Turn on future language features.") enablingIfNotSetByUser futureSettings
-  val optimise =
-    BooleanSetting("-optimise", "Compiler flag for the optimizer in Scala 2.11")
-      .withAbbreviation("-optimize")
-      .withDeprecationMessage(
-        "In 2.12, -optimise enables -Yopt:l:classpath. Check -Yopt:help for using the Scala 2.12 optimizer.")
-      .withPostSetHook(_ => Yopt.tryToSet(List(YoptChoices.lClasspath.name)))
+  val optimise = BooleanSetting(
+    "-optimise",
+    "Compiler flag for the optimizer in Scala 2.11")
+    .withAbbreviation("-optimize")
+    .withDeprecationMessage(
+      "In 2.12, -optimise enables -Yopt:l:classpath. Check -Yopt:help for using the Scala 2.12 optimizer.")
+    .withPostSetHook(_ => Yopt.tryToSet(List(YoptChoices.lClasspath.name)))
   val Xexperimental = BooleanSetting(
     "-Xexperimental",
     "Enable experimental extensions.") enablingIfNotSetByUser experimentalSettings
@@ -723,9 +744,10 @@ trait ScalaSettings
   /**
     * -P "Plugin" settings
     */
-  val pluginOptions =
-    MultiStringSetting("-P", "plugin:opt", "Pass an option to a plugin")
-      .withHelpSyntax("-P:<plugin>:<opt>")
+  val pluginOptions = MultiStringSetting(
+    "-P",
+    "plugin:opt",
+    "Pass an option to a plugin").withHelpSyntax("-P:<plugin>:<opt>")
 
   /** Test whether this is scaladoc we're looking at */
   def isScaladoc = false

@@ -51,8 +51,11 @@ class ApplyUnapplyForBindingSearcher
           checkUnapply = true)
         processBinding(processor, scope, binding, queryParameters.getProject)
       case inAnonClassWithBinding((binding, checkApply, checkUnapply)) =>
-        val processor =
-          createProcessor(consumer, binding, checkApply, checkUnapply)
+        val processor = createProcessor(
+          consumer,
+          binding,
+          checkApply,
+          checkUnapply)
         processBinding(processor, scope, binding, queryParameters.getProject)
       case _ => true
     }
@@ -158,11 +161,12 @@ class ApplyUnapplyForBindingSearcher
     def unapply(fun: ScFunctionDefinition)
         : Option[(ScBindingPattern, Boolean, Boolean)] =
       inReadAction {
-        val (checkApply, checkUnapply) = fun.name match {
-          case "apply"                  => (true, false)
-          case "unapply" | "unapplySeq" => (false, true)
-          case _                        => (false, false)
-        }
+        val (checkApply, checkUnapply) =
+          fun.name match {
+            case "apply"                  => (true, false)
+            case "unapply" | "unapplySeq" => (false, true)
+            case _                        => (false, false)
+          }
         if (checkApply || checkUnapply) {
           fun.containingClass match {
             case anon: ScNewTemplateDefinition =>

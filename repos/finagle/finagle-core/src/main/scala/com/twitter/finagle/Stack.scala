@@ -178,8 +178,7 @@ sealed trait Stack[T] {
     *
     * Alias for [[Stack.++]].
     */
-  def concat(right: Stack[T]): Stack[T] =
-    this ++ right
+  def concat(right: Stack[T]): Stack[T] = this ++ right
 
   /**
     * Produce a new stack representing the concatenation of `this`
@@ -197,14 +196,12 @@ sealed trait Stack[T] {
     *
     * An alias for [[Stack.+:]].
     */
-  def prepend(stk: Stackable[T]): Stack[T] =
-    stk +: this
+  def prepend(stk: Stackable[T]): Stack[T] = stk +: this
 
   /**
     * A copy of this Stack with `stk` prepended.
     */
-  def +:(stk: Stackable[T]): Stack[T] =
-    stk.toStack(this)
+  def +:(stk: Stackable[T]): Stack[T] = stk.toStack(this)
 
   override def toString = {
     val elems = tails map {
@@ -294,11 +291,12 @@ object Stack {
       * is created automatically
       */
     def apply[T](_role: Stack.Role, t: T): Leaf[T] = {
-      val head = new Stack.Head {
-        val role = _role
-        val description = _role.toString
-        val parameters = Nil
-      }
+      val head =
+        new Stack.Head {
+          val role = _role
+          val description = _role.toString
+          val parameters = Nil
+        }
       Leaf(head, t)
     }
   }
@@ -364,8 +362,7 @@ object Stack {
     /**
       * Alias for [[addAll(Params)]].
       */
-    def ++(ps: Params): Params =
-      addAll(ps)
+    def ++(ps: Params): Params = addAll(ps)
 
     /**
       * Produce a new parameter map, overriding any previously
@@ -383,17 +380,14 @@ object Stack {
           case None    => param.default
         }
 
-      def contains[P](implicit param: Param[P]): Boolean =
-        map.contains(param)
+      def contains[P](implicit param: Param[P]): Boolean = map.contains(param)
 
-      def iterator: Iterator[(Param[_], Any)] =
-        map.iterator
+      def iterator: Iterator[(Param[_], Any)] = map.iterator
 
       def +[P](p: P)(implicit param: Param[P]): Params =
         copy(map + (param -> p))
 
-      def addAll(ps: Params): Params =
-        copy(map ++ ps.iterator)
+      def addAll(ps: Params): Params = copy(map ++ ps.iterator)
     }
 
     /**
@@ -408,8 +402,7 @@ object Stack {
   trait Parameterized[+T] {
     def params: Stack.Params
 
-    def configured[P: Stack.Param](p: P): T =
-      withParams(params + p)
+    def configured[P: Stack.Param](p: P): T = withParams(params + p)
 
     def configured[P](psp: (P, Stack.Param[P])): T = {
       val (p, sp) = psp
@@ -480,8 +473,7 @@ object Stack {
 
   /** A module of 1 parameter. */
   abstract class Module1[P1: Param, T] extends Stackable[T] {
-    final val parameters: Seq[Stack.Param[_]] =
-      Seq(implicitly[Param[P1]])
+    final val parameters: Seq[Stack.Param[_]] = Seq(implicitly[Param[P1]])
     def make(p1: P1, next: T): T
     def toStack(next: Stack[T]): Stack[T] =
       Node(
@@ -492,8 +484,9 @@ object Stack {
 
   /** A module of 2 parameters. */
   abstract class Module2[P1: Param, P2: Param, T] extends Stackable[T] {
-    final val parameters: Seq[Stack.Param[_]] =
-      Seq(implicitly[Param[P1]], implicitly[Param[P2]])
+    final val parameters: Seq[Stack.Param[_]] = Seq(
+      implicitly[Param[P1]],
+      implicitly[Param[P2]])
     def make(p1: P1, p2: P2, next: T): T
     def toStack(next: Stack[T]) =
       Node(
@@ -505,8 +498,10 @@ object Stack {
   /** A module of 3 parameters. */
   abstract class Module3[P1: Param, P2: Param, P3: Param, T]
       extends Stackable[T] {
-    final val parameters: Seq[Stack.Param[_]] =
-      Seq(implicitly[Param[P1]], implicitly[Param[P2]], implicitly[Param[P3]])
+    final val parameters: Seq[Stack.Param[_]] = Seq(
+      implicitly[Param[P1]],
+      implicitly[Param[P2]],
+      implicitly[Param[P3]])
     def make(p1: P1, p2: P2, p3: P3, next: T): T
     def toStack(next: Stack[T]): Stack[T] =
       Node(

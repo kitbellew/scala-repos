@@ -32,12 +32,13 @@ object ExecutionSpec extends Specification {
       }
 
       // Work out how deep to go to cause an overflow
-      val overflowingExecutionContext = new ExecutionContext {
-        def execute(runnable: Runnable): Unit = {
-          runnable.run()
+      val overflowingExecutionContext =
+        new ExecutionContext {
+          def execute(runnable: Runnable): Unit = {
+            runnable.run()
+          }
+          def reportFailure(t: Throwable): Unit = t.printStackTrace()
         }
-        def reportFailure(t: Throwable): Unit = t.printStackTrace()
-      }
 
       var overflowTimes = 1 << 10
       try {

@@ -1,9 +1,10 @@
 object A {
   class C
 
-  val z = new C {
-    type B = B
-  }
+  val z =
+    new C {
+      type B = B
+    }
 
   def foo(x: C {
     type B = String

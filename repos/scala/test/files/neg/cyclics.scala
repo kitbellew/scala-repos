@@ -4,7 +4,8 @@ object test {
   trait I {
     type E
   }
-  type C = I {
-    type E = C
-  }
+  type C =
+    I {
+      type E = C
+    }
 }

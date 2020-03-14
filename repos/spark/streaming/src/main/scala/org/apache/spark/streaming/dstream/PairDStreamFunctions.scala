@@ -491,9 +491,10 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   ): DStream[(K, S)] =
     ssc.withScope {
       val cleanedUpdateF = sparkContext.clean(updateFunc)
-      val newUpdateFunc = (iterator: Iterator[(K, Seq[V], Option[S])]) => {
-        iterator.flatMap(t => cleanedUpdateF(t._2, t._3).map(s => (t._1, s)))
-      }
+      val newUpdateFunc =
+        (iterator: Iterator[(K, Seq[V], Option[S])]) => {
+          iterator.flatMap(t => cleanedUpdateF(t._2, t._3).map(s => (t._1, s)))
+        }
       updateStateByKey(newUpdateFunc, partitioner, true)
     }
 
@@ -542,9 +543,10 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
   ): DStream[(K, S)] =
     ssc.withScope {
       val cleanedUpdateF = sparkContext.clean(updateFunc)
-      val newUpdateFunc = (iterator: Iterator[(K, Seq[V], Option[S])]) => {
-        iterator.flatMap(t => cleanedUpdateF(t._2, t._3).map(s => (t._1, s)))
-      }
+      val newUpdateFunc =
+        (iterator: Iterator[(K, Seq[V], Option[S])]) => {
+          iterator.flatMap(t => cleanedUpdateF(t._2, t._3).map(s => (t._1, s)))
+        }
       updateStateByKey(newUpdateFunc, partitioner, true, initialRDD)
     }
 
@@ -827,15 +829,16 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     ssc.withScope {
       // Wrap conf in SerializableWritable so that ForeachDStream can be serialized for checkpoints
       val serializableConf = new SerializableJobConf(conf)
-      val saveFunc = (rdd: RDD[(K, V)], time: Time) => {
-        val file = rddToFileName(prefix, suffix, time)
-        rdd.saveAsHadoopFile(
-          file,
-          keyClass,
-          valueClass,
-          outputFormatClass,
-          new JobConf(serializableConf.value))
-      }
+      val saveFunc =
+        (rdd: RDD[(K, V)], time: Time) => {
+          val file = rddToFileName(prefix, suffix, time)
+          rdd.saveAsHadoopFile(
+            file,
+            keyClass,
+            valueClass,
+            outputFormatClass,
+            new JobConf(serializableConf.value))
+        }
       self.foreachRDD(saveFunc)
     }
 
@@ -871,15 +874,16 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     ssc.withScope {
       // Wrap conf in SerializableWritable so that ForeachDStream can be serialized for checkpoints
       val serializableConf = new SerializableConfiguration(conf)
-      val saveFunc = (rdd: RDD[(K, V)], time: Time) => {
-        val file = rddToFileName(prefix, suffix, time)
-        rdd.saveAsNewAPIHadoopFile(
-          file,
-          keyClass,
-          valueClass,
-          outputFormatClass,
-          serializableConf.value)
-      }
+      val saveFunc =
+        (rdd: RDD[(K, V)], time: Time) => {
+          val file = rddToFileName(prefix, suffix, time)
+          rdd.saveAsNewAPIHadoopFile(
+            file,
+            keyClass,
+            valueClass,
+            outputFormatClass,
+            serializableConf.value)
+        }
       self.foreachRDD(saveFunc)
     }
 

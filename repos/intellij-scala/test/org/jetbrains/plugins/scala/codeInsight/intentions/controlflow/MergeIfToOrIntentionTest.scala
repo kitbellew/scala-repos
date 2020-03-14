@@ -11,8 +11,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
   val familyName = MergeIfToOrIntention.familyName
 
   def testMergeIfToOr() {
-    val text =
-      """
+    val text = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0
@@ -22,8 +21,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0
@@ -37,8 +35,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testMergeIfToOr2() {
-    val text =
-      """
+    val text = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0
@@ -52,8 +49,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0
@@ -70,8 +66,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testMergeIfToOr3() {
-    val text =
-      """
+    val text = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0
@@ -82,8 +77,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0
@@ -96,8 +90,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testMergeIfToOr4() {
-    val text =
-      """
+    val text = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0
@@ -112,8 +105,7 @@ class MergeIfToOrIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class MergeIfToOr {
         |  def mthd {
         |    val a: Int = 0

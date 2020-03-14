@@ -122,34 +122,35 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
         case _ => false
       }
 
-    val result = getContext match {
-      case _: ScStableCodeReferenceElement => stableQualRef
-      case e: ScImportExpr =>
-        if (e.selectorSet != None
-            //import Class._ is not allowed
-            || qualifier == None || e.singleWildcard)
-          stableQualRef
-        else
-          stableImportSelector
-      case ste: ScSimpleTypeElement =>
-        if (incomplete)
-          noPackagesClassCompletion // todo use the settings to include packages
-        else if (ste.getLastChild.isInstanceOf[PsiErrorElement])
-          stableQualRef
-        else if (ste.singleton)
-          stableQualRef
-        else
-          stableClass
-      case _: ScTypeAlias                           => stableClass
-      case _: ScInterpolationPattern                => stableImportSelector
-      case _: ScConstructorPattern                  => objectOrValue
-      case _: ScInfixPattern                        => objectOrValue
-      case _: ScThisReference | _: ScSuperReference => stableClassOrObject
-      case _: ScImportSelector                      => stableImportSelector
-      case _: ScInfixTypeElement                    => stableClass
-      case _ if isInMacroDef                        => methodsOnly
-      case _                                        => stableQualRef
-    }
+    val result =
+      getContext match {
+        case _: ScStableCodeReferenceElement => stableQualRef
+        case e: ScImportExpr =>
+          if (e.selectorSet != None
+              //import Class._ is not allowed
+              || qualifier == None || e.singleWildcard)
+            stableQualRef
+          else
+            stableImportSelector
+        case ste: ScSimpleTypeElement =>
+          if (incomplete)
+            noPackagesClassCompletion // todo use the settings to include packages
+          else if (ste.getLastChild.isInstanceOf[PsiErrorElement])
+            stableQualRef
+          else if (ste.singleton)
+            stableQualRef
+          else
+            stableClass
+        case _: ScTypeAlias                           => stableClass
+        case _: ScInterpolationPattern                => stableImportSelector
+        case _: ScConstructorPattern                  => objectOrValue
+        case _: ScInfixPattern                        => objectOrValue
+        case _: ScThisReference | _: ScSuperReference => stableClassOrObject
+        case _: ScImportSelector                      => stableImportSelector
+        case _: ScInfixTypeElement                    => stableClass
+        case _ if isInMacroDef                        => methodsOnly
+        case _                                        => stableQualRef
+      }
     if (completion)
       result + ResolveTargets.PACKAGE + ResolveTargets.OBJECT + ResolveTargets.VAL
     else
@@ -164,8 +165,9 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
     if (isReferenceTo(element))
       this
     else {
-      val aliasedRef: Option[ScReferenceElement] =
-        ScalaPsiUtil.importAliasFor(element, this)
+      val aliasedRef: Option[ScReferenceElement] = ScalaPsiUtil.importAliasFor(
+        element,
+        this)
       if (aliasedRef.isDefined) {
         this.replace(aliasedRef.get)
       } else {
@@ -186,8 +188,9 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
                   getText
               })
           if (nameId.getText != c.name) {
-            val ref =
-              ScalaPsiElementFactory.createReferenceFromText(c.name, getManager)
+            val ref = ScalaPsiElementFactory.createReferenceFromText(
+              c.name,
+              getManager)
             return this
               .replace(ref)
               .asInstanceOf[ScStableCodeReferenceElement]
@@ -210,11 +213,13 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
             }
           }
           if (qname != null) {
-            val selector: ScImportSelector =
-              PsiTreeUtil.getParentOfType(this, classOf[ScImportSelector])
+            val selector: ScImportSelector = PsiTreeUtil.getParentOfType(
+              this,
+              classOf[ScImportSelector])
             if (selector != null) {
-              val importExpr =
-                PsiTreeUtil.getParentOfType(this, classOf[ScImportExpr])
+              val importExpr = PsiTreeUtil.getParentOfType(
+                this,
+                classOf[ScImportExpr])
               selector
                 .deleteSelector() //we can't do anything here, so just simply delete it
               return importExpr.reference.get //todo: what we should return exactly?
@@ -223,8 +228,9 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
               getParent match {
                 case importExpr: ScImportExpr
                     if !importExpr.singleWildcard && !importExpr.selectorSet.isDefined =>
-                  val holder =
-                    PsiTreeUtil.getParentOfType(this, classOf[ScImportsHolder])
+                  val holder = PsiTreeUtil.getParentOfType(
+                    this,
+                    classOf[ScImportsHolder])
                   importExpr.deleteExpr()
                   c match {
                     case ClassTypeToImport(clazz) =>
@@ -282,8 +288,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
               case member: ScMember =>
                 val containingClass = member.containingClass
                 val refToClass = bindToElement(containingClass)
-                val refToMember =
-                  ScalaPsiElementFactory.createReferenceFromText(
+                val refToMember = ScalaPsiElementFactory
+                  .createReferenceFromText(
                     refToClass.getText + "." + binding.name,
                     getManager)
                 this.replace(refToMember).asInstanceOf[ScReferenceElement]

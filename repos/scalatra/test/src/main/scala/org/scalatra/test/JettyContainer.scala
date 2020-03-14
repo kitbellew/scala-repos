@@ -10,8 +10,9 @@ import org.eclipse.jetty.servlet._
 import org.scalatra.servlet.{HasMultipartConfig, ScalatraAsyncSupport}
 
 object JettyContainer {
-  private val DefaultDispatcherTypes: EnumSet[DispatcherType] =
-    EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC)
+  private val DefaultDispatcherTypes: EnumSet[DispatcherType] = EnumSet.of(
+    DispatcherType.REQUEST,
+    DispatcherType.ASYNC)
 }
 
 trait JettyContainer extends Container {

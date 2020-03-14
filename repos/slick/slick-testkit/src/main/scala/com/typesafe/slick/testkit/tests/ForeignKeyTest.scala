@@ -178,10 +178,11 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
       as ++= Seq(1 -> "a", 2 -> "b", 3 -> "c"),
       bs ++= Seq(1 -> "x", 2 -> "y", 3 -> "z"),
       aToB ++= Seq(1 -> 1, 1 -> 2, 2 -> 2, 2 -> 3), {
-        val q1 = (for {
-          a <- as if a.id >= 2
-          b <- a.bs
-        } yield (a.s, b.s)).to[Set]
+        val q1 =
+          (for {
+            a <- as if a.id >= 2
+            b <- a.bs
+          } yield (a.s, b.s)).to[Set]
         q1.result.map(_ shouldBe Set(("b", "y"), ("b", "z")))
       }
     )

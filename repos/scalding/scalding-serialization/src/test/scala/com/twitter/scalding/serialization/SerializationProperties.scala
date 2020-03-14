@@ -74,12 +74,11 @@ object SerializationProperties extends Properties("SerializationProperties") {
         Success(new IntTryWrapperClass(x))
       })
 
-  implicit val arbIntWrapperClass: Arbitrary[IntWrapperClass] =
-    Arbitrary(implicitly[Arbitrary[Int]].arbitrary.map(new IntWrapperClass(_)))
+  implicit val arbIntWrapperClass: Arbitrary[IntWrapperClass] = Arbitrary(
+    implicitly[Arbitrary[Int]].arbitrary.map(new IntWrapperClass(_)))
 
-  implicit val arbIntTryWrapperClass: Arbitrary[IntTryWrapperClass] =
-    Arbitrary(
-      implicitly[Arbitrary[Int]].arbitrary.map(new IntTryWrapperClass(_)))
+  implicit val arbIntTryWrapperClass: Arbitrary[IntTryWrapperClass] = Arbitrary(
+    implicitly[Arbitrary[Int]].arbitrary.map(new IntTryWrapperClass(_)))
 
   implicit def tuple[A: OrderedSerialization, B: OrderedSerialization]
       : OrderedSerialization[(A, B)] =
@@ -88,10 +87,11 @@ object SerializationProperties extends Properties("SerializationProperties") {
   def serializeSequenceCompare[T: OrderedSerialization](g: Gen[T]): Prop =
     forAll(Gen.listOf(g)) { list =>
       // make sure the list is even in size:
-      val pairList = (if (list.size % 2 == 1)
-                        list.tail
-                      else
-                        list).grouped(2)
+      val pairList =
+        (if (list.size % 2 == 1)
+           list.tail
+         else
+           list).grouped(2)
       val baos1 = new ByteArrayOutputStream
       val baos2 = new ByteArrayOutputStream
       pairList.foreach {
@@ -117,10 +117,11 @@ object SerializationProperties extends Properties("SerializationProperties") {
   def serializeSequenceEquiv[T: Serialization](g: Gen[T]): Prop =
     forAll(Gen.listOf(g)) { list =>
       // make sure the list is even in size:
-      val pairList = (if (list.size % 2 == 1)
-                        list.tail
-                      else
-                        list).grouped(2)
+      val pairList =
+        (if (list.size % 2 == 1)
+           list.tail
+         else
+           list).grouped(2)
       val baos1 = new ByteArrayOutputStream
       val baos2 = new ByteArrayOutputStream
       pairList.foreach {
@@ -145,24 +146,24 @@ object SerializationProperties extends Properties("SerializationProperties") {
 
   property("sequences compare well [Int]") = serializeSequenceCompare[Int]
   property("sequences equiv well [Int]") = serializeSequenceEquiv[Int]
-  property("sequences compare well [(Int, Int)]") =
-    serializeSequenceCompare[(Int, Int)]
-  property("sequences equiv well [(Int, Int)]") =
-    serializeSequenceEquiv[(Int, Int)]
+  property("sequences compare well [(Int, Int)]") = serializeSequenceCompare[
+    (Int, Int)]
+  property("sequences equiv well [(Int, Int)]") = serializeSequenceEquiv[
+    (Int, Int)]
 
   property("sequences compare well [String]") = serializeSequenceCompare[String]
   property("sequences equiv well [String]") = serializeSequenceEquiv[String]
   property("sequences compare well [(String, String)]") =
     serializeSequenceCompare[(String, String)]
-  property("sequences equiv well [(String, String)]") =
-    serializeSequenceEquiv[(String, String)]
+  property("sequences equiv well [(String, String)]") = serializeSequenceEquiv[
+    (String, String)]
 
   property("sequences compare well [IntWrapperClass]") =
     serializeSequenceCompare[IntWrapperClass]
   property("sequences compare well [IntTryWrapperClass]") =
     serializeSequenceCompare[IntTryWrapperClass]
-  property("sequences equiv well [IntWrapperClass]") =
-    serializeSequenceEquiv[IntWrapperClass]
+  property("sequences equiv well [IntWrapperClass]") = serializeSequenceEquiv[
+    IntWrapperClass]
   property("sequences equiv well [IntTryWrapperClass]") =
     serializeSequenceEquiv[IntTryWrapperClass]
 

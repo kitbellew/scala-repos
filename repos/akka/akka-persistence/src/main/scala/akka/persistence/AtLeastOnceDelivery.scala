@@ -233,12 +233,16 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
         s"Too many unconfirmed messages, maximum allowed is [$maxUnconfirmedMessages]")
 
     val deliveryId = nextDeliverySequenceNr()
-    val now = if (recoveryRunning) {
-      System.nanoTime() - redeliverInterval.toNanos
-    } else
-      System.nanoTime()
-    val d =
-      Delivery(destination, deliveryIdToMessage(deliveryId), now, attempt = 0)
+    val now =
+      if (recoveryRunning) {
+        System.nanoTime() - redeliverInterval.toNanos
+      } else
+        System.nanoTime()
+    val d = Delivery(
+      destination,
+      deliveryIdToMessage(deliveryId),
+      now,
+      attempt = 0)
 
     if (recoveryRunning)
       unconfirmed = unconfirmed.updated(deliveryId, d)
@@ -356,8 +360,9 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   def setDeliverySnapshot(snapshot: AtLeastOnceDeliverySnapshot): Unit = {
     deliverySequenceNr = snapshot.currentDeliveryId
     val now = System.nanoTime()
-    unconfirmed = snapshot.unconfirmedDeliveries.map(d ⇒
-      d.deliveryId -> Delivery(d.destination, d.message, now, 0))(breakOut)
+    unconfirmed =
+      snapshot.unconfirmedDeliveries.map(d ⇒
+        d.deliveryId -> Delivery(d.destination, d.message, now, 0))(breakOut)
   }
 
   /**

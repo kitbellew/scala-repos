@@ -53,8 +53,8 @@ private[spark] class ClientArguments(
 
   private var driverMemory: Int = Utils.DEFAULT_DRIVER_MEM_MB // MB
   private var driverCores: Int = 1
-  private val isDynamicAllocationEnabled =
-    Utils.isDynamicAllocationEnabled(sparkConf)
+  private val isDynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(
+    sparkConf)
 
   parseArgs(args.toList)
   loadEnvironmentArgs()
@@ -66,19 +66,22 @@ private[spark] class ClientArguments(
       DRIVER_MEMORY_OVERHEAD
     else
       AM_MEMORY_OVERHEAD
-  val amMemoryOverhead = sparkConf
-    .get(amMemoryOverheadEntry)
-    .getOrElse(
-      math.max((MEMORY_OVERHEAD_FACTOR * amMemory).toLong, MEMORY_OVERHEAD_MIN))
-    .toInt
+  val amMemoryOverhead =
+    sparkConf
+      .get(amMemoryOverheadEntry)
+      .getOrElse(
+        math
+          .max((MEMORY_OVERHEAD_FACTOR * amMemory).toLong, MEMORY_OVERHEAD_MIN))
+      .toInt
 
-  val executorMemoryOverhead = sparkConf
-    .get(EXECUTOR_MEMORY_OVERHEAD)
-    .getOrElse(
-      math.max(
-        (MEMORY_OVERHEAD_FACTOR * executorMemory).toLong,
-        MEMORY_OVERHEAD_MIN))
-    .toInt
+  val executorMemoryOverhead =
+    sparkConf
+      .get(EXECUTOR_MEMORY_OVERHEAD)
+      .getOrElse(
+        math.max(
+          (MEMORY_OVERHEAD_FACTOR * executorMemory).toLong,
+          MEMORY_OVERHEAD_MIN))
+      .toInt
 
   /** Load any default arguments provided through environment variables and Spark properties. */
   private def loadEnvironmentArgs(): Unit = {

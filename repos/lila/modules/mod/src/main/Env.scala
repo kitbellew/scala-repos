@@ -34,32 +34,36 @@ final class Env(
 
   lazy val logApi = new ModlogApi
 
-  lazy val api = new ModApi(
-    logApi = logApi,
-    userSpy = userSpy,
-    firewall = firewall,
-    reporter = hub.actor.report,
-    lightUserApi = lightUserApi,
-    lilaBus = system.lilaBus)
+  lazy val api =
+    new ModApi(
+      logApi = logApi,
+      userSpy = userSpy,
+      firewall = firewall,
+      reporter = hub.actor.report,
+      lightUserApi = lightUserApi,
+      lilaBus = system.lilaBus)
 
-  private lazy val boosting = new BoostingApi(
-    modApi = api,
-    collBoosting = db(CollectionBoosting),
-    nbGamesToMark = NbGamesToMark,
-    ratioGamesToMark = RatioGamesToMark)
+  private lazy val boosting =
+    new BoostingApi(
+      modApi = api,
+      collBoosting = db(CollectionBoosting),
+      nbGamesToMark = NbGamesToMark,
+      ratioGamesToMark = RatioGamesToMark)
 
-  lazy val assessApi = new AssessApi(
-    collAssessments = db(CollectionPlayerAssessment),
-    logApi = logApi,
-    modApi = api,
-    reporter = hub.actor.report,
-    fishnet = hub.actor.fishnet,
-    userIdsSharingIp = securityApi.userIdsSharingIp)
+  lazy val assessApi =
+    new AssessApi(
+      collAssessments = db(CollectionPlayerAssessment),
+      logApi = logApi,
+      modApi = api,
+      reporter = hub.actor.report,
+      fishnet = hub.actor.fishnet,
+      userIdsSharingIp = securityApi.userIdsSharingIp)
 
-  lazy val gamify = new Gamify(
-    logColl = logColl,
-    reportColl = reportColl,
-    historyColl = db(CollectionGamingHistory))
+  lazy val gamify =
+    new Gamify(
+      logColl = logColl,
+      reportColl = reportColl,
+      historyColl = db(CollectionGamingHistory))
 
   lazy val search =
     new UserSearch(securityApi = securityApi, emailAddress = emailAddress)

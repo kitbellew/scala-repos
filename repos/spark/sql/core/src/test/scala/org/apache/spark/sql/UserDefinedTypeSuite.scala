@@ -87,10 +87,9 @@ class UserDefinedTypeSuite
     assert(labelsArrays.contains(1.0))
     assert(labelsArrays.contains(0.0))
 
-    val features: RDD[MyDenseVector] =
-      pointsRDD.select('features).rdd.map {
-        case Row(v: MyDenseVector) => v
-      }
+    val features: RDD[MyDenseVector] = pointsRDD.select('features).rdd.map {
+      case Row(v: MyDenseVector) => v
+    }
     val featuresArrays: Array[MyDenseVector] = features.collect()
     assert(featuresArrays.size === 2)
     assert(featuresArrays.contains(new MyDenseVector(Array(0.1, 1.0))))
@@ -179,8 +178,8 @@ class UserDefinedTypeSuite
     val toScalaConverter = CatalystTypeConverters.createToScalaConverter(udt)
     assert(toScalaConverter(null) === null)
 
-    val toCatalystConverter =
-      CatalystTypeConverters.createToCatalystConverter(udt)
+    val toCatalystConverter = CatalystTypeConverters.createToCatalystConverter(
+      udt)
     assert(toCatalystConverter(null) === null)
 
   }

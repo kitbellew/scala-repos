@@ -91,8 +91,9 @@ trait ResultConverterCompiler[Domain <: ResultConverterDomain] {
 }
 
 object ResultConverterCompiler {
-  protected lazy val logger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[ResultConverterCompiler[_]]))
+  protected lazy val logger =
+    new SlickLogger(
+      LoggerFactory.getLogger(classOf[ResultConverterCompiler[_]]))
 }
 
 /** A node that wraps a ResultConverter */

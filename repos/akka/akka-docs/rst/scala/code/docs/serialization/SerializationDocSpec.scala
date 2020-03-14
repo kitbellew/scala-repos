@@ -207,8 +207,8 @@ package docs.serialization {
 
     "demonstrate serialization of ActorRefs" in {
       val theActorRef: ActorRef = system.deadLetters
-      val extendedSystem: ExtendedActorSystem =
-        system.asInstanceOf[ExtendedActorSystem]
+      val extendedSystem: ExtendedActorSystem = system
+        .asInstanceOf[ExtendedActorSystem]
 
       //#actorref-serializer
       // Serialize
@@ -219,8 +219,8 @@ package docs.serialization {
 
       // Deserialize
       // (beneath fromBinary)
-      val deserializedActorRef =
-        extendedSystem.provider.resolveActorRef(identifier)
+      val deserializedActorRef = extendedSystem.provider.resolveActorRef(
+        identifier)
       // Then just use the ActorRef
       //#actorref-serializer
 

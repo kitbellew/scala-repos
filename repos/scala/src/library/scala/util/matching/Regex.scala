@@ -558,8 +558,7 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
     *  @return        The array of strings computed by splitting the
     *                 input around matches of this regexp
     */
-  def split(toSplit: CharSequence): Array[String] =
-    pattern.split(toSplit)
+  def split(toSplit: CharSequence): Array[String] = pattern.split(toSplit)
 
   /** Create a new Regex with the same pattern, but no requirement that
     *  the entire String matches in extractor patterns.

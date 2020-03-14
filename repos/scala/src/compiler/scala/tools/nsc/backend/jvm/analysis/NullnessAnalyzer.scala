@@ -196,32 +196,33 @@ class NullnessFrame(nLocals: Int, nStack: Int)
     // get the alias set the object that is known to be not-null after this operation.
     // alias sets are mutable / mutated, so after super.execute, this set contains the remaining
     // aliases of the value that becomes not-null.
-    val nullCheckedAliases: AliasSet = (insn.getOpcode: @switch) match {
-      case IALOAD | LALOAD | FALOAD | DALOAD | AALOAD | BALOAD | CALOAD |
-          SALOAD =>
-        aliasesOf(this.stackTop - 1)
+    val nullCheckedAliases: AliasSet =
+      (insn.getOpcode: @switch) match {
+        case IALOAD | LALOAD | FALOAD | DALOAD | AALOAD | BALOAD | CALOAD |
+            SALOAD =>
+          aliasesOf(this.stackTop - 1)
 
-      case IASTORE | FASTORE | AASTORE | BASTORE | CASTORE | SASTORE | LASTORE |
-          DASTORE =>
-        aliasesOf(this.stackTop - 2)
+        case IASTORE | FASTORE | AASTORE | BASTORE | CASTORE | SASTORE |
+            LASTORE | DASTORE =>
+          aliasesOf(this.stackTop - 2)
 
-      case GETFIELD =>
-        aliasesOf(this.stackTop)
+        case GETFIELD =>
+          aliasesOf(this.stackTop)
 
-      case PUTFIELD =>
-        aliasesOf(this.stackTop - 1)
+        case PUTFIELD =>
+          aliasesOf(this.stackTop - 1)
 
-      case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE =>
-        val desc = insn.asInstanceOf[MethodInsnNode].desc
-        val numArgs = Type.getArgumentTypes(desc).length
-        aliasesOf(this.stackTop - numArgs)
+        case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE =>
+          val desc = insn.asInstanceOf[MethodInsnNode].desc
+          val numArgs = Type.getArgumentTypes(desc).length
+          aliasesOf(this.stackTop - numArgs)
 
-      case ARRAYLENGTH | MONITORENTER | MONITOREXIT =>
-        aliasesOf(this.stackTop)
+        case ARRAYLENGTH | MONITORENTER | MONITOREXIT =>
+          aliasesOf(this.stackTop)
 
-      case _ =>
-        null
-    }
+        case _ =>
+          null
+      }
 
     super.execute(insn, interpreter)
 

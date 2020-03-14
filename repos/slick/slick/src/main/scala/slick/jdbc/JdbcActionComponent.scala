@@ -23,8 +23,10 @@ import slick.util.{CloseableIterator, DumpInfo, SQLBuilder, ignoreFollowOnError}
 trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
   type ProfileAction[+R, +S <: NoStream, -E <: Effect] = FixedSqlAction[R, S, E]
-  type StreamingProfileAction[+R, +T, -E <: Effect] =
-    FixedSqlStreamingAction[R, T, E]
+  type StreamingProfileAction[+R, +T, -E <: Effect] = FixedSqlStreamingAction[
+    R,
+    T,
+    E]
 
   abstract class SimpleJdbcProfileAction[+R](
       _name: String,
@@ -376,13 +378,14 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       Nothing,
       Streaming[ResultSetMutator[T]],
       Effect.Read with Effect.Write] = {
-      val sql = tree
-        .findNode(_.isInstanceOf[CompiledStatement])
-        .get
-        .asInstanceOf[CompiledStatement]
-        .extra
-        .asInstanceOf[SQLBuilder.Result]
-        .sql
+      val sql =
+        tree
+          .findNode(_.isInstanceOf[CompiledStatement])
+          .get
+          .asInstanceOf[CompiledStatement]
+          .extra
+          .asInstanceOf[SQLBuilder.Result]
+          .sql
       val (rsm @ ResultSetMapping(
         _,
         _,
@@ -467,8 +470,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       _,
       CompiledStatement(_, sres: SQLBuilder.Result, _),
       CompiledMapping(_converter, _)) = tree
-    protected[this] val converter =
-      _converter.asInstanceOf[ResultConverter[JdbcResultConverterDomain, T]]
+    protected[this] val converter = _converter
+      .asInstanceOf[ResultConverter[JdbcResultConverterDomain, T]]
 
     /** An Action that updates the data selected by this query. */
     def update(value: T): ProfileAction[Int, NoStream, Effect.Write] = {
@@ -715,12 +718,10 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
     protected def retQuery(st: Statement, updateCount: Int): QueryInsertResult
 
     protected def preparedInsert[T](sql: String, session: Backend#Session)(
-        f: PreparedStatement => T) =
-      session.withPreparedStatement(sql)(f)
+        f: PreparedStatement => T) = session.withPreparedStatement(sql)(f)
 
     protected def preparedOther[T](sql: String, session: Backend#Session)(
-        f: PreparedStatement => T) =
-      session.withPreparedStatement(sql)(f)
+        f: PreparedStatement => T) = session.withPreparedStatement(sql)(f)
 
     class SingleInsertAction(a: compiled.Artifacts, value: U)
         extends SimpleJdbcProfileAction[SingleInsertResult](
@@ -817,13 +818,14 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           updateSql: String,
           insertSql: String)(
           implicit session: Backend#Session): SingleInsertOrUpdateResult = {
-        val found = preparedOther(checkSql, session) { st =>
-          st.clearParameters()
-          compiled.checkInsert.converter.set(value, st)
-          val rs = st.executeQuery()
-          try rs.next()
-          finally rs.close()
-        }
+        val found =
+          preparedOther(checkSql, session) { st =>
+            st.clearParameters()
+            compiled.checkInsert.converter.set(value, st)
+            val rs = st.executeQuery()
+            try rs.next()
+            finally rs.close()
+          }
         if (found)
           preparedOther(updateSql, session) { st =>
             st.clearParameters()
@@ -930,8 +932,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
     override protected def useBatchUpdates(implicit session: Backend#Session) =
       false
 
-    protected lazy val (keyColumns, keyConverter, keyReturnOther) =
-      compiled.buildReturnColumns(keys)
+    protected lazy val (keyColumns, keyConverter, keyReturnOther) = compiled
+      .buildReturnColumns(keys)
 
     override protected def preparedInsert[T](
         sql: String,

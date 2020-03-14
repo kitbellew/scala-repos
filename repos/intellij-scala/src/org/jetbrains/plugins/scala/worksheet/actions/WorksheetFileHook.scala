@@ -221,8 +221,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
                         modelSync = true)
                       val document = viewer.getDocument
 
-                      val splitter =
-                        WorksheetEditorPrinter.DIFF_SPLITTER_KEY.get(viewer)
+                      val splitter = WorksheetEditorPrinter.DIFF_SPLITTER_KEY
+                        .get(viewer)
 
                       extensions.inWriteAction {
                         document setText result

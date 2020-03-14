@@ -65,8 +65,9 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
     ctx.currentVars = input
     val resultVars = exprs.map(_.gen(ctx))
     // Evaluation of non-deterministic expressions can't be deferred.
-    val nonDeterministicAttrs =
-      projectList.filterNot(_.deterministic).map(_.toAttribute)
+    val nonDeterministicAttrs = projectList
+      .filterNot(_.deterministic)
+      .map(_.toAttribute)
     s"""
        |${evaluateRequiredVariables(
          output,
@@ -93,8 +94,8 @@ case class Filter(condition: Expression, child: SparkPlan)
     with PredicateHelper {
 
   // Split out all the IsNotNulls from condition.
-  private val (notNullPreds, otherPreds) =
-    splitConjunctivePredicates(condition).partition {
+  private val (notNullPreds, otherPreds) = splitConjunctivePredicates(condition)
+    .partition {
       case IsNotNull(a) if child.output.contains(a) => true
       case _                                        => false
     }
@@ -144,11 +145,12 @@ case class Filter(condition: Expression, child: SparkPlan)
         val bound = ExpressionCanonicalizer.execute(
           BindReferences.bindReference(e, output))
         val ev = bound.gen(ctx)
-        val nullCheck = if (bound.nullable) {
-          s"${ev.isNull} || "
-        } else {
-          s""
-        }
+        val nullCheck =
+          if (bound.nullable) {
+            s"${ev.isNull} || "
+          } else {
+            s""
+          }
         s"""
          |${ev.code}
          |if (${nullCheck}!${ev.value}) continue;
@@ -239,8 +241,11 @@ case class Range(
       .createLongMetric(sparkContext, "number of output rows"))
 
   // output attributes should not affect the results
-  override lazy val cleanArgs: Seq[Any] =
-    Seq(start, step, numSlices, numElements)
+  override lazy val cleanArgs: Seq[Any] = Seq(
+    start,
+    step,
+    numSlices,
+    numElements)
 
   override def upstreams(): Seq[RDD[InternalRow]] = {
     sqlContext.sparkContext
@@ -263,11 +268,12 @@ case class Range(
     val value = ctx.freshName("value")
     val ev = ExprCode("", "false", value)
     val BigInt = classOf[java.math.BigInteger].getName
-    val checkEnd = if (step > 0) {
-      s"$number < $partitionEnd"
-    } else {
-      s"$number > $partitionEnd"
-    }
+    val checkEnd =
+      if (step > 0) {
+        s"$number < $partitionEnd"
+      } else {
+        s"$number > $partitionEnd"
+      }
 
     ctx.addNewFunction(
       "initRange",

@@ -305,8 +305,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               s"Overridden concrete accessor: ${mixinMember.fullLocationString}")
           else {
             // mixin field accessors
-            val mixedInAccessor =
-              cloneAndAddMixinMember(mixinClass, mixinMember)
+            val mixedInAccessor = cloneAndAddMixinMember(
+              mixinClass,
+              mixinMember)
             if (mixinMember.isLazy) {
               initializer(mixedInAccessor) = (
                 mixinClass.info.decl(mixinMember.name)
@@ -446,8 +447,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   class MixinTransformer(unit: CompilationUnit) extends Transformer {
 
     /** The rootContext used for typing */
-    private val rootContext =
-      erasure.NoContext.make(EmptyTree, rootMirror.RootClass, newScope)
+    private val rootContext = erasure.NoContext.make(
+      EmptyTree,
+      rootMirror.RootClass,
+      newScope)
 
     /** The typer */
     private var localTyper: erasure.Typer = _
@@ -620,14 +623,15 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         stat match {
           case DefDef(_, _, _, vparams :: Nil, _, EmptyTree)
               if stat.symbol.isSuperAccessor =>
-            val body = atPos(stat.pos)(
-              Apply(
-                SuperSelect(clazz, stat.symbol.alias),
-                vparams map (v => Ident(v.symbol))))
+            val body =
+              atPos(stat.pos)(
+                Apply(
+                  SuperSelect(clazz, stat.symbol.alias),
+                  vparams map (v => Ident(v.symbol))))
             val pt = stat.symbol.tpe.resultType
 
-            copyDefDef(stat)(rhs =
-              enteringMixin(transform(localTyper.typed(body, pt))))
+            copyDefDef(stat)(rhs = enteringMixin(
+              transform(localTyper.typed(body, pt))))
           case _ =>
             stat
         }
@@ -655,10 +659,11 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               sym addAnnotation TransientAttr
             case _ =>
           }
-          val init = bitmapKind match {
-            case BooleanClass => ValDef(sym, FALSE)
-            case _            => ValDef(sym, ZERO)
-          }
+          val init =
+            bitmapKind match {
+              case BooleanClass => ValDef(sym, FALSE)
+              case _            => ValDef(sym, ZERO)
+            }
 
           sym setFlag PrivateLocal
           clazz0.info.decls.enter(sym)
@@ -878,11 +883,11 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         val kind = bitmapKind(sym)
         val mask = maskForOffset(offset, sym, kind)
         val msg = s"Uninitialized field: ${unit.source}: ${pos.line}"
-        val result =
-          IF(mkTest(clazz, mask, bitmapSym, equalToZero = false, kind))
-            .THEN(retVal)
-            .ELSE(Throw(
-              NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
+        val result = IF(
+          mkTest(clazz, mask, bitmapSym, equalToZero = false, kind))
+          .THEN(retVal)
+          .ELSE(
+            Throw(NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
 
         typedPos(pos)(BLOCK(result, retVal))
       }
@@ -1030,34 +1035,42 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
       def getterBody(getter: Symbol) = {
         assert(getter.isGetter)
-        val readValue = getter.tpe match {
-          // A field "final val f = const" in a trait generates a getter with a ConstantType.
-          case MethodType(Nil, ConstantType(c)) =>
-            Literal(c)
-          case _ =>
-            // if it is a mixed-in lazy value, complete the accessor
-            if (getter.isLazy) {
-              val isUnit = isUnitGetter(getter)
-              val initCall = Apply(SuperSelect(clazz, initializer(getter)), Nil)
-              val selection = fieldAccess(getter)
-              val init =
-                if (isUnit)
-                  initCall
-                else
-                  atPos(getter.pos)(Assign(selection, initCall))
-              val returns =
-                if (isUnit)
-                  UNIT
-                else
-                  selection
-              mkLazyDef(clazz, getter, List(init), returns, fieldOffset(getter))
-            }
-            // For a field of type Unit in a trait, no actual field is generated when being mixed in.
-            else if (isUnitGetter(getter))
-              UNIT
-            else
-              fieldAccess(getter)
-        }
+        val readValue =
+          getter.tpe match {
+            // A field "final val f = const" in a trait generates a getter with a ConstantType.
+            case MethodType(Nil, ConstantType(c)) =>
+              Literal(c)
+            case _ =>
+              // if it is a mixed-in lazy value, complete the accessor
+              if (getter.isLazy) {
+                val isUnit = isUnitGetter(getter)
+                val initCall = Apply(
+                  SuperSelect(clazz, initializer(getter)),
+                  Nil)
+                val selection = fieldAccess(getter)
+                val init =
+                  if (isUnit)
+                    initCall
+                  else
+                    atPos(getter.pos)(Assign(selection, initCall))
+                val returns =
+                  if (isUnit)
+                    UNIT
+                  else
+                    selection
+                mkLazyDef(
+                  clazz,
+                  getter,
+                  List(init),
+                  returns,
+                  fieldOffset(getter))
+              }
+              // For a field of type Unit in a trait, no actual field is generated when being mixed in.
+              else if (isUnitGetter(getter))
+                UNIT
+              else
+                fieldAccess(getter)
+          }
         if (!needsInitFlag(getter))
           readValue
         else

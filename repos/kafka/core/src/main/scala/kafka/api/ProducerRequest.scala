@@ -159,8 +159,9 @@ case class ProducerRequest(
               -1L,
               Message.NoTimestamp))
       }
-      val errorResponse =
-        ProducerResponse(correlationId, producerResponseStatus)
+      val errorResponse = ProducerResponse(
+        correlationId,
+        producerResponseStatus)
       requestChannel.sendResponse(
         new Response(
           request,

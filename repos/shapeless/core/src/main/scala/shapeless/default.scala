@@ -45,9 +45,10 @@ object Default {
       def apply() = defaults
     }
 
-  type Aux[T, Out0 <: HList] = Default[T] {
-    type Out = Out0
-  }
+  type Aux[T, Out0 <: HList] =
+    Default[T] {
+      type Out = Out0
+    }
 
   implicit def materialize[T, L <: HList]: Aux[T, L] =
     macro DefaultMacros.materialize[T, L]
@@ -80,9 +81,10 @@ object Default {
   object AsRecord {
     def apply[T](implicit default: AsRecord[T]): Aux[T, default.Out] = default
 
-    type Aux[T, Out0 <: HList] = AsRecord[T] {
-      type Out = Out0
-    }
+    type Aux[T, Out0 <: HList] =
+      AsRecord[T] {
+        type Out = Out0
+      }
 
     trait Helper[L <: HList, Labels <: HList]
         extends DepFn1[L]
@@ -95,9 +97,10 @@ object Default {
           implicit helper: Helper[L, Labels]): Aux[L, Labels, helper.Out] =
         helper
 
-      type Aux[L <: HList, Labels <: HList, Out0 <: HList] = Helper[L, Labels] {
-        type Out = Out0
-      }
+      type Aux[L <: HList, Labels <: HList, Out0 <: HList] =
+        Helper[L, Labels] {
+          type Out = Out0
+        }
 
       implicit def hnilHelper: Aux[HNil, HNil, HNil] =
         new Helper[HNil, HNil] {
@@ -175,9 +178,10 @@ object Default {
   object AsOptions {
     def apply[T](implicit default: AsOptions[T]): Aux[T, default.Out] = default
 
-    type Aux[T, Out0 <: HList] = AsOptions[T] {
-      type Out = Out0
-    }
+    type Aux[T, Out0 <: HList] =
+      AsOptions[T] {
+        type Out = Out0
+      }
 
     trait Helper[L <: HList, Repr <: HList]
         extends DepFn1[L]
@@ -189,9 +193,10 @@ object Default {
       def apply[L <: HList, Repr <: HList](
           implicit helper: Helper[L, Repr]): Aux[L, Repr, helper.Out] = helper
 
-      type Aux[L <: HList, Repr <: HList, Out0 <: HList] = Helper[L, Repr] {
-        type Out = Out0
-      }
+      type Aux[L <: HList, Repr <: HList, Out0 <: HList] =
+        Helper[L, Repr] {
+          type Out = Out0
+        }
 
       implicit def hnilHelper: Aux[HNil, HNil, HNil] =
         new Helper[HNil, HNil] {
@@ -330,10 +335,11 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
       case (wrapTpe, _) => wrapTpe
     })
 
-    val resultTree = wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {
-      case ((_, value), acc) =>
-        q"_root_.shapeless.::($value, $acc)"
-    }
+    val resultTree =
+      wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {
+        case ((_, value), acc) =>
+          q"_root_.shapeless.::($value, $acc)"
+      }
 
     q"_root_.shapeless.Default.mkDefault[$tpe, $resultTpe]($resultTree)"
   }

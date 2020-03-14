@@ -216,10 +216,9 @@ object SexpExamples extends App {
       SexpProp("s", SexpAtom("blah"))
     ))
   val wibble = Wibble(Foo(13))
-  val wibbleSexp =
-    SexpCons(
-      SexpAtom("Wibble"),
-      SexpProp("foo", SexpCons(SexpAtom("Foo"), SexpProp("i", SexpAtom("13")))))
+  val wibbleSexp = SexpCons(
+    SexpAtom("Wibble"),
+    SexpProp("foo", SexpCons(SexpAtom("Foo"), SexpProp("i", SexpAtom("13")))))
 
   // SETUP
   val creator = SexpConvert[Super]
@@ -242,12 +241,11 @@ object SexpExamples extends App {
   val complex = SexpConvert[TokenTree]
 
   val token = QualifierToken("thing", DatabaseField("Source.THING"))
-  val tokenSexp =
+  val tokenSexp = SexpCons(
+    SexpAtom("QualifierToken"),
     SexpCons(
-      SexpAtom("QualifierToken"),
-      SexpCons(
-        SexpProp("text", SexpAtom("thing")),
-        SexpProp("field", SexpProp("column", SexpAtom("Source.THING")))))
+      SexpProp("text", SexpAtom("thing")),
+      SexpProp("field", SexpProp("column", SexpAtom("Source.THING")))))
 
   assert(complex.deser(tokenSexp) == Some(token))
   assert(complex.ser(token) == tokenSexp)

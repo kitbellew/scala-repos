@@ -161,18 +161,19 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
 
   def withApplication[T](result: Result, chunkedThreshold: Int = 1024)(
       block: Materializer => T): T = {
-    val application = new GuiceApplicationBuilder()
-      .configure(
-        "play.filters.gzip.chunkedThreshold" -> chunkedThreshold,
-        "play.filters.gzip.bufferSize" -> 512
-      )
-      .overrides(
-        bind[Router].to(Router.from {
-          case _ => Action(result)
-        }),
-        bind[HttpFilters].to[Filters]
-      )
-      .build
+    val application =
+      new GuiceApplicationBuilder()
+        .configure(
+          "play.filters.gzip.chunkedThreshold" -> chunkedThreshold,
+          "play.filters.gzip.bufferSize" -> 512
+        )
+        .overrides(
+          bind[Router].to(Router.from {
+            case _ => Action(result)
+          }),
+          bind[HttpFilters].to[Filters]
+        )
+        .build
     running(application)(block(application.materializer))
   }
 

@@ -62,16 +62,17 @@ class StressTest {
     actorSystem.actorOf(Props(makechef))
   }
 
-  val chef =
-    actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+  val chef = actorSystem.actorOf(
+    Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
   val owner: AccountId = "account999"
 
   val authorities = Authorities(NonEmptyList(owner))
 
-  val txLogScheduler = new ScheduledThreadPoolExecutor(
-    10,
-    (new ThreadFactoryBuilder()).setNameFormat("HOWL-sched-%03d").build())
+  val txLogScheduler =
+    new ScheduledThreadPoolExecutor(
+      10,
+      (new ThreadFactoryBuilder()).setNameFormat("HOWL-sched-%03d").build())
 
   def newNihdb(workDir: File, threshold: Int = 1000): NIHDB =
     NIHDB
@@ -168,13 +169,14 @@ class StressTest {
 
       import scalaz._
       val length = NIHDBProjection.wrap(nihdb).flatMap { projection =>
-        val stream = StreamT.unfoldM[Future, Unit, Option[Long]](None) { key =>
-          projection
-            .getBlockAfter(key, None)
-            .map(_.map {
-              case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
-            })
-        }
+        val stream =
+          StreamT.unfoldM[Future, Unit, Option[Long]](None) { key =>
+            projection
+              .getBlockAfter(key, None)
+              .map(_.map {
+                case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
+              })
+          }
         stream.length
       }
 

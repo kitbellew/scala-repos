@@ -89,6 +89,5 @@ trait SharedProjectFixture
   override def withProject(testCode: (TestActorRef[Project], TestProbe) => Any)(
       implicit
       testkit: TestKitFix,
-      config: EnsimeConfig): Any =
-    testCode(_project, _probe)
+      config: EnsimeConfig): Any = testCode(_project, _probe)
 }

@@ -17,10 +17,11 @@ class TransformProcessorTest extends AkkaIdentityProcessorVerification[Int] {
 
     implicit val materializer = ActorMaterializer(settings)(system)
 
-    val mkStage = () ⇒
-      new PushStage[Int, Int] {
-        override def onPush(in: Int, ctx: Context[Int]) = ctx.push(in)
-      }
+    val mkStage =
+      () ⇒
+        new PushStage[Int, Int] {
+          override def onPush(in: Int, ctx: Context[Int]) = ctx.push(in)
+        }
 
     Flow[Int].transform(mkStage).toProcessor.run()
   }

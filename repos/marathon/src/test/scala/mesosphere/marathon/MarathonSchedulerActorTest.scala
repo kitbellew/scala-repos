@@ -186,8 +186,8 @@ class MarathonSchedulerActorTest
 
       expectMsg(5.seconds, TasksKilled(app.id, Set(taskA.taskId)))
 
-      val Some(taskFailureEvent) =
-        TaskFailure.FromMesosStatusUpdateEvent(statusUpdateEvent)
+      val Some(taskFailureEvent) = TaskFailure.FromMesosStatusUpdateEvent(
+        statusUpdateEvent)
 
       awaitAssert(
         verify(taskFailureEventRepository, times(1))
@@ -271,8 +271,12 @@ class MarathonSchedulerActorTest
 
     val targetGroup = Group(PathId("/foo/bar"), Set(appNew))
 
-    val plan =
-      DeploymentPlan("foo", origGroup, targetGroup, Nil, Timestamp.now())
+    val plan = DeploymentPlan(
+      "foo",
+      origGroup,
+      targetGroup,
+      Nil,
+      Timestamp.now())
 
     system.eventStream.subscribe(probe.ref, classOf[UpgradeEvent])
 
@@ -611,8 +615,8 @@ class MarathonSchedulerActorTest
           hcManager,
           system.eventStream
         ))
-    historyActorProps =
-      Props(new HistoryActor(system.eventStream, taskFailureEventRepository))
+    historyActorProps = Props(
+      new HistoryActor(system.eventStream, taskFailureEventRepository))
     schedulerActions = ref =>
       new SchedulerActions(
         repo,

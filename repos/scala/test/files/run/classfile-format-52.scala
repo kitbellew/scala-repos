@@ -52,15 +52,14 @@ object Test extends DirectTest {
     cw.visitEnd()
     val bytes = cw.toByteArray()
 
-    val fos = new FileOutputStream(
-      new File(s"${testOutput.path}/$interfaceName.class"))
+    val fos =
+      new FileOutputStream(new File(s"${testOutput.path}/$interfaceName.class"))
     try fos write bytes
     finally fos.close()
 
   }
 
-  def code =
-    """
+  def code = """
 class Driver extends HasDefaultMethod {
   println(publicMethod())
   println(HasDefaultMethod.staticMethod())

@@ -71,8 +71,8 @@ private[spark] abstract class RestSubmissionServer(
 
   /** Start the server and return the bound port. */
   def start(): Int = {
-    val (server, boundPort) =
-      Utils.startServiceOnPort[Server](requestedPort, doStart, masterConf)
+    val (server, boundPort) = Utils
+      .startServiceOnPort[Server](requestedPort, doStart, masterConf)
     _server = Some(server)
     logInfo(
       s"Started REST server for submitting applications on port $boundPort")
@@ -266,8 +266,8 @@ private[rest] abstract class SubmitRequestServlet extends RestServlet {
       try {
         val requestMessageJson =
           Source.fromInputStream(requestServlet.getInputStream).mkString
-        val requestMessage =
-          SubmitRestProtocolMessage.fromJson(requestMessageJson)
+        val requestMessage = SubmitRestProtocolMessage.fromJson(
+          requestMessageJson)
         // The response should have already been validated on the client.
         // In case this is not true, validate it ourselves to avoid potential NPEs.
         requestMessage.validate()

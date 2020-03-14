@@ -106,32 +106,31 @@ trait ClassDeconstruction { self: QuasiquoteProperties =>
   property("SI-7979") = test {
     val PARAMACCESSOR = (1 << 29).toLong.asInstanceOf[FlagSet]
     assertThrows[MatchError] {
-      val SyntacticClassDef(_, _, _, _, _, _, _, _, _) =
-        ClassDef(
-          Modifiers(),
-          TypeName("Foo"),
-          List(),
-          Template(
-            List(Select(Ident(TermName("scala")), TypeName("AnyRef"))),
-            noSelfType,
-            List(
-              //ValDef(Modifiers(PRIVATE | LOCAL | PARAMACCESSOR), TermName("x"), Ident(TypeName("Int")), EmptyTree),
-              DefDef(
-                Modifiers(),
-                termNames.CONSTRUCTOR,
-                List(),
+      val SyntacticClassDef(_, _, _, _, _, _, _, _, _) = ClassDef(
+        Modifiers(),
+        TypeName("Foo"),
+        List(),
+        Template(
+          List(Select(Ident(TermName("scala")), TypeName("AnyRef"))),
+          noSelfType,
+          List(
+            //ValDef(Modifiers(PRIVATE | LOCAL | PARAMACCESSOR), TermName("x"), Ident(TypeName("Int")), EmptyTree),
+            DefDef(
+              Modifiers(),
+              termNames.CONSTRUCTOR,
+              List(),
+              List(
                 List(
-                  List(
-                    ValDef(
-                      Modifiers(PARAM | PARAMACCESSOR),
-                      TermName("x"),
-                      Ident(TypeName("Int")),
-                      EmptyTree))),
-                TypeTree(),
-                Block(List(pendingSuperCall), Literal(Constant(())))
-              ))
-          )
+                  ValDef(
+                    Modifiers(PARAM | PARAMACCESSOR),
+                    TermName("x"),
+                    Ident(TypeName("Int")),
+                    EmptyTree))),
+              TypeTree(),
+              Block(List(pendingSuperCall), Literal(Constant(())))
+            ))
         )
+      )
     }
   }
 

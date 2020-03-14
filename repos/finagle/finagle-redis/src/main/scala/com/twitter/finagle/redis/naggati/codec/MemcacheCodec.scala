@@ -70,8 +70,13 @@ case class MemcacheResponse(
 object MemcacheCodec {
   import Stages._
 
-  val STORAGE_COMMANDS =
-    List("set", "add", "replace", "append", "prepend", "cas")
+  val STORAGE_COMMANDS = List(
+    "set",
+    "add",
+    "replace",
+    "append",
+    "prepend",
+    "cas")
   val END = "\r\nEND\r\n".getBytes
   val CRLF = "\r\n".getBytes
 
@@ -82,34 +87,36 @@ object MemcacheCodec {
 
   def asciiCodec() = new Codec(readAscii, writeAscii)
 
-  val readAscii = readLine(true, "ISO-8859-1") { line =>
-    val segments = line.split(" ")
-    segments(0) = segments(0).toLowerCase
+  val readAscii =
+    readLine(true, "ISO-8859-1") { line =>
+      val segments = line.split(" ")
+      segments(0) = segments(0).toLowerCase
 
-    val command = segments(0)
-    if (STORAGE_COMMANDS contains command) {
-      if (segments.length < 5) {
-        throw new ProtocolError("Malformed request line")
+      val command = segments(0)
+      if (STORAGE_COMMANDS contains command) {
+        if (segments.length < 5) {
+          throw new ProtocolError("Malformed request line")
+        }
+        val dataBytes = segments(4).toInt
+        ensureBytes(dataBytes + 2) { buffer =>
+          // final 2 bytes are just "\r\n" mandated by protocol.
+          val bytes = ByteBuffer.allocate(dataBytes)
+          buffer.readBytes(bytes)
+          bytes.flip()
+          buffer.skipBytes(2)
+          emit(
+            MemcacheRequest(
+              segments.toList,
+              Some(bytes),
+              line.length + dataBytes + 4))
+        }
+      } else {
+        emit(MemcacheRequest(segments.toList, None, line.length + 2))
       }
-      val dataBytes = segments(4).toInt
-      ensureBytes(dataBytes + 2) { buffer =>
-        // final 2 bytes are just "\r\n" mandated by protocol.
-        val bytes = ByteBuffer.allocate(dataBytes)
-        buffer.readBytes(bytes)
-        bytes.flip()
-        buffer.skipBytes(2)
-        emit(
-          MemcacheRequest(
-            segments.toList,
-            Some(bytes),
-            line.length + dataBytes + 4))
-      }
-    } else {
-      emit(MemcacheRequest(segments.toList, None, line.length + 2))
     }
-  }
 
-  val writeAscii = new Encoder[MemcacheResponse] {
-    def encode(obj: MemcacheResponse) = obj.writeAscii()
-  }
+  val writeAscii =
+    new Encoder[MemcacheResponse] {
+      def encode(obj: MemcacheResponse) = obj.writeAscii()
+    }
 }

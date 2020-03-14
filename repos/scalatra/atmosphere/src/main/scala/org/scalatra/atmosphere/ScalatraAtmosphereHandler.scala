@@ -83,9 +83,9 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
   def onRequest(resource: AtmosphereResource) {
     implicit val req = resource.getRequest
     implicit val res = resource.getResponse
-    val route =
-      Option(req.getAttribute(org.scalatra.atmosphere.AtmosphereRouteKey))
-        .map(_.asInstanceOf[MatchedRoute])
+    val route = Option(
+      req.getAttribute(org.scalatra.atmosphere.AtmosphereRouteKey))
+      .map(_.asInstanceOf[MatchedRoute])
     var session = resource.session()
     val isNew = !session.contains(org.scalatra.atmosphere.AtmosphereClientKey)
 
@@ -104,10 +104,11 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
               .asInstanceOf[AtmosphereClient]
             handleIncomingMessage(req, client)
           case (_, true) =>
-            val cl = if (isNew) {
-              createClient(route.get, session, resource)
-            } else
-              null
+            val cl =
+              if (isNew) {
+                createClient(route.get, session, resource)
+              } else
+                null
 
             addEventListener(resource)
             resumeIfNeeded(resource)
@@ -116,8 +117,9 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
               handleIncomingMessage(Connected, cl)
             resource.suspend
           case _ =>
-            val ex = new ScalatraAtmosphereException(
-              "There is no atmosphere route defined for " + req.getRequestURI)
+            val ex =
+              new ScalatraAtmosphereException(
+                "There is no atmosphere route defined for " + req.getRequestURI)
             internalLogger.warn(ex.getMessage)
             throw ex
         }

@@ -223,14 +223,15 @@ class HiveContext private[hive] (
       execHive
     } else {
       logInfo(s"Initializing execution hive, version $hiveExecutionVersion")
-      val loader = new IsolatedClientLoader(
-        version = IsolatedClientLoader.hiveVersion(hiveExecutionVersion),
-        sparkConf = sc.conf,
-        execJars = Seq(),
-        hadoopConf = sc.hadoopConfiguration,
-        config = newTemporaryConfiguration(useInMemoryDerby = true),
-        isolationOn = false,
-        baseClassLoader = Utils.getContextOrSparkClassLoader)
+      val loader =
+        new IsolatedClientLoader(
+          version = IsolatedClientLoader.hiveVersion(hiveExecutionVersion),
+          sparkConf = sc.conf,
+          execJars = Seq(),
+          hadoopConf = sc.hadoopConfiguration,
+          config = newTemporaryConfiguration(useInMemoryDerby = true),
+          isolationOn = false,
+          baseClassLoader = Utils.getContextOrSparkClassLoader)
       loader.createClient().asInstanceOf[HiveClientImpl]
     }
 
@@ -250,107 +251,108 @@ class HiveContext private[hive] (
     * in the hive-site.xml file.
     */
   @transient
-  protected[hive] lazy val metadataHive: HiveClient = if (metaHive != null) {
-    metaHive
-  } else {
-    val metaVersion = IsolatedClientLoader.hiveVersion(hiveMetastoreVersion)
-
-    // We instantiate a HiveConf here to read in the hive-site.xml file and then pass the options
-    // into the isolated client loader
-    val metadataConf = new HiveConf(sc.hadoopConfiguration, classOf[HiveConf])
-
-    val defaultWarehouseLocation =
-      metadataConf.get("hive.metastore.warehouse.dir")
-    logInfo("default warehouse location is " + defaultWarehouseLocation)
-
-    // `configure` goes second to override other settings.
-    val allConfig =
-      metadataConf.asScala.map(e => e.getKey -> e.getValue).toMap ++ configure
-
-    val isolatedLoader = if (hiveMetastoreJars == "builtin") {
-      if (hiveExecutionVersion != hiveMetastoreVersion) {
-        throw new IllegalArgumentException("Builtin jars can only be used when hive execution version == hive metastore version. " +
-          s"Execution: ${hiveExecutionVersion} != Metastore: ${hiveMetastoreVersion}. " +
-          "Specify a vaild path to the correct hive jars using $HIVE_METASTORE_JARS " +
-          s"or change ${HIVE_METASTORE_VERSION.key} to $hiveExecutionVersion.")
-      }
-
-      // We recursively find all jars in the class loader chain,
-      // starting from the given classLoader.
-      def allJars(classLoader: ClassLoader): Array[URL] =
-        classLoader match {
-          case null => Array.empty[URL]
-          case urlClassLoader: URLClassLoader =>
-            urlClassLoader.getURLs ++ allJars(urlClassLoader.getParent)
-          case other => allJars(other.getParent)
-        }
-
-      val classLoader = Utils.getContextOrSparkClassLoader
-      val jars = allJars(classLoader)
-      if (jars.length == 0) {
-        throw new IllegalArgumentException(
-          "Unable to locate hive jars to connect to metastore. " +
-            "Please set spark.sql.hive.metastore.jars.")
-      }
-
-      logInfo(
-        s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using Spark classes.")
-      new IsolatedClientLoader(
-        version = metaVersion,
-        sparkConf = sc.conf,
-        execJars = jars.toSeq,
-        hadoopConf = sc.hadoopConfiguration,
-        config = allConfig,
-        isolationOn = true,
-        barrierPrefixes = hiveMetastoreBarrierPrefixes,
-        sharedPrefixes = hiveMetastoreSharedPrefixes)
-    } else if (hiveMetastoreJars == "maven") {
-      // TODO: Support for loading the jars from an already downloaded location.
-      logInfo(
-        s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using maven.")
-      IsolatedClientLoader.forVersion(
-        hiveMetastoreVersion = hiveMetastoreVersion,
-        hadoopVersion = VersionInfo.getVersion,
-        sparkConf = sc.conf,
-        hadoopConf = sc.hadoopConfiguration,
-        config = allConfig,
-        barrierPrefixes = hiveMetastoreBarrierPrefixes,
-        sharedPrefixes = hiveMetastoreSharedPrefixes
-      )
+  protected[hive] lazy val metadataHive: HiveClient =
+    if (metaHive != null) {
+      metaHive
     } else {
-      // Convert to files and expand any directories.
-      val jars =
-        hiveMetastoreJars
-          .split(File.pathSeparator)
-          .flatMap {
-            case path if new File(path).getName() == "*" =>
-              val files = new File(path).getParentFile().listFiles()
-              if (files == null) {
-                logWarning(s"Hive jar path '$path' does not exist.")
-                Nil
-              } else {
-                files.filter(_.getName().toLowerCase().endsWith(".jar"))
-              }
-            case path =>
-              new File(path) :: Nil
-          }
-          .map(_.toURI.toURL)
+      val metaVersion = IsolatedClientLoader.hiveVersion(hiveMetastoreVersion)
 
-      logInfo(
-        s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion " +
-          s"using ${jars.mkString(":")}")
-      new IsolatedClientLoader(
-        version = metaVersion,
-        sparkConf = sc.conf,
-        execJars = jars.toSeq,
-        hadoopConf = sc.hadoopConfiguration,
-        config = allConfig,
-        isolationOn = true,
-        barrierPrefixes = hiveMetastoreBarrierPrefixes,
-        sharedPrefixes = hiveMetastoreSharedPrefixes)
+      // We instantiate a HiveConf here to read in the hive-site.xml file and then pass the options
+      // into the isolated client loader
+      val metadataConf = new HiveConf(sc.hadoopConfiguration, classOf[HiveConf])
+
+      val defaultWarehouseLocation = metadataConf.get(
+        "hive.metastore.warehouse.dir")
+      logInfo("default warehouse location is " + defaultWarehouseLocation)
+
+      // `configure` goes second to override other settings.
+      val allConfig =
+        metadataConf.asScala.map(e => e.getKey -> e.getValue).toMap ++ configure
+
+      val isolatedLoader =
+        if (hiveMetastoreJars == "builtin") {
+          if (hiveExecutionVersion != hiveMetastoreVersion) {
+            throw new IllegalArgumentException("Builtin jars can only be used when hive execution version == hive metastore version. " +
+              s"Execution: ${hiveExecutionVersion} != Metastore: ${hiveMetastoreVersion}. " +
+              "Specify a vaild path to the correct hive jars using $HIVE_METASTORE_JARS " +
+              s"or change ${HIVE_METASTORE_VERSION.key} to $hiveExecutionVersion.")
+          }
+
+          // We recursively find all jars in the class loader chain,
+          // starting from the given classLoader.
+          def allJars(classLoader: ClassLoader): Array[URL] =
+            classLoader match {
+              case null => Array.empty[URL]
+              case urlClassLoader: URLClassLoader =>
+                urlClassLoader.getURLs ++ allJars(urlClassLoader.getParent)
+              case other => allJars(other.getParent)
+            }
+
+          val classLoader = Utils.getContextOrSparkClassLoader
+          val jars = allJars(classLoader)
+          if (jars.length == 0) {
+            throw new IllegalArgumentException(
+              "Unable to locate hive jars to connect to metastore. " +
+                "Please set spark.sql.hive.metastore.jars.")
+          }
+
+          logInfo(
+            s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using Spark classes.")
+          new IsolatedClientLoader(
+            version = metaVersion,
+            sparkConf = sc.conf,
+            execJars = jars.toSeq,
+            hadoopConf = sc.hadoopConfiguration,
+            config = allConfig,
+            isolationOn = true,
+            barrierPrefixes = hiveMetastoreBarrierPrefixes,
+            sharedPrefixes = hiveMetastoreSharedPrefixes)
+        } else if (hiveMetastoreJars == "maven") {
+          // TODO: Support for loading the jars from an already downloaded location.
+          logInfo(
+            s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using maven.")
+          IsolatedClientLoader.forVersion(
+            hiveMetastoreVersion = hiveMetastoreVersion,
+            hadoopVersion = VersionInfo.getVersion,
+            sparkConf = sc.conf,
+            hadoopConf = sc.hadoopConfiguration,
+            config = allConfig,
+            barrierPrefixes = hiveMetastoreBarrierPrefixes,
+            sharedPrefixes = hiveMetastoreSharedPrefixes
+          )
+        } else {
+          // Convert to files and expand any directories.
+          val jars = hiveMetastoreJars
+            .split(File.pathSeparator)
+            .flatMap {
+              case path if new File(path).getName() == "*" =>
+                val files = new File(path).getParentFile().listFiles()
+                if (files == null) {
+                  logWarning(s"Hive jar path '$path' does not exist.")
+                  Nil
+                } else {
+                  files.filter(_.getName().toLowerCase().endsWith(".jar"))
+                }
+              case path =>
+                new File(path) :: Nil
+            }
+            .map(_.toURI.toURL)
+
+          logInfo(
+            s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion " +
+              s"using ${jars.mkString(":")}")
+          new IsolatedClientLoader(
+            version = metaVersion,
+            sparkConf = sc.conf,
+            execJars = jars.toSeq,
+            hadoopConf = sc.hadoopConfiguration,
+            config = allConfig,
+            isolationOn = true,
+            barrierPrefixes = hiveMetastoreBarrierPrefixes,
+            sharedPrefixes = hiveMetastoreSharedPrefixes)
+        }
+      isolatedLoader.createClient()
     }
-    isolatedLoader.createClient()
-  }
 
   protected[sql] override def parseSql(sql: String): LogicalPlan = {
     executionHive.withHiveState {
@@ -359,8 +361,7 @@ class HiveContext private[hive] (
   }
 
   override protected[sql] def executePlan(
-      plan: LogicalPlan): this.QueryExecution =
-    new this.QueryExecution(plan)
+      plan: LogicalPlan): this.QueryExecution = new this.QueryExecution(plan)
 
   /**
     * Invalidate and refresh all the cached the metadata of the given table. For performance reasons,
@@ -410,19 +411,20 @@ class HiveContext private[hive] (
 
         def calculateTableSize(fs: FileSystem, path: Path): Long = {
           val fileStatus = fs.getFileStatus(path)
-          val size = if (fileStatus.isDirectory) {
-            fs.listStatus(path)
-              .map { status =>
-                if (!status.getPath().getName().startsWith(stagingDir)) {
-                  calculateTableSize(fs, status.getPath)
-                } else {
-                  0L
+          val size =
+            if (fileStatus.isDirectory) {
+              fs.listStatus(path)
+                .map { status =>
+                  if (!status.getPath().getName().startsWith(stagingDir)) {
+                    calculateTableSize(fs, status.getPath)
+                  } else {
+                    0L
+                  }
                 }
-              }
-              .sum
-          } else {
-            fileStatus.getLen
-          }
+                .sum
+            } else {
+              fileStatus.getLen
+            }
 
           size
         }
@@ -446,10 +448,10 @@ class HiveContext private[hive] (
         }
 
         val tableParameters = relation.hiveQlTable.getParameters
-        val oldTotalSize =
-          Option(tableParameters.get(StatsSetupConst.TOTAL_SIZE))
-            .map(_.toLong)
-            .getOrElse(0L)
+        val oldTotalSize = Option(
+          tableParameters.get(StatsSetupConst.TOTAL_SIZE))
+          .map(_.toLong)
+          .getOrElse(0L)
         val newTotalSize = getFileSizeForTable(hiveconf, relation.hiveQlTable)
         // Update the Hive metastore if the total size of the table is different than the size
         // recorded in the Hive metastore.
@@ -778,19 +780,18 @@ private[hive] object HiveContext {
     propMap.toMap
   }
 
-  protected val primitiveTypes =
-    Seq(
-      StringType,
-      IntegerType,
-      LongType,
-      DoubleType,
-      FloatType,
-      BooleanType,
-      ByteType,
-      ShortType,
-      DateType,
-      TimestampType,
-      BinaryType)
+  protected val primitiveTypes = Seq(
+    StringType,
+    IntegerType,
+    LongType,
+    DoubleType,
+    FloatType,
+    BooleanType,
+    ByteType,
+    ShortType,
+    DateType,
+    TimestampType,
+    BinaryType)
 
   protected[sql] def toHiveString(a: (Any, DataType)): String =
     a match {

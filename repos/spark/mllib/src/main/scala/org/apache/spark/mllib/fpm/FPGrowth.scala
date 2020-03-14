@@ -116,8 +116,8 @@ object FPGrowthModel extends Loader[FPGrowthModel[_]] {
       // Get the type of item class
       val sample = model.freqItemsets.first().items(0)
       val className = sample.getClass.getCanonicalName
-      val classSymbol =
-        runtimeMirror(getClass.getClassLoader).staticClass(className)
+      val classSymbol = runtimeMirror(getClass.getClassLoader)
+        .staticClass(className)
       val tpe = classSymbol.selfType
 
       val itemType = ScalaReflection.schemaFor(tpe).dataType

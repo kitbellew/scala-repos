@@ -72,18 +72,19 @@ private[spark] class JavaDeserializationStream(
     loader: ClassLoader)
     extends DeserializationStream {
 
-  private val objIn = new ObjectInputStream(in) {
-    override def resolveClass(desc: ObjectStreamClass): Class[_] =
-      try {
-        // scalastyle:off classforname
-        Class.forName(desc.getName, false, loader)
-        // scalastyle:on classforname
-      } catch {
-        case e: ClassNotFoundException =>
-          JavaDeserializationStream.primitiveMappings
-            .getOrElse(desc.getName, throw e)
-      }
-  }
+  private val objIn =
+    new ObjectInputStream(in) {
+      override def resolveClass(desc: ObjectStreamClass): Class[_] =
+        try {
+          // scalastyle:off classforname
+          Class.forName(desc.getName, false, loader)
+          // scalastyle:on classforname
+        } catch {
+          case e: ClassNotFoundException =>
+            JavaDeserializationStream.primitiveMappings
+              .getOrElse(desc.getName, throw e)
+        }
+    }
 
   def readObject[T: ClassTag](): T = objIn.readObject().asInstanceOf[T]
   def close() {
@@ -158,16 +159,18 @@ private[spark] class JavaSerializerInstance(
   */
 @DeveloperApi
 class JavaSerializer(conf: SparkConf) extends Serializer with Externalizable {
-  private var counterReset =
-    conf.getInt("spark.serializer.objectStreamReset", 100)
-  private var extraDebugInfo =
-    conf.getBoolean("spark.serializer.extraDebugInfo", true)
+  private var counterReset = conf.getInt(
+    "spark.serializer.objectStreamReset",
+    100)
+  private var extraDebugInfo = conf.getBoolean(
+    "spark.serializer.extraDebugInfo",
+    true)
 
   protected def this() = this(new SparkConf()) // For deserialization only
 
   override def newInstance(): SerializerInstance = {
-    val classLoader =
-      defaultClassLoader.getOrElse(Thread.currentThread.getContextClassLoader)
+    val classLoader = defaultClassLoader.getOrElse(
+      Thread.currentThread.getContextClassLoader)
     new JavaSerializerInstance(counterReset, extraDebugInfo, classLoader)
   }
 

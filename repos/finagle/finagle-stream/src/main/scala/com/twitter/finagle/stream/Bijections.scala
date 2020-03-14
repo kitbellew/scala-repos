@@ -13,35 +13,37 @@ private[stream] object Bijections {
   /**
     * Convert an A to a B.
     */
-  def from[A, B](a: A)(implicit ev: From[A, B]): B =
-    ev.apply(a)
+  def from[A, B](a: A)(implicit ev: From[A, B]): B = ev.apply(a)
 
   // Version
 
-  implicit val toNettyVersion = new From[Version, HttpVersion] {
-    def apply(version: Version) =
-      HttpVersion.valueOf(s"HTTP/${version.major}.${version.minor}")
-  }
+  implicit val toNettyVersion =
+    new From[Version, HttpVersion] {
+      def apply(version: Version) =
+        HttpVersion.valueOf(s"HTTP/${version.major}.${version.minor}")
+    }
 
-  implicit val fromNettyVersion = new From[HttpVersion, Version] {
-    def apply(version: HttpVersion) =
-      Version(version.getMajorVersion, version.getMinorVersion)
-  }
+  implicit val fromNettyVersion =
+    new From[HttpVersion, Version] {
+      def apply(version: HttpVersion) =
+        Version(version.getMajorVersion, version.getMinorVersion)
+    }
 
   // Method
 
-  implicit val toNettyMethod = new From[StreamRequest.Method, HttpMethod] {
-    def apply(method: StreamRequest.Method) =
-      method match {
-        case StreamRequest.Method.Custom(name) => HttpMethod.valueOf(name)
-        case _                                 => HttpMethod.valueOf(method.toString.toUpperCase)
-      }
-  }
+  implicit val toNettyMethod =
+    new From[StreamRequest.Method, HttpMethod] {
+      def apply(method: StreamRequest.Method) =
+        method match {
+          case StreamRequest.Method.Custom(name) => HttpMethod.valueOf(name)
+          case _                                 => HttpMethod.valueOf(method.toString.toUpperCase)
+        }
+    }
 
-  implicit val fromNettyMethod = new From[HttpMethod, StreamRequest.Method] {
-    def apply(method: HttpMethod) =
-      StreamRequest.Method(method.getName)
-  }
+  implicit val fromNettyMethod =
+    new From[HttpMethod, StreamRequest.Method] {
+      def apply(method: HttpMethod) = StreamRequest.Method(method.getName)
+    }
 
   // Headers
 
@@ -66,9 +68,10 @@ private[stream] object Bijections {
   implicit val toNettyResponse: From[StreamResponse.Info, HttpResponse] =
     new From[StreamResponse.Info, HttpResponse] {
       def apply(info: StreamResponse.Info) = {
-        val res = new DefaultHttpResponse(
-          toNettyVersion(info.version),
-          HttpResponseStatus.valueOf(info.status.code))
+        val res =
+          new DefaultHttpResponse(
+            toNettyVersion(info.version),
+            HttpResponseStatus.valueOf(info.status.code))
         info.headers.foreach(h => res.headers.add(h.key, h.value))
         res
       }
@@ -91,11 +94,12 @@ private[stream] object Bijections {
   implicit val toNettyRequest: From[StreamRequest, HttpRequest] =
     new From[StreamRequest, HttpRequest] {
       def apply(req: StreamRequest) = {
-        val httpReq = new DefaultHttpRequest(
-          from(req.version),
-          from(req.method),
-          req.uri
-        )
+        val httpReq =
+          new DefaultHttpRequest(
+            from(req.version),
+            from(req.method),
+            req.uri
+          )
         req.headers.foreach(h => httpReq.headers.add(h.key, h.value))
         httpReq.setContent(BufChannelBuffer(req.body))
         httpReq

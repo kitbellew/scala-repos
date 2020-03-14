@@ -133,9 +133,10 @@ class LBatchView(
 
   @transient lazy val eventsDb = Storage.getLEvents()
 
-  @transient lazy val _events = eventsDb
-    .find(appId = appId, startTime = startTime, untilTime = untilTime)
-    .toList
+  @transient lazy val _events =
+    eventsDb
+      .find(appId = appId, startTime = startTime, untilTime = untilTime)
+      .toList
 
   @transient lazy val events: EventSeq = new EventSeq(_events)
 

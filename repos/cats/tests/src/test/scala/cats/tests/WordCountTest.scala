@@ -28,10 +28,9 @@ class WordCountTest extends CatsSuite {
       else
         0
     // An applicative functor to count each line
-    val countLine: AppFunc[Count, Char, Unit] =
-      appFunc { (c: Char) =>
-        liftInt(testIf(c == '\n'))
-      }
+    val countLine: AppFunc[Count, Char, Unit] = appFunc { (c: Char) =>
+      liftInt(testIf(c == '\n'))
+    }
     def isSpace(c: Char): Boolean = (c == ' ' || c == '\n')
 
     // To count words, we need to detect transitions from whitespace to non-whitespace.

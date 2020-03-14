@@ -184,8 +184,7 @@ object CompileServer {
   private def createRedirect(dir: Directory, filename: String) =
     new PrintStream((dir / filename).createFile().bufferedOutput())
 
-  def main(args: Array[String]) =
-    execute(() => (), args)
+  def main(args: Array[String]) = execute(() => (), args)
 
   /**
     * Used for internal testing. The callback is called upon
@@ -209,8 +208,8 @@ object CompileServer {
 
     // Create instance rather than extend to pass a port parameter.
     val server = new StandardCompileServer(port)
-    val redirectDir =
-      (server.compileSocket.tmpDir / "output-redirects").createDirectory()
+    val redirectDir = (server.compileSocket.tmpDir / "output-redirects")
+      .createDirectory()
 
     if (debug) {
       server.echo("Starting CompileServer on port " + server.port)

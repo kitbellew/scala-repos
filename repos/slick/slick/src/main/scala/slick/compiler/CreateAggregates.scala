@@ -61,23 +61,24 @@ class CreateAggregates extends Phase {
                   }
                   .infer()
                 logger.debug("New 'from' with joined aggregates:", from2)
-                val repl: Map[TermSymbol, List[TermSymbol]] = sources match {
-                  case Vector((s, n)) => Map(s -> List(s1))
-                  case _ =>
-                    val len = sources.length
-                    val it = Iterator.iterate(s1)(_ => ElementSymbol(2))
-                    sources.zipWithIndex.map {
-                      case ((s, _), i) =>
-                        val l = List.iterate(s1, i + 1)(_ => ElementSymbol(2))
-                        s -> (if (i == len - 1)
-                                l
-                              else
-                                l :+ ElementSymbol(1))
-                    }.toMap
-                }
+                val repl: Map[TermSymbol, List[TermSymbol]] =
+                  sources match {
+                    case Vector((s, n)) => Map(s -> List(s1))
+                    case _ =>
+                      val len = sources.length
+                      val it = Iterator.iterate(s1)(_ => ElementSymbol(2))
+                      sources.zipWithIndex.map {
+                        case ((s, _), i) =>
+                          val l = List.iterate(s1, i + 1)(_ => ElementSymbol(2))
+                          s -> (if (i == len - 1)
+                                  l
+                                else
+                                  l :+ ElementSymbol(1))
+                      }.toMap
+                  }
                 logger.debug("Replacement paths: " + repl)
-                val scope =
-                  Type.Scope(s1 -> from2.nodeType.asCollectionType.elementType)
+                val scope = Type.Scope(
+                  s1 -> from2.nodeType.asCollectionType.elementType)
                 val replNodes = repl.mapValues(ss => FwdPath(ss).infer(scope))
                 logger.debug(
                   "Replacement path nodes: ",

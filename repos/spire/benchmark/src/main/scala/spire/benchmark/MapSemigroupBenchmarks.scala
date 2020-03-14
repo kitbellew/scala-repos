@@ -27,11 +27,12 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
   def algebirdAdd[K, V](x: Map[K, V], y: Map[K, V])(implicit
       semigroup: Semigroup[V],
       eq: Eq[V]): Map[K, V] = {
-    val (big, small, bigOnLeft) = if (x.size > y.size) {
-      (x, y, true)
-    } else {
-      (y, x, false)
-    }
+    val (big, small, bigOnLeft) =
+      if (x.size > y.size) {
+        (x, y, true)
+      } else {
+        (y, x, false)
+      }
     small.foldLeft(big) { (oldMap, kv) =>
       val newV = big
         .get(kv._1)
@@ -113,9 +114,10 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
     }
   }
 
-  implicit val semigroup = new Semigroup[Int] {
-    def op(x: Int, y: Int): Int = x + y
-  }
+  implicit val semigroup =
+    new Semigroup[Int] {
+      def op(x: Int, y: Int): Int = x + y
+    }
 
   def timeAlgebirdMapAdd(reps: Int) =
     run(reps) {

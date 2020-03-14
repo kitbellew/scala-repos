@@ -335,9 +335,9 @@ object ClusterEvent {
       Nil
     else {
       val newMembers = newGossip.members diff oldGossip.members
-      val membersGroupedByAddress =
-        List(newGossip.members, oldGossip.members).flatten
-          .groupBy(_.uniqueAddress)
+      val membersGroupedByAddress = List(
+        newGossip.members,
+        oldGossip.members).flatten.groupBy(_.uniqueAddress)
       val changedMembers = membersGroupedByAddress collect {
         case (_, newMember :: oldMember :: Nil)
             if newMember.status != oldMember.status || newMember.upNumber != oldMember.upNumber ⇒
@@ -470,10 +470,11 @@ private[cluster] final class ClusterDomainEventPublisher
       unreachable = unreachable,
       seenBy = latestGossip.seenBy.map(_.address),
       leader = latestGossip.leader(selfUniqueAddress).map(_.address),
-      roleLeaderMap = latestGossip.allRoles.map(r ⇒
-        r -> latestGossip
-          .roleLeader(r, selfUniqueAddress)
-          .map(_.address))(collection.breakOut)
+      roleLeaderMap =
+        latestGossip.allRoles.map(r ⇒
+          r -> latestGossip
+            .roleLeader(r, selfUniqueAddress)
+            .map(_.address))(collection.breakOut)
     )
     receiver ! state
   }

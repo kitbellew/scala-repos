@@ -18,8 +18,8 @@ import scala.tools.scalap.Decompiler
   * @author ilyas
   */
 object DecompilerUtil {
-  protected val LOG: Logger =
-    Logger.getInstance("#org.jetbrains.plugins.scala.decompiler.DecompilerUtil")
+  protected val LOG: Logger = Logger.getInstance(
+    "#org.jetbrains.plugins.scala.decompiler.DecompilerUtil")
 
   val DECOMPILER_VERSION = 270
   private val SCALA_DECOMPILER_FILE_ATTRIBUTE =
@@ -41,11 +41,12 @@ object DecompilerUtil {
   private def openedNotDisposedProjects: Array[Project] = {
     val manager = ProjectManager.getInstance
     if (ApplicationManager.getApplication.isUnitTestMode) {
-      val testProject = manager
-        .asInstanceOf[ProjectManagerEx]
-        .getOpenProjects
-        .find(!_.isDisposed)
-        .orNull
+      val testProject =
+        manager
+          .asInstanceOf[ProjectManagerEx]
+          .getOpenProjects
+          .find(!_.isDisposed)
+          .orNull
       if (testProject != null)
         Array(testProject)
       else
@@ -95,8 +96,8 @@ object DecompilerUtil {
       def updateAttributeAndData() {
         val decompilationResult = decompileInner(file, bytes)
         if (attributesSupported) {
-          val writeAttribute =
-            SCALA_DECOMPILER_FILE_ATTRIBUTE.writeAttribute(file)
+          val writeAttribute = SCALA_DECOMPILER_FILE_ATTRIBUTE.writeAttribute(
+            file)
           try {
             writeAttribute.writeBoolean(decompilationResult.isScala)
             writeAttribute.writeUTF(decompilationResult.sourceName)

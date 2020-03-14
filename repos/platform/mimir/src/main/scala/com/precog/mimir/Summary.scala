@@ -78,8 +78,9 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
 
       def makeReduction(jtpe: JType): Reduction = {
         val jtypes: List[Option[JType]] = {
-          val grouped =
-            Schema.flatten(jtpe, List.empty[ColumnRef]).groupBy(_.selector)
+          val grouped = Schema
+            .flatten(jtpe, List.empty[ColumnRef])
+            .groupBy(_.selector)
           val numerics = grouped filter {
             case (cpath, refs) =>
               refs.map(_.ctype).exists(_.isNumeric)
@@ -132,20 +133,21 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
       }
 
       def apply(table: Table, ctx: MorphContext) = {
-        val jtypes0: M[Seq[Option[JType]]] = for {
-          schemas <- table.schemas
-        } yield {
-          schemas.toSeq map { jtype =>
-            val flattened = Schema.flatten(jtype, List.empty[ColumnRef])
+        val jtypes0: M[Seq[Option[JType]]] =
+          for {
+            schemas <- table.schemas
+          } yield {
+            schemas.toSeq map { jtype =>
+              val flattened = Schema.flatten(jtype, List.empty[ColumnRef])
 
-            val values = flattened filter {
-              case ref =>
-                ref.selector.hasPrefix(paths.Value) && ref.ctype.isNumeric
+              val values = flattened filter {
+                case ref =>
+                  ref.selector.hasPrefix(paths.Value) && ref.ctype.isNumeric
+              }
+
+              Schema.mkType(values.toSeq)
             }
-
-            Schema.mkType(values.toSeq)
           }
-        }
 
         // one JType-with-numeric-leaves per schema
         val jtypes: M[Seq[JType]] = jtypes0 map (_ collect {
@@ -163,12 +165,13 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           table.transform(spec).compact(TransSpec1.Id, AllDefined)
         })
 
-        val tablesWithType: M[Seq[(Table, JType)]] = for {
-          tbls <- tables
-          schemas <- jtypes
-        } yield {
-          tbls zip schemas
-        }
+        val tablesWithType: M[Seq[(Table, JType)]] =
+          for {
+            tbls <- tables
+            schemas <- jtypes
+          } yield {
+            tbls zip schemas
+          }
 
         val resultTables: M[Seq[Table]] = tablesWithType flatMap {
           _.map {

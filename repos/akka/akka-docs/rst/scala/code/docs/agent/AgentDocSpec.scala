@@ -142,18 +142,17 @@ class AgentDocSpec extends AkkaSpec {
       println(value)
 
     // uses map
-    val agent3 =
-      for (value <- agent1)
-        yield value + 1
+    val agent3 = for (value <- agent1) yield value + 1
 
     // or using map directly
     val agent4 = agent1 map (_ + 1)
 
     // uses flatMap
-    val agent5 = for {
-      value1 <- agent1
-      value2 <- agent2
-    } yield value1 + value2
+    val agent5 =
+      for {
+        value1 <- agent1
+        value2 <- agent2
+      } yield value1 + value2
     //#monadic-example
 
     agent3() should be(4)

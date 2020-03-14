@@ -16,8 +16,9 @@ object JsPathSpec extends Specification {
 
   "JsPath" should {
     "retrieve simple path" in {
-      val obj =
-        Json.obj("key1" -> Json.obj("key11" -> "value11"), "key2" -> "value2")
+      val obj = Json.obj(
+        "key1" -> Json.obj("key11" -> "value11"),
+        "key2" -> "value2")
 
       (JsPath \ "key1" \ "key11")(obj) must equalTo(Seq(JsString("value11")))
     }

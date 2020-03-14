@@ -111,28 +111,29 @@ final class Eval(
       tpeName: Option[String] = None,
       srcName: String = "<setting>",
       line: Int = DefaultStartLine): EvalResult = {
-    val ev = new EvalType[String] {
-      def makeUnit = mkUnit(srcName, line, expression)
-      def unlink = true
-      def unitBody(
-          unit: CompilationUnit,
-          importTrees: Seq[Tree],
-          moduleName: String): Tree = {
-        val (parser, tree) = parse(unit, settingErrorStrings, _.expr())
-        val tpt: Tree = expectedType(tpeName)
-        augment(parser, importTrees, tree, tpt, moduleName)
-      }
-      def extra(run: Run, unit: CompilationUnit) =
-        atPhase(run.typerPhase.next) {
-          (new TypeExtractor).getType(unit.body)
+    val ev =
+      new EvalType[String] {
+        def makeUnit = mkUnit(srcName, line, expression)
+        def unlink = true
+        def unitBody(
+            unit: CompilationUnit,
+            importTrees: Seq[Tree],
+            moduleName: String): Tree = {
+          val (parser, tree) = parse(unit, settingErrorStrings, _.expr())
+          val tpt: Tree = expectedType(tpeName)
+          augment(parser, importTrees, tree, tpt, moduleName)
         }
-      def read(file: File) = IO.read(file)
-      def write(value: String, f: File) = IO.write(f, value)
-      def extraHash = ""
-    }
+        def extra(run: Run, unit: CompilationUnit) =
+          atPhase(run.typerPhase.next) {
+            (new TypeExtractor).getType(unit.body)
+          }
+        def read(file: File) = IO.read(file)
+        def write(value: String, f: File) = IO.write(f, value)
+        def extraHash = ""
+      }
     val i = evalCommon(expression :: Nil, imports, tpeName, ev)
-    val value = (cl: ClassLoader) =>
-      getValue[Any](i.enclosingModule, i.loader(cl))
+    val value =
+      (cl: ClassLoader) => getValue[Any](i.enclosingModule, i.loader(cl))
     new EvalResult(i.extra, value, i.generated, i.enclosingModule)
   }
   def evalDefinitions(
@@ -142,31 +143,32 @@ final class Eval(
       file: Option[File],
       valTypes: Seq[String]): EvalDefinitions = {
     require(definitions.nonEmpty, "Definitions to evaluate cannot be empty.")
-    val ev = new EvalType[Seq[String]] {
-      lazy val (fullUnit, defUnits) = mkDefsUnit(srcName, definitions)
-      def makeUnit = fullUnit
-      def unlink = false
-      def unitBody(
-          unit: CompilationUnit,
-          importTrees: Seq[Tree],
-          moduleName: String): Tree = {
-        val fullParser = new syntaxAnalyzer.UnitParser(unit)
-        val trees = defUnits flatMap parseDefinitions
-        syntheticModule(fullParser, importTrees, trees.toList, moduleName)
-      }
-      def extra(run: Run, unit: CompilationUnit) = {
-        atPhase(run.typerPhase.next) {
-          (new ValExtractor(valTypes.toSet)).getVals(unit.body)
+    val ev =
+      new EvalType[Seq[String]] {
+        lazy val (fullUnit, defUnits) = mkDefsUnit(srcName, definitions)
+        def makeUnit = fullUnit
+        def unlink = false
+        def unitBody(
+            unit: CompilationUnit,
+            importTrees: Seq[Tree],
+            moduleName: String): Tree = {
+          val fullParser = new syntaxAnalyzer.UnitParser(unit)
+          val trees = defUnits flatMap parseDefinitions
+          syntheticModule(fullParser, importTrees, trees.toList, moduleName)
         }
-      }
-      def read(file: File) = IO.readLines(file)
-      def write(value: Seq[String], file: File) = IO.writeLines(file, value)
-      def extraHash =
-        file match {
-          case Some(f) => f.getAbsolutePath
-          case None    => ""
+        def extra(run: Run, unit: CompilationUnit) = {
+          atPhase(run.typerPhase.next) {
+            (new ValExtractor(valTypes.toSet)).getVals(unit.body)
+          }
         }
-    }
+        def read(file: File) = IO.readLines(file)
+        def write(value: Seq[String], file: File) = IO.writeLines(file, value)
+        def extraHash =
+          file match {
+            case Some(f) => f.getAbsolutePath
+            case None    => ""
+          }
+      }
     val i = evalCommon(definitions.map(_._1), imports, Some(""), ev)
     new EvalDefinitions(i.loader, i.generated, i.enclosingModule, i.extra)
   }
@@ -194,9 +196,10 @@ final class Eval(
       reporter.reset
       ev.makeUnit
     }
-    lazy val run = new Run {
-      override def units = (unit :: Nil).iterator
-    }
+    lazy val run =
+      new Run {
+        override def units = (unit :: Nil).iterator
+      }
     def unlinkAll(): Unit =
       for ((sym, _) <- run.symSource)
         if (ev.unlink)
@@ -204,19 +207,21 @@ final class Eval(
         else
           toUnlinkLater ::= sym
 
-    val (extra, loader) = backing match {
-      case Some(back) if classExists(back, moduleName) =>
-        val loader = (parent: ClassLoader) =>
-          new URLClassLoader(Array(back.toURI.toURL), parent)
-        val extra = ev.read(cacheFile(back, moduleName))
-        (extra, loader)
-      case _ =>
-        try {
-          compileAndLoad(run, unit, imports, backing, moduleName, ev)
-        } finally {
-          unlinkAll()
-        }
-    }
+    val (extra, loader) =
+      backing match {
+        case Some(back) if classExists(back, moduleName) =>
+          val loader =
+            (parent: ClassLoader) =>
+              new URLClassLoader(Array(back.toURI.toURL), parent)
+          val extra = ev.read(cacheFile(back, moduleName))
+          (extra, loader)
+        case _ =>
+          try {
+            compileAndLoad(run, unit, imports, backing, moduleName, ev)
+          } finally {
+            unlinkAll()
+          }
+      }
 
     val generatedFiles = getGeneratedFiles(backing, moduleName)
     new EvalIntermediate(extra, loader, generatedFiles, moduleName)
@@ -257,8 +262,8 @@ final class Eval(
     val extra = ev.extra(run, unit)
     for (f <- backing)
       ev.write(extra, cacheFile(f, moduleName))
-    val loader = (parent: ClassLoader) =>
-      new AbstractFileClassLoader(dir, parent)
+    val loader =
+      (parent: ClassLoader) => new AbstractFileClassLoader(dir, parent)
     (extra, loader)
   }
 
@@ -392,8 +397,7 @@ final class Eval(
     }
   private[this] def moduleFileFilter(moduleName: String) =
     new java.io.FilenameFilter {
-      def accept(dir: File, s: String) =
-        (s contains moduleName)
+      def accept(dir: File, s: String) = (s contains moduleName)
     }
   private[this] def moduleClassFilter(moduleName: String) =
     new java.io.FilenameFilter {
@@ -435,25 +439,28 @@ final class Eval(
     val parser = new syntaxAnalyzer.UnitParser(unit)
 
     val tree = f(parser)
-    val extra = parser.in.token match {
-      case EOF => errors.extraBlank
-      case _   => ""
-    }
+    val extra =
+      parser.in.token match {
+        case EOF => errors.extraBlank
+        case _   => ""
+      }
     checkError(errors.base + extra)
 
     parser.accept(EOF)
-    val extra2 = parser.in.token match {
-      case SEMI               => errors.extraSemi
-      case NEWLINE | NEWLINES => errors.missingBlank
-      case _                  => ""
-    }
+    val extra2 =
+      parser.in.token match {
+        case SEMI               => errors.extraSemi
+        case NEWLINE | NEWLINES => errors.missingBlank
+        case _                  => ""
+      }
     checkError(errors.base + extra2)
 
     (parser, tree)
   }
   private[this] def parseType(tpe: String): Tree = {
-    val tpeParser = new syntaxAnalyzer.UnitParser(
-      mkUnit("<expected-type>", DefaultStartLine, tpe))
+    val tpeParser =
+      new syntaxAnalyzer.UnitParser(
+        mkUnit("<expected-type>", DefaultStartLine, tpe))
     val tpt0: Tree = tpeParser.typ()
     tpeParser.accept(EOF)
     checkError("Error parsing expression type.")

@@ -24,13 +24,14 @@ object Inspect {
         case opt @ (DependencyTree | Details(_)) =>
           spacedKeyParser(s).map(key => (opt, key))
       }
-  val spacedModeParser: (State => Parser[Mode]) = (s: State) => {
-    val actual = "actual" ^^^ Details(true)
-    val tree = "tree" ^^^ DependencyTree
-    val uses = "uses" ^^^ Uses
-    val definitions = "definitions" ^^^ Definitions
-    token(Space ~> (tree | actual | uses | definitions)) ?? Details(false)
-  }
+  val spacedModeParser: (State => Parser[Mode]) =
+    (s: State) => {
+      val actual = "actual" ^^^ Details(true)
+      val tree = "tree" ^^^ DependencyTree
+      val uses = "uses" ^^^ Uses
+      val definitions = "definitions" ^^^ Definitions
+      token(Space ~> (tree | actual | uses | definitions)) ?? Details(false)
+    }
 
   def allKeyParser(s: State): Parser[AttributeKey[_]] = {
     val keyMap = Project.structure(s).index.keyMap
@@ -38,8 +39,8 @@ object Inspect {
       key => Act.getKey(keyMap, key, idFun)
     }
   }
-  val spacedKeyParser: State => Parser[ScopedKey[_]] = (s: State) =>
-    Act.requireSession(s, token(Space) ~> Act.scopedKeyParser(s))
+  val spacedKeyParser: State => Parser[ScopedKey[_]] =
+    (s: State) => Act.requireSession(s, token(Space) ~> Act.scopedKeyParser(s))
 
   def output(s: State, option: Mode, sk: Def.ScopedKey[_]): String = {
     val extracted = Project.extract(s)

@@ -82,12 +82,13 @@ object Msgs extends DispatchSnippet {
           .flatMap(_.child)
 
         // Extract any provided classes for the messages
-        val cssClasses = ((styles \\ noticeType.styleTag) ++
-          (styles \\ noticeType.titleTag \\ "@class")).toList
-          .map(_.text.trim) match {
-          case Nil     => Empty
-          case classes => Full(classes.mkString(" "))
-        }
+        val cssClasses =
+          ((styles \\ noticeType.styleTag) ++
+            (styles \\ noticeType.titleTag \\ "@class")).toList
+            .map(_.text.trim) match {
+            case Nil     => Empty
+            case classes => Full(classes.mkString(" "))
+          }
 
         // Save the settings for AJAX usage
         ajaxStorage(Full(AjaxMessageMeta(title, cssClasses)))
@@ -139,13 +140,14 @@ object Msgs extends DispatchSnippet {
             }</li>)) match {
             case Nil => Nil
             case msgList => {
-              val ret = <div id={
-                noticeType.id
-              }>{
-                title
-              }<ul>{
-                msgList
-              }</ul></div>
+              val ret =
+                <div id={
+                  noticeType.id
+                }>{
+                  title
+                }<ul>{
+                  msgList
+                }</ul></div>
               styles.foldLeft(ret)((xml, style) =>
                 xml % new UnprefixedAttribute("class", Text(style), Null))
             }

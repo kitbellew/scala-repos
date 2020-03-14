@@ -95,8 +95,8 @@ object IntervalSeqSampleCheck extends Properties("IntervalSeq.Sample") {
     val hullSet = IntervalSeq(a.hull)
     val outside = ~hullSet
     val nothingOutside = (a & outside) == IntervalSeq.empty[Int]
-    val allInside =
-      a.intervals.forall(i => hullSet.isSupersetOf(IntervalSeq(i)))
+    val allInside = a.intervals.forall(i =>
+      hullSet.isSupersetOf(IntervalSeq(i)))
     nothingOutside & allInside
   }
 

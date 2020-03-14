@@ -67,15 +67,16 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
       checkSerDe(sketch)
 
       val probCorrect = {
-        val numErrors = allItems.map { item =>
-          val count = exactFreq.getOrElse(item, 0L)
-          val ratio =
-            (sketch.estimateCount(item) - count).toDouble / numAllItems
-          if (ratio > epsOfTotalCount)
-            1
-          else
-            0
-        }.sum
+        val numErrors =
+          allItems.map { item =>
+            val count = exactFreq.getOrElse(item, 0L)
+            val ratio =
+              (sketch.estimateCount(item) - count).toDouble / numAllItems
+            if (ratio > epsOfTotalCount)
+              1
+            else
+              0
+          }.sum
 
         1d - numErrors.toDouble / numAllItems
       }
@@ -95,9 +96,10 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
 
       val numToMerge = 5
       val numItemsPerSketch = 100000
-      val perSketchItems = Array.fill(numToMerge, numItemsPerSketch) {
-        itemGenerator(r)
-      }
+      val perSketchItems =
+        Array.fill(numToMerge, numItemsPerSketch) {
+          itemGenerator(r)
+        }
 
       val sketches = perSketchItems.map { items =>
         val sketch = CountMinSketch.create(epsOfTotalCount, confidence, seed)

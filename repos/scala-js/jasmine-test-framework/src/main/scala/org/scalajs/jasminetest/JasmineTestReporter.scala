@@ -45,8 +45,7 @@ class JasmineTestReporter(
     val results = spec.results()
     val description = spec.description
 
-    val selector =
-      new NestedTestSelector(spec.suite.getFullName(), description)
+    val selector = new NestedTestSelector(spec.suite.getFullName(), description)
 
     if (results.passed) {
       eventHandler.handle(new JasmineEvent(taskDef, Status.Success, selector))
@@ -72,8 +71,7 @@ class JasmineTestReporter(
 
     info("")
     val title = "Total for suite " + suite.description
-    val message =
-      s"${results.totalCount} specs, ${results.failedCount} failure"
+    val message = s"${results.totalCount} specs, ${results.failedCount} failure"
 
     val selector = new NestedSuiteSelector(suite.getFullName())
 
@@ -103,8 +101,7 @@ class JasmineTestReporter(
   private val InfoColor = "\u001b[34m"
   private val Reset = "\u001b[0m"
 
-  private def info(str: String) =
-    loggers.foreach(_.info(str))
+  private def info(str: String) = loggers.foreach(_.info(str))
 
   private def color(log: Logger, color: String, msg: String) =
     if (log.ansiCodesSupported)

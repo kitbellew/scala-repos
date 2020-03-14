@@ -44,180 +44,183 @@ object Duration extends TimeLikeOps[Duration] {
     * Duration `Top` is greater than any other duration, except for
     * itself. `Top`'s complement is `Bottom`.
     */
-  val Top: Duration = new Duration(Long.MaxValue) {
-    override def hashCode = System.identityHashCode(this)
+  val Top: Duration =
+    new Duration(Long.MaxValue) {
+      override def hashCode = System.identityHashCode(this)
 
-    /** Top is equal only to Top and greater than every finite duration */
-    override def compare(that: Duration) =
-      if (that eq Undefined)
-        -1
-      else if (that eq Top)
-        0
-      else
-        1
+      /** Top is equal only to Top and greater than every finite duration */
+      override def compare(that: Duration) =
+        if (that eq Undefined)
+          -1
+        else if (that eq Top)
+          0
+        else
+          1
 
-    override def equals(other: Any) =
-      other match {
-        case d: Duration => d eq this
-        case _           => false
-      }
+      override def equals(other: Any) =
+        other match {
+          case d: Duration => d eq this
+          case _           => false
+        }
 
-    override def *(x: Long): Duration =
-      if (x == 0)
-        Undefined
-      else if (x < 0)
-        Bottom
-      else
-        Top
+      override def *(x: Long): Duration =
+        if (x == 0)
+          Undefined
+        else if (x < 0)
+          Bottom
+        else
+          Top
 
-    override def *(x: Double): Duration =
-      if (x == 0.0 || java.lang.Double.isNaN(x))
-        Undefined
-      else if (x < 0.0)
-        Bottom
-      else
-        Top
+      override def *(x: Double): Duration =
+        if (x == 0.0 || java.lang.Double.isNaN(x))
+          Undefined
+        else if (x < 0.0)
+          Bottom
+        else
+          Top
 
-    override def /(x: Long): Duration =
-      if (x == 0)
-        Undefined
-      else if (x < 0)
-        Bottom
-      else
-        Top
+      override def /(x: Long): Duration =
+        if (x == 0)
+          Undefined
+        else if (x < 0)
+          Bottom
+        else
+          Top
 
-    override def /(x: Double): Duration =
-      if (x == 0.0 || java.lang.Double.isNaN(x))
-        Undefined
-      else if (x < 0.0)
-        Bottom
-      else
-        Top
+      override def /(x: Double): Duration =
+        if (x == 0.0 || java.lang.Double.isNaN(x))
+          Undefined
+        else if (x < 0.0)
+          Bottom
+        else
+          Top
 
-    override def isFinite = false
+      override def isFinite = false
 
-    override def %(x: Duration) = Undefined
-    override def abs = this
-    override def fromNow = Time.Top
-    override def ago = Time.Bottom
-    override def afterEpoch = Time.Top
-    override def +(delta: Duration) =
-      delta match {
-        case Bottom | Undefined => Undefined
-        case _                  => this
-      }
-    override def unary_- = Bottom
-    override def toString = "Duration.Top"
+      override def %(x: Duration) = Undefined
+      override def abs = this
+      override def fromNow = Time.Top
+      override def ago = Time.Bottom
+      override def afterEpoch = Time.Top
+      override def +(delta: Duration) =
+        delta match {
+          case Bottom | Undefined => Undefined
+          case _                  => this
+        }
+      override def unary_- = Bottom
+      override def toString = "Duration.Top"
 
-    private def writeReplace(): Object = DurationBox.Top()
-  }
+      private def writeReplace(): Object = DurationBox.Top()
+    }
 
   /**
     * Duration `Bottom` is smaller than any other duration, except for
     * itself. `Bottom`'s complement is `Top`.
     */
-  val Bottom: Duration = new Duration(Long.MinValue) {
-    override def hashCode = System.identityHashCode(this)
+  val Bottom: Duration =
+    new Duration(Long.MinValue) {
+      override def hashCode = System.identityHashCode(this)
 
-    /** Bottom is equal to Bottom, but smaller than everything else */
-    override def compare(that: Duration) =
-      if (this eq that)
-        0
-      else
-        -1
+      /** Bottom is equal to Bottom, but smaller than everything else */
+      override def compare(that: Duration) =
+        if (this eq that)
+          0
+        else
+          -1
 
-    override def equals(other: Any) =
-      other match {
-        case d: Duration => d eq this
-        case _           => false
-      }
+      override def equals(other: Any) =
+        other match {
+          case d: Duration => d eq this
+          case _           => false
+        }
 
-    /** Scaling arithmetic is Bottom preserving. */
-    override def *(x: Long): Duration =
-      if (x == 0)
-        Undefined
-      else if (x < 0)
-        Top
-      else
-        Bottom
+      /** Scaling arithmetic is Bottom preserving. */
+      override def *(x: Long): Duration =
+        if (x == 0)
+          Undefined
+        else if (x < 0)
+          Top
+        else
+          Bottom
 
-    override def *(x: Double): Duration =
-      if (x == 0.0 || java.lang.Double.isNaN(x))
-        Undefined
-      else if (x < 0.0)
-        Top
-      else
-        Bottom
+      override def *(x: Double): Duration =
+        if (x == 0.0 || java.lang.Double.isNaN(x))
+          Undefined
+        else if (x < 0.0)
+          Top
+        else
+          Bottom
 
-    override def /(x: Long): Duration =
-      if (x == 0)
-        Undefined
-      else if (x < 0)
-        Top
-      else
-        Bottom
+      override def /(x: Long): Duration =
+        if (x == 0)
+          Undefined
+        else if (x < 0)
+          Top
+        else
+          Bottom
 
-    override def /(x: Double): Duration =
-      if (x == 0.0 || java.lang.Double.isNaN(x))
-        Undefined
-      else if (x < 0.0)
-        Top
-      else
-        Bottom
+      override def /(x: Double): Duration =
+        if (x == 0.0 || java.lang.Double.isNaN(x))
+          Undefined
+        else if (x < 0.0)
+          Top
+        else
+          Bottom
 
-    override def %(x: Duration): Duration = Undefined
+      override def %(x: Duration): Duration = Undefined
 
-    override def abs = Top
-    override def fromNow = Time.Bottom
-    override def ago = Time.Top
-    override def afterEpoch = Time.Bottom
+      override def abs = Top
+      override def fromNow = Time.Bottom
+      override def ago = Time.Top
+      override def afterEpoch = Time.Bottom
 
-    override def isFinite = false
+      override def isFinite = false
 
-    override def +(delta: Duration) =
-      delta match {
-        case Top | Undefined => Undefined
-        case _               => this
-      }
+      override def +(delta: Duration) =
+        delta match {
+          case Top | Undefined => Undefined
+          case _               => this
+        }
 
-    override def unary_- = Top
-    override def toString = "Duration.Bottom"
+      override def unary_- = Top
+      override def toString = "Duration.Bottom"
 
-    private def writeReplace(): Object = DurationBox.Bottom()
-  }
+      private def writeReplace(): Object = DurationBox.Bottom()
+    }
 
-  val Undefined: Duration = new Duration(0) {
-    override def hashCode = System.identityHashCode(this)
+  val Undefined: Duration =
+    new Duration(0) {
+      override def hashCode = System.identityHashCode(this)
 
-    override def compare(that: Duration) =
-      if (this eq that)
-        0
-      else
-        1
+      override def compare(that: Duration) =
+        if (this eq that)
+          0
+        else
+          1
 
-    override def equals(other: Any) =
-      other match {
-        case d: Duration => d eq this
-        case _           => false
-      }
+      override def equals(other: Any) =
+        other match {
+          case d: Duration => d eq this
+          case _           => false
+        }
 
-    override def *(x: Long): Duration = this
-    override def *(x: Double): Duration = this
-    override def /(x: Long): Duration = this
-    override def /(x: Double): Duration = this
-    override def %(x: Duration): Duration = this
-    override def abs = this
-    override def fromNow = Time.Undefined
-    override def ago = Time.Undefined
-    override def afterEpoch = Time.Undefined
-    override def +(delta: Duration) = this
-    override def unary_- = this
-    override def isFinite = false
+      override def *(x: Long): Duration = this
+      override def *(x: Double): Duration = this
+      override def /(x: Long): Duration = this
+      override def /(x: Double): Duration = this
+      override def %(x: Duration): Duration = this
+      override def abs = this
+      override def fromNow = Time.Undefined
+      override def ago = Time.Undefined
+      override def afterEpoch = Time.Undefined
+      override def +(delta: Duration) = this
+      override def unary_- = this
+      override def isFinite = false
 
-    override def toString = "Duration.Undefined"
+      override def toString = "Duration.Undefined"
 
-    private def writeReplace(): Object = DurationBox.Undefined()
-  }
+      private def writeReplace(): Object = DurationBox.Undefined()
+    }
 
   private val timeUnits = Seq(
     TimeUnit.DAYS,
@@ -269,18 +272,21 @@ object Duration extends TimeLikeOps[Duration] {
         SingleDurationRegex.findAllIn(ss).matchData.zipWithIndex map {
           case (m, i) =>
             val List(signStr, numStr, unitStr, special) = m.subgroups
-            val absDuration = special match {
-              case "top"       => Top
-              case "bottom"    => Bottom
-              case "undefined" => Undefined
-              case _ =>
-                val u = nameToUnit.get(unitStr) match {
-                  case Some(t) => t
-                  case None =>
-                    throw new NumberFormatException("Invalid unit: " + unitStr)
-                }
-                Duration(numStr.toLong, u)
-            }
+            val absDuration =
+              special match {
+                case "top"       => Top
+                case "bottom"    => Bottom
+                case "undefined" => Undefined
+                case _ =>
+                  val u =
+                    nameToUnit.get(unitStr) match {
+                      case Some(t) => t
+                      case None =>
+                        throw new NumberFormatException(
+                          "Invalid unit: " + unitStr)
+                    }
+                  Duration(numStr.toLong, u)
+              }
 
             signStr match {
               case "-" => -absDuration

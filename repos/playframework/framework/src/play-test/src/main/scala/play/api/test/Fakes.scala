@@ -235,12 +235,13 @@ case class FakeApplication(
       PartialFunction.empty)
     extends Application {
 
-  private val app: Application = new GuiceApplicationBuilder()
-    .in(Environment(path, classloader, Mode.Test))
-    .global(withGlobal.orNull)
-    .configure(additionalConfiguration)
-    .routes(withRoutes)
-    .build
+  private val app: Application =
+    new GuiceApplicationBuilder()
+      .in(Environment(path, classloader, Mode.Test))
+      .global(withGlobal.orNull)
+      .configure(additionalConfiguration)
+      .routes(withRoutes)
+      .build
 
   override def mode: Mode.Mode = app.mode
   @deprecated("Use dependency injection", "2.5.0") override def global

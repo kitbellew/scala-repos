@@ -71,10 +71,11 @@ private[regression] trait IsotonicRegressionBase
     * effect otherwise.
     * @group param
     */
-  final val featureIndex: IntParam = new IntParam(
-    this,
-    "featureIndex",
-    "The index of the feature if featuresCol is a vector column, no effect otherwise.")
+  final val featureIndex: IntParam =
+    new IntParam(
+      this,
+      "featureIndex",
+      "The index of the feature if featuresCol is a vector column, no effect otherwise.")
 
   /** @group getParam */
   final def getFeatureIndex: Int = $(featureIndex)
@@ -101,11 +102,12 @@ private[regression] trait IsotonicRegressionBase
       } else {
         col($(featuresCol))
       }
-    val w = if (hasWeightCol) {
-      col($(weightCol))
-    } else {
-      lit(1.0)
-    }
+    val w =
+      if (hasWeightCol) {
+        col($(weightCol))
+      } else {
+        lit(1.0)
+      }
     dataset.select(col($(labelCol)), f, w).rdd.map {
       case Row(label: Double, feature: Double, weight: Double) =>
         (label, feature, weight)
@@ -192,8 +194,8 @@ class IsotonicRegression @Since("1.5.0") (
     if (handlePersistence)
       instances.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val isotonicRegression =
-      new MLlibIsotonicRegression().setIsotonic($(isotonic))
+    val isotonicRegression = new MLlibIsotonicRegression()
+      .setIsotonic($(isotonic))
     val oldModel = isotonicRegression.run(instances)
 
     copyValues(new IsotonicRegressionModel(uid, oldModel).setParent(this))
@@ -262,17 +264,18 @@ class IsotonicRegressionModel private[ml] (
 
   @Since("1.5.0")
   override def transform(dataset: DataFrame): DataFrame = {
-    val predict = dataset.schema($(featuresCol)).dataType match {
-      case DoubleType =>
-        udf { feature: Double =>
-          oldModel.predict(feature)
-        }
-      case _: VectorUDT =>
-        val idx = $(featureIndex)
-        udf { features: Vector =>
-          oldModel.predict(features(idx))
-        }
-    }
+    val predict =
+      dataset.schema($(featuresCol)).dataType match {
+        case DoubleType =>
+          udf { feature: Double =>
+            oldModel.predict(feature)
+          }
+        case _: VectorUDT =>
+          val idx = $(featureIndex)
+          udf { features: Vector =>
+            oldModel.predict(features(idx))
+          }
+      }
     dataset.withColumn($(predictionCol), predict(col($(featuresCol))))
   }
 
@@ -282,8 +285,7 @@ class IsotonicRegressionModel private[ml] (
   }
 
   @Since("1.6.0")
-  override def write: MLWriter =
-    new IsotonicRegressionModelWriter(this)
+  override def write: MLWriter = new IsotonicRegressionModelWriter(this)
 }
 
 @Since("1.6.0")
@@ -341,9 +343,10 @@ object IsotonicRegressionModel extends MLReadable[IsotonicRegressionModel] {
       val boundaries = data.getAs[Seq[Double]](0).toArray
       val predictions = data.getAs[Seq[Double]](1).toArray
       val isotonic = data.getBoolean(2)
-      val model = new IsotonicRegressionModel(
-        metadata.uid,
-        new MLlibIsotonicRegressionModel(boundaries, predictions, isotonic))
+      val model =
+        new IsotonicRegressionModel(
+          metadata.uid,
+          new MLlibIsotonicRegressionModel(boundaries, predictions, isotonic))
 
       DefaultParamsReader.getAndSetParams(model, metadata)
       model

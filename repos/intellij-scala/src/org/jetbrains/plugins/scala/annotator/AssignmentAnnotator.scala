@@ -42,14 +42,14 @@ trait AssignmentAnnotator {
                   expression.getTypeAfterImplicitConversion().tr.foreach {
                     rType =>
                       if (!rType.conforms(lType)) {
-                        val (expectedText, actualText) =
-                          ScTypePresentation.different(lType, rType)
+                        val (expectedText, actualText) = ScTypePresentation
+                          .different(lType, rType)
                         val message = ScalaBundle.message(
                           "type.mismatch.expected.actual",
                           expectedText,
                           actualText)
-                        val annotation =
-                          holder.createErrorAnnotation(expression, message)
+                        val annotation = holder
+                          .createErrorAnnotation(expression, message)
                         annotation.registerFix(ReportHighlightingErrorQuickFix)
                       }
                   }
@@ -80,14 +80,15 @@ trait AssignmentAnnotator {
                         if (expression != null)
                           for (t <- expression.getType(TypingContext.empty)) {
                             //TODO show parameter name
-                            val (expectedText, actualText) =
-                              ScTypePresentation.different(expectedType, t)
+                            val (expectedText, actualText) = ScTypePresentation
+                              .different(expectedType, t)
                             val message = ScalaBundle.message(
                               "type.mismatch.expected.actual",
                               expectedText,
                               actualText)
-                            val annotation =
-                              holder.createErrorAnnotation(expression, message)
+                            val annotation = holder.createErrorAnnotation(
+                              expression,
+                              message)
                             annotation.registerFix(
                               ReportHighlightingErrorQuickFix)
                           }

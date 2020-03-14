@@ -45,14 +45,11 @@ object AbstractMap {
       oldValue
     }
 
-    override def equals(o: Any): Boolean =
-      entryEquals(this, o)
+    override def equals(o: Any): Boolean = entryEquals(this, o)
 
-    override def hashCode(): Int =
-      entryHashCode(this)
+    override def hashCode(): Int = entryHashCode(this)
 
-    override def toString(): String =
-      getKey + "=" + getValue
+    override def toString(): String = getKey + "=" + getValue
   }
 
   class SimpleImmutableEntry[K, V](key: K, value: V)
@@ -66,17 +63,13 @@ object AbstractMap {
 
     def getValue(): V = value
 
-    def setValue(value: V): V =
-      throw new UnsupportedOperationException()
+    def setValue(value: V): V = throw new UnsupportedOperationException()
 
-    override def equals(o: Any): Boolean =
-      entryEquals(this, o)
+    override def equals(o: Any): Boolean = entryEquals(this, o)
 
-    override def hashCode(): Int =
-      entryHashCode(this)
+    override def hashCode(): Int = entryHashCode(this)
 
-    override def toString(): String =
-      getKey + "=" + getValue
+    override def toString(): String = getKey + "=" + getValue
   }
 }
 
@@ -103,8 +96,7 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
       }
   }
 
-  def put(key: K, value: V): V =
-    throw new UnsupportedOperationException()
+  def put(key: K, value: V): V = throw new UnsupportedOperationException()
 
   def remove(key: Any): V = {
     @tailrec
@@ -125,8 +117,7 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
   def putAll(m: Map[_ <: K, _ <: V]): Unit =
     m.entrySet.iterator.foreach(e => put(e.getKey, e.getValue))
 
-  def clear(): Unit =
-    entrySet.clear()
+  def clear(): Unit = entrySet.clear()
 
   def keySet(): Set[K] = {
     new AbstractSet[K] {

@@ -161,13 +161,14 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   private val regions: ConcurrentHashMap[String, ActorRef] =
     new ConcurrentHashMap
   private lazy val guardian = {
-    val guardianName: String =
-      system.settings.config.getString("akka.cluster.sharding.guardian-name")
-    val dispatcher = system.settings.config
-      .getString("akka.cluster.sharding.use-dispatcher") match {
-      case "" ⇒ Dispatchers.DefaultDispatcherId
-      case id ⇒ id
-    }
+    val guardianName: String = system.settings.config
+      .getString("akka.cluster.sharding.guardian-name")
+    val dispatcher =
+      system.settings.config
+        .getString("akka.cluster.sharding.use-dispatcher") match {
+        case "" ⇒ Dispatchers.DefaultDispatcherId
+        case id ⇒ id
+      }
     system.systemActorOf(
       Props[ClusterShardingGuardian].withDispatcher(dispatcher),
       guardianName)
@@ -219,8 +220,9 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractShardId,
       allocationStrategy,
       handOffStopMessage)
-    val Started(shardRegion) =
-      Await.result(guardian ? startMsg, timeout.duration)
+    val Started(shardRegion) = Await.result(
+      guardian ? startMsg,
+      timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }
@@ -253,9 +255,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId): ActorRef = {
 
-    val allocationStrategy = new LeastShardAllocationStrategy(
-      settings.tuningParameters.leastShardAllocationRebalanceThreshold,
-      settings.tuningParameters.leastShardAllocationMaxSimultaneousRebalance)
+    val allocationStrategy =
+      new LeastShardAllocationStrategy(
+        settings.tuningParameters.leastShardAllocationRebalanceThreshold,
+        settings.tuningParameters.leastShardAllocationMaxSimultaneousRebalance)
 
     start(
       typeName,
@@ -332,9 +335,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       settings: ClusterShardingSettings,
       messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
 
-    val allocationStrategy = new LeastShardAllocationStrategy(
-      settings.tuningParameters.leastShardAllocationRebalanceThreshold,
-      settings.tuningParameters.leastShardAllocationMaxSimultaneousRebalance)
+    val allocationStrategy =
+      new LeastShardAllocationStrategy(
+        settings.tuningParameters.leastShardAllocationRebalanceThreshold,
+        settings.tuningParameters.leastShardAllocationMaxSimultaneousRebalance)
 
     start(
       typeName,
@@ -372,10 +376,14 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
     implicit val timeout = system.settings.CreationTimeout
     val settings = ClusterShardingSettings(system).withRole(role)
-    val startMsg =
-      StartProxy(typeName, settings, extractEntityId, extractShardId)
-    val Started(shardRegion) =
-      Await.result(guardian ? startMsg, timeout.duration)
+    val startMsg = StartProxy(
+      typeName,
+      settings,
+      extractEntityId,
+      extractShardId)
+    val Started(shardRegion) = Await.result(
+      guardian ? startMsg,
+      timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }

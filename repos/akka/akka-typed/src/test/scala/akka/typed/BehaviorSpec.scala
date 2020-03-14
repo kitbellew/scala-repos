@@ -54,14 +54,16 @@ class BehaviorSpec extends TypedSpec {
   trait State {
     def next: State
   }
-  val StateA: State = new State {
-    override def toString = "StateA";
-    override def next = StateB
-  }
-  val StateB: State = new State {
-    override def toString = "StateB";
-    override def next = StateA
-  }
+  val StateA: State =
+    new State {
+      override def toString = "StateA";
+      override def next = StateB
+    }
+  val StateB: State =
+    new State {
+      override def toString = "StateB";
+      override def next = StateA
+    }
 
   trait Common {
     def behavior(monitor: ActorRef[Event]): Behavior[Command]

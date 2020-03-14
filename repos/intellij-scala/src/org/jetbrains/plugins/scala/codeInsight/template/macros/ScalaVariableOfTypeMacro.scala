@@ -61,8 +61,8 @@ class ScalaVariableOfTypeMacro extends Macro {
         val variants = MacroUtil
           .getVariablesForScope(element)
           .filter(r => {
-            val clazz =
-              PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
+            val clazz = PsiTreeUtil
+              .getParentOfType(r.element, classOf[PsiClass])
             if (clazz == null)
               true
             else {
@@ -113,8 +113,8 @@ class ScalaVariableOfTypeMacro extends Macro {
         val variants = MacroUtil
           .getVariablesForScope(element)
           .filter(r => {
-            val clazz =
-              PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
+            val clazz = PsiTreeUtil
+              .getParentOfType(r.element, classOf[PsiClass])
             if (clazz == null)
               true
             else {

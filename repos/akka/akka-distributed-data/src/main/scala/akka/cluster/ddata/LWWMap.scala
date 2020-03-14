@@ -117,10 +117,11 @@ final class LWWMap[A] private[akka] (
       key: String,
       value: A,
       clock: Clock[A]): LWWMap[A] = {
-    val newRegister = underlying.get(key) match {
-      case Some(r) ⇒ r.withValue(node, value, clock)
-      case None ⇒ LWWRegister(node, value, clock)
-    }
+    val newRegister =
+      underlying.get(key) match {
+        case Some(r) ⇒ r.withValue(node, value, clock)
+        case None ⇒ LWWRegister(node, value, clock)
+      }
     new LWWMap(underlying.put(node, key, newRegister))
   }
 

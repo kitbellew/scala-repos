@@ -69,13 +69,14 @@ abstract class ScTypeDefinitionImpl protected (
       case member: PsiMember
           if member.getLanguage.isKindOf(JavaLanguage.INSTANCE) =>
         val newMemberText = JavaToScala.convertPsiToText(member).trim()
-        val mem: Option[ScMember] = member match {
-          case method: PsiMethod =>
-            Some(
-              ScalaPsiElementFactory
-                .createMethodFromText(newMemberText, getManager))
-          case _ => None
-        }
+        val mem: Option[ScMember] =
+          member match {
+            case method: PsiMethod =>
+              Some(
+                ScalaPsiElementFactory
+                  .createMethodFromText(newMemberText, getManager))
+            case _ => None
+          }
         mem match {
           case Some(m) => addMember(m, None)
           case _       => super.add(element)
@@ -199,8 +200,10 @@ abstract class ScTypeDefinitionImpl protected (
     }
 
   def getSourceMirrorClass: PsiClass = {
-    val classParent =
-      PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
+    val classParent = PsiTreeUtil.getParentOfType(
+      this,
+      classOf[ScTypeDefinition],
+      true)
     val name = this.name
     if (classParent == null) {
       val classes: Array[PsiClass] =
@@ -228,10 +231,11 @@ abstract class ScTypeDefinitionImpl protected (
   }
 
   override def isLocal: Boolean = {
-    val stub: StubElement[_ <: PsiElement] = this match {
-      case st: ScalaStubBasedElementImpl[_] => st.getStub
-      case _                                => null
-    }
+    val stub: StubElement[_ <: PsiElement] =
+      this match {
+        case st: ScalaStubBasedElementImpl[_] => st.getStub
+        case _                                => null
+      }
     stub match {
       case memberOrLocal: ScMemberOrLocal =>
         return memberOrLocal.isLocal
@@ -373,16 +377,17 @@ abstract class ScTypeDefinitionImpl protected (
   }
 
   override def getPresentation: ItemPresentation = {
-    val presentableName = this match {
-      case o: ScObject if o.isPackageObject && o.name == "`package`" =>
-        val packageName = o.qualifiedName.stripSuffix(".`package`")
-        val index = packageName.lastIndexOf('.')
-        if (index < 0)
-          packageName
-        else
-          packageName.substring(index + 1, packageName.length)
-      case _ => name
-    }
+    val presentableName =
+      this match {
+        case o: ScObject if o.isPackageObject && o.name == "`package`" =>
+          val packageName = o.qualifiedName.stripSuffix(".`package`")
+          val index = packageName.lastIndexOf('.')
+          if (index < 0)
+            packageName
+          else
+            packageName.substring(index + 1, packageName.length)
+        case _ => name
+      }
 
     new ItemPresentation() {
       def getPresentableText: String = presentableName

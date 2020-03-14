@@ -150,8 +150,9 @@ class ClientSuite
 
   test("Jar path propagation through SparkConf") {
     val sparkConf = new SparkConf().set(SPARK_JARS, Seq(SPARK))
-    val client =
-      createClient(sparkConf, args = Array("--jar", USER, "--addJars", ADDED))
+    val client = createClient(
+      sparkConf,
+      args = Array("--jar", USER, "--addJars", ADDED))
 
     val tempDir = Utils.createTempDir()
     try {
@@ -211,15 +212,16 @@ class ClientSuite
     val sparkConf = new SparkConf()
       .set(APPLICATION_TAGS.key, ",tag1, dup,tag2 , ,multi word , dup")
       .set(MAX_APP_ATTEMPTS, 42)
-    val args = new ClientArguments(
-      Array("--name", "foo-test-app", "--queue", "staging-queue"),
-      sparkConf)
+    val args =
+      new ClientArguments(
+        Array("--name", "foo-test-app", "--queue", "staging-queue"),
+        sparkConf)
 
     val appContext = Records.newRecord(classOf[ApplicationSubmissionContext])
-    val getNewApplicationResponse =
-      Records.newRecord(classOf[GetNewApplicationResponse])
-    val containerLaunchContext =
-      Records.newRecord(classOf[ContainerLaunchContext])
+    val getNewApplicationResponse = Records.newRecord(
+      classOf[GetNewApplicationResponse])
+    val containerLaunchContext = Records.newRecord(
+      classOf[ContainerLaunchContext])
 
     val client = new Client(args, conf, sparkConf)
     client.createApplicationSubmissionContext(
@@ -342,17 +344,15 @@ class ClientSuite
 
     val knownMRAppCP = Some(Seq("/known/mr/path"))
 
-    val mapMRAppConf =
-      Map(
-        "mapreduce.application.classpath" -> knownMRAppCP
-          .map(_.mkString(":"))
-          .get)
+    val mapMRAppConf = Map(
+      "mapreduce.application.classpath" -> knownMRAppCP
+        .map(_.mkString(":"))
+        .get)
 
-    val mapYARNAppConf =
-      Map(
-        YarnConfiguration.YARN_APPLICATION_CLASSPATH -> knownYARNAppCP
-          .map(_.mkString(":"))
-          .get)
+    val mapYARNAppConf = Map(
+      YarnConfiguration.YARN_APPLICATION_CLASSPATH -> knownYARNAppCP
+        .map(_.mkString(":"))
+        .get)
 
     val mapAppConf = mapYARNAppConf ++ mapMRAppConf
   }

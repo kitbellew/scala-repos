@@ -37,8 +37,8 @@ object hist extends UFunc {
   implicit def defaultHistBins[T, @expand.args(Int, Double, Float, Long) S](
       implicit iter: CanTraverseValues[T, S]): Impl2[T, Int, Histogram[S]] =
     new Impl2[T, Int, Histogram[S]] {
-      private val innerImpl =
-        implicitly[Impl3[T, Int, (Double, Double), Histogram[S]]]
+      private val innerImpl = implicitly[
+        Impl3[T, Int, (Double, Double), Histogram[S]]]
       def apply(v: T, bins: Int) = {
         val minima = min(v).toDouble
         val maxima = max(v).toDouble
@@ -62,26 +62,29 @@ object hist extends UFunc {
         }
         val result = DenseVector.zeros[S](bins)
 
-        val visitor = new ValuesVisitor[S] {
-          def visit(a: S) = {
-            val ad = a.toDouble
-            val i: Int =
-              math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
-            if ((i >= 0) && (i < bins)) {
-              result(i) += 1
+        val visitor =
+          new ValuesVisitor[S] {
+            def visit(a: S) = {
+              val ad = a.toDouble
+              val i: Int =
+                math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
+              if ((i >= 0) && (i < bins)) {
+                result(i) += 1
+              }
+              if (ad == maxima) { //Include the endpoint
+                result(bins - 1) += 1
+              }
             }
-            if (ad == maxima) { //Include the endpoint
-              result(bins - 1) += 1
+            def zeros(numZero: Int, zeroValue: S): Unit = {
+              val i =
+                math
+                  .floor(bins * ((zeroValue.toDouble - minima) / maxima))
+                  .toInt
+              if ((i >= 0) && (i < bins)) {
+                result(i) += numZero
+              }
             }
           }
-          def zeros(numZero: Int, zeroValue: S): Unit = {
-            val i =
-              math.floor(bins * ((zeroValue.toDouble - minima) / maxima)).toInt
-            if ((i >= 0) && (i < bins)) {
-              result(i) += numZero
-            }
-          }
-        }
         iter.traverse(v, visitor)
         new HistogramImpl(result, minima, maxima, bins)
       }
@@ -107,8 +110,8 @@ object hist extends UFunc {
       iter: CanZipAndTraverseValues[T, U, S, S],
       iter2: CanTraverseValues[T, S]): Impl3[T, Int, U, Histogram[S]] =
     new Impl3[T, Int, U, Histogram[S]] {
-      private val innerImpl =
-        implicitly[Impl4[T, Int, (Double, Double), U, Histogram[S]]]
+      private val innerImpl = implicitly[
+        Impl4[T, Int, (Double, Double), U, Histogram[S]]]
       def apply(v: T, bins: Int, weights: U) = {
         val minima = min(v).toDouble
         val maxima = max(v).toDouble
@@ -137,19 +140,20 @@ object hist extends UFunc {
         }
         val result = DenseVector.zeros[S](bins)
 
-        val visitor = new PairValuesVisitor[S, S] {
-          def visit(a: S, w: S) = {
-            val ad = a.toDouble
-            val i: Int =
-              math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
-            if ((i >= 0) && (i < bins)) {
-              result(i) += w
-            }
-            if (ad == maxima) { //Include the endpoint
-              result(bins - 1) += w
+        val visitor =
+          new PairValuesVisitor[S, S] {
+            def visit(a: S, w: S) = {
+              val ad = a.toDouble
+              val i: Int =
+                math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
+              if ((i >= 0) && (i < bins)) {
+                result(i) += w
+              }
+              if (ad == maxima) { //Include the endpoint
+                result(bins - 1) += w
+              }
             }
           }
-        }
         iter.traverse(v, weights, visitor)
         new HistogramImpl(result, minima, maxima, bins)
       }

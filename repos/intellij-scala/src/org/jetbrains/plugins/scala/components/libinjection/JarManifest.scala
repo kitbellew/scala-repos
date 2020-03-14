@@ -70,8 +70,8 @@ object JarManifest {
   def deserialize(
       f: VirtualFile,
       containingJar: VirtualFile = null): JarManifest = {
-    val jar =
-      Option(containingJar).getOrElse(VfsUtilCore.getVirtualFileForJar(f))
+    val jar = Option(containingJar).getOrElse(
+      VfsUtilCore.getVirtualFileForJar(f))
     deserialize(XML.load(f.getInputStream), jar)
   }
 

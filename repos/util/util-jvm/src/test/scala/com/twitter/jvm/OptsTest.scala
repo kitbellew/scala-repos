@@ -11,8 +11,8 @@ import org.scalatest.junit.JUnitRunner
 class OptsTest extends FunSuite {
   test("Opts") {
     if (System.getProperty("java.vm.name").contains("HotSpot")) {
-      val DiagnosticName =
-        ObjectName.getInstance("com.sun.management:type=HotSpotDiagnostic")
+      val DiagnosticName = ObjectName.getInstance(
+        "com.sun.management:type=HotSpotDiagnostic")
 
       val originalValue: String = Opt("MaxHeapFreeRatio").getOrElse("100")
 
@@ -24,15 +24,16 @@ class OptsTest extends FunSuite {
           Array("MaxHeapFreeRatio"),
           Array("java.lang.String"))
 
-      val writable = option.getClass match {
-        case clazz: Class[_]
-            if clazz.getCanonicalName == "com.sun.management.VMOption" =>
-          clazz.getMethod("isWriteable").invoke(option) match {
-            case bool: JBool => bool: Boolean
-            case _           => fail()
-          }
-        case _ => false
-      }
+      val writable =
+        option.getClass match {
+          case clazz: Class[_]
+              if clazz.getCanonicalName == "com.sun.management.VMOption" =>
+            clazz.getMethod("isWriteable").invoke(option) match {
+              case bool: JBool => bool: Boolean
+              case _           => fail()
+            }
+          case _ => false
+        }
 
       if (writable) {
         ManagementFactory

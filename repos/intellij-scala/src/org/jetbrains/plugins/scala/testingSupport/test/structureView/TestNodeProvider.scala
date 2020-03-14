@@ -260,20 +260,22 @@ object TestNodeProvider {
       expr: ScMethodCall,
       callerName: String,
       paramNames: List[String]*): Boolean = {
-    val methodExpr = expr.getEffectiveInvokedExpr match {
-      case refExpr: ScReferenceExpression => refExpr
-      case otherExpr =>
-        otherExpr.findFirstChildByType(ScalaElementTypes.REFERENCE_EXPRESSION)
-    }
+    val methodExpr =
+      expr.getEffectiveInvokedExpr match {
+        case refExpr: ScReferenceExpression => refExpr
+        case otherExpr =>
+          otherExpr.findFirstChildByType(ScalaElementTypes.REFERENCE_EXPRESSION)
+      }
     methodExpr != null && {
       methodExpr.asInstanceOf[ScReferenceExpression].advancedResolve match {
         case Some(resolveResult) =>
           resolveResult.getActualElement.getName == callerName && {
-            val funElement = resolveResult.innerResolveResult match {
-              case Some(innerResult) =>
-                innerResult.getActualElement
-              case None => resolveResult.getElement
-            }
+            val funElement =
+              resolveResult.innerResolveResult match {
+                case Some(innerResult) =>
+                  innerResult.getActualElement
+                case None => resolveResult.getElement
+              }
             funElement.getName == "apply" && funElement
               .isInstanceOf[ScFunctionDefinition] &&
             checkClauses(
@@ -554,8 +556,10 @@ object TestNodeProvider {
   private def extractFreeSpec(
       expr: ScInfixExpr,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerInfixExprs(expr), extractFreeSpec, project)
+    lazy val children = processChildren(
+      getInnerInfixExprs(expr),
+      extractFreeSpec,
+      project)
     extractScalaTestScInfixExpr(
       expr,
       ExtractEntry("$minus", true, false, _ => children, List("void")),
@@ -578,8 +582,10 @@ object TestNodeProvider {
   private def extractWordSpec(
       expr: ScInfixExpr,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerInfixExprs(expr), extractWordSpec, project)
+    lazy val children = processChildren(
+      getInnerInfixExprs(expr),
+      extractWordSpec,
+      project)
     extractScalaTestScInfixExpr(
       expr,
       ExtractEntry("in", true, true, List("void")),
@@ -632,8 +638,10 @@ object TestNodeProvider {
   private def extractFunSpec(
       expr: ScMethodCall,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerMethodCalls(expr), extractFunSpec, project)
+    lazy val children = processChildren(
+      getInnerMethodCalls(expr),
+      extractFunSpec,
+      project)
     extractScMethodCall(
       expr,
       ExtractEntry(
@@ -659,8 +667,10 @@ object TestNodeProvider {
   private def extractFeatureSpec(
       expr: ScMethodCall,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerMethodCalls(expr), extractFeatureSpec, project)
+    lazy val children = processChildren(
+      getInnerMethodCalls(expr),
+      extractFeatureSpec,
+      project)
     extractScMethodCall(
       expr,
       ExtractEntry(
@@ -711,8 +721,10 @@ object TestNodeProvider {
   private def extractUnitSpec(
       expr: ScInfixExpr,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerInfixExprs(expr), extractUnitSpec, project)
+    lazy val children = processChildren(
+      getInnerInfixExprs(expr),
+      extractUnitSpec,
+      project)
     extractSpecs2ScInfixExpr(expr, children, project)
   }
 
@@ -806,12 +818,13 @@ object TestNodeProvider {
       case Some(patternList) =>
         val refPattern = elem.getParent
         val patternsImpl = refPattern.getParent.asInstanceOf[ScPatternsImpl]
-        val index = patternsImpl.patterns.zipWithIndex
-          .find {
-            case (pat, _) => pat == refPattern
-          }
-          .get
-          ._2
+        val index =
+          patternsImpl.patterns.zipWithIndex
+            .find {
+              case (pat, _) => pat == refPattern
+            }
+            .get
+            ._2
         Some((patternList, Some(index, patternsImpl.patterns.size)))
       case _ =>
         checkParent(elem, classOf[ScReferencePattern])

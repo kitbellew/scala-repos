@@ -19,14 +19,15 @@ class DarkTrafficFilterTest extends FunSuite with MockitoSugar {
     val gate = mock[() => Boolean]
     val statsReceiver = new InMemoryStatsReceiver
 
-    val darkService = new Service[String, String] {
-      val counter = statsReceiver.counter("test_applyCounts")
+    val darkService =
+      new Service[String, String] {
+        val counter = statsReceiver.counter("test_applyCounts")
 
-      override def apply(request: String) = {
-        counter.incr()
-        Future.value(response)
+        override def apply(request: String) = {
+          counter.incr()
+          Future.value(response)
+        }
       }
-    }
 
     val enableSampling = (s: String) => gate()
 
@@ -70,10 +71,11 @@ class DarkTrafficFilterTest extends FunSuite with MockitoSugar {
   test("count failures in forwarding") {
     new Fixture {
       when(gate()) thenReturn true
-      val failingService = new Service[String, String] {
-        override def apply(request: String) =
-          Future.exception(new Exception("fail"))
-      }
+      val failingService =
+        new Service[String, String] {
+          override def apply(request: String) =
+            Future.exception(new Exception("fail"))
+        }
       val failingFilter =
         new DarkTrafficFilter(failingService, enableSampling, statsReceiver)
       assert(Await.result(failingFilter(request, service)) == response)

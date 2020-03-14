@@ -135,10 +135,11 @@ class StringConverterSpec extends FlatSpec {
     }
 
     "A JavaFX StringConverter" should "be convertible to a Scala StringConverter" in {
-      val jc = new jfxu.StringConverter[Char] {
-        def toString(c: Char) = c.toString
-        def fromString(s: String) = s.charAt(0)
-      }
+      val jc =
+        new jfxu.StringConverter[Char] {
+          def toString(c: Char) = c.toString
+          def fromString(s: String) = s.charAt(0)
+        }
       val sc: StringConverter[Char] = jc
 
       sc.isInstanceOf[StringConverter[_]] should be(true)

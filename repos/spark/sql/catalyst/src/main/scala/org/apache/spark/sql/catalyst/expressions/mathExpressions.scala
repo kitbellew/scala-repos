@@ -766,18 +766,19 @@ case class Round(child: Expression, scale: Expression)
 
   override def foldable: Boolean = child.foldable
 
-  override lazy val dataType: DataType = child.dataType match {
-    // if the new scale is bigger which means we are scaling up,
-    // keep the original scale as `Decimal` does
-    case DecimalType.Fixed(p, s) =>
-      DecimalType(
-        p,
-        if (_scale > s)
-          s
-        else
-          _scale)
-    case t => t
-  }
+  override lazy val dataType: DataType =
+    child.dataType match {
+      // if the new scale is bigger which means we are scaling up,
+      // keep the original scale as `Decimal` does
+      case DecimalType.Fixed(p, s) =>
+        DecimalType(
+          p,
+          if (_scale > s)
+            s
+          else
+            _scale)
+      case t => t
+    }
 
   override def inputTypes: Seq[AbstractDataType] = Seq(NumericType, IntegerType)
 
@@ -850,81 +851,82 @@ case class Round(child: Expression, scale: Expression)
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val ce = child.gen(ctx)
 
-    val evaluationCode = child.dataType match {
-      case _: DecimalType =>
-        s"""
+    val evaluationCode =
+      child.dataType match {
+        case _: DecimalType =>
+          s"""
         if (${ce.value}.changePrecision(${ce.value}.precision(), ${_scale})) {
           ${ev.value} = ${ce.value};
         } else {
           ${ev.isNull} = true;
         }"""
-      case ByteType =>
-        if (_scale < 0) {
-          s"""
+        case ByteType =>
+          if (_scale < 0) {
+            s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).byteValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
-      case ShortType =>
-        if (_scale < 0) {
-          s"""
+          } else {
+            s"${ev.value} = ${ce.value};"
+          }
+        case ShortType =>
+          if (_scale < 0) {
+            s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).shortValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
-      case IntegerType =>
-        if (_scale < 0) {
-          s"""
+          } else {
+            s"${ev.value} = ${ce.value};"
+          }
+        case IntegerType =>
+          if (_scale < 0) {
+            s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).intValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
-      case LongType =>
-        if (_scale < 0) {
-          s"""
+          } else {
+            s"${ev.value} = ${ce.value};"
+          }
+        case LongType =>
+          if (_scale < 0) {
+            s"""
           ${ev.value} = new java.math.BigDecimal(${ce.value}).
             setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).longValue();"""
-        } else {
-          s"${ev.value} = ${ce.value};"
-        }
-      case FloatType => // if child eval to NaN or Infinity, just return it.
-        if (_scale == 0) {
-          s"""
+          } else {
+            s"${ev.value} = ${ce.value};"
+          }
+        case FloatType => // if child eval to NaN or Infinity, just return it.
+          if (_scale == 0) {
+            s"""
             if (Float.isNaN(${ce.value}) || Float.isInfinite(${ce.value})) {
               ${ev.value} = ${ce.value};
             } else {
               ${ev.value} = Math.round(${ce.value});
             }"""
-        } else {
-          s"""
+          } else {
+            s"""
             if (Float.isNaN(${ce.value}) || Float.isInfinite(${ce.value})) {
               ${ev.value} = ${ce.value};
             } else {
               ${ev.value} = java.math.BigDecimal.valueOf(${ce.value}).
                 setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).floatValue();
             }"""
-        }
-      case DoubleType => // if child eval to NaN or Infinity, just return it.
-        if (_scale == 0) {
-          s"""
+          }
+        case DoubleType => // if child eval to NaN or Infinity, just return it.
+          if (_scale == 0) {
+            s"""
             if (Double.isNaN(${ce.value}) || Double.isInfinite(${ce.value})) {
               ${ev.value} = ${ce.value};
             } else {
               ${ev.value} = Math.round(${ce.value});
             }"""
-        } else {
-          s"""
+          } else {
+            s"""
             if (Double.isNaN(${ce.value}) || Double.isInfinite(${ce.value})) {
               ${ev.value} = ${ce.value};
             } else {
               ${ev.value} = java.math.BigDecimal.valueOf(${ce.value}).
                 setScale(${_scale}, java.math.BigDecimal.ROUND_HALF_UP).doubleValue();
             }"""
-        }
-    }
+          }
+      }
 
     if (scaleV == null) { // if scale is null, no need to eval its child at all
       s"""

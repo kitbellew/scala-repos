@@ -133,17 +133,18 @@ object Reflect {
       }
     }
 
-    val maybeClass = config.get[Option[String]](key) match {
-      // If provided, don't bind anything
-      case Some("provided") => None
-      // If empty, use the default
-      case None =>
-        // If no value, load the default class name, but if it's not found, then fallback to the default class
-        loadClass(defaultClassName, notFoundFatal = false)
-          .orElse(Some(default.runtimeClass))
-      // If a value, load that class
-      case Some(className) => loadClass(className, notFoundFatal = true)
-    }
+    val maybeClass =
+      config.get[Option[String]](key) match {
+        // If provided, don't bind anything
+        case Some("provided") => None
+        // If empty, use the default
+        case None =>
+          // If no value, load the default class name, but if it's not found, then fallback to the default class
+          loadClass(defaultClassName, notFoundFatal = false)
+            .orElse(Some(default.runtimeClass))
+        // If a value, load that class
+        case Some(className) => loadClass(className, notFoundFatal = true)
+      }
 
     maybeClass.map {
 

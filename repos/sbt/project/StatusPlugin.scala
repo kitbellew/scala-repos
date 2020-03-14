@@ -6,8 +6,8 @@ object StatusPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   object autoImport {
-    lazy val publishStatus =
-      settingKey[String]("possible values are snapshots or releases.")
+    lazy val publishStatus = settingKey[String](
+      "possible values are snapshots or releases.")
   }
 
   import autoImport._

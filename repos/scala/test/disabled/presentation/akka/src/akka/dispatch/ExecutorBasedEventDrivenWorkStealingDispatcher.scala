@@ -233,8 +233,9 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     var recipient: ActorRef = null
 
     while ((i < prSz) && (recipient eq null)) {
-      val actor =
-        potentialRecipients((i + startIndex) % prSz) //Wrap-around, one full lap
+      val actor = potentialRecipients(
+        (i + startIndex) % prSz
+      ) //Wrap-around, one full lap
       val mbox = getMailbox(actor)
 
       if ((mbox ne donorMbox) && mbox.isEmpty) { //Don't donate to yourself

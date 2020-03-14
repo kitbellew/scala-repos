@@ -17,8 +17,10 @@ object ForkTest extends Properties("Fork") {
     */
   final val MaximumClasspathLength = 100000
 
-  lazy val genOptionName =
-    frequency((9, Some("-cp")), (9, Some("-classpath")), (1, None))
+  lazy val genOptionName = frequency(
+    (9, Some("-cp")),
+    (9, Some("-classpath")),
+    (1, None))
   lazy val pathElement = nonEmptyListOf(alphaNumChar).map(_.mkString)
   lazy val path = nonEmptyListOf(pathElement).map(_.mkString(File.separator))
   lazy val genRelClasspath = nonEmptyListOf(path)
@@ -69,8 +71,9 @@ object ForkTest extends Properties("Fork") {
 
   private[this] def trimClasspath(cp: String): String =
     if (cp.length > MaximumClasspathLength) {
-      val lastEntryI =
-        cp.lastIndexOf(File.pathSeparatorChar, MaximumClasspathLength)
+      val lastEntryI = cp.lastIndexOf(
+        File.pathSeparatorChar,
+        MaximumClasspathLength)
       if (lastEntryI > 0)
         cp.substring(0, lastEntryI)
       else

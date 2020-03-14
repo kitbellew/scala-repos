@@ -94,12 +94,13 @@ object BlockStoreColumnarTableModuleSpec
 
   type YggConfig = IdSourceConfig with ColumnarTableModuleConfig
 
-  val yggConfig = new IdSourceConfig with ColumnarTableModuleConfig {
-    val maxSliceSize = 10
-    val smallSliceSize = 3
+  val yggConfig =
+    new IdSourceConfig with ColumnarTableModuleConfig {
+      val maxSliceSize = 10
+      val smallSliceSize = 3
 
-    val idSource = new FreshAtomicIdSource
-  }
+      val idSource = new FreshAtomicIdSource
+    }
 }
 
 // vim: set ts=4 sw=4 et:

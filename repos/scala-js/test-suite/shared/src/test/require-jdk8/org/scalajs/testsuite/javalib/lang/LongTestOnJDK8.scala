@@ -297,8 +297,7 @@ class LongTestOnJDK8 {
   }
 
   @Test def compareUnsigned(): Unit = {
-    def compare(x: Long, y: Long): Int =
-      JLong.compareUnsigned(x, y)
+    def compare(x: Long, y: Long): Int = JLong.compareUnsigned(x, y)
 
     assertTrue(compare(0, 5) < 0)
     assertTrue(compare(10, 9) > 0)

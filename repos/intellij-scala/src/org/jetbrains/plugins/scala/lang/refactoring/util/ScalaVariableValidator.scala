@@ -146,19 +146,20 @@ class ScalaVariableValidator(
       name: String): Seq[(PsiNamedElement, String)] = {
     ScalaPsiElementFactory.createExpressionFromText(name, context) match {
       case ResolvesTo(elem @ ScalaPsiUtil.inNameContext(nameCtx)) =>
-        val message = nameCtx match {
-          case p: ScClassParameter => messageForClassParameter(name)
-          case p: ScParameter      => messageForParameter(name)
-          case m: ScMember if m.isLocal =>
-            if (m.getTextOffset < context.getTextOffset)
+        val message =
+          nameCtx match {
+            case p: ScClassParameter => messageForClassParameter(name)
+            case p: ScParameter      => messageForParameter(name)
+            case m: ScMember if m.isLocal =>
+              if (m.getTextOffset < context.getTextOffset)
+                messageForLocal(name)
+              else
+                ""
+            case _: ScCaseClause | _: ScGenerator | _: ScEnumerator =>
               messageForLocal(name)
-            else
-              ""
-          case _: ScCaseClause | _: ScGenerator | _: ScEnumerator =>
-            messageForLocal(name)
-          case m: PsiMember => messageForMember(name)
-          case _            => ""
-        }
+            case m: PsiMember => messageForMember(name)
+            case _            => ""
+          }
         if (message != "")
           Seq((elem, message))
         else
@@ -198,11 +199,12 @@ class ScalaVariableValidator(
       }
     else {
       var from = {
-        var parent: PsiElement = if (allOcc) {
-          selectedElement //todo:
-        } else {
-          selectedElement
-        }
+        var parent: PsiElement =
+          if (allOcc) {
+            selectedElement //todo:
+          } else {
+            selectedElement
+          }
         if (PsiTreeUtil.isAncestor(container, parent, true))
           while (parent.getParent != null && parent.getParent != container)
             parent = parent.getParent

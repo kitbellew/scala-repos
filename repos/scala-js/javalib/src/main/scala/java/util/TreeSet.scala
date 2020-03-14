@@ -12,8 +12,7 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
     with Cloneable
     with Serializable { self =>
 
-  def this() =
-    this(null.asInstanceOf[Comparator[_ >: E]])
+  def this() = this(null.asInstanceOf[Comparator[_ >: E]])
 
   def this(collection: Collection[_ <: E]) = {
     this(null.asInstanceOf[Comparator[E]])
@@ -98,11 +97,9 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
     new NavigableView(this, descSetFun, None, true, None, true)
   }
 
-  def size(): Int =
-    inner.size
+  def size(): Int = inner.size
 
-  override def isEmpty(): Boolean =
-    inner.headOption.isEmpty
+  override def isEmpty(): Boolean = inner.headOption.isEmpty
 
   override def contains(o: Any): Boolean =
     inner.contains(Box(o.asInstanceOf[E]))
@@ -116,11 +113,9 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
     inner.add(boxed)
   }
 
-  override def remove(o: Any): Boolean =
-    inner.remove(Box(o.asInstanceOf[E]))
+  override def remove(o: Any): Boolean = inner.remove(Box(o.asInstanceOf[E]))
 
-  override def clear(): Unit =
-    inner.clear()
+  override def clear(): Unit = inner.clear()
 
   override def addAll(c: Collection[_ <: E]): Boolean = {
     val iter = c.iterator()
@@ -207,19 +202,15 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
   def subSet(fromElement: E, toElement: E): SortedSet[E] =
     subSet(fromElement, true, toElement, false)
 
-  def headSet(toElement: E): SortedSet[E] =
-    headSet(toElement, false)
+  def headSet(toElement: E): SortedSet[E] = headSet(toElement, false)
 
-  def tailSet(fromElement: E): SortedSet[E] =
-    tailSet(fromElement, true)
+  def tailSet(fromElement: E): SortedSet[E] = tailSet(fromElement, true)
 
   def comparator(): Comparator[_ >: E] = _comparator
 
-  def first(): E =
-    inner.head.inner
+  def first(): E = inner.head.inner
 
-  def last(): E =
-    inner.last.inner
+  def last(): E = inner.last.inner
 
   def lower(e: E): E =
     headSet(e, false).lastOption.getOrElse(null.asInstanceOf[E])
@@ -253,6 +244,5 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
       null.asInstanceOf[E]
   }
 
-  override def clone(): TreeSet[E] =
-    new TreeSet(this)
+  override def clone(): TreeSet[E] = new TreeSet(this)
 }

@@ -188,10 +188,11 @@ private[kinesis] class KinesisReceiver[T](
      *  IRecordProcessor.processRecords() method.
      *  We're using our custom KinesisRecordProcessor in this case.
      */
-    val recordProcessorFactory = new IRecordProcessorFactory {
-      override def createProcessor: IRecordProcessor =
-        new KinesisRecordProcessor(receiver, workerId)
-    }
+    val recordProcessorFactory =
+      new IRecordProcessorFactory {
+        override def createProcessor: IRecordProcessor =
+          new KinesisRecordProcessor(receiver, workerId)
+      }
 
     worker = new Worker(recordProcessorFactory, kinesisClientLibConfiguration)
     workerThread = new Thread() {

@@ -58,8 +58,8 @@ class MongoAPIKeyManagerSpec
   override def mongoStartupPause = Some(0L)
   val timeout = Duration(10, "seconds")
 
-  lazy val logger =
-    LoggerFactory.getLogger("com.precog.common.security.MongoAPIKeyManagerSpec")
+  lazy val logger = LoggerFactory.getLogger(
+    "com.precog.common.security.MongoAPIKeyManagerSpec")
 
   "mongo API key manager" should {
 
@@ -90,15 +90,19 @@ class MongoAPIKeyManagerSpec
     }
 
     "not find missing API key" in new TestAPIKeyManager {
-      val result =
-        Await.result(apiKeyManager.findAPIKey(notFoundAPIKeyID), timeout)
+      val result = Await.result(
+        apiKeyManager.findAPIKey(notFoundAPIKeyID),
+        timeout)
       result must beNone
     }
 
     "issue new API key" in new TestAPIKeyManager {
       val name = "newAPIKey"
-      val fResult =
-        apiKeyManager.createAPIKey(Some(name), None, rootAPIKey, Set.empty)
+      val fResult = apiKeyManager.createAPIKey(
+        Some(name),
+        None,
+        rootAPIKey,
+        Set.empty)
 
       val result = Await.result(fResult, timeout)
 
@@ -126,20 +130,22 @@ class MongoAPIKeyManagerSpec
 
     "move API key to deleted pool on deletion" in new TestAPIKeyManager {
 
-      type Results = (
-          Option[APIKeyRecord],
-          Option[APIKeyRecord],
-          Option[APIKeyRecord],
-          Option[APIKeyRecord])
+      type Results =
+        (
+            Option[APIKeyRecord],
+            Option[APIKeyRecord],
+            Option[APIKeyRecord],
+            Option[APIKeyRecord])
 
-      val fut: Future[Results] = for {
-        before <- apiKeyManager.findAPIKey(child2.apiKey)
-        deleted <- apiKeyManager.deleteAPIKey(before.get.apiKey)
-        after <- apiKeyManager.findAPIKey(child2.apiKey)
-        deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
-      } yield {
-        (before, deleted, after, deleteCol)
-      }
+      val fut: Future[Results] =
+        for {
+          before <- apiKeyManager.findAPIKey(child2.apiKey)
+          deleted <- apiKeyManager.deleteAPIKey(before.get.apiKey)
+          after <- apiKeyManager.findAPIKey(child2.apiKey)
+          deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
+        } yield {
+          (before, deleted, after, deleteCol)
+        }
 
       val result = Await.result(fut, timeout)
 
@@ -151,22 +157,24 @@ class MongoAPIKeyManagerSpec
     }
 
     "no failure on deleting API key that is already deleted" in new TestAPIKeyManager {
-      type Results = (
-          Option[APIKeyRecord],
-          Option[APIKeyRecord],
-          Option[APIKeyRecord],
-          Option[APIKeyRecord],
-          Option[APIKeyRecord])
+      type Results =
+        (
+            Option[APIKeyRecord],
+            Option[APIKeyRecord],
+            Option[APIKeyRecord],
+            Option[APIKeyRecord],
+            Option[APIKeyRecord])
 
-      val fut: Future[Results] = for {
-        before <- apiKeyManager.findAPIKey(child2.apiKey)
-        deleted1 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
-        deleted2 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
-        after <- apiKeyManager.findAPIKey(child2.apiKey)
-        deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
-      } yield {
-        (before, deleted1, deleted2, after, deleteCol)
-      }
+      val fut: Future[Results] =
+        for {
+          before <- apiKeyManager.findAPIKey(child2.apiKey)
+          deleted1 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
+          deleted2 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
+          after <- apiKeyManager.findAPIKey(child2.apiKey)
+          deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
+        } yield {
+          (before, deleted1, deleted2, after, deleteCol)
+        }
 
       val result = Await.result(fut, timeout)
 
@@ -181,8 +189,8 @@ class MongoAPIKeyManagerSpec
   trait TestAPIKeyManager extends After {
     import MongoAPIKeyManagerSpec.dbId
     val defaultActorSystem = ActorSystem("apiKeyManagerTest")
-    implicit val execContext =
-      ExecutionContext.defaultExecutionContext(defaultActorSystem)
+    implicit val execContext = ExecutionContext.defaultExecutionContext(
+      defaultActorSystem)
 
     val dbName = "test_v1_" + dbId.getAndIncrement()
     val testDB =
@@ -204,11 +212,12 @@ class MongoAPIKeyManagerSpec
         MongoAPIKeyManagerSettings.defaults.grants),
       to)
 
-    val apiKeyManager = new MongoAPIKeyManager(
-      mongo,
-      testDB,
-      MongoAPIKeyManagerSettings.defaults
-        .copy(rootKeyId = rootAPIKeyOrig.apiKey))
+    val apiKeyManager =
+      new MongoAPIKeyManager(
+        mongo,
+        testDB,
+        MongoAPIKeyManagerSettings.defaults
+          .copy(rootKeyId = rootAPIKeyOrig.apiKey))
 
     val notFoundAPIKeyID = "NOT-GOING-TO-FIND"
 

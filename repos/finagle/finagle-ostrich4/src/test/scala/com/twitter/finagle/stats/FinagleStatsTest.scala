@@ -19,9 +19,10 @@ import com.twitter.ostrich.stats.Stats
 
 @RunWith(classOf[JUnitRunner])
 class FinagleStatsTest extends FunSuite with MockitoSugar {
-  val dummyService = new Service[String, String] {
-    def apply(request: String) = Future.value("You said: " + request)
-  }
+  val dummyService =
+    new Service[String, String] {
+      def apply(request: String) = Future.value("You said: " + request)
+    }
 
   class StringCodec extends CodecFactory[String, String] {
     def server =

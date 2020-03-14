@@ -87,8 +87,9 @@ class JsonParsingOptionsSuite extends QueryTest with SharedSQLContext {
   test("allowNumericLeadingZeros on") {
     val str = """{"age": 0018}"""
     val rdd = sqlContext.sparkContext.parallelize(Seq(str))
-    val df =
-      sqlContext.read.option("allowNumericLeadingZeros", "true").json(rdd)
+    val df = sqlContext.read
+      .option("allowNumericLeadingZeros", "true")
+      .json(rdd)
 
     assert(df.schema.head.name == "age")
     assert(df.first().getLong(0) == 18)

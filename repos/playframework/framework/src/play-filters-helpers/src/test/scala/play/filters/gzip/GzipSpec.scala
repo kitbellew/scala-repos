@@ -118,10 +118,11 @@ object GzipSpec extends Specification {
         expected: String,
         gunzip: Enumeratee[Array[Byte], Array[Byte]] = Gzip.gunzip(),
         chunkSize: Option[Int] = None) = {
-      val gzipEnumerator = chunkSize match {
-        case Some(size) => Enumerator.enumerate(input.grouped(size))
-        case None       => Enumerator(input)
-      }
+      val gzipEnumerator =
+        chunkSize match {
+          case Some(size) => Enumerator.enumerate(input.grouped(size))
+          case None       => Enumerator(input)
+        }
       val future = gzipEnumerator &> gunzip |>>> Iteratee.consume[Array[Byte]]()
       val result = new String(Await.result(future, 10.seconds), "utf-8")
       result must_== expected

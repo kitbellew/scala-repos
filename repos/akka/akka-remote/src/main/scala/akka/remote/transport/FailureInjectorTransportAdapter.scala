@@ -70,8 +70,8 @@ private[remote] class FailureInjectorTransportAdapter(
 
   private def rng = ThreadLocalRandom.current()
   private val log = Logging(extendedSystem, getClass.getName)
-  private val shouldDebugLog: Boolean =
-    extendedSystem.settings.config.getBoolean("akka.remote.gremlin.debug")
+  private val shouldDebugLog: Boolean = extendedSystem.settings.config
+    .getBoolean("akka.remote.gremlin.debug")
 
   @volatile private var upstreamListener: Option[AssociationEventListener] =
     None
@@ -191,8 +191,8 @@ private[remote] class FailureInjectorTransportAdapter(
     }
 
   def chaosMode(remoteAddress: Address): GremlinMode = {
-    val mode =
-      addressChaosTable.get(remoteAddress.copy(protocol = "", system = ""))
+    val mode = addressChaosTable.get(
+      remoteAddress.copy(protocol = "", system = ""))
     if (mode eq null)
       PassThru
     else

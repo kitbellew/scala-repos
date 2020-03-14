@@ -29,12 +29,13 @@ object FibStateExample extends App {
 
   val initialState = (0, 1)
 
-  val (nextFib: State[(Int, Int), Int]) = for {
-    s <- init: State[(Int, Int), (Int, Int)]
-    (a, b) = s
-    n = a + b
-    _ <- put(b, n)
-  } yield b // if we yield n, getNFibs gives you (1,2,3,5,8...)
+  val (nextFib: State[(Int, Int), Int]) =
+    for {
+      s <- init: State[(Int, Int), (Int, Int)]
+      (a, b) = s
+      n = a + b
+      _ <- put(b, n)
+    } yield b // if we yield n, getNFibs gives you (1,2,3,5,8...)
   // yield b instead to get (1,1,2,3...)
 
   def getNFibs(k: Int): State[(Int, Int), List[Int]] = {
@@ -83,8 +84,9 @@ object LaunchburyInterpreter extends App {
   // \x.x
   val example1 = Lambda("x", Var("x"))
   // let z = \y.y in (\x.x) z
-  val example2 =
-    Let(HashMap("z" -> Lambda("y", Var("y"))), Apply(example1, "z"))
+  val example2 = Let(
+    HashMap("z" -> Lambda("y", Var("y"))),
+    Apply(example1, "z"))
 
   case class ReduceState(heap: Map[String, Expr], freshVars: Stream[String])
 
@@ -112,11 +114,12 @@ object LaunchburyInterpreter extends App {
   // replaces every bound variable with a new, "fresh" variable
   // e.g. freshen(Lambda("x", Var("x"))).eval(initialState) => Lambda("$1", Var("$1"))
   private def freshen(e: Expr): State[ReduceState, Expr] = {
-    val getFreshVar = for {
-      s <- init: State[ReduceState, ReduceState]
-      ReduceState(_, f #:: fs) = s
-      _ <- modify((s: ReduceState) => s.copy(freshVars = fs))
-    } yield f
+    val getFreshVar =
+      for {
+        s <- init: State[ReduceState, ReduceState]
+        ReduceState(_, f #:: fs) = s
+        _ <- modify((s: ReduceState) => s.copy(freshVars = fs))
+      } yield f
     // Lambda and Let define new bound variables, so we substitute fresh variables into them
     // Var and Apply just recursively traverse the AST
     e match {
@@ -174,8 +177,9 @@ object LaunchburyInterpreter extends App {
           freshendE <- freshen(e3)
         } yield freshendE
       case Let(bs, e2) => {
-        val heapAdd = ((binding: (String, Expr)) =>
-          modify((s: ReduceState) => s.copy(heap = s.heap + binding)))
+        val heapAdd =
+          ((binding: (String, Expr)) =>
+            modify((s: ReduceState) => s.copy(heap = s.heap + binding)))
         bs.toList.traverseS(heapAdd) >> reduce(e2)
       }
     }

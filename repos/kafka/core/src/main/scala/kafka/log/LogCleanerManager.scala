@@ -52,14 +52,15 @@ private[log] class LogCleanerManager(
   private[log] val offsetCheckpointFile = "cleaner-offset-checkpoint"
 
   /* the offset checkpoints holding the last cleaned point for each log */
-  private val checkpoints = logDirs
-    .map(dir =>
-      (dir, new OffsetCheckpoint(new File(dir, offsetCheckpointFile))))
-    .toMap
+  private val checkpoints =
+    logDirs
+      .map(dir =>
+        (dir, new OffsetCheckpoint(new File(dir, offsetCheckpointFile))))
+      .toMap
 
   /* the set of logs currently being cleaned */
-  private val inProgress =
-    mutable.HashMap[TopicAndPartition, LogCleaningState]()
+  private val inProgress = mutable
+    .HashMap[TopicAndPartition, LogCleaningState]()
 
   /* a global lock used to control all access to the in-progress set and the offset checkpoints */
   private val lock = new ReentrantLock
@@ -109,8 +110,9 @@ private[log] class LogCleanerManager(
             // is no longer valid, reset to the log starting offset and log the error event
             val logStartOffset = log.logSegments.head.baseOffset
             val firstDirtyOffset = {
-              val offset =
-                lastClean.getOrElse(topicAndPartition, logStartOffset)
+              val offset = lastClean.getOrElse(
+                topicAndPartition,
+                logStartOffset)
               if (offset < logStartOffset) {
                 error(
                   "Resetting first dirty offset to log start offset %d since the checkpointed offset %d is invalid."

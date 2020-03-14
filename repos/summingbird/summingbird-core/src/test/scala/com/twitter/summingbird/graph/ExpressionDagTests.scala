@@ -151,38 +151,42 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
 
   //Check the Node[T] <=> Id[T] is an Injection for all nodes reachable from the root
 
-  property("toLiteral/Literal.evaluate is a bijection") = forAll(genForm) {
-    form => toLiteral.apply(form).evaluate == form
-  }
+  property("toLiteral/Literal.evaluate is a bijection") =
+    forAll(genForm) { form =>
+      toLiteral.apply(form).evaluate == form
+    }
 
-  property("Going to ExpressionDag round trips") = forAll(genForm) { form =>
-    val (dag, id) = ExpressionDag(form, toLiteral)
-    dag.evaluate(id) == form
-  }
+  property("Going to ExpressionDag round trips") =
+    forAll(genForm) { form =>
+      val (dag, id) = ExpressionDag(form, toLiteral)
+      dag.evaluate(id) == form
+    }
 
-  property("CombineInc does not change results") = forAll(genForm) { form =>
-    val simplified = ExpressionDag.applyRule(form, toLiteral, CombineInc)
-    form.evaluate == simplified.evaluate
-  }
+  property("CombineInc does not change results") =
+    forAll(genForm) { form =>
+      val simplified = ExpressionDag.applyRule(form, toLiteral, CombineInc)
+      form.evaluate == simplified.evaluate
+    }
 
-  property("RemoveInc removes all Inc") = forAll(genForm) { form =>
-    val noIncForm = ExpressionDag.applyRule(form, toLiteral, RemoveInc)
-    def noInc(f: Formula[Int]): Boolean =
-      f match {
-        case Constant(_)   => true
-        case Inc(_, _)     => false
-        case Sum(l, r)     => noInc(l) && noInc(r)
-        case Product(l, r) => noInc(l) && noInc(r)
-      }
-    noInc(noIncForm) && (noIncForm.evaluate == form.evaluate)
-  }
+  property("RemoveInc removes all Inc") =
+    forAll(genForm) { form =>
+      val noIncForm = ExpressionDag.applyRule(form, toLiteral, RemoveInc)
+      def noInc(f: Formula[Int]): Boolean =
+        f match {
+          case Constant(_)   => true
+          case Inc(_, _)     => false
+          case Sum(l, r)     => noInc(l) && noInc(r)
+          case Product(l, r) => noInc(l) && noInc(r)
+        }
+      noInc(noIncForm) && (noIncForm.evaluate == form.evaluate)
+    }
 
   /**
     * This law is important for the rules to work as expected, and not have equivalent
     * nodes appearing more than once in the Dag
     */
-  property("Node structural equality implies Id equality") = forAll(genForm) {
-    form =>
+  property("Node structural equality implies Id equality") =
+    forAll(genForm) { form =>
       val (dag, id) = ExpressionDag(form, toLiteral)
       type BoolT[T] = Boolean // constant type function
       dag.idToExp
@@ -195,7 +199,7 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
             }
           })
         .forall(identity)
-  }
+    }
 
   // The normal Inc gen recursively calls the general dag Generator
   def genChainInc: Gen[Formula[Int]] =
@@ -206,14 +210,14 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
 
   def genChain: Gen[Formula[Int]] =
     Gen.frequency((1, genConst), (3, genChainInc))
-  property("CombineInc compresses linear Inc chains") = forAll(genChain) {
-    chain =>
+  property("CombineInc compresses linear Inc chains") =
+    forAll(genChain) { chain =>
       ExpressionDag.applyRule(chain, toLiteral, CombineInc) match {
         case Constant(n)         => true
         case Inc(Constant(n), b) => true
         case _                   => false // All others should have been compressed
       }
-  }
+    }
 
   /**
     * We should be able to totally evaluate these formulas
@@ -226,10 +230,11 @@ object ExpressionDagTests extends Properties("ExpressionDag") {
       case _                                 => None
     }
   }
-  property("EvaluationRule totally evaluates") = forAll(genForm) { form =>
-    ExpressionDag.applyRule(form, toLiteral, EvaluationRule) match {
-      case Constant(x) if x == form.evaluate => true
-      case _                                 => false
+  property("EvaluationRule totally evaluates") =
+    forAll(genForm) { form =>
+      ExpressionDag.applyRule(form, toLiteral, EvaluationRule) match {
+        case Constant(x) if x == form.evaluate => true
+        case _                                 => false
+      }
     }
-  }
 }

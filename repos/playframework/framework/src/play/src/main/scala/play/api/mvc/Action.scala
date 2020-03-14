@@ -372,8 +372,7 @@ trait ActionFunction[-R[_], +P[_]] {
   def compose[Q[_]](other: ActionFunction[Q, R]): ActionFunction[Q, P] =
     other.andThen(this)
 
-  def compose(other: ActionBuilder[R]): ActionBuilder[P] =
-    other.andThen(this)
+  def compose(other: ActionBuilder[R]): ActionBuilder[P] = other.andThen(this)
 
 }
 

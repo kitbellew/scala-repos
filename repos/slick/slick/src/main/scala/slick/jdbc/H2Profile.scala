@@ -108,8 +108,8 @@ trait H2Profile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size =
-          sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym.flatMap(
+          _.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR")(l =>
           if (l.varying)
             s"VARCHAR(${l.length})"
@@ -147,11 +147,12 @@ trait H2Profile extends JdbcProfile {
   }
 
   class JdbcTypes extends super.JdbcTypes {
-    override val uuidJdbcType = new UUIDJdbcType {
-      override def sqlTypeName(sym: Option[FieldSymbol]) = "UUID"
-      override def valueToSQLLiteral(value: UUID) = "'" + value + "'"
-      override def hasLiteralForm = true
-    }
+    override val uuidJdbcType =
+      new UUIDJdbcType {
+        override def sqlTypeName(sym: Option[FieldSymbol]) = "UUID"
+        override def valueToSQLLiteral(value: UUID) = "'" + value + "'"
+        override def hasLiteralForm = true
+      }
   }
 
   /* Extending super.InsertBuilder here instead of super.UpsertBuilder. MERGE is almost identical to INSERT on H2. */
@@ -164,9 +165,8 @@ trait H2Profile extends JdbcProfile {
       extends super.CountingInsertActionComposerImpl[U](compiled) {
     // H2 cannot perform server-side insert-or-update with soft insert semantics. We don't have to do
     // the same in ReturningInsertInvoker because H2 does not allow returning non-AutoInc keys anyway.
-    override protected val useServerSideUpsert =
-      compiled.upsert.fields.forall(fs =>
-        !fs.options.contains(ColumnOption.AutoInc))
+    override protected val useServerSideUpsert = compiled.upsert.fields.forall(
+      fs => !fs.options.contains(ColumnOption.AutoInc))
     override protected def useTransactionForUpsert = !useServerSideUpsert
   }
 }

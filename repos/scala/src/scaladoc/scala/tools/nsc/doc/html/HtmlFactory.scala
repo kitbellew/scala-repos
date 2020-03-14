@@ -82,11 +82,12 @@ class HtmlFactory(val universe: doc.Universe, val reporter: ScalaDocReporter) {
   def generate() {
 
     def copyResource(subPath: String) {
-      val bytes = new Streamable.Bytes {
-        val p = "/scala/tools/nsc/doc/html/resource/" + subPath
-        val inputStream = getClass.getResourceAsStream(p)
-        assert(inputStream != null, p)
-      }.toByteArray()
+      val bytes =
+        new Streamable.Bytes {
+          val p = "/scala/tools/nsc/doc/html/resource/" + subPath
+          val inputStream = getClass.getResourceAsStream(p)
+          assert(inputStream != null, p)
+        }.toByteArray()
       val dest = Directory(siteRoot) / subPath
       dest.parent.createDirectory()
       val out = dest.toFile.bufferedOutput()

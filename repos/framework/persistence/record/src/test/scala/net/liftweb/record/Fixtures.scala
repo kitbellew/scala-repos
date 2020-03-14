@@ -317,10 +317,11 @@ class CustomFormatDateTimeRecord private ()
   def meta = CustomFormatDateTimeRecord
 
   object customFormatDateTimeField extends DateTimeField(this) {
-    override val formats = new DefaultFormats {
-      override def dateFormatter =
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    }
+    override val formats =
+      new DefaultFormats {
+        override def dateFormatter =
+          new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+      }
   }
 
 }

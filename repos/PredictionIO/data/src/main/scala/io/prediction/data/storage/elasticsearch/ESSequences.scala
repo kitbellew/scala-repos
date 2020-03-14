@@ -52,10 +52,11 @@ class ESSequences(client: Client, config: StorageClientConfig, index: String)
 
   def genNext(name: String): Int = {
     try {
-      val response = client
-        .prepareIndex(index, estype, name)
-        .setSource(compact(render("n" -> name)))
-        .get
+      val response =
+        client
+          .prepareIndex(index, estype, name)
+          .setSource(compact(render("n" -> name)))
+          .get
       response.getVersion().toInt
     } catch {
       case e: ElasticsearchException =>

@@ -32,36 +32,37 @@ class ReplProps {
 
   def enversion(s: String) = {
     import FormattableFlags._
-    val v = new Formattable {
-      override def formatTo(
-          formatter: Formatter,
-          flags: Int,
-          width: Int,
-          precision: Int) = {
-        val version =
-          if ((flags & ALTERNATE) != 0)
-            versionNumberString
-          else
-            versionString
-        val left =
-          if ((flags & LEFT_JUSTIFY) != 0)
-            "-"
-          else
-            ""
-        val w =
-          if (width >= 0)
-            s"$width"
-          else
-            ""
-        val p =
-          if (precision >= 0)
-            s".$precision"
-          else
-            ""
-        val fmt = s"%${left}${w}${p}s"
-        formatter.format(fmt, version)
+    val v =
+      new Formattable {
+        override def formatTo(
+            formatter: Formatter,
+            flags: Int,
+            width: Int,
+            precision: Int) = {
+          val version =
+            if ((flags & ALTERNATE) != 0)
+              versionNumberString
+            else
+              versionString
+          val left =
+            if ((flags & LEFT_JUSTIFY) != 0)
+              "-"
+            else
+              ""
+          val w =
+            if (width >= 0)
+              s"$width"
+            else
+              ""
+          val p =
+            if (precision >= 0)
+              s".$precision"
+            else
+              ""
+          val fmt = s"%${left}${w}${p}s"
+          formatter.format(fmt, version)
+        }
       }
-    }
     s.format(v, javaVersion, javaVmName)
   }
   def encolor(s: String) = {

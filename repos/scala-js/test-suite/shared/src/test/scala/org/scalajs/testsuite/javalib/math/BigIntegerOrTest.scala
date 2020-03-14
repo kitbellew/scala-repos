@@ -17,8 +17,8 @@ class BigIntegerOrTest {
   @Test def testNegNegFirstLonger(): Unit = {
     val aBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = -1
     val bSign = -1
     val rBytes = Array[Byte](-1, 1, 75, -89, -45, -2, -3, -18, -36, -17, -10,
@@ -35,8 +35,8 @@ class BigIntegerOrTest {
   }
 
   @Test def testNegNegFirstShorter(): Unit = {
-    val aBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val bBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
     val aSign = -1
@@ -55,10 +55,10 @@ class BigIntegerOrTest {
   }
 
   @Test def testNegNegSameLength(): Unit = {
-    val aBytes =
-      Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26,
+      -117)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = -1
     val bSign = -1
     val rBytes = Array[Byte](-1, 127, -57, -101, -5, -5, -18, -38, -17, -2, -65,
@@ -75,8 +75,8 @@ class BigIntegerOrTest {
   }
 
   @Test def testNegPos(): Unit = {
-    val aBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val bBytes = Array[Byte](0)
     val aSign = -1
     val bSign = 0
@@ -96,8 +96,8 @@ class BigIntegerOrTest {
   @Test def testNegPosFirstLonger(): Unit = {
     val aBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = -1
     val bSign = 1
     val rBytes = Array[Byte](-1, 127, -10, -57, -101, -1, -1, -2, -2, -91, -2,
@@ -114,14 +114,14 @@ class BigIntegerOrTest {
   }
 
   @Test def testNegPosFirstShorter(): Unit = {
-    val aBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val bBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
     val aSign = -1
     val bSign = 1
-    val rBytes =
-      Array[Byte](-74, 91, 47, -5, -13, -7, -5, -33, -49, -65, -1, -9, -3)
+    val rBytes = Array[Byte](-74, 91, 47, -5, -13, -7, -5, -33, -49, -65, -1,
+      -9, -3)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)
@@ -134,10 +134,10 @@ class BigIntegerOrTest {
   }
 
   @Test def testNegPosSameLength(): Unit = {
-    val aBytes =
-      Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26,
+      -117)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = -1
     val bSign = 1
     val rBytes = Array[Byte](-1, 5, 79, -73, -9, -76, -3, 78, -35, -17, 119)
@@ -172,12 +172,12 @@ class BigIntegerOrTest {
   @Test def testPosNegFirstLonger(): Unit = {
     val aBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = 1
     val bSign = -1
-    val rBytes =
-      Array[Byte](-74, 91, 47, -5, -13, -7, -5, -33, -49, -65, -1, -9, -3)
+    val rBytes = Array[Byte](-74, 91, 47, -5, -13, -7, -5, -33, -49, -65, -1,
+      -9, -3)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)
@@ -190,8 +190,8 @@ class BigIntegerOrTest {
   }
 
   @Test def testPosNegFirstShorter(): Unit = {
-    val aBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val bBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
     val aSign = 1
@@ -210,10 +210,10 @@ class BigIntegerOrTest {
   }
 
   @Test def testPosNegSameLength(): Unit = {
-    val aBytes =
-      Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26,
+      -117)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = 1
     val bSign = -1
     val rBytes = Array[Byte](-1, 1, -126, 59, 103, -2, -11, -7, -3, -33, -57,
@@ -232,8 +232,8 @@ class BigIntegerOrTest {
   @Test def testPosPosFirstLonger(): Unit = {
     val aBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = 1
     val bSign = 1
     val rBytes = Array[Byte](0, -128, 9, 56, 100, -2, -3, -3, -3, 95, 15, -9,
@@ -250,8 +250,8 @@ class BigIntegerOrTest {
   }
 
   @Test def testPosPosFirstShorter(): Unit = {
-    val aBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val bBytes = Array[Byte](-128, 9, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35,
       26, -117, 23, 87, -25, -75)
     val aSign = 1
@@ -270,14 +270,14 @@ class BigIntegerOrTest {
   }
 
   @Test def testPosPosSameLength(): Unit = {
-    val aBytes =
-      Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26, -117)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-128, 56, 100, -2, -76, 89, 45, 91, 3, -15, 35, 26,
+      -117)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = 1
     val bSign = 1
-    val rBytes =
-      Array[Byte](0, -2, -3, -4, -4, -1, -66, 95, 47, 123, 59, -13, 39, 30, -97)
+    val rBytes = Array[Byte](0, -2, -3, -4, -4, -1, -66, 95, 47, 123, 59, -13,
+      39, 30, -97)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)
@@ -290,13 +290,13 @@ class BigIntegerOrTest {
   }
 
   @Test def testPosZero(): Unit = {
-    val aBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val aBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val bBytes = Array[Byte](0)
     val aSign = 1
     val bSign = 0
-    val rBytes =
-      Array[Byte](0, -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val rBytes = Array[Byte](0, -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5,
+      14, 23)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)
@@ -318,8 +318,8 @@ class BigIntegerOrTest {
 
   @Test def testZeroNeg(): Unit = {
     val aBytes = Array[Byte](0)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = 0
     val bSign = -1
     val rBytes = Array[Byte](-1, 1, 2, 3, 3, -6, -15, -24, -40, -49, -58, -67,
@@ -354,12 +354,12 @@ class BigIntegerOrTest {
 
   @Test def testZeroPos(): Unit = {
     val aBytes = Array[Byte](0)
-    val bBytes =
-      Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val bBytes = Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14,
+      23)
     val aSign = 0
     val bSign = 1
-    val rBytes =
-      Array[Byte](0, -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
+    val rBytes = Array[Byte](0, -2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5,
+      14, 23)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)

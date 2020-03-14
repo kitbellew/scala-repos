@@ -104,10 +104,11 @@ object Analytics extends Logging {
         println("GRAPHX: Number of vertices " + graph.vertices.count)
         println("GRAPHX: Number of edges " + graph.edges.count)
 
-        val pr = (numIterOpt match {
-          case Some(numIter) => PageRank.run(graph, numIter)
-          case None          => PageRank.runUntilConvergence(graph, tol)
-        }).vertices.cache()
+        val pr =
+          (numIterOpt match {
+            case Some(numIter) => PageRank.run(graph, numIter)
+            case None          => PageRank.runUntilConvergence(graph, tol)
+          }).vertices.cache()
 
         println("GRAPHX: Total rank: " + pr.map(_._2).reduce(_ + _))
 
@@ -131,8 +132,9 @@ object Analytics extends Logging {
         println("|      Connected Components          |")
         println("======================================")
 
-        val sc = new SparkContext(
-          conf.setAppName("ConnectedComponents(" + fname + ")"))
+        val sc =
+          new SparkContext(
+            conf.setAppName("ConnectedComponents(" + fname + ")"))
         val unpartitionedGraph = GraphLoader
           .edgeListFile(
             sc,
@@ -163,8 +165,8 @@ object Analytics extends Logging {
         println("|      Triangle Count                |")
         println("======================================")
 
-        val sc = new SparkContext(
-          conf.setAppName("TriangleCount(" + fname + ")"))
+        val sc =
+          new SparkContext(conf.setAppName("TriangleCount(" + fname + ")"))
         val graph = GraphLoader
           .edgeListFile(
             sc,

@@ -56,10 +56,11 @@ object BatchLaws extends Properties("BatchID") {
       (b1: BatchID, diff: Long) =>
         // We can't enumerate too much:
         val b2 = b1 + diff
-        val interval = Interval.leftClosedRightOpen(b1, b2.next) match {
-          case Left(i)  => i
-          case Right(i) => i
-        }
+        val interval =
+          Interval.leftClosedRightOpen(b1, b2.next) match {
+            case Left(i)  => i
+            case Right(i) => i
+          }
         (BatchID.toInterval(BatchID.range(b1, b2)) == Some(interval)) &&
         BatchID.toIterable(interval).toList == BatchID.range(b1, b2).toList
     }

@@ -125,10 +125,11 @@ abstract class SerializerWithStringManifest extends Serializer {
   final def fromBinary(
       bytes: Array[Byte],
       manifest: Option[Class[_]]): AnyRef = {
-    val manifestString = manifest match {
-      case Some(c) ⇒ c.getName
-      case None ⇒ ""
-    }
+    val manifestString =
+      manifest match {
+        case Some(c) ⇒ c.getName
+        case None ⇒ ""
+      }
     fromBinary(bytes, manifestString)
   }
 
@@ -248,12 +249,14 @@ class JavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
   }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
-    val in = new ClassLoaderObjectInputStream(
-      system.dynamicAccess.classLoader,
-      new ByteArrayInputStream(bytes))
-    val obj = JavaSerializer.currentSystem.withValue(system) {
-      in.readObject
-    }
+    val in =
+      new ClassLoaderObjectInputStream(
+        system.dynamicAccess.classLoader,
+        new ByteArrayInputStream(bytes))
+    val obj =
+      JavaSerializer.currentSystem.withValue(system) {
+        in.readObject
+      }
     in.close()
     obj
   }

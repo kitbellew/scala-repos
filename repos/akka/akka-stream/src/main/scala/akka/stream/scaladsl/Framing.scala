@@ -133,8 +133,8 @@ object Framing {
 
   class FramingException(msg: String) extends RuntimeException(msg)
 
-  private final val bigEndianDecoder: (ByteIterator, Int) ⇒ Int = (bs, length) ⇒
-    {
+  private final val bigEndianDecoder: (ByteIterator, Int) ⇒ Int =
+    (bs, length) ⇒ {
       var count = length
       var decoded = 0
       while (count > 0) {
@@ -197,8 +197,9 @@ object Framing {
 
     @tailrec
     private def doParse(ctx: Context[ByteString]): SyncDirective = {
-      val possibleMatchPos =
-        buffer.indexOf(firstSeparatorByte, from = nextPossibleMatch)
+      val possibleMatchPos = buffer.indexOf(
+        firstSeparatorByte,
+        from = nextPossibleMatch)
       if (possibleMatchPos > maximumLineBytes)
         ctx.fail(new FramingException(s"Read ${buffer.size} bytes " +
           s"which is more than $maximumLineBytes without seeing a line terminator"))
@@ -245,10 +246,11 @@ object Framing {
     private var buffer = ByteString.empty
     private var frameSize = Int.MaxValue
     private val minimumChunkSize = lengthFieldOffset + lengthFieldLength
-    private val intDecoder = byteOrder match {
-      case ByteOrder.BIG_ENDIAN ⇒ bigEndianDecoder
-      case ByteOrder.LITTLE_ENDIAN ⇒ littleEndianDecoder
-    }
+    private val intDecoder =
+      byteOrder match {
+        case ByteOrder.BIG_ENDIAN ⇒ bigEndianDecoder
+        case ByteOrder.LITTLE_ENDIAN ⇒ littleEndianDecoder
+      }
 
     private def tryPull(ctx: Context[ByteString]): SyncDirective =
       if (ctx.isFinishing)
@@ -288,8 +290,9 @@ object Framing {
       if (bufSize >= frameSize)
         emitFrame(ctx)
       else if (bufSize >= minimumChunkSize) {
-        val parsedLength =
-          intDecoder(buffer.iterator.drop(lengthFieldOffset), lengthFieldLength)
+        val parsedLength = intDecoder(
+          buffer.iterator.drop(lengthFieldOffset),
+          lengthFieldLength)
         frameSize = parsedLength + minimumChunkSize
         if (frameSize > maximumFrameLength)
           ctx.fail(new FramingException(

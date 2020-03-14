@@ -92,8 +92,8 @@ trait MergeSpec[M[+_]]
         | {"key":[5908438637678328472],"value":{"a":2,"b":6}}
         | {"key":[5908438637678328473],"value":{"a":3,"b":7}}
         | """.stripMargin
-      val foo =
-        fromJson(JParser.parseManyFromString(fooJson).valueOr(throw _).toStream)
+      val foo = fromJson(
+        JParser.parseManyFromString(fooJson).valueOr(throw _).toStream)
 
       val barJson =
         """
@@ -104,8 +104,8 @@ trait MergeSpec[M[+_]]
         | {"key":[5908438637678328580],"value":{"a":0,"c":12,"b":-1}}
         | {"key":[5908438637678328581],"value":{"a":0,"c":13,"b":-1}}
         | """.stripMargin
-      val bar =
-        fromJson(JParser.parseManyFromString(barJson).valueOr(throw _).toStream)
+      val bar = fromJson(
+        JParser.parseManyFromString(barJson).valueOr(throw _).toStream)
 
       val resultJson0 =
         """
@@ -125,60 +125,56 @@ trait MergeSpec[M[+_]]
       val oneField = CPathField("1")
       val twoField = CPathField("2")
 
-      val grouping =
-        GroupingAlignment(
-          TransSpec1.Id,
-          TransSpec1.Id,
-          GroupingSource(
-            bar,
-            DerefObjectStatic(Leaf(Source), keyField),
-            Some(
-              InnerObjectConcat(
-                ObjectDelete(Leaf(Source), Set(valueField)),
-                WrapObject(
-                  DerefObjectStatic(
-                    DerefObjectStatic(Leaf(Source), valueField),
-                    cField),
-                  "value"))),
-            0,
-            GroupKeySpecOr(
-              GroupKeySpecSource(
-                oneField,
+      val grouping = GroupingAlignment(
+        TransSpec1.Id,
+        TransSpec1.Id,
+        GroupingSource(
+          bar,
+          DerefObjectStatic(Leaf(Source), keyField),
+          Some(
+            InnerObjectConcat(
+              ObjectDelete(Leaf(Source), Set(valueField)),
+              WrapObject(
                 DerefObjectStatic(
                   DerefObjectStatic(Leaf(Source), valueField),
-                  aField)),
-              GroupKeySpecSource(
-                twoField,
-                DerefObjectStatic(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  bField))
-            )
-          ),
-          GroupingSource(
-            foo,
-            DerefObjectStatic(Leaf(Source), keyField),
-            Some(
-              InnerObjectConcat(
-                ObjectDelete(Leaf(Source), Set(valueField)),
-                WrapObject(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  "value"))),
-            3,
-            GroupKeySpecAnd(
-              GroupKeySpecSource(
-                oneField,
-                DerefObjectStatic(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  aField)),
-              GroupKeySpecSource(
-                twoField,
-                DerefObjectStatic(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  bField))
-            )
-          ),
-          GroupingSpec.Intersection
-        )
+                  cField),
+                "value"))),
+          0,
+          GroupKeySpecOr(
+            GroupKeySpecSource(
+              oneField,
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                aField)),
+            GroupKeySpecSource(
+              twoField,
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                bField))
+          )
+        ),
+        GroupingSource(
+          foo,
+          DerefObjectStatic(Leaf(Source), keyField),
+          Some(InnerObjectConcat(
+            ObjectDelete(Leaf(Source), Set(valueField)),
+            WrapObject(DerefObjectStatic(Leaf(Source), valueField), "value"))),
+          3,
+          GroupKeySpecAnd(
+            GroupKeySpecSource(
+              oneField,
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                aField)),
+            GroupKeySpecSource(
+              twoField,
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                bField))
+          )
+        ),
+        GroupingSpec.Intersection
+      )
 
       def evaluator(key: RValue, partition: GroupId => M[Table]) = {
         val K0 = RValue.fromJValue(JParser.parseUnsafe("""{"1":0,"2":4}"""))
@@ -283,86 +279,85 @@ trait MergeSpec[M[+_]]
       val extra1Field = CPathField("extra1")
       val oneField = CPathField("1")
 
-      val grouping =
-        GroupingAlignment(
-          TransSpec1.Id,
-          TransSpec1.Id,
-          GroupingSource(
-            medals,
-            DerefObjectStatic(Leaf(Source), keyField),
-            Some(
-              InnerObjectConcat(
-                ObjectDelete(Leaf(Source), Set(valueField)),
-                WrapObject(
+      val grouping = GroupingAlignment(
+        TransSpec1.Id,
+        TransSpec1.Id,
+        GroupingSource(
+          medals,
+          DerefObjectStatic(Leaf(Source), keyField),
+          Some(
+            InnerObjectConcat(
+              ObjectDelete(Leaf(Source), Set(valueField)),
+              WrapObject(
+                DerefObjectStatic(
+                  DerefObjectStatic(Leaf(Source), valueField),
+                  genderField),
+                "value"))),
+          0,
+          GroupKeySpecAnd(
+            GroupKeySpecSource(
+              extra0Field,
+              Filter(
+                EqualLiteral(
                   DerefObjectStatic(
                     DerefObjectStatic(Leaf(Source), valueField),
                     genderField),
-                  "value"))),
-            0,
-            GroupKeySpecAnd(
-              GroupKeySpecSource(
-                extra0Field,
-                Filter(
-                  EqualLiteral(
-                    DerefObjectStatic(
-                      DerefObjectStatic(Leaf(Source), valueField),
-                      genderField),
-                    CString("Men"),
-                    false),
-                  EqualLiteral(
-                    DerefObjectStatic(
-                      DerefObjectStatic(Leaf(Source), valueField),
-                      genderField),
-                    CString("Men"),
-                    false)
-                )
-              ),
-              GroupKeySpecSource(
-                oneField,
-                DerefObjectStatic(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  editionField))
-            )
-          ),
-          GroupingSource(
-            medals,
-            DerefObjectStatic(Leaf(Source), keyField),
-            Some(
-              InnerObjectConcat(
-                ObjectDelete(Leaf(Source), Set(valueField)),
-                WrapObject(
+                  CString("Men"),
+                  false),
+                EqualLiteral(
                   DerefObjectStatic(
                     DerefObjectStatic(Leaf(Source), valueField),
                     genderField),
-                  "value"))),
-            2,
-            GroupKeySpecAnd(
-              GroupKeySpecSource(
-                extra1Field,
-                Filter(
-                  EqualLiteral(
-                    DerefObjectStatic(
-                      DerefObjectStatic(Leaf(Source), valueField),
-                      genderField),
-                    CString("Women"),
-                    false),
-                  EqualLiteral(
-                    DerefObjectStatic(
-                      DerefObjectStatic(Leaf(Source), valueField),
-                      genderField),
-                    CString("Women"),
-                    false)
-                )
-              ),
-              GroupKeySpecSource(
-                oneField,
+                  CString("Men"),
+                  false)
+              )
+            ),
+            GroupKeySpecSource(
+              oneField,
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                editionField))
+          )
+        ),
+        GroupingSource(
+          medals,
+          DerefObjectStatic(Leaf(Source), keyField),
+          Some(
+            InnerObjectConcat(
+              ObjectDelete(Leaf(Source), Set(valueField)),
+              WrapObject(
                 DerefObjectStatic(
                   DerefObjectStatic(Leaf(Source), valueField),
-                  editionField))
-            )
-          ),
-          GroupingSpec.Intersection
-        )
+                  genderField),
+                "value"))),
+          2,
+          GroupKeySpecAnd(
+            GroupKeySpecSource(
+              extra1Field,
+              Filter(
+                EqualLiteral(
+                  DerefObjectStatic(
+                    DerefObjectStatic(Leaf(Source), valueField),
+                    genderField),
+                  CString("Women"),
+                  false),
+                EqualLiteral(
+                  DerefObjectStatic(
+                    DerefObjectStatic(Leaf(Source), valueField),
+                    genderField),
+                  CString("Women"),
+                  false)
+              )
+            ),
+            GroupKeySpecSource(
+              oneField,
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                editionField))
+          )
+        ),
+        GroupingSpec.Intersection
+      )
 
       def evaluator(key: RValue, partition: GroupId => M[Table]) = {
         val K0 = RValue.fromJValue(
@@ -440,10 +435,11 @@ object MergeSpec extends MergeSpec[Need] {
 
   type YggConfig = IdSourceConfig with ColumnarTableModuleConfig
 
-  val yggConfig = new IdSourceConfig with ColumnarTableModuleConfig {
-    val maxSliceSize = 10
-    val smallSliceSize = 3
+  val yggConfig =
+    new IdSourceConfig with ColumnarTableModuleConfig {
+      val maxSliceSize = 10
+      val smallSliceSize = 3
 
-    val idSource = new FreshAtomicIdSource
-  }
+      val idSource = new FreshAtomicIdSource
+    }
 }

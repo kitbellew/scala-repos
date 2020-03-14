@@ -2,9 +2,10 @@ import scala.reflect.runtime.universe._
 import scala.reflect.ClassTag
 
 object Test extends App {
-  var typeMembers = typeOf[scala.reflect.api.Universe].members
-    .filter(sym => sym.isType && !sym.isClass)
-    .toList
+  var typeMembers =
+    typeOf[scala.reflect.api.Universe].members
+      .filter(sym => sym.isType && !sym.isClass)
+      .toList
   typeMembers = typeMembers.filter(
     _.name != TypeName("ModifiersCreator")
   ) // type ModifiersCreator = ModifiersExtractor
@@ -12,9 +13,10 @@ object Test extends App {
   typeMembers = typeMembers.filter(_.name != TypeName("Internal")) // internal
   typeMembers = typeMembers.filter(_.name != TypeName("Compat")) // internal
   typeMembers = typeMembers.filter(_.name != TypeName("BuildApi")) // deprecated
-  val tags = typeOf[scala.reflect.api.Universe].members
-    .filter(sym => sym.isImplicit)
-    .toList
+  val tags =
+    typeOf[scala.reflect.api.Universe].members
+      .filter(sym => sym.isImplicit)
+      .toList
 
   typeMembers.foreach(_.info)
   tags.foreach(_.info)

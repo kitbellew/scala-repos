@@ -30,15 +30,16 @@ class PersistentService[Req, Rep](factory: ServiceFactory[Req, Rep])
 }
 
 object MemcacheStress extends App {
-  private[this] val config = new {
-    val concurrency: Flag[Int] = flag("concurrency", 400, "concurrency")
-    val hosts: Flag[String] = flag("hosts", "localhost:11211", "hosts")
-    val keysize: Flag[Int] = flag("keysize", 55, "keysize")
-    val valuesize: Flag[Int] = flag("valuesize", 1, "valuesize")
-    val nworkers: Flag[Int] = flag("nworkers", -1, "nworkers")
-    val stats: Flag[Boolean] = flag("stats", true, "stats")
-    val tracing: Flag[Boolean] = flag("tracing", true, "tracing")
-  }
+  private[this] val config =
+    new {
+      val concurrency: Flag[Int] = flag("concurrency", 400, "concurrency")
+      val hosts: Flag[String] = flag("hosts", "localhost:11211", "hosts")
+      val keysize: Flag[Int] = flag("keysize", 55, "keysize")
+      val valuesize: Flag[Int] = flag("valuesize", 1, "valuesize")
+      val nworkers: Flag[Int] = flag("nworkers", -1, "nworkers")
+      val stats: Flag[Boolean] = flag("stats", true, "stats")
+      val tracing: Flag[Boolean] = flag("tracing", true, "tracing")
+    }
   val count = new AtomicLong
 
   def proc(client: memcached.Client, key: String, value: Buf) {

@@ -30,14 +30,15 @@ class StackRegistryTest extends FunSuite {
   val param1 = TestParam(999)
 
   def newStack() = {
-    val stack = new StackBuilder(
-      Stack.Leaf(
-        new Stack.Head {
-          def role: Stack.Role = headRole
-          def description: String = "the head!!"
-          def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
-        },
-        List(1, 2, 3, 4)))
+    val stack =
+      new StackBuilder(
+        Stack.Leaf(
+          new Stack.Head {
+            def role: Stack.Role = headRole
+            def description: String = "the head!!"
+            def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
+          },
+          List(1, 2, 3, 4)))
     val stackable: Stackable[List[Int]] =
       new Stack.Module1[TestParam, List[Int]] {
         def make(p: TestParam, l: List[Int]): List[Int] = p.p1 :: l
@@ -51,9 +52,10 @@ class StackRegistryTest extends FunSuite {
   }
 
   test("StackRegistry should register stacks and params properly") {
-    val reg = new StackRegistry {
-      def registryName: String = "test"
-    }
+    val reg =
+      new StackRegistry {
+        def registryName: String = "test"
+      }
     val stk = newStack()
     val params =
       Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
@@ -72,9 +74,10 @@ class StackRegistryTest extends FunSuite {
   }
 
   test("StackRegistry should unregister stacks and params properly") {
-    val reg = new StackRegistry {
-      def registryName: String = "test"
-    }
+    val reg =
+      new StackRegistry {
+        def registryName: String = "test"
+      }
     val stk = newStack()
     val params =
       Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
@@ -97,9 +100,10 @@ class StackRegistryTest extends FunSuite {
 
   test(
     "StackRegistry keeps track of the number of GlobalRegistry entries it enters") {
-    val reg = new StackRegistry {
-      def registryName: String = "test"
-    }
+    val reg =
+      new StackRegistry {
+        def registryName: String = "test"
+      }
     val stk = newStack()
     val params =
       Stack.Params.empty + param1 + param.Label("foo") + param.ProtocolLibrary(
@@ -121,9 +125,10 @@ class StackRegistryTest extends FunSuite {
   }
 
   test("Duplicates are tracked") {
-    val reg = new StackRegistry {
-      def registryName: String = "test"
-    }
+    val reg =
+      new StackRegistry {
+        def registryName: String = "test"
+      }
     val stk = newStack()
 
     val name = "aname"

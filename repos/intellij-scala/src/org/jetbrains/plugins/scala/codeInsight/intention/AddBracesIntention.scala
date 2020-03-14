@@ -56,38 +56,40 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
     def isAncestorOfElement(ancestor: PsiElement) =
       PsiTreeUtil.isContextAncestor(ancestor, element, false)
 
-    val expr: Option[ScExpression] = containing match {
-      case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
-        Some(e)
-      case ifStmt: ScIfStmt =>
-        ifStmt.thenBranch
-          .filter(isAncestorOfElement)
-          .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
-      case funDef: ScFunctionDefinition =>
-        funDef.body.filter(isAncestorOfElement)
-      case tryBlock: ScTryBlock if !tryBlock.hasRBrace =>
-        tryBlock.statements match {
-          case Seq(x: ScExpression) if isAncestorOfElement(x) => Some(x)
-          case _                                              => None
-        }
-      case finallyBlock: ScFinallyBlock =>
-        finallyBlock.expression.filter(isAncestorOfElement)
-      case whileStmt: ScWhileStmt =>
-        whileStmt.body.filter(isAncestorOfElement)
-      case doStmt: ScDoStmt =>
-        doStmt.getExprBody.filter(isAncestorOfElement)
-      case _ => None
-    }
-    val oneLinerExpr: Option[ScExpression] = expr.filter { x =>
-      val startLine =
-        editor.getDocument.getLineNumber(x.getTextRange.getStartOffset)
-      val endLine =
-        editor.getDocument.getLineNumber(x.getTextRange.getEndOffset)
-      val isBlock = x match {
-        case _: ScBlockExpr => true
-        case _              => false
-
+    val expr: Option[ScExpression] =
+      containing match {
+        case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
+          Some(e)
+        case ifStmt: ScIfStmt =>
+          ifStmt.thenBranch
+            .filter(isAncestorOfElement)
+            .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
+        case funDef: ScFunctionDefinition =>
+          funDef.body.filter(isAncestorOfElement)
+        case tryBlock: ScTryBlock if !tryBlock.hasRBrace =>
+          tryBlock.statements match {
+            case Seq(x: ScExpression) if isAncestorOfElement(x) => Some(x)
+            case _                                              => None
+          }
+        case finallyBlock: ScFinallyBlock =>
+          finallyBlock.expression.filter(isAncestorOfElement)
+        case whileStmt: ScWhileStmt =>
+          whileStmt.body.filter(isAncestorOfElement)
+        case doStmt: ScDoStmt =>
+          doStmt.getExprBody.filter(isAncestorOfElement)
+        case _ => None
       }
+    val oneLinerExpr: Option[ScExpression] = expr.filter { x =>
+      val startLine = editor.getDocument.getLineNumber(
+        x.getTextRange.getStartOffset)
+      val endLine = editor.getDocument.getLineNumber(
+        x.getTextRange.getEndOffset)
+      val isBlock =
+        x match {
+          case _: ScBlockExpr => true
+          case _              => false
+
+        }
       startLine == endLine && !isBlock
     }
     oneLinerExpr.map { expr => () =>

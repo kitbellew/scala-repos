@@ -40,8 +40,8 @@ object ProdServerStartSpec extends Specification {
     try Right(f)
     catch {
       case ExitException(message, cause, _) =>
-        val causeMessage: Option[String] =
-          cause.flatMap(c => Option(c.getMessage))
+        val causeMessage: Option[String] = cause.flatMap(c =>
+          Option(c.getMessage))
         Left((message, causeMessage))
     }
 
@@ -103,12 +103,13 @@ object ProdServerStartSpec extends Specification {
 
     "read settings, create custom ServerProvider, create a pid file, start the the server and register shutdown hooks" in withTempDir {
       tempDir =>
-        val process = new FakeServerProcess(
-          args = Seq(tempDir.getAbsolutePath),
-          propertyMap =
-            Map("play.server.provider" -> classOf[FakeServerProvider].getName),
-          pid = Some("999")
-        )
+        val process =
+          new FakeServerProcess(
+            args = Seq(tempDir.getAbsolutePath),
+            propertyMap = Map(
+              "play.server.provider" -> classOf[FakeServerProvider].getName),
+            pid = Some("999")
+          )
         val pidFile = new File(tempDir, "RUNNING_PID")
         pidFile.exists must beFalse
         val server = ProdServerStart.start(process)
@@ -127,16 +128,17 @@ object ProdServerStartSpec extends Specification {
     }
 
     "read configuration for ports" in withTempDir { tempDir =>
-      val process = new FakeServerProcess(
-        args = Seq(tempDir.getAbsolutePath),
-        propertyMap = Map(
-          "play.server.provider" -> classOf[FakeServerProvider].getName,
-          "play.server.http.port" -> "disabled",
-          "play.server.https.port" -> "443",
-          "play.server.http.address" -> "localhost"
-        ),
-        pid = Some("123")
-      )
+      val process =
+        new FakeServerProcess(
+          args = Seq(tempDir.getAbsolutePath),
+          propertyMap = Map(
+            "play.server.provider" -> classOf[FakeServerProvider].getName,
+            "play.server.http.port" -> "disabled",
+            "play.server.https.port" -> "443",
+            "play.server.http.address" -> "localhost"
+          ),
+          pid = Some("123")
+        )
       val pidFile = new File(tempDir, "RUNNING_PID")
       pidFile.exists must beFalse
       val server = ProdServerStart.start(process)
@@ -156,16 +158,17 @@ object ProdServerStartSpec extends Specification {
     }
 
     "read configuration for disabled https port" in withTempDir { tempDir =>
-      val process = new FakeServerProcess(
-        args = Seq(tempDir.getAbsolutePath),
-        propertyMap = Map(
-          "play.server.provider" -> classOf[FakeServerProvider].getName,
-          "play.server.http.port" -> "80",
-          "play.server.https.port" -> "disabled",
-          "play.server.http.address" -> "localhost"
-        ),
-        pid = Some("123")
-      )
+      val process =
+        new FakeServerProcess(
+          args = Seq(tempDir.getAbsolutePath),
+          propertyMap = Map(
+            "play.server.provider" -> classOf[FakeServerProvider].getName,
+            "play.server.http.port" -> "80",
+            "play.server.https.port" -> "disabled",
+            "play.server.http.address" -> "localhost"
+          ),
+          pid = Some("123")
+        )
       val pidFile = new File(tempDir, "RUNNING_PID")
       pidFile.exists must beFalse
       val server = ProdServerStart.start(process)

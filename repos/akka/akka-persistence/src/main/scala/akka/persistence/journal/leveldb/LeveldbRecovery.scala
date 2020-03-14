@@ -20,8 +20,8 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
   import Key._
 
   private lazy val replayDispatcherId = config.getString("replay-dispatcher")
-  private lazy val replayDispatcher =
-    context.system.dispatchers.lookup(replayDispatcherId)
+  private lazy val replayDispatcher = context.system.dispatchers
+    .lookup(replayDispatcherId)
 
   def asyncReadHighestSequenceNr(
       persistenceId: String,

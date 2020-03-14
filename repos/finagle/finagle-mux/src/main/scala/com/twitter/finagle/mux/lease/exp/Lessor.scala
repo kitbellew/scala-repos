@@ -63,10 +63,11 @@ private[twitter] object Lessor {
     val default = Param(ClockedDrainer.flagged)
   }
 
-  val nil: Lessor = new Lessor {
-    def register(lessee: Lessee) = ()
-    def unregister(lessee: Lessee) = ()
-    def observe(d: Duration) = ()
-    def observeArrival() = ()
-  }
+  val nil: Lessor =
+    new Lessor {
+      def register(lessee: Lessee) = ()
+      def unregister(lessee: Lessee) = ()
+      def observe(d: Duration) = ()
+      def observeArrival() = ()
+    }
 }

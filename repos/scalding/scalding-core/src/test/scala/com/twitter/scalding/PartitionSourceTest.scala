@@ -55,8 +55,12 @@ object PartitionSourceTestHelpers {
     false,
     Fields.ALL,
     SinkMode.REPLACE)
-  val PartialPartitionedTsv =
-    StandardPartitionedTsv("base", "/", ('col1, 'col2), false, ('col1, 'col3))
+  val PartialPartitionedTsv = StandardPartitionedTsv(
+    "base",
+    "/",
+    ('col1, 'col2),
+    false,
+    ('col1, 'col3))
 }
 
 class DelimitedPartitionTestJob(args: Args) extends Job(args) {
@@ -118,10 +122,10 @@ class DelimitedPartitionSourceTest extends WordSpec with Matchers {
         })
         .toSet shouldBe Set("A", "B")
 
-      val aSource =
-        ScalaSource.fromFile(new File(directory, "A/part-00000-00000"))
-      val bSource =
-        ScalaSource.fromFile(new File(directory, "B/part-00000-00001"))
+      val aSource = ScalaSource.fromFile(
+        new File(directory, "A/part-00000-00000"))
+      val bSource = ScalaSource.fromFile(
+        new File(directory, "B/part-00000-00001"))
 
       aSource.getLines.toSeq shouldBe Seq("A\t1", "A\t2")
       bSource.getLines.toSeq shouldBe Seq("B\t3")
@@ -159,10 +163,10 @@ class CustomPartitionSourceTest extends WordSpec with Matchers {
         })
         .toSet shouldBe Set("{A}->{x}", "{B}->{y}")
 
-      val aSource =
-        ScalaSource.fromFile(new File(directory, "{A}->{x}/part-00000-00000"))
-      val bSource =
-        ScalaSource.fromFile(new File(directory, "{B}->{y}/part-00000-00001"))
+      val aSource = ScalaSource.fromFile(
+        new File(directory, "{A}->{x}/part-00000-00000"))
+      val bSource = ScalaSource.fromFile(
+        new File(directory, "{B}->{y}/part-00000-00001"))
 
       aSource.getLines.toSeq shouldBe Seq("A\tx\t1", "A\tx\t2")
       bSource.getLines.toSeq shouldBe Seq("B\ty\t3")
@@ -201,10 +205,10 @@ class PartialPartitionSourceTest extends WordSpec with Matchers {
         })
         .toSet shouldBe Set("A", "B")
 
-      val aSource =
-        ScalaSource.fromFile(new File(directory, "A/x/part-00000-00000"))
-      val bSource =
-        ScalaSource.fromFile(new File(directory, "B/y/part-00000-00001"))
+      val aSource = ScalaSource.fromFile(
+        new File(directory, "A/x/part-00000-00000"))
+      val bSource = ScalaSource.fromFile(
+        new File(directory, "B/y/part-00000-00001"))
 
       aSource.getLines.toSeq shouldBe Seq("A\t1", "A\t2")
       bSource.getLines.toSeq shouldBe Seq("B\t3")

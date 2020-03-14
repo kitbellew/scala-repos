@@ -67,11 +67,10 @@ class CapConcurrentExecutions private (
   import CapConcurrentExecutions.log
 
   private[util] val serializeExecutionActorRef = {
-    val serializeExecutionActorProps =
-      RestrictParallelExecutionsActor.props(
-        metrics,
-        maxParallel = maxParallel,
-        maxQueued = maxQueued)
+    val serializeExecutionActorProps = RestrictParallelExecutionsActor.props(
+      metrics,
+      maxParallel = maxParallel,
+      maxQueued = maxQueued)
     actorRefFactory.actorOf(serializeExecutionActorProps, actorName)
   }
 

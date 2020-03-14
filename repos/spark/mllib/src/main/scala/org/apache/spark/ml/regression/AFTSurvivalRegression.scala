@@ -72,12 +72,13 @@ private[regression] trait AFTSurvivalRegressionParams
     * @group param
     */
   @Since("1.6.0")
-  final val quantileProbabilities: DoubleArrayParam = new DoubleArrayParam(
-    this,
-    "quantileProbabilities",
-    "quantile probabilities array",
-    (t: Array[Double]) =>
-      t.forall(ParamValidators.inRange(0, 1, false, false)) && t.length > 0)
+  final val quantileProbabilities: DoubleArrayParam =
+    new DoubleArrayParam(
+      this,
+      "quantileProbabilities",
+      "quantile probabilities array",
+      (t: Array[Double]) =>
+        t.forall(ParamValidators.inRange(0, 1, false, false)) && t.length > 0)
 
   /** @group getParam */
   @Since("1.6.0")
@@ -413,11 +414,12 @@ object AFTSurvivalRegressionModel
       val coefficients = data.getAs[Vector](0)
       val intercept = data.getDouble(1)
       val scale = data.getDouble(2)
-      val model = new AFTSurvivalRegressionModel(
-        metadata.uid,
-        coefficients,
-        intercept,
-        scale)
+      val model =
+        new AFTSurvivalRegressionModel(
+          metadata.uid,
+          coefficients,
+          intercept,
+          scale)
 
       DefaultParamsReader.getAndSetParams(model, metadata)
       model

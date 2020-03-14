@@ -10,9 +10,10 @@ trait Typers {
 }
 
 class Global {
-  lazy val analyzer = new {
-    val global: Global.this.type = Global.this
-  } with Analyzer
+  lazy val analyzer =
+    new {
+      val global: Global.this.type = Global.this
+    } with Analyzer
 }
 
 abstract class D {

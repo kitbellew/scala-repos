@@ -54,8 +54,7 @@ sealed abstract class Eval[A] extends Serializable { self =>
     * Computation performed in f is always lazy, even when called on an
     * eager (Now) instance.
     */
-  def map[B](f: A => B): Eval[B] =
-    flatMap(a => Now(f(a)))
+  def map[B](f: A => B): Eval[B] = flatMap(a => Now(f(a)))
 
   /**
     * Lazily perform a computation based on an Eval[A], using the
@@ -75,12 +74,13 @@ sealed abstract class Eval[A] extends Serializable { self =>
         new Eval.Compute[B] {
           type Start = c.Start
           val start = c.start
-          val run = (s: c.Start) =>
-            new Eval.Compute[B] {
-              type Start = A
-              val start = () => c.run(s)
-              val run = f
-            }
+          val run =
+            (s: c.Start) =>
+              new Eval.Compute[B] {
+                type Start = A
+                val start = () => c.run(s)
+                val run = f
+              }
         }
       case c: Eval.Call[A] =>
         new Eval.Compute[B] {
@@ -197,8 +197,7 @@ object Eval extends EvalInstances {
     * This is useful when you want to delay execution of an expression
     * which produces an Eval[A] value. Like .flatMap, it is stack-safe.
     */
-  def defer[A](a: => Eval[A]): Eval[A] =
-    new Eval.Call[A](a _) {}
+  def defer[A](a: => Eval[A]): Eval[A] = new Eval.Call[A](a _) {}
 
   /**
     * Static Eval instances for some common values.
@@ -306,8 +305,7 @@ private[cats] trait EvalInstances extends EvalInstances0 {
 
   implicit def evalOrder[A: Order]: Order[Eval[A]] =
     new Order[Eval[A]] {
-      def compare(lx: Eval[A], ly: Eval[A]): Int =
-        lx.value compare ly.value
+      def compare(lx: Eval[A], ly: Eval[A]): Int = lx.value compare ly.value
     }
 
   implicit def evalGroup[A: Group]: Group[Eval[A]] =
@@ -332,8 +330,7 @@ private[cats] trait EvalInstances0 extends EvalInstances1 {
 private[cats] trait EvalInstances1 {
   implicit def evalEq[A: Eq]: Eq[Eval[A]] =
     new Eq[Eval[A]] {
-      def eqv(lx: Eval[A], ly: Eval[A]): Boolean =
-        lx.value === ly.value
+      def eqv(lx: Eval[A], ly: Eval[A]): Boolean = lx.value === ly.value
     }
 
   implicit def evalSemigroup[A: Semigroup]: Semigroup[Eval[A]] =
@@ -358,8 +355,7 @@ trait EvalMonoid[A] extends Monoid[Eval[A]] with EvalSemigroup[A] {
 
 trait EvalGroup[A] extends Group[Eval[A]] with EvalMonoid[A] {
   implicit def algebra: Group[A]
-  def inverse(lx: Eval[A]): Eval[A] =
-    lx.map(_.inverse)
+  def inverse(lx: Eval[A]): Eval[A] = lx.map(_.inverse)
   override def remove(lx: Eval[A], ly: Eval[A]): Eval[A] =
     for {
       x <- lx;

@@ -192,51 +192,58 @@ object DebuggerUtil {
   }
 
   def getFunctionJVMSignature(function: ScMethodLike): JVMName = {
-    val typeParams = function match {
-      case fun: ScFunction if !fun.isConstructor => fun.typeParameters
-      case _: ScFunction | _: ScPrimaryConstructor =>
-        function.containingClass match {
-          case td: ScTypeDefinition => td.typeParameters
-          case _                    => Seq.empty
-        }
-      case _ => Seq.empty
-    }
-    val subst = typeParams.foldLeft(ScSubstitutor.empty) { (subst, tp) =>
-      subst.bindT(
-        (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
-        tp.upperBound.getOrAny)
-    }
-    val localParameters = function match {
-      case fun: ScFunctionDefinition if fun.isLocal => localParamsForFunDef(fun)
-      case fun if fun.isConstructor =>
-        fun.containingClass match {
-          case c: ScClass => localParamsForConstructor(c)
-          case _          => Seq.empty
-        }
+    val typeParams =
+      function match {
+        case fun: ScFunction if !fun.isConstructor => fun.typeParameters
+        case _: ScFunction | _: ScPrimaryConstructor =>
+          function.containingClass match {
+            case td: ScTypeDefinition => td.typeParameters
+            case _                    => Seq.empty
+          }
+        case _ => Seq.empty
+      }
+    val subst =
+      typeParams.foldLeft(ScSubstitutor.empty) { (subst, tp) =>
+        subst.bindT(
+          (tp.name, ScalaPsiUtil.getPsiElementId(tp)),
+          tp.upperBound.getOrAny)
+      }
+    val localParameters =
+      function match {
+        case fun: ScFunctionDefinition if fun.isLocal =>
+          localParamsForFunDef(fun)
+        case fun if fun.isConstructor =>
+          fun.containingClass match {
+            case c: ScClass => localParamsForConstructor(c)
+            case _          => Seq.empty
+          }
 
-      case _ => Seq.empty
-    }
-    val valueClassParameter = function.containingClass match {
-      case cl: ScClass if ValueClassType.isValueClass(cl) =>
-        cl.constructors match {
-          case Array(pc: ScPrimaryConstructor) => pc.parameters.headOption
-          case _                               => None
-        }
-      case _ => None
-    }
-    val simpleParameters =
-      function.effectiveParameterClauses.flatMap(_.effectiveParameters)
+        case _ => Seq.empty
+      }
+    val valueClassParameter =
+      function.containingClass match {
+        case cl: ScClass if ValueClassType.isValueClass(cl) =>
+          cl.constructors match {
+            case Array(pc: ScPrimaryConstructor) => pc.parameters.headOption
+            case _                               => None
+          }
+        case _ => None
+      }
+    val simpleParameters = function.effectiveParameterClauses.flatMap(
+      _.effectiveParameters)
     val parameters =
       valueClassParameter ++: simpleParameters ++: localParameters
-    val paramTypes =
-      parameters.map(parameterForJVMSignature(_, subst)).mkString("(", "", ")")
-    val resultType = function match {
-      case fun: ScFunction if !fun.isConstructor =>
-        getJVMStringForType(
-          subst.subst(fun.returnType.getOrAny),
-          isParam = false)
-      case _: ScFunction | _: ScPrimaryConstructor => "V"
-    }
+    val paramTypes = parameters
+      .map(parameterForJVMSignature(_, subst))
+      .mkString("(", "", ")")
+    val resultType =
+      function match {
+        case fun: ScFunction if !fun.isConstructor =>
+          getJVMStringForType(
+            subst.subst(fun.returnType.getOrAny),
+            isParam = false)
+        case _: ScFunction | _: ScPrimaryConstructor => "V"
+      }
     JVMNameUtil.getJVMRawText(paramTypes + resultType)
   }
 
@@ -262,16 +269,18 @@ object DebuggerUtil {
   }
 
   def lambdaJVMSignature(lambda: PsiElement): Option[String] = {
-    val (argumentTypes, returnType) = lambda match {
-      case expr @ ExpressionType(tp) if ScalaPsiUtil.isByNameArgument(expr) =>
-        (Seq.empty, tp)
-      case ExpressionType(ScFunctionType(retT, argTypes)) => (argTypes, retT)
-      case _                                              => return None
-    }
-    val trueReturnType = returnType match {
-      case ValueClassType(inner) => inner
-      case _                     => returnType
-    }
+    val (argumentTypes, returnType) =
+      lambda match {
+        case expr @ ExpressionType(tp) if ScalaPsiUtil.isByNameArgument(expr) =>
+          (Seq.empty, tp)
+        case ExpressionType(ScFunctionType(retT, argTypes)) => (argTypes, retT)
+        case _                                              => return None
+      }
+    val trueReturnType =
+      returnType match {
+        case ValueClassType(inner) => inner
+        case _                     => returnType
+      }
 
     val paramText = argumentTypes
       .map(getJVMStringForType(_, isParam = true))

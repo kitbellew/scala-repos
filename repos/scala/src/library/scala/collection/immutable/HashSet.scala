@@ -177,8 +177,7 @@ class HashSet[A]
     null
   }
 
-  def -(e: A): HashSet[A] =
-    nullToEmpty(removed0(e, computeHash(e), 0))
+  def -(e: A): HashSet[A] = nullToEmpty(removed0(e, computeHash(e), 0))
 
   override def tail: HashSet[A] = this - head
 
@@ -1116,13 +1115,14 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         val length = offset - offset0
         val elems1 = new Array[HashSet[A]](length)
         System.arraycopy(buffer, offset0, elems1, 0, length)
-        val bitmap1 = if (length == elems.length) {
-          // we can reuse the original bitmap
-          bitmap
-        } else {
-          // calculate new bitmap by keeping just bits in the kept bitmask
-          keepBits(bitmap, kept)
-        }
+        val bitmap1 =
+          if (length == elems.length) {
+            // we can reuse the original bitmap
+            bitmap
+          } else {
+            // calculate new bitmap by keeping just bits in the kept bitmask
+            keepBits(bitmap, kept)
+          }
         new HashTrieSet(bitmap1, elems1, rs)
       }
     }

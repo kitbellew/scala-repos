@@ -36,12 +36,13 @@ class PopupControlControls(target: PopupControl)
     extends PropertiesNodes[PopupControl](target, "Popup Control Properties") {
 
   val originalId: String = target.id.get()
-  val txfID = new TextField {
-    text <==> target.id
-    prefWidth = 50.0
-    minWidth = 50.0
-    //    maxWidth = 50.0
-  }
+  val txfID =
+    new TextField {
+      text <==> target.id
+      prefWidth = 50.0
+      minWidth = 50.0
+      //    maxWidth = 50.0
+    }
 
   val originalMaxHeight: Double = target.maxHeight.get()
   val originalMinHeight: Double = target.minHeight.get()

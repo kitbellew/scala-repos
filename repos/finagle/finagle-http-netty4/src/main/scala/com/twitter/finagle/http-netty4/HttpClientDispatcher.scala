@@ -37,8 +37,7 @@ private[http4] class HttpClientDispatcher(
   import GenSerialClientDispatcher.wrapWriteException
   import HttpClientDispatcher._
 
-  def this(trans: Transport[Any, Any]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[Any, Any]) = this(trans, NullStatsReceiver)
 
   def dispatch(req: Request, p: Promise[Response]): Future[Unit] = {
 

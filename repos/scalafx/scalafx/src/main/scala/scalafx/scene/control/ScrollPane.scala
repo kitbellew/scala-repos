@@ -57,8 +57,8 @@ object ScrollPane {
     val ALWAYS = Always
 
     /** Indicates that a scroll bar should be shown when required. */
-    val AsNeeded = new ScrollBarPolicy(
-      jfxsc.ScrollPane.ScrollBarPolicy.AS_NEEDED)
+    val AsNeeded =
+      new ScrollBarPolicy(jfxsc.ScrollPane.ScrollBarPolicy.AS_NEEDED)
     @deprecated(
       "Use AsNeeded; AS_NEEDED will be removed in a future release",
       "8.0.60-R10")

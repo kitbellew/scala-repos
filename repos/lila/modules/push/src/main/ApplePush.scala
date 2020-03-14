@@ -13,8 +13,8 @@ private final class ApplePush(
     password: String,
     enabled: Boolean) {
 
-  private val actor =
-    system.actorOf(Props(classOf[ApnsActor], certificate, password))
+  private val actor = system.actorOf(
+    Props(classOf[ApnsActor], certificate, password))
 
   def apply(userId: String)(data: => PushApi.Data): Funit =
     getDevice(userId) map {
@@ -45,14 +45,15 @@ private final class ApnsActor(certificate: InputStream, password: String)
 
   def getManager =
     Option(manager) getOrElse {
-      val m = new PushManager[SimpleApnsPushNotification](
-        ApnsEnvironment.getSandboxEnvironment(),
-        SSLContextUtil.createDefaultSSLContext(certificate, password),
-        null, // Optional: custom event loop group
-        null, // Optional: custom ExecutorService for calling listeners
-        null, // Optional: custom BlockingQueue implementation
-        new PushManagerConfiguration(),
-        "ApplePushManager")
+      val m =
+        new PushManager[SimpleApnsPushNotification](
+          ApnsEnvironment.getSandboxEnvironment(),
+          SSLContextUtil.createDefaultSSLContext(certificate, password),
+          null, // Optional: custom event loop group
+          null, // Optional: custom ExecutorService for calling listeners
+          null, // Optional: custom BlockingQueue implementation
+          new PushManagerConfiguration(),
+          "ApplePushManager")
 
       m.registerRejectedNotificationListener(
         new RejectedNotificationListener[SimpleApnsPushNotification] {
@@ -95,9 +96,10 @@ private final class ApnsActor(certificate: InputStream, password: String)
       payloadBuilder.setBadgeNumber(1)
       payloadBuilder.addCustomProperty("data", Json stringify payload)
 
-      val notif = new SimpleApnsPushNotification(
-        TokenUtil.tokenStringToByteArray(token),
-        payloadBuilder.buildWithDefaultMaximumLength())
+      val notif =
+        new SimpleApnsPushNotification(
+          TokenUtil.tokenStringToByteArray(token),
+          payloadBuilder.buildWithDefaultMaximumLength())
 
       logger.info(s"Sending alert=$alert, payload=$payload to $token")
 

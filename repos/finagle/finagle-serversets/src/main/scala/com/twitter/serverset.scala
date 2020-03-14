@@ -24,8 +24,7 @@ private[twitter] trait BaseServersetNamer extends Namer {
   protected[this] def resolveServerset(
       hosts: String,
       path: String,
-      endpoint: String) =
-    resolve(s"zk2!$hosts!$path!$endpoint")
+      endpoint: String) = resolve(s"zk2!$hosts!$path!$endpoint")
 
   /** Bind a name. */
   protected[this] def bind(path: Path): Option[Name.Bound]
@@ -76,14 +75,15 @@ class serverset extends BaseServersetNamer {
   protected[this] def bind(path: Path): Option[Name.Bound] =
     path match {
       case Path.Utf8(hosts, rest @ _*) =>
-        val addr = if (rest.nonEmpty && (rest.last contains ":")) {
-          val Array(name, endpoint) = rest.last.split(":", 2)
-          val zkPath = (rest.init :+ name).mkString("/", "/", "")
-          resolveServerset(hosts, zkPath, endpoint)
-        } else {
-          val zkPath = rest.mkString("/", "/", "")
-          resolveServerset(hosts, zkPath)
-        }
+        val addr =
+          if (rest.nonEmpty && (rest.last contains ":")) {
+            val Array(name, endpoint) = rest.last.split(":", 2)
+            val zkPath = (rest.init :+ name).mkString("/", "/", "")
+            resolveServerset(hosts, zkPath, endpoint)
+          } else {
+            val zkPath = rest.mkString("/", "/", "")
+            resolveServerset(hosts, zkPath)
+          }
 
         // Clients may depend on Name.Bound ids being Paths which resolve
         // back to the same Name.Bound

@@ -22,8 +22,8 @@ abstract sealed class ImportUsed(val e: PsiElement) {
 }
 
 object ImportUsed {
-  val key: Key[_root_.scala.collection.Set[ImportUsed]] =
-    Key.create("scala.used.imports.key")
+  val key: Key[_root_.scala.collection.Set[ImportUsed]] = Key.create(
+    "scala.used.imports.key")
 
   def unapply(importUsed: ImportUsed): Option[PsiElement] = {
     Some(importUsed.e)
@@ -76,8 +76,9 @@ case class ImportExprUsed(expr: ScImportExpr) extends ImportUsed(expr) {
   */
 case class ImportSelectorUsed(sel: ScImportSelector) extends ImportUsed(sel) {
   override def qualName: Option[String] = {
-    val expr: ScImportExpr =
-      PsiTreeUtil.getParentOfType(sel, classOf[ScImportExpr])
+    val expr: ScImportExpr = PsiTreeUtil.getParentOfType(
+      sel,
+      classOf[ScImportExpr])
     expr.reference.map(ref => ref.qualName + "." + sel.reference.refName)
   }
 

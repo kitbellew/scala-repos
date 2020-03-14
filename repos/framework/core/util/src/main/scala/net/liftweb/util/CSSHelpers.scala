@@ -89,20 +89,21 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
         seq rest
       }
 
-      val rest = walk(in) {
-        case c =>
-          content append c
-          c.toLower match {
-            case 'u' if (seqDone == 0) => seqDone = 1;
-            case 'r' if (seqDone == 1) => seqDone = 2;
-            case 'l' if (seqDone == 2) => seqDone = 3;
-            case ' ' | '\t' | '\n' | '\r' if (seqDone == 3 || seqDone == 4) =>
-              seqDone = 4
-            case '(' if (seqDone == 3 || seqDone == 4) => seqDone = 5
-            case _                                     => seqDone = 0
-          }
-          seqDone == 5;
-      }
+      val rest =
+        walk(in) {
+          case c =>
+            content append c
+            c.toLower match {
+              case 'u' if (seqDone == 0) => seqDone = 1;
+              case 'r' if (seqDone == 1) => seqDone = 2;
+              case 'l' if (seqDone == 2) => seqDone = 3;
+              case ' ' | '\t' | '\n' | '\r' if (seqDone == 3 || seqDone == 4) =>
+                seqDone = 4
+              case '(' if (seqDone == 3 || seqDone == 4) => seqDone = 5
+              case _                                     => seqDone = 0
+            }
+            seqDone == 5;
+        }
 
       Success(content toString, rest);
   }
@@ -157,11 +158,13 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
   }
 
   // the URL might be wrapped in simple quotes
-  lazy val singleQuotedPath =
-    fullUrl(elem('\'') ~> pathWith('"') <~ elem('\''), "'")
+  lazy val singleQuotedPath = fullUrl(
+    elem('\'') ~> pathWith('"') <~ elem('\''),
+    "'")
   // the URL might be wrapped in double quotes
-  lazy val doubleQuotedPath =
-    fullUrl(elem('\"') ~> pathWith('\'') <~ elem('\"'), "\"")
+  lazy val doubleQuotedPath = fullUrl(
+    elem('\"') ~> pathWith('\'') <~ elem('\"'),
+    "\"")
   // the URL might not be wrapped at all
   lazy val quotelessPath = fullUrl(path, "")
 

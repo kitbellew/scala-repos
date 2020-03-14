@@ -21,9 +21,10 @@ private[serverset2] object ServiceDiscoverer {
       ents: Seq[Entry],
       vecs: Set[Vector]): Seq[(Entry, Double)] = {
     ents map { ent =>
-      val w = vecs.foldLeft(1.0) {
-        case (w, vec) => w * vec.weightOf(ent)
-      }
+      val w =
+        vecs.foldLeft(1.0) {
+          case (w, vec) => w * vec.weightOf(ent)
+        }
       ent -> w
     }
   }
@@ -74,15 +75,17 @@ private[serverset2] class ServiceDiscoverer(
 ) {
   import ServiceDiscoverer._
 
-  private[this] val zkEntriesReadStat =
-    statsReceiver.scope("entries").stat("read_ms")
-  private[this] val zkVectorsReadStat =
-    statsReceiver.scope("vectors").stat("read_ms")
+  private[this] val zkEntriesReadStat = statsReceiver
+    .scope("entries")
+    .stat("read_ms")
+  private[this] val zkVectorsReadStat = statsReceiver
+    .scope("vectors")
+    .stat("read_ms")
 
   private[this] val actZkSession = Activity(varZkSession.map(Activity.Ok(_)))
   private[this] val log = Logger(getClass)
-  private[this] val retryJitter =
-    Duration.fromSeconds(20 + Rng.threadLocal.nextInt(120))
+  private[this] val retryJitter = Duration.fromSeconds(
+    20 + Rng.threadLocal.nextInt(120))
 
   /**
     * Monitor the session status of the ZkSession and expose to listeners whether
@@ -115,8 +118,10 @@ private[serverset2] class ServiceDiscoverer(
     * which only reports unhealthy when the rawHealth has been unhealthy for
     * a long enough time (as defined by the stabilization epoch).
     */
-  private[serverset2] val health: Var[ClientHealth] =
-    HealthStabilizer(rawHealth, healthStabilizationEpoch, statsReceiver)
+  private[serverset2] val health: Var[ClientHealth] = HealthStabilizer(
+    rawHealth,
+    healthStabilizationEpoch,
+    statsReceiver)
 
   /**
     * Activity to keep a hydrated list of Entrys or Vectors for a given ZK path.

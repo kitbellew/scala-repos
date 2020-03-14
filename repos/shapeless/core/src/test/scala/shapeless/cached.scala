@@ -23,18 +23,20 @@ object CachedTestsDefinitions {
     }
 
     object First {
-      implicit val tc: TC[Int] = new TC[Int] {
-        val msg = "first"
-      }
+      implicit val tc: TC[Int] =
+        new TC[Int] {
+          val msg = "first"
+        }
 
       def msg = implicitly[TC[Int]].msg
       def msgCached = Cached.implicitly[TC[Int]].msg
     }
 
     object Second {
-      implicit val tc: TC[Int] = new TC[Int] {
-        val msg = "second"
-      }
+      implicit val tc: TC[Int] =
+        new TC[Int] {
+          val msg = "second"
+        }
 
       def msg = implicitly[TC[Int]].msg
       def msgCached = Cached.implicitly[TC[Int]].msg

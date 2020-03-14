@@ -57,10 +57,11 @@ private object AnalysisBuilder {
       .zip(moves)
       .zipWithIndex map {
       case ((List(before, after), move), index) => {
-        val variation = before.cappedPvList match {
-          case first :: rest if first != move => first :: rest
-          case _                              => Nil
-        }
+        val variation =
+          before.cappedPvList match {
+            case first :: rest if first != move => first :: rest
+            case _                              => Nil
+          }
         val best = variation.headOption flatMap Uci.Move.apply
         val info = Info(
           ply = index + 1 + startedAtPly,

@@ -196,14 +196,15 @@ class StoppableReceiver extends Receiver[Int](StorageLevel.MEMORY_ONLY) {
   var receivingThreadOption: Option[Thread] = None
 
   def onStart() {
-    val thread = new Thread() {
-      override def run() {
-        while (!StoppableReceiver.shouldStop) {
-          Thread.sleep(10)
+    val thread =
+      new Thread() {
+        override def run() {
+          while (!StoppableReceiver.shouldStop) {
+            Thread.sleep(10)
+          }
+          StoppableReceiver.this.stop("stop")
         }
-        StoppableReceiver.this.stop("stop")
       }
-    }
     thread.start()
   }
 

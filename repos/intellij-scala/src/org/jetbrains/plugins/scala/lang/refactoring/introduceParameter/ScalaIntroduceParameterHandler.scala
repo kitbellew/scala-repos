@@ -86,8 +86,8 @@ class ScalaIntroduceParameterHandler
       return
     }
 
-    val canBeIntroduced: (ScExpression) => Boolean =
-      ScalaRefactoringUtil.checkCanBeIntroduced(_)
+    val canBeIntroduced: (ScExpression) => Boolean = ScalaRefactoringUtil
+      .checkCanBeIntroduced(_)
     ScalaRefactoringUtil.afterExpressionChoosing(
       project,
       editor,
@@ -106,35 +106,39 @@ class ScalaIntroduceParameterHandler
       method: ScMethodLike): (ScExpression, ScType) = {
     val namesAndTypes = input.map { v =>
       val elem = v.element
-      val typeText = elem match {
-        case fun: ScFunction => fun.getType().getOrAny.canonicalText
-        case named =>
-          ScType.ofNamedElement(v.element).getOrElse(scTypeAny).canonicalText
-      }
+      val typeText =
+        elem match {
+          case fun: ScFunction => fun.getType().getOrAny.canonicalText
+          case named =>
+            ScType.ofNamedElement(v.element).getOrElse(scTypeAny).canonicalText
+        }
       s"${elem.name}: $typeText"
     }
     val project = method.getProject
     val arrow = ScalaPsiUtil.functionArrow(project)
     val paramsText = namesAndTypes.mkString("(", ", ", ")")
-    val funText = elems match {
-      case Seq(single: ScExpression) =>
-        val bodyText = single.getText
-        s"$paramsText $arrow $bodyText"
-      case _ =>
-        val bodyText = elems.map(_.getText).mkString
-        s"$paramsText $arrow {\n$bodyText\n}"
-    }
+    val funText =
+      elems match {
+        case Seq(single: ScExpression) =>
+          val bodyText = single.getText
+          s"$paramsText $arrow $bodyText"
+        case _ =>
+          val bodyText = elems.map(_.getText).mkString
+          s"$paramsText $arrow {\n$bodyText\n}"
+      }
     val expr = ScalaPsiElementFactory
       .createExpressionWithContextFromText(
         funText,
         elems.head.getContext,
         elems.head)
       .asInstanceOf[ScFunctionExpr]
-    val toReturn = IntroduceImplicitParameterIntention
-      .createExpressionToIntroduce(expr, withoutParameterTypes = true) match {
-      case Left(e) => e
-      case _       => expr
-    }
+    val toReturn =
+      IntroduceImplicitParameterIntention.createExpressionToIntroduce(
+        expr,
+        withoutParameterTypes = true) match {
+        case Left(e) => e
+        case _       => expr
+      }
     ScalaPsiUtil.adjustTypes(toReturn, addImports = false)
     (
       CodeStyleManager
@@ -148,10 +152,11 @@ class ScalaIntroduceParameterHandler
     ScalaRefactoringUtil.trimSpacesAndComments(editor, file)
     PsiDocumentManager.getInstance(project).commitAllDocuments()
 
-    val (exprWithTypes, elems) = selectedElements(file, project, editor) match {
-      case Some((x, y)) => (x, y)
-      case None         => return
-    }
+    val (exprWithTypes, elems) =
+      selectedElements(file, project, editor) match {
+        case Some((x, y)) => (x, y)
+        case None         => return
+      }
 
     afterMethodChoosing(elems.head, editor) { methodLike =>
       val data = collectData(exprWithTypes, elems, methodLike, editor)
@@ -191,14 +196,15 @@ class ScalaIntroduceParameterHandler
         file,
         startOffset,
         endOffset)
-      val elems = exprWithTypes match {
-        case Some((e, _)) => Seq(e)
-        case None =>
-          ScalaRefactoringUtil.selectedElements(
-            editor,
-            file.asInstanceOf[ScalaFile],
-            trimComments = false)
-      }
+      val elems =
+        exprWithTypes match {
+          case Some((e, _)) => Seq(e)
+          case None =>
+            ScalaRefactoringUtil.selectedElements(
+              editor,
+              file.asInstanceOf[ScalaFile],
+              trimComments = false)
+        }
 
       val hasWarnings = ScalaRefactoringUtil.showNotPossibleWarnings(
         elems,
@@ -229,77 +235,85 @@ class ScalaIntroduceParameterHandler
       editor: Editor): Option[ScalaIntroduceParameterData] = {
     val project = methodLike.getProject
 
-    val info =
-      ReachingDefintionsCollector.collectVariableInfo(elems, methodLike)
+    val info = ReachingDefintionsCollector.collectVariableInfo(
+      elems,
+      methodLike)
     val input = info.inputVariables
     val (types, argText, argClauseText) =
       if (input.nonEmpty || exprWithTypes.isEmpty) {
         val (funExpr, funType) = functionalArg(elems, input, methodLike)
         val argClauseText = input.map(_.element.name).mkString("(", ", ", ")")
-        val allTypes = funType match {
-          case ScFunctionType(retType, _) =>
-            Array(funType, retType, StdType.ANY)
-          case _ => Array(funType, StdType.ANY)
-        }
+        val allTypes =
+          funType match {
+            case ScFunctionType(retType, _) =>
+              Array(funType, retType, StdType.ANY)
+            case _ => Array(funType, StdType.ANY)
+          }
         (allTypes, funExpr.getText, argClauseText)
       } else
         (exprWithTypes.get._2, exprWithTypes.get._1.getText, "")
 
-    val superMethod = methodLike.findDeepestSuperMethod() match {
-      case null => methodLike
-      case scMethod: ScMethodLike =>
-        SuperMethodWarningUtil.checkSuperMethod(
-          methodLike,
-          RefactoringBundle.message("to.refactor"))
-      case _ => methodLike
-    }
-    val methodToSearchFor = superMethod match {
-      case m: ScMethodLike => m
-      case _               => return None
-    }
+    val superMethod =
+      methodLike.findDeepestSuperMethod() match {
+        case null => methodLike
+        case scMethod: ScMethodLike =>
+          SuperMethodWarningUtil.checkSuperMethod(
+            methodLike,
+            RefactoringBundle.message("to.refactor"))
+        case _ => methodLike
+      }
+    val methodToSearchFor =
+      superMethod match {
+        case m: ScMethodLike => m
+        case _               => return None
+      }
     if (!CommonRefactoringUtil.checkReadOnlyStatus(project, superMethod))
       return None
 
     val suggestedName = {
-      val validator = new ScalaVariableValidator(
-        this,
-        project,
-        elems.head,
-        false,
-        methodLike,
-        methodLike)
-      val possibleNames = elems match {
-        case Seq(expr: ScExpression) =>
-          NameSuggester.suggestNames(expr, validator)
-        case _ => NameSuggester.suggestNamesByType(types(0))
-      }
+      val validator =
+        new ScalaVariableValidator(
+          this,
+          project,
+          elems.head,
+          false,
+          methodLike,
+          methodLike)
+      val possibleNames =
+        elems match {
+          case Seq(expr: ScExpression) =>
+            NameSuggester.suggestNames(expr, validator)
+          case _ => NameSuggester.suggestNamesByType(types(0))
+        }
       possibleNames(0)
     }
 
-    val (occurrences, mainOcc) = elems match {
-      case Seq(expr: ScExpression) =>
-        val occurrencesScope = methodLike match {
-          case ScFunctionDefinition.withBody(body) => body
-          case pc: ScPrimaryConstructor            => pc.containingClass.extendsBlock
-          case _                                   => methodLike
-        }
+    val (occurrences, mainOcc) =
+      elems match {
+        case Seq(expr: ScExpression) =>
+          val occurrencesScope =
+            methodLike match {
+              case ScFunctionDefinition.withBody(body) => body
+              case pc: ScPrimaryConstructor            => pc.containingClass.extendsBlock
+              case _                                   => methodLike
+            }
 
-        val occurrences = ScalaRefactoringUtil.getOccurrenceRanges(
-          ScalaRefactoringUtil.unparExpr(expr),
-          occurrencesScope)
-        if (occurrences.length > 1)
-          occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
-            project,
-            occurrences,
-            editor)
+          val occurrences = ScalaRefactoringUtil.getOccurrenceRanges(
+            ScalaRefactoringUtil.unparExpr(expr),
+            occurrencesScope)
+          if (occurrences.length > 1)
+            occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
+              project,
+              occurrences,
+              editor)
 
-        (occurrences, expr.getTextRange)
-      case _ =>
-        (
-          Array.empty[TextRange],
-          elems.head.getTextRange.union(elems.last.getTextRange))
+          (occurrences, expr.getTextRange)
+        case _ =>
+          (
+            Array.empty[TextRange],
+            elems.head.getTextRange.union(elems.last.getTextRange))
 
-    }
+      }
     val data = ScalaIntroduceParameterData(
       methodLike,
       methodToSearchFor,
@@ -354,15 +368,16 @@ class ScalaIntroduceParameterHandler
   }
 
   def createDialog(project: Project, data: ScalaIntroduceParameterData) = {
-    val paramInfo = new ScalaParameterInfo(
-      data.paramName,
-      -1,
-      data.tp,
-      project,
-      false,
-      false,
-      data.defaultArg,
-      isIntroducedParameter = true)
+    val paramInfo =
+      new ScalaParameterInfo(
+        data.paramName,
+        -1,
+        data.tp,
+        project,
+        false,
+        false,
+        data.defaultArg,
+        isIntroducedParameter = true)
     val descriptor = createMethodDescriptor(data.methodToSearchFor, paramInfo)
     new ScalaIntroduceParameterDialog(project, descriptor, data)
   }

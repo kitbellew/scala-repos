@@ -162,8 +162,8 @@ class PluginGitUploadPack(repoName: String, routing: GitRepositoryRouting)
           Some(user),
           loadSystemSettings(),
           false)) {
-      val path =
-        routing.urlPattern.r.replaceFirstIn(repoName, routing.localPath)
+      val path = routing.urlPattern.r
+        .replaceFirstIn(repoName, routing.localPath)
       using(Git.open(new File(Directory.GitBucketHome, path))) { git =>
         val repository = git.getRepository
         val upload = new UploadPack(repository)
@@ -184,8 +184,8 @@ class PluginGitReceivePack(repoName: String, routing: GitRepositoryRouting)
           Some(user),
           loadSystemSettings(),
           true)) {
-      val path =
-        routing.urlPattern.r.replaceFirstIn(repoName, routing.localPath)
+      val path = routing.urlPattern.r
+        .replaceFirstIn(repoName, routing.localPath)
       using(Git.open(new File(Directory.GitBucketHome, path))) { git =>
         val repository = git.getRepository
         val receive = new ReceivePack(repository)

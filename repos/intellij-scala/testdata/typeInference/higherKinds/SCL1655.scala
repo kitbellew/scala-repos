@@ -9,12 +9,13 @@ sealed trait MA[M[_], A] {
 
   def mmi: M[M[Int]]
 
-  val a = (
-    ma2[M, M[Int]](mmi), // return type correctly inferred
-    ma2(mmi), // infers type MA[Nothing, M[Int]]
-    ma1[M, M[Int]](mmi), // return type correctly inferred
-    ma1(mmi) // infers type MA[Nothing, M[Int]]
-  )
+  val a =
+    (
+      ma2[M, M[Int]](mmi), // return type correctly inferred
+      ma2(mmi), // infers type MA[Nothing, M[Int]]
+      ma1[M, M[Int]](mmi), // return type correctly inferred
+      ma1(mmi) // infers type MA[Nothing, M[Int]]
+    )
   /*start*/
   a /*end*/
 }

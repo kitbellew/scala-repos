@@ -120,8 +120,10 @@ class DeploymentPlanRevertTest
 
     When("we remove an app and try to revert that without concurrent changes")
     val appId = "/changeme/app1".toRootPath
-    val target =
-      original.update(appId.parent, _.removeApplication(appId), Timestamp.now())
+    val target = original.update(
+      appId.parent,
+      _.removeApplication(appId),
+      Timestamp.now())
     target.app(appId) should be('empty)
     val plan = DeploymentPlan(original, target)
     val revertToOriginal = plan.revert(target)
@@ -532,8 +534,9 @@ class DeploymentPlanRevertTest
     test(
       s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(_.name).mkString(", ")}") {
       Given("an existing group with apps")
-      val original =
-        performDeployments(originalBeforeChanges, changesBeforeTest)
+      val original = performDeployments(
+        originalBeforeChanges,
+        changesBeforeTest)
 
       When(
         s"performing a series of deployments (${deployments.map(_.name).mkString(", ")})")
@@ -546,8 +549,8 @@ class DeploymentPlanRevertTest
         normalizeVersions(original),
         normalizeVersions(firstDeployment.change(original)),
         newVersion)
-      val reverted =
-        deploymentReverterForFirst(normalizeVersions(targetWithAllDeployments))
+      val reverted = deploymentReverterForFirst(
+        normalizeVersions(targetWithAllDeployments))
 
       Then(
         "The result should only contain items with the prior or the new version")
@@ -565,8 +568,9 @@ class DeploymentPlanRevertTest
 
       Then(
         "the result should be the same as if we had only applied all the other deployments")
-      val targetWithoutFirstDeployment =
-        performDeployments(original, deployments.tail)
+      val targetWithoutFirstDeployment = performDeployments(
+        original,
+        deployments.tail)
       withClue("while comparing reverted with targetWithoutFirstDeployment: ") {
         assertEqualsExceptVersion(targetWithoutFirstDeployment, reverted)
       }

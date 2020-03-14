@@ -46,11 +46,12 @@ class PolynomialExpansion(override val uid: String)
     * Default: 2
     * @group param
     */
-  val degree = new IntParam(
-    this,
-    "degree",
-    "the polynomial degree to expand (>= 1)",
-    ParamValidators.gtEq(1))
+  val degree =
+    new IntParam(
+      this,
+      "degree",
+      "the polynomial degree to expand (>= 1)",
+      ParamValidators.gtEq(1))
 
   setDefault(degree -> 2)
 
@@ -111,8 +112,13 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
       var i = 0
       var curStart = curPolyIdx
       while (i <= degree && alpha != 0.0) {
-        curStart =
-          expandDense(values, lastIdx1, degree - i, alpha, polyValues, curStart)
+        curStart = expandDense(
+          values,
+          lastIdx1,
+          degree - i,
+          alpha,
+          polyValues,
+          curStart)
         i += 1
         alpha *= v
       }

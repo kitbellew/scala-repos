@@ -62,9 +62,10 @@ object LUB {
 
 object Bug1189 {
   case class Cell[T](x: T)
-  type U = Cell[T1] forSome {
-    type T1
-  }
+  type U =
+    Cell[T1] forSome {
+      type T1
+    }
   def f(x: Any): U =
     x match {
       case y: Cell[_] => y
@@ -116,19 +117,21 @@ object Test extends App {
       case _ =>
     }
 
-  val ci = new Counter[Int] {
-    def newCounter = 0
-    def get(i: Int) = i
-    def inc(i: Int) = i + 1
-    def name = "Int"
-  }
+  val ci =
+    new Counter[Int] {
+      def newCounter = 0
+      def get(i: Int) = i
+      def inc(i: Int) = i + 1
+      def name = "Int"
+    }
 
-  val cf = new Counter[Float] {
-    def newCounter = 0
-    def get(i: Float) = i.intValue
-    def inc(i: Float) = i + 1
-    def name = "Float"
-  }
+  val cf =
+    new Counter[Float] {
+      def newCounter = 0
+      def get(i: Float) = i.intValue
+      def inc(i: Float) = i + 1
+      def name = "Float"
+    }
 
   var ex: Counter[T] forSome {
     type T

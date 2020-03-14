@@ -29,8 +29,7 @@ object Contexts extends Enumeration {
 object TestGen {
   val testFile = "object-testers-automated.scala"
 
-  val payload =
-    """      var ObjCounter = 0
+  val payload = """      var ObjCounter = 0
 
       object Obj  { ObjCounter += 1}
       Obj // one
@@ -98,8 +97,7 @@ object TestGen {
 
   import Contexts._
 
-  val template =
-    """
+  val template = """
 %s
 
 %s
@@ -149,99 +147,100 @@ object Test {
       }
     } else {
       for (ctx <- enums) {
-        val (body1, trigger1) = ctx match {
-          case Class =>
-            val name = freshName("Class") + "_" + depth
-            (
-              """
+        val (body1, trigger1) =
+          ctx match {
+            case Class =>
+              val name = freshName("Class") + "_" + depth
+              (
+                """
              class %s {
                %s
                def run { %s }
              }
            """.format(name, body, trigger),
-              "(new %s).run".format(name))
+                "(new %s).run".format(name))
 
-          case Trait =>
-            val name = freshName("Trait") + "_" + depth
-            (
-              """
+            case Trait =>
+              val name = freshName("Trait") + "_" + depth
+              (
+                """
              trait %s {
                %s
                def run { %s }
              }
            """.format(name, body, trigger),
-              "(new %s {}).run".format(name))
+                "(new %s {}).run".format(name))
 
-          case Object =>
-            val name = freshName("Object") + "_" + depth
-            (
-              """
+            case Object =>
+              val name = freshName("Object") + "_" + depth
+              (
+                """
              object %s {
                %s
                def run { %s } // trigger
              }
            """.format(name, body, trigger),
-              "%s.run".format(name))
+                "%s.run".format(name))
 
-          case Method =>
-            val name = freshName("method") + "_" + depth
-            (
-              """
+            case Method =>
+              val name = freshName("method") + "_" + depth
+              (
+                """
              def %s {
                %s
                %s // trigger
              }
            """.format(name, body, trigger),
-              name)
+                name)
 
-          case PrivateMethod =>
-            val name = freshName("method") + "_" + depth
-            (
-              """
+            case PrivateMethod =>
+              val name = freshName("method") + "_" + depth
+              (
+                """
              private def %s {
                %s
                %s // trigger
              }
            """.format(name, body, trigger),
-              name)
+                name)
 
-          case Val =>
-            val name = freshName("value") + "_" + depth
-            (
-              """
+            case Val =>
+              val name = freshName("value") + "_" + depth
+              (
+                """
                val %s = {
                  %s
                  %s // trigger
                }
              """.format(name, body, trigger),
-              name)
+                name)
 
-          case LazyVal =>
-            val name = freshName("lzvalue") + "_" + depth
-            (
-              """
+            case LazyVal =>
+              val name = freshName("lzvalue") + "_" + depth
+              (
+                """
                lazy val %s = {
                  %s
                  %s // trigger
                }
              """.format(name, body, trigger),
-              name)
+                name)
 
-          case Anonfun =>
-            val name = freshName("fun") + "_" + depth
-            (
-              """
+            case Anonfun =>
+              val name = freshName("fun") + "_" + depth
+              (
+                """
                val %s = () => {
                  %s
                  %s // trigger
                }
              """.format(name, body, trigger),
-              name + "()")
+                name + "()")
 
-          case ClassConstructor =>
-            val name = freshName("Class") + "_" + depth
-            (
-              """
+            case ClassConstructor =>
+              val name = freshName("Class") + "_" + depth
+              (
+                """
              class %s {
                { // in primary constructor
                  %s
@@ -249,12 +248,12 @@ object Test {
                }
              }
            """.format(name, body, trigger),
-              "(new %s)".format(name))
+                "(new %s)".format(name))
 
-          case TraitConstructor =>
-            val name = freshName("Trait") + "_" + depth
-            (
-              """
+            case TraitConstructor =>
+              val name = freshName("Trait") + "_" + depth
+              (
+                """
              trait %s {
                { // in primary constructor
                  %s
@@ -262,9 +261,9 @@ object Test {
                }
              }
            """.format(name, body, trigger),
-              "(new %s {})".format(name))
+                "(new %s {})".format(name))
 
-        }
+          }
         generate(depth - 1, body1, trigger1, ctx :: nested, p)
       }
     }

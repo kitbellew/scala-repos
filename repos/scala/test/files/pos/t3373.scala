@@ -5,8 +5,9 @@ class Entry(time: Long) {
 object Test {
   def extractTime(e: Entry) = e.getTime
 
-  implicit val orderEntries = new Ordering[Entry] {
-    def compare(first: Entry, second: Entry) =
-      extractTime(first) compare extractTime(second)
-  }
+  implicit val orderEntries =
+    new Ordering[Entry] {
+      def compare(first: Entry, second: Entry) =
+        extractTime(first) compare extractTime(second)
+    }
 }

@@ -16,9 +16,10 @@ object sized {
   }
 
   object ToHList {
-    type Aux[Repr, L <: Nat, Out0 <: HList] = ToHList[Repr, L] {
-      type Out = Out0
-    }
+    type Aux[Repr, L <: Nat, Out0 <: HList] =
+      ToHList[Repr, L] {
+        type Out = Out0
+      }
 
     implicit val emptySizedToHList: Aux[Any, Nat._0, HNil] =
       new ToHList[Any, Nat._0] {

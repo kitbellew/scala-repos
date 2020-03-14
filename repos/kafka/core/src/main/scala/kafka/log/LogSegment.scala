@@ -158,10 +158,11 @@ class LogSegment(
     if (startPosition == null)
       return null
 
-    val offsetMetadata = new LogOffsetMetadata(
-      startOffset,
-      this.baseOffset,
-      startPosition.position)
+    val offsetMetadata =
+      new LogOffsetMetadata(
+        startOffset,
+        this.baseOffset,
+        startPosition.position)
 
     // if the size is zero, still return a log segment but with zero size
     if (maxSize == 0)

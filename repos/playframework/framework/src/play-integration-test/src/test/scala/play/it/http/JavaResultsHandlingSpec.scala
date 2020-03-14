@@ -111,8 +111,8 @@ trait JavaResultsHandlingSpec
     "chunk comet results from string" in makeRequest(new MockController {
       def action = {
         import scala.collection.JavaConverters._
-        val dataSource =
-          akka.stream.javadsl.Source.from(List("a", "b", "c").asJava)
+        val dataSource = akka.stream.javadsl.Source
+          .from(List("a", "b", "c").asJava)
         val cometSource = dataSource.via(Comet.string("callback"))
         Results.ok().chunked(cometSource)
       }
@@ -127,8 +127,8 @@ trait JavaResultsHandlingSpec
       def action = {
         val objectNode = Json.newObject
         objectNode.put("foo", "bar")
-        val dataSource: Source[JsonNode, NotUsed] =
-          akka.stream.javadsl.Source.from(Arrays.asList(objectNode))
+        val dataSource: Source[JsonNode, NotUsed] = akka.stream.javadsl.Source
+          .from(Arrays.asList(objectNode))
         val cometSource = dataSource.via(Comet.json("callback"))
         Results.ok().chunked(cometSource)
       }
@@ -142,8 +142,9 @@ trait JavaResultsHandlingSpec
     "chunk event source results" in makeRequest(new MockController {
       def action = {
         import scala.collection.JavaConverters._
-        val dataSource =
-          akka.stream.javadsl.Source.from(List("a", "b").asJava).map {
+        val dataSource = akka.stream.javadsl.Source
+          .from(List("a", "b").asJava)
+          .map {
             new akka.japi.function.Function[String, EventSource.Event] {
               def apply(t: String) = EventSource.Event.event(t)
             }

@@ -36,8 +36,7 @@ trait Row {
     * @return Some(Value) if the column
     * exists with the given name. Otherwise, None.
     */
-  def apply(columnName: String): Option[Value] =
-    apply(indexOf(columnName))
+  def apply(columnName: String): Option[Value] = apply(indexOf(columnName))
 
   protected def apply(columnIndex: Option[Int]): Option[Value] =
     for (idx <- columnIndex)

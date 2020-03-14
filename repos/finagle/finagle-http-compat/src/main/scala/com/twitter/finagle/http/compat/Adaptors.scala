@@ -22,8 +22,8 @@ abstract class Adaptor[Req, Rep]
   * An Adaptor for Netty HTTP services.
   */
 object NettyAdaptor extends Adaptor[netty.HttpRequest, netty.HttpResponse] {
-  val NoStreaming = new IllegalArgumentException(
-    "this service doesn't support streaming")
+  val NoStreaming =
+    new IllegalArgumentException("this service doesn't support streaming")
 
   private[compat] def in(req: http.Request): Future[netty.HttpRequest] =
     if (req.isChunked)
@@ -56,8 +56,8 @@ abstract class ClientAdaptor[Req, Rep]
   */
 object NettyClientAdaptor
     extends ClientAdaptor[netty.HttpRequest, netty.HttpResponse] {
-  val NoStreaming = new IllegalArgumentException(
-    "this client doesn't support streaming")
+  val NoStreaming =
+    new IllegalArgumentException("this client doesn't support streaming")
 
   private[compat] def in(req: netty.HttpRequest): Future[http.Request] =
     if (req.isChunked)

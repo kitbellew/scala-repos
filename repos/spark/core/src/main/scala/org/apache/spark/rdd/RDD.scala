@@ -304,8 +304,8 @@ abstract class RDD[T: ClassTag](
     val ancestors = new mutable.HashSet[RDD[_]]
 
     def visit(rdd: RDD[_]) {
-      val narrowDependencies =
-        rdd.dependencies.filter(_.isInstanceOf[NarrowDependency[_]])
+      val narrowDependencies = rdd.dependencies.filter(
+        _.isInstanceOf[NarrowDependency[_]])
       val narrowParents = narrowDependencies.map(_.rdd)
       val narrowParentsNotVisited = narrowParents.filterNot(ancestors.contains)
       narrowParentsNotVisited.foreach { parent =>
@@ -351,8 +351,9 @@ abstract class RDD[T: ClassTag](
       }) match {
       case Left(blockResult) =>
         if (readCachedBlock) {
-          val existingMetrics =
-            context.taskMetrics().registerInputMetrics(blockResult.readMethod)
+          val existingMetrics = context
+            .taskMetrics()
+            .registerInputMetrics(blockResult.readMethod)
           existingMetrics.incBytesReadInternal(blockResult.bytes)
           new InterruptibleIterator[T](
             context,
@@ -473,16 +474,17 @@ abstract class RDD[T: ClassTag](
       if (shuffle) {
 
         /** Distributes elements evenly across output partitions, starting from a random partition. */
-        val distributePartition = (index: Int, items: Iterator[T]) =>
-          {
-            var position = (new Random(index)).nextInt(numPartitions)
-            items.map { t =>
-              // Note that the hash code of the key will just be the key itself. The HashPartitioner
-              // will mod it with the number of total partitions.
-              position = position + 1
-              (position, t)
-            }
-          }: Iterator[(Int, T)]
+        val distributePartition =
+          (index: Int, items: Iterator[T]) =>
+            {
+              var position = (new Random(index)).nextInt(numPartitions)
+              items.map { t =>
+                // Note that the hash code of the key will just be the key itself. The HashPartitioner
+                // will mod it with the number of total partitions.
+                position = position + 1
+                (position, t)
+              }
+            }: Iterator[(Int, T)]
 
         // include a shuffle step so that our upstream tasks are still distributed
         new CoalescedRDD(
@@ -607,8 +609,9 @@ abstract class RDD[T: ClassTag](
               num,
               initialCount,
               withReplacement)
-            var samples =
-              this.sample(withReplacement, fraction, rand.nextInt()).collect()
+            var samples = this
+              .sample(withReplacement, fraction, rand.nextInt())
+              .collect()
 
             // If the first sample didn't turn out large enough, keep trying to take samples;
             // this shouldn't happen often because we use a big multiplier for the initial size
@@ -616,8 +619,9 @@ abstract class RDD[T: ClassTag](
             while (samples.length < num) {
               logWarning(
                 s"Needed to re-sample due to insufficient sample size. Repeat #$numIters")
-              samples =
-                this.sample(withReplacement, fraction, rand.nextInt()).collect()
+              samples = this
+                .sample(withReplacement, fraction, rand.nextInt())
+                .collect()
               numIters += 1
             }
             Utils.randomizeInPlace(samples, rand).take(num)
@@ -1082,11 +1086,12 @@ abstract class RDD[T: ClassTag](
       if (partitioner == Some(p)) {
         // Our partitioner knows how to handle T (which, since we have a partitioner, is
         // really (K, V)) so make a new Partitioner that will de-tuple our fake tuples
-        val p2 = new Partitioner() {
-          override def numPartitions: Int = p.numPartitions
-          override def getPartition(k: Any): Int =
-            p.getPartition(k.asInstanceOf[(Any, _)]._1)
-        }
+        val p2 =
+          new Partitioner() {
+            override def numPartitions: Int = p.numPartitions
+            override def getPartition(k: Any): Int =
+              p.getPartition(k.asInstanceOf[(Any, _)]._1)
+          }
         // Unfortunately, since we're making a new p2, we'll get ShuffleDependencies
         // anyway, and when calling .keys, will not have a partitioner set, even though
         // the SubtractedRDD will, thanks to p2's de-tupled partitioning, already be
@@ -1104,22 +1109,24 @@ abstract class RDD[T: ClassTag](
   def reduce(f: (T, T) => T): T =
     withScope {
       val cleanF = sc.clean(f)
-      val reducePartition: Iterator[T] => Option[T] = iter => {
-        if (iter.hasNext) {
-          Some(iter.reduceLeft(cleanF))
-        } else {
-          None
-        }
-      }
-      var jobResult: Option[T] = None
-      val mergeResult = (index: Int, taskResult: Option[T]) => {
-        if (taskResult.isDefined) {
-          jobResult = jobResult match {
-            case Some(value) => Some(f(value, taskResult.get))
-            case None        => taskResult
+      val reducePartition: Iterator[T] => Option[T] =
+        iter => {
+          if (iter.hasNext) {
+            Some(iter.reduceLeft(cleanF))
+          } else {
+            None
           }
         }
-      }
+      var jobResult: Option[T] = None
+      val mergeResult =
+        (index: Int, taskResult: Option[T]) => {
+          if (taskResult.isDefined) {
+            jobResult = jobResult match {
+              case Some(value) => Some(f(value, taskResult.get))
+              case None        => taskResult
+            }
+          }
+        }
       sc.runJob(this, reducePartition, mergeResult)
       // Get the final result out of our Option, or throw an exception if the RDD was empty
       jobResult.getOrElse(
@@ -1138,25 +1145,27 @@ abstract class RDD[T: ClassTag](
         depth >= 1,
         s"Depth must be greater than or equal to 1 but got $depth.")
       val cleanF = context.clean(f)
-      val reducePartition: Iterator[T] => Option[T] = iter => {
-        if (iter.hasNext) {
-          Some(iter.reduceLeft(cleanF))
-        } else {
-          None
+      val reducePartition: Iterator[T] => Option[T] =
+        iter => {
+          if (iter.hasNext) {
+            Some(iter.reduceLeft(cleanF))
+          } else {
+            None
+          }
         }
-      }
       val partiallyReduced = mapPartitions(it => Iterator(reducePartition(it)))
-      val op: (Option[T], Option[T]) => Option[T] = (c, x) => {
-        if (c.isDefined && x.isDefined) {
-          Some(cleanF(c.get, x.get))
-        } else if (c.isDefined) {
-          c
-        } else if (x.isDefined) {
-          x
-        } else {
-          None
+      val op: (Option[T], Option[T]) => Option[T] =
+        (c, x) => {
+          if (c.isDefined && x.isDefined) {
+            Some(cleanF(c.get, x.get))
+          } else if (c.isDefined) {
+            c
+          } else if (x.isDefined) {
+            x
+          } else {
+            None
+          }
         }
-      }
       partiallyReduced
         .treeAggregate(Option.empty[T])(op, op, depth)
         .getOrElse(throw new UnsupportedOperationException("empty collection"))
@@ -1185,8 +1194,9 @@ abstract class RDD[T: ClassTag](
   def fold(zeroValue: T)(op: (T, T) => T): T =
     withScope {
       // Clone the zero value since we will also be serializing it as part of tasks
-      var jobResult =
-        Utils.clone(zeroValue, sc.env.closureSerializer.newInstance())
+      var jobResult = Utils.clone(
+        zeroValue,
+        sc.env.closureSerializer.newInstance())
       val cleanOp = sc.clean(op)
       val foldPartition = (iter: Iterator[T]) => iter.fold(zeroValue)(cleanOp)
       val mergeResult =
@@ -1246,11 +1256,12 @@ abstract class RDD[T: ClassTag](
         val cleanCombOp = context.clean(combOp)
         val aggregatePartition =
           (it: Iterator[T]) => it.aggregate(zeroValue)(cleanSeqOp, cleanCombOp)
-        var partiallyAggregated =
-          mapPartitions(it => Iterator(aggregatePartition(it)))
+        var partiallyAggregated = mapPartitions(it =>
+          Iterator(aggregatePartition(it)))
         var numPartitions = partiallyAggregated.partitions.length
-        val scale =
-          math.max(math.ceil(math.pow(numPartitions, 1.0 / depth)).toInt, 2)
+        val scale = math.max(
+          math.ceil(math.pow(numPartitions, 1.0 / depth)).toInt,
+          2)
         // If creating an extra level doesn't help reduce
         // the wall-clock time, we stop tree aggregation.
 
@@ -1468,8 +1479,10 @@ abstract class RDD[T: ClassTag](
           val left = num - buf.size
           val p = partsScanned.until(
             math.min(partsScanned + numPartsToTry, totalParts).toInt)
-          val res =
-            sc.runJob(this, (it: Iterator[T]) => it.take(left).toArray, p)
+          val res = sc.runJob(
+            this,
+            (it: Iterator[T]) => it.take(left).toArray,
+            p)
 
           res.foreach(buf ++= _.take(num - buf.size))
           partsScanned += p.size
@@ -1819,10 +1832,10 @@ abstract class RDD[T: ClassTag](
   // less data but is not safe for all workloads. E.g. in streaming we may checkpoint both
   // an RDD and its parent in every batch, in which case the parent may never be checkpointed
   // and its lineage never truncated, leading to OOMs in the long run (SPARK-6847).
-  private val checkpointAllMarkedAncestors =
-    Option(sc.getLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
-      .map(_.toBoolean)
-      .getOrElse(false)
+  private val checkpointAllMarkedAncestors = Option(
+    sc.getLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
+    .map(_.toBoolean)
+    .getOrElse(false)
 
   /** Returns the first parent RDD */
   protected[spark] def firstParent[U: ClassTag]: RDD[U] = {
@@ -1951,12 +1964,11 @@ abstract class RDD[T: ClassTag](
               d.isInstanceOf[ShuffleDependency[_, _, _]]))
 
           val lastDep = rdd.dependencies.last
-          val lastDepStrings =
-            debugString(
-              lastDep.rdd,
-              prefix,
-              lastDep.isInstanceOf[ShuffleDependency[_, _, _]],
-              true)
+          val lastDepStrings = debugString(
+            lastDep.rdd,
+            prefix,
+            lastDep.isInstanceOf[ShuffleDependency[_, _, _]],
+            true)
 
           (frontDepStrings ++ lastDepStrings)
       }

@@ -99,12 +99,13 @@ abstract class FormatInterpolator {
     // Sanity-check the % fields in this part.
     def copyPart(part: Tree, n: Int): Unit = {
       import SpecifierGroups.{Spec, Index}
-      val s0 = part match {
-        case Literal(Constant(x: String)) => x
-        case _ =>
-          throw new IllegalArgumentException(
-            "internal error: argument parts must be a list of string literals")
-      }
+      val s0 =
+        part match {
+          case Literal(Constant(x: String)) => x
+          case _ =>
+            throw new IllegalArgumentException(
+              "internal error: argument parts must be a list of string literals")
+        }
       def escapeHatch: PartialFunction[Throwable, String] = {
         // trailing backslash, octal escape, or other
         case e: StringContext.InvalidEscapeException =>
@@ -241,13 +242,12 @@ abstract class FormatInterpolator {
             TypeName("StringOps"))),
         termNames.CONSTRUCTOR
       )
-      val expr =
-        Apply(
-          Select(
-            Apply(newStringOps, List(Literal(Constant(format)))),
-            TermName("format")),
-          ids.toList
-        )
+      val expr = Apply(
+        Select(
+          Apply(newStringOps, List(Literal(Constant(format)))),
+          TermName("format")),
+        ids.toList
+      )
       val p = c.macroApplication.pos
       Block(evals.toList, atPos(p.focus)(expr)) setPos p.makeTransparent
     }
@@ -258,9 +258,10 @@ abstract class FormatInterpolator {
     val Spec, Index, Flags, Width, Precision, CC = Value
   }
 
-  val stdContextTags = new {
-    val tc: c.type = c
-  } with StdContextTags
+  val stdContextTags =
+    new {
+      val tc: c.type = c
+    } with StdContextTags
   import stdContextTags._
   val tagOfFormattable = typeTag[Formattable]
 

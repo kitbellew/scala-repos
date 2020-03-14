@@ -79,8 +79,8 @@ class GenericAvroSerializerSuite extends SparkFunSuite with SharedSparkContext {
   test("caches previously seen schemas") {
     val genericSer = new GenericAvroSerializer(conf.getAvroSchema)
     val compressedSchema = genericSer.compress(schema)
-    val decompressedSchema =
-      genericSer.decompress(ByteBuffer.wrap(compressedSchema))
+    val decompressedSchema = genericSer.decompress(
+      ByteBuffer.wrap(compressedSchema))
 
     assert(compressedSchema.eq(genericSer.compress(schema)))
     assert(

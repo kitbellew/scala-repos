@@ -109,10 +109,11 @@ object NetUtil {
   // (ip, netMask)
   def ipToIpBlock(ip: String, prefixLen: Option[Int]): (Int, Int) = {
     val arr = ip.split('.')
-    val pLen = prefixLen match {
-      case None if arr.length != 4 => arr.length * 8
-      case t                       => t.getOrElse(32)
-    }
+    val pLen =
+      prefixLen match {
+        case None if arr.length != 4 => arr.length * 8
+        case t                       => t.getOrElse(32)
+      }
 
     val netIp = ipToInt(arr.padTo(4, "0").mkString("."))
     val mask = (1 << 31) >> (pLen - 1)

@@ -70,18 +70,20 @@ private[thrift] class TTwitterClientFilter(
         // however if the ClientIdContext handler failed to load for
         // some reason, a pass-through context would be used instead.
         if (k != ClientId.clientIdCtx.marshalId) {
-          val c = new thrift.RequestContext(
-            Buf.ByteBuffer.Owned.extract(k),
-            Buf.ByteBuffer.Owned.extract(buf))
+          val c =
+            new thrift.RequestContext(
+              Buf.ByteBuffer.Owned.extract(k),
+              Buf.ByteBuffer.Owned.extract(buf))
           ctxs.add(c)
         }
       }
     }
     clientIdBuf match {
       case Some(buf) =>
-        val ctx = new thrift.RequestContext(
-          Buf.ByteBuffer.Owned.extract(ClientId.clientIdCtx.marshalId),
-          Buf.ByteBuffer.Owned.extract(buf))
+        val ctx =
+          new thrift.RequestContext(
+            Buf.ByteBuffer.Owned.extract(ClientId.clientIdCtx.marshalId),
+            Buf.ByteBuffer.Owned.extract(buf))
         ctxs.add(ctx)
       case None => // skip
     }
@@ -112,8 +114,8 @@ private[thrift] class TTwitterClientFilter(
       service: Service[ThriftClientRequest, Array[Byte]])
       : Future[Array[Byte]] = {
     // Create a new span identifier for this request.
-    val msg =
-      new InputBuffer(request.message, protocolFactory)().readMessageBegin()
+    val msg = new InputBuffer(request.message, protocolFactory)()
+      .readMessageBegin()
     Trace.recordRpc(msg.name)
 
     val thriftRequest =

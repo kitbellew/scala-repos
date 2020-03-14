@@ -1015,8 +1015,9 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
   test("Applying schemas with MapType") {
     val schemaWithSimpleMap = StructType(
       StructField("map", MapType(StringType, IntegerType, true), false) :: Nil)
-    val jsonWithSimpleMap =
-      sqlContext.read.schema(schemaWithSimpleMap).json(mapType1)
+    val jsonWithSimpleMap = sqlContext.read
+      .schema(schemaWithSimpleMap)
+      .json(mapType1)
 
     jsonWithSimpleMap.registerTempTable("jsonWithSimpleMap")
 
@@ -1044,8 +1045,9 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val schemaWithComplexMap = StructType(
       StructField("map", MapType(StringType, innerStruct, true), false) :: Nil)
 
-    val jsonWithComplexMap =
-      sqlContext.read.schema(schemaWithComplexMap).json(mapType2)
+    val jsonWithComplexMap = sqlContext.read
+      .schema(schemaWithComplexMap)
+      .json(mapType2)
 
     jsonWithComplexMap.registerTempTable("jsonWithComplexMap")
 
@@ -1477,8 +1479,10 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
   }
 
   test("SPARK-8093 Erase empty structs") {
-    val emptySchema =
-      InferSchema.infer(emptyRecords, "", new JSONOptions(Map()))
+    val emptySchema = InferSchema.infer(
+      emptyRecords,
+      "",
+      new JSONOptions(Map()))
     assert(StructType(Seq()) === emptySchema)
   }
 
@@ -1542,58 +1546,55 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     //  - If the type is NullType, we do not write data out.
 
     // Create the schema.
-    val struct =
-      StructType(
-        StructField("f1", FloatType, true) ::
-          StructField("f2", ArrayType(BooleanType), true) :: Nil)
+    val struct = StructType(
+      StructField("f1", FloatType, true) ::
+        StructField("f2", ArrayType(BooleanType), true) :: Nil)
 
-    val dataTypes =
-      Seq(
-        StringType,
-        BinaryType,
-        NullType,
-        BooleanType,
-        ByteType,
-        ShortType,
-        IntegerType,
-        LongType,
-        FloatType,
-        DoubleType,
-        DecimalType(25, 5),
-        DecimalType(6, 5),
-        DateType,
-        TimestampType,
-        ArrayType(IntegerType),
-        MapType(StringType, LongType),
-        struct,
-        new MyDenseVectorUDT()
-      )
+    val dataTypes = Seq(
+      StringType,
+      BinaryType,
+      NullType,
+      BooleanType,
+      ByteType,
+      ShortType,
+      IntegerType,
+      LongType,
+      FloatType,
+      DoubleType,
+      DecimalType(25, 5),
+      DecimalType(6, 5),
+      DateType,
+      TimestampType,
+      ArrayType(IntegerType),
+      MapType(StringType, LongType),
+      struct,
+      new MyDenseVectorUDT()
+    )
     val fields = dataTypes.zipWithIndex.map {
       case (dataType, index) =>
         StructField(s"col$index", dataType, nullable = true)
     }
     val schema = StructType(fields)
 
-    val constantValues =
-      Seq(
-        "a string in binary".getBytes(StandardCharsets.UTF_8),
-        null,
-        true,
-        1.toByte,
-        2.toShort,
-        3,
-        Long.MaxValue,
-        0.25.toFloat,
-        0.75,
-        new java.math.BigDecimal(s"1234.23456"),
-        new java.math.BigDecimal(s"1.23456"),
-        java.sql.Date.valueOf("2015-01-01"),
-        java.sql.Timestamp.valueOf("2015-01-01 23:50:59.123"),
-        Seq(2, 3, 4),
-        Map("a string" -> 2000L),
-        Row(4.75.toFloat, Seq(false, true)),
-        new MyDenseVector(Array(0.25, 2.25, 4.25))
-      )
+    val constantValues = Seq(
+      "a string in binary".getBytes(StandardCharsets.UTF_8),
+      null,
+      true,
+      1.toByte,
+      2.toShort,
+      3,
+      Long.MaxValue,
+      0.25.toFloat,
+      0.75,
+      new java.math.BigDecimal(s"1234.23456"),
+      new java.math.BigDecimal(s"1.23456"),
+      java.sql.Date.valueOf("2015-01-01"),
+      java.sql.Timestamp.valueOf("2015-01-01 23:50:59.123"),
+      Seq(2, 3, 4),
+      Map("a string" -> 2000L),
+      Row(4.75.toFloat, Seq(false, true)),
+      new MyDenseVector(Array(0.25, 2.25, 4.25))
+    )
     val data =
       Row.fromSeq(
         Seq(
@@ -1629,18 +1630,17 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       sparkContext.parallelize(allJSON, 1).saveAsTextFile(path.getCanonicalPath)
 
       // Read data back with the schema specified.
-      val col0Values =
-        Seq(
-          "Spark 1.2.2",
-          "Spark 1.3.1",
-          "Spark 1.3.1",
-          "Spark 1.4.1",
-          "Spark 1.4.1",
-          "Spark 1.5.0",
-          "Spark 1.5.0",
-          "Spark " + sqlContext.sparkContext.version,
-          "Spark " + sqlContext.sparkContext.version
-        )
+      val col0Values = Seq(
+        "Spark 1.2.2",
+        "Spark 1.3.1",
+        "Spark 1.3.1",
+        "Spark 1.4.1",
+        "Spark 1.4.1",
+        "Spark 1.5.0",
+        "Spark 1.5.0",
+        "Spark " + sqlContext.sparkContext.version,
+        "Spark " + sqlContext.sparkContext.version
+      )
       val expectedResult = col0Values.map { v =>
         Row.fromSeq(Seq(v) ++ constantValues)
       }
@@ -1699,8 +1699,9 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         }
 
         {
-          val jsonDF =
-            sqlContext.read.schema(schema).json(additionalCorruptRecords)
+          val jsonDF = sqlContext.read
+            .schema(schema)
+            .json(additionalCorruptRecords)
           jsonDF.registerTempTable("jsonTable")
 
           // In HiveContext, backticks should be used to access columns starting with a underscore.
@@ -1730,13 +1731,12 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         .map(record => record.replaceAll("\n", " "))
         .saveAsTextFile(path)
 
-      val schema =
-        StructType(
-          StructField(
-            "a",
-            StructType(
-              StructField("b", StringType) :: Nil
-            )) :: Nil)
+      val schema = StructType(
+        StructField(
+          "a",
+          StructType(
+            StructField("b", StringType) :: Nil
+          )) :: Nil)
       val jsonDF = sqlContext.read.schema(schema).json(path)
       assert(jsonDF.count() == 2)
     }

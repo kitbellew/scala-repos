@@ -387,10 +387,11 @@ trait BodyParsers {
           maxLength,
           Accumulator {
             val buffer = RawBuffer(memoryThreshold)
-            val sink = Sink.fold[RawBuffer, ByteString](buffer) { (bf, bs) =>
-              bf.push(bs);
-              bf
-            }
+            val sink =
+              Sink.fold[RawBuffer, ByteString](buffer) { (bf, bs) =>
+                bf.push(bs);
+                bf
+              }
             sink.mapMaterializedValue { future =>
               future andThen {
                 case _ => buffer.close()
@@ -683,8 +684,8 @@ trait BodyParsers {
 
         def maxLengthOrDefault = maxLength.fold(DefaultMaxTextLength)(_.toInt)
         def maxLengthOrDefaultLarge = maxLength.getOrElse(DefaultMaxDiskLength)
-        val contentType: Option[String] =
-          request.contentType.map(_.toLowerCase(Locale.ENGLISH))
+        val contentType: Option[String] = request.contentType.map(
+          _.toLowerCase(Locale.ENGLISH))
         contentType match {
           case Some("text/plain") =>
             logger.trace("Parsing AnyContent as text")
@@ -838,12 +839,13 @@ trait BodyParsers {
 
           statusFuture.flatMap {
             case MaxSizeExceeded(_) =>
-              val badResult = Future
-                .successful(())
-                .flatMap(_ =>
-                  createBadResult(
-                    "Request Entity Too Large",
-                    REQUEST_ENTITY_TOO_LARGE)(request))(defaultCtx)
+              val badResult =
+                Future
+                  .successful(())
+                  .flatMap(_ =>
+                    createBadResult(
+                      "Request Entity Too Large",
+                      REQUEST_ENTITY_TOO_LARGE)(request))(defaultCtx)
               badResult.map(Left(_))
             case MaxSizeNotExceeded => resultFuture
           }
@@ -916,43 +918,44 @@ object BodyParsers extends BodyParsers {
       val status = Promise[MaxSizeStatus]()
       var pushedBytes: Long = 0
 
-      val logic = new GraphStageLogic(shape) {
-        setHandler(
-          out,
-          new OutHandler {
-            override def onPull(): Unit = {
-              pull(in)
-            }
-            override def onDownstreamFinish(): Unit = {
-              status.success(MaxSizeNotExceeded)
-              completeStage()
-            }
-          })
-        setHandler(
-          in,
-          new InHandler {
-            override def onPush(): Unit = {
-              val chunk = grab(in)
-              pushedBytes += chunk.size
-              if (pushedBytes > maxLength) {
-                status.success(MaxSizeExceeded(maxLength))
-                // Make sure we fail the stream, this will ensure downstream body parsers don't try to parse it
-                failStage(new MaxLengthLimitAttained)
-              } else {
-                push(out, chunk)
+      val logic =
+        new GraphStageLogic(shape) {
+          setHandler(
+            out,
+            new OutHandler {
+              override def onPull(): Unit = {
+                pull(in)
+              }
+              override def onDownstreamFinish(): Unit = {
+                status.success(MaxSizeNotExceeded)
+                completeStage()
+              }
+            })
+          setHandler(
+            in,
+            new InHandler {
+              override def onPush(): Unit = {
+                val chunk = grab(in)
+                pushedBytes += chunk.size
+                if (pushedBytes > maxLength) {
+                  status.success(MaxSizeExceeded(maxLength))
+                  // Make sure we fail the stream, this will ensure downstream body parsers don't try to parse it
+                  failStage(new MaxLengthLimitAttained)
+                } else {
+                  push(out, chunk)
+                }
+              }
+              override def onUpstreamFinish(): Unit = {
+                status.success(MaxSizeNotExceeded)
+                completeStage()
+              }
+              override def onUpstreamFailure(ex: Throwable): Unit = {
+                status.failure(ex)
+                failStage(ex)
               }
             }
-            override def onUpstreamFinish(): Unit = {
-              status.success(MaxSizeNotExceeded)
-              completeStage()
-            }
-            override def onUpstreamFailure(ex: Throwable): Unit = {
-              status.failure(ex)
-              failStage(ex)
-            }
-          }
-        )
-      }
+          )
+        }
 
       (logic, status.future)
     }

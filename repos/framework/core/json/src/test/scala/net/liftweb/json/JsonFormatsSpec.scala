@@ -28,12 +28,12 @@ object JsonFormatsSpec extends Specification with TypeHintExamples {
   implicit val formats =
     ShortTypeHintExamples.formats + FullTypeHintExamples.formats.typeHints
 
-  val hintsForFish =
-    ShortTypeHintExamples.formats.typeHints.hintFor(classOf[Fish])
-  val hintsForDog =
-    ShortTypeHintExamples.formats.typeHints.hintFor(classOf[Dog])
-  val hintsForAnimal =
-    FullTypeHintExamples.formats.typeHints.hintFor(classOf[Animal])
+  val hintsForFish = ShortTypeHintExamples.formats.typeHints
+    .hintFor(classOf[Fish])
+  val hintsForDog = ShortTypeHintExamples.formats.typeHints
+    .hintFor(classOf[Dog])
+  val hintsForAnimal = FullTypeHintExamples.formats.typeHints
+    .hintFor(classOf[Animal])
 
   "hintsFor across composite formats" in {
     (formats.typeHints.hintFor(classOf[Fish]) mustEqual (hintsForFish)) and
@@ -58,9 +58,10 @@ object JsonFormatsSpec extends Specification with TypeHintExamples {
       def lookupParameterNames(constructor: java.lang.reflect.Constructor[_]) =
         List("name", "age")
     }
-    implicit val formats = new DefaultFormats {
-      override val parameterNameReader = TestReader
-    }
+    implicit val formats =
+      new DefaultFormats {
+        override val parameterNameReader = TestReader
+      }
     val json = parse("""{"name":"joe","age":35}""")
     json.extract[NamesNotSameAsInJson] mustEqual NamesNotSameAsInJson("joe", 35)
   }

@@ -15,9 +15,10 @@ object B1 {
 object Test {
   def main(args: Array[String]) {
     import B1.B2.q
-    val res = 5 match {
-      case q(x) => x
-    }
+    val res =
+      5 match {
+        case q(x) => x
+      }
     println(res)
   }
 }

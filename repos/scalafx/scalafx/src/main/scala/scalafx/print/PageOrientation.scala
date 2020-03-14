@@ -49,14 +49,14 @@ object PageOrientation
   /**
     * The printable area's origin is at the top right of the paper.
     */
-  val ReverseLandcsape = new PageOrientation(
-    jfxp.PageOrientation.REVERSE_LANDSCAPE)
+  val ReverseLandcsape =
+    new PageOrientation(jfxp.PageOrientation.REVERSE_LANDSCAPE)
 
   /**
     * The printable area's origin is at the bottom right of the paper.
     */
-  val ReversePortrait = new PageOrientation(
-    jfxp.PageOrientation.REVERSE_PORTRAIT)
+  val ReversePortrait =
+    new PageOrientation(jfxp.PageOrientation.REVERSE_PORTRAIT)
 
   protected override def unsortedValues: Array[PageOrientation] =
     Array(Landscape, Portrait, ReverseLandcsape, ReversePortrait)

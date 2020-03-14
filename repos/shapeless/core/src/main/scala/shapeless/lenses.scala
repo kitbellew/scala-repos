@@ -245,9 +245,10 @@ trait OpticComposer[L, R] {
 }
 
 object OpticComposer {
-  type Aux[L, R, Out0] = OpticComposer[L, R] {
-    type Out = Out0
-  }
+  type Aux[L, R, Out0] =
+    OpticComposer[L, R] {
+      type Out = Out0
+    }
 
   implicit def composeLL[S, A, T]: Aux[Lens[S, A], Lens[T, S], Lens[T, A]] =
     new OpticComposer[Lens[S, A], Lens[T, S]] {
@@ -280,9 +281,10 @@ trait MkFieldLens[A, K] {
 }
 
 object MkFieldLens {
-  type Aux[A, K, Elem0] = MkFieldLens[A, K] {
-    type Elem = Elem0
-  }
+  type Aux[A, K, Elem0] =
+    MkFieldLens[A, K] {
+      type Elem = Elem0
+    }
 
   implicit def mkFieldLens[A, K, R <: HList, B](implicit
       mkGen: MkLabelledGenericLens.Aux[A, R],
@@ -299,9 +301,10 @@ trait MkNthFieldLens[A, N <: Nat] {
 }
 
 object MkNthFieldLens {
-  type Aux[A, N <: Nat, Elem0] = MkNthFieldLens[A, N] {
-    type Elem = Elem0
-  }
+  type Aux[A, N <: Nat, Elem0] =
+    MkNthFieldLens[A, N] {
+      type Elem = Elem0
+    }
 
   implicit def mkGenPNth[A, N <: Nat, R <: HList, B](implicit
       mkGen: MkGenericLens.Aux[A, R],
@@ -330,9 +333,10 @@ trait InferProduct[C <: Coproduct, K] {
 }
 
 object InferProduct {
-  type Aux[C <: Coproduct, K, P] = InferProduct[C, K] {
-    type Prod = P
-  }
+  type Aux[C <: Coproduct, K, P] =
+    InferProduct[C, K] {
+      type Prod = P
+    }
 
   implicit def inferProduct1[P, R <: HList, T <: Coproduct, K](implicit
       gen: LabelledGeneric.Aux[P, R],
@@ -354,9 +358,10 @@ trait MkSelectDynamicOptic[R, A, K, B] {
 }
 
 trait LowPriorityMkSelectDynamicOptic {
-  type Aux[R, A, K, B, Out0] = MkSelectDynamicOptic[R, A, K, B] {
-    type Out = Out0
-  }
+  type Aux[R, A, K, B, Out0] =
+    MkSelectDynamicOptic[R, A, K, B] {
+      type Out = Out0
+    }
 
   implicit def mkInferCtorSelField[R, A, C <: Coproduct, I, K, E](implicit
       gen: Generic.Aux[A, C],
@@ -407,9 +412,10 @@ trait MkGenericLens[T] extends Serializable {
 }
 
 object MkGenericLens {
-  type Aux[T, Repr0] = MkGenericLens[T] {
-    type Repr = Repr0
-  }
+  type Aux[T, Repr0] =
+    MkGenericLens[T] {
+      type Repr = Repr0
+    }
 
   implicit def mkGenericLens[T](implicit gen: Generic[T]): Aux[T, gen.Repr] =
     new MkGenericLens[T] {
@@ -428,9 +434,10 @@ trait MkLabelledGenericLens[T] extends Serializable {
 }
 
 object MkLabelledGenericLens {
-  type Aux[T, Repr0] = MkLabelledGenericLens[T] {
-    type Repr = Repr0
-  }
+  type Aux[T, Repr0] =
+    MkLabelledGenericLens[T] {
+      type Repr = Repr0
+    }
 
   implicit def mkLabelledGenericLens[T](
       implicit gen: LabelledGeneric[T]): Aux[T, gen.Repr] =
@@ -450,9 +457,10 @@ trait MkHListNthLens[L <: HList, N <: Nat] extends Serializable {
 }
 
 object MkHListNthLens {
-  type Aux[L <: HList, N <: Nat, Elem0] = MkHListNthLens[L, N] {
-    type Elem = Elem0
-  }
+  type Aux[L <: HList, N <: Nat, Elem0] =
+    MkHListNthLens[L, N] {
+      type Elem = Elem0
+    }
 
   implicit def mkHListNthLens[L <: HList, N <: Nat, E](implicit
       atx: At.Aux[L, N, E],
@@ -507,9 +515,10 @@ trait MkRecordSelectLens[R <: HList, K] extends Serializable {
 }
 
 object MkRecordSelectLens {
-  type Aux[R <: HList, K, Elem0] = MkRecordSelectLens[R, K] {
-    type Elem = Elem0
-  }
+  type Aux[R <: HList, K, Elem0] =
+    MkRecordSelectLens[R, K] {
+      type Elem = Elem0
+    }
 
   implicit def mkRecordSelectLens[R <: HList, K, E](implicit
       selector: RSelector.Aux[R, K, E],
@@ -531,14 +540,16 @@ trait MkPathOptic[S, P <: HList] {
 }
 
 trait LowPriorityMkPathOptic {
-  type Aux[S, P <: HList, Out0, E0] = MkPathOptic[S, P] {
-    type Out = Out0;
-    type Elem = E0
-  }
+  type Aux[S, P <: HList, Out0, E0] =
+    MkPathOptic[S, P] {
+      type Out = Out0;
+      type Elem = E0
+    }
 
-  type Aux1[S, P <: HList, Out0] = MkPathOptic[S, P] {
-    type Out = Out0
-  }
+  type Aux1[S, P <: HList, Out0] =
+    MkPathOptic[S, P] {
+      type Out = Out0
+    }
 
   implicit def mkCoselSelPathOptic[
       S,
@@ -602,9 +613,10 @@ trait Segment[P, S, T <: HList] {
 }
 
 trait LowPrioritySegment {
-  type Aux[P, S, T <: HList, Out0 <: HList] = Segment[P, S, T] {
-    type Out = Out0
-  }
+  type Aux[P, S, T <: HList, Out0 <: HList] =
+    Segment[P, S, T] {
+      type Out = Out0
+    }
 
   implicit def two[P, S, T <: HList]
       : Aux[P, S, T, Coselect[S] :: Select[Symbol @@ P] :: T] =
@@ -638,8 +650,7 @@ trait Path[T <: HList] extends LPPath[T] {
 trait LPPath[T <: HList] extends Dynamic { self: Path[T] =>
   def selectDynamic[H](h: String)(implicit
       segment: Segment[h.type, H, T],
-      dummy: DummyImplicit): Path[segment.Out] =
-    new Path[segment.Out] {}
+      dummy: DummyImplicit): Path[segment.Out] = new Path[segment.Out] {}
 }
 
 object Path extends Path[HNil]

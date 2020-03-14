@@ -29,14 +29,15 @@ object FromString {
 
   /** Path related stringifiers.
     */
-  val ExistingDir: FromString[Directory] = new FromString[Directory] {
-    override def isDefinedAt(s: String) = toDir(s).isDirectory
-    def apply(s: String): Directory =
-      if (isDefinedAt(s))
-        toDir(s)
-      else
-        cmd.runAndExit(println("'%s' is not an existing directory." format s))
-  }
+  val ExistingDir: FromString[Directory] =
+    new FromString[Directory] {
+      override def isDefinedAt(s: String) = toDir(s).isDirectory
+      def apply(s: String): Directory =
+        if (isDefinedAt(s))
+          toDir(s)
+        else
+          cmd.runAndExit(println("'%s' is not an existing directory." format s))
+    }
   def ExistingDirRelativeTo(root: Directory) =
     new FromString[Directory] {
       private def resolve(s: String) =
@@ -60,19 +61,21 @@ object FromString {
 
   /** Identity.
     */
-  implicit val StringFromString: FromString[String] = new FromString[String] {
-    def apply(s: String): String = s
-  }
+  implicit val StringFromString: FromString[String] =
+    new FromString[String] {
+      def apply(s: String): String = s
+    }
 
   /** Implicit as the most likely to be useful as-is.
     */
-  implicit val IntFromString: FromString[Int] = new FromString[Int] {
-    override def isDefinedAt(s: String) = safeToInt(s).isDefined
-    def apply(s: String) = safeToInt(s).get
-    def safeToInt(s: String): Option[Int] =
-      try Some(java.lang.Integer.parseInt(s))
-      catch {
-        case _: NumberFormatException => None
-      }
-  }
+  implicit val IntFromString: FromString[Int] =
+    new FromString[Int] {
+      override def isDefinedAt(s: String) = safeToInt(s).isDefined
+      def apply(s: String) = safeToInt(s).get
+      def safeToInt(s: String): Option[Int] =
+        try Some(java.lang.Integer.parseInt(s))
+        catch {
+          case _: NumberFormatException => None
+        }
+    }
 }

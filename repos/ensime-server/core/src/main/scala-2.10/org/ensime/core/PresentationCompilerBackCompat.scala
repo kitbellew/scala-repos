@@ -23,11 +23,9 @@ trait PresentationCompilerBackCompat {
 
 trait PositionBackCompat {
   implicit class RichPosition(pos: Position) {
-    def withSource(src: SourceFile): Position =
-      pos.withSource(src, 0)
+    def withSource(src: SourceFile): Position = pos.withSource(src, 0)
 
-    def withShift(shift: Int): Position =
-      pos.withSource(pos.source, shift)
+    def withShift(shift: Int): Position = pos.withSource(pos.source, shift)
 
     // I wish we could override `start` and `end`
     def startOrCursor: Int = pos.startOrPoint

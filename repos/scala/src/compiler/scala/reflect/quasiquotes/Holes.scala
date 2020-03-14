@@ -97,8 +97,9 @@ trait Holes { self: Quasiquotes =>
 
   class ApplyHole(annotatedRank: Rank, unquotee: Tree) extends Hole {
     val (strippedTpe, tpe): (Type, Type) = {
-      val (strippedRank, strippedTpe) =
-        stripIterable(unquotee.tpe, limit = annotatedRank)
+      val (strippedRank, strippedTpe) = stripIterable(
+        unquotee.tpe,
+        limit = annotatedRank)
       if (isBottomType(strippedTpe))
         cantSplice()
       else if (isNativeType(strippedTpe)) {
@@ -255,47 +256,47 @@ trait Holes { self: Quasiquotes =>
   }
 
   class UnapplyHole(val rank: Rank, pat: Tree) extends Hole {
-    val (placeholderName, pos, tptopt) = pat match {
-      case Bind(pname, inner @ Bind(_, Typed(Ident(nme.WILDCARD), tpt))) =>
-        (pname, inner.pos, Some(tpt))
-      case Bind(pname, inner @ Typed(Ident(nme.WILDCARD), tpt)) =>
-        (pname, inner.pos, Some(tpt))
-      case Bind(pname, inner) => (pname, inner.pos, None)
-    }
+    val (placeholderName, pos, tptopt) =
+      pat match {
+        case Bind(pname, inner @ Bind(_, Typed(Ident(nme.WILDCARD), tpt))) =>
+          (pname, inner.pos, Some(tpt))
+        case Bind(pname, inner @ Typed(Ident(nme.WILDCARD), tpt)) =>
+          (pname, inner.pos, Some(tpt))
+        case Bind(pname, inner) => (pname, inner.pos, None)
+      }
     val treeNoUnlift = Bind(placeholderName, Ident(nme.WILDCARD))
-    lazy val tree =
-      tptopt
-        .map { tpt =>
-          val TypeDef(_, _, _, typedTpt) =
-            try c.typecheck(TypeDef(NoMods, TypeName("T"), Nil, tpt))
-            catch {
-              case TypecheckException(pos, msg) =>
-                c.abort(pos.asInstanceOf[c.Position], msg)
-            }
-          val tpe = typedTpt.tpe
-          val (iterableRank, _) = stripIterable(tpe)
-          if (iterableRank.value < rank.value)
-            c.abort(
-              pat.pos,
-              s"Can't extract $tpe with $rank, consider using $iterableRank")
-          val (_, strippedTpe) = stripIterable(tpe, limit = rank)
-          if (strippedTpe <:< treeType)
-            treeNoUnlift
-          else
-            unlifters
-              .spawn(strippedTpe, rank)
-              .map {
-                Apply(_, treeNoUnlift :: Nil)
-              }
-              .getOrElse {
-                c.abort(
-                  pat.pos,
-                  s"Can't find $unliftableType[$strippedTpe], consider providing it")
-              }
-        }
-        .getOrElse {
+    lazy val tree = tptopt
+      .map { tpt =>
+        val TypeDef(_, _, _, typedTpt) =
+          try c.typecheck(TypeDef(NoMods, TypeName("T"), Nil, tpt))
+          catch {
+            case TypecheckException(pos, msg) =>
+              c.abort(pos.asInstanceOf[c.Position], msg)
+          }
+        val tpe = typedTpt.tpe
+        val (iterableRank, _) = stripIterable(tpe)
+        if (iterableRank.value < rank.value)
+          c.abort(
+            pat.pos,
+            s"Can't extract $tpe with $rank, consider using $iterableRank")
+        val (_, strippedTpe) = stripIterable(tpe, limit = rank)
+        if (strippedTpe <:< treeType)
           treeNoUnlift
-        }
+        else
+          unlifters
+            .spawn(strippedTpe, rank)
+            .map {
+              Apply(_, treeNoUnlift :: Nil)
+            }
+            .getOrElse {
+              c.abort(
+                pat.pos,
+                s"Can't find $unliftableType[$strippedTpe], consider providing it")
+            }
+      }
+      .getOrElse {
+        treeNoUnlift
+      }
   }
 
   /** Full support for unliftable implies that it's possible to interleave
@@ -335,10 +336,11 @@ trait Holes { self: Quasiquotes =>
       records.zipWithIndex.map {
         case ((tpe, rank), idx) =>
           val name = TermName(nme.QUASIQUOTE_UNLIFT_HELPER + idx)
-          val helperName = rank match {
-            case DotDot    => nme.UnliftListElementwise
-            case DotDotDot => nme.UnliftListOfListsElementwise
-          }
+          val helperName =
+            rank match {
+              case DotDot    => nme.UnliftListElementwise
+              case DotDotDot => nme.UnliftListOfListsElementwise
+            }
           val lifter = inferUnliftable(tpe)
           assert(helperName.isTermName)
           // q"val $name: $u.internal.reificationSupport.${helperName.toTypeName} = $u.internal.reificationSupport.$helperName($lifter)"

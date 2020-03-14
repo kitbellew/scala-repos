@@ -148,8 +148,10 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val appId: PathId = PathId("/test")
     val taskId = Task.Id.forApp(appId)
 
-    val update =
-      TaskStatus.newBuilder().setTaskId(taskId.mesosTaskId).buildPartial()
+    val update = TaskStatus
+      .newBuilder()
+      .setTaskId(taskId.mesosTaskId)
+      .buildPartial()
 
     When("statusUpdate is called")
     val statusUpdate = f.delegate.statusUpdate(appId, update)
@@ -176,10 +178,11 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     lazy val clock = ConstantClock()
     lazy val config = MarathonTestHelper.defaultConfig()
     lazy val taskTrackerProbe = TestProbe()
-    lazy val delegate = new TaskCreationHandlerAndUpdaterDelegate(
-      clock,
-      config,
-      taskTrackerProbe.ref)
+    lazy val delegate =
+      new TaskCreationHandlerAndUpdaterDelegate(
+        clock,
+        config,
+        taskTrackerProbe.ref)
     lazy val timeoutDuration = delegate.timeout.duration
     def timeoutFromNow = clock.now() + timeoutDuration
   }

@@ -62,8 +62,9 @@ object SbtWatcherMain {
               override def consume(message: String) {
                 try {
                   val sc = new Socket(InetAddress.getByName(null), port)
-                  val writer = new BufferedWriter(
-                    new OutputStreamWriter(sc.getOutputStream))
+                  val writer =
+                    new BufferedWriter(
+                      new OutputStreamWriter(sc.getOutputStream))
                   writer.write(message)
                   writer.flush()
                   writer.close()

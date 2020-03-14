@@ -123,8 +123,9 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
   def drop(minNonNulls: Int, cols: Seq[String]): DataFrame = {
     // Filtering condition:
     // only keep the row if it has at least `minNonNulls` non-null and non-NaN values.
-    val predicate =
-      AtLeastNNonNulls(minNonNulls, cols.map(name => df.resolve(name)))
+    val predicate = AtLeastNNonNulls(
+      minNonNulls,
+      cols.map(name => df.resolve(name)))
     df.filter(Column(predicate))
   }
 
@@ -352,21 +353,24 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     }
 
     // replacementMap is either Map[String, String] or Map[Double, Double] or Map[Boolean,Boolean]
-    val replacementMap: Map[_, _] = replacement.head._2 match {
-      case v: String  => replacement
-      case v: Boolean => replacement
-      case _ =>
-        replacement.map {
-          case (k, v) => (convertToDouble(k), convertToDouble(v))
-        }
-    }
+    val replacementMap: Map[_, _] =
+      replacement.head._2 match {
+        case v: String  => replacement
+        case v: Boolean => replacement
+        case _ =>
+          replacement.map {
+            case (k, v) => (convertToDouble(k), convertToDouble(v))
+          }
+      }
 
     // targetColumnType is either DoubleType or StringType or BooleanType
-    val targetColumnType = replacement.head._1 match {
-      case _: jl.Double | _: jl.Float | _: jl.Integer | _: jl.Long => DoubleType
-      case _: jl.Boolean                                           => BooleanType
-      case _: String                                               => StringType
-    }
+    val targetColumnType =
+      replacement.head._1 match {
+        case _: jl.Double | _: jl.Float | _: jl.Integer | _: jl.Long =>
+          DoubleType
+        case _: jl.Boolean => BooleanType
+        case _: String     => StringType
+      }
 
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
@@ -450,10 +454,11 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
       replacementMap: Map[_, _]): Column = {
     val keyExpr = df.col(col.name).expr
     def buildExpr(v: Any) = Cast(Literal(v), keyExpr.dataType)
-    val branches = replacementMap.flatMap {
-      case (source, target) =>
-        Seq(buildExpr(source), buildExpr(target))
-    }.toSeq
+    val branches =
+      replacementMap.flatMap {
+        case (source, target) =>
+          Seq(buildExpr(source), buildExpr(target))
+      }.toSeq
     new Column(CaseKeyWhen(keyExpr, branches :+ keyExpr)).as(col.name)
   }
 

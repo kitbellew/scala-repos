@@ -11,8 +11,7 @@ package scala
 
 object Product3 {
   def unapply[T1, T2, T3](
-      x: Product3[T1, T2, T3]): Option[Product3[T1, T2, T3]] =
-    Some(x)
+      x: Product3[T1, T2, T3]): Option[Product3[T1, T2, T3]] = Some(x)
 }
 
 /** Product3 is a cartesian product of 3 components.

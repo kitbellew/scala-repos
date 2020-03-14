@@ -72,12 +72,12 @@ object IndexService extends SLF4JLogging {
         case o             => throw new IllegalStateException(o)
       }
   }
-  private val ClassIndexT = new TermQuery(
-    new Term("TYPE", classOf[ClassIndex].getSimpleName))
-  private val MethodIndexT = new TermQuery(
-    new Term("TYPE", classOf[MethodIndex].getSimpleName))
-  private val FieldIndexT = new TermQuery(
-    new Term("TYPE", classOf[FieldIndex].getSimpleName))
+  private val ClassIndexT =
+    new TermQuery(new Term("TYPE", classOf[ClassIndex].getSimpleName))
+  private val MethodIndexT =
+    new TermQuery(new Term("TYPE", classOf[MethodIndex].getSimpleName))
+  private val FieldIndexT =
+    new TermQuery(new Term("TYPE", classOf[FieldIndex].getSimpleName))
 
   /**
     * Like `PrefixQuery` but gives a higher value to exact matches.
@@ -131,18 +131,20 @@ class IndexService(path: File) {
   }
 
   def searchClasses(query: String, max: Int): List[ClassIndex] = {
-    val q = new BooleanQuery {
-      add(new BoostedPrefixQuery(new Term("fqn", query)), Occur.MUST)
-      add(ClassIndexT, Occur.MUST)
-    }
+    val q =
+      new BooleanQuery {
+        add(new BoostedPrefixQuery(new Term("fqn", query)), Occur.MUST)
+        add(ClassIndexT, Occur.MUST)
+      }
     lucene.search(q, max).map(_.toEntity[ClassIndex]).distinct
   }
 
   def searchClassesMethods(terms: List[String], max: Int): List[FqnIndex] = {
-    val query = new DisjunctionMaxQuery(
-      terms.map(buildTermClassMethodQuery),
-      0f
-    )
+    val query =
+      new DisjunctionMaxQuery(
+        terms.map(buildTermClassMethodQuery),
+        0f
+      )
     lucene.search(query, max).map(_.toEntity[ClassIndex]).distinct
   }
 

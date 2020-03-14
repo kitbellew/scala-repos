@@ -123,13 +123,14 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       val (nonConflictingUps, uRest) = application.span(e =>
         !database.headOption.exists(_.revision >= e.revision))
 
-      val (conflictingDowns, conflictingUps) =
-        Evolutions.conflictings(dRest, uRest)
+      val (conflictingDowns, conflictingUps) = Evolutions.conflictings(
+        dRest,
+        uRest)
 
-      val ups =
-        (nonConflictingUps ++ conflictingUps).reverseMap(e => UpScript(e))
-      val downs =
-        (nonConflictingDowns ++ conflictingDowns).map(e => DownScript(e))
+      val ups = (nonConflictingUps ++ conflictingUps).reverseMap(e =>
+        UpScript(e))
+      val downs = (nonConflictingDowns ++ conflictingDowns).map(e =>
+        DownScript(e))
 
       downs ++ ups
     } else
@@ -241,11 +242,12 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
     } catch {
       case NonFatal(e) => {
-        val message = e match {
-          case ex: SQLException =>
-            ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex.getSQLState + "]"
-          case ex => ex.getMessage
-        }
+        val message =
+          e match {
+            case ex: SQLException =>
+              ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex.getSQLState + "]"
+            case ex => ex.getMessage
+          }
         if (!autocommit) {
           logger.error(message)
 
@@ -287,13 +289,14 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
   private def checkEvolutionsState(): Unit = {
     def createPlayEvolutionsTable()(implicit conn: Connection): Unit = {
       try {
-        val createScript = database.url match {
-          case SqlServerJdbcUrl() => CreatePlayEvolutionsSqlServerSql
-          case OracleJdbcUrl()    => CreatePlayEvolutionsOracleSql
-          case MysqlJdbcUrl(_)    => CreatePlayEvolutionsMySql
-          case DerbyJdbcUrl()     => CreatePlayEvolutionsDerby
-          case _                  => CreatePlayEvolutionsSql
-        }
+        val createScript =
+          database.url match {
+            case SqlServerJdbcUrl() => CreatePlayEvolutionsSqlServerSql
+            case OracleJdbcUrl()    => CreatePlayEvolutionsOracleSql
+            case MysqlJdbcUrl(_)    => CreatePlayEvolutionsMySql
+            case DerbyJdbcUrl()     => CreatePlayEvolutionsDerby
+            case _                  => CreatePlayEvolutionsSql
+          }
 
         execute(createScript)
       } catch {
@@ -313,10 +316,11 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         val revision = problem.getInt("id")
         val state = problem.getString("state")
         val hash = problem.getString("hash").take(7)
-        val script = state match {
-          case "applying_up" => problem.getString("apply_script")
-          case _             => problem.getString("revert_script")
-        }
+        val script =
+          state match {
+            case "applying_up" => problem.getString("apply_script")
+            case _             => problem.getString("revert_script")
+          }
         val error = problem.getString("last_problem")
 
         logger.error(error)
@@ -387,8 +391,7 @@ private object DefaultEvolutionsApi {
 
   val logger = Logger(classOf[DefaultEvolutionsApi])
 
-  val CreatePlayEvolutionsSql =
-    """
+  val CreatePlayEvolutionsSql = """
       create table ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,
@@ -400,8 +403,7 @@ private object DefaultEvolutionsApi {
       )
     """
 
-  val CreatePlayEvolutionsSqlServerSql =
-    """
+  val CreatePlayEvolutionsSqlServerSql = """
       create table ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,
@@ -427,8 +429,7 @@ private object DefaultEvolutionsApi {
       )
     """
 
-  val CreatePlayEvolutionsMySql =
-    """
+  val CreatePlayEvolutionsMySql = """
       CREATE TABLE ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,
@@ -440,8 +441,7 @@ private object DefaultEvolutionsApi {
       )
     """
 
-  val CreatePlayEvolutionsDerby =
-    """
+  val CreatePlayEvolutionsDerby = """
       create table ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,

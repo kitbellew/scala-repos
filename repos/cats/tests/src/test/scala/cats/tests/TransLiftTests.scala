@@ -9,22 +9,24 @@ class TransLiftTests extends CatsSuite {
 
   case class JustFunctor[A](a: A)
 
-  implicit val jfFunctor: Functor[JustFunctor] = new Functor[JustFunctor] {
-    override def map[A, B](fa: JustFunctor[A])(f: A => B): JustFunctor[B] =
-      JustFunctor(f(fa.a))
-  }
+  implicit val jfFunctor: Functor[JustFunctor] =
+    new Functor[JustFunctor] {
+      override def map[A, B](fa: JustFunctor[A])(f: A => B): JustFunctor[B] =
+        JustFunctor(f(fa.a))
+    }
 
   case class JustAp[A](a: A)
 
-  implicit val jfApp: Applicative[JustAp] = new Applicative[JustAp] {
-    override def pure[A](a: A): JustAp[A] = JustAp(a)
-    override def ap[A, B](ff: JustAp[A => B])(fa: JustAp[A]): JustAp[B] =
-      JustAp(ff.a(fa.a))
-    override def product[A, B](fa: JustAp[A], fb: JustAp[B]): JustAp[(A, B)] =
-      JustAp(fa.a -> fb.a)
-    override def map[A, B](fa: JustAp[A])(f: A => B): JustAp[B] =
-      JustAp(f(fa.a))
-  }
+  implicit val jfApp: Applicative[JustAp] =
+    new Applicative[JustAp] {
+      override def pure[A](a: A): JustAp[A] = JustAp(a)
+      override def ap[A, B](ff: JustAp[A => B])(fa: JustAp[A]): JustAp[B] =
+        JustAp(ff.a(fa.a))
+      override def product[A, B](fa: JustAp[A], fb: JustAp[B]): JustAp[(A, B)] =
+        JustAp(fa.a -> fb.a)
+      override def map[A, B](fa: JustAp[A])(f: A => B): JustAp[B] =
+        JustAp(f(fa.a))
+    }
 
   test("transLift for XorT, OptionT, WriterT requires only Functor") {
     val d: XorT[JustFunctor, Int, Int] = JustFunctor(1).liftT[({

@@ -57,8 +57,7 @@ object BigInt {
   /** Translates a byte array containing the two's-complement binary
     *  representation of a BigInt into a BigInt.
     */
-  def apply(x: Array[Byte]): BigInt =
-    new BigInt(new BigInteger(x))
+  def apply(x: Array[Byte]): BigInt = new BigInt(new BigInteger(x))
 
   /** Translates the sign-magnitude representation of a BigInt into a BigInt.
     */
@@ -79,8 +78,7 @@ object BigInt {
 
   /** Translates the decimal String representation of a BigInt into a BigInt.
     */
-  def apply(x: String): BigInt =
-    new BigInt(new BigInteger(x))
+  def apply(x: String): BigInt = new BigInt(new BigInteger(x))
 
   /** Translates the string representation of a `BigInt` in the
     *  specified `radix` into a BigInt.
@@ -90,8 +88,7 @@ object BigInt {
 
   /** Translates a `java.math.BigInteger` into a BigInt.
     */
-  def apply(x: BigInteger): BigInt =
-    new BigInt(x)
+  def apply(x: BigInteger): BigInt = new BigInt(x)
 
   /** Returns a positive BigInt that is probably prime, with the specified bitLength.
     */

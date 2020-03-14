@@ -256,16 +256,18 @@ class RandBasis(val generator: RandomGenerator) {
   /**
     * Uniformly samples in [0,1]
     */
-  val uniform: Rand[Double] = new Rand[Double] {
-    def draw = generator.nextDouble
-  }
+  val uniform: Rand[Double] =
+    new Rand[Double] {
+      def draw = generator.nextDouble
+    }
 
   /**
     * Uniformly samples an integer in [0,MAX_INT]
     */
-  val randInt: Rand[Int] = new Rand[Int] {
-    def draw = generator.nextInt & Int.MaxValue
-  }
+  val randInt: Rand[Int] =
+    new Rand[Int] {
+      def draw = generator.nextInt & Int.MaxValue
+    }
 
   /**
     * Uniformly samples an integer in [0,n)
@@ -286,9 +288,10 @@ class RandBasis(val generator: RandomGenerator) {
   /**
     * Uniformly samples a long integer in [0,MAX_LONG]
     */
-  val randLong: Rand[Long] = new Rand[Long] {
-    def draw = generator.nextLong & Long.MaxValue
-  }
+  val randLong: Rand[Long] =
+    new Rand[Long] {
+      def draw = generator.nextLong & Long.MaxValue
+    }
 
   /**
     * Uniformly samples a long integer in [0,n)
@@ -315,9 +318,10 @@ class RandBasis(val generator: RandomGenerator) {
   /**
     * Samples a gaussian with 0 mean and 1 std
     */
-  val gaussian: Rand[Double] = new Rand[Double] {
-    def draw = generator.nextGaussian
-  }
+  val gaussian: Rand[Double] =
+    new Rand[Double] {
+      def draw = generator.nextGaussian
+    }
 
   /**
     * Samples a gaussian with m mean and s std

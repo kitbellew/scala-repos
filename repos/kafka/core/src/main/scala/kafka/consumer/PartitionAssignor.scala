@@ -57,8 +57,8 @@ class AssignmentContext(
     myTopicCount.getConsumerThreadIdsPerTopic
   }
 
-  val partitionsForTopic: collection.Map[String, Seq[Int]] =
-    zkUtils.getPartitionsForTopics(myTopicThreadIds.keySet.toSeq)
+  val partitionsForTopic: collection.Map[String, Seq[Int]] = zkUtils
+    .getPartitionsForTopics(myTopicThreadIds.keySet.toSeq)
 
   val consumersForTopic: collection.Map[String, List[ConsumerThreadId]] =
     zkUtils.getConsumersPerTopic(group, excludeInternalTopics)
@@ -81,8 +81,9 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
 
   def assign(ctx: AssignmentContext) = {
 
-    val valueFactory = (topic: String) =>
-      new mutable.HashMap[TopicAndPartition, ConsumerThreadId]
+    val valueFactory =
+      (topic: String) =>
+        new mutable.HashMap[TopicAndPartition, ConsumerThreadId]
     val partitionAssignment =
       new Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]](
         Some(valueFactory))
@@ -105,8 +106,8 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
           )
       }
 
-      val threadAssignor =
-        CoreUtils.circularIterator(headThreadIdSet.toSeq.sorted)
+      val threadAssignor = CoreUtils.circularIterator(
+        headThreadIdSet.toSeq.sorted)
 
       info("Starting round-robin assignment with consumers " + ctx.consumers)
       val allTopicPartitions = ctx.partitionsForTopic
@@ -131,8 +132,8 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
       allTopicPartitions.foreach(topicPartition => {
         val threadId = threadAssignor.next()
         // record the partition ownership decision
-        val assignmentForConsumer =
-          partitionAssignment.getAndMaybePut(threadId.consumer)
+        val assignmentForConsumer = partitionAssignment.getAndMaybePut(
+          threadId.consumer)
         assignmentForConsumer += (topicPartition -> threadId)
       })
     }
@@ -156,8 +157,9 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
 class RangeAssignor() extends PartitionAssignor with Logging {
 
   def assign(ctx: AssignmentContext) = {
-    val valueFactory = (topic: String) =>
-      new mutable.HashMap[TopicAndPartition, ConsumerThreadId]
+    val valueFactory =
+      (topic: String) =>
+        new mutable.HashMap[TopicAndPartition, ConsumerThreadId]
     val partitionAssignment =
       new Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]](
         Some(valueFactory))
@@ -197,8 +199,8 @@ class RangeAssignor() extends PartitionAssignor with Logging {
             info(
               consumerThreadId + " attempting to claim partition " + partition)
             // record the partition ownership decision
-            val assignmentForConsumer =
-              partitionAssignment.getAndMaybePut(consumerThreadId.consumer)
+            val assignmentForConsumer = partitionAssignment.getAndMaybePut(
+              consumerThreadId.consumer)
             assignmentForConsumer += (TopicAndPartition(
               topic,
               partition) -> consumerThreadId)

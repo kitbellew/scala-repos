@@ -2,8 +2,7 @@ sealed abstract class MyList[@specialized +A] {
   def head: A
   def tail: MyList[A]
 
-  def ::[@specialized B >: A](x: B): MyList[B] =
-    new Cons[B](x, this)
+  def ::[@specialized B >: A](x: B): MyList[B] = new Cons[B](x, this)
 }
 
 case object MyNil extends MyList[Nothing] {

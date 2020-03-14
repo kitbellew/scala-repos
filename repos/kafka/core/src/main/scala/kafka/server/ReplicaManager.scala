@@ -144,13 +144,14 @@ class ReplicaManager(
   val replicaFetcherManager =
     new ReplicaFetcherManager(config, this, metrics, jTime, threadNamePrefix)
   private val highWatermarkCheckPointThreadStarted = new AtomicBoolean(false)
-  val highWatermarkCheckpoints = config.logDirs
-    .map(dir =>
-      (
-        new File(dir).getAbsolutePath,
-        new OffsetCheckpoint(
-          new File(dir, ReplicaManager.HighWatermarkFilename))))
-    .toMap
+  val highWatermarkCheckpoints =
+    config.logDirs
+      .map(dir =>
+        (
+          new File(dir).getAbsolutePath,
+          new OffsetCheckpoint(
+            new File(dir, ReplicaManager.HighWatermarkFilename))))
+      .toMap
   private var hwThreadInitialized = false
   this.logIdent = "[Replica Manager on Broker " + localBrokerId + "]: "
   val stateChangeLogger = KafkaController.stateChangeLogger
@@ -159,14 +160,16 @@ class ReplicaManager(
   private val lastIsrChangeMs = new AtomicLong(System.currentTimeMillis())
   private val lastIsrPropagationMs = new AtomicLong(System.currentTimeMillis())
 
-  val delayedProducePurgatory = new DelayedOperationPurgatory[DelayedProduce](
-    purgatoryName = "Produce",
-    config.brokerId,
-    config.producerPurgatoryPurgeIntervalRequests)
-  val delayedFetchPurgatory = new DelayedOperationPurgatory[DelayedFetch](
-    purgatoryName = "Fetch",
-    config.brokerId,
-    config.fetchPurgatoryPurgeIntervalRequests)
+  val delayedProducePurgatory =
+    new DelayedOperationPurgatory[DelayedProduce](
+      purgatoryName = "Produce",
+      config.brokerId,
+      config.producerPurgatoryPurgeIntervalRequests)
+  val delayedFetchPurgatory =
+    new DelayedOperationPurgatory[DelayedFetch](
+      purgatoryName = "Fetch",
+      config.brokerId,
+      config.fetchPurgatoryPurgeIntervalRequests)
 
   val leaderCount = newGauge(
     "LeaderCount",
@@ -453,8 +456,8 @@ class ReplicaManager(
 
       } else {
         // we can respond immediately
-        val produceResponseStatus =
-          produceStatus.mapValues(status => status.responseStatus)
+        val produceResponseStatus = produceStatus.mapValues(status =>
+          status.responseStatus)
         responseCallback(produceResponseStatus)
       }
     } else {
@@ -521,18 +524,20 @@ class ReplicaManager(
                   .format(topicPartition.topic)))))
         } else {
           try {
-            val partitionOpt =
-              getPartition(topicPartition.topic, topicPartition.partition)
-            val info = partitionOpt match {
-              case Some(partition) =>
-                partition.appendMessagesToLeader(
-                  messages.asInstanceOf[ByteBufferMessageSet],
-                  requiredAcks)
-              case None =>
-                throw new UnknownTopicOrPartitionException(
-                  "Partition %s doesn't exist on %d"
-                    .format(topicPartition, localBrokerId))
-            }
+            val partitionOpt = getPartition(
+              topicPartition.topic,
+              topicPartition.partition)
+            val info =
+              partitionOpt match {
+                case Some(partition) =>
+                  partition.appendMessagesToLeader(
+                    messages.asInstanceOf[ByteBufferMessageSet],
+                    requiredAcks)
+                case None =>
+                  throw new UnknownTopicOrPartitionException(
+                    "Partition %s doesn't exist on %d"
+                      .format(topicPartition, localBrokerId))
+              }
 
             val numAppendedMessages =
               if (info.firstOffset == -1L || info.lastOffset == -1L)
@@ -615,8 +620,10 @@ class ReplicaManager(
     val fetchOnlyCommitted: Boolean = !Request.isValidBrokerId(replicaId)
 
     // read from local logs
-    val logReadResults =
-      readFromLocalLog(fetchOnlyFromLeader, fetchOnlyCommitted, fetchInfo)
+    val logReadResults = readFromLocalLog(
+      fetchOnlyFromLeader,
+      fetchOnlyCommitted,
+      fetchInfo)
 
     // if the fetch comes from the follower,
     // update its corresponding log end offset
@@ -714,17 +721,18 @@ class ReplicaManager(
              * This can cause a replica to always be out of sync.
              */
             val initialLogEndOffset = localReplica.logEndOffset
-            val logReadInfo = localReplica.log match {
-              case Some(log) =>
-                log.read(offset, fetchSize, maxOffsetOpt)
-              case None =>
-                error(
-                  "Leader for partition [%s,%d] does not have a local log"
-                    .format(topic, partition))
-                FetchDataInfo(
-                  LogOffsetMetadata.UnknownOffsetMetadata,
-                  MessageSet.Empty)
-            }
+            val logReadInfo =
+              localReplica.log match {
+                case Some(log) =>
+                  log.read(offset, fetchSize, maxOffsetOpt)
+                case None =>
+                  error(
+                    "Leader for partition [%s,%d] does not have a local log"
+                      .format(topic, partition))
+                  FetchDataInfo(
+                    LogOffsetMetadata.UnknownOffsetMetadata,
+                    MessageSet.Empty)
+              }
 
             val readToEndOfLog =
               initialLogEndOffset.messageOffset - logReadInfo.fetchOffsetMetadata.messageOffset <= 0
@@ -813,14 +821,15 @@ class ReplicaManager(
       metadataCache: MetadataCache) {
     replicaStateChangeLock synchronized {
       if (updateMetadataRequest.controllerEpoch < controllerEpoch) {
-        val stateControllerEpochErrorMessage = ("Broker %d received update metadata request with correlation id %d from an " +
-          "old controller %d with epoch %d. Latest known controller epoch is %d")
-          .format(
-            localBrokerId,
-            correlationId,
-            updateMetadataRequest.controllerId,
-            updateMetadataRequest.controllerEpoch,
-            controllerEpoch)
+        val stateControllerEpochErrorMessage =
+          ("Broker %d received update metadata request with correlation id %d from an " +
+            "old controller %d with epoch %d. Latest known controller epoch is %d")
+            .format(
+              localBrokerId,
+              correlationId,
+              updateMetadataRequest.controllerId,
+              updateMetadataRequest.controllerEpoch,
+              controllerEpoch)
         stateChangeLogger.warn(stateControllerEpochErrorMessage)
         throw new ControllerMovedException(stateControllerEpochErrorMessage)
       } else {
@@ -1316,9 +1325,10 @@ class ReplicaManager(
       .filter(_.log.isDefined)
       .groupBy(_.log.get.dir.getParentFile.getAbsolutePath)
     for ((dir, reps) <- replicasByDir) {
-      val hwms = reps
-        .map(r => new TopicAndPartition(r) -> r.highWatermark.messageOffset)
-        .toMap
+      val hwms =
+        reps
+          .map(r => new TopicAndPartition(r) -> r.highWatermark.messageOffset)
+          .toMap
       try {
         highWatermarkCheckpoints(dir).write(hwms)
       } catch {

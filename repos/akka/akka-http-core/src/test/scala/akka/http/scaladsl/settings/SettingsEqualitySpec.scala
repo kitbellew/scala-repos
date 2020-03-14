@@ -10,8 +10,9 @@ import org.scalatest.WordSpec
 
 class SettingsEqualitySpec extends WordSpec with Matchers {
 
-  val config = ConfigFactory
-    .parseString("""
+  val config =
+    ConfigFactory
+      .parseString("""
     akka.http.routing {
       verbose-error-messages = off
       file-get-conditional = on
@@ -22,8 +23,8 @@ class SettingsEqualitySpec extends WordSpec with Matchers {
       file-io-dispatcher = ${akka.stream.blocking-io-dispatcher}
     }
   """)
-    .withFallback(ConfigFactory.load)
-    .resolve
+      .withFallback(ConfigFactory.load)
+      .resolve
 
   "equality" should {
     "hold for ConnectionPoolSettings" in {

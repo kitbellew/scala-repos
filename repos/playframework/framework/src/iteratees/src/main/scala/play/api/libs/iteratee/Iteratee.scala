@@ -664,13 +664,14 @@ trait Iteratee[E, +A] {
       case Step.Done(a, e) =>
         executeIteratee(f(a))(pec).pureFlatFold {
           case Step.Done(a, eIn) => {
-            val fullIn = (e, eIn) match {
-              case (Input.Empty, in)            => in
-              case (in, Input.Empty)            => in
-              case (Input.EOF, _)               => Input.EOF
-              case (in, Input.EOF)              => in
-              case (Input.El(e1), Input.El(e2)) => Input.El[E](p(e1) ++ p(e2))
-            }
+            val fullIn =
+              (e, eIn) match {
+                case (Input.Empty, in)            => in
+                case (in, Input.Empty)            => in
+                case (Input.EOF, _)               => Input.EOF
+                case (in, Input.EOF)              => in
+                case (Input.El(e1), Input.El(e2)) => Input.El[E](p(e1) ++ p(e2))
+              }
 
             Done(a, fullIn)
           }
@@ -740,21 +741,21 @@ trait Iteratee[E, +A] {
     implicit val pec = ec.prepare()
 
     def recoveringIteratee(it: Iteratee[E, A]): Iteratee[E, B] = {
-      val futureRecoveringIteratee: Future[Iteratee[E, B]] = it
-        .pureFlatFold[E, B] {
-          case Step.Cont(k) =>
-            Cont { input: Input[E] =>
-              val orig: Iteratee[E, A] = k(input)
-              val recovering: Iteratee[E, B] = recoveringIteratee(orig)
-              recovering
-            }
-          case Step.Error(msg, _) =>
-            throw new IterateeException(msg)
-          case done => done.it
-        }(dec)
-        .unflatten
-        .map(_.it)(dec)
-        .recover(pf)(pec)
+      val futureRecoveringIteratee: Future[Iteratee[E, B]] =
+        it.pureFlatFold[E, B] {
+            case Step.Cont(k) =>
+              Cont { input: Input[E] =>
+                val orig: Iteratee[E, A] = k(input)
+                val recovering: Iteratee[E, B] = recoveringIteratee(orig)
+                recovering
+              }
+            case Step.Error(msg, _) =>
+              throw new IterateeException(msg)
+            case done => done.it
+          }(dec)
+          .unflatten
+          .map(_.it)(dec)
+          .recover(pf)(pec)
       Iteratee.flatten(futureRecoveringIteratee)
     }
 

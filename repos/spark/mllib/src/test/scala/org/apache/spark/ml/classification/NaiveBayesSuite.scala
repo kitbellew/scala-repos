@@ -46,8 +46,8 @@ class NaiveBayesSuite
       Array(0.10, 0.10, 0.70, 0.10) // label 2
     ).map(_.map(math.log))
 
-    dataset =
-      sqlContext.createDataFrame(generateNaiveBayesInput(pi, theta, 100, 42))
+    dataset = sqlContext.createDataFrame(
+      generateNaiveBayesInput(pi, theta, 100, 42))
   }
 
   def validatePrediction(predictionAndLabels: DataFrame): Unit = {
@@ -103,14 +103,15 @@ class NaiveBayesSuite
     featureAndProbabilities.collect().foreach {
       case Row(features: Vector, probability: Vector) => {
         assert(probability.toArray.sum ~== 1.0 relTol 1.0e-10)
-        val expected = modelType match {
-          case Multinomial =>
-            expectedMultinomialProbabilities(model, features)
-          case Bernoulli =>
-            expectedBernoulliProbabilities(model, features)
-          case _ =>
-            throw new UnknownError(s"Invalid modelType: $modelType.")
-        }
+        val expected =
+          modelType match {
+            case Multinomial =>
+              expectedMultinomialProbabilities(model, features)
+            case Bernoulli =>
+              expectedBernoulliProbabilities(model, features)
+            case _ =>
+              throw new UnknownError(s"Invalid modelType: $modelType.")
+          }
         assert(probability ~== expected relTol 1.0e-10)
       }
     }
@@ -118,10 +119,11 @@ class NaiveBayesSuite
 
   test("params") {
     ParamsSuite.checkParams(new NaiveBayes)
-    val model = new NaiveBayesModel(
-      "nb",
-      pi = Vectors.dense(Array(0.2, 0.8)),
-      theta = new DenseMatrix(2, 3, Array(0.1, 0.2, 0.3, 0.4, 0.6, 0.4)))
+    val model =
+      new NaiveBayesModel(
+        "nb",
+        pi = Vectors.dense(Array(0.2, 0.8)),
+        theta = new DenseMatrix(2, 3, Array(0.1, 0.2, 0.3, 0.4, 0.6, 0.4)))
     ParamsSuite.checkParams(model)
   }
 
@@ -156,8 +158,9 @@ class NaiveBayesSuite
     val validationDataset = sqlContext.createDataFrame(
       generateNaiveBayesInput(piArray, thetaArray, nPoints, 17, "multinomial"))
 
-    val predictionAndLabels =
-      model.transform(validationDataset).select("prediction", "label")
+    val predictionAndLabels = model
+      .transform(validationDataset)
+      .select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
     val featureAndProbabilities = model
@@ -191,8 +194,9 @@ class NaiveBayesSuite
     val validationDataset = sqlContext.createDataFrame(
       generateNaiveBayesInput(piArray, thetaArray, nPoints, 20, "bernoulli"))
 
-    val predictionAndLabels =
-      model.transform(validationDataset).select("prediction", "label")
+    val predictionAndLabels = model
+      .transform(validationDataset)
+      .select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
     val featureAndProbabilities = model

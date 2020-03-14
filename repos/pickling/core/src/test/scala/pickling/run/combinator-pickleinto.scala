@@ -25,8 +25,7 @@ class Person(val id: Int) {
     _name = details._1
     _age = details._2
   }
-  override def toString =
-    "Person(" + name + ", " + age + ")"
+  override def toString = "Person(" + name + ", " + age + ")"
 }
 
 class CombinatorPickleIntoTest extends FunSuite {

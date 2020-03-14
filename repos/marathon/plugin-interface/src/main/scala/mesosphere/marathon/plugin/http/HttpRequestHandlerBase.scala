@@ -13,10 +13,11 @@ abstract class HttpRequestHandlerBase extends HttpRequestHandler {
   protected[this] def serveResource(
       path: String,
       response: HttpResponse): Unit = {
-    val content = withResource(path) { url =>
-      response.body(mediaMime(url), Resources.toByteArray(url))
-      response.status(200)
-    }
+    val content =
+      withResource(path) { url =>
+        response.body(mediaMime(url), Resources.toByteArray(url))
+        response.status(200)
+      }
     content.getOrElse(response.status(404))
   }
 

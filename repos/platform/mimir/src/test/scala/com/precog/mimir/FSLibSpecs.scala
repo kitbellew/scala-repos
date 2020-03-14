@@ -126,22 +126,25 @@ trait FSLibSpecs[M[+_]]
 
     "expand a leading glob" in {
       val table = pathTable("/*/bar1")
-      val expected: List[JValue] =
-        List(JString("/foo/bar1/"), JString("/foo2/bar1/"))
+      val expected: List[JValue] = List(
+        JString("/foo/bar1/"),
+        JString("/foo2/bar1/"))
       runExpansion(table) must_== expected
     }
 
     "expand a trailing glob" in {
       val table = pathTable("/foo/*")
-      val expected: List[JValue] =
-        List(JString("/foo/bar1/"), JString("/foo/bar2/"))
+      val expected: List[JValue] = List(
+        JString("/foo/bar1/"),
+        JString("/foo/bar2/"))
       runExpansion(table) must_== expected
     }
 
     "expand an internal glob and filter" in {
       val table = pathTable("/foo/*/baz/quux1")
-      val expected: List[JValue] =
-        List(JString("/foo/bar1/baz/quux1/"), JString("/foo/bar2/baz/quux1/"))
+      val expected: List[JValue] = List(
+        JString("/foo/bar1/baz/quux1/"),
+        JString("/foo/bar2/baz/quux1/"))
       runExpansion(table) must_== expected
     }
 

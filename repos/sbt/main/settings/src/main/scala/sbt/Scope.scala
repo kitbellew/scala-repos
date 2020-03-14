@@ -201,24 +201,26 @@ object Scope {
     val inTaskOpt = Option(inTaskOrNull)
     val DotURI = new URI(".")
     val GlobalStr = "*"
-    val scope = (uriOpt, projectIdOpt, configOpt, inTaskOpt) match {
-      case (None, None, Some(GlobalStr), None) => GlobalScope
-      case _ =>
-        val projScope = (uriOpt, projectIdOpt) match {
-          case (Some(DotURI), Some("")) => Select(ThisBuild)
-          case (Some(uri), Some(""))    => Select(BuildRef(uri))
-          case (Some(uri), Some(p))     => Select(ProjectRef(uri, p))
-          case (None, Some(p))          => Select(LocalProject(p))
-          case _                        => This
-        }
-        val configScope = configOpt map {
-          case c if c != GlobalStr => Select(ConfigKey(c))
-        } getOrElse This
-        val inTaskScope = inTaskOpt map { t =>
-          Select(AttributeKey(t))
-        } getOrElse This
-        Scope(projScope, configScope, inTaskScope, This)
-    }
+    val scope =
+      (uriOpt, projectIdOpt, configOpt, inTaskOpt) match {
+        case (None, None, Some(GlobalStr), None) => GlobalScope
+        case _ =>
+          val projScope =
+            (uriOpt, projectIdOpt) match {
+              case (Some(DotURI), Some("")) => Select(ThisBuild)
+              case (Some(uri), Some(""))    => Select(BuildRef(uri))
+              case (Some(uri), Some(p))     => Select(ProjectRef(uri, p))
+              case (None, Some(p))          => Select(LocalProject(p))
+              case _                        => This
+            }
+          val configScope = configOpt map {
+            case c if c != GlobalStr => Select(ConfigKey(c))
+          } getOrElse This
+          val inTaskScope = inTaskOpt map { t =>
+            Select(AttributeKey(t))
+          } getOrElse This
+          Scope(projScope, configScope, inTaskScope, This)
+      }
     (scope, transformTaskName(key))
   }
   @deprecated("No longer used", "0.13.6")
@@ -258,18 +260,21 @@ object Scope {
     def nonProjectScopes(resolvedProj: ResolvedReference)(
         px: ScopeAxis[ResolvedReference]) = {
       val p = px.toOption getOrElse resolvedProj
-      val configProj = p match {
-        case pr: ProjectRef => pr;
-        case br: BuildRef   => ProjectRef(br.build, rootProject(br.build))
-      }
-      val cLin = scope.config match {
-        case Select(conf) => index.config(configProj, conf);
-        case _            => withGlobalAxis(scope.config)
-      }
-      val tLin = scope.task match {
-        case t @ Select(task) => linearize(t)(taskInherit);
-        case _                => withGlobalAxis(scope.task)
-      }
+      val configProj =
+        p match {
+          case pr: ProjectRef => pr;
+          case br: BuildRef   => ProjectRef(br.build, rootProject(br.build))
+        }
+      val cLin =
+        scope.config match {
+          case Select(conf) => index.config(configProj, conf);
+          case _            => withGlobalAxis(scope.config)
+        }
+      val tLin =
+        scope.task match {
+          case t @ Select(task) => linearize(t)(taskInherit);
+          case _                => withGlobalAxis(scope.task)
+        }
       val eLin = withGlobalAxis(scope.extra)
       for (c <- cLin;
            t <- tLin;
@@ -315,14 +320,15 @@ object Scope {
       projectInherit: ProjectRef => Seq[ProjectRef],
       configInherit: (ResolvedReference, ConfigKey) => Seq[ConfigKey])
       : DelegateIndex = {
-    val pDelegates = refs map {
-      case (ref, project) =>
-        (
-          ref,
-          delegateIndex(ref, configurations(project))(
-            projectInherit,
-            configInherit))
-    } toMap;
+    val pDelegates =
+      refs map {
+        case (ref, project) =>
+          (
+            ref,
+            delegateIndex(ref, configurations(project))(
+              projectInherit,
+              configInherit))
+      } toMap;
     new DelegateIndex0(pDelegates)
   }
   private[this] def delegateIndex(ref: ProjectRef, confs: Seq[ConfigKey])(

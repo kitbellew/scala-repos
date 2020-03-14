@@ -51,8 +51,8 @@ import scala.collection.mutable.ArrayBuffer
   * Date: 11.01.2010
   */
 class ScalaExtractMethodHandler extends RefactoringActionHandler {
-  private val REFACTORING_NAME: String =
-    ScalaBundle.message("extract.method.title")
+  private val REFACTORING_NAME: String = ScalaBundle.message(
+    "extract.method.title")
 
   def invoke(
       project: Project,
@@ -98,8 +98,10 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
     if (!editor.getSelectionModel.hasSelection)
       return
-    val elements: Seq[PsiElement] =
-      ScalaRefactoringUtil.selectedElements(editor, file, trimComments = false)
+    val elements: Seq[PsiElement] = ScalaRefactoringUtil.selectedElements(
+      editor,
+      file,
+      trimComments = false)
 
     val hasWarnings = ScalaRefactoringUtil.showNotPossibleWarnings(
       elements,
@@ -129,15 +131,17 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       if (fun == null)
         return None
       var result: Option[ScType] = None
-      val visitor = new ScalaRecursiveElementVisitor {
-        override def visitReturnStatement(ret: ScReturnStmt) {
-          val newFun =
-            PsiTreeUtil.getParentOfType(ret, classOf[ScFunctionDefinition])
-          if (newFun == fun) {
-            result = Some(fun.returnType.getOrElse(psi.types.Unit))
+      val visitor =
+        new ScalaRecursiveElementVisitor {
+          override def visitReturnStatement(ret: ScReturnStmt) {
+            val newFun = PsiTreeUtil.getParentOfType(
+              ret,
+              classOf[ScFunctionDefinition])
+            if (newFun == fun) {
+              result = Some(fun.returnType.getOrElse(psi.types.Unit))
+            }
           }
         }
-      }
       for (element <- elements if result.isEmpty) {
         element.accept(visitor)
       }
@@ -244,11 +248,12 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     val commonParent = PsiTreeUtil.findCommonParent(elements: _*)
 
     def scopeBound(ref: ScReferenceElement): Option[PsiElement] = {
-      val fromThisRef: Option[ScTemplateDefinition] = ref.qualifier match {
-        case Some(thisRef: ScThisReference) => thisRef.refTemplate
-        case Some(_)                        => return None
-        case None                           => None
-      }
+      val fromThisRef: Option[ScTemplateDefinition] =
+        ref.qualifier match {
+          case Some(thisRef: ScThisReference) => thisRef.refTemplate
+          case Some(_)                        => return None
+          case None                           => None
+        }
       val defScope: Option[PsiElement] = fromThisRef.orElse {
         ref.resolve() match {
           case primConstr: ScPrimaryConstructor =>
@@ -288,16 +293,17 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
 
     var result: PsiElement = commonParent.getContainingFile
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitReference(ref: ScReferenceElement) {
-        scopeBound(ref) match {
-          case Some(bound: PsiElement)
-              if PsiTreeUtil.isAncestor(result, bound, true) =>
-            result = bound
-          case _ =>
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitReference(ref: ScReferenceElement) {
+          scopeBound(ref) match {
+            case Some(bound: PsiElement)
+                if PsiTreeUtil.isAncestor(result, bound, true) =>
+              result = bound
+            case _ =>
+          }
         }
       }
-    }
     elements.foreach {
       case elem: ScalaPsiElement => elem.accept(visitor)
       case _                     =>
@@ -315,8 +321,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       smallestScope: Boolean,
       lastExprType: Option[ScType]) {
 
-    val info =
-      ReachingDefintionsCollector.collectVariableInfo(elements, sibling)
+    val info = ReachingDefintionsCollector.collectVariableInfo(
+      elements,
+      sibling)
 
     val input = info.inputVariables
     val output = info.outputVariables
@@ -330,15 +337,16 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
     val settings: ScalaExtractMethodSettings =
       if (!ApplicationManager.getApplication.isUnitTestMode) {
-        val dialog = new ScalaExtractMethodDialog(
-          project,
-          elements,
-          hasReturn,
-          lastReturn,
-          sibling,
-          input.toArray,
-          output.toArray,
-          lastExprType)
+        val dialog =
+          new ScalaExtractMethodDialog(
+            project,
+            elements,
+            hasReturn,
+            lastReturn,
+            sibling,
+            input.toArray,
+            output.toArray,
+            lastExprType)
         dialog.show()
         if (!dialog.isOK)
           return

@@ -16,8 +16,8 @@ class CacheTest extends FunSuite with MockitoSugar {
   class CacheHelper {
     val timer = new MockTimer
     val evictor = mock[Object => Unit]
-    val cache =
-      Mockito.spy(new Cache[Object](5, 5.seconds, timer, Some(evictor)))
+    val cache = Mockito.spy(
+      new Cache[Object](5, 5.seconds, timer, Some(evictor)))
     val objects = 0 until 10 map { _ =>
       mock[Object]
     }

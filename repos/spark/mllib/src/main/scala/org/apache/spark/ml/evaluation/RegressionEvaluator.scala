@@ -56,8 +56,8 @@ final class RegressionEvaluator @Since("1.4.0") (
     */
   @Since("1.4.0")
   val metricName: Param[String] = {
-    val allowedParams =
-      ParamValidators.inArray(Array("mse", "rmse", "r2", "mae"))
+    val allowedParams = ParamValidators.inArray(
+      Array("mse", "rmse", "r2", "mae"))
     new Param(
       this,
       "metricName",
@@ -109,12 +109,13 @@ final class RegressionEvaluator @Since("1.4.0") (
           (prediction, label)
       }
     val metrics = new RegressionMetrics(predictionAndLabels)
-    val metric = $(metricName) match {
-      case "rmse" => metrics.rootMeanSquaredError
-      case "mse"  => metrics.meanSquaredError
-      case "r2"   => metrics.r2
-      case "mae"  => metrics.meanAbsoluteError
-    }
+    val metric =
+      $(metricName) match {
+        case "rmse" => metrics.rootMeanSquaredError
+        case "mse"  => metrics.meanSquaredError
+        case "r2"   => metrics.r2
+        case "mae"  => metrics.meanAbsoluteError
+      }
     metric
   }
 

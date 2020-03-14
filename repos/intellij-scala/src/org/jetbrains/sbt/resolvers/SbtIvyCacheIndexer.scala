@@ -15,10 +15,11 @@ class SbtIvyCacheIndexer(val cacheDir: File) {
 
   def artifacts: Stream[ArtifactInfo] = listArtifacts(cacheDir)
 
-  private val ivyFileFilter = new FilenameFilter {
-    override def accept(dir: File, name: String): Boolean =
-      name.endsWith(".xml")
-  }
+  private val ivyFileFilter =
+    new FilenameFilter {
+      override def accept(dir: File, name: String): Boolean =
+        name.endsWith(".xml")
+    }
 
   private def listArtifacts(dir: File): Stream[ArtifactInfo] = {
     if (!dir.isDirectory)

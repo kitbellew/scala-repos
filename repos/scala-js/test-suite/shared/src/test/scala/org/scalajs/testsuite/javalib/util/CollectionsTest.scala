@@ -238,9 +238,10 @@ class CollectionsTest extends CollectionsTestBase {
   }
 
   @Test def reverseOrder_with_comparator(): Unit = {
-    val rCmp1 = new ju.Comparator[Int] {
-      override def compare(o1: Int, o2: Int): Int = o2 - o1
-    }
+    val rCmp1 =
+      new ju.Comparator[Int] {
+        override def compare(o1: Int, o2: Int): Int = o2 - o1
+      }
     val rCmp2 = ju.Collections.reverseOrder(new ju.Comparator[Int] {
       override def compare(o1: Int, o2: Int): Int = o1 - o2
     })

@@ -35,14 +35,16 @@ import scalafx.scene.control.{ChoiceBox, TextField}
 class TextFieldControls(target: TextField)
     extends PropertiesNodes[TextField](target, "TextField Properties") {
 
-  val txfPromptText = new TextField {
-    text <==> target.promptText
-  }
+  val txfPromptText =
+    new TextField {
+      text <==> target.promptText
+    }
 
-  val chbPrefColumnCount = new ChoiceBox[Int] {
-    items = ObservableBuffer[Int](0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
-      14, 15)
-  }
+  val chbPrefColumnCount =
+    new ChoiceBox[Int] {
+      items = ObservableBuffer[Int](0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+        13, 14, 15)
+    }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
   chbPrefColumnCount.delegate.selectionModelProperty
     .addListener(new ChangeListener[Any] {
@@ -50,8 +52,9 @@ class TextFieldControls(target: TextField)
           observable: ObservableValue[_],
           oldValue: Any,
           newValue: Any) {
-        target.prefColumnCount =
-          chbPrefColumnCount.items.get().get(newValue.toString.toInt)
+        target.prefColumnCount = chbPrefColumnCount.items
+          .get()
+          .get(newValue.toString.toInt)
       }
     })
 

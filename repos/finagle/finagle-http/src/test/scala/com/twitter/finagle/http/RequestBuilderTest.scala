@@ -11,8 +11,8 @@ import scala.collection.JavaConverters._
 class RequestBuilderTest extends FunSuite {
   val URL0 = new URL("http://joe:blow@www.google.com:77/xxx?foo=bar#xxx")
   val URL1 = new URL("https://www.google.com/")
-  val URL2 = new URL(
-    "http://joe%40host.com:blow@www.google.com:77/xxx?foo=bar#xxx")
+  val URL2 =
+    new URL("http://joe%40host.com:blow@www.google.com:77/xxx?foo=bar#xxx")
 
   val BODY0 = Buf.Utf8("blah")
   val FORM0 = Seq(
@@ -21,8 +21,7 @@ class RequestBuilderTest extends FunSuite {
     "k3" -> "v3"
   )
 
-  val MULTIPART0 =
-    """--Boundary
+  val MULTIPART0 = """--Boundary
 Content-Disposition: form-data; name="k1"
 Content-Type: text/plain; charset=UTF-8
 

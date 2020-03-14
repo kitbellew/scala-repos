@@ -79,24 +79,25 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
 
   test("app with lastTaskFailure") {
     Given("an app with a lastTaskFailure")
-    val lastTaskFailure = new TaskFailure(
-      appId = PathId("/myapp"),
-      taskId = mesos.TaskID
-        .newBuilder()
-        .setValue("myapp.2da6109e-4cce-11e5-98c1-be5b2935a987")
-        .build(),
-      state = mesos.TaskState.TASK_FAILED,
-      message = "Command exited with status 1",
-      host = "srv2.dc43.mesosphere.com",
-      timestamp = Timestamp("2015-08-27T15:13:48.386Z"),
-      version = Timestamp("2015-08-27T14:13:05.942Z"),
-      slaveId = Some(mesos.SlaveID.newBuilder().setValue("slave34").build())
-    )
+    val lastTaskFailure =
+      new TaskFailure(
+        appId = PathId("/myapp"),
+        taskId = mesos.TaskID
+          .newBuilder()
+          .setValue("myapp.2da6109e-4cce-11e5-98c1-be5b2935a987")
+          .build(),
+        state = mesos.TaskState.TASK_FAILED,
+        message = "Command exited with status 1",
+        host = "srv2.dc43.mesosphere.com",
+        timestamp = Timestamp("2015-08-27T15:13:48.386Z"),
+        version = Timestamp("2015-08-27T14:13:05.942Z"),
+        slaveId = Some(mesos.SlaveID.newBuilder().setValue("slave34").build())
+      )
     val extended = AppInfo(app, maybeLastTaskFailure = Some(lastTaskFailure))
 
     Then("the result contains all fields of the app plus the deployments")
-    val lastTaskFailureJson =
-      Json.parse("""
+    val lastTaskFailureJson = Json
+      .parse("""
        | {
        |   "lastTaskFailure": {
        |     "appId": "/myapp",
@@ -109,7 +110,8 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
        |     "version": "2015-08-27T14:13:05.942Z"
        |   }
        | }
-       |""".stripMargin('|')).as[JsObject]
+       |""".stripMargin('|'))
+      .as[JsObject]
     val expectedJson = Json.toJson(app).as[JsObject] ++ lastTaskFailureJson
     JsonTestHelper.assertThatJsonOf(extended).correspondsToJsonOf(expectedJson)
   }

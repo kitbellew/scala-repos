@@ -19,32 +19,35 @@ import akka.event.Logging.Warning
 
 object LoggerSpec {
 
-  val defaultConfig =
-    ConfigFactory.parseString("""
+  val defaultConfig = ConfigFactory
+    .parseString("""
       akka {
         stdout-loglevel = "WARNING"
         loglevel = "DEBUG"
         loggers = ["akka.event.LoggerSpec$TestLogger1"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """)
+    .withFallback(AkkaSpec.testConf)
 
-  val slowConfig =
-    ConfigFactory.parseString("""
+  val slowConfig = ConfigFactory
+    .parseString("""
       akka {
         stdout-loglevel = "ERROR"
         loglevel = "ERROR"
         loggers = ["akka.event.LoggerSpec$SlowLogger"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """)
+    .withFallback(AkkaSpec.testConf)
 
-  val noLoggingConfig =
-    ConfigFactory.parseString("""
+  val noLoggingConfig = ConfigFactory
+    .parseString("""
       akka {
         stdout-loglevel = "OFF"
         loglevel = "OFF"
         loggers = ["akka.event.LoggerSpec$TestLogger1"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """)
+    .withFallback(AkkaSpec.testConf)
 
   val multipleConfig = ConfigFactory
     .parseString(
@@ -57,8 +60,8 @@ object LoggerSpec {
     """)
     .withFallback(AkkaSpec.testConf)
 
-  val ticket3165Config =
-    ConfigFactory.parseString("""
+  val ticket3165Config = ConfigFactory
+    .parseString("""
       akka {
         stdout-loglevel = "WARNING"
         loglevel = "DEBUG"
@@ -71,10 +74,11 @@ object LoggerSpec {
           }
         }
       }
-    """).withFallback(AkkaSpec.testConf)
+    """)
+    .withFallback(AkkaSpec.testConf)
 
-  val ticket3671Config =
-    ConfigFactory.parseString("""
+  val ticket3671Config = ConfigFactory
+    .parseString("""
       akka {
         stdout-loglevel = "WARNING"
         loglevel = "WARNING"
@@ -83,7 +87,8 @@ object LoggerSpec {
           serialize-messages = off
         }
       }
-    """).withFallback(AkkaSpec.testConf)
+    """)
+    .withFallback(AkkaSpec.testConf)
 
   final case class SetTarget(ref: ActorRef, qualifier: Int)
 
@@ -133,13 +138,14 @@ object LoggerSpec {
       reqId += 1
       val always = Map("requestId" -> reqId)
       val cmim = "Current Message in MDC"
-      val perMessage = currentMessage match {
-        case `cmim` ⇒
-          Map[String, Any](
-            "currentMsg" -> cmim,
-            "currentMsgLength" -> cmim.length)
-        case _ ⇒ Map()
-      }
+      val perMessage =
+        currentMessage match {
+          case `cmim` ⇒
+            Map[String, Any](
+              "currentMsg" -> cmim,
+              "currentMsgLength" -> cmim.length)
+          case _ ⇒ Map()
+        }
       always ++ perMessage
     }
 

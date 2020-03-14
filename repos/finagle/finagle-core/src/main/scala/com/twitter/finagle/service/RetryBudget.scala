@@ -50,21 +50,23 @@ object RetryBudget {
     * An immutable [[RetryBudget]] that never has a balance,
     * and as such, will never allow a retry.
     */
-  val Empty: RetryBudget = new RetryBudget {
-    def deposit(): Unit = ()
-    def tryWithdraw(): Boolean = false
-    def balance: Long = 0L
-  }
+  val Empty: RetryBudget =
+    new RetryBudget {
+      def deposit(): Unit = ()
+      def tryWithdraw(): Boolean = false
+      def balance: Long = 0L
+    }
 
   /**
     * An immutable [[RetryBudget]] that always has a balance of `100`,
     * and as such, will always allow a retry.
     */
-  val Infinite: RetryBudget = new RetryBudget {
-    def deposit(): Unit = ()
-    def tryWithdraw(): Boolean = true
-    def balance: Long = 100L
-  }
+  val Infinite: RetryBudget =
+    new RetryBudget {
+      def deposit(): Unit = ()
+      def tryWithdraw(): Boolean = true
+      def balance: Long = 100L
+    }
 
   private object TokenRetryBudget {
 
@@ -81,14 +83,11 @@ object RetryBudget {
       depositAmount: Int,
       withdrawalAmount: Int)
       extends RetryBudget {
-    def deposit(): Unit =
-      tokenBucket.put(depositAmount)
+    def deposit(): Unit = tokenBucket.put(depositAmount)
 
-    def tryWithdraw(): Boolean =
-      tokenBucket.tryGet(withdrawalAmount)
+    def tryWithdraw(): Boolean = tokenBucket.tryGet(withdrawalAmount)
 
-    def balance: Long =
-      tokenBucket.count / withdrawalAmount
+    def balance: Long = tokenBucket.count / withdrawalAmount
   }
 
   private[this] val DefaultTtl = 10.seconds
@@ -105,8 +104,7 @@ object RetryBudget {
     * in order to accommodate clients that have just started issuing
     * requests as well as clients that do not issue many requests per window.
     */
-  def apply(): RetryBudget =
-    apply(DefaultTtl, 10, 0.2, Stopwatch.systemMillis)
+  def apply(): RetryBudget = apply(DefaultTtl, 10, 0.2, Stopwatch.systemMillis)
 
   /**
     * Creates a [[RetryBudget]] that allows for about `percentCanRetry` percent

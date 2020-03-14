@@ -32,8 +32,8 @@ trait PrecedenceHelper[T] {
   this: BaseProcessor =>
 
   protected def getPlace: PsiElement
-  protected lazy val placePackageName: String =
-    ResolveUtils.getPlacePackage(getPlace)
+  protected lazy val placePackageName: String = ResolveUtils.getPlacePackage(
+    getPlace)
   protected val levelSet: util.HashSet[ScalaResolveResult] = new util.HashSet
   protected val qualifiedNamesSet: util.HashSet[T] = new util.HashSet[T]
   protected val levelQualifiedNamesSet: util.HashSet[T] = new util.HashSet[T]
@@ -111,12 +111,13 @@ trait PrecedenceHelper[T] {
   protected def isSpecialResult(result: ScalaResolveResult): Boolean = {
     val importsUsed = result.importsUsed.toSeq
     if (importsUsed.length == 1) {
-      val importExpr = importsUsed.head match {
-        case ImportExprUsed(expr) => expr
-        case ImportSelectorUsed(selector) =>
-          PsiTreeUtil.getContextOfType(selector, true, classOf[ScImportExpr])
-        case ImportWildcardSelectorUsed(expr) => expr
-      }
+      val importExpr =
+        importsUsed.head match {
+          case ImportExprUsed(expr) => expr
+          case ImportSelectorUsed(selector) =>
+            PsiTreeUtil.getContextOfType(selector, true, classOf[ScImportExpr])
+          case ImportWildcardSelectorUsed(expr) => expr
+        }
       importExpr.qualifier.bind() match {
         case Some(ScalaResolveResult(p: PsiPackage, _)) =>
           suspiciousPackages.contains(p.getQualifiedName)

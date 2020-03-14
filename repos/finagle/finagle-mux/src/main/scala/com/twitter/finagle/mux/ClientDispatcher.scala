@@ -120,8 +120,8 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
 }
 
 private[twitter] object ClientDispatcher {
-  val FutureExhaustedTagsException =
-    Future.exception(Failure.rejected("Exhausted tags"))
+  val FutureExhaustedTagsException = Future.exception(
+    Failure.rejected("Exhausted tags"))
 
   val Empty: Updatable[Try[Message]] = Updatable.empty()
 
@@ -173,23 +173,24 @@ private class ReqRepFilter
       svc: Service[Int => Message, Message]): Future[Response] = {
     val couldDispatch = canDispatch
 
-    val msg = couldDispatch match {
-      case CanDispatch.No => { tag: Int =>
-        Message.Treq(tag, Some(Trace.id), BufChannelBuffer(req.body))
-      }
-
-      case CanDispatch.Yes | CanDispatch.Unknown => { tag: Int =>
-        val contexts = Contexts.broadcast.marshal().map {
-          case (k, v) => (BufChannelBuffer(k), BufChannelBuffer(v))
+    val msg =
+      couldDispatch match {
+        case CanDispatch.No => { tag: Int =>
+          Message.Treq(tag, Some(Trace.id), BufChannelBuffer(req.body))
         }
-        Message.Tdispatch(
-          tag,
-          contexts.toSeq,
-          req.destination,
-          Dtab.local,
-          BufChannelBuffer(req.body))
+
+        case CanDispatch.Yes | CanDispatch.Unknown => { tag: Int =>
+          val contexts = Contexts.broadcast.marshal().map {
+            case (k, v) => (BufChannelBuffer(k), BufChannelBuffer(v))
+          }
+          Message.Tdispatch(
+            tag,
+            contexts.toSeq,
+            req.destination,
+            Dtab.local,
+            BufChannelBuffer(req.body))
+        }
       }
-    }
 
     if (couldDispatch != CanDispatch.Unknown)
       svc(msg).transform(reply)
@@ -211,8 +212,8 @@ private class ReqRepFilter
 }
 
 private object ReqRepFilter {
-  val FutureNackedException =
-    Future.exception(Failure.rejected("The request was Nacked by the server"))
+  val FutureNackedException = Future.exception(
+    Failure.rejected("The request was Nacked by the server"))
 
   /** Indicates if our peer can accept `Tdispatch` messages. */
   object CanDispatch extends Enumeration {

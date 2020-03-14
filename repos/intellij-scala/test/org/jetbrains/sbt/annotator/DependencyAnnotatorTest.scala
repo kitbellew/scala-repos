@@ -21,16 +21,15 @@ import org.jetbrains.sbt.resolvers.{SbtResolver, SbtResolverIndexesManager}
   */
 class DependencyAnnotatorTest extends AnnotatorTestBase {
 
-  val testResolver = new SbtResolver(
-    SbtResolver.Kind.Maven,
-    "Test repo",
-    "file:/%s/sbt/resolvers/testRepository" format TestUtils.getTestDataPath)
+  val testResolver =
+    new SbtResolver(
+      SbtResolver.Kind.Maven,
+      "Test repo",
+      "file:/%s/sbt/resolvers/testRepository" format TestUtils.getTestDataPath)
 
-  def testDoNotAnnotateIndexedDep() =
-    doTest(Seq.empty)
+  def testDoNotAnnotateIndexedDep() = doTest(Seq.empty)
 
-  def testDoNotAnnotateIndexedDepWithDynamicVersion() =
-    doTest(Seq.empty)
+  def testDoNotAnnotateIndexedDepWithDynamicVersion() = doTest(Seq.empty)
 
   def testAnnotateUnresolvedDep() = {
     val msg = SbtBundle("sbt.annotation.unresolvedDependency")
@@ -74,12 +73,13 @@ class DependencyAnnotatorTest extends AnnotatorTestBase {
     val mock = new AnnotatorHolderMock
     val annotator = new SbtDependencyAnnotator
 
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitLiteral(lit: ScLiteral) {
-        annotator.annotate(lit, mock)
-        super.visitLiteral(lit)
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitLiteral(lit: ScLiteral) {
+          annotator.annotate(lit, mock)
+          super.visitLiteral(lit)
+        }
       }
-    }
     element.accept(visitor)
     assertEquals(messages, mock.annotations)
   }

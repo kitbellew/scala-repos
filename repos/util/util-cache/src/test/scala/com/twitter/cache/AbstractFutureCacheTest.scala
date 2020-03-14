@@ -71,10 +71,11 @@ abstract class AbstractFutureCacheTest extends FunSuite {
     cache.set("key", value)
 
     var mod = false
-    val result = cache.getOrElseUpdate("key") {
-      mod = true
-      Future.value("mu")
-    }
+    val result =
+      cache.getOrElseUpdate("key") {
+        mod = true
+        Future.value("mu")
+      }
     assert(result == value)
     assert(mod == false)
   }
@@ -83,9 +84,10 @@ abstract class AbstractFutureCacheTest extends FunSuite {
     val ctx = mkCtx()
     import ctx._
 
-    val result = cache.getOrElseUpdate("key") {
-      value
-    }
+    val result =
+      cache.getOrElseUpdate("key") {
+        value
+      }
     assert(result.poll == value.poll)
     assert(cache.size == 1)
   }

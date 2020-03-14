@@ -71,8 +71,8 @@ object SbtProjectDataService {
 
     private def configureJdk(project: Project, data: SbtProjectData): Unit =
       executeProjectChangeAction {
-        val existingJdk =
-          Option(ProjectRootManager.getInstance(project).getProjectSdk)
+        val existingJdk = Option(
+          ProjectRootManager.getInstance(project).getProjectSdk)
         val projectJdk = data.jdk
           .flatMap(SdkUtils.findProjectSdk)
           .orElse(existingJdk)
@@ -83,8 +83,8 @@ object SbtProjectDataService {
 
     private def setLanguageLevel(project: Project, data: SbtProjectData): Unit =
       executeProjectChangeAction {
-        val projectJdk =
-          Option(ProjectRootManager.getInstance(project).getProjectSdk)
+        val projectJdk = Option(
+          ProjectRootManager.getInstance(project).getProjectSdk)
         val javaLanguageLevel = SdkUtils
           .javaLanguageLevelFrom(data.javacOptions)
           .orElse(projectJdk.flatMap(SdkUtils.defaultJavaLanguageLevelIn))
@@ -113,8 +113,9 @@ object SbtProjectDataService {
         project: Project,
         options: Seq[String]): Unit =
       executeProjectChangeAction {
-        val settings =
-          JavacConfiguration.getOptions(project, classOf[JavacConfiguration])
+        val settings = JavacConfiguration.getOptions(
+          project,
+          classOf[JavacConfiguration])
 
         def contains(values: String*) = values.exists(options.contains)
 

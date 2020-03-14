@@ -24,16 +24,18 @@ class MakeExplicitAction
   def actionPerformed(e: AnActionEvent) {
     val context = e.getDataContext
     val project = CommonDataKeys.PROJECT.getData(context)
-    val selectedItem = PlatformDataKeys.SELECTED_ITEM.getData(context) match {
-      case s: Parameters => s
-      case _             => null
-    }
+    val selectedItem =
+      PlatformDataKeys.SELECTED_ITEM.getData(context) match {
+        case s: Parameters => s
+        case _             => null
+      }
     if (selectedItem == null || selectedItem.getNewExpression == null)
       return
-    val function = selectedItem.getNewExpression match {
-      case f: ScFunction => f
-      case _             => null
-    }
+    val function =
+      selectedItem.getNewExpression match {
+        case f: ScFunction => f
+        case _             => null
+      }
     val expression = selectedItem.getOldExpression
     val editor = selectedItem.getEditor
     val secondPart = selectedItem.getSecondPart
@@ -58,8 +60,8 @@ class MakeExplicitAction
     if (index < 0) {
       throw new RuntimeException("Index = " + index + " is less than zero.")
     }
-    val itemBounds: Rectangle =
-      GoToImplicitConversionAction.getList.getCellBounds(index, index)
+    val itemBounds: Rectangle = GoToImplicitConversionAction.getList
+      .getCellBounds(index, index)
     if (itemBounds == null) {
       throw new RuntimeException("No bounds for index = " + index + ".")
     }

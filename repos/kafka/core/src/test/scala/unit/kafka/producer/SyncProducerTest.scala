@@ -126,12 +126,13 @@ class SyncProducerTest extends KafkaServerTestHarness {
     val clientId = SyncProducerConfig.DefaultClientId
     val ackTimeoutMs = SyncProducerConfig.DefaultAckTimeoutMs
     val ack: Short = 1
-    val emptyRequest = new kafka.api.ProducerRequest(
-      correlationId,
-      clientId,
-      ack,
-      ackTimeoutMs,
-      collection.mutable.Map[TopicAndPartition, ByteBufferMessageSet]())
+    val emptyRequest =
+      new kafka.api.ProducerRequest(
+        correlationId,
+        clientId,
+        ack,
+        ackTimeoutMs,
+        collection.mutable.Map[TopicAndPartition, ByteBufferMessageSet]())
 
     val producer = new SyncProducer(new SyncProducerConfig(props))
     val response = producer.send(emptyRequest)
@@ -153,11 +154,12 @@ class SyncProducerTest extends KafkaServerTestHarness {
       servers = servers)
 
     val message1 = new Message(new Array[Byte](configs(0).messageMaxBytes + 1))
-    val messageSet1 = new ByteBufferMessageSet(
-      compressionCodec = NoCompressionCodec,
-      messages = message1)
-    val response1 =
-      producer.send(produceRequest("test", 0, messageSet1, acks = 1))
+    val messageSet1 =
+      new ByteBufferMessageSet(
+        compressionCodec = NoCompressionCodec,
+        messages = message1)
+    val response1 = producer.send(
+      produceRequest("test", 0, messageSet1, acks = 1))
 
     assertEquals(1, response1.status.count(_._2.error != Errors.NONE.code))
     assertEquals(
@@ -168,11 +170,12 @@ class SyncProducerTest extends KafkaServerTestHarness {
     val safeSize = configs(
       0).messageMaxBytes - Message.MinMessageOverhead - Message.TimestampLength - MessageSet.LogOverhead - 1
     val message2 = new Message(new Array[Byte](safeSize))
-    val messageSet2 = new ByteBufferMessageSet(
-      compressionCodec = NoCompressionCodec,
-      messages = message2)
-    val response2 =
-      producer.send(produceRequest("test", 0, messageSet2, acks = 1))
+    val messageSet2 =
+      new ByteBufferMessageSet(
+        compressionCodec = NoCompressionCodec,
+        messages = message2)
+    val response2 = producer.send(
+      produceRequest("test", 0, messageSet2, acks = 1))
 
     assertEquals(1, response1.status.count(_._2.error != Errors.NONE.code))
     assertEquals(
@@ -319,12 +322,13 @@ class SyncProducerTest extends KafkaServerTestHarness {
     val clientId = SyncProducerConfig.DefaultClientId
     val ackTimeoutMs = SyncProducerConfig.DefaultAckTimeoutMs
     val ack: Short = 0
-    val emptyRequest = new kafka.api.ProducerRequest(
-      correlationId,
-      clientId,
-      ack,
-      ackTimeoutMs,
-      collection.mutable.Map[TopicAndPartition, ByteBufferMessageSet]())
+    val emptyRequest =
+      new kafka.api.ProducerRequest(
+        correlationId,
+        clientId,
+        ack,
+        ackTimeoutMs,
+        collection.mutable.Map[TopicAndPartition, ByteBufferMessageSet]())
     val producer = new SyncProducer(new SyncProducerConfig(props))
     val response = producer.send(emptyRequest)
     assertTrue(response == null)

@@ -72,8 +72,7 @@ sealed trait LocPath {
 }
 
 object LocPath {
-  implicit def stringToLocPath(in: String): LocPath =
-    new NormalLocPath(in)
+  implicit def stringToLocPath(in: String): LocPath = new NormalLocPath(in)
 }
 
 case object * extends LocPath {
@@ -238,34 +237,36 @@ object Menu extends MenuSingleton {
       * Convert the ParamMenuable into a Loc so you can access
       * the well typed currentValue
       */
-    lazy val toLoc: Loc[T] = new Loc[T] with ParamExtractor[String, T] {
-      def headMatch: Boolean = ParamMenuable.this.headMatch
+    lazy val toLoc: Loc[T] =
+      new Loc[T] with ParamExtractor[String, T] {
+        def headMatch: Boolean = ParamMenuable.this.headMatch
 
-      // the name of the page
-      def name = ParamMenuable.this.name
+        // the name of the page
+        def name = ParamMenuable.this.name
 
-      // the default parameters (used for generating the menu listing)
-      def defaultValue = Empty
+        // the default parameters (used for generating the menu listing)
+        def defaultValue = Empty
 
-      // no extra parameters
-      def params = ParamMenuable.this.params
+        // no extra parameters
+        def params = ParamMenuable.this.params
 
-      /**
-        * What's the text of the link?
-        */
-      def text = ParamMenuable.this.linkText
+        /**
+          * What's the text of the link?
+          */
+        def text = ParamMenuable.this.linkText
 
-      def locPath: List[LocPath] = ParamMenuable.this.path
+        def locPath: List[LocPath] = ParamMenuable.this.path
 
-      def parser = ParamMenuable.this.parser
+        def parser = ParamMenuable.this.parser
 
-      def listToFrom(in: List[String]): Box[String] = in.headOption
+        def listToFrom(in: List[String]): Box[String] = in.headOption
 
-      val link = new ParamLocLink[T](
-        ParamMenuable.this.path,
-        ParamMenuable.this.headMatch,
-        t => List(encoder(t)))
-    }
+        val link =
+          new ParamLocLink[T](
+            ParamMenuable.this.path,
+            ParamMenuable.this.headMatch,
+            t => List(encoder(t)))
+      }
   }
 
   /**
@@ -409,36 +410,38 @@ object Menu extends MenuSingleton {
       * Convert the ParamsMenuable into a Loc so you can access
       * the well typed currentValue
       */
-    lazy val toLoc: Loc[T] = new Loc[T] with ParamExtractor[List[String], T] {
-      // the name of the page
-      def name = ParamsMenuable.this.name
+    lazy val toLoc: Loc[T] =
+      new Loc[T] with ParamExtractor[List[String], T] {
+        // the name of the page
+        def name = ParamsMenuable.this.name
 
-      def headMatch: Boolean = ParamsMenuable.this.headMatch
+        def headMatch: Boolean = ParamsMenuable.this.headMatch
 
-      // the default parameters (used for generating the menu listing)
-      def defaultValue = Empty
+        // the default parameters (used for generating the menu listing)
+        def defaultValue = Empty
 
-      // no extra parameters
-      def params = ParamsMenuable.this.params
+        // no extra parameters
+        def params = ParamsMenuable.this.params
 
-      /**
-        * What's the text of the link?
-        */
-      def text = ParamsMenuable.this.linkText
+        /**
+          * What's the text of the link?
+          */
+        def text = ParamsMenuable.this.linkText
 
-      val link = new ParamLocLink[T](
-        ParamsMenuable.this.path,
-        ParamsMenuable.this.headMatch,
-        encoder)
+        val link =
+          new ParamLocLink[T](
+            ParamsMenuable.this.path,
+            ParamsMenuable.this.headMatch,
+            encoder)
 
-      def locPath: List[LocPath] = ParamsMenuable.this.path
+        def locPath: List[LocPath] = ParamsMenuable.this.path
 
-      def parser = ParamsMenuable.this.parser
+        def parser = ParamsMenuable.this.parser
 
-      def listToFrom(in: List[String]): Box[List[String]] = Full(in)
+        def listToFrom(in: List[String]): Box[List[String]] = Full(in)
 
-      val pathLen = ParamsMenuable.this.path.length
-    }
+        val pathLen = ParamsMenuable.this.path.length
+      }
   }
 
   /**
@@ -519,14 +522,13 @@ object Menu extends MenuSingleton {
     /**
       * Rewrite the request and emit the type-safe parameter
       */
-    override lazy val rewrite: LocRewrite =
-      Full(NamedPF(locPath.toString) {
-        case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
-            if param.isDefined || params.contains(
-              Loc.MatchWithoutCurrentValue) => {
-          RewriteResponse(path, true) -> param
-        }
-      })
+    override lazy val rewrite: LocRewrite = Full(NamedPF(locPath.toString) {
+      case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
+          if param.isDefined || params.contains(
+            Loc.MatchWithoutCurrentValue) => {
+        RewriteResponse(path, true) -> param
+      }
+    })
 
     def headMatch: Boolean
 
@@ -793,16 +795,15 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
       pathAt: HasKids,
       actual: Menu,
       populate: List[MenuItem]): List[MenuItem] = {
-    val kids: List[MenuItem] =
-      _parent.toList.flatMap(
-        _.kids.toList.flatMap(m =>
-          m.loc.buildItem(
-            if (m == this)
-              populate
-            else
-              Nil,
-            m == actual,
-            m == pathAt)))
+    val kids: List[MenuItem] = _parent.toList.flatMap(
+      _.kids.toList.flatMap(m =>
+        m.loc.buildItem(
+          if (m == this)
+            populate
+          else
+            Nil,
+          m == actual,
+          m == pathAt)))
 
     _parent.toList.flatMap(p => p.buildUpperLines(p, actual, kids))
   }

@@ -228,80 +228,84 @@ trait Internals extends api.Internals {
         .map(_.patterns.map(duplicateAndKeepPositions))
 
     type Decorators = MacroDecoratorApi
-    lazy val decorators: Decorators = new MacroDecoratorApi {
-      override type ScopeDecorator[T <: Scope] = MacroScopeDecoratorApi[T]
-      override implicit def scopeDecorator[T <: Scope](
-          scope: T): ScopeDecorator[T] = new MacroScopeDecoratorApi[T](scope)
-      override type TreeDecorator[T <: Tree] = MacroTreeDecoratorApi[T]
-      override implicit def treeDecorator[T <: Tree](
-          tree: T): TreeDecorator[T] = new MacroTreeDecoratorApi[T](tree)
-      override type TypeTreeDecorator[T <: TypeTree] =
-        MacroTypeTreeDecoratorApi[T]
-      override implicit def typeTreeDecorator[T <: TypeTree](
-          tt: T): TypeTreeDecorator[T] = new MacroTypeTreeDecoratorApi[T](tt)
-      override type SymbolDecorator[T <: Symbol] = MacroSymbolDecoratorApi[T]
-      override implicit def symbolDecorator[T <: Symbol](
-          symbol: T): SymbolDecorator[T] =
-        new MacroSymbolDecoratorApi[T](symbol)
-      override type TypeDecorator[T <: Type] = TypeDecoratorApi[T]
-      override implicit def typeDecorator[T <: Type](tp: T): TypeDecorator[T] =
-        new TypeDecoratorApi[T](tp)
-    }
+    lazy val decorators: Decorators =
+      new MacroDecoratorApi {
+        override type ScopeDecorator[T <: Scope] = MacroScopeDecoratorApi[T]
+        override implicit def scopeDecorator[T <: Scope](
+            scope: T): ScopeDecorator[T] = new MacroScopeDecoratorApi[T](scope)
+        override type TreeDecorator[T <: Tree] = MacroTreeDecoratorApi[T]
+        override implicit def treeDecorator[T <: Tree](
+            tree: T): TreeDecorator[T] = new MacroTreeDecoratorApi[T](tree)
+        override type TypeTreeDecorator[T <: TypeTree] =
+          MacroTypeTreeDecoratorApi[T]
+        override implicit def typeTreeDecorator[T <: TypeTree](
+            tt: T): TypeTreeDecorator[T] = new MacroTypeTreeDecoratorApi[T](tt)
+        override type SymbolDecorator[T <: Symbol] = MacroSymbolDecoratorApi[T]
+        override implicit def symbolDecorator[T <: Symbol](
+            symbol: T): SymbolDecorator[T] =
+          new MacroSymbolDecoratorApi[T](symbol)
+        override type TypeDecorator[T <: Type] = TypeDecoratorApi[T]
+        override implicit def typeDecorator[T <: Type](
+            tp: T): TypeDecorator[T] = new TypeDecoratorApi[T](tp)
+      }
   }
 
-  lazy val treeBuild = new self.TreeGen {
-    def mkAttributedQualifier(tpe: Type): Tree =
-      self.gen.mkAttributedQualifier(tpe)
-    def mkAttributedQualifier(tpe: Type, termSym: Symbol): Tree =
-      self.gen.mkAttributedQualifier(tpe, termSym)
-    def mkAttributedRef(pre: Type, sym: Symbol): RefTree =
-      self.gen.mkAttributedRef(pre, sym)
-    def mkAttributedRef(sym: Symbol): RefTree = self.gen.mkAttributedRef(sym)
-    def stabilize(tree: Tree): Tree = self.gen.stabilize(tree)
-    def mkAttributedStableRef(pre: Type, sym: Symbol): Tree =
-      self.gen.mkAttributedStableRef(pre, sym)
-    def mkAttributedStableRef(sym: Symbol): Tree =
-      self.gen.mkAttributedStableRef(sym)
-    def mkUnattributedRef(sym: Symbol): RefTree =
-      self.gen.mkUnattributedRef(sym)
-    def mkUnattributedRef(fullName: Name): RefTree =
-      self.gen.mkUnattributedRef(fullName)
-    def mkAttributedThis(sym: Symbol): This = self.gen.mkAttributedThis(sym)
-    def mkAttributedIdent(sym: Symbol): RefTree =
-      self.gen.mkAttributedIdent(sym)
-    def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree =
-      self.gen.mkAttributedSelect(qual, sym)
-    def mkMethodCall(
-        receiver: Symbol,
-        methodName: Name,
-        targs: List[Type],
-        args: List[Tree]): Tree =
-      self.gen.mkMethodCall(receiver, methodName, targs, args)
-    def mkMethodCall(
-        method: Symbol,
-        targs: List[Type],
-        args: List[Tree]): Tree = self.gen.mkMethodCall(method, targs, args)
-    def mkMethodCall(method: Symbol, args: List[Tree]): Tree =
-      self.gen.mkMethodCall(method, args)
-    def mkMethodCall(target: Tree, args: List[Tree]): Tree =
-      self.gen.mkMethodCall(target, args)
-    def mkMethodCall(
-        receiver: Symbol,
-        methodName: Name,
-        args: List[Tree]): Tree =
-      self.gen.mkMethodCall(receiver, methodName, args)
-    def mkMethodCall(
-        receiver: Tree,
-        method: Symbol,
-        targs: List[Type],
-        args: List[Tree]): Tree =
-      self.gen.mkMethodCall(receiver, method, targs, args)
-    def mkMethodCall(target: Tree, targs: List[Type], args: List[Tree]): Tree =
-      self.gen.mkMethodCall(target, targs, args)
-    def mkNullaryCall(method: Symbol, targs: List[Type]): Tree =
-      self.gen.mkNullaryCall(method, targs)
-    def mkRuntimeUniverseRef: Tree = self.gen.mkRuntimeUniverseRef
-    def mkZero(tp: Type): Tree = self.gen.mkZero(tp)
-    def mkCast(tree: Tree, pt: Type): Tree = self.gen.mkCast(tree, pt)
-  }
+  lazy val treeBuild =
+    new self.TreeGen {
+      def mkAttributedQualifier(tpe: Type): Tree =
+        self.gen.mkAttributedQualifier(tpe)
+      def mkAttributedQualifier(tpe: Type, termSym: Symbol): Tree =
+        self.gen.mkAttributedQualifier(tpe, termSym)
+      def mkAttributedRef(pre: Type, sym: Symbol): RefTree =
+        self.gen.mkAttributedRef(pre, sym)
+      def mkAttributedRef(sym: Symbol): RefTree = self.gen.mkAttributedRef(sym)
+      def stabilize(tree: Tree): Tree = self.gen.stabilize(tree)
+      def mkAttributedStableRef(pre: Type, sym: Symbol): Tree =
+        self.gen.mkAttributedStableRef(pre, sym)
+      def mkAttributedStableRef(sym: Symbol): Tree =
+        self.gen.mkAttributedStableRef(sym)
+      def mkUnattributedRef(sym: Symbol): RefTree =
+        self.gen.mkUnattributedRef(sym)
+      def mkUnattributedRef(fullName: Name): RefTree =
+        self.gen.mkUnattributedRef(fullName)
+      def mkAttributedThis(sym: Symbol): This = self.gen.mkAttributedThis(sym)
+      def mkAttributedIdent(sym: Symbol): RefTree =
+        self.gen.mkAttributedIdent(sym)
+      def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree =
+        self.gen.mkAttributedSelect(qual, sym)
+      def mkMethodCall(
+          receiver: Symbol,
+          methodName: Name,
+          targs: List[Type],
+          args: List[Tree]): Tree =
+        self.gen.mkMethodCall(receiver, methodName, targs, args)
+      def mkMethodCall(
+          method: Symbol,
+          targs: List[Type],
+          args: List[Tree]): Tree = self.gen.mkMethodCall(method, targs, args)
+      def mkMethodCall(method: Symbol, args: List[Tree]): Tree =
+        self.gen.mkMethodCall(method, args)
+      def mkMethodCall(target: Tree, args: List[Tree]): Tree =
+        self.gen.mkMethodCall(target, args)
+      def mkMethodCall(
+          receiver: Symbol,
+          methodName: Name,
+          args: List[Tree]): Tree =
+        self.gen.mkMethodCall(receiver, methodName, args)
+      def mkMethodCall(
+          receiver: Tree,
+          method: Symbol,
+          targs: List[Type],
+          args: List[Tree]): Tree =
+        self.gen.mkMethodCall(receiver, method, targs, args)
+      def mkMethodCall(
+          target: Tree,
+          targs: List[Type],
+          args: List[Tree]): Tree = self.gen.mkMethodCall(target, targs, args)
+      def mkNullaryCall(method: Symbol, targs: List[Type]): Tree =
+        self.gen.mkNullaryCall(method, targs)
+      def mkRuntimeUniverseRef: Tree = self.gen.mkRuntimeUniverseRef
+      def mkZero(tp: Type): Tree = self.gen.mkZero(tp)
+      def mkCast(tree: Tree, pt: Type): Tree = self.gen.mkCast(tree, pt)
+    }
 }

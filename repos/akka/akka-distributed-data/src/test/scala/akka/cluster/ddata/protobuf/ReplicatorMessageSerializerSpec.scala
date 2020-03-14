@@ -37,15 +37,18 @@ class ReplicatorMessageSerializerSpec
     with Matchers
     with BeforeAndAfterAll {
 
-  val serializer = new ReplicatorMessageSerializer(
-    system.asInstanceOf[ExtendedActorSystem])
+  val serializer =
+    new ReplicatorMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
 
-  val address1 =
-    UniqueAddress(Address("akka.tcp", system.name, "some.host.org", 4711), 1)
-  val address2 =
-    UniqueAddress(Address("akka.tcp", system.name, "other.host.org", 4711), 2)
-  val address3 =
-    UniqueAddress(Address("akka.tcp", system.name, "some.host.org", 4712), 3)
+  val address1 = UniqueAddress(
+    Address("akka.tcp", system.name, "some.host.org", 4711),
+    1)
+  val address2 = UniqueAddress(
+    Address("akka.tcp", system.name, "other.host.org", 4711),
+    2)
+  val address3 = UniqueAddress(
+    Address("akka.tcp", system.name, "some.host.org", 4712),
+    3)
 
   val keyA = GSetKey[String]("A")
 

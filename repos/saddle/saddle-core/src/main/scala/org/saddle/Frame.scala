@@ -551,8 +551,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def withRowIndex(col1: Int, col2: Int)(
       implicit ordT: ORD[T]): Frame[(T, T), CX, T] = {
-    val newIx: Index[(T, T)] =
-      Index.make(this.colAt(col1).toVec, this.colAt(col2).toVec)
+    val newIx: Index[(T, T)] = Index.make(
+      this.colAt(col1).toVec,
+      this.colAt(col2).toVec)
     this.setRowIndex(newIx).filterAt {
       case c => !Set(col1, col2).contains(c)
     }
@@ -589,8 +590,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     */
   def withColIndex(row1: Int, row2: Int)(
       implicit ordT: ORD[T]): Frame[RX, (T, T), T] = {
-    val newIx: Index[(T, T)] =
-      Index.make(this.rowAt(row1).toVec, this.rowAt(row2).toVec)
+    val newIx: Index[(T, T)] = Index.make(
+      this.rowAt(row1).toVec,
+      this.rowAt(row2).toVec)
     this.setColIndex(newIx).rfilterAt {
       case r => !Set(row1, row2).contains(r)
     }
@@ -1225,18 +1227,22 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     val rJoin = rowIx.join(other.rowIx, rhow)
     val cJoin = colIx.join(other.colIx, chow)
 
-    val lvals: MatCols[T] =
-      cJoin.lTake.map(locs => values.take(locs)).getOrElse(values)
-    val rvals: MatCols[U] =
-      cJoin.rTake.map(locs => other.values.take(locs)).getOrElse(other.values)
+    val lvals: MatCols[T] = cJoin.lTake
+      .map(locs => values.take(locs))
+      .getOrElse(values)
+    val rvals: MatCols[U] = cJoin.rTake
+      .map(locs => other.values.take(locs))
+      .getOrElse(other.values)
 
     val vecs =
       for (i <- 0 until lvals.length)
         yield {
-          val lvec: Vec[T] =
-            rJoin.lTake.map(locs => lvals(i).take(locs)).getOrElse(lvals(i))
-          val rvec: Vec[U] =
-            rJoin.rTake.map(locs => rvals(i).take(locs)).getOrElse(rvals(i))
+          val lvec: Vec[T] = rJoin.lTake
+            .map(locs => lvals(i).take(locs))
+            .getOrElse(lvals(i))
+          val rvec: Vec[U] = rJoin.rTake
+            .map(locs => rvals(i).take(locs))
+            .getOrElse(rvals(i))
           (lvec, rvec)
         }
 
@@ -1370,13 +1376,16 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     implicit def ordV = stkr.ord
     implicit def clmV = stkr.tag
 
-    val (lft, rgt) =
-      splt(rowIx) // lft = row index w/o pivot level; rgt = pivot level
+    val (lft, rgt) = splt(
+      rowIx
+    ) // lft = row index w/o pivot level; rgt = pivot level
 
     val rix = lft.uniques // Final row index
     val uix = rgt.uniques
-    val cix =
-      stkr(colIx, uix) // Final col index (colIx stacked w/unique pivot labels)
+    val cix = stkr(
+      colIx,
+      uix
+    ) // Final col index (colIx stacked w/unique pivot labels)
 
     val grps =
       IndexGrouper(
@@ -1396,14 +1405,12 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
         val ixer = rix.join(gIdx) //   to compute map to final (rix) locations;
 
         for (currVec <- values) { // For each column vec of original frame
-          val vals =
-            currVec.take(
-              taker
-            ) //   take values corresponding to current pivot label
-          val v =
-            ixer.rTake
-              .map(vals.take(_))
-              .getOrElse(vals) //   map values to be in correspondence to rix
+          val vals = currVec.take(
+            taker
+          ) //   take values corresponding to current pivot label
+          val v = ixer.rTake
+            .map(vals.take(_))
+            .getOrElse(vals) //   map values to be in correspondence to rix
           result(loc) = v //   and save vec in array.
 
           loc += len // Increment offset into result array
@@ -1643,8 +1650,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
       val rhalf = nrows / 2
 
-      val maxf = (a: List[Int], b: List[String]) =>
-        (a zip b).map(v => math.max(v._1, v._2.length))
+      val maxf =
+        (a: List[Int], b: List[String]) =>
+          (a zip b).map(v => math.max(v._1, v._2.length))
 
       // calc row index width
       val rsca = rowIx.scalarTag
@@ -1667,12 +1675,11 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
             0
         }
 
-      var prevColMask =
-        clens.map(x =>
-          (
-            x._1,
-            false
-          )) // recalls whether we printed a column's label at level L-1
+      var prevColMask = clens.map(x =>
+        (
+          x._1,
+          false
+        )) // recalls whether we printed a column's label at level L-1
       var prevColLabel = "" // recalls previous column's label at level L
 
       // build columns header
@@ -1735,11 +1742,12 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
           for ((i, l, v) <- enumZip(rlens, vls))
             yield {
               val fmt = "%" + l + "s"
-              val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
-                resetRowLabels(i + 1)
-                v.formatted(fmt)
-              } else
-                "".formatted(fmt)
+              val res =
+                if (i == vls.length - 1 || prevRowLabels(i) != v) {
+                  resetRowLabels(i + 1)
+                  v.formatted(fmt)
+                } else
+                  "".formatted(fmt)
               prevRowLabels(i) = v
               res
             }
@@ -1748,9 +1756,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
       // for building frame entries
       def createVals(r: Int) = {
-        val elem = (col: Int) =>
-          "%" + clen(col) + "s " format values(col).scalarTag
-            .show(values(r, col))
+        val elem =
+          (col: Int) =>
+            "%" + clen(col) + "s " format values(col).scalarTag
+              .show(values(r, col))
         util.buildStr(ncols, numCols, elem) + "\n"
       }
 
@@ -1891,8 +1900,10 @@ object Frame extends BinOpFrame {
       case 1 =>
         Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, IndexIntRange(1))
       case _ => {
-        val init =
-          Frame(IndexedSeq(asIdxSeq(0).values), asIdxSeq(0).index, Array(0))
+        val init = Frame(
+          IndexedSeq(asIdxSeq(0).values),
+          asIdxSeq(0).index,
+          Array(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
         Frame(temp.values, temp.rowIx, IndexIntRange(temp.numCols))
       }

@@ -48,12 +48,13 @@ object PageViewStream {
     val port = args(2).toInt
 
     // Create the context
-    val ssc = new StreamingContext(
-      "local[2]",
-      "PageViewStream",
-      Seconds(1),
-      System.getenv("SPARK_HOME"),
-      StreamingContext.jarOfClass(this.getClass).toSeq)
+    val ssc =
+      new StreamingContext(
+        "local[2]",
+        "PageViewStream",
+        Seconds(1),
+        System.getenv("SPARK_HOME"),
+        StreamingContext.jarOfClass(this.getClass).toSeq)
 
     // Create a ReceiverInputDStream on target host:port and convert each line to a PageView
     val pageViews = ssc

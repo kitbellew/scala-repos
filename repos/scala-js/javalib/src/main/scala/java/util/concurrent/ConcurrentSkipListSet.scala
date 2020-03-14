@@ -14,28 +14,22 @@ class ConcurrentSkipListSet[E] private (inner: TreeSet[E])
 
   def this(collection: Collection[_ <: E]) = {
     this(new TreeSet[E](collection) {
-      override def add(e: E): Boolean =
-        inner.add(Box(e))
+      override def add(e: E): Boolean = inner.add(Box(e))
     })
   }
 
-  def this() =
-    this(Collections.emptySet[E]: Collection[E])
+  def this() = this(Collections.emptySet[E]: Collection[E])
 
-  def this(comparator: Comparator[_ >: E]) =
-    this(new TreeSet[E](comparator))
+  def this(comparator: Comparator[_ >: E]) = this(new TreeSet[E](comparator))
 
-  def this(sortedSet: SortedSet[E]) =
-    this(new TreeSet[E](sortedSet))
+  def this(sortedSet: SortedSet[E]) = this(new TreeSet[E](sortedSet))
 
   override def clone(): ConcurrentSkipListSet[E] =
     new ConcurrentSkipListSet(this)
 
-  def size(): Int =
-    inner.size
+  def size(): Int = inner.size
 
-  override def isEmpty(): Boolean =
-    inner.isEmpty
+  override def isEmpty(): Boolean = inner.isEmpty
 
   override def contains(o: Any): Boolean =
     if (o == null)
@@ -55,44 +49,31 @@ class ConcurrentSkipListSet[E] private (inner: TreeSet[E])
     else
       inner.remove(o)
 
-  override def clear(): Unit =
-    inner.clear()
+  override def clear(): Unit = inner.clear()
 
-  def iterator(): Iterator[E] =
-    inner.iterator()
+  def iterator(): Iterator[E] = inner.iterator()
 
-  def descendingIterator(): Iterator[E] =
-    inner.descendingIterator()
+  def descendingIterator(): Iterator[E] = inner.descendingIterator()
 
-  override def removeAll(c: Collection[_]): Boolean =
-    inner.removeAll(c)
+  override def removeAll(c: Collection[_]): Boolean = inner.removeAll(c)
 
-  def lower(e: E): E =
-    inner.lower(e)
+  def lower(e: E): E = inner.lower(e)
 
-  def floor(e: E): E =
-    inner.floor(e)
+  def floor(e: E): E = inner.floor(e)
 
-  def ceiling(e: E): E =
-    inner.ceiling(e)
+  def ceiling(e: E): E = inner.ceiling(e)
 
-  def higher(e: E): E =
-    inner.higher(e)
+  def higher(e: E): E = inner.higher(e)
 
-  def pollFirst(): E =
-    inner.pollFirst()
+  def pollFirst(): E = inner.pollFirst()
 
-  def pollLast(): E =
-    inner.pollLast()
+  def pollLast(): E = inner.pollLast()
 
-  def comparator(): Comparator[_ >: E] =
-    inner.comparator()
+  def comparator(): Comparator[_ >: E] = inner.comparator()
 
-  def first(): E =
-    inner.first
+  def first(): E = inner.first
 
-  def last(): E =
-    inner.last
+  def last(): E = inner.last
 
   def subSet(
       fromElement: E,
@@ -110,12 +91,10 @@ class ConcurrentSkipListSet[E] private (inner: TreeSet[E])
   def subSet(fromElement: E, toElement: E): NavigableSet[E] =
     inner.subSet(fromElement, true, toElement, false)
 
-  def headSet(toElement: E): NavigableSet[E] =
-    inner.headSet(toElement, false)
+  def headSet(toElement: E): NavigableSet[E] = inner.headSet(toElement, false)
 
   def tailSet(fromElement: E): NavigableSet[E] =
     inner.tailSet(fromElement, true)
 
-  def descendingSet(): NavigableSet[E] =
-    inner.descendingSet()
+  def descendingSet(): NavigableSet[E] = inner.descendingSet()
 }

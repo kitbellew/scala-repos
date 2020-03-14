@@ -32,9 +32,10 @@ package object graph {
       stack match {
         case Nil => deps
         case h :: tail =>
-          val newStack = nf(h).filterNot(acc).foldLeft(tail) { (s, it) =>
-            it :: s
-          }
+          val newStack =
+            nf(h).filterNot(acc).foldLeft(tail) { (s, it) =>
+              it :: s
+            }
           val newDeps =
             if (acc(h))
               deps

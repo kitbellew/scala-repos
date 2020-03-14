@@ -43,13 +43,14 @@ object MsgSpec extends Specification with XmlMatchers {
         S.notice("foo", "Notice")
 
         // We reparse due to inconsistencies with UnparsedAttributes
-        val result = S.withAttrs(
-          new UnprefixedAttribute(
-            "id",
-            Text("foo"),
-            new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
-          secureXML.loadString(Msg.render(<div/>).toString)
-        }
+        val result =
+          S.withAttrs(
+            new UnprefixedAttribute(
+              "id",
+              Text("foo"),
+              new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
+            secureXML.loadString(Msg.render(<div/>).toString)
+          }
 
         result must ==/(
           <span id="foo">Error, <span class="funky">Notice</span></span>)
@@ -64,14 +65,17 @@ object MsgSpec extends Specification with XmlMatchers {
         S.notice("foo", "Notice")
 
         // We reparse due to inconsistencies with UnparsedAttributes
-        val result = S.withAttrs(
-          new UnprefixedAttribute(
-            "id",
-            Text("foo"),
-            new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
-          Msg.render(<div/>).toString // render this first so attrs get captured
-          LiftRules.noticesToJsCmd().toString.replace("\n", "")
-        }
+        val result =
+          S.withAttrs(
+            new UnprefixedAttribute(
+              "id",
+              Text("foo"),
+              new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
+            Msg
+              .render(<div/>)
+              .toString // render this first so attrs get captured
+            LiftRules.noticesToJsCmd().toString.replace("\n", "")
+          }
 
         result must_== """JsCmd(jQuery('#'+"foo").html("Error, <span class=\"funky\">Notice</span>");jQuery('#'+"bar").html("Warning");)"""
       }

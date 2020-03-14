@@ -91,9 +91,10 @@ class ActorDSLSpec extends AkkaSpec {
       val i = inbox()
       i.receiver ! "hello"
       i.receiver ! "world"
-      val result = i.select() {
-        case "world" ⇒ true
-      }
+      val result =
+        i.select() {
+          case "world" ⇒ true
+        }
       result should ===(true)
       i.receive() should ===("hello")
     }
@@ -113,9 +114,7 @@ class ActorDSLSpec extends AkkaSpec {
         expectMsgType[Warning]
         i.receiver ! 42
         expectNoMsg(1 second)
-        val gotit =
-          for (_ ← 1 to 1000)
-            yield i.receive()
+        val gotit = for (_ ← 1 to 1000) yield i.receive()
         gotit should ===((1 to 1000) map (_ ⇒ 0))
         intercept[TimeoutException] {
           i.receive(1 second)
@@ -231,14 +230,15 @@ class ActorDSLSpec extends AkkaSpec {
           case _: Exception ⇒ Resume
         })
         //#supervise-with
-        val child = actor("child")(new Act {
-          whenFailing { (_, _) ⇒
-          }
-          become {
-            case ref: ActorRef ⇒ whenStopping(ref ! "stopped")
-            case ex: Exception ⇒ throw ex
-          }
-        })
+        val child =
+          actor("child")(new Act {
+            whenFailing { (_, _) ⇒
+            }
+            become {
+              case ref: ActorRef ⇒ whenStopping(ref ! "stopped")
+              case ex: Exception ⇒ throw ex
+            }
+          })
         become {
           case x ⇒ child ! x
         }
@@ -258,16 +258,18 @@ class ActorDSLSpec extends AkkaSpec {
       val system = this.system
       //#nested-actor
       // here we pass in the ActorRefFactory explicitly as an example
-      val a = actor(system, "fred")(new Act {
-        val b = actor("barney")(new Act {
-          whenStarting {
-            context.parent ! ("hello from " + self.path)
+      val a =
+        actor(system, "fred")(new Act {
+          val b =
+            actor("barney")(new Act {
+              whenStarting {
+                context.parent ! ("hello from " + self.path)
+              }
+            })
+          become {
+            case x ⇒ testActor ! x
           }
         })
-        become {
-          case x ⇒ testActor ! x
-        }
-      })
       //#nested-actor
       expectMsg("hello from akka://ActorDSLSpec/user/fred/barney")
       lastSender should ===(a)

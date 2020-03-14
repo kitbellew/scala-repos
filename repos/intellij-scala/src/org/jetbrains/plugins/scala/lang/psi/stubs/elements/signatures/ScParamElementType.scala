@@ -27,14 +27,16 @@ abstract class ScParamElementType[Param <: ScParameter](debugName: String)
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScParameter,
       parentStub: StubElement[ParentPsi]): ScParameterStub = {
-    val typeText: String = psi.typeElement match {
-      case Some(t) => t.getText
-      case None    => ""
-    }
-    val (isVal, isVar) = psi match {
-      case c: ScClassParameter => (c.isVal, c.isVar)
-      case _                   => (false, false)
-    }
+    val typeText: String =
+      psi.typeElement match {
+        case Some(t) => t.getText
+        case None    => ""
+      }
+    val (isVal, isVar) =
+      psi match {
+        case c: ScClassParameter => (c.isVal, c.isVar)
+        case _                   => (false, false)
+      }
     val isCallByName = psi.isCallByNameParameter
     val defaultExprText = psi.getActualDefaultExpression.map(_.getText)
     val deprecatedName = psi.deprecatedName

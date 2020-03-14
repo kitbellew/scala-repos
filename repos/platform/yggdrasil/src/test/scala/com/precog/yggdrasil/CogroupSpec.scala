@@ -62,13 +62,14 @@ trait CogroupSpec[M[+_]]
         Bifunctor[Tuple2].umap(cschema.splitAt(cschema.size / 2)) {
           _.map(_._1).toSet
         }
-      val (l, r) = data map {
-        case (ids, values) =>
-          val (d1, d2) = values.partition {
-            case (cpath, _) => lschema.contains(cpath)
-          }
-          (toRecord(ids, assemble(d1)), toRecord(ids, assemble(d2)))
-      } unzip
+      val (l, r) =
+        data map {
+          case (ids, values) =>
+            val (d1, d2) = values.partition {
+              case (cpath, _) => lschema.contains(cpath)
+            }
+            (toRecord(ids, assemble(d1)), toRecord(ids, assemble(d2)))
+        } unzip
 
       (
         SampleData(l.sortBy(_ \ "key").toStream),
@@ -651,19 +652,22 @@ trait CogroupSpec[M[+_]]
     )
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("id"))
-    val result = ltable.cogroup(keySpec, keySpec, rtable)(
-      Leaf(Source),
-      Leaf(Source),
-      OuterObjectConcat(
-        WrapObject(DerefObjectStatic(Leaf(SourceLeft), CPathField("id")), "id"),
-        WrapObject(
-          DerefObjectStatic(Leaf(SourceLeft), CPathField("val")),
-          "left"),
-        WrapObject(
-          DerefObjectStatic(Leaf(SourceRight), CPathField("val")),
-          "right")
+    val result =
+      ltable.cogroup(keySpec, keySpec, rtable)(
+        Leaf(Source),
+        Leaf(Source),
+        OuterObjectConcat(
+          WrapObject(
+            DerefObjectStatic(Leaf(SourceLeft), CPathField("id")),
+            "id"),
+          WrapObject(
+            DerefObjectStatic(Leaf(SourceLeft), CPathField("val")),
+            "left"),
+          WrapObject(
+            DerefObjectStatic(Leaf(SourceRight), CPathField("val")),
+            "right")
+        )
       )
-    )
 
     toJson(result).copoint must_== expected
   }
@@ -678,11 +682,12 @@ trait CogroupSpec[M[+_]]
     val expected = Stream.tabulate(22)(JNum(_))
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("key"))
-    val result: Table = ltable.cogroup(keySpec, keySpec, rtable)(
-      WrapObject(Leaf(Source), "blah!"),
-      WrapObject(Leaf(Source), "argh!"),
-      DerefObjectStatic(Leaf(SourceRight), CPathField("value"))
-    )
+    val result: Table =
+      ltable.cogroup(keySpec, keySpec, rtable)(
+        WrapObject(Leaf(Source), "blah!"),
+        WrapObject(Leaf(Source), "argh!"),
+        DerefObjectStatic(Leaf(SourceRight), CPathField("value"))
+      )
 
     val jsonResult = toJson(result).copoint
     jsonResult must_== expected
@@ -698,11 +703,12 @@ trait CogroupSpec[M[+_]]
     val expected = Stream.tabulate(22)(JNum(_))
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("key"))
-    val result: Table = ltable.cogroup(keySpec, keySpec, rtable)(
-      WrapObject(Leaf(Source), "blah!"),
-      WrapObject(Leaf(Source), "argh!"),
-      DerefObjectStatic(Leaf(SourceLeft), CPathField("value"))
-    )
+    val result: Table =
+      ltable.cogroup(keySpec, keySpec, rtable)(
+        WrapObject(Leaf(Source), "blah!"),
+        WrapObject(Leaf(Source), "argh!"),
+        DerefObjectStatic(Leaf(SourceLeft), CPathField("value"))
+      )
 
     val jsonResult = toJson(result).copoint
     jsonResult must_== expected
@@ -713,27 +719,29 @@ trait CogroupSpec[M[+_]]
       JParser.parseUnsafe("""{"key":"Bob","value":%d}""" format i)
     }))
 
-    val expected = (for {
-      left <- 0 until 22
-      right <- 0 until 22
-    } yield {
-      JParser.parseUnsafe(
-        """{ "left": %d, "right": %d }""" format (left, right))
-    }).toStream
+    val expected =
+      (for {
+        left <- 0 until 22
+        right <- 0 until 22
+      } yield {
+        JParser.parseUnsafe(
+          """{ "left": %d, "right": %d }""" format (left, right))
+      }).toStream
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("key"))
-    val result: Table = table.cogroup(keySpec, keySpec, table)(
-      WrapObject(Leaf(Source), "blah!"),
-      WrapObject(Leaf(Source), "argh!"),
-      InnerObjectConcat(
-        WrapObject(
-          DerefObjectStatic(Leaf(SourceRight), CPathField("value")),
-          "right"),
-        WrapObject(
-          DerefObjectStatic(Leaf(SourceLeft), CPathField("value")),
-          "left")
+    val result: Table =
+      table.cogroup(keySpec, keySpec, table)(
+        WrapObject(Leaf(Source), "blah!"),
+        WrapObject(Leaf(Source), "argh!"),
+        InnerObjectConcat(
+          WrapObject(
+            DerefObjectStatic(Leaf(SourceRight), CPathField("value")),
+            "right"),
+          WrapObject(
+            DerefObjectStatic(Leaf(SourceLeft), CPathField("value")),
+            "left")
+        )
       )
-    )
 
     val jsonResult = toJson(result).copoint
     jsonResult must_== expected
@@ -755,18 +763,23 @@ trait CogroupSpec[M[+_]]
     } ++ Stream(JParser.parseUnsafe("""{ "right": 60 }"""))
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("key"))
-    val result: Table = ltable.cogroup(keySpec, keySpec, rtable)(
-      WrapObject(DerefObjectStatic(Leaf(Source), CPathField("value")), "left"),
-      WrapObject(DerefObjectStatic(Leaf(Source), CPathField("value")), "right"),
-      InnerObjectConcat(
+    val result: Table =
+      ltable.cogroup(keySpec, keySpec, rtable)(
         WrapObject(
-          DerefObjectStatic(Leaf(SourceRight), CPathField("value")),
+          DerefObjectStatic(Leaf(Source), CPathField("value")),
+          "left"),
+        WrapObject(
+          DerefObjectStatic(Leaf(Source), CPathField("value")),
           "right"),
-        WrapObject(
-          DerefObjectStatic(Leaf(SourceLeft), CPathField("value")),
-          "left")
+        InnerObjectConcat(
+          WrapObject(
+            DerefObjectStatic(Leaf(SourceRight), CPathField("value")),
+            "right"),
+          WrapObject(
+            DerefObjectStatic(Leaf(SourceLeft), CPathField("value")),
+            "left")
+        )
       )
-    )
 
     val jsonResult = toJson(result).copoint
     jsonResult must_== expected

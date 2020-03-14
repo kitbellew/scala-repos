@@ -24,8 +24,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
   /** the following two members override abstract members in Transform */
   val phaseName: String = "extmethods"
 
-  def newTransformer(unit: CompilationUnit): Transformer =
-    new Extender(unit)
+  def newTransformer(unit: CompilationUnit): Transformer = new Extender(unit)
 
   /** Generate stream of possible names for the extension version of given instance method `imeth`.
     *  If the method is not overloaded, this stream consists of just "extension$imeth".
@@ -188,10 +187,12 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
       val thisParam = extensionMeth.newValueParameter(
         nme.SELF,
         extensionMeth.pos) setInfo thisParamType
-      val resultType =
-        MethodType(List(thisParam), dropNullaryMethod(methodResult))
-      val selfParamType =
-        singleType(currentOwner.companionModule.thisType, thisParam)
+      val resultType = MethodType(
+        List(thisParam),
+        dropNullaryMethod(methodResult))
+      val selfParamType = singleType(
+        currentOwner.companionModule.thisType,
+        thisParam)
 
       def fixres(tp: Type) =
         tp substThisAndSym (clazz, selfParamType, clazz.typeParams, tparamsFromClass)
@@ -260,8 +261,10 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
           }
 
           val extensionMeth = makeExtensionMethodSymbol
-          val newInfo =
-            extensionMethInfo(extensionMeth, origMeth.info, origThis)
+          val newInfo = extensionMethInfo(
+            extensionMeth,
+            origMeth.info,
+            origThis)
           extensionMeth setInfo newInfo
 
           log(
@@ -271,8 +274,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
             extensionTpeParams,
             MethodType(thiz :: Nil, extensionMono)) = newInfo
           val extensionParams = allParameters(extensionMono)
-          val extensionThis =
-            gen.mkAttributedStableRef(thiz setPos extensionMeth.pos)
+          val extensionThis = gen.mkAttributedStableRef(
+            thiz setPos extensionMeth.pos)
 
           val extensionBody: Tree = {
             val tree = rhs
@@ -323,13 +326,14 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
         exprOwner: Symbol): List[Tree] =
       super.transformStats(stats, exprOwner) map {
         case md @ ModuleDef(_, _, _) =>
-          val extraStats = extensionDefs remove md.symbol match {
-            case Some(defns) =>
-              defns.toList map (defn =>
-                atOwner(md.symbol)(
-                  localTyper.typedPos(md.pos.focus)(defn.duplicate)))
-            case _ => Nil
-          }
+          val extraStats =
+            extensionDefs remove md.symbol match {
+              case Some(defns) =>
+                defns.toList map (defn =>
+                  atOwner(md.symbol)(
+                    localTyper.typedPos(md.pos.focus)(defn.duplicate)))
+              case _ => Nil
+            }
           if (extraStats.isEmpty)
             md
           else

@@ -9,17 +9,13 @@ class AtomicReferenceArray[E <: AnyRef](length: Int) extends Serializable {
 
   private val inner: Array[AnyRef] = new Array[AnyRef](length)
 
-  final def length(): Int =
-    inner.length
+  final def length(): Int = inner.length
 
-  final def get(i: Int): E =
-    inner(i).asInstanceOf[E]
+  final def get(i: Int): E = inner(i).asInstanceOf[E]
 
-  final def set(i: Int, newValue: E): Unit =
-    inner(i) = newValue
+  final def set(i: Int, newValue: E): Unit = inner(i) = newValue
 
-  final def lazySet(i: Int, newValue: E): Unit =
-    set(i, newValue)
+  final def lazySet(i: Int, newValue: E): Unit = set(i, newValue)
 
   final def getAndSet(i: Int, newValue: E): E = {
     val ret = get(i)
@@ -39,6 +35,5 @@ class AtomicReferenceArray[E <: AnyRef](length: Int) extends Serializable {
   final def weakCompareAndSet(i: Int, expect: E, update: E): Boolean =
     compareAndSet(i, expect, update)
 
-  override def toString(): String =
-    inner.mkString("[", ", ", "]")
+  override def toString(): String = inner.mkString("[", ", ", "]")
 }

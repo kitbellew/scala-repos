@@ -31,15 +31,16 @@ abstract class RehighlightingPerformanceTypingTestBase
     //have to create a fake fixture instead of using myTestFixture because when I call setUp() on myCodeInsightTestFixture
     //it calls setUp on myTestFixture, which throws an error because it is already initialized
     //I'm pretty sure I'm not supposed to create fixtures that way but it works (at least for this case)
-    val fakeFixture = new IdeaProjectTestFixture {
-      override def getModule: Module = myTestFixture.getModule
+    val fakeFixture =
+      new IdeaProjectTestFixture {
+        override def getModule: Module = myTestFixture.getModule
 
-      override def getProject: Project = myTestFixture.getProject
+        override def getProject: Project = myTestFixture.getProject
 
-      override def setUp(): Unit = ()
+        override def setUp(): Unit = ()
 
-      override def tearDown(): Unit = ()
-    }
+        override def tearDown(): Unit = ()
+      }
     myCodeInsightTestFixture = IdeaTestFixtureFactory.getFixtureFactory
       .createCodeInsightFixture(fakeFixture)
     myCodeInsightTestFixture.setUp()
@@ -66,10 +67,11 @@ abstract class RehighlightingPerformanceTypingTestBase
       pos: LogicalPosition,
       typeInSetup: Option[String]): Unit = {
     val file = findFile(filename)
-    val fileManager: FileManager = PsiManager
-      .getInstance(myProject)
-      .asInstanceOf[PsiManagerEx]
-      .getFileManager
+    val fileManager: FileManager =
+      PsiManager
+        .getInstance(myProject)
+        .asInstanceOf[PsiManagerEx]
+        .getFileManager
 
     myCodeInsightTestFixture.openFileInEditor(file)
     val editor = myCodeInsightTestFixture.getEditor

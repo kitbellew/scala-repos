@@ -69,8 +69,7 @@ object ConfiguredLocalRoutingSpec {
   }
 
   final case class MyRoutee(reply: String) extends Routee {
-    override def send(message: Any, sender: ActorRef): Unit =
-      sender ! reply
+    override def send(message: Any, sender: ActorRef): Unit = sender ! reply
   }
 
   class EchoProps extends Actor {
@@ -163,8 +162,8 @@ class ConfiguredLocalRoutingSpec
 
     "not get confused when trying to wildcard-configure children" in {
       val router = system.actorOf(
-        FromConfig.props(routeeProps =
-          Props(classOf[SendRefAtStartup], testActor)),
+        FromConfig
+          .props(routeeProps = Props(classOf[SendRefAtStartup], testActor)),
         "weird")
       val recv = Set() ++ (for (_ ← 1 to 3)
         yield expectMsgType[ActorRef])

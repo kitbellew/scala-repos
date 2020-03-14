@@ -92,12 +92,14 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
 
     def maybeLaunchOnReservation =
       if (needToLaunch) {
-        val maybeVolumeMatch =
-          PersistentVolumeMatcher.matchVolumes(offer, app, request.reserved)
+        val maybeVolumeMatch = PersistentVolumeMatcher.matchVolumes(
+          offer,
+          app,
+          request.reserved)
 
         maybeVolumeMatch.flatMap { volumeMatch =>
-          val matchingReservedResourcesWithoutVolumes =
-            ResourceMatcher.matchResources(
+          val matchingReservedResourcesWithoutVolumes = ResourceMatcher
+            .matchResources(
               offer,
               app,
               tasks.values,
@@ -124,13 +126,12 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
 
     def maybeReserveAndCreateVolumes =
       if (needToReserve) {
-        val matchingResourcesForReservation =
-          ResourceMatcher.matchResources(
-            offer,
-            app,
-            tasks.values,
-            ResourceSelector(acceptedResourceRoles, reserved = false)
-          )
+        val matchingResourcesForReservation = ResourceMatcher.matchResources(
+          offer,
+          app,
+          tasks.values,
+          ResourceSelector(acceptedResourceRoles, reserved = false)
+        )
         matchingResourcesForReservation.map { resourceMatch =>
           reserveAndCreateVolumes(
             request.frameworkId,

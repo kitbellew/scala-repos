@@ -115,39 +115,37 @@ trait JoinOptimizerSpecs[M[+_]]
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val liftedLHS =
-        AddSortKey(
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
-      val liftedRHS =
-        AddSortKey(
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), users, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), users, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val input =
         Filter(
@@ -215,42 +213,39 @@ trait JoinOptimizerSpecs[M[+_]]
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val liftedLHS =
-        AddSortKey(
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
-      val liftedRHS =
-        AddSortKey(
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Operate(
-                BuiltInFunction1Op(toLowerCase),
-                Join(DerefObject, Cross(None), users, userId)(line))(line))(
-              line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Operate(
+              BuiltInFunction1Op(toLowerCase),
+              Join(DerefObject, Cross(None), users, userId)(line))(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val input =
         Filter(
@@ -321,39 +316,37 @@ trait JoinOptimizerSpecs[M[+_]]
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val liftedLHS =
-        AddSortKey(
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), users, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), users, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
-      val liftedRHS =
-        AddSortKey(
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val input =
         Filter(
@@ -404,39 +397,37 @@ trait JoinOptimizerSpecs[M[+_]]
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val liftedLHS =
-        AddSortKey(
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
-      val liftedRHS =
-        AddSortKey(
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), users, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), users, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val input =
         Filter(
@@ -614,48 +605,46 @@ trait JoinOptimizerSpecs[M[+_]]
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val liftedLHS =
-        AddSortKey(
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
             Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(
-                DerefObject,
-                Cross(None),
-                Join(DerefObject, Cross(None), clicksData, product)(line),
-                price)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, clicksData)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+              DerefObject,
+              Cross(None),
+              Join(DerefObject, Cross(None), clicksData, product)(line),
+              price)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, clicksData)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
-      val liftedRHS =
-        AddSortKey(
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
             Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(
-                DerefObject,
-                Cross(None),
-                Join(DerefObject, Cross(None), conversionsData, product)(line),
-                price)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, conversionsData)(
-              line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+              DerefObject,
+              Cross(None),
+              Join(DerefObject, Cross(None), conversionsData, product)(line),
+              price)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, conversionsData)(
+            line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val input =
         Filter(
@@ -731,39 +720,37 @@ trait JoinOptimizerSpecs[M[+_]]
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val liftedLHS =
-        AddSortKey(
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
-      val liftedRHS =
-        AddSortKey(
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), users, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), users, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val input =
         Filter(
@@ -843,22 +830,21 @@ trait JoinOptimizerSpecs[M[+_]]
           0
         )
 
-      val liftedRHS =
-        AddSortKey(
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
           Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), users, userId)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), users, userId)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val lhs =
         Join(
@@ -1015,86 +1001,87 @@ trait JoinOptimizerSpecs[M[+_]]
       val line = Line(1, 1, "")
 
       val name = Const(CString("Name"))(line)
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
+      val medals =
+        dag.AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(
+          line)
       val newMedals = dag.New(medals)(line)
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val input = Filter(
-        IdentitySort,
+      val input =
+        Filter(
+          IdentitySort,
+          Join(
+            ArraySwap,
+            Cross(None),
+            Join(
+              JoinArray,
+              Cross(None),
+              Operate(
+                WrapArray,
+                Join(DerefObject, Cross(None), newMedals, name)(line))(line),
+              Operate(
+                WrapArray,
+                Join(DerefObject, Cross(None), medals, name)(line))(line)
+            )(line),
+            Const(CLong(1))(line)
+          )(line),
+          Join(
+            Eq,
+            Cross(None),
+            Join(DerefObject, Cross(None), medals, name)(line),
+            Join(DerefObject, Cross(None), newMedals, name)(line))(line)
+        )(line)
+
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
+          Join(
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), medals, name)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, medals)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
+
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
+          Join(
+            WrapObject,
+            Cross(Some(CrossRight)),
+            key,
+            Join(DerefObject, Cross(None), newMedals, name)(line))(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, newMedals)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
+
+      // `liftedRHS` and `liftedLHS` are swapped because of the `ArraySwap`
+      val expectedOpt =
         Join(
           ArraySwap,
           Cross(None),
           Join(
             JoinArray,
-            Cross(None),
+            ValueSort(0),
             Operate(
               WrapArray,
-              Join(DerefObject, Cross(None), newMedals, name)(line))(line),
+              Join(DerefObject, Cross(None), liftedRHS, name)(line))(line),
             Operate(
               WrapArray,
-              Join(DerefObject, Cross(None), medals, name)(line))(line)
+              Join(DerefObject, Cross(None), liftedLHS, name)(line))(line)
           )(line),
           Const(CLong(1))(line)
-        )(line),
-        Join(
-          Eq,
-          Cross(None),
-          Join(DerefObject, Cross(None), medals, name)(line),
-          Join(DerefObject, Cross(None), newMedals, name)(line))(line)
-      )(line)
-
-      val liftedLHS =
-        AddSortKey(
-          Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), medals, name)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, medals)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
-
-      val liftedRHS =
-        AddSortKey(
-          Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              key,
-              Join(DerefObject, Cross(None), newMedals, name)(line))(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, newMedals)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
-
-      // `liftedRHS` and `liftedLHS` are swapped because of the `ArraySwap`
-      val expectedOpt = Join(
-        ArraySwap,
-        Cross(None),
-        Join(
-          JoinArray,
-          ValueSort(0),
-          Operate(
-            WrapArray,
-            Join(DerefObject, Cross(None), liftedRHS, name)(line))(line),
-          Operate(
-            WrapArray,
-            Join(DerefObject, Cross(None), liftedLHS, name)(line))(line)
-        )(line),
-        Const(CLong(1))(line)
-      )(line)
+        )(line)
 
       val opt = optimizeJoins(input, ctx, new IdGen)
 
@@ -1116,8 +1103,9 @@ trait JoinOptimizerSpecs[M[+_]]
 
       val country = Const(CString("Country"))(line)
       val total = Const(CString("Total"))(line)
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
+      val medals =
+        dag.AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(
+          line)
       val medalsP =
         dag.Filter(
           IdentitySort,
@@ -1137,41 +1125,40 @@ trait JoinOptimizerSpecs[M[+_]]
       val key = Const(CString("key"))(line)
       val value = Const(CString("value"))(line)
 
-      val input = Filter(
-        IdentitySort,
+      val input =
+        Filter(
+          IdentitySort,
+          Join(
+            JoinArray,
+            Cross(None),
+            Operate(WrapArray, medalsPcountry)(line),
+            Operate(WrapArray, medalsPPcountry)(line))(line),
+          Join(Eq, Cross(None), medalsPtotal, medalsPPtotal)(line)
+        )(line)
+
+      val liftedLHS = AddSortKey(
         Join(
-          JoinArray,
-          Cross(None),
-          Operate(WrapArray, medalsPcountry)(line),
-          Operate(WrapArray, medalsPPcountry)(line))(line),
-        Join(Eq, Cross(None), medalsPtotal, medalsPPtotal)(line)
-      )(line)
+          JoinObject,
+          IdentitySort,
+          Join(WrapObject, Cross(Some(CrossRight)), key, medalsPtotal)(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, medalsP)(line))(
+          line),
+        "key",
+        "value",
+        0
+      )
 
-      val liftedLHS =
-        AddSortKey(
-          Join(
-            JoinObject,
-            IdentitySort,
-            Join(WrapObject, Cross(Some(CrossRight)), key, medalsPtotal)(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, medalsP)(line))(
-            line),
-          "key",
-          "value",
-          0
-        )
-
-      val liftedRHS =
-        AddSortKey(
-          Join(
-            JoinObject,
-            IdentitySort,
-            Join(WrapObject, Cross(Some(CrossRight)), key, medalsPPtotal)(line),
-            Join(WrapObject, Cross(Some(CrossRight)), value, medalsPP)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
+          Join(WrapObject, Cross(Some(CrossRight)), key, medalsPPtotal)(line),
+          Join(WrapObject, Cross(Some(CrossRight)), value, medalsPP)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val expectedOpt =
         Join(
@@ -1210,8 +1197,9 @@ trait JoinOptimizerSpecs[M[+_]]
 
       val line = Line(1, 1, "")
 
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
+      val medals =
+        dag.AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(
+          line)
       val athletes =
         dag.AbsoluteLoad(Const(CString("/summer_games/athletes"))(line))(line)
 
@@ -1232,97 +1220,96 @@ trait JoinOptimizerSpecs[M[+_]]
       val athletesPrime =
         Join(JoinObject, IdentitySort, athletes, wrapName(athletes))(line)
 
-      val input = Filter(
-        IdentitySort,
-        Join(
-          JoinObject,
-          Cross(None),
-          Join(
-            WrapObject,
-            Cross(Some(CrossRight)),
-            Const(CString("winner"))(line),
-            Join(
-              DerefObject,
-              Cross(None),
-              medalsPrime,
-              Const(CString("Medal winner"))(line))(line)
-          )(line),
-          Join(
-            WrapObject,
-            Cross(Some(CrossRight)),
-            Const(CString("country"))(line),
-            Join(
-              DerefObject,
-              Cross(None),
-              athletesPrime,
-              Const(CString("Countryname"))(line))(line)
-          )(line)
-        )(line),
-        Join(
-          Eq,
-          Cross(None),
-          Join(
-            DerefObject,
-            Cross(None),
-            medalsPrime,
-            Const(CString("name"))(line))(line),
-          Join(
-            DerefObject,
-            Cross(None),
-            athletesPrime,
-            Const(CString("name"))(line))(line)
-        )(line)
-      )(line)
-
-      val liftedLHS =
-        AddSortKey(
+      val input =
+        Filter(
+          IdentitySort,
           Join(
             JoinObject,
-            IdentitySort,
+            Cross(None),
             Join(
               WrapObject,
               Cross(Some(CrossRight)),
-              Const(CString("key"))(line),
+              Const(CString("winner"))(line),
               Join(
                 DerefObject,
                 Cross(None),
                 medalsPrime,
-                Const(CString("name"))(line))(line))(line),
+                Const(CString("Medal winner"))(line))(line)
+            )(line),
             Join(
               WrapObject,
               Cross(Some(CrossRight)),
-              Const(CString("value"))(line),
-              medalsPrime)(line)
-          )(line),
-          "key",
-          "value",
-          0
-        )
-
-      val liftedRHS =
-        AddSortKey(
-          Join(
-            JoinObject,
-            IdentitySort,
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              Const(CString("key"))(line),
+              Const(CString("country"))(line),
               Join(
                 DerefObject,
                 Cross(None),
                 athletesPrime,
-                Const(CString("name"))(line))(line))(line),
-            Join(
-              WrapObject,
-              Cross(Some(CrossRight)),
-              Const(CString("value"))(line),
-              athletesPrime)(line)
+                Const(CString("Countryname"))(line))(line)
+            )(line)
           )(line),
-          "key",
-          "value",
-          0
-        )
+          Join(
+            Eq,
+            Cross(None),
+            Join(
+              DerefObject,
+              Cross(None),
+              medalsPrime,
+              Const(CString("name"))(line))(line),
+            Join(
+              DerefObject,
+              Cross(None),
+              athletesPrime,
+              Const(CString("name"))(line))(line)
+          )(line)
+        )(line)
+
+      val liftedLHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
+          Join(
+            WrapObject,
+            Cross(Some(CrossRight)),
+            Const(CString("key"))(line),
+            Join(
+              DerefObject,
+              Cross(None),
+              medalsPrime,
+              Const(CString("name"))(line))(line))(line),
+          Join(
+            WrapObject,
+            Cross(Some(CrossRight)),
+            Const(CString("value"))(line),
+            medalsPrime)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
+
+      val liftedRHS = AddSortKey(
+        Join(
+          JoinObject,
+          IdentitySort,
+          Join(
+            WrapObject,
+            Cross(Some(CrossRight)),
+            Const(CString("key"))(line),
+            Join(
+              DerefObject,
+              Cross(None),
+              athletesPrime,
+              Const(CString("name"))(line))(line))(line),
+          Join(
+            WrapObject,
+            Cross(Some(CrossRight)),
+            Const(CString("value"))(line),
+            athletesPrime)(line)
+        )(line),
+        "key",
+        "value",
+        0
+      )
 
       val result = optimizeJoins(input, ctx, new IdGen)
 

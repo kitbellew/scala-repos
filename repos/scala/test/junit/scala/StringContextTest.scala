@@ -12,8 +12,9 @@ import org.junit.runners.JUnit4
 import scala.tools.testing.AssertUtil._
 
 object StringContextTestUtils {
-  private val decimalSeparator: Char =
-    new DecimalFormat().getDecimalFormatSymbols().getDecimalSeparator()
+  private val decimalSeparator: Char = new DecimalFormat()
+    .getDecimalFormatSymbols()
+    .getDecimalSeparator()
   private val numberPattern = """(\d+)\.(\d+.*)""".r
 
   implicit class StringContextOps(val sc: StringContext) extends AnyVal {
@@ -97,19 +98,21 @@ class StringContextTest {
   }
 
   @Test def fIf() = {
-    val res = f"${if (true)
-      2.5
-    else
-      2.5}%.2f"
+    val res =
+      f"${if (true)
+        2.5
+      else
+        2.5}%.2f"
     val expected = locally"2.50"
     assertEquals(expected, res)
   }
 
   @Test def fIfNot() = {
-    val res = f"${if (false)
-      2.5
-    else
-      3.5}%.2f"
+    val res =
+      f"${if (false)
+        2.5
+      else
+        3.5}%.2f"
     val expected = locally"3.50"
     assertEquals(expected, res)
   }
@@ -141,10 +144,11 @@ class StringContextTest {
 
     val s = "Scala"
 
-    val fff = new java.util.Formattable {
-      def formatTo(f: java.util.Formatter, g: Int, w: Int, p: Int) =
-        f.format("4")
-    }
+    val fff =
+      new java.util.Formattable {
+        def formatTo(f: java.util.Formatter, g: Int, w: Int, p: Int) =
+          f.format("4")
+      }
     import java.util.{Calendar, Locale}
     val c = Calendar.getInstance(Locale.US)
     c.set(2012, Calendar.MAY, 26)

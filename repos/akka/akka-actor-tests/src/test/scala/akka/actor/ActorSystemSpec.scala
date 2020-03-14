@@ -108,29 +108,32 @@ object ActorSystemSpec {
 
   class SlowDispatcher(_config: Config, _prerequisites: DispatcherPrerequisites)
       extends MessageDispatcherConfigurator(_config, _prerequisites) {
-    private val instance = new Dispatcher(
-      this,
-      config.getString("id"),
-      config.getInt("throughput"),
-      config.getNanosDuration("throughput-deadline-time"),
-      configureExecutor(),
-      config.getMillisDuration("shutdown-timeout")) {
-      val doneIt = new Switch
-      override protected[akka] def registerForExecution(
-          mbox: Mailbox,
-          hasMessageHint: Boolean,
-          hasSystemMessageHint: Boolean): Boolean = {
-        val ret =
-          super.registerForExecution(mbox, hasMessageHint, hasSystemMessageHint)
-        doneIt.switchOn {
-          TestKit.awaitCond(mbox.actor.actor != null, 1.second)
-          mbox.actor.actor match {
-            case FastActor(latch, _) ⇒ Await.ready(latch, 1.second)
+    private val instance =
+      new Dispatcher(
+        this,
+        config.getString("id"),
+        config.getInt("throughput"),
+        config.getNanosDuration("throughput-deadline-time"),
+        configureExecutor(),
+        config.getMillisDuration("shutdown-timeout")) {
+        val doneIt = new Switch
+        override protected[akka] def registerForExecution(
+            mbox: Mailbox,
+            hasMessageHint: Boolean,
+            hasSystemMessageHint: Boolean): Boolean = {
+          val ret = super.registerForExecution(
+            mbox,
+            hasMessageHint,
+            hasSystemMessageHint)
+          doneIt.switchOn {
+            TestKit.awaitCond(mbox.actor.actor != null, 1.second)
+            mbox.actor.actor match {
+              case FastActor(latch, _) ⇒ Await.ready(latch, 1.second)
+            }
           }
+          ret
         }
-        ret
       }
-    }
 
     /**
       * Returns the same dispatcher instance for each invocation
@@ -251,8 +254,9 @@ class ActorSystemSpec
       system2.terminate()
       Await.ready(latch, 5 seconds)
 
-      val expected = (for (i ← 1 to count)
-        yield i).reverse
+      val expected =
+        (for (i ← 1 to count)
+          yield i).reverse
 
       immutableSeq(result) should ===(expected)
     }
@@ -405,12 +409,14 @@ class ActorSystemSpec
 
     "work with a passed in ExecutionContext" in {
       val ecProbe = TestProbe()
-      val ec = new ActorSystemSpec.TestExecutionContext(
-        ecProbe.ref,
-        ExecutionContexts.global())
+      val ec =
+        new ActorSystemSpec.TestExecutionContext(
+          ecProbe.ref,
+          ExecutionContexts.global())
 
-      val system2 =
-        ActorSystem(name = "default", defaultExecutionContext = Some(ec))
+      val system2 = ActorSystem(
+        name = "default",
+        defaultExecutionContext = Some(ec))
 
       try {
         val ref = system2.actorOf(Props(new Actor {
@@ -432,9 +438,10 @@ class ActorSystemSpec
 
     "not use passed in ExecutionContext if executor is configured" in {
       val ecProbe = TestProbe()
-      val ec = new ActorSystemSpec.TestExecutionContext(
-        ecProbe.ref,
-        ExecutionContexts.global())
+      val ec =
+        new ActorSystemSpec.TestExecutionContext(
+          ecProbe.ref,
+          ExecutionContexts.global())
 
       val config = ConfigFactory.parseString(
         "akka.actor.default-dispatcher.executor = \"fork-join-executor\"")
@@ -462,12 +469,13 @@ class ActorSystemSpec
     }
 
     "not allow top-level actor creation with custom guardian" in {
-      val sys = new ActorSystemImpl(
-        "custom",
-        ConfigFactory.defaultReference(),
-        getClass.getClassLoader,
-        None,
-        Some(Props.empty))
+      val sys =
+        new ActorSystemImpl(
+          "custom",
+          ConfigFactory.defaultReference(),
+          getClass.getClassLoader,
+          None,
+          Some(Props.empty))
       sys.start()
       try {
         intercept[UnsupportedOperationException] {

@@ -52,14 +52,15 @@ object SecondStageExceptionDemo extends JFXApp {
           text = "Show Dialog"
           onAction = (ae: ActionEvent) => {
             // the JavaFX stage constructor argument below was needed to prevent exceptions
-            val dialogStage = new Stage {
-              scene = new Scene {
-                content = new StackPane {
-                  padding = Insets(20, 20, 20, 20)
-                  children = new Label("  This is a new dialog!  ")
+            val dialogStage =
+              new Stage {
+                scene = new Scene {
+                  content = new StackPane {
+                    padding = Insets(20, 20, 20, 20)
+                    children = new Label("  This is a new dialog!  ")
+                  }
                 }
               }
-            }
             // Exception was thrown here: java.lang.IllegalStateException: Cannot call this method on primary stage
             dialogStage.showAndWait()
           }

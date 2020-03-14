@@ -220,10 +220,11 @@ object LDAPUtil {
       }
     }
 
-    val filterCond = additionalFilterCondition.getOrElse("") match {
-      case "" => userNameAttribute + "=" + userName
-      case x  => "(&(" + x + ")(" + userNameAttribute + "=" + userName + "))"
-    }
+    val filterCond =
+      additionalFilterCondition.getOrElse("") match {
+        case "" => userNameAttribute + "=" + userName
+        case x  => "(&(" + x + ")(" + userNameAttribute + "=" + userName + "))"
+      }
 
     getEntries(
       conn.search(baseDN, LDAPConnection.SCOPE_SUB, filterCond, null, false))

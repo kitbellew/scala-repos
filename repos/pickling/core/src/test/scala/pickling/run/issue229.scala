@@ -11,8 +11,8 @@ class Issue229 extends FunSuite {
     val hist: Map[Dim, Int] =
       List((Dim(0.5d, 0.3d), 5), (Dim(1.5d, 1.3d), 15)).toMap
 
-    val serMap: Map[(Double, Double), Int] =
-      hist.map(p => (p._1.width, p._1.height) -> p._2)
+    val serMap: Map[(Double, Double), Int] = hist.map(p =>
+      (p._1.width, p._1.height) -> p._2)
 
     val p = serMap.pickle
     val up = p.unpickle[Map[(Double, Double), Int]]

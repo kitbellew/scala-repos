@@ -58,8 +58,8 @@ object PaperSource {
   val Envelope: PaperSource = new PaperSource(jfxp.PaperSource.ENVELOPE)
 
   /** Specify to select the LARGE_CAPACITY tray. */
-  val LargeCapatity: PaperSource = new PaperSource(
-    jfxp.PaperSource.LARGE_CAPACITY)
+  val LargeCapatity: PaperSource =
+    new PaperSource(jfxp.PaperSource.LARGE_CAPACITY)
 
   /** Specify to select the MAIN tray. */
   val Main: PaperSource = new PaperSource(jfxp.PaperSource.MAIN)

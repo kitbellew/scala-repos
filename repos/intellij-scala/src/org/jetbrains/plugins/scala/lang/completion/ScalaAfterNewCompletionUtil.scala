@@ -46,8 +46,8 @@ import scala.collection.mutable
   * @since 27.03.12
   */
 object ScalaAfterNewCompletionUtil {
-  lazy val afterNewPattern =
-    ScalaSmartCompletionContributor.superParentsPattern(
+  lazy val afterNewPattern = ScalaSmartCompletionContributor
+    .superParentsPattern(
       classOf[ScStableCodeReferenceElement],
       classOf[ScSimpleTypeElement],
       classOf[ScConstructor],
@@ -60,16 +60,18 @@ object ScalaAfterNewCompletionUtil {
       position: PsiElement,
       context: ProcessingContext): (Array[ScType], Boolean) = {
     val isAfter = isAfterNew(position, context)
-    val data = if (isAfter) {
-      val element = position
-      val newExpr: ScNewTemplateDefinition =
-        PsiTreeUtil.getContextOfType(element, classOf[ScNewTemplateDefinition])
-      newExpr.expectedTypes().map {
-        case ScAbstractType(_, lower, upper) => upper
-        case tp                              => tp
-      }
-    } else
-      Array[ScType]()
+    val data =
+      if (isAfter) {
+        val element = position
+        val newExpr: ScNewTemplateDefinition = PsiTreeUtil.getContextOfType(
+          element,
+          classOf[ScNewTemplateDefinition])
+        newExpr.expectedTypes().map {
+          case ScAbstractType(_, lower, upper) => upper
+          case tp                              => tp
+        }
+      } else
+        Array[ScType]()
 
     (data, isAfter)
   }
@@ -186,12 +188,13 @@ object ScalaAfterNewCompletionUtil {
       renamesMap: mutable.HashMap[String, (String, PsiNamedElement)])
       : ScalaLookupItem = {
     val name: String = psiClass.name
-    val isRenamed = renamesMap
-      .filter {
-        case (aName, (renamed, aClazz)) => aName == name && aClazz == psiClass
-      }
-      .map(_._2._1)
-      .headOption
+    val isRenamed =
+      renamesMap
+        .filter {
+          case (aName, (renamed, aClazz)) => aName == name && aClazz == psiClass
+        }
+        .map(_._2._1)
+        .headOption
     val lookupElement: ScalaLookupItem =
       new ScalaLookupItem(psiClass, isRenamed.getOrElse(name)) {
         override def renderElement(presentation: LookupElementPresentation) {
@@ -293,8 +296,8 @@ object ScalaAfterNewCompletionUtil {
             def process(clazz: PsiClass): Boolean = {
               if (clazz.name == null || clazz.name == "")
                 return true
-              val undefines: Seq[ScUndefinedType] =
-                clazz.getTypeParameters.map(ptp =>
+              val undefines: Seq[ScUndefinedType] = clazz.getTypeParameters.map(
+                ptp =>
                   new ScUndefinedType(
                     new ScTypeParameterType(ptp, ScSubstitutor.empty)))
               val predefinedType =

@@ -740,17 +740,18 @@ object Future {
     else {
       val result = Promise[Option[T]]()
       val ref = new AtomicInteger(futuresBuffer.size)
-      val search: Try[T] => Unit = v =>
-        try {
-          v match {
-            case Success(r) if p(r) => result tryComplete Success(Some(r))
-            case _                  =>
+      val search: Try[T] => Unit =
+        v =>
+          try {
+            v match {
+              case Success(r) if p(r) => result tryComplete Success(Some(r))
+              case _                  =>
+            }
+          } finally {
+            if (ref.decrementAndGet == 0) {
+              result tryComplete Success(None)
+            }
           }
-        } finally {
-          if (ref.decrementAndGet == 0) {
-            result tryComplete Success(None)
-          }
-        }
 
       futuresBuffer.foreach(_ onComplete search)
 
@@ -939,8 +940,7 @@ object Future {
   private[concurrent] object InternalCallbackExecutor
       extends ExecutionContext
       with BatchingExecutor {
-    override protected def unbatchedExecute(r: Runnable): Unit =
-      r.run()
+    override protected def unbatchedExecute(r: Runnable): Unit = r.run()
     override def reportFailure(t: Throwable): Unit =
       throw new IllegalStateException(
         "problem in scala.concurrent internal callback",

@@ -41,16 +41,18 @@ class ScenariosTask(settings: Settings)
   "aggregated services" should {
     "create account, ingest data, query" in {
       val account = createAccount
-      val res = ingestString(account, dummyEvents, "application/json")(
-        _ / account.bareRootPath / "foo")
+      val res =
+        ingestString(account, dummyEvents, "application/json")(
+          _ / account.bareRootPath / "foo")
 
       EventuallyResults.eventually(10, 1.second) {
         val res = (analytics / "fs" / account.bareRootPath) <<? List(
           "apiKey" -> account.apiKey,
           "q" -> "count(//foo)")
         val str = Http(res OK as.String)()
-        val json =
-          JParser.parseFromString(Http(res OK as.String)()).valueOr(throw _)
+        val json = JParser
+          .parseFromString(Http(res OK as.String)())
+          .valueOr(throw _)
         val count = json(0).deserialize[Double]
         count must_== 2
       }
@@ -75,14 +77,15 @@ class ScenariosTask(settings: Settings)
       val account1 = createAccount
       val account2 = createAccount
 
-      val res = ingestString(
-        account1.apiKey,
-        account2,
-        dummyEvents,
-        "application/json")(_ / account1.bareRootPath / "foo") match {
-        case Left(thr) => Failure(thr)
-        case Right(s)  => JParser.parseFromString(s)
-      }
+      val res =
+        ingestString(
+          account1.apiKey,
+          account2,
+          dummyEvents,
+          "application/json")(_ / account1.bareRootPath / "foo") match {
+          case Left(thr) => Failure(thr)
+          case Right(s)  => JParser.parseFromString(s)
+        }
 
       res must beLike {
         case Success(jobj) => ok
@@ -124,14 +127,15 @@ class ScenariosTask(settings: Settings)
       val account1 = createAccount
       val account2 = createAccount
 
-      val res = ingestString(
-        account1.apiKey,
-        account2,
-        dummyEvents,
-        "application/json")(_ / account1.bareRootPath / "foo") match {
-        case Left(thr) => Failure(thr)
-        case Right(s)  => JParser.parseFromString(s)
-      }
+      val res =
+        ingestString(
+          account1.apiKey,
+          account2,
+          dummyEvents,
+          "application/json")(_ / account1.bareRootPath / "foo") match {
+          case Left(thr) => Failure(thr)
+          case Right(s)  => JParser.parseFromString(s)
+        }
 
       EventuallyResults.eventually(10, 1.second) {
         val json =
@@ -144,14 +148,15 @@ class ScenariosTask(settings: Settings)
       val account1 = createAccount
       val account2 = createAccount
 
-      val res = ingestString(
-        account1.apiKey,
-        account2,
-        dummyEvents,
-        "application/json")(_ / account1.bareRootPath / "foo") match {
-        case Left(thr) => Failure(thr)
-        case Right(s)  => JParser.parseFromString(s)
-      }
+      val res =
+        ingestString(
+          account1.apiKey,
+          account2,
+          dummyEvents,
+          "application/json")(_ / account1.bareRootPath / "foo") match {
+          case Left(thr) => Failure(thr)
+          case Right(s)  => JParser.parseFromString(s)
+        }
 
       EventuallyResults.eventually(10, 1.second) {
         val json =

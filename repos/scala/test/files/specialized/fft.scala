@@ -31,14 +31,11 @@ object Test {
     ((x._1 * y._1 + x._2 * y._2) / num, (x._2 * y._1 - x._1 * y._2) / num)
   }
 
-  def div(x: Complex, y: Long) =
-    (x._1 / y, x._2 / y)
+  def div(x: Complex, y: Long) = (x._1 / y, x._2 / y)
 
-  def add(x: Complex, y: Complex) =
-    (x._1 + y._1, x._2 + y._2)
+  def add(x: Complex, y: Complex) = (x._1 + y._1, x._2 + y._2)
 
-  def minus(x: Complex, y: Complex) =
-    (x._1 - y._1, x._2 - y._2)
+  def minus(x: Complex, y: Complex) = (x._1 - y._1, x._2 - y._2)
 
   def FFT(dir: Int, m: Long, x: Array[(Double, Double)]) {
     var i, i1, i2, j, k, l, l1, l2, n = 0L

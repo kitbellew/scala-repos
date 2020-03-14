@@ -59,16 +59,18 @@ import scalafx.scene.text.{Font, FontWeight, Text}
   *
   */
 object ScalaFX_Layout_Panes_03 extends JFXApp {
-  val current = new Button {
-    text = "Current"
-    prefWidth = 100
-    prefHeight = 20
-  }
-  val projected = new Button {
-    text = "Projected"
-    prefWidth = 100
-    prefHeight = 20
-  }
+  val current =
+    new Button {
+      text = "Current"
+      prefWidth = 100
+      prefHeight = 20
+    }
+  val projected =
+    new Button {
+      text = "Projected"
+      prefWidth = 100
+      prefHeight = 20
+    }
   val data = List(
     new Text {
       text = "Data"

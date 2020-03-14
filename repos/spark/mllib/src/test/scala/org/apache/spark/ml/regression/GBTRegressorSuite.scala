@@ -40,8 +40,11 @@ class GBTRegressorSuite extends SparkFunSuite with MLlibTestSparkContext {
   import GBTRegressorSuite.compareAPIs
 
   // Combinations for estimators, learning rates and subsamplingRate
-  private val testCombinations =
-    Array((10, 1.0, 1.0), (10, 0.1, 1.0), (10, 0.5, 0.75), (10, 0.1, 0.75))
+  private val testCombinations = Array(
+    (10, 1.0, 1.0),
+    (10, 0.1, 1.0),
+    (10, 0.5, 0.75),
+    (10, 0.1, 0.75))
 
   private var data: RDD[LabeledPoint] = _
   private var trainData: RDD[LabeledPoint] = _
@@ -175,12 +178,15 @@ private object GBTRegressorSuite extends SparkFunSuite {
       gbt: GBTRegressor,
       categoricalFeatures: Map[Int, Int]): Unit = {
     val numFeatures = data.first().features.size
-    val oldBoostingStrategy =
-      gbt.getOldBoostingStrategy(categoricalFeatures, OldAlgo.Regression)
+    val oldBoostingStrategy = gbt.getOldBoostingStrategy(
+      categoricalFeatures,
+      OldAlgo.Regression)
     val oldGBT = new OldGBT(oldBoostingStrategy)
     val oldModel = oldGBT.run(data)
-    val newData: DataFrame =
-      TreeTests.setMetadata(data, categoricalFeatures, numClasses = 0)
+    val newData: DataFrame = TreeTests.setMetadata(
+      data,
+      categoricalFeatures,
+      numClasses = 0)
     val newModel = gbt.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = GBTRegressionModel.fromOld(

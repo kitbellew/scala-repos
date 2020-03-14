@@ -16,13 +16,14 @@ object ClosableLazySpec extends Specification {
 
     "create a value when first accessed" in {
       val createCount = new AtomicInteger()
-      val cl = new ClosableLazy[String, Int] {
-        protected def create() = {
-          createCount.incrementAndGet()
-          ("hello", () => 1)
+      val cl =
+        new ClosableLazy[String, Int] {
+          protected def create() = {
+            createCount.incrementAndGet()
+            ("hello", () => 1)
+          }
+          protected def closeNotNeeded = -1
         }
-        protected def closeNotNeeded = -1
-      }
       createCount.get must_== 0
       cl.get must_== "hello"
       createCount.get must_== 1
@@ -35,12 +36,13 @@ object ClosableLazySpec extends Specification {
     "call the close function when first closed" in {
       val closeCount = new AtomicInteger()
 
-      val cl = new ClosableLazy[String, Int] {
-        protected def create() = {
-          ("hat", () => closeCount.incrementAndGet())
+      val cl =
+        new ClosableLazy[String, Int] {
+          protected def create() = {
+            ("hat", () => closeCount.incrementAndGet())
+          }
+          protected def closeNotNeeded = -1
         }
-        protected def closeNotNeeded = -1
-      }
       closeCount.get must_== 0
       cl.get must_== "hat"
       closeCount.get must_== 0
@@ -56,12 +58,13 @@ object ClosableLazySpec extends Specification {
     "be closable before the first call to get" in {
       val closeCount = new AtomicInteger()
 
-      val cl = new ClosableLazy[String, Int] {
-        protected def create() = {
-          ("sock", () => closeCount.incrementAndGet())
+      val cl =
+        new ClosableLazy[String, Int] {
+          protected def create() = {
+            ("sock", () => closeCount.incrementAndGet())
+          }
+          protected def closeNotNeeded = -1
         }
-        protected def closeNotNeeded = -1
-      }
       closeCount.get must_== 0
       cl.close() must_== -1
       closeCount.get must_== 0
@@ -73,10 +76,11 @@ object ClosableLazySpec extends Specification {
     }
 
     "throw an exception when accessed after being closed" in {
-      val cl = new ClosableLazy[String, Int] {
-        protected def create() = ("oof", () => 1)
-        protected def closeNotNeeded = -1
-      }
+      val cl =
+        new ClosableLazy[String, Int] {
+          protected def create() = ("oof", () => 1)
+          protected def closeNotNeeded = -1
+        }
       cl.get must_== "oof"
       cl.close() must_== 1
       cl.get must throwAn[IllegalStateException]

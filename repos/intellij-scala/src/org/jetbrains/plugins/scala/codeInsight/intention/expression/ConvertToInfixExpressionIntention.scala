@@ -34,19 +34,22 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     if (!IntentionAvailabilityChecker.checkIntention(this, element))
       return false
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null)
       return false
-    val referenceExpr = methodCallExpr.getInvokedExpr match {
-      case ref: ScReferenceExpression => ref
-      case call: ScGenericCall =>
-        Option(call.referencedExpr) match { //if the expression has type args
-          case Some(ref: ScReferenceExpression) => ref
-          case _                                => return false
-        }
-      case _ => return false
-    }
+    val referenceExpr =
+      methodCallExpr.getInvokedExpr match {
+        case ref: ScReferenceExpression => ref
+        case call: ScGenericCall =>
+          Option(call.referencedExpr) match { //if the expression has type args
+            case Some(ref: ScReferenceExpression) => ref
+            case _                                => return false
+          }
+        case _ => return false
+      }
     val range: TextRange = referenceExpr.nameId.getTextRange
     val offset = editor.getCaretModel.getOffset
     if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
@@ -57,20 +60,23 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null || !methodCallExpr.isValid)
       return
 
-    val referenceExpr = methodCallExpr.getInvokedExpr match {
-      case ref: ScReferenceExpression => ref
-      case call: ScGenericCall =>
-        Option(call.referencedExpr) match { //if the expression has type args
-          case Some(ref: ScReferenceExpression) => ref
-          case _                                => return
-        }
-      case _ => return
-    }
+    val referenceExpr =
+      methodCallExpr.getInvokedExpr match {
+        case ref: ScReferenceExpression => ref
+        case call: ScGenericCall =>
+          Option(call.referencedExpr) match { //if the expression has type args
+            case Some(ref: ScReferenceExpression) => ref
+            case _                                => return
+          }
+        case _ => return
+      }
     val start = methodCallExpr.getTextRange.getStartOffset
     val diff =
       editor.getCaretModel.getOffset - referenceExpr.nameId.getTextRange.getStartOffset
@@ -80,15 +86,16 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
     val invokedExprBuilder = new StringBuilder
 
     val qual = referenceExpr.qualifier.get
-    val operText = methodCallExpr.getInvokedExpr match {
-      case call: ScGenericCall =>
-        call.typeArgs match {
-          case Some(typeArgs) =>
-            referenceExpr.nameId.getText ++ typeArgs.getText
-          case _ => referenceExpr.nameId.getText
-        }
-      case _ => referenceExpr.nameId.getText
-    }
+    val operText =
+      methodCallExpr.getInvokedExpr match {
+        case call: ScGenericCall =>
+          call.typeArgs match {
+            case Some(typeArgs) =>
+              referenceExpr.nameId.getText ++ typeArgs.getText
+            case _ => referenceExpr.nameId.getText
+          }
+        case _ => referenceExpr.nameId.getText
+      }
     val invokedExprText = methodCallExpr.getInvokedExpr.getText
     val methodCallArgs = methodCallExpr.args
 
@@ -113,15 +120,18 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
       forB = argsBuilder.toString().drop(1).dropRight(1)
     }
 
-    val exprA: ScExpression =
-      ScalaPsiElementFactory.createExpressionFromText(forA, element.getManager)
-    val exprB: ScExpression =
-      ScalaPsiElementFactory.createExpressionFromText(forB, element.getManager)
+    val exprA: ScExpression = ScalaPsiElementFactory.createExpressionFromText(
+      forA,
+      element.getManager)
+    val exprB: ScExpression = ScalaPsiElementFactory.createExpressionFromText(
+      forB,
+      element.getManager)
 
-    val expr = putArgsFirst match {
-      case true  => argsBuilder.append(" ").append(invokedExprBuilder)
-      case false => invokedExprBuilder.append(" ").append(argsBuilder)
-    }
+    val expr =
+      putArgsFirst match {
+        case true  => argsBuilder.append(" ").append(invokedExprBuilder)
+        case false => invokedExprBuilder.append(" ").append(argsBuilder)
+      }
 
     val text = expr.toString()
     ScalaPsiElementFactory.createExpressionFromText(

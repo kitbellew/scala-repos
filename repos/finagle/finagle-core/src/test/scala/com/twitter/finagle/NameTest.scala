@@ -17,8 +17,9 @@ class NameTest extends FunSuite {
       addr = _
     }))
     assert(addr == Addr.Pending)
-    val set =
-      Set[SocketAddress](new InetSocketAddress(0), new InetSocketAddress(1))
+    val set = Set[SocketAddress](
+      new InetSocketAddress(0),
+      new InetSocketAddress(1))
     g() = set
 
     val Addr.Bound(s2, r) = addr
@@ -45,11 +46,12 @@ class NameTest extends FunSuite {
   }
 
   test("Name.all maintains equality") {
-    val names = Seq
-      .fill(10) {
-        Name.Bound.singleton(Var(Addr.Pending))
-      }
-      .toSet
+    val names =
+      Seq
+        .fill(10) {
+          Name.Bound.singleton(Var(Addr.Pending))
+        }
+        .toSet
 
     assert(Name.all(names) == Name.all(names))
     assert(Name.all(names) != Name.all(names drop 1))

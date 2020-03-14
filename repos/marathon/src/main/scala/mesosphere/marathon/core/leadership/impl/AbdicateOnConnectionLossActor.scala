@@ -27,10 +27,11 @@ private[impl] class AbdicateOnConnectionLossActor(
     extends Actor
     with ActorLogging {
 
-  private[impl] val watcher = new Watcher {
-    val reference = self
-    override def process(event: WatchedEvent): Unit = reference ! event
-  }
+  private[impl] val watcher =
+    new Watcher {
+      val reference = self
+      override def process(event: WatchedEvent): Unit = reference ! event
+    }
 
   override def preStart(): Unit = {
     log.info("Register as ZK Listener")

@@ -57,8 +57,8 @@ object ParquetReadBenchmark {
 
   def withSQLConf(pairs: (String, String)*)(f: => Unit): Unit = {
     val (keys, values) = pairs.unzip
-    val currentValues =
-      keys.map(key => Try(sqlContext.conf.getConfString(key)).toOption)
+    val currentValues = keys.map(key =>
+      Try(sqlContext.conf.getConfString(key)).toOption)
     (keys, values).zipped.foreach(sqlContext.conf.setConfString)
     try f
     finally {

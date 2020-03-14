@@ -36,9 +36,10 @@ class ImmutableLRU[K, V] private (
   // Scala's SortedMap requires a key ordering; ImmutableLRU doesn't
   // care about pulling a minimum value out of the SortedMap, so the
   // following kOrd treats every value as equal.
-  protected implicit val kOrd = new Ordering[K] {
-    def compare(l: K, r: K) = 0
-  }
+  protected implicit val kOrd =
+    new Ordering[K] {
+      def compare(l: K, r: K) = 0
+    }
 
   /**
     * the number of entries in the cache
@@ -71,12 +72,13 @@ class ImmutableLRU[K, V] private (
       .getOrElse(ord)
     val ordWithNewKey = baseOrd + (newIdx -> key)
     // Do we need to remove an old key:
-    val (evicts, finalMap, finalOrd) = if (ordWithNewKey.size > maxSize) {
-      val (minIdx, eKey) = ordWithNewKey.min
-      (Some(eKey), newMap - eKey, ordWithNewKey - minIdx)
-    } else {
-      (None, newMap, ordWithNewKey)
-    }
+    val (evicts, finalMap, finalOrd) =
+      if (ordWithNewKey.size > maxSize) {
+        val (minIdx, eKey) = ordWithNewKey.min
+        (Some(eKey), newMap - eKey, ordWithNewKey - minIdx)
+      } else {
+        (None, newMap, ordWithNewKey)
+      }
     (evicts, new ImmutableLRU[K, V](maxSize, newIdx, finalMap, finalOrd))
   }
 

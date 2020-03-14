@@ -146,9 +146,10 @@ object Generic {
     * @tparam T the type for which we want to find a Generic
     * @tparam Repr0 the generic representation type equivalent to T.
     */
-  type Aux[T, Repr0] = Generic[T] {
-    type Repr = Repr0
-  }
+  type Aux[T, Repr0] =
+    Generic[T] {
+      type Repr = Repr0
+    }
 
   /** Provides an instance of Generic. Prefer this over finding one with `implicitly`, or else use `the`.
     *
@@ -214,9 +215,10 @@ object LabelledGeneric {
     * @tparam T the type
     * @tparam Repr0 the labelled generic representation of the type
     */
-  type Aux[T, Repr0] = LabelledGeneric[T] {
-    type Repr = Repr0
-  }
+  type Aux[T, Repr0] =
+    LabelledGeneric[T] {
+      type Repr = Repr0
+    }
 
   /** Provides an instance of LabelledGeneric for the given T. As with [[shapeless.Generic]],
     * use this method or {{{the[LabelledGeneric[T]]}}} to obtain an instance for suitable given T. */
@@ -302,11 +304,9 @@ trait CaseClassMacros extends ReprTypes {
   import internal.constantType
   import Flag._
 
-  def abort(msg: String) =
-    c.abort(c.enclosingPosition, msg)
+  def abort(msg: String) = c.abort(c.enclosingPosition, msg)
 
-  def isReprType(tpe: Type): Boolean =
-    tpe <:< hlistTpe || tpe <:< coproductTpe
+  def isReprType(tpe: Type): Boolean = tpe <:< hlistTpe || tpe <:< coproductTpe
 
   def isReprType1(tpe: Type): Boolean = {
     val normalized = appliedType(tpe, WildcardType).dealias
@@ -723,8 +723,8 @@ trait CaseClassMacros extends ReprTypes {
     val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
     val gTpe = tpe.asInstanceOf[global.Type]
     val pre = gTpe.prefix
-    val cSym =
-      patchedCompanionSymbolOf(tpe.typeSymbol).asInstanceOf[global.Symbol]
+    val cSym = patchedCompanionSymbolOf(tpe.typeSymbol)
+      .asInstanceOf[global.Symbol]
     if (cSym != NoSymbol)
       global.gen.mkAttributedRef(pre, cSym).asInstanceOf[Tree]
     else
@@ -989,8 +989,9 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val isCaseClass = sym.asClass.isCaseClass
 
-      val repWCard =
-        Star(Ident(termNames.WILDCARD)) // like pq"_*" except that it does work
+      val repWCard = Star(
+        Ident(termNames.WILDCARD)
+      ) // like pq"_*" except that it does work
 
       def narrow(tree: Tree, tpe: Type): Tree =
         tpe match {
@@ -1010,13 +1011,14 @@ trait CaseClassMacros extends ReprTypes {
         val elems = elems0.map {
           case (name, tpe) => (TermName(c.freshName("pat")), tpe)
         }
-        val pattern = pq"${companionRef(tpe)}(..${elems.map {
-          case (binder, tpe) =>
-            if (isVararg(tpe))
-              pq"$binder @ $repWCard"
-            else
-              pq"$binder"
-        }})"
+        val pattern =
+          pq"${companionRef(tpe)}(..${elems.map {
+            case (binder, tpe) =>
+              if (isVararg(tpe))
+                pq"$binder @ $repWCard"
+              else
+                pq"$binder"
+          }})"
         val reprPattern =
           elems.foldRight(q"_root_.shapeless.HNil": Tree) {
             case ((bound, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
@@ -1100,13 +1102,14 @@ trait CaseClassMacros extends ReprTypes {
           val elems = args.map {
             case (name, tpe) => (TermName(c.freshName("pat")), name, tpe)
           }
-          val pattern = pq"${companionRef(tpe)}(..${elems.map {
-            case (binder, _, tpe) =>
-              if (isVararg(tpe))
-                pq"$binder @ $repWCard"
-              else
-                pq"$binder"
-          }})"
+          val pattern =
+            pq"${companionRef(tpe)}(..${elems.map {
+              case (binder, _, tpe) =>
+                if (isVararg(tpe))
+                  pq"$binder @ $repWCard"
+                else
+                  pq"$binder"
+            }})"
           val rhs = elems.map {
             case (binder, _, tpe) => narrow(q"$binder", tpe)
           }

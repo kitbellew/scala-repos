@@ -81,33 +81,34 @@ private[streaming] class BlockManagerBasedBlockHandler(
 
     var numRecords: Option[Long] = None
 
-    val putSucceeded: Boolean = block match {
-      case ArrayBufferBlock(arrayBuffer) =>
-        numRecords = Some(arrayBuffer.size.toLong)
-        blockManager.putIterator(
-          blockId,
-          arrayBuffer.iterator,
-          storageLevel,
-          tellMaster = true)
-      case IteratorBlock(iterator) =>
-        val countIterator = new CountingIterator(iterator)
-        val putResult = blockManager.putIterator(
-          blockId,
-          countIterator,
-          storageLevel,
-          tellMaster = true)
-        numRecords = countIterator.count
-        putResult
-      case ByteBufferBlock(byteBuffer) =>
-        blockManager.putBytes(
-          blockId,
-          new ChunkedByteBuffer(byteBuffer.duplicate()),
-          storageLevel,
-          tellMaster = true)
-      case o =>
-        throw new SparkException(
-          s"Could not store $blockId to block manager, unexpected block type ${o.getClass.getName}")
-    }
+    val putSucceeded: Boolean =
+      block match {
+        case ArrayBufferBlock(arrayBuffer) =>
+          numRecords = Some(arrayBuffer.size.toLong)
+          blockManager.putIterator(
+            blockId,
+            arrayBuffer.iterator,
+            storageLevel,
+            tellMaster = true)
+        case IteratorBlock(iterator) =>
+          val countIterator = new CountingIterator(iterator)
+          val putResult = blockManager.putIterator(
+            blockId,
+            countIterator,
+            storageLevel,
+            tellMaster = true)
+          numRecords = countIterator.count
+          putResult
+        case ByteBufferBlock(byteBuffer) =>
+          blockManager.putBytes(
+            blockId,
+            new ChunkedByteBuffer(byteBuffer.duplicate()),
+            storageLevel,
+            tellMaster = true)
+        case o =>
+          throw new SparkException(
+            s"Could not store $blockId to block manager, unexpected block type ${o.getClass.getName}")
+      }
     if (!putSucceeded) {
       throw new SparkException(
         s"Could not store $blockId to block manager with storage level $storageLevel")
@@ -198,21 +199,24 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
 
     var numRecords = None: Option[Long]
     // Serialize the block so that it can be inserted into both
-    val serializedBlock = block match {
-      case ArrayBufferBlock(arrayBuffer) =>
-        numRecords = Some(arrayBuffer.size.toLong)
-        blockManager.dataSerialize(blockId, arrayBuffer.iterator)
-      case IteratorBlock(iterator) =>
-        val countIterator = new CountingIterator(iterator)
-        val serializedBlock = blockManager.dataSerialize(blockId, countIterator)
-        numRecords = countIterator.count
-        serializedBlock
-      case ByteBufferBlock(byteBuffer) =>
-        new ChunkedByteBuffer(byteBuffer.duplicate())
-      case _ =>
-        throw new Exception(
-          s"Could not push $blockId to block manager, unexpected block type")
-    }
+    val serializedBlock =
+      block match {
+        case ArrayBufferBlock(arrayBuffer) =>
+          numRecords = Some(arrayBuffer.size.toLong)
+          blockManager.dataSerialize(blockId, arrayBuffer.iterator)
+        case IteratorBlock(iterator) =>
+          val countIterator = new CountingIterator(iterator)
+          val serializedBlock = blockManager.dataSerialize(
+            blockId,
+            countIterator)
+          numRecords = countIterator.count
+          serializedBlock
+        case ByteBufferBlock(byteBuffer) =>
+          new ChunkedByteBuffer(byteBuffer.duplicate())
+        case _ =>
+          throw new Exception(
+            s"Could not push $blockId to block manager, unexpected block type")
+      }
 
     // Store the block in block manager
     val storeInBlockManagerFuture = Future {
@@ -233,8 +237,9 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
     }
 
     // Combine the futures, wait for both to complete, and return the write ahead log record handle
-    val combinedFuture =
-      storeInBlockManagerFuture.zip(storeInWriteAheadLogFuture).map(_._2)
+    val combinedFuture = storeInBlockManagerFuture
+      .zip(storeInWriteAheadLogFuture)
+      .map(_._2)
     val walRecordHandle = Await.result(combinedFuture, blockStoreTimeout)
     WriteAheadLogBasedStoreResult(blockId, numRecords, walRecordHandle)
   }

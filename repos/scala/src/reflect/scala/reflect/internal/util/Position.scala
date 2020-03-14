@@ -52,11 +52,12 @@ object Position {
         NoPosition
       else
         posIn
-    val prefix = pos.source match {
-      case NoSourceFile     => ""
-      case s if shortenFile => s.file.name + ":"
-      case s                => s.file.path + ":"
-    }
+    val prefix =
+      pos.source match {
+        case NoSourceFile     => ""
+        case s if shortenFile => s.file.name + ":"
+        case s                => s.file.path + ":"
+      }
     prefix + (pos showError msg)
   }
 
@@ -306,8 +307,7 @@ private[util] trait InternalPositionImpl {
       source: SourceFile = source,
       start: Int = start,
       point: Int = point,
-      end: Int = end): Position =
-    Position.range(source, start, point, end)
+      end: Int = end): Position = Position.range(source, start, point, end)
 
   private def calculateColumn(): Int = {
     var idx = source.lineToOffset(source.offsetToLine(point))

@@ -37,10 +37,11 @@ object ClusterShardingCustomShardAllocationSpec {
     case id: Int ⇒ (id.toString, id)
   }
 
-  val extractShardId: ShardRegion.ExtractShardId = msg ⇒
-    msg match {
-      case id: Int ⇒ id.toString
-    }
+  val extractShardId: ShardRegion.ExtractShardId =
+    msg ⇒
+      msg match {
+        case id: Int ⇒ id.toString
+      }
 
   case object AllocateReq
   case class UseRegion(region: ActorRef)

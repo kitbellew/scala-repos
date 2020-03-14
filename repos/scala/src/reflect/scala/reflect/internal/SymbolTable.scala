@@ -49,9 +49,10 @@ abstract class SymbolTable
     with Internals
     with Reporting {
 
-  val gen = new InternalTreeGen {
-    val global: SymbolTable.this.type = SymbolTable.this
-  }
+  val gen =
+    new InternalTreeGen {
+      val global: SymbolTable.this.type = SymbolTable.this
+    }
 
   def log(msg: => AnyRef): Unit
 
@@ -248,12 +249,10 @@ abstract class SymbolTable
   /** The phase associated with given period. */
   final def phaseOf(period: Period): Phase = phaseWithId(phaseId(period))
 
-  final def period(rid: RunId, pid: Phase#Id): Period =
-    (rid << 8) + pid
+  final def period(rid: RunId, pid: Phase#Id): Period = (rid << 8) + pid
 
   /** Are we later than given phase in compilation? */
-  final def isAtPhaseAfter(p: Phase) =
-    p != NoPhase && phase.id > p.id
+  final def isAtPhaseAfter(p: Phase) = p != NoPhase && phase.id > p.id
 
   /** Perform given operation at given phase. */
   @inline final def enteringPhase[T](ph: Phase)(op: => T): T = {
@@ -358,13 +357,14 @@ abstract class SymbolTable
         val formals = tp.paramTypes
         assert(formals.last.typeSymbol == definitions.ArrayClass, formals)
         val method = params.last.owner
-        val elemtp = formals.last.typeArgs.head match {
-          case RefinedType(List(t1, t2), _)
-              if (t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass) =>
-            t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
-          case t =>
-            t
-        }
+        val elemtp =
+          formals.last.typeArgs.head match {
+            case RefinedType(List(t1, t2), _)
+                if (t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass) =>
+              t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
+            case t =>
+              t
+          }
         val newParams = method.newSyntheticValueParams(
           formals.init :+ definitions.javaRepeatedType(elemtp))
         MethodType(newParams, rtpe)
@@ -441,11 +441,12 @@ abstract class SymbolTable
   }
 
   /** The set of all installed infotransformers. */
-  var infoTransformers = new InfoTransformer {
-    val pid = NoPhase.id
-    val changesBaseClasses = true
-    def transform(sym: Symbol, tpe: Type): Type = tpe
-  }
+  var infoTransformers =
+    new InfoTransformer {
+      val pid = NoPhase.id
+      val changesBaseClasses = true
+      def transform(sym: Symbol, tpe: Type): Type = tpe
+    }
 
   /** The phase which has given index as identifier. */
   val phaseWithId: Array[Phase]

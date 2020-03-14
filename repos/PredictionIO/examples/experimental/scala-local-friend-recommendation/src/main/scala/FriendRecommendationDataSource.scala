@@ -15,8 +15,10 @@ class FriendRecommendationDataSource(
   override def readTraining(): FriendRecommendationTrainingData = {
     val (itemIdMap, itemKeyword) = readItem(dsp.itemFilePath)
     val (userIdMap, userKeyword) = readUser(dsp.userKeywordFilePath)
-    val adjArray =
-      readRelationship(dsp.userActionFilePath, userKeyword.size, userIdMap)
+    val adjArray = readRelationship(
+      dsp.userActionFilePath,
+      userKeyword.size,
+      userIdMap)
     // Originally for the purpose of training an acceptance threshold
     // Commented out here due to the high time and space complexity of training
     // val trainingRecord = readTrainingRecord(dsp.trainingRecordFilePath,

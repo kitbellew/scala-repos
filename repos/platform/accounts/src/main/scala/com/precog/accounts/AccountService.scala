@@ -82,26 +82,27 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
       extends DelegatingService[A, Future[B], A, Account => Future[B]]
       with Logging {
     private implicit val M = new FutureMonad(executor)
-    val service = (request: HttpRequest[A]) => {
-      logger.info("Got authentication request " + request)
-      delegate.service(request) map { (f: Account => Future[B]) =>
-        request.headers.header[Authorization] flatMap {
-          _.basic map {
-            case BasicAuthCredentials(email, password) =>
-              accountManager.authAccount(email, password) flatMap {
-                case Success(account) => f(account)
-                case Failure(error) =>
-                  logger.warn("Authentication failure from %s for %s: %s"
-                    .format(NetUtils.remoteIpFrom(request), email, error))
-                  Future(err(AuthMismatch(
-                    "Credentials provided were formatted correctly, but did not match a known account.")))
-              }
+    val service =
+      (request: HttpRequest[A]) => {
+        logger.info("Got authentication request " + request)
+        delegate.service(request) map { (f: Account => Future[B]) =>
+          request.headers.header[Authorization] flatMap {
+            _.basic map {
+              case BasicAuthCredentials(email, password) =>
+                accountManager.authAccount(email, password) flatMap {
+                  case Success(account) => f(account)
+                  case Failure(error) =>
+                    logger.warn("Authentication failure from %s for %s: %s"
+                      .format(NetUtils.remoteIpFrom(request), email, error))
+                    Future(err(AuthMismatch(
+                      "Credentials provided were formatted correctly, but did not match a known account.")))
+                }
+            }
+          } getOrElse {
+            Future(err(NotProvided))
           }
-        } getOrElse {
-          Future(err(NotProvided))
         }
       }
-    }
 
     val metadata = DescriptionMetadata(
       "HTTP Basic authentication is required for use of this service.")
@@ -126,84 +127,88 @@ trait AccountService
 
   def clock: Clock
 
-  val AccountService = service("accounts", "1.0") {
-    requestLogging(timeout) {
-      healthMonitor("/health", timeout, List(eternity)) { monitor => context =>
-        startup {
-          import context._
+  val AccountService =
+    service("accounts", "1.0") {
+      requestLogging(timeout) {
+        healthMonitor("/health", timeout, List(eternity)) {
+          monitor => context =>
+            startup {
+              import context._
 
-          Future {
-            logger.debug("Building account service state...")
-            val (accountManager, stoppable) = AccountManager(config)
-            val apiKeyFinder = APIKeyFinder(config.detach("security"))
-            val rootAccountId =
-              config[String]("accounts.rootAccountId", "INVALID")
-            val rootAPIKey = RootKey(config.detach("security"))
-            val emailer = Emailer(config.detach("email"))
+              Future {
+                logger.debug("Building account service state...")
+                val (accountManager, stoppable) = AccountManager(config)
+                val apiKeyFinder = APIKeyFinder(config.detach("security"))
+                val rootAccountId = config[String](
+                  "accounts.rootAccountId",
+                  "INVALID")
+                val rootAPIKey = RootKey(config.detach("security"))
+                val emailer = Emailer(config.detach("email"))
 
-            val handlers = new AccountServiceHandlers(
-              accountManager,
-              apiKeyFinder,
-              clock,
-              rootAccountId,
-              rootAPIKey,
-              emailer)
+                val handlers =
+                  new AccountServiceHandlers(
+                    accountManager,
+                    apiKeyFinder,
+                    clock,
+                    rootAccountId,
+                    rootAPIKey,
+                    emailer)
 
-            State(handlers, stoppable)
-          }
-        } ->
-          request {
-            case State(handlers, _) =>
-              import CORSHeaderHandler.allowOrigin
-              import handlers._
-              allowOrigin("*", executionContext) {
-                jsonp {
-                  jvalue[ByteChunk] {
-                    path("/accounts/") {
-                      post(PostAccountHandler) ~
-                        path("'accountId/password/reset") {
-                          post(GenerateResetTokenHandler) ~
-                            path("/'resetToken") {
-                              post(PasswordResetHandler)
-                            }
-                        } ~
-                        path("search") {
-                          get(SearchAccountsHandler)
-                        } ~
-                        path("'accountId/grants/") {
-                          post(CreateAccountGrantHandler)
-                        } ~
-                        auth(handlers.accountManager) {
-                          get(ListAccountsHandler) ~
-                            path("'accountId") {
-                              get(GetAccountDetailsHandler) ~
-                                delete(DeleteAccountHandler) ~
-                                path("/password") {
-                                  put(PutAccountPasswordHandler)
-                                } ~
-                                path("/plan") {
-                                  get(GetAccountPlanHandler) ~
-                                    put(PutAccountPlanHandler) ~
-                                    delete(DeleteAccountPlanHandler)
+                State(handlers, stoppable)
+              }
+            } ->
+              request {
+                case State(handlers, _) =>
+                  import CORSHeaderHandler.allowOrigin
+                  import handlers._
+                  allowOrigin("*", executionContext) {
+                    jsonp {
+                      jvalue[ByteChunk] {
+                        path("/accounts/") {
+                          post(PostAccountHandler) ~
+                            path("'accountId/password/reset") {
+                              post(GenerateResetTokenHandler) ~
+                                path("/'resetToken") {
+                                  post(PasswordResetHandler)
+                                }
+                            } ~
+                            path("search") {
+                              get(SearchAccountsHandler)
+                            } ~
+                            path("'accountId/grants/") {
+                              post(CreateAccountGrantHandler)
+                            } ~
+                            auth(handlers.accountManager) {
+                              get(ListAccountsHandler) ~
+                                path("'accountId") {
+                                  get(GetAccountDetailsHandler) ~
+                                    delete(DeleteAccountHandler) ~
+                                    path("/password") {
+                                      put(PutAccountPasswordHandler)
+                                    } ~
+                                    path("/plan") {
+                                      get(GetAccountPlanHandler) ~
+                                        put(PutAccountPlanHandler) ~
+                                        delete(DeleteAccountPlanHandler)
+                                    }
                                 }
                             }
                         }
+                      }
                     }
-                  }
-                }
-              } ~
-                orFail { req: HttpRequest[ByteChunk] =>
-                  self.logger.error(
-                    "Request " + req + " could not be serviced.")
-                  (
-                    HttpStatusCodes.NotFound,
-                    "Request " + req + " could not be serviced.")
-                }
-          } ->
-          stop { s: State =>
-            s.stop
-          }
+                  } ~
+                    orFail { req: HttpRequest[ByteChunk] =>
+                      self.logger.error(
+                        "Request " + req + " could not be serviced.")
+                      (
+                        HttpStatusCodes.NotFound,
+                        "Request " + req + " could not be serviced.")
+                    }
+              } ->
+              stop { s: State =>
+                s.stop
+              }
+        }
       }
     }
-  }
 }

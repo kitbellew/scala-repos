@@ -43,13 +43,14 @@ object FileLock {
   }
 
   def apply(target: File, lockPrefix: String = "LOCKFILE"): FileLock = {
-    val (lockFile, removeFile) = if (target.isDirectory) {
-      val lockFile = new File(target, lockPrefix + ".lock")
-      lockFile.createNewFile
-      (lockFile, true)
-    } else {
-      (target, false)
-    }
+    val (lockFile, removeFile) =
+      if (target.isDirectory) {
+        val lockFile = new File(target, lockPrefix + ".lock")
+        lockFile.createNewFile
+        (lockFile, true)
+      } else {
+        (target, false)
+      }
 
     val channel = new RandomAccessFile(lockFile, "rw").getChannel
     val lock = channel.tryLock

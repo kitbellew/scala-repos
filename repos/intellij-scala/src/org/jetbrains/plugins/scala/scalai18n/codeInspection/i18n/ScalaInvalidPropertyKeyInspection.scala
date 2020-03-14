@@ -145,17 +145,17 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
                   AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER)) {
               val manager: PropertiesReferenceManager =
                 PropertiesReferenceManager.getInstance(expression.getProject)
-              val module: Module =
-                ModuleUtilCore.findModuleForPsiElement(expression)
+              val module: Module = ModuleUtilCore.findModuleForPsiElement(
+                expression)
               if (module != null) {
-                val propFiles: util.List[PropertiesFile] =
-                  manager.findPropertiesFiles(module, key)
+                val propFiles: util.List[PropertiesFile] = manager
+                  .findPropertiesFiles(module, key)
                 if (propFiles.isEmpty) {
                   val description: String = CodeInsightBundle.message(
                     "inspection.invalid.resource.bundle.reference",
                     key)
-                  val problem: ProblemDescriptor =
-                    myManager.createProblemDescriptor(
+                  val problem: ProblemDescriptor = myManager
+                    .createProblemDescriptor(
                       expression,
                       description,
                       null.asInstanceOf[LocalQuickFix],
@@ -176,12 +176,12 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
                   expression,
                   annotationParams))
               return
-            val paramsCount: java.lang.Integer =
-              ScalaI18nUtil.getPropertyValueParamsMaxCount(expression)
+            val paramsCount: java.lang.Integer = ScalaI18nUtil
+              .getPropertyValueParamsMaxCount(expression)
             if (paramsCount == -1)
               return
-            val methodCall: ScMethodCall =
-              expressions.getParent.asInstanceOf[ScMethodCall]
+            val methodCall: ScMethodCall = expressions.getParent
+              .asInstanceOf[ScMethodCall]
             methodCall.getInvokedExpr match {
               case referenceExpression: ScReferenceExpression =>
                 referenceExpression.resolve() match {

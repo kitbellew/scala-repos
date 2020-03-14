@@ -18,16 +18,18 @@ object DateTypeHandler {
       nullable: Boolean): scala.util.Try[List[ColumnFormat[c.type]]] = {
     import c.universe._
 
-    val helper = new {
-      val ctx: c.type = c
-      val cfieldName = fieldName
-      val cannotationInfo = annotationInfo
-    } with AnnotationHelper
+    val helper =
+      new {
+        val ctx: c.type = c
+        val cfieldName = fieldName
+        val cannotationInfo = annotationInfo
+      } with AnnotationHelper
 
-    val extracted = for {
-      (nextHelper, dateAnno) <- helper.dateAnnotation
-      _ <- nextHelper.validateFinished
-    } yield (dateAnno)
+    val extracted =
+      for {
+        (nextHelper, dateAnno) <- helper.dateAnnotation
+        _ <- nextHelper.validateFinished
+      } yield (dateAnno)
 
     extracted.flatMap { t =>
       t match {

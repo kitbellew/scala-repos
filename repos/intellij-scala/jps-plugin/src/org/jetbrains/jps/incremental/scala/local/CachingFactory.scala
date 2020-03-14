@@ -32,8 +32,8 @@ class CachingFactory(
       compilerData: CompilerData,
       client: Client,
       fileToStore: File => AnalysisStore): Compiler = {
-    val cachingFileToStore = (file: File) =>
-      analysisCache.getOrUpdate(file)(fileToStore(file))
+    val cachingFileToStore =
+      (file: File) => analysisCache.getOrUpdate(file)(fileToStore(file))
 
     compilerCache.getOrUpdate(compilerData) {
       delegate.createCompiler(compilerData, client, cachingFileToStore)

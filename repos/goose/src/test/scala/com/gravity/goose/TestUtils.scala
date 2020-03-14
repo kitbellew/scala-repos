@@ -15,8 +15,9 @@ object TestUtils {
   val staticHtmlDir = "/com/gravity/goose/statichtml/"
   private val NL = '\n';
   private val TAB = "\t\t";
-  val articleReport = new StringBuilder(
-    "=======================::. ARTICLE REPORT .::======================\n");
+  val articleReport =
+    new StringBuilder(
+      "=======================::. ARTICLE REPORT .::======================\n");
 
   val DEFAULT_CONFIG: Configuration = new Configuration
   val NO_IMAGE_CONFIG: Configuration = new Configuration

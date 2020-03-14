@@ -106,8 +106,9 @@ class CreateTableAsSelectSuite
       sql("SELECT a, b FROM jsonTable"),
       sql("SELECT a, b FROM jt").collect())
 
-    val message = intercept[AnalysisException] {
-      sql(s"""
+    val message =
+      intercept[AnalysisException] {
+        sql(s"""
         |CREATE TEMPORARY TABLE IF NOT EXISTS jsonTable
         |USING json
         |OPTIONS (
@@ -115,7 +116,7 @@ class CreateTableAsSelectSuite
         |) AS
         |SELECT a * 4 FROM jt
       """.stripMargin)
-    }.getMessage
+      }.getMessage
     assert(
       message.contains(
         s"a CREATE TEMPORARY TABLE statement does not allow IF NOT EXISTS clause."),
@@ -157,8 +158,9 @@ class CreateTableAsSelectSuite
   }
 
   test("CREATE TEMPORARY TABLE AS SELECT with IF NOT EXISTS is not allowed") {
-    val message = intercept[AnalysisException] {
-      sql(s"""
+    val message =
+      intercept[AnalysisException] {
+        sql(s"""
         |CREATE TEMPORARY TABLE IF NOT EXISTS jsonTable
         |USING json
         |OPTIONS (
@@ -166,7 +168,7 @@ class CreateTableAsSelectSuite
         |) AS
         |SELECT b FROM jt
       """.stripMargin)
-    }.getMessage
+      }.getMessage
     assert(
       message.contains(
         "a CREATE TEMPORARY TABLE statement does not allow IF NOT EXISTS clause."),
@@ -197,8 +199,9 @@ class CreateTableAsSelectSuite
         |SELECT a, b FROM jt
       """.stripMargin)
 
-    val message = intercept[AnalysisException] {
-      sql(s"""
+    val message =
+      intercept[AnalysisException] {
+        sql(s"""
         |CREATE TEMPORARY TABLE jsonTable
         |USING json
         |OPTIONS (
@@ -206,7 +209,7 @@ class CreateTableAsSelectSuite
         |) AS
         |SELECT a, b FROM jsonTable
       """.stripMargin)
-    }.getMessage
+      }.getMessage
     assert(
       message.contains("Cannot overwrite table "),
       "Writing to a table while querying it should not be allowed.")

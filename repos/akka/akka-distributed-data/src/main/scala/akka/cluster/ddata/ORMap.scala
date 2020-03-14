@@ -134,10 +134,11 @@ final class ORMap[A <: ReplicatedData] private[akka] (
     */
   private[akka] def updated(node: UniqueAddress, key: String, initial: A)(
       modify: A ⇒ A): ORMap[A] = {
-    val newValue = values.get(key) match {
-      case Some(old) ⇒ modify(old)
-      case _ ⇒ modify(initial)
-    }
+    val newValue =
+      values.get(key) match {
+        case Some(old) ⇒ modify(old)
+        case _ ⇒ modify(initial)
+      }
     new ORMap(keys.add(node, key), values.updated(key, newValue))
   }
 
@@ -176,8 +177,9 @@ final class ORMap[A <: ReplicatedData] private[akka] (
             throw new IllegalArgumentException(errMsg)
           }
           // TODO can we get rid of these (safe) casts?
-          val mergedValue =
-            thisValue.merge(thatValue.asInstanceOf[thisValue.T]).asInstanceOf[A]
+          val mergedValue = thisValue
+            .merge(thatValue.asInstanceOf[thisValue.T])
+            .asInstanceOf[A]
           mergedValues = mergedValues.updated(key, mergedValue)
         case (Some(thisValue), None) ⇒
           mergedValues = mergedValues.updated(key, thisValue)
@@ -202,23 +204,27 @@ final class ORMap[A <: ReplicatedData] private[akka] (
       removedNode: UniqueAddress,
       collapseInto: UniqueAddress): ORMap[A] = {
     val prunedKeys = keys.prune(removedNode, collapseInto)
-    val prunedValues = values.foldLeft(values) {
-      case (acc, (key, data: RemovedNodePruning))
-          if data.needPruningFrom(removedNode) ⇒
-        acc.updated(key, data.prune(removedNode, collapseInto).asInstanceOf[A])
-      case (acc, _) ⇒ acc
-    }
+    val prunedValues =
+      values.foldLeft(values) {
+        case (acc, (key, data: RemovedNodePruning))
+            if data.needPruningFrom(removedNode) ⇒
+          acc.updated(
+            key,
+            data.prune(removedNode, collapseInto).asInstanceOf[A])
+        case (acc, _) ⇒ acc
+      }
     new ORMap(prunedKeys, prunedValues)
   }
 
   override def pruningCleanup(removedNode: UniqueAddress): ORMap[A] = {
     val pruningCleanupedKeys = keys.pruningCleanup(removedNode)
-    val pruningCleanupedValues = values.foldLeft(values) {
-      case (acc, (key, data: RemovedNodePruning))
-          if data.needPruningFrom(removedNode) ⇒
-        acc.updated(key, data.pruningCleanup(removedNode).asInstanceOf[A])
-      case (acc, _) ⇒ acc
-    }
+    val pruningCleanupedValues =
+      values.foldLeft(values) {
+        case (acc, (key, data: RemovedNodePruning))
+            if data.needPruningFrom(removedNode) ⇒
+          acc.updated(key, data.pruningCleanup(removedNode).asInstanceOf[A])
+        case (acc, _) ⇒ acc
+      }
     new ORMap(pruningCleanupedKeys, pruningCleanupedValues)
   }
 

@@ -9,12 +9,12 @@ import Keys._
 object Dependencies {
   import DependencyHelpers._
 
-  lazy val scalaTestVersion =
-    settingKey[String]("The version of ScalaTest to use.")
-  lazy val scalaStmVersion =
-    settingKey[String]("The version of ScalaSTM to use.")
-  lazy val scalaCheckVersion =
-    settingKey[String]("The version of ScalaCheck to use.")
+  lazy val scalaTestVersion = settingKey[String](
+    "The version of ScalaTest to use.")
+  lazy val scalaStmVersion = settingKey[String](
+    "The version of ScalaSTM to use.")
+  lazy val scalaCheckVersion = settingKey[String](
+    "The version of ScalaCheck to use.")
   val junitVersion = "4.12"
 
   val Versions = Seq(

@@ -81,10 +81,11 @@ private[streaming] object UIUtils {
     }
 
   // SimpleDateFormat is not thread-safe. Don't expose it to avoid improper use.
-  private val batchTimeFormat = new ThreadLocal[SimpleDateFormat]() {
-    override def initialValue(): SimpleDateFormat =
-      new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-  }
+  private val batchTimeFormat =
+    new ThreadLocal[SimpleDateFormat]() {
+      override def initialValue(): SimpleDateFormat =
+        new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    }
 
   private val batchTimeFormatWithMilliseconds =
     new ThreadLocal[SimpleDateFormat]() {
@@ -168,21 +169,22 @@ private[streaming] object UIUtils {
       } else {
         failureReason
       }
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val details =
+      if (isMultiline) {
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{
-          failureDetails
-        }</pre>
+            failureDetails
+          }</pre>
         </div>
-      // scalastyle:on
-    } else {
-      ""
-    }
+        // scalastyle:on
+      } else {
+        ""
+      }
 
     if (rowspan == 1) {
       <td valign="middle" style="max-width: 300px">{

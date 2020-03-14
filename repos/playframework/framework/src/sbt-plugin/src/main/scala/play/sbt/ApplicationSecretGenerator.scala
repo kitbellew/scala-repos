@@ -39,11 +39,12 @@ object ApplicationSecretGenerator {
       val baseDir: File = Keys.baseDirectory.value
       val log = Keys.streams.value.log
 
-      val appConfFile = Option(System.getProperty("config.file")) match {
-        case Some(applicationConf) => new File(baseDir, applicationConf)
-        case None =>
-          (Keys.resourceDirectory in Compile).value / "application.conf"
-      }
+      val appConfFile =
+        Option(System.getProperty("config.file")) match {
+          case Some(applicationConf) => new File(baseDir, applicationConf)
+          case None =>
+            (Keys.resourceDirectory in Compile).value / "application.conf"
+        }
 
       if (appConfFile.exists()) {
         log.info(
@@ -52,18 +53,19 @@ object ApplicationSecretGenerator {
         val lines = IO.readLines(appConfFile)
         val config: Config = ConfigFactory.parseString(lines.mkString("\n"))
 
-        val newLines = if (config.hasPath("play.crypto.secret")) {
-          log.info(
-            "Replacing old application secret: " + config.getString(
-              "play.crypto.secret"))
-          getUpdatedSecretLines(secret, lines, config)
-        } else {
-          log.warn(
-            "Did not find application secret in " + appConfFile.getCanonicalPath)
-          log.warn("Adding application secret to start of file")
-          val secretConfig = s"""play.crypto.secret="$secret""""
-          secretConfig :: lines
-        }
+        val newLines =
+          if (config.hasPath("play.crypto.secret")) {
+            log.info(
+              "Replacing old application secret: " + config.getString(
+                "play.crypto.secret"))
+            getUpdatedSecretLines(secret, lines, config)
+          } else {
+            log.warn(
+              "Did not find application secret in " + appConfFile.getCanonicalPath)
+            log.warn("Adding application secret to start of file")
+            val secretConfig = s"""play.crypto.secret="$secret""""
+            secretConfig :: lines
+          }
 
         IO.writeLines(appConfFile, newLines)
 

@@ -71,11 +71,11 @@ object ValidatePullRequest extends AutoPlugin {
   val SourceBranchEnvVarName = "PR_SOURCE_BRANCH"
   val SourcePullIdJenkinsEnvVarName =
     "ghprbPullId" // used to obtain branch name in form of "pullreq/17397"
-  val sourceBranch =
-    settingKey[String]("Branch containing the changes of this PR")
+  val sourceBranch = settingKey[String](
+    "Branch containing the changes of this PR")
 
-  val targetBranch =
-    settingKey[String]("Target branch of this PR, defaults to `master`")
+  val targetBranch = settingKey[String](
+    "Target branch of this PR, defaults to `master`")
 
   // asking github comments if this PR should be PLS BUILD ALL
   val githubEnforcedBuildAll = taskKey[Option[BuildMode]](
@@ -84,22 +84,22 @@ object ValidatePullRequest extends AutoPlugin {
     "Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
 
   // determining touched dirs and projects
-  val changedDirectories =
-    taskKey[immutable.Set[String]]("List of touched modules in this PR branch")
+  val changedDirectories = taskKey[immutable.Set[String]](
+    "List of touched modules in this PR branch")
   val projectBuildMode = taskKey[BuildMode](
     "Determines what will run when this project is affected by the PR and should be rebuilt")
 
   // running validation
   val validatePullRequest = taskKey[Unit]("Validate pull request")
-  val additionalTasks =
-    taskKey[Seq[TaskKey[_]]]("Additional tasks for pull request validation")
+  val additionalTasks = taskKey[Seq[TaskKey[_]]](
+    "Additional tasks for pull request validation")
 
   def changedDirectoryIsDependency(
       changedDirs: Set[String],
       name: String,
       graphsToTest: Seq[(Configuration, ModuleGraph)])(log: Logger): Boolean = {
-    val dirsOrExperimental =
-      changedDirs.flatMap(dir => Set(dir, s"$dir-experimental"))
+    val dirsOrExperimental = changedDirs.flatMap(dir =>
+      Set(dir, s"$dir-experimental"))
     graphsToTest exists {
       case (ivyScope, deps) =>
         log.debug(s"Analysing [$ivyScope] scoped dependencies...")
@@ -198,11 +198,12 @@ object ValidatePullRequest extends AutoPlugin {
           Set.empty
         else {
           val statusOutput = s"git status --short".!!.split("\n")
-          val dirtyDirectories = statusOutput
-            .map(l ⇒ l.trim.dropWhile(_ != ' ').drop(1))
-            .map(_.takeWhile(_ != '/'))
-            .filter(dir => dir.startsWith("akka-") || dir == "project")
-            .toSet
+          val dirtyDirectories =
+            statusOutput
+              .map(l ⇒ l.trim.dropWhile(_ != ' ').drop(1))
+              .map(_.takeWhile(_ != '/'))
+              .filter(dir => dir.startsWith("akka-") || dir == "project")
+              .toSet
           log.info(
             "Detected uncomitted changes in directories (including in dependency analysis): " + dirtyDirectories
               .mkString("[", ",", "]"))

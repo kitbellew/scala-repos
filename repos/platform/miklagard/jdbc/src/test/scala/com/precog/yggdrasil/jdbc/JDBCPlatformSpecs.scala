@@ -100,18 +100,19 @@ object JDBCPlatformSpecEngine extends Logging {
       logger.debug("DB released, refcount = " + refcount)
     }
 
-  val checkUnused = new Runnable {
-    def run =
-      lock.synchronized {
-        logger.debug(
-          "Checking for unused JDBCPlatformSpecEngine. Count = " + refcount)
-        if (refcount == 0) {
-          logger.debug("Shutting down DB after final release")
-          shutdown()
-          logger.debug("DB shutdown complete")
+  val checkUnused =
+    new Runnable {
+      def run =
+        lock.synchronized {
+          logger.debug(
+            "Checking for unused JDBCPlatformSpecEngine. Count = " + refcount)
+          if (refcount == 0) {
+            logger.debug("Shutting down DB after final release")
+            shutdown()
+            logger.debug("DB shutdown complete")
+          }
         }
-      }
-  }
+    }
 
   def runLoads(): Unit = {
     logger.debug("Starting load")
@@ -153,12 +154,13 @@ object JDBCPlatformSpecEngine extends Logging {
                 }
 
                 // Two passes: first one constructs a schema for the table, second inserts data
-                val schema = rows.foldLeft(Set[(String, String)]()) {
-                  case (acc, properties) =>
-                    acc ++ (properties.map {
-                      case (p, (t, _)) => (p, t)
-                    }).toSet
-                }
+                val schema =
+                  rows.foldLeft(Set[(String, String)]()) {
+                    case (acc, properties) =>
+                      acc ++ (properties.map {
+                        case (p, (t, _)) => (p, t)
+                      }).toSet
+                  }
 
                 val ddlCreate = "CREATE TABLE %s (%s);".format(
                   tableName,
@@ -256,12 +258,13 @@ trait JDBCPlatformSpecs
 
   val unescapeColumnNames = true
 
-  val report = new LoggingQueryLogger[Future, instructions.Line]
-    with ExceptionQueryLogger[Future, instructions.Line]
-    with TimingQueryLogger[Future, instructions.Line] {
+  val report =
+    new LoggingQueryLogger[Future, instructions.Line]
+      with ExceptionQueryLogger[Future, instructions.Line]
+      with TimingQueryLogger[Future, instructions.Line] {
 
-    implicit def M = self.M
-  }
+      implicit def M = self.M
+    }
 
   trait TableCompanion extends JDBCColumnarTableCompanion
 
@@ -315,12 +318,13 @@ trait JDBCPlatformSpecs
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =
     new Evaluator[N](N0)(mn, nm) {
-      val report = new LoggingQueryLogger[N, instructions.Line]
-        with ExceptionQueryLogger[N, instructions.Line]
-        with TimingQueryLogger[N, instructions.Line] {
+      val report =
+        new LoggingQueryLogger[N, instructions.Line]
+          with ExceptionQueryLogger[N, instructions.Line]
+          with TimingQueryLogger[N, instructions.Line] {
 
-        val M = N0
-      }
+          val M = N0
+        }
       class YggConfig extends EvaluatorConfig {
         val idSource = new FreshAtomicIdSource
         val maxSliceSize = 10

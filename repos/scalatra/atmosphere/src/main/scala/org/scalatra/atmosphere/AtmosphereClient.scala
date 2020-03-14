@@ -20,13 +20,14 @@ object AtmosphereClient {
 
   def lookup(path: String): Option[ScalatraBroadcaster] = {
     val pth = path.blankOption getOrElse "/*"
-    val norm = if (!pth.endsWith("/*")) {
-      if (!pth.endsWith("/"))
-        pth + "/*"
-      else
-        "*"
-    } else
-      pth
+    val norm =
+      if (!pth.endsWith("/*")) {
+        if (!pth.endsWith("/"))
+          pth + "/*"
+        else
+          "*"
+      } else
+        pth
     val res: Broadcaster = BroadcasterFactory.getDefault.lookup(norm)
     if (res != null && res.isInstanceOf[ScalatraBroadcaster]) {
       Some(res.asInstanceOf[ScalatraBroadcaster])

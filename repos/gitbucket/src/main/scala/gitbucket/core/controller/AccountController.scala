@@ -66,41 +66,45 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   case class PersonalTokenForm(note: String)
 
-  val newForm = mapping(
-    "userName" -> trim(
-      label(
-        "User name",
-        text(required, maxlength(100), identifier, uniqueUserName))),
-    "password" -> trim(label("Password", text(required, maxlength(20)))),
-    "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-    "mailAddress" -> trim(
-      label(
-        "Mail Address",
-        text(required, maxlength(100), uniqueMailAddress()))),
-    "url" -> trim(label("URL", optional(text(maxlength(200))))),
-    "fileId" -> trim(label("File ID", optional(text())))
-  )(AccountNewForm.apply)
+  val newForm =
+    mapping(
+      "userName" -> trim(
+        label(
+          "User name",
+          text(required, maxlength(100), identifier, uniqueUserName))),
+      "password" -> trim(label("Password", text(required, maxlength(20)))),
+      "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
+      "mailAddress" -> trim(
+        label(
+          "Mail Address",
+          text(required, maxlength(100), uniqueMailAddress()))),
+      "url" -> trim(label("URL", optional(text(maxlength(200))))),
+      "fileId" -> trim(label("File ID", optional(text())))
+    )(AccountNewForm.apply)
 
-  val editForm = mapping(
-    "password" -> trim(label("Password", optional(text(maxlength(20))))),
-    "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-    "mailAddress" -> trim(
-      label(
-        "Mail Address",
-        text(required, maxlength(100), uniqueMailAddress("userName")))),
-    "url" -> trim(label("URL", optional(text(maxlength(200))))),
-    "fileId" -> trim(label("File ID", optional(text()))),
-    "clearImage" -> trim(label("Clear image", boolean()))
-  )(AccountEditForm.apply)
+  val editForm =
+    mapping(
+      "password" -> trim(label("Password", optional(text(maxlength(20))))),
+      "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
+      "mailAddress" -> trim(
+        label(
+          "Mail Address",
+          text(required, maxlength(100), uniqueMailAddress("userName")))),
+      "url" -> trim(label("URL", optional(text(maxlength(200))))),
+      "fileId" -> trim(label("File ID", optional(text()))),
+      "clearImage" -> trim(label("Clear image", boolean()))
+    )(AccountEditForm.apply)
 
-  val sshKeyForm = mapping(
-    "title" -> trim(label("Title", text(required, maxlength(100)))),
-    "publicKey" -> trim(label("Key", text(required, validPublicKey)))
-  )(SshKeyForm.apply)
+  val sshKeyForm =
+    mapping(
+      "title" -> trim(label("Title", text(required, maxlength(100)))),
+      "publicKey" -> trim(label("Key", text(required, validPublicKey)))
+    )(SshKeyForm.apply)
 
-  val personalTokenForm = mapping(
-    "note" -> trim(label("Token", text(required, maxlength(100))))
-  )(PersonalTokenForm.apply)
+  val personalTokenForm =
+    mapping(
+      "note" -> trim(label("Token", text(required, maxlength(100))))
+    )(PersonalTokenForm.apply)
 
   case class NewGroupForm(
       groupName: String,
@@ -114,24 +118,26 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       members: String,
       clearImage: Boolean)
 
-  val newGroupForm = mapping(
-    "groupName" -> trim(
-      label(
-        "Group name",
-        text(required, maxlength(100), identifier, uniqueUserName))),
-    "url" -> trim(label("URL", optional(text(maxlength(200))))),
-    "fileId" -> trim(label("File ID", optional(text()))),
-    "members" -> trim(label("Members", text(required, members)))
-  )(NewGroupForm.apply)
+  val newGroupForm =
+    mapping(
+      "groupName" -> trim(
+        label(
+          "Group name",
+          text(required, maxlength(100), identifier, uniqueUserName))),
+      "url" -> trim(label("URL", optional(text(maxlength(200))))),
+      "fileId" -> trim(label("File ID", optional(text()))),
+      "members" -> trim(label("Members", text(required, members)))
+    )(NewGroupForm.apply)
 
-  val editGroupForm = mapping(
-    "groupName" -> trim(
-      label("Group name", text(required, maxlength(100), identifier))),
-    "url" -> trim(label("URL", optional(text(maxlength(200))))),
-    "fileId" -> trim(label("File ID", optional(text()))),
-    "members" -> trim(label("Members", text(required, members))),
-    "clearImage" -> trim(label("Clear image", boolean()))
-  )(EditGroupForm.apply)
+  val editGroupForm =
+    mapping(
+      "groupName" -> trim(
+        label("Group name", text(required, maxlength(100), identifier))),
+      "url" -> trim(label("URL", optional(text(maxlength(200))))),
+      "fileId" -> trim(label("File ID", optional(text()))),
+      "members" -> trim(label("Members", text(required, members))),
+      "clearImage" -> trim(label("Clear image", boolean()))
+    )(EditGroupForm.apply)
 
   case class RepositoryCreationForm(
       owner: String,
@@ -141,31 +147,34 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       createReadme: Boolean)
   case class ForkRepositoryForm(owner: String, name: String)
 
-  val newRepositoryForm = mapping(
-    "owner" -> trim(
-      label(
-        "Owner",
-        text(required, maxlength(100), identifier, existsAccount))),
-    "name" -> trim(
-      label(
-        "Repository name",
-        text(required, maxlength(100), repository, uniqueRepository))),
-    "description" -> trim(label("Description", optional(text()))),
-    "isPrivate" -> trim(label("Repository Type", boolean())),
-    "createReadme" -> trim(label("Create README", boolean()))
-  )(RepositoryCreationForm.apply)
+  val newRepositoryForm =
+    mapping(
+      "owner" -> trim(
+        label(
+          "Owner",
+          text(required, maxlength(100), identifier, existsAccount))),
+      "name" -> trim(
+        label(
+          "Repository name",
+          text(required, maxlength(100), repository, uniqueRepository))),
+      "description" -> trim(label("Description", optional(text()))),
+      "isPrivate" -> trim(label("Repository Type", boolean())),
+      "createReadme" -> trim(label("Create README", boolean()))
+    )(RepositoryCreationForm.apply)
 
-  val forkRepositoryForm = mapping(
-    "owner" -> trim(label("Repository owner", text(required))),
-    "name" -> trim(label("Repository name", text(required)))
-  )(ForkRepositoryForm.apply)
+  val forkRepositoryForm =
+    mapping(
+      "owner" -> trim(label("Repository owner", text(required))),
+      "name" -> trim(label("Repository name", text(required)))
+    )(ForkRepositoryForm.apply)
 
   case class AccountForm(accountName: String)
 
-  val accountForm = mapping(
-    "account" -> trim(
-      label("Group/User name", text(required, validAccountName)))
-  )(AccountForm.apply)
+  val accountForm =
+    mapping(
+      "account" -> trim(
+        label("Group/User name", text(required, validAccountName)))
+    )(AccountForm.apply)
 
   /**
     * Displays user information.
@@ -308,16 +317,17 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     getAccountByUserName(userName).map {
       x =>
         var tokens = getAccessTokens(x.userName)
-        val generatedToken = flash.get("generatedToken") match {
-          case Some((tokenId: Int, token: String)) => {
-            val gt = tokens.find(_.accessTokenId == tokenId)
-            gt.map { t =>
-              tokens = tokens.filterNot(_ == t)
-              (t, token)
+        val generatedToken =
+          flash.get("generatedToken") match {
+            case Some((tokenId: Int, token: String)) => {
+              val gt = tokens.find(_.accessTokenId == tokenId)
+              gt.map { t =>
+                tokens = tokens.filterNot(_ == t)
+                (t, token)
+              }
             }
+            case _ => None
           }
-          case _ => None
-        }
         html.application(x, tokens, generatedToken)
     } getOrElse NotFound
   })
@@ -512,8 +522,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           redirect(s"/${accountName}/${repository.name}")
         } else {
           // Insert to the database at first
-          val originUserName =
-            repository.repository.originUserName.getOrElse(repository.owner)
+          val originUserName = repository.repository.originUserName
+            .getOrElse(repository.owner)
           val originRepositoryName = repository.repository.originRepositoryName
             .getOrElse(repository.name)
 

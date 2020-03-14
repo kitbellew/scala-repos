@@ -81,11 +81,12 @@ class ESApps(client: Client, config: StorageClientConfig, index: String)
 
   def getByName(name: String): Option[App] = {
     try {
-      val response = client
-        .prepareSearch(index)
-        .setTypes(estype)
-        .setPostFilter(termFilter("name", name))
-        .get
+      val response =
+        client
+          .prepareSearch(index)
+          .setTypes(estype)
+          .setPostFilter(termFilter("name", name))
+          .get
       val hits = response.getHits().hits()
       if (hits.size > 0) {
         Some(read[App](hits.head.getSourceAsString))

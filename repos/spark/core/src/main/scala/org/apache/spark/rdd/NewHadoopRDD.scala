@@ -82,8 +82,8 @@ class NewHadoopRDD[K, V](
 
   @transient protected val jobId = new JobID(jobTrackerId, id)
 
-  private val shouldCloneJobConf =
-    sparkContext.conf.getBoolean("spark.hadoop.cloneConf", false)
+  private val shouldCloneJobConf = sparkContext.conf
+    .getBoolean("spark.hadoop.cloneConf", false)
 
   def getConf: Configuration = {
     val conf: Configuration = confBroadcast.value.value
@@ -132,121 +132,123 @@ class NewHadoopRDD[K, V](
   override def compute(
       theSplit: Partition,
       context: TaskContext): InterruptibleIterator[(K, V)] = {
-    val iter = new Iterator[(K, V)] {
-      val split = theSplit.asInstanceOf[NewHadoopPartition]
-      logInfo("Input split: " + split.serializableHadoopSplit)
-      val conf = getConf
+    val iter =
+      new Iterator[(K, V)] {
+        val split = theSplit.asInstanceOf[NewHadoopPartition]
+        logInfo("Input split: " + split.serializableHadoopSplit)
+        val conf = getConf
 
-      val inputMetrics =
-        context.taskMetrics().registerInputMetrics(DataReadMethod.Hadoop)
-      val existingBytesRead = inputMetrics.bytesRead
+        val inputMetrics = context
+          .taskMetrics()
+          .registerInputMetrics(DataReadMethod.Hadoop)
+        val existingBytesRead = inputMetrics.bytesRead
 
-      // Find a function that will return the FileSystem bytes read by this thread. Do this before
-      // creating RecordReader, because RecordReader's constructor might read some bytes
-      val getBytesReadCallback: Option[() => Long] =
-        split.serializableHadoopSplit.value match {
-          case _: FileSplit | _: CombineFileSplit =>
-            SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
-          case _ => None
-        }
-
-      // For Hadoop 2.5+, we get our input bytes from thread-local Hadoop FileSystem statistics.
-      // If we do a coalesce, however, we are likely to compute multiple partitions in the same
-      // task and in the same thread, in which case we need to avoid override values written by
-      // previous partitions (SPARK-13071).
-      def updateBytesRead(): Unit = {
-        getBytesReadCallback.foreach { getBytesRead =>
-          inputMetrics.setBytesRead(existingBytesRead + getBytesRead())
-        }
-      }
-
-      val format = inputFormatClass.newInstance
-      format match {
-        case configurable: Configurable =>
-          configurable.setConf(conf)
-        case _ =>
-      }
-      val attemptId =
-        new TaskAttemptID(jobTrackerId, id, TaskType.MAP, split.index, 0)
-      val hadoopAttemptContext = new TaskAttemptContextImpl(conf, attemptId)
-      private var reader = format.createRecordReader(
-        split.serializableHadoopSplit.value,
-        hadoopAttemptContext)
-      reader.initialize(
-        split.serializableHadoopSplit.value,
-        hadoopAttemptContext)
-
-      // Register an on-task-completion callback to close the input stream.
-      context.addTaskCompletionListener(context => close())
-      var havePair = false
-      var finished = false
-      var recordsSinceMetricsUpdate = 0
-
-      override def hasNext: Boolean = {
-        if (!finished && !havePair) {
-          finished = !reader.nextKeyValue
-          if (finished) {
-            // Close and release the reader here; close() will also be called when the task
-            // completes, but for tasks that read from many files, it helps to release the
-            // resources early.
-            close()
+        // Find a function that will return the FileSystem bytes read by this thread. Do this before
+        // creating RecordReader, because RecordReader's constructor might read some bytes
+        val getBytesReadCallback: Option[() => Long] =
+          split.serializableHadoopSplit.value match {
+            case _: FileSplit | _: CombineFileSplit =>
+              SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
+            case _ => None
           }
-          havePair = !finished
-        }
-        !finished
-      }
 
-      override def next(): (K, V) = {
-        if (!hasNext) {
-          throw new java.util.NoSuchElementException("End of stream")
-        }
-        havePair = false
-        if (!finished) {
-          inputMetrics.incRecordsReadInternal(1)
-        }
-        if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
-          updateBytesRead()
-        }
-        (reader.getCurrentKey, reader.getCurrentValue)
-      }
-
-      private def close() {
-        if (reader != null) {
-          // Close the reader and release it. Note: it's very important that we don't close the
-          // reader more than once, since that exposes us to MAPREDUCE-5918 when running against
-          // Hadoop 1.x and older Hadoop 2.x releases. That bug can lead to non-deterministic
-          // corruption issues when reading compressed input.
-          try {
-            reader.close()
-          } catch {
-            case e: Exception =>
-              if (!ShutdownHookManager.inShutdown()) {
-                logWarning("Exception in RecordReader.close()", e)
-              }
-          } finally {
-            reader = null
+        // For Hadoop 2.5+, we get our input bytes from thread-local Hadoop FileSystem statistics.
+        // If we do a coalesce, however, we are likely to compute multiple partitions in the same
+        // task and in the same thread, in which case we need to avoid override values written by
+        // previous partitions (SPARK-13071).
+        def updateBytesRead(): Unit = {
+          getBytesReadCallback.foreach { getBytesRead =>
+            inputMetrics.setBytesRead(existingBytesRead + getBytesRead())
           }
-          if (getBytesReadCallback.isDefined) {
+        }
+
+        val format = inputFormatClass.newInstance
+        format match {
+          case configurable: Configurable =>
+            configurable.setConf(conf)
+          case _ =>
+        }
+        val attemptId =
+          new TaskAttemptID(jobTrackerId, id, TaskType.MAP, split.index, 0)
+        val hadoopAttemptContext = new TaskAttemptContextImpl(conf, attemptId)
+        private var reader = format.createRecordReader(
+          split.serializableHadoopSplit.value,
+          hadoopAttemptContext)
+        reader.initialize(
+          split.serializableHadoopSplit.value,
+          hadoopAttemptContext)
+
+        // Register an on-task-completion callback to close the input stream.
+        context.addTaskCompletionListener(context => close())
+        var havePair = false
+        var finished = false
+        var recordsSinceMetricsUpdate = 0
+
+        override def hasNext: Boolean = {
+          if (!finished && !havePair) {
+            finished = !reader.nextKeyValue
+            if (finished) {
+              // Close and release the reader here; close() will also be called when the task
+              // completes, but for tasks that read from many files, it helps to release the
+              // resources early.
+              close()
+            }
+            havePair = !finished
+          }
+          !finished
+        }
+
+        override def next(): (K, V) = {
+          if (!hasNext) {
+            throw new java.util.NoSuchElementException("End of stream")
+          }
+          havePair = false
+          if (!finished) {
+            inputMetrics.incRecordsReadInternal(1)
+          }
+          if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
             updateBytesRead()
-          } else if (split.serializableHadoopSplit.value
-                       .isInstanceOf[FileSplit] ||
-                     split.serializableHadoopSplit.value
-                       .isInstanceOf[CombineFileSplit]) {
-            // If we can't get the bytes read from the FS stats, fall back to the split size,
-            // which may be inaccurate.
+          }
+          (reader.getCurrentKey, reader.getCurrentValue)
+        }
+
+        private def close() {
+          if (reader != null) {
+            // Close the reader and release it. Note: it's very important that we don't close the
+            // reader more than once, since that exposes us to MAPREDUCE-5918 when running against
+            // Hadoop 1.x and older Hadoop 2.x releases. That bug can lead to non-deterministic
+            // corruption issues when reading compressed input.
             try {
-              inputMetrics.incBytesReadInternal(
-                split.serializableHadoopSplit.value.getLength)
+              reader.close()
             } catch {
-              case e: java.io.IOException =>
-                logWarning(
-                  "Unable to get input size to set InputMetrics for task",
-                  e)
+              case e: Exception =>
+                if (!ShutdownHookManager.inShutdown()) {
+                  logWarning("Exception in RecordReader.close()", e)
+                }
+            } finally {
+              reader = null
+            }
+            if (getBytesReadCallback.isDefined) {
+              updateBytesRead()
+            } else if (split.serializableHadoopSplit.value
+                         .isInstanceOf[FileSplit] ||
+                       split.serializableHadoopSplit.value
+                         .isInstanceOf[CombineFileSplit]) {
+              // If we can't get the bytes read from the FS stats, fall back to the split size,
+              // which may be inaccurate.
+              try {
+                inputMetrics.incBytesReadInternal(
+                  split.serializableHadoopSplit.value.getLength)
+              } catch {
+                case e: java.io.IOException =>
+                  logWarning(
+                    "Unable to get input size to set InputMetrics for task",
+                    e)
+              }
             }
           }
         }
       }
-    }
     new InterruptibleIterator(context, iter)
   }
 
@@ -261,19 +263,21 @@ class NewHadoopRDD[K, V](
   override def getPreferredLocations(hsplit: Partition): Seq[String] = {
     val split =
       hsplit.asInstanceOf[NewHadoopPartition].serializableHadoopSplit.value
-    val locs = HadoopRDD.SPLIT_INFO_REFLECTIONS match {
-      case Some(c) =>
-        try {
-          val infos =
-            c.newGetLocationInfo.invoke(split).asInstanceOf[Array[AnyRef]]
-          Some(HadoopRDD.convertSplitLocationInfo(infos))
-        } catch {
-          case e: Exception =>
-            logDebug("Failed to use InputSplit#getLocationInfo.", e)
-            None
-        }
-      case None => None
-    }
+    val locs =
+      HadoopRDD.SPLIT_INFO_REFLECTIONS match {
+        case Some(c) =>
+          try {
+            val infos = c.newGetLocationInfo
+              .invoke(split)
+              .asInstanceOf[Array[AnyRef]]
+            Some(HadoopRDD.convertSplitLocationInfo(infos))
+          } catch {
+            case e: Exception =>
+              logDebug("Failed to use InputSplit#getLocationInfo.", e)
+              None
+          }
+        case None => None
+      }
     locs.getOrElse(split.getLocations.filter(_ != "localhost"))
   }
 

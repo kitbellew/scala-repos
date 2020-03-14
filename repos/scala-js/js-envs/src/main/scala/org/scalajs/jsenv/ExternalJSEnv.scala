@@ -63,16 +63,14 @@ abstract class ExternalJSEnv(
       *
       *  Default is `sys.env` and [[additionalEnv]]
       */
-    protected def getVMEnv(): Map[String, String] =
-      sys.env ++ additionalEnv
+    protected def getVMEnv(): Map[String, String] = sys.env ++ additionalEnv
 
     /** Get files that are a library (i.e. that do not run anything) */
     protected def getLibJSFiles(): Seq[VirtualJSFile] =
       initFiles() ++ customInitFiles() ++ libs.map(_.lib)
 
     /** Get all files that are passed to VM (libraries and code) */
-    protected def getJSFiles(): Seq[VirtualJSFile] =
-      getLibJSFiles() :+ code
+    protected def getJSFiles(): Seq[VirtualJSFile] = getLibJSFiles() :+ code
 
     /** write a single JS file to a writer using an include fct if appropriate */
     protected def writeJSFile(file: VirtualJSFile, writer: Writer): Unit = {
@@ -186,21 +184,22 @@ abstract class ExternalJSEnv(
     private[this] var ioThreadEx: Throwable = null
     private[this] val promise = Promise[Unit]
 
-    private[this] val thread = new Thread {
-      override def run(): Unit = {
-        // This thread should not be interrupted, so it is safe to use Trys
-        val pipeResult = Try(pipeVMData(vmInst))
-        val vmComplete = Try(waitForVM(vmInst))
+    private[this] val thread =
+      new Thread {
+        override def run(): Unit = {
+          // This thread should not be interrupted, so it is safe to use Trys
+          val pipeResult = Try(pipeVMData(vmInst))
+          val vmComplete = Try(waitForVM(vmInst))
 
-        // Store IO exception
-        pipeResult recover {
-          case e => ioThreadEx = e
+          // Store IO exception
+          pipeResult recover {
+            case e => ioThreadEx = e
+          }
+
+          // Chain Try's the other way: We want VM failure first, then IO failure
+          promise.complete(pipeResult orElse vmComplete)
         }
-
-        // Chain Try's the other way: We want VM failure first, then IO failure
-        promise.complete(pipeResult orElse vmComplete)
       }
-    }
 
     def future: Future[Unit] = promise.future
 

@@ -24,9 +24,10 @@ trait MonadError[F[_], S] extends Monad[F] { self =>
   def monadErrorLaw = new MonadErrorLaw {}
 
   ////
-  val monadErrorSyntax = new scalaz.syntax.MonadErrorSyntax[F, S] {
-    def F = MonadError.this
-  }
+  val monadErrorSyntax =
+    new scalaz.syntax.MonadErrorSyntax[F, S] {
+      def F = MonadError.this
+    }
 }
 
 object MonadError {

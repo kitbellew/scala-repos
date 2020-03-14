@@ -141,58 +141,62 @@ private[jackson] class JsValueDeserializer(
       jp.nextToken()
     }
 
-    val (maybeValue, nextContext) = (jp.getCurrentToken.id(): @switch) match {
+    val (maybeValue, nextContext) =
+      (jp.getCurrentToken.id(): @switch) match {
 
-      case JsonTokenId.ID_NUMBER_INT | JsonTokenId.ID_NUMBER_FLOAT =>
-        (Some(JsNumber(jp.getDecimalValue)), parserContext)
+        case JsonTokenId.ID_NUMBER_INT | JsonTokenId.ID_NUMBER_FLOAT =>
+          (Some(JsNumber(jp.getDecimalValue)), parserContext)
 
-      case JsonTokenId.ID_STRING => (Some(JsString(jp.getText)), parserContext)
+        case JsonTokenId.ID_STRING =>
+          (Some(JsString(jp.getText)), parserContext)
 
-      case JsonTokenId.ID_TRUE => (Some(JsBoolean(true)), parserContext)
+        case JsonTokenId.ID_TRUE => (Some(JsBoolean(true)), parserContext)
 
-      case JsonTokenId.ID_FALSE => (Some(JsBoolean(false)), parserContext)
+        case JsonTokenId.ID_FALSE => (Some(JsBoolean(false)), parserContext)
 
-      case JsonTokenId.ID_NULL => (Some(JsNull), parserContext)
+        case JsonTokenId.ID_NULL => (Some(JsNull), parserContext)
 
-      case JsonTokenId.ID_START_ARRAY =>
-        (None, ReadingList(ListBuffer()) +: parserContext)
+        case JsonTokenId.ID_START_ARRAY =>
+          (None, ReadingList(ListBuffer()) +: parserContext)
 
-      case JsonTokenId.ID_END_ARRAY =>
-        parserContext match {
-          case ReadingList(content) :: stack => (Some(JsArray(content)), stack)
-          case _ =>
-            throw new RuntimeException(
-              "We should have been reading list, something got wrong")
-        }
+        case JsonTokenId.ID_END_ARRAY =>
+          parserContext match {
+            case ReadingList(content) :: stack =>
+              (Some(JsArray(content)), stack)
+            case _ =>
+              throw new RuntimeException(
+                "We should have been reading list, something got wrong")
+          }
 
-      case JsonTokenId.ID_START_OBJECT =>
-        (None, ReadingMap(ListBuffer()) +: parserContext)
+        case JsonTokenId.ID_START_OBJECT =>
+          (None, ReadingMap(ListBuffer()) +: parserContext)
 
-      case JsonTokenId.ID_FIELD_NAME =>
-        parserContext match {
-          case (c: ReadingMap) :: stack =>
-            (None, c.setField(jp.getCurrentName) +: stack)
-          case _ =>
-            throw new RuntimeException(
-              "We should be reading map, something got wrong")
-        }
+        case JsonTokenId.ID_FIELD_NAME =>
+          parserContext match {
+            case (c: ReadingMap) :: stack =>
+              (None, c.setField(jp.getCurrentName) +: stack)
+            case _ =>
+              throw new RuntimeException(
+                "We should be reading map, something got wrong")
+          }
 
-      case JsonTokenId.ID_END_OBJECT =>
-        parserContext match {
-          case ReadingMap(content) :: stack => (Some(JsObject(content)), stack)
-          case _ =>
-            throw new RuntimeException(
-              "We should have been reading an object, something got wrong")
-        }
+        case JsonTokenId.ID_END_OBJECT =>
+          parserContext match {
+            case ReadingMap(content) :: stack =>
+              (Some(JsObject(content)), stack)
+            case _ =>
+              throw new RuntimeException(
+                "We should have been reading an object, something got wrong")
+          }
 
-      case JsonTokenId.ID_NOT_AVAILABLE =>
-        throw new RuntimeException(
-          "We should have been reading an object, something got wrong")
+        case JsonTokenId.ID_NOT_AVAILABLE =>
+          throw new RuntimeException(
+            "We should have been reading an object, something got wrong")
 
-      case JsonTokenId.ID_EMBEDDED_OBJECT =>
-        throw new RuntimeException(
-          "We should have been reading an object, something got wrong")
-    }
+        case JsonTokenId.ID_EMBEDDED_OBJECT =>
+          throw new RuntimeException(
+            "We should have been reading an object, something got wrong")
+      }
 
     // Read ahead
     jp.nextToken()
@@ -259,8 +263,7 @@ private[json] object JacksonJson {
   private def stringJsonGenerator(out: java.io.StringWriter) =
     jsonFactory.createGenerator(out)
 
-  private def jsonParser(c: String): JsonParser =
-    jsonFactory.createParser(c)
+  private def jsonParser(c: String): JsonParser = jsonFactory.createParser(c)
 
   private def jsonParser(data: Array[Byte]): JsonParser =
     jsonFactory.createParser(data)

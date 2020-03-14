@@ -75,8 +75,8 @@ class DensePolynomialTest extends FunSuite {
           })
       })
 
-    val expectedResult =
-      DenseMatrix.zeros[Double](M, M) // expected result easy to compute
+    val expectedResult = DenseMatrix
+      .zeros[Double](M, M) // expected result easy to compute
     cfor(0)(i => i < M, i => i + 1)(i => {
       cfor(0)(j => j < M, j => j + 1)(j => {
         if (j == i) {

@@ -74,8 +74,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     request.name = "jung"
     val json = request.toJson
     assertJsonEquals(json, dummyRequestJson)
-    val newRequest =
-      SubmitRestProtocolMessage.fromJson(json, classOf[DummyRequest])
+    val newRequest = SubmitRestProtocolMessage.fromJson(
+      json,
+      classOf[DummyRequest])
     assert(newRequest.clientSparkVersion === "1.2.3")
     assert(newRequest.clientSparkVersion === "1.2.3")
     assert(newRequest.active)
@@ -90,8 +91,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     response.success = true
     val json = response.toJson
     assertJsonEquals(json, dummyResponseJson)
-    val newResponse =
-      SubmitRestProtocolMessage.fromJson(json, classOf[DummyResponse])
+    val newResponse = SubmitRestProtocolMessage.fromJson(
+      json,
+      classOf[DummyResponse])
     assert(newResponse.serverSparkVersion === "3.3.4")
     assert(newResponse.serverSparkVersion === "3.3.4")
     assert(newResponse.success)
@@ -145,8 +147,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, submitDriverRequestJson)
-    val newMessage =
-      SubmitRestProtocolMessage.fromJson(json, classOf[CreateSubmissionRequest])
+    val newMessage = SubmitRestProtocolMessage.fromJson(
+      json,
+      classOf[CreateSubmissionRequest])
     assert(newMessage.clientSparkVersion === "1.2.3")
     assert(newMessage.appResource === "honey-walnut-cherry.jar")
     assert(newMessage.mainClass === "org.apache.spark.examples.SparkPie")
@@ -207,8 +210,9 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, killDriverResponseJson)
-    val newMessage =
-      SubmitRestProtocolMessage.fromJson(json, classOf[KillSubmissionResponse])
+    val newMessage = SubmitRestProtocolMessage.fromJson(
+      json,
+      classOf[KillSubmissionResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.submissionId === "driver_123")
     assert(newMessage.success)
@@ -252,14 +256,14 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, errorJson)
-    val newMessage =
-      SubmitRestProtocolMessage.fromJson(json, classOf[ErrorResponse])
+    val newMessage = SubmitRestProtocolMessage.fromJson(
+      json,
+      classOf[ErrorResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.message === "Field not found in submit request: X")
   }
 
-  private val dummyRequestJson =
-    """
+  private val dummyRequestJson = """
       |{
       |  "action" : "DummyRequest",
       |  "active" : true,
@@ -269,8 +273,7 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
       |}
     """.stripMargin
 
-  private val dummyResponseJson =
-    """
+  private val dummyResponseJson = """
       |{
       |  "action" : "DummyResponse",
       |  "serverSparkVersion" : "3.3.4",
@@ -278,8 +281,7 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
       |}
     """.stripMargin
 
-  private val submitDriverRequestJson =
-    s"""
+  private val submitDriverRequestJson = s"""
       |{
       |  "action" : "CreateSubmissionRequest",
       |  "appArgs" : [ "two slices", "a hint of cinnamon" ],
@@ -315,8 +317,7 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
       |}
     """.stripMargin
 
-  private val killDriverResponseJson =
-    """
+  private val killDriverResponseJson = """
       |{
       |  "action" : "KillSubmissionResponse",
       |  "serverSparkVersion" : "1.2.3",
@@ -338,8 +339,7 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
       |}
     """.stripMargin
 
-  private val errorJson =
-    """
+  private val errorJson = """
       |{
       |  "action" : "ErrorResponse",
       |  "message" : "Field not found in submit request: X",

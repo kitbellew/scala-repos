@@ -133,28 +133,29 @@ trait MarkupParsers {
         val key = xName
         xEQ()
         val mid = curOffset
-        val value: Tree = ch match {
-          case '"' | '\'' =>
-            val tmp = xAttributeValue(ch_returning_nextch)
+        val value: Tree =
+          ch match {
+            case '"' | '\'' =>
+              val tmp = xAttributeValue(ch_returning_nextch)
 
-            try handle.parseAttribute(r2p(start, mid, curOffset), tmp)
-            catch {
-              case e: RuntimeException =>
-                errorAndResult(
-                  "error parsing attribute value",
-                  parser.errorTermTree)
-            }
+              try handle.parseAttribute(r2p(start, mid, curOffset), tmp)
+              catch {
+                case e: RuntimeException =>
+                  errorAndResult(
+                    "error parsing attribute value",
+                    parser.errorTermTree)
+              }
 
-          case '{' =>
-            nextch()
-            xEmbeddedExpr
-          case SU =>
-            throw TruncatedXMLControl
-          case _ =>
-            errorAndResult(
-              "' or \" delimited attribute value or '{' scala-expr '}' expected",
-              Literal(Constant("<syntax-error>")))
-        }
+            case '{' =>
+              nextch()
+              xEmbeddedExpr
+            case SU =>
+              throw TruncatedXMLControl
+            case _ =>
+              errorAndResult(
+                "' or \" delimited attribute value or '{' scala-expr '}' expected",
+                Literal(Constant("<syntax-error>")))
+          }
         // well-formedness constraint: unique attribute names
         if (aMap contains key)
           reportSyntaxError("attribute %s may only be defined once" format key)
@@ -222,17 +223,18 @@ trait MarkupParsers {
       */
     def content_AMP(ts: ArrayBuffer[Tree]) {
       nextch()
-      val toAppend = ch match {
-        case '#' => // CharacterRef
-          nextch()
-          val theChar = handle.text(tmppos, xCharRef)
-          xToken(';')
-          theChar
-        case _ => // EntityRef
-          val n = xName
-          xToken(';')
-          handle.entityRef(tmppos, n)
-      }
+      val toAppend =
+        ch match {
+          case '#' => // CharacterRef
+            nextch()
+            val theChar = handle.text(tmppos, xCharRef)
+            xToken(';')
+            theChar
+          case _ => // EntityRef
+            val n = xName
+            xToken(';')
+            handle.entityRef(tmppos, n)
+        }
 
       ts append toAppend
     }
@@ -254,18 +256,19 @@ trait MarkupParsers {
       */
     private def content_LT(ts: ArrayBuffer[Tree]): Boolean =
       (ch == '/') || {
-        val toAppend = ch match {
-          case '!' =>
-            nextch();
-            if (ch == '[')
-              xCharData
-            else
-              xComment // CDATA or Comment
-          case '?' =>
-            nextch();
-            xProcInstr // PI
-          case _ => element // child node
-        }
+        val toAppend =
+          ch match {
+            case '!' =>
+              nextch();
+              if (ch == '[')
+                xCharData
+              else
+                xComment // CDATA or Comment
+            case '?' =>
+              nextch();
+              xProcInstr // PI
+            case _ => element // child node
+          }
         ts append toAppend
         false
       }

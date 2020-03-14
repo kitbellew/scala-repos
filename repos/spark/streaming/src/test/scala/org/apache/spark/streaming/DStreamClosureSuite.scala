@@ -144,14 +144,16 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
   private def testTransform(ds: DStream[Int]): Unit = {
-    val transformF1 = (rdd: RDD[Int]) => {
-      return;
-      rdd
-    }
-    val transformF2 = (rdd: RDD[Int], time: Time) => {
-      return;
-      rdd
-    }
+    val transformF1 =
+      (rdd: RDD[Int]) => {
+        return;
+        rdd
+      }
+    val transformF2 =
+      (rdd: RDD[Int], time: Time) => {
+        return;
+        rdd
+      }
     expectCorrectException {
       ds.transform(transformF1)
     }
@@ -160,14 +162,16 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
   private def testTransformWith(ds: DStream[Int]): Unit = {
-    val transformF1 = (rdd1: RDD[Int], rdd2: RDD[Int]) => {
-      return;
-      rdd1
-    }
-    val transformF2 = (rdd1: RDD[Int], rdd2: RDD[Int], time: Time) => {
-      return;
-      rdd2
-    }
+    val transformF1 =
+      (rdd1: RDD[Int], rdd2: RDD[Int]) => {
+        return;
+        rdd1
+      }
+    val transformF2 =
+      (rdd1: RDD[Int], rdd2: RDD[Int], time: Time) => {
+        return;
+        rdd2
+      }
     expectCorrectException {
       ds.transformWith(ds, transformF1)
     }
@@ -176,10 +180,11 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
   private def testReduceByWindow(ds: DStream[Int]): Unit = {
-    val reduceF = (_: Int, _: Int) => {
-      return;
-      1
-    }
+    val reduceF =
+      (_: Int, _: Int) => {
+        return;
+        1
+      }
     expectCorrectException {
       ds.reduceByWindow(reduceF, Seconds(1), Seconds(2))
     }
@@ -190,10 +195,11 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   // PairDStreamFunctions operations
   private def testReduceByKey(ds: DStream[(Int, Int)]): Unit = {
-    val reduceF = (_: Int, _: Int) => {
-      return;
-      1
-    }
+    val reduceF =
+      (_: Int, _: Int) => {
+        return;
+        1
+      }
     expectCorrectException {
       ds.reduceByKey(reduceF)
     }
@@ -226,14 +232,16 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
   private def testReduceByKeyAndWindow(ds: DStream[(Int, Int)]): Unit = {
-    val reduceF = (_: Int, _: Int) => {
-      return;
-      1
-    }
-    val filterF = (_: (Int, Int)) => {
-      return;
-      false
-    }
+    val reduceF =
+      (_: Int, _: Int) => {
+        return;
+        1
+      }
+    val filterF =
+      (_: (Int, Int)) => {
+        return;
+        false
+      }
     expectCorrectException {
       ds.reduceByKeyAndWindow(reduceF, Seconds(1))
     }
@@ -264,14 +272,16 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
   private def testUpdateStateByKey(ds: DStream[(Int, Int)]): Unit = {
-    val updateF1 = (_: Seq[Int], _: Option[Int]) => {
-      return;
-      Some(1)
-    }
-    val updateF2 = (_: Iterator[(Int, Seq[Int], Option[Int])]) => {
-      return;
-      Seq((1, 1)).toIterator
-    }
+    val updateF1 =
+      (_: Seq[Int], _: Option[Int]) => {
+        return;
+        Some(1)
+      }
+    val updateF2 =
+      (_: Iterator[(Int, Seq[Int], Option[Int])]) => {
+        return;
+        Seq((1, 1)).toIterator
+      }
     val initialRDD = ds.ssc.sparkContext.emptyRDD[Int].map { i =>
       (i, i)
     }
@@ -311,10 +321,11 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   // StreamingContext operations
   private def testTransform2(ssc: StreamingContext, ds: DStream[Int]): Unit = {
-    val transformF = (rdds: Seq[RDD[_]], time: Time) => {
-      return;
-      ssc.sparkContext.emptyRDD[Int]
-    }
+    val transformF =
+      (rdds: Seq[RDD[_]], time: Time) => {
+        return;
+        ssc.sparkContext.emptyRDD[Int]
+      }
     expectCorrectException {
       ssc.transform(Seq(ds), transformF)
     }

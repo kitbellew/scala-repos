@@ -118,13 +118,14 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
 
     // The number of containers to allocate, divided into two groups, one with preferred locality,
     // and the other without locality preference.
-    val requiredLocalityFreeContainerNum =
-      math.max(0, numContainer - updatedLocalityAwareContainerNum)
+    val requiredLocalityFreeContainerNum = math.max(
+      0,
+      numContainer - updatedLocalityAwareContainerNum)
     val requiredLocalityAwareContainerNum =
       numContainer - requiredLocalityFreeContainerNum
 
-    val containerLocalityPreferences =
-      ArrayBuffer[ContainerLocalityPreferences]()
+    val containerLocalityPreferences = ArrayBuffer[
+      ContainerLocalityPreferences]()
     if (requiredLocalityFreeContainerNum > 0) {
       for (i <- 0 until requiredLocalityFreeContainerNum) {
         containerLocalityPreferences += ContainerLocalityPreferences(
@@ -148,9 +149,10 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
         // Only filter out the ratio which is larger than 0, which means the current host can
         // still be allocated with new container request.
         val hosts = preferredLocalityRatio.filter(_._2 > 0).keys.toArray
-        val racks = hosts.map { h =>
-          RackResolver.resolve(yarnConf, h).getNetworkLocation
-        }.toSet
+        val racks =
+          hosts.map { h =>
+            RackResolver.resolve(yarnConf, h).getNetworkLocation
+          }.toSet
         containerLocalityPreferences += ContainerLocalityPreferences(
           hosts,
           racks.toArray)

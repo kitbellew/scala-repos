@@ -141,8 +141,7 @@ trait Pattern {
             x))
 
     /** Returns true if this expression contains given subexpression */
-    def contains(s: Expr[_]): Boolean =
-      this == s || args.exists(_ contains s)
+    def contains(s: Expr[_]): Boolean = this == s || args.exists(_ contains s)
 
     /** Counts number of occurrences of the given subexpression. */
     def count(condition: Expr[_] => Boolean): Int =
@@ -479,8 +478,7 @@ trait Pattern {
       )
 
     def eval(f: Any => Any) = num.div(left.eval(f), right.eval(f))
-    def mapArgs(f: EndoFunction[Expr[_]]) =
-      Div(f(left), f(right))
+    def mapArgs(f: EndoFunction[Expr[_]]) = Div(f(left), f(right))
     override def toString = "(" + left + " / " + right + ")"
     override lazy val hashCode = ScalaRunTime._hashCode(this);
   }
@@ -626,8 +624,7 @@ trait Pattern {
         Const(value)
 
     implicit def double2Constant[T](d: Double)(
-        implicit num: NumericOps[T]): Leaf[T] =
-      const(num.fromDouble(d))
+        implicit num: NumericOps[T]): Leaf[T] = const(num.fromDouble(d))
 
     implicit def float2Constant[T](f: Float)(
         implicit num: NumericOps[T]): Leaf[T] =

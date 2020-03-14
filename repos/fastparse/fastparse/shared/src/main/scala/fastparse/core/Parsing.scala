@@ -130,8 +130,11 @@ object Parsed {
           index: Int)
           extends Extra {
 
-        lazy val traced =
-          TracedFailure(input, index, lastParser, (startIndex, startParser))
+        lazy val traced = TracedFailure(
+          input,
+          index,
+          lastParser,
+          (startIndex, startParser))
 
         lazy val pos = Position.computeFrom(input, index)
 
@@ -184,14 +187,15 @@ object Parsed {
       fullStack: Vector[Frame],
       traceParsers: Set[Parser[_]]) {
 
-    private[this] lazy val expected0 = new Precedence {
-      def opPred =
-        if (traceParsers.size == 1)
-          traceParsers.head.opPred
-        else
-          Precedence.|
-      override def toString = traceParsers.map(opWrap).mkString(" | ")
-    }
+    private[this] lazy val expected0 =
+      new Precedence {
+        def opPred =
+          if (traceParsers.size == 1)
+            traceParsers.head.opPred
+          else
+            Precedence.|
+        override def toString = traceParsers.map(opWrap).mkString(" | ")
+      }
 
     /**
       * A short string describing the parsers which were expected at the point
@@ -329,12 +333,13 @@ object Mutable {
       var cut: Boolean)
       extends Mutable[Nothing] {
     def toResult = {
-      val extra = new Parsed.Failure.Extra.Impl(
-        input,
-        originalParser,
-        originalIndex,
-        lastParser,
-        index)
+      val extra =
+        new Parsed.Failure.Extra.Impl(
+          input,
+          originalParser,
+          originalIndex,
+          lastParser,
+          index)
       Parsed.Failure(lastParser, index, extra)
     }
   }

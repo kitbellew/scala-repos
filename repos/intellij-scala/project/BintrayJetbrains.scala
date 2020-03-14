@@ -19,8 +19,9 @@ object BintrayJetbrains {
       "scala-plugin-deps",
       "scala-plugin-deps",
       Resolver.ivyStylePatterns)
-    val structureCore =
-      jbSbtResolver("jb-structure-core", Resolver.ivyStylePatterns)
+    val structureCore = jbSbtResolver(
+      "jb-structure-core",
+      Resolver.ivyStylePatterns)
     val structureExtractor012 = jbSbtResolver(
       "jb-structure-extractor-0.12",
       Patterns.structureExtractor012)

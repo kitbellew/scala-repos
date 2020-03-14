@@ -14,8 +14,7 @@ object BackoffSupervisorSpec {
   class TestException extends RuntimeException with NoStackTrace
 
   object Child {
-    def props(probe: ActorRef): Props =
-      Props(new Child(probe))
+    def props(probe: ActorRef): Props = Props(new Child(probe))
   }
 
   class Child(probe: ActorRef) extends Actor {
@@ -26,8 +25,7 @@ object BackoffSupervisorSpec {
   }
 
   object ManualChild {
-    def props(probe: ActorRef): Props =
-      Props(new ManualChild(probe))
+    def props(probe: ActorRef): Props = Props(new ManualChild(probe))
   }
 
   class ManualChild(probe: ActorRef) extends Actor {
@@ -88,12 +86,14 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
         }
       }
       filterException[TestException] {
-        val stoppingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Stop
-        }
-        val restartingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Restart
-        }
+        val stoppingStrategy =
+          OneForOneStrategy() {
+            case _: TestException ⇒ SupervisorStrategy.Stop
+          }
+        val restartingStrategy =
+          OneForOneStrategy() {
+            case _: TestException ⇒ SupervisorStrategy.Restart
+          }
 
         assertCustomStrategy(
           create(onStopOptions()
@@ -158,12 +158,14 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
           expectMsg(BackoffSupervisor.RestartCount(0))
         }
 
-        val stoppingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Stop
-        }
-        val restartingStrategy = OneForOneStrategy() {
-          case _: TestException ⇒ SupervisorStrategy.Restart
-        }
+        val stoppingStrategy =
+          OneForOneStrategy() {
+            case _: TestException ⇒ SupervisorStrategy.Stop
+          }
+        val restartingStrategy =
+          OneForOneStrategy() {
+            case _: TestException ⇒ SupervisorStrategy.Restart
+          }
 
         assertManualReset(
           create(onStopOptions(ManualChild.props(testActor)).withManualReset

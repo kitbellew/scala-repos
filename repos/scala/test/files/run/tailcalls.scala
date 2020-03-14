@@ -332,10 +332,8 @@ class TailCall[S](s: S) {
     aux(x, y, Nil);
   }
 
-  final def b1(x: Int): Boolean =
-    (x == 1) || b1(x - 1)
-  final def b2(x: Int): Boolean =
-    (x > 0) && ((x == 1) || b1(x - 1))
+  final def b1(x: Int): Boolean = (x == 1) || b1(x - 1)
+  final def b2(x: Int): Boolean = (x > 0) && ((x == 1) || b1(x - 1))
 
   def h1(n: Int, v: Int): Int = hP(n, v);
   private def hP(n: Int, v: Int): Int =

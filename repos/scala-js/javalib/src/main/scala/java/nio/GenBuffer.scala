@@ -1,16 +1,14 @@
 package java.nio
 
 private[nio] object GenBuffer {
-  def apply[B <: Buffer](self: B): GenBuffer[B] =
-    new GenBuffer(self)
+  def apply[B <: Buffer](self: B): GenBuffer[B] = new GenBuffer(self)
 }
 
 private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   import self._
 
   @inline
-  def generic_get(): ElementType =
-    load(getPosAndAdvanceRead())
+  def generic_get(): ElementType = load(getPosAndAdvanceRead())
 
   @inline
   def generic_put(elem: ElementType): B = {
@@ -20,8 +18,7 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   }
 
   @inline
-  def generic_get(index: Int): ElementType =
-    load(validateIndex(index))
+  def generic_get(index: Int): ElementType = load(validateIndex(index))
 
   @inline
   def generic_put(index: Int, elem: ElementType): BufferType = {
@@ -77,8 +74,7 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   }
 
   @inline
-  def generic_hasArray(): Boolean =
-    _array != null && !isReadOnly
+  def generic_hasArray(): Boolean = _array != null && !isReadOnly
 
   @inline
   def generic_array(): Array[ElementType] = {

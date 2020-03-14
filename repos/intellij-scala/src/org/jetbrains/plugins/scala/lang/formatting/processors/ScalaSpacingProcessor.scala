@@ -138,8 +138,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     if (left == null) {
       return getSpacing(keepBlankLinesInCode, 0, 0) //todo:
     }
-    val scalaSettings: ScalaCodeStyleSettings =
-      left.getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
+    val scalaSettings: ScalaCodeStyleSettings = left.getSettings
+      .getCustomSettings(classOf[ScalaCodeStyleSettings])
     def getDependentLFSpacing(x: Int, y: Int, range: TextRange) = {
       if (keepLineBreaks)
         Spacing.createDependentLFSpacing(y, y, range, true, x)
@@ -172,17 +172,26 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
           left.getTextRange.substring(fileText),
           right.getTextRange.substring(fileText))
 
-    val spacesMin: Integer =
-      spacesToPreventNewIds(left, right, fileText, fileTextRange)
+    val spacesMin: Integer = spacesToPreventNewIds(
+      left,
+      right,
+      fileText,
+      fileTextRange)
     val WITHOUT_SPACING = getSpacing(keepBlankLinesInCode, spacesMin, 0)
-    val WITHOUT_SPACING_NO_KEEP =
-      Spacing.createSpacing(spacesMin, spacesMin, 0, false, 0)
-    val WITHOUT_SPACING_DEPENDENT = (range: TextRange) =>
-      getDependentLFSpacing(keepBlankLinesInCode, spacesMin, range)
+    val WITHOUT_SPACING_NO_KEEP = Spacing.createSpacing(
+      spacesMin,
+      spacesMin,
+      0,
+      false,
+      0)
+    val WITHOUT_SPACING_DEPENDENT =
+      (range: TextRange) =>
+        getDependentLFSpacing(keepBlankLinesInCode, spacesMin, range)
     val WITH_SPACING = getSpacing(keepBlankLinesInCode, 1, 0)
     val WITH_SPACING_NO_KEEP = Spacing.createSpacing(1, 1, 0, false, 0)
-    val WITH_SPACING_DEPENDENT = (range: TextRange) =>
-      getDependentLFSpacing(keepBlankLinesInCode, 1, range)
+    val WITH_SPACING_DEPENDENT =
+      (range: TextRange) =>
+        getDependentLFSpacing(keepBlankLinesInCode, 1, range)
     val ON_NEW_LINE = getSpacing(keepBlankLinesInCode, 0, 1)
     val DOUBLE_LINE = getSpacing(keepBlankLinesInCode, 0, 2)
 
@@ -256,11 +265,10 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
         else
           WITH_SPACING
       case (ScalaDocTokenType.DOC_TAG_NAME, _, _, _) =>
-        val rightText =
-          getText(
-            rightNode,
-            fileText
-          ) //rightString is not semantically equal for PsiError nodes
+        val rightText = getText(
+          rightNode,
+          fileText
+        ) //rightString is not semantically equal for PsiError nodes
         return if (rightText.nonEmpty && rightText.apply(0) == ' ')
           Spacing.getReadOnlySpacing
         else
@@ -645,11 +653,12 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
       if (rightPsi.isInstanceOf[ScExtendsBlock] || rightPsi
             .isInstanceOf[ScEarlyDefinitions] || rightPsi
             .isInstanceOf[ScTemplateBody]) {
-        val extendsBlock = rightPsi match {
-          case e: ScExtendsBlock     => e
-          case t: ScEarlyDefinitions => t.getParent
-          case t: ScTemplateBody     => t.getParent
-        }
+        val extendsBlock =
+          rightPsi match {
+            case e: ScExtendsBlock     => e
+            case t: ScEarlyDefinitions => t.getParent
+            case t: ScTemplateBody     => t.getParent
+          }
         settings.CLASS_BRACE_STYLE match {
           case CommonCodeStyleSettings.NEXT_LINE          => return ON_NEW_LINE
           case CommonCodeStyleSettings.NEXT_LINE_SHIFTED  => return ON_NEW_LINE
@@ -667,12 +676,13 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
               else
                 WITHOUT_SPACING_NO_KEEP
           case CommonCodeStyleSettings.NEXT_LINE_IF_WRAPPED =>
-            val startOffset = extendsBlock.getParent.getParent match {
-              case b: ScTypeDefinition => b.nameId.getTextRange.getStartOffset
-              case b: ScTemplateDefinition =>
-                b.nameId.getTextRange.getStartOffset
-              case b => b.getTextRange.getStartOffset
-            }
+            val startOffset =
+              extendsBlock.getParent.getParent match {
+                case b: ScTypeDefinition => b.nameId.getTextRange.getStartOffset
+                case b: ScTemplateDefinition =>
+                  b.nameId.getTextRange.getStartOffset
+                case b => b.getTextRange.getStartOffset
+              }
             val range =
               new TextRange(startOffset, rightPsi.getTextRange.getStartOffset)
             if (settings.SPACE_BEFORE_CLASS_LBRACE)
@@ -696,9 +706,10 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
                   return WITHOUT_SPACING_NO_KEEP
               case CommonCodeStyleSettings.NEXT_LINE_IF_WRAPPED =>
                 val startOffset = fun.nameId.getTextRange.getStartOffset
-                val range = new TextRange(
-                  startOffset,
-                  rightPsi.getTextRange.getStartOffset)
+                val range =
+                  new TextRange(
+                    startOffset,
+                    rightPsi.getTextRange.getStartOffset)
                 if (settings.SPACE_BEFORE_METHOD_LBRACE)
                   return WITH_SPACING_DEPENDENT(range)
                 else
@@ -718,9 +729,10 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
                 return WITH_SPACING_NO_KEEP //todo: spacing settings
               case CommonCodeStyleSettings.NEXT_LINE_IF_WRAPPED =>
                 val startOffset = parent.getTextRange.getStartOffset
-                val range = new TextRange(
-                  startOffset,
-                  rightPsi.getTextRange.getStartOffset)
+                val range =
+                  new TextRange(
+                    startOffset,
+                    rightPsi.getTextRange.getStartOffset)
                 return WITH_SPACING_DEPENDENT(range) //todo: spacing settings
             }
         }
@@ -1072,8 +1084,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
 
     if (leftPsi.isInstanceOf[ScSelfTypeElement]) {
-      val c =
-        PsiTreeUtil.getParentOfType(leftPsi, classOf[ScTemplateDefinition])
+      val c = PsiTreeUtil.getParentOfType(
+        leftPsi,
+        classOf[ScTemplateDefinition])
       val setting =
         if (c.isInstanceOf[ScTypeDefinition])
           settings.BLANK_LINES_AFTER_CLASS_HEADER
@@ -1093,22 +1106,24 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
       if (rightElementType != tSEMICOLON) {
         leftPsi.getParent match {
           case b @ (_: ScEarlyDefinitions | _: ScTemplateBody) =>
-            val p =
-              PsiTreeUtil.getParentOfType(b, classOf[ScTemplateDefinition])
-            val setting = leftPsi match {
-              case _: ScFunction if p.isInstanceOf[ScTrait] =>
-                settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
-              case _: ScFunction => settings.BLANK_LINES_AROUND_METHOD
-              case _ =>
-                rightPsi match {
-                  case _: ScFunction if p.isInstanceOf[ScTrait] =>
-                    settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
-                  case _: ScFunction => settings.BLANK_LINES_AROUND_METHOD
-                  case _ if p.isInstanceOf[ScTrait] =>
-                    settings.BLANK_LINES_AROUND_FIELD_IN_INTERFACE
-                  case _ => settings.BLANK_LINES_AROUND_FIELD
-                }
-            }
+            val p = PsiTreeUtil.getParentOfType(
+              b,
+              classOf[ScTemplateDefinition])
+            val setting =
+              leftPsi match {
+                case _: ScFunction if p.isInstanceOf[ScTrait] =>
+                  settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
+                case _: ScFunction => settings.BLANK_LINES_AROUND_METHOD
+                case _ =>
+                  rightPsi match {
+                    case _: ScFunction if p.isInstanceOf[ScTrait] =>
+                      settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
+                    case _: ScFunction => settings.BLANK_LINES_AROUND_METHOD
+                    case _ if p.isInstanceOf[ScTrait] =>
+                      settings.BLANK_LINES_AROUND_FIELD_IN_INTERFACE
+                    case _ => settings.BLANK_LINES_AROUND_FIELD
+                  }
+              }
             if (rightPsi.isInstanceOf[PsiComment] && !fileText
                   .substring(
                     leftPsi.getTextRange.getEndOffset,
@@ -1141,16 +1156,18 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
             .isInstanceOf[ScTypeAlias]) {
         pseudoRightPsi.getParent match {
           case b @ (_: ScEarlyDefinitions | _: ScTemplateBody) =>
-            val p =
-              PsiTreeUtil.getParentOfType(b, classOf[ScTemplateDefinition])
-            val setting = (pseudoRightPsi, p) match {
-              case (_: ScFunction, _: ScTrait) =>
-                settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
-              case (_: ScFunction, _) => settings.BLANK_LINES_AROUND_METHOD
-              case (_, _: ScTrait) =>
-                settings.BLANK_LINES_AROUND_FIELD_IN_INTERFACE
-              case _ => settings.BLANK_LINES_AROUND_FIELD
-            }
+            val p = PsiTreeUtil.getParentOfType(
+              b,
+              classOf[ScTemplateDefinition])
+            val setting =
+              (pseudoRightPsi, p) match {
+                case (_: ScFunction, _: ScTrait) =>
+                  settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
+                case (_: ScFunction, _) => settings.BLANK_LINES_AROUND_METHOD
+                case (_, _: ScTrait) =>
+                  settings.BLANK_LINES_AROUND_FIELD_IN_INTERFACE
+                case _ => settings.BLANK_LINES_AROUND_FIELD
+              }
             return Spacing.createSpacing(
               0,
               0,
@@ -1172,14 +1189,15 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
       rightPsi.getParent match {
         case b @ (_: ScEarlyDefinitions | _: ScTemplateBody) =>
           val p = PsiTreeUtil.getParentOfType(b, classOf[ScTemplateDefinition])
-          val setting = (rightPsi, p) match {
-            case (_: ScFunction, _: ScTrait) =>
-              settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
-            case (_: ScFunction, _) => settings.BLANK_LINES_AROUND_METHOD
-            case (_, _: ScTrait) =>
-              settings.BLANK_LINES_AROUND_FIELD_IN_INTERFACE
-            case _ => settings.BLANK_LINES_AROUND_FIELD
-          }
+          val setting =
+            (rightPsi, p) match {
+              case (_: ScFunction, _: ScTrait) =>
+                settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
+              case (_: ScFunction, _) => settings.BLANK_LINES_AROUND_METHOD
+              case (_, _: ScTrait) =>
+                settings.BLANK_LINES_AROUND_FIELD_IN_INTERFACE
+              case _ => settings.BLANK_LINES_AROUND_FIELD
+            }
           return Spacing.createSpacing(
             0,
             0,

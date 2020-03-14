@@ -41,13 +41,15 @@ trait Plugin {
 }
 
 object Build {
-  val defaultEmpty: Build = new Build {
-    override def projects = Nil
-  }
-  val default: Build = new Build {
-    override def projectDefinitions(base: File) =
-      defaultProject(defaultID(base), base) :: Nil
-  }
+  val defaultEmpty: Build =
+    new Build {
+      override def projects = Nil
+    }
+  val default: Build =
+    new Build {
+      override def projectDefinitions(base: File) =
+        defaultProject(defaultID(base), base) :: Nil
+    }
   def defaultAggregated(id: String, aggregate: Seq[ProjectRef]): Build =
     new Build {
       override def projectDefinitions(base: File) =

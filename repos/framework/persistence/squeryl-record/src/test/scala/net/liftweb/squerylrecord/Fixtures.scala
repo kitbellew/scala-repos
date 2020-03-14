@@ -196,8 +196,8 @@ object MySchema extends Schema {
   val employees = table[Employee]
   val rooms = table[Room]
 
-  val companyToEmployees =
-    oneToManyRelation(companies, employees).via((c, e) => c.id === e.companyId)
+  val companyToEmployees = oneToManyRelation(companies, employees).via((c, e) =>
+    c.id === e.companyId)
 
   val roomAssignments = manyToManyRelation(employees, rooms)
     .via[RoomAssignment]((employee, room, roomAssignment) =>

@@ -93,14 +93,12 @@ abstract class GenIncOptimizer private[optimizer] (
 
   private def findStaticsNamespace(encodedName: String): StaticsNamespace =
     statics(encodedName)
-  private def findClass(encodedName: String): Class =
-    classes(encodedName)
+  private def findClass(encodedName: String): Class = classes(encodedName)
   private def findDefaults(encodedName: String): Defaults =
     defaults(encodedName)
 
   private def getStaticsNamespace(
-      encodedName: String): Option[StaticsNamespace] =
-    statics.get(encodedName)
+      encodedName: String): Option[StaticsNamespace] = statics.get(encodedName)
   private def getClass(encodedName: String): Option[Class] =
     classes.get(encodedName)
   private def getDefaults(encodedName: String): Option[Defaults] =
@@ -208,8 +206,7 @@ abstract class GenIncOptimizer private[optimizer] (
               false
             } { linkedClass =>
               /* Existing static/default context. Update it. */
-              val (added, changed, removed) =
-                namespace.updateWith(linkedClass)
+              val (added, changed, removed) = namespace.updateWith(linkedClass)
 
               if (containerMap eq statics) {
                 for (method <- changed)
@@ -252,8 +249,8 @@ abstract class GenIncOptimizer private[optimizer] (
        *
        * Non-batch mode only.
        */
-      val objectClassStillExists =
-        objectClass.walkClassesForDeletions(neededClasses.get(_))
+      val objectClassStillExists = objectClass.walkClassesForDeletions(
+        neededClasses.get(_))
       assert(objectClassStillExists, "Uh oh, java.lang.Object was deleted!")
 
       /* Class changes:
@@ -409,8 +406,7 @@ abstract class GenIncOptimizer private[optimizer] (
       this :: superClass.fold[List[Class]](Nil)(_.parentChain)
 
     /** Reverse parent chain from Object to this. */
-    val reverseParentChain: List[Class] =
-      parentChain.reverse
+    val reverseParentChain: List[Class] = parentChain.reverse
 
     def thisType: Type = ClassType(encodedName)
 
@@ -425,8 +421,7 @@ abstract class GenIncOptimizer private[optimizer] (
     var isInlineable: Boolean = false
     var tryNewInlineable: Option[RecordValue] = None
 
-    override def toString(): String =
-      encodedName
+    override def toString(): String = encodedName
 
     /** Walk the class hierarchy tree for deletions.
       *  This includes "deleting" classes that were previously instantiated but
@@ -441,8 +436,8 @@ abstract class GenIncOptimizer private[optimizer] (
       getLinkedClassIfNeeded(encodedName) match {
         case Some(linkedClass) if sameSuperClass(linkedClass) =>
           // Class still exists. Recurse.
-          subclasses =
-            subclasses.filter(_.walkClassesForDeletions(getLinkedClassIfNeeded))
+          subclasses = subclasses.filter(
+            _.walkClassesForDeletions(getLinkedClassIfNeeded))
           if (isInstantiated && !linkedClass.hasInstances)
             notInstantiatedAnymore()
           true
@@ -491,8 +486,8 @@ abstract class GenIncOptimizer private[optimizer] (
 
       val linkedClass = getLinkedClass(encodedName)
 
-      val (addedMethods, changedMethods, deletedMethods) =
-        updateWith(linkedClass)
+      val (addedMethods, changedMethods, deletedMethods) = updateWith(
+        linkedClass)
 
       val oldInterfaces = interfaces
       val newInterfaces = linkedClass.ancestors.map(getInterface).toSet
@@ -591,13 +586,14 @@ abstract class GenIncOptimizer private[optimizer] (
         tryNewInlineable = None
       } else {
         val allFields = reverseParentChain.flatMap(_.fields)
-        val (fieldValues, fieldTypes) = (for {
-          f @ FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
-        } yield {
-          (
-            zeroOf(tpe)(f.pos),
-            RecordType.Field(name, originalName, tpe, mutable))
-        }).unzip
+        val (fieldValues, fieldTypes) =
+          (for {
+            f @ FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
+          } yield {
+            (
+              zeroOf(tpe)(f.pos),
+              RecordType.Field(name, originalName, tpe, mutable))
+          }).unzip
         tryNewInlineable = Some(
           RecordValue(RecordType(fieldTypes), fieldValues)(Position.NoPosition))
       }
@@ -712,8 +708,7 @@ abstract class GenIncOptimizer private[optimizer] (
 
     def thisType: Type = NoType
 
-    override def toString(): String =
-      s"static $encodedName"
+    override def toString(): String = s"static $encodedName"
   }
 
   /** Default methods of an interface. */
@@ -722,8 +717,7 @@ abstract class GenIncOptimizer private[optimizer] (
 
     def thisType: Type = ClassType(encodedName)
 
-    override def toString(): String =
-      s"defaults $encodedName"
+    override def toString(): String = s"defaults $encodedName"
   }
 
   /** Thing from which a [[MethodImpl]] can unregister itself from. */
@@ -742,8 +736,7 @@ abstract class GenIncOptimizer private[optimizer] (
   private[optimizer] abstract class InterfaceType(val encodedName: String)
       extends Unregisterable {
 
-    override def toString(): String =
-      s"intf $encodedName"
+    override def toString(): String = s"intf $encodedName"
 
     /** PROCESS PASS ONLY. Concurrency safe except with
       *  [[addInstantiatedSubclass]] and [[removeInstantiatedSubclass]]
@@ -827,8 +820,7 @@ abstract class GenIncOptimizer private[optimizer] (
     def thisType: Type = owner.thisType
     def deleted: Boolean = _deleted
 
-    override def toString(): String =
-      s"$owner.$encodedName"
+    override def toString(): String = s"$owner.$encodedName"
 
     /** PROCESS PASS ONLY. */
     def registerBodyAsker(asker: MethodImpl): Unit
@@ -1038,8 +1030,7 @@ object GenIncOptimizer {
 
   type OptimizerFactory = (Semantics, ESLevel, Boolean) => GenIncOptimizer
 
-  private val isAdHocElidableModuleAccessor =
-    Set("s_Predef$")
+  private val isAdHocElidableModuleAccessor = Set("s_Predef$")
 
   private[optimizer] trait AbsCollOps {
     type Map[K, V] <: mutable.Map[K, V]

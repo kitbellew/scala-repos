@@ -29,11 +29,12 @@ trait MilestonesControllerBase extends ControllerBase {
       description: Option[String],
       dueDate: Option[java.util.Date])
 
-  val milestoneForm = mapping(
-    "title" -> trim(label("Title", text(required, maxlength(100)))),
-    "description" -> trim(label("Description", optional(text()))),
-    "dueDate" -> trim(label("Due Date", optional(date())))
-  )(MilestoneForm.apply)
+  val milestoneForm =
+    mapping(
+      "title" -> trim(label("Title", text(required, maxlength(100)))),
+      "description" -> trim(label("Description", optional(text()))),
+      "dueDate" -> trim(label("Due Date", optional(date())))
+    )(MilestoneForm.apply)
 
   get("/:owner/:repository/issues/milestones")(referrersOnly { repository =>
     html.list(

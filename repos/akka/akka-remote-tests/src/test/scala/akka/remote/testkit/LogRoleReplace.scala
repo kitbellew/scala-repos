@@ -53,8 +53,9 @@ object LogRoleReplace extends ClipboardOwner {
       val contents = clipboard.getContents(null)
       if (contents != null && contents.isDataFlavorSupported(
             DataFlavor.stringFlavor)) {
-        val text =
-          contents.getTransferData(DataFlavor.stringFlavor).asInstanceOf[String]
+        val text = contents
+          .getTransferData(DataFlavor.stringFlavor)
+          .asInstanceOf[String]
         val result = new StringWriter
         replacer.process(
           new BufferedReader(new StringReader(text)),

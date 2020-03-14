@@ -173,14 +173,12 @@ trait NumberTag[A] {
     * Returns true if all values representable by `A` are finite and live on the
     * real number line.
     */
-  def finite: Boolean =
-    hasMinValue.isDefined && hasMaxValue.isDefined
+  def finite: Boolean = hasMinValue.isDefined && hasMaxValue.isDefined
 
   /**
     * Returns true if this type can represent arbitrarily large or small values.
     */
-  def infinite: Boolean =
-    hasMinValue.isEmpty || hasMaxValue.isEmpty
+  def infinite: Boolean = hasMinValue.isEmpty || hasMaxValue.isEmpty
 
   /**
     * Returns `true` if `a` is an infinite value (either positive or negative)

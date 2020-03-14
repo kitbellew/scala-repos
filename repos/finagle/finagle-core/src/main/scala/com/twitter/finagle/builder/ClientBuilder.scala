@@ -29,17 +29,24 @@ import scala.annotation.{implicitNotFound, varargs}
   * Factory for [[com.twitter.finagle.builder.ClientBuilder]] instances
   */
 object ClientBuilder {
-  type Complete[Req, Rep] =
-    ClientBuilder[
-      Req,
-      Rep,
-      ClientConfig.Yes,
-      ClientConfig.Yes,
-      ClientConfig.Yes]
-  type NoCluster[Req, Rep] =
-    ClientBuilder[Req, Rep, Nothing, ClientConfig.Yes, ClientConfig.Yes]
-  type NoCodec =
-    ClientBuilder[_, _, ClientConfig.Yes, Nothing, ClientConfig.Yes]
+  type Complete[Req, Rep] = ClientBuilder[
+    Req,
+    Rep,
+    ClientConfig.Yes,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
+  type NoCluster[Req, Rep] = ClientBuilder[
+    Req,
+    Rep,
+    Nothing,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
+  type NoCodec = ClientBuilder[
+    _,
+    _,
+    ClientConfig.Yes,
+    Nothing,
+    ClientConfig.Yes]
 
   def apply() = new ClientBuilder()
 
@@ -115,8 +122,7 @@ object ClientConfig {
 
   // params specific to ClientBuilder
   private[builder] case class DestName(name: Name) {
-    def mk(): (DestName, Stack.Param[DestName]) =
-      (this, DestName.param)
+    def mk(): (DestName, Stack.Param[DestName]) = (this, DestName.param)
   }
   private[builder] object DestName {
     implicit val param = Stack.Param(DestName(Name.empty))
@@ -131,8 +137,7 @@ object ClientConfig {
   }
 
   private[builder] case class Daemonize(onOrOff: Boolean) {
-    def mk(): (Daemonize, Stack.Param[Daemonize]) =
-      (this, Daemonize.param)
+    def mk(): (Daemonize, Stack.Param[Daemonize]) = (this, Daemonize.param)
   }
   private[builder] object Daemonize {
     implicit val param = Stack.Param(Daemonize(true))
@@ -279,10 +284,18 @@ class ClientBuilder[
 
   // Convenient aliases.
   type FullySpecifiedConfig = FullySpecified[Req, Rep]
-  type ThisConfig =
-    ClientConfig[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit]
-  type This =
-    ClientBuilder[Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit]
+  type ThisConfig = ClientConfig[
+    Req,
+    Rep,
+    HasCluster,
+    HasCodec,
+    HasHostConnectionLimit]
+  type This = ClientBuilder[
+    Req,
+    Rep,
+    HasCluster,
+    HasCodec,
+    HasHostConnectionLimit]
 
   private[builder] def this() = this(ClientConfig.nilClient)
 
@@ -295,8 +308,7 @@ class ClientBuilder[
     Rep1,
     HasCluster1,
     HasCodec1,
-    HasHostConnectionLimit1] =
-    new ClientBuilder(client)
+    HasHostConnectionLimit1] = new ClientBuilder(client)
 
   private def configured[
       P: Stack.Param,
@@ -516,8 +528,7 @@ class ClientBuilder[
     *
     * Applicable only to service-builds (`build()`)
     */
-  def timeout(duration: Duration): This =
-    configured(GlobalTimeout(duration))
+  def timeout(duration: Duration): This = configured(GlobalTimeout(duration))
 
   /**
     * Apply TCP keepAlive (`SO_KEEPALIVE` socket option).
@@ -546,8 +557,7 @@ class ClientBuilder[
     *
     * @see [[ClientBuilder.reportHostStats]]
     */
-  def reportTo(receiver: StatsReceiver): This =
-    configured(Stats(receiver))
+  def reportTo(receiver: StatsReceiver): This = configured(Stats(receiver))
 
   /**
     * Report per host stats to the given `StatsReceiver`.
@@ -560,8 +570,7 @@ class ClientBuilder[
   /**
     * Give a meaningful name to the client. Required.
     */
-  def name(value: String): This =
-    configured(Label(value))
+  def name(value: String): This = configured(Label(value))
 
   /**
     * The maximum number of connections that are allowed per host.
@@ -688,8 +697,7 @@ class ClientBuilder[
     * @see [[retryBudget]] for governing how many failed requests are
     * eligible for retries.
     */
-  def retries(value: Int): This =
-    retryPolicy(RetryPolicy.tries(value))
+  def retries(value: Int): This = retryPolicy(RetryPolicy.tries(value))
 
   /**
     * Retry failed requests according to the given [[RetryPolicy]].
@@ -819,8 +827,8 @@ class ClientBuilder[
     */
   def expHttpProxy(hostName: String, port: Int): This =
     configured(
-      params[Transporter.HttpProxy].copy(sa =
-        Some(InetSocketAddress.createUnresolved(hostName, port))))
+      params[Transporter.HttpProxy]
+        .copy(sa = Some(InetSocketAddress.createUnresolved(hostName, port))))
 
   /**
     * For the http proxy use these [[Credentials]] for authentication.
@@ -848,8 +856,8 @@ class ClientBuilder[
     */
   def expSocksProxy(hostName: String, port: Int): This =
     configured(
-      params[Transporter.HttpProxy].copy(sa =
-        Some(InetSocketAddress.createUnresolved(hostName, port))))
+      params[Transporter.HttpProxy]
+        .copy(sa = Some(InetSocketAddress.createUnresolved(hostName, port))))
 
   /**
     * For the socks proxy use this username for authentication.
@@ -869,8 +877,7 @@ class ClientBuilder[
 
   // API compatibility method
   @deprecated("Use tracer() instead", "7.0.0")
-  def tracerFactory(t: com.twitter.finagle.tracing.Tracer): This =
-    tracer(t)
+  def tracerFactory(t: com.twitter.finagle.tracing.Tracer): This = tracer(t)
 
   /**
     * Specifies a tracer that receives trace events.
@@ -906,8 +913,7 @@ class ClientBuilder[
     *
     * To replace the [[FailureAccrualFactory]] use `failureAccrualFactory`.
     */
-  def noFailureAccrual: This =
-    configured(FailureAccrualFactory.Disabled)
+  def noFailureAccrual: This = configured(FailureAccrualFactory.Disabled)
 
   /**
     * Completely replaces the [[FailureAccrualFactory]] from the underlying stack
@@ -923,8 +929,7 @@ class ClientBuilder[
     "No longer experimental: Use failFast()." +
       "The new default value is true, so replace .expFailFast(true) with nothing at all",
     "5.3.10")
-  def expFailFast(enabled: Boolean): This =
-    failFast(enabled)
+  def expFailFast(enabled: Boolean): This = failFast(enabled)
 
   /**
     * Marks a host dead on connection failure. The host remains dead
@@ -932,16 +937,14 @@ class ClientBuilder[
     * *are* respected, but host availability is turned off during the
     * reconnection period.
     */
-  def failFast(enabled: Boolean): This =
-    configured(FailFast(enabled))
+  def failFast(enabled: Boolean): This = configured(FailFast(enabled))
 
   /**
     * When true, the client is daemonized. As with java threads, a
     * process can exit only when all remaining clients are daemonized.
     * False by default.
     */
-  def daemon(daemonize: Boolean): This =
-    configured(Daemonize(daemonize))
+  def daemon(daemonize: Boolean): This = configured(Daemonize(daemonize))
 
   /**
     * Provide an alternative to putting all request exceptions under
@@ -1027,15 +1030,13 @@ class ClientBuilder[
     * Construct a Service, with runtime checks for builder
     * completeness.
     */
-  def unsafeBuild(): Service[Req, Rep] =
-    validated.build()
+  def unsafeBuild(): Service[Req, Rep] = validated.build()
 
   /**
     * Construct a ServiceFactory, with runtime checks for builder
     * completeness.
     */
-  def unsafeBuildFactory(): ServiceFactory[Req, Rep] =
-    validated.buildFactory()
+  def unsafeBuildFactory(): ServiceFactory[Req, Rep] = validated.buildFactory()
 }
 
 /**
@@ -1168,22 +1169,21 @@ private object ClientBuilderClient {
       dest: Name,
       label: String
   ): Service[Req, Rep] = {
-    val client =
-      client0
-        .transformed(new Stack.Transformer {
-          def apply[Request, Response](
-              stack: Stack[ServiceFactory[Request, Response]]) =
-            stack
-              .insertBefore(
-                Retries.Role,
-                new StatsFilterModule[Request, Response])
-              .replace(
-                Retries.Role,
-                Retries.moduleWithRetryPolicy[Request, Response])
-              .prepend(new GlobalTimeoutModule[Request, Response])
-              .prepend(new ExceptionSourceFilterModule[Request, Response])
-        })
-        .configured(FactoryToService.Enabled(true))
+    val client = client0
+      .transformed(new Stack.Transformer {
+        def apply[Request, Response](
+            stack: Stack[ServiceFactory[Request, Response]]) =
+          stack
+            .insertBefore(
+              Retries.Role,
+              new StatsFilterModule[Request, Response])
+            .replace(
+              Retries.Role,
+              Retries.moduleWithRetryPolicy[Request, Response])
+            .prepend(new GlobalTimeoutModule[Request, Response])
+            .prepend(new ExceptionSourceFilterModule[Request, Response])
+      })
+      .configured(FactoryToService.Enabled(true))
 
     val factory = newClient(client, dest, label)
     val service: Service[Req, Rep] = new FactoryToService[Req, Rep](factory)
@@ -1222,25 +1222,26 @@ private case class CodecClient[Req, Rep](
   def newClient(dest: Name, label: String): ServiceFactory[Req, Rep] = {
     val codec = codecFactory(ClientCodecConfig(label))
 
-    val prepConn = new Stack.ModuleParams[ServiceFactory[Req, Rep]] {
-      override def parameters: Seq[Stack.Param[_]] = Nil
-      override val role = StackClient.Role.prepConn
-      override val description =
-        "Connection preparation phase as defined by a Codec"
-      def make(ps: Stack.Params, next: ServiceFactory[Req, Rep]) = {
-        val Stats(stats) = ps[Stats]
-        val underlying = codec.prepareConnFactory(next, ps)
-        new ServiceFactoryProxy(underlying) {
-          val stat = stats.stat("codec_connection_preparation_latency_ms")
-          override def apply(conn: ClientConnection) = {
-            val begin = Time.now
-            super.apply(conn) ensure {
-              stat.add((Time.now - begin).inMilliseconds)
+    val prepConn =
+      new Stack.ModuleParams[ServiceFactory[Req, Rep]] {
+        override def parameters: Seq[Stack.Param[_]] = Nil
+        override val role = StackClient.Role.prepConn
+        override val description =
+          "Connection preparation phase as defined by a Codec"
+        def make(ps: Stack.Params, next: ServiceFactory[Req, Rep]) = {
+          val Stats(stats) = ps[Stats]
+          val underlying = codec.prepareConnFactory(next, ps)
+          new ServiceFactoryProxy(underlying) {
+            val stat = stats.stat("codec_connection_preparation_latency_ms")
+            override def apply(conn: ClientConnection) = {
+              val begin = Time.now
+              super.apply(conn) ensure {
+                stat.add((Time.now - begin).inMilliseconds)
+              }
             }
           }
         }
       }
-    }
 
     val clientStack = {
       val stack0 = stack

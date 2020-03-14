@@ -69,19 +69,21 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
 
     // Keep the qualifier information by using it as sub-query name, if there is only one qualifier
     // present.
-    val finalName = if (qualifiers.length == 1) {
-      qualifiers.head
-    } else {
-      newSubqueryName()
-    }
+    val finalName =
+      if (qualifiers.length == 1) {
+        qualifiers.head
+      } else {
+        newSubqueryName()
+      }
 
     // Canonicalizer will remove all naming information, we should add it back by adding an extra
     // Project and alias the outputs.
     val aliasedOutput = canonicalizedPlan.output.zip(outputNames).map {
       case (attr, name) => Alias(attr.withQualifiers(Nil), name)()
     }
-    val finalPlan =
-      Project(aliasedOutput, SubqueryAlias(finalName, canonicalizedPlan))
+    val finalPlan = Project(
+      aliasedOutput,
+      SubqueryAlias(finalName, canonicalizedPlan))
 
     try {
       val replaced = finalPlan.transformAllExpressions {
@@ -143,10 +145,11 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         s"${toSQL(child)} LIMIT ${limitExpr.sql}"
 
       case Filter(condition, child) =>
-        val whereOrHaving = child match {
-          case _: Aggregate => "HAVING"
-          case _            => "WHERE"
-        }
+        val whereOrHaving =
+          child match {
+            case _: Aggregate => "HAVING"
+            case _            => "WHERE"
+          }
         build(toSQL(child), whereOrHaving, condition.sql)
 
       case p @ Distinct(u: Union) if u.children.length > 1 =>
@@ -179,8 +182,9 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         sample
           .map {
             case (lowerBound, upperBound) =>
-              val fraction =
-                math.min(100, math.max(0, (upperBound - lowerBound) * 100))
+              val fraction = math.min(
+                100,
+                math.max(0, (upperBound - lowerBound) * 100))
               qualifiedName + " TABLESAMPLE(" + fraction + " PERCENT)"
           }
           .getOrElse(qualifiedName)
@@ -294,17 +298,18 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
   private def generateToSQL(g: Generate): String = {
     val columnAliases = g.generatorOutput.map(_.sql).mkString(", ")
 
-    val childSQL = if (g.child == OneRowRelation) {
-      // This only happens when we put UDTF in project list and there is no FROM clause. Because we
-      // always generate LATERAL VIEW for `Generate`, here we use a trick to put a dummy sub-query
-      // after FROM clause, so that we can generate a valid LATERAL VIEW SQL string.
-      // For example, if the original SQL is: "SELECT EXPLODE(ARRAY(1, 2))", we will convert in to
-      // LATERAL VIEW format, and generate:
-      // SELECT col FROM (SELECT 1) sub_q0 LATERAL VIEW EXPLODE(ARRAY(1, 2)) sub_q1 AS col
-      s"(SELECT 1) ${newSubqueryName()}"
-    } else {
-      toSQL(g.child)
-    }
+    val childSQL =
+      if (g.child == OneRowRelation) {
+        // This only happens when we put UDTF in project list and there is no FROM clause. Because we
+        // always generate LATERAL VIEW for `Generate`, here we use a trick to put a dummy sub-query
+        // after FROM clause, so that we can generate a valid LATERAL VIEW SQL string.
+        // For example, if the original SQL is: "SELECT EXPLODE(ARRAY(1, 2))", we will convert in to
+        // LATERAL VIEW format, and generate:
+        // SELECT col FROM (SELECT 1) sub_q0 LATERAL VIEW EXPLODE(ARRAY(1, 2)) sub_q1 AS col
+        s"(SELECT 1) ${newSubqueryName()}"
+      } else {
+        toSQL(g.child)
+      }
 
     // The final SQL string for Generate contains 7 parts:
     //   1. the SQL of child, can be a table or sub-query
@@ -357,8 +362,9 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     // Assumption: Aggregate's groupingExpressions is composed of
     // 1) the attributes of aliased group by expressions
     // 2) gid, which is always the last one
-    val groupByAttributes =
-      agg.groupingExpressions.dropRight(1).map(_.asInstanceOf[Attribute])
+    val groupByAttributes = agg.groupingExpressions
+      .dropRight(1)
+      .map(_.asInstanceOf[Attribute])
     // Assumption: Project's projectList is composed of
     // 1) the original output (Project's child.output),
     // 2) the aliased group by expressions.

@@ -8,8 +8,7 @@ import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
   */
 class ScalaSomeSmartCompletionTest extends ScalaCodeInsightTestBase {
   def testSomeSmart1() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -20,8 +19,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -35,8 +33,7 @@ class TUI {
   }
 
   def testSomeSmart2() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -47,8 +44,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -64,8 +60,7 @@ class TUI {
   }
 
   def testSomeSmart3() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -76,8 +71,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -91,8 +85,7 @@ class TUI {
   }
 
   def testSomeSmart4() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -103,8 +96,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A
   def foo(x: Option[A]) = 1
@@ -121,8 +113,7 @@ class TUI {
   }
 
   def testSomeSmart5() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A
   class B {def z(x: Int): A = new A}
@@ -133,8 +124,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A
   class B {def z(x: Int): A = new A}
@@ -151,8 +141,7 @@ class TUI {
   }
 
   def testOuterThis() {
-    val fileText =
-      """
+    val fileText = """
       |class TT {
       |  class GG {
       |    val al: Option[TT] = <caret>
@@ -162,8 +151,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class TT {
       |  class GG {
       |    val al: Option[TT] = Some(TT.this)<caret>

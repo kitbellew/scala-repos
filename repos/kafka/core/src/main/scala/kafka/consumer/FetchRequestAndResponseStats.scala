@@ -24,22 +24,24 @@ import kafka.utils.Pool
 
 class FetchRequestAndResponseMetrics(metricId: ClientIdBroker)
     extends KafkaMetricsGroup {
-  val tags = metricId match {
-    case ClientIdAndBroker(clientId, brokerHost, brokerPort) =>
-      Map(
-        "clientId" -> clientId,
-        "brokerHost" -> brokerHost,
-        "brokerPort" -> brokerPort.toString)
-    case ClientIdAllBrokers(clientId) =>
-      Map("clientId" -> clientId)
-  }
+  val tags =
+    metricId match {
+      case ClientIdAndBroker(clientId, brokerHost, brokerPort) =>
+        Map(
+          "clientId" -> clientId,
+          "brokerHost" -> brokerHost,
+          "brokerPort" -> brokerPort.toString)
+      case ClientIdAllBrokers(clientId) =>
+        Map("clientId" -> clientId)
+    }
 
-  val requestTimer = new KafkaTimer(
-    newTimer(
-      "FetchRequestRateAndTimeMs",
-      TimeUnit.MILLISECONDS,
-      TimeUnit.SECONDS,
-      tags))
+  val requestTimer =
+    new KafkaTimer(
+      newTimer(
+        "FetchRequestRateAndTimeMs",
+        TimeUnit.MILLISECONDS,
+        TimeUnit.SECONDS,
+        tags))
   val requestSizeHist = newHistogram("FetchResponseSize", biased = true, tags)
   val throttleTimeStats = newTimer(
     "FetchRequestThrottleRateAndTimeMs",
@@ -53,12 +55,12 @@ class FetchRequestAndResponseMetrics(metricId: ClientIdBroker)
   * @param clientId ClientId of the given consumer
   */
 class FetchRequestAndResponseStats(clientId: String) {
-  private val valueFactory = (k: ClientIdBroker) =>
-    new FetchRequestAndResponseMetrics(k)
+  private val valueFactory =
+    (k: ClientIdBroker) => new FetchRequestAndResponseMetrics(k)
   private val stats =
     new Pool[ClientIdBroker, FetchRequestAndResponseMetrics](Some(valueFactory))
-  private val allBrokersStats = new FetchRequestAndResponseMetrics(
-    new ClientIdAllBrokers(clientId))
+  private val allBrokersStats =
+    new FetchRequestAndResponseMetrics(new ClientIdAllBrokers(clientId))
 
   def getFetchRequestAndResponseAllBrokersStats()
       : FetchRequestAndResponseMetrics = allBrokersStats

@@ -30,8 +30,8 @@ import org.apache.spark.SparkFunSuite
 class ThreadUtilsSuite extends SparkFunSuite {
 
   test("newDaemonSingleThreadExecutor") {
-    val executor =
-      ThreadUtils.newDaemonSingleThreadExecutor("this-is-a-thread-name")
+    val executor = ThreadUtils.newDaemonSingleThreadExecutor(
+      "this-is-a-thread-name")
     @volatile var threadName = ""
     executor.submit(new Runnable {
       override def run(): Unit = {
@@ -110,9 +110,10 @@ class ThreadUtilsSuite extends SparkFunSuite {
 
   test("sameThread") {
     val callerThreadName = Thread.currentThread().getName()
-    val f = Future {
-      Thread.currentThread().getName()
-    }(ThreadUtils.sameThread)
+    val f =
+      Future {
+        Thread.currentThread().getName()
+      }(ThreadUtils.sameThread)
     val futureThreadName = Await.result(f, 10.seconds)
     assert(futureThreadName === callerThreadName)
   }

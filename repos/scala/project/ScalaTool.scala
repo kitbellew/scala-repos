@@ -56,10 +56,11 @@ case class ScalaTool(
       platform: String,
       rootDir: File,
       outDir: File): File = {
-    val forWindows = platform match {
-      case "windows" => true
-      case _         => false
-    }
+    val forWindows =
+      platform match {
+        case "windows" => true
+        case _         => false
+      }
     val templatePath = s"scala/tools/ant/templates/tool-$platform.tmpl"
     val suffix =
       if (forWindows)

@@ -339,8 +339,9 @@ object ConsoleConsumer extends Logging {
       .withRequiredArg
       .describedAs("metrics directory")
       .ofType(classOf[java.lang.String])
-    val useNewConsumerOpt =
-      parser.accepts("new-consumer", "Use the new consumer implementation.")
+    val useNewConsumerOpt = parser.accepts(
+      "new-consumer",
+      "Use the new consumer implementation.")
     val bootstrapServerOpt = parser
       .accepts("bootstrap-server")
       .withRequiredArg
@@ -380,8 +381,8 @@ object ConsoleConsumer extends Logging {
       topicArg = options.valueOf(topicIdOpt)
       whitelistArg = options.valueOf(whitelistOpt)
     } else {
-      val topicOrFilterOpt =
-        List(topicIdOpt, whitelistOpt, blacklistOpt).filter(options.has)
+      val topicOrFilterOpt = List(topicIdOpt, whitelistOpt, blacklistOpt)
+        .filter(options.has)
       if (topicOrFilterOpt.size != 1)
         CommandLineUtils.printUsageAndDie(
           parser,
@@ -405,8 +406,8 @@ object ConsoleConsumer extends Logging {
         true
       else
         false
-    val messageFormatterClass =
-      Class.forName(options.valueOf(messageFormatterOpt))
+    val messageFormatterClass = Class.forName(
+      options.valueOf(messageFormatterOpt))
     val formatterArgs = CommandLineUtils.parseKeyValueArgs(
       options.valuesOf(messageFormatterArgOpt).asScala)
     val maxMessages =
@@ -422,8 +423,9 @@ object ConsoleConsumer extends Logging {
     val bootstrapServer = options.valueOf(bootstrapServerOpt)
     val keyDeserializer = options.valueOf(keyDeserializerOpt)
     val valueDeserializer = options.valueOf(valueDeserializerOpt)
-    val formatter: MessageFormatter =
-      messageFormatterClass.newInstance().asInstanceOf[MessageFormatter]
+    val formatter: MessageFormatter = messageFormatterClass
+      .newInstance()
+      .asInstanceOf[MessageFormatter]
     formatter.init(formatterArgs)
 
     CommandLineUtils.checkRequiredArgs(
@@ -490,8 +492,11 @@ class DefaultMessageFormatter extends MessageFormatter {
 
   override def init(props: Properties) {
     if (props.containsKey("print.timestamp"))
-      printTimestamp =
-        props.getProperty("print.timestamp").trim.toLowerCase.equals("true")
+      printTimestamp = props
+        .getProperty("print.timestamp")
+        .trim
+        .toLowerCase
+        .equals("true")
     if (props.containsKey("print.key"))
       printKey = props.getProperty("print.key").trim.toLowerCase.equals("true")
     if (props.containsKey("key.separator"))

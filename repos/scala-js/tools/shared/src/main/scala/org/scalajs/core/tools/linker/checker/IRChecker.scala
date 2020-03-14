@@ -221,8 +221,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           NoType
         else
           ClassType(classDef.name.name)
-      val bodyEnv =
-        Env.fromSignature(thisType, params, resultType, isConstructor)
+      val bodyEnv = Env.fromSignature(
+        thisType,
+        params,
+        resultType,
+        isConstructor)
       if (resultType == NoType)
         typecheckStat(body, bodyEnv)
       else
@@ -296,26 +299,31 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           "but must be NoType")
     }
 
-    val bodyStats = body match {
-      case Block(stats) => stats
-      case _            => body :: Nil
-    }
+    val bodyStats =
+      body match {
+        case Block(stats) => stats
+        case _            => body :: Nil
+      }
 
-    val (prepStats, superCallAndRest) =
-      bodyStats.span(!_.isInstanceOf[JSSuperConstructorCall])
+    val (prepStats, superCallAndRest) = bodyStats.span(
+      !_.isInstanceOf[JSSuperConstructorCall])
 
-    val (superCall, restStats) = superCallAndRest match {
-      case (superCall: JSSuperConstructorCall) :: restStats =>
-        (superCall, restStats)
-      case _ =>
-        reportError(
-          "A JS class constructor must contain one super constructor call " +
-            "at the top-level")
-        (JSSuperConstructorCall(Nil)(methodDef.pos), Nil)
-    }
+    val (superCall, restStats) =
+      superCallAndRest match {
+        case (superCall: JSSuperConstructorCall) :: restStats =>
+          (superCall, restStats)
+        case _ =>
+          reportError(
+            "A JS class constructor must contain one super constructor call " +
+              "at the top-level")
+          (JSSuperConstructorCall(Nil)(methodDef.pos), Nil)
+      }
 
-    val initialEnv =
-      Env.fromSignature(NoType, params, NoType, isConstructor = true)
+    val initialEnv = Env.fromSignature(
+      NoType,
+      params,
+      NoType,
+      isConstructor = true)
 
     val preparedEnv = (initialEnv /: prepStats) { (prevEnv, stat) =>
       typecheckStat(stat, prevEnv)
@@ -443,12 +451,14 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           case _ =>
         }
         val lhsTpe = typecheckExpr(select, env)
-        val expectedRhsTpe = select match {
-          case _: JSDotSelect | _: JSBracketSelect | _: JSSuperBracketSelect =>
-            AnyType
-          case _ =>
-            lhsTpe
-        }
+        val expectedRhsTpe =
+          select match {
+            case _: JSDotSelect | _: JSBracketSelect |
+                _: JSSuperBracketSelect =>
+              AnyType
+            case _ =>
+              lhsTpe
+          }
         typecheckExpect(rhs, env, expectedRhsTpe)
         env
 
@@ -493,8 +503,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case Try(block, errVar, handler, finalizer) =>
         typecheckStat(block, env)
         if (handler != EmptyTree) {
-          val handlerEnv =
-            env.withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
+          val handlerEnv = env.withLocal(
+            LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckStat(handler, handlerEnv)
         }
         if (finalizer != EmptyTree) {
@@ -615,8 +625,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         val tpe = tree.tpe
         typecheckExpect(block, env, tpe)
         if (handler != EmptyTree) {
-          val handlerEnv =
-            env.withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
+          val handlerEnv = env.withLocal(
+            LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckExpect(handler, handlerEnv, tpe)
         }
         if (finalizer != EmptyTree) {
@@ -838,12 +848,13 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
       case LoadJSConstructor(cls) =>
         val clazz = lookupClass(cls)
-        val valid = clazz.kind match {
-          case ClassKind.JSClass       => true
-          case ClassKind.JSModuleClass => true
-          case ClassKind.RawJSType     => clazz.jsName.isDefined
-          case _                       => false
-        }
+        val valid =
+          clazz.kind match {
+            case ClassKind.JSClass       => true
+            case ClassKind.JSModuleClass => true
+            case ClassKind.RawJSType     => clazz.jsName.isDefined
+            case _                       => false
+          }
         if (!valid)
           reportError(s"JS class type expected but $cls found")
 
@@ -918,8 +929,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             reportError(s"Closure parameter $name cannot be a rest parameter")
         }
 
-        val bodyEnv =
-          Env.fromSignature(AnyType, captureParams ++ params, AnyType)
+        val bodyEnv = Env.fromSignature(
+          AnyType,
+          captureParams ++ params,
+          AnyType)
         typecheckExpect(body, bodyEnv, AnyType)
 
       case _ =>
@@ -935,14 +948,15 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
     val (_, paramRefTypes, resultRefType) = decodeMethodName(encodedName)
     val paramTypes = paramRefTypes.map(refTypeToType)
 
-    val resultType = resultRefType.fold[Type] {
-      if (isConstructorName(encodedName))
-        NoType
-      else
-        AnyType // reflective proxy
-    } { refType =>
-      refTypeToType(refType)
-    }
+    val resultType =
+      resultRefType.fold[Type] {
+        if (isConstructorName(encodedName))
+          NoType
+        else
+          AnyType // reflective proxy
+      } { refType =>
+        refTypeToType(refType)
+      }
 
     (paramTypes, resultType)
   }
@@ -1192,10 +1206,11 @@ object IRChecker {
       extends AnyVal {
 
     override def toString(): String = {
-      val (pos, name) = treeOrLinkedClass match {
-        case tree: Tree               => (tree.pos, tree.getClass.getSimpleName)
-        case linkedClass: LinkedClass => (linkedClass.pos, "ClassDef")
-      }
+      val (pos, name) =
+        treeOrLinkedClass match {
+          case tree: Tree               => (tree.pos, tree.getClass.getSimpleName)
+          case linkedClass: LinkedClass => (linkedClass.pos, "ClassDef")
+        }
       s"${pos.source}(${pos.line + 1}:${pos.column + 1}:$name)"
     }
   }
@@ -1204,8 +1219,7 @@ object IRChecker {
     implicit def tree2errorContext(tree: Tree): ErrorContext =
       ErrorContext(tree)
 
-    def apply(tree: Tree): ErrorContext =
-      new ErrorContext(tree)
+    def apply(tree: Tree): ErrorContext = new ErrorContext(tree)
 
     def apply(linkedClass: LinkedClass): ErrorContext =
       new ErrorContext(linkedClass)

@@ -65,12 +65,13 @@ object Rng {
         v
       }
     }
-  val threadLocal: Rng = new Rng {
-    def nextDouble(): Double = ThreadLocalRandom.current().nextDouble()
-    def nextInt(n: Int): Int = ThreadLocalRandom.current().nextInt(0, n)
-    def nextInt(): Int = ThreadLocalRandom.current().nextInt()
-    def nextLong(n: Long): Long = ThreadLocalRandom.current().nextLong(n)
-  }
+  val threadLocal: Rng =
+    new Rng {
+      def nextDouble(): Double = ThreadLocalRandom.current().nextDouble()
+      def nextInt(n: Int): Int = ThreadLocalRandom.current().nextInt(0, n)
+      def nextInt(): Int = ThreadLocalRandom.current().nextInt()
+      def nextLong(n: Long): Long = ThreadLocalRandom.current().nextLong(n)
+    }
 }
 
 /** Java compatible forwarders. */

@@ -49,9 +49,10 @@ class BaseGlobifier(
     }
 
   final def asteriskChildren(rd: RichDate): String = {
-    val childStarPattern = children.foldLeft(pattern) { (this_pat, child) =>
-      this_pat.replaceAll(Pattern.quote(child.sym), "*")
-    }
+    val childStarPattern =
+      children.foldLeft(pattern) { (this_pat, child) =>
+        this_pat.replaceAll(Pattern.quote(child.sym), "*")
+      }
     rd.format(childStarPattern)(tz)
   }
 

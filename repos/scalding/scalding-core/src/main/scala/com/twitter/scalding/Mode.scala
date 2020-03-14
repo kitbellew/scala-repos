@@ -141,20 +141,21 @@ trait HadoopMode extends Mode {
     val asMap = conf.toMap.toMap[AnyRef, AnyRef]
     val jarKey = AppProps.APP_JAR_CLASS
 
-    val finalMap = conf.getCascadingAppJar match {
-      case Some(Success(cls)) => asMap + (jarKey -> cls)
-      case Some(Failure(err)) =>
-        // This may or may not cause the job to fail at submission, let's punt till then
-        LoggerFactory
-          .getLogger(getClass)
-          .error(
-            "Could not create class from: %s in config key: %s, Job may fail."
-              .format(conf.get(jarKey), AppProps.APP_JAR_CLASS),
-            err)
-        // Just delete the key and see if it fails when cascading tries to submit
-        asMap - jarKey
-      case None => asMap
-    }
+    val finalMap =
+      conf.getCascadingAppJar match {
+        case Some(Success(cls)) => asMap + (jarKey -> cls)
+        case Some(Failure(err)) =>
+          // This may or may not cause the job to fail at submission, let's punt till then
+          LoggerFactory
+            .getLogger(getClass)
+            .error(
+              "Could not create class from: %s in config key: %s, Job may fail."
+                .format(conf.get(jarKey), AppProps.APP_JAR_CLASS),
+              err)
+          // Just delete the key and see if it fails when cascading tries to submit
+          asMap - jarKey
+        case None => asMap
+      }
 
     val flowConnectorClass = jobConf.get(
       Mode.CascadingFlowConnectorClassKey,

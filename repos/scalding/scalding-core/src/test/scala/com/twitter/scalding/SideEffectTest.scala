@@ -62,8 +62,10 @@ class SideEffectTest extends WordSpec with Matchers with FieldConversions {
       .sink[(String, String)](Tsv("zipped")) { ob =>
         "correctly compute zipped sequence" in {
           val res = ob.toList
-          val expected =
-            List(("line1", "line2"), ("line2", "line3"), ("line3", "line4"))
+          val expected = List(
+            ("line1", "line2"),
+            ("line2", "line3"),
+            ("line3", "line4"))
           res shouldBe expected
         }
       }
@@ -129,11 +131,12 @@ class SideEffectBufferTest
       .sink[(String, String)](Tsv("zipped")) { ob =>
         "correctly compute zipped sequence" in {
           val res = ob.toList.sorted
-          val expected = List(
-            ("line1", "line3"),
-            ("line3", "line5"),
-            ("line2", "line4"),
-            ("line4", "line6")).sorted
+          val expected =
+            List(
+              ("line1", "line3"),
+              ("line3", "line5"),
+              ("line2", "line4"),
+              ("line4", "line6")).sorted
           res shouldBe expected
         }
       }

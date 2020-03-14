@@ -146,11 +146,12 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedBinary[T] =>
-            val toSet = v match {
-              case null            => null
-              case ba: Array[Byte] => ba
-              case other           => other.toString.getBytes("UTF-8")
-            }
+            val toSet =
+              v match {
+                case null            => null
+                case ba: Array[Byte] => ba
+                case other           => other.toString.getBytes("UTF-8")
+              }
             f.data() = toSet
             f.orgData() = toSet
         }
@@ -301,14 +302,15 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedText[T] =>
-            val toSet = v match {
-              case null            => null
-              case s: String       => s
-              case ba: Array[Byte] => new String(ba, "UTF-8")
-              case clob: java.sql.Clob =>
-                clob.getSubString(1, clob.length.toInt)
-              case other => other.toString
-            }
+            val toSet =
+              v match {
+                case null            => null
+                case s: String       => s
+                case ba: Array[Byte] => new String(ba, "UTF-8")
+                case clob: java.sql.Clob =>
+                  clob.getSubString(1, clob.length.toInt)
+                case other => other.toString
+              }
             f.data() = toSet
             f.orgData() = toSet
         }
@@ -326,10 +328,11 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedText[T] =>
-            val toSet = v match {
-              case null  => null
-              case other => other
-            }
+            val toSet =
+              v match {
+                case null  => null
+                case other => other
+              }
             f.data() = toSet
             f.orgData() = toSet
         })
@@ -472,13 +475,14 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedFakeClob[T] =>
-            val toSet = v match {
-              case null            => null
-              case ba: Array[Byte] => new String(ba, "UTF-8")
-              case clob: java.sql.Clob =>
-                clob.getSubString(1, clob.length.toInt)
-              case other => other.toString
-            }
+            val toSet =
+              v match {
+                case null            => null
+                case ba: Array[Byte] => new String(ba, "UTF-8")
+                case clob: java.sql.Clob =>
+                  clob.getSubString(1, clob.length.toInt)
+                case other => other.toString
+              }
             f.data() = toSet
             f.orgData() = toSet
         }
@@ -496,10 +500,11 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         {
           case f: MappedFakeClob[T] =>
-            val toSet = v match {
-              case null  => null
-              case other => other
-            }
+            val toSet =
+              v match {
+                case null  => null
+                case other => other
+              }
             f.data() = toSet
             f.orgData() = toSet
         })

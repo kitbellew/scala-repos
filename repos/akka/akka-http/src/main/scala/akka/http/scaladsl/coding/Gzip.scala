@@ -78,8 +78,7 @@ class GzipDecompressor(maxBytesPerChunk: Int = Decoder.MaxBytesPerChunkDefault)
       override def afterBytesRead(
           buffer: Array[Byte],
           offset: Int,
-          length: Int): Unit =
-        crc32.update(buffer, offset, length)
+          length: Int): Unit = crc32.update(buffer, offset, length)
 
       trait Step extends ParseStep[ByteString] {
         override def onTruncation(): Unit =

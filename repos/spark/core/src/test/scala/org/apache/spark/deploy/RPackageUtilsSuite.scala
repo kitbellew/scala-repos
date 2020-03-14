@@ -52,9 +52,10 @@ class RPackageUtilsSuite
 
   private val lineBuffer = ArrayBuffer[String]()
 
-  private val noOpOutputStream = new OutputStream {
-    def write(b: Int) = {}
-  }
+  private val noOpOutputStream =
+    new OutputStream {
+      def write(b: Int) = {}
+    }
 
   /** Simple PrintStream that reads data into a buffer */
   private class BufferPrintStream extends PrintStream(noOpOutputStream) {

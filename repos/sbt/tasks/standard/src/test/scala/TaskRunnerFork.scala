@@ -15,8 +15,8 @@ object TaskRunnerForkTest extends Properties("TaskRunner Fork") {
         values)
       true
     }
-  property("Fork and reduce 2") = forAll(MaxTasksGen, MaxWorkersGen) {
-    (m: Int, workers: Int) =>
+  property("Fork and reduce 2") =
+    forAll(MaxTasksGen, MaxWorkersGen) { (m: Int, workers: Int) =>
       (m > 1) ==> {
         val task = (0 to m) fork {
           _ * 10
@@ -25,22 +25,23 @@ object TaskRunnerForkTest extends Properties("TaskRunner Fork") {
         }
         checkResult(tryRun(task, false, workers), 5 * (m + 1) * m)
       }
-  }
-  property("Double join") = forAll(MaxJoinGen, MaxJoinGen, MaxWorkersGen) {
-    (a: Int, b: Int, workers: Int) =>
-      runDoubleJoin(abs(a), abs(b), workers)
-      true
-  }
+    }
+  property("Double join") =
+    forAll(MaxJoinGen, MaxJoinGen, MaxWorkersGen) {
+      (a: Int, b: Int, workers: Int) =>
+        runDoubleJoin(abs(a), abs(b), workers)
+        true
+    }
   def runDoubleJoin(a: Int, b: Int, workers: Int): Unit = {
     def inner(i: Int) =
       List.range(0, b).map(j => task(j).named(j.toString)).join
     tryRun(List.range(0, a).map(inner).join, false, workers)
   }
-  property("fork and reduce") = forAll(TaskListGen, MaxWorkersGen) {
-    (m: List[Int], workers: Int) =>
+  property("fork and reduce") =
+    forAll(TaskListGen, MaxWorkersGen) { (m: List[Int], workers: Int) =>
       m.nonEmpty ==> {
         val expected = m.sum
         checkResult(tryRun(m.tasks.reduced(_ + _), false, workers), expected)
       }
-  }
+    }
 }

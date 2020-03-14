@@ -21,8 +21,7 @@ trait InfoTransform extends Transform {
 
   def transformInfo(sym: Symbol, tpe: Type): Type
 
-  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase =
-    new Phase(prev)
+  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new Phase(prev)
 
   protected def changesBaseClasses = true
   protected def keepsTypeParams = true
@@ -32,11 +31,12 @@ trait InfoTransform extends Transform {
 
     if (infoTransformers.nextFrom(id).pid != id) {
       // this phase is not yet in the infoTransformers
-      val infoTransformer = new InfoTransformer {
-        val pid = id
-        val changesBaseClasses = InfoTransform.this.changesBaseClasses
-        def transform(sym: Symbol, tpe: Type): Type = transformInfo(sym, tpe)
-      }
+      val infoTransformer =
+        new InfoTransformer {
+          val pid = id
+          val changesBaseClasses = InfoTransform.this.changesBaseClasses
+          def transform(sym: Symbol, tpe: Type): Type = transformInfo(sym, tpe)
+        }
       infoTransformers insert infoTransformer
     }
   }

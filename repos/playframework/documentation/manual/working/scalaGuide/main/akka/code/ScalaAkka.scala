@@ -73,14 +73,15 @@ package scalaguide.akka {
         import akka.pattern.ask
         implicit val timeout = 5.seconds
 
-        val actor =
-          app.injector.instanceOf(bind[ActorRef].qualifiedWith("parent-actor"))
-        val futureConfig = for {
-          child <- (actor ? actors.ParentActor.GetChild("my.config"))
-            .mapTo[ActorRef]
-          config <- (child ? actors.ConfiguredChildActor.GetConfig)
-            .mapTo[String]
-        } yield config
+        val actor = app.injector.instanceOf(
+          bind[ActorRef].qualifiedWith("parent-actor"))
+        val futureConfig =
+          for {
+            child <- (actor ? actors.ParentActor.GetChild("my.config"))
+              .mapTo[ActorRef]
+            config <- (child ? actors.ConfiguredChildActor.GetConfig)
+              .mapTo[String]
+          } yield config
         await(futureConfig) must_== "foo"
       }
 

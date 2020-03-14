@@ -59,9 +59,10 @@ class PriorityQueueTest {
   @Test def should_store_objects_with_custom_comparables(): Unit = {
     case class Rect(x: Int, y: Int)
 
-    val areaComp = new Comparator[Rect] {
-      def compare(a: Rect, b: Rect): Int = (a.x * a.y) - (b.x * b.y)
-    }
+    val areaComp =
+      new Comparator[Rect] {
+        def compare(a: Rect, b: Rect): Int = (a.x * a.y) - (b.x * b.y)
+      }
 
     val pq = new PriorityQueue[Rect](11, areaComp)
 

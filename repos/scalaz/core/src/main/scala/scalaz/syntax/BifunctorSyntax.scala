@@ -33,8 +33,7 @@ sealed trait ToBifunctorOps0 {
 trait ToBifunctorOps extends ToBifunctorOps0 {
 
   implicit def ToBifunctorOps[F[_, _], A, B](v: F[A, B])(
-      implicit F0: Bifunctor[F]) =
-    new BifunctorOps[F, A, B](v)
+      implicit F0: Bifunctor[F]) = new BifunctorOps[F, A, B](v)
 
   implicit def ToBifunctorVFromKleisliLike[G[_], F[G[_], _, _], A, B](
       v: F[G, A, B])(implicit F0: Bifunctor[F[G, ?, ?]]) =

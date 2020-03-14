@@ -71,12 +71,14 @@ object BooleanInduction extends App {
     trait Case[B <: Boolean] {
       type T
     }
-    implicit val sit = new Case[True] {
-      type T = String
-    }
-    implicit val sif = new Case[False] {
-      type T = Int
-    }
+    implicit val sit =
+      new Case[True] {
+        type T = String
+      }
+    implicit val sif =
+      new Case[False] {
+        type T = Int
+      }
   }
 
   val bt: String = boolInduction(si)("foo")(23)(true)

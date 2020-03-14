@@ -385,19 +385,22 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           // build a set of the distinct aggregate expressions and build a function which can
           // be used to re-write expressions so that they reference the single copy of the
           // aggregate function which actually gets computed.
-          val aggregateExpressions = resultExpressions.flatMap { expr =>
-            expr.collect {
-              case agg: AggregateExpression => agg
-            }
-          }.distinct
+          val aggregateExpressions =
+            resultExpressions.flatMap { expr =>
+              expr.collect {
+                case agg: AggregateExpression => agg
+              }
+            }.distinct
           // For those distinct aggregate expressions, we create a map from the
           // aggregate function to the corresponding attribute of the function.
-          val aggregateFunctionToAttribute = aggregateExpressions.map { agg =>
-            val aggregateFunction = agg.aggregateFunction
-            val attribute =
-              Alias(aggregateFunction, aggregateFunction.toString)().toAttribute
-            (aggregateFunction, agg.isDistinct) -> attribute
-          }.toMap
+          val aggregateFunctionToAttribute =
+            aggregateExpressions.map { agg =>
+              val aggregateFunction = agg.aggregateFunction
+              val attribute =
+                Alias(aggregateFunction, aggregateFunction.toString)()
+                  .toAttribute
+              (aggregateFunction, agg.isDistinct) -> attribute
+            }.toMap
 
           val (functionsWithDistinct, functionsWithoutDistinct) =
             aggregateExpressions.partition(_.isDistinct)
@@ -555,8 +558,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
       }
   }
 
-  protected lazy val singleRowRdd =
-    sparkContext.parallelize(Seq(InternalRow()), 1)
+  protected lazy val singleRowRdd = sparkContext.parallelize(
+    Seq(InternalRow()),
+    1)
 
   object InMemoryScans extends Strategy {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =

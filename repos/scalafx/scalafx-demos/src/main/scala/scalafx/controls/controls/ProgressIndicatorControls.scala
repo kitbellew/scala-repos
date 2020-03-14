@@ -43,13 +43,15 @@ class ProgressIndicatorControls(target: ProgressIndicator)
       () => (target.progress = ProgressIndicator.IndeterminateProgress))
   }
 
-  val lblRealValue = new Label {
-    text <== target.progress.asString()
-  }
+  val lblRealValue =
+    new Label {
+      text <== target.progress.asString()
+    }
 
-  val lblIndeterminate = new Label {
-    text <== target.indeterminate.asString()
-  }
+  val lblIndeterminate =
+    new Label {
+      text <== target.indeterminate.asString()
+    }
 
   super.addNode("Value", txfValue)
   super.addNode("Real Value", lblRealValue)

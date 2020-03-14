@@ -66,8 +66,7 @@ class ArgsSerializer extends KSerializer[Args] {
   def write(kser: Kryo, out: Output, a: Args) {
     out.writeString(a.toString)
   }
-  def read(kser: Kryo, in: Input, cls: Class[Args]): Args =
-    Args(in.readString)
+  def read(kser: Kryo, in: Input, cls: Class[Args]): Args = Args(in.readString)
 }
 
 class IntFieldSerializer extends KSerializer[IntField[_]] {

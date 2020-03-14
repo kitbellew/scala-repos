@@ -20,14 +20,15 @@ trait LowPriorityProductFormats {
   }
 
   object HListFormat {
-    implicit val HNilFormat: HListFormat[HNil] = new HListFormat[HNil] {
-      def write(x: HNil) = Nil
-      def read(value: List[Sexp]) =
-        value match {
-          case Nil => HNil
-          case x   => throw new DeserializationException(s"Didn't expect $x")
-        }
-    }
+    implicit val HNilFormat: HListFormat[HNil] =
+      new HListFormat[HNil] {
+        def write(x: HNil) = Nil
+        def read(value: List[Sexp]) =
+          value match {
+            case Nil => HNil
+            case x   => throw new DeserializationException(s"Didn't expect $x")
+          }
+      }
 
     implicit def hListFormat[H, T <: HList](implicit
         h: Lazy[SexpFormat[H]],

@@ -100,8 +100,9 @@ class AllProjectHighlightingTest
   }
 
   def doRunHighlighting(): Unit = {
-    val inspectionManagerEx: InspectionManagerEx =
-      InspectionManager.getInstance(myProject).asInstanceOf[InspectionManagerEx]
+    val inspectionManagerEx: InspectionManagerEx = InspectionManager
+      .getInstance(myProject)
+      .asInstanceOf[InspectionManagerEx]
 
     val searchScope =
       new SourceFilterScope(
@@ -111,15 +112,17 @@ class AllProjectHighlightingTest
           JavaFileType.INSTANCE),
         myProject)
 
-    val files: util.Collection[VirtualFile] =
-      FileTypeIndex.getFiles(ScalaFileType.SCALA_FILE_TYPE, searchScope)
+    val files: util.Collection[VirtualFile] = FileTypeIndex.getFiles(
+      ScalaFileType.SCALA_FILE_TYPE,
+      searchScope)
 
     LocalFileSystem.getInstance().refreshFiles(files)
 
-    val fileManager = PsiManager
-      .getInstance(myProject)
-      .asInstanceOf[PsiManagerEx]
-      .getFileManager
+    val fileManager =
+      PsiManager
+        .getInstance(myProject)
+        .asInstanceOf[PsiManagerEx]
+        .getFileManager
     val annotator = new ScalaAnnotator
 
     import scala.collection.JavaConversions._
@@ -129,25 +132,26 @@ class AllProjectHighlightingTest
     val size: Int = files.size()
 
     for ((file, index) <- files.zipWithIndex) {
-      val mock = new AnnotatorHolderMock {
-        override def createErrorAnnotation(
-            range: TextRange,
-            message: String): Annotation = {
-          errorCount += 1
-          println(
-            s"Error in ${file.getName}. Range: $range. Message: $message.")
-          super.createErrorAnnotation(range, message)
-        }
+      val mock =
+        new AnnotatorHolderMock {
+          override def createErrorAnnotation(
+              range: TextRange,
+              message: String): Annotation = {
+            errorCount += 1
+            println(
+              s"Error in ${file.getName}. Range: $range. Message: $message.")
+            super.createErrorAnnotation(range, message)
+          }
 
-        override def createErrorAnnotation(
-            elt: PsiElement,
-            message: String): Annotation = {
-          errorCount += 1
-          println(
-            s"Error in ${file.getName}. Range: ${elt.getTextRange}. Message: $message.")
-          super.createErrorAnnotation(elt, message)
+          override def createErrorAnnotation(
+              elt: PsiElement,
+              message: String): Annotation = {
+            errorCount += 1
+            println(
+              s"Error in ${file.getName}. Range: ${elt.getTextRange}. Message: $message.")
+            super.createErrorAnnotation(elt, message)
+          }
         }
-      }
 
       if ((index + 1) * 100 >= (percent + 1) * size) {
         while ((index + 1) * 100 >= (percent + 1) * size)
@@ -157,19 +161,20 @@ class AllProjectHighlightingTest
 
       val psi = fileManager.findFile(file)
 
-      val visitor = new ScalaRecursiveElementVisitor {
-        override def visitElement(element: ScalaPsiElement) {
-          try {
-            annotator.annotate(element, mock)
-          } catch {
-            case e: Throwable =>
-              println(s"Exception in ${file.getName}, Stacktrace: ")
-              e.printStackTrace()
-              assert(false)
+      val visitor =
+        new ScalaRecursiveElementVisitor {
+          override def visitElement(element: ScalaPsiElement) {
+            try {
+              annotator.annotate(element, mock)
+            } catch {
+              case e: Throwable =>
+                println(s"Exception in ${file.getName}, Stacktrace: ")
+                e.printStackTrace()
+                assert(false)
+            }
+            super.visitElement(element)
           }
-          super.visitElement(element)
         }
-      }
       psi.accept(visitor)
     }
 
@@ -181,8 +186,8 @@ class AllProjectHighlightingTest
     val projectDir: File = new File(getRootDir, getTestName(false))
     if (!projectDir.exists())
       return
-    myProjectRoot =
-      LocalFileSystem.getInstance.refreshAndFindFileByIoFile(projectDir)
+    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
+      projectDir)
     setUpSbtLauncherAndStructure(myProject)
   }
 }

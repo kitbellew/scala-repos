@@ -56,10 +56,11 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       if (settings.docUncompilable.isDefault)
         Set()
       else {
-        val uncompilable = new {
-          val global: compiler.type = compiler
-          val settings = processor.settings
-        } with Uncompilable {}
+        val uncompilable =
+          new {
+            val global: compiler.type = compiler
+            val settings = processor.settings
+          } with Uncompilable {}
 
         compiler.docComments ++= uncompilable.comments
         docdbg("" + uncompilable)
@@ -68,20 +69,22 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
       }
     }
 
-    val modelFactory = (
-      new {
-        override val global: compiler.type = compiler
-      } with model.ModelFactory(compiler, settings)
-        with model.ModelFactoryImplicitSupport
-      with model.ModelFactoryTypeSupport with model.diagram.DiagramFactory
-      with model.CommentFactory with model.TreeFactory with model.MemberLookup {
-        override def templateShouldDocument(
-            sym: compiler.Symbol,
-            inTpl: DocTemplateImpl) =
-          extraTemplatesToDocument(sym) || super
-            .templateShouldDocument(sym, inTpl)
-      }
-    )
+    val modelFactory =
+      (
+        new {
+          override val global: compiler.type = compiler
+        } with model.ModelFactory(compiler, settings)
+          with model.ModelFactoryImplicitSupport
+        with model.ModelFactoryTypeSupport with model.diagram.DiagramFactory
+        with model.CommentFactory with model.TreeFactory
+        with model.MemberLookup {
+          override def templateShouldDocument(
+              sym: compiler.Symbol,
+              inTpl: DocTemplateImpl) =
+            extraTemplatesToDocument(sym) || super
+              .templateShouldDocument(sym, inTpl)
+        }
+      )
 
     modelFactory.makeModel match {
       case Some(madeModel) =>
@@ -118,8 +121,9 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   def document(files: List[String]) {
     def generate() = {
       import doclet._
-      val docletClass =
-        Class.forName(settings.docgenerator.value) // default is html.Doclet
+      val docletClass = Class.forName(
+        settings.docgenerator.value
+      ) // default is html.Doclet
       val docletInstance = docletClass.newInstance().asInstanceOf[Generator]
 
       docletInstance match {

@@ -11,8 +11,7 @@ import org.junit.Assert
   */
 class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   def testRenameValAliased() {
-    val fileText =
-      """
+    val fileText = """
       |object test {
       |
       |  object A {
@@ -32,8 +31,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
     Assert.assertEquals(usages.size(), 3)
     myFixture.renameElementAtCaret("newValueName")
 
-    val resultText =
-      """object test {
+    val resultText = """object test {
         |
         |  object A {
         |    val newValueName = 1
@@ -50,8 +48,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   }
 
   def testRenameDefAliased() {
-    val fileText =
-      """
+    val fileText = """
       |object test {
       |
       |  object A {
@@ -71,8 +68,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
     Assert.assertEquals(usages.size(), 3)
     myFixture.renameElementAtCaret("newDefName")
 
-    val resultText =
-      """
+    val resultText = """
       |object test {
       |
       |  object A {
@@ -90,8 +86,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   }
 
   def testRenameObjectAliased() {
-    val fileText =
-      """
+    val fileText = """
       |object test {
       |
       |  object A {
@@ -113,8 +108,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
     Assert.assertEquals(usages.length, 3)
     myFixture.renameElementAtCaret("newObjectName")
 
-    val resultText =
-      """
+    val resultText = """
       |object test {
       |
       |  object A {
@@ -134,8 +128,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   }
 
   def testRenameClassAliased() {
-    val fileText =
-      """
+    val fileText = """
       |object test {
       |
       |  object A {
@@ -157,8 +150,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
     Assert.assertEquals(usages.size(), 5)
     myFixture.renameElementAtCaret("newClassName")
 
-    val resultText =
-      """
+    val resultText = """
       |object test {
       |
       |  object A {
@@ -178,8 +170,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   }
 
   def testRenameAliasOfTypeAliasToClass() {
-    val fileText =
-      """
+    val fileText = """
       |object test {
       |
       |  class X
@@ -201,8 +192,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
     Assert.assertEquals(usages.size(), 5)
     myFixture.renameElementAtCaret("newAliasName")
 
-    val resultText =
-      """
+    val resultText = """
         |object test {
         |
         |  class X
@@ -222,8 +212,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   }
 
   def testRenameTypeAliasToClass() {
-    val fileText =
-      """
+    val fileText = """
       |object test {
       |
       |  class X
@@ -241,8 +230,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
     Assert.assertEquals(usages.size(), 2)
     myFixture.renameElementAtCaret("newAliasName")
 
-    val resultText =
-      """
+    val resultText = """
       |object test {
       |
       |  class X
@@ -258,8 +246,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
   }
 
   def testRenameClassWithSameNameTypeAlias() {
-    val fileText =
-      """
+    val fileText = """
         |class oldName<caret>
         |
         |object A {
@@ -277,8 +264,7 @@ class ScalaRenameAliasedTest extends ScalaRenameTestBase {
     Assert.assertEquals(usages.size(), 5)
     myFixture.renameElementAtCaret("newName")
 
-    val resultText =
-      """
+    val resultText = """
         |class newName
         |
         |object A {

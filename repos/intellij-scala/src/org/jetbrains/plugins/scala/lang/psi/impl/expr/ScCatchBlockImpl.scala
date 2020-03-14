@@ -31,8 +31,8 @@ class ScCatchBlockImpl(node: ASTNode)
   }
 
   def getLeftParenthesis = {
-    val leftParenthesis =
-      findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)
+    val leftParenthesis = findChildByType[PsiElement](
+      ScalaTokenTypes.tLPARENTHESIS)
     if (leftParenthesis == null)
       None
     else
@@ -40,8 +40,8 @@ class ScCatchBlockImpl(node: ASTNode)
   }
 
   def getRightParenthesis = {
-    val rightParenthesis =
-      findChildByType[PsiElement](ScalaTokenTypes.tRPARENTHESIS)
+    val rightParenthesis = findChildByType[PsiElement](
+      ScalaTokenTypes.tRPARENTHESIS)
     if (rightParenthesis == null)
       None
     else

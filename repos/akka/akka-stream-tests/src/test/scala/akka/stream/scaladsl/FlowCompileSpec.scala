@@ -53,8 +53,9 @@ class FlowCompileSpec extends AkkaSpec {
     }
     "append Sink" in {
       val open: Flow[Int, String, _] = Flow[Int].map(_.toString)
-      val closedSink: Sink[String, _] =
-        Flow[String].map(_.hashCode).to(Sink.asPublisher[Int](false))
+      val closedSink: Sink[String, _] = Flow[String]
+        .map(_.hashCode)
+        .to(Sink.asPublisher[Int](false))
       val appended: Sink[Int, _] = open.to(closedSink)
       "appended.run()" shouldNot compile
       "appended.to(Sink.head[Int])" shouldNot compile
@@ -62,8 +63,8 @@ class FlowCompileSpec extends AkkaSpec {
     }
     "be appended to Source" in {
       val open: Flow[Int, String, _] = Flow[Int].map(_.toString)
-      val closedSource: Source[Int, _] =
-        strSeq.via(Flow[String].map(_.hashCode))
+      val closedSource: Source[Int, _] = strSeq.via(
+        Flow[String].map(_.hashCode))
       val closedSource2: Source[String, _] = closedSource.via(open)
       "closedSource2.run()" shouldNot compile
       "strSeq.to(closedSource2)" shouldNot compile
@@ -72,8 +73,9 @@ class FlowCompileSpec extends AkkaSpec {
   }
 
   "Sink" should {
-    val openSink: Sink[Int, _] =
-      Flow[Int].map(_.toString).to(Sink.asPublisher[String](false))
+    val openSink: Sink[Int, _] = Flow[Int]
+      .map(_.toString)
+      .to(Sink.asPublisher[String](false))
     "accept Source" in {
       intSeq.to(openSink)
     }
@@ -86,8 +88,7 @@ class FlowCompileSpec extends AkkaSpec {
   }
 
   "Source" should {
-    val openSource: Source[String, _] =
-      Source(Seq(1, 2, 3)).map(_.toString)
+    val openSource: Source[String, _] = Source(Seq(1, 2, 3)).map(_.toString)
     "accept Sink" in {
       openSource.to(Sink.asPublisher[String](false))
     }

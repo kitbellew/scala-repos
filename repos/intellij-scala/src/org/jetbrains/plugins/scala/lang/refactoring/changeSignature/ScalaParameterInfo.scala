@@ -49,10 +49,11 @@ class ScalaParameterInfo(
   @BooleanBeanProperty
   var useAnySingleVariable: Boolean = false
 
-  val wasArrayType: Boolean = scType match {
-    case JavaArrayType(_) => true
-    case _                => false
-  }
+  val wasArrayType: Boolean =
+    scType match {
+      case JavaArrayType(_) => true
+      case _                => false
+    }
 
   val isVarargType =
     false //overriders in java of method with repeated parameters are not varargs
@@ -66,8 +67,10 @@ class ScalaParameterInfo(
       val functionType = ScFunctionType(scType, Seq())(project, allScope)
       ScType.toPsi(functionType, project, allScope)
     } else if (isRepeatedParameter) {
-      val seqType =
-        ScDesignatorType.fromClassFqn("scala.collection.Seq", project, allScope)
+      val seqType = ScDesignatorType.fromClassFqn(
+        "scala.collection.Seq",
+        project,
+        allScope)
       ScType.toPsi(ScParameterizedType(seqType, Seq(scType)), project, allScope)
     } else
       ScType.toPsi(scType, project, allScope)
@@ -81,15 +84,16 @@ class ScalaParameterInfo(
       return null
     val defaultText =
       if (defaultForJava.contains("$default$")) {
-        val qual = expr match {
-          case mc: PsiMethodCallExpression =>
-            mc.getMethodExpression.getQualifierExpression match {
-              case s: PsiSuperExpression => ""
-              case null                  => ""
-              case q                     => q.getText + "."
-            }
-          case _ => ""
-        }
+        val qual =
+          expr match {
+            case mc: PsiMethodCallExpression =>
+              mc.getMethodExpression.getQualifierExpression match {
+                case s: PsiSuperExpression => ""
+                case null                  => ""
+                case q                     => q.getText + "."
+              }
+            case _ => ""
+          }
         qual + defaultForJava
       } else
         defaultForJava

@@ -60,15 +60,16 @@ class OneHotEncoderSuite
       .setDropLast(false)
     val encoded = encoder.transform(transformed)
 
-    val output = encoded
-      .select("id", "labelVec")
-      .rdd
-      .map { r =>
-        val vec = r.getAs[Vector](1)
-        (r.getInt(0), vec(0), vec(1), vec(2))
-      }
-      .collect()
-      .toSet
+    val output =
+      encoded
+        .select("id", "labelVec")
+        .rdd
+        .map { r =>
+          val vec = r.getAs[Vector](1)
+          (r.getInt(0), vec(0), vec(1), vec(2))
+        }
+        .collect()
+        .toSet
     // a -> 0, b -> 2, c -> 1
     val expected = Set(
       (0, 1.0, 0.0, 0.0),
@@ -87,15 +88,16 @@ class OneHotEncoderSuite
       .setOutputCol("labelVec")
     val encoded = encoder.transform(transformed)
 
-    val output = encoded
-      .select("id", "labelVec")
-      .rdd
-      .map { r =>
-        val vec = r.getAs[Vector](1)
-        (r.getInt(0), vec(0), vec(1))
-      }
-      .collect()
-      .toSet
+    val output =
+      encoded
+        .select("id", "labelVec")
+        .rdd
+        .map { r =>
+          val vec = r.getAs[Vector](1)
+          (r.getInt(0), vec(0), vec(1))
+        }
+        .collect()
+        .toSet
     // a -> 0, b -> 2, c -> 1
     val expected = Set(
       (0, 1.0, 0.0),
@@ -108,8 +110,10 @@ class OneHotEncoderSuite
   }
 
   test("input column with ML attribute") {
-    val attr =
-      NominalAttribute.defaultAttr.withValues("small", "medium", "large")
+    val attr = NominalAttribute.defaultAttr.withValues(
+      "small",
+      "medium",
+      "large")
     val df = sqlContext
       .createDataFrame(Seq(0.0, 1.0, 2.0, 1.0).map(Tuple1.apply))
       .toDF("size")
@@ -178,15 +182,16 @@ class OneHotEncoderSuite
         .setDropLast(false)
       val encoded = encoder.transform(dfWithTypes)
 
-      val output = encoded
-        .select("id", "labelVec")
-        .rdd
-        .map { r =>
-          val vec = r.getAs[Vector](1)
-          (r.getInt(0), vec(0), vec(1), vec(2))
-        }
-        .collect()
-        .toSet
+      val output =
+        encoded
+          .select("id", "labelVec")
+          .rdd
+          .map { r =>
+            val vec = r.getAs[Vector](1)
+            (r.getInt(0), vec(0), vec(1), vec(2))
+          }
+          .collect()
+          .toSet
       // a -> 0, b -> 2, c -> 1
       val expected = Set(
         (0, 1.0, 0.0, 0.0),

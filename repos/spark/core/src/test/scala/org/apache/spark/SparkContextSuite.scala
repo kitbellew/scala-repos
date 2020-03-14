@@ -54,8 +54,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
 
   test(
     "Can still construct a new SparkContext after failing to construct a previous one") {
-    val conf =
-      new SparkConf().set("spark.driver.allowMultipleContexts", "false")
+    val conf = new SparkConf()
+      .set("spark.driver.allowMultipleContexts", "false")
     // This is an invalid configuration (no app name or master URL)
     intercept[SparkException] {
       new SparkContext(conf)

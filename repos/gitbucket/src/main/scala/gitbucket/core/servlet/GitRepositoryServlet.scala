@@ -64,9 +64,10 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
 class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
     extends RepositoryResolver[HttpServletRequest] {
 
-  private val resolver = new FileResolver[HttpServletRequest](
-    new File(Directory.GitBucketHome),
-    true)
+  private val resolver =
+    new FileResolver[HttpServletRequest](
+      new File(Directory.GitBucketHome),
+      true)
 
   override def open(req: HttpServletRequest, name: String): Repository = {
     // Rewrite repository path if routing is marched
@@ -88,8 +89,8 @@ class GitBucketReceivePackFactory
     extends ReceivePackFactory[HttpServletRequest]
     with SystemSettingsService {
 
-  private val logger =
-    LoggerFactory.getLogger(classOf[GitBucketReceivePackFactory])
+  private val logger = LoggerFactory.getLogger(
+    classOf[GitBucketReceivePackFactory])
 
   override def create(
       request: HttpServletRequest,
@@ -99,8 +100,9 @@ class GitBucketReceivePackFactory
     if (PluginRegistry()
           .getRepositoryRouting(request.gitRepositoryPath)
           .isEmpty) {
-      val pusher =
-        request.getAttribute(Keys.Request.UserName).asInstanceOf[String]
+      val pusher = request
+        .getAttribute(Keys.Request.UserName)
+        .asInstanceOf[String]
 
       logger.debug("requestURI: " + request.getRequestURI)
       logger.debug("pusher:" + pusher)
@@ -185,18 +187,19 @@ class CommitLogHook(
           implicit val apiContext = api.JsonFormat.Context(baseUrl)
           val refName = command.getRefName.split("/")
           val branchName = refName.drop(2).mkString("/")
-          val commits = if (refName(1) == "tags") {
-            Nil
-          } else {
-            command.getType match {
-              case ReceiveCommand.Type.DELETE => Nil
-              case _ =>
-                JGitUtil.getCommitLog(
-                  git,
-                  command.getOldId.name,
-                  command.getNewId.name)
+          val commits =
+            if (refName(1) == "tags") {
+              Nil
+            } else {
+              command.getType match {
+                case ReceiveCommand.Type.DELETE => Nil
+                case _ =>
+                  JGitUtil.getCommitLog(
+                    git,
+                    command.getOldId.name,
+                    command.getNewId.name)
+              }
             }
-          }
 
           // Retrieve all issue count in the repository
           val issueCount =

@@ -44,20 +44,23 @@ abstract class CheckPrivateAccessTestBase
     if (!elem.isInstanceOf[ScReferenceElement])
       assert(assertion = true, message = "Ref marker should point on reference")
     val ref = elem.asInstanceOf[ScReferenceElement]
-    val resolve: PsiMember =
-      PsiTreeUtil.getParentOfType(ref.resolve(), classOf[PsiMember], false)
+    val resolve: PsiMember = PsiTreeUtil.getParentOfType(
+      ref.resolve(),
+      classOf[PsiMember],
+      false)
 
     val res = "" + ResolveUtils.isAccessible(resolve, elem)
 
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     val text = lastPsi.getText
-    val output = lastPsi.getNode.getElementType match {
-      case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
-      case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
-        text.substring(2, text.length - 2).trim
-      case _ =>
-        assertTrue("Test result must be in last comment statement.", false)
-    }
+    val output =
+      lastPsi.getNode.getElementType match {
+        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
+          text.substring(2, text.length - 2).trim
+        case _ =>
+          assertTrue("Test result must be in last comment statement.", false)
+      }
     assertEquals(output, res.toString)
   }
 }

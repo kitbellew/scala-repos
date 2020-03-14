@@ -80,14 +80,16 @@ object Scalding {
       override def invert(in: Interval[Timestamp]) =
         in match {
           case Intersection(lb, ub) =>
-            val low = lb match {
-              case InclusiveLower(l) => l
-              case ExclusiveLower(l) => l.next
-            }
-            val high = ub match {
-              case InclusiveUpper(u) => u
-              case ExclusiveUpper(u) => u.prev
-            }
+            val low =
+              lb match {
+                case InclusiveLower(l) => l
+                case ExclusiveLower(l) => l.next
+              }
+            val high =
+              ub match {
+                case InclusiveUpper(u) => u
+                case ExclusiveUpper(u) => u.prev
+              }
             Success(DateRange(low.toRichDate, high.toRichDate))
           case _ => Failure(new RuntimeException("Unbounded interval!"))
         }
@@ -103,17 +105,18 @@ object Scalding {
       options: Map[String, Options],
       s: Summer[Scalding, _, _]): Commutativity = {
 
-    val commutativity = getOrElse(
-      options,
-      names,
-      s, {
-        val default = MonoidIsCommutative.default
-        logger.warn(
-          "Store: %s has no commutativity setting. Assuming %s"
-            .format(names, default))
-        default
-      }
-    ).commutativity
+    val commutativity =
+      getOrElse(
+        options,
+        names,
+        s, {
+          val default = MonoidIsCommutative.default
+          logger.warn(
+            "Store: %s has no commutativity setting. Assuming %s"
+              .format(names, default))
+          default
+        }
+      ).commutativity
 
     commutativity match {
       case Commutative =>
@@ -141,18 +144,19 @@ object Scalding {
   def minify(mode: Mode, desired: DateRange)(
       factory: (DateRange) => SSource): Either[List[FailureReason], DateRange] =
     try {
-      val available = (mode, factory(desired)) match {
-        case (hdfs: Hdfs, ts: STPS) =>
-          // This class has structure we can directly query
-          BTimePathedSource.satisfiableHdfs(
-            hdfs,
-            desired,
-            factory.asInstanceOf[DateRange => STPS])
-        case (_, source) if STry(source.validateTaps(mode)).isSuccess =>
-          // If we can validate, there is no need in doing any bisection
-          Some(desired)
-        case _ => bisectingMinify(mode, desired)(factory)
-      }
+      val available =
+        (mode, factory(desired)) match {
+          case (hdfs: Hdfs, ts: STPS) =>
+            // This class has structure we can directly query
+            BTimePathedSource.satisfiableHdfs(
+              hdfs,
+              desired,
+              factory.asInstanceOf[DateRange => STPS])
+          case (_, source) if STry(source.validateTaps(mode)).isSuccess =>
+            // If we can validate, there is no need in doing any bisection
+            Some(desired)
+          case _ => bisectingMinify(mode, desired)(factory)
+        }
       available
         .flatMap {
           intersect(desired, _)
@@ -395,12 +399,13 @@ object Scalding {
     }
 
     // This is used to join in the StateWithError monad that we use to plan
-    implicit val modeSemigroup: Semigroup[Mode] = new Semigroup[Mode] {
-      def plus(left: Mode, right: Mode) = {
-        assert(left == right, "Mode cannot change during planning")
-        left
+    implicit val modeSemigroup: Semigroup[Mode] =
+      new Semigroup[Mode] {
+        def plus(left: Mode, right: Mode) = {
+          assert(left == right, "Mode cannot change during planning")
+          left
+        }
       }
-    }
 
     /**
       * The scalding Typed-API does not deal with TypedPipes with fanout,
@@ -425,278 +430,290 @@ object Scalding {
     built.get(producer) match {
       case Some(pf) => (pf.asInstanceOf[PipeFactory[T]], built)
       case None =>
-        val (pf, m) = producer match {
-          case Source(src) => {
-            val shards =
-              getOrElse(options, names, producer, FlatMapShards.default).count
-            val srcPf =
-              if (shards <= 1)
-                src
-              else
-                src.mapPipe(_.shard(shards))
+        val (pf, m) =
+          producer match {
+            case Source(src) => {
+              val shards =
+                getOrElse(options, names, producer, FlatMapShards.default).count
+              val srcPf =
+                if (shards <= 1)
+                  src
+                else
+                  src.mapPipe(_.shard(shards))
 
-            (srcPf, built)
-          }
-          case IdentityKeyedProducer(producer) =>
-            recurse(producer)
-          case NamedProducer(producer, newId) =>
-            recurse(producer)
-          case summer @ Summer(producer, store, semigroup) =>
-            /*
-             * The store may already have materialized values, so we don't need the whole
-             * input history, but to produce NEW batches, we may need some input.
-             * So, we pass the full PipeFactory to to the store so it can request only
-             * the time ranges that it needs.
-             */
-            val shouldForkProducer =
-              InternalService.storeIsJoined(dependants, store)
-            val (in, m) = recurse(producer, forceFanOut = shouldForkProducer)
-            val commutativity = getCommutativity(names, options, summer)
-            val storeReducers =
-              getOrElse(options, names, producer, Reducers.default).count
-            logger.info(
-              "Store {} using {} reducers (-1 means unset)",
-              store,
-              storeReducers)
-            (store.merge(in, semigroup, commutativity, storeReducers), m)
-          case LeftJoinedProducer(left, service: ExternalService[_, _]) =>
-            /**
-              * There is no point loading more from the left than the service can
-              * join with, so we pass in the left PipeFactory so that the service
-              * can compute how wuch it can actually handle and only load that much
-              */
-            val (pf, m) = recurse(left)
-            (service.lookup(pf), m)
-          case ljp @ LeftJoinedProducer(left, StoreService(store))
-              if InternalService.storeDoesNotDependOnJoin(
-                dependants,
-                ljp,
-                store) =>
-            /*
-             * This is the simplest case of joining against a store. Here we just need the input to
-             * the store and call LookupJoin
-             * We use the go method to put the types correctly that scala misses in matching
-             */
-            def go[K, U, V](
-                left: Producer[Scalding, (K, U)],
-                bstore: BatchedStore[K, V]) = {
-              implicit val keyOrdering = bstore.ordering
-              val Summer(storeLog, _, sg) = InternalService
-                .getSummer[K, V](dependants, bstore)
-                .getOrElse(
-                  sys.error(
-                    "join %s is against store not in the entire job's Dag"
-                      .format(ljp)))
-              val (leftPf, m1) = recurse(left)
-              // We have to force the fanOut on the storeLog because this kind of fanout
-              // due to joining is not visible in the Dependants dag
-              val (logPf, m2) =
-                recurse(storeLog, built = m1, forceFanOut = true)
-              // We have to combine the last snapshot on disk with the deltas:
-              val allDeltas: PipeFactory[(K, V)] = bstore.readDeltaLog(logPf)
-              val reducers =
-                getOrElse(options, names, ljp, Reducers.default).count
-              val res = for {
-                leftAndDelta <- leftPf.join(allDeltas)
-                joined = InternalService.doIndependentJoin[K, U, V](
-                  leftAndDelta._1,
-                  leftAndDelta._2,
-                  sg,
-                  Some(reducers))
-                // read the latest state, which is the (time interval, mode)
-                maxAvailable <- StateWithError.getState
-              } yield Scalding.limitTimes(maxAvailable._1, joined)
-              (res, m2)
+              (srcPf, built)
             }
-            go(left, store)
-
-          case ljp @ LeftJoinedProducer(left, StoreService(store))
-              if InternalService.isValidLoopJoin(dependants, left, store) =>
-            def go[K, V, U](
-                incoming: Producer[Scalding, (K, V)],
-                bs: BatchedStore[K, U]) = {
-              val (flatMapFn, othersOpt) =
-                InternalService.getLoopInputs(dependants, incoming, bs)
-              val (leftPf, m1) = recurse(incoming)
-
-              val (deltaLogOpt, m2) = othersOpt match {
-                case Some(o) =>
-                  val (merges, m2) = recurse(o, built = m1)
-                  (Some(bs.readDeltaLog(merges)), m2)
-                case None =>
-                  (None, m1)
-              }
-              val reducers =
-                getOrElse(options, names, ljp, Reducers.default).count
-              implicit val keyOrdering = bs.ordering
-              val Summer(storeLog, _, sg) = InternalService
-                .getSummer[K, U](dependants, bs)
-                .getOrElse(
-                  sys.error(
-                    "join %s is against store not in the entire job's Dag"
-                      .format(ljp)))
-              implicit val semigroup: Semigroup[U] = sg
+            case IdentityKeyedProducer(producer) =>
+              recurse(producer)
+            case NamedProducer(producer, newId) =>
+              recurse(producer)
+            case summer @ Summer(producer, store, semigroup) =>
+              /*
+               * The store may already have materialized values, so we don't need the whole
+               * input history, but to produce NEW batches, we may need some input.
+               * So, we pass the full PipeFactory to to the store so it can request only
+               * the time ranges that it needs.
+               */
+              val shouldForkProducer = InternalService.storeIsJoined(
+                dependants,
+                store)
+              val (in, m) = recurse(producer, forceFanOut = shouldForkProducer)
+              val commutativity = getCommutativity(names, options, summer)
+              val storeReducers =
+                getOrElse(options, names, producer, Reducers.default).count
               logger.info(
-                "Service {} using {} reducers (-1 means unset)",
-                ljp,
-                reducers)
+                "Store {} using {} reducers (-1 means unset)",
+                store,
+                storeReducers)
+              (store.merge(in, semigroup, commutativity, storeReducers), m)
+            case LeftJoinedProducer(left, service: ExternalService[_, _]) =>
+              /**
+                * There is no point loading more from the left than the service can
+                * join with, so we pass in the left PipeFactory so that the service
+                * can compute how wuch it can actually handle and only load that much
+                */
+              val (pf, m) = recurse(left)
+              (service.lookup(pf), m)
+            case ljp @ LeftJoinedProducer(left, StoreService(store))
+                if InternalService.storeDoesNotDependOnJoin(
+                  dependants,
+                  ljp,
+                  store) =>
+              /*
+               * This is the simplest case of joining against a store. Here we just need the input to
+               * the store and call LookupJoin
+               * We use the go method to put the types correctly that scala misses in matching
+               */
+              def go[K, U, V](
+                  left: Producer[Scalding, (K, U)],
+                  bstore: BatchedStore[K, V]) = {
+                implicit val keyOrdering = bstore.ordering
+                val Summer(storeLog, _, sg) = InternalService
+                  .getSummer[K, V](dependants, bstore)
+                  .getOrElse(
+                    sys.error(
+                      "join %s is against store not in the entire job's Dag"
+                        .format(ljp)))
+                val (leftPf, m1) = recurse(left)
+                // We have to force the fanOut on the storeLog because this kind of fanout
+                // due to joining is not visible in the Dependants dag
+                val (logPf, m2) = recurse(
+                  storeLog,
+                  built = m1,
+                  forceFanOut = true)
+                // We have to combine the last snapshot on disk with the deltas:
+                val allDeltas: PipeFactory[(K, V)] = bstore.readDeltaLog(logPf)
+                val reducers =
+                  getOrElse(options, names, ljp, Reducers.default).count
+                val res =
+                  for {
+                    leftAndDelta <- leftPf.join(allDeltas)
+                    joined = InternalService.doIndependentJoin[K, U, V](
+                      leftAndDelta._1,
+                      leftAndDelta._2,
+                      sg,
+                      Some(reducers))
+                    // read the latest state, which is the (time interval, mode)
+                    maxAvailable <- StateWithError.getState
+                  } yield Scalding.limitTimes(maxAvailable._1, joined)
+                (res, m2)
+              }
+              go(left, store)
 
-              val res: PipeFactory[(K, (V, Option[U]))] = for {
-                // Handle the Option[Producer] return value from getLoopInputs properly.
-                // If there was no producer returned, pass an empty TypedPipe to the join for that part.
-                flowToPipe <- deltaLogOpt
-                  .map { del =>
-                    leftPf.join(del).map {
-                      case (ftpA, ftpB) =>
-                        Scalding.joinFP(
-                          ftpA,
-                          ftpB
-                        ) // extra producer for store, join the two FlowToPipes
+            case ljp @ LeftJoinedProducer(left, StoreService(store))
+                if InternalService.isValidLoopJoin(dependants, left, store) =>
+              def go[K, V, U](
+                  incoming: Producer[Scalding, (K, V)],
+                  bs: BatchedStore[K, U]) = {
+                val (flatMapFn, othersOpt) = InternalService.getLoopInputs(
+                  dependants,
+                  incoming,
+                  bs)
+                val (leftPf, m1) = recurse(incoming)
+
+                val (deltaLogOpt, m2) =
+                  othersOpt match {
+                    case Some(o) =>
+                      val (merges, m2) = recurse(o, built = m1)
+                      (Some(bs.readDeltaLog(merges)), m2)
+                    case None =>
+                      (None, m1)
+                  }
+                val reducers =
+                  getOrElse(options, names, ljp, Reducers.default).count
+                implicit val keyOrdering = bs.ordering
+                val Summer(storeLog, _, sg) = InternalService
+                  .getSummer[K, U](dependants, bs)
+                  .getOrElse(
+                    sys.error(
+                      "join %s is against store not in the entire job's Dag"
+                        .format(ljp)))
+                implicit val semigroup: Semigroup[U] = sg
+                logger.info(
+                  "Service {} using {} reducers (-1 means unset)",
+                  ljp,
+                  reducers)
+
+                val res: PipeFactory[(K, (V, Option[U]))] =
+                  for {
+                    // Handle the Option[Producer] return value from getLoopInputs properly.
+                    // If there was no producer returned, pass an empty TypedPipe to the join for that part.
+                    flowToPipe <- deltaLogOpt
+                      .map { del =>
+                        leftPf.join(del).map {
+                          case (ftpA, ftpB) =>
+                            Scalding.joinFP(
+                              ftpA,
+                              ftpB
+                            ) // extra producer for store, join the two FlowToPipes
+                        }
+                      }
+                      .getOrElse(leftPf.map { p =>
+                        p.map((_, TypedPipe.empty))
+                      }) // no extra producer for store
+                    servOut = flowToPipe.map {
+                      case (lpipe, dpipe) =>
+                        InternalService.loopJoin[Timestamp, K, V, U](
+                          lpipe,
+                          dpipe,
+                          flatMapFn,
+                          Some(reducers))
+                    }
+                    // servOut is both the store output and the join output
+                    plannedStore = servOut.map(_._1)
+                  } yield plannedStore
+
+                (res, m2)
+              }
+              go(left, store)
+            case ljp @ LeftJoinedProducer(left, StoreService(store)) =>
+              sys.error(
+                "Unsupported Join against store: not a valid loop join. If the store depends on join output, only the values can change (filterValues, mapValues, flatMapValues).")
+            case WrittenProducer(producer, sink) =>
+              val (pf, m) = recurse(producer)
+              (sink.write(pf), m)
+            case OptionMappedProducer(producer, op) =>
+              // Map in two monads here, first state then reader
+              val (fmp, m) = recurse(producer)
+              (
+                fmp.map { flowP =>
+                  flowP.map { typedPipe =>
+                    typedPipe.flatMap {
+                      case (time, item) =>
+                        op(item).map((time, _))
                     }
                   }
-                  .getOrElse(leftPf.map { p =>
-                    p.map((_, TypedPipe.empty))
-                  }) // no extra producer for store
-                servOut = flowToPipe.map {
-                  case (lpipe, dpipe) =>
-                    InternalService.loopJoin[Timestamp, K, V, U](
-                      lpipe,
-                      dpipe,
-                      flatMapFn,
-                      Some(reducers))
-                }
-                // servOut is both the store output and the join output
-                plannedStore = servOut.map(_._1)
-              } yield plannedStore
+                },
+                m)
+            case ValueFlatMappedProducer(producer, op) =>
+              // Map in two monads here, first state then reader
+              val (fmp, m) = recurse(producer)
+              (
+                fmp.map { flowP =>
+                  flowP.map { typedPipe =>
+                    typedPipe.flatMap {
+                      case (time, (k, v)) =>
+                        op(v).map { u =>
+                          (time, (k, u))
+                        }
+                    }
+                  }
+                },
+                m)
+            case kfm @ KeyFlatMappedProducer(producer, op) =>
+              val (fmp, m) = recurse(producer)
 
-              (res, m2)
-            }
-            go(left, store)
-          case ljp @ LeftJoinedProducer(left, StoreService(store)) =>
-            sys.error(
-              "Unsupported Join against store: not a valid loop join. If the store depends on join output, only the values can change (filterValues, mapValues, flatMapValues).")
-          case WrittenProducer(producer, sink) =>
-            val (pf, m) = recurse(producer)
-            (sink.write(pf), m)
-          case OptionMappedProducer(producer, op) =>
-            // Map in two monads here, first state then reader
-            val (fmp, m) = recurse(producer)
-            (
-              fmp.map { flowP =>
-                flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, item) =>
-                      op(item).map((time, _))
-                  }
-                }
-              },
-              m)
-          case ValueFlatMappedProducer(producer, op) =>
-            // Map in two monads here, first state then reader
-            val (fmp, m) = recurse(producer)
-            (
-              fmp.map { flowP =>
-                flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, (k, v)) =>
-                      op(v).map { u =>
-                        (time, (k, u))
+              /**
+                * If the following is true, it is safe to put a mapside reduce before this node:
+                * 1) there is only one downstream output, which is a Summer
+                * 2) there are only NoOp Producers between this node and the Summer
+                */
+              val downStream = dependants.transitiveDependantsTillOutput(kfm)
+              val maybeMerged =
+                downStream.collect {
+                  case t: TailProducer[_, _] => t
+                } match {
+                  case List(sAny: Summer[_, _, _]) =>
+                    val s = sAny.asInstanceOf[Summer[Scalding, Any, Any]]
+                    if (downStream.forall(d => Producer.isNoOp(d) || d == s)) {
+                      //only downstream are no-ops and the summer GO!
+                      getCommutativity(names, options, s) match {
+                        case Commutative =>
+                          logger.info("enabling flatMapKeys mapside caching")
+                          s.store.partialMerge(fmp, s.semigroup, Commutative)
+                        case NonCommutative =>
+                          logger.info(
+                            "not enabling flatMapKeys mapside caching, due to non-commutativity")
+                          fmp
                       }
-                  }
+                    } else
+                      fmp
+                  case _ => fmp
                 }
-              },
-              m)
-          case kfm @ KeyFlatMappedProducer(producer, op) =>
-            val (fmp, m) = recurse(producer)
+
+              // Map in two monads here, first state then reader
+              (
+                maybeMerged.map { flowP =>
+                  flowP.map { typedPipe =>
+                    typedPipe.flatMap {
+                      case (time, (k, v)) =>
+                        op(k).map { newK =>
+                          (time, (newK, v))
+                        }
+                    }
+                  }
+                },
+                m)
+            case FlatMappedProducer(producer, op) =>
+              // Map in two monads here, first state then reader
+              val shards =
+                getOrElse(options, names, producer, FlatMapShards.default).count
+              val (fmp, m) = recurse(producer)
+              val fmpSharded =
+                if (shards < 1)
+                  fmp
+                else
+                  fmp.mapPipe(_.shard(shards))
+
+              (
+                fmpSharded.map { flowP =>
+                  flowP.map { typedPipe =>
+                    typedPipe.flatMap {
+                      case (time, item) =>
+                        op(item).map((time, _))
+                    }
+                  }
+                },
+                m)
+            case MergedProducer(l, r) => {
+              val (pfl, ml) = recurse(l)
+              val (pfr, mr) = recurse(r, built = ml)
+              val merged =
+                for {
+                  leftAndRight <- pfl.join(pfr)
+                  merged = Scalding.merge(leftAndRight._1, leftAndRight._2)
+                  maxAvailable <- StateWithError.getState // read the latest state, which is the time
+                } yield Scalding.limitTimes(maxAvailable._1, merged)
+              (merged, mr)
+            }
 
             /**
-              * If the following is true, it is safe to put a mapside reduce before this node:
-              * 1) there is only one downstream output, which is a Summer
-              * 2) there are only NoOp Producers between this node and the Summer
+              * The logic here is identical to a merge except we ignore what comes out of
+              * the left side, BUT NOT THE TIME. we can't let the right get ahead of what the
+              * left could do to be consistent with the rest of this code.
               */
-            val downStream = dependants.transitiveDependantsTillOutput(kfm)
-            val maybeMerged = downStream.collect {
-              case t: TailProducer[_, _] => t
-            } match {
-              case List(sAny: Summer[_, _, _]) =>
-                val s = sAny.asInstanceOf[Summer[Scalding, Any, Any]]
-                if (downStream.forall(d => Producer.isNoOp(d) || d == s)) {
-                  //only downstream are no-ops and the summer GO!
-                  getCommutativity(names, options, s) match {
-                    case Commutative =>
-                      logger.info("enabling flatMapKeys mapside caching")
-                      s.store.partialMerge(fmp, s.semigroup, Commutative)
-                    case NonCommutative =>
-                      logger.info(
-                        "not enabling flatMapKeys mapside caching, due to non-commutativity")
-                      fmp
-                  }
-                } else
-                  fmp
-              case _ => fmp
+            case AlsoProducer(l, r) => {
+              val (pfl, ml) = recurse(l)
+              val (pfr, mr) = recurse(r, built = ml)
+              val onlyRight =
+                for {
+                  leftAndRight <- pfl.join(pfr)
+                  justRight = Scalding.also(leftAndRight._1, leftAndRight._2)
+                  maxAvailable <- StateWithError.getState // read the latest state, which is the time
+                } yield Scalding.limitTimes(maxAvailable._1, justRight)
+              (onlyRight, mr)
             }
-
-            // Map in two monads here, first state then reader
-            (
-              maybeMerged.map { flowP =>
-                flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, (k, v)) =>
-                      op(k).map { newK =>
-                        (time, (newK, v))
-                      }
-                  }
-                }
-              },
-              m)
-          case FlatMappedProducer(producer, op) =>
-            // Map in two monads here, first state then reader
-            val shards =
-              getOrElse(options, names, producer, FlatMapShards.default).count
-            val (fmp, m) = recurse(producer)
-            val fmpSharded =
-              if (shards < 1)
-                fmp
-              else
-                fmp.mapPipe(_.shard(shards))
-
-            (
-              fmpSharded.map { flowP =>
-                flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, item) =>
-                      op(item).map((time, _))
-                  }
-                }
-              },
-              m)
-          case MergedProducer(l, r) => {
-            val (pfl, ml) = recurse(l)
-            val (pfr, mr) = recurse(r, built = ml)
-            val merged = for {
-              leftAndRight <- pfl.join(pfr)
-              merged = Scalding.merge(leftAndRight._1, leftAndRight._2)
-              maxAvailable <- StateWithError.getState // read the latest state, which is the time
-            } yield Scalding.limitTimes(maxAvailable._1, merged)
-            (merged, mr)
           }
-
-          /**
-            * The logic here is identical to a merge except we ignore what comes out of
-            * the left side, BUT NOT THE TIME. we can't let the right get ahead of what the
-            * left could do to be consistent with the rest of this code.
-            */
-          case AlsoProducer(l, r) => {
-            val (pfl, ml) = recurse(l)
-            val (pfr, mr) = recurse(r, built = ml)
-            val onlyRight = for {
-              leftAndRight <- pfl.join(pfr)
-              justRight = Scalding.also(leftAndRight._1, leftAndRight._2)
-              maxAvailable <- StateWithError.getState // read the latest state, which is the time
-            } yield Scalding.limitTimes(maxAvailable._1, justRight)
-            (onlyRight, mr)
-          }
-        }
         // Make sure that we end any chains of nodes at fanned out nodes:
         val res = memoize(forceNode(pf))
         (res.asInstanceOf[PipeFactory[T]], m + (producer -> res))
@@ -785,8 +802,8 @@ object Scalding {
 
 // Jank to get around serialization issues
 class Memo[T] extends java.io.Serializable {
-  @transient private val mmap =
-    scala.collection.mutable.Map[(FlowDef, Mode), TimedPipe[T]]()
+  @transient private val mmap = scala.collection.mutable
+    .Map[(FlowDef, Mode), TimedPipe[T]]()
   def getOrElseUpdate(
       in: (FlowDef, Mode),
       rdr: Reader[(FlowDef, Mode), TimedPipe[T]]): TimedPipe[T] =
@@ -843,11 +860,12 @@ class Scalding(
       conf.setSerialization(Right(classOf[serialization.KryoHadoop]))
     } else {
       val kryoReg = new IterableRegistrar(passedRegistrars)
-      val initKryo = conf.getKryo match {
-        case None =>
-          new serialization.KryoHadoop(ScalaMapConfig(conf.toMap))
-        case Some(kryo) => kryo
-      }
+      val initKryo =
+        conf.getKryo match {
+          case None =>
+            new serialization.KryoHadoop(ScalaMapConfig(conf.toMap))
+          case Some(kryo) => kryo
+        }
 
       conf
         .setSerialization(
@@ -918,14 +936,15 @@ class Scalding(
       pf: PipeFactory[Any],
       mutate: Flow[_] => Unit): WaitingState[Interval[Timestamp]] = {
 
-    val config = mode match {
-      case Hdfs(_, conf) =>
-        buildConfig(conf)
-      case HadoopTest(conf, _) =>
-        buildConfig(conf)
+    val config =
+      mode match {
+        case Hdfs(_, conf) =>
+          buildConfig(conf)
+        case HadoopTest(conf, _) =>
+          buildConfig(conf)
 
-      case _ => Config.empty
-    }
+        case _ => Config.empty
+      }
 
     val prepareState = state.begin
     toFlow(config, prepareState.requested, mode, pf) match {

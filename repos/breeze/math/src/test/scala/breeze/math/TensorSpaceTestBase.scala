@@ -54,8 +54,8 @@ trait TensorSpaceTestBase[V, I, S] extends MutableModuleTestBase[V, S] {
   test("dot product distributes") {
     check(Prop.forAll { (trip: (V, V, V)) =>
       val (a, b, c) = trip
-      val res =
-        scalars.close(scalars.+(a dot b, a dot c), (a dot (b + c)), 1e-3)
+      val res = scalars
+        .close(scalars.+(a dot b, a dot c), (a dot (b + c)), 1e-3)
       if (!res)
         println(scalars.+(a dot b, a dot c) + " " + (a dot (b + c)))
       res

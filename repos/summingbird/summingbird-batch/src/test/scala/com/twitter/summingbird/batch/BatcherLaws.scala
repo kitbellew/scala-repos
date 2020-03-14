@@ -58,11 +58,12 @@ object BatcherLaws extends Properties("Batcher") {
   def batchesCoveredByIdent(batcher: Batcher) =
     forAll { (d: Timestamp) =>
       val b = batcher.batchOf(d)
-      val list = BatchID
-        .toIterable(
-          batcher.batchesCoveredBy(batcher.toInterval(b))
-        )
-        .toList
+      val list =
+        BatchID
+          .toIterable(
+            batcher.batchesCoveredBy(batcher.toInterval(b))
+          )
+          .toList
       list == List(b)
     }
 
@@ -77,8 +78,9 @@ object BatcherLaws extends Properties("Batcher") {
           (tsB, tsA)
 
       val deltaBounded = Milliseconds(deltaMs % 1000 * 86000 * 365L)
-      val int =
-        intervalGenerator(batcher.batchOf(tsLower), batcher.batchOf(tsUpper))
+      val int = intervalGenerator(
+        batcher.batchOf(tsLower),
+        batcher.batchOf(tsUpper))
 
       val tsInterval = batcher.toTimestamp(int)
 

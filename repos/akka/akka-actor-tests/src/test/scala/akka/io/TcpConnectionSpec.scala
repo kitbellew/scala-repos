@@ -85,8 +85,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     "set socket options before connecting" in new LocalServerTest() {
       run {
-        val connectionActor =
-          createConnectionActor(options = Vector(Inet.SO.ReuseAddress(true)))
+        val connectionActor = createConnectionActor(options = Vector(
+          Inet.SO.ReuseAddress(true)))
         val clientChannel = connectionActor.underlyingActor.channel
         clientChannel.socket.getReuseAddress should ===(true)
       }
@@ -95,8 +95,8 @@ class TcpConnectionSpec extends AkkaSpec("""
     "set socket options after connecting" ignore new LocalServerTest() {
       run {
         // Workaround for systems where SO_KEEPALIVE is true by default
-        val connectionActor =
-          createConnectionActor(options = Vector(SO.KeepAlive(false)))
+        val connectionActor = createConnectionActor(options = Vector(
+          SO.KeepAlive(false)))
         val clientChannel = connectionActor.underlyingActor.channel
         clientChannel.socket.getKeepAlive should ===(
           true
@@ -387,11 +387,10 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     "respect pull mode" in new EstablishedConnectionTest(pullMode = true) {
       // override config to decrease default buffer size
-      val config =
-        ConfigFactory.load(
-          ConfigFactory
-            .parseString("akka.io.tcp.direct-buffer-size = 1k")
-            .withFallback(AkkaSpec.testConf))
+      val config = ConfigFactory.load(
+        ConfigFactory
+          .parseString("akka.io.tcp.direct-buffer-size = 1k")
+          .withFallback(AkkaSpec.testConf))
       override implicit def system: ActorSystem =
         ActorSystem("respectPullModeTest", config)
 
@@ -655,8 +654,8 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     "report failed connection attempt when target is unreachable" in
       new UnacceptedConnectionTest() {
-        override lazy val connectionActor =
-          createConnectionActor(serverAddress = UnboundAddress)
+        override lazy val connectionActor = createConnectionActor(
+          serverAddress = UnboundAddress)
         run {
           val sel = SelectorProvider.provider().openSelector()
           try {
@@ -1000,8 +999,9 @@ class TcpConnectionSpec extends AkkaSpec("""
   abstract class UnacceptedConnectionTest(pullMode: Boolean = false)
       extends LocalServerTest {
     // lazy init since potential exceptions should not be triggered in the constructor but during execution of `run`
-    private[io] lazy val connectionActor =
-      createConnectionActor(serverAddress, pullMode = pullMode)
+    private[io] lazy val connectionActor = createConnectionActor(
+      serverAddress,
+      pullMode = pullMode)
     // calling .underlyingActor ensures that the actor is actually created at this point
     lazy val clientSideChannel = connectionActor.underlyingActor.channel
 
@@ -1189,12 +1189,11 @@ class TcpConnectionSpec extends AkkaSpec("""
           )
       }
 
-    val interestsNames =
-      Seq(
-        OP_ACCEPT -> "accepting",
-        OP_CONNECT -> "connecting",
-        OP_READ -> "reading",
-        OP_WRITE -> "writing")
+    val interestsNames = Seq(
+      OP_ACCEPT -> "accepting",
+      OP_CONNECT -> "connecting",
+      OP_READ -> "reading",
+      OP_WRITE -> "writing")
     def interestsDesc(interests: Int): String =
       interestsNames
         .filter(i ⇒ (i._1 & interests) != 0)

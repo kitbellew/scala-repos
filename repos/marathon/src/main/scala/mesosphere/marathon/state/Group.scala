@@ -144,8 +144,8 @@ case class Group(
     if (gid.isEmpty)
       this //group already exists
     else {
-      val (change, remaining) =
-        groups.partition(_.id.restOf(id).root == gid.root)
+      val (change, remaining) = groups.partition(
+        _.id.restOf(id).root == gid.root)
       val toUpdate = change.headOption.getOrElse(
         Group.empty.copy(id = id.append(gid.rootPath)))
       this.copy(groups = remaining + toUpdate.makeGroup(gid.child))
@@ -158,8 +158,8 @@ case class Group(
   lazy val transitiveGroups: Set[Group] =
     groups.flatMap(_.transitiveGroups) + this
 
-  lazy val transitiveAppGroups: Set[Group] =
-    transitiveGroups.filter(_.apps.nonEmpty)
+  lazy val transitiveAppGroups: Set[Group] = transitiveGroups.filter(
+    _.apps.nonEmpty)
 
   lazy val applicationDependencies: List[(AppDefinition, AppDefinition)] = {
     var result = List.empty[(AppDefinition, AppDefinition)]
@@ -270,11 +270,12 @@ object Group {
       group.groups is every(valid(validNestedGroup(base)))
     }
 
-  implicit val validRootGroup: Validator[Group] = new Validator[Group] {
-    override def apply(group: Group): Result = {
-      validate(group)(validator = validNestedGroup(PathId.empty))
+  implicit val validRootGroup: Validator[Group] =
+    new Validator[Group] {
+      override def apply(group: Group): Result = {
+        validate(group)(validator = validNestedGroup(PathId.empty))
+      }
     }
-  }
 
   def validGroupWithConfig(maxApps: Option[Int])(
       implicit validator: Validator[Group]): Validator[Group] = {

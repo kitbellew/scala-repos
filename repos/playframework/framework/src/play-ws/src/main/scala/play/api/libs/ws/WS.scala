@@ -315,10 +315,11 @@ trait WSRequest {
       if (queryString.isEmpty)
         url
       else {
-        val qs = (for {
-          (n, vs) <- queryString
-          v <- vs
-        } yield s"${enc(n)}=${enc(v)}").mkString("&")
+        val qs =
+          (for {
+            (n, vs) <- queryString
+            v <- vs
+          } yield s"${enc(n)}=${enc(v)}").mkString("&")
         s"$url?$qs"
       })
   }

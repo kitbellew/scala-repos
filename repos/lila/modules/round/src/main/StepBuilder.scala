@@ -33,10 +33,11 @@ object StepBuilder {
           val fen = Forsyth >> g
           Step(
             ply = g.turns,
-            move = for {
-              uci <- g.board.history.lastMove
-              san <- g.pgnMoves.lastOption
-            } yield Step.Move(uci, san),
+            move =
+              for {
+                uci <- g.board.history.lastMove
+                san <- g.pgnMoves.lastOption
+              } yield Step.Move(uci, san),
             fen = fen,
             check = g.situation.check,
             dests = None,
@@ -120,10 +121,11 @@ object StepBuilder {
         games.drop(1).map { g =>
           Step(
             ply = g.turns,
-            move = for {
-              uci <- g.board.history.lastMove
-              san <- g.pgnMoves.lastOption
-            } yield Step.Move(uci, san),
+            move =
+              for {
+                uci <- g.board.history.lastMove
+                san <- g.pgnMoves.lastOption
+              } yield Step.Move(uci, san),
             fen = Forsyth >> g,
             check = g.situation.check,
             dests = None,
@@ -134,14 +136,15 @@ object StepBuilder {
     }
   }
 
-  private val logChessError = (id: String) =>
-    (err: String) => {
-      val path =
-        if (id == "synthetic")
-          "analysis"
-        else
-          id
-      logger.info(
-        s"http://lichess.org/$path ${err.lines.toList.headOption | "?"}")
-    }
+  private val logChessError =
+    (id: String) =>
+      (err: String) => {
+        val path =
+          if (id == "synthetic")
+            "analysis"
+          else
+            id
+        logger.info(
+          s"http://lichess.org/$path ${err.lines.toList.headOption | "?"}")
+      }
 }

@@ -60,8 +60,8 @@ private class ApertureLoadBandBalancer[Req, Rep](
     with LoadBand[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted =
-    statsReceiver.counter("max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver.counter(
+    "max_effort_exhausted")
 
 }
 
@@ -105,9 +105,10 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
     node.status == Status.Open
   }
 
-  private[this] val gauge = statsReceiver.addGauge("aperture") {
-    aperture
-  }
+  private[this] val gauge =
+    statsReceiver.addGauge("aperture") {
+      aperture
+    }
 
   protected class Distributor(val vector: Vector[Node], initAperture: Int)
       extends DistributorT[Node] {
@@ -116,10 +117,11 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
     // Indicates if we've seen any down nodes during pick which we expected to be available
     @volatile private[this] var sawDown = false
 
-    private[this] val (up, down) = vector.partition(nodeUp) match {
-      case (Vector(), down) => (down, Vector.empty)
-      case updown           => updown
-    }
+    private[this] val (up, down) =
+      vector.partition(nodeUp) match {
+        case (Vector(), down) => (down, Vector.empty)
+        case updown           => updown
+      }
 
     private[this] val (ring, unitWidth, maxAperture) =
       if (up.isEmpty) {
@@ -132,8 +134,9 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
         (ring, unit, max)
       }
 
-    private[this] val minAperture =
-      math.min(Aperture.this.minAperture, maxAperture)
+    private[this] val minAperture = math.min(
+      Aperture.this.minAperture,
+      maxAperture)
 
     @volatile private[Aperture] var aperture = initAperture
 
@@ -144,8 +147,7 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
       aperture = math.max(minAperture, math.min(maxAperture, aperture + n))
     }
 
-    def rebuild() =
-      new Distributor(vector, aperture)
+    def rebuild() = new Distributor(vector, aperture)
 
     def rebuild(vector: Vector[Node]) =
       new Distributor(vector.sortBy(_.token), aperture)
@@ -181,8 +183,7 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
       sawDown || (down.nonEmpty && down.exists(nodeUp))
   }
 
-  protected def initDistributor() =
-    new Distributor(Vector.empty, 1)
+  protected def initDistributor() = new Distributor(Vector.empty, 1)
 
   /**
     * Adjust the aperture by `n` serving units.

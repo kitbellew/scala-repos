@@ -76,9 +76,11 @@ trait RandomLibSpecs[M[+_]]
   "return observed set given 22 heterogeneous events with identities" in {
     val uniform = dag.Morph1(UniformDistribution, Const(CLong(100))(line))(line)
 
-    val input = dag.Observe(
-      dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
-      uniform)(line)
+    val input =
+      dag.Observe(
+        dag
+          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        uniform)(line)
 
     val result = testEval(input)
 

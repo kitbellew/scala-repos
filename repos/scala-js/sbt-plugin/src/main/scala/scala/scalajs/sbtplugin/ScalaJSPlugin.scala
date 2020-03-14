@@ -124,17 +124,17 @@ object ScalaJSPlugin extends AutoPlugin {
       "Link all compiled JavaScript into a single file and fully optimize",
       APlusTask)
 
-    val scalaJSIR =
-      TaskKey[Attributed[Seq[VirtualScalaJSIRFile with RelativeVirtualFile]]](
-        "scalaJSIR",
-        "All the *.sjsir files on the classpath",
-        CTask)
+    val scalaJSIR = TaskKey[
+      Attributed[Seq[VirtualScalaJSIRFile with RelativeVirtualFile]]](
+      "scalaJSIR",
+      "All the *.sjsir files on the classpath",
+      CTask)
 
-    val scalaJSNativeLibraries =
-      TaskKey[Attributed[Seq[VirtualJSFile with RelativeVirtualFile]]](
-        "scalaJSNativeLibraries",
-        "All the *.js files on the classpath",
-        CTask)
+    val scalaJSNativeLibraries = TaskKey[
+      Attributed[Seq[VirtualJSFile with RelativeVirtualFile]]](
+      "scalaJSNativeLibraries",
+      "All the *.js files on the classpath",
+      CTask)
 
     val scalaJSStage = SettingKey[Stage](
       "scalaJSStage",
@@ -162,11 +162,11 @@ object ScalaJSPlugin extends AutoPlugin {
       "Writes the JS_DEPENDENCIES file.",
       DTask)
 
-    val jsDependencyManifests =
-      TaskKey[Attributed[Traversable[JSDependencyManifest]]](
-        "jsDependencyManifests",
-        "All the JS_DEPENDENCIES on the classpath",
-        DTask)
+    val jsDependencyManifests = TaskKey[
+      Attributed[Traversable[JSDependencyManifest]]](
+      "jsDependencyManifests",
+      "All the JS_DEPENDENCIES on the classpath",
+      DTask)
 
     val scalaJSLinkedFile = TaskKey[VirtualJSFile](
       "scalaJSLinkedFile",

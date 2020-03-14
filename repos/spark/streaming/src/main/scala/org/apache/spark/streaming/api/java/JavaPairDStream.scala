@@ -521,15 +521,16 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   private def convertUpdateStateFunction[S](
       in: JFunction2[JList[V], Optional[S], Optional[S]])
       : (Seq[V], Option[S]) => Option[S] = {
-    val scalaFunc: (Seq[V], Option[S]) => Option[S] = (values, state) => {
-      val list: JList[V] = values.asJava
-      val scalaState: Optional[S] = JavaUtils.optionToOptional(state)
-      val result: Optional[S] = in.apply(list, scalaState)
-      result.isPresent match {
-        case true => Some(result.get())
-        case _    => None
+    val scalaFunc: (Seq[V], Option[S]) => Option[S] =
+      (values, state) => {
+        val list: JList[V] = values.asJava
+        val scalaState: Optional[S] = JavaUtils.optionToOptional(state)
+        val result: Optional[S] = in.apply(list, scalaState)
+        result.isPresent match {
+          case true => Some(result.get())
+          case _    => None
+        }
       }
-    }
     scalaFunc
   }
 
@@ -626,8 +627,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       f: JFunction[V, java.lang.Iterable[U]]): JavaPairDStream[K, U] = {
     import scala.collection.JavaConverters._
     def fn: (V) => Iterable[U] = (x: V) => f.apply(x).asScala
-    implicit val cm: ClassTag[U] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[U]]
+    implicit val cm: ClassTag[U] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[U]]
     dstream.flatMapValues(fn)
   }
 

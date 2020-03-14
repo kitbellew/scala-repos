@@ -45,8 +45,7 @@ abstract class GuiceBuilder[Self] protected (
   /**
     * Set the environment.
     */
-  final def in(env: Environment): Self =
-    copyBuilder(environment = env)
+  final def in(env: Environment): Self = copyBuilder(environment = env)
 
   /**
     * Set the environment path.
@@ -69,8 +68,7 @@ abstract class GuiceBuilder[Self] protected (
   /**
     * Set the dependency initialization to eager.
     */
-  final def eagerlyLoaded(): Self =
-    copyBuilder(eagerly = true)
+  final def eagerlyLoaded(): Self = copyBuilder(eagerly = true)
 
   /**
     * Add additional configuration.
@@ -87,8 +85,7 @@ abstract class GuiceBuilder[Self] protected (
   /**
     * Add additional configuration.
     */
-  final def configure(conf: (String, Any)*): Self =
-    configure(conf.toMap)
+  final def configure(conf: (String, Any)*): Self = configure(conf.toMap)
 
   private def withBinderOption(
       opt: BinderOption,
@@ -202,11 +199,12 @@ abstract class GuiceBuilder[Self] protected (
     */
   def injector(): PlayInjector = {
     try {
-      val stage = environment.mode match {
-        case Mode.Prod    => Stage.PRODUCTION
-        case _ if eagerly => Stage.PRODUCTION
-        case _            => Stage.DEVELOPMENT
-      }
+      val stage =
+        environment.mode match {
+          case Mode.Prod    => Stage.PRODUCTION
+          case _ if eagerly => Stage.PRODUCTION
+          case _            => Stage.DEVELOPMENT
+        }
       val guiceInjector = Guice.createInjector(stage, applicationModule())
       guiceInjector.getInstance(classOf[PlayInjector])
     } catch {

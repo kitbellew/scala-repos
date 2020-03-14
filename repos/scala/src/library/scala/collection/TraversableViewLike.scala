@@ -377,8 +377,7 @@ trait TraversableViewLike[
       newMapped(x => asTriple(x)._3)
     ) // TODO - Performance improvements.
 
-  override def filterNot(p: (A) => Boolean): This =
-    newFiltered(a => !(p(a)))
+  override def filterNot(p: (A) => Boolean): This = newFiltered(a => !(p(a)))
 
   override def inits: Iterator[This] =
     thisSeq.inits.map(as => newForced(as).asInstanceOf[This])

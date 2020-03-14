@@ -47,14 +47,15 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
 
   private val lock = new Object()
   @volatile private var shutdown: Boolean = false
-  private val blockingChannel = new BlockingChannel(
-    config.host,
-    config.port,
-    BlockingChannel.UseDefaultBufferSize,
-    config.sendBufferBytes,
-    config.requestTimeoutMs)
-  val producerRequestStats =
-    ProducerRequestStatsRegistry.getProducerRequestStats(config.clientId)
+  private val blockingChannel =
+    new BlockingChannel(
+      config.host,
+      config.port,
+      BlockingChannel.UseDefaultBufferSize,
+      config.sendBufferBytes,
+      config.requestTimeoutMs)
+  val producerRequestStats = ProducerRequestStatsRegistry
+    .getProducerRequestStats(config.clientId)
 
   trace(
     "Instantiating Scala Sync Producer with properties: %s".format(
@@ -120,9 +121,10 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
       .update(requestSize)
 
     var response: NetworkReceive = null
-    val specificTimer = producerRequestStats
-      .getProducerRequestStats(config.host, config.port)
-      .requestTimer
+    val specificTimer =
+      producerRequestStats
+        .getProducerRequestStats(config.host, config.port)
+        .requestTimer
     val aggregateTimer =
       producerRequestStats.getProducerRequestAllBrokersStats.requestTimer
     aggregateTimer.time {

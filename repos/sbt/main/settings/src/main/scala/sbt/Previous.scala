@@ -58,8 +58,8 @@ object Previous {
     "previous-cache",
     "Caches previous values of tasks read from disk for the duration of a task execution.",
     KeyRanks.Invisible)
-  private[this] val previousReferenced =
-    AttributeKey[Referenced[_]]("previous-referenced")
+  private[this] val previousReferenced = AttributeKey[Referenced[_]](
+    "previous-referenced")
 
   /** Records references to previous task value. This should be completely populated after settings finish loading. */
   private[sbt] final class References {

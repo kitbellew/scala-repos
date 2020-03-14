@@ -18,8 +18,7 @@ object IPC {
   private val portMax = 65536
   private val loopback = InetAddress.getByName(null) // loopback
 
-  def client[T](port: Int)(f: IPC => T): T =
-    ipc(new Socket(loopback, port))(f)
+  def client[T](port: Int)(f: IPC => T): T = ipc(new Socket(loopback, port))(f)
 
   def pullServer[T](f: Server => T): T = {
     val server = makeServer
@@ -78,8 +77,8 @@ object IPC {
 final class IPC private (s: Socket) extends NotNull {
   def port = s.getLocalPort
   private val in = new BufferedReader(new InputStreamReader(s.getInputStream))
-  private val out = new BufferedWriter(
-    new OutputStreamWriter(s.getOutputStream))
+  private val out =
+    new BufferedWriter(new OutputStreamWriter(s.getOutputStream))
 
   def send(s: String) = {
     out.write(s);

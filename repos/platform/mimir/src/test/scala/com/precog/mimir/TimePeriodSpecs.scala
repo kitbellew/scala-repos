@@ -53,9 +53,10 @@ trait TimePeriodSpecs[M[+_]]
 
   "Period parsing" should {
     "parse period with all fields present" in {
-      val input = Operate(
-        BuiltInFunction1Op(ParsePeriod),
-        Const(CString("P3Y6M4DT12H30M5S"))(line))(line)
+      val input =
+        Operate(
+          BuiltInFunction1Op(ParsePeriod),
+          Const(CString("P3Y6M4DT12H30M5S"))(line))(line)
 
       val result = testEval(input)
 
@@ -68,9 +69,10 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "parse period with not all fields present" in {
-      val input = Operate(
-        BuiltInFunction1Op(ParsePeriod),
-        Const(CString("P6M4DT30M5S"))(line))(line)
+      val input =
+        Operate(
+          BuiltInFunction1Op(ParsePeriod),
+          Const(CString("P6M4DT30M5S"))(line))(line)
 
       val result = testEval(input)
 
@@ -83,9 +85,10 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "fail to parse string not in proper format" in {
-      val input = Operate(
-        BuiltInFunction1Op(ParsePeriod),
-        Const(CString("6M4DT30M5S"))(line))(line)
+      val input =
+        Operate(
+          BuiltInFunction1Op(ParsePeriod),
+          Const(CString("6M4DT30M5S"))(line))(line)
 
       val result = testEval(input)
 
@@ -111,10 +114,14 @@ trait TimePeriodSpecs[M[+_]]
 
   "Range computing" should {
     "compute correct range given single value" in {
-      val start =
-        createObject("start", ParseDateTimeFuzzy, "1987-12-09T18:33:02.037Z")
-      val end =
-        createObject("end", ParseDateTimeFuzzy, "2005-08-09T12:00:00.000Z")
+      val start = createObject(
+        "start",
+        ParseDateTimeFuzzy,
+        "1987-12-09T18:33:02.037Z")
+      val end = createObject(
+        "end",
+        ParseDateTimeFuzzy,
+        "2005-08-09T12:00:00.000Z")
       val step = createObject("step", ParsePeriod, "P3Y6M4DT12H30M5S")
 
       val obj = joinObject(start, end, step)
@@ -136,10 +143,14 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "compute correct range given end earlier than start" in {
-      val start =
-        createObject("start", ParseDateTimeFuzzy, "1987-12-09T18:33:02.037Z")
-      val end =
-        createObject("end", ParseDateTimeFuzzy, "1980-08-09T12:00:00.000Z")
+      val start = createObject(
+        "start",
+        ParseDateTimeFuzzy,
+        "1987-12-09T18:33:02.037Z")
+      val end = createObject(
+        "end",
+        ParseDateTimeFuzzy,
+        "1980-08-09T12:00:00.000Z")
       val step = createObject("step", ParsePeriod, "P3Y6M4DT12H30M5S")
 
       val obj = joinObject(start, end, step)
@@ -157,8 +168,10 @@ trait TimePeriodSpecs[M[+_]]
         "start",
         ParseDateTimeFuzzy,
         "1987-12-09T18:33:02.037+01:00")
-      val end =
-        createObject("end", ParseDateTimeFuzzy, "1987-12-09T20:33:02.037+03:00")
+      val end = createObject(
+        "end",
+        ParseDateTimeFuzzy,
+        "1987-12-09T20:33:02.037+03:00")
       val step = createObject("step", ParsePeriod, "PT2H")
 
       val obj = joinObject(start, end, step)
@@ -195,17 +208,19 @@ trait TimePeriodSpecs[M[+_]]
       val end = createObject2("end", ParseDateTimeFuzzy)
       val step = createObject2("step", ParsePeriod)
 
-      val obj = Join(
-        JoinObject,
-        IdentitySort,
-        Join(JoinObject, IdentitySort, start, end)(line),
-        step)(line)
+      val obj =
+        Join(
+          JoinObject,
+          IdentitySort,
+          Join(JoinObject, IdentitySort, start, end)(line),
+          step)(line)
 
-      val range = Join(
-        WrapObject,
-        Cross(None),
-        Const(CString("range"))(line),
-        Operate(BuiltInFunction1Op(TimeRange), obj)(line))(line)
+      val range =
+        Join(
+          WrapObject,
+          Cross(None),
+          Const(CString("range"))(line),
+          Operate(BuiltInFunction1Op(TimeRange), obj)(line))(line)
 
       val input = Join(JoinObject, IdentitySort, obj, range)(line)
 
@@ -242,8 +257,10 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "fail to compute correct range given only start field" in {
-      val start =
-        createObject("start", ParseDateTimeFuzzy, "1987-12-09T18:33:02.037Z")
+      val start = createObject(
+        "start",
+        ParseDateTimeFuzzy,
+        "1987-12-09T18:33:02.037Z")
       val input = Operate(BuiltInFunction1Op(TimeRange), start)(line)
 
       val result = testEval(input)
@@ -252,9 +269,9 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "fail to compute correct range given malformed input" in {
-      val input = Operate(
-        BuiltInFunction1Op(TimeRange),
-        Const(CString("foo"))(line))(line)
+      val input =
+        Operate(BuiltInFunction1Op(TimeRange), Const(CString("foo"))(line))(
+          line)
 
       val result = testEval(input)
 

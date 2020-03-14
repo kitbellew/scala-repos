@@ -79,28 +79,26 @@ object BuildCommons {
     java8Tests,
     sparkGangliaLgpl,
     streamingKinesisAsl,
-    dockerIntegrationTests) =
-    Seq(
-      "yarn",
-      "java8-tests",
-      "ganglia-lgpl",
-      "streaming-kinesis-asl",
-      "docker-integration-tests").map(ProjectRef(buildLocation, _))
+    dockerIntegrationTests) = Seq(
+    "yarn",
+    "java8-tests",
+    "ganglia-lgpl",
+    "streaming-kinesis-asl",
+    "docker-integration-tests").map(ProjectRef(buildLocation, _))
 
   val assemblyProjects @ Seq(
     assembly,
     networkYarn,
     streamingKafkaAssembly,
-    streamingKinesisAslAssembly) =
-    Seq(
-      "assembly",
-      "network-yarn",
-      "streaming-kafka-assembly",
-      "streaming-kinesis-asl-assembly")
-      .map(ProjectRef(buildLocation, _))
+    streamingKinesisAslAssembly) = Seq(
+    "assembly",
+    "network-yarn",
+    "streaming-kafka-assembly",
+    "streaming-kinesis-asl-assembly")
+    .map(ProjectRef(buildLocation, _))
 
-  val copyJarsProjects @ Seq(examples) =
-    Seq("examples").map(ProjectRef(buildLocation, _))
+  val copyJarsProjects @ Seq(examples) = Seq("examples").map(
+    ProjectRef(buildLocation, _))
 
   val tools = ProjectRef(buildLocation, "tools")
   // Root project.
@@ -109,10 +107,10 @@ object BuildCommons {
 
   val testTempDir = s"$sparkHome/target/tmp"
 
-  val javacJVMVersion =
-    settingKey[String]("source and target JVM version for javac")
-  val scalacJVMVersion =
-    settingKey[String]("source and target JVM version for scalac")
+  val javacJVMVersion = settingKey[String](
+    "source and target JVM version for javac")
+  val scalacJVMVersion = settingKey[String](
+    "source and target JVM version for scalac")
 }
 
 object SparkBuild extends PomBuild {
@@ -153,20 +151,21 @@ object SparkBuild extends PomBuild {
   }
 
   override val profiles = {
-    val profiles = Properties.envOrNone("SBT_MAVEN_PROFILES") match {
-      case None => backwardCompatibility
-      case Some(v) =>
-        if (backwardCompatibility.nonEmpty)
-          // scalastyle:off println
-          println(
-            "Note: We ignore environment variables, when use of profile is detected in " +
-              "conjunction with environment variable.")
-        // scalastyle:on println
-        v.split("(\\s+|,)")
-          .filterNot(_.isEmpty)
-          .map(_.trim.replaceAll("-P", ""))
-          .toSeq
-    }
+    val profiles =
+      Properties.envOrNone("SBT_MAVEN_PROFILES") match {
+        case None => backwardCompatibility
+        case Some(v) =>
+          if (backwardCompatibility.nonEmpty)
+            // scalastyle:off println
+            println(
+              "Note: We ignore environment variables, when use of profile is detected in " +
+                "conjunction with environment variable.")
+          // scalastyle:on println
+          v.split("(\\s+|,)")
+            .filterNot(_.isEmpty)
+            .map(_.trim.replaceAll("-P", ""))
+            .toSeq
+      }
 
     if (System.getProperty("scala-2.10") == "") {
       // To activate scala-2.10 profile, replace empty property value to non-empty value
@@ -189,8 +188,9 @@ object SparkBuild extends PomBuild {
   override val userPropertiesMap = System.getProperties.asScala.toMap
 
   lazy val MavenCompile = config("m2r") extend (Compile)
-  lazy val publishLocalBoth =
-    TaskKey[Unit]("publish-local", "publish local for m2 and ivy")
+  lazy val publishLocalBoth = TaskKey[Unit](
+    "publish-local",
+    "publish local for m2 and ivy")
 
   lazy val sparkGenjavadocSettings: Seq[sbt.Def.Setting[_]] = Seq(
     libraryDependencies += compilerPlugin(
@@ -287,12 +287,13 @@ object SparkBuild extends PomBuild {
               failed = failed + 1
             }
 
-            val printer: (=> String) => Unit = s =>
-              if (deprecation) {
-                out.log.warn(s)
-              } else {
-                out.log.error("[warn] " + s)
-              }
+            val printer: (=> String) => Unit =
+              s =>
+                if (deprecation) {
+                  out.log.warn(s)
+                } else {
+                  out.log.error("[warn] " + s)
+                }
 
             logProblem(printer, k, p)
 
@@ -307,8 +308,9 @@ object SparkBuild extends PomBuild {
   )
 
   def enable(settings: Seq[Setting[_]])(projectRef: ProjectRef) = {
-    val existingSettings =
-      projectsMap.getOrElse(projectRef.project, Seq[Setting[_]]())
+    val existingSettings = projectsMap.getOrElse(
+      projectRef.project,
+      Seq[Setting[_]]())
     projectsMap += (projectRef.project -> (existingSettings ++ settings))
   }
 
@@ -400,8 +402,9 @@ object SparkBuild extends PomBuild {
       },
       sparkPackage := {
         import complete.DefaultParsers._
-        val packages :: className :: otherArgs = spaceDelimited(
-          "<group:artifact:version> <MainClass> [args]").parsed.toList
+        val packages :: className :: otherArgs =
+          spaceDelimited(
+            "<group:artifact:version> <MainClass> [args]").parsed.toList
         val scalaRun = (runner in run).value
         val classpath = (fullClasspath in Runtime).value
         val args = Seq(
@@ -622,8 +625,8 @@ object Assembly {
   import sbtassembly.Plugin._
   import AssemblyKeys._
 
-  val hadoopVersion =
-    taskKey[String]("The version of hadoop that spark is compiled against.")
+  val hadoopVersion = taskKey[String](
+    "The version of hadoop that spark is compiled against.")
 
   val deployDatanucleusJars = taskKey[Unit](
     "Deploy datanucleus jars to the spark/lib_managed/jars directory")
@@ -770,8 +773,8 @@ object Unidoc {
         _.getCanonicalPath.contains("org/apache/spark/sql/hive/test")))
   }
 
-  val unidocSourceBase =
-    settingKey[String]("Base URL of source links in Scaladoc.")
+  val unidocSourceBase = settingKey[String](
+    "Base URL of source links in Scaladoc.")
 
   lazy val settings = scalaJavaUnidocSettings ++ Seq(
     publish := {},

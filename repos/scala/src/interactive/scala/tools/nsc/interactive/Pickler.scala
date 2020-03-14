@@ -346,11 +346,12 @@ object Pickler {
     }
 
   /** A pickler for values of type `Int`, represented as integer literals */
-  implicit val intPickler: Pickler[Int] = longPickler.wrapped {
-    _.toInt
-  } {
-    _.toLong
-  }
+  implicit val intPickler: Pickler[Int] =
+    longPickler.wrapped {
+      _.toInt
+    } {
+      _.toLong
+    }
 
   /** A conditional pickler for the boolean value `true` */
   private val truePickler =
@@ -372,26 +373,28 @@ object Pickler {
   implicit def booleanPickler: Pickler[Boolean] = truePickler | falsePickler
 
   /** A pickler for values of type `Unit`, represented by the empty character string */
-  implicit val unitPickler: Pickler[Unit] = new Pickler[Unit] {
-    def pickle(wr: Writer, x: Unit) {}
-    def unpickle(rd: Lexer): Unpickled[Unit] = UnpickleSuccess(())
-  }
+  implicit val unitPickler: Pickler[Unit] =
+    new Pickler[Unit] {
+      def pickle(wr: Writer, x: Unit) {}
+      def unpickle(rd: Lexer): Unpickled[Unit] = UnpickleSuccess(())
+    }
 
   /** A pickler for values of type `String`, represented as string literals */
-  implicit val stringPickler: Pickler[String] = new Pickler[String] {
-    def pickle(wr: Writer, x: String) =
-      wr.write(
-        if (x == null)
-          "null"
-        else
-          quoted(x))
-    def unpickle(rd: Lexer) =
-      rd.token match {
-        case StringLit(s) => nextSuccess(rd, s)
-        case NullLit      => nextSuccess(rd, null)
-        case _            => errorExpected(rd, "string literal")
-      }
-  }
+  implicit val stringPickler: Pickler[String] =
+    new Pickler[String] {
+      def pickle(wr: Writer, x: String) =
+        wr.write(
+          if (x == null)
+            "null"
+          else
+            quoted(x))
+      def unpickle(rd: Lexer) =
+        rd.token match {
+          case StringLit(s) => nextSuccess(rd, s)
+          case NullLit      => nextSuccess(rd, null)
+          case _            => errorExpected(rd, "string literal")
+        }
+    }
 
   /** A pickler for pairs, represented as `~`-pairs */
   implicit def tuple2Pickler[T1: Pickler, T2: Pickler]: Pickler[(T1, T2)] =

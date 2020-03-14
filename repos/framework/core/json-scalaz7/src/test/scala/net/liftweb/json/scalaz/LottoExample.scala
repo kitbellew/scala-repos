@@ -30,21 +30,23 @@ object LottoExample extends Specification {
         xs.success
 
   implicit def winnerJSON: JSONR[Winner] = {
-    val numbersResult = (jValue: JValue) =>
-      (for {
-        numbers <- field[List[Int]]("numbers")(jValue).disjunction
-        _ <- len(6)(numbers).disjunction
-      } yield numbers).validation
+    val numbersResult =
+      (jValue: JValue) =>
+        (for {
+          numbers <- field[List[Int]]("numbers")(jValue).disjunction
+          _ <- len(6)(numbers).disjunction
+        } yield numbers).validation
     Winner.applyJSON(field[Long]("winner-id"), numbersResult)
   }
 
   implicit def lottoJSON: JSONR[Lotto] = {
-    val winningNumbersResult = (jValue: JValue) =>
-      (for {
-        winningNumbers <- field[List[Int]]("winning-numbers")(
-          jValue).disjunction
-        _ <- len(6)(winningNumbers).disjunction
-      } yield winningNumbers).validation
+    val winningNumbersResult =
+      (jValue: JValue) =>
+        (for {
+          winningNumbers <- field[List[Int]]("winning-numbers")(
+            jValue).disjunction
+          _ <- len(6)(winningNumbers).disjunction
+        } yield winningNumbers).validation
     Lotto.applyJSON(
       field[Long]("id"),
       winningNumbersResult,

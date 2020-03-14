@@ -52,10 +52,11 @@ class ScPackageImpl private (val pack: PsiPackage)
       place: PsiElement): Boolean = {
     if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE && pack.getQualifiedName == "scala") {
       if (!BaseProcessor.isImplicitProcessor(processor)) {
-        val scope = processor match {
-          case r: ResolveProcessor => r.getResolveScope
-          case _                   => place.getResolveScope
-        }
+        val scope =
+          processor match {
+            case r: ResolveProcessor => r.getResolveScope
+            case _                   => place.getResolveScope
+          }
         val namesSet = ScalaShortNamesCacheManager
           .getInstance(getProject)
           .getClassNames(pack, scope)
@@ -92,10 +93,11 @@ class ScPackageImpl private (val pack: PsiPackage)
 
     //for Scala
     if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE) {
-      val scope = processor match {
-        case r: ResolveProcessor => r.getResolveScope
-        case _                   => place.getResolveScope
-      }
+      val scope =
+        processor match {
+          case r: ResolveProcessor => r.getResolveScope
+          case _                   => place.getResolveScope
+        }
       if (getQualifiedName == "scala") {
         ScPackageImpl.implicitlyImportedObject(
           place.getManager,
@@ -205,9 +207,10 @@ object ScPackageImpl {
     processing.set(processing.get() - 1)
   }
 
-  private val processing: ThreadLocal[Long] = new ThreadLocal[Long] {
-    override def initialValue(): Long = 0
-  }
+  private val processing: ThreadLocal[Long] =
+    new ThreadLocal[Long] {
+      override def initialValue(): Long = 0
+    }
 
   private def implicitlyImportedObject(
       manager: PsiManager,

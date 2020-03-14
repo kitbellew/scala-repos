@@ -33,28 +33,30 @@ final class Env(
     historyApi: lila.history.HistoryApi,
     scheduler: lila.common.Scheduler) {
 
-  private val settings = new {
-    val UidTimeout = config duration "uid.timeout"
-    val PlayerDisconnectTimeout = config duration "player.disconnect.timeout"
-    val PlayerRagequitTimeout = config duration "player.ragequit.timeout"
-    val AnimationDuration = config duration "animation.duration"
-    val Moretime = config duration "moretime"
-    val SocketName = config getString "socket.name"
-    val SocketTimeout = config duration "socket.timeout"
-    val FinisherLockTimeout = config duration "finisher.lock.timeout"
-    val NetDomain = config getString "net.domain"
-    val ActorMapName = config getString "actor.map.name"
-    val CasualOnly = config getBoolean "casual_only"
-    val ActiveTtl = config duration "active.ttl"
-    val CollectionNote = config getString "collection.note"
-    val CollectionHistory = config getString "collection.history"
-    val CollectionForecast = config getString "collection.forecast"
-    val ChannelMoveTime = config getString "channel.move_time.name "
-  }
+  private val settings =
+    new {
+      val UidTimeout = config duration "uid.timeout"
+      val PlayerDisconnectTimeout = config duration "player.disconnect.timeout"
+      val PlayerRagequitTimeout = config duration "player.ragequit.timeout"
+      val AnimationDuration = config duration "animation.duration"
+      val Moretime = config duration "moretime"
+      val SocketName = config getString "socket.name"
+      val SocketTimeout = config duration "socket.timeout"
+      val FinisherLockTimeout = config duration "finisher.lock.timeout"
+      val NetDomain = config getString "net.domain"
+      val ActorMapName = config getString "actor.map.name"
+      val CasualOnly = config getBoolean "casual_only"
+      val ActiveTtl = config duration "active.ttl"
+      val CollectionNote = config getString "collection.note"
+      val CollectionHistory = config getString "collection.history"
+      val CollectionForecast = config getString "collection.forecast"
+      val ChannelMoveTime = config getString "channel.move_time.name "
+    }
   import settings._
 
-  private val moveTimeChannel =
-    system.actorOf(Props(classOf[lila.socket.Channel]), name = ChannelMoveTime)
+  private val moveTimeChannel = system.actorOf(
+    Props(classOf[lila.socket.Channel]),
+    name = ChannelMoveTime)
 
   private val moveMonitor = new MoveMonitor(system, moveTimeChannel)
 
@@ -126,53 +128,59 @@ final class Env(
     actor
   }
 
-  lazy val socketHandler = new SocketHandler(
-    hub = hub,
-    roundMap = roundMap,
-    socketHub = socketHub,
-    messenger = messenger,
-    bus = system.lilaBus)
+  lazy val socketHandler =
+    new SocketHandler(
+      hub = hub,
+      roundMap = roundMap,
+      socketHub = socketHub,
+      messenger = messenger,
+      bus = system.lilaBus)
 
   lazy val perfsUpdater = new PerfsUpdater(historyApi, rankingApi)
 
-  lazy val forecastApi: ForecastApi = new ForecastApi(
-    coll = db(CollectionForecast),
-    roundMap = hub.actor.roundMap)
+  lazy val forecastApi: ForecastApi =
+    new ForecastApi(
+      coll = db(CollectionForecast),
+      roundMap = hub.actor.roundMap)
 
-  private lazy val finisher = new Finisher(
-    messenger = messenger,
-    perfsUpdater = perfsUpdater,
-    crosstableApi = crosstableApi,
-    playban = playban,
-    bus = system.lilaBus,
-    timeline = hub.actor.timeline,
-    casualOnly = CasualOnly)
+  private lazy val finisher =
+    new Finisher(
+      messenger = messenger,
+      perfsUpdater = perfsUpdater,
+      crosstableApi = crosstableApi,
+      playban = playban,
+      bus = system.lilaBus,
+      timeline = hub.actor.timeline,
+      casualOnly = CasualOnly)
 
-  private lazy val rematcher = new Rematcher(
-    messenger = messenger,
-    onStart = onStart,
-    rematch960Cache = rematch960Cache,
-    isRematchCache = isRematchCache)
+  private lazy val rematcher =
+    new Rematcher(
+      messenger = messenger,
+      onStart = onStart,
+      rematch960Cache = rematch960Cache,
+      isRematchCache = isRematchCache)
 
-  private lazy val player: Player = new Player(
-    fishnetPlayer = fishnetPlayer,
-    bus = system.lilaBus,
-    finisher = finisher,
-    cheatDetector = cheatDetector,
-    uciMemo = uciMemo)
+  private lazy val player: Player =
+    new Player(
+      fishnetPlayer = fishnetPlayer,
+      bus = system.lilaBus,
+      finisher = finisher,
+      cheatDetector = cheatDetector,
+      uciMemo = uciMemo)
 
   private lazy val drawer =
     new Drawer(prefApi = prefApi, messenger = messenger, finisher = finisher)
 
-  private lazy val cheatDetector = new CheatDetector(
-    reporter = hub.actor.report)
+  private lazy val cheatDetector =
+    new CheatDetector(reporter = hub.actor.report)
 
   lazy val cli = new Cli(db, roundMap = roundMap, system = system)
 
-  lazy val messenger = new Messenger(
-    socketHub = socketHub,
-    chat = hub.actor.chat,
-    i18nKeys = i18nKeys)
+  lazy val messenger =
+    new Messenger(
+      socketHub = socketHub,
+      chat = hub.actor.chat,
+      i18nKeys = i18nKeys)
 
   def version(gameId: String): Fu[Int] =
     socketHub ? Ask(gameId, GetVersion) mapTo manifest[Int]
@@ -180,14 +188,15 @@ final class Env(
   private def getSocketStatus(gameId: String): Fu[SocketStatus] =
     socketHub ? Ask(gameId, GetSocketStatus) mapTo manifest[SocketStatus]
 
-  lazy val jsonView = new JsonView(
-    chatApi = chatApi,
-    noteApi = noteApi,
-    userJsonView = userJsonView,
-    getSocketStatus = getSocketStatus,
-    canTakeback = takebacker.isAllowedByPrefs,
-    baseAnimationDuration = AnimationDuration,
-    moretimeSeconds = Moretime.toSeconds.toInt)
+  lazy val jsonView =
+    new JsonView(
+      chatApi = chatApi,
+      noteApi = noteApi,
+      userJsonView = userJsonView,
+      getSocketStatus = getSocketStatus,
+      canTakeback = takebacker.isAllowedByPrefs,
+      baseAnimationDuration = AnimationDuration,
+      moretimeSeconds = Moretime.toSeconds.toInt)
 
   lazy val noteApi = new NoteApi(db(CollectionNote))
 

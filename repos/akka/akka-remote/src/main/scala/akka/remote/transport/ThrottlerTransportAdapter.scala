@@ -292,8 +292,10 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
 
   override def ready: Receive = {
     case InboundAssociation(handle) ⇒
-      val wrappedHandle =
-        wrapHandle(handle, associationListener, inbound = true)
+      val wrappedHandle = wrapHandle(
+        handle,
+        associationListener,
+        inbound = true)
       wrappedHandle.throttlerActor ! Handle(wrappedHandle)
     case AssociateUnderlying(remoteAddress, statusPromise) ⇒
       wrappedTransport.associate(remoteAddress) onComplete {
@@ -303,8 +305,10 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       }
     // Finished outbound association and got back the handle
     case AssociateResult(handle, statusPromise) ⇒
-      val wrappedHandle =
-        wrapHandle(handle, associationListener, inbound = false)
+      val wrappedHandle = wrapHandle(
+        handle,
+        associationListener,
+        inbound = false)
       val naked = nakedAddress(handle.remoteAddress)
       val inMode = getInboundMode(naked)
       wrappedHandle.outboundThrottleMode.set(getOutboundMode(naked))
@@ -624,8 +628,9 @@ private[transport] class ThrottledAssociation(
     } else {
       if (throttledMessages.isEmpty) {
         val tokens = payload.length
-        val (newbucket, success) =
-          inboundThrottleMode.tryConsumeTokens(System.nanoTime(), tokens)
+        val (newbucket, success) = inboundThrottleMode.tryConsumeTokens(
+          System.nanoTime(),
+          tokens)
         if (success) {
           inboundThrottleMode = newbucket
           upstreamListener notify InboundPayload(payload)
@@ -667,8 +672,9 @@ private[transport] final case class ThrottlerHandle(
 
     @tailrec def tryConsume(currentBucket: ThrottleMode): Boolean = {
       val timeOfSend = System.nanoTime()
-      val (newBucket, allow) =
-        currentBucket.tryConsumeTokens(timeOfSend, tokens)
+      val (newBucket, allow) = currentBucket.tryConsumeTokens(
+        timeOfSend,
+        tokens)
       if (allow) {
         if (outboundThrottleMode.compareAndSet(currentBucket, newBucket))
           true

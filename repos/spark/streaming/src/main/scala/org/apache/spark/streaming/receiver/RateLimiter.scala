@@ -36,10 +36,11 @@ import org.apache.spark.internal.Logging
 private[receiver] abstract class RateLimiter(conf: SparkConf) extends Logging {
 
   // treated as an upper limit
-  private val maxRateLimit =
-    conf.getLong("spark.streaming.receiver.maxRate", Long.MaxValue)
-  private lazy val rateLimiter =
-    GuavaRateLimiter.create(getInitialRateLimit().toDouble)
+  private val maxRateLimit = conf.getLong(
+    "spark.streaming.receiver.maxRate",
+    Long.MaxValue)
+  private lazy val rateLimiter = GuavaRateLimiter.create(
+    getInitialRateLimit().toDouble)
 
   def waitToPush() {
     rateLimiter.acquire()

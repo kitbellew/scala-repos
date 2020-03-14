@@ -12,11 +12,9 @@ import akka.testkit.EventFilter
 
 class ExecutionDirectivesSpec extends RoutingSpec {
   object MyException extends RuntimeException
-  val handler =
-    ExceptionHandler {
-      case MyException ⇒
-        complete((500, "Pling! Plong! Something went wrong!!!"))
-    }
+  val handler = ExceptionHandler {
+    case MyException ⇒ complete((500, "Pling! Plong! Something went wrong!!!"))
+  }
 
   "The `handleExceptions` directive" should {
     "handle an exception strictly thrown in the inner route with the supplied exception handler" in {

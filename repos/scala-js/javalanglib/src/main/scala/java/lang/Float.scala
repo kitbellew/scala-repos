@@ -8,8 +8,7 @@ final class Float private () extends Number with Comparable[Float] {
   def this(value: scala.Float) = this()
   def this(s: String) = this()
 
-  @inline def floatValue(): scala.Float =
-    this.asInstanceOf[scala.Float]
+  @inline def floatValue(): scala.Float = this.asInstanceOf[scala.Float]
 
   @inline override def byteValue(): scala.Byte = floatValue.toByte
   @inline override def shortValue(): scala.Short = floatValue.toShort
@@ -34,14 +33,11 @@ final class Float private () extends Number with Comparable[Float] {
   @inline override def compareTo(that: Float): Int =
     Float.compare(floatValue, that.floatValue)
 
-  @inline override def toString(): String =
-    Float.toString(floatValue)
+  @inline override def toString(): String = Float.toString(floatValue)
 
-  @inline def isNaN(): scala.Boolean =
-    Float.isNaN(floatValue)
+  @inline def isNaN(): scala.Boolean = Float.isNaN(floatValue)
 
-  @inline def isInfinite(): scala.Boolean =
-    Float.isInfinite(floatValue)
+  @inline def isInfinite(): scala.Boolean = Float.isInfinite(floatValue)
 
 }
 
@@ -60,11 +56,9 @@ object Float {
 
   @inline def valueOf(s: String): Float = valueOf(parseFloat(s))
 
-  @inline def parseFloat(s: String): scala.Float =
-    Double.parseDouble(s).toFloat
+  @inline def parseFloat(s: String): scala.Float = Double.parseDouble(s).toFloat
 
-  @inline def toString(f: scala.Float): String =
-    "" + f
+  @inline def toString(f: scala.Float): String = "" + f
 
   @inline def compare(a: scala.Float, b: scala.Float): scala.Int =
     Double.compare(a, b)
@@ -72,8 +66,7 @@ object Float {
   @inline protected def equals(a: scala.Float, b: scala.Float): scala.Boolean =
     a == b || (isNaN(a) && isNaN(b))
 
-  @inline def isNaN(v: scala.Float): scala.Boolean =
-    v != v
+  @inline def isNaN(v: scala.Float): scala.Boolean = v != v
 
   @inline def isInfinite(v: scala.Float): scala.Boolean =
     v == POSITIVE_INFINITY || v == NEGATIVE_INFINITY

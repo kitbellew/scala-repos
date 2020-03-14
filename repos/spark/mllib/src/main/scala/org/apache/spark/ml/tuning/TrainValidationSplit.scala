@@ -36,11 +36,12 @@ private[ml] trait TrainValidationSplitParams extends ValidatorParams {
     * Default: 0.75
     * @group param
     */
-  val trainRatio: DoubleParam = new DoubleParam(
-    this,
-    "trainRatio",
-    "ratio between training set and validation set (>= 0 && <= 1)",
-    ParamValidators.inRange(0, 1))
+  val trainRatio: DoubleParam =
+    new DoubleParam(
+      this,
+      "trainRatio",
+      "ratio between training set and validation set (>= 0 && <= 1)",
+      ParamValidators.inRange(0, 1))
 
   /** @group getParam */
   def getTrainRatio: Double = $(trainRatio)
@@ -94,8 +95,8 @@ class TrainValidationSplit @Since("1.5.0") (
     val numModels = epm.length
     val metrics = new Array[Double](epm.length)
 
-    val Array(training, validation) =
-      dataset.rdd.randomSplit(Array($(trainRatio), 1 - $(trainRatio)))
+    val Array(training, validation) = dataset.rdd.randomSplit(
+      Array($(trainRatio), 1 - $(trainRatio)))
     val trainingDataset = sqlCtx.createDataFrame(training, schema).cache()
     val validationDataset = sqlCtx.createDataFrame(validation, schema).cache()
 
@@ -173,10 +174,11 @@ class TrainValidationSplitModel private[ml] (
 
   @Since("1.5.0")
   override def copy(extra: ParamMap): TrainValidationSplitModel = {
-    val copied = new TrainValidationSplitModel(
-      uid,
-      bestModel.copy(extra).asInstanceOf[Model[_]],
-      validationMetrics.clone())
+    val copied =
+      new TrainValidationSplitModel(
+        uid,
+        bestModel.copy(extra).asInstanceOf[Model[_]],
+        validationMetrics.clone())
     copyValues(copied, extra)
   }
 }

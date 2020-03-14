@@ -198,8 +198,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
 
   /** Converts this matrix to a flat Array (column-major) */
   def toArray: Array[V] = {
-    implicit val man =
-      ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      data.getClass.getComponentType.asInstanceOf[Class[V]])
     val ret = new Array[V](rows * cols)
     var i = 0
     while (i < cols) {
@@ -289,10 +289,11 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
             isTranspose)
       case View.Copy =>
         // calling copy directly gives a verify error. TODO: submit bug
-        val result = new DenseMatrix(
-          this.rows,
-          this.cols,
-          ArrayUtil.newArrayLike(data, size))
+        val result =
+          new DenseMatrix(
+            this.rows,
+            this.cols,
+            ArrayUtil.newArrayLike(data, size))
         result := this
         result.reshape(rows, _cols, View.Require)
       case View.Prefer =>
@@ -336,8 +337,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   }
 
   def copy: DenseMatrix[V] = {
-    implicit val man =
-      ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      data.getClass.getComponentType.asInstanceOf[Class[V]])
     val result = DenseMatrix.create[V](rows, cols, new Array[V](size))
     result := this
     result
@@ -347,8 +348,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   private implicit def dontNeedZero[V]: Zero[V] = null.asInstanceOf[Zero[V]]
 
   def delete(row: Int, axis: Axis._0.type): DenseMatrix[V] = {
-    implicit val man =
-      ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      data.getClass.getComponentType.asInstanceOf[Class[V]])
     require(row >= 0 && row < rows, s"row $row is not in bounds: [0, $rows)")
     if (row == 0)
       this(1 until rows, ::).copy
@@ -359,8 +360,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   }
 
   def delete(col: Int, axis: Axis._1.type): DenseMatrix[V] = {
-    implicit val man =
-      ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      data.getClass.getComponentType.asInstanceOf[Class[V]])
     require(col >= 0 && col < cols, s"col $col is not in bounds: [0, $cols)")
     if (col == 0)
       this(::, 1 until cols).copy
@@ -371,8 +372,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   }
 
   def delete(rows: Seq[Int], axis: Axis._0.type): DenseMatrix[V] = {
-    implicit val man =
-      ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      data.getClass.getComponentType.asInstanceOf[Class[V]])
     if (rows.isEmpty)
       copy
     else if (rows.size == 1)
@@ -399,8 +400,8 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   }
 
   def delete(cols: Seq[Int], axis: Axis._1.type): DenseMatrix[V] = {
-    implicit val man =
-      ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      data.getClass.getComponentType.asInstanceOf[Class[V]])
     if (cols.isEmpty)
       copy
     else if (cols.size == 1)

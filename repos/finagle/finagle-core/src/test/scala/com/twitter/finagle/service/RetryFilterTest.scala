@@ -108,11 +108,12 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
       // have a policy that allows for way more retries than the budgets allows for
       val policy = RetryPolicy.tries(10, RetryPolicy.WriteExceptionsOnly)
 
-      val filter = new RetryExceptionsFilter[Throwable, Int](
-        policy,
-        Timer.Nil,
-        stats,
-        budget)
+      val filter =
+        new RetryExceptionsFilter[Throwable, Int](
+          policy,
+          Timer.Nil,
+          stats,
+          budget)
       val service: Service[Throwable, Int] = Service.mk(Future.exception)
 
       val svc = filter.andThen(service)
@@ -173,12 +174,13 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
 
         it("propagate interrupts") {
           new TriesFixture(retryExceptionsOnly) {
-            val replyPromise = new Promise[Int] {
-              @volatile var interrupted: Option[Throwable] = None
-              setInterruptHandler {
-                case exc => interrupted = Some(exc)
+            val replyPromise =
+              new Promise[Int] {
+                @volatile var interrupted: Option[Throwable] = None
+                setInterruptHandler {
+                  case exc => interrupted = Some(exc)
+                }
               }
-            }
             when(service(123)) thenReturn replyPromise
 
             val res = retryingService(123)
@@ -356,12 +358,13 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
 
       it("propagate cancellation") {
         new PolicyFixture(policy, retryExceptionsOnly, timer) {
-          val replyPromise = new Promise[Int] {
-            @volatile var interrupted: Option[Throwable] = None
-            setInterruptHandler {
-              case exc => interrupted = Some(exc)
+          val replyPromise =
+            new Promise[Int] {
+              @volatile var interrupted: Option[Throwable] = None
+              setInterruptHandler {
+                case exc => interrupted = Some(exc)
+              }
             }
-          }
           when(service(123)) thenReturn replyPromise
 
           val res = retryingService(123)

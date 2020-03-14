@@ -60,9 +60,10 @@ class PeriodicGraphCheckpointerSuite
     var graphsToCheck = Seq.empty[GraphToCheck]
     sc.setCheckpointDir(path)
     val graph1 = createGraph(sc)
-    val checkpointer = new PeriodicGraphCheckpointer[Double, Double](
-      checkpointInterval,
-      graph1.vertices.sparkContext)
+    val checkpointer =
+      new PeriodicGraphCheckpointer[Double, Double](
+        checkpointInterval,
+        graph1.vertices.sparkContext)
     checkpointer.update(graph1)
     graph1.edges.count()
     graph1.vertices.count()

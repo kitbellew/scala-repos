@@ -88,11 +88,12 @@ abstract class ContextCleanerSuiteBase(
   }
 
   protected def randomRdd() = {
-    val rdd: RDD[_] = Random.nextInt(3) match {
-      case 0 => newRDD()
-      case 1 => newShuffleRDD()
-      case 2 => newPairRDD.join(newPairRDD())
-    }
+    val rdd: RDD[_] =
+      Random.nextInt(3) match {
+        case 0 => newRDD()
+        case 1 => newShuffleRDD()
+        case 2 => newPairRDD.join(newPairRDD())
+      }
     if (Random.nextBoolean())
       rdd.persist()
     rdd.count()
@@ -473,39 +474,40 @@ class CleanerTester(
   val toBeCheckpointIds = new HashSet[Long] ++= checkpointIds
   val isDistributed = !sc.isLocal
 
-  val cleanerListener = new CleanerListener {
-    def rddCleaned(rddId: Int): Unit = {
-      toBeCleanedRDDIds.synchronized {
-        toBeCleanedRDDIds -= rddId
+  val cleanerListener =
+    new CleanerListener {
+      def rddCleaned(rddId: Int): Unit = {
+        toBeCleanedRDDIds.synchronized {
+          toBeCleanedRDDIds -= rddId
+        }
+        logInfo("RDD " + rddId + " cleaned")
       }
-      logInfo("RDD " + rddId + " cleaned")
-    }
 
-    def shuffleCleaned(shuffleId: Int): Unit = {
-      toBeCleanedShuffleIds.synchronized {
-        toBeCleanedShuffleIds -= shuffleId
+      def shuffleCleaned(shuffleId: Int): Unit = {
+        toBeCleanedShuffleIds.synchronized {
+          toBeCleanedShuffleIds -= shuffleId
+        }
+        logInfo("Shuffle " + shuffleId + " cleaned")
       }
-      logInfo("Shuffle " + shuffleId + " cleaned")
-    }
 
-    def broadcastCleaned(broadcastId: Long): Unit = {
-      toBeCleanedBroadcstIds.synchronized {
-        toBeCleanedBroadcstIds -= broadcastId
+      def broadcastCleaned(broadcastId: Long): Unit = {
+        toBeCleanedBroadcstIds.synchronized {
+          toBeCleanedBroadcstIds -= broadcastId
+        }
+        logInfo("Broadcast " + broadcastId + " cleaned")
       }
-      logInfo("Broadcast " + broadcastId + " cleaned")
-    }
 
-    def accumCleaned(accId: Long): Unit = {
-      logInfo("Cleaned accId " + accId + " cleaned")
-    }
-
-    def checkpointCleaned(rddId: Long): Unit = {
-      toBeCheckpointIds.synchronized {
-        toBeCheckpointIds -= rddId
+      def accumCleaned(accId: Long): Unit = {
+        logInfo("Cleaned accId " + accId + " cleaned")
       }
-      logInfo("checkpoint  " + rddId + " cleaned")
+
+      def checkpointCleaned(rddId: Long): Unit = {
+        toBeCheckpointIds.synchronized {
+          toBeCheckpointIds -= rddId
+        }
+        logInfo("checkpoint  " + rddId + " cleaned")
+      }
     }
-  }
 
   val MAX_VALIDATION_ATTEMPTS = 10
   val VALIDATION_ATTEMPT_INTERVAL = 100

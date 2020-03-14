@@ -36,8 +36,10 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     // expectations
     val Ew = 1.0
     val Emu = Vectors.dense(5.0, 10.0)
-    val Esigma =
-      Matrices.dense(2, 2, Array(2.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0, 2.0 / 3.0))
+    val Esigma = Matrices.dense(
+      2,
+      2,
+      Array(2.0 / 3.0, -2.0 / 3.0, -2.0 / 3.0, 2.0 / 3.0))
 
     val seeds = Array(314589, 29032897, 50181, 494821, 4660)
     seeds.foreach { seed =>
@@ -53,17 +55,18 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     val data = sc.parallelize(GaussianTestData.data)
 
     // we set an initial gaussian to induce expected results
-    val initialGmm = new GaussianMixtureModel(
-      Array(0.5, 0.5),
-      Array(
-        new MultivariateGaussian(
-          Vectors.dense(-1.0),
-          Matrices.dense(1, 1, Array(1.0))),
-        new MultivariateGaussian(
-          Vectors.dense(1.0),
-          Matrices.dense(1, 1, Array(1.0)))
+    val initialGmm =
+      new GaussianMixtureModel(
+        Array(0.5, 0.5),
+        Array(
+          new MultivariateGaussian(
+            Vectors.dense(-1.0),
+            Matrices.dense(1, 1, Array(1.0))),
+          new MultivariateGaussian(
+            Vectors.dense(1.0),
+            Matrices.dense(1, 1, Array(1.0)))
+        )
       )
-    )
 
     val Ew = Array(1.0 / 3.0, 2.0 / 3.0)
     val Emu = Array(Vectors.dense(-4.3673), Vectors.dense(5.1604))
@@ -133,20 +136,21 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("two clusters with sparse data") {
     val data = sc.parallelize(GaussianTestData.data)
-    val sparseData =
-      data.map(point => Vectors.sparse(1, Array(0), point.toArray))
+    val sparseData = data.map(point =>
+      Vectors.sparse(1, Array(0), point.toArray))
     // we set an initial gaussian to induce expected results
-    val initialGmm = new GaussianMixtureModel(
-      Array(0.5, 0.5),
-      Array(
-        new MultivariateGaussian(
-          Vectors.dense(-1.0),
-          Matrices.dense(1, 1, Array(1.0))),
-        new MultivariateGaussian(
-          Vectors.dense(1.0),
-          Matrices.dense(1, 1, Array(1.0)))
+    val initialGmm =
+      new GaussianMixtureModel(
+        Array(0.5, 0.5),
+        Array(
+          new MultivariateGaussian(
+            Vectors.dense(-1.0),
+            Matrices.dense(1, 1, Array(1.0))),
+          new MultivariateGaussian(
+            Vectors.dense(1.0),
+            Matrices.dense(1, 1, Array(1.0)))
+        )
       )
-    )
     val Ew = Array(1.0 / 3.0, 2.0 / 3.0)
     val Emu = Array(Vectors.dense(-4.3673), Vectors.dense(5.1604))
     val Esigma = Array(
@@ -219,9 +223,10 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
       Vectors.dense(6.2734)
     )
 
-    val data2: Array[Vector] = Array.tabulate(25) { i: Int =>
-      Vectors.dense(Array.tabulate(50)(i + _.toDouble))
-    }
+    val data2: Array[Vector] =
+      Array.tabulate(25) { i: Int =>
+        Vectors.dense(Array.tabulate(50)(i + _.toDouble))
+      }
 
   }
 }

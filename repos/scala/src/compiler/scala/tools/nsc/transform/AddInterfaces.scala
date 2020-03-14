@@ -22,15 +22,16 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
     tp match {
       case ClassInfoType(parents, decls, clazz)
           if clazz.isPackageClass || !clazz.isJavaDefined =>
-        val parents1 = parents match {
-          case Nil => Nil
-          case hd :: tl =>
-            assert(!hd.typeSymbol.isTrait, clazz)
-            if (clazz.isTrait)
-              ObjectTpe :: tl
-            else
-              parents
-        }
+        val parents1 =
+          parents match {
+            case Nil => Nil
+            case hd :: tl =>
+              assert(!hd.typeSymbol.isTrait, clazz)
+              if (clazz.isTrait)
+                ObjectTpe :: tl
+              else
+                parents
+          }
         if (clazz.isTrait) {
           decls foreach { sym =>
             if (!sym.isType)
@@ -104,21 +105,23 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
     }
   }
 
-  protected val mixinTransformer = new Transformer {
-    override def transform(tree: Tree): Tree = {
-      val sym = tree.symbol
-      val tree1 = tree match {
-        case DefDef(_, _, _, _, _, _)
-            if sym.isClassConstructor && sym.isPrimaryConstructor && sym.owner != ArrayClass =>
-          deriveDefDef(tree)(addMixinConstructorCalls(_, sym.owner)) // (3)
-        case Template(parents, self, body) =>
-          val parents1 =
-            sym.owner.info.parents map (t => TypeTree(t) setPos tree.pos)
-          treeCopy.Template(tree, parents1, noSelfType, body)
-        case _ =>
-          tree
+  protected val mixinTransformer =
+    new Transformer {
+      override def transform(tree: Tree): Tree = {
+        val sym = tree.symbol
+        val tree1 =
+          tree match {
+            case DefDef(_, _, _, _, _, _)
+                if sym.isClassConstructor && sym.isPrimaryConstructor && sym.owner != ArrayClass =>
+              deriveDefDef(tree)(addMixinConstructorCalls(_, sym.owner)) // (3)
+            case Template(parents, self, body) =>
+              val parents1 =
+                sym.owner.info.parents map (t => TypeTree(t) setPos tree.pos)
+              treeCopy.Template(tree, parents1, noSelfType, body)
+            case _ =>
+              tree
+          }
+        super.transform(tree1)
       }
-      super.transform(tree1)
     }
-  }
 }

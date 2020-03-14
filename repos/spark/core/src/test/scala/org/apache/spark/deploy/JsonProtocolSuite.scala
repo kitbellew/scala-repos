@@ -81,16 +81,17 @@ class JsonProtocolSuite extends SparkFunSuite with JsonTestUtils {
     val completedApps = Array[ApplicationInfo]()
     val activeDrivers = Array(createDriverInfo())
     val completedDrivers = Array(createDriverInfo())
-    val stateResponse = new MasterStateResponse(
-      "host",
-      8080,
-      None,
-      workers,
-      activeApps,
-      completedApps,
-      activeDrivers,
-      completedDrivers,
-      RecoveryState.ALIVE)
+    val stateResponse =
+      new MasterStateResponse(
+        "host",
+        8080,
+        None,
+        workers,
+        activeApps,
+        completedApps,
+        activeDrivers,
+        completedDrivers,
+        RecoveryState.ALIVE)
     val output = JsonProtocol.writeMasterState(stateResponse)
     assertValidJson(output)
     assertValidDataInJson(
@@ -100,25 +101,28 @@ class JsonProtocolSuite extends SparkFunSuite with JsonTestUtils {
 
   test("writeWorkerState") {
     val executors = List[ExecutorRunner]()
-    val finishedExecutors =
-      List[ExecutorRunner](createExecutorRunner(123), createExecutorRunner(123))
+    val finishedExecutors = List[ExecutorRunner](
+      createExecutorRunner(123),
+      createExecutorRunner(123))
     val drivers = List(createDriverRunner("driverId"))
-    val finishedDrivers =
-      List(createDriverRunner("driverId"), createDriverRunner("driverId"))
-    val stateResponse = new WorkerStateResponse(
-      "host",
-      8080,
-      "workerId",
-      executors,
-      finishedExecutors,
-      drivers,
-      finishedDrivers,
-      "masterUrl",
-      4,
-      1234,
-      4,
-      1234,
-      "masterWebUiUrl")
+    val finishedDrivers = List(
+      createDriverRunner("driverId"),
+      createDriverRunner("driverId"))
+    val stateResponse =
+      new WorkerStateResponse(
+        "host",
+        8080,
+        "workerId",
+        executors,
+        finishedExecutors,
+        drivers,
+        finishedDrivers,
+        "masterUrl",
+        4,
+        1234,
+        4,
+        1234,
+        "masterWebUiUrl")
     val output = JsonProtocol.writeWorkerState(stateResponse)
     assertValidJson(output)
     assertValidDataInJson(
@@ -152,8 +156,7 @@ object JsonConstants {
         currTimeInMillis - appInfoStartTime)
       .stripMargin
 
-  val workerInfoJsonStr =
-    """
+  val workerInfoJsonStr = """
       |{"id":"id","host":"host","port":8080,
       |"webuiaddress":"http://publicAddress:80",
       |"cores":4,"coresused":0,"coresfree":4,
@@ -167,8 +170,7 @@ object JsonConstants {
       |"user":"%s","command":"Command(mainClass,List(arg1, arg2),Map(),List(),List(),List())"}
     """.format(System.getProperty("user.name", "<unknown>")).stripMargin
 
-  val executorRunnerJsonStr =
-    """
+  val executorRunnerJsonStr = """
       |{"id":123,"memory":1234,"appid":"appId",
       |"appdesc":%s}
     """.format(appDescJsonStr).stripMargin

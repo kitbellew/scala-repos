@@ -248,8 +248,8 @@ case class ScMethodType(
         new ScMethodType(
           returnType.recursiveUpdate(update, newVisited),
           params.map(p =>
-            p.copy(paramType =
-              p.paramType.recursiveUpdate(update, newVisited))),
+            p.copy(paramType = p.paramType
+              .recursiveUpdate(update, newVisited))),
           isImplicit)(project, scope)
     }
   }
@@ -328,15 +328,16 @@ case class ScTypePolymorphicType(
         var coOrInVariant = 0
         internalType.recursiveVarianceUpdate {
           case (typez: ScType, i: Int) =>
-            val pair = typez match {
-              case tp: ScTypeParameterType =>
-                (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-              case ScUndefinedType(tp) =>
-                (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-              case ScAbstractType(tp, _, _) =>
-                (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-              case _ => null
-            }
+            val pair =
+              typez match {
+                case tp: ScTypeParameterType =>
+                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+                case ScUndefinedType(tp) =>
+                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+                case ScAbstractType(tp, _, _) =>
+                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+                case _ => null
+              }
             if (pair != null) {
               val (tpName, id) = pair
               if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
@@ -568,28 +569,29 @@ case class ScTypePolymorphicType(
           undefinedSubst = t._2
           i = i + 1
         }
-        val subst = new ScSubstitutor(
-          new collection.immutable.HashMap[(String, PsiElement), ScType] ++
-            typeParameters
-              .zip(p.typeParameters)
-              .map({ tuple =>
-                (
-                  (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
-                  new ScTypeParameterType(
-                    tuple._2.name,
-                    tuple._2.ptp match {
-                      case p: ScTypeParam =>
-                        p.typeParameters.toList.map {
-                          new ScTypeParameterType(_, ScSubstitutor.empty)
-                        }
-                      case _ => Nil
-                    },
-                    new Suspension(tuple._2.lowerType),
-                    new Suspension(tuple._2.upperType),
-                    tuple._2.ptp))
-              }),
-          Map.empty,
-          None)
+        val subst =
+          new ScSubstitutor(
+            new collection.immutable.HashMap[(String, PsiElement), ScType] ++
+              typeParameters
+                .zip(p.typeParameters)
+                .map({ tuple =>
+                  (
+                    (tuple._1.name, ScalaPsiUtil.getPsiElementId(tuple._1.ptp)),
+                    new ScTypeParameterType(
+                      tuple._2.name,
+                      tuple._2.ptp match {
+                        case p: ScTypeParam =>
+                          p.typeParameters.toList.map {
+                            new ScTypeParameterType(_, ScSubstitutor.empty)
+                          }
+                        case _ => Nil
+                      },
+                      new Suspension(tuple._2.lowerType),
+                      new Suspension(tuple._2.upperType),
+                      tuple._2.ptp))
+                }),
+            Map.empty,
+            None)
         Equivalence.equivInner(
           subst.subst(internalType),
           p.internalType,

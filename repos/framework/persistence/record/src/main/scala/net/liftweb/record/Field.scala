@@ -259,10 +259,11 @@ trait TypedField[ThisType] extends BaseField {
       if (forceDirty_?) {
         dirty_?(true)
       } else if (!dirty_?) {
-        val same = (oldValue, data) match {
-          case (Full(ov), Full(nv)) => ov == nv
-          case (a, b)               => a == b
-        }
+        val same =
+          (oldValue, data) match {
+            case (Full(ov), Full(nv)) => ov == nv
+            case (a, b)               => a == b
+          }
         dirty_?(!same)
       }
       data

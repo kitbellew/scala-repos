@@ -16,8 +16,7 @@ import org.osgi.framework.BundleContext
 @ExamReactorStrategy(Array(classOf[PerMethod]))
 class BasicLibraryTest extends ScalaOsgiHelper {
   @Configuration
-  def config(): Array[exam.Option] =
-    justCoreLibraryOptions
+  def config(): Array[exam.Option] = justCoreLibraryOptions
 
   @Test
   def everythingLoads(): Unit = {

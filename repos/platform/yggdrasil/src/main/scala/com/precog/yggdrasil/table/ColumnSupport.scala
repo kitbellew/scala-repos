@@ -34,11 +34,12 @@ class BitsetColumn(definedAt: BitSet) { this: Column =>
 
   override def toString = {
     val limit = definedAt.max
-    val repr = (row: Int) =>
-      if (definedAt(row))
-        'x'
-      else
-        '_'
+    val repr =
+      (row: Int) =>
+        if (definedAt(row))
+          'x'
+        else
+          '_'
     getClass.getName + "(" + (0 until limit)
       .map(repr)
       .mkString("[", ",", "]") + ", " + limit + ")"

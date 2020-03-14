@@ -82,22 +82,23 @@ class SQLExecutionSuite extends SparkFunSuite {
     // Before starting the thread, mutate the execution ID in the parent.
     // The child thread should not see the effect of this change.
     var throwable: Option[Throwable] = None
-    val child = new Thread {
-      override def run(): Unit = {
-        try {
-          sc.parallelize(1 to 100)
-            .map { i =>
-              (i, i)
-            }
-            .toDF("a", "b")
-            .collect()
-        } catch {
-          case t: Throwable =>
-            throwable = Some(t)
-        }
+    val child =
+      new Thread {
+        override def run(): Unit = {
+          try {
+            sc.parallelize(1 to 100)
+              .map { i =>
+                (i, i)
+              }
+              .toDF("a", "b")
+              .collect()
+          } catch {
+            case t: Throwable =>
+              throwable = Some(t)
+          }
 
+        }
       }
-    }
     sc.setLocalProperty(SQLExecution.EXECUTION_ID_KEY, "anything")
     child.start()
     child.join()

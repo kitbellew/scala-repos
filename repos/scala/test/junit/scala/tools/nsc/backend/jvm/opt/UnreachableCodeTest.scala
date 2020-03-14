@@ -262,8 +262,7 @@ class UnreachableCodeTest extends ClearAfterClass {
 
   @Test
   def loadNullNothingBytecode(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def nl: Null = null
         |  def nt: Nothing = throw new Error("")
         |  def cons(a: Any) = ()

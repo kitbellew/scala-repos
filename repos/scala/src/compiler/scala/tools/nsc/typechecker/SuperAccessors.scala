@@ -82,8 +82,9 @@ abstract class SuperAccessors
     private val accDefs = mutable.Map[Symbol, ListBuffer[Tree]]()
 
     private def storeAccessorDefinition(clazz: Symbol, tree: Tree) = {
-      val buf =
-        accDefs.getOrElse(clazz, sys.error("no acc def buf for " + clazz))
+      val buf = accDefs.getOrElse(
+        clazz,
+        sys.error("no acc def buf for " + clazz))
       buf += typers(clazz) typed tree
     }
     private def ensureAccessor(sel: Select, mixName: TermName = nme.EMPTY) = {
@@ -98,10 +99,11 @@ abstract class SuperAccessors
             supername,
             sel.pos,
             SUPERACCESSOR | PRIVATE | ARTIFACT) setAlias sym
-          val tpe = clazz.thisType memberType sym match {
-            case t if sym.isModuleNotMethod => NullaryMethodType(t)
-            case t                          => t
-          }
+          val tpe =
+            clazz.thisType memberType sym match {
+              case t if sym.isModuleNotMethod => NullaryMethodType(t)
+              case t                          => t
+            }
           acc setInfoAndEnter (tpe cloneInfo acc)
           // Diagnostic for SI-7091
           if (!accDefs.contains(clazz))
@@ -162,8 +164,8 @@ abstract class SuperAccessors
           )
       } else if (mix == tpnme.EMPTY && !sym.owner.isTrait) {
         // SI-4989 Check if an intermediate class between `clazz` and `sym.owner` redeclares the method as abstract.
-        val intermediateClasses =
-          clazz.info.baseClasses.tail.takeWhile(_ != sym.owner)
+        val intermediateClasses = clazz.info.baseClasses.tail
+          .takeWhile(_ != sym.owner)
         intermediateClasses
           .map(sym.overridingSymbol)
           .find(s => s.isDeferred && !s.isAbstractOverride && !s.owner.isTrait)
@@ -500,20 +502,21 @@ abstract class SuperAccessors
           clazz.thisType
         else
           clazz.typeOfThis
-      val accType = (protAcc: Symbol) =>
-        memberType match {
-          case PolyType(tparams, restpe) =>
-            // luc: question to author: should the tparams symbols not be cloned and get a new owner (protAcc)?
-            PolyType(
-              tparams,
+      val accType =
+        (protAcc: Symbol) =>
+          memberType match {
+            case PolyType(tparams, restpe) =>
+              // luc: question to author: should the tparams symbols not be cloned and get a new owner (protAcc)?
+              PolyType(
+                tparams,
+                MethodType(
+                  List(protAcc.newSyntheticValueParam(objType)),
+                  restpe.cloneInfo(protAcc).asSeenFrom(qual.tpe, sym.owner)))
+            case _ =>
               MethodType(
                 List(protAcc.newSyntheticValueParam(objType)),
-                restpe.cloneInfo(protAcc).asSeenFrom(qual.tpe, sym.owner)))
-          case _ =>
-            MethodType(
-              List(protAcc.newSyntheticValueParam(objType)),
-              memberType.cloneInfo(protAcc).asSeenFrom(qual.tpe, sym.owner))
-        }
+                memberType.cloneInfo(protAcc).asSeenFrom(qual.tpe, sym.owner))
+          }
 
       val protAcc = clazz.info
         .decl(accName)
@@ -529,8 +532,9 @@ abstract class SuperAccessors
             val (receiver :: _) :: tail = newAcc.paramss
             val base: Tree = Select(Ident(receiver), sym)
             val allParamTypes = mapParamss(sym)(_.tpe)
-            val args = map2(tail, allParamTypes)((params, tpes) =>
-              map2(params, tpes)(makeArg(_, receiver, _)))
+            val args =
+              map2(tail, allParamTypes)((params, tpes) =>
+                map2(params, tpes)(makeArg(_, receiver, _)))
             args.foldLeft(base)(Apply(_, _))
           }
         )
@@ -541,12 +545,13 @@ abstract class SuperAccessors
       }
       val selection = Select(This(clazz), protAcc)
       def mkApply(fn: Tree) = Apply(fn, qual :: Nil)
-      val res = atPos(tree.pos) {
-        targs.head match {
-          case EmptyTree => mkApply(selection)
-          case _         => mkApply(TypeApply(selection, targs))
+      val res =
+        atPos(tree.pos) {
+          targs.head match {
+            case EmptyTree => mkApply(selection)
+            case _         => mkApply(TypeApply(selection, targs))
+          }
         }
-      }
       debuglog(s"Replaced $tree with $res")
       if (hasArgs)
         localTyper.typedOperator(res)
@@ -567,10 +572,11 @@ abstract class SuperAccessors
       */
     private def makeArg(v: Symbol, obj: Symbol, pt: Type): Tree = {
       // owner class
-      val clazz = pt match {
-        case TypeRef(pre, _, _) => thisTypeOfPath(pre)
-        case _                  => NoSymbol
-      }
+      val clazz =
+        pt match {
+          case TypeRef(pre, _, _) => thisTypeOfPath(pre)
+          case _                  => NoSymbol
+        }
       val result = gen.paramToArg(v)
       if (clazz != NoSymbol && (obj.tpe.typeSymbol isSubClass clazz)) // path-dependent type
         gen.mkAsInstanceOf(

@@ -224,15 +224,17 @@ case object CPathArray extends CPathNode {
 
 object CPath {
   import blueeyes.json._
-  implicit val CPathDecomposer: Decomposer[CPath] = new Decomposer[CPath] {
-    def decompose(cpath: CPath): JValue = JString(cpath.toString)
-  }
+  implicit val CPathDecomposer: Decomposer[CPath] =
+    new Decomposer[CPath] {
+      def decompose(cpath: CPath): JValue = JString(cpath.toString)
+    }
 
-  implicit val CPathExtractor: Extractor[CPath] = new Extractor[CPath] {
-    override def validated(
-        obj: JValue): scalaz.Validation[Extractor.Error, CPath] =
-      obj.validated[String].map(CPath(_))
-  }
+  implicit val CPathExtractor: Extractor[CPath] =
+    new Extractor[CPath] {
+      override def validated(
+          obj: JValue): scalaz.Validation[Extractor.Error, CPath] =
+        obj.validated[String].map(CPath(_))
+    }
 
   private[this] case class CompositeCPath(nodes: List[CPathNode]) extends CPath
 

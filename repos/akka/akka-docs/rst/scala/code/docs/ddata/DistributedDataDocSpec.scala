@@ -17,8 +17,7 @@ import akka.serialization.SerializationExtension
 
 object DistributedDataDocSpec {
 
-  val config =
-    """
+  val config = """
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.netty.tcp.port = 0
 
@@ -67,8 +66,11 @@ object DistributedDataDocSpec {
     implicit val node = Cluster(context.system)
 
     import context.dispatcher
-    val tickTask =
-      context.system.scheduler.schedule(5.seconds, 5.seconds, self, Tick)
+    val tickTask = context.system.scheduler.schedule(
+      5.seconds,
+      5.seconds,
+      self,
+      Tick)
 
     val DataKey = ORSetKey[String]("key")
 
@@ -378,10 +380,11 @@ class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
     case class Record(version: Int, name: String, address: String)
 
     implicit val node = Cluster(system)
-    implicit val recordClock = new LWWRegister.Clock[Record] {
-      override def apply(currentTimestamp: Long, value: Record): Long =
-        value.version
-    }
+    implicit val recordClock =
+      new LWWRegister.Clock[Record] {
+        override def apply(currentTimestamp: Long, value: Record): Long =
+          value.version
+      }
 
     val record1 = Record(version = 1, "Alice", "Union Square")
     val r1 = LWWRegister(record1)

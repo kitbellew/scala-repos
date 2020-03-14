@@ -187,20 +187,16 @@ private[niflheim] class NIHDBImpl private[niflheim] (
       cols: Option[Set[CPath]]): Future[Option[Block]] =
     getSnapshot().map(_.getBlock(id, cols))
 
-  def length: Future[Long] =
-    getSnapshot().map(_.count())
+  def length: Future[Long] = getSnapshot().map(_.count())
 
-  def status: Future[Status] =
-    (actor ? GetStatus).mapTo[Status]
+  def status: Future[Status] = (actor ? GetStatus).mapTo[Status]
 
-  def structure: Future[Set[ColumnRef]] =
-    getSnapshot().map(_.structure)
+  def structure: Future[Set[ColumnRef]] = getSnapshot().map(_.structure)
 
   def count(paths0: Option[Set[CPath]]): Future[Long] =
     getSnapshot().map(_.count(paths0))
 
-  def quiesce: IO[PrecogUnit] =
-    IO(actor ! Quiesce)
+  def quiesce: IO[PrecogUnit] = IO(actor ! Quiesce)
 
   def close(implicit actorSystem: ActorSystem): Future[PrecogUnit] =
     gracefulStop(actor, timeout.duration)(actorSystem).map { _ =>
@@ -214,15 +210,14 @@ private[niflheim] object NIHDBActor extends Logging {
   final val rawSubdir = "raw_blocks"
   final val lockName = "NIHDBProjection"
 
-  private[niflheim] final val internalDirs =
-    Set(
-      cookedSubdir,
-      rawSubdir,
-      descriptorFilename,
-      CookStateLog.logName + "_1.log",
-      CookStateLog.logName + "_2.log",
-      lockName + ".lock",
-      CookStateLog.lockName + ".lock")
+  private[niflheim] final val internalDirs = Set(
+    cookedSubdir,
+    rawSubdir,
+    descriptorFilename,
+    CookStateLog.logName + "_1.log",
+    CookStateLog.logName + "_2.log",
+    lockName + ".lock",
+    CookStateLog.lockName + ".lock")
 
   final def create(
       chef: ActorRef,
@@ -358,33 +353,36 @@ private[niflheim] class NIHDBActor private (
       var maxOffset = currentState.maxOffset
 
       val currentRawFile = rawFileFor(txLog.currentBlockId)
-      val (currentLog, rawLogOffsets) = if (currentRawFile.exists) {
-        val (handler, offsets, ok) =
-          RawHandler.load(txLog.currentBlockId, currentRawFile)
-        if (!ok) {
-          logger.warn(
-            "Corruption detected and recovery performed on " + currentRawFile)
+      val (currentLog, rawLogOffsets) =
+        if (currentRawFile.exists) {
+          val (handler, offsets, ok) = RawHandler.load(
+            txLog.currentBlockId,
+            currentRawFile)
+          if (!ok) {
+            logger.warn(
+              "Corruption detected and recovery performed on " + currentRawFile)
+          }
+          (handler, offsets)
+        } else {
+          (
+            RawHandler.empty(txLog.currentBlockId, currentRawFile),
+            Seq.empty[Long])
         }
-        (handler, offsets)
-      } else {
-        (
-          RawHandler.empty(txLog.currentBlockId, currentRawFile),
-          Seq.empty[Long])
-      }
 
       rawLogOffsets.sortBy(-_).headOption.foreach { newMaxOffset =>
         maxOffset = maxOffset max newMaxOffset
       }
 
-      val pendingCooks = txLog.pendingCookIds.map { id =>
-        val (reader, offsets, ok) = RawHandler.load(id, rawFileFor(id))
-        if (!ok) {
-          logger.warn(
-            "Corruption detected and recovery performed on " + currentRawFile)
-        }
-        maxOffset = math.max(maxOffset, offsets.max)
-        (id, reader)
-      }.toMap
+      val pendingCooks =
+        txLog.pendingCookIds.map { id =>
+          val (reader, offsets, ok) = RawHandler.load(id, rawFileFor(id))
+          if (!ok) {
+            logger.warn(
+              "Corruption detected and recovery performed on " + currentRawFile)
+          }
+          maxOffset = math.max(maxOffset, offsets.max)
+          (id, reader)
+        }.toMap
 
       this.currentState = currentState.copy(maxOffset = maxOffset)
 
@@ -501,8 +499,8 @@ private[niflheim] class NIHDBActor private (
         if (responseRequested)
           sender ! Skipped
       } else {
-        val (skipValues, keepValues) =
-          batch.partition(_.offset <= currentState.maxOffset)
+        val (skipValues, keepValues) = batch.partition(
+          _.offset <= currentState.maxOffset)
         if (keepValues.isEmpty) {
           logger.warn(
             "Skipping entirely seen batch of %d rows prior to offset %d"
@@ -530,8 +528,9 @@ private[niflheim] class NIHDBActor private (
                 baseDir.getCanonicalPath))
             state.blockState.rawLog.close
             val toCook = state.blockState.rawLog
-            val newRaw =
-              RawHandler.empty(toCook.id + 1, rawFileFor(toCook.id + 1))
+            val newRaw = RawHandler.empty(
+              toCook.id + 1,
+              rawFileFor(toCook.id + 1))
 
             state.blockState = state.blockState.copy(
               pending = state.blockState.pending + (toCook.id -> toCook),
@@ -580,8 +579,9 @@ private[niflheim] object ProjectionState {
   def empty(authorities: Authorities) =
     ProjectionState(-1L, Map.empty, authorities)
 
-  implicit val projectionStateIso =
-    Iso.hlist(ProjectionState.apply _, ProjectionState.unapply _)
+  implicit val projectionStateIso = Iso.hlist(
+    ProjectionState.apply _,
+    ProjectionState.unapply _)
 
   // FIXME: Add version for this format
   val v1Schema = "maxOffset" :: "cookedMap" :: "authorities" :: HNil

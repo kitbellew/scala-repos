@@ -18,8 +18,10 @@ class FlowReduceSpec extends AkkaSpec {
     val input = 1 to 100
     val expected = input.sum
     val inputSource = Source(input).filter(_ ⇒ true).map(identity)
-    val reduceSource =
-      inputSource.reduce[Int](_ + _).filter(_ ⇒ true).map(identity)
+    val reduceSource = inputSource
+      .reduce[Int](_ + _)
+      .filter(_ ⇒ true)
+      .map(identity)
     val reduceFlow = Flow[Int]
       .filter(_ ⇒ true)
       .map(identity)

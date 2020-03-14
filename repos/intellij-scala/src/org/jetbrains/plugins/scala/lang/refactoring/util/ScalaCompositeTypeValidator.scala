@@ -54,11 +54,12 @@ class ScalaCompositeTypeValidator(
     //returns declaration and message
     val buf = new ArrayBuffer[(PsiNamedElement, String)]
 
-    val filesToSearchIn = enclosingContainerAll match {
-      case directory: PsiDirectory =>
-        findFilesForDownConflictFindings(directory, name)
-      case _ => null
-    }
+    val filesToSearchIn =
+      enclosingContainerAll match {
+        case directory: PsiDirectory =>
+          findFilesForDownConflictFindings(directory, name)
+        case _ => null
+      }
 
     for (file <- filesToSearchIn) {
       if (buf.isEmpty) {
@@ -82,15 +83,16 @@ class ScalaCompositeTypeValidator(
     def oneRound(word: String) = {
       val buffer = new ArrayBuffer[PsiFile]()
 
-      val processor = new Processor[PsiFile] {
-        override def process(file: PsiFile): Boolean = {
-          buffer += file
-          true
+      val processor =
+        new Processor[PsiFile] {
+          override def process(file: PsiFile): Boolean = {
+            buffer += file
+            true
+          }
         }
-      }
 
-      val helper: PsiSearchHelper =
-        PsiSearchHelper.SERVICE.getInstance(directory.getProject)
+      val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
+        directory.getProject)
       helper.processAllFilesWithWord(
         word,
         GlobalSearchScopesCore.directoryScope(directory, true),

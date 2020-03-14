@@ -65,8 +65,9 @@ class YarnAllocatorSuite
   sparkConf.set(SPARK_JARS, Seq("notarealjar.jar"))
   sparkConf.set("spark.yarn.launchContainers", "false")
 
-  val appAttemptId =
-    ApplicationAttemptId.newInstance(ApplicationId.newInstance(0, 0), 0)
+  val appAttemptId = ApplicationAttemptId.newInstance(
+    ApplicationId.newInstance(0, 0),
+    0)
 
   // Resource returned by YARN.  YARN can give larger containers than requested, so give 6 cores
   // instead of the 5 requested and 3 GB instead of the 2 requested.
@@ -148,9 +149,10 @@ class YarnAllocatorSuite
     handler.allocatedHostToContainersMap.get("host1").get should contain(
       container.getId)
 
-    val size = rmClient
-      .getMatchingRequests(container.getPriority, "host1", containerResource)
-      .size
+    val size =
+      rmClient
+        .getMatchingRequests(container.getPriority, "host1", containerResource)
+        .size
     size should be(0)
   }
 

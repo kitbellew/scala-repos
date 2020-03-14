@@ -312,10 +312,11 @@ trait ProtoUser {
   case class MenuItem(name: String, path: List[String], loggedIn: Boolean) {
     lazy val endOfPath = path.last
     lazy val pathStr: String = path.mkString("/", "/", "")
-    lazy val display = name match {
-      case null | "" => false
-      case _         => true
-    }
+    lazy val display =
+      name match {
+        case null | "" => false
+        case _         => true
+      }
   }
 
   /**
@@ -579,11 +580,11 @@ trait ProtoUser {
     */
   final case object AddUserMenusUnder extends Loc.LocParam[Any]
 
-  private lazy val AfterUnapply =
-    SiteMap.buildMenuMatcher(_ == AddUserMenusAfter)
+  private lazy val AfterUnapply = SiteMap.buildMenuMatcher(
+    _ == AddUserMenusAfter)
   private lazy val HereUnapply = SiteMap.buildMenuMatcher(_ == AddUserMenusHere)
-  private lazy val UnderUnapply =
-    SiteMap.buildMenuMatcher(_ == AddUserMenusUnder)
+  private lazy val UnderUnapply = SiteMap.buildMenuMatcher(
+    _ == AddUserMenusUnder)
 
   /**
     * The SiteMap mutator function
@@ -595,16 +596,15 @@ trait ProtoUser {
       case UnderUnapply(menu) => List(menu.rebuild(_ ::: sitemap))
     }(SiteMap.addMenusAtEndMutator(sitemap))
 
-  lazy val sitemap: List[Menu] =
-    List(
-      loginMenuLoc,
-      createUserMenuLoc,
-      lostPasswordMenuLoc,
-      resetPasswordMenuLoc,
-      editUserMenuLoc,
-      changePasswordMenuLoc,
-      validateUserMenuLoc,
-      logoutMenuLoc).flatten(a => a)
+  lazy val sitemap: List[Menu] = List(
+    loginMenuLoc,
+    createUserMenuLoc,
+    lostPasswordMenuLoc,
+    resetPasswordMenuLoc,
+    editUserMenuLoc,
+    changePasswordMenuLoc,
+    validateUserMenuLoc,
+    logoutMenuLoc).flatten(a => a)
 
   def skipEmailValidation = false
 
@@ -624,17 +624,16 @@ trait ProtoUser {
     (for (r <- S.request)
       yield r.path.wholePath.last) openOr ""
 
-  lazy val ItemList: List[MenuItem] =
-    List(
-      MenuItem(S.?("sign.up"), signUpPath, false),
-      MenuItem(S.?("log.in"), loginPath, false),
-      MenuItem(S.?("lost.password"), lostPasswordPath, false),
-      MenuItem("", passwordResetPath, false),
-      MenuItem(S.?("change.password"), changePasswordPath, true),
-      MenuItem(S.?("log.out"), logoutPath, true),
-      MenuItem(S.?("edit.profile"), editPath, true),
-      MenuItem("", validateUserPath, false)
-    )
+  lazy val ItemList: List[MenuItem] = List(
+    MenuItem(S.?("sign.up"), signUpPath, false),
+    MenuItem(S.?("log.in"), loginPath, false),
+    MenuItem(S.?("lost.password"), lostPasswordPath, false),
+    MenuItem("", passwordResetPath, false),
+    MenuItem(S.?("change.password"), changePasswordPath, true),
+    MenuItem(S.?("log.out"), logoutPath, true),
+    MenuItem(S.?("edit.profile"), editPath, true),
+    MenuItem("", validateUserPath, false)
+  )
 
   var onLogIn: List[TheUserType => Unit] = Nil
 
@@ -970,13 +969,14 @@ trait ProtoUser {
             if user.validated_? &&
               user.testPassword(S.param("password")) => {
           val preLoginState = capturePreLoginState()
-          val redir = loginRedirect.get match {
-            case Full(url) =>
-              loginRedirect(Empty)
-              url
-            case _ =>
-              homePage
-          }
+          val redir =
+            loginRedirect.get match {
+              case Full(url) =>
+                loginRedirect(Empty)
+                url
+              case _ =>
+                homePage
+            }
 
           logUserIn(
             user,
@@ -1225,8 +1225,9 @@ trait ProtoUser {
 
     val bind = {
       // Use the same password input for both new password fields.
-      val passwordInput =
-        SHtml.password_*("", LFuncHolder(s => newPassword = s))
+      val passwordInput = SHtml.password_*(
+        "",
+        LFuncHolder(s => newPassword = s))
 
       ".old-password" #> SHtml.password("", s => oldPassword = s) &
         ".new-password" #> passwordInput &
@@ -1273,9 +1274,8 @@ trait ProtoUser {
   protected def mutateUserOnEdit(user: TheUserType): TheUserType = user
 
   def edit = {
-    val theUser: TheUserType =
-      mutateUserOnEdit(
-        currentUser.openOrThrowException("we know we're logged in"))
+    val theUser: TheUserType = mutateUserOnEdit(
+      currentUser.openOrThrowException("we know we're logged in"))
 
     val theName = editPath.mkString("")
 

@@ -56,15 +56,16 @@ case class ScalaChangeInfo(
     else
       null
 
-  override val getOldName: String = function match {
-    case fun: ScFunction =>
-      if (fun.isConstructor)
-        fun.containingClass.name
-      else
-        fun.name
-    case pc: ScPrimaryConstructor => pc.containingClass.name
-    case _                        => newName
-  }
+  override val getOldName: String =
+    function match {
+      case fun: ScFunction =>
+        if (fun.isConstructor)
+          fun.containingClass.name
+        else
+          fun.name
+      case pc: ScPrimaryConstructor => pc.containingClass.name
+      case _                        => newName
+    }
 
   override def getNewNameIdentifier =
     JavaPsiFacade.getElementFactory(project).createIdentifier(newName)
@@ -81,10 +82,11 @@ case class ScalaChangeInfo(
 
   override val getLanguage: Language = ScalaFileType.SCALA_LANGUAGE
 
-  override val isReturnTypeChanged: Boolean = function match {
-    case f: ScFunction =>
-      f.returnType.toOption.map(_.canonicalText) != Option(newType).map(
-        _.canonicalText)
-    case _ => false
-  }
+  override val isReturnTypeChanged: Boolean =
+    function match {
+      case f: ScFunction =>
+        f.returnType.toOption.map(_.canonicalText) != Option(newType).map(
+          _.canonicalText)
+      case _ => false
+    }
 }

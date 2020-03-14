@@ -36,43 +36,46 @@ class EnsembleStyledToolBar extends EnsembleExample {
 
   def getContent = {
     // ToolBar Standard
-    val stdToolBar = new ToolBar {
-      id = "standard"
-      content = List(
-        new Button {
-          text = "Button 1"
-        },
-        new Button {
-          text = "Button 2"
-        },
-        new Slider {})
-    }
+    val stdToolBar =
+      new ToolBar {
+        id = "standard"
+        content = List(
+          new Button {
+            text = "Button 1"
+          },
+          new Button {
+            text = "Button 2"
+          },
+          new Slider {})
+      }
     //ToolBar Blue
-    val blueToolBar = new ToolBar {
-      id = "blue"
-      style = "-fx-base: dodgerblue"
-      content = List(
-        new Button {
-          text = "Button 1"
-        },
-        new Button {
-          text = "Button 2"
-        },
-        new Slider {})
-    }
+    val blueToolBar =
+      new ToolBar {
+        id = "blue"
+        style = "-fx-base: dodgerblue"
+        content = List(
+          new Button {
+            text = "Button 1"
+          },
+          new Button {
+            text = "Button 2"
+          },
+          new Slider {})
+      }
     //ToolBar Dark
-    val darkToolBar = new ToolBar {
-      id = "dark"
-      style = "-fx-base: #333333"
-      content = List(
-        new Button {
-          text = "Button 1"
-        },
-        new Button {
-          text = "Button 2"
-        },
-        new Slider {})
-    }
+    val darkToolBar =
+      new ToolBar {
+        id = "dark"
+        style = "-fx-base: #333333"
+        content = List(
+          new Button {
+            text = "Button 1"
+          },
+          new Button {
+            text = "Button 2"
+          },
+          new Slider {})
+      }
 
     new VBox {
       spacing = 10

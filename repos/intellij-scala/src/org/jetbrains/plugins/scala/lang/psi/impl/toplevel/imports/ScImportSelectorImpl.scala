@@ -63,8 +63,9 @@ class ScImportSelectorImpl private (
   }
 
   def deleteSelector() {
-    val expr: ScImportExpr =
-      PsiTreeUtil.getParentOfType(this, classOf[ScImportExpr])
+    val expr: ScImportExpr = PsiTreeUtil.getParentOfType(
+      this,
+      classOf[ScImportExpr])
     if (expr.selectors.length + expr.singleWildcard.toInt == 1) {
       expr.deleteExpr()
     }

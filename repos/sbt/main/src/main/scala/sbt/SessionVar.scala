@@ -42,8 +42,9 @@ object SessionVar {
   def orEmpty(opt: Option[Map]) = opt getOrElse emptyMap
 
   def transform[S](task: Task[S], f: (State, S) => State): Task[S] = {
-    val g = (s: S, map: AttributeMap) =>
-      map.put(Keys.transformState, (state: State) => f(state, s))
+    val g =
+      (s: S, map: AttributeMap) =>
+        map.put(Keys.transformState, (state: State) => f(state, s))
     task.copy(info = task.info.postTransform(g))
   }
 

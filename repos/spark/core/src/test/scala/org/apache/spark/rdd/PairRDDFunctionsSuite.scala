@@ -46,8 +46,9 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
   test("aggregateByKey") {
     val pairs = sc.parallelize(Array((1, 1), (1, 1), (3, 2), (5, 1), (5, 3)), 2)
 
-    val sets =
-      pairs.aggregateByKey(new HashSet[Int]())(_ += _, _ ++= _).collect()
+    val sets = pairs
+      .aggregateByKey(new HashSet[Int]())(_ += _, _ ++= _)
+      .collect()
     assert(sets.size === 3)
     val valuesFor1 = sets.find(_._1 == 1).get._2
     assert(valuesFor1.toList.sorted === List(1))
@@ -105,8 +106,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (n <- List(100, 1000, 1000000)) {
       val data = sc.parallelize(1 to n, 2)
       val fractionPositive = 0.3
-      val stratifiedData =
-        data.keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data.keyBy(
+        StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
       StratifiedAuxiliary.testSample(
         stratifiedData,
@@ -119,8 +120,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (fractionPositive <- List(0.1, 0.3, 0.5, 0.7, 0.9)) {
       val n = 100
       val data = sc.parallelize(1 to n, 2)
-      val stratifiedData =
-        data.keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data.keyBy(
+        StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
       StratifiedAuxiliary.testSample(
         stratifiedData,
@@ -133,8 +134,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val fractionPositive = 0.3
     val n = 100
     val data = sc.parallelize(1 to n, 2)
-    val stratifiedData =
-      data.keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
+    val stratifiedData = data.keyBy(
+      StratifiedAuxiliary.stratifier(fractionPositive))
 
     // vary seed
     for (seed <- defaultSeed to defaultSeed + 5L) {
@@ -159,8 +160,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (n <- List(100, 1000, 1000000)) {
       val data = sc.parallelize(1 to n, 2)
       val fractionPositive = 0.3
-      val stratifiedData =
-        data.keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data.keyBy(
+        StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
       StratifiedAuxiliary.testSampleExact(
         stratifiedData,
@@ -173,8 +174,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     for (fractionPositive <- List(0.1, 0.3, 0.5, 0.7, 0.9)) {
       val n = 100
       val data = sc.parallelize(1 to n, 2)
-      val stratifiedData =
-        data.keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
+      val stratifiedData = data.keyBy(
+        StratifiedAuxiliary.stratifier(fractionPositive))
       val samplingRate = 0.1
       StratifiedAuxiliary.testSampleExact(
         stratifiedData,
@@ -187,8 +188,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val fractionPositive = 0.3
     val n = 100
     val data = sc.parallelize(1 to n, 2)
-    val stratifiedData =
-      data.keyBy(StratifiedAuxiliary.stratifier(fractionPositive))
+    val stratifiedData = data.keyBy(
+      StratifiedAuxiliary.stratifier(fractionPositive))
 
     // vary seed
     for (seed <- defaultSeed to defaultSeed + 5L) {
@@ -227,12 +228,14 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("reduceByKey with partitioner") {
-    val p = new Partitioner() {
-      def numPartitions = 2
-      def getPartition(key: Any) = key.asInstanceOf[Int]
-    }
-    val pairs =
-      sc.parallelize(Array((1, 1), (1, 2), (1, 1), (0, 1))).partitionBy(p)
+    val p =
+      new Partitioner() {
+        def numPartitions = 2
+        def getPartition(key: Any) = key.asInstanceOf[Int]
+      }
+    val pairs = sc
+      .parallelize(Array((1, 1), (1, 2), (1, 1), (0, 1)))
+      .partitionBy(p)
     val sums = pairs.reduceByKey(_ + _)
     assert(sums.collect().toSet === Set((1, 4), (0, 1)))
     assert(sums.partitioner === Some(p))
@@ -431,9 +434,10 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd3 = sc.parallelize(Array((1, 'a'), (3, 'b'), (4, 'c'), (4, 'd')))
     val joined = rdd1.groupWith(rdd2, rdd3).collect()
     assert(joined.size === 4)
-    val joinedSet = joined
-      .map(x => (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList)))
-      .toSet
+    val joinedSet =
+      joined
+        .map(x => (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList)))
+        .toSet
     assert(
       joinedSet === Set(
         (1, (List(1, 2), List('x'), List('a'))),
@@ -450,12 +454,13 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd4 = sc.parallelize(Array((2, '@')))
     val joined = rdd1.groupWith(rdd2, rdd3, rdd4).collect()
     assert(joined.size === 4)
-    val joinedSet = joined
-      .map(x =>
-        (
-          x._1,
-          (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
-      .toSet
+    val joinedSet =
+      joined
+        .map(x =>
+          (
+            x._1,
+            (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
+        .toSet
     assert(
       joinedSet === Set(
         (1, (List(1, 2), List('x'), List('a'), List())),
@@ -512,10 +517,11 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
   test("subtract with narrow dependency") {
     // use a deterministic partitioner
-    val p = new Partitioner() {
-      def numPartitions = 5
-      def getPartition(key: Any) = key.asInstanceOf[Int]
-    }
+    val p =
+      new Partitioner() {
+        def numPartitions = 5
+        def getPartition(key: Any) = key.asInstanceOf[Int]
+      }
     // partitionBy so we have a narrow dependency
     val a = sc.parallelize(Array((1, "a"), (2, "b"), (3, "c"))).partitionBy(p)
     // more partitions/no partitioner so a shuffle dependency
@@ -536,10 +542,11 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
 
   test("subtractByKey with narrow dependency") {
     // use a deterministic partitioner
-    val p = new Partitioner() {
-      def numPartitions = 5
-      def getPartition(key: Any) = key.asInstanceOf[Int]
-    }
+    val p =
+      new Partitioner() {
+        def numPartitions = 5
+        def getPartition(key: Any) = key.asInstanceOf[Int]
+      }
     // partitionBy so we have a narrow dependency
     val a = sc
       .parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")))
@@ -662,11 +669,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
   test("lookup with partitioner") {
     val pairs = sc.parallelize(Array((1, 2), (3, 4), (5, 6), (5, 7)))
 
-    val p = new Partitioner {
-      def numPartitions: Int = 2
+    val p =
+      new Partitioner {
+        def numPartitions: Int = 2
 
-      def getPartition(key: Any): Int = Math.abs(key.hashCode() % 2)
-    }
+        def getPartition(key: Any): Int = Math.abs(key.hashCode() % 2)
+      }
     val shuffled = pairs.partitionBy(p)
 
     assert(shuffled.partitioner === Some(p))
@@ -678,11 +686,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
   test("lookup with bad partitioner") {
     val pairs = sc.parallelize(Array((1, 2), (3, 4), (5, 6), (5, 7)))
 
-    val p = new Partitioner {
-      def numPartitions: Int = 2
+    val p =
+      new Partitioner {
+        def numPartitions: Int = 2
 
-      def getPartition(key: Any): Int = key.hashCode() % 2
-    }
+        def getPartition(key: Any): Int = key.hashCode() % 2
+      }
     val shuffled = pairs.partitionBy(p)
 
     assert(shuffled.partitioner === Some(p))
@@ -759,11 +768,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         n: Long): Unit = {
       val trials = stratifiedData.countByKey()
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
-      val sample = if (exact) {
-        stratifiedData.sampleByKeyExact(false, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(false, fractions, seed)
-      }
+      val sample =
+        if (exact) {
+          stratifiedData.sampleByKeyExact(false, fractions, seed)
+        } else {
+          stratifiedData.sampleByKey(false, fractions, seed)
+        }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {
@@ -792,11 +802,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         .countByKey()
         .mapValues(count => math.ceil(count * samplingRate).toInt)
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
-      val sample = if (exact) {
-        stratifiedData.sampleByKeyExact(true, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(true, fractions, seed)
-      }
+      val sample =
+        if (exact) {
+          stratifiedData.sampleByKeyExact(true, fractions, seed)
+        } else {
+          stratifiedData.sampleByKey(true, fractions, seed)
+        }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {

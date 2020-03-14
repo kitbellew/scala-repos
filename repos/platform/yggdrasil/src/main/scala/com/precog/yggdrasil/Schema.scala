@@ -54,27 +54,29 @@ object Schema {
     }
 
   def cpath(jtype: JType): Seq[CPath] = {
-    val cpaths = jtype match {
-      case JArrayFixedT(indices) =>
-        indices flatMap {
-          case (idx, tpe) => CPath(CPathIndex(idx)) combine cpath(tpe)
-        } toSeq
-      case JObjectFixedT(fields) =>
-        fields flatMap {
-          case (name, tpe) => CPath(CPathField(name)) combine cpath(tpe)
-        } toSeq
-      case JArrayHomogeneousT(elemType)                    => Seq(CPath(CPathArray))
-      case JNumberT | JTextT | JBooleanT | JNullT | JDateT => Nil
-      case _                                               => Nil
-    }
+    val cpaths =
+      jtype match {
+        case JArrayFixedT(indices) =>
+          indices flatMap {
+            case (idx, tpe) => CPath(CPathIndex(idx)) combine cpath(tpe)
+          } toSeq
+        case JObjectFixedT(fields) =>
+          fields flatMap {
+            case (name, tpe) => CPath(CPathField(name)) combine cpath(tpe)
+          } toSeq
+        case JArrayHomogeneousT(elemType)                    => Seq(CPath(CPathArray))
+        case JNumberT | JTextT | JBooleanT | JNullT | JDateT => Nil
+        case _                                               => Nil
+      }
 
     cpaths sorted
   }
 
   def sample(jtype: JType, size: Int): Option[JType] = {
-    val paths = flatten(jtype, Nil) groupBy {
-      _.selector
-    } toSeq
+    val paths =
+      flatten(jtype, Nil) groupBy {
+        _.selector
+      } toSeq
     val sampledPaths: Seq[ColumnRef] =
       scala.util.Random.shuffle(paths).take(size) flatMap {
         _._2
@@ -353,10 +355,11 @@ object Schema {
       else
         List(JArrayFixedT(elements.toMap))
 
-    val keys = ctpes.foldLeft(Set.empty[String]) {
-      case (acc, ColumnRef(CPath(CPathField(key), _*), _)) => acc + key
-      case (acc, _)                                        => acc
-    }
+    val keys =
+      ctpes.foldLeft(Set.empty[String]) {
+        case (acc, ColumnRef(CPath(CPathField(key), _*), _)) => acc + key
+        case (acc, _)                                        => acc
+      }
 
     val members = keys.flatMap { key =>
       mkType(ctpes.collect {

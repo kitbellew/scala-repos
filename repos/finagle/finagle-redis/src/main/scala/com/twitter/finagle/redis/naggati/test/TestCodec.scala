@@ -29,15 +29,16 @@ class Counter {
 object TestCodec {
   def apply[A: Manifest](firstStage: Stage, encoder: Encoder[A]) = {
     val counter = new Counter()
-    val codec = new Codec(
-      firstStage,
-      encoder,
-      { n =>
-        counter.readBytes += n
-      },
-      { n =>
-        counter.writtenBytes += n
-      })
+    val codec =
+      new Codec(
+        firstStage,
+        encoder,
+        { n =>
+          counter.readBytes += n
+        },
+        { n =>
+          counter.writtenBytes += n
+        })
     val testCodec = new TestCodec(codec)
     (testCodec, counter)
   }
@@ -70,36 +71,40 @@ class TestCodec[A](val codec: Codec[A]) {
       }
     }
 
-  val upstreamTerminus = new SimpleChannelUpstreamHandler() {
-    override def messageReceived(c: ChannelHandlerContext, e: MessageEvent) {
-      log(e, upstreamOutput)
+  val upstreamTerminus =
+    new SimpleChannelUpstreamHandler() {
+      override def messageReceived(c: ChannelHandlerContext, e: MessageEvent) {
+        log(e, upstreamOutput)
+      }
     }
-  }
-  val downstreamTerminus = new SimpleChannelDownstreamHandler() {
-    override def writeRequested(c: ChannelHandlerContext, e: MessageEvent) {
-      log(e, downstreamOutput)
+  val downstreamTerminus =
+    new SimpleChannelDownstreamHandler() {
+      override def writeRequested(c: ChannelHandlerContext, e: MessageEvent) {
+        log(e, downstreamOutput)
+      }
     }
-  }
   val pipeline = Channels.pipeline()
   pipeline.addLast("downstreamTerminus", downstreamTerminus)
   pipeline.addLast("decoder", codec)
   pipeline.addLast("upstreamTerminus", upstreamTerminus)
 
   val context = pipeline.getContext(codec)
-  val sink = new AbstractChannelSink() {
-    def eventSunk(pipeline: ChannelPipeline, event: ChannelEvent) {}
-  }
-  val channel = new AbstractChannel(null, null, pipeline, sink) {
-    def getRemoteAddress() = null
-    def getLocalAddress() = null
-    def isConnected() = true
-    def isBound() = true
-    def getConfig() = new DefaultChannelConfig()
-    override def close() = {
-      downstreamOutput += "<CLOSE>"
-      null
+  val sink =
+    new AbstractChannelSink() {
+      def eventSunk(pipeline: ChannelPipeline, event: ChannelEvent) {}
     }
-  }
+  val channel =
+    new AbstractChannel(null, null, pipeline, sink) {
+      def getRemoteAddress() = null
+      def getLocalAddress() = null
+      def isConnected() = true
+      def isBound() = true
+      def getConfig() = new DefaultChannelConfig()
+      override def close() = {
+        downstreamOutput += "<CLOSE>"
+        null
+      }
+    }
 
   def apply(buffer: ChannelBuffer) = {
     upstreamOutput.clear()

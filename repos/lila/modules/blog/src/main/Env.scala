@@ -24,11 +24,12 @@ final class Env(
   lazy val lastPostCache =
     new LastPostCache(api, LastPostCacheTtl, PrismicCollection)
 
-  private implicit lazy val notifier = new Notifier(
-    blogApi = api,
-    messageApi = messageApi,
-    lastPostCache = lastPostCache,
-    lichessUserId = NotifySender)
+  private implicit lazy val notifier =
+    new Notifier(
+      blogApi = api,
+      messageApi = messageApi,
+      lastPostCache = lastPostCache,
+      lichessUserId = NotifySender)
 
   {
     import scala.concurrent.duration._

@@ -91,8 +91,8 @@ abstract class ShuffleSuite
 
     // All blocks must have non-zero size
     (0 until NUM_BLOCKS).foreach { id =>
-      val statuses =
-        SparkEnv.get.mapOutputTracker.getMapSizesByExecutorId(shuffleId, id)
+      val statuses = SparkEnv.get.mapOutputTracker
+        .getMapSizesByExecutorId(shuffleId, id)
       assert(
         statuses.forall(_._2.forall(blockIdSizePair => blockIdSizePair._2 > 0)))
     }
@@ -134,8 +134,8 @@ abstract class ShuffleSuite
     assert(c.count === 4)
 
     val blockSizes = (0 until NUM_BLOCKS).flatMap { id =>
-      val statuses =
-        SparkEnv.get.mapOutputTracker.getMapSizesByExecutorId(shuffleId, id)
+      val statuses = SparkEnv.get.mapOutputTracker
+        .getMapSizesByExecutorId(shuffleId, id)
       statuses.flatMap(_._2.map(_._2))
     }
     val nonEmptyBlocks = blockSizes.filter(x => x > 0)
@@ -161,8 +161,8 @@ abstract class ShuffleSuite
     assert(c.count === 4)
 
     val blockSizes = (0 until NUM_BLOCKS).flatMap { id =>
-      val statuses =
-        SparkEnv.get.mapOutputTracker.getMapSizesByExecutorId(shuffleId, id)
+      val statuses = SparkEnv.get.mapOutputTracker
+        .getMapSizesByExecutorId(shuffleId, id)
       statuses.flatMap(_._2.map(_._2))
     }
     val nonEmptyBlocks = blockSizes.filter(x => x > 0)
@@ -177,8 +177,8 @@ abstract class ShuffleSuite
     def p[T1, T2](_1: T1, _2: T2): MutablePair[T1, T2] = MutablePair(_1, _2)
     val data = Array(p(1, 1), p(1, 2), p(1, 3), p(2, 1))
     val pairs: RDD[MutablePair[Int, Int]] = sc.parallelize(data, 2)
-    val results =
-      new ShuffledRDD[Int, Int, Int](pairs, new HashPartitioner(2)).collect()
+    val results = new ShuffledRDD[Int, Int, Int](pairs, new HashPartitioner(2))
+      .collect()
 
     data.foreach { pair =>
       results should contain((pair._1, pair._2))
@@ -238,8 +238,8 @@ abstract class ShuffleSuite
     val data2 = Seq(p(1, "11"), p(1, "12"), p(2, "22"))
     val pairs1: RDD[MutablePair[Int, Int]] = sc.parallelize(data1, 2)
     val pairs2: RDD[MutablePair[Int, String]] = sc.parallelize(data2, 2)
-    val results =
-      new SubtractedRDD(pairs1, pairs2, new HashPartitioner(2)).collect()
+    val results = new SubtractedRDD(pairs1, pairs2, new HashPartitioner(2))
+      .collect()
     results should have length (1)
     // substracted rdd return results as Tuple2
     results(0) should be((3, 33))
@@ -311,8 +311,8 @@ abstract class ShuffleSuite
     rdd.count()
 
     // Delete one of the local shuffle blocks.
-    val hashFile =
-      sc.env.blockManager.diskBlockManager.getFile(new ShuffleBlockId(0, 0, 0))
+    val hashFile = sc.env.blockManager.diskBlockManager
+      .getFile(new ShuffleBlockId(0, 0, 0))
     val sortFile = sc.env.blockManager.diskBlockManager
       .getFile(new ShuffleDataBlockId(0, 0, 0))
     assert(hashFile.exists() || sortFile.exists())
@@ -332,12 +332,13 @@ abstract class ShuffleSuite
     sc = new SparkContext("local", "test", conf.clone())
     val numRecords = 10000
 
-    val metrics = ShuffleSuite.runAndReturnMetrics(sc) {
-      sc.parallelize(1 to numRecords, 4)
-        .map(key => (key, 1))
-        .groupByKey()
-        .collect()
-    }
+    val metrics =
+      ShuffleSuite.runAndReturnMetrics(sc) {
+        sc.parallelize(1 to numRecords, 4)
+          .map(key => (key, 1))
+          .groupByKey()
+          .collect()
+      }
 
     assert(metrics.recordsRead === numRecords)
     assert(metrics.recordsWritten === numRecords)
@@ -349,11 +350,12 @@ abstract class ShuffleSuite
     sc = new SparkContext("local", "test", conf.clone())
     val numRecords = 10000
 
-    val metrics = ShuffleSuite.runAndReturnMetrics(sc) {
-      sc.parallelize(1 to numRecords, 4)
-        .flatMap(key => Array.fill(100)((key, 1)))
-        .countByKey()
-    }
+    val metrics =
+      ShuffleSuite.runAndReturnMetrics(sc) {
+        sc.parallelize(1 to numRecords, 4)
+          .flatMap(key => Array.fill(100)((key, 1)))
+          .countByKey()
+      }
 
     assert(metrics.recordsRead === numRecords)
     assert(metrics.recordsWritten === numRecords)
@@ -363,8 +365,8 @@ abstract class ShuffleSuite
 
   test("multiple simultaneous attempts for one task (SPARK-8029)") {
     sc = new SparkContext("local", "test", conf)
-    val mapTrackerMaster =
-      sc.env.mapOutputTracker.asInstanceOf[MapOutputTrackerMaster]
+    val mapTrackerMaster = sc.env.mapOutputTracker
+      .asInstanceOf[MapOutputTrackerMaster]
     val manager = sc.env.shuffleManager
 
     val taskMemoryManager = new TaskMemoryManager(sc.env.memoryManager, 0L)
@@ -416,11 +418,12 @@ abstract class ShuffleSuite
       val files = writer.write(iter)
       writer.stop(true)
     }
-    val interleaver = new InterleaveIterators(
-      data1,
-      writeAndClose(writer1),
-      data2,
-      writeAndClose(writer2))
+    val interleaver =
+      new InterleaveIterators(
+        data1,
+        writeAndClose(writer1),
+        data2,
+        writeAndClose(writer2))
     val (mapOutput1, mapOutput2) = interleaver.run()
 
     // check that we can read the map output and it has the right data
@@ -479,12 +482,14 @@ class InterleaveIterators[T, R](
     }
   }
 
-  val c1 = new Callable[R] {
-    override def call(): R = f1(new BarrierIterator(1, data1.iterator))
-  }
-  val c2 = new Callable[R] {
-    override def call(): R = f2(new BarrierIterator(2, data2.iterator))
-  }
+  val c1 =
+    new Callable[R] {
+      override def call(): R = f1(new BarrierIterator(1, data1.iterator))
+    }
+  val c2 =
+    new Callable[R] {
+      override def call(): R = f2(new BarrierIterator(2, data2.iterator))
+    }
 
   val e: ExecutorService = Executors.newFixedThreadPool(2)
 
@@ -523,18 +528,19 @@ object ShuffleSuite {
     @volatile var recordsRead: Long = 0
     @volatile var bytesWritten: Long = 0
     @volatile var bytesRead: Long = 0
-    val listener = new SparkListener {
-      override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
-        taskEnd.taskMetrics.shuffleWriteMetrics.foreach { m =>
-          recordsWritten += m.recordsWritten
-          bytesWritten += m.bytesWritten
-        }
-        taskEnd.taskMetrics.shuffleReadMetrics.foreach { m =>
-          recordsRead += m.recordsRead
-          bytesRead += m.totalBytesRead
+    val listener =
+      new SparkListener {
+        override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
+          taskEnd.taskMetrics.shuffleWriteMetrics.foreach { m =>
+            recordsWritten += m.recordsWritten
+            bytesWritten += m.bytesWritten
+          }
+          taskEnd.taskMetrics.shuffleReadMetrics.foreach { m =>
+            recordsRead += m.recordsRead
+            bytesRead += m.totalBytesRead
+          }
         }
       }
-    }
     sc.addSparkListener(listener)
 
     job

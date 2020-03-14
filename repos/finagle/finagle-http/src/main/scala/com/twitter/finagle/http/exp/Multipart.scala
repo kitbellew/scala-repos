@@ -88,21 +88,24 @@ object Multipart {
     require(!request.isChunked)
     require(request.method == Method.Post)
 
-    val decoder = new multipart.HttpPostRequestDecoder(
-      new multipart.DefaultHttpDataFactory(MaxInMemoryFileSize.inBytes),
-      request.httpRequest)
+    val decoder =
+      new multipart.HttpPostRequestDecoder(
+        new multipart.DefaultHttpDataFactory(MaxInMemoryFileSize.inBytes),
+        request.httpRequest)
     val attrs = new mutable.HashMap[String, mutable.ListBuffer[String]]()
     val files = new mutable.HashMap[String, mutable.ListBuffer[FileUpload]]()
 
     decoder.getBodyHttpDatas.asScala.foreach {
       case attr: multipart.Attribute =>
-        val buf =
-          attrs.getOrElseUpdate(attr.getName, mutable.ListBuffer[String]())
+        val buf = attrs.getOrElseUpdate(
+          attr.getName,
+          mutable.ListBuffer[String]())
         buf += attr.getValue
 
       case fu: multipart.FileUpload =>
-        val buf =
-          files.getOrElseUpdate(fu.getName, mutable.ListBuffer[FileUpload]())
+        val buf = files.getOrElseUpdate(
+          fu.getName,
+          mutable.ListBuffer[FileUpload]())
         if (fu.isInMemory) {
           buf += InMemoryFileUpload(
             Buf.ByteArray.Owned(fu.get()),

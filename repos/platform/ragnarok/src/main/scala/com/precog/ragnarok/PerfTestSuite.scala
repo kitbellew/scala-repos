@@ -108,12 +108,13 @@ trait PerfTestSuite extends Logging {
     import RunConfig.OutputFormat
 
     try {
-      val runner = new NIHDBPerfTestRunner(
-        SimpleTimer,
-        optimize = config.optimize,
-        apiKey = "dummyAPIKey",
-        _rootDir = config.rootDir,
-        testTimeout = Duration(config.queryTimeout, "seconds"))
+      val runner =
+        new NIHDBPerfTestRunner(
+          SimpleTimer,
+          optimize = config.optimize,
+          apiKey = "dummyAPIKey",
+          _rootDir = config.rootDir,
+          testTimeout = Duration(config.queryTimeout, "seconds"))
 
       runner.startup()
 
@@ -153,8 +154,9 @@ trait PerfTestSuite extends Logging {
             using(in) { in =>
               val reader = new InputStreamReader(in)
               val baseline = BaselineComparisons.readBaseline(reader)
-              val delta =
-                BaselineComparisons.compareWithBaseline(result, baseline)
+              val delta = BaselineComparisons.compareWithBaseline(
+                result,
+                baseline)
 
               withPrinter(_.println(config.format match {
                 case OutputFormat.Legible =>
@@ -210,10 +212,11 @@ trait PerfTestSuite extends Logging {
 
       if (retreat) {
 
-        val p = loc.tree match {
-          case Tree.Node(Group(_), _) => path.tail
-          case _                      => path
-        }
+        val p =
+          loc.tree match {
+            case Tree.Node(Group(_), _) => path.tail
+            case _                      => path
+          }
 
         loc.right match {
           case Some(loc) =>
@@ -231,10 +234,11 @@ trait PerfTestSuite extends Logging {
 
       } else {
 
-        val p = loc.tree match {
-          case Tree.Node(Group(name), _) => name :: path
-          case _                         => path
-        }
+        val p =
+          loc.tree match {
+            case Tree.Node(Group(name), _) => name :: path
+            case _                         => path
+          }
 
         if (select(p.reverse, loc.tree.rootLabel)) {
           find(loc, p, loc.tree :: matches, retreat = true)

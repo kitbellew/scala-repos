@@ -78,20 +78,22 @@ object GitSpecUtil {
     inserter.close()
   }
   def getFile(git: Git, branch: String, path: String) = {
-    val revCommit =
-      JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(branch))
-    val objectId = using(new TreeWalk(git.getRepository)) { walk =>
-      walk.addTree(revCommit.getTree)
-      walk.setRecursive(true)
-      @scala.annotation.tailrec
-      def _getPathObjectId: ObjectId =
-        walk.next match {
-          case true if (walk.getPathString == path) => walk.getObjectId(0)
-          case true                                 => _getPathObjectId
-          case false                                => throw new Exception(s"not found ${branch} / ${path}")
-        }
-      _getPathObjectId
-    }
+    val revCommit = JGitUtil.getRevCommitFromId(
+      git,
+      git.getRepository.resolve(branch))
+    val objectId =
+      using(new TreeWalk(git.getRepository)) { walk =>
+        walk.addTree(revCommit.getTree)
+        walk.setRecursive(true)
+        @scala.annotation.tailrec
+        def _getPathObjectId: ObjectId =
+          walk.next match {
+            case true if (walk.getPathString == path) => walk.getObjectId(0)
+            case true                                 => _getPathObjectId
+            case false                                => throw new Exception(s"not found ${branch} / ${path}")
+          }
+        _getPathObjectId
+      }
     JGitUtil.getContentInfo(git, path, objectId)
   }
   def mergeAndCommit(

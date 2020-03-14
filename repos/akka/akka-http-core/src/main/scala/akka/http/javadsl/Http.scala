@@ -65,8 +65,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
     SslTlsOutbound,
     SslTlsInbound,
     HttpRequest,
-    NotUsed] =
-    adaptServerLayer(delegate.serverLayer()(materializer))
+    NotUsed] = adaptServerLayer(delegate.serverLayer()(materializer))
 
   /**
     * Constructs a server layer stage using the given [[akka.http.javadsl.settings.ServerSettings]]. The returned [[BidiFlow]] isn't reusable and

@@ -156,15 +156,16 @@ class ScTypeParamImpl private (
     // For Java
     upperBound match {
       case Success(t, _) =>
-        val psiType = if (hasTypeParameters) {
-          t match {
-            case ScParameterizedType(des, _) =>
-              ScType.toPsi(des, getProject, getResolveScope)
-            case _ => ScType.toPsi(t, getProject, getResolveScope)
+        val psiType =
+          if (hasTypeParameters) {
+            t match {
+              case ScParameterizedType(des, _) =>
+                ScType.toPsi(des, getProject, getResolveScope)
+              case _ => ScType.toPsi(t, getProject, getResolveScope)
+            }
+          } else {
+            ScType.toPsi(t, getProject, getResolveScope)
           }
-        } else {
-          ScType.toPsi(t, getProject, getResolveScope)
-        }
         psiType match {
           case x: PsiClassType => Array(x)
           case _               => Array() // TODO

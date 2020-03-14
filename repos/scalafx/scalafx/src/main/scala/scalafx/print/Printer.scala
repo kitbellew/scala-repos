@@ -82,8 +82,8 @@ object Printer {
     /**
       * Request margins are set to be the smallest on each side that the hardware allows.
       */
-    val HardwareMinimum = new MarginType(
-      jfxp.Printer.MarginType.HARDWARE_MINIMUM)
+    val HardwareMinimum =
+      new MarginType(jfxp.Printer.MarginType.HARDWARE_MINIMUM)
 
     protected override def unsortedValues: Array[Printer.MarginType] =
       Array(Default, Equal, EqualOpposites, HardwareMinimum)

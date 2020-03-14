@@ -80,8 +80,8 @@ trait VFSColumnarTableModule
         }
       } yield {
         val length = projections.map(_.length).sum
-        val stream = projections.foldLeft(StreamT.empty[Future, Slice]) {
-          (acc, proj) =>
+        val stream =
+          projections.foldLeft(StreamT.empty[Future, Slice]) { (acc, proj) =>
             // FIXME: Can Schema.flatten return Option[Set[ColumnRef]] instead?
             val constraints = proj.structure.map { struct =>
               Some(Schema.flatten(tpe, struct.toList))
@@ -91,7 +91,7 @@ trait VFSColumnarTableModule
             acc ++ StreamT.wrapEffect(constraints map { c =>
               proj.getBlockStream(c)
             })
-        }
+          }
 
         Table(stream, ExactSize(length))
       }

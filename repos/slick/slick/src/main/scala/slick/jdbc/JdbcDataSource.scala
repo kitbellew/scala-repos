@@ -99,35 +99,36 @@ object DataSourceJdbcDataSource extends JdbcDataSourceFactory {
       driver: Driver,
       name: String,
       classLoader: ClassLoader): DataSourceJdbcDataSource = {
-    val ds = c.getStringOpt("dataSourceClass") match {
-      case Some(dsClass) =>
-        val propsO = c.getPropertiesOpt("properties")
-        try {
-          val ds = Class.forName(dsClass).newInstance.asInstanceOf[DataSource]
-          propsO.foreach(BeanConfigurator.configure(ds, _))
+    val ds =
+      c.getStringOpt("dataSourceClass") match {
+        case Some(dsClass) =>
+          val propsO = c.getPropertiesOpt("properties")
+          try {
+            val ds = Class.forName(dsClass).newInstance.asInstanceOf[DataSource]
+            propsO.foreach(BeanConfigurator.configure(ds, _))
+            ds
+          } catch {
+            case ex: Exception =>
+              throw new SlickException(
+                "Error configuring DataSource " + dsClass,
+                ex)
+          }
+        case None =>
+          val ds = new DriverDataSource
+          ds.classLoader = classLoader
+          ds.driverObject = driver
+          BeanConfigurator.configure(
+            ds,
+            c.toProperties,
+            Set(
+              "url",
+              "user",
+              "password",
+              "properties",
+              "driver",
+              "driverClassName"))
           ds
-        } catch {
-          case ex: Exception =>
-            throw new SlickException(
-              "Error configuring DataSource " + dsClass,
-              ex)
-        }
-      case None =>
-        val ds = new DriverDataSource
-        ds.classLoader = classLoader
-        ds.driverObject = driver
-        BeanConfigurator.configure(
-          ds,
-          c.toProperties,
-          Set(
-            "url",
-            "user",
-            "password",
-            "properties",
-            "driver",
-            "driverClassName"))
-        ds
-    }
+      }
     new DataSourceJdbcDataSource(
       ds,
       c.getBooleanOr("keepAliveConnection"),
@@ -261,8 +262,9 @@ class ConnectionPreparer(c: Config) extends (Connection => Unit) {
       throw new SlickException(
         s"Unknown transaction isolation level [$unknown]")
   }
-  val catalog =
-    c.getStringOpt("catalog").orElse(c.getStringOpt("defaultCatalog"))
+  val catalog = c
+    .getStringOpt("catalog")
+    .orElse(c.getStringOpt("defaultCatalog"))
   val readOnly = c.getBooleanOpt("readOnly")
 
   val isLive = isolation.isDefined || catalog.isDefined || readOnly.isDefined

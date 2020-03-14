@@ -41,11 +41,12 @@ class BinaryType private () extends AtomicType {
     typeTag[InternalType]
   }
 
-  private[sql] val ordering = new Ordering[InternalType] {
-    def compare(x: Array[Byte], y: Array[Byte]): Int = {
-      TypeUtils.compareBinary(x, y)
+  private[sql] val ordering =
+    new Ordering[InternalType] {
+      def compare(x: Array[Byte], y: Array[Byte]): Int = {
+        TypeUtils.compareBinary(x, y)
+      }
     }
-  }
 
   /**
     * The default size of a value of the BinaryType is 100 bytes.

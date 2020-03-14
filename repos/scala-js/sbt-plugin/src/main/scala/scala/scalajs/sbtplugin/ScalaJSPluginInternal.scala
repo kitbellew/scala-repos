@@ -134,29 +134,31 @@ object ScalaJSPluginInternal {
     */
   def scalaJSPatchIncOptions(incOptions: IncOptions): IncOptions = {
     val inheritedNewClassfileManager = incOptions.newClassfileManager
-    val newClassfileManager = () =>
-      new ClassfileManager {
-        private[this] val inherited = inheritedNewClassfileManager()
+    val newClassfileManager =
+      () =>
+        new ClassfileManager {
+          private[this] val inherited = inheritedNewClassfileManager()
 
-        def delete(classes: Iterable[File]): Unit = {
-          inherited.delete(classes flatMap { classFile =>
-            val scalaJSFiles = if (classFile.getPath endsWith ".class") {
-              val f =
-                FileVirtualFile.withExtension(classFile, ".class", ".sjsir")
-              if (f.exists)
-                List(f)
-              else
-                Nil
-            } else
-              Nil
-            classFile :: scalaJSFiles
-          })
+          def delete(classes: Iterable[File]): Unit = {
+            inherited.delete(classes flatMap { classFile =>
+              val scalaJSFiles =
+                if (classFile.getPath endsWith ".class") {
+                  val f = FileVirtualFile
+                    .withExtension(classFile, ".class", ".sjsir")
+                  if (f.exists)
+                    List(f)
+                  else
+                    Nil
+                } else
+                  Nil
+              classFile :: scalaJSFiles
+            })
+          }
+
+          def generated(classes: Iterable[File]): Unit =
+            inherited.generated(classes)
+          def complete(success: Boolean): Unit = inherited.complete(success)
         }
-
-        def generated(classes: Iterable[File]): Unit =
-          inherited.generated(classes)
-        def complete(success: Boolean): Unit = inherited.complete(success)
-      }
     incOptions.withNewClassfileManager(newClassfileManager)
   }
 
@@ -242,10 +244,11 @@ object ScalaJSPluginInternal {
         val projectPart = thisProject.value.id
         val configPart = configuration.value.name
 
-        val stagePart = stage match {
-          case Stage.FastOpt => "fastopt"
-          case Stage.FullOpt => "fullopt"
-        }
+        val stagePart =
+          stage match {
+            case Stage.FastOpt => "fastopt"
+            case Stage.FullOpt => "fullopt"
+          }
 
         Tags.Tag(s"uses-scalajs-linker-$projectPart-$configPart-$stagePart")
       },
@@ -267,10 +270,11 @@ object ScalaJSPluginInternal {
             FilesInfo.exists) {
             _ => // We don't need the files
 
-              val stageName = stage match {
-                case Stage.FastOpt => "Fast"
-                case Stage.FullOpt => "Full"
-              }
+              val stageName =
+                stage match {
+                  case Stage.FastOpt => "Fast"
+                  case Stage.FullOpt => "Full"
+                }
 
               log.info(s"$stageName optimizing $output")
 
@@ -333,9 +337,10 @@ object ScalaJSPluginInternal {
     def scalajspParser(state: State, relPaths: Seq[String]) =
       optionsParser ~ sjsirFileOnClasspathParser(relPaths)
 
-    val parser = loadForParser(sjsirFilesOnClasspath) { (state, relPaths) =>
-      scalajspParser(state, relPaths.getOrElse(Nil))
-    }
+    val parser =
+      loadForParser(sjsirFilesOnClasspath) { (state, relPaths) =>
+        scalajspParser(state, relPaths.getOrElse(Nil))
+      }
 
     Seq(
       sjsirFilesOnClasspath <<= Def.task {
@@ -504,11 +509,12 @@ object ScalaJSPluginInternal {
        */
       val compliantSemantics = scalaJSSemantics.value.compliants
 
-      val manifest = new JSDependencyManifest(
-        new Origin(myModule, config),
-        jsDeps.toList,
-        requiresDOM,
-        compliantSemantics)
+      val manifest =
+        new JSDependencyManifest(
+          new Origin(myModule, config),
+          jsDeps.toList,
+          requiresDOM,
+          compliantSemantics)
 
       // Write dependency file to class directory
       val targetDir = classDirectory.value
@@ -781,12 +787,13 @@ object ScalaJSPluginInternal {
       val logger = streams.value.log
       val frameworks = testFrameworks.value
 
-      val jsEnv = loadedJSEnv.value match {
-        case jsEnv: ComJSEnv => jsEnv
+      val jsEnv =
+        loadedJSEnv.value match {
+          case jsEnv: ComJSEnv => jsEnv
 
-        case jsEnv =>
-          sys.error(s"You need a ComJSEnv to test (found ${jsEnv.name})")
-      }
+          case jsEnv =>
+            sys.error(s"You need a ComJSEnv to test (found ${jsEnv.name})")
+        }
 
       val detector = new FrameworkDetector(jsEnv)
 

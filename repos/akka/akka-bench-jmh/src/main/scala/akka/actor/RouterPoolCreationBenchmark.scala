@@ -34,8 +34,8 @@ class RouterPoolCreationBenchmark {
   @Benchmark
   @OutputTimeUnit(TimeUnit.MICROSECONDS)
   def testCreation: Boolean = {
-    val pool =
-      system.actorOf(RoundRobinPool(size).props(TestActors.echoActorProps))
+    val pool = system.actorOf(
+      RoundRobinPool(size).props(TestActors.echoActorProps))
     pool.tell("hello", probe.ref)
     probe.expectMsg(5.seconds, "hello")
     true

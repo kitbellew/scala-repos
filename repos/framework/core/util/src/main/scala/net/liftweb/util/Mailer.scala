@@ -180,10 +180,11 @@ trait Mailer extends SimpleInjector {
     * Set the mail.charset property to something other than UTF-8 for non-UTF-8
     * mail.
     */
-  lazy val charSet = properties.getProperty("mail.charset") match {
-    case null => "UTF-8"
-    case x    => x
-  }
+  lazy val charSet =
+    properties.getProperty("mail.charset") match {
+      case null => "UTF-8"
+      case x    => x
+    }
 
   // def host_=(hostname: String) = System.setProperty("mail.smtp.host", hostname)
 
@@ -255,10 +256,11 @@ trait Mailer extends SimpleInjector {
   }
 
   def msgSendImpl(from: From, subject: Subject, info: List[MailTypes]) {
-    val session = authenticator match {
-      case Full(a) => jndiSession openOr Session.getInstance(buildProps, a)
-      case _       => jndiSession openOr Session.getInstance(buildProps)
-    }
+    val session =
+      authenticator match {
+        case Full(a) => jndiSession openOr Session.getInstance(buildProps, a)
+        case _       => jndiSession openOr Session.getInstance(buildProps)
+      }
     val subj = MimeUtility.encodeText(subject.subject, "utf-8", "Q")
     val message = new MimeMessage(session)
     message.setFrom(from)

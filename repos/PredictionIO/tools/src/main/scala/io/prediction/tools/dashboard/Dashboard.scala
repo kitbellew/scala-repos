@@ -39,14 +39,15 @@ case class DashboardConfig(ip: String = "localhost", port: Int = 9000)
 
 object Dashboard extends Logging with SSLConfiguration {
   def main(args: Array[String]): Unit = {
-    val parser = new scopt.OptionParser[DashboardConfig]("Dashboard") {
-      opt[String]("ip") action { (x, c) =>
-        c.copy(ip = x)
-      } text ("IP to bind to (default: localhost).")
-      opt[Int]("port") action { (x, c) =>
-        c.copy(port = x)
-      } text ("Port to bind to (default: 9000).")
-    }
+    val parser =
+      new scopt.OptionParser[DashboardConfig]("Dashboard") {
+        opt[String]("ip") action { (x, c) =>
+          c.copy(ip = x)
+        } text ("IP to bind to (default: localhost).")
+        opt[Int]("port") action { (x, c) =>
+          c.copy(port = x)
+        } text ("Port to bind to (default: 9000).")
+      }
 
     parser.parse(args, DashboardConfig()) map { dc =>
       createDashboard(dc)
@@ -55,8 +56,9 @@ object Dashboard extends Logging with SSLConfiguration {
 
   def createDashboard(dc: DashboardConfig): Unit = {
     implicit val system = ActorSystem("pio-dashboard")
-    val service =
-      system.actorOf(Props(classOf[DashboardActor], dc), "dashboard")
+    val service = system.actorOf(
+      Props(classOf[DashboardActor], dc),
+      "dashboard")
     implicit val timeout = Timeout(5.seconds)
     val settings = ServerSettings(system)
     IO(Http) ? Http.Bind(

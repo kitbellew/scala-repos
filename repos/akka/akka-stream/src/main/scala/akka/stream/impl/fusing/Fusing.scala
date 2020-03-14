@@ -240,20 +240,22 @@ private[stream] object Fusing {
     copyToArray(outOwnersB3.iterator, outOwners, outStart)
 
     // FIXME attributes should contain some naming info and async boundary where needed
-    val firstModule = group.iterator.next() match {
-      case c: CopiedModule => c
-      case _ =>
-        throw new IllegalArgumentException("unexpected module structure")
-    }
+    val firstModule =
+      group.iterator.next() match {
+        case c: CopiedModule => c
+        case _ =>
+          throw new IllegalArgumentException("unexpected module structure")
+      }
     val async =
       if (isAsync(firstModule))
         Attributes(AsyncBoundary)
       else
         Attributes.none
-    val disp = dispatcher(firstModule) match {
-      case None ⇒ Attributes.none
-      case Some(d) ⇒ Attributes(d)
-    }
+    val disp =
+      dispatcher(firstModule) match {
+        case None ⇒ Attributes.none
+        case Some(d) ⇒ Attributes(d)
+      }
     val attr = async and disp
 
     GraphModule(
@@ -303,12 +305,14 @@ private[stream] object Fusing {
       openGroup: ju.Set[Module],
       indent: Int): List[(Module, MaterializedValueNode)] = {
     def log(msg: String): Unit = println("  " * indent + msg)
-    val async = m match {
-      case _: GraphStageModule ⇒ m.attributes.contains(AsyncBoundary)
-      case _: GraphModule ⇒ m.attributes.contains(AsyncBoundary)
-      case _ if m.isAtomic ⇒ true // non-GraphStage atomic or has AsyncBoundary
-      case _ ⇒ m.attributes.contains(AsyncBoundary)
-    }
+    val async =
+      m match {
+        case _: GraphStageModule ⇒ m.attributes.contains(AsyncBoundary)
+        case _: GraphModule ⇒ m.attributes.contains(AsyncBoundary)
+        case _ if m.isAtomic ⇒
+          true // non-GraphStage atomic or has AsyncBoundary
+        case _ ⇒ m.attributes.contains(AsyncBoundary)
+      }
     if (Debug)
       log(s"entering ${m.getClass} (hash=${struct.hash(
         m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
@@ -430,8 +434,8 @@ private[stream] object Fusing {
           // computation context (i.e. that need the same value).
           struct.enterMatCtx()
           // now descend into submodules and collect their computations (plus updates to `struct`)
-          val subMatBuilder =
-            Predef.Map.newBuilder[Module, MaterializedValueNode]
+          val subMatBuilder = Predef.Map
+            .newBuilder[Module, MaterializedValueNode]
           val subIterator = m.subModules.iterator
           while (subIterator.hasNext) {
             val sub = subIterator.next()
@@ -450,12 +454,14 @@ private[stream] object Fusing {
                   ""))
           // we need to remove all wirings that this module copied from nested modules so that we
           // don’t do wirings twice
-          val oldDownstreams = m match {
-            case f: FusedModule ⇒ f.info.downstreams.toSet
-            case _ ⇒ m.downstreams.toSet
-          }
-          val down = m.subModules.foldLeft(oldDownstreams)((set, m) ⇒
-            set -- m.downstreams)
+          val oldDownstreams =
+            m match {
+              case f: FusedModule ⇒ f.info.downstreams.toSet
+              case _ ⇒ m.downstreams.toSet
+            }
+          val down =
+            m.subModules.foldLeft(oldDownstreams)((set, m) ⇒
+              set -- m.downstreams)
           down.foreach {
             case (start, end) ⇒ struct.wire(start, end, indent)
           }
@@ -463,8 +469,10 @@ private[stream] object Fusing {
           val matNodeMapping
               : ju.Map[MaterializedValueNode, MaterializedValueNode] =
             new ju.HashMap
-          val newMat =
-            rewriteMat(subMat, m.materializedValueComputation, matNodeMapping)
+          val newMat = rewriteMat(
+            subMat,
+            m.materializedValueComputation,
+            matNodeMapping)
           if (Debug)
             log(
               matNodeMapping.asScala
@@ -480,11 +488,12 @@ private[stream] object Fusing {
               .asInstanceOf[GraphStageModule]
               .stage
               .asInstanceOf[MaterializedValueSource[Any]]
-            val mapped = ms.computation match {
-              case Atomic(sub) ⇒ subMat(sub)
-              case Ignore => Ignore
-              case other ⇒ matNodeMapping.get(other)
-            }
+            val mapped =
+              ms.computation match {
+                case Atomic(sub) ⇒ subMat(sub)
+                case Ignore => Ignore
+                case other ⇒ matNodeMapping.get(other)
+              }
             if (Debug)
               log(s"materialized value source: ${c.copyOf} -> $mapped")
             require(

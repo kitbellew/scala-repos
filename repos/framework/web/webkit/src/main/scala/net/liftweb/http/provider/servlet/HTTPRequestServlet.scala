@@ -288,15 +288,16 @@ private class OfflineRequestSnapshot(
 
   val scheme: String = req.scheme
 
-  lazy val serverPort: Int = req.serverPort match {
-    case 80 =>
-      headers("X-SSL")
-        .flatMap(Helpers.asBoolean _)
-        .filter(a => a)
-        .map(a => 443)
-        .headOption getOrElse 80
-    case x => x
-  }
+  lazy val serverPort: Int =
+    req.serverPort match {
+      case 80 =>
+        headers("X-SSL")
+          .flatMap(Helpers.asBoolean _)
+          .filter(a => a)
+          .map(a => 443)
+          .headOption getOrElse 80
+      case x => x
+    }
 
   val method: String = req.method
 

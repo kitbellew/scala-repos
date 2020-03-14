@@ -71,8 +71,7 @@ final case class GuiceApplicationBuilder(
     * Overrides the default or any previously configured values.
     */
   def load(loader: (Environment, Configuration) => Seq[GuiceableModule])
-      : GuiceApplicationBuilder =
-    copy(loadModules = loader)
+      : GuiceApplicationBuilder = copy(loadModules = loader)
 
   /**
     * Override the module loader with the given modules.
@@ -107,8 +106,8 @@ final case class GuiceApplicationBuilder(
   override def applicationModule(): GuiceModule = {
     val initialConfiguration = loadConfiguration(environment)
     val appConfiguration = initialConfiguration ++ configuration
-    val globalSettings =
-      global.getOrElse(GlobalSettings(appConfiguration, environment))
+    val globalSettings = global.getOrElse(
+      GlobalSettings(appConfiguration, environment))
 
     LoggerConfigurator(environment.classLoader).foreach {
       _.configure(environment)
@@ -195,8 +194,13 @@ final case class GuiceApplicationBuilder(
     import scala.collection.JavaConverters._
     import scala.collection.mutable
 
-    val deprecatedValues =
-      List("DEBUG", "WARN", "ERROR", "INFO", "TRACE", "OFF")
+    val deprecatedValues = List(
+      "DEBUG",
+      "WARN",
+      "ERROR",
+      "INFO",
+      "TRACE",
+      "OFF")
 
     // Recursively checks each key to see if it contains a deprecated value
     def hasDeprecatedValue(values: mutable.Map[String, AnyRef]): Boolean = {
@@ -249,8 +253,7 @@ private class FakeRoutes(
   } orElse new AbstractPartialFunction[RequestHeader, Handler] {
     override def applyOrElse[A <: RequestHeader, B >: Handler](
         rh: A,
-        default: A => B) =
-      fallback.routes.applyOrElse(rh, default)
+        default: A => B) = fallback.routes.applyOrElse(rh, default)
     def isDefinedAt(x: RequestHeader) = fallback.routes.isDefinedAt(x)
   }
   def withPrefix(prefix: String) = {

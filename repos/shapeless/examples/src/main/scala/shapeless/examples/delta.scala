@@ -63,21 +63,24 @@ object Delta extends Delta0 {
       implicit delta: Lazy[Delta[In]]): Delta.Aux[In, delta.value.Out] =
     delta.value
 
-  type Aux[In, Out0] = Delta[In] {
-    type Out = Out0
-  }
+  type Aux[In, Out0] =
+    Delta[In] {
+      type Out = Out0
+    }
 
-  implicit val booleanDelta: Delta.Aux[Boolean, Boolean] = new Delta[Boolean] {
-    type Out = Boolean
+  implicit val booleanDelta: Delta.Aux[Boolean, Boolean] =
+    new Delta[Boolean] {
+      type Out = Boolean
 
-    def apply(before: Boolean, after: Boolean): Out = before == after
-  }
+      def apply(before: Boolean, after: Boolean): Out = before == after
+    }
 
-  implicit val intDelta: Delta.Aux[Int, Int] = new Delta[Int] {
-    type Out = Int
+  implicit val intDelta: Delta.Aux[Int, Int] =
+    new Delta[Int] {
+      type Out = Int
 
-    def apply(before: Int, after: Int): Out = after - before
-  }
+      def apply(before: Int, after: Int): Out = after - before
+    }
 
   implicit def stringDelta: Delta.Aux[String, (String, String)] =
     new Delta[String] {

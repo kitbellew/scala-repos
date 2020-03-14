@@ -89,17 +89,20 @@ object OAuthRequestVerifier {
           case (key, values) => values.map(value => key -> value)
         }
         // If the body is form URL encoded, must include body parameters
-        val collectedParamsWithBody = request.contentType match {
-          case Some(formUrlEncoded)
-              if formUrlEncoded.startsWith(
-                "application/x-www-form-urlencoded") =>
-            val form =
-              FormUrlEncodedParser.parse(body.utf8String).toSeq.flatMap {
-                case (key, values) => values.map(value => key -> value)
-              }
-            collectedParams ++ form
-          case _ => collectedParams
-        }
+        val collectedParamsWithBody =
+          request.contentType match {
+            case Some(formUrlEncoded)
+                if formUrlEncoded.startsWith(
+                  "application/x-www-form-urlencoded") =>
+              val form = FormUrlEncodedParser
+                .parse(body.utf8String)
+                .toSeq
+                .flatMap {
+                  case (key, values) => values.map(value => key -> value)
+                }
+              collectedParams ++ form
+            case _ => collectedParams
+          }
         oauthSignature must beSome.like {
           case signature =>
             val ourSignature = signParams(

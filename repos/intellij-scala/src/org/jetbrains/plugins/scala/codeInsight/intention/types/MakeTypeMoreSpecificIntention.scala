@@ -55,42 +55,43 @@ class MakeTypeMoreSpecificIntention extends PsiElementBaseIntentionAction {
         setText(s)
         isAvailable = true
       }
-      val desc = new StrategyAdapter {
-        override def removeFromVariable(
-            variable: ScVariableDefinition): Unit = {
-          for {
-            declared <- variable.declaredType
-            expr <- variable.expr
-            tp <- expr.getType()
-            if MakeTypeMoreSpecificStrategy
-              .computeBaseTypes(declared, tp)
-              .nonEmpty
-          } text(ScalaBundle.message("make.type.more.specific"))
-        }
+      val desc =
+        new StrategyAdapter {
+          override def removeFromVariable(
+              variable: ScVariableDefinition): Unit = {
+            for {
+              declared <- variable.declaredType
+              expr <- variable.expr
+              tp <- expr.getType()
+              if MakeTypeMoreSpecificStrategy
+                .computeBaseTypes(declared, tp)
+                .nonEmpty
+            } text(ScalaBundle.message("make.type.more.specific"))
+          }
 
-        override def removeFromValue(value: ScPatternDefinition): Unit = {
-          for {
-            declared <- value.declaredType
-            expr <- value.expr
-            tp <- expr.getType()
-            if MakeTypeMoreSpecificStrategy
-              .computeBaseTypes(declared, tp)
-              .nonEmpty
-          } text(ScalaBundle.message("make.type.more.specific"))
-        }
+          override def removeFromValue(value: ScPatternDefinition): Unit = {
+            for {
+              declared <- value.declaredType
+              expr <- value.expr
+              tp <- expr.getType()
+              if MakeTypeMoreSpecificStrategy
+                .computeBaseTypes(declared, tp)
+                .nonEmpty
+            } text(ScalaBundle.message("make.type.more.specific"))
+          }
 
-        override def removeFromFunction(
-            function: ScFunctionDefinition): Unit = {
-          for {
-            declared <- function.returnType
-            expr <- function.body
-            tp <- expr.getType()
-            if MakeTypeMoreSpecificStrategy
-              .computeBaseTypes(declared, tp)
-              .nonEmpty
-          } text(ScalaBundle.message("make.type.more.specific.fun"))
+          override def removeFromFunction(
+              function: ScFunctionDefinition): Unit = {
+            for {
+              declared <- function.returnType
+              expr <- function.body
+              tp <- expr.getType()
+              if MakeTypeMoreSpecificStrategy
+                .computeBaseTypes(declared, tp)
+                .nonEmpty
+            } text(ScalaBundle.message("make.type.more.specific.fun"))
+          }
         }
-      }
 
       ToggleTypeAnnotation.complete(desc, element)
       isAvailable

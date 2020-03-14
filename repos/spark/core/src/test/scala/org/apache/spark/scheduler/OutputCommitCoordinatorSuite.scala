@@ -88,8 +88,8 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
           conf: SparkConf,
           isLocal: Boolean,
           listenerBus: LiveListenerBus): SparkEnv = {
-        outputCommitCoordinator =
-          spy(new OutputCommitCoordinator(conf, isDriver = true))
+        outputCommitCoordinator = spy(
+          new OutputCommitCoordinator(conf, isDriver = true))
         // Use Mockito.spy() to maintain the default infrastructure everywhere else.
         // This mocking allows us to control the coordinator responses in test cases.
         SparkEnv.createDriverEnv(
@@ -101,8 +101,8 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
       }
     }
     // Use Mockito.spy() to maintain the default infrastructure everywhere else
-    val mockTaskScheduler =
-      spy(sc.taskScheduler.asInstanceOf[TaskSchedulerImpl])
+    val mockTaskScheduler = spy(
+      sc.taskScheduler.asInstanceOf[TaskSchedulerImpl])
 
     doAnswer(new Answer[Unit]() {
       override def answer(invoke: InvocationOnMock): Unit = {
@@ -276,13 +276,14 @@ private case class OutputCommitFunctions(tempDirPath: String) {
       new JobConf {
         override def getOutputCommitter(): OutputCommitter = outputCommitter
       }
-    val sparkHadoopWriter = new SparkHadoopWriter(jobConf) {
-      override def newTaskAttemptContext(
-          conf: JobConf,
-          attemptId: TaskAttemptID): TaskAttemptContext = {
-        mock(classOf[TaskAttemptContext])
+    val sparkHadoopWriter =
+      new SparkHadoopWriter(jobConf) {
+        override def newTaskAttemptContext(
+            conf: JobConf,
+            attemptId: TaskAttemptID): TaskAttemptContext = {
+          mock(classOf[TaskAttemptContext])
+        }
       }
-    }
     sparkHadoopWriter.setup(ctx.stageId, ctx.partitionId, ctx.attemptNumber)
     sparkHadoopWriter.commit()
   }

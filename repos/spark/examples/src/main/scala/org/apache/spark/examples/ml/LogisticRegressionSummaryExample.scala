@@ -37,8 +37,9 @@ object LogisticRegressionSummaryExample {
     import sqlCtx.implicits._
 
     // Load training data
-    val training =
-      sqlCtx.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val training = sqlCtx.read
+      .format("libsvm")
+      .load("data/mllib/sample_libsvm_data.txt")
 
     val lr = new LogisticRegression()
       .setMaxIter(10)
@@ -60,8 +61,8 @@ object LogisticRegressionSummaryExample {
     // Obtain the metrics useful to judge performance on test data.
     // We cast the summary to a BinaryLogisticRegressionSummary since the problem is a
     // binary classification problem.
-    val binarySummary =
-      trainingSummary.asInstanceOf[BinaryLogisticRegressionSummary]
+    val binarySummary = trainingSummary
+      .asInstanceOf[BinaryLogisticRegressionSummary]
 
     // Obtain the receiver-operating characteristic as a dataframe and areaUnderROC.
     val roc = binarySummary.roc

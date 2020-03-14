@@ -25,10 +25,11 @@ object Test extends App {
   }
 
   def testFilter = {
-    val predicate = (x: Int) => {
-      println("p(" + x + ")");
-      x % 2 == 0
-    }
+    val predicate =
+      (x: Int) => {
+        println("p(" + x + ")");
+        x % 2 == 0
+      }
 
     val evens = Iterator.range(0, 10).filter(predicate)
 

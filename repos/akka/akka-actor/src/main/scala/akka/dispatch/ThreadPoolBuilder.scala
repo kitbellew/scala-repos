@@ -82,24 +82,26 @@ final case class ThreadPoolConfig(
     corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
     maxPoolSize: Int = ThreadPoolConfig.defaultMaxPoolSize,
     threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
-    queueFactory: ThreadPoolConfig.QueueFactory =
-      ThreadPoolConfig.linkedBlockingQueue(),
+    queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig
+      .linkedBlockingQueue(),
     rejectionPolicy: RejectedExecutionHandler =
       ThreadPoolConfig.defaultRejectionPolicy)
     extends ExecutorServiceFactoryProvider {
   class ThreadPoolExecutorServiceFactory(val threadFactory: ThreadFactory)
       extends ExecutorServiceFactory {
     def createExecutorService: ExecutorService = {
-      val service: ThreadPoolExecutor = new ThreadPoolExecutor(
-        corePoolSize,
-        maxPoolSize,
-        threadTimeout.length,
-        threadTimeout.unit,
-        queueFactory(),
-        threadFactory,
-        rejectionPolicy) with LoadMetrics {
-        def atFullThrottle(): Boolean = this.getActiveCount >= this.getPoolSize
-      }
+      val service: ThreadPoolExecutor =
+        new ThreadPoolExecutor(
+          corePoolSize,
+          maxPoolSize,
+          threadTimeout.length,
+          threadTimeout.unit,
+          queueFactory(),
+          threadFactory,
+          rejectionPolicy) with LoadMetrics {
+          def atFullThrottle(): Boolean =
+            this.getActiveCount >= this.getPoolSize
+        }
       service.allowCoreThreadTimeOut(allowCorePoolTimeout)
       service
     }
@@ -107,12 +109,13 @@ final case class ThreadPoolConfig(
   final def createExecutorServiceFactory(
       id: String,
       threadFactory: ThreadFactory): ExecutorServiceFactory = {
-    val tf = threadFactory match {
-      case m: MonitorableThreadFactory ⇒
-        // add the dispatcher id to the thread names
-        m.withName(m.name + "-" + id)
-      case other ⇒ other
-    }
+    val tf =
+      threadFactory match {
+        case m: MonitorableThreadFactory ⇒
+          // add the dispatcher id to the thread names
+          m.withName(m.name + "-" + id)
+        case other ⇒ other
+      }
     new ThreadPoolExecutorServiceFactory(tf)
   }
 }
@@ -147,8 +150,8 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
   def withNewThreadPoolWithArrayBlockingQueueWithCapacityAndFairness(
       capacity: Int,
       fair: Boolean): ThreadPoolConfigBuilder =
-    this.copy(config =
-      config.copy(queueFactory = arrayBlockingQueue(capacity, fair)))
+    this.copy(config = config
+      .copy(queueFactory = arrayBlockingQueue(capacity, fair)))
 
   def setFixedPoolSize(size: Int): ThreadPoolConfigBuilder =
     this.copy(config = config.copy(corePoolSize = size, maxPoolSize = size))
@@ -159,8 +162,8 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
       maxPoolSize = math.max(size, config.maxPoolSize)))
 
   def setMaxPoolSize(size: Int): ThreadPoolConfigBuilder =
-    this.copy(config =
-      config.copy(maxPoolSize = math.max(size, config.corePoolSize)))
+    this.copy(config = config
+      .copy(maxPoolSize = math.max(size, config.corePoolSize)))
 
   def setCorePoolSizeFromFactor(
       min: Int,

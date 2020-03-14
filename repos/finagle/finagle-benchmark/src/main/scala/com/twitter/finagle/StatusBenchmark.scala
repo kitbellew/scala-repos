@@ -8,8 +8,7 @@ import org.openjdk.jmh.infra.Blackhole
 @State(Scope.Benchmark)
 class StatusBenchmark extends StdBenchAnnotations {
 
-  private[this] val all =
-    Array(Open, Busy, Closed)
+  private[this] val all = Array(Open, Busy, Closed)
 
   val combinations: Array[(Status, Status)] =
     for (l <- all;

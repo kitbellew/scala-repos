@@ -26,16 +26,15 @@ class ImportPanelConverterProvider
 
   override def createConverter(context: ConversionContext): ProjectConverter = {
     import org.jdom.Element
-    val actualSettingsSet =
-      Set(
-        "addFullQualifiedImports",
-        "addImportMostCloseToReference",
-        "classCountToUseImportOnDemand",
-        "importMembersUsingUnderScore",
-        "importShortestPathForAmbiguousReferences",
-        "importsWithPrefix",
-        "sortImports"
-      )
+    val actualSettingsSet = Set(
+      "addFullQualifiedImports",
+      "addImportMostCloseToReference",
+      "classCountToUseImportOnDemand",
+      "importMembersUsingUnderScore",
+      "importShortestPathForAmbiguousReferences",
+      "importsWithPrefix",
+      "sortImports"
+    )
 
     def getElements: Seq[Element] = {
       context.getSettingsBaseDir

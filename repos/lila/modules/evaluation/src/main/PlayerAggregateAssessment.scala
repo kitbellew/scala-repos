@@ -99,10 +99,11 @@ case class PlayerAggregateAssessment(
 
   val relatedCheatersCount = relatedCheaters.distinct.size
   val relatedUsersCount = relatedUsers.distinct.size
-  val assessmentsCount = playerAssessments.size match {
-    case 0 => 1
-    case a => a
-  }
+  val assessmentsCount =
+    playerAssessments.size match {
+      case 0 => 1
+      case a => a
+    }
   val relationModifier =
     if (relatedUsersCount >= 1)
       0.02
@@ -113,8 +114,8 @@ case class PlayerAggregateAssessment(
 
   // Some statistics
   def sfAvgGiven(predicate: PlayerAssessment => Boolean): Option[Int] = {
-    val avg = listAverage(
-      playerAssessments.filter(predicate).map(_.sfAvg)).toInt
+    val avg =
+      listAverage(playerAssessments.filter(predicate).map(_.sfAvg)).toInt
     if (playerAssessments.exists(predicate))
       Some(avg)
     else
@@ -183,28 +184,29 @@ object PlayerFlags {
   import reactivemongo.bson._
   import lila.db.BSON
 
-  implicit val playerFlagsBSONHandler = new BSON[PlayerFlags] {
+  implicit val playerFlagsBSONHandler =
+    new BSON[PlayerFlags] {
 
-    def reads(r: BSON.Reader): PlayerFlags =
-      PlayerFlags(
-        suspiciousErrorRate = r boolD "ser",
-        alwaysHasAdvantage = r boolD "aha",
-        highBlurRate = r boolD "hbr",
-        moderateBlurRate = r boolD "mbr",
-        consistentMoveTimes = r boolD "cmt",
-        noFastMoves = r boolD "nfm",
-        suspiciousHoldAlert = r boolD "sha"
-      )
+      def reads(r: BSON.Reader): PlayerFlags =
+        PlayerFlags(
+          suspiciousErrorRate = r boolD "ser",
+          alwaysHasAdvantage = r boolD "aha",
+          highBlurRate = r boolD "hbr",
+          moderateBlurRate = r boolD "mbr",
+          consistentMoveTimes = r boolD "cmt",
+          noFastMoves = r boolD "nfm",
+          suspiciousHoldAlert = r boolD "sha"
+        )
 
-    def writes(w: BSON.Writer, o: PlayerFlags) =
-      BSONDocument(
-        "ser" -> w.boolO(o.suspiciousErrorRate),
-        "aha" -> w.boolO(o.alwaysHasAdvantage),
-        "hbr" -> w.boolO(o.highBlurRate),
-        "mbr" -> w.boolO(o.moderateBlurRate),
-        "cmt" -> w.boolO(o.consistentMoveTimes),
-        "nfm" -> w.boolO(o.noFastMoves),
-        "sha" -> w.boolO(o.suspiciousHoldAlert)
-      )
-  }
+      def writes(w: BSON.Writer, o: PlayerFlags) =
+        BSONDocument(
+          "ser" -> w.boolO(o.suspiciousErrorRate),
+          "aha" -> w.boolO(o.alwaysHasAdvantage),
+          "hbr" -> w.boolO(o.highBlurRate),
+          "mbr" -> w.boolO(o.moderateBlurRate),
+          "cmt" -> w.boolO(o.consistentMoveTimes),
+          "nfm" -> w.boolO(o.noFastMoves),
+          "sha" -> w.boolO(o.suspiciousHoldAlert)
+        )
+    }
 }

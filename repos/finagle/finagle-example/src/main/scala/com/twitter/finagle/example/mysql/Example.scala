@@ -17,8 +17,7 @@ case class SwimmingRecord(
 )
 
 object SwimmingRecord {
-  val createTableSQL =
-    """CREATE TABLE IF NOT EXISTS `finagle-mysql-example` (
+  val createTableSQL = """CREATE TABLE IF NOT EXISTS `finagle-mysql-example` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `event` varchar(30) DEFAULT NULL,
     `time` float DEFAULT NULL,
@@ -83,11 +82,12 @@ object Example extends App {
       .withDatabase(dbname())
       .newRichClient("%s:%d".format(host().getHostName, host().getPort))
 
-    val resultFuture = for {
-      _ <- createTable(client)
-      _ <- insertValues(client)
-      r <- selectQuery(client)
-    } yield r
+    val resultFuture =
+      for {
+        _ <- createTable(client)
+        _ <- insertValues(client)
+        r <- selectQuery(client)
+      } yield r
 
     resultFuture onSuccess { seq =>
       seq foreach println
@@ -123,10 +123,11 @@ object Example extends App {
       val StringValue(event) = row("event").get
       val DateValue(date) = row("date").get
       val StringValue(name) = row("name").get
-      val time = row("time").map {
-        case FloatValue(f) => f
-        case _             => 0.0f
-      }.get
+      val time =
+        row("time").map {
+          case FloatValue(f) => f
+          case _             => 0.0f
+        }.get
 
       (name, time, date)
     }

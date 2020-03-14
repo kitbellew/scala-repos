@@ -55,75 +55,80 @@ trait ThriftTest { self: FunSuite =>
     () // noop
   }
 
-  private val newBuilderServer = (protocolFactory: TProtocolFactory) =>
-    new {
-      val server = ServerBuilder()
-        .codec(ThriftServerFramedCodec(protocolFactory))
-        .bindTo(new InetSocketAddress(loopback, 0))
-        .name("thriftserver")
-        .tracer(DefaultTracer)
-        .build(ifaceToService(processor, protocolFactory))
+  private val newBuilderServer =
+    (protocolFactory: TProtocolFactory) =>
+      new {
+        val server = ServerBuilder()
+          .codec(ThriftServerFramedCodec(protocolFactory))
+          .bindTo(new InetSocketAddress(loopback, 0))
+          .name("thriftserver")
+          .tracer(DefaultTracer)
+          .build(ifaceToService(processor, protocolFactory))
 
-      val boundAddr = server.boundAddress
+        val boundAddr = server.boundAddress
 
-      def close() {
-        server.close()
+        def close() {
+          server.close()
+        }
       }
-    }
 
-  private val newBuilderClient = (
-      protocolFactory: TProtocolFactory,
-      addr: SocketAddress,
-      clientIdOpt: Option[ClientId]
-  ) =>
-    new {
-      val serviceFactory = ClientBuilder()
-        .hosts(Seq(addr.asInstanceOf[InetSocketAddress]))
-        .codec(
-          ThriftClientFramedCodec(clientIdOpt).protocolFactory(protocolFactory))
-        .name("thriftclient")
-        .hostConnectionLimit(2)
-        .tracer(DefaultTracer)
-        .buildFactory()
-      val service = serviceFactory.toService
-      val client = serviceToIface(service, protocolFactory)
+  private val newBuilderClient =
+    (
+        protocolFactory: TProtocolFactory,
+        addr: SocketAddress,
+        clientIdOpt: Option[ClientId]
+    ) =>
+      new {
+        val serviceFactory = ClientBuilder()
+          .hosts(Seq(addr.asInstanceOf[InetSocketAddress]))
+          .codec(ThriftClientFramedCodec(clientIdOpt).protocolFactory(
+            protocolFactory))
+          .name("thriftclient")
+          .hostConnectionLimit(2)
+          .tracer(DefaultTracer)
+          .buildFactory()
+        val service = serviceFactory.toService
+        val client = serviceToIface(service, protocolFactory)
 
-      def close() {
-        service.close()
+        def close() {
+          service.close()
+        }
       }
-    }
 
-  private val newAPIServer = (protocolFactory: TProtocolFactory) =>
-    new {
-      val server = Thrift.server
-        .withLabel("thriftserver")
-        .withProtocolFactory(protocolFactory)
-        .serveIface("localhost:*", processor)
-      val boundAddr = server.boundAddress
+  private val newAPIServer =
+    (protocolFactory: TProtocolFactory) =>
+      new {
+        val server = Thrift.server
+          .withLabel("thriftserver")
+          .withProtocolFactory(protocolFactory)
+          .serveIface("localhost:*", processor)
+        val boundAddr = server.boundAddress
 
-      def close() {
-        server.close()
+        def close() {
+          server.close()
+        }
       }
-    }
 
-  private val newAPIClient = (
-      protocolFactory: TProtocolFactory,
-      addr: SocketAddress,
-      clientIdOpt: Option[ClientId]
-  ) =>
-    new {
-      implicit val cls = ifaceManifest
-      val client = {
-        val thrift = clientIdOpt.foldLeft(
-          Thrift.client.withProtocolFactory(protocolFactory)) {
-          case (thrift, clientId) => thrift.withClientId(clientId)
+  private val newAPIClient =
+    (
+        protocolFactory: TProtocolFactory,
+        addr: SocketAddress,
+        clientIdOpt: Option[ClientId]
+    ) =>
+      new {
+        implicit val cls = ifaceManifest
+        val client = {
+          val thrift =
+            clientIdOpt.foldLeft(
+              Thrift.client.withProtocolFactory(protocolFactory)) {
+              case (thrift, clientId) => thrift.withClientId(clientId)
+            }
+
+          thrift.newIface[Iface](Group(addr).named("thriftclient"))
         }
 
-        thrift.newIface[Iface](Group(addr).named("thriftclient"))
+        def close() = ()
       }
-
-      def close() = ()
-    }
 
   private val protocols = Map(
     // Commenting out due to flakiness - see DPT-175 and DPT-181
@@ -141,10 +146,11 @@ trait ThriftTest { self: FunSuite =>
       val client: Iface
     }
 
-  private type NewServer = (TProtocolFactory) => {
-    def close()
-    val boundAddr: SocketAddress
-  }
+  private type NewServer =
+    (TProtocolFactory) => {
+      def close()
+      val boundAddr: SocketAddress
+    }
 
   private val clients = Map[String, NewClient](
     "builder" -> newBuilderClient,

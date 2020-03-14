@@ -46,9 +46,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
               " is annotated @inline but"
             else
               ""
-          val msg = s"${BackendReporting.methodSignature(
-            callee.calleeDeclarationClass.internalName,
-            callee.callee)}$annotWarn could not be inlined:\n$warning"
+          val msg =
+            s"${BackendReporting.methodSignature(
+              callee.calleeDeclarationClass.internalName,
+              callee.callee)}$annotWarn could not be inlined:\n$warning"
           backendReporting.inlinerWarning(
             request.callsite.callsitePosition,
             msg)
@@ -154,74 +155,78 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     // The rewrite reading the implementation class and the implementation method from the bytecode
     // repository. If either of the two fails, the rewrite is not performed.
-    val res = for {
-      selfParamType <- selfParamTypeV
-      implMethodDescriptor = asm.Type.getMethodDescriptor(
-        asm.Type.getReturnType(callee.desc),
-        selfParamType.toASMType +: traitMethodArgumentTypes: _*)
-      implClassMethod <- implClassMethodV(implMethodDescriptor)
-      implClassBType = classBTypeFromParsedClassfile(implClassInternalName)
-      selfTypeOk <- calleeDeclarationClass.isSubtypeOf(selfParamType)
-    } yield {
+    val res =
+      for {
+        selfParamType <- selfParamTypeV
+        implMethodDescriptor = asm.Type.getMethodDescriptor(
+          asm.Type.getReturnType(callee.desc),
+          selfParamType.toASMType +: traitMethodArgumentTypes: _*)
+        implClassMethod <- implClassMethodV(implMethodDescriptor)
+        implClassBType = classBTypeFromParsedClassfile(implClassInternalName)
+        selfTypeOk <- calleeDeclarationClass.isSubtypeOf(selfParamType)
+      } yield {
 
-      // The self parameter type may be incompatible with the trait type.
-      //   trait T { self: S => def foo = 1 }
-      // The $self parameter type of T$class.foo is S, which may be unrelated to T. If we re-write
-      // a call to T.foo to T$class.foo, we need to cast the receiver to S, otherwise we get a
-      // VerifyError. We run a `SourceInterpreter` to find all producer instructions of the
-      // receiver value and add a cast to the self type after each.
-      if (!selfTypeOk) {
-        // We don't need to worry about the method being too large for running an analysis.
-        // Callsites of large methods are not added to the call graph.
-        val analyzer = new AsmAnalyzer(
-          callsite.callsiteMethod,
-          callsite.callsiteClass.internalName,
-          new Analyzer(new SourceInterpreter))
-        val receiverValue = analyzer
-          .frameAt(callsite.callsiteInstruction)
-          .peekStack(traitMethodArgumentTypes.length)
-        for (i <- receiverValue.insns.asScala) {
-          val cast = new TypeInsnNode(CHECKCAST, selfParamType.internalName)
-          callsite.callsiteMethod.instructions.insert(i, cast)
+        // The self parameter type may be incompatible with the trait type.
+        //   trait T { self: S => def foo = 1 }
+        // The $self parameter type of T$class.foo is S, which may be unrelated to T. If we re-write
+        // a call to T.foo to T$class.foo, we need to cast the receiver to S, otherwise we get a
+        // VerifyError. We run a `SourceInterpreter` to find all producer instructions of the
+        // receiver value and add a cast to the self type after each.
+        if (!selfTypeOk) {
+          // We don't need to worry about the method being too large for running an analysis.
+          // Callsites of large methods are not added to the call graph.
+          val analyzer =
+            new AsmAnalyzer(
+              callsite.callsiteMethod,
+              callsite.callsiteClass.internalName,
+              new Analyzer(new SourceInterpreter))
+          val receiverValue = analyzer
+            .frameAt(callsite.callsiteInstruction)
+            .peekStack(traitMethodArgumentTypes.length)
+          for (i <- receiverValue.insns.asScala) {
+            val cast = new TypeInsnNode(CHECKCAST, selfParamType.internalName)
+            callsite.callsiteMethod.instructions.insert(i, cast)
+          }
         }
-      }
 
-      val newCallsiteInstruction = new MethodInsnNode(
-        INVOKESTATIC,
-        implClassInternalName,
-        callee.name,
-        implMethodDescriptor,
-        false)
-      callsite.callsiteMethod.instructions
-        .insert(callsite.callsiteInstruction, newCallsiteInstruction)
-      callsite.callsiteMethod.instructions.remove(callsite.callsiteInstruction)
+        val newCallsiteInstruction =
+          new MethodInsnNode(
+            INVOKESTATIC,
+            implClassInternalName,
+            callee.name,
+            implMethodDescriptor,
+            false)
+        callsite.callsiteMethod.instructions
+          .insert(callsite.callsiteInstruction, newCallsiteInstruction)
+        callsite.callsiteMethod.instructions
+          .remove(callsite.callsiteInstruction)
 
-      callGraph.removeCallsite(
-        callsite.callsiteInstruction,
-        callsite.callsiteMethod)
-      val staticCallSamParamTypes = {
-        if (selfParamType.info.get.inlineInfo.sam.isEmpty)
-          samParamTypes - 0
-        else
-          samParamTypes.updated(0, selfParamType)
+        callGraph.removeCallsite(
+          callsite.callsiteInstruction,
+          callsite.callsiteMethod)
+        val staticCallSamParamTypes = {
+          if (selfParamType.info.get.inlineInfo.sam.isEmpty)
+            samParamTypes - 0
+          else
+            samParamTypes.updated(0, selfParamType)
+        }
+        val staticCallsite = callsite.copy(
+          callsiteInstruction = newCallsiteInstruction,
+          callee = Right(
+            Callee(
+              callee = implClassMethod,
+              calleeDeclarationClass = implClassBType,
+              safeToInline = true,
+              safeToRewrite = false,
+              canInlineFromSource = canInlineFromSource,
+              annotatedInline = annotatedInline,
+              annotatedNoInline = annotatedNoInline,
+              samParamTypes = staticCallSamParamTypes,
+              calleeInfoWarning = infoWarning
+            ))
+        )
+        callGraph.addCallsite(staticCallsite)
       }
-      val staticCallsite = callsite.copy(
-        callsiteInstruction = newCallsiteInstruction,
-        callee = Right(
-          Callee(
-            callee = implClassMethod,
-            calleeDeclarationClass = implClassBType,
-            safeToInline = true,
-            safeToRewrite = false,
-            canInlineFromSource = canInlineFromSource,
-            annotatedInline = annotatedInline,
-            annotatedNoInline = annotatedNoInline,
-            samParamTypes = staticCallSamParamTypes,
-            calleeInfoWarning = infoWarning
-          ))
-      )
-      callGraph.addCallsite(staticCallsite)
-    }
 
     for (warning <- res.left) {
       val Right(callee) = callsite.callee
@@ -268,8 +273,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
               else if (visited(x))
                 reachableImpl(xs, visited)
               else {
-                val callees =
-                  nonElidedRequests(x).map(_.callsite.callee.get.callee)
+                val callees = nonElidedRequests(x).map(
+                  _.callsite.callee.get.callee)
                 reachableImpl(xs ::: callees.toList, visited + x)
               }
 
@@ -304,8 +309,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
         Nil
       else {
         val (leaves, others) = requests.partition(r => {
-          val inlineRequestsForCallee =
-            nonElidedRequests(r.callsite.callee.get.callee)
+          val inlineRequestsForCallee = nonElidedRequests(
+            r.callsite.callee.get.callee)
           inlineRequestsForCallee.forall(visited)
         })
         assert(leaves.nonEmpty, requests)
@@ -430,8 +435,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val (
       clonedInstructions,
       instructionMap,
-      hasSerializableClosureInstantiation) =
-      cloneInstructions(callee, labelsMap)
+      hasSerializableClosureInstantiation) = cloneInstructions(
+      callee,
+      labelsMap)
     val keepLineNumbers = callsiteClass == calleeDeclarationClass
     if (!keepLineNumbers) {
       removeLineNumberNodes(clonedInstructions)
@@ -466,10 +472,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val calleeParamTypes = calleAsmType.getArgumentTypes
 
     for (argTp <- calleeParamTypes) {
-      val opc =
-        argTp.getOpcode(
-          ISTORE
-        ) // returns the correct xSTORE instruction for argTp
+      val opc = argTp.getOpcode(
+        ISTORE
+      ) // returns the correct xSTORE instruction for argTp
       argStores.insert(
         new VarInsnNode(opc, nextLocalIndex)
       ) // "insert" is "prepend" - the last argument is on the top of the stack
@@ -494,13 +499,14 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     nextLocalIndex += returnType.getSize
 
     def returnValueStore(returnInstruction: AbstractInsnNode) = {
-      val opc = returnInstruction.getOpcode match {
-        case IRETURN => ISTORE
-        case LRETURN => LSTORE
-        case FRETURN => FSTORE
-        case DRETURN => DSTORE
-        case ARETURN => ASTORE
-      }
+      val opc =
+        returnInstruction.getOpcode match {
+          case IRETURN => ISTORE
+          case LRETURN => LSTORE
+          case FRETURN => FSTORE
+          case DRETURN => DSTORE
+          case ARETURN => ASTORE
+        }
       new VarInsnNode(opc, returnValueIndex)
     }
 
@@ -622,9 +628,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     callGraph.closureInstantiations(callee).valuesIterator foreach {
       originalClosureInit =>
-        val newIndy =
-          instructionMap(originalClosureInit.lambdaMetaFactoryCall.indy)
-            .asInstanceOf[InvokeDynamicInsnNode]
+        val newIndy = instructionMap(
+          originalClosureInit.lambdaMetaFactoryCall.indy)
+          .asInstanceOf[InvokeDynamicInsnNode]
         val capturedArgInfos =
           originalClosureInit.capturedArgInfos flatMap mapArgInfo
         val newClosureInit = ClosureInstantiation(

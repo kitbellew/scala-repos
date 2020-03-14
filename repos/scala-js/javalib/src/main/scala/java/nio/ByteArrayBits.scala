@@ -45,8 +45,7 @@ private[nio] final class ByteArrayBits(
   // Making and unmaking values
 
   @inline
-  private def makeChar(bs: (Byte, Byte)): Char =
-    makeChar(bs._1, bs._2)
+  private def makeChar(bs: (Byte, Byte)): Char = makeChar(bs._1, bs._2)
 
   @inline
   private def makeChar(b0: Byte, b1: Byte): Char =
@@ -60,8 +59,7 @@ private[nio] final class ByteArrayBits(
     ((b0 << 8) | (b1 & 0xff)).toChar
 
   @inline
-  private def makeShort(bs: (Byte, Byte)): Short =
-    makeShort(bs._1, bs._2)
+  private def makeShort(bs: (Byte, Byte)): Short = makeShort(bs._1, bs._2)
 
   @inline
   private def makeShort(b0: Byte, b1: Byte): Short =
@@ -158,8 +156,7 @@ private[nio] final class ByteArrayBits(
   }
 
   @inline
-  private def unmakeCharBE(c: Char): (Byte, Byte) =
-    ((c >> 8).toByte, c.toByte)
+  private def unmakeCharBE(c: Char): (Byte, Byte) = ((c >> 8).toByte, c.toByte)
 
   @inline
   private def unmakeShort(s: Short): (Byte, Byte) = {

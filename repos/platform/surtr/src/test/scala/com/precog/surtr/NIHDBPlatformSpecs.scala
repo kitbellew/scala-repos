@@ -117,15 +117,17 @@ trait NIHDBTestActors
       executor,
       yggConfig.storageTimeout.duration)
 
-  val accountFinder = new StaticAccountFinder[Future](
-    TestStack.testAccount,
-    TestStack.testAPIKey,
-    Some("/"))
+  val accountFinder =
+    new StaticAccountFinder[Future](
+      TestStack.testAccount,
+      TestStack.testAPIKey,
+      Some("/"))
   val apiKeyFinder = new StaticAPIKeyFinder[Future](TestStack.testAPIKey)
-  val permissionsFinder = new PermissionsFinder(
-    apiKeyFinder,
-    accountFinder,
-    yggConfig.clock.instant())
+  val permissionsFinder =
+    new PermissionsFinder(
+      apiKeyFinder,
+      accountFinder,
+      yggConfig.clock.instant())
   val jobManager = new InMemoryJobManager[Future]
 
   val masterChef = actorSystem.actorOf(
@@ -133,12 +135,13 @@ trait NIHDBTestActors
       Chef(
         VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
         VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
-  val resourceBuilder = new ResourceBuilder(
-    actorSystem,
-    yggConfig.clock,
-    masterChef,
-    yggConfig.cookThreshold,
-    yggConfig.storageTimeout)
+  val resourceBuilder =
+    new ResourceBuilder(
+      actorSystem,
+      yggConfig.clock,
+      masterChef,
+      yggConfig.cookThreshold,
+      yggConfig.storageTimeout)
 
   val projectionsActor = actorSystem.actorOf(
     Props(
@@ -177,11 +180,12 @@ trait NIHDBTestStack
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =
     new Evaluator[N](N0)(mn, nm) {
-      val report = new LoggingQueryLogger[N, instructions.Line]
-        with ExceptionQueryLogger[N, instructions.Line]
-        with TimingQueryLogger[N, instructions.Line] {
-        val M = N0
-      }
+      val report =
+        new LoggingQueryLogger[N, instructions.Line]
+          with ExceptionQueryLogger[N, instructions.Line]
+          with TimingQueryLogger[N, instructions.Line] {
+          val M = N0
+        }
       class YggConfig extends EvaluatorConfig {
         val idSource = new FreshAtomicIdSource
         val maxSliceSize = 10
@@ -190,18 +194,20 @@ trait NIHDBTestStack
       def freshIdScanner = self.freshIdScanner
     }
 
-  val actorVFS = new ActorVFS(
-    projectionsActor,
-    yggConfig.storageTimeout,
-    yggConfig.storageTimeout)
+  val actorVFS =
+    new ActorVFS(
+      projectionsActor,
+      yggConfig.storageTimeout,
+      yggConfig.storageTimeout)
   val vfs =
     new SecureVFS(actorVFS, permissionsFinder, jobManager, yggConfig.clock)
 
-  val report = new LoggingQueryLogger[Future, instructions.Line]
-    with ExceptionQueryLogger[Future, instructions.Line]
-    with TimingQueryLogger[Future, instructions.Line] {
-    implicit def M = self.M
-  }
+  val report =
+    new LoggingQueryLogger[Future, instructions.Line]
+      with ExceptionQueryLogger[Future, instructions.Line]
+      with TimingQueryLogger[Future, instructions.Line] {
+      implicit def M = self.M
+    }
 
   trait TableCompanion extends VFSColumnarTableCompanion
 

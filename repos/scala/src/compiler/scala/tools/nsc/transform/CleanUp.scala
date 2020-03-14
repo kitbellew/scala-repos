@@ -41,8 +41,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
       val Template(_, _, body) = tree
       clearStatics()
       val newBody = transformTrees(body)
-      val templ = deriveTemplate(tree)(_ =>
-        transformTrees(newStaticMembers.toList) ::: newBody)
+      val templ =
+        deriveTemplate(tree)(_ =>
+          transformTrees(newStaticMembers.toList) ::: newBody)
       try if (newStaticInits.isEmpty)
         templ
       else
@@ -139,8 +140,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           val methodSym = reflMethodSym
             .newVariable(mkTerm("method"), ad.pos) setInfo MethodClass.tpe
 
-          val dummyMethodType =
-            MethodType(NoSymbol.newSyntheticValueParams(paramTypes), AnyTpe)
+          val dummyMethodType = MethodType(
+            NoSymbol.newSyntheticValueParams(paramTypes),
+            AnyTpe)
           BLOCK(
             ValDef(
               methodCache,
@@ -412,29 +414,30 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
          *   because invoke only returns object and erasure made sure the result is
          *   expected to be an AnyRef. */
         val t: Tree = {
-          val (mparams, resType) = ad.symbol.tpe match {
-            case MethodType(mparams, resType) =>
-              assert(params.length == mparams.length, ((params, mparams)))
-              (mparams, resType)
-            case tpe @ OverloadedType(pre, alts) =>
-              reporter.warning(
-                ad.pos,
-                s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
-                  .map(_.tpe)
-              )
-              alts filter (_.paramss.flatten.size == params.length) map (_.tpe) match {
-                case mt @ MethodType(mparams, resType) :: Nil =>
-                  reporter.warning(
-                    NoPosition,
-                    "Only one overload has the right arity, proceeding with overload " + mt)
-                  (mparams, resType)
-                case _ =>
-                  reporter.error(ad.pos, "Cannot resolve overload.")
-                  (Nil, NoType)
-              }
-            case NoType =>
-              abort(ad.symbol.toString)
-          }
+          val (mparams, resType) =
+            ad.symbol.tpe match {
+              case MethodType(mparams, resType) =>
+                assert(params.length == mparams.length, ((params, mparams)))
+                (mparams, resType)
+              case tpe @ OverloadedType(pre, alts) =>
+                reporter.warning(
+                  ad.pos,
+                  s"Overloaded type reached the backend! This is a bug in scalac.\n     Symbol: ${ad.symbol}\n  Overloads: $tpe\n  Arguments: " + ad.args
+                    .map(_.tpe)
+                )
+                alts filter (_.paramss.flatten.size == params.length) map (_.tpe) match {
+                  case mt @ MethodType(mparams, resType) :: Nil =>
+                    reporter.warning(
+                      NoPosition,
+                      "Only one overload has the right arity, proceeding with overload " + mt)
+                    (mparams, resType)
+                  case _ =>
+                    reporter.error(ad.pos, "Cannot resolve overload.")
+                    (Nil, NoType)
+                }
+              case NoType =>
+                abort(ad.symbol.toString)
+            }
           typedPos {
             val sym =
               currentOwner.newValue(mkTerm("qual"), ad.pos) setInfo qual0.tpe
@@ -451,14 +454,15 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
          * can be printed-out in great detail. Remove? */
         if (settings.debug) {
           def paramsToString(xs: Any*) = xs map (_.toString) mkString ", "
-          val mstr = ad.symbol.tpe match {
-            case MethodType(mparams, resType) =>
-              sm"""|  with
+          val mstr =
+            ad.symbol.tpe match {
+              case MethodType(mparams, resType) =>
+                sm"""|  with
                    |  - declared parameter types: '${paramsToString(mparams)}'
                    |  - passed argument types:    '${paramsToString(params)}'
                    |  - result type:              '${resType.toString}'"""
-            case _ => ""
-          }
+              case _ => ""
+            }
           log(
             s"""Dynamically application '$qual.${ad.symbol.name}(${paramsToString(
               params)})' $mstr - resulting code: '$t'""")

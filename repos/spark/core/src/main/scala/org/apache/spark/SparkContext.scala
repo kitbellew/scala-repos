@@ -117,8 +117,9 @@ class SparkContext(config: SparkConf)
   private val creationSite: CallSite = Utils.getCallSite()
 
   // If true, log warnings instead of throwing exceptions when multiple SparkContexts are active
-  private val allowMultipleContexts: Boolean =
-    config.getBoolean("spark.driver.allowMultipleContexts", false)
+  private val allowMultipleContexts: Boolean = config.getBoolean(
+    "spark.driver.allowMultipleContexts",
+    false)
 
   // In order to prevent multiple SparkContexts from being active at the same time, mark this
   // context as having started construction.
@@ -229,8 +230,7 @@ class SparkContext(config: SparkConf)
       master: String,
       appName: String,
       sparkHome: String,
-      jars: Seq[String]) =
-    this(master, appName, sparkHome, jars, Map())
+      jars: Seq[String]) = this(master, appName, sparkHome, jars, Map())
 
   // log out Spark Version in Spark driver log
   logInfo(s"Running Spark version $SPARK_VERSION")
@@ -322,8 +322,9 @@ class SparkContext(config: SparkConf)
 
   // Keeps track of all persisted RDDs
   private[spark] val persistentRdds = {
-    val map: ConcurrentMap[Int, RDD[_]] =
-      new MapMaker().weakValues().makeMap[Int, RDD[_]]()
+    val map: ConcurrentMap[Int, RDD[_]] = new MapMaker()
+      .weakValues()
+      .makeMap[Int, RDD[_]]()
     map.asScala
   }
   private[spark] def jobProgressListener: JobProgressListener =
@@ -377,8 +378,7 @@ class SparkContext(config: SparkConf)
   private[spark] def eventLogger: Option[EventLoggingListener] = _eventLogger
 
   private[spark] def executorAllocationManager
-      : Option[ExecutorAllocationManager] =
-    _executorAllocationManager
+      : Option[ExecutorAllocationManager] = _executorAllocationManager
 
   private[spark] def cleaner: Option[ContextCleaner] = _cleaner
 
@@ -413,8 +413,15 @@ class SparkContext(config: SparkConf)
     * Valid log levels include: ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE, WARN
     */
   def setLogLevel(logLevel: String) {
-    val validLevels =
-      Seq("ALL", "DEBUG", "ERROR", "FATAL", "INFO", "OFF", "TRACE", "WARN")
+    val validLevels = Seq(
+      "ALL",
+      "DEBUG",
+      "ERROR",
+      "FATAL",
+      "INFO",
+      "OFF",
+      "TRACE",
+      "WARN")
     if (!validLevels.contains(logLevel)) {
       throw new IllegalArgumentException(
         s"Supplied level $logLevel did not match one of: ${validLevels.mkString(",")}")
@@ -465,14 +472,15 @@ class SparkContext(config: SparkConf)
       .toSeq
       .flatten
 
-    _eventLogDir = if (isEventLogEnabled) {
-      val unresolvedDir = conf
-        .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
-        .stripSuffix("/")
-      Some(Utils.resolveURI(unresolvedDir))
-    } else {
-      None
-    }
+    _eventLogDir =
+      if (isEventLogEnabled) {
+        val unresolvedDir = conf
+          .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
+          .stripSuffix("/")
+        Some(Utils.resolveURI(unresolvedDir))
+      } else {
+        None
+      }
 
     _eventLogCodec = {
       val compress = _conf.getBoolean("spark.eventLog.compress", false)
@@ -498,8 +506,8 @@ class SparkContext(config: SparkConf)
 
     // If running the REPL, register the repl's output dir with the file server.
     _conf.getOption("spark.repl.class.outputDir").foreach { path =>
-      val replUri =
-        _env.rpcEnv.fileServer.addDirectory("/classes", new File(path))
+      val replUri = _env.rpcEnv.fileServer
+        .addDirectory("/classes", new File(path))
       _conf.set("spark.repl.class.uri", replUri)
     }
 
@@ -514,20 +522,21 @@ class SparkContext(config: SparkConf)
         None
       }
 
-    _ui = if (conf.getBoolean("spark.ui.enabled", true)) {
-      Some(
-        SparkUI.createLiveUI(
-          this,
-          _conf,
-          listenerBus,
-          _jobProgressListener,
-          _env.securityManager,
-          appName,
-          startTime = startTime))
-    } else {
-      // For tests, do not enable the UI
-      None
-    }
+    _ui =
+      if (conf.getBoolean("spark.ui.enabled", true)) {
+        Some(
+          SparkUI.createLiveUI(
+            this,
+            _conf,
+            listenerBus,
+            _jobProgressListener,
+            _env.securityManager,
+            appName,
+            startTime = startTime))
+      } else {
+        // For tests, do not enable the UI
+        None
+      }
     // Bind the UI before starting the task scheduler to communicate
     // the bound port to the cluster manager properly
     _ui.foreach(_.bind())
@@ -599,35 +608,38 @@ class SparkContext(config: SparkConf)
     _env.metricsSystem.getServletHandlers.foreach(handler =>
       ui.foreach(_.attachHandler(handler)))
 
-    _eventLogger = if (isEventLogEnabled) {
-      val logger =
-        new EventLoggingListener(
-          _applicationId,
-          _applicationAttemptId,
-          _eventLogDir.get,
-          _conf,
-          _hadoopConfiguration)
-      logger.start()
-      listenerBus.addListener(logger)
-      Some(logger)
-    } else {
-      None
-    }
+    _eventLogger =
+      if (isEventLogEnabled) {
+        val logger =
+          new EventLoggingListener(
+            _applicationId,
+            _applicationAttemptId,
+            _eventLogDir.get,
+            _conf,
+            _hadoopConfiguration)
+        logger.start()
+        listenerBus.addListener(logger)
+        Some(logger)
+      } else {
+        None
+      }
 
     // Optionally scale number of executors dynamically based on workload. Exposed for testing.
     val dynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(_conf)
-    _executorAllocationManager = if (dynamicAllocationEnabled) {
-      Some(new ExecutorAllocationManager(this, listenerBus, _conf))
-    } else {
-      None
-    }
+    _executorAllocationManager =
+      if (dynamicAllocationEnabled) {
+        Some(new ExecutorAllocationManager(this, listenerBus, _conf))
+      } else {
+        None
+      }
     _executorAllocationManager.foreach(_.start())
 
-    _cleaner = if (_conf.getBoolean("spark.cleaner.referenceTracking", true)) {
-      Some(new ContextCleaner(this))
-    } else {
-      None
-    }
+    _cleaner =
+      if (_conf.getBoolean("spark.cleaner.referenceTracking", true)) {
+        Some(new ContextCleaner(this))
+      } else {
+        None
+      }
     _cleaner.foreach(_.start())
 
     setupAndStartListenerBus()
@@ -645,11 +657,12 @@ class SparkContext(config: SparkConf)
     // Make sure the context is stopped if the user forgets about it. This avoids leaving
     // unfinished event logs around after the JVM exits cleanly. It doesn't help if the JVM
     // is killed, though.
-    _shutdownHookRef = ShutdownHookManager.addShutdownHook(
-      ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY) { () =>
-      logInfo("Invoking stop() from shutdown hook")
-      stop()
-    }
+    _shutdownHookRef =
+      ShutdownHookManager.addShutdownHook(
+        ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY) { () =>
+        logInfo("Invoking stop() from shutdown hook")
+        stop()
+      }
   } catch {
     case NonFatal(e) =>
       logError("Error initializing SparkContext.", e)
@@ -1107,8 +1120,8 @@ class SparkContext(config: SparkConf)
     withScope {
       assertNotStopped()
       // A Hadoop configuration can be about 10 KB, which is pretty big, so broadcast it.
-      val confBroadcast =
-        broadcast(new SerializableConfiguration(hadoopConfiguration))
+      val confBroadcast = broadcast(
+        new SerializableConfiguration(hadoopConfiguration))
       val setInputPathsFunc =
         (jobConf: JobConf) => FileInputFormat.setInputPaths(jobConf, path)
       new HadoopRDD(
@@ -1480,10 +1493,11 @@ class SparkContext(config: SparkConf)
     */
   def addFile(path: String, recursive: Boolean): Unit = {
     val uri = new URI(path)
-    val schemeCorrectedPath = uri.getScheme match {
-      case null | "local" => new File(path).getCanonicalFile.toURI.toString
-      case _              => path
-    }
+    val schemeCorrectedPath =
+      uri.getScheme match {
+        case null | "local" => new File(path).getCanonicalFile.toURI.toString
+        case _              => path
+      }
 
     val hadoopPath = new Path(schemeCorrectedPath)
     val scheme = new URI(schemeCorrectedPath).getScheme
@@ -1506,11 +1520,12 @@ class SparkContext(config: SparkConf)
       }
     }
 
-    val key = if (!isLocal && scheme == "file") {
-      env.rpcEnv.fileServer.addFile(new File(uri.getPath))
-    } else {
-      schemeCorrectedPath
-    }
+    val key =
+      if (!isLocal && scheme == "file") {
+        env.rpcEnv.fileServer.addFile(new File(uri.getPath))
+      } else {
+        schemeCorrectedPath
+      }
     val timestamp = System.currentTimeMillis
     addedFiles(key) = timestamp
 
@@ -2034,8 +2049,8 @@ class SparkContext(config: SparkConf)
       rdd: RDD[T],
       processPartition: Iterator[T] => U,
       resultHandler: (Int, U) => Unit) {
-    val processFunc = (context: TaskContext, iter: Iterator[T]) =>
-      processPartition(iter)
+    val processFunc =
+      (context: TaskContext, iter: Iterator[T]) => processPartition(iter)
     runJob[T, U](rdd, processFunc, 0 until rdd.partitions.length, resultHandler)
   }
 
@@ -2209,12 +2224,11 @@ class SparkContext(config: SparkConf)
   private def setupAndStartListenerBus(): Unit = {
     // Use reflection to instantiate listeners specified via `spark.extraListeners`
     try {
-      val listenerClassNames: Seq[String] =
-        conf
-          .get("spark.extraListeners", "")
-          .split(',')
-          .map(_.trim)
-          .filter(_ != "")
+      val listenerClassNames: Seq[String] = conf
+        .get("spark.extraListeners", "")
+        .split(',')
+        .map(_.trim)
+        .filter(_ != "")
       for (className <- listenerClassNames) {
         // Use reflection to find the right constructor
         val constructors = {
@@ -2345,10 +2359,9 @@ object SparkContext extends Logging {
         if (otherContext ne sc) { // checks for reference equality
           // Since otherContext might point to a partially-constructed context, guard against
           // its creationSite field being null:
-          val otherContextCreationSite =
-            Option(otherContext.creationSite)
-              .map(_.longForm)
-              .getOrElse("unknown location")
+          val otherContextCreationSite = Option(otherContext.creationSite)
+            .map(_.longForm)
+            .getOrElse("unknown location")
           val warnMsg = "Another SparkContext is being constructed (or threw an exception in its" +
             " constructor).  This may indicate an error, since only one SparkContext may be" +
             " running in this JVM (see SPARK-2243)." +
@@ -2623,11 +2636,12 @@ object SparkContext extends Logging {
         }
 
         val scheduler = new TaskSchedulerImpl(sc)
-        val localCluster = new LocalSparkCluster(
-          numSlaves.toInt,
-          coresPerSlave.toInt,
-          memoryPerSlaveInt,
-          sc.conf)
+        val localCluster =
+          new LocalSparkCluster(
+            numSlaves.toInt,
+            coresPerSlave.toInt,
+            memoryPerSlaveInt,
+            sc.conf)
         val masterUrls = localCluster.start()
         val backend = new SparkDeploySchedulerBackend(scheduler, sc, masterUrls)
         scheduler.initialize(backend)
@@ -2652,9 +2666,8 @@ object SparkContext extends Logging {
           }
         val backend =
           try {
-            val clazz =
-              Utils.classForName(
-                "org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
+            val clazz = Utils.classForName(
+              "org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
             val cons = clazz.getConstructor(
               classOf[TaskSchedulerImpl],
               classOf[SparkContext])
@@ -2685,9 +2698,8 @@ object SparkContext extends Logging {
 
         val backend =
           try {
-            val clazz =
-              Utils.classForName(
-                "org.apache.spark.scheduler.cluster.YarnClientSchedulerBackend")
+            val clazz = Utils.classForName(
+              "org.apache.spark.scheduler.cluster.YarnClientSchedulerBackend")
             val cons = clazz.getConstructor(
               classOf[TaskSchedulerImpl],
               classOf[SparkContext])
@@ -2706,17 +2718,18 @@ object SparkContext extends Logging {
       case MESOS_REGEX(mesosUrl) =>
         MesosNativeLibrary.load()
         val scheduler = new TaskSchedulerImpl(sc)
-        val coarseGrained =
-          sc.conf.getBoolean("spark.mesos.coarse", defaultValue = true)
-        val backend = if (coarseGrained) {
-          new CoarseMesosSchedulerBackend(
-            scheduler,
-            sc,
-            mesosUrl,
-            sc.env.securityManager)
-        } else {
-          new MesosSchedulerBackend(scheduler, sc, mesosUrl)
-        }
+        val coarseGrained = sc.conf
+          .getBoolean("spark.mesos.coarse", defaultValue = true)
+        val backend =
+          if (coarseGrained) {
+            new CoarseMesosSchedulerBackend(
+              scheduler,
+              sc,
+              mesosUrl,
+              sc.env.securityManager)
+          } else {
+            new MesosSchedulerBackend(scheduler, sc, mesosUrl)
+          }
         scheduler.initialize(backend)
         (backend, scheduler)
 
@@ -2822,8 +2835,8 @@ object WritableFactory {
   private[spark] def simpleWritableFactory[
       T: ClassTag,
       W <: Writable: ClassTag](convert: T => W): WritableFactory[T] = {
-    val writableClass =
-      implicitly[ClassTag[W]].runtimeClass.asInstanceOf[Class[W]]
+    val writableClass = implicitly[ClassTag[W]].runtimeClass
+      .asInstanceOf[Class[W]]
     new WritableFactory[T](_ => writableClass, convert)
   }
 
@@ -2849,7 +2862,6 @@ object WritableFactory {
     simpleWritableFactory(new Text(_))
 
   implicit def writableWritableFactory[T <: Writable: ClassTag]
-      : WritableFactory[T] =
-    simpleWritableFactory(w => w)
+      : WritableFactory[T] = simpleWritableFactory(w => w)
 
 }

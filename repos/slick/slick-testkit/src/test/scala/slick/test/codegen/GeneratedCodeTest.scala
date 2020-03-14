@@ -33,10 +33,10 @@ object GeneratedCodeTest {
           0,
           B.baseTableRow.foreignKeys.size)
         val aFk = A.baseTableRow.foreignKeys.head
-        val srcColumns =
-          convertColumnsToString(aFk.linearizedSourceColumns.toList)
-        val trgColumns =
-          convertColumnsToString(aFk.linearizedTargetColumns.toList)
+        val srcColumns = convertColumnsToString(
+          aFk.linearizedSourceColumns.toList)
+        val trgColumns = convertColumnsToString(
+          aFk.linearizedTargetColumns.toList)
         assertEquals(
           "FKs should have the same source column",
           List("k1"),
@@ -59,10 +59,10 @@ object GeneratedCodeTest {
           0,
           D.baseTableRow.foreignKeys.size)
         val cFk = C.baseTableRow.foreignKeys.head
-        val cSrcColumns =
-          convertColumnsToString(cFk.linearizedSourceColumns.toList)
-        val cTrgColumns =
-          convertColumnsToString(cFk.linearizedTargetColumns.toList)
+        val cSrcColumns = convertColumnsToString(
+          cFk.linearizedSourceColumns.toList)
+        val cTrgColumns = convertColumnsToString(
+          cFk.linearizedTargetColumns.toList)
         assertEquals(
           "FKs should have the same source column",
           List("k1", "k2"),

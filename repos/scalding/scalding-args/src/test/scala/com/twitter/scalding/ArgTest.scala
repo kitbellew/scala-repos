@@ -49,8 +49,8 @@ class ArgTest extends WordSpec {
     }
 
     "remove empty args in lists" in {
-      val map =
-        Args(Array("", "hello", "--one", "1", "", "\t", "--two", "2", "", "3"))
+      val map = Args(
+        Array("", "hello", "--one", "1", "", "\t", "--two", "2", "", "3"))
       assert(map("") === "hello")
       assert(map.list("") === List("hello"))
       assert(map("one") === "1")

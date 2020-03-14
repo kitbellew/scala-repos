@@ -49,13 +49,14 @@ object MailerSpec extends Specification {
 
   Props.mode // touch the lazy val so it's detected correctly
 
-  val myMailer = new Mailer with MailerForTesting {
-    @volatile var lastMessage: Box[MimeMessage] = Empty
+  val myMailer =
+    new Mailer with MailerForTesting {
+      @volatile var lastMessage: Box[MimeMessage] = Empty
 
-    testModeSend.default.set((msg: MimeMessage) => {
-      lastMessage = Full(msg)
-    })
-  }
+      testModeSend.default.set((msg: MimeMessage) => {
+        lastMessage = Full(msg)
+      })
+    }
 
   import myMailer._
 
@@ -113,13 +114,14 @@ object MailerSpec extends Specification {
     }
 
     "deliver emails with attachments as mixed multipart" in {
-      val attachmentBytes = Source
-        .fromInputStream(
-          getClass.getClassLoader.getResourceAsStream(
-            "net/liftweb/util/Html5ParserSpec.page1.html")
-        )
-        .map(_.toByte)
-        .toArray
+      val attachmentBytes =
+        Source
+          .fromInputStream(
+            getClass.getClassLoader.getResourceAsStream(
+              "net/liftweb/util/Html5ParserSpec.page1.html")
+          )
+          .map(_.toByte)
+          .toArray
       val msg = doNewMessage {
         sendMail(
           From("sender@nowhere.com"),

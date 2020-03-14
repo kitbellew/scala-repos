@@ -3,9 +3,10 @@ package tests
 object Child1 extends Base {
   override val NameAfterRename = 1
 
-  val x = new Base {
-    override def NameAfterRename() = 3
-  }
+  val x =
+    new Base {
+      override def NameAfterRename() = 3
+    }
   x.NameAfterRename()
 }
 

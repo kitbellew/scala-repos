@@ -54,15 +54,17 @@ trait HashJoin {
     }
   }
 
-  protected lazy val (buildPlan, streamedPlan) = buildSide match {
-    case BuildLeft  => (left, right)
-    case BuildRight => (right, left)
-  }
+  protected lazy val (buildPlan, streamedPlan) =
+    buildSide match {
+      case BuildLeft  => (left, right)
+      case BuildRight => (right, left)
+    }
 
-  protected lazy val (buildKeys, streamedKeys) = buildSide match {
-    case BuildLeft  => (leftKeys, rightKeys)
-    case BuildRight => (rightKeys, leftKeys)
-  }
+  protected lazy val (buildKeys, streamedKeys) =
+    buildSide match {
+      case BuildLeft  => (leftKeys, rightKeys)
+      case BuildRight => (rightKeys, leftKeys)
+    }
 
   /**
     * Try to rewrite the key as LongType so we can use getLong(), if they key can fit with a long.
@@ -87,14 +89,15 @@ trait HashJoin {
             // hashCode of Long is (l >> 32) ^ l.toInt, it means the hash code of an long with same
             // value in high 32 bit and low 32 bit will be 0. To avoid the worst case that keys
             // with two same ints have hash code 0, we rotate the bits of second one.
-            val rotated = if (e.dataType == IntegerType) {
-              // (e >>> 15) | (e << 17)
-              BitwiseOr(
-                ShiftRightUnsigned(e, Literal(15)),
-                ShiftLeft(e, Literal(17)))
-            } else {
-              e
-            }
+            val rotated =
+              if (e.dataType == IntegerType) {
+                // (e >>> 15) | (e << 17)
+                BitwiseOr(
+                  ShiftRightUnsigned(e, Literal(15)),
+                  ShiftLeft(e, Literal(17)))
+              } else {
+                e
+              }
             keyExpr = BitwiseOr(
               ShiftLeft(keyExpr, Literal(bits)),
               BitwiseAnd(Cast(rotated, LongType), Literal((1L << bits) - 1)))
@@ -120,13 +123,14 @@ trait HashJoin {
   protected def streamSideKeyGenerator: Projection =
     UnsafeProjection.create(rewriteKeyExpr(streamedKeys), streamedPlan.output)
 
-  @transient private[this] lazy val boundCondition = if (condition.isDefined) {
-    newPredicate(
-      condition.getOrElse(Literal(true)),
-      left.output ++ right.output)
-  } else { (r: InternalRow) =>
-    true
-  }
+  @transient private[this] lazy val boundCondition =
+    if (condition.isDefined) {
+      newPredicate(
+        condition.getOrElse(Literal(true)),
+        left.output ++ right.output)
+    } else { (r: InternalRow) =>
+      true
+    }
 
   protected def createResultProjection: (InternalRow) => InternalRow =
     UnsafeProjection.create(self.schema)
@@ -204,10 +208,10 @@ trait HashJoin {
 
   @transient protected[this] lazy val EMPTY_LIST = CompactBuffer[InternalRow]()
 
-  @transient private[this] lazy val leftNullRow = new GenericInternalRow(
-    left.output.length)
-  @transient private[this] lazy val rightNullRow = new GenericInternalRow(
-    right.output.length)
+  @transient private[this] lazy val leftNullRow =
+    new GenericInternalRow(left.output.length)
+  @transient private[this] lazy val rightNullRow =
+    new GenericInternalRow(right.output.length)
 
   protected[this] def leftOuterIterator(
       key: InternalRow,
@@ -217,16 +221,17 @@ trait HashJoin {
       numOutputRows: LongSQLMetric): Iterator[InternalRow] = {
     val ret: Iterable[InternalRow] = {
       if (!key.anyNull) {
-        val temp = if (rightIter != null) {
-          rightIter.collect {
-            case r if boundCondition(joinedRow.withRight(r)) => {
-              numOutputRows += 1
-              resultProjection(joinedRow).copy()
+        val temp =
+          if (rightIter != null) {
+            rightIter.collect {
+              case r if boundCondition(joinedRow.withRight(r)) => {
+                numOutputRows += 1
+                resultProjection(joinedRow).copy()
+              }
             }
+          } else {
+            List.empty
           }
-        } else {
-          List.empty
-        }
         if (temp.isEmpty) {
           numOutputRows += 1
           resultProjection(joinedRow.withRight(rightNullRow)) :: Nil
@@ -249,16 +254,17 @@ trait HashJoin {
       numOutputRows: LongSQLMetric): Iterator[InternalRow] = {
     val ret: Iterable[InternalRow] = {
       if (!key.anyNull) {
-        val temp = if (leftIter != null) {
-          leftIter.collect {
-            case l if boundCondition(joinedRow.withLeft(l)) => {
-              numOutputRows += 1
-              resultProjection(joinedRow).copy()
+        val temp =
+          if (leftIter != null) {
+            leftIter.collect {
+              case l if boundCondition(joinedRow.withLeft(l)) => {
+                numOutputRows += 1
+                resultProjection(joinedRow).copy()
+              }
             }
+          } else {
+            List.empty
           }
-        } else {
-          List.empty
-        }
         if (temp.isEmpty) {
           numOutputRows += 1
           resultProjection(joinedRow.withLeft(leftNullRow)) :: Nil

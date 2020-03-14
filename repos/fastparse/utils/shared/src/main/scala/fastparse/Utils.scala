@@ -20,10 +20,10 @@ object MacroUtils {
   def preComputeImpl(c: Compat.Context)(
       pred: c.Expr[Char => Boolean]): c.Expr[Utils.CharBitSet] = {
     import c.universe._
-    val evaled =
-      c.eval(c.Expr[Char => Boolean](c.resetLocalAttrs(pred.tree.duplicate)))
-    val (first, last, array) =
-      Utils.CharBitSet.compute((Char.MinValue to Char.MaxValue).filter(evaled))
+    val evaled = c.eval(
+      c.Expr[Char => Boolean](c.resetLocalAttrs(pred.tree.duplicate)))
+    val (first, last, array) = Utils.CharBitSet.compute(
+      (Char.MinValue to Char.MaxValue).filter(evaled))
     val txt = Utils.CharBitSet.ints2Hex(array)
     c.Expr[Utils.CharBitSet](q"""
       new fastparse.Utils.CharBitSet(fastparse.Utils.CharBitSet.hex2Ints($txt), $first, $last)
@@ -75,11 +75,12 @@ object Utils {
       res
     }
     def hex2Ints(hex: String): Array[Int] = {
-      val res = for {
-        i <- 0 to hex.length - 1 by 8
-        // parseUnsignedInt not implemented in Scala.js
-        // java.lang.Long.parseLong also misbehaves
-      } yield hex2Int(hex.slice(i, i + 8))
+      val res =
+        for {
+          i <- 0 to hex.length - 1 by 8
+          // parseUnsignedInt not implemented in Scala.js
+          // java.lang.Long.parseLong also misbehaves
+        } yield hex2Int(hex.slice(i, i + 8))
       res.toArray
     }
 

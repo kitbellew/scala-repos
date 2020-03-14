@@ -39,12 +39,12 @@ object PublishSubscribe {
   // Setup publish/subscribe example
   val system = ActorSystem("some-system")
   val jmsUri = "jms:topic:test"
-  val jmsSubscriber1 =
-    system.actorOf(Props(classOf[Subscriber], "jms-subscriber-1", jmsUri))
-  val jmsSubscriber2 =
-    system.actorOf(Props(classOf[Subscriber], "jms-subscriber-2", jmsUri))
-  val jmsPublisher =
-    system.actorOf(Props(classOf[Publisher], "jms-publisher", jmsUri))
+  val jmsSubscriber1 = system.actorOf(
+    Props(classOf[Subscriber], "jms-subscriber-1", jmsUri))
+  val jmsSubscriber2 = system.actorOf(
+    Props(classOf[Subscriber], "jms-subscriber-2", jmsUri))
+  val jmsPublisher = system.actorOf(
+    Props(classOf[Publisher], "jms-publisher", jmsUri))
   val jmsPublisherBridge = system.actorOf(
     Props(
       classOf[PublisherBridge],

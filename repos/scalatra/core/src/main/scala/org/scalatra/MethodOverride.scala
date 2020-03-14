@@ -32,14 +32,15 @@ trait MethodOverride extends Handler with ServletApiImplicits {
   abstract override def handle(
       req: HttpServletRequest,
       res: HttpServletResponse): Unit = {
-    val req2 = req.requestMethod match {
-      case Post =>
-        new HttpServletRequestWrapper(req) {
-          override def getMethod(): String =
-            methodOverride(req) getOrElse req.getMethod
-        }
-      case _ => req
-    }
+    val req2 =
+      req.requestMethod match {
+        case Post =>
+          new HttpServletRequestWrapper(req) {
+            override def getMethod(): String =
+              methodOverride(req) getOrElse req.getMethod
+          }
+        case _ => req
+      }
     super.handle(req2, res)
   }
 

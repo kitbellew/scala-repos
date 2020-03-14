@@ -72,10 +72,11 @@ class MethodResolveProcessor(
   }
 
   override def execute(element: PsiElement, state: ResolveState): Boolean = {
-    val named = element match {
-      case named: PsiNamedElement => named
-      case _                      => return true //do not process
-    }
+    val named =
+      element match {
+        case named: PsiNamedElement => named
+        case _                      => return true //do not process
+      }
     def implicitConversionClass: Option[PsiClass] =
       state.get(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY).toOption
     def implFunction: Option[PsiNamedElement] =
@@ -94,10 +95,11 @@ class MethodResolveProcessor(
       if (accessibility && !accessible)
         return true
 
-      val s = fromType match {
-        case Some(tp) => getSubst(state).followUpdateThisType(tp)
-        case _        => getSubst(state)
-      }
+      val s =
+        fromType match {
+          case Some(tp) => getSubst(state).followUpdateThisType(tp)
+          case _        => getSubst(state)
+        }
       element match {
         case m: PsiMethod =>
           addResult(
@@ -123,20 +125,22 @@ class MethodResolveProcessor(
               "update"
             else
               "apply"
-          val typeResult = getFromType(state) match {
-            case Some(tp) =>
-              Success(
-                ScProjectionType(tp, obj, superReference = false),
-                Some(obj))
-            case _ => obj.getType(TypingContext.empty)
-          }
+          val typeResult =
+            getFromType(state) match {
+              case Some(tp) =>
+                Success(
+                  ScProjectionType(tp, obj, superReference = false),
+                  Some(obj))
+              case _ => obj.getType(TypingContext.empty)
+            }
           val processor = new CollectMethodsProcessor(ref, functionName)
           typeResult.foreach(t => processor.processType(t, ref))
-          val sigs = processor.candidatesS.flatMap {
-            case ScalaResolveResult(meth: PsiMethod, subst) =>
-              Some((meth, subst))
-            case _ => None
-          }.toSeq
+          val sigs =
+            processor.candidatesS.flatMap {
+              case ScalaResolveResult(meth: PsiMethod, subst) =>
+                Some((meth, subst))
+              case _ => None
+            }.toSeq
           val seq = sigs
             .map {
               case (m, subst) =>
@@ -274,22 +278,25 @@ object MethodResolveProcessor {
     import proc._
     val problems = new ArrayBuffer[ApplicabilityProblem]()
 
-    val realResolveResult = c.innerResolveResult match {
-      case Some(rr) => rr
-      case _        => c
-    }
+    val realResolveResult =
+      c.innerResolveResult match {
+        case Some(rr) => rr
+        case _        => c
+      }
     val element = realResolveResult.element
     val s = realResolveResult.substitutor
 
-    val elementForUndefining = element match {
-      case m: PsiMethod if m.isConstructor && !selfConstructorResolve =>
-        realResolveResult.getActualElement
-      case _ => element //do not
-    }
+    val elementForUndefining =
+      element match {
+        case m: PsiMethod if m.isConstructor && !selfConstructorResolve =>
+          realResolveResult.getActualElement
+        case _ => element //do not
+      }
 
-    val substitutor: ScSubstitutor =
-      undefinedSubstitutor(elementForUndefining, s, proc).followed(
-        InferUtil.undefineSubstitutor(prevTypeInfo))
+    val substitutor: ScSubstitutor = undefinedSubstitutor(
+      elementForUndefining,
+      s,
+      proc).followed(InferUtil.undefineSubstitutor(prevTypeInfo))
 
     val typeParameters: Seq[TypeParameter] = prevTypeInfo ++ (element match {
       case fun: ScFunction => fun.typeParameters.map(new TypeParameter(_))
@@ -301,23 +308,24 @@ object MethodResolveProcessor {
     def addExpectedTypeProblems(
         eOption: Option[ScType] = expectedOption()): Unit = {
       for (expected <- eOption) {
-        val retType: ScType = element match {
-          case f: ScFunction
-              if f.paramClauses.clauses.length > 1 &&
-                !f.paramClauses.clauses.apply(1).isImplicit =>
-            problems += ExpectedTypeMismatch //do not check expected types for more than one param clauses
-            Nothing
-          case f: ScFunction => substitutor.subst(f.returnType.getOrNothing)
-          case f: ScFun      => substitutor.subst(f.retType)
-          case m: PsiMethod =>
-            Option(m.getReturnType)
-              .map { rt =>
-                substitutor.subst(
-                  ScType.create(rt, ref.getProject, getResolveScope))
-              }
-              .getOrElse(Nothing)
-          case _ => Nothing
-        }
+        val retType: ScType =
+          element match {
+            case f: ScFunction
+                if f.paramClauses.clauses.length > 1 &&
+                  !f.paramClauses.clauses.apply(1).isImplicit =>
+              problems += ExpectedTypeMismatch //do not check expected types for more than one param clauses
+              Nothing
+            case f: ScFunction => substitutor.subst(f.returnType.getOrNothing)
+            case f: ScFun      => substitutor.subst(f.retType)
+            case m: PsiMethod =>
+              Option(m.getReturnType)
+                .map { rt =>
+                  substitutor.subst(
+                    ScType.create(rt, ref.getProject, getResolveScope))
+                }
+                .getOrElse(Nothing)
+            case _ => Nothing
+          }
         if (!retType.conforms(expected) && !expected.equiv(Unit)) {
           problems += ExpectedTypeMismatch
         }
@@ -390,17 +398,17 @@ object MethodResolveProcessor {
 
     def constructorCompatibility(
         constr: ScMethodLike with PsiNamedElement): ConformanceExtResult = {
-      val classTypeParameters: Seq[ScTypeParam] =
-        constr.getClassTypeParameters.map(_.typeParameters).getOrElse(Seq())
+      val classTypeParameters: Seq[ScTypeParam] = constr.getClassTypeParameters
+        .map(_.typeParameters)
+        .getOrElse(Seq())
       if (typeArgElements.isEmpty || typeArgElements.length == classTypeParameters.length) {
-        val result =
-          Compatibility.compatible(
-            constr,
-            substitutor,
-            argumentClauses,
-            checkWithImplicits,
-            ref.getResolveScope,
-            isShapeResolve)
+        val result = Compatibility.compatible(
+          constr,
+          substitutor,
+          argumentClauses,
+          checkWithImplicits,
+          ref.getResolveScope,
+          isShapeResolve)
         problems ++= result.problems
         result.copy(problems)
       } else {
@@ -413,14 +421,13 @@ object MethodResolveProcessor {
         constr: PsiMethod): ConformanceExtResult = {
       val classTypeParmeters = constr.containingClass.getTypeParameters
       if (typeArgElements.isEmpty || typeArgElements.length == classTypeParmeters.length) {
-        val result =
-          Compatibility.compatible(
-            constr,
-            substitutor,
-            argumentClauses,
-            checkWithImplicits,
-            ref.getResolveScope,
-            isShapeResolve)
+        val result = Compatibility.compatible(
+          constr,
+          substitutor,
+          argumentClauses,
+          checkWithImplicits,
+          ref.getResolveScope,
+          isShapeResolve)
         problems ++= result.problems
         result.copy(problems)
       } else {
@@ -429,118 +436,119 @@ object MethodResolveProcessor {
       }
     }
 
-    val result = element match {
-      //objects
-      case obj: PsiClass =>
-        ConformanceExtResult(problems)
-      case a: ScTypeAlias =>
-        ConformanceExtResult(problems)
-      //Implicit Application
-      case f: ScFunction if f.hasMalformedSignature =>
-        problems += new MalformedDefinition
-        ConformanceExtResult(problems)
-      case c: ScPrimaryConstructor if c.hasMalformedSignature =>
-        problems += new MalformedDefinition
-        ConformanceExtResult(problems)
-      case f: ScFunction if f.isConstructor => constructorCompatibility(f)
-      case c: ScPrimaryConstructor with PsiNamedElement =>
-        constructorCompatibility(c)
-      case method: PsiMethod if method.isConstructor =>
-        javaConstructorCompatibility(method)
-      case fun: ScFunction
-          if (typeArgElements.isEmpty ||
-            typeArgElements.length == fun.typeParameters.length) && fun.paramClauses.clauses.length == 1 &&
-            fun.paramClauses.clauses.head.isImplicit &&
-            argumentClauses.isEmpty =>
-        addExpectedTypeProblems()
-        ConformanceExtResult(problems) //special case for cases like Seq.toArray
-      //eta expansion
-      case fun: ScTypeParametersOwner
-          if (typeArgElements.isEmpty ||
-            typeArgElements.length == fun.typeParameters.length) && argumentClauses.isEmpty &&
-            fun.isInstanceOf[PsiNamedElement] =>
-        fun match {
-          case function: ScFunction if function.isConstructor =>
-            problems += new ApplicabilityProblem("1")
-            return ConformanceExtResult(problems)
-          case _ =>
-        }
-        checkFunction(fun.asInstanceOf[PsiNamedElement])
-      case fun: PsiTypeParameterListOwner
-          if (typeArgElements.isEmpty ||
-            typeArgElements.length == fun.getTypeParameters.length) && argumentClauses.isEmpty &&
-            fun.isInstanceOf[PsiNamedElement] =>
-        checkFunction(fun.asInstanceOf[PsiNamedElement])
-      //simple application including empty application
-      case tp: ScTypeParametersOwner with PsiNamedElement =>
-        val args = argumentClauses.headOption.toList
-
-        val typeArgCount = typeArgElements.length
-        val typeParamCount = tp.typeParameters.length
-        if (typeArgCount > 0 && typeArgCount != typeParamCount) {
-          if (typeParamCount == 0) {
-            problems += DoesNotTakeTypeParameters
-          } else if (typeParamCount < typeArgCount) {
-            problems ++= typeArgElements
-              .drop(typeParamCount)
-              .map(ExcessTypeArgument)
-          } else {
-            problems ++= tp.typeParameters
-              .drop(typeArgCount)
-              .map(ptp => MissedTypeParameter(new TypeParameter(ptp)))
-          }
+    val result =
+      element match {
+        //objects
+        case obj: PsiClass =>
+          ConformanceExtResult(problems)
+        case a: ScTypeAlias =>
+          ConformanceExtResult(problems)
+        //Implicit Application
+        case f: ScFunction if f.hasMalformedSignature =>
+          problems += new MalformedDefinition
+          ConformanceExtResult(problems)
+        case c: ScPrimaryConstructor if c.hasMalformedSignature =>
+          problems += new MalformedDefinition
+          ConformanceExtResult(problems)
+        case f: ScFunction if f.isConstructor => constructorCompatibility(f)
+        case c: ScPrimaryConstructor with PsiNamedElement =>
+          constructorCompatibility(c)
+        case method: PsiMethod if method.isConstructor =>
+          javaConstructorCompatibility(method)
+        case fun: ScFunction
+            if (typeArgElements.isEmpty ||
+              typeArgElements.length == fun.typeParameters.length) && fun.paramClauses.clauses.length == 1 &&
+              fun.paramClauses.clauses.head.isImplicit &&
+              argumentClauses.isEmpty =>
           addExpectedTypeProblems()
-          new ConformanceExtResult(problems)
-        } else {
-          val result =
-            Compatibility.compatible(
+          ConformanceExtResult(
+            problems
+          ) //special case for cases like Seq.toArray
+        //eta expansion
+        case fun: ScTypeParametersOwner
+            if (typeArgElements.isEmpty ||
+              typeArgElements.length == fun.typeParameters.length) && argumentClauses.isEmpty &&
+              fun.isInstanceOf[PsiNamedElement] =>
+          fun match {
+            case function: ScFunction if function.isConstructor =>
+              problems += new ApplicabilityProblem("1")
+              return ConformanceExtResult(problems)
+            case _ =>
+          }
+          checkFunction(fun.asInstanceOf[PsiNamedElement])
+        case fun: PsiTypeParameterListOwner
+            if (typeArgElements.isEmpty ||
+              typeArgElements.length == fun.getTypeParameters.length) && argumentClauses.isEmpty &&
+              fun.isInstanceOf[PsiNamedElement] =>
+          checkFunction(fun.asInstanceOf[PsiNamedElement])
+        //simple application including empty application
+        case tp: ScTypeParametersOwner with PsiNamedElement =>
+          val args = argumentClauses.headOption.toList
+
+          val typeArgCount = typeArgElements.length
+          val typeParamCount = tp.typeParameters.length
+          if (typeArgCount > 0 && typeArgCount != typeParamCount) {
+            if (typeParamCount == 0) {
+              problems += DoesNotTakeTypeParameters
+            } else if (typeParamCount < typeArgCount) {
+              problems ++= typeArgElements
+                .drop(typeParamCount)
+                .map(ExcessTypeArgument)
+            } else {
+              problems ++= tp.typeParameters
+                .drop(typeArgCount)
+                .map(ptp => MissedTypeParameter(new TypeParameter(ptp)))
+            }
+            addExpectedTypeProblems()
+            new ConformanceExtResult(problems)
+          } else {
+            val result = Compatibility.compatible(
               tp.asInstanceOf[PsiNamedElement],
               substitutor,
               args,
               checkWithImplicits,
               ref.getResolveScope,
               isShapeResolve)
-          problems ++= result.problems
-          addExpectedTypeProblems()
-          result.copy(problems)
-        }
-      case tp: PsiTypeParameterListOwner with PsiNamedElement =>
-        val typeArgCount = typeArgElements.length
-        val typeParamCount = tp.getTypeParameters.length
-        if (typeArgCount > 0 && typeArgCount != typeParamCount) {
-          if (typeParamCount == 0) {
-            problems += DoesNotTakeTypeParameters
-          } else if (typeParamCount < typeArgCount) {
-            problems ++= typeArgElements
-              .drop(typeParamCount)
-              .map(ExcessTypeArgument)
-          } else {
-            problems ++= tp.getTypeParameters
-              .drop(typeArgCount)
-              .map(ptp => MissedTypeParameter(new TypeParameter(ptp)))
+            problems ++= result.problems
+            addExpectedTypeProblems()
+            result.copy(problems)
           }
-          addExpectedTypeProblems()
-          new ConformanceExtResult(problems)
-        } else {
-          val args = argumentClauses.headOption.toList
-          val result =
-            Compatibility.compatible(
+        case tp: PsiTypeParameterListOwner with PsiNamedElement =>
+          val typeArgCount = typeArgElements.length
+          val typeParamCount = tp.getTypeParameters.length
+          if (typeArgCount > 0 && typeArgCount != typeParamCount) {
+            if (typeParamCount == 0) {
+              problems += DoesNotTakeTypeParameters
+            } else if (typeParamCount < typeArgCount) {
+              problems ++= typeArgElements
+                .drop(typeParamCount)
+                .map(ExcessTypeArgument)
+            } else {
+              problems ++= tp.getTypeParameters
+                .drop(typeArgCount)
+                .map(ptp => MissedTypeParameter(new TypeParameter(ptp)))
+            }
+            addExpectedTypeProblems()
+            new ConformanceExtResult(problems)
+          } else {
+            val args = argumentClauses.headOption.toList
+            val result = Compatibility.compatible(
               tp,
               substitutor,
               args,
               checkWithImplicits,
               ref.getResolveScope,
               isShapeResolve)
-          problems ++= result.problems
+            problems ++= result.problems
+            addExpectedTypeProblems()
+            result.copy(problems)
+          }
+        case _ =>
+          if (typeArgElements.nonEmpty)
+            problems += DoesNotTakeTypeParameters
           addExpectedTypeProblems()
-          result.copy(problems)
-        }
-      case _ =>
-        if (typeArgElements.nonEmpty)
-          problems += DoesNotTakeTypeParameters
-        addExpectedTypeProblems()
-        ConformanceExtResult(problems)
-    }
+          ConformanceExtResult(problems)
+      }
 
     if (result.problems.forall(_ == ExpectedTypeMismatch)) {
       var uSubst = result.undefSubst
@@ -610,10 +618,11 @@ object MethodResolveProcessor {
       return ScSubstitutor.empty
 
     //todo: it's always None, if you have constructor => actual element is class of type alias
-    val constructorTypeParameters = element match {
-      case ml: ScMethodLike => ml.getClassTypeParameters
-      case _                => None
-    }
+    val constructorTypeParameters =
+      element match {
+        case ml: ScMethodLike => ml.getClassTypeParameters
+        case _                => None
+      }
     (constructorTypeParameters, element) match {
       case (Some(typeParameterClause), _) =>
         val typeParameters = typeParameterClause.typeParameters
@@ -785,8 +794,8 @@ object MethodResolveProcessor {
         })
     }
     var mapped = mapper(applicationImplicits = false)
-    var filtered =
-      mapped.filter(_.isApplicableInternal(withExpectedType = true))
+    var filtered = mapped.filter(
+      _.isApplicableInternal(withExpectedType = true))
     if (filtered.isEmpty)
       filtered = mapped.filter(_.isApplicableInternal(withExpectedType = false))
 
@@ -795,8 +804,8 @@ object MethodResolveProcessor {
       mapped = mapper(applicationImplicits = true)
       filtered = mapped.filter(_.isApplicableInternal(withExpectedType = true))
       if (filtered.isEmpty)
-        filtered =
-          mapped.filter(_.isApplicableInternal(withExpectedType = false))
+        filtered = mapped.filter(
+          _.isApplicableInternal(withExpectedType = false))
     }
 
     val onlyValues = mapped.forall(_.isApplicable())

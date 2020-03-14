@@ -19,16 +19,18 @@ object NumericTypeHandler {
       numericType: String): scala.util.Try[List[ColumnFormat[c.type]]] = {
     import c.universe._
 
-    val helper = new {
-      val ctx: c.type = c
-      val cfieldName = fieldName
-      val cannotationInfo = annotationInfo
-    } with AnnotationHelper
+    val helper =
+      new {
+        val ctx: c.type = c
+        val cfieldName = fieldName
+        val cannotationInfo = annotationInfo
+      } with AnnotationHelper
 
-    val extracted = for {
-      (nextHelper, sizeAnno) <- helper.sizeAnnotation
-      _ <- nextHelper.validateFinished
-    } yield (sizeAnno)
+    val extracted =
+      for {
+        (nextHelper, sizeAnno) <- helper.sizeAnnotation
+        _ <- nextHelper.validateFinished
+      } yield (sizeAnno)
 
     extracted.flatMap { t =>
       t match {

@@ -66,11 +66,12 @@ object StrictForm {
         implicit mat ⇒ {
           case FromString(value) ⇒ fsu(value)
           case FromPart(value) ⇒
-            val charsetName = value.entity.contentType
-              .asInstanceOf[ContentType.NonBinary]
-              .charset
-              .nioCharset
-              .name
+            val charsetName =
+              value.entity.contentType
+                .asInstanceOf[ContentType.NonBinary]
+                .charset
+                .nioCharset
+                .name
             fsu(value.entity.data.decodeString(charsetName))
         })
 
@@ -107,11 +108,12 @@ object StrictForm {
           def unmarshalPart(value: Multipart.FormData.BodyPart.Strict)(implicit
               ec: ExecutionContext,
               mat: Materializer) = {
-            val charsetName = value.entity.contentType
-              .asInstanceOf[ContentType.NonBinary]
-              .charset
-              .nioCharset
-              .name
+            val charsetName =
+              value.entity.contentType
+                .asInstanceOf[ContentType.NonBinary]
+                .charset
+                .nioCharset
+                .name
             fsu(value.entity.data.decodeString(charsetName))
           }
         }
@@ -137,9 +139,10 @@ object StrictForm {
         for (formData ← formDataUM(entity).fast)
           yield {
             new StrictForm {
-              val fields = formData.fields.map {
-                case (name, value) ⇒ name -> Field.FromString(value)
-              }(collection.breakOut)
+              val fields =
+                formData.fields.map {
+                  case (name, value) ⇒ name -> Field.FromString(value)
+                }(collection.breakOut)
             }
           }
 
@@ -151,10 +154,11 @@ object StrictForm {
             .fast // TODO: make timeout configurable
         } yield {
           new StrictForm {
-            val fields = strictMultiPartFD.strictParts.map {
-              case x: Multipart.FormData.BodyPart.Strict ⇒
-                x.name -> Field.FromPart(x)
-            }(collection.breakOut)
+            val fields =
+              strictMultiPartFD.strictParts.map {
+                case x: Multipart.FormData.BodyPart.Strict ⇒
+                  x.name -> Field.FromPart(x)
+              }(collection.breakOut)
           }
         }
 

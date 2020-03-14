@@ -227,20 +227,21 @@ object GradientDescent extends Logging {
       val bcWeights = data.context.broadcast(weights)
       // Sample a subset (fraction miniBatchFraction) of the total data
       // compute and sum up the subgradients on this subset (this is one map-reduce)
-      val (gradientSum, lossSum, miniBatchSize) = data
-        .sample(false, miniBatchFraction, 42 + i)
-        .treeAggregate((BDV.zeros[Double](n), 0.0, 0L))(
-          seqOp = (c, v) => {
-            // c: (grad, loss, count), v: (label, features)
-            val l = gradient
-              .compute(v._2, v._1, bcWeights.value, Vectors.fromBreeze(c._1))
-            (c._1, c._2 + l, c._3 + 1)
-          },
-          combOp = (c1, c2) => {
-            // c: (grad, loss, count)
-            (c1._1 += c2._1, c1._2 + c2._2, c1._3 + c2._3)
-          }
-        )
+      val (gradientSum, lossSum, miniBatchSize) =
+        data
+          .sample(false, miniBatchFraction, 42 + i)
+          .treeAggregate((BDV.zeros[Double](n), 0.0, 0L))(
+            seqOp = (c, v) => {
+              // c: (grad, loss, count), v: (label, features)
+              val l = gradient
+                .compute(v._2, v._1, bcWeights.value, Vectors.fromBreeze(c._1))
+              (c._1, c._2 + l, c._3 + 1)
+            },
+            combOp = (c1, c2) => {
+              // c: (grad, loss, count)
+              (c1._1 += c2._1, c1._2 + c2._2, c1._3 + c2._3)
+            }
+          )
 
       if (miniBatchSize > 0) {
 
@@ -261,8 +262,10 @@ object GradientDescent extends Logging {
         previousWeights = currentWeights
         currentWeights = Some(weights)
         if (previousWeights != None && currentWeights != None) {
-          converged =
-            isConverged(previousWeights.get, currentWeights.get, convergenceTol)
+          converged = isConverged(
+            previousWeights.get,
+            currentWeights.get,
+            convergenceTol)
         }
       } else {
         logWarning(

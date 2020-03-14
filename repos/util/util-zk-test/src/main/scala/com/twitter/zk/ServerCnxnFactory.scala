@@ -56,11 +56,14 @@ object ServerCnxnFactory {
       maxClients: java.lang.Integer): ServerCnxnFactory = {
     val factory = {
       try {
-        val inst = java.lang.Class
-          .forName("org.apache.zookeeper.server.NIOServerCnxnFactory")
-          .newInstance
-        val call =
-          inst.getClass.getMethod("configure", sockAddr.getClass, Integer.TYPE)
+        val inst =
+          java.lang.Class
+            .forName("org.apache.zookeeper.server.NIOServerCnxnFactory")
+            .newInstance
+        val call = inst.getClass.getMethod(
+          "configure",
+          sockAddr.getClass,
+          Integer.TYPE)
         call.invoke(inst, sockAddr, maxClients)
         inst
       } catch {

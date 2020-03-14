@@ -47,13 +47,14 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
     assert(executor.isAllEmpty)
 
     // Thread that runs the executor
-    val executingThread = new Thread() {
-      override def run() {
-        executor.start()
-        executorStarted.release(1)
-        executor.awaitTermination()
+    val executingThread =
+      new Thread() {
+        override def run() {
+          executor.start()
+          executorStarted.release(1)
+          executor.awaitTermination()
+        }
       }
-    }
 
     // Start the receiver
     executingThread.start()

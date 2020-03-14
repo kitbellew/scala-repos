@@ -219,8 +219,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       storageLevel: StorageLevel): JavaReceiverInputDStream[T] = {
     def fn: (InputStream) => Iterator[T] =
       (x: InputStream) => converter.call(x).iterator().asScala
-    implicit val cmt: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cmt: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     ssc.socketStream(hostname, port, fn, storageLevel)
   }
 
@@ -267,8 +267,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       hostname: String,
       port: Int,
       storageLevel: StorageLevel): JavaReceiverInputDStream[T] = {
-    implicit val cmt: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cmt: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     JavaReceiverInputDStream.fromReceiverInputDStream(
       ssc.rawSocketStream(hostname, port, storageLevel))
   }
@@ -285,8 +285,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
   def rawSocketStream[T](
       hostname: String,
       port: Int): JavaReceiverInputDStream[T] = {
-    implicit val cmt: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cmt: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     JavaReceiverInputDStream.fromReceiverInputDStream(
       ssc.rawSocketStream(hostname, port))
   }
@@ -388,8 +388,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     * @tparam T         Type of objects in the RDD
     */
   def queueStream[T](queue: java.util.Queue[JavaRDD[T]]): JavaDStream[T] = {
-    implicit val cm: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cm: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     val sQueue = new scala.collection.mutable.Queue[RDD[T]]
     sQueue.enqueue(queue.asScala.map(_.rdd).toSeq: _*)
     ssc.queueStream(sQueue)
@@ -412,8 +412,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       queue: java.util.Queue[JavaRDD[T]],
       oneAtATime: Boolean
   ): JavaInputDStream[T] = {
-    implicit val cm: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cm: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     val sQueue = new scala.collection.mutable.Queue[RDD[T]]
     sQueue.enqueue(queue.asScala.map(_.rdd).toSeq: _*)
     ssc.queueStream(sQueue, oneAtATime)
@@ -437,8 +437,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       queue: java.util.Queue[JavaRDD[T]],
       oneAtATime: Boolean,
       defaultRDD: JavaRDD[T]): JavaInputDStream[T] = {
-    implicit val cm: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cm: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     val sQueue = new scala.collection.mutable.Queue[RDD[T]]
     sQueue.enqueue(queue.asScala.map(_.rdd).toSeq: _*)
     ssc.queueStream(sQueue, oneAtATime, defaultRDD.rdd)
@@ -450,8 +450,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
     * @param receiver Custom implementation of Receiver
     */
   def receiverStream[T](receiver: Receiver[T]): JavaReceiverInputDStream[T] = {
-    implicit val cm: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cm: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     ssc.receiverStream(receiver)
   }
 
@@ -473,8 +473,8 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       first: JavaPairDStream[K, V],
       rest: JList[JavaPairDStream[K, V]]
   ): JavaPairDStream[K, V] = {
-    val dstreams: Seq[DStream[(K, V)]] =
-      (Seq(first) ++ rest.asScala).map(_.dstream)
+    val dstreams: Seq[DStream[(K, V)]] = (Seq(first) ++ rest.asScala)
+      .map(_.dstream)
     implicit val cm: ClassTag[(K, V)] = first.classTag
     implicit val kcm: ClassTag[K] = first.kManifest
     implicit val vcm: ClassTag[V] = first.vManifest
@@ -494,12 +494,13 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       dstreams: JList[JavaDStream[_]],
       transformFunc: JFunction2[JList[JavaRDD[_]], Time, JavaRDD[T]]
   ): JavaDStream[T] = {
-    implicit val cmt: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
-    val scalaTransformFunc = (rdds: Seq[RDD[_]], time: Time) => {
-      val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
-      transformFunc.call(jrdds, time).rdd
-    }
+    implicit val cmt: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
+    val scalaTransformFunc =
+      (rdds: Seq[RDD[_]], time: Time) => {
+        val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
+        transformFunc.call(jrdds, time).rdd
+      }
     ssc.transform(dstreams.asScala.map(_.dstream).toSeq, scalaTransformFunc)
   }
 
@@ -516,14 +517,15 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       dstreams: JList[JavaDStream[_]],
       transformFunc: JFunction2[JList[JavaRDD[_]], Time, JavaPairRDD[K, V]]
   ): JavaPairDStream[K, V] = {
-    implicit val cmk: ClassTag[K] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[K]]
-    implicit val cmv: ClassTag[V] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[V]]
-    val scalaTransformFunc = (rdds: Seq[RDD[_]], time: Time) => {
-      val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
-      transformFunc.call(jrdds, time).rdd
-    }
+    implicit val cmk: ClassTag[K] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[K]]
+    implicit val cmv: ClassTag[V] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[V]]
+    val scalaTransformFunc =
+      (rdds: Seq[RDD[_]], time: Time) => {
+        val jrdds = rdds.map(JavaRDD.fromRDD(_)).asJava
+        transformFunc.call(jrdds, time).rdd
+      }
     ssc.transform(dstreams.asScala.map(_.dstream).toSeq, scalaTransformFunc)
   }
 

@@ -73,32 +73,34 @@ private[history] class ApplicationCache(
   /**
     * Services the load request from the cache.
     */
-  private val appLoader = new CacheLoader[CacheKey, CacheEntry] {
+  private val appLoader =
+    new CacheLoader[CacheKey, CacheEntry] {
 
-    /** the cache key doesn't match a cached entry, or the entry is out-of-date, so load it. */
-    override def load(key: CacheKey): CacheEntry = {
-      loadApplicationEntry(key.appId, key.attemptId)
+      /** the cache key doesn't match a cached entry, or the entry is out-of-date, so load it. */
+      override def load(key: CacheKey): CacheEntry = {
+        loadApplicationEntry(key.appId, key.attemptId)
+      }
+
     }
-
-  }
 
   /**
     * Handler for callbacks from the cache of entry removal.
     */
-  private val removalListener = new RemovalListener[CacheKey, CacheEntry] {
+  private val removalListener =
+    new RemovalListener[CacheKey, CacheEntry] {
 
-    /**
-      * Removal event notifies the provider to detach the UI.
-      * @param rm removal notification
-      */
-    override def onRemoval(
-        rm: RemovalNotification[CacheKey, CacheEntry]): Unit = {
-      metrics.evictionCount.inc()
-      val key = rm.getKey
-      logDebug(s"Evicting entry ${key}")
-      operations.detachSparkUI(key.appId, key.attemptId, rm.getValue().ui)
+      /**
+        * Removal event notifies the provider to detach the UI.
+        * @param rm removal notification
+        */
+      override def onRemoval(
+          rm: RemovalNotification[CacheKey, CacheEntry]): Unit = {
+        metrics.evictionCount.inc()
+        val key = rm.getKey
+        logDebug(s"Evicting entry ${key}")
+        operations.detachSparkUI(key.appId, key.attemptId, rm.getValue().ui)
+      }
     }
-  }
 
   /**
     * The cache of applications.
@@ -206,9 +208,10 @@ private[history] class ApplicationCache(
       log.debug(
         s"Probing at time $now for updated application $cacheKey -> $entry")
       metrics.updateProbeCount.inc()
-      updated = time(metrics.updateProbeTimer) {
-        entry.updateProbe()
-      }
+      updated =
+        time(metrics.updateProbeTimer) {
+          entry.updateProbe()
+        }
       if (updated) {
         logDebug(s"refreshing $cacheKey")
         metrics.updateTriggeredCount.inc()
@@ -306,8 +309,8 @@ private[history] class ApplicationCache(
     time(metrics.loadTimer) {
       operations.getAppUI(appId, attemptId) match {
         case Some(LoadedAppUI(ui, updateState)) =>
-          val completed =
-            ui.getApplicationInfoList.exists(_.attempts.last.completed)
+          val completed = ui.getApplicationInfoList.exists(
+            _.attempts.last.completed)
           if (completed) {
             // completed spark UIs are attached directly
             operations.attachSparkUI(appId, attemptId, ui, completed)
@@ -382,9 +385,10 @@ private[history] class ApplicationCache(
     * @return a string value, primarily for testing and diagnostics
     */
   override def toString: String = {
-    val sb = new StringBuilder(
-      s"ApplicationCache(" +
-        s" retainedApplications= $retainedApplications)")
+    val sb =
+      new StringBuilder(
+        s"ApplicationCache(" +
+          s" retainedApplications= $retainedApplications)")
     sb.append(s"; time= ${clock.getTimeMillis()}")
     sb.append(s"; entry count= ${appCache.size()}\n")
     sb.append("----\n")
@@ -608,8 +612,9 @@ private[history] class ApplicationCacheCheckFilter()
       // send a redirect back to the same location. This will be routed
       // to the *new* UI
       logInfo(s"Application Attempt $appId/$attemptId updated; refreshing")
-      val queryStr =
-        Option(httpRequest.getQueryString).map("?" + _).getOrElse("")
+      val queryStr = Option(httpRequest.getQueryString)
+        .map("?" + _)
+        .getOrElse("")
       val redirectUrl = httpResponse.encodeRedirectURL(requestURI + queryStr)
       httpResponse.sendRedirect(redirectUrl)
     } else {
@@ -719,8 +724,8 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
       appId: String,
       attemptId: Option[String]): Unit = {
     require(ui != null)
-    val enumDispatcher =
-      java.util.EnumSet.of(DispatcherType.ASYNC, DispatcherType.REQUEST)
+    val enumDispatcher = java.util.EnumSet
+      .of(DispatcherType.ASYNC, DispatcherType.REQUEST)
     val holder = new FilterHolder()
     holder.setClassName(FILTER_NAME)
     holder.setInitParameter(APP_ID, appId)

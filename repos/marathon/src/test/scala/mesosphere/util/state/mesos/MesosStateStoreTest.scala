@@ -20,12 +20,13 @@ class MesosStateStoreTest
 
   lazy val persistentStore: MesosStateStore = {
     val duration = 30.seconds
-    val state = new ZooKeeperState(
-      config.zkHostAndPort,
-      duration.toMillis,
-      TimeUnit.MILLISECONDS,
-      config.zkPath
-    )
+    val state =
+      new ZooKeeperState(
+        config.zkHostAndPort,
+        duration.toMillis,
+        TimeUnit.MILLISECONDS,
+        config.zkPath
+      )
     new MesosStateStore(state, duration)
   }
 

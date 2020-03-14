@@ -53,9 +53,10 @@ trait TimeExtractionSpecs[M[+_]]
 
   "time extraction functions (homogeneous case)" should {
     "extract time zone" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(TimeZone),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(TimeZone),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -69,9 +70,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute season" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Season),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Season),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -85,9 +87,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Year),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Year),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -101,9 +104,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute quarter" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(QuarterOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(QuarterOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -117,9 +121,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute month of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MonthOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MonthOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -133,9 +138,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute week of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -148,9 +154,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(17, 8, 36, 6, 52)
     }
     "compute week of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfMonth),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfMonth),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -163,9 +170,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(2, 5, 4)
     }
     "compute day of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -178,9 +186,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(52, 119, 42, 249, 363)
     }
     "compute day of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfMonth),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfMonth),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -193,9 +202,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(21, 29, 11, 6, 28)
     }
     "compute day of week" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfWeek),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfWeek),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -208,9 +218,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(1, 2, 6, 5, 4)
     }
     "compute hour of day" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(HourOfDay),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(HourOfDay),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -223,9 +234,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(20, 6, 9)
     }
     "compute minute of hour" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MinuteOfHour),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MinuteOfHour),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -238,9 +250,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(9, 44, 11, 37, 38)
     }
     "compute second of minute" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(SecondOfMinute),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(SecondOfMinute),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -253,9 +266,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(19, 59, 52, 33)
     }
     "compute millis of second" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MillisOfSecond),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MillisOfSecond),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -271,9 +285,10 @@ trait TimeExtractionSpecs[M[+_]]
 
   "time extraction functions (heterogeneous case)" should {
     "extract time zone" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(TimeZone),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(TimeZone),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -287,9 +302,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute season" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Season),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Season),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -303,9 +319,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Year),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Year),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -319,9 +336,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute quarter" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(QuarterOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(QuarterOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -335,9 +353,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute month of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MonthOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MonthOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -351,9 +370,10 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute week of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -366,9 +386,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(17, 8, 36, 6, 52)
     }
     "compute week of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfMonth),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfMonth),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -381,9 +402,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(2, 5, 4)
     }
     "compute day of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -396,9 +418,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(52, 119, 42, 249, 363)
     }
     "compute day of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfMonth),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfMonth),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -411,9 +434,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(21, 29, 11, 6, 28)
     }
     "compute day of week" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfWeek),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfWeek),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -426,9 +450,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(1, 2, 6, 5, 4)
     }
     "compute hour of day" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(HourOfDay),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(HourOfDay),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -441,9 +466,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(20, 6, 9)
     }
     "compute minute of hour" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MinuteOfHour),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MinuteOfHour),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -456,9 +482,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(9, 44, 11, 37, 38)
     }
     "compute second of minute" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(SecondOfMinute),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(SecondOfMinute),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -471,9 +498,10 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(19, 59, 52, 33)
     }
     "compute millis of second" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MillisOfSecond),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MillisOfSecond),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line))(line)
 
       val result = testEval(input)
 
@@ -489,10 +517,11 @@ trait TimeExtractionSpecs[M[+_]]
 
   "time extraction functions (homogeneous case across slices)" should {
     "extract time zone" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(TimeZone),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(TimeZone),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -520,10 +549,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute season" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Season),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Season),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -537,10 +567,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Year),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Year),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -554,10 +585,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute quarter" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(QuarterOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(QuarterOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -571,10 +603,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute month of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MonthOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MonthOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -588,10 +621,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute week of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -605,10 +639,11 @@ trait TimeExtractionSpecs[M[+_]]
         18, 31, 11, 43)
     }
     "compute week of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfMonth),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfMonth),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -621,10 +656,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(5, 1, 6, 2, 3, 4)
     }
     "compute day of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfYear),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfYear),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -638,10 +674,11 @@ trait TimeExtractionSpecs[M[+_]]
         144, 66, 198, 223, 35, 363, 40, 300, 122, 83)
     }
     "compute day of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfMonth),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfMonth),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -655,10 +692,11 @@ trait TimeExtractionSpecs[M[+_]]
         4, 15)
     }
     "compute day of week" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfWeek),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfWeek),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -671,10 +709,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(5, 1, 6, 2, 7, 3, 4)
     }
     "compute hour of day" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(HourOfDay),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(HourOfDay),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -688,10 +727,11 @@ trait TimeExtractionSpecs[M[+_]]
         4)
     }
     "compute minute of hour" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MinuteOfHour),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MinuteOfHour),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -705,10 +745,11 @@ trait TimeExtractionSpecs[M[+_]]
         11, 43, 58, 36, 30, 19)
     }
     "compute second of minute" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(SecondOfMinute),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(SecondOfMinute),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -722,10 +763,11 @@ trait TimeExtractionSpecs[M[+_]]
         16, 31, 40, 55, 19, 4)
     }
     "compute millis of second" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MillisOfSecond),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MillisOfSecond),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -742,10 +784,11 @@ trait TimeExtractionSpecs[M[+_]]
 
   "time extraction functions (heterogeneous case across slices)" should {
     "extract time zone" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(TimeZone),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(TimeZone),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -769,10 +812,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute season" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Season),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Season),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -786,10 +830,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(Year),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(Year),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -803,10 +848,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute quarter" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(QuarterOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(QuarterOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -820,10 +866,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute month of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MonthOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MonthOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -837,10 +884,11 @@ trait TimeExtractionSpecs[M[+_]]
     }
 
     "compute week of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -853,10 +901,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(25, 46, 28, 41, 34, 22, 27, 18, 43)
     }
     "compute week of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(WeekOfMonth),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(WeekOfMonth),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -869,10 +918,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(3, 5, 1, 4)
     }
     "compute day of year" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfYear),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfYear),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -885,10 +935,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(184, 325, 229, 298, 148, 176, 286, 126, 195)
     }
     "compute day of month" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfMonth),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfMonth),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -901,10 +952,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(5, 24, 25, 14, 21, 13, 2, 17, 27)
     }
     "compute day of week" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(DayOfWeek),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(DayOfWeek),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -917,10 +969,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(5, 1, 6, 2, 7, 3, 4)
     }
     "compute hour of day" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(HourOfDay),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(HourOfDay),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -933,10 +986,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(0, 5, 1, 3, 18, 16, 11, 23, 8, 15)
     }
     "compute minute of hour" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MinuteOfHour),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MinuteOfHour),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -949,10 +1003,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(53, 44, 27, 54, 49, 18, 50, 58, 51, 47)
     }
     "compute second of minute" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(SecondOfMinute),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(SecondOfMinute),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 
@@ -965,10 +1020,11 @@ trait TimeExtractionSpecs[M[+_]]
       result2 must contain(10, 24, 50, 16, 43, 40, 8, 30, 19)
     }
     "compute millis of second" in {
-      val input = dag.Operate(
-        BuiltInFunction1Op(MillisOfSecond),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line))(line)
+      val input =
+        dag.Operate(
+          BuiltInFunction1Op(MillisOfSecond),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+            line))(line)
 
       val result = testEval(input)
 

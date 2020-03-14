@@ -580,21 +580,23 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
       "batch-accept-limit") requiring (_ > 0, "batch-accept-limit must be > 0")
     val DirectBufferSize: Int = getIntBytes("direct-buffer-size")
     val MaxDirectBufferPoolSize: Int = getInt("direct-buffer-pool-limit")
-    val RegisterTimeout: Duration = getString("register-timeout") match {
-      case "infinite" ⇒ Duration.Undefined
-      case x ⇒ _config.getMillisDuration("register-timeout")
-    }
-    val ReceivedMessageSizeLimit: Int = getString(
-      "max-received-message-size") match {
-      case "unlimited" ⇒ Int.MaxValue
-      case x ⇒ getIntBytes("max-received-message-size")
-    }
+    val RegisterTimeout: Duration =
+      getString("register-timeout") match {
+        case "infinite" ⇒ Duration.Undefined
+        case x ⇒ _config.getMillisDuration("register-timeout")
+      }
+    val ReceivedMessageSizeLimit: Int =
+      getString("max-received-message-size") match {
+        case "unlimited" ⇒ Int.MaxValue
+        case x ⇒ getIntBytes("max-received-message-size")
+      }
     val ManagementDispatcher: String = getString("management-dispatcher")
     val FileIODispatcher: String = getString("file-io-dispatcher")
-    val TransferToLimit: Int = getString("file-io-transferTo-limit") match {
-      case "unlimited" ⇒ Int.MaxValue
-      case _ ⇒ getIntBytes("file-io-transferTo-limit")
-    }
+    val TransferToLimit: Int =
+      getString("file-io-transferTo-limit") match {
+        case "unlimited" ⇒ Int.MaxValue
+        case _ ⇒ getIntBytes("file-io-transferTo-limit")
+      }
 
     val MaxChannelsPerSelector: Int =
       if (MaxChannels == -1)
@@ -605,11 +607,11 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
       getInt("finish-connect-retries") requiring (_ > 0,
       "finish-connect-retries must be > 0")
 
-    val WindowsConnectionAbortWorkaroundEnabled: Boolean = getString(
-      "windows-connection-abort-workaround-enabled") match {
-      case "auto" ⇒ Helpers.isWindows
-      case _ ⇒ getBoolean("windows-connection-abort-workaround-enabled")
-    }
+    val WindowsConnectionAbortWorkaroundEnabled: Boolean =
+      getString("windows-connection-abort-workaround-enabled") match {
+        case "auto" ⇒ Helpers.isWindows
+        case _ ⇒ getBoolean("windows-connection-abort-workaround-enabled")
+      }
 
     private[this] def getIntBytes(path: String): Int = {
       val size = getBytes(path)
@@ -635,9 +637,10 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
     */
   def getManager: ActorRef = manager
 
-  val bufferPool: BufferPool = new DirectByteBufferPool(
-    Settings.DirectBufferSize,
-    Settings.MaxDirectBufferPoolSize)
+  val bufferPool: BufferPool =
+    new DirectByteBufferPool(
+      Settings.DirectBufferSize,
+      Settings.MaxDirectBufferPoolSize)
   val fileIoDispatcher = system.dispatchers.lookup(Settings.FileIODispatcher)
 }
 
@@ -854,8 +857,7 @@ object TcpMessage {
       filePath: String,
       position: Long,
       count: Long,
-      ack: Event): Command =
-    WriteFile(filePath, position, count, ack)
+      ack: Event): Command = WriteFile(filePath, position, count, ack)
 
   /**
     * When `useResumeWriting` is in effect as was indicated in the [[Tcp.Register]] message

@@ -14,10 +14,10 @@ import scala.collection.mutable
   */
 class PackageObjectsData extends Serializable {
 
-  private val baseSourceToPackageObjects =
-    mutable.HashMap[File, HashSet[File]]()
-  private val packageObjectToBaseSources =
-    mutable.HashMap[File, HashSet[File]]()
+  private val baseSourceToPackageObjects = mutable
+    .HashMap[File, HashSet[File]]()
+  private val packageObjectToBaseSources = mutable
+    .HashMap[File, HashSet[File]]()
 
   def add(baseSource: File, packageObject: File): Unit =
     synchronized {

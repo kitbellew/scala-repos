@@ -420,19 +420,21 @@ class FilteredScanSuite
         .setConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED, false)
       try {
         val queryExecution = sql(sqlString).queryExecution
-        val rawPlan = queryExecution.executedPlan.collect {
-          case p: execution.DataSourceScan => p
-        } match {
-          case Seq(p) => p
-          case _      => fail(s"More than one PhysicalRDD found\n$queryExecution")
-        }
+        val rawPlan =
+          queryExecution.executedPlan.collect {
+            case p: execution.DataSourceScan => p
+          } match {
+            case Seq(p) => p
+            case _      => fail(s"More than one PhysicalRDD found\n$queryExecution")
+          }
         val rawCount = rawPlan.execute().count()
         assert(ColumnsRequired.set === requiredColumnNames)
 
         val table = caseInsensitiveContext.table("oneToTenFiltered")
-        val relation = table.queryExecution.logical.collectFirst {
-          case LogicalRelation(r, _, _) => r
-        }.get
+        val relation =
+          table.queryExecution.logical.collectFirst {
+            case LogicalRelation(r, _, _) => r
+          }.get
 
         assert(
           relation

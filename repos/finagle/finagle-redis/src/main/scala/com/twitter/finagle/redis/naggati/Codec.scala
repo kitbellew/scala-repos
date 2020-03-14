@@ -43,9 +43,10 @@ trait Encoder[A] {
 }
 
 object Codec {
-  val NONE = new Encoder[Unit] {
-    def encode(obj: Unit) = None
-  }
+  val NONE =
+    new Encoder[Unit] {
+      def encode(obj: Unit) = None
+    }
 
   sealed abstract class Flag
   case object Disconnect extends Flag

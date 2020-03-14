@@ -40,11 +40,12 @@ class SimplifyJumpsTest {
       Label(3),
       Op(ATHROW)
     )
-    val method = genMethod()(
-      Op(ACONST_NULL) ::
-        Jump(GOTO, Label(2)) :: // replaced by ATHROW
-        rest: _*
-    )
+    val method =
+      genMethod()(
+        Op(ACONST_NULL) ::
+          Jump(GOTO, Label(2)) :: // replaced by ATHROW
+          rest: _*
+      )
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(
       instructionsFromMethod(method),
@@ -119,9 +120,10 @@ class SimplifyJumpsTest {
     // and remove the GOTO: removing the GOTO would change semantics. However, the jump that targets
     // Label(22) will be re-written (jump-chain collapsing), so in a second round, the IFGE is still
     // rewritten to IFLT
-    val twoRounds = genMethod()(
-      List(VarOp(ILOAD, 1), Jump(IFLE, Label(22))) ::: begin ::: Label(
-        22) :: rest: _*)
+    val twoRounds =
+      genMethod()(
+        List(VarOp(ILOAD, 1), Jump(IFLE, Label(22))) ::: begin ::: Label(
+          22) :: rest: _*)
     assertTrue(LocalOptImpls.simplifyJumps(twoRounds))
     assertSameCode(
       instructionsFromMethod(twoRounds),

@@ -57,8 +57,9 @@ trait StandardScalaSettings {
     "encoding",
     "Specify character encoding used by source files.",
     Properties.sourceEncoding)
-  val explaintypes =
-    BooleanSetting("-explaintypes", "Explain type errors in more detail.")
+  val explaintypes = BooleanSetting(
+    "-explaintypes",
+    "Explain type errors in more detail.")
   val feature = BooleanSetting(
     "-feature",
     "Emit warning and location for usages of features that should be imported explicitly.")

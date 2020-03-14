@@ -112,10 +112,11 @@ class DataMap(
     * @return Return the property value of type T
     */
   def get[T](name: String, clazz: java.lang.Class[T]): T = {
-    val manifest = new Manifest[T] {
-      override def erasure: Class[_] = clazz
-      override def runtimeClass: Class[_] = clazz
-    }
+    val manifest =
+      new Manifest[T] {
+        override def erasure: Class[_] = clazz
+        override def runtimeClass: Class[_] = clazz
+      }
 
     fields.get(name) match {
       case None        => null.asInstanceOf[T]

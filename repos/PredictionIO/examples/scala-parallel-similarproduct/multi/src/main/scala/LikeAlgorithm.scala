@@ -41,13 +41,14 @@ class LikeAlgorithm(ap: ALSAlgorithmParams) extends ALSAlgorithm(ap) {
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
 
     // collect Item as Map and convert ID to Int index
-    val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
-      .collectAsMap
-      .toMap
+    val items: Map[Int, Item] =
+      data.items
+        .map {
+          case (id, item) =>
+            (itemStringIntMap(id), item)
+        }
+        .collectAsMap
+        .toMap
 
     val mllibRatings = data.likeEvents
       .map { r =>

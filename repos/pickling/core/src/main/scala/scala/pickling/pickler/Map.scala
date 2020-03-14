@@ -33,8 +33,7 @@ trait MapPicklers {
       pairTag: FastTypeTag[(K, V)],
       collTag: FastTypeTag[Map[K, V]],
       cbf: CanBuildFrom[Map[K, V], (K, V), Map[K, V]])
-      : Pickler[Map[K, V]] with Unpickler[Map[K, V]] =
-    MapPickler[K, V, Map]
+      : Pickler[Map[K, V]] with Unpickler[Map[K, V]] = MapPickler[K, V, Map]
 
   locally {
     val generator =

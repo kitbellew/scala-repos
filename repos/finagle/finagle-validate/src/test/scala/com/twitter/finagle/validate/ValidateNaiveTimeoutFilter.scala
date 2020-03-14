@@ -15,8 +15,9 @@ import scala.collection.mutable.ArrayBuffer
 class ValidateNaiveTimeoutFilter extends FunSuite {
   def getRealData(n: Int): Iterator[Long] = {
     val cl: ClassLoader = getClass().getClassLoader();
-    val input: InputStreamReader = new InputStreamReader(
-      cl.getResourceAsStream("resources/real_latencies.data"));
+    val input: InputStreamReader =
+      new InputStreamReader(
+        cl.getResourceAsStream("resources/real_latencies.data"));
 
     val reader: BufferedReader = new BufferedReader(input);
 

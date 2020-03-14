@@ -91,8 +91,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     *  - or nested classfile annotations
     */
   sealed abstract class ClassfileAnnotArg extends Product with JavaArgumentApi
-  implicit val JavaArgumentTag =
-    ClassTag[ClassfileAnnotArg](classOf[ClassfileAnnotArg])
+  implicit val JavaArgumentTag = ClassTag[ClassfileAnnotArg](
+    classOf[ClassfileAnnotArg])
   case object UnmappableAnnotArg extends ClassfileAnnotArg
 
   /** Represents a compile-time Constant (`Boolean`, `Byte`, `Short`,
@@ -129,16 +129,16 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
   type JavaArgument = ClassfileAnnotArg
   type LiteralArgument = LiteralAnnotArg
   val LiteralArgument = LiteralAnnotArg
-  implicit val LiteralArgumentTag =
-    ClassTag[LiteralAnnotArg](classOf[LiteralAnnotArg])
+  implicit val LiteralArgumentTag = ClassTag[LiteralAnnotArg](
+    classOf[LiteralAnnotArg])
   type ArrayArgument = ArrayAnnotArg
   val ArrayArgument = ArrayAnnotArg
-  implicit val ArrayArgumentTag =
-    ClassTag[ArrayAnnotArg](classOf[ArrayAnnotArg])
+  implicit val ArrayArgumentTag = ClassTag[ArrayAnnotArg](
+    classOf[ArrayAnnotArg])
   type NestedArgument = NestedAnnotArg
   val NestedArgument = NestedAnnotArg
-  implicit val NestedArgumentTag =
-    ClassTag[NestedAnnotArg](classOf[NestedAnnotArg])
+  implicit val NestedArgumentTag = ClassTag[NestedAnnotArg](
+    classOf[NestedAnnotArg])
 
   /** A specific annotation argument that encodes an array of bytes as an
     *  array of `Long`. The type of the argument declared in the annotation
@@ -195,11 +195,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
   }
 
   object AnnotationInfo {
-    def marker(atp: Type): AnnotationInfo =
-      apply(atp, Nil, Nil)
+    def marker(atp: Type): AnnotationInfo = apply(atp, Nil, Nil)
 
-    def lazily(lazyInfo: => AnnotationInfo) =
-      new LazyAnnotationInfo(lazyInfo)
+    def lazily(lazyInfo: => AnnotationInfo) = new LazyAnnotationInfo(lazyInfo)
 
     def apply(
         atp: Type,

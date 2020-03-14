@@ -69,8 +69,7 @@ object Recovery {
     * Java API
     * @see [[Recovery]]
     */
-  def create(toSequenceNr: Long) =
-    Recovery(toSequenceNr = toSequenceNr)
+  def create(toSequenceNr: Long) = Recovery(toSequenceNr = toSequenceNr)
 
   /**
     * Java API
@@ -93,8 +92,7 @@ object Recovery {
   def create(
       fromSnapshot: SnapshotSelectionCriteria,
       toSequenceNr: Long,
-      replayMax: Long) =
-    Recovery(fromSnapshot, toSequenceNr, replayMax)
+      replayMax: Long) = Recovery(fromSnapshot, toSequenceNr, replayMax)
 
   /**
     * Convenience method for skipping recovery in [[PersistentActor]].

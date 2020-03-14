@@ -152,8 +152,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
       // Setup unique distinct aggregate children.
       val distinctAggChildren = distinctAggGroups.keySet.flatten.toSeq.distinct
-      val distinctAggChildAttrMap =
-        distinctAggChildren.map(expressionAttributePair)
+      val distinctAggChildAttrMap = distinctAggChildren.map(
+        expressionAttributePair)
       val distinctAggChildAttrs = distinctAggChildAttrMap.map(_._2)
 
       // Setup expand & aggregate operators for distinct aggregate expressions.
@@ -171,9 +171,10 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
           // Final aggregate
           val operators = expressions.map { e =>
             val af = e.aggregateFunction
-            val naf = patchAggregateFunctionChildren(af) { x =>
-              evalWithinGroup(id, distinctAggChildAttrLookup(x))
-            }
+            val naf =
+              patchAggregateFunctionChildren(af) { x =>
+                evalWithinGroup(id, distinctAggChildAttrLookup(x))
+              }
             (e, e.copy(aggregateFunction = naf, isDistinct = false))
           }
 
@@ -184,16 +185,17 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       val regularAggExprs = aggExpressions.filter(!_.isDistinct)
       val regularAggChildren =
         regularAggExprs.flatMap(_.aggregateFunction.children).distinct
-      val regularAggChildAttrMap =
-        regularAggChildren.map(expressionAttributePair)
+      val regularAggChildAttrMap = regularAggChildren.map(
+        expressionAttributePair)
 
       // Setup aggregates for 'regular' aggregate expressions.
       val regularGroupId = Literal(0)
       val regularAggChildAttrLookup = regularAggChildAttrMap.toMap
       val regularAggOperatorMap = regularAggExprs.map { e =>
         // Perform the actual aggregation in the initial aggregate.
-        val af = patchAggregateFunctionChildren(e.aggregateFunction)(
-          regularAggChildAttrLookup)
+        val af =
+          patchAggregateFunctionChildren(e.aggregateFunction)(
+            regularAggChildAttrLookup)
         val operator = Alias(e.copy(aggregateFunction = af), e.sql)()
 
         // Select the result of the first aggregate in the last aggregate.
@@ -206,10 +208,11 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
         // Some aggregate functions (COUNT) have the special property that they can return a
         // non-null result without any input. We need to make sure we return a result in this case.
-        val resultWithDefault = af.defaultResult match {
-          case Some(lit) => Coalesce(Seq(result, lit))
-          case None      => result
-        }
+        val resultWithDefault =
+          af.defaultResult match {
+            case Some(lit) => Coalesce(Seq(result, lit))
+            case None      => result
+          }
 
         // Return a Tuple3 containing:
         // i. The original aggregate expression (used for look ups).
@@ -219,15 +222,16 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       }
 
       // Construct the regular aggregate input projection only if we need one.
-      val regularAggProjection = if (regularAggExprs.nonEmpty) {
-        Seq(
-          a.groupingExpressions ++
-            distinctAggChildren.map(nullify) ++
-            Seq(regularGroupId) ++
-            regularAggChildren)
-      } else {
-        Seq.empty[Seq[Expression]]
-      }
+      val regularAggProjection =
+        if (regularAggExprs.nonEmpty) {
+          Seq(
+            a.groupingExpressions ++
+              distinctAggChildren.map(nullify) ++
+              Seq(regularGroupId) ++
+              regularAggChildren)
+        } else {
+          Seq.empty[Seq[Expression]]
+        }
 
       // Construct the distinct aggregate input projections.
       val regularAggNulls = regularAggChildren.map(nullify)

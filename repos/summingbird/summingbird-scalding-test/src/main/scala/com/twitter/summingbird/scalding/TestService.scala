@@ -72,14 +72,15 @@ class TestService[K, V](
               (
                 batch: BatchID,
                 writes: Iterable[(Timestamp, (K, Option[V]))])) =>
-          val thisBatch = writes.foldLeft(
-            map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
-            case (innerMap, (time, (k, v))) =>
-              v match {
-                case None    => innerMap - k
-                case Some(v) => innerMap + (k -> (time -> v))
-              }
-          }
+          val thisBatch =
+            writes.foldLeft(
+              map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
+              case (innerMap, (time, (k, v))) =>
+                v match {
+                  case None    => innerMap - k
+                  case Some(v) => innerMap + (k -> (time -> v))
+                }
+            }
           map + (batch -> thisBatch)
       }
       .mapValues { innerMap =>

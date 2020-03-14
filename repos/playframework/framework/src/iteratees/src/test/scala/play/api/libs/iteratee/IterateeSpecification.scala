@@ -19,9 +19,10 @@ trait IterateeSpecification {
   def ready[A](f: Future[A]): Future[A] = Await.ready(f, waitTime)
 
   def mustTransformTo[E, A](in: E*)(out: A*)(e: Enumeratee[E, A]) = {
-    val f = Future(Enumerator(in: _*) |>>> e &>> Iteratee.getChunks[A])(
-      Execution.defaultExecutionContext)
-      .flatMap[List[A]](x => x)(Execution.defaultExecutionContext)
+    val f =
+      Future(Enumerator(in: _*) |>>> e &>> Iteratee.getChunks[A])(
+        Execution.defaultExecutionContext)
+        .flatMap[List[A]](x => x)(Execution.defaultExecutionContext)
     Await.result(f, Duration.Inf) must equalTo(List(out: _*))
   }
 

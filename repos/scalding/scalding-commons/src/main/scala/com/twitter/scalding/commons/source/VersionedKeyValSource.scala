@@ -115,8 +115,8 @@ class VersionedKeyValSource[K, V](
       VersionedKeyValSource.defaultVersionsToKeep)(codec)
 
   def getTap(mode: TapMode) = {
-    val tap =
-      new VersionedTap(path, hdfsScheme, mode).setVersionsToKeep(versionsToKeep)
+    val tap = new VersionedTap(path, hdfsScheme, mode)
+      .setVersionsToKeep(versionsToKeep)
     (sourceVersion, sinkVersion) match {
       case (Some(v), _) if mode == TapMode.SOURCE =>
         tap.setVersion(v)
@@ -269,8 +269,7 @@ class VersionedKeyValSource[K, V](
 object RichPipeEx extends java.io.Serializable {
   implicit def pipeToRichPipeEx(pipe: Pipe): RichPipeEx = new RichPipeEx(pipe)
   implicit def typedPipeToRichPipeEx[K: Ordering, V: Monoid](
-      pipe: TypedPipe[(K, V)]) =
-    new TypedRichPipeEx(pipe)
+      pipe: TypedPipe[(K, V)]) = new TypedRichPipeEx(pipe)
   implicit def keyedListLikeToRichPipeEx[
       K: Ordering,
       V: Monoid,

@@ -190,24 +190,25 @@ trait MessageDispatcher {
     }
   }
 
-  private val shutdownAction = new Runnable {
-    def run =
-      guard withGuard {
-        shutdownSchedule match {
-          case RESCHEDULED =>
-            shutdownSchedule = SCHEDULED
-            Scheduler.scheduleOnce(this, timeoutMs, TimeUnit.MILLISECONDS)
-          case SCHEDULED =>
-            if (uuids.isEmpty && futures.get == 0) {
-              active switchOff {
-                shutdown // shut down in the dispatcher's references is zero
+  private val shutdownAction =
+    new Runnable {
+      def run =
+        guard withGuard {
+          shutdownSchedule match {
+            case RESCHEDULED =>
+              shutdownSchedule = SCHEDULED
+              Scheduler.scheduleOnce(this, timeoutMs, TimeUnit.MILLISECONDS)
+            case SCHEDULED =>
+              if (uuids.isEmpty && futures.get == 0) {
+                active switchOff {
+                  shutdown // shut down in the dispatcher's references is zero
+                }
               }
-            }
-            shutdownSchedule = UNSCHEDULED
-          case UNSCHEDULED => //Do nothing
+              shutdownSchedule = UNSCHEDULED
+            case UNSCHEDULED => //Do nothing
+          }
         }
-      }
-  }
+    }
 
   /**
     * When the dispatcher no longer has any actors registered, how long will it wait until it shuts itself down, in Ms
@@ -265,8 +266,9 @@ abstract class MessageDispatcherConfigurator {
   def configure(config: Configuration): MessageDispatcher
 
   def mailboxType(config: Configuration): MailboxType = {
-    val capacity =
-      config.getInt("mailbox-capacity", Dispatchers.MAILBOX_CAPACITY)
+    val capacity = config.getInt(
+      "mailbox-capacity",
+      Dispatchers.MAILBOX_CAPACITY)
     if (capacity < 1)
       UnboundedMailbox()
     else

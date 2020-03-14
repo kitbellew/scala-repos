@@ -32,9 +32,10 @@ object test {
     }
 
     val i: I {
-      type X = G {
-        type Ig = P
-      }
+      type X =
+        G {
+          type Ig = P
+        }
     } = null;
 
     // Values with types P and i.X as seen from instances of M
@@ -46,20 +47,23 @@ object test {
 
   abstract class N() extends M() {
     type Q;
-    type P = F {
-      type If = Q
-    };
+    type P =
+      F {
+        type If = Q
+      };
     val j: J {
-      type Y = G {
-        type Ig = Q
-      }
+      type Y =
+        G {
+          type Ig = Q
+        }
     } = null;
 
     abstract class J() extends I() {
       type Y;
-      type X = G {
-        type Ig = Y;
-      };
+      type X =
+        G {
+          type Ig = Y;
+        };
       // Values with types Y and X as seen from instances of J
       def val_jy: Y = val_jy;
       def val_jx: G {
@@ -77,9 +81,10 @@ object test {
       type If = Q
     } = f[Q](val_nq);
     def val_nix: G {
-      type Ig = F {
-        type If = Q
-      }
+      type Ig =
+        F {
+          type If = Q
+        }
     } =
       g[F {
         type If = Q
@@ -88,9 +93,10 @@ object test {
       type Ig = Q;
     } = g[Q](val_nq);
     def val_njx: G {
-      type Ig = G {
-        type Ig = Q
-      }
+      type Ig =
+        G {
+          type Ig = Q
+        }
     } =
       g[G {
         type Ig = Q;

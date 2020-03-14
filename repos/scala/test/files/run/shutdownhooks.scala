@@ -5,24 +5,26 @@ object Test {
   }
 
   def daemon() = {
-    val t = new Thread {
-      override def run() {
-        Thread.sleep(10000)
-        println("Hallelujah!") // should not see this
+    val t =
+      new Thread {
+        override def run() {
+          Thread.sleep(10000)
+          println("Hallelujah!") // should not see this
+        }
       }
-    }
     t.setDaemon(true)
     t.start()
     t
   }
 
   def nonDaemon() = {
-    val t = new Thread {
-      override def run() {
-        Thread.sleep(100)
-        println("Fooblitzky!")
+    val t =
+      new Thread {
+        override def run() {
+          Thread.sleep(100)
+          println("Fooblitzky!")
+        }
       }
-    }
     t.start()
     t
   }

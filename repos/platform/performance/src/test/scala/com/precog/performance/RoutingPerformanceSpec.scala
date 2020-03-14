@@ -53,8 +53,9 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
 
       val batchSize = 100
 
-      val sampler =
-        DistributedSampleSet(0, sampler = AdSamples.adCampaignSample)
+      val sampler = DistributedSampleSet(
+        0,
+        sampler = AdSamples.adCampaignSample)
 
       val samples = 0.until(batchSize) map { _ =>
         sampler.next._1
@@ -68,33 +69,34 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
         EventMessage(0, seq.getAndIncrement, event)
       }
 
-      val metadataActor: ActorRef =
-        system.actorOf(Props(new MockMetadataActor()), "mock_metadata_actor")
+      val metadataActor: ActorRef = system.actorOf(
+        Props(new MockMetadataActor()),
+        "mock_metadata_actor")
 
-      val projectionActor: ActorRef =
-        system.actorOf(Props(new MockProjectionActor), "mock_projection_actor")
+      val projectionActor: ActorRef = system.actorOf(
+        Props(new MockProjectionActor),
+        "mock_projection_actor")
 
-      val projectionActors: ActorRef =
-        system.actorOf(
-          Props(new MockProjectionActors(projectionActor)),
-          "mock_projections_actor")
+      val projectionActors: ActorRef = system.actorOf(
+        Props(new MockProjectionActors(projectionActor)),
+        "mock_projections_actor")
 
       val routingTable: RoutingTable = new SingleColumnProjectionRoutingTable
 
-      val ingestActor: ActorRef =
-        system.actorOf(
-          Props(new MockIngestActor(inserts / batchSize, batch)),
-          "mock_shard_ingest")
+      val ingestActor: ActorRef = system.actorOf(
+        Props(new MockIngestActor(inserts / batchSize, batch)),
+        "mock_shard_ingest")
 
       val routingActor: ActorRef = {
         val routingTable = new SingleColumnProjectionRoutingTable
-        val eventStore = new EventStore(
-          routingTable,
-          projectionActors,
-          metadataActor,
-          Duration(60, "seconds"),
-          new Timeout(60000),
-          ExecutionContext.defaultExecutionContext(system))
+        val eventStore =
+          new EventStore(
+            routingTable,
+            projectionActors,
+            metadataActor,
+            Duration(60, "seconds"),
+            new Timeout(60000),
+            ExecutionContext.defaultExecutionContext(system))
         system.actorOf(
           Props(
             new BatchStoreActor(
@@ -120,8 +122,10 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
 
       try {
         println("routing actor performance")
-        val result =
-          Performance().benchmark(testIngest(), benchParams, benchParams)
+        val result = Performance().benchmark(
+          testIngest(),
+          benchParams,
+          benchParams)
         //perfUtil.uploadResults("routing actor", result)
         //val result = Performance().profile(testIngest())
 

@@ -164,8 +164,11 @@ class PipelineSuite
         stageIdx: Int,
         numStages: Int,
         expectedPrefix: String): Unit = {
-      val path =
-        SharedReadWrite.getStagePath(stageUid, stageIdx, numStages, stagesDir)
+      val path = SharedReadWrite.getStagePath(
+        stageUid,
+        stageIdx,
+        numStages,
+        stagesDir)
       val expected =
         new Path(stagesDir, expectedPrefix + "_" + stageUid).toString
       assert(path === expected)

@@ -52,13 +52,14 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
 
   protected[test] def lackConfigMapConstructor(clazz: PsiClass): Boolean = {
     val project = clazz.getProject
-    val constructors = clazz match {
-      case c: ScClass =>
-        c.secondaryConstructors
-          .filter(_.isConstructor)
-          .toList ::: c.constructor.toList
-      case _ => clazz.getConstructors.toList
-    }
+    val constructors =
+      clazz match {
+        case c: ScClass =>
+          c.secondaryConstructors
+            .filter(_.isConstructor)
+            .toList ::: c.constructor.toList
+        case _ => clazz.getConstructors.toList
+      }
     for (con <- constructors) {
       if (con.isConstructor && con.getParameterList.getParametersCount == 1) {
         con match {
@@ -67,18 +68,20 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
               val params = con.getParameterList.getParameters
               val firstParam = params(0)
               val psiManager = ScalaPsiManager.instance(project)
-              val mapPsiClass = psiManager
-                .getCachedClass(
-                  ProjectScope.getAllScope(project),
-                  "scala.collection.immutable.Map")
-                .orNull
+              val mapPsiClass =
+                psiManager
+                  .getCachedClass(
+                    ProjectScope.getAllScope(project),
+                    "scala.collection.immutable.Map")
+                  .orNull
               val mapClass = ScType.designator(mapPsiClass)
               val paramClass = ScType.create(firstParam.getType, project)
-              val conformanceType = paramClass match {
-                case parameterizedType: ScParameterizedType =>
-                  parameterizedType.designator
-                case _ => paramClass
-              }
+              val conformanceType =
+                paramClass match {
+                  case parameterizedType: ScParameterizedType =>
+                    parameterizedType.designator
+                  case _ => paramClass
+                }
               if (Conformance.conforms(mapClass, conformanceType))
                 return false
             }
@@ -91,12 +94,13 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
 
   override protected[test] def lackSuitableConstructor(
       clazz: PsiClass): Boolean = {
-    val hasConfigMapAnnotation = clazz match {
-      case classDef: ScTypeDefinition =>
-        val annotation = classDef.hasAnnotation(wrapWithAnnotationFqn)
-        annotation.isDefined
-      case _ => false
-    }
+    val hasConfigMapAnnotation =
+      clazz match {
+        case classDef: ScTypeDefinition =>
+          val annotation = classDef.hasAnnotation(wrapWithAnnotationFqn)
+          annotation.isDefined
+        case _ => false
+      }
     if (hasConfigMapAnnotation) {
       lackConfigMapConstructor(clazz)
     } else {

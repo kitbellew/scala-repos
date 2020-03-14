@@ -790,8 +790,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
         else
           Float.MaxValue
       try {
-        val value: Double =
-          java.lang.Double.valueOf(name.toString).doubleValue()
+        val value: Double = java.lang.Double
+          .valueOf(name.toString)
+          .doubleValue()
         if (value > limit)
           syntaxError("floating point number too large")
         if (negated)

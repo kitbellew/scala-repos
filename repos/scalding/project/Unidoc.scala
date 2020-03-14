@@ -12,8 +12,9 @@ object Unidoc {
   val unidocSources = TaskKey[Seq[File]]("unidoc-sources")
   val unidocAllClasspaths = TaskKey[Seq[Classpath]]("unidoc-all-classpaths")
   val unidocClasspath = TaskKey[Seq[File]]("unidoc-classpath")
-  val unidoc =
-    TaskKey[File]("unidoc", "Create unified scaladoc for all aggregates")
+  val unidoc = TaskKey[File](
+    "unidoc",
+    "Create unified scaladoc for all aggregates")
 
   lazy val settings = Seq(
     unidocDirectory <<= crossTarget / "unidoc",
@@ -59,8 +60,10 @@ object Unidoc {
       projectRef: ProjectRef,
       structure: Load.BuildStructure,
       exclude: Seq[String]): Seq[String] = {
-    val aggregate =
-      Project.getProject(projectRef, structure).toSeq.flatMap(_.aggregate)
+    val aggregate = Project
+      .getProject(projectRef, structure)
+      .toSeq
+      .flatMap(_.aggregate)
     aggregate flatMap { ref =>
       if (exclude contains ref.project)
         Seq.empty

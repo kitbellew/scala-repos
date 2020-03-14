@@ -91,8 +91,7 @@ package object util {
   }
   private[http] def installEventStreamLoggerFor[T](implicit
       ct: ClassTag[T],
-      system: ActorSystem): Unit =
-    installEventStreamLoggerFor(ct.runtimeClass)
+      system: ActorSystem): Unit = installEventStreamLoggerFor(ct.runtimeClass)
 
   private[http] implicit class AddFutureAwaitResult[T](future: Future[T]) {
 

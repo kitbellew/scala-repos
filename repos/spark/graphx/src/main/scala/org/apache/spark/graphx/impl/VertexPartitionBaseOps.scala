@@ -165,8 +165,10 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       val newValues = new Array[VD2](self.capacity)
       var i = newMask.nextSetBit(0)
       while (i >= 0) {
-        newValues(i) =
-          f(self.index.getValue(i), self.values(i), other.values(i))
+        newValues(i) = f(
+          self.index.getValue(i),
+          self.values(i),
+          other.values(i))
         i = newMask.nextSetBit(i + 1)
       }
       this.withValues(newValues).withMask(newMask)

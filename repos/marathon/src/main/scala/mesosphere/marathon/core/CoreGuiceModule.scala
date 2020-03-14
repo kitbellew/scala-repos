@@ -76,8 +76,7 @@ class CoreGuiceModule extends AbstractModule {
   def leadershipCoordinator(
       leadershipModule: LeadershipModule,
       makeSureToInitializeThisBeforeCreatingCoordinator: TaskStatusUpdateProcessor)
-      : LeadershipCoordinator =
-    leadershipModule.coordinator()
+      : LeadershipCoordinator = leadershipModule.coordinator()
 
   @Provides @Singleton
   def offerProcessor(coreModule: CoreModule): OfferProcessor =
@@ -187,9 +186,10 @@ class CoreGuiceModule extends AbstractModule {
       metrics: Metrics,
       config: MarathonConf,
       actorRefFactory: ActorRefFactory): CapConcurrentExecutions = {
-    val capMetrics = new CapConcurrentExecutionsMetrics(
-      metrics,
-      classOf[ThrottlingTaskStatusUpdateProcessor])
+    val capMetrics =
+      new CapConcurrentExecutionsMetrics(
+        metrics,
+        classOf[ThrottlingTaskStatusUpdateProcessor])
 
     CapConcurrentExecutions(
       capMetrics,

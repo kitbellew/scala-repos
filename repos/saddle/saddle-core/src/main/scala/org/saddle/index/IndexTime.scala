@@ -57,25 +57,26 @@ class IndexTime(
       t.getMillis
   private def il2it(l: Index[Long]) = new IndexTime(l, tzone)
 
-  @transient lazy private val _locator = new Locator[DateTime] {
-    lazy val _keys = times.uniques.map(l2t)
+  @transient lazy private val _locator =
+    new Locator[DateTime] {
+      lazy val _keys = times.uniques.map(l2t)
 
-    def contains(key: DateTime) = times.contains(t2l(key))
-    def get(key: DateTime) = times.getFirst(t2l(key))
+      def contains(key: DateTime) = times.contains(t2l(key))
+      def get(key: DateTime) = times.getFirst(t2l(key))
 
-    def count(key: DateTime) = times.count(t2l(key))
+      def count(key: DateTime) = times.count(t2l(key))
 
-    def keys() = _keys.toArray
-    def counts() = times.counts
+      def keys() = _keys.toArray
+      def counts() = times.counts
 
-    def size = _keys.length
+      def size = _keys.length
 
-    // these should not be accessible
-    def put(key: DateTime, value: Int) {
-      throw new IllegalAccessError()
+      // these should not be accessible
+      def put(key: DateTime, value: Int) {
+        throw new IllegalAccessError()
+      }
+      def inc(key: DateTime) = throw new IllegalAccessError()
     }
-    def inc(key: DateTime) = throw new IllegalAccessError()
-  }
 
   protected def locator = _locator
 

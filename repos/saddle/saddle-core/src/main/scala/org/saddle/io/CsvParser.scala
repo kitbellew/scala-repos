@@ -87,9 +87,10 @@ object CsvParser {
       locs = (0 until firstLine.length).toArray
 
     // set up buffers to store parsed data
-    val bufdata = for {
-      c <- locs
-    } yield Buffer[String](1024)
+    val bufdata =
+      for {
+        c <- locs
+      } yield Buffer[String](1024)
 
     // this seriously helps reduce memory footprint w/o major perf. impact
     val interner = new ObjectLinkedOpenHashSet[String]()

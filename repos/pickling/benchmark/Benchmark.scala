@@ -35,8 +35,7 @@ import scala.compat.Platform
   */
 trait Benchmark {
 
-  def show(arr: Array[Byte]): String =
-    arr.mkString("[", ",", "]")
+  def show(arr: Array[Byte]): String = arr.mkString("[", ",", "]")
 
   /** this method should be implemented by the concrete benchmark.
     *  This method is called by the benchmarking code for a number of times.

@@ -83,11 +83,12 @@ object ScalaProjectSettingsUtil {
         patternJBList: JListCompatibility.JListContainer) {
       if (pattern == null)
         return
-      val listModel = JListCompatibility.getDefaultListModel(
-        patternJBList.getList.getModel) match {
-        case null    => return
-        case default => default
-      }
+      val listModel =
+        JListCompatibility.getDefaultListModel(
+          patternJBList.getList.getModel) match {
+          case null    => return
+          case default => default
+        }
       val index: Int = -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
       if (index < 0)
         return
@@ -128,11 +129,12 @@ object ScalaProjectSettingsUtil {
         patternJBList: JListCompatibility.JListContainer) {
       if (pattern == null)
         return
-      val listModel = JListCompatibility.getDefaultListModel(
-        patternJBList.getList.getModel) match {
-        case null    => return
-        case default => default
-      }
+      val listModel =
+        JListCompatibility.getDefaultListModel(
+          patternJBList.getList.getModel) match {
+          case null    => return
+          case default => default
+        }
       val index = patternJBList.getList.getSelectedIndex
       JListCompatibility.add(listModel, index + 1, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
@@ -166,11 +168,12 @@ object ScalaProjectSettingsUtil {
       })
       .setRemoveAction(new AnActionButtonRunnable {
         override def run(t: AnActionButton): Unit = {
-          val listModel = JListCompatibility.getDefaultListModel(
-            patternJBList.getList.getModel) match {
-            case null    => return
-            case default => default
-          }
+          val listModel =
+            JListCompatibility.getDefaultListModel(
+              patternJBList.getList.getModel) match {
+              case null    => return
+              case default => default
+            }
           val index = patternJBList.getList.getSelectedIndex
           if (index != -1) {
             if (listModel.get(

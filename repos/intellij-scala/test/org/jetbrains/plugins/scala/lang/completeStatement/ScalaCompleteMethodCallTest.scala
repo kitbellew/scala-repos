@@ -7,16 +7,14 @@ package lang.completeStatement
   */
 class ScalaCompleteMethodCallTest extends ScalaCompleteStatementTestBase {
   def testMethodCall() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {}
         |
         |  method(<caret>
         |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {}
         |

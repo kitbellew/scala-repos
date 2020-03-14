@@ -18,33 +18,35 @@ final class Env(
 
   lazy val bus = lila.common.Bus(system)
 
-  lazy val preloader = new mashup.Preload(
-    tv = Env.tv.tv,
-    leaderboard = Env.user.cached.topWeek,
-    tourneyWinners = Env.tournament.winners.scheduled,
-    timelineEntries = Env.timeline.entryRepo.userEntries _,
-    dailyPuzzle = Env.puzzle.daily,
-    streamsOnAir = () => Env.tv.streamsOnAir.all,
-    countRounds = Env.round.count,
-    lobbyApi = Env.api.lobbyApi,
-    getPlayban = Env.playban.api.currentBan _,
-    lightUser = Env.user.lightUser)
+  lazy val preloader =
+    new mashup.Preload(
+      tv = Env.tv.tv,
+      leaderboard = Env.user.cached.topWeek,
+      tourneyWinners = Env.tournament.winners.scheduled,
+      timelineEntries = Env.timeline.entryRepo.userEntries _,
+      dailyPuzzle = Env.puzzle.daily,
+      streamsOnAir = () => Env.tv.streamsOnAir.all,
+      countRounds = Env.round.count,
+      lobbyApi = Env.api.lobbyApi,
+      getPlayban = Env.playban.api.currentBan _,
+      lightUser = Env.user.lightUser)
 
-  lazy val userInfo = mashup.UserInfo(
-    countUsers = () => Env.user.countEnabled,
-    bookmarkApi = Env.bookmark.api,
-    relationApi = Env.relation.api,
-    trophyApi = Env.user.trophyApi,
-    gameCached = Env.game.cached,
-    crosstableApi = Env.game.crosstableApi,
-    postApi = Env.forum.postApi,
-    getRatingChart = Env.history.ratingChartApi.apply,
-    getRanks = Env.user.cached.ranking.getAll,
-    isDonor = Env.donation.isDonor,
-    isHostingSimul = Env.simul.isHosting,
-    isStreamer = Env.tv.isStreamer.apply,
-    insightShare = Env.insight.share
-  ) _
+  lazy val userInfo =
+    mashup.UserInfo(
+      countUsers = () => Env.user.countEnabled,
+      bookmarkApi = Env.bookmark.api,
+      relationApi = Env.relation.api,
+      trophyApi = Env.user.trophyApi,
+      gameCached = Env.game.cached,
+      crosstableApi = Env.game.crosstableApi,
+      postApi = Env.forum.postApi,
+      getRatingChart = Env.history.ratingChartApi.apply,
+      getRanks = Env.user.cached.ranking.getAll,
+      isDonor = Env.donation.isDonor,
+      isHostingSimul = Env.simul.isHosting,
+      isStreamer = Env.tv.isStreamer.apply,
+      insightShare = Env.insight.share
+    ) _
 
   system.actorOf(Props(new actor.Renderer), name = RendererName)
 

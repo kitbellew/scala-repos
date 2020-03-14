@@ -158,9 +158,7 @@ class ParHashMap[K, V] private[collection] (
         yield checkBucket(i)
 
     // check if each element is in the position corresponding to its key
-    val elems =
-      for (i <- 0 until table.length)
-        yield checkEntry(i)
+    val elems = for (i <- 0 until table.length) yield checkEntry(i)
 
     buckets.flatMap(x => x) ++ elems.flatMap(x => x)
   }
@@ -172,10 +170,11 @@ class ParHashMap[K, V] private[collection] (
       else
         1 + count(e.next)
     val expected = sizemap(i)
-    val found = ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
-      .foldLeft(0) { (acc, c) =>
-        acc + count(table(c))
-      }
+    val found =
+      ((i * sizeMapBucketSize) until ((i + 1) * sizeMapBucketSize))
+        .foldLeft(0) { (acc, c) =>
+          acc + count(table(c))
+        }
     if (found != expected)
       List("Found " + found + " elements, while sizemap showed " + expected)
     else

@@ -234,8 +234,8 @@ abstract class SymbolLoaders {
 
     override def complete(root: Symbol) {
       try {
-        val start =
-          java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(System.nanoTime())
+        val start = java.util.concurrent.TimeUnit.NANOSECONDS
+          .toMillis(System.nanoTime())
         val currentphase = phase
         doComplete(root)
         phase = currentphase
@@ -381,9 +381,10 @@ abstract class SymbolLoaders {
        * due to issue described in SI-7585 type-checker cannot tie the knot here.
        *
        */
-      private type SymbolLoadersRefined = SymbolLoaders {
-        val symbolTable: classfileParser.symbolTable.type
-      }
+      private type SymbolLoadersRefined =
+        SymbolLoaders {
+          val symbolTable: classfileParser.symbolTable.type
+        }
 
       val loaders = SymbolLoaders.this.asInstanceOf[SymbolLoadersRefined]
 
@@ -453,6 +454,7 @@ abstract class SymbolLoaders {
 
 object SymbolLoadersStats {
   import scala.reflect.internal.TypesStats.typerNanos
-  val classReadNanos =
-    Statistics.newSubTimer("time classfilereading", typerNanos)
+  val classReadNanos = Statistics.newSubTimer(
+    "time classfilereading",
+    typerNanos)
 }

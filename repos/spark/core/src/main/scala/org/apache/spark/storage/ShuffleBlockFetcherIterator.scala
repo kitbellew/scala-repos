@@ -108,8 +108,9 @@ private[spark] final class ShuffleBlockFetcherIterator(
   /** Current number of requests in flight */
   private[this] var reqsInFlight = 0
 
-  private[this] val shuffleMetrics =
-    context.taskMetrics().registerTempShuffleReadMetrics()
+  private[this] val shuffleMetrics = context
+    .taskMetrics()
+    .registerTempShuffleReadMetrics()
 
   /**
     * Whether the iterator is still active. If isZombie is true, the callback interface will no
@@ -166,9 +167,10 @@ private[spark] final class ShuffleBlockFetcherIterator(
     reqsInFlight += 1
 
     // so we can look up the size of each blockID
-    val sizeMap = req.blocks.map {
-      case (blockId, size) => (blockId.toString, size)
-    }.toMap
+    val sizeMap =
+      req.blocks.map {
+        case (blockId, size) => (blockId.toString, size)
+      }.toMap
     val remainingBlocks = new HashSet[String]() ++= sizeMap.keys
     val blockIds = req.blocks.map(_._1.toString)
 

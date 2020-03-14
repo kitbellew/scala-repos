@@ -8,9 +8,10 @@ trait MonadListen[F[_], W] extends MonadTell[F, W] {
       case ((a, f), w) => writer(f(w), a)
     }
 
-  val monadListenSyntax = new scalaz.syntax.MonadListenSyntax[F, W] {
-    def F = MonadListen.this
-  }
+  val monadListenSyntax =
+    new scalaz.syntax.MonadListenSyntax[F, W] {
+      def F = MonadListen.this
+    }
 }
 
 object MonadListen {

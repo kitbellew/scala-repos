@@ -71,27 +71,28 @@ class ScalaGlobalMembersCompletionContributor
         val parent: PsiElement = position.getContext
         parent match {
           case ref: ScReferenceExpression =>
-            val qualifier = ref.qualifier match {
-              case Some(qual) => qual
-              case None =>
-                ref.getContext match {
-                  case inf: ScInfixExpr if inf.operation == ref =>
-                    inf.getBaseExpr
-                  case posf: ScPostfixExpr if posf.operation == ref =>
-                    posf.getBaseExpr
-                  case pref: ScPrefixExpr if pref.operation == ref =>
-                    pref.getBaseExpr
-                  case _ =>
-                    if (result.getPrefixMatcher.getPrefix == "")
+            val qualifier =
+              ref.qualifier match {
+                case Some(qual) => qual
+                case None =>
+                  ref.getContext match {
+                    case inf: ScInfixExpr if inf.operation == ref =>
+                      inf.getBaseExpr
+                    case posf: ScPostfixExpr if posf.operation == ref =>
+                      posf.getBaseExpr
+                    case pref: ScPrefixExpr if pref.operation == ref =>
+                      pref.getBaseExpr
+                    case _ =>
+                      if (result.getPrefixMatcher.getPrefix == "")
+                        return
+                      complete(
+                        ref,
+                        result,
+                        parameters.getOriginalFile,
+                        parameters.getInvocationCount)
                       return
-                    complete(
-                      ref,
-                      result,
-                      parameters.getOriginalFile,
-                      parameters.getInvocationCount)
-                    return
-                }
-            }
+                  }
+              }
             val typeWithoutImplicits = qualifier.getTypeWithoutImplicits()
             if (typeWithoutImplicits.isEmpty)
               return
@@ -153,10 +154,11 @@ class ScalaGlobalMembersCompletionContributor
       if (elem.getContainingFile == originalFile) {
         //complex logic to detect static methods in same file, which we shouldn't import
         val name = elem.name
-        val containingClass = ScalaPsiUtil.nameContext(elem) match {
-          case member: PsiMember => member.containingClass
-          case _                 => null
-        }
+        val containingClass =
+          ScalaPsiUtil.nameContext(elem) match {
+            case member: PsiMember => member.containingClass
+            case _                 => null
+          }
         if (containingClass == null)
           return false
         val qualName = containingClass.qualifiedName
@@ -226,14 +228,15 @@ class ScalaGlobalMembersCompletionContributor
         for (elem <- c.candidates) {
           val shouldImport = !elemsSetContains(elem.getElement)
           //todo: overloads?
-          val lookup: ScalaLookupItem = LookupElementManager
-            .getLookupElement(
-              elem,
-              isClassName = true,
-              isOverloadedForClassName = false,
-              shouldImport = shouldImport,
-              isInStableCodeReference = false)
-            .head
+          val lookup: ScalaLookupItem =
+            LookupElementManager
+              .getLookupElement(
+                elem,
+                isClassName = true,
+                isOverloadedForClassName = false,
+                shouldImport = shouldImport,
+                isInStableCodeReference = false)
+              .head
           lookup.usedImportStaticQuickfix = true
           lookup.elementToImport = next.resolveResult.getElement
           result.addElement(lookup)
@@ -257,9 +260,8 @@ class ScalaGlobalMembersCompletionContributor
     def showHint(shouldImport: Boolean) {
       if (!hintShown && !shouldImport && CompletionService.getCompletionService.getAdvertisementText == null) {
         val actionId = IdeActions.ACTION_SHOW_INTENTION_ACTIONS
-        val shortcut: String =
-          KeymapUtil.getFirstKeyboardShortcutText(
-            ActionManager.getInstance.getAction(actionId))
+        val shortcut: String = KeymapUtil.getFirstKeyboardShortcutText(
+          ActionManager.getInstance.getAction(actionId))
         if (shortcut != null) {
           result.addLookupAdvertisement(
             s"To import a method statically, press $shortcut")
@@ -277,10 +279,11 @@ class ScalaGlobalMembersCompletionContributor
       if (elem.getContainingFile == originalFile) {
         //complex logic to detect static methods in same file, which we shouldn't import
         val name = elem.name
-        val containingClass = ScalaPsiUtil.nameContext(elem) match {
-          case member: PsiMember => member.containingClass
-          case _                 => null
-        }
+        val containingClass =
+          ScalaPsiUtil.nameContext(elem) match {
+            case member: PsiMember => member.containingClass
+            case _                 => null
+          }
         if (containingClass == null)
           return false
         val qualName = containingClass.qualifiedName
@@ -355,12 +358,13 @@ class ScalaGlobalMembersCompletionContributor
                 val shouldImport = !elemsSetContains(method)
                 showHint(shouldImport)
 
-                val overloads = containingClass match {
-                  case o: ScObject => o.functionsByName(methodName)
-                  case _ =>
-                    containingClass.getAllMethods.toSeq.filter(m =>
-                      m.name == methodName)
-                }
+                val overloads =
+                  containingClass match {
+                    case o: ScObject => o.functionsByName(methodName)
+                    case _ =>
+                      containingClass.getAllMethods.toSeq.filter(m =>
+                        m.name == methodName)
+                  }
                 if (overloads.size == 1) {
                   result.addElement(
                     createLookupElement(method, containingClass, shouldImport))
@@ -406,26 +410,29 @@ class ScalaGlobalMembersCompletionContributor
       }
     }
 
-    val scalaFieldsIterator = ScalaShortNamesCacheManager
-      .getInstance(ref.getProject)
-      .getAllScalaFieldNames
-      .iterator
+    val scalaFieldsIterator =
+      ScalaShortNamesCacheManager
+        .getInstance(ref.getProject)
+        .getAllScalaFieldNames
+        .iterator
 
     while (scalaFieldsIterator.hasNext) {
       val fieldName = scalaFieldsIterator.next()
       if (matcher.prefixMatches(fieldName)) {
-        val fieldsIterator = ScalaShortNamesCacheManager
-          .getInstance(ref.getProject)
-          .getScalaFieldsByName(fieldName, scope)
-          .iterator
+        val fieldsIterator =
+          ScalaShortNamesCacheManager
+            .getInstance(ref.getProject)
+            .getScalaFieldsByName(fieldName, scope)
+            .iterator
         while (fieldsIterator.hasNext) {
           val field = fieldsIterator.next()
-          val namedElement = field match {
-            case v: ScValue =>
-              v.declaredElements.find(_.name == fieldName).orNull
-            case v: ScVariable =>
-              v.declaredElements.find(_.name == fieldName).orNull
-          }
+          val namedElement =
+            field match {
+              case v: ScValue =>
+                v.declaredElements.find(_.name == fieldName).orNull
+              case v: ScVariable =>
+                v.declaredElements.find(_.name == fieldName).orNull
+            }
           if (field.containingClass != null) {
             val inheritors = ClassInheritorsSearch
               .search(field.containingClass, scope, true)

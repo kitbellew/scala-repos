@@ -35,9 +35,10 @@ import scalafx.scene.control.{ComboBox, Label}
 import scalafx.scene.layout.VBox
 
 object TextBinding extends JFXApp {
-  var comboBox = new ComboBox() {
-    editable = false
-  }
+  var comboBox =
+    new ComboBox() {
+      editable = false
+    }
   stage = new PrimaryStage {
     width = 800
     height = 600

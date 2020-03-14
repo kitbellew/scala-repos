@@ -503,8 +503,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     BitLevel.flipBit(this, n)
   }
 
-  override def floatValue(): Float =
-    java.lang.Float.parseFloat(this.toString)
+  override def floatValue(): Float = java.lang.Float.parseFloat(this.toString)
 
   def gcd(bi: BigInteger): BigInteger = {
     val val1 = this.abs()
@@ -700,8 +699,10 @@ class BigInteger extends Number with Comparable[BigInteger] {
       val resLength = divisorLen
       var resDigits = new Array[Int](resLength)
       if (resLength == 1) {
-        resDigits(0) =
-          Division.remainderArrayByInt(digits, thisLen, divisor.digits(0))
+        resDigits(0) = Division.remainderArrayByInt(
+          digits,
+          thisLen,
+          divisor.digits(0))
       } else {
         val qLen = thisLen - divisorLen + 1
         resDigits = Division.divide(
@@ -840,11 +841,9 @@ class BigInteger extends Number with Comparable[BigInteger] {
     bytes
   }
 
-  override def toString(): String =
-    Conversion.toDecimalScaledString(this)
+  override def toString(): String = Conversion.toDecimalScaledString(this)
 
-  def toString(radix: Int): String =
-    Conversion.bigInteger2String(this, radix)
+  def toString(radix: Int): String = Conversion.bigInteger2String(this, radix)
 
   def xor(bi: BigInteger): BigInteger = Logical.xor(this, bi)
 
@@ -894,8 +893,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
   }
 
   /** Tests if {@code this.abs()} is equals to {@code ONE}. */
-  private[math] def isOne(): Boolean =
-    numberLength == 1 && digits(0) == 1
+  private[math] def isOne(): Boolean = numberLength == 1 && digits(0) == 1
 
   private[math] def shiftLeftOneBit(): BigInteger = {
     if (sign == 0)
@@ -1041,8 +1039,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
     var newDigit: Int = 0
     var substrStart = startChar
     while (substrStart < endChar) {
-      val bigRadixDigit =
-        java.lang.Integer.parseInt(s.substring(substrStart, substrEnd), radix)
+      val bigRadixDigit = java.lang.Integer
+        .parseInt(s.substring(substrStart, substrEnd), radix)
       newDigit = Multiplication.multiplyByInt(_digits, digitIndex, bigRadix)
       newDigit += Elementary.inplaceAdd(_digits, digitIndex, bigRadixDigit)
       _digits(digitIndex) = newDigit

@@ -26,8 +26,9 @@ object IvyConsole {
   final val Name = "ivy-console"
   lazy val command =
     Command.command(Name) { state =>
-      val Dependencies(managed, repos, unmanaged) =
-        parseDependencies(state.remainingCommands, state.log)
+      val Dependencies(managed, repos, unmanaged) = parseDependencies(
+        state.remainingCommands,
+        state.log)
       val base = new File(CommandUtil.bootDirectory(state), Name)
       IO.createDirectory(base)
 

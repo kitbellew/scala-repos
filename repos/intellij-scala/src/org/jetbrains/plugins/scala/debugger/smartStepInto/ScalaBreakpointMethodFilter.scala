@@ -40,10 +40,11 @@ class ScalaBreakpointMethodFilter(
       process: DebugProcessImpl,
       location: Location): Boolean = {
     def signatureMatches(method: Method): Boolean = {
-      val expSign = expectedSignature match {
-        case None          => return true
-        case Some(jvmSign) => jvmSign.getName(process)
-      }
+      val expSign =
+        expectedSignature match {
+          case None          => return true
+          case Some(jvmSign) => jvmSign.getName(process)
+        }
       if (expSign == method.signature)
         return true
       val sameNameMethods =

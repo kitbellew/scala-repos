@@ -61,77 +61,82 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
     def isAncestorOfElement(ancestor: PsiElement) =
       PsiTreeUtil.isContextAncestor(ancestor, element, false)
 
-    val expr: Option[ScExpression] = containing match {
-      case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
-        Some(e)
-      case ifStmt: ScIfStmt =>
-        ifStmt.thenBranch
-          .filter(isAncestorOfElement)
-          .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
-      case funDef: ScFunctionDefinition if !funDef.hasUnitResultType =>
-        funDef.body.filter(isAncestorOfElement)
-      case tryBlock: ScTryBlock if tryBlock.hasRBrace =>
-        // special handling for try block, which itself is parent to the (optional) pair of braces.
-        val lBrace =
-          tryBlock.getNode.getChildren(TokenSet.create(ScalaTokenTypes.tLBRACE))
-        val rBrace =
-          tryBlock.getNode.getChildren(TokenSet.create(ScalaTokenTypes.tRBRACE))
-        (lBrace, rBrace) match {
-          case (Array(lBraceNode), Array(rBraceNode))
-              if tryBlock.statements.length == 1 =>
-            val action = () => {
-              Seq(lBraceNode, rBraceNode).foreach(tryBlock.getNode.removeChild)
-              CodeEditUtil.markToReformat(tryBlock.getParent.getNode, true)
-              // TODO clean up excess newlines.
-            }
-            return Some(action)
-          case _ => None
-        }
-      case finallyBlock: ScFinallyBlock =>
-        finallyBlock.expression.filter(isAncestorOfElement)
-      case whileStmt: ScWhileStmt =>
-        whileStmt.body.filter(isAncestorOfElement)
-      case doStmt: ScDoStmt =>
-        doStmt.getExprBody.filter(isAncestorOfElement)
-      case caseClause: ScCaseClause =>
-        caseClause.expr match {
-          case Some(x: ScBlockExpr) if isAncestorOfElement(x) =>
-            // special handling for case clauses, which never _need_ braces.
-            val action = () => {
-              val Regex = """(?ms)\{(.+)\}""".r
-              x.getText match {
-                case Regex(code) =>
-                  val replacement = ScalaPsiElementFactory
-                    .createBlockExpressionWithoutBracesFromText(
-                      code,
-                      element.getManager)
-                  CodeEditUtil.replaceChild(
-                    x.getParent.getNode,
-                    x.getNode,
-                    replacement.getNode)
-                  CodeEditUtil.markToReformat(caseClause.getNode, true)
-                case _ =>
-                  ()
-              }
-            }
-            return Some(action)
-          case _ =>
-            None
-        }
-      case _ => None
-    }
+    val expr: Option[ScExpression] =
+      containing match {
+        case pattern @ ScPatternDefinition.expr(e) if isAncestorOfElement(e) =>
+          Some(e)
+        case ifStmt: ScIfStmt =>
+          ifStmt.thenBranch
+            .filter(isAncestorOfElement)
+            .orElse(ifStmt.elseBranch.filter(isAncestorOfElement))
+        case funDef: ScFunctionDefinition if !funDef.hasUnitResultType =>
+          funDef.body.filter(isAncestorOfElement)
+        case tryBlock: ScTryBlock if tryBlock.hasRBrace =>
+          // special handling for try block, which itself is parent to the (optional) pair of braces.
+          val lBrace = tryBlock.getNode.getChildren(
+            TokenSet.create(ScalaTokenTypes.tLBRACE))
+          val rBrace = tryBlock.getNode.getChildren(
+            TokenSet.create(ScalaTokenTypes.tRBRACE))
+          (lBrace, rBrace) match {
+            case (Array(lBraceNode), Array(rBraceNode))
+                if tryBlock.statements.length == 1 =>
+              val action =
+                () => {
+                  Seq(lBraceNode, rBraceNode).foreach(
+                    tryBlock.getNode.removeChild)
+                  CodeEditUtil.markToReformat(tryBlock.getParent.getNode, true)
+                  // TODO clean up excess newlines.
+                }
+              return Some(action)
+            case _ => None
+          }
+        case finallyBlock: ScFinallyBlock =>
+          finallyBlock.expression.filter(isAncestorOfElement)
+        case whileStmt: ScWhileStmt =>
+          whileStmt.body.filter(isAncestorOfElement)
+        case doStmt: ScDoStmt =>
+          doStmt.getExprBody.filter(isAncestorOfElement)
+        case caseClause: ScCaseClause =>
+          caseClause.expr match {
+            case Some(x: ScBlockExpr) if isAncestorOfElement(x) =>
+              // special handling for case clauses, which never _need_ braces.
+              val action =
+                () => {
+                  val Regex = """(?ms)\{(.+)\}""".r
+                  x.getText match {
+                    case Regex(code) =>
+                      val replacement = ScalaPsiElementFactory
+                        .createBlockExpressionWithoutBracesFromText(
+                          code,
+                          element.getManager)
+                      CodeEditUtil.replaceChild(
+                        x.getParent.getNode,
+                        x.getNode,
+                        replacement.getNode)
+                      CodeEditUtil.markToReformat(caseClause.getNode, true)
+                    case _ =>
+                      ()
+                  }
+                }
+              return Some(action)
+            case _ =>
+              None
+          }
+        case _ => None
+      }
 
     // Everything other than case clauses is treated uniformly.
 
     // Is the expression a block containing a single expression?
     val oneLinerBlock
-        : Option[(ScBlockExpr, ScExpression, CommentsAroundElement)] =
-      expr.flatMap {
+        : Option[(ScBlockExpr, ScExpression, CommentsAroundElement)] = expr
+      .flatMap {
         case blk: ScBlockExpr =>
           blk.statements match {
             case Seq(x: ScExpression) =>
-              val comments =
-                IntentionUtil.collectComments(x, onElementLine = true)
+              val comments = IntentionUtil.collectComments(
+                x,
+                onElementLine = true)
               if (!IntentionUtil.hasOtherComments(blk, comments))
                 Some((blk, x, comments))
               else

@@ -35,10 +35,11 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
   private def isSynthetic(
       location: Location,
       debugProcess: DebugProcess): Boolean = {
-    val positionManager = ScalaPositionManager.instance(debugProcess) match {
-      case Some(m) => m
-      case None    => return true
-    }
+    val positionManager =
+      ScalaPositionManager.instance(debugProcess) match {
+        case Some(m) => m
+        case None    => return true
+      }
 
     val method = location.method()
     val name = method.name()

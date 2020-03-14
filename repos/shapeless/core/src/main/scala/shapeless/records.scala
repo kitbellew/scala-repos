@@ -98,12 +98,14 @@ class RecordMacros(val c: whitebox.Context) {
   import internal.constantType
   import labelled.FieldType
 
-  val hconsValueTree = reify {
-    ::
-  }.tree
-  val hnilValueTree = reify {
-    HNil: HNil
-  }.tree
+  val hconsValueTree =
+    reify {
+      ::
+    }.tree
+  val hnilValueTree =
+    reify {
+      HNil: HNil
+    }.tree
   val fieldTypeTpe = typeOf[FieldType[_, _]].typeConstructor
   val SymTpe = typeOf[scala.Symbol]
   val atatTpe = typeOf[tag.@@[_, _]].typeConstructor

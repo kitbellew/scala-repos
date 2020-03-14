@@ -22,9 +22,7 @@ trait PresentationCompilerRequestsWorkingMode extends TestResources {
   private def askAllSourcesAsync[T](marker: TestMarker)(
       askAt: Position => Response[T])(f: (Position, T) => Unit) {
     val positions = allPositionsOf(str = marker.marker)
-    val responses =
-      for (pos <- positions)
-        yield askAt(pos)
+    val responses = for (pos <- positions) yield askAt(pos)
 
     for ((pos, r) <- positions zip responses)
       withResponse(pos, r)(f)

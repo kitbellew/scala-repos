@@ -30,11 +30,12 @@ case class Person(name: String, age: Int)
 object SparkSqlExample {
 
   def main(args: Array[String]) {
-    val conf = sys.env.get("SPARK_AUDIT_MASTER") match {
-      case Some(master) =>
-        new SparkConf().setAppName("Simple Sql App").setMaster(master)
-      case None => new SparkConf().setAppName("Simple Sql App")
-    }
+    val conf =
+      sys.env.get("SPARK_AUDIT_MASTER") match {
+        case Some(master) =>
+          new SparkConf().setAppName("Simple Sql App").setMaster(master)
+        case None => new SparkConf().setAppName("Simple Sql App")
+      }
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 

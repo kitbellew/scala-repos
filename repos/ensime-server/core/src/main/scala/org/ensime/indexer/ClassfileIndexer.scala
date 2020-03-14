@@ -116,8 +116,8 @@ trait ClassfileIndexer {
                 case (_, None)                                            =>
                 case (Some(existing), Some(latest)) if existing <= latest =>
                 case _ =>
-                  clazz =
-                    clazz.copy(source = clazz.source.copy(line = firstLine))
+                  clazz = clazz
+                    .copy(source = clazz.source.copy(line = firstLine))
               }
 
             case name =>
@@ -150,16 +150,17 @@ trait ClassfileIndexer {
     }
     protected def addRef(seen: FullyQualifiedName): Unit = addRefs(seen :: Nil)
 
-    private val fieldVisitor = new FieldVisitor(ASM5) {
-      override def visitAnnotation(desc: String, visible: Boolean) =
-        handleAnn(desc)
-      override def visitTypeAnnotation(
-          typeRef: Int,
-          typePath: TypePath,
-          desc: String,
-          visible: Boolean
-      ) = handleAnn(desc)
-    }
+    private val fieldVisitor =
+      new FieldVisitor(ASM5) {
+        override def visitAnnotation(desc: String, visible: Boolean) =
+          handleAnn(desc)
+        override def visitTypeAnnotation(
+            typeRef: Int,
+            typePath: TypePath,
+            desc: String,
+            visible: Boolean
+        ) = handleAnn(desc)
+      }
 
     override def visitField(
         access: Int,
@@ -198,14 +199,16 @@ trait ClassfileIndexer {
       addRef(ClassName.fromInternal(owner))
     }
 
-    private val annVisitor: AnnotationVisitor = new AnnotationVisitor(ASM5) {
-      override def visitAnnotation(name: String, desc: String) = handleAnn(desc)
-      override def visitEnum(
-          name: String,
-          desc: String,
-          value: String
-      ): Unit = handleAnn(desc)
-    }
+    private val annVisitor: AnnotationVisitor =
+      new AnnotationVisitor(ASM5) {
+        override def visitAnnotation(name: String, desc: String) =
+          handleAnn(desc)
+        override def visitEnum(
+            name: String,
+            desc: String,
+            value: String
+        ): Unit = handleAnn(desc)
+      }
     private def handleAnn(desc: String): AnnotationVisitor = {
       addRef(ClassName.fromDescriptor(desc))
       annVisitor
@@ -280,11 +283,15 @@ trait ClassfileIndexer {
       internalRefs = internalRefs.enqueue(classesInDescriptor(bsm.getDesc))
     }
 
-    private val annVisitor: AnnotationVisitor = new AnnotationVisitor(ASM5) {
-      override def visitAnnotation(name: String, desc: String) = handleAnn(desc)
-      override def visitEnum(name: String, desc: String, value: String): Unit =
-        handleAnn(desc)
-    }
+    private val annVisitor: AnnotationVisitor =
+      new AnnotationVisitor(ASM5) {
+        override def visitAnnotation(name: String, desc: String) =
+          handleAnn(desc)
+        override def visitEnum(
+            name: String,
+            desc: String,
+            value: String): Unit = handleAnn(desc)
+      }
     private def handleAnn(desc: String): AnnotationVisitor = {
       internalRefs :+= ClassName.fromDescriptor(desc)
       annVisitor

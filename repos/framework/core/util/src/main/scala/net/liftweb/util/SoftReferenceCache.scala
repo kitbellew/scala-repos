@@ -52,11 +52,12 @@ object SoftReferenceCache {
   def initialize = {
     // A daemon thread is more approapriate here then an Actor as
     // we'll do blocking reads from the reference queue
-    val thread = new Thread(new Runnable() {
-      def run() {
-        processQueue
-      }
-    })
+    val thread =
+      new Thread(new Runnable() {
+        def run() {
+          processQueue
+        }
+      })
     thread.setDaemon(true)
     thread setContextClassLoader null
     thread.start
@@ -91,12 +92,13 @@ case object Done
   */
 class SoftReferenceCache[K, V](cacheSize: Int) {
 
-  val cache = new LinkedHashMap[K, SoftValue[K, V]]() {
-    override def removeEldestEntry(
-        eldest: Entry[K, SoftValue[K, V]]): Boolean = {
-      return size() > cacheSize;
+  val cache =
+    new LinkedHashMap[K, SoftValue[K, V]]() {
+      override def removeEldestEntry(
+          eldest: Entry[K, SoftValue[K, V]]): Boolean = {
+        return size() > cacheSize;
+      }
     }
-  }
 
   val rwl = new ReentrantReadWriteLock();
 

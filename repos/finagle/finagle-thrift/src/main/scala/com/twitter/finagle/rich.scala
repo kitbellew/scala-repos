@@ -14,30 +14,28 @@ import scala.reflect.ClassTag
 private[twitter] object ThriftUtil {
   private type BinaryService = Service[Array[Byte], Array[Byte]]
 
-  private val thriftFinagleClientParamTypes =
-    Seq(classOf[Service[_, _]], classOf[TProtocolFactory])
+  private val thriftFinagleClientParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory])
 
-  private val scrooge2FinagleClientParamTypes =
-    Seq(
-      classOf[Service[_, _]],
-      classOf[TProtocolFactory],
-      classOf[Option[_]],
-      classOf[StatsReceiver])
+  private val scrooge2FinagleClientParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory],
+    classOf[Option[_]],
+    classOf[StatsReceiver])
 
-  private val scrooge3FinagleClientParamTypes =
-    Seq(
-      classOf[Service[_, _]],
-      classOf[TProtocolFactory],
-      classOf[String],
-      classOf[StatsReceiver])
+  private val scrooge3FinagleClientParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory],
+    classOf[String],
+    classOf[StatsReceiver])
 
-  private val scrooge3FinagleClientWithRepClassifierParamTypes =
-    Seq(
-      classOf[Service[_, _]],
-      classOf[TProtocolFactory],
-      classOf[String],
-      classOf[StatsReceiver],
-      classOf[ResponseClassifier])
+  private val scrooge3FinagleClientWithRepClassifierParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory],
+    classOf[String],
+    classOf[StatsReceiver],
+    classOf[ResponseClassifier])
 
   def findClass1(name: String): Option[Class[_]] =
     try Some(Class.forName(name))
@@ -75,19 +73,20 @@ private[twitter] object ThriftUtil {
       None
 
   lazy val findSwiftClass: Class[_] => Option[Class[_]] = {
-    val f = for {
-      serviceSym <- findClass1("com.twitter.finagle.exp.swift.ServiceSym")
-      meth <- findMethod(serviceSym, "isService", classOf[Class[_]])
-    } yield { k: Class[_] =>
-      try {
-        if (meth.invoke(null, k).asInstanceOf[Boolean])
-          Some(k)
-        else
-          None
-      } catch {
-        case NonFatal(_) => None
+    val f =
+      for {
+        serviceSym <- findClass1("com.twitter.finagle.exp.swift.ServiceSym")
+        meth <- findMethod(serviceSym, "isService", classOf[Class[_]])
+      } yield { k: Class[_] =>
+        try {
+          if (meth.invoke(null, k).asInstanceOf[Boolean])
+            Some(k)
+          else
+            None
+        } catch {
+          case NonFatal(_) => None
+        }
       }
-    }
 
     f getOrElse Function.const(None)
   }
@@ -209,8 +208,11 @@ private[twitter] object ThriftUtil {
           classOf[StatsReceiver],
           Integer.TYPE)
         val newParameters = oldParameters :+ classOf[String]
-        val oldArgs =
-          Seq(impl, protocolFactory, stats, Int.box(maxThriftBufferSize))
+        val oldArgs = Seq(
+          impl,
+          protocolFactory,
+          stats,
+          Int.box(maxThriftBufferSize))
         val newArgs = oldArgs :+ label
         def newConsCall: Option[BinaryService] =
           findConstructor(serviceCls, newParameters: _*).map(cons =>
@@ -413,11 +415,12 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
     */
   def newIface[Iface](name: Name, label: String, cls: Class[_]): Iface = {
     val underlying = newService(name, label)
-    val clientLabel = (label, defaultClientName) match {
-      case ("", "") => Showable.show(name)
-      case ("", l1) => l1
-      case (l0, l1) => l0
-    }
+    val clientLabel =
+      (label, defaultClientName) match {
+        case ("", "") => Showable.show(name)
+        case ("", l1) => l1
+        case (l0, l1) => l0
+      }
     val sr = stats.scope(clientLabel)
     val responseClassifier =
       params[com.twitter.finagle.param.ResponseClassifier].responseClassifier
@@ -535,8 +538,8 @@ trait ThriftRichServer { self: Server[Array[Byte], Array[Byte]] =>
 
   protected val serverLabel = "thrift"
 
-  protected lazy val serverStats: StatsReceiver =
-    ServerStatsReceiver.scope(serverLabel)
+  protected lazy val serverStats: StatsReceiver = ServerStatsReceiver.scope(
+    serverLabel)
 
   /**
     * $serveIface

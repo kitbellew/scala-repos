@@ -45,14 +45,20 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
         state.completedApps.find(_.id == appId).getOrElse(null)
       })
     if (app == null) {
-      val msg = <div class="row-fluid">No running application with ID {
-        appId
-      }</div>
+      val msg =
+        <div class="row-fluid">No running application with ID {
+          appId
+        }</div>
       return UIUtils.basicSparkPage(msg, "Not Found")
     }
 
-    val executorHeaders =
-      Seq("ExecutorID", "Worker", "Cores", "Memory", "State", "Logs")
+    val executorHeaders = Seq(
+      "ExecutorID",
+      "Worker",
+      "Cores",
+      "Memory",
+      "State",
+      "Logs")
     val allExecutors =
       (app.executors.values ++ app.removedExecutors).toSet.toSeq
     // This includes executors that are either still running or have exited cleanly
@@ -61,10 +67,14 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
         exec.state) || exec.state == ExecutorState.EXITED
     }
     val removedExecutors = allExecutors.diff(executors)
-    val executorsTable =
-      UIUtils.listingTable(executorHeaders, executorRow, executors)
-    val removedExecutorsTable =
-      UIUtils.listingTable(executorHeaders, executorRow, removedExecutors)
+    val executorsTable = UIUtils.listingTable(
+      executorHeaders,
+      executorRow,
+      executors)
+    val removedExecutorsTable = UIUtils.listingTable(
+      executorHeaders,
+      executorRow,
+      removedExecutors)
 
     val content =
       <div class="row-fluid">

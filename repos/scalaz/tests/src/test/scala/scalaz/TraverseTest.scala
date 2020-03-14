@@ -16,8 +16,8 @@ object TraverseTest extends SpecLite {
     // ghci> traverse (\x -> writer (x, x)) ["1", "2", "3"] |> runWriter
     // (["1","2","3"],"123")
     "apply effects in order" in {
-      val s: Writer[String, List[Int]] =
-        List(1, 2, 3).traverseU(x => Writer(x.toString, x))
+      val s: Writer[String, List[Int]] = List(1, 2, 3).traverseU(x =>
+        Writer(x.toString, x))
       s.run must_=== (("123", List(1, 2, 3)))
     }
 
@@ -44,8 +44,9 @@ object TraverseTest extends SpecLite {
     }
 
     "not blow the stack" in {
-      val s: Option[List[Int]] =
-        List.range(0, 32 * 1024).traverseU(x => some(x))
+      val s: Option[List[Int]] = List
+        .range(0, 32 * 1024)
+        .traverseU(x => some(x))
       s.map(_.take(3)) must_=== (some(List(0, 1, 2)))
     }
 
@@ -69,8 +70,8 @@ object TraverseTest extends SpecLite {
 
   "stream" should {
     "apply effects in order" in {
-      val s: Writer[String, Stream[Int]] =
-        Stream(1, 2, 3).traverseU(x => Writer(x.toString, x))
+      val s: Writer[String, Stream[Int]] = Stream(1, 2, 3).traverseU(x =>
+        Writer(x.toString, x))
       s.run must_=== (("123", Stream(1, 2, 3)))
     }
 
@@ -90,8 +91,8 @@ object TraverseTest extends SpecLite {
 
   "combos" should {
     "traverse with monadic join" in {
-      val s: Writer[String, List[Int]] =
-        List(1, 2, 3).traverseM[Writer[String, ?], Int](x =>
+      val s: Writer[String, List[Int]] = List(1, 2, 3)
+        .traverseM[Writer[String, ?], Int](x =>
           Writer(x.toString, List(x, x * 2)))
       s.run must_=== (("123", List(1, 2, 2, 4, 3, 6)))
     }

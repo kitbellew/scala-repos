@@ -115,74 +115,75 @@ object CreateServer extends Logging {
   val modeldata = Storage.getModelDataModels
 
   def main(args: Array[String]): Unit = {
-    val parser = new scopt.OptionParser[ServerConfig]("CreateServer") {
-      opt[String]("batch") action { (x, c) =>
-        c.copy(batch = x)
-      } text ("Batch label of the deployment.")
-      opt[String]("engineId") action { (x, c) =>
-        c.copy(engineId = Some(x))
-      } text ("Engine ID.")
-      opt[String]("engineVersion") action { (x, c) =>
-        c.copy(engineVersion = Some(x))
-      } text ("Engine version.")
-      opt[String]("engine-variant") required () action { (x, c) =>
-        c.copy(engineVariant = x)
-      } text ("Engine variant JSON.")
-      opt[String]("ip") action { (x, c) =>
-        c.copy(ip = x)
+    val parser =
+      new scopt.OptionParser[ServerConfig]("CreateServer") {
+        opt[String]("batch") action { (x, c) =>
+          c.copy(batch = x)
+        } text ("Batch label of the deployment.")
+        opt[String]("engineId") action { (x, c) =>
+          c.copy(engineId = Some(x))
+        } text ("Engine ID.")
+        opt[String]("engineVersion") action { (x, c) =>
+          c.copy(engineVersion = Some(x))
+        } text ("Engine version.")
+        opt[String]("engine-variant") required () action { (x, c) =>
+          c.copy(engineVariant = x)
+        } text ("Engine variant JSON.")
+        opt[String]("ip") action { (x, c) =>
+          c.copy(ip = x)
+        }
+        opt[String]("env") action { (x, c) =>
+          c.copy(env = Some(x))
+        } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
+          "format) to pass to the Spark execution environment.")
+        opt[Int]("port") action { (x, c) =>
+          c.copy(port = x)
+        } text ("Port to bind to (default: 8000).")
+        opt[String]("engineInstanceId") required () action { (x, c) =>
+          c.copy(engineInstanceId = x)
+        } text ("Engine instance ID.")
+        opt[Unit]("feedback") action { (_, c) =>
+          c.copy(feedback = true)
+        } text ("Enable feedback loop to event server.")
+        opt[String]("event-server-ip") action { (x, c) =>
+          c.copy(eventServerIp = x)
+        }
+        opt[Int]("event-server-port") action { (x, c) =>
+          c.copy(eventServerPort = x)
+        } text ("Event server port. Default: 7070")
+        opt[String]("accesskey") action { (x, c) =>
+          c.copy(accessKey = Some(x))
+        } text ("Event server access key.")
+        opt[String]("log-url") action { (x, c) =>
+          c.copy(logUrl = Some(x))
+        }
+        opt[String]("log-prefix") action { (x, c) =>
+          c.copy(logPrefix = Some(x))
+        }
+        opt[String]("log-file") action { (x, c) =>
+          c.copy(logFile = Some(x))
+        }
+        opt[Unit]("verbose") action { (x, c) =>
+          c.copy(verbose = true)
+        } text ("Enable verbose output.")
+        opt[Unit]("debug") action { (x, c) =>
+          c.copy(debug = true)
+        } text ("Enable debug output.")
+        opt[String]("json-extractor") action { (x, c) =>
+          c.copy(jsonExtractor = JsonExtractorOption.withName(x))
+        }
       }
-      opt[String]("env") action { (x, c) =>
-        c.copy(env = Some(x))
-      } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
-        "format) to pass to the Spark execution environment.")
-      opt[Int]("port") action { (x, c) =>
-        c.copy(port = x)
-      } text ("Port to bind to (default: 8000).")
-      opt[String]("engineInstanceId") required () action { (x, c) =>
-        c.copy(engineInstanceId = x)
-      } text ("Engine instance ID.")
-      opt[Unit]("feedback") action { (_, c) =>
-        c.copy(feedback = true)
-      } text ("Enable feedback loop to event server.")
-      opt[String]("event-server-ip") action { (x, c) =>
-        c.copy(eventServerIp = x)
-      }
-      opt[Int]("event-server-port") action { (x, c) =>
-        c.copy(eventServerPort = x)
-      } text ("Event server port. Default: 7070")
-      opt[String]("accesskey") action { (x, c) =>
-        c.copy(accessKey = Some(x))
-      } text ("Event server access key.")
-      opt[String]("log-url") action { (x, c) =>
-        c.copy(logUrl = Some(x))
-      }
-      opt[String]("log-prefix") action { (x, c) =>
-        c.copy(logPrefix = Some(x))
-      }
-      opt[String]("log-file") action { (x, c) =>
-        c.copy(logFile = Some(x))
-      }
-      opt[Unit]("verbose") action { (x, c) =>
-        c.copy(verbose = true)
-      } text ("Enable verbose output.")
-      opt[Unit]("debug") action { (x, c) =>
-        c.copy(debug = true)
-      } text ("Enable debug output.")
-      opt[String]("json-extractor") action { (x, c) =>
-        c.copy(jsonExtractor = JsonExtractorOption.withName(x))
-      }
-    }
 
     parser.parse(args, ServerConfig()) map { sc =>
       WorkflowUtils.modifyLogging(sc.verbose)
       engineInstances.get(sc.engineInstanceId) map { engineInstance =>
         val engineId = sc.engineId.getOrElse(engineInstance.engineId)
-        val engineVersion =
-          sc.engineVersion.getOrElse(engineInstance.engineVersion)
+        val engineVersion = sc.engineVersion.getOrElse(
+          engineInstance.engineVersion)
         engineManifests.get(engineId, engineVersion) map { manifest =>
           val engineFactoryName = engineInstance.engineFactory
-          val upgrade =
-            actorSystem.actorOf(Props(classOf[UpgradeActor], engineFactoryName))
+          val upgrade = actorSystem.actorOf(
+            Props(classOf[UpgradeActor], engineFactoryName))
           actorSystem.scheduler.schedule(
             0.seconds,
             1.days,
@@ -215,22 +216,23 @@ object CreateServer extends Logging {
       engineLanguage: EngineLanguage.Value,
       manifest: EngineManifest): ActorRef = {
 
-    val engineParams =
-      engine.engineInstanceToEngineParams(engineInstance, sc.jsonExtractor)
+    val engineParams = engine.engineInstanceToEngineParams(
+      engineInstance,
+      sc.jsonExtractor)
 
     val kryo = KryoInstantiator.newKryoInjection
 
-    val modelsFromEngineInstance =
-      kryo
-        .invert(modeldata.get(engineInstance.id).get.models)
-        .get
-        .asInstanceOf[Seq[Any]]
+    val modelsFromEngineInstance = kryo
+      .invert(modeldata.get(engineInstance.id).get.models)
+      .get
+      .asInstanceOf[Seq[Any]]
 
-    val batch = if (engineInstance.batch.nonEmpty) {
-      s"${engineInstance.engineFactory} (${engineInstance.batch})"
-    } else {
-      engineInstance.engineFactory
-    }
+    val batch =
+      if (engineInstance.batch.nonEmpty) {
+        s"${engineInstance.engineFactory} (${engineInstance.batch})"
+      } else {
+        engineInstance.engineFactory
+      }
 
     val sparkContext = WorkflowContext(
       batch = batch,
@@ -303,13 +305,14 @@ class MasterActor(
     val serverUrl = s"https://${ip}:${port}"
     log.info(s"Undeploying any existing engine instance at $serverUrl")
     try {
-      val code = scalaj.http
-        .Http(s"$serverUrl/stop")
-        .option(HttpOptions.allowUnsafeSSL)
-        .param(ServerKey.param, ServerKey.get)
-        .method("POST")
-        .asString
-        .code
+      val code =
+        scalaj.http
+          .Http(s"$serverUrl/stop")
+          .option(HttpOptions.allowUnsafeSSL)
+          .param(ServerKey.param, ServerKey.get)
+          .method("POST")
+          .asString
+          .code
       code match {
         case 200 => Unit
         case 404 =>
@@ -332,8 +335,11 @@ class MasterActor(
 
   def receive: Actor.Receive = {
     case x: StartServer =>
-      val actor =
-        createServerActor(sc, engineInstance, engineFactoryName, manifest)
+      val actor = createServerActor(
+        sc,
+        engineInstance,
+        engineFactoryName,
+        manifest)
       currentServerActor = Some(actor)
       undeploy(sc.ip, sc.port)
       self ! BindServer()
@@ -359,8 +365,8 @@ class MasterActor(
       }
     case x: ReloadServer =>
       log.info("Reload server command received.")
-      val latestEngineInstance =
-        CreateServer.engineInstances.getLatestCompleted(
+      val latestEngineInstance = CreateServer.engineInstances
+        .getLatestCompleted(
           manifest.id,
           manifest.version,
           engineInstance.engineVariant)
@@ -407,8 +413,9 @@ class MasterActor(
       engineInstance: EngineInstance,
       engineFactoryName: String,
       manifest: EngineManifest): ActorRef = {
-    val (engineLanguage, engineFactory) =
-      WorkflowUtils.getEngine(engineFactoryName, getClass.getClassLoader)
+    val (engineLanguage, engineFactory) = WorkflowUtils.getEngine(
+      engineFactoryName,
+      getClass.getClassLoader)
     val engine = engineFactory()
 
     // EngineFactory return a base engine, which may not be deployable.
@@ -455,23 +462,23 @@ class ServerActor[Q, P](
   def actorRefFactory: ActorContext = context
 
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
-  val pluginsActorRef =
-    context.actorOf(
-      Props(classOf[PluginsActor], args.engineVariant),
-      "PluginsActor")
+  val pluginsActorRef = context.actorOf(
+    Props(classOf[PluginsActor], args.engineVariant),
+    "PluginsActor")
   val pluginContext = EngineServerPluginContext(log, args.engineVariant)
 
   def receive: Actor.Receive = runRoute(myRoute)
 
-  val feedbackEnabled = if (args.feedback) {
-    if (args.accessKey.isEmpty) {
-      log.error("Feedback loop cannot be enabled because accessKey is empty.")
+  val feedbackEnabled =
+    if (args.feedback) {
+      if (args.accessKey.isEmpty) {
+        log.error("Feedback loop cannot be enabled because accessKey is empty.")
+        false
+      } else {
+        true
+      }
+    } else
       false
-    } else {
-      true
-    }
-  } else
-    false
 
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
     implicit val formats = Utils.json4sDefaultFormats
@@ -571,78 +578,81 @@ class ServerActor[Q, P](
                   * - prediction
                   * - prId
                   */
-                val result = if (feedbackEnabled) {
-                  implicit val formats =
-                    algorithms.headOption map { alg =>
-                      alg.querySerializer
-                    } getOrElse {
-                      Utils.json4sDefaultFormats
-                    }
-                  // val genPrId = Random.alphanumeric.take(64).mkString
-                  def genPrId: String = Random.alphanumeric.take(64).mkString
-                  val newPrId = prediction match {
-                    case id: WithPrId =>
-                      val org = id.prId
-                      if (org.isEmpty)
-                        genPrId
-                      else
-                        org
-                    case _ => genPrId
-                  }
+                val result =
+                  if (feedbackEnabled) {
+                    implicit val formats =
+                      algorithms.headOption map { alg =>
+                        alg.querySerializer
+                      } getOrElse {
+                        Utils.json4sDefaultFormats
+                      }
+                    // val genPrId = Random.alphanumeric.take(64).mkString
+                    def genPrId: String = Random.alphanumeric.take(64).mkString
+                    val newPrId =
+                      prediction match {
+                        case id: WithPrId =>
+                          val org = id.prId
+                          if (org.isEmpty)
+                            genPrId
+                          else
+                            org
+                        case _ => genPrId
+                      }
 
-                  // also save Query's prId as prId of this pio_pr predict events
-                  val queryPrId =
-                    query match {
-                      case id: WithPrId =>
-                        Map("prId" -> id.prId)
-                      case _ =>
-                        Map()
+                    // also save Query's prId as prId of this pio_pr predict events
+                    val queryPrId =
+                      query match {
+                        case id: WithPrId =>
+                          Map("prId" -> id.prId)
+                        case _ =>
+                          Map()
+                      }
+                    val data = Map(
+                      // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,
+                      "event" -> "predict",
+                      "eventTime" -> queryTime.toString(),
+                      "entityType" -> "pio_pr", // prediction result
+                      "entityId" -> newPrId,
+                      "properties" -> Map(
+                        "engineInstanceId" -> engineInstance.id,
+                        "query" -> query,
+                        "prediction" -> prediction)
+                    ) ++ queryPrId
+                    // At this point args.accessKey should be Some(String).
+                    val accessKey = args.accessKey.getOrElse("")
+                    val f: Future[Int] = future {
+                      scalaj.http
+                        .Http(
+                          s"http://${args.eventServerIp}:${args.eventServerPort}/" +
+                            s"events.json?accessKey=$accessKey")
+                        .postData(write(data))
+                        .header("content-type", "application/json")
+                        .asString
+                        .code
                     }
-                  val data = Map(
-                    // "appId" -> dataSourceParams.asInstanceOf[ParamsWithAppId].appId,
-                    "event" -> "predict",
-                    "eventTime" -> queryTime.toString(),
-                    "entityType" -> "pio_pr", // prediction result
-                    "entityId" -> newPrId,
-                    "properties" -> Map(
-                      "engineInstanceId" -> engineInstance.id,
-                      "query" -> query,
-                      "prediction" -> prediction)
-                  ) ++ queryPrId
-                  // At this point args.accessKey should be Some(String).
-                  val accessKey = args.accessKey.getOrElse("")
-                  val f: Future[Int] = future {
-                    scalaj.http
-                      .Http(
-                        s"http://${args.eventServerIp}:${args.eventServerPort}/" +
-                          s"events.json?accessKey=$accessKey")
-                      .postData(write(data))
-                      .header("content-type", "application/json")
-                      .asString
-                      .code
-                  }
-                  f onComplete {
-                    case Success(code) => {
-                      if (code != 201) {
-                        log.error(s"Feedback event failed. Status code: $code."
-                          + s"Data: ${write(data)}.")
+                    f onComplete {
+                      case Success(code) => {
+                        if (code != 201) {
+                          log.error(
+                            s"Feedback event failed. Status code: $code."
+                              + s"Data: ${write(data)}.")
+                        }
+                      }
+                      case Failure(t) => {
+                        log.error(s"Feedback event failed: ${t.getMessage}")
                       }
                     }
-                    case Failure(t) => {
-                      log.error(s"Feedback event failed: ${t.getMessage}")
+                    // overwrite prId in predictedResult
+                    // - if it is WithPrId,
+                    //   then overwrite with new prId
+                    // - if it is not WithPrId, no prId injection
+                    if (prediction.isInstanceOf[WithPrId]) {
+                      predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
+                    } else {
+                      predictionJValue
                     }
-                  }
-                  // overwrite prId in predictedResult
-                  // - if it is WithPrId,
-                  //   then overwrite with new prId
-                  // - if it is not WithPrId, no prId injection
-                  if (prediction.isInstanceOf[WithPrId]) {
-                    predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
-                  } else {
+                  } else
                     predictionJValue
-                  }
-                } else
-                  predictionJValue
 
                 val pluginResult =
                   pluginContext.outputBlockers.values.foldLeft(result) {

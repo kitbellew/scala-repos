@@ -130,25 +130,26 @@ object WizardSpec extends Specification {
   }
 
   "A wizard must be able to snapshot itself" in {
-    val ss = S.initIfUninitted(session) {
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+    val ss =
+      S.initIfUninitted(session) {
+        MyWizard.currentScreen.openOrThrowException(
+          "legacy code") must_== MyWizard.nameAndAge
 
-      MyWizard.nextScreen
+        MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.nameAndAge
+        MyWizard.currentScreen.openOrThrowException(
+          "legacy code") must_== MyWizard.nameAndAge
 
-      MyWizard.nameAndAge.name.set("David")
-      MyWizard.nameAndAge.age.set(14)
+        MyWizard.nameAndAge.name.set("David")
+        MyWizard.nameAndAge.age.set(14)
 
-      MyWizard.nextScreen
+        MyWizard.nextScreen
 
-      MyWizard.currentScreen.openOrThrowException(
-        "legacy code") must_== MyWizard.parentName
+        MyWizard.currentScreen.openOrThrowException(
+          "legacy code") must_== MyWizard.parentName
 
-      MyWizard.createSnapshot
-    }
+        MyWizard.createSnapshot
+      }
 
     S.initIfUninitted(session) {
       MyWizard.currentScreen.openOrThrowException(

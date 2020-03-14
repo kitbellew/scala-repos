@@ -39,14 +39,15 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
   test("success") {
     val credentials = mock[GSSContext]
     val clientToken: Token = Array[Byte](1, 3, 3, 7)
-    val credSrc = new Credentials.ClientSource with Credentials.ServerSource {
-      def load() = Future(credentials)
-      def init(c: GSSContext, t: Option[Token]) = Future(clientToken)
-      def accept(c: GSSContext, t: Token) = {
-        assert(arrayEquals(clientToken, t))
-        Future(Negotiated(Some(c), Some("sure thing boss")))
+    val credSrc =
+      new Credentials.ClientSource with Credentials.ServerSource {
+        def load() = Future(credentials)
+        def init(c: GSSContext, t: Option[Token]) = Future(clientToken)
+        def accept(c: GSSContext, t: Token) = {
+          assert(arrayEquals(clientToken, t))
+          Future(Negotiated(Some(c), Some("sure thing boss")))
+        }
       }
-    }
 
     // Spnego-filtered client/server
     val (client, server, service) = serve(credSrc, Some(credSrc))
@@ -91,14 +92,13 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
     val port = server.boundAddress.asInstanceOf[InetSocketAddress].getPort
     val rawClient = com.twitter.finagle.Http.newService(s"localhost:$port")
 
-    val client =
-      clientSrc
-        .map { src =>
-          new ClientFilter(src) andThen rawClient
-        }
-        .getOrElse {
-          rawClient
-        }
+    val client = clientSrc
+      .map { src =>
+        new ClientFilter(src) andThen rawClient
+      }
+      .getOrElse {
+        rawClient
+      }
     (client, server, service)
   }
 }

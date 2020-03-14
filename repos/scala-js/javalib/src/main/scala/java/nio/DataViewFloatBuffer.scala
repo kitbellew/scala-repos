@@ -21,28 +21,23 @@ private[nio] final class DataViewFloatBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): FloatBuffer =
-    GenDataViewBuffer(this).generic_slice()
+  def slice(): FloatBuffer = GenDataViewBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): FloatBuffer =
-    GenDataViewBuffer(this).generic_duplicate()
+  def duplicate(): FloatBuffer = GenDataViewBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): FloatBuffer =
     GenDataViewBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Float =
-    GenBuffer(this).generic_get()
+  def get(): Float = GenBuffer(this).generic_get()
 
   @noinline
-  def put(f: Float): FloatBuffer =
-    GenBuffer(this).generic_put(f)
+  def put(f: Float): FloatBuffer = GenBuffer(this).generic_put(f)
 
   @noinline
-  def get(index: Int): Float =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Float = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, f: Float): FloatBuffer =
@@ -57,11 +52,9 @@ private[nio] final class DataViewFloatBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): FloatBuffer =
-    GenDataViewBuffer(this).generic_compact()
+  def compact(): FloatBuffer = GenDataViewBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    GenDataViewBuffer(this).generic_order()
+  def order(): ByteOrder = GenDataViewBuffer(this).generic_order()
 
   // Internal API
 

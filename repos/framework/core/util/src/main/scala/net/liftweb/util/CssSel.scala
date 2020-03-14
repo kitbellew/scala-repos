@@ -124,14 +124,15 @@ private class SelectorMap(binds: List[CssBind])
     var elemMap: Map[String, List[CssBind]] = Map()
     var starFunc: Box[List[CssBind]] = Empty
 
-    val selThis: Box[CssBind] = binds.flatMap { b =>
-      b.css
-        .openOrThrowException("Guarded with test before calling this method")
-        .subNodes match {
-        case Full(SelectThisNode(_)) => List(b)
-        case _                       => Nil
-      }
-    }.headOption
+    val selThis: Box[CssBind] =
+      binds.flatMap { b =>
+        b.css
+          .openOrThrowException("Guarded with test before calling this method")
+          .subNodes match {
+          case Full(SelectThisNode(_)) => List(b)
+          case _                       => Nil
+        }
+      }.headOption
 
     binds.foreach {
       case i @ CssBind(IdSelector(id, _)) =>
@@ -227,12 +228,13 @@ private class SelectorMap(binds: List[CssBind])
               case _                       => true
             }
 
-            val newAttr = if (calced.isEmpty) {
-              filtered
-            } else {
-              val flat: NodeSeq = calced.flatMap(a => a)
-              new UnprefixedAttribute(attr, flat, filtered)
-            }
+            val newAttr =
+              if (calced.isEmpty) {
+                filtered
+              } else {
+                val flat: NodeSeq = calced.flatMap(a => a)
+                new UnprefixedAttribute(attr, flat, filtered)
+              }
 
             elem.copy(attributes = newAttr)
           }
@@ -249,18 +251,19 @@ private class SelectorMap(binds: List[CssBind])
                 case _                       => true
               }
 
-              val flat: NodeSeq = if (attr == "class") {
-                if (org.isEmpty) {
-                  calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
-                    calced.takeRight(1).head
-                } else {
-                  org ++ Text(" ") ++
+              val flat: NodeSeq =
+                if (attr == "class") {
+                  if (org.isEmpty) {
                     calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
-                    calced.takeRight(1).head
+                      calced.takeRight(1).head
+                  } else {
+                    org ++ Text(" ") ++
+                      calced.dropRight(1).flatMap(a => a ++ Text(" ")) ++
+                      calced.takeRight(1).head
+                  }
+                } else {
+                  org ++ (calced.flatMap(a => a): NodeSeq)
                 }
-              } else {
-                org ++ (calced.flatMap(a => a): NodeSeq)
-              }
 
               val newAttr = new UnprefixedAttribute(attr, flat, filtered)
 
@@ -288,27 +291,29 @@ private class SelectorMap(binds: List[CssBind])
                 case _                       => true
               }
 
-              val flat: Box[NodeSeq] = if (attr == "class") {
-                val set = Set(calced.map(_.text): _*)
-                SuperString(org.text)
-                  .charSplit(' ')
-                  .toList
-                  .filter(_.length > 0)
-                  .filter(s => !set.contains(s)) match {
-                  case Nil => Empty
-                  case xs  => Full(Text(xs.mkString(" ")))
+              val flat: Box[NodeSeq] =
+                if (attr == "class") {
+                  val set = Set(calced.map(_.text): _*)
+                  SuperString(org.text)
+                    .charSplit(' ')
+                    .toList
+                    .filter(_.length > 0)
+                    .filter(s => !set.contains(s)) match {
+                    case Nil => Empty
+                    case xs  => Full(Text(xs.mkString(" ")))
+                  }
+                } else {
+                  if (org.text == calced.flatMap(a => a).text)
+                    Empty
+                  else
+                    Full(org)
                 }
-              } else {
-                if (org.text == calced.flatMap(a => a).text)
-                  Empty
-                else
-                  Full(org)
-              }
 
-              val newAttr = flat match {
-                case Full(a) => new UnprefixedAttribute(attr, a, filtered)
-                case _       => filtered
-              }
+              val newAttr =
+                flat match {
+                  case Full(a) => new UnprefixedAttribute(attr, a, filtered)
+                  case _       => filtered
+                }
 
               new Elem(
                 elem.prefix,
@@ -495,13 +500,14 @@ private class SelectorMap(binds: List[CssBind])
 
             case n => {
               val calcedList = calced.toList
-              val availableIds = (attrs.get("id").toList ++
-                calcedList
-                  .collect({
-                    case e: Elem => e.attribute("id")
-                  })
-                  .flatten
-                  .map(_.toString)).toSet
+              val availableIds =
+                (attrs.get("id").toList ++
+                  calcedList
+                    .collect({
+                      case e: Elem => e.attribute("id")
+                    })
+                    .flatten
+                    .map(_.toString)).toSet
               val merged =
                 calcedList.foldLeft((availableIds, Nil: List[Seq[xml.Node]])) {
                   (idsAndResult, a) =>
@@ -517,16 +523,17 @@ private class SelectorMap(binds: List[CssBind])
                         } getOrElse (false)
                         val newIds = targetId filter (_ => keepId) map (i =>
                           ids - i) getOrElse (ids)
-                        val newElem = new Elem(
-                          e.prefix,
-                          e.label,
-                          mergeAll(
-                            e.attributes,
-                            !keepId,
-                            x == Full(DontMergeAttributes)),
-                          e.scope,
-                          e.minimizeEmpty,
-                          e.child: _*)
+                        val newElem =
+                          new Elem(
+                            e.prefix,
+                            e.label,
+                            mergeAll(
+                              e.attributes,
+                              !keepId,
+                              x == Full(DontMergeAttributes)),
+                            e.scope,
+                            e.minimizeEmpty,
+                            e.child: _*)
                         (newIds, newElem :: result)
                       }
                       case x => (ids, x :: result)

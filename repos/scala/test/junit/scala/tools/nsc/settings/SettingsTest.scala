@@ -11,8 +11,8 @@ import scala.tools.testing.AssertUtil.assertThrows
 class SettingsTest {
   @Test def booleanSettingColon() {
     def check(args: String*): MutableSettings#BooleanSetting = {
-      val s = new MutableSettings(msg =>
-        throw new IllegalArgumentException(msg))
+      val s =
+        new MutableSettings(msg => throw new IllegalArgumentException(msg))
       val b1 = new s.BooleanSetting("-Ytest-setting", "")
       s.allSettings += b1
       val (ok, residual) = s.processArguments(args.toList, processAll = true)
@@ -29,8 +29,8 @@ class SettingsTest {
 
   @Test def userSettingsHavePrecedenceOverExperimental() {
     def check(args: String*): MutableSettings#BooleanSetting = {
-      val s = new MutableSettings(msg =>
-        throw new IllegalArgumentException(msg))
+      val s =
+        new MutableSettings(msg => throw new IllegalArgumentException(msg))
       val (ok, residual) = s.processArguments(args.toList, processAll = true)
       assert(residual.isEmpty)
       s.YmethodInfer // among -Xexperimental
@@ -236,8 +236,8 @@ class SettingsTest {
 
   @Test def xSourceTest(): Unit = {
     def check(expected: String, args: String*): Unit = {
-      val s = new MutableSettings(msg =>
-        throw new IllegalArgumentException(msg))
+      val s =
+        new MutableSettings(msg => throw new IllegalArgumentException(msg))
       val (_, residual) = s.processArguments(args.toList, processAll = true)
       assert(residual.isEmpty)
       assertTrue(s.source.value == ScalaVersion(expected))

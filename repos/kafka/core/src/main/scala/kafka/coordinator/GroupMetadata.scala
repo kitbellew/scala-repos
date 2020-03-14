@@ -93,13 +93,12 @@ private[coordinator] case object Dead extends GroupState {
 }
 
 private object GroupMetadata {
-  private val validPreviousStates: Map[GroupState, Set[GroupState]] =
-    Map(
-      Dead -> Set(Stable, PreparingRebalance, AwaitingSync),
-      AwaitingSync -> Set(PreparingRebalance),
-      Stable -> Set(AwaitingSync),
-      PreparingRebalance -> Set(Stable, AwaitingSync)
-    )
+  private val validPreviousStates: Map[GroupState, Set[GroupState]] = Map(
+    Dead -> Set(Stable, PreparingRebalance, AwaitingSync),
+    AwaitingSync -> Set(PreparingRebalance),
+    Stable -> Set(AwaitingSync),
+    PreparingRebalance -> Set(Stable, AwaitingSync)
+  )
 }
 
 /**
@@ -156,11 +155,12 @@ private[coordinator] class GroupMetadata(
   def remove(memberId: String) {
     members.remove(memberId)
     if (memberId == leaderId) {
-      leaderId = if (members.isEmpty) {
-        null
-      } else {
-        members.keys.head
-      }
+      leaderId =
+        if (members.isEmpty) {
+          null
+        } else {
+          members.keys.head
+        }
     }
   }
 
@@ -198,11 +198,12 @@ private[coordinator] class GroupMetadata(
     val candidates = candidateProtocols
 
     // let each member vote for one of the protocols and choose the one with the most votes
-    val votes: List[(String, Int)] = allMemberMetadata
-      .map(_.vote(candidates))
-      .groupBy(identity)
-      .mapValues(_.size)
-      .toList
+    val votes: List[(String, Int)] =
+      allMemberMetadata
+        .map(_.vote(candidates))
+        .groupBy(identity)
+        .mapValues(_.size)
+        .toList
 
     votes.maxBy(_._2)._1
   }
@@ -237,14 +238,16 @@ private[coordinator] class GroupMetadata(
 
   def summary: GroupSummary = {
     if (is(Stable)) {
-      val members = this.members.values.map { member =>
-        member.summary(protocol)
-      }.toList
+      val members =
+        this.members.values.map { member =>
+          member.summary(protocol)
+        }.toList
       GroupSummary(state.toString, protocolType, protocol, members)
     } else {
-      val members = this.members.values.map { member =>
-        member.summaryNoMetadata()
-      }.toList
+      val members =
+        this.members.values.map { member =>
+          member.summaryNoMetadata()
+        }.toList
       GroupSummary(
         state.toString,
         protocolType,

@@ -78,14 +78,14 @@ class ScArgumentExprListImpl(node: ASTNode)
       anchor: PsiElement): PsiElement = {
     if (anchor == null) {
       if (exprs.isEmpty) {
-        val par: PsiElement =
-          findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)
+        val par: PsiElement = findChildByType[PsiElement](
+          ScalaTokenTypes.tLPARENTHESIS)
         if (par == null)
           return super.addBefore(element, anchor)
         super.addAfter(element, par)
       } else {
-        val par: PsiElement =
-          findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)
+        val par: PsiElement = findChildByType[PsiElement](
+          ScalaTokenTypes.tLPARENTHESIS)
         if (par == null)
           return super.addBefore(element, anchor)
         val comma = ScalaPsiElementFactory.createComma(getManager)

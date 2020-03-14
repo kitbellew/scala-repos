@@ -35,14 +35,15 @@ object InterpolatedStringParser extends StringParser {
 
         val parts = pairs.collect {
           case (expression: ScExpression, next) =>
-            val actualExpression = expression match {
-              case block: ScBlockExpr =>
-                if (block.exprs.length > 1)
-                  block
-                else
-                  block.exprs.headOption.getOrElse(block)
-              case it => it
-            }
+            val actualExpression =
+              expression match {
+                case block: ScBlockExpr =>
+                  if (block.exprs.length > 1)
+                    block
+                  else
+                    block.exprs.headOption.getOrElse(block)
+                case it => it
+              }
             val specifier =
               if (!formatted)
                 None

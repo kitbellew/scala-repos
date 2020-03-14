@@ -7,9 +7,10 @@ class HealthCheckSupportSpec extends ScalatraFlatSpec {
 
   class TestServlet extends ScalatraServlet with HealthChecksSupport {
     get("/") {
-      val test = checkHealth("database") {
-        true
-      }
+      val test =
+        checkHealth("database") {
+          true
+        }
       test.execute()
     }
   }

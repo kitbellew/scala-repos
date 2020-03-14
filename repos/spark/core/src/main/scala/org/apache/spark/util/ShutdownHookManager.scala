@@ -120,9 +120,10 @@ private[spark] object ShutdownHookManager extends Logging {
     */
   def inShutdown(): Boolean = {
     try {
-      val hook = new Thread {
-        override def run() {}
-      }
+      val hook =
+        new Thread {
+          override def run() {}
+        }
       // scalastyle:off runtimeaddshutdownhook
       Runtime.getRuntime.addShutdownHook(hook)
       // scalastyle:on runtimeaddshutdownhook
@@ -177,9 +178,10 @@ private[util] class SparkShutdownHookManager {
     * the best.
     */
   def install(): Unit = {
-    val hookTask = new Runnable() {
-      override def run(): Unit = runAll()
-    }
+    val hookTask =
+      new Runnable() {
+        override def run(): Unit = runAll()
+      }
     org.apache.hadoop.util.ShutdownHookManager
       .get()
       .addShutdownHook(hookTask, FileSystem.SHUTDOWN_HOOK_PRIORITY + 30)

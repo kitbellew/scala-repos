@@ -161,9 +161,10 @@ object GaussianMixtureModel extends Loader[GaussianMixtureModel] {
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.
-      val dataArray = Array.tabulate(weights.length) { i =>
-        Data(weights(i), gaussians(i).mu, gaussians(i).sigma)
-      }
+      val dataArray =
+        Array.tabulate(weights.length) { i =>
+          Data(weights(i), gaussians(i).mu, gaussians(i).sigma)
+        }
       sc.parallelize(dataArray, 1).toDF().write.parquet(Loader.dataPath(path))
     }
 
@@ -175,10 +176,11 @@ object GaussianMixtureModel extends Loader[GaussianMixtureModel] {
       Loader.checkSchema[Data](dataFrame.schema)
       val dataArray = dataFrame.select("weight", "mu", "sigma").collect()
 
-      val (weights, gaussians) = dataArray.map {
-        case Row(weight: Double, mu: Vector, sigma: Matrix) =>
-          (weight, new MultivariateGaussian(mu, sigma))
-      }.unzip
+      val (weights, gaussians) =
+        dataArray.map {
+          case Row(weight: Double, mu: Vector, sigma: Matrix) =>
+            (weight, new MultivariateGaussian(mu, sigma))
+        }.unzip
 
       new GaussianMixtureModel(weights.toArray, gaussians.toArray)
     }

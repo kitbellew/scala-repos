@@ -68,8 +68,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
       request: RequestHeader,
       result: Result): Future[Result] = {
     if (shouldCompress(result) && config.shouldGzip(request, result)) {
-      val header =
-        result.header.copy(headers = setupHeader(result.header.headers))
+      val header = result.header
+        .copy(headers = setupHeader(result.header.headers))
 
       result.body match {
 
@@ -92,16 +92,16 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
             Result(header, HttpEntity.Chunked(gzipped, contentType)))
 
         case HttpEntity.Chunked(chunks, contentType) =>
-          val gzipFlow =
-            Flow.fromGraph(GraphDSL.create[FlowShape[HttpChunk, HttpChunk]]() {
+          val gzipFlow = Flow.fromGraph(
+            GraphDSL.create[FlowShape[HttpChunk, HttpChunk]]() {
               implicit builder =>
                 import GraphDSL.Implicits._
 
                 val extractChunks = Flow[HttpChunk] collect {
                   case HttpChunk.Chunk(data) => data
                 }
-                val createChunks =
-                  Flow[ByteString].map[HttpChunk](HttpChunk.Chunk.apply)
+                val createChunks = Flow[ByteString]
+                  .map[HttpChunk](HttpChunk.Chunk.apply)
                 val filterLastChunk = Flow[HttpChunk]
                   .filter(_.isInstanceOf[HttpChunk.LastChunk])
                   // Since we're doing a merge by concatenating, the filter last chunk won't receive demand until the gzip
@@ -288,8 +288,8 @@ trait GzipFilterComponents {
   def configuration: Configuration
   def materializer: Materializer
 
-  lazy val gzipFilterConfig: GzipFilterConfig =
-    GzipFilterConfig.fromConfiguration(configuration)
-  lazy val gzipFilter: GzipFilter = new GzipFilter(gzipFilterConfig)(
-    materializer)
+  lazy val gzipFilterConfig: GzipFilterConfig = GzipFilterConfig
+    .fromConfiguration(configuration)
+  lazy val gzipFilter: GzipFilter =
+    new GzipFilter(gzipFilterConfig)(materializer)
 }

@@ -546,8 +546,9 @@ object EvaluateTask {
     val tags = tagged[Task[_]](
       _.info get tagsKey getOrElse Map.empty,
       Tags.predicate(config.restrictions))
-    val (service, shutdownThreads) =
-      completionService[Task[_], Completed](tags, (s: String) => log.warn(s))
+    val (service, shutdownThreads) = completionService[Task[_], Completed](
+      tags,
+      (s: String) => log.warn(s))
 
     def shutdown(): Unit = {
       // First ensure that all threads are stopped for task execution.
@@ -565,10 +566,11 @@ object EvaluateTask {
         case _                => true
       }
     def run() = {
-      val x = new Execute[Task](
-        Execute.config(config.checkCycles, overwriteNode),
-        triggers,
-        config.progressReporter)(taskToNode)
+      val x =
+        new Execute[Task](
+          Execute.config(config.checkCycles, overwriteNode),
+          triggers,
+          config.progressReporter)(taskToNode)
       val (newState, result) =
         try {
           val results = x.runKeep(root)(service)
@@ -673,13 +675,14 @@ object EvaluateTask {
     }
 
   // if the return type Seq[Setting[_]] is not explicitly given, scalac hangs
-  val injectStreams: ScopedKey[_] => Seq[Setting[_]] = scoped =>
-    if (scoped.key == streams.key)
-      Seq(streams in scoped.scope <<= streamsManager map { mgr =>
-        val stream = mgr(scoped)
-        stream.open()
-        stream
-      })
-    else
-      Nil
+  val injectStreams: ScopedKey[_] => Seq[Setting[_]] =
+    scoped =>
+      if (scoped.key == streams.key)
+        Seq(streams in scoped.scope <<= streamsManager map { mgr =>
+          val stream = mgr(scoped)
+          stream.open()
+          stream
+        })
+      else
+        Nil
 }

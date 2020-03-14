@@ -82,8 +82,8 @@ class SocketServerTest extends JUnitSuite {
   /* A simple request handler that just echos back the response */
   def processRequest(channel: RequestChannel) {
     val request = channel.receiveRequest
-    val byteBuffer =
-      ByteBuffer.allocate(request.header.sizeOf + request.body.sizeOf)
+    val byteBuffer = ByteBuffer.allocate(
+      request.header.sizeOf + request.body.sizeOf)
     request.header.writeTo(byteBuffer)
     request.body.writeTo(byteBuffer)
     byteBuffer.rewind()
@@ -112,13 +112,14 @@ class SocketServerTest extends JUnitSuite {
     val ack = 0: Short
 
     val emptyHeader = new RequestHeader(apiKey, clientId, correlationId)
-    val emptyRequest = new ProduceRequest(
-      ack,
-      ackTimeoutMs,
-      new HashMap[TopicPartition, ByteBuffer]())
+    val emptyRequest =
+      new ProduceRequest(
+        ack,
+        ackTimeoutMs,
+        new HashMap[TopicPartition, ByteBuffer]())
 
-    val byteBuffer =
-      ByteBuffer.allocate(emptyHeader.sizeOf + emptyRequest.sizeOf)
+    val byteBuffer = ByteBuffer.allocate(
+      emptyHeader.sizeOf + emptyRequest.sizeOf)
     emptyHeader.writeTo(byteBuffer)
     emptyRequest.writeTo(byteBuffer)
     byteBuffer.rewind()
@@ -221,13 +222,16 @@ class SocketServerTest extends JUnitSuite {
   def testMaxConnectionsPerIPOverrides() {
     val overrideNum = 6
     val overrides = Map("localhost" -> overrideNum)
-    val overrideProps =
-      TestUtils.createBrokerConfig(0, TestUtils.MockZkConnect, port = 0)
+    val overrideProps = TestUtils.createBrokerConfig(
+      0,
+      TestUtils.MockZkConnect,
+      port = 0)
     val serverMetrics = new Metrics()
-    val overrideServer: SocketServer = new SocketServer(
-      KafkaConfig.fromProps(overrideProps),
-      serverMetrics,
-      new SystemTime())
+    val overrideServer: SocketServer =
+      new SocketServer(
+        KafkaConfig.fromProps(overrideProps),
+        serverMetrics,
+        new SystemTime())
     try {
       overrideServer.startup()
       // make the maximum allowable number of connections and then leak them
@@ -255,10 +259,11 @@ class SocketServerTest extends JUnitSuite {
     overrideProps.put(KafkaConfig.ListenersProp, "SSL://localhost:0")
 
     val serverMetrics = new Metrics
-    val overrideServer: SocketServer = new SocketServer(
-      KafkaConfig.fromProps(overrideProps),
-      serverMetrics,
-      new SystemTime)
+    val overrideServer: SocketServer =
+      new SocketServer(
+        KafkaConfig.fromProps(overrideProps),
+        serverMetrics,
+        new SystemTime)
     overrideServer.startup()
     try {
       val sslContext = SSLContext.getInstance("TLSv1.2")
@@ -280,13 +285,14 @@ class SocketServerTest extends JUnitSuite {
       val ackTimeoutMs = 10000
       val ack = 0: Short
       val emptyHeader = new RequestHeader(apiKey, clientId, correlationId)
-      val emptyRequest = new ProduceRequest(
-        ack,
-        ackTimeoutMs,
-        new HashMap[TopicPartition, ByteBuffer]())
+      val emptyRequest =
+        new ProduceRequest(
+          ack,
+          ackTimeoutMs,
+          new HashMap[TopicPartition, ByteBuffer]())
 
-      val byteBuffer =
-        ByteBuffer.allocate(emptyHeader.sizeOf() + emptyRequest.sizeOf())
+      val byteBuffer = ByteBuffer.allocate(
+        emptyHeader.sizeOf() + emptyRequest.sizeOf())
       emptyHeader.writeTo(byteBuffer)
       emptyRequest.writeTo(byteBuffer)
       byteBuffer.rewind()

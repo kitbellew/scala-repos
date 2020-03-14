@@ -49,12 +49,11 @@ object DefaultPool {
       bufferSize: Int,
       idleTime: Duration,
       maxWaiters: Int) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
-    implicit val param =
-      Stack.Param(Param(0, Int.MaxValue, 0, Duration.Top, Int.MaxValue))
+    implicit val param = Stack.Param(
+      Param(0, Int.MaxValue, 0, Duration.Top, Int.MaxValue))
   }
 
   /**

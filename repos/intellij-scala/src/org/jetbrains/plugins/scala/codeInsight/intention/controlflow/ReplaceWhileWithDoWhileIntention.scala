@@ -42,8 +42,9 @@ class ReplaceWhileWithDoWhileIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val whileStmt: ScWhileStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScWhileStmt])
+    val whileStmt: ScWhileStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScWhileStmt])
     if (whileStmt == null || !whileStmt.isValid)
       return
 

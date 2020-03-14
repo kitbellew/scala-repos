@@ -193,9 +193,10 @@ class SparkILoop(
   class SparkILoopInterpreter extends SparkIMain(settings, out) {
     outer =>
 
-    override private[repl] lazy val formatting = new Formatting {
-      def prompt = SparkILoop.this.prompt
-    }
+    override private[repl] lazy val formatting =
+      new Formatting {
+        def prompt = SparkILoop.this.prompt
+      }
     override protected def parentClassLoader =
       SparkHelper
         .explicitParentLoader(settings)
@@ -224,8 +225,9 @@ class SparkILoop(
         }
       }
     // work around for Scala bug
-    val totalClassPath = addedJars.foldLeft(settings.classpath.value)((l, r) =>
-      ClassPath.join(l, r))
+    val totalClassPath =
+      addedJars.foldLeft(settings.classpath.value)((l, r) =>
+        ClassPath.join(l, r))
     this.settings.classpath.value = totalClassPath
 
     intp = new SparkILoopInterpreter
@@ -297,30 +299,31 @@ class SparkILoop(
   }
 
   /** Show the history */
-  private lazy val historyCommand = new LoopCommand(
-    "history",
-    "show the history (optional num is commands to show)") {
-    override def usage = "[num]"
-    def defaultLines = 20
+  private lazy val historyCommand =
+    new LoopCommand(
+      "history",
+      "show the history (optional num is commands to show)") {
+      override def usage = "[num]"
+      def defaultLines = 20
 
-    def apply(line: String): Result = {
-      if (history eq NoHistory)
-        return "No history available."
+      def apply(line: String): Result = {
+        if (history eq NoHistory)
+          return "No history available."
 
-      val xs = words(line)
-      val current = history.index
-      val count =
-        try xs.head.toInt
-        catch {
-          case _: Exception => defaultLines
-        }
-      val lines = history.asStrings takeRight count
-      val offset = current - lines.size + 1
+        val xs = words(line)
+        val current = history.index
+        val count =
+          try xs.head.toInt
+          catch {
+            case _: Exception => defaultLines
+          }
+        val lines = history.asStrings takeRight count
+        val offset = current - lines.size + 1
 
-      for ((line, index) <- lines.zipWithIndex)
-        echo("%3d  %s".format(index + offset, line))
+        for ((line, index) <- lines.zipWithIndex)
+          echo("%3d  %s".format(index + offset, line))
+      }
     }
-  }
 
   // When you know you are most likely breaking into the middle
   // of a line being typed.  This softens the blow.
@@ -574,11 +577,12 @@ class SparkILoop(
       None
   }
   private def addToolsJarToLoader() = {
-    val cl = findToolsJar match {
-      case Some(tools) =>
-        ScalaClassLoader.fromURLs(Seq(tools.toURL), intp.classLoader)
-      case _ => intp.classLoader
-    }
+    val cl =
+      findToolsJar match {
+        case Some(tools) =>
+          ScalaClassLoader.fromURLs(Seq(tools.toURL), intp.classLoader)
+        case _ => intp.classLoader
+      }
     if (Javap.isAvailable(cl)) {
       logDebug(":javap available.")
       cl
@@ -860,20 +864,22 @@ class SparkILoop(
   }
 
   /** fork a shell and run a command */
-  private lazy val shCommand = new LoopCommand(
-    "sh",
-    "run a shell command (result is implicitly => List[String])") {
-    override def usage = "<command line>"
-    def apply(line: String): Result =
-      line match {
-        case "" => showUsage()
-        case _ =>
-          val toRun =
-            classOf[ProcessResult].getName + "(" + string2codeQuoted(line) + ")"
-          intp interpret toRun
-          ()
-      }
-  }
+  private lazy val shCommand =
+    new LoopCommand(
+      "sh",
+      "run a shell command (result is implicitly => List[String])") {
+      override def usage = "<command line>"
+      def apply(line: String): Result =
+        line match {
+          case "" => showUsage()
+          case _ =>
+            val toRun =
+              classOf[ProcessResult].getName + "(" + string2codeQuoted(
+                line) + ")"
+            intp interpret toRun
+            ()
+        }
+    }
 
   private def withFile(filename: String)(action: File => Unit) {
     val f = File(filename)
@@ -901,8 +907,9 @@ class SparkILoop(
       if (f.exists) {
         added = true
         addedClasspath = ClassPath.join(addedClasspath, f.path)
-        totalClasspath =
-          ClassPath.join(settings.classpath.value, addedClasspath)
+        totalClasspath = ClassPath.join(
+          settings.classpath.value,
+          addedClasspath)
         intp.addUrlsToClassPath(f.toURI.toURL)
         sparkContext.addJar(f.toURI.toURL.getPath)
       }
@@ -1130,8 +1137,8 @@ class SparkILoop(
             case x => x
           }
       }
-      lazy val tagOfSparkIMain =
-        tagOfStaticClass[org.apache.spark.repl.SparkIMain]
+      lazy val tagOfSparkIMain = tagOfStaticClass[
+        org.apache.spark.repl.SparkIMain]
       // Bind intp somewhere out of the regular namespace where
       // we can get at it in generated code.
       addThunk(
@@ -1223,13 +1230,14 @@ class SparkILoop(
   }
 
   private def getMaster(): String = {
-    val master = this.master match {
-      case Some(m) => m
-      case None =>
-        val envMaster = sys.env.get("MASTER")
-        val propMaster = sys.props.get("spark.master")
-        propMaster.orElse(envMaster).getOrElse("local[*]")
-    }
+    val master =
+      this.master match {
+        case Some(m) => m
+        case None =>
+          val envMaster = sys.env.get("MASTER")
+          val propMaster = sys.props.get("spark.master")
+          propMaster.orElse(envMaster).getOrElse("local[*]")
+      }
     master
   }
 
@@ -1289,29 +1297,31 @@ object SparkILoop extends Logging {
 
     stringFromStream { ostream =>
       Console.withOut(ostream) {
-        val output = new JPrintWriter(new OutputStreamWriter(ostream), true) {
-          override def write(str: String) = {
-            // completely skip continuation lines
-            if (str forall (ch => ch.isWhitespace || ch == '|'))
-              ()
-            // print a newline on empty scala prompts
-            else if ((str contains '\n') && (str.trim == "scala> "))
-              super.write("\n")
-            else
-              super.write(str)
+        val output =
+          new JPrintWriter(new OutputStreamWriter(ostream), true) {
+            override def write(str: String) = {
+              // completely skip continuation lines
+              if (str forall (ch => ch.isWhitespace || ch == '|'))
+                ()
+              // print a newline on empty scala prompts
+              else if ((str contains '\n') && (str.trim == "scala> "))
+                super.write("\n")
+              else
+                super.write(str)
+            }
           }
-        }
-        val input = new BufferedReader(new StringReader(code)) {
-          override def readLine(): String = {
-            val s = super.readLine()
-            // helping out by printing the line being interpreted.
-            if (s != null)
-              // scalastyle:off println
-              output.println(s)
-            // scalastyle:on println
-            s
+        val input =
+          new BufferedReader(new StringReader(code)) {
+            override def readLine(): String = {
+              val s = super.readLine()
+              // helping out by printing the line being interpreted.
+              if (s != null)
+                // scalastyle:off println
+                output.println(s)
+              // scalastyle:on println
+              s
+            }
           }
-        }
         val repl = new SparkILoop(input, output)
 
         if (settings.classpath.isDefault)

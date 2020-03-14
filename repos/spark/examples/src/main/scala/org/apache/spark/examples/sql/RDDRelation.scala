@@ -44,14 +44,17 @@ object RDDRelation {
     sqlContext.sql("SELECT * FROM records").collect().foreach(println)
 
     // Aggregation queries are also supported.
-    val count =
-      sqlContext.sql("SELECT COUNT(*) FROM records").collect().head.getLong(0)
+    val count = sqlContext
+      .sql("SELECT COUNT(*) FROM records")
+      .collect()
+      .head
+      .getLong(0)
     println(s"COUNT(*): $count")
 
     // The results of SQL queries are themselves RDDs and support all normal RDD functions.  The
     // items in the RDD are of type Row, which allows you to access each column by ordinal.
-    val rddFromSql =
-      sqlContext.sql("SELECT key, value FROM records WHERE key < 10")
+    val rddFromSql = sqlContext.sql(
+      "SELECT key, value FROM records WHERE key < 10")
 
     println("Result of RDD.map:")
     rddFromSql.rdd

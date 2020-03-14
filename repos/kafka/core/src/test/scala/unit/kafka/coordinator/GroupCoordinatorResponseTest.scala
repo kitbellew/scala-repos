@@ -405,8 +405,11 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     assertEquals(Errors.NONE.code, joinGroupErrorCode)
 
     EasyMock.reset(replicaManager)
-    val syncGroupResult =
-      syncGroupLeader(groupId, generationId, assignedConsumerId, Map())
+    val syncGroupResult = syncGroupLeader(
+      groupId,
+      generationId,
+      assignedConsumerId,
+      Map())
     val syncGroupErrorCode = syncGroupResult._2
     assertEquals(Errors.NONE.code, syncGroupErrorCode)
     assertTrue(syncGroupResult._1.isEmpty)
@@ -457,8 +460,10 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
 
     EasyMock.reset(replicaManager)
     val unknownMemberId = "blah"
-    val unknownMemberSyncResult =
-      syncGroupFollower(groupId, generationId, unknownMemberId)
+    val unknownMemberSyncResult = syncGroupFollower(
+      groupId,
+      generationId,
+      unknownMemberId)
     assertEquals(Errors.UNKNOWN_MEMBER_ID.code, unknownMemberSyncResult._2)
   }
 
@@ -642,10 +647,13 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     // with no leader SyncGroup, the follower's request should failure with an error indicating
     // that it should rejoin
     EasyMock.reset(replicaManager)
-    val followerSyncFuture =
-      sendSyncGroupFollower(groupId, nextGenerationId, otherJoinResult.memberId)
-    val followerSyncResult =
-      await(followerSyncFuture, DefaultSessionTimeout + 100)
+    val followerSyncFuture = sendSyncGroupFollower(
+      groupId,
+      nextGenerationId,
+      otherJoinResult.memberId)
+    val followerSyncResult = await(
+      followerSyncFuture,
+      DefaultSessionTimeout + 100)
     assertEquals(Errors.REBALANCE_IN_PROGRESS.code, followerSyncResult._2)
   }
 
@@ -715,8 +723,10 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     assertEquals(leaderAssignment, leaderSyncResult._1)
 
     EasyMock.reset(replicaManager)
-    val followerSyncResult =
-      syncGroupFollower(groupId, nextGenerationId, otherJoinResult.memberId)
+    val followerSyncResult = syncGroupFollower(
+      groupId,
+      nextGenerationId,
+      otherJoinResult.memberId)
     assertEquals(Errors.NONE.code, followerSyncResult._2)
     assertEquals(followerAssignment, followerSyncResult._1)
   }
@@ -779,8 +789,10 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     assertEquals(firstMemberId, otherJoinResult.leaderId)
 
     EasyMock.reset(replicaManager)
-    val followerSyncFuture =
-      sendSyncGroupFollower(groupId, nextGenerationId, followerId)
+    val followerSyncFuture = sendSyncGroupFollower(
+      groupId,
+      nextGenerationId,
+      followerId)
 
     EasyMock.reset(replicaManager)
     val leaderSyncResult = syncGroupLeader(
@@ -791,8 +803,9 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     assertEquals(Errors.NONE.code, leaderSyncResult._2)
     assertEquals(leaderAssignment, leaderSyncResult._1)
 
-    val followerSyncResult =
-      await(followerSyncFuture, DefaultSessionTimeout + 100)
+    val followerSyncResult = await(
+      followerSyncFuture,
+      DefaultSessionTimeout + 100)
     assertEquals(Errors.NONE.code, followerSyncResult._2)
     assertEquals(followerAssignment, followerSyncResult._1)
   }
@@ -875,8 +888,10 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
 
     // We should be in the middle of a rebalance, so the heartbeat should return rebalance in progress
     EasyMock.reset(replicaManager)
-    val heartbeatResult =
-      heartbeat(groupId, assignedConsumerId, initialGenerationId)
+    val heartbeatResult = heartbeat(
+      groupId,
+      assignedConsumerId,
+      initialGenerationId)
     assertEquals(Errors.REBALANCE_IN_PROGRESS.code, heartbeatResult)
   }
 
@@ -1089,8 +1104,9 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       : (Future[SyncGroupCallbackParams], SyncGroupCallback) = {
     val responsePromise = Promise[SyncGroupCallbackParams]
     val responseFuture = responsePromise.future
-    val responseCallback: SyncGroupCallback = (assignment, errorCode) =>
-      responsePromise.success((assignment, errorCode))
+    val responseCallback: SyncGroupCallback =
+      (assignment, errorCode) =>
+        responsePromise.success((assignment, errorCode))
     (responseFuture, responseCallback)
   }
 
@@ -1098,8 +1114,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       : (Future[HeartbeatCallbackParams], HeartbeatCallback) = {
     val responsePromise = Promise[HeartbeatCallbackParams]
     val responseFuture = responsePromise.future
-    val responseCallback: HeartbeatCallback = errorCode =>
-      responsePromise.success(errorCode)
+    val responseCallback: HeartbeatCallback =
+      errorCode => responsePromise.success(errorCode)
     (responseFuture, responseCallback)
   }
 
@@ -1107,8 +1123,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       : (Future[CommitOffsetCallbackParams], CommitOffsetCallback) = {
     val responsePromise = Promise[CommitOffsetCallbackParams]
     val responseFuture = responsePromise.future
-    val responseCallback: CommitOffsetCallback = offsets =>
-      responsePromise.success(offsets)
+    val responseCallback: CommitOffsetCallback =
+      offsets => responsePromise.success(offsets)
     (responseFuture, responseCallback)
   }
 
@@ -1142,8 +1158,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     val (responseFuture, responseCallback) = setupSyncGroupCallback
 
     val capturedArgument
-        : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
-      EasyMock.newCapture()
+        : Capture[Map[TopicPartition, PartitionResponse] => Unit] = EasyMock
+      .newCapture()
 
     EasyMock
       .expect(
@@ -1201,8 +1217,12 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       sessionTimeout: Int,
       protocolType: String,
       protocols: List[(String, Array[Byte])]): JoinGroupResult = {
-    val responseFuture =
-      sendJoinGroup(groupId, memberId, sessionTimeout, protocolType, protocols)
+    val responseFuture = sendJoinGroup(
+      groupId,
+      memberId,
+      sessionTimeout,
+      protocolType,
+      protocols)
     // should only have to wait as long as session timeout, but allow some extra time in case of an unexpected delay
     Await.result(
       responseFuture,
@@ -1224,8 +1244,11 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       generationId: Int,
       memberId: String,
       assignment: Map[String, Array[Byte]]): SyncGroupCallbackParams = {
-    val responseFuture =
-      sendSyncGroupLeader(groupId, generationId, memberId, assignment)
+    val responseFuture = sendSyncGroupLeader(
+      groupId,
+      generationId,
+      memberId,
+      assignment)
     Await.result(
       responseFuture,
       Duration(DefaultSessionTimeout + 100, TimeUnit.MILLISECONDS))
@@ -1260,8 +1283,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     val (responseFuture, responseCallback) = setupCommitOffsetsCallback
 
     val capturedArgument
-        : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
-      EasyMock.newCapture()
+        : Capture[Map[TopicPartition, PartitionResponse] => Unit] = EasyMock
+      .newCapture()
 
     EasyMock
       .expect(

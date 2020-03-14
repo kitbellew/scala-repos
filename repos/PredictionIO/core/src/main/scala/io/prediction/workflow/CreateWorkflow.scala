@@ -70,64 +70,65 @@ object CreateWorkflow extends Logging {
     }
   }
 
-  val parser = new scopt.OptionParser[WorkflowConfig]("CreateWorkflow") {
-    override def errorOnUnknownArgument: Boolean = false
-    opt[String]("batch") action { (x, c) =>
-      c.copy(batch = x)
-    } text ("Batch label of the workflow run.")
-    opt[String]("engine-id") required () action { (x, c) =>
-      c.copy(engineId = x)
-    } text ("Engine's ID.")
-    opt[String]("engine-version") required () action { (x, c) =>
-      c.copy(engineVersion = x)
-    } text ("Engine's version.")
-    opt[String]("engine-variant") required () action { (x, c) =>
-      c.copy(engineVariant = x)
-    } text ("Engine variant JSON.")
-    opt[String]("evaluation-class") action { (x, c) =>
-      c.copy(evaluationClass = Some(x))
-    } text ("Class name of the run's evaluator.")
-    opt[String]("engine-params-generator-class") action { (x, c) =>
-      c.copy(engineParamsGeneratorClass = Some(x))
-    } text ("Path to evaluator parameters")
-    opt[String]("env") action { (x, c) =>
-      c.copy(env = Some(x))
-    } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
-      "format) to pass to the Spark execution environment.")
-    opt[Unit]("verbose") action { (x, c) =>
-      c.copy(verbose = true)
-    } text ("Enable verbose output.")
-    opt[Unit]("debug") action { (x, c) =>
-      c.copy(debug = true)
-    } text ("Enable debug output.")
-    opt[Unit]("skip-sanity-check") action { (x, c) =>
-      c.copy(skipSanityCheck = true)
+  val parser =
+    new scopt.OptionParser[WorkflowConfig]("CreateWorkflow") {
+      override def errorOnUnknownArgument: Boolean = false
+      opt[String]("batch") action { (x, c) =>
+        c.copy(batch = x)
+      } text ("Batch label of the workflow run.")
+      opt[String]("engine-id") required () action { (x, c) =>
+        c.copy(engineId = x)
+      } text ("Engine's ID.")
+      opt[String]("engine-version") required () action { (x, c) =>
+        c.copy(engineVersion = x)
+      } text ("Engine's version.")
+      opt[String]("engine-variant") required () action { (x, c) =>
+        c.copy(engineVariant = x)
+      } text ("Engine variant JSON.")
+      opt[String]("evaluation-class") action { (x, c) =>
+        c.copy(evaluationClass = Some(x))
+      } text ("Class name of the run's evaluator.")
+      opt[String]("engine-params-generator-class") action { (x, c) =>
+        c.copy(engineParamsGeneratorClass = Some(x))
+      } text ("Path to evaluator parameters")
+      opt[String]("env") action { (x, c) =>
+        c.copy(env = Some(x))
+      } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
+        "format) to pass to the Spark execution environment.")
+      opt[Unit]("verbose") action { (x, c) =>
+        c.copy(verbose = true)
+      } text ("Enable verbose output.")
+      opt[Unit]("debug") action { (x, c) =>
+        c.copy(debug = true)
+      } text ("Enable debug output.")
+      opt[Unit]("skip-sanity-check") action { (x, c) =>
+        c.copy(skipSanityCheck = true)
+      }
+      opt[Unit]("stop-after-read") action { (x, c) =>
+        c.copy(stopAfterRead = true)
+      }
+      opt[Unit]("stop-after-prepare") action { (x, c) =>
+        c.copy(stopAfterPrepare = true)
+      }
+      opt[String]("deploy-mode") action { (x, c) =>
+        c.copy(deployMode = x)
+      }
+      opt[Int]("verbosity") action { (x, c) =>
+        c.copy(verbosity = x)
+      }
+      opt[String]("engine-factory") action { (x, c) =>
+        c.copy(engineFactory = x)
+      }
+      opt[String]("engine-params-key") action { (x, c) =>
+        c.copy(engineParamsKey = x)
+      }
+      opt[String]("log-file") action { (x, c) =>
+        c.copy(logFile = Some(x))
+      }
+      opt[String]("json-extractor") action { (x, c) =>
+        c.copy(jsonExtractor = JsonExtractorOption.withName(x))
+      }
     }
-    opt[Unit]("stop-after-read") action { (x, c) =>
-      c.copy(stopAfterRead = true)
-    }
-    opt[Unit]("stop-after-prepare") action { (x, c) =>
-      c.copy(stopAfterPrepare = true)
-    }
-    opt[String]("deploy-mode") action { (x, c) =>
-      c.copy(deployMode = x)
-    }
-    opt[Int]("verbosity") action { (x, c) =>
-      c.copy(verbosity = x)
-    }
-    opt[String]("engine-factory") action { (x, c) =>
-      c.copy(engineFactory = x)
-    }
-    opt[String]("engine-params-key") action { (x, c) =>
-      c.copy(engineParamsKey = x)
-    }
-    opt[String]("log-file") action { (x, c) =>
-      c.copy(logFile = Some(x))
-    }
-    opt[String]("json-extractor") action { (x, c) =>
-      c.copy(jsonExtractor = JsonExtractorOption.withName(x))
-    }
-  }
 
   def main(args: Array[String]): Unit = {
     val wfcOpt = parser.parse(args, WorkflowConfig())
@@ -176,25 +177,27 @@ object CreateWorkflow extends Logging {
 
     if (evaluation.isEmpty) {
       val variantJson = parse(stringFromFile(wfc.engineVariant))
-      val engineFactory = if (wfc.engineFactory == "") {
-        variantJson \ "engineFactory" match {
+      val engineFactory =
+        if (wfc.engineFactory == "") {
+          variantJson \ "engineFactory" match {
+            case JString(s) => s
+            case _ =>
+              error(
+                "Unable to read engine factory class name from " +
+                  s"${wfc.engineVariant}. Aborting.")
+              sys.exit(1)
+          }
+        } else
+          wfc.engineFactory
+      val variantId =
+        variantJson \ "id" match {
           case JString(s) => s
           case _ =>
             error(
-              "Unable to read engine factory class name from " +
+              "Unable to read engine variant ID from " +
                 s"${wfc.engineVariant}. Aborting.")
             sys.exit(1)
         }
-      } else
-        wfc.engineFactory
-      val variantId = variantJson \ "id" match {
-        case JString(s) => s
-        case _ =>
-          error(
-            "Unable to read engine variant ID from " +
-              s"${wfc.engineVariant}. Aborting.")
-          sys.exit(1)
-      }
       val (engineLanguage, engineFactoryObj) =
         try {
           WorkflowUtils.getEngine(engineFactory, getClass.getClassLoader)
@@ -223,11 +226,12 @@ object CreateWorkflow extends Logging {
 
       val trainableEngine = engine.asInstanceOf[Engine[_, _, _, _, _, _]]
 
-      val engineParams = if (wfc.engineParamsKey == "") {
-        trainableEngine.jValueToEngineParams(variantJson, wfc.jsonExtractor)
-      } else {
-        engineFactoryObj.engineParams(wfc.engineParamsKey)
-      }
+      val engineParams =
+        if (wfc.engineParamsKey == "") {
+          trainableEngine.jValueToEngineParams(variantJson, wfc.jsonExtractor)
+        } else {
+          engineFactoryObj.engineParams(wfc.engineParamsKey)
+        }
 
       val engineInstance = EngineInstance(
         id = "",
@@ -251,8 +255,8 @@ object CreateWorkflow extends Logging {
           .paramToJson(wfc.jsonExtractor, engineParams.servingParams)
       )
 
-      val engineInstanceId =
-        Storage.getMetaDataEngineInstances.insert(engineInstance)
+      val engineInstanceId = Storage.getMetaDataEngineInstances.insert(
+        engineInstance)
 
       CoreWorkflow.runTrain(
         env = pioEnvVars,

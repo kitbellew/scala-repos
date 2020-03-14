@@ -29,8 +29,9 @@ object ClassHelpers extends ClassHelpers with ControlHelpers
   */
 trait ClassHelpers { self: ControlHelpers =>
 
-  private val nameModifiers =
-    List[String => String](StringHelpers.camelify _, n => n)
+  private val nameModifiers = List[String => String](
+    StringHelpers.camelify _,
+    n => n)
 
   /**
     * This operator transforms its arguments into a List
@@ -397,8 +398,8 @@ trait ClassHelpers { self: ControlHelpers =>
   }
 
   private val methCacheLock = new ConcurrentLock
-  private val methodCache: LRU[(String, String, Int), List[Method]] = new LRU(
-    5000)
+  private val methodCache: LRU[(String, String, Int), List[Method]] =
+    new LRU(5000)
 
   /**
     * Create a new instance of a class

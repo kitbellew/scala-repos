@@ -77,8 +77,8 @@ private[finagle] class ExceptionRemoteInfoFactory[Req, Rep](
     label: String)
     extends ServiceFactoryProxy[Req, Rep](underlying) {
   private[this] val requestAddRemoteInfo
-      : PartialFunction[Throwable, Future[Rep]] =
-    ExceptionRemoteInfoFactory.addRemoteInfo(endpointAddr, label)
+      : PartialFunction[Throwable, Future[Rep]] = ExceptionRemoteInfoFactory
+    .addRemoteInfo(endpointAddr, label)
 
   private[this] val connectionAddRemoteInfo
       : PartialFunction[Throwable, Future[Service[Req, Rep]]] =
@@ -87,12 +87,11 @@ private[finagle] class ExceptionRemoteInfoFactory[Req, Rep](
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
     underlying(conn)
       .map { service =>
-        val filter = new SimpleFilter[Req, Rep] {
-          override def apply(
-              request: Req,
-              service: Service[Req, Rep]): Future[Rep] =
-            service(request).rescue(requestAddRemoteInfo)
-        }
+        val filter =
+          new SimpleFilter[Req, Rep] {
+            override def apply(request: Req, service: Service[Req, Rep])
+                : Future[Rep] = service(request).rescue(requestAddRemoteInfo)
+          }
         filter andThen service
       }
       .rescue(connectionAddRemoteInfo)

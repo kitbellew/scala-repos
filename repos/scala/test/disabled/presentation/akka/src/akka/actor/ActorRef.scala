@@ -853,8 +853,7 @@ class LocalActorRef private[akka] (
     * <p/>
     * To be invoked from within the actor itself.
     */
-  def spawn(clazz: Class[_ <: Actor]): ActorRef =
-    Actor.actorOf(clazz).start()
+  def spawn(clazz: Class[_ <: Actor]): ActorRef = Actor.actorOf(clazz).start()
 
   /**
     * Atomically create (from actor class), start and make an actor remote.

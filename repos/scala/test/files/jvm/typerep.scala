@@ -28,8 +28,7 @@ object serialize {
   @throws(classOf[IOException])
   @throws(classOf[ClassNotFoundException])
   def read[A](buffer: Array[Byte]): A = {
-    val in =
-      new ObjectInputStream(new ByteArrayInputStream(buffer))
+    val in = new ObjectInputStream(new ByteArrayInputStream(buffer))
     in.readObject().asInstanceOf[A]
   }
 }
@@ -195,14 +194,12 @@ object TypeRep {
 
   implicit def tuple2Rep[A1, A2](implicit
       _1: TypeRep[A1],
-      _2: TypeRep[A2]): TypeRep[(A1, A2)] =
-    Tuple2Rep(_1, _2)
+      _2: TypeRep[A2]): TypeRep[(A1, A2)] = Tuple2Rep(_1, _2)
 
   implicit def tuple3Rep[A1, A2, A3](implicit
       _1: TypeRep[A1],
       _2: TypeRep[A2],
-      _3: TypeRep[A3]): TypeRep[(A1, A2, A3)] =
-    Tuple3Rep(_1, _2, _3)
+      _3: TypeRep[A3]): TypeRep[(A1, A2, A3)] = Tuple3Rep(_1, _2, _3)
   implicit def tuple4Rep[A1, A2, A3, A4](implicit
       _1: TypeRep[A1],
       _2: TypeRep[A2],
@@ -257,13 +254,11 @@ object TypeRep {
 
   implicit def func1Rep[A1, B](implicit
       a1: TypeRep[A1],
-      b: TypeRep[B]): TypeRep[Function1[A1, B]] =
-    Function1Rep(a1, b)
+      b: TypeRep[B]): TypeRep[Function1[A1, B]] = Function1Rep(a1, b)
   implicit def func2Rep[A1, A2, B](implicit
       a1: TypeRep[A1],
       a2: TypeRep[A2],
-      b: TypeRep[B]): TypeRep[Function2[A1, A2, B]] =
-    Function2Rep(a1, a2, b)
+      b: TypeRep[B]): TypeRep[Function2[A1, A2, B]] = Function2Rep(a1, a2, b)
   implicit def func3Rep[A1, A2, A3, B](implicit
       a1: TypeRep[A1],
       a2: TypeRep[A2],

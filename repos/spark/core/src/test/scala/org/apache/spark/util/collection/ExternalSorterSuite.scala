@@ -151,16 +151,18 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         buffer1: ArrayBuffer[String],
         buffer2: ArrayBuffer[String]): ArrayBuffer[String] = buffer1 ++= buffer2
 
-    val agg = new Aggregator[String, String, ArrayBuffer[String]](
-      createCombiner _,
-      mergeValue _,
-      mergeCombiners _)
+    val agg =
+      new Aggregator[String, String, ArrayBuffer[String]](
+        createCombiner _,
+        mergeValue _,
+        mergeCombiners _)
 
-    val sorter = new ExternalSorter[String, String, ArrayBuffer[String]](
-      context,
-      Some(agg),
-      None,
-      None)
+    val sorter =
+      new ExternalSorter[String, String, ArrayBuffer[String]](
+        context,
+        Some(agg),
+        None,
+        None)
 
     val collisionPairs = Seq(
       ("Aa", "BB"), // 2112
@@ -198,8 +200,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val it = sorter.iterator
     while (it.hasNext) {
       val kv = it.next()
-      val expectedValue =
-        ArrayBuffer[String](collisionPairsMap.getOrElse(kv._1, kv._1))
+      val expectedValue = ArrayBuffer[String](
+        collisionPairsMap.getOrElse(kv._1, kv._1))
       assert(kv._2.equals(expectedValue))
       count += 1
     }
@@ -215,11 +217,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local-cluster[1,1,1024]", "test", conf)
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
     val agg = new Aggregator[FixedHashObject, Int, Int](_ => 1, _ + _, _ + _)
-    val sorter = new ExternalSorter[FixedHashObject, Int, Int](
-      context,
-      Some(agg),
-      None,
-      None)
+    val sorter =
+      new ExternalSorter[FixedHashObject, Int, Int](
+        context,
+        Some(agg),
+        None,
+        None)
     // Insert 10 copies each of lots of objects whose hash codes are either 0 or 1. This causes
     // problems if the map fails to group together the objects with the same code (SPARK-2043).
     val toInsert =
@@ -256,10 +259,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       buf1 ++= buf2
     }
 
-    val agg = new Aggregator[Int, Int, ArrayBuffer[Int]](
-      createCombiner,
-      mergeValue,
-      mergeCombiners)
+    val agg =
+      new Aggregator[Int, Int, ArrayBuffer[Int]](
+        createCombiner,
+        mergeValue,
+        mergeCombiners)
     val sorter =
       new ExternalSorter[Int, Int, ArrayBuffer[Int]](
         context,
@@ -292,19 +296,20 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         i: String): ArrayBuffer[String] = buffer += i
     def mergeCombiners(
         buf1: ArrayBuffer[String],
-        buf2: ArrayBuffer[String]): ArrayBuffer[String] =
-      buf1 ++= buf2
+        buf2: ArrayBuffer[String]): ArrayBuffer[String] = buf1 ++= buf2
 
-    val agg = new Aggregator[String, String, ArrayBuffer[String]](
-      createCombiner,
-      mergeValue,
-      mergeCombiners)
+    val agg =
+      new Aggregator[String, String, ArrayBuffer[String]](
+        createCombiner,
+        mergeValue,
+        mergeCombiners)
 
-    val sorter = new ExternalSorter[String, String, ArrayBuffer[String]](
-      context,
-      Some(agg),
-      None,
-      None)
+    val sorter =
+      new ExternalSorter[String, String, ArrayBuffer[String]](
+        context,
+        Some(agg),
+        None,
+        None)
 
     sorter.insertAll(
       (1 to size).iterator.map(i => (i.toString, i.toString)) ++ Iterator(
@@ -370,38 +375,42 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val ord = implicitly[Ordering[Int]]
 
     // Both aggregator and ordering
-    val sorter = new ExternalSorter[Int, Int, Int](
-      context,
-      Some(agg),
-      Some(new HashPartitioner(3)),
-      Some(ord))
+    val sorter =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        Some(agg),
+        Some(new HashPartitioner(3)),
+        Some(ord))
     assert(sorter.iterator.toSeq === Seq())
     sorter.stop()
 
     // Only aggregator
-    val sorter2 = new ExternalSorter[Int, Int, Int](
-      context,
-      Some(agg),
-      Some(new HashPartitioner(3)),
-      None)
+    val sorter2 =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        Some(agg),
+        Some(new HashPartitioner(3)),
+        None)
     assert(sorter2.iterator.toSeq === Seq())
     sorter2.stop()
 
     // Only ordering
-    val sorter3 = new ExternalSorter[Int, Int, Int](
-      context,
-      None,
-      Some(new HashPartitioner(3)),
-      Some(ord))
+    val sorter3 =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        None,
+        Some(new HashPartitioner(3)),
+        Some(ord))
     assert(sorter3.iterator.toSeq === Seq())
     sorter3.stop()
 
     // Neither aggregator nor ordering
-    val sorter4 = new ExternalSorter[Int, Int, Int](
-      context,
-      None,
-      Some(new HashPartitioner(3)),
-      None)
+    val sorter4 =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        None,
+        Some(new HashPartitioner(3)),
+        None)
     assert(sorter4.iterator.toSeq === Seq())
     sorter4.stop()
   }
@@ -425,11 +434,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       (6, Set()))
 
     // Both aggregator and ordering
-    val sorter = new ExternalSorter[Int, Int, Int](
-      context,
-      Some(agg),
-      Some(new HashPartitioner(7)),
-      Some(ord))
+    val sorter =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        Some(agg),
+        Some(new HashPartitioner(7)),
+        Some(ord))
     sorter.insertAll(elements.iterator)
     assert(
       sorter.partitionedIterator
@@ -438,11 +448,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sorter.stop()
 
     // Only aggregator
-    val sorter2 = new ExternalSorter[Int, Int, Int](
-      context,
-      Some(agg),
-      Some(new HashPartitioner(7)),
-      None)
+    val sorter2 =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        Some(agg),
+        Some(new HashPartitioner(7)),
+        None)
     sorter2.insertAll(elements.iterator)
     assert(
       sorter2.partitionedIterator
@@ -451,11 +462,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sorter2.stop()
 
     // Only ordering
-    val sorter3 = new ExternalSorter[Int, Int, Int](
-      context,
-      None,
-      Some(new HashPartitioner(7)),
-      Some(ord))
+    val sorter3 =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        None,
+        Some(new HashPartitioner(7)),
+        Some(ord))
     sorter3.insertAll(elements.iterator)
     assert(
       sorter3.partitionedIterator
@@ -464,11 +476,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sorter3.stop()
 
     // Neither aggregator nor ordering
-    val sorter4 = new ExternalSorter[Int, Int, Int](
-      context,
-      None,
-      Some(new HashPartitioner(7)),
-      None)
+    val sorter4 =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        None,
+        Some(new HashPartitioner(7)),
+        None)
     sorter4.insertAll(elements.iterator)
     assert(
       sorter4.partitionedIterator
@@ -490,11 +503,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val elements =
       Iterator((1, 1), (5, 5)) ++ (0 until size).iterator.map(x => (2, 2))
 
-    val sorter = new ExternalSorter[Int, Int, Int](
-      context,
-      None,
-      Some(new HashPartitioner(7)),
-      Some(ord))
+    val sorter =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        None,
+        Some(new HashPartitioner(7)),
+        Some(ord))
     sorter.insertAll(elements)
     assert(sorter.numSpills > 0, "sorter did not spill")
     val iter = sorter.partitionedIterator.map(p => (p._1, p._2.toList))
@@ -584,9 +598,10 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         }
         .sortByKey(numPartitions = numReduceTasks)
         .collect()
-      val expected = (0 until size).map { i =>
-        (i / 2, i)
-      }.toArray
+      val expected =
+        (0 until size).map { i =>
+          (i / 2, i)
+        }.toArray
       assert(result.length === size)
       result.zipWithIndex.foreach {
         case ((k, _), i) =>
@@ -614,11 +629,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       else
         size
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
-    val sorter = new ExternalSorter[Int, Int, Int](
-      context,
-      None,
-      Some(new HashPartitioner(3)),
-      Some(ord))
+    val sorter =
+      new ExternalSorter[Int, Int, Int](
+        context,
+        None,
+        Some(new HashPartitioner(3)),
+        Some(ord))
     if (withFailures) {
       intercept[SparkException] {
         sorter.insertAll((0 until size).iterator.map { i =>
@@ -718,28 +734,31 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     } else {
       assert(sorter.numSpills === 0, "sorter spilled")
     }
-    val results = sorter.partitionedIterator.map {
-      case (p, vs) => (p, vs.toSet)
-    }.toSet
-    val expected = (0 until 3).map { p =>
-      var v = (0 until size)
-        .map { i =>
-          (i / 4, i)
+    val results =
+      sorter.partitionedIterator.map {
+        case (p, vs) => (p, vs.toSet)
+      }.toSet
+    val expected =
+      (0 until 3).map { p =>
+        var v =
+          (0 until size)
+            .map { i =>
+              (i / 4, i)
+            }
+            .filter {
+              case (k, _) => k % 3 == p
+            }
+            .toSet
+        if (withPartialAgg) {
+          v = v
+            .groupBy(_._1)
+            .mapValues { s =>
+              s.map(_._2).sum
+            }
+            .toSet
         }
-        .filter {
-          case (k, _) => k % 3 == p
-        }
-        .toSet
-      if (withPartialAgg) {
-        v = v
-          .groupBy(_._1)
-          .mapValues { s =>
-            s.map(_._2).sum
-          }
-          .toSet
-      }
-      (p, v.toSet)
-    }.toSet
+        (p, v.toSet)
+      }.toSet
     assert(results === expected)
   }
 
@@ -754,32 +773,35 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
 
     // Using wrongOrdering to show integer overflow introduced exception.
     val rand = new Random(100L)
-    val wrongOrdering = new Ordering[String] {
-      override def compare(a: String, b: String): Int = {
-        val h1 =
-          if (a == null)
-            0
-          else
-            a.hashCode()
-        val h2 =
-          if (b == null)
-            0
-          else
-            b.hashCode()
-        h1 - h2
+    val wrongOrdering =
+      new Ordering[String] {
+        override def compare(a: String, b: String): Int = {
+          val h1 =
+            if (a == null)
+              0
+            else
+              a.hashCode()
+          val h2 =
+            if (b == null)
+              0
+            else
+              b.hashCode()
+          h1 - h2
+        }
       }
-    }
 
-    val testData = Array.tabulate(size) { _ =>
-      rand.nextInt().toString
-    }
+    val testData =
+      Array.tabulate(size) { _ =>
+        rand.nextInt().toString
+      }
 
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
-    val sorter1 = new ExternalSorter[String, String, String](
-      context,
-      None,
-      None,
-      Some(wrongOrdering))
+    val sorter1 =
+      new ExternalSorter[String, String, String](
+        context,
+        None,
+        None,
+        Some(wrongOrdering))
     val thrown = intercept[IllegalArgumentException] {
       sorter1.insertAll(testData.iterator.map(i => (i, i)))
       assert(sorter1.numSpills > 0, "sorter did not spill")
@@ -799,19 +821,20 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       c += i
     def mergeCombiners(
         c1: ArrayBuffer[String],
-        c2: ArrayBuffer[String]): ArrayBuffer[String] =
-      c1 ++= c2
+        c2: ArrayBuffer[String]): ArrayBuffer[String] = c1 ++= c2
 
-    val agg = new Aggregator[String, String, ArrayBuffer[String]](
-      createCombiner,
-      mergeValue,
-      mergeCombiners)
+    val agg =
+      new Aggregator[String, String, ArrayBuffer[String]](
+        createCombiner,
+        mergeValue,
+        mergeCombiners)
 
-    val sorter2 = new ExternalSorter[String, String, ArrayBuffer[String]](
-      context,
-      Some(agg),
-      None,
-      None)
+    val sorter2 =
+      new ExternalSorter[String, String, ArrayBuffer[String]](
+        context,
+        Some(agg),
+        None,
+        None)
     sorter2.insertAll(testData.iterator.map(i => (i, i)))
     assert(sorter2.numSpills > 0, "sorter did not spill")
 

@@ -321,8 +321,7 @@ trait SeqViewLike[
     patch(length, fill(len - length)(elem), 0)
 
   override def reverseMap[B, That](f: A => B)(
-      implicit bf: CanBuildFrom[This, B, That]): That =
-    reverse map f
+      implicit bf: CanBuildFrom[This, B, That]): That = reverse map f
 
   override def updated[B >: A, That](index: Int, elem: B)(
       implicit bf: CanBuildFrom[This, B, That]): That = {
@@ -363,8 +362,7 @@ trait SeqViewLike[
   override def permutations: Iterator[This] =
     thisSeq.permutations.map(as => newForced(as).asInstanceOf[This])
 
-  override def distinct: This =
-    newForced(thisSeq.distinct).asInstanceOf[This]
+  override def distinct: This = newForced(thisSeq.distinct).asInstanceOf[This]
 
   override def stringPrefix = "SeqView"
 }

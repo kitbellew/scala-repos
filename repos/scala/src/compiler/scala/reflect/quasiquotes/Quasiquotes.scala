@@ -36,19 +36,21 @@ abstract class Quasiquotes
               part.pos,
               "Quasiquotes can only be used with literal strings")
         }
-        val reify0 = method0 match {
-          case nme.apply   => new ApplyReifier().reifyFillingHoles(_)
-          case nme.unapply => new UnapplyReifier().reifyFillingHoles(_)
-          case other       => global.abort(s"Unknown quasiquote api method: $other")
-        }
-        val parse0 = interpolator0 match {
-          case nme.q  => TermParser.parse(_)
-          case nme.tq => TypeParser.parse(_)
-          case nme.cq => CaseParser.parse(_)
-          case nme.pq => PatternParser.parse(_)
-          case nme.fq => ForEnumeratorParser.parse(_)
-          case other  => global.abort(s"Unknown quasiquote flavor: $other")
-        }
+        val reify0 =
+          method0 match {
+            case nme.apply   => new ApplyReifier().reifyFillingHoles(_)
+            case nme.unapply => new UnapplyReifier().reifyFillingHoles(_)
+            case other       => global.abort(s"Unknown quasiquote api method: $other")
+          }
+        val parse0 =
+          interpolator0 match {
+            case nme.q  => TermParser.parse(_)
+            case nme.tq => TypeParser.parse(_)
+            case nme.cq => CaseParser.parse(_)
+            case nme.pq => PatternParser.parse(_)
+            case nme.fq => ForEnumeratorParser.parse(_)
+            case other  => global.abort(s"Unknown quasiquote flavor: $other")
+          }
         (universe0, args0, parts1, parse0, reify0, method0)
       case _ =>
         global.abort(s"Couldn't parse call prefix tree ${c.macroApplication}.")

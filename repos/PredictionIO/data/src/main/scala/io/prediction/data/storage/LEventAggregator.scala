@@ -70,9 +70,10 @@ object LEventAggregator {
   @DeveloperApi
   def aggregatePropertiesSingle(
       events: Iterator[Event]): Option[PropertyMap] = {
-    val prop = events.toList
-      .sortBy(_.eventTime.getMillis)
-      .foldLeft[Prop](Prop())(propAggregator)
+    val prop =
+      events.toList
+        .sortBy(_.eventTime.getMillis)
+        .foldLeft[Prop](Prop())(propAggregator)
 
     prop.dm.map { d =>
       require(

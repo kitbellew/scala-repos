@@ -69,18 +69,20 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
             val tpeText = tpe.presentableText
             val withoutAliases = Some(ScTypePresentation.withoutAliases(tpe))
             val tpeWithoutImplicits = expr.getTypeWithoutImplicits().toOption
-            val tpeWithoutImplicitsText =
-              tpeWithoutImplicits.map(_.presentableText)
+            val tpeWithoutImplicitsText = tpeWithoutImplicits.map(
+              _.presentableText)
             val expectedTypeText = expr.expectedType().map(_.presentableText)
-            val nonSingletonTypeText =
-              ScType.extractDesignatorSingletonType(tpe).map(_.presentableText)
+            val nonSingletonTypeText = ScType
+              .extractDesignatorSingletonType(tpe)
+              .map(_.presentableText)
 
             val mainText = Seq("Type: " + tpeText)
             def additionalTypeText(typeText: Option[String], label: String) =
               typeText.filter(_ != tpeText).map(s"$label: " + _)
 
-            val nonSingleton =
-              additionalTypeText(nonSingletonTypeText, "Non-singleton")
+            val nonSingleton = additionalTypeText(
+              nonSingletonTypeText,
+              "Non-singleton")
             val simplified = additionalTypeText(withoutAliases, "Simplified")
             val orig = additionalTypeText(tpeWithoutImplicitsText, "Original")
             val expected = additionalTypeText(expectedTypeText, "Expected")
@@ -114,19 +116,20 @@ object ShowTypeInfoAction {
       editor: Editor,
       file: PsiFile,
       offset: Int): Option[String] = {
-    val typeInfoFromRef = file.findReferenceAt(offset) match {
-      case ResolvedWithSubst(e, subst) => typeTextOf(e, subst)
-      case _ =>
-        val element = file.findElementAt(offset)
-        if (element == null)
-          return None
-        if (element.getNode.getElementType != ScalaTokenTypes.tIDENTIFIER)
-          return None
-        element match {
-          case Parent(p) => typeTextOf(p, ScSubstitutor.empty)
-          case _         => None
-        }
-    }
+    val typeInfoFromRef =
+      file.findReferenceAt(offset) match {
+        case ResolvedWithSubst(e, subst) => typeTextOf(e, subst)
+        case _ =>
+          val element = file.findElementAt(offset)
+          if (element == null)
+            return None
+          if (element.getNode.getElementType != ScalaTokenTypes.tIDENTIFIER)
+            return None
+          element match {
+            case Parent(p) => typeTextOf(p, ScSubstitutor.empty)
+            case _         => None
+          }
+      }
     val pattern = PsiTreeUtil.findElementOfClassAtOffset(
       file,
       offset,

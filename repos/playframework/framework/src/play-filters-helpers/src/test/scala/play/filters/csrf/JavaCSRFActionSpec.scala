@@ -104,10 +104,11 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     } {
       lazy val token = crypto.generateSignedToken
       import play.api.Play.current
-      val returned = await(
-        ws.url("http://localhost:" + testServerPort)
-          .withSession(TokenName -> token)
-          .get()).body
+      val returned =
+        await(
+          ws.url("http://localhost:" + testServerPort)
+            .withSession(TokenName -> token)
+            .get()).body
       crypto.compareSignedTokens(token, returned) must beTrue
     }
   }

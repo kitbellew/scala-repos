@@ -91,8 +91,7 @@ private[deploy] object IvyTestUtils {
 
   /** Create an example Python file. */
   private def createPythonFile(dir: File): File = {
-    val contents =
-      """def myfunc(x):
+    val contents = """def myfunc(x):
         |   return x + 1
       """.stripMargin
     writeFile(dir, "mylib.py", contents)
@@ -106,14 +105,12 @@ private[deploy] object IvyTestUtils {
     val rFilesDir = new File(dir, "R" + File.separator + "pkg")
     Files.createParentDirs(
       new File(rFilesDir, "R" + File.separator + "mylib.R"))
-    val contents =
-      s"""myfunc <- function(x) {
+    val contents = s"""myfunc <- function(x) {
         |  SparkR:::callJStatic("$packageName.$className", "myFunc", x)
         |}
       """.stripMargin
     val source = writeFile(new File(rFilesDir, "R"), "mylib.R", contents)
-    val description =
-      """Package: sparkPackageTest
+    val description = """Package: sparkPackageTest
         |Type: Package
         |Title: Test for building an R package
         |Version: 0.1
@@ -127,8 +124,7 @@ private[deploy] object IvyTestUtils {
         |Collate: 'mylib.R'
       """.stripMargin
     val descFile = writeFile(rFilesDir, "DESCRIPTION", description)
-    val namespace =
-      """import(SparkR)
+    val namespace = """import(SparkR)
         |export("myfunc")
       """.stripMargin
     val nameFile = writeFile(rFilesDir, "NAMESPACE", namespace)
@@ -143,8 +139,7 @@ private[deploy] object IvyTestUtils {
       dir: File,
       className: String,
       packageName: String): File = {
-    val contents =
-      s"""package $packageName;
+    val contents = s"""package $packageName;
         |
         |import java.lang.Integer;
         |
@@ -325,9 +320,10 @@ private[deploy] object IvyTestUtils {
 
       val javaClass = createJavaClass(root, className, artifact.groupId)
       // A tuple of files representation in the jar, and the file
-      val javaFile = (
-        artifact.groupId.replace(".", "/") + "/" + javaClass.getName,
-        javaClass)
+      val javaFile =
+        (
+          artifact.groupId.replace(".", "/") + "/" + javaClass.getName,
+          javaClass)
       val allFiles = ArrayBuffer[(String, File)](javaFile)
       if (withPython) {
         val pythonFile = createPythonFile(root)
@@ -339,8 +335,11 @@ private[deploy] object IvyTestUtils {
       }
       val jarFile = packJar(jarPath, artifact, allFiles, useIvyLayout, withR)
       assert(jarFile.exists(), "Problem creating Jar file")
-      val descriptor =
-        createDescriptor(tempPath, artifact, dependencies, useIvyLayout)
+      val descriptor = createDescriptor(
+        tempPath,
+        artifact,
+        dependencies,
+        useIvyLayout)
       assert(descriptor.exists(), "Problem creating Pom file")
     } finally {
       FileUtils.deleteDirectory(root)

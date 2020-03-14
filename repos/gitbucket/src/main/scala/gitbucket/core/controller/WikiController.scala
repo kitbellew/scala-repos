@@ -39,23 +39,25 @@ trait WikiControllerBase extends ControllerBase {
       currentPageName: String,
       id: String)
 
-  val newForm = mapping(
-    "pageName" -> trim(
-      label("Page name", text(required, maxlength(40), pagename, unique))),
-    "content" -> trim(label("Content", text(required, conflictForNew))),
-    "message" -> trim(label("Message", optional(text()))),
-    "currentPageName" -> trim(label("Current page name", text())),
-    "id" -> trim(label("Latest commit id", text()))
-  )(WikiPageEditForm.apply)
+  val newForm =
+    mapping(
+      "pageName" -> trim(
+        label("Page name", text(required, maxlength(40), pagename, unique))),
+      "content" -> trim(label("Content", text(required, conflictForNew))),
+      "message" -> trim(label("Message", optional(text()))),
+      "currentPageName" -> trim(label("Current page name", text())),
+      "id" -> trim(label("Latest commit id", text()))
+    )(WikiPageEditForm.apply)
 
-  val editForm = mapping(
-    "pageName" -> trim(
-      label("Page name", text(required, maxlength(40), pagename))),
-    "content" -> trim(label("Content", text(required, conflictForEdit))),
-    "message" -> trim(label("Message", optional(text()))),
-    "currentPageName" -> trim(label("Current page name", text(required))),
-    "id" -> trim(label("Latest commit id", text(required)))
-  )(WikiPageEditForm.apply)
+  val editForm =
+    mapping(
+      "pageName" -> trim(
+        label("Page name", text(required, maxlength(40), pagename))),
+      "content" -> trim(label("Content", text(required, conflictForEdit))),
+      "message" -> trim(label("Message", optional(text()))),
+      "currentPageName" -> trim(label("Current page name", text(required))),
+      "id" -> trim(label("Latest commit id", text(required)))
+    )(WikiPageEditForm.apply)
 
   get("/:owner/:repository/wiki")(referrersOnly { repository =>
     getWikiPage(repository.owner, repository.name, "Home").map {

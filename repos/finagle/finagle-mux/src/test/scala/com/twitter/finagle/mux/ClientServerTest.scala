@@ -72,27 +72,29 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
       f
     }
 
-    val filter = new SimpleFilter[Message, Message] {
-      def apply(
-          req: Message,
-          service: Service[Message, Message]): Future[Message] =
-        req match {
-          case Message.Tdispatch(tag, _, _, _, _) if !canDispatch =>
-            Future.value(Message.Rerr(tag, "Tdispatch not enabled"))
-          case Message.Tping(tag) =>
-            ping().before {
-              Future.value(Message.Rping(tag))
-            }
-          case req => service(req)
-        }
-    }
+    val filter =
+      new SimpleFilter[Message, Message] {
+        def apply(
+            req: Message,
+            service: Service[Message, Message]): Future[Message] =
+          req match {
+            case Message.Tdispatch(tag, _, _, _, _) if !canDispatch =>
+              Future.value(Message.Rerr(tag, "Tdispatch not enabled"))
+            case Message.Tping(tag) =>
+              ping().before {
+                Future.value(Message.Rping(tag))
+              }
+            case req => service(req)
+          }
+      }
 
-    val server = new ServerDispatcher(
-      serverTransport,
-      filter andThen Processor andThen service,
-      Lessor.nil,
-      tracer,
-      NullStatsReceiver)
+    val server =
+      new ServerDispatcher(
+        serverTransport,
+        filter andThen Processor andThen service,
+        Lessor.nil,
+        tracer,
+        NullStatsReceiver)
   }
 
   // Push a tracer for the client.
@@ -238,9 +240,10 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     )
 
     val id = Trace.nextId
-    val resp = Trace.letId(id) {
-      client(Request(Path.empty, buf(1)))
-    }
+    val resp =
+      Trace.letId(id) {
+        client(Request(Path.empty, buf(1)))
+      }
     assert(resp.poll.isDefined)
     val Buf.Utf8(respStr) = Await.result(resp).body
     assert(respStr == id.toString)
@@ -262,10 +265,11 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
 
     val flags = Flags().setDebug
     val id = Trace.nextId.copy(flags = flags)
-    val resp = Trace.letId(id) {
-      val p = client(Request(Path.empty, buf(1)))
-      p
-    }
+    val resp =
+      Trace.letId(id) {
+        val p = client(Request(Path.empty, buf(1)))
+        p
+      }
     assert(resp.poll.isDefined)
     val respCb = BufChannelBuffer(Await.result(resp).body)
     assert(respCb.readableBytes == 8)
@@ -345,9 +349,10 @@ class ClientServerTestDispatch extends ClientServerTest(true) {
     // No context set
     assert(Await.result(client(Request(Path.empty, Buf.Empty))).body.isEmpty)
 
-    val f = Contexts.broadcast.let(testContext, Buf.Utf8("My context!")) {
-      client(Request.empty)
-    }
+    val f =
+      Contexts.broadcast.let(testContext, Buf.Utf8("My context!")) {
+        client(Request.empty)
+      }
 
     assert(Await.result(f).body == Buf.Utf8("My context!"))
   }

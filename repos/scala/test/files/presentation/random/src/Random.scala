@@ -29,8 +29,8 @@ object randomclient {
     try {
       val ia = InetAddress.getByName("localhost")
       val socket = new Socket(ia, 9999)
-      val out = new ObjectOutputStream(
-        new DataOutputStream(socket.getOutputStream()))
+      val out =
+        new ObjectOutputStream(new DataOutputStream(socket.getOutputStream()))
       val in = new DataInputStream(socket.getInputStream())
 
       out.writeObject(filter)
@@ -74,8 +74,8 @@ case class ServerThread(socket: Socket) extends Thread("ServerThread") {
     val rand = new Random(System.currentTimeMillis());
     try {
       val out = new DataOutputStream(socket.getOutputStream());
-      val in = new ObjectInputStream(
-        new DataInputStream(socket.getInputStream()));
+      val in =
+        new ObjectInputStream(new DataInputStream(socket.getInputStream()));
 
       val filter = in.readObject().asInstanceOf[Int => Boolean];
 

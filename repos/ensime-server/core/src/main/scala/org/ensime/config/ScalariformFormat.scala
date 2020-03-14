@@ -34,10 +34,11 @@ trait ScalariformFormat {
           FormattingPreferences()
 
         case SexpData(data) =>
-          val custom = for {
-            descriptor <- AllPreferences.preferences
-            value <- deser(descriptor, data)
-          } yield (descriptor, value)
+          val custom =
+            for {
+              descriptor <- AllPreferences.preferences
+              value <- deser(descriptor, data)
+            } yield (descriptor, value)
           new FormattingPreferences(custom.toMap)
 
         case x => deserializationError(x)

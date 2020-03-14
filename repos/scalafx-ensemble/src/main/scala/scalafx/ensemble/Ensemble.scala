@@ -45,47 +45,52 @@ object Ensemble extends JFXApp {
   // Example selection tree
   //
   var centerPane = PageDisplayer.choosePage("dashBoard")
-  val rootTreeItem = new TreeItem[String]("ScalaFX Ensemble") {
-    expanded = true
-    children = EnsembleTree.create().getTree
-  }
+  val rootTreeItem =
+    new TreeItem[String]("ScalaFX Ensemble") {
+      expanded = true
+      children = EnsembleTree.create().getTree
+    }
 
   val screen = Screen.primary
-  val controlsView = new TreeView[String]() {
-    minWidth = 200
-    maxWidth = 200
-    editable = true
-    root = rootTreeItem
-    id = "page-tree"
-  }
+  val controlsView =
+    new TreeView[String]() {
+      minWidth = 200
+      maxWidth = 200
+      editable = true
+      root = rootTreeItem
+      id = "page-tree"
+    }
   controlsView.selectionModel().selectionMode = SelectionMode.SINGLE
   controlsView.selectionModel().selectedItem.onChange { (_, _, newItem) =>
     {
-      val pageCode = (newItem.isLeaf, Option(newItem.getParent)) match {
-        case (true, Some(parent)) =>
-          parent.getValue.toLowerCase + " > " + newItem.getValue
-        case (false, Some(_)) => "dashBoard - " + newItem.getValue
-        case (_, _)           => "dashBoard"
-      }
+      val pageCode =
+        (newItem.isLeaf, Option(newItem.getParent)) match {
+          case (true, Some(parent)) =>
+            parent.getValue.toLowerCase + " > " + newItem.getValue
+          case (false, Some(_)) => "dashBoard - " + newItem.getValue
+          case (_, _)           => "dashBoard"
+        }
       centerPane = PageDisplayer.choosePage(pageCode)
       splitPane.items.remove(1)
       splitPane.items.add(1, centerPane)
     }
   }
 
-  val scrollPane = new ScrollPane {
-    minWidth = 200
-    maxWidth = 200
-    fitToWidth = true
-    fitToHeight = true
-    id = "page-tree"
-    content = controlsView
-  }
-  lazy val splitPane = new SplitPane {
-    dividerPositions = 0
-    id = "page-splitpane"
-    items.addAll(scrollPane, centerPane)
-  }
+  val scrollPane =
+    new ScrollPane {
+      minWidth = 200
+      maxWidth = 200
+      fitToWidth = true
+      fitToHeight = true
+      id = "page-tree"
+      content = controlsView
+    }
+  lazy val splitPane =
+    new SplitPane {
+      dividerPositions = 0
+      id = "page-splitpane"
+      items.addAll(scrollPane, centerPane)
+    }
 
   //
   // Layout the main stage

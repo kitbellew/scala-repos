@@ -52,13 +52,11 @@ trait ProductTypeClassCompanion[C[_]] extends Serializable {
 
   implicit def deriveHCons[H, T <: HList](implicit
       ch: Lazy[C[H]],
-      ct: Lazy[C[T]]): C[H :: T] =
-    typeClass.product(ch.value, ct.value)
+      ct: Lazy[C[T]]): C[H :: T] = typeClass.product(ch.value, ct.value)
 
   implicit def deriveInstance[F, G](implicit
       gen: Generic.Aux[F, G],
-      cg: Lazy[C[G]]): C[F] =
-    typeClass.project(cg.value, gen.to _, gen.from _)
+      cg: Lazy[C[G]]): C[F] = typeClass.project(cg.value, gen.to _, gen.from _)
 }
 
 /**
@@ -100,9 +98,10 @@ trait LabelledProductTypeClassCompanion[C[_]] extends Serializable {
   }
 
   object Wrap {
-    type Aux[KV, V0] = Wrap[KV] {
-      type V = V0
-    }
+    type Aux[KV, V0] =
+      Wrap[KV] {
+        type V = V0
+      }
   }
 
   implicit def deriveHNil: Wrap.Aux[HNil, HNil] =
@@ -165,8 +164,7 @@ trait TypeClassCompanion[C[_]] extends ProductTypeClassCompanion[C] {
 
   implicit def deriveCCons[H, T <: Coproduct](implicit
       ch: Lazy[C[H]],
-      ct: Lazy[C[T]]): C[H :+: T] =
-    typeClass.coproduct(ch.value, ct.value)
+      ct: Lazy[C[T]]): C[H :+: T] = typeClass.coproduct(ch.value, ct.value)
 }
 
 /**
@@ -213,8 +211,10 @@ trait LabelledTypeClassCompanion[C[_]]
   ): Wrap.Aux[FieldType[HK, HV] :+: TKV, HV :+: ct.value.V] =
     new Wrap[FieldType[HK, HV] :+: TKV] {
       type V = HV :+: ct.value.V
-      val unwrap =
-        typeClass.coproduct(key.value.name, ch.value, ct.value.unwrap)
+      val unwrap = typeClass.coproduct(
+        key.value.name,
+        ch.value,
+        ct.value.unwrap)
       def label(v: HV :+: ct.value.V): FieldType[HK, HV] :+: TKV =
         v match {
           case Inl(hv) => Inl(field[HK](hv))

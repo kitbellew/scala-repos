@@ -65,32 +65,36 @@ class WorksheetCompiler {
       case Left((code, name)) =>
         FileUtil.writeToFile(tempFile, code)
 
-        val task = new CompilerTask(
-          project,
-          s"Worksheet ${worksheetFile.getName} compilation",
-          false,
-          false,
-          false,
-          false)
+        val task =
+          new CompilerTask(
+            project,
+            s"Worksheet ${worksheetFile.getName} compilation",
+            false,
+            false,
+            false,
+            false)
 
-        val worksheetPrinter =
-          WorksheetEditorPrinter.newWorksheetUiFor(editor, worksheetVirtual)
+        val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
+          editor,
+          worksheetVirtual)
         worksheetPrinter.scheduleWorksheetUpdate()
 
-        val onError = (msg: String) => {
-          NotificationUtil
-            .builder(project, msg)
-            .setGroup("Scala")
-            .setNotificationType(NotificationType.ERROR)
-            .setTitle(CONFIG_ERROR_HEADER)
-            .show()
-        }
+        val onError =
+          (msg: String) => {
+            NotificationUtil
+              .builder(project, msg)
+              .setGroup("Scala")
+              .setNotificationType(NotificationType.ERROR)
+              .setTitle(CONFIG_ERROR_HEADER)
+              .show()
+          }
 
-        val consumer = new RemoteServerConnector.CompilerInterfaceImpl(
-          task,
-          worksheetPrinter,
-          None,
-          auto)
+        val consumer =
+          new RemoteServerConnector.CompilerInterfaceImpl(
+            task,
+            worksheetPrinter,
+            None,
+            auto)
 
         task.start(
           new Runnable {
@@ -170,8 +174,8 @@ class WorksheetCompiler {
       new Runnable {
         override def run() {
           Disposer.register(content, treeView, null)
-          val messageView =
-            ServiceManager.getService(project, classOf[MessageView])
+          val messageView = ServiceManager
+            .getService(project, classOf[MessageView])
           messageView.getContentManager setSelectedContent content
 
           val toolWindow =

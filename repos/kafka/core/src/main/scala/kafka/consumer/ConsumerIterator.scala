@@ -41,8 +41,8 @@ class ConsumerIterator[K, V](
     new AtomicReference(null)
   private var currentTopicInfo: PartitionTopicInfo = null
   private var consumedOffset: Long = -1L
-  private val consumerTopicStats =
-    ConsumerTopicStatsRegistry.getConsumerTopicStat(clientId)
+  private val consumerTopicStats = ConsumerTopicStatsRegistry
+    .getConsumerTopicStat(clientId)
 
   override def next(): MessageAndMetadata[K, V] = {
     val item = super.next()
@@ -66,8 +66,9 @@ class ConsumerIterator[K, V](
       if (consumerTimeoutMs < 0)
         currentDataChunk = channel.take
       else {
-        currentDataChunk =
-          channel.poll(consumerTimeoutMs, TimeUnit.MILLISECONDS)
+        currentDataChunk = channel.poll(
+          consumerTimeoutMs,
+          TimeUnit.MILLISECONDS)
         if (currentDataChunk == null) {
           // reset state to make the iterator re-iterable
           resetState()

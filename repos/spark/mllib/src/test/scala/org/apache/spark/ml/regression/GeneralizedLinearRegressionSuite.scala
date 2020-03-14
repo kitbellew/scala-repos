@@ -104,19 +104,22 @@ class GeneralizedLinearRegressionSuite
 
     datasetBinomial = {
       val nPoints = 10000
-      val coefficients =
-        Array(-0.57997, 0.912083, -0.371077, -0.819866, 2.688191)
+      val coefficients = Array(
+        -0.57997,
+        0.912083,
+        -0.371077,
+        -0.819866,
+        2.688191)
       val xMean = Array(5.843, 3.057, 3.758, 1.199)
       val xVariance = Array(0.6856, 0.1899, 3.116, 0.581)
 
-      val testData =
-        generateMultinomialLogisticInput(
-          coefficients,
-          xMean,
-          xVariance,
-          addIntercept = true,
-          nPoints,
-          seed)
+      val testData = generateMultinomialLogisticInput(
+        coefficients,
+        xMean,
+        xVariance,
+        addIntercept = true,
+        nPoints,
+        seed)
 
       sqlContext.createDataFrame(sc.parallelize(testData, 2))
     }
@@ -1056,10 +1059,16 @@ class GeneralizedLinearRegressionSuite
     val coefficientsR = Vectors.dense(Array(3.3241, -1.0818))
     val interceptR = 6.2999
     val devianceResidualsR = Array(-0.28952, 0.11048, 0.14839, -0.07268)
-    val pearsonResidualsR =
-      Array(-0.28043145, 0.11099310, 0.14963714, -0.07253611)
-    val workingResidualsR =
-      Array(-0.17960679, 0.02813593, 0.05113852, -0.01201650)
+    val pearsonResidualsR = Array(
+      -0.28043145,
+      0.11099310,
+      0.14963714,
+      -0.07253611)
+    val workingResidualsR = Array(
+      -0.17960679,
+      0.02813593,
+      0.05113852,
+      -0.01201650)
     val responseResidualsR = Array(-0.4378554, 0.2189277, 0.1459518, -0.1094638)
     val seCoefR = Array(1.0184, 0.3522, 1.6086)
     val tValsR = Array(3.264, -3.071, 3.916)
@@ -1188,10 +1197,16 @@ class GeneralizedLinearRegressionSuite
     val coefficientsR = Vectors.dense(Array(-0.72730, 0.23894))
     val interceptR = -0.81511
     val devianceResidualsR = Array(-0.26343, 0.05761, 0.12818, -0.03484)
-    val pearsonResidualsR =
-      Array(-0.24082508, 0.05839241, 0.13135766, -0.03463621)
-    val workingResidualsR =
-      Array(0.091414181, -0.005374314, -0.027196998, 0.001890910)
+    val pearsonResidualsR = Array(
+      -0.24082508,
+      0.05839241,
+      0.13135766,
+      -0.03463621)
+    val workingResidualsR = Array(
+      0.091414181,
+      -0.005374314,
+      -0.027196998,
+      0.001890910)
     val responseResidualsR = Array(-0.6344390, 0.3172195, 0.2114797, -0.1586097)
     val seCoefR = Array(0.16137, 0.05481, 0.23449)
     val tValsR = Array(-4.507, 4.359, -3.476)
@@ -1304,11 +1319,12 @@ object GeneralizedLinearRegressionSuite {
     def rndElement(i: Int) = {
       (rnd.nextDouble() - 0.5) * math.sqrt(12.0 * xVariance(i)) + xMean(i)
     }
-    val (generator, mean) = family match {
-      case "gaussian" => (new StandardNormalGenerator, 0.0)
-      case "poisson"  => (new PoissonGenerator(1.0), 1.0)
-      case "gamma"    => (new GammaGenerator(1.0, 1.0), 1.0)
-    }
+    val (generator, mean) =
+      family match {
+        case "gaussian" => (new StandardNormalGenerator, 0.0)
+        case "poisson"  => (new PoissonGenerator(1.0), 1.0)
+        case "gamma"    => (new GammaGenerator(1.0, 1.0), 1.0)
+      }
     generator.setSeed(seed)
 
     (0 until nPoints).map { _ =>
@@ -1316,12 +1332,13 @@ object GeneralizedLinearRegressionSuite {
         rndElement(_)
       }.toArray)
       val eta = BLAS.dot(Vectors.dense(coefficients), features) + intercept
-      val mu = link match {
-        case "identity" => eta
-        case "log"      => math.exp(eta)
-        case "sqrt"     => math.pow(eta, 2.0)
-        case "inverse"  => 1.0 / eta
-      }
+      val mu =
+        link match {
+          case "identity" => eta
+          case "log"      => math.exp(eta)
+          case "sqrt"     => math.pow(eta, 2.0)
+          case "inverse"  => 1.0 / eta
+        }
       val label = mu + noiseLevel * (generator.nextValue() - mean)
       // Return LabeledPoints with DenseVector
       LabeledPoint(label, features)

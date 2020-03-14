@@ -123,9 +123,10 @@ object Checkpoint {
       flowDef: FlowDef,
       conv: TupleConverter[A],
       setter: TupleSetter[A]): TypedPipe[A] = {
-    val rPipe = apply(checkpointName, Dsl.intFields(0 until conv.arity)) {
-      flow.toPipe(Dsl.intFields(0 until conv.arity))
-    }
+    val rPipe =
+      apply(checkpointName, Dsl.intFields(0 until conv.arity)) {
+        flow.toPipe(Dsl.intFields(0 until conv.arity))
+      }
     TypedPipe.from[A](rPipe, Dsl.intFields(0 until conv.arity))
   }
 
@@ -135,10 +136,9 @@ object Checkpoint {
   // TODO(mjahr): maybe move this to scalding.Args
   private case class CheckpointArg(checkpointName: String, argName: String)(
       implicit args: Args) {
-    val baseValue: Option[String] =
-      args.optional("checkpoint." + argName)
-    val overrideValue: Option[String] =
-      args.optional("checkpoint." + argName + "." + checkpointName)
+    val baseValue: Option[String] = args.optional("checkpoint." + argName)
+    val overrideValue: Option[String] = args.optional(
+      "checkpoint." + argName + "." + checkpointName)
     def value: Option[String] =
       if (overrideValue.isDefined) {
         overrideValue
@@ -174,10 +174,11 @@ object Checkpoint {
   // determined by the flag --checkpoint.format, and defaults to SequenceFile.
   private def getFormat(
       checkpointName: String)(implicit args: Args, mode: Mode): String = {
-    val defaultFormat = mode match {
-      case Hdfs(_, _) | HadoopTest(_, _) => "sequencefile"
-      case _                             => "tsv"
-    }
+    val defaultFormat =
+      mode match {
+        case Hdfs(_, _) | HadoopTest(_, _) => "sequencefile"
+        case _                             => "tsv"
+      }
     CheckpointArg(checkpointName, "format").value
       .getOrElse(defaultFormat)
       .toLowerCase

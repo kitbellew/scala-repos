@@ -120,8 +120,8 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
         }
       }
 
-    val toAddress: Endpoint => Address = (ep: Endpoint) =>
-      Address(ep.getHost, ep.getPort)
+    val toAddress: Endpoint => Address =
+      (ep: Endpoint) => Address(ep.getHost, ep.getPort)
 
     (insts: Set[ServiceInstance]) =>
       insts.collect(filterShardId).collect(getEndpoint).map(toAddress)

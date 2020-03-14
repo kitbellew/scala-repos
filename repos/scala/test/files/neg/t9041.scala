@@ -10,11 +10,12 @@ trait Nope {
     trait CellSetter[A] {
       def setCell(cell: Cell, data: A): Unit
     }
-    implicit val bigDecimalCellSetter = new CellSetter[math.BigDecimal]() {
-      def setCell(cell: Cell, data: math.BigDecimal) {
-        cell.setCellValue(data)
+    implicit val bigDecimalCellSetter =
+      new CellSetter[math.BigDecimal]() {
+        def setCell(cell: Cell, data: math.BigDecimal) {
+          cell.setCellValue(data)
+        }
       }
-    }
     implicit class RichCell(cell: Cell) {
       def setCellValue[A](data: A)(implicit cellSetter: CellSetter[A]) =
         cellSetter.setCell(cell, data)

@@ -78,11 +78,12 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
     val partitionId = 0
 
     // create topic with 1 partition, 2 replicas, one on each broker
-    val leader1 = createTopic(
-      zkUtils,
-      topic,
-      partitionReplicaAssignment = Map(0 -> Seq(0, 1)),
-      servers = servers)(0)
+    val leader1 =
+      createTopic(
+        zkUtils,
+        topic,
+        partitionReplicaAssignment = Map(0 -> Seq(0, 1)),
+        servers = servers)(0)
 
     val leaderEpoch1 = zkUtils.getEpochForPartition(topic, partitionId)
     debug("leader Epoc: " + leaderEpoch1)
@@ -156,11 +157,12 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
     val partitionId = 0
 
     // create topic with 1 partition, 2 replicas, one on each broker
-    val leader1 = createTopic(
-      zkUtils,
-      topic,
-      partitionReplicaAssignment = Map(0 -> Seq(0, 1)),
-      servers = servers)(0)
+    val leader1 =
+      createTopic(
+        zkUtils,
+        topic,
+        partitionReplicaAssignment = Map(0 -> Seq(0, 1)),
+        servers = servers)(0)
 
     val leaderEpoch1 = zkUtils.getEpochForPartition(topic, partitionId)
     debug("leader Epoc: " + leaderEpoch1)
@@ -190,11 +192,12 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
     val controllerContext = new ControllerContext(zkUtils, 6000)
     controllerContext.liveBrokers = brokers.toSet
     val metrics = new Metrics
-    val controllerChannelManager = new ControllerChannelManager(
-      controllerContext,
-      controllerConfig,
-      new SystemTime,
-      metrics)
+    val controllerChannelManager =
+      new ControllerChannelManager(
+        controllerContext,
+        controllerConfig,
+        new SystemTime,
+        metrics)
     controllerChannelManager.startup()
     try {
       val staleControllerEpoch = 0
@@ -207,11 +210,12 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
           LeaderAndIsr.initialZKVersion,
           Set(0, 1).map(Integer.valueOf).asJava)
       )
-      val leaderAndIsrRequest = new LeaderAndIsrRequest(
-        controllerId,
-        staleControllerEpoch,
-        partitionStates.asJava,
-        brokerEndPoints.toSet.asJava)
+      val leaderAndIsrRequest =
+        new LeaderAndIsrRequest(
+          controllerId,
+          staleControllerEpoch,
+          partitionStates.asJava,
+          brokerEndPoints.toSet.asJava)
 
       controllerChannelManager.sendRequest(
         brokerId2,

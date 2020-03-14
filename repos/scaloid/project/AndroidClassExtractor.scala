@@ -11,10 +11,13 @@ import scala.collection.JavaConversions._
 
 object AndroidClassExtractor extends JavaConversionHelpers {
 
-  private val sourceJars: List[JarFile] =
-    getClass.getClassLoader.getResources("android").toList.map { binUrl =>
-      val binFile = new File(
-        binUrl.toString.split("/|!").tail.dropRight(2).mkString("/", "/", ""))
+  private val sourceJars: List[JarFile] = getClass.getClassLoader
+    .getResources("android")
+    .toList
+    .map { binUrl =>
+      val binFile =
+        new File(
+          binUrl.toString.split("/|!").tail.dropRight(2).mkString("/", "/", ""))
       val basePath = binFile.getParentFile.getParentFile
       new JarFile(basePath / "srcs" / (binFile.base + "-sources.jar"))
     }
@@ -64,23 +67,21 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       .map(toScalaType)
       .filter(_.name.startsWith("android"))
 
-    val superProps: Set[String] =
-      superClass
-        .map {
-          Introspector
-            .getBeanInfo(_)
-            .getPropertyDescriptors
-            .map(propDescSignature)
-            .toSet[String]
-        }
-        .getOrElse(Set())
+    val superProps: Set[String] = superClass
+      .map {
+        Introspector
+          .getBeanInfo(_)
+          .getPropertyDescriptors
+          .map(propDescSignature)
+          .toSet[String]
+      }
+      .getOrElse(Set())
 
-    val superMethods: Set[String] =
-      superClass
-        .map {
-          _.getMethods.map(methodSignature).toSet
-        }
-        .getOrElse(Set())
+    val superMethods: Set[String] = superClass
+      .map {
+        _.getMethods.map(methodSignature).toSet
+      }
+      .getOrElse(Set())
 
     def toAndroidMethod(m: Method): AndroidMethod = {
       val name = m.getName
@@ -181,8 +182,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
               None
             else {
               val nameClashes = allMethodNames(name) || superGetterExists
-              val tpe =
-                getter.map(_.retType).getOrElse(setters.head.argTypes.head)
+              val tpe = getter
+                .map(_.retType)
+                .getOrElse(setters.head.argTypes.head)
               val switch =
                 if (name.endsWith("Enabled"))
                   Some(name.replace("Enabled", "").capitalize)
@@ -220,25 +222,25 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def toAndroidListeners(method: Method): List[AndroidListener] = {
       val setter = method.getName
       val setterArgTypes = method.getGenericParameterTypes.toList
-      val listenerCls: Class[_] = setterArgTypes.collectFirst {
-        case c: Class[_]
-            if c.getName.matches(".+(Listener|Manager|Observer|Watcher).*") =>
-          c
-      } match {
-        case Some(c) => c
-        case None    => classOf[Any] // Failed to find listener argument by type
-      }
-      val callbackMethods = extractMethodsFromListener(listenerCls)
-      val androidCallbackMethods =
-        callbackMethods.map { cm =>
-          AndroidCallbackMethod(
-            cm.name,
-            cm.retType,
-            cm.argTypes,
-            false,
-            cm.isDeprecated
-          )
+      val listenerCls: Class[_] =
+        setterArgTypes.collectFirst {
+          case c: Class[_]
+              if c.getName.matches(".+(Listener|Manager|Observer|Watcher).*") =>
+            c
+        } match {
+          case Some(c) => c
+          case None    => classOf[Any] // Failed to find listener argument by type
         }
+      val callbackMethods = extractMethodsFromListener(listenerCls)
+      val androidCallbackMethods = callbackMethods.map { cm =>
+        AndroidCallbackMethod(
+          cm.name,
+          cm.retType,
+          cm.argTypes,
+          false,
+          cm.isDeprecated
+        )
+      }
 
       def listenerName(
           am: AndroidMethod,
@@ -343,26 +345,29 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       }
 
       val javaTypes = cons.getGenericParameterTypes.toList
-      val typeStrs = javaTypes.reverse match {
-        case Nil => Nil
-        case last :: init =>
-          (toTypeStr(last, isVarArgs, true) :: init.map(
-            toTypeStr(_, isVarArgs, false))).reverse
-      }
+      val typeStrs =
+        javaTypes.reverse match {
+          case Nil => Nil
+          case last :: init =>
+            (toTypeStr(last, isVarArgs, true) :: init.map(
+              toTypeStr(_, isVarArgs, false))).reverse
+        }
 
-      val args = typeStrs match {
-        case Nil => Nil
-        case _ =>
-          val paramNames = constructorNames.get(typeStrs) match {
-            case Some(ns) => ns
-            case None     => looseConstructorLookup(typeStrs).get
-          }
-          val types = javaTypes.map(toScalaType)
+      val args =
+        typeStrs match {
+          case Nil => Nil
+          case _ =>
+            val paramNames =
+              constructorNames.get(typeStrs) match {
+                case Some(ns) => ns
+                case None     => looseConstructorLookup(typeStrs).get
+              }
+            val types = javaTypes.map(toScalaType)
 
-          paramNames.zip(types).map {
-            case (n, t) => Argument(n, t)
-          }
-      }
+            paramNames.zip(types).map {
+              case (n, t) => Argument(n, t)
+            }
+        }
 
       val (implicits, explicits) = args.partition(isImplicit)
       val paramedTypes =
@@ -429,10 +434,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       else {
         s.log.info("Extracting class info from Android...")
 
-        val classLoaders =
-          List(
-            ClasspathHelper.contextClassLoader(),
-            ClasspathHelper.staticClassLoader())
+        val classLoaders = List(
+          ClasspathHelper.contextClassLoader(),
+          ClasspathHelper.staticClassLoader())
 
         val inputFilter = new FilterBuilder()
           .include(FilterBuilder.prefix("android"))
@@ -441,36 +445,38 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           ) // excluding some classes that depends on the Android library ABOVE 2.1.1
           .exclude(".*Compat.*")
 
-        val r = new Reflections(
-          new ConfigurationBuilder()
-            .addClassLoaders(classLoaders: _*)
-            .setScanners(new SubTypesScanner(false), new ResourcesScanner())
-            .setUrls(ClasspathHelper.forClassLoader(classLoaders: _*))
-            .filterInputsBy(inputFilter))
+        val r =
+          new Reflections(
+            new ConfigurationBuilder()
+              .addClassLoaders(classLoaders: _*)
+              .setScanners(new SubTypesScanner(false), new ResourcesScanner())
+              .setUrls(ClasspathHelper.forClassLoader(classLoaders: _*))
+              .filterInputsBy(inputFilter))
 
         val clss = asScalaSet(r.getSubTypesOf(classOf[java.lang.Object]))
-        val res = clss.toList
-          .filter(isPublic)
-          .filter {
-            !_.getName.contains(
-              "$"
-            ) // excludes inner classes for now - let's deal with it later
-          }
-          .filter { n =>
-            val name = n.toString
-            !name.contains("webkit") || name.contains(
-              "WebView"
-            ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
-          }
-          .filter {
-            !_.getName.contains(
-              "RemoteViewsService"
-            ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
-          }
-          .filter(sourceExists)
-          .map(toAndroidClass)
-          .map(c => c.tpe.name -> c)
-          .toMap
+        val res =
+          clss.toList
+            .filter(isPublic)
+            .filter {
+              !_.getName.contains(
+                "$"
+              ) // excludes inner classes for now - let's deal with it later
+            }
+            .filter { n =>
+              val name = n.toString
+              !name.contains("webkit") || name.contains(
+                "WebView"
+              ) // excludes android.webkit.* in Android 2.1.1, which is deprecated
+            }
+            .filter {
+              !_.getName.contains(
+                "RemoteViewsService"
+              ) // excludes RemoteViewsService, because it is packaged weird place "android.view"
+            }
+            .filter(sourceExists)
+            .map(toAndroidClass)
+            .map(c => c.tpe.name -> c)
+            .toMap
 
         val values = res.values.toList
         s.log.info("Done.")

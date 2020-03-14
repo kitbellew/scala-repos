@@ -49,8 +49,8 @@ import scala.collection.{Map => CMap}
   * The primary difference between those two being the the presents of map side aggreagtion in a final flatmap.
   */
 object FlatMapBoltProvider {
-  @transient private val logger =
-    LoggerFactory.getLogger(FlatMapBoltProvider.getClass)
+  @transient private val logger = LoggerFactory.getLogger(
+    FlatMapBoltProvider.getClass)
   private def wrapTimeBatchIDKV[T, K, V](
       existingOp: FlatMapOperation[T, (K, V)])(batcher: Batcher)
       : FlatMapOperation[(Timestamp, T), ((K, BatchID), (Timestamp, V))] =
@@ -125,8 +125,9 @@ case class FlatMapBoltProvider(
     // Query to get the summer paralellism of the summer down stream of us we are emitting to
     // to ensure no edge case between what we might see for its parallelism and what it would see/pass to storm.
     val summerParalellism = getOrElse(DEFAULT_SUMMER_PARALLELISM, summer)
-    val summerBatchMultiplier =
-      getOrElse(DEFAULT_SUMMER_BATCH_MULTIPLIER, summer)
+    val summerBatchMultiplier = getOrElse(
+      DEFAULT_SUMMER_BATCH_MULTIPLIER,
+      summer)
 
     // This option we report its value here, but its not user settable.
     val keyValueShards = executor.KeyValueShards(
@@ -186,12 +187,13 @@ case class FlatMapBoltProvider(
   }
 
   def apply: BaseBolt[Any, Any] = {
-    val summerOpt: Option[SummerNode[Storm]] = stormDag
-      .dependantsOf(node)
-      .collect {
-        case s: SummerNode[Storm] => s
-      }
-      .headOption
+    val summerOpt: Option[SummerNode[Storm]] =
+      stormDag
+        .dependantsOf(node)
+        .collect {
+          case s: SummerNode[Storm] => s
+        }
+        .headOption
     summerOpt match {
       case Some(s) =>
         getFFMBolt[Any, Any, Any](s).asInstanceOf[BaseBolt[Any, Any]]

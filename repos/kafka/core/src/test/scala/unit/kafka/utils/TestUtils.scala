@@ -814,8 +814,9 @@ object TestUtils extends Logging {
         val partition = leaderForPartition._1
         val leader = leaderForPartition._2
         try {
-          val currentLeaderAndIsrOpt =
-            zkUtils.getLeaderAndIsrForPartition(topic, partition)
+          val currentLeaderAndIsrOpt = zkUtils.getLeaderAndIsrForPartition(
+            topic,
+            partition)
           var newLeaderAndIsr: LeaderAndIsr = null
           if (currentLeaderAndIsrOpt == None)
             newLeaderAndIsr = new LeaderAndIsr(leader, List(leader))
@@ -993,8 +994,8 @@ object TestUtils extends Logging {
     TestUtils.waitUntilTrue(
       () =>
         servers.foldLeft(true) { (result, server) =>
-          val partitionStateOpt =
-            server.apis.metadataCache.getPartitionInfo(topic, partition)
+          val partitionStateOpt = server.apis.metadataCache
+            .getPartitionInfo(topic, partition)
           partitionStateOpt match {
             case None => false
             case Some(partitionState) =>
@@ -1049,8 +1050,9 @@ object TestUtils extends Logging {
       topic: String,
       partitionToBeReassigned: Int,
       assignedReplicas: Seq[Int]) {
-    val inSyncReplicas =
-      zkUtils.getInSyncReplicasForPartition(topic, partitionToBeReassigned)
+    val inSyncReplicas = zkUtils.getInSyncReplicasForPartition(
+      topic,
+      partitionToBeReassigned)
     // in sync replicas should not have any replica that is not in the new assigned replicas
     val phantomInSyncReplicas = inSyncReplicas.toSet -- assignedReplicas.toSet
     assertTrue(
@@ -1067,8 +1069,8 @@ object TestUtils extends Logging {
       servers: Seq[KafkaServer]) {
     TestUtils.waitUntilTrue(
       () => {
-        val inSyncReplicas =
-          zkUtils.getInSyncReplicasForPartition(topic, partitionToBeReassigned)
+        val inSyncReplicas = zkUtils
+          .getInSyncReplicasForPartition(topic, partitionToBeReassigned)
         inSyncReplicas.size == assignedReplicas.size
       },
       "Reassigned partition [%s,%d] is under replicated"
@@ -1147,14 +1149,13 @@ object TestUtils extends Logging {
 
     // Specific Partition
     if (partition >= 0) {
-      val producer: Producer[Int, String] =
-        createProducer(
-          TestUtils.getBrokerListStrFromServers(servers),
-          encoder = classOf[StringEncoder].getName,
-          keyEncoder = classOf[IntEncoder].getName,
-          partitioner = classOf[FixedValuePartitioner].getName,
-          producerProps = props
-        )
+      val producer: Producer[Int, String] = createProducer(
+        TestUtils.getBrokerListStrFromServers(servers),
+        encoder = classOf[StringEncoder].getName,
+        keyEncoder = classOf[IntEncoder].getName,
+        partitioner = classOf[FixedValuePartitioner].getName,
+        producerProps = props
+      )
 
       producer.send(
         ms.map(m => new KeyedMessage[Int, String](topic, partition, m)): _*)
@@ -1269,8 +1270,8 @@ object TestUtils extends Logging {
       topic: String,
       numPartitions: Int,
       servers: Seq[KafkaServer]) {
-    val topicAndPartitions =
-      (0 until numPartitions).map(TopicAndPartition(topic, _))
+    val topicAndPartitions = (0 until numPartitions).map(
+      TopicAndPartition(topic, _))
     // wait until admin path for delete topic is deleted, signaling completion of topic deletion
     TestUtils.waitUntilTrue(
       () => !zkUtils.pathExists(getDeleteTopicPath(topic)),
@@ -1354,17 +1355,18 @@ object TestUtils extends Logging {
 
   // a X509TrustManager to trust self-signed certs for unit tests.
   def trustAllCerts: X509TrustManager = {
-    val trustManager = new X509TrustManager() {
-      override def getAcceptedIssuers: Array[X509Certificate] = {
-        null
+    val trustManager =
+      new X509TrustManager() {
+        override def getAcceptedIssuers: Array[X509Certificate] = {
+          null
+        }
+        override def checkClientTrusted(
+            certs: Array[X509Certificate],
+            authType: String) {}
+        override def checkServerTrusted(
+            certs: Array[X509Certificate],
+            authType: String) {}
       }
-      override def checkClientTrusted(
-          certs: Array[X509Certificate],
-          authType: String) {}
-      override def checkServerTrusted(
-          certs: Array[X509Certificate],
-          authType: String) {}
-    }
     trustManager
   }
 
@@ -1397,14 +1399,16 @@ object TestUtils extends Logging {
     val threadPool = Executors.newFixedThreadPool(numThreads)
     val exceptions = ArrayBuffer[Throwable]()
     try {
-      val runnables = functions.map { function =>
-        new Callable[Unit] {
-          override def call(): Unit = function()
-        }
-      }.asJava
-      val futures = threadPool
-        .invokeAll(runnables, timeoutMs, TimeUnit.MILLISECONDS)
-        .asScala
+      val runnables =
+        functions.map { function =>
+          new Callable[Unit] {
+            override def call(): Unit = function()
+          }
+        }.asJava
+      val futures =
+        threadPool
+          .invokeAll(runnables, timeoutMs, TimeUnit.MILLISECONDS)
+          .asScala
       futures.foreach { future =>
         if (future.isCancelled)
           failWithTimeout()

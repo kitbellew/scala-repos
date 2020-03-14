@@ -7,10 +7,9 @@ import docs.http.scaladsl.server.RoutingSpec
 
 class SchemeDirectivesExamplesSpec extends RoutingSpec {
   "example-1" in {
-    val route =
-      extractScheme { scheme =>
-        complete(s"The scheme is '${scheme}'")
-      }
+    val route = extractScheme { scheme =>
+      complete(s"The scheme is '${scheme}'")
+    }
 
     // tests:
     Get("https://www.example.com/") ~> route ~> check {

@@ -74,17 +74,18 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
     vfs.findDirectChildren(apiKey, path) map { paths =>
       JArray(
         (paths map { p =>
-          val fields: Map[String, JValue] = p.pathType match {
-            case DataDir(contentType) =>
-              Map(
-                "contentType" -> JString(contentType.value),
-                "type" -> JArray(JString("file"), JString("directory")))
-            case DataOnly(contentType) =>
-              Map(
-                "contentType" -> JString(contentType.value),
-                "type" -> JArray(JString("file")))
-            case PathOnly => Map("type" -> JArray(JString("directory")))
-          }
+          val fields: Map[String, JValue] =
+            p.pathType match {
+              case DataDir(contentType) =>
+                Map(
+                  "contentType" -> JString(contentType.value),
+                  "type" -> JArray(JString("file"), JString("directory")))
+              case DataOnly(contentType) =>
+                Map(
+                  "contentType" -> JString(contentType.value),
+                  "type" -> JArray(JString("file")))
+              case PathOnly => Map("type" -> JArray(JString("directory")))
+            }
           JObject(fields + ("name" -> JString(p.path.path.substring(1))))
         }).toSeq: _*
       )
@@ -137,96 +138,99 @@ class BrowseServiceHandler[A](
     with CustomHttpService[A, (APIKey, Path) => Future[HttpResponse[JValue]]]
     with Logging {
 
-  val service = (request: HttpRequest[A]) =>
-    success { (apiKey: APIKey, path: Path) =>
-      request.parameters.get('type).map(_.toLowerCase) map {
-        case "size" =>
-          size(apiKey, path) map { sz =>
-            JObject("size" -> sz)
-          }
+  val service =
+    (request: HttpRequest[A]) =>
+      success { (apiKey: APIKey, path: Path) =>
+        request.parameters.get('type).map(_.toLowerCase) map {
+          case "size" =>
+            size(apiKey, path) map { sz =>
+              JObject("size" -> sz)
+            }
 
-        case "children" =>
-          val kids =
-            if (legacy)
+          case "children" =>
+            val kids =
+              if (legacy)
+                children(apiKey, path)
+              else
+                browse(apiKey, path)
+            kids map { paths =>
+              JObject("children" -> paths)
+            }
+
+          case "structure" =>
+            val cpath = request.parameters
+              .get('property)
+              .map(CPath(_))
+              .getOrElse(CPath.Identity)
+            structure(apiKey, path, cpath) map { detail =>
+              JObject("structure" -> detail)
+            }
+
+        } getOrElse {
+          logger.debug(
+            "Retrieving all available metadata for %s as %s"
+              .format(path.path, apiKey))
+          for {
+            sz <- size(apiKey, path)
+            children <- if (legacy)
               children(apiKey, path)
             else
               browse(apiKey, path)
-          kids map { paths =>
-            JObject("children" -> paths)
+            struct <- structure(apiKey, path, CPath.Identity)
+          } yield {
+            JObject(
+              "size" -> sz,
+              "children" -> children,
+              "structure" -> struct).normalize
           }
-
-        case "structure" =>
-          val cpath = request.parameters
-            .get('property)
-            .map(CPath(_))
-            .getOrElse(CPath.Identity)
-          structure(apiKey, path, cpath) map { detail =>
-            JObject("structure" -> detail)
-          }
-
-      } getOrElse {
-        logger.debug(
-          "Retrieving all available metadata for %s as %s"
-            .format(path.path, apiKey))
-        for {
-          sz <- size(apiKey, path)
-          children <- if (legacy)
-            children(apiKey, path)
-          else
-            browse(apiKey, path)
-          struct <- structure(apiKey, path, CPath.Identity)
-        } yield {
-          JObject(
-            "size" -> sz,
-            "children" -> children,
-            "structure" -> struct).normalize
-        }
-      } map { content0 =>
-        HttpResponse[JValue](OK, content = Some(content0))
-      } valueOr {
-        _.fold(
-          fatalError => {
-            logger.error(
-              "A fatal error was encountered handling browse request %s: %s"
-                .format(request.shows, fatalError))
-            HttpResponse[JValue](
-              InternalServerError,
-              content = Some(JObject(
-                "errors" -> JArray("sorry, we're looking into it!".serialize))))
-          },
-          {
-            case ResourceError.NotFound(message) =>
-              HttpResponse[JValue](
-                HttpStatusCodes.NotFound,
-                content = Some(JObject("errors" -> JArray(
-                  "Could not find any resource that corresponded to path %s: %s"
-                    .format(path.path, message)
-                    .serialize)))
-              )
-
-            case PermissionsError(message) =>
-              HttpResponse[JValue](
-                Forbidden,
-                content = Some(
-                  JObject("errors" -> JArray(
-                    "API key %s does not have the ability to browse path %s: %s"
-                      .format(apiKey, path.path, message)
-                      .serialize)))
-              )
-
-            case unexpected =>
+        } map { content0 =>
+          HttpResponse[JValue](OK, content = Some(content0))
+        } valueOr {
+          _.fold(
+            fatalError => {
               logger.error(
-                "An unexpected error was encountered handling browse request %s: %s"
-                  .format(request.shows, unexpected))
+                "A fatal error was encountered handling browse request %s: %s"
+                  .format(request.shows, fatalError))
               HttpResponse[JValue](
                 InternalServerError,
                 content = Some(
-                  JObject(
-                    "errors" -> "sorry, we're looking into it!".serialize)))
-          }
-        )
+                  JObject("errors" -> JArray(
+                    "sorry, we're looking into it!".serialize))))
+            },
+            {
+              case ResourceError.NotFound(message) =>
+                HttpResponse[JValue](
+                  HttpStatusCodes.NotFound,
+                  content = Some(
+                    JObject(
+                      "errors" -> JArray(
+                        "Could not find any resource that corresponded to path %s: %s"
+                          .format(path.path, message)
+                          .serialize)))
+                )
+
+              case PermissionsError(message) =>
+                HttpResponse[JValue](
+                  Forbidden,
+                  content = Some(JObject("errors" -> JArray(
+                    "API key %s does not have the ability to browse path %s: %s"
+                      .format(apiKey, path.path, message)
+                      .serialize)))
+                )
+
+              case unexpected =>
+                logger.error(
+                  "An unexpected error was encountered handling browse request %s: %s"
+                    .format(request.shows, unexpected))
+                HttpResponse[JValue](
+                  InternalServerError,
+                  content = Some(
+                    JObject(
+                      "errors" -> "sorry, we're looking into it!".serialize)))
+            }
+          )
+        }
       }
-    }
 
   val metadata = DescriptionMetadata(
     """Browse the children of the given path.""")

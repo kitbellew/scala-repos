@@ -215,13 +215,15 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       }
     } else if (c == '.' && ScalaPsiUtil.isLineTerminator(prevElement)) {
       //hacky way to introduce indent without calling formatter; this is better then turning formatting model into a mess
-      val indent = CodeStyleSettingsManager
-        .getSettings(project)
-        .getCommonSettings(ScalaLanguage.Instance)
-        .getIndentOptions
-        .CONTINUATION_INDENT_SIZE
-      val indentString = (for (i <- 1 to indent)
-        yield " ").foldLeft("")(_ + _)
+      val indent =
+        CodeStyleSettingsManager
+          .getSettings(project)
+          .getCommonSettings(ScalaLanguage.Instance)
+          .getIndentOptions
+          .CONTINUATION_INDENT_SIZE
+      val indentString =
+        (for (i <- 1 to indent)
+          yield " ").foldLeft("")(_ + _)
       extensions.inWriteAction {
         val document = editor.getDocument
         document.insertString(offset, indentString)
@@ -656,8 +658,11 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
 
 object ScalaTypedHandler {
   val wiki1LTagMatch = Set("^", "`")
-  val wiki2LTagMatch =
-    Map("__" -> "__", "''" -> "''", ",," -> ",,", "[[" -> "]]")
+  val wiki2LTagMatch = Map(
+    "__" -> "__",
+    "''" -> "''",
+    ",," -> ",,",
+    "[[" -> "]]")
 
   val unicodeCaseArrow = "⇒"
   val unicodeMapArrow = "→"

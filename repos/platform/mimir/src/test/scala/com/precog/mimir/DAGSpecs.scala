@@ -122,8 +122,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     }
 
     "parse out distinct" in {
-      val result =
-        decorate(Vector(Line(1, 1, ""), PushNull, instructions.Distinct))
+      val result = decorate(
+        Vector(Line(1, 1, ""), PushNull, instructions.Distinct))
       result mustEqual Right(
         dag.Distinct(Const(CNull)(Line(1, 1, "")))(Line(1, 1, "")))
     }
@@ -152,31 +152,33 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         ))
 
       val line = Line(1, 1, "")
-      val medals = dag.AbsoluteLoad(
-        Const(CString("/summer_games/london_medals"))(line))(line)
+      val medals =
+        dag.AbsoluteLoad(Const(CString("/summer_games/london_medals"))(line))(
+          line)
 
-      val expected = Join(
-        JoinArray,
-        Cross(None),
-        Operate(
-          WrapArray,
-          dag.Reduce(
-            Reduction(Vector(), "max", 0x2001),
-            Join(
-              DerefObject,
-              Cross(None),
-              medals,
-              Const(CString("Weight"))(line))(line))(line))(line),
-        Operate(
-          WrapArray,
-          dag.Reduce(
-            Reduction(Vector(), "max", 0x2001),
-            Join(
-              DerefObject,
-              Cross(None),
-              medals,
-              Const(CString("HeightIncm"))(line))(line))(line))(line)
-      )(line)
+      val expected =
+        Join(
+          JoinArray,
+          Cross(None),
+          Operate(
+            WrapArray,
+            dag.Reduce(
+              Reduction(Vector(), "max", 0x2001),
+              Join(
+                DerefObject,
+                Cross(None),
+                medals,
+                Const(CString("Weight"))(line))(line))(line))(line),
+          Operate(
+            WrapArray,
+            dag.Reduce(
+              Reduction(Vector(), "max", 0x2001),
+              Join(
+                DerefObject,
+                Cross(None),
+                medals,
+                Const(CString("HeightIncm"))(line))(line))(line))(line)
+        )(line)
 
       result mustEqual Right(expected)
     }
@@ -608,24 +610,27 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         )
       )
 
-      val expectedTarget = Join(
-        JoinObject,
-        Cross(None),
+      val expectedTarget =
         Join(
-          WrapObject,
+          JoinObject,
           Cross(None),
-          Const(CString("revenue"))(line),
-          SplitParam(1, id)(line))(line),
-        Join(
-          WrapObject,
-          Cross(None),
-          Const(CString("num"))(line),
-          dag.Reduce(
-            Reduction(Vector(), "count", 0x002000),
-            SplitGroup(4, Identities.Specs(Vector(LoadIds("/campaigns"))), id)(
-              line))(line)
+          Join(
+            WrapObject,
+            Cross(None),
+            Const(CString("revenue"))(line),
+            SplitParam(1, id)(line))(line),
+          Join(
+            WrapObject,
+            Cross(None),
+            Const(CString("num"))(line),
+            dag.Reduce(
+              Reduction(Vector(), "count", 0x002000),
+              SplitGroup(
+                4,
+                Identities.Specs(Vector(LoadIds("/campaigns"))),
+                id)(line))(line)
+          )(line)
         )(line)
-      )(line)
 
       val expectedSplit = dag.Split(expectedSpec, expectedTarget, id)(line)
 
@@ -650,8 +655,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       "assert" >> {
         val line = Line(1, 1, "")
-        val result =
-          decorate(Vector(line, PushTrue, PushNum("42"), instructions.Assert))
+        val result = decorate(
+          Vector(line, PushTrue, PushNum("42"), instructions.Assert))
         result mustEqual Right(
           dag.Assert(Const(CTrue)(line), Const(CLong(42))(line))(line))
       }
@@ -694,8 +699,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
     "continue processing beyond a filter" in {
       val line = Line(1, 1, "")
-      val result =
-        decorate(Vector(line, PushFalse, PushTrue, FilterMatch, Map1(Neg)))
+      val result = decorate(
+        Vector(line, PushFalse, PushTrue, FilterMatch, Map1(Neg)))
       result mustEqual Right(
         Operate(
           Neg,
@@ -713,8 +718,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       {
         val line = Line(1, 1, "")
-        val result =
-          decorate(Vector(line, PushNum("42"), Map1(Neg), Dup, IUnion))
+        val result = decorate(
+          Vector(line, PushNum("42"), Map1(Neg), Dup, IUnion))
         result mustEqual Right(
           IUI(
             true,
@@ -726,8 +731,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "parse and factor a swap" in {
       "1" >> {
         val line = Line(1, 1, "")
-        val result =
-          decorate(Vector(line, PushFalse, PushTrue, Swap(1), IUnion))
+        val result = decorate(
+          Vector(line, PushFalse, PushTrue, Swap(1), IUnion))
         result mustEqual Right(
           IUI(true, Const(CTrue)(line), Const(CFalse)(line))(line))
       }
@@ -1033,17 +1038,18 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
           IIntersect
         ))
 
-      val split = dag.Split(
-        dag.Group(
-          2,
-          Const(CLong(12))(line),
-          UnfixedSolution(1, Const(CLong(42))(line))),
-        IUI(
-          true,
-          SplitGroup(2, Identities.Specs(Vector()), id)(line),
-          Const(CTrue)(line))(line),
-        id
-      )(line)
+      val split =
+        dag.Split(
+          dag.Group(
+            2,
+            Const(CLong(12))(line),
+            UnfixedSolution(1, Const(CLong(42))(line))),
+          IUI(
+            true,
+            SplitGroup(2, Identities.Specs(Vector()), id)(line),
+            Const(CTrue)(line))(line),
+          id
+        )(line)
 
       val expect = IUI(false, Const(CFalse)(line), split)(line)
 
@@ -1092,10 +1098,11 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       val id = new Identifier
 
-      val input = dag.Split(
-        dag.Group(1, load, UnfixedSolution(0, load)),
-        SplitParam(0, id)(line),
-        id)(line)
+      val input =
+        dag.Split(
+          dag.Group(1, load, UnfixedSolution(0, load)),
+          SplitParam(0, id)(line),
+          id)(line)
 
       val result = input.mapDown { recurse =>
         {
@@ -1119,15 +1126,17 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       val id = new Identifier
 
-      val input = dag.Split(
-        dag.Group(1, load, UnfixedSolution(0, load)),
-        SplitParam(0, id)(line),
-        id)(line)
+      val input =
+        dag.Split(
+          dag.Group(1, load, UnfixedSolution(0, load)),
+          SplitParam(0, id)(line),
+          id)(line)
 
       import scalaz.std.anyVal._
-      val result = input.foldDown[Int](true) {
-        case _: AbsoluteLoad => 1
-      }
+      val result =
+        input.foldDown[Int](true) {
+          case _: AbsoluteLoad => 1
+        }
 
       result mustEqual 2
     }

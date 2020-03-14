@@ -148,20 +148,20 @@ package play.api.mvc {
     /**
       * The HTTP cookies.
       */
-    lazy val cookies: Cookies =
-      Cookies.fromCookieHeader(headers.get(play.api.http.HeaderNames.COOKIE))
+    lazy val cookies: Cookies = Cookies.fromCookieHeader(
+      headers.get(play.api.http.HeaderNames.COOKIE))
 
     /**
       * Parses the `Session` cookie and returns the `Session` data.
       */
-    lazy val session: Session =
-      Session.decodeFromCookie(cookies.get(Session.COOKIE_NAME))
+    lazy val session: Session = Session.decodeFromCookie(
+      cookies.get(Session.COOKIE_NAME))
 
     /**
       * Parses the `Flash` cookie and returns the `Flash` data.
       */
-    lazy val flash: Flash =
-      Flash.decodeFromCookie(cookies.get(Flash.COOKIE_NAME))
+    lazy val flash: Flash = Flash.decodeFromCookie(
+      cookies.get(Flash.COOKIE_NAME))
 
     /**
       * Returns the raw query string.
@@ -171,23 +171,25 @@ package play.api.mvc {
     /**
       * The media type of this request.  Same as contentType, except returns a fully parsed media type with parameters.
       */
-    lazy val mediaType: Option[MediaType] =
-      headers.get(HeaderNames.CONTENT_TYPE).flatMap(MediaType.parse.apply)
+    lazy val mediaType: Option[MediaType] = headers
+      .get(HeaderNames.CONTENT_TYPE)
+      .flatMap(MediaType.parse.apply)
 
     /**
       * Returns the value of the Content-Type header (without the parameters (eg charset))
       */
-    lazy val contentType: Option[String] =
-      mediaType.map(mt => mt.mediaType + "/" + mt.mediaSubType)
+    lazy val contentType: Option[String] = mediaType.map(mt =>
+      mt.mediaType + "/" + mt.mediaSubType)
 
     /**
       * Returns the charset of the request for text-based body
       */
-    lazy val charset: Option[String] = for {
-      mt <- mediaType
-      param <- mt.parameters.find(_._1.equalsIgnoreCase("charset"))
-      charset <- param._2
-    } yield charset
+    lazy val charset: Option[String] =
+      for {
+        mt <- mediaType
+        param <- mt.parameters.find(_._1.equalsIgnoreCase("charset"))
+        charset <- param._2
+      } yield charset
 
     /**
       * Convenience method for adding a single tag to this request
@@ -225,18 +227,19 @@ package play.api.mvc {
         _headers,
         _remoteAddress,
         _secure,
-        _clientCertificateChain) = (
-        id,
-        tags,
-        uri,
-        path,
-        method,
-        version,
-        queryString,
-        headers,
-        () => remoteAddress,
-        () => secure,
-        clientCertificateChain)
+        _clientCertificateChain) =
+        (
+          id,
+          tags,
+          uri,
+          path,
+          method,
+          version,
+          queryString,
+          headers,
+          () => remoteAddress,
+          () => secure,
+          clientCertificateChain)
       new RequestHeader {
         override val id = _id
         override val tags = _tags
@@ -533,8 +536,8 @@ package play.api.mvc {
     /**
       * Transform the Headers to a Map by ignoring multiple values.
       */
-    lazy val toSimpleMap: Map[String, String] =
-      toMap.mapValues(_.headOption.getOrElse(""))
+    lazy val toSimpleMap: Map[String, String] = toMap.mapValues(
+      _.headOption.getOrElse(""))
 
     override def toString = headers.toString()
 
@@ -1089,9 +1092,8 @@ package play.api.mvc {
     def mergeCookieHeader(
         cookieHeader: String,
         cookies: Seq[Cookie]): String = {
-      val tupledCookies =
-        (decodeCookieHeader(cookieHeader) ++ cookies).map(cookie =>
-          cookie.name -> cookie)
+      val tupledCookies = (decodeCookieHeader(cookieHeader) ++ cookies).map(
+        cookie => cookie.name -> cookie)
       // Put cookies in a map
       // Note: Seq.toMap do not preserve order
       val uniqCookies = scala.collection.immutable.ListMap(tupledCookies: _*)

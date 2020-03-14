@@ -159,8 +159,7 @@ private[http] object FrameHandler {
       else
         ctx.push(part)
     private def publishDirectResponse(frame: FrameStart)(
-        implicit ctx: Ctx): SyncDirective =
-      ctx.push(DirectAnswer(frame))
+        implicit ctx: Ctx): SyncDirective = ctx.push(DirectAnswer(frame))
 
     private def protocolError(reason: String = "")(
         implicit ctx: Ctx): SyncDirective =

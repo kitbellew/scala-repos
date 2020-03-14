@@ -39,19 +39,21 @@ trait PresentationCompilation {
       val compiler = newPresentationCompiler()
       val trees = compiler.newUnitParser(line1).parseStats()
       val importer = global.mkImporter(compiler)
-      val request = new Request(
-        line1,
-        trees map (t => importer.importTree(t)),
-        generousImports = true)
+      val request =
+        new Request(
+          line1,
+          trees map (t => importer.importTree(t)),
+          generousImports = true)
       val wrappedCode: String = request.ObjectSourceCode(request.handlers)
       val unit = compiler.newCompilationUnit(wrappedCode)
       import compiler._
       val richUnit = new RichCompilationUnit(unit.source)
       unitOfFile(richUnit.source.file) = richUnit
       enteringTyper(typeCheck(richUnit))
-      val result = PresentationCompileResult(compiler)(
-        richUnit,
-        request.ObjectSourceCode.preambleLength + line1.length - line.length)
+      val result =
+        PresentationCompileResult(compiler)(
+          richUnit,
+          request.ObjectSourceCode.preambleLength + line1.length - line.length)
       Right(result)
     }
   }
@@ -67,9 +69,10 @@ trait PresentationCompilation {
   def newPresentationCompiler(): interactive.Global = {
     val replOutClasspath: DirectoryClassPath =
       new DirectoryClassPath(replOutput.dir, DefaultJavaContext)
-    val mergedClasspath = new MergedClassPath[AbstractFile](
-      replOutClasspath :: global.platform.classPath :: Nil,
-      DefaultJavaContext)
+    val mergedClasspath =
+      new MergedClassPath[AbstractFile](
+        replOutClasspath :: global.platform.classPath :: Nil,
+        DefaultJavaContext)
     def copySettings: Settings = {
       val s = new Settings(_ => () /* ignores "bad option -nc" errors, etc */ )
       s.processArguments(global.settings.recreateArgs, processAll = false)
@@ -79,11 +82,12 @@ trait PresentationCompilation {
     val storeReporter: StoreReporter = new StoreReporter
     val interactiveGlobal =
       new interactive.Global(copySettings, storeReporter) { self =>
-        override lazy val platform: ThisPlatform = new JavaPlatform {
-          val global: self.type = self
+        override lazy val platform: ThisPlatform =
+          new JavaPlatform {
+            val global: self.type = self
 
-          override def classPath: PlatformClassPath = mergedClasspath
-        }
+            override def classPath: PlatformClassPath = mergedClasspath
+          }
       }
     new interactiveGlobal.TyperRun()
     interactiveGlobal

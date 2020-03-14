@@ -46,9 +46,10 @@ object Field {
     def %(a: Int, b: Int) = a % b
     def pow(a: Int, b: Int) = Math.pow(a, b).toInt
 
-    implicit val normImpl: norm.Impl[Int, Double] = new norm.Impl[Int, Double] {
-      def apply(v: Int) = v.abs.toDouble
-    }
+    implicit val normImpl: norm.Impl[Int, Double] =
+      new norm.Impl[Int, Double] {
+        def apply(v: Int) = v.abs.toDouble
+      }
   }
 
   /** Not a field, but whatever. */

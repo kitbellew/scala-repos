@@ -53,8 +53,8 @@ class CachingAccountFinder[M[+_]: Monad](
     settings: CachingAccountFinderSettings =
       CachingAccountFinderSettings.Default)
     extends AccountFinder[M] {
-  private val byKeyCache =
-    Cache.simple[APIKey, AccountId](settings.byKeyCacheSettings: _*)
+  private val byKeyCache = Cache.simple[APIKey, AccountId](
+    settings.byKeyCacheSettings: _*)
   private val byAccountIdCache = Cache.simple[AccountId, AccountDetails](
     settings.byAccountIdCacheSettings: _*)
 

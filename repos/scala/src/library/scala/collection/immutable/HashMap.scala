@@ -52,8 +52,7 @@ class HashMap[A, +B]
 
   override def foreach[U](f: ((A, B)) => U): Unit = ()
 
-  def get(key: A): Option[B] =
-    get0(key, computeHash(key), 0)
+  def get(key: A): Option[B] = get0(key, computeHash(key), 0)
 
   override def updated[B1 >: B](key: A, value: B1): HashMap[A, B1] =
     updated0(key, computeHash(key), 0, value, null, null)
@@ -64,11 +63,9 @@ class HashMap[A, +B]
   override def +[B1 >: B](
       elem1: (A, B1),
       elem2: (A, B1),
-      elems: (A, B1)*): HashMap[A, B1] =
-    this + elem1 + elem2 ++ elems
+      elems: (A, B1)*): HashMap[A, B1] = this + elem1 + elem2 ++ elems
 
-  def -(key: A): HashMap[A, B] =
-    removed0(key, computeHash(key), 0)
+  def -(key: A): HashMap[A, B] = removed0(key, computeHash(key), 0)
 
   override def tail: HashMap[A, B] = this - head._1
 
@@ -175,10 +172,11 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     new Merger[A1, B1] {
       self =>
       def apply(kv1: (A1, B1), kv2: (A1, B1)): (A1, B1) = mergef(kv1, kv2)
-      val invert: Merger[A1, B1] = new Merger[A1, B1] {
-        def apply(kv1: (A1, B1), kv2: (A1, B1)): (A1, B1) = mergef(kv2, kv1)
-        def invert: Merger[A1, B1] = self
-      }
+      val invert: Merger[A1, B1] =
+        new Merger[A1, B1] {
+          def apply(kv1: (A1, B1), kv2: (A1, B1)): (A1, B1) = mergef(kv2, kv1)
+          def invert: Merger[A1, B1] = self
+        }
     }
 
   /** $mapCanBuildFromInfo */
@@ -535,13 +533,14 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         val length = offset - offset0
         val elems1 = new Array[HashMap[A, B]](length)
         System.arraycopy(buffer, offset0, elems1, 0, length)
-        val bitmap1 = if (length == elems.length) {
-          // we can reuse the original bitmap
-          bitmap
-        } else {
-          // calculate new bitmap by keeping just bits in the kept bitmask
-          keepBits(bitmap, kept)
-        }
+        val bitmap1 =
+          if (length == elems.length) {
+            // we can reuse the original bitmap
+            bitmap
+          } else {
+            // calculate new bitmap by keeping just bits in the kept bitmask
+            keepBits(bitmap, kept)
+          }
         new HashTrieMap(bitmap1, elems1, rs)
       }
     }
@@ -630,8 +629,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
 
             // collision
             if (thislsb == thatlsb) {
-              val m =
-                thiselems(thisi).merge0(thatelems(thati), level + 5, merger)
+              val m = thiselems(thisi).merge0(
+                thatelems(thati),
+                level + 5,
+                merger)
               totalelems += m.size
               merged(i) = m
               thisbm = thisbm & ~thislsb

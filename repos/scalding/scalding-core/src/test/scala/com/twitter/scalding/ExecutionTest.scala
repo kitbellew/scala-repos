@@ -131,10 +131,11 @@ class ExecutionTest extends WordSpec with Matchers {
         in.mapValues(_ * 2).toList ++ in.mapValues(_ * 3)
       }
       val input = (0 to 100).toList
-      val result = ExecutionTestJobs
-        .mergeFanout(input)
-        .waitFor(Config.default, Local(false))
-        .get
+      val result =
+        ExecutionTestJobs
+          .mergeFanout(input)
+          .waitFor(Config.default, Local(false))
+          .get
       val cres = correct(input)
       unorderedEq(cres, result.toList) shouldBe true
     }
@@ -237,8 +238,11 @@ class ExecutionTest extends WordSpec with Matchers {
 
       val sink = TypedTsv[Int](sinkF)
       val src = TypedTsv[Int](srcF)
-      val operationTP = (TypedPipe.from(src) ++ TypedPipe.from(
-        (1 until 100).toList)).writeExecution(sink).getCounters.map(_._2.toMap)
+      val operationTP =
+        (TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList))
+          .writeExecution(sink)
+          .getCounters
+          .map(_._2.toMap)
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
 
@@ -260,16 +264,17 @@ class ExecutionTest extends WordSpec with Matchers {
   }
 
   "ExecutionApp" should {
-    val parser = new ExecutionApp {
-      def job = Execution.from(())
-    }
+    val parser =
+      new ExecutionApp {
+        def job = Execution.from(())
+      }
     "parse hadoop args correctly" in {
       val conf = parser.config(Array("-Dmapred.reduce.tasks=100", "--local"))._1
       conf.get("mapred.reduce.tasks") should contain("100")
       conf.getArgs.boolean("local") shouldBe true
 
-      val (conf1, Hdfs(_, hconf)) =
-        parser.config(Array("--test", "-Dmapred.reduce.tasks=110", "--hdfs"))
+      val (conf1, Hdfs(_, hconf)) = parser.config(
+        Array("--test", "-Dmapred.reduce.tasks=110", "--hdfs"))
       conf1.get("mapred.reduce.tasks") should contain("110")
       conf1.getArgs.boolean("test") shouldBe true
       hconf.get("mapred.reduce.tasks") shouldBe "110"
@@ -376,13 +381,14 @@ class ExecutionTest extends WordSpec with Matchers {
     "evaluate shared portions just once, writeExecution" in {
 
       var timesEvaluated = 0
-      val baseTp = TypedPipe
-        .from(0 until 1000)
-        .flatMap { i =>
-          timesEvaluated += 1
-          List(i, i)
-        }
-        .fork
+      val baseTp =
+        TypedPipe
+          .from(0 until 1000)
+          .flatMap { i =>
+            timesEvaluated += 1
+            List(i, i)
+          }
+          .fork
 
       val fde1 = baseTp
         .map {
@@ -406,20 +412,23 @@ class ExecutionTest extends WordSpec with Matchers {
     "evaluate shared portions just once, forceToDiskExecution" in {
 
       var timesEvaluated = 0
-      val baseTp = TypedPipe
-        .from(0 until 1000)
-        .flatMap { i =>
-          timesEvaluated += 1
-          List(i, i)
-        }
-        .fork
+      val baseTp =
+        TypedPipe
+          .from(0 until 1000)
+          .flatMap { i =>
+            timesEvaluated += 1
+            List(i, i)
+          }
+          .fork
 
-      val fde1 = baseTp.map {
-        _ * 3
-      }.forceToDiskExecution
-      val fde2 = baseTp.map {
-        _ * 5
-      }.forceToDiskExecution
+      val fde1 =
+        baseTp.map {
+          _ * 3
+        }.forceToDiskExecution
+      val fde2 =
+        baseTp.map {
+          _ * 5
+        }.forceToDiskExecution
 
       val res = fde1.zip(fde2)
 
@@ -432,20 +441,23 @@ class ExecutionTest extends WordSpec with Matchers {
     "evaluate shared portions just once, forceToDiskExecution with execution cache" in {
 
       var timesEvaluated = 0
-      val baseTp = TypedPipe
-        .from(0 until 1000)
-        .flatMap { i =>
-          timesEvaluated += 1
-          List(i, i)
-        }
-        .fork
+      val baseTp =
+        TypedPipe
+          .from(0 until 1000)
+          .flatMap { i =>
+            timesEvaluated += 1
+            List(i, i)
+          }
+          .fork
 
-      val fde1 = baseTp.map {
-        _ * 3
-      }.forceToDiskExecution
-      val fde2 = baseTp.map {
-        _ * 5
-      }.forceToDiskExecution
+      val fde1 =
+        baseTp.map {
+          _ * 3
+        }.forceToDiskExecution
+      val fde2 =
+        baseTp.map {
+          _ * 5
+        }.forceToDiskExecution
 
       val res = fde1
         .zip(fde2)
@@ -513,19 +525,19 @@ class ExecutionTest extends WordSpec with Matchers {
         seen += 1
       }
 
-      val executions = 0
-        .to(10)
-        .map { i =>
-          Execution
-            .from[Int](i)
-            .map { i =>
-              Thread.sleep(10 - i);
-              i
-            }
-            .onComplete(t => updateSeen(t.get))
-        }
-        .toList
-        .reverse
+      val executions =
+        0.to(10)
+          .map { i =>
+            Execution
+              .from[Int](i)
+              .map { i =>
+                Thread.sleep(10 - i);
+                i
+              }
+              .onComplete(t => updateSeen(t.get))
+          }
+          .toList
+          .reverse
 
       val result = Execution.withParallelism(executions, 1)
 

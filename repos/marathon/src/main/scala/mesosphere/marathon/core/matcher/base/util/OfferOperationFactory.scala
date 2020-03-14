@@ -17,19 +17,21 @@ class OfferOperationFactory(
 
   private[this] val log = LoggerFactory.getLogger(getClass)
 
-  private[this] lazy val principal: String = principalOpt match {
-    case Some(value) => value
-    case _ =>
-      throw new WrongConfigurationException(
-        "No principal set. Set --mesos_authentication_principal to enable using local volumes in Marathon.")
-  }
+  private[this] lazy val principal: String =
+    principalOpt match {
+      case Some(value) => value
+      case _ =>
+        throw new WrongConfigurationException(
+          "No principal set. Set --mesos_authentication_principal to enable using local volumes in Marathon.")
+    }
 
-  private[this] lazy val role: String = roleOpt match {
-    case Some(value) => value
-    case _ =>
-      throw new WrongConfigurationException(
-        "No role set. Set --mesos_role to enable using local volumes in Marathon.")
-  }
+  private[this] lazy val role: String =
+    roleOpt match {
+      case Some(value) => value
+      case _ =>
+        throw new WrongConfigurationException(
+          "No role set. Set --mesos_role to enable using local volumes in Marathon.")
+    }
 
   /** Create a launch operation for the given taskInfo. */
   def launch(taskInfo: Mesos.TaskInfo): Mesos.Offer.Operation = {
@@ -99,12 +101,11 @@ class OfferOperationFactory(
           .setVolume(volume)
       }
 
-      val reservation =
-        Mesos.Resource.ReservationInfo
-          .newBuilder()
-          .setPrincipal(principal)
-          .setLabels(TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
-          .build()
+      val reservation = Mesos.Resource.ReservationInfo
+        .newBuilder()
+        .setPrincipal(principal)
+        .setLabels(TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
+        .build()
 
       Mesos.Resource
         .newBuilder()

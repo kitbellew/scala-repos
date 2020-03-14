@@ -36,10 +36,9 @@ case class StormEnv(override val jobName: String, override val args: Args)
     // of the environment and defining the builder).
     val ajob = abstractJob
 
-    val classSuffix =
-      args
-        .optional("name")
-        .getOrElse(jobName.split("\\.").last)
+    val classSuffix = args
+      .optional("name")
+      .getOrElse(jobName.split("\\.").last)
 
     Storm
       .remote(builder.opts)

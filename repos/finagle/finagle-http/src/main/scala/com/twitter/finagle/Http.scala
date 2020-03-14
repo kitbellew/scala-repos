@@ -140,13 +140,12 @@ object Http
     }
 
   object Client {
-    val stack: Stack[ServiceFactory[Request, Response]] =
-      StackClient.newStack
-        .replace(
-          TraceInitializerFilter.role,
-          new HttpClientTraceInitializer[Request, Response])
-        .prepend(http.TlsFilter.module)
-        .prepend(nonChunkedPayloadSize)
+    val stack: Stack[ServiceFactory[Request, Response]] = StackClient.newStack
+      .replace(
+        TraceInitializerFilter.role,
+        new HttpClientTraceInitializer[Request, Response])
+      .prepend(http.TlsFilter.module)
+      .prepend(nonChunkedPayloadSize)
   }
 
   case class Client(
@@ -161,8 +160,8 @@ object Http
     protected type Out = Any
 
     protected def newTransporter(): Transporter[Any, Any] = {
-      val com.twitter.finagle.param.Label(label) =
-        params[com.twitter.finagle.param.Label]
+      val com.twitter.finagle.param
+        .Label(label) = params[com.twitter.finagle.param.Label]
       val codec = param
         .applyToCodec(params, http.Http())
         .client(ClientCodecConfig(label))
@@ -180,10 +179,12 @@ object Http
 
     protected def newDispatcher(
         transport: Transport[Any, Any]): Service[Request, Response] = {
-      val dispatcher = new HttpClientDispatcher(
-        transport,
-        params[Stats].statsReceiver.scope(GenSerialClientDispatcher.StatsScope)
-      )
+      val dispatcher =
+        new HttpClientDispatcher(
+          transport,
+          params[Stats].statsReceiver
+            .scope(GenSerialClientDispatcher.StatsScope)
+        )
 
       new ClientContextFilter[Request, Response].andThen(dispatcher)
     }
@@ -221,8 +222,7 @@ object Http
       new SessionQualificationParams(this)
     override val withAdmissionControl: ClientAdmissionControlParams[Client] =
       new ClientAdmissionControlParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
 
@@ -261,13 +261,12 @@ object Http
     client.newClient(dest, label)
 
   object Server {
-    val stack: Stack[ServiceFactory[Request, Response]] =
-      StackServer.newStack
-        .replace(
-          TraceInitializerFilter.role,
-          new HttpServerTraceInitializer[Request, Response])
-        .replace(StackServer.Role.preparer, HttpNackFilter.module)
-        .prepend(nonChunkedPayloadSize)
+    val stack: Stack[ServiceFactory[Request, Response]] = StackServer.newStack
+      .replace(
+        TraceInitializerFilter.role,
+        new HttpServerTraceInitializer[Request, Response])
+      .replace(StackServer.Role.preparer, HttpNackFilter.module)
+      .prepend(nonChunkedPayloadSize)
   }
 
   case class Server(
@@ -280,8 +279,8 @@ object Http
     protected type Out = Any
 
     protected def newListener(): Listener[Any, Any] = {
-      val com.twitter.finagle.param.Label(label) =
-        params[com.twitter.finagle.param.Label]
+      val com.twitter.finagle.param
+        .Label(label) = params[com.twitter.finagle.param.Label]
       val httpPipeline =
         param
           .applyToCodec(params, http.Http())

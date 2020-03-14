@@ -118,13 +118,14 @@ akka {
         "localhost",
         SocketUtil.temporaryServerAddress().getPort)) / "user" / "noone"
     val transport = RARP(system).provider.transport
-    val extinctRef = new RemoteActorRef(
-      transport,
-      transport.localAddressForRemote(extinctPath.address),
-      extinctPath,
-      Nobody,
-      props = None,
-      deploy = None)
+    val extinctRef =
+      new RemoteActorRef(
+        transport,
+        transport.localAddressForRemote(extinctPath.address),
+        extinctPath,
+        Nobody,
+        props = None,
+        deploy = None)
 
     val probe = TestProbe()
     probe.watch(extinctRef)

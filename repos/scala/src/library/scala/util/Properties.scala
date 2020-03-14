@@ -115,8 +115,9 @@ private[scala] trait PropertiesTrait {
     */
   val versionString =
     "version " + scalaPropOrElse("version.number", "(unknown)")
-  val copyrightString =
-    scalaPropOrElse("copyright.string", "Copyright 2002-2016, LAMP/EPFL")
+  val copyrightString = scalaPropOrElse(
+    "copyright.string",
+    "Copyright 2002-2016, LAMP/EPFL")
 
   /** This is the encoding to use reading in source files, overridden with -encoding.
     *  Note that it uses "prop" i.e. looks in the scala jar, not the system properties.

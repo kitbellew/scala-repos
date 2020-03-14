@@ -13,8 +13,10 @@ object BasicKeys {
     "shell-prompt",
     "The function that constructs the command prompt from the current build state.",
     10000)
-  val watch =
-    AttributeKey[Watched]("watch", "Continuous execution configuration.", 1000)
+  val watch = AttributeKey[Watched](
+    "watch",
+    "Continuous execution configuration.",
+    1000)
   private[sbt] val interactive = AttributeKey[Boolean](
     "interactive",
     "True if commands are currently being entered from an interactive environment.",

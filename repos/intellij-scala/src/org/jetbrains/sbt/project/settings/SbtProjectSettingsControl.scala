@@ -30,16 +30,17 @@ class SbtProjectSettingsControl(
 
     val button = new JButton("Ne\u001Bw...")
 
-    val addToTable = new Condition[Sdk] {
-      override def value(sdk: Sdk): Boolean = {
-        inWriteAction {
-          val table = ProjectJdkTable.getInstance()
-          if (!table.getAllJdks.contains(sdk))
-            table.addJdk(sdk)
+    val addToTable =
+      new Condition[Sdk] {
+        override def value(sdk: Sdk): Boolean = {
+          inWriteAction {
+            val table = ProjectJdkTable.getInstance()
+            if (!table.getAllJdks.contains(sdk))
+              table.addJdk(sdk)
+          }
+          true
         }
-        true
       }
-    }
 
     result.setSetupButton(
       button,
@@ -52,12 +53,12 @@ class SbtProjectSettingsControl(
     result
   }
 
-  private val resolveClassifiersCheckBox = new JCheckBox(
-    SbtBundle("sbt.settings.resolveClassifiers"))
-  private val resolveJavadocsCheckBox = new JCheckBox(
-    SbtBundle("sbt.settings.resolveJavadocs"))
-  private val resolveSbtClassifiersCheckBox = new JCheckBox(
-    SbtBundle("sbt.settings.resolveSbtClassifiers"))
+  private val resolveClassifiersCheckBox =
+    new JCheckBox(SbtBundle("sbt.settings.resolveClassifiers"))
+  private val resolveJavadocsCheckBox =
+    new JCheckBox(SbtBundle("sbt.settings.resolveJavadocs"))
+  private val resolveSbtClassifiersCheckBox =
+    new JCheckBox(SbtBundle("sbt.settings.resolveSbtClassifiers"))
 
   def fillExtraControls(@NotNull content: PaintAwarePanel, indentLevel: Int) {
     val downloadPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0))

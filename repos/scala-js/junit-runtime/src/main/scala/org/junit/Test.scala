@@ -13,8 +13,7 @@ class Test(val expected: Class[_ <: Throwable], val timeout: Long)
   def this(timeout: Long) = this(classOf[Test.None], timeout)
   def this() = this(0L)
 
-  def annotationType(): Class[_ <: Annotation] =
-    classOf[Test]
+  def annotationType(): Class[_ <: Annotation] = classOf[Test]
 }
 
 object Test {

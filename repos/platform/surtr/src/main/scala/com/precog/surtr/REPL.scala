@@ -86,8 +86,9 @@ class REPLConfig(dataDir: Option[String])
     with EvaluatorConfig
     with ColumnarTableModuleConfig
     with BlockStoreColumnarTableModuleConfig {
-  val defaultConfig =
-    Configuration.loadResource("/default_ingest.conf", BlockFormat)
+  val defaultConfig = Configuration.loadResource(
+    "/default_ingest.conf",
+    BlockFormat)
   val config = dataDir map {
     defaultConfig.set("precog.storage.root", _)
   } getOrElse {
@@ -154,9 +155,7 @@ trait REPL
         bindRoot(oldTree, oldTree)
 
         val tree = shakeTree(oldTree)
-        val strs =
-          for (error <- tree.errors)
-            yield showError(error)
+        val strs = for (error <- tree.errors) yield showError(error)
 
         if (!tree.errors.isEmpty) {
           out.println(color.red(strs mkString "\n"))
@@ -283,8 +282,7 @@ trait REPL
   }
 
   def printHelp(out: PrintStream) {
-    val str =
-      """Note: command abbreviations are not yet supported!
+    val str = """Note: command abbreviations are not yet supported!
         |
         |<expr>        Evaluate the expression
         |:help         Print this help message
@@ -331,11 +329,12 @@ object Console extends App {
           val storageTimeout = yggConfig.storageTimeout
 
           implicit val actorSystem = ActorSystem("replActorSystem")
-          implicit val asyncContext =
-            ExecutionContext.defaultExecutionContext(actorSystem)
-          implicit val M = new blueeyes.bkka.UnsafeFutureComonad(
-            asyncContext,
-            yggConfig.maxEvalDuration)
+          implicit val asyncContext = ExecutionContext.defaultExecutionContext(
+            actorSystem)
+          implicit val M =
+            new blueeyes.bkka.UnsafeFutureComonad(
+              asyncContext,
+              yggConfig.maxEvalDuration)
 
           type YggConfig = REPLConfig
           val yggConfig = replConfig
@@ -352,16 +351,18 @@ object Console extends App {
                 VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
 
           val jobManager = new InMemoryJobManager[Future]
-          val permissionsFinder = new PermissionsFinder(
-            accessControl,
-            new StaticAccountFinder[Future]("", ""),
-            new org.joda.time.Instant())
-          val resourceBuilder = new ResourceBuilder(
-            actorSystem,
-            yggConfig.clock,
-            masterChef,
-            yggConfig.cookThreshold,
-            storageTimeout)
+          val permissionsFinder =
+            new PermissionsFinder(
+              accessControl,
+              new StaticAccountFinder[Future]("", ""),
+              new org.joda.time.Instant())
+          val resourceBuilder =
+            new ResourceBuilder(
+              actorSystem,
+              yggConfig.clock,
+              masterChef,
+              yggConfig.cookThreshold,
+              storageTimeout)
 
           val projectionsActor = actorSystem.actorOf(
             Props(
@@ -372,10 +373,11 @@ object Console extends App {
                 100,
                 yggConfig.clock)))
 
-          val actorVFS = new ActorVFS(
-            projectionsActor,
-            yggConfig.storageTimeout,
-            yggConfig.storageTimeout)
+          val actorVFS =
+            new ActorVFS(
+              projectionsActor,
+              yggConfig.storageTimeout,
+              yggConfig.storageTimeout)
           val vfs =
             new SecureVFS(actorVFS, permissionsFinder, jobManager, Clock.System)
 

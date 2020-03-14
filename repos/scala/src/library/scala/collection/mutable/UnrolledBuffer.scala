@@ -383,8 +383,8 @@ object UnrolledBuffer extends ClassTagTraversableFactory[UnrolledBuffer] {
     private def nullout(from: Int, until: Int) {
       var idx = from
       while (idx < until) {
-        array(idx) =
-          null.asInstanceOf[T] // TODO find a way to assign a default here!!
+        array(idx) = null
+          .asInstanceOf[T] // TODO find a way to assign a default here!!
         idx += 1
       }
     }

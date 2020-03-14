@@ -17,10 +17,11 @@ object Test extends Properties("concurrent.TrieMap") {
 
   val threadCounts = choose(2, 16)
 
-  val threadCountsAndSizes = for {
-    p <- threadCounts
-    sz <- sizes
-  } yield (p, sz);
+  val threadCountsAndSizes =
+    for {
+      p <- threadCounts
+      sz <- sizes
+    } yield (p, sz);
 
   /* helpers */
 
@@ -47,14 +48,13 @@ object Test extends Properties("concurrent.TrieMap") {
     forAll(threadCounts, sizes) { (p, sz) =>
       val chm = new ConcurrentHashMap[Wrap, Int]().asScala
 
-      val results = inParallel(p) { idx =>
-        for (i <- 0 until sz)
-          yield chm.getOrElseUpdate(new Wrap(i), idx)
-      }
+      val results =
+        inParallel(p) { idx =>
+          for (i <- 0 until sz)
+            yield chm.getOrElseUpdate(new Wrap(i), idx)
+        }
 
-      val resultSets =
-        for (i <- 0 until sz)
-          yield results.map(_(i)).toSet
+      val resultSets = for (i <- 0 until sz) yield results.map(_(i)).toSet
       val largerThanOne = resultSets.zipWithIndex.find(_._1.size != 1)
       val allThreadsAgreeOnWhoInserted = {
         largerThanOne == None

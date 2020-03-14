@@ -492,10 +492,9 @@ private[io] abstract class TcpConnection(
 
     def doWrite(info: ConnectionInfo): PendingWrite = {
       @tailrec def writeToChannel(data: ByteString): PendingWrite = {
-        val writtenBytes =
-          channel.write(
-            buffer
-          ) // at first we try to drain the remaining bytes from the buffer
+        val writtenBytes = channel.write(
+          buffer
+        ) // at first we try to drain the remaining bytes from the buffer
         if (TraceLogging)
           log.debug("Wrote [{}] bytes to channel", writtenBytes)
         if (buffer.hasRemaining) {
@@ -577,13 +576,14 @@ private[io] abstract class TcpConnection(
         val written = fileChannel.transferTo(offset, toWrite, channel)
 
         if (written < remaining) {
-          val updated = new PendingWriteFile(
-            commander,
-            fileChannel,
-            offset + written,
-            remaining - written,
-            ack,
-            tail)
+          val updated =
+            new PendingWriteFile(
+              commander,
+              fileChannel,
+              offset + written,
+              remaining - written,
+              ack,
+              tail)
           self ! UpdatePendingWriteAndThen(updated, TcpConnection.doNothing)
         } else {
           release()

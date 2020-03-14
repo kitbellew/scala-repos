@@ -33,11 +33,9 @@ sealed abstract class ISet[A] {
     }
 
   /** Alias for member */
-  final def contains(x: A)(implicit o: Order[A]) =
-    member(x)
+  final def contains(x: A)(implicit o: Order[A]) = member(x)
 
-  final def notMember(x: A)(implicit o: Order[A]) =
-    !member(x)
+  final def notMember(x: A)(implicit o: Order[A]) = !member(x)
 
   @tailrec
   final def lookupLT(x: A)(implicit o: Order[A]): Option[A] = {
@@ -274,8 +272,7 @@ sealed abstract class ISet[A] {
   }
 
   // -- * Operators
-  final def \\(other: ISet[A])(implicit o: Order[A]) =
-    difference(other)
+  final def \\(other: ISet[A])(implicit o: Order[A]) = difference(other)
 
   final def intersection(other: ISet[A])(implicit o: Order[A]) = {
     def hedgeInt(
@@ -375,8 +372,7 @@ sealed abstract class ISet[A] {
 
   // -- * Index
   /** Alias for Foldable[ISet].index */
-  final def elemAt(i: Int): Option[A] =
-    Foldable[ISet].index(this, i)
+  final def elemAt(i: Int): Option[A] = Foldable[ISet].index(this, i)
 
   final def lookupIndex(x: A)(implicit o: Order[A]): Option[Int] = {
     @tailrec
@@ -433,8 +429,7 @@ sealed abstract class ISet[A] {
     -- for some @(x,y)@, @x \/= y && f x == f y@
     }}}
     */
-  def map[B: Order](f: A => B) =
-    fromList(toList.map(f))
+  def map[B: Order](f: A => B) = fromList(toList.map(f))
 
   // -- * Folds
   final def foldRight[B](z: B)(f: (A, B) => B): B =
@@ -443,8 +438,7 @@ sealed abstract class ISet[A] {
       case Bin(x, l, r) => l.foldRight(f(x, r.foldRight(z)(f)))(f)
     }
 
-  final def foldr[B](z: B)(f: (A, B) => B): B =
-    foldRight(z)(f)
+  final def foldr[B](z: B)(f: (A, B) => B): B = foldRight(z)(f)
 
   final def foldLeft[B](z: B)(f: (B, A) => B): B =
     this match {
@@ -453,8 +447,7 @@ sealed abstract class ISet[A] {
         r.foldLeft(f(l.foldLeft(z)(f), x))(f)
     }
 
-  final def foldl[B](z: B)(f: (B, A) => B): B =
-    foldLeft(z)(f)
+  final def foldl[B](z: B)(f: (B, A) => B): B = foldLeft(z)(f)
 
   // -- * Min\/Max
   @tailrec
@@ -520,18 +513,14 @@ sealed abstract class ISet[A] {
     }
 
   // -- ** List
-  final def elems =
-    toAscList
+  final def elems = toAscList
 
-  final def toList =
-    toAscList
+  final def toList = toAscList
 
   // -- ** Ordered list
-  final def toAscList =
-    foldRight(List.empty[A])(_ :: _)
+  final def toAscList = foldRight(List.empty[A])(_ :: _)
 
-  final def toDescList =
-    foldLeft(List.empty[A])((a, b) => b :: a)
+  final def toDescList = foldLeft(List.empty[A])((a, b) => b :: a)
 
   private def glue[A](l: ISet[A], r: ISet[A]): ISet[A] =
     (l, r) match {
@@ -666,8 +655,7 @@ sealed abstract class ISet[A] {
         false
     }
 
-  override final def hashCode: Int =
-    toAscList.hashCode
+  override final def hashCode: Int = toAscList.hashCode
 }
 
 sealed abstract class ISetInstances {
@@ -689,129 +677,120 @@ sealed abstract class ISetInstances {
 
   implicit def setShow[A: Show]: Show[ISet[A]] =
     new Show[ISet[A]] {
-      override def shows(f: ISet[A]) =
-        f.toAscList.mkString("ISet(", ",", ")")
+      override def shows(f: ISet[A]) = f.toAscList.mkString("ISet(", ",", ")")
     }
 
   implicit def setMonoid[A: Order]: Monoid[ISet[A]] =
     new Monoid[ISet[A]] {
-      def zero: ISet[A] =
-        empty[A]
+      def zero: ISet[A] = empty[A]
 
-      def append(a: ISet[A], b: => ISet[A]): ISet[A] =
-        a union b
+      def append(a: ISet[A], b: => ISet[A]): ISet[A] = a union b
     }
 
-  implicit val setFoldable: Foldable[ISet] = new Foldable[ISet] {
-    override def findLeft[A](fa: ISet[A])(f: A => Boolean) =
-      fa match {
-        case Bin(x, l, r) =>
-          findLeft(l)(f) match {
-            case a @ Some(_) =>
-              a
-            case None =>
-              if (f(x))
-                Some(x)
-              else
-                findLeft(r)(f)
-          }
-        case Tip() =>
-          None
-      }
-
-    override def findRight[A](fa: ISet[A])(f: A => Boolean) =
-      fa match {
-        case Bin(x, l, r) =>
-          findRight(r)(f) match {
-            case a @ Some(_) =>
-              a
-            case None =>
-              if (f(x))
-                Some(x)
-              else
-                findRight(l)(f)
-          }
-        case Tip() =>
-          None
-      }
-
-    def foldMap[A, B](fa: ISet[A])(f: A => B)(implicit F: Monoid[B]): B =
-      fa match {
-        case Tip() =>
-          F.zero
-        case Bin(x, l, r) =>
-          F.append(F.append(foldMap(l)(f), f(x)), foldMap(r)(f))
-      }
-
-    def foldRight[A, B](fa: ISet[A], z: => B)(f: (A, => B) => B): B =
-      fa.foldRight(z)((a, b) => f(a, b))
-
-    override def foldLeft[A, B](fa: ISet[A], z: B)(f: (B, A) => B) =
-      fa.foldLeft(z)(f)
-
-    override def index[A](fa: ISet[A], i: Int): Option[A] = {
-      import std.anyVal._
-      @tailrec def loop(a: ISet[A], b: Int): Option[A] =
-        a match {
+  implicit val setFoldable: Foldable[ISet] =
+    new Foldable[ISet] {
+      override def findLeft[A](fa: ISet[A])(f: A => Boolean) =
+        fa match {
           case Bin(x, l, r) =>
-            Order[Int].order(b, l.size) match {
-              case Ordering.LT =>
-                loop(l, b)
-              case Ordering.GT =>
-                loop(r, b - l.size - 1)
-              case Ordering.EQ =>
-                Some(x)
+            findLeft(l)(f) match {
+              case a @ Some(_) =>
+                a
+              case None =>
+                if (f(x))
+                  Some(x)
+                else
+                  findLeft(r)(f)
             }
           case Tip() =>
             None
         }
 
-      if (i < 0 || fa.size <= i)
-        None
-      else
-        loop(fa, i)
+      override def findRight[A](fa: ISet[A])(f: A => Boolean) =
+        fa match {
+          case Bin(x, l, r) =>
+            findRight(r)(f) match {
+              case a @ Some(_) =>
+                a
+              case None =>
+                if (f(x))
+                  Some(x)
+                else
+                  findRight(l)(f)
+            }
+          case Tip() =>
+            None
+        }
+
+      def foldMap[A, B](fa: ISet[A])(f: A => B)(implicit F: Monoid[B]): B =
+        fa match {
+          case Tip() =>
+            F.zero
+          case Bin(x, l, r) =>
+            F.append(F.append(foldMap(l)(f), f(x)), foldMap(r)(f))
+        }
+
+      def foldRight[A, B](fa: ISet[A], z: => B)(f: (A, => B) => B): B =
+        fa.foldRight(z)((a, b) => f(a, b))
+
+      override def foldLeft[A, B](fa: ISet[A], z: B)(f: (B, A) => B) =
+        fa.foldLeft(z)(f)
+
+      override def index[A](fa: ISet[A], i: Int): Option[A] = {
+        import std.anyVal._
+        @tailrec def loop(a: ISet[A], b: Int): Option[A] =
+          a match {
+            case Bin(x, l, r) =>
+              Order[Int].order(b, l.size) match {
+                case Ordering.LT =>
+                  loop(l, b)
+                case Ordering.GT =>
+                  loop(r, b - l.size - 1)
+                case Ordering.EQ =>
+                  Some(x)
+              }
+            case Tip() =>
+              None
+          }
+
+        if (i < 0 || fa.size <= i)
+          None
+        else
+          loop(fa, i)
+      }
+
+      override def toIList[A](fa: ISet[A]) =
+        fa.foldRight(IList.empty[A])(_ :: _)
+
+      override def toList[A](fa: ISet[A]) = fa.toList
+
+      override def length[A](fa: ISet[A]) = fa.size
+
+      override def maximum[A: Order](fa: ISet[A]) = fa.findMax
+
+      override def minimum[A: Order](fa: ISet[A]) = fa.findMin
+
+      override def empty[A](fa: ISet[A]) = fa.isEmpty
+
+      override def any[A](fa: ISet[A])(f: A => Boolean) =
+        fa match {
+          case Tip() => false
+          case Bin(x, l, r) =>
+            any(l)(f) || f(x) || any(r)(f)
+        }
+
+      override def all[A](fa: ISet[A])(f: A => Boolean) =
+        fa match {
+          case Tip() => true
+          case Bin(x, l, r) =>
+            all(l)(f) && f(x) && all(r)(f)
+        }
     }
-
-    override def toIList[A](fa: ISet[A]) =
-      fa.foldRight(IList.empty[A])(_ :: _)
-
-    override def toList[A](fa: ISet[A]) =
-      fa.toList
-
-    override def length[A](fa: ISet[A]) =
-      fa.size
-
-    override def maximum[A: Order](fa: ISet[A]) =
-      fa.findMax
-
-    override def minimum[A: Order](fa: ISet[A]) =
-      fa.findMin
-
-    override def empty[A](fa: ISet[A]) =
-      fa.isEmpty
-
-    override def any[A](fa: ISet[A])(f: A => Boolean) =
-      fa match {
-        case Tip() => false
-        case Bin(x, l, r) =>
-          any(l)(f) || f(x) || any(r)(f)
-      }
-
-    override def all[A](fa: ISet[A])(f: A => Boolean) =
-      fa match {
-        case Tip() => true
-        case Bin(x, l, r) =>
-          all(l)(f) && f(x) && all(r)(f)
-      }
-  }
 }
 
 object ISet extends ISetInstances {
-  final def empty[A]: ISet[A] =
-    Tip()
+  final def empty[A]: ISet[A] = Tip()
 
-  final def singleton[A](x: A): ISet[A] =
-    Bin(x, Tip(), Tip())
+  final def singleton[A](x: A): ISet[A] = Bin(x, Tip(), Tip())
 
   final def fromList[A](xs: List[A])(implicit o: Order[A]): ISet[A] =
     xs.foldLeft(empty[A])((a, b) => a insert b)

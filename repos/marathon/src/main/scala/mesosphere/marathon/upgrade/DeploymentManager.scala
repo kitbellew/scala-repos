@@ -38,10 +38,10 @@ class DeploymentManager(
   import context.dispatcher
   import mesosphere.marathon.upgrade.DeploymentManager._
 
-  val runningDeployments: mutable.Map[String, DeploymentInfo] =
-    mutable.Map.empty[String, DeploymentInfo]
-  val deploymentStatus: mutable.Map[String, DeploymentStepInfo] =
-    mutable.Map.empty[String, DeploymentStepInfo]
+  val runningDeployments: mutable.Map[String, DeploymentInfo] = mutable.Map
+    .empty[String, DeploymentInfo]
+  val deploymentStatus: mutable.Map[String, DeploymentStepInfo] = mutable.Map
+    .empty[String, DeploymentStepInfo]
 
   override def supervisorStrategy: SupervisorStrategy =
     OneForOneStrategy() {
@@ -52,10 +52,11 @@ class DeploymentManager(
   //scalastyle:off cyclomatic.complexity method.length
   def receive: Receive = {
     case CancelConflictingDeployments(plan) =>
-      val conflictingDeployments = for {
-        info <- runningDeployments.values
-        if info.plan.isAffectedBy(plan)
-      } yield info
+      val conflictingDeployments =
+        for {
+          info <- runningDeployments.values
+          if info.plan.isAffectedBy(plan)
+        } yield info
 
       val cancellations = conflictingDeployments.map { info =>
         stopActor(

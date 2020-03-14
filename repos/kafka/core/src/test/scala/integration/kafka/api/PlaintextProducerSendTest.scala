@@ -66,11 +66,12 @@ class PlaintextProducerSendTest extends BaseProducerSendTest {
     // send a record with a wrong type should receive a serialization exception
     try {
       val producer = createProducerWithWrongSerializer(brokerList)
-      val record5 = new ProducerRecord[Array[Byte], Array[Byte]](
-        topic,
-        new Integer(0),
-        "key".getBytes,
-        "value".getBytes)
+      val record5 =
+        new ProducerRecord[Array[Byte], Array[Byte]](
+          topic,
+          new Integer(0),
+          "key".getBytes,
+          "value".getBytes)
       producer.send(record5)
       fail("Should have gotten a SerializationException")
     } catch {

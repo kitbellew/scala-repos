@@ -69,15 +69,15 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
 
   private val listeners = new ConcurrentLinkedQueue[CleanerListener]()
 
-  private val cleaningThread = new Thread() {
-    override def run() {
-      keepCleaning()
+  private val cleaningThread =
+    new Thread() {
+      override def run() {
+        keepCleaning()
+      }
     }
-  }
 
-  private val periodicGCService: ScheduledExecutorService =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-      "context-cleaner-periodic-gc")
+  private val periodicGCService: ScheduledExecutorService = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("context-cleaner-periodic-gc")
 
   /**
     * How often to trigger a garbage collection in this JVM.
@@ -87,8 +87,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     * on the driver, this may happen very occasionally or not at all. Not cleaning at all may
     * lead to executors running out of disk space after a while.
     */
-  private val periodicGCInterval =
-    sc.conf.getTimeAsSeconds("spark.cleaner.periodicGC.interval", "30min")
+  private val periodicGCInterval = sc.conf
+    .getTimeAsSeconds("spark.cleaner.periodicGC.interval", "30min")
 
   /**
     * Whether the cleaning thread will block on cleanup tasks (other than shuffle, which
@@ -100,8 +100,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     * for instance, when the driver performs a GC and cleans up all broadcast blocks that are no
     * longer in scope.
     */
-  private val blockOnCleanupTasks =
-    sc.conf.getBoolean("spark.cleaner.referenceTracking.blocking", true)
+  private val blockOnCleanupTasks = sc.conf
+    .getBoolean("spark.cleaner.referenceTracking.blocking", true)
 
   /**
     * Whether the cleaning thread will block on shuffle cleanup tasks.
@@ -195,9 +195,9 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     Utils.tryOrStopSparkContext(sc) {
       while (!stopped) {
         try {
-          val reference =
-            Option(referenceQueue.remove(ContextCleaner.REF_QUEUE_POLL_TIMEOUT))
-              .map(_.asInstanceOf[CleanupTaskWeakReference])
+          val reference = Option(
+            referenceQueue.remove(ContextCleaner.REF_QUEUE_POLL_TIMEOUT))
+            .map(_.asInstanceOf[CleanupTaskWeakReference])
           // Synchronize here to avoid being interrupted on stop()
           synchronized {
             reference.map(_.task).foreach { task =>

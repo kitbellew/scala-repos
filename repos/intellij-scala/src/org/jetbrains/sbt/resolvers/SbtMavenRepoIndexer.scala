@@ -45,16 +45,18 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   private val queryCreator = new DefaultQueryCreator
   private val indexer =
     new DefaultIndexer(new DefaultSearchEngine, indexerEngine, queryCreator)
-  private val updater = new DefaultIndexUpdater(
-    new DefaultIncrementalHandler,
-    java.util.Collections.emptyList())
+  private val updater =
+    new DefaultIndexUpdater(
+      new DefaultIncrementalHandler,
+      java.util.Collections.emptyList())
   private val httpWagon = container.lookup(classOf[Wagon], "http")
 
-  private val indexers = Seq(
-    container.lookup(classOf[IndexCreator], "min"),
-    container.lookup(classOf[IndexCreator], "jarContent"),
-    container.lookup(classOf[IndexCreator], "maven-plugin")
-  ).asJava
+  private val indexers =
+    Seq(
+      container.lookup(classOf[IndexCreator], "min"),
+      container.lookup(classOf[IndexCreator], "jarContent"),
+      container.lookup(classOf[IndexCreator], "maven-plugin")
+    ).asJava
 
   private var context = {
     val repoUrl =
@@ -102,34 +104,38 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
     }
 
   private def updateLocal(progressIndicator: Option[ProgressIndicator]) {
-    val scannerListener = new ArtifactScanningListener {
-      override def scanningStarted(p1: IndexingContext) =
-        progressIndicator foreach { indicator =>
-          indicator.setText2(SbtBundle("sbt.resolverIndexer.progress.scanning"))
-          indicator.setFraction(0.0)
-        }
-      override def scanningFinished(p1: IndexingContext, p2: ScanningResult) =
-        progressIndicator foreach {
-          _.setFraction(0.5)
-        }
-      override def artifactError(p1: ArtifactContext, p2: Exception) {}
-      override def artifactDiscovered(p1: ArtifactContext): Unit =
-        progressIndicator foreach {
-          _.checkCanceled()
-        }
-    }
+    val scannerListener =
+      new ArtifactScanningListener {
+        override def scanningStarted(p1: IndexingContext) =
+          progressIndicator foreach { indicator =>
+            indicator.setText2(
+              SbtBundle("sbt.resolverIndexer.progress.scanning"))
+            indicator.setFraction(0.0)
+          }
+        override def scanningFinished(p1: IndexingContext, p2: ScanningResult) =
+          progressIndicator foreach {
+            _.setFraction(0.5)
+          }
+        override def artifactError(p1: ArtifactContext, p2: Exception) {}
+        override def artifactDiscovered(p1: ArtifactContext): Unit =
+          progressIndicator foreach {
+            _.checkCanceled()
+          }
+      }
 
     val repoDir = context.getRepository
     indexer.closeIndexingContext(context, false)
 
     // TODO: when guys from maven-indexer fix their code (or at least Scanner class will work as it should)
-    val nexusIndexer = new DefaultNexusIndexer(
-      indexer,
-      new DefaultScanner(
-        new DefaultArtifactContextProducer(new DefaultArtifactPackagingMapper)),
-      indexerEngine,
-      queryCreator
-    )
+    val nexusIndexer =
+      new DefaultNexusIndexer(
+        indexer,
+        new DefaultScanner(
+          new DefaultArtifactContextProducer(
+            new DefaultArtifactPackagingMapper)),
+        indexerEngine,
+        queryCreator
+      )
     val nexusContext = nexusIndexer.addIndexingContext(
       root.shaDigest,
       root.shaDigest,
@@ -155,25 +161,26 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   }
 
   private def updateRemote(progressIndicator: Option[ProgressIndicator]) {
-    val transferListener = new AbstractTransferListener {
-      var downloadedBytes = 0
-      override def transferProgress(
-          evt: TransferEvent,
-          bytes: Array[Byte],
-          length: Int) =
-        progressIndicator foreach { indicator =>
-          downloadedBytes += length
-          val done =
-            (downloadedBytes.toFloat / evt.getResource.getContentLength) / 2.0
-          indicator.setFraction(done)
-        }
-      override def transferStarted(evt: TransferEvent) =
-        progressIndicator foreach { indicator =>
-          indicator.setText2(
-            SbtBundle("sbt.resolverIndexer.progress.downloading"))
-          indicator.setFraction(0.0)
-        }
-    }
+    val transferListener =
+      new AbstractTransferListener {
+        var downloadedBytes = 0
+        override def transferProgress(
+            evt: TransferEvent,
+            bytes: Array[Byte],
+            length: Int) =
+          progressIndicator foreach { indicator =>
+            downloadedBytes += length
+            val done =
+              (downloadedBytes.toFloat / evt.getResource.getContentLength) / 2.0
+            indicator.setFraction(done)
+          }
+        override def transferStarted(evt: TransferEvent) =
+          progressIndicator foreach { indicator =>
+            indicator.setText2(
+              SbtBundle("sbt.resolverIndexer.progress.downloading"))
+            indicator.setFraction(0.0)
+          }
+      }
     val fetcher =
       new WagonHelper.WagonFetcher(httpWagon, transferListener, null, null)
     val updateRequest = new IndexUpdateRequest(context, fetcher)
@@ -193,8 +200,9 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
         progressIndicator foreach {
           _.checkCanceled()
         }
-        val info =
-          IndexUtils.constructArtifactInfo(reader.document(i - 1), context)
+        val info = IndexUtils.constructArtifactInfo(
+          reader.document(i - 1),
+          context)
         if (info != null)
           f(info)
         progressIndicator foreach (_.setFraction(

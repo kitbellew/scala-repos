@@ -31,8 +31,7 @@ class PrintStream private (
    *   encoder field.
    */
 
-  def this(out: OutputStream) =
-    this(out, false, null: Charset)
+  def this(out: OutputStream) = this(out, false, null: Charset)
 
   def this(out: OutputStream, autoFlush: Boolean) =
     this(out, autoFlush, null: Charset)
@@ -49,10 +48,8 @@ class PrintStream private (
     this(new BufferedOutputStream(new FileOutputStream(file)))
   def this(file: File, csn: String) =
     this(new BufferedOutputStream(new FileOutputStream(file)), false, csn)
-  def this(fileName: String) =
-    this(new File(fileName))
-  def this(fileName: String, csn: String) =
-    this(new File(fileName), csn)
+  def this(fileName: String) = this(new File(fileName))
+  def this(fileName: String, csn: String) = this(new File(fileName), csn)
 
   private lazy val encoder = {
     val c =
@@ -72,8 +69,7 @@ class PrintStream private (
   private var closed: Boolean = false
   private var errorFlag: Boolean = false
 
-  override def flush(): Unit =
-    ensureOpenAndTrapIOExceptions(out.flush())
+  override def flush(): Unit = ensureOpenAndTrapIOExceptions(out.flush())
 
   override def close(): Unit =
     trapIOExceptions {
@@ -214,8 +210,7 @@ class PrintStream private (
     println()
   }
 
-  def printf(fmt: String, args: Array[Object]): PrintStream =
-    format(fmt, args)
+  def printf(fmt: String, args: Array[Object]): PrintStream = format(fmt, args)
 
   // Not implemented:
   //def printf(l: java.util.Locale, fmt: String, args: Array[Object]): PrintStream = ???

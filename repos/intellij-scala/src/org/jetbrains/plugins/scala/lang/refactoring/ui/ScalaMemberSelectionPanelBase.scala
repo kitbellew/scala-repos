@@ -22,8 +22,9 @@ abstract class ScalaMemberSelectionPanelBase[
     extends AbstractMemberSelectionPanel[M, I] {
 
   setLayout(new BorderLayout)
-  private val myTable =
-    createMemberSelectionTable(memberInfo, abstractColumnHeader)
+  private val myTable = createMemberSelectionTable(
+    memberInfo,
+    abstractColumnHeader)
   val scrollPane: JScrollPane = ScrollPaneFactory.createScrollPane(myTable)
   add(SeparatorFactory.createSeparator(title, myTable), BorderLayout.NORTH)
   add(scrollPane, BorderLayout.CENTER)

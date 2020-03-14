@@ -66,8 +66,9 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
 
   // PRIVATE DATA
 
-  private var queues =
-    Map[CallingThreadMailbox, Set[WeakReference[MessageQueue]]]()
+  private var queues = Map[
+    CallingThreadMailbox,
+    Set[WeakReference[MessageQueue]]]()
   private var lastGC = 0L
 
   // we have to forget about long-gone threads sometime
@@ -171,8 +172,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
 
   protected[akka] override def createMailbox(
       actor: akka.actor.Cell,
-      mailboxType: MailboxType) =
-    new CallingThreadMailbox(actor, mailboxType)
+      mailboxType: MailboxType) = new CallingThreadMailbox(actor, mailboxType)
 
   protected[akka] override def shutdown() {}
 
@@ -198,10 +198,11 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
   }
 
   protected[akka] override def unregister(actor: ActorCell): Unit = {
-    val mbox = actor.mailbox match {
-      case m: CallingThreadMailbox ⇒ Some(m)
-      case _ ⇒ None
-    }
+    val mbox =
+      actor.mailbox match {
+        case m: CallingThreadMailbox ⇒ Some(m)
+        case _ ⇒ None
+      }
     super.unregister(actor)
     mbox foreach CallingThreadDispatcherQueues(actor.system).unregisterQueues
   }
@@ -246,13 +247,14 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
     receiver.mailbox match {
       case mbox: CallingThreadMailbox ⇒
         val queue = mbox.queue
-        val execute = mbox.suspendSwitch.fold {
-          queue.enqueue(receiver.self, handle)
-          false
-        } {
-          queue.enqueue(receiver.self, handle)
-          true
-        }
+        val execute =
+          mbox.suspendSwitch.fold {
+            queue.enqueue(receiver.self, handle)
+            false
+          } {
+            queue.enqueue(receiver.self, handle)
+            true
+          }
         if (execute)
           runQueue(mbox, queue)
       case m ⇒ m.enqueue(receiver.self, handle)
@@ -278,8 +280,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
     def checkThreadInterruption(
         intEx: InterruptedException): InterruptedException = {
       if (Thread.interrupted()) { // clear interrupted flag before we continue, exception will be thrown later
-        val ie = new InterruptedException(
-          "Interrupted during message processing")
+        val ie =
+          new InterruptedException("Interrupted during message processing")
         log.error(ie, "Interrupted during message processing")
         ie
       } else
@@ -300,12 +302,13 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
       var intex = intEx
       val recurse = {
         mbox.processAllSystemMessages()
-        val handle = mbox.suspendSwitch.fold[Envelope](null) {
-          if (mbox.isClosed)
-            null
-          else
-            queue.dequeue()
-        }
+        val handle =
+          mbox.suspendSwitch.fold[Envelope](null) {
+            if (mbox.isClosed)
+              null
+            else
+              queue.dequeue()
+          }
         if (handle ne null) {
           try {
             if (Mailbox.debug)
@@ -386,14 +389,15 @@ class CallingThreadMailbox(
   val system = _receiver.system
   val self = _receiver.self
 
-  private val q = new ThreadLocal[MessageQueue]() {
-    override def initialValue = {
-      val queue = mailboxType.create(Some(self), Some(system))
-      CallingThreadDispatcherQueues(system)
-        .registerQueue(CallingThreadMailbox.this, queue)
-      queue
+  private val q =
+    new ThreadLocal[MessageQueue]() {
+      override def initialValue = {
+        val queue = mailboxType.create(Some(self), Some(system))
+        CallingThreadDispatcherQueues(system)
+          .registerQueue(CallingThreadMailbox.this, queue)
+        queue
+      }
     }
-  }
 
   /**
     * This is only a marker to be put in the messageQueue’s stead to make error

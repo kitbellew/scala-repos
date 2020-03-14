@@ -42,13 +42,14 @@ case class ShuffleExchange(
     extends Exchange {
 
   override def nodeName: String = {
-    val extraInfo = coordinator match {
-      case Some(exchangeCoordinator) if exchangeCoordinator.isEstimated =>
-        s"(coordinator id: ${System.identityHashCode(coordinator)})"
-      case Some(exchangeCoordinator) if !exchangeCoordinator.isEstimated =>
-        s"(coordinator id: ${System.identityHashCode(coordinator)})"
-      case None => ""
-    }
+    val extraInfo =
+      coordinator match {
+        case Some(exchangeCoordinator) if exchangeCoordinator.isEstimated =>
+          s"(coordinator id: ${System.identityHashCode(coordinator)})"
+        case Some(exchangeCoordinator) if !exchangeCoordinator.isEstimated =>
+          s"(coordinator id: ${System.identityHashCode(coordinator)})"
+        case None => ""
+      }
 
     val simpleNodeName = "Exchange"
     s"$simpleNodeName$extraInfo"
@@ -56,8 +57,8 @@ case class ShuffleExchange(
 
   override def outputPartitioning: Partitioning = newPartitioning
 
-  private val serializer: Serializer = new UnsafeRowSerializer(
-    child.output.size)
+  private val serializer: Serializer =
+    new UnsafeRowSerializer(child.output.size)
 
   override protected def doPrepare(): Unit = {
     // If an ExchangeCoordinator is needed, we register this Exchange operator
@@ -171,11 +172,12 @@ object ShuffleExchange {
     val conf = SparkEnv.get.conf
     val shuffleManager = SparkEnv.get.shuffleManager
     val sortBasedShuffleOn = shuffleManager.isInstanceOf[SortShuffleManager]
-    val bypassMergeThreshold =
-      conf.getInt("spark.shuffle.sort.bypassMergeThreshold", 200)
+    val bypassMergeThreshold = conf.getInt(
+      "spark.shuffle.sort.bypassMergeThreshold",
+      200)
     if (sortBasedShuffleOn) {
-      val bypassIsSupported =
-        SparkEnv.get.shuffleManager.isInstanceOf[SortShuffleManager]
+      val bypassIsSupported = SparkEnv.get.shuffleManager
+        .isInstanceOf[SortShuffleManager]
       if (bypassIsSupported && partitioner.numPartitions <= bypassMergeThreshold) {
         // If we're using the original SortShuffleManager and the number of output partitions is
         // sufficiently small, then Spark will fall back to the hash-based shuffle write path, which
@@ -216,40 +218,41 @@ object ShuffleExchange {
       newPartitioning: Partitioning,
       serializer: Serializer)
       : ShuffleDependency[Int, InternalRow, InternalRow] = {
-    val part: Partitioner = newPartitioning match {
-      case RoundRobinPartitioning(numPartitions) =>
-        new HashPartitioner(numPartitions)
-      case HashPartitioning(_, n) =>
-        new Partitioner {
-          override def numPartitions: Int = n
-          // For HashPartitioning, the partitioning key is already a valid partition ID, as we use
-          // `HashPartitioning.partitionIdExpression` to produce partitioning key.
-          override def getPartition(key: Any): Int = key.asInstanceOf[Int]
-        }
-      case RangePartitioning(sortingExpressions, numPartitions) =>
-        // Internally, RangePartitioner runs a job on the RDD that samples keys to compute
-        // partition bounds. To get accurate samples, we need to copy the mutable keys.
-        val rddForSampling = rdd.mapPartitionsInternal { iter =>
-          val mutablePair = new MutablePair[InternalRow, Null]()
-          iter.map(row => mutablePair.update(row.copy(), null))
-        }
-        implicit val ordering =
-          new LazilyGeneratedOrdering(sortingExpressions, outputAttributes)
-        new RangePartitioner(numPartitions, rddForSampling, ascending = true)
-      case SinglePartition =>
-        new Partitioner {
-          override def numPartitions: Int = 1
-          override def getPartition(key: Any): Int = 0
-        }
-      case _ => sys.error(s"Exchange not implemented for $newPartitioning")
-      // TODO: Handle BroadcastPartitioning.
-    }
+    val part: Partitioner =
+      newPartitioning match {
+        case RoundRobinPartitioning(numPartitions) =>
+          new HashPartitioner(numPartitions)
+        case HashPartitioning(_, n) =>
+          new Partitioner {
+            override def numPartitions: Int = n
+            // For HashPartitioning, the partitioning key is already a valid partition ID, as we use
+            // `HashPartitioning.partitionIdExpression` to produce partitioning key.
+            override def getPartition(key: Any): Int = key.asInstanceOf[Int]
+          }
+        case RangePartitioning(sortingExpressions, numPartitions) =>
+          // Internally, RangePartitioner runs a job on the RDD that samples keys to compute
+          // partition bounds. To get accurate samples, we need to copy the mutable keys.
+          val rddForSampling = rdd.mapPartitionsInternal { iter =>
+            val mutablePair = new MutablePair[InternalRow, Null]()
+            iter.map(row => mutablePair.update(row.copy(), null))
+          }
+          implicit val ordering =
+            new LazilyGeneratedOrdering(sortingExpressions, outputAttributes)
+          new RangePartitioner(numPartitions, rddForSampling, ascending = true)
+        case SinglePartition =>
+          new Partitioner {
+            override def numPartitions: Int = 1
+            override def getPartition(key: Any): Int = 0
+          }
+        case _ => sys.error(s"Exchange not implemented for $newPartitioning")
+        // TODO: Handle BroadcastPartitioning.
+      }
     def getPartitionKeyExtractor(): InternalRow => Any =
       newPartitioning match {
         case RoundRobinPartitioning(numPartitions) =>
           // Distributes elements evenly across output partitions, starting from a random partition.
-          var position =
-            new Random(TaskContext.get().partitionId()).nextInt(numPartitions)
+          var position = new Random(TaskContext.get().partitionId())
+            .nextInt(numPartitions)
           (row: InternalRow) => {
             // The HashPartitioner will handle the `mod` by the number of partitions
             position += 1

@@ -30,8 +30,7 @@ class FilterIsEmptyCheckTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testWithSideEffect(): Unit = {
-    val text =
-      """var z = 1
+    val text = """var z = 1
         |Seq(0).filter { x =>
         |  z = x
         |  true

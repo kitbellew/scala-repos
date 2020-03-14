@@ -131,10 +131,11 @@ object Test {
     val foo1 = new Foo(1)
     val foo2 = new Foo(2)
     def run() {
-      val res = (foo1.Bar(2): Any) match {
+      val res =
+        (foo1.Bar(2): Any) match {
 
-        case foo1.Bar(2) => true
-      }
+          case foo1.Bar(2) => true
+        }
       assert(res)
     }
   }
@@ -161,15 +162,17 @@ object Test {
   object TestGuards extends Shmeez {
     val tree: Tree = Beez(2)
     def run() {
-      val res = tree match {
-        case Beez(x) if x == 3 => false
-        case Beez(x) if x == 2 => true
-      }
+      val res =
+        tree match {
+          case Beez(x) if x == 3 => false
+          case Beez(x) if x == 2 => true
+        }
       assert(res)
-      val ret = (Beez(3): Tree) match {
-        case Beez(x) if x == 3 => true
-        case Beez(x) if x == 2 => false
-      }
+      val ret =
+        (Beez(3): Tree) match {
+          case Beez(x) if x == 3 => true
+          case Beez(x) if x == 2 => false
+        }
       assert(ret)
     }
   }
@@ -248,16 +251,18 @@ object Test {
     case class Foo(i: Int, chars: Char*)
 
     def run() {
-      val a = Foo(0, 'a') match {
-        case Foo(i, c, chars @ _*) => c
-        case _                     => null
-      }
+      val a =
+        Foo(0, 'a') match {
+          case Foo(i, c, chars @ _*) => c
+          case _                     => null
+        }
       assertEquals(a, 'a')
 
-      val b = Foo(0, 'a') match {
-        case Foo(i, chars @ _*) => 'b'
-        case _                  => null
-      }
+      val b =
+        Foo(0, 'a') match {
+          case Foo(i, chars @ _*) => 'b'
+          case _                  => null
+        }
       assertEquals(b, 'b')
     }
   }
@@ -270,11 +275,12 @@ object Test {
     case class Bar(xs: Con*) extends Con
 
     def run() {
-      val res = (Bar(Foo()): Con) match {
-        case Bar(xs @ _*) =>
-          xs // this should be optimized away to a pattern Bar(xs)
-        case _ => Nil
-      }
+      val res =
+        (Bar(Foo()): Con) match {
+          case Bar(xs @ _*) =>
+            xs // this should be optimized away to a pattern Bar(xs)
+          case _ => Nil
+        }
       assertEquals(
         "res instance" + res.isInstanceOf[Seq[Con] forSome {
           type Con
@@ -339,10 +345,11 @@ object Test {
   object TestSequence08 {
     def run() {
       val xs = List(2, 3)
-      val ys = List(1, 2, 3) match {
-        case x :: `xs` => xs
-        case _         => Nil
-      }
+      val ys =
+        List(1, 2, 3) match {
+          case x :: `xs` => xs
+          case _         => Nil
+        }
       assertEquals(xs, ys)
     }
   }
@@ -432,8 +439,7 @@ object Test {
       class Bar1(val x: String)
       def p(b: Bar1) = b.x
 
-      def unapply(s: String): Option[Bar1] =
-        Some(new Bar1(s))
+      def unapply(s: String): Option[Bar1] = Some(new Bar1(s))
     }
     class Foo(j: Int) {
       case class Bar(i: Int)

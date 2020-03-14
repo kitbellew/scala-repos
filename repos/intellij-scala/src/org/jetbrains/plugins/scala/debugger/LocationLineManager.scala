@@ -73,8 +73,8 @@ trait LocationLineManager {
 
     checkAndUpdateCaches(refType)
 
-    val nonCustomized =
-      jvmLocations.asScala.filterNot(customizedLocationsCache.contains)
+    val nonCustomized = jvmLocations.asScala.filterNot(
+      customizedLocationsCache.contains)
     val customized = customizedLocations(refType, line)
     (nonCustomized ++ customized).filter(!shouldSkip(_))
   }
@@ -141,8 +141,9 @@ trait LocationLineManager {
         if (lineNumber < 0)
           return true
 
-        val linePosition =
-          SourcePosition.createFromLine(containingFile, lineNumber)
+        val linePosition = SourcePosition.createFromLine(
+          containingFile,
+          lineNumber)
         val elem = nonWhitespaceElement(linePosition)
         val parent = PsiTreeUtil.getParentOfType(
           elem,
@@ -159,8 +160,8 @@ trait LocationLineManager {
         location <- methods.flatMap(_.allLineLocations().asScala)
       } {
         if (shouldPointAtStartLine(location)) {
-          val significantElem =
-            DebuggerUtil.getSignificantElement(generatingElem)
+          val significantElem = DebuggerUtil.getSignificantElement(
+            generatingElem)
           val lineNumber = elementStartLine(significantElem)
           if (lineNumber != ScalaPositionManager.checkedLineNumber(location))
             cacheCustomLine(location, lineNumber)
@@ -285,13 +286,14 @@ trait LocationLineManager {
           }
         }
 
-        val baseLine = caseClauses.getParent match {
-          case ms: ScMatchStmt => ms.expr.map(elementStartLine)
-          case (b: ScBlock) childOf (tr: ScTryStmt) =>
-            return //todo: handle try statements
-          case (b: ScBlock) => Some(elementStartLine(b))
-          case _            => None
-        }
+        val baseLine =
+          caseClauses.getParent match {
+            case ms: ScMatchStmt => ms.expr.map(elementStartLine)
+            case (b: ScBlock) childOf (tr: ScTryStmt) =>
+              return //todo: handle try statements
+            case (b: ScBlock) => Some(elementStartLine(b))
+            case _            => None
+          }
         val caseLines = caseClauses.caseClauses.map(elementStartLine)
         val methods = refType.methods().asScala.filterNot(tooSmall)
 

@@ -41,11 +41,11 @@ import org.apache.kafka.common.requests.{
   */
 private[server] class MetadataCache(brokerId: Int) extends Logging {
   private val stateChangeLogger = KafkaController.stateChangeLogger
-  private val cache =
-    mutable.Map[String, mutable.Map[Int, PartitionStateInfo]]()
+  private val cache = mutable
+    .Map[String, mutable.Map[Int, PartitionStateInfo]]()
   private val aliveBrokers = mutable.Map[Int, Broker]()
-  private val aliveNodes =
-    mutable.Map[Int, collection.Map[SecurityProtocol, Node]]()
+  private val aliveNodes = mutable
+    .Map[Int, collection.Map[SecurityProtocol, Node]]()
   private val partitionMetadataLock = new ReentrantReadWriteLock()
 
   this.logIdent = "[Kafka Metadata Cache on broker %d] ".format(brokerId)
@@ -219,8 +219,10 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
             endPoints.put(protocol, EndPoint(ep.host, ep.port, protocol))
             nodes.put(protocol, new Node(broker.id, ep.host, ep.port))
         }
-        aliveBrokers(broker.id) =
-          Broker(broker.id, endPoints.asScala, Option(broker.rack))
+        aliveBrokers(broker.id) = Broker(
+          broker.id,
+          endPoints.asScala,
+          Option(broker.rack))
         aliveNodes(broker.id) = nodes.asScala
       }
 
@@ -262,8 +264,9 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
       partitionState.leaderEpoch,
       partitionState.isr.asScala.map(_.toInt).toList,
       partitionState.zkVersion)
-    val leaderInfo =
-      LeaderIsrAndControllerEpoch(leaderAndIsr, partitionState.controllerEpoch)
+    val leaderInfo = LeaderIsrAndControllerEpoch(
+      leaderAndIsr,
+      partitionState.controllerEpoch)
     PartitionStateInfo(leaderInfo, partitionState.replicas.asScala.map(_.toInt))
   }
 

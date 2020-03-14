@@ -66,11 +66,12 @@ class RedundantBlockInspection extends AbstractInspection {
 object RedundantBlockInspection {
   def isRedundantBlock(block: ScBlock): Boolean = {
     val child: PsiElement = block.getChildren.apply(1)
-    val probablyRedundant = child match {
-      case ref: ScReferenceExpression if ref.qualifier.isEmpty => true
-      case t: ScThisReference if t.reference.isEmpty           => true
-      case _                                                   => false
-    }
+    val probablyRedundant =
+      child match {
+        case ref: ScReferenceExpression if ref.qualifier.isEmpty => true
+        case t: ScThisReference if t.reference.isEmpty           => true
+        case _                                                   => false
+      }
     if (probablyRedundant) {
       val next: PsiElement = block.getNextSibling
       val parent = block.getParent

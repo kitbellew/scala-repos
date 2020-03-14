@@ -63,18 +63,19 @@ private[kinesis] class KPLDataGenerator(regionName: String)
       val str = num.toString
       val data = ByteBuffer.wrap(str.getBytes(StandardCharsets.UTF_8))
       val future = producer.addUserRecord(streamName, str, data)
-      val kinesisCallBack = new FutureCallback[UserRecordResult]() {
-        override def onFailure(t: Throwable): Unit = {} // do nothing
+      val kinesisCallBack =
+        new FutureCallback[UserRecordResult]() {
+          override def onFailure(t: Throwable): Unit = {} // do nothing
 
-        override def onSuccess(result: UserRecordResult): Unit = {
-          val shardId = result.getShardId
-          val seqNumber = result.getSequenceNumber()
-          val sentSeqNumbers = shardIdToSeqNumbers.getOrElseUpdate(
-            shardId,
-            new ArrayBuffer[(Int, String)]())
-          sentSeqNumbers += ((num, seqNumber))
+          override def onSuccess(result: UserRecordResult): Unit = {
+            val shardId = result.getShardId
+            val seqNumber = result.getSequenceNumber()
+            val sentSeqNumbers = shardIdToSeqNumbers.getOrElseUpdate(
+              shardId,
+              new ArrayBuffer[(Int, String)]())
+            sentSeqNumbers += ((num, seqNumber))
+          }
         }
-      }
       Futures.addCallback(future, kinesisCallBack)
     }
     producer.flushSync()

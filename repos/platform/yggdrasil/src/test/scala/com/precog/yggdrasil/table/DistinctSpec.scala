@@ -117,10 +117,11 @@ trait DistinctSpec[M[+_]]
         "key":[1.0,2.0]
       }]""")
 
-    val data: Stream[JValue] = (array match {
-      case JArray(li) => li
-      case _          => sys.error("Expected a JArray")
-    }).toStream
+    val data: Stream[JValue] =
+      (array match {
+        case JArray(li) => li
+        case _          => sys.error("Expected a JArray")
+      }).toStream
 
     val sample = SampleData(data)
     val table = fromSample(sample, Some(5))
@@ -197,10 +198,11 @@ trait DistinctSpec[M[+_]]
         "key":[8.0,4.0]
       }]""")
 
-    val data: Stream[JValue] = (array match {
-      case JArray(li) => li
-      case _          => sys.error("Expected JArray")
-    }).toStream
+    val data: Stream[JValue] =
+      (array match {
+        case JArray(li) => li
+        case _          => sys.error("Expected JArray")
+      }).toStream
 
     val sample = SampleData(data)
     val table = fromSample(sample, Some(5))

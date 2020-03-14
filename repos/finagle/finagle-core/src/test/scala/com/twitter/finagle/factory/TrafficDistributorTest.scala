@@ -148,11 +148,12 @@ class TrafficDistributorTest extends FunSuite {
       val ε: Double = 0.01
       val weightClasses = Seq((1.0, 1000), (2.0, 5), (10.0, 150))
       val classes = weightClasses.flatMap(weightClass.tupled).toSet
-      val weightSum = weightClasses.foldLeft(0.0) {
-        case (sum, tup) =>
-          val (w, t) = tup
-          sum + (w * t)
-      }
+      val weightSum =
+        weightClasses.foldLeft(0.0) {
+          case (sum, tup) =>
+            val (w, t) = tup
+            sum + (w * t)
+        }
 
       val dest = Var(Activity.Ok(classes))
       val dist = newDist(dest)
@@ -183,9 +184,10 @@ class TrafficDistributorTest extends FunSuite {
 
       val result = distribution(balancers)
 
-      val baseline = result.collect {
-        case ((w, s, l)) if s / w == 1.0 => l / w
-      }.head
+      val baseline =
+        result.collect {
+          case ((w, s, l)) if s / w == 1.0 => l / w
+        }.head
 
       result.foreach {
         case ((w, _, l)) => assert(math.abs(l / w - baseline) <= baseline * ε)
@@ -213,9 +215,10 @@ class TrafficDistributorTest extends FunSuite {
   })
 
   test("partition endpoints into weight classes")(new Ctx {
-    val init: Set[Address] = (1 to 5).map { i =>
-      WeightedAddress(Address(i), i)
-    }.toSet
+    val init: Set[Address] =
+      (1 to 5).map { i =>
+        WeightedAddress(Address(i), i)
+      }.toSet
     val dest = Var(Activity.Ok(init))
 
     newDist(dest)
@@ -362,17 +365,18 @@ class TrafficDistributorTest extends FunSuite {
     val weightClasses = Seq((1.0, 1), (busyWeight, 2))
     val classes = weightClasses.flatMap(weightClass.tupled).toSet
     val dest = Var(Activity.Ok(classes))
-    val dist = new TrafficDistributor[Int, Int](
-      dest = Activity(dest),
-      newEndpoint = newEndpoint,
-      newBalancer = DefaultBalancerFactory.newBalancer(
-        _,
-        NullStatsReceiver,
-        new NoBrokersAvailableException("test")),
-      eagerEviction = true,
-      statsReceiver = NullStatsReceiver,
-      rng = Rng("seed".hashCode)
-    )
+    val dist =
+      new TrafficDistributor[Int, Int](
+        dest = Activity(dest),
+        newEndpoint = newEndpoint,
+        newBalancer = DefaultBalancerFactory.newBalancer(
+          _,
+          NullStatsReceiver,
+          new NoBrokersAvailableException("test")),
+        eagerEviction = true,
+        statsReceiver = NullStatsReceiver,
+        rng = Rng("seed".hashCode)
+      )
 
     assert(dist.status == Status.Open)
   })
@@ -424,8 +428,7 @@ class TrafficDistributorTest extends FunSuite {
 
     def gauges: Map[Seq[String], () => Float] = underlying.gauges.toMap
 
-    def numGauges(name: Seq[String]): Int =
-      numUnderlying(name: _*)
+    def numGauges(name: Seq[String]): Int = numUnderlying(name: _*)
   }
 
   test("increment weights on a shard")(new StringClient with StringServer {
@@ -437,10 +440,11 @@ class TrafficDistributorTest extends FunSuite {
     val sr = new CumulativeGaugeInMemoryStatsReceiver()
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))
-    val client = stringClient
-      .configured(param.Stats(sr))
-      .newClient(Name.Bound.singleton(va), "test")
-      .toService
+    val client =
+      stringClient
+        .configured(param.Stats(sr))
+        .newClient(Name.Bound.singleton(va), "test")
+        .toService
 
     // step this socket address through weight classes. Previous weight
     // classes are closed during each step. This is similar to how we
@@ -481,10 +485,11 @@ class TrafficDistributorTest extends FunSuite {
     val sr = new InMemoryStatsReceiver
     val addr = Address(server.boundAddress.asInstanceOf[InetSocketAddress])
     val va = Var[Addr](Addr.Bound(addr))
-    val client = stringClient
-      .configured(param.Stats(sr))
-      .newClient(Name.Bound.singleton(va), "test")
-      .toService
+    val client =
+      stringClient
+        .configured(param.Stats(sr))
+        .newClient(Name.Bound.singleton(va), "test")
+        .toService
 
     assert(Await.result(client("hello")) == "hello".reverse)
     Await.ready(client.close())

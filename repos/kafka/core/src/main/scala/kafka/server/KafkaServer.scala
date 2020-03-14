@@ -179,13 +179,14 @@ class KafkaServer(
   var zkUtils: ZkUtils = null
   val correlationId: AtomicInteger = new AtomicInteger(0)
   val brokerMetaPropsFile = "meta.properties"
-  val brokerMetadataCheckpoints = config.logDirs
-    .map(logDir =>
-      (
-        logDir,
-        new BrokerMetadataCheckpoint(
-          new File(logDir + File.separator + brokerMetaPropsFile))))
-    .toMap
+  val brokerMetadataCheckpoints =
+    config.logDirs
+      .map(logDir =>
+        (
+          logDir,
+          new BrokerMetadataCheckpoint(
+            new File(logDir + File.separator + brokerMetaPropsFile))))
+      .toMap
 
   newGauge(
     "BrokerState",
@@ -264,8 +265,11 @@ class KafkaServer(
         kafkaController.startup()
 
         /* start kafka coordinator */
-        consumerCoordinator =
-          GroupCoordinator(config, zkUtils, replicaManager, kafkaMetricsTime)
+        consumerCoordinator = GroupCoordinator(
+          config,
+          zkUtils,
+          replicaManager,
+          kafkaMetricsTime)
         consumerCoordinator.startup()
 
         /* Get the authorizer and initialize it if one is specified.*/
@@ -375,8 +379,8 @@ class KafkaServer(
         "zkEnableSecureAcls is true, but the verification of the JAAS login file failed.")
     }
     if (chroot.length > 1) {
-      val zkConnForChrootCreation =
-        config.zkConnect.substring(0, config.zkConnect.indexOf("/"))
+      val zkConnForChrootCreation = config.zkConnect
+        .substring(0, config.zkConnect.indexOf("/"))
       val zkClientForChrootCreation = ZkUtils(
         zkConnForChrootCreation,
         config.zkSessionTimeoutMs,
@@ -411,8 +415,8 @@ class KafkaServer(
   private def controlledShutdown() {
 
     def node(broker: Broker): Node = {
-      val brokerEndPoint =
-        broker.getBrokerEndPoint(config.interBrokerSecurityProtocol)
+      val brokerEndPoint = broker.getBrokerEndPoint(
+        config.interBrokerSecurityProtocol)
       new Node(brokerEndPoint.id, brokerEndPoint.host, brokerEndPoint.port)
     }
 
@@ -425,20 +429,21 @@ class KafkaServer(
     def networkClientControlledShutdown(retries: Int): Boolean = {
       val metadataUpdater = new ManualMetadataUpdater()
       val networkClient = {
-        val selector = new Selector(
-          NetworkReceive.UNLIMITED,
-          config.connectionsMaxIdleMs,
-          metrics,
-          kafkaMetricsTime,
-          "kafka-server-controlled-shutdown",
-          Map.empty.asJava,
-          false,
-          ChannelBuilders.create(
-            config.interBrokerSecurityProtocol,
-            Mode.CLIENT,
-            LoginType.SERVER,
-            config.values)
-        )
+        val selector =
+          new Selector(
+            NetworkReceive.UNLIMITED,
+            config.connectionsMaxIdleMs,
+            metrics,
+            kafkaMetricsTime,
+            "kafka-server-controlled-shutdown",
+            Map.empty.asJava,
+            false,
+            ChannelBuilders.create(
+              config.interBrokerSecurityProtocol,
+              Mode.CLIENT,
+              LoginType.SERVER,
+              config.values)
+          )
         new NetworkClient(
           selector,
           metadataUpdater,
@@ -496,25 +501,27 @@ class KafkaServer(
                 throw socketTimeoutException
 
               // send the controlled shutdown request
-              val requestHeader =
-                networkClient.nextRequestHeader(ApiKeys.CONTROLLED_SHUTDOWN_KEY)
-              val send = new RequestSend(
-                node(prevController).idString,
-                requestHeader,
-                new ControlledShutdownRequest(config.brokerId).toStruct)
-              val request = new ClientRequest(
-                kafkaMetricsTime.milliseconds(),
-                true,
-                send,
-                null)
+              val requestHeader = networkClient.nextRequestHeader(
+                ApiKeys.CONTROLLED_SHUTDOWN_KEY)
+              val send =
+                new RequestSend(
+                  node(prevController).idString,
+                  requestHeader,
+                  new ControlledShutdownRequest(config.brokerId).toStruct)
+              val request =
+                new ClientRequest(
+                  kafkaMetricsTime.milliseconds(),
+                  true,
+                  send,
+                  null)
               val clientResponse = networkClient
                 .blockingSendAndReceive(request, socketTimeoutMs)
                 .getOrElse {
                   throw socketTimeoutException
                 }
 
-              val shutdownResponse = new ControlledShutdownResponse(
-                clientResponse.responseBody)
+              val shutdownResponse =
+                new ControlledShutdownResponse(clientResponse.responseBody)
               if (shutdownResponse.errorCode == Errors.NONE.code && shutdownResponse.partitionsRemaining.isEmpty) {
                 shutdownSucceeded = true
                 info("Controlled shutdown succeeded")
@@ -590,11 +597,12 @@ class KafkaServer(
             var response: NetworkReceive = null
             try {
               // send the controlled shutdown request
-              val request = new kafka.api.ControlledShutdownRequest(
-                0,
-                correlationId.getAndIncrement,
-                None,
-                config.brokerId)
+              val request =
+                new kafka.api.ControlledShutdownRequest(
+                  0,
+                  correlationId.getAndIncrement,
+                  None,
+                  config.brokerId)
               channel.send(request)
 
               response = channel.receive()

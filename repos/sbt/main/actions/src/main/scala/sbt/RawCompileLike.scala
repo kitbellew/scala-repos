@@ -76,8 +76,8 @@ object RawCompileLike {
       implicit val stringEquiv: Equiv[String] = defaultEquiv
       implicit val fileEquiv: Equiv[File] = defaultEquiv
       implicit val intEquiv: Equiv[Int] = defaultEquiv
-      val cachedComp = inputChanged(cache / "inputs") {
-        (inChanged, in: Inputs) =>
+      val cachedComp =
+        inputChanged(cache / "inputs") { (inChanged, in: Inputs) =>
           outputChanged(cache / "output") {
             (outChanged, outputs: FilesInfo[PlainFileInfo]) =>
               if (inChanged || outChanged)
@@ -91,7 +91,7 @@ object RawCompileLike {
               else
                 log.debug("Uptodate: " + outputDirectory.getAbsolutePath)
           }
-      }
+        }
       cachedComp(inputs)(() => exists(outputDirectory.allPaths.get.toSet))
     }
   def prepare(description: String, doCompile: Gen): Gen =

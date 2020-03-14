@@ -95,28 +95,34 @@ object EnsembleTree {
             for (leafName <- examples)
               yield {
                 val sampleName = ExampleInfo.formatAddSpaces(leafName)
-                val img = new ImageView {
-                  val filePath = ExampleInfo.thumbnailPath(leafName, groupName)
-                  val inputStream = this.getClass.getResourceAsStream(filePath)
-                  if (inputStream == null) {
-                    throw new IOException(
-                      "Unable to locate resource: " + filePath)
+                val img =
+                  new ImageView {
+                    val filePath = ExampleInfo.thumbnailPath(
+                      leafName,
+                      groupName)
+                    val inputStream = this.getClass
+                      .getResourceAsStream(filePath)
+                    if (inputStream == null) {
+                      throw new IOException(
+                        "Unable to locate resource: " + filePath)
+                    }
+                    image = new Image(inputStream)
                   }
-                  image = new Image(inputStream)
-                }
-                val button = new Button(sampleName, img) {
-                  prefWidth = 140
-                  prefHeight = 145
-                  contentDisplay = ContentDisplay.Top
-                  styleClass.clear()
-                  styleClass += "sample-tile"
-                  onAction = (ae: ActionEvent) => {
-                    Ensemble.splitPane.items.remove(1)
-                    Ensemble.splitPane.items.add(
-                      1,
-                      PageDisplayer.choosePage(groupName + " > " + sampleName))
+                val button =
+                  new Button(sampleName, img) {
+                    prefWidth = 140
+                    prefHeight = 145
+                    contentDisplay = ContentDisplay.Top
+                    styleClass.clear()
+                    styleClass += "sample-tile"
+                    onAction = (ae: ActionEvent) => {
+                      Ensemble.splitPane.items.remove(1)
+                      Ensemble.splitPane.items.add(
+                        1,
+                        PageDisplayer.choosePage(
+                          groupName + " > " + sampleName))
+                    }
                   }
-                }
                 EnsembleThumbNail(button)
               }
           dirName.capitalize -> thumbs.toList.sortWith(SortUtils.thumbNailsSort)

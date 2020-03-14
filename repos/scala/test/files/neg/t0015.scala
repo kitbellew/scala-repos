@@ -7,9 +7,10 @@ abstract class Test {
 abstract class M { self =>
 
   type T
-  final type selfType = M {
-    type T = self.T
-  }
+  final type selfType =
+    M {
+      type T = self.T
+    }
   type actualSelfType >: self.type <: selfType
 
   def f[U](x: Any) = {}

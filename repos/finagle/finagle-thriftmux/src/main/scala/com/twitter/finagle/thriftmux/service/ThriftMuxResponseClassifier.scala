@@ -100,8 +100,8 @@ object ThriftMuxResponseClassifier {
         s"ThriftMux.usingDeserializeCtx(${classifier.toString})"
 
       def isDefinedAt(reqRep: ReqRep): Boolean = {
-        val deserCtx =
-          Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
+        val deserCtx = Contexts.local
+          .getOrElse(DeserializeCtx.Key, NoDeserializerFn)
         if (deserCtx eq NoDeserializeCtx)
           return false
 
@@ -118,8 +118,8 @@ object ThriftMuxResponseClassifier {
       def apply(reqRep: ReqRep): ResponseClass =
         reqRep.response match {
           case Return(rep: mux.Response) =>
-            val deserCtx =
-              Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
+            val deserCtx = Contexts.local
+              .getOrElse(DeserializeCtx.Key, NoDeserializerFn)
             if (deserCtx eq NoDeserializeCtx)
               throw new MatchError("No DeserializeCtx found")
             try {
@@ -146,8 +146,8 @@ object ThriftMuxResponseClassifier {
       private[this] def deserializeIfPossible(rep: Try[Any]): Unit = {
         rep match {
           case Return(rep: mux.Response) =>
-            val deserCtx =
-              Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
+            val deserCtx = Contexts.local
+              .getOrElse(DeserializeCtx.Key, NoDeserializerFn)
             if (deserCtx ne NoDeserializeCtx) {
               try {
                 val bytes = Buf.ByteArray.Owned.extract(rep.body)

@@ -52,9 +52,10 @@ trait FlatMapOperation[-T, +U] extends Serializable with Closeable {
     new FlatMapOperation[T, V] {
       def apply(t: T) =
         self(t).flatMap { tr =>
-          val next: Seq[Future[TraversableOnce[V]]] = tr.map {
-            fmo.apply(_)
-          }.toIndexedSeq
+          val next: Seq[Future[TraversableOnce[V]]] =
+            tr.map {
+              fmo.apply(_)
+            }.toIndexedSeq
           Future.collect(next).map(_.flatten) // flatten the inner
         }
 
@@ -135,21 +136,23 @@ object FlatMapOperation {
       override def apply(t: T) =
         fm.apply(t).flatMap { trav: TraversableOnce[(K, V)] =>
           val resultList = trav.toSeq // Can't go through this twice
-          val keySet: Set[K] = resultList.map {
-            _._1
-          }.toSet
+          val keySet: Set[K] =
+            resultList.map {
+              _._1
+            }.toSet
 
           if (keySet.isEmpty)
             Future.value(Map.empty)
           else {
             // Do the lookup
             val mres: Map[K, Future[Option[JoinedV]]] = store.multiGet(keySet)
-            val resultFutures = resultList.map {
-              case (k, v) =>
-                mres(k).map {
-                  k -> (v, _)
-                }
-            }.toIndexedSeq
+            val resultFutures =
+              resultList.map {
+                case (k, v) =>
+                  mres(k).map {
+                    k -> (v, _)
+                  }
+              }.toIndexedSeq
             Future.collect(resultFutures)
           }
         }

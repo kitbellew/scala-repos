@@ -102,16 +102,15 @@ object Analysis {
               "[" * dimensions + decodeClassName(base)
           }
 
-        val (simpleName, paramTypes, resultType) =
-          ir.Definitions.decodeMethodName(encodedName)
+        val (simpleName, paramTypes, resultType) = ir.Definitions
+          .decodeMethodName(encodedName)
 
         simpleName + "(" + paramTypes.map(typeDisplayName).mkString(",") + ")" +
           resultType.fold("")(typeDisplayName)
       }
     }
 
-    def fullDisplayName: String =
-      owner.displayName + "." + displayName
+    def fullDisplayName: String = owner.displayName + "." + displayName
   }
 
   sealed trait MethodSyntheticKind
@@ -194,21 +193,22 @@ object Analysis {
   case object FromExports extends From
 
   def logError(error: Error, logger: Logger, level: Level): Unit = {
-    val headMsg = error match {
-      case MissingJavaLangObjectClass(_) =>
-        "Fatal error: java.lang.Object is missing"
-      case CycleInInheritanceChain(cycle, _) =>
-        ("Fatal error: cycle in inheritance chain involving " +
-          cycle.map(_.displayName).mkString(", "))
-      case MissingClass(info, _) =>
-        s"Referring to non-existent class ${info.displayName}"
-      case NotAModule(info, _) =>
-        s"Cannot access module for non-module ${info.displayName}"
-      case MissingMethod(info, _) =>
-        s"Referring to non-existent method ${info.fullDisplayName}"
-      case ConflictingDefaultMethods(infos, _) =>
-        s"Conflicting default methods: ${infos.map(_.fullDisplayName).mkString(" ")}"
-    }
+    val headMsg =
+      error match {
+        case MissingJavaLangObjectClass(_) =>
+          "Fatal error: java.lang.Object is missing"
+        case CycleInInheritanceChain(cycle, _) =>
+          ("Fatal error: cycle in inheritance chain involving " +
+            cycle.map(_.displayName).mkString(", "))
+        case MissingClass(info, _) =>
+          s"Referring to non-existent class ${info.displayName}"
+        case NotAModule(info, _) =>
+          s"Cannot access module for non-module ${info.displayName}"
+        case MissingMethod(info, _) =>
+          s"Referring to non-existent method ${info.fullDisplayName}"
+        case ConflictingDefaultMethods(infos, _) =>
+          s"Conflicting default methods: ${infos.map(_.fullDisplayName).mkString(" ")}"
+      }
 
     logger.log(level, headMsg)
     val csl = new CallStackLogger(logger)

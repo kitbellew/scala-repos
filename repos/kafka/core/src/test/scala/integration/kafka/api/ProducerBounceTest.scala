@@ -105,8 +105,12 @@ class ProducerBounceTest extends KafkaServerTestHarness {
   @Test
   def testBrokerFailure() {
     val numPartitions = 3
-    val leaders =
-      TestUtils.createTopic(zkUtils, topic1, numPartitions, numServers, servers)
+    val leaders = TestUtils.createTopic(
+      zkUtils,
+      topic1,
+      numPartitions,
+      numServers,
+      servers)
     assertTrue(
       "Leader of all partitions of the topic should exist",
       leaders.values.forall(leader => leader.isDefined))
@@ -144,12 +148,13 @@ class ProducerBounceTest extends KafkaServerTestHarness {
     val fetchResponses = newLeaders.zipWithIndex.map {
       case (leader, partition) =>
         // Consumers must be instantiated after all the restarts since they use random ports each time they start up
-        val consumer = new SimpleConsumer(
-          "localhost",
-          servers(leader).boundPort(),
-          100,
-          1024 * 1024,
-          "")
+        val consumer =
+          new SimpleConsumer(
+            "localhost",
+            servers(leader).boundPort(),
+            100,
+            1024 * 1024,
+            "")
         val response = consumer
           .fetch(
             new FetchRequestBuilder()

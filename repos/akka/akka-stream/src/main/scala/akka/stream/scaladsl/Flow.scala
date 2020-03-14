@@ -32,13 +32,15 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
     extends FlowOpsMat[Out, Mat]
     with Graph[FlowShape[In, Out], Mat] {
 
-  override val shape: FlowShape[In, Out] =
-    module.shape.asInstanceOf[FlowShape[In, Out]]
+  override val shape: FlowShape[In, Out] = module.shape
+    .asInstanceOf[FlowShape[In, Out]]
 
   override def toString: String = s"Flow($shape, $module)"
 
-  override type Repr[+O] =
-    Flow[In @uncheckedVariance, O, Mat @uncheckedVariance]
+  override type Repr[+O] = Flow[
+    In @uncheckedVariance,
+    O,
+    Mat @uncheckedVariance]
   override type ReprMat[+O, +M] = Flow[In @uncheckedVariance, O, M]
 
   override type Closed = Sink[In @uncheckedVariance, Mat @uncheckedVariance]
@@ -969,8 +971,7 @@ trait FlowOps[+Out, +Mat] {
   def delay(
       of: FiniteDuration,
       strategy: DelayOverflowStrategy = DelayOverflowStrategy.dropTail)
-      : Repr[Out] =
-    via(new Delay[Out](of, strategy))
+      : Repr[Out] = via(new Delay[Out](of, strategy))
 
   /**
     * Discard the given number of elements at the beginning of the stream.
@@ -984,8 +985,7 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def drop(n: Long): Repr[Out] =
-    via(Drop[Out](n))
+  def drop(n: Long): Repr[Out] = via(Drop[Out](n))
 
   /**
     * Discard the elements received within the given duration at beginning of the stream.
@@ -998,8 +998,7 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def dropWithin(d: FiniteDuration): Repr[Out] =
-    via(new DropWithin[Out](d))
+  def dropWithin(d: FiniteDuration): Repr[Out] = via(new DropWithin[Out](d))
 
   /**
     * Terminate processing (and cancel the upstream publisher) after the given
@@ -1283,19 +1282,21 @@ trait FlowOps[+Out, +Mat] {
       maxSubstreams: Int,
       f: Out ⇒ K): SubFlow[Out, Mat, Repr, Closed] = {
     implicit def mat = GraphInterpreter.currentInterpreter.materializer
-    val merge = new SubFlowImpl.MergeBack[Out, Repr] {
-      override def apply[T](
-          flow: Flow[Out, T, NotUsed],
-          breadth: Int): Repr[T] =
+    val merge =
+      new SubFlowImpl.MergeBack[Out, Repr] {
+        override def apply[T](
+            flow: Flow[Out, T, NotUsed],
+            breadth: Int): Repr[T] =
+          deprecatedAndThen[Source[Out, NotUsed]](
+            GroupBy(maxSubstreams, f.asInstanceOf[Any ⇒ Any]))
+            .map(_.via(flow))
+            .via(new FlattenMerge(breadth))
+      }
+    val finish: (Sink[Out, NotUsed]) ⇒ Closed =
+      s ⇒
         deprecatedAndThen[Source[Out, NotUsed]](
           GroupBy(maxSubstreams, f.asInstanceOf[Any ⇒ Any]))
-          .map(_.via(flow))
-          .via(new FlattenMerge(breadth))
-    }
-    val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
-      deprecatedAndThen[Source[Out, NotUsed]](
-        GroupBy(maxSubstreams, f.asInstanceOf[Any ⇒ Any]))
-        .to(Sink.foreach(_.runWith(s)))
+          .to(Sink.foreach(_.runWith(s)))
     new SubFlowImpl(Flow[Out], merge, finish)
   }
 
@@ -1355,20 +1356,22 @@ trait FlowOps[+Out, +Mat] {
     */
   def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy)(
       p: Out ⇒ Boolean): SubFlow[Out, Mat, Repr, Closed] = {
-    val merge = new SubFlowImpl.MergeBack[Out, Repr] {
-      override def apply[T](
-          flow: Flow[Out, T, NotUsed],
-          breadth: Int): Repr[T] =
-        via(Split.when(p, substreamCancelStrategy))
-          .map(_.via(flow))
-          .via(new FlattenMerge(breadth))
-    }
+    val merge =
+      new SubFlowImpl.MergeBack[Out, Repr] {
+        override def apply[T](
+            flow: Flow[Out, T, NotUsed],
+            breadth: Int): Repr[T] =
+          via(Split.when(p, substreamCancelStrategy))
+            .map(_.via(flow))
+            .via(new FlattenMerge(breadth))
+      }
 
-    val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
-      via(Split.when(p, substreamCancelStrategy))
-        .to(
-          Sink.foreach(
-            _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+    val finish: (Sink[Out, NotUsed]) ⇒ Closed =
+      s ⇒
+        via(Split.when(p, substreamCancelStrategy))
+          .to(
+            Sink.foreach(
+              _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
 
     new SubFlowImpl(Flow[Out], merge, finish)
   }
@@ -1430,19 +1433,21 @@ trait FlowOps[+Out, +Mat] {
     */
   def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy)(
       p: Out ⇒ Boolean): SubFlow[Out, Mat, Repr, Closed] = {
-    val merge = new SubFlowImpl.MergeBack[Out, Repr] {
-      override def apply[T](
-          flow: Flow[Out, T, NotUsed],
-          breadth: Int): Repr[T] =
+    val merge =
+      new SubFlowImpl.MergeBack[Out, Repr] {
+        override def apply[T](
+            flow: Flow[Out, T, NotUsed],
+            breadth: Int): Repr[T] =
+          via(Split.after(p, substreamCancelStrategy))
+            .map(_.via(flow))
+            .via(new FlattenMerge(breadth))
+      }
+    val finish: (Sink[Out, NotUsed]) ⇒ Closed =
+      s ⇒
         via(Split.after(p, substreamCancelStrategy))
-          .map(_.via(flow))
-          .via(new FlattenMerge(breadth))
-    }
-    val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
-      via(Split.after(p, substreamCancelStrategy))
-        .to(
-          Sink.foreach(
-            _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+          .to(
+            Sink.foreach(
+              _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
     new SubFlowImpl(Flow[Out], merge, finish)
   }
 
@@ -1742,8 +1747,7 @@ trait FlowOps[+Out, +Mat] {
     */
   def interleave[U >: Out](
       that: Graph[SourceShape[U], _],
-      segmentSize: Int): Repr[U] =
-    via(interleaveGraph(that, segmentSize))
+      segmentSize: Int): Repr[U] = via(interleaveGraph(that, segmentSize))
 
   protected def interleaveGraph[U >: Out, M](
       that: Graph[SourceShape[U], M],
@@ -1796,8 +1800,7 @@ trait FlowOps[+Out, +Mat] {
     * '''Cancels when''' downstream cancels
     */
   def mergeSorted[U >: Out, M](that: Graph[SourceShape[U], M])(
-      implicit ord: Ordering[U]): Repr[U] =
-    via(mergeSortedGraph(that))
+      implicit ord: Ordering[U]): Repr[U] = via(mergeSortedGraph(that))
 
   protected def mergeSortedGraph[U >: Out, M](
       that: Graph[SourceShape[U], M])(implicit

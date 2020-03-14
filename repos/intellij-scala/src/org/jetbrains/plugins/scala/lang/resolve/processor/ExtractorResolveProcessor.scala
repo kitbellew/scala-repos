@@ -38,36 +38,40 @@ class ExtractorResolveProcessor(
 
       def resultsForTypedDef(obj: ScTypedDefinition) {
         def resultsFor(unapplyName: String) = {
-          val typeResult = getFromType(state) match {
-            case Some(tp) =>
-              Success(
-                ScProjectionType(tp, obj, superReference = false),
-                Some(obj))
-            case _ => obj.getType(TypingContext.empty)
-          }
+          val typeResult =
+            getFromType(state) match {
+              case Some(tp) =>
+                Success(
+                  ScProjectionType(tp, obj, superReference = false),
+                  Some(obj))
+              case _ => obj.getType(TypingContext.empty)
+            }
           val processor = new CollectMethodsProcessor(ref, unapplyName)
           typeResult.foreach(t => processor.processType(t, ref))
-          val sigs = processor.candidatesS.flatMap {
-            case ScalaResolveResult(meth: PsiMethod, subst) =>
-              Some((meth, subst, Some(obj)))
-            case _ => None
-          }.toSeq
+          val sigs =
+            processor.candidatesS.flatMap {
+              case ScalaResolveResult(meth: PsiMethod, subst) =>
+                Some((meth, subst, Some(obj)))
+              case _ => None
+            }.toSeq
           addResults(sigs.map {
             case (m, subst, parent) =>
-              val resolveToMethod = new ScalaResolveResult(
-                m,
-                subst,
-                getImports(state),
-                fromType = getFromType(state),
-                parentElement = parent,
-                isAccessible = accessible)
-              val resolveToNamed = new ScalaResolveResult(
-                named,
-                subst,
-                getImports(state),
-                fromType = getFromType(state),
-                parentElement = parent,
-                isAccessible = accessible)
+              val resolveToMethod =
+                new ScalaResolveResult(
+                  m,
+                  subst,
+                  getImports(state),
+                  fromType = getFromType(state),
+                  parentElement = parent,
+                  isAccessible = accessible)
+              val resolveToNamed =
+                new ScalaResolveResult(
+                  named,
+                  subst,
+                  getImports(state),
+                  fromType = getFromType(state),
+                  parentElement = parent,
+                  isAccessible = accessible)
 
               resolveToMethod.copy(innerResolveResult = Option(resolveToNamed))
           })

@@ -96,11 +96,12 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
 
   private def buildDefaultPool() {
     if (rootPool.getSchedulableByName(DEFAULT_POOL_NAME) == null) {
-      val pool = new Pool(
-        DEFAULT_POOL_NAME,
-        DEFAULT_SCHEDULING_MODE,
-        DEFAULT_MINIMUM_SHARE,
-        DEFAULT_WEIGHT)
+      val pool =
+        new Pool(
+          DEFAULT_POOL_NAME,
+          DEFAULT_SCHEDULING_MODE,
+          DEFAULT_MINIMUM_SHARE,
+          DEFAULT_WEIGHT)
       rootPool.addSchedulable(pool)
       logInfo(
         "Created default pool %s, schedulingMode: %s, minShare: %d, weight: %d"
@@ -153,8 +154,9 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
     var poolName = DEFAULT_POOL_NAME
     var parentPool = rootPool.getSchedulableByName(poolName)
     if (properties != null) {
-      poolName =
-        properties.getProperty(FAIR_SCHEDULER_PROPERTIES, DEFAULT_POOL_NAME)
+      poolName = properties.getProperty(
+        FAIR_SCHEDULER_PROPERTIES,
+        DEFAULT_POOL_NAME)
       parentPool = rootPool.getSchedulableByName(poolName)
       if (parentPool == null) {
         // we will create a new pool that user has configured in app

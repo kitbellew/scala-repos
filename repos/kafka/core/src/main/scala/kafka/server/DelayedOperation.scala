@@ -225,9 +225,10 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     * @return the number of completed operations during this process
     */
   def checkAndComplete(key: Any): Int = {
-    val watchers = inReadLock(removeWatchersLock) {
-      watchersForKey.get(key)
-    }
+    val watchers =
+      inReadLock(removeWatchersLock) {
+        watchersForKey.get(key)
+      }
     if (watchers == null)
       0
     else

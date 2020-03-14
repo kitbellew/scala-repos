@@ -49,20 +49,21 @@ class NettyServer(
     val actorSystem: ActorSystem)(implicit val materializer: Materializer)
     extends Server {
 
-  private val nettyConfig =
-    config.configuration.underlying.getConfig("play.server.netty")
+  private val nettyConfig = config.configuration.underlying
+    .getConfig("play.server.netty")
   private val maxInitialLineLength = nettyConfig.getInt("maxInitialLineLength")
   private val maxHeaderSize = nettyConfig.getInt("maxHeaderSize")
   private val maxChunkSize = nettyConfig.getInt("maxChunkSize")
   private val logWire = nettyConfig.getBoolean("log.wire")
 
-  private lazy val transport = nettyConfig.getString("transport") match {
-    case "native" => Native
-    case "jdk"    => Jdk
-    case _ =>
-      throw ServerStartException(
-        "Netty transport configuration value should be either jdk or native")
-  }
+  private lazy val transport =
+    nettyConfig.getString("transport") match {
+      case "native" => Native
+      case "jdk"    => Jdk
+      case _ =>
+        throw ServerStartException(
+          "Netty transport configuration value should be either jdk or native")
+    }
 
   import NettyServer._
 
@@ -136,10 +137,11 @@ class NettyServer(
     val channelPublisher =
       new HandlerPublisher(serverChannelEventLoop, classOf[Channel])
 
-    val channelClass = transport match {
-      case Native => classOf[EpollServerSocketChannel]
-      case Jdk    => classOf[NioServerSocketChannel]
-    }
+    val channelClass =
+      transport match {
+        case Native => classOf[EpollServerSocketChannel]
+        case Jdk    => classOf[NioServerSocketChannel]
+      }
 
     val bootstrap = new Bootstrap()
       .channel(channelClass)
@@ -375,8 +377,8 @@ trait NettyServerComponents {
       application.actorSystem)(application.materializer)
   }
 
-  lazy val environment: Environment =
-    Environment.simple(mode = serverConfig.mode)
+  lazy val environment: Environment = Environment.simple(mode =
+    serverConfig.mode)
   lazy val sourceMapper: Option[SourceMapper] = None
   lazy val webCommands: WebCommands = new DefaultWebCommands
   lazy val configuration: Configuration = Configuration(ConfigFactory.load())

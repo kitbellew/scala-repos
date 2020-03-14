@@ -192,9 +192,10 @@ class ScaloidCodeGenerator(
   }
 
   def baseClassInstance = {
-    val args = BaseClassArgs.toMap
-      .get(cls.name)
-      .fold(cls.constructors.head.args.map(_.name).mkString(", "))(_(cls))
+    val args =
+      BaseClassArgs.toMap
+        .get(cls.name)
+        .fold(cls.constructors.head.args.map(_.name).mkString(", "))(_(cls))
     s"${cls.tpe.name}${typeVar(cls.tpe)}($args)"
   }
 
@@ -286,8 +287,7 @@ class ScaloidCodeGenerator(
      else
        "") + "\n\n" + unitListener(l)
 
-  def listeners =
-    cls.listeners.map(listener).mkString("\n\n")
+  def listeners = cls.listeners.map(listener).mkString("\n\n")
 
   // Intent
 
@@ -373,8 +373,7 @@ class ScaloidCodeGenerator(
     prop.setters.map(s => setter(prop, s)).mkString("\n") +
       prop.switch.fold("")("\n\n" + switch(_, prop.setters.headOption))
 
-  def property(prop: AndroidProperty) =
-    s"""${getter(prop)}
+  def property(prop: AndroidProperty) = s"""${getter(prop)}
        |
        |${setters(prop)}
        |""".stripMargin
@@ -402,20 +401,17 @@ class ScaloidCodeGenerator(
   def androidMethodReference(c: AndroidClass, method: AndroidMethod) =
     s"`[[${androidClassUrl(c)}#${methodSignature(method, ",%20")} ${methodSignature(method, ", ")}]]`"
 
-  def methodScalaDoc(method: AndroidMethod) =
-    s"""/**
+  def methodScalaDoc(method: AndroidMethod) = s"""/**
        | * Shortcut for ${androidMethodReference(cls, method)}
        | */
        |""".stripMargin.trim
 
-  def richClassScalaDoc =
-    s"""/**
+  def richClassScalaDoc = s"""/**
        | * Automatically generated enriching class of ${androidReference(cls)}.
        | */
        |""".stripMargin.trim
 
-  def helperTraitScalaDoc =
-    s"""/**
+  def helperTraitScalaDoc = s"""/**
        | * Automatically generated helper trait of ${androidReference(cls)}. This contains several property accessors.
        | */
        |""".stripMargin.trim

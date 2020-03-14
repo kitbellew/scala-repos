@@ -58,17 +58,18 @@ trait Analyzer
         override val checkable = false
         import global._
 
-        val openPackageObjectsTraverser = new Traverser {
-          override def traverse(tree: Tree): Unit =
-            tree match {
-              case ModuleDef(_, _, _) =>
-                if (tree.symbol.name == nme.PACKAGEkw) {
-                  openPackageModule(tree.symbol, tree.symbol.owner)
-                }
-              case ClassDef(_, _, _, _) => () // make it fast
-              case _                    => super.traverse(tree)
-            }
-        }
+        val openPackageObjectsTraverser =
+          new Traverser {
+            override def traverse(tree: Tree): Unit =
+              tree match {
+                case ModuleDef(_, _, _) =>
+                  if (tree.symbol.name == nme.PACKAGEkw) {
+                    openPackageModule(tree.symbol, tree.symbol.owner)
+                  }
+                case ClassDef(_, _, _, _) => () // make it fast
+                case _                    => super.traverse(tree)
+              }
+          }
 
         def apply(unit: CompilationUnit) {
           openPackageObjectsTraverser(unit.body)

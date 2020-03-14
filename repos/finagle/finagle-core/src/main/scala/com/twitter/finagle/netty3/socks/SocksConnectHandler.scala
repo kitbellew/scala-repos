@@ -22,13 +22,15 @@ import org.jboss.netty.channel._
 
 object SocksConnectHandler {
   // Throwables used as `cause` fields for ConnectionFailedExceptions.
-  private[socks] val InvalidInit = new Throwable(
-    "unexpected SOCKS version or authentication " +
-      "level specified in connect response from proxy")
+  private[socks] val InvalidInit =
+    new Throwable(
+      "unexpected SOCKS version or authentication " +
+        "level specified in connect response from proxy")
 
-  private[socks] val InvalidResponse = new Throwable(
-    "unexpected SOCKS version or response " +
-      "status specified in connect response from proxy")
+  private[socks] val InvalidResponse =
+    new Throwable(
+      "unexpected SOCKS version or response " +
+        "status specified in connect response from proxy")
 
   // Socks Version constants
   private val Version1: Byte = 0x01
@@ -243,11 +245,12 @@ class SocksConnectHandler(
           }
         })
 
-        val wrappedEvent = new DownstreamChannelStateEvent(
-          de.getChannel,
-          wrappedConnectFuture,
-          de.getState,
-          proxyAddr)
+        val wrappedEvent =
+          new DownstreamChannelStateEvent(
+            de.getChannel,
+            wrappedConnectFuture,
+            de.getState,
+            proxyAddr)
 
         super.connectRequested(ctx, wrappedEvent)
 

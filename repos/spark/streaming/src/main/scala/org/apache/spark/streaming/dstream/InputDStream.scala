@@ -55,14 +55,15 @@ abstract class InputDStream[T: ClassTag](_ssc: StreamingContext)
   /** A human-readable name of this InputDStream */
   private[streaming] def name: String = {
     // e.g. FlumePollingDStream -> "Flume polling stream"
-    val newName = Utils
-      .getFormattedClassName(this)
-      .replaceAll("InputDStream", "Stream")
-      .split("(?=[A-Z])")
-      .filter(_.nonEmpty)
-      .mkString(" ")
-      .toLowerCase
-      .capitalize
+    val newName =
+      Utils
+        .getFormattedClassName(this)
+        .replaceAll("InputDStream", "Stream")
+        .split("(?=[A-Z])")
+        .filter(_.nonEmpty)
+        .mkString(" ")
+        .toLowerCase
+        .capitalize
     s"$newName [$id]"
   }
 

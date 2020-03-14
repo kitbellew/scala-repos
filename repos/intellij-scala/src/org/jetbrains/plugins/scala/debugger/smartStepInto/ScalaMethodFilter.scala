@@ -25,11 +25,12 @@ class ScalaMethodFilter(
     callingExpressionLines: Range[Integer])
     extends MethodFilter {
   private val unknownName: String = "!unknownName!"
-  private val myTargetMethodSignature =
-    DebuggerUtil.getFunctionJVMSignature(function)
+  private val myTargetMethodSignature = DebuggerUtil.getFunctionJVMSignature(
+    function)
   private val myDeclaringClassName = {
-    val clazz =
-      PsiTreeUtil.getParentOfType(function, classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil.getParentOfType(
+      function,
+      classOf[ScTemplateDefinition])
     if (clazz == null)
       JVMNameUtil.getJVMRawText(unknownName)
     else
@@ -37,11 +38,12 @@ class ScalaMethodFilter(
         clazz,
         clazz.isInstanceOf[ScObject] || ValueClassType.isValueClass(clazz))
   }
-  private val funName = function match {
-    case c: ScMethodLike if c.isConstructor => "<init>"
-    case fun: ScFunction                    => ScalaNamesUtil.toJavaName(fun.name)
-    case _                                  => unknownName
-  }
+  private val funName =
+    function match {
+      case c: ScMethodLike if c.isConstructor => "<init>"
+      case fun: ScFunction                    => ScalaNamesUtil.toJavaName(fun.name)
+      case _                                  => unknownName
+    }
 
   override def locationMatches(
       process: DebugProcessImpl,

@@ -56,13 +56,14 @@ class ScalaIntroduceVariableHandler
 
     def getTypeElementAtOffset = {
       def isExpression = {
-        val element: PsiElement = file.findElementAt(offset) match {
-          case w: PsiWhiteSpace
-              if w.getTextRange.getStartOffset == offset &&
-                w.getText.contains("\n") =>
-            file.findElementAt(offset - 1)
-          case p => p
-        }
+        val element: PsiElement =
+          file.findElementAt(offset) match {
+            case w: PsiWhiteSpace
+                if w.getTextRange.getStartOffset == offset &&
+                  w.getText.contains("\n") =>
+              file.findElementAt(offset - 1)
+            case p => p
+          }
         ScalaRefactoringUtil.getExpressions(element).nonEmpty
       }
 
@@ -85,8 +86,8 @@ class ScalaIntroduceVariableHandler
     }
 
     if (hasSelection && selectedElement.isEmpty) {
-      val message =
-        ScalaBundle.message("cannot.refactor.not.expression.nor.type")
+      val message = ScalaBundle.message(
+        "cannot.refactor.not.expression.nor.type")
       CommonRefactoringUtil.showErrorHint(
         project,
         editor,
@@ -103,11 +104,12 @@ class ScalaIntroduceVariableHandler
         new IntroduceTypeAliasData())
     }
 
-    val typeElement = selectedElement match {
-      case Some(te: ScTypeElement) =>
-        Option(te)
-      case _ => getTypeElementAtOffset
-    }
+    val typeElement =
+      selectedElement match {
+        case Some(te: ScTypeElement) =>
+          Option(te)
+        case _ => getTypeElementAtOffset
+      }
 
     if (typeElement.isDefined) {
       if (editor
@@ -127,8 +129,8 @@ class ScalaIntroduceVariableHandler
         }
       }
     } else {
-      val canBeIntroduced: ScExpression => Boolean =
-        ScalaRefactoringUtil.checkCanBeIntroduced(_)
+      val canBeIntroduced: ScExpression => Boolean = ScalaRefactoringUtil
+        .checkCanBeIntroduced(_)
       ScalaRefactoringUtil.afterExpressionChoosing(
         project,
         editor,

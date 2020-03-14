@@ -362,8 +362,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 Constant(boostrapMethodRef: Symbol)) :: staticAndDynamicArgs) =>
           val numStaticArgs =
             boostrapMethodRef.paramss.head.size - 3 /*JVM provided args*/
-          val (staticArgs, dynamicArgs) =
-            staticAndDynamicArgs.splitAt(numStaticArgs)
+          val (staticArgs, dynamicArgs) = staticAndDynamicArgs.splitAt(
+            numStaticArgs)
           val boostrapDescriptor = staticHandleFromSymbol(boostrapMethodRef)
           val bootstrapArgs = staticArgs.map({
             case t @ Literal(c: Constant) => bootstrapMethodArg(c, t.pos)
@@ -658,13 +658,14 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
         case Apply(TypeApply(fun, targs), _) =>
           val sym = fun.symbol
-          val cast = sym match {
-            case Object_isInstanceOf => false
-            case Object_asInstanceOf => true
-            case _ =>
-              abort(
-                s"Unexpected type application $fun[sym: ${sym.fullName}] in: $app")
-          }
+          val cast =
+            sym match {
+              case Object_isInstanceOf => false
+              case Object_asInstanceOf => true
+              case _ =>
+                abort(
+                  s"Unexpected type application $fun[sym: ${sym.fullName}] in: $app")
+            }
 
           val Select(obj, _) = fun
           val l = tpeTK(obj)
@@ -804,10 +805,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>
           genLoad(expr)
-          val boxType =
-            unboxResultType(
-              fun.symbol
-            ) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
+          val boxType = unboxResultType(
+            fun.symbol
+          ) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
           generatedType = boxType
           val MethodNameAndType(mname, methodType) =
             srBoxesRuntimeUnboxToMethods(boxType)
@@ -1223,15 +1223,16 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case concatenations =>
           bc.genStartConcat(tree.pos)
           for (elem <- concatenations) {
-            val loadedElem = elem match {
-              case Apply(boxOp, value :: Nil)
-                  if currentRun.runDefinitions.isBox(boxOp.symbol) =>
-                // Eliminate boxing of primitive values. Boxing is introduced by erasure because
-                // there's only a single synthetic `+` method "added" to the string class.
-                value
+            val loadedElem =
+              elem match {
+                case Apply(boxOp, value :: Nil)
+                    if currentRun.runDefinitions.isBox(boxOp.symbol) =>
+                  // Eliminate boxing of primitive values. Boxing is introduced by erasure because
+                  // there's only a single synthetic `+` method "added" to the string class.
+                  value
 
-              case _ => elem
-            }
+                case _ => elem
+              }
             val elemType = tpeTK(loadedElem)
             genLoad(loadedElem, elemType)
             bc.genConcat(elemType, loadedElem.pos)
@@ -1622,8 +1623,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           genCZJUMP(success, failure, TestOp.NE, BOOL, targetIfNoJump)
         } else {
           // l == r -> if (l eq null) r eq null else l.equals(r)
-          val eqEqTempLocal =
-            locals.makeLocal(ObjectRef, nme.EQEQ_LOCAL_VAR.toString)
+          val eqEqTempLocal = locals.makeLocal(
+            ObjectRef,
+            nme.EQEQ_LOCAL_VAR.toString)
           val lNull = new asm.Label
           val lNonNull = new asm.Label
 
@@ -1690,9 +1692,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         (receiver ::: capturedParams).map(sym =>
           typeToBType(sym.info).toASMType): _*)
 
-      val constrainedType = new MethodBType(
-        lambdaParams.map(p => typeToBType(p.tpe)),
-        typeToBType(lambdaTarget.tpe.resultType)).toASMType
+      val constrainedType =
+        new MethodBType(
+          lambdaParams.map(p => typeToBType(p.tpe)),
+          typeToBType(lambdaTarget.tpe.resultType)).toASMType
       val sam = functionalInterface.info.decls
         .find(_.isDeferred)
         .getOrElse(functionalInterface.info.member(nme.apply))
@@ -1702,8 +1705,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val flags =
         java.lang.invoke.LambdaMetafactory.FLAG_SERIALIZABLE | java.lang.invoke.LambdaMetafactory.FLAG_MARKERS
 
-      val ScalaSerializable = classBTypeFromSymbol(
-        definitions.SerializableClass).toASMType
+      val ScalaSerializable =
+        classBTypeFromSymbol(definitions.SerializableClass).toASMType
       bc.jmethod.visitInvokeDynamicInsn(
         samName,
         invokedType,

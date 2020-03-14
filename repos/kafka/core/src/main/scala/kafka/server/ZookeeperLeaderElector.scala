@@ -81,11 +81,12 @@ class ZookeeperLeaderElector(
     }
 
     try {
-      val zkCheckedEphemeral = new ZKCheckedEphemeral(
-        electionPath,
-        electString,
-        controllerContext.zkUtils.zkConnection.getZookeeper,
-        JaasUtils.isZkSecurityEnabled())
+      val zkCheckedEphemeral =
+        new ZKCheckedEphemeral(
+          electionPath,
+          electString,
+          controllerContext.zkUtils.zkConnection.getZookeeper,
+          JaasUtils.isZkSecurityEnabled())
       zkCheckedEphemeral.create()
       info(brokerId + " successfully elected as leader")
       leaderId = brokerId

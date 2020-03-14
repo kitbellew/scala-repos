@@ -48,8 +48,7 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     * Construct a new Dtab with the given delegation
     * entry appended.
     */
-  def +(dentry: Dentry): Dtab =
-    Dtab(dentries0 :+ dentry)
+  def +(dentry: Dentry): Dtab = Dtab(dentries0 :+ dentry)
 
   /**
     * Java API for '+'
@@ -155,28 +154,30 @@ object Dentry {
   // concrete syntax will not admit it. It will do for a no-op.
   val nop: Dentry = Dentry(Path.Utf8("/"), NameTree.Neg)
 
-  implicit val equiv: Equiv[Dentry] = new Equiv[Dentry] {
-    def equiv(d1: Dentry, d2: Dentry): Boolean =
-      (
-        d1.prefix == d2.prefix &&
-          d1.dst.simplified == d2.dst.simplified
-      )
-  }
+  implicit val equiv: Equiv[Dentry] =
+    new Equiv[Dentry] {
+      def equiv(d1: Dentry, d2: Dentry): Boolean =
+        (
+          d1.prefix == d2.prefix &&
+            d1.dst.simplified == d2.dst.simplified
+        )
+    }
 }
 
 /**
   * Object Dtab manages 'base' and 'local' Dtabs.
   */
 object Dtab {
-  implicit val equiv: Equiv[Dtab] = new Equiv[Dtab] {
-    def equiv(d1: Dtab, d2: Dtab): Boolean =
-      (
-        d1.size == d2.size &&
-          d1.zip(d2).forall {
-            case (de1, de2) => Equiv[Dentry].equiv(de1, de2)
-          }
-      )
-  }
+  implicit val equiv: Equiv[Dtab] =
+    new Equiv[Dtab] {
+      def equiv(d1: Dtab, d2: Dtab): Boolean =
+        (
+          d1.size == d2.size &&
+            d1.zip(d2).forall {
+              case (de1, de2) => Equiv[Dentry].equiv(de1, de2)
+            }
+        )
+    }
 
   /**
     * A failing delegation table.
@@ -269,11 +270,12 @@ object Dtab {
     * [[com.twitter.app.Flaggable]], allowing Dtabs to be easily used as
     * [[com.twitter.app.Flag]]s
     */
-  implicit val flaggable: Flaggable[Dtab] = new Flaggable[Dtab] {
-    override def default = None
-    def parse(s: String) = Dtab.read(s)
-    override def show(dtab: Dtab) = dtab.show
-  }
+  implicit val flaggable: Flaggable[Dtab] =
+    new Flaggable[Dtab] {
+      override def default = None
+      def parse(s: String) = Dtab.read(s)
+      override def show(dtab: Dtab) = dtab.show
+    }
 }
 
 final class DtabBuilder extends Builder[Dentry, Dtab] {

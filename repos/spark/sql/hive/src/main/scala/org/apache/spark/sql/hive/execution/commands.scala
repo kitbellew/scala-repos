@@ -264,12 +264,13 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
     }
 
     val data = Dataset.newDataFrame(hiveContext, query)
-    val df = existingSchema match {
-      // If we are inserting into an existing table, just use the existing schema.
-      case Some(s) =>
-        sqlContext.internalCreateDataFrame(data.queryExecution.toRdd, s)
-      case None => data
-    }
+    val df =
+      existingSchema match {
+        // If we are inserting into an existing table, just use the existing schema.
+        case Some(s) =>
+          sqlContext.internalCreateDataFrame(data.queryExecution.toRdd, s)
+        case None => data
+      }
 
     // Create the relation based on the data of df.
     val dataSource = DataSource(

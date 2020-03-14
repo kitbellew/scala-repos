@@ -36,16 +36,17 @@ private[spark] class ConsoleSink(
   val CONSOLE_KEY_PERIOD = "period"
   val CONSOLE_KEY_UNIT = "unit"
 
-  val pollPeriod = Option(property.getProperty(CONSOLE_KEY_PERIOD)) match {
-    case Some(s) => s.toInt
-    case None    => CONSOLE_DEFAULT_PERIOD
-  }
+  val pollPeriod =
+    Option(property.getProperty(CONSOLE_KEY_PERIOD)) match {
+      case Some(s) => s.toInt
+      case None    => CONSOLE_DEFAULT_PERIOD
+    }
 
-  val pollUnit: TimeUnit = Option(
-    property.getProperty(CONSOLE_KEY_UNIT)) match {
-    case Some(s) => TimeUnit.valueOf(s.toUpperCase())
-    case None    => TimeUnit.valueOf(CONSOLE_DEFAULT_UNIT)
-  }
+  val pollUnit: TimeUnit =
+    Option(property.getProperty(CONSOLE_KEY_UNIT)) match {
+      case Some(s) => TimeUnit.valueOf(s.toUpperCase())
+      case None    => TimeUnit.valueOf(CONSOLE_DEFAULT_UNIT)
+    }
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 

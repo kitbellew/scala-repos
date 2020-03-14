@@ -77,11 +77,12 @@ class ScalaUnreachableCodeInspection
       }
     }
 
-    val elements = instructions.toSeq
-      .sortBy(_.num)
-      .flatMap(_.element)
-      .map(e => getParentStmt(e).getOrElse(e))
-      .distinct
+    val elements =
+      instructions.toSeq
+        .sortBy(_.num)
+        .flatMap(_.element)
+        .map(e => getParentStmt(e).getOrElse(e))
+        .distinct
     elements.groupBy(_.getParent).values
   }
 
@@ -94,12 +95,13 @@ class ScalaUnreachableCodeInspection
     val descriptor = {
       val message = "Unreachable code"
 
-      val fix = fragment match {
-        case Seq(e childOf (doStmt: ScDoStmt))
-            if doStmt.condition.contains(e) =>
-          new UnwrapDoStmtFix(doStmt)
-        case _ => new RemoveFragmentQuickFix(fragment)
-      }
+      val fix =
+        fragment match {
+          case Seq(e childOf (doStmt: ScDoStmt))
+              if doStmt.condition.contains(e) =>
+            new UnwrapDoStmtFix(doStmt)
+          case _ => new RemoveFragmentQuickFix(fragment)
+        }
       new ProblemDescriptorImpl(
         fragment.head,
         fragment.last,

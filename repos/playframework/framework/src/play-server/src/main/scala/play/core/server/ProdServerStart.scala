@@ -41,8 +41,10 @@ object ProdServerStart {
 
       // Start the application
       val application: Application = {
-        val environment =
-          Environment(config.rootDir, process.classLoader, Mode.Prod)
+        val environment = Environment(
+          config.rootDir,
+          process.classLoader,
+          Mode.Prod)
         val context = ApplicationLoader.createContext(environment)
         val loader = ApplicationLoader(context)
         loader.load(context)
@@ -75,8 +77,9 @@ object ProdServerStart {
   def readServerConfigSettings(process: ServerProcess): ServerConfig = {
     val configuration: Configuration = {
       val rootDirArg: Option[File] = process.args.headOption.map(new File(_))
-      val rootDirConfig = rootDirArg.fold(Map.empty[String, String])(dir =>
-        ServerConfig.rootDirConfig(dir))
+      val rootDirConfig =
+        rootDirArg.fold(Map.empty[String, String])(dir =>
+          ServerConfig.rootDirConfig(dir))
       Configuration.load(
         process.classLoader,
         process.properties,
@@ -115,8 +118,9 @@ object ProdServerStart {
     if (!(httpPort orElse httpsPort).isDefined)
       throw ServerStartException("Must provide either an HTTP or HTTPS port")
 
-    val address =
-      configuration.getString("play.server.http.address").getOrElse("0.0.0.0")
+    val address = configuration
+      .getString("play.server.http.address")
+      .getOrElse("0.0.0.0")
 
     ServerConfig(
       rootDir = rootDir,

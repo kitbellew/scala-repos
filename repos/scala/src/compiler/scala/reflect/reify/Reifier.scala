@@ -60,60 +60,71 @@ abstract class Reifier extends States with Phases with Errors with Utils {
       if (universe.tpe == null)
         CannotReifyUntypedPrefix(universe)
 
-      val result = reifee match {
-        case tree: Tree =>
-          reifyTrace("reifying = ")(
-            if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
-              "\n" + nodePrinters.nodeToString(tree).trim
-            else
-              tree.toString)
-          reifyTrace("reifee is located at: ")(tree.pos)
-          reifyTrace("universe = ")(universe)
-          reifyTrace("mirror = ")(mirror)
-          if (tree exists (_.isErroneous))
-            CannotReifyErroneousReifee(tree)
-          if (tree.tpe == null)
-            CannotReifyUntypedReifee(tree)
-          val pipeline = mkReificationPipeline
-          val rtree = pipeline(tree)
-
-          val tpe = typer.packedType(tree, NoSymbol)
-          val ReifiedType(_, _, tpeSymtab, _, rtpe, tpeReificationIsConcrete) =
-            `package`
-              .reifyType(global)(typer, universe, mirror, tpe, concrete = false)
-          state.reificationIsConcrete &= tpeReificationIsConcrete
-          state.symtab ++= tpeSymtab
-          ReifiedTree(
-            universe,
-            mirror,
-            symtab,
-            rtree,
-            tpe,
-            rtpe,
-            reificationIsConcrete)
-
-        case tpe: Type =>
-          reifyTrace("reifying = ")(tpe.toString)
-          reifyTrace("universe = ")(universe)
-          reifyTrace("mirror = ")(mirror)
-          val rtree = reify(tpe)
-          ReifiedType(
-            universe,
-            mirror,
-            symtab,
-            tpe,
-            rtree,
-            reificationIsConcrete)
-
-        case _ =>
-          throw new Error(
-            "reifee %s of type %s is not supported".format(
-              reifee,
-              if (reifee == null)
-                "null"
+      val result =
+        reifee match {
+          case tree: Tree =>
+            reifyTrace("reifying = ")(
+              if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
+                "\n" + nodePrinters.nodeToString(tree).trim
               else
-                reifee.getClass.toString))
-      }
+                tree.toString)
+            reifyTrace("reifee is located at: ")(tree.pos)
+            reifyTrace("universe = ")(universe)
+            reifyTrace("mirror = ")(mirror)
+            if (tree exists (_.isErroneous))
+              CannotReifyErroneousReifee(tree)
+            if (tree.tpe == null)
+              CannotReifyUntypedReifee(tree)
+            val pipeline = mkReificationPipeline
+            val rtree = pipeline(tree)
+
+            val tpe = typer.packedType(tree, NoSymbol)
+            val ReifiedType(
+              _,
+              _,
+              tpeSymtab,
+              _,
+              rtpe,
+              tpeReificationIsConcrete) =
+              `package`.reifyType(global)(
+                typer,
+                universe,
+                mirror,
+                tpe,
+                concrete = false)
+            state.reificationIsConcrete &= tpeReificationIsConcrete
+            state.symtab ++= tpeSymtab
+            ReifiedTree(
+              universe,
+              mirror,
+              symtab,
+              rtree,
+              tpe,
+              rtpe,
+              reificationIsConcrete)
+
+          case tpe: Type =>
+            reifyTrace("reifying = ")(tpe.toString)
+            reifyTrace("universe = ")(universe)
+            reifyTrace("mirror = ")(mirror)
+            val rtree = reify(tpe)
+            ReifiedType(
+              universe,
+              mirror,
+              symtab,
+              tpe,
+              rtree,
+              reificationIsConcrete)
+
+          case _ =>
+            throw new Error(
+              "reifee %s of type %s is not supported".format(
+                reifee,
+                if (reifee == null)
+                  "null"
+                else
+                  reifee.getClass.toString))
+        }
 
       // todo. why do we reset attrs?
       //

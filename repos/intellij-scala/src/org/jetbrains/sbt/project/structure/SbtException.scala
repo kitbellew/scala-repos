@@ -36,17 +36,18 @@ object SbtException {
   }
 
   private def handleUnresolvedDeps(lines: Seq[String]): SbtException = {
-    val dependencies = lines.foldLeft("") { (acc, line) =>
-      if (line.startsWith("[warn]")) {
-        val trimmed = line.substring(6).trim
-        if (trimmed.startsWith(":: ") && !trimmed.contains(
-              "UNRESOLVED DEPENDENCIES"))
-          acc + s"<li>${trimmed.substring(2)}</li>"
-        else
+    val dependencies =
+      lines.foldLeft("") { (acc, line) =>
+        if (line.startsWith("[warn]")) {
+          val trimmed = line.substring(6).trim
+          if (trimmed.startsWith(":: ") && !trimmed.contains(
+                "UNRESOLVED DEPENDENCIES"))
+            acc + s"<li>${trimmed.substring(2)}</li>"
+          else
+            acc
+        } else
           acc
-      } else
-        acc
-    }
+      }
     new SbtException(
       SbtBundle(
         "sbt.import.unresolvedDependencies",

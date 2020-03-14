@@ -139,102 +139,108 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
 
   def multiple(r: Range, x: Int) = (x.toLong - r.start) % r.step == 0
 
-  property("foreach.step") = forAllNoShrink(myGen) { r =>
+  property("foreach.step") =
+    forAllNoShrink(myGen) { r =>
 //    println("foreach.step "+str(r))
-    var allValid = true
-    val cnt = new Counter(r)
+      var allValid = true
+      val cnt = new Counter(r)
 //    println("--------------------")
 //    println(r)
-    r foreach { x =>
-      cnt(x)
+      r foreach { x =>
+        cnt(x)
 //      println(x + ", " + (x - r.start) + ", " + (x.toLong - r.start) + ", " + ((x.toLong - r.start) % r.step))
-      allValid &&= multiple(r, x)
+        allValid &&= multiple(r, x)
+      }
+      allValid :| str(r)
     }
-    allValid :| str(r)
-  }
 
-  property("foreach.inside.range") = forAll(myGen) { r =>
+  property("foreach.inside.range") =
+    forAll(myGen) { r =>
 //    println("foreach.inside.range "+str(r))
-    var allValid = true
-    var last: Option[Int] = None
-    val cnt = new Counter(r)
-    r foreach { x =>
-      cnt(x)
-      allValid &&= within(r, x)
+      var allValid = true
+      var last: Option[Int] = None
+      val cnt = new Counter(r)
+      r foreach { x =>
+        cnt(x)
+        allValid &&= within(r, x)
+      }
+      allValid :| str(r)
     }
-    allValid :| str(r)
-  }
 
-  property("foreach.visited.size") = forAll(myGen) { r =>
+  property("foreach.visited.size") =
+    forAll(myGen) { r =>
 //    println("foreach.visited.size "+str(r))
-    var visited = 0L
-    val cnt = new Counter(r)
-    r foreach { x =>
-      cnt(x)
-      visited += 1L
-    }
+      var visited = 0L
+      val cnt = new Counter(r)
+      r foreach { x =>
+        cnt(x)
+        visited += 1L
+      }
 //    println("----------")
 //    println(str(r))
 //    println("size: " + r.size)
 //    println("expected: " + expectedSize(r))
 //    println("visited: " + visited)
-    (visited == expectedSize(r)) :| str(r)
-  }
+      (visited == expectedSize(r)) :| str(r)
+    }
 
-  property("sum") = forAll(myGen) { r =>
+  property("sum") =
+    forAll(myGen) { r =>
 //    println("----------")
 //    println("sum "+str(r))
-    val rSum = r.sum
-    val expected = r.length match {
-      case 0             => 0
-      case 1             => r.head
-      case x if x < 1000 =>
-        // Explicit sum, to guard against having the same mistake in both the
-        // range implementation and test implementation of sum formula.
-        // (Yes, this happened before.)
-        var i = r.head
-        var s = 0L
-        var n = x
-        while (n > 0) {
-          s += i
-          i += r.step
-          n -= 1
+      val rSum = r.sum
+      val expected =
+        r.length match {
+          case 0             => 0
+          case 1             => r.head
+          case x if x < 1000 =>
+            // Explicit sum, to guard against having the same mistake in both the
+            // range implementation and test implementation of sum formula.
+            // (Yes, this happened before.)
+            var i = r.head
+            var s = 0L
+            var n = x
+            while (n > 0) {
+              s += i
+              i += r.step
+              n -= 1
+            }
+            s.toInt
+          case _ =>
+            // Make sure head + last doesn't overflow!
+            ((r.head.toLong + r.last) * r.length / 2).toInt
         }
-        s.toInt
-      case _ =>
-        // Make sure head + last doesn't overflow!
-        ((r.head.toLong + r.last) * r.length / 2).toInt
-    }
 //   println("size: " + r.length)
 //   println("expected: " + expected)
 //   println("obtained: " + rSum)
 
-    (rSum == expected) :| str(r)
-  }
-
-  /* checks that sum respects custom Numeric */
-  property("sumCustomNumeric") = forAll(myGen) { r =>
-    val mod = 65536
-    object mynum extends Numeric[Int] {
-      def plus(x: Int, y: Int): Int = (x + y) % mod
-      override def zero = 0
-
-      def fromInt(x: Int): Int = ???
-      def minus(x: Int, y: Int): Int = ???
-      def negate(x: Int): Int = ???
-      def times(x: Int, y: Int): Int = ???
-      def toDouble(x: Int): Double = ???
-      def toFloat(x: Int): Float = ???
-      def toInt(x: Int): Int = ((x % mod) + mod * 2) % mod
-      def toLong(x: Int): Long = ???
-      def compare(x: Int, y: Int): Int = ???
+      (rSum == expected) :| str(r)
     }
 
-    val rSum = r.sum(mynum)
-    val expected = mynum.toInt(r.sum)
+  /* checks that sum respects custom Numeric */
+  property("sumCustomNumeric") =
+    forAll(myGen) { r =>
+      val mod = 65536
+      object mynum extends Numeric[Int] {
+        def plus(x: Int, y: Int): Int = (x + y) % mod
+        override def zero = 0
 
-    (rSum == expected) :| str(r)
-  }
+        def fromInt(x: Int): Int = ???
+        def minus(x: Int, y: Int): Int = ???
+        def negate(x: Int): Int = ???
+        def times(x: Int, y: Int): Int = ???
+        def toDouble(x: Int): Double = ???
+        def toFloat(x: Int): Float = ???
+        def toInt(x: Int): Int = ((x % mod) + mod * 2) % mod
+        def toLong(x: Int): Long = ???
+        def compare(x: Int, y: Int): Int = ???
+      }
+
+      val rSum = r.sum(mynum)
+      val expected = mynum.toInt(r.sum)
+
+      (rSum == expected) :| str(r)
+    }
 
   property("length") =
     forAll(myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) {
@@ -250,7 +256,8 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
         (r.isEmpty == (expectedSize(r) == 0L)) :| str(r)
     }
 
-  property("contains") = forAll(myGen, arbInt.arbitrary) { (r, x) =>
+  property("contains") =
+    forAll(myGen, arbInt.arbitrary) { (r, x) =>
 //    println("contains "+str(r))
 //    println("----------------")
 //    println(str(r))
@@ -258,17 +265,18 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
 //    println("within: " + within(r, x))
 //    println("multiple: " + multiple(r, x))
 //    println("contains: " + r.contains(x))
-    ((within(r, x) && multiple(r, x)) == r.contains(x)) :| str(r) + ": " + x
-  }
+      ((within(r, x) && multiple(r, x)) == r.contains(x)) :| str(r) + ": " + x
+    }
 
-  property("take") = forAll(
-    myGen suchThat (r => expectedSize(r).toInt == expectedSize(r)),
-    arbInt.arbitrary) { (r, x) =>
+  property("take") =
+    forAll(
+      myGen suchThat (r => expectedSize(r).toInt == expectedSize(r)),
+      arbInt.arbitrary) { (r, x) =>
 //    println("take "+str(r))
-    val t = r take x
-    (t.size == (0 max x min r.size) && t.start == r.start && t.step == r.step) :| str(
-      r) + " / " + str(t) + ": " + x
-  }
+      val t = r take x
+      (t.size == (0 max x min r.size) && t.start == r.start && t.step == r.step) :| str(
+        r) + " / " + str(t) + ": " + x
+    }
 
   property("init") =
     forAll(myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) {
@@ -280,41 +288,43 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
         }
     }
 
-  property("takeWhile") = forAll(
-    myGen suchThat (r => expectedSize(r).toInt == expectedSize(r)),
-    arbInt.arbitrary) { (r, x) =>
+  property("takeWhile") =
+    forAll(
+      myGen suchThat (r => expectedSize(r).toInt == expectedSize(r)),
+      arbInt.arbitrary) { (r, x) =>
 //    println("takeWhile "+str(r))
-    val t =
-      (if (r.step > 0)
-         r takeWhile (_ <= x)
-       else
-         r takeWhile (_ >= x))
-    if (r.size == 0) {
-      (t.size == 0) :| str(r) + " / " + str(t) + ": " + x
-    } else {
-      val t2 =
+      val t =
         (if (r.step > 0)
-           Range(r.start, x min r.last, r.step).inclusive
+           r takeWhile (_ <= x)
          else
-           Range(r.start, x max r.last, r.step).inclusive)
-      (t.start == r.start && t.size == t2.size && t.step == r.step) :| str(
-        r) + " / " + str(t) + " / " + str(t2) + ": " + x
+           r takeWhile (_ >= x))
+      if (r.size == 0) {
+        (t.size == 0) :| str(r) + " / " + str(t) + ": " + x
+      } else {
+        val t2 =
+          (if (r.step > 0)
+             Range(r.start, x min r.last, r.step).inclusive
+           else
+             Range(r.start, x max r.last, r.step).inclusive)
+        (t.start == r.start && t.size == t2.size && t.step == r.step) :| str(
+          r) + " / " + str(t) + " / " + str(t2) + ": " + x
+      }
     }
-  }
 
-  property("reverse.toSet.equal") = forAll(myGen) { r =>
+  property("reverse.toSet.equal") =
+    forAll(myGen) { r =>
 //    println("reverse.toSet.equal "+str(r))
-    val reversed = r.reverse
-    val aresame = r.toSet == reversed.toSet
-    if (!aresame) {
-      println(str(r))
-      println(r)
-      println(reversed)
-      println(r.toSet)
-      println(reversed.toSet)
+      val reversed = r.reverse
+      val aresame = r.toSet == reversed.toSet
+      if (!aresame) {
+        println(str(r))
+        println(r)
+        println(reversed)
+        println(r.toSet)
+        println(reversed.toSet)
+      }
+      aresame :| str(r)
     }
-    aresame :| str(r)
-  }
 }
 
 object NormalRangeTest extends RangeTest("normal") {
@@ -331,9 +341,10 @@ object NormalRangeTest extends RangeTest("normal") {
         1
       else
         -1)
-  property("by 1.size + 1 == inclusive.size") = forAll(genOne) { r =>
-    (r.size + 1 == r.inclusive.size) :| str(r)
-  }
+  property("by 1.size + 1 == inclusive.size") =
+    forAll(genOne) { r =>
+      (r.size + 1 == r.inclusive.size) :| str(r)
+    }
 }
 
 object InclusiveRangeTest extends RangeTest("inclusive") {
@@ -357,12 +368,13 @@ object SmallValuesRange extends RangeTest("smallValues") {
 }
 
 object TooLargeRange extends Properties("Too Large Range") {
-  val genTooLargeStart = for {
-    start <- choose(-Int.MinValue, 0)
-  } yield start
+  val genTooLargeStart =
+    for {
+      start <- choose(-Int.MinValue, 0)
+    } yield start
 
-  property("Too large range throws exception") = forAll(genTooLargeStart) {
-    start =>
+  property("Too large range throws exception") =
+    forAll(genTooLargeStart) { start =>
       try {
         val r = Range.inclusive(start, Int.MaxValue, 1)
         val l = r.length
@@ -371,7 +383,7 @@ object TooLargeRange extends Properties("Too Large Range") {
       } catch {
         case _: IllegalArgumentException => true
       }
-  }
+    }
 }
 
 object Test extends Properties("Range") {

@@ -48,8 +48,8 @@ object LambdaDeserializer {
       val funcInterfaceSignature = parseDescriptor(
         getFunctionalInterfaceMethodSignature)
       val instantiated = parseDescriptor(getInstantiatedMethodType)
-      val functionalInterfaceClass =
-        loader.loadClass(slashDot(getFunctionalInterfaceClass))
+      val functionalInterfaceClass = loader.loadClass(
+        slashDot(getFunctionalInterfaceClass))
 
       val implMethodSig = parseDescriptor(getImplMethodSignature)
       // Construct the invoked type from the impl method type. This is the type of a factory
@@ -57,13 +57,14 @@ object LambdaDeserializer {
       // coming form the types of the captures, and return type being the functional interface.
       val invokedType: MethodType = {
         // 1. Add receiver for non-static impl methods
-        val withReceiver = getImplMethodKind match {
-          case MethodHandleInfo.REF_invokeStatic |
-              MethodHandleInfo.REF_newInvokeSpecial =>
-            implMethodSig
-          case _ =>
-            implMethodSig.insertParameterTypes(0, implClass)
-        }
+        val withReceiver =
+          getImplMethodKind match {
+            case MethodHandleInfo.REF_invokeStatic |
+                MethodHandleInfo.REF_newInvokeSpecial =>
+              implMethodSig
+            case _ =>
+              implMethodSig.insertParameterTypes(0, implClass)
+          }
         // 2. Remove lambda parameters, leaving only captures. Note: the receiver may be a lambda parameter,
         //    such as in `Function<Object, String> s = Object::toString`
         val lambdaArity = funcInterfaceSignature.parameterCount()
@@ -94,8 +95,8 @@ object LambdaDeserializer {
 
       val flags: Int =
         LambdaMetafactory.FLAG_SERIALIZABLE | LambdaMetafactory.FLAG_MARKERS
-      val isScalaFunction =
-        functionalInterfaceClass.getName.startsWith("scala.Function")
+      val isScalaFunction = functionalInterfaceClass.getName.startsWith(
+        "scala.Function")
       val markerInterface: Class[_] = loader.loadClass(
         if (isScalaFunction)
           ScalaSerializable
@@ -118,20 +119,22 @@ object LambdaDeserializer {
 
     val key =
       serialized.getImplMethodName + " : " + serialized.getImplMethodSignature
-    val factory: MethodHandle = if (cache == null) {
-      makeCallSite.getTarget
-    } else
-      cache.get(key) match {
-        case null =>
-          val callSite = makeCallSite
-          val temp = callSite.getTarget
-          cache.put(key, temp)
-          temp
-        case target => target
-      }
+    val factory: MethodHandle =
+      if (cache == null) {
+        makeCallSite.getTarget
+      } else
+        cache.get(key) match {
+          case null =>
+            val callSite = makeCallSite
+            val temp = callSite.getTarget
+            cache.put(key, temp)
+            temp
+          case target => target
+        }
 
-    val captures = Array.tabulate(serialized.getCapturedArgCount)(n =>
-      serialized.getCapturedArg(n))
+    val captures =
+      Array.tabulate(serialized.getCapturedArgCount)(n =>
+        serialized.getCapturedArg(n))
     factory.invokeWithArguments(captures: _*)
   }
 

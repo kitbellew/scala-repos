@@ -64,10 +64,13 @@ trait ColumnarTableModuleTestSupport[M[+_]]
     }
 
     val (prefix, suffix) = sampleData.splitAt(sliceSize)
-    val slice = new Slice {
-      val (columns, size) =
-        buildColArrays(prefix.toStream, Map.empty[ColumnRef, ArrayColumn[_]], 0)
-    }
+    val slice =
+      new Slice {
+        val (columns, size) = buildColArrays(
+          prefix.toStream,
+          Map.empty[ColumnRef, ArrayColumn[_]],
+          0)
+      }
 
     (slice, suffix)
   }
@@ -134,11 +137,12 @@ trait ColumnarTableModuleTestSupport[M[+_]]
             case _                                                => false
           }
 
-          val mask = BitSetUtil.filteredRange(range.start, range.end) { i =>
-            prioritized exists {
-              _ isDefinedAt i
+          val mask =
+            BitSetUtil.filteredRange(range.start, range.end) { i =>
+              prioritized exists {
+                _ isDefinedAt i
+              }
             }
-          }
 
           val (a2, arr) =
             mask.toList.foldLeft((a, new Array[BigDecimal](range.end))) {

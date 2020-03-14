@@ -33,9 +33,10 @@ class JavaLoggerStatsReceiver(logger: Logger, timer: Timer)
     synchronized {
       deregisterGauge(name)
 
-      timerTasks(name) = timer.schedule(10.seconds) {
-        logger.info("%s %2f".format(formatName(name), f))
-      }
+      timerTasks(name) =
+        timer.schedule(10.seconds) {
+          logger.info("%s %2f".format(formatName(name), f))
+        }
     }
 
   protected[this] def deregisterGauge(name: Seq[String]): Unit =

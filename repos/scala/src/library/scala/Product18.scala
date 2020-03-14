@@ -65,8 +65,7 @@ object Product18 {
     T15,
     T16,
     T17,
-    T18]] =
-    Some(x)
+    T18]] = Some(x)
 }
 
 /** Product18 is a cartesian product of 18 components.

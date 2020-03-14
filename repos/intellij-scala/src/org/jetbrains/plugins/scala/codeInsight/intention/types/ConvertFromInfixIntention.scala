@@ -35,12 +35,15 @@ class ConvertFromInfixIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixTypeElement: ScInfixTypeElement =
-      PsiTreeUtil.getParentOfType(element, classOf[ScInfixTypeElement], false)
-    val elementToReplace = infixTypeElement.getParent match {
-      case x: ScParenthesisedTypeElement => x
-      case _                             => infixTypeElement
-    }
+    val infixTypeElement: ScInfixTypeElement = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScInfixTypeElement],
+      false)
+    val elementToReplace =
+      infixTypeElement.getParent match {
+        case x: ScParenthesisedTypeElement => x
+        case _                             => infixTypeElement
+      }
 
     if (element == null)
       return

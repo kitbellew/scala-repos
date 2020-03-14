@@ -135,18 +135,20 @@ case class AhcWSRequest(
     copy(auth = Some((username, password, scheme)))
 
   def withHeaders(hdrs: (String, String)*): WSRequest = {
-    val headers = hdrs.foldLeft(this.headers)((m, hdr) =>
-      if (m.contains(hdr._1))
-        m.updated(hdr._1, m(hdr._1) :+ hdr._2)
-      else
-        m + (hdr._1 -> Seq(hdr._2)))
+    val headers =
+      hdrs.foldLeft(this.headers)((m, hdr) =>
+        if (m.contains(hdr._1))
+          m.updated(hdr._1, m(hdr._1) :+ hdr._2)
+        else
+          m + (hdr._1 -> Seq(hdr._2)))
     copy(headers = headers)
   }
 
   def withQueryString(parameters: (String, String)*): WSRequest =
-    copy(queryString = parameters.foldLeft(this.queryString) {
-      case (m, (k, v)) => m + (k -> (v +: m.getOrElse(k, Nil)))
-    })
+    copy(queryString =
+      parameters.foldLeft(this.queryString) {
+        case (m, (k, v)) => m + (k -> (v +: m.getOrElse(k, Nil)))
+      })
 
   def withFollowRedirects(follow: Boolean): WSRequest =
     copy(followRedirects = Some(follow))
@@ -302,63 +304,67 @@ case class AhcWSRequest(
     proxyServer.foreach(p => builder.setProxyServer(createProxy(p)))
     requestTimeout.foreach(builder.setRequestTimeout)
 
-    val (builderWithBody, updatedHeaders) = body match {
-      case EmptyBody => (builder, this.headers)
-      case FileBody(file) =>
-        import org.asynchttpclient.request.body.generator.FileBodyGenerator
-        val bodyGenerator = new FileBodyGenerator(file)
-        builder.setBody(bodyGenerator)
-        (builder, this.headers)
-      case InMemoryBody(bytes) =>
-        val ct: String = contentType.getOrElse("text/plain")
+    val (builderWithBody, updatedHeaders) =
+      body match {
+        case EmptyBody => (builder, this.headers)
+        case FileBody(file) =>
+          import org.asynchttpclient.request.body.generator.FileBodyGenerator
+          val bodyGenerator = new FileBodyGenerator(file)
+          builder.setBody(bodyGenerator)
+          (builder, this.headers)
+        case InMemoryBody(bytes) =>
+          val ct: String = contentType.getOrElse("text/plain")
 
-        val h =
-          try {
-            // Only parse out the form body if we are doing the signature calculation.
-            if (ct.contains(
-                  HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) && calc.isDefined) {
-              // If we are taking responsibility for setting the request body, we should block any
-              // externally defined Content-Length field (see #5221 for the details)
-              val filteredHeaders = this.headers.filterNot {
-                case (k, v) =>
-                  k.equalsIgnoreCase(HttpHeaders.Names.CONTENT_LENGTH)
-              }
-
-              // extract the content type and the charset
-              val charsetOption = Option(HttpUtils.parseCharset(ct))
-              val charset = charsetOption
-                .getOrElse {
-                  StandardCharsets.UTF_8
+          val h =
+            try {
+              // Only parse out the form body if we are doing the signature calculation.
+              if (ct.contains(
+                    HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) && calc.isDefined) {
+                // If we are taking responsibility for setting the request body, we should block any
+                // externally defined Content-Length field (see #5221 for the details)
+                val filteredHeaders = this.headers.filterNot {
+                  case (k, v) =>
+                    k.equalsIgnoreCase(HttpHeaders.Names.CONTENT_LENGTH)
                 }
-                .name()
 
-              // Get the string body given the given charset...
-              val stringBody = bytes.decodeString(charset)
-              // The Ahc signature calculator uses request.getFormParams() for calculation,
-              // so we have to parse it out and add it rather than using setBody.
+                // extract the content type and the charset
+                val charsetOption = Option(HttpUtils.parseCharset(ct))
+                val charset = charsetOption
+                  .getOrElse {
+                    StandardCharsets.UTF_8
+                  }
+                  .name()
 
-              val params = for {
-                (key, values) <- FormUrlEncodedParser.parse(stringBody).toSeq
-                value <- values
-              } yield new Param(key, value)
-              builder.setFormParams(params.asJava)
-              filteredHeaders
-            } else {
-              builder.setBody(bytes.toArray)
-              this.headers
+                // Get the string body given the given charset...
+                val stringBody = bytes.decodeString(charset)
+                // The Ahc signature calculator uses request.getFormParams() for calculation,
+                // so we have to parse it out and add it rather than using setBody.
+
+                val params =
+                  for {
+                    (key, values) <- FormUrlEncodedParser
+                      .parse(stringBody)
+                      .toSeq
+                    value <- values
+                  } yield new Param(key, value)
+                builder.setFormParams(params.asJava)
+                filteredHeaders
+              } else {
+                builder.setBody(bytes.toArray)
+                this.headers
+              }
+            } catch {
+              case e: UnsupportedEncodingException =>
+                throw new RuntimeException(e)
             }
-          } catch {
-            case e: UnsupportedEncodingException =>
-              throw new RuntimeException(e)
-          }
 
-        (builder, h)
-      case StreamedBody(source) =>
-        (
-          builder.setBody(
-            source.map(_.toByteBuffer).runWith(Sink.asPublisher(false))),
-          this.headers)
-    }
+          (builder, h)
+        case StreamedBody(source) =>
+          (
+            builder.setBody(
+              source.map(_.toByteBuffer).runWith(Sink.asPublisher(false))),
+            this.headers)
+      }
 
     // headers
     for {
@@ -403,18 +409,20 @@ case class AhcWSRequest(
     val proxyBuilder =
       new AHCProxyServer.Builder(wsProxyServer.host, wsProxyServer.port)
     if (wsProxyServer.principal.isDefined) {
-      val realmBuilder = new Realm.Builder(
-        wsProxyServer.principal.orNull,
-        wsProxyServer.password.orNull)
-      val scheme: Realm.AuthScheme = wsProxyServer.protocol
-        .getOrElse("http")
-        .toLowerCase(java.util.Locale.ENGLISH) match {
-        case "http" | "https" => Realm.AuthScheme.BASIC
-        case "kerberos"       => Realm.AuthScheme.KERBEROS
-        case "ntlm"           => Realm.AuthScheme.NTLM
-        case "spnego"         => Realm.AuthScheme.SPNEGO
-        case _                => scala.sys.error("Unrecognized protocol!")
-      }
+      val realmBuilder =
+        new Realm.Builder(
+          wsProxyServer.principal.orNull,
+          wsProxyServer.password.orNull)
+      val scheme: Realm.AuthScheme =
+        wsProxyServer.protocol
+          .getOrElse("http")
+          .toLowerCase(java.util.Locale.ENGLISH) match {
+          case "http" | "https" => Realm.AuthScheme.BASIC
+          case "kerberos"       => Realm.AuthScheme.KERBEROS
+          case "ntlm"           => Realm.AuthScheme.NTLM
+          case "spnego"         => Realm.AuthScheme.SPNEGO
+          case _                => scala.sys.error("Unrecognized protocol!")
+        }
       realmBuilder.setScheme(scheme)
       wsProxyServer.encoding.foreach(enc =>
         realmBuilder.setCharset(Charset.forName(enc)))
@@ -594,8 +602,8 @@ case class AhcWSResponse(ahcResponse: AHCResponse) extends WSResponse {
     // RFC-2616#3.7.1 states that any text/* mime type should default to ISO-8859-1 charset if not
     // explicitly set, while Plays default encoding is UTF-8.  So, use UTF-8 if charset is not explicitly
     // set and content type is not text/*, otherwise default to ISO-8859-1
-    val contentType =
-      Option(ahcResponse.getContentType).getOrElse("application/octet-stream")
+    val contentType = Option(ahcResponse.getContentType)
+      .getOrElse("application/octet-stream")
     val charset = Option(HttpUtils.parseCharset(contentType)).getOrElse {
       if (contentType.startsWith("text/"))
         HttpUtils.DEFAULT_CHARSET
@@ -621,8 +629,7 @@ case class AhcWSResponse(ahcResponse: AHCResponse) extends WSResponse {
   @throws(classOf[IOException])
   def bodyAsBytes: ByteString = ByteString(ahcResponse.getResponseBodyAsBytes)
 
-  override def toString: String =
-    s"AhcWSResponse($status, $statusText)"
+  override def toString: String = s"AhcWSResponse($status, $statusText)"
 }
 
 /**

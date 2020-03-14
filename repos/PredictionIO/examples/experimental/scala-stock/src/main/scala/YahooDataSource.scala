@@ -231,8 +231,9 @@ class YahooDataSource(val params: YahooDataSource.Params)
 
   def getTimeIndex(): HistoricalData = {
     // Only extracts market ticker as the main reference of market hours
-    val predicate = (e: Event) =>
-      (e.entityType == params.entityType && e.entityId == marketTicker)
+    val predicate =
+      (e: Event) =>
+        (e.entityType == params.entityType && e.entityId == marketTicker)
 
     val tickerMap: Map[String, HistoricalData] = batchView.events
       .filter(predicate)
@@ -248,8 +249,8 @@ class YahooDataSource(val params: YahooDataSource.Params)
   def getHistoricalDataSet(): Map[String, HistoricalData] = {
     // Also extract market ticker again, just as a normal stock.
     val tickerSet = (windowParams.tickerList :+ windowParams.marketTicker).toSet
-    val predicate = (e: Event) =>
-      (e.entityType == params.entityType && tickerSet(e.entityId))
+    val predicate =
+      (e: Event) => (e.entityType == params.entityType && tickerSet(e.entityId))
 
     val defaultTickerMap: Map[String, HistoricalData] =
       params.windowParams.tickerList.map { ticker =>
@@ -277,13 +278,15 @@ class YahooDataSource(val params: YahooDataSource.Params)
   def getRawData(tickerMap: Map[String, HistoricalData]): RawData = {
     val allTickers = windowParams.tickerList :+ windowParams.marketTicker
 
-    val price: Array[(String, Array[Double])] = allTickers.map { ticker =>
-      (ticker, tickerMap(ticker).adjClose)
-    }.toArray
+    val price: Array[(String, Array[Double])] =
+      allTickers.map { ticker =>
+        (ticker, tickerMap(ticker).adjClose)
+      }.toArray
 
-    val active: Array[(String, Array[Boolean])] = allTickers.map { ticker =>
-      (ticker, tickerMap(ticker).active)
-    }.toArray
+    val active: Array[(String, Array[Boolean])] =
+      allTickers.map { ticker =>
+        (ticker, tickerMap(ticker).active)
+      }.toArray
 
     new RawData(
       tickers = windowParams.tickerList.toArray,
@@ -307,25 +310,28 @@ class YahooDataSource(val params: YahooDataSource.Params)
 
     val dsp: DataSourceParams = windowParams
 
-    val dataSet: Seq[(TrainingData, Seq[(QueryDate, AnyRef)])] =
-      Range(dsp.fromIdx, dsp.untilIdx, dsp.maxTestingWindowSize).map { idx =>
-        {
-          val trainingData = TrainingData(
-            untilIdx = idx,
-            maxWindowSize = dsp.trainingWindowSize,
-            rawDataB = rawDataB)
+    val dataSet: Seq[(TrainingData, Seq[(QueryDate, AnyRef)])] = Range(
+      dsp.fromIdx,
+      dsp.untilIdx,
+      dsp.maxTestingWindowSize).map { idx =>
+      {
+        val trainingData = TrainingData(
+          untilIdx = idx,
+          maxWindowSize = dsp.trainingWindowSize,
+          rawDataB = rawDataB)
 
-          // cannot evaluate the last item as data view only last until untilIdx.
-          val testingUntilIdx =
-            math.min(idx + dsp.maxTestingWindowSize, dsp.untilIdx - 1)
+        // cannot evaluate the last item as data view only last until untilIdx.
+        val testingUntilIdx = math.min(
+          idx + dsp.maxTestingWindowSize,
+          dsp.untilIdx - 1)
 
-          val queries = (idx until testingUntilIdx)
-            .map { idx =>
-              (QueryDate(idx), None)
-            }
-          (trainingData, queries)
-        }
+        val queries = (idx until testingUntilIdx)
+          .map { idx =>
+            (QueryDate(idx), None)
+          }
+        (trainingData, queries)
       }
+    }
 
     dataSet.map {
       case (trainingData, queries) =>

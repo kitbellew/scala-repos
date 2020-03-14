@@ -102,9 +102,10 @@ object KMeansExample extends App {
     def randPoint(gen: => Double): V =
       f((1 to d).map(_ => gen)(collection.breakOut))
 
-    val centers: Vector[V] = (1 to k).map({ _ =>
-      randPoint(nextDouble() * 10)
-    })(collection.breakOut)
+    val centers: Vector[V] =
+      (1 to k).map({ _ =>
+        randPoint(nextDouble() * 10)
+      })(collection.breakOut)
 
     val bldr = cbf()
     cfor(0)(_ < n, _ + 1) { _ =>
@@ -121,8 +122,9 @@ object KMeansExample extends App {
   val points0 = genPoints[List, Array[Double], Double](15, 5, 10000)(identity)
   val points1 =
     genPoints[List, Vector[Double], Double](5, 10, 10000)(_.toVector)
-  val points2 = genPoints[List, Vector[BigDecimal], BigDecimal](7, 8, 2000)(
-    _.map(BigDecimal(_)).toVector)
+  val points2 =
+    genPoints[List, Vector[BigDecimal], BigDecimal](7, 8, 2000)(
+      _.map(BigDecimal(_)).toVector)
 
   println("Finding clusters of Array[Double] points.")
   val cluster0 = kMeans(points0, 5)

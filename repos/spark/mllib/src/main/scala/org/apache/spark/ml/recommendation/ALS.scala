@@ -102,11 +102,12 @@ private[recommendation] trait ALSParams
     * Default: 10
     * @group param
     */
-  val rank = new IntParam(
-    this,
-    "rank",
-    "rank of the factorization",
-    ParamValidators.gtEq(1))
+  val rank =
+    new IntParam(
+      this,
+      "rank",
+      "rank of the factorization",
+      ParamValidators.gtEq(1))
 
   /** @group getParam */
   def getRank: Int = $(rank)
@@ -116,11 +117,12 @@ private[recommendation] trait ALSParams
     * Default: 10
     * @group param
     */
-  val numUserBlocks = new IntParam(
-    this,
-    "numUserBlocks",
-    "number of user blocks",
-    ParamValidators.gtEq(1))
+  val numUserBlocks =
+    new IntParam(
+      this,
+      "numUserBlocks",
+      "number of user blocks",
+      ParamValidators.gtEq(1))
 
   /** @group getParam */
   def getNumUserBlocks: Int = $(numUserBlocks)
@@ -130,11 +132,12 @@ private[recommendation] trait ALSParams
     * Default: 10
     * @group param
     */
-  val numItemBlocks = new IntParam(
-    this,
-    "numItemBlocks",
-    "number of item blocks",
-    ParamValidators.gtEq(1))
+  val numItemBlocks =
+    new IntParam(
+      this,
+      "numItemBlocks",
+      "number of item blocks",
+      ParamValidators.gtEq(1))
 
   /** @group getParam */
   def getNumItemBlocks: Int = $(numItemBlocks)
@@ -144,10 +147,11 @@ private[recommendation] trait ALSParams
     * Default: false
     * @group param
     */
-  val implicitPrefs = new BooleanParam(
-    this,
-    "implicitPrefs",
-    "whether to use implicit preference")
+  val implicitPrefs =
+    new BooleanParam(
+      this,
+      "implicitPrefs",
+      "whether to use implicit preference")
 
   /** @group getParam */
   def getImplicitPrefs: Boolean = $(implicitPrefs)
@@ -157,11 +161,12 @@ private[recommendation] trait ALSParams
     * Default: 1.0
     * @group param
     */
-  val alpha = new DoubleParam(
-    this,
-    "alpha",
-    "alpha for implicit preference",
-    ParamValidators.gtEq(0))
+  val alpha =
+    new DoubleParam(
+      this,
+      "alpha",
+      "alpha for implicit preference",
+      ParamValidators.gtEq(0))
 
   /** @group getParam */
   def getAlpha: Double = $(alpha)
@@ -182,10 +187,11 @@ private[recommendation] trait ALSParams
     * Default: false
     * @group param
     */
-  val nonnegative = new BooleanParam(
-    this,
-    "nonnegative",
-    "whether to use nonnegative constraint for least squares")
+  val nonnegative =
+    new BooleanParam(
+      this,
+      "nonnegative",
+      "whether to use nonnegative constraint for least squares")
 
   /** @group getParam */
   def getNonnegative: Boolean = $(nonnegative)
@@ -689,13 +695,12 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         new CholeskySolver
     val blockRatings = partitionRatings(ratings, userPart, itemPart)
       .persist(intermediateRDDStorageLevel)
-    val (userInBlocks, userOutBlocks) =
-      makeBlocks(
-        "user",
-        blockRatings,
-        userPart,
-        itemPart,
-        intermediateRDDStorageLevel)
+    val (userInBlocks, userOutBlocks) = makeBlocks(
+      "user",
+      blockRatings,
+      userPart,
+      itemPart,
+      intermediateRDDStorageLevel)
     // materialize blockRatings and user blocks
     userOutBlocks.count()
     val swappedBlockRatings = blockRatings.map {
@@ -706,30 +711,31 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           (itemBlockId, userBlockId),
           RatingBlock(itemIds, userIds, localRatings))
     }
-    val (itemInBlocks, itemOutBlocks) =
-      makeBlocks(
-        "item",
-        swappedBlockRatings,
-        itemPart,
-        userPart,
-        intermediateRDDStorageLevel)
+    val (itemInBlocks, itemOutBlocks) = makeBlocks(
+      "item",
+      swappedBlockRatings,
+      itemPart,
+      userPart,
+      intermediateRDDStorageLevel)
     // materialize item blocks
     itemOutBlocks.count()
     val seedGen = new XORShiftRandom(seed)
     var userFactors = initialize(userInBlocks, rank, seedGen.nextLong())
     var itemFactors = initialize(itemInBlocks, rank, seedGen.nextLong())
     var previousCheckpointFile: Option[String] = None
-    val shouldCheckpoint: Int => Boolean = (iter) =>
-      sc.checkpointDir.isDefined && checkpointInterval != -1 && (iter % checkpointInterval == 0)
-    val deletePreviousCheckpointFile: () => Unit = () =>
-      previousCheckpointFile.foreach { file =>
-        try {
-          FileSystem.get(sc.hadoopConfiguration).delete(new Path(file), true)
-        } catch {
-          case e: IOException =>
-            logWarning(s"Cannot delete checkpoint file $file:", e)
+    val shouldCheckpoint: Int => Boolean =
+      (iter) =>
+        sc.checkpointDir.isDefined && checkpointInterval != -1 && (iter % checkpointInterval == 0)
+    val deletePreviousCheckpointFile: () => Unit =
+      () =>
+        previousCheckpointFile.foreach { file =>
+          try {
+            FileSystem.get(sc.hadoopConfiguration).delete(new Path(file), true)
+          } catch {
+            case e: IOException =>
+              logWarning(s"Cannot delete checkpoint file $file:", e)
+          }
         }
-      }
     if (implicitPrefs) {
       for (iter <- 1 to maxIter) {
         userFactors
@@ -907,12 +913,13 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     inBlocks.map {
       case (srcBlockId, inBlock) =>
         val random = new XORShiftRandom(byteswap64(seed ^ srcBlockId))
-        val factors = Array.fill(inBlock.srcIds.length) {
-          val factor = Array.fill(rank)(random.nextGaussian().toFloat)
-          val nrm = blas.snrm2(rank, factor, 1)
-          blas.sscal(rank, 1.0f / nrm, factor, 1)
-          factor
-        }
+        val factors =
+          Array.fill(inBlock.srcIds.length) {
+            val factor = Array.fill(rank)(random.nextGaussian().toFloat)
+            val nrm = blas.snrm2(rank, factor, 1)
+            blas.sscal(rank, 1.0f / nrm, factor, 1)
+            factor
+          }
         (srcBlockId, factors)
     }
   }
@@ -1369,8 +1376,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
               (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
         }
     }
-    val merged =
-      srcOut.groupByKey(new ALSPartitioner(dstInBlocks.partitions.length))
+    val merged = srcOut.groupByKey(
+      new ALSPartitioner(dstInBlocks.partitions.length))
     dstInBlocks.join(merged).mapValues {
       case (InBlock(dstIds, srcPtrs, srcEncodedIndices, ratings), srcFactors) =>
         val sortedSrcFactors = new Array[FactorBlock](numSrcBlocks)
@@ -1447,8 +1454,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
 
     require(numBlocks > 0, s"numBlocks must be positive but found $numBlocks.")
 
-    private[this] final val numLocalIndexBits =
-      math.min(java.lang.Integer.numberOfLeadingZeros(numBlocks - 1), 31)
+    private[this] final val numLocalIndexBits = math.min(
+      java.lang.Integer.numberOfLeadingZeros(numBlocks - 1),
+      31)
     private[this] final val localIndexMask = (1 << numLocalIndexBits) - 1
 
     /** Encodes a (blockId, localIndex) into a single integer. */

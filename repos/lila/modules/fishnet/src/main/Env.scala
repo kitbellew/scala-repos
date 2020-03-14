@@ -27,31 +27,34 @@ final class Env(
 
   private val moveDb = new MoveDB
 
-  private val sequencer = new lila.hub.FutureSequencer(
-    system = system,
-    receiveTimeout = None,
-    executionTimeout = Some(1 second),
-    logger = logger)
+  private val sequencer =
+    new lila.hub.FutureSequencer(
+      system = system,
+      receiveTimeout = None,
+      executionTimeout = Some(1 second),
+      logger = logger)
 
   private val monitor = new Monitor(moveDb, repo, sequencer, scheduler)
 
-  val api = new FishnetApi(
-    hub = hub,
-    repo = repo,
-    moveDb = moveDb,
-    analysisColl = analysisColl,
-    sequencer = sequencer,
-    monitor = monitor,
-    saveAnalysis = saveAnalysis,
-    offlineMode = OfflineMode)(system)
+  val api =
+    new FishnetApi(
+      hub = hub,
+      repo = repo,
+      moveDb = moveDb,
+      analysisColl = analysisColl,
+      sequencer = sequencer,
+      monitor = monitor,
+      saveAnalysis = saveAnalysis,
+      offlineMode = OfflineMode)(system)
 
   val player = new Player(moveDb = moveDb, uciMemo = uciMemo)
 
-  val analyser = new Analyser(
-    repo = repo,
-    uciMemo = uciMemo,
-    sequencer = sequencer,
-    limiter = new Limiter(analysisColl))
+  val analyser =
+    new Analyser(
+      repo = repo,
+      uciMemo = uciMemo,
+      sequencer = sequencer,
+      limiter = new Limiter(analysisColl))
 
   val aiPerfApi = new AiPerfApi
 

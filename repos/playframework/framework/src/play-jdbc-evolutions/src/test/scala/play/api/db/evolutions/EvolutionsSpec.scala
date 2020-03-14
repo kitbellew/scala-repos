@@ -110,8 +110,8 @@ object EvolutionsSpec extends Specification {
 
     trait ProvideHelperForTestingSchema { this: WithEvolutions =>
       // Check if the play_evolutions table was created within the testschema
-      val resultSet =
-        executeQuery("select count(0) from testschema.play_evolutions")
+      val resultSet = executeQuery(
+        "select count(0) from testschema.play_evolutions")
       resultSet.next must beTrue
       resultSet.close()
     }
@@ -170,10 +170,11 @@ object EvolutionsSpec extends Specification {
   }
 
   trait WithDerbyEvolutionsSchema extends WithDerbyEvolutions {
-    override lazy val evolutions: DatabaseEvolutions = new DatabaseEvolutions(
-      database = database,
-      schema = "testschema"
-    )
+    override lazy val evolutions: DatabaseEvolutions =
+      new DatabaseEvolutions(
+        database = database,
+        schema = "testschema"
+      )
   }
 
   object TestEvolutions {

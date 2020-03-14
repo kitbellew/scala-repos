@@ -267,8 +267,10 @@ class ScReferenceExpressionImpl(node: ASTNode)
   protected def convertBindToType(
       bind: Option[ScalaResolveResult]): TypeResult[ScType] = {
     val fromType: Option[ScType] = bind.map(_.fromType).getOrElse(None)
-    val unresolvedTypeParameters: Seq[TypeParameter] =
-      bind.map(_.unresolvedTypeParameters).getOrElse(None).getOrElse(Seq.empty)
+    val unresolvedTypeParameters: Seq[TypeParameter] = bind
+      .map(_.unresolvedTypeParameters)
+      .getOrElse(None)
+      .getOrElse(Seq.empty)
 
     def stableTypeRequired: Boolean = {
       //SLS 6.4
@@ -298,21 +300,22 @@ class ScReferenceExpressionImpl(node: ASTNode)
                           p.owner match {
                             case f: ScFunction =>
                               var found = false
-                              val visitor = new ScalaRecursiveElementVisitor {
-                                override def visitSimpleTypeElement(
-                                    simple: ScSimpleTypeElement): Unit = {
-                                  if (simple.singleton) {
-                                    simple.reference match {
-                                      case Some(ref)
-                                          if ref.refName == p.name && ref
-                                            .resolve() == p =>
-                                        found = true
-                                      case _ =>
+                              val visitor =
+                                new ScalaRecursiveElementVisitor {
+                                  override def visitSimpleTypeElement(
+                                      simple: ScSimpleTypeElement): Unit = {
+                                    if (simple.singleton) {
+                                      simple.reference match {
+                                        case Some(ref)
+                                            if ref.refName == p.name && ref
+                                              .resolve() == p =>
+                                          found = true
+                                        case _ =>
+                                      }
                                     }
+                                    super.visitSimpleTypeElement(simple)
                                   }
-                                  super.visitSimpleTypeElement(simple)
                                 }
-                              }
                               f.returnTypeElement.foreach(_.accept(visitor))
                               if (found)
                                 return true
@@ -337,245 +340,261 @@ class ScReferenceExpressionImpl(node: ASTNode)
       }
     }
 
-    val inner: ScType = bind match {
-      case Some(ScalaResolveResult(fun: ScFun, s)) =>
-        s.subst(fun.polymorphicType)
-      //prevent infinite recursion for recursive pattern reference
-      case Some(ScalaResolveResult(self: ScSelfTypeElement, _)) =>
-        val clazz = PsiTreeUtil.getContextOfType(
-          self,
-          true,
-          classOf[ScTemplateDefinition])
-        ScThisReferenceImpl.getThisTypeForTypeDefinition(clazz, this) match {
-          case success: Success[ScType] => success.get
-          case failure                  => return failure
-        }
-      case Some(r @ ScalaResolveResult(refPatt: ScBindingPattern, s)) =>
-        ScalaPsiUtil.nameContext(refPatt) match {
-          case pd: ScPatternDefinition
-              if PsiTreeUtil.isContextAncestor(pd, this, true) =>
-            pd.declaredType match {
-              case Some(t) => t
-              case None    => return Failure("No declared type found", Some(this))
-            }
-          case vd: ScVariableDefinition
-              if PsiTreeUtil.isContextAncestor(vd, this, true) =>
-            vd.declaredType match {
-              case Some(t) => t
-              case None    => return Failure("No declared type found", Some(this))
-            }
-          case _ =>
-            if (stableTypeRequired && refPatt.isStable) {
-              r.fromType match {
-                case Some(fT) =>
-                  ScProjectionType(fT, refPatt, superReference = false)
-                case None => ScType.designator(refPatt)
-              }
-            } else {
-              val result = refPatt.getType(TypingContext.empty)
-              result match {
-                case Success(tp, _) => s.subst(tp)
-                case _              => return result
-              }
-            }
-        }
-      case Some(r @ ScalaResolveResult(param: ScParameter, s)) =>
-        val owner = param.owner match {
-          case f: ScPrimaryConstructor => f.containingClass
-          case f: ScFunctionExpr       => null
-          case f                       => f
-        }
-        r.fromType match {
-          case Some(fT) if param.isVal && stableTypeRequired =>
-            ScProjectionType(fT, param, superReference = false)
-          case Some(ScThisType(clazz))
-              if owner != null && PsiTreeUtil.isContextAncestor(
-                owner,
-                this,
-                true) &&
-                stableTypeRequired && owner
-                .isInstanceOf[ScTypeDefinition] && owner == clazz =>
-            ScType.designator(
-              param
-            ) //todo: think about projection from this type?
-          case _
-              if owner != null && PsiTreeUtil.isContextAncestor(
-                owner,
-                this,
-                true) &&
-                stableTypeRequired && !owner.isInstanceOf[ScTypeDefinition] =>
-            ScType.designator(param)
-          case _ =>
-            val result = param.getRealParameterType(TypingContext.empty)
-            s.subst(result match {
-              case Success(tp, _) => tp
-              case _              => return result
-            })
-        }
-      case Some(ScalaResolveResult(value: ScSyntheticValue, _)) => value.tp
-      case Some(ScalaResolveResult(fun: ScFunction, s))
-          if fun.isProbablyRecursive =>
-        val optionResult: Option[ScType] = {
-          fun.definedReturnType match {
-            case s: Success[ScType] => Some(s.get)
-            case fail: Failure      => None
+    val inner: ScType =
+      bind match {
+        case Some(ScalaResolveResult(fun: ScFun, s)) =>
+          s.subst(fun.polymorphicType)
+        //prevent infinite recursion for recursive pattern reference
+        case Some(ScalaResolveResult(self: ScSelfTypeElement, _)) =>
+          val clazz = PsiTreeUtil.getContextOfType(
+            self,
+            true,
+            classOf[ScTemplateDefinition])
+          ScThisReferenceImpl.getThisTypeForTypeDefinition(clazz, this) match {
+            case success: Success[ScType] => success.get
+            case failure                  => return failure
           }
-        }
-        s.subst(fun.polymorphicType(optionResult))
-      case Some(result @ ScalaResolveResult(fun: ScFunction, s)) =>
-        val functionType = s.subst(fun.polymorphicType())
-        if (result.isDynamic)
-          ResolvableReferenceExpression.getDynamicReturn(functionType)
-        else
-          functionType
-      case Some(ScalaResolveResult(param: ScParameter, s))
-          if param.isRepeatedParameter =>
-        val seqClass = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            "scala.collection.Seq",
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)
-        val result = param.getType(TypingContext.empty)
-        val computeType = s.subst(result match {
-          case Success(tp, _) => tp
-          case _              => return result
-        })
-        if (seqClass != null) {
-          ScParameterizedType(ScType.designator(seqClass), Seq(computeType))
-        } else
-          computeType
-      case Some(ScalaResolveResult(obj: ScObject, s)) =>
-        def tail = {
-          fromType match {
-            case Some(tp) => ScProjectionType(tp, obj, superReference = false)
-            case _        => ScType.designator(obj)
-          }
-        }
-        //hack to add Eta expansion for case classes
-        if (obj.isSyntheticObject) {
-          ScalaPsiUtil.getCompanionModule(obj) match {
-            case Some(clazz) if clazz.isCase && !clazz.hasTypeParameters =>
-              expectedType() match {
-                case Some(tp) =>
-                  if (ScFunctionType.isFunctionType(tp)) {
-                    val tp = tail
-                    val processor =
-                      new MethodResolveProcessor(this, "apply", Nil, Nil, Nil)
-                    processor.processType(tp, this)
-                    val candidates = processor.candidates
-                    if (candidates.length != 1)
-                      tail
-                    else
-                      convertBindToType(Some(candidates(0))).getOrElse(tail)
-                  } else
-                    tail
-                case _ => tail
+        case Some(r @ ScalaResolveResult(refPatt: ScBindingPattern, s)) =>
+          ScalaPsiUtil.nameContext(refPatt) match {
+            case pd: ScPatternDefinition
+                if PsiTreeUtil.isContextAncestor(pd, this, true) =>
+              pd.declaredType match {
+                case Some(t) => t
+                case None =>
+                  return Failure("No declared type found", Some(this))
               }
-            case _ => tail
+            case vd: ScVariableDefinition
+                if PsiTreeUtil.isContextAncestor(vd, this, true) =>
+              vd.declaredType match {
+                case Some(t) => t
+                case None =>
+                  return Failure("No declared type found", Some(this))
+              }
+            case _ =>
+              if (stableTypeRequired && refPatt.isStable) {
+                r.fromType match {
+                  case Some(fT) =>
+                    ScProjectionType(fT, refPatt, superReference = false)
+                  case None => ScType.designator(refPatt)
+                }
+              } else {
+                val result = refPatt.getType(TypingContext.empty)
+                result match {
+                  case Success(tp, _) => s.subst(tp)
+                  case _              => return result
+                }
+              }
           }
-        } else
-          tail
-      case Some(r @ ScalaResolveResult(f: ScFieldId, s)) =>
-        if (stableTypeRequired && f.isStable) {
+        case Some(r @ ScalaResolveResult(param: ScParameter, s)) =>
+          val owner =
+            param.owner match {
+              case f: ScPrimaryConstructor => f.containingClass
+              case f: ScFunctionExpr       => null
+              case f                       => f
+            }
           r.fromType match {
-            case Some(fT) => ScProjectionType(fT, f, superReference = false)
-            case None     => ScType.designator(f)
+            case Some(fT) if param.isVal && stableTypeRequired =>
+              ScProjectionType(fT, param, superReference = false)
+            case Some(ScThisType(clazz))
+                if owner != null && PsiTreeUtil.isContextAncestor(
+                  owner,
+                  this,
+                  true) &&
+                  stableTypeRequired && owner
+                  .isInstanceOf[ScTypeDefinition] && owner == clazz =>
+              ScType.designator(
+                param
+              ) //todo: think about projection from this type?
+            case _
+                if owner != null && PsiTreeUtil.isContextAncestor(
+                  owner,
+                  this,
+                  true) &&
+                  stableTypeRequired && !owner.isInstanceOf[ScTypeDefinition] =>
+              ScType.designator(param)
+            case _ =>
+              val result = param.getRealParameterType(TypingContext.empty)
+              s.subst(result match {
+                case Success(tp, _) => tp
+                case _              => return result
+              })
           }
-        } else {
-          val result = f.getType(TypingContext.empty)
+        case Some(ScalaResolveResult(value: ScSyntheticValue, _)) => value.tp
+        case Some(ScalaResolveResult(fun: ScFunction, s))
+            if fun.isProbablyRecursive =>
+          val optionResult: Option[ScType] = {
+            fun.definedReturnType match {
+              case s: Success[ScType] => Some(s.get)
+              case fail: Failure      => None
+            }
+          }
+          s.subst(fun.polymorphicType(optionResult))
+        case Some(result @ ScalaResolveResult(fun: ScFunction, s)) =>
+          val functionType = s.subst(fun.polymorphicType())
+          if (result.isDynamic)
+            ResolvableReferenceExpression.getDynamicReturn(functionType)
+          else
+            functionType
+        case Some(ScalaResolveResult(param: ScParameter, s))
+            if param.isRepeatedParameter =>
+          val seqClass = ScalaPsiManager
+            .instance(getProject)
+            .getCachedClass(
+              "scala.collection.Seq",
+              getResolveScope,
+              ScalaPsiManager.ClassCategory.TYPE)
+          val result = param.getType(TypingContext.empty)
+          val computeType = s.subst(result match {
+            case Success(tp, _) => tp
+            case _              => return result
+          })
+          if (seqClass != null) {
+            ScParameterizedType(ScType.designator(seqClass), Seq(computeType))
+          } else
+            computeType
+        case Some(ScalaResolveResult(obj: ScObject, s)) =>
+          def tail = {
+            fromType match {
+              case Some(tp) => ScProjectionType(tp, obj, superReference = false)
+              case _        => ScType.designator(obj)
+            }
+          }
+          //hack to add Eta expansion for case classes
+          if (obj.isSyntheticObject) {
+            ScalaPsiUtil.getCompanionModule(obj) match {
+              case Some(clazz) if clazz.isCase && !clazz.hasTypeParameters =>
+                expectedType() match {
+                  case Some(tp) =>
+                    if (ScFunctionType.isFunctionType(tp)) {
+                      val tp = tail
+                      val processor =
+                        new MethodResolveProcessor(this, "apply", Nil, Nil, Nil)
+                      processor.processType(tp, this)
+                      val candidates = processor.candidates
+                      if (candidates.length != 1)
+                        tail
+                      else
+                        convertBindToType(Some(candidates(0))).getOrElse(tail)
+                    } else
+                      tail
+                  case _ => tail
+                }
+              case _ => tail
+            }
+          } else
+            tail
+        case Some(r @ ScalaResolveResult(f: ScFieldId, s)) =>
+          if (stableTypeRequired && f.isStable) {
+            r.fromType match {
+              case Some(fT) => ScProjectionType(fT, f, superReference = false)
+              case None     => ScType.designator(f)
+            }
+          } else {
+            val result = f.getType(TypingContext.empty)
+            result match {
+              case Success(tp, _) => s.subst(tp)
+              case _              => return result
+            }
+          }
+        case Some(ScalaResolveResult(typed: ScTypedDefinition, s)) =>
+          val result = typed.getType(TypingContext.empty)
           result match {
             case Success(tp, _) => s.subst(tp)
             case _              => return result
           }
-        }
-      case Some(ScalaResolveResult(typed: ScTypedDefinition, s)) =>
-        val result = typed.getType(TypingContext.empty)
-        result match {
-          case Success(tp, _) => s.subst(tp)
-          case _              => return result
-        }
-      case Some(ScalaResolveResult(pack: PsiPackage, _)) =>
-        ScType.designator(pack)
-      case Some(ScalaResolveResult(clazz: ScClass, s)) if clazz.isCase =>
-        s.subst(clazz.constructor
-          .getOrElse(
-            return Failure("Case Class hasn't primary constructor", Some(this)))
-          .polymorphicType)
-      case Some(ScalaResolveResult(clazz: ScTypeDefinition, s))
-          if clazz.typeParameters.nonEmpty =>
-        s.subst(
-          ScParameterizedType(
-            ScType.designator(clazz),
-            clazz.typeParameters.map(new ScTypeParameterType(_, s))))
-      case Some(ScalaResolveResult(clazz: PsiClass, _)) =>
-        new ScDesignatorType(clazz, true) //static Java class
-      case Some(ScalaResolveResult(field: PsiField, s)) =>
-        s.subst(ScType.create(field.getType, field.getProject, getResolveScope))
-      case Some(ScalaResolveResult(method: PsiMethod, s)) =>
-        if (method.getName == "getClass" && method.containingClass != null &&
-            method.containingClass.getQualifiedName == "java.lang.Object") {
-          val jlClass = ScalaPsiManager
-            .instance(getProject)
-            .getCachedClass(
-              "java.lang.Class",
-              getResolveScope,
-              ScalaPsiManager.ClassCategory.TYPE)
-          def convertQualifier(
-              typeResult: TypeResult[ScType]): Option[ScType] = {
-            if (jlClass != null) {
-              typeResult match {
-                case Success(tp, _) =>
-                  val actualType = tp match {
-                    case ScThisType(clazz)             => ScDesignatorType(clazz)
-                    case ScDesignatorType(o: ScObject) => Any
-                    case ScCompoundType(comps, _, _) =>
-                      if (comps.isEmpty)
-                        Any
-                      else
-                        ScTypeUtil
-                          .removeTypeDesignator(comps.head)
-                          .getOrElse(Any)
-                    case _ => ScTypeUtil.removeTypeDesignator(tp).getOrElse(Any)
+        case Some(ScalaResolveResult(pack: PsiPackage, _)) =>
+          ScType.designator(pack)
+        case Some(ScalaResolveResult(clazz: ScClass, s)) if clazz.isCase =>
+          s.subst(
+            clazz.constructor
+              .getOrElse(
+                return Failure(
+                  "Case Class hasn't primary constructor",
+                  Some(this)))
+              .polymorphicType)
+        case Some(ScalaResolveResult(clazz: ScTypeDefinition, s))
+            if clazz.typeParameters.nonEmpty =>
+          s.subst(
+            ScParameterizedType(
+              ScType.designator(clazz),
+              clazz.typeParameters.map(new ScTypeParameterType(_, s))))
+        case Some(ScalaResolveResult(clazz: PsiClass, _)) =>
+          new ScDesignatorType(clazz, true) //static Java class
+        case Some(ScalaResolveResult(field: PsiField, s)) =>
+          s.subst(
+            ScType.create(field.getType, field.getProject, getResolveScope))
+        case Some(ScalaResolveResult(method: PsiMethod, s)) =>
+          if (method.getName == "getClass" && method.containingClass != null &&
+              method.containingClass.getQualifiedName == "java.lang.Object") {
+            val jlClass = ScalaPsiManager
+              .instance(getProject)
+              .getCachedClass(
+                "java.lang.Class",
+                getResolveScope,
+                ScalaPsiManager.ClassCategory.TYPE)
+            def convertQualifier(
+                typeResult: TypeResult[ScType]): Option[ScType] = {
+              if (jlClass != null) {
+                typeResult match {
+                  case Success(tp, _) =>
+                    val actualType =
+                      tp match {
+                        case ScThisType(clazz)             => ScDesignatorType(clazz)
+                        case ScDesignatorType(o: ScObject) => Any
+                        case ScCompoundType(comps, _, _) =>
+                          if (comps.isEmpty)
+                            Any
+                          else
+                            ScTypeUtil
+                              .removeTypeDesignator(comps.head)
+                              .getOrElse(Any)
+                        case _ =>
+                          ScTypeUtil.removeTypeDesignator(tp).getOrElse(Any)
+                      }
+                    Some(
+                      ScExistentialType(
+                        ScParameterizedType(
+                          ScDesignatorType(jlClass),
+                          Seq(ScTypeVariable("_$1"))),
+                        List(
+                          ScExistentialArgument(
+                            "_$1",
+                            Nil,
+                            Nothing,
+                            actualType))))
+                  case _ => None
+                }
+              } else
+                None
+            }
+            val returnType: Option[ScType] =
+              qualifier match {
+                case Some(qual) =>
+                  convertQualifier(qual.getType(TypingContext.empty))
+                case None =>
+                  getContext match {
+                    case i: ScInfixExpr if i.operation == this =>
+                      convertQualifier(i.lOp.getType(TypingContext.empty))
+                    case i: ScPostfixExpr if i.operation == this =>
+                      convertQualifier(i.operand.getType(TypingContext.empty))
+                    case _ =>
+                      for {
+                        clazz <- ScalaPsiUtil.drvTemplate(this)
+                        qualifier <- convertQualifier(
+                          clazz.getType(TypingContext.empty))
+                      } yield qualifier
                   }
-                  Some(ScExistentialType(
-                    ScParameterizedType(
-                      ScDesignatorType(jlClass),
-                      Seq(ScTypeVariable("_$1"))),
-                    List(
-                      ScExistentialArgument("_$1", Nil, Nothing, actualType))))
-                case _ => None
               }
-            } else
-              None
+            ResolveUtils.javaPolymorphicType(
+              method,
+              s,
+              getResolveScope,
+              returnType)
+          } else {
+            ResolveUtils.javaPolymorphicType(method, s, getResolveScope)
           }
-          val returnType: Option[ScType] = qualifier match {
-            case Some(qual) =>
-              convertQualifier(qual.getType(TypingContext.empty))
-            case None =>
-              getContext match {
-                case i: ScInfixExpr if i.operation == this =>
-                  convertQualifier(i.lOp.getType(TypingContext.empty))
-                case i: ScPostfixExpr if i.operation == this =>
-                  convertQualifier(i.operand.getType(TypingContext.empty))
-                case _ =>
-                  for {
-                    clazz <- ScalaPsiUtil.drvTemplate(this)
-                    qualifier <- convertQualifier(
-                      clazz.getType(TypingContext.empty))
-                  } yield qualifier
-              }
-          }
-          ResolveUtils.javaPolymorphicType(
-            method,
-            s,
-            getResolveScope,
-            returnType)
-        } else {
-          ResolveUtils.javaPolymorphicType(method, s, getResolveScope)
-        }
-      case _ => return Failure("Cannot resolve expression", Some(this))
-    }
+        case _ => return Failure("Cannot resolve expression", Some(this))
+      }
     qualifier match {
       case Some(s: ScSuperReference) =>
       case None => //infix, prefix and postfix

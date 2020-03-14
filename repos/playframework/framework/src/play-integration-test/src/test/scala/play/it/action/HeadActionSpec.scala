@@ -50,14 +50,13 @@ trait HeadActionSpec
         }
     }
 
-    val routes =
-      get // GET /get
-        .orElse(patch) // PATCH /patch
-        .orElse(post) // POST /post
-        .orElse(put) // PUT /put
-        .orElse(delete) // DELETE /delete
-        .orElse(stream) // GET /stream/0
-        .orElse(chunkedResponse) // GET /chunked
+    val routes = get // GET /get
+      .orElse(patch) // PATCH /patch
+      .orElse(post) // POST /post
+      .orElse(put) // PUT /put
+      .orElse(delete) // DELETE /delete
+      .orElse(stream) // GET /stream/0
+      .orElse(chunkedResponse) // GET /chunked
 
     def withServer[T](block: WSClient => T): T = {
       // Routes from HttpBinApplication
@@ -91,10 +90,11 @@ trait HeadActionSpec
     }
 
     "match the headers of an equivalent GET" in withServer { client =>
-      val collectedFutures = for {
-        headResponse <- client.url("/get").head()
-        getResponse <- client.url("/get").get()
-      } yield List(headResponse, getResponse)
+      val collectedFutures =
+        for {
+          headResponse <- client.url("/get").head()
+          getResponse <- client.url("/get").get()
+        } yield List(headResponse, getResponse)
 
       val responses = await(collectedFutures)
 
@@ -124,12 +124,13 @@ trait HeadActionSpec
 
     "return 404 in response to a URL without an associated GET handler" in withServer {
       client =>
-        val collectedFutures = for {
-          putRoute <- client.url("/put").head()
-          patchRoute <- client.url("/patch").head()
-          postRoute <- client.url("/post").head()
-          deleteRoute <- client.url("/delete").head()
-        } yield List(putRoute, patchRoute, postRoute, deleteRoute)
+        val collectedFutures =
+          for {
+            putRoute <- client.url("/put").head()
+            patchRoute <- client.url("/patch").head()
+            postRoute <- client.url("/post").head()
+            deleteRoute <- client.url("/delete").head()
+          } yield List(putRoute, patchRoute, postRoute, deleteRoute)
 
         val responseList = await(collectedFutures)
 

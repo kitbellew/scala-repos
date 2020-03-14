@@ -43,44 +43,50 @@ class EnsembleImageProperties extends EnsembleExample {
 
   def getContent = {
     // We can set image properties directly during creation
-    val url = this.getClass
-      .getResource("/scalafx/ensemble/images/sanfran.jpg")
-      .toExternalForm
-    val sample1 = new ImageView(
-      new Image(
-        url,
-        requestedWidth = 30,
-        requestedHeight = 70,
-        preserveRatio = false,
-        smooth = true))
+    val url =
+      this.getClass
+        .getResource("/scalafx/ensemble/images/sanfran.jpg")
+        .toExternalForm
+    val sample1 =
+      new ImageView(
+        new Image(
+          url,
+          requestedWidth = 30,
+          requestedHeight = 70,
+          preserveRatio = false,
+          smooth = true))
 
-    val sample2 = new ImageView(new Image(url)) {
-      // Image can be resized to preferred width
-      fitWidth = 200
-      preserveRatio = true
-    }
+    val sample2 =
+      new ImageView(new Image(url)) {
+        // Image can be resized to preferred width
+        fitWidth = 200
+        preserveRatio = true
+      }
 
-    val sample3 = new ImageView(new Image(url)) {
-      //image can be resized to preferred height
-      fitHeight = 20
-      preserveRatio = true
-    }
+    val sample3 =
+      new ImageView(new Image(url)) {
+        //image can be resized to preferred height
+        fitHeight = 20
+        preserveRatio = true
+      }
 
-    val sample4 = new ImageView(new Image(url)) {
-      // One can resize image without preserving ratio between height and width
-      fitWidth = 40
-      fitHeight = 80
-      preserveRatio = false
-      // The usage of the better filter
-      smooth = true
-    }
+    val sample4 =
+      new ImageView(new Image(url)) {
+        // One can resize image without preserving ratio between height and width
+        fitWidth = 40
+        fitHeight = 80
+        preserveRatio = false
+        // The usage of the better filter
+        smooth = true
+      }
 
-    val sample5 = new ImageView(new Image(url)) {
-      fitHeight = 60
-      preserveRatio = true
-      // Viewport is used for displaying the part of image
-      viewport = new Rectangle2D(50, 200, width = 120, height = 60)
-    }
+    val sample5 =
+      new ImageView(new Image(url)) {
+        fitHeight = 60
+        preserveRatio = true
+        // Viewport is used for displaying the part of image
+        viewport = new Rectangle2D(50, 200, width = 120, height = 60)
+      }
 
     new VBox {
       vgrow = Priority.Always

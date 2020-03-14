@@ -54,9 +54,8 @@ private[hive] case class DescribeHiveTableCommand(
         results ++= columns.map(field =>
           (field.getName, field.getType, field.getComment))
         if (partitionColumns.nonEmpty) {
-          val partColumnInfo =
-            partitionColumns.map(field =>
-              (field.getName, field.getType, field.getComment))
+          val partColumnInfo = partitionColumns.map(field =>
+            (field.getName, field.getType, field.getComment))
           results ++=
             partColumnInfo ++
               Seq(("# Partition Information", "", "")) ++

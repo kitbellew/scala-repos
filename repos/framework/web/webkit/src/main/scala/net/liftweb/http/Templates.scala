@@ -29,9 +29,10 @@ import java.io.InputStream
   */
 object Templates {
   // Making this lazy to ensure it doesn't accidentally init before Boot completes in case someone touches this class.
-  private lazy val parsers = LiftRules.contentParsers
-    .flatMap(parser => parser.templateSuffixes.map(_ -> parser))
-    .toMap
+  private lazy val parsers =
+    LiftRules.contentParsers
+      .flatMap(parser => parser.templateSuffixes.map(_ -> parser))
+      .toMap
 
   private def checkForLiftView(
       part: List[String],
@@ -91,8 +92,7 @@ object Templates {
     *
     * @return the template if it can be found
     */
-  def apply(places: List[String]): Box[NodeSeq] =
-    apply(places, S.locale)
+  def apply(places: List[String]): Box[NodeSeq] = apply(places, S.locale)
 
   /**
     * Given a list of paths (e.g. List("foo", "index")),
@@ -301,11 +301,12 @@ object Templates {
   }
 
   private def lookForClasses(places: List[String]): Box[NodeSeq] = {
-    val (controller, action) = places match {
-      case ctl :: act :: _ => (ctl, act)
-      case ctl :: _        => (ctl, "index")
-      case Nil             => ("default_template", "index")
-    }
+    val (controller, action) =
+      places match {
+        case ctl :: act :: _ => (ctl, act)
+        case ctl :: _        => (ctl, "index")
+        case Nil             => ("default_template", "index")
+      }
     val trans = List[String => String](n => n, n => camelify(n))
     val toTry = trans.flatMap(f =>
       (LiftRules.buildPackage("view") ::: ("lift.app.view" :: Nil))

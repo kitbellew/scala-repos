@@ -224,15 +224,16 @@ object ConsumerGroupCommand {
         channelRetryBackoffMs: Int) {
       val topicPartitions = getTopicPartitions(topic)
       val groupDirs = new ZKGroupTopicDirs(group, topic)
-      val ownerByTopicPartition = topicPartitions.flatMap { topicPartition =>
-        zkUtils
-          .readDataMaybeNull(
-            groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
-          ._1
-          .map { owner =>
-            topicPartition -> owner
-          }
-      }.toMap
+      val ownerByTopicPartition =
+        topicPartitions.flatMap { topicPartition =>
+          zkUtils
+            .readDataMaybeNull(
+              groupDirs.consumerOwnerDir + "/" + topicPartition.partition)
+            ._1
+            .map { owner =>
+              topicPartition -> owner
+            }
+        }.toMap
       val partitionOffsets = getPartitionOffsets(
         group,
         topicPartitions,
@@ -265,11 +266,12 @@ object ConsumerGroupCommand {
                   topicAndPartition -> PartitionOffsetRequestInfo(
                     OffsetRequest.LatestTime,
                     1)))
-              val logEndOffset = consumer
-                .getOffsetsBefore(request)
-                .partitionErrorAndOffsets(topicAndPartition)
-                .offsets
-                .head
+              val logEndOffset =
+                consumer
+                  .getOffsetsBefore(request)
+                  .partitionErrorAndOffsets(topicAndPartition)
+                  .offsets
+                  .head
               consumer.close()
               LogEndOffsetResult.LogEndOffset(logEndOffset)
             }
@@ -293,8 +295,8 @@ object ConsumerGroupCommand {
         channelSocketTimeoutMs,
         channelRetryBackoffMs)
       channel.send(OffsetFetchRequest(group, topicPartitions))
-      val offsetFetchResponse =
-        OffsetFetchResponse.readFrom(channel.receive().payload())
+      val offsetFetchResponse = OffsetFetchResponse.readFrom(
+        channel.receive().payload())
 
       offsetFetchResponse.requestInfo.foreach {
         case (topicAndPartition, offsetAndMetadata) =>
@@ -303,11 +305,12 @@ object ConsumerGroupCommand {
             // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
             // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
             try {
-              val offset = zkUtils
-                .readData(
-                  topicDirs.consumerOffsetDir + "/" + topicAndPartition.partition)
-                ._1
-                .toLong
+              val offset =
+                zkUtils
+                  .readData(
+                    topicDirs.consumerOffsetDir + "/" + topicAndPartition.partition)
+                  ._1
+                  .toLong
               offsetMap.put(topicAndPartition, offset)
             } catch {
               case z: ZkNoNodeException =>
@@ -444,15 +447,16 @@ object ConsumerGroupCommand {
         consumerSummaries.foreach { consumerSummary =>
           val topicPartitions = consumerSummary.assignment.map(tp =>
             TopicAndPartition(tp.topic, tp.partition))
-          val partitionOffsets = topicPartitions.flatMap { topicPartition =>
-            Option(
-              consumer.committed(
-                new TopicPartition(
-                  topicPartition.topic,
-                  topicPartition.partition))).map { offsetAndMetadata =>
-              topicPartition -> offsetAndMetadata.offset
-            }
-          }.toMap
+          val partitionOffsets =
+            topicPartitions.flatMap { topicPartition =>
+              Option(
+                consumer.committed(
+                  new TopicPartition(
+                    topicPartition.topic,
+                    topicPartition.partition))).map { offsetAndMetadata =>
+                topicPartition -> offsetAndMetadata.offset
+              }
+            }.toMap
           describeTopicPartition(
             group,
             topicPartitions,
@@ -585,8 +589,10 @@ object ConsumerGroupCommand {
       .ofType(classOf[String])
     val options = parser.parse(args: _*)
 
-    val allConsumerGroupLevelOpts: Set[OptionSpec[_]] =
-      Set(listOpt, describeOpt, deleteOpt)
+    val allConsumerGroupLevelOpts: Set[OptionSpec[_]] = Set(
+      listOpt,
+      describeOpt,
+      deleteOpt)
 
     def checkArgs() {
       // check required args

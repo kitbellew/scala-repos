@@ -50,20 +50,26 @@ object Test {
       "%s == %s")
 
     val startsWithInputs: Inputs
-    lazy val startsWith =
-      Method(_ startsWith _, startsWithInputs, "%s startsWith %s")
+    lazy val startsWith = Method(
+      _ startsWith _,
+      startsWithInputs,
+      "%s startsWith %s")
 
     val endsWithInputs: Inputs
     lazy val endsWith = Method(_ endsWith _, endsWithInputs, "%s endsWith %s")
 
     val indexOfSliceInputs: Inputs
     private def subseqTest(s1: Seq[T], s2: Seq[T]) = (s1 indexOfSlice s2) != -1
-    lazy val indexOfSlice =
-      Method(subseqTest _, indexOfSliceInputs, "(%s indexOfSlice %s) != -1")
+    lazy val indexOfSlice = Method(
+      subseqTest _,
+      indexOfSliceInputs,
+      "(%s indexOfSlice %s) != -1")
 
     val sameElementsInputs: Inputs
-    lazy val sameElements =
-      Method(_ sameElements _, sameElementsInputs, "%s sameElements %s")
+    lazy val sameElements = Method(
+      _ sameElements _,
+      sameElementsInputs,
+      "%s sameElements %s")
 
     def methodList =
       List(eqeq, startsWith, endsWith, indexOfSlice, sameElements)
@@ -72,41 +78,45 @@ object Test {
   object test1 extends Data[Int] {
     val seq = List(1, 2, 3, 4, 5)
 
-    val startsWithInputs = (
-      List(Nil, List(1), List(1, 2), seq),
-      List(List(1, 2, 3, 4, 6), seq ::: List(5), List(0))
-    )
+    val startsWithInputs =
+      (
+        List(Nil, List(1), List(1, 2), seq),
+        List(List(1, 2, 3, 4, 6), seq ::: List(5), List(0))
+      )
 
-    val endsWithInputs = (
-      List(Nil, List(5), List(4, 5), seq),
-      List(0 :: seq, List(5, 2, 3, 4, 5), List(3, 4), List(5, 6))
-    )
+    val endsWithInputs =
+      (
+        List(Nil, List(5), List(4, 5), seq),
+        List(0 :: seq, List(5, 2, 3, 4, 5), List(3, 4), List(5, 6))
+      )
 
-    val indexOfSliceInputs = (
-      List(
-        Nil,
-        List(1),
-        List(3),
-        List(5),
-        List(1, 2),
-        List(2, 3, 4),
-        List(4, 5),
-        seq),
-      List(List(1, 2, 3, 5), List(6), List(5, 4, 3, 2, 1), List(2, 1))
-    )
+    val indexOfSliceInputs =
+      (
+        List(
+          Nil,
+          List(1),
+          List(3),
+          List(5),
+          List(1, 2),
+          List(2, 3, 4),
+          List(4, 5),
+          seq),
+        List(List(1, 2, 3, 5), List(6), List(5, 4, 3, 2, 1), List(2, 1))
+      )
 
-    val sameElementsInputs = (
-      List(List(1, 2, 3, 4, 5)),
-      List(
-        Nil,
-        List(1),
-        List(1, 2),
-        List(2, 3, 4),
-        List(2, 3, 4, 5),
-        List(2, 3, 4, 5, 1),
-        List(1, 2, 3, 5, 4),
-        seq.reverse)
-    )
+    val sameElementsInputs =
+      (
+        List(List(1, 2, 3, 4, 5)),
+        List(
+          Nil,
+          List(1),
+          List(1, 2),
+          List(2, 3, 4),
+          List(2, 3, 4, 5),
+          List(2, 3, 4, 5, 1),
+          List(1, 2, 3, 5, 4),
+          seq.reverse)
+      )
   }
 
   val failures = new mutable.ListBuffer[String]

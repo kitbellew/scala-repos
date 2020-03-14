@@ -27,12 +27,13 @@ class RemoveTakeDrop(
               s"""Translating "drop $d, then take $t" to zipWithIndex operation:""",
               n)
             val fromRetyped = tr(from).infer()
-            val from2 = fromRetyped match {
-              case b: Bind => b
-              case n =>
-                val s = new AnonSymbol
-                Bind(s, n, Pure(Ref(s)))
-            }
+            val from2 =
+              fromRetyped match {
+                case b: Bind => b
+                case n =>
+                  val s = new AnonSymbol
+                  Bind(s, n, Pure(Ref(s)))
+              }
             val j = Join(
               new AnonSymbol,
               new AnonSymbol,

@@ -34,12 +34,13 @@ object ValidationExample extends Specification {
 
     "fail when age is less than min age" in {
       // Age must be between 18 an 60
-      val ageResult = (jValue: JValue) =>
-        (for {
-          age <- field[Int]("age")(jValue).disjunction
-          _ <- min(18)(age).disjunction
-          _ <- max(60)(age).disjunction
-        } yield age).validation
+      val ageResult =
+        (jValue: JValue) =>
+          (for {
+            age <- field[Int]("age")(jValue).disjunction
+            _ <- min(18)(age).disjunction
+            _ <- max(60)(age).disjunction
+          } yield age).validation
       val person = Person.applyJSON(field[String]("name"), ageResult)
       person(json) mustEqual Failure(
         NonEmptyList(UncategorizedError("min", "17 < 18", Nil)))
@@ -47,12 +48,13 @@ object ValidationExample extends Specification {
 
     "pass when age within limits" in {
       // Age must be between 16 an 60
-      val ageResult = (jValue: JValue) =>
-        (for {
-          age <- field[Int]("age")(jValue).disjunction
-          _ <- min(16)(age).disjunction
-          _ <- max(60)(age).disjunction
-        } yield age).validation
+      val ageResult =
+        (jValue: JValue) =>
+          (for {
+            age <- field[Int]("age")(jValue).disjunction
+            _ <- min(16)(age).disjunction
+            _ <- max(60)(age).disjunction
+          } yield age).validation
       val person = Person.applyJSON(field[String]("name"), ageResult)
       person(json) mustEqual Success(Person("joe", 17))
     }
@@ -65,8 +67,8 @@ object ValidationExample extends Specification {
   // * parse a List with invalid values
 
   "Range filtering" should {
-    val json =
-      JsonParser.parse(""" [{"s":10,"e":17},{"s":12,"e":13},{"s":11,"e":8}] """)
+    val json = JsonParser.parse(
+      """ [{"s":10,"e":17},{"s":12,"e":13},{"s":11,"e":8}] """)
 
     def ascending: (Int, Int) => Result[(Int, Int)] =
       (x1: Int, x2: Int) =>

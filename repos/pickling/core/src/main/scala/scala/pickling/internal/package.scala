@@ -61,8 +61,8 @@ package object internal {
 
   private[pickling] def typeToString(tpe: Type): String = tpe.key
 
-  private val typeFromStringCache =
-    scala.collection.concurrent.TrieMap[String, Type]()
+  private val typeFromStringCache = scala.collection.concurrent
+    .TrieMap[String, Type]()
   private[pickling] def typeFromString(mirror: Mirror, stpe: String): Type = {
     // TODO: find out why typeFromString is called repeatedly for scala.Predef.String (at least in the evactor1 bench)
     if (typeFromStringCache.contains(stpe))

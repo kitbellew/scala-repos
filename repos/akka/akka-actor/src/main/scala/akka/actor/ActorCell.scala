@@ -343,14 +343,16 @@ private[akka] trait Cell {
   * for! (waves hand)
   */
 private[akka] object ActorCell {
-  val contextStack = new ThreadLocal[List[ActorContext]] {
-    override def initialValue: List[ActorContext] = Nil
-  }
+  val contextStack =
+    new ThreadLocal[List[ActorContext]] {
+      override def initialValue: List[ActorContext] = Nil
+    }
 
-  final val emptyCancellable: Cancellable = new Cancellable {
-    def isCancelled: Boolean = false
-    def cancel(): Boolean = false
-  }
+  final val emptyCancellable: Cancellable =
+    new Cancellable {
+      def isCancelled: Boolean = false
+      def cancel(): Boolean = false
+    }
 
   final val emptyBehaviorStack: List[Actor.Receive] = Nil
 

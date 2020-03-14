@@ -47,8 +47,8 @@ final class Sequencer(
           timeout =>
             run().withTimeout(
               duration = timeout,
-              error =
-                lila.common.LilaException(s"Sequencer timed out after $timeout")
+              error = lila.common.LilaException(
+                s"Sequencer timed out after $timeout")
             )(context.system)
         } andThenAnyway {
           self ! Done

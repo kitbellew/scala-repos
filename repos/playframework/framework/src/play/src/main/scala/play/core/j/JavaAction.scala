@@ -34,21 +34,22 @@ class JavaActionAnnotations(
   private def config: ActionCompositionConfiguration =
     HttpConfiguration.current.actionComposition
 
-  val parser: Class[_ <: JBodyParser[_]] =
-    Seq(
-      method.getAnnotation(classOf[play.mvc.BodyParser.Of]),
-      controller.getAnnotation(classOf[play.mvc.BodyParser.Of]))
-      .filterNot(_ == null)
-      .headOption
-      .map(_.value)
-      .getOrElse(classOf[JBodyParser.Default])
+  val parser: Class[_ <: JBodyParser[_]] = Seq(
+    method.getAnnotation(classOf[play.mvc.BodyParser.Of]),
+    controller.getAnnotation(classOf[play.mvc.BodyParser.Of]))
+    .filterNot(_ == null)
+    .headOption
+    .map(_.value)
+    .getOrElse(classOf[JBodyParser.Default])
 
-  val controllerAnnotations = play.api.libs.Collections
-    .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](
-      Option(controller)) { clazz =>
-      clazz.map(c => (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
-    }
-    .flatten
+  val controllerAnnotations =
+    play.api.libs.Collections
+      .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](
+        Option(controller)) { clazz =>
+        clazz.map(c =>
+          (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
+      }
+      .flatten
 
   val actionMixins = {
     val allDeclaredAnnotations: Seq[java.lang.annotation.Annotation] =
@@ -90,28 +91,30 @@ abstract class JavaAction(components: JavaHandlerComponents)
 
     val javaContext: JContext = createJavaContext(req)
 
-    val rootAction = new JAction[Any] {
-      def call(ctx: JContext): CompletionStage[JResult] = {
-        // The context may have changed, set it again
-        val oldContext = JContext.current.get()
-        try {
-          JContext.current.set(ctx)
-          invocation
-        } finally {
-          JContext.current.set(oldContext)
+    val rootAction =
+      new JAction[Any] {
+        def call(ctx: JContext): CompletionStage[JResult] = {
+          // The context may have changed, set it again
+          val oldContext = JContext.current.get()
+          try {
+            JContext.current.set(ctx)
+            invocation
+          } finally {
+            JContext.current.set(oldContext)
+          }
         }
       }
-    }
 
     val baseAction = components.actionCreator
       .createAction(javaContext.request, annotations.method)
 
-    val endOfChainAction = if (config.executeActionCreatorActionFirst) {
-      rootAction
-    } else {
-      baseAction.delegate = rootAction
-      baseAction
-    }
+    val endOfChainAction =
+      if (config.executeActionCreatorActionFirst) {
+        rootAction
+      } else {
+        baseAction.delegate = rootAction
+        baseAction
+      }
 
     val finalUserDeclaredAction =
       annotations.actionMixins.foldLeft[JAction[_ <: Any]](endOfChainAction) {
@@ -136,9 +139,10 @@ abstract class JavaAction(components: JavaHandlerComponents)
       val javaClassLoader = Thread.currentThread.getContextClassLoader
       new HttpExecutionContext(javaClassLoader, javaContext, trampoline)
     }
-    val actionFuture: Future[Future[JResult]] = Future {
-      FutureConverters.toScala(finalAction.call(javaContext))
-    }(trampolineWithContext)
+    val actionFuture: Future[Future[JResult]] =
+      Future {
+        FutureConverters.toScala(finalAction.call(javaContext))
+      }(trampolineWithContext)
     val flattenedActionFuture: Future[JResult] =
       actionFuture.flatMap(identity)(trampoline)
     val resultFuture: Future[Result] =

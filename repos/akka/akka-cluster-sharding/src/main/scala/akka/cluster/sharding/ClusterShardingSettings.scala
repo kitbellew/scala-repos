@@ -24,30 +24,33 @@ object ClusterShardingSettings {
     * the default configuration `akka.cluster.sharding`.
     */
   def apply(config: Config): ClusterShardingSettings = {
-    val tuningParameters = new TuningParameters(
-      coordinatorFailureBackoff =
-        config.getDuration("coordinator-failure-backoff", MILLISECONDS).millis,
-      retryInterval = config.getDuration("retry-interval", MILLISECONDS).millis,
-      bufferSize = config.getInt("buffer-size"),
-      handOffTimeout =
-        config.getDuration("handoff-timeout", MILLISECONDS).millis,
-      shardStartTimeout =
-        config.getDuration("shard-start-timeout", MILLISECONDS).millis,
-      shardFailureBackoff =
-        config.getDuration("shard-failure-backoff", MILLISECONDS).millis,
-      entityRestartBackoff =
-        config.getDuration("entity-restart-backoff", MILLISECONDS).millis,
-      rebalanceInterval =
-        config.getDuration("rebalance-interval", MILLISECONDS).millis,
-      snapshotAfter = config.getInt("snapshot-after"),
-      leastShardAllocationRebalanceThreshold =
-        config.getInt("least-shard-allocation-strategy.rebalance-threshold"),
-      leastShardAllocationMaxSimultaneousRebalance = config.getInt(
-        "least-shard-allocation-strategy.max-simultaneous-rebalance"),
-      waitingForStateTimeout =
-        config.getDuration("waiting-for-state-timeout", MILLISECONDS).millis,
-      updatingStateTimeout =
-        config.getDuration("updating-state-timeout", MILLISECONDS).millis)
+    val tuningParameters =
+      new TuningParameters(
+        coordinatorFailureBackoff = config
+          .getDuration("coordinator-failure-backoff", MILLISECONDS)
+          .millis,
+        retryInterval =
+          config.getDuration("retry-interval", MILLISECONDS).millis,
+        bufferSize = config.getInt("buffer-size"),
+        handOffTimeout =
+          config.getDuration("handoff-timeout", MILLISECONDS).millis,
+        shardStartTimeout =
+          config.getDuration("shard-start-timeout", MILLISECONDS).millis,
+        shardFailureBackoff =
+          config.getDuration("shard-failure-backoff", MILLISECONDS).millis,
+        entityRestartBackoff =
+          config.getDuration("entity-restart-backoff", MILLISECONDS).millis,
+        rebalanceInterval =
+          config.getDuration("rebalance-interval", MILLISECONDS).millis,
+        snapshotAfter = config.getInt("snapshot-after"),
+        leastShardAllocationRebalanceThreshold = config.getInt(
+          "least-shard-allocation-strategy.rebalance-threshold"),
+        leastShardAllocationMaxSimultaneousRebalance = config.getInt(
+          "least-shard-allocation-strategy.max-simultaneous-rebalance"),
+        waitingForStateTimeout =
+          config.getDuration("waiting-for-state-timeout", MILLISECONDS).millis,
+        updatingStateTimeout =
+          config.getDuration("updating-state-timeout", MILLISECONDS).millis)
 
     val coordinatorSingletonSettings = ClusterSingletonManagerSettings(
       config.getConfig("coordinator-singleton"))
@@ -145,8 +148,7 @@ final class ClusterShardingSettings(
 
   def withTuningParameters(
       tuningParameters: ClusterShardingSettings.TuningParameters)
-      : ClusterShardingSettings =
-    copy(tuningParameters = tuningParameters)
+      : ClusterShardingSettings = copy(tuningParameters = tuningParameters)
 
   /**
     * The `role` of the `ClusterSingletonManagerSettings` is not used. The `role` of the

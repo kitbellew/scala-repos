@@ -38,30 +38,32 @@ object EnsembleTabbedPage {
 
   def buildTab(ctrlName: String, ctrlgrop: String) = {
 
-    val tabbedPage = new TabPane() {
-      hgrow = Priority.Always
-      vgrow = Priority.Always
-      id = "source-tabs"
-      tabs = Seq(
-        new Tab() {
-          text = "Demo"
-          closable = false
-        },
-        new Tab() {
-          text = "Source"
-          closable = false
-        }
-      )
-    }
+    val tabbedPage =
+      new TabPane() {
+        hgrow = Priority.Always
+        vgrow = Priority.Always
+        id = "source-tabs"
+        tabs = Seq(
+          new Tab() {
+            text = "Demo"
+            closable = false
+          },
+          new Tab() {
+            text = "Source"
+            closable = false
+          }
+        )
+      }
 
     new EnsembleTabbedPage(tabbedPage, ctrlName, ctrlgrop)
   }
 
   def buildTabContent(node: Node) = {
-    val demoTabStack = new StackPane {
-      alignmentInParent = Pos.TopLeft
-      children = List(node)
-    }
+    val demoTabStack =
+      new StackPane {
+        alignmentInParent = Pos.TopLeft
+        children = List(node)
+      }
     demoTabStack
   }
 }

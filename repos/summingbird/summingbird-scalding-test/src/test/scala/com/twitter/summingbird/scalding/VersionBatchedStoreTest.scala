@@ -124,8 +124,8 @@ class VersionedBatchedStoreTest extends WordSpec {
       val unpackFn = { kv: ((Long, Int), Int) =>
         (kv._1._2, kv._2)
       }
-      implicit val tupEncoder: Injection[(Long, Int), Array[Byte]] =
-        Bufferable.injectionOf[(Long, Int)]
+      implicit val tupEncoder: Injection[(Long, Int), Array[Byte]] = Bufferable
+        .injectionOf[(Long, Int)]
       val conf = new org.apache.hadoop.conf.Configuration
       implicit val config = Config.hadoopWithDefaults(conf)
       implicit val mode: Mode = Hdfs(true, conf)
@@ -136,9 +136,10 @@ class VersionedBatchedStoreTest extends WordSpec {
         val testStoreVBS =
           VersionedBatchStore[Int, Int, (Long, Int), Int](rootFolder, 1)(
             packFn)(unpackFn)
-        val testStore = new InitialBatchedStore(
-          batcher.batchOf(Timestamp(inWithTime.head._1)),
-          testStoreVBS)
+        val testStore =
+          new InitialBatchedStore(
+            batcher.batchOf(Timestamp(inWithTime.head._1)),
+            testStoreVBS)
         val testStoreReader = { version: Long =>
           VersionedKeyValSource[(Long, Int), Int](
             rootFolder,
@@ -159,16 +160,17 @@ class VersionedBatchedStoreTest extends WordSpec {
 
       // First store's A & B
       {
-        val tail = TestGraphs
-          .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
-            source,
-            testStoreA,
-            testStoreB)(
-            { t =>
-              fnA(t._2)
-            },
-            fnB,
-            fnC)
+        val tail =
+          TestGraphs
+            .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
+              source,
+              testStoreA,
+              testStoreB)(
+              { t =>
+                fnA(t._2)
+              },
+              fnB,
+              fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -177,16 +179,17 @@ class VersionedBatchedStoreTest extends WordSpec {
 
       // Now Stores C & B
       {
-        val tail = TestGraphs
-          .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
-            source,
-            testStoreC,
-            testStoreB)(
-            { t =>
-              fnA(t._2)
-            },
-            fnB,
-            fnC)
+        val tail =
+          TestGraphs
+            .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
+              source,
+              testStoreC,
+              testStoreB)(
+              { t =>
+                fnA(t._2)
+              },
+              fnB,
+              fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))
@@ -196,16 +199,17 @@ class VersionedBatchedStoreTest extends WordSpec {
       // Run stores C & B again, now there should be no operations to do
       // This should warning but succeed
       {
-        val tail = TestGraphs
-          .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
-            source,
-            testStoreC,
-            testStoreB)(
-            { t =>
-              fnA(t._2)
-            },
-            fnB,
-            fnC)
+        val tail =
+          TestGraphs
+            .multipleSummerJob[Scalding, (Long, Int), Int, Int, Int, Int, Int](
+              source,
+              testStoreC,
+              testStoreB)(
+              { t =>
+                fnA(t._2)
+              },
+              fnB,
+              fnC)
         val scald = Scalding("scalaCheckMultipleSumJob")
         val ws = new LoopState(intr)
         scald.run(ws, mode, scald.plan(tail))

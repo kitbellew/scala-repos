@@ -76,8 +76,8 @@ class FutureTest extends SpecLite {
   }
 
   "Nondeterminism[Future]" should {
-    implicit val es: ExecutionContext =
-      ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+    implicit val es: ExecutionContext = ExecutionContext.fromExecutor(
+      Executors.newFixedThreadPool(1))
 
     "fetch first completed future in chooseAny" ! forAll { (xs: Vector[Int]) =>
       val promises = Vector.fill(xs.size)(Promise[Int]())
@@ -97,8 +97,10 @@ class FutureTest extends SpecLite {
         }
 
       val sorted = xs.zipWithIndex.sorted
-      val sortedF =
-        loop(sorted.map(_._2).toList, promises.map(_.future), Vector.empty)
+      val sortedF = loop(
+        sorted.map(_._2).toList,
+        promises.map(_.future),
+        Vector.empty)
       Await.result(sortedF, duration) must_== sorted.map(_._1)
     }
 

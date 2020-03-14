@@ -182,11 +182,12 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
             replicaId,
             topicAndPartition,
             targetState))
-    val currState =
-      replicaState.getOrElseUpdate(partitionAndReplica, NonExistentReplica)
+    val currState = replicaState.getOrElseUpdate(
+      partitionAndReplica,
+      NonExistentReplica)
     try {
-      val replicaAssignment =
-        controllerContext.partitionReplicaAssignment(topicAndPartition)
+      val replicaAssignment = controllerContext.partitionReplicaAssignment(
+        topicAndPartition)
       targetState match {
         case NewReplica =>
           assertValidPreviousStates(
@@ -280,8 +281,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
             List(ReplicaDeletionSuccessful),
             targetState)
           // remove this replica from the assigned replicas list for its partition
-          val currentAssignedReplicas =
-            controllerContext.partitionReplicaAssignment(topicAndPartition)
+          val currentAssignedReplicas = controllerContext
+            .partitionReplicaAssignment(topicAndPartition)
           controllerContext.partitionReplicaAssignment.put(
             topicAndPartition,
             currentAssignedReplicas.filterNot(_ == replicaId))
@@ -307,8 +308,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
           replicaState(partitionAndReplica) match {
             case NewReplica =>
               // add this replica to the assigned replicas list for its partition
-              val currentAssignedReplicas =
-                controllerContext.partitionReplicaAssignment(topicAndPartition)
+              val currentAssignedReplicas = controllerContext
+                .partitionReplicaAssignment(topicAndPartition)
               if (!currentAssignedReplicas.contains(replicaId))
                 controllerContext.partitionReplicaAssignment
                   .put(topicAndPartition, currentAssignedReplicas :+ replicaId)
@@ -373,9 +374,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                   replicaId) match {
                   case Some(updatedLeaderIsrAndControllerEpoch) =>
                     // send the shrunk ISR state change request to all the remaining alive replicas of the partition.
-                    val currentAssignedReplicas =
-                      controllerContext.partitionReplicaAssignment(
-                        topicAndPartition)
+                    val currentAssignedReplicas = controllerContext
+                      .partitionReplicaAssignment(topicAndPartition)
                     if (!controller.deleteTopicManager.isPartitionToBeDeleted(
                           topicAndPartition)) {
                       brokerRequestBatch.addLeaderAndIsrRequestForBrokers(
@@ -496,8 +496,10 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
       val topic = topicPartition.topic
       val partition = topicPartition.partition
       assignedReplicas.foreach { replicaId =>
-        val partitionAndReplica =
-          PartitionAndReplica(topic, partition, replicaId)
+        val partitionAndReplica = PartitionAndReplica(
+          topic,
+          partition,
+          replicaId)
         controllerContext.liveBrokerIds.contains(replicaId) match {
           case true  => replicaState.put(partitionAndReplica, OnlineReplica)
           case false =>
@@ -544,8 +546,8 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                 controllerContext.liveOrShuttingDownBrokerIds
               val newBrokerIds = curBrokerIds -- liveOrShuttingDownBrokerIds
               val deadBrokerIds = liveOrShuttingDownBrokerIds -- curBrokerIds
-              val newBrokers =
-                curBrokers.filter(broker => newBrokerIds(broker.id))
+              val newBrokers = curBrokers.filter(broker =>
+                newBrokerIds(broker.id))
               controllerContext.liveBrokers = curBrokers
               val newBrokerIdsSorted = newBrokerIds.toSeq.sorted
               val deadBrokerIdsSorted = deadBrokerIds.toSeq.sorted

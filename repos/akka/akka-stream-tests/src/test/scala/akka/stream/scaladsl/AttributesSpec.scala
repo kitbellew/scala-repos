@@ -58,9 +58,10 @@ class AttributesSpec extends AkkaSpec {
   "attributes" must {
 
     "be overridable on a module basis" in {
-      val runnable = Source.empty.toMat(
-        AttributesSink().withAttributes(Attributes.name("new-name")))(
-        Keep.right)
+      val runnable =
+        Source.empty.toMat(
+          AttributesSink().withAttributes(Attributes.name("new-name")))(
+          Keep.right)
       whenReady(runnable.run()) { attributes ⇒
         attributes.get[Name] should contain(Name("new-name"))
       }

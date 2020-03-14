@@ -62,9 +62,10 @@ object Decode {
       case Annotation(_, els) =>
         val bytesElem =
           els find (x => constant(x.elementNameIndex) == BYTES_VALUE) get
-        val _bytes = bytesElem.elementValue match {
-          case ConstValueIndex(x) => constantWrapped(x)
-        }
+        val _bytes =
+          bytesElem.elementValue match {
+            case ConstValueIndex(x) => constantWrapped(x)
+          }
         val bytes = _bytes.asInstanceOf[StringBytesPair].bytes
         val length = ByteCodecs.decode(bytes)
 
@@ -75,10 +76,11 @@ object Decode {
   /** private[scala] so nobody gets the idea this is a supported interface.
     */
   private[scala] def caseParamNames(path: String): Option[List[String]] = {
-    val (outer, inner) = (path indexOf '$') match {
-      case -1 => (path, "")
-      case x  => (path take x, path drop (x + 1))
-    }
+    val (outer, inner) =
+      (path indexOf '$') match {
+        case -1 => (path, "")
+        case x  => (path take x, path drop (x + 1))
+      }
 
     for {
       clazz <- appLoader.tryToLoadClass[AnyRef](outer)

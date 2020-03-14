@@ -98,9 +98,10 @@ trait Monad[F[_]] extends Applicative[F] with Bind[F] { self =>
   }
   def monadLaw = new MonadLaw {}
   ////
-  val monadSyntax = new scalaz.syntax.MonadSyntax[F] {
-    def F = Monad.this
-  }
+  val monadSyntax =
+    new scalaz.syntax.MonadSyntax[F] {
+      def F = Monad.this
+    }
 }
 
 object Monad {
@@ -110,8 +111,7 @@ object Monad {
 
   implicit def monadMTMAB[MT[_[_], _], MAB[_, _], A](implicit
       t: MonadTrans[MT],
-      m: Monad[MAB[A, ?]]): Monad[MT[MAB[A, ?], ?]] =
-    t.apply[MAB[A, ?]]
+      m: Monad[MAB[A, ?]]): Monad[MT[MAB[A, ?], ?]] = t.apply[MAB[A, ?]]
 
   ////
 }

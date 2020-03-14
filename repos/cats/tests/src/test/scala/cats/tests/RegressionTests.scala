@@ -63,36 +63,39 @@ class RegressionTests extends CatsSuite {
   }
 
   test("#167: confirm ap2 order") {
-    val twelve = Apply[State[String, ?]]
-      .ap2(State.instance[String].pure((_: Unit, _: Unit) => ()))(
-        State[String, Unit](s => ((), s + "1")),
-        State[String, Unit](s => ((), s + "2"))
-      )
-      .run("")
-      ._2
+    val twelve =
+      Apply[State[String, ?]]
+        .ap2(State.instance[String].pure((_: Unit, _: Unit) => ()))(
+          State[String, Unit](s => ((), s + "1")),
+          State[String, Unit](s => ((), s + "2"))
+        )
+        .run("")
+        ._2
     twelve should ===("12")
   }
 
   test("#167: confirm map2 order") {
-    val twelve = Apply[State[String, ?]]
-      .map2(
-        State[String, Unit](s => ((), s + "1")),
-        State[String, Unit](s => ((), s + "2"))
-      )((_: Unit, _: Unit) => ())
-      .run("")
-      ._2
+    val twelve =
+      Apply[State[String, ?]]
+        .map2(
+          State[String, Unit](s => ((), s + "1")),
+          State[String, Unit](s => ((), s + "2"))
+        )((_: Unit, _: Unit) => ())
+        .run("")
+        ._2
     twelve should ===("12")
   }
 
   test("#167: confirm map3 order") {
-    val oneTwoThree = Apply[State[String, ?]]
-      .map3(
-        State[String, Unit](s => ((), s + "1")),
-        State[String, Unit](s => ((), s + "2")),
-        State[String, Unit](s => ((), s + "3"))
-      )((_: Unit, _: Unit, _: Unit) => ())
-      .run("")
-      ._2
+    val oneTwoThree =
+      Apply[State[String, ?]]
+        .map3(
+          State[String, Unit](s => ((), s + "1")),
+          State[String, Unit](s => ((), s + "2")),
+          State[String, Unit](s => ((), s + "3"))
+        )((_: Unit, _: Unit, _: Unit) => ())
+        .run("")
+        ._2
     oneTwoThree should ===("123")
   }
 

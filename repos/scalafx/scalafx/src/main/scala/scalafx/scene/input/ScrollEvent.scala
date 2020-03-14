@@ -48,8 +48,9 @@ object ScrollEvent {
     /**
       * The horizontal text-based scrolling amount is a number of characters to scroll.
       */
-    val Characters = new HorizontalTextScrollUnits(
-      jfxsi.ScrollEvent.HorizontalTextScrollUnits.CHARACTERS)
+    val Characters =
+      new HorizontalTextScrollUnits(
+        jfxsi.ScrollEvent.HorizontalTextScrollUnits.CHARACTERS)
     @deprecated(
       "Use Characters; CHARACTERS will be removed in a future release",
       "8.0.60-R10")
@@ -58,8 +59,9 @@ object ScrollEvent {
     /**
       * The horizontal text-based scrolling data is not available (not provided by the underlying platform).
       */
-    val None = new HorizontalTextScrollUnits(
-      jfxsi.ScrollEvent.HorizontalTextScrollUnits.NONE)
+    val None =
+      new HorizontalTextScrollUnits(
+        jfxsi.ScrollEvent.HorizontalTextScrollUnits.NONE)
     @deprecated(
       "Use None; NONE will be removed in a future release",
       "8.0.60-R10")
@@ -85,8 +87,9 @@ object ScrollEvent {
     /**
       * The vertical text-based scrolling amount is a number of lines to scroll.
       */
-    val Lines = new VerticalTextScrollUnits(
-      jfxsi.ScrollEvent.VerticalTextScrollUnits.LINES)
+    val Lines =
+      new VerticalTextScrollUnits(
+        jfxsi.ScrollEvent.VerticalTextScrollUnits.LINES)
     @deprecated(
       "Use Lines; LINES will be removed in a future release",
       "8.0.60-R10")
@@ -95,8 +98,9 @@ object ScrollEvent {
     /**
       * The vertical text-based scrolling amount is a number of pages to scroll.
       */
-    val Pages = new VerticalTextScrollUnits(
-      jfxsi.ScrollEvent.VerticalTextScrollUnits.PAGES)
+    val Pages =
+      new VerticalTextScrollUnits(
+        jfxsi.ScrollEvent.VerticalTextScrollUnits.PAGES)
     @deprecated(
       "Use Pages; PAGES will be removed in a future release",
       "8.0.60-R10")
@@ -105,8 +109,9 @@ object ScrollEvent {
     /**
       * The vertical text-based scrolling data is not available (not provided by the underlying platform).
       */
-    val None = new VerticalTextScrollUnits(
-      jfxsi.ScrollEvent.VerticalTextScrollUnits.NONE)
+    val None =
+      new VerticalTextScrollUnits(
+        jfxsi.ScrollEvent.VerticalTextScrollUnits.NONE)
     @deprecated(
       "Use None; NONE will be removed in a future release",
       "8.0.60-R10")

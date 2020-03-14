@@ -21,13 +21,14 @@ class SbtCompiler(
 
     client.progress("Searching for changed files...")
 
-    val order = compilationData.order match {
-      case CompileOrder.Mixed => xsbti.compile.CompileOrder.Mixed
-      case CompileOrder.JavaThenScala =>
-        xsbti.compile.CompileOrder.JavaThenScala
-      case CompileOrder.ScalaThenJava =>
-        xsbti.compile.CompileOrder.ScalaThenJava
-    }
+    val order =
+      compilationData.order match {
+        case CompileOrder.Mixed => xsbti.compile.CompileOrder.Mixed
+        case CompileOrder.JavaThenScala =>
+          xsbti.compile.CompileOrder.JavaThenScala
+        case CompileOrder.ScalaThenJava =>
+          xsbti.compile.CompileOrder.ScalaThenJava
+      }
 
     val compileOutput = CompileOutput(compilationData.output)
 
@@ -46,41 +47,45 @@ class SbtCompiler(
 
     val outputToAnalysisMap = compilationData.outputToCacheMap.map {
       case (output, cache) =>
-        val analysis =
-          fileToStore(cache).get().map(_._1).getOrElse(Analysis.Empty)
+        val analysis = fileToStore(cache)
+          .get()
+          .map(_._1)
+          .getOrElse(Analysis.Empty)
         (output, analysis)
     }
 
-    val incOptions = compilationData.sbtIncOptions match {
-      case None => IncOptions.Default
-      case Some(opt) =>
-        IncOptions.Default
-          .withNameHashing(opt.nameHashing)
-          .withRecompileOnMacroDef(opt.recompileOnMacroDef)
-          .withTransitiveStep(opt.transitiveStep)
-          .withRecompileAllFraction(opt.recompileAllFraction)
-    }
+    val incOptions =
+      compilationData.sbtIncOptions match {
+        case None => IncOptions.Default
+        case Some(opt) =>
+          IncOptions.Default
+            .withNameHashing(opt.nameHashing)
+            .withRecompileOnMacroDef(opt.recompileOnMacroDef)
+            .withTransitiveStep(opt.transitiveStep)
+            .withRecompileAllFraction(opt.recompileAllFraction)
+      }
 
     try {
-      val Result(analysis, setup, hasModified) = IC.incrementalCompile(
-        scalac.orNull,
-        javac,
-        compilationData.sources,
-        compilationData.classpath,
-        compileOutput,
-        CompilerCache.fresh,
-        Some(progress),
-        compilationData.scalaOptions,
-        compilationData.javaOptions,
-        previousAnalysis,
-        previousSetup,
-        outputToAnalysisMap.get,
-        Locate.definesClass,
-        reporter,
-        order,
-        skip = false,
-        incOptions
-      )(logger)
+      val Result(analysis, setup, hasModified) =
+        IC.incrementalCompile(
+          scalac.orNull,
+          javac,
+          compilationData.sources,
+          compilationData.classpath,
+          compileOutput,
+          CompilerCache.fresh,
+          Some(progress),
+          compilationData.scalaOptions,
+          compilationData.javaOptions,
+          previousAnalysis,
+          previousSetup,
+          outputToAnalysisMap.get,
+          Locate.definesClass,
+          reporter,
+          order,
+          skip = false,
+          incOptions
+        )(logger)
 
       analysisStore.set(analysis, setup)
 

@@ -13,10 +13,11 @@ class IndexSerializationTest extends ScalaFixtureTestCase {
 
   import _root_.junit.framework.Assert._
 
-  val testResolver = new SbtResolver(
-    SbtResolver.Kind.Maven,
-    "some cool repo name",
-    "http://some.cool.repo/")
+  val testResolver =
+    new SbtResolver(
+      SbtResolver.Kind.Maven,
+      "some cool repo name",
+      "http://some.cool.repo/")
 
   def testIndexStoring() = {
     val tmpPath = new File(myFixture.getTempDirPath)
@@ -37,10 +38,11 @@ class IndexSerializationTest extends ScalaFixtureTestCase {
 
   def testIndexLoading() = {
     myFixture.setTestDataPath(rootPath)
-    val testIndexDir = new File(
-      myFixture
-        .copyDirectoryToProject("sbt/resolvers/testIndex", "testIndex")
-        .getPath)
+    val testIndexDir =
+      new File(
+        myFixture
+          .copyDirectoryToProject("sbt/resolvers/testIndex", "testIndex")
+          .getPath)
     val storingManager = new SbtResolverIndexesManager(Some(testIndexDir))
 
     val indexOpt = storingManager.find(testResolver)

@@ -32,8 +32,7 @@ sealed abstract class STRef[S, A] {
     })
 
   /**Synonym for write*/
-  def |=(a: => A): ST[S, STRef[S, A]] =
-    write(a)
+  def |=(a: => A): ST[S, STRef[S, A]] = write(a)
 
   /**Swap the value at this reference with the value at another. */
   def swap(that: STRef[S, A]): ST[S, Unit] =
@@ -47,8 +46,7 @@ sealed abstract class STRef[S, A] {
 
 object STRef extends STRefInstances {
 
-  def apply[S]: (Id ~> STRef[S, ?]) =
-    stRef[S]
+  def apply[S]: (Id ~> STRef[S, ?]) = stRef[S]
 
   def stRef[S]: (Id ~> STRef[S, ?]) =
     new (Id ~> STRef[S, ?]) {
@@ -143,8 +141,7 @@ sealed abstract class ST[S, A] {
 }
 
 object ST extends STInstances {
-  def apply[S, A](a: => A): ST[S, A] =
-    returnST(a)
+  def apply[S, A](a: => A): ST[S, A] = returnST(a)
 
   def st[S, A](f: Tower[S] => (Tower[S], A)): ST[S, A] =
     new ST[S, A] {
@@ -156,12 +153,10 @@ object ST extends STInstances {
     IO.io(rw => Free.return_(st(rw)))
 
   /**Put a value in a state thread */
-  def returnST[S, A](a: => A): ST[S, A] =
-    st(s => (s, a))
+  def returnST[S, A](a: => A): ST[S, A] = st(s => (s, a))
 
   /**Run a state thread */
-  def runST[A](f: Forall[ST[?, A]]): A =
-    f.apply.apply(ivoryTower)._2
+  def runST[A](f: Forall[ST[?, A]]): A = f.apply.apply(ivoryTower)._2
 
   /**Allocates a fresh mutable reference. */
   def newVar[S]: Id ~> λ[α => ST[S, STRef[S, α]]] =

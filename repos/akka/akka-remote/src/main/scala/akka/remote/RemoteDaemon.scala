@@ -196,23 +196,24 @@ private[akka] class RemoteSystemDaemon(
                   else
                     s.substring(0, i)
                 }
-                val isTerminating = !terminating.whileOff {
-                  val parent = supervisor.asInstanceOf[InternalActorRef]
-                  val actor = system.provider.actorOf(
-                    system,
-                    props,
-                    parent,
-                    p,
-                    systemService = false,
-                    Some(deploy),
-                    lookupDeploy = true,
-                    async = false)
-                  addChild(childName, actor)
-                  actor.sendSystemMessage(Watch(actor, this))
-                  actor.start()
-                  if (addChildParentNeedsWatch(parent, actor))
-                    parent.sendSystemMessage(Watch(parent, this))
-                }
+                val isTerminating =
+                  !terminating.whileOff {
+                    val parent = supervisor.asInstanceOf[InternalActorRef]
+                    val actor = system.provider.actorOf(
+                      system,
+                      props,
+                      parent,
+                      p,
+                      systemService = false,
+                      Some(deploy),
+                      lookupDeploy = true,
+                      async = false)
+                    addChild(childName, actor)
+                    actor.sendSystemMessage(Watch(actor, this))
+                    actor.start()
+                    if (addChildParentNeedsWatch(parent, actor))
+                      parent.sendSystemMessage(Watch(parent, this))
+                  }
                 if (isTerminating)
                   log.error(
                     "Skipping [{}] to RemoteSystemDaemon on [{}] while terminating",
@@ -246,10 +247,11 @@ private[akka] class RemoteSystemDaemon(
         }
         getChild(concatenatedChildNames.iterator) match {
           case Nobody ⇒
-            val emptyRef = new EmptyLocalActorRef(
-              system.provider,
-              path / sel.elements.map(_.toString),
-              system.eventStream)
+            val emptyRef =
+              new EmptyLocalActorRef(
+                system.provider,
+                path / sel.elements.map(_.toString),
+                system.eventStream)
             emptyRef.tell(sel, sender)
           case child ⇒
             child.tell(m, sender)

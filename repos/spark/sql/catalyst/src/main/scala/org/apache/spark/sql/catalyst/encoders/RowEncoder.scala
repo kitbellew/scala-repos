@@ -115,26 +115,25 @@ object RowEncoder {
         }
 
       case t @ MapType(kt, vt, valueNullable) =>
-        val keys =
+        val keys = Invoke(
           Invoke(
-            Invoke(
-              inputObject,
-              "keysIterator",
-              ObjectType(classOf[scala.collection.Iterator[_]])),
-            "toSeq",
-            ObjectType(classOf[scala.collection.Seq[_]]))
+            inputObject,
+            "keysIterator",
+            ObjectType(classOf[scala.collection.Iterator[_]])),
+          "toSeq",
+          ObjectType(classOf[scala.collection.Seq[_]]))
         val convertedKeys = extractorsFor(keys, ArrayType(kt, false))
 
-        val values =
+        val values = Invoke(
           Invoke(
-            Invoke(
-              inputObject,
-              "valuesIterator",
-              ObjectType(classOf[scala.collection.Iterator[_]])),
-            "toSeq",
-            ObjectType(classOf[scala.collection.Seq[_]]))
-        val convertedValues =
-          extractorsFor(values, ArrayType(vt, valueNullable))
+            inputObject,
+            "valuesIterator",
+            ObjectType(classOf[scala.collection.Iterator[_]])),
+          "toSeq",
+          ObjectType(classOf[scala.collection.Seq[_]]))
+        val convertedValues = extractorsFor(
+          values,
+          ArrayType(vt, valueNullable))
 
         NewInstance(
           classOf[ArrayBasedMapData],
@@ -144,11 +143,12 @@ object RowEncoder {
       case StructType(fields) =>
         val convertedFields = fields.zipWithIndex.map {
           case (f, i) =>
-            val method = if (f.dataType.isInstanceOf[StructType]) {
-              "getStruct"
-            } else {
-              "get"
-            }
+            val method =
+              if (f.dataType.isInstanceOf[StructType]) {
+                "getStruct"
+              } else {
+                "get"
+              }
             If(
               Invoke(inputObject, "isNullAt", BooleanType, Literal(i) :: Nil),
               Literal.create(null, f.dataType),
@@ -185,10 +185,11 @@ object RowEncoder {
   private def constructorFor(schema: StructType): Expression = {
     val fields = schema.zipWithIndex.map {
       case (f, i) =>
-        val dt = f.dataType match {
-          case p: PythonUserDefinedType => p.sqlType
-          case other                    => other
-        }
+        val dt =
+          f.dataType match {
+            case p: PythonUserDefinedType => p.sqlType
+            case other                    => other
+          }
         val field = BoundReference(i, dt, f.nullable)
         If(
           IsNull(field),
@@ -239,11 +240,10 @@ object RowEncoder {
         Invoke(input, "toString", ObjectType(classOf[String]))
 
       case ArrayType(et, nullable) =>
-        val arrayData =
-          Invoke(
-            MapObjects(constructorFor(_), input, et),
-            "array",
-            ObjectType(classOf[Array[_]]))
+        val arrayData = Invoke(
+          MapObjects(constructorFor(_), input, et),
+          "array",
+          ObjectType(classOf[Array[_]]))
         StaticInvoke(
           scala.collection.mutable.WrappedArray.getClass,
           ObjectType(classOf[Seq[_]]),

@@ -19,8 +19,7 @@ class CheckedBenchmarks extends MyBenchmark {
 
   var limit: Int = 0
 
-  override def setUp(): Unit =
-    limit = start + len
+  override def setUp(): Unit = limit = start + len
 
   def timeOption(reps: Int) =
     run(reps) {

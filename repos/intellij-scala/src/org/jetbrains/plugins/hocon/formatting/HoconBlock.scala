@@ -42,8 +42,7 @@ class HoconBlock(
 
   def buildChildren() = children.asJava
 
-  def isLeaf =
-    formatter.getChildren(node).isEmpty
+  def isLeaf = formatter.getChildren(node).isEmpty
 
   def getSpacing(child1: Block, child2: Block) =
     if (child1 == null)

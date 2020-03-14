@@ -182,13 +182,14 @@ trait Enumerator[E] {
     } // Shadow ec to make this the only implicit EC in scope
     new Enumerator[U] {
       def apply[A](iteratee: Iteratee[U, A]): Future[Iteratee[U, A]] = {
-        val folder = Iteratee.fold2[E, Iteratee[U, A]](iteratee) { (it, e) =>
-          for {
-            en <- Future(f(e))(pec)
-            newIt <- en(it)
-            done <- Iteratee.isDoneOrError(newIt)
-          } yield ((newIt, done))
-        }(dec)
+        val folder =
+          Iteratee.fold2[E, Iteratee[U, A]](iteratee) { (it, e) =>
+            for {
+              en <- Future(f(e))(pec)
+              newIt <- en(it)
+              done <- Iteratee.isDoneOrError(newIt)
+            } yield ((newIt, done))
+          }(dec)
         parent(folder).flatMap(_.run)
       }
     }
@@ -268,23 +269,24 @@ object Enumerator {
             val i = iter.single.swap(Iteratee.flatten(p.future))
             in match {
               case Input.El(_) | Input.Empty =>
-                val nextI = i.fold {
+                val nextI =
+                  i.fold {
 
-                  case Step.Cont(k) =>
-                    val n = k(in)
-                    n.fold {
-                      case Step.Cont(kk) =>
-                        p.success(Cont(kk))
-                        Future.successful(Cont(step))
-                      case _ =>
-                        p.success(n)
-                        Future.successful(Done((), Input.Empty: Input[EE]))
-                    }(dec)
-                  case _ =>
-                    p.success(i)
-                    Future.successful(Done((), Input.Empty: Input[EE]))
+                    case Step.Cont(k) =>
+                      val n = k(in)
+                      n.fold {
+                        case Step.Cont(kk) =>
+                          p.success(Cont(kk))
+                          Future.successful(Cont(step))
+                        case _ =>
+                          p.success(n)
+                          Future.successful(Done((), Input.Empty: Input[EE]))
+                      }(dec)
+                    case _ =>
+                      p.success(i)
+                      Future.successful(Done((), Input.Empty: Input[EE]))
 
-                }(dec)
+                  }(dec)
                 Iteratee.flatten(nextI)
               case Input.EOF => {
                 if (attending.single
@@ -354,23 +356,24 @@ object Enumerator {
             val i = iter.single.swap(Iteratee.flatten(p.future))
             in match {
               case Input.El(_) | Input.Empty =>
-                val nextI = i.fold {
+                val nextI =
+                  i.fold {
 
-                  case Step.Cont(k) =>
-                    val n = k(in)
-                    n.fold {
-                      case Step.Cont(kk) =>
-                        p.success(Cont(kk))
-                        Future.successful(Cont(step))
-                      case _ =>
-                        p.success(n)
-                        Future.successful(Done((), Input.Empty: Input[EE]))
-                    }(dec)
-                  case _ =>
-                    p.success(i)
-                    Future.successful(Done((), Input.Empty: Input[EE]))
+                    case Step.Cont(k) =>
+                      val n = k(in)
+                      n.fold {
+                        case Step.Cont(kk) =>
+                          p.success(Cont(kk))
+                          Future.successful(Cont(step))
+                        case _ =>
+                          p.success(n)
+                          Future.successful(Done((), Input.Empty: Input[EE]))
+                      }(dec)
+                    case _ =>
+                      p.success(i)
+                      Future.successful(Done((), Input.Empty: Input[EE]))
 
-                }(dec)
+                  }(dec)
                 Iteratee.flatten(nextI)
               case Input.EOF => {
                 if (attending.single.transformAndGet {
@@ -590,28 +593,29 @@ object Enumerator {
 
         def step(it: Iteratee[E, A], initial: Boolean = false) {
 
-          val next = it.fold {
-            case Step.Cont(k) => {
-              executeFuture(retriever(initial))(pec).map {
-                case None => {
-                  val remainingIteratee = k(Input.EOF)
-                  iterateeP.success(remainingIteratee)
-                  None
-                }
-                case Some(read) => {
-                  val nextIteratee = k(Input.El(read))
-                  Some(nextIteratee)
-                }
-              }(dec)
-            }
-            case Step.Error(msg, in) =>
-              onError(msg, in)
-              iterateeP.success(it)
-              Future.successful(None)
-            case _ =>
-              iterateeP.success(it)
-              Future.successful(None)
-          }(dec)
+          val next =
+            it.fold {
+              case Step.Cont(k) => {
+                executeFuture(retriever(initial))(pec).map {
+                  case None => {
+                    val remainingIteratee = k(Input.EOF)
+                    iterateeP.success(remainingIteratee)
+                    None
+                  }
+                  case Some(read) => {
+                    val nextIteratee = k(Input.El(read))
+                    Some(nextIteratee)
+                  }
+                }(dec)
+              }
+              case Step.Error(msg, in) =>
+                onError(msg, in)
+                iterateeP.success(it)
+                Future.successful(None)
+              case _ =>
+                iterateeP.success(it)
+                Future.successful(None)
+            }(dec)
 
           next.onFailure {
             case reason: Exception =>
@@ -650,14 +654,15 @@ object Enumerator {
       val bytesRead = blocking {
         input.read(buffer)
       }
-      val chunk = bytesRead match {
-        case -1          => None
-        case `chunkSize` => Some(buffer)
-        case read =>
-          val input = new Array[Byte](read)
-          System.arraycopy(buffer, 0, input, 0, read)
-          Some(input)
-      }
+      val chunk =
+        bytesRead match {
+          case -1          => None
+          case `chunkSize` => Some(buffer)
+          case read =>
+            val input = new Array[Byte](read)
+            System.arraycopy(buffer, 0, input, 0, read)
+            Some(input)
+        }
       Future.successful(chunk)
     })(pec).onDoneEnumerating(input.close)(pec)
   }
@@ -701,21 +706,22 @@ object Enumerator {
   def outputStream(a: java.io.OutputStream => Unit)(
       implicit ec: ExecutionContext): Enumerator[Array[Byte]] = {
     Concurrent.unicast[Array[Byte]] { channel =>
-      val outputStream = new java.io.OutputStream() {
-        override def close() {
-          channel.end()
+      val outputStream =
+        new java.io.OutputStream() {
+          override def close() {
+            channel.end()
+          }
+          override def flush() {}
+          override def write(value: Int) {
+            channel.push(Array(value.toByte))
+          }
+          override def write(buffer: Array[Byte]) {
+            write(buffer, 0, buffer.length)
+          }
+          override def write(buffer: Array[Byte], start: Int, count: Int) {
+            channel.push(buffer.slice(start, start + count))
+          }
         }
-        override def flush() {}
-        override def write(value: Int) {
-          channel.push(Array(value.toByte))
-        }
-        override def write(buffer: Array[Byte]) {
-          write(buffer, 0, buffer.length)
-        }
-        override def write(buffer: Array[Byte], start: Int, count: Int) {
-          channel.push(buffer.slice(start, start + count))
-        }
-      }
       a(outputStream)
     }(ec)
   }

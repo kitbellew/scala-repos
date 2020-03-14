@@ -47,11 +47,12 @@ class UdpConnectedIntegrationSpec
       connectUdp(localAddress = None, serverAddress, testActor) ! UdpConnected
         .Send(data1)
 
-      val clientAddress = expectMsgPF() {
-        case Udp.Received(d, a) ⇒
-          d should ===(data1)
-          a
-      }
+      val clientAddress =
+        expectMsgPF() {
+          case Udp.Received(d, a) ⇒
+            d should ===(data1)
+            a
+        }
 
       server ! Udp.Send(data2, clientAddress)
 

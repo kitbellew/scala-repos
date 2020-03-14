@@ -171,8 +171,7 @@ private[akka] class RemoteWatcher(
         watchingNodes = watchingNodes.size)(watchSet, watchingNodes.toSet)
   }
 
-  def receiveHeartbeat(): Unit =
-    sender() ! selfHeartbeatRspMsg
+  def receiveHeartbeat(): Unit = sender() ! selfHeartbeatRspMsg
 
   def receiveHeartbeatRsp(uid: Int): Unit = {
     val from = sender().path.address

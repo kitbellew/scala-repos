@@ -386,8 +386,9 @@ object PaintScale {
     500)
 
   /** Produces a gradient through red, orange, yellow */
-  lazy val RedOrangeYellow =
-    createMultiGradient(Array(Color.red, Color.orange, Color.yellow), 500)
+  lazy val RedOrangeYellow = createMultiGradient(
+    Array(Color.red, Color.orange, Color.yellow),
+    500)
 
   /**
     * Creates an array of Color objects for use as a gradient, using a linear

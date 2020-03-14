@@ -172,13 +172,14 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     val cmd = mesos.CommandInfo.newBuilder
       .setValue("bash foo-*/start -Dhttp.port=$PORT")
 
-    val proto1 = ServiceDefinition.newBuilder
-      .setId("play")
-      .setCmd(cmd)
-      .setInstances(3)
-      .setExecutor("//cmd")
-      .setVersion(Timestamp.now().toString)
-      .build
+    val proto1 =
+      ServiceDefinition.newBuilder
+        .setId("play")
+        .setCmd(cmd)
+        .setInstances(3)
+        .setExecutor("//cmd")
+        .setVersion(Timestamp.now().toString)
+        .build
 
     val app1 = AppDefinition().mergeFromProto(proto1)
 
@@ -192,15 +193,16 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     val cmd = mesos.CommandInfo.newBuilder
       .setValue("bash foo-*/start -Dhttp.port=$PORT")
 
-    val proto1 = ServiceDefinition.newBuilder
-      .setId("/app")
-      .setCmd(cmd)
-      .setInstances(1)
-      .setExecutor("//cmd")
-      .setVersion(Timestamp.now().toString)
-      .addPorts(1000)
-      .addPorts(1001)
-      .build
+    val proto1 =
+      ServiceDefinition.newBuilder
+        .setId("/app")
+        .setCmd(cmd)
+        .setInstances(1)
+        .setExecutor("//cmd")
+        .setVersion(Timestamp.now().toString)
+        .addPorts(1000)
+        .addPorts(1001)
+        .build
 
     val app = AppDefinition().mergeFromProto(proto1)
 

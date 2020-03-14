@@ -139,8 +139,10 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
     val c1 = document.getImmutableCharSequence.charAt(offset)
 
     def hasLeft: Option[Boolean] = {
-      val iterator =
-        editor.asInstanceOf[EditorEx].getHighlighter.createIterator(offset)
+      val iterator = editor
+        .asInstanceOf[EditorEx]
+        .getHighlighter
+        .createIterator(offset)
 
       val fileType = file.getFileType
       if (fileType != ScalaFileType.SCALA_FILE_TYPE)

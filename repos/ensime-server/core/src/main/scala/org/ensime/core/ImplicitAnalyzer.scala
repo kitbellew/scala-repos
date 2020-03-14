@@ -28,10 +28,11 @@ class ImplicitAnalyzer(val global: RichPresentationCompiler) {
                   SymbolInfo(t.fun.symbol)
                 ))
             case t: ApplyToImplicitArgs =>
-              val funIsImplicit = t.fun match {
-                case tt: ApplyImplicitView => true
-                case _                     => false
-              }
+              val funIsImplicit =
+                t.fun match {
+                  case tt: ApplyImplicitView => true
+                  case _                     => false
+                }
               implicits.append(
                 ImplicitParamInfo(
                   treeP.startOrCursor,

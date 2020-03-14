@@ -37,9 +37,10 @@ private[util] class BatchExecutor[In, Out](
 
   class ScheduledFlush(after: Duration, timer: Timer) {
     @volatile var cancelled = false
-    val task = timer.schedule(after.fromNow) {
-      flush()
-    }
+    val task =
+      timer.schedule(after.fromNow) {
+        flush()
+      }
 
     def cancel() {
       cancelled = true

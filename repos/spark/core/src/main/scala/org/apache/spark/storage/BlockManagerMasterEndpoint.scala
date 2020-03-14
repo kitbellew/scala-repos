@@ -60,10 +60,10 @@ private[spark] class BlockManagerMasterEndpoint(
   private val blockLocations =
     new JHashMap[BlockId, mutable.HashSet[BlockManagerId]]
 
-  private val askThreadPool =
-    ThreadUtils.newDaemonCachedThreadPool("block-manager-ask-thread-pool")
-  private implicit val askExecutionContext =
-    ExecutionContext.fromExecutorService(askThreadPool)
+  private val askThreadPool = ThreadUtils.newDaemonCachedThreadPool(
+    "block-manager-ask-thread-pool")
+  private implicit val askExecutionContext = ExecutionContext
+    .fromExecutorService(askThreadPool)
 
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
@@ -154,8 +154,9 @@ private[spark] class BlockManagerMasterEndpoint(
 
     // Find all blocks for the given RDD, remove the block from both blockLocations and
     // the blockManagerInfo that is tracking the blocks.
-    val blocks =
-      blockLocations.asScala.keys.flatMap(_.asRDDId).filter(_.rddId == rddId)
+    val blocks = blockLocations.asScala.keys
+      .flatMap(_.asRDDId)
+      .filter(_.rddId == rddId)
     blocks.foreach { blockId =>
       val bms: mutable.HashSet[BlockManagerId] = blockLocations.get(blockId)
       bms.foreach(bm =>
@@ -536,8 +537,10 @@ private[spark] class BlockManagerInfo(
             Utils.bytesToString(_remainingMem)))
       }
       if (storageLevel.useDisk) {
-        blockStatus =
-          BlockStatus(storageLevel, memSize = 0, diskSize = diskSize)
+        blockStatus = BlockStatus(
+          storageLevel,
+          memSize = 0,
+          diskSize = diskSize)
         _blocks.put(blockId, blockStatus)
         logInfo(
           "Added %s on disk on %s (size: %s)".format(

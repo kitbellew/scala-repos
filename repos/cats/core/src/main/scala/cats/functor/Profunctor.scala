@@ -17,8 +17,7 @@ trait Profunctor[F[_, _]] extends Serializable { self =>
   /**
     * contramap on the first type parameter
     */
-  def lmap[A, B, C](fab: F[A, B])(f: C => A): F[C, B] =
-    dimap(fab)(f)(identity)
+  def lmap[A, B, C](fab: F[A, B])(f: C => A): F[C, B] = dimap(fab)(f)(identity)
 
   /**
     * map on the second type parameter

@@ -6,8 +6,7 @@ final class ChoiceOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
     implicit val F: Choice[F])
     extends Ops[F[A, B]] {
   ////
-  final def |||[C](x: => F[C, B]): F[A \/ C, B] =
-    F.choice(self, x)
+  final def |||[C](x: => F[C, B]): F[A \/ C, B] = F.choice(self, x)
   ////
 }
 

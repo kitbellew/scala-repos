@@ -22,8 +22,8 @@ class CokleisliTests extends SlowCatsSuite {
       FA: Eq[A]): Eq[Cokleisli[F, A, A]] =
     Eq.by[Cokleisli[F, A, A], F[A] => A](_.run)
 
-  implicit val iso =
-    CartesianTests.Isomorphisms.invariant[Cokleisli[Option, Int, ?]]
+  implicit val iso = CartesianTests.Isomorphisms
+    .invariant[Cokleisli[Option, Int, ?]]
 
   checkAll(
     "Cokleisli[Option, Int, Int]",
@@ -59,8 +59,7 @@ class CokleisliTests extends SlowCatsSuite {
     type CokleisliNEL[A, B] = Cokleisli[NonEmptyList, A, B]
 
     implicit def ev0[A: Arbitrary, B: Arbitrary]
-        : Arbitrary[CokleisliNEL[A, B]] =
-      cokleisliArbitrary
+        : Arbitrary[CokleisliNEL[A, B]] = cokleisliArbitrary
 
     implicit def ev1[A: Arbitrary, B: Eq]: Eq[CokleisliNEL[A, B]] =
       cokleisliEq[NonEmptyList, A, B](oneAndArbitrary, Eq[B])
@@ -94,8 +93,8 @@ class CokleisliTests extends SlowCatsSuite {
     }
 
     {
-      implicit val cokleisliSemigroupK =
-        Cokleisli.cokleisliSemigroupK[NonEmptyList]
+      implicit val cokleisliSemigroupK = Cokleisli
+        .cokleisliSemigroupK[NonEmptyList]
       checkAll(
         "Cokleisli[NonEmptyList, Int, Int]",
         SemigroupKTests[CokleisliNELE].semigroupK[Int])

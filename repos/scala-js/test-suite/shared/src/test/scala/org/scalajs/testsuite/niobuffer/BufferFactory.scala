@@ -18,8 +18,7 @@ sealed abstract class BufferFactory {
   implicit def bufferAdapter(
       buffer: BufferType): BufferAdapter[BufferType, ElementType]
 
-  def boxed(array: Array[ElementType]): Array[AnyRef] =
-    array.map(elemToAnyRef)
+  def boxed(array: Array[ElementType]): Array[AnyRef] = array.map(elemToAnyRef)
 
   def boxedElemsFromInt(elems: Int*): Array[AnyRef] =
     boxed(elems.map(elemFromInt).toArray)
@@ -249,8 +248,7 @@ object BufferFactory {
   trait ByteBufferViewFactory extends BufferFactory {
     def baseAllocBuffer(capacity: Int): BufferType
 
-    def allocBuffer(capacity: Int): BufferType =
-      baseAllocBuffer(capacity)
+    def allocBuffer(capacity: Int): BufferType = baseAllocBuffer(capacity)
 
     override def allocBuffer(
         pos: Int,

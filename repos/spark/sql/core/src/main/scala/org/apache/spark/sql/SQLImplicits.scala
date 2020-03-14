@@ -127,8 +127,7 @@ abstract class SQLImplicits {
 
   /** @since 1.6.1 */
   implicit def newProductArrayEncoder[A <: Product: TypeTag]
-      : Encoder[Array[A]] =
-    ExpressionEncoder()
+      : Encoder[Array[A]] = ExpressionEncoder()
 
   /**
     * Creates a [[Dataset]] from an RDD.

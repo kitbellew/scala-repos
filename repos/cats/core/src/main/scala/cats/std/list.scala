@@ -21,15 +21,12 @@ trait ListInstances extends ListInstances1 {
 
       def pure[A](x: A): List[A] = x :: Nil
 
-      override def map[A, B](fa: List[A])(f: A => B): List[B] =
-        fa.map(f)
+      override def map[A, B](fa: List[A])(f: A => B): List[B] = fa.map(f)
 
-      def flatMap[A, B](fa: List[A])(f: A => List[B]): List[B] =
-        fa.flatMap(f)
+      def flatMap[A, B](fa: List[A])(f: A => List[B]): List[B] = fa.flatMap(f)
 
       override def map2[A, B, Z](fa: List[A], fb: List[B])(
-          f: (A, B) => Z): List[Z] =
-        fa.flatMap(a => fb.map(b => f(a, b)))
+          f: (A, B) => Z): List[Z] = fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: List[A])(f: List[A] => B): List[B] = {
         @tailrec def loop(buf: ListBuffer[B], as: List[A]): List[B] =

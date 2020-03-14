@@ -41,39 +41,41 @@ private[sql] object InferSchema {
       configOptions.samplingRatio > 0,
       s"samplingRatio (${configOptions.samplingRatio}) should be greater than 0")
     val shouldHandleCorruptRecord = configOptions.permissive
-    val schemaData = if (configOptions.samplingRatio > 0.99) {
-      json
-    } else {
-      json.sample(withReplacement = false, configOptions.samplingRatio, 1)
-    }
+    val schemaData =
+      if (configOptions.samplingRatio > 0.99) {
+        json
+      } else {
+        json.sample(withReplacement = false, configOptions.samplingRatio, 1)
+      }
 
     // perform schema inference on each row and merge afterwards
-    val rootType = schemaData
-      .mapPartitions { iter =>
-        val factory = new JsonFactory()
-        configOptions.setJacksonOptions(factory)
-        iter.flatMap { row =>
-          try {
-            Utils.tryWithResource(factory.createParser(row)) { parser =>
-              parser.nextToken()
-              Some(inferField(parser, configOptions))
+    val rootType =
+      schemaData
+        .mapPartitions { iter =>
+          val factory = new JsonFactory()
+          configOptions.setJacksonOptions(factory)
+          iter.flatMap { row =>
+            try {
+              Utils.tryWithResource(factory.createParser(row)) { parser =>
+                parser.nextToken()
+                Some(inferField(parser, configOptions))
+              }
+            } catch {
+              case _: JsonParseException if shouldHandleCorruptRecord =>
+                Some(StructType(
+                  Seq(StructField(columnNameOfCorruptRecords, StringType))))
+              case _: JsonParseException =>
+                None
             }
-          } catch {
-            case _: JsonParseException if shouldHandleCorruptRecord =>
-              Some(StructType(
-                Seq(StructField(columnNameOfCorruptRecords, StringType))))
-            case _: JsonParseException =>
-              None
           }
         }
-      }
-      .treeAggregate[DataType](StructType(Seq()))(
-        compatibleRootType(
-          columnNameOfCorruptRecords,
-          shouldHandleCorruptRecord),
-        compatibleRootType(
-          columnNameOfCorruptRecords,
-          shouldHandleCorruptRecord))
+        .treeAggregate[DataType](StructType(Seq()))(
+          compatibleRootType(
+            columnNameOfCorruptRecords,
+            shouldHandleCorruptRecord),
+          compatibleRootType(
+            columnNameOfCorruptRecords,
+            shouldHandleCorruptRecord))
 
     canonicalizeType(rootType) match {
       case Some(st: StructType) => st
@@ -124,8 +126,9 @@ private[sql] object InferSchema {
         // the type as we pass through all JSON objects.
         var elementType: DataType = NullType
         while (nextUntil(parser, END_ARRAY)) {
-          elementType =
-            compatibleType(elementType, inferField(parser, configOptions))
+          elementType = compatibleType(
+            elementType,
+            inferField(parser, configOptions))
         }
 
         ArrayType(elementType)
@@ -173,13 +176,14 @@ private[sql] object InferSchema {
         }
 
       case StructType(fields) =>
-        val canonicalFields: Array[StructField] = for {
-          field <- fields
-          if field.name.length > 0
-          canonicalType <- canonicalizeType(field.dataType)
-        } yield {
-          field.copy(dataType = canonicalType)
-        }
+        val canonicalFields: Array[StructField] =
+          for {
+            field <- fields
+            if field.name.length > 0
+            canonicalType <- canonicalizeType(field.dataType)
+          } yield {
+            field.copy(dataType = canonicalType)
+          }
 
         if (canonicalFields.length > 0) {
           Some(StructType(canonicalFields))
@@ -259,11 +263,13 @@ private[sql] object InferSchema {
           }
 
         case (StructType(fields1), StructType(fields2)) =>
-          val newFields =
-            (fields1 ++ fields2).groupBy(field => field.name).map {
+          val newFields = (fields1 ++ fields2)
+            .groupBy(field => field.name)
+            .map {
               case (name, fieldTypes) =>
-                val dataType =
-                  fieldTypes.view.map(_.dataType).reduce(compatibleType)
+                val dataType = fieldTypes.view
+                  .map(_.dataType)
+                  .reduce(compatibleType)
                 StructField(name, dataType, nullable = true)
             }
           StructType(newFields.toSeq.sortBy(_.name))

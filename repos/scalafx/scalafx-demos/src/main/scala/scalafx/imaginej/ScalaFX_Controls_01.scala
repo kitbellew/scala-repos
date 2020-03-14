@@ -60,44 +60,49 @@ import scalafx.scene.text.{Font, TextAlignment}
   *
   */
 object ScalaFX_Controls_01 extends JFXApp {
-  val labelsImageView = new ImageView {
-    image = new Image(this, "images/labels.jpg")
-  }
-  val searchLabel = new Label {
-    text = "Search"
-    graphic = labelsImageView
-    font = Font.font("Arial", 30)
-    textFill = Color.web("#0076a3")
-    textAlignment = TextAlignment.Justify
-  }
-  val valuesLabel = new Label {
-    text = "Values"
-    font = Font.font("Cambria", 32)
-    rotate = 270
-    translateY = 50
-  }
-  val wrappedLabel = new Label {
-    text = "A label that needs to be wrapped"
-    wrapText = true
-    translateY = 50
-    prefWidth = 100
-    onMouseEntered = { (_: MouseEvent) =>
-      scaleX = 1.5
-      scaleY = 1.5
+  val labelsImageView =
+    new ImageView {
+      image = new Image(this, "images/labels.jpg")
     }
-    onMouseExited = { (_: MouseEvent) =>
-      scaleX = 1
-      scaleY = 1
+  val searchLabel =
+    new Label {
+      text = "Search"
+      graphic = labelsImageView
+      font = Font.font("Arial", 30)
+      textFill = Color.web("#0076a3")
+      textAlignment = TextAlignment.Justify
     }
-  }
-  val hBox = new HBox {
-    spacing = 10
-    children = List(
-      searchLabel,
-      valuesLabel,
-      wrappedLabel
-    )
-  }
+  val valuesLabel =
+    new Label {
+      text = "Values"
+      font = Font.font("Cambria", 32)
+      rotate = 270
+      translateY = 50
+    }
+  val wrappedLabel =
+    new Label {
+      text = "A label that needs to be wrapped"
+      wrapText = true
+      translateY = 50
+      prefWidth = 100
+      onMouseEntered = { (_: MouseEvent) =>
+        scaleX = 1.5
+        scaleY = 1.5
+      }
+      onMouseExited = { (_: MouseEvent) =>
+        scaleX = 1
+        scaleY = 1
+      }
+    }
+  val hBox =
+    new HBox {
+      spacing = 10
+      children = List(
+        searchLabel,
+        valuesLabel,
+        wrappedLabel
+      )
+    }
   stage = new PrimaryStage {
     title = "ScalaFX Controls 01"
     width = 500

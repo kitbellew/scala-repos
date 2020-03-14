@@ -70,8 +70,10 @@ class RateLimiterActorTest extends MarathonSpec {
     taskTracker = mock[TaskTracker]
     appRepository = mock[AppRepository]
     updateReceiver = TestProbe()
-    val props =
-      RateLimiterActor.props(rateLimiter, appRepository, updateReceiver.ref)
+    val props = RateLimiterActor.props(
+      rateLimiter,
+      appRepository,
+      updateReceiver.ref)
     limiterRef = actorSystem.actorOf(props, "limiter")
   }
 

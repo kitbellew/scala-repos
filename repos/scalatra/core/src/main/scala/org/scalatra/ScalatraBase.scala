@@ -690,10 +690,12 @@ trait ScalatraBase
     */
   def initialize(config: ConfigT): Unit = {
     this.config = config
-    val path = contextPath match {
-      case "" => "/" // The root servlet is "", but the root cookie path is "/"
-      case p  => p
-    }
+    val path =
+      contextPath match {
+        case "" =>
+          "/" // The root servlet is "", but the root cookie path is "/"
+        case p => p
+      }
     servletContext(CookieSupport.CookieOptionsKey) = CookieOptions(path = path)
   }
 
@@ -736,19 +738,22 @@ trait ScalatraBase
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
 
-    val newPath = path match {
-      case x if x.startsWith("/") && includeContextPath && includeServletPath =>
-        ensureSlash(routeBasePath) + ensureContextPathsStripped(
-          ensureSlash(path))
-      case x if x.startsWith("/") && includeContextPath =>
-        ensureSlash(contextPath) + ensureContextPathStripped(ensureSlash(path))
-      case x if x.startsWith("/") && includeServletPath =>
-        request.getServletPath.blankOption map {
-          ensureSlash(_) + ensureServletPathStripped(ensureSlash(path))
-        } getOrElse "/"
-      case _ if absolutize => ensureContextPathsStripped(ensureSlash(path))
-      case _               => path
-    }
+    val newPath =
+      path match {
+        case x
+            if x.startsWith("/") && includeContextPath && includeServletPath =>
+          ensureSlash(routeBasePath) + ensureContextPathsStripped(
+            ensureSlash(path))
+        case x if x.startsWith("/") && includeContextPath =>
+          ensureSlash(contextPath) + ensureContextPathStripped(
+            ensureSlash(path))
+        case x if x.startsWith("/") && includeServletPath =>
+          request.getServletPath.blankOption map {
+            ensureSlash(_) + ensureServletPathStripped(ensureSlash(path))
+          } getOrElse "/"
+        case _ if absolutize => ensureContextPathsStripped(ensureSlash(path))
+        case _               => path
+      }
 
     val pairs = params map {
       case (key, None)        => key.urlEncode + "="
@@ -851,8 +856,12 @@ trait ScalatraBase
     if (path.startsWith("http"))
       path
     else {
-      val p =
-        url(path, params, includeContextPath, includeServletPath, withSessionId)
+      val p = url(
+        path,
+        params,
+        includeContextPath,
+        includeServletPath,
+        withSessionId)
       if (p.startsWith("http"))
         p
       else

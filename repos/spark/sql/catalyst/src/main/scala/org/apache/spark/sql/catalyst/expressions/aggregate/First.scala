@@ -33,12 +33,13 @@ case class First(child: Expression, ignoreNullsExpr: Expression)
 
   def this(child: Expression) = this(child, Literal.create(false, BooleanType))
 
-  private val ignoreNulls: Boolean = ignoreNullsExpr match {
-    case Literal(b: Boolean, BooleanType) => b
-    case _ =>
-      throw new AnalysisException(
-        "The second argument of First should be a boolean literal.")
-  }
+  private val ignoreNulls: Boolean =
+    ignoreNullsExpr match {
+      case Literal(b: Boolean, BooleanType) => b
+      case _ =>
+        throw new AnalysisException(
+          "The second argument of First should be a boolean literal.")
+    }
 
   override def children: Seq[Expression] = child :: Nil
 

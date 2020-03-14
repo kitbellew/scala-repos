@@ -27,20 +27,19 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     //#websocket-handler
     // The Greeter WebSocket Service expects a "name" per message and
     // returns a greeting message for that name
-    val greeterWebSocketService =
-      Flow[Message]
-        .mapConcat {
-          // we match but don't actually consume the text message here,
-          // rather we simply stream it back as the tail of the response
-          // this means we might start sending the response even before the
-          // end of the incoming message has been received
-          case tm: TextMessage ⇒
-            TextMessage(Source.single("Hello ") ++ tm.textStream) :: Nil
-          case bm: BinaryMessage =>
-            // ignore binary messages but drain content to avoid the stream being clogged
-            bm.dataStream.runWith(Sink.ignore)
-            Nil
-        }
+    val greeterWebSocketService = Flow[Message]
+      .mapConcat {
+        // we match but don't actually consume the text message here,
+        // rather we simply stream it back as the tail of the response
+        // this means we might start sending the response even before the
+        // end of the incoming message has been received
+        case tm: TextMessage ⇒
+          TextMessage(Source.single("Hello ") ++ tm.textStream) :: Nil
+        case bm: BinaryMessage =>
+          // ignore binary messages but drain content to avoid the stream being clogged
+          bm.dataStream.runWith(Sink.ignore)
+          Nil
+      }
     //#websocket-handler
 
     //#websocket-request-handling
@@ -55,11 +54,10 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     }
     //#websocket-request-handling
 
-    val bindingFuture =
-      Http().bindAndHandleSync(
-        requestHandler,
-        interface = "localhost",
-        port = 8080)
+    val bindingFuture = Http().bindAndHandleSync(
+      requestHandler,
+      interface = "localhost",
+      port = 8080)
 
     println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
     Console.readLine()
@@ -85,13 +83,12 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
 
     // The Greeter WebSocket Service expects a "name" per message and
     // returns a greeting message for that name
-    val greeterWebSocketService =
-      Flow[Message]
-        .collect {
-          case tm: TextMessage ⇒
-            TextMessage(Source.single("Hello ") ++ tm.textStream)
-          // ignore binary messages
-        }
+    val greeterWebSocketService = Flow[Message]
+      .collect {
+        case tm: TextMessage ⇒
+          TextMessage(Source.single("Hello ") ++ tm.textStream)
+        // ignore binary messages
+      }
 
     //#websocket-routing
     val route =

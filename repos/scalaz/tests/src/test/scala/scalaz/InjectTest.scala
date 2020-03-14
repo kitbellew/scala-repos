@@ -110,10 +110,9 @@ object InjectTest extends SpecLite {
         Test3(z, l) <- match_[F, Test3Algebra, A](k((x ++ y).length))
       } yield l((x ++ y ++ z).length)
 
-    val res =
-      distr[T, Int](
-        (test1[T](Seq("a")) >> test2[T](Seq("b")): Free[T, Int]) >> test3[T](
-          Seq("c")))
+    val res = distr[T, Int](
+      (test1[T](Seq("a")) >> test2[T](Seq("b")): Free[T, Int]) >> test3[T](
+        Seq("c")))
 
     (res == Some(Free.pure[T, Int](3))) must_=== (true)
   }

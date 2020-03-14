@@ -84,12 +84,13 @@ final class PersistencePluginProxy(config: Config)
   import SnapshotProtocol._
 
   private val pluginId = self.path.name
-  private val pluginType: PluginType = pluginId match {
-    case "akka.persistence.journal.proxy" ⇒ Journal
-    case "akka.persistence.snapshot-store.proxy" ⇒ SnapshotStore
-    case other ⇒
-      throw new IllegalArgumentException("Unknown plugin type: " + other)
-  }
+  private val pluginType: PluginType =
+    pluginId match {
+      case "akka.persistence.journal.proxy" ⇒ Journal
+      case "akka.persistence.snapshot-store.proxy" ⇒ SnapshotStore
+      case other ⇒
+        throw new IllegalArgumentException("Unknown plugin type: " + other)
+    }
 
   private val initTimeout: FiniteDuration =
     config.getDuration("init-timeout", MILLISECONDS).millis
@@ -97,19 +98,20 @@ final class PersistencePluginProxy(config: Config)
     val key = s"target-${pluginType.qualifier}-plugin"
     config.getString(key).requiring(_ != "", s"$pluginId.$key must be defined")
   }
-  private val startTarget: Boolean =
-    config.getBoolean(s"start-target-${pluginType.qualifier}")
+  private val startTarget: Boolean = config.getBoolean(
+    s"start-target-${pluginType.qualifier}")
 
   override def preStart(): Unit = {
     if (startTarget) {
-      val target = pluginType match {
-        case Journal ⇒
-          log.info("Starting target journal [{}]", targetPluginId)
-          Persistence(context.system).journalFor(targetPluginId)
-        case SnapshotStore ⇒
-          log.info("Starting target snapshot-store [{}]", targetPluginId)
-          Persistence(context.system).snapshotStoreFor(targetPluginId)
-      }
+      val target =
+        pluginType match {
+          case Journal ⇒
+            log.info("Starting target journal [{}]", targetPluginId)
+            Persistence(context.system).journalFor(targetPluginId)
+          case SnapshotStore ⇒
+            log.info("Starting target snapshot-store [{}]", targetPluginId)
+            Persistence(context.system).snapshotStoreFor(targetPluginId)
+        }
       context.become(active(target, targetAtThisNode = true))
     } else {
       val targetAddressKey = s"target-${pluginType.qualifier}-address"
@@ -169,8 +171,8 @@ final class PersistencePluginProxy(config: Config)
   }
 
   def sendIdentify(address: Address): Unit = {
-    val sel =
-      context.actorSelection(RootActorPath(address) / "system" / targetPluginId)
+    val sel = context.actorSelection(
+      RootActorPath(address) / "system" / targetPluginId)
     log.info("Trying to identify target {} at {}", pluginType.qualifier, sel)
     sel ! Identify(targetPluginId)
   }

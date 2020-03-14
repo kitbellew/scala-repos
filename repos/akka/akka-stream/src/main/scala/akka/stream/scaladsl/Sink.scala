@@ -412,7 +412,6 @@ object Sink {
     *
     * @see [[akka.stream.SinkQueue]]
     */
-  def queue[T](): Sink[T, SinkQueue[T]] =
-    Sink.fromGraph(new QueueSink())
+  def queue[T](): Sink[T, SinkQueue[T]] = Sink.fromGraph(new QueueSink())
 
 }

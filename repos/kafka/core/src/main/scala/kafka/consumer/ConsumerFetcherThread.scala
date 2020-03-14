@@ -49,12 +49,13 @@ class ConsumerFetcherThread(
   private val clientId = config.clientId
   private val fetchSize = config.fetchMessageMaxBytes
 
-  private val simpleConsumer = new SimpleConsumer(
-    sourceBroker.host,
-    sourceBroker.port,
-    config.socketTimeoutMs,
-    config.socketReceiveBufferBytes,
-    config.clientId)
+  private val simpleConsumer =
+    new SimpleConsumer(
+      sourceBroker.host,
+      sourceBroker.port,
+      config.socketTimeoutMs,
+      config.socketReceiveBufferBytes,
+      config.clientId)
 
   private val fetchRequestBuilder = new FetchRequestBuilder()
     .clientId(clientId)
@@ -95,11 +96,12 @@ class ConsumerFetcherThread(
 
   // handle a partition whose offset is out of range and return a new fetch offset
   def handleOffsetOutOfRange(topicAndPartition: TopicAndPartition): Long = {
-    val startTimestamp = config.autoOffsetReset match {
-      case OffsetRequest.SmallestTimeString => OffsetRequest.EarliestTime
-      case OffsetRequest.LargestTimeString  => OffsetRequest.LatestTime
-      case _                                => OffsetRequest.LatestTime
-    }
+    val startTimestamp =
+      config.autoOffsetReset match {
+        case OffsetRequest.SmallestTimeString => OffsetRequest.EarliestTime
+        case OffsetRequest.LargestTimeString  => OffsetRequest.LatestTime
+        case _                                => OffsetRequest.LatestTime
+      }
     val newOffset = simpleConsumer.earliestOrLatestOffset(
       topicAndPartition,
       startTimestamp,

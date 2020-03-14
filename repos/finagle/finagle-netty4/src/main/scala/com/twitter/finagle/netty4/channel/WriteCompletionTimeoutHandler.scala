@@ -24,15 +24,16 @@ private[finagle] class WriteCompletionTimeoutHandler(
       ctx: ChannelHandlerContext,
       msg: Any,
       promise: ChannelPromise) {
-    val task = timer.doLater(timeout) {
-      val writeExn =
-        if (ctx.channel != null)
-          new WriteTimedOutException(ctx.channel.remoteAddress)
-        else
-          new WriteTimedOutException
+    val task =
+      timer.doLater(timeout) {
+        val writeExn =
+          if (ctx.channel != null)
+            new WriteTimedOutException(ctx.channel.remoteAddress)
+          else
+            new WriteTimedOutException
 
-      ctx.fireExceptionCaught(writeExn)
-    }
+        ctx.fireExceptionCaught(writeExn)
+      }
 
     // cancel task on write completion irrespective of outcome
     promise.addListener(new GenericFutureListener[ChannelPromise] {

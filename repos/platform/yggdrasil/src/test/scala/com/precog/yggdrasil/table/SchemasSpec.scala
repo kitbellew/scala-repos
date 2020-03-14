@@ -42,8 +42,9 @@ trait SchemasSpec[M[+_]]
   def testSingleSchema = {
     val expected = Set(
       JObjectFixedT(Map("a" -> JNumberT, "b" -> JTextT, "c" -> JNullT)))
-    val trivialData = Stream.fill(100)(
-      JParser.parseUnsafe("""{ "a": 1, "b": "x", "c": null }"""))
+    val trivialData =
+      Stream.fill(100)(
+        JParser.parseUnsafe("""{ "a": 1, "b": "x", "c": null }"""))
     val sample = SampleData(trivialData)
     val table = fromSample(sample, Some(10))
     table.schemas.copoint must_== expected
@@ -78,11 +79,13 @@ trait SchemasSpec[M[+_]]
           "a" -> JArrayFixedT(Map(0 -> JNumberT, 1 -> JNumberT)),
           "b" -> JArrayFixedT(Map(0 -> JTextT, 1 -> JObjectFixedT(Map.empty)))))
     )
-    val data = Stream.tabulate(30) {
-      case i if i % 3 == 0 => JParser.parseUnsafe("""{ "a": [], "b": "2" }""")
-      case i if i % 3 == 1 => JParser.parseUnsafe("""{ "a": null, "b": "2" }""")
-      case _               => JParser.parseUnsafe("""{ "a": [ 1, 2 ], "b": [ "2", {} ] }""")
-    }
+    val data =
+      Stream.tabulate(30) {
+        case i if i % 3 == 0 => JParser.parseUnsafe("""{ "a": [], "b": "2" }""")
+        case i if i % 3 == 1 =>
+          JParser.parseUnsafe("""{ "a": null, "b": "2" }""")
+        case _ => JParser.parseUnsafe("""{ "a": [ 1, 2 ], "b": [ "2", {} ] }""")
+      }
     val table = fromSample(SampleData(data), Some(10))
     table.schemas.copoint must_== expected
   }
@@ -95,15 +98,16 @@ trait SchemasSpec[M[+_]]
       JObjectFixedT(Map.empty)
     )
 
-    val data = Stream.tabulate(100) {
-      case i if i % 4 == 0 =>
-        JObject(List(JField("a", JNum(1)), JField("b", JNum(i))))
-      case i if i % 4 == 1 =>
-        JObject(List(JField("a", JNum(1)), JField("b", JUndefined)))
-      case i if i % 4 == 2 =>
-        JObject(List(JField("a", JUndefined), JField("b", JNum(i))))
-      case _ => JObject(Map.empty)
-    }
+    val data =
+      Stream.tabulate(100) {
+        case i if i % 4 == 0 =>
+          JObject(List(JField("a", JNum(1)), JField("b", JNum(i))))
+        case i if i % 4 == 1 =>
+          JObject(List(JField("a", JNum(1)), JField("b", JUndefined)))
+        case i if i % 4 == 2 =>
+          JObject(List(JField("a", JUndefined), JField("b", JNum(i))))
+        case _ => JObject(Map.empty)
+      }
 
     val table = fromSample(SampleData(data), Some(10))
     table.schemas.copoint must_== expected

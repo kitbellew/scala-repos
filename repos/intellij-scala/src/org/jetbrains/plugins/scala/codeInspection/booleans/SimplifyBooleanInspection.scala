@@ -62,14 +62,15 @@ object SimplifyBooleanUtil {
       case ScParenthesisedExpr(e)      => canBeSimplified(e, isTopLevel)
       case expression: ScExpression =>
         val children = getScExprChildren(expr)
-        val isBooleanOperation = expression match {
-          case ScPrefixExpr(operation, operand) =>
-            operation.refName == "!" && isOfBooleanType(operand)
-          case ScInfixExpr(left, oper, right) =>
-            boolInfixOperations.contains(oper.refName) &&
-              isOfBooleanType(left) && isOfBooleanType(right)
-          case _ => false
-        }
+        val isBooleanOperation =
+          expression match {
+            case ScPrefixExpr(operation, operand) =>
+              operation.refName == "!" && isOfBooleanType(operand)
+            case ScInfixExpr(left, oper, right) =>
+              boolInfixOperations.contains(oper.refName) &&
+                isOfBooleanType(left) && isOfBooleanType(right)
+            case _ => false
+          }
         isBooleanOperation && isOfBooleanType(expr) && children.exists(
           canBeSimplified(_, isTopLevel = false))
     }
@@ -156,35 +157,37 @@ object SimplifyBooleanUtil {
       operation: String,
       expr: ScExpression): ScExpression = {
     val manager = expr.getManager
-    val text: String = booleanConst(expr) match {
-      case Some(bool: Boolean) =>
-        val result: Boolean = operation match {
-          case "=="       => bool == value
-          case "!=" | "^" => bool != value
-          case "&&" | "&" => bool && value
-          case "||" | "|" => bool || value
-        }
-        result.toString
-      case _ =>
-        (value, operation) match {
-          case (true, "==") | (false, "!=") | (false, "^") | (true, "&&") |
-              (true, "&") | (false, "||") | (false, "|") =>
-            expr.getText
-          case (false, "==") | (true, "!=") | (true, "^") =>
-            val negated: ScPrefixExpr = ScalaPsiElementFactory
-              .createExpressionFromText("!a", manager)
-              .asInstanceOf[ScPrefixExpr]
-            val copyExpr = expr.copy.asInstanceOf[ScExpression]
-            negated.operand
-              .replaceExpression(copyExpr, removeParenthesis = true)
-            negated.getText
-          case (true, "||") | (true, "|") =>
-            ScalaKeyword.TRUE
-          case (false, "&&") | (false, "&") =>
-            ScalaKeyword.FALSE
-          case _ => throw new IllegalArgumentException("Wrong operation")
-        }
-    }
+    val text: String =
+      booleanConst(expr) match {
+        case Some(bool: Boolean) =>
+          val result: Boolean =
+            operation match {
+              case "=="       => bool == value
+              case "!=" | "^" => bool != value
+              case "&&" | "&" => bool && value
+              case "||" | "|" => bool || value
+            }
+          result.toString
+        case _ =>
+          (value, operation) match {
+            case (true, "==") | (false, "!=") | (false, "^") | (true, "&&") |
+                (true, "&") | (false, "||") | (false, "|") =>
+              expr.getText
+            case (false, "==") | (true, "!=") | (true, "^") =>
+              val negated: ScPrefixExpr = ScalaPsiElementFactory
+                .createExpressionFromText("!a", manager)
+                .asInstanceOf[ScPrefixExpr]
+              val copyExpr = expr.copy.asInstanceOf[ScExpression]
+              negated.operand
+                .replaceExpression(copyExpr, removeParenthesis = true)
+              negated.getText
+            case (true, "||") | (true, "|") =>
+              ScalaKeyword.TRUE
+            case (false, "&&") | (false, "&") =>
+              ScalaKeyword.FALSE
+            case _ => throw new IllegalArgumentException("Wrong operation")
+          }
+      }
     ScalaPsiElementFactory.createExpressionFromText(text, manager)
 
   }

@@ -82,10 +82,9 @@ class ZkAsyncSemaphoreTest
           var awaiting2: Future[Permit] = null
 
           "queue waiters when no permits are available" in {
-            implicit val config =
-              PatienceConfig(
-                timeout = scaled(Span(1, Seconds)),
-                interval = scaled(Span(100, Millis)))
+            implicit val config = PatienceConfig(
+              timeout = scaled(Span(1, Seconds)),
+              interval = scaled(Span(100, Millis)))
 
             awaiting1 = acquire(sem1)
             assert(awaiting1.poll == (None))
@@ -109,10 +108,9 @@ class ZkAsyncSemaphoreTest
           }
 
           "have correct gauges as permit holders release" in {
-            implicit val config =
-              PatienceConfig(
-                timeout = scaled(Span(1, Seconds)),
-                interval = scaled(Span(100, Millis)))
+            implicit val config = PatienceConfig(
+              timeout = scaled(Span(1, Seconds)),
+              interval = scaled(Span(100, Millis)))
 
             assert(permits.size == (2))
 

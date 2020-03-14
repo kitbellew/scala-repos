@@ -40,8 +40,7 @@ private[stat] sealed trait StreamingTestMethod extends Serializable {
   val methodName: String
   val nullHypothesis: String
 
-  protected type SummaryPairStream =
-    DStream[(StatCounter, StatCounter)]
+  protected type SummaryPairStream = DStream[(StatCounter, StatCounter)]
 
   /**
     * Perform streaming 2-sample statistical significance testing.
@@ -155,8 +154,9 @@ private[stat] object StudentTTest extends StreamingTestMethod with Logging {
   */
 private[stat] object StreamingTestMethod {
   // Note: after new `StreamingTestMethod`s are implemented, please update this map.
-  private final val TEST_NAME_TO_OBJECT: Map[String, StreamingTestMethod] =
-    Map("welch" -> WelchTTest, "student" -> StudentTTest)
+  private final val TEST_NAME_TO_OBJECT: Map[String, StreamingTestMethod] = Map(
+    "welch" -> WelchTTest,
+    "student" -> StudentTTest)
 
   def getTestMethodFromName(method: String): StreamingTestMethod =
     TEST_NAME_TO_OBJECT.get(method) match {

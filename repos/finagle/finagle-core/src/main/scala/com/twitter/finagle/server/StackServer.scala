@@ -176,8 +176,7 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
   /**
     * Creates a new StackServer with parameter `p`.
     */
-  override def configured[P: Stack.Param](p: P): This =
-    withParams(params + p)
+  override def configured[P: Stack.Param](p: P): This = withParams(params + p)
 
   /**
     * Creates a new StackServer with parameter `psp._1` and Stack Param type `psp._2`.
@@ -190,8 +189,7 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
   /**
     * Creates a new StackServer with `params` used to configure this StackServer's `stack`.
     */
-  def withParams(params: Stack.Params): This =
-    copy1(params = params)
+  def withParams(params: Stack.Params): This = copy1(params = params)
 
   def withStack(stack: Stack[ServiceFactory[Req, Rep]]): This =
     copy1(stack = stack)
@@ -262,30 +260,31 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
       // Listen over `addr` and serve traffic from incoming transports to
       // `serviceFactory` via `newDispatcher`.
       val listener = server.newListener()
-      val underlying = listener.listen(addr) { transport =>
-        serviceFactory(newConn(transport)) respond {
-          case Return(service) =>
-            val d = server.newDispatcher(transport, service)
-            connections.add(d)
-            transport.onClose ensure connections.remove(d)
-          case Throw(exc) =>
-            // If we fail to create a new session locally, we continue establishing
-            // the session but (1) reject any incoming requests; (2) close it right
-            // away. This allows protocols that support graceful shutdown to
-            // also gracefully deny new sessions.
-            val d = server.newDispatcher(
-              transport,
-              Service.const(
-                Future.exception(Failure
-                  .rejected("Terminating session and ignoring request", exc)))
-            )
-            connections.add(d)
-            transport.onClose ensure connections.remove(d)
-            // We give it a generous amount of time to shut down the session to
-            // improve our chances of being able to do so gracefully.
-            d.close(10.seconds)
+      val underlying =
+        listener.listen(addr) { transport =>
+          serviceFactory(newConn(transport)) respond {
+            case Return(service) =>
+              val d = server.newDispatcher(transport, service)
+              connections.add(d)
+              transport.onClose ensure connections.remove(d)
+            case Throw(exc) =>
+              // If we fail to create a new session locally, we continue establishing
+              // the session but (1) reject any incoming requests; (2) close it right
+              // away. This allows protocols that support graceful shutdown to
+              // also gracefully deny new sessions.
+              val d = server.newDispatcher(
+                transport,
+                Service.const(
+                  Future.exception(Failure
+                    .rejected("Terminating session and ignoring request", exc)))
+              )
+              connections.add(d)
+              transport.onClose ensure connections.remove(d)
+              // We give it a generous amount of time to shut down the session to
+              // improve our chances of being able to do so gracefully.
+              d.close(10.seconds)
+          }
         }
-      }
 
       ServerRegistry.register(
         underlying.boundAddress.toString,

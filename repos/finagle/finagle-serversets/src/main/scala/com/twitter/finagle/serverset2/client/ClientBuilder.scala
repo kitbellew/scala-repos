@@ -179,8 +179,7 @@ private[client] class ClientBuilder(config: ClientConfig) {
     *
     * @return configured ClientBuilder
     */
-  def readOnlyOK(): ClientBuilder =
-    withConfig(_.copy(readOnlyOK = true))
+  def readOnlyOK(): ClientBuilder = withConfig(_.copy(readOnlyOK = true))
 
   /**
     * Configure builder with a session ID for reconnection.
@@ -206,6 +205,5 @@ private[client] class ClientBuilder(config: ClientConfig) {
     * @param timer Timer to use.
     * @return configured ClientBuilder
     */
-  def timer(timer: Timer): ClientBuilder =
-    withConfig(_.copy(timer = timer))
+  def timer(timer: Timer): ClientBuilder = withConfig(_.copy(timer = timer))
 }

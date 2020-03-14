@@ -97,8 +97,12 @@ class QuotasTest extends KafkaServerTestHarness {
     producers += new KafkaProducer[Array[Byte], Array[Byte]](producerProps)
 
     val numPartitions = 1
-    val leaders =
-      TestUtils.createTopic(zkUtils, topic1, numPartitions, numServers, servers)
+    val leaders = TestUtils.createTopic(
+      zkUtils,
+      topic1,
+      numPartitions,
+      numServers,
+      servers)
     leaderNode =
       if (leaders(0).get == servers.head.config.brokerId)
         servers.head
@@ -208,10 +212,14 @@ class QuotasTest extends KafkaServerTestHarness {
     TestUtils.retry(10000) {
       val quotaManagers: Map[Short, ClientQuotaManager] =
         leaderNode.apis.quotaManagers
-      val overrideProducerQuota =
-        quotaManagers.get(ApiKeys.PRODUCE.id).get.quota(producerId2)
-      val overrideConsumerQuota =
-        quotaManagers.get(ApiKeys.FETCH.id).get.quota(consumerId2)
+      val overrideProducerQuota = quotaManagers
+        .get(ApiKeys.PRODUCE.id)
+        .get
+        .quota(producerId2)
+      val overrideConsumerQuota = quotaManagers
+        .get(ApiKeys.FETCH.id)
+        .get
+        .quota(consumerId2)
 
       assertEquals(
         s"ClientId $producerId2 must have unlimited producer quota",

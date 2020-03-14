@@ -20,8 +20,11 @@ class ZipkinTracerTest
   import ZipkinTracerTest._
 
   test("ZipkinTracer should handle sampling") {
-    val traceId =
-      TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
+    val traceId = TraceId(
+      Some(SpanId(123)),
+      Some(SpanId(123)),
+      SpanId(123),
+      None)
 
     val underlying = mock[RawZipkinTracer]
     val tracer = new ZipkinTracer(underlying, 0f)
@@ -32,13 +35,19 @@ class ZipkinTracerTest
 
   test(
     "ZipkinTracer should pass through trace id with sampled true despite of sample rate") {
-    val traceId =
-      TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
+    val traceId = TraceId(
+      Some(SpanId(123)),
+      Some(SpanId(123)),
+      SpanId(123),
+      None)
 
     val underlying = mock[RawZipkinTracer]
     val tracer = new ZipkinTracer(underlying, 0f)
-    val id =
-      TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), Some(true))
+    val id = TraceId(
+      Some(SpanId(123)),
+      Some(SpanId(123)),
+      SpanId(123),
+      Some(true))
     val record = Record(id, Time.now, Annotation.ClientSend())
     tracer.record(record)
     verify(underlying).record(record)

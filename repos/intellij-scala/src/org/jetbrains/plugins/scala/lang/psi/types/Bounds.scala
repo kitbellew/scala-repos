@@ -70,10 +70,11 @@ object Bounds {
   }
 
   private class Options(_tp: ScType) extends {
-    val tp = _tp match {
-      case ex: ScExistentialType => ex.skolem
-      case other                 => other
-    }
+    val tp =
+      _tp match {
+        case ex: ScExistentialType => ex.skolem
+        case other                 => other
+      }
   } with AnyRef {
     private val typeNamedElement: Option[(PsiNamedElement, ScSubstitutor)] = {
       ScType.extractClassType(tp) match {
@@ -90,10 +91,11 @@ object Bounds {
     def getSubst: ScSubstitutor = typeNamedElement.get._2
 
     def getSuperOptions: Seq[Options] = {
-      val subst = this.projectionOption match {
-        case Some(proj) => new ScSubstitutor(Map.empty, Map.empty, Some(proj))
-        case None       => ScSubstitutor.empty
-      }
+      val subst =
+        this.projectionOption match {
+          case Some(proj) => new ScSubstitutor(Map.empty, Map.empty, Some(proj))
+          case None       => ScSubstitutor.empty
+        }
       getNamedElement match {
         case t: ScTemplateDefinition =>
           t.superTypes
@@ -163,13 +165,14 @@ object Bounds {
             None
           else {
             visited += drv
-            val superTypes: Seq[ScType] = drv match {
-              case td: ScTemplateDefinition => td.superTypes
-              case _ =>
-                drv.getSuperTypes.map { t =>
-                  ScType.create(t, drv.getProject)
-                }
-            }
+            val superTypes: Seq[ScType] =
+              drv match {
+                case td: ScTemplateDefinition => td.superTypes
+                case _ =>
+                  drv.getSuperTypes.map { t =>
+                    ScType.create(t, drv.getProject)
+                  }
+              }
             val iterator = superTypes.iterator
             while (iterator.hasNext) {
               val st = iterator.next()
@@ -333,8 +336,11 @@ object Bounds {
               lub(upper, t2, checkWeak))
           case (_: ValType, _: ValType) => types.AnyVal
           case (JavaArrayType(arg1), JavaArrayType(arg2)) =>
-            val (v, ex) =
-              calcForTypeParamWithoutVariance(arg1, arg2, depth, checkWeak)
+            val (v, ex) = calcForTypeParamWithoutVariance(
+              arg1,
+              arg2,
+              depth,
+              checkWeak)
             ex match {
               case Some(w) => ScExistentialType(JavaArrayType(v), List(w))
               case None    => JavaArrayType(v)
@@ -344,8 +350,11 @@ object Bounds {
                 case Some(q) => q.qualifiedName == "scala.Array"
                 case _       => false
               }) =>
-            val (v, ex) =
-              calcForTypeParamWithoutVariance(arg, args(0), depth, checkWeak)
+            val (v, ex) = calcForTypeParamWithoutVariance(
+              arg,
+              args(0),
+              depth,
+              checkWeak)
             ex match {
               case Some(w) =>
                 ScExistentialType(ScParameterizedType(des, Seq(v)), List(w))
@@ -356,8 +365,11 @@ object Bounds {
                 case Some(q) => q.qualifiedName == "scala.Array"
                 case _       => false
               }) =>
-            val (v, ex) =
-              calcForTypeParamWithoutVariance(arg, args(0), depth, checkWeak)
+            val (v, ex) = calcForTypeParamWithoutVariance(
+              arg,
+              args(0),
+              depth,
+              checkWeak)
             ex match {
               case Some(w) =>
                 ScExistentialType(ScParameterizedType(des, Seq(v)), List(w))
@@ -390,8 +402,9 @@ object Bounds {
               types.Any
             else {
               val buf = new ArrayBuffer[ScType]
-              val supers: Array[(Options, Int, Int)] =
-                getLeastUpperClasses(aOptions, bOptions)
+              val supers: Array[(Options, Int, Int)] = getLeastUpperClasses(
+                aOptions,
+                bOptions)
               for (sup <- supers) {
                 val tp = getTypeForAppending(
                   aOptions(sup._2),
@@ -485,9 +498,10 @@ object Bounds {
               def getTypesForLubEvaluation(t: ScType) = Seq(t)
               val typesToCover = getTypesForLubEvaluation(
                 substed1) ++ getTypesForLubEvaluation(substed2)
-              val newLub = Bounds
-                .lub(typesToCover, checkWeak = false)(stopAddingUpperBound =
-                  true)
+              val newLub =
+                Bounds
+                  .lub(typesToCover, checkWeak = false)(stopAddingUpperBound =
+                    true)
               (
                 ScTypeVariable("_$" + count),
                 Some(

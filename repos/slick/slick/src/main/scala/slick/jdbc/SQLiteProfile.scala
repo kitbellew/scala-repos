@@ -103,9 +103,10 @@ trait SQLiteProfile extends JdbcProfile {
 
         /** Regex matcher to extract name and length out of a db type name with length ascription */
         final val TypePattern = "^([A-Z]+)(\\(([0-9]+)\\))?$".r
-        private val (_dbType, _size) = meta.typeName match {
-          case TypePattern(d, _, s) => (d, Option(s).map(_.toInt))
-        }
+        private val (_dbType, _size) =
+          meta.typeName match {
+            case TypePattern(d, _, s) => (d, Option(s).map(_.toInt))
+          }
         override def dbType = Some(_dbType)
         override def length = _size
         override def varying = dbType == Some("VARCHAR")
@@ -266,9 +267,8 @@ trait SQLiteProfile extends JdbcProfile {
       extends super.CountingInsertActionComposerImpl[U](compiled) {
     // SQLite cannot perform server-side insert-or-update with soft insert semantics. We don't have to do
     // the same in ReturningInsertInvoker because SQLite does not allow returning non-AutoInc keys anyway.
-    override protected val useServerSideUpsert =
-      compiled.upsert.fields.forall(fs =>
-        !fs.options.contains(ColumnOption.AutoInc))
+    override protected val useServerSideUpsert = compiled.upsert.fields.forall(
+      fs => !fs.options.contains(ColumnOption.AutoInc))
     override protected def useTransactionForUpsert = !useServerSideUpsert
   }
 

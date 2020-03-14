@@ -33,13 +33,14 @@ private[deploy] object DeployTestUtils {
 
   def createAppInfo(): ApplicationInfo = {
     val appDesc = createAppDesc()
-    val appInfo = new ApplicationInfo(
-      JsonConstants.appInfoStartTime,
-      "id",
-      appDesc,
-      JsonConstants.submitDate,
-      null,
-      Int.MaxValue)
+    val appInfo =
+      new ApplicationInfo(
+        JsonConstants.appInfoStartTime,
+        "id",
+        appDesc,
+        JsonConstants.submitDate,
+        null,
+        Int.MaxValue)
     appInfo.endTime = JsonConstants.currTimeInMillis
     appInfo
   }
@@ -66,14 +67,15 @@ private[deploy] object DeployTestUtils {
     new DriverInfo(3, "driver-3", createDriverDesc(), new Date())
 
   def createWorkerInfo(): WorkerInfo = {
-    val workerInfo = new WorkerInfo(
-      "id",
-      "host",
-      8080,
-      4,
-      1234,
-      null,
-      "http://publicAddress:80")
+    val workerInfo =
+      new WorkerInfo(
+        "id",
+        "host",
+        8080,
+        4,
+        1234,
+        null,
+        "http://publicAddress:80")
     workerInfo.lastHeartbeat = JsonConstants.currTimeInMillis
     workerInfo
   }

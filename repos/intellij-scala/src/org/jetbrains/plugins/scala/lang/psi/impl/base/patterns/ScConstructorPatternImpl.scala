@@ -109,11 +109,12 @@ class ScConstructorPatternImpl(node: ASTNode)
                     case _ => new ScTypeParameterType(tp, r.substitutor)
                   }))
               )
-              val emptySubst: ScSubstitutor = new ScSubstitutor(
-                Map(td.typeParameters.map(tp =>
-                  ((tp.name, ScalaPsiUtil.getPsiElementId(tp)), Any)): _*),
-                Map.empty,
-                None)
+              val emptySubst: ScSubstitutor =
+                new ScSubstitutor(
+                  Map(td.typeParameters.map(tp =>
+                    ((tp.name, ScalaPsiUtil.getPsiElementId(tp)), Any)): _*),
+                  Map.empty,
+                  None)
               expectedType match {
                 case Some(tp) =>
                   val t = Conformance.conforms(tp, clazzType)

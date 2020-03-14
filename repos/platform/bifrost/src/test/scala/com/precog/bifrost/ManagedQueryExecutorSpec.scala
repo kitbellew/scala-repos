@@ -62,8 +62,8 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
 
   val actorSystem = ActorSystem("managedQueryModuleSpec")
   val jobActorSystem = ActorSystem("managedQueryModuleSpecJobActorSystem")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
       executionContext,
@@ -87,21 +87,22 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
     val timeout = ticksToTimeout map { t =>
       Duration(clock.duration * t, TimeUnit.MILLISECONDS)
     }
-    val executionResult = for {
-      executor <- asyncExecutorFor(apiKey) leftMap {
-        EvaluationError.invalidState
-      }
-      ctx = EvaluationContext(
-        apiKey,
-        account,
-        Path("/\\\\/\\///\\/"),
-        Path.Root,
-        clock.now())
-      result <- executor.execute(
-        numTicks.toString,
-        ctx,
-        QueryOptions(timeout = timeout))
-    } yield result
+    val executionResult =
+      for {
+        executor <- asyncExecutorFor(apiKey) leftMap {
+          EvaluationError.invalidState
+        }
+        ctx = EvaluationContext(
+          apiKey,
+          account,
+          Path("/\\\\/\\///\\/"),
+          Path.Root,
+          clock.now())
+        result <- executor.execute(
+          numTicks.toString,
+          ctx,
+          QueryOptions(timeout = timeout))
+      } yield result
 
     executionResult.valueOr(err => sys.error(err.toString))
   }
@@ -156,31 +157,34 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
     }
 
     "return the results of a completed job" in {
-      val result = for {
-        jobId <- execute(3)
-        _ <- waitForJobCompletion(jobId)
-        _ <- waitFor(3)
-        result <- poll(jobId)
-      } yield result
+      val result =
+        for {
+          jobId <- execute(3)
+          _ <- waitForJobCompletion(jobId)
+          _ <- waitFor(3)
+          result <- poll(jobId)
+        } yield result
 
       result.copoint must_== Some((Some(JSON), """[".",".","."]"""))
     }
 
     "not return results if the job is still running" in {
-      val results = for {
-        jobId <- execute(20)
-        _ <- waitFor(1)
-        results <- poll(jobId)
-      } yield results
+      val results =
+        for {
+          jobId <- execute(20)
+          _ <- waitFor(1)
+          results <- poll(jobId)
+        } yield results
 
       results.copoint must_== None
     }
 
     "be in the finished state if the job has finished" in {
-      val result = for {
-        jobId <- execute(1)
-        job <- waitForJobCompletion(jobId)
-      } yield job
+      val result =
+        for {
+          jobId <- execute(1)
+          job <- waitForJobCompletion(jobId)
+        } yield job
 
       result.copoint must beLike {
         case Job(_, _, _, _, _, Finished(_, _)) => ok
@@ -188,12 +192,13 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
     }
 
     "not return the results of an aborted job" in {
-      val result = for {
-        jobId <- execute(8)
-        _ <- cancel(jobId, 1)
-        _ <- waitForJobCompletion(jobId)
-        result <- poll(jobId)
-      } yield result
+      val result =
+        for {
+          jobId <- execute(8)
+          _ <- cancel(jobId, 1)
+          _ <- waitForJobCompletion(jobId)
+          result <- poll(jobId)
+        } yield result
 
       result.copoint must_== None
     }

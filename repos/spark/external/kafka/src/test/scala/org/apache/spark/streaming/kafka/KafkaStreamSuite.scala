@@ -69,8 +69,8 @@ class KafkaStreamSuite
       "group.id" -> s"test-consumer-${Random.nextInt(10000)}",
       "auto.offset.reset" -> "smallest")
 
-    val stream =
-      KafkaUtils.createStream[String, String, StringDecoder, StringDecoder](
+    val stream = KafkaUtils
+      .createStream[String, String, StringDecoder, StringDecoder](
         ssc,
         kafkaParams,
         Map(topic -> 1),

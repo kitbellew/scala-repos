@@ -354,9 +354,10 @@ class CircuitBreaker(
           case _ ⇒ callFails()
         }
 
-        val timeout = scheduler.scheduleOnce(callTimeout) {
-          p tryCompleteWith timeoutFuture
-        }
+        val timeout =
+          scheduler.scheduleOnce(callTimeout) {
+            p tryCompleteWith timeoutFuture
+          }
 
         materialize(body).onComplete { result ⇒
           p tryComplete result

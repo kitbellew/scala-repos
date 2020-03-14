@@ -259,14 +259,13 @@ object ScalaPsiElementFactory {
   def createWildcardNode(manager: PsiManager): ASTNode = {
     val text = "import a._"
 
-    val dummyFile: ScalaFile =
-      PsiFileFactory
-        .getInstance(manager.getProject)
-        .createFileFromText(
-          DUMMY + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
-          ScalaFileType.SCALA_FILE_TYPE,
-          text)
-        .asInstanceOf[ScalaFile]
+    val dummyFile: ScalaFile = PsiFileFactory
+      .getInstance(manager.getProject)
+      .createFileFromText(
+        DUMMY + ScalaFileType.SCALA_FILE_TYPE.getDefaultExtension,
+        ScalaFileType.SCALA_FILE_TYPE,
+        text)
+      .asInstanceOf[ScalaFile]
     dummyFile.getLastChild.getLastChild.getLastChild.getNode
   }
 
@@ -653,10 +652,11 @@ object ScalaPsiElementFactory {
     try {
       val imp: ScImportStmt = dummyFile.getFirstChild.asInstanceOf[ScImportStmt]
       val expr: ScImportExpr = imp.importExprs.apply(0)
-      val ref = expr.reference match {
-        case Some(x) => x
-        case None    => return null
-      }
+      val ref =
+        expr.reference match {
+          case Some(x) => x
+          case None    => return null
+        }
       ref
     } catch {
       case t: Throwable =>
@@ -670,18 +670,19 @@ object ScalaPsiElementFactory {
       clazz: PsiClass,
       manager: PsiManager): ScImportStmt = {
     val qualifiedName = clazz.qualifiedName
-    val packageName = holder match {
-      case packaging: ScPackaging => packaging.getPackageName
-      case _ =>
-        var element: PsiElement = holder
-        while (element != null && !element.isInstanceOf[ScalaFile] && !element
-                 .isInstanceOf[ScPackaging])
-          element = element.getParent
-        element match {
-          case packaging: ScPackaging => packaging.getPackageName
-          case _                      => null
-        }
-    }
+    val packageName =
+      holder match {
+        case packaging: ScPackaging => packaging.getPackageName
+        case _ =>
+          var element: PsiElement = holder
+          while (element != null && !element.isInstanceOf[ScalaFile] && !element
+                   .isInstanceOf[ScPackaging])
+            element = element.getParent
+          element match {
+            case packaging: ScPackaging => packaging.getPackageName
+            case _                      => null
+          }
+      }
     val name = getShortName(qualifiedName, packageName)
     val text = "import " + (if (isResolved(name, clazz, packageName, manager))
                               name
@@ -817,13 +818,14 @@ object ScalaPsiElementFactory {
                 fun.params.getText
             } else
               fun.params.getText
-          val resultText = result match {
-            case block: ScBlock
-                if !block.hasRBrace && block.statements.size != 1 =>
-              s"{\n${block.getText}\n}"
-            case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
-            case _                                       => result.getText
-          }
+          val resultText =
+            result match {
+              case block: ScBlock
+                  if !block.hasRBrace && block.statements.size != 1 =>
+                s"{\n${block.getText}\n}"
+              case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
+              case _                                       => result.getText
+            }
           val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
           s"$paramText $arrow $resultText"
         case null => ""
@@ -909,8 +911,8 @@ object ScalaPsiElementFactory {
     val enumText = s"$name$typeText = ${expr.getText}"
     val text = s"for {\n  i <- 1 to 239\n  $enumText\n}"
     val dummyFile = createScalaFile(text, manager)
-    val forStmt: ScForStatement =
-      dummyFile.getFirstChild.asInstanceOf[ScForStatement]
+    val forStmt: ScForStatement = dummyFile.getFirstChild
+      .asInstanceOf[ScForStatement]
     forStmt.enumerators.flatMap(_.enumerators.headOption).getOrElse {
       throw new IllegalArgumentException(
         s"Could not create enumerator from text:\n $enumText")
@@ -964,10 +966,11 @@ object ScalaPsiElementFactory {
         text)
       .asInstanceOf[ScalaFile]
     val classDef: ScTypeDefinition = dummyFile.typeDefinitions(0)
-    val body = classDef.extendsBlock.templateBody match {
-      case Some(x) => x
-      case None    => return null
-    }
+    val body =
+      classDef.extendsBlock.templateBody match {
+        case Some(x) => x
+        case None    => return null
+      }
     body
   }
 
@@ -995,8 +998,8 @@ object ScalaPsiElementFactory {
         text)
       .asInstanceOf[ScalaFile]
     val extendsBlock = dummyFile.typeDefinitions.head.extendsBlock
-    val extendToken =
-      extendsBlock.findFirstChildByType(ScalaTokenTypes.kEXTENDS)
+    val extendToken = extendsBlock.findFirstChildByType(
+      ScalaTokenTypes.kEXTENDS)
     val templateParents = extendsBlock.templateParents.get
     (extendToken, templateParents)
   }
@@ -1176,11 +1179,12 @@ object ScalaPsiElementFactory {
                 "+"
               else
                 ""
-            val clauseText = typeParam.typeParametersClause match {
-              case None => ""
-              case Some(x) =>
-                x.typeParameters.map(buildText).mkString("[", ",", "]")
-            }
+            val clauseText =
+              typeParam.typeParametersClause match {
+                case None => ""
+                case Some(x) =>
+                  x.typeParameters.map(buildText).mkString("[", ",", "]")
+              }
             val lowerBoundText = typeParam.lowerBound.toOption collect {
               case psi.types.Nothing => ""
               case x                 => " >: " + ScType.canonicalText(substitutor.subst(x))
@@ -1231,9 +1235,7 @@ object ScalaPsiElementFactory {
                 case _ => name
               }
             }
-            val params =
-              for (t <- paramClause.parameters)
-                yield buildText(t)
+            val params = for (t <- paramClause.parameters) yield buildText(t)
             builder ++= params.mkString(
               if (paramClause.isImplicit)
                 "(implicit "
@@ -1245,23 +1247,24 @@ object ScalaPsiElementFactory {
         }
 
         val retType = method.returnType.toOption.map(t => substitutor.subst(t))
-        val retAndBody = (needsInferType, retType) match {
-          case (true, Some(scType)) =>
-            var text = ScType.canonicalText(scType)
-            if (text == "_root_.java.lang.Object")
-              text = "AnyRef"
-            val needWhitespace =
-              method.paramClauses.clauses.isEmpty && method.typeParameters.isEmpty && ScalaNamesUtil
-                .isIdentifier(method.name + ":")
-            val colon =
-              if (needWhitespace)
-                " : "
-              else
-                ": "
-            s"$colon$text = $body"
-          case _ =>
-            " = " + body
-        }
+        val retAndBody =
+          (needsInferType, retType) match {
+            case (true, Some(scType)) =>
+              var text = ScType.canonicalText(scType)
+              if (text == "_root_.java.lang.Object")
+                text = "AnyRef"
+              val needWhitespace =
+                method.paramClauses.clauses.isEmpty && method.typeParameters.isEmpty && ScalaNamesUtil
+                  .isIdentifier(method.name + ":")
+              val colon =
+                if (needWhitespace)
+                  " : "
+                else
+                  ": "
+              s"$colon$text = $body"
+            case _ =>
+              " = " + body
+          }
         builder ++= retAndBody
       case _ =>
         builder ++= "def " + ScalaNamesUtil.changeKeyword(method.name)
@@ -1271,13 +1274,14 @@ object ScalaPsiElementFactory {
             for (param <- params)
               yield {
                 val extendsTypes = param.getExtendsListTypes
-                val extendsTypesText = if (extendsTypes.length > 0) {
-                  val typeTexts = extendsTypes.map((t: PsiClassType) =>
-                    ScType.canonicalText(
-                      substitutor.subst(ScType.create(t, method.getProject))))
-                  typeTexts.mkString(" <: ", " with ", "")
-                } else
-                  ""
+                val extendsTypesText =
+                  if (extendsTypes.length > 0) {
+                    val typeTexts = extendsTypes.map((t: PsiClassType) =>
+                      ScType.canonicalText(
+                        substitutor.subst(ScType.create(t, method.getProject))))
+                    typeTexts.mkString(" <: ", " with ", "")
+                  } else
+                    ""
                 param.name + extendsTypesText
               }
           builder ++= strings.mkString("[", ", ", "]")
@@ -1292,14 +1296,15 @@ object ScalaPsiElementFactory {
           val params =
             for (param <- method.getParameterList.getParameters)
               yield {
-                val paramName = param.name match {
-                  case null =>
-                    param match {
-                      case param: ClsParameterImpl => param.getStub.getName
-                      case _                       => null
-                    }
-                  case x => x
-                }
+                val paramName =
+                  param.name match {
+                    case null =>
+                      param match {
+                        case param: ClsParameterImpl => param.getStub.getName
+                        case _                       => null
+                      }
+                    case x => x
+                  }
                 val pName: String = ScalaNamesUtil.changeKeyword(paramName)
                 val colon =
                   if (pName.endsWith("_"))
@@ -1309,12 +1314,13 @@ object ScalaPsiElementFactory {
                 val scType: ScType = substitutor.subst(
                   ScType
                     .create(param.getTypeElement.getType, method.getProject))
-                val typeText = scType match {
-                  case types.AnyRef => "scala.Any"
-                  case JavaArrayType(arg: ScType) if param.isVarArgs =>
-                    ScType.canonicalText(arg) + "*"
-                  case _ => ScType.canonicalText(scType)
-                }
+                val typeText =
+                  scType match {
+                    case types.AnyRef => "scala.Any"
+                    case JavaArrayType(arg: ScType) if param.isVarArgs =>
+                      ScType.canonicalText(arg) + "*"
+                    case _ => ScType.canonicalText(scType)
+                  }
                 s"$pName$colon$typeText"
               }
           builder ++= params.mkString("(", ", ", ")")
@@ -1583,9 +1589,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement,
       parse: ScalaPsiBuilder => Unit): PsiElement = {
-    val holder: FileElement = DummyHolderFactory
-      .createHolder(context.getManager, context)
-      .getTreeElement
+    val holder: FileElement =
+      DummyHolderFactory
+        .createHolder(context.getManager, context)
+        .getTreeElement
     val builder: ScalaPsiBuilderImpl =
       new ScalaPsiBuilderImpl(
         PsiBuilderFactory.getInstance.createBuilder(
@@ -1834,9 +1841,11 @@ object ScalaPsiElementFactory {
   def createMonospaceSyntaxFromText(
       text: String,
       manager: PsiManager): ScDocSyntaxElement = {
-    val docComment = createScalaFile(
-      "/**\n`" + text + "`\n*/" + " class a { }",
-      manager).typeDefinitions(0).docComment.get
+    val docComment =
+      createScalaFile("/**\n`" + text + "`\n*/" + " class a { }", manager)
+        .typeDefinitions(0)
+        .docComment
+        .get
     docComment.getChildren()(2).asInstanceOf[ScDocSyntaxElement]
   }
 
@@ -1963,15 +1972,17 @@ object ScalaPsiElementFactory {
   def createEquivMethodCall(infixExpr: ScInfixExpr): ScMethodCall = {
     val baseText = infixExpr.getBaseExpr.getText
     val opText = infixExpr.operation.getText
-    val typeArgText = infixExpr.typeArgs match {
-      case Some(tpArg) => tpArg.getText
-      case _           => ""
-    }
+    val typeArgText =
+      infixExpr.typeArgs match {
+        case Some(tpArg) => tpArg.getText
+        case _           => ""
+      }
     val argText = infixExpr.getArgExpr.getText
-    val clauseText = infixExpr.getArgExpr match {
-      case _: ScTuple | _: ScParenthesisedExpr | _: ScUnitExpr => argText
-      case _                                                   => s"($argText)"
-    }
+    val clauseText =
+      infixExpr.getArgExpr match {
+        case _: ScTuple | _: ScParenthesisedExpr | _: ScUnitExpr => argText
+        case _                                                   => s"($argText)"
+      }
     val exprText = s"($baseText).$opText$typeArgText$clauseText"
 
     val exprA: ScExpression = createExpressionWithContextFromText(
@@ -1979,16 +1990,16 @@ object ScalaPsiElementFactory {
       infixExpr,
       infixExpr.getBaseExpr)
 
-    val methodCallExpr =
-      createExpressionWithContextFromText(
-        exprText.toString,
-        infixExpr.getContext,
-        infixExpr).asInstanceOf[ScMethodCall]
-    val referenceExpr = methodCallExpr.getInvokedExpr match {
-      case ref: ScReferenceExpression => ref
-      case call: ScGenericCall =>
-        call.referencedExpr.asInstanceOf[ScReferenceExpression]
-    }
+    val methodCallExpr = createExpressionWithContextFromText(
+      exprText.toString,
+      infixExpr.getContext,
+      infixExpr).asInstanceOf[ScMethodCall]
+    val referenceExpr =
+      methodCallExpr.getInvokedExpr match {
+        case ref: ScReferenceExpression => ref
+        case call: ScGenericCall =>
+          call.referencedExpr.asInstanceOf[ScReferenceExpression]
+      }
     referenceExpr.qualifier.get
       .replaceExpression(exprA, removeParenthesis = true)
     methodCallExpr
@@ -2003,8 +2014,10 @@ object ScalaPsiElementFactory {
       qualRefText,
       postfix.getContext,
       postfix).asInstanceOf[ScReferenceExpression]
-    val qualWithoutPars =
-      createExpressionWithContextFromText(operandText, postfix, operand)
+    val qualWithoutPars = createExpressionWithContextFromText(
+      operandText,
+      postfix,
+      operand)
     expr.qualifier.foreach(
       _.replaceExpression(qualWithoutPars, removeParenthesis = true))
     expr

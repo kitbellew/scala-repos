@@ -18,8 +18,8 @@ object Files {
     require(
       file.length() < limit,
       "File '%s' is too big".format(file.getAbsolutePath()))
-    val buf = new ByteArrayOutputStream(
-      math.min(limit, file.length().intValue()))
+    val buf =
+      new ByteArrayOutputStream(math.min(limit, file.length().intValue()))
     val in = new FileInputStream(file)
     try {
       StreamIO.copy(in, buf)

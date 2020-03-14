@@ -73,12 +73,13 @@ final class FlattenMerge[T, M](breadth: Int)
           }
         })
 
-      val outHandler = new OutHandler {
-        // could be unavailable due to async input having been executed before this notification
-        override def onPull(): Unit =
-          if (q.nonEmpty && isAvailable(out))
-            pushOut()
-      }
+      val outHandler =
+        new OutHandler {
+          // could be unavailable due to async input having been executed before this notification
+          override def onPull(): Unit =
+            if (q.nonEmpty && isAvailable(out))
+              pushOut()
+        }
 
       def addSource(source: Graph[SourceShape[T], M]): Unit = {
         val sinkIn = new SubSinkInlet[T]("FlattenMergeSink")
@@ -183,11 +184,12 @@ final class PrefixAndTail[T](n: Int)
       }
 
     private def openSubstream(): Source[T, NotUsed] = {
-      val timeout = ActorMaterializer
-        .downcast(interpreter.materializer)
-        .settings
-        .subscriptionTimeoutSettings
-        .timeout
+      val timeout =
+        ActorMaterializer
+          .downcast(interpreter.materializer)
+          .settings
+          .subscriptionTimeoutSettings
+          .timeout
       tailSource = new SubSourceOutlet[T]("TailSource")
       tailSource.setHandler(subHandler)
       setKeepGoing(true)
@@ -286,10 +288,11 @@ final class Split[T](
   val out: Outlet[Source[T, NotUsed]] = Outlet("Split.out")
   override val shape: FlowShape[T, Source[T, NotUsed]] = FlowShape(in, out)
 
-  private val propagateSubstreamCancel = substreamCancelStrategy match {
-    case SubstreamCancelStrategies.Propagate ⇒ true
-    case SubstreamCancelStrategies.Drain ⇒ false
-  }
+  private val propagateSubstreamCancel =
+    substreamCancelStrategy match {
+      case SubstreamCancelStrategies.Propagate ⇒ true
+      case SubstreamCancelStrategies.Drain ⇒ false
+    }
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) {

@@ -72,8 +72,10 @@ case class TopicMetadataRequest(
     val topicMetadata = topics.map { topic =>
       TopicMetadata(topic, Nil, Errors.forException(e).code)
     }
-    val errorResponse =
-      TopicMetadataResponse(Seq(), topicMetadata, correlationId)
+    val errorResponse = TopicMetadataResponse(
+      Seq(),
+      topicMetadata,
+      correlationId)
     requestChannel.sendResponse(
       new Response(
         request,

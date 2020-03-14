@@ -37,8 +37,8 @@ import org.apache.spark.sql.util.ContinuousQueryListener
 @Experimental
 class ContinuousQueryManager(sqlContext: SQLContext) {
 
-  private val listenerBus = new ContinuousQueryListenerBus(
-    sqlContext.sparkContext.listenerBus)
+  private val listenerBus =
+    new ContinuousQueryListenerBus(sqlContext.sparkContext.listenerBus)
   private val activeQueries = new mutable.HashMap[String, ContinuousQuery]
   private val activeQueriesLock = new Object
   private val awaitTerminationLock = new Object

@@ -25,8 +25,7 @@ class PipeliningDispatcher[Req, Rep](
       trans,
       statsReceiver) {
 
-  def this(trans: Transport[Req, Rep]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[Req, Rep]) = this(trans, NullStatsReceiver)
 
   private[this] val q = new AsyncQueue[Promise[Rep]]
 
@@ -42,8 +41,7 @@ class PipeliningDispatcher[Req, Rep](
         finally loop()
       }
 
-  private[this] def loop(): Unit =
-    q.poll().onSuccess(transRead)
+  private[this] def loop(): Unit = q.poll().onSuccess(transRead)
 
   loop()
 

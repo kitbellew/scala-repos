@@ -28,9 +28,10 @@ class FutureDirectivesSpec extends RoutingSpec {
         i += 1;
         i
       }
-      val route = onComplete(Future.successful(nextNumber())) {
-        echoComplete
-      }
+      val route =
+        onComplete(Future.successful(nextNumber())) {
+          echoComplete
+        }
       Get() ~> route ~> check {
         responseAs[String] shouldEqual "Success(1)"
       }
@@ -117,9 +118,10 @@ class FutureDirectivesSpec extends RoutingSpec {
       }
     }
     "recover using the inner route if the Future fails" in {
-      val route = completeOrRecoverWith(Future.failed[String](TestException)) {
-        case e ⇒ complete(s"Exception occurred: ${e.getMessage}")
-      }
+      val route =
+        completeOrRecoverWith(Future.failed[String](TestException)) {
+          case e ⇒ complete(s"Exception occurred: ${e.getMessage}")
+        }
 
       Get() ~> route ~> check {
         responseAs[String] shouldEqual "Exception occurred: XXX"

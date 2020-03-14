@@ -147,8 +147,9 @@ class TungstenAggregationIterator(
       val bufferAttributes = aggregateFunctions.flatMap(_.aggBufferAttributes)
       val groupingKeySchema = StructType.fromAttributes(groupingAttributes)
       val bufferSchema = StructType.fromAttributes(bufferAttributes)
-      val unsafeRowJoiner =
-        GenerateUnsafeRowJoiner.create(groupingKeySchema, bufferSchema)
+      val unsafeRowJoiner = GenerateUnsafeRowJoiner.create(
+        groupingKeySchema,
+        bufferSchema)
 
       (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) => {
         unsafeRowJoiner.join(
@@ -172,16 +173,17 @@ class TungstenAggregationIterator(
   // This is the hash map used for hash-based aggregation. It is backed by an
   // UnsafeFixedWidthAggregationMap and it is used to store
   // all groups and their corresponding aggregation buffers for hash-based aggregation.
-  private[this] val hashMap = new UnsafeFixedWidthAggregationMap(
-    initialAggregationBuffer,
-    StructType.fromAttributes(
-      aggregateFunctions.flatMap(_.aggBufferAttributes)),
-    StructType.fromAttributes(groupingExpressions.map(_.toAttribute)),
-    TaskContext.get().taskMemoryManager(),
-    1024 * 16, // initial capacity
-    TaskContext.get().taskMemoryManager().pageSizeBytes,
-    false // disable tracking of performance metrics
-  )
+  private[this] val hashMap =
+    new UnsafeFixedWidthAggregationMap(
+      initialAggregationBuffer,
+      StructType.fromAttributes(
+        aggregateFunctions.flatMap(_.aggBufferAttributes)),
+      StructType.fromAttributes(groupingExpressions.map(_.toAttribute)),
+      TaskContext.get().taskMemoryManager(),
+      1024 * 16, // initial capacity
+      TaskContext.get().taskMemoryManager().pageSizeBytes,
+      false // disable tracking of performance metrics
+    )
 
   // The function used to read and process input rows. When processing input rows,
   // it first uses hash-based aggregation by putting groups and their buffers in
@@ -193,8 +195,8 @@ class TungstenAggregationIterator(
       // If there is no grouping expressions, we can just reuse the same buffer over and over again.
       // Note that it would be better to eliminate the hash map entirely in the future.
       val groupingKey = groupingProjection.apply(null)
-      val buffer: UnsafeRow =
-        hashMap.getAggregationBufferFromUnsafeRow(groupingKey)
+      val buffer: UnsafeRow = hashMap.getAggregationBufferFromUnsafeRow(
+        groupingKey)
       while (inputIter.hasNext) {
         val newInput = inputIter.next()
         processRow(buffer, newInput)
@@ -269,8 +271,10 @@ class TungstenAggregationIterator(
     }
     val newFunctions = initializeAggregateFunctions(newExpressions, 0)
     val newInputAttributes = newFunctions.flatMap(_.inputAggBufferAttributes)
-    sortBasedProcessRow =
-      generateProcessRow(newExpressions, newFunctions, newInputAttributes)
+    sortBasedProcessRow = generateProcessRow(
+      newExpressions,
+      newFunctions,
+      newInputAttributes)
 
     // Step 5: Get the sorted iterator from the externalSorter.
     sortedKVIterator = externalSorter.sortedIterator()
@@ -400,46 +404,48 @@ class TungstenAggregationIterator(
 
   override final def next(): UnsafeRow = {
     if (hasNext) {
-      val res = if (sortBased) {
-        // Process the current group.
-        processCurrentSortedGroup()
-        // Generate output row for the current group.
-        val outputRow =
-          generateOutput(currentGroupingKey, sortBasedAggregationBuffer)
-        // Initialize buffer values for the next group.
-        sortBasedAggregationBuffer.copyFrom(initialAggregationBuffer)
+      val res =
+        if (sortBased) {
+          // Process the current group.
+          processCurrentSortedGroup()
+          // Generate output row for the current group.
+          val outputRow = generateOutput(
+            currentGroupingKey,
+            sortBasedAggregationBuffer)
+          // Initialize buffer values for the next group.
+          sortBasedAggregationBuffer.copyFrom(initialAggregationBuffer)
 
-        outputRow
-      } else {
-        // We did not fall back to sort-based aggregation.
-        val result =
-          generateOutput(
+          outputRow
+        } else {
+          // We did not fall back to sort-based aggregation.
+          val result = generateOutput(
             aggregationBufferMapIterator.getKey,
             aggregationBufferMapIterator.getValue)
 
-        // Pre-load next key-value pair form aggregationBufferMapIterator to make hasNext
-        // idempotent.
-        mapIteratorHasNext = aggregationBufferMapIterator.next()
+          // Pre-load next key-value pair form aggregationBufferMapIterator to make hasNext
+          // idempotent.
+          mapIteratorHasNext = aggregationBufferMapIterator.next()
 
-        if (!mapIteratorHasNext) {
-          // If there is no input from aggregationBufferMapIterator, we copy current result.
-          val resultCopy = result.copy()
-          // Then, we free the map.
-          hashMap.free()
+          if (!mapIteratorHasNext) {
+            // If there is no input from aggregationBufferMapIterator, we copy current result.
+            val resultCopy = result.copy()
+            // Then, we free the map.
+            hashMap.free()
 
-          resultCopy
-        } else {
-          result
+            resultCopy
+          } else {
+            result
+          }
         }
-      }
 
       // If this is the last record, update the task's peak memory usage. Since we destroy
       // the map to create the sorter, their memory usages should not overlap, so it is safe
       // to just use the max of the two.
       if (!hasNext) {
         val mapMemory = hashMap.getPeakMemoryUsedBytes
-        val sorterMemory =
-          Option(externalSorter).map(_.getPeakMemoryUsedBytes).getOrElse(0L)
+        val sorterMemory = Option(externalSorter)
+          .map(_.getPeakMemoryUsedBytes)
+          .getOrElse(0L)
         val peakMemory = Math.max(mapMemory, sorterMemory)
         val metrics = TaskContext.get().taskMetrics()
         dataSize += peakMemory
@@ -465,10 +471,9 @@ class TungstenAggregationIterator(
     if (groupingExpressions.isEmpty) {
       sortBasedAggregationBuffer.copyFrom(initialAggregationBuffer)
       // We create a output row and copy it. So, we can free the map.
-      val resultCopy =
-        generateOutput(
-          UnsafeRow.createFromByteArray(0, 0),
-          sortBasedAggregationBuffer).copy()
+      val resultCopy = generateOutput(
+        UnsafeRow.createFromByteArray(0, 0),
+        sortBasedAggregationBuffer).copy()
       hashMap.free()
       resultCopy
     } else {

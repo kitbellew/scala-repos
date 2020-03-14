@@ -18,8 +18,9 @@ object Macro {
         dynArgs: List[c.Tree]): c.Tree = {
       val symtab = c.universe.asInstanceOf[SymbolTable]
       import symtab._
-      val paramSym =
-        NoSymbol.newTermSymbol(TermName("x")).setInfo(typeOf[CharSequence])
+      val paramSym = NoSymbol
+        .newTermSymbol(TermName("x"))
+        .setInfo(typeOf[CharSequence])
       val dummySymbol = NoSymbol
         .newTermSymbol(TermName("matcher"))
         .setInfo(
@@ -36,8 +37,8 @@ object Macro {
     import c.universe._
     pat match {
       case l @ Literal(Constant(pat: String)) =>
-        val boostrapSym =
-          typeOf[test.Bootstrap].companion.member(TermName("bootstrap"))
+        val boostrapSym = typeOf[test.Bootstrap].companion
+          .member(TermName("bootstrap"))
         Indy(boostrapSym, l :: Nil, text :: Nil)
       case _ =>
         q"_root_.java.util.regex.Pattern.compile($pat).matcher($text)"

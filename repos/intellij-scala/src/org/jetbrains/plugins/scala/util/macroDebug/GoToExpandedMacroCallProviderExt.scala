@@ -31,12 +31,13 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
     val first = elements get 0
     val file = first.getContainingFile
 
-    val synFile = file match {
-      case scalaFile: ScalaFile
-          if ScalaMacroDebuggingUtil tryToLoad scalaFile =>
-        Some(scalaFile)
-      case _ => None
-    }
+    val synFile =
+      file match {
+        case scalaFile: ScalaFile
+            if ScalaMacroDebuggingUtil tryToLoad scalaFile =>
+          Some(scalaFile)
+        case _ => None
+      }
 
     val macrosFound = elements filter ScalaMacroDebuggingUtil.isMacroCall
     if (macrosFound.isEmpty)
@@ -44,32 +45,34 @@ class GoToExpandedMacroCallProviderExt extends LineMarkerProvider {
 
     macrosFound foreach {
       case macroCall =>
-        val markerInfo = new RelatedItemLineMarkerInfo[PsiElement](
-          macroCall,
-          macroCall.getTextRange,
-          Icons.NO_SCALA_SDK,
-          Pass.UPDATE_OVERRIDEN_MARKERS,
-          new Function[PsiElement, String] {
-            def fun(param: PsiElement): String = {
-              if (!ScalaMacroDebuggingUtil.macrosToExpand.contains(macroCall)) {
-                "Expand macro"
-              } else {
-                "Collapse macro"
+        val markerInfo =
+          new RelatedItemLineMarkerInfo[PsiElement](
+            macroCall,
+            macroCall.getTextRange,
+            Icons.NO_SCALA_SDK,
+            Pass.UPDATE_OVERRIDEN_MARKERS,
+            new Function[PsiElement, String] {
+              def fun(param: PsiElement): String = {
+                if (!ScalaMacroDebuggingUtil.macrosToExpand.contains(
+                      macroCall)) {
+                  "Expand macro"
+                } else {
+                  "Collapse macro"
+                }
               }
-            }
-          },
-          new GutterIconNavigationHandler[PsiElement] {
-            def navigate(mouseEvent: MouseEvent, elt: PsiElement) {
-              if (ScalaMacroDebuggingUtil.macrosToExpand.contains(elt)) {
-                ScalaMacroDebuggingUtil.macrosToExpand.remove(elt)
-              } else {
-                ScalaMacroDebuggingUtil.macrosToExpand.add(elt)
+            },
+            new GutterIconNavigationHandler[PsiElement] {
+              def navigate(mouseEvent: MouseEvent, elt: PsiElement) {
+                if (ScalaMacroDebuggingUtil.macrosToExpand.contains(elt)) {
+                  ScalaMacroDebuggingUtil.macrosToExpand.remove(elt)
+                } else {
+                  ScalaMacroDebuggingUtil.macrosToExpand.add(elt)
+                }
+                ScalaMacroDebuggingUtil.expandMacros(elt.getProject)
               }
-              ScalaMacroDebuggingUtil.expandMacros(elt.getProject)
-            }
-          },
-          GutterIconRenderer.Alignment.RIGHT,
-          util.Arrays.asList[GotoRelatedItem]())
+            },
+            GutterIconRenderer.Alignment.RIGHT,
+            util.Arrays.asList[GotoRelatedItem]())
 
         result add markerInfo
         ScalaMacroDebuggingUtil.allMacroCalls.add(macroCall)

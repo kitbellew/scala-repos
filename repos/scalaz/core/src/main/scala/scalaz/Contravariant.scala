@@ -26,8 +26,7 @@ trait Contravariant[F[_]] extends InvariantFunctor[F] { self =>
 
   // derived functions
 
-  def xmap[A, B](fa: F[A], f: A => B, g: B => A): F[B] =
-    contramap(fa)(g)
+  def xmap[A, B](fa: F[A], f: A => B, g: B => A): F[B] = contramap(fa)(g)
 
   /** The composition of Contravariant F and G, `[x]F[G[x]]`, is
     * covariant.
@@ -74,9 +73,10 @@ trait Contravariant[F[_]] extends InvariantFunctor[F] { self =>
   def contravariantLaw = new ContravariantLaw {}
 
   ////
-  val contravariantSyntax = new scalaz.syntax.ContravariantSyntax[F] {
-    def F = Contravariant.this
-  }
+  val contravariantSyntax =
+    new scalaz.syntax.ContravariantSyntax[F] {
+      def F = Contravariant.this
+    }
 }
 
 object Contravariant {

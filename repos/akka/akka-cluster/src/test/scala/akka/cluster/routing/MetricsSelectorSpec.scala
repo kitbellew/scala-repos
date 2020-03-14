@@ -17,10 +17,11 @@ import akka.cluster.StandardMetrics._
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class MetricsSelectorSpec extends WordSpec with Matchers {
 
-  val abstractSelector = new CapacityMetricsSelector {
-    override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] =
-      Map.empty
-  }
+  val abstractSelector =
+    new CapacityMetricsSelector {
+      override def capacity(
+          nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = Map.empty
+    }
 
   val a1 = Address("akka.tcp", "sys", "a1", 2551)
   val b1 = Address("akka.tcp", "sys", "b1", 2551)

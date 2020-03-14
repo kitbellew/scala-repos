@@ -107,8 +107,7 @@ abstract class TimeSeqPathedSource(
     }
 
   /** These are all the paths we will read for this data completely enumerated */
-  def allPaths: Iterable[String] =
-    patterns.flatMap(allPathsFor(_))
+  def allPaths: Iterable[String] = patterns.flatMap(allPathsFor(_))
 
   /**
     * Get path statuses based on daterange. This tests each path with pathIsGood

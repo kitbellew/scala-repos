@@ -69,8 +69,8 @@ trait CodingDirectives {
         pass
       else
         extractSettings flatMap { settings ⇒
-          val effectiveDecoder =
-            decoder.withMaxBytesPerChunk(settings.decodeMaxBytesPerChunk)
+          val effectiveDecoder = decoder.withMaxBytesPerChunk(
+            settings.decodeMaxBytesPerChunk)
           mapRequest { request ⇒
             effectiveDecoder
               .decode(request)
@@ -113,8 +113,7 @@ trait CodingDirectives {
     * Uncompressed requests are passed through untouched.
     * If the request encoded with another encoding the request is rejected with an `UnsupportedRequestEncodingRejection`.
     */
-  def decodeRequest: Directive0 =
-    decodeRequestWith(DefaultCoders: _*)
+  def decodeRequest: Directive0 = decodeRequestWith(DefaultCoders: _*)
 
   /**
     * Inspects the response entity and adds a `Content-Encoding: gzip` response header if
@@ -131,11 +130,15 @@ trait CodingDirectives {
 }
 
 object CodingDirectives extends CodingDirectives {
-  val DefaultCoders: immutable.Seq[Coder] =
-    immutable.Seq(Gzip, Deflate, NoCoding)
+  val DefaultCoders: immutable.Seq[Coder] = immutable.Seq(
+    Gzip,
+    Deflate,
+    NoCoding)
 
-  private[http] val DefaultEncodeResponseEncoders =
-    immutable.Seq(NoCoding, Gzip, Deflate)
+  private[http] val DefaultEncodeResponseEncoders = immutable.Seq(
+    NoCoding,
+    Gzip,
+    Deflate)
 
   def theseOrDefault[T >: Coder](these: Seq[T]): Seq[T] =
     if (these.isEmpty)

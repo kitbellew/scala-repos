@@ -335,18 +335,20 @@ object CType {
       case _           => None
     }
 
-  implicit val decomposer: Decomposer[CType] = new Decomposer[CType] {
-    def decompose(ctype: CType): JValue = JString(nameOf(ctype))
-  }
+  implicit val decomposer: Decomposer[CType] =
+    new Decomposer[CType] {
+      def decompose(ctype: CType): JValue = JString(nameOf(ctype))
+    }
 
-  implicit val extractor: Extractor[CType] = new Extractor[CType] {
-    def validated(obj: JValue): Validation[Extractor.Error, CType] =
-      obj.validated[String].map(fromName _) match {
-        case Success(Some(t)) => Success(t)
-        case Success(None)    => Failure(Extractor.Invalid("Unknown type."))
-        case Failure(f)       => Failure(f)
-      }
-  }
+  implicit val extractor: Extractor[CType] =
+    new Extractor[CType] {
+      def validated(obj: JValue): Validation[Extractor.Error, CType] =
+        obj.validated[String].map(fromName _) match {
+          case Success(Some(t)) => Success(t)
+          case Success(None)    => Failure(Extractor.Invalid("Unknown type."))
+          case Failure(f)       => Failure(f)
+        }
+    }
 
   def readResolve() = CType
 

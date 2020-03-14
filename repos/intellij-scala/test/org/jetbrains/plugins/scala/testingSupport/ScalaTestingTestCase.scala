@@ -116,8 +116,9 @@ abstract class ScalaTestingTestCase(
     var wrapper: StructureViewComponent.StructureViewTreeElementWrapper = null
     UsefulTestCase.edt(new Runnable() {
       override def run(): Unit = {
-        val file =
-          PsiManager.getInstance(getProject).findFile(getVirtualFile(ioFile))
+        val file = PsiManager
+          .getInstance(getProject)
+          .findFile(getVirtualFile(ioFile))
         val treeViewModel =
           new ScalaStructureViewModel(file.asInstanceOf[ScalaFile]) {
             override def isEnabled(
@@ -160,8 +161,9 @@ abstract class ScalaTestingTestCase(
 
     UsefulTestCase.edt(new Runnable() {
       override def run(): Unit = {
-        val psiFile =
-          myManager.findViewProvider(file).getPsi(ScalaFileType.SCALA_LANGUAGE)
+        val psiFile = myManager
+          .findViewProvider(file)
+          .getPsi(ScalaFileType.SCALA_LANGUAGE)
         psiElement = psiFile.findElementAt(
           FileDocumentManager
             .getInstance()
@@ -257,9 +259,10 @@ abstract class ScalaTestingTestCase(
           make()
           saveChecksums()
         }
-        val runner = ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
-          _.getClass == classOf[DefaultJavaProgramRunner]
-        }.get
+        val runner =
+          ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
+            _.getClass == classOf[DefaultJavaProgramRunner]
+          }.get
         val (handler, runContentDescriptor) = runProcess(
           runConfig,
           classOf[DefaultRunExecutor],
@@ -294,8 +297,8 @@ abstract class ScalaTestingTestCase(
       runner: ProgramRunner[_ <: RunnerSettings])
       : (ProcessHandler, RunContentDescriptor) = {
     val configuration = runConfiguration.getConfiguration
-    val executor: Executor =
-      Executor.EXECUTOR_EXTENSION_NAME.findExtension(executorClass)
+    val executor: Executor = Executor.EXECUTOR_EXTENSION_NAME.findExtension(
+      executorClass)
     val executionEnvironmentBuilder: ExecutionEnvironmentBuilder =
       new ExecutionEnvironmentBuilder(configuration.getProject, executor)
     executionEnvironmentBuilder.runProfile(configuration)

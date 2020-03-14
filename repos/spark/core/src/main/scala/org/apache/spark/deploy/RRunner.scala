@@ -57,24 +57,26 @@ object RRunner {
     // Check if the file path exists.
     // If not, change directory to current working directory for YARN cluster mode
     val rF = new File(rFile)
-    val rFileNormalized = if (!rF.exists()) {
-      new Path(rFile).getName
-    } else {
-      rFile
-    }
+    val rFileNormalized =
+      if (!rF.exists()) {
+        new Path(rFile).getName
+      } else {
+        rFile
+      }
 
     // Launch a SparkR backend server for the R process to connect to; this will let it see our
     // Java system properties etc.
     val sparkRBackend = new RBackend()
     @volatile var sparkRBackendPort = 0
     val initialized = new Semaphore(0)
-    val sparkRBackendThread = new Thread("SparkR backend") {
-      override def run() {
-        sparkRBackendPort = sparkRBackend.init()
-        initialized.release()
-        sparkRBackend.run()
+    val sparkRBackendThread =
+      new Thread("SparkR backend") {
+        override def run() {
+          sparkRBackendPort = sparkRBackend.init()
+          initialized.release()
+          sparkRBackend.run()
+        }
       }
-    }
 
     sparkRBackendThread.start()
     // Wait for RBackend initialization to finish
@@ -82,8 +84,9 @@ object RRunner {
       // Launch R
       val returnCode =
         try {
-          val builder = new ProcessBuilder(
-            (Seq(rCommand, rFileNormalized) ++ otherArgs).asJava)
+          val builder =
+            new ProcessBuilder(
+              (Seq(rCommand, rFileNormalized) ++ otherArgs).asJava)
           val env = builder.environment()
           env.put("EXISTING_SPARKR_BACKEND_PORT", sparkRBackendPort.toString)
           val rPackageDir = RUtils.sparkRPackagePath(isDriver = true)

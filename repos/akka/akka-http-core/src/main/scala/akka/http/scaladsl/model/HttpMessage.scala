@@ -323,19 +323,20 @@ object HttpRequest {
       def fail(detail: String) =
         throw IllegalUriException(
           s"Cannot establish effective URI of request to `$uri`, request has a relative URI and $detail")
-      val Host(host, port) = hostHeader match {
-        case None ⇒
-          if (defaultHostHeader.isEmpty)
-            fail("is missing a `Host` header")
-          else
-            defaultHostHeader
-        case Some(x) if x.isEmpty ⇒
-          if (defaultHostHeader.isEmpty)
-            fail("an empty `Host` header")
-          else
-            defaultHostHeader
-        case Some(x) ⇒ x
-      }
+      val Host(host, port) =
+        hostHeader match {
+          case None ⇒
+            if (defaultHostHeader.isEmpty)
+              fail("is missing a `Host` header")
+            else
+              defaultHostHeader
+          case Some(x) if x.isEmpty ⇒
+            if (defaultHostHeader.isEmpty)
+              fail("an empty `Host` header")
+            else
+              defaultHostHeader
+          case Some(x) ⇒ x
+        }
       uri.toEffectiveHttpRequestUri(host, port, securedConnection)
     } else // http://tools.ietf.org/html/rfc7230#section-5.4
     if (hostHeader.isEmpty || uri.authority.isEmpty && hostHeader.get.isEmpty ||

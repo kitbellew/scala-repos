@@ -95,14 +95,15 @@ class FlowExpandSpec extends AkkaSpec {
     }
 
     "work on a variable rate chain" in {
-      val future = Source(1 to 100)
-        .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean())
-            Thread.sleep(10);
-          i
-        }
-        .expand(Iterator.continually(_))
-        .runFold(Set.empty[Int])(_ + _)
+      val future =
+        Source(1 to 100)
+          .map { i ⇒
+            if (ThreadLocalRandom.current().nextBoolean())
+              Thread.sleep(10);
+            i
+          }
+          .expand(Iterator.continually(_))
+          .runFold(Set.empty[Int])(_ + _)
 
       Await.result(
         future,
@@ -150,12 +151,11 @@ class FlowExpandSpec extends AkkaSpec {
     }
 
     "work properly with finite extrapolations" in {
-      val (source, sink) =
-        TestSource
-          .probe[Int]
-          .expand(i ⇒ Iterator.from(0).map(i -> _).take(3))
-          .toMat(TestSink.probe)(Keep.both)
-          .run()
+      val (source, sink) = TestSource
+        .probe[Int]
+        .expand(i ⇒ Iterator.from(0).map(i -> _).take(3))
+        .toMat(TestSink.probe)(Keep.both)
+        .run()
       source
         .sendNext(1)
       sink

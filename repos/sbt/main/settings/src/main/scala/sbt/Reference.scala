@@ -67,9 +67,10 @@ object Reference {
           case (_: ProjectRef, _: BuildRef) => 1
         }
     }
-  implicit val buildRefOrdering: Ordering[BuildRef] = new Ordering[BuildRef] {
-    def compare(a: BuildRef, b: BuildRef): Int = a.build compareTo b.build
-  }
+  implicit val buildRefOrdering: Ordering[BuildRef] =
+    new Ordering[BuildRef] {
+      def compare(a: BuildRef, b: BuildRef): Int = a.build compareTo b.build
+    }
 
   implicit val projectRefOrdering: Ordering[ProjectRef] =
     new Ordering[ProjectRef] {

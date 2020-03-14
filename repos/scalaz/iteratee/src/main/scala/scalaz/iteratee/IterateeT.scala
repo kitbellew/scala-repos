@@ -212,8 +212,7 @@ sealed abstract class IterateeT[E, F[_], A] {
 }
 
 object IterateeT extends IterateeTInstances with IterateeTFunctions {
-  def apply[E, F[_], A](s: F[StepT[E, F, A]]): IterateeT[E, F, A] =
-    iterateeT(s)
+  def apply[E, F[_], A](s: F[StepT[E, F, A]]): IterateeT[E, F, A] = iterateeT(s)
 }
 
 sealed abstract class IterateeTInstances0 {
@@ -234,8 +233,7 @@ sealed abstract class IterateeTInstances0 {
 
 sealed abstract class IterateeTInstances extends IterateeTInstances0 {
   implicit def IterateeTMonadTrans[E]
-      : Hoist[λ[(α[_], β) => IterateeT[E, α, β]]] =
-    new IterateeTHoist[E] {}
+      : Hoist[λ[(α[_], β) => IterateeT[E, α, β]]] = new IterateeTHoist[E] {}
 
   implicit def IterateeTHoistT[E, H[_[_], _]](
       implicit T0: Hoist[H]): Hoist[λ[(α[_], β) => IterateeT[E, H[α, ?], β]]] =
@@ -268,8 +266,7 @@ trait IterateeTFunctions {
 
   def done[E, F[_]: Applicative, A](
       d: => A,
-      r: => Input[E]): IterateeT[E, F, A] =
-    StepT.sdone(d, r).pointI
+      r: => Input[E]): IterateeT[E, F, A] = StepT.sdone(d, r).pointI
 
   /**
     * An iteratee that writes input to the output stream as it comes in.  Useful for debugging.

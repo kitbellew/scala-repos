@@ -124,10 +124,11 @@ class ChannelTransportTest
     // Initially don't do anything: we buffer one item.
     verify(ch, never).setReadable(Matchers.any[Boolean])
 
-    val f = for {
-      a <- trans.read()
-      b <- trans.read()
-    } yield Seq(a, b)
+    val f =
+      for {
+        a <- trans.read()
+        b <- trans.read()
+      } yield Seq(a, b)
     verify(ch, never).setReadable(Matchers.any[Boolean])
 
     // Now we need to make sure that, if we have successive

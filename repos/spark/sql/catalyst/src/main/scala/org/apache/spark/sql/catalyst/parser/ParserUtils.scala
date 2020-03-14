@@ -85,8 +85,8 @@ object ParserUtils {
       nodeList: Seq[ASTNode]): Seq[Option[ASTNode]] = {
     var remainingNodes = nodeList
     val clauses = clauseNames.map { clauseName =>
-      val (matches, nonMatches) =
-        remainingNodes.partition(_.text.toUpperCase == clauseName)
+      val (matches, nonMatches) = remainingNodes.partition(
+        _.text.toUpperCase == clauseName)
       remainingNodes = nonMatches ++ (if (matches.nonEmpty)
                                         matches.tail
                                       else

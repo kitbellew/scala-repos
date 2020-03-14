@@ -90,10 +90,11 @@ object MemoizerSpecs extends Specification with Memoizer with FNDummyModule {
           libMorphism1.head,
           dag.AbsoluteLoad(Const(CString("/clicks"))(line))(line))(line)
 
-      val split = dag.Split(
-        dag.Group(0, clicks, UnfixedSolution(1, clicks)),
-        SplitParam(1, id)(line),
-        id)(line)
+      val split =
+        dag.Split(
+          dag.Group(0, clicks, UnfixedSolution(1, clicks)),
+          SplitParam(1, id)(line),
+          id)(line)
 
       val input =
         Join(
@@ -131,10 +132,11 @@ object MemoizerSpecs extends Specification with Memoizer with FNDummyModule {
           dag.Morph1(libMorphism1.head, clicks)(line),
           Join(Mul, Cross(None), clicks, clicks)(line))(line)
 
-      val split = dag.Split(
-        dag.Group(0, join, UnfixedSolution(1, join)),
-        SplitParam(1, id)(line),
-        id)(line)
+      val split =
+        dag.Split(
+          dag.Group(0, join, UnfixedSolution(1, join)),
+          SplitParam(1, id)(line),
+          id)(line)
 
       val memoClicks = Memoize(clicks, 3)
 
@@ -145,10 +147,11 @@ object MemoizerSpecs extends Specification with Memoizer with FNDummyModule {
           dag.Morph1(libMorphism1.head, memoClicks)(line),
           Join(Mul, Cross(None), memoClicks, memoClicks)(line))(line)
 
-      val expectedSplit = dag.Split(
-        dag.Group(0, expectedJoin, UnfixedSolution(1, expectedJoin)),
-        SplitParam(1, id)(line),
-        id)(line)
+      val expectedSplit =
+        dag.Split(
+          dag.Group(0, expectedJoin, UnfixedSolution(1, expectedJoin)),
+          SplitParam(1, id)(line),
+          id)(line)
 
       memoize(split) mustEqual expectedSplit
     }

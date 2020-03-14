@@ -76,12 +76,13 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
 
     val modules = chunk.getModules.asScala.toSet
 
-    val client = new IdeClientSbt(
-      "scala",
-      context,
-      modules.map(_.getName).toSeq,
-      outputConsumer,
-      filesToCompile.get)
+    val client =
+      new IdeClientSbt(
+        "scala",
+        context,
+        modules.map(_.getName).toSeq,
+        outputConsumer,
+        filesToCompile.get)
 
     logCustomSbtIncOptions(context, chunk, client)
 
@@ -109,14 +110,15 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     val project = context.getProjectDescriptor
 
     val resourceTargets: Seq[ResourcesTarget] = {
-      val sourceModules =
-        SourceDependenciesProviderService.getSourceDependenciesFor(chunk)
-      val targetType = chunk.representativeTarget.getTargetType match {
-        case JavaModuleBuildTargetType.PRODUCTION =>
-          ResourcesTargetType.PRODUCTION
-        case JavaModuleBuildTargetType.TEST => ResourcesTargetType.TEST
-        case _                              => ResourcesTargetType.PRODUCTION
-      }
+      val sourceModules = SourceDependenciesProviderService
+        .getSourceDependenciesFor(chunk)
+      val targetType =
+        chunk.representativeTarget.getTargetType match {
+          case JavaModuleBuildTargetType.PRODUCTION =>
+            ResourcesTargetType.PRODUCTION
+          case JavaModuleBuildTargetType.TEST => ResourcesTargetType.TEST
+          case _                              => ResourcesTargetType.PRODUCTION
+        }
       sourceModules.map(new ResourcesTarget(_, targetType))
     }
 
@@ -203,12 +205,13 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     val excludeIndex = project.getModuleExcludeIndex
 
     val sourceTargets = {
-      val sourceModules =
-        SourceDependenciesProviderService.getSourceDependenciesFor(chunk)
-      val targetType = chunk.representativeTarget.getTargetType match {
-        case javaBuildTarget: JavaModuleBuildTargetType => javaBuildTarget
-        case _                                          => JavaModuleBuildTargetType.PRODUCTION
-      }
+      val sourceModules = SourceDependenciesProviderService
+        .getSourceDependenciesFor(chunk)
+      val targetType =
+        chunk.representativeTarget.getTargetType match {
+          case javaBuildTarget: JavaModuleBuildTargetType => javaBuildTarget
+          case _                                          => JavaModuleBuildTargetType.PRODUCTION
+        }
       sourceModules.map(new ModuleBuildTarget(_, targetType))
     }
 

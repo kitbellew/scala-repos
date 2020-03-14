@@ -27,12 +27,13 @@ private[streaming] class RecurringTimer(
     name: String)
     extends Logging {
 
-  private val thread = new Thread("RecurringTimer - " + name) {
-    setDaemon(true)
-    override def run() {
-      loop
+  private val thread =
+    new Thread("RecurringTimer - " + name) {
+      setDaemon(true)
+      override def run() {
+        loop
+      }
     }
-  }
 
   @volatile private var prevTime = -1L
   @volatile private var nextTime = -1L

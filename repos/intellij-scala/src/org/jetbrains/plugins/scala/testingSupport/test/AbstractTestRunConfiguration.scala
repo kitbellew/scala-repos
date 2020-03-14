@@ -328,8 +328,9 @@ abstract class AbstractTestRunConfiguration(
               throw new RuntimeConfigurationException("Module is not specified")
             }
         }
-        val pack =
-          JavaPsiFacade.getInstance(project).findPackage(getTestPackagePath)
+        val pack = JavaPsiFacade
+          .getInstance(project)
+          .findPackage(getTestPackagePath)
         if (pack == null) {
           throw new RuntimeConfigurationException("Package doesn't exist")
         }
@@ -432,218 +433,222 @@ abstract class AbstractTestRunConfiguration(
     if (module == null)
       throw new ExecutionException("Module is not specified")
 
-    val state = new JavaCommandLineState(env)
-      with AbstractTestRunConfiguration.TestCommandLinePatcher {
-      val getClasses: Seq[String] = getClassFileNames(classes)
+    val state =
+      new JavaCommandLineState(env)
+        with AbstractTestRunConfiguration.TestCommandLinePatcher {
+        val getClasses: Seq[String] = getClassFileNames(classes)
 
-      protected override def createJavaParameters: JavaParameters = {
-        val params = new JavaParameters()
+        protected override def createJavaParameters: JavaParameters = {
+          val params = new JavaParameters()
 
-        params.setCharset(null)
-        var vmParams = getJavaOptions
+          params.setCharset(null)
+          var vmParams = getJavaOptions
 
-        //expand macros
-        vmParams = PathMacroManager.getInstance(project).expandPath(vmParams)
+          //expand macros
+          vmParams = PathMacroManager.getInstance(project).expandPath(vmParams)
 
-        if (module != null) {
-          vmParams = PathMacroManager.getInstance(module).expandPath(vmParams)
-        }
+          if (module != null) {
+            vmParams = PathMacroManager.getInstance(module).expandPath(vmParams)
+          }
 
-        params.setEnv(getEnvVariables)
+          params.setEnv(getEnvVariables)
 
-        //expand environment variables in vmParams
-        for (entry <- params.getEnv.entrySet) {
-          vmParams = StringUtil.replace(
-            vmParams,
-            "$" + entry.getKey + "$",
-            entry.getValue,
-            false)
-        }
+          //expand environment variables in vmParams
+          for (entry <- params.getEnv.entrySet) {
+            vmParams = StringUtil.replace(
+              vmParams,
+              "$" + entry.getKey + "$",
+              entry.getValue,
+              false)
+          }
 
-        params.getVMParametersList.addParametersString(vmParams)
-        val wDir = getWorkingDirectory
-        params.setWorkingDirectory(expandPath(wDir))
+          params.getVMParametersList.addParametersString(vmParams)
+          val wDir = getWorkingDirectory
+          params.setWorkingDirectory(expandPath(wDir))
 
 //        params.getVMParametersList.addParametersString("-Xnoagent -Djava.compiler=NONE -Xdebug " +
 //          "-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5010")
 
-        val rtJarPath = ScalaUtil.runnersPath()
-        params.getClassPath.add(rtJarPath)
-        if (addIntegrationTestsClasspath) {
-          //a workaround to add jars for integration tests
-          val integrationTestsPath = ScalaUtil.testingSupportTestPath()
-          params.getClassPath.add(integrationTestsPath)
-        }
+          val rtJarPath = ScalaUtil.runnersPath()
+          params.getClassPath.add(rtJarPath)
+          if (addIntegrationTestsClasspath) {
+            //a workaround to add jars for integration tests
+            val integrationTestsPath = ScalaUtil.testingSupportTestPath()
+            params.getClassPath.add(integrationTestsPath)
+          }
 
-        searchTest match {
-          case SearchForTest.IN_WHOLE_PROJECT =>
-            var jdk: Sdk = null
-            for (module <- ModuleManager.getInstance(project).getModules
-                 if jdk == null) {
-              jdk = JavaParameters.getModuleJdk(module)
-            }
-            params.configureByProject(
-              project,
-              JavaParameters.JDK_AND_CLASSES_AND_TESTS,
-              jdk)
-          case _ =>
-            params.configureByModule(
-              module,
-              JavaParameters.JDK_AND_CLASSES_AND_TESTS,
-              JavaParameters.getModuleJdk(module))
-        }
-
-        params.setMainClass(mainClass)
-
-        if (JdkUtil.useDynamicClasspath(getProject)) {
-          try {
-            val fileWithParams: File =
-              File.createTempFile("abstracttest", ".tmp")
-            val outputStream = new FileOutputStream(fileWithParams)
-            val printer: PrintStream = new PrintStream(outputStream)
-            if (getFailedTests == null) {
-              printer.println("-s")
-              for (cl <- getClasses) {
-                printer.println(cl)
+          searchTest match {
+            case SearchForTest.IN_WHOLE_PROJECT =>
+              var jdk: Sdk = null
+              for (module <- ModuleManager.getInstance(project).getModules
+                   if jdk == null) {
+                jdk = JavaParameters.getModuleJdk(module)
               }
+              params.configureByProject(
+                project,
+                JavaParameters.JDK_AND_CLASSES_AND_TESTS,
+                jdk)
+            case _ =>
+              params.configureByModule(
+                module,
+                JavaParameters.JDK_AND_CLASSES_AND_TESTS,
+                JavaParameters.getModuleJdk(module))
+          }
+
+          params.setMainClass(mainClass)
+
+          if (JdkUtil.useDynamicClasspath(getProject)) {
+            try {
+              val fileWithParams: File = File.createTempFile(
+                "abstracttest",
+                ".tmp")
+              val outputStream = new FileOutputStream(fileWithParams)
+              val printer: PrintStream = new PrintStream(outputStream)
+              if (getFailedTests == null) {
+                printer.println("-s")
+                for (cl <- getClasses) {
+                  printer.println(cl)
+                }
+                if (testKind == TestKind.TEST_NAME && testName != "") {
+                  //this is a "by-name" test for single suite, better fail in a known manner then do something undefined
+                  assert(getClasses.size == 1)
+                  for (test <- splitTests) {
+                    printer.println("-testName")
+                    printer.println(test)
+                    for (testParam <- getAdditionalTestParams(test)) {
+                      params.getVMParametersList.addParametersString(testParam)
+                    }
+                  }
+                }
+              } else {
+                printer.println("-failedTests")
+                for (failed <- getFailedTests) {
+                  printer.println(failed._1)
+                  printer.println(failed._2)
+                  for (testParam <- getAdditionalTestParams(failed._2)) {
+                    params.getVMParametersList.addParametersString(testParam)
+                  }
+                }
+              }
+
+              printer.println("-showProgressMessages")
+              printer.println(showProgressMessages.toString)
+              if (reporterClass != null) {
+                printer.println("-C")
+                printer.println(reporterClass)
+              }
+
+              val parms: Array[String] = ParametersList.parse(getTestArgs)
+              for (parm <- parms) {
+                printer.println(parm)
+              }
+
+              printer.close()
+              params.getProgramParametersList.add("@" + fileWithParams.getPath)
+            } catch {
+              case ioException: IOException =>
+                throw new ExecutionException(
+                  "Failed to create dynamic classpath file with command-line args.",
+                  ioException)
+            }
+          } else {
+            if (getFailedTests == null) {
+              params.getProgramParametersList.add("-s")
+              for (cl <- getClasses)
+                params.getProgramParametersList.add(cl)
               if (testKind == TestKind.TEST_NAME && testName != "") {
                 //this is a "by-name" test for single suite, better fail in a known manner then do something undefined
                 assert(getClasses.size == 1)
                 for (test <- splitTests) {
-                  printer.println("-testName")
-                  printer.println(test)
+                  params.getProgramParametersList.add("-testName")
+                  params.getProgramParametersList.add(test)
                   for (testParam <- getAdditionalTestParams(test)) {
                     params.getVMParametersList.addParametersString(testParam)
                   }
                 }
               }
             } else {
-              printer.println("-failedTests")
+              params.getProgramParametersList.add("-failedTests")
               for (failed <- getFailedTests) {
-                printer.println(failed._1)
-                printer.println(failed._2)
+                params.getProgramParametersList.add(failed._1)
+                params.getProgramParametersList.add(failed._2)
                 for (testParam <- getAdditionalTestParams(failed._2)) {
                   params.getVMParametersList.addParametersString(testParam)
                 }
               }
             }
 
-            printer.println("-showProgressMessages")
-            printer.println(showProgressMessages.toString)
+            params.getProgramParametersList.add("-showProgressMessages")
+            params.getProgramParametersList.add(showProgressMessages.toString)
+
             if (reporterClass != null) {
-              printer.println("-C")
-              printer.println(reporterClass)
+              params.getProgramParametersList.add("-C")
+              params.getProgramParametersList.add(reporterClass)
             }
 
-            val parms: Array[String] = ParametersList.parse(getTestArgs)
-            for (parm <- parms) {
-              printer.println(parm)
-            }
-
-            printer.close()
-            params.getProgramParametersList.add("@" + fileWithParams.getPath)
-          } catch {
-            case ioException: IOException =>
-              throw new ExecutionException(
-                "Failed to create dynamic classpath file with command-line args.",
-                ioException)
-          }
-        } else {
-          if (getFailedTests == null) {
-            params.getProgramParametersList.add("-s")
-            for (cl <- getClasses)
-              params.getProgramParametersList.add(cl)
-            if (testKind == TestKind.TEST_NAME && testName != "") {
-              //this is a "by-name" test for single suite, better fail in a known manner then do something undefined
-              assert(getClasses.size == 1)
-              for (test <- splitTests) {
-                params.getProgramParametersList.add("-testName")
-                params.getProgramParametersList.add(test)
-                for (testParam <- getAdditionalTestParams(test)) {
-                  params.getVMParametersList.addParametersString(testParam)
-                }
-              }
-            }
-          } else {
-            params.getProgramParametersList.add("-failedTests")
-            for (failed <- getFailedTests) {
-              params.getProgramParametersList.add(failed._1)
-              params.getProgramParametersList.add(failed._2)
-              for (testParam <- getAdditionalTestParams(failed._2)) {
-                params.getVMParametersList.addParametersString(testParam)
-              }
-            }
+            params.getProgramParametersList.addParametersString(getTestArgs)
           }
 
-          params.getProgramParametersList.add("-showProgressMessages")
-          params.getProgramParametersList.add(showProgressMessages.toString)
-
-          if (reporterClass != null) {
-            params.getProgramParametersList.add("-C")
-            params.getProgramParametersList.add(reporterClass)
+          for (ext <- Extensions.getExtensions(
+                 RunConfigurationExtension.EP_NAME)) {
+            ext.updateJavaParameters(
+              currentConfiguration,
+              params,
+              getRunnerSettings)
           }
 
-          params.getProgramParametersList.addParametersString(getTestArgs)
+          params
         }
 
-        for (ext <- Extensions.getExtensions(
-               RunConfigurationExtension.EP_NAME)) {
-          ext.updateJavaParameters(
-            currentConfiguration,
-            params,
-            getRunnerSettings)
-        }
+        override def execute(
+            executor: Executor,
+            runner: ProgramRunner[_ <: RunnerSettings]): ExecutionResult = {
+          val processHandler = startProcess
+          val runnerSettings = getRunnerSettings
+          if (getConfiguration == null)
+            setConfiguration(currentConfiguration)
+          val config = getConfiguration
+          JavaRunConfigurationExtensionManager.getInstance
+            .attachExtensionsToProcess(
+              currentConfiguration,
+              processHandler,
+              runnerSettings)
+          val consoleProperties =
+            new SMTRunnerConsoleProperties(
+              currentConfiguration,
+              "Scala",
+              executor) with PropertiesExtension {
+              override def getTestLocator = new ScalaTestLocationProvider
+              def getRunConfigurationBase: RunConfigurationBase = config
+            }
 
-        params
-      }
+          consoleProperties.setIdBasedTestTree(true)
 
-      override def execute(
-          executor: Executor,
-          runner: ProgramRunner[_ <: RunnerSettings]): ExecutionResult = {
-        val processHandler = startProcess
-        val runnerSettings = getRunnerSettings
-        if (getConfiguration == null)
-          setConfiguration(currentConfiguration)
-        val config = getConfiguration
-        JavaRunConfigurationExtensionManager.getInstance
-          .attachExtensionsToProcess(
-            currentConfiguration,
+          // console view
+          val consoleView = SMTestRunnerConnectionUtil.createAndAttachConsole(
+            "Scala",
             processHandler,
-            runnerSettings)
-        val consoleProperties = new SMTRunnerConsoleProperties(
-          currentConfiguration,
-          "Scala",
-          executor) with PropertiesExtension {
-          override def getTestLocator = new ScalaTestLocationProvider
-          def getRunConfigurationBase: RunConfigurationBase = config
+            consoleProperties)
+
+          val res =
+            new DefaultExecutionResult(
+              consoleView,
+              processHandler,
+              createActions(consoleView, processHandler, executor): _*)
+
+          val rerunFailedTestsAction =
+            new AbstractTestRerunFailedTestsAction(consoleView)
+          rerunFailedTestsAction.init(consoleView.getProperties)
+          rerunFailedTestsAction.setModelProvider(
+            new Getter[TestFrameworkRunningModel] {
+              def get: TestFrameworkRunningModel = {
+                consoleView.asInstanceOf[SMTRunnerConsoleView].getResultsViewer
+              }
+            })
+          res.setRestartActions(rerunFailedTestsAction)
+          res
         }
-
-        consoleProperties.setIdBasedTestTree(true)
-
-        // console view
-        val consoleView = SMTestRunnerConnectionUtil.createAndAttachConsole(
-          "Scala",
-          processHandler,
-          consoleProperties)
-
-        val res = new DefaultExecutionResult(
-          consoleView,
-          processHandler,
-          createActions(consoleView, processHandler, executor): _*)
-
-        val rerunFailedTestsAction = new AbstractTestRerunFailedTestsAction(
-          consoleView)
-        rerunFailedTestsAction.init(consoleView.getProperties)
-        rerunFailedTestsAction.setModelProvider(
-          new Getter[TestFrameworkRunningModel] {
-            def get: TestFrameworkRunningModel = {
-              consoleView.asInstanceOf[SMTRunnerConsoleView].getResultsViewer
-            }
-          })
-        res.setRestartActions(rerunFailedTestsAction)
-        res
       }
-    }
     state
   }
 
@@ -694,13 +699,14 @@ abstract class AbstractTestRunConfiguration(
       if (search.toString == s)
         searchTest = search
     }
-    testName =
-      Option(JDOMExternalizer.readString(element, "testName")).getOrElse("")
+    testName = Option(JDOMExternalizer.readString(element, "testName"))
+      .getOrElse("")
     testKind = TestKind.fromString(
       Option(JDOMExternalizer.readString(element, "testKind"))
         .getOrElse("Class"))
-    showProgressMessages =
-      JDOMExternalizer.readBoolean(element, "showProgressMessages")
+    showProgressMessages = JDOMExternalizer.readBoolean(
+      element,
+      "showProgressMessages")
   }
 }
 
@@ -736,13 +742,14 @@ object AbstractTestRunConfiguration extends SuiteValidityChecker {
   }
 
   protected[test] def lackSuitableConstructor(clazz: PsiClass): Boolean = {
-    val constructors = clazz match {
-      case c: ScClass =>
-        c.secondaryConstructors
-          .filter(_.isConstructor)
-          .toList ::: c.constructor.toList
-      case _ => clazz.getConstructors.toList
-    }
+    val constructors =
+      clazz match {
+        case c: ScClass =>
+          c.secondaryConstructors
+            .filter(_.isConstructor)
+            .toList ::: c.constructor.toList
+        case _ => clazz.getConstructors.toList
+      }
     for (con <- constructors) {
       if (con.isConstructor && con.getParameterList.getParametersCount == 0) {
         con match {

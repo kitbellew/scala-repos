@@ -20,22 +20,24 @@ class DecodeHandlerTest extends FunSuite with MockitoSugar {
   test("DecodeHandler handles decodes") {
     val messagesSeen = new ArrayBuffer[String]
     var nonStringsMessageCount = 0
-    val readSnooper = new ChannelInboundHandlerAdapter {
-      override def channelRead(
-          ctx: ChannelHandlerContext,
-          msg: scala.Any): Unit = {
-        msg match {
-          case s: String =>
-            messagesSeen.append(s)
-          case _ =>
-            nonStringsMessageCount += 1
+    val readSnooper =
+      new ChannelInboundHandlerAdapter {
+        override def channelRead(
+            ctx: ChannelHandlerContext,
+            msg: scala.Any): Unit = {
+          msg match {
+            case s: String =>
+              messagesSeen.append(s)
+            case _ =>
+              nonStringsMessageCount += 1
+          }
+          super.channelRead(ctx, msg)
         }
-        super.channelRead(ctx, msg)
       }
-    }
-    val ch = new EmbeddedChannel(
-      new DecodeHandler[String](() => StringDecoder),
-      readSnooper)
+    val ch =
+      new EmbeddedChannel(
+        new DecodeHandler[String](() => StringDecoder),
+        readSnooper)
     ch.pipeline.fireChannelActive
 
     ch.writeInbound(Unpooled.wrappedBuffer("hi".getBytes))
@@ -53,9 +55,10 @@ class DecodeHandlerTest extends FunSuite with MockitoSugar {
 
   test("DecoderHandler doesn't swallow exceptions thrown by decoder") {
     val exnThrown = new Exception("boom")
-    val failingDecoder = new FrameDecoder[String] {
-      def apply(buf: Buf): IndexedSeq[String] = throw exnThrown
-    }
+    val failingDecoder =
+      new FrameDecoder[String] {
+        def apply(buf: Buf): IndexedSeq[String] = throw exnThrown
+      }
 
     val ch =
       new EmbeddedChannel(new DecodeHandler[String](() => failingDecoder))

@@ -24,11 +24,12 @@ abstract class ScalaMemberInfoBase[Member <: PsiElement](member: Member)
   member match {
     case method: PsiMethod =>
       displayName = ScalaPsiUtil.getMethodPresentableText(method)
-      val (superMethod, containingClass) = method match {
-        case scFun: ScFunction => (scFun.superMethod, scFun.containingClass)
-        case _ =>
-          (method.findSuperMethods().headOption, method.getContainingClass)
-      }
+      val (superMethod, containingClass) =
+        method match {
+          case scFun: ScFunction => (scFun.superMethod, scFun.containingClass)
+          case _ =>
+            (method.findSuperMethods().headOption, method.getContainingClass)
+        }
       superMethod match {
         case Some(m: ScFunctionDefinition) => overrides = java.lang.Boolean.TRUE
         case Some(m: ScFunctionDeclaration) =>
@@ -48,8 +49,8 @@ abstract class ScalaMemberInfoBase[Member <: PsiElement](member: Member)
         case _                       => method.hasModifierProperty(PsiModifier.STATIC)
       }
     case clazz: ScTypeDefinition =>
-      displayName =
-        ScalaElementPresentation.getTypeDefinitionPresentableText(clazz)
+      displayName = ScalaElementPresentation.getTypeDefinitionPresentableText(
+        clazz)
       isStatic = clazz.containingClass.isInstanceOf[ScObject]
       overrides = null
     case ta: ScTypeAlias =>

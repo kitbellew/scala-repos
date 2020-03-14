@@ -92,8 +92,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     dir
   }
 
-  private lazy val temporaryConfig =
-    newTemporaryConfiguration(useInMemoryDerby = false)
+  private lazy val temporaryConfig = newTemporaryConfiguration(
+    useInMemoryDerby = false)
 
   /** Sets up the system initially or after a RESET command */
   protected override def configure(): Map[String, String] = {
@@ -124,27 +124,29 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     new this.QueryExecution(plan)
 
   @transient
-  protected[sql] override lazy val sessionState = new HiveSessionState(this) {
-    override lazy val conf: SQLConf = {
-      new SQLConf {
-        clear()
-        override def caseSensitiveAnalysis: Boolean =
-          getConf(SQLConf.CASE_SENSITIVE, false)
-        override def clear(): Unit = {
-          super.clear()
-          TestHiveContext.overrideConfs.map {
-            case (key, value) => setConfString(key, value)
+  protected[sql] override lazy val sessionState =
+    new HiveSessionState(this) {
+      override lazy val conf: SQLConf = {
+        new SQLConf {
+          clear()
+          override def caseSensitiveAnalysis: Boolean =
+            getConf(SQLConf.CASE_SENSITIVE, false)
+          override def clear(): Unit = {
+            super.clear()
+            TestHiveContext.overrideConfs.map {
+              case (key, value) => setConfString(key, value)
+            }
           }
         }
       }
-    }
 
-    override lazy val functionRegistry = {
-      new TestHiveFunctionRegistry(
-        org.apache.spark.sql.catalyst.analysis.FunctionRegistry.builtin.copy(),
-        self.executionHive)
+      override lazy val functionRegistry = {
+        new TestHiveFunctionRegistry(
+          org.apache.spark.sql.catalyst.analysis.FunctionRegistry.builtin
+            .copy(),
+          self.executionHive)
+      }
     }
-  }
 
   /**
     * Returns the value of specified environmental variable as a [[java.io.File]] after checking
@@ -160,10 +162,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     */
   private def rewritePaths(cmd: String): String =
     if (cmd.toUpperCase contains "LOAD DATA") {
-      val testDataLocation =
-        hiveDevHome
-          .map(_.getCanonicalPath)
-          .getOrElse(inRepoTests.getCanonicalPath)
+      val testDataLocation = hiveDevHome
+        .map(_.getCanonicalPath)
+        .getOrElse(inRepoTests.getCanonicalPath)
       cmd.replaceAll("\\.\\./\\.\\./", testDataLocation + "/")
     } else {
       cmd
@@ -187,8 +188,9 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     }
 
   def getHiveFile(path: String): File = {
-    val stripped =
-      path.replaceAll("""\.\.\/""", "").replace('/', File.separatorChar)
+    val stripped = path
+      .replaceAll("""\.\.\/""", "")
+      .replace('/', File.separatorChar)
     hiveDevHome
       .map(new File(_, stripped))
       .filter(_.exists)
@@ -204,11 +206,12 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       extends super.QueryExecution(logicalPlan) {
     def this(sql: String) = this(parseSql(sql))
     override lazy val analyzed = {
-      val describedTables = logical match {
-        case HiveNativeCommand(describedTable(tbl)) => tbl :: Nil
-        case CacheTableCommand(tbl, _, _)           => tbl :: Nil
-        case _                                      => Nil
-      }
+      val describedTables =
+        logical match {
+          case HiveNativeCommand(describedTable(tbl)) => tbl :: Nil
+          case CacheTableCommand(tbl, _, _)           => tbl :: Nil
+          case _                                      => Nil
+        }
 
       // Make sure any test tables referenced are loaded.
       val referencedTables =
@@ -433,11 +436,10 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       // Marks the table as loaded first to prevent infinite mutually recursive table loading.
       loadedTables += name
       logDebug(s"Loading test table $name")
-      val createCmds =
-        testTables
-          .get(name)
-          .map(_.commands)
-          .getOrElse(sys.error(s"Unknown test table $name"))
+      val createCmds = testTables
+        .get(name)
+        .map(_.commands)
+        .getOrElse(sys.error(s"Unknown test table $name"))
       createCmds.foreach(_())
 
       if (cacheTables) {
@@ -513,9 +515,8 @@ private[hive] class TestHiveFunctionRegistry(
     client: HiveClientImpl)
     extends HiveFunctionRegistry(fr, client) {
 
-  private val removedFunctions =
-    collection.mutable.ArrayBuffer
-      .empty[(String, (ExpressionInfo, FunctionBuilder))]
+  private val removedFunctions = collection.mutable.ArrayBuffer
+    .empty[(String, (ExpressionInfo, FunctionBuilder))]
 
   def unregisterFunction(name: String): Unit = {
     fr.functionBuilders.remove(name).foreach(f => removedFunctions += name -> f)
@@ -533,9 +534,8 @@ private[hive] object TestHiveContext {
   /**
     * A map used to store all confs that need to be overridden in sql/hive unit tests.
     */
-  val overrideConfs: Map[String, String] =
-    Map(
-      // Fewer shuffle partitions to speed up testing.
-      SQLConf.SHUFFLE_PARTITIONS.key -> "5"
-    )
+  val overrideConfs: Map[String, String] = Map(
+    // Fewer shuffle partitions to speed up testing.
+    SQLConf.SHUFFLE_PARTITIONS.key -> "5"
+  )
 }

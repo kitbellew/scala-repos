@@ -20,11 +20,12 @@ private[process] trait ProcessImpl {
   private[process] object Spawn {
     def apply(f: => Unit): Thread = apply(f, daemon = false)
     def apply(f: => Unit, daemon: Boolean): Thread = {
-      val thread = new Thread() {
-        override def run() = {
-          f
+      val thread =
+        new Thread() {
+          override def run() = {
+            f
+          }
         }
-      }
       thread.setDaemon(daemon)
       thread.start()
       thread

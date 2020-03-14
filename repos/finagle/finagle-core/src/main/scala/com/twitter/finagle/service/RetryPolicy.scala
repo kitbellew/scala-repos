@@ -194,9 +194,10 @@ object RetryPolicy extends JavaSingleton {
     case Throw(_: ChannelClosedException) => true
   }
 
-  val Never: RetryPolicy[Try[Nothing]] = new RetryPolicy[Try[Nothing]] {
-    def apply(t: Try[Nothing]): Option[(Duration, Nothing)] = None
-  }
+  val Never: RetryPolicy[Try[Nothing]] =
+    new RetryPolicy[Try[Nothing]] {
+      def apply(t: Try[Nothing]): Option[(Duration, Nothing)] = None
+    }
 
   /**
     * Converts a `RetryPolicy[Try[Nothing]]` to a `RetryPolicy[(Req, Try[Rep])]`
@@ -330,19 +331,18 @@ object RetryPolicy extends JavaSingleton {
       // stores the first matched backoff
       var backoffOpt: Option[Duration] = None
 
-      val policies2 =
-        policies.map { p =>
-          if (backoffOpt.nonEmpty)
-            p
-          else {
-            p(e) match {
-              case None => p
-              case Some((backoff, p2)) =>
-                backoffOpt = Some(backoff)
-                p2
-            }
+      val policies2 = policies.map { p =>
+        if (backoffOpt.nonEmpty)
+          p
+        else {
+          p(e) match {
+            case None => p
+            case Some((backoff, p2)) =>
+              backoffOpt = Some(backoff)
+              p2
           }
         }
+      }
 
       backoffOpt match {
         case None          => None

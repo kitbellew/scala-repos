@@ -106,18 +106,19 @@ private[http] trait LiftMerge {
         case _ => Nil
       }: _*)
 
-    val hasHtmlHeadAndBody: Boolean = xhtml.find {
-      case e: Elem if e.label == "html" =>
-        e.child.find {
-          case e: Elem if e.label == "head" => true
-          case _                            => false
-        }.isDefined &&
+    val hasHtmlHeadAndBody: Boolean =
+      xhtml.find {
+        case e: Elem if e.label == "html" =>
           e.child.find {
-            case e: Elem if e.label == "body" => true
+            case e: Elem if e.label == "head" => true
             case _                            => false
-          }.isDefined
-      case _ => false
-    }.isDefined
+          }.isDefined &&
+            e.child.find {
+              case e: Elem if e.label == "body" => true
+              case _                            => false
+            }.isDefined
+        case _ => false
+      }.isDefined
 
     var htmlElement =
       <html xmlns="http://www.w3.org/1999/xhtml" xmlns:lift='http://liftweb.net'/>
@@ -198,10 +199,9 @@ private[http] trait LiftMerge {
             .normalizeNode(node, contextPath, stripComments)
             .map {
               case normalized @ NodeAndEventJs(normalizedElement: Elem, _) =>
-                val normalizedChildren =
-                  normalizeMergeAndExtractEvents(
-                    normalizedElement.child,
-                    childInfo)
+                val normalizedChildren = normalizeMergeAndExtractEvents(
+                  normalizedElement.child,
+                  childInfo)
 
                 normalized.copy(
                   normalizedElement.copy(child = normalizedChildren.nodes),
@@ -335,35 +335,37 @@ private[http] trait LiftMerge {
         htmlElement.minimizeEmpty,
         htmlKids.toList: _*)
 
-      val ret: Node = if (Props.devMode) {
-        LiftRules.xhtmlValidator.toList.flatMap(_(tmpRet)) match {
-          case Nil => tmpRet
-          case xs =>
-            import scala.xml.transform._
+      val ret: Node =
+        if (Props.devMode) {
+          LiftRules.xhtmlValidator.toList.flatMap(_(tmpRet)) match {
+            case Nil => tmpRet
+            case xs =>
+              import scala.xml.transform._
 
-            val errors: NodeSeq = xs.map(e =>
-              <div style="border: red solid 2px">XHTML Validation error:{
-                e.msg
-              }at line{
-                e.line + 1
-              }and column{
-                e.col
-              }</div>)
+              val errors: NodeSeq = xs.map(e =>
+                <div style="border: red solid 2px">XHTML Validation error:{
+                  e.msg
+                }at line{
+                  e.line + 1
+                }and column{
+                  e.col
+                }</div>)
 
-            val rule = new RewriteRule {
-              override def transform(n: Node) =
-                n match {
-                  case e: Elem if e.label == "body" =>
-                    e.copy(child = e.child ++ errors)
+              val rule =
+                new RewriteRule {
+                  override def transform(n: Node) =
+                    n match {
+                      case e: Elem if e.label == "body" =>
+                        e.copy(child = e.child ++ errors)
 
-                  case x => super.transform(x)
+                      case x => super.transform(x)
+                    }
                 }
-            }
-            (new RuleTransformer(rule)).transform(tmpRet)(0)
-        }
+              (new RuleTransformer(rule)).transform(tmpRet)(0)
+          }
 
-      } else
-        tmpRet
+        } else
+          tmpRet
 
       ret
     }

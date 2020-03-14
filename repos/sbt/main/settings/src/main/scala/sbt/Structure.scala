@@ -401,9 +401,10 @@ object Scoped {
       mapR(f compose failM)
   }
 
-  type AnyInitTask = Initialize[Task[T]] forSome {
-    type T
-  }
+  type AnyInitTask =
+    Initialize[Task[T]] forSome {
+      type T
+    }
 
   implicit def richTaskSeq[T](in: Seq[Initialize[Task[T]]]): RichTaskSeq[T] =
     new RichTaskSeq(in)
@@ -453,8 +454,7 @@ object Scoped {
       }
     protected[this] def map0(f: PathFinder => PathFinder): Initialize[Seq[File]]
     protected[this] def finder(
-        f: PathFinder => PathFinder): Seq[File] => Seq[File] =
-      in => f(in).get
+        f: PathFinder => PathFinder): Seq[File] => Seq[File] = in => f(in).get
   }
 
   // this is the least painful arrangement I came up with

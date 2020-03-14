@@ -27,8 +27,7 @@ class PicklerCanBeForwarded extends FunSuite {
     t.pickle
 
   private def doUnpickle[T](p: JSONPickle)(
-      implicit unpickler1: Unpickler[T]): T =
-    p.unpickle[T]
+      implicit unpickler1: Unpickler[T]): T = p.unpickle[T]
 
   test("main") {
     val x: F = G(42)

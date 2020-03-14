@@ -119,16 +119,17 @@ class ScalaFindUsagesHandler(
         }
       case t: ScTypedDefinition =>
         t.getBeanMethods.toArray ++ {
-          val a: Array[DefinitionRole] = t.nameContext match {
-            case v: ScValue if ScalaPsiUtil.isBeanProperty(v) => Array(GETTER)
-            case v: ScVariable if ScalaPsiUtil.isBeanProperty(v) =>
-              Array(GETTER, SETTER)
-            case v: ScValue if ScalaPsiUtil.isBooleanBeanProperty(v) =>
-              Array(IS_GETTER)
-            case v: ScVariable if ScalaPsiUtil.isBooleanBeanProperty(v) =>
-              Array(IS_GETTER, SETTER)
-            case _ => Array.empty
-          }
+          val a: Array[DefinitionRole] =
+            t.nameContext match {
+              case v: ScValue if ScalaPsiUtil.isBeanProperty(v) => Array(GETTER)
+              case v: ScVariable if ScalaPsiUtil.isBeanProperty(v) =>
+                Array(GETTER, SETTER)
+              case v: ScValue if ScalaPsiUtil.isBooleanBeanProperty(v) =>
+                Array(IS_GETTER)
+              case v: ScVariable if ScalaPsiUtil.isBooleanBeanProperty(v) =>
+                Array(IS_GETTER, SETTER)
+              case _ => Array.empty
+            }
           a.map(role =>
             t.getTypedDefinitionWrapper(
               isStatic = false,
@@ -166,14 +167,15 @@ class ScalaFindUsagesHandler(
       element: PsiElement,
       processor: Processor[UsageInfo],
       searchScope: GlobalSearchScope): Boolean = {
-    val nonScalaTextProcessor = new Processor[UsageInfo] {
-      override def process(t: UsageInfo): Boolean = {
-        if (t.getFile.getFileType == ScalaFileType.SCALA_FILE_TYPE)
-          true
-        else
-          processor.process(t)
+    val nonScalaTextProcessor =
+      new Processor[UsageInfo] {
+        override def process(t: UsageInfo): Boolean = {
+          if (t.getFile.getFileType == ScalaFileType.SCALA_FILE_TYPE)
+            true
+          else
+            processor.process(t)
+        }
       }
-    }
     super.processUsagesInText(element, nonScalaTextProcessor, searchScope)
   }
 

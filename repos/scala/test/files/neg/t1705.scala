@@ -6,11 +6,12 @@ object crashing {
     }
   }
   abstract class Thing {
-    val c = new C {
-      class T[A](a: A) {
-        def f[Z](t: T[Z]) = new T(a)
+    val c =
+      new C {
+        class T[A](a: A) {
+          def f[Z](t: T[Z]) = new T(a)
+        }
       }
-    }
     val x1 = {
       class C[T] {
         val x: T

@@ -314,13 +314,12 @@ class AnalysisErrorSuite extends AnalysisTest {
     // CheckAnalysis should throw AnalysisException when Aggregate contains missing attribute(s)
     // Since we manually construct the logical plan at here and Sum only accept
     // LongType, DoubleType, and DecimalType. We use LongType as the type of a.
-    val plan =
-      Aggregate(
-        Nil,
-        Alias(
-          sum(AttributeReference("a", LongType)(exprId = ExprId(1))),
-          "b")() :: Nil,
-        LocalRelation(AttributeReference("a", LongType)(exprId = ExprId(2))))
+    val plan = Aggregate(
+      Nil,
+      Alias(
+        sum(AttributeReference("a", LongType)(exprId = ExprId(1))),
+        "b")() :: Nil,
+      LocalRelation(AttributeReference("a", LongType)(exprId = ExprId(2))))
 
     assert(plan.resolved)
 
@@ -342,16 +341,15 @@ class AnalysisErrorSuite extends AnalysisTest {
 
   test("check grouping expression data types") {
     def checkDataType(dataType: DataType, shouldSuccess: Boolean): Unit = {
-      val plan =
-        Aggregate(
-          AttributeReference("a", dataType)(exprId = ExprId(2)) :: Nil,
-          Alias(
-            sum(AttributeReference("b", IntegerType)(exprId = ExprId(1))),
-            "c")() :: Nil,
-          LocalRelation(
-            AttributeReference("a", dataType)(exprId = ExprId(2)),
-            AttributeReference("b", IntegerType)(exprId = ExprId(1)))
-        )
+      val plan = Aggregate(
+        AttributeReference("a", dataType)(exprId = ExprId(2)) :: Nil,
+        Alias(
+          sum(AttributeReference("b", IntegerType)(exprId = ExprId(1))),
+          "c")() :: Nil,
+        LocalRelation(
+          AttributeReference("a", dataType)(exprId = ExprId(2)),
+          AttributeReference("b", IntegerType)(exprId = ExprId(1)))
+      )
 
       shouldSuccess match {
         case true =>
@@ -407,16 +405,15 @@ class AnalysisErrorSuite extends AnalysisTest {
   }
 
   test("we should fail analysis when we find nested aggregate functions") {
-    val plan =
-      Aggregate(
-        AttributeReference("a", IntegerType)(exprId = ExprId(2)) :: Nil,
-        Alias(
-          sum(sum(AttributeReference("b", IntegerType)(exprId = ExprId(1)))),
-          "c")() :: Nil,
-        LocalRelation(
-          AttributeReference("a", IntegerType)(exprId = ExprId(2)),
-          AttributeReference("b", IntegerType)(exprId = ExprId(1)))
-      )
+    val plan = Aggregate(
+      AttributeReference("a", IntegerType)(exprId = ExprId(2)) :: Nil,
+      Alias(
+        sum(sum(AttributeReference("b", IntegerType)(exprId = ExprId(1)))),
+        "c")() :: Nil,
+      LocalRelation(
+        AttributeReference("a", IntegerType)(exprId = ExprId(2)),
+        AttributeReference("b", IntegerType)(exprId = ExprId(1)))
+    )
 
     assertAnalysisError(
       plan,
@@ -425,43 +422,41 @@ class AnalysisErrorSuite extends AnalysisTest {
   }
 
   test("Join can't work on binary and map types") {
-    val plan =
-      Join(
-        LocalRelation(
+    val plan = Join(
+      LocalRelation(
+        AttributeReference("a", BinaryType)(exprId = ExprId(2)),
+        AttributeReference("b", IntegerType)(exprId = ExprId(1))),
+      LocalRelation(
+        AttributeReference("c", BinaryType)(exprId = ExprId(4)),
+        AttributeReference("d", IntegerType)(exprId = ExprId(3))),
+      Inner,
+      Some(
+        EqualTo(
           AttributeReference("a", BinaryType)(exprId = ExprId(2)),
-          AttributeReference("b", IntegerType)(exprId = ExprId(1))),
-        LocalRelation(
-          AttributeReference("c", BinaryType)(exprId = ExprId(4)),
-          AttributeReference("d", IntegerType)(exprId = ExprId(3))),
-        Inner,
-        Some(
-          EqualTo(
-            AttributeReference("a", BinaryType)(exprId = ExprId(2)),
-            AttributeReference("c", BinaryType)(exprId = ExprId(4))))
-      )
+          AttributeReference("c", BinaryType)(exprId = ExprId(4))))
+    )
 
     assertAnalysisError(
       plan,
       "binary type expression `a` cannot be used in join conditions" :: Nil)
 
-    val plan2 =
-      Join(
-        LocalRelation(
+    val plan2 = Join(
+      LocalRelation(
+        AttributeReference("a", MapType(IntegerType, StringType))(exprId =
+          ExprId(2)),
+        AttributeReference("b", IntegerType)(exprId = ExprId(1))),
+      LocalRelation(
+        AttributeReference("c", MapType(IntegerType, StringType))(exprId =
+          ExprId(4)),
+        AttributeReference("d", IntegerType)(exprId = ExprId(3))),
+      Inner,
+      Some(
+        EqualTo(
           AttributeReference("a", MapType(IntegerType, StringType))(exprId =
             ExprId(2)),
-          AttributeReference("b", IntegerType)(exprId = ExprId(1))),
-        LocalRelation(
           AttributeReference("c", MapType(IntegerType, StringType))(exprId =
-            ExprId(4)),
-          AttributeReference("d", IntegerType)(exprId = ExprId(3))),
-        Inner,
-        Some(
-          EqualTo(
-            AttributeReference("a", MapType(IntegerType, StringType))(exprId =
-              ExprId(2)),
-            AttributeReference("c", MapType(IntegerType, StringType))(exprId =
-              ExprId(4))))
-      )
+            ExprId(4))))
+    )
 
     assertAnalysisError(
       plan2,

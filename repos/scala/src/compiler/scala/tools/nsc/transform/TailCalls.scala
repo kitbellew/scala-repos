@@ -241,10 +241,11 @@ abstract class TailCalls extends Transform {
           targs: List[Tree],
           args: List[Tree],
           mustTransformArgs: Boolean = true) = {
-        val receiver: Tree = fun match {
-          case Select(qual, _) => qual
-          case _               => EmptyTree
-        }
+        val receiver: Tree =
+          fun match {
+            case Select(qual, _) => qual
+            case _               => EmptyTree
+          }
         def receiverIsSame = ctx.enclosingType.widen =:= receiver.tpe.widen
         def receiverIsSuper = ctx.enclosingType.widen <:< receiver.tpe.widen
         def isRecursiveCall = (ctx.method eq fun.symbol) && ctx.tailPos
@@ -277,8 +278,9 @@ abstract class TailCalls extends Transform {
             "Rewriting tail recursive call:  " + fun.pos.lineContent.trim)
           accessed += ctx.label
           typedPos(fun.pos) {
-            val args = mapWithIndex(transformArgs)((arg, i) =>
-              mkAttributedCastHack(arg, ctx.label.info.params(i + 1).tpe))
+            val args =
+              mapWithIndex(transformArgs)((arg, i) =>
+                mkAttributedCastHack(arg, ctx.label.info.params(i + 1).tpe))
             Apply(Ident(ctx.label), noTailTransform(recv) :: args)
           }
         }

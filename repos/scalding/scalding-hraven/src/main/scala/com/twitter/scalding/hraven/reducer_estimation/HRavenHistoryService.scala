@@ -116,8 +116,9 @@ object HRavenHistoryService extends HistoryService {
             }
           }
 
-          val successfulFlows =
-            flows.asScala.filter(_.getHdfsBytesRead > 0).take(max)
+          val successfulFlows = flows.asScala
+            .filter(_.getHdfsBytesRead > 0)
+            .take(max)
           if (successfulFlows.isEmpty) {
             LOG.warn(
               "Unable to find any successful flows in the last " + nFetch + " jobs.")
@@ -171,29 +172,30 @@ object HRavenHistoryService extends HistoryService {
       }
     }
 
-    val flowsTry = for {
-      // connect to hRaven REST API
-      client <- HRavenClient(conf)
+    val flowsTry =
+      for {
+        // connect to hRaven REST API
+        client <- HRavenClient(conf)
 
-      // lookup cluster name used by hRaven
-      cluster <- lookupClusterName(client)
+        // lookup cluster name used by hRaven
+        cluster <- lookupClusterName(client)
 
-      // get identifying info for this job
-      user <- conf.getFirstKey("hraven.history.user.name", "user.name")
-      batch <- conf.getFirstKey("batch.desc")
-      signature <- conf.getFirstKey("scalding.flow.class.signature")
+        // get identifying info for this job
+        user <- conf.getFirstKey("hraven.history.user.name", "user.name")
+        batch <- conf.getFirstKey("batch.desc")
+        signature <- conf.getFirstKey("scalding.flow.class.signature")
 
-      // query hRaven for matching flows
-      flows <- fetchSuccessfulFlows(
-        client,
-        cluster,
-        user,
-        batch,
-        signature,
-        max,
-        conf.maxFetch)
+        // query hRaven for matching flows
+        flows <- fetchSuccessfulFlows(
+          client,
+          cluster,
+          user,
+          batch,
+          signature,
+          max,
+          conf.maxFetch)
 
-    } yield flows
+      } yield flows
 
     // Find the FlowStep in the hRaven flow that corresponds to the current step
     // *Note*: when hRaven says "Job" it means "FlowStep"

@@ -179,11 +179,12 @@ class CoGroupedRDD[K: ClassTag](
   private def createExternalMap(
       numRdds: Int): ExternalAppendOnlyMap[K, CoGroupValue, CoGroupCombiner] = {
 
-    val createCombiner: (CoGroupValue => CoGroupCombiner) = value => {
-      val newCombiner = Array.fill(numRdds)(new CoGroup)
-      newCombiner(value._2) += value._1
-      newCombiner
-    }
+    val createCombiner: (CoGroupValue => CoGroupCombiner) =
+      value => {
+        val newCombiner = Array.fill(numRdds)(new CoGroup)
+        newCombiner(value._2) += value._1
+        newCombiner
+      }
     val mergeValue: (CoGroupCombiner, CoGroupValue) => CoGroupCombiner =
       (combiner, value) => {
         combiner(value._2) += value._1

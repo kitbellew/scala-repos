@@ -117,8 +117,7 @@ trait TimeHelpers { self: ControlHelpers =>
   class TimeSpan(private val dt: Either[Duration, Period])
       extends ConvertableToDate {
 
-    def this(ms: Long) =
-      this(Left(new Duration(ms)))
+    def this(ms: Long) = this(Left(new Duration(ms)))
 
     /**
       * Convert to a Java `Date`. The number of milliseconds in the `Duration`
@@ -334,8 +333,7 @@ trait TimeHelpers { self: ControlHelpers =>
     /**
       * Convert a Duration to a TimeSpan
       */
-    implicit def durationToTS(in: Duration): TimeSpan =
-      new TimeSpan(Left(in))
+    implicit def durationToTS(in: Duration): TimeSpan = new TimeSpan(Left(in))
 
     /**
       * Convert a Period to a TimeSpan
@@ -343,8 +341,7 @@ trait TimeHelpers { self: ControlHelpers =>
     @deprecated(
       "Implicit conversion from Period to TimeSpan will be removed due to its unclear behavior; use new Period(timeSpan.millis) instead.",
       "3.0.0")
-    implicit def periodToTS(in: Period): TimeSpan =
-      new TimeSpan(Right(in))
+    implicit def periodToTS(in: Period): TimeSpan = new TimeSpan(Right(in))
 
     /**
       * Convert a TimeSpan to a Period

@@ -46,10 +46,11 @@ object Cross {
         val x = Project.extract(state)
         import x._
 
-        val (resolveVersion, homePath) = arg.split("=") match {
-          case Array(v, h) => (v, h)
-          case _           => ("", arg)
-        }
+        val (resolveVersion, homePath) =
+          arg.split("=") match {
+            case Array(v, h) => (v, h)
+            case _           => ("", arg)
+          }
         val home = IO.resolve(x.currentProject.base, new File(homePath))
         // Basic Algorithm.
         // 1. First we figure out what the new scala instances should be, create settings for them.
@@ -131,8 +132,8 @@ object Cross {
       token(matched(state.combinedParser & spacedFirst(CrossCommand)))
     }
 
-  lazy val crossBuild = Command.arb(requireSession(crossParser), crossHelp) {
-    (state, command) =>
+  lazy val crossBuild =
+    Command.arb(requireSession(crossParser), crossHelp) { (state, command) =>
       val x = Project.extract(state)
       import x._
       val versions = crossVersions(state)
@@ -143,7 +144,7 @@ object Cross {
       else {
         versions.map(v => s"$SwitchCommand $v $command") ::: current ::: state
       }
-  }
+    }
   def crossVersions(state: State): Seq[String] = {
     val x = Project.extract(state)
     import x._

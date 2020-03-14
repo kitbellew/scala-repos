@@ -83,8 +83,9 @@ class ModuleExtDataServiceTest
     )
 
     importProjectData(generateScalaProject("2.11.5", Some("2.11.5"), options))
-    val module =
-      ModuleManager.getInstance(getProject).findModuleByName("Module 1")
+    val module = ModuleManager
+      .getInstance(getProject)
+      .findModuleByName("Module 1")
     val compilerConfiguration = ScalaCompilerConfiguration
       .instanceIn(getProject)
       .getSettingsForModule(module)
@@ -117,17 +118,18 @@ class ModuleExtDataServiceTest
   }
 
   def testModuleIsNull(): Unit = {
-    val testProject = new project {
-      name := getProject.getName
-      ideDirectoryPath := getProject.getBasePath
-      linkedProjectPath := getProject.getBasePath
-      arbitraryNodes += new ModuleExtNode(
-        Some(Version("2.11.5")),
-        Seq.empty,
-        Seq.empty,
-        None,
-        Seq.empty)
-    }.build.toDataNode
+    val testProject =
+      new project {
+        name := getProject.getName
+        ideDirectoryPath := getProject.getBasePath
+        linkedProjectPath := getProject.getBasePath
+        arbitraryNodes += new ModuleExtNode(
+          Some(Version("2.11.5")),
+          Seq.empty,
+          Seq.empty,
+          None,
+          Seq.empty)
+      }.build.toDataNode
 
     importProjectData(testProject)
   }
@@ -148,12 +150,12 @@ class ModuleExtDataServiceTest
   def testInvalidSdk(): Unit =
     doTestSdk(Some(JdkByName("20")), defaultJdk, LanguageLevel.JDK_1_7)
 
-  def testAbsentSdk(): Unit =
-    doTestSdk(None, defaultJdk, LanguageLevel.JDK_1_7)
+  def testAbsentSdk(): Unit = doTestSdk(None, defaultJdk, LanguageLevel.JDK_1_7)
 
   def testValidJdkByHome(): Unit = {
-    val jdk =
-      ProjectJdkTable.getInstance().findJdk(IdeaTestUtil.getMockJdk18.getName)
+    val jdk = ProjectJdkTable
+      .getInstance()
+      .findJdk(IdeaTestUtil.getMockJdk18.getName)
     doTestSdk(
       Some(JdkByHome(new File(jdk.getHomePath))),
       jdk,
@@ -181,38 +183,41 @@ class ModuleExtDataServiceTest
     val evictedVersion = "2.11.2"
     val newVersion = "2.11.6"
 
-    val projectData = new project {
-      name := getProject.getName
-      ideDirectoryPath := getProject.getBasePath
-      linkedProjectPath := getProject.getBasePath
-      arbitraryNodes += new SbtProjectNode(
-        Seq.empty,
-        None,
-        Seq.empty,
-        "",
-        getProject.getBasePath)
-
-      val evictedScalaLibrary = new library {
-        name := s"org.scala-lang:scala-library:$evictedVersion"
-      }
-      val newScalaLibrary = new library {
-        name := s"org.scala-lang:scala-library:$newVersion"
-      }
-      libraries ++= Seq(evictedScalaLibrary, newScalaLibrary)
-
-      modules += new javaModule {
-        name := "Module 1"
-        moduleFileDirectoryPath := getProject.getBasePath + "/module1"
-        externalConfigPath := getProject.getBasePath + "/module1"
-        libraryDependencies += newScalaLibrary
-        arbitraryNodes += new ModuleExtNode(
-          Some(Version(evictedVersion)),
-          Seq.empty,
+    val projectData =
+      new project {
+        name := getProject.getName
+        ideDirectoryPath := getProject.getBasePath
+        linkedProjectPath := getProject.getBasePath
+        arbitraryNodes += new SbtProjectNode(
           Seq.empty,
           None,
-          Seq.empty)
-      }
-    }.build.toDataNode
+          Seq.empty,
+          "",
+          getProject.getBasePath)
+
+        val evictedScalaLibrary =
+          new library {
+            name := s"org.scala-lang:scala-library:$evictedVersion"
+          }
+        val newScalaLibrary =
+          new library {
+            name := s"org.scala-lang:scala-library:$newVersion"
+          }
+        libraries ++= Seq(evictedScalaLibrary, newScalaLibrary)
+
+        modules += new javaModule {
+          name := "Module 1"
+          moduleFileDirectoryPath := getProject.getBasePath + "/module1"
+          externalConfigPath := getProject.getBasePath + "/module1"
+          libraryDependencies += newScalaLibrary
+          arbitraryNodes += new ModuleExtNode(
+            Some(Version(evictedVersion)),
+            Seq.empty,
+            Seq.empty,
+            None,
+            Seq.empty)
+        }
+      }.build.toDataNode
 
     importProjectData(projectData)
 
@@ -310,8 +315,8 @@ class ModuleExtDataServiceTest
       assertTrue(moduleRootManager.isSdkInherited)
     } else {
       assertEquals(expectedSdk, moduleRootManager.getSdk)
-      val languageLevelModuleExtension =
-        LanguageLevelModuleExtensionImpl.getInstance(getModule)
+      val languageLevelModuleExtension = LanguageLevelModuleExtensionImpl
+        .getInstance(getModule)
       val actualLanguageLevel = languageLevelModuleExtension.getLanguageLevel
       assertEquals(expectedLanguageLevel, actualLanguageLevel)
     }

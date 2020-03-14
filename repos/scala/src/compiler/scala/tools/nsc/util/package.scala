@@ -92,10 +92,11 @@ package object util {
   def stackTraceHeadString(ex: Throwable): String = {
     val frame = ex.getStackTrace.dropWhile(
       _.getClassName contains "Predef") take 1 mkString ""
-    val msg = ex.getMessage match {
-      case null | "" => "";
-      case s         => s"""("$s")"""
-    }
+    val msg =
+      ex.getMessage match {
+        case null | "" => "";
+        case s         => s"""("$s")"""
+      }
     val clazz = ex.getClass.getName.split('.').last
 
     s"$clazz$msg @ $frame"

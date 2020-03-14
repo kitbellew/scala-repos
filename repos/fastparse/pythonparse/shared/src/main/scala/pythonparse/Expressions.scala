@@ -103,10 +103,10 @@ object Expressions {
       }
   }
   val atom: P[Ast.expr] = {
-    val empty_tuple =
-      ("(" ~ ")").map(_ => Ast.expr.Tuple(Nil, Ast.expr_context.Load))
-    val empty_list =
-      ("[" ~ "]").map(_ => Ast.expr.List(Nil, Ast.expr_context.Load))
+    val empty_tuple = ("(" ~ ")").map(_ =>
+      Ast.expr.Tuple(Nil, Ast.expr_context.Load))
+    val empty_list = ("[" ~ "]").map(_ =>
+      Ast.expr.List(Nil, Ast.expr_context.Load))
     val empty_dict = ("{" ~ "}").map(_ => Ast.expr.Dict(Nil, Nil))
     P(
       empty_tuple |
@@ -129,8 +129,8 @@ object Expressions {
   val list_comp = P(list_comp_contents).map(Ast.expr.ListComp.tupled)
   val generator = P(list_comp_contents).map(Ast.expr.GeneratorExp.tupled)
 
-  val lambdef: P[Ast.expr.Lambda] =
-    P(kw("lambda") ~ varargslist ~ ":" ~ test).map(Ast.expr.Lambda.tupled)
+  val lambdef: P[Ast.expr.Lambda] = P(kw("lambda") ~ varargslist ~ ":" ~ test)
+    .map(Ast.expr.Lambda.tupled)
   val trailer: P[Ast.expr => Ast.expr] = {
     val call = P("(" ~ arglist ~ ")").map {
       case (args, (keywords, starargs, kwargs)) =>
@@ -195,11 +195,10 @@ object Expressions {
   }
   val named_argument = P(NAME ~ "=" ~ test).map(Ast.keyword.tupled)
 
-  val comp_for: P[Ast.comprehension] =
-    P("for" ~ exprlist ~ "in" ~ or_test ~ comp_if.rep).map {
-      case (targets, test, ifs) =>
-        Ast.comprehension(tuplize(targets), test, ifs)
-    }
+  val comp_for: P[Ast.comprehension] = P(
+    "for" ~ exprlist ~ "in" ~ or_test ~ comp_if.rep).map {
+    case (targets, test, ifs) => Ast.comprehension(tuplize(targets), test, ifs)
+  }
   val comp_if: P[Ast.expr] = P("if" ~ test)
 
   val testlist1: P[Seq[Ast.expr]] = P(test.rep(1, sep = ","))
@@ -207,8 +206,8 @@ object Expressions {
   // not used in grammar, but may appear in "node" passed from Parser to Compiler
   //  val encoding_decl: P0 = P( NAME )
 
-  val yield_expr: P[Ast.expr.Yield] =
-    P(kw("yield") ~ testlist.map(tuplize).?).map(Ast.expr.Yield)
+  val yield_expr: P[Ast.expr.Yield] = P(kw("yield") ~ testlist.map(tuplize).?)
+    .map(Ast.expr.Yield)
 
   val varargslist: P[Ast.arguments] = {
     val named_arg = P(fpdef ~ ("=" ~ test).?)

@@ -215,8 +215,9 @@ private[remote] class Remoting(
             Promise()
           manager ! Listen(addressesPromise)
 
-          val transports: Seq[(AkkaProtocolTransport, Address)] =
-            Await.result(addressesPromise.future, StartupTimeout.duration)
+          val transports: Seq[(AkkaProtocolTransport, Address)] = Await.result(
+            addressesPromise.future,
+            StartupTimeout.duration)
           if (transports.isEmpty)
             throw new RemoteTransportException(
               "No transport drivers were loaded.",
@@ -488,8 +489,7 @@ private[remote] object EndpointManager {
         timeOfRelease: Deadline): Unit =
       addressToWritable += address -> Quarantined(uid, timeOfRelease)
 
-    def removePolicy(address: Address): Unit =
-      addressToWritable -= address
+    def removePolicy(address: Address): Unit = addressToWritable -= address
 
     def allEndpoints: collection.Iterable[ActorRef] =
       writableToAddress.keys ++ readonlyToAddress.keys
@@ -518,10 +518,11 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   val extendedSystem = context.system.asInstanceOf[ExtendedActorSystem]
   val endpointId: Iterator[Int] = Iterator from 0
 
-  val eventPublisher = new EventPublisher(
-    context.system,
-    log,
-    settings.RemoteLifecycleEventsLogLevel)
+  val eventPublisher =
+    new EventPublisher(
+      context.system,
+      log,
+      settings.RemoteLifecycleEventsLogLevel)
 
   // Mapping between addresses and endpoint actors. If passive connections are turned off, incoming connections
   // will be not part of this map!
@@ -529,11 +530,15 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   // Mapping between transports and the local addresses they listen to
   var transportMapping: Map[Address, AkkaProtocolTransport] = Map()
 
-  val pruneInterval: FiniteDuration =
-    (settings.RetryGateClosedFor * 2).max(1.second).min(10.seconds)
+  val pruneInterval: FiniteDuration = (settings.RetryGateClosedFor * 2)
+    .max(1.second)
+    .min(10.seconds)
 
-  val pruneTimerCancellable: Cancellable =
-    context.system.scheduler.schedule(pruneInterval, pruneInterval, self, Prune)
+  val pruneTimerCancellable: Cancellable = context.system.scheduler.schedule(
+    pruneInterval,
+    pruneInterval,
+    self,
+    Prune)
 
   var pendingReadHandoffs = Map[ActorRef, AkkaProtocolHandle]()
   var stashedInbound = Map[ActorRef, Vector[InboundAssociation]]()
@@ -962,19 +967,20 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           // Loads the driver -- the bottom element of the chain.
           // The chain at this point:
           //   Driver
-          val driver = extendedSystem.dynamicAccess
-            .createInstanceFor[Transport](fqn, args)
-            .recover({
+          val driver =
+            extendedSystem.dynamicAccess
+              .createInstanceFor[Transport](fqn, args)
+              .recover({
 
-              case exception ⇒
-                throw new IllegalArgumentException(
-                  s"Cannot instantiate transport [$fqn]. " +
-                    "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
-                    "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
-                  exception)
+                case exception ⇒
+                  throw new IllegalArgumentException(
+                    s"Cannot instantiate transport [$fqn]. " +
+                      "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
+                      "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
+                    exception)
 
-            })
-            .get
+              })
+              .get
 
           // Iteratively decorates the bottom level driver with a list of adapters.
           // The chain at this point:

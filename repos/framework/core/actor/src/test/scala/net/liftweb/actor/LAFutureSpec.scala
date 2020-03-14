@@ -10,9 +10,10 @@ class LAFutureSpec extends Specification {
   LAScheduler
 
   "LAFuture" should {
-    val futureSpecScheduler = new LAScheduler {
-      override def execute(f: () => Unit): Unit = f()
-    }
+    val futureSpecScheduler =
+      new LAScheduler {
+        override def execute(f: () => Unit): Unit = f()
+      }
 
     "map to failing future if transforming function throws an Exception" in {
       val future = LAFuture(() => 1, futureSpecScheduler)

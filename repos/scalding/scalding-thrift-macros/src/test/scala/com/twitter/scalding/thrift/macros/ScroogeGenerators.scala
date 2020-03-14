@@ -88,10 +88,11 @@ object ScroogeGenerators {
   def dataProvider[T: Arbitrary](i: Int): T = {
     @annotation.tailrec
     def g(innerI: Int, loops: Int): T = {
-      val p = new org.scalacheck.Gen.Parameters {
-        override val size = 2
-        override val rng = new scala.util.Random(innerI)
-      }
+      val p =
+        new org.scalacheck.Gen.Parameters {
+          override val size = 2
+          override val rng = new scala.util.Random(innerI)
+        }
       implicitly[Arbitrary[T]].arbitrary(p) match {
         case Some(s)           => s
         case None if loops < 5 => g(innerI + 1, loops + 1)

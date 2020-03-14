@@ -30,8 +30,8 @@ object Connection extends App {
   if (false) {
     val dataSource = null.asInstanceOf[slick.jdbc.DatabaseUrlDataSource]
     //#forDatabaseURL
-    val db =
-      Database.forDataSource(dataSource: slick.jdbc.DatabaseUrlDataSource)
+    val db = Database.forDataSource(
+      dataSource: slick.jdbc.DatabaseUrlDataSource)
     //#forDatabaseURL
   }
   if (false) {
@@ -71,9 +71,7 @@ object Connection extends App {
     def println(s: Any) = lines += s;
     {
       //#materialize
-      val q =
-        for (c <- coffees)
-          yield c.name
+      val q = for (c <- coffees) yield c.name
       val a = q.result
       val f: Future[Seq[String]] = db.run(a)
 
@@ -85,9 +83,7 @@ object Connection extends App {
     };
     {
       //#stream
-      val q =
-        for (c <- coffees)
-          yield c.name
+      val q = for (c <- coffees) yield c.name
       val a = q.result
       val p: DatabasePublisher[String] = db.stream(a)
 
@@ -104,9 +100,7 @@ object Connection extends App {
     };
     {
       //#streamblob
-      val q =
-        for (c <- coffees)
-          yield c.image
+      val q = for (c <- coffees) yield c.image
       val a = q.result
       val p1: DatabasePublisher[Blob] = db.stream(a)
       val p2: DatabasePublisher[Array[Byte]] = p1.mapResult { b =>
@@ -117,10 +111,11 @@ object Connection extends App {
     };
     {
       //#transaction
-      val a = (for {
-        ns <- coffees.filter(_.name.startsWith("ESPRESSO")).map(_.name).result
-        _ <- DBIO.seq(ns.map(n => coffees.filter(_.name === n).delete): _*)
-      } yield ()).transactionally
+      val a =
+        (for {
+          ns <- coffees.filter(_.name.startsWith("ESPRESSO")).map(_.name).result
+          _ <- DBIO.seq(ns.map(n => coffees.filter(_.name === n).delete): _*)
+        } yield ()).transactionally
 
       val f: Future[Unit] = db.run(a)
       //#transaction
@@ -130,12 +125,13 @@ object Connection extends App {
       //#rollback
       val countAction = coffees.length.result
 
-      val rollbackAction = (coffees ++= Seq(
-        ("Cold_Drip", new SerialBlob(Array[Byte](101))),
-        ("Dutch_Coffee", new SerialBlob(Array[Byte](49)))
-      )).flatMap { _ =>
-        DBIO.failed(new Exception("Roll it back"))
-      }.transactionally
+      val rollbackAction =
+        (coffees ++= Seq(
+          ("Cold_Drip", new SerialBlob(Array[Byte](101))),
+          ("Dutch_Coffee", new SerialBlob(Array[Byte](49)))
+        )).flatMap { _ =>
+          DBIO.failed(new Exception("Roll it back"))
+        }.transactionally
 
       val errorHandleAction = rollbackAction.asTry.flatMap {
         case Failure(e: Throwable) => DBIO.successful(e.getMessage)

@@ -69,8 +69,8 @@ object ServerResultUtils {
     } else if (!mayHaveEntity(
                  result.header.status) && !result.body.isKnownEmpty) {
       cancelEntity(result.body)
-      result.copy(body =
-        HttpEntity.Strict(ByteString.empty, result.body.contentType))
+      result.copy(body = HttpEntity
+        .Strict(ByteString.empty, result.body.contentType))
     } else {
       result
     }
@@ -149,8 +149,9 @@ object ServerResultUtils {
     * in the incoming request.
     */
   def cleanFlashCookie(requestHeader: RequestHeader, result: Result): Result = {
-    val optResultFlashCookies: Option[_] =
-      result.header.headers.get(SET_COOKIE).flatMap { setCookieValue: String =>
+    val optResultFlashCookies: Option[_] = result.header.headers
+      .get(SET_COOKIE)
+      .flatMap { setCookieValue: String =>
         Cookies
           .decodeSetCookieHeader(setCookieValue)
           .find(_.name == Flash.COOKIE_NAME)

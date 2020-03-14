@@ -222,8 +222,9 @@ object JdbcUtils extends Logging {
                   val typeName =
                     getJdbcType(et, dialect).databaseTypeDefinition.toLowerCase
                       .split("\\(")(0)
-                  val array =
-                    conn.createArrayOf(typeName, row.getSeq[AnyRef](i).toArray)
+                  val array = conn.createArrayOf(
+                    typeName,
+                    row.getSeq[AnyRef](i).toArray)
                   stmt.setArray(i + 1, array)
                 case _ =>
                   throw new IllegalArgumentException(
@@ -310,8 +311,9 @@ object JdbcUtils extends Logging {
     }
 
     val rddSchema = df.schema
-    val getConnection: () => Connection =
-      createConnectionFactory(url, properties)
+    val getConnection: () => Connection = createConnectionFactory(
+      url,
+      properties)
     val batchSize = properties.getProperty("batchsize", "1000").toInt
     df.foreachPartition { iterator =>
       savePartition(

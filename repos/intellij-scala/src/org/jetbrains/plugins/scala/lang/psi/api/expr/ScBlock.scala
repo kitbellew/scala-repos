@@ -53,26 +53,29 @@ trait ScBlock
     if (hasCaseClauses) {
       val caseClauses = findChildByClassScala(classOf[ScCaseClauses])
       val clauses: Seq[ScCaseClause] = caseClauses.caseClauses
-      val clausesType = clauses.foldLeft(types.Nothing: ScType)((tp, clause) =>
-        Bounds.lub(
-          tp,
-          clause.expr match {
-            case Some(expr) => expr.getType(TypingContext.empty).getOrNothing
-            case _          => types.Nothing
-          }))
+      val clausesType =
+        clauses.foldLeft(types.Nothing: ScType)((tp, clause) =>
+          Bounds.lub(
+            tp,
+            clause.expr match {
+              case Some(expr) => expr.getType(TypingContext.empty).getOrNothing
+              case _          => types.Nothing
+            }))
 
       getContext match {
         case c: ScCatchBlock =>
           val manager = ScalaPsiManager.instance(getProject)
-          val funs =
-            manager.getCachedClasses(getResolveScope, "scala.PartialFunction")
+          val funs = manager.getCachedClasses(
+            getResolveScope,
+            "scala.PartialFunction")
           val fun = funs
             .find(_.isInstanceOf[ScTrait])
             .getOrElse(
               return Failure("Cannot find PartialFunction class", Some(this)))
-          val throwable = manager
-            .getCachedClass(getResolveScope, "java.lang.Throwable")
-            .orNull
+          val throwable =
+            manager
+              .getCachedClass(getResolveScope, "java.lang.Throwable")
+              .orNull
           if (throwable == null)
             return Failure("Cannot find Throwable class", Some(this))
           return Success(
@@ -108,142 +111,147 @@ trait ScBlock
           }
       }
     }
-    val inner = lastExpr match {
-      case None =>
-        ScalaPsiUtil.fileContext(this) match {
-          case scalaFile: ScalaFile if scalaFile.isCompiled => Nothing
-          case _                                            => Unit
-        }
-      case Some(e) =>
-        val m = new mutable.HashMap[String, ScExistentialArgument]
-        def existize(t: ScType, visited: HashSet[ScType]): ScType = {
-          if (visited.contains(t))
-            return t
-          val visitedWithT = visited + t
-          t match {
-            case ScDesignatorType(p: ScParameter)
-                if p.owner.isInstanceOf[ScFunctionExpr] && p.owner
-                  .asInstanceOf[ScFunctionExpr]
-                  .result == Some(this) =>
-              val t =
-                existize(p.getType(TypingContext.empty).getOrAny, visitedWithT)
-              m.put(p.name, new ScExistentialArgument(p.name, Nil, t, t))
-              new ScTypeVariable(p.name)
-            case ScDesignatorType(typed: ScBindingPattern)
-                if typed.nameContext.isInstanceOf[ScCaseClause] &&
-                  typed.nameContext.asInstanceOf[ScCaseClause].expr == Some(
-                    this) =>
-              val t = existize(
-                typed.getType(TypingContext.empty).getOrAny,
-                visitedWithT)
-              m.put(
-                typed.name,
-                new ScExistentialArgument(typed.name, Nil, t, t))
-              new ScTypeVariable(typed.name)
-            case ScDesignatorType(des)
-                if PsiTreeUtil.isContextAncestor(this, des, true) =>
-              des match {
-                case obj: ScObject =>
-                  val t = existize(leastClassType(obj), visitedWithT)
-                  m.put(
-                    obj.name,
-                    new ScExistentialArgument(obj.name, Nil, t, t))
-                  new ScTypeVariable(obj.name)
-                case clazz: ScTypeDefinition =>
-                  val t = existize(leastClassType(clazz), visitedWithT)
-                  val vars = clazz.typeParameters.map { tp =>
-                    ScalaPsiManager.typeVariable(tp)
-                  }.toList
-                  m.put(
-                    clazz.name,
-                    new ScExistentialArgument(clazz.name, vars, t, t))
-                  new ScTypeVariable(clazz.name)
-                case typed: ScTypedDefinition =>
-                  val t = existize(
-                    typed.getType(TypingContext.empty).getOrAny,
-                    visitedWithT)
-                  m.put(
-                    typed.name,
-                    new ScExistentialArgument(typed.name, Nil, t, t))
-                  new ScTypeVariable(typed.name)
-                case _ => t
-              }
-            case proj @ ScProjectionType(p, elem, s) =>
-              ScProjectionType(existize(p, visitedWithT), elem, s)
-            case ScCompoundType(comps, signatureMap, typesMap) =>
-              new ScCompoundType(
-                comps.map(existize(_, visitedWithT)),
-                signatureMap.map {
-                  case (s: Signature, tp) =>
-                    def updateTypeParam(tp: TypeParameter): TypeParameter = {
-                      new TypeParameter(
-                        tp.name,
-                        tp.typeParams.map(updateTypeParam),
-                        () => existize(tp.lowerType(), visitedWithT),
-                        () => existize(tp.upperType(), visitedWithT),
-                        tp.ptp)
-                    }
-
-                    val pTypes: List[Seq[() => ScType]] =
-                      s.substitutedTypes.map(_.map(f =>
-                        () => existize(f(), visitedWithT)))
-                    val tParams: Array[TypeParameter] =
-                      if (s.typeParams.length == 0)
-                        TypeParameter.EMPTY_ARRAY
-                      else
-                        s.typeParams.map(updateTypeParam)
-                    val rt: ScType = existize(tp, visitedWithT)
-                    (
-                      new Signature(
-                        s.name,
-                        pTypes,
-                        s.paramLength,
-                        tParams,
-                        ScSubstitutor.empty,
-                        s.namedElement match {
-                          case fun: ScFunction =>
-                            ScFunction.getCompoundCopy(
-                              pTypes.map(_.map(_()).toList),
-                              tParams.toList,
-                              rt,
-                              fun)
-                          case b: ScBindingPattern =>
-                            ScBindingPattern.getCompoundCopy(rt, b)
-                          case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
-                          case named        => named
-                        },
-                        s.hasRepeatedParam),
-                      rt)
-                },
-                typesMap.map {
-                  case (s, sign) =>
-                    (s, sign.updateTypes(existize(_, visitedWithT)))
-                })
-            case JavaArrayType(arg) =>
-              JavaArrayType(existize(arg, visitedWithT))
-            case ScParameterizedType(des, typeArgs) =>
-              ScParameterizedType(
-                existize(des, visitedWithT),
-                typeArgs.map(existize(_, visitedWithT)))
-            case ex @ ScExistentialType(q, wildcards) =>
-              new ScExistentialType(
-                existize(q, visitedWithT),
-                wildcards.map { ex =>
-                  new ScExistentialArgument(
-                    ex.name,
-                    ex.args,
-                    existize(ex.lowerBound, visitedWithT),
-                    existize(ex.upperBound, visitedWithT))
-                })
-            case _ => t
+    val inner =
+      lastExpr match {
+        case None =>
+          ScalaPsiUtil.fileContext(this) match {
+            case scalaFile: ScalaFile if scalaFile.isCompiled => Nothing
+            case _                                            => Unit
           }
-        }
-        val t = existize(e.getType(TypingContext.empty).getOrAny, HashSet.empty)
-        if (m.size == 0)
-          t
-        else
-          new ScExistentialType(t, m.values.toList).simplify()
-    }
+        case Some(e) =>
+          val m = new mutable.HashMap[String, ScExistentialArgument]
+          def existize(t: ScType, visited: HashSet[ScType]): ScType = {
+            if (visited.contains(t))
+              return t
+            val visitedWithT = visited + t
+            t match {
+              case ScDesignatorType(p: ScParameter)
+                  if p.owner.isInstanceOf[ScFunctionExpr] && p.owner
+                    .asInstanceOf[ScFunctionExpr]
+                    .result == Some(this) =>
+                val t = existize(
+                  p.getType(TypingContext.empty).getOrAny,
+                  visitedWithT)
+                m.put(p.name, new ScExistentialArgument(p.name, Nil, t, t))
+                new ScTypeVariable(p.name)
+              case ScDesignatorType(typed: ScBindingPattern)
+                  if typed.nameContext.isInstanceOf[ScCaseClause] &&
+                    typed.nameContext.asInstanceOf[ScCaseClause].expr == Some(
+                      this) =>
+                val t = existize(
+                  typed.getType(TypingContext.empty).getOrAny,
+                  visitedWithT)
+                m.put(
+                  typed.name,
+                  new ScExistentialArgument(typed.name, Nil, t, t))
+                new ScTypeVariable(typed.name)
+              case ScDesignatorType(des)
+                  if PsiTreeUtil.isContextAncestor(this, des, true) =>
+                des match {
+                  case obj: ScObject =>
+                    val t = existize(leastClassType(obj), visitedWithT)
+                    m.put(
+                      obj.name,
+                      new ScExistentialArgument(obj.name, Nil, t, t))
+                    new ScTypeVariable(obj.name)
+                  case clazz: ScTypeDefinition =>
+                    val t = existize(leastClassType(clazz), visitedWithT)
+                    val vars =
+                      clazz.typeParameters.map { tp =>
+                        ScalaPsiManager.typeVariable(tp)
+                      }.toList
+                    m.put(
+                      clazz.name,
+                      new ScExistentialArgument(clazz.name, vars, t, t))
+                    new ScTypeVariable(clazz.name)
+                  case typed: ScTypedDefinition =>
+                    val t = existize(
+                      typed.getType(TypingContext.empty).getOrAny,
+                      visitedWithT)
+                    m.put(
+                      typed.name,
+                      new ScExistentialArgument(typed.name, Nil, t, t))
+                    new ScTypeVariable(typed.name)
+                  case _ => t
+                }
+              case proj @ ScProjectionType(p, elem, s) =>
+                ScProjectionType(existize(p, visitedWithT), elem, s)
+              case ScCompoundType(comps, signatureMap, typesMap) =>
+                new ScCompoundType(
+                  comps.map(existize(_, visitedWithT)),
+                  signatureMap.map {
+                    case (s: Signature, tp) =>
+                      def updateTypeParam(tp: TypeParameter): TypeParameter = {
+                        new TypeParameter(
+                          tp.name,
+                          tp.typeParams.map(updateTypeParam),
+                          () => existize(tp.lowerType(), visitedWithT),
+                          () => existize(tp.upperType(), visitedWithT),
+                          tp.ptp)
+                      }
+
+                      val pTypes: List[Seq[() => ScType]] = s.substitutedTypes
+                        .map(_.map(f => () => existize(f(), visitedWithT)))
+                      val tParams: Array[TypeParameter] =
+                        if (s.typeParams.length == 0)
+                          TypeParameter.EMPTY_ARRAY
+                        else
+                          s.typeParams.map(updateTypeParam)
+                      val rt: ScType = existize(tp, visitedWithT)
+                      (
+                        new Signature(
+                          s.name,
+                          pTypes,
+                          s.paramLength,
+                          tParams,
+                          ScSubstitutor.empty,
+                          s.namedElement match {
+                            case fun: ScFunction =>
+                              ScFunction.getCompoundCopy(
+                                pTypes.map(_.map(_()).toList),
+                                tParams.toList,
+                                rt,
+                                fun)
+                            case b: ScBindingPattern =>
+                              ScBindingPattern.getCompoundCopy(rt, b)
+                            case f: ScFieldId =>
+                              ScFieldId.getCompoundCopy(rt, f)
+                            case named => named
+                          },
+                          s.hasRepeatedParam),
+                        rt)
+                  },
+                  typesMap.map {
+                    case (s, sign) =>
+                      (s, sign.updateTypes(existize(_, visitedWithT)))
+                  })
+              case JavaArrayType(arg) =>
+                JavaArrayType(existize(arg, visitedWithT))
+              case ScParameterizedType(des, typeArgs) =>
+                ScParameterizedType(
+                  existize(des, visitedWithT),
+                  typeArgs.map(existize(_, visitedWithT)))
+              case ex @ ScExistentialType(q, wildcards) =>
+                new ScExistentialType(
+                  existize(q, visitedWithT),
+                  wildcards.map { ex =>
+                    new ScExistentialArgument(
+                      ex.name,
+                      ex.args,
+                      existize(ex.lowerBound, visitedWithT),
+                      existize(ex.upperBound, visitedWithT))
+                  })
+              case _ => t
+            }
+          }
+          val t = existize(
+            e.getType(TypingContext.empty).getOrAny,
+            HashSet.empty)
+          if (m.size == 0)
+            t
+          else
+            new ScExistentialType(t, m.values.toList).simplify()
+      }
     Success(inner, Some(this))
   }
 

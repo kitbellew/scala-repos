@@ -66,19 +66,20 @@ class RadialGradientSpec
   }
 
   it should "return valid instance from companion's apply(stops*)" in {
-    val expected: RadialGradient = new RadialGradient(
-      0,
-      0,
-      0,
-      0,
-      0,
-      true,
-      jfxsp.CycleMethod.NO_CYCLE,
-      List(
-        new jfxsp.Stop(0, Color.White),
-        new jfxsp.Stop(0, Color.Black)
+    val expected: RadialGradient =
+      new RadialGradient(
+        0,
+        0,
+        0,
+        0,
+        0,
+        true,
+        jfxsp.CycleMethod.NO_CYCLE,
+        List(
+          new jfxsp.Stop(0, Color.White),
+          new jfxsp.Stop(0, Color.Black)
+        )
       )
-    )
     val radialGradient = RadialGradient(
       focusAngle = 0,
       focusDistance = 0,

@@ -43,8 +43,8 @@ private[ui] class StorageTab(parent: SparkUI)
 class StorageListener(storageStatusListener: StorageStatusListener)
     extends BlockStatusListener {
 
-  private[ui] val _rddInfoMap =
-    mutable.Map[Int, RDDInfo]() // exposed for testing
+  private[ui] val _rddInfoMap = mutable
+    .Map[Int, RDDInfo]() // exposed for testing
 
   def activeStorageStatusList: Seq[StorageStatus] =
     storageStatusListener.storageStatusList
@@ -58,9 +58,10 @@ class StorageListener(storageStatusListener: StorageStatusListener)
   /** Update the storage info of the RDDs whose blocks are among the given updated blocks */
   private def updateRDDInfo(
       updatedBlocks: Seq[(BlockId, BlockStatus)]): Unit = {
-    val rddIdsToUpdate = updatedBlocks.flatMap {
-      case (bid, _) => bid.asRDDId.map(_.rddId)
-    }.toSet
+    val rddIdsToUpdate =
+      updatedBlocks.flatMap {
+        case (bid, _) => bid.asRDDId.map(_.rddId)
+      }.toSet
     val rddInfosToUpdate = _rddInfoMap.values.toSeq.filter { s =>
       rddIdsToUpdate.contains(s.id)
     }

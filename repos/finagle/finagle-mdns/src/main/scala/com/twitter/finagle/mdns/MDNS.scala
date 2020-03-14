@@ -46,10 +46,11 @@ private trait MDNSResolverIface {
 }
 
 private[mdns] object MDNS {
-  lazy val pid = ManagementFactory.getRuntimeMXBean.getName.split("@") match {
-    case Array(pid, _) => pid
-    case _             => "unknown"
-  }
+  lazy val pid =
+    ManagementFactory.getRuntimeMXBean.getName.split("@") match {
+      case Array(pid, _) => pid
+      case _             => "unknown"
+    }
 
   def mkName(ps: Any*) = ps.mkString("/")
 

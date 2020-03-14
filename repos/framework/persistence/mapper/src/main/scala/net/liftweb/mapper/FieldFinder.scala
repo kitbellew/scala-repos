@@ -124,6 +124,7 @@ class FieldFinder[T: ClassTag](
     findForClass(startingClass).distinct
   }
 
-  lazy val accessorMethods =
-    findMagicFields(metaMapper, metaMapper.getClass.getSuperclass)
+  lazy val accessorMethods = findMagicFields(
+    metaMapper,
+    metaMapper.getClass.getSuperclass)
 }

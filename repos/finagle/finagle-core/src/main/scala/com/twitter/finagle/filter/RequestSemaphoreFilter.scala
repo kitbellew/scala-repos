@@ -12,8 +12,7 @@ object RequestSemaphoreFilter {
     * [[com.twitter.finagle.filter.RequestSemaphoreFilter]] module.
     */
   case class Param(sem: Option[AsyncSemaphore]) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
     implicit val param = Stack.Param(Param(None))
@@ -34,20 +33,21 @@ object RequestSemaphoreFilter {
           case Param(None) => next
           case Param(Some(sem)) =>
             val param.Stats(sr) = _stats
-            val filter = new RequestSemaphoreFilter[Req, Rep](sem) {
-              // We capture the gauges inside of here so their
-              // (reference) lifetime is tied to that of the filter
-              // itself.
-              val max = sem.numInitialPermits
-              val gauges = Seq(
-                sr.addGauge("request_concurrency") {
-                  max - sem.numPermitsAvailable
-                },
-                sr.addGauge("request_queue_size") {
-                  sem.numWaiters
-                }
-              )
-            }
+            val filter =
+              new RequestSemaphoreFilter[Req, Rep](sem) {
+                // We capture the gauges inside of here so their
+                // (reference) lifetime is tied to that of the filter
+                // itself.
+                val max = sem.numInitialPermits
+                val gauges = Seq(
+                  sr.addGauge("request_concurrency") {
+                    max - sem.numPermitsAvailable
+                  },
+                  sr.addGauge("request_queue_size") {
+                    sem.numWaiters
+                  }
+                )
+              }
             filter andThen next
         }
     }

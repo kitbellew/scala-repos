@@ -43,8 +43,7 @@ class ConduitSpscBenchmark extends StdBenchAnnotations {
     * `source` is plugged directly into `sink` without a conduit.
     */
   @Benchmark
-  def control: Boolean =
-    Await.result(runControl(size))
+  def control: Boolean = Await.result(runControl(size))
 
   private[this] def feedQueue(n: Int): Future[Unit] =
     if (n <= 0)

@@ -141,12 +141,18 @@ trait DocComments { self: Global =>
           // 2 - expanding explicit inheritance @inheritdoc tags
           // 3 - expanding variables like $COLL
           val useCaseCommentRaw = uc.comment.raw
-          val useCaseCommentMerged =
-            merge(fullSigComment, useCaseCommentRaw, defn)
-          val useCaseCommentInheritdoc =
-            expandInheritdoc(fullSigComment, useCaseCommentMerged, sym)
-          val useCaseCommentVariables =
-            expandVariables(useCaseCommentInheritdoc, sym, site)
+          val useCaseCommentMerged = merge(
+            fullSigComment,
+            useCaseCommentRaw,
+            defn)
+          val useCaseCommentInheritdoc = expandInheritdoc(
+            fullSigComment,
+            useCaseCommentMerged,
+            sym)
+          val useCaseCommentVariables = expandVariables(
+            useCaseCommentInheritdoc,
+            sym,
+            site)
           (defn, useCaseCommentVariables, uc.pos)
         }
     }
@@ -559,16 +565,17 @@ trait DocComments { self: Global =>
           return ErrorType
         }
         val partnames = (parts.init map newTermName) :+ newTypeName(parts.last)
-        val (start, rest) = parts match {
-          case "this" :: _ => (site.thisType, partnames.tail)
-          case _ :: "this" :: _ =>
-            site.ownerChain.find(_.name == partnames.head) match {
-              case Some(clazz) => (clazz.thisType, partnames drop 2)
-              case _           => (NoType, Nil)
-            }
-          case _ =>
-            (getSite(partnames.head), partnames.tail)
-        }
+        val (start, rest) =
+          parts match {
+            case "this" :: _ => (site.thisType, partnames.tail)
+            case _ :: "this" :: _ =>
+              site.ownerChain.find(_.name == partnames.head) match {
+                case Some(clazz) => (clazz.thisType, partnames drop 2)
+                case _           => (NoType, Nil)
+              }
+            case _ =>
+              (getSite(partnames.head), partnames.tail)
+          }
         val result = (start /: rest)(select(_, _, NoType))
         if (result == NoType)
           reporter.warning(
@@ -625,25 +632,26 @@ trait DocComments { self: Global =>
         else
           subst(sym, from.tail, to.tail)
 
-      val substAliases = new TypeMap {
-        def apply(tp: Type) =
-          mapOver(tp) match {
-            case tp1 @ TypeRef(pre, sym, args)
-                if (sym.name.length > 1 && sym.name.startChar == '$') =>
-              subst(sym, aliases, aliasExpansions) match {
-                case (TypeRef(pre1, sym1, _), canNormalize) =>
-                  val tpe = typeRef(pre1, sym1, args)
-                  if (canNormalize)
-                    tpe.normalize
-                  else
-                    tpe
-                case _ =>
-                  tp1
-              }
-            case tp1 =>
-              tp1
-          }
-      }
+      val substAliases =
+        new TypeMap {
+          def apply(tp: Type) =
+            mapOver(tp) match {
+              case tp1 @ TypeRef(pre, sym, args)
+                  if (sym.name.length > 1 && sym.name.startChar == '$') =>
+                subst(sym, aliases, aliasExpansions) match {
+                  case (TypeRef(pre1, sym1, _), canNormalize) =>
+                    val tpe = typeRef(pre1, sym1, args)
+                    if (canNormalize)
+                      tpe.normalize
+                    else
+                      tpe
+                  case _ =>
+                    tp1
+                }
+              case tp1 =>
+                tp1
+            }
+        }
 
       for (defn <- defined)
         yield {

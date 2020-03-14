@@ -63,8 +63,10 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
         if doc.getLineCount > line
       } yield {
         val startOffset: Int = doc.getLineStartOffset(line)
-        val offset: Int =
-          CharArrayUtil.shiftForward(doc.getCharsSequence, startOffset, " \t{")
+        val offset: Int = CharArrayUtil.shiftForward(
+          doc.getCharsSequence,
+          startOffset,
+          " \t{")
         val element: PsiElement = sf.findElementAt(offset)
         (element, doc)
       }) match {
@@ -97,17 +99,20 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
   override def createMethodFilter(stepTarget: SmartStepTarget) = {
     stepTarget match {
       case methodTarget: MethodSmartStepTarget =>
-        val scalaFilter = methodTarget.getMethod match {
-          case f @ (_: ScMethodLike | _: FakeAnonymousClassConstructor)
-              if stepTarget.needsBreakpointRequest() =>
-            ScalaBreakpointMethodFilter.from(
-              f,
-              stepTarget.getCallingExpressionLines)
-          case fun: ScMethodLike =>
-            Some(
-              new ScalaMethodFilter(fun, stepTarget.getCallingExpressionLines))
-          case _ => None
-        }
+        val scalaFilter =
+          methodTarget.getMethod match {
+            case f @ (_: ScMethodLike | _: FakeAnonymousClassConstructor)
+                if stepTarget.needsBreakpointRequest() =>
+              ScalaBreakpointMethodFilter.from(
+                f,
+                stepTarget.getCallingExpressionLines)
+            case fun: ScMethodLike =>
+              Some(
+                new ScalaMethodFilter(
+                  fun,
+                  stepTarget.getCallingExpressionLines))
+            case _ => None
+          }
         scalaFilter.getOrElse(super.createMethodFilter(stepTarget))
       case ScalaFunExprSmartStepTarget(fExpr, stmts) =>
         ScalaBreakpointMethodFilter
@@ -162,10 +167,11 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
             constr.simpleTypeElement.fold("")(ste => s"new ${ste.getText}.")
 
           val generateAnonClass = DebuggerUtil.generatesAnonClass(templ)
-          val method = ref.resolve() match {
-            case m: PsiMethod if !generateAnonClass => m
-            case _                                  => new FakeAnonymousClassConstructor(templ, ref.refName)
-          }
+          val method =
+            ref.resolve() match {
+              case m: PsiMethod if !generateAnonClass => m
+              case _                                  => new FakeAnonymousClassConstructor(templ, ref.refName)
+            }
           result += new MethodSmartStepTarget(
             method,
             "new ",
@@ -247,8 +253,8 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
                 noStopAtLines)
             case Both(f: ScFunctionDefinition, ContainingClass(cl: ScClass))
                 if cl.getModifierList.hasModifierProperty("implicit") =>
-              val isActuallyImplicit =
-                ref.qualifier.exists(_.getImplicitConversions()._2.nonEmpty)
+              val isActuallyImplicit = ref.qualifier.exists(
+                _.getImplicitConversions()._2.nonEmpty)
               val prefix =
                 if (isActuallyImplicit)
                   "implicit "
@@ -278,11 +284,12 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
       if (!elementFilter(pat))
         return
 
-      val ref = pat match {
-        case cp: ScConstructorPattern => Some(cp.ref)
-        case ip: ScInfixPattern       => Some(ip.reference)
-        case _                        => None
-      }
+      val ref =
+        pat match {
+          case cp: ScConstructorPattern => Some(cp.ref)
+          case ip: ScInfixPattern       => Some(ip.reference)
+          case _                        => None
+        }
       ref match {
         case Some(r @ ResolvesTo(f: ScFunctionDefinition)) =>
           val prefix = s"${r.refName}."

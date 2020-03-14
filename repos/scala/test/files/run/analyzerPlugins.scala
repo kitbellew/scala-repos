@@ -143,14 +143,15 @@ object Test extends DirectTest {
     addAnalyzerPlugin(analyzerPlugin)
     compileString(global)(code)
 
-    val res = output
-      .groupBy(identity)
-      .mapValues(_.size)
-      .map {
-        case (k, v) => s"$k [$v]"
-      }
-      .toList
-      .sorted
+    val res =
+      output
+        .groupBy(identity)
+        .mapValues(_.size)
+        .map {
+          case (k, v) => s"$k [$v]"
+        }
+        .toList
+        .sorted
     println(res.mkString("\n"))
   }
 

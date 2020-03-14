@@ -27,50 +27,51 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
     class TestException extends Exception {}
     val exc = new TestException {}
 
-    val namer = new Namer {
-      var acts: Map[
-        Path,
-        (Activity[NameTree[Path]], Witness[Try[NameTree[Path]]])] =
-        Map.empty
+    val namer =
+      new Namer {
+        var acts: Map[
+          Path,
+          (Activity[NameTree[Path]], Witness[Try[NameTree[Path]]])] = Map.empty
 
-      def contains(path: String) = acts contains Path.read(path)
+        def contains(path: String) = acts contains Path.read(path)
 
-      def apply(path: String): Witness[Try[NameTree[Path]]] = {
-        val p = Path.read(path)
-        val (_, wit) = acts.getOrElse(p, addPath(p))
-        wit
-      }
+        def apply(path: String): Witness[Try[NameTree[Path]]] = {
+          val p = Path.read(path)
+          val (_, wit) = acts.getOrElse(p, addPath(p))
+          wit
+        }
 
-      private def addPath(p: Path) = {
-        val tup = Activity[NameTree[Path]]
-        acts += p -> tup
-        tup
-      }
+        private def addPath(p: Path) = {
+          val tup = Activity[NameTree[Path]]
+          acts += p -> tup
+          tup
+        }
 
-      val pathNamer = new Namer {
-        def lookup(path: Path): Activity[NameTree[Name]] =
-          path match {
-            // Don't capture system paths.
-            case Path.Utf8("$", _*) => Activity.value(NameTree.Neg)
-            case p @ Path.Utf8(elems @ _*) =>
-              acts.get(p) match {
-                case Some((a, _)) =>
-                  a map { tree =>
-                    tree.map(Name(_))
+        val pathNamer =
+          new Namer {
+            def lookup(path: Path): Activity[NameTree[Name]] =
+              path match {
+                // Don't capture system paths.
+                case Path.Utf8("$", _*) => Activity.value(NameTree.Neg)
+                case p @ Path.Utf8(elems @ _*) =>
+                  acts.get(p) match {
+                    case Some((a, _)) =>
+                      a map { tree =>
+                        tree.map(Name(_))
+                      }
+                    case None =>
+                      val (act, _) = addPath(p)
+                      act map { tree =>
+                        tree.map(Name(_))
+                      }
                   }
-                case None =>
-                  val (act, _) = addPath(p)
-                  act map { tree =>
-                    tree.map(Name(_))
-                  }
+                case _ => Activity.value(NameTree.Neg)
               }
-            case _ => Activity.value(NameTree.Neg)
           }
-      }
 
-      val namer = OrElse(pathNamer, Namer.global)
-      def lookup(path: Path) = namer.lookup(path)
-    }
+        val namer = OrElse(pathNamer, Namer.global)
+        def lookup(path: Path) = namer.lookup(path)
+      }
   }
 
   def assertEval(res: Activity[NameTree[Name.Bound]], expected: Name.Bound*) =

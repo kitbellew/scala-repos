@@ -18,9 +18,10 @@ object Equivalence {
     equivInner(l, r, new ScUndefinedSubstitutor)._2
 
   val guard = RecursionManager.createGuard("equivalence.guard")
-  val eval = new ThreadLocal[Boolean] {
-    override def initialValue(): Boolean = false
-  }
+  val eval =
+    new ThreadLocal[Boolean] {
+      override def initialValue(): Boolean = false
+    }
 
   val cache: ConcurrentWeakHashMap[
     (ScType, ScType, Boolean),

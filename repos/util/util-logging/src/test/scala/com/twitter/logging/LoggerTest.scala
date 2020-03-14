@@ -93,12 +93,13 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     var log: Logger = null
 
     val timeFrozenFormatter = new Formatter(timezone = Some("UTC"))
-    val timeFrozenHandler = new StringHandler(timeFrozenFormatter, None) {
-      override def publish(record: javalog.LogRecord) = {
-        record.setMillis(1206769996722L)
-        super.publish(record)
+    val timeFrozenHandler =
+      new StringHandler(timeFrozenFormatter, None) {
+        override def publish(record: javalog.LogRecord) = {
+          record.setMillis(1206769996722L)
+          super.publish(record)
+        }
       }
-    }
 
     def parse(): List[String] = {
       val rv = myHandler.asInstanceOf[StringHandler].get.split("\n")
@@ -243,10 +244,10 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     }
 
     "withLoggers applies logger factories, executes a block, and then applies original factories" in {
-      val initialFactories =
-        List(LoggerFactory(node = "", level = Some(Level.DEBUG)))
-      val otherFactories =
-        List(LoggerFactory(node = "", level = Some(Level.INFO)))
+      val initialFactories = List(
+        LoggerFactory(node = "", level = Some(Level.DEBUG)))
+      val otherFactories = List(
+        LoggerFactory(node = "", level = Some(Level.INFO)))
       Logger.configure(initialFactories)
 
       assert(Logger.get("").getLevel == Level.DEBUG)

@@ -228,8 +228,8 @@ class UdpExt(system: ExtendedActorSystem) extends IO.Extension {
 
   import Udp.UdpSettings
 
-  val settings: UdpSettings = new UdpSettings(
-    system.settings.config.getConfig("akka.io.udp"))
+  val settings: UdpSettings =
+    new UdpSettings(system.settings.config.getConfig("akka.io.udp"))
 
   val manager: ActorRef = {
     system.systemActorOf(
@@ -245,9 +245,10 @@ class UdpExt(system: ExtendedActorSystem) extends IO.Extension {
   /**
     * INTERNAL API
     */
-  private[io] val bufferPool: BufferPool = new DirectByteBufferPool(
-    settings.DirectBufferSize,
-    settings.MaxDirectBufferPoolSize)
+  private[io] val bufferPool: BufferPool =
+    new DirectByteBufferPool(
+      settings.DirectBufferSize,
+      settings.MaxDirectBufferPoolSize)
 }
 
 /**

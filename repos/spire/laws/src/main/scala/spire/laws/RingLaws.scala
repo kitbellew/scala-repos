@@ -15,10 +15,11 @@ object RingLaws {
     new RingLaws[A] {
       def Arb = implicitly[Arbitrary[A]]
       def pred = _pred
-      val nonZeroLaws = new GroupLaws[A] {
-        def Arb = Arbitrary(arbitrary[A] filter _pred)
-        def Equ = Eq[A]
-      }
+      val nonZeroLaws =
+        new GroupLaws[A] {
+          def Arb = Arbitrary(arbitrary[A] filter _pred)
+          def Equ = Eq[A]
+        }
     }
 }
 

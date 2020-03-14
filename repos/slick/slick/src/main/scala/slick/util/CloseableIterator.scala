@@ -52,11 +52,12 @@ object CloseableIterator {
   /**
     * An empty CloseableIterator
     */
-  val empty: CloseableIterator[Nothing] = new CloseableIterator[Nothing] {
-    def hasNext = false
-    def next() = noNext
-    def close() {}
-  }
+  val empty: CloseableIterator[Nothing] =
+    new CloseableIterator[Nothing] {
+      def hasNext = false
+      def next() = noNext
+      def close() {}
+    }
 
   /**
     * A CloseableIterator which contains exactly one item.

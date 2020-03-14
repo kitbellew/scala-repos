@@ -21,15 +21,17 @@ import javax.validation.Validation
 
 object FormSpec extends Specification {
 
-  val messagesApi = new DefaultMessagesApi(
-    Environment.simple(),
-    Configuration.reference,
-    new DefaultLangs(Configuration.reference))
+  val messagesApi =
+    new DefaultMessagesApi(
+      Environment.simple(),
+      Configuration.reference,
+      new DefaultLangs(Configuration.reference))
   val jMessagesApi = new play.i18n.MessagesApi(messagesApi)
-  val formFactory = new FormFactory(
-    jMessagesApi,
-    new Formatters(jMessagesApi),
-    Validation.buildDefaultValidatorFactory().getValidator())
+  val formFactory =
+    new FormFactory(
+      jMessagesApi,
+      new Formatters(jMessagesApi),
+      Validation.buildDefaultValidatorFactory().getValidator())
 
   "a java form" should {
     "be valid" in {
@@ -48,8 +50,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(false)
     }
     "be valid with mandatory params passed" in {
@@ -67,8 +70,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(false)
     }
     "have an error due to badly formatted date" in new WithApplication() {
@@ -86,8 +90,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(2)
       myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
@@ -117,8 +122,9 @@ object FormSpec extends Specification {
 
       Context.current.get().setTransientLang("fr");
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
       myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
@@ -154,8 +160,9 @@ object FormSpec extends Specification {
 
       Context.current.get().changeLang("fr");
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
       myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
@@ -183,8 +190,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().asScala must contain(
         "error.required")
@@ -204,8 +212,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("id").get(0).messages().asScala must contain(
         "error.invalid")
@@ -226,8 +235,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(false)
     }
     "have an error due to badly formatted date for default date binder" in new WithApplication() {
@@ -246,8 +256,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("endDate").get(0).messages().asScala must contain(
         "error.invalid.java.util.Date")
@@ -255,49 +266,60 @@ object FormSpec extends Specification {
 
     "support repeated values for Java binding" in {
 
-      val user1 = formFactory
-        .form(classOf[AnotherUser])
-        .bindFromRequest(dummyRequest(Map("name" -> Array("Kiki"))))
-        .get
+      val user1 =
+        formFactory
+          .form(classOf[AnotherUser])
+          .bindFromRequest(dummyRequest(Map("name" -> Array("Kiki"))))
+          .get
       user1.getName must beEqualTo("Kiki")
       user1.getEmails.size must beEqualTo(0)
 
-      val user2 = formFactory
-        .form(classOf[AnotherUser])
-        .bindFromRequest(dummyRequest(
-          Map("name" -> Array("Kiki"), "emails[0]" -> Array("kiki@gmail.com"))))
-        .get
+      val user2 =
+        formFactory
+          .form(classOf[AnotherUser])
+          .bindFromRequest(
+            dummyRequest(
+              Map(
+                "name" -> Array("Kiki"),
+                "emails[0]" -> Array("kiki@gmail.com"))))
+          .get
       user2.getName must beEqualTo("Kiki")
       user2.getEmails.size must beEqualTo(1)
 
-      val user3 = formFactory
-        .form(classOf[AnotherUser])
-        .bindFromRequest(
-          dummyRequest(
-            Map(
-              "name" -> Array("Kiki"),
-              "emails[0]" -> Array("kiki@gmail.com"),
-              "emails[1]" -> Array("kiki@zen.com"))))
-        .get
+      val user3 =
+        formFactory
+          .form(classOf[AnotherUser])
+          .bindFromRequest(
+            dummyRequest(
+              Map(
+                "name" -> Array("Kiki"),
+                "emails[0]" -> Array("kiki@gmail.com"),
+                "emails[1]" -> Array("kiki@zen.com"))))
+          .get
       user3.getName must beEqualTo("Kiki")
       user3.getEmails.size must beEqualTo(2)
 
-      val user4 = formFactory
-        .form(classOf[AnotherUser])
-        .bindFromRequest(dummyRequest(
-          Map("name" -> Array("Kiki"), "emails[]" -> Array("kiki@gmail.com"))))
-        .get
+      val user4 =
+        formFactory
+          .form(classOf[AnotherUser])
+          .bindFromRequest(
+            dummyRequest(
+              Map(
+                "name" -> Array("Kiki"),
+                "emails[]" -> Array("kiki@gmail.com"))))
+          .get
       user4.getName must beEqualTo("Kiki")
       user4.getEmails.size must beEqualTo(1)
 
-      val user5 = formFactory
-        .form(classOf[AnotherUser])
-        .bindFromRequest(
-          dummyRequest(
-            Map(
-              "name" -> Array("Kiki"),
-              "emails[]" -> Array("kiki@gmail.com", "kiki@zen.com"))))
-        .get
+      val user5 =
+        formFactory
+          .form(classOf[AnotherUser])
+          .bindFromRequest(
+            dummyRequest(
+              Map(
+                "name" -> Array("Kiki"),
+                "emails[]" -> Array("kiki@gmail.com", "kiki@zen.com"))))
+          .get
       user5.getName must beEqualTo("Kiki")
       user5.getEmails.size must beEqualTo(2)
 
@@ -319,17 +341,19 @@ object FormSpec extends Specification {
     }
 
     "support optional deserialization of a request" in {
-      val user1 = formFactory
-        .form(classOf[AnotherUser])
-        .bindFromRequest(dummyRequest(Map("name" -> Array("Kiki"))))
-        .get
+      val user1 =
+        formFactory
+          .form(classOf[AnotherUser])
+          .bindFromRequest(dummyRequest(Map("name" -> Array("Kiki"))))
+          .get
       user1.getCompany.isPresent must beEqualTo(false)
 
-      val user2 = formFactory
-        .form(classOf[AnotherUser])
-        .bindFromRequest(dummyRequest(
-          Map("name" -> Array("Kiki"), "company" -> Array("Acme"))))
-        .get
+      val user2 =
+        formFactory
+          .form(classOf[AnotherUser])
+          .bindFromRequest(dummyRequest(
+            Map("name" -> Array("Kiki"), "company" -> Array("Acme"))))
+          .get
       user2.getCompany.get must beEqualTo("Acme")
     }
 
@@ -413,10 +437,11 @@ object FormSpec extends Specification {
           .map(_.toString)
 
       def fillNoBind(values: (String, String)*) = {
-        val map = values.zipWithIndex.flatMap {
-          case ((a, b), i) =>
-            Seq("foo[" + i + "].a" -> a, "foo[" + i + "].b" -> b)
-        }.toMap
+        val map =
+          values.zipWithIndex.flatMap {
+            case ((a, b), i) =>
+              Seq("foo[" + i + "].a" -> a, "foo[" + i + "].b" -> b)
+          }.toMap
         // Don't use bind, the point here is to have a form with data that isn't bound, otherwise the mapping indexes
         // used come from the form, not the input data
         new Form[JavaForm](

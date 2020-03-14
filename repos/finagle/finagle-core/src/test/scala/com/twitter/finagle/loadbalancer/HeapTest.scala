@@ -13,11 +13,12 @@ class HeapTest extends FunSuite {
     val heap = new Array[Int](N + 1)
     val input = (new Random).shuffle(Seq(0 until 100: _*)).toArray
     val indices = new HashMap[Int, Int]
-    val indexer = new Heap.Indexer[Int] {
-      def apply(v: Int, i: Int) {
-        indices(v) = i
+    val indexer =
+      new Heap.Indexer[Int] {
+        def apply(v: Int, i: Int) {
+          indices(v) = i
+        }
       }
-    }
     val ops = Heap[Int](math.Ordering.Int, indexer)
   }
 

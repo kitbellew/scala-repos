@@ -86,42 +86,46 @@ class SbtModuleBuilder
     sbtVersionComboBox.setItems(sbtVersions)
     scalaVersionComboBox.setItems(scalaVersions)
 
-    val resolveClassifiersCheckBox = new JCheckBox(
-      SbtBundle("sbt.settings.resolveClassifiers"))
-    val resolveJavadocsCheckBox = new JCheckBox(
-      SbtBundle("sbt.settings.resolveJavadocs"))
-    val resolveSbtClassifiersCheckBox = new JCheckBox(
-      SbtBundle("sbt.settings.resolveSbtClassifiers"))
-    val useAutoImportCheckBox = new JCheckBox(
-      ExternalSystemBundle.message("settings.label.use.auto.import"))
-    val createContentDirsCheckBox = new JCheckBox(
-      ExternalSystemBundle.message(
-        "settings.label.create.empty.content.root.directories"))
+    val resolveClassifiersCheckBox =
+      new JCheckBox(SbtBundle("sbt.settings.resolveClassifiers"))
+    val resolveJavadocsCheckBox =
+      new JCheckBox(SbtBundle("sbt.settings.resolveJavadocs"))
+    val resolveSbtClassifiersCheckBox =
+      new JCheckBox(SbtBundle("sbt.settings.resolveSbtClassifiers"))
+    val useAutoImportCheckBox =
+      new JCheckBox(
+        ExternalSystemBundle.message("settings.label.use.auto.import"))
+    val createContentDirsCheckBox =
+      new JCheckBox(
+        ExternalSystemBundle.message(
+          "settings.label.create.empty.content.root.directories"))
 
-    val step = new SdkSettingsStep(
-      settingsStep,
-      this,
-      new Condition[SdkTypeId] {
-        def value(t: SdkTypeId): Boolean = t != null && t.isInstanceOf[JavaSdk]
-      }) {
-      override def updateDataModel() {
-        sbtVersion = sbtVersionComboBox.getSelectedItem
-        scalaVersion = scalaVersionComboBox.getSelectedItem
+    val step =
+      new SdkSettingsStep(
+        settingsStep,
+        this,
+        new Condition[SdkTypeId] {
+          def value(t: SdkTypeId): Boolean =
+            t != null && t.isInstanceOf[JavaSdk]
+        }) {
+        override def updateDataModel() {
+          sbtVersion = sbtVersionComboBox.getSelectedItem
+          scalaVersion = scalaVersionComboBox.getSelectedItem
 
-        settingsStep.getContext setProjectJdk myJdkComboBox.getSelectedJdk
+          settingsStep.getContext setProjectJdk myJdkComboBox.getSelectedJdk
 
-        getExternalProjectSettings.setResolveClassifiers(
-          resolveClassifiersCheckBox.isSelected)
-        getExternalProjectSettings.setResolveJavadocs(
-          resolveJavadocsCheckBox.isSelected)
-        getExternalProjectSettings.setResolveSbtClassifiers(
-          resolveSbtClassifiersCheckBox.isSelected)
-        getExternalProjectSettings.setUseAutoImport(
-          useAutoImportCheckBox.isSelected)
-        getExternalProjectSettings.setCreateEmptyContentRootDirectories(
-          createContentDirsCheckBox.isSelected)
+          getExternalProjectSettings.setResolveClassifiers(
+            resolveClassifiersCheckBox.isSelected)
+          getExternalProjectSettings.setResolveJavadocs(
+            resolveJavadocsCheckBox.isSelected)
+          getExternalProjectSettings.setResolveSbtClassifiers(
+            resolveSbtClassifiersCheckBox.isSelected)
+          getExternalProjectSettings.setUseAutoImport(
+            useAutoImportCheckBox.isSelected)
+          getExternalProjectSettings.setCreateEmptyContentRootDirectories(
+            createContentDirsCheckBox.isSelected)
+        }
       }
-    }
 
     createContentDirsCheckBox.setSelected(true)
     resolveClassifiersCheckBox.setSelected(true)
@@ -187,13 +191,12 @@ class SbtModuleBuilder
 
     model.addContentEntry(vContentRootDir)
     model.inheritSdk()
-    val settings =
-      ExternalSystemApiUtil
-        .getSettings(model.getProject, SbtProjectSystem.Id)
-        .asInstanceOf[AbstractExternalSystemSettings[
-          _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
-          SbtProjectSettings,
-          _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
+    val settings = ExternalSystemApiUtil
+      .getSettings(model.getProject, SbtProjectSystem.Id)
+      .asInstanceOf[AbstractExternalSystemSettings[
+        _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
+        SbtProjectSettings,
+        _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
 //    model.commit()
 
     val externalProjectSettings = getExternalProjectSettings

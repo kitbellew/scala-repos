@@ -17,10 +17,11 @@ class ScalaElseUnwrapper extends ScalaElseUnwrapperBase {
       ifStmt: ScIfStmt,
       context: ScalaUnwrapContext) = {
     val from = maxIfStmt(ifStmt)
-    val branch = expr match {
-      case elseIf @ ScIfStmt(_, Some(thenBr), _) => thenBr
-      case _                                     => expr
-    }
+    val branch =
+      expr match {
+        case elseIf @ ScIfStmt(_, Some(thenBr), _) => thenBr
+        case _                                     => expr
+      }
     context.extractBlockOrSingleStatement(branch, from)
     context.delete(from)
   }

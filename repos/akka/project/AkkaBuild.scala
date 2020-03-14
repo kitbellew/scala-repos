@@ -192,8 +192,11 @@ object AkkaBuild extends Build {
   lazy val remote = Project(
     id = "akka-remote",
     base = file("akka-remote"),
-    dependencies =
-      Seq(actor, actorTests % "test->test", testkit % "test->test", protobuf)
+    dependencies = Seq(
+      actor,
+      actorTests % "test->test",
+      testkit % "test->test",
+      protobuf)
   )
 
   lazy val multiNodeTestkit = Project(
@@ -211,8 +214,10 @@ object AkkaBuild extends Build {
   lazy val cluster = Project(
     id = "akka-cluster",
     base = file("akka-cluster"),
-    dependencies =
-      Seq(remote, remoteTests % "test->test", testkit % "test->test")
+    dependencies = Seq(
+      remote,
+      remoteTests % "test->test",
+      testkit % "test->test")
   ) configs (MultiJvm)
 
   lazy val clusterMetrics = Project(
@@ -226,8 +231,8 @@ object AkkaBuild extends Build {
   lazy val clusterTools = Project(
     id = "akka-cluster-tools",
     base = file("akka-cluster-tools"),
-    dependencies =
-      Seq(cluster % "compile->compile;test->test;multi-jvm->multi-jvm")
+    dependencies = Seq(
+      cluster % "compile->compile;test->test;multi-jvm->multi-jvm")
   ) configs (MultiJvm)
 
   lazy val clusterSharding = Project(
@@ -247,8 +252,8 @@ object AkkaBuild extends Build {
   lazy val distributedData = Project(
     id = "akka-distributed-data-experimental",
     base = file("akka-distributed-data"),
-    dependencies =
-      Seq(cluster % "compile->compile;test->test;multi-jvm->multi-jvm")
+    dependencies = Seq(
+      cluster % "compile->compile;test->test;multi-jvm->multi-jvm")
   ) configs (MultiJvm)
 
   lazy val slf4j = Project(
@@ -332,11 +337,9 @@ object AkkaBuild extends Build {
   ).settings(parentSettings: _*)
     .aggregate(httpSprayJson, httpXml)
 
-  lazy val httpXml =
-    httpMarshallersScalaSubproject("xml")
+  lazy val httpXml = httpMarshallersScalaSubproject("xml")
 
-  lazy val httpSprayJson =
-    httpMarshallersScalaSubproject("spray-json")
+  lazy val httpSprayJson = httpMarshallersScalaSubproject("spray-json")
 
   lazy val httpMarshallersJava = Project(
     id = "akka-http-marshallers-java-experimental",
@@ -344,8 +347,7 @@ object AkkaBuild extends Build {
   ).settings(parentSettings: _*)
     .aggregate(httpJackson)
 
-  lazy val httpJackson =
-    httpMarshallersJavaSubproject("jackson")
+  lazy val httpJackson = httpMarshallersJavaSubproject("jackson")
 
   def httpMarshallersScalaSubproject(name: String) =
     Project(
@@ -496,23 +498,23 @@ object AkkaBuild extends Build {
 
   lazy val sampleMultiNodeScala = Sample.project("akka-sample-multi-node-scala")
 
-  lazy val samplePersistenceJava =
-    Sample.project("akka-sample-persistence-java")
-  lazy val samplePersistenceScala =
-    Sample.project("akka-sample-persistence-scala")
-  lazy val samplePersistenceJavaLambda =
-    Sample.project("akka-sample-persistence-java-lambda")
+  lazy val samplePersistenceJava = Sample.project(
+    "akka-sample-persistence-java")
+  lazy val samplePersistenceScala = Sample.project(
+    "akka-sample-persistence-scala")
+  lazy val samplePersistenceJavaLambda = Sample.project(
+    "akka-sample-persistence-java-lambda")
 
   lazy val sampleRemoteJava = Sample.project("akka-sample-remote-java")
   lazy val sampleRemoteScala = Sample.project("akka-sample-remote-scala")
 
-  lazy val sampleSupervisionJavaLambda =
-    Sample.project("akka-sample-supervision-java-lambda")
+  lazy val sampleSupervisionJavaLambda = Sample.project(
+    "akka-sample-supervision-java-lambda")
 
-  lazy val sampleDistributedDataScala =
-    Sample.project("akka-sample-distributed-data-scala")
-  lazy val sampleDistributedDataJava =
-    Sample.project("akka-sample-distributed-data-java")
+  lazy val sampleDistributedDataScala = Sample.project(
+    "akka-sample-distributed-data-scala")
+  lazy val sampleDistributedDataJava = Sample.project(
+    "akka-sample-distributed-data-java")
 
   lazy val osgiDiningHakkersSampleMavenTest = Project(
     id = "akka-sample-osgi-dining-hakkers-maven-test",

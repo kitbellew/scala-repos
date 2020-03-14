@@ -41,10 +41,11 @@ object QuickLinker {
         val vf = new NodeVirtualBinaryFile(file) with VirtualJarFile
         IRContainer.Jar(vf)
       } else if (file.endsWith(".sjsir")) {
-        val vf = new NodeVirtualScalaJSIRFile(file) with RelativeVirtualFile {
-          // The compiler should not use this (only scalajsp does)
-          def relativePath: String = s"<dummy relative path from $getClass>"
-        }
+        val vf =
+          new NodeVirtualScalaJSIRFile(file) with RelativeVirtualFile {
+            // The compiler should not use this (only scalajsp does)
+            def relativePath: String = s"<dummy relative path from $getClass>"
+          }
         IRContainer.File(vf)
       } else {
         sys.error("Illegal IR file / Jar: " + file)

@@ -34,16 +34,17 @@ private[internal] trait GlbLubs {
       }
     }
 
-    val sorted =
-      btsMap.toList.sortWith((x, y) => x._1.typeSymbol isLess y._1.typeSymbol)
+    val sorted = btsMap.toList.sortWith((x, y) =>
+      x._1.typeSymbol isLess y._1.typeSymbol)
     val maxSeqLength = sorted.map(_._2.size).max
     val padded = sorted map (_._2.padTo(maxSeqLength, NoType))
     val transposed = padded.transpose
 
-    val columns: List[Column[List[Type]]] = mapWithIndex(sorted) {
-      case ((k, v), idx) =>
-        Column(str(k), (xs: List[Type]) => str(xs(idx)), left = true)
-    }
+    val columns: List[Column[List[Type]]] =
+      mapWithIndex(sorted) {
+        case ((k, v), idx) =>
+          Column(str(k), (xs: List[Type]) => str(xs(idx)), left = true)
+      }
 
     val tableDef = TableDef(columns: _*)
     val formatted = tableDef.table(transposed)
@@ -81,10 +82,11 @@ private[internal] trait GlbLubs {
 
     isRecursive && (transposeSafe(tsElimSub map (_.normalize.typeArgs)) match {
       case Some(arggsTransposed) =>
-        val mergedTypeArgs = (tp match {
-          case et: ExistentialType => et.underlying;
-          case _                   => tp
-        }).typeArgs
+        val mergedTypeArgs =
+          (tp match {
+            case et: ExistentialType => et.underlying;
+            case _                   => tp
+          }).typeArgs
         exists3(typeSym.typeParams, mergedTypeArgs, arggsTransposed) {
           (param, arg, lubbedArgs) =>
             val isExistential = arg.typeSymbol.isExistentiallyBound
@@ -139,9 +141,10 @@ private[internal] trait GlbLubs {
         val ts0 = tsBts map (_.head)
 
         // Is the frontier made up of types with the same symbol?
-        val isUniformFrontier = (ts0: @unchecked) match {
-          case t :: ts => ts forall (_.typeSymbol == t.typeSymbol)
-        }
+        val isUniformFrontier =
+          (ts0: @unchecked) match {
+            case t :: ts => ts forall (_.typeSymbol == t.typeSymbol)
+          }
 
         // Produce a single type for this frontier by merging the prefixes and arguments of those
         // typerefs that share the same symbol: that symbol is the current maximal symbol for which
@@ -174,12 +177,13 @@ private[internal] trait GlbLubs {
             else
               ts)
           if (printLubs) {
-            val str = (newtps.zipWithIndex map {
-              case (tps, idx) =>
-                tps
-                  .map("        " + _ + "\n")
-                  .mkString("   (" + idx + ")\n", "", "\n")
-            }).mkString("")
+            val str =
+              (newtps.zipWithIndex map {
+                case (tps, idx) =>
+                  tps
+                    .map("        " + _ + "\n")
+                    .mkString("   (" + idx + ")\n", "", "\n")
+              }).mkString("")
 
             println("Frontier(\n" + str + ")")
             printLubMatrix((ts zip tsBts).toMap, lubListDepth)
@@ -367,8 +371,11 @@ private[internal] trait GlbLubs {
         case List()  => NothingTpe
         case List(t) => t
         case ts @ PolyType(tparams, _) :: _ =>
-          val tparams1 = map2(tparams, matchingBounds(ts, tparams).transpose)(
-            (tparam, bounds) => tparam.cloneSymbol.setInfo(glb(bounds, depth)))
+          val tparams1 =
+            map2(tparams, matchingBounds(ts, tparams).transpose)(
+              (
+                  tparam,
+                  bounds) => tparam.cloneSymbol.setInfo(glb(bounds, depth)))
           PolyType(tparams1, lub0(matchingInstTypes(ts, tparams1)))
         case ts @ (mt @ MethodType(params, _)) :: rest =>
           MethodType(params, lub0(matchingRestypes(ts, mt.paramTypes)))
@@ -565,8 +572,11 @@ private[internal] trait GlbLubs {
         case List()  => AnyTpe
         case List(t) => t
         case ts @ PolyType(tparams, _) :: _ =>
-          val tparams1 = map2(tparams, matchingBounds(ts, tparams).transpose)(
-            (tparam, bounds) => tparam.cloneSymbol.setInfo(lub(bounds, depth)))
+          val tparams1 =
+            map2(tparams, matchingBounds(ts, tparams).transpose)(
+              (
+                  tparam,
+                  bounds) => tparam.cloneSymbol.setInfo(lub(bounds, depth)))
           PolyType(tparams1, glbNorm(matchingInstTypes(ts, tparams1), depth))
         case ts @ (mt @ MethodType(params, _)) :: rest =>
           MethodType(

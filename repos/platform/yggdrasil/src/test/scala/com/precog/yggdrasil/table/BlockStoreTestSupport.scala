@@ -93,13 +93,14 @@ trait BaseBlockStoreTestModule[M[+_]]
     private val slices = fromJson(data).slices.toStream.copoint
 
     val length: Long = data.length
-    val xyz = slices.foldLeft(Set.empty[ColumnRef]) {
-      case (acc, slice) => acc ++ slice.columns.keySet
-    }
+    val xyz =
+      slices.foldLeft(Set.empty[ColumnRef]) {
+        case (acc, slice) => acc ++ slice.columns.keySet
+      }
     def structure(implicit M: Monad[M]) = M.point(xyz)
 
-    private implicit val keyOrder: Order[JArray] =
-      Order[List[JValue]].contramap((_: JArray).elements)
+    private implicit val keyOrder: Order[JArray] = Order[List[JValue]]
+      .contramap((_: JArray).elements)
 
     def getBlockAfter(id: Option[JArray], colSelection: Option[Set[ColumnRef]])(
         implicit M: Monad[M]) =
@@ -125,21 +126,22 @@ trait BaseBlockStoreTestModule[M[+_]]
         }
 
         slice map { s =>
-          val s0 = new Slice {
-            val size = s.size
-            val columns = colSelection
-              .map { reqCols =>
-                s.columns.filter {
-                  case (ref @ ColumnRef(jpath, ctype), _) =>
-                    jpath.nodes.head == CPathField("key") || reqCols.exists {
-                      ref =>
-                        (CPathField(
-                          "value") \ ref.selector) == jpath && ref.ctype == ctype
-                    }
+          val s0 =
+            new Slice {
+              val size = s.size
+              val columns = colSelection
+                .map { reqCols =>
+                  s.columns.filter {
+                    case (ref @ ColumnRef(jpath, ctype), _) =>
+                      jpath.nodes.head == CPathField("key") || reqCols.exists {
+                        ref =>
+                          (CPathField(
+                            "value") \ ref.selector) == jpath && ref.ctype == ctype
+                      }
+                  }
                 }
-              }
-              .getOrElse(s.columns)
-          }
+                .getOrElse(s.columns)
+            }
 
           BlockProjectionData[JArray, Slice](
             s0.toJson(0).getOrElse(JUndefined) \ "key" --> classOf[JArray],

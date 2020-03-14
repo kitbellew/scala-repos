@@ -121,17 +121,18 @@ private[spark] object SubmitRestProtocolMessage {
     * If the action field is not found, throw a [[SubmitRestMissingFieldException]].
     */
   def parseAction(json: String): String = {
-    val value: Option[String] = parse(json) match {
-      case JObject(fields) =>
-        fields
-          .collectFirst {
-            case ("action", v) => v
-          }
-          .collect {
-            case JString(s) => s
-          }
-      case _ => None
-    }
+    val value: Option[String] =
+      parse(json) match {
+        case JObject(fields) =>
+          fields
+            .collectFirst {
+              case ("action", v) => v
+            }
+            .collect {
+              case JString(s) => s
+            }
+        case _ => None
+      }
     value.getOrElse {
       throw new SubmitRestMissingFieldException(
         s"Action field not found in JSON:\n$json")

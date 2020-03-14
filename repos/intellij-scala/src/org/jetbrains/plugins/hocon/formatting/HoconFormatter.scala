@@ -16,14 +16,15 @@ class HoconFormatter(settings: CodeStyleSettings) {
   import org.jetbrains.plugins.hocon.parser.HoconElementType._
 
   val commonSettings = settings.getCommonSettings(HoconLanguage)
-  val customSettings =
-    settings.getCustomSettings(classOf[HoconCustomCodeStyleSettings])
+  val customSettings = settings.getCustomSettings(
+    classOf[HoconCustomCodeStyleSettings])
 
   private def beforeCommentOnNewLineSpacing(
       parent: ASTNode,
       comment: ASTNode) = {
-    val maxBlankLines =
-      getMaxBlankLines(parent.getElementType, comment.getElementType)
+    val maxBlankLines = getMaxBlankLines(
+      parent.getElementType,
+      comment.getElementType)
     comment.getElementType match {
       case HashComment if customSettings.HASH_COMMENTS_AT_FIRST_COLUMN =>
         Spacing.createKeepingFirstColumnSpacing(0, 0, true, maxBlankLines)
@@ -59,8 +60,9 @@ class HoconFormatter(settings: CodeStyleSettings) {
   def getSpacing(parent: ASTNode, leftChild: ASTNode, rightChild: ASTNode) = {
 
     val keepLineBreaks = commonSettings.KEEP_LINE_BREAKS
-    val maxBlankLines =
-      getMaxBlankLines(parent.getElementType, rightChild.getElementType)
+    val maxBlankLines = getMaxBlankLines(
+      parent.getElementType,
+      rightChild.getElementType)
 
     def dependentLFSpacing(shouldBeSpace: Boolean) = {
       val spaces =
@@ -85,8 +87,12 @@ class HoconFormatter(settings: CodeStyleSettings) {
       Spacing.createSpacing(spaces, spaces, 0, keepLineBreaks, maxBlankLines)
     }
 
-    val lineBreakEnsuringSpacing =
-      Spacing.createSpacing(0, 0, 1, keepLineBreaks, maxBlankLines)
+    val lineBreakEnsuringSpacing = Spacing.createSpacing(
+      0,
+      0,
+      1,
+      keepLineBreaks,
+      maxBlankLines)
 
     val isLineBreakBetween = parent.getText
       .subSequence(
@@ -202,28 +208,30 @@ class HoconFormatter(settings: CodeStyleSettings) {
   // for children of the same parent and these two classes are one way to make it possible.
 
   class WrapCache(keyValueSeparator: Option[IElementType]) {
-    val objectEntryWrap =
-      Wrap.createWrap(customSettings.OBJECTS_WRAP, false)
+    val objectEntryWrap = Wrap.createWrap(customSettings.OBJECTS_WRAP, false)
 
-    val arrayValueWrap =
-      Wrap.createWrap(customSettings.LISTS_WRAP, false)
+    val arrayValueWrap = Wrap.createWrap(customSettings.LISTS_WRAP, false)
 
-    val fieldInnerWrap = keyValueSeparator match {
-      case Some(Colon) =>
-        Wrap.createWrap(customSettings.OBJECT_FIELDS_WITH_COLON_WRAP, true)
-      case Some(Equals | PlusEquals) =>
-        Wrap.createWrap(customSettings.OBJECT_FIELDS_WITH_ASSIGNMENT_WRAP, true)
-      case _ => null
-    }
+    val fieldInnerWrap =
+      keyValueSeparator match {
+        case Some(Colon) =>
+          Wrap.createWrap(customSettings.OBJECT_FIELDS_WITH_COLON_WRAP, true)
+        case Some(Equals | PlusEquals) =>
+          Wrap.createWrap(
+            customSettings.OBJECT_FIELDS_WITH_ASSIGNMENT_WRAP,
+            true)
+        case _ => null
+      }
 
-    val keyValueSeparatorWrap = keyValueSeparator match {
-      case Some(Colon) if customSettings.OBJECT_FIELDS_COLON_ON_NEXT_LINE =>
-        fieldInnerWrap
-      case Some(Equals | PlusEquals)
-          if customSettings.OBJECT_FIELDS_ASSIGNMENT_ON_NEXT_LINE =>
-        fieldInnerWrap
-      case _ => null
-    }
+    val keyValueSeparatorWrap =
+      keyValueSeparator match {
+        case Some(Colon) if customSettings.OBJECT_FIELDS_COLON_ON_NEXT_LINE =>
+          fieldInnerWrap
+        case Some(Equals | PlusEquals)
+            if customSettings.OBJECT_FIELDS_ASSIGNMENT_ON_NEXT_LINE =>
+          fieldInnerWrap
+        case _ => null
+      }
 
     val fieldValueWrap =
       if (keyValueSeparatorWrap == null)
@@ -231,8 +239,9 @@ class HoconFormatter(settings: CodeStyleSettings) {
       else
         null
 
-    val includeInnerWrap =
-      Wrap.createWrap(customSettings.INCLUDED_RESOURCE_WRAP, true)
+    val includeInnerWrap = Wrap.createWrap(
+      customSettings.INCLUDED_RESOURCE_WRAP,
+      true)
 
   }
 

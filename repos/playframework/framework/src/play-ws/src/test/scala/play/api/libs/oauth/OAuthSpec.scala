@@ -16,10 +16,12 @@ class OAuthSpec extends PlaySpecification {
 
   sequential
 
-  val consumerKey =
-    ConsumerKey("someConsumerKey", "someVerySecretConsumerSecret")
-  val requestToken =
-    RequestToken("someRequestToken", "someVerySecretRequestSecret")
+  val consumerKey = ConsumerKey(
+    "someConsumerKey",
+    "someVerySecretConsumerSecret")
+  val requestToken = RequestToken(
+    "someRequestToken",
+    "someVerySecretRequestSecret")
   val oauthCalculator = OAuthCalculator(consumerKey, requestToken)
 
   "OAuth" should {

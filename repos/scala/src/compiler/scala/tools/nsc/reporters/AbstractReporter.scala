@@ -72,14 +72,15 @@ abstract class AbstractReporter extends Reporter {
       msg: String): Boolean =
     pos != null && pos.isDefined && {
       val fpos = pos.focus
-      val suppress = positions(fpos) match {
-        case ERROR => true // already error at position
-        case highest if highest.id > severity.id =>
-          true // already message higher than present severity
-        case `severity` =>
-          messages(fpos) contains msg // already issued this exact message
-        case _ => false // good to go
-      }
+      val suppress =
+        positions(fpos) match {
+          case ERROR => true // already error at position
+          case highest if highest.id > severity.id =>
+            true // already message higher than present severity
+          case `severity` =>
+            messages(fpos) contains msg // already issued this exact message
+          case _ => false // good to go
+        }
 
       suppress || {
         positions(fpos) = severity

@@ -189,11 +189,12 @@ object IntervalTrie {
     tl.toLong(value)
 
   private[interval] def fromKind[T: Element](value: T, kind: Int) = {
-    val bound = kind match {
-      case 0 => Below(value)
-      case 1 => Above(value)
-      case 2 => Both(value)
-    }
+    val bound =
+      kind match {
+        case 0 => Below(value)
+        case 1 => Above(value)
+        case 2 => Both(value)
+      }
     IntervalTrie[T](false, bound)
   }
 
@@ -283,8 +284,10 @@ object IntervalTrie {
         r.toLong
     }
     def intervalToIntervalSet(i: Interval[Long]): IntervalTrie[Long] = apply(i)
-    val intervals =
-      text.split(';').map(Interval.apply).map(_.mapBounds(rationalToLong)(la))
+    val intervals = text
+      .split(';')
+      .map(Interval.apply)
+      .map(_.mapBounds(rationalToLong)(la))
     val simpleSets = intervals.map(intervalToIntervalSet)
     (empty[Long] /: simpleSets)(_ | _)
   }

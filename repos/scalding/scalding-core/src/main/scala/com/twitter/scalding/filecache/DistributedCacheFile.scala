@@ -20,8 +20,7 @@ object URIHasher {
     else
       b
 
-  def apply(stringUri: String): String =
-    apply(new URI(stringUri))
+  def apply(stringUri: String): String = apply(new URI(stringUri))
 
   /**
     * generates hashes of hdfs URIs using algebird's MurmurHash128

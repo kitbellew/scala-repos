@@ -56,20 +56,22 @@ object ControlHelpersSpec extends Specification {
       } must_== Empty
     }
     "trigger a callback function with the exception if the tested block throws an exception" in {
-      val callback = (e: Throwable) => {
-        e must_== exception;
-        ()
-      }
+      val callback =
+        (e: Throwable) => {
+          e must_== exception;
+          ()
+        }
       tryo(callback) {
         failureBlock
       }
       success
     }
     "trigger a callback function with the exception if the tested block throws an exception even if it is ignored" in {
-      val callback = (e: Throwable) => {
-        e must_== exception;
-        ()
-      }
+      val callback =
+        (e: Throwable) => {
+          e must_== exception;
+          ()
+        }
       tryo(List(classOf[RuntimeException]), Full(callback)) {
         failureBlock
       }
@@ -77,9 +79,10 @@ object ControlHelpersSpec extends Specification {
     }
     "don't trigger a callback if the tested block doesn't throw an exception" in {
       var x = false
-      val callback = (e: Throwable) => {
-        x = true
-      }
+      val callback =
+        (e: Throwable) => {
+          x = true
+        }
       tryo(callback) {
         "valid"
       }
@@ -87,9 +90,10 @@ object ControlHelpersSpec extends Specification {
     }
     "don't trigger a callback if the tested block doesn't throw an exception, even with an ignore list" in {
       var x = false
-      val callback = (e: Throwable) => {
-        x = true
-      }
+      val callback =
+        (e: Throwable) => {
+          x = true
+        }
       tryo(List(classOf[RuntimeException]), Full(callback)) {
         "valid"
       }

@@ -56,11 +56,12 @@ trait IngestSupport extends Logging {
       f: Authorities => Future[HttpResponse[JValue]])
       : Future[HttpResponse[JValue]] = {
     val timestamp = timestampO getOrElse clock.now().toInstant
-    val requestAuthorities = for {
-      paramIds <- request.parameters.get('ownerAccountId)
-      ids = paramIds.split("""\s*,\s*""")
-      auths <- Authorities.ifPresent(ids.toSet) if ids.nonEmpty
-    } yield auths
+    val requestAuthorities =
+      for {
+        paramIds <- request.parameters.get('ownerAccountId)
+        ids = paramIds.split("""\s*,\s*""")
+        auths <- Authorities.ifPresent(ids.toSet) if ids.nonEmpty
+      } yield auths
 
     requestAuthorities map { authorities =>
       permissionsFinder.checkWriteAuthorities(

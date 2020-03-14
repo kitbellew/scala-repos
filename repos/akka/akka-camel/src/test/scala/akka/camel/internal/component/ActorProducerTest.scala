@@ -121,11 +121,12 @@ class ActorProducerTest
 
         "response is not sent by actor" must {
           val latch = TestLatch(1)
-          val callback = new AsyncCallback {
-            def done(doneSync: Boolean) {
-              latch.countDown()
+          val callback =
+            new AsyncCallback {
+              def done(doneSync: Boolean) {
+                latch.countDown()
+              }
             }
-          }
           def process() = {
             producer = given(outCapable = true, replyTimeout = 100 millis)
             val duration = time {
@@ -177,8 +178,9 @@ class ActorProducerTest
           "get a response and async callback as soon as it gets the response (but not before)" in {
             producer = given(outCapable = true)
 
-            val doneSync =
-              producer.processExchangeAdapter(exchange, asyncCallback)
+            val doneSync = producer.processExchangeAdapter(
+              exchange,
+              asyncCallback)
 
             asyncCallback.expectNoCallWithin(100 millis)
             info("no async callback before response")
@@ -249,8 +251,9 @@ class ActorProducerTest
           "get sync callback as soon as it sends a message" in {
 
             producer = given(outCapable = false, autoAck = true)
-            val doneSync =
-              producer.processExchangeAdapter(exchange, asyncCallback)
+            val doneSync = producer.processExchangeAdapter(
+              exchange,
+              asyncCallback)
 
             doneSync should ===(true)
             info("done sync")
@@ -268,8 +271,9 @@ class ActorProducerTest
             "get async callback" in {
               producer = given(outCapable = false, autoAck = false)
 
-              val doneSync =
-                producer.processExchangeAdapter(exchange, asyncCallback)
+              val doneSync = producer.processExchangeAdapter(
+                exchange,
+                asyncCallback)
 
               doneSync should ===(false)
               within(1 second) {
@@ -323,8 +327,9 @@ class ActorProducerTest
             "set an exception on exchange" in {
               producer = given(outCapable = false, autoAck = false)
 
-              val doneSync =
-                producer.processExchangeAdapter(exchange, asyncCallback)
+              val doneSync = producer.processExchangeAdapter(
+                exchange,
+                asyncCallback)
 
               doneSync should ===(false)
               within(1 second) {
@@ -382,8 +387,9 @@ private[camel] trait ActorProducerFixture
         override val log = mock[LoggingAdapter]
         override lazy val template = mock[ProducerTemplate]
         override lazy val context = mock[DefaultCamelContext]
-        override val settings = new CamelSettings(
-          ConfigFactory.parseString("""
+        override val settings =
+          new CamelSettings(
+            ConfigFactory.parseString("""
           akka {
             camel {
               jmx = off
@@ -396,7 +402,7 @@ private[camel] trait ActorProducerFixture
             }
           }
         """).withFallback(config),
-          sys.dynamicAccess)
+            sys.dynamicAccess)
       }
     camel = camelWithMocks
 

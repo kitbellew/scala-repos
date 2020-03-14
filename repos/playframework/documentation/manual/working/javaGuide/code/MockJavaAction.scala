@@ -23,22 +23,24 @@ package javaguide.testhelpers {
       with Action[Http.RequestBody] {
     self =>
 
-    private lazy val components = new DefaultJavaHandlerComponents(
-      play.api.Play.current.injector,
-      new DefaultActionCreator
-    )
+    private lazy val components =
+      new DefaultJavaHandlerComponents(
+        play.api.Play.current.injector,
+        new DefaultActionCreator
+      )
 
-    private lazy val action = new JavaAction(components) {
-      val annotations = new JavaActionAnnotations(controller, method)
+    private lazy val action =
+      new JavaAction(components) {
+        val annotations = new JavaActionAnnotations(controller, method)
 
-      def parser = {
-        play.HandlerInvokerFactoryAccessor.javaBodyParserToScala(
-          components.getBodyParser(annotations.parser)
-        )
+        def parser = {
+          play.HandlerInvokerFactoryAccessor.javaBodyParserToScala(
+            components.getBodyParser(annotations.parser)
+          )
+        }
+
+        def invocation = self.invocation
       }
-
-      def invocation = self.invocation
-    }
 
     def parser = action.parser
 

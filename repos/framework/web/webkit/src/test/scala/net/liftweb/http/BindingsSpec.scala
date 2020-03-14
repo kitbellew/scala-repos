@@ -84,11 +84,12 @@ object BindingsSpec extends Specification with XmlMatchers {
     "deal with # in link" in {
       val session = new LiftSession("hello", "", Empty)
 
-      val href = S.initIfUninitted(session) {
-        val a = SHtml.link("/foo#bar", () => true, Text("Test"))
+      val href =
+        S.initIfUninitted(session) {
+          val a = SHtml.link("/foo#bar", () => true, Text("Test"))
 
-        (a \ "@href").text
-      }
+          (a \ "@href").text
+        }
 
       href.endsWith("#bar") must_== true
 

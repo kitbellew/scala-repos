@@ -103,17 +103,18 @@ object ThriftMux
     }
 
   private object ClientRpcTracing extends Mux.ClientProtoTracing {
-    private[this] val rpcTracer = new SimpleFilter[mux.Request, mux.Response] {
-      def apply(
-          request: mux.Request,
-          svc: Service[mux.Request, mux.Response]
-      ): Future[mux.Response] = {
-        // we're reasonably sure that this filter sits just after the ThriftClientRequest's
-        // message array is wrapped by a ChannelBuffer
-        recordRpc(Buf.ByteArray.Owned.extract(request.body))
-        svc(request)
+    private[this] val rpcTracer =
+      new SimpleFilter[mux.Request, mux.Response] {
+        def apply(
+            request: mux.Request,
+            svc: Service[mux.Request, mux.Response]
+        ): Future[mux.Response] = {
+          // we're reasonably sure that this filter sits just after the ThriftClientRequest's
+          // message array is wrapped by a ChannelBuffer
+          recordRpc(Buf.ByteArray.Owned.extract(request.body))
+          svc(request)
+        }
       }
-    }
 
     override def make(next: ServiceFactory[mux.Request, mux.Response]) =
       rpcTracer andThen super.make(next)
@@ -135,8 +136,7 @@ object ThriftMux
       with WithDefaultLoadBalancer[Client]
       with ThriftRichClient {
 
-    def stack: Stack[ServiceFactory[mux.Request, mux.Response]] =
-      muxer.stack
+    def stack: Stack[ServiceFactory[mux.Request, mux.Response]] = muxer.stack
 
     def params: Stack.Params = muxer.params
 
@@ -144,8 +144,8 @@ object ThriftMux
 
     override protected lazy val Stats(stats) = params[Stats]
 
-    protected val Thrift.param.ProtocolFactory(protocolFactory) =
-      params[Thrift.param.ProtocolFactory]
+    protected val Thrift.param
+      .ProtocolFactory(protocolFactory) = params[Thrift.param.ProtocolFactory]
 
     def withParams(ps: Stack.Params): Client =
       copy(muxer = muxer.withParams(ps))
@@ -167,8 +167,8 @@ object ThriftMux
     def withProtocolFactory(pf: TProtocolFactory): Client =
       configured(Thrift.param.ProtocolFactory(pf))
 
-    private[this] val Thrift.param.ClientId(clientId) =
-      params[Thrift.param.ClientId]
+    private[this] val Thrift.param
+      .ClientId(clientId) = params[Thrift.param.ClientId]
 
     private[this] object ThriftMuxToMux
         extends Filter[
@@ -203,13 +203,14 @@ object ThriftMux
       // a failure. So, when none is specified, a "deserializing-only"
       // classifier is used to make when deserialization happens in the stack
       // uniform whether or not a `ResponseClassifier` is wired up.
-      val classifier = if (params.contains[param.ResponseClassifier]) {
-        ThriftMuxResponseClassifier.usingDeserializeCtx(
-          params[param.ResponseClassifier].responseClassifier
-        )
-      } else {
-        ThriftMuxResponseClassifier.DeserializeCtxOnly
-      }
+      val classifier =
+        if (params.contains[param.ResponseClassifier]) {
+          ThriftMuxResponseClassifier.usingDeserializeCtx(
+            params[param.ResponseClassifier].responseClassifier
+          )
+        } else {
+          ThriftMuxResponseClassifier.DeserializeCtxOnly
+        }
       muxer.configured(param.ResponseClassifier(classifier))
     }
 
@@ -227,8 +228,7 @@ object ThriftMux
     // See https://issues.scala-lang.org/browse/SI-8905
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withLoadBalancer: DefaultLoadBalancingParams[Client] =
       new DefaultLoadBalancingParams(this)
     override val withSessionQualifier: SessionQualificationParams[Client] =
@@ -269,8 +269,8 @@ object ThriftMux
 
   protected def params: Stack.Params = client.params
 
-  protected val Thrift.param.ProtocolFactory(protocolFactory) =
-    client.params[Thrift.param.ProtocolFactory]
+  protected val Thrift.param.ProtocolFactory(protocolFactory) = client
+    .params[Thrift.param.ProtocolFactory]
 
   def newClient(
       dest: Name,
@@ -281,16 +281,14 @@ object ThriftMux
   def newService(
       dest: Name,
       label: String
-  ): Service[ThriftClientRequest, Array[Byte]] =
-    client.newService(dest, label)
+  ): Service[ThriftClientRequest, Array[Byte]] = client.newService(dest, label)
 
   /**
     * Produce a [[com.twitter.finagle.ThriftMux.Client]] using the provided
     * client ID.
     */
   @deprecated("Use `ThriftMux.client.withClientId`", "6.22.0")
-  def withClientId(clientId: ClientId): Client =
-    client.withClientId(clientId)
+  def withClientId(clientId: ClientId): Client = client.withClientId(clientId)
 
   /**
     * Produce a [[com.twitter.finagle.ThriftMux.Client]] using the provided
@@ -337,8 +335,8 @@ object ThriftMux
     protected def newListener(): Listener[In, Out] = {
       val Stats(sr) = params[Stats]
       val scoped = sr.scope("thriftmux")
-      val Thrift.param.ProtocolFactory(pf) =
-        params[Thrift.param.ProtocolFactory]
+      val Thrift.param
+        .ProtocolFactory(pf) = params[Thrift.param.ProtocolFactory]
 
       // Create a Listener with a pipeline that can downgrade the connection
       // to vanilla thrift.
@@ -437,8 +435,7 @@ object ThriftMux
 
     import Server.MuxToArrayFilter
 
-    def stack: Stack[ServiceFactory[mux.Request, mux.Response]] =
-      muxer.stack
+    def stack: Stack[ServiceFactory[mux.Request, mux.Response]] = muxer.stack
 
     override protected val Label(serverLabel) = params[Label]
 
@@ -446,8 +443,8 @@ object ThriftMux
 
     def params: Stack.Params = muxer.params
 
-    protected val Thrift.param.ProtocolFactory(protocolFactory) =
-      params[Thrift.param.ProtocolFactory]
+    protected val Thrift.param
+      .ProtocolFactory(protocolFactory) = params[Thrift.param.ProtocolFactory]
 
     override val Thrift.param.MaxReusableBufferSize(maxThriftBufferSize) =
       params[Thrift.param.MaxReusableBufferSize]
@@ -521,6 +518,5 @@ object ThriftMux
   def serve(
       addr: SocketAddress,
       factory: ServiceFactory[Array[Byte], Array[Byte]]
-  ): ListeningServer =
-    server.serve(addr, factory)
+  ): ListeningServer = server.serve(addr, factory)
 }

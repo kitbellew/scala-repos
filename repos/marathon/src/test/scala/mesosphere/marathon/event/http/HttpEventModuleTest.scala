@@ -36,10 +36,11 @@ class HttpEventModuleTest extends MarathonSpec {
   }
 
   def makeHttpEventConfig(args: String*): HttpEventConfiguration = {
-    val opts = new ScallopConf(args) with HttpEventConfiguration {
-      // scallop will trigger sys exit
-      override protected def onError(e: Throwable): Unit = throw e
-    }
+    val opts =
+      new ScallopConf(args) with HttpEventConfiguration {
+        // scallop will trigger sys exit
+        override protected def onError(e: Throwable): Unit = throw e
+      }
     opts.afterInit()
     opts
   }

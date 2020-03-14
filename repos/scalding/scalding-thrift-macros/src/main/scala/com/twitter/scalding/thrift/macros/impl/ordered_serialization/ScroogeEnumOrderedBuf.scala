@@ -41,8 +41,7 @@ object ScroogeEnumOrderedBuf {
       override val tpe = outerType
       override def compareBinary(
           inputStreamA: ctx.TermName,
-          inputStreamB: ctx.TermName) =
-        q"""
+          inputStreamB: ctx.TermName) = q"""
         _root_.java.lang.Integer.compare($inputStreamA.readPosVarInt, $inputStreamB.readPosVarInt)
         """
 
@@ -55,8 +54,7 @@ object ScroogeEnumOrderedBuf {
         q"${outerType.typeSymbol.companionSymbol}.apply($inputStream.readPosVarInt)"
       override def compare(
           elementA: ctx.TermName,
-          elementB: ctx.TermName): ctx.Tree =
-        q"""
+          elementB: ctx.TermName): ctx.Tree = q"""
         _root_.java.lang.Integer.compare($elementA.value, $elementB.value) : Int
         """
 

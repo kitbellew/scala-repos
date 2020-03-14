@@ -369,14 +369,15 @@ private class TestMasterInfo(
 
   def readState() {
     try {
-      val masterStream = new InputStreamReader(
-        new URL("http://%s:8080/json".format(ip)).openStream,
-        StandardCharsets.UTF_8)
+      val masterStream =
+        new InputStreamReader(
+          new URL("http://%s:8080/json".format(ip)).openStream,
+          StandardCharsets.UTF_8)
       val json = JsonMethods.parse(masterStream)
 
       val workers = json \ "workers"
-      val liveWorkers =
-        workers.children.filter(w => (w \ "state").extract[String] == "ALIVE")
+      val liveWorkers = workers.children.filter(w =>
+        (w \ "state").extract[String] == "ALIVE")
       // Extract the worker IP from "webuiaddress" (rather than "host") because the host name
       // on containers is a weird hash instead of the actual IP address.
       liveWorkerIPs = liveWorkers.map { w =>
@@ -447,8 +448,10 @@ private object SparkDocker {
 
   private def startNode(dockerCmd: ProcessBuilder): (String, DockerId, File) = {
     val ipPromise = Promise[String]()
-    val outFile =
-      File.createTempFile("fault-tolerance-test", "", Utils.createTempDir())
+    val outFile = File.createTempFile(
+      "fault-tolerance-test",
+      "",
+      Utils.createTempDir())
     val outStream: FileWriter = new FileWriter(outFile)
     def findIpAndLog(line: String): Unit = {
       if (line.startsWith("CONTAINER_IP=")) {
@@ -476,10 +479,11 @@ private object Docker extends Logging {
       imageTag: String,
       args: String = "",
       mountDir: String = ""): ProcessBuilder = {
-    val mountCmd = if (mountDir != "") {
-      " -v " + mountDir
-    } else
-      ""
+    val mountCmd =
+      if (mountDir != "") {
+        " -v " + mountDir
+      } else
+        ""
 
     val cmd = "docker run -privileged %s %s %s".format(mountCmd, imageTag, args)
     logDebug("Run command: " + cmd)

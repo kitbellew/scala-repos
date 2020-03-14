@@ -14,11 +14,12 @@ object Test extends App {
   // we have to explicitly launch our server because when the client launches a server it uses
   // the "scala" shell command meaning whatever version of scala (and whatever version of libraries)
   // happens to be in the path gets used
-  val t = new Thread(new Runnable {
-    def run() = {
-      CompileServer.execute(() => startupLatch.countDown(), Array[String]())
-    }
-  })
+  val t =
+    new Thread(new Runnable {
+      def run() = {
+        CompileServer.execute(() => startupLatch.countDown(), Array[String]())
+      }
+    })
   t setDaemon true
   t.start()
   if (!startupLatch.await(2, TimeUnit.MINUTES))

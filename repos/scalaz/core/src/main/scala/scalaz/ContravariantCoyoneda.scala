@@ -37,8 +37,7 @@ sealed abstract class ContravariantCoyoneda[F[_], A] {
   import ContravariantCoyoneda.{Aux, apply}
 
   /** Converts to `F[A]` given that `F` is a contravariant. */
-  final def run(implicit F: Contravariant[F]): F[A] =
-    F.contramap(fi)(k)
+  final def run(implicit F: Contravariant[F]): F[A] = F.contramap(fi)(k)
 
   /** Alias for `run`. */
   @inline final def unlift(implicit F: Contravariant[F]): F[A] = run
@@ -70,9 +69,10 @@ object ContravariantCoyoneda extends ContravariantCoyonedaInstances {
   /** Lift the `I` type member to a parameter.  It is usually more
     * convenient to use `Aux` than a structural type.
     */
-  type Aux[F[_], A, B] = ContravariantCoyoneda[F, A] {
-    type I = B
-  }
+  type Aux[F[_], A, B] =
+    ContravariantCoyoneda[F, A] {
+      type I = B
+    }
 
   /** See `by` method. */
   final class By[F[_]] {

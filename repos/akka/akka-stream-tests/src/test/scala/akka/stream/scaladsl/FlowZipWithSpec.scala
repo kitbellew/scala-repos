@@ -75,12 +75,14 @@ class FlowZipWithSpec extends BaseTwoStreamsSetup {
     }
 
     "work with one delayed completed and one nonempty publisher" in {
-      val subscriber1 =
-        setup(soonToCompletePublisher, nonemptyPublisher(1 to 4))
+      val subscriber1 = setup(
+        soonToCompletePublisher,
+        nonemptyPublisher(1 to 4))
       subscriber1.expectSubscriptionAndComplete()
 
-      val subscriber2 =
-        setup(nonemptyPublisher(1 to 4), soonToCompletePublisher)
+      val subscriber2 = setup(
+        nonemptyPublisher(1 to 4),
+        soonToCompletePublisher)
       subscriber2.expectSubscriptionAndComplete()
     }
 

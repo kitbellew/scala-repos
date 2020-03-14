@@ -29,9 +29,10 @@ class DefaultInfoServiceTest
     }
 
     When("querying for one App")
-    val appInfo = f.infoService
-      .selectApp(id = app1.id, embed = Set.empty, selector = AppSelector.all)
-      .futureValue
+    val appInfo =
+      f.infoService
+        .selectApp(id = app1.id, embed = Set.empty, selector = AppSelector.all)
+        .futureValue
 
     Then("we get an appInfo for the app from the appRepo/baseAppData")
     appInfo.map(_.app.id).toSet should be(Set(app1.id))
@@ -54,8 +55,9 @@ class DefaultInfoServiceTest
     }
 
     When("querying for one App")
-    val embed: Set[AppInfo.Embed] =
-      Set(AppInfo.Embed.Tasks, AppInfo.Embed.Counts)
+    val embed: Set[AppInfo.Embed] = Set(
+      AppInfo.Embed.Tasks,
+      AppInfo.Embed.Counts)
     f.infoService
       .selectApp(id = app1.id, embed = embed, selector = AppSelector.all)
       .futureValue
@@ -76,9 +78,10 @@ class DefaultInfoServiceTest
     }
 
     When("querying all apps")
-    val appInfos = f.infoService
-      .selectAppsBy(AppSelector(_ => true), embed = Set.empty)
-      .futureValue
+    val appInfos =
+      f.infoService
+        .selectAppsBy(AppSelector(_ => true), embed = Set.empty)
+        .futureValue
 
     Then("we get appInfos for each app from the appRepo/baseAppData")
     appInfos.map(_.app.id).toSet should be(someApps.map(_.id))
@@ -102,8 +105,9 @@ class DefaultInfoServiceTest
     }
 
     When("querying all apps")
-    val embed: Set[AppInfo.Embed] =
-      Set(AppInfo.Embed.Tasks, AppInfo.Embed.Counts)
+    val embed: Set[AppInfo.Embed] = Set(
+      AppInfo.Embed.Tasks,
+      AppInfo.Embed.Counts)
     f.infoService
       .selectAppsBy(AppSelector(_ => true), embed = embed)
       .futureValue
@@ -121,9 +125,10 @@ class DefaultInfoServiceTest
     f.groupManager.rootGroup() returns Future.successful(someGroup)
 
     When("querying all apps with a filter that filters all apps")
-    val appInfos = f.infoService
-      .selectAppsBy(AppSelector(_ => false), embed = Set.empty)
-      .futureValue
+    val appInfos =
+      f.infoService
+        .selectAppsBy(AppSelector(_ => false), embed = Set.empty)
+        .futureValue
 
     Then("we get appInfos for no app from the appRepo/baseAppData")
     appInfos.map(_.app.id).toSet should be(Set.empty)
@@ -144,9 +149,10 @@ class DefaultInfoServiceTest
     }
 
     When("querying all apps in that group")
-    val appInfos = f.infoService
-      .selectAppsInGroup(PathId("/nested"), AppSelector.all, Set.empty)
-      .futureValue
+    val appInfos =
+      f.infoService
+        .selectAppsInGroup(PathId("/nested"), AppSelector.all, Set.empty)
+        .futureValue
 
     Then("we get appInfos for each app from the groupRepo/baseAppData")
     appInfos.map(_.app.id).toSet should be(someNestedApps.map(_.id))
@@ -170,8 +176,9 @@ class DefaultInfoServiceTest
     }
 
     When("querying all apps in that group")
-    val embed: Set[AppInfo.Embed] =
-      Set(AppInfo.Embed.Tasks, AppInfo.Embed.Counts)
+    val embed: Set[AppInfo.Embed] = Set(
+      AppInfo.Embed.Tasks,
+      AppInfo.Embed.Counts)
     f.infoService
       .selectAppsInGroup(PathId("/nested"), AppSelector.all, embed)
       .futureValue
@@ -235,12 +242,13 @@ class DefaultInfoServiceTest
       Future.successful(AppInfo(args.head.asInstanceOf[AppDefinition]))
     }
     f.groupManager.group(group.id) returns Future.successful(Some(group))
-    val selector = new GroupSelector {
-      override def matches(group: Group): Boolean =
-        group.id.toString.startsWith("/visible")
-      override def matches(app: AppDefinition): Boolean =
-        app.id.toString.startsWith("/visible")
-    }
+    val selector =
+      new GroupSelector {
+        override def matches(group: Group): Boolean =
+          group.id.toString.startsWith("/visible")
+        override def matches(app: AppDefinition): Boolean =
+          app.id.toString.startsWith("/visible")
+      }
 
     When("querying extending group information with selector")
     val result = f.infoService.selectGroup(

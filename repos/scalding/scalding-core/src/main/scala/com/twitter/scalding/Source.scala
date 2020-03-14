@@ -180,10 +180,11 @@ abstract class Source extends java.io.Serializable {
     if (!sinks.containsKey(sinkName)) {
       sinks.put(sinkName, createTap(Write)(mode))
     }
-    val newPipe = (mode, transformInTest) match {
-      case (test: TestMode, false) => pipe
-      case _                       => transformForWrite(pipe)
-    }
+    val newPipe =
+      (mode, transformInTest) match {
+        case (test: TestMode, false) => pipe
+        case _                       => transformForWrite(pipe)
+      }
     val outPipe = new Pipe(sinkName, newPipe)
     flowDef.addTail(outPipe)
     pipe

@@ -47,55 +47,56 @@ class JavaUniverse
   protected def PerRunReporting = new PerRunReporting
 
   type TreeCopier = InternalTreeCopierOps
-  implicit val TreeCopierTag: ClassTag[TreeCopier] =
-    ClassTag[TreeCopier](classOf[TreeCopier])
+  implicit val TreeCopierTag: ClassTag[TreeCopier] = ClassTag[TreeCopier](
+    classOf[TreeCopier])
   def newStrictTreeCopier: TreeCopier = new StrictTreeCopier
   def newLazyTreeCopier: TreeCopier = new LazyTreeCopier
 
   def currentFreshNameCreator = globalFreshNameCreator
 
-  override lazy val internal: Internal = new SymbolTableInternal {
-    override def typeTagToManifest[T: ClassTag](
-        mirror0: Any,
-        tag: Universe#TypeTag[T]): Manifest[T] = {
-      // SI-6239: make this conversion more precise
-      val mirror = mirror0.asInstanceOf[Mirror]
-      val runtimeClass = mirror.runtimeClass(tag.in(mirror).tpe)
-      Manifest.classType(runtimeClass).asInstanceOf[Manifest[T]]
-    }
-    override def manifestToTypeTag[T](
-        mirror0: Any,
-        manifest: Manifest[T]): Universe#TypeTag[T] =
-      TypeTag(
-        mirror0.asInstanceOf[Mirror],
-        new TypeCreator {
-          def apply[U <: Universe with Singleton](
-              mirror: scala.reflect.api.Mirror[U]): U#Type = {
-            mirror.universe match {
-              case ju: JavaUniverse =>
-                val jm = mirror.asInstanceOf[ju.Mirror]
-                val sym = jm.classSymbol(manifest.runtimeClass)
-                val tpe =
-                  if (manifest.typeArguments.isEmpty)
-                    sym.toType
-                  else {
-                    val tags = manifest.typeArguments map (targ =>
-                      ju.internal.manifestToTypeTag(jm, targ))
-                    ju.appliedType(
-                      sym.toTypeConstructor,
-                      tags map (_.in(jm).tpe))
-                  }
-                tpe.asInstanceOf[U#Type]
-              case u =>
-                u.internal
-                  .manifestToTypeTag(mirror.asInstanceOf[u.Mirror], manifest)
-                  .in(mirror)
-                  .tpe
+  override lazy val internal: Internal =
+    new SymbolTableInternal {
+      override def typeTagToManifest[T: ClassTag](
+          mirror0: Any,
+          tag: Universe#TypeTag[T]): Manifest[T] = {
+        // SI-6239: make this conversion more precise
+        val mirror = mirror0.asInstanceOf[Mirror]
+        val runtimeClass = mirror.runtimeClass(tag.in(mirror).tpe)
+        Manifest.classType(runtimeClass).asInstanceOf[Manifest[T]]
+      }
+      override def manifestToTypeTag[T](
+          mirror0: Any,
+          manifest: Manifest[T]): Universe#TypeTag[T] =
+        TypeTag(
+          mirror0.asInstanceOf[Mirror],
+          new TypeCreator {
+            def apply[U <: Universe with Singleton](
+                mirror: scala.reflect.api.Mirror[U]): U#Type = {
+              mirror.universe match {
+                case ju: JavaUniverse =>
+                  val jm = mirror.asInstanceOf[ju.Mirror]
+                  val sym = jm.classSymbol(manifest.runtimeClass)
+                  val tpe =
+                    if (manifest.typeArguments.isEmpty)
+                      sym.toType
+                    else {
+                      val tags = manifest.typeArguments map (targ =>
+                        ju.internal.manifestToTypeTag(jm, targ))
+                      ju.appliedType(
+                        sym.toTypeConstructor,
+                        tags map (_.in(jm).tpe))
+                    }
+                  tpe.asInstanceOf[U#Type]
+                case u =>
+                  u.internal
+                    .manifestToTypeTag(mirror.asInstanceOf[u.Mirror], manifest)
+                    .in(mirror)
+                    .tpe
+              }
             }
           }
-        }
-      )
-  }
+        )
+    }
 
   // can't put this in runtime.Trees since that's mixed with Global in ReflectGlobal, which has the definition from internal.Trees
   object treeInfo extends {

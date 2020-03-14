@@ -33,9 +33,10 @@ private[twitter] object ServerAdmissionControl {
     */
   case class Param(enabled: Boolean)
   object Param {
-    implicit val param = new Stack.Param[Param] {
-      lazy val default = Param(true)
-    }
+    implicit val param =
+      new Stack.Param[Param] {
+        lazy val default = Param(true)
+      }
   }
 
   /**

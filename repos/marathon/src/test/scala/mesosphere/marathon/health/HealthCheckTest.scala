@@ -73,15 +73,16 @@ class HealthCheckTest extends MarathonSpec {
   }
 
   test("MergeFromProto with portIndex") {
-    val proto = Protos.HealthCheckDefinition.newBuilder
-      .setPath("/health")
-      .setProtocol(Protocol.HTTP)
-      .setPortIndex(0)
-      .setGracePeriodSeconds(10)
-      .setIntervalSeconds(60)
-      .setTimeoutSeconds(10)
-      .setMaxConsecutiveFailures(10)
-      .build
+    val proto =
+      Protos.HealthCheckDefinition.newBuilder
+        .setPath("/health")
+        .setProtocol(Protocol.HTTP)
+        .setPortIndex(0)
+        .setGracePeriodSeconds(10)
+        .setIntervalSeconds(60)
+        .setTimeoutSeconds(10)
+        .setMaxConsecutiveFailures(10)
+        .build
 
     val mergeResult = HealthCheck().mergeFromProto(proto)
 
@@ -100,15 +101,16 @@ class HealthCheckTest extends MarathonSpec {
   }
 
   test("MergeFromProto with port") {
-    val proto = Protos.HealthCheckDefinition.newBuilder
-      .setPath("/health")
-      .setProtocol(Protocol.HTTP)
-      .setGracePeriodSeconds(10)
-      .setIntervalSeconds(60)
-      .setTimeoutSeconds(10)
-      .setMaxConsecutiveFailures(10)
-      .setPort(12345)
-      .build
+    val proto =
+      Protos.HealthCheckDefinition.newBuilder
+        .setPath("/health")
+        .setProtocol(Protocol.HTTP)
+        .setGracePeriodSeconds(10)
+        .setIntervalSeconds(60)
+        .setTimeoutSeconds(10)
+        .setMaxConsecutiveFailures(10)
+        .setPort(12345)
+        .build
 
     val mergeResult = HealthCheck().mergeFromProto(proto)
 
@@ -127,14 +129,15 @@ class HealthCheckTest extends MarathonSpec {
   }
 
   test("MergeFromProto with neither port nor portIndex") {
-    val proto = Protos.HealthCheckDefinition.newBuilder
-      .setPath("/health")
-      .setProtocol(Protocol.HTTP)
-      .setGracePeriodSeconds(10)
-      .setIntervalSeconds(60)
-      .setTimeoutSeconds(10)
-      .setMaxConsecutiveFailures(10)
-      .build
+    val proto =
+      Protos.HealthCheckDefinition.newBuilder
+        .setPath("/health")
+        .setProtocol(Protocol.HTTP)
+        .setGracePeriodSeconds(10)
+        .setIntervalSeconds(60)
+        .setTimeoutSeconds(10)
+        .setMaxConsecutiveFailures(10)
+        .build
 
     val mergeResult = HealthCheck().mergeFromProto(proto)
 
@@ -153,14 +156,15 @@ class HealthCheckTest extends MarathonSpec {
   }
 
   test("MergeFromProtoTcp") {
-    val proto = Protos.HealthCheckDefinition.newBuilder
-      .setProtocol(Protocol.TCP)
-      .setPortIndex(1)
-      .setGracePeriodSeconds(7)
-      .setIntervalSeconds(35)
-      .setTimeoutSeconds(10)
-      .setMaxConsecutiveFailures(10)
-      .build
+    val proto =
+      Protos.HealthCheckDefinition.newBuilder
+        .setProtocol(Protocol.TCP)
+        .setPortIndex(1)
+        .setGracePeriodSeconds(7)
+        .setIntervalSeconds(35)
+        .setTimeoutSeconds(10)
+        .setMaxConsecutiveFailures(10)
+        .build
 
     val mergeResult = HealthCheck().mergeFromProto(proto)
 
@@ -178,15 +182,16 @@ class HealthCheckTest extends MarathonSpec {
   }
 
   test("MergeFromProtoHttps") {
-    val proto = Protos.HealthCheckDefinition.newBuilder
-      .setPath("/health")
-      .setProtocol(Protocol.HTTPS)
-      .setPortIndex(0)
-      .setGracePeriodSeconds(10)
-      .setIntervalSeconds(60)
-      .setTimeoutSeconds(10)
-      .setMaxConsecutiveFailures(10)
-      .build
+    val proto =
+      Protos.HealthCheckDefinition.newBuilder
+        .setPath("/health")
+        .setProtocol(Protocol.HTTPS)
+        .setPortIndex(0)
+        .setGracePeriodSeconds(10)
+        .setIntervalSeconds(60)
+        .setTimeoutSeconds(10)
+        .setMaxConsecutiveFailures(10)
+        .build
 
     val mergeResult = HealthCheck().mergeFromProto(proto)
 
@@ -220,8 +225,7 @@ class HealthCheckTest extends MarathonSpec {
   }
 
   test("Read COMMAND health check") {
-    val json =
-      """
+    val json = """
         {
           "protocol": "COMMAND",
           "command": { "value": "echo healthy" },
@@ -231,19 +235,17 @@ class HealthCheckTest extends MarathonSpec {
           "maxConsecutiveFailures": 3
         }
       """
-    val expected =
-      HealthCheck(
-        protocol = Protocol.COMMAND,
-        command = Some(Command("echo healthy"))
-      )
+    val expected = HealthCheck(
+      protocol = Protocol.COMMAND,
+      command = Some(Command("echo healthy"))
+    )
     val readResult = fromJson(json)
     assert(readResult == expected)
   }
 
   test(
     "Read COMMAND health check (portIndex may be provided for backwards-compatibility)") {
-    val json =
-      """
+    val json = """
         {
           "protocol": "COMMAND",
           "command": { "value": "echo healthy" },
@@ -254,12 +256,11 @@ class HealthCheckTest extends MarathonSpec {
           "maxConsecutiveFailures": 3
         }
       """
-    val expected =
-      HealthCheck(
-        protocol = Protocol.COMMAND,
-        command = Some(Command("echo healthy")),
-        portIndex = Some(0)
-      )
+    val expected = HealthCheck(
+      protocol = Protocol.COMMAND,
+      command = Some(Command("echo healthy")),
+      portIndex = Some(0)
+    )
     val readResult = fromJson(json)
     assert(readResult == expected)
   }

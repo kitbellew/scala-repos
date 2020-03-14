@@ -399,8 +399,8 @@ object AccessibleRole
     * <ul>
     * </ul>
     */
-  val ProgressIndicator = new AccessibleRole(
-    jfxs.AccessibleRole.PROGRESS_INDICATOR)
+  val ProgressIndicator =
+    new AccessibleRole(jfxs.AccessibleRole.PROGRESS_INDICATOR)
 
   /**
     * Radio Button role.
@@ -609,8 +609,8 @@ object AccessibleRole
     * <li> {@link AccessibleAction#COLLAPSE} </li>
     * </ul>
     */
-  val SplitMenuButton = new AccessibleRole(
-    jfxs.AccessibleRole.SPLIT_MENU_BUTTON)
+  val SplitMenuButton =
+    new AccessibleRole(jfxs.AccessibleRole.SPLIT_MENU_BUTTON)
 
   /**
     * Tab Item role.

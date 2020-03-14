@@ -260,8 +260,7 @@ histogram
     "hw2 test 100K x 1" in {
       insert(bifrost, Path("/test/small3"), 1, 100000, 1)
 
-      val query =
-        """
+      val query = """
 tests := load(//test/small3)
 count(tests where tests.gender = "male")
 """
@@ -389,14 +388,15 @@ histogram
 }]
       """
       val jvals = JParser.parse(nullReal)
-      val msgs = jvals match {
-        case JArray(jvals) =>
-          jvals.zipWithIndex.map {
-            case (jval, idx) =>
-              val event = Event(Path("/test/null"), "apiKey", jval, Map.empty)
-              EventMessage(EventId(1, idx), event)
-          }
-      }
+      val msgs =
+        jvals match {
+          case JArray(jvals) =>
+            jvals.zipWithIndex.map {
+              case (jval, idx) =>
+                val event = Event(Path("/test/null"), "apiKey", jval, Map.empty)
+                EventMessage(EventId(1, idx), event)
+            }
+        }
 
       Await.result(bifrost.storeBatch(msgs, timeout), timeout)
 
@@ -479,14 +479,19 @@ histogram
 }]
       """
       val jvalues = JsonParser.parse(mixedReal)
-      val msgs = jvalues match {
-        case JArray(jvals) =>
-          jvals.zipWithIndex.map {
-            case (jval, idx) =>
-              val event = Event(Path("/test/mixed"), "apiKey", jval, Map.empty)
-              EventMessage(EventId(2, idx), event)
-          }
-      }
+      val msgs =
+        jvalues match {
+          case JArray(jvals) =>
+            jvals.zipWithIndex.map {
+              case (jval, idx) =>
+                val event = Event(
+                  Path("/test/mixed"),
+                  "apiKey",
+                  jval,
+                  Map.empty)
+                EventMessage(EventId(2, idx), event)
+            }
+        }
 
       Await.result(bifrost.storeBatch(msgs, timeout), timeout)
 
@@ -513,43 +518,44 @@ class TestQueryExecutor(config: Configuration, testShard: TestShard)
   override type Dataset[A] = IterableDataset[A]
 
   lazy val actorSystem = ActorSystem("testQueryExecutor")
-  implicit lazy val asyncContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
-  lazy val yggConfig = new JDBMQueryExecutorConfig {
-    val config = TestQueryExecutor.this.config
-    val sortWorkDir = scratchDir
-    val memoizationBufferSize = sortBufferSize
-    val memoizationWorkDir = scratchDir
+  implicit lazy val asyncContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
+  lazy val yggConfig =
+    new JDBMQueryExecutorConfig {
+      val config = TestQueryExecutor.this.config
+      val sortWorkDir = scratchDir
+      val memoizationBufferSize = sortBufferSize
+      val memoizationWorkDir = scratchDir
 
-    val clock = blueeyes.util.Clock.System
-    val idSource = new FreshAtomicIdSource
+      val clock = blueeyes.util.Clock.System
+      val idSource = new FreshAtomicIdSource
 
-    object valueSerialization
-        extends SortSerialization[SValue]
-        with SValueRunlengthFormatting
-        with BinarySValueFormatting
-        with ZippedStreamSerialization
-    object eventSerialization
-        extends SortSerialization[SEvent]
-        with SEventRunlengthFormatting
-        with BinarySValueFormatting
-        with ZippedStreamSerialization
-    object groupSerialization
-        extends SortSerialization[(SValue, Identities, SValue)]
-        with GroupRunlengthFormatting
-        with BinarySValueFormatting
-        with ZippedStreamSerialization
-    object memoSerialization
-        extends IncrementalSerialization[(Identities, SValue)]
-        with SEventRunlengthFormatting
-        with BinarySValueFormatting
-        with ZippedStreamSerialization
+      object valueSerialization
+          extends SortSerialization[SValue]
+          with SValueRunlengthFormatting
+          with BinarySValueFormatting
+          with ZippedStreamSerialization
+      object eventSerialization
+          extends SortSerialization[SEvent]
+          with SEventRunlengthFormatting
+          with BinarySValueFormatting
+          with ZippedStreamSerialization
+      object groupSerialization
+          extends SortSerialization[(SValue, Identities, SValue)]
+          with GroupRunlengthFormatting
+          with BinarySValueFormatting
+          with ZippedStreamSerialization
+      object memoSerialization
+          extends IncrementalSerialization[(Identities, SValue)]
+          with SEventRunlengthFormatting
+          with BinarySValueFormatting
+          with ZippedStreamSerialization
 
-    override lazy val flatMapTimeout: Duration = 5000 seconds
-    override lazy val projectionRetrievalTimeout: Timeout = Timeout(
-      5000 seconds)
-    override lazy val maxEvalDuration: Duration = 5000 seconds
-  }
+      override lazy val flatMapTimeout: Duration = 5000 seconds
+      override lazy val projectionRetrievalTimeout: Timeout = Timeout(
+        5000 seconds)
+      override lazy val maxEvalDuration: Duration = 5000 seconds
+    }
   type Storage = TestShard
 
   object ops extends Ops
@@ -562,13 +568,15 @@ class TestShard(config: Configuration, dataDir: File)
     extends ActorYggShard[IterableDataset]
     with StandaloneActorEcosystem {
   type YggConfig = ProductionActorConfig
-  lazy val yggConfig = new ProductionActorConfig {
-    lazy val config = TestShard.this.config
-  }
+  lazy val yggConfig =
+    new ProductionActorConfig {
+      lazy val config = TestShard.this.config
+    }
   lazy val yggState: YggState =
     YggState.restore(dataDir).unsafePerformIO.toOption.get
-  lazy val accessControl: AccessControl = new UnlimitedAccessControl()(
-    ExecutionContext.defaultExecutionContext(actorSystem))
+  lazy val accessControl: AccessControl =
+    new UnlimitedAccessControl()(
+      ExecutionContext.defaultExecutionContext(actorSystem))
   def waitForRoutingActorIdle() {
     val td = Duration(5000, "seconds")
     implicit val to = new Timeout(td)

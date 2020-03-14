@@ -10,15 +10,16 @@ import org.junit.runners.JUnit4
   */
 @RunWith(classOf[JUnit4])
 class SpecVersionTest {
-  val sut = new PropertiesTrait {
-    override def javaSpecVersion = "1.7"
+  val sut =
+    new PropertiesTrait {
+      override def javaSpecVersion = "1.7"
 
-    override protected def pickJarBasedOn: Class[_] = ???
-    override protected def propCategory: String = "test"
+      override protected def pickJarBasedOn: Class[_] = ???
+      override protected def propCategory: String = "test"
 
-    // override because of vals like releaseVersion
-    override lazy val scalaProps = new java.util.Properties
-  }
+      // override because of vals like releaseVersion
+      override lazy val scalaProps = new java.util.Properties
+    }
 
   // SI-7265
   @Test

@@ -281,12 +281,13 @@ class CustomMailboxSpec extends AkkaSpec(CustomMailboxSpec.config) {
         },
         1 second,
         10 millis)
-      val queue = actor
-        .asInstanceOf[ActorRefWithCell]
-        .underlying
-        .asInstanceOf[ActorCell]
-        .mailbox
-        .messageQueue
+      val queue =
+        actor
+          .asInstanceOf[ActorRefWithCell]
+          .underlying
+          .asInstanceOf[ActorCell]
+          .mailbox
+          .messageQueue
       queue.getClass should ===(classOf[CustomMailboxSpec.MyMailbox])
     }
   }

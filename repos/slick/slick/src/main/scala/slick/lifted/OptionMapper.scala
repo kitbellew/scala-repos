@@ -32,18 +32,20 @@ trait OptionMapper[BR, R] extends (Rep[BR] => Rep[R]) {
 sealed trait OptionMapper2[B1, B2, BR, P1, P2, R] extends OptionMapper[BR, R]
 
 object OptionMapper2 {
-  val plain = new OptionMapper2[Any, Any, Any, Any, Any, Any] {
-    def apply(n: Rep[Any]): Rep[Any] = n
-    def lift = false
-    override def toString = "OptionMapper2.plain"
-  }
-  val option = new OptionMapper2[Any, Any, Any, Any, Any, Option[Any]] {
-    def apply(n: Rep[Any]): Rep[Option[Any]] =
-      Rep.forNode(OptionApply(n.toNode))(
-        n.asInstanceOf[Rep.TypedRep[Any]].tpe.optionType)
-    def lift = true
-    override def toString = "OptionMapper2.option"
-  }
+  val plain =
+    new OptionMapper2[Any, Any, Any, Any, Any, Any] {
+      def apply(n: Rep[Any]): Rep[Any] = n
+      def lift = false
+      override def toString = "OptionMapper2.plain"
+    }
+  val option =
+    new OptionMapper2[Any, Any, Any, Any, Any, Option[Any]] {
+      def apply(n: Rep[Any]): Rep[Option[Any]] =
+        Rep.forNode(OptionApply(n.toNode))(
+          n.asInstanceOf[Rep.TypedRep[Any]].tpe.optionType)
+      def lift = true
+      override def toString = "OptionMapper2.option"
+    }
 
   @inline implicit def getOptionMapper2TT[B1, B2: BaseTypedType, BR] =
     OptionMapper2.plain.asInstanceOf[OptionMapper2[B1, B2, BR, B1, B2, BR]]
@@ -64,11 +66,12 @@ sealed trait OptionMapper3[B1, B2, B3, BR, P1, P2, P3, R]
     extends OptionMapper[BR, R]
 
 object OptionMapper3 {
-  val plain = new OptionMapper3[Any, Any, Any, Any, Any, Any, Any, Any] {
-    def apply(n: Rep[Any]): Rep[Any] = n
-    def lift = false
-    override def toString = "OptionMapper3.plain"
-  }
+  val plain =
+    new OptionMapper3[Any, Any, Any, Any, Any, Any, Any, Any] {
+      def apply(n: Rep[Any]): Rep[Any] = n
+      def lift = false
+      override def toString = "OptionMapper3.plain"
+    }
   val option =
     new OptionMapper3[Any, Any, Any, Any, Any, Any, Any, Option[Any]] {
       def apply(n: Rep[Any]): Rep[Option[Any]] =

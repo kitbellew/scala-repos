@@ -58,8 +58,9 @@ private[spark] class MemoryStore(
   private val unrollMemoryMap = mutable.HashMap[Long, Long]()
 
   // Initial memory to request before unrolling any block
-  private val unrollMemoryThreshold: Long =
-    conf.getLong("spark.storage.unrollMemoryThreshold", 1024 * 1024)
+  private val unrollMemoryThreshold: Long = conf.getLong(
+    "spark.storage.unrollMemoryThreshold",
+    1024 * 1024)
 
   /** Total amount of memory available for storage, in bytes. */
   private def maxMemory: Long = memoryManager.maxStorageMemory
@@ -171,8 +172,9 @@ private[spark] class MemoryStore(
     var vector = new SizeTrackingVector[Any]
 
     // Request enough memory to begin unrolling
-    keepUnrolling =
-      reserveUnrollMemoryForThisTask(blockId, initialMemoryThreshold)
+    keepUnrolling = reserveUnrollMemoryForThisTask(
+      blockId,
+      initialMemoryThreshold)
 
     if (!keepUnrolling) {
       logWarning(s"Failed to reserve initial memory threshold of " +
@@ -190,8 +192,9 @@ private[spark] class MemoryStore(
         if (currentSize >= memoryThreshold) {
           val amountToRequest =
             (currentSize * memoryGrowthFactor - memoryThreshold).toLong
-          keepUnrolling =
-            reserveUnrollMemoryForThisTask(blockId, amountToRequest)
+          keepUnrolling = reserveUnrollMemoryForThisTask(
+            blockId,
+            amountToRequest)
           if (keepUnrolling) {
             unrollMemoryUsedByThisBlock += amountToRequest
           }
@@ -206,14 +209,15 @@ private[spark] class MemoryStore(
       // We successfully unrolled the entirety of this block
       val arrayValues = vector.toArray
       vector = null
-      val entry = if (level.deserialized) {
-        new DeserializedMemoryEntry(
-          arrayValues,
-          SizeEstimator.estimate(arrayValues))
-      } else {
-        val bytes = blockManager.dataSerialize(blockId, arrayValues.iterator)
-        new SerializedMemoryEntry(bytes, bytes.size)
-      }
+      val entry =
+        if (level.deserialized) {
+          new DeserializedMemoryEntry(
+            arrayValues,
+            SizeEstimator.estimate(arrayValues))
+        } else {
+          val bytes = blockManager.dataSerialize(blockId, arrayValues.iterator)
+          new SerializedMemoryEntry(bytes, bytes.size)
+        }
       val size = entry.size
       def transferUnrollToStorage(amount: Long): Unit = {
         // Synchronize so that transfer is atomic
@@ -226,10 +230,9 @@ private[spark] class MemoryStore(
       // Acquire storage memory if necessary to store this block in memory.
       val enoughStorageMemory = {
         if (unrollMemoryUsedByThisBlock <= size) {
-          val acquiredExtra =
-            memoryManager.acquireStorageMemory(
-              blockId,
-              size - unrollMemoryUsedByThisBlock)
+          val acquiredExtra = memoryManager.acquireStorageMemory(
+            blockId,
+            size - unrollMemoryUsedByThisBlock)
           if (acquiredExtra) {
             transferUnrollToStorage(unrollMemoryUsedByThisBlock)
           }
@@ -394,12 +397,14 @@ private[spark] class MemoryStore(
           // blocks and removing entries. However the check is still here for
           // future safety.
           if (entry != null) {
-            val data = entry match {
-              case DeserializedMemoryEntry(values, _) => Left(values)
-              case SerializedMemoryEntry(buffer, _)   => Right(buffer)
-            }
-            val newEffectiveStorageLevel =
-              blockManager.dropFromMemory(blockId, () => data)
+            val data =
+              entry match {
+                case DeserializedMemoryEntry(values, _) => Left(values)
+                case SerializedMemoryEntry(buffer, _)   => Right(buffer)
+              }
+            val newEffectiveStorageLevel = blockManager.dropFromMemory(
+              blockId,
+              () => data)
             if (newEffectiveStorageLevel.isValid) {
               // The block is still present in at least one store, so release the lock
               // but don't delete the block info

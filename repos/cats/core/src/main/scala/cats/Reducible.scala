@@ -22,8 +22,7 @@ import simulacrum.typeclass
     *
     * Implementations should override this method when possible.
     */
-  def reduceLeft[A](fa: F[A])(f: (A, A) => A): A =
-    reduceLeftTo(fa)(identity)(f)
+  def reduceLeft[A](fa: F[A])(f: (A, A) => A): A = reduceLeftTo(fa)(identity)(f)
 
   /**
     * Right-associative reduction on `F` using the function `f`.
@@ -63,8 +62,7 @@ import simulacrum.typeclass
     * Overriden from Foldable[_] for efficiency.
     */
   override def reduceLeftToOption[A, B](fa: F[A])(f: A => B)(
-      g: (B, A) => B): Option[B] =
-    Some(reduceLeftTo(fa)(f)(g))
+      g: (B, A) => B): Option[B] = Some(reduceLeftTo(fa)(f)(g))
 
   /**
     * Apply `f` to the "initial element" of `fa` and lazily combine it

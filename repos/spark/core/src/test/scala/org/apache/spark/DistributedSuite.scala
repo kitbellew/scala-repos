@@ -84,8 +84,9 @@ class DistributedSuite
     sc = new SparkContext(clusterUrl, "test", conf)
     // This data should be around 20 MB, so even with 4 mappers and 2 reducers, each map output
     // file should be about 2.5 MB
-    val pairs =
-      sc.parallelize(1 to 2000, 4).map(x => (x % 16, new Array[Byte](10000)))
+    val pairs = sc
+      .parallelize(1 to 2000, 4)
+      .map(x => (x % 16, new Array[Byte](10000)))
     val groups = pairs.groupByKey(2).map(x => (x._1, x._2.size)).collect()
     assert(groups.length === 16)
     assert(groups.map(_._2).sum === 2000)
@@ -165,8 +166,9 @@ class DistributedSuite
 
   test("caching in memory, serialized, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data =
-      sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_ONLY_SER_2)
+    val data = sc
+      .parallelize(1 to 1000, 10)
+      .persist(StorageLevel.MEMORY_ONLY_SER_2)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -182,8 +184,9 @@ class DistributedSuite
 
   test("caching in memory and disk, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data =
-      sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_AND_DISK_2)
+    val data = sc
+      .parallelize(1 to 1000, 10)
+      .persist(StorageLevel.MEMORY_AND_DISK_2)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -191,8 +194,9 @@ class DistributedSuite
 
   test("caching in memory and disk, serialized, replicated") {
     sc = new SparkContext(clusterUrl, "test")
-    val data =
-      sc.parallelize(1 to 1000, 10).persist(StorageLevel.MEMORY_AND_DISK_SER_2)
+    val data = sc
+      .parallelize(1 to 1000, 10)
+      .persist(StorageLevel.MEMORY_AND_DISK_SER_2)
 
     assert(data.count() === 1000)
     assert(data.count() === 1000)
@@ -208,10 +212,11 @@ class DistributedSuite
     blockManager.master.getLocations(blockId).foreach { cmId =>
       val bytes = blockTransfer
         .fetchBlockSync(cmId.host, cmId.port, cmId.executorId, blockId.toString)
-      val deserialized = blockManager
-        .dataDeserialize(blockId, bytes.nioByteBuffer())
-        .asInstanceOf[Iterator[Int]]
-        .toList
+      val deserialized =
+        blockManager
+          .dataDeserialize(blockId, bytes.nioByteBuffer())
+          .asInstanceOf[Iterator[Int]]
+          .toList
       assert(deserialized === (1 to 100).toList)
     }
   }
@@ -227,8 +232,8 @@ class DistributedSuite
     assert(data.count() === size)
     assert(data.count() === size)
     // ensure only a subset of partitions were cached
-    val rddBlocks =
-      sc.env.blockManager.master.getMatchingBlockIds(_.isRDD, askSlaves = true)
+    val rddBlocks = sc.env.blockManager.master
+      .getMatchingBlockIds(_.isRDD, askSlaves = true)
     assert(
       rddBlocks.size === 0,
       s"expected no RDD blocks, found ${rddBlocks.size}")
@@ -241,14 +246,15 @@ class DistributedSuite
       .set("spark.storage.unrollMemoryThreshold", "1024")
       .set("spark.testing.memory", (size * numPartitions).toString)
     sc = new SparkContext(clusterUrl, "test", conf)
-    val data =
-      sc.parallelize(1 to size, numPartitions).persist(StorageLevel.MEMORY_ONLY)
+    val data = sc
+      .parallelize(1 to size, numPartitions)
+      .persist(StorageLevel.MEMORY_ONLY)
     assert(data.count() === size)
     assert(data.count() === size)
     assert(data.count() === size)
     // ensure only a subset of partitions were cached
-    val rddBlocks =
-      sc.env.blockManager.master.getMatchingBlockIds(_.isRDD, askSlaves = true)
+    val rddBlocks = sc.env.blockManager.master
+      .getMatchingBlockIds(_.isRDD, askSlaves = true)
     assert(rddBlocks.size > 0, "no RDD blocks found")
     assert(
       rddBlocks.size < numPartitions,
@@ -262,8 +268,10 @@ class DistributedSuite
       null,
       Nil,
       Map("TEST_VAR" -> "TEST_VALUE"))
-    val values =
-      sc.parallelize(1 to 2, 2).map(x => System.getenv("TEST_VAR")).collect()
+    val values = sc
+      .parallelize(1 to 2, 2)
+      .map(x => System.getenv("TEST_VAR"))
+      .collect()
     assert(values.toSeq === Seq("TEST_VALUE", "TEST_VALUE"))
   }
 
@@ -327,8 +335,9 @@ class DistributedSuite
 
       // Create a new replicated RDD to make sure that cached peer information doesn't cause
       // problems.
-      val data2 =
-        sc.parallelize(Seq(true, true), 2).persist(StorageLevel.MEMORY_ONLY_2)
+      val data2 = sc
+        .parallelize(Seq(true, true), 2)
+        .persist(StorageLevel.MEMORY_ONLY_2)
       assert(data2.count === 2)
     }
   }

@@ -11,10 +11,11 @@ private[pickling] object Classes {
       val elemClassTag = classTagFromString(elemTypeString)
       elemClassTag.wrap
     } else {
-      val clazz = typeString match {
-        case "scala.Double" => classOf[Double]
-        case _              => Class.forName(typeString)
-      }
+      val clazz =
+        typeString match {
+          case "scala.Double" => classOf[Double]
+          case _              => Class.forName(typeString)
+        }
       ClassTag(clazz)
     }
   }

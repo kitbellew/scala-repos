@@ -1,8 +1,7 @@
 import scala.tools.partest.SessionTest
 
 object Test extends SessionTest {
-  def session =
-    s"""|
+  def session = s"""|
     |scala> :paste -raw $pastie
     |Pasting file $pastie...
     |

@@ -180,8 +180,7 @@ object Memcached
     }
 
     case class KeyHasher(hasher: hashing.KeyHasher) {
-      def mk(): (KeyHasher, Stack.Param[KeyHasher]) =
-        (this, KeyHasher.param)
+      def mk(): (KeyHasher, Stack.Param[KeyHasher]) = (this, KeyHasher.param)
     }
 
     object KeyHasher {
@@ -189,13 +188,12 @@ object Memcached
     }
 
     case class NumReps(reps: Int) {
-      def mk(): (NumReps, Stack.Param[NumReps]) =
-        (this, NumReps.param)
+      def mk(): (NumReps, Stack.Param[NumReps]) = (this, NumReps.param)
     }
 
     object NumReps {
-      implicit val param =
-        Stack.Param(NumReps(KetamaPartitionedClient.DefaultNumReps))
+      implicit val param = Stack.Param(
+        NumReps(KetamaPartitionedClient.DefaultNumReps))
     }
   }
 
@@ -203,8 +201,9 @@ object Memcached
 
     private[Memcached] val ProtocolLibraryName = "memcached"
 
-    private[this] val defaultFailureAccrualPolicy = () =>
-      FailureAccrualPolicy.consecutiveFailures(100, Backoff.const(1.second))
+    private[this] val defaultFailureAccrualPolicy =
+      () =>
+        FailureAccrualPolicy.consecutiveFailures(100, Backoff.const(1.second))
 
     /**
       * Default stack parameters used for memcached client. We change the
@@ -294,19 +293,21 @@ object Memcached
       )
 
     def newTwemcacheClient(dest: Name, label: String): TwemcacheClient = {
-      val _dest = if (LocalMemcached.enabled) {
-        Resolver.eval(mkDestination("localhost", LocalMemcached.port))
-      } else
-        dest
+      val _dest =
+        if (LocalMemcached.enabled) {
+          Resolver.eval(mkDestination("localhost", LocalMemcached.port))
+        } else
+          dest
 
       // Memcache only support Name.Bound names (TRFC-162).
       // See KetamaPartitionedClient for more details.
-      val va = _dest match {
-        case Name.Bound(va) => va
-        case n =>
-          throw new IllegalArgumentException(
-            s"Memcached client only supports Bound Names, was: $n")
-      }
+      val va =
+        _dest match {
+          case Name.Bound(va) => va
+          case n =>
+            throw new IllegalArgumentException(
+              s"Memcached client only supports Bound Names, was: $n")
+        }
 
       val finagle.param.Stats(sr) = params[finagle.param.Stats]
       val param.KeyHasher(hasher) = params[param.KeyHasher]
@@ -360,8 +361,7 @@ object Memcached
       * @see [[com.twitter.hashing.KetamaDistributor]] for more
       * details.
       */
-    def withNumReps(reps: Int): Client =
-      configured(param.NumReps(reps))
+    def withNumReps(reps: Int): Client = configured(param.NumReps(reps))
 
     // Java-friendly forwarders
     // See https://issues.scala-lang.org/browse/SI-8905
@@ -369,8 +369,7 @@ object Memcached
       new ConcurrentLoadBalancingParams(this)
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withAdmissionControl: ClientAdmissionControlParams[Client] =
       new ClientAdmissionControlParams(this)
     override val withSessionQualifier: SessionQualificationParams[Client] =

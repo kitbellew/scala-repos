@@ -45,29 +45,33 @@ class WebAPIKeyFinderSpec extends APIKeyFinderSpec[Future] with AkkaDefaults {
 
   def withAPIKeyFinder[A](mgr: APIKeyManager[Future])(
       f: APIKeyFinder[Future] => A): A = {
-    val testService = new TestAPIKeyService {
-      val apiKeyManager = mgr
-    }
-    val (service, stoppable) = testService
-      .server(Configuration.parse(testService.config), executionContext)
-      .start
-      .get
-      .copoint
-    val client = new HttpClient[ByteChunk] {
-      def isDefinedAt(req: HttpRequest[ByteChunk]) = true
-      def apply(req: HttpRequest[ByteChunk]) =
-        service.service(req) getOrElse Future(
-          HttpResponse(HttpStatus(NotFound)))
-    }
+    val testService =
+      new TestAPIKeyService {
+        val apiKeyManager = mgr
+      }
+    val (service, stoppable) =
+      testService
+        .server(Configuration.parse(testService.config), executionContext)
+        .start
+        .get
+        .copoint
+    val client =
+      new HttpClient[ByteChunk] {
+        def isDefinedAt(req: HttpRequest[ByteChunk]) = true
+        def apply(req: HttpRequest[ByteChunk]) =
+          service.service(req) getOrElse Future(
+            HttpResponse(HttpStatus(NotFound)))
+      }
 
-    val apiKeyFinder = new WebAPIKeyFinder {
-      val M = self.M
-      val rootAPIKey = self.M.copoint(mgr.rootAPIKey)
-      val rootGrantId = self.M.copoint(mgr.rootGrantId)
-      val executor = self.executionContext
-      protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
-        f(client.path("/security/v1/"))
-    }
+    val apiKeyFinder =
+      new WebAPIKeyFinder {
+        val M = self.M
+        val rootAPIKey = self.M.copoint(mgr.rootAPIKey)
+        val rootGrantId = self.M.copoint(mgr.rootGrantId)
+        val executor = self.executionContext
+        protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
+          f(client.path("/security/v1/"))
+      }
 
     val result = f(apiKeyFinder.withM[Future])
 

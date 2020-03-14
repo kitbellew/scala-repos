@@ -20,11 +20,12 @@ private[wiki] final class Fetch(gitUrl: String, markdownPath: String)(
     getFiles flatMap { files =>
       val (defaultPages, langPages) =
         files.map(filePage).flatten partition (_.isDefaultLang)
-      val newLangPages = (langPages map { page =>
-        defaultPages find (_.number == page.number) map { default =>
-          page.copy(slug = default.slug)
-        }
-      }).flatten
+      val newLangPages =
+        (langPages map { page =>
+          defaultPages find (_.number == page.number) map { default =>
+            page.copy(slug = default.slug)
+          }
+        }).flatten
       $remove($select.all) >> (newLangPages ::: defaultPages)
         .map($insert(_))
         .sequenceFu

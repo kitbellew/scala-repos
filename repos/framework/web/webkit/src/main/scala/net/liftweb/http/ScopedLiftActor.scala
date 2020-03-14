@@ -82,44 +82,46 @@ trait ScopedLiftActor extends LiftActor with LazyLoggable {
 
   protected override def messageHandler = {
     val what = composeFunction
-    val myPf: PartialFunction[Any, Unit] = new PartialFunction[Any, Unit] {
-      def apply(in: Any): Unit =
-        S.initIfUninitted(session) {
-          RenderVersion.doWith(uniqueId) {
-            S.functionLifespan(true) {
-              try {
-                what.apply(in)
-              } catch {
-                case e if exceptionHandler.isDefinedAt(e) => exceptionHandler(e)
-                case e: Exception =>
-                  reportError("Message dispatch for " + in, e)
-              }
-              if (S.functionMap.size > 0) {
-                session.updateFunctionMap(S.functionMap, uniqueId, millis)
-                S.clearFunctionMap
+    val myPf: PartialFunction[Any, Unit] =
+      new PartialFunction[Any, Unit] {
+        def apply(in: Any): Unit =
+          S.initIfUninitted(session) {
+            RenderVersion.doWith(uniqueId) {
+              S.functionLifespan(true) {
+                try {
+                  what.apply(in)
+                } catch {
+                  case e if exceptionHandler.isDefinedAt(e) =>
+                    exceptionHandler(e)
+                  case e: Exception =>
+                    reportError("Message dispatch for " + in, e)
+                }
+                if (S.functionMap.size > 0) {
+                  session.updateFunctionMap(S.functionMap, uniqueId, millis)
+                  S.clearFunctionMap
+                }
               }
             }
           }
-        }
 
-      def isDefinedAt(in: Any): Boolean =
-        S.initIfUninitted(session) {
-          RenderVersion.doWith(uniqueId) {
-            S.functionLifespan(true) {
-              try {
-                what.isDefinedAt(in)
-              } catch {
-                case e if exceptionHandler.isDefinedAt(e) =>
-                  exceptionHandler(e);
-                  false
-                case e: Exception =>
-                  reportError("Message test for " + in, e);
-                  false
+        def isDefinedAt(in: Any): Boolean =
+          S.initIfUninitted(session) {
+            RenderVersion.doWith(uniqueId) {
+              S.functionLifespan(true) {
+                try {
+                  what.isDefinedAt(in)
+                } catch {
+                  case e if exceptionHandler.isDefinedAt(e) =>
+                    exceptionHandler(e);
+                    false
+                  case e: Exception =>
+                    reportError("Message test for " + in, e);
+                    false
+                }
               }
             }
           }
-        }
-    }
+      }
 
     myPf
   }

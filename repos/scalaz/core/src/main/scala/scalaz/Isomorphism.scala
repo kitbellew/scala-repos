@@ -148,12 +148,14 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
 
   /**Convenience template trait to implement `<~>` */
   trait IsoFunctorTemplate[F[_], G[_]] extends IsoFunctor[F, G] {
-    final val to: NaturalTransformation[F, G] = new (F ~> G) {
-      def apply[A](fa: F[A]): G[A] = to[A](fa)
-    }
-    final val from: NaturalTransformation[G, F] = new (G ~> F) {
-      def apply[A](ga: G[A]): F[A] = from[A](ga)
-    }
+    final val to: NaturalTransformation[F, G] =
+      new (F ~> G) {
+        def apply[A](fa: F[A]): G[A] = to[A](fa)
+      }
+    final val from: NaturalTransformation[G, F] =
+      new (G ~> F) {
+        def apply[A](ga: G[A]): F[A] = from[A](ga)
+      }
 
     def to[A](fa: F[A]): G[A]
     def from[A](ga: G[A]): F[A]
@@ -164,12 +166,14 @@ sealed abstract class Isomorphisms extends IsomorphismsLow0 {
 
   /**Convenience template trait to implement `<~~>` */
   trait IsoBifunctorTemplate[F[_, _], G[_, _]] extends IsoBifunctor[F, G] {
-    final val to: BiNaturalTransformation[F, G] = new (F ~~> G) {
-      def apply[A, B](fab: F[A, B]): G[A, B] = to[A, B](fab)
-    }
-    final val from: BiNaturalTransformation[G, F] = new (G ~~> F) {
-      def apply[A, B](gab: G[A, B]): F[A, B] = from[A, B](gab)
-    }
+    final val to: BiNaturalTransformation[F, G] =
+      new (F ~~> G) {
+        def apply[A, B](fab: F[A, B]): G[A, B] = to[A, B](fab)
+      }
+    final val from: BiNaturalTransformation[G, F] =
+      new (G ~~> F) {
+        def apply[A, B](gab: G[A, B]): F[A, B] = from[A, B](gab)
+      }
 
     def to[A, B](fa: F[A, B]): G[A, B]
     def from[A, B](ga: G[A, B]): F[A, B]
@@ -421,16 +425,14 @@ trait IsomorphismBifoldable[F[_, _], G[_, _]] extends Bifoldable[F] {
   implicit def G: Bifoldable[G]
 
   override final def bifoldMap[A, B, M: Monoid](fab: F[A, B])(f: A => M)(
-      g: B => M): M =
-    G.bifoldMap(biNaturalTrans(fab))(f)(g)
+      g: B => M): M = G.bifoldMap(biNaturalTrans(fab))(f)(g)
 
   override final def bifoldRight[A, B, C](fab: F[A, B], z: => C)(
       f: (A, => C) => C)(g: (B, => C) => C): C =
     G.bifoldRight(biNaturalTrans(fab), z)(f)(g)
 
   override final def bifoldLeft[A, B, C](fa: F[A, B], z: C)(f: (C, A) => C)(
-      g: (C, B) => C): C =
-    G.bifoldLeft(biNaturalTrans(fa), z)(f)(g)
+      g: (C, B) => C): C = G.bifoldLeft(biNaturalTrans(fa), z)(f)(g)
 }
 
 trait IsomorphismBitraverse[F[_, _], G[_, _]]

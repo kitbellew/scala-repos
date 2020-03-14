@@ -19,15 +19,17 @@ object Config {
   val VERSION = "1.1.3"
 
   val HOME = {
-    val envHome = System.getenv("AKKA_HOME") match {
-      case null | "" | "." => None
-      case value           => Some(value)
-    }
+    val envHome =
+      System.getenv("AKKA_HOME") match {
+        case null | "" | "." => None
+        case value           => Some(value)
+      }
 
-    val systemHome = System.getProperty("akka.home") match {
-      case null | "" => None
-      case value     => Some(value)
-    }
+    val systemHome =
+      System.getProperty("akka.home") match {
+        case null | "" => None
+        case value     => Some(value)
+      }
 
     envHome orElse systemHome
   }
@@ -35,15 +37,17 @@ object Config {
   val config: Configuration =
     try {
       val confName = {
-        val envConf = System.getenv("AKKA_MODE") match {
-          case null | "" => None
-          case value     => Some(value)
-        }
+        val envConf =
+          System.getenv("AKKA_MODE") match {
+            case null | "" => None
+            case value     => Some(value)
+          }
 
-        val systemConf = System.getProperty("akka.mode") match {
-          case null | "" => None
-          case value     => Some(value)
-        }
+        val systemConf =
+          System.getProperty("akka.mode") match {
+            case null | "" => None
+            case value     => Some(value)
+          }
 
         (envConf orElse systemConf)
           .map("akka." + _ + ".conf")

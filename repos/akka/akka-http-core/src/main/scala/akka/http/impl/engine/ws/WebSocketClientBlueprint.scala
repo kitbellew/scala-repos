@@ -80,11 +80,10 @@ object WebSocketClientBlueprint {
       subprotocol.toList,
       settings.websocketRandomFactory())
     val hostHeader = Host(uri.authority)
-    val renderedInitialRequest =
-      HttpRequestRendererFactory.renderStrict(
-        RequestRenderingContext(initialRequest, hostHeader),
-        settings,
-        log)
+    val renderedInitialRequest = HttpRequestRendererFactory.renderStrict(
+      RequestRenderingContext(initialRequest, hostHeader),
+      settings,
+      log)
 
     class UpgradeStage extends StatefulStage[ByteString, ByteString] {
       type State = StageState[ByteString, ByteString]
@@ -95,23 +94,24 @@ object WebSocketClientBlueprint {
         new State {
           // a special version of the parser which only parses one message and then reports the remaining data
           // if some is available
-          val parser = new HttpResponseParser(
-            settings.parserSettings,
-            HttpHeaderParser(settings.parserSettings)()) {
-            var first = true
-            override def handleInformationalResponses = false
-            override protected def parseMessage(
-                input: ByteString,
-                offset: Int): StateResult = {
-              if (first) {
-                first = false
-                super.parseMessage(input, offset)
-              } else {
-                emit(RemainingBytes(input.drop(offset)))
-                terminate()
+          val parser =
+            new HttpResponseParser(
+              settings.parserSettings,
+              HttpHeaderParser(settings.parserSettings)()) {
+              var first = true
+              override def handleInformationalResponses = false
+              override protected def parseMessage(
+                  input: ByteString,
+                  offset: Int): StateResult = {
+                if (first) {
+                  first = false
+                  super.parseMessage(input, offset)
+                } else {
+                  emit(RemainingBytes(input.drop(offset)))
+                  terminate()
+                }
               }
             }
-          }
           parser.setContextForNextResponse(
             HttpResponseParser.ResponseContext(HttpMethods.GET, None))
 
@@ -121,8 +121,10 @@ object WebSocketClientBlueprint {
             parser.parseBytes(elem) match {
               case NeedMoreData ⇒ ctx.pull()
               case ResponseStart(status, protocol, headers, entity, close) ⇒
-                val response =
-                  HttpResponse(status, headers, protocol = protocol)
+                val response = HttpResponse(
+                  status,
+                  headers,
+                  protocol = protocol)
                 Handshake.Client.validateResponse(
                   response,
                   subprotocol.toList,
@@ -173,8 +175,8 @@ object WebSocketClientBlueprint {
       val networkIn = b.add(Flow[ByteString].transform(() ⇒ new UpgradeStage))
       val wsIn = b.add(Flow[ByteString])
 
-      val handshakeRequestSource =
-        b.add(Source.single(renderedInitialRequest) ++ valve.source)
+      val handshakeRequestSource = b.add(
+        Source.single(renderedInitialRequest) ++ valve.source)
       val httpRequestBytesAndThenWSBytes = b.add(Concat[ByteString]())
 
       handshakeRequestSource ~> httpRequestBytesAndThenWSBytes

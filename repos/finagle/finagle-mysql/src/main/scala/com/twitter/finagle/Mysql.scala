@@ -49,10 +49,11 @@ object MySqlClientTracingFilter {
     def make(_label: param.Label, next: ServiceFactory[Request, Result]) = {
       val param.Label(label) = _label
       // TODO(jeff): should be able to get this directly from ClientTracingFilter
-      val annotations = new AnnotatingTracingFilter[Request, Result](
-        label,
-        Annotation.ClientSend(),
-        Annotation.ClientRecv())
+      val annotations =
+        new AnnotatingTracingFilter[Request, Result](
+          label,
+          Annotation.ClientSend(),
+          Annotation.ClientRecv())
       annotations andThen TracingFilter andThen next
     }
   }
@@ -153,8 +154,7 @@ object Mysql
       new DefaultLoadBalancingParams(this)
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withSessionQualifier: SessionQualificationParams[Client] =
       new SessionQualificationParams(this)
     override val withAdmissionControl: ClientAdmissionControlParams[Client] =
@@ -220,6 +220,5 @@ object Mysql
     * A client configured with parameter p.
     */
   @deprecated("Use client.configured", "6.22.0")
-  def configured[P: Stack.Param](p: P): Client =
-    client.configured(p)
+  def configured[P: Stack.Param](p: P): Client = client.configured(p)
 }

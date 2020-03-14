@@ -156,19 +156,20 @@ class ScalaChangeSignatureDialog(
           editor: TableCellEditor,
           row: Int,
           column: Int): Component = {
-        val listener: DocumentAdapter = new DocumentAdapter() {
-          override def documentChanged(e: DocumentEvent) {
-            val ed: TableCellEditor = parametersTable.getCellEditor
-            if (ed != null) {
-              val editorValue: AnyRef = ed.getCellEditorValue
-              myParametersTableModel.setValueAtWithoutUpdate(
-                editorValue,
-                row,
-                column)
-              updateSignature()
+        val listener: DocumentAdapter =
+          new DocumentAdapter() {
+            override def documentChanged(e: DocumentEvent) {
+              val ed: TableCellEditor = parametersTable.getCellEditor
+              if (ed != null) {
+                val editorValue: AnyRef = ed.getCellEditorValue
+                myParametersTableModel.setValueAtWithoutUpdate(
+                  editorValue,
+                  row,
+                  column)
+                updateSignature()
+              }
             }
           }
-        }
         editor match {
           case ed: StringTableCellEditor =>
             ed.addDocumentListener(listener)
@@ -205,10 +206,11 @@ class ScalaChangeSignatureDialog(
       t: JTable,
       item: ParameterTableModelItemBase[ScalaParameterInfo])
       : JBTableRowEditor = {
-    val scalaItem = item match {
-      case si: ScalaParameterTableModelItem => si
-      case _                                => throw new IllegalArgumentException
-    }
+    val scalaItem =
+      item match {
+        case si: ScalaParameterTableModelItem => si
+        case _                                => throw new IllegalArgumentException
+      }
 
     new ScalaChangeSignatureRowEditor(scalaItem, this)
   }
@@ -228,18 +230,19 @@ class ScalaChangeSignatureDialog(
     def itemText(item: ScalaParameterTableModelItem) =
       item.keywordsAndAnnotations + nameAndType(item)
 
-    val prefix = method.fun match {
-      case fun: ScFunction =>
-        val name =
-          if (!fun.isConstructor)
-            getMethodName
-          else
-            "this"
-        s"$getVisibility def $name"
-      case pc: ScPrimaryConstructor =>
-        s"class ${pc.getClassNameText} $getVisibility"
-      case _ => ""
-    }
+    val prefix =
+      method.fun match {
+        case fun: ScFunction =>
+          val name =
+            if (!fun.isConstructor)
+              getMethodName
+            else
+              "this"
+          s"$getVisibility def $name"
+        case pc: ScPrimaryConstructor =>
+          s"class ${pc.getClassNameText} $getVisibility"
+        case _ => ""
+      }
     val paramsText =
       splittedItems.map(_.map(itemText).mkString("(", ", ", ")")).mkString
 
@@ -590,9 +593,10 @@ class ScalaChangeSignatureDialog(
             focused)
 
           if (item.parameter.isIntroducedParameter) {
-            val fields = UIUtil
-              .findComponentsOfType(comp, classOf[EditorTextField])
-              .asScala
+            val fields =
+              UIUtil
+                .findComponentsOfType(comp, classOf[EditorTextField])
+                .asScala
             fields.foreach { f =>
               f.setFont(f.getFont.deriveFont(Font.BOLD))
             }
@@ -613,19 +617,21 @@ class ScalaChangeSignatureDialog(
     }
 
     protected def nameText(item: ScalaParameterTableModelItem) = {
-      val maxLength = parameterItems.map(_.parameter.getName.length) match {
-        case Seq() => 0
-        case seq   => seq.max
-      }
+      val maxLength =
+        parameterItems.map(_.parameter.getName.length) match {
+          case Seq() => 0
+          case seq   => seq.max
+        }
       val name = item.parameter.getName
       name + StringUtil.repeat(" ", maxLength - name.length)
     }
 
     protected def typeText(item: ScalaParameterTableModelItem) = {
-      val maxLength = parameterItems.map(_.typeText.length) match {
-        case Seq() => 0
-        case seq   => seq.max
-      }
+      val maxLength =
+        parameterItems.map(_.typeText.length) match {
+          case Seq() => 0
+          case seq   => seq.max
+        }
       val typeText = item.typeText
       typeText + StringUtil.repeat(" ", maxLength - typeText.length)
     }

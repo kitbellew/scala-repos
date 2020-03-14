@@ -14,6 +14,5 @@ object CorePlugin extends AutoPlugin {
 
   override lazy val projectSettings: Seq[Setting[_]] =
     Defaults.coreDefaultSettings
-  override lazy val globalSettings: Seq[Setting[_]] =
-    Defaults.globalSbtCore
+  override lazy val globalSettings: Seq[Setting[_]] = Defaults.globalSbtCore
 }

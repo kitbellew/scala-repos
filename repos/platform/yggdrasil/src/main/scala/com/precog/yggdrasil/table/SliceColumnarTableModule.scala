@@ -86,8 +86,8 @@ trait SliceColumnarTableModule[M[+_]]
             }
           }
 
-          val stream = projections.foldLeft(StreamT.empty[M, Slice]) {
-            (acc, proj) =>
+          val stream =
+            projections.foldLeft(StreamT.empty[M, Slice]) { (acc, proj) =>
               // FIXME: Can Schema.flatten return Option[Set[ColumnRef]] instead?
               val constraints: M[Option[Set[ColumnRef]]] = proj.structure.map {
                 struct => Some(Schema.flatten(tpe, struct.toList).toSet)
@@ -96,7 +96,7 @@ trait SliceColumnarTableModule[M[+_]]
               acc ++ StreamT.wrapEffect(constraints map { c =>
                 slices(proj, c)
               })
-          }
+            }
 
           Table(stream, ExactSize(totalLength))
         }

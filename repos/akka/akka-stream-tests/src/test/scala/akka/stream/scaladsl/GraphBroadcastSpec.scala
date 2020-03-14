@@ -55,16 +55,17 @@ class GraphBroadcastSpec extends AkkaSpec {
     }
 
     "work with one-way broadcast" in assertAllStagesStopped {
-      val result = Source
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val broadcast = b.add(Broadcast[Int](1))
-          val source = b.add(Source(1 to 3))
+      val result =
+        Source
+          .fromGraph(GraphDSL.create() { implicit b ⇒
+            val broadcast = b.add(Broadcast[Int](1))
+            val source = b.add(Source(1 to 3))
 
-          source ~> broadcast.in
+            source ~> broadcast.in
 
-          SourceShape(broadcast.out(0))
-        })
-        .runFold(Seq[Int]())(_ :+ _)
+            SourceShape(broadcast.out(0))
+          })
+          .runFold(Seq[Int]())(_ :+ _)
 
       Await.result(result, 3.seconds) should ===(Seq(1, 2, 3))
     }
@@ -359,8 +360,10 @@ class GraphBroadcastSpec extends AkkaSpec {
 
     "alsoTo must broadcast" in assertAllStagesStopped {
       val p, p2 = TestSink.probe[Int](system)
-      val (ps1, ps2) =
-        Source(1 to 6).alsoToMat(p)(Keep.right).toMat(p2)(Keep.both).run()
+      val (ps1, ps2) = Source(1 to 6)
+        .alsoToMat(p)(Keep.right)
+        .toMat(p2)(Keep.both)
+        .run()
       ps1.request(6)
       ps2.request(6)
       ps1.expectNext(1, 2, 3, 4, 5, 6)
@@ -371,8 +374,10 @@ class GraphBroadcastSpec extends AkkaSpec {
 
     "alsoTo must continue if sink cancels" in assertAllStagesStopped {
       val p, p2 = TestSink.probe[Int](system)
-      val (ps1, ps2) =
-        Source(1 to 6).alsoToMat(p)(Keep.right).toMat(p2)(Keep.both).run()
+      val (ps1, ps2) = Source(1 to 6)
+        .alsoToMat(p)(Keep.right)
+        .toMat(p2)(Keep.both)
+        .run()
       ps2.request(6)
       ps1.cancel()
       ps2.expectNext(1, 2, 3, 4, 5, 6)

@@ -24,8 +24,8 @@ trait Compat210Component {
   def newDefDef(sym: Symbol, rhs: Tree)(
       mods: Modifiers = Modifiers(sym.flags),
       name: TermName = sym.name.toTermName,
-      tparams: List[TypeDef] =
-        sym.typeParams.map(sym => newTypeDef(sym, typeBoundsTree(sym))()),
+      tparams: List[TypeDef] = sym.typeParams.map(sym =>
+        newTypeDef(sym, typeBoundsTree(sym))()),
       vparamss: List[List[ValDef]] =
         mapParamss(sym)(sym => newValDef(sym, EmptyTree)()),
       tpt: Tree = TypeTreeMemberType(sym)): DefDef = {

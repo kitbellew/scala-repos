@@ -57,28 +57,29 @@ object Analysis {
   import lila.db.BSON.BSONJodaDateTimeHandler
   import reactivemongo.bson._
 
-  private[analyse] implicit val analysisBSONHandler = new BSON[Analysis] {
-    def reads(r: BSON.Reader) = {
-      val startPly = r intD "ply"
-      val raw = r str "data"
-      Analysis(
-        id = r str "_id",
-        infos =
-          Info.decodeList(raw, startPly) err s"Invalid analysis data $raw",
-        startPly = startPly,
-        uid = r strO "uid",
-        by = r strO "by",
-        date = r date "date")
+  private[analyse] implicit val analysisBSONHandler =
+    new BSON[Analysis] {
+      def reads(r: BSON.Reader) = {
+        val startPly = r intD "ply"
+        val raw = r str "data"
+        Analysis(
+          id = r str "_id",
+          infos =
+            Info.decodeList(raw, startPly) err s"Invalid analysis data $raw",
+          startPly = startPly,
+          uid = r strO "uid",
+          by = r strO "by",
+          date = r date "date")
+      }
+      def writes(w: BSON.Writer, o: Analysis) =
+        BSONDocument(
+          "_id" -> o.id,
+          "data" -> Info.encodeList(o.infos),
+          "ply" -> w.intO(o.startPly),
+          "uid" -> o.uid,
+          "by" -> o.by,
+          "date" -> w.date(o.date))
     }
-    def writes(w: BSON.Writer, o: Analysis) =
-      BSONDocument(
-        "_id" -> o.id,
-        "data" -> Info.encodeList(o.infos),
-        "ply" -> w.intO(o.startPly),
-        "uid" -> o.uid,
-        "by" -> o.by,
-        "date" -> w.date(o.date))
-  }
 
   private[analyse] lazy val tube = lila.db.BsTube(analysisBSONHandler)
 }

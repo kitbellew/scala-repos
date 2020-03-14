@@ -21,10 +21,9 @@ class RangeDirectivesExamplesSpec extends RoutingSpec {
       .withFallback(super.testConfig)
 
   "withRangeSupport" in {
-    val route =
-      withRangeSupport {
-        complete("ABCDEFGH")
-      }
+    val route = withRangeSupport {
+      complete("ABCDEFGH")
+    }
 
     Get() ~> addHeader(Range(ByteRange(3, 4))) ~> route ~> check {
       headers should contain(`Content-Range`(ContentRange(3, 4, 8)))
@@ -42,9 +41,10 @@ class RangeDirectivesExamplesSpec extends RoutingSpec {
       headers.collectFirst {
         case `Content-Range`(_, _) => true
       } shouldBe None
-      val responseF = responseAs[Multipart.ByteRanges].parts
-        .runFold[List[Multipart.ByteRanges.BodyPart]](Nil)((acc, curr) =>
-          curr :: acc)
+      val responseF =
+        responseAs[Multipart.ByteRanges].parts
+          .runFold[List[Multipart.ByteRanges.BodyPart]](Nil)((acc, curr) =>
+            curr :: acc)
 
       val response = Await.result(responseF, 3.seconds).reverse
 

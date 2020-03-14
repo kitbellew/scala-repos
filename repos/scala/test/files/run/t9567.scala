@@ -27,34 +27,35 @@ object Test {
 
     val instance = MethodLocalWide(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0)
-    val result = instance match {
-      case MethodLocalWide(
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0) =>
-        true
-      case _ => false
-    }
+    val result =
+      instance match {
+        case MethodLocalWide(
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0) =>
+          true
+        case _ => false
+      }
     assert(result)
   }
   def main(args: Array[String]) {

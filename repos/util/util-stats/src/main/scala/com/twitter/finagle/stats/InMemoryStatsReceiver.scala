@@ -68,14 +68,15 @@ class InMemoryStatsReceiver extends StatsReceiver {
 
       override def toString: String = {
         val vals = apply()
-        val valStr = if (vals.length <= 3) {
-          vals.mkString("[", ",", "]")
-        } else {
-          val numOmitted = vals.length - 3
-          vals
-            .take(3)
-            .mkString("[", ",", s"... (omitted $numOmitted value(s))]")
-        }
+        val valStr =
+          if (vals.length <= 3) {
+            vals.mkString("[", ",", "]")
+          } else {
+            val numOmitted = vals.length - 3
+            vals
+              .take(3)
+              .mkString("[", ",", s"... (omitted $numOmitted value(s))]")
+          }
         s"Stat(${name.mkString("/")}=$valStr)"
       }
     }
@@ -84,20 +85,22 @@ class InMemoryStatsReceiver extends StatsReceiver {
     * Creates a [[Gauge]] of the given `name`.
     */
   def addGauge(name: String*)(f: => Float): Gauge = {
-    val gauge = new Gauge {
-      def remove(): Unit = {
-        gauges -= name
-      }
-
-      override def toString: String = {
-        // avoid holding a reference to `f`
-        val current = gauges.get(name) match {
-          case Some(fn) => fn()
-          case None     => -0.0f
+    val gauge =
+      new Gauge {
+        def remove(): Unit = {
+          gauges -= name
         }
-        s"Gauge(${name.mkString("/")}=$current)"
+
+        override def toString: String = {
+          // avoid holding a reference to `f`
+          val current =
+            gauges.get(name) match {
+              case Some(fn) => fn()
+              case None     => -0.0f
+            }
+          s"Gauge(${name.mkString("/")}=$current)"
+        }
       }
-    }
     gauges += name -> (() => f)
     gauge
   }

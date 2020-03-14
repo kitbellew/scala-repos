@@ -53,8 +53,7 @@ object Sink {
   /**
     * A `Sink` that immediately cancels its upstream after materialization.
     */
-  def cancelled[T](): Sink[T, NotUsed] =
-    new Sink(scaladsl.Sink.cancelled)
+  def cancelled[T](): Sink[T, NotUsed] = new Sink(scaladsl.Sink.cancelled)
 
   /**
     * A `Sink` that will consume the stream and discard the elements.
@@ -309,8 +308,7 @@ final class Sink[-In, +Mat](delegate: scaladsl.Sink[In, Mat])
     */
   def runWith[M](
       source: Graph[SourceShape[In], M],
-      materializer: Materializer): M =
-    asScala.runWith(source)(materializer)
+      materializer: Materializer): M = asScala.runWith(source)(materializer)
 
   /**
     * Transform this Sink by applying a function to each *incoming* upstream element before
@@ -358,7 +356,6 @@ final class Sink[-In, +Mat](delegate: scaladsl.Sink[In, Mat])
   /**
     * Put an asynchronous boundary around this `Sink`
     */
-  override def async: javadsl.Sink[In, Mat] =
-    new Sink(delegate.async)
+  override def async: javadsl.Sink[In, Mat] = new Sink(delegate.async)
 
 }

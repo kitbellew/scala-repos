@@ -79,9 +79,10 @@ trait Slice { source =>
     } toSet
   }
 
-  lazy val valueColumns: Set[Column] = columns collect {
-    case (ColumnRef(CPath.Identity, _), col) => col
-  } toSet
+  lazy val valueColumns: Set[Column] =
+    columns collect {
+      case (ColumnRef(CPath.Identity, _), col) => col
+    } toSet
 
   def isDefinedAt(row: Int) = columns.values.exists(_.isDefinedAt(row))
 
@@ -99,12 +100,13 @@ trait Slice { source =>
       val size = source.size
 
       val columns: Map[ColumnRef, Column] = {
-        val resultColumns = for {
-          col <- source.columns collect {
-            case (ref, col) if ref.selector == CPath.Identity => col
-          }
-          result <- f(col)
-        } yield result
+        val resultColumns =
+          for {
+            col <- source.columns collect {
+              case (ref, col) if ref.selector == CPath.Identity => col
+            }
+            result <- f(col)
+          } yield result
 
         resultColumns.groupBy(_.tpe) map {
           case (tpe, cols) =>
@@ -121,10 +123,11 @@ trait Slice { source =>
       val size = source.size
 
       val columns: Map[ColumnRef, Column] = {
-        val resultColumns: Seq[(ColumnRef, Column)] = for {
-          (ref, col) <- source.columns.toSeq
-          result <- f(col)
-        } yield (ref.copy(ctype = result.tpe), result)
+        val resultColumns: Seq[(ColumnRef, Column)] =
+          for {
+            (ref, col) <- source.columns.toSeq
+            result <- f(col)
+          } yield (ref.copy(ctype = result.tpe), result)
 
         resultColumns.groupBy(_._1) map {
           case (ref, pairs) =>
@@ -168,9 +171,10 @@ trait Slice { source =>
             ColumnRef(CPath(CPathArray), CArrayType(tpe0)),
             tpe0 match {
               case CLong =>
-                val longcols = cols.collect {
-                  case (col: LongColumn) => col
-                }.toArray
+                val longcols =
+                  cols.collect {
+                    case (col: LongColumn) => col
+                  }.toArray
 
                 new HomogeneousArrayColumn[Long] {
                   private val cols: Array[Int => Long] = longcols map { col =>
@@ -183,9 +187,10 @@ trait Slice { source =>
                   def apply(row: Int): Array[Long] = inflate(cols, row)
                 }
               case CDouble =>
-                val doublecols = cols.collect {
-                  case (col: DoubleColumn) => col
-                }.toArray
+                val doublecols =
+                  cols.collect {
+                    case (col: DoubleColumn) => col
+                  }.toArray
                 new HomogeneousArrayColumn[Double] {
                   private val cols: Array[Int => Double] = doublecols map { x =>
                     x(_)
@@ -197,9 +202,10 @@ trait Slice { source =>
                   def apply(row: Int): Array[Double] = inflate(cols, row)
                 }
               case CNum =>
-                val numcols = cols.collect {
-                  case (col: NumColumn) => col
-                }.toArray
+                val numcols =
+                  cols.collect {
+                    case (col: NumColumn) => col
+                  }.toArray
                 new HomogeneousArrayColumn[BigDecimal] {
                   private val cols: Array[Int => BigDecimal] = numcols map {
                     x => x(_)
@@ -211,9 +217,10 @@ trait Slice { source =>
                   def apply(row: Int): Array[BigDecimal] = inflate(cols, row)
                 }
               case CBoolean =>
-                val boolcols = cols.collect {
-                  case (col: BoolColumn) => col
-                }.toArray
+                val boolcols =
+                  cols.collect {
+                    case (col: BoolColumn) => col
+                  }.toArray
                 new HomogeneousArrayColumn[Boolean] {
                   private val cols: Array[Int => Boolean] = boolcols map { x =>
                     x(_)
@@ -225,9 +232,10 @@ trait Slice { source =>
                   def apply(row: Int): Array[Boolean] = inflate(cols, row)
                 }
               case CString =>
-                val strcols = cols.collect {
-                  case (col: StrColumn) => col
-                }.toArray
+                val strcols =
+                  cols.collect {
+                    case (col: StrColumn) => col
+                  }.toArray
                 new HomogeneousArrayColumn[String] {
                   private val cols: Array[Int => String] = strcols map { x =>
                     x(_)
@@ -340,24 +348,25 @@ trait Slice { source =>
   def deref(node: CPathNode): Slice =
     new Slice {
       val size = source.size
-      val columns = node match {
-        case CPathIndex(i) =>
-          source.columns collect {
-            case (
-                  ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
-                  col: HomogeneousArrayColumn[_]) =>
-              (ColumnRef(CPath(xs: _*), elemType), col.select(i))
+      val columns =
+        node match {
+          case CPathIndex(i) =>
+            source.columns collect {
+              case (
+                    ColumnRef(CPath(CPathArray, xs @ _*), CArrayType(elemType)),
+                    col: HomogeneousArrayColumn[_]) =>
+                (ColumnRef(CPath(xs: _*), elemType), col.select(i))
 
-            case (ColumnRef(CPath(CPathIndex(`i`), xs @ _*), ctype), col) =>
-              (ColumnRef(CPath(xs: _*), ctype), col)
-          }
+              case (ColumnRef(CPath(CPathIndex(`i`), xs @ _*), ctype), col) =>
+                (ColumnRef(CPath(xs: _*), ctype), col)
+            }
 
-        case _ =>
-          source.columns collect {
-            case (ColumnRef(CPath(`node`, xs @ _*), ctype), col) =>
-              (ColumnRef(CPath(xs: _*), ctype), col)
-          }
-      }
+          case _ =>
+            source.columns collect {
+              case (ColumnRef(CPath(`node`, xs @ _*), ctype), col) =>
+                (ColumnRef(CPath(xs: _*), ctype), col)
+            }
+        }
     }
 
   def wrap(wrapper: CPathNode): Slice =
@@ -368,18 +377,19 @@ trait Slice { source =>
       // Unfortunately, CArrayType(_) cannot wrap CNullTypes, so we can't just
       // arbitrarily wrap everything in a CPathArray.
 
-      val columns = wrapper match {
-        case CPathArray =>
-          source.columns map {
-            case (ColumnRef(CPath(nodes @ _*), ctype), col) =>
-              (ColumnRef(CPath(CPathIndex(0) +: nodes: _*), ctype), col)
-          }
-        case _ =>
-          source.columns map {
-            case (ColumnRef(CPath(nodes @ _*), ctype), col) =>
-              (ColumnRef(CPath(wrapper +: nodes: _*), ctype), col)
-          }
-      }
+      val columns =
+        wrapper match {
+          case CPathArray =>
+            source.columns map {
+              case (ColumnRef(CPath(nodes @ _*), ctype), col) =>
+                (ColumnRef(CPath(CPathIndex(0) +: nodes: _*), ctype), col)
+            }
+          case _ =>
+            source.columns map {
+              case (ColumnRef(CPath(nodes @ _*), ctype), col) =>
+                (ColumnRef(CPath(wrapper +: nodes: _*), ctype), col)
+            }
+        }
     }
 
   // ARRAYS:
@@ -510,11 +520,12 @@ trait Slice { source =>
         case _ => false
       }
 
-      private val becomeEmpty = BitSetUtil.filteredRange(0, source.size) { i =>
-        Column.isDefinedAt(removed.values.toArray, i) && !Column.isDefinedAt(
-          withoutPrefixes.values.toArray,
-          i)
-      }
+      private val becomeEmpty =
+        BitSetUtil.filteredRange(0, source.size) { i =>
+          Column.isDefinedAt(removed.values.toArray, i) && !Column.isDefinedAt(
+            withoutPrefixes.values.toArray,
+            i)
+        }
 
       private val ref = ColumnRef(CPath.Identity, CEmptyObject)
 
@@ -547,16 +558,18 @@ trait Slice { source =>
     }
 
   def typedSubsumes(jtpe: JType): Slice = {
-    val tuples: Seq[(CPath, CType)] = source.columns.map({
-      case (ColumnRef(path, ctpe), _) => (path, ctpe)
-    })(collection.breakOut)
-    val columns = if (Schema.subsumes(tuples, jtpe)) {
-      source.columns filter {
-        case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+    val tuples: Seq[(CPath, CType)] =
+      source.columns.map({
+        case (ColumnRef(path, ctpe), _) => (path, ctpe)
+      })(collection.breakOut)
+    val columns =
+      if (Schema.subsumes(tuples, jtpe)) {
+        source.columns filter {
+          case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+        }
+      } else {
+        Map.empty[ColumnRef, Column]
       }
-    } else {
-      Map.empty[ColumnRef, Column]
-    }
 
     Slice(columns, source.size)
   }
@@ -582,21 +595,24 @@ trait Slice { source =>
         .map(_.definedAt(0, size))
         .reduceOption(_ | _) getOrElse new BitSet
 
-      val columns = if (subsumes) {
-        val cols = source.columns filter {
-          case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+      val columns =
+        if (subsumes) {
+          val cols = source.columns filter {
+            case (ColumnRef(path, ctpe), _) =>
+              Schema.requiredBy(jtpe, path, ctpe)
+          }
+
+          val included = Schema.findTypes(jtpe, CPath.Identity, cols, size)
+          val includedBits = BitSetUtil.filteredRange(0, size)(included)
+
+          Map(
+            ColumnRef(CPath.Identity, CBoolean) -> BoolColumn
+              .Either(definedBits, includedBits))
+        } else {
+          Map(
+            ColumnRef(CPath.Identity, CBoolean) -> BoolColumn.False(
+              definedBits))
         }
-
-        val included = Schema.findTypes(jtpe, CPath.Identity, cols, size)
-        val includedBits = BitSetUtil.filteredRange(0, size)(included)
-
-        Map(
-          ColumnRef(CPath.Identity, CBoolean) -> BoolColumn
-            .Either(definedBits, includedBits))
-      } else {
-        Map(
-          ColumnRef(CPath.Identity, CBoolean) -> BoolColumn.False(definedBits))
-      }
     }
 
   def nest(selectorPrefix: CPath) =
@@ -678,12 +694,13 @@ trait Slice { source =>
       val size = source.size
 
       val columns: Map[ColumnRef, Column] = {
-        val resultColumns = for {
-          col <- source.columns collect {
-            case (ref, col) if ref.selector.hasPrefix(from) => col
-          }
-          result <- f(col)
-        } yield result
+        val resultColumns =
+          for {
+            col <- source.columns collect {
+              case (ref, col) if ref.selector.hasPrefix(from) => col
+            }
+            result <- f(col)
+          } yield result
 
         resultColumns.groupBy(_.tpe) map {
           case (tpe, cols) =>
@@ -700,15 +717,16 @@ trait Slice { source =>
       val size = source.size
 
       val columns: Map[ColumnRef, Column] = {
-        val resultColumns = for {
-          left <- source.columns collect {
-            case (ref, col) if ref.selector.hasPrefix(froml) => col
-          }
-          right <- source.columns collect {
-            case (ref, col) if ref.selector.hasPrefix(fromr) => col
-          }
-          result <- f(left, right)
-        } yield result
+        val resultColumns =
+          for {
+            left <- source.columns collect {
+              case (ref, col) if ref.selector.hasPrefix(froml) => col
+            }
+            right <- source.columns collect {
+              case (ref, col) if ref.selector.hasPrefix(fromr) => col
+            }
+            result <- f(left, right)
+          } yield result
 
         resultColumns.groupBy(_.tpe) map {
           case (tpe, cols) =>
@@ -723,20 +741,21 @@ trait Slice { source =>
   def filterDefined(filter: Slice, definedness: Definedness) = {
     new Slice {
       private val colValues = filter.columns.values.toArray
-      lazy val defined = definedness match {
-        case AnyDefined =>
-          BitSetUtil.filteredRange(0, source.size) { i =>
-            colValues.exists(_.isDefinedAt(i))
-          }
-
-        case AllDefined =>
-          if (colValues.isEmpty)
-            new BitSet
-          else
+      lazy val defined =
+        definedness match {
+          case AnyDefined =>
             BitSetUtil.filteredRange(0, source.size) { i =>
-              colValues.forall(_.isDefinedAt(i))
+              colValues.exists(_.isDefinedAt(i))
             }
-      }
+
+          case AllDefined =>
+            if (colValues.isEmpty)
+              new BitSet
+            else
+              BitSetUtil.filteredRange(0, source.size) { i =>
+                colValues.forall(_.isDefinedAt(i))
+              }
+        }
 
       val size = source.size
       val columns: Map[ColumnRef, Column] = source.columns lazyMapValues {
@@ -749,44 +768,45 @@ trait Slice { source =>
     new Slice {
       private val cols = filter.columns
 
-      lazy val retained = definedness match {
-        case AnyDefined => {
-          val acc = new ArrayIntList
-          Loop.range(0, filter.size) { i =>
-            if (cols.values.toArray.exists(_.isDefinedAt(i)))
-              acc.add(i)
-          }
-          acc
-        }
-
-        case AllDefined => {
-          val acc = new ArrayIntList
-          val (numCols, otherCols) = cols partition {
-            case (ColumnRef(_, ctype), _) =>
-              ctype.isNumeric
+      lazy val retained =
+        definedness match {
+          case AnyDefined => {
+            val acc = new ArrayIntList
+            Loop.range(0, filter.size) { i =>
+              if (cols.values.toArray.exists(_.isDefinedAt(i)))
+                acc.add(i)
+            }
+            acc
           }
 
-          val grouped = numCols groupBy {
-            case (ColumnRef(cpath, _), _) => cpath
-          }
-
-          Loop.range(0, filter.size) { i =>
-            val numBools = grouped.values map {
-              case refs =>
-                refs.values.toArray.exists(_.isDefinedAt(i))
+          case AllDefined => {
+            val acc = new ArrayIntList
+            val (numCols, otherCols) = cols partition {
+              case (ColumnRef(_, ctype), _) =>
+                ctype.isNumeric
             }
 
-            val numBool = numBools reduce {
-              _ && _
+            val grouped = numCols groupBy {
+              case (ColumnRef(cpath, _), _) => cpath
             }
-            val otherBool = otherCols.values.toArray.forall(_.isDefinedAt(i))
 
-            if (otherBool && numBool)
-              acc.add(i)
+            Loop.range(0, filter.size) { i =>
+              val numBools = grouped.values map {
+                case refs =>
+                  refs.values.toArray.exists(_.isDefinedAt(i))
+              }
+
+              val numBool = numBools reduce {
+                _ && _
+              }
+              val otherBool = otherCols.values.toArray.forall(_.isDefinedAt(i))
+
+              if (otherBool && numBool)
+                acc.add(i)
+            }
+            acc
           }
-          acc
         }
-      }
 
       lazy val size = retained.size
       lazy val columns: Map[ColumnRef, Column] = source.columns lazyMapValues {
@@ -898,34 +918,37 @@ trait Slice { source =>
 
       type GroupedCols = Either[Map[CPath, Column], Map[CPath, Set[Column]]]
 
-      val grouped = columns.foldLeft(Left(Map.empty): GroupedCols) {
-        case (Left(acc), (ColumnRef(path, CArrayType(_)), col)) =>
-          val acc0 = acc.map {
-            case (k, v) => (k, Set(v))
-          }
-          Right(acc0 + (path -> Set(col)))
-
-        case (Left(acc), (ColumnRef(path, _), col)) =>
-          acc get path map { col0 =>
+      val grouped =
+        columns.foldLeft(Left(Map.empty): GroupedCols) {
+          case (Left(acc), (ColumnRef(path, CArrayType(_)), col)) =>
             val acc0 = acc.map {
               case (k, v) => (k, Set(v))
             }
-            Right(acc0 + (path -> Set(col0, col)))
-          } getOrElse Left(acc + (path -> col))
+            Right(acc0 + (path -> Set(col)))
 
-        case (Right(acc), (ColumnRef(path, _), col)) =>
-          Right(acc + (path -> (acc.getOrElse(path, Set.empty[Column]) + col)))
-      }
+          case (Left(acc), (ColumnRef(path, _), col)) =>
+            acc get path map { col0 =>
+              val acc0 = acc.map {
+                case (k, v) => (k, Set(v))
+              }
+              Right(acc0 + (path -> Set(col0, col)))
+            } getOrElse Left(acc + (path -> col))
+
+          case (Right(acc), (ColumnRef(path, _), col)) =>
+            Right(
+              acc + (path -> (acc.getOrElse(path, Set.empty[Column]) + col)))
+        }
 
       grouped match {
         case Left(cols0) =>
-          val cols = cols0.toList
-            .sortBy(_._1)
-            .map {
-              case (_, col) =>
-                Column.rowOrder(col)
-            }
-            .toArray
+          val cols =
+            cols0.toList
+              .sortBy(_._1)
+              .map {
+                case (_, col) =>
+                  Column.rowOrder(col)
+              }
+              .toArray
 
           new spire.math.Order[Int] {
             def compare(i: Int, j: Int): Int = {
@@ -992,18 +1015,19 @@ trait Slice { source =>
       prefixes: VectorCase[CPath],
       sortOrder: DesiredSortOrder = SortAscending): Slice = {
     // TODO This is slow... Faster would require a prefix map or something... argh.
-    val keySlice = new Slice {
-      val size = source.size
-      val columns: Map[ColumnRef, Column] = {
-        prefixes.zipWithIndex.flatMap({
-          case (prefix, i) =>
-            source.columns collect {
-              case (ColumnRef(path, tpe), col) if path hasPrefix prefix =>
-                (ColumnRef(CPathIndex(i) \ path, tpe), col)
-            }
-        })(collection.breakOut)
+    val keySlice =
+      new Slice {
+        val size = source.size
+        val columns: Map[ColumnRef, Column] = {
+          prefixes.zipWithIndex.flatMap({
+            case (prefix, i) =>
+              source.columns collect {
+                case (ColumnRef(path, tpe), col) if path hasPrefix prefix =>
+                  (ColumnRef(CPathIndex(i) \ path, tpe), col)
+              }
+          })(collection.breakOut)
+        }
       }
-    }
 
     source.sortWith(keySlice)._1
   }
@@ -1074,9 +1098,10 @@ trait Slice { source =>
       val columns = source.columns lazyMapValues {
         case col: BoolColumn =>
           val defined = col.definedAt(0, source.size)
-          val values = BitSetUtil.filteredRange(0, source.size) { row =>
-            defined(row) && col(row)
-          }
+          val values =
+            BitSetUtil.filteredRange(0, source.size) { row =>
+              defined(row) && col(row)
+            }
           ArrayBoolColumn(defined, values)
 
         case col: LongColumn =>
@@ -1180,8 +1205,10 @@ trait Slice { source =>
                 case SchemaNode.Obj(nodes) => {
                   val subTarget =
                     nodes get name getOrElse SchemaNode.Union(Set())
-                  val result =
-                    insert(subTarget, ColumnRef(CPath(tail), ctype), col)
+                  val result = insert(
+                    subTarget,
+                    ColumnRef(CPath(tail), ctype),
+                    col)
                   SchemaNode.Obj(nodes + (name -> result))
                 }
 
@@ -1206,8 +1233,10 @@ trait Slice { source =>
               target match {
                 case SchemaNode.Arr(map) => {
                   val subTarget = map get idx getOrElse SchemaNode.Union(Set())
-                  val result =
-                    insert(subTarget, ColumnRef(CPath(tail), ctype), col)
+                  val result = insert(
+                    subTarget,
+                    ColumnRef(CPath(tail), ctype),
+                    col)
                   SchemaNode.Arr(map + (idx -> result))
                 }
 
@@ -1328,9 +1357,10 @@ trait Slice { source =>
             case lf: SchemaNode.Leaf => Some(lf)
           }
 
-        val schema = columns.foldLeft(SchemaNode.Union(Set()): SchemaNode) {
-          case (acc, (ref, col)) => insert(acc, ref, col)
-        }
+        val schema =
+          columns.foldLeft(SchemaNode.Union(Set()): SchemaNode) {
+            case (acc, (ref, col)) => insert(acc, ref, col)
+          }
 
         normalize(schema)
       }
@@ -1813,15 +1843,16 @@ trait Slice { source =>
         buffer.flip()
         vector += buffer
 
-        val stream = StreamT.unfoldM(0) { idx =>
-          val back =
-            if (idx < vector.length)
-              Some((vector(idx), idx + 1))
-            else
-              None
+        val stream =
+          StreamT.unfoldM(0) { idx =>
+            val back =
+              if (idx < vector.length)
+                Some((vector(idx), idx + 1))
+              else
+                None
 
-          M.point(back)
-        }
+            M.point(back)
+          }
 
         (stream, rendered)
       } else {
@@ -1912,97 +1943,98 @@ object Slice {
       case (acc, (cpath, cvalue)) =>
         val ref = ColumnRef(cpath, (cvalue.cType))
 
-        val updatedColumn: ArrayColumn[_] = cvalue match {
-          case CBoolean(b) =>
-            acc
-              .getOrElse(ref, ArrayBoolColumn.empty())
-              .asInstanceOf[ArrayBoolColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, b)
-              }
+        val updatedColumn: ArrayColumn[_] =
+          cvalue match {
+            case CBoolean(b) =>
+              acc
+                .getOrElse(ref, ArrayBoolColumn.empty())
+                .asInstanceOf[ArrayBoolColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, b)
+                }
 
-          case CLong(d) =>
-            acc
-              .getOrElse(ref, ArrayLongColumn.empty(sliceSize))
-              .asInstanceOf[ArrayLongColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, d.toLong)
-              }
+            case CLong(d) =>
+              acc
+                .getOrElse(ref, ArrayLongColumn.empty(sliceSize))
+                .asInstanceOf[ArrayLongColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, d.toLong)
+                }
 
-          case CDouble(d) =>
-            acc
-              .getOrElse(ref, ArrayDoubleColumn.empty(sliceSize))
-              .asInstanceOf[ArrayDoubleColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, d.toDouble)
-              }
+            case CDouble(d) =>
+              acc
+                .getOrElse(ref, ArrayDoubleColumn.empty(sliceSize))
+                .asInstanceOf[ArrayDoubleColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, d.toDouble)
+                }
 
-          case CNum(d) =>
-            acc
-              .getOrElse(ref, ArrayNumColumn.empty(sliceSize))
-              .asInstanceOf[ArrayNumColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, d)
-              }
+            case CNum(d) =>
+              acc
+                .getOrElse(ref, ArrayNumColumn.empty(sliceSize))
+                .asInstanceOf[ArrayNumColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, d)
+                }
 
-          case CString(s) =>
-            acc
-              .getOrElse(ref, ArrayStrColumn.empty(sliceSize))
-              .asInstanceOf[ArrayStrColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, s)
-              }
+            case CString(s) =>
+              acc
+                .getOrElse(ref, ArrayStrColumn.empty(sliceSize))
+                .asInstanceOf[ArrayStrColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, s)
+                }
 
-          case CDate(d) =>
-            acc
-              .getOrElse(ref, ArrayDateColumn.empty(sliceSize))
-              .asInstanceOf[ArrayDateColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, d)
-              }
+            case CDate(d) =>
+              acc
+                .getOrElse(ref, ArrayDateColumn.empty(sliceSize))
+                .asInstanceOf[ArrayDateColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, d)
+                }
 
-          case CPeriod(p) =>
-            acc
-              .getOrElse(ref, ArrayPeriodColumn.empty(sliceSize))
-              .asInstanceOf[ArrayPeriodColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, p)
-              }
+            case CPeriod(p) =>
+              acc
+                .getOrElse(ref, ArrayPeriodColumn.empty(sliceSize))
+                .asInstanceOf[ArrayPeriodColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, p)
+                }
 
-          case CArray(arr, cType) =>
-            acc
-              .getOrElse(
-                ref,
-                ArrayHomogeneousArrayColumn.empty(sliceSize)(cType))
-              .asInstanceOf[ArrayHomogeneousArrayColumn[cType.tpe]]
-              .unsafeTap { c =>
-                c.update(sliceIndex, arr)
-              }
+            case CArray(arr, cType) =>
+              acc
+                .getOrElse(
+                  ref,
+                  ArrayHomogeneousArrayColumn.empty(sliceSize)(cType))
+                .asInstanceOf[ArrayHomogeneousArrayColumn[cType.tpe]]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, arr)
+                }
 
-          case CEmptyArray =>
-            acc
-              .getOrElse(ref, MutableEmptyArrayColumn.empty())
-              .asInstanceOf[MutableEmptyArrayColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, true)
-              }
+            case CEmptyArray =>
+              acc
+                .getOrElse(ref, MutableEmptyArrayColumn.empty())
+                .asInstanceOf[MutableEmptyArrayColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, true)
+                }
 
-          case CEmptyObject =>
-            acc
-              .getOrElse(ref, MutableEmptyObjectColumn.empty())
-              .asInstanceOf[MutableEmptyObjectColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, true)
-              }
+            case CEmptyObject =>
+              acc
+                .getOrElse(ref, MutableEmptyObjectColumn.empty())
+                .asInstanceOf[MutableEmptyObjectColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, true)
+                }
 
-          case CNull =>
-            acc
-              .getOrElse(ref, MutableNullColumn.empty())
-              .asInstanceOf[MutableNullColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, true)
-              }
-        }
+            case CNull =>
+              acc
+                .getOrElse(ref, MutableNullColumn.empty())
+                .asInstanceOf[MutableNullColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, true)
+                }
+          }
 
         acc + (ref -> updatedColumn)
     }
@@ -2028,8 +2060,10 @@ object Slice {
     }
 
     new Slice {
-      val (columns, size) =
-        buildColArrays(values, Map.empty[ColumnRef, ArrayColumn[_]], 0)
+      val (columns, size) = buildColArrays(
+        values,
+        Map.empty[ColumnRef, ArrayColumn[_]],
+        0)
     }
   }
 
@@ -2051,13 +2085,14 @@ object Slice {
         case ((cols, offset), _) => (cols, offset)
       }
 
-    val slice = new Slice {
-      val size = _size
-      val columns = _columns.flatMap {
-        case (ref, parts) =>
-          cf.util.NConcat(parts) map ((ref, _))
+    val slice =
+      new Slice {
+        val size = _size
+        val columns = _columns.flatMap {
+          case (ref, parts) =>
+            cf.util.NConcat(parts) map ((ref, _))
+        }
       }
-    }
 
     slice
   }
@@ -2098,81 +2133,83 @@ object Slice {
           sys.error(
             "Cannot determine ctype for " + v + " at " + jpath + " in " + jv)
         }
-        val ref =
-          ColumnRef(remapPath.map(_(jpath)).getOrElse(CPath(jpath)), ctype)
+        val ref = ColumnRef(
+          remapPath.map(_(jpath)).getOrElse(CPath(jpath)),
+          ctype)
 
-        val updatedColumn: ArrayColumn[_] = v match {
-          case JBool(b) =>
-            acc
-              .getOrElse(ref, ArrayBoolColumn.empty())
-              .asInstanceOf[ArrayBoolColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, b)
+        val updatedColumn: ArrayColumn[_] =
+          v match {
+            case JBool(b) =>
+              acc
+                .getOrElse(ref, ArrayBoolColumn.empty())
+                .asInstanceOf[ArrayBoolColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, b)
+                }
+
+            case JNum(d) =>
+              ctype match {
+                case CLong =>
+                  acc
+                    .getOrElse(ref, ArrayLongColumn.empty(sliceSize))
+                    .asInstanceOf[ArrayLongColumn]
+                    .unsafeTap { c =>
+                      c.update(sliceIndex, d.toLong)
+                    }
+
+                case CDouble =>
+                  acc
+                    .getOrElse(ref, ArrayDoubleColumn.empty(sliceSize))
+                    .asInstanceOf[ArrayDoubleColumn]
+                    .unsafeTap { c =>
+                      c.update(sliceIndex, d.toDouble)
+                    }
+
+                case CNum =>
+                  acc
+                    .getOrElse(ref, ArrayNumColumn.empty(sliceSize))
+                    .asInstanceOf[ArrayNumColumn]
+                    .unsafeTap { c =>
+                      c.update(sliceIndex, d)
+                    }
+
+                case _ => sys.error("non-numeric type reached")
               }
 
-          case JNum(d) =>
-            ctype match {
-              case CLong =>
-                acc
-                  .getOrElse(ref, ArrayLongColumn.empty(sliceSize))
-                  .asInstanceOf[ArrayLongColumn]
-                  .unsafeTap { c =>
-                    c.update(sliceIndex, d.toLong)
-                  }
+            case JString(s) =>
+              acc
+                .getOrElse(ref, ArrayStrColumn.empty(sliceSize))
+                .asInstanceOf[ArrayStrColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, s)
+                }
 
-              case CDouble =>
-                acc
-                  .getOrElse(ref, ArrayDoubleColumn.empty(sliceSize))
-                  .asInstanceOf[ArrayDoubleColumn]
-                  .unsafeTap { c =>
-                    c.update(sliceIndex, d.toDouble)
-                  }
+            case JArray(Nil) =>
+              acc
+                .getOrElse(ref, MutableEmptyArrayColumn.empty())
+                .asInstanceOf[MutableEmptyArrayColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, true)
+                }
 
-              case CNum =>
-                acc
-                  .getOrElse(ref, ArrayNumColumn.empty(sliceSize))
-                  .asInstanceOf[ArrayNumColumn]
-                  .unsafeTap { c =>
-                    c.update(sliceIndex, d)
-                  }
+            case JObject.empty =>
+              acc
+                .getOrElse(ref, MutableEmptyObjectColumn.empty())
+                .asInstanceOf[MutableEmptyObjectColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, true)
+                }
 
-              case _ => sys.error("non-numeric type reached")
-            }
+            case JNull =>
+              acc
+                .getOrElse(ref, MutableNullColumn.empty())
+                .asInstanceOf[MutableNullColumn]
+                .unsafeTap { c =>
+                  c.update(sliceIndex, true)
+                }
 
-          case JString(s) =>
-            acc
-              .getOrElse(ref, ArrayStrColumn.empty(sliceSize))
-              .asInstanceOf[ArrayStrColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, s)
-              }
-
-          case JArray(Nil) =>
-            acc
-              .getOrElse(ref, MutableEmptyArrayColumn.empty())
-              .asInstanceOf[MutableEmptyArrayColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, true)
-              }
-
-          case JObject.empty =>
-            acc
-              .getOrElse(ref, MutableEmptyObjectColumn.empty())
-              .asInstanceOf[MutableEmptyObjectColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, true)
-              }
-
-          case JNull =>
-            acc
-              .getOrElse(ref, MutableNullColumn.empty())
-              .asInstanceOf[MutableNullColumn]
-              .unsafeTap { c =>
-                c.update(sliceIndex, true)
-              }
-
-          case _ => sys.error("non-flattened value reached")
-        }
+            case _ => sys.error("non-flattened value reached")
+          }
 
         acc + (ref -> updatedColumn)
     }

@@ -80,12 +80,13 @@ private[spark] trait SizeTracker {
     if (samples.size > 2) {
       samples.dequeue()
     }
-    val bytesDelta = samples.toList.reverse match {
-      case latest :: previous :: tail =>
-        (latest.size - previous.size).toDouble / (latest.numUpdates - previous.numUpdates)
-      // If fewer than 2 samples, assume no change
-      case _ => 0
-    }
+    val bytesDelta =
+      samples.toList.reverse match {
+        case latest :: previous :: tail =>
+          (latest.size - previous.size).toDouble / (latest.numUpdates - previous.numUpdates)
+        // If fewer than 2 samples, assume no change
+        case _ => 0
+      }
     bytesPerUpdate = math.max(0, bytesDelta)
     nextSampleNum = math.ceil(numUpdates * SAMPLE_GROWTH_RATE).toLong
   }

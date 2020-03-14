@@ -57,69 +57,71 @@ abstract class Flatten extends InfoTransform {
     }
   }
 
-  private val flattened = new TypeMap {
-    def apply(tp: Type): Type =
-      tp match {
-        case TypeRef(pre, sym, args) if isFlattenablePrefix(pre) =>
-          assert(
-            args.isEmpty && sym.enclosingTopLevelClass != NoSymbol,
-            sym.ownerChain)
-          typeRef(sym.enclosingTopLevelClass.owner.thisType, sym, Nil)
-        case ClassInfoType(parents, decls, clazz) =>
-          var parents1 = parents
-          val decls1 = scopeTransform(clazz) {
-            val decls1 = newScope
-            if (clazz.isPackageClass) {
-              exitingFlatten {
-                decls foreach (decls1 enter _)
-              }
-            } else {
-              val oldowner = clazz.owner
-              exitingFlatten {
-                oldowner.info
-              }
-              parents1 = parents mapConserve (this)
-
-              for (sym <- decls) {
-                if (sym.isTerm && !sym.isStaticModule) {
-                  decls1 enter sym
-                  if (sym.isModule) {
-                    // In theory, we could assert(sym.isMethod), because nested, non-static modules are
-                    // transformed to methods (lateMETHOD flag added in RefChecks). But this requires
-                    // forcing sym.info (see comment on isModuleNotMethod), which forces stub symbols
-                    // too eagerly (SI-8907).
-
-                    // Note that module classes are not entered into the 'decls' of the ClassInfoType
-                    // of the outer class, only the module symbols are. So the current loop does
-                    // not visit module classes. Therefore we set the LIFTED flag here for module
-                    // classes.
-                    // TODO: should we also set the LIFTED flag for static, nested module classes?
-                    // currently they don't get the flag, even though they are lifted to the package
-                    sym.moduleClass setFlag LIFTED
+  private val flattened =
+    new TypeMap {
+      def apply(tp: Type): Type =
+        tp match {
+          case TypeRef(pre, sym, args) if isFlattenablePrefix(pre) =>
+            assert(
+              args.isEmpty && sym.enclosingTopLevelClass != NoSymbol,
+              sym.ownerChain)
+            typeRef(sym.enclosingTopLevelClass.owner.thisType, sym, Nil)
+          case ClassInfoType(parents, decls, clazz) =>
+            var parents1 = parents
+            val decls1 =
+              scopeTransform(clazz) {
+                val decls1 = newScope
+                if (clazz.isPackageClass) {
+                  exitingFlatten {
+                    decls foreach (decls1 enter _)
                   }
-                } else if (sym.isClass)
-                  liftSymbol(sym)
+                } else {
+                  val oldowner = clazz.owner
+                  exitingFlatten {
+                    oldowner.info
+                  }
+                  parents1 = parents mapConserve (this)
+
+                  for (sym <- decls) {
+                    if (sym.isTerm && !sym.isStaticModule) {
+                      decls1 enter sym
+                      if (sym.isModule) {
+                        // In theory, we could assert(sym.isMethod), because nested, non-static modules are
+                        // transformed to methods (lateMETHOD flag added in RefChecks). But this requires
+                        // forcing sym.info (see comment on isModuleNotMethod), which forces stub symbols
+                        // too eagerly (SI-8907).
+
+                        // Note that module classes are not entered into the 'decls' of the ClassInfoType
+                        // of the outer class, only the module symbols are. So the current loop does
+                        // not visit module classes. Therefore we set the LIFTED flag here for module
+                        // classes.
+                        // TODO: should we also set the LIFTED flag for static, nested module classes?
+                        // currently they don't get the flag, even though they are lifted to the package
+                        sym.moduleClass setFlag LIFTED
+                      }
+                    } else if (sym.isClass)
+                      liftSymbol(sym)
+                  }
+                }
+                decls1
               }
-            }
-            decls1
-          }
-          ClassInfoType(parents1, decls1, clazz)
-        case MethodType(params, restp) =>
-          val restp1 = apply(restp)
-          if (restp1 eq restp)
-            tp
-          else
-            copyMethodType(tp, params, restp1)
-        case PolyType(tparams, restp) =>
-          val restp1 = apply(restp)
-          if (restp1 eq restp)
-            tp
-          else
-            PolyType(tparams, restp1)
-        case _ =>
-          mapOver(tp)
-      }
-  }
+            ClassInfoType(parents1, decls1, clazz)
+          case MethodType(params, restp) =>
+            val restp1 = apply(restp)
+            if (restp1 eq restp)
+              tp
+            else
+              copyMethodType(tp, params, restp1)
+          case PolyType(tparams, restp) =>
+            val restp1 = apply(restp)
+            if (restp1 eq restp)
+              tp
+            else
+              PolyType(tparams, restp1)
+          case _ =>
+            mapOver(tp)
+        }
+    }
 
   def transformInfo(sym: Symbol, tp: Type): Type = flattened(tp)
 
@@ -150,8 +152,8 @@ abstract class Flatten extends InfoTransform {
             //            - create the private[this] accessors eagerly in Namer (but would this cover private[this] fields
             //              added later phases in compilation?)
             //            - move the accessor creation to the Mixin info transformer
-            val liftedBuffer =
-              liftedDefs(tree.symbol.enclosingTopLevelClass.owner)
+            val liftedBuffer = liftedDefs(
+              tree.symbol.enclosingTopLevelClass.owner)
             val index = liftedBuffer.length
             liftedBuffer.insert(index, super.transform(tree))
             if (tree.symbol.sourceModule.isStaticModule)
@@ -164,22 +166,23 @@ abstract class Flatten extends InfoTransform {
 
     private def postTransform(tree: Tree): Tree = {
       val sym = tree.symbol
-      val tree1 = tree match {
-        case Select(qual, name) if sym.isStaticModule && !sym.isTopLevel =>
-          exitingFlatten {
-            atPos(tree.pos) {
-              val ref = gen.mkAttributedRef(sym)
-              if (isQualifierSafeToElide(qual))
-                ref
-              else
-                Block(List(qual), ref).setType(
-                  tree.tpe
-                ) // need to execute the qualifier but refer directly to the lifted module.
+      val tree1 =
+        tree match {
+          case Select(qual, name) if sym.isStaticModule && !sym.isTopLevel =>
+            exitingFlatten {
+              atPos(tree.pos) {
+                val ref = gen.mkAttributedRef(sym)
+                if (isQualifierSafeToElide(qual))
+                  ref
+                else
+                  Block(List(qual), ref).setType(
+                    tree.tpe
+                  ) // need to execute the qualifier but refer directly to the lifted module.
+              }
             }
-          }
-        case _ =>
-          tree
-      }
+          case _ =>
+            tree
+        }
       tree1 setType flattened(tree1.tpe)
     }
 

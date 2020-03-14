@@ -406,11 +406,11 @@ trait RestHelper extends LiftRules.DispatchPF {
     * into JSON and then Xml.toXml() to convert to XML.
     */
   protected def serveJx[T](pf: PartialFunction[Req, BoxOrRaw[T]])(
-      implicit cvt: JxCvtPF[T]): Unit =
-    serveType(jxSel)(pf)(cvt)
+      implicit cvt: JxCvtPF[T]): Unit = serveType(jxSel)(pf)(cvt)
 
-  protected type JxCvtPF[T] =
-    PartialFunction[(JsonXmlSelect, T, Req), LiftResponse]
+  protected type JxCvtPF[T] = PartialFunction[
+    (JsonXmlSelect, T, Req),
+    LiftResponse]
 
   /**
     * Serve a request returning either JSON or XML.
@@ -718,8 +718,7 @@ trait RestHelper extends LiftRules.DispatchPF {
   /**
     * Convert a JValue to a LiftResponse
     */
-  implicit def jsonToResp(in: JsonAST.JValue): LiftResponse =
-    JsonResponse(in)
+  implicit def jsonToResp(in: JsonAST.JValue): LiftResponse = JsonResponse(in)
 
   /**
     * Convert a JsExp to a LiftResponse
@@ -730,8 +729,7 @@ trait RestHelper extends LiftRules.DispatchPF {
   /**
     * Convert a JsCmd to a LiftResponse
     */
-  implicit def jsCmdToResp(in: js.JsCmd): LiftResponse =
-    JavaScriptResponse(in)
+  implicit def jsCmdToResp(in: js.JsCmd): LiftResponse = JavaScriptResponse(in)
 
   /** @return a SuperString with more available methods such as roboSplit or commafy */
   protected implicit def listStringToSuper(in: List[String]): SuperListString =

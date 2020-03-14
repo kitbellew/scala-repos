@@ -71,9 +71,10 @@ class ConcurrentSkipListSetTest {
   @Test def should_store_objects_with_custom_comparables(): Unit = {
     case class Rect(x: Int, y: Int)
 
-    val areaComp = new ju.Comparator[Rect] {
-      def compare(a: Rect, b: Rect): Int = (a.x * a.y) - (b.x * b.y)
-    }
+    val areaComp =
+      new ju.Comparator[Rect] {
+        def compare(a: Rect, b: Rect): Int = (a.x * a.y) - (b.x * b.y)
+      }
 
     val csls = new ConcurrentSkipListSet[Rect](areaComp)
 
@@ -413,8 +414,7 @@ object ConcurrentSkipListSetFactory extends ConcurrentSkipListSetFactory {
 }
 
 class ConcurrentSkipListSetFactory extends NavigableSetFactory {
-  def implementationName: String =
-    "java.util.concurrent.ConcurrentSkipListSet"
+  def implementationName: String = "java.util.concurrent.ConcurrentSkipListSet"
 
   def empty[E: ClassTag]: ju.concurrent.ConcurrentSkipListSet[E] =
     new ConcurrentSkipListSet[E]

@@ -41,15 +41,16 @@ class OstrichExporter extends HttpMuxHandler {
       filtered: Boolean): String = {
 
     // TODO: read command line args (minPeriod, filterRegex)?
-    val summary = (period, namespace) match {
-      case (Some(period), _) =>
-        val duration = period.toInt.seconds
-        StatsListener(duration, Stats, regexes).get(filtered)
-      case (None, Some(namespace)) =>
-        StatsListener(namespace, Stats).get(filtered)
-      case _ =>
-        Stats.get()
-    }
+    val summary =
+      (period, namespace) match {
+        case (Some(period), _) =>
+          val duration = period.toInt.seconds
+          StatsListener(duration, Stats, regexes).get(filtered)
+        case (None, Some(namespace)) =>
+          StatsListener(namespace, Stats).get(filtered)
+        case _ =>
+          Stats.get()
+      }
 
     summary.toJson
   }

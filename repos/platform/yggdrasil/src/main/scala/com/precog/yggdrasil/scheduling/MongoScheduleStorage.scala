@@ -63,14 +63,14 @@ object MongoScheduleStorage {
 
     val mongo = RealMongo(config.detach("mongo"))
 
-    val database =
-      mongo.database(config[String]("mongo.database", "schedules_v1"))
+    val database = mongo.database(
+      config[String]("mongo.database", "schedules_v1"))
 
     val storage = new MongoScheduleStorage(mongo, database, settings)
 
-    val dbStop =
-      Stoppable.fromFuture(database.disconnect.fallbackTo(Future(())) flatMap {
-        _ => mongo.close
+    val dbStop = Stoppable.fromFuture(
+      database.disconnect.fallbackTo(Future(())) flatMap { _ =>
+        mongo.close
       })
 
     (storage, dbStop)

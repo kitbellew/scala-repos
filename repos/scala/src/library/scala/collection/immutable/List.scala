@@ -109,8 +109,7 @@ sealed abstract class List[+A]
     *    Example:
     *    {{{1 :: List(2, 3) = List(2, 3).::(1) = List(1, 2, 3)}}}
     */
-  def ::[B >: A](x: B): List[B] =
-    new scala.collection.immutable.::(x, this)
+  def ::[B >: A](x: B): List[B] = new scala.collection.immutable.::(x, this)
 
   /** Adds the elements of a given list in front of this list.
     *  @param prefix  The list elements to prepend.
@@ -505,9 +504,10 @@ object List extends SeqFactory[List] {
 
   override def apply[A](xs: A*): List[A] = xs.toList
 
-  private[collection] val partialNotApplied = new Function1[Any, Any] {
-    def apply(x: Any): Any = this
-  }
+  private[collection] val partialNotApplied =
+    new Function1[Any, Any] {
+      def apply(x: Any): Any = this
+    }
 
   @SerialVersionUID(1L)
   private class SerializationProxy[A](@transient private var orig: List[A])

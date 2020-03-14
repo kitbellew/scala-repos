@@ -46,10 +46,11 @@ private[streaming] class ForEachDStream[T: ClassTag](
   override def generateJob(time: Time): Option[Job] = {
     parent.getOrCompute(time) match {
       case Some(rdd) =>
-        val jobFunc = () =>
-          createRDDWithLocalProperties(time, displayInnerRDDOps) {
-            foreachFunc(rdd, time)
-          }
+        val jobFunc =
+          () =>
+            createRDDWithLocalProperties(time, displayInnerRDDOps) {
+              foreachFunc(rdd, time)
+            }
         Some(new Job(time, jobFunc))
       case None => None
     }

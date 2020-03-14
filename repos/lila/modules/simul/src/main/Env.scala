@@ -24,31 +24,33 @@ final class Env(
     onGameStart: String => Unit,
     isOnline: String => Boolean) {
 
-  private val settings = new {
-    val CollectionSimul = config getString "collection.simul"
-    val SequencerTimeout = config duration "sequencer.timeout"
-    val CreatedCacheTtl = config duration "created.cache.ttl"
-    val HistoryMessageTtl = config duration "history.message.ttl"
-    val UidTimeout = config duration "uid.timeout"
-    val SocketTimeout = config duration "socket.timeout"
-    val SocketName = config getString "socket.name"
-    val ActorName = config getString "actor.name"
-  }
+  private val settings =
+    new {
+      val CollectionSimul = config getString "collection.simul"
+      val SequencerTimeout = config duration "sequencer.timeout"
+      val CreatedCacheTtl = config duration "created.cache.ttl"
+      val HistoryMessageTtl = config duration "history.message.ttl"
+      val UidTimeout = config duration "uid.timeout"
+      val SocketTimeout = config duration "socket.timeout"
+      val SocketName = config getString "socket.name"
+      val ActorName = config getString "actor.name"
+    }
   import settings._
 
   lazy val repo = new SimulRepo(simulColl = simulColl)
 
-  lazy val api = new SimulApi(
-    repo = repo,
-    system = system,
-    socketHub = socketHub,
-    site = hub.socket.site,
-    renderer = hub.actor.renderer,
-    timeline = hub.actor.timeline,
-    userRegister = hub.actor.userRegister,
-    lobby = hub.socket.lobby,
-    onGameStart = onGameStart,
-    sequencers = sequencerMap)
+  lazy val api =
+    new SimulApi(
+      repo = repo,
+      system = system,
+      socketHub = socketHub,
+      site = hub.socket.site,
+      renderer = hub.actor.renderer,
+      timeline = hub.actor.timeline,
+      userRegister = hub.actor.userRegister,
+      lobby = hub.socket.lobby,
+      onGameStart = onGameStart,
+      sequencers = sequencerMap)
 
   lazy val forms = new DataForm
 
@@ -69,12 +71,13 @@ final class Env(
     name = SocketName
   )
 
-  lazy val socketHandler = new SocketHandler(
-    hub = hub,
-    socketHub = socketHub,
-    chat = hub.actor.chat,
-    flood = flood,
-    exists = repo.exists)
+  lazy val socketHandler =
+    new SocketHandler(
+      hub = hub,
+      socketHub = socketHub,
+      chat = hub.actor.chat,
+      flood = flood,
+      exists = repo.exists)
 
   system.actorOf(
     Props(new Actor {
@@ -104,8 +107,8 @@ final class Env(
   def isHosting(userId: String): Fu[Boolean] =
     api.currentHostIds map (_ contains userId)
 
-  val allCreated =
-    lila.memo.AsyncCache.single(repo.allCreated, timeToLive = CreatedCacheTtl)
+  val allCreated = lila.memo.AsyncCache
+    .single(repo.allCreated, timeToLive = CreatedCacheTtl)
 
   val allCreatedFeaturable = lila.memo.AsyncCache
     .single(repo.allCreatedFeaturable, timeToLive = CreatedCacheTtl)

@@ -157,12 +157,11 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     var offsetChanged = false
     for (i <- 1 to 14) {
       val topicAndPartition = TopicAndPartition(topic, 0)
-      val offsetRequest =
-        OffsetRequest(
-          Map(
-            topicAndPartition -> PartitionOffsetRequestInfo(
-              OffsetRequest.EarliestTime,
-              1)))
+      val offsetRequest = OffsetRequest(
+        Map(
+          topicAndPartition -> PartitionOffsetRequestInfo(
+            OffsetRequest.EarliestTime,
+            1)))
       val consumerOffsets =
         simpleConsumer
           .getOffsetsBefore(offsetRequest)
@@ -251,12 +250,11 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       () => isLeaderLocalOnBroker(topic, part, server),
       "Leader should be elected")
     val topicAndPartition = TopicAndPartition(topic, part)
-    val offsetRequest =
-      OffsetRequest(
-        Map(
-          topicAndPartition -> PartitionOffsetRequestInfo(
-            OffsetRequest.EarliestTime,
-            10)))
+    val offsetRequest = OffsetRequest(
+      Map(
+        topicAndPartition -> PartitionOffsetRequestInfo(
+          OffsetRequest.EarliestTime,
+          10)))
     val consumerOffsets =
       simpleConsumer
         .getOffsetsBefore(offsetRequest)

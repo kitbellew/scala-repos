@@ -33,9 +33,10 @@ class ArraysTest {
   /** Overridden by typedarray tests */
   def Array[T: ClassTag](v: T*): scala.Array[T] = scala.Array(v: _*)
 
-  val stringComparator = new Comparator[String]() {
-    def compare(s1: String, s2: String): Int = s1.compareTo(s2)
-  }
+  val stringComparator =
+    new Comparator[String]() {
+      def compare(s1: String, s2: String): Int = s1.compareTo(s2)
+    }
 
   @Test def sort_Int(): Unit =
     testSort[Int](_.toInt, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
@@ -112,9 +113,10 @@ class ArraysTest {
 
   @Test def sortIsStable(): Unit = {
     case class A(n: Int)
-    val cmp = new Comparator[A]() {
-      def compare(a1: A, a2: A): Int = a1.n.compareTo(a2.n)
-    }
+    val cmp =
+      new Comparator[A]() {
+        def compare(a1: A, a2: A): Int = a1.n.compareTo(a2.n)
+      }
     val scalajs: Array[A] = Array(A(1), A(2), A(2), A(3), A(1), A(2), A(3))
     val sorted = Array[A](
       scalajs(0),
@@ -1124,8 +1126,9 @@ class ArraysTest {
     assertEquals("[[...], null]", Arrays.deepToString(recArr))
     assertEquals("[[[...], null]]", Arrays.deepToString(Array[AnyRef](recArr)))
     assertEquals("[[[...], null]]", Arrays.deepToString(Array[AnyRef](recArr)))
-    recArr(1) =
-      Array[AnyRef](null, Array[AnyRef](null, recArr, Array[AnyRef](recArr)))
+    recArr(1) = Array[AnyRef](
+      null,
+      Array[AnyRef](null, recArr, Array[AnyRef](recArr)))
     assertEquals(
       "[[...], [null, [null, [...], [[...]]]]]",
       Arrays.deepToString(recArr))

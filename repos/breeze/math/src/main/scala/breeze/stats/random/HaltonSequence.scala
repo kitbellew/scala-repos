@@ -11,9 +11,10 @@ class HaltonSequence(dim: Int) extends Rand[DenseVector[Double]] {
   require(dim > 0, "dim must be positive!")
 
   private var count = 0
-  val primes = Array.iterate(2L, dim) { last =>
-    new java.math.BigInteger(last.toString).nextProbablePrime().longValue()
-  }
+  val primes =
+    Array.iterate(2L, dim) { last =>
+      new java.math.BigInteger(last.toString).nextProbablePrime().longValue()
+    }
 
   def draw() = {
     count += 1

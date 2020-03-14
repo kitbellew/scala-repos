@@ -175,15 +175,16 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
       .withValues(labels)
       .toMetadata()
     // If we are skipping invalid records, filter them out.
-    val filteredDataset = (getHandleInvalid) match {
-      case "skip" => {
-        val filterer = udf { label: String =>
-          labelToIndex.contains(label)
+    val filteredDataset =
+      (getHandleInvalid) match {
+        case "skip" => {
+          val filterer = udf { label: String =>
+            labelToIndex.contains(label)
+          }
+          dataset.where(filterer(dataset($(inputCol))))
         }
-        dataset.where(filterer(dataset($(inputCol))))
+        case _ => dataset
       }
-      case _ => dataset
-    }
     filteredDataset.select(
       col("*"),
       indexer(dataset($(inputCol)).cast(StringType)).as($(outputCol), metadata))
@@ -269,8 +270,7 @@ class IndexToString private[ml] (override val uid: String)
     with HasOutputCol
     with DefaultParamsWritable {
 
-  def this() =
-    this(Identifiable.randomUID("idxToStr"))
+  def this() = this(Identifiable.randomUID("idxToStr"))
 
   /** @group setParam */
   def setInputCol(value: String): this.type = set(inputCol, value)
@@ -287,11 +287,12 @@ class IndexToString private[ml] (override val uid: String)
     * Default: Empty array, in which case [[inputCol]] metadata is used for labels.
     * @group param
     */
-  final val labels: StringArrayParam = new StringArrayParam(
-    this,
-    "labels",
-    "Optional array of labels specifying index-string mapping." +
-      " If not provided or if empty, then metadata from inputCol is used instead.")
+  final val labels: StringArrayParam =
+    new StringArrayParam(
+      this,
+      "labels",
+      "Optional array of labels specifying index-string mapping." +
+        " If not provided or if empty, then metadata from inputCol is used instead.")
   setDefault(labels, Array.empty[String])
 
   /** @group getParam */
@@ -316,15 +317,16 @@ class IndexToString private[ml] (override val uid: String)
   override def transform(dataset: DataFrame): DataFrame = {
     val inputColSchema = dataset.schema($(inputCol))
     // If the labels array is empty use column metadata
-    val values = if ($(labels).isEmpty) {
-      Attribute
-        .fromStructField(inputColSchema)
-        .asInstanceOf[NominalAttribute]
-        .values
-        .get
-    } else {
-      $(labels)
-    }
+    val values =
+      if ($(labels).isEmpty) {
+        Attribute
+          .fromStructField(inputColSchema)
+          .asInstanceOf[NominalAttribute]
+          .values
+          .get
+      } else {
+        $(labels)
+      }
     val indexer = udf { index: Double =>
       val idx = index.toInt
       if (0 <= idx && idx < values.length) {

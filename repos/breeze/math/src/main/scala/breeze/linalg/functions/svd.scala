@@ -83,14 +83,16 @@ object svd extends UFunc {
     val m = mat.rows
     val n = mat.cols
     val S = DenseVector.zeros[Double](m min n)
-    val U = mode match {
-      case CompleteSVD => DenseMatrix.zeros[Double](m, m)
-      case ReducedSVD  => DenseMatrix.zeros[Double](m, m min n)
-    }
-    val Vt = mode match {
-      case CompleteSVD => DenseMatrix.zeros[Double](n, n)
-      case ReducedSVD  => DenseMatrix.zeros[Double](m min n, n)
-    }
+    val U =
+      mode match {
+        case CompleteSVD => DenseMatrix.zeros[Double](m, m)
+        case ReducedSVD  => DenseMatrix.zeros[Double](m, m min n)
+      }
+    val Vt =
+      mode match {
+        case CompleteSVD => DenseMatrix.zeros[Double](n, n)
+        case ReducedSVD  => DenseMatrix.zeros[Double](m min n, n)
+      }
     val iwork = new Array[Int](8 * (m min n))
     val workSize = (3
       * scala.math.min(m, n)
@@ -103,10 +105,11 @@ object svd extends UFunc {
     val info = new intW(0)
     val cm = copy(mat)
 
-    val LDVT = mode match {
-      case CompleteSVD => scala.math.max(1, n)
-      case ReducedSVD  => m min n
-    }
+    val LDVT =
+      mode match {
+        case CompleteSVD => scala.math.max(1, n)
+        case ReducedSVD  => m min n
+      }
 
     lapack.dgesdd(
       mode.JOBZ,
@@ -145,14 +148,16 @@ object svd extends UFunc {
     val m = mat.rows
     val n = mat.cols
     val S = DenseVector.zeros[Float](m min n)
-    val U = mode.JOBZ match {
-      case "A" => DenseMatrix.zeros[Float](m, m)
-      case "S" => DenseMatrix.zeros[Float](m, m min n)
-    }
-    val Vt = mode.JOBZ match {
-      case "A" => DenseMatrix.zeros[Float](n, n)
-      case "S" => DenseMatrix.zeros[Float](m min n, n)
-    }
+    val U =
+      mode.JOBZ match {
+        case "A" => DenseMatrix.zeros[Float](m, m)
+        case "S" => DenseMatrix.zeros[Float](m, m min n)
+      }
+    val Vt =
+      mode.JOBZ match {
+        case "A" => DenseMatrix.zeros[Float](n, n)
+        case "S" => DenseMatrix.zeros[Float](m min n, n)
+      }
     val iwork = new Array[Int](8 * (m min n))
     val workSize = (3
       * scala.math.min(m, n)
@@ -165,10 +170,11 @@ object svd extends UFunc {
     val info = new intW(0)
     val cm = copy(mat)
 
-    val LDVT = mode.JOBZ match {
-      case "A" => scala.math.max(1, n)
-      case "S" => m min n
-    }
+    val LDVT =
+      mode.JOBZ match {
+        case "A" => scala.math.max(1, n)
+        case "S" => m min n
+      }
 
     lapack.sgesdd(
       mode.JOBZ,
@@ -194,8 +200,10 @@ object svd extends UFunc {
     SVD(U, S, Vt)
   }
 
-  type OpMulMatrixDenseVector[Mat] =
-    OpMulMatrix.Impl2[Mat, DenseVector[Double], DenseVector[Double]]
+  type OpMulMatrixDenseVector[Mat] = OpMulMatrix.Impl2[
+    Mat,
+    DenseVector[Double],
+    DenseVector[Double]]
 
   /**
     * Implementation of svds for a sparse matrix. The caller provides two operations: mul - matrix

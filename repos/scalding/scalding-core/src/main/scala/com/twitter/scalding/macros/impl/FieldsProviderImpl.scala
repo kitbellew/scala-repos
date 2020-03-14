@@ -110,13 +110,14 @@ object FieldsProviderImpl {
     object FieldBuilder {
       // This is method on the object to work around this compiler bug: SI-6231
       def toFieldsTree(fb: FieldBuilder, scheme: NamingScheme): Tree = {
-        val nameTree = scheme match {
-          case Indexed =>
-            val indices = fb.names.zipWithIndex.map(_._2)
-            q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..$indices)"""
-          case _ =>
-            q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..${fb.names})"""
-        }
+        val nameTree =
+          scheme match {
+            case Indexed =>
+              val indices = fb.names.zipWithIndex.map(_._2)
+              q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..$indices)"""
+            case _ =>
+              q"""_root_.scala.Array.apply[_root_.java.lang.Comparable[_]](..${fb.names})"""
+          }
         q"""new _root_.cascading.tuple.Fields($nameTree,
           _root_.scala.Array.apply[_root_.java.lang.reflect.Type](..${fb.columnTypes}))
          """

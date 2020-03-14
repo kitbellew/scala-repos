@@ -53,9 +53,10 @@ class TFinagleBinaryProtocolTest
 
   test("writeString fallsback on encoding failure") {
     // use multi-byte chars so that we overflow on encode
-    val str = new String(Array.fill(TFinagleBinaryProtocol.OutBufferSize) {
-      '\u2603'
-    })
+    val str =
+      new String(Array.fill(TFinagleBinaryProtocol.OutBufferSize) {
+        '\u2603'
+      })
     val byteLength = str.getBytes(Charsets.UTF_8).length
     str.length should be < byteLength
     byteLength should be > TFinagleBinaryProtocol.OutBufferSize
@@ -63,10 +64,11 @@ class TFinagleBinaryProtocolTest
     val trans = new TMemoryBuffer(128)
     val stats = new InMemoryStatsReceiver
     val fastEncodeFailed = stats.counter("fastEncodeFailed")
-    val proto = new TFinagleBinaryProtocol(
-      trans,
-      fastEncodeFailed = fastEncodeFailed,
-      largerThanTlOutBuffer = NullCounter)
+    val proto =
+      new TFinagleBinaryProtocol(
+        trans,
+        fastEncodeFailed = fastEncodeFailed,
+        largerThanTlOutBuffer = NullCounter)
     proto.writeString(str)
     fastEncodeFailed() should be(1)
     assertSerializedBytes(str, trans)
@@ -93,16 +95,17 @@ class TFinagleBinaryProtocolTest
   }
 
   test("writeString larger than threadlocal out buffer") {
-    val longStr =
-      new Random(214566).nextString(TFinagleBinaryProtocol.OutBufferSize + 1)
+    val longStr = new Random(214566)
+      .nextString(TFinagleBinaryProtocol.OutBufferSize + 1)
 
     val trans = new TMemoryBuffer(128)
     val stats = new InMemoryStatsReceiver
     val largerThanTlOutBuffer = stats.counter("largerThanTlOutBuffer")
-    val proto = new TFinagleBinaryProtocol(
-      trans,
-      fastEncodeFailed = NullCounter,
-      largerThanTlOutBuffer = largerThanTlOutBuffer)
+    val proto =
+      new TFinagleBinaryProtocol(
+        trans,
+        fastEncodeFailed = NullCounter,
+        largerThanTlOutBuffer = largerThanTlOutBuffer)
     proto.writeString(longStr)
     largerThanTlOutBuffer() should be(1)
     assertSerializedBytes(longStr, trans)

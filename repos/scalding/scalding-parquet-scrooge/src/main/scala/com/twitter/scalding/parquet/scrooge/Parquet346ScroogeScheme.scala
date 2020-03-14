@@ -80,8 +80,8 @@ class Parquet346ScroogeRecordConverter[T <: ThriftStruct](
 
       // this thrift reader is the same as what's in ScroogeRecordConverter's constructor
       new ThriftReader[T] {
-        val codec: ThriftStructCodec[T] =
-          Parquet346ScroogeRecordConverter.getCodec(thriftClass)
+        val codec: ThriftStructCodec[T] = Parquet346ScroogeRecordConverter
+          .getCodec(thriftClass)
         def readOneRecord(protocol: TProtocol): T = codec.decode(protocol)
       },
       thriftClass.getSimpleName,

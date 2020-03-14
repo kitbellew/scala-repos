@@ -32,8 +32,10 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null)
       return false
 
@@ -57,44 +59,49 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 
     val expr = new StringBuilder
-    val newCond = ifStmt.condition.get match {
-      case infixExpr: ScInfixExpr =>
-        val oper = infixExpr.operation.nameId.getText
-        val first = if (oper == "||" || oper == "&&") {
-          IntentionUtils.negate(infixExpr.getBaseExpr)
-        } else {
-          infixExpr.getBaseExpr.getText
-        }
-        val second = if (oper == "||" || oper == "&&") {
-          IntentionUtils.negate(infixExpr.getArgExpr)
-        } else {
-          infixExpr.getArgExpr.getText
-        }
-        val replaceOper = Map(
-          "==" -> "!=",
-          "!=" -> "==",
-          ">" -> "<=",
-          "<" -> ">=",
-          ">=" -> "<",
-          "<=" -> ">",
-          "&&" -> "||",
-          "||" -> "&&")
-        val buf = new StringBuilder
-        buf
-          .append(first)
-          .append(" ")
-          .append(replaceOper(oper))
-          .append(" ")
-          .append(second)
-        buf.toString()
-      case _ => IntentionUtils.negate(ifStmt.condition.get)
-    }
+    val newCond =
+      ifStmt.condition.get match {
+        case infixExpr: ScInfixExpr =>
+          val oper = infixExpr.operation.nameId.getText
+          val first =
+            if (oper == "||" || oper == "&&") {
+              IntentionUtils.negate(infixExpr.getBaseExpr)
+            } else {
+              infixExpr.getBaseExpr.getText
+            }
+          val second =
+            if (oper == "||" || oper == "&&") {
+              IntentionUtils.negate(infixExpr.getArgExpr)
+            } else {
+              infixExpr.getArgExpr.getText
+            }
+          val replaceOper = Map(
+            "==" -> "!=",
+            "!=" -> "==",
+            ">" -> "<=",
+            "<" -> ">=",
+            ">=" -> "<",
+            "<=" -> ">",
+            "&&" -> "||",
+            "||" -> "&&")
+          val buf = new StringBuilder
+          buf
+            .append(first)
+            .append(" ")
+            .append(replaceOper(oper))
+            .append(" ")
+            .append(second)
+          buf.toString()
+        case _ => IntentionUtils.negate(ifStmt.condition.get)
+      }
 
     val elseBranch = ifStmt.elseBranch.orNull
     val newThenBranch =
@@ -108,10 +115,11 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
       .append(")")
       .append(newThenBranch)
       .append(" else ")
-    val res = ifStmt.thenBranch.get match {
-      case e: ScBlockExpr => e.getText
-      case _              => "{\n" + ifStmt.thenBranch.get.getText + "\n}"
-    }
+    val res =
+      ifStmt.thenBranch.get match {
+        case e: ScBlockExpr => e.getText
+        case _              => "{\n" + ifStmt.thenBranch.get.getText + "\n}"
+      }
     expr.append(res)
     val newStmt: ScExpression = ScalaPsiElementFactory.createExpressionFromText(
       expr.toString(),

@@ -59,8 +59,9 @@ object SortFilter extends SimplificationType {
 
           val newText = s"${baseExpr.getText}$lastText$secondText"
           val qual = second.optionalBase.getOrElse(second.itself)
-          val simplification =
-            replace(expr).withText(newText).highlightFrom(qual)
+          val simplification = replace(expr)
+            .withText(newText)
+            .highlightFrom(qual)
           return Some(simplification)
         }
         None

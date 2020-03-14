@@ -37,8 +37,10 @@ class TypedPipeDiffTest extends FunSuite {
   val expectedSortedDiff =
     List(("bar", (1, 0)), ("baz", (0, 1)), ("hi", (2, 1))).sorted
 
-  val leftArr =
-    List(Array[Byte](3, 3, 5, 3, 2), Array[Byte](2, 2, 2), Array[Byte](0, 1, 0))
+  val leftArr = List(
+    Array[Byte](3, 3, 5, 3, 2),
+    Array[Byte](2, 2, 2),
+    Array[Byte](0, 1, 0))
 
   val rightArr = List(
     Array[Byte](2, 2, 2),
@@ -154,11 +156,12 @@ object TypedPipeDiffLaws {
 
   def diffLaw[T: Ordering: Arbitrary]: Prop =
     Prop.forAll { (left: List[T], right: List[T]) =>
-      val diff = TypedPipe
-        .from(left)
-        .diff(TypedPipe.from(right))
-        .toTypedPipe
-        .inMemoryToList
+      val diff =
+        TypedPipe
+          .from(left)
+          .diff(TypedPipe.from(right))
+          .toTypedPipe
+          .inMemoryToList
       checkDiff(left, right, diff)
     }
 
@@ -178,18 +181,19 @@ object TypedPipeDiffLaws {
 
   def diffByGroupLaw[T: Arbitrary]: Prop =
     Prop.forAll { (left: List[T], right: List[T]) =>
-      val diff = TypedPipe
-        .from(left)
-        .diffByHashCode(TypedPipe.from(right))
-        .inMemoryToList
+      val diff =
+        TypedPipe
+          .from(left)
+          .diffByHashCode(TypedPipe.from(right))
+          .inMemoryToList
       checkDiff(left, right, diff)
     }
 
 }
 
 class TypedPipeDiffLaws extends PropSpec with PropertyChecks with Checkers {
-  override implicit val generatorDrivenConfig =
-    PropertyCheckConfig(minSuccessful = 5)
+  override implicit val generatorDrivenConfig = PropertyCheckConfig(
+    minSuccessful = 5)
 
   property("diffLaws") {
     check(TypedPipeDiffLaws.diffLaw[Int])

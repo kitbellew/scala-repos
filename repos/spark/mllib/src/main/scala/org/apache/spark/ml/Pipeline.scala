@@ -147,15 +147,16 @@ class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     theStages.view.zipWithIndex.foreach {
       case (stage, index) =>
         if (index <= indexOfLastEstimator) {
-          val transformer = stage match {
-            case estimator: Estimator[_] =>
-              estimator.fit(curDataset)
-            case t: Transformer =>
-              t
-            case _ =>
-              throw new IllegalArgumentException(
-                s"Do not support stage $stage of type ${stage.getClass}")
-          }
+          val transformer =
+            stage match {
+              case estimator: Estimator[_] =>
+                estimator.fit(curDataset)
+              case t: Transformer =>
+                t
+              case _ =>
+                throw new IllegalArgumentException(
+                  s"Do not support stage $stage of type ${stage.getClass}")
+            }
           if (index < indexOfLastEstimator) {
             curDataset = transformer.transform(curDataset)
           }
@@ -211,8 +212,10 @@ object Pipeline extends MLReadable[Pipeline] {
     private val className = classOf[Pipeline].getName
 
     override def load(path: String): Pipeline = {
-      val (uid: String, stages: Array[PipelineStage]) =
-        SharedReadWrite.load(className, sc, path)
+      val (uid: String, stages: Array[PipelineStage]) = SharedReadWrite.load(
+        className,
+        sc,
+        path)
       new Pipeline(uid).setStages(stages)
     }
   }
@@ -270,8 +273,10 @@ object Pipeline extends MLReadable[Pipeline] {
         expectedClassName: String,
         sc: SparkContext,
         path: String): (String, Array[PipelineStage]) = {
-      val metadata =
-        DefaultParamsReader.loadMetadata(path, sc, expectedClassName)
+      val metadata = DefaultParamsReader.loadMetadata(
+        path,
+        sc,
+        expectedClassName)
 
       implicit val format = DefaultFormats
       val stagesDir = new Path(path, "stages").toString
@@ -373,8 +378,10 @@ object PipelineModel extends MLReadable[PipelineModel] {
     private val className = classOf[PipelineModel].getName
 
     override def load(path: String): PipelineModel = {
-      val (uid: String, stages: Array[PipelineStage]) =
-        SharedReadWrite.load(className, sc, path)
+      val (uid: String, stages: Array[PipelineStage]) = SharedReadWrite.load(
+        className,
+        sc,
+        path)
       val transformers = stages map {
         case stage: Transformer => stage
         case other =>

@@ -122,14 +122,14 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("unionAll should union DataFrames with UDTs (SPARK-13410)") {
-    val rowRDD1 =
-      sparkContext.parallelize(Seq(Row(1, new ExamplePoint(1.0, 2.0))))
+    val rowRDD1 = sparkContext.parallelize(
+      Seq(Row(1, new ExamplePoint(1.0, 2.0))))
     val schema1 = StructType(
       Array(
         StructField("label", IntegerType, false),
         StructField("point", new ExamplePointUDT(), false)))
-    val rowRDD2 =
-      sparkContext.parallelize(Seq(Row(2, new ExamplePoint(3.0, 4.0))))
+    val rowRDD2 = sparkContext.parallelize(
+      Seq(Row(2, new ExamplePoint(3.0, 4.0))))
     val schema2 = StructType(
       Array(
         StructField("label", IntegerType, false),
@@ -403,8 +403,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     checkAnswer(allNulls.intersect(allNulls), Row(null) :: Nil)
 
     // check if values are de-duplicated
-    val df =
-      Seq(("id1", 1), ("id1", 1), ("id", 1), ("id1", 2)).toDF("id", "value")
+    val df = Seq(("id1", 1), ("id1", 1), ("id", 1), ("id1", 2))
+      .toDF("id", "value")
     checkAnswer(
       df.intersect(df),
       Row("id1", 1) ::
@@ -516,8 +516,10 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val newSalary = salary.withColumnRenamed("personId", "id")
     val col = newSalary("id")
     // this join will result in duplicate "id" columns
-    val joinedDf =
-      person.join(newSalary, person("id") === newSalary("id"), "inner")
+    val joinedDf = person.join(
+      newSalary,
+      person("id") === newSalary("id"),
+      "inner")
     // remove only the "id" column that was associated with newSalary
     val df = joinedDf.drop(col)
     checkAnswer(
@@ -761,8 +763,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test(
     "createDataFrame(RDD[Row], StructType) should convert UDTs (SPARK-6672)") {
     val rowRDD = sparkContext.parallelize(Seq(Row(new ExamplePoint(1.0, 2.0))))
-    val schema =
-      StructType(Array(StructField("point", new ExamplePointUDT(), false)))
+    val schema = StructType(
+      Array(StructField("point", new ExamplePointUDT(), false)))
     val df = sqlContext.createDataFrame(rowRDD, schema)
     df.rdd.collect()
   }
@@ -1055,8 +1057,10 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val seed = 33
     val df = (1 to 100).map(Tuple1.apply).toDF("i")
     val random = new XORShiftRandom(seed)
-    val expected =
-      (1 to 100).map(_ -> random.nextDouble()).sortBy(_._2).map(_._1)
+    val expected = (1 to 100)
+      .map(_ -> random.nextDouble())
+      .sortBy(_._2)
+      .map(_._1)
     val actual = df.sort(rand(seed)).collect().map(_.getInt(0))
     assert(expected === actual)
   }
@@ -1068,8 +1072,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-9323: DataFrame.orderBy should support nested column name") {
-    val df =
-      sqlContext.read.json(sparkContext.makeRDD("""{"a": {"b": 1}}""" :: Nil))
+    val df = sqlContext.read.json(
+      sparkContext.makeRDD("""{"a": {"b": 1}}""" :: Nil))
     checkAnswer(df.orderBy("a.b"), Row(Row(1)))
   }
 
@@ -1441,8 +1445,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     assert(
       df6.toString === "[c1: bigint, c2: struct<_1: bigint, _2: string> ... 2 more fields]")
 
-    val df7 =
-      Seq((1L, Tuple3(1L, "val", 2), 20.0, 1)).toDF("c1", "c2", "c3", "c4")
+    val df7 = Seq((1L, Tuple3(1L, "val", 2), 20.0, 1))
+      .toDF("c1", "c2", "c3", "c4")
     assert(
       df7.toString ===
         "[c1: bigint, c2: struct<_1: bigint, _2: string ... 1 more field> ... 2 more fields]")
@@ -1453,9 +1457,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       df8.toString ===
         "[c1: bigint, c2: struct<_1: bigint, _2: string ... 5 more fields> ... 2 more fields]")
 
-    val df9 =
-      Seq((1L, Tuple4(1L, Tuple4(1L, 2L, 3L, 4L), 2L, 3L), 20.0, 1))
-        .toDF("c1", "c2", "c3", "c4")
+    val df9 = Seq((1L, Tuple4(1L, Tuple4(1L, 2L, 3L, 4L), 2L, 3L), 20.0, 1))
+      .toDF("c1", "c2", "c3", "c4")
     assert(df9.toString ===
       "[c1: bigint, c2: struct<_1: bigint," +
         " _2: struct<_1: bigint," +

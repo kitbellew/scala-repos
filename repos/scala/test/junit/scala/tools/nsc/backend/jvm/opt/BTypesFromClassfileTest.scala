@@ -128,8 +128,8 @@ class BTypesFromClassfileTest {
       clearCache()
       val fromSymbol = classBTypeFromSymbol(classSym)
       clearCache()
-      val fromClassfile =
-        bTypes.classBTypeFromParsedClassfile(fromSymbol.internalName)
+      val fromClassfile = bTypes.classBTypeFromParsedClassfile(
+        fromSymbol.internalName)
       sameBType(fromSymbol, fromClassfile)
     }
 

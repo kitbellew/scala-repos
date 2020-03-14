@@ -113,9 +113,10 @@ object Endpoint {
   def parseJson(json: String): Seq[Endpoint] = {
     val d = JsonDict(json)
 
-    val shard = for {
-      IntObj(s) <- d("shard")
-    } yield s
+    val shard =
+      for {
+        IntObj(s) <- d("shard")
+      } yield s
     val status = {
       for {
         StringObj(s) <- d("status")
@@ -125,8 +126,8 @@ object Endpoint {
     val tmpl = Endpoint.Empty
       .copy(shard = shard.getOrElse(Int.MinValue), status = status)
 
-    val namesByHostPort =
-      Memoize.snappable[(String, Int), ArrayBuffer[String]] {
+    val namesByHostPort = Memoize
+      .snappable[(String, Int), ArrayBuffer[String]] {
         case (host, port) =>
           new ArrayBuffer[String]
       }

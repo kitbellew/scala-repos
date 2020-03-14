@@ -455,18 +455,20 @@ class CSCMatrixTest extends FunSuite with Checkers {
   }
 
   test("#479") {
-    val m1: Matrix[Double] = new CSCMatrix[Double](
-      Array(1.0, 1, 1),
-      3,
-      3,
-      Array(0, 1, 2, 3),
-      Array(0, 1, 2))
-    val m2: Matrix[Double] = new CSCMatrix[Double](
-      Array(1.0, 2, 2, 4),
-      3,
-      3,
-      Array(0, 0, 2, 4),
-      Array(1, 2, 1, 2))
+    val m1: Matrix[Double] =
+      new CSCMatrix[Double](
+        Array(1.0, 1, 1),
+        3,
+        3,
+        Array(0, 1, 2, 3),
+        Array(0, 1, 2))
+    val m2: Matrix[Double] =
+      new CSCMatrix[Double](
+        Array(1.0, 2, 2, 4),
+        3,
+        3,
+        Array(0, 0, 2, 4),
+        Array(1, 2, 1, 2))
 
     val sum = (m1 + m2).asInstanceOf[CSCMatrix[Double]]
     require(

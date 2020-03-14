@@ -65,8 +65,8 @@ class BindingFactoryTest
         expected: Seq[Annotation]
     ) {
       val tracer: Tracer = spy(new NullTracer)
-      val captor: ArgumentCaptor[Record] =
-        ArgumentCaptor.forClass(classOf[Record])
+      val captor: ArgumentCaptor[Record] = ArgumentCaptor.forClass(
+        classOf[Record])
       Trace.letTracer(tracer) {
         f
       }
@@ -103,12 +103,13 @@ class BindingFactoryTest
           }
         }
 
-    lazy val factory = new BindingFactory(
-      path,
-      newFactory,
-      statsReceiver = imsr,
-      maxNamerCacheSize = 2,
-      maxNameCacheSize = 2)
+    lazy val factory =
+      new BindingFactory(
+        path,
+        newFactory,
+        statsReceiver = imsr,
+        maxNamerCacheSize = 2,
+        maxNameCacheSize = 2)
 
     def newWith(localDtab: Dtab): Service[Unit, Var[Addr]] = {
       Dtab.unwind {
@@ -153,12 +154,11 @@ class BindingFactoryTest
       TestNamer.f = { _ =>
         Activity(v)
       }
-      val f =
-        Dtab.unwind {
-          Dtab.local = Dtab.read(
-            "/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
-          factory()
-        }
+      val f = Dtab.unwind {
+        Dtab.local = Dtab.read(
+          "/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
+        factory()
+      }
       tc.advance(5678.microseconds)
       v() = Activity.Ok(NameTree.Leaf(Name.Path(Path.read("/test1010"))))
       Await.result(Await.result(f).close())
@@ -217,16 +217,17 @@ class BindingFactoryTest
     "Includes path and Dtab.local in NoBrokersAvailableException from service creation") {
     val localDtab = Dtab.read("/foo/bar=>/test1010")
 
-    val factory = new BindingFactory(
-      Path.read("/foo/bar"),
-      newFactory = { addr =>
-        new ServiceFactory[Unit, Unit] {
-          def apply(conn: ClientConnection) =
-            Future.exception(new NoBrokersAvailableException("/foo/bar"))
+    val factory =
+      new BindingFactory(
+        Path.read("/foo/bar"),
+        newFactory = { addr =>
+          new ServiceFactory[Unit, Unit] {
+            def apply(conn: ClientConnection) =
+              Future.exception(new NoBrokersAvailableException("/foo/bar"))
 
-          def close(deadline: Time) = Future.Done
-        }
-      })
+            def close(deadline: Time) = Future.Done
+          }
+        })
 
     val noBrokers = intercept[NoBrokersAvailableException] {
       Dtab.unwind {
@@ -302,16 +303,17 @@ class BindingFactoryTest
       {
         val localDtab = Dtab.read("/foo/bar=>/test1010")
 
-        val f = new BindingFactory(
-          Path.read("/foo/bar"),
-          newFactory = { addr =>
-            new ServiceFactory[Unit, Unit] {
-              def apply(conn: ClientConnection) =
-                Future.exception(new NoBrokersAvailableException("/foo/bar"))
+        val f =
+          new BindingFactory(
+            Path.read("/foo/bar"),
+            newFactory = { addr =>
+              new ServiceFactory[Unit, Unit] {
+                def apply(conn: ClientConnection) =
+                  Future.exception(new NoBrokersAvailableException("/foo/bar"))
 
-              def close(deadline: Time) = Future.Done
-            }
-          })
+                def close(deadline: Time) = Future.Done
+              }
+            })
 
         intercept[NoBrokersAvailableException] {
           Dtab.unwind {
@@ -402,12 +404,13 @@ class BindingFactoryTest
   })
 
   test("BindingFactory.Module: filters with bound residual paths") {
-    val module = new BindingFactory.Module[Path, Path] {
-      protected[this] def boundPathFilter(path: Path) =
-        Filter.mk { (in, service) =>
-          service(path ++ in)
-        }
-    }
+    val module =
+      new BindingFactory.Module[Path, Path] {
+        protected[this] def boundPathFilter(path: Path) =
+          Filter.mk { (in, service) =>
+            service(path ++ in)
+          }
+      }
 
     val name = Name.Bound(Var(Addr.Pending), "id", Path.read("/alpha"))
 
@@ -556,27 +559,27 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
 class NameTreeFactoryTest extends FunSuite {
 
   test("distributes requests according to weight") {
-    val tree =
-      NameTree.Union(
-        NameTree.Weighted(
-          1d,
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf("foo")),
-            NameTree.Weighted(1d, NameTree.Leaf("bar")))),
-        NameTree.Weighted(1d, NameTree.Leaf("baz"))
-      )
+    val tree = NameTree.Union(
+      NameTree.Weighted(
+        1d,
+        NameTree.Union(
+          NameTree.Weighted(1d, NameTree.Leaf("foo")),
+          NameTree.Weighted(1d, NameTree.Leaf("bar")))),
+      NameTree.Weighted(1d, NameTree.Leaf("baz"))
+    )
 
     val counts = mutable.HashMap[String, Int]()
 
-    val factoryCache = new ServiceFactoryCache[String, Unit, Unit](key =>
-      new ServiceFactory[Unit, Unit] {
-        def apply(conn: ClientConnection): Future[Service[Unit, Unit]] = {
-          val count = counts.getOrElse(key, 0)
-          counts.put(key, count + 1)
-          Future.value(null)
-        }
-        def close(deadline: Time) = Future.Done
-      })
+    val factoryCache =
+      new ServiceFactoryCache[String, Unit, Unit](key =>
+        new ServiceFactory[Unit, Unit] {
+          def apply(conn: ClientConnection): Future[Service[Unit, Unit]] = {
+            val count = counts.getOrElse(key, 0)
+            counts.put(key, count + 1)
+            Future.value(null)
+          }
+          def close(deadline: Time) = Future.Done
+        })
 
     // not the world's greatest test since it depends on the
     // implementation of Drv
@@ -585,8 +588,7 @@ class NameTreeFactoryTest extends FunSuite {
       var intIdx = 0
 
       new Rng {
-        def nextDouble() =
-          throw new UnsupportedOperationException
+        def nextDouble() = throw new UnsupportedOperationException
 
         def nextInt(n: Int) = {
           val i = ints(intIdx)

@@ -9,8 +9,7 @@ abstract private[util] class AbstractRandomAccessListIterator[E](
 
   private var last = -1
 
-  def hasNext(): Boolean =
-    i < end
+  def hasNext(): Boolean = i < end
 
   def next(): E = {
     last = i
@@ -18,8 +17,7 @@ abstract private[util] class AbstractRandomAccessListIterator[E](
     get(last)
   }
 
-  def hasPrevious(): Boolean =
-    start < i
+  def hasPrevious(): Boolean = start < i
 
   def previous(): E = {
     i -= 1

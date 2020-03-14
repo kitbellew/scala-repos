@@ -161,8 +161,8 @@ class GraphUnzipWithSpec extends AkkaSpec {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b ⇒
-          val unzip =
-            b.add(UnzipWith[Int, Int, String]((b: Int) ⇒ (1 / b, 1 + "/" + b)))
+          val unzip = b.add(
+            UnzipWith[Int, Int, String]((b: Int) ⇒ (1 / b, 1 + "/" + b)))
 
           Source(-2 to 2) ~> unzip.in
 
@@ -250,28 +250,29 @@ class GraphUnzipWithSpec extends AkkaSpec {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b ⇒
-          val split20 = (a: (List[Int])) ⇒
-            (
-              a(0),
-              a(0).toString,
-              a(1),
-              a(1).toString,
-              a(2),
-              a(2).toString,
-              a(3),
-              a(3).toString,
-              a(4),
-              a(4).toString,
-              a(5),
-              a(5).toString,
-              a(6),
-              a(6).toString,
-              a(7),
-              a(7).toString,
-              a(8),
-              a(8).toString,
-              a(9),
-              a(9).toString)
+          val split20 =
+            (a: (List[Int])) ⇒
+              (
+                a(0),
+                a(0).toString,
+                a(1),
+                a(1).toString,
+                a(2),
+                a(2).toString,
+                a(3),
+                a(3).toString,
+                a(4),
+                a(4).toString,
+                a(5),
+                a(5).toString,
+                a(6),
+                a(6).toString,
+                a(7),
+                a(7).toString,
+                a(8),
+                a(8).toString,
+                a(9),
+                a(9).toString)
 
           // odd input ports will be Int, even input ports will be String
           val unzip = b.add(UnzipWith(split20))

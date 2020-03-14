@@ -32,19 +32,21 @@ private[sbt] class PluginsDebug(
         case pa: PluginActivated   => Left(pa)
         case pd: EnableDeactivated => Right(pd)
       }
-    val activePrefix = if (activated.nonEmpty)
-      s"Some already activated plugins define $notFoundKey: ${activated.mkString(", ")}\n"
-    else
-      ""
+    val activePrefix =
+      if (activated.nonEmpty)
+        s"Some already activated plugins define $notFoundKey: ${activated.mkString(", ")}\n"
+      else
+        ""
     activePrefix + debugDeactivated(notFoundKey, deactivated)
   }
   private[this] def debugDeactivated(
       notFoundKey: String,
       deactivated: Seq[EnableDeactivated]): String = {
-    val (impossible, possible) = Util.separate(deactivated) {
-      case pi: PluginImpossible   => Left(pi)
-      case pr: PluginRequirements => Right(pr)
-    }
+    val (impossible, possible) =
+      Util.separate(deactivated) {
+        case pi: PluginImpossible   => Left(pi)
+        case pr: PluginRequirements => Right(pr)
+      }
     if (possible.nonEmpty) {
       val explained = possible.map(explainPluginEnable)
       val possibleString =
@@ -174,8 +176,8 @@ private[sbt] object PluginsDebug {
       p.autoPlugins.contains(plugin)
     def projectForRef(ref: ProjectRef): ResolvedProject =
       get(Keys.thisProject in ref)
-    val perBuild: Map[URI, Set[AutoPlugin]] =
-      structure.units.mapValues(unit => availableAutoPlugins(unit).toSet)
+    val perBuild: Map[URI, Set[AutoPlugin]] = structure.units.mapValues(unit =>
+      availableAutoPlugins(unit).toSet)
     val pluginsThisBuild =
       perBuild.getOrElse(currentRef.build, Set.empty).toList
     lazy val context = Context(
@@ -186,8 +188,9 @@ private[sbt] object PluginsDebug {
       s.log)
     lazy val debug = PluginsDebug(context.available)
     if (!pluginsThisBuild.contains(plugin)) {
-      val availableInBuilds: List[URI] =
-        perBuild.toList.filter(_._2(plugin)).map(_._1)
+      val availableInBuilds: List[URI] = perBuild.toList
+        .filter(_._2(plugin))
+        .map(_._1)
       s"Plugin ${plugin.label} is only available in builds:\n\t${availableInBuilds.mkString("\n\t")}\nSwitch to a project in one of those builds using `project` and rerun this command for more information."
     } else if (definesPlugin(currentProject))
       debug.activatedHelp(plugin)
@@ -196,13 +199,12 @@ private[sbt] object PluginsDebug {
         .dependencies(structure.units)
         .aggregateTransitive
         .getOrElse(currentRef, Nil)
-      val definedInAggregated =
-        thisAggregated.filter(ref => definesPlugin(projectForRef(ref)))
+      val definedInAggregated = thisAggregated.filter(ref =>
+        definesPlugin(projectForRef(ref)))
       if (definedInAggregated.nonEmpty) {
-        val projectNames =
-          definedInAggregated.map(
-            _.project
-          ) // TODO: usually in this build, but could technically require the build to be qualified
+        val projectNames = definedInAggregated.map(
+          _.project
+        ) // TODO: usually in this build, but could technically require the build to be qualified
         s"Plugin ${plugin.label} is not activated on this project, but this project aggregates projects where it is activated:\n\t${projectNames
           .mkString("\n\t")}"
       } else {

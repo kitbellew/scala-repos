@@ -71,11 +71,15 @@ class CircuitBreakerStressSpec extends AkkaSpec with ImplicitSender {
   muteDeadLetters(classOf[AnyRef])(system)
 
   "A CircuitBreaker" in {
-    val breaker =
-      CircuitBreaker(system.scheduler, 5, 200.millisecond, 200.seconds)
-    val stressActors = Vector.fill(3) {
-      system.actorOf(Props(classOf[StressActor], breaker))
-    }
+    val breaker = CircuitBreaker(
+      system.scheduler,
+      5,
+      200.millisecond,
+      200.seconds)
+    val stressActors =
+      Vector.fill(3) {
+        system.actorOf(Props(classOf[StressActor], breaker))
+      }
     for (_ ← 0 to 1000;
          a ← stressActors) {
       a ! JobDone

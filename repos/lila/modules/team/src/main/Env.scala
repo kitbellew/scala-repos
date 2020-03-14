@@ -6,28 +6,31 @@ import lila.common.PimpedConfig._
 
 final class Env(config: Config, hub: lila.hub.Env, db: lila.db.Env) {
 
-  private val settings = new {
-    val CollectionTeam = config getString "collection.team"
-    val CollectionMember = config getString "collection.member"
-    val CollectionRequest = config getString "collection.request"
-    val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
-    val PaginatorMaxUserPerPage = config getInt "paginator.max_user_per_page"
-    val NotifierSender = config getString "notifier.sender"
-  }
+  private val settings =
+    new {
+      val CollectionTeam = config getString "collection.team"
+      val CollectionMember = config getString "collection.member"
+      val CollectionRequest = config getString "collection.request"
+      val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
+      val PaginatorMaxUserPerPage = config getInt "paginator.max_user_per_page"
+      val NotifierSender = config getString "notifier.sender"
+    }
   import settings._
 
   lazy val forms = new DataForm(hub.actor.captcher)
 
-  lazy val api = new TeamApi(
-    cached = cached,
-    notifier = notifier,
-    forum = hub.actor.forum,
-    indexer = hub.actor.teamSearch,
-    timeline = hub.actor.timeline)
+  lazy val api =
+    new TeamApi(
+      cached = cached,
+      notifier = notifier,
+      forum = hub.actor.forum,
+      indexer = hub.actor.teamSearch,
+      timeline = hub.actor.timeline)
 
-  lazy val paginator = new PaginatorBuilder(
-    maxPerPage = PaginatorMaxPerPage,
-    maxUserPerPage = PaginatorMaxUserPerPage)
+  lazy val paginator =
+    new PaginatorBuilder(
+      maxPerPage = PaginatorMaxPerPage,
+      maxUserPerPage = PaginatorMaxUserPerPage)
 
   lazy val cli = new Cli(api)
 
@@ -37,10 +40,11 @@ final class Env(config: Config, hub: lila.hub.Env, db: lila.db.Env) {
   private[team] lazy val requestColl = db(CollectionRequest)
   private[team] lazy val memberColl = db(CollectionMember)
 
-  private lazy val notifier = new Notifier(
-    sender = NotifierSender,
-    messenger = hub.actor.messenger,
-    router = hub.actor.router)
+  private lazy val notifier =
+    new Notifier(
+      sender = NotifierSender,
+      messenger = hub.actor.messenger,
+      router = hub.actor.router)
 }
 
 object Env {

@@ -57,11 +57,12 @@ object Serialization {
     */
   def serializedActorPath(actorRef: ActorRef): String = {
     val path = actorRef.path
-    val originalSystem: ExtendedActorSystem = actorRef match {
-      case a: ActorRefWithCell ⇒
-        a.underlying.system.asInstanceOf[ExtendedActorSystem]
-      case _ ⇒ null
-    }
+    val originalSystem: ExtendedActorSystem =
+      actorRef match {
+        case a: ActorRefWithCell ⇒
+          a.underlying.system.asInstanceOf[ExtendedActorSystem]
+        case _ ⇒ null
+      }
     Serialization.currentTransportInformation.value match {
       case null ⇒
         originalSystem match {
@@ -198,18 +199,19 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
               0)._1)) ||
             (possibilities forall (_._2 == possibilities(0)._2))
 
-        val ser = bindings filter {
-          _._1 isAssignableFrom clazz
-        } match {
-          case Seq() ⇒
-            throw new NotSerializableException(
-              "No configured serialization-bindings for class [%s]" format clazz.getName)
-          case possibilities ⇒
-            if (!unique(possibilities))
-              log.warning(
-                "Multiple serializers found for " + clazz + ", choosing first: " + possibilities)
-            possibilities(0)._2
-        }
+        val ser =
+          bindings filter {
+            _._1 isAssignableFrom clazz
+          } match {
+            case Seq() ⇒
+              throw new NotSerializableException(
+                "No configured serialization-bindings for class [%s]" format clazz.getName)
+            case possibilities ⇒
+              if (!unique(possibilities))
+                log.warning(
+                  "Multiple serializers found for " + clazz + ", choosing first: " + possibilities)
+              possibilities(0)._2
+          }
         serializerMap.putIfAbsent(clazz, ser) match {
           case null ⇒
             if (shouldWarnAboutJavaSerializer(clazz, ser)) {
@@ -254,12 +256,11 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     *  bindings is a Seq of tuple representing the mapping from Class to Serializer.
     *  It is primarily ordered by the most specific classes first, and secondly in the configured order.
     */
-  private[akka] val bindings: immutable.Seq[ClassSerializer] =
-    sort(
-      for ((k: String, v: String) ← settings.SerializationBindings
-           if v != "none" && checkGoogleProtobuf(k))
-        yield (system.dynamicAccess.getClassFor[Any](k).get, serializers(v)))
-      .to[immutable.Seq]
+  private[akka] val bindings: immutable.Seq[ClassSerializer] = sort(
+    for ((k: String, v: String) ← settings.SerializationBindings
+         if v != "none" && checkGoogleProtobuf(k))
+      yield (system.dynamicAccess.getClassFor[Any](k).get, serializers(v)))
+    .to[immutable.Seq]
 
   // com.google.protobuf serialization binding is only used if the class can be loaded,
   // i.e. com.google.protobuf dependency has been added in the application project.
@@ -303,8 +304,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       case (_, v) ⇒ (v.identifier, v)
     }
 
-  private val isJavaSerializationWarningEnabled =
-    settings.config.getBoolean("akka.actor.warn-about-java-serializer-usage")
+  private val isJavaSerializationWarningEnabled = settings.config.getBoolean(
+    "akka.actor.warn-about-java-serializer-usage")
 
   private def shouldWarnAboutJavaSerializer(
       serializedClass: Class[_],

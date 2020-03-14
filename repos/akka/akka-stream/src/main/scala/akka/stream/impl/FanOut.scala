@@ -59,8 +59,7 @@ private[akka] object FanOut {
     private val completed = Array.ofDim[Boolean](outputCount)
     private val errored = Array.ofDim[Boolean](outputCount)
 
-    override def toString: String =
-      s"""|OutputBunch
+    override def toString: String = s"""|OutputBunch
           |  marked:    ${marked.mkString(", ")}
           |  pending:   ${pending.mkString(", ")}
           |  errored:   ${errored.mkString(", ")}
@@ -226,21 +225,23 @@ private[akka] object FanOut {
       * have demand, and will complete as soon as any of the marked
       * outputs have canceled.
       */
-    val AllOfMarkedOutputs = new TransferState {
-      override def isCompleted: Boolean =
-        markedCancelled > 0 || markedCount == 0
-      override def isReady: Boolean = markedPending == markedCount
-    }
+    val AllOfMarkedOutputs =
+      new TransferState {
+        override def isCompleted: Boolean =
+          markedCancelled > 0 || markedCount == 0
+        override def isReady: Boolean = markedPending == markedCount
+      }
 
     /**
       * Will transfer an element when any of the  marked outputs
       * have demand, and will complete when all of the marked
       * outputs have canceled.
       */
-    val AnyOfMarkedOutputs = new TransferState {
-      override def isCompleted: Boolean = markedCancelled == markedCount
-      override def isReady: Boolean = markedPending > 0
-    }
+    val AnyOfMarkedOutputs =
+      new TransferState {
+        override def isCompleted: Boolean = markedCancelled == markedCount
+        override def isReady: Boolean = markedPending > 0
+      }
 
     // FIXME: Eliminate re-wraps
     def subreceive: SubReceive =

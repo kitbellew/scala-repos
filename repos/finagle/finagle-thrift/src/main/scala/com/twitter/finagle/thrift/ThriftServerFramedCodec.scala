@@ -57,8 +57,9 @@ class ThriftServerFramedCodec(
   def pipelineFactory: ChannelPipelineFactory =
     ThriftServerFramedPipelineFactory
 
-  private[this] val preparer =
-    ThriftServerPreparer(protocolFactory, config.serviceName)
+  private[this] val preparer = ThriftServerPreparer(
+    protocolFactory,
+    config.serviceName)
 
   override def prepareConnFactory(
       factory: ServiceFactory[Array[Byte], Array[Byte]],
@@ -82,10 +83,11 @@ private[finagle] case class ThriftServerPreparer(
       params: Stack.Params
   ): ServiceFactory[Array[Byte], Array[Byte]] =
     factory.map { service =>
-      val payloadSize = new PayloadSizeFilter[Array[Byte], Array[Byte]](
-        params[param.Stats].statsReceiver,
-        _.length,
-        _.length)
+      val payloadSize =
+        new PayloadSizeFilter[Array[Byte], Array[Byte]](
+          params[param.Stats].statsReceiver,
+          _.length,
+          _.length)
 
       val ttwitter = new TTwitterServerFilter(serviceName, protocolFactory)
 
@@ -135,9 +137,10 @@ private[finagle] object UncaughtAppExceptionFilter {
 
     // Note: The wire contents of the exception message differ from Apache's Thrift in that here,
     // e.toString is appended to the error message.
-    val x = new TApplicationException(
-      TApplicationException.INTERNAL_ERROR,
-      s"Internal error processing $name: '$throwable'")
+    val x =
+      new TApplicationException(
+        TApplicationException.INTERNAL_ERROR,
+        s"Internal error processing $name: '$throwable'")
 
     x.write(buffer())
     buffer().writeMessageEnd()

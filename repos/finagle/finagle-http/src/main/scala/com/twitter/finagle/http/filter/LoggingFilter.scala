@@ -123,8 +123,7 @@ class CommonLogFormatter extends LogFormatter {
     throw new UnsupportedOperationException(
       "Log throwables as empty 500s instead")
 
-  def formattedDate(): String =
-    DateFormat.format(Time.now.toDate)
+  def formattedDate(): String = DateFormat.format(Time.now.toDate)
 }
 
 /**

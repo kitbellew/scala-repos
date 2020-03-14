@@ -66,13 +66,14 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
     if (!children.isEmpty) {
       tdb.cleanUpBefore()
       try {
-        val is = children.iterator
-          .map(ch => (ch, ch.cl.newInstance()))
-          .filter {
-            case (_, to) => to.setTestDB(tdb)
-          }
-          .zipWithIndex
-          .toIndexedSeq
+        val is =
+          children.iterator
+            .map(ch => (ch, ch.cl.newInstance()))
+            .filter {
+              case (_, to) => to.setTestDB(tdb)
+            }
+            .zipWithIndex
+            .toIndexedSeq
         val last = is.length - 1
         var previousTestObject: GenericTest[_ >: Null <: TestDB] = null
         for (((ch, preparedTestObject), idx) <- is) {
@@ -222,12 +223,14 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
     import slick.compiler.QueryCompiler
     import slick.ast._
     import slick.ast.Util._
-    val qc = new QueryCompiler(
-      tdb.profile.queryCompiler.phases.takeWhile(_.name != "codeGen"))
+    val qc =
+      new QueryCompiler(
+        tdb.profile.queryCompiler.phases.takeWhile(_.name != "codeGen"))
     val cs = qc.run(q.toNode)
-    val found = cs.tree.collect {
-      case c: Comprehension => c
-    }.length
+    val found =
+      cs.tree.collect {
+        case c: Comprehension => c
+      }.length
     if (found != exp)
       throw cs.symbolNamer.use(
         new SlickTreeException(
@@ -413,21 +416,23 @@ abstract class AsyncTest[TDB >: Null <: TestDB](
       tr: T => Future[R],
       delay: Duration = Duration(100L, TimeUnit.MILLISECONDS))
       : Future[Vector[R]] = {
-    val exe = new ThreadPoolExecutor(
-      1,
-      1,
-      1L,
-      TimeUnit.SECONDS,
-      new LinkedBlockingQueue[Runnable]())
+    val exe =
+      new ThreadPoolExecutor(
+        1,
+        1,
+        1L,
+        TimeUnit.SECONDS,
+        new LinkedBlockingQueue[Runnable]())
     val ec = ExecutionContext.fromExecutor(exe)
     val builder = Vector.newBuilder[R]
     val pr = Promise[Vector[R]]()
     var sub: Subscription = null
     def async[T](thunk: => T): Future[T] = {
-      val f = Future {
-        Thread.sleep(delay.toMillis)
-        thunk
-      }(ec)
+      val f =
+        Future {
+          Thread.sleep(delay.toMillis)
+          thunk
+        }(ec)
       f.onFailure {
         case t =>
           pr.tryFailure(t)

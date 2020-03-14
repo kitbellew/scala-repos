@@ -134,23 +134,25 @@ case class GetJsonObject(json: Expression, path: Expression)
       return null
     }
 
-    val parsed = if (path.foldable) {
-      parsedPath
-    } else {
-      parsePath(path.eval(input).asInstanceOf[UTF8String])
-    }
+    val parsed =
+      if (path.foldable) {
+        parsedPath
+      } else {
+        parsePath(path.eval(input).asInstanceOf[UTF8String])
+      }
 
     if (parsed.isDefined) {
       try {
         Utils.tryWithResource(jsonFactory.createParser(jsonStr.getBytes)) {
           parser =>
             val output = new ByteArrayOutputStream()
-            val matched = Utils.tryWithResource(
-              jsonFactory.createGenerator(output, JsonEncoding.UTF8)) {
-              generator =>
-                parser.nextToken()
-                evaluatePath(parser, generator, RawStyle, parsed.get)
-            }
+            val matched =
+              Utils.tryWithResource(
+                jsonFactory.createGenerator(output, JsonEncoding.UTF8)) {
+                generator =>
+                  parser.nextToken()
+                  evaluatePath(parser, generator, RawStyle, parsed.get)
+              }
             if (matched) {
               UTF8String.fromBytes(output.toByteArray)
             } else {
@@ -255,11 +257,12 @@ case class GetJsonObject(json: Expression, path: Expression)
 
       case (START_ARRAY, Subscript :: Wildcard :: xs) if style != QuotedStyle =>
         // retain Flatten, otherwise use Quoted... cannot use Raw within an array
-        val nextStyle = style match {
-          case RawStyle     => QuotedStyle
-          case FlattenStyle => FlattenStyle
-          case QuotedStyle  => throw new IllegalStateException()
-        }
+        val nextStyle =
+          style match {
+            case RawStyle     => QuotedStyle
+            case FlattenStyle => FlattenStyle
+            case QuotedStyle  => throw new IllegalStateException()
+          }
 
         // temporarily buffer child matches, the emitted json will need to be
         // modified slightly if there is only a single element written
@@ -364,8 +367,8 @@ case class JsonTuple(children: Seq[Expression])
   }
 
   // and count the number of foldable fields, we'll use this later to optimize evaluation
-  @transient private lazy val constantFields: Int =
-    foldableFieldNames.count(_ != null)
+  @transient private lazy val constantFields: Int = foldableFieldNames.count(
+    _ != null)
 
   override def elementTypes: Seq[(DataType, Boolean, String)] =
     fieldExpressions.zipWithIndex.map {
@@ -413,21 +416,23 @@ case class JsonTuple(children: Seq[Expression])
 
     // evaluate the field names as String rather than UTF8String to
     // optimize lookups from the json token, which is also a String
-    val fieldNames = if (constantFields == fieldExpressions.length) {
-      // typically the user will provide the field names as foldable expressions
-      // so we can use the cached copy
-      foldableFieldNames
-    } else if (constantFields == 0) {
-      // none are foldable so all field names need to be evaluated from the input row
-      fieldExpressions.map(_.eval(input).asInstanceOf[UTF8String].toString)
-    } else {
-      // if there is a mix of constant and non-constant expressions
-      // prefer the cached copy when available
-      foldableFieldNames.zip(fieldExpressions).map {
-        case (null, expr)   => expr.eval(input).asInstanceOf[UTF8String].toString
-        case (fieldName, _) => fieldName
+    val fieldNames =
+      if (constantFields == fieldExpressions.length) {
+        // typically the user will provide the field names as foldable expressions
+        // so we can use the cached copy
+        foldableFieldNames
+      } else if (constantFields == 0) {
+        // none are foldable so all field names need to be evaluated from the input row
+        fieldExpressions.map(_.eval(input).asInstanceOf[UTF8String].toString)
+      } else {
+        // if there is a mix of constant and non-constant expressions
+        // prefer the cached copy when available
+        foldableFieldNames.zip(fieldExpressions).map {
+          case (null, expr) =>
+            expr.eval(input).asInstanceOf[UTF8String].toString
+          case (fieldName, _) => fieldName
+        }
       }
-    }
 
     val row = Array.ofDim[Any](fieldNames.length)
 

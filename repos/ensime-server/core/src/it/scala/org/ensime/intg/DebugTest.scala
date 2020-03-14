@@ -369,8 +369,11 @@ trait DebugTestUtils {
     asyncHelper.expectMsg(DebugVMStartEvent)
     asyncHelper.expectMsgType[DebugThreadStartEvent]
 
-    val expect =
-      DebugBreakEvent(DebugThreadId(1), "main", resolvedFile, breakLine)
+    val expect = DebugBreakEvent(
+      DebugThreadId(1),
+      "main",
+      resolvedFile,
+      breakLine)
     asyncHelper.expectMsg(expect)
     project ! DebugClearBreakReq(resolvedFile, breakLine)
     expectMsg(TrueResponse)

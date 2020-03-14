@@ -32,8 +32,8 @@ object MacroUtil {
     * @return visible variables and values from element position
     */
   def getVariablesForScope(element: PsiElement): Array[ScalaResolveResult] = {
-    val completionProcessor = new VariablesCompletionProcessor(
-      StdKinds.valuesRef)
+    val completionProcessor =
+      new VariablesCompletionProcessor(StdKinds.valuesRef)
     PsiTreeUtil.treeWalkUp(
       completionProcessor,
       element,
@@ -77,10 +77,11 @@ object MacroUtil {
       .filter(_.isInstanceOf[ScTypeDefinition])
       .map {
         case typeDef: ScTypeDefinition =>
-          val lookupItem = new ScalaLookupItem(
-            typeDef,
-            typeDef.getTruncedQualifiedName,
-            Option(typeDef.getContainingClass))
+          val lookupItem =
+            new ScalaLookupItem(
+              typeDef,
+              typeDef.getTruncedQualifiedName,
+              Option(typeDef.getContainingClass))
           lookupItem.shouldImport = true
           lookupItem
       }

@@ -40,8 +40,7 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     }
   }
 
-  def termsIterator: Iterator[Term[C]] =
-    new TermIterator
+  def termsIterator: Iterator[Term[C]] = new TermIterator
 
   class TermIterator extends Iterator[Term[C]] {
     private[this] var e: Int = 0
@@ -88,8 +87,7 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     }
   }
 
-  def isZero: Boolean =
-    coeffs.length == 0
+  def isZero: Boolean = coeffs.length == 0
 
   def apply(x: C)(implicit ring: Semiring[C]): C = {
     if (isZero)
@@ -150,8 +148,7 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
 
   def +(rhs: Polynomial[C])(implicit
       ring: Semiring[C],
-      eq: Eq[C]): Polynomial[C] =
-    PolyDense.plusDense(lhs, rhs)
+      eq: Eq[C]): Polynomial[C] = PolyDense.plusDense(lhs, rhs)
 
   def *(rhs: Polynomial[C])(implicit
       ring: Semiring[C],
@@ -183,8 +180,7 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
     def zipSum(lcs: Array[C], rcs: Array[C])(implicit r: Ring[C]): Array[C] =
       (lcs + rcs).tail
 
-    def polyFromCoeffsLE(cs: Array[C]): Polynomial[C] =
-      Polynomial.dense(cs)
+    def polyFromCoeffsLE(cs: Array[C]): Polynomial[C] = Polynomial.dense(cs)
 
     def polyFromCoeffsBE(cs: Array[C]): Polynomial[C] = {
       val ncs = cs.dropWhile(_ === field.zero)

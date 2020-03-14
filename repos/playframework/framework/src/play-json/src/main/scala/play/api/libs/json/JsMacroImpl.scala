@@ -102,11 +102,14 @@ object JsMacroImpl {
     val unapplySeq = companionType.decl(TermName("unapplySeq"))
     val hasVarArgs = unapplySeq != NoSymbol
 
-    val effectiveUnapply = Seq(unapply, unapplySeq).find(_ != NoSymbol) match {
-      case None =>
-        c.abort(c.enclosingPosition, "No unapply or unapplySeq function found")
-      case Some(s) => s.asMethod
-    }
+    val effectiveUnapply =
+      Seq(unapply, unapplySeq).find(_ != NoSymbol) match {
+        case None =>
+          c.abort(
+            c.enclosingPosition,
+            "No unapply or unapplySeq function found")
+        case Some(s) => s.asMethod
+      }
 
     val unapplyReturnTypes: Option[List[Type]] =
       effectiveUnapply.returnType match {
@@ -143,17 +146,18 @@ object JsMacroImpl {
     // Find an apply method that matches the unapply
     val maybeApply = applies.collectFirst {
       case (apply: MethodSymbol) if hasVarArgs && {
-            val someApplyTypes =
-              apply.paramLists.headOption.map(_.map(_.asTerm.typeSignature))
+            val someApplyTypes = apply.paramLists.headOption
+              .map(_.map(_.asTerm.typeSignature))
             val someInitApply = someApplyTypes.map(_.init)
             val someApplyLast = someApplyTypes.map(_.last)
             val someInitUnapply = unapplyReturnTypes.map(_.init)
             val someUnapplyLast = unapplyReturnTypes.map(_.last)
             val initsMatch = someInitApply == someInitUnapply
-            val lastMatch = (for {
-              lastApply <- someApplyLast
-              lastUnapply <- someUnapplyLast
-            } yield lastApply <:< lastUnapply).getOrElse(false)
+            val lastMatch =
+              (for {
+                lastApply <- someApplyLast
+                lastUnapply <- someUnapplyLast
+              } yield lastApply <:< lastUnapply).getOrElse(false)
             initsMatch && lastMatch
           } =>
         apply
@@ -163,14 +167,15 @@ object JsMacroImpl {
         apply
     }
 
-    val params = maybeApply match {
-      case Some(apply) =>
-        apply.paramLists.head //verify there is a single parameter group
-      case None =>
-        c.abort(
-          c.enclosingPosition,
-          "No apply function found matching unapply parameters")
-    }
+    val params =
+      maybeApply match {
+        case Some(apply) =>
+          apply.paramLists.head //verify there is a single parameter group
+        case None =>
+          c.abort(
+            c.enclosingPosition,
+            "No apply function found matching unapply parameters")
+      }
 
     // Now we find all the implicits that we need
     final case class Implicit(
@@ -181,23 +186,26 @@ object JsMacroImpl {
         tpe: Type)
 
     val createImplicit = { (name: Name, implType: c.universe.type#Type) =>
-      val (isRecursive, tpe) = implType match {
-        case TypeRef(_, t, args) =>
-          val isRec = args.exists(_.typeSymbol == companioned)
-          // Option[_] needs special treatment because we need to use XXXOpt
-          val tp =
-            if (implType.typeConstructor <:< typeOf[Option[_]].typeConstructor)
-              args.head
-            else
-              implType
-          (isRec, tp)
-        case TypeRef(_, t, _) =>
-          (false, implType)
-      }
+      val (isRecursive, tpe) =
+        implType match {
+          case TypeRef(_, t, args) =>
+            val isRec = args.exists(_.typeSymbol == companioned)
+            // Option[_] needs special treatment because we need to use XXXOpt
+            val tp =
+              if (implType.typeConstructor <:< typeOf[
+                    Option[_]].typeConstructor)
+                args.head
+              else
+                implType
+            (isRec, tp)
+          case TypeRef(_, t, _) =>
+            (false, implType)
+        }
 
       // builds M implicit from expected type
-      val neededImplicitType =
-        appliedType(natag.tpe.typeConstructor, tpe :: Nil)
+      val neededImplicitType = appliedType(
+        natag.tpe.typeConstructor,
+        tpe :: Nil)
       // infers implicit
       val neededImplicit = c.inferImplicitValue(neededImplicitType)
       Implicit(name, implType, neededImplicit, isRecursive, tpe)
@@ -206,13 +214,14 @@ object JsMacroImpl {
     val applyParamImplicits = params.map { param =>
       createImplicit(param.name, param.typeSignature)
     }
-    val effectiveInferredImplicits = if (hasVarArgs) {
-      val varArgsImplicit = createImplicit(
-        applyParamImplicits.last.paramName,
-        unapplyReturnTypes.get.last)
-      applyParamImplicits.init :+ varArgsImplicit
-    } else
-      applyParamImplicits
+    val effectiveInferredImplicits =
+      if (hasVarArgs) {
+        val varArgsImplicit = createImplicit(
+          applyParamImplicits.last.paramName,
+          unapplyReturnTypes.get.last)
+        applyParamImplicits.init :+ varArgsImplicit
+      } else
+        applyParamImplicits
 
     // if any implicit is missing, abort
     val missingImplicits = effectiveInferredImplicits.collect {
@@ -275,11 +284,13 @@ object JsMacroImpl {
     val applyFunction = {
       if (hasVarArgs) {
 
-        val applyParams = params.foldLeft(List[Tree]())((l, e) =>
-          l :+ Ident(TermName(e.name.encodedName.toString)))
-        val vals = params.foldLeft(List[Tree]())((l, e) =>
-          // Let type inference infer the type by using the empty type, TypeTree()
-          l :+ q"val ${TermName(e.name.encodedName.toString)}: ${TypeTree()}")
+        val applyParams =
+          params.foldLeft(List[Tree]())((l, e) =>
+            l :+ Ident(TermName(e.name.encodedName.toString)))
+        val vals =
+          params.foldLeft(List[Tree]())((l, e) =>
+            // Let type inference infer the type by using the empty type, TypeTree()
+            l :+ q"val ${TermName(e.name.encodedName.toString)}: ${TypeTree()}")
 
         q"(..$vals) => $companionObject.apply(..${applyParams.init}, ${applyParams.last}: _*)"
       } else {
@@ -302,17 +313,18 @@ object JsMacroImpl {
       $canBuild.$applyOrMap(..${conditionalList(applyFunction, unapplyFunction)})
     """
 
-    val lazyFinalTree = if (!hasRec) {
-      finalTree
-    } else {
-      // If we're recursive, we need to wrap the whole thing in a class that breaks the recursion using a
-      // lazy val
-      q"""
+    val lazyFinalTree =
+      if (!hasRec) {
+        finalTree
+      } else {
+        // If we're recursive, we need to wrap the whole thing in a class that breaks the recursion using a
+        // lazy val
+        q"""
         new $LazyHelper[${matag.tpe.typeSymbol}, ${atag.tpe.typeSymbol}] {
           override lazy val lazyStuff: ${matag.tpe.typeSymbol}[${atag.tpe}] = $finalTree
         }.lazyStuff
        """
-    }
+      }
     c.Expr[M[A]](lazyFinalTree)
   }
 

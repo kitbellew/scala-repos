@@ -31,9 +31,10 @@ object nat {
   object Pred {
     def apply[A <: Nat](implicit pred: Pred[A]): Aux[A, pred.Out] = pred
 
-    type Aux[A <: Nat, B <: Nat] = Pred[A] {
-      type Out = B
-    }
+    type Aux[A <: Nat, B <: Nat] =
+      Pred[A] {
+        type Out = B
+      }
 
     implicit def pred[B <: Nat]: Aux[Succ[B], B] =
       new Pred[Succ[B]] {
@@ -54,9 +55,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit sum: Sum[A, B]): Aux[A, B, sum.Out] =
       sum
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Sum[A, B] {
-      type Out = C
-    }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] =
+      Sum[A, B] {
+        type Out = C
+      }
 
     implicit def sum1[B <: Nat]: Aux[_0, B, B] =
       new Sum[_0, B] {
@@ -82,9 +84,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](
         implicit diff: Diff[A, B]): Aux[A, B, diff.Out] = diff
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Diff[A, B] {
-      type Out = C
-    }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] =
+      Diff[A, B] {
+        type Out = C
+      }
 
     implicit def diff1[A <: Nat]: Aux[A, _0, A] =
       new Diff[A, _0] {
@@ -110,9 +113,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](
         implicit prod: Prod[A, B]): Aux[A, B, prod.Out] = prod
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Prod[A, B] {
-      type Out = C
-    }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] =
+      Prod[A, B] {
+        type Out = C
+      }
 
     implicit def prod1[B <: Nat]: Aux[_0, B, _0] =
       new Prod[_0, B] {
@@ -141,9 +145,10 @@ object nat {
 
     import LT._
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Div[A, B] {
-      type Out = C
-    }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] =
+      Div[A, B] {
+        type Out = C
+      }
 
     implicit def div1[A <: Nat]: Aux[_0, A, _0] =
       new Div[_0, A] {
@@ -176,9 +181,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit mod: Mod[A, B]): Aux[A, B, mod.Out] =
       mod
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Mod[A, B] {
-      type Out = C
-    }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] =
+      Mod[A, B] {
+        type Out = C
+      }
 
     implicit def modAux[A <: Nat, B <: Nat, C <: Nat, D <: Nat, E <: Nat](
         implicit
@@ -268,9 +274,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit min: Min[A, B]): Aux[A, B, min.Out] =
       min
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Min[A, B] {
-      type Out = C
-    }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] =
+      Min[A, B] {
+        type Out = C
+      }
 
     implicit def minAux0[A <: Nat, B <: Nat, C <: Nat](
         implicit lteq: LTEq[A, B]): Aux[A, B, A] =
@@ -297,9 +304,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit max: Max[A, B]): Aux[A, B, max.Out] =
       max
 
-    type Aux[A <: Nat, B <: Nat, C <: Nat] = Max[A, B] {
-      type Out = C
-    }
+    type Aux[A <: Nat, B <: Nat, C <: Nat] =
+      Max[A, B] {
+        type Out = C
+      }
 
     implicit def maxAux0[A <: Nat, B <: Nat, C <: Nat](
         implicit lteq: LTEq[A, B]): Aux[A, B, B] =
@@ -328,9 +336,10 @@ object nat {
 
     import shapeless.nat._1
 
-    type Aux[N <: Nat, X <: Nat, Z <: Nat] = Pow[N, X] {
-      type Out = Z
-    }
+    type Aux[N <: Nat, X <: Nat, Z <: Nat] =
+      Pow[N, X] {
+        type Out = Z
+      }
 
     implicit def pow1[A <: Nat]: Aux[Succ[A], _0, _0] =
       new Pow[Succ[A], _0] {
@@ -361,9 +370,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](
         implicit range: Range[A, B]): Aux[A, B, range.Out] = range
 
-    type Aux[A <: Nat, B <: Nat, Out0 <: HList] = Range[A, B] {
-      type Out = Out0
-    }
+    type Aux[A <: Nat, B <: Nat, Out0 <: HList] =
+      Range[A, B] {
+        type Out = Out0
+      }
 
     import shapeless.ops.hlist._
 
@@ -407,9 +417,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit gcd: GCD[A, B]): Aux[A, B, gcd.Out] =
       gcd
 
-    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] = GCD[A, B] {
-      type Out = Out0
-    }
+    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] =
+      GCD[A, B] {
+        type Out = Out0
+      }
 
     implicit def terminationCase[A <: Nat]: Aux[A, _0, A] =
       new GCD[A, _0] {
@@ -430,9 +441,10 @@ object nat {
     def apply[A <: Nat, B <: Nat](implicit lcm: LCM[A, B]): Aux[A, B, lcm.Out] =
       lcm
 
-    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] = LCM[A, B] {
-      type Out = Out0
-    }
+    type Aux[A <: Nat, B <: Nat, Out0 <: Nat] =
+      LCM[A, B] {
+        type Out = Out0
+      }
 
     implicit def lcm[A <: Nat, B <: Nat, M <: Nat, N <: Nat, Res <: Nat](
         implicit
@@ -457,9 +469,10 @@ object nat {
   object ToInt {
     def apply[N <: Nat](implicit toInt: ToInt[N]): ToInt[N] = toInt
 
-    implicit val toInt0 = new ToInt[_0] {
-      def apply() = 0
-    }
+    implicit val toInt0 =
+      new ToInt[_0] {
+        def apply() = 0
+      }
     implicit def toIntSucc[N <: Nat](implicit toIntN: ToInt[N]) =
       new ToInt[Succ[N]] {
         def apply() = toIntN() + 1

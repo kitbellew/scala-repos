@@ -89,8 +89,9 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         isOptimisticCounter)
     }
 
-    val metaField =
-      findMetaField(parentMetaData.clasz.asInstanceOf[Class[Rec]], name)
+    val metaField = findMetaField(
+      parentMetaData.clasz.asInstanceOf[Class[Rec]],
+      name)
 
     val (field, getter, setter, annotations) = property
 
@@ -98,27 +99,28 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
       .find(a => a.isInstanceOf[Column])
       .map(a => a.asInstanceOf[Column])
 
-    val fieldsValueType = metaField match {
-      case (f: SquerylRecordField)    => f.classOfPersistentField
-      case (_: BooleanTypedField)     => classOf[Boolean]
-      case (_: DateTimeTypedField)    => classOf[Timestamp]
-      case (_: DoubleTypedField)      => classOf[Double]
-      case (_: IntTypedField)         => classOf[java.lang.Integer]
-      case (_: LongTypedField)        => classOf[java.lang.Long]
-      case (_: DecimalTypedField)     => classOf[BigDecimal]
-      case (_: TimeZoneTypedField)    => classOf[String]
-      case (_: StringTypedField)      => classOf[String]
-      case (_: PasswordTypedField)    => classOf[String]
-      case (_: BinaryTypedField)      => classOf[Array[Byte]]
-      case (_: LocaleTypedField)      => classOf[String]
-      case (_: EnumTypedField[_])     => classOf[Int]
-      case (_: EnumNameTypedField[_]) => classOf[String]
-      case _ =>
-        org.squeryl.internals.Utils.throwError(
-          "Unsupported field type. Consider implementing " +
-            "SquerylRecordField for defining the persistent class." +
-            "Field: " + metaField)
-    }
+    val fieldsValueType =
+      metaField match {
+        case (f: SquerylRecordField)    => f.classOfPersistentField
+        case (_: BooleanTypedField)     => classOf[Boolean]
+        case (_: DateTimeTypedField)    => classOf[Timestamp]
+        case (_: DoubleTypedField)      => classOf[Double]
+        case (_: IntTypedField)         => classOf[java.lang.Integer]
+        case (_: LongTypedField)        => classOf[java.lang.Long]
+        case (_: DecimalTypedField)     => classOf[BigDecimal]
+        case (_: TimeZoneTypedField)    => classOf[String]
+        case (_: StringTypedField)      => classOf[String]
+        case (_: PasswordTypedField)    => classOf[String]
+        case (_: BinaryTypedField)      => classOf[Array[Byte]]
+        case (_: LocaleTypedField)      => classOf[String]
+        case (_: EnumTypedField[_])     => classOf[Int]
+        case (_: EnumNameTypedField[_]) => classOf[String]
+        case _ =>
+          org.squeryl.internals.Utils.throwError(
+            "Unsupported field type. Consider implementing " +
+              "SquerylRecordField for defining the persistent class." +
+              "Field: " + metaField)
+      }
 
     new FieldMetaData(
       parentMetaData,

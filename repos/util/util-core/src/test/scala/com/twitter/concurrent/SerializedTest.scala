@@ -13,27 +13,29 @@ class SerializedTest extends WordSpec with Serialized {
       val t1FinishesWork = new CountDownLatch(1)
       val orderOfExecution = new collection.mutable.ListBuffer[Thread]
 
-      val t1 = new Thread {
-        override def run {
-          serialized {
-            t1CallsSerializedFirst.countDown()
-            t1FinishesWork.await()
-            orderOfExecution += this
-            ()
+      val t1 =
+        new Thread {
+          override def run {
+            serialized {
+              t1CallsSerializedFirst.countDown()
+              t1FinishesWork.await()
+              orderOfExecution += this
+              ()
+            }
           }
         }
-      }
 
-      val t2 = new Thread {
-        override def run {
-          t1CallsSerializedFirst.await()
-          serialized {
-            orderOfExecution += this
-            ()
+      val t2 =
+        new Thread {
+          override def run {
+            t1CallsSerializedFirst.await()
+            serialized {
+              orderOfExecution += this
+              ()
+            }
+            t1FinishesWork.countDown()
           }
-          t1FinishesWork.countDown()
         }
-      }
 
       t1.start()
       t2.start()

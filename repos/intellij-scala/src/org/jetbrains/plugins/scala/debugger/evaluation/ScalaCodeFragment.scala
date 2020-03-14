@@ -99,18 +99,19 @@ class ScalaCodeFragment(project: Project, text: String) extends {
       .undoableActionPerformed(
         new ScalaCodeFragment.ImportClassUndoableAction(path, document, imports)
       )
-    val newRef = ref match {
-      case st: ScStableCodeReferenceElement if st.resolve() == null =>
-        Some(
-          ScalaPsiElementFactory
-            .createReferenceFromText(st.getText, st.getParent, st))
-      case expr: ScReferenceExpression if expr.resolve() == null =>
-        Some(
-          ScalaPsiElementFactory
-            .createExpressionFromText(expr.getText, expr)
-            .asInstanceOf[ScReferenceExpression])
-      case _ => None
-    }
+    val newRef =
+      ref match {
+        case st: ScStableCodeReferenceElement if st.resolve() == null =>
+          Some(
+            ScalaPsiElementFactory
+              .createReferenceFromText(st.getText, st.getParent, st))
+        case expr: ScReferenceExpression if expr.resolve() == null =>
+          Some(
+            ScalaPsiElementFactory
+              .createExpressionFromText(expr.getText, expr)
+              .asInstanceOf[ScReferenceExpression])
+        case _ => None
+      }
     newRef match {
       case Some(r) if r.resolve() != null => ref.replace(r)
       case _                              =>

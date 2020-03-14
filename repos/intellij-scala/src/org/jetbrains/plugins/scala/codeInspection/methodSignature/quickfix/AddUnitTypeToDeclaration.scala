@@ -23,8 +23,9 @@ class AddUnitTypeToDeclaration(functionDecl: ScFunctionDeclaration)
     val manager = funDef.getManager
     val colon = ScalaPsiElementFactory.createColon(manager)
     val whitespace = ScalaPsiElementFactory.createWhitespace(manager)
-    val typeElem =
-      ScalaPsiElementFactory.createTypeElementFromText("Unit", manager)
+    val typeElem = ScalaPsiElementFactory.createTypeElementFromText(
+      "Unit",
+      manager)
     funDef.getNode.addChild(colon.getNode)
     funDef.getNode.addChild(whitespace.getNode)
     funDef.getNode.addChild(typeElem.getNode)

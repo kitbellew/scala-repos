@@ -144,17 +144,18 @@ class Interaction @Since("1.6.0") (override val uid: String)
       }
     }
     features.map { f =>
-      val numFeatures = f.dataType match {
-        case _: NumericType | BooleanType =>
-          Array(getNumFeatures(Attribute.fromStructField(f)))
-        case _: VectorUDT =>
-          val attrs = AttributeGroup
-            .fromStructField(f)
-            .attributes
-            .getOrElse(throw new SparkException(
-              "Vector attributes must be defined for interaction."))
-          attrs.map(getNumFeatures).toArray
-      }
+      val numFeatures =
+        f.dataType match {
+          case _: NumericType | BooleanType =>
+            Array(getNumFeatures(Attribute.fromStructField(f)))
+          case _: VectorUDT =>
+            val attrs = AttributeGroup
+              .fromStructField(f)
+              .attributes
+              .getOrElse(throw new SparkException(
+                "Vector attributes must be defined for interaction."))
+            attrs.map(getNumFeatures).toArray
+        }
       new FeatureEncoder(numFeatures)
     }.toArray
   }
@@ -171,22 +172,23 @@ class Interaction @Since("1.6.0") (override val uid: String)
   private def getFeatureAttrs(features: Seq[StructField]): AttributeGroup = {
     var featureAttrs: Seq[Attribute] = Nil
     features.reverse.foreach { f =>
-      val encodedAttrs = f.dataType match {
-        case _: NumericType | BooleanType =>
-          val attr = Attribute.decodeStructField(f, preserveName = true)
-          if (attr == UnresolvedAttribute) {
-            encodedFeatureAttrs(
-              Seq(NumericAttribute.defaultAttr.withName(f.name)),
-              None)
-          } else if (!attr.name.isDefined) {
-            encodedFeatureAttrs(Seq(attr.withName(f.name)), None)
-          } else {
-            encodedFeatureAttrs(Seq(attr), None)
-          }
-        case _: VectorUDT =>
-          val group = AttributeGroup.fromStructField(f)
-          encodedFeatureAttrs(group.attributes.get, Some(group.name))
-      }
+      val encodedAttrs =
+        f.dataType match {
+          case _: NumericType | BooleanType =>
+            val attr = Attribute.decodeStructField(f, preserveName = true)
+            if (attr == UnresolvedAttribute) {
+              encodedFeatureAttrs(
+                Seq(NumericAttribute.defaultAttr.withName(f.name)),
+                None)
+            } else if (!attr.name.isDefined) {
+              encodedFeatureAttrs(Seq(attr.withName(f.name)), None)
+            } else {
+              encodedFeatureAttrs(Seq(attr), None)
+            }
+          case _: VectorUDT =>
+            val group = AttributeGroup.fromStructField(f)
+            encodedFeatureAttrs(group.attributes.get, Some(group.name))
+        }
       if (featureAttrs.isEmpty) {
         featureAttrs = encodedAttrs
       } else {
@@ -217,8 +219,10 @@ class Interaction @Since("1.6.0") (override val uid: String)
         index: Int,
         attrName: Option[String],
         categoryName: Option[String]): String = {
-      val parts =
-        Seq(groupName, Some(attrName.getOrElse(index.toString)), categoryName)
+      val parts = Seq(
+        groupName,
+        Some(attrName.getOrElse(index.toString)),
+        categoryName)
       parts.flatten.mkString("_")
     }
 

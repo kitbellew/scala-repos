@@ -151,11 +151,12 @@ private object QuantileDiscretizerSuite extends SparkFunSuite {
       .map {
         case Row(transformedFeature: Double) => transformedFeature
       }
-    val transformedAttrs = Attribute
-      .fromStructField(result.schema("result"))
-      .asInstanceOf[NominalAttribute]
-      .values
-      .get
+    val transformedAttrs =
+      Attribute
+        .fromStructField(result.schema("result"))
+        .asInstanceOf[NominalAttribute]
+        .values
+        .get
 
     assert(
       transformedFeatures === expectedResult,

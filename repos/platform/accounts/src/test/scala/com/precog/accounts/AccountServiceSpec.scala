@@ -111,8 +111,9 @@ trait TestAccountService
 
   val clock = Clock.System
 
-  override implicit val defaultFutureTimeouts: FutureTimeouts =
-    FutureTimeouts(0, Duration(1, "second"))
+  override implicit val defaultFutureTimeouts: FutureTimeouts = FutureTimeouts(
+    0,
+    Duration(1, "second"))
 
   val shortFutureTimeouts = FutureTimeouts(5, Duration(50, "millis"))
 
@@ -143,8 +144,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
     HttpHeaders.Authorization("Basic " + encoded)
   }
 
-  def listAccounts(request: JValue) =
-    accounts.query("", "").post("")(request)
+  def listAccounts(request: JValue) = accounts.query("", "").post("")(request)
 
   def createAccount(email: String, password: String) = {
     val request: JValue = JObject(
@@ -229,16 +229,17 @@ class AccountServiceSpec extends TestAccountService with Tags {
     }
 
     "not create duplicate accounts" in {
-      val msgFuture = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(jv1), _) <- createAccount(
-          "test0002@email.com",
-          "password1")
-        HttpResponse(
-          HttpStatus(Conflict, _),
-          _,
-          Some(errorMessage),
-          _) <- createAccount("test0002@email.com", "password2")
-      } yield errorMessage
+      val msgFuture =
+        for {
+          HttpResponse(HttpStatus(OK, _), _, Some(jv1), _) <- createAccount(
+            "test0002@email.com",
+            "password1")
+          HttpResponse(
+            HttpStatus(Conflict, _),
+            _,
+            Some(errorMessage),
+            _) <- createAccount("test0002@email.com", "password2")
+        } yield errorMessage
 
       msgFuture.copoint must beLike {
         case JString(msg) => msg must startWith("An account already exists")
@@ -331,15 +332,17 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
       val accountId = createAccountAndGetId(user, pass).copoint
 
-      val JString(apiKey) = getAccount(accountId, user, pass).map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
-          jvalue \ "apiKey"
-        case badResponse => failure("Invalid response: " + badResponse)
-      }.copoint
+      val JString(apiKey) =
+        getAccount(accountId, user, pass).map {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+            jvalue \ "apiKey"
+          case badResponse => failure("Invalid response: " + badResponse)
+        }.copoint
 
-      val subkey = apiKeyManager
-        .createAPIKey(Some("subkey"), None, apiKey, Set.empty)
-        .copoint
+      val subkey =
+        apiKeyManager
+          .createAPIKey(Some("subkey"), None, apiKey, Set.empty)
+          .copoint
 
       getAccountByAPIKey(subkey.apiKey, rootUser, rootPass).map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>

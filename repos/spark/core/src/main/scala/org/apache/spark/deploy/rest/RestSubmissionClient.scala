@@ -61,11 +61,12 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
 
   private val supportedMasterPrefixes = Seq("spark://", "mesos://")
 
-  private val masters: Array[String] = if (master.startsWith("spark://")) {
-    Utils.parseStandaloneMasterUrls(master)
-  } else {
-    Array(master)
-  }
+  private val masters: Array[String] =
+    if (master.startsWith("spark://")) {
+      Utils.parseStandaloneMasterUrls(master)
+    } else {
+      Array(master)
+    }
 
   // Set of masters that lost contact with us, used to keep track of
   // whether there are masters still alive for us to communicate with
@@ -362,10 +363,11 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
   private def pollSubmissionStatus(submissionId: String): Unit = {
     (1 to REPORT_DRIVER_STATUS_MAX_TRIES).foreach { _ =>
       val response = requestSubmissionStatus(submissionId, quiet = true)
-      val statusResponse = response match {
-        case s: SubmissionStatusResponse => s
-        case _                           => return // unexpected type, let upstream caller handle it
-      }
+      val statusResponse =
+        response match {
+          case s: SubmissionStatusResponse => s
+          case _                           => return // unexpected type, let upstream caller handle it
+        }
       if (statusResponse.success) {
         val driverState = Option(statusResponse.driverState)
         val workerId = Option(statusResponse.workerId)

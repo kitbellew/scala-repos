@@ -358,8 +358,9 @@ trait Html5Parser {
         hp.setContentNonXmlCharPolicy(common.XmlViolationPolicy.ALLOW)
         hp.setContentSpacePolicy(common.XmlViolationPolicy.FATAL)
         hp.setNamePolicy(common.XmlViolationPolicy.ALLOW)
-        val saxer = new NoBindingFactoryAdapter {
-          /*
+        val saxer =
+          new NoBindingFactoryAdapter {
+            /*
         override def createNode (pre: String, label: String, attrs: MetaData, scope: NamespaceBinding, children: List[Node]) : Elem = {
           if (pre == "lift" && label == "head") {
             super.createNode(null, label, attrs, scope, children)
@@ -368,16 +369,16 @@ trait Html5Parser {
           }
         }*/
 
-          override def captureText(): Unit = {
-            if (capture) {
-              val text = buffer.toString()
-              if (text.length() > 0) {
-                hStack.push(createText(text))
+            override def captureText(): Unit = {
+              if (capture) {
+                val text = buffer.toString()
+                if (text.length() > 0) {
+                  hStack.push(createText(text))
+                }
               }
+              buffer.setLength(0)
             }
-            buffer.setLength(0)
           }
-        }
 
         saxer.scopeStack.push(TopScope)
         hp.setContentHandler(saxer)

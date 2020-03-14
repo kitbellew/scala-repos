@@ -154,9 +154,11 @@ class MessageSerializer(val system: ExtendedActorSystem)
     val allNodeMetrics = envelope.gossip.nodes
     val allAddresses: Vector[Address] = allNodeMetrics.map(_.address)(breakOut)
     val addressMapping = allAddresses.zipWithIndex.toMap
-    val allMetricNames: Vector[String] = allNodeMetrics
-      .foldLeft(Set.empty[String])((s, n) ⇒ s ++ n.metrics.iterator.map(_.name))
-      .toVector
+    val allMetricNames: Vector[String] =
+      allNodeMetrics
+        .foldLeft(Set.empty[String])((s, n) ⇒
+          s ++ n.metrics.iterator.map(_.name))
+        .toVector
     val metricNamesMapping = allMetricNames.zipWithIndex.toMap
     def mapAddress(address: Address) =
       mapWithErrorMessage(addressMapping, address, "address")
@@ -213,8 +215,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
         .setTimestamp(nodeMetrics.timestamp)
         .addAllMetrics(nodeMetrics.metrics.map(metricToProto(_).build).asJava)
 
-    val nodeMetrics: Iterable[cm.NodeMetrics] =
-      allNodeMetrics.map(nodeMetricsToProto(_).build)
+    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics.map(
+      nodeMetricsToProto(_).build)
 
     cm.MetricsGossipEnvelope
       .newBuilder()
@@ -254,9 +256,10 @@ class MessageSerializer(val system: ExtendedActorSystem)
         case NumberType.Float_VALUE ⇒ jl.Float.intBitsToFloat(number.getValue32)
         case NumberType.Integer_VALUE ⇒ number.getValue32
         case NumberType.Serialized_VALUE ⇒
-          val in = new ClassLoaderObjectInputStream(
-            system.dynamicAccess.classLoader,
-            new ByteArrayInputStream(number.getSerialized.toByteArray))
+          val in =
+            new ClassLoaderObjectInputStream(
+              system.dynamicAccess.classLoader,
+              new ByteArrayInputStream(number.getSerialized.toByteArray))
           val obj = in.readObject
           in.close()
           obj.asInstanceOf[jl.Number]

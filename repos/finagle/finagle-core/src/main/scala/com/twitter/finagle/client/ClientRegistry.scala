@@ -11,9 +11,10 @@ import java.util.logging.Level
 private[twitter] object ClientRegistry extends StackRegistry {
 
   private[this] val sr = FinagleStatsReceiver.scope("clientregistry")
-  private[this] val clientRegistrySize = sr.addGauge("size") {
-    size
-  }
+  private[this] val clientRegistrySize =
+    sr.addGauge("size") {
+      size
+    }
   private[this] val initialResolutionTime = sr.counter("initialresolution_ms")
 
   def registryName: String = "client"
@@ -84,10 +85,11 @@ private[finagle] object RegistryEntryLifecycle {
 
         // for the benefit of ClientRegistry.expAllRegisteredClientsResolved
         // which waits for these to become non-Pending
-        val va = dest match {
-          case Name.Bound(va)  => va
-          case Name.Path(path) => Namer.resolve(baseDtab(), path)
-        }
+        val va =
+          dest match {
+            case Name.Bound(va)  => va
+            case Name.Path(path) => Namer.resolve(baseDtab(), path)
+          }
 
         val shown = Showable.show(dest)
         val registeredParams = params + LoadBalancerFactory.Dest(va)

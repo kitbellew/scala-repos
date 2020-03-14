@@ -26,8 +26,9 @@ class SeqSinkSpec extends AkkaSpec {
 
     "return an empty Seq[T] from an empty Source" in {
       val input: immutable.Seq[Int] = Nil
-      val future: Future[immutable.Seq[Int]] =
-        Source.fromIterator(() ⇒ input.iterator).runWith(Sink.seq)
+      val future: Future[immutable.Seq[Int]] = Source
+        .fromIterator(() ⇒ input.iterator)
+        .runWith(Sink.seq)
       val result: immutable.Seq[Int] = Await.result(future, 300.millis)
       result should be(input)
     }

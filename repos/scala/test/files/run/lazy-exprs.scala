@@ -6,10 +6,11 @@ object TestExpressions {
       Some("lazy z1")
     }
 
-    val res = z1 match {
-      case Some(msg) => msg
-      case None      => "failed"
-    }
+    val res =
+      z1 match {
+        case Some(msg) => msg
+        case None      => "failed"
+      }
     print("lazy val in scrutinee: ")
     if (res == "lazy z1")
       println("ok")
@@ -19,16 +20,17 @@ object TestExpressions {
 
   def patmatchCase {
     val t: Option[String] = Some("test")
-    val res = t match {
-      case Some(msg) =>
-        lazy val z1 = {
-          println("forced <z1>");
-          "lazy z1"
-        }
-        z1
+    val res =
+      t match {
+        case Some(msg) =>
+          lazy val z1 = {
+            println("forced <z1>");
+            "lazy z1"
+          }
+          z1
 
-      case None => "failed"
-    }
+        case None => "failed"
+      }
     print("lazy val in case: ")
     if (res == "lazy z1")
       println("ok")
@@ -81,26 +83,28 @@ object TestExpressions {
     }
   }
 
-  lazy val (x, y) = (
-    {
-      print("x");
-      "x"
-    }, {
-      print("y");
-      "y"
-    })
+  lazy val (x, y) =
+    (
+      {
+        print("x");
+        "x"
+      }, {
+        print("y");
+        "y"
+      })
   def testPatLazyVal {
     println("lazy val with patterns:")
     print("x and y: ")
     println("(" + x + ", " + y + ")")
-    lazy val (x1, y1) = (
-      {
-        print("x1");
-        "x1"
-      }, {
-        print("y1");
-        "y1"
-      })
+    lazy val (x1, y1) =
+      (
+        {
+          print("x1");
+          "x1"
+        }, {
+          print("y1");
+          "y1"
+        })
     print("x1 and y1: ")
     println("(" + x1 + ", " + y1 + ")")
   }

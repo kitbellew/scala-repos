@@ -137,10 +137,11 @@ class ScDocTagValueImpl(node: ASTNode)
       PARAM_TAG,
       TYPE_PARAM_TAG
     }
-    val parentTagType: String = getParent match {
-      case a: ScDocTag => a.name
-      case _           => null
-    }
+    val parentTagType: String =
+      getParent match {
+        case a: ScDocTag => a.name
+        case _           => null
+      }
     var parent = getParent
     while (parent != null && !parent.isInstanceOf[ScDocComment]) {
       parent = parent.getParent

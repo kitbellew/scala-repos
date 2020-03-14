@@ -59,8 +59,9 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
       cellHasFocus)
     comp match {
       case container: Container =>
-        val colored =
-          container.getComponents.apply(2).asInstanceOf[SimpleColoredComponent]
+        val colored = container.getComponents
+          .apply(2)
+          .asInstanceOf[SimpleColoredComponent]
         if (item == actual) {
           colored.clear()
           colored.setIcon(actual.getIcon(0))
@@ -96,14 +97,15 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
               index,
               isSelected,
               cellHasFocus)
-          val color: Color = isSelected match {
-            case true                               => UIUtil.getListSelectionBackground
-            case false if firstPart.contains(item)  => implicitFirstPart
-            case false if secondPart.contains(item) => implicitSecondPart
-            case _ =>
-              throw new RuntimeException(
-                "Implicit conversions list contains unknown value: " + item)
-          }
+          val color: Color =
+            isSelected match {
+              case true                               => UIUtil.getListSelectionBackground
+              case false if firstPart.contains(item)  => implicitFirstPart
+              case false if secondPart.contains(item) => implicitSecondPart
+              case _ =>
+                throw new RuntimeException(
+                  "Implicit conversions list contains unknown value: " + item)
+            }
           rightCellRendererComponent.setBackground(color)
           add(rightCellRendererComponent, BorderLayout.EAST)
           val spacer: JPanel = new JPanel

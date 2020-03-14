@@ -32,8 +32,7 @@ private[pickling] class IrScalaSymbols[
   def isCaseClass(sym: TypeSymbol): Boolean =
     sym.isClass && sym.asClass.isCaseClass
 
-  def isClosed(sym: tools.u.TypeSymbol): Boolean =
-    whyNotClosed(sym).isEmpty
+  def isClosed(sym: tools.u.TypeSymbol): Boolean = whyNotClosed(sym).isEmpty
 
   def whyNotClosed(sym: tools.u.TypeSymbol): Seq[String] = {
     if (sym.isEffectivelyFinal)
@@ -56,10 +55,11 @@ private[pickling] class IrScalaSymbols[
 
   def newClass(tpe: Type): IrClass =
     if (tpe.typeSymbol.isClass) {
-      val (quantified, rawTpe) = tpe match {
-        case ExistentialType(quantified, rtpe) => (quantified, rtpe);
-        case rtpe                              => (Nil, rtpe)
-      }
+      val (quantified, rawTpe) =
+        tpe match {
+          case ExistentialType(quantified, rtpe) => (quantified, rtpe);
+          case rtpe                              => (Nil, rtpe)
+        }
       new ScalaIrClass(tpe, quantified, rawTpe)
     } else
       sys.error(s"Don't know how to handle $tpe, ${tpe.typeSymbol.owner}")
@@ -68,10 +68,11 @@ private[pickling] class IrScalaSymbols[
   private class ScalaIrClass(private[generator] val tpe: Type) extends IrClass {
     //System.err.println(s"New class: $tpe")
     def this(tpe: Type, quantified: List[Symbol], rawType: Type) = this(tpe)
-    private[generator] val (quantified, rawType) = tpe match {
-      case ExistentialType(quantified, rtpe) => (quantified, rtpe);
-      case rtpe                              => (Nil, rtpe)
-    }
+    private[generator] val (quantified, rawType) =
+      tpe match {
+        case ExistentialType(quantified, rtpe) => (quantified, rtpe);
+        case rtpe                              => (Nil, rtpe)
+      }
     private def classSymbol = tpe.typeSymbol.asClass
 
     /** The class name represented by this symbol. */
@@ -97,21 +98,23 @@ private[pickling] class IrScalaSymbols[
 
     // TODO - Should we iterate down ALL of the hierarchy here for members, or make the algorithms do it later...
     private val allMethods = {
-      val constructorArgs = tpe.members
-        .collect {
-          case meth: MethodSymbol => meth
-        }
-        .toList
-        .filter { x =>
-          //System.err.println(s"$x - param: ${x.isParamAccessor}, var: ${x.isVar}, val: ${x.isVal}, owner: ${x.owner}, owner-constructor: ${x.owner.isConstructor}")
-          (x.owner == tpe.typeSymbol) && (x.isParamAccessor)
-        }
-        .toList
+      val constructorArgs =
+        tpe.members
+          .collect {
+            case meth: MethodSymbol => meth
+          }
+          .toList
+          .filter { x =>
+            //System.err.println(s"$x - param: ${x.isParamAccessor}, var: ${x.isVar}, val: ${x.isVal}, owner: ${x.owner}, owner-constructor: ${x.owner.isConstructor}")
+            (x.owner == tpe.typeSymbol) && (x.isParamAccessor)
+          }
+          .toList
       //System.err.println(s"$tpe has constructor args:\n - ${constructorArgs.mkString("\n - ")}")
       // NOTE - This will only collect memeber vals/vals.  It's possible some things come from the constructor.
-      val declaredVars = (tpe.declarations).collect {
-        case meth: MethodSymbol => meth
-      }.toList
+      val declaredVars =
+        (tpe.declarations).collect {
+          case meth: MethodSymbol => meth
+        }.toList
       // NOTE - There can be duplication between 'constructor args' and 'declared vars' we'd like to avoid.
       declaredVars
     }
@@ -205,14 +208,15 @@ private[pickling] class IrScalaSymbols[
     /** Fill is the concrete types for a given symbol using the concrete types this class knows about. */
     final def fillParameters(baseSym: Symbol): Type = {
       //System.err.println(s"baseSym= ${baseSym.toString}")
-      val baseSymTpe =
-        baseSym.typeSignature.asSeenFrom(rawType, rawType.typeSymbol.asClass)
+      val baseSymTpe = baseSym.typeSignature
+        .asSeenFrom(rawType, rawType.typeSymbol.asClass)
       //System.err.println(s"baseSymTpe: ${baseSymTpe.toString}")
 
-      val rawSymTpe = baseSymTpe match {
-        case NullaryMethodType(ntpe) => ntpe;
-        case ntpe                    => ntpe
-      }
+      val rawSymTpe =
+        baseSymTpe match {
+          case NullaryMethodType(ntpe) => ntpe;
+          case ntpe                    => ntpe
+        }
       val result = existentialAbstraction(quantified, rawSymTpe)
       //System.err.println(s"result = ${result.toString}")
       result

@@ -45,10 +45,11 @@ abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScTemplateParents,
       parentStub: StubElement[ParentPsi]): ScTemplateParentsStub = {
-    val constr = psi match {
-      case p: ScClassParents => p.constructor.map(_.getText)
-      case _                 => None
-    }
+    val constr =
+      psi match {
+        case p: ScClassParents => p.constructor.map(_.getText)
+        case _                 => None
+      }
     new ScTemplateParentsStubImpl(
       parentStub,
       this,
@@ -65,10 +66,11 @@ abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
       val res = new ArrayBuffer[StringRef]
       for (i <- 0 until length)
         res += dataStream.readName
-      val constr = dataStream.readBoolean() match {
-        case true  => Some(dataStream.readName())
-        case false => None
-      }
+      val constr =
+        dataStream.readBoolean() match {
+          case true  => Some(dataStream.readName())
+          case false => None
+        }
       new ScTemplateParentsStubImpl(
         parentStub.asInstanceOf[StubElement[PsiElement]],
         this,

@@ -56,6 +56,5 @@ trait MapProxyLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       b: StringBuilder,
       start: String,
       sep: String,
-      end: String): StringBuilder =
-    self.addString(b, start, sep, end)
+      end: String): StringBuilder = self.addString(b, start, sep, end)
 }

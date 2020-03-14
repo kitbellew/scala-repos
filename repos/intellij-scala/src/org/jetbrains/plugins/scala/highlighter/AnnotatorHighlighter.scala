@@ -49,8 +49,9 @@ import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
   * Date: 17.07.2008
   */
 object AnnotatorHighlighter {
-  private val JAVA_COLLECTIONS_BASES =
-    List("java.util.Map", "java.util.Collection")
+  private val JAVA_COLLECTIONS_BASES = List(
+    "java.util.Map",
+    "java.util.Collection")
   private val SCALA_FACTORY_METHODS_NAMES = Set("make", "apply")
   private val SCALA_COLLECTION_MUTABLE_BASE = "_root_.scala.collection.mutable."
   private val SCALA_COLLECTION_IMMUTABLE_BASE =
@@ -92,8 +93,8 @@ object AnnotatorHighlighter {
             .substring(0, resolvedType.presentableText.prefixLength(_ != '.'))))
         return
 
-      val scalaProjectSettings: ScalaProjectSettings =
-        ScalaProjectSettings.getInstance(refElement.getProject)
+      val scalaProjectSettings: ScalaProjectSettings = ScalaProjectSettings
+        .getInstance(refElement.getProject)
 
       scalaProjectSettings.getCollectionTypeHighlightingLevel match {
         case ScalaProjectSettings.COLLECTION_TYPE_HIGHLIGHTING_NONE => return
@@ -128,8 +129,9 @@ object AnnotatorHighlighter {
         if (SCALA_FACTORY_METHODS_NAMES.contains(refElement.nameId.getText)) {
           return
         }
-        val annotation =
-          holder.createInfoAnnotation(refElement.nameId, annotationText)
+        val annotation = holder.createInfoAnnotation(
+          refElement.nameId,
+          annotationText)
         annotation.setTextAttributes(annotationAttributes)
       }
 
@@ -334,8 +336,9 @@ object AnnotatorHighlighter {
         }
       case x: PsiMethod =>
         if (x.isConstructor) {
-          val clazz: PsiClass =
-            PsiTreeUtil.getParentOfType(x, classOf[PsiClass])
+          val clazz: PsiClass = PsiTreeUtil.getParentOfType(
+            x,
+            classOf[PsiClass])
           if (clazz != null)
             annotateCollection(clazz)
         }
@@ -433,8 +436,9 @@ object AnnotatorHighlighter {
   private def visitAnnotation(
       annotation: ScAnnotation,
       holder: AnnotationHolder): Unit = {
-    val annotation1 =
-      holder.createInfoAnnotation(annotation.getFirstChild, null)
+    val annotation1 = holder.createInfoAnnotation(
+      annotation.getFirstChild,
+      null)
     annotation1.setTextAttributes(DefaultHighlighter.ANNOTATION)
     val element = annotation.annotationExpr.constr.typeElement
     val annotation2 = holder.createInfoAnnotation(element, null)

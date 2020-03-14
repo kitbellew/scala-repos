@@ -14,8 +14,7 @@ class DoubleTest {
   @Test
   def `toInt`(): Unit = {
     @inline
-    def test(x: Double, expected: Int): Unit =
-      assertEquals(expected, x.toInt)
+    def test(x: Double, expected: Int): Unit = assertEquals(expected, x.toInt)
 
     // Specials
     test(+0.0, 0)

@@ -28,11 +28,12 @@ case class ProducerViz[P <: Platform[P]](tail: Producer[P, _]) {
   private val nameLookupTable = MMap[String, Int]()
 
   def getName(node: Producer[P, _]): String = {
-    val preferredName = node match {
-      case NamedProducer(parent, name) => "NamedProducer(%s)".format(name)
-      case _ =>
-        node.getClass.getName.replaceFirst("com.twitter.summingbird.", "")
-    }
+    val preferredName =
+      node match {
+        case NamedProducer(parent, name) => "NamedProducer(%s)".format(name)
+        case _ =>
+          node.getClass.getName.replaceFirst("com.twitter.summingbird.", "")
+      }
 
     nodeLookupTable.get(node) match {
       case Some(name) => name

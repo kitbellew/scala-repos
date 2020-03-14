@@ -78,8 +78,9 @@ class GraphConcatSpec extends TwoStreamsSetup {
     }
 
     "work with one delayed completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 =
-        setup(soonToCompletePublisher, nonemptyPublisher(1 to 4))
+      val subscriber1 = setup(
+        soonToCompletePublisher,
+        nonemptyPublisher(1 to 4))
       val subscription1 = subscriber1.expectSubscription()
       subscription1.request(5)
       subscriber1.expectNext(1)
@@ -88,8 +89,9 @@ class GraphConcatSpec extends TwoStreamsSetup {
       subscriber1.expectNext(4)
       subscriber1.expectComplete()
 
-      val subscriber2 =
-        setup(nonemptyPublisher(1 to 4), soonToCompletePublisher)
+      val subscriber2 = setup(
+        nonemptyPublisher(1 to 4),
+        soonToCompletePublisher)
       val subscription2 = subscriber2.expectSubscription()
       subscription2.request(5)
       subscriber2.expectNext(1)

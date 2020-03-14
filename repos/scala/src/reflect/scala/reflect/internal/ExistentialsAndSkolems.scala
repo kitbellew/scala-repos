@@ -97,10 +97,11 @@ trait ExistentialsAndSkolems {
       rawOwner: Symbol = NoSymbol)(creator: (List[Symbol], Type) => T): T = {
     val allBounds = existentialBoundsExcludingHidden(rawSyms)
     val typeParams: List[Symbol] = rawSyms map { sym =>
-      val name = sym.name match {
-        case x: TypeName => x
-        case x           => tpnme.singletonName(x)
-      }
+      val name =
+        sym.name match {
+          case x: TypeName => x
+          case x           => tpnme.singletonName(x)
+        }
       def rawOwner0 =
         rawOwner orElse abort(
           s"no owner provided for existential transform over raw parameter: $sym")

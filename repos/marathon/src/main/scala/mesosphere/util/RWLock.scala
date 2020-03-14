@@ -22,8 +22,7 @@ case class RWLock[T](private val value: T) {
     * It is *not* safe to use the `T` reference outside the
     * lifetime of the supplied closure.
     */
-  def readLock[U](f: T => U): U =
-    withLock(lock.readLock)(f)
+  def readLock[U](f: T => U): U = withLock(lock.readLock)(f)
 
   /**
     * Returns the result of evaluating the supplied function with the
@@ -35,6 +34,5 @@ case class RWLock[T](private val value: T) {
     * It is *not* safe to use the `T` reference outside the
     * lifetime of the supplied closure.
     */
-  def writeLock[U](f: T => U): U =
-    withLock(lock.writeLock)(f)
+  def writeLock[U](f: T => U): U = withLock(lock.writeLock)(f)
 }

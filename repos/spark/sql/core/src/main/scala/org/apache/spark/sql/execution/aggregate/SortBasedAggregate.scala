@@ -86,20 +86,21 @@ case class SortBasedAggregate(
           // so return an empty iterator.
           Iterator[UnsafeRow]()
         } else {
-          val outputIter = new SortBasedAggregationIterator(
-            groupingExpressions,
-            child.output,
-            iter,
-            aggregateExpressions,
-            aggregateAttributes,
-            initialInputBufferOffset,
-            resultExpressions,
-            (expressions, inputSchema) =>
-              newMutableProjection(
-                expressions,
-                inputSchema,
-                subexpressionEliminationEnabled),
-            numOutputRows)
+          val outputIter =
+            new SortBasedAggregationIterator(
+              groupingExpressions,
+              child.output,
+              iter,
+              aggregateExpressions,
+              aggregateAttributes,
+              initialInputBufferOffset,
+              resultExpressions,
+              (expressions, inputSchema) =>
+                newMutableProjection(
+                  expressions,
+                  inputSchema,
+                  subexpressionEliminationEnabled),
+              numOutputRows)
           if (!hasInput && groupingExpressions.isEmpty) {
             // There is no input and there is no grouping expressions.
             // We need to output a single row as the output.

@@ -99,8 +99,8 @@ package object debug {
       *                     causing the wrong data to be projected.
       */
     case class ColumnMetrics(
-        elementTypes: Accumulator[HashSet[String]] =
-          sparkContext.accumulator(HashSet.empty))
+        elementTypes: Accumulator[HashSet[String]] = sparkContext.accumulator(
+          HashSet.empty))
 
     val tupleCount: Accumulator[Int] = sparkContext.accumulator[Int](0)
 
@@ -113,8 +113,8 @@ package object debug {
       logDebug(s"Tuples output: ${tupleCount.value}")
       child.output.zip(columnStats).foreach {
         case (attr, metric) =>
-          val actualDataTypes =
-            metric.elementTypes.value.mkString("{", ",", "}")
+          val actualDataTypes = metric.elementTypes.value
+            .mkString("{", ",", "}")
           logDebug(s" ${attr.name} ${attr.dataType}: $actualDataTypes")
       }
     }

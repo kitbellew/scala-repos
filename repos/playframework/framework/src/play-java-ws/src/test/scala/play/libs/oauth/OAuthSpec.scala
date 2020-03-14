@@ -24,8 +24,8 @@ class OAuthSpec extends PlaySpecification {
     new RequestToken("someRequestToken", "someVerySecretRequestSecret")
   val oauthCalculator = new OAuthCalculator(javaConsumerKey, javaRequestToken)
 
-  val consumerKey =
-    play.api.libs.oauth.ConsumerKey(javaConsumerKey.key, javaConsumerKey.secret)
+  val consumerKey = play.api.libs.oauth
+    .ConsumerKey(javaConsumerKey.key, javaConsumerKey.secret)
   val requestToken = play.api.libs.oauth
     .RequestToken(javaRequestToken.token, javaRequestToken.secret)
 

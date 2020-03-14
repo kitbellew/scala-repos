@@ -10,18 +10,19 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class JsonpFilterTest extends FunSuite {
 
-  val dummyService = new Service[Request, Response] {
-    def apply(request: Request): Future[Response] = {
-      val response = request.response
-      response.status = Status.Ok
-      if (request.params.contains("not_json"))
-        response.mediaType = "not_json"
-      else
-        response.mediaType = MediaType.Json
-      response.write("{}")
-      Future.value(response)
+  val dummyService =
+    new Service[Request, Response] {
+      def apply(request: Request): Future[Response] = {
+        val response = request.response
+        response.status = Status.Ok
+        if (request.params.contains("not_json"))
+          response.mediaType = "not_json"
+        else
+          response.mediaType = MediaType.Json
+        response.write("{}")
+        Future.value(response)
+      }
     }
-  }
 
   test("wrap json") {
     val request = Request("/test.json", "callback" -> "mycallback")
@@ -32,8 +33,10 @@ class JsonpFilterTest extends FunSuite {
   }
 
   test("ignore non-json") {
-    val request =
-      Request("/test.json", "callback" -> "mycallback", "not_json" -> "t")
+    val request = Request(
+      "/test.json",
+      "callback" -> "mycallback",
+      "not_json" -> "t")
     val response = Await.result(JsonpFilter(request, dummyService))
 
     assert(response.mediaType == Some("not_json"))

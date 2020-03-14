@@ -67,11 +67,12 @@ trait ScPrimaryConstructor
       ScalaPsiElementFactory.createEmptyClassParamClauseWithContext(
         getManager,
         parameterList)
-    val clausesWithInitialEmpty = parameterList.clauses match {
-      case Seq()                            => Seq(emptyParameterList)
-      case Seq(clause) if clause.isImplicit => Seq(emptyParameterList, clause)
-      case clauses                          => clauses
-    }
+    val clausesWithInitialEmpty =
+      parameterList.clauses match {
+        case Seq()                            => Seq(emptyParameterList)
+        case Seq(clause) if clause.isImplicit => Seq(emptyParameterList, clause)
+        case clauses                          => clauses
+      }
     clausesWithInitialEmpty ++ syntheticParamClause
   }
 
@@ -116,12 +117,13 @@ trait ScPrimaryConstructor
       return new ScMethodType(returnType, Seq.empty, false)(
         getProject,
         getResolveScope)
-    val res = clauses.foldRight[ScType](returnType) {
-      (clause: ScParameterClause, tp: ScType) =>
-        new ScMethodType(tp, clause.getSmartParameters, clause.isImplicit)(
-          getProject,
-          getResolveScope)
-    }
+    val res =
+      clauses.foldRight[ScType](returnType) {
+        (clause: ScParameterClause, tp: ScType) =>
+          new ScMethodType(tp, clause.getSmartParameters, clause.isImplicit)(
+            getProject,
+            getResolveScope)
+      }
     res.asInstanceOf[ScMethodType]
   }
 

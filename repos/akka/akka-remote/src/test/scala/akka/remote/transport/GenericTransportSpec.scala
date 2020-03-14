@@ -31,12 +31,15 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
   val addressATest: Address = Address("test", "testsytemA", "testhostA", 4321)
   val addressBTest: Address = Address("test", "testsytemB", "testhostB", 5432)
 
-  val addressA: Address =
-    addressATest.copy(protocol = s"$schemeIdentifier.${addressATest.protocol}")
-  val addressB: Address =
-    addressBTest.copy(protocol = s"$schemeIdentifier.${addressATest.protocol}")
-  val nonExistingAddress =
-    Address(schemeIdentifier + ".test", "nosystem", "nohost", 0)
+  val addressA: Address = addressATest.copy(protocol =
+    s"$schemeIdentifier.${addressATest.protocol}")
+  val addressB: Address = addressBTest.copy(protocol =
+    s"$schemeIdentifier.${addressATest.protocol}")
+  val nonExistingAddress = Address(
+    schemeIdentifier + ".test",
+    "nosystem",
+    "nohost",
+    0)
 
   def freshTransport(testTransport: TestTransport): Transport
   def wrapTransport(transport: Transport): Transport =

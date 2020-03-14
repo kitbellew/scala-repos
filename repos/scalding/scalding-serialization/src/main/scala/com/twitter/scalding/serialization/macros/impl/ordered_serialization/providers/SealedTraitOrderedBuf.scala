@@ -62,15 +62,16 @@ object SealedTraitOrderedBuf {
     val subClasses: List[Type] =
       knownDirectSubclasses.map(_.asType.toType).toList
 
-    val subData: List[(Int, Type, TreeOrderedBuf[c.type])] = subClasses
-      .map { t =>
-        (t, dispatcher(t))
-      }
-      .zipWithIndex
-      .map {
-        case ((tpe, tbuf), idx) => (idx, tpe, tbuf)
-      }
-      .toList
+    val subData: List[(Int, Type, TreeOrderedBuf[c.type])] =
+      subClasses
+        .map { t =>
+          (t, dispatcher(t))
+        }
+        .zipWithIndex
+        .map {
+          case ((tpe, tbuf), idx) => (idx, tpe, tbuf)
+        }
+        .toList
 
     require(
       subData.nonEmpty,
@@ -95,8 +96,10 @@ object SealedTraitOrderedBuf {
         SealedTraitLike.compare(c)(outerType, elementA, elementB)(subData)
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         SealedTraitLike.length(c)(element)(subData)
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        subData.map(_._3).map(_.lazyOuterVariables).reduce(_ ++ _)
+      override val lazyOuterVariables: Map[String, ctx.Tree] = subData
+        .map(_._3)
+        .map(_.lazyOuterVariables)
+        .reduce(_ ++ _)
     }
   }
 }

@@ -55,8 +55,9 @@ object ShapelessForProduct extends ScalaMacroTypeable {
         val tpt = c.typeParameters
         if (tpt.length == 0)
           return None
-        val undef = new ScUndefinedType(
-          new ScTypeParameterType(tpt(0), ScSubstitutor.empty))
+        val undef =
+          new ScUndefinedType(
+            new ScTypeParameterType(tpt(0), ScSubstitutor.empty))
         val genericType = ScParameterizedType(ScDesignatorType(c), Seq(undef))
         val (res, undefSubst) = Conformance.conformsInner(
           genericType,
@@ -68,8 +69,9 @@ object ShapelessForProduct extends ScalaMacroTypeable {
         undefSubst.getSubstitutor match {
           case Some(subst) =>
             val productLikeType = subst.subst(undef)
-            val parts =
-              ScPattern.extractProductParts(productLikeType, context.place)
+            val parts = ScPattern.extractProductParts(
+              productLikeType,
+              context.place)
             if (parts.length == 0)
               return None
             val coloncolon = manager.getCachedClass(
@@ -84,12 +86,13 @@ object ShapelessForProduct extends ScalaMacroTypeable {
               ClassCategory.TYPE)
             if (hnil == null)
               return None
-            val repr = parts.foldRight(ScDesignatorType(hnil): ScType) {
-              case (part, resultType) =>
-                ScParameterizedType(
-                  ScDesignatorType(coloncolon),
-                  Seq(part, resultType))
-            }
+            val repr =
+              parts.foldRight(ScDesignatorType(hnil): ScType) {
+                case (part, resultType) =>
+                  ScParameterizedType(
+                    ScDesignatorType(coloncolon),
+                    Seq(part, resultType))
+              }
             ScalaPsiUtil.getCompanionModule(c) match {
               case Some(obj: ScObject) =>
                 val elem = obj.members.find {

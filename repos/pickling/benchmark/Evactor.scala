@@ -48,9 +48,7 @@ object EvactorPicklingBench extends scala.pickling.testing.PicklingBenchmark {
           time + Random.nextInt(100),
           Random.nextString(5))
 
-    val pickles =
-      for (evt <- evts)
-        yield evt.pickle
+    val pickles = for (evt <- evts) yield evt.pickle
 
     var i = 0
     while (i < size) {

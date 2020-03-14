@@ -80,13 +80,14 @@ class SparkEnv(
     extends Logging {
 
   private[spark] var isStopped = false
-  private val pythonWorkers =
-    mutable.HashMap[(String, Map[String, String]), PythonWorkerFactory]()
+  private val pythonWorkers = mutable
+    .HashMap[(String, Map[String, String]), PythonWorkerFactory]()
 
   // A general, soft-reference map for metadata needed during HadoopRDD split computation
   // (e.g., HadoopFileRDD uses this to cache JobConfs and InputFormats).
-  private[spark] val hadoopJobMetadata =
-    new MapMaker().softValues().makeMap[String, Any]()
+  private[spark] val hadoopJobMetadata = new MapMaker()
+    .softValues()
+    .makeMap[String, Any]()
 
   private var driverTmpDirToDelete: Option[String] = None
 
@@ -335,11 +336,12 @@ object SparkEnv extends Logging {
       }
     }
 
-    val mapOutputTracker = if (isDriver) {
-      new MapOutputTrackerMaster(conf)
-    } else {
-      new MapOutputTrackerWorker(conf)
-    }
+    val mapOutputTracker =
+      if (isDriver) {
+        new MapOutputTrackerMaster(conf)
+      } else {
+        new MapOutputTrackerWorker(conf)
+      }
 
     // Have to assign trackerEndpoint after initialization as MapOutputTrackerEndpoint
     // requires the MapOutputTracker itself
@@ -357,12 +359,14 @@ object SparkEnv extends Logging {
       "tungsten-sort" -> "org.apache.spark.shuffle.sort.SortShuffleManager"
     )
     val shuffleMgrName = conf.get("spark.shuffle.manager", "sort")
-    val shuffleMgrClass =
-      shortShuffleMgrNames.getOrElse(shuffleMgrName.toLowerCase, shuffleMgrName)
+    val shuffleMgrClass = shortShuffleMgrNames.getOrElse(
+      shuffleMgrName.toLowerCase,
+      shuffleMgrName)
     val shuffleManager = instantiateClass[ShuffleManager](shuffleMgrClass)
 
-    val useLegacyMemoryManager =
-      conf.getBoolean("spark.memory.useLegacyMode", false)
+    val useLegacyMemoryManager = conf.getBoolean(
+      "spark.memory.useLegacyMode",
+      false)
     val memoryManager: MemoryManager =
       if (useLegacyMemoryManager) {
         new StaticMemoryManager(conf, numUsableCores)
@@ -373,53 +377,61 @@ object SparkEnv extends Logging {
     val blockTransferService =
       new NettyBlockTransferService(conf, securityManager, numUsableCores)
 
-    val blockManagerMaster = new BlockManagerMaster(
-      registerOrLookupEndpoint(
-        BlockManagerMaster.DRIVER_ENDPOINT_NAME,
-        new BlockManagerMasterEndpoint(rpcEnv, isLocal, conf, listenerBus)),
-      conf,
-      isDriver)
+    val blockManagerMaster =
+      new BlockManagerMaster(
+        registerOrLookupEndpoint(
+          BlockManagerMaster.DRIVER_ENDPOINT_NAME,
+          new BlockManagerMasterEndpoint(rpcEnv, isLocal, conf, listenerBus)),
+        conf,
+        isDriver)
 
     // NB: blockManager is not valid until initialize() is called later.
-    val blockManager = new BlockManager(
-      executorId,
-      rpcEnv,
-      blockManagerMaster,
-      serializer,
-      conf,
-      memoryManager,
-      mapOutputTracker,
-      shuffleManager,
-      blockTransferService,
-      securityManager,
-      numUsableCores)
+    val blockManager =
+      new BlockManager(
+        executorId,
+        rpcEnv,
+        blockManagerMaster,
+        serializer,
+        conf,
+        memoryManager,
+        mapOutputTracker,
+        shuffleManager,
+        blockTransferService,
+        securityManager,
+        numUsableCores)
 
     val broadcastManager = new BroadcastManager(isDriver, conf, securityManager)
 
-    val metricsSystem = if (isDriver) {
-      // Don't start metrics system right now for Driver.
-      // We need to wait for the task scheduler to give us an app ID.
-      // Then we can start the metrics system.
-      MetricsSystem.createMetricsSystem("driver", conf, securityManager)
-    } else {
-      // We need to set the executor ID before the MetricsSystem is created because sources and
-      // sinks specified in the metrics configuration file will want to incorporate this executor's
-      // ID into the metrics they report.
-      conf.set("spark.executor.id", executorId)
-      val ms =
-        MetricsSystem.createMetricsSystem("executor", conf, securityManager)
-      ms.start()
-      ms
-    }
+    val metricsSystem =
+      if (isDriver) {
+        // Don't start metrics system right now for Driver.
+        // We need to wait for the task scheduler to give us an app ID.
+        // Then we can start the metrics system.
+        MetricsSystem.createMetricsSystem("driver", conf, securityManager)
+      } else {
+        // We need to set the executor ID before the MetricsSystem is created because sources and
+        // sinks specified in the metrics configuration file will want to incorporate this executor's
+        // ID into the metrics they report.
+        conf.set("spark.executor.id", executorId)
+        val ms = MetricsSystem.createMetricsSystem(
+          "executor",
+          conf,
+          securityManager)
+        ms.start()
+        ms
+      }
 
     // Set the sparkFiles directory, used when downloading dependencies.  In local mode,
     // this is a temporary directory; in distributed mode, this is the executor's current working
     // directory.
-    val sparkFilesDir: String = if (isDriver) {
-      Utils.createTempDir(Utils.getLocalDir(conf), "userFiles").getAbsolutePath
-    } else {
-      "."
-    }
+    val sparkFilesDir: String =
+      if (isDriver) {
+        Utils
+          .createTempDir(Utils.getLocalDir(conf), "userFiles")
+          .getAbsolutePath
+      } else {
+        "."
+      }
 
     val outputCommitCoordinator = mockOutputCommitCoordinator.getOrElse {
       new OutputCommitCoordinator(conf, isDriver)
@@ -429,23 +441,24 @@ object SparkEnv extends Logging {
       new OutputCommitCoordinatorEndpoint(rpcEnv, outputCommitCoordinator))
     outputCommitCoordinator.coordinatorRef = Some(outputCommitCoordinatorRef)
 
-    val envInstance = new SparkEnv(
-      executorId,
-      rpcEnv,
-      serializer,
-      closureSerializer,
-      serializerManager,
-      mapOutputTracker,
-      shuffleManager,
-      broadcastManager,
-      blockTransferService,
-      blockManager,
-      securityManager,
-      sparkFilesDir,
-      metricsSystem,
-      memoryManager,
-      outputCommitCoordinator,
-      conf)
+    val envInstance =
+      new SparkEnv(
+        executorId,
+        rpcEnv,
+        serializer,
+        closureSerializer,
+        serializerManager,
+        mapOutputTracker,
+        shuffleManager,
+        broadcastManager,
+        blockTransferService,
+        blockManager,
+        securityManager,
+        sparkFilesDir,
+        metricsSystem,
+        memoryManager,
+        outputCommitCoordinator,
+        conf)
 
     // Add a reference to tmp dir created by driver, we will delete this tmp dir when stop() is
     // called, and we only need to do it for driver. Because driver may run as a service, and if we
@@ -469,11 +482,12 @@ object SparkEnv extends Logging {
       addedFiles: Seq[String]): Map[String, Seq[(String, String)]] = {
 
     import Properties._
-    val jvmInformation = Seq(
-      ("Java Version", s"$javaVersion ($javaVendor)"),
-      ("Java Home", javaHome),
-      ("Scala Version", versionString)
-    ).sorted
+    val jvmInformation =
+      Seq(
+        ("Java Version", s"$javaVersion ($javaVendor)"),
+        ("Java Home", javaHome),
+        ("Scala Version", versionString)
+      ).sorted
 
     // Spark properties
     // This includes the scheduling mode whether or not it is configured (used by SparkUI)
@@ -487,10 +501,11 @@ object SparkEnv extends Logging {
 
     // System properties that are not java classpaths
     val systemProperties = Utils.getSystemProperties.toSeq
-    val otherProperties = systemProperties.filter {
-      case (k, _) =>
-        k != "java.class.path" && !k.startsWith("spark.")
-    }.sorted
+    val otherProperties =
+      systemProperties.filter {
+        case (k, _) =>
+          k != "java.class.path" && !k.startsWith("spark.")
+      }.sorted
 
     // Class paths including all added jars and files
     val classPathEntries = javaClassPath

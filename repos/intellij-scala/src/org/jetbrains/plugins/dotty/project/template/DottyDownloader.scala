@@ -35,19 +35,17 @@ object DottyDownloader extends Downloader {
             )).toOption
         case _ => None
       }
-    val element =
-      Try(HttpConfigurable.getInstance().openHttpConnection(pomFileUrl)).map {
-        connection =>
-          try {
-            val bytes = Source
-              .fromInputStream(connection.getInputStream)
-              .mkString
-              .getBytes
-            MavenJDOMUtil.read(bytes, null)
-          } finally {
-            connection.disconnect()
-          }
-      }
+    val element = Try(
+      HttpConfigurable.getInstance().openHttpConnection(pomFileUrl)).map {
+      connection =>
+        try {
+          val bytes =
+            Source.fromInputStream(connection.getInputStream).mkString.getBytes
+          MavenJDOMUtil.read(bytes, null)
+        } finally {
+          connection.disconnect()
+        }
+    }
     element.toOption.toSeq
       .flatMap(_.getDescendants.asScala)
       .flatMap(toDependency _)

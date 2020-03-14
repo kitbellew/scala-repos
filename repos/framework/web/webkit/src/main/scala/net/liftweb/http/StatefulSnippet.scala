@@ -122,10 +122,11 @@ trait StatefulSnippet extends DispatchSnippet {
       isForm: Boolean,
       res: NodeSeq,
       toMerge: => NodeSeq): NodeSeq = {
-    val formElem = Helpers.findOption(res) {
-      case e: Elem if e.label == "form" && null == e.prefix => Some(e)
-      case _                                                => None
-    }
+    val formElem =
+      Helpers.findOption(res) {
+        case e: Elem if e.label == "form" && null == e.prefix => Some(e)
+        case _                                                => None
+      }
 
     if (formElem.isDefined) {
       import util.Helpers._

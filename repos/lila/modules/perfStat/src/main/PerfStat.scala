@@ -28,8 +28,8 @@ case class PerfStat(
         highest = RatingAt.agg(highest, pov, 1),
         lowest = thisYear.fold(RatingAt.agg(lowest, pov, -1), lowest),
         bestWins = (~pov.win).fold(bestWins.agg(pov, -1), bestWins),
-        worstLosses =
-          (thisYear && ~pov.loss).fold(worstLosses.agg(pov, 1), worstLosses),
+        worstLosses = (thisYear && ~pov.loss)
+          .fold(worstLosses.agg(pov, 1), worstLosses),
         count = count(pov),
         resultStreak = resultStreak agg pov,
         playStreak = playStreak agg pov
@@ -52,8 +52,10 @@ object PerfStat {
       worstLosses = Results(Nil),
       count = Count.init,
       resultStreak = ResultStreak(win = Streaks.init, loss = Streaks.init),
-      playStreak =
-        PlayStreak(nb = Streaks.init, time = Streaks.init, lastDate = none)
+      playStreak = PlayStreak(
+        nb = Streaks.init,
+        time = Streaks.init,
+        lastDate = none)
     )
 }
 

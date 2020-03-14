@@ -24,8 +24,7 @@ object Client {
   /**
     * Construct a client from a single Service.
     */
-  def apply(raw: Service[Command, Reply]): Client =
-    new Client(raw)
+  def apply(raw: Service[Command, Reply]): Client = new Client(raw)
 
 }
 

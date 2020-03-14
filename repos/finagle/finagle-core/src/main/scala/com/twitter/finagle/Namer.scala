@@ -31,8 +31,7 @@ trait Namer { self =>
 }
 
 private case class FailingNamer(exc: Throwable) extends Namer {
-  def lookup(path: Path): Activity[NameTree[Name]] =
-    Activity.exception(exc)
+  def lookup(path: Path): Activity[NameTree[Name]] = Activity.exception(exc)
 }
 
 object Namer {
@@ -68,68 +67,67 @@ object Namer {
     *
     * to force empty resolutions.
     */
-  val global: Namer = new Namer {
+  val global: Namer =
+    new Namer {
 
-    private[this] object InetPath {
-      def unapply(path: Path): Option[(Address, Path)] =
-        path match {
-          case Path.Utf8(
-                "$",
-                "inet",
-                host,
-                IntegerString(port),
-                residual @ _*) =>
-            Some(
-              (
-                Address(new InetSocketAddress(host, port)),
-                Path.Utf8(residual: _*)))
-          case Path.Utf8("$", "inet", IntegerString(port), residual @ _*) =>
-            Some(
-              (Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
-          case _ => None
-        }
-    }
-
-    private[this] object FailPath {
-      val prefix = Path.Utf8("$", "fail")
-
-      def unapply(path: Path): Boolean =
-        path startsWith prefix
-    }
-
-    private[this] object NilPath {
-      val prefix = Path.Utf8("$", "nil")
-
-      def unapply(path: Path): Boolean =
-        path startsWith prefix
-    }
-
-    private[this] object NamerPath {
-      def unapply(path: Path): Option[(Namer, Path)] =
-        path match {
-          case Path.Utf8("$", kind, rest @ _*) =>
-            Some((namerOfKind(kind), Path.Utf8(rest: _*)))
-          case _ => None
-        }
-    }
-
-    def lookup(path: Path): Activity[NameTree[Name]] =
-      path match {
-        // Clients may depend on Name.Bound ids being Paths which resolve
-        // back to the same Name.Bound.
-        case InetPath(addr, residual) =>
-          val id = path.take(path.size - residual.size)
-          Activity.value(
-            Leaf(Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
-
-        case FailPath()             => Activity.value(Fail)
-        case NilPath()              => Activity.value(Empty)
-        case NamerPath(namer, rest) => namer.lookup(rest)
-        case _                      => Activity.value(Neg)
+      private[this] object InetPath {
+        def unapply(path: Path): Option[(Address, Path)] =
+          path match {
+            case Path.Utf8(
+                  "$",
+                  "inet",
+                  host,
+                  IntegerString(port),
+                  residual @ _*) =>
+              Some(
+                (
+                  Address(new InetSocketAddress(host, port)),
+                  Path.Utf8(residual: _*)))
+            case Path.Utf8("$", "inet", IntegerString(port), residual @ _*) =>
+              Some(
+                (Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
+            case _ => None
+          }
       }
 
-    override def toString = "Namer.global"
-  }
+      private[this] object FailPath {
+        val prefix = Path.Utf8("$", "fail")
+
+        def unapply(path: Path): Boolean = path startsWith prefix
+      }
+
+      private[this] object NilPath {
+        val prefix = Path.Utf8("$", "nil")
+
+        def unapply(path: Path): Boolean = path startsWith prefix
+      }
+
+      private[this] object NamerPath {
+        def unapply(path: Path): Option[(Namer, Path)] =
+          path match {
+            case Path.Utf8("$", kind, rest @ _*) =>
+              Some((namerOfKind(kind), Path.Utf8(rest: _*)))
+            case _ => None
+          }
+      }
+
+      def lookup(path: Path): Activity[NameTree[Name]] =
+        path match {
+          // Clients may depend on Name.Bound ids being Paths which resolve
+          // back to the same Name.Bound.
+          case InetPath(addr, residual) =>
+            val id = path.take(path.size - residual.size)
+            Activity.value(
+              Leaf(Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
+
+          case FailPath()             => Activity.value(Fail)
+          case NilPath()              => Activity.value(Empty)
+          case NamerPath(namer, rest) => namer.lookup(rest)
+          case _                      => Activity.value(Neg)
+        }
+
+      override def toString = "Namer.global"
+    }
 
   /**
     * Resolve a path to an address set (taking `dtab` into account).
@@ -159,13 +157,11 @@ object Namer {
     }
 
   private object IntegerString {
-    def unapply(s: String): Option[Int] =
-      Try(s.toInt).toOption
+    def unapply(s: String): Option[Int] = Try(s.toInt).toOption
   }
 
   private object DoubleString {
-    def unapply(s: String): Option[Double] =
-      Try(s.toDouble).toOption
+    def unapply(s: String): Option[Double] = Try(s.toDouble).toOption
   }
 
   private val MaxDepth = 100
@@ -197,25 +193,25 @@ object Namer {
         treesAct.map(Weighted(w, _)).run
     }
 
-    val stateVar: Var[Activity.State[NameTree[Name.Bound]]] =
-      Var.collect(weightedTreeVars).map {
-        seq: Seq[Activity.State[NameTree.Weighted[Name.Bound]]] =>
-          // - if there's at least one activity in Ok state, return the union of them
-          // - if all activities are pending, the union is pending.
-          // - if no subtree is Ok, and there are failures, retain the first failure.
+    val stateVar: Var[Activity.State[NameTree[Name.Bound]]] = Var
+      .collect(weightedTreeVars)
+      .map { seq: Seq[Activity.State[NameTree.Weighted[Name.Bound]]] =>
+        // - if there's at least one activity in Ok state, return the union of them
+        // - if all activities are pending, the union is pending.
+        // - if no subtree is Ok, and there are failures, retain the first failure.
 
-          val oks = seq.collect {
-            case Activity.Ok(t) => t
-          }
-          if (oks.isEmpty) {
-            seq
-              .collectFirst {
-                case f @ Activity.Failed(_) => f
-              }
-              .getOrElse(Activity.Pending)
-          } else {
-            Activity.Ok(Union.fromSeq(oks).simplified)
-          }
+        val oks = seq.collect {
+          case Activity.Ok(t) => t
+        }
+        if (oks.isEmpty) {
+          seq
+            .collectFirst {
+              case f @ Activity.Failed(_) => f
+            }
+            .getOrElse(Activity.Pending)
+        } else {
+          Activity.Ok(Union.fromSeq(oks).simplified)
+        }
       }
     new Activity(stateVar)
   }

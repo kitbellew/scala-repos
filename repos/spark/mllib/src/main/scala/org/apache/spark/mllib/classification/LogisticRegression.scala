@@ -75,12 +75,13 @@ class LogisticRegressionModel @Since("1.3.0") (
 
   private val dataWithBiasSize: Int = weights.size / (numClasses - 1)
 
-  private val weightsArray: Array[Double] = weights match {
-    case dv: DenseVector => dv.values
-    case _ =>
-      throw new IllegalArgumentException(
-        s"weights only supports dense vector but got type ${weights.getClass}.")
-  }
+  private val weightsArray: Array[Double] =
+    weights match {
+      case dv: DenseVector => dv.values
+      case _ =>
+        throw new IllegalArgumentException(
+          s"weights only supports dense vector but got type ${weights.getClass}.")
+    }
 
   /**
     * Constructs a [[LogisticRegressionModel]] with weights and intercept for binary classification.
@@ -201,10 +202,12 @@ object LogisticRegressionModel extends Loader[LogisticRegressionModel] {
       "org.apache.spark.mllib.classification.LogisticRegressionModel"
     (loadedClassName, version) match {
       case (className, "1.0") if className == classNameV1_0 =>
-        val (numFeatures, numClasses) =
-          ClassificationModel.getNumFeaturesClasses(metadata)
-        val data =
-          GLMClassificationModel.SaveLoadV1_0.loadData(sc, path, classNameV1_0)
+        val (numFeatures, numClasses) = ClassificationModel
+          .getNumFeaturesClasses(metadata)
+        val data = GLMClassificationModel.SaveLoadV1_0.loadData(
+          sc,
+          path,
+          classNameV1_0)
         // numFeatures, numClasses, weights are checked in model initialization
         val model =
           new LogisticRegressionModel(
@@ -495,8 +498,8 @@ class LogisticRegressionWithLBFGS
         // Train our model
         val mlLogisticRegresionModel = lr.train(df, handlePersistence)
         // convert the model
-        val weights =
-          Vectors.dense(mlLogisticRegresionModel.coefficients.toArray)
+        val weights = Vectors.dense(
+          mlLogisticRegresionModel.coefficients.toArray)
         createModel(weights, mlLogisticRegresionModel.intercept)
       }
       optimizer.getUpdater() match {

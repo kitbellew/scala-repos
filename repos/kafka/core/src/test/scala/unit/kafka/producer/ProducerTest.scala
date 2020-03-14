@@ -46,8 +46,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
   private var server2: KafkaServer = null
   private var consumer1: SimpleConsumer = null
   private var consumer2: SimpleConsumer = null
-  private val requestHandlerLogger =
-    Logger.getLogger(classOf[KafkaRequestHandler])
+  private val requestHandlerLogger = Logger.getLogger(
+    classOf[KafkaRequestHandler])
   private var servers = List.empty[KafkaServer]
 
   // Creation of consumers is deferred until they are actually needed. This allows us to kill brokers that use random
@@ -201,15 +201,16 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       leaderOpt.isDefined)
     val leader = leaderOpt.get
 
-    val messageSet = if (leader == server1.config.brokerId) {
-      val response1 = getConsumer1().fetch(
-        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
-      response1.messageSet("new-topic", 0).iterator.toBuffer
-    } else {
-      val response2 = getConsumer2().fetch(
-        new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
-      response2.messageSet("new-topic", 0).iterator.toBuffer
-    }
+    val messageSet =
+      if (leader == server1.config.brokerId) {
+        val response1 = getConsumer1().fetch(
+          new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+        response1.messageSet("new-topic", 0).iterator.toBuffer
+      } else {
+        val response2 = getConsumer2().fetch(
+          new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())
+        response2.messageSet("new-topic", 0).iterator.toBuffer
+      }
     assertEquals("Should have fetched 2 messages", 2, messageSet.size)
     // Message 1
     assertTrue(
@@ -241,8 +242,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
 
     try {
       val producer2 = TestUtils.createProducer[String, String](
-        brokerList =
-          TestUtils.getBrokerListStrFromServers(Seq(server1, server2)),
+        brokerList = TestUtils.getBrokerListStrFromServers(
+          Seq(server1, server2)),
         encoder = classOf[StringEncoder].getName,
         keyEncoder = classOf[StringEncoder].getName,
         partitioner = classOf[StaticPartitioner].getName,
@@ -269,8 +270,11 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     TestUtils.createTopic(
       zkUtils,
       topic,
-      partitionReplicaAssignment =
-        Map(0 -> Seq(0), 1 -> Seq(0), 2 -> Seq(0), 3 -> Seq(0)),
+      partitionReplicaAssignment = Map(
+        0 -> Seq(0),
+        1 -> Seq(0),
+        2 -> Seq(0),
+        3 -> Seq(0)),
       servers = servers)
 
     val producer = TestUtils.createProducer[String, String](

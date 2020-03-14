@@ -86,20 +86,21 @@ final class Firewall(
 
   private type IP = Vector[Byte]
 
-  private lazy val ips = new {
-    private val cache: Cache[Set[IP]] = LruCache(timeToLive = cachedIpsTtl)
-    private def strToIp(ip: String) =
-      InetAddress.getByName(ip).getAddress.toVector
-    def apply: Fu[Set[IP]] = cache(true)(fetch)
-    def clear {
-      cache.clear
-    }
-    def contains(ip: String) = apply map (_ contains strToIp(ip))
-    def fetch: Fu[Set[IP]] =
-      firewallTube.coll.distinct("_id") map { res =>
-        lila.db.BSON.asStringSet(res) map strToIp
-      } addEffect { ips =>
-        lila.mon.security.firewall.ip(ips.size)
+  private lazy val ips =
+    new {
+      private val cache: Cache[Set[IP]] = LruCache(timeToLive = cachedIpsTtl)
+      private def strToIp(ip: String) =
+        InetAddress.getByName(ip).getAddress.toVector
+      def apply: Fu[Set[IP]] = cache(true)(fetch)
+      def clear {
+        cache.clear
       }
-  }
+      def contains(ip: String) = apply map (_ contains strToIp(ip))
+      def fetch: Fu[Set[IP]] =
+        firewallTube.coll.distinct("_id") map { res =>
+          lila.db.BSON.asStringSet(res) map strToIp
+        } addEffect { ips =>
+          lila.mon.security.firewall.ip(ips.size)
+        }
+    }
 }

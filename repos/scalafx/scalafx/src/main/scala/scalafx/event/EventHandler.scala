@@ -128,22 +128,24 @@ trait EventHandlerDelegate {
     implicit def fromParen[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
         op: () => Unit): HandlerMagnet[J, S] = {
       new HandlerMagnet[J, S] {
-        override val eventHandler = new jfxe.EventHandler[J] {
-          def handle(event: J) {
-            op()
+        override val eventHandler =
+          new jfxe.EventHandler[J] {
+            def handle(event: J) {
+              op()
+            }
           }
-        }
       }
     }
 
     implicit def fromEvent[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
         op: S => Unit)(implicit jfx2sfx: J => S): HandlerMagnet[J, S] = {
       new HandlerMagnet[J, S] {
-        override val eventHandler = new jfxe.EventHandler[J] {
-          def handle(event: J) {
-            op(jfx2sfx(event))
+        override val eventHandler =
+          new jfxe.EventHandler[J] {
+            def handle(event: J) {
+              op(jfx2sfx(event))
+            }
           }
-        }
       }
     }
   }
@@ -234,22 +236,24 @@ trait EventHandlerDelegate {
     implicit def fromParen[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
         op: () => Unit): FilterMagnet[J, S] = {
       new FilterMagnet[J, S] {
-        override val eventFilter = new jfxe.EventHandler[J] {
-          def handle(event: J) {
-            op()
+        override val eventFilter =
+          new jfxe.EventHandler[J] {
+            def handle(event: J) {
+              op()
+            }
           }
-        }
       }
     }
 
     implicit def fromEvent[J <: jfxe.Event, S <: Event with SFXDelegate[J]](
         op: S => Unit)(implicit jfx2sfx: J => S): FilterMagnet[J, S] = {
       new FilterMagnet[J, S] {
-        override val eventFilter = new jfxe.EventHandler[J] {
-          def handle(event: J) {
-            op(jfx2sfx(event))
+        override val eventFilter =
+          new jfxe.EventHandler[J] {
+            def handle(event: J) {
+              op(jfx2sfx(event))
+            }
           }
-        }
       }
     }
   }

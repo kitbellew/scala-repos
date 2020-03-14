@@ -92,8 +92,9 @@ private[spark] object SerDeUtil extends Logging {
       } else if (args.length == 2 && args(1).isInstanceOf[String]) {
         val typecode = args(0).asInstanceOf[String].charAt(0)
         // This must be ISO 8859-1 / Latin 1, not UTF-8, to interoperate correctly
-        val data =
-          args(1).asInstanceOf[String].getBytes(StandardCharsets.ISO_8859_1)
+        val data = args(1)
+          .asInstanceOf[String]
+          .getBytes(StandardCharsets.ISO_8859_1)
         construct(typecode, machineCodes(typecode), data)
       } else {
         super.construct(args)
@@ -232,10 +233,11 @@ private[spark] object SerDeUtil extends Logging {
   def pairRDDToPython(
       rdd: RDD[(Any, Any)],
       batchSize: Int): RDD[Array[Byte]] = {
-    val (keyFailed, valueFailed) = rdd.take(1) match {
-      case Array()      => (false, false)
-      case Array(first) => checkPickle(first)
-    }
+    val (keyFailed, valueFailed) =
+      rdd.take(1) match {
+        case Array()      => (false, false)
+        case Array(first) => checkPickle(first)
+      }
 
     rdd.mapPartitions { iter =>
       val cleaned = iter.map {

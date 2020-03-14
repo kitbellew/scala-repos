@@ -38,16 +38,17 @@ object Test extends Properties("HtmlFactory") {
     // does partest actually guarantee this? to quote Leonard Nimoy: The answer, of course, is no.
     // this test _will_ fail again some time in the future.
     // Footnote: java.lang.ClassCastException: org.apache.tools.ant.loader.AntClassLoader5 cannot be cast to java.net.URLClassLoader
-    val loader =
-      Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader]
+    val loader = Thread.currentThread.getContextClassLoader
+      .asInstanceOf[URLClassLoader]
     val paths = loader.getURLs.map(u => URLDecoder.decode(u.getPath))
     paths mkString java.io.File.pathSeparator
   }
 
   def createFactory = {
-    val settings = new Settings({
-      Console.err.println(_)
-    })
+    val settings =
+      new Settings({
+        Console.err.println(_)
+      })
     settings.scaladocQuietRun = true
     settings.nowarn.value = true
     settings.classpath.value = getClasspath
@@ -107,17 +108,19 @@ object Test extends Properties("HtmlFactory") {
 
     for ((fileHint, check, expected) <- checks) {
       // resolve the file to be checked
-      val fileName = fileHint match {
-        case Some(file) =>
-          if (file endsWith ".html")
-            file
-          else
-            file + ".html"
-        case None =>
-          htmlFile
-      }
-      val fileTextPretty =
-        htmlAllFiles(fileName).text.replace('→', ' ').replaceAll("\\s+", " ")
+      val fileName =
+        fileHint match {
+          case Some(file) =>
+            if (file endsWith ".html")
+              file
+            else
+              file + ".html"
+          case None =>
+            htmlFile
+        }
+      val fileTextPretty = htmlAllFiles(fileName).text
+        .replace('→', ' ')
+        .replaceAll("\\s+", " ")
       val fileText = fileTextPretty.replaceAll(" ", "")
 
       val checkTextPretty = check.replace('→', ' ').replaceAll("\\s+", " ")
@@ -783,30 +786,30 @@ object Test extends Properties("HtmlFactory") {
       case _                    => false
     }
 
-    property("SI-8514: No inconsistencies") = checkText("SI-8514.scala")(
-      (
-        Some("a/index"),
-        """class A extends AnyRef
+    property("SI-8514: No inconsistencies") =
+      checkText("SI-8514.scala")(
+        (
+          Some("a/index"),
+          """class A extends AnyRef
             Some doc here
             Some doc here
             Annotations @DeveloperApi()
          """,
-        true),
-      (
-        Some("a/index"),
-        """class B extends AnyRef
+          true),
+        (
+          Some("a/index"),
+          """class B extends AnyRef
             Annotations @DeveloperApi()
          """,
-        true)
-    )
+          true)
+      )
   }
 
   // SI-8144
   {
     implicit class AttributesAwareNode(val node: NodeSeq) {
 
-      def \@(attrName: String): String =
-        node \ ("@" + attrName) text
+      def \@(attrName: String): String = node \ ("@" + attrName) text
 
       def \@(attrName: String, attrValue: String): NodeSeq =
         node filter {

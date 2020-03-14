@@ -155,12 +155,13 @@ object build extends Build {
     isJSProject := isJSProject.?.value.getOrElse(false),
     genTypeClasses := {
       typeClasses.value.flatMap { tc =>
-        val dir = name.value match {
-          case ConcurrentName =>
-            (scalaSource in Compile).value
-          case _ =>
-            ScalazCrossType.shared(baseDirectory.value, "main")
-        }
+        val dir =
+          name.value match {
+            case ConcurrentName =>
+              (scalaSource in Compile).value
+            case _ =>
+              ScalazCrossType.shared(baseDirectory.value, "main")
+          }
         typeclassSource(tc).sources
           .map(_.createOrUpdate(dir, streams.value.log))
       }
@@ -401,19 +402,18 @@ object build extends Build {
     )
   )
 
-  lazy val scalacheckBinding =
-    CrossProject(
-      "scalacheck-binding",
-      file("scalacheck-binding"),
-      ScalazCrossType)
-      .settings(standardSettings: _*)
-      .settings(
-        name := "scalaz-scalacheck-binding",
-        libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value,
-        osgiExport("scalaz.scalacheck"))
-      .dependsOn(core, iteratee)
-      .jvmConfigure(_ dependsOn concurrent)
-      .jsSettings(scalajsProjectSettings: _*)
+  lazy val scalacheckBinding = CrossProject(
+    "scalacheck-binding",
+    file("scalacheck-binding"),
+    ScalazCrossType)
+    .settings(standardSettings: _*)
+    .settings(
+      name := "scalaz-scalacheck-binding",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value,
+      osgiExport("scalaz.scalacheck"))
+    .dependsOn(core, iteratee)
+    .jvmConfigure(_ dependsOn concurrent)
+    .jsSettings(scalajsProjectSettings: _*)
 
   lazy val scalacheckBindingJVM = scalacheckBinding.jvm
   lazy val scalacheckBindingJS = scalacheckBinding.js

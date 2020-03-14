@@ -40,12 +40,13 @@ private[v1] class AllJobsResource(ui: SparkUI) {
         statuses
       }
     }
-    val jobInfos = for {
-      (status, jobs) <- statusToJobs
-      job <- jobs if adjStatuses.contains(status)
-    } yield {
-      AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
-    }
+    val jobInfos =
+      for {
+        (status, jobs) <- statusToJobs
+        job <- jobs if adjStatuses.contains(status)
+      } yield {
+        AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
+      }
     jobInfos.sortBy {
       -_.jobId
     }

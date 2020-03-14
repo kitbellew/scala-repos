@@ -40,35 +40,36 @@ class AssignUniqueSymbols extends Phase {
           case _ =>
         }
       def tr(n: Node): Node = {
-        val n3 = n match {
-          case Select(in, s) => Select(tr(in), s) :@ n.nodeType
-          case r @ Ref(a: AnonSymbol) =>
-            val s = replace.getOrElse(a, a)
-            if (s eq a)
-              r
-            else
-              Ref(s)
-          case t: TableNode =>
-            t.copy(identity = new AnonTableIdentitySymbol)(t.profileTable)
-          case Pure(value, _) => Pure(tr(value))
-          case g: GroupBy =>
-            val d = g.copy(identity = new AnonTypeSymbol)
-            val a = new AnonSymbol
-            replace += g.fromGen -> a
-            g.copy(
-              fromGen = a,
-              tr(g.from),
-              tr(g.by),
-              identity = new AnonTypeSymbol)
-          case n: StructNode => n.mapChildren(tr)
-          case d: DefNode =>
-            checkFeatures(d)
-            replace ++= d.generators.iterator.map(_._1 -> new AnonSymbol)
-            d.mapSymbols(s => replace.getOrElse(s, s)).mapChildren(tr)
-          case n =>
-            checkFeatures(n)
-            n.mapChildren(tr)
-        }
+        val n3 =
+          n match {
+            case Select(in, s) => Select(tr(in), s) :@ n.nodeType
+            case r @ Ref(a: AnonSymbol) =>
+              val s = replace.getOrElse(a, a)
+              if (s eq a)
+                r
+              else
+                Ref(s)
+            case t: TableNode =>
+              t.copy(identity = new AnonTableIdentitySymbol)(t.profileTable)
+            case Pure(value, _) => Pure(tr(value))
+            case g: GroupBy =>
+              val d = g.copy(identity = new AnonTypeSymbol)
+              val a = new AnonSymbol
+              replace += g.fromGen -> a
+              g.copy(
+                fromGen = a,
+                tr(g.from),
+                tr(g.by),
+                identity = new AnonTypeSymbol)
+            case n: StructNode => n.mapChildren(tr)
+            case d: DefNode =>
+              checkFeatures(d)
+              replace ++= d.generators.iterator.map(_._1 -> new AnonSymbol)
+              d.mapSymbols(s => replace.getOrElse(s, s)).mapChildren(tr)
+            case n =>
+              checkFeatures(n)
+              n.mapChildren(tr)
+          }
         // Remove all NominalTypes (which might have changed)
         if (n3.hasType && hasNominalType(n3.nodeType))
           n3.untyped

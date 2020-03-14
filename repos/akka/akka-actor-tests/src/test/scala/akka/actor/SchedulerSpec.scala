@@ -149,8 +149,8 @@ trait SchedulerSpec
 
       val initialDelay = 200.milliseconds.dilated
       val delay = 10.milliseconds.dilated
-      val timeout =
-        collectCancellable(system.scheduler.schedule(initialDelay, delay) {
+      val timeout = collectCancellable(
+        system.scheduler.schedule(initialDelay, delay) {
           ticks.incrementAndGet()
         })
       Thread.sleep(10.milliseconds.dilated.toMillis)
@@ -165,8 +165,8 @@ trait SchedulerSpec
 
       val initialDelay = 90.milliseconds.dilated
       val delay = 500.milliseconds.dilated
-      val timeout =
-        collectCancellable(system.scheduler.schedule(initialDelay, delay) {
+      val timeout = collectCancellable(
+        system.scheduler.schedule(initialDelay, delay) {
           ticks.incrementAndGet()
         })
       Thread.sleep((initialDelay + 200.milliseconds.dilated).toMillis)
@@ -177,8 +177,8 @@ trait SchedulerSpec
     }
 
     "be canceled if cancel is performed before execution" in {
-      val task =
-        collectCancellable(system.scheduler.scheduleOnce(10 seconds)(()))
+      val task = collectCancellable(
+        system.scheduler.scheduleOnce(10 seconds)(()))
       task.cancel() should ===(true)
       task.isCancelled should ===(true)
       task.cancel() should ===(false)
@@ -218,8 +218,9 @@ trait SchedulerSpec
 
         override def postRestart(reason: Throwable) = restartLatch.open
       })
-      val actor =
-        Await.result((supervisor ? props).mapTo[ActorRef], timeout.duration)
+      val actor = Await.result(
+        (supervisor ? props).mapTo[ActorRef],
+        timeout.duration)
 
       collectCancellable(
         system.scheduler
@@ -333,14 +334,15 @@ trait SchedulerSpec
           testActor ! (stop - now - next * 1000000L)
         }
       }
-      val latencies = within(10.seconds) {
-        for (i ← 1 to N)
-          yield try expectMsgType[Long]
-          catch {
-            case NonFatal(e) ⇒
-              throw new Exception(s"failed expecting the $i-th latency", e)
-          }
-      }
+      val latencies =
+        within(10.seconds) {
+          for (i ← 1 to N)
+            yield try expectMsgType[Long]
+            catch {
+              case NonFatal(e) ⇒
+                throw new Exception(s"failed expecting the $i-th latency", e)
+            }
+        }
       val histogram = latencies groupBy (_ / 100000000L)
       for (k ← histogram.keys.toSeq.sorted) {
         system.log.info(f"${k * 100}%3d: ${histogram(k).size}")
@@ -424,14 +426,15 @@ class LightArrayRevolverSchedulerSpec
           }
       val cancelled = cancellations.sum
       println(cancelled)
-      val latencies = within(10.seconds) {
-        for (i ← 1 to (N - cancelled))
-          yield try expectMsgType[Long]
-          catch {
-            case NonFatal(e) ⇒
-              throw new Exception(s"failed expecting the $i-th latency", e)
-          }
-      }
+      val latencies =
+        within(10.seconds) {
+          for (i ← 1 to (N - cancelled))
+            yield try expectMsgType[Long]
+            catch {
+              case NonFatal(e) ⇒
+                throw new Exception(s"failed expecting the $i-th latency", e)
+            }
+        }
       val histogram = latencies groupBy (_ / 100000000L)
       for (k ← histogram.keys.toSeq.sorted) {
         system.log.info(f"${k * 100}%3d: ${histogram(k).size}")
@@ -440,34 +443,32 @@ class LightArrayRevolverSchedulerSpec
     }
 
     "survive vicious enqueueing" in {
-      withScheduler(config =
-        ConfigFactory.parseString("akka.scheduler.ticks-per-wheel=2")) {
-        (sched, driver) ⇒
-          import driver._
-          import system.dispatcher
-          val counter = new AtomicInteger
-          val terminated = future {
-            var rounds = 0
-            while (Try(
-                     sched.scheduleOnce(Duration.Zero)(())(
-                       localEC)).isSuccess) {
-              Thread.sleep(1)
-              driver.wakeUp(step)
-              rounds += 1
-            }
-            rounds
+      withScheduler(config = ConfigFactory.parseString(
+        "akka.scheduler.ticks-per-wheel=2")) { (sched, driver) ⇒
+        import driver._
+        import system.dispatcher
+        val counter = new AtomicInteger
+        val terminated = future {
+          var rounds = 0
+          while (Try(
+                   sched.scheduleOnce(Duration.Zero)(())(localEC)).isSuccess) {
+            Thread.sleep(1)
+            driver.wakeUp(step)
+            rounds += 1
           }
-          def delay =
-            if (ThreadLocalRandom.current.nextBoolean)
-              step * 2
-            else
-              step
-          val N = 1000000
-          (1 to N) foreach (_ ⇒
-            sched.scheduleOnce(delay)(counter.incrementAndGet()))
-          sched.close()
-          Await.result(terminated, 3.seconds.dilated) should be > 10
-          awaitCond(counter.get == N)
+          rounds
+        }
+        def delay =
+          if (ThreadLocalRandom.current.nextBoolean)
+            step * 2
+          else
+            step
+        val N = 1000000
+        (1 to N) foreach (_ ⇒
+          sched.scheduleOnce(delay)(counter.incrementAndGet()))
+        sched.close()
+        Await.result(terminated, 3.seconds.dilated) should be > 10
+        awaitCond(counter.get == N)
       }
     }
 
@@ -503,32 +504,31 @@ class LightArrayRevolverSchedulerSpec
     }
 
     "correctly wrap around wheel rounds" in {
-      withScheduler(config =
-        ConfigFactory.parseString("akka.scheduler.ticks-per-wheel=2")) {
-        (sched, driver) ⇒
-          implicit def ec = localEC
-          import driver._
-          val start = step / 2
-          (0 to 3) foreach (i ⇒
-            sched.scheduleOnce(start + step * i, probe.ref, "hello"))
-          probe.expectNoMsg(step)
-          wakeUp(step)
-          expectWait(step)
-          // the following are no for-comp to see which iteration fails
-          wakeUp(step)
-          probe.expectMsg("hello")
-          expectWait(step)
-          wakeUp(step)
-          probe.expectMsg("hello")
-          expectWait(step)
-          wakeUp(step)
-          probe.expectMsg("hello")
-          expectWait(step)
-          wakeUp(step)
-          probe.expectMsg("hello")
-          expectWait(step)
-          wakeUp(step)
-          expectWait(step)
+      withScheduler(config = ConfigFactory.parseString(
+        "akka.scheduler.ticks-per-wheel=2")) { (sched, driver) ⇒
+        implicit def ec = localEC
+        import driver._
+        val start = step / 2
+        (0 to 3) foreach (i ⇒
+          sched.scheduleOnce(start + step * i, probe.ref, "hello"))
+        probe.expectNoMsg(step)
+        wakeUp(step)
+        expectWait(step)
+        // the following are no for-comp to see which iteration fails
+        wakeUp(step)
+        probe.expectMsg("hello")
+        expectWait(step)
+        wakeUp(step)
+        probe.expectMsg("hello")
+        expectWait(step)
+        wakeUp(step)
+        probe.expectMsg("hello")
+        expectWait(step)
+        wakeUp(step)
+        probe.expectMsg("hello")
+        expectWait(step)
+        wakeUp(step)
+        expectWait(step)
       }
     }
 
@@ -600,20 +600,22 @@ class LightArrayRevolverSchedulerSpec
     def close(): Unit
   }
 
-  val localEC = new ExecutionContext {
-    def execute(runnable: Runnable) {
-      runnable.run()
+  val localEC =
+    new ExecutionContext {
+      def execute(runnable: Runnable) {
+        runnable.run()
+      }
+      def reportFailure(t: Throwable) {
+        t.printStackTrace()
+      }
     }
-    def reportFailure(t: Throwable) {
-      t.printStackTrace()
-    }
-  }
 
   def withScheduler(start: Long = 0L, config: Config = ConfigFactory.empty)(
       thunk: (Scheduler with Closeable, Driver) ⇒ Unit): Unit = {
     import akka.actor.{LightArrayRevolverScheduler ⇒ LARS}
-    val lbq = new AtomicReference[LinkedBlockingQueue[Long]](
-      new LinkedBlockingQueue[Long])
+    val lbq =
+      new AtomicReference[LinkedBlockingQueue[Long]](
+        new LinkedBlockingQueue[Long])
     val prb = TestProbe()
     val tf = system.asInstanceOf[ActorSystemImpl].threadFactory
     val sched =
@@ -640,21 +642,22 @@ class LightArrayRevolverSchedulerSpec
           }
         }
       }
-    val driver = new Driver {
-      def wakeUp(d: FiniteDuration) =
-        lbq.get match {
-          case q: LinkedBlockingQueue[Long] ⇒ q.offer(d.toNanos)
-          case _ ⇒
-        }
-      def expectWait(): FiniteDuration = probe.expectMsgType[Long].nanos
-      def probe = prb
-      def step = sched.TickDuration
-      def close() =
-        lbq.getAndSet(null) match {
-          case q: LinkedBlockingQueue[Long] ⇒ q.offer(0L)
-          case _ ⇒
-        }
-    }
+    val driver =
+      new Driver {
+        def wakeUp(d: FiniteDuration) =
+          lbq.get match {
+            case q: LinkedBlockingQueue[Long] ⇒ q.offer(d.toNanos)
+            case _ ⇒
+          }
+        def expectWait(): FiniteDuration = probe.expectMsgType[Long].nanos
+        def probe = prb
+        def step = sched.TickDuration
+        def close() =
+          lbq.getAndSet(null) match {
+            case q: LinkedBlockingQueue[Long] ⇒ q.offer(0L)
+            case _ ⇒
+          }
+      }
     driver.expectWait()
     try thunk(sched, driver)
     catch {

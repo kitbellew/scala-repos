@@ -68,8 +68,8 @@ class PrimitiveApiTest
 
   @Test
   def testEmptyFetchRequest() {
-    val partitionRequests =
-      immutable.Map[TopicAndPartition, PartitionFetchInfo]()
+    val partitionRequests = immutable
+      .Map[TopicAndPartition, PartitionFetchInfo]()
     val request = new FetchRequest(requestInfo = partitionRequests)
     val fetched = consumer.fetch(request)
     assertTrue(!fetched.hasError && fetched.data.size == 0)
@@ -146,8 +146,8 @@ class PrimitiveApiTest
       val builder = new FetchRequestBuilder()
       for ((topic, partition) <- topics) {
         val messageList = List("a_" + topic, "b_" + topic)
-        val producerData =
-          messageList.map(new KeyedMessage[String, String](topic, topic, _))
+        val producerData = messageList.map(
+          new KeyedMessage[String, String](topic, topic, _))
         messages += topic -> messageList
         producer.send(producerData: _*)
         builder.addFetch(topic, partition, 0, 10000)
@@ -219,8 +219,8 @@ class PrimitiveApiTest
     val builder = new FetchRequestBuilder()
     for ((topic, partition) <- topics) {
       val messageList = List("a_" + topic, "b_" + topic)
-      val producerData =
-        messageList.map(new KeyedMessage[String, String](topic, topic, _))
+      val producerData = messageList.map(
+        new KeyedMessage[String, String](topic, topic, _))
       messages += topic -> messageList
       producer.send(producerData: _*)
       builder.addFetch(topic, partition, 0, 10000)
@@ -264,8 +264,8 @@ class PrimitiveApiTest
       TestUtils.createTopic(zkUtils, topic, servers = servers))
     val props = new Properties()
     props.put("request.required.acks", "0")
-    val pipelinedProducer: Producer[String, String] =
-      TestUtils.createProducer[String, String](
+    val pipelinedProducer: Producer[String, String] = TestUtils
+      .createProducer[String, String](
         TestUtils.getBrokerListStrFromServers(servers),
         encoder = classOf[StringEncoder].getName,
         keyEncoder = classOf[StringEncoder].getName,
@@ -278,8 +278,8 @@ class PrimitiveApiTest
     val builder = new FetchRequestBuilder()
     for ((topic, partition) <- topics) {
       val messageList = List("a_" + topic, "b_" + topic)
-      val producerData =
-        messageList.map(new KeyedMessage[String, String](topic, topic, _))
+      val producerData = messageList.map(
+        new KeyedMessage[String, String](topic, topic, _))
       messages += topic -> messageList
       pipelinedProducer.send(producerData: _*)
       builder.addFetch(topic, partition, 0, 10000)

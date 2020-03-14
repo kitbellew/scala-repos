@@ -53,19 +53,20 @@ abstract class ActorSystemActivator extends BundleActivator {
     * @param  system  the ActorSystem to be advertised
     */
   def addLogServiceListener(context: BundleContext, system: ActorSystem) {
-    val logServiceListner = new ServiceListener {
-      def serviceChanged(event: ServiceEvent) {
-        event.getType match {
-          case ServiceEvent.REGISTERED ⇒
-            system.eventStream.publish(
-              serviceForReference[LogService](
-                context,
-                event.getServiceReference))
-          case ServiceEvent.UNREGISTERING ⇒
-            system.eventStream.publish(UnregisteringLogService)
+    val logServiceListner =
+      new ServiceListener {
+        def serviceChanged(event: ServiceEvent) {
+          event.getType match {
+            case ServiceEvent.REGISTERED ⇒
+              system.eventStream.publish(
+                serviceForReference[LogService](
+                  context,
+                  event.getServiceReference))
+            case ServiceEvent.UNREGISTERING ⇒
+              system.eventStream.publish(UnregisteringLogService)
+          }
         }
       }
-    }
     val filter = s"(objectclass=${classOf[LogService].getName})"
     context.addServiceListener(logServiceListner, filter)
 

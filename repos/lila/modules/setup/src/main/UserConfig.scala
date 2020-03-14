@@ -37,25 +37,26 @@ private[setup] object UserConfig {
   import HookConfig.hookConfigBSONHandler
   import FilterConfig.filterConfigBSONHandler
 
-  private[setup] implicit val userConfigBSONHandler = new BSON[UserConfig] {
+  private[setup] implicit val userConfigBSONHandler =
+    new BSON[UserConfig] {
 
-    def reads(r: BSON.Reader): UserConfig =
-      UserConfig(
-        id = r str "_id",
-        ai = r.getO[AiConfig]("ai") | AiConfig.default,
-        friend = r.getO[FriendConfig]("friend") | FriendConfig.default,
-        hook = r.getO[HookConfig]("hook") | HookConfig.default,
-        filter = r.getO[FilterConfig]("filter") | FilterConfig.default
-      )
+      def reads(r: BSON.Reader): UserConfig =
+        UserConfig(
+          id = r str "_id",
+          ai = r.getO[AiConfig]("ai") | AiConfig.default,
+          friend = r.getO[FriendConfig]("friend") | FriendConfig.default,
+          hook = r.getO[HookConfig]("hook") | HookConfig.default,
+          filter = r.getO[FilterConfig]("filter") | FilterConfig.default
+        )
 
-    def writes(w: BSON.Writer, o: UserConfig) =
-      BSONDocument(
-        "_id" -> o.id,
-        "ai" -> o.ai,
-        "friend" -> o.friend,
-        "hook" -> o.hook,
-        "filter" -> o.filter)
-  }
+      def writes(w: BSON.Writer, o: UserConfig) =
+        BSONDocument(
+          "_id" -> o.id,
+          "ai" -> o.ai,
+          "friend" -> o.friend,
+          "hook" -> o.hook,
+          "filter" -> o.filter)
+    }
 
   private[setup] val tube = BsTube(userConfigBSONHandler)
 }

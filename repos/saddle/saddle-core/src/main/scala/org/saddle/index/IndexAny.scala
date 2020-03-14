@@ -30,8 +30,8 @@ import locator.Locator
 class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
   val scalarTag = keys.scalarTag
 
-  private lazy val (lmap, IndexProperties(contiguous, monotonic)) =
-    IndexImpl.keys2map(this)
+  private lazy val (lmap, IndexProperties(contiguous, monotonic)) = IndexImpl
+    .keys2map(this)
 
   protected def locator: Locator[T] = lmap
 

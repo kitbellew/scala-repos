@@ -14,11 +14,9 @@ trait Output[T] {
 
 class StringOutput extends Output[String] {
 
-  private val buf =
-    new StringBuilder()
+  private val buf = new StringBuilder()
 
-  def result(): String =
-    buf.toString
+  def result(): String = buf.toString
 
   def put(obj: String): this.type = {
     buf ++= obj

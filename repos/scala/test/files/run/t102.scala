@@ -11,11 +11,12 @@ object Test {
     def apply(y: x.Arg) = x.makeProd(y)
   }
 
-  val myFoo = new Foo {
-    type Arg = Int
-    type Prod = (Int, Int)
-    def makeProd(i: Int) = (i, i)
-  }
+  val myFoo =
+    new Foo {
+      type Arg = Int
+      type Prod = (Int, Int)
+      def makeProd(i: Int) = (i, i)
+    }
 
   def main(args: Array[String]): Unit = {
     println(f1(myFoo)(5))

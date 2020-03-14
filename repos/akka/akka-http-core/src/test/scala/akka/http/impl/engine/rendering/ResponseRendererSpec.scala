@@ -217,8 +217,8 @@ class ResponseRendererSpec
 
       "status 200 and a custom Transfer-Encoding header" in new TestSetup() {
         HttpResponse(
-          headers =
-            List(`Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
+          headers = List(
+            `Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
           entity = "All good") should renderTo {
           """HTTP/1.1 200 OK
               |Transfer-Encoding: fancy
@@ -413,12 +413,11 @@ class ResponseRendererSpec
 
       "with a custom Transfer-Encoding header" in new TestSetup() {
         HttpResponse(
-          headers =
-            List(`Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
-          entity =
-            Chunked(
-              ContentTypes.`text/plain(UTF-8)`,
-              source("Yahoooo"))) should renderTo {
+          headers = List(
+            `Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
+          entity = Chunked(
+            ContentTypes.`text/plain(UTF-8)`,
+            source("Yahoooo"))) should renderTo {
           """HTTP/1.1 200 OK
               |Transfer-Encoding: fancy, chunked
               |Server: akka-http/1.0.0
@@ -666,8 +665,8 @@ class ResponseRendererSpec
               else
                 HttpMethods.GET,
             requestProtocol = reqProto,
-            closeRequested =
-              HttpMessage.connectionCloseExpected(reqProto, reqCH)
+            closeRequested = HttpMessage
+              .connectionCloseExpected(reqProto, reqCH)
           ) should renderTo(
             s"""${resProto.value} 200 OK
                  |Server: akka-http/1.0.0

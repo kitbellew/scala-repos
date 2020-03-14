@@ -15,13 +15,14 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class SslTest extends FunSuite {
-  val certChainInput = new CertChainInput(
-    "setup-chain", // directory that contains the files below
-    "setupCA.sh",
-    "makecert.sh",
-    "openssl-intermediate.conf",
-    "openssl-root.conf"
-  )
+  val certChainInput =
+    new CertChainInput(
+      "setup-chain", // directory that contains the files below
+      "setupCA.sh",
+      "makecert.sh",
+      "openssl-intermediate.conf",
+      "openssl-root.conf"
+    )
 
   // before we run any tests, construct the chain
   try {
@@ -56,46 +57,47 @@ class SslTest extends FunSuite {
   }
 
   // the chain should have generated the files below
-  val certChain = new CertChainOutput(
-    "test.example.com.chain",
-    "test.example.com.cert",
-    "test.example.com.key",
-    "cacert.pem",
-    certChainInput.setupCADirPath.toString
-  )
+  val certChain =
+    new CertChainOutput(
+      "test.example.com.chain",
+      "test.example.com.cert",
+      "test.example.com.key",
+      "cacert.pem",
+      certChainInput.setupCADirPath.toString
+    )
 
   // now let's run some tests
   test("be able to send and receive various sized content") {
     def makeContent(length: Int): Buf =
       Buf.ByteArray.Owned(Array.fill(length)('Z'.toByte))
 
-    val service = new Service[Request, Response] {
-      def apply(request: Request) =
-        Future {
-          val requestedBytes = request.headerMap.get("Requested-Bytes") match {
-            case Some(s) => s.toInt
-            case None    => 17280
+    val service =
+      new Service[Request, Response] {
+        def apply(request: Request) =
+          Future {
+            val requestedBytes =
+              request.headerMap.get("Requested-Bytes") match {
+                case Some(s) => s.toInt
+                case None    => 17280
+              }
+            val response = Response(Version.Http11, Status.Ok)
+            request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
+              response.headerMap.set("X-Transport-Cipher", cipher)
+            }
+            response.content = makeContent(requestedBytes)
+            response.contentLength = requestedBytes
+            response
           }
-          val response = Response(Version.Http11, Status.Ok)
-          request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
-            response.headerMap.set("X-Transport-Cipher", cipher)
-          }
-          response.content = makeContent(requestedBytes)
-          response.contentLength = requestedBytes
-          response
-        }
-    }
+      }
 
-    val codec =
-      Http().annotateCipherHeader("X-Transport-Cipher")
+    val codec = Http().annotateCipherHeader("X-Transport-Cipher")
 
-    val server =
-      ServerBuilder()
-        .codec(codec)
-        .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .tls(certChain.certPath, certChain.keyPath)
-        .name("SSLServer")
-        .build(service)
+    val server = ServerBuilder()
+      .codec(codec)
+      .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+      .tls(certChain.certPath, certChain.keyPath)
+      .name("SSLServer")
+      .build(service)
 
     def client =
       ClientBuilder()
@@ -140,29 +142,30 @@ class SslTest extends FunSuite {
 
   test("be able to validate a properly constructed authentication chain") {
     // ... spin up an SSL server ...
-    val service = new Service[Request, Response] {
-      def apply(request: Request) =
-        Future {
-          def makeContent(length: Int): Buf =
-            Buf.ByteArray.Owned(Array.fill(length)('Z'.toByte))
+    val service =
+      new Service[Request, Response] {
+        def apply(request: Request) =
+          Future {
+            def makeContent(length: Int): Buf =
+              Buf.ByteArray.Owned(Array.fill(length)('Z'.toByte))
 
-          val requestedBytes = request.headerMap.get("Requested-Bytes") match {
-            case Some(s) => s.toInt
-            case None    => 17280
+            val requestedBytes =
+              request.headerMap.get("Requested-Bytes") match {
+                case Some(s) => s.toInt
+                case None    => 17280
+              }
+            val response = Response(Version.Http11, Status.Ok)
+            request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
+              response.headerMap.set("X-Transport-Cipher", cipher)
+            }
+            response.content = makeContent(requestedBytes)
+            response.contentLength = requestedBytes
+
+            response
           }
-          val response = Response(Version.Http11, Status.Ok)
-          request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
-            response.headerMap.set("X-Transport-Cipher", cipher)
-          }
-          response.content = makeContent(requestedBytes)
-          response.contentLength = requestedBytes
+      }
 
-          response
-        }
-    }
-
-    val codec =
-      Http().annotateCipherHeader("X-Transport-Cipher")
+    val codec = Http().annotateCipherHeader("X-Transport-Cipher")
 
     val server = ServerBuilder()
       .codec(codec)
@@ -234,14 +237,22 @@ class CertChainInput(
     Resources.asByteSource(url).copyTo(GuavaFiles.asByteSink(newFile))
     newFile
   }
-  val setupCAFile =
-    writeResourceToDir(getClass, setupCAFilename, setupCADirPath)
-  val makeCertFile =
-    writeResourceToDir(getClass, makeCertFilename, setupCADirPath)
-  val openSSLIntConfFile =
-    writeResourceToDir(getClass, openSSLIntConfFilename, setupCADirPath)
-  val openSSLRootConfFile =
-    writeResourceToDir(getClass, openSSLRootConfFilename, setupCADirPath)
+  val setupCAFile = writeResourceToDir(
+    getClass,
+    setupCAFilename,
+    setupCADirPath)
+  val makeCertFile = writeResourceToDir(
+    getClass,
+    makeCertFilename,
+    setupCADirPath)
+  val openSSLIntConfFile = writeResourceToDir(
+    getClass,
+    openSSLIntConfFilename,
+    setupCADirPath)
+  val openSSLRootConfFile = writeResourceToDir(
+    getClass,
+    openSSLRootConfFilename,
+    setupCADirPath)
 
   val setupCAPath: String = setupCAFile.getAbsolutePath
   val makeCertPath: String = makeCertFile.getAbsolutePath

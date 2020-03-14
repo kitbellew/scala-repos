@@ -133,8 +133,8 @@ private[akka] class IteratorInterpreter[I, O](
     val inOwners = Array.ofDim[Int](length + 1)
     val outs = Array.ofDim[Outlet[_]](length + 1)
     val outOwners = Array.ofDim[Int](length + 1)
-    val stages =
-      Array.ofDim[GraphStageWithMaterializedValue[Shape, Any]](length)
+    val stages = Array.ofDim[GraphStageWithMaterializedValue[Shape, Any]](
+      length)
 
     ins(ops.length) = null
     inOwners(ops.length) = Boundary
@@ -155,24 +155,24 @@ private[akka] class IteratorInterpreter[I, O](
     val assembly =
       new GraphAssembly(stages, attributes, ins, inOwners, outs, outOwners)
 
-    val (inHandlers, outHandlers, logics) =
-      assembly.materialize(
-        Attributes.none,
-        assembly.stages.map(_.module),
-        new ju.HashMap,
-        _ ⇒ ())
-    val interpreter = new GraphInterpreter(
-      assembly,
-      NoMaterializer,
-      NoLogging,
-      inHandlers,
-      outHandlers,
-      logics,
-      (_, _, _) ⇒
-        throw new UnsupportedOperationException(
-          "IteratorInterpreter does not support asynchronous events."),
-      fuzzingMode = false,
-      null)
+    val (inHandlers, outHandlers, logics) = assembly.materialize(
+      Attributes.none,
+      assembly.stages.map(_.module),
+      new ju.HashMap,
+      _ ⇒ ())
+    val interpreter =
+      new GraphInterpreter(
+        assembly,
+        NoMaterializer,
+        NoLogging,
+        inHandlers,
+        outHandlers,
+        logics,
+        (_, _, _) ⇒
+          throw new UnsupportedOperationException(
+            "IteratorInterpreter does not support asynchronous events."),
+        fuzzingMode = false,
+        null)
     interpreter.attachUpstreamBoundary(0, upstream)
     interpreter.attachDownstreamBoundary(ops.length, downstream)
     interpreter.init(null)

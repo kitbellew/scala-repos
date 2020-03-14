@@ -46,8 +46,7 @@ final class ESClientHttp(endpoint: String, val index: Index, writeable: Boolean)
     writeable ??
       HTTP(s"delete/ids/${index.name}", Json.obj("ids" -> ids.map(_.value)))
 
-  def putMapping =
-    HTTP(s"mapping/${index.name}/${index.name}", Json.obj())
+  def putMapping = HTTP(s"mapping/${index.name}/${index.name}", Json.obj())
 
   def storeBulk(docs: Seq[(Id, JsObject)]) =
     HTTP(

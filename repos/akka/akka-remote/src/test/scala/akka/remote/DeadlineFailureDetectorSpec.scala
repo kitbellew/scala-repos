@@ -98,8 +98,8 @@ class DeadlineFailureDetectorSpec extends AkkaSpec {
     }
 
     "fail after configured acceptable missing heartbeats" in {
-      val timeInterval =
-        List[Long](0, 1000, 1000, 1000, 1000, 1000, 500, 500, 5000)
+      val timeInterval = List[Long](0, 1000, 1000, 1000, 1000, 1000, 500, 500,
+        5000)
       val fd = createFailureDetector(
         acceptableLostDuration = 4.seconds,
         clock = fakeTimeGenerator(timeInterval))

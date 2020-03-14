@@ -99,8 +99,8 @@ object ClassHelpersSpec extends Specification {
       callableMethod_?(publicParameterLess) must beTrue
     }
     "return false if the method is public and has parameters" in {
-      val publicWithParameters =
-        classOf[String].getMethod("indexOf", classOf[String])
+      val publicWithParameters = classOf[String]
+        .getMethod("indexOf", classOf[String])
       callableMethod_?(publicWithParameters) must beFalse
     }
     "return false if the method is private" in {

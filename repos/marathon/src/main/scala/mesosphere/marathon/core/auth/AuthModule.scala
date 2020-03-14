@@ -19,8 +19,8 @@ class AuthModule(pluginManager: PluginManager) {
     plugins.headOption
   }
 
-  lazy val authorizer: Authorizer =
-    pluginOption[Authorizer].getOrElse(AuthAllowEverything)
-  lazy val authenticator: Authenticator =
-    pluginOption[Authenticator].getOrElse(AuthAllowEverything)
+  lazy val authorizer: Authorizer = pluginOption[Authorizer].getOrElse(
+    AuthAllowEverything)
+  lazy val authenticator: Authenticator = pluginOption[Authenticator].getOrElse(
+    AuthAllowEverything)
 }

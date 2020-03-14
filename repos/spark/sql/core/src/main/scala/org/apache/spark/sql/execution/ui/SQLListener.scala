@@ -55,8 +55,9 @@ private[sql] class SQLListener(conf: SparkConf)
     extends SparkListener
     with Logging {
 
-  private val retainedExecutions =
-    conf.getInt("spark.sql.ui.retainedExecutions", 1000)
+  private val retainedExecutions = conf.getInt(
+    "spark.sql.ui.retainedExecutions",
+    1000)
 
   private val activeExecutions = mutable.HashMap[Long, SQLExecutionUIData]()
 
@@ -111,8 +112,8 @@ private[sql] class SQLListener(conf: SparkConf)
   }
 
   override def onJobStart(jobStart: SparkListenerJobStart): Unit = {
-    val executionIdString =
-      jobStart.properties.getProperty(SQLExecution.EXECUTION_ID_KEY)
+    val executionIdString = jobStart.properties.getProperty(
+      SQLExecution.EXECUTION_ID_KEY)
     if (executionIdString == null) {
       // This is not a job created by SQL
       return
@@ -259,14 +260,15 @@ private[sql] class SQLListener(conf: SparkConf)
         val sqlPlanMetrics = physicalPlanGraph.allNodes.flatMap { node =>
           node.metrics.map(metric => metric.accumulatorId -> metric)
         }
-        val executionUIData = new SQLExecutionUIData(
-          executionId,
-          description,
-          details,
-          physicalPlanDescription,
-          physicalPlanGraph,
-          sqlPlanMetrics.toMap,
-          time)
+        val executionUIData =
+          new SQLExecutionUIData(
+            executionId,
+            description,
+            details,
+            physicalPlanDescription,
+            physicalPlanGraph,
+            sqlPlanMetrics.toMap,
+            time)
         synchronized {
           activeExecutions(executionId) = executionUIData
           _executionIdToData(executionId) = executionUIData
@@ -392,8 +394,9 @@ private[spark] class SQLHistoryListener(conf: SparkConf, sparkUI: SparkUI)
           // Filter out accumulators that are not SQL metrics
           // For now we assume all SQL metrics are Long's that have been JSON serialized as String's
           if (a.metadata == Some(SQLMetrics.ACCUM_IDENTIFIER)) {
-            val newValue = new LongSQLMetricValue(
-              a.update.map(_.toString.toLong).getOrElse(0L))
+            val newValue =
+              new LongSQLMetricValue(
+                a.update.map(_.toString.toLong).getOrElse(0L))
             Some(a.copy(update = Some(newValue)))
           } else {
             None

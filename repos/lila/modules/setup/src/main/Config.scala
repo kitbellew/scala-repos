@@ -65,19 +65,20 @@ trait Positional { self: Config =>
   def fenGame(builder: ChessGame => Game): Game = {
     val baseState =
       fen ifTrue (variant == chess.variant.FromPosition) flatMap Forsyth.<<<
-    val (chessGame, state) = baseState.fold(makeGame -> none[SituationPlus]) {
-      case sit @ SituationPlus(Situation(board, color), _) =>
-        val game = ChessGame(
-          board = board,
-          player = color,
-          turns = sit.turns,
-          startedAtTurn = sit.turns,
-          clock = makeClock)
-        if (Forsyth.>>(game) == Forsyth.initial)
-          makeGame(chess.variant.Standard) -> none
-        else
-          game -> baseState
-    }
+    val (chessGame, state) =
+      baseState.fold(makeGame -> none[SituationPlus]) {
+        case sit @ SituationPlus(Situation(board, color), _) =>
+          val game = ChessGame(
+            board = board,
+            player = color,
+            turns = sit.turns,
+            startedAtTurn = sit.turns,
+            clock = makeClock)
+          if (Forsyth.>>(game) == Forsyth.initial)
+            makeGame(chess.variant.Standard) -> none
+          else
+            game -> baseState
+      }
     val game = builder(chessGame)
     state.fold(game) {
       case sit @ SituationPlus(Situation(board, _), _) =>

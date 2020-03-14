@@ -48,8 +48,7 @@ abstract class Duplicators extends Analyzer {
     new BodyDuplicator(context)
 
   /** Return the special typer for duplicate method bodies. */
-  override def newTyper(context: Context): Typer =
-    newBodyDuplicator(context)
+  override def newTyper(context: Context): Typer = newBodyDuplicator(context)
 
   private def resetClassOwners() {
     oldClassOwner = null
@@ -69,8 +68,8 @@ abstract class Duplicators extends Analyzer {
         sym1 eq sym2
   }
 
-  private val invalidSyms: mutable.Map[Symbol, Tree] =
-    perRunCaches.newMap[Symbol, Tree]()
+  private val invalidSyms: mutable.Map[Symbol, Tree] = perRunCaches
+    .newMap[Symbol, Tree]()
 
   /** A typer that creates new symbols for all definitions in the given tree
     *  and updates references to them while re-typechecking. All types in the
@@ -140,10 +139,11 @@ abstract class Duplicators extends Analyzer {
     def fixType(tpe: Type): Type = {
       val tpe1 = envSubstitution(tpe)
       val tpe2: Type = (new FixInvalidSyms)(tpe1)
-      val tpe3 = if (newClassOwner ne null) {
-        tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
-      } else
-        tpe2
+      val tpe3 =
+        if (newClassOwner ne null) {
+          tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
+        } else
+          tpe2
       tpe3
     }
 

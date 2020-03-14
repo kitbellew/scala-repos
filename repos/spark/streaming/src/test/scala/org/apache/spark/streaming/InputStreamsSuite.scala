@@ -189,8 +189,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         }
 
         val expectedOutput = input.map(i => i.toByte)
-        val obtainedOutput =
-          outputQueue.asScala.flatten.toList.map(i => i(0).toByte)
+        val obtainedOutput = outputQueue.asScala.flatten.toList.map(i =>
+          i(0).toByte)
         assert(obtainedOutput.toSeq === expectedOutput)
       }
     } finally {
@@ -363,10 +363,13 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       }
 
       // Register input streams
-      val receiverInputStreams =
-        Array(new TestReceiverInputDStream, new TestReceiverInputDStream)
-      val inputStreams =
-        Array(new TestInputDStream, new TestInputDStream, new TestInputDStream)
+      val receiverInputStreams = Array(
+        new TestReceiverInputDStream,
+        new TestReceiverInputDStream)
+      val inputStreams = Array(
+        new TestInputDStream,
+        new TestInputDStream,
+        new TestInputDStream)
 
       assert(
         ssc.graph.getInputStreams().length ==
@@ -432,11 +435,12 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         }
 
         // Verify that all the files have been read
-        val expectedOutput = if (newFilesOnly) {
-          input.map(_.toString).toSet
-        } else {
-          (Seq(0) ++ input).map(_.toString).toSet
-        }
+        val expectedOutput =
+          if (newFilesOnly) {
+            input.map(_.toString).toSet
+          } else {
+            (Seq(0) ++ input).map(_.toString).toSet
+          }
         assert(outputQueue.asScala.flatten.toSet === expectedOutput)
       }
     } finally {
@@ -455,54 +459,56 @@ class TestServer(portToBind: Int = 0) extends Logging {
 
   private val startLatch = new CountDownLatch(1)
 
-  val servingThread = new Thread() {
-    override def run() {
-      try {
-        while (true) {
-          logInfo("Accepting connections on port " + port)
-          val clientSocket = serverSocket.accept()
-          if (startLatch.getCount == 1) {
-            // The first connection is a test connection to implement "waitForStart", so skip it
-            // and send a signal
-            if (!clientSocket.isClosed) {
-              clientSocket.close()
-            }
-            startLatch.countDown()
-          } else {
-            // Real connections
-            logInfo("New connection")
-            try {
-              clientSocket.setTcpNoDelay(true)
-              val outputStream = new BufferedWriter(
-                new OutputStreamWriter(
-                  clientSocket.getOutputStream,
-                  StandardCharsets.UTF_8))
-
-              while (clientSocket.isConnected) {
-                val msg = queue.poll(100, TimeUnit.MILLISECONDS)
-                if (msg != null) {
-                  outputStream.write(msg)
-                  outputStream.flush()
-                  logInfo("Message '" + msg + "' sent")
-                }
-              }
-            } catch {
-              case e: SocketException => logError("TestServer error", e)
-            } finally {
-              logInfo("Connection closed")
+  val servingThread =
+    new Thread() {
+      override def run() {
+        try {
+          while (true) {
+            logInfo("Accepting connections on port " + port)
+            val clientSocket = serverSocket.accept()
+            if (startLatch.getCount == 1) {
+              // The first connection is a test connection to implement "waitForStart", so skip it
+              // and send a signal
               if (!clientSocket.isClosed) {
                 clientSocket.close()
               }
+              startLatch.countDown()
+            } else {
+              // Real connections
+              logInfo("New connection")
+              try {
+                clientSocket.setTcpNoDelay(true)
+                val outputStream =
+                  new BufferedWriter(
+                    new OutputStreamWriter(
+                      clientSocket.getOutputStream,
+                      StandardCharsets.UTF_8))
+
+                while (clientSocket.isConnected) {
+                  val msg = queue.poll(100, TimeUnit.MILLISECONDS)
+                  if (msg != null) {
+                    outputStream.write(msg)
+                    outputStream.flush()
+                    logInfo("Message '" + msg + "' sent")
+                  }
+                }
+              } catch {
+                case e: SocketException => logError("TestServer error", e)
+              } finally {
+                logInfo("Connection closed")
+                if (!clientSocket.isClosed) {
+                  clientSocket.close()
+                }
+              }
             }
           }
+        } catch {
+          case ie: InterruptedException =>
+        } finally {
+          serverSocket.close()
         }
-      } catch {
-        case ie: InterruptedException =>
-      } finally {
-        serverSocket.close()
       }
     }
-  }
 
   def start(): Unit = {
     servingThread.start()
@@ -548,16 +554,17 @@ class MultiThreadTestReceiver(numThreads: Int, numRecordsPerThread: Int)
 
   def onStart() {
     (1 to numThreads).map(threadId => {
-      val runnable = new Runnable {
-        def run() {
-          (1 to numRecordsPerThread).foreach(i =>
-            store(threadId * numRecordsPerThread + i))
-          if (finishCount.incrementAndGet == numThreads) {
-            MultiThreadTestReceiver.haveAllThreadsFinished = true
+      val runnable =
+        new Runnable {
+          def run() {
+            (1 to numRecordsPerThread).foreach(i =>
+              store(threadId * numRecordsPerThread + i))
+            if (finishCount.incrementAndGet == numThreads) {
+              MultiThreadTestReceiver.haveAllThreadsFinished = true
+            }
+            logInfo("Finished thread " + threadId)
           }
-          logInfo("Finished thread " + threadId)
         }
-      }
       executorPool.submit(runnable)
     })
   }

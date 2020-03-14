@@ -29,9 +29,10 @@ class FilterTest extends FunSuite {
 
     val filter = stringToInt andThen intToString
 
-    val service = new Service[Int, Int] {
-      def apply(request: Int) = Future(2 * request.intValue)
-    }
+    val service =
+      new Service[Int, Int] {
+        def apply(request: Int) = Future(2 * request.intValue)
+      }
 
     val result = (filter andThen service)(123)
 
@@ -46,11 +47,12 @@ class FilterTest extends FunSuite {
 
     // set up
     val e = new RuntimeException("yargs")
-    val exceptionThrowingService = new Service[Int, Int] {
-      def apply(request: Int) = {
-        throw e
+    val exceptionThrowingService =
+      new Service[Int, Int] {
+        def apply(request: Int) = {
+          throw e
+        }
       }
-    }
 
     assert(
       Try(
@@ -66,11 +68,12 @@ class FilterTest extends FunSuite {
 
     // set up
     val e = new RuntimeException("yargs")
-    val exceptionThrowingService = new Service[Int, Int] {
-      def apply(request: Int) = {
-        throw e
+    val exceptionThrowingService =
+      new Service[Int, Int] {
+        def apply(request: Int) = {
+          throw e
+        }
       }
-    }
 
     assert(
       Try(

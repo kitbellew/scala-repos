@@ -127,11 +127,12 @@ object ScalaOverridingMemberSearcher {
       case _ => return Array[PsiNamedElement]()
     }
 
-    val parentClass = member match {
-      case m: PsiMethod => m.containingClass
-      case x: PsiNamedElement =>
-        PsiTreeUtil.getParentOfType(x, classOf[ScTemplateDefinition])
-    }
+    val parentClass =
+      member match {
+        case m: PsiMethod => m.containingClass
+        case x: PsiNamedElement =>
+          PsiTreeUtil.getParentOfType(x, classOf[ScTemplateDefinition])
+      }
     val buffer = new ArrayBuffer[PsiNamedElement]
 
     def process(inheritor: PsiClass): Boolean = {
@@ -174,8 +175,8 @@ object ScalaOverridingMemberSearcher {
             while (signsIterator.hasNext) {
               val (
                 t: Signature,
-                node: TypeDefinitionMembers.SignatureNodes.Node) =
-                signsIterator.next()
+                node: TypeDefinitionMembers.SignatureNodes.Node) = signsIterator
+                .next()
               if (PsiTreeUtil.getParentOfType(
                     t.namedElement,
                     classOf[PsiClass]) == inheritor) {

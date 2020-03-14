@@ -12,8 +12,9 @@ import akka.cluster.sharding.Shard
 class ClusterShardingMessageSerializerSpec extends AkkaSpec {
   import ShardCoordinator.Internal._
 
-  val serializer = new ClusterShardingMessageSerializer(
-    system.asInstanceOf[ExtendedActorSystem])
+  val serializer =
+    new ClusterShardingMessageSerializer(
+      system.asInstanceOf[ExtendedActorSystem])
 
   val region1 = system.actorOf(Props.empty, "region1")
   val region2 = system.actorOf(Props.empty, "region2")

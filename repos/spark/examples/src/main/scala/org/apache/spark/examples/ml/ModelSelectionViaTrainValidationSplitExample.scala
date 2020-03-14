@@ -28,8 +28,8 @@ import org.apache.spark.sql.SQLContext
 object ModelSelectionViaTrainValidationSplitExample {
 
   def main(args: Array[String]): Unit = {
-    val conf =
-      new SparkConf().setAppName("ModelSelectionViaTrainValidationSplitExample")
+    val conf = new SparkConf()
+      .setAppName("ModelSelectionViaTrainValidationSplitExample")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 

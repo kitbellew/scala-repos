@@ -70,8 +70,8 @@ class WorksheetEditorPrinter(
   private var inited = false
   private var cutoffPrinted = false
 
-  private val viewerFolding =
-    worksheetViewer.getFoldingModel.asInstanceOf[FoldingModelImpl]
+  private val viewerFolding = worksheetViewer.getFoldingModel
+    .asInstanceOf[FoldingModelImpl]
   private lazy val group =
     new WorksheetFoldGroup(
       getViewerEditor,
@@ -388,11 +388,11 @@ object WorksheetEditorPrinter {
   val BULK_COUNT = 15
   val IDLE_TIME_MLS = 1000
 
-  val DIFF_SPLITTER_KEY =
-    Key.create[WorksheetDiffSplitters.SimpleWorksheetSplitter](
+  val DIFF_SPLITTER_KEY = Key
+    .create[WorksheetDiffSplitters.SimpleWorksheetSplitter](
       "SimpleWorksheetViewerSplitter")
-  val DIFF_SYNC_SUPPORT =
-    Key.create[SyncScrollSupport]("WorksheetSyncScrollSupport")
+  val DIFF_SYNC_SUPPORT = Key.create[SyncScrollSupport](
+    "WorksheetSyncScrollSupport")
 
   private val LAST_WORKSHEET_RUN_RESULT =
     new FileAttribute("LastWorksheetRunResult", 2, false)
@@ -672,8 +672,9 @@ object WorksheetEditorPrinter {
 
   private def createBlankEditor(project: Project): Editor = {
     val factory: EditorFactory = EditorFactory.getInstance
-    val editor: Editor =
-      factory.createViewer(factory createDocument "", project)
+    val editor: Editor = factory.createViewer(
+      factory createDocument "",
+      project)
     editor setBorder null
     editor.getContentComponent.getParent match {
       case jComp: JComponent =>

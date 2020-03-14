@@ -42,26 +42,27 @@ private[akka] class Mailboxes(
 
   import Mailboxes._
 
-  val deadLetterMailbox: Mailbox = new Mailbox(new MessageQueue {
-    def enqueue(receiver: ActorRef, envelope: Envelope): Unit =
-      envelope.message match {
-        case _: DeadLetter ⇒ // actor subscribing to DeadLetter, drop it
-        case msg ⇒
-          deadLetters
-            .tell(DeadLetter(msg, envelope.sender, receiver), envelope.sender)
-      }
-    def dequeue() = null
-    def hasMessages = false
-    def numberOfMessages = 0
-    def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = ()
-  }) {
-    becomeClosed()
-    def systemEnqueue(receiver: ActorRef, handle: SystemMessage): Unit =
-      deadLetters ! DeadLetter(handle, receiver, receiver)
-    def systemDrain(newContents: LatestFirstSystemMessageList)
-        : EarliestFirstSystemMessageList = SystemMessageList.ENil
-    def hasSystemMessages = false
-  }
+  val deadLetterMailbox: Mailbox =
+    new Mailbox(new MessageQueue {
+      def enqueue(receiver: ActorRef, envelope: Envelope): Unit =
+        envelope.message match {
+          case _: DeadLetter ⇒ // actor subscribing to DeadLetter, drop it
+          case msg ⇒
+            deadLetters
+              .tell(DeadLetter(msg, envelope.sender, receiver), envelope.sender)
+        }
+      def dequeue() = null
+      def hasMessages = false
+      def numberOfMessages = 0
+      def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = ()
+    }) {
+      becomeClosed()
+      def systemEnqueue(receiver: ActorRef, handle: SystemMessage): Unit =
+        deadLetters ! DeadLetter(handle, receiver, receiver)
+      def systemDrain(newContents: LatestFirstSystemMessageList)
+          : EarliestFirstSystemMessageList = SystemMessageList.ENil
+      def hasSystemMessages = false
+    }
 
   private val mailboxTypeConfigurators =
     new ConcurrentHashMap[String, MailboxType]
@@ -225,51 +226,53 @@ private[akka] class Mailboxes(
     mailboxTypeConfigurators.get(id) match {
       case null ⇒
         // It doesn't matter if we create a mailbox type configurator that isn't used due to concurrent lookup.
-        val newConfigurator = id match {
-          // TODO RK remove these two for Akka 2.3
-          case "unbounded" ⇒ UnboundedMailbox()
-          case "bounded" ⇒ new BoundedMailbox(settings, config(id))
-          case _ ⇒
-            if (!settings.config.hasPath(id))
-              throw new ConfigurationException(
-                s"Mailbox Type [${id}] not configured")
-            val conf = config(id)
-
-            val mailboxType = conf.getString("mailbox-type") match {
-              case "" ⇒
+        val newConfigurator =
+          id match {
+            // TODO RK remove these two for Akka 2.3
+            case "unbounded" ⇒ UnboundedMailbox()
+            case "bounded" ⇒ new BoundedMailbox(settings, config(id))
+            case _ ⇒
+              if (!settings.config.hasPath(id))
                 throw new ConfigurationException(
-                  s"The setting mailbox-type, defined in [$id] is empty")
-              case fqcn ⇒
-                val args = List(
-                  classOf[ActorSystem.Settings] -> settings,
-                  classOf[Config] -> conf)
-                dynamicAccess
-                  .createInstanceFor[MailboxType](fqcn, args)
-                  .recover({
-                    case exception ⇒
-                      throw new IllegalArgumentException(
-                        s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
-                          " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
-                        exception)
-                  })
-                  .get
-            }
+                  s"Mailbox Type [${id}] not configured")
+              val conf = config(id)
 
-            if (!mailboxNonZeroPushTimeoutWarningIssued) {
-              mailboxType match {
-                case m: ProducesPushTimeoutSemanticsMailbox
-                    if m.pushTimeOut.toNanos > 0L ⇒
-                  warn(
-                    s"Configured potentially-blocking mailbox [$id] configured with non-zero pushTimeOut (${m.pushTimeOut}), " +
-                      s"which can lead to blocking behaviour when sending messages to this mailbox. " +
-                      s"Avoid this by setting `$id.mailbox-push-timeout-time` to `0`.")
-                  mailboxNonZeroPushTimeoutWarningIssued = true
-                case _ ⇒ // good; nothing to see here, move along, sir.
+              val mailboxType =
+                conf.getString("mailbox-type") match {
+                  case "" ⇒
+                    throw new ConfigurationException(
+                      s"The setting mailbox-type, defined in [$id] is empty")
+                  case fqcn ⇒
+                    val args = List(
+                      classOf[ActorSystem.Settings] -> settings,
+                      classOf[Config] -> conf)
+                    dynamicAccess
+                      .createInstanceFor[MailboxType](fqcn, args)
+                      .recover({
+                        case exception ⇒
+                          throw new IllegalArgumentException(
+                            s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
+                              " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
+                            exception)
+                      })
+                      .get
+                }
+
+              if (!mailboxNonZeroPushTimeoutWarningIssued) {
+                mailboxType match {
+                  case m: ProducesPushTimeoutSemanticsMailbox
+                      if m.pushTimeOut.toNanos > 0L ⇒
+                    warn(
+                      s"Configured potentially-blocking mailbox [$id] configured with non-zero pushTimeOut (${m.pushTimeOut}), " +
+                        s"which can lead to blocking behaviour when sending messages to this mailbox. " +
+                        s"Avoid this by setting `$id.mailbox-push-timeout-time` to `0`.")
+                    mailboxNonZeroPushTimeoutWarningIssued = true
+                  case _ ⇒ // good; nothing to see here, move along, sir.
+                }
               }
-            }
 
-            mailboxType
-        }
+              mailboxType
+          }
 
         mailboxTypeConfigurators.putIfAbsent(id, newConfigurator) match {
           case null ⇒ newConfigurator
@@ -296,10 +299,9 @@ private[akka] class Mailboxes(
 
   private val stashCapacityCache =
     new AtomicReference[Map[String, Int]](Map.empty[String, Int])
-  private val defaultStashCapacity: Int =
-    stashCapacityFromConfig(
-      Dispatchers.DefaultDispatcherId,
-      Mailboxes.DefaultMailboxId)
+  private val defaultStashCapacity: Int = stashCapacityFromConfig(
+    Dispatchers.DefaultDispatcherId,
+    Mailboxes.DefaultMailboxId)
 
   /**
     * INTERNAL API: The capacity of the stash. Configured in the actor's mailbox or dispatcher config.
@@ -335,8 +337,8 @@ private[akka] class Mailboxes(
       dispatcher: String,
       mailbox: String): Int = {
     val disp = settings.config.getConfig(dispatcher)
-    val fallback =
-      disp.withFallback(settings.config.getConfig(Mailboxes.DefaultMailboxId))
+    val fallback = disp.withFallback(
+      settings.config.getConfig(Mailboxes.DefaultMailboxId))
     val config =
       if (mailbox == Mailboxes.DefaultMailboxId)
         fallback

@@ -64,12 +64,13 @@ class TaskFailureRepositoryTest
 
   class Fixture {
     lazy val inMemoryStore = new InMemoryStore()
-    lazy val entityStore = new MarathonStore[TaskFailure](
-      inMemoryStore,
-      metrics,
-      () => TaskFailure.empty,
-      prefix = "taskFailure:"
-    )
+    lazy val entityStore =
+      new MarathonStore[TaskFailure](
+        inMemoryStore,
+        metrics,
+        () => TaskFailure.empty,
+        prefix = "taskFailure:"
+      )
     lazy val metricRegistry = new MetricRegistry
     lazy val metrics = new Metrics(metricRegistry)
     lazy val taskFailureRepo =

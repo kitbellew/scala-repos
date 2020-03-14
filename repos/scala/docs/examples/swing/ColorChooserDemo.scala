@@ -23,38 +23,42 @@ object ColorChooserDemo extends SimpleSwingApplication {
 
   def ui =
     new BorderPanel {
-      val colorChooser = new ColorChooser {
-        reactions += {
-          case ColorChanged(_, c) =>
-            banner.foreground = c
+      val colorChooser =
+        new ColorChooser {
+          reactions += {
+            case ColorChanged(_, c) =>
+              banner.foreground = c
+          }
         }
-      }
 
       colorChooser.border = TitledBorder(EtchedBorder, "Choose Text Color")
 
-      val banner = new Label("Welcome to Scala Swing") {
-        horizontalAlignment = Alignment.Center
-        foreground = Color.yellow
-        background = Color.blue
-        opaque = true
-        font = new Font("SansSerif", Font.BOLD, 24)
-      }
+      val banner =
+        new Label("Welcome to Scala Swing") {
+          horizontalAlignment = Alignment.Center
+          foreground = Color.yellow
+          background = Color.blue
+          opaque = true
+          font = new Font("SansSerif", Font.BOLD, 24)
+        }
 
-      val bannerArea = new BorderPanel {
-        layout(banner) = Position.Center
-        border = TitledBorder(EtchedBorder, "Banner")
-      }
+      val bannerArea =
+        new BorderPanel {
+          layout(banner) = Position.Center
+          border = TitledBorder(EtchedBorder, "Banner")
+        }
 
       // Display a color selection dialog when button pressed
-      val selectColor = new Button("Choose Background Color") {
-        reactions += {
-          case ButtonClicked(_) =>
-            ColorChooser.showDialog(this, "Test", Color.red) match {
-              case Some(c) => banner.background = c
-              case None    =>
-            }
+      val selectColor =
+        new Button("Choose Background Color") {
+          reactions += {
+            case ButtonClicked(_) =>
+              ColorChooser.showDialog(this, "Test", Color.red) match {
+                case Some(c) => banner.background = c
+                case None    =>
+              }
+          }
         }
-      }
 
       layout(bannerArea) = Position.North
       layout(colorChooser) = Position.Center

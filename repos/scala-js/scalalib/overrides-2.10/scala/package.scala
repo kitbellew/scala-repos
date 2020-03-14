@@ -30,9 +30,10 @@ package object scala {
   type InterruptedException = java.lang.InterruptedException
 
   // A dummy used by the specialization annotation.
-  val AnyRef = new Specializable {
-    override def toString = "object AnyRef"
-  }
+  val AnyRef =
+    new Specializable {
+      override def toString = "object AnyRef"
+    }
 
   @deprecated(
     "instead of `@serializable class C`, use `class C extends Serializable`",

@@ -29,13 +29,14 @@ class AnalysisSuite extends AnalysisTest {
   import org.apache.spark.sql.catalyst.analysis.TestRelations._
 
   test("union project *") {
-    val plan = (1 to 100)
-      .map(_ => testRelation)
-      .fold[LogicalPlan](testRelation) { (a, b) =>
-        a.select(UnresolvedStar(None))
-          .select('a)
-          .unionAll(b.select(UnresolvedStar(None)))
-      }
+    val plan =
+      (1 to 100)
+        .map(_ => testRelation)
+        .fold[LogicalPlan](testRelation) { (a, b) =>
+          a.select(UnresolvedStar(None))
+            .select('a)
+            .unionAll(b.select(UnresolvedStar(None)))
+        }
 
     assertAnalysisSuccess(plan)
   }
@@ -45,8 +46,8 @@ class AnalysisSuite extends AnalysisTest {
 
     assert(!Project(Seq(UnresolvedAttribute("a")), testRelation).resolved)
 
-    val explode =
-      Explode(AttributeReference("a", IntegerType, nullable = true)())
+    val explode = Explode(
+      AttributeReference("a", IntegerType, nullable = true)())
     assert(!Project(Seq(Alias(explode, "explode")()), testRelation).resolved)
 
     assert(
@@ -223,25 +224,23 @@ class AnalysisSuite extends AnalysisTest {
   test("pull out nondeterministic expressions from RepartitionByExpression") {
     val plan = RepartitionByExpression(Seq(Rand(33)), testRelation)
     val projected = Alias(Rand(33), "_nondeterministic")()
-    val expected =
-      Project(
-        testRelation.output,
-        RepartitionByExpression(
-          Seq(projected.toAttribute),
-          Project(testRelation.output :+ projected, testRelation)))
+    val expected = Project(
+      testRelation.output,
+      RepartitionByExpression(
+        Seq(projected.toAttribute),
+        Project(testRelation.output :+ projected, testRelation)))
     checkAnalysis(plan, expected)
   }
 
   test("pull out nondeterministic expressions from Sort") {
     val plan = Sort(Seq(SortOrder(Rand(33), Ascending)), false, testRelation)
     val projected = Alias(Rand(33), "_nondeterministic")()
-    val expected =
-      Project(
-        testRelation.output,
-        Sort(
-          Seq(SortOrder(projected.toAttribute, Ascending)),
-          false,
-          Project(testRelation.output :+ projected, testRelation)))
+    val expected = Project(
+      testRelation.output,
+      Sort(
+        Seq(SortOrder(projected.toAttribute, Ascending)),
+        false,
+        Project(testRelation.output :+ projected, testRelation)))
     checkAnalysis(plan, expected)
   }
 
@@ -251,14 +250,15 @@ class AnalysisSuite extends AnalysisTest {
     var expected = testRelation.select((a + 1 + 2).as("col"))
     checkAnalysis(plan, expected)
 
-    plan = testRelation
-      .groupBy(a.as("a1").as("a2"))((min(a).as("min_a") + 1).as("col"))
+    plan =
+      testRelation
+        .groupBy(a.as("a1").as("a2"))((min(a).as("min_a") + 1).as("col"))
     expected = testRelation.groupBy(a)((min(a) + 1).as("col"))
     checkAnalysis(plan, expected)
 
     // CreateStruct is a special case that we should not trim Alias for it.
-    plan =
-      testRelation.select(CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
+    plan = testRelation.select(
+      CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
     checkAnalysis(plan, plan)
     plan = testRelation.select(
       CreateStructUnsafe(Seq(a, (a + 1).as("a+1"))).as("col"))
@@ -334,8 +334,10 @@ class AnalysisSuite extends AnalysisTest {
     checkUDF(udf2, expected2)
 
     // special null handling should apply to all primitive parameters
-    val udf3 =
-      ScalaUDF((s: Short, d: Double) => "x", StringType, short :: double :: Nil)
+    val udf3 = ScalaUDF(
+      (s: Short, d: Double) => "x",
+      StringType,
+      short :: double :: Nil)
     val expected3 = If(IsNull(short) || IsNull(double), nullResult, udf3)
     checkUDF(udf3, expected3)
 
@@ -375,24 +377,24 @@ class AnalysisSuite extends AnalysisTest {
   }
 
   test("SPARK-12102: Ignore nullablity when comparing two sides of case") {
-    val relation =
-      LocalRelation('a.struct('x.int), 'b.struct('x.int.withNullability(false)))
-    val plan =
-      relation.select(CaseWhen(Seq((Literal(true), 'a.attr)), 'b).as("val"))
+    val relation = LocalRelation(
+      'a.struct('x.int),
+      'b.struct('x.int.withNullability(false)))
+    val plan = relation.select(
+      CaseWhen(Seq((Literal(true), 'a.attr)), 'b).as("val"))
     assertAnalysisSuccess(plan)
   }
 
   test("Keep attribute qualifiers after dedup") {
     val input = LocalRelation('key.int, 'value.string)
 
-    val query =
-      Project(
-        Seq($"x.key", $"y.key"),
-        Join(
-          Project(Seq($"x.key"), SubqueryAlias("x", input)),
-          Project(Seq($"y.key"), SubqueryAlias("y", input)),
-          Inner,
-          None))
+    val query = Project(
+      Seq($"x.key", $"y.key"),
+      Join(
+        Project(Seq($"x.key"), SubqueryAlias("x", input)),
+        Project(Seq($"y.key"), SubqueryAlias("y", input)),
+        Inner,
+        None))
 
     assertAnalysisSuccess(query)
   }

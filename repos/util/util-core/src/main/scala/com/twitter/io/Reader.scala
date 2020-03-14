@@ -34,10 +34,11 @@ trait Reader {
 
 object Reader {
 
-  val Null = new Reader {
-    def read(n: Int) = Future.None
-    def discard() = ()
-  }
+  val Null =
+    new Reader {
+      def read(n: Int) = Future.None
+      def discard() = ()
+    }
 
   /**
     * Read the entire bytestream presented by `r`.

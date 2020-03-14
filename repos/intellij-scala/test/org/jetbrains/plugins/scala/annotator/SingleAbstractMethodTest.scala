@@ -25,8 +25,7 @@ class SingleAbstractMethodTest
   }
 
   def testBasicGenerics() {
-    val code =
-      """
+    val code = """
         |trait Blargle[T] {
         |  def blargle(a: T): Unit
         |}
@@ -37,8 +36,7 @@ class SingleAbstractMethodTest
   }
 
   def testTypeInference() {
-    val code =
-      """
+    val code = """
         | abstract class Foo {
         |   def bar(i: Int, j: String)
         | }
@@ -49,8 +47,7 @@ class SingleAbstractMethodTest
   }
 
   def testFunctionSAM() {
-    val code =
-      """
+    val code = """
         |def z() = println()
         |val y: Runnable = z
       """.stripMargin
@@ -58,8 +55,7 @@ class SingleAbstractMethodTest
   }
 
   def testFunctionNegOne() {
-    val code =
-      """
+    val code = """
         |def z(): Unit = println()
         |val y: Runnable = z()
       """.stripMargin
@@ -71,8 +67,7 @@ class SingleAbstractMethodTest
   }
 
   def testFunctionNegTwo() {
-    val code =
-      """
+    val code = """
         |def z: Unit = println()
         |val y: Runnable = z
       """.stripMargin
@@ -82,8 +77,7 @@ class SingleAbstractMethodTest
   }
 
   def testFunctionNegThree() {
-    val code =
-      """
+    val code = """
         |def z(): Unit = println()
         |val x = z
         |val y: Runnable = x
@@ -94,8 +88,7 @@ class SingleAbstractMethodTest
   }
 
   def testSCL7686(): Unit = {
-    val code =
-      """
+    val code = """
         |trait FI { def apply(idx: Int): String }
         |val a: FI = x => "result: " + x.toString
         |println(a(5))
@@ -104,8 +97,7 @@ class SingleAbstractMethodTest
   }
 
   def testUnderscoreOne() {
-    val code =
-      """
+    val code = """
         |trait Foo { def bar(i: Int, s: String): String }
         |val f: Foo = _ + _
       """.stripMargin
@@ -113,8 +105,7 @@ class SingleAbstractMethodTest
   }
 
   def testUnderscoreTwo() {
-    val code =
-      """
+    val code = """
         |trait Foo { def bar(s: String): String }
         |val i: Foo = _.charAt(0).toString
       """.stripMargin
@@ -122,8 +113,7 @@ class SingleAbstractMethodTest
   }
 
   def testSimpleNeg() {
-    val code =
-      """
+    val code = """
         |trait Foo { def blargle(i: Int): Unit }
         |val f: Foo = s => println(s.charAt(0))
       """.stripMargin
@@ -133,8 +123,7 @@ class SingleAbstractMethodTest
   }
 
   def testSimpleNegWrongReturnType() {
-    val code =
-      """
+    val code = """
         |object T {
         |  trait Blergh { def apply(i: Int): String }
         |  ((j: Int) => j): Blergh
@@ -149,8 +138,7 @@ class SingleAbstractMethodTest
   }
 
   def testSimpleNegWrongParamNumber() {
-    val code =
-      """
+    val code = """
         |object T {
         |  trait Blargle { def apply(i: Int, j: String): String }
         |  ((i: Int) => "aaa"): Blargle
@@ -164,8 +152,7 @@ class SingleAbstractMethodTest
   }
 
   def testSimpleNegWrongParamType() {
-    val code =
-      """
+    val code = """
         |object T {
         |  trait Blargle { def apply(i: Int, j: String): String }
         |  ((i: Int, j: Int) => "aaa"): Blargle
@@ -179,8 +166,7 @@ class SingleAbstractMethodTest
   }
 
   def testSimpleNegRightParamWrongReturn() {
-    val code =
-      """
+    val code = """
         |object T {
         |  trait Blergh { def apply(i: Int): String }
         |  (j => j): Blergh
@@ -194,8 +180,7 @@ class SingleAbstractMethodTest
   }
 
   def testConstructorWithArgs() {
-    val code =
-      """
+    val code = """
         |abstract class Foo(s: String) { def a(): String }
         |val f: Foo = () => ""
       """.stripMargin
@@ -205,8 +190,7 @@ class SingleAbstractMethodTest
   }
 
   def testImplicitConversionWithSAM() {
-    val code =
-      """
+    val code = """
         |import scala.language.implicitConversions
         |object T {
         |  trait Foo {
@@ -233,8 +217,7 @@ class SingleAbstractMethodTest
   }
 
   def testUnimplementedWithSAM(): Unit = {
-    val code =
-      """
+    val code = """
         |abstract class Foo { def a(): String }
         |val f: Foo = () => ???
       """.stripMargin
@@ -242,8 +225,7 @@ class SingleAbstractMethodTest
   }
 
   def testConformance(): Unit = {
-    val code =
-      """
+    val code = """
         |trait SAAM {
         |  def sam(s: String): Object
         |}
@@ -253,8 +235,7 @@ class SingleAbstractMethodTest
   }
 
   def testConformanceNeg(): Unit = {
-    val code =
-      """
+    val code = """
         |trait SAAM {
         |  def sam(s: Object): Object
         |}
@@ -271,8 +252,7 @@ class SingleAbstractMethodTest
   }
 
   def testValueDiscarding(): Unit = {
-    val code =
-      """
+    val code = """
         |def goo(r: Runnable) = 2
         |
         |
@@ -282,8 +262,7 @@ class SingleAbstractMethodTest
   }
 
   def testJavaGenerics(): Unit = {
-    val code =
-      """
+    val code = """
         |import java.util.concurrent.FutureTask
         |
         |new FutureTask[String](() => "hi")
@@ -292,8 +271,7 @@ class SingleAbstractMethodTest
   }
 
   def testSAMMethodReference(): Unit = {
-    val code =
-      """
+    val code = """
         |trait F[T, R] {
         |  def apply(a: T): R
         |}
@@ -307,8 +285,7 @@ class SingleAbstractMethodTest
   }
 
   def testExistentialBounds(): Unit = {
-    val code =
-      """
+    val code = """
         |trait Blargle[T] {
         |  def foo(a: T): String
         |}
@@ -333,8 +310,7 @@ class SingleAbstractMethodTest
   }
 
   def testOverload(): Unit = {
-    val code =
-      """
+    val code = """
         |trait SAMOverload[A] {
         |  def foo(s: A): Int = ???
         |}
@@ -367,8 +343,7 @@ class SingleAbstractMethodTest
     checkCodeHasNoErrors(scalaCode, Some(javaCode))
   }
 
-  val etaExpansionPrefix: String =
-    """
+  val etaExpansionPrefix: String = """
       |def a = () => println()
       |def b() = () => println()
       |def c = println()
@@ -497,8 +472,7 @@ class SingleAbstractMethodTest
   }
 
   def testEtaExpansionImplicit(): Unit = {
-    val code =
-      """
+    val code = """
         |class A
         |class B
         |implicit def a2b(a: A): B = new B
@@ -517,8 +491,7 @@ class SingleAbstractMethodTest
 
   //similar to testEtaExpansion11
   def testEtaExpansionUnitReturnWithParams(): Unit = {
-    val code =
-      """
+    val code = """
         |trait S {
         |  def foo(i: Int): Unit
         |}
@@ -534,8 +507,7 @@ class SingleAbstractMethodTest
   }
 
   def testOverrideImplementSAM(): Unit = {
-    val code =
-      """
+    val code = """
         |val s: Bar = () => 2
         |
         |abstract class Foo {
@@ -550,8 +522,7 @@ class SingleAbstractMethodTest
   }
 
   def testOverrideImplementSAM2(): Unit = {
-    val code =
-      """
+    val code = """
         |val s: Bar = () => 2
         |
         |abstract class Foo {
@@ -567,8 +538,7 @@ class SingleAbstractMethodTest
   }
 
   def testSAMComparable(): Unit = {
-    val code =
-      """
+    val code = """
         |import java.util.Comparator
         |
         |val comp: Comparator[String] = (o1, o2) => o1.compareTo(o2)
@@ -577,8 +547,7 @@ class SingleAbstractMethodTest
   }
 
   def testNotSAM(): Unit = {
-    val code =
-      """
+    val code = """
         |abstract class U {
         |  def foo(): Unit
         |}
@@ -589,8 +558,7 @@ class SingleAbstractMethodTest
   }
 
   def testSAMNumericWidening(): Unit = {
-    val code =
-      """
+    val code = """
         |  abstract class A {
         |    def foo(): Long
         |  }

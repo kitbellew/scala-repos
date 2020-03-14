@@ -97,16 +97,17 @@ case class DefaultClient[Req, Rep](
 ) extends Client[Req, Rep] { outer =>
 
   private[this] def transform(stack: Stack[ServiceFactory[Req, Rep]]) = {
-    val failureAccrualTransform: Transformer[Req, Rep] = failureAccrual match {
-      case _: DefaultClient.UninitializedFailureAccrual =>
-        factory: ServiceFactory[Req, Rep] => {
-          val classifier = params[param.ResponseClassifier].responseClassifier
-          DefaultClient
-            .defaultFailureAccrual(statsReceiver, classifier)
-            .andThen(factory)
-        }
-      case _ => failureAccrual
-    }
+    val failureAccrualTransform: Transformer[Req, Rep] =
+      failureAccrual match {
+        case _: DefaultClient.UninitializedFailureAccrual =>
+          factory: ServiceFactory[Req, Rep] => {
+            val classifier = params[param.ResponseClassifier].responseClassifier
+            DefaultClient
+              .defaultFailureAccrual(statsReceiver, classifier)
+              .andThen(factory)
+          }
+        case _ => failureAccrual
+      }
 
     val stk = stack
       .replace(FailureAccrualFactory.role, failureAccrualTransform)
@@ -174,19 +175,19 @@ case class DefaultClient[Req, Rep](
 
   private[this] val underlying = Client()
 
-  def newService(dest: Name, label: String) =
-    underlying.newService(dest, label)
+  def newService(dest: Name, label: String) = underlying.newService(dest, label)
 
-  def newClient(dest: Name, label: String) =
-    underlying.newClient(dest, label)
+  def newClient(dest: Name, label: String) = underlying.newClient(dest, label)
 
   // These are kept around to not break the API. They probably should
   // have been private[finagle] to begin with.
   val newStack: Name => ServiceFactory[Req, Rep] = newClient(_, name)
-  val newStack0: Var[Addr] => ServiceFactory[Req, Rep] = va => {
-    clientStack.make(params + LoadBalancerFactory.Dest(va))
-  }
-  val bindStack: Address => ServiceFactory[Req, Rep] = addr => {
-    endpointStack.make(params + Transporter.EndpointAddr(addr))
-  }
+  val newStack0: Var[Addr] => ServiceFactory[Req, Rep] =
+    va => {
+      clientStack.make(params + LoadBalancerFactory.Dest(va))
+    }
+  val bindStack: Address => ServiceFactory[Req, Rep] =
+    addr => {
+      endpointStack.make(params + Transporter.EndpointAddr(addr))
+    }
 }

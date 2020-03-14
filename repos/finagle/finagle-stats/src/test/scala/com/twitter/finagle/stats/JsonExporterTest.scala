@@ -54,10 +54,11 @@ class JsonExporterTest
 
   test("samples can be filtered") {
     val registry = Metrics.createDetached()
-    val exporter = new JsonExporter(registry) {
-      override lazy val statsFilterRegex: Option[Regex] =
-        mkRegex("abc,ill_be_partially_matched.*")
-    }
+    val exporter =
+      new JsonExporter(registry) {
+        override lazy val statsFilterRegex: Option[Regex] = mkRegex(
+          "abc,ill_be_partially_matched.*")
+      }
     val sample = Map[String, Number](
       "jvm_uptime" -> 15.0,
       "abc" -> 42,
@@ -101,16 +102,18 @@ class JsonExporterTest
     val tFile1 = File.createTempFile("regex", ".txt")
     tFile1.deleteOnExit()
 
-    val writer1 = new BufferedWriter(
-      new OutputStreamWriter(new FileOutputStream(tFile1), "UTF-8"))
+    val writer1 =
+      new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(tFile1), "UTF-8"))
     writer1.write("abc123\r\n")
     writer1.close()
 
     val tFile2 = File.createTempFile("regex", ".txt")
     tFile2.deleteOnExit()
 
-    val writer2 = new BufferedWriter(
-      new OutputStreamWriter(new FileOutputStream(tFile2), "UTF-8"))
+    val writer2 =
+      new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(tFile2), "UTF-8"))
     writer2.write("def456\r\n")
     writer2.write("ghi789\r\n")
     writer2.close()
@@ -131,8 +134,9 @@ class JsonExporterTest
     val tFile = File.createTempFile("regex", ".txt")
     tFile.deleteOnExit()
 
-    val writer = new BufferedWriter(
-      new OutputStreamWriter(new FileOutputStream(tFile), "UTF-8"))
+    val writer =
+      new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(tFile), "UTF-8"))
     writer.write("abc123\r\n")
     writer.close()
 
@@ -153,9 +157,10 @@ class JsonExporterTest
     val gcCounter = registry.createCounter("jvm_gcs")
     viewsCounter.increment()
     gcCounter.increment()
-    val exporter = new JsonExporter(registry) {
-      override lazy val statsFilterRegex: Option[Regex] = mkRegex("jvm.*,vie")
-    }
+    val exporter =
+      new JsonExporter(registry) {
+        override lazy val statsFilterRegex: Option[Regex] = mkRegex("jvm.*,vie")
+      }
     val requestFiltered = Request("/admin/metrics.json?filtered=1&pretty=0")
     val responseFiltered =
       Await.result(exporter.apply(requestFiltered)).contentString
@@ -304,9 +309,10 @@ class JsonExporterTest
 
   test("deadly gauge") {
     val registry = Metrics.createDetached()
-    val g = new AbstractGauge[java.lang.Double]("boom") {
-      def read: java.lang.Double = throw new RuntimeException("loolool")
-    }
+    val g =
+      new AbstractGauge[java.lang.Double]("boom") {
+        def read: java.lang.Double = throw new RuntimeException("loolool")
+      }
     val sr = registry.registerGauge(g)
 
     val exporter = new JsonExporter(registry)

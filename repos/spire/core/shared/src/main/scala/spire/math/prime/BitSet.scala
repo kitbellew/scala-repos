@@ -37,9 +37,7 @@ case class BitSet(length: Int, array: Array[Int]) {
     else
       this -= n
 
-  def apply(n: Int): Boolean =
-    ((array(n >>> 5) >>> (n & 31)) & 1) == 1
+  def apply(n: Int): Boolean = ((array(n >>> 5) >>> (n & 31)) & 1) == 1
 
-  def clear(): Unit =
-    cfor(0)(_ < array.length, _ + 1)(array(_) = 0)
+  def clear(): Unit = cfor(0)(_ < array.length, _ + 1)(array(_) = 0)
 }

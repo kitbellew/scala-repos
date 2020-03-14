@@ -44,23 +44,23 @@ trait EventBus[E, S, C] {
   * C is the Classifier type
   */
 abstract class LookupEventBus[E, S, C] extends EventBus[E, S, C] {
-  private val bus = new akka.event.EventBus
-  with akka.event.LookupClassification {
-    type Event = E
-    type Subscriber = S
-    type Classifier = C
+  private val bus =
+    new akka.event.EventBus with akka.event.LookupClassification {
+      type Event = E
+      type Subscriber = S
+      type Classifier = C
 
-    override protected def mapSize: Int = LookupEventBus.this.mapSize
+      override protected def mapSize: Int = LookupEventBus.this.mapSize
 
-    override protected def compareSubscribers(a: S, b: S): Int =
-      LookupEventBus.this.compareSubscribers(a, b)
+      override protected def compareSubscribers(a: S, b: S): Int =
+        LookupEventBus.this.compareSubscribers(a, b)
 
-    override protected def classify(event: E): C =
-      LookupEventBus.this.classify(event)
+      override protected def classify(event: E): C =
+        LookupEventBus.this.classify(event)
 
-    override protected def publish(event: E, subscriber: S): Unit =
-      LookupEventBus.this.publish(event, subscriber)
-  }
+      override protected def publish(event: E, subscriber: S): Unit =
+        LookupEventBus.this.publish(event, subscriber)
+    }
 
   /**
     * This is a size hint for the number of Classifiers you expect to have (use powers of 2)
@@ -98,21 +98,23 @@ abstract class LookupEventBus[E, S, C] extends EventBus[E, S, C] {
   * C is the Classifier type
   */
 abstract class SubchannelEventBus[E, S, C] extends EventBus[E, S, C] {
-  private val bus = new akka.event.EventBus
-  with akka.event.SubchannelClassification {
-    type Event = E
-    type Subscriber = S
-    type Classifier = C
+  private val bus =
+    new akka.event.EventBus with akka.event.SubchannelClassification {
+      type Event = E
+      type Subscriber = S
+      type Classifier = C
 
-    override protected def subclassification: Subclassification[Classifier] =
-      SubchannelEventBus.this.subclassification
+      override protected def subclassification: Subclassification[Classifier] =
+        SubchannelEventBus.this.subclassification
 
-    override protected def classify(event: Event): Classifier =
-      SubchannelEventBus.this.classify(event)
+      override protected def classify(event: Event): Classifier =
+        SubchannelEventBus.this.classify(event)
 
-    override protected def publish(event: Event, subscriber: Subscriber): Unit =
-      SubchannelEventBus.this.publish(event, subscriber)
-  }
+      override protected def publish(
+          event: Event,
+          subscriber: Subscriber): Unit =
+        SubchannelEventBus.this.publish(event, subscriber)
+    }
 
   /**
     * The logic to form sub-class hierarchy
@@ -145,24 +147,24 @@ abstract class SubchannelEventBus[E, S, C] extends EventBus[E, S, C] {
   * C is the Classifier type
   */
 abstract class ScanningEventBus[E, S, C] extends EventBus[E, S, C] {
-  private val bus = new akka.event.EventBus
-  with akka.event.ScanningClassification {
-    type Event = E
-    type Subscriber = S
-    type Classifier = C
+  private val bus =
+    new akka.event.EventBus with akka.event.ScanningClassification {
+      type Event = E
+      type Subscriber = S
+      type Classifier = C
 
-    override protected def compareClassifiers(a: C, b: C): Int =
-      ScanningEventBus.this.compareClassifiers(a, b)
+      override protected def compareClassifiers(a: C, b: C): Int =
+        ScanningEventBus.this.compareClassifiers(a, b)
 
-    override protected def compareSubscribers(a: S, b: S): Int =
-      ScanningEventBus.this.compareSubscribers(a, b)
+      override protected def compareSubscribers(a: S, b: S): Int =
+        ScanningEventBus.this.compareSubscribers(a, b)
 
-    override protected def matches(classifier: C, event: E): Boolean =
-      ScanningEventBus.this.matches(classifier, event)
+      override protected def matches(classifier: C, event: E): Boolean =
+        ScanningEventBus.this.matches(classifier, event)
 
-    override protected def publish(event: E, subscriber: S): Unit =
-      ScanningEventBus.this.publish(event, subscriber)
-  }
+      override protected def publish(event: E, subscriber: S): Unit =
+        ScanningEventBus.this.publish(event, subscriber)
+    }
 
   /**
     * Provides a total ordering of Classifiers (think java.util.Comparator.compare)
@@ -200,17 +202,18 @@ abstract class ScanningEventBus[E, S, C] extends EventBus[E, S, C] {
   */
 abstract class ManagedActorEventBus[E](system: ActorSystem)
     extends EventBus[E, ActorRef, ActorRef] {
-  private val bus = new akka.event.ActorEventBus
-  with akka.event.ManagedActorClassification with akka.event.ActorClassifier {
-    type Event = E
+  private val bus =
+    new akka.event.ActorEventBus with akka.event.ManagedActorClassification
+    with akka.event.ActorClassifier {
+      type Event = E
 
-    override val system = ManagedActorEventBus.this.system
+      override val system = ManagedActorEventBus.this.system
 
-    override protected def mapSize: Int = ManagedActorEventBus.this.mapSize
+      override protected def mapSize: Int = ManagedActorEventBus.this.mapSize
 
-    override protected def classify(event: E): ActorRef =
-      ManagedActorEventBus.this.classify(event)
-  }
+      override protected def classify(event: E): ActorRef =
+        ManagedActorEventBus.this.classify(event)
+    }
 
   /**
     * This is a size hint for the number of Classifiers you expect to have (use powers of 2)
@@ -239,15 +242,16 @@ abstract class ManagedActorEventBus[E](system: ActorSystem)
   */
 @deprecated("Use ManagedActorEventBus instead", "2.4")
 abstract class ActorEventBus[E] extends EventBus[E, ActorRef, ActorRef] {
-  private val bus = new akka.event.ActorEventBus
-  with akka.event.ActorClassification with akka.event.ActorClassifier {
-    type Event = E
+  private val bus =
+    new akka.event.ActorEventBus with akka.event.ActorClassification
+    with akka.event.ActorClassifier {
+      type Event = E
 
-    override protected def mapSize: Int = ActorEventBus.this.mapSize
+      override protected def mapSize: Int = ActorEventBus.this.mapSize
 
-    override protected def classify(event: E): ActorRef =
-      ActorEventBus.this.classify(event)
-  }
+      override protected def classify(event: E): ActorRef =
+        ActorEventBus.this.classify(event)
+    }
 
   /**
     * This is a size hint for the number of Classifiers you expect to have (use powers of 2)

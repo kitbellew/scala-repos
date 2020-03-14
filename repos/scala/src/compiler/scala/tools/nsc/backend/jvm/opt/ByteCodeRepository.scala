@@ -114,19 +114,20 @@ class ByteCodeRepository[BT <: BTypes](
   def classNode(
       internalName: InternalName): Either[ClassNotFound, ClassNode] = {
     compilingClasses.get(internalName).map(Right(_)) getOrElse {
-      val r = parsedClasses.get(internalName) match {
-        case Some(l @ Left(_)) => l
-        case Some(r @ Right((classNode, _))) =>
-          parsedClasses(internalName) =
-            Right((classNode, lruCounter.incrementAndGet()))
-          r
-        case None =>
-          limitCacheSize()
-          val res =
-            parseClass(internalName).map((_, lruCounter.incrementAndGet()))
-          parsedClasses(internalName) = res
-          res
-      }
+      val r =
+        parsedClasses.get(internalName) match {
+          case Some(l @ Left(_)) => l
+          case Some(r @ Right((classNode, _))) =>
+            parsedClasses(internalName) = Right(
+              (classNode, lruCounter.incrementAndGet()))
+            r
+          case None =>
+            limitCacheSize()
+            val res = parseClass(internalName).map(
+              (_, lruCounter.incrementAndGet()))
+            parsedClasses(internalName) = res
+            res
+        }
       r.map(_._1)
     }
   }

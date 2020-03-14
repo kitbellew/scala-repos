@@ -190,18 +190,19 @@ class FSMActorSpec
        * This lazy val trick is beyond evil: KIDS, DON'T TRY THIS AT HOME!
        * It is necessary here because of the path-dependent type fsm.StopEvent.
        */
-      lazy val fsm = new Actor with FSM[Int, Null] {
-        override def preStart = {
-          started.countDown
+      lazy val fsm =
+        new Actor with FSM[Int, Null] {
+          override def preStart = {
+            started.countDown
+          }
+          startWith(1, null)
+          when(1) {
+            FSM.NullFunction
+          }
+          onTermination {
+            case x ⇒ testActor ! x
+          }
         }
-        startWith(1, null)
-        when(1) {
-          FSM.NullFunction
-        }
-        onTermination {
-          case x ⇒ testActor ! x
-        }
-      }
       val ref = system.actorOf(Props(fsm))
       Await.ready(started, timeout.duration)
       system.stop(ref)

@@ -6,17 +6,19 @@ import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class CategorizingExceptionStatsHandlerTest extends FunSuite {
-  val categorizer = (t: Throwable) => {
-    "clienterrors"
-  }
+  val categorizer =
+    (t: Throwable) => {
+      "clienterrors"
+    }
 
   test("uses category, source, exception chains and rollup") {
     val receiver = new InMemoryStatsReceiver
 
-    val esh = new CategorizingExceptionStatsHandler(
-      _ => Some("clienterrors"),
-      PartialFunction.apply(_ => Some("service")),
-      true)
+    val esh =
+      new CategorizingExceptionStatsHandler(
+        _ => Some("clienterrors"),
+        PartialFunction.apply(_ => Some("service")),
+        true)
 
     val cwe = new RuntimeException(new Exception("e"))
     esh.record(receiver, cwe)
@@ -89,10 +91,11 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
   test("supports no rollup") {
     val receiver = new InMemoryStatsReceiver
 
-    val esh = new CategorizingExceptionStatsHandler(
-      _ => Some("clienterrors"),
-      _ => Some("service"),
-      false)
+    val esh =
+      new CategorizingExceptionStatsHandler(
+        _ => Some("clienterrors"),
+        _ => Some("service"),
+        false)
 
     val cwe = new RuntimeException(new Exception("e"))
     esh.record(receiver, cwe)

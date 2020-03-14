@@ -627,25 +627,27 @@ class CommandCodec extends UnifiedProtocolCodec {
 
   val log = Logger(getClass)
 
-  val encode = new Encoder[Command] {
-    def encode(obj: Command) = Some(obj.toChannelBuffer)
-  }
-
-  val decode = readBytes(1) { bytes =>
-    bytes(0) match {
-      case ARG_COUNT_MARKER =>
-        val doneFn = { lines =>
-          commandDecode(lines)
-        }
-        RequireClientProtocol.safe {
-          readLine { line =>
-            decodeUnifiedFormat(NumberFormat.toLong(line), doneFn)
-          }
-        }
-      case b: Byte =>
-        decodeInlineRequest(b.asInstanceOf[Char])
+  val encode =
+    new Encoder[Command] {
+      def encode(obj: Command) = Some(obj.toChannelBuffer)
     }
-  }
+
+  val decode =
+    readBytes(1) { bytes =>
+      bytes(0) match {
+        case ARG_COUNT_MARKER =>
+          val doneFn = { lines =>
+            commandDecode(lines)
+          }
+          RequireClientProtocol.safe {
+            readLine { line =>
+              decodeUnifiedFormat(NumberFormat.toLong(line), doneFn)
+            }
+          }
+        case b: Byte =>
+          decodeInlineRequest(b.asInstanceOf[Char])
+      }
+    }
 
   def decodeInlineRequest(c: Char) =
     readLine { line =>

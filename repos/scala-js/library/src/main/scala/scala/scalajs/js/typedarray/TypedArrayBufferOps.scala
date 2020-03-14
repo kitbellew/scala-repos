@@ -54,8 +54,7 @@ final class TypedArrayBufferOps[ // scalastyle:ignore
     *  @throws UnsupportedOperationException
     *    If this buffer has no backing [[ArrayBuffer]], i.e., !hasArrayBuffer()
     */
-  def dataView(): DataView =
-    TypedArrayBufferBridge.Buffer_dataView(buffer)
+  def dataView(): DataView = TypedArrayBufferBridge.Buffer_dataView(buffer)
 
   /** Tests whether this direct buffer has a valid associated [[TypedArray]].
     *

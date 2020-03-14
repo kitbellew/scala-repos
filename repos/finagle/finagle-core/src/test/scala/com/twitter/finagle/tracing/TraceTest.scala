@@ -164,8 +164,10 @@ class TraceTest
   test("Trace.record: record binary annotations") {
     Time.withCurrentTimeFrozen { tc =>
       Trace.letTracerAndId(tracer1, id0) {
-        val rec1 =
-          Record(id0, Time.now, Annotation.BinaryAnnotation("key", "test"))
+        val rec1 = Record(
+          id0,
+          Time.now,
+          Annotation.BinaryAnnotation("key", "test"))
         Trace.recordBinary("key", "test")
         verify(tracer1, times(1)).record(rec1)
       }
@@ -212,8 +214,12 @@ class TraceTest
 
   test("pass flags to next id") {
     val flags = Flags().setDebug
-    val id =
-      TraceId(Some(SpanId(1L)), Some(SpanId(2L)), SpanId(3L), None, flags)
+    val id = TraceId(
+      Some(SpanId(1L)),
+      Some(SpanId(2L)),
+      SpanId(3L),
+      None,
+      flags)
     Trace.letId(id) {
       val nextId = Trace.nextId
       assert(id.flags == nextId.flags)
@@ -335,8 +341,12 @@ class TraceTest
   }
 
   test("Trace.isActivelyTracing") {
-    val id =
-      TraceId(Some(SpanId(12)), Some(SpanId(13)), SpanId(14), None, Flags(0L))
+    val id = TraceId(
+      Some(SpanId(12)),
+      Some(SpanId(13)),
+      SpanId(14),
+      None,
+      Flags(0L))
     val tracer = mock[Tracer]
 
     // no tracers, not tracing
@@ -399,14 +409,15 @@ class TraceTest
     def spanIds(seed: Long): Seq[Option[SpanId]] =
       None +: (longs(seed) map (l => Some(SpanId(l))))
 
-    val traceIds = for {
-      traceId <- spanIds(1L)
-      parentId <- traceId +: spanIds(2L)
-      maybeSpanId <- parentId +: spanIds(3L)
-      spanId <- maybeSpanId.toSeq
-      flags <- Seq(Flags(0L), Flags(Flags.Debug))
-      sampled <- Seq(None, Some(false), Some(true))
-    } yield TraceId(traceId, parentId, spanId, sampled, flags)
+    val traceIds =
+      for {
+        traceId <- spanIds(1L)
+        parentId <- traceId +: spanIds(2L)
+        maybeSpanId <- parentId +: spanIds(3L)
+        spanId <- maybeSpanId.toSeq
+        flags <- Seq(Flags(0L), Flags(Flags.Debug))
+        sampled <- Seq(None, Some(false), Some(true))
+      } yield TraceId(traceId, parentId, spanId, sampled, flags)
 
     for (id <- traceIds)
       assert(Trace.idCtx.tryUnmarshal(Trace.idCtx.marshal(id)) == Return(id))

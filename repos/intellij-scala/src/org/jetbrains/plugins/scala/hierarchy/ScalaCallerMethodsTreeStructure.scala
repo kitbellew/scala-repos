@@ -40,10 +40,11 @@ final class ScalaCallerMethodsTreeStructure(
       .asInstanceOf[CallHierarchyNodeDescriptor]
       .getTargetElement
       .asInstanceOf[PsiMethod]
-    val containing = baseMethod match {
-      case mem: ScMember => mem.getContainingClassLoose
-      case x             => x.containingClass
-    }
+    val containing =
+      baseMethod match {
+        case mem: ScMember => mem.getContainingClassLoose
+        case x             => x.containingClass
+      }
     val searchScope: SearchScope = getSearchScope(scopeType, containing)
     val originalClass: PsiClass = method.containingClass
     assert(originalClass != null)
@@ -76,12 +77,13 @@ final class ScalaCallerMethodsTreeStructure(
                     }
                     call
                   case _ =>
-                    val newD = new CallHierarchyNodeDescriptor(
-                      myProject,
-                      descriptor,
-                      element,
-                      false,
-                      true)
+                    val newD =
+                      new CallHierarchyNodeDescriptor(
+                        myProject,
+                        descriptor,
+                        element,
+                        false,
+                        true)
                     methodToDescriptorMap.put(key, newD)
                     newD
                 }

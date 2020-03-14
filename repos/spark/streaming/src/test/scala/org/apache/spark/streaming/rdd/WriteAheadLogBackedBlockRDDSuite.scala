@@ -168,8 +168,9 @@ class WriteAheadLogBackedBlockRDDSuite
     val data = Seq.fill(numPartitions, 10)(scala.util.Random.nextString(50))
 
     // Put the necessary blocks in the block manager
-    val blockIds = Array.fill(numPartitions)(
-      StreamBlockId(Random.nextInt(), Random.nextInt()))
+    val blockIds =
+      Array.fill(numPartitions)(
+        StreamBlockId(Random.nextInt(), Random.nextInt()))
     data.zip(blockIds).take(numPartitionsInBM).foreach {
       case (block, blockId) =>
         blockManager
@@ -210,11 +211,12 @@ class WriteAheadLogBackedBlockRDDSuite
     )
 
     // Create the RDD and verify whether the returned data is correct
-    val rdd = new WriteAheadLogBackedBlockRDD[String](
-      sparkContext,
-      blockIds.toArray,
-      recordHandles.toArray,
-      storeInBlockManager = false)
+    val rdd =
+      new WriteAheadLogBackedBlockRDD[String](
+        sparkContext,
+        blockIds.toArray,
+        recordHandles.toArray,
+        storeInBlockManager = false)
     assert(rdd.collect() === data.flatten)
 
     // Verify that the block fetching is skipped when isBlockValid is set to false.
@@ -226,11 +228,12 @@ class WriteAheadLogBackedBlockRDDSuite
         numPartitionsInBM === numPartitions,
         "All partitions must be in BlockManager")
       require(numPartitionsInWAL === 0, "No partitions must be in WAL")
-      val rdd2 = new WriteAheadLogBackedBlockRDD[String](
-        sparkContext,
-        blockIds.toArray,
-        recordHandles.toArray,
-        isBlockIdValid = Array.fill(blockIds.length)(false))
+      val rdd2 =
+        new WriteAheadLogBackedBlockRDD[String](
+          sparkContext,
+          blockIds.toArray,
+          recordHandles.toArray,
+          isBlockIdValid = Array.fill(blockIds.length)(false))
       intercept[SparkException] {
         rdd2.collect()
       }
@@ -250,12 +253,13 @@ class WriteAheadLogBackedBlockRDDSuite
     }
 
     if (testStoreInBM) {
-      val rdd2 = new WriteAheadLogBackedBlockRDD[String](
-        sparkContext,
-        blockIds.toArray,
-        recordHandles.toArray,
-        storeInBlockManager = true,
-        storageLevel = StorageLevel.MEMORY_ONLY)
+      val rdd2 =
+        new WriteAheadLogBackedBlockRDD[String](
+          sparkContext,
+          blockIds.toArray,
+          recordHandles.toArray,
+          storeInBlockManager = true,
+          storageLevel = StorageLevel.MEMORY_ONLY)
       assert(rdd2.collect() === data.flatten)
       assert(
         blockIds.forall(blockManager.get(_).nonEmpty),
@@ -269,9 +273,10 @@ class WriteAheadLogBackedBlockRDDSuite
       blockIds: Seq[BlockId]
   ): Seq[FileBasedWriteAheadLogSegment] = {
     require(blockData.size === blockIds.size)
-    val writer = new FileBasedWriteAheadLogWriter(
-      new File(dir, "logFile").toString,
-      hadoopConf)
+    val writer =
+      new FileBasedWriteAheadLogWriter(
+        new File(dir, "logFile").toString,
+        hadoopConf)
     val segments = blockData.zip(blockIds).map {
       case (data, id) =>
         writer.write(blockManager.dataSerialize(id, data.iterator).toByteBuffer)

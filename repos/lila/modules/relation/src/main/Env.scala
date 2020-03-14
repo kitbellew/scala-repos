@@ -16,24 +16,26 @@ final class Env(
     system: ActorSystem,
     scheduler: lila.common.Scheduler) {
 
-  private val settings = new {
-    val CollectionRelation = config getString "collection.relation"
-    val ActorNotifyFreq = config duration "actor.notify_freq"
-    val ActorName = config getString "actor.name"
-    val MaxFollow = config getInt "limit.follow"
-    val MaxBlock = config getInt "limit.block"
-  }
+  private val settings =
+    new {
+      val CollectionRelation = config getString "collection.relation"
+      val ActorNotifyFreq = config duration "actor.notify_freq"
+      val ActorName = config getString "actor.name"
+      val MaxFollow = config getInt "limit.follow"
+      val MaxBlock = config getInt "limit.block"
+    }
   import settings._
 
-  lazy val api = new RelationApi(
-    coll = relationColl,
-    actor = hub.actor.relation,
-    bus = system.lilaBus,
-    timeline = hub.actor.timeline,
-    reporter = hub.actor.report,
-    followable = followable,
-    maxFollow = MaxFollow,
-    maxBlock = MaxBlock)
+  lazy val api =
+    new RelationApi(
+      coll = relationColl,
+      actor = hub.actor.relation,
+      bus = system.lilaBus,
+      timeline = hub.actor.timeline,
+      reporter = hub.actor.report,
+      followable = followable,
+      maxFollow = MaxFollow,
+      maxBlock = MaxBlock)
 
   private[relation] val actor = system.actorOf(
     Props(

@@ -99,14 +99,12 @@ class AggregateFlatClassPathTest {
   private def classFile(
       pathPrefix: String,
       inPackage: String,
-      fileName: String) =
-    virtualFile(pathPrefix, inPackage, fileName, ".class")
+      fileName: String) = virtualFile(pathPrefix, inPackage, fileName, ".class")
 
   private def sourceFile(
       pathPrefix: String,
       inPackage: String,
-      fileName: String) =
-    virtualFile(pathPrefix, inPackage, fileName, ".scala")
+      fileName: String) = virtualFile(pathPrefix, inPackage, fileName, ".scala")
 
   private def virtualFile(
       pathPrefix: String,

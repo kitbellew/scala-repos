@@ -23,8 +23,7 @@ object Magic {
     def castB(x: T1): T2 = castA(x);
   }
 
-  def cast[T1, T2](v: T1): T2 =
-    new B[T1, T2]().castB(v)
+  def cast[T1, T2](v: T1): T2 = new B[T1, T2]().castB(v)
 
 }
 

@@ -47,12 +47,13 @@ private[feature] trait ChiSqSelectorParams
     * of numTopFeatures is 50.
     * @group param
     */
-  final val numTopFeatures = new IntParam(
-    this,
-    "numTopFeatures",
-    "Number of features that selector will select, ordered by statistics value descending. If the" +
-      " number of features is < numTopFeatures, then this will select all features.",
-    ParamValidators.gtEq(1))
+  final val numTopFeatures =
+    new IntParam(
+      this,
+      "numTopFeatures",
+      "Number of features that selector will select, ordered by statistics value descending. If the" +
+        " number of features is < numTopFeatures, then this will select all features.",
+      ParamValidators.gtEq(1))
   setDefault(numTopFeatures -> 50)
 
   /** @group getParam */
@@ -210,8 +211,10 @@ object ChiSqSelectorModel extends MLReadable[ChiSqSelectorModel] {
     override def load(path: String): ChiSqSelectorModel = {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
       val dataPath = new Path(path, "data").toString
-      val data =
-        sqlContext.read.parquet(dataPath).select("selectedFeatures").head()
+      val data = sqlContext.read
+        .parquet(dataPath)
+        .select("selectedFeatures")
+        .head()
       val selectedFeatures = data.getAs[Seq[Int]](0).toArray
       val oldModel = new feature.ChiSqSelectorModel(selectedFeatures)
       val model = new ChiSqSelectorModel(metadata.uid, oldModel)

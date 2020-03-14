@@ -119,39 +119,41 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
     }
   }
 
-  val service = (request: HttpRequest[ByteChunk]) => {
-    success {
-      (
-          apiKey: APIKey,
-          account: AccountDetails,
-          path: Path,
-          query: String,
-          opts: QueryOptions) =>
-        val responseEither = for {
-          executor <- execution.executorFor(apiKey) leftMap {
-            EvaluationError.invalidState
-          }
-          ctx = EvaluationContext(
-            apiKey,
-            account,
-            path,
-            Path.Root,
-            new DateTime
-          ) //CLOCK!!!!!!
-          result <- executor.execute(query, ctx, opts)
-          httpResponse <- EitherT.right(
-            extractResponse(request, result, opts.output))
-        } yield {
-          appendHeaders(opts) {
-            httpResponse
-          }
-        }
+  val service =
+    (request: HttpRequest[ByteChunk]) => {
+      success {
+        (
+            apiKey: APIKey,
+            account: AccountDetails,
+            path: Path,
+            query: String,
+            opts: QueryOptions) =>
+          val responseEither =
+            for {
+              executor <- execution.executorFor(apiKey) leftMap {
+                EvaluationError.invalidState
+              }
+              ctx = EvaluationContext(
+                apiKey,
+                account,
+                path,
+                Path.Root,
+                new DateTime
+              ) //CLOCK!!!!!!
+              result <- executor.execute(query, ctx, opts)
+              httpResponse <- EitherT.right(
+                extractResponse(request, result, opts.output))
+            } yield {
+              appendHeaders(opts) {
+                httpResponse
+              }
+            }
 
-        responseEither valueOr {
-          handleErrors(query, _)
-        }
+          responseEither valueOr {
+            handleErrors(query, _)
+          }
+      }
     }
-  }
 
   def metadata =
     DescriptionMetadata(
@@ -168,51 +170,55 @@ class AnalysisServiceHandler(
     with Logging {
   import blueeyes.core.http.HttpHeaders._
 
-  val service = (request: HttpRequest[ByteChunk]) => {
-    ShardServiceCombinators.queryOpts(request) map {
-      queryOptions =>
-        { (details: (APIKey, AccountDetails), path: Path) =>
-          val (apiKey, accountDetails) = details
-          // The context needs to use the prefix of the requested script, not th script path
-          val context = EvaluationContext(
-            apiKey,
-            accountDetails,
-            Path.Root,
-            path.prefix getOrElse Path.Root,
-            clock.now())
-          val cacheDirectives =
-            request.headers.header[`Cache-Control`].toSeq.flatMap(_.directives)
-          logger.debug(
-            "Received analysis request with cache directives: " + cacheDirectives)
+  val service =
+    (request: HttpRequest[ByteChunk]) => {
+      ShardServiceCombinators.queryOpts(request) map {
+        queryOptions =>
+          { (details: (APIKey, AccountDetails), path: Path) =>
+            val (apiKey, accountDetails) = details
+            // The context needs to use the prefix of the requested script, not th script path
+            val context = EvaluationContext(
+              apiKey,
+              accountDetails,
+              Path.Root,
+              path.prefix getOrElse Path.Root,
+              clock.now())
+            val cacheDirectives = request.headers
+              .header[`Cache-Control`]
+              .toSeq
+              .flatMap(_.directives)
+            logger.debug(
+              "Received analysis request with cache directives: " + cacheDirectives)
 
-          val cacheControl0 =
-            CacheControl.fromCacheDirectives(cacheDirectives: _*)
-          // Internally maxAge/maxStale are compared against ms times
-          platform.vfs.executeStoredQuery(
-            platform,
-            scheduler,
-            context,
-            path,
-            queryOptions.copy(cacheControl = cacheControl0)) map { sqr =>
-            HttpResponse(
-              OK,
-              headers = HttpHeaders(sqr.cachedAt.toSeq map { lmod =>
-                `Last-Modified`(HttpDateTimes.StandardDateTime(lmod.toDateTime))
-              }: _*),
-              content = Some(
-                Right(
-                  ColumnarTableModule.toCharBuffers(
-                    queryOptions.output,
-                    sqr.data.map(_.deref(TransSpecModule.paths.Value)))))
-            )
-          } valueOr { evaluationError =>
-            logger.error(
-              "Evaluation errors prevented returning results from stored query: " + evaluationError)
-            HttpResponse(InternalServerError)
+            val cacheControl0 = CacheControl.fromCacheDirectives(
+              cacheDirectives: _*)
+            // Internally maxAge/maxStale are compared against ms times
+            platform.vfs.executeStoredQuery(
+              platform,
+              scheduler,
+              context,
+              path,
+              queryOptions.copy(cacheControl = cacheControl0)) map { sqr =>
+              HttpResponse(
+                OK,
+                headers = HttpHeaders(sqr.cachedAt.toSeq map { lmod =>
+                  `Last-Modified`(
+                    HttpDateTimes.StandardDateTime(lmod.toDateTime))
+                }: _*),
+                content = Some(
+                  Right(
+                    ColumnarTableModule.toCharBuffers(
+                      queryOptions.output,
+                      sqr.data.map(_.deref(TransSpecModule.paths.Value)))))
+              )
+            } valueOr { evaluationError =>
+              logger.error(
+                "Evaluation errors prevented returning results from stored query: " + evaluationError)
+              HttpResponse(InternalServerError)
+            }
           }
-        }
+      }
     }
-  }
 
   def metadata =
     DescriptionMetadata("""Returns the result of executing a stored query.""")
@@ -289,37 +295,47 @@ class SyncQueryServiceHandler(
       case (Right(Detailed), Some(jobId), data0) =>
         val prefix = CharBuffer.wrap("""{ "data" : """)
         val data = ensureTermination(data0)
-        val result = StreamT.unfoldM(some(prefix :: data)) {
-          case Some(stream) =>
-            stream.uncons flatMap {
-              case Some((buffer, tail)) =>
-                M.point(Some((buffer, Some(tail))))
-              case None =>
-                val warningsM =
-                  jobManager.listMessages(jobId, channels.Warning, None)
-                val errorsM =
-                  jobManager.listMessages(jobId, channels.Error, None)
-                val serverErrorsM =
-                  jobManager.listMessages(jobId, channels.ServerError, None)
-                val serverWarningsM =
-                  jobManager.listMessages(jobId, channels.ServerWarning, None)
-                (warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM) {
-                  (warnings, errors, serverErrors, serverWarnings) =>
-                    val suffix =
-                      """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format (
-                        JArray(errors.toList map (_.value)).renderCompact,
-                        JArray(warnings.toList map (_.value)).renderCompact,
-                        JArray(serverErrors.toList map (_.value)).renderCompact,
-                        JArray(
-                          serverWarnings.toList map (_.value)).renderCompact
-                    )
-                    Some((CharBuffer.wrap(suffix), None))
-                }
-            }
+        val result =
+          StreamT.unfoldM(some(prefix :: data)) {
+            case Some(stream) =>
+              stream.uncons flatMap {
+                case Some((buffer, tail)) =>
+                  M.point(Some((buffer, Some(tail))))
+                case None =>
+                  val warningsM = jobManager.listMessages(
+                    jobId,
+                    channels.Warning,
+                    None)
+                  val errorsM = jobManager.listMessages(
+                    jobId,
+                    channels.Error,
+                    None)
+                  val serverErrorsM = jobManager.listMessages(
+                    jobId,
+                    channels.ServerError,
+                    None)
+                  val serverWarningsM = jobManager.listMessages(
+                    jobId,
+                    channels.ServerWarning,
+                    None)
+                  (warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM) {
+                    (warnings, errors, serverErrors, serverWarnings) =>
+                      val suffix =
+                        """, "errors": %s, "warnings": %s, "serverErrors": %s, "serverWarnings": %s }""" format (
+                          JArray(errors.toList map (_.value)).renderCompact,
+                          JArray(warnings.toList map (_.value)).renderCompact,
+                          JArray(
+                            serverErrors.toList map (_.value)).renderCompact,
+                          JArray(
+                            serverWarnings.toList map (_.value)).renderCompact
+                      )
+                      Some((CharBuffer.wrap(suffix), None))
+                  }
+              }
 
-          case None =>
-            M.point(None)
-        }
+            case None =>
+              M.point(None)
+          }
 
         HttpResponse[QueryResult](OK, content = Some(Right(result)))
           .point[Future]

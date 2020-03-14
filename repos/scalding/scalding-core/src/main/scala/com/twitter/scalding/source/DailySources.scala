@@ -68,8 +68,7 @@ object DailySuffixTypedTsv {
       dateRange: DateRange,
       mf: Manifest[T],
       conv: TupleConverter[T],
-      tset: TupleSetter[T]) =
-    new DailySuffixTypedTsv[T](prefix)
+      tset: TupleSetter[T]) = new DailySuffixTypedTsv[T](prefix)
 }
 
 class DailySuffixTypedTsv[T](prefix: String)(implicit

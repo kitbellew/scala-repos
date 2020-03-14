@@ -149,11 +149,12 @@ trait WebHookService {
       webHooks.map { webHook =>
         val reqPromise = Promise[HttpRequest]
         val f = Future {
-          val itcp = new org.apache.http.HttpRequestInterceptor {
-            def process(res: HttpRequest, ctx: HttpContext): Unit = {
-              reqPromise.success(res)
+          val itcp =
+            new org.apache.http.HttpRequestInterceptor {
+              def process(res: HttpRequest, ctx: HttpContext): Unit = {
+                reqPromise.success(res)
+              }
             }
-          }
           try {
             val httpClient =
               HttpClientBuilder.create.addInterceptorLast(itcp).build
@@ -175,8 +176,9 @@ trait WebHookService {
 
             if (!webHook.token.isEmpty) {
               // TODO find a better way and see how to extract content from postContent
-              val contentAsBytes =
-                URLEncodedUtils.format(params, "UTF-8").getBytes("UTF-8")
+              val contentAsBytes = URLEncodedUtils
+                .format(params, "UTF-8")
+                .getBytes("UTF-8")
               httpPost.addHeader(
                 "X-Hub-Signature",
                 XHub.generateHeaderXHubToken(
@@ -243,8 +245,10 @@ trait WebHookPullRequestService extends WebHookService {
           action = action,
           number = issue.issueId,
           repository = ApiRepository(repository, ApiUser(repoOwner)),
-          issue =
-            ApiIssue(issue, RepositoryName(repository), ApiUser(issueUser)),
+          issue = ApiIssue(
+            issue,
+            RepositoryName(repository),
+            ApiUser(issueUser)),
           sender = ApiUser(sender)
         )
       }
@@ -466,18 +470,19 @@ object WebHookService {
       repository: ApiRepository
   ) extends FieldSerializable
       with WebHookPayload {
-    val compare = commits.size match {
-      case 0 =>
-        ApiPath(
-          s"/${repository.full_name}"
-        ) // maybe test hook on un-initalied repository
-      case 1 => ApiPath(s"/${repository.full_name}/commit/${after}")
-      case _ if before.filterNot(_ == '0').isEmpty =>
-        ApiPath(
-          s"/${repository.full_name}/compare/${commits.head.id}^...${after}")
-      case _ =>
-        ApiPath(s"/${repository.full_name}/compare/${before}...${after}")
-    }
+    val compare =
+      commits.size match {
+        case 0 =>
+          ApiPath(
+            s"/${repository.full_name}"
+          ) // maybe test hook on un-initalied repository
+        case 1 => ApiPath(s"/${repository.full_name}/commit/${after}")
+        case _ if before.filterNot(_ == '0').isEmpty =>
+          ApiPath(
+            s"/${repository.full_name}/compare/${commits.head.id}^...${after}")
+        case _ =>
+          ApiPath(s"/${repository.full_name}/compare/${before}...${after}")
+      }
     val head_commit = commits.lastOption
   }
 

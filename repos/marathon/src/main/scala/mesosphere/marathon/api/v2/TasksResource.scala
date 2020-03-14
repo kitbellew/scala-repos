@@ -75,28 +75,31 @@ class TasksResource @Inject() (
       val appIdsToApps =
         appIds.map(appId => appId -> result(groupManager.app(appId))).toMap
 
-      val appToPorts = appIdsToApps.map {
-        case (appId, app) => appId -> app.map(_.servicePorts).getOrElse(Nil)
-      }.toMap
+      val appToPorts =
+        appIdsToApps.map {
+          case (appId, app) => appId -> app.map(_.servicePorts).getOrElse(Nil)
+        }.toMap
 
-      val health = appIds.flatMap { appId =>
-        result(healthCheckManager.statuses(appId))
-      }.toMap
+      val health =
+        appIds.flatMap { appId =>
+          result(healthCheckManager.statuses(appId))
+        }.toMap
 
-      val enrichedTasks: IterableView[EnrichedTask, Iterable[_]] = for {
-        (appId, task) <- tasks
-        app <- appIdsToApps(appId)
-        if isAuthorized(ViewApp, app)
-        if statusSet.isEmpty || task.mesosStatus.exists(s =>
-          statusSet(s.getState))
-      } yield {
-        EnrichedTask(
-          appId,
-          task,
-          health.getOrElse(task.taskId, Nil),
-          appToPorts.getOrElse(appId, Nil)
-        )
-      }
+      val enrichedTasks: IterableView[EnrichedTask, Iterable[_]] =
+        for {
+          (appId, task) <- tasks
+          app <- appIdsToApps(appId)
+          if isAuthorized(ViewApp, app)
+          if statusSet.isEmpty || task.mesosStatus.exists(s =>
+            statusSet(s.getState))
+        } yield {
+          EnrichedTask(
+            appId,
+            task,
+            health.getOrElse(task.taskId, Nil),
+            appToPorts.getOrElse(appId, Nil)
+          )
+        }
 
       ok(
         jsonObjString(
@@ -130,30 +133,33 @@ class TasksResource @Inject() (
       @Context req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
       val taskIds = (Json.parse(body) \ "ids").as[Set[String]]
-      val tasksToAppId = taskIds.map { id =>
-        try {
-          id -> Task.Id.appId(id)
-        } catch {
-          case e: MatchError =>
-            throw new BadRequestException(s"Invalid task id '$id'.")
-        }
-      }.toMap
+      val tasksToAppId =
+        taskIds.map { id =>
+          try {
+            id -> Task.Id.appId(id)
+          } catch {
+            case e: MatchError =>
+              throw new BadRequestException(s"Invalid task id '$id'.")
+          }
+        }.toMap
 
       def scaleAppWithKill(toKill: Map[PathId, Iterable[Task]]): Response = {
         deploymentResult(result(taskKiller.killAndScale(toKill, force)))
       }
 
       def killTasks(toKill: Map[PathId, Iterable[Task]]): Response = {
-        val affectedApps = tasksToAppId.values
-          .flatMap(appId => result(groupManager.app(appId)))
-          .toSeq
+        val affectedApps =
+          tasksToAppId.values
+            .flatMap(appId => result(groupManager.app(appId)))
+            .toSeq
         // FIXME (gkleiman): taskKiller.kill a few lines below also checks authorization, but we need to check ALL before
         // starting to kill tasks
         affectedApps.foreach(checkAuthorization(UpdateApp, _))
 
-        val killed = result(Future.sequence(toKill.map {
-          case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
-        })).flatten
+        val killed =
+          result(Future.sequence(toKill.map {
+            case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
+          })).flatten
         ok(jsonObjString("tasks" -> killed.map(task =>
           EnrichedTask(task.taskId.appId, task, Seq.empty))))
       }

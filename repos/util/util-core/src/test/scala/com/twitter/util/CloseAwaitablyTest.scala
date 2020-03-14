@@ -33,12 +33,13 @@ class CloseAwaitablyTest extends FunSuite {
 
   test("Await.ready") {
     val c = make()
-    val t = new Thread {
-      start()
-      override def run() {
-        Await.ready(c)
+    val t =
+      new Thread {
+        start()
+        override def run() {
+          Await.ready(c)
+        }
       }
-    }
 
     c.close(Time.now)
     assert(t.isAlive)

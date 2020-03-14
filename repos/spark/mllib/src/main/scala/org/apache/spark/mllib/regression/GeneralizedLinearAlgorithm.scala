@@ -281,12 +281,13 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       *
       * Currently, it's only enabled in LogisticRegressionWithLBFGS
       */
-    val scaler = if (useFeatureScaling) {
-      new StandardScaler(withStd = true, withMean = false)
-        .fit(input.map(_.features))
-    } else {
-      null
-    }
+    val scaler =
+      if (useFeatureScaling) {
+        new StandardScaler(withStd = true, withMean = false)
+          .fit(input.map(_.features))
+      } else {
+        null
+      }
 
     // Prepend an extra variable consisting of all 1.0's for the intercept.
     // TODO: Apply feature scaling to the weight vector instead of input data.
@@ -321,21 +322,24 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
         initialWeights
       }
 
-    val weightsWithIntercept =
-      optimizer.optimize(data, initialWeightsWithIntercept)
+    val weightsWithIntercept = optimizer.optimize(
+      data,
+      initialWeightsWithIntercept)
 
-    val intercept = if (addIntercept && numOfLinearPredictor == 1) {
-      weightsWithIntercept(weightsWithIntercept.size - 1)
-    } else {
-      0.0
-    }
+    val intercept =
+      if (addIntercept && numOfLinearPredictor == 1) {
+        weightsWithIntercept(weightsWithIntercept.size - 1)
+      } else {
+        0.0
+      }
 
-    var weights = if (addIntercept && numOfLinearPredictor == 1) {
-      Vectors.dense(
-        weightsWithIntercept.toArray.slice(0, weightsWithIntercept.size - 1))
-    } else {
-      weightsWithIntercept
-    }
+    var weights =
+      if (addIntercept && numOfLinearPredictor == 1) {
+        Vectors.dense(
+          weightsWithIntercept.toArray.slice(0, weightsWithIntercept.size - 1))
+      } else {
+        weightsWithIntercept
+      }
 
     /**
       * The weights and intercept are trained in the scaled space; we're converting them back to
@@ -367,9 +371,10 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
               0
           }
 
-          val partialWeightsArray = scaler
-            .transform(Vectors.dense(weightsArray.slice(start, end)))
-            .toArray
+          val partialWeightsArray =
+            scaler
+              .transform(Vectors.dense(weightsArray.slice(start, end)))
+              .toArray
 
           System.arraycopy(
             partialWeightsArray,

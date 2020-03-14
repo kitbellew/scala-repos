@@ -38,13 +38,14 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       println(s"Reading files from: $rootPath")
       val allFiles = new File(rootPath).listFiles.toList
 
-      val results = for {
-        path <- allFiles
-        lines = Source.fromFile(path).getLines().toList
-        comparison = SplitterComparison(
-          splitLines(path, oldSplitter, lines),
-          splitLines(path, newSplitter, lines))
-      } yield path -> comparison
+      val results =
+        for {
+          path <- allFiles
+          lines = Source.fromFile(path).getLines().toList
+          comparison = SplitterComparison(
+            splitLines(path, oldSplitter, lines),
+            splitLines(path, newSplitter, lines))
+        } yield path -> comparison
 
       printResults(results)
 
@@ -88,17 +89,18 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
               .nonEmpty) {
           Some((statements, lineRange))
         } else {
-          val closeSlashAsteriskLine =
-            statements.indexWhere(s => s.contains(END_COMMENT))
+          val closeSlashAsteriskLine = statements.indexWhere(s =>
+            s.contains(END_COMMENT))
           if (closeSlashAsteriskLine == -1) {
             Some((statements, lineRange))
           } else {
-            val newLineRange = if (reverted) {
-              lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
-            } else {
-              lineRange.copy(start =
-                lineRange.start + closeSlashAsteriskLine + 1)
-            }
+            val newLineRange =
+              if (reverted) {
+                lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
+              } else {
+                lineRange.copy(start =
+                  lineRange.start + closeSlashAsteriskLine + 1)
+              }
             removeSlashAsterisk(
               statements.drop(closeSlashAsteriskLine + 1),
               newLineRange,
@@ -160,8 +162,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
 
       //TODO: Return actual contents (after making both splitter...
       //TODO: ...implementations return CharRanges instead of LineRanges)
-      val settingsAndDefWithoutComments =
-        settingsAndDefs.flatMap(t => removeCommentFromStatement(t._1, t._2))
+      val settingsAndDefWithoutComments = settingsAndDefs.flatMap(t =>
+        removeCommentFromStatement(t._1, t._2))
       scala.util.Success(
         (
           imports.map(imp => (imp._1.trim, imp._2)),

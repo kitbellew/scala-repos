@@ -91,28 +91,29 @@ object AiConfig extends BaseConfig {
   import reactivemongo.bson._
   import lila.db.BSON
 
-  private[setup] implicit val aiConfigBSONHandler = new BSON[AiConfig] {
+  private[setup] implicit val aiConfigBSONHandler =
+    new BSON[AiConfig] {
 
-    def reads(r: BSON.Reader): AiConfig =
-      AiConfig(
-        variant = chess.variant.Variant orDefault (r int "v"),
-        timeMode = TimeMode orDefault (r int "tm"),
-        time = r double "t",
-        increment = r int "i",
-        days = r int "d",
-        level = r int "l",
-        color = Color.White,
-        fen = r strO "f" filter (_.nonEmpty)
-      )
+      def reads(r: BSON.Reader): AiConfig =
+        AiConfig(
+          variant = chess.variant.Variant orDefault (r int "v"),
+          timeMode = TimeMode orDefault (r int "tm"),
+          time = r double "t",
+          increment = r int "i",
+          days = r int "d",
+          level = r int "l",
+          color = Color.White,
+          fen = r strO "f" filter (_.nonEmpty)
+        )
 
-    def writes(w: BSON.Writer, o: AiConfig) =
-      BSONDocument(
-        "v" -> o.variant.id,
-        "tm" -> o.timeMode.id,
-        "t" -> o.time,
-        "i" -> o.increment,
-        "d" -> o.days,
-        "l" -> o.level,
-        "f" -> o.fen)
-  }
+      def writes(w: BSON.Writer, o: AiConfig) =
+        BSONDocument(
+          "v" -> o.variant.id,
+          "tm" -> o.timeMode.id,
+          "t" -> o.time,
+          "i" -> o.increment,
+          "d" -> o.days,
+          "l" -> o.level,
+          "f" -> o.fen)
+    }
 }

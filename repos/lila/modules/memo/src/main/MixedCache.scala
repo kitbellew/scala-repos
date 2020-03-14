@@ -27,8 +27,7 @@ final class MixedCache[K, V] private (
 object MixedCache {
 
   private def invalidate[K](async: AsyncCache[K, _], sync: SyncCache[K, _])(
-      k: K): Funit =
-    async.remove(k) >>- sync.invalidate(k)
+      k: K): Funit = async.remove(k) >>- sync.invalidate(k)
 
   def apply[K, V](
       f: K => Fu[V],

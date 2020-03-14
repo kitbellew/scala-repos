@@ -245,10 +245,11 @@ class ImplicitCollector(
       val named = element.asInstanceOf[PsiNamedElement]
       def fromType: Option[ScType] =
         state.get(BaseProcessor.FROM_TYPE_KEY).toOption
-      lazy val subst: ScSubstitutor = fromType match {
-        case Some(t) => getSubst(state).followUpdateThisType(t)
-        case _       => getSubst(state)
-      }
+      lazy val subst: ScSubstitutor =
+        fromType match {
+          case Some(t) => getSubst(state).followUpdateThisType(t)
+          case _       => getSubst(state)
+        }
       named match {
         case o: ScObject if o.hasModifierProperty("implicit") =>
           placeCalculated = true
@@ -500,8 +501,8 @@ class ImplicitCollector(
                                 place.getProject,
                                 place.getResolveScope)))
                           .getOrElse(ret)
-                        val polymorphicTypeParameters =
-                          typeParameters.map(new TypeParameter(_))
+                        val polymorphicTypeParameters = typeParameters.map(
+                          new TypeParameter(_))
                         def inferValueType(
                             tp: ScType): (ScType, Seq[TypeParameter]) = {
                           if (isExtensionConversion) {
@@ -509,11 +510,10 @@ class ImplicitCollector(
                               case ScTypePolymorphicType(
                                     internalType,
                                     typeParams) =>
-                                val filteredTypeParams =
-                                  typeParams.filter(tp =>
-                                    !tp.lowerType().equiv(types.Nothing) || !tp
-                                      .upperType()
-                                      .equiv(types.Any))
+                                val filteredTypeParams = typeParams.filter(tp =>
+                                  !tp.lowerType().equiv(types.Nothing) || !tp
+                                    .upperType()
+                                    .equiv(types.Any))
                                 val newPolymorphicType = ScTypePolymorphicType(
                                   internalType,
                                   filteredTypeParams)
@@ -535,15 +535,14 @@ class ImplicitCollector(
                               case _ => (tp.inferValueType, Seq.empty)
                             }
                         }
-                        var nonValueType: TypeResult[ScType] =
-                          Success(
-                            if (polymorphicTypeParameters.isEmpty)
-                              methodType
-                            else
-                              ScTypePolymorphicType(
-                                methodType,
-                                polymorphicTypeParameters),
-                            Some(place))
+                        var nonValueType: TypeResult[ScType] = Success(
+                          if (polymorphicTypeParameters.isEmpty)
+                            methodType
+                          else
+                            ScTypePolymorphicType(
+                              methodType,
+                              polymorphicTypeParameters),
+                          Some(place))
                         try {
                           def reportWrong(result: ImplicitResult)
                               : Some[(ScalaResolveResult, ScSubstitutor)] = {
@@ -557,8 +556,8 @@ class ImplicitCollector(
                               : Some[(ScalaResolveResult, ScSubstitutor)] = {
                             val expected = Some(tp)
                             try {
-                              nonValueType =
-                                InferUtil.updateAccordingToExpectedType(
+                              nonValueType = InferUtil
+                                .updateAccordingToExpectedType(
                                   nonValueType,
                                   fromImplicitParameters = true,
                                   filterTypeParams = isImplicitConversion,
@@ -570,9 +569,10 @@ class ImplicitCollector(
                                 return reportWrong(CantInferTypeParameterResult)
                             }
 
-                            val depth = ScalaProjectSettings
-                              .getInstance(place.getProject)
-                              .getImplicitParametersSearchDepth
+                            val depth =
+                              ScalaProjectSettings
+                                .getInstance(place.getProject)
+                                .getImplicitParametersSearchDepth
                             if (lastImplicit.isDefined &&
                                 (depth < 0 || searchImplicitsRecursively < depth)) {
                               predicate match {
@@ -582,8 +582,8 @@ class ImplicitCollector(
                                     return reportWrong(BadTypeResult))) match {
                                     case (ScFunctionType(rt, _), _) =>
                                       if (predicateFunction(
-                                            c.copy(implicitParameterType =
-                                              Some(rt)),
+                                            c.copy(implicitParameterType = Some(
+                                              rt)),
                                             subst).isEmpty)
                                         return reportWrong(
                                           CantFindExtensionMethodResult)
@@ -612,8 +612,8 @@ class ImplicitCollector(
                                     _.name == InferUtil.notFoundParameterName)))
                                 return Some(
                                   c.copy(
-                                    implicitParameters =
-                                      results.getOrElse(Seq.empty),
+                                    implicitParameters = results.getOrElse(
+                                      Seq.empty),
                                     implicitReason =
                                       ImplicitParameterNotFoundResult),
                                   subst)
@@ -635,8 +635,8 @@ class ImplicitCollector(
                                 addImportsUsed(
                                   c.copy(
                                     implicitParameterType = Some(valueType),
-                                    implicitParameters =
-                                      results.getOrElse(Seq.empty),
+                                    implicitParameters = results.getOrElse(
+                                      Seq.empty),
                                     implicitReason = OkResult,
                                     unresolvedTypeParameters = Some(typeParams)
                                   ),
@@ -708,13 +708,14 @@ class ImplicitCollector(
                     }
                   }
 
-                  val funType = if (MacroInferUtil.isMacro(fun).isDefined) {
-                    MacroInferUtil.checkMacro(fun, Some(tp), place) match {
-                      case Some(newTp) => newTp
-                      case _           => _funType
-                    }
-                  } else
-                    _funType
+                  val funType =
+                    if (MacroInferUtil.isMacro(fun).isDefined) {
+                      MacroInferUtil.checkMacro(fun, Some(tp), place) match {
+                        case Some(newTp) => newTp
+                        case _           => _funType
+                      }
+                    } else
+                      _funType
                   var substedFunType: ScType = funType
 
                   if (fun.hasTypeParameters && noReturnType) {

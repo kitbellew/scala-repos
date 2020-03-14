@@ -26,8 +26,7 @@ class SizedSinkTest extends FunSuite {
     val type2 = Event.nullType
     val type3 = Event.nullType
     Time.withCurrentTimeFrozen { _ =>
-      def event(etype: Type) =
-        Event(etype, Time.now, NoLong, NoObject, 1.0f)
+      def event(etype: Type) = Event(etype, Time.now, NoLong, NoObject, 1.0f)
 
       val sink = new SizedSink(2, () => Time.now.inMillis)
       assert(sink.events.size == 0)

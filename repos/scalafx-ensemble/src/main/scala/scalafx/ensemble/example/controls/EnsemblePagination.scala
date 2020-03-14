@@ -61,17 +61,20 @@ class EnsemblePagination extends EnsembleExample {
         }
 
     // Factory function for creating page content
-    val createAnimalPage = (index: Int) =>
-      new VBox() {
-        children =
-          List(new ImageView(images(index)), new Label("PAGE " + (index + 1)))
-        alignment = Pos.Center
-      }
+    val createAnimalPage =
+      (index: Int) =>
+        new VBox() {
+          children = List(
+            new ImageView(images(index)),
+            new Label("PAGE " + (index + 1)))
+          alignment = Pos.Center
+        }
 
     // Pagination with 7 pages and index starts at zero
-    val pagination = new Pagination(7, 0) {
-      pageFactory = createAnimalPage
-    }
+    val pagination =
+      new Pagination(7, 0) {
+        pageFactory = createAnimalPage
+      }
 
     new VBox {
       vgrow = Priority.Always

@@ -46,14 +46,15 @@ private[ml] trait MultilayerPerceptronParams
     * Default: Array(1, 1)
     * @group param
     */
-  final val layers: IntArrayParam = new IntArrayParam(
-    this,
-    "layers",
-    "Sizes of layers from input layer to output layer" +
-      " E.g., Array(780, 100, 10) means 780 inputs, " +
-      "one hidden layer with 100 neurons and output layer of 10 neurons.",
-    // TODO: how to check ALSO that all elements are greater than 0?
-    ParamValidators.arrayLengthGt(1))
+  final val layers: IntArrayParam =
+    new IntArrayParam(
+      this,
+      "layers",
+      "Sizes of layers from input layer to output layer" +
+        " E.g., Array(780, 100, 10) means 780 inputs, " +
+        "one hidden layer with 100 neurons and output layer of 10 neurons.",
+      // TODO: how to check ALSO that all elements are greater than 0?
+      ParamValidators.arrayLengthGt(1))
 
   /** @group getParam */
   final def getLayers: Array[Int] = $(layers)
@@ -66,13 +67,14 @@ private[ml] trait MultilayerPerceptronParams
     * Default: 128
     * @group expertParam
     */
-  final val blockSize: IntParam = new IntParam(
-    this,
-    "blockSize",
-    "Block size for stacking input data in matrices. Data is stacked within partitions." +
-      " If block size is more than remaining data in a partition then " +
-      "it is adjusted to the size of this data. Recommended size is between 10 and 1000",
-    ParamValidators.gt(0))
+  final val blockSize: IntParam =
+    new IntParam(
+      this,
+      "blockSize",
+      "Block size for stacking input data in matrices. Data is stacked within partitions." +
+        " If block size is more than remaining data in a partition then " +
+        "it is adjusted to the size of this data. Recommended size is between 10 and 1000",
+      ParamValidators.gt(0))
 
   /** @group getParam */
   final def getBlockSize: Int = $(blockSize)
@@ -222,8 +224,9 @@ class MultilayerPerceptronClassificationModel private[ml] (
   @Since("1.6.0")
   override val numFeatures: Int = layers.head
 
-  private val mlpModel =
-    FeedForwardTopology.multiLayerPerceptron(layers, true).getInstance(weights)
+  private val mlpModel = FeedForwardTopology
+    .multiLayerPerceptron(layers, true)
+    .getInstance(weights)
 
   /**
     * Returns layers in a Java List.

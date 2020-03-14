@@ -65,11 +65,12 @@ trait ScaladocAnalyzer extends Analyzer {
 
     def defineUseCases(useCase: UseCase): List[Symbol] = {
       def stringParser(str: String): syntaxAnalyzer.Parser = {
-        val file = new BatchSourceFile(context.unit.source.file, str) {
-          override def positionInUltimateSource(pos: Position) = {
-            pos withSource context.unit.source withShift useCase.pos.start
+        val file =
+          new BatchSourceFile(context.unit.source.file, str) {
+            override def positionInUltimateSource(pos: Position) = {
+              pos withSource context.unit.source withShift useCase.pos.start
+            }
           }
-        }
         newUnitParser(new CompilationUnit(file))
       }
 
@@ -83,10 +84,12 @@ trait ScaladocAnalyzer extends Analyzer {
               repl =>
                 silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
                   tpt =>
-                    val alias =
-                      enclClass.newAliasType(name.toTypeName, useCase.pos)
-                    val tparams =
-                      cloneSymbolsAtOwner(tpt.tpe.typeSymbol.typeParams, alias)
+                    val alias = enclClass.newAliasType(
+                      name.toTypeName,
+                      useCase.pos)
+                    val tparams = cloneSymbolsAtOwner(
+                      tpt.tpe.typeSymbol.typeParams,
+                      alias)
                     val newInfo = genPolyType(
                       tparams,
                       appliedType(tpt.tpe, tparams map (_.tpe)))

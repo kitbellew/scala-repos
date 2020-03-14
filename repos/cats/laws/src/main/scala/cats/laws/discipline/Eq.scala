@@ -60,7 +60,8 @@ object eq {
       }
     }
 
-  implicit val unitEq: Eq[Unit] = new Eq[Unit] {
-    def eqv(a: Unit, b: Unit): Boolean = true
-  }
+  implicit val unitEq: Eq[Unit] =
+    new Eq[Unit] {
+      def eqv(a: Unit, b: Unit): Boolean = true
+    }
 }

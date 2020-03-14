@@ -11,17 +11,13 @@ class Thread private (dummy: Unit) extends Runnable {
 
   def run(): Unit = ()
 
-  def interrupt(): Unit =
-    interruptedState = true
+  def interrupt(): Unit = interruptedState = true
 
-  def isInterrupted(): scala.Boolean =
-    interruptedState
+  def isInterrupted(): scala.Boolean = interruptedState
 
-  final def setName(name: String): Unit =
-    this.name = name
+  final def setName(name: String): Unit = this.name = name
 
-  final def getName(): String =
-    this.name
+  final def getName(): String = this.name
 
   def getStackTrace(): Array[StackTraceElement] =
     scala.scalajs.runtime.StackTrace.getCurrentStackTrace()

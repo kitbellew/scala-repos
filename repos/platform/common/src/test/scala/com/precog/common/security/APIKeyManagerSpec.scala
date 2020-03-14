@@ -40,25 +40,26 @@ trait APIKeyManagerSpec[M[+_]] extends Specification {
       val path = Path("/user1/")
       val mgr = new InMemoryAPIKeyManager[M](blueeyes.util.Clock.System)
 
-      val grantParentage = for {
-        rootKey <- mgr.rootAPIKey
-        rootGrantId <- mgr.rootGrantId
-        perms = Account.newAccountPermissions("012345", Path("/012345/"))
-        grantRequest = v1.NewGrantRequest(
-          Some("testGrant"),
-          None,
-          Set(rootGrantId),
-          perms,
-          None)
-        record <- mgr.newAPIKeyWithGrants(
-          Some("test"),
-          None,
-          rootKey,
-          Set(grantRequest))
-        grants <- record.toList.flatMap(_.grants).map(mgr.findGrant).sequence
-      } yield {
-        (grants.flatten.flatMap(_.parentIds), rootGrantId)
-      }
+      val grantParentage =
+        for {
+          rootKey <- mgr.rootAPIKey
+          rootGrantId <- mgr.rootGrantId
+          perms = Account.newAccountPermissions("012345", Path("/012345/"))
+          grantRequest = v1.NewGrantRequest(
+            Some("testGrant"),
+            None,
+            Set(rootGrantId),
+            perms,
+            None)
+          record <- mgr.newAPIKeyWithGrants(
+            Some("test"),
+            None,
+            rootKey,
+            Set(grantRequest))
+          grants <- record.toList.flatMap(_.grants).map(mgr.findGrant).sequence
+        } yield {
+          (grants.flatten.flatMap(_.parentIds), rootGrantId)
+        }
 
       val (grantParents, rootGrantId) = grantParentage.copoint
 

@@ -420,16 +420,18 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setMaxIterations(maxIterations)
 
     if (initialModelWeights != null && initialModelMu != null && initialModelSigma != null) {
-      val gaussians =
-        initialModelMu.asScala.toSeq.zip(initialModelSigma.asScala.toSeq).map {
+      val gaussians = initialModelMu.asScala.toSeq
+        .zip(initialModelSigma.asScala.toSeq)
+        .map {
           case (x, y) =>
             new MultivariateGaussian(
               x.asInstanceOf[Vector],
               y.asInstanceOf[Matrix])
         }
-      val initialModel = new GaussianMixtureModel(
-        initialModelWeights.asScala.toArray,
-        gaussians.toArray)
+      val initialModel =
+        new GaussianMixtureModel(
+          initialModelWeights.asScala.toArray,
+          gaussians.toArray)
       gmmAlg.setInitialModel(initialModel)
     }
 
@@ -456,9 +458,10 @@ private[python] class PythonMLLibAPI extends Serializable {
     val weight = wt.toArray
     val mean = mu.map(_.asInstanceOf[DenseVector])
     val sigma = si.map(_.asInstanceOf[DenseMatrix])
-    val gaussians = Array.tabulate(weight.length) { i =>
-      new MultivariateGaussian(mean(i), sigma(i))
-    }
+    val gaussians =
+      Array.tabulate(weight.length) { i =>
+        new MultivariateGaussian(mean(i), sigma(i))
+      }
     val model = new GaussianMixtureModel(weight, gaussians)
     model.predictSoft(data).map(Vectors.dense)
   }
@@ -722,8 +725,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setSeed(seed)
       .setMinCount(minCount)
     try {
-      val model =
-        word2vec.fit(dataJRDD.rdd.persist(StorageLevel.MEMORY_AND_DISK_SER))
+      val model = word2vec.fit(
+        dataJRDD.rdd.persist(StorageLevel.MEMORY_AND_DISK_SER))
       new Word2VecModelWrapper(model)
     } finally {
       dataJRDD.rdd.unpersist(blocking = false)
@@ -752,15 +755,16 @@ private[python] class PythonMLLibAPI extends Serializable {
     val algo = Algo.fromString(algoStr)
     val impurity = Impurities.fromString(impurityStr)
 
-    val strategy = new Strategy(
-      algo = algo,
-      impurity = impurity,
-      maxDepth = maxDepth,
-      numClasses = numClasses,
-      maxBins = maxBins,
-      categoricalFeaturesInfo = categoricalFeaturesInfo.asScala.toMap,
-      minInstancesPerNode = minInstancesPerNode,
-      minInfoGain = minInfoGain)
+    val strategy =
+      new Strategy(
+        algo = algo,
+        impurity = impurity,
+        maxDepth = maxDepth,
+        numClasses = numClasses,
+        maxBins = maxBins,
+        categoricalFeaturesInfo = categoricalFeaturesInfo.asScala.toMap,
+        minInstancesPerNode = minInstancesPerNode,
+        minInfoGain = minInfoGain)
     try {
       DecisionTree.train(
         data.rdd.persist(StorageLevel.MEMORY_AND_DISK),
@@ -790,13 +794,14 @@ private[python] class PythonMLLibAPI extends Serializable {
 
     val algo = Algo.fromString(algoStr)
     val impurity = Impurities.fromString(impurityStr)
-    val strategy = new Strategy(
-      algo = algo,
-      impurity = impurity,
-      maxDepth = maxDepth,
-      numClasses = numClasses,
-      maxBins = maxBins,
-      categoricalFeaturesInfo = categoricalFeaturesInfo.asScala.toMap)
+    val strategy =
+      new Strategy(
+        algo = algo,
+        impurity = impurity,
+        maxDepth = maxDepth,
+        numClasses = numClasses,
+        maxBins = maxBins,
+        categoricalFeaturesInfo = categoricalFeaturesInfo.asScala.toMap)
     val cached = data.rdd.persist(StorageLevel.MEMORY_AND_DISK)
     try {
       if (algo == Algo.Classification) {
@@ -1146,10 +1151,11 @@ private[python] class PythonMLLibAPI extends Serializable {
       data: JavaRDD[Vector],
       decayFactor: Double,
       timeUnit: String): JList[Object] = {
-    val model = new StreamingKMeansModel(
-      clusterCenters.asScala.toArray,
-      clusterWeights.asScala.toArray)
-      .update(data, decayFactor, timeUnit)
+    val model =
+      new StreamingKMeansModel(
+        clusterCenters.asScala.toArray,
+        clusterWeights.asScala.toArray)
+        .update(data, decayFactor, timeUnit)
     List[AnyRef](
       model.clusterCenters,
       Vectors.dense(model.clusterWeights)).asJava
@@ -1285,8 +1291,8 @@ private[python] class PythonMLLibAPI extends Serializable {
   def getMatrixEntries(coordinateMatrix: CoordinateMatrix): DataFrame = {
     // We use DataFrames for serialization of MatrixEntry entries to
     // Python, so return a DataFrame.
-    val sqlContext =
-      SQLContext.getOrCreate(coordinateMatrix.entries.sparkContext)
+    val sqlContext = SQLContext.getOrCreate(
+      coordinateMatrix.entries.sparkContext)
     sqlContext.createDataFrame(coordinateMatrix.entries)
   }
 
@@ -1346,12 +1352,13 @@ private[spark] object SerDe extends Serializable {
         out.write(Opcodes.MARK)
       }
       objects.foreach(pickler.save)
-      val code = objects.length match {
-        case 1 => Opcodes.TUPLE1
-        case 2 => Opcodes.TUPLE2
-        case 3 => Opcodes.TUPLE3
-        case _ => Opcodes.TUPLE
-      }
+      val code =
+        objects.length match {
+          case 1 => Opcodes.TUPLE1
+          case 2 => Opcodes.TUPLE2
+          case 3 => Opcodes.TUPLE3
+          case _ => Opcodes.TUPLE
+        }
       out.write(code)
     }
 

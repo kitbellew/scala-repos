@@ -51,8 +51,9 @@ class CompressionCodecSuite extends SparkFunSuite {
   }
 
   test("lz4 compression codec") {
-    val codec =
-      CompressionCodec.createCodec(conf, classOf[LZ4CompressionCodec].getName)
+    val codec = CompressionCodec.createCodec(
+      conf,
+      classOf[LZ4CompressionCodec].getName)
     assert(codec.getClass === classOf[LZ4CompressionCodec])
     testCodec(codec)
   }
@@ -64,15 +65,17 @@ class CompressionCodecSuite extends SparkFunSuite {
   }
 
   test("lz4 supports concatenation of serialized streams") {
-    val codec =
-      CompressionCodec.createCodec(conf, classOf[LZ4CompressionCodec].getName)
+    val codec = CompressionCodec.createCodec(
+      conf,
+      classOf[LZ4CompressionCodec].getName)
     assert(codec.getClass === classOf[LZ4CompressionCodec])
     testConcatenationOfSerializedStreams(codec)
   }
 
   test("lzf compression codec") {
-    val codec =
-      CompressionCodec.createCodec(conf, classOf[LZFCompressionCodec].getName)
+    val codec = CompressionCodec.createCodec(
+      conf,
+      classOf[LZFCompressionCodec].getName)
     assert(codec.getClass === classOf[LZFCompressionCodec])
     testCodec(codec)
   }
@@ -84,8 +87,9 @@ class CompressionCodecSuite extends SparkFunSuite {
   }
 
   test("lzf supports concatenation of serialized streams") {
-    val codec =
-      CompressionCodec.createCodec(conf, classOf[LZFCompressionCodec].getName)
+    val codec = CompressionCodec.createCodec(
+      conf,
+      classOf[LZFCompressionCodec].getName)
     assert(codec.getClass === classOf[LZFCompressionCodec])
     testConcatenationOfSerializedStreams(codec)
   }
@@ -134,8 +138,8 @@ class CompressionCodecSuite extends SparkFunSuite {
       out.close()
       baos.toByteArray
     }
-    val concatenatedBytes =
-      codec.compressedInputStream(new ByteArrayInputStream(bytes1 ++ bytes2))
+    val concatenatedBytes = codec.compressedInputStream(
+      new ByteArrayInputStream(bytes1 ++ bytes2))
     val decompressed: Array[Byte] = new Array[Byte](128)
     ByteStreams.readFully(concatenatedBytes, decompressed)
     assert(decompressed.toSeq === (0 to 127))

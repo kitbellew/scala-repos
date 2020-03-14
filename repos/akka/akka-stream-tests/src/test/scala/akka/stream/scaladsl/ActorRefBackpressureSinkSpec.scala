@@ -150,14 +150,13 @@ class ActorRefBackpressureSinkSpec extends AkkaSpec {
 
     "work with one element buffer" in assertAllStagesStopped {
       val fw = createActor(classOf[Fw2])
-      val publisher =
-        TestSource
-          .probe[Int]
-          .to(
-            Sink
-              .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
-              .withAttributes(inputBuffer(1, 1)))
-          .run()
+      val publisher = TestSource
+        .probe[Int]
+        .to(
+          Sink
+            .actorRefWithAck(fw, initMessage, ackMessage, completeMessage)
+            .withAttributes(inputBuffer(1, 1)))
+        .run()
 
       expectMsg(initMessage)
       fw ! TriggerAckMessage

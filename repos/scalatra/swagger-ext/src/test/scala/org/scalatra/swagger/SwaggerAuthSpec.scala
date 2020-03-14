@@ -96,18 +96,21 @@ object SwaggerAuthSpec {
     protected val applicationDescription = "The pets api"
     override protected val applicationName = Some("pets")
 
-    private val allowsTom = (u: Option[User]) => {
-      u.map(_.login) == Some("tom")
-    }
+    private val allowsTom =
+      (u: Option[User]) => {
+        u.map(_.login) == Some("tom")
+      }
 
-    private val allowsAuthenticated = (u: Option[User]) => {
-      u.isDefined
-    }
+    private val allowsAuthenticated =
+      (u: Option[User]) => {
+        u.isDefined
+      }
 
-    private val noJohn = (u: Option[User]) => {
-      val uu = u.map(_.login)
-      uu.isDefined && uu != Some("john")
-    }
+    private val noJohn =
+      (u: Option[User]) => {
+        val uu = u.map(_.login)
+        uu.isDefined && uu != Some("john")
+      }
 
     get("/", operation(apiOperation[Unit]("getPets"))) {
       "OK"

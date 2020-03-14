@@ -38,11 +38,12 @@ object TraverseUsage extends App {
   // fa.traverse(f):
   val smallNumbers = List(1, 2, 3, 4, 5)
   val bigNumbers = List(10, 20, 30, 40, 50)
-  val doubleSmall: Int => Option[Int] = (x =>
-    if (x < 30)
-      Some(x * 2)
-    else
-      None)
+  val doubleSmall: Int => Option[Int] =
+    (x =>
+      if (x < 30)
+        Some(x * 2)
+      else
+        None)
 
   assert(smallNumbers.traverse(doubleSmall) === Some(List(2, 4, 6, 8, 10)))
   assert(
@@ -62,8 +63,11 @@ object TraverseUsage extends App {
   // instead of the expected * -> * kind of an Applicative, since the
   // Validation type constructor takes two arguments instead of one.
 
-  val validations: Vector[ValidationNel[String, Int]] =
-    Vector(1.success, "failure2".failureNel, 3.success, "failure4".failureNel)
+  val validations: Vector[ValidationNel[String, Int]] = Vector(
+    1.success,
+    "failure2".failureNel,
+    3.success,
+    "failure4".failureNel)
 
   // this would not compile:
   // val result = validations.sequence
@@ -75,11 +79,12 @@ object TraverseUsage extends App {
   val result: ValidationNel[String, Vector[Int]] = validations.sequenceU
   assert(result === NonEmptyList("failure2", "failure4").failure[Vector[Int]])
 
-  val onlyEvenAllowed: Int => ValidationNel[String, Int] = x =>
-    if (x % 2 === 0)
-      x.successNel
-    else
-      (x.toString + " is not even").failureNel
+  val onlyEvenAllowed: Int => ValidationNel[String, Int] =
+    x =>
+      if (x % 2 === 0)
+        x.successNel
+      else
+        (x.toString + " is not even").failureNel
 
   val evens = IList(2, 4, 6, 8)
   val notAllEvens = List(1, 2, 3, 4)

@@ -28,6 +28,6 @@ object Profile {
 
   val default = Profile()
 
-  private[user] val profileBSONHandler =
-    reactivemongo.bson.Macros.handler[Profile]
+  private[user] val profileBSONHandler = reactivemongo.bson.Macros
+    .handler[Profile]
 }

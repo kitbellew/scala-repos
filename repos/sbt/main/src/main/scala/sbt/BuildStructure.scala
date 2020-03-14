@@ -40,8 +40,11 @@ final class BuildStructure(
     }
   def allProjectRefs(build: URI): Seq[ProjectRef] =
     refs(build, allProjects(build))
-  val extra: BuildUtil[ResolvedProject] =
-    BuildUtil(root, units, index.keyIndex, data)
+  val extra: BuildUtil[ResolvedProject] = BuildUtil(
+    root,
+    units,
+    index.keyIndex,
+    data)
   private[this] def refs(
       build: URI,
       projects: Seq[ResolvedProject]): Seq[ProjectRef] =
@@ -186,21 +189,20 @@ final class DetectedPlugins(
 
   private[this] lazy val (
     autoPluginAutoImports,
-    topLevelAutoPluginAutoImports) =
-    autoPlugins
-      .flatMap {
-        case DetectedAutoPlugin(name, ap, hasAutoImport) =>
-          if (hasAutoImport)
-            Some(name)
-          else
-            None
-      }
-      .partition(nonTopLevelPlugin)
+    topLevelAutoPluginAutoImports) = autoPlugins
+    .flatMap {
+      case DetectedAutoPlugin(name, ap, hasAutoImport) =>
+        if (hasAutoImport)
+          Some(name)
+        else
+          None
+    }
+    .partition(nonTopLevelPlugin)
 
   /** A function to select the right [[AutoPlugin]]s from [[autoPlugins]] for a [[Project]]. */
   @deprecated("Use deducePluginsFromProject", "0.13.8")
-  lazy val deducePlugins: (Plugins, Logger) => Seq[AutoPlugin] =
-    Plugins.deducer(autoPlugins.toList map {
+  lazy val deducePlugins: (Plugins, Logger) => Seq[AutoPlugin] = Plugins
+    .deducer(autoPlugins.toList map {
       _.value
     })
 
@@ -210,13 +212,14 @@ final class DetectedPlugins(
     val allDetected = autoPlugins.toList map {
       _.value
     }
-    val detected = p match {
-      case _: GeneratedRootProject =>
-        allDetected filterNot {
-          _ == sbt.plugins.IvyPlugin
-        }
-      case _ => allDetected
-    }
+    val detected =
+      p match {
+        case _: GeneratedRootProject =>
+          allDetected filterNot {
+            _ == sbt.plugins.IvyPlugin
+          }
+        case _ => allDetected
+      }
     Plugins.deducer(detected)(ps0, log)
   }
 

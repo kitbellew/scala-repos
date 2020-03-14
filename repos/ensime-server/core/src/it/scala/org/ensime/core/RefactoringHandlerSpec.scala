@@ -115,8 +115,8 @@ class RefactoringHandlerSpec
 
       val analyzer = analyzerRef.underlyingActor
 
-      val formatted =
-        analyzer.handleFormatFile(SourceFileInfo(new File(file.path)))
+      val formatted = analyzer.handleFormatFile(
+        SourceFileInfo(new File(file.path)))
       val expectedContents = contents(
         "package blah",
         "class Something {}",
@@ -387,10 +387,11 @@ class RefactoringHandlerSpec
           false
         )
       )
-      val diffFile = result match {
-        case RefactorDiffEffect(_, _, f) => f.canon
-        case _                           => fail()
-      }
+      val diffFile =
+        result match {
+          case RefactorDiffEffect(_, _, f) => f.canon
+          case _                           => fail()
+        }
 
       val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z")
       val t = sdf.format(new Date((new File(file.path)).lastModified()))
@@ -442,10 +443,11 @@ class RefactoringHandlerSpec
           false
         )
       )
-      val diffFile = result match {
-        case RefactorDiffEffect(_, _, f) => f.canon
-        case default                     => fail()
-      }
+      val diffFile =
+        result match {
+          case RefactorDiffEffect(_, _, f) => f.canon
+          case default                     => fail()
+        }
 
       val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z")
       val t = sdf.format(new Date((new File(file.path)).lastModified()))

@@ -20,10 +20,11 @@ object PartialFunctionTest extends SpecLite {
     val nums = (num, num2)
     A.split(A.id[Int], A.id[Int]).isDefinedAt(nums) must_=== (true)
     A.split(A.id[Int], A.id[Int])(nums) must_=== (nums)
-    val definedness = for {
-      l <- List(pfnegonly, pfposonly)
-      r <- List(pfnegonly, pfposonly)
-    } yield (A.split(l, r), A.split(l, r) isDefinedAt (nums))
+    val definedness =
+      for {
+        l <- List(pfnegonly, pfposonly)
+        r <- List(pfnegonly, pfposonly)
+      } yield (A.split(l, r), A.split(l, r) isDefinedAt (nums))
     (definedness.find(_._2).get._1(nums)
       must_=== ((0 - num, 0 - num2)))
   }

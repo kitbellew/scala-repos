@@ -52,9 +52,10 @@ object Covariant {
   }
   abstract class AbstractTest {
     val a: Foo[AnyRef]
-    val c = new a.Convert[Int] {
-      def b2a(b: Int): AnyRef = "hello"
-    }
+    val c =
+      new a.Convert[Int] {
+        def b2a(b: Int): AnyRef = "hello"
+      }
     val b: Int = 42
   }
   class Test extends AbstractTest {

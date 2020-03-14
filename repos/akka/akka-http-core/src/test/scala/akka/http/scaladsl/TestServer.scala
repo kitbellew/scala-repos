@@ -16,8 +16,8 @@ import com.typesafe.config.{ConfigFactory, Config}
 import HttpMethods._
 
 object TestServer extends App {
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString(
+    """
     akka.loglevel = INFO
     akka.log-dead-letters = off
     akka.stream.materializer.debug.fuzzing-mode = off

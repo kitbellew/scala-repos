@@ -250,8 +250,8 @@ private[repl] trait SparkMemberHandlers {
     def implicitSymbols = importedSymbols filter (_.isImplicit)
     def importedSymbols = individualSymbols ++ wildcardSymbols
 
-    lazy val individualSymbols: List[Symbol] =
-      beforePickler(individualNames map (targetType nonPrivateMember _))
+    lazy val individualSymbols: List[Symbol] = beforePickler(
+      individualNames map (targetType nonPrivateMember _))
 
     lazy val wildcardSymbols: List[Symbol] =
       if (importsWildcard)

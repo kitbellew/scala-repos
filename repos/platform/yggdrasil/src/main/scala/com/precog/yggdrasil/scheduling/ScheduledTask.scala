@@ -42,23 +42,25 @@ import scalaz._
 import shapeless._
 
 object CronExpressionSerialization {
-  implicit val cronExpressionDecomposer = new Decomposer[CronExpression] {
-    def decompose(expr: CronExpression) = JString(expr.toString)
-  }
+  implicit val cronExpressionDecomposer =
+    new Decomposer[CronExpression] {
+      def decompose(expr: CronExpression) = JString(expr.toString)
+    }
 
-  implicit val cronExpressionExtractor = new Extractor[CronExpression] {
-    def validated(jv: JValue) =
-      jv match {
-        case JString(expr) =>
-          Validation
-            .fromTryCatch(new CronExpression(expr))
-            .leftMap(Extractor.Error.thrown)
-        case invalid =>
-          Failure(
-            Extractor.Error.invalid(
-              "Could not parse CRON expression from " + invalid))
-      }
-  }
+  implicit val cronExpressionExtractor =
+    new Extractor[CronExpression] {
+      def validated(jv: JValue) =
+        jv match {
+          case JString(expr) =>
+            Validation
+              .fromTryCatch(new CronExpression(expr))
+              .leftMap(Extractor.Error.thrown)
+          case invalid =>
+            Failure(
+              Extractor.Error.invalid(
+                "Could not parse CRON expression from " + invalid))
+        }
+    }
 }
 
 case class ScheduledTask(
@@ -85,8 +87,10 @@ object ScheduledTask {
   val schemaV1 =
     "id" :: "repeat" :: "apiKey" :: "authorities" :: "prefix" :: "source" :: "sink" :: "timeout" :: HNil
 
-  implicit val decomposer: Decomposer[ScheduledTask] =
-    decomposerV(schemaV1, Some("1.0".v))
-  implicit val extractor: Extractor[ScheduledTask] =
-    extractorV(schemaV1, Some("1.0".v))
+  implicit val decomposer: Decomposer[ScheduledTask] = decomposerV(
+    schemaV1,
+    Some("1.0".v))
+  implicit val extractor: Extractor[ScheduledTask] = extractorV(
+    schemaV1,
+    Some("1.0".v))
 }

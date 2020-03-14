@@ -92,8 +92,8 @@ object FaultHandlingDocSpec {
   }
   //#child
 
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString(
+    """
       akka {
         loggers = ["akka.testkit.TestEventListener"]
       }
@@ -130,8 +130,9 @@ class FaultHandlingDocSpec(_system: ActorSystem)
     val supervisor = system.actorOf(Props[Supervisor], "supervisor")
 
     supervisor ! Props[Child]
-    val child =
-      expectMsgType[ActorRef] // retrieve answer from TestKit’s testActor
+    val child = expectMsgType[
+      ActorRef
+    ] // retrieve answer from TestKit’s testActor
     //#create
     EventFilter.warning(occurrences = 1) intercept {
       //#resume

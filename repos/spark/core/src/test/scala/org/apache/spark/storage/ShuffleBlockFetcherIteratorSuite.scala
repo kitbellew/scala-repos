@@ -49,8 +49,9 @@ class ShuffleBlockFetcherIteratorSuite
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val blocks = invocation.getArguments()(3).asInstanceOf[Array[String]]
-          val listener =
-            invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
+          val listener = invocation
+            .getArguments()(4)
+            .asInstanceOf[BlockFetchingListener]
 
           for (blockId <- blocks) {
             if (data.contains(BlockId(blockId))) {
@@ -106,13 +107,14 @@ class ShuffleBlockFetcherIteratorSuite
         remoteBlocks.keys.map(blockId => (blockId, 1.asInstanceOf[Long])).toSeq)
     )
 
-    val iterator = new ShuffleBlockFetcherIterator(
-      TaskContext.empty(),
-      transfer,
-      blockManager,
-      blocksByAddress,
-      48 * 1024 * 1024,
-      Int.MaxValue)
+    val iterator =
+      new ShuffleBlockFetcherIterator(
+        TaskContext.empty(),
+        transfer,
+        blockManager,
+        blocksByAddress,
+        48 * 1024 * 1024,
+        Int.MaxValue)
 
     // 3 local blocks fetched in initialization
     verify(blockManager, times(3)).getBlockData(any())
@@ -126,8 +128,8 @@ class ShuffleBlockFetcherIteratorSuite
       // Make sure we release buffers when a wrapped input stream is closed.
       val mockBuf = localBlocks.getOrElse(blockId, remoteBlocks(blockId))
       // Note: ShuffleBlockFetcherIterator wraps input streams in a BufferReleasingInputStream
-      val wrappedInputStream =
-        inputStream.asInstanceOf[BufferReleasingInputStream]
+      val wrappedInputStream = inputStream
+        .asInstanceOf[BufferReleasingInputStream]
       verify(mockBuf, times(0)).release()
       val delegateAccess = PrivateMethod[InputStream]('delegate)
 
@@ -168,8 +170,9 @@ class ShuffleBlockFetcherIteratorSuite
     when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
-          val listener =
-            invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
+          val listener = invocation
+            .getArguments()(4)
+            .asInstanceOf[BlockFetchingListener]
           Future {
             // Return the first two blocks, and wait till task completion before returning the 3rd one
             listener.onBlockFetchSuccess(
@@ -192,13 +195,14 @@ class ShuffleBlockFetcherIteratorSuite
         blocks.keys.map(blockId => (blockId, 1.asInstanceOf[Long])).toSeq))
 
     val taskContext = TaskContext.empty()
-    val iterator = new ShuffleBlockFetcherIterator(
-      taskContext,
-      transfer,
-      blockManager,
-      blocksByAddress,
-      48 * 1024 * 1024,
-      Int.MaxValue)
+    val iterator =
+      new ShuffleBlockFetcherIterator(
+        taskContext,
+        transfer,
+        blockManager,
+        blocksByAddress,
+        48 * 1024 * 1024,
+        Int.MaxValue)
 
     verify(blocks(ShuffleBlockId(0, 0, 0)), times(0)).release()
     iterator.next()._2.close() // close() first block's input stream
@@ -238,8 +242,9 @@ class ShuffleBlockFetcherIteratorSuite
     when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
-          val listener =
-            invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
+          val listener = invocation
+            .getArguments()(4)
+            .asInstanceOf[BlockFetchingListener]
           Future {
             // Return the first block, and then fail.
             listener.onBlockFetchSuccess(
@@ -262,13 +267,14 @@ class ShuffleBlockFetcherIteratorSuite
         blocks.keys.map(blockId => (blockId, 1.asInstanceOf[Long])).toSeq))
 
     val taskContext = TaskContext.empty()
-    val iterator = new ShuffleBlockFetcherIterator(
-      taskContext,
-      transfer,
-      blockManager,
-      blocksByAddress,
-      48 * 1024 * 1024,
-      Int.MaxValue)
+    val iterator =
+      new ShuffleBlockFetcherIterator(
+        taskContext,
+        transfer,
+        blockManager,
+        blocksByAddress,
+        48 * 1024 * 1024,
+        Int.MaxValue)
 
     // Continue only after the mock calls onBlockFetchFailure
     sem.acquire()

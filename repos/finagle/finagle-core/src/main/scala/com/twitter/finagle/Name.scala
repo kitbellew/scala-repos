@@ -75,8 +75,7 @@ object Name {
     def apply(
         addr: Var[Addr],
         id: Any,
-        path: com.twitter.finagle.Path): Name.Bound =
-      new Bound(addr, id, path)
+        path: com.twitter.finagle.Path): Name.Bound = new Bound(addr, id, path)
 
     def apply(addr: Var[Addr], id: Any): Name.Bound =
       apply(addr, id, com.twitter.finagle.Path.empty)
@@ -90,17 +89,18 @@ object Name {
   }
 
   // So that we can print NameTree[Name]
-  implicit val showable: Showable[Name] = new Showable[Name] {
-    def show(name: Name) =
-      name match {
-        case Path(path) => path.show
-        case bound @ Bound(_) =>
-          bound.id match {
-            case id: com.twitter.finagle.Path => id.show
-            case id                           => id.toString
-          }
-      }
-  }
+  implicit val showable: Showable[Name] =
+    new Showable[Name] {
+      def show(name: Name) =
+        name match {
+          case Path(path) => path.show
+          case bound @ Bound(_) =>
+            bound.id match {
+              case id: com.twitter.finagle.Path => id.show
+              case id                           => id.toString
+            }
+        }
+    }
 
   /**
     * Create a pre-bound address.
@@ -154,15 +154,13 @@ object Name {
     * Create a path-based Name which is interpreted vis-à-vis
     * the current request-local delegation table.
     */
-  def apply(path: com.twitter.finagle.Path): Name =
-    Name.Path(path)
+  def apply(path: com.twitter.finagle.Path): Name = Name.Path(path)
 
   /**
     * Create a path-based Name which is interpreted vis-à-vis
     * the current request-local delegation table.
     */
-  def apply(path: String): Name =
-    Name.Path(com.twitter.finagle.Path.read(path))
+  def apply(path: String): Name = Name.Path(com.twitter.finagle.Path.read(path))
 
   // Create a name representing the union of the passed-in names.
   // Metadata is not preserved on bound addresses.
@@ -177,10 +175,11 @@ object Name {
               case Addr.Bound(_, _) => true;
               case _                => false
             }) =>
-          val endpointAddrs = addrs.flatMap {
-            case Addr.Bound(as, _) => as
-            case _                 => Set.empty[Address]
-          }.toSet
+          val endpointAddrs =
+            addrs.flatMap {
+              case Addr.Bound(as, _) => as
+              case _                 => Set.empty[Address]
+            }.toSet
           Addr.Bound(endpointAddrs, Addr.Metadata.empty)
 
         case addrs if addrs.forall(_ == Addr.Neg) => Addr.Neg

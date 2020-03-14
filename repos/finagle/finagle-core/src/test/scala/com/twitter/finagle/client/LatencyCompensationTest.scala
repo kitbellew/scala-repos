@@ -31,8 +31,8 @@ class LatencyCompensationTest
       def make(
           prms: Stack.Params,
           next: Stack[ServiceFactory[String, String]]) = {
-        val LatencyCompensation.Compensation(compensation) =
-          prms[LatencyCompensation.Compensation]
+        val LatencyCompensation
+          .Compensation(compensation) = prms[LatencyCompensation.Compensation]
         assert(expected == compensation)
 
         Stack.Leaf(
@@ -42,8 +42,7 @@ class LatencyCompensationTest
     }
 
   // after each test, make sure to reset the override
-  override def afterEach() =
-    LatencyCompensation.DefaultOverride.reset()
+  override def afterEach() = LatencyCompensation.DefaultOverride.reset()
 
   test("Sets Compensation param") {
     val stk =
@@ -116,8 +115,9 @@ class LatencyCompensationTest
       val server = Echo.serve("127.1:0", service)
       val ia = server.boundAddress.asInstanceOf[InetSocketAddress]
       val addr = Addr.Bound(Set[Address](Address(ia)), metadata)
-      val client =
-        echoClient.newService(Name.Bound(Var.value(addr), "id"), "label")
+      val client = echoClient.newService(
+        Name.Bound(Var.value(addr), "id"),
+        "label")
 
       try f(client)
       finally Await.result(client.close() join server.close(), 10.seconds)

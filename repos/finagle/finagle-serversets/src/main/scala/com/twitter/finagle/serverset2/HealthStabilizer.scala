@@ -32,42 +32,44 @@ private[serverset2] object HealthStabilizer {
   ): Var[ClientHealth] = {
 
     Var.async[ClientHealth](ClientHealth.Healthy) { u =>
-      val stateChanges = va.changes.dedup
-        .select(probationEpoch.event)
-        .foldLeft[Status](Unknown) {
-          // always take the first update as our status
-          case (Unknown, Left(ClientHealth.Healthy))   => Healthy
-          case (Unknown, Left(ClientHealth.Unhealthy)) => Unhealthy
+      val stateChanges =
+        va.changes.dedup
+          .select(probationEpoch.event)
+          .foldLeft[Status](Unknown) {
+            // always take the first update as our status
+            case (Unknown, Left(ClientHealth.Healthy))   => Healthy
+            case (Unknown, Left(ClientHealth.Unhealthy)) => Unhealthy
 
-          // Any change from * => healthy makes us immediately healthy
-          case (_, Left(ClientHealth.Healthy)) => Healthy
+            // Any change from * => healthy makes us immediately healthy
+            case (_, Left(ClientHealth.Healthy)) => Healthy
 
-          // Change from good to bad is placed in limbo starting now
-          case (Healthy, Left(ClientHealth.Unhealthy)) =>
-            Probation(Stopwatch.start())
+            // Change from good to bad is placed in limbo starting now
+            case (Healthy, Left(ClientHealth.Unhealthy)) =>
+              Probation(Stopwatch.start())
 
-          // The probation epoch has ended. If we entered probation > the probation duration then we are
-          // now unhealthy.
-          case (Probation(elapsed), Right(()))
-              if elapsed() >= probationEpoch.period =>
-            Unhealthy
+            // The probation epoch has ended. If we entered probation > the probation duration then we are
+            // now unhealthy.
+            case (Probation(elapsed), Right(()))
+                if elapsed() >= probationEpoch.period =>
+              Unhealthy
 
-          // any other change is ignored
-          case (v, _) => v
-        }
+            // any other change is ignored
+            case (v, _) => v
+          }
 
       val currentStatus = new AtomicReference[Status]()
       val gaugeListener = stateChanges.dedup.register(Witness {
         currentStatus
       })
-      val gauge = statsReceiver.addGauge("zkHealth") {
-        currentStatus.get() match {
-          case Unknown      => 0
-          case Healthy      => 1
-          case Unhealthy    => 2
-          case Probation(_) => 3
+      val gauge =
+        statsReceiver.addGauge("zkHealth") {
+          currentStatus.get() match {
+            case Unknown      => 0
+            case Healthy      => 1
+            case Unhealthy    => 2
+            case Probation(_) => 3
+          }
         }
-      }
 
       val notify = stateChanges
         .collect {

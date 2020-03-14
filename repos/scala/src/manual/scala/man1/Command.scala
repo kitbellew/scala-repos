@@ -18,8 +18,7 @@ trait Command {
   protected def MBold(contents: AbstractText) = Mono(Bold(contents))
   protected def MItalic(contents: AbstractText) = Mono(Italic(contents))
 
-  protected def CmdLine(opts: AbstractText) =
-    MBold(command) & Mono(" " & opts)
+  protected def CmdLine(opts: AbstractText) = MBold(command) & Mono(" " & opts)
 
   protected def CmdOption(opt: String, params: AbstractText) =
     Mono(Bold(NDash & opt) & " " & params & " ")
@@ -36,8 +35,7 @@ trait Command {
   protected def CmdOptionLong(opt: String): AbstractText =
     Mono(Bold(NDash & NDash & opt) & " ")
 
-  protected def Argument(arg: String): AbstractText =
-    "<" & Italic(arg) & ">"
+  protected def Argument(arg: String): AbstractText = "<" & Italic(arg) & ">"
 
   def authors =
     Section(

@@ -40,8 +40,8 @@ private[akka] class DistributedPubSubMessageSerializer(
   private val SendToAllManifest = "D"
   private val PublishManifest = "E"
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       StatusManifest -> statusFromBinary,
       DeltaManifest -> deltaFromBinary,
       SendManifest -> sendFromBinary,
@@ -129,17 +129,18 @@ private[akka] class DistributedPubSubMessageSerializer(
       address.getPort)
 
   private def statusToProto(status: Status): dm.Status = {
-    val versions = status.versions
-      .map {
-        case (a, v) ⇒
-          dm.Status.Version
-            .newBuilder()
-            .setAddress(addressToProto(a))
-            .setTimestamp(v)
-            .build()
-      }
-      .toVector
-      .asJava
+    val versions =
+      status.versions
+        .map {
+          case (a, v) ⇒
+            dm.Status.Version
+              .newBuilder()
+              .setAddress(addressToProto(a))
+              .setTimestamp(v)
+              .build()
+        }
+        .toVector
+        .asJava
     dm.Status.newBuilder().addAllVersions(versions).build()
   }
 
@@ -151,31 +152,33 @@ private[akka] class DistributedPubSubMessageSerializer(
       addressFromProto(v.getAddress) -> v.getTimestamp)(breakOut))
 
   private def deltaToProto(delta: Delta): dm.Delta = {
-    val buckets = delta.buckets
-      .map { b ⇒
-        val entries = b.content
-          .map {
-            case (key, value) ⇒
-              val b = dm.Delta.Entry
-                .newBuilder()
-                .setKey(key)
-                .setVersion(value.version)
-              value.ref.foreach(r ⇒
-                b.setRef(Serialization.serializedActorPath(r)))
-              b.build()
-          }
-          .toVector
-          .asJava
+    val buckets =
+      delta.buckets
+        .map { b ⇒
+          val entries =
+            b.content
+              .map {
+                case (key, value) ⇒
+                  val b = dm.Delta.Entry
+                    .newBuilder()
+                    .setKey(key)
+                    .setVersion(value.version)
+                  value.ref.foreach(r ⇒
+                    b.setRef(Serialization.serializedActorPath(r)))
+                  b.build()
+              }
+              .toVector
+              .asJava
 
-        dm.Delta.Bucket
-          .newBuilder()
-          .setOwner(addressToProto(b.owner))
-          .setVersion(b.version)
-          .addAllContent(entries)
-          .build()
-      }
-      .toVector
-      .asJava
+          dm.Delta.Bucket
+            .newBuilder()
+            .setOwner(addressToProto(b.owner))
+            .setVersion(b.version)
+            .addAllContent(entries)
+            .build()
+        }
+        .toVector
+        .asJava
     dm.Delta.newBuilder().addAllBuckets(buckets).build()
   }
 
@@ -184,15 +187,15 @@ private[akka] class DistributedPubSubMessageSerializer(
 
   private def deltaFromProto(delta: dm.Delta): Delta =
     Delta(delta.getBucketsList.asScala.toVector.map { b ⇒
-      val content: TreeMap[String, ValueHolder] = b.getContentList.asScala.map {
-        entry ⇒
+      val content: TreeMap[String, ValueHolder] =
+        b.getContentList.asScala.map { entry ⇒
           entry.getKey -> ValueHolder(
             entry.getVersion,
             if (entry.hasRef)
               Some(resolveActorRef(entry.getRef))
             else
               None)
-      }(breakOut)
+        }(breakOut)
       Bucket(addressFromProto(b.getOwner), b.getVersion, content)
     })
 

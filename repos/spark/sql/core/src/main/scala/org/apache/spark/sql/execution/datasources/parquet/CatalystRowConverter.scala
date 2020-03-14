@@ -366,9 +366,10 @@ private[parquet] class CatalystRowConverter(
     override def hasDictionarySupport: Boolean = true
 
     override def setDictionary(dictionary: Dictionary): Unit = {
-      this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { i =>
-        UTF8String.fromBytes(dictionary.decodeToBinary(i).getBytes)
-      }
+      this.expandedDictionary =
+        Array.tabulate(dictionary.getMaxId + 1) { i =>
+          UTF8String.fromBytes(dictionary.decodeToBinary(i).getBytes)
+        }
     }
 
     override def addValueFromDictionary(dictionaryId: Int): Unit = {
@@ -444,9 +445,10 @@ private[parquet] class CatalystRowConverter(
       extends CatalystDecimalConverter(precision, scale, updater) {
 
     override def setDictionary(dictionary: Dictionary): Unit = {
-      this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { id =>
-        decimalFromLong(dictionary.decodeToInt(id).toLong)
-      }
+      this.expandedDictionary =
+        Array.tabulate(dictionary.getMaxId + 1) { id =>
+          decimalFromLong(dictionary.decodeToInt(id).toLong)
+        }
     }
   }
 
@@ -457,9 +459,10 @@ private[parquet] class CatalystRowConverter(
       extends CatalystDecimalConverter(precision, scale, updater) {
 
     override def setDictionary(dictionary: Dictionary): Unit = {
-      this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { id =>
-        decimalFromLong(dictionary.decodeToLong(id))
-      }
+      this.expandedDictionary =
+        Array.tabulate(dictionary.getMaxId + 1) { id =>
+          decimalFromLong(dictionary.decodeToLong(id))
+        }
     }
   }
 
@@ -470,9 +473,10 @@ private[parquet] class CatalystRowConverter(
       extends CatalystDecimalConverter(precision, scale, updater) {
 
     override def setDictionary(dictionary: Dictionary): Unit = {
-      this.expandedDictionary = Array.tabulate(dictionary.getMaxId + 1) { id =>
-        decimalFromBinary(dictionary.decodeToBinary(id))
-      }
+      this.expandedDictionary =
+        Array.tabulate(dictionary.getMaxId + 1) { id =>
+          decimalFromBinary(dictionary.decodeToBinary(id))
+        }
     }
   }
 
@@ -693,8 +697,10 @@ private[parquet] class CatalystRowConverter(
 
     val updater: ParentContainerUpdater = newArrayUpdater(parentUpdater)
 
-    private val elementConverter: PrimitiveConverter =
-      newConverter(parquetType, catalystType, updater).asPrimitiveConverter()
+    private val elementConverter: PrimitiveConverter = newConverter(
+      parquetType,
+      catalystType,
+      updater).asPrimitiveConverter()
 
     override def addBoolean(value: Boolean): Unit =
       elementConverter.addBoolean(value)
@@ -728,8 +734,10 @@ private[parquet] class CatalystRowConverter(
 
     val updater: ParentContainerUpdater = newArrayUpdater(parentUpdater)
 
-    private val elementConverter: GroupConverter =
-      newConverter(parquetType, catalystType, updater).asGroupConverter()
+    private val elementConverter: GroupConverter = newConverter(
+      parquetType,
+      catalystType,
+      updater).asGroupConverter()
 
     override def getConverter(field: Int): Converter =
       elementConverter.getConverter(field)

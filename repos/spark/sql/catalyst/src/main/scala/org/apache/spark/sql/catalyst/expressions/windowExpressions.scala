@@ -101,17 +101,19 @@ case class WindowSpecDefinition(
   override def dataType: DataType = throw new UnsupportedOperationException
 
   override def sql: String = {
-    val partition = if (partitionSpec.isEmpty) {
-      ""
-    } else {
-      "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ")
-    }
+    val partition =
+      if (partitionSpec.isEmpty) {
+        ""
+      } else {
+        "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ")
+      }
 
-    val order = if (orderSpec.isEmpty) {
-      ""
-    } else {
-      "ORDER BY " + orderSpec.map(_.sql).mkString(", ")
-    }
+    val order =
+      if (orderSpec.isEmpty) {
+        ""
+      } else {
+        "ORDER BY " + orderSpec.map(_.sql).mkString(", ")
+      }
 
     s"($partition $order ${frameSpecification.toString})"
   }
@@ -398,16 +400,18 @@ abstract class OffsetWindowFunction
 
   override lazy val frame = {
     // This will be triggered by the Analyzer.
-    val offsetValue = offset.eval() match {
-      case o: Int => o
-      case x =>
-        throw new AnalysisException(
-          s"Offset expression must be a foldable integer expression: $x")
-    }
-    val boundary = direction match {
-      case Ascending  => ValueFollowing(offsetValue)
-      case Descending => ValuePreceding(offsetValue)
-    }
+    val offsetValue =
+      offset.eval() match {
+        case o: Int => o
+        case x =>
+          throw new AnalysisException(
+            s"Offset expression must be a foldable integer expression: $x")
+      }
+    val boundary =
+      direction match {
+        case Ascending  => ValueFollowing(offsetValue)
+        case Descending => ValuePreceding(offsetValue)
+      }
     SpecifiedWindowFrame(RowFrame, boundary, boundary)
   }
 
@@ -481,8 +485,10 @@ abstract class AggregateWindowFunction
     extends DeclarativeAggregate
     with WindowFunction {
   self: Product =>
-  override val frame =
-    SpecifiedWindowFrame(RowFrame, UnboundedPreceding, CurrentRow)
+  override val frame = SpecifiedWindowFrame(
+    RowFrame,
+    UnboundedPreceding,
+    CurrentRow)
   override def dataType: DataType = IntegerType
   override def nullable: Boolean = true
   override def supportsPartial: Boolean = false
@@ -511,10 +517,11 @@ trait SizeBasedWindowFunction extends AggregateWindowFunction {
 }
 
 object SizeBasedWindowFunction {
-  val n = AttributeReference(
-    "window__partition__size",
-    IntegerType,
-    nullable = false)()
+  val n =
+    AttributeReference(
+      "window__partition__size",
+      IntegerType,
+      nullable = false)()
 }
 
 /**
@@ -548,10 +555,13 @@ case class CumeDist() extends RowNumberLike with SizeBasedWindowFunction {
   override def dataType: DataType = DoubleType
   // The frame for CUME_DIST is Range based instead of Row based, because CUME_DIST must
   // return the same value for equal values in the partition.
-  override val frame =
-    SpecifiedWindowFrame(RangeFrame, UnboundedPreceding, CurrentRow)
-  override val evaluateExpression =
-    Divide(Cast(rowNumber, DoubleType), Cast(n, DoubleType))
+  override val frame = SpecifiedWindowFrame(
+    RangeFrame,
+    UnboundedPreceding,
+    CurrentRow)
+  override val evaluateExpression = Divide(
+    Cast(rowNumber, DoubleType),
+    Cast(n, DoubleType))
   override def sql: String = "CUME_DIST()"
 }
 
@@ -689,8 +699,10 @@ abstract class RankLike extends AggregateWindowFunction {
   protected def rankSource: Expression = rowNumber
 
   /** Increase the rank when the current rank == 0 or when the one of order attributes changes. */
-  protected val increaseRank =
-    If(And(orderEquals, Not(EqualTo(rank, zero))), rank, rankSource)
+  protected val increaseRank = If(
+    And(orderEquals, Not(EqualTo(rank, zero))),
+    rank,
+    rankSource)
 
   override val aggBufferAttributes: Seq[AttributeReference] =
     rank +: rowNumber +: orderAttrs

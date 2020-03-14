@@ -29,7 +29,6 @@ class BlacklistStatsReceiver(
     else
       underlying
 
-  override def toString: String =
-    s"BlacklistStatsReceiver($underlying)"
+  override def toString: String = s"BlacklistStatsReceiver($underlying)"
 
 }

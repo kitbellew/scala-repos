@@ -66,8 +66,10 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
             getHPartitionTap(hfsTap)
           }
           case hdfsTest @ HadoopTest(_, _) => {
-            val hfsTap =
-              createHfsTap(hdfsScheme, hdfsTest.getWritePathFor(this), sinkMode)
+            val hfsTap = createHfsTap(
+              hdfsScheme,
+              hdfsTest.getWritePathFor(this),
+              sinkMode)
             getHPartitionTap(hfsTap)
           }
           case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)

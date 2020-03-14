@@ -97,8 +97,7 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
       case x @ Some(_) => F.point(x)
     })
 
-  def |||(a: => OptionT[F, A])(implicit F: Monad[F]): OptionT[F, A] =
-    orElse(a)
+  def |||(a: => OptionT[F, A])(implicit F: Monad[F]): OptionT[F, A] = orElse(a)
 
   /** @since 7.0.3 */
   def toRight[E](e: => E)(implicit F: Functor[F]): EitherT[F, E, A] =
@@ -311,8 +310,7 @@ private trait OptionTMonadTell[F[_], W]
 
   implicit def F = MT
 
-  def writer[A](w: W, v: A): OptionT[F, A] =
-    liftM[F, A](MT.writer(w, v))
+  def writer[A](w: W, v: A): OptionT[F, A] = liftM[F, A](MT.writer(w, v))
 }
 
 private trait OptionTMonadListen[F[_], W]
@@ -321,10 +319,11 @@ private trait OptionTMonadListen[F[_], W]
   def MT: MonadListen[F, W]
 
   def listen[A](ma: OptionT[F, A]): OptionT[F, (A, W)] = {
-    val tmp = MT.bind[(Option[A], W), Option[(A, W)]](MT.listen(ma.run)) {
-      case (None, _)    => MT.point(None)
-      case (Some(a), w) => MT.point(Some(a, w))
-    }
+    val tmp =
+      MT.bind[(Option[A], W), Option[(A, W)]](MT.listen(ma.run)) {
+        case (None, _)    => MT.point(None)
+        case (Some(a), w) => MT.point(Some(a, w))
+      }
 
     OptionT.optionT[F].apply[(A, W)](tmp)
   }

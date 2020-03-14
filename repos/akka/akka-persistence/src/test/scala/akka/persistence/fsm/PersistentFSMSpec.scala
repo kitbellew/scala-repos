@@ -236,8 +236,8 @@ abstract class PersistentFSMSpec(config: Config)
     "not trigger onTransition for stay()" taggedAs TimingTest in {
       val persistenceId = name
       val probe = TestProbe()
-      val fsmRef =
-        system.actorOf(SimpleTransitionFSM.props(persistenceId, probe.ref))
+      val fsmRef = system.actorOf(
+        SimpleTransitionFSM.props(persistenceId, probe.ref))
 
       probe.expectMsg(
         3.seconds,
@@ -283,8 +283,8 @@ abstract class PersistentFSMSpec(config: Config)
 
       expectTerminated(fsmRef)
 
-      val persistentEventsStreamer =
-        system.actorOf(PersistentEventsStreamer.props(persistenceId, testActor))
+      val persistentEventsStreamer = system.actorOf(
+        PersistentEventsStreamer.props(persistenceId, testActor))
 
       expectMsg(ItemAdded(Item("1", "Shirt", 59.99f)))
       expectMsgType[
@@ -384,8 +384,7 @@ object PersistentFSMSpec {
 
     override def applyEvent(
         domainEvent: DomainEvent,
-        currentData: ShoppingCart): ShoppingCart =
-      currentData
+        currentData: ShoppingCart): ShoppingCart = currentData
   }
   object SimpleTransitionFSM {
     def props(persistenceId: String, reportActor: ActorRef) =

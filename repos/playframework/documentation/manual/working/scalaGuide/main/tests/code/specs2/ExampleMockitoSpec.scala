@@ -17,9 +17,10 @@ class ExampleMockitoSpec extends Specification with Mockito {
       mockDataService.findData returns Data(retrievalDate =
         new java.util.Date())
 
-      val myService = new MyService() {
-        override def dataService = mockDataService
-      }
+      val myService =
+        new MyService() {
+          override def dataService = mockDataService
+        }
 
       val actual = myService.isDailyData
       actual must equalTo(true)

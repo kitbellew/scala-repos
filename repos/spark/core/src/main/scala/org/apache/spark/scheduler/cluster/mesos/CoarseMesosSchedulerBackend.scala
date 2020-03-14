@@ -65,18 +65,18 @@ private[spark] class CoarseMesosSchedulerBackend(
   // Maximum number of cores to acquire (TODO: we'll need more flexible controls here)
   val maxCores = conf.get("spark.cores.max", Int.MaxValue.toString).toInt
 
-  private[this] val shutdownTimeoutMS =
-    conf
-      .getTimeAsMs("spark.mesos.coarse.shutdownTimeout", "10s")
-      .ensuring(_ >= 0, "spark.mesos.coarse.shutdownTimeout must be >= 0")
+  private[this] val shutdownTimeoutMS = conf
+    .getTimeAsMs("spark.mesos.coarse.shutdownTimeout", "10s")
+    .ensuring(_ >= 0, "spark.mesos.coarse.shutdownTimeout must be >= 0")
 
   // Synchronization protected by stateLock
   private[this] var stopCalled: Boolean = false
 
   // If shuffle service is enabled, the Spark driver will register with the shuffle service.
   // This is for cleaning up shuffle files reliably.
-  private val shuffleServiceEnabled =
-    conf.getBoolean("spark.shuffle.service.enabled", false)
+  private val shuffleServiceEnabled = conf.getBoolean(
+    "spark.shuffle.service.enabled",
+    false)
 
   // Cores we have acquired with each Mesos task ID
   val coresByTaskId = new HashMap[String, Int]
@@ -114,8 +114,8 @@ private[spark] class CoarseMesosSchedulerBackend(
   val extraCoresPerExecutor = conf.getInt("spark.mesos.extra.cores", 0)
 
   // Offer constraints
-  private val slaveOfferConstraints =
-    parseConstraintString(sc.conf.get("spark.mesos.constraints", ""))
+  private val slaveOfferConstraints = parseConstraintString(
+    sc.conf.get("spark.mesos.constraints", ""))
 
   // reject offers with mismatched constraints in seconds
   private val rejectOfferDurationForUnmetConstraints =
@@ -416,10 +416,14 @@ private[spark] class CoarseMesosSchedulerBackend(
             .taskIDs
             .add(taskId)
 
-          val (afterCPUResources, cpuResourcesToUse) =
-            partitionResources(resources, "cpus", taskCPUs)
-          val (resourcesLeft, memResourcesToUse) =
-            partitionResources(afterCPUResources.asJava, "mem", taskMemory)
+          val (afterCPUResources, cpuResourcesToUse) = partitionResources(
+            resources,
+            "cpus",
+            taskCPUs)
+          val (resourcesLeft, memResourcesToUse) = partitionResources(
+            afterCPUResources.asJava,
+            "mem",
+            taskMemory)
 
           val taskBuilder = MesosTaskInfo
             .newBuilder()
@@ -494,8 +498,9 @@ private[spark] class CoarseMesosSchedulerBackend(
           "External shuffle client was not instantiated even though shuffle service is enabled.")
         // TODO: Remove this and allow the MesosExternalShuffleService to detect
         // framework termination when new Mesos Framework HTTP API is available.
-        val externalShufflePort =
-          conf.getInt("spark.shuffle.service.port", 7337)
+        val externalShufflePort = conf.getInt(
+          "spark.shuffle.service.port",
+          7337)
 
         logDebug(s"Connecting to shuffle service on slave $slaveId, " +
           s"host ${slave.hostname}, port $externalShufflePort for app ${conf.getAppId}")

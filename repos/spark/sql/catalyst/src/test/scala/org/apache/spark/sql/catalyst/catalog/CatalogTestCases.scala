@@ -429,10 +429,10 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
         "db2",
         "tbl2",
         Seq(
-          oldPart1.copy(storage =
-            storageFormat.copy(locationUri = Some(newLocation))),
-          oldPart2.copy(storage =
-            storageFormat.copy(locationUri = Some(newLocation))))
+          oldPart1.copy(storage = storageFormat
+            .copy(locationUri = Some(newLocation))),
+          oldPart2.copy(storage = storageFormat
+            .copy(locationUri = Some(newLocation))))
       )
       val newPart1 = catalog.getPartition("db2", "tbl2", part1.spec)
       val newPart2 = catalog.getPartition("db2", "tbl2", part2.spec)
@@ -594,12 +594,15 @@ abstract class CatalogTestUtils {
     outputFormat = Some(tableOutputFormat),
     serde = None,
     serdeProperties = Map.empty)
-  lazy val part1 =
-    CatalogTablePartition(Map("a" -> "1", "b" -> "2"), storageFormat)
-  lazy val part2 =
-    CatalogTablePartition(Map("a" -> "3", "b" -> "4"), storageFormat)
-  lazy val part3 =
-    CatalogTablePartition(Map("a" -> "5", "b" -> "6"), storageFormat)
+  lazy val part1 = CatalogTablePartition(
+    Map("a" -> "1", "b" -> "2"),
+    storageFormat)
+  lazy val part2 = CatalogTablePartition(
+    Map("a" -> "3", "b" -> "4"),
+    storageFormat)
+  lazy val part3 = CatalogTablePartition(
+    Map("a" -> "5", "b" -> "6"),
+    storageFormat)
   lazy val funcClass = "org.apache.spark.myFunc"
 
   /**
@@ -647,10 +650,12 @@ abstract class CatalogTestUtils {
       name = TableIdentifier(name, database),
       tableType = CatalogTableType.EXTERNAL_TABLE,
       storage = storageFormat,
-      schema =
-        Seq(CatalogColumn("col1", "int"), CatalogColumn("col2", "string")),
-      partitionColumns =
-        Seq(CatalogColumn("a", "int"), CatalogColumn("b", "string"))
+      schema = Seq(
+        CatalogColumn("col1", "int"),
+        CatalogColumn("col2", "string")),
+      partitionColumns = Seq(
+        CatalogColumn("a", "int"),
+        CatalogColumn("b", "string"))
     )
   }
 

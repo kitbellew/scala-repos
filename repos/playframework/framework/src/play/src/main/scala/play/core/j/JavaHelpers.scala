@@ -251,8 +251,9 @@ class RequestHeaderImpl(header: RequestHeader) extends JRequestHeader {
 
   private def createHeaderMap(
       headers: Headers): java.util.Map[String, Array[String]] = {
-    val map = new java.util.TreeMap[String, Array[String]](
-      play.core.utils.CaseInsensitiveOrdered)
+    val map =
+      new java.util.TreeMap[String, Array[String]](
+        play.core.utils.CaseInsensitiveOrdered)
     map.putAll(headers.toMap.mapValues(_.toArray).asJava)
     map
   }

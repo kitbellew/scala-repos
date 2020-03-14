@@ -95,8 +95,7 @@ trait OptionInstances extends OptionInstances0 {
       def cobind[A, B](fa: Option[A])(f: Option[A] => B) =
         fa map (a => f(Some(a)))
 
-      override def cojoin[A](a: Option[A]) =
-        a map (Some(_))
+      override def cojoin[A](a: Option[A]) = a map (Some(_))
 
       def pextract[B, A](fa: Option[A]): Option[B] \/ A =
         fa map \/.right getOrElse -\/(None)

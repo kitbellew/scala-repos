@@ -97,8 +97,9 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
 
   override def start(): Status = {
     log.info("Starting simulated Mesos")
-    val config: Config =
-      ConfigFactory.load(getClass.getClassLoader, "mesos-simulation.conf")
+    val config: Config = ConfigFactory.load(
+      getClass.getClassLoader,
+      "mesos-simulation.conf")
     val sys: ActorSystem = ActorSystem("mesos-simulation", config)
     system = Some(sys)
     driverActorRefOpt = Some(sys.actorOf(driverProps, "driver"))

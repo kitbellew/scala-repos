@@ -13,29 +13,21 @@ sealed abstract class LazyOption[+A] extends Product with Serializable {
       case LazyNone    => none
     }
 
-  def ?[X](some: => X, none: => X): X =
-    fold(_ => some, none)
+  def ?[X](some: => X, none: => X): X = fold(_ => some, none)
 
-  def isDefined =
-    fold(_ => true, false)
+  def isDefined = fold(_ => true, false)
 
-  def isEmpty =
-    !isDefined
+  def isEmpty = !isDefined
 
-  def getOrElse[AA >: A](default: => AA): AA =
-    fold(a => a, default)
+  def getOrElse[AA >: A](default: => AA): AA = fold(a => a, default)
 
-  def |[AA >: A](default: => AA): AA =
-    getOrElse(default)
+  def |[AA >: A](default: => AA): AA = getOrElse(default)
 
-  def exists(f: (=> A) => Boolean): Boolean =
-    fold(f, false)
+  def exists(f: (=> A) => Boolean): Boolean = fold(f, false)
 
-  def forall(f: (=> A) => Boolean): Boolean =
-    fold(f, true)
+  def forall(f: (=> A) => Boolean): Boolean = fold(f, true)
 
-  def toOption: Option[A] =
-    fold(a => Some(a), None)
+  def toOption: Option[A] = fold(a => Some(a), None)
 
   def toLazyRight[X](left: => X): LazyEither[X, A] =
     fold(lazyRight(_), lazyLeft(left))
@@ -43,17 +35,13 @@ sealed abstract class LazyOption[+A] extends Product with Serializable {
   def toLazyLeft[X](right: => X): LazyEither[A, X] =
     fold(lazyLeft(_), lazyRight(right))
 
-  def toRight[X](left: => X): (X \/ A) =
-    fold(\/-(_), -\/(left))
+  def toRight[X](left: => X): (X \/ A) = fold(\/-(_), -\/(left))
 
-  def toLeft[X](right: => X): (A \/ X) =
-    fold(-\/(_), \/-(right))
+  def toLeft[X](right: => X): (A \/ X) = fold(-\/(_), \/-(right))
 
-  def toList: List[A] =
-    fold(_ :: Nil, Nil)
+  def toList: List[A] = fold(_ :: Nil, Nil)
 
-  def orElse[AA >: A](a: => LazyOption[AA]): LazyOption[AA] =
-    fold(_ => this, a)
+  def orElse[AA >: A](a: => LazyOption[AA]): LazyOption[AA] = fold(_ => this, a)
 
   /* TODO
   def first: FirstLazyOption[A] =
@@ -66,8 +54,7 @@ sealed abstract class LazyOption[+A] extends Product with Serializable {
   def map[B](f: (=> A) => B): LazyOption[B] =
     fold(a => lazySome(f(a)), lazyNone)
 
-  def foreach(f: (=> A) => Unit): Unit =
-    fold(f, ())
+  def foreach(f: (=> A) => Unit): Unit = fold(f, ())
 
   def filter(f: (=> A) => Boolean): LazyOption[A] =
     fold(
@@ -78,8 +65,7 @@ sealed abstract class LazyOption[+A] extends Product with Serializable {
           lazyNone,
       lazyNone)
 
-  def flatMap[B](f: (=> A) => LazyOption[B]): LazyOption[B] =
-    fold(f, lazyNone)
+  def flatMap[B](f: (=> A) => LazyOption[B]): LazyOption[B] = fold(f, lazyNone)
 
   def ap[B](f: => LazyOption[A => B]): LazyOption[B] =
     fold(a => f map (k => k.apply(a)), lazyNone)
@@ -213,11 +199,9 @@ implicit def LazyOptionOrder[A: Order]: Order[LazyOption[A]] =
 }
 
 object LazyOption extends LazyOptionInstances {
-  def lazySome[A](a: => A): LazyOption[A] =
-    LazySome(() => a)
+  def lazySome[A](a: => A): LazyOption[A] = LazySome(() => a)
 
-  def lazyNone[A]: LazyOption[A] =
-    LazyNone
+  def lazyNone[A]: LazyOption[A] = LazyNone
 
   def fromOption[A](oa: Option[A]): LazyOption[A] =
     oa match {

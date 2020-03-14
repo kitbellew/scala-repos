@@ -99,12 +99,14 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
           // second iterator params
           val sidx = idx + divsz + 1 // + 1 preserves iteration invariant
           val suntil = until
-          val ses =
-            itertable(sidx - 1).asInstanceOf[
-              Entry
-            ] // sidx - 1 ensures counting from the right spot
-          val stotal =
-            calcNumElems(sidx - 1, suntil, table.length, sizeMapBucketSize)
+          val ses = itertable(sidx - 1).asInstanceOf[
+            Entry
+          ] // sidx - 1 ensures counting from the right spot
+          val stotal = calcNumElems(
+            sidx - 1,
+            suntil,
+            table.length,
+            sizeMapBucketSize)
 
           // first iterator params
           val fidx = idx
@@ -120,11 +122,12 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
           // otherwise, this is the last entry in the table - all what remains is the chain
           // so split the rest of the chain
           val arr = convertToArrayBuffer(es)
-          val arrpit = new scala.collection.parallel.BufferSplitter[T](
-            arr,
-            0,
-            arr.length,
-            signalDelegate)
+          val arrpit =
+            new scala.collection.parallel.BufferSplitter[T](
+              arr,
+              0,
+              arr.length,
+              signalDelegate)
           arrpit.split
         }
       } else

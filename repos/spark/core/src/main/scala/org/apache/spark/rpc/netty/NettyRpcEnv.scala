@@ -57,9 +57,10 @@ private[netty] class NettyRpcEnv(
 
   private val streamManager = new NettyStreamManager(this)
 
-  private val transportContext = new TransportContext(
-    transportConf,
-    new NettyRpcHandler(dispatcher, this, streamManager))
+  private val transportContext =
+    new TransportContext(
+      transportConf,
+      new NettyRpcHandler(dispatcher, this, streamManager))
 
   private def createClientBootstraps()
       : java.util.List[TransportClientBootstrap] = {
@@ -75,8 +76,8 @@ private[netty] class NettyRpcEnv(
     }
   }
 
-  private val clientFactory =
-    transportContext.createClientFactory(createClientBootstraps())
+  private val clientFactory = transportContext.createClientFactory(
+    createClientBootstraps())
 
   /**
     * A separate client factory for file downloads. This avoids using the same RPC handler as
@@ -88,14 +89,14 @@ private[netty] class NettyRpcEnv(
     */
   @volatile private var fileDownloadFactory: TransportClientFactory = _
 
-  val timeoutScheduler =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor("netty-rpc-env-timeout")
+  val timeoutScheduler = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
+    "netty-rpc-env-timeout")
 
   // Because TransportClientFactory.createClient is blocking, we need to run it in this thread pool
   // to implement non-blocking send/ask.
   // TODO: a non-blocking TransportClientFactory.createClient in future
-  private[netty] val clientConnectionExecutor =
-    ThreadUtils.newDaemonCachedThreadPool(
+  private[netty] val clientConnectionExecutor = ThreadUtils
+    .newDaemonCachedThreadPool(
       "netty-rpc-connection",
       conf.getInt("spark.rpc.connect.threads", 64))
 
@@ -150,10 +151,11 @@ private[netty] class NettyRpcEnv(
   def asyncSetupEndpointRefByURI(uri: String): Future[RpcEndpointRef] = {
     val addr = RpcEndpointAddress(uri)
     val endpointRef = new NettyRpcEndpointRef(conf, addr, this)
-    val verifier = new NettyRpcEndpointRef(
-      conf,
-      RpcEndpointAddress(addr.rpcAddress, RpcEndpointVerifier.NAME),
-      this)
+    val verifier =
+      new NettyRpcEndpointRef(
+        conf,
+        RpcEndpointAddress(addr.rpcAddress, RpcEndpointVerifier.NAME),
+        this)
     verifier
       .ask[Boolean](RpcEndpointVerifier.CheckExistence(endpointRef.name))
       .flatMap { find =>
@@ -393,12 +395,14 @@ private[netty] class NettyRpcEnv(
           }
 
           val ioThreads = clone.getInt("spark.files.io.threads", 1)
-          val downloadConf =
-            SparkTransportConf.fromSparkConf(clone, module, ioThreads)
+          val downloadConf = SparkTransportConf.fromSparkConf(
+            clone,
+            module,
+            ioThreads)
           val downloadContext =
             new TransportContext(downloadConf, new NoOpRpcHandler(), true)
-          fileDownloadFactory =
-            downloadContext.createClientFactory(createClientBootstraps())
+          fileDownloadFactory = downloadContext.createClientFactory(
+            createClientBootstraps())
         }
       }
     fileDownloadFactory.createClient(host, port)
@@ -486,10 +490,9 @@ private[rpc] class NettyRpcEnvFactory extends RpcEnvFactory with Logging {
     val sparkConf = config.conf
     // Use JavaSerializerInstance in multiple threads is safe. However, if we plan to support
     // KryoSerializer in future, we have to use ThreadLocal to store SerializerInstance
-    val javaSerializerInstance =
-      new JavaSerializer(sparkConf)
-        .newInstance()
-        .asInstanceOf[JavaSerializerInstance]
+    val javaSerializerInstance = new JavaSerializer(sparkConf)
+      .newInstance()
+      .asInstanceOf[JavaSerializerInstance]
     val nettyEnv =
       new NettyRpcEnv(
         sparkConf,
@@ -653,8 +656,10 @@ private[netty] class NettyRpcHandler(
   private def internalReceive(
       client: TransportClient,
       message: ByteBuffer): RequestMessage = {
-    val addr =
-      client.getChannel().remoteAddress().asInstanceOf[InetSocketAddress]
+    val addr = client
+      .getChannel()
+      .remoteAddress()
+      .asInstanceOf[InetSocketAddress]
     assert(addr != null)
     val clientAddr = RpcAddress(addr.getHostName, addr.getPort)
     val requestMessage = nettyEnv.deserialize[RequestMessage](client, message)
@@ -700,8 +705,10 @@ private[netty] class NettyRpcHandler(
   }
 
   override def channelActive(client: TransportClient): Unit = {
-    val addr =
-      client.getChannel().remoteAddress().asInstanceOf[InetSocketAddress]
+    val addr = client
+      .getChannel()
+      .remoteAddress()
+      .asInstanceOf[InetSocketAddress]
     assert(addr != null)
     val clientAddr = RpcAddress(addr.getHostName, addr.getPort)
     dispatcher.postToAll(RemoteProcessConnected(clientAddr))

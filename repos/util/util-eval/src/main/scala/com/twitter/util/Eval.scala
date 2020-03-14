@@ -98,20 +98,19 @@ class Eval(target: Option[File]) {
     *   lazy val preprocessors = {...}
     * }
     */
-  protected lazy val preprocessors: Seq[Preprocessor] =
-    Seq(
-      new IncludePreprocessor(
-        Seq(
-          new ClassScopedResolver(getClass),
-          new FilesystemResolver(new File(".")),
-          new FilesystemResolver(new File("." + File.separator + "config"))
-        ) ++ (
-          Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
-            path => new FilesystemResolver(new File(path))
-          }
-        )
+  protected lazy val preprocessors: Seq[Preprocessor] = Seq(
+    new IncludePreprocessor(
+      Seq(
+        new ClassScopedResolver(getClass),
+        new FilesystemResolver(new File(".")),
+        new FilesystemResolver(new File("." + File.separator + "config"))
+      ) ++ (
+        Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
+          path => new FilesystemResolver(new File(path))
+        }
       )
     )
+  )
 
   // For derived classes to provide an alternate compiler message handler.
   protected lazy val compilerMessageHandler: Option[Reporter] = None
@@ -120,11 +119,12 @@ class Eval(target: Option[File]) {
   protected lazy val compilerSettings: Settings = new EvalSettings(target)
 
   // Primary encapsulation around native Scala compiler
-  private[this] lazy val compiler = new StringCompiler(
-    codeWrapperLineOffset,
-    target,
-    compilerSettings,
-    compilerMessageHandler)
+  private[this] lazy val compiler =
+    new StringCompiler(
+      codeWrapperLineOffset,
+      target,
+      compilerSettings,
+      compilerMessageHandler)
 
   /**
     * run preprocessors on our string, returning a String that is the processed source
@@ -166,11 +166,12 @@ class Eval(target: Option[File]) {
       val processed = sourceForString(unprocessedSource)
       val sourceChecksum = uniqueId(processed, None)
       val checksumFile = new File(targetDir, "checksum")
-      val lastChecksum = if (checksumFile.exists) {
-        Source.fromFile(checksumFile).getLines().take(1).toList.head
-      } else {
-        -1
-      }
+      val lastChecksum =
+        if (checksumFile.exists) {
+          Source.fromFile(checksumFile).getLines().take(1).toList.head
+        } else {
+          -1
+        }
 
       if (lastChecksum != sourceChecksum) {
         compiler.reset()
@@ -320,10 +321,11 @@ class Eval(target: Option[File]) {
      *                  /____/
      */
     val fileName = f.getName
-    val baseName = fileName.lastIndexOf('.') match {
-      case -1  => fileName
-      case dot => fileName.substring(0, dot)
-    }
+    val baseName =
+      fileName.lastIndexOf('.') match {
+        case -1  => fileName
+        case dot => fileName.substring(0, dot)
+      }
     baseName.regexSub(Eval.classCleaner) { m =>
       "$%02x".format(m.group(0).charAt(0).toInt)
     }
@@ -372,14 +374,15 @@ class Eval(target: Option[File]) {
     def getClassPath(
         cl: ClassLoader,
         acc: List[List[String]] = List.empty): List[List[String]] = {
-      val cp = cl match {
-        case urlClassLoader: URLClassLoader =>
-          urlClassLoader.getURLs
-            .filter(_.getProtocol == "file")
-            .map(u => new File(u.toURI).getPath)
-            .toList
-        case _ => Nil
-      }
+      val cp =
+        cl match {
+          case urlClassLoader: URLClassLoader =>
+            urlClassLoader.getURLs
+              .filter(_.getProtocol == "file")
+              .map(u => new File(u.toURI).getPath)
+              .toList
+          case _ => Nil
+        }
       cl.getParent match {
         case null   => (cp :: acc).reverse
         case parent => getClassPath(parent, cp :: acc)
@@ -425,16 +428,13 @@ class Eval(target: Option[File]) {
     private[this] def file(path: String): File =
       new File(root.getAbsolutePath + File.separator + path)
 
-    def resolvable(path: String): Boolean =
-      file(path).exists
+    def resolvable(path: String): Boolean = file(path).exists
 
-    def get(path: String): InputStream =
-      new FileInputStream(file(path))
+    def get(path: String): InputStream = new FileInputStream(file(path))
   }
 
   class ClassScopedResolver(clazz: Class[_]) extends Resolver {
-    private[this] def quotePath(path: String) =
-      "/" + path
+    private[this] def quotePath(path: String) = "/" + path
 
     def resolvable(path: String): Boolean =
       clazz.getResourceAsStream(quotePath(path)) != null
@@ -460,8 +460,7 @@ class Eval(target: Option[File]) {
   class IncludePreprocessor(resolvers: Seq[Resolver]) extends Preprocessor {
     def maximumRecursionDepth = 100
 
-    def apply(code: String): String =
-      apply(code, maximumRecursionDepth)
+    def apply(code: String): String = apply(code, maximumRecursionDepth)
 
     def apply(code: String, maxDepth: Int): String = {
       val lines = code.lines map { line: String =>
@@ -492,18 +491,19 @@ class Eval(target: Option[File]) {
     }
   }
 
-  lazy val compilerOutputDir = target match {
-    case Some(dir) => AbstractFile.getDirectory(dir)
-    case None      => new VirtualDirectory("(memory)", None)
-  }
+  lazy val compilerOutputDir =
+    target match {
+      case Some(dir) => AbstractFile.getDirectory(dir)
+      case None      => new VirtualDirectory("(memory)", None)
+    }
 
   class EvalSettings(targetDir: Option[File]) extends Settings {
     nowarnings.value = true // warnings are exceptions, so disable
     outputDirs.setSingleOutput(compilerOutputDir)
     private[this] val pathList = compilerPath ::: libPath
     bootclasspath.value = pathList.mkString(File.pathSeparator)
-    classpath.value =
-      (pathList ::: impliedClassPath).mkString(File.pathSeparator)
+    classpath.value = (pathList ::: impliedClassPath).mkString(
+      File.pathSeparator)
   }
 
   /**
@@ -530,11 +530,12 @@ class Eval(target: Option[File]) {
 
       def display(pos: Position, message: String, severity: Severity) {
         severity.count += 1
-        val severityName = severity match {
-          case ERROR   => "error: "
-          case WARNING => "warning: "
-          case _       => ""
-        }
+        val severityName =
+          severity match {
+            case ERROR   => "error: "
+            case WARNING => "warning: "
+            case _       => ""
+          }
         // the line number is not always available
         val lineMessage =
           try {
@@ -634,12 +635,13 @@ class Eval(target: Option[File]) {
       compiler.compileSources(sourceFiles)
 
       if (reporter.hasErrors || reporter.WARNING.count > 0) {
-        val msgs: List[List[String]] = reporter match {
-          case collector: MessageCollector =>
-            collector.messages.toList
-          case _ =>
-            List(List(reporter.toString))
-        }
+        val msgs: List[List[String]] =
+          reporter match {
+            case collector: MessageCollector =>
+              collector.messages.toList
+            case _ =>
+              List(List(reporter.toString))
+          }
         throw new CompilerException(msgs)
       }
     }

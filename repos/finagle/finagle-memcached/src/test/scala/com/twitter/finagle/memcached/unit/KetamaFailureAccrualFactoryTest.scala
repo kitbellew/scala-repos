@@ -183,17 +183,15 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   }
 
   test("treat successful response and cancelled exceptions as success") {
-    val successes =
-      Seq(
-        Future.value(123),
-        Future.exception(new CancelledRequestException(new Exception)),
-        Future.exception(new CancelledConnectionException(new Exception)),
-        Future.exception(
-          ChannelWriteException(new CancelledRequestException(new Exception))),
-        Future.exception(
-          ChannelWriteException(
-            new CancelledConnectionException(new Exception)))
-      )
+    val successes = Seq(
+      Future.value(123),
+      Future.exception(new CancelledRequestException(new Exception)),
+      Future.exception(new CancelledConnectionException(new Exception)),
+      Future.exception(
+        ChannelWriteException(new CancelledRequestException(new Exception))),
+      Future.exception(
+        ChannelWriteException(new CancelledConnectionException(new Exception)))
+    )
 
     successes.foreach { rep =>
       val h = new Helper(false, rep)

@@ -63,18 +63,19 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
   /**
     * A `PathFilter` to filter only batch files
     */
-  private val batchFilesFilter = new PathFilter {
-    override def accept(path: Path): Boolean =
-      try {
-        path.getName.toLong
-        true
-      } catch {
-        case _: NumberFormatException => false
-      }
-  }
+  private val batchFilesFilter =
+    new PathFilter {
+      override def accept(path: Path): Boolean =
+        try {
+          path.getName.toLong
+          true
+        } catch {
+          case _: NumberFormatException => false
+        }
+    }
 
-  private val serializer =
-    new JavaSerializer(sqlContext.sparkContext.conf).newInstance()
+  private val serializer = new JavaSerializer(sqlContext.sparkContext.conf)
+    .newInstance()
 
   private def batchFile(batchId: Long): Path = {
     new Path(metadataPath, batchId.toString)
@@ -191,12 +192,12 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
   }
 
   override def getLatest(): Option[(Long, T)] = {
-    val batchIds = fc
-      .util()
-      .listStatus(metadataPath, batchFilesFilter)
-      .map(_.getPath.getName.toLong)
-      .sorted
-      .reverse
+    val batchIds =
+      fc.util()
+        .listStatus(metadataPath, batchFilesFilter)
+        .map(_.getPath.getName.toLong)
+        .sorted
+        .reverse
     for (batchId <- batchIds) {
       val batch = get(batchId)
       if (batch.isDefined) {

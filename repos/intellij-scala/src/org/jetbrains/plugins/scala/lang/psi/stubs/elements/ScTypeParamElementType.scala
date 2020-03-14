@@ -46,18 +46,20 @@ class ScTypeParamElementType[Func <: ScTypeParam]
   def createStubImpl[ParentPsi <: PsiElement](
       psi: ScTypeParam,
       parentStub: StubElement[ParentPsi]): ScTypeParamStub = {
-    val upperText = psi.upperTypeElement match {
-      case Some(te) => te.getText
-      case None     => ""
-    }
-    val lowerText = psi.lowerTypeElement match {
-      case Some(te) => te.getText
-      case None     => ""
-    }
-    val viewText =
-      psi.viewTypeElement.map(te => StringRef.fromString(te.getText))
-    val contextText =
-      psi.contextBoundTypeElement.map(te => StringRef.fromString(te.getText))
+    val upperText =
+      psi.upperTypeElement match {
+        case Some(te) => te.getText
+        case None     => ""
+      }
+    val lowerText =
+      psi.lowerTypeElement match {
+        case Some(te) => te.getText
+        case None     => ""
+      }
+    val viewText = psi.viewTypeElement.map(te =>
+      StringRef.fromString(te.getText))
+    val contextText = psi.contextBoundTypeElement.map(te =>
+      StringRef.fromString(te.getText))
     val typeParameterText = psi.getText
     new ScTypeParamStubImpl(
       parentStub.asInstanceOf[StubElement[PsiElement]],

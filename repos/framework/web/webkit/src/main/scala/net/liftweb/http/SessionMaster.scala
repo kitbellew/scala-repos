@@ -56,8 +56,8 @@ object SessionMaster extends LiftActor with Loggable {
     * If you have a rule other than <pre>Box !! req.request.remoteAddress</pre>
     * for calculating the remote address, change this function
     */
-  @volatile var getIpFromReq: Req => Box[String] = req =>
-    Box !! req.request.remoteAddress
+  @volatile var getIpFromReq: Req => Box[String] =
+    req => Box !! req.request.remoteAddress
 
   /**
     * A list of functions that are run every 10 seconds.  The first param is
@@ -268,8 +268,9 @@ object SessionMaster extends LiftActor with Loggable {
       /* remove dead sessions that are more than 45 minutes old */
       val now = Helpers.millis - 45.minutes
 
-      val removeKeys: Iterable[String] =
-        killedSessions.filter(_._2 < now).map(_._1)
+      val removeKeys: Iterable[String] = killedSessions
+        .filter(_._2 < now)
+        .map(_._1)
       removeKeys.foreach(s => killedSessions.remove(s))
 
       val ses = Map(lockRead {

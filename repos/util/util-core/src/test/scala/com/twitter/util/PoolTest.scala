@@ -29,13 +29,14 @@ class PoolTest extends WordSpec {
     "with an object factory and a health check" should {
       class PoolSpecHelper {
         var count = 0
-        val pool = new FactoryPool[Int](4) {
-          def makeItem() = {
-            count += 1;
-            Future(count)
+        val pool =
+          new FactoryPool[Int](4) {
+            def makeItem() = {
+              count += 1;
+              Future(count)
+            }
+            def isHealthy(i: Int) = i % 2 == 0
           }
-          def isHealthy(i: Int) = i % 2 == 0
-        }
       }
 
       "reserve & release" in {

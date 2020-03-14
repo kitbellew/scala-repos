@@ -28,46 +28,51 @@ class DataSource(val dsp: DataSourceParams)
   override def readTraining(sc: SparkContext): TrainingData = {
     val eventsDb = Storage.getPEvents()
 
-    val users: EntityMap[User] = eventsDb.extractEntityMap[User](
-      appId = dsp.appId,
-      entityType = "user",
-      required = Some(Seq("attr0", "attr1", "attr2"))
-    )(sc) { dm =>
-      User(
-        attr0 = dm.get[Double]("attr0"),
-        attr1 = dm.get[Int]("attr1"),
-        attr2 = dm.get[Int]("attr2")
-      )
-    }
+    val users: EntityMap[User] =
+      eventsDb.extractEntityMap[User](
+        appId = dsp.appId,
+        entityType = "user",
+        required = Some(Seq("attr0", "attr1", "attr2"))
+      )(sc) { dm =>
+        User(
+          attr0 = dm.get[Double]("attr0"),
+          attr1 = dm.get[Int]("attr1"),
+          attr2 = dm.get[Int]("attr2")
+        )
+      }
 
-    val items: EntityMap[Item] = eventsDb.extractEntityMap[Item](
-      appId = dsp.appId,
-      entityType = "item",
-      required = Some(Seq("attrA", "attrB", "attrC"))
-    )(sc) { dm =>
-      Item(
-        attrA = dm.get[String]("attrA"),
-        attrB = dm.get[Int]("attrB"),
-        attrC = dm.get[Boolean]("attrC")
-      )
-    }
+    val items: EntityMap[Item] =
+      eventsDb.extractEntityMap[Item](
+        appId = dsp.appId,
+        entityType = "item",
+        required = Some(Seq("attrA", "attrB", "attrC"))
+      )(sc) { dm =>
+        Item(
+          attrA = dm.get[String]("attrA"),
+          attrB = dm.get[Int]("attrB"),
+          attrC = dm.get[Boolean]("attrC")
+        )
+      }
 
-    val eventsRDD: RDD[Event] = eventsDb.find(
-      appId = dsp.appId,
-      entityType = Some("user"),
-      eventNames = Some(List("rate", "buy")), // read "rate" and "buy" event
-      // targetEntityType is optional field of an event.
-      targetEntityType = Some(Some("item"))
-    )(sc)
+    val eventsRDD: RDD[Event] =
+      eventsDb.find(
+        appId = dsp.appId,
+        entityType = Some("user"),
+        eventNames = Some(List("rate", "buy")), // read "rate" and "buy" event
+        // targetEntityType is optional field of an event.
+        targetEntityType = Some(Some("item"))
+      )(sc)
 
     val ratingsRDD: RDD[Rating] = eventsRDD.map { event =>
       val rating =
         try {
-          val ratingValue: Double = event.event match {
-            case "rate" => event.properties.get[Double]("rating")
-            case "buy"  => 4.0 // map buy event to rating value of 4
-            case _      => throw new Exception(s"Unexpected event ${event} is read.")
-          }
+          val ratingValue: Double =
+            event.event match {
+              case "rate" => event.properties.get[Double]("rating")
+              case "buy"  => 4.0 // map buy event to rating value of 4
+              case _ =>
+                throw new Exception(s"Unexpected event ${event} is read.")
+            }
           // entityId and targetEntityId is String
           Rating(event.entityId, event.targetEntityId.get, ratingValue)
         } catch {

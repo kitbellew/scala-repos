@@ -107,9 +107,10 @@ class ThrottledHandler(
     }
 
     private[this] def publishSwallowed() {
-      val throttledRecord = new javalog.LogRecord(
-        level,
-        "(swallowed %d repeating messages)".format(count - maxToDisplay))
+      val throttledRecord =
+        new javalog.LogRecord(
+          level,
+          "(swallowed %d repeating messages)".format(count - maxToDisplay))
       throttledRecord.setLoggerName(name)
       doPublish(throttledRecord)
     }
@@ -147,10 +148,11 @@ class ThrottledHandler(
       flushThrottled()
     }
 
-    val key = record match {
-      case r: LazyLogRecordUnformatted => r.preformatted
-      case _                           => record.getMessage
-    }
+    val key =
+      record match {
+        case r: LazyLogRecordUnformatted => r.preformatted
+        case _                           => record.getMessage
+      }
     @tailrec def tryPublish() {
       val throttle = synchronized {
         throttleMap.getOrElseUpdate(

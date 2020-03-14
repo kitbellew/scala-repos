@@ -109,26 +109,27 @@ object TestUtil {
   def toTimeInterval(minTime: Long, maxTime: Long): Interval[Timestamp] =
     Interval.leftClosedRightOpen(Timestamp(minTime), Timestamp(maxTime))
 
-  val simpleBatcher = new Batcher {
-    def batchOf(d: Timestamp) =
-      if (d == Timestamp.Max)
-        BatchID(2)
-      else if (d.milliSinceEpoch >= 0L)
-        BatchID(1)
-      else
-        BatchID(0)
+  val simpleBatcher =
+    new Batcher {
+      def batchOf(d: Timestamp) =
+        if (d == Timestamp.Max)
+          BatchID(2)
+        else if (d.milliSinceEpoch >= 0L)
+          BatchID(1)
+        else
+          BatchID(0)
 
-    def earliestTimeOf(batch: BatchID) =
-      batch.id match {
-        case 0L => Timestamp.Min
-        case 1L => Timestamp(0)
-        case 2L => Timestamp.Max
-        case 3L => Timestamp.Max
-      }
-    // this is just for testing, it covers everything with batch 1
-    override def cover(interval: Interval[Timestamp]): Interval[BatchID] =
-      Interval.leftClosedRightOpen(BatchID(1), BatchID(2))
-  }
+      def earliestTimeOf(batch: BatchID) =
+        batch.id match {
+          case 0L => Timestamp.Min
+          case 1L => Timestamp(0)
+          case 2L => Timestamp.Max
+          case 3L => Timestamp.Max
+        }
+      // this is just for testing, it covers everything with batch 1
+      override def cover(interval: Interval[Timestamp]): Interval[BatchID] =
+        Interval.leftClosedRightOpen(BatchID(1), BatchID(2))
+    }
 
   def randomBatcher(items: Iterable[(Long, Any)]): Batcher = {
     if (items.isEmpty)

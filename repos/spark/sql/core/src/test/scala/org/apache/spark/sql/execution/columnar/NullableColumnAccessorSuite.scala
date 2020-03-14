@@ -88,8 +88,8 @@ class NullableColumnAccessorSuite extends SparkFunSuite {
 
       val accessor = TestNullableColumnAccessor(builder.build(), columnType)
       val row = new GenericMutableRow(1)
-      val converter =
-        CatalystTypeConverters.createToScalaConverter(columnType.dataType)
+      val converter = CatalystTypeConverters.createToScalaConverter(
+        columnType.dataType)
 
       (0 until 4).foreach { _ =>
         assert(accessor.hasNext)

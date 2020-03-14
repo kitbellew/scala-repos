@@ -27,8 +27,8 @@ object Scaladoc extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = plugins.JvmPlugin
 
-  val validateDiagrams =
-    settingKey[Boolean]("Validate generated scaladoc diagrams")
+  val validateDiagrams = settingKey[Boolean](
+    "Validate generated scaladoc diagrams")
 
   override lazy val projectSettings = {
     inTask(doc)(
@@ -135,12 +135,14 @@ object UnidocRoot extends AutoPlugin {
     .getOrElse(Nil)
 
   def settings(ignoreAggregates: Seq[Project], ignoreProjects: Seq[Project]) = {
-    val withoutAggregates = ignoreAggregates.foldLeft(inAnyProject) {
-      _ -- inAggregates(_, transitive = true, includeRoot = true)
-    }
-    val docProjectFilter = ignoreProjects.foldLeft(withoutAggregates) {
-      _ -- inProjects(_)
-    }
+    val withoutAggregates =
+      ignoreAggregates.foldLeft(inAnyProject) {
+        _ -- inAggregates(_, transitive = true, includeRoot = true)
+      }
+    val docProjectFilter =
+      ignoreProjects.foldLeft(withoutAggregates) {
+        _ -- inProjects(_)
+      }
 
     inTask(unidoc)(
       Seq(

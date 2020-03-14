@@ -47,11 +47,12 @@ class ThriftCodecTest extends FunSuite {
 
   test("thrift server encoder should encode replys") {
     val protocolFactory = new TBinaryProtocol.Factory()
-    val call = new ThriftCall(
-      "testMethod",
-      new Silly.bleep_args("arg"),
-      classOf[Silly.bleep_result],
-      23)
+    val call =
+      new ThriftCall(
+        "testMethod",
+        new Silly.bleep_args("arg"),
+        classOf[Silly.bleep_result],
+        23)
     val reply = call.newReply
     reply.setSuccess("result")
 
@@ -61,8 +62,10 @@ class ThriftCodecTest extends FunSuite {
     assert(channel.upstreamEvents.size == 0)
     assert(channel.downstreamEvents.size == 1)
 
-    val message =
-      channel.downstreamEvents(0).asInstanceOf[MessageEvent].getMessage()
+    val message = channel
+      .downstreamEvents(0)
+      .asInstanceOf[MessageEvent]
+      .getMessage()
     val buffer = message.asInstanceOf[ChannelBuffer]
     val transport = new ChannelBufferToTransport(buffer)
     val protocol = new TBinaryProtocol(transport, true, true)
@@ -92,10 +95,12 @@ class ThriftCodecTest extends FunSuite {
     assert(channel.downstreamEvents.size == 0)
 
     // verify decode
-    val message =
-      channel.upstreamEvents(0).asInstanceOf[MessageEvent].getMessage()
-    val thriftCall =
-      message.asInstanceOf[ThriftCall[Silly.bleep_args, Silly.bleep_result]]
+    val message = channel
+      .upstreamEvents(0)
+      .asInstanceOf[MessageEvent]
+      .getMessage()
+    val thriftCall = message
+      .asInstanceOf[ThriftCall[Silly.bleep_args, Silly.bleep_result]]
     assert(thriftCall != null)
 
     assert(thriftCall.method == "bleep")
@@ -131,10 +136,12 @@ class ThriftCodecTest extends FunSuite {
       assert(channel.upstreamEvents.size == 1)
       assert(channel.downstreamEvents.size == 0)
 
-      val message =
-        channel.upstreamEvents(0).asInstanceOf[MessageEvent].getMessage()
-      val thriftCall =
-        message.asInstanceOf[ThriftCall[Silly.bleep_args, Silly.bleep_result]]
+      val message = channel
+        .upstreamEvents(0)
+        .asInstanceOf[MessageEvent]
+        .getMessage()
+      val thriftCall = message
+        .asInstanceOf[ThriftCall[Silly.bleep_args, Silly.bleep_result]]
       assert(thriftCall != null)
       assert(thriftCall.method == "bleep")
     }
@@ -142,18 +149,21 @@ class ThriftCodecTest extends FunSuite {
 
   test("thrift client encoder should encode calls") {
     val protocolFactory = new TBinaryProtocol.Factory()
-    val call = new ThriftCall(
-      "testMethod",
-      new Silly.bleep_args("arg"),
-      classOf[Silly.bleep_result])
+    val call =
+      new ThriftCall(
+        "testMethod",
+        new Silly.bleep_args("arg"),
+        classOf[Silly.bleep_result])
     val channel = makeChannel(new ThriftClientEncoder(protocolFactory))
     Channels.write(channel, call)
 
     assert(channel.upstreamEvents.size == 0)
     assert(channel.downstreamEvents.size == 1)
 
-    val message =
-      channel.downstreamEvents(0).asInstanceOf[MessageEvent].getMessage()
+    val message = channel
+      .downstreamEvents(0)
+      .asInstanceOf[MessageEvent]
+      .getMessage()
     val buffer = message.asInstanceOf[ChannelBuffer]
     val transport = new ChannelBufferToTransport(buffer)
     val protocol = new TBinaryProtocol(transport, true, true)
@@ -182,8 +192,10 @@ class ThriftCodecTest extends FunSuite {
     assert(channel.downstreamEvents.size == 0)
 
     // verify decode
-    val message =
-      channel.upstreamEvents(0).asInstanceOf[MessageEvent].getMessage()
+    val message = channel
+      .upstreamEvents(0)
+      .asInstanceOf[MessageEvent]
+      .getMessage()
     val result = message.asInstanceOf[ThriftReply[Silly.bleep_result]]
     assert(result != null)
     assert(result.response.success == "result")
@@ -216,8 +228,10 @@ class ThriftCodecTest extends FunSuite {
       // call should be received
       assert(channel.upstreamEvents.size == 1)
       assert(channel.downstreamEvents.size == 0)
-      val message =
-        channel.upstreamEvents(0).asInstanceOf[MessageEvent].getMessage()
+      val message = channel
+        .upstreamEvents(0)
+        .asInstanceOf[MessageEvent]
+        .getMessage()
       val result = message.asInstanceOf[ThriftReply[Silly.bleep_result]]
       assert(result != null)
       assert(result.response.success == "result")

@@ -76,8 +76,8 @@ class RewriteJoins extends Phase {
         val j2 = j.replace {
           case Ref(s) :@ tpe if s == s1 => Ref(sj1) :@ tpe
         }
-        val oj =
-          Join(sj1, sj2, f1, j2, JoinType.Inner, LiteralNode(true)).infer()
+        val oj = Join(sj1, sj2, f1, j2, JoinType.Inner, LiteralNode(true))
+          .infer()
         val refSn = Ref(sn) :@ oj.nodeType.asCollectionType.elementType
         val ref1 = Select(refSn, ElementSymbol(1))
         val ref2 = Select(refSn, ElementSymbol(2))
@@ -198,17 +198,18 @@ class RewriteJoins extends Phase {
           },
           stopOnMatch = true)
         val Bind(_, _, Pure(StructNode(struct1), pts)) = b
-        val foundRefs = sRefs.map {
-          case (p, pOnBGen) =>
-            (
-              p,
+        val foundRefs =
+          sRefs.map {
+            case (p, pOnBGen) =>
               (
-                pOnBGen, /*None: Option[Symbol]*/ struct1
-                  .find {
-                    case (s, n) => pOnBGen == n
-                  }
-                  .map(_._1)))
-        }.toMap
+                p,
+                (
+                  pOnBGen, /*None: Option[Symbol]*/ struct1
+                    .find {
+                      case (s, n) => pOnBGen == n
+                    }
+                    .map(_._1)))
+          }.toMap
         logger.debug(
           "Found references in predicate: " + foundRefs.mkString(", "))
         val newDefs = foundRefs.filter(_._2._2.isEmpty).map {
@@ -272,8 +273,8 @@ class RewriteJoins extends Phase {
         sn: StructNode,
         ok: TermSymbol,
         illegal: Set[TermSymbol]): (StructNode, Map[TermSymbol, Node]) = {
-      val (illegalDefs, legalDefs) =
-        sn.elements.toSeq.partition(t => hasRefTo(t._2, illegal))
+      val (illegalDefs, legalDefs) = sn.elements.toSeq.partition(t =>
+        hasRefTo(t._2, illegal))
       if (illegalDefs.isEmpty)
         (sn, Map.empty)
       else {
@@ -281,22 +282,26 @@ class RewriteJoins extends Phase {
           "Pulling refs to [" + illegal.mkString(
             ", ") + "] with OK base " + ok + " out of:",
           sn)
-        val requiredOkPaths = illegalDefs
-          .flatMap(_._2.collect {
-            case p @ FwdPath(s :: _) if s == ok => p
-          }.toSeq)
-          .toSet
-        val existingOkDefs = legalDefs.collect {
-          case (s, p @ FwdPath(s2 :: _)) if s2 == ok => (p, s)
-        }.toMap
-        val createDefs = (requiredOkPaths -- existingOkDefs.keySet)
-          .map(p => (new AnonSymbol, p))
-          .toMap
+        val requiredOkPaths =
+          illegalDefs
+            .flatMap(_._2.collect {
+              case p @ FwdPath(s :: _) if s == ok => p
+            }.toSeq)
+            .toSet
+        val existingOkDefs =
+          legalDefs.collect {
+            case (s, p @ FwdPath(s2 :: _)) if s2 == ok => (p, s)
+          }.toMap
+        val createDefs =
+          (requiredOkPaths -- existingOkDefs.keySet)
+            .map(p => (new AnonSymbol, p))
+            .toMap
         val sn2 = StructNode(ConstArray.from(legalDefs ++ createDefs))
         logger.debug("Pulled refs out of:", sn2)
-        val replacements = (existingOkDefs ++ createDefs.map {
-          case (s, n) => (n, s)
-        }).toMap
+        val replacements =
+          (existingOkDefs ++ createDefs.map {
+            case (s, n) => (n, s)
+          }).toMap
         def rebase(n: Node): Node =
           n.replace(
             {
@@ -409,8 +414,8 @@ class RewriteJoins extends Phase {
         val j2b = rearrangeJoinConditions(j2a, pull)
         val (on1Down, on1Keep) = splitConjunctions(on1).partition(p =>
           hasRefTo(p, Set(s2)) && !hasRefTo(p, pull))
-        val (on2Up, on2Keep) =
-          splitConjunctions(j2b.on).partition(p => hasRefTo(p, pull))
+        val (on2Up, on2Keep) = splitConjunctions(j2b.on).partition(p =>
+          hasRefTo(p, pull))
         if (on1Down.nonEmpty || on2Up.nonEmpty) {
           val refS2 = Ref(s2) :@ j2b.nodeType.asCollectionType.elementType
           val on1b = and(

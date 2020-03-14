@@ -91,14 +91,15 @@ object ShardServiceCombinators extends Logging {
     val JSON = application / json
     val CSV = text / csv
 
-    val requestParamType = for {
-      headerString <- request.parameters.get('headers)
-      headerJson <- JParser.parseFromString(headerString).toOption
-      headerMap <- headerJson.validated[Map[String, String]].toOption
-      contentTypeString <- headerMap.get("Accept")
-      accept <- Accept.parse(contentTypeString)
-      mimeType <- accept.mimeTypes.headOption
-    } yield mimeType
+    val requestParamType =
+      for {
+        headerString <- request.parameters.get('headers)
+        headerJson <- JParser.parseFromString(headerString).toOption
+        headerMap <- headerJson.validated[Map[String, String]].toOption
+        contentTypeString <- headerMap.get("Accept")
+        accept <- Accept.parse(contentTypeString)
+        mimeType <- accept.mimeTypes.headOption
+      } yield mimeType
 
     val requested = (request.headers
       .header[Accept]
@@ -291,14 +292,13 @@ trait ShardServiceCombinators
                   (APIKey, AccountDetails),
                   Path) => Future[HttpResponse[B]] = {
                 case ((apiKey, account), path) =>
-                  val query: Option[Future[String]] =
-                    request.parameters
-                      .get('q)
-                      .filter(_ != null)
-                      .map(Promise.successful)
-                      .orElse(quirrelContent(request).map(ByteChunk
-                        .forceByteArray(_: ByteChunk)
-                        .map(new String(_: Array[Byte], "UTF-8"))))
+                  val query: Option[Future[String]] = request.parameters
+                    .get('q)
+                    .filter(_ != null)
+                    .map(Promise.successful)
+                    .orElse(quirrelContent(request).map(ByteChunk
+                      .forceByteArray(_: ByteChunk)
+                      .map(new String(_: Array[Byte], "UTF-8"))))
 
                   val result: Future[HttpResponse[B]] = query map { q =>
                     q flatMap {
@@ -337,8 +337,10 @@ trait ShardServiceCombinators
       ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]]] {
       val delegate = query[B](next)
       val service = { (request: HttpRequest[ByteChunk]) =>
-        val path =
-          request.parameters.get('prefixPath).filter(_ != null).getOrElse("")
+        val path = request.parameters
+          .get('prefixPath)
+          .filter(_ != null)
+          .getOrElse("")
         delegate.service(
           request
             .copy(parameters = request.parameters + ('sync -> "async"))) map {

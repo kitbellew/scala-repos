@@ -77,8 +77,8 @@ class ReflectionTupleUnpacker[T](implicit m: Manifest[T])
   // A Fields object representing all of m's
   // fields, in the declared field order.
   // Lazy because we need this twice or not at all.
-  lazy val allFields = new Fields(
-    ReflectionUtils.fieldsOf(m.runtimeClass).toSeq: _*)
+  lazy val allFields =
+    new Fields(ReflectionUtils.fieldsOf(m.runtimeClass).toSeq: _*)
 
   /**
     * A helper to check the passed-in
@@ -94,8 +94,7 @@ class ReflectionTupleUnpacker[T](implicit m: Manifest[T])
   override def newSetter(fields: Fields) =
     new ReflectionSetter[T](expandIfAll(fields))(m)
 
-  override def getResultFields(fields: Fields): Fields =
-    expandIfAll(fields)
+  override def getResultFields(fields: Fields): Fields = expandIfAll(fields)
 }
 
 class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])

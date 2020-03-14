@@ -18,20 +18,21 @@ class ReflectGlobal(
     with scala.tools.reflect.ReflectSetup
     with scala.reflect.runtime.SymbolTable {
 
-  override lazy val analyzer = new {
-    val global: ReflectGlobal.this.type = ReflectGlobal.this
-  } with Analyzer {
+  override lazy val analyzer =
+    new {
+      val global: ReflectGlobal.this.type = ReflectGlobal.this
+    } with Analyzer {
 
-    /** Obtains the classLoader used for runtime macro expansion.
-      *
-      *  Macro expansion can use everything available in [[global.classPath]] or [[rootClassLoader]].
-      *  The [[rootClassLoader]] is used to obtain runtime defined macros.
-      */
-    override protected def findMacroClassLoader(): ClassLoader = {
-      val classpath = global.classPath.asURLs
-      ScalaClassLoader.fromURLs(classpath, rootClassLoader)
+      /** Obtains the classLoader used for runtime macro expansion.
+        *
+        *  Macro expansion can use everything available in [[global.classPath]] or [[rootClassLoader]].
+        *  The [[rootClassLoader]] is used to obtain runtime defined macros.
+        */
+      override protected def findMacroClassLoader(): ClassLoader = {
+        val classpath = global.classPath.asURLs
+        ScalaClassLoader.fromURLs(classpath, rootClassLoader)
+      }
     }
-  }
 
   override def transformedType(sym: Symbol) =
     postErasure.transformInfo(
@@ -65,9 +66,9 @@ class ReflectGlobal(
   // so here the compiler needs an extra push to help decide between those (in favor of the latter)
   import scala.reflect.ClassTag
   override type Mirror = JavaMirror
-  override implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[Mirror])
+  override implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[Mirror])
   override type RuntimeClass = java.lang.Class[_]
-  override implicit val RuntimeClassTag: ClassTag[RuntimeClass] =
-    ClassTag[RuntimeClass](classOf[RuntimeClass])
+  override implicit val RuntimeClassTag
+      : ClassTag[RuntimeClass] = ClassTag[RuntimeClass](classOf[RuntimeClass])
 }

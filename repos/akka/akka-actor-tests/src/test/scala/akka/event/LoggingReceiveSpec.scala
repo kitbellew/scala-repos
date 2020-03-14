@@ -218,8 +218,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         within(3 seconds) {
           val supervisor = TestActorRef[TestLogActor](Props[TestLogActor])
           val sclass = classOf[TestLogActor]
-          val actor =
-            TestActorRef[TestLogActor](Props[TestLogActor], supervisor, "none")
+          val actor = TestActorRef[TestLogActor](
+            Props[TestLogActor],
+            supervisor,
+            "none")
           val aname = actor.path.toString
 
           supervisor watch actor
@@ -255,8 +257,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             case _ ⇒ false
           }
 
-          val actor =
-            TestActorRef[TestLogActor](Props[TestLogActor], supervisor, "none")
+          val actor = TestActorRef[TestLogActor](
+            Props[TestLogActor],
+            supervisor,
+            "none")
           val aname = actor.path.toString
           val aclass = classOf[TestLogActor]
 
@@ -269,12 +273,17 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
 
           EventFilter[ActorKilledException](occurrences = 1) intercept {
             actor ! Kill
-            val set = receiveWhile(messages = 3) {
-              case Logging.Error(_: ActorKilledException, `aname`, _, "Kill") ⇒
-                1
-              case Logging.Debug(`aname`, `aclass`, "restarting") ⇒ 2
-              case Logging.Debug(`aname`, `aclass`, "restarted") ⇒ 3
-            }.toSet
+            val set =
+              receiveWhile(messages = 3) {
+                case Logging.Error(
+                      _: ActorKilledException,
+                      `aname`,
+                      _,
+                      "Kill") ⇒
+                  1
+                case Logging.Debug(`aname`, `aclass`, "restarting") ⇒ 2
+                case Logging.Debug(`aname`, `aclass`, "restarted") ⇒ 3
+              }.toSet
             expectNoMsg(Duration.Zero)
             assert(set == Set(1, 2, 3), set + " was not Set(1, 2, 3)")
           }

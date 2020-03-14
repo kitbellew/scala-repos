@@ -221,9 +221,10 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
     }
 
     get("/" + indexRoute + "(.:format)") {
-      val docs = swagger.docs
-        .filter(_.apis.exists(_.operations.exists(_.allows(userOption))))
-        .toList
+      val docs =
+        swagger.docs
+          .filter(_.apis.exists(_.operations.exists(_.allows(userOption))))
+          .toList
       if (docs.isEmpty)
         halt(NotFound())
       renderIndex(docs.asInstanceOf[List[ApiType]])
@@ -354,8 +355,7 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
 
   protected implicit def operationBuilder2operation(
       bldr: AuthApi.SwaggerAuthOperationBuilder[TypeForUser])
-      : AuthOperation[TypeForUser] =
-    bldr.result
+      : AuthOperation[TypeForUser] = bldr.result
 
   protected def apiOperation[T: Manifest: NotNothing](
       nickname: String): AuthOperationBuilder[TypeForUser] = {
@@ -415,8 +415,9 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
       val responseClass =
         route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
           DataType]) getOrElse DataType.Void
-      val summary = (route.metadata
-        .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
+      val summary =
+        (route.metadata
+          .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])
       val nick =
         route.metadata.get(Symbols.Nickname) map (_.asInstanceOf[String])

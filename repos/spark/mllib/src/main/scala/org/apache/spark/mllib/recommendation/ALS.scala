@@ -228,20 +228,22 @@ class ALS private (
   def run(ratings: RDD[Rating]): MatrixFactorizationModel = {
     val sc = ratings.context
 
-    val numUserBlocks = if (this.numUserBlocks == -1) {
-      math.max(sc.defaultParallelism, ratings.partitions.length / 2)
-    } else {
-      this.numUserBlocks
-    }
-    val numProductBlocks = if (this.numProductBlocks == -1) {
-      math.max(sc.defaultParallelism, ratings.partitions.length / 2)
-    } else {
-      this.numProductBlocks
-    }
+    val numUserBlocks =
+      if (this.numUserBlocks == -1) {
+        math.max(sc.defaultParallelism, ratings.partitions.length / 2)
+      } else {
+        this.numUserBlocks
+      }
+    val numProductBlocks =
+      if (this.numProductBlocks == -1) {
+        math.max(sc.defaultParallelism, ratings.partitions.length / 2)
+      } else {
+        this.numProductBlocks
+      }
 
     val (floatUserFactors, floatProdFactors) = NewALS.train[Int](
-      ratings =
-        ratings.map(r => NewALS.Rating(r.user, r.product, r.rating.toFloat)),
+      ratings = ratings.map(r =>
+        NewALS.Rating(r.user, r.product, r.rating.toFloat)),
       rank = rank,
       numUserBlocks = numUserBlocks,
       numItemBlocks = numProductBlocks,

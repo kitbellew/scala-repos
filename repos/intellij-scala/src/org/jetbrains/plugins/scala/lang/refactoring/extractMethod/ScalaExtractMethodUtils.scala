@@ -62,8 +62,9 @@ object ScalaExtractMethodUtils {
         param.fromElement.getProject,
         param.isCallByNameParameter)
 
-    val parameters =
-      settings.parameters.filter(_.passAsParameter).map(paramText)
+    val parameters = settings.parameters
+      .filter(_.passAsParameter)
+      .map(paramText)
     val paramsText =
       if (parameters.nonEmpty)
         parameters.mkString("(", ", ", ")")
@@ -78,19 +79,23 @@ object ScalaExtractMethodUtils {
       else
         s": ${settings.calcReturnTypeText} ="
 
-    val notPassedParams =
-      settings.parameters.filter(p => !p.passAsParameter).map { p =>
-        val nameAndType =
-          typedName(p.oldName, p.tp.canonicalText, p.fromElement.getProject)
+    val notPassedParams = settings.parameters
+      .filter(p => !p.passAsParameter)
+      .map { p =>
+        val nameAndType = typedName(
+          p.oldName,
+          p.tp.canonicalText,
+          p.fromElement.getProject)
         s"val $nameAndType = ???\n"
       }
     val notPassedParamsText = notPassedParams.mkString
 
-    val elementsToAdd: Iterator[PsiElement] = settings.elements.toSeq match {
-      case Seq(x: ScBlockExpr) =>
-        x.children.toSeq.drop(1).dropRight(1).toIterator // drop '{' and '}'
-      case x => x.toIterator
-    }
+    val elementsToAdd: Iterator[PsiElement] =
+      settings.elements.toSeq match {
+        case Seq(x: ScBlockExpr) =>
+          x.children.toSeq.drop(1).dropRight(1).toIterator // drop '{' and '}'
+        case x => x.toIterator
+      }
     val elementsText = elementsToAdd.map(_.getText).mkString("")
 
     def byOutputsSize(
@@ -147,115 +152,121 @@ object ScalaExtractMethodUtils {
       settings.elements.apply(0).getManager)
 
     if (!settings.lastReturn) {
-      val returnVisitor = new ScalaRecursiveElementVisitor {
-        override def visitReturnStatement(ret: ScReturnStmt) {
-          if (!ret.returnFunction.contains(method))
-            return
-          val retExprText = ret.expr.map(_.getText).mkString
-          val newText = settings.returnType match {
-            case Some(psi.types.Unit) =>
-              byOutputsSize(
-                "true",
-                "None",
-                "None"
-              )
-            case Some(_) =>
-              byOutputsSize(
-                s"Some($retExprText)",
-                s"Left($retExprText)",
-                s"Left($retExprText)"
-              )
-            case None => "" //should not occur
+      val returnVisitor =
+        new ScalaRecursiveElementVisitor {
+          override def visitReturnStatement(ret: ScReturnStmt) {
+            if (!ret.returnFunction.contains(method))
+              return
+            val retExprText = ret.expr.map(_.getText).mkString
+            val newText =
+              settings.returnType match {
+                case Some(psi.types.Unit) =>
+                  byOutputsSize(
+                    "true",
+                    "None",
+                    "None"
+                  )
+                case Some(_) =>
+                  byOutputsSize(
+                    s"Some($retExprText)",
+                    s"Left($retExprText)",
+                    s"Left($retExprText)"
+                  )
+                case None => "" //should not occur
+              }
+            val retElem = ScalaPsiElementFactory.createExpressionFromText(
+              s"return $newText",
+              ret.getManager)
+            ret.replace(retElem)
           }
-          val retElem = ScalaPsiElementFactory.createExpressionFromText(
-            s"return $newText",
-            ret.getManager)
-          ret.replace(retElem)
         }
-      }
       returnVisitor.visitElement(method: ScalaPsiElement)
     }
 
-    val visitor = new ScalaRecursiveElementVisitor() {
-      override def visitReference(ref: ScReferenceElement) {
-        ref.bind() match {
-          case Some(
-                ScalaResolveResult(
-                  named: PsiNamedElement,
-                  subst: ScSubstitutor)) =>
-            if (named.getContainingFile == method.getContainingFile && named.getTextOffset < offset &&
-                !named.name.startsWith("_")) {
-              val oldName = named.name
-              var break = false
-              for (param <- settings.parameters if !break) {
-                if (param.oldName == oldName) {
-                  def tail() {
-                    if (param.oldName != param.newName) {
-                      val newRef =
-                        ScalaPsiElementFactory.createExpressionFromText(
-                          param.newName,
-                          method.getManager)
-                      ref.getParent.getNode
-                        .replaceChild(ref.getNode, newRef.getNode)
-                    }
-                  }
-                  ref.getParent match {
-                    case sect: ScUnderscoreSection if param.isFunction =>
-                      val newRef =
-                        ScalaPsiElementFactory.createExpressionFromText(
-                          param.newName,
-                          method.getManager)
-                      sect.getParent.getNode
-                        .replaceChild(sect.getNode, newRef.getNode)
-                    case _ if param.isEmptyParamFunction =>
-                      ref.getParent match {
-                        case ref: ScReferenceElement
-                            if ref.refName == "apply" =>
-                          tail()
-                        case call: ScMethodCall => tail()
-                        case _ =>
-                          ref.asInstanceOf[ScExpression].expectedType() match {
-                            case Some(ScFunctionType(_, params))
-                                if params.isEmpty =>
-                              tail()
-                            case _ =>
-                              //we need to replace by method call
-                              val newRef =
-                                ScalaPsiElementFactory.createExpressionFromText(
-                                  param.newName + "()",
-                                  method.getManager)
-                              ref.getParent.getNode
-                                .replaceChild(ref.getNode, newRef.getNode)
-                          }
+    val visitor =
+      new ScalaRecursiveElementVisitor() {
+        override def visitReference(ref: ScReferenceElement) {
+          ref.bind() match {
+            case Some(
+                  ScalaResolveResult(
+                    named: PsiNamedElement,
+                    subst: ScSubstitutor)) =>
+              if (named.getContainingFile == method.getContainingFile && named.getTextOffset < offset &&
+                  !named.name.startsWith("_")) {
+                val oldName = named.name
+                var break = false
+                for (param <- settings.parameters if !break) {
+                  if (param.oldName == oldName) {
+                    def tail() {
+                      if (param.oldName != param.newName) {
+                        val newRef = ScalaPsiElementFactory
+                          .createExpressionFromText(
+                            param.newName,
+                            method.getManager)
+                        ref.getParent.getNode
+                          .replaceChild(ref.getNode, newRef.getNode)
                       }
-                    case _ => tail()
+                    }
+                    ref.getParent match {
+                      case sect: ScUnderscoreSection if param.isFunction =>
+                        val newRef = ScalaPsiElementFactory
+                          .createExpressionFromText(
+                            param.newName,
+                            method.getManager)
+                        sect.getParent.getNode
+                          .replaceChild(sect.getNode, newRef.getNode)
+                      case _ if param.isEmptyParamFunction =>
+                        ref.getParent match {
+                          case ref: ScReferenceElement
+                              if ref.refName == "apply" =>
+                            tail()
+                          case call: ScMethodCall => tail()
+                          case _ =>
+                            ref
+                              .asInstanceOf[ScExpression]
+                              .expectedType() match {
+                              case Some(ScFunctionType(_, params))
+                                  if params.isEmpty =>
+                                tail()
+                              case _ =>
+                                //we need to replace by method call
+                                val newRef = ScalaPsiElementFactory
+                                  .createExpressionFromText(
+                                    param.newName + "()",
+                                    method.getManager)
+                                ref.getParent.getNode
+                                  .replaceChild(ref.getNode, newRef.getNode)
+                            }
+                        }
+                      case _ => tail()
+                    }
+                    break = true
                   }
-                  break = true
                 }
               }
-            }
-          case _ =>
+            case _ =>
+          }
+          super.visitReference(ref)
         }
-        super.visitReference(ref)
       }
-    }
     visitor.visitElement(method)
 
     val bindTo = new ArrayBuffer[(PsiNamedElement, String)]
-    val newVisitor = new ScalaRecursiveElementVisitor() {
-      override def visitElement(element: ScalaPsiElement) {
-        element match {
-          case named: PsiNamedElement
-              if named != method && named.getTextOffset < offset =>
-            settings.parameters
-              .find(p => p.oldName == named.name)
-              .filter(p => p.oldName != p.newName)
-              .foreach(p => bindTo += ((named, p.newName)))
-          case _ =>
+    val newVisitor =
+      new ScalaRecursiveElementVisitor() {
+        override def visitElement(element: ScalaPsiElement) {
+          element match {
+            case named: PsiNamedElement
+                if named != method && named.getTextOffset < offset =>
+              settings.parameters
+                .find(p => p.oldName == named.name)
+                .filter(p => p.oldName != p.newName)
+                .foreach(p => bindTo += ((named, p.newName)))
+            case _ =>
+          }
+          super.visitElement(element)
         }
-        super.visitElement(element)
       }
-    }
     newVisitor.visitElement(method)
     for ((named, newName) <- bindTo) {
       val id = named.asInstanceOf[ScNamedElement].nameId
@@ -274,20 +285,22 @@ object ScalaExtractMethodUtils {
       return null
     val definition = variable.element.asInstanceOf[ScTypedDefinition]
 
-    val isInside = if (elements.length > 0) {
-      val startOffset = elements(0).getTextRange.getStartOffset
-      val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
-      definition.getTextOffset >= startOffset && definition.getTextOffset < endOffset
-    } else
-      false
+    val isInside =
+      if (elements.length > 0) {
+        val startOffset = elements(0).getTextRange.getStartOffset
+        val endOffset = elements(elements.length - 1).getTextRange.getEndOffset
+        definition.getTextOffset >= startOffset && definition.getTextOffset < endOffset
+      } else
+        false
     val retType = definition.getType(TypingContext.empty).getOrNothing
-    val tp = definition match {
-      case fun: ScFunction if fun.paramClauses.clauses.isEmpty =>
-        ScFunctionType(retType, Seq.empty)(
-          definition.getProject,
-          definition.getResolveScope)
-      case _ => retType
-    }
+    val tp =
+      definition match {
+        case fun: ScFunction if fun.paramClauses.clauses.isEmpty =>
+          ScFunctionType(retType, Seq.empty)(
+            definition.getProject,
+            definition.getResolveScope)
+        case _ => retType
+      }
     new ScalaVariableData(definition, isInside, tp)
   }
 
@@ -367,8 +380,9 @@ object ScalaExtractMethodUtils {
       elements: Array[PsiElement]) = {
     var buffer: ArrayBuffer[VariableData] = new ArrayBuffer[VariableData]
     for (input <- myInput) {
-      var d: VariableData =
-        ScalaExtractMethodUtils.convertVariableData(input, elements)
+      var d: VariableData = ScalaExtractMethodUtils.convertVariableData(
+        input,
+        elements)
       if (d != null)
         buffer += d
     }
@@ -393,8 +407,9 @@ object ScalaExtractMethodUtils {
     val list: util.ArrayList[ExtractMethodOutput] =
       new util.ArrayList[ExtractMethodOutput]
     for (info <- myOutput) {
-      val data: ScalaVariableData =
-        ScalaExtractMethodUtils.convertVariableData(info, elements)
+      val data: ScalaVariableData = ScalaExtractMethodUtils.convertVariableData(
+        info,
+        elements)
       list.add(ExtractMethodOutput.from(data))
     }
     list.toArray(new Array[ExtractMethodOutput](list.size))
@@ -462,10 +477,11 @@ object ScalaExtractMethodUtils {
       .getOrElse(return
       )
     val manager = element.getManager
-    val processor = new CompletionProcessor(
-      StdKinds.refExprLastRef,
-      element,
-      includePrefixImports = false)
+    val processor =
+      new CompletionProcessor(
+        StdKinds.refExprLastRef,
+        element,
+        includePrefixImports = false)
     PsiTreeUtil.treeWalkUp(processor, element, null, ResolveState.initial)
     val allNames = new mutable.HashSet[String]()
     allNames ++= processor.candidatesS.map(rr => rr.element.name)
@@ -517,54 +533,59 @@ object ScalaExtractMethodUtils {
 
     def insertCallStmt(): PsiElement = {
       def insertExpression(text: String): PsiElement = {
-        val expr =
-          ScalaPsiElementFactory.createExpressionFromText(text, manager)
+        val expr = ScalaPsiElementFactory.createExpressionFromText(
+          text,
+          manager)
         elements.head.replace(expr)
       }
       if (settings.lastReturn)
         insertExpression(s"return $methodCallText")
       else if (settings.outputs.length == 0) {
-        val exprText = settings.returnType match {
-          case None                 => methodCallText
-          case Some(psi.types.Unit) => s"if ($methodCallText) return"
-          case Some(_) =>
-            val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
-            s"""$methodCallText match {
+        val exprText =
+          settings.returnType match {
+            case None                 => methodCallText
+            case Some(psi.types.Unit) => s"if ($methodCallText) return"
+            case Some(_) =>
+              val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
+              s"""$methodCallText match {
                  |  case Some(toReturn) $arrow return toReturn
                  |  case None $arrow
                  |}""".stripMargin.replace("\r", "")
-        }
+          }
         insertExpression(exprText)
       } else {
-        val (pattern, isVal) = settings.outputs match {
-          case _ if ics.needClass =>
-            needExtractorsFromMultipleReturn = true
-            (patternForDeclaration, true)
-          case outputs if outputs.forall(_.isVal) =>
-            (patternForDeclaration, true)
-          case outputs if outputs.forall(!_.isVal) =>
-            (patternForDeclaration, false)
-          case outputs =>
-            needExtractorsFromMultipleReturn = true
-            val typeText = ScalaExtractMethodUtils.outputTypeText(settings)
-            (s"$mFreshName: $typeText", true)
-        }
+        val (pattern, isVal) =
+          settings.outputs match {
+            case _ if ics.needClass =>
+              needExtractorsFromMultipleReturn = true
+              (patternForDeclaration, true)
+            case outputs if outputs.forall(_.isVal) =>
+              (patternForDeclaration, true)
+            case outputs if outputs.forall(!_.isVal) =>
+              (patternForDeclaration, false)
+            case outputs =>
+              needExtractorsFromMultipleReturn = true
+              val typeText = ScalaExtractMethodUtils.outputTypeText(settings)
+              (s"$mFreshName: $typeText", true)
+          }
         val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
-        val exprText = settings.returnType match {
-          case None => methodCallText
-          case Some(psi.types.Unit) =>
-            s"""$methodCallText match {
+        val exprText =
+          settings.returnType match {
+            case None => methodCallText
+            case Some(psi.types.Unit) =>
+              s"""$methodCallText match {
                   |  case Some(result) $arrow result
                   |  case None $arrow return
                   |}""".stripMargin.replace("\r", "")
-          case Some(_) =>
-            s"""$methodCallText match {
+            case Some(_) =>
+              s"""$methodCallText match {
                   |  case Left(toReturn) $arrow return toReturn
                   |  case Right(result) $arrow result
                   |}""".stripMargin.replace("\r", "")
-        }
-        val expr =
-          ScalaPsiElementFactory.createExpressionFromText(exprText, manager)
+          }
+        val expr = ScalaPsiElementFactory.createExpressionFromText(
+          exprText,
+          manager)
         val declaration = ScalaPsiElementFactory.createDeclaration(
           pattern,
           "",
@@ -615,8 +636,9 @@ object ScalaExtractMethodUtils {
         if (allVals || allVars) {
           val patternArgsText = outputTypedNames.mkString("(", ", ", ")")
           val patternText = ics.className + patternArgsText
-          val expr =
-            ScalaPsiElementFactory.createExpressionFromText(mFreshName, manager)
+          val expr = ScalaPsiElementFactory.createExpressionFromText(
+            mFreshName,
+            manager)
           val stmt = ScalaPsiElementFactory.createDeclaration(
             patternText,
             "",

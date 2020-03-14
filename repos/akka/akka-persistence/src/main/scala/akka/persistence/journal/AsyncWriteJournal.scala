@@ -52,10 +52,10 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
     }
   private def isReplayFilterEnabled: Boolean =
     replayFilterMode != ReplayFilter.Disabled
-  private val replayFilterWindowSize: Int =
-    config.getInt("replay-filter.window-size")
-  private val replayFilterMaxOldWriters: Int =
-    config.getInt("replay-filter.max-old-writers")
+  private val replayFilterWindowSize: Int = config.getInt(
+    "replay-filter.window-size")
+  private val replayFilterMaxOldWriters: Int = config.getInt(
+    "replay-filter.max-old-writers")
 
   private val resequencer = context.actorOf(Props[Resequencer]())
   private var resequencerCounter = 1L
@@ -74,25 +74,26 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
 
         val atomicWriteCount = messages.count(_.isInstanceOf[AtomicWrite])
         val prepared = Try(preparePersistentBatch(messages))
-        val writeResult = (prepared match {
-          case Success(prep) ⇒
-            // try in case the asyncWriteMessages throws
-            try breaker.withCircuitBreaker(asyncWriteMessages(prep))
-            catch {
-              case NonFatal(e) ⇒ Future.failed(e)
-            }
-          case f @ Failure(_) ⇒
-            // exception from preparePersistentBatch => rejected
-            Future.successful(messages.collect {
-              case a: AtomicWrite ⇒ f
-            })
-        }).map { results ⇒
-          if (results.nonEmpty && results.size != atomicWriteCount)
-            throw new IllegalStateException(
-              "asyncWriteMessages returned invalid number of results. " +
-                s"Expected [${prepared.get.size}], but got [${results.size}]")
-          results
-        }
+        val writeResult =
+          (prepared match {
+            case Success(prep) ⇒
+              // try in case the asyncWriteMessages throws
+              try breaker.withCircuitBreaker(asyncWriteMessages(prep))
+              catch {
+                case NonFatal(e) ⇒ Future.failed(e)
+              }
+            case f @ Failure(_) ⇒
+              // exception from preparePersistentBatch => rejected
+              Future.successful(messages.collect {
+                case a: AtomicWrite ⇒ f
+              })
+          }).map { results ⇒
+            if (results.nonEmpty && results.size != atomicWriteCount)
+              throw new IllegalStateException(
+                "asyncWriteMessages returned invalid number of results. " +
+                  s"Expected [${prepared.get.size}], but got [${results.size}]")
+            results
+          }
 
         writeResult.onComplete {
           case Success(results) ⇒

@@ -40,8 +40,8 @@ import scala.annotation.tailrec
 import JDBMProjection._
 
 object JDBMSlice {
-  private lazy val logger =
-    LoggerFactory.getLogger("com.precog.yggdrasil.jdbm3.JDBMSlice")
+  private lazy val logger = LoggerFactory.getLogger(
+    "com.precog.yggdrasil.jdbm3.JDBMSlice")
 
   def load(
       size: Int,

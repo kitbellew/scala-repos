@@ -19,8 +19,8 @@ class Preparator(pp: CustomPreparatorParams) // ADDED CustomPreparatorParams
 
   def prepare(sc: SparkContext, trainingData: TrainingData): PreparedData = {
     val noTrainItems = Source.fromFile(pp.filepath).getLines.toSet //CHANGED
-    val ratings =
-      trainingData.ratings.filter(r => !noTrainItems.contains(r.item))
+    val ratings = trainingData.ratings.filter(r =>
+      !noTrainItems.contains(r.item))
     new PreparedData(ratings)
   }
 }

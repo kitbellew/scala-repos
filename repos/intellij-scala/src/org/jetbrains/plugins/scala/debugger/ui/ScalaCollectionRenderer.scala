@@ -77,21 +77,24 @@ object ScalaCollectionRenderer {
     def exprEval = new ExpressionEvaluatorImpl(e)
   }
 
-  private val hasDefiniteSizeEval = new ScalaMethodEvaluator(
-    new ScalaThisEvaluator(),
-    "hasDefiniteSize",
-    JVMNameUtil.getJVMRawText("()Z"),
-    Nil)
-  private val nonEmptyEval = new ScalaMethodEvaluator(
-    new ScalaThisEvaluator(),
-    "nonEmpty",
-    JVMNameUtil.getJVMRawText("()Z"),
-    Nil)
-  private val sizeEval = new ScalaMethodEvaluator(
-    new ScalaThisEvaluator(),
-    "size",
-    JVMNameUtil.getJVMRawText("()I"),
-    Nil)
+  private val hasDefiniteSizeEval =
+    new ScalaMethodEvaluator(
+      new ScalaThisEvaluator(),
+      "hasDefiniteSize",
+      JVMNameUtil.getJVMRawText("()Z"),
+      Nil)
+  private val nonEmptyEval =
+    new ScalaMethodEvaluator(
+      new ScalaThisEvaluator(),
+      "nonEmpty",
+      JVMNameUtil.getJVMRawText("()Z"),
+      Nil)
+  private val sizeEval =
+    new ScalaMethodEvaluator(
+      new ScalaThisEvaluator(),
+      "size",
+      JVMNameUtil.getJVMRawText("()I"),
+      Nil)
 
   val collectionClassName = "scala.collection.GenIterable"
   val streamClassName = "scala.collection.immutable.Stream"
@@ -145,29 +148,30 @@ object ScalaCollectionRenderer {
   private def createSizeLabelRenderer(): LabelRenderer = {
     val expressionText = "size()"
     val sizePrefix = " size = "
-    val labelRenderer: LabelRenderer = new LabelRenderer() {
-      override def calcLabel(
-          descriptor: ValueDescriptor,
-          evaluationContext: EvaluationContext,
-          labelListener: DescriptorLabelListener): String = {
-        descriptor.getValue match {
-          case null => "null"
-          case objRef: ObjectReference =>
-            val typeName =
-              if (objRef.referenceType() != null)
-                ScalaCollectionRenderer.transformName(
-                  objRef.referenceType().name)
-              else
-                ""
-            val sizeValue =
-              if (!hasDefiniteSize(objRef, evaluationContext))
-                "?"
-              else
-                size(objRef, evaluationContext)
-            typeName + sizePrefix + sizeValue
+    val labelRenderer: LabelRenderer =
+      new LabelRenderer() {
+        override def calcLabel(
+            descriptor: ValueDescriptor,
+            evaluationContext: EvaluationContext,
+            labelListener: DescriptorLabelListener): String = {
+          descriptor.getValue match {
+            case null => "null"
+            case objRef: ObjectReference =>
+              val typeName =
+                if (objRef.referenceType() != null)
+                  ScalaCollectionRenderer.transformName(
+                    objRef.referenceType().name)
+                else
+                  ""
+              val sizeValue =
+                if (!hasDefiniteSize(objRef, evaluationContext))
+                  "?"
+                else
+                  size(objRef, evaluationContext)
+              typeName + sizePrefix + sizeValue
+          }
         }
       }
-    }
     labelRenderer.setLabelExpression(
       new TextWithImportsImpl(
         CodeFragmentKind.EXPRESSION,
@@ -245,8 +249,8 @@ object ScalaCollectionRenderer {
         value: Value,
         context: EvaluationContext,
         parentDescriptor: NodeDescriptor): Boolean = {
-      val evaluationContext: EvaluationContext =
-        context.createEvaluationContext(value)
+      val evaluationContext: EvaluationContext = context
+        .createEvaluationContext(value)
       try {
         return nonEmpty(value, context) && hasDefiniteSize(value, context)
       } catch {
@@ -254,10 +258,11 @@ object ScalaCollectionRenderer {
       }
 
       try {
-        val children: Value =
-          evaluateChildren(evaluationContext, parentDescriptor)
-        val defaultChildrenRenderer: ChildrenRenderer =
-          DebugProcessImpl.getDefaultRenderer(value.`type`)
+        val children: Value = evaluateChildren(
+          evaluationContext,
+          parentDescriptor)
+        val defaultChildrenRenderer: ChildrenRenderer = DebugProcessImpl
+          .getDefaultRenderer(value.`type`)
         defaultChildrenRenderer.isExpandable(
           children,
           evaluationContext,
@@ -285,8 +290,9 @@ object ScalaCollectionRenderer {
         val childrenValue: Value = evaluateChildren(
           evaluationContext.createEvaluationContext(value),
           parentDescriptor)
-        val renderer: NodeRenderer =
-          getChildrenRenderer(childrenValue, parentDescriptor)
+        val renderer: NodeRenderer = getChildrenRenderer(
+          childrenValue,
+          parentDescriptor)
         renderer.buildChildren(childrenValue, builder, evaluationContext)
       } catch {
         case e: EvaluateException =>
@@ -302,8 +308,8 @@ object ScalaCollectionRenderer {
     private def getChildrenRenderer(
         childrenValue: Value,
         parentDescriptor: ValueDescriptor): NodeRenderer = {
-      var renderer: NodeRenderer =
-        ExpressionChildrenRenderer.getLastChildrenRenderer(parentDescriptor)
+      var renderer: NodeRenderer = ExpressionChildrenRenderer
+        .getLastChildrenRenderer(parentDescriptor)
       if (renderer == null || childrenValue == null || !renderer.isApplicable(
             childrenValue.`type`)) {
         renderer = DebugProcessImpl.getDefaultRenderer(

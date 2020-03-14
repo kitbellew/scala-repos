@@ -8,6 +8,5 @@ object Test {
     override def f: Int = super[A].f
   }
 
-  def main(args: Array[String]) =
-    Console.println(new B().f);
+  def main(args: Array[String]) = Console.println(new B().f);
 }

@@ -289,11 +289,9 @@ sealed abstract class Natural
       case that               => unifiedPrimitiveEquals(that)
     }
 
-  def ===(rhs: Natural): Boolean =
-    (lhs compare rhs) == 0
+  def ===(rhs: Natural): Boolean = (lhs compare rhs) == 0
 
-  def =!=(rhs: Natural): Boolean =
-    !(this === rhs)
+  def =!=(rhs: Natural): Boolean = !(this === rhs)
 
   def <(rhs: Natural): Boolean = (lhs compare rhs) < 0
   def <=(rhs: Natural): Boolean = (lhs compare rhs) <= 0
@@ -804,13 +802,14 @@ object Natural extends NaturalInstances {
 trait NaturalInstances {
   implicit final val NaturalAlgebra = new NaturalAlgebra
   import NumberTag._
-  implicit final val NaturalTag = new CustomTag[Natural](
-    Integral,
-    Some(Natural.zero),
-    Some(Natural.zero),
-    None,
-    false,
-    false)
+  implicit final val NaturalTag =
+    new CustomTag[Natural](
+      Integral,
+      Some(Natural.zero),
+      Some(Natural.zero),
+      None,
+      false,
+      false)
 }
 
 private[math] trait NaturalIsRig extends Rig[Natural] {

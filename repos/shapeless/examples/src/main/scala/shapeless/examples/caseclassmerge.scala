@@ -54,7 +54,6 @@ object CaseClassMerge {
       merger: Merger.Aux[RT, RU, RT]
   ): CaseClassMerge[T, U] =
     new CaseClassMerge[T, U] {
-      def apply(t: T, u: U): T =
-        tgen.from(merger(tgen.to(t), ugen.to(u)))
+      def apply(t: T, u: U): T = tgen.from(merger(tgen.to(t), ugen.to(u)))
     }
 }

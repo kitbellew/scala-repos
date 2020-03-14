@@ -88,8 +88,9 @@ object TestGraphs {
               /*
                * This is a lookup, and there is an existing value
                */
-              val currentV =
-                Some(sum(optv, v)) // isn't u already a sum and optu prev value?
+              val currentV = Some(
+                sum(optv, v)
+              ) // isn't u already a sum and optu prev value?
               val joinResult = Some((time, (u, currentV)))
               val sumResult = Semigroup
                 .sumOption(valuesFn(time, (u, currentV)))
@@ -317,87 +318,84 @@ object TestGraphs {
     )
 
     // create the delta stream
-    val sumStream: Iterable[(Long, (K, (Option[JoinedU], JoinedU)))] =
-      source1
-        .flatMap(simpleFM1)
-        .toList
-        .groupBy(_._1)
-        .mapValues {
-          _.map {
-            case (time, (k, joinedu)) => (k, joinedu)
-          }.groupBy(_._1)
-            .mapValues { l =>
-              scanSum(l.iterator.map(_._2)).toList
-            }
-            .toIterable
-            .flatMap {
-              case (k, lv) =>
-                lv.map {
-                  case (optju, ju) => (k, (optju, ju))
-                }
-            }
-        }
-        .toIterable
-        .flatMap {
-          case (time, lv) =>
-            lv.map {
-              case (k, (optju, ju)) => (time, (k, (optju, ju)))
-            }
-        }
+    val sumStream: Iterable[(Long, (K, (Option[JoinedU], JoinedU)))] = source1
+      .flatMap(simpleFM1)
+      .toList
+      .groupBy(_._1)
+      .mapValues {
+        _.map {
+          case (time, (k, joinedu)) => (k, joinedu)
+        }.groupBy(_._1)
+          .mapValues { l =>
+            scanSum(l.iterator.map(_._2)).toList
+          }
+          .toIterable
+          .flatMap {
+            case (k, lv) =>
+              lv.map {
+                case (optju, ju) => (k, (optju, ju))
+              }
+          }
+      }
+      .toIterable
+      .flatMap {
+        case (time, lv) =>
+          lv.map {
+            case (k, (optju, ju)) => (time, (k, (optju, ju)))
+          }
+      }
 
     // zip the left and right streams
-    val leftAndRight: Iterable[(K, (Long, Either[U, JoinedU]))] =
-      source2
-        .flatMap(simpleFM2)
-        .toList
-        .map {
-          case (time, (k, u)) => (k, (time, Left(u)))
-        }
-        .++(sumStream.map {
-          case (time, (k, (optju, ju))) => (k, (time, Right(ju)))
-        })
+    val leftAndRight: Iterable[(K, (Long, Either[U, JoinedU]))] = source2
+      .flatMap(simpleFM2)
+      .toList
+      .map {
+        case (time, (k, u)) => (k, (time, Left(u)))
+      }
+      .++(sumStream.map {
+        case (time, (k, (optju, ju))) => (k, (time, Right(ju)))
+      })
 
     // scan left to join the left values and the right summing result stream
-    val resultStream: List[(Long, (K, (U, Option[JoinedU])))] =
-      leftAndRight
-        .groupBy(_._1)
-        .mapValues {
-          _.map(_._2).toList
-            .sortBy(identity)
-            .scanLeft(
-              Option.empty[(Long, JoinedU)],
-              Option.empty[(Long, U, Option[JoinedU])]) {
-              case ((None, result), (time, Left(u))) => {
-                // The was no value previously
-                (None, Some((time, u, None)))
-              }
-              case ((prev @ Some((oldt, ju)), result), (time, Left(u))) => {
-                // gate the time for window join?
-                (prev, Some((time, u, Some(ju))))
-              }
-              case ((None, result), (time, Right(joined))) => {
-                (Some((time, joined)), None)
-              }
+    val resultStream: List[(Long, (K, (U, Option[JoinedU])))] = leftAndRight
+      .groupBy(_._1)
+      .mapValues {
+        _.map(_._2).toList
+          .sortBy(identity)
+          .scanLeft(
+            Option.empty[(Long, JoinedU)],
+            Option.empty[(Long, U, Option[JoinedU])]) {
+            case ((None, result), (time, Left(u))) => {
+              // The was no value previously
+              (None, Some((time, u, None)))
+            }
+            case ((prev @ Some((oldt, ju)), result), (time, Left(u))) => {
+              // gate the time for window join?
+              (prev, Some((time, u, Some(ju))))
+            }
+            case ((None, result), (time, Right(joined))) => {
+              (Some((time, joined)), None)
+            }
 
-              case ((Some((oldt, oldJ)), result), (time, Right(joined))) => {
-                val nextJoined = Semigroup.plus(oldJ, joined)
-                (Some((time, nextJoined)), None)
-              }
+            case ((Some((oldt, oldJ)), result), (time, Right(joined))) => {
+              val nextJoined = Semigroup.plus(oldJ, joined)
+              (Some((time, nextJoined)), None)
             }
-        }
-        .toList
-        .flatMap {
-          case (k, lv) =>
-            lv.map {
-              case ((_, optuju)) => (k, optuju)
-            }
-        }
-        .flatMap {
-          case (k, opt) =>
-            opt.map {
-              case (time, u, optju) => (time, (k, (u, optju)))
-            }
-        }
+          }
+      }
+      .toList
+      .flatMap {
+        case (k, lv) =>
+          lv.map {
+            case ((_, optuju)) => (k, optuju)
+          }
+      }
+      .flatMap {
+        case (k, opt) =>
+          opt.map {
+            case (time, u, optju) => (time, (k, (u, optju)))
+          }
+      }
 
     // compute the final store result after join
     val finalStore = MapAlgebra.sumByKey(
@@ -448,13 +446,12 @@ object TestGraphs {
       : Map[K, V] = {
 
     // zip the left and right streams
-    val leftAndRight: Iterable[(K, (Long, Either[U, V]))] =
-      source
-        .flatMap(simpleFM)
-        .toList
-        .map {
-          case (time, (k, u)) => (k, (time, Left(u)))
-        }
+    val leftAndRight: Iterable[(K, (Long, Either[U, V]))] = source
+      .flatMap(simpleFM)
+      .toList
+      .map {
+        case (time, (k, u)) => (k, (time, Left(u)))
+      }
 
     // scan left to join the left values and the right summing result stream
     val resultStream = loopJoinInScala(leftAndRight, flatMapValuesFn)
@@ -509,13 +506,12 @@ object TestGraphs {
       : (Map[K, V], Map[K, V1]) = {
 
     // zip the left and right streams
-    val leftAndRight: Iterable[(K, (Long, Either[U, V]))] =
-      source
-        .flatMap(simpleFM)
-        .toList
-        .map {
-          case (time, (k, u)) => (k, (time, Left(u)))
-        }
+    val leftAndRight: Iterable[(K, (Long, Either[U, V]))] = source
+      .flatMap(simpleFM)
+      .toList
+      .map {
+        case (time, (k, u)) => (k, (time, Left(u)))
+      }
 
     // scan left to join the left values and the right summing result stream
     val resultStream = loopJoinInScala(leftAndRight, flatMapValuesFn)
@@ -752,12 +748,13 @@ object TestGraphs {
       .flatMap {
         case (k, lv) => lv.map((k, _))
       }
-    val v2 = sumStream.map {
-      case (k, (_, v)) =>
-        fn(k).map {
-          (_, v)
-        }
-    }.flatten
+    val v2 =
+      sumStream.map {
+        case (k, (_, v)) =>
+          fn(k).map {
+            (_, v)
+          }
+      }.flatten
     val sum2 = MapAlgebra.sumByKey(v2)
     (sum1, sum2)
   }

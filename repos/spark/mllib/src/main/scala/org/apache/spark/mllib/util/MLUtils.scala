@@ -79,16 +79,17 @@ object MLUtils {
       .map { line =>
         val items = line.split(' ')
         val label = items.head.toDouble
-        val (indices, values) = items.tail
-          .filter(_.nonEmpty)
-          .map { item =>
-            val indexAndValue = item.split(':')
-            val index =
-              indexAndValue(0).toInt - 1 // Convert 1-based indices to 0-based.
-            val value = indexAndValue(1).toDouble
-            (index, value)
-          }
-          .unzip
+        val (indices, values) =
+          items.tail
+            .filter(_.nonEmpty)
+            .map { item =>
+              val indexAndValue = item.split(':')
+              val index = indexAndValue(
+                0).toInt - 1 // Convert 1-based indices to 0-based.
+              val value = indexAndValue(1).toDouble
+              (index, value)
+            }
+            .unzip
 
         // check if indices are one-based and in ascending order
         var previous = -1
@@ -108,17 +109,18 @@ object MLUtils {
       }
 
     // Determine number of features.
-    val d = if (numFeatures > 0) {
-      numFeatures
-    } else {
-      parsed.persist(StorageLevel.MEMORY_ONLY)
-      parsed
-        .map {
-          case (label, indices, values) =>
-            indices.lastOption.getOrElse(0)
-        }
-        .reduce(math.max) + 1
-    }
+    val d =
+      if (numFeatures > 0) {
+        numFeatures
+      } else {
+        parsed.persist(StorageLevel.MEMORY_ONLY)
+        parsed
+          .map {
+            case (label, indices, values) =>
+              indices.lastOption.getOrElse(0)
+          }
+          .reduce(math.max) + 1
+      }
 
     parsed.map {
       case (label, indices, values) =>
@@ -169,8 +171,7 @@ object MLUtils {
   def loadLibSVMFile(
       sc: SparkContext,
       path: String,
-      multiclass: Boolean): RDD[LabeledPoint] =
-    loadLibSVMFile(sc, path)
+      multiclass: Boolean): RDD[LabeledPoint] = loadLibSVMFile(sc, path)
 
   /**
     * Loads binary labeled data in the LIBSVM format into an RDD[LabeledPoint], with number of
@@ -284,8 +285,8 @@ object MLUtils {
   @Since("1.0.0")
   @deprecated("Should use RDD[LabeledPoint].saveAsTextFile instead.", "1.0.1")
   def saveLabeledData(data: RDD[LabeledPoint], dir: String) {
-    val dataStr =
-      data.map(x => x.label + "," + x.features.toArray.mkString(" "))
+    val dataStr = data.map(x =>
+      x.label + "," + x.features.toArray.mkString(" "))
     dataStr.saveAsTextFile(dir)
   }
 
@@ -312,10 +313,11 @@ object MLUtils {
       seed: Long): Array[(RDD[T], RDD[T])] = {
     val numFoldsF = numFolds.toFloat
     (1 to numFolds).map { fold =>
-      val sampler = new BernoulliCellSampler[T](
-        (fold - 1) / numFoldsF,
-        fold / numFoldsF,
-        complement = false)
+      val sampler =
+        new BernoulliCellSampler[T](
+          (fold - 1) / numFoldsF,
+          fold / numFoldsF,
+          complement = false)
       val validation = new PartitionwiseSampledRDD(rdd, sampler, true, seed)
       val training =
         new PartitionwiseSampledRDD(rdd, sampler.cloneComplement(), true, seed)

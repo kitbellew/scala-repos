@@ -66,10 +66,11 @@ class StateTTests extends CatsSuite {
 
   test("State.modify equivalent to get then set") {
     forAll { (f: Long => Long) =>
-      val s1 = for {
-        l <- State.get[Long]
-        _ <- State.set(f(l))
-      } yield ()
+      val s1 =
+        for {
+          l <- State.get[Long]
+          _ <- State.set(f(l))
+        } yield ()
 
       val s2 = State.modify(f)
 
@@ -110,8 +111,8 @@ class StateTTests extends CatsSuite {
   }
 
   {
-    implicit val iso =
-      CartesianTests.Isomorphisms.invariant[StateT[Option, Int, ?]]
+    implicit val iso = CartesianTests.Isomorphisms
+      .invariant[StateT[Option, Int, ?]]
     checkAll(
       "StateT[Option, Int, Int]",
       MonadStateTests[StateT[Option, Int, ?], Int].monadState[Int, Int, Int])
@@ -136,8 +137,7 @@ object StateTTests extends StateTTestsInstances {
     stateTEq[Eval, S, A]
 
   implicit def stateArbitrary[S: Arbitrary, A: Arbitrary]
-      : Arbitrary[State[S, A]] =
-    stateTArbitrary[Eval, S, A]
+      : Arbitrary[State[S, A]] = stateTArbitrary[Eval, S, A]
 
   val add1: State[Int, Int] = State(n => (n + 1, n))
 }

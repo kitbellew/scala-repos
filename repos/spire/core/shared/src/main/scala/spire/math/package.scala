@@ -121,8 +121,7 @@ package object math {
       a
     else
       Math.round(a).toDouble
-  final def round(a: BigDecimal): BigDecimal =
-    a.setScale(0, HALF_UP)
+  final def round(a: BigDecimal): BigDecimal = a.setScale(0, HALF_UP)
   final def round[A](a: A)(implicit ev: IsReal[A]): A = ev.round(a)
 
   /**
@@ -210,8 +209,7 @@ package object math {
     */
   final def log(n: Double): Double = Math.log(n)
 
-  final def log(n: Double, base: Int): Double =
-    Math.log(n) / Math.log(base)
+  final def log(n: Double, base: Int): Double = Math.log(n) / Math.log(base)
 
   final def log(n: BigDecimal): BigDecimal = {
     val scale = n.mc.getPrecision
@@ -246,11 +244,9 @@ package object math {
     (ln(x) * BigDecimal(2).pow(i)).setScale(scale, HALF_UP)
   }
 
-  def log(n: BigDecimal, base: Int): BigDecimal =
-    log(n) / log(BigDecimal(base))
+  def log(n: BigDecimal, base: Int): BigDecimal = log(n) / log(BigDecimal(base))
 
-  final def log[A](a: A)(implicit t: Trig[A]): A =
-    t.log(a)
+  final def log[A](a: A)(implicit t: Trig[A]): A = t.log(a)
 
   final def log[A](a: A, base: Int)(implicit f: Field[A], t: Trig[A]): A =
     f.div(t.log(a), t.log(f.fromInt(base)))
@@ -373,8 +369,7 @@ package object math {
       gcd(y, x)
     }
   final def gcd[A](x: A, y: A, z: A, rest: A*)(
-      implicit ev: EuclideanRing[A]): A =
-    gcd(gcd(gcd(x, y), z), gcd(rest))
+      implicit ev: EuclideanRing[A]): A = gcd(gcd(gcd(x, y), z), gcd(rest))
 
   /**
     * lcm

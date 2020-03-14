@@ -59,19 +59,20 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
               classes(0).asInstanceOf[ScTemplateDefinition]))
         case _ =>
           val selection = classes(0)
-          val processor = new PsiElementProcessor[PsiClass] {
-            def execute(aClass: PsiClass): Boolean = {
-              action(
-                new IntroduceFieldContext[T](
-                  project,
-                  editor,
-                  file,
-                  elem,
-                  types,
-                  aClass.asInstanceOf[ScTemplateDefinition]))
-              false
+          val processor =
+            new PsiElementProcessor[PsiClass] {
+              def execute(aClass: PsiClass): Boolean = {
+                action(
+                  new IntroduceFieldContext[T](
+                    project,
+                    editor,
+                    file,
+                    elem,
+                    types,
+                    aClass.asInstanceOf[ScTemplateDefinition]))
+                false
+              }
             }
-          }
           NavigationUtil
             .getPsiElementPopup(
               classes,
@@ -140,8 +141,8 @@ object ScalaIntroduceFieldHandlerBase {
     val parExpr: ScExpression = ScalaRefactoringUtil.findParentExpr(
       ScalaRefactoringUtil.commonParent(ifc.file, occurrences: _*))
     val container = ScalaRefactoringUtil.container(parExpr, ifc.file)
-    val stmtsAndMmbrs =
-      ScalaRefactoringUtil.statementsAndMembersInClass(ifc.aClass)
+    val stmtsAndMmbrs = ScalaRefactoringUtil.statementsAndMembersInClass(
+      ifc.aClass)
     val containerIsLocal =
       (Iterator(container) ++ new ParentsIterator(container))
         .exists(stmtsAndMmbrs.contains(_))

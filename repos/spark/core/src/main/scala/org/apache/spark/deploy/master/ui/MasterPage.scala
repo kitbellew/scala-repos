@@ -101,8 +101,10 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
     val activeApps = state.activeApps.sortBy(_.startTime).reverse
     val activeAppsTable = UIUtils.listingTable(appHeaders, appRow, activeApps)
     val completedApps = state.completedApps.sortBy(_.endTime).reverse
-    val completedAppsTable =
-      UIUtils.listingTable(appHeaders, appRow, completedApps)
+    val completedAppsTable = UIUtils.listingTable(
+      appHeaders,
+      appRow,
+      completedApps)
 
     val driverHeaders = Seq(
       "Submission ID",
@@ -113,11 +115,15 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       "Memory",
       "Main Class")
     val activeDrivers = state.activeDrivers.sortBy(_.startTime).reverse
-    val activeDriversTable =
-      UIUtils.listingTable(driverHeaders, driverRow, activeDrivers)
+    val activeDriversTable = UIUtils.listingTable(
+      driverHeaders,
+      driverRow,
+      activeDrivers)
     val completedDrivers = state.completedDrivers.sortBy(_.startTime).reverse
-    val completedDriversTable =
-      UIUtils.listingTable(driverHeaders, driverRow, completedDrivers)
+    val completedDriversTable = UIUtils.listingTable(
+      driverHeaders,
+      driverRow,
+      completedDrivers)
 
     // For now we only show driver information if the user has submitted drivers to the cluster.
     // This is until we integrate the notion of drivers and applications in the UI.

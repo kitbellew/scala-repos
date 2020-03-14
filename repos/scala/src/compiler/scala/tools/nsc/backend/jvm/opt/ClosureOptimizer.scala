@@ -189,21 +189,22 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           // We are checking if the closure body method is accessible at the closure callsite.
           // If the closure allocation has access to the body method, then the callsite (in the same
           // method as the allocation) should have access too.
-          val bodyAccessible: Either[OptimizerWarning, Boolean] = for {
-            (bodyMethodNode, declClass) <- byteCodeRepository.methodNode(
-              lambdaBodyHandle.getOwner,
-              lambdaBodyHandle.getName,
-              lambdaBodyHandle.getDesc): Either[
-              OptimizerWarning,
-              (MethodNode, InternalName)]
-            isAccessible <- inliner.memberIsAccessible(
-              bodyMethodNode.access,
-              classBTypeFromParsedClassfile(declClass),
-              classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
-              ownerClass)
-          } yield {
-            isAccessible
-          }
+          val bodyAccessible: Either[OptimizerWarning, Boolean] =
+            for {
+              (bodyMethodNode, declClass) <- byteCodeRepository.methodNode(
+                lambdaBodyHandle.getOwner,
+                lambdaBodyHandle.getName,
+                lambdaBodyHandle.getDesc): Either[
+                OptimizerWarning,
+                (MethodNode, InternalName)]
+              isAccessible <- inliner.memberIsAccessible(
+                bodyMethodNode.access,
+                classBTypeFromParsedClassfile(declClass),
+                classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
+                ownerClass)
+            } yield {
+              isAccessible
+            }
 
           def pos =
             callGraph
@@ -260,8 +261,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           val numArgs = Type.getArgumentTypes(invocation.desc).length
           invocationFrame.stackTop - numArgs
         }
-        val receiverProducers =
-          prodCons.initialProducersForValueAt(invocation, receiverSlot)
+        val receiverProducers = prodCons.initialProducersForValueAt(
+          invocation,
+          receiverSlot)
         receiverProducers.size == 1 && receiverProducers.head == indy
       }
 
@@ -337,8 +339,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       None
     } else {
       val invokeArgTypes = Type.getArgumentTypes(invokeDesc)
-      val implMethodArgTypes =
-        Type.getArgumentTypes(lambdaBodyMethodDescWithoutCaptures)
+      val implMethodArgTypes = Type.getArgumentTypes(
+        lambdaBodyMethodDescWithoutCaptures)
       val res = new Array[Option[AbstractInsnNode]](invokeArgTypes.length)
       for (i <- invokeArgTypes.indices) {
         if (invokeArgTypes(i) == implMethodArgTypes(i)) {
@@ -400,26 +402,28 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       ownerMethod.maxStack = invocationStackHeight
 
     // replace the callsite with a new call to the body method
-    val bodyOpcode = (lambdaBodyHandle.getTag: @switch) match {
-      case H_INVOKEVIRTUAL   => INVOKEVIRTUAL
-      case H_INVOKESTATIC    => INVOKESTATIC
-      case H_INVOKESPECIAL   => INVOKESPECIAL
-      case H_INVOKEINTERFACE => INVOKEINTERFACE
-      case H_NEWINVOKESPECIAL =>
-        val insns = ownerMethod.instructions
-        insns.insertBefore(
-          invocation,
-          new TypeInsnNode(NEW, lambdaBodyHandle.getOwner))
-        insns.insertBefore(invocation, new InsnNode(DUP))
-        INVOKESPECIAL
-    }
+    val bodyOpcode =
+      (lambdaBodyHandle.getTag: @switch) match {
+        case H_INVOKEVIRTUAL   => INVOKEVIRTUAL
+        case H_INVOKESTATIC    => INVOKESTATIC
+        case H_INVOKESPECIAL   => INVOKESPECIAL
+        case H_INVOKEINTERFACE => INVOKEINTERFACE
+        case H_NEWINVOKESPECIAL =>
+          val insns = ownerMethod.instructions
+          insns.insertBefore(
+            invocation,
+            new TypeInsnNode(NEW, lambdaBodyHandle.getOwner))
+          insns.insertBefore(invocation, new InsnNode(DUP))
+          INVOKESPECIAL
+      }
     val isInterface = bodyOpcode == INVOKEINTERFACE
-    val bodyInvocation = new MethodInsnNode(
-      bodyOpcode,
-      lambdaBodyHandle.getOwner,
-      lambdaBodyHandle.getName,
-      lambdaBodyHandle.getDesc,
-      isInterface)
+    val bodyInvocation =
+      new MethodInsnNode(
+        bodyOpcode,
+        lambdaBodyHandle.getOwner,
+        lambdaBodyHandle.getName,
+        lambdaBodyHandle.getDesc,
+        isInterface)
     ownerMethod.instructions.insertBefore(invocation, bodyInvocation)
 
     val bodyReturnType = Type.getReturnType(lambdaBodyHandle.getDesc)
@@ -466,8 +470,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         .getOrElse(false)
     val callee = bodyMethod.map({
       case (bodyMethodNode, bodyMethodDeclClass) =>
-        val bodyDeclClassType =
-          classBTypeFromParsedClassfile(bodyMethodDeclClass)
+        val bodyDeclClassType = classBTypeFromParsedClassfile(
+          bodyMethodDeclClass)
         val canInlineFromSource =
           compilerSettings.YoptInlineGlobal || bodyMethodIsBeingCompiled
         Callee(
@@ -479,8 +483,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           canInlineFromSource = canInlineFromSource,
           annotatedInline = false,
           annotatedNoInline = false,
-          samParamTypes =
-            callGraph.samParamTypes(bodyMethodNode, bodyDeclClassType),
+          samParamTypes = callGraph
+            .samParamTypes(bodyMethodNode, bodyDeclClassType),
           calleeInfoWarning = None
         )
     })
@@ -498,8 +502,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       argInfos = argInfos,
       callsiteStackHeight = invocationStackHeight,
       receiverKnownNotNull = true, // see below (*)
-      callsitePosition =
-        originalCallsite.map(_.callsitePosition).getOrElse(NoPosition),
+      callsitePosition = originalCallsite
+        .map(_.callsitePosition)
+        .getOrElse(NoPosition),
       annotatedInline = false,
       annotatedNoInline = false
     )
@@ -534,8 +539,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // local. On the other hand, further optimizations (copy propagation, remove unused locals) will
     // clean it up.
 
-    val localsForCaptures =
-      LocalsList.fromTypes(firstCaptureLocal, capturedTypes)
+    val localsForCaptures = LocalsList.fromTypes(
+      firstCaptureLocal,
+      capturedTypes)
     closureInit.ownerMethod.maxLocals =
       firstCaptureLocal + localsForCaptures.size
 
@@ -603,14 +609,15 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       */
     def fromTypes(firstLocal: Int, types: Array[Type]): LocalsList = {
       var sizeTwoOffset = 0
-      val locals: List[Local] = types.indices.map(i => {
-        // The ASM method `type.getOpcode` returns the opcode for operating on a value of `type`.
-        val offset = types(i).getOpcode(ILOAD) - ILOAD
-        val local = Local(firstLocal + i + sizeTwoOffset, offset)
-        if (local.size == 2)
-          sizeTwoOffset += 1
-        local
-      })(collection.breakOut)
+      val locals: List[Local] =
+        types.indices.map(i => {
+          // The ASM method `type.getOpcode` returns the opcode for operating on a value of `type`.
+          val offset = types(i).getOpcode(ILOAD) - ILOAD
+          val local = Local(firstLocal + i + sizeTwoOffset, offset)
+          if (local.size == 2)
+            sizeTwoOffset += 1
+          local
+        })(collection.breakOut)
       LocalsList(locals)
     }
   }

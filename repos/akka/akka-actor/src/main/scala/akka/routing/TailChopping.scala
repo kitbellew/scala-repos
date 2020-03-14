@@ -79,22 +79,24 @@ private[akka] final case class TailChoppingRoutees(
     val aIdx = new AtomicInteger()
     val size = shuffled.length
 
-    val tryWithNext = scheduler.schedule(0.millis, interval) {
-      val idx = aIdx.getAndIncrement
-      if (idx < size) {
-        shuffled(idx) match {
-          case ActorRefRoutee(ref) ⇒
-            promise.tryCompleteWith(ref.ask(message))
-          case ActorSelectionRoutee(sel) ⇒
-            promise.tryCompleteWith(sel.ask(message))
-          case _ ⇒
+    val tryWithNext =
+      scheduler.schedule(0.millis, interval) {
+        val idx = aIdx.getAndIncrement
+        if (idx < size) {
+          shuffled(idx) match {
+            case ActorRefRoutee(ref) ⇒
+              promise.tryCompleteWith(ref.ask(message))
+            case ActorSelectionRoutee(sel) ⇒
+              promise.tryCompleteWith(sel.ask(message))
+            case _ ⇒
+          }
         }
       }
-    }
 
-    val sendTimeout = scheduler.scheduleOnce(within)(
-      promise.tryFailure(new AskTimeoutException(
-        s"Ask timed out on [$sender] after [$within.toMillis} ms]")))
+    val sendTimeout =
+      scheduler.scheduleOnce(within)(
+        promise.tryFailure(new AskTimeoutException(
+          s"Ask timed out on [$sender] after [$within.toMillis} ms]")))
 
     val f = promise.future
     f.onComplete {

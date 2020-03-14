@@ -23,11 +23,9 @@ object HashSetFactory {
 }
 
 class HashSetFactory extends AbstractSetFactory {
-  def implementationName: String =
-    "java.util.HashSet"
+  def implementationName: String = "java.util.HashSet"
 
-  def empty[E: ClassTag]: ju.HashSet[E] =
-    new ju.HashSet[E]()
+  def empty[E: ClassTag]: ju.HashSet[E] = new ju.HashSet[E]()
 
   def allowsNullElement: Boolean = true
 }

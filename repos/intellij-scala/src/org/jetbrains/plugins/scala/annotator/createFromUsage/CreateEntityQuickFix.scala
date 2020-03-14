@@ -111,24 +111,26 @@ abstract class CreateEntityQuickFix(
       ref.nameId.getText,
       params) + unimplementedBody
 
-    val block = ref match {
-      case it if it.isQualified       => ref.qualifier.flatMap(tryToFindBlock)
-      case Parent(infix: ScInfixExpr) => tryToFindBlock(infix.getBaseExpr)
-      case _                          => None
-    }
+    val block =
+      ref match {
+        case it if it.isQualified       => ref.qualifier.flatMap(tryToFindBlock)
+        case Parent(infix: ScInfixExpr) => tryToFindBlock(infix.getBaseExpr)
+        case _                          => None
+      }
 
     if (!FileModificationService.getInstance.prepareFileForWrite(
           block.map(_.getContainingFile).getOrElse(file)))
       return
 
     inWriteAction {
-      val entity = block match {
-        case Some(_ childOf (obj: ScObject)) if obj.isSyntheticObject =>
-          val bl = materializeSytheticObject(obj).extendsBlock
-          createEntity(bl, ref, text)
-        case Some(it) => createEntity(it, ref, text)
-        case None     => createEntity(ref, text)
-      }
+      val entity =
+        block match {
+          case Some(_ childOf (obj: ScObject)) if obj.isSyntheticObject =>
+            val bl = materializeSytheticObject(obj).extendsBlock
+            createEntity(bl, ref, text)
+          case Some(it) => createEntity(it, ref, text)
+          case None     => createEntity(ref, text)
+        }
 
       ScalaPsiUtil.adjustTypes(entity)
 
@@ -226,8 +228,9 @@ object CreateEntityQuickFix {
       block.add(createTemplateBody(block.getManager))
 
     val children = block.templateBody.get.children.toSeq
-    val anchor =
-      children.find(_.isInstanceOf[ScSelfTypeElement]).getOrElse(children.head)
+    val anchor = children
+      .find(_.isInstanceOf[ScSelfTypeElement])
+      .getOrElse(children.head)
     val holder = anchor.getParent
     val hasMembers = holder.children.findByType(classOf[ScMember]).isDefined
 

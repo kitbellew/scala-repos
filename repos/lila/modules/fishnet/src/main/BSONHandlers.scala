@@ -9,14 +9,17 @@ import chess.variant.Variant
 
 private object BSONHandlers {
 
-  implicit val ClientKeyBSONHandler =
-    stringAnyValHandler[Client.Key](_.value, Client.Key.apply)
-  implicit val ClientVersionBSONHandler =
-    stringAnyValHandler[Client.Version](_.value, Client.Version.apply)
-  implicit val ClientUserIdBSONHandler =
-    stringAnyValHandler[Client.UserId](_.value, Client.UserId.apply)
-  implicit val ClientIpAddressBSONHandler =
-    stringAnyValHandler[Client.IpAddress](_.value, Client.IpAddress.apply)
+  implicit val ClientKeyBSONHandler = stringAnyValHandler[Client.Key](
+    _.value,
+    Client.Key.apply)
+  implicit val ClientVersionBSONHandler = stringAnyValHandler[Client.Version](
+    _.value,
+    Client.Version.apply)
+  implicit val ClientUserIdBSONHandler = stringAnyValHandler[Client.UserId](
+    _.value,
+    Client.UserId.apply)
+  implicit val ClientIpAddressBSONHandler = stringAnyValHandler[
+    Client.IpAddress](_.value, Client.IpAddress.apply)
 
   implicit val ClientSkillBSONHandler =
     new BSONHandler[BSONString, Client.Skill] {
@@ -33,18 +36,21 @@ private object BSONHandlers {
 
   implicit val ClientBSONHandler = Macros.handler[Client]
 
-  implicit val VariantBSONHandler = new BSONHandler[BSONInteger, Variant] {
-    def read(b: BSONInteger): Variant =
-      Variant(b.value) err s"No such variant: ${b.value}"
-    def write(x: Variant) = BSONInteger(x.id)
-  }
-  implicit val FENBSONHandler = new BSONHandler[BSONString, FEN] {
-    def read(b: BSONString) = FEN(b.value)
-    def write(x: FEN) = BSONString(x.value)
-  }
+  implicit val VariantBSONHandler =
+    new BSONHandler[BSONInteger, Variant] {
+      def read(b: BSONInteger): Variant =
+        Variant(b.value) err s"No such variant: ${b.value}"
+      def write(x: Variant) = BSONInteger(x.id)
+    }
+  implicit val FENBSONHandler =
+    new BSONHandler[BSONString, FEN] {
+      def read(b: BSONString) = FEN(b.value)
+      def write(x: FEN) = BSONString(x.value)
+    }
 
-  implicit val WorkIdBSONHandler =
-    stringAnyValHandler[Work.Id](_.value, Work.Id.apply)
+  implicit val WorkIdBSONHandler = stringAnyValHandler[Work.Id](
+    _.value,
+    Work.Id.apply)
   import Work.Acquired
   implicit val MoveAcquiredHandler = Macros.handler[Acquired]
   import Work.Game

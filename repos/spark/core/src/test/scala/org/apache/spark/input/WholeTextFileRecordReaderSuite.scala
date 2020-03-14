@@ -51,8 +51,8 @@ class WholeTextFileRecordReaderSuite
     // the new value of "fs.local.block.size" (see SPARK-5227 and SPARK-5679). To work around this,
     // we disable FileSystem caching in this suite.
     super.beforeAll()
-    val conf =
-      new SparkConf().set("spark.hadoop.fs.file.impl.disable.cache", "true")
+    val conf = new SparkConf()
+      .set("spark.hadoop.fs.file.impl.disable.cache", "true")
 
     sc = new SparkContext("local", "test", conf)
 
@@ -77,14 +77,16 @@ class WholeTextFileRecordReaderSuite
       fileName: String,
       contents: Array[Byte],
       compress: Boolean) = {
-    val out = if (compress) {
-      val codec = new GzipCodec
-      val path = s"${inputDir.toString}/$fileName${codec.getDefaultExtension}"
-      codec.createOutputStream(new DataOutputStream(new FileOutputStream(path)))
-    } else {
-      val path = s"${inputDir.toString}/$fileName"
-      new DataOutputStream(new FileOutputStream(path))
-    }
+    val out =
+      if (compress) {
+        val codec = new GzipCodec
+        val path = s"${inputDir.toString}/$fileName${codec.getDefaultExtension}"
+        codec.createOutputStream(
+          new DataOutputStream(new FileOutputStream(path)))
+      } else {
+        val path = s"${inputDir.toString}/$fileName"
+        new DataOutputStream(new FileOutputStream(path))
+      }
     out.write(contents, 0, contents.length)
     out.close()
   }
@@ -160,21 +162,22 @@ class WholeTextFileRecordReaderSuite
   * Files to be tested are defined here.
   */
 object WholeTextFileRecordReaderSuite {
-  private val testWords: IndexedSeq[Byte] =
-    "Spark is easy to use.\n".map(_.toByte)
+  private val testWords: IndexedSeq[Byte] = "Spark is easy to use.\n".map(
+    _.toByte)
 
   private val fileNames = Array("part-00000", "part-00001", "part-00002")
   private val fileLengths = Array(10, 100, 1000)
 
-  private val files = fileLengths
-    .zip(fileNames)
-    .map {
-      case (upperBound, filename) =>
-        filename -> Stream
-          .continually(testWords.toList.toStream)
-          .flatten
-          .take(upperBound)
-          .toArray
-    }
-    .toMap
+  private val files =
+    fileLengths
+      .zip(fileNames)
+      .map {
+        case (upperBound, filename) =>
+          filename -> Stream
+            .continually(testWords.toList.toStream)
+            .flatten
+            .take(upperBound)
+            .toArray
+      }
+      .toMap
 }

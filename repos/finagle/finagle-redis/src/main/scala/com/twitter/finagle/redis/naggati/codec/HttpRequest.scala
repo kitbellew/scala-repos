@@ -32,15 +32,16 @@ object HttpRequest {
 
   def codec() = new Codec(read, Codec.NONE)
 
-  val read = readLine(true, "UTF-8") { line =>
-    line.split(' ').toList match {
-      case method :: resource :: version :: Nil =>
-        val requestLine = RequestLine(method, resource, version)
-        readHeader(requestLine, Nil)
-      case _ =>
-        throw new ProtocolError("Malformed request line: " + line)
+  val read =
+    readLine(true, "UTF-8") { line =>
+      line.split(' ').toList match {
+        case method :: resource :: version :: Nil =>
+          val requestLine = RequestLine(method, resource, version)
+          readHeader(requestLine, Nil)
+        case _ =>
+          throw new ProtocolError("Malformed request line: " + line)
+      }
     }
-  }
 
   def readHeader(requestLine: RequestLine, headers: List[HeaderLine]): Stage = {
     readLine(true, "UTF-8") { line =>
@@ -62,16 +63,18 @@ object HttpRequest {
         if (headers.size == 0) {
           throw new ProtocolError("Malformed header line: " + line)
         }
-        val newHeaderLine =
-          HeaderLine(headers.head.name, headers.head.value + " " + line.trim)
+        val newHeaderLine = HeaderLine(
+          headers.head.name,
+          headers.head.value + " " + line.trim)
         readHeader(requestLine, newHeaderLine :: headers.drop(1))
       } else {
-        val newHeaderLine = line.split(':').toList match {
-          case name :: value :: Nil =>
-            HeaderLine(name.trim.toLowerCase, value.trim)
-          case _ =>
-            throw new ProtocolError("Malformed header line: " + line)
-        }
+        val newHeaderLine =
+          line.split(':').toList match {
+            case name :: value :: Nil =>
+              HeaderLine(name.trim.toLowerCase, value.trim)
+            case _ =>
+              throw new ProtocolError("Malformed header line: " + line)
+          }
         readHeader(requestLine, newHeaderLine :: headers)
       }
     }

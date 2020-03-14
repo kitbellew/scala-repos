@@ -118,8 +118,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       flowDef: FlowDef,
       mode: Mode): Unit
 
-  @transient private val logger =
-    LoggerFactory.getLogger(classOf[BatchedStore[_, _]])
+  @transient private val logger = LoggerFactory.getLogger(
+    classOf[BatchedStore[_, _]])
 
   /** The writeLast method as a FlowProducer */
   private def writeFlow(
@@ -149,8 +149,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       capturedBatcher: Batcher,
       commutativity: Commutativity)
       : TypedPipe[(LTuple2[K1, BatchID], (Timestamp, V))] = {
-    implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] =
-      IteratorSums.optimizedPairSemigroup[Timestamp, V](1000)
+    implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] = IteratorSums
+      .optimizedPairSemigroup[Timestamp, V](1000)
 
     val inits = ins.map {
       case (t, (k, v)) =>
@@ -245,24 +245,25 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
             (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))] = {
 
       // Make sure to use sumOption on V
-      implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] =
-        IteratorSums.optimizedPairSemigroup[Timestamp, V](1000)
+      implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] = IteratorSums
+        .optimizedPairSemigroup[Timestamp, V](1000)
 
       val grouped = all.group.withReducers(reducers)
 
       // We need the tuples to be sorted by batch ID to compute partials, and by time if the
       // monoid is not commutative. Although sorting by time is adequate for both, sorting
       // by batch is more efficient because the reducers' input is almost sorted.
-      val sorted = commutativity match {
-        case NonCommutative =>
-          grouped.sortBy {
-            case (_, (t, _)) => t
-          }(BinaryOrdering.ordSer[com.twitter.summingbird.batch.Timestamp])
-        case Commutative =>
-          grouped.sortBy {
-            case (b, (_, _)) => b
-          }(BinaryOrdering.ordSer[BatchID])
-      }
+      val sorted =
+        commutativity match {
+          case NonCommutative =>
+            grouped.sortBy {
+              case (_, (t, _)) => t
+            }(BinaryOrdering.ordSer[com.twitter.summingbird.batch.Timestamp])
+          case Commutative =>
+            grouped.sortBy {
+              case (b, (_, _)) => b
+            }(BinaryOrdering.ordSer[BatchID])
+        }
 
       sorted.mapValueStream { it: Iterator[(BatchID, (Timestamp, V))] =>
         // each BatchID appears at most once, so it fits in RAM
@@ -285,8 +286,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
         : TypedPipe[(BatchID, (K, V))] =
       res.flatMap {
         case (k, (batchid, (prev, v))) =>
-          val totalSum =
-            Semigroup.plus[Option[(Timestamp, V)]](flatOpt(prev), v)
+          val totalSum = Semigroup
+            .plus[Option[(Timestamp, V)]](flatOpt(prev), v)
           totalSum.map {
             case (_, sumv) => (batchid, (k, sumv))
           }

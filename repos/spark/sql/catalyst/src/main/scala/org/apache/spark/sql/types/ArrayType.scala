@@ -95,20 +95,22 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
   @transient
   private[sql] lazy val interpretedOrdering: Ordering[ArrayData] =
     new Ordering[ArrayData] {
-      private[this] val elementOrdering: Ordering[Any] = elementType match {
-        case dt: AtomicType => dt.ordering.asInstanceOf[Ordering[Any]]
-        case a: ArrayType   => a.interpretedOrdering.asInstanceOf[Ordering[Any]]
-        case s: StructType  => s.interpretedOrdering.asInstanceOf[Ordering[Any]]
-        case other =>
-          throw new IllegalArgumentException(
-            s"Type $other does not support ordered operations")
-      }
+      private[this] val elementOrdering: Ordering[Any] =
+        elementType match {
+          case dt: AtomicType => dt.ordering.asInstanceOf[Ordering[Any]]
+          case a: ArrayType   => a.interpretedOrdering.asInstanceOf[Ordering[Any]]
+          case s: StructType =>
+            s.interpretedOrdering.asInstanceOf[Ordering[Any]]
+          case other =>
+            throw new IllegalArgumentException(
+              s"Type $other does not support ordered operations")
+        }
 
       def compare(x: ArrayData, y: ArrayData): Int = {
         val leftArray = x
         val rightArray = y
-        val minLength =
-          scala.math.min(leftArray.numElements(), rightArray.numElements())
+        val minLength = scala.math
+          .min(leftArray.numElements(), rightArray.numElements())
         var i = 0
         while (i < minLength) {
           val isNullLeft = leftArray.isNullAt(i)
@@ -120,10 +122,9 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
           } else if (isNullRight) {
             return 1
           } else {
-            val comp =
-              elementOrdering.compare(
-                leftArray.get(i, elementType),
-                rightArray.get(i, elementType))
+            val comp = elementOrdering.compare(
+              leftArray.get(i, elementType),
+              rightArray.get(i, elementType))
             if (comp != 0) {
               return comp
             }

@@ -59,8 +59,9 @@ class DefaultClientTest
     val name = "name"
     val socket = new InetSocketAddress(0)
     val client: Client[Int, Int]
-    lazy val service: Service[Int, Int] =
-      client.newService(Name.bound(Address(socket)), name)
+    lazy val service: Service[Int, Int] = client.newService(
+      Name.bound(Address(socket)),
+      name)
   }
 
   trait BaseClientHelper extends ServiceHelper {
@@ -152,13 +153,14 @@ class DefaultClientTest
       with ServiceHelper {
 
     val pool = new DefaultPool[Int, Int](0, 1, timer = timer) // pool of size 1
-    val client = new DefaultClient[Int, Int](
-      name,
-      endPointer,
-      pool = pool,
-      timer = timer,
-      statsReceiver = statsReceiver
-    )
+    val client =
+      new DefaultClient[Int, Int](
+        name,
+        endPointer,
+        pool = pool,
+        timer = timer,
+        statsReceiver = statsReceiver
+      )
   }
 
   test(
@@ -203,13 +205,12 @@ class DefaultClientTest
     new DefaultClientHelper {
       @volatile var closed = false
 
-      val dest =
-        Name.Bound.singleton(Var.async(Addr.Bound(Seq.empty[Address]: _*)) {
-          _ =>
-            Closable.make { _ =>
-              closed = true
-              Future.Done
-            }
+      val dest = Name.Bound.singleton(
+        Var.async(Addr.Bound(Seq.empty[Address]: _*)) { _ =>
+          Closable.make { _ =>
+            closed = true
+            Future.Done
+          }
         })
       val svc = client.newService(dest, "test")
       assert(!closed, "client closed too early")
@@ -246,13 +247,14 @@ class DefaultClientTest
 
     val pool = new DefaultPool[Int, Int](0, 1, timer = timer) // pool of size 1
 
-    val client = new DefaultClient[Int, Int](
-      name,
-      endPointer,
-      pool = pool,
-      timer = timer,
-      statsReceiver = statsReceiver
-    )
+    val client =
+      new DefaultClient[Int, Int](
+        name,
+        endPointer,
+        pool = pool,
+        timer = timer,
+        statsReceiver = statsReceiver
+      )
   }
 
   test("DefaultClient should handle failureAccrual default") {
@@ -267,23 +269,24 @@ class DefaultClientTest
   test("DefaultClient should handle passed-in failure accrual") {
     new DefaultFailureAccrualHelper {
       initialFailures = 10
-      override val client = new DefaultClient[Int, Int](
-        name,
-        endPointer,
-        pool = pool,
-        timer = timer,
-        statsReceiver = statsReceiver,
-        failureAccrual = { factory: ServiceFactory[Int, Int] =>
-          FailureAccrualFactory.wrapper(
-            statsReceiver,
-            FailureAccrualPolicy
-              .consecutiveFailures(6, Backoff.const(3.seconds)),
-            name,
-            DefaultLogger,
-            failing,
-            ResponseClassifier.Default)(timer) andThen factory
-        }
-      )
+      override val client =
+        new DefaultClient[Int, Int](
+          name,
+          endPointer,
+          pool = pool,
+          timer = timer,
+          statsReceiver = statsReceiver,
+          failureAccrual = { factory: ServiceFactory[Int, Int] =>
+            FailureAccrualFactory.wrapper(
+              statsReceiver,
+              FailureAccrualPolicy
+                .consecutiveFailures(6, Backoff.const(3.seconds)),
+              name,
+              DefaultLogger,
+              failing,
+              ResponseClassifier.Default)(timer) andThen factory
+          }
+        )
 
       Time.withCurrentTimeFrozen { control =>
         0 until 10 foreach {

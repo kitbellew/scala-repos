@@ -25,28 +25,30 @@ object ThriftDispatchBench {
     Arrays.copyOfRange(buf.getArray(), 0, buf.length())
   }
 
-  val service = new Service[ThriftClientRequest, Array[Byte]] {
-    val response = Future.value {
-      val buf = new TMemoryBuffer(32)
-      val out = new TBinaryProtocol(buf)
-      out.writeMessageBegin(new TMessage("echo", TMessageType.REPLY, 0))
-      out.writeStructBegin(new TStruct("echo_result"))
-      out.writeFieldBegin(new TField("success", TType.STRING, 0))
-      out.writeString("the response")
-      out.writeFieldEnd()
-      out.writeFieldStop()
-      out.writeStructEnd()
-      out.writeMessageEnd()
-      Arrays.copyOfRange(buf.getArray(), 0, buf.length())
-    }
+  val service =
+    new Service[ThriftClientRequest, Array[Byte]] {
+      val response = Future.value {
+        val buf = new TMemoryBuffer(32)
+        val out = new TBinaryProtocol(buf)
+        out.writeMessageBegin(new TMessage("echo", TMessageType.REPLY, 0))
+        out.writeStructBegin(new TStruct("echo_result"))
+        out.writeFieldBegin(new TField("success", TType.STRING, 0))
+        out.writeString("the response")
+        out.writeFieldEnd()
+        out.writeFieldStop()
+        out.writeStructEnd()
+        out.writeMessageEnd()
+        Arrays.copyOfRange(buf.getArray(), 0, buf.length())
+      }
 
-    def apply(req: ThriftClientRequest) = response
-  }
+      def apply(req: ThriftClientRequest) = response
+    }
 
   def scroogeService(prot: TProtocolFactory) = {
-    val impl = new Hello.FutureIface {
-      def echo(body: String) = Future.value(body)
-    }
+    val impl =
+      new Hello.FutureIface {
+        def echo(body: String) = Future.value(body)
+      }
     new Hello.FinagledService(impl, prot)
   }
 

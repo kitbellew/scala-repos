@@ -22,8 +22,7 @@ import scala.util.control.NoStackTrace
 
 object ActorPublisherSpec {
 
-  val config =
-    s"""
+  val config = s"""
       my-dispatcher1 = $${akka.test.stream-dispatcher}
       my-dispatcher2 = $${akka.test.stream-dispatcher}
     """
@@ -333,8 +332,8 @@ class ActorPublisherSpec
         val probe = TestProbe()
 
         val source: Source[Int, ActorRef] = Source.actorPublisher(senderProps)
-        val sink: Sink[String, ActorRef] =
-          Sink.actorSubscriber(receiverProps(probe.ref))
+        val sink: Sink[String, ActorRef] = Sink.actorSubscriber(
+          receiverProps(probe.ref))
 
         val (snd, rcv) = source
           .collect {
@@ -374,8 +373,8 @@ class ActorPublisherSpec
 
       val sink1 = Sink.fromSubscriber(
         ActorSubscriber[String](system.actorOf(receiverProps(probe1.ref))))
-      val sink2: Sink[String, ActorRef] =
-        Sink.actorSubscriber(receiverProps(probe2.ref))
+      val sink2: Sink[String, ActorRef] = Sink.actorSubscriber(
+        receiverProps(probe2.ref))
 
       val senderRef2 = RunnableGraph
         .fromGraph(GraphDSL.create(Source.actorPublisher[Int](senderProps)) {
@@ -435,8 +434,8 @@ class ActorPublisherSpec
       val sub = TestSubscriber.manualProbe[Int]()
 
       within(2 * timeout) {
-        val pub =
-          ActorPublisher(system.actorOf(timeoutingProps(testActor, timeout)))
+        val pub = ActorPublisher(
+          system.actorOf(timeoutingProps(testActor, timeout)))
 
         // subscribe right away, should cancel subscription-timeout
         pub.subscribe(sub)

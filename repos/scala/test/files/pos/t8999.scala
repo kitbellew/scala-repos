@@ -73,8 +73,7 @@ object Trees {
   case class Ident(name: String, originalName: Option[String])
       extends PropertyName
   object Ident {
-    def apply(name: String): Ident =
-      new Ident(name, Some(name))
+    def apply(name: String): Ident = new Ident(name, Some(name))
   }
 
   case class VarDef(name: Ident, vtpe: Type, mutable: Boolean, rhs: Tree)

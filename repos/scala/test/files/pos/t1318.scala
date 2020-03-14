@@ -6,9 +6,10 @@ abstract class M { self =>
 
   type mType <: M
 
-  type fType = F {
-    type mType >: self.mType
-  }
+  type fType =
+    F {
+      type mType >: self.mType
+    }
   def fs: List[fType]
 }
 

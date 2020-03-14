@@ -353,9 +353,10 @@ object JqJE {
     * See http://api.jquery.com/replaceWith/ .
     */
   case class JqReplace(content: NodeSeq) extends JsExp with JsMember {
-    override val toJsCmd = fixHtmlCmdFunc("inline", content) {
-      "replaceWith(" + _ + ")"
-    }
+    override val toJsCmd =
+      fixHtmlCmdFunc("inline", content) {
+        "replaceWith(" + _ + ")"
+      }
   }
 
   object JqHtml {
@@ -381,9 +382,10 @@ object JqJE {
       */
     def apply(content: NodeSeq): JsExp with JsMember =
       new JsExp with JsMember {
-        val toJsCmd = fixHtmlCmdFunc("inline", content) {
-          "html(" + _ + ")"
-        }
+        val toJsCmd =
+          fixHtmlCmdFunc("inline", content) {
+            "html(" + _ + ")"
+          }
       }
   }
 
@@ -447,8 +449,7 @@ object JqJE {
         def toJsCmd = "tabsClick(" + tab.toJsCmd + ")"
       }
 
-    def apply(tab: Int): JsExp with JsMember =
-      apply(Num(tab))
+    def apply(tab: Int): JsExp with JsMember = apply(Num(tab))
   }
 
   object JqTabs {
@@ -457,8 +458,7 @@ object JqJE {
         def toJsCmd = "tabs(" + in.toJsCmd + ")"
       }
 
-    def apply(): JsExp with JsMember =
-      apply(JsRaw(""))
+    def apply(): JsExp with JsMember = apply(JsRaw(""))
   }
 
 }
@@ -705,10 +705,11 @@ object JqJsCmds {
     }
      */
 
-    val toJsCmd = fixHtmlCmdFunc("inline", html) { str =>
-      "jQuery.blockUI({ message: " + str +
-        (css.map(",  css: " + _.toJsCmd + " ").openOr("")) + "});"
-    }
+    val toJsCmd =
+      fixHtmlCmdFunc("inline", html) { str =>
+        "jQuery.blockUI({ message: " + str +
+          (css.map(",  css: " + _.toJsCmd + " ").openOr("")) + "});"
+      }
   }
 
   /**

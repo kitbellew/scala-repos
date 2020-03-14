@@ -151,12 +151,13 @@ trait AbstractExamples extends Specification {
 
   "Example which collects all integers and forms a new JSON" in {
     val json = parse(person)
-    val ints = json.fold(JNothing: JValue) { (a, v) =>
-      v match {
-        case x: JInt => a ++ x
-        case _       => a
+    val ints =
+      json.fold(JNothing: JValue) { (a, v) =>
+        v match {
+          case x: JInt => a ++ x
+          case _       => a
+        }
       }
-    }
     print(ints) mustEqual """[35,33]"""
   }
 
@@ -217,8 +218,7 @@ object Examples {
             ("name" -> "Marilyn") ~
               ("age" -> 33))))
 
-  val objArray =
-    """
+  val objArray = """
 { "name": "joe",
   "address": {
     "street": "Bulevard",

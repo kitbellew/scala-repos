@@ -70,8 +70,9 @@ private[spark] class BlockManager(
     extends BlockDataManager
     with Logging {
 
-  private[spark] val externalShuffleServiceEnabled =
-    conf.getBoolean("spark.shuffle.service.enabled", false)
+  private[spark] val externalShuffleServiceEnabled = conf.getBoolean(
+    "spark.shuffle.service.enabled",
+    false)
 
   val diskBlockManager = {
     // Only perform cleanup if an external service is not serving our shuffle files.
@@ -99,9 +100,10 @@ private[spark] class BlockManager(
   // Port used by the external shuffle service. In Yarn mode, this may be already be
   // set through the Hadoop configuration as the server is launched in the Yarn NM.
   private val externalShuffleServicePort = {
-    val tmpPort = Utils
-      .getSparkOrYarnConfig(conf, "spark.shuffle.service.port", "7337")
-      .toInt
+    val tmpPort =
+      Utils
+        .getSparkOrYarnConfig(conf, "spark.shuffle.service.port", "7337")
+        .toInt
     if (tmpPort == 0) {
       // for testing, we set "spark.shuffle.service.port" to 0 in the yarn config, so yarn finds
       // an open port.  But we still need to tell our spark apps the right port to use.  So
@@ -120,31 +122,37 @@ private[spark] class BlockManager(
 
   // Client to read other executors' shuffle files. This is either an external service, or just the
   // standard BlockTransferService to directly connect to other Executors.
-  private[spark] val shuffleClient = if (externalShuffleServiceEnabled) {
-    val transConf =
-      SparkTransportConf.fromSparkConf(conf, "shuffle", numUsableCores)
-    new ExternalShuffleClient(
-      transConf,
-      securityManager,
-      securityManager.isAuthenticationEnabled(),
-      securityManager.isSaslEncryptionEnabled())
-  } else {
-    blockTransferService
-  }
+  private[spark] val shuffleClient =
+    if (externalShuffleServiceEnabled) {
+      val transConf = SparkTransportConf.fromSparkConf(
+        conf,
+        "shuffle",
+        numUsableCores)
+      new ExternalShuffleClient(
+        transConf,
+        securityManager,
+        securityManager.isAuthenticationEnabled(),
+        securityManager.isSaslEncryptionEnabled())
+    } else {
+      blockTransferService
+    }
 
   // Whether to compress broadcast variables that are stored
-  private val compressBroadcast =
-    conf.getBoolean("spark.broadcast.compress", true)
+  private val compressBroadcast = conf.getBoolean(
+    "spark.broadcast.compress",
+    true)
   // Whether to compress shuffle output that are stored
   private val compressShuffle = conf.getBoolean("spark.shuffle.compress", true)
   // Whether to compress RDD partitions that are stored serialized
   private val compressRdds = conf.getBoolean("spark.rdd.compress", false)
   // Whether to compress shuffle output temporarily spilled to disk
-  private val compressShuffleSpill =
-    conf.getBoolean("spark.shuffle.spill.compress", true)
+  private val compressShuffleSpill = conf.getBoolean(
+    "spark.shuffle.spill.compress",
+    true)
   // Max number of failures before this block manager refreshes the block locations from the driver
-  private val maxFailuresBeforeLocationRefresh =
-    conf.getInt("spark.block.failures.beforeLocationRefresh", 5)
+  private val maxFailuresBeforeLocationRefresh = conf.getInt(
+    "spark.block.failures.beforeLocationRefresh",
+    5)
 
   private val slaveEndpoint = rpcEnv.setupEndpoint(
     "BlockManagerEndpoint" + BlockManager.ID_GENERATOR.next,
@@ -165,8 +173,8 @@ private[spark] class BlockManager(
    * program could be using a user-defined codec in a third party jar, which is loaded in
    * Executor.updateDependencies. When the BlockManager is initialized, user level jars hasn't been
    * loaded yet. */
-  private lazy val compressionCodec: CompressionCodec =
-    CompressionCodec.createCodec(conf)
+  private lazy val compressionCodec: CompressionCodec = CompressionCodec
+    .createCodec(conf)
 
   /**
     * Initializes the BlockManager with the given appId. This is not performed in the constructor as
@@ -186,15 +194,16 @@ private[spark] class BlockManager(
       blockTransferService.hostName,
       blockTransferService.port)
 
-    shuffleServerId = if (externalShuffleServiceEnabled) {
-      logInfo(s"external shuffle service port = $externalShuffleServicePort")
-      BlockManagerId(
-        executorId,
-        blockTransferService.hostName,
-        externalShuffleServicePort)
-    } else {
-      blockManagerId
-    }
+    shuffleServerId =
+      if (externalShuffleServiceEnabled) {
+        logInfo(s"external shuffle service port = $externalShuffleServicePort")
+        BlockManagerId(
+          executorId,
+          blockTransferService.hostName,
+          externalShuffleServicePort)
+      } else {
+        blockManagerId
+      }
 
     master.registerBlockManager(blockManagerId, maxMemory, slaveEndpoint)
 
@@ -206,10 +215,11 @@ private[spark] class BlockManager(
 
   private def registerWithExternalShuffleServer() {
     logInfo("Registering executor with local external shuffle service.")
-    val shuffleConfig = new ExecutorShuffleInfo(
-      diskBlockManager.localDirs.map(_.toString),
-      diskBlockManager.subDirsPerLocalDir,
-      shuffleManager.shortName)
+    val shuffleConfig =
+      new ExecutorShuffleInfo(
+        diskBlockManager.localDirs.map(_.toString),
+        diskBlockManager.subDirsPerLocalDir,
+        shuffleManager.shortName)
 
     val MAX_ATTEMPTS = 3
     val SLEEP_TIME_SECS = 5
@@ -276,14 +286,15 @@ private[spark] class BlockManager(
   private def asyncReregister(): Unit = {
     asyncReregisterLock.synchronized {
       if (asyncReregisterTask == null) {
-        asyncReregisterTask = Future[Unit] {
-          // This is a blocking action and should run in futureExecutionContext which is a cached
-          // thread pool
-          reregister()
-          asyncReregisterLock.synchronized {
-            asyncReregisterTask = null
-          }
-        }(futureExecutionContext)
+        asyncReregisterTask =
+          Future[Unit] {
+            // This is a blocking action and should run in futureExecutionContext which is a cached
+            // thread pool
+            reregister()
+            asyncReregisterLock.synchronized {
+              asyncReregisterTask = null
+            }
+          }(futureExecutionContext)
       }
     }
   }
@@ -433,8 +444,11 @@ private[spark] class BlockManager(
               level.replication
             else
               1
-          val storageLevel =
-            StorageLevel(onDisk, inMem, deserialized, replication)
+          val storageLevel = StorageLevel(
+            onDisk,
+            inMem,
+            deserialized,
+            replication)
           val memSize =
             if (inMem)
               memoryStore.getSize(blockId)
@@ -476,13 +490,15 @@ private[spark] class BlockManager(
         val level = info.level
         logDebug(s"Level for block $blockId is $level")
         if (level.useMemory && memoryStore.contains(blockId)) {
-          val iter: Iterator[Any] = if (level.deserialized) {
-            memoryStore.getValues(blockId).get
-          } else {
-            dataDeserialize(blockId, memoryStore.getBytes(blockId).get)
-          }
-          val ci =
-            CompletionIterator[Any, Iterator[Any]](iter, releaseLock(blockId))
+          val iter: Iterator[Any] =
+            if (level.deserialized) {
+              memoryStore.getValues(blockId).get
+            } else {
+              dataDeserialize(blockId, memoryStore.getBytes(blockId).get)
+            }
+          val ci = CompletionIterator[Any, Iterator[Any]](
+            iter,
+            releaseLock(blockId))
           Some(new BlockResult(ci, DataReadMethod.Memory, info.size))
         } else if (level.useDisk && diskStore.contains(blockId)) {
           val iterToReturn: Iterator[Any] = {
@@ -789,8 +805,9 @@ private[spark] class BlockManager(
       serializerInstance: SerializerInstance,
       bufferSize: Int,
       writeMetrics: ShuffleWriteMetrics): DiskBlockObjectWriter = {
-    val compressStream: OutputStream => OutputStream =
-      wrapForCompression(blockId, _)
+    val compressStream: OutputStream => OutputStream = wrapForCompression(
+      blockId,
+      _)
     val syncWrites = conf.getBoolean("spark.shuffle.sync", false)
     new DiskBlockObjectWriter(
       file,
@@ -841,34 +858,36 @@ private[spark] class BlockManager(
       val startTimeMs = System.currentTimeMillis
       // Since we're storing bytes, initiate the replication before storing them locally.
       // This is faster as data is already serialized and ready to send.
-      val replicationFuture = if (level.replication > 1) {
-        Future {
-          // This is a blocking action and should run in futureExecutionContext which is a cached
-          // thread pool
-          replicate(blockId, bytes, level)
-        }(futureExecutionContext)
-      } else {
-        null
-      }
+      val replicationFuture =
+        if (level.replication > 1) {
+          Future {
+            // This is a blocking action and should run in futureExecutionContext which is a cached
+            // thread pool
+            replicate(blockId, bytes, level)
+          }(futureExecutionContext)
+        } else {
+          null
+        }
 
       val size = bytes.size
 
       if (level.useMemory) {
         // Put it in memory first, even if it also has useDisk set to true;
         // We will drop it to disk later if the memory store can't hold it.
-        val putSucceeded = if (level.deserialized) {
-          val values = dataDeserialize(blockId, bytes)
-          memoryStore.putIterator(blockId, values, level) match {
-            case Right(_)   => true
-            case Left(iter) =>
-              // If putting deserialized values in memory failed, we will put the bytes directly to
-              // disk, so we don't need this iterator and can close it to free resources earlier.
-              iter.close()
-              false
+        val putSucceeded =
+          if (level.deserialized) {
+            val values = dataDeserialize(blockId, bytes)
+            memoryStore.putIterator(blockId, values, level) match {
+              case Right(_)   => true
+              case Left(iter) =>
+                // If putting deserialized values in memory failed, we will put the bytes directly to
+                // disk, so we don't need this iterator and can close it to free resources earlier.
+                iter.close()
+                false
+            }
+          } else {
+            memoryStore.putBytes(blockId, size, () => bytes)
           }
-        } else {
-          memoryStore.putBytes(blockId, size, () => bytes)
-        }
         if (!putSucceeded && level.useDisk) {
           logWarning(s"Persisting block $blockId to disk instead.")
           diskStore.putBytes(blockId, bytes)
@@ -1141,8 +1160,10 @@ private[spark] class BlockManager(
     */
   private def getPeers(forceFetch: Boolean): Seq[BlockManagerId] = {
     peerFetchLock.synchronized {
-      val cachedPeersTtl =
-        conf.getInt("spark.storage.cachedPeersTtl", 60 * 1000) // milliseconds
+      val cachedPeersTtl = conf.getInt(
+        "spark.storage.cachedPeersTtl",
+        60 * 1000
+      ) // milliseconds
       val timeout =
         System.currentTimeMillis - lastPeerFetchTime > cachedPeersTtl
       if (cachedPeers == null || forceFetch || timeout) {
@@ -1163,14 +1184,18 @@ private[spark] class BlockManager(
       blockId: BlockId,
       data: ChunkedByteBuffer,
       level: StorageLevel): Unit = {
-    val maxReplicationFailures =
-      conf.getInt("spark.storage.maxReplicationFailures", 1)
+    val maxReplicationFailures = conf.getInt(
+      "spark.storage.maxReplicationFailures",
+      1)
     val numPeersToReplicateTo = level.replication - 1
     val peersForReplication = new ArrayBuffer[BlockManagerId]
     val peersReplicatedTo = new ArrayBuffer[BlockManagerId]
     val peersFailedToReplicateTo = new ArrayBuffer[BlockManagerId]
-    val tLevel =
-      StorageLevel(level.useDisk, level.useMemory, level.deserialized, 1)
+    val tLevel = StorageLevel(
+      level.useDisk,
+      level.useMemory,
+      level.deserialized,
+      1)
     val startTime = System.currentTimeMillis
     val random = new Random(blockId.hashCode)
 
@@ -1349,8 +1374,9 @@ private[spark] class BlockManager(
   def removeRdd(rddId: Int): Int = {
     // TODO: Avoid a linear scan by creating another mapping of RDD.id to blocks.
     logInfo(s"Removing RDD $rddId")
-    val blocksToRemove =
-      blockInfoManager.entries.flatMap(_._1.asRDDId).filter(_.rddId == rddId)
+    val blocksToRemove = blockInfoManager.entries
+      .flatMap(_._1.asRDDId)
+      .filter(_.rddId == rddId)
     blocksToRemove.foreach { blockId =>
       removeBlock(blockId, tellMaster = false)
     }
@@ -1445,8 +1471,8 @@ private[spark] class BlockManager(
   def dataSerialize(
       blockId: BlockId,
       values: Iterator[Any]): ChunkedByteBuffer = {
-    val byteArrayChunkOutputStream = new ByteArrayChunkOutputStream(
-      1024 * 1024 * 4)
+    val byteArrayChunkOutputStream =
+      new ByteArrayChunkOutputStream(1024 * 1024 * 4)
     dataSerializeStream(blockId, byteArrayChunkOutputStream, values)
     new ChunkedByteBuffer(
       byteArrayChunkOutputStream.toArrays.map(ByteBuffer.wrap))

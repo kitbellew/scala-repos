@@ -35,8 +35,8 @@ class CleanMacrosheetAction() extends AnAction with TopComponentAction {
   def actionPerformed(e: AnActionEvent) {
     val editor: Editor =
       FileEditorManager.getInstance(e.getProject).getSelectedTextEditor
-    val file: VirtualFile =
-      CommonDataKeys.VIRTUAL_FILE.getData(e.getDataContext)
+    val file: VirtualFile = CommonDataKeys.VIRTUAL_FILE.getData(
+      e.getDataContext)
 
     if (editor == null || file == null)
       return

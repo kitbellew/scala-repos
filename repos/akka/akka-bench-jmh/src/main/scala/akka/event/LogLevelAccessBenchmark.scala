@@ -24,32 +24,30 @@ class LogLevelAccessBenchmark {
     a.e.LogLevelAccessBenchmark.g:writeLogLevel_2        thrpt        60     1245.023       51.071   ops/ms
    */
 
-  val NoopBus = new LoggingBus {
-    override def subscribe(subscriber: Subscriber, to: Classifier): Boolean =
-      true
-    override def publish(event: Event): Unit = ()
-    override def unsubscribe(
-        subscriber: Subscriber,
-        from: Classifier): Boolean = true
-    override def unsubscribe(subscriber: Subscriber): Unit = ()
-  }
+  val NoopBus =
+    new LoggingBus {
+      override def subscribe(subscriber: Subscriber, to: Classifier): Boolean =
+        true
+      override def publish(event: Event): Unit = ()
+      override def unsubscribe(
+          subscriber: Subscriber,
+          from: Classifier): Boolean = true
+      override def unsubscribe(subscriber: Subscriber): Unit = ()
+    }
 
   var log: BusLogging = akka.event.Logging(NoopBus, "").asInstanceOf[BusLogging]
 
   @Benchmark
   @GroupThreads(20)
   @Group("g")
-  def readLogLevel(): LogLevel =
-    log.bus.logLevel
+  def readLogLevel(): LogLevel = log.bus.logLevel
 
   @Benchmark
   @Group("g")
-  def setLogLevel_1(): Unit =
-    log.bus.setLogLevel(Logging.ErrorLevel)
+  def setLogLevel_1(): Unit = log.bus.setLogLevel(Logging.ErrorLevel)
 
   @Benchmark
   @Group("g")
-  def setLogLevel_2(): Unit =
-    log.bus.setLogLevel(Logging.DebugLevel)
+  def setLogLevel_2(): Unit = log.bus.setLogLevel(Logging.DebugLevel)
 
 }

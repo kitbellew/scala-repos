@@ -149,8 +149,9 @@ abstract class BaseYarnClusterSuite
         "client"
       else
         "cluster"
-    val propsFile =
-      createConfFile(extraClassPath = extraClassPath, extraConf = extraConf)
+    val propsFile = createConfFile(
+      extraClassPath = extraClassPath,
+      extraConf = extraConf)
     val env =
       Map("YARN_CONF_DIR" -> hadoopConfDir.getAbsolutePath()) ++ extraEnv
 
@@ -255,9 +256,10 @@ abstract class BaseYarnClusterSuite
     }
 
     val propsFile = File.createTempFile("spark", ".properties", tempDir)
-    val writer = new OutputStreamWriter(
-      new FileOutputStream(propsFile),
-      StandardCharsets.UTF_8)
+    val writer =
+      new OutputStreamWriter(
+        new FileOutputStream(propsFile),
+        StandardCharsets.UTF_8)
     props.store(writer, "Spark properties.")
     writer.close()
     propsFile.getAbsolutePath()

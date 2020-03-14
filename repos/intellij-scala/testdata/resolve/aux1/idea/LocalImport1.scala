@@ -7,11 +7,12 @@ abstract class Specification {
 trait SpecificationBuilder extends Specification
 
 abstract class Client {
-  val builder = new Specification with SpecificationBuilder {
-    type Den = String
-    val popa = 56
-    class Yole
-  }
+  val builder =
+    new Specification with SpecificationBuilder {
+      type Den = String
+      val popa = 56
+      class Yole
+    }
   import builder._
 
   // Class in named element

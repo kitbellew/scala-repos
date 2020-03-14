@@ -145,8 +145,9 @@ class TaskTrackerImplTest
     taskCreationHandler.created(task2).futureValue
     taskCreationHandler.created(task3).futureValue
 
-    val testAppTasks =
-      call(taskTracker).map(_.marathonTask).map(TaskSerializer.fromProto(_))
+    val testAppTasks = call(taskTracker)
+      .map(_.marathonTask)
+      .map(TaskSerializer.fromProto(_))
 
     shouldContainTask(testAppTasks.toSet, task1)
     shouldContainTask(testAppTasks.toSet, task2)
@@ -199,8 +200,9 @@ class TaskTrackerImplTest
     stateShouldContainKey(state, sampleTask.taskId)
 
     // TASK STATUS UPDATE
-    val startingTaskStatus =
-      makeTaskStatus(sampleTask.taskId, TaskState.TASK_STARTING)
+    val startingTaskStatus = makeTaskStatus(
+      sampleTask.taskId,
+      TaskState.TASK_STARTING)
 
     taskUpdater.statusUpdate(TEST_APP_NAME, startingTaskStatus).futureValue
 
@@ -211,8 +213,9 @@ class TaskTrackerImplTest
       .foreach(task => shouldHaveTaskStatus(task, startingTaskStatus))
 
     // TASK RUNNING
-    val runningTaskStatus: TaskStatus =
-      makeTaskStatus(sampleTask.taskId, TaskState.TASK_RUNNING)
+    val runningTaskStatus: TaskStatus = makeTaskStatus(
+      sampleTask.taskId,
+      TaskState.TASK_RUNNING)
 
     taskUpdater.statusUpdate(TEST_APP_NAME, runningTaskStatus).futureValue
 
@@ -223,8 +226,9 @@ class TaskTrackerImplTest
       .foreach(task => shouldHaveTaskStatus(task, runningTaskStatus))
 
     // TASK STILL RUNNING
-    val updatedRunningTaskStatus =
-      runningTaskStatus.toBuilder.setTimestamp(123).build()
+    val updatedRunningTaskStatus = runningTaskStatus.toBuilder
+      .setTimestamp(123)
+      .build()
     taskUpdater
       .statusUpdate(TEST_APP_NAME, updatedRunningTaskStatus)
       .futureValue
@@ -250,10 +254,11 @@ class TaskTrackerImplTest
     // ERRONEOUS MESSAGE, TASK DOES NOT EXIST ANYMORE
     val erroneousStatus = makeTaskStatus(sampleTask.taskId, TaskState.TASK_LOST)
 
-    val failure = taskUpdater
-      .statusUpdate(TEST_APP_NAME, erroneousStatus)
-      .failed
-      .futureValue
+    val failure =
+      taskUpdater
+        .statusUpdate(TEST_APP_NAME, erroneousStatus)
+        .failed
+        .futureValue
     assert(failure.getCause != null)
     assert(
       failure.getCause.getMessage.contains("does not exist"),
@@ -294,8 +299,9 @@ class TaskTrackerImplTest
     val sampleTask = makeSampleTask(TEST_APP_NAME)
 
     // don't call taskTracker.created, but directly running
-    val runningTaskStatus: TaskStatus =
-      makeTaskStatus(sampleTask.taskId, TaskState.TASK_RUNNING)
+    val runningTaskStatus: TaskStatus = makeTaskStatus(
+      sampleTask.taskId,
+      TaskState.TASK_RUNNING)
     val res = taskUpdater.statusUpdate(TEST_APP_NAME, runningTaskStatus)
     ScalaFutures.whenReady(res.failed) { e =>
       assert(

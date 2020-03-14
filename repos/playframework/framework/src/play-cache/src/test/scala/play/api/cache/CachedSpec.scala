@@ -60,23 +60,25 @@ class CachedSpec extends PlaySpecification {
       import net.sf.ehcache.store.MemoryStoreEvictionPolicy
       // FIXME: Do this properly
       val cacheManager = app.injector.instanceOf[CacheManager]
-      val diskEhcache = new Cache(
-        new CacheConfiguration("disk", 30)
-          .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-          .eternal(false)
-          .timeToLiveSeconds(60)
-          .timeToIdleSeconds(30)
-          .diskExpiryThreadIntervalSeconds(0)
-          .persistence(new PersistenceConfiguration()
-            .strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
+      val diskEhcache =
+        new Cache(
+          new CacheConfiguration("disk", 30)
+            .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+            .eternal(false)
+            .timeToLiveSeconds(60)
+            .timeToIdleSeconds(30)
+            .diskExpiryThreadIntervalSeconds(0)
+            .persistence(new PersistenceConfiguration()
+              .strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
       cacheManager.addCache(diskEhcache)
       val diskEhcache2 = cacheManager.getCache("disk")
       assert(diskEhcache2 != null)
       val diskCache = new EhCacheApi(diskEhcache2)
       val diskCached = new Cached(diskCache)
       val invoked = new AtomicInteger()
-      val action = diskCached(_ => "foo")(
-        Action(Results.Ok("" + invoked.incrementAndGet())))
+      val action =
+        diskCached(_ => "foo")(
+          Action(Results.Ok("" + invoked.incrementAndGet())))
       val result1 = action(FakeRequest()).run()
       contentAsString(result1) must_== "1"
       invoked.get() must_== 1
@@ -92,9 +94,10 @@ class CachedSpec extends PlaySpecification {
 
     "cache values using Application's Cached" in new WithApplication() {
       val invoked = new AtomicInteger()
-      val action = Cached(_ => "foo") {
-        (Action(Results.Ok("" + invoked.incrementAndGet())))
-      }
+      val action =
+        Cached(_ => "foo") {
+          (Action(Results.Ok("" + invoked.incrementAndGet())))
+        }
       val result1 = action(FakeRequest()).run()
       contentAsString(result1) must_== "1"
       invoked.get() must_== 1
@@ -117,8 +120,8 @@ class CachedSpec extends PlaySpecification {
       invoked.get() must_== 1
       val etag = header(ETAG, result1)
       etag must beSome(matching("""([wW]/)?"([^"]|\\")*"""")) //"""
-      val result2 =
-        action(FakeRequest().withHeaders(IF_NONE_MATCH -> etag.get)).run()
+      val result2 = action(FakeRequest().withHeaders(IF_NONE_MATCH -> etag.get))
+        .run()
       status(result2) must_== NOT_MODIFIED
       invoked.get() must_== 1
     }
@@ -130,8 +133,8 @@ class CachedSpec extends PlaySpecification {
       val result1 = action(FakeRequest()).run()
       status(result1) must_== 200
       invoked.get() must_== 1
-      val result2 =
-        action(FakeRequest().withHeaders(IF_NONE_MATCH -> "*")).run()
+      val result2 = action(FakeRequest().withHeaders(IF_NONE_MATCH -> "*"))
+        .run()
       status(result2) must_== NOT_MODIFIED
       invoked.get() must_== 1
     }

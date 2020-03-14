@@ -55,8 +55,10 @@ object ScalaDSL {
       if (isUnhandled(behv))
         Unhandled
       else if (isAlive(behv)) {
-        val next =
-          canonicalize(ctx.asInstanceOf[ActorContext[T]], behv, behavior)
+        val next = canonicalize(
+          ctx.asInstanceOf[ActorContext[T]],
+          behv,
+          behavior)
         if (next eq behavior)
           Same
         else

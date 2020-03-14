@@ -3,7 +3,8 @@ object Outer {
     type Xyz
   }
 
-  type TypeInner = Inner {
-    type Xyz = Int
-  }
+  type TypeInner =
+    Inner {
+      type Xyz = Int
+    }
 }

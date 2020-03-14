@@ -60,9 +60,8 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
           .orc(partitionDir.toString)
       }
 
-      val dataSchemaWithPartition =
-        StructType(
-          dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
+      val dataSchemaWithPartition = StructType(
+        dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
         hiveContext.read
@@ -105,12 +104,14 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
       // Check if this is compressed as ZLIB.
       val conf = sparkContext.hadoopConfiguration
       val fs = FileSystem.getLocal(conf)
-      val maybeOrcFile =
-        new File(path).listFiles().find(_.getName.endsWith(".zlib.orc"))
+      val maybeOrcFile = new File(path)
+        .listFiles()
+        .find(_.getName.endsWith(".zlib.orc"))
       assert(maybeOrcFile.isDefined)
       val orcFilePath = new Path(maybeOrcFile.get.toPath.toString)
-      val orcReader =
-        OrcFile.createReader(orcFilePath, OrcFile.readerOptions(conf))
+      val orcReader = OrcFile.createReader(
+        orcFilePath,
+        OrcFile.readerOptions(conf))
       assert(orcReader.getCompression == CompressionKind.ZLIB)
 
       val copyDf = sqlContext.read

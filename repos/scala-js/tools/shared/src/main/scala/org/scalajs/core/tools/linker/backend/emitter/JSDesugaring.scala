@@ -171,8 +171,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     // TODO Get rid of this when we break backward binary compatibility
     private lazy val hasNewRuntimeLong = {
-      val rtLongClass =
-        classEmitter.linkedClassByName(LongImpl.RuntimeLongClass)
+      val rtLongClass = classEmitter.linkedClassByName(
+        LongImpl.RuntimeLongClass)
       rtLongClass.memberMethods.exists { linkedMethod =>
         linkedMethod.tree.name.name == LongImpl.initFromParts
       }
@@ -248,12 +248,14 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         else
           Return(body)
 
-      val translateRestParam = outputMode match {
-        case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
-          params.nonEmpty && params.last.rest
-        case _ =>
-          false
-      }
+      val translateRestParam =
+        outputMode match {
+          case OutputMode.ECMAScript51Global |
+              OutputMode.ECMAScript51Isolated =>
+            params.nonEmpty && params.last.rest
+          case _ =>
+            false
+        }
 
       val extractRestParam =
         if (translateRestParam)
@@ -267,10 +269,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
          else
            params).map(transformParamDef)
 
-      val newBody = transformStat(withReturn)(env) match {
-        case js.Block(stats :+ js.Return(js.Undefined())) => js.Block(stats)
-        case other                                        => other
-      }
+      val newBody =
+        transformStat(withReturn)(env) match {
+          case js.Block(stats :+ js.Return(js.Undefined())) => js.Block(stats)
+          case other                                        => other
+        }
 
       js.Function(newParams, js.Block(extractRestParam, newBody))
     }
@@ -486,52 +489,54 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               }
             }
 
-            val fieldDefs = for {
-              field @ FieldDef(name, ftpe, mutable) <- linkedClass.fields
-            } yield {
-              implicit val pos = field.pos
-              /* Here, a naive translation would emit something like this:
-               *
-               *   this["field"] = 0;
-               *
-               * However, this won't work if we override a getter from the
-               * superclass with a val in this class, because the assignment
-               * would try to set the property which has a getter but no
-               * setter.
-               * Instead, we must force the creation of a field on the object,
-               * irrespective of the presence of a getter/setter in the
-               * prototype chain. This is why we use `defineProperties`:
-               *
-               *   Object.defineProperties(this, { "field": {
-               *     "configurable": true,
-               *     "enumerable": true,
-               *     "writable": true,
-               *     "value": 0
-               *   } });
-               *
-               * which has all the same semantics as the assignment, except
-               * it disregards the prototype chain.
-               */
-              val defineProperties = {
-                genIdentBracketSelect(
-                  genIdentBracketSelect(envField("g"), "Object"),
-                  "defineProperties")
+            val fieldDefs =
+              for {
+                field @ FieldDef(name, ftpe, mutable) <- linkedClass.fields
+              } yield {
+                implicit val pos = field.pos
+                /* Here, a naive translation would emit something like this:
+                 *
+                 *   this["field"] = 0;
+                 *
+                 * However, this won't work if we override a getter from the
+                 * superclass with a val in this class, because the assignment
+                 * would try to set the property which has a getter but no
+                 * setter.
+                 * Instead, we must force the creation of a field on the object,
+                 * irrespective of the presence of a getter/setter in the
+                 * prototype chain. This is why we use `defineProperties`:
+                 *
+                 *   Object.defineProperties(this, { "field": {
+                 *     "configurable": true,
+                 *     "enumerable": true,
+                 *     "writable": true,
+                 *     "value": 0
+                 *   } });
+                 *
+                 * which has all the same semantics as the assignment, except
+                 * it disregards the prototype chain.
+                 */
+                val defineProperties = {
+                  genIdentBracketSelect(
+                    genIdentBracketSelect(envField("g"), "Object"),
+                    "defineProperties")
+                }
+                val transformedName =
+                  name match {
+                    case name: Ident      => transformIdent(name)
+                    case StringLiteral(s) => js.StringLiteral(s)
+                  }
+                val descriptor = js.ObjectConstr(
+                  List(
+                    js.StringLiteral("configurable") -> js.BooleanLiteral(true),
+                    js.StringLiteral("enumerable") -> js.BooleanLiteral(true),
+                    js.StringLiteral("writable") -> js.BooleanLiteral(true),
+                    js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
+                  ))
+                val descriptors = js.ObjectConstr(
+                  List(transformedName -> descriptor))
+                js.Apply(defineProperties, List(js.This(), descriptors))
               }
-              val transformedName = name match {
-                case name: Ident      => transformIdent(name)
-                case StringLiteral(s) => js.StringLiteral(s)
-              }
-              val descriptor = js.ObjectConstr(
-                List(
-                  js.StringLiteral("configurable") -> js.BooleanLiteral(true),
-                  js.StringLiteral("enumerable") -> js.BooleanLiteral(true),
-                  js.StringLiteral("writable") -> js.BooleanLiteral(true),
-                  js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
-                ))
-              val descriptors =
-                js.ObjectConstr(List(transformedName -> descriptor))
-              js.Apply(defineProperties, List(js.This(), descriptors))
-            }
 
             js.Block(superCtorCall :: fieldDefs)
           }
@@ -623,10 +628,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       */
     def unnestOrSpread(args: List[Tree])(
         makeStat: (List[Tree], Env) => js.Tree)(implicit env: Env): js.Tree = {
-      val (argsNoSpread, argsWereSpread) = args.map {
-        case JSSpread(items) => (items, true)
-        case arg             => (arg, false)
-      }.unzip
+      val (argsNoSpread, argsWereSpread) =
+        args.map {
+          case JSSpread(items) => (items, true)
+          case arg             => (arg, false)
+        }.unzip
 
       unnest(argsNoSpread) { (newArgsNoSpread, env) =>
         val newArgs = newArgsNoSpread.zip(argsWereSpread).map {
@@ -950,14 +956,15 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       implicit val pos = rhs.pos
       tpe match {
         case RecordType(fields) =>
-          val elems = (rhs: @unchecked) match {
-            case RecordValue(_, elems) =>
-              elems
-            case VarRef(rhsIdent) =>
-              for (RecordType.Field(fName, fOrigName, fTpe, _) <- fields)
-                yield VarRef(makeRecordFieldIdent(rhsIdent, fName, fOrigName))(
-                  fTpe)
-          }
+          val elems =
+            (rhs: @unchecked) match {
+              case RecordValue(_, elems) =>
+                elems
+              case VarRef(rhsIdent) =>
+                for (RecordType.Field(fName, fOrigName, fTpe, _) <- fields)
+                  yield VarRef(
+                    makeRecordFieldIdent(rhsIdent, fName, fOrigName))(fTpe)
+            }
           js.Block(for {
             (
               RecordType.Field(fName, fOrigName, fTpe, fMutable),
@@ -996,12 +1003,17 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       lhs.tpe match {
         case RecordType(fields) =>
           val VarRef(ident) = lhs
-          val elems = (rhs: @unchecked) match {
-            case VarRef(rhsIdent) =>
-              for (RecordType.Field(fName, fOrigName, fTpe, fMutable) <- fields)
-                yield VarRef(makeRecordFieldIdent(rhsIdent, fName, fOrigName))(
-                  fTpe)
-          }
+          val elems =
+            (rhs: @unchecked) match {
+              case VarRef(rhsIdent) =>
+                for (RecordType.Field(
+                       fName,
+                       fOrigName,
+                       fTpe,
+                       fMutable) <- fields)
+                  yield VarRef(
+                    makeRecordFieldIdent(rhsIdent, fName, fOrigName))(fTpe)
+            }
           js.Block(for {
             (
               RecordType.Field(fName, fOrigName, fTpe, fMutable),
@@ -1166,8 +1178,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
           case Try(block, errVar, handler, finalizer) =>
             extractLet { newLhs =>
-              val newBlock =
-                pushLhsInto(newLhs, block)
+              val newBlock = pushLhsInto(newLhs, block)
               val newHandler =
                 if (handler == EmptyTree)
                   js.EmptyTree
@@ -1407,8 +1418,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case JSSuperBracketCall(cls, receiver, method, args) =>
             val superClass = getSuperClassOfJSClass(
               classEmitter.linkedClassByName(cls.className))
-            val superCtor =
-              LoadJSConstructor(ClassType(superClass.encodedName))
+            val superCtor = LoadJSConstructor(ClassType(superClass.encodedName))
 
             redo {
               JSBracketMethodApply(
@@ -1475,25 +1485,27 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 AnyType,
                 mutable = false,
                 JSObjectConstr(Nil))
-              val assignFields = fields
-                .foldRight((Set.empty[String], List.empty[Tree])) {
-                  case ((prop, value), (namesSeen, statsAcc)) =>
-                    implicit val pos = value.pos
-                    val name = prop.name
-                    val stat = prop match {
-                      case _ if namesSeen.contains(name) =>
-                        /* Important: do not emit the assignment, otherwise
-                         * Closure recreates a literal with the duplicate field!
-                         */
-                        value
-                      case prop: Ident =>
-                        Assign(JSDotSelect(objVarDef.ref, prop), value)
-                      case prop: StringLiteral =>
-                        Assign(JSBracketSelect(objVarDef.ref, prop), value)
-                    }
-                    (namesSeen + name, stat :: statsAcc)
-                }
-                ._2
+              val assignFields =
+                fields
+                  .foldRight((Set.empty[String], List.empty[Tree])) {
+                    case ((prop, value), (namesSeen, statsAcc)) =>
+                      implicit val pos = value.pos
+                      val name = prop.name
+                      val stat =
+                        prop match {
+                          case _ if namesSeen.contains(name) =>
+                            /* Important: do not emit the assignment, otherwise
+                             * Closure recreates a literal with the duplicate field!
+                             */
+                            value
+                          case prop: Ident =>
+                            Assign(JSDotSelect(objVarDef.ref, prop), value)
+                          case prop: StringLiteral =>
+                            Assign(JSBracketSelect(objVarDef.ref, prop), value)
+                        }
+                      (namesSeen + name, stat :: statsAcc)
+                  }
+                  ._2
               redo {
                 Block(objVarDef :: assignFields ::: objVarDef.ref :: Nil)
               }
@@ -1693,19 +1705,20 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         case BinaryOp(op, lhs, rhs) =>
           import BinaryOp._
-          val lhs1 = lhs match {
-            case UnaryOp(UnaryOp.DoubleToInt, inner)
-                if op == Int_& || op == Int_<< =>
-              /* This case is emitted typically by conversions from
-               * Float/Double to Char/Byte/Short. We have to introduce an
-               * (int) cast in the IR so that it typechecks, but in JavaScript
-               * this is redundant because & and << already convert both their
-               * operands to ints. So we get rid of the conversion here.
-               */
-              inner
-            case _ =>
-              lhs
-          }
+          val lhs1 =
+            lhs match {
+              case UnaryOp(UnaryOp.DoubleToInt, inner)
+                  if op == Int_& || op == Int_<< =>
+                /* This case is emitted typically by conversions from
+                 * Float/Double to Char/Byte/Short. We have to introduce an
+                 * (int) cast in the IR so that it typechecks, but in JavaScript
+                 * this is redundant because & and << already convert both their
+                 * operands to ints. So we get rid of the conversion here.
+                 */
+                inner
+              case _ =>
+                lhs
+            }
 
           val newLhs = transformExpr(lhs1)
           val newRhs = transformExpr(rhs)
@@ -1917,12 +1930,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
            * methods of `window`).
            */
           val transformedFun = transformExpr(fun)
-          val protectedFun = transformedFun match {
-            case _: js.DotSelect | _: js.BracketSelect =>
-              js.Block(js.IntLiteral(0), transformedFun)
-            case _ =>
-              transformedFun
-          }
+          val protectedFun =
+            transformedFun match {
+              case _: js.DotSelect | _: js.BracketSelect =>
+                js.Block(js.IntLiteral(0), transformedFun)
+              case _ =>
+                transformedFun
+            }
           js.Apply(protectedFun, args map transformExpr)
 
         case JSDotMethodApply(receiver, method, args) =>
@@ -2019,12 +2033,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           }
 
         case Closure(captureParams, params, body, captureValues) =>
-          val innerFunction =
-            desugarToFunction(
-              params,
-              body,
-              isStat = false,
-              Env.empty.withParams(captureParams ++ params))
+          val innerFunction = desugarToFunction(
+            params,
+            body,
+            isStat = false,
+            Env.empty.withParams(captureParams ++ params))
 
           if (captureParams.isEmpty) {
             innerFunction
@@ -2204,13 +2217,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
   private[emitter] def genIsInstanceOf(expr: js.Tree, cls: ReferenceType)(
       implicit
       outputMode: OutputMode,
-      pos: Position): js.Tree =
-    genIsAsInstanceOf(expr, cls, test = true)
+      pos: Position): js.Tree = genIsAsInstanceOf(expr, cls, test = true)
 
   private def genAsInstanceOf(expr: js.Tree, cls: ReferenceType)(implicit
       outputMode: OutputMode,
-      pos: Position): js.Tree =
-    genIsAsInstanceOf(expr, cls, test = false)
+      pos: Position): js.Tree = genIsAsInstanceOf(expr, cls, test = false)
 
   private def genIsAsInstanceOf(
       expr: js.Tree,
@@ -2283,8 +2294,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
   private[emitter] def encodeClassVar(className: String)(implicit
       outputMode: OutputMode,
-      pos: Position): js.Tree =
-    envField("c", className)
+      pos: Position): js.Tree = envField("c", className)
 
   private[emitter] def genRawJSClassConstructor(linkedClass: LinkedClass)(
       implicit

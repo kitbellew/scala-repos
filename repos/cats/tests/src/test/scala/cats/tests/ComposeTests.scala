@@ -26,8 +26,8 @@ class ComposeTests extends CatsSuite {
     implicit val alternativeListVector
         : Alternative[Lambda[A => List[Vector[A]]]] =
       Alternative[List] compose Alternative[Vector]
-    implicit val iso =
-      CartesianTests.Isomorphisms.invariant[Lambda[A => List[Vector[A]]]]
+    implicit val iso = CartesianTests.Isomorphisms
+      .invariant[Lambda[A => List[Vector[A]]]]
 
     checkAll(
       "Alternative[Lambda[A => List[Vector[A]]]]",
@@ -40,8 +40,8 @@ class ComposeTests extends CatsSuite {
     implicit val applicativeListVector
         : Applicative[Lambda[A => List[Vector[A]]]] =
       Applicative[List] compose Applicative[Vector]
-    implicit val iso =
-      CartesianTests.Isomorphisms.invariant[Lambda[A => List[Vector[A]]]]
+    implicit val iso = CartesianTests.Isomorphisms
+      .invariant[Lambda[A => List[Vector[A]]]]
 
     checkAll(
       "Applicative[Lambda[A => List[Vector[A]]]]",
@@ -88,8 +88,8 @@ class ComposeTests extends CatsSuite {
     // SemigroupK composition
 
     implicit val semigroupKListVector
-        : SemigroupK[Lambda[A => List[Vector[A]]]] =
-      SemigroupK[List].composeK[Vector]
+        : SemigroupK[Lambda[A => List[Vector[A]]]] = SemigroupK[List]
+      .composeK[Vector]
 
     checkAll(
       "SemigroupK[Lambda[A => List[Vector[A]]]]",

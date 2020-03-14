@@ -15,8 +15,7 @@ object Graphing {
     def genx(x: Interval[Double]): Interval[Double] =
       Interval.point(r ** 2) - x ** 2
 
-    def geny(y: Interval[Double]): Interval[Double] =
-      y ** 2
+    def geny(y: Interval[Double]): Interval[Double] = y ** 2
 
     for (iy <- -10 to 10) {
       for (ix <- -10 to 10) {

@@ -78,11 +78,10 @@ class RuntimeNameActorSystemActivatorTest
 
   import ActorSystemActivatorTest._
 
-  val testBundles: immutable.Seq[BundleDescriptor] =
-    buildTestBundles(
-      List(
-        bundle(TEST_BUNDLE_NAME).withActivator(
-          classOf[RuntimeNameActorSystemActivator])))
+  val testBundles: immutable.Seq[BundleDescriptor] = buildTestBundles(
+    List(
+      bundle(TEST_BUNDLE_NAME).withActivator(
+        classOf[RuntimeNameActorSystemActivator])))
 
   "RuntimeNameActorSystemActivator" must {
 

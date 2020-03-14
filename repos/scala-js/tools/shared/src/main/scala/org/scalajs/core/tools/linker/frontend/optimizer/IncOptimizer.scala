@@ -78,12 +78,12 @@ final class IncOptimizer(
   private class SeqInterfaceType(encName: String)
       extends InterfaceType(encName) {
     private val ancestorsAskers = mutable.Set.empty[MethodImpl]
-    private val dynamicCallers =
-      mutable.Map.empty[String, mutable.Set[MethodImpl]]
-    private val staticCallers =
-      mutable.Map.empty[String, mutable.Set[MethodImpl]]
-    private val callersOfStatic =
-      mutable.Map.empty[String, mutable.Set[MethodImpl]]
+    private val dynamicCallers = mutable.Map
+      .empty[String, mutable.Set[MethodImpl]]
+    private val staticCallers = mutable.Map
+      .empty[String, mutable.Set[MethodImpl]]
+    private val callersOfStatic = mutable.Map
+      .empty[String, mutable.Set[MethodImpl]]
 
     private var _ancestors: List[String] = encodedName :: Nil
 
@@ -91,8 +91,7 @@ final class IncOptimizer(
 
     def instantiatedSubclasses: Iterable[Class] = _instantiatedSubclasses
 
-    def addInstantiatedSubclass(x: Class): Unit =
-      _instantiatedSubclasses += x
+    def addInstantiatedSubclass(x: Class): Unit = _instantiatedSubclasses += x
 
     def removeInstantiatedSubclass(x: Class): Unit =
       _instantiatedSubclasses -= x
@@ -107,8 +106,7 @@ final class IncOptimizer(
       }
     }
 
-    def registerAskAncestors(asker: MethodImpl): Unit =
-      ancestorsAskers += asker
+    def registerAskAncestors(asker: MethodImpl): Unit = ancestorsAskers += asker
 
     def registerDynamicCaller(methodName: String, caller: MethodImpl): Unit =
       dynamicCallers.getOrElseUpdate(methodName, mutable.Set.empty) += caller
@@ -141,11 +139,9 @@ final class IncOptimizer(
 
     private val bodyAskers = mutable.Set.empty[MethodImpl]
 
-    def registerBodyAsker(asker: MethodImpl): Unit =
-      bodyAskers += asker
+    def registerBodyAsker(asker: MethodImpl): Unit = bodyAskers += asker
 
-    def unregisterDependee(dependee: MethodImpl): Unit =
-      bodyAskers -= dependee
+    def unregisterDependee(dependee: MethodImpl): Unit = bodyAskers -= dependee
 
     def tagBodyAskers(): Unit = {
       bodyAskers.foreach(_.tag())

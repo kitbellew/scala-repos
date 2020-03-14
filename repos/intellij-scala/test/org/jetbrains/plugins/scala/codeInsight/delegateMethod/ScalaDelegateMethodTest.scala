@@ -31,8 +31,7 @@ class ScalaDelegateMethodTest
   }
 
   def testVal() {
-    val text =
-      """class D {
+    val text = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -40,8 +39,7 @@ class ScalaDelegateMethodTest
         |  val d = new D
         |  <caret>
         |}"""
-    val resultText =
-      """class D {
+    val resultText = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -54,8 +52,7 @@ class ScalaDelegateMethodTest
   }
 
   def testVar() {
-    val text =
-      """class D {
+    val text = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -63,8 +60,7 @@ class ScalaDelegateMethodTest
         |  var d = new D
         |  <caret>
         |}"""
-    val resultText =
-      """class D {
+    val resultText = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -77,8 +73,7 @@ class ScalaDelegateMethodTest
   }
 
   def testDefParameterless() {
-    val text =
-      """class D {
+    val text = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -86,8 +81,7 @@ class ScalaDelegateMethodTest
         |  def d = new D
         |  <caret>
         |}"""
-    val resultText =
-      """class D {
+    val resultText = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -100,8 +94,7 @@ class ScalaDelegateMethodTest
   }
 
   def testDefEmptyParen() {
-    val text =
-      """class D {
+    val text = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -109,8 +102,7 @@ class ScalaDelegateMethodTest
         |  def d() = new D
         |  <caret>
         |}"""
-    val resultText =
-      """class D {
+    val resultText = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -123,8 +115,7 @@ class ScalaDelegateMethodTest
   }
 
   def testDelegateCompoundType() {
-    val text =
-      """trait DT {
+    val text = """trait DT {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -134,8 +125,7 @@ class ScalaDelegateMethodTest
         |  val d = new DC with DT
         |  <caret>
         |}"""
-    val resultText =
-      """trait DT {
+    val resultText = """trait DT {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -150,8 +140,7 @@ class ScalaDelegateMethodTest
   }
 
   def testTargetFromBaseClass() {
-    val text =
-      """class Base {
+    val text = """class Base {
         |  val d = new D()
         |}
         |
@@ -162,8 +151,7 @@ class ScalaDelegateMethodTest
         |class A extends Base {
         |  <caret>
         |}"""
-    val result =
-      """class Base {
+    val result = """class Base {
         |  val d = new D()
         |}
         |
@@ -178,8 +166,7 @@ class ScalaDelegateMethodTest
   }
 
   def testPrivateFromBaseClass() {
-    val text =
-      """class Base {
+    val text = """class Base {
         |  private val d = new D()
         |}
         |
@@ -206,8 +193,7 @@ class ScalaDelegateMethodTest
   }
 
   def testOverride() {
-    val text =
-      """trait DT {
+    val text = """trait DT {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -217,8 +203,7 @@ class ScalaDelegateMethodTest
         |  val d = new DC
         |  <caret>
         |}"""
-    val result =
-      """trait DT {
+    val result = """trait DT {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -233,8 +218,7 @@ class ScalaDelegateMethodTest
   }
 
   def testInInner() {
-    val text =
-      """class D {
+    val text = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -244,8 +228,7 @@ class ScalaDelegateMethodTest
         |    <caret>
         |  }
         |}"""
-    val result =
-      """class D {
+    val result = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -259,8 +242,7 @@ class ScalaDelegateMethodTest
   }
 
   def testInInner2() = {
-    val text =
-      """class D {
+    val text = """class D {
         |  def foo(x: Int): Int = x
         |}
         |
@@ -283,8 +265,7 @@ class ScalaDelegateMethodTest
   }
 
   def testMultipleParamList() {
-    val text =
-      """class D {
+    val text = """class D {
         |  def foo(x: Int)(y: Int): Int = x
         |}
         |
@@ -292,8 +273,7 @@ class ScalaDelegateMethodTest
         |  val d = new D()
         |  <caret>
         |}"""
-    val result =
-      """class D {
+    val result = """class D {
         |  def foo(x: Int)(y: Int): Int = x
         |}
         |
@@ -306,8 +286,7 @@ class ScalaDelegateMethodTest
   }
 
   def testGenericDelegate() {
-    val text =
-      """class D[T] {
+    val text = """class D[T] {
         |  def foo(x: T): T = x
         |}
         |
@@ -315,8 +294,7 @@ class ScalaDelegateMethodTest
         |  val d = new D[Int]()
         |  <caret>
         |}"""
-    val result =
-      """class D[T] {
+    val result = """class D[T] {
         |  def foo(x: T): T = x
         |}
         |
@@ -329,8 +307,7 @@ class ScalaDelegateMethodTest
   }
 
   def testMethodCallNeedTypeParam() {
-    val text =
-      """class D[T] {
+    val text = """class D[T] {
         |  def foo[S <: T](x: T): T = x
         |}
         |
@@ -338,8 +315,7 @@ class ScalaDelegateMethodTest
         |  val d = new D[AnyRef]()
         |  <caret>
         |}"""
-    val result =
-      """class D[T] {
+    val result = """class D[T] {
         |  def foo[S <: T](x: T): T = x
         |}
         |
@@ -352,8 +328,7 @@ class ScalaDelegateMethodTest
   }
 
   def testNeedTypeParamWithoutRetType() {
-    val text =
-      """class D[T] {
+    val text = """class D[T] {
         |  def foo[S >: AnyRef](x: T): S = null
         |}
         |
@@ -361,8 +336,7 @@ class ScalaDelegateMethodTest
         |  val d = new D[Int]()
         |  <caret>
         |}"""
-    val result =
-      """class D[T] {
+    val result = """class D[T] {
         |  def foo[S >: AnyRef](x: T): S = null
         |}
         |
@@ -375,8 +349,7 @@ class ScalaDelegateMethodTest
   }
 
   def testNoTypeParamWithReturn() {
-    val text =
-      """class D[T] {
+    val text = """class D[T] {
         |  def foo[S >: AnyRef](x: T): S = null
         |}
         |
@@ -384,8 +357,7 @@ class ScalaDelegateMethodTest
         |  val d = new D[Int]()
         |  <caret>
         |}"""
-    val result =
-      """class D[T] {
+    val result = """class D[T] {
         |  def foo[S >: AnyRef](x: T): S = null
         |}
         |

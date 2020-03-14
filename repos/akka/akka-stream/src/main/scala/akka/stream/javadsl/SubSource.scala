@@ -43,8 +43,7 @@ class SubSource[+Out, +Mat](
     *
     * This is identical in effect to `mergeSubstreamsWithParallelism(Integer.MAX_VALUE)`.
     */
-  def mergeSubstreams(): Source[Out, Mat] =
-    new Source(delegate.mergeSubstreams)
+  def mergeSubstreams(): Source[Out, Mat] = new Source(delegate.mergeSubstreams)
 
   /**
     * Flatten the sub-flows back into the super-source by performing a merge
@@ -443,8 +442,7 @@ class SubSource[+Out, +Mat](
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-      : SubSource[Out, Mat] =
-    new SubSource(delegate.reduce(f.apply))
+      : SubSource[Out, Mat] = new SubSource(delegate.reduce(f.apply))
 
   /**
     * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
@@ -541,8 +539,7 @@ class SubSource[+Out, +Mat](
     *
     * '''Cancels when''' downstream cancels
     */
-  def drop(n: Long): SubSource[Out, Mat] =
-    new SubSource(delegate.drop(n))
+  def drop(n: Long): SubSource[Out, Mat] = new SubSource(delegate.drop(n))
 
   /**
     * Discard the elements received within the given duration at beginning of the stream.
@@ -680,8 +677,7 @@ class SubSource[+Out, +Mat](
     *
     * '''Cancels when''' the defined number of elements has been taken or downstream cancels
     */
-  def take(n: Long): SubSource[Out, Mat] =
-    new SubSource(delegate.take(n))
+  def take(n: Long): SubSource[Out, Mat] = new SubSource(delegate.take(n))
 
   /**
     * Terminate processing (and cancel the upstream publisher) after the given
@@ -933,8 +929,7 @@ class SubSource[+Out, +Mat](
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : SubSource[T, Mat] =
-    new SubSource(delegate.flatMapConcat(x ⇒ f(x)))
+      : SubSource[T, Mat] = new SubSource(delegate.flatMapConcat(x ⇒ f(x)))
 
   /**
     * Transform each input element into a `Source` of output elements that is
@@ -1296,8 +1291,7 @@ class SubSource[+Out, +Mat](
   /**
     * Put an asynchronous boundary around this `SubSource`
     */
-  def async: SubSource[Out, Mat] =
-    new SubSource(delegate.async)
+  def async: SubSource[Out, Mat] = new SubSource(delegate.async)
 
   /**
     * Logs elements flowing through the stream as well as completion and erroring.

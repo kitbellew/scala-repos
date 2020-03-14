@@ -5,9 +5,10 @@ import scala.tools.reflect.ToolBox
 
 object Test extends App {
   val code = reify {
-    val (x, y) = "abc" match {
-      case x => (x, x)
-    }
+    val (x, y) =
+      "abc" match {
+        case x => (x, x)
+      }
     (x, y)
   };
 

@@ -45,8 +45,8 @@ abstract class AkkaIdentityProcessorVerification[T](
   /** By default Akka Publishers do not support Fanout! */
   override def maxSupportedSubscribers: Long = 1L
 
-  override lazy val publisherExecutorService: ExecutorService =
-    Executors.newFixedThreadPool(3)
+  override lazy val publisherExecutorService: ExecutorService = Executors
+    .newFixedThreadPool(3)
 
   @AfterClass
   def shutdownPublisherExecutorService(): Unit = {

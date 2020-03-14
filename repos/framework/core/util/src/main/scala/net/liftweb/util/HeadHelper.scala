@@ -43,15 +43,17 @@ object HeadHelper {
     var hrefs: Set[String] = Set()
 
     Text("\n\t") ++ (in flatMap { e =>
-      val src = e.attributes("src") match {
-        case null => null
-        case x    => x.text
-      }
+      val src =
+        e.attributes("src") match {
+          case null => null
+          case x    => x.text
+        }
 
-      val href = e.attributes("href") match {
-        case null => null
-        case x    => x.text
-      }
+      val href =
+        e.attributes("href") match {
+          case null => null
+          case x    => x.text
+        }
 
       e match {
         case e: Elem

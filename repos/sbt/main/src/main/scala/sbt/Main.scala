@@ -73,8 +73,8 @@ object StandardMain {
   }
 
   /** The common interface to standard output, used for all built-in ConsoleLoggers. */
-  val console =
-    ConsoleOut.systemOutOverwrite(ConsoleOut.overwriteContaining("Resolving "))
+  val console = ConsoleOut.systemOutOverwrite(
+    ConsoleOut.overwriteContaining("Resolving "))
 
   def initialGlobalLogging: GlobalLogging =
     GlobalLogging.initial(
@@ -88,8 +88,8 @@ object StandardMain {
       preCommands: Seq[String]): State = {
     import BasicCommandStrings.isEarlyCommand
     val userCommands = configuration.arguments.map(_.trim)
-    val (earlyCommands, normalCommands) =
-      (preCommands ++ userCommands).partition(isEarlyCommand)
+    val (earlyCommands, normalCommands) = (preCommands ++ userCommands)
+      .partition(isEarlyCommand)
     val commands = earlyCommands ++ normalCommands
     val initAttrs = BuiltinCommands.initialAttributes
     val s = State(
@@ -196,10 +196,11 @@ object BuiltinCommands {
   def aboutProject(s: State): String =
     if (Project.isProjectLoaded(s)) {
       val e = Project.extract(s)
-      val version = e.getOpt(Keys.version) match {
-        case None    => "";
-        case Some(v) => " " + v
-      }
+      val version =
+        e.getOpt(Keys.version) match {
+          case None    => "";
+          case Some(v) => " " + v
+        }
       val current = "The current project is " + Reference.display(
         e.currentRef) + version + "\n"
       val sc = aboutScala(s, e)
@@ -416,8 +417,9 @@ object BuiltinCommands {
     // Here, for correct behavior, we also need to re-inject a settings logger, as we'll be re-evaluating settings.
     val loggerInject = LogManager.settingsLogger(s)
     val withLogger = newSession.appendRaw(loggerInject :: Nil)
-    val newStructure = Load.reapply(withLogger.mergeSettings, structure)(
-      Project.showContextKey(newSession, structure))
+    val newStructure =
+      Load.reapply(withLogger.mergeSettings, structure)(
+        Project.showContextKey(newSession, structure))
     Project.setProject(newSession, newStructure, s)
   }
   def set =
@@ -431,13 +433,14 @@ object BuiltinCommands {
         // just ALL of them.
         val ims = (imports(extracted) ++ dslVals.imports.map(i => (i, -1)))
         val cl = dslVals.classloader(currentLoader)
-        val settings = EvaluateConfigurations.evaluateSetting(
-          session.currentEval(),
-          "<set>",
-          ims,
-          arg,
-          LineRange(0, 0)
-        )(cl)
+        val settings =
+          EvaluateConfigurations.evaluateSetting(
+            session.currentEval(),
+            "<set>",
+            ims,
+            arg,
+            LineRange(0, 0)
+          )(cl)
         val setResult =
           if (all)
             SettingCompletions.setAll(extracted, settings)
@@ -452,8 +455,7 @@ object BuiltinCommands {
       s: State,
       extracted: Extracted,
       settings: Seq[Def.Setting[_]],
-      arg: String) =
-    SettingCompletions.setThis(s, extracted, settings, arg)
+      arg: String) = SettingCompletions.setThis(s, extracted, settings, arg)
   def inspect =
     Command(InspectCommand, inspectBrief, inspectDetailed)(Inspect.parser) {
       case (s, (option, sk)) =>
@@ -508,13 +510,14 @@ object BuiltinCommands {
   val spacedKeyParser: State => Parser[Def.ScopedKey[_]] =
     Inspect.spacedKeyParser
 
-  val spacedAggregatedParser = (s: State) =>
-    Act.requireSession(s, token(Space) ~> Act.aggregatedKeyParser(s))
-  val aggregatedKeyValueParser: State => Parser[Option[AnyKeys]] = (s: State) =>
-    spacedAggregatedParser(s).map(x => Act.keyValues(s)(x)).?
+  val spacedAggregatedParser =
+    (s: State) =>
+      Act.requireSession(s, token(Space) ~> Act.aggregatedKeyParser(s))
+  val aggregatedKeyValueParser: State => Parser[Option[AnyKeys]] =
+    (s: State) => spacedAggregatedParser(s).map(x => Act.keyValues(s)(x)).?
 
-  val exportParser: State => Parser[() => State] = (s: State) =>
-    Act.requireSession(s, token(Space) ~> exportParser0(s))
+  val exportParser: State => Parser[() => State] =
+    (s: State) => Act.requireSession(s, token(Space) ~> exportParser0(s))
   private[sbt] def exportParser0(s: State): Parser[() => State] = {
     val extracted = Project extract s
     import extracted.{showKey, structure}
@@ -643,10 +646,11 @@ object BuiltinCommands {
       System.out.println(helpString)
       s
     }
-  val pluginParser: State => Parser[AutoPlugin] = s => {
-    val autoPlugins: Map[String, AutoPlugin] = PluginsDebug.autoPluginMap(s)
-    token(Space) ~> Act.knownPluginParser(autoPlugins, "plugin")
-  }
+  val pluginParser: State => Parser[AutoPlugin] =
+    s => {
+      val autoPlugins: Map[String, AutoPlugin] = PluginsDebug.autoPluginMap(s)
+      token(Space) ~> Act.knownPluginParser(autoPlugins, "plugin")
+    }
   def plugin =
     Command(PluginCommand)(pluginParser) { (s, plugin) =>
       val helpString = PluginsDebug.help(plugin, s)
@@ -704,9 +708,10 @@ object BuiltinCommands {
 
   @tailrec
   private[this] def doLoadFailed(s: State, loadArg: String): State = {
-    val result = (SimpleReader.readLine(
-      "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse Quit)
-      .toLowerCase(Locale.ENGLISH)
+    val result =
+      (SimpleReader.readLine(
+        "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse Quit)
+        .toLowerCase(Locale.ENGLISH)
     def matches(s: String) = !result.isEmpty && (s startsWith result)
 
     if (result.isEmpty || matches("retry"))

@@ -20,8 +20,8 @@ import scala.collection.mutable
   */
 trait ScControlFlowOwner extends ScalaPsiElement {
 
-  private val myControlFlowCache =
-    mutable.Map[ScControlFlowPolicy, ControlFlowCacheProvider]()
+  private val myControlFlowCache = mutable
+    .Map[ScControlFlowPolicy, ControlFlowCacheProvider]()
 
   private def buildControlFlow(
       policy: ScControlFlowPolicy = AllVariablesControlFlowPolicy) = {

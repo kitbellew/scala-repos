@@ -73,10 +73,11 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
     }
 
     if (lastParent != null) {
-      var run = lastParent match {
-        case element: ScalaPsiElement => element.getDeepSameElementInContext
-        case _                        => lastParent
-      }
+      var run =
+        lastParent match {
+          case element: ScalaPsiElement => element.getDeepSameElementInContext
+          case _                        => lastParent
+        }
       while (run != null) {
         ProgressManager.checkCanceled()
         place match {
@@ -97,8 +98,9 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
 
       //forward references are allowed (e.g. 2 local methods see each other)
       run = lastParent.getNextSibling
-      val forwardState =
-        state.put(BaseProcessor.FORWARD_REFERENCE_KEY, lang.Boolean.TRUE)
+      val forwardState = state.put(
+        BaseProcessor.FORWARD_REFERENCE_KEY,
+        lang.Boolean.TRUE)
       while (run != null) {
         ProgressManager.checkCanceled()
         if (!processElement(run, forwardState))

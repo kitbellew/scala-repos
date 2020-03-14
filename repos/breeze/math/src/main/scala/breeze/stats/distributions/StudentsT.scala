@@ -20,10 +20,11 @@ case class StudentsT(degreesOfFreedom: Double)(
     "degreesOfFreedom must be positive, but got " + degreesOfFreedom)
   override def toString: String = ScalaRunTime._toString(this)
 
-  private val innerInstance = new TDistribution(
-    randBasis.generator,
-    degreesOfFreedom,
-    TDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY)
+  private val innerInstance =
+    new TDistribution(
+      randBasis.generator,
+      degreesOfFreedom,
+      TDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY)
 
   def draw(): Double = {
     // TODO: for small DoF this seems a little wrong..., StudentsT is even worse though.

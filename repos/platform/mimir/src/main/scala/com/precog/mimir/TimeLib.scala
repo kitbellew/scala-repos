@@ -255,9 +255,10 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 Array(startCol.get, endCol.get, stepCol.get)
             }
 
-            val baseDefined = BitSetUtil.filteredRange(range.start, range.end) {
-              i => Column.isDefinedAtAll(rawCols, i)
-            }
+            val baseDefined =
+              BitSetUtil.filteredRange(range.start, range.end) { i =>
+                Column.isDefinedAtAll(rawCols, i)
+              }
 
             val definedRange = range.filter(baseDefined(_))
 
@@ -322,8 +323,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        Scan(source, scanner)
+          source: TransSpec[A]): TransSpec[A] = Scan(source, scanner)
     }
 
     trait ExtremeTime extends Op2F2 {

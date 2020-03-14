@@ -187,8 +187,8 @@ abstract class Delambdafy
         }
         val targetParams: List[Symbol] = target.paramss.head
         val numCaptures = targetParams.length - functionParamTypes.length
-        val (targetCaptureParams, targetFunctionParams) =
-          targetParams.splitAt(numCaptures)
+        val (targetCaptureParams, targetFunctionParams) = targetParams.splitAt(
+          numCaptures)
         val bridgeParams: List[Symbol] =
           targetCaptureParams.map(param =>
             methSym
@@ -213,28 +213,34 @@ abstract class Delambdafy
 
           oldClass.info.decls enter methSym
 
-          val body = localTyper.typedPos(originalFunction.pos) {
-            val newTarget = Select(gen.mkAttributedThis(oldClass), target)
-            val args: List[Tree] = mapWithIndex(bridgeParams) { (param, i) =>
-              if (i < numCaptures) {
-                gen.mkAttributedRef(param)
-              } else {
-                val functionParam = functionParamTypes(i - numCaptures)
-                val targetParam = targetParams(i)
-                if (enteringErasure(
-                      functionParam.typeSymbol.isDerivedValueClass)) {
-                  val casted = cast(gen.mkAttributedRef(param), functionParam)
-                  val unboxed = unbox(
-                    casted,
-                    ErasedValueType(functionParam.typeSymbol, targetParam.tpe))
-                    .modifyType(postErasure.elimErasedValueType)
-                  unboxed
-                } else
-                  adaptToType(gen.mkAttributedRef(param), targetParam.tpe)
-              }
+          val body =
+            localTyper.typedPos(originalFunction.pos) {
+              val newTarget = Select(gen.mkAttributedThis(oldClass), target)
+              val args: List[Tree] =
+                mapWithIndex(bridgeParams) { (param, i) =>
+                  if (i < numCaptures) {
+                    gen.mkAttributedRef(param)
+                  } else {
+                    val functionParam = functionParamTypes(i - numCaptures)
+                    val targetParam = targetParams(i)
+                    if (enteringErasure(
+                          functionParam.typeSymbol.isDerivedValueClass)) {
+                      val casted = cast(
+                        gen.mkAttributedRef(param),
+                        functionParam)
+                      val unboxed = unbox(
+                        casted,
+                        ErasedValueType(
+                          functionParam.typeSymbol,
+                          targetParam.tpe))
+                        .modifyType(postErasure.elimErasedValueType)
+                      unboxed
+                    } else
+                      adaptToType(gen.mkAttributedRef(param), targetParam.tpe)
+                  }
+                }
+              gen.mkMethodCall(newTarget, args)
             }
-            gen.mkMethodCall(newTarget, args)
-          }
           val body1 =
             if (enteringErasure(
                   functionResultType.typeSymbol.isDerivedValueClass))
@@ -264,9 +270,10 @@ abstract class Delambdafy
         val methSym = newClass.newMethod(nme.apply, fun.pos, FINAL | SYNTHETIC)
         val params = fun.vparams map (_.duplicate)
 
-        val paramSyms = map2(formals, params) { (tp, vparam) =>
-          methSym.newSyntheticValueParam(tp, vparam.name)
-        }
+        val paramSyms =
+          map2(formals, params) { (tp, vparam) =>
+            methSym.newSyntheticValueParam(tp, vparam.name)
+          }
         params zip paramSyms foreach {
           case (valdef, sym) => valdef.symbol = sym
         }
@@ -308,18 +315,21 @@ abstract class Delambdafy
       def createConstructor(newClass: Symbol, members: List[ValDef]): DefDef = {
         val constrSym = newClass.newConstructor(originalFunction.pos, SYNTHETIC)
 
-        val (paramSymbols, params, assigns) = (members map { member =>
-          val paramSymbol =
-            newClass.newVariable(member.symbol.name.toTermName, newClass.pos, 0)
-          paramSymbol.setInfo(member.symbol.info)
-          val paramVal = ValDef(paramSymbol)
-          val paramIdent = Ident(paramSymbol)
-          val assign = Assign(
-            Select(gen.mkAttributedThis(newClass), member.symbol),
-            paramIdent)
+        val (paramSymbols, params, assigns) =
+          (members map { member =>
+            val paramSymbol = newClass.newVariable(
+              member.symbol.name.toTermName,
+              newClass.pos,
+              0)
+            paramSymbol.setInfo(member.symbol.info)
+            val paramVal = ValDef(paramSymbol)
+            val paramIdent = Ident(paramSymbol)
+            val assign = Assign(
+              Select(gen.mkAttributedThis(newClass), member.symbol),
+              paramIdent)
 
-          (paramSymbol, paramVal, assign)
-        }).unzip3
+            (paramSymbol, paramVal, assign)
+          }).unzip3
 
         val constrType = MethodType(paramSymbols, newClass.thisType)
         constrSym setInfoAndEnter constrType
@@ -400,16 +410,18 @@ abstract class Delambdafy
           }
         }
 
-        val decapturify = new DeCapturifyTransformer(
-          captureProxies2,
-          unit,
-          oldClass,
-          lambdaClass,
-          originalFunction.symbol.pos,
-          thisProxy)
+        val decapturify =
+          new DeCapturifyTransformer(
+            captureProxies2,
+            unit,
+            oldClass,
+            lambdaClass,
+            originalFunction.symbol.pos,
+            thisProxy)
 
-        val decapturedFunction =
-          decapturify.transform(originalFunction).asInstanceOf[Function]
+        val decapturedFunction = decapturify
+          .transform(originalFunction)
+          .asInstanceOf[Function]
 
         val members =
           (optionSymbol(thisProxy).toList ++ (captureProxies2 map (_._2))) map {
@@ -424,11 +436,15 @@ abstract class Delambdafy
         val constr = createConstructor(lambdaClass, members)
 
         // apply method with same arguments and return type as original lambda.
-        val applyMethodDef =
-          createApplyMethod(lambdaClass, decapturedFunction, thisProxy)
+        val applyMethodDef = createApplyMethod(
+          lambdaClass,
+          decapturedFunction,
+          thisProxy)
 
-        val bridgeMethod =
-          createBridgeMethod(lambdaClass, originalFunction, applyMethodDef)
+        val bridgeMethod = createBridgeMethod(
+          lambdaClass,
+          originalFunction,
+          applyMethodDef)
 
         def fulldef(sym: Symbol) =
           if (sym == NoSymbol)
@@ -458,10 +474,11 @@ abstract class Delambdafy
             Nil
           else
             (gen.mkAttributedThis(oldClass) setPos originalFunction.pos) :: Nil
-        val captureArgs = captures.iterator
-          .map(capture =>
-            gen.mkAttributedRef(capture) setPos originalFunction.pos)
-          .toList
+        val captureArgs =
+          captures.iterator
+            .map(capture =>
+              gen.mkAttributedRef(capture) setPos originalFunction.pos)
+            .toList
         thisArg ::: captureArgs
       }
 
@@ -486,11 +503,13 @@ abstract class Delambdafy
         val boxedParamTypes = info.paramTypes.takeRight(arity).map(boxed)
         (boxedParamTypes, boxed(info.resultType))
       }
-      val functionType =
-        definitions.functionType(functionParamTypes, functionResultType)
+      val functionType = definitions.functionType(
+        functionParamTypes,
+        functionResultType)
 
-      val (functionalInterface, isSpecialized) =
-        java8CompatFunctionalInterface(target, functionType)
+      val (functionalInterface, isSpecialized) = java8CompatFunctionalInterface(
+        target,
+        functionType)
       if (functionalInterface.exists) {
         // Create a symbol representing a fictional lambda factory method that accepts the captured
         // arguments and returns a Function.
@@ -554,8 +573,9 @@ abstract class Delambdafy
         FINAL | SYNTHETIC | BRIDGE)
       val originalParams = applyMethod.vparamss(0)
       val bridgeParams = originalParams map { originalParam =>
-        val bridgeSym =
-          bridgeMethSym.newSyntheticValueParam(ObjectTpe, originalParam.name)
+        val bridgeSym = bridgeMethSym.newSyntheticValueParam(
+          ObjectTpe,
+          originalParam.name)
         ValDef(bridgeSym)
       }
 
@@ -574,9 +594,10 @@ abstract class Delambdafy
       def adaptAndPostErase(tree: Tree, pt: Type): (Boolean, Tree) = {
         val (needsAdapt, adaptedTree) = adapt(tree, pt)
         val trans = postErasure.newTransformer(unit)
-        val postErasedTree = trans.atOwner(currentOwner)(
-          trans.transform(adaptedTree)
-        ) // SI-8017 eliminates ErasedValueTypes
+        val postErasedTree =
+          trans.atOwner(currentOwner)(
+            trans.transform(adaptedTree)
+          ) // SI-8017 eliminates ErasedValueTypes
         (needsAdapt, postErasedTree)
       }
 
@@ -608,8 +629,9 @@ abstract class Delambdafy
             gen.mkAttributedThis(newClass),
             applyMethod.symbol),
           adaptedParams) setType resTp
-        val (needsReturnAdaptation, adaptedBody) =
-          adaptAndPostErase(body, ObjectTpe)
+        val (needsReturnAdaptation, adaptedBody) = adaptAndPostErase(
+          body,
+          ObjectTpe)
 
         val needsBridge =
           (paramNeedsAdaptation contains true) || needsReturnAdaptation
@@ -700,8 +722,9 @@ abstract class Delambdafy
     // the set of methods that refer to this
     val thisReferringMethods = mutable.Set[Symbol]()
     // the set of lifted lambda body methods that each method refers to
-    val liftedMethodReferences =
-      mutable.Map[Symbol, Set[Symbol]]().withDefault(_ => mutable.Set())
+    val liftedMethodReferences = mutable
+      .Map[Symbol, Set[Symbol]]()
+      .withDefault(_ => mutable.Set())
     override def traverse(tree: Tree) =
       tree match {
         case DefDef(_, _, _, _, _, _) =>
@@ -740,16 +763,18 @@ abstract class Delambdafy
       functionType: Type): (Symbol, Boolean) = {
     val sym = functionType.typeSymbol
     val pack = currentRun.runDefinitions.Scala_Java8_CompatPackage
-    val name1 =
-      specializeTypes.specializedFunctionName(sym, functionType.typeArgs)
+    val name1 = specializeTypes.specializedFunctionName(
+      sym,
+      functionType.typeArgs)
     val paramTps :+ restpe = functionType.typeArgs
     val arity = paramTps.length
     val isSpecialized = name1.toTypeName != sym.name
-    val functionalInterface = if (!isSpecialized) {
-      currentRun.runDefinitions.Scala_Java8_CompatPackage_JFunction(arity)
-    } else {
-      pack.info.decl(name1.toTypeName.prepend("J"))
-    }
+    val functionalInterface =
+      if (!isSpecialized) {
+        currentRun.runDefinitions.Scala_Java8_CompatPackage_JFunction(arity)
+      } else {
+        pack.info.decl(name1.toTypeName.prepend("J"))
+      }
     (functionalInterface, isSpecialized)
   }
 }

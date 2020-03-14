@@ -155,9 +155,10 @@ object Metric {
     Opportunism,
     Luck,
     Material)
-  val byKey = all map { p =>
-    (p.key, p)
-  } toMap
+  val byKey =
+    all map { p =>
+      (p.key, p)
+    } toMap
 
   def requiresAnalysis(m: Metric) =
     m match {

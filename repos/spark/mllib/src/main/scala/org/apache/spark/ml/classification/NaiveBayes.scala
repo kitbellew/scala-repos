@@ -43,11 +43,12 @@ private[ml] trait NaiveBayesParams extends PredictorParams {
     * (default = 1.0).
     * @group param
     */
-  final val smoothing: DoubleParam = new DoubleParam(
-    this,
-    "smoothing",
-    "The smoothing parameter.",
-    ParamValidators.gtEq(0))
+  final val smoothing: DoubleParam =
+    new DoubleParam(
+      this,
+      "smoothing",
+      "The smoothing parameter.",
+      ParamValidators.gtEq(0))
 
   /** @group getParam */
   final def getSmoothing: Double = $(smoothing)
@@ -58,12 +59,14 @@ private[ml] trait NaiveBayesParams extends PredictorParams {
     * (default = multinomial)
     * @group param
     */
-  final val modelType: Param[String] = new Param[String](
-    this,
-    "modelType",
-    "The model type " +
-      "which is a string (case-sensitive). Supported options: multinomial (default) and bernoulli.",
-    ParamValidators.inArray[String](OldNaiveBayes.supportedModelTypes.toArray))
+  final val modelType: Param[String] =
+    new Param[String](
+      this,
+      "modelType",
+      "The model type " +
+        "which is a string (case-sensitive). Supported options: multinomial (default) and bernoulli.",
+      ParamValidators.inArray[String](
+        OldNaiveBayes.supportedModelTypes.toArray))
 
   /** @group getParam */
   final def getModelType: String = $(modelType)
@@ -150,21 +153,23 @@ class NaiveBayesModel private[ml] (
     * This precomputes log(1.0 - exp(theta)) and its sum which are used for the linear algebra
     * application of this condition (in predict function).
     */
-  private lazy val (thetaMinusNegTheta, negThetaSum) = $(modelType) match {
-    case Multinomial => (None, None)
-    case Bernoulli =>
-      val negTheta = theta.map(value => math.log(1.0 - math.exp(value)))
-      val ones = new DenseVector(Array.fill(theta.numCols) {
-        1.0
-      })
-      val thetaMinusNegTheta = theta.map { value =>
-        value - math.log(1.0 - math.exp(value))
-      }
-      (Option(thetaMinusNegTheta), Option(negTheta.multiply(ones)))
-    case _ =>
-      // This should never happen.
-      throw new UnknownError(s"Invalid modelType: ${$(modelType)}.")
-  }
+  private lazy val (thetaMinusNegTheta, negThetaSum) =
+    $(modelType) match {
+      case Multinomial => (None, None)
+      case Bernoulli =>
+        val negTheta = theta.map(value => math.log(1.0 - math.exp(value)))
+        val ones =
+          new DenseVector(Array.fill(theta.numCols) {
+            1.0
+          })
+        val thetaMinusNegTheta = theta.map { value =>
+          value - math.log(1.0 - math.exp(value))
+        }
+        (Option(thetaMinusNegTheta), Option(negTheta.multiply(ones)))
+      case _ =>
+        // This should never happen.
+        throw new UnknownError(s"Invalid modelType: ${$(modelType)}.")
+    }
 
   @Since("1.6.0")
   override val numFeatures: Int = theta.numCols
@@ -257,11 +262,12 @@ object NaiveBayesModel extends MLReadable[NaiveBayesModel] {
         Identifiable.randomUID("nb")
     val labels = Vectors.dense(oldModel.labels)
     val pi = Vectors.dense(oldModel.pi)
-    val theta = new DenseMatrix(
-      oldModel.labels.length,
-      oldModel.theta(0).length,
-      oldModel.theta.flatten,
-      true)
+    val theta =
+      new DenseMatrix(
+        oldModel.labels.length,
+        oldModel.theta(0).length,
+        oldModel.theta.flatten,
+        true)
     new NaiveBayesModel(uid, pi, theta)
   }
 

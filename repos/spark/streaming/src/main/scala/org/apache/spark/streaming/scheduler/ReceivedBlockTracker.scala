@@ -118,9 +118,10 @@ private[streaming] class ReceivedBlockTracker(
   def allocateBlocksToBatch(batchTime: Time): Unit =
     synchronized {
       if (lastAllocatedBatchTime == null || batchTime > lastAllocatedBatchTime) {
-        val streamIdToBlocks = streamIds.map { streamId =>
-          (streamId, getReceivedBlockQueue(streamId).dequeueAll(x => true))
-        }.toMap
+        val streamIdToBlocks =
+          streamIds.map { streamId =>
+            (streamId, getReceivedBlockQueue(streamId).dequeueAll(x => true))
+          }.toMap
         val allocatedBlocks = AllocatedBlocks(streamIdToBlocks)
         if (writeToLog(BatchAllocationEvent(batchTime, allocatedBlocks))) {
           timeToAllocatedBlocks.put(batchTime, allocatedBlocks)
@@ -191,9 +192,10 @@ private[streaming] class ReceivedBlockTracker(
       waitForCompletion: Boolean): Unit =
     synchronized {
       require(cleanupThreshTime.milliseconds < clock.getTimeMillis())
-      val timesToCleanup = timeToAllocatedBlocks.keys.filter {
-        _ < cleanupThreshTime
-      }.toSeq
+      val timesToCleanup =
+        timeToAllocatedBlocks.keys.filter {
+          _ < cleanupThreshTime
+        }.toSeq
       logInfo(s"Deleting batches: ${timesToCleanup.mkString(" ")}")
       if (writeToLog(BatchCleanupEvent(timesToCleanup))) {
         timeToAllocatedBlocks --= timesToCleanup
@@ -296,8 +298,8 @@ private[streaming] class ReceivedBlockTracker(
   /** Optionally create the write ahead log manager only if the feature is enabled */
   private def createWriteAheadLog(): Option[WriteAheadLog] = {
     checkpointDirOption.map { checkpointDir =>
-      val logDir =
-        ReceivedBlockTracker.checkpointDirToLogDir(checkpointDirOption.get)
+      val logDir = ReceivedBlockTracker.checkpointDirToLogDir(
+        checkpointDirOption.get)
       WriteAheadLogUtils.createLogForDriver(conf, logDir, hadoopConf)
     }
   }

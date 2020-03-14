@@ -53,9 +53,10 @@ private case class ScalaSdkData(
       val fileName = name.replaceAll("\\W", "_")
       suggestLibraryFile(fileName, context)
     }
-    val componentElement = <component name="libraryTable"> {
-      library
-    } </component>
+    val componentElement =
+      <component name="libraryTable"> {
+        library
+      } </component>
     Files.write(formatXml(componentElement).getBytes, file)
     file
   }
@@ -153,8 +154,8 @@ private object ScalaSdkData {
   }
 
   def languageLevelFrom(compilerClasspath: Seq[String]): String = {
-    val compilerJarVersions =
-      compilerClasspath.flatMap(path => versionOf(new File(path)).toSeq)
+    val compilerJarVersions = compilerClasspath.flatMap(path =>
+      versionOf(new File(path)).toSeq)
 
     compilerJarVersions.headOption
       .flatMap(languageLevelFrom)

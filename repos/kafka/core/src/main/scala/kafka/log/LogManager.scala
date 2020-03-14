@@ -67,10 +67,11 @@ class LogManager(
 
   createAndValidateLogDirs(logDirs)
   private val dirLocks = lockLogDirs(logDirs)
-  private val recoveryPointCheckpoints = logDirs
-    .map(dir =>
-      (dir, new OffsetCheckpoint(new File(dir, RecoveryPointCheckpointFile))))
-    .toMap
+  private val recoveryPointCheckpoints =
+    logDirs
+      .map(dir =>
+        (dir, new OffsetCheckpoint(new File(dir, RecoveryPointCheckpointFile))))
+      .toMap
   loadLogs()
 
   // public, so we can access this from kafka.admin.DeleteTopicTest
@@ -158,30 +159,32 @@ class LogManager(
         }
       }
 
-      val jobsForDir = for {
-        dirContent <- Option(dir.listFiles).toList
-        logDir <- dirContent if logDir.isDirectory
-      } yield {
-        CoreUtils.runnable {
-          debug("Loading log '" + logDir.getName + "'")
+      val jobsForDir =
+        for {
+          dirContent <- Option(dir.listFiles).toList
+          logDir <- dirContent if logDir.isDirectory
+        } yield {
+          CoreUtils.runnable {
+            debug("Loading log '" + logDir.getName + "'")
 
-          val topicPartition = Log.parseTopicPartitionName(logDir)
-          val config =
-            topicConfigs.getOrElse(topicPartition.topic, defaultConfig)
-          val logRecoveryPoint = recoveryPoints.getOrElse(topicPartition, 0L)
+            val topicPartition = Log.parseTopicPartitionName(logDir)
+            val config = topicConfigs.getOrElse(
+              topicPartition.topic,
+              defaultConfig)
+            val logRecoveryPoint = recoveryPoints.getOrElse(topicPartition, 0L)
 
-          val current =
-            new Log(logDir, config, logRecoveryPoint, scheduler, time)
-          val previous = this.logs.put(topicPartition, current)
+            val current =
+              new Log(logDir, config, logRecoveryPoint, scheduler, time)
+            val previous = this.logs.put(topicPartition, current)
 
-          if (previous != null) {
-            throw new IllegalArgumentException(
-              "Duplicate log directories found: %s, %s!".format(
-                current.dir.getAbsolutePath,
-                previous.dir.getAbsolutePath))
+            if (previous != null) {
+              throw new IllegalArgumentException(
+                "Duplicate log directories found: %s, %s!".format(
+                  current.dir.getAbsolutePath,
+                  previous.dir.getAbsolutePath))
+            }
           }
         }
-      }
 
       jobs(cleanShutdownFile) = jobsForDir.map(pool.submit).toSeq
     }
@@ -399,9 +402,10 @@ class LogManager(
 
       // if not, create it
       val dataDir = nextLogDir()
-      val dir = new File(
-        dataDir,
-        topicAndPartition.topic + "-" + topicAndPartition.partition)
+      val dir =
+        new File(
+          dataDir,
+          topicAndPartition.topic + "-" + topicAndPartition.partition)
       dir.mkdirs()
       log = new Log(dir, config, recoveryPoint = 0L, scheduler, time)
       logs.put(topicAndPartition, log)

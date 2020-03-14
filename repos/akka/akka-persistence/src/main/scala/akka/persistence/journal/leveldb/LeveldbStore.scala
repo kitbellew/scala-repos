@@ -33,8 +33,9 @@ private[persistence] trait LeveldbStore
   val leveldbOptions = new Options().createIfMissing(true)
   def leveldbReadOptions =
     new ReadOptions().verifyChecksums(config.getBoolean("checksum"))
-  val leveldbWriteOptions =
-    new WriteOptions().sync(config.getBoolean("fsync")).snapshot(false)
+  val leveldbWriteOptions = new WriteOptions()
+    .sync(config.getBoolean("fsync"))
+    .snapshot(false)
   val leveldbDir = new File(config.getString("dir"))
   var leveldb: DB = _
 
@@ -71,11 +72,12 @@ private[persistence] trait LeveldbStore
             Try {
               a.payload.foreach {
                 p ⇒
-                  val (p2, tags) = p.payload match {
-                    case Tagged(payload, tags) ⇒
-                      (p.withPayload(payload), tags)
-                    case _ ⇒ (p, Set.empty[String])
-                  }
+                  val (p2, tags) =
+                    p.payload match {
+                      case Tagged(payload, tags) ⇒
+                        (p.withPayload(payload), tags)
+                      case _ ⇒ (p, Set.empty[String])
+                    }
                   if (tags.nonEmpty && hasTagSubscribers)
                     allTags = allTags union tags
 
@@ -180,19 +182,18 @@ private[persistence] trait LeveldbStore
   }
 
   private def nextTagSequenceNr(tag: String): Long = {
-    val n = tagSequenceNr.get(tag) match {
-      case Some(n) ⇒ n
-      case None ⇒ readHighestSequenceNr(tagNumericId(tag))
-    }
+    val n =
+      tagSequenceNr.get(tag) match {
+        case Some(n) ⇒ n
+        case None ⇒ readHighestSequenceNr(tagNumericId(tag))
+      }
     tagSequenceNr = tagSequenceNr.updated(tag, n + 1)
     n + 1
   }
 
-  def tagNumericId(tag: String): Int =
-    numericId(tagAsPersistenceId(tag))
+  def tagNumericId(tag: String): Int = numericId(tagAsPersistenceId(tag))
 
-  def tagAsPersistenceId(tag: String): String =
-    tagPersistenceIdPrefix + tag
+  def tagAsPersistenceId(tag: String): String = tagPersistenceIdPrefix + tag
 
   override def preStart() {
     leveldb = leveldbFactory.open(

@@ -34,8 +34,9 @@ sealed abstract class HList extends Product {
   type Drop[N <: Nat] = N#Fold[HList, TailOf, Self]
 
   /** Get the type of the Nth element of this HList */
-  type Apply[N <: Nat] =
-    HeadOf[Drop[N]] // should be Drop[N]#Head (work-around for SI-5294)
+  type Apply[N <: Nat] = HeadOf[
+    Drop[N]
+  ] // should be Drop[N]#Head (work-around for SI-5294)
   /** Get the Nat type of the length of this HList */
   type Length = Fold[Nat, IncrementForFold, Nat._0]
 
@@ -187,10 +188,11 @@ final object HListMacros {
     val _Zero = reify(Zero).tree
     n.tree match {
       case t @ Literal(Constant(v: Int)) =>
-        val tt = (1 to v).foldLeft[Tree](SingletonTypeTree(_Zero)) {
-          case (z, _) =>
-            AppliedTypeTree(Ident(_Succ), List(z))
-        }
+        val tt =
+          (1 to v).foldLeft[Tree](SingletonTypeTree(_Zero)) {
+            case (z, _) =>
+              AppliedTypeTree(Ident(_Succ), List(z))
+          }
         ctx.Expr(
           Apply(
             TypeApply(
@@ -211,8 +213,9 @@ final class HCons[@specialized +H, +T <: HList](val head: H, val tail: T)
   type Self = HCons[H @uv, T @uv]
   type Head = H @uv
   type Tail = T @uv
-  type Fold[U, F[_ <: HList, _ <: U] <: U, Z <: U] =
-    F[Self @uv, (T @uv)#Fold[U, F, Z]]
+  type Fold[U, F[_ <: HList, _ <: U] <: U, Z <: U] = F[
+    Self @uv,
+    (T @uv)#Fold[U, F, Z]]
 
   def self = this
   def fold[U, F[_ <: HList, _ <: U] <: U, Z <: U](

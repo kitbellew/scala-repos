@@ -13,22 +13,24 @@ final class Env(
     lightUser: String => Option[lila.common.LightUser],
     db: lila.db.Env) {
 
-  private val settings = new {
-    val CollectionPerfStat = config getString "collection.perf_stat"
-  }
+  private val settings =
+    new {
+      val CollectionPerfStat = config getString "collection.perf_stat"
+    }
   import settings._
 
   lazy val storage = new PerfStatStorage(coll = db(CollectionPerfStat))
 
-  lazy val indexer = new PerfStatIndexer(
-    storage = storage,
-    sequencer = system.actorOf(
-      Props(
-        classOf[lila.hub.Sequencer],
-        None,
-        None,
-        lila.log("perfStat")
-      )))
+  lazy val indexer =
+    new PerfStatIndexer(
+      storage = storage,
+      sequencer = system.actorOf(
+        Props(
+          classOf[lila.hub.Sequencer],
+          None,
+          None,
+          lila.log("perfStat")
+        )))
 
   lazy val jsonView = new JsonView(lightUser)
 

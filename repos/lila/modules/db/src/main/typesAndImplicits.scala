@@ -26,8 +26,8 @@ trait Types {
 
 trait Implicits extends Types {
 
-  implicit val LilaBSONDocumentZero: Zero[BSONDocument] =
-    Zero.instance(BSONDocument())
+  implicit val LilaBSONDocumentZero: Zero[BSONDocument] = Zero.instance(
+    BSONDocument())
 
   implicit def docId[ID](doc: Identified[ID]): ID = doc.id
 

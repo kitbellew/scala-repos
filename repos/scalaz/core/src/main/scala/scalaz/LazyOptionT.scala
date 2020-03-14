@@ -9,17 +9,14 @@ final case class LazyOptionT[F[_], A](run: F[LazyOption[A]]) {
   def ?[X](some: => X, none: => X)(implicit F: Functor[F]): F[X] =
     F.map(run)(_.?(some, none))
 
-  def isDefined(implicit F: Functor[F]): F[Boolean] =
-    F.map(run)(_.isDefined)
+  def isDefined(implicit F: Functor[F]): F[Boolean] = F.map(run)(_.isDefined)
 
-  def isEmpty(implicit F: Functor[F]): F[Boolean] =
-    F.map(run)(_.isEmpty)
+  def isEmpty(implicit F: Functor[F]): F[Boolean] = F.map(run)(_.isEmpty)
 
   def getOrElse(default: => A)(implicit F: Functor[F]): F[A] =
     F.map(run)(_.getOrElse(default))
 
-  def |(default: => A)(implicit F: Functor[F]): F[A] =
-    getOrElse(default)
+  def |(default: => A)(implicit F: Functor[F]): F[A] = getOrElse(default)
 
   def orZero(implicit F0: Functor[F], M0: Monoid[A]): F[A] = getOrElse(M0.zero)
 
@@ -63,8 +60,7 @@ final case class LazyOptionT[F[_], A](run: F[LazyOption[A]]) {
     lazyOptionT(M.bind(run)(_.fold(a => f(a).run, M.point(lazyNone[B]))))
 
   def mapLazyOption[B](f: LazyOption[A] => LazyOption[B])(
-      implicit F: Functor[F]): LazyOptionT[F, B] =
-    lazyOptionT(F.map(run)(f))
+      implicit F: Functor[F]): LazyOptionT[F, B] = lazyOptionT(F.map(run)(f))
 
 }
 
@@ -149,14 +145,12 @@ private trait LazyOptionTMonad[F[_]]
     LazyOptionT[F, A](F.point(LazyOption.lazySome(a)))
 
   def bind[A, B](fa: LazyOptionT[F, A])(
-      f: A => LazyOptionT[F, B]): LazyOptionT[F, B] =
-    fa flatMap (a => f(a))
+      f: A => LazyOptionT[F, B]): LazyOptionT[F, B] = fa flatMap (a => f(a))
 
   override def plus[A](a: LazyOptionT[F, A], b: => LazyOptionT[F, A]) =
     a orElse b
 
-  override def empty[A] =
-    LazyOptionT.lazyNoneT[F, A]
+  override def empty[A] = LazyOptionT.lazyNoneT[F, A]
 }
 
 private trait LazyOptionTBindRec[F[_]]

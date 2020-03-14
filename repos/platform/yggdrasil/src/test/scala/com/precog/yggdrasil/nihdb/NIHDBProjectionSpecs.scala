@@ -61,9 +61,10 @@ class NIHDBProjectionSpecs
         VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
         VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
 
-  val txLogScheduler = new ScheduledThreadPoolExecutor(
-    10,
-    (new ThreadFactoryBuilder()).setNameFormat("HOWL-sched-%03d").build())
+  val txLogScheduler =
+    new ScheduledThreadPoolExecutor(
+      10,
+      (new ThreadFactoryBuilder()).setNameFormat("HOWL-sched-%03d").build())
 
   implicit val M = new FutureMonad(actorSystem.dispatcher)
 
@@ -168,8 +169,12 @@ class NIHDBProjectionSpecs
         val ctxt = new TempContext {}
         import ctxt._
 
-        val expected: Seq[JValue] =
-          Seq(JNum(0L), JNum(1L), JNum(2L), JNum(3L), JNum(4L))
+        val expected: Seq[JValue] = Seq(
+          JNum(0L),
+          JNum(1L),
+          JNum(2L),
+          JNum(3L),
+          JNum(4L))
 
         val io =
           nihdb.insert((0L to 2L).toSeq.map { i =>
@@ -183,13 +188,14 @@ class NIHDBProjectionSpecs
               NIHDB.Batch(i, Seq(JNum(i)))
             })
 
-        val result = for {
-          _ <- Future(io.unsafePerformIO)(actorSystem.dispatcher)
-          _ <- nihdb.close(actorSystem)
-          _ <- Future(nihdb = newNihdb(workDir))(actorSystem.dispatcher)
-          status <- nihdb.status
-          r <- projection.getBlockAfter(None, None)
-        } yield r
+        val result =
+          for {
+            _ <- Future(io.unsafePerformIO)(actorSystem.dispatcher)
+            _ <- nihdb.close(actorSystem)
+            _ <- Future(nihdb = newNihdb(workDir))(actorSystem.dispatcher)
+            status <- nihdb.status
+            r <- projection.getBlockAfter(None, None)
+          } yield r
 
         result.onComplete { _ =>
           ctxt.stop
@@ -231,13 +237,14 @@ class NIHDBProjectionSpecs
       status.pending mustEqual 0
       status.rawSize mustEqual 751
 
-      val result = for {
-        firstBlock <- projection.getBlockAfter(None, None)
-        secondBlock <- projection.getBlockAfter(Some(0), None)
-      } yield {
-        ctxt.stop
-        (firstBlock, secondBlock)
-      }
+      val result =
+        for {
+          firstBlock <- projection.getBlockAfter(None, None)
+          secondBlock <- projection.getBlockAfter(Some(0), None)
+        } yield {
+          ctxt.stop
+          (firstBlock, secondBlock)
+        }
 
       result must awaited(maxDuration)(beLike {
         case (

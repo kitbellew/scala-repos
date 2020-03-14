@@ -39,8 +39,8 @@ private[akka] class FileSubscriber(
     extends akka.stream.actor.ActorSubscriber
     with ActorLogging {
 
-  override protected val requestStrategy =
-    WatermarkRequestStrategy(highWatermark = bufSize)
+  override protected val requestStrategy = WatermarkRequestStrategy(
+    highWatermark = bufSize)
 
   private var chan: FileChannel = _
 

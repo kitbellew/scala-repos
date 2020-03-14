@@ -211,15 +211,16 @@ class JobProgressListenerSuite
     // finish this task, should get updated shuffleRead
     shuffleReadMetrics.incRemoteBytesRead(1000)
     taskMetrics.mergeShuffleReadMetrics()
-    var taskInfo = new TaskInfo(
-      1234L,
-      0,
-      1,
-      0L,
-      "exe-1",
-      "host1",
-      TaskLocality.NODE_LOCAL,
-      false)
+    var taskInfo =
+      new TaskInfo(
+        1234L,
+        0,
+        1,
+        0L,
+        "exe-1",
+        "host1",
+        TaskLocality.NODE_LOCAL,
+        false)
     taskInfo.finishTime = 1
     var task = new ShuffleMapTask(0)
     val taskType = Utils.getFormattedClassName(task)
@@ -319,15 +320,16 @@ class JobProgressListenerSuite
     val conf = new SparkConf()
     val listener = new JobProgressListener(conf)
     val metrics = new TaskMetrics()
-    val taskInfo = new TaskInfo(
-      1234L,
-      0,
-      3,
-      0L,
-      "exe-1",
-      "host1",
-      TaskLocality.NODE_LOCAL,
-      false)
+    val taskInfo =
+      new TaskInfo(
+        1234L,
+        0,
+        3,
+        0L,
+        "exe-1",
+        "host1",
+        TaskLocality.NODE_LOCAL,
+        false)
     taskInfo.finishTime = 1
     val task = new ShuffleMapTask(0)
     val taskType = Utils.getFormattedClassName(task)
@@ -386,8 +388,8 @@ class JobProgressListenerSuite
       val shuffleReadMetrics = taskMetrics.registerTempShuffleReadMetrics()
       val shuffleWriteMetrics = taskMetrics.registerShuffleWriteMetrics()
       val inputMetrics = taskMetrics.registerInputMetrics(DataReadMethod.Hadoop)
-      val outputMetrics =
-        taskMetrics.registerOutputMetrics(DataWriteMethod.Hadoop)
+      val outputMetrics = taskMetrics.registerOutputMetrics(
+        DataWriteMethod.Hadoop)
       shuffleReadMetrics.incRemoteBytesRead(base + 1)
       shuffleReadMetrics.incLocalBytesRead(base + 9)
       shuffleReadMetrics.incRemoteBlocksFetched(base + 2)
@@ -402,15 +404,16 @@ class JobProgressListenerSuite
     }
 
     def makeTaskInfo(taskId: Long, finishTime: Int = 0): TaskInfo = {
-      val taskInfo = new TaskInfo(
-        taskId,
-        0,
-        1,
-        0L,
-        execId,
-        "host1",
-        TaskLocality.NODE_LOCAL,
-        false)
+      val taskInfo =
+        new TaskInfo(
+          taskId,
+          0,
+          1,
+          0L,
+          execId,
+          "host1",
+          TaskLocality.NODE_LOCAL,
+          false)
       taskInfo.finishTime = finishTime
       taskInfo
     }

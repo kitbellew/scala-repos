@@ -14,17 +14,18 @@ class IteratorTest {
 
   @Test def groupedIteratorShouldNotAskForUnneededElement(): Unit = {
     var counter = 0
-    val it = new Iterator[Int] {
-      var i = 0;
-      def hasNext = {
-        counter = i;
-        true
-      };
-      def next = {
-        i += 1;
-        i
+    val it =
+      new Iterator[Int] {
+        var i = 0;
+        def hasNext = {
+          counter = i;
+          true
+        };
+        def next = {
+          i += 1;
+          i
+        }
       }
-    }
     val slidingIt = it sliding 2
     slidingIt.next
     assertEquals(

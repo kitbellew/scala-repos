@@ -12,11 +12,9 @@ import org.jetbrains.plugins.hocon.lang.HoconLanguage
 import scala.collection.JavaConverters._
 
 class HoconColorSettingsPage extends ColorSettingsPage {
-  def getIcon =
-    AllIcons.FileTypes.Config
+  def getIcon = AllIcons.FileTypes.Config
 
-  def getDemoText =
-    s"""<hashcomment># hash comment</hashcomment>
+  def getDemoText = s"""<hashcomment># hash comment</hashcomment>
        |<doubleslashcomment>// double slash comment<doubleslashcomment>
        |
        |<include>include</include> <inclmod>classpath</inclmod><imparens>(</imparens><quotedstring>"included.conf"</quotedstring><imparens>)</imparens>
@@ -65,14 +63,11 @@ class HoconColorSettingsPage extends ColorSettingsPage {
   def getHighlighter =
     SyntaxHighlighterFactory.getSyntaxHighlighter(HoconLanguage, null, null)
 
-  def getDisplayName =
-    "HOCON"
+  def getDisplayName = "HOCON"
 
-  def getColorDescriptors =
-    Array.empty
+  def getColorDescriptors = Array.empty
 
-  def getAttributeDescriptors =
-    HoconColorSettingsPage.Attrs
+  def getAttributeDescriptors = HoconColorSettingsPage.Attrs
 }
 
 object HoconColorSettingsPage {

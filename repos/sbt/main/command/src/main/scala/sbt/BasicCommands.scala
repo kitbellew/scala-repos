@@ -122,14 +122,13 @@ object BasicCommands {
     } map (_.trim)).+
   }
 
-  def multiApplied(s: State) =
-    Command.applyEffect(multiParser(s))(_ ::: s)
+  def multiApplied(s: State) = Command.applyEffect(multiParser(s))(_ ::: s)
 
   def multi =
     Command.custom(multiApplied, Help(Multi, MultiBrief, MultiDetailed))
 
-  lazy val otherCommandParser = (s: State) =>
-    token(OptSpace ~> combinedLax(s, NotSpaceClass ~ any.*))
+  lazy val otherCommandParser =
+    (s: State) => token(OptSpace ~> combinedLax(s, NotSpaceClass ~ any.*))
   def combinedLax(s: State, any: Parser[_]): Parser[String] =
     matched(s.combinedParser | token(any, hide = const(true)))
 
@@ -269,10 +268,11 @@ object BasicCommands {
     Command.command(Shell, Help.more(Shell, ShellDetailed)) { s =>
       val history =
         (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
-      val prompt = (s get shellPrompt) match {
-        case Some(pf) => pf(s);
-        case None     => "> "
-      }
+      val prompt =
+        (s get shellPrompt) match {
+          case Some(pf) => pf(s);
+          case None     => "> "
+        }
       val reader = new FullReader(history, s.combinedParser)
       val line = reader.readLine(prompt)
       line match {

@@ -19,8 +19,9 @@ object Import {
   object PlayForkRunKeys {
     val playRun = InputKey[Unit]("playRun", "Play in-process reloading run")
     val playForkRun = InputKey[Unit]("playForkRun", "Play forked reloading run")
-    val playForkOptions =
-      TaskKey[PlayForkOptions]("playForkRunOptions", "Fork run options")
+    val playForkOptions = TaskKey[PlayForkOptions](
+      "playForkRunOptions",
+      "Fork run options")
     val playForkLogSbtEvents = SettingKey[Boolean](
       "playForkLogSbtEvents",
       "Determines whether events from sbt server are logged in fork run")
@@ -30,8 +31,9 @@ object Import {
     val playForkShutdownTimeout = SettingKey[FiniteDuration](
       "playForkShutdownTimeout",
       "Timeout for shutdown of forked process before forcibly shutting down")
-    val playForkConfig =
-      TaskKey[ForkConfig]("playForkConfig", "All setup settings for forked run")
+    val playForkConfig = TaskKey[ForkConfig](
+      "playForkConfig",
+      "All setup settings for forked run")
     val playForkNotifyStart = InputKey[Unit](
       "playForkNotifyStart",
       "For notifying sbt with the play server url")
@@ -150,8 +152,8 @@ object PlayForkRun extends AutoPlugin {
         devSettings = PlayKeys.devSettings.value,
         defaultHttpPort = PlayKeys.playDefaultPort.value,
         defaultHttpAddress = PlayKeys.playDefaultAddress.value,
-        watchService =
-          ForkConfig.identifyWatchService(PlayKeys.fileWatchService.value),
+        watchService = ForkConfig.identifyWatchService(
+          PlayKeys.fileWatchService.value),
         monitoredFiles = PlayKeys.playMonitoredFiles.value,
         targetDirectory = target.value,
         pollInterval = pollInterval.value,

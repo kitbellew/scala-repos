@@ -27,12 +27,13 @@ import akka.event.Logging
 abstract class SelectionHandlerSettings(config: Config) {
   import config._
 
-  val MaxChannels: Int = getString("max-channels") match {
-    case "unlimited" ⇒ -1
-    case _ ⇒
-      getInt(
-        "max-channels") requiring (_ > 0, "max-channels must be > 0 or 'unlimited'")
-  }
+  val MaxChannels: Int =
+    getString("max-channels") match {
+      case "unlimited" ⇒ -1
+      case _ ⇒
+        getInt(
+          "max-channels") requiring (_ > 0, "max-channels must be > 0 or 'unlimited'")
+    }
   val SelectorAssociationRetries: Int = getInt(
     "selector-association-retries") requiring (_ >= 0, "selector-association-retries must be >= 0")
 
@@ -143,52 +144,54 @@ private[io] object SelectionHandler {
 
     final val OP_READ_AND_WRITE = OP_READ | OP_WRITE // compile-time constant
 
-    private[this] val select = new Task {
-      def tryRun(): Unit = {
-        if (selector.select() > 0) { // This assumes select return value == selectedKeys.size
-          val keys = selector.selectedKeys
-          val iterator = keys.iterator()
-          while (iterator.hasNext) {
-            val key = iterator.next()
-            if (key.isValid) {
-              try {
-                // Cache because the performance implications of calling this on different platforms are not clear
-                val readyOps = key.readyOps()
-                key.interestOps(
-                  key.interestOps & ~readyOps
-                ) // prevent immediate reselection by always clearing
-                val connection = key.attachment.asInstanceOf[ActorRef]
-                readyOps match {
-                  case OP_READ ⇒ connection ! ChannelReadable
-                  case OP_WRITE ⇒ connection ! ChannelWritable
-                  case OP_READ_AND_WRITE ⇒ {
-                    connection ! ChannelWritable;
-                    connection ! ChannelReadable
+    private[this] val select =
+      new Task {
+        def tryRun(): Unit = {
+          if (selector.select() > 0) { // This assumes select return value == selectedKeys.size
+            val keys = selector.selectedKeys
+            val iterator = keys.iterator()
+            while (iterator.hasNext) {
+              val key = iterator.next()
+              if (key.isValid) {
+                try {
+                  // Cache because the performance implications of calling this on different platforms are not clear
+                  val readyOps = key.readyOps()
+                  key.interestOps(
+                    key.interestOps & ~readyOps
+                  ) // prevent immediate reselection by always clearing
+                  val connection = key.attachment.asInstanceOf[ActorRef]
+                  readyOps match {
+                    case OP_READ ⇒ connection ! ChannelReadable
+                    case OP_WRITE ⇒ connection ! ChannelWritable
+                    case OP_READ_AND_WRITE ⇒ {
+                      connection ! ChannelWritable;
+                      connection ! ChannelReadable
+                    }
+                    case x if (x & OP_ACCEPT) > 0 ⇒
+                      connection ! ChannelAcceptable
+                    case x if (x & OP_CONNECT) > 0 ⇒
+                      connection ! ChannelConnectable
+                    case x ⇒ log.warning("Invalid readyOps: [{}]", x)
                   }
-                  case x if (x & OP_ACCEPT) > 0 ⇒ connection ! ChannelAcceptable
-                  case x if (x & OP_CONNECT) > 0 ⇒
-                    connection ! ChannelConnectable
-                  case x ⇒ log.warning("Invalid readyOps: [{}]", x)
+                } catch {
+                  case _: CancelledKeyException ⇒
+                  // can be ignored because this exception is triggered when the key becomes invalid
+                  // because `channel.close()` in `TcpConnection.postStop` is called from another thread
                 }
-              } catch {
-                case _: CancelledKeyException ⇒
-                // can be ignored because this exception is triggered when the key becomes invalid
-                // because `channel.close()` in `TcpConnection.postStop` is called from another thread
               }
             }
+            keys.clear() // we need to remove the selected keys from the set, otherwise they remain selected
           }
-          keys.clear() // we need to remove the selected keys from the set, otherwise they remain selected
+          wakeUp.set(false)
         }
-        wakeUp.set(false)
-      }
 
-      override def run(): Unit =
-        if (selector.isOpen)
-          try super.run()
-          finally executionContext.execute(
-            this
-          ) // re-schedule select behind all currently queued tasks
-    }
+        override def run(): Unit =
+          if (selector.isOpen)
+            try super.run()
+            finally executionContext.execute(
+              this
+            ) // re-schedule select behind all currently queued tasks
+      }
 
     executionContext.execute(select) // start selection "loop"
 
@@ -318,18 +321,19 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
           cause: Throwable,
           decision: SupervisorStrategy.Directive): Unit =
         try {
-          val logMessage = cause match {
-            case e: ActorInitializationException
-                if (e.getCause ne null) && (e.getCause.getMessage ne null) ⇒
-              e.getCause.getMessage
-            case e: ActorInitializationException if e.getCause ne null ⇒
-              e.getCause match {
-                case ie: java.lang.reflect.InvocationTargetException ⇒
-                  ie.getTargetException.toString
-                case t: Throwable ⇒ Logging.simpleName(t)
-              }
-            case e ⇒ e.getMessage
-          }
+          val logMessage =
+            cause match {
+              case e: ActorInitializationException
+                  if (e.getCause ne null) && (e.getCause.getMessage ne null) ⇒
+                e.getCause.getMessage
+              case e: ActorInitializationException if e.getCause ne null ⇒
+                e.getCause match {
+                  case ie: java.lang.reflect.InvocationTargetException ⇒
+                    ie.getTargetException.toString
+                  case t: Throwable ⇒ Logging.simpleName(t)
+                }
+              case e ⇒ e.getMessage
+            }
           context.system.eventStream.publish(Logging
             .Debug(child.path.toString, classOf[SelectionHandler], logMessage))
         } catch {

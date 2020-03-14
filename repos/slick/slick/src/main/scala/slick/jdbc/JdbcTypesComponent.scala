@@ -100,8 +100,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
   def defaultSqlTypeName(tmd: JdbcType[_], sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size =
-          sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym.flatMap(
+          _.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR(254)")(l =>
           if (l.varying)
             s"VARCHAR(${l.length})"

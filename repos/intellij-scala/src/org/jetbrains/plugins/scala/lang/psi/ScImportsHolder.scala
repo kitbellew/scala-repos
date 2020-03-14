@@ -174,13 +174,15 @@ trait ScImportsHolder extends ScalaPsiElement {
     import ScalaImportOptimizer._
 
     def samePackage(path: String) = {
-      val ref =
-        ScalaPsiElementFactory.createReferenceFromText(path, this.getManager)
-      val pathQualifier =
-        Option(ref).flatMap(_.qualifier.map(_.getText)).getOrElse("")
-      val ourPackageName: Option[String] =
-        Option(PsiTreeUtil.getParentOfType(this, classOf[ScPackaging], false))
-          .map(_.fullPackageName)
+      val ref = ScalaPsiElementFactory.createReferenceFromText(
+        path,
+        this.getManager)
+      val pathQualifier = Option(ref)
+        .flatMap(_.qualifier.map(_.getText))
+        .getOrElse("")
+      val ourPackageName: Option[String] = Option(
+        PsiTreeUtil.getParentOfType(this, classOf[ScPackaging], false))
+        .map(_.fullPackageName)
       ourPackageName.contains(pathQualifier)
     }
 
@@ -194,19 +196,21 @@ trait ScImportsHolder extends ScalaPsiElement {
       case _ =>
     }
 
-    val file = this.getContainingFile match {
-      case sf: ScalaFile => sf
-      case _             => return
-    }
+    val file =
+      this.getContainingFile match {
+        case sf: ScalaFile => sf
+        case _             => return
+      }
 
     val documentManager = PsiDocumentManager.getInstance(getProject)
     val document: Document = documentManager.getDocument(file)
     val settings = OptimizeImportSettings(getProject)
 
-    val optimizer: ScalaImportOptimizer = findOptimizerFor(file) match {
-      case Some(o: ScalaImportOptimizer) => o
-      case _                             => return
-    }
+    val optimizer: ScalaImportOptimizer =
+      findOptimizerFor(file) match {
+        case Some(o: ScalaImportOptimizer) => o
+        case _                             => return
+      }
 
     def replaceWithNewInfos(
         range: TextRange,
@@ -225,15 +229,17 @@ trait ScImportsHolder extends ScalaPsiElement {
 
     val importInfosToAdd = paths.filterNot(samePackage).flatMap { path =>
       val importText = s"import $path"
-      val place =
-        getImportStatements.lastOption.getOrElse(getFirstChild.getNextSibling)
+      val place = getImportStatements.lastOption.getOrElse(
+        getFirstChild.getNextSibling)
       val importStmt = ScalaPsiElementFactory
         .createImportFromTextWithContext(importText, this, place)
       createInfo(importStmt)
     }
 
-    val importRanges =
-      optimizer.collectImportRanges(this, namesAtRangeStart, createInfo(_))
+    val importRanges = optimizer.collectImportRanges(
+      this,
+      namesAtRangeStart,
+      createInfo(_))
 
     val needToInsertFirst =
       if (importRanges.isEmpty)
@@ -246,8 +252,8 @@ trait ScImportsHolder extends ScalaPsiElement {
         "import dummy._",
         getManager)
       val usedNames = collectUsedImportedNames(this)
-      val inserted =
-        insertFirstImport(dummyImport, getFirstChild).asInstanceOf[ScImportStmt]
+      val inserted = insertFirstImport(dummyImport, getFirstChild)
+        .asInstanceOf[ScImportStmt]
       val range = inserted.getTextRange
       val namesAtStart = namesAtRangeStart(inserted)
       val rangeInfo = RangeInfo(

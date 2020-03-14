@@ -128,8 +128,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
     * To make sure all the metrics be de-registered after consumer/producer close, the metric names should be
     * put into the metric name set.
     */
-  private val consumerMetricNameList: immutable.List[MetricName] =
-    immutable.List[MetricName](
+  private val consumerMetricNameList: immutable.List[MetricName] = immutable
+    .List[MetricName](
       // kafka.consumer.ZookeeperConsumerConnector
       new MetricName(
         "kafka.consumer",
@@ -196,8 +196,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         "ProducerRequestSize")
     )
 
-  private val producerMetricNameList: immutable.List[MetricName] =
-    immutable.List[MetricName](
+  private val producerMetricNameList: immutable.List[MetricName] = immutable
+    .List[MetricName](
       // kafka.producer.ProducerStats <-- DefaultEventHandler <-- Producer
       new MetricName(
         "kafka.producer",

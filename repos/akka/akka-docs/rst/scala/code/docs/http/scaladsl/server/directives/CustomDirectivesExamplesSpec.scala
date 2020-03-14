@@ -26,11 +26,9 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "map-0" in {
-    val textParam: Directive1[String] =
-      parameter("text".as[String])
+    val textParam: Directive1[String] = parameter("text".as[String])
 
-    val lengthDirective: Directive1[Int] =
-      textParam.map(text => text.length)
+    val lengthDirective: Directive1[Int] = textParam.map(text => text.length)
 
     // tests:
     Get("/?text=abcdefg") ~> lengthDirective(x =>
@@ -40,13 +38,12 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "tmap-1" in {
-    val twoIntParameters: Directive[(Int, Int)] =
-      parameters(("a".as[Int], "b".as[Int]))
+    val twoIntParameters: Directive[(Int, Int)] = parameters(
+      ("a".as[Int], "b".as[Int]))
 
-    val myDirective: Directive1[String] =
-      twoIntParameters.tmap {
-        case (a, b) => (a + b).toString
-      }
+    val myDirective: Directive1[String] = twoIntParameters.tmap {
+      case (a, b) => (a + b).toString
+    }
 
     // tests:
     Get("/?a=2&b=5") ~> myDirective(x => complete(x)) ~> check {
@@ -57,11 +54,10 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
   "flatMap-0" in {
     val intParameter: Directive1[Int] = parameter("a".as[Int])
 
-    val myDirective: Directive1[Int] =
-      intParameter.flatMap {
-        case a if a > 0 => provide(2 * a)
-        case _          => reject
-      }
+    val myDirective: Directive1[Int] = intParameter.flatMap {
+      case a if a > 0 => provide(2 * a)
+      case _          => reject
+    }
 
     // tests:
     Get("/?a=21") ~> myDirective(i => complete(i.toString)) ~> check {

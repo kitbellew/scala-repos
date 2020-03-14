@@ -32,10 +32,10 @@ import scala.collection.mutable
 class DuplicateMatch(
     pattern: DuplicatePattern,
     val candidates: Seq[PsiElement]) {
-  private val parameterValues =
-    mutable.Map[ExtractMethodParameter, ScExpression]()
-  private val definitionCorrespondence =
-    mutable.Map[ScTypedDefinition, ScTypedDefinition]()
+  private val parameterValues = mutable
+    .Map[ExtractMethodParameter, ScExpression]()
+  private val definitionCorrespondence = mutable
+    .Map[ScTypedDefinition, ScTypedDefinition]()
 
   def isDuplicate: Boolean = checkElementSeq(pattern.elements, candidates)
 

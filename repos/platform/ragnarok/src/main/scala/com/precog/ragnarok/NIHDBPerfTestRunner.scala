@@ -101,10 +101,11 @@ final class NIHDBPerfTestRunner[T](
   val accountFinder = new StaticAccountFinder[Future]("", "")
   val apiKeyManager = new InMemoryAPIKeyManager[Future](yggConfig.clock)
   val accessControl = new DirectAPIKeyFinder(apiKeyManager)
-  val permissionsFinder = new PermissionsFinder(
-    accessControl,
-    accountFinder,
-    new org.joda.time.Instant())
+  val permissionsFinder =
+    new PermissionsFinder(
+      accessControl,
+      accountFinder,
+      new org.joda.time.Instant())
 
   val storageTimeout = Timeout(testTimeout)
 
@@ -116,16 +117,17 @@ final class NIHDBPerfTestRunner[T](
   val chefs = (1 to 4).map { _ =>
     actorSystem.actorOf(Props(makeChef))
   }
-  val masterChef =
-    actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+  val masterChef = actorSystem.actorOf(
+    Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
   val jobManager = new InMemoryJobManager[Future]
-  val resourceBuilder = new ResourceBuilder(
-    actorSystem,
-    yggConfig.clock,
-    masterChef,
-    yggConfig.cookThreshold,
-    yggConfig.storageTimeout)
+  val resourceBuilder =
+    new ResourceBuilder(
+      actorSystem,
+      yggConfig.clock,
+      masterChef,
+      yggConfig.cookThreshold,
+      yggConfig.storageTimeout)
   val projectionsActor = actorSystem.actorOf(
     Props(
       new PathRoutingActor(
@@ -135,10 +137,11 @@ final class NIHDBPerfTestRunner[T](
         1000,
         yggConfig.clock)))
 
-  val actorVFS = new ActorVFS(
-    projectionsActor,
-    yggConfig.storageTimeout,
-    yggConfig.storageTimeout)
+  val actorVFS =
+    new ActorVFS(
+      projectionsActor,
+      yggConfig.storageTimeout,
+      yggConfig.storageTimeout)
   val vfs =
     new SecureVFS(actorVFS, permissionsFinder, jobManager, yggConfig.clock)
 

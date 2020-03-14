@@ -105,11 +105,12 @@ trait WithPlay { self: PackageObject =>
 
   implicit def execontext = play.api.libs.concurrent.Execution.defaultContext
 
-  implicit val LilaFutureMonad = new Monad[Fu] {
-    override def map[A, B](fa: Fu[A])(f: A => B) = fa map f
-    def point[A](a: => A) = fuccess(a)
-    def bind[A, B](fa: Fu[A])(f: A => Fu[B]) = fa flatMap f
-  }
+  implicit val LilaFutureMonad =
+    new Monad[Fu] {
+      override def map[A, B](fa: Fu[A])(f: A => B) = fa map f
+      def point[A](a: => A) = fuccess(a)
+      def bind[A, B](fa: Fu[A])(f: A => Fu[B]) = fa flatMap f
+    }
 
   implicit def LilaFuMonoid[A: Monoid]: Monoid[Fu[A]] =
     Monoid.instance(
@@ -122,8 +123,8 @@ trait WithPlay { self: PackageObject =>
   implicit def LilaFuZero[A: Zero]: Zero[Fu[A]] =
     Zero.instance(fuccess(zero[A]))
 
-  implicit val LilaJsObjectZero: Zero[JsObject] =
-    Zero.instance(JsObject(Seq.empty))
+  implicit val LilaJsObjectZero: Zero[JsObject] = Zero.instance(
+    JsObject(Seq.empty))
 
   implicit def LilaJsResultZero[A]: Zero[JsResult[A]] =
     Zero.instance(JsError(Seq.empty))

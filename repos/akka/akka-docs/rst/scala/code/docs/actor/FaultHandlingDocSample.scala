@@ -82,9 +82,10 @@ class Worker extends Actor with ActorLogging {
   implicit val askTimeout = Timeout(5 seconds)
 
   // Stop the CounterService child if it throws ServiceUnavailable
-  override val supervisorStrategy = OneForOneStrategy() {
-    case _: CounterService.ServiceUnavailable => Stop
-  }
+  override val supervisorStrategy =
+    OneForOneStrategy() {
+      case _: CounterService.ServiceUnavailable => Stop
+    }
 
   // The sender of the initial Start message will continuously be notified
   // about progress

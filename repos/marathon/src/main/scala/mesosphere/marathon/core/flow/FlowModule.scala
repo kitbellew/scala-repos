@@ -70,8 +70,8 @@ class FlowModule(leadershipModule: LeadershipModule) {
       conf: LaunchTokenConfig,
       taskStatusObservables: TaskStatusObservables,
       offerMatcherManager: OfferMatcherManager): Unit = {
-    lazy val offerMatcherLaunchTokensProps =
-      OfferMatcherLaunchTokensActor.props(
+    lazy val offerMatcherLaunchTokensProps = OfferMatcherLaunchTokensActor
+      .props(
         conf,
         taskStatusObservables,
         offerMatcherManager

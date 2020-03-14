@@ -24,17 +24,17 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
 
   test("joinVertices") {
     withSpark { sc =>
-      val vertices =
-        sc.parallelize(
-          Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
-          2)
+      val vertices = sc.parallelize(
+        Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
+        2)
       val edges = sc.parallelize((Seq(Edge(1, 2, "onetwo"))))
       val g: Graph[String, String] = Graph(vertices, edges)
 
       val tbl = sc.parallelize(Seq[(VertexId, Int)]((1, 10), (2, 20)))
-      val g1 = g.joinVertices(tbl) { (vid: VertexId, attr: String, u: Int) =>
-        attr + u
-      }
+      val g1 =
+        g.joinVertices(tbl) { (vid: VertexId, attr: String, u: Int) =>
+          attr + u
+        }
 
       val v = g1.vertices.collect().toSet
       assert(v === Set((1, "one10"), (2, "two20"), (3, "three")))
@@ -70,9 +70,10 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
         .map {
           case (a, b) => (a.toLong, b.toLong)
         }
-      val correctEdges = edgeArray.filter {
-        case (a, b) => a != b
-      }.toSet
+      val correctEdges =
+        edgeArray.filter {
+          case (a, b) => a != b
+        }.toSet
       val graph = Graph.fromEdgeTuples(sc.parallelize(edgeArray), 1)
       val canonicalizedEdges =
         graph.removeSelfEdges().edges.map(e => (e.srcId, e.dstId)).collect
@@ -103,22 +104,22 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       assert(v === Set((0, 0)))
 
       // the map is necessary because of object-reuse in the edge iterator
-      val e = filteredGraph.edges
-        .map(e => Edge(e.srcId, e.dstId, e.attr))
-        .collect()
-        .toSet
+      val e =
+        filteredGraph.edges
+          .map(e => Edge(e.srcId, e.dstId, e.attr))
+          .collect()
+          .toSet
       assert(e.isEmpty)
     }
   }
 
   test("convertToCanonicalEdges") {
     withSpark { sc =>
-      val vertices =
-        sc.parallelize(
-          Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
-          2)
-      val edges =
-        sc.parallelize(Seq(Edge(1, 2, 1), Edge(2, 1, 1), Edge(3, 2, 2)))
+      val vertices = sc.parallelize(
+        Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
+        2)
+      val edges = sc.parallelize(
+        Seq(Edge(1, 2, 1), Edge(2, 1, 1), Edge(3, 2, 2)))
       val g: Graph[String, Int] = Graph(vertices, edges)
 
       val g1 = g.convertToCanonicalEdges()

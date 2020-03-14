@@ -124,32 +124,33 @@ private[finagle] class LatencyFactory(sr: StatsReceiver) {
       next: () => Duration,
       _weight: Double = 1.0
   ): ServiceFactory[Unit, Unit] = {
-    val service = new Service[Unit, Unit] {
-      implicit val timer = DefaultTimer.twitter
-      val load = new AtomicInteger(0)
-      val maxload = new AtomicInteger(0)
-      val gauges = Seq(
-        sr.scope("load").addGauge("" + name) {
-          load.get()
-        },
-        sr.scope("maxload").addGauge("" + name) {
-          maxload.get()
-        }
-      )
-      val count = sr.scope("count").counter("" + name)
+    val service =
+      new Service[Unit, Unit] {
+        implicit val timer = DefaultTimer.twitter
+        val load = new AtomicInteger(0)
+        val maxload = new AtomicInteger(0)
+        val gauges = Seq(
+          sr.scope("load").addGauge("" + name) {
+            load.get()
+          },
+          sr.scope("maxload").addGauge("" + name) {
+            maxload.get()
+          }
+        )
+        val count = sr.scope("count").counter("" + name)
 
-      def apply(req: Unit) = {
-        synchronized {
-          val l = load.incrementAndGet()
-          if (l > maxload.get())
-            maxload.set(l)
-        }
-        Future.sleep(next()) ensure {
-          count.incr()
-          load.decrementAndGet()
+        def apply(req: Unit) = {
+          synchronized {
+            val l = load.incrementAndGet()
+            if (l > maxload.get())
+              maxload.set(l)
+          }
+          Future.sleep(next()) ensure {
+            count.incr()
+            load.decrementAndGet()
+          }
         }
       }
-    }
 
     new ServiceFactory[Unit, Unit] {
       def apply(conn: ClientConnection) = Future.value(service)
@@ -174,37 +175,44 @@ private[finagle] object Simulation extends com.twitter.app.App {
     val noBrokers = new NoBrokersAvailableException
     val newFactory = new LatencyFactory(stats)
 
-    val data =
-      getClass.getClassLoader.getResource("resources/real_latencies.data")
+    val data = getClass.getClassLoader.getResource(
+      "resources/real_latencies.data")
     val dist = LatencyProfile.fromFile(data)
     val stable: Set[ServiceFactory[Unit, Unit]] =
       Seq.tabulate(nstable())(i => newFactory(i, dist)).toSet
 
     val underlying = Var(stable)
-    val activity: Activity[Set[ServiceFactory[Unit, Unit]]] =
-      Activity(underlying.map { facs =>
+    val activity: Activity[Set[ServiceFactory[Unit, Unit]]] = Activity(
+      underlying.map { facs =>
         Activity.Ok(facs)
       })
 
-    val factory = bal() match {
-      case "p2c" =>
-        Balancers
-          .p2c()
-          .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
+    val factory =
+      bal() match {
+        case "p2c" =>
+          Balancers
+            .p2c()
+            .newBalancer(
+              activity,
+              statsReceiver = stats.scope("p2c"),
+              noBrokers)
 
-      case "ewma" =>
-        Balancers
-          .p2cPeakEwma()
-          .newBalancer(activity, statsReceiver = stats.scope("p2c"), noBrokers)
+        case "ewma" =>
+          Balancers
+            .p2cPeakEwma()
+            .newBalancer(
+              activity,
+              statsReceiver = stats.scope("p2c"),
+              noBrokers)
 
-      case "aperture" =>
-        Balancers
-          .aperture()
-          .newBalancer(
-            activity,
-            statsReceiver = stats.scope("aperture"),
-            noBrokers)
-    }
+        case "aperture" =>
+          Balancers
+            .aperture()
+            .newBalancer(
+              activity,
+              statsReceiver = stats.scope("aperture"),
+              noBrokers)
+      }
 
     val balancer = factory.toService
 

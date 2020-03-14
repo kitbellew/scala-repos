@@ -17,17 +17,18 @@ class EmpiricalHessianTest
     val x = DenseVector(1d, 1d)
     val A = DenseMatrix((802d, -400d), (-400d, 200d))
 
-    val f = new DiffFunction[DenseVector[Double]] {
-      def calculate(x: DenseVector[Double]) = {
-        val n = x.length
-        val value =
-          100 * Math.pow(x(1) - x(0) * x(0), 2) + Math.pow(1 - x(0), 2)
-        val grad = DenseVector(
-          -400 * x(0) * (x(1) - x(0) * x(0)) - 2 * (1 - x(0)),
-          200 * (x(1) - x(0) * x(0)))
-        (value, grad)
+    val f =
+      new DiffFunction[DenseVector[Double]] {
+        def calculate(x: DenseVector[Double]) = {
+          val n = x.length
+          val value =
+            100 * Math.pow(x(1) - x(0) * x(0), 2) + Math.pow(1 - x(0), 2)
+          val grad = DenseVector(
+            -400 * x(0) * (x(1) - x(0) * x(0)) - 2 * (1 - x(0)),
+            200 * (x(1) - x(0) * x(0)))
+          (value, grad)
+        }
       }
-    }
 
     val H = EmpiricalHessian.hessian(f, x)
 
@@ -47,14 +48,15 @@ class EmpiricalHessianTest
       (0d, 0d, 0d, 3.064854d, 0d),
       (0d, 0d, 0d, 0d, 0.2187119d))
 
-    val f = new DiffFunction[DenseVector[Double]] {
-      def calculate(x: DenseVector[Double]) = {
-        val n = x.length
-        val value = sum(exp(x) - x) / n
-        val grad = exp(x) - 1d
-        (value, grad)
+    val f =
+      new DiffFunction[DenseVector[Double]] {
+        def calculate(x: DenseVector[Double]) = {
+          val n = x.length
+          val value = sum(exp(x) - x) / n
+          val grad = exp(x) - 1d
+          (value, grad)
+        }
       }
-    }
 
     val H = EmpiricalHessian.hessian(f, x)
 

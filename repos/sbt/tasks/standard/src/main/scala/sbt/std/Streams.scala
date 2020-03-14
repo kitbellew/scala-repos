@@ -100,12 +100,13 @@ trait Streams[Key] {
 }
 trait CloseableStreams[Key] extends Streams[Key] with java.io.Closeable
 object Streams {
-  private[this] val closeQuietly = (c: Closeable) =>
-    try {
-      c.close()
-    } catch {
-      case _: IOException => ()
-    }
+  private[this] val closeQuietly =
+    (c: Closeable) =>
+      try {
+        c.close()
+      } catch {
+        case _: IOException => ()
+      }
 
   def closeable[Key](delegate: Streams[Key]): CloseableStreams[Key] =
     new CloseableStreams[Key] {

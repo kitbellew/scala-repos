@@ -92,10 +92,11 @@ class Probe(name: String, q: Quantity) extends Constraint {
   def newValue: Unit = printProbe(q.getValue);
   def dropValue: Unit = printProbe(None);
   private def printProbe(v: Option[Double]) {
-    val vstr = v match {
-      case Some(x) => x.toString()
-      case None    => "?"
-    }
+    val vstr =
+      v match {
+        case Some(x) => x.toString()
+        case None    => "?"
+      }
     Console.println("Probe: " + name + " = " + vstr);
   }
   q connect this

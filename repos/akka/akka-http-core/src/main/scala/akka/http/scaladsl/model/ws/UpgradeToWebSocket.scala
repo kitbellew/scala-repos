@@ -69,8 +69,7 @@ trait UpgradeToWebSocket extends jm.ws.UpgradeToWebSocket {
     */
   def handleMessagesWith(
       handlerFlow: Graph[FlowShape[jm.ws.Message, jm.ws.Message], _ <: Any])
-      : HttpResponse =
-    handleMessages(JavaMapping.toScala(handlerFlow))
+      : HttpResponse = handleMessages(JavaMapping.toScala(handlerFlow))
 
   /**
     * Java API

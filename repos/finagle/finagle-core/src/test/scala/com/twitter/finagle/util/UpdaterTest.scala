@@ -13,24 +13,25 @@ class UpdaterTest extends FunSuite {
     val barrier = new CyclicBarrier(2)
     val first = new CountDownLatch(1)
 
-    val u = new Updater[Work] {
-      protected def preprocess(elems: Seq[Work]) =
-        Seq(elems.minBy(_.p))
+    val u =
+      new Updater[Work] {
+        protected def preprocess(elems: Seq[Work]) = Seq(elems.minBy(_.p))
 
-      def handle(w: Work) {
-        worked :+= w
-        first.countDown()
-        barrier.await()
-        ()
+        def handle(w: Work) {
+          worked :+= w
+          first.countDown()
+          barrier.await()
+          ()
+        }
       }
-    }
 
     val w0 = Work(0)
-    val thr = new Thread("Test-Updater") {
-      override def run() {
-        u(w0)
+    val thr =
+      new Thread("Test-Updater") {
+        override def run() {
+          u(w0)
+        }
       }
-    }
 
     thr.start()
     first.await()

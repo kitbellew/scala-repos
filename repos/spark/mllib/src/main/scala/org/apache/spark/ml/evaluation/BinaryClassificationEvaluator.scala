@@ -55,8 +55,8 @@ class BinaryClassificationEvaluator @Since("1.4.0") (
     */
   @Since("1.2.0")
   val metricName: Param[String] = {
-    val allowedParams =
-      ParamValidators.inArray(Array("areaUnderROC", "areaUnderPR"))
+    val allowedParams = ParamValidators.inArray(
+      Array("areaUnderROC", "areaUnderPR"))
     new Param(
       this,
       "metricName",
@@ -101,17 +101,20 @@ class BinaryClassificationEvaluator @Since("1.4.0") (
     SchemaUtils.checkColumnType(schema, $(labelCol), DoubleType)
 
     // TODO: When dataset metadata has been implemented, check rawPredictionCol vector length = 2.
-    val scoreAndLabels =
-      dataset.select($(rawPredictionCol), $(labelCol)).rdd.map {
+    val scoreAndLabels = dataset
+      .select($(rawPredictionCol), $(labelCol))
+      .rdd
+      .map {
         case Row(rawPrediction: Vector, label: Double) =>
           (rawPrediction(1), label)
         case Row(rawPrediction: Double, label: Double) => (rawPrediction, label)
       }
     val metrics = new BinaryClassificationMetrics(scoreAndLabels)
-    val metric = $(metricName) match {
-      case "areaUnderROC" => metrics.areaUnderROC()
-      case "areaUnderPR"  => metrics.areaUnderPR()
-    }
+    val metric =
+      $(metricName) match {
+        case "areaUnderROC" => metrics.areaUnderROC()
+        case "areaUnderPR"  => metrics.areaUnderPR()
+      }
     metrics.unpersist()
     metric
   }

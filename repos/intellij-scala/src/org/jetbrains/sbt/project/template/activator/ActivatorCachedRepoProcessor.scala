@@ -127,8 +127,9 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
 
         reader = DirectoryReader.open(FSDirectory.open(extracted))
         val searcher = new IndexSearcher(reader)
-        val docs =
-          searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
+        val docs = searcher.search(
+          new lucene.search.MatchAllDocsQuery,
+          reader.maxDoc())
         val data = docs.scoreDocs.map {
           case doc => reader document doc.doc
         }
@@ -156,21 +157,22 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
     val fileName = ActivatorRepoProcessor.templateFileName(templateId)
     val cachedTemplate = new File(getCacheDataPath, fileName)
 
-    val myOnError = (a: String) => {
+    val myOnError =
+      (a: String) => {
 
-      hasError = true
+        hasError = true
 
-      if (!cachedTemplate.exists()) {
-        onError(a)
-        return
+        if (!cachedTemplate.exists()) {
+          onError(a)
+          return
+        }
+
+        try {
+          FileUtil.copy(cachedTemplate, pathTo)
+        } catch {
+          case _: IOException => onError(a)
+        }
       }
-
-      try {
-        FileUtil.copy(cachedTemplate, pathTo)
-      } catch {
-        case _: IOException => onError(a)
-      }
-    }
 
     ActivatorRepoProcessor.downloadTemplateFromRepo(
       templateId,
@@ -185,8 +187,10 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       templateId: String,
       extractTo: File,
       onError: String => Unit) {
-    val contentDir =
-      FileUtilRt.createTempDirectory(s"$templateId-template-content", "", true)
+    val contentDir = FileUtilRt.createTempDirectory(
+      s"$templateId-template-content",
+      "",
+      true)
     val contentFile = new File(contentDir, "content.zip")
 
     contentFile.createNewFile()
@@ -197,19 +201,20 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
   }
 
   def extractRepoData(): Map[String, DocData] = {
-    val toProcess: File = downloadIndex() match {
-      case Some(file) =>
-        cacheFile(file, new File(getCacheDataPath, INDEX_CACHE_NAME))
-        workOffline = false
-        file
-      case None =>
-        val cacheFile = new File(getCacheDataPath, INDEX_CACHE_NAME)
-        workOffline = true
-        if (!cacheFile.exists())
-          null
-        else
-          cacheFile
-    }
+    val toProcess: File =
+      downloadIndex() match {
+        case Some(file) =>
+          cacheFile(file, new File(getCacheDataPath, INDEX_CACHE_NAME))
+          workOffline = false
+          file
+        case None =>
+          val cacheFile = new File(getCacheDataPath, INDEX_CACHE_NAME)
+          workOffline = true
+          if (!cacheFile.exists())
+            null
+          else
+            cacheFile
+      }
 
     if (toProcess != null)
       processIndex(toProcess)

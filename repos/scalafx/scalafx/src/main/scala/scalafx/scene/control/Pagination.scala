@@ -112,9 +112,10 @@ class Pagination(override val delegate: jfxsc.Pagination = new jfxsc.Pagination)
   def pageFactory: ObjectProperty[Int => Node] =
     ObjectProperty((page: Int) => delegate.pageFactoryProperty.get.call(page))
   def pageFactory_=(callback: Int => Node) {
-    val jCallback = new jfxu.Callback[java.lang.Integer, jfxs.Node] {
-      def call(pageIndex: java.lang.Integer) = callback(pageIndex).delegate
-    }
+    val jCallback =
+      new jfxu.Callback[java.lang.Integer, jfxs.Node] {
+        def call(pageIndex: java.lang.Integer) = callback(pageIndex).delegate
+      }
 
     delegate.setPageFactory(jCallback)
   }

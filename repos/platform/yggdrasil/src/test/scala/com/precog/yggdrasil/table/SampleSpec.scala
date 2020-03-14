@@ -38,32 +38,34 @@ trait SampleSpec[M[+_]]
   import SampleData._
   import trans._
 
-  val simpleData: Stream[JValue] = Stream.tabulate(100) { i =>
-    JObject(
-      JField(
-        "id",
-        if (i % 2 == 0)
-          JString(i.toString)
-        else
-          JNum(i)) :: Nil)
-  }
-
-  val simpleData2: Stream[JValue] = Stream.tabulate(100) { i =>
-    JObject(
-      JField(
-        "id",
-        if (i % 2 == 0)
-          JString(i.toString)
-        else
-          JNum(i)) ::
+  val simpleData: Stream[JValue] =
+    Stream.tabulate(100) { i =>
+      JObject(
         JField(
-          "value",
+          "id",
           if (i % 2 == 0)
-            JBool(true)
+            JString(i.toString)
+          else
+            JNum(i)) :: Nil)
+    }
+
+  val simpleData2: Stream[JValue] =
+    Stream.tabulate(100) { i =>
+      JObject(
+        JField(
+          "id",
+          if (i % 2 == 0)
+            JString(i.toString)
           else
             JNum(i)) ::
-        Nil)
-  }
+          JField(
+            "value",
+            if (i % 2 == 0)
+              JBool(true)
+            else
+              JNum(i)) ::
+          Nil)
+    }
 
   def testSample = {
     val data = SampleData(simpleData)
@@ -102,11 +104,14 @@ trait SampleSpec[M[+_]]
         result1 must have size (15)
         result2 must have size (15)
 
-        val expected1 = toJson(
-          table.transform(
-            trans.DerefObjectStatic(TransSpec1.Id, CPathField("id")))).copoint
-        val expected2 = toJson(table.transform(
-          trans.DerefObjectStatic(TransSpec1.Id, CPathField("value")))).copoint
+        val expected1 =
+          toJson(
+            table.transform(
+              trans.DerefObjectStatic(TransSpec1.Id, CPathField("id")))).copoint
+        val expected2 =
+          toJson(
+            table.transform(trans
+              .DerefObjectStatic(TransSpec1.Id, CPathField("value")))).copoint
         expected1 must containAllOf(result1)
         expected2 must containAllOf(result2)
     }

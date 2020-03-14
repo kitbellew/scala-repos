@@ -47,10 +47,11 @@ class SerializationSpecs extends Specification {
         { "tid" : "45A49AB5", "cid" : "A594581E", "gids" : ["b994", "3be3"] }
       ]"""
 
-      val result = for {
-        jv <- JParser.parseFromString(inputs)
-        records <- jv.validated[List[APIKeyRecord]]
-      } yield records
+      val result =
+        for {
+          jv <- JParser.parseFromString(inputs)
+          records <- jv.validated[List[APIKeyRecord]]
+        } yield records
 
       result must beLike {
         case Success(records) =>
@@ -106,10 +107,11 @@ class SerializationSpecs extends Specification {
         {"isRoot" : true, "name" : "root-apiKey", "description" : "The root API key", "apiKey" : "A09D8293-A28F-4422-B375-9C0CDF75DC68", "grants" : ["c6ab82c1f69640de9e5211ebb2b96661e1bff7d8a4134f25ad1aaf1319fa7b3e182e6aa8eb1f4699b1303f0d03022213"] }
       ]"""
 
-      val records = for {
-        jv <- JParser.parseFromString(inputs)
-        records <- jv.validated[List[APIKeyRecord]]
-      } yield records
+      val records =
+        for {
+          jv <- JParser.parseFromString(inputs)
+          records <- jv.validated[List[APIKeyRecord]]
+        } yield records
 
       records mustEqual Success(
         List(

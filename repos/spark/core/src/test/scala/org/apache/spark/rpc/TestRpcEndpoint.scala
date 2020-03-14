@@ -33,8 +33,9 @@ class TestRpcEndpoint extends ThreadSafeRpcEndpoint with TripleEquals {
 
   @volatile private var onDisconnectedMessages = ArrayBuffer[RpcAddress]()
 
-  @volatile private var onNetworkErrorMessages =
-    ArrayBuffer[(Throwable, RpcAddress)]()
+  @volatile private var onNetworkErrorMessages = ArrayBuffer[(
+      Throwable,
+      RpcAddress)]()
 
   @volatile private var started = false
 

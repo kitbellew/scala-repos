@@ -59,62 +59,69 @@ import scalafx.scene.shape.Rectangle
   */
 object ScalaFX_Controls_04 extends JFXApp {
 
-  val priorityLabel = new Label {
-    text = "Priority:"
-  }
+  val priorityLabel =
+    new Label {
+      text = "Priority:"
+    }
 
   val theToggleGroup = new ToggleGroup {}
 
-  val minorToggleButton = new ToggleButton {
-    text = "Minor"
-    toggleGroup = theToggleGroup
-    userData = Color.LightGreen
-    selected = true
-    style = "-fx-base: lightgreen;"
-  }
+  val minorToggleButton =
+    new ToggleButton {
+      text = "Minor"
+      toggleGroup = theToggleGroup
+      userData = Color.LightGreen
+      selected = true
+      style = "-fx-base: lightgreen;"
+    }
 
-  val majorToggleButton = new ToggleButton {
-    text = "Major"
-    toggleGroup = theToggleGroup
-    userData = Color.LightBlue
-    selected = true
-    style = "-fx-base: lightblue;"
-  }
+  val majorToggleButton =
+    new ToggleButton {
+      text = "Major"
+      toggleGroup = theToggleGroup
+      userData = Color.LightBlue
+      selected = true
+      style = "-fx-base: lightblue;"
+    }
 
-  val criticalToggleButton = new ToggleButton {
-    text = "Critical"
-    toggleGroup = theToggleGroup
-    userData = Color.Salmon
-    selected = true
-    style = "-fx-base: salmon;"
-  }
+  val criticalToggleButton =
+    new ToggleButton {
+      text = "Critical"
+      toggleGroup = theToggleGroup
+      userData = Color.Salmon
+      selected = true
+      style = "-fx-base: salmon;"
+    }
 
-  val hBox = new HBox {
-    children = List(
-      minorToggleButton,
-      majorToggleButton,
-      criticalToggleButton
-    )
-  }
+  val hBox =
+    new HBox {
+      children = List(
+        minorToggleButton,
+        majorToggleButton,
+        criticalToggleButton
+      )
+    }
 
-  val rectangle = new Rectangle {
-    width = 158
-    height = 50
-    fill = Color.White
-    stroke = Color.DarkGray
-    strokeWidth = 2
-    arcHeight = 10
-    arcWidth = 10
-  }
+  val rectangle =
+    new Rectangle {
+      width = 158
+      height = 50
+      fill = Color.White
+      stroke = Color.DarkGray
+      strokeWidth = 2
+      arcHeight = 10
+      arcWidth = 10
+    }
 
-  val vBox = new VBox {
-    padding = Insets(20, 10, 10, 20)
-    children = List(
-      priorityLabel,
-      hBox,
-      rectangle
-    )
-  }
+  val vBox =
+    new VBox {
+      padding = Insets(20, 10, 10, 20)
+      children = List(
+        priorityLabel,
+        hBox,
+        rectangle
+      )
+    }
 
   theToggleGroup.selectedToggle onChange { (_, _, newToggle) =>
     if (newToggle != null) {

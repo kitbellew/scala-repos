@@ -72,11 +72,12 @@ object CrossOrderingSpecs
       val input =
         Join(Or, IdentitySort, Join(Eq, Cross(None), left, right)(line), left)(
           line)
-      val expected = Join(
-        Or,
-        IdentitySort,
-        Join(Eq, Cross(Some(CrossLeft)), left, right)(line),
-        left)(line)
+      val expected =
+        Join(
+          Or,
+          IdentitySort,
+          Join(Eq, Cross(Some(CrossLeft)), left, right)(line),
+          left)(line)
 
       orderCrosses(input) mustEqual expected
     }
@@ -90,10 +91,11 @@ object CrossOrderingSpecs
       val input =
         Filter(IdentitySort, Join(Eq, Cross(None), left, right)(line), left)(
           line)
-      val expected = Filter(
-        IdentitySort,
-        Join(Eq, Cross(Some(CrossLeft)), left, right)(line),
-        left)(line)
+      val expected =
+        Filter(
+          IdentitySort,
+          Join(Eq, Cross(Some(CrossLeft)), left, right)(line),
+          left)(line)
 
       orderCrosses(input) mustEqual expected
     }

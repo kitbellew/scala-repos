@@ -19,11 +19,12 @@ sealed abstract class FreeListInstances {
 
 object FreeList extends FreeListInstances {
 
-  implicit val freeListZip: Zip[FreeList] = new Zip[FreeList] {
-    val Z = Zip[Free[List, ?]]
-    override def zip[A, B](a: => FreeList[A], b: => FreeList[B]) =
-      FreeList(Z.zip(a.f, b.f))
-  }
+  implicit val freeListZip: Zip[FreeList] =
+    new Zip[FreeList] {
+      val Z = Zip[Free[List, ?]]
+      override def zip[A, B](a: => FreeList[A], b: => FreeList[B]) =
+        FreeList(Z.zip(a.f, b.f))
+    }
 
   implicit def freeListMonad =
     new Monad[FreeList] with BindRec[FreeList] {
@@ -136,12 +137,13 @@ object FreeTest extends SpecLite {
           Free.pure[FTestApi, Int](j)
       } yield z
 
-    val runner = new (FTestApi ~> Id.Id) {
-      def apply[A](fa: FTestApi[A]) =
-        fa match {
-          case TB(i) => i + 1
-        }
-    }
+    val runner =
+      new (FTestApi ~> Id.Id) {
+        def apply[A](fa: FTestApi[A]) =
+          fa match {
+            case TB(i) => i + 1
+          }
+      }
 
     a(0).foldMapRec(runner) must_=== n
   }

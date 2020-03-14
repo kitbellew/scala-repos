@@ -14,9 +14,10 @@ class HttpResponseProxyTest extends FunSuite {
   test("basics") {
     val message =
       new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK)
-    val proxy = new HttpResponseProxy {
-      final val httpResponse = message
-    }
+    val proxy =
+      new HttpResponseProxy {
+        final val httpResponse = message
+      }
     assert(proxy.httpMessage != null)
     assert(proxy.getProtocolVersion == HttpVersion.HTTP_1_1)
     assert(proxy.getStatus == HttpResponseStatus.OK)

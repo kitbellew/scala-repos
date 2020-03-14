@@ -16,8 +16,7 @@ class PatternMayNeverMatchInspectionTest
     PatternMayNeverMatchInspection.inspectionName
 
   def testSCL9668(): Unit = {
-    val code =
-      s"""
+    val code = s"""
         |object Moo {
         |  (1, 2) match {
         |    case ${START}ScFunctionType(_, _)$END =>

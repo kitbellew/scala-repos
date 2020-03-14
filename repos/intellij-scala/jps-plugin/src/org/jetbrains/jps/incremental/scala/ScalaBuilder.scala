@@ -68,17 +68,18 @@ object ScalaBuilder {
 
     def getPreviousIncrementalType: Option[IncrementalityType] = {
       storageFile.filter(_.exists).flatMap { file =>
-        val result = using(
-          new DataInputStream(
-            new BufferedInputStream(new FileInputStream(file)))) { in =>
-          try {
-            Some(IncrementalityType.valueOf(in.readUTF()))
-          } catch {
-            case _: IOException | _: IllegalArgumentException |
-                _: NullPointerException =>
-              None
+        val result =
+          using(
+            new DataInputStream(
+              new BufferedInputStream(new FileInputStream(file)))) { in =>
+            try {
+              Some(IncrementalityType.valueOf(in.readUTF()))
+            } catch {
+              case _: IOException | _: IllegalArgumentException |
+                  _: NullPointerException =>
+                None
+            }
           }
-        }
         if (result.isEmpty)
           file.delete()
         result
@@ -200,8 +201,8 @@ object ScalaBuilder {
 
   private lazy val sbtData = {
     val classLoader = getClass.getClassLoader
-    val pluginRoot = new File(
-      PathManager.getJarPathForClass(getClass)).getParentFile
+    val pluginRoot =
+      new File(PathManager.getJarPathForClass(getClass)).getParentFile
     val javaClassVersion = System.getProperty("java.class.version")
 
     SbtData.from(classLoader, pluginRoot, javaClassVersion)
@@ -212,8 +213,8 @@ object ScalaBuilder {
       compilationData: CompilationData,
       client: Client) {
     val hasScalaFacet = modules.exists(SettingsManager.hasScalaSdk)
-    val hasScalaLibrary =
-      compilationData.classpath.exists(_.getName.startsWith("scala-library"))
+    val hasScalaLibrary = compilationData.classpath.exists(
+      _.getName.startsWith("scala-library"))
 
     if (hasScalaFacet && !hasScalaLibrary) {
       val names = modules.map(_.getName).mkString(", ")

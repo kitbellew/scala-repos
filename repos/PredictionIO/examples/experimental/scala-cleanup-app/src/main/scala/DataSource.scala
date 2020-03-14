@@ -37,32 +37,35 @@ class DataSource(val dsp: DataSourceParams)
     val lEventsDb = Storage.getLEvents()
     logger.info(s"CleanupApp: $dsp")
 
-    val countBefore = eventsDb
-      .find(
-        appId = dsp.appId
-      )(sc)
-      .count
+    val countBefore =
+      eventsDb
+        .find(
+          appId = dsp.appId
+        )(sc)
+        .count
     logger.info(s"Event count before cleanup: $countBefore")
 
-    val countRemove = eventsDb
-      .find(
-        appId = dsp.appId,
-        untilTime = Some(dsp.cutoffTime)
-      )(sc)
-      .count
+    val countRemove =
+      eventsDb
+        .find(
+          appId = dsp.appId,
+          untilTime = Some(dsp.cutoffTime)
+        )(sc)
+        .count
     logger.info(s"Number of events to remove: $countRemove")
 
     logger.info(s"Remove events from appId ${dsp.appId}")
-    val eventsToRemove: Array[String] = eventsDb
-      .find(
-        appId = dsp.appId,
-        untilTime = Some(dsp.cutoffTime)
-      )(sc)
-      .map {
-        case e =>
-          e.eventId.getOrElse("")
-      }
-      .collect
+    val eventsToRemove: Array[String] =
+      eventsDb
+        .find(
+          appId = dsp.appId,
+          untilTime = Some(dsp.cutoffTime)
+        )(sc)
+        .map {
+          case e =>
+            e.eventId.getOrElse("")
+        }
+        .collect
 
     var lastFuture: Future[Boolean] = Future[Boolean] {
       true
@@ -78,11 +81,12 @@ class DataSource(val dsp: DataSourceParams)
     Await.result(lastFuture, scala.concurrent.duration.Duration(5, "minutes"))
     logger.info(s"Finish cleaning up events to appId ${dsp.appId}")
 
-    val countAfter = eventsDb
-      .find(
-        appId = dsp.appId
-      )(sc)
-      .count
+    val countAfter =
+      eventsDb
+        .find(
+          appId = dsp.appId
+        )(sc)
+        .count
     logger.info(s"Event count after cleanup: $countAfter")
 
     throw new StopAfterReadInterruption()

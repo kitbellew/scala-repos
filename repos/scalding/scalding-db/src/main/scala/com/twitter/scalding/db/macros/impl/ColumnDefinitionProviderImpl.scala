@@ -35,10 +35,11 @@ object ColumnDefinitionProviderImpl {
     }
     // pick the last apply method which (anecdotally) gives us the defaults
     // set in the case class declaration, not the companion object
-    val applyList = moduleSym.typeSignature
-      .declaration(newTermName("apply"))
-      .asTerm
-      .alternatives
+    val applyList =
+      moduleSym.typeSignature
+        .declaration(newTermName("apply"))
+        .asTerm
+        .alternatives
     val apply = applyList.last.asMethod
     // can handle only default parameters from the first parameter list
     // because subsequent parameter lists might depend on previous parameters
@@ -234,16 +235,18 @@ object ColumnDefinitionProviderImpl {
         }
     }
 
-    val formats = expandMethod(Nil, T.tpe) match {
-      case Success(s) => s
-      case Failure(e) => (c.abort(c.enclosingPosition, e.getMessage))
-    }
+    val formats =
+      expandMethod(Nil, T.tpe) match {
+        case Success(s) => s
+        case Failure(e) => (c.abort(c.enclosingPosition, e.getMessage))
+      }
 
-    val duplicateFields = formats
-      .map(_.fieldName)
-      .groupBy(identity)
-      .filter(_._2.size > 1)
-      .keys
+    val duplicateFields =
+      formats
+        .map(_.fieldName)
+        .groupBy(identity)
+        .filter(_._2.size > 1)
+        .keys
 
     if (duplicateFields.nonEmpty) {
       c.abort(
@@ -271,8 +274,9 @@ object ColumnDefinitionProviderImpl {
             q"_root_.com.twitter.scalding.db.Nullable"
           else
             q"_root_.com.twitter.scalding.db.NotNullable"
-        val fieldTypeSelect =
-          Select(q"_root_.com.twitter.scalding.db", newTermName(cf.fieldType))
+        val fieldTypeSelect = Select(
+          q"_root_.com.twitter.scalding.db",
+          newTermName(cf.fieldType))
         val res = q"""new _root_.com.twitter.scalding.db.ColumnDefinition(
         $fieldTypeSelect,
         _root_.com.twitter.scalding.db.ColumnName(${cf.fieldName.toStr}),
@@ -304,14 +308,15 @@ object ColumnDefinitionProviderImpl {
         // certain types have synonyms, so we group them together here
         // note: this is mysql specific
         // http://dev.mysql.com/doc/refman/5.0/en/numeric-type-overview.html
-        val typeValidation = cf.fieldType match {
-          case "VARCHAR" =>
-            q"""List("VARCHAR", "CHAR").contains($typeNameTerm)"""
-          case "BOOLEAN" | "TINYINT" =>
-            q"""List("BOOLEAN", "BOOL", "TINYINT").contains($typeNameTerm)"""
-          case "INT" => q"""List("INTEGER", "INT").contains($typeNameTerm)"""
-          case f     => q"""$f == $typeNameTerm"""
-        }
+        val typeValidation =
+          cf.fieldType match {
+            case "VARCHAR" =>
+              q"""List("VARCHAR", "CHAR").contains($typeNameTerm)"""
+            case "BOOLEAN" | "TINYINT" =>
+              q"""List("BOOLEAN", "BOOL", "TINYINT").contains($typeNameTerm)"""
+            case "INT" => q"""List("INTEGER", "INT").contains($typeNameTerm)"""
+            case f     => q"""$f == $typeNameTerm"""
+          }
         val typeAssert = q"""
         if (!$typeValidation) {
           throw new _root_.com.twitter.scalding.db.JdbcValidationException(

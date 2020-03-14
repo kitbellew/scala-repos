@@ -42,21 +42,22 @@ object Correlations {
 
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("Correlations") {
-      head("Correlations: an example app for computing correlations")
-      opt[String]("input")
-        .text(
-          s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
-        .action((x, c) => c.copy(input = x))
-      note(
-        """
+    val parser =
+      new OptionParser[Params]("Correlations") {
+        head("Correlations: an example app for computing correlations")
+        opt[String]("input")
+          .text(
+            s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
+          .action((x, c) => c.copy(input = x))
+        note(
+          """
         |For example, the following command runs this app on a synthetic dataset:
         |
         | bin/spark-submit --class org.apache.spark.examples.mllib.Correlations \
         |  examples/target/scala-*/spark-examples-*.jar \
         |  --input data/mllib/sample_linear_regression_data.txt
         """.stripMargin)
-    }
+      }
 
     parser.parse(args, defaultParams).map { params =>
       run(params)

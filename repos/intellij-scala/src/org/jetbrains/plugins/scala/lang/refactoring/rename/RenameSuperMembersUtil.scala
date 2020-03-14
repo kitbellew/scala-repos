@@ -41,12 +41,13 @@ object RenameSuperMembersUtil {
 
   def chooseSuper(named: ScNamedElement): PsiNamedElement = {
     var chosen: PsiNamedElement = null
-    val processor = new PsiElementProcessor[PsiNamedElement]() {
-      def execute(element: PsiNamedElement): Boolean = {
-        chosen = element
-        false
+    val processor =
+      new PsiElementProcessor[PsiNamedElement]() {
+        def execute(element: PsiNamedElement): Boolean = {
+          chosen = element
+          false
+        }
       }
-    }
     chooseAndProcessSuper(named, processor, null)
     chosen
   }
@@ -56,10 +57,11 @@ object RenameSuperMembersUtil {
       processor: PsiElementProcessor[PsiNamedElement],
       editor: Editor) {
 
-    val superMembers = named match {
-      case _: ScTypeAlias => allSuperTypes(named, withSelfType = false)
-      case _              => allSuperMembers(named, withSelfType = false)
-    }
+    val superMembers =
+      named match {
+        case _: ScTypeAlias => allSuperTypes(named, withSelfType = false)
+        case _              => allSuperMembers(named, withSelfType = false)
+      }
     val maxSuperMembers = findMaxSuperMembers(superMembers)
     if (maxSuperMembers.isEmpty || maxSuperMembers == Seq(named)) {
       processor.execute(named)
@@ -96,8 +98,8 @@ object RenameSuperMembersUtil {
       return
     }
     val allElements = superMembers :+ element
-    val classes: Seq[PsiClass] =
-      allElements.map(PsiTreeUtil.getParentOfType(_, classOf[PsiClass], false))
+    val classes: Seq[PsiClass] = allElements.map(
+      PsiTreeUtil.getParentOfType(_, classOf[PsiClass], false))
     val oneSuperClass = superMembers.size == 1
     val renameAllMarkerObject = ScalaPsiElementFactory.createObjectWithContext(
       "object RenameAll",
@@ -111,36 +113,39 @@ object RenameSuperMembersUtil {
     val classesToNamed = additional ++: Map(classes.zip(allElements): _*)
     val selection = classesToNamed.keys.head
 
-    val processor = new PsiElementProcessor[PsiClass] {
-      def execute(aClass: PsiClass): Boolean = {
-        if (aClass != renameAllMarkerObject)
-          action(classesToNamed(aClass))
-        else {
-          val mainOne = classesToNamed(classes(0))
-          superMembersToRename.clear()
-          superMembersToRename ++= classes
-            .dropRight(1)
-            .drop(1)
-            .map(classesToNamed)
-          action(mainOne)
+    val processor =
+      new PsiElementProcessor[PsiClass] {
+        def execute(aClass: PsiClass): Boolean = {
+          if (aClass != renameAllMarkerObject)
+            action(classesToNamed(aClass))
+          else {
+            val mainOne = classesToNamed(classes(0))
+            superMembersToRename.clear()
+            superMembersToRename ++= classes
+              .dropRight(1)
+              .drop(1)
+              .map(classesToNamed)
+            action(mainOne)
+          }
+          false
         }
-        false
       }
-    }
     val renameAllText = ScalaBundle.message("rename.all.base.members")
     val renameBase = ScalaBundle.message("rename.base.member")
     val renameOnlyCurrent = ScalaBundle.message("rename.only.current.member")
     val name = ScalaNamesUtil.scalaName(superMembers.last)
     val title =
       if (oneSuperClass) {
-        val overimpl = ScalaPsiUtil.nameContext(superMembers(0)) match {
-          case decl: ScDeclaration => "implements"
-          case _                   => "overrides"
-        }
-        val qualName = classes(0) match {
-          case td: ScTypeDefinition => td.qualifiedName
-          case cl                   => cl.getQualifiedName
-        }
+        val overimpl =
+          ScalaPsiUtil.nameContext(superMembers(0)) match {
+            case decl: ScDeclaration => "implements"
+            case _                   => "overrides"
+          }
+        val qualName =
+          classes(0) match {
+            case td: ScTypeDefinition => td.qualifiedName
+            case cl                   => cl.getQualifiedName
+          }
         s"$name $overimpl member of $qualName"
       } else
         ScalaBundle.message("rename.has.multiple.base.members", name)
@@ -206,10 +211,11 @@ object RenameSuperMembersUtil {
   def allSuperMembers(
       named: ScNamedElement,
       withSelfType: Boolean): Seq[PsiNamedElement] = {
-    val member = ScalaPsiUtil.nameContext(named) match {
-      case m: ScMember => m
-      case _           => return Seq()
-    }
+    val member =
+      ScalaPsiUtil.nameContext(named) match {
+        case m: ScMember => m
+        case _           => return Seq()
+      }
     val aClass = member.containingClass
     if (aClass == null)
       return Seq()
@@ -227,10 +233,11 @@ object RenameSuperMembersUtil {
   def allSuperTypes(
       named: ScNamedElement,
       withSelfType: Boolean): Seq[PsiNamedElement] = {
-    val typeAlias = ScalaPsiUtil.nameContext(named) match {
-      case t: ScTypeAlias => t
-      case _              => return Seq()
-    }
+    val typeAlias =
+      ScalaPsiUtil.nameContext(named) match {
+        case t: ScTypeAlias => t
+        case _              => return Seq()
+      }
     val aClass = typeAlias.containingClass
     if (aClass == null)
       return Seq()
@@ -240,8 +247,8 @@ object RenameSuperMembersUtil {
       else
         TypeDefinitionMembers.getTypes(aClass)
     val forName = types.forName(named.name)._1
-    val typeAliases =
-      forName.filter(ta => ScalaNamesUtil.scalaName(ta._1) == named.name)
+    val typeAliases = forName.filter(ta =>
+      ScalaNamesUtil.scalaName(ta._1) == named.name)
     typeAliases.flatMap(ta => ta._2.supers.map(_.info))
   }
 

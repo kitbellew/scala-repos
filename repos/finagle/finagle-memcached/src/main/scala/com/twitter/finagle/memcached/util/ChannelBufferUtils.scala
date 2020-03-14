@@ -11,32 +11,34 @@ import org.jboss.netty.buffer.{
 import scala.language.implicitConversions
 
 private[finagle] object ChannelBufferUtils {
-  private val FIND_SPACE = new ChannelBufferIndexFinder() {
-    def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
-      val enoughBytesForDelimeter = guessedIndex + 1
-      if (buffer.writerIndex < enoughBytesForDelimeter)
-        return false
+  private val FIND_SPACE =
+    new ChannelBufferIndexFinder() {
+      def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
+        val enoughBytesForDelimeter = guessedIndex + 1
+        if (buffer.writerIndex < enoughBytesForDelimeter)
+          return false
 
-      val space = buffer.getByte(guessedIndex)
-      space == ' '
+        val space = buffer.getByte(guessedIndex)
+        space == ' '
+      }
     }
-  }
 
   // Per memcached protocol, control characters and whitespace cannot be in the key
   // https://github.com/memcached/memcached/blob/master/doc/protocol.txt
   // But both memcached and twemcache are not strictly enforcing this rule currently,
   // we are relaxing the rules here to only eliminate ' '(ws), \r, \n and \0, to
   // make it compatible with our previous validation logic
-  val FIND_INVALID_KEY_CHARACTER = new ChannelBufferIndexFinder() {
-    def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
-      val enoughBytesForDelimeter = guessedIndex + 1
-      if (buffer.writerIndex < enoughBytesForDelimeter)
-        return false
+  val FIND_INVALID_KEY_CHARACTER =
+    new ChannelBufferIndexFinder() {
+      def find(buffer: ChannelBuffer, guessedIndex: Int): Boolean = {
+        val enoughBytesForDelimeter = guessedIndex + 1
+        if (buffer.writerIndex < enoughBytesForDelimeter)
+          return false
 
-      val control = buffer.getByte(guessedIndex)
-      control == '\u0000' || control == '\n' || control == '\r' || control == ' '
+        val control = buffer.getByte(guessedIndex)
+        control == '\u0000' || control == '\n' || control == '\r' || control == ' '
+      }
     }
-  }
 
   private val Byte0 = '0'.toByte
 
@@ -76,8 +78,7 @@ private[finagle] object ChannelBufferUtils {
 
     override def toString: String = buffer.toString(Charsets.Utf8)
 
-    def split: Seq[ChannelBuffer] =
-      split(FIND_SPACE, 1)
+    def split: Seq[ChannelBuffer] = split(FIND_SPACE, 1)
 
     def split(
         indexFinder: ChannelBufferIndexFinder,
@@ -116,8 +117,7 @@ private[finagle] object ChannelBufferUtils {
     new String(channelBufferToBytes(channelBuffer))
 
   implicit def channelBufferToRichChannelBuffer(
-      buffer: ChannelBuffer): RichChannelBuffer =
-    new RichChannelBuffer(buffer)
+      buffer: ChannelBuffer): RichChannelBuffer = new RichChannelBuffer(buffer)
 
   implicit def stringToChannelBuffer(string: String): ChannelBuffer =
     if (Strings.isNullOrEmpty(string))
@@ -140,8 +140,7 @@ private[finagle] object ChannelBufferUtils {
       }
     }
 
-  implicit def stringToByteArray(string: String): Array[Byte] =
-    string.getBytes
+  implicit def stringToByteArray(string: String): Array[Byte] = string.getBytes
 
   implicit def stringToChannelBufferIndexFinder(
       string: String): ChannelBufferIndexFinder =

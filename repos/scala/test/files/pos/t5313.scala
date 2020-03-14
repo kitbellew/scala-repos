@@ -10,10 +10,11 @@ object DepBug {
     val b: a.B
   }
 
-  val dep = new Dep {
-    val a = new A
-    val b = a.mkB
-  }
+  val dep =
+    new Dep {
+      val a = new A
+      val b = a.mkB
+    }
 
   def useDep(d: Dep) {
     import d._

@@ -126,17 +126,18 @@ object Actor extends ListenerManagement {
   /** Add shutdown cleanups
     */
   private[akka] lazy val shutdownHook = {
-    val hook = new Runnable {
-      override def run {
-        // Clear Thread.subclassAudits
-        val tf = classOf[java.lang.Thread].getDeclaredField("subclassAudits")
-        tf.setAccessible(true)
-        val subclassAudits = tf.get(null).asInstanceOf[java.util.Map[_, _]]
-        subclassAudits synchronized {
-          subclassAudits.clear
+    val hook =
+      new Runnable {
+        override def run {
+          // Clear Thread.subclassAudits
+          val tf = classOf[java.lang.Thread].getDeclaredField("subclassAudits")
+          tf.setAccessible(true)
+          val subclassAudits = tf.get(null).asInstanceOf[java.util.Map[_, _]]
+          subclassAudits synchronized {
+            subclassAudits.clear
+          }
         }
       }
-    }
     Runtime.getRuntime.addShutdownHook(new Thread(hook))
     hook
   }
@@ -152,17 +153,19 @@ object Actor extends ListenerManagement {
 
   private[akka] val TIMEOUT =
     Duration(config.getInt("akka.actor.timeout", 5), TIME_UNIT).toMillis
-  private[akka] val SERIALIZE_MESSAGES =
-    config.getBool("akka.actor.serialize-messages", false)
+  private[akka] val SERIALIZE_MESSAGES = config.getBool(
+    "akka.actor.serialize-messages",
+    false)
 
   /** A Receive is a convenience type that defines actor message behavior currently modeled as
     *  a PartialFunction[Any, Unit].
     */
   type Receive = PartialFunction[Any, Unit]
 
-  private[actor] val actorRefInCreation = new ThreadLocal[Option[ActorRef]] {
-    override def initialValue = None
-  }
+  private[actor] val actorRefInCreation =
+    new ThreadLocal[Option[ActorRef]] {
+      override def initialValue = None
+    }
 
   /** Creates an ActorRef out of the Actor with type T.
     *  <pre>
@@ -203,10 +206,11 @@ object Actor extends ListenerManagement {
           noArgs) match {
           case Right(actor) => actor
           case Left(exception) =>
-            val cause = exception match {
-              case i: InvocationTargetException => i.getTargetException
-              case _                            => exception
-            }
+            val cause =
+              exception match {
+                case i: InvocationTargetException => i.getTargetException
+                case _                            => exception
+              }
 
             throw new ActorInitializationException(
               "Could not instantiate Actor of " + clazz +

@@ -37,9 +37,10 @@ class ZookeeperTopicEventWatcher(
     zkUtils.zkClient.subscribeStateChanges(
       new ZkSessionExpireListener(topicEventListener))
 
-    val topics = zkUtils.zkClient
-      .subscribeChildChanges(ZkUtils.BrokerTopicsPath, topicEventListener)
-      .toList
+    val topics =
+      zkUtils.zkClient
+        .subscribeChildChanges(ZkUtils.BrokerTopicsPath, topicEventListener)
+        .toList
 
     // call to bootstrap topic list
     topicEventListener.handleChildChange(ZkUtils.BrokerTopicsPath, topics)

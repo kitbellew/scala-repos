@@ -60,12 +60,13 @@ private[io] class TcpListener(
       val socket = channel.socket
       bind.options.foreach(_.beforeServerSocketBind(socket))
       socket.bind(bind.localAddress, bind.backlog)
-      val ret = socket.getLocalSocketAddress match {
-        case isa: InetSocketAddress ⇒ isa
-        case x ⇒
-          throw new IllegalArgumentException(
-            s"bound to unknown SocketAddress [$x]")
-      }
+      val ret =
+        socket.getLocalSocketAddress match {
+          case isa: InetSocketAddress ⇒ isa
+          case x ⇒
+            throw new IllegalArgumentException(
+              s"bound to unknown SocketAddress [$x]")
+        }
       channelRegistry.register(
         channel,
         if (bind.pullMode)

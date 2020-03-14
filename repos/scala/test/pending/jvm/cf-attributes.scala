@@ -63,12 +63,13 @@ object anonymousClasses {
   }
   //InnerClass:
   // public final #_; //class anonymousClasses$$anon$1 of class anonymousClasses$
-  val x = new Foo() {
-    override def foo() {
-      println("foo (overridden)");
+  val x =
+    new Foo() {
+      override def foo() {
+        println("foo (overridden)");
+      }
+      def dummy = 0
     }
-    def dummy = 0
-  }
 }
 
 // Auxiliary functions

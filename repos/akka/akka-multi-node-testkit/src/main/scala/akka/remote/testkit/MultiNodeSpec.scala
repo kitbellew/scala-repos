@@ -148,13 +148,14 @@ object MultiNodeSpec {
     * InetAddress.getLocalHost.getHostAddress is used if empty or "localhost"
     * is defined as system property "multinode.host".
     */
-  val selfName: String = Option(System.getProperty("multinode.host")) match {
-    case None ⇒
-      throw new IllegalStateException(
-        "need system property multinode.host to be set")
-    case Some("") ⇒ InetAddress.getLocalHost.getHostAddress
-    case Some(host) ⇒ host
-  }
+  val selfName: String =
+    Option(System.getProperty("multinode.host")) match {
+      case None ⇒
+        throw new IllegalStateException(
+          "need system property multinode.host to be set")
+      case Some("") ⇒ InetAddress.getLocalHost.getHostAddress
+      case Some(host) ⇒ host
+    }
 
   require(selfName != "", "multinode.host must not be empty")
 
@@ -222,8 +223,8 @@ object MultiNodeSpec {
       "akka.remote.netty.tcp.hostname" -> selfName,
       "akka.remote.netty.tcp.port" -> selfPort))
 
-  private[testkit] val baseConfig: Config =
-    ConfigFactory.parseString("""
+  private[testkit] val baseConfig: Config = ConfigFactory.parseString(
+    """
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"
@@ -249,10 +250,11 @@ object MultiNodeSpec {
   private def getCallerName(clazz: Class[_]): String = {
     val s =
       Thread.currentThread.getStackTrace map (_.getClassName) drop 1 dropWhile (_ matches ".*MultiNodeSpec.?$")
-    val reduced = s.lastIndexWhere(_ == clazz.getName) match {
-      case -1 ⇒ s
-      case z ⇒ s drop (z + 1)
-    }
+    val reduced =
+      s.lastIndexWhere(_ == clazz.getName) match {
+        case -1 ⇒ s
+        case z ⇒ s drop (z + 1)
+      }
     reduced.head.replaceFirst(""".*\.""", "").replaceAll("[^a-zA-Z_0-9]", "_")
   }
 }

@@ -36,8 +36,7 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
     setUpJdks()
   }
 
-  def testEmptyBasePackages(): Unit =
-    doTestBasePackages(Seq.empty)
+  def testEmptyBasePackages(): Unit = doTestBasePackages(Seq.empty)
 
   def testNonEmptyBasePackages(): Unit =
     doTestBasePackages(Seq("com.test1.base", "com.test2.base"))
@@ -58,8 +57,7 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
   def testInvalidSdk(): Unit =
     doTestSdk(Some(data.JdkByName("20")), defaultJdk, LanguageLevel.JDK_1_7)
 
-  def testAbsentSdk(): Unit =
-    doTestSdk(None, defaultJdk, LanguageLevel.JDK_1_7)
+  def testAbsentSdk(): Unit = doTestSdk(None, defaultJdk, LanguageLevel.JDK_1_7)
 
   def testJavacOptions(): Unit = {
     val options = Seq(
@@ -72,8 +70,9 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
     )
     importProjectData(generateProject(Seq.empty, None, options, ""))
 
-    val compilerOptions =
-      JavacConfiguration.getOptions(getProject, classOf[JavacConfiguration])
+    val compilerOptions = JavacConfiguration.getOptions(
+      getProject,
+      classOf[JavacConfiguration])
     assertFalse(compilerOptions.DEBUGGING_INFO)
     assertTrue(compilerOptions.GENERATE_NO_WARNINGS)
     assertTrue(compilerOptions.DEPRECATION)
@@ -92,33 +91,35 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
     val expectedVersion = "0.13.8"
     importProjectData(
       generateProject(Seq.empty, None, Seq.empty, expectedVersion))
-    val actualVersion = SbtSystemSettings
-      .getInstance(getProject)
-      .getLinkedProjectSettings(getProject.getBasePath)
-      .sbtVersion
+    val actualVersion =
+      SbtSystemSettings
+        .getInstance(getProject)
+        .getLinkedProjectSettings(getProject.getBasePath)
+        .sbtVersion
     assertEquals(expectedVersion, actualVersion)
   }
 
   def testIncrementalityTypeForSharedModules(): Unit = {
-    val testProject = new project {
-      name := getProject.getName
-      ideDirectoryPath := getProject.getBasePath
-      linkedProjectPath := getProject.getBasePath
+    val testProject =
+      new project {
+        name := getProject.getName
+        ideDirectoryPath := getProject.getBasePath
+        linkedProjectPath := getProject.getBasePath
 
-      modules += new module {
-        val typeId = SharedSourcesModuleType.instance.getId
-        name := "Module 1"
-        moduleFileDirectoryPath := getProject.getBasePath + "/module1"
-        externalConfigPath := getProject.getBasePath + "/module1"
-      }
+        modules += new module {
+          val typeId = SharedSourcesModuleType.instance.getId
+          name := "Module 1"
+          moduleFileDirectoryPath := getProject.getBasePath + "/module1"
+          externalConfigPath := getProject.getBasePath + "/module1"
+        }
 
-      arbitraryNodes += new SbtProjectNode(
-        Seq.empty,
-        None,
-        Seq.empty,
-        "",
-        getProject.getBasePath)
-    }.build.toDataNode
+        arbitraryNodes += new SbtProjectNode(
+          Seq.empty,
+          None,
+          Seq.empty,
+          "",
+          getProject.getBasePath)
+      }.build.toDataNode
 
     importProjectData(testProject)
     assertEquals(
@@ -163,8 +164,7 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
       basePackages: _*)
   }
 
-  private def defaultJdk: Sdk =
-    ProjectJdkTable.getInstance().getAllJdks.head
+  private def defaultJdk: Sdk = ProjectJdkTable.getInstance().getAllJdks.head
 
   private def doTestSdk(
       sdk: Option[data.Sdk],
@@ -181,8 +181,8 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
     assertEquals(
       expectedSdk,
       ProjectRootManager.getInstance(getProject).getProjectSdk)
-    val languageLevelProjectExtension =
-      LanguageLevelProjectExtension.getInstance(getProject)
+    val languageLevelProjectExtension = LanguageLevelProjectExtension
+      .getInstance(getProject)
     val actualLanguageLevel = languageLevelProjectExtension.getLanguageLevel
     assertEquals(expectedLanguageLevel, actualLanguageLevel)
     if (data.SdkUtils

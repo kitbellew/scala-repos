@@ -66,10 +66,8 @@ sealed abstract class ImmutableArrayInstances {
           Some(fa(i))
         else
           None
-      override def length[A](fa: ImmutableArray[A]) =
-        fa.length
-      override def empty[A](fa: ImmutableArray[A]) =
-        fa.isEmpty
+      override def length[A](fa: ImmutableArray[A]) = fa.length
+      override def empty[A](fa: ImmutableArray[A]) = fa.isEmpty
       override def all[A](fa: ImmutableArray[A])(f: A => Boolean) = {
         val len = fa.length
         @annotation.tailrec
@@ -99,20 +97,21 @@ sealed abstract class ImmutableArrayInstances {
 object ImmutableArray extends ImmutableArrayInstances {
 
   def make[A](x: AnyRef): ImmutableArray[A] = {
-    val y = x match {
-      case null              => null
-      case x: Array[Byte]    => new ofByte(x)
-      case x: Array[Short]   => new ofShort(x)
-      case x: Array[Char]    => new ofChar(x)
-      case x: Array[Int]     => new ofInt(x)
-      case x: Array[Long]    => new ofLong(x)
-      case x: Array[Float]   => new ofFloat(x)
-      case x: Array[Double]  => new ofDouble(x)
-      case x: Array[Boolean] => new ofBoolean(x)
-      case x: Array[Unit]    => new ofUnit(x)
-      case x: Array[AnyRef]  => new ofRef(x)
-      case x: String         => new StringArray(x)
-    }
+    val y =
+      x match {
+        case null              => null
+        case x: Array[Byte]    => new ofByte(x)
+        case x: Array[Short]   => new ofShort(x)
+        case x: Array[Char]    => new ofChar(x)
+        case x: Array[Int]     => new ofInt(x)
+        case x: Array[Long]    => new ofLong(x)
+        case x: Array[Float]   => new ofFloat(x)
+        case x: Array[Double]  => new ofDouble(x)
+        case x: Array[Boolean] => new ofBoolean(x)
+        case x: Array[Unit]    => new ofUnit(x)
+        case x: Array[AnyRef]  => new ofRef(x)
+        case x: String         => new StringArray(x)
+      }
     y.asInstanceOf[ImmutableArray[A]]
   }
 
@@ -122,19 +121,20 @@ object ImmutableArray extends ImmutableArrayInstances {
     * Provides better type inference than `make[A]`
     */
   def fromArray[A](x: Array[A]): ImmutableArray[A] = {
-    val y = x.asInstanceOf[AnyRef] match {
-      case null              => null
-      case x: Array[Byte]    => new ofByte(x)
-      case x: Array[Short]   => new ofShort(x)
-      case x: Array[Char]    => new ofChar(x)
-      case x: Array[Int]     => new ofInt(x)
-      case x: Array[Long]    => new ofLong(x)
-      case x: Array[Float]   => new ofFloat(x)
-      case x: Array[Double]  => new ofDouble(x)
-      case x: Array[Boolean] => new ofBoolean(x)
-      case x: Array[Unit]    => new ofUnit(x)
-      case _: Array[AnyRef]  => new ofRef(x.asInstanceOf[Array[AnyRef]])
-    }
+    val y =
+      x.asInstanceOf[AnyRef] match {
+        case null              => null
+        case x: Array[Byte]    => new ofByte(x)
+        case x: Array[Short]   => new ofShort(x)
+        case x: Array[Char]    => new ofChar(x)
+        case x: Array[Int]     => new ofInt(x)
+        case x: Array[Long]    => new ofLong(x)
+        case x: Array[Float]   => new ofFloat(x)
+        case x: Array[Double]  => new ofDouble(x)
+        case x: Array[Boolean] => new ofBoolean(x)
+        case x: Array[Unit]    => new ofUnit(x)
+        case _: Array[AnyRef]  => new ofRef(x.asInstanceOf[Array[AnyRef]])
+      }
     y.asInstanceOf[ImmutableArray[A]]
   }
 

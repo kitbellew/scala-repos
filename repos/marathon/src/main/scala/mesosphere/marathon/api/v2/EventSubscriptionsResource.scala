@@ -38,8 +38,8 @@ class EventSubscriptionsResource @Inject() (val config: MarathonConf)
       @Context req: HttpServletRequest,
       @QueryParam("callbackUrl") callbackUrl: String): Response = {
     validateSubscriptionService()
-    val future: Future[MarathonEvent] =
-      service.handleSubscriptionEvent(Subscribe(req.getRemoteAddr, callbackUrl))
+    val future: Future[MarathonEvent] = service.handleSubscriptionEvent(
+      Subscribe(req.getRemoteAddr, callbackUrl))
     ok(jsonString(eventToJson(result(future))))
   }
 

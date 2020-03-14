@@ -82,8 +82,7 @@ sealed private[exception] case class ExceptionContents(e: Throwable) {
     * delimited by newline characters. The elements are in order with the stacktrace.
     */
   private def generateStackTrace(
-      st: Array[java.lang.StackTraceElement]): String =
-    st mkString "\n"
+      st: Array[java.lang.StackTraceElement]): String = st mkString "\n"
 
   val jsonValue = Map(
     "exceptionClass" -> e.getClass.getName,

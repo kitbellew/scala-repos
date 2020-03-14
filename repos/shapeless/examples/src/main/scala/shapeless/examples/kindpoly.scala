@@ -22,8 +22,7 @@ class TyApp[App, TyCon, Args <: HList]
 
 object TyApp {
   class Arbitrary
-  implicit def tyApp1[TC[_], A] =
-    new TyApp[TC[A], TC[Arbitrary], A :: HNil]
+  implicit def tyApp1[TC[_], A] = new TyApp[TC[A], TC[Arbitrary], A :: HNil]
 
   implicit def tyApp2[TC[_, _], A, B] =
     new TyApp[TC[A, B], TC[Arbitrary, Arbitrary], A :: B :: HNil]

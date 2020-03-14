@@ -68,18 +68,21 @@ object DataView {
 
     val sc = sqlContext.sparkContext
 
-    val beginTime = startTime match {
-      case Some(t) => t
-      case None    => new DateTime(0L)
-    }
-    val endTime = untilTime match {
-      case Some(t) => t
-      case None    => DateTime.now() // fix the current time
-    }
+    val beginTime =
+      startTime match {
+        case Some(t) => t
+        case None    => new DateTime(0L)
+      }
+    val endTime =
+      untilTime match {
+        case Some(t) => t
+        case None    => DateTime.now() // fix the current time
+      }
     // detect changes to the case class
-    val uid = java.io.ObjectStreamClass
-      .lookup(implicitly[reflect.ClassTag[E]].runtimeClass)
-      .getSerialVersionUID
+    val uid =
+      java.io.ObjectStreamClass
+        .lookup(implicitly[reflect.ClassTag[E]].runtimeClass)
+        .getSerialVersionUID
     val hash = MurmurHash3.stringHash(s"$beginTime-$endTime-$version-$uid")
     val baseDir = s"${sys.env("PIO_FS_BASEDIR")}/view"
     val fileName = s"$baseDir/$name-$appName-$hash.parquet"

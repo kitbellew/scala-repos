@@ -82,8 +82,9 @@ class MarshallingSpec
           Multipart.General(
             `multipart/alternative`,
             Multipart.General.BodyPart.Strict(
-              entity =
-                HttpEntity(ContentTypes.`text/plain(UTF-8)`, "test@there.com"),
+              entity = HttpEntity(
+                ContentTypes.`text/plain(UTF-8)`,
+                "test@there.com"),
               headers = `Content-Disposition`(
                 ContentDispositionTypes.`form-data`,
                 Map("name" -> "email")) :: Nil

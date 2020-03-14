@@ -6,8 +6,11 @@ import java.io._
 import java.util.Date
 
 object Serbench extends Benchmark {
-  val classes =
-    List(classOf[Project], classOf[Team], classOf[Employee], classOf[Language])
+  val classes = List(
+    classOf[Project],
+    classOf[Team],
+    classOf[Employee],
+    classOf[Language])
   val project = Project(
     "test",
     new Date,

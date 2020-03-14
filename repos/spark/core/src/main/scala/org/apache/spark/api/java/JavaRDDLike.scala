@@ -246,8 +246,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Return an RDD created by coalescing all elements within each partition into an array.
     */
-  def glom(): JavaRDD[JList[T]] =
-    new JavaRDD(rdd.glom().map(_.toSeq.asJava))
+  def glom(): JavaRDD[JList[T]] = new JavaRDD(rdd.glom().map(_.toSeq.asJava))
 
   /**
     * Return the Cartesian product of this RDD and another one, that is, the RDD of all pairs of
@@ -291,8 +290,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
   /**
     * Return an RDD created by piping elements to a forked external process.
     */
-  def pipe(command: JList[String]): JavaRDD[String] =
-    rdd.pipe(command.asScala)
+  def pipe(command: JList[String]): JavaRDD[String] = rdd.pipe(command.asScala)
 
   /**
     * Return an RDD created by piping elements to a forked external process.
@@ -370,8 +368,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @note this method should only be used if the resulting array is expected to be small, as
     * all the data is loaded into the driver's memory.
     */
-  def collect(): JList[T] =
-    rdd.collect().toSeq.asJava
+  def collect(): JList[T] = rdd.collect().toSeq.asJava
 
   /**
     * Return an iterator that contains all of the elements in this RDD.
@@ -424,8 +421,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * that are not commutative, the result may differ from that of a fold applied to a
     * non-distributed collection.
     */
-  def fold(zeroValue: T)(f: JFunction2[T, T, T]): T =
-    rdd.fold(zeroValue)(f)
+  def fold(zeroValue: T)(f: JFunction2[T, T, T]): T = rdd.fold(zeroValue)(f)
 
   /**
     * Aggregate the elements of each partition, and then the results for all the partitions, using
@@ -517,8 +513,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @note this method should only be used if the resulting array is expected to be small, as
     * all the data is loaded into the driver's memory.
     */
-  def take(num: Int): JList[T] =
-    rdd.take(num).toSeq.asJava
+  def take(num: Int): JList[T] = rdd.take(num).toSeq.asJava
 
   def takeSample(withReplacement: Boolean, num: Int): JList[T] =
     takeSample(withReplacement, num, Utils.random.nextLong)
@@ -621,8 +616,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @return an array of top elements
     */
   def top(num: Int): JList[T] = {
-    val comp =
-      com.google.common.collect.Ordering.natural().asInstanceOf[Comparator[T]]
+    val comp = com.google.common.collect.Ordering
+      .natural()
+      .asInstanceOf[Comparator[T]]
     top(num, comp)
   }
 
@@ -670,8 +666,9 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * @return an array of top elements
     */
   def takeOrdered(num: Int): JList[T] = {
-    val comp =
-      com.google.common.collect.Ordering.natural().asInstanceOf[Comparator[T]]
+    val comp = com.google.common.collect.Ordering
+      .natural()
+      .asInstanceOf[Comparator[T]]
     takeOrdered(num, comp)
   }
 

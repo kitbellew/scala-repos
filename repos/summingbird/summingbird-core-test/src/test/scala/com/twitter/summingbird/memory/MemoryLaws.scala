@@ -299,8 +299,8 @@ class MemoryLaws extends WordSpec {
       val store1 = MutableMap.empty[Int, Int]
       val store2 = MutableMap.empty[Int, Int]
       val comp = source.map(v => (v % 3, v)).sumByKey(store1)
-      val prod =
-        comp.also(comp.mapValues(_._2).write(new BufferFunc).sumByKey(store2))
+      val prod = comp.also(
+        comp.mapValues(_._2).write(new BufferFunc).sumByKey(store2))
       val mem = new Memory
       mem.run(mem.plan(prod))
       assert(store1.toMap == ((0 to 100).groupBy(_ % 3).mapValues(_.sum)))

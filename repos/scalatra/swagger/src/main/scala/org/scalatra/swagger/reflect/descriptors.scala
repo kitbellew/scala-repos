@@ -71,32 +71,32 @@ object ManifestScalaType {
   }
 
   private val IntType: ScalaType = new PrimitiveManifestScalaType(Manifest.Int)
-  private val NumberType: ScalaType = new PrimitiveManifestScalaType(
-    manifest[Number])
-  private val LongType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Long)
-  private val ByteType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Byte)
-  private val ShortType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Short)
-  private val BooleanType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Boolean)
-  private val FloatType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Float)
-  private val DoubleType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Double)
-  private val StringType: ScalaType = new PrimitiveManifestScalaType(
-    manifest[java.lang.String])
-  private val SymbolType: ScalaType = new PrimitiveManifestScalaType(
-    manifest[Symbol])
-  private val BigDecimalType: ScalaType = new PrimitiveManifestScalaType(
-    manifest[BigDecimal])
-  private val BigIntType: ScalaType = new PrimitiveManifestScalaType(
-    manifest[BigInt])
-  private val DateType: ScalaType = new PrimitiveManifestScalaType(
-    manifest[java.util.Date])
-  private val TimestampType: ScalaType = new PrimitiveManifestScalaType(
-    manifest[java.sql.Timestamp])
+  private val NumberType: ScalaType =
+    new PrimitiveManifestScalaType(manifest[Number])
+  private val LongType: ScalaType =
+    new PrimitiveManifestScalaType(Manifest.Long)
+  private val ByteType: ScalaType =
+    new PrimitiveManifestScalaType(Manifest.Byte)
+  private val ShortType: ScalaType =
+    new PrimitiveManifestScalaType(Manifest.Short)
+  private val BooleanType: ScalaType =
+    new PrimitiveManifestScalaType(Manifest.Boolean)
+  private val FloatType: ScalaType =
+    new PrimitiveManifestScalaType(Manifest.Float)
+  private val DoubleType: ScalaType =
+    new PrimitiveManifestScalaType(Manifest.Double)
+  private val StringType: ScalaType =
+    new PrimitiveManifestScalaType(manifest[java.lang.String])
+  private val SymbolType: ScalaType =
+    new PrimitiveManifestScalaType(manifest[Symbol])
+  private val BigDecimalType: ScalaType =
+    new PrimitiveManifestScalaType(manifest[BigDecimal])
+  private val BigIntType: ScalaType =
+    new PrimitiveManifestScalaType(manifest[BigInt])
+  private val DateType: ScalaType =
+    new PrimitiveManifestScalaType(manifest[java.util.Date])
+  private val TimestampType: ScalaType =
+    new PrimitiveManifestScalaType(manifest[java.sql.Timestamp])
 
   private class PrimitiveManifestScalaType(mf: Manifest[_])
       extends ManifestScalaType(mf) {

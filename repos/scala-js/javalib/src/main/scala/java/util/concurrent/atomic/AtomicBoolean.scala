@@ -18,11 +18,9 @@ class AtomicBoolean(private[this] var value: Boolean) extends Serializable {
   def weakCompareAndSet(expect: Boolean, update: Boolean): Boolean =
     compareAndSet(expect, update)
 
-  final def set(newValue: Boolean): Unit =
-    value = newValue
+  final def set(newValue: Boolean): Unit = value = newValue
 
-  final def lazySet(newValue: Boolean): Unit =
-    set(newValue)
+  final def lazySet(newValue: Boolean): Unit = set(newValue)
 
   final def getAndSet(newValue: Boolean): Boolean = {
     val old = value
@@ -30,6 +28,5 @@ class AtomicBoolean(private[this] var value: Boolean) extends Serializable {
     old
   }
 
-  override def toString(): String =
-    value.toString()
+  override def toString(): String = value.toString()
 }

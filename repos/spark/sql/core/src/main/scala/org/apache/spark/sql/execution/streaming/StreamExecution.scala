@@ -58,10 +58,9 @@ class StreamExecution(
   private[sql] val streamProgress = new StreamProgress
 
   /** All stream sources present the query plan. */
-  private val sources =
-    logicalPlan.collect {
-      case s: StreamingRelation => s.source
-    }
+  private val sources = logicalPlan.collect {
+    case s: StreamingRelation => s.source
+  }
 
   /** Defines the internal state of execution */
   @volatile
@@ -74,12 +73,12 @@ class StreamExecution(
   private[sql] var streamDeathCause: ContinuousQueryException = null
 
   /** The thread that runs the micro-batches of this stream. */
-  private[sql] val microBatchThread = new Thread(
-    s"stream execution thread for $name") {
-    override def run(): Unit = {
-      runBatches()
+  private[sql] val microBatchThread =
+    new Thread(s"stream execution thread for $name") {
+      override def run(): Unit = {
+        runBatches()
+      }
     }
-  }
 
   /** Whether the query is currently active or not */
   override def isActive: Boolean = state == ACTIVE
@@ -315,10 +314,11 @@ class StreamExecution(
   }
 
   def toDebugString: String = {
-    val deathCauseStr = if (streamDeathCause != null) {
-      "Error:\n" + stackTraceToString(streamDeathCause.cause)
-    } else
-      ""
+    val deathCauseStr =
+      if (streamDeathCause != null) {
+        "Error:\n" + stackTraceToString(streamDeathCause.cause)
+      } else
+        ""
     s"""
        |=== Continuous Query ===
        |Name: $name

@@ -12,8 +12,7 @@ package scala
 object Product9 {
   def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9](
       x: Product9[T1, T2, T3, T4, T5, T6, T7, T8, T9])
-      : Option[Product9[T1, T2, T3, T4, T5, T6, T7, T8, T9]] =
-    Some(x)
+      : Option[Product9[T1, T2, T3, T4, T5, T6, T7, T8, T9]] = Some(x)
 }
 
 /** Product9 is a cartesian product of 9 components.

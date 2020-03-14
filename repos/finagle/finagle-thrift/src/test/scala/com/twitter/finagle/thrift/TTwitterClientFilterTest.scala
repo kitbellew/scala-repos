@@ -51,8 +51,12 @@ class TTwitterClientFilterTest extends FunSuite with MockitoSugar {
   }
 
   test("TTwitterClientFilter should create header correctly") {
-    val traceId =
-      TraceId(Some(SpanId(1L)), None, SpanId(2L), Some(true), Flags().setDebug)
+    val traceId = TraceId(
+      Some(SpanId(1L)),
+      None,
+      SpanId(2L),
+      Some(true),
+      Flags().setDebug)
     Trace.letId(traceId) {
 
       val filter =

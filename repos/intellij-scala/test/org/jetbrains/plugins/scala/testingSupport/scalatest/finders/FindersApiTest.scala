@@ -82,8 +82,9 @@ trait FindersApiTest
   def testBehaviorFlatSpec() {
     addBehaviorFlatSpec()
 
-    val testNames =
-      Set("FlatSpec should run scopes", "FlatSpec should do other stuff")
+    val testNames = Set(
+      "FlatSpec should run scopes",
+      "FlatSpec should do other stuff")
     val fileName = "BehaviorFlatSpec.scala"
 
     //'behavior' word

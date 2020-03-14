@@ -17,9 +17,10 @@ sealed trait SoundSetObject {
 
   lazy val listString = list mkString " "
 
-  lazy val allByKey = list map { c =>
-    c.key -> c
-  } toMap
+  lazy val allByKey =
+    list map { c =>
+      c.key -> c
+    } toMap
 
   lazy val default = all.head
 

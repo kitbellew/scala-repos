@@ -57,18 +57,20 @@ private[spark] class GraphiteSink(
   val host = propertyToOption(GRAPHITE_KEY_HOST).get
   val port = propertyToOption(GRAPHITE_KEY_PORT).get.toInt
 
-  val pollPeriod = propertyToOption(GRAPHITE_KEY_PERIOD) match {
-    case Some(s) => s.toInt
-    case None    => GRAPHITE_DEFAULT_PERIOD
-  }
+  val pollPeriod =
+    propertyToOption(GRAPHITE_KEY_PERIOD) match {
+      case Some(s) => s.toInt
+      case None    => GRAPHITE_DEFAULT_PERIOD
+    }
 
-  val pollUnit: TimeUnit = propertyToOption(GRAPHITE_KEY_UNIT) match {
-    case Some(s) => TimeUnit.valueOf(s.toUpperCase())
-    case None    => TimeUnit.valueOf(GRAPHITE_DEFAULT_UNIT)
-  }
+  val pollUnit: TimeUnit =
+    propertyToOption(GRAPHITE_KEY_UNIT) match {
+      case Some(s) => TimeUnit.valueOf(s.toUpperCase())
+      case None    => TimeUnit.valueOf(GRAPHITE_DEFAULT_UNIT)
+    }
 
-  val prefix =
-    propertyToOption(GRAPHITE_KEY_PREFIX).getOrElse(GRAPHITE_DEFAULT_PREFIX)
+  val prefix = propertyToOption(GRAPHITE_KEY_PREFIX).getOrElse(
+    GRAPHITE_DEFAULT_PREFIX)
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 

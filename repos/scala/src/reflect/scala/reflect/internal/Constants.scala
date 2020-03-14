@@ -35,24 +35,25 @@ trait Constants extends api.Constants {
     import java.lang.Double.doubleToRawLongBits
     import java.lang.Float.floatToRawIntBits
 
-    val tag: Int = value match {
-      case null       => NullTag
-      case x: Unit    => UnitTag
-      case x: Boolean => BooleanTag
-      case x: Byte    => ByteTag
-      case x: Short   => ShortTag
-      case x: Int     => IntTag
-      case x: Long    => LongTag
-      case x: Float   => FloatTag
-      case x: Double  => DoubleTag
-      case x: String  => StringTag
-      case x: Char    => CharTag
-      case x: Type    => ClazzTag
-      case x: Symbol  => EnumTag
-      case _ =>
-        throw new Error(
-          "bad constant value: " + value + " of class " + value.getClass)
-    }
+    val tag: Int =
+      value match {
+        case null       => NullTag
+        case x: Unit    => UnitTag
+        case x: Boolean => BooleanTag
+        case x: Byte    => ByteTag
+        case x: Short   => ShortTag
+        case x: Int     => IntTag
+        case x: Long    => LongTag
+        case x: Float   => FloatTag
+        case x: Double  => DoubleTag
+        case x: String  => StringTag
+        case x: Char    => CharTag
+        case x: Type    => ClazzTag
+        case x: Symbol  => EnumTag
+        case _ =>
+          throw new Error(
+            "bad constant value: " + value + " of class " + value.getClass)
+      }
 
     def isByteRange: Boolean =
       isIntRange && Byte.MinValue <= intValue && intValue <= Byte.MaxValue

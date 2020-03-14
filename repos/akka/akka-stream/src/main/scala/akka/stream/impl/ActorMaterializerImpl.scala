@@ -149,16 +149,17 @@ private[akka] case class ActorMaterializerImpl(
 
             case tls: TlsModule ⇒ // TODO solve this so TlsModule doesn't need special treatment here
               val es = effectiveSettings(effectiveAttributes)
-              val props =
-                TLSActor.props(
-                  es,
-                  tls.sslContext,
-                  tls.firstSession,
-                  tls.role,
-                  tls.closing,
-                  tls.hostInfo)
-              val impl =
-                actorOf(props, stageName(effectiveAttributes), es.dispatcher)
+              val props = TLSActor.props(
+                es,
+                tls.sslContext,
+                tls.firstSession,
+                tls.role,
+                tls.closing,
+                tls.hostInfo)
+              val impl = actorOf(
+                props,
+                stageName(effectiveAttributes),
+                es.dispatcher)
               def factory(id: Int) =
                 new ActorPublisher[Any](impl) {
                   override val wakeUpMsg = FanOut.SubstreamSubscribePending(id)
@@ -182,15 +183,14 @@ private[akka] case class ActorMaterializerImpl(
               matGraph(graph, effectiveAttributes, matVal)
 
             case stage: GraphStageModule ⇒
-              val graph =
-                GraphModule(
-                  GraphAssembly(
-                    stage.shape.inlets,
-                    stage.shape.outlets,
-                    stage.stage),
-                  stage.shape,
-                  stage.attributes,
-                  Array(stage))
+              val graph = GraphModule(
+                GraphAssembly(
+                  stage.shape.inlets,
+                  stage.shape.outlets,
+                  stage.stage),
+                stage.shape,
+                stage.attributes,
+                Array(stage))
               matGraph(graph, effectiveAttributes, matVal)
           }
         }
@@ -206,14 +206,15 @@ private[akka] case class ActorMaterializerImpl(
             matVal,
             registerSrc)
 
-          val shell = new GraphInterpreterShell(
-            graph.assembly,
-            inHandlers,
-            outHandlers,
-            logics,
-            graph.shape,
-            calculatedSettings,
-            ActorMaterializerImpl.this)
+          val shell =
+            new GraphInterpreterShell(
+              graph.assembly,
+              inHandlers,
+              outHandlers,
+              logics,
+              graph.shape,
+              calculatedSettings,
+              ActorMaterializerImpl.this)
 
           val impl =
             if (subflowFuser != null && !effectiveAttributes.contains(
@@ -264,8 +265,8 @@ private[akka] case class ActorMaterializerImpl(
     session.materialize().asInstanceOf[Mat]
   }
 
-  override lazy val executionContext: ExecutionContextExecutor =
-    dispatchers.lookup(settings.dispatcher match {
+  override lazy val executionContext: ExecutionContextExecutor = dispatchers
+    .lookup(settings.dispatcher match {
       case Deploy.NoDispatcherGiven ⇒ Dispatchers.DefaultDispatcherId
       case other ⇒ other
     })
@@ -301,9 +302,10 @@ private[akka] case class ActorMaterializerImpl(
               systemService = false)
         else {
           implicit val timeout = ref.system.settings.CreationTimeout
-          val f = (supervisor ? StreamSupervisor.Materialize(
-            props.withDispatcher(dispatcher),
-            name)).mapTo[ActorRef]
+          val f =
+            (supervisor ? StreamSupervisor.Materialize(
+              props.withDispatcher(dispatcher),
+              name)).mapTo[ActorRef]
           Await.result(f, timeout.duration)
         }
       case unknown ⇒

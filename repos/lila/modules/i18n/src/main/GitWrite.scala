@@ -101,8 +101,7 @@ private[i18n] final class GitWrite(
         api.branchList.call map (_.getName) map cleanupBranch
       }
 
-    def branchExists(branch: String) =
-      branchList map (_ contains branch)
+    def branchExists(branch: String) = branchList map (_ contains branch)
 
     def checkout(branch: String, create: Boolean = false) =
       Future {

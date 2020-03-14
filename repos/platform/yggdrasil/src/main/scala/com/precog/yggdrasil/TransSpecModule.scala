@@ -218,12 +218,13 @@ trait TransSpecModule extends FNModule {
             }
           }
 
-        val initialSpecs = tree match {
-          case RootNode(children)     => createSpecs(children)
-          case FieldNode(_, children) => createSpecs(children)
-          case IndexNode(_, children) => createSpecs(children)
-          case LeafNode(_)            => Seq()
-        }
+        val initialSpecs =
+          tree match {
+            case RootNode(children)     => createSpecs(children)
+            case FieldNode(_, children) => createSpecs(children)
+            case IndexNode(_, children) => createSpecs(children)
+            case LeafNode(_)            => Seq()
+          }
 
         val result = initialSpecs reduceOption { (t1, t2) =>
           (t1, t2) match {
@@ -398,8 +399,9 @@ trait TransSpecModule extends FNModule {
         WrapObject(SourceKey.Single, paths.Key.name),
         WrapObject(SourceValue.Single, paths.Value.name))
 
-      val DeleteKeyValue =
-        ObjectDelete(Leaf(Source), Set(paths.Key, paths.Value))
+      val DeleteKeyValue = ObjectDelete(
+        Leaf(Source),
+        Set(paths.Key, paths.Value))
     }
 
     type TransSpec2 = TransSpec[Source2]
@@ -422,10 +424,12 @@ trait TransSpecModule extends FNModule {
       def DerefArray2(source: Source2) =
         DerefArrayStatic(Leaf(source), CPathIndex(2))
 
-      val DeleteKeyValueLeft =
-        ObjectDelete(Leaf(SourceLeft), Set(paths.Key, paths.Value))
-      val DeleteKeyValueRight =
-        ObjectDelete(Leaf(SourceRight), Set(paths.Key, paths.Value))
+      val DeleteKeyValueLeft = ObjectDelete(
+        Leaf(SourceLeft),
+        Set(paths.Key, paths.Value))
+      val DeleteKeyValueRight = ObjectDelete(
+        Leaf(SourceRight),
+        Set(paths.Key, paths.Value))
     }
 
     sealed trait GroupKeySpec
@@ -526,9 +530,10 @@ trait TransSpecModule extends FNModule {
     val wrapped =
       for ((key @ CPathField(fieldName), value) <- tableTrans)
         yield {
-          val mapped = TransSpec.deepMap(value) {
-            case Leaf(_) => DerefObjectStatic(Leaf(Source), key)
-          }
+          val mapped =
+            TransSpec.deepMap(value) {
+              case Leaf(_) => DerefObjectStatic(Leaf(Source), key)
+            }
 
           trans.WrapObject(mapped, fieldName)
         }
@@ -544,8 +549,9 @@ trait TransSpecModule extends FNModule {
 
   def buildConstantWrapSpec[A <: SourceType](
       source: TransSpec[A]): TransSpec[A] = {
-    val bottomWrapped =
-      trans.WrapObject(trans.ConstLiteral(CEmptyArray, source), paths.Key.name)
+    val bottomWrapped = trans.WrapObject(
+      trans.ConstLiteral(CEmptyArray, source),
+      paths.Key.name)
     trans.InnerObjectConcat(
       bottomWrapped,
       trans.WrapObject(source, paths.Value.name))

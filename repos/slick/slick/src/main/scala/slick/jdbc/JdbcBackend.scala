@@ -332,8 +332,11 @@ trait JdbcBackend extends RelationalBackend {
           config
         else
           config.getConfig(path)
-      val source =
-        JdbcDataSource.forConfig(usedConfig, driver, path, classLoader)
+      val source = JdbcDataSource.forConfig(
+        usedConfig,
+        driver,
+        path,
+        classLoader)
       val executor = AsyncExecutor(
         path,
         usedConfig.getIntOr("numThreads", 20),
@@ -484,8 +487,10 @@ trait JdbcBackend extends RelationalBackend {
           ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability =
           ResultSetHoldability.Default)(f: (Statement => T)): T = {
-      val st =
-        createStatement(defaultType, defaultConcurrency, defaultHoldability)
+      val st = createStatement(
+        defaultType,
+        defaultConcurrency,
+        defaultHoldability)
       try f(st)
       finally st.close()
     }
@@ -692,10 +697,12 @@ object JdbcBackend extends JdbcBackend {
     null,
     0)
 
-  protected[jdbc] lazy val statementLogger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[JdbcBackend].getName + ".statement"))
-  protected[jdbc] lazy val benchmarkLogger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[JdbcBackend].getName + ".benchmark"))
+  protected[jdbc] lazy val statementLogger =
+    new SlickLogger(
+      LoggerFactory.getLogger(classOf[JdbcBackend].getName + ".statement"))
+  protected[jdbc] lazy val benchmarkLogger =
+    new SlickLogger(
+      LoggerFactory.getLogger(classOf[JdbcBackend].getName + ".benchmark"))
 
   protected[jdbc] def logStatement(msg: String, stmt: String) =
     if (statementLogger.isDebugEnabled) {

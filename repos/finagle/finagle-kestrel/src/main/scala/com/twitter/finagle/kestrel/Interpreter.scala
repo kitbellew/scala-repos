@@ -85,8 +85,9 @@ class Interpreter(queues: LoadingCache[Buf, BlockingDeque[Buf]])
         }
       case Peek(queueName, timeout) =>
         val wait = timeout.getOrElse(0.seconds)
-        val item =
-          queues.get(queueName).poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
+        val item = queues
+          .get(queueName)
+          .poll(wait.inMilliseconds, TimeUnit.MILLISECONDS)
         if (item eq null)
           Values(Seq.empty)
         else

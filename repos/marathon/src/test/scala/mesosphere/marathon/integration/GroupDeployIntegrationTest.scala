@@ -197,8 +197,8 @@ class GroupDeployIntegrationTest
     Given("A group with one application")
     val id = "test".toRootTestPath
     val appId = id / "app"
-    val proxy =
-      appProxy(appId, "v1", 2).copy(upgradeStrategy = UpgradeStrategy(1))
+    val proxy = appProxy(appId, "v1", 2)
+      .copy(upgradeStrategy = UpgradeStrategy(1))
     val group = GroupUpdate(id, Set(proxy))
     val create = marathon.createGroup(group)
     waitForChange(create)
@@ -287,8 +287,11 @@ class GroupDeployIntegrationTest
       "v1",
       1,
       dependencies = Set("/test/frontend1".toTestPath))
-    val service =
-      appProxy("/test/service".toTestPath, "v1", 1, dependencies = Set(db.id))
+    val service = appProxy(
+      "/test/service".toTestPath,
+      "v1",
+      1,
+      dependencies = Set(db.id))
     val frontend = appProxy(
       "/test/frontend1".toTestPath,
       "v1",
@@ -301,16 +304,19 @@ class GroupDeployIntegrationTest
 
     Then(
       "An unsuccessful response has been posted, with an error indicating cyclic dependencies")
-    val errors =
-      (result.entityJson \ "details" \\ "errors").flatMap(_.as[Seq[String]])
+    val errors = (result.entityJson \ "details" \\ "errors")
+      .flatMap(_.as[Seq[String]])
     errors.find(_.contains("cyclic dependencies")) shouldBe defined
   }
 
   test("Applications with dependencies get deployed in the correct order") {
     Given("A group with 3 dependent applications")
     val db = appProxy("/test/db".toTestPath, "v1", 1)
-    val service =
-      appProxy("/test/service".toTestPath, "v1", 1, dependencies = Set(db.id))
+    val service = appProxy(
+      "/test/service".toTestPath,
+      "v1",
+      1,
+      dependencies = Set(db.id))
     val frontend = appProxy(
       "/test/frontend1".toTestPath,
       "v1",
@@ -324,10 +330,10 @@ class GroupDeployIntegrationTest
       if (!ping.contains(health.appId))
         ping += health.appId -> DateTime.now
     }
-    val dbHealth =
-      appProxyCheck(db.id, "v1", state = true).withHealthAction(storeFirst)
-    val serviceHealth =
-      appProxyCheck(service.id, "v1", state = true).withHealthAction(storeFirst)
+    val dbHealth = appProxyCheck(db.id, "v1", state = true)
+      .withHealthAction(storeFirst)
+    val serviceHealth = appProxyCheck(service.id, "v1", state = true)
+      .withHealthAction(storeFirst)
     val frontendHealth = appProxyCheck(frontend.id, "v1", state = true)
       .withHealthAction(storeFirst)
     waitForChange(marathon.createGroup(group))
@@ -361,10 +367,10 @@ class GroupDeployIntegrationTest
       if (!ping.contains(health.appId))
         ping += health.appId -> DateTime.now
     }
-    val dbHealth =
-      appProxyCheck(db.id, "v1", state = true).withHealthAction(storeFirst)
-    val serviceHealth =
-      appProxyCheck(service.id, "v1", state = true).withHealthAction(storeFirst)
+    val dbHealth = appProxyCheck(db.id, "v1", state = true)
+      .withHealthAction(storeFirst)
+    val serviceHealth = appProxyCheck(service.id, "v1", state = true)
+      .withHealthAction(storeFirst)
     val frontendHealth = appProxyCheck(frontend.id, "v1", state = true)
       .withHealthAction(storeFirst)
     waitForChange(marathon.createGroup(group))

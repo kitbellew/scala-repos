@@ -24,8 +24,13 @@ trait TimeLikeSpec[T <: TimeLike[T]]
   import ops._
 
   "Top, Bottom, Undefined, Nanoseconds(_), Finite(_)" should {
-    val easyVs =
-      Seq(Zero, Top, Bottom, Undefined, fromNanoseconds(1), fromNanoseconds(-1))
+    val easyVs = Seq(
+      Zero,
+      Top,
+      Bottom,
+      Undefined,
+      fromNanoseconds(1),
+      fromNanoseconds(-1))
     val vs = easyVs ++ Seq(
       fromNanoseconds(Long.MaxValue - 1),
       fromNanoseconds(Long.MinValue + 1))
@@ -455,11 +460,12 @@ class TimeTest extends {
         tc.set(t0)
         assert(Time.now == t0)
         @volatile var threadTime: Option[Time] = None
-        val thread = new Thread {
-          override def run() {
-            threadTime = Some(Time.now)
+        val thread =
+          new Thread {
+            override def run() {
+              threadTime = Some(Time.now)
+            }
           }
-        }
         thread.start()
         thread.join()
         assert(threadTime.get != t0)
@@ -504,12 +510,13 @@ class TimeTest extends {
     "sleep" in {
       Time.withCurrentTimeFrozen { ctl =>
         val ctx = Local.save()
-        val r = new Runnable {
-          def run() {
-            Local.restore(ctx)
-            Time.sleep(5.seconds)
+        val r =
+          new Runnable {
+            def run() {
+              Local.restore(ctx)
+              Time.sleep(5.seconds)
+            }
           }
-        }
         @volatile var x = 0
         val t = new Thread(r)
         t.start()

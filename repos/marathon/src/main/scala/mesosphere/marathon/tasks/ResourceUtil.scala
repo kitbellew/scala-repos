@@ -195,8 +195,9 @@ object ResourceUtil {
     import scala.collection.JavaConverters._
     val offerResources: Seq[MesosProtos.Resource] =
       offer.getResourcesList.asScala
-    val leftOverResources =
-      ResourceUtil.consumeResources(offerResources, usedResources)
+    val leftOverResources = ResourceUtil.consumeResources(
+      offerResources,
+      usedResources)
     offer.toBuilder
       .clearResources()
       .addAllResources(leftOverResources.asJava)

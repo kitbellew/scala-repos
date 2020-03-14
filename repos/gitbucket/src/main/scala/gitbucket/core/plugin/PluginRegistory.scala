@@ -47,11 +47,12 @@ class PluginRegistry {
 
   @deprecated("Use addImage(id: String, bytes: Array[Byte]) instead", "3.4.0")
   def addImage(id: String, in: InputStream): Unit = {
-    val bytes = using(in) { in =>
-      val bytes = new Array[Byte](in.available)
-      in.read(bytes)
-      bytes
-    }
+    val bytes =
+      using(in) { in =>
+        val bytes = new Array[Byte](in.available)
+        in.read(bytes)
+        bytes
+      }
     addImage(id, bytes)
   }
 
@@ -158,24 +159,28 @@ object PluginRegistry {
             name.endsWith(".jar")
         })
         .foreach { pluginJar =>
-          val classLoader = new URLClassLoader(
-            Array(pluginJar.toURI.toURL),
-            Thread.currentThread.getContextClassLoader)
+          val classLoader =
+            new URLClassLoader(
+              Array(pluginJar.toURI.toURL),
+              Thread.currentThread.getContextClassLoader)
           try {
-            val plugin =
-              classLoader.loadClass("Plugin").newInstance().asInstanceOf[Plugin]
+            val plugin = classLoader
+              .loadClass("Plugin")
+              .newInstance()
+              .asInstanceOf[Plugin]
 
             // Migration
             val headVersion = plugin.versions.head
-            val currentVersion = conn.find(
-              "SELECT * FROM PLUGIN WHERE PLUGIN_ID = ?",
-              plugin.pluginId)(_.getString("VERSION")) match {
-              case Some(x) => {
-                val dim = x.split("\\.")
-                Version(dim(0).toInt, dim(1).toInt)
+            val currentVersion =
+              conn.find(
+                "SELECT * FROM PLUGIN WHERE PLUGIN_ID = ?",
+                plugin.pluginId)(_.getString("VERSION")) match {
+                case Some(x) => {
+                  val dim = x.split("\\.")
+                  Version(dim(0).toInt, dim(1).toInt)
+                }
+                case None => Version(0, 0)
               }
-              case None => Version(0, 0)
-            }
 
             Versions.update(
               conn,

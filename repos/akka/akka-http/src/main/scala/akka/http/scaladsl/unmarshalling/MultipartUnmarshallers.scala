@@ -119,11 +119,12 @@ trait MultipartUnmarshallers {
             import BodyPartParser._
             val effectiveParserSettings = Option(parserSettings).getOrElse(
               ParserSettings(ActorMaterializer.downcast(mat).system))
-            val parser = new BodyPartParser(
-              defaultContentType,
-              boundary,
-              log,
-              effectiveParserSettings)
+            val parser =
+              new BodyPartParser(
+                defaultContentType,
+                boundary,
+                log,
+                effectiveParserSettings)
             FastFuture.successful {
               entity match {
                 case HttpEntity.Strict(
@@ -137,12 +138,13 @@ trait MultipartUnmarshallers {
                   // note that iter.next() will throw exception if stream fails
                   iter.foreach {
                     case BodyPartStart(headers, createEntity) ⇒
-                      val entity = createEntity(Source.empty) match {
-                        case x: HttpEntity.Strict ⇒ x
-                        case x ⇒
-                          throw new IllegalStateException(
-                            "Unexpected entity type from strict BodyPartParser: " + x)
-                      }
+                      val entity =
+                        createEntity(Source.empty) match {
+                          case x: HttpEntity.Strict ⇒ x
+                          case x ⇒
+                            throw new IllegalStateException(
+                              "Unexpected entity type from strict BodyPartParser: " + x)
+                        }
                       builder += createStrictBodyPart(entity, headers)
                     case ParseError(errorInfo) ⇒
                       throw ParsingException(errorInfo)
@@ -152,24 +154,25 @@ trait MultipartUnmarshallers {
                   }
                   createStrict(mediaType, builder.result())
                 case _ ⇒
-                  val bodyParts = entity.dataBytes
-                    .transform(() ⇒ parser)
-                    .splitWhen(_.isInstanceOf[PartStart])
-                    .buffer(
-                      100,
-                      OverflowStrategy.backpressure
-                    ) // FIXME remove (#19240)
-                    .prefixAndTail(1)
-                    .collect {
-                      case (
-                            Seq(BodyPartStart(headers, createEntity)),
-                            entityParts) ⇒
-                        createBodyPart(createEntity(entityParts), headers)
-                      case (Seq(ParseError(errorInfo)), rest) ⇒
-                        SubSource.kill(rest)
-                        throw ParsingException(errorInfo)
-                    }
-                    .concatSubstreams
+                  val bodyParts =
+                    entity.dataBytes
+                      .transform(() ⇒ parser)
+                      .splitWhen(_.isInstanceOf[PartStart])
+                      .buffer(
+                        100,
+                        OverflowStrategy.backpressure
+                      ) // FIXME remove (#19240)
+                      .prefixAndTail(1)
+                      .collect {
+                        case (
+                              Seq(BodyPartStart(headers, createEntity)),
+                              entityParts) ⇒
+                          createBodyPart(createEntity(entityParts), headers)
+                        case (Seq(ParseError(errorInfo)), rest) ⇒
+                          SubSource.kill(rest)
+                          throw ParsingException(errorInfo)
+                      }
+                      .concatSubstreams
                   createStreamed(
                     entity.contentType.mediaType
                       .asInstanceOf[MediaType.Multipart],

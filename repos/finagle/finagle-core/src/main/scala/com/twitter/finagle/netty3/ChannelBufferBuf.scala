@@ -77,8 +77,7 @@ object ChannelBufferBuf {
   /**
     * Java API for [[ChannelBufferBuf.Owned.apply]].
     */
-  def newOwned(cb: ChannelBuffer): Buf =
-    Owned(cb)
+  def newOwned(cb: ChannelBuffer): Buf = Owned(cb)
 
   object Owned {
 

@@ -83,17 +83,18 @@ trait BatchedSink[T] extends Sink[T] {
       }
 
       // Maybe an inclusive interval of batches to pull from incoming
-      val batchesToWrite: Option[(BatchID, BatchID)] = batchStreams
-        .dropWhile {
-          _._2.isDefined
+      val batchesToWrite: Option[(BatchID, BatchID)] =
+        batchStreams
+          .dropWhile {
+            _._2.isDefined
+          }
+          .map {
+            _._1
+          }
+          .toList match {
+          case Nil  => None
+          case list => Some((list.min, list.max))
         }
-        .map {
-          _._1
-        }
-        .toList match {
-        case Nil  => None
-        case list => Some((list.min, list.max))
-      }
 
       val newlyWritten = batchesToWrite.map {
         case (lower, upper) =>
@@ -135,8 +136,8 @@ trait BatchedSink[T] extends Sink[T] {
         else {
           // it is a static (i.e. independent from input) bug if this get ever throws
           val available = batchOps.intersect(batches, timeSpan).get
-          val merged =
-            Scalding.limitTimes(available, flows.reduce(Scalding.merge(_, _)))
+          val merged = Scalding
+            .limitTimes(available, flows.reduce(Scalding.merge(_, _)))
           Right(((available, mode), merged))
         }
       }

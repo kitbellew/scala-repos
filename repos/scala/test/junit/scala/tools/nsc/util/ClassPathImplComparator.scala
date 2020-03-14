@@ -70,18 +70,20 @@ object ClassPathImplComparator {
   private val oldCpSearchingStats = new DurationStats("Old classpath - search")
 
   private val flatCpCreationStats = new DurationStats("Flat classpath - create")
-  private val flatCpSearchingStats = new DurationStats(
-    "Flat classpath - search")
+  private val flatCpSearchingStats =
+    new DurationStats("Flat classpath - search")
 
   def main(args: Array[String]): Unit = {
 
     if (args contains "-help")
       usage()
     else {
-      val oldCpSettings =
-        loadSettings(args.toList, ClassPathRepresentationType.Recursive)
-      val flatCpSettings =
-        loadSettings(args.toList, ClassPathRepresentationType.Flat)
+      val oldCpSettings = loadSettings(
+        args.toList,
+        ClassPathRepresentationType.Recursive)
+      val flatCpSettings = loadSettings(
+        args.toList,
+        ClassPathRepresentationType.Flat)
 
       val classesToCheck = oldCpSettings.checkClasses.value
       val classesToFind =

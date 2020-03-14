@@ -18,10 +18,11 @@ object Test {
   //                   ^^     ^^       ^^     ^^ <-- QUIZ: what is missing from these types?
 
   // The type it should figure out, come on scalac
-  type F = Factory[CC] forSome {
-    type X;
-    type CC[X] >: Bar[X] with Foo[X] <: Bip[X]
-  }
+  type F =
+    Factory[CC] forSome {
+      type X;
+      type CC[X] >: Bar[X] with Foo[X] <: Bip[X]
+    }
 
   // No problem
   val ys = List[F](Quux1, Quux2)

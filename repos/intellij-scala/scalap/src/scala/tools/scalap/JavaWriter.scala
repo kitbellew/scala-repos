@@ -62,8 +62,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     Names.decode(name)
   }
 
-  def sigToType(str: String): String =
-    sigToType(str, 0)._1
+  def sigToType(str: String): String = sigToType(str, 0)._1
 
   def sigToType(str: String, i: Int): (String, Int) =
     str.charAt(i) match {
@@ -149,8 +148,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       case cf.Attribute(name, _) => getName(name) == "JacoMeta"
     } match {
       case Some(cf.Attribute(_, data)) =>
-        val mp = new MetaParser(
-          getName(((data(0) & 0xff) << 8) + (data(1) & 0xff)).trim())
+        val mp =
+          new MetaParser(
+            getName(((data(0) & 0xff) << 8) + (data(1) & 0xff)).trim())
         mp.parse match {
           case None =>
             if (getName(name) == "<init>") {
@@ -216,8 +216,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       case None =>
         printClassHeader;
       case Some(cf.Attribute(_, data)) =>
-        val mp = new MetaParser(
-          getName(((data(0) & 0xff) << 8) + (data(1) & 0xff)).trim());
+        val mp =
+          new MetaParser(
+            getName(((data(0) & 0xff) << 8) + (data(1) & 0xff)).trim());
         mp.parse match {
           case None => printClassHeader;
           case Some(str) =>

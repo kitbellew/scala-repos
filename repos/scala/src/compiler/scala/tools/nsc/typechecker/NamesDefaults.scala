@@ -146,36 +146,38 @@ trait NamesDefaults { self: Analyzer =>
       // funTargs: type arguments on baseFun, used to reconstruct TypeApply in blockWith(Out)Qualifier
       // defaultTargs: type arguments to be used for calling defaultGetters. If the type arguments are given
       //   in the source code, re-use them for default getter. Otherwise infer the default getter's t-args.
-      val (baseFun1, funTargs, defaultTargs) = baseFun match {
-        case TypeApply(fun, targs) =>
-          val targsInSource =
-            if (targs.forall(a => context.undetparams contains a.symbol))
-              Nil
-            else
-              targs
-          (fun, targs, targsInSource)
+      val (baseFun1, funTargs, defaultTargs) =
+        baseFun match {
+          case TypeApply(fun, targs) =>
+            val targsInSource =
+              if (targs.forall(a => context.undetparams contains a.symbol))
+                Nil
+              else
+                targs
+            (fun, targs, targsInSource)
 
-        case Select(New(tpt @ TypeTree()), _) if isConstr =>
-          val targsInSource = tpt.tpe match {
-            case TypeRef(pre, sym, args)
-                if (!args.forall(a =>
-                  context.undetparams contains a.typeSymbol)) =>
-              args.map(TypeTree(_))
-            case _ =>
-              Nil
-          }
-          (baseFun, Nil, targsInSource)
+          case Select(New(tpt @ TypeTree()), _) if isConstr =>
+            val targsInSource =
+              tpt.tpe match {
+                case TypeRef(pre, sym, args)
+                    if (!args.forall(a =>
+                      context.undetparams contains a.typeSymbol)) =>
+                  args.map(TypeTree(_))
+                case _ =>
+                  Nil
+              }
+            (baseFun, Nil, targsInSource)
 
-        case Select(TypeApply(New(TypeTree()), targs), _) if isConstr =>
-          val targsInSource =
-            if (targs.forall(a => context.undetparams contains a.symbol))
-              Nil
-            else
-              targs
-          (baseFun, Nil, targsInSource)
+          case Select(TypeApply(New(TypeTree()), targs), _) if isConstr =>
+            val targsInSource =
+              if (targs.forall(a => context.undetparams contains a.symbol))
+                Nil
+              else
+                targs
+            (baseFun, Nil, targsInSource)
 
-        case _ => (baseFun, Nil, Nil)
-      }
+          case _ => (baseFun, Nil, Nil)
+        }
 
       // never used for constructor calls, they always have a stable qualifier
       def blockWithQualifier(qual: Tree, selected: Name) = {
@@ -190,26 +192,27 @@ trait NamesDefaults { self: Analyzer =>
 
         val newQual =
           atPos(qual.pos.focus)(blockTyper.typedQualifier(Ident(sym.name)))
-        val baseFunTransformed = atPos(baseFun.pos.makeTransparent) {
-          // setSymbol below is important because the 'selected' function might be overloaded. by
-          // assigning the correct method symbol, typedSelect will just assign the type. the reason
-          // to still call 'typed' is to correctly infer singleton types, SI-5259.
-          val selectPos =
-            if (qual.pos.isRange && baseFun1.pos.isRange)
-              qual.pos
-                .union(baseFun1.pos)
-                .withStart(Math.min(qual.pos.end, baseFun1.pos.end))
+        val baseFunTransformed =
+          atPos(baseFun.pos.makeTransparent) {
+            // setSymbol below is important because the 'selected' function might be overloaded. by
+            // assigning the correct method symbol, typedSelect will just assign the type. the reason
+            // to still call 'typed' is to correctly infer singleton types, SI-5259.
+            val selectPos =
+              if (qual.pos.isRange && baseFun1.pos.isRange)
+                qual.pos
+                  .union(baseFun1.pos)
+                  .withStart(Math.min(qual.pos.end, baseFun1.pos.end))
+              else
+                baseFun1.pos
+            val f = blockTyper.typedOperator(
+              Select(newQual, selected)
+                .setSymbol(baseFun1.symbol)
+                .setPos(selectPos))
+            if (funTargs.isEmpty)
+              f
             else
-              baseFun1.pos
-          val f = blockTyper.typedOperator(
-            Select(newQual, selected)
-              .setSymbol(baseFun1.symbol)
-              .setPos(selectPos))
-          if (funTargs.isEmpty)
-            f
-          else
-            TypeApply(f, funTargs).setType(baseFun.tpe)
-        }
+              TypeApply(f, funTargs).setType(baseFun.tpe)
+          }
 
         val b = Block(List(vd), baseFunTransformed)
           .setType(baseFunTransformed.tpe)
@@ -314,39 +317,41 @@ trait NamesDefaults { self: Analyzer =>
         paramTypes: List[Type],
         blockTyper: Typer): List[Option[ValDef]] = {
       val context = blockTyper.context
-      val symPs = map2(args, paramTypes)((arg, paramTpe) =>
-        arg match {
-          case Ident(nme.SELECTOR_DUMMY) =>
-            None // don't create a local ValDef if the argument is <unapply-selector>
-          case _ =>
-            val byName = isByNameParamType(paramTpe)
-            val repeated = isScalaRepeatedParamType(paramTpe)
-            val argTpe = (
-              if (repeated)
-                arg match {
-                  case WildcardStarArg(expr) => expr.tpe
-                  case _                     => seqType(arg.tpe)
-                }
-              else {
-                // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
-                //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
-                //      which is important for (at least) macros.
-                arg.tpe
+      val symPs =
+        map2(args, paramTypes)((arg, paramTpe) =>
+          arg match {
+            case Ident(nme.SELECTOR_DUMMY) =>
+              None // don't create a local ValDef if the argument is <unapply-selector>
+            case _ =>
+              val byName = isByNameParamType(paramTpe)
+              val repeated = isScalaRepeatedParamType(paramTpe)
+              val argTpe =
+                (
+                  if (repeated)
+                    arg match {
+                      case WildcardStarArg(expr) => expr.tpe
+                      case _                     => seqType(arg.tpe)
+                    }
+                  else {
+                    // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
+                    //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
+                    //      which is important for (at least) macros.
+                    arg.tpe
+                  }
+                ).widen // have to widen or types inferred from literal defaults will be singletons
+              val s = context.owner.newValue(
+                unit.freshTermName(nme.NAMEDARG_PREFIX),
+                arg.pos,
+                newFlags = ARTIFACT) setInfo {
+                val tp =
+                  if (byName)
+                    functionType(Nil, argTpe)
+                  else
+                    argTpe
+                uncheckedBounds(tp)
               }
-            ).widen // have to widen or types inferred from literal defaults will be singletons
-            val s = context.owner.newValue(
-              unit.freshTermName(nme.NAMEDARG_PREFIX),
-              arg.pos,
-              newFlags = ARTIFACT) setInfo {
-              val tp =
-                if (byName)
-                  functionType(Nil, argTpe)
-                else
-                  argTpe
-              uncheckedBounds(tp)
-            }
-            Some((context.scope.enter(s), byName, repeated))
-        })
+              Some((context.scope.enter(s), byName, repeated))
+          })
       map2(symPs, args) {
         case (None, _) => None
         case (Some((sym, byName, repeated)), arg) =>
@@ -486,8 +491,8 @@ trait NamesDefaults { self: Analyzer =>
         n.isEmpty || n.get == param.name || params.forall(_.name != n.get)
     } map (_._1)
 
-    val paramsWithoutPositionalArg =
-      params.drop(args.length - namedArgsOnChangedPosition.length)
+    val paramsWithoutPositionalArg = params.drop(
+      args.length - namedArgsOnChangedPosition.length)
 
     // missing parameters: those with a name which is not specified in one of the namedArgsOnChangedPosition
     val missingParams = paramsWithoutPositionalArg.filter(p =>
@@ -518,8 +523,10 @@ trait NamesDefaults { self: Analyzer =>
       pos: scala.reflect.internal.util.Position,
       context: Context): (List[Tree], List[Symbol]) = {
     if (givenArgs.length < params.length) {
-      val (missing, positional) =
-        missingParams(givenArgs, params, nameOfNamedArg)
+      val (missing, positional) = missingParams(
+        givenArgs,
+        params,
+        nameOfNamedArg)
       if (missing forall (_.hasDefault)) {
         val defaultArgs = missing flatMap (p => {
           val defGetter = defaultGetter(p, context)
@@ -527,11 +534,12 @@ trait NamesDefaults { self: Analyzer =>
           if (defGetter == NoSymbol)
             None // prevent crash in erroneous trees, #3649
           else {
-            var default1: Tree = qual match {
-              case Some(q) => gen.mkAttributedSelect(q.duplicate, defGetter)
-              case None    => gen.mkAttributedRef(defGetter)
+            var default1: Tree =
+              qual match {
+                case Some(q) => gen.mkAttributedSelect(q.duplicate, defGetter)
+                case None    => gen.mkAttributedRef(defGetter)
 
-            }
+              }
             default1 =
               if (targs.isEmpty)
                 default1
@@ -596,9 +604,10 @@ trait NamesDefaults { self: Analyzer =>
       //   f(x = 1)   <<  "x = 1" typechecks with expected type WildcardType
       val udp = context.undetparams
       context.savingUndeterminedTypeParams(reportAmbiguous = false) {
-        val subst = new SubstTypeMap(udp, udp map (_ => WildcardType)) {
-          override def apply(tp: Type): Type = super.apply(dropByName(tp))
-        }
+        val subst =
+          new SubstTypeMap(udp, udp map (_ => WildcardType)) {
+            override def apply(tp: Type): Type = super.apply(dropByName(tp))
+          }
         // This throws an exception which is caught in `tryTypedApply` (as it
         // uses `silent`) - unfortunately, tryTypedApply recovers from the
         // exception if you use errorTree(arg, ...) and conforms is allowed as

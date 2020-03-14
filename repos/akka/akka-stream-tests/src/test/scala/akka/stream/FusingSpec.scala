@@ -124,16 +124,17 @@ class FusingSpec extends AkkaSpec {
 
     "use multiple actors when there are asynchronous boundaries in the subflows (manual)" in {
       def ref = {
-        val bus =
-          GraphInterpreter.currentInterpreter.log.asInstanceOf[BusLogging]
+        val bus = GraphInterpreter.currentInterpreter.log
+          .asInstanceOf[BusLogging]
         bus.logSource
       }
-      val async = Flow[Int]
-        .map(x ⇒ {
-          testActor ! ref;
-          x
-        })
-        .async
+      val async =
+        Flow[Int]
+          .map(x ⇒ {
+            testActor ! ref;
+            x
+          })
+          .async
       Source(0 to 9)
         .map(x ⇒ {
           testActor ! ref;
@@ -152,8 +153,8 @@ class FusingSpec extends AkkaSpec {
 
     "use multiple actors when there are asynchronous boundaries in the subflows (combinator)" in {
       def ref = {
-        val bus =
-          GraphInterpreter.currentInterpreter.log.asInstanceOf[BusLogging]
+        val bus = GraphInterpreter.currentInterpreter.log
+          .asInstanceOf[BusLogging]
         bus.logSource
       }
       val flow = Flow[Int].map(x ⇒ {

@@ -110,9 +110,10 @@ object Annotations {
       implicit annotations: Annotations[A, T]): Aux[A, T, annotations.Out] =
     annotations
 
-  type Aux[A, T, Out0 <: HList] = Annotations[A, T] {
-    type Out = Out0
-  }
+  type Aux[A, T, Out0 <: HList] =
+    Annotations[A, T] {
+      type Out = Out0
+    }
 
   def mkAnnotations[A, T, Out0 <: HList](
       annotations: => Out0): Aux[A, T, Out0] =
@@ -183,15 +184,16 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     val annTreeOpts =
       if (isProduct(tpe)) {
-        val constructorSyms = tpe
-          .member(termNames.CONSTRUCTOR)
-          .asMethod
-          .paramLists
-          .flatten
-          .map { sym =>
-            sym.name.decodedName.toString -> sym
-          }
-          .toMap
+        val constructorSyms =
+          tpe
+            .member(termNames.CONSTRUCTOR)
+            .asMethod
+            .paramLists
+            .flatten
+            .map { sym =>
+              sym.name.decodedName.toString -> sym
+            }
+            .toMap
 
         fieldsOf(tpe).map {
           case (name, _) =>
@@ -222,9 +224,10 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
     val outTpe = mkHListTpe(wrapTpeTrees.map {
       case (aTpe, _) => aTpe
     })
-    val outTree = wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {
-      case ((_, bound), acc) => pq"_root_.shapeless.::($bound, $acc)"
-    }
+    val outTree =
+      wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {
+        case ((_, bound), acc) => pq"_root_.shapeless.::($bound, $acc)"
+      }
 
     q"_root_.shapeless.Annotations.mkAnnotations[$annTpe, $tpe, $outTpe]($outTree)"
   }

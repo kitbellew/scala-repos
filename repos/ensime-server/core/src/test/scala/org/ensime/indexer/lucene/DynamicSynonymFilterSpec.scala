@@ -30,13 +30,14 @@ class DynamicSynonymFilterSpec extends EnsimeSpec {
     "run down the curtain and joined the bleedin choir invisible",
     "ex-parrot"
   )
-  val engine = new SynonymEngine {
-    def synonyms(term: String) =
-      if (term != "dead")
-        Set.empty
-      else
-        cleese
-  }
+  val engine =
+    new SynonymEngine {
+      def synonyms(term: String) =
+        if (term != "dead")
+          Set.empty
+        else
+          cleese
+    }
 
   private def applyEngineToTerm(
       term: String,

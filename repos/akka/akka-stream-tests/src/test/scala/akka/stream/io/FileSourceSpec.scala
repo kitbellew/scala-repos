@@ -188,9 +188,10 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
           .asInstanceOf[ActorMaterializerImpl]
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
-        val ref = expectMsgType[Children].children
-          .find(_.path.toString contains "fileSource")
-          .get
+        val ref =
+          expectMsgType[Children].children
+            .find(_.path.toString contains "fileSource")
+            .get
         try assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
         finally p.cancel()
       } finally shutdown(sys)
@@ -204,19 +205,21 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       implicit val timeout = Timeout(500.millis)
 
       try {
-        val p = FileIO
-          .fromFile(manyLines)
-          .withAttributes(
-            ActorAttributes.dispatcher("akka.actor.default-dispatcher"))
-          .runWith(TestSink.probe)(materializer)
+        val p =
+          FileIO
+            .fromFile(manyLines)
+            .withAttributes(
+              ActorAttributes.dispatcher("akka.actor.default-dispatcher"))
+            .runWith(TestSink.probe)(materializer)
 
         materializer
           .asInstanceOf[ActorMaterializerImpl]
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
-        val ref = expectMsgType[Children].children
-          .find(_.path.toString contains "File")
-          .get
+        val ref =
+          expectMsgType[Children].children
+            .find(_.path.toString contains "File")
+            .get
         try assertDispatcher(ref, "akka.actor.default-dispatcher")
         finally p.cancel()
       } finally shutdown(sys)

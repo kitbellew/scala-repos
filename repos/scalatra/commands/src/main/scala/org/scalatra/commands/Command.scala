@@ -79,8 +79,7 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
   }
 
   implicit def autoBind[T: Manifest: TypeConverterFactory](
-      fieldName: String): Field[T] =
-    bind[T](FieldDescriptor[T](fieldName))
+      fieldName: String): Field[T] = bind[T](FieldDescriptor[T](fieldName))
 
   implicit def bind[T](field: FieldDescriptor[T])(implicit
       mf: Manifest[T],
@@ -145,31 +144,37 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
         val fieldBinding =
           Binding(b.field, cv, b.typeConverterFactory)(mi, b.valueManifest)
 
-        val result = b.field.valueSource match {
-          case ValueSource.Body =>
-            fieldBinding(
-              data.read(name).right.map(_ map (_.asInstanceOf[fieldBinding.S])))
-          case ValueSource.Header =>
-            val tc: TypeConverter[String, _] = tcf.resolveStringParams
-            val headersBinding = Binding(
-              b.field,
-              tc.asInstanceOf[TypeConverter[String, b.T]],
-              tcf)(manifest[String], b.valueManifest)
-            headersBinding(
-              Right(headers.get(name).map(_.asInstanceOf[headersBinding.S])))
-          case ValueSource.Path | ValueSource.Query =>
-            val pv = typeConverterBuilder(
-              tcf.asInstanceOf[CommandTypeConverterFactory[_]])(params)
-              .asInstanceOf[TypeConverter[Seq[String], b.T]]
-            val paramsBinding = Binding(b.field, pv, b.typeConverterFactory)(
-              manifest[Seq[String]],
-              b.valueManifest)
-            paramsBinding(
-              params
-                .read(name)
-                .right
-                .map(_ map (_.asInstanceOf[paramsBinding.S])))
-        }
+        val result =
+          b.field.valueSource match {
+            case ValueSource.Body =>
+              fieldBinding(
+                data
+                  .read(name)
+                  .right
+                  .map(_ map (_.asInstanceOf[fieldBinding.S])))
+            case ValueSource.Header =>
+              val tc: TypeConverter[String, _] = tcf.resolveStringParams
+              val headersBinding =
+                Binding(
+                  b.field,
+                  tc.asInstanceOf[TypeConverter[String, b.T]],
+                  tcf)(manifest[String], b.valueManifest)
+              headersBinding(
+                Right(headers.get(name).map(_.asInstanceOf[headersBinding.S])))
+            case ValueSource.Path | ValueSource.Query =>
+              val pv = typeConverterBuilder(
+                tcf.asInstanceOf[CommandTypeConverterFactory[_]])(params)
+                .asInstanceOf[TypeConverter[Seq[String], b.T]]
+              val paramsBinding =
+                Binding(b.field, pv, b.typeConverterFactory)(
+                  manifest[Seq[String]],
+                  b.valueManifest)
+              paramsBinding(
+                params
+                  .read(name)
+                  .right
+                  .map(_ map (_.asInstanceOf[paramsBinding.S])))
+          }
 
         name -> result
     }

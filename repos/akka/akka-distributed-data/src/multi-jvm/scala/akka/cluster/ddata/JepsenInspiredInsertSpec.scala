@@ -64,9 +64,10 @@ class JepsenInspiredInsertSpec
   //  val totalCount = 2000
   val expectedData = (0 until totalCount).toSet
   val data: Map[RoleName, Seq[Int]] = {
-    val nodeIndex = nodes.zipWithIndex.map {
-      case (n, i) ⇒ i -> n
-    }.toMap
+    val nodeIndex =
+      nodes.zipWithIndex.map {
+        case (n, i) ⇒ i -> n
+      }.toMap
     (0 until totalCount).groupBy(i ⇒ nodeIndex(i % nodeCount))
   }
   lazy val myData: Seq[Int] = data(myself)
@@ -146,9 +147,10 @@ class JepsenInspiredInsertSpec
         awaitAssert {
           val readProbe = TestProbe()
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
-          val result = readProbe.expectMsgPF() {
-            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
-          }
+          val result =
+            readProbe.expectMsgPF() {
+              case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+            }
           result.elements should be(expectedData)
         }
       }
@@ -187,9 +189,10 @@ class JepsenInspiredInsertSpec
       // read from majority of nodes, which is enough to retrieve all data
       val readProbe = TestProbe()
       replicator.tell(Get(key, readMajority), readProbe.ref)
-      val result = readProbe.expectMsgPF() {
-        case g @ GetSuccess(`key`, _) ⇒ g.get(key)
-      }
+      val result =
+        readProbe.expectMsgPF() {
+          case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+        }
       val survivors = result.elements.size
       result.elements should be(expectedData)
 
@@ -243,9 +246,10 @@ class JepsenInspiredInsertSpec
         awaitAssert {
           val readProbe = TestProbe()
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
-          val result = readProbe.expectMsgPF() {
-            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
-          }
+          val result =
+            readProbe.expectMsgPF() {
+              case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+            }
           result.elements should be(expectedData)
         }
       }
@@ -304,9 +308,10 @@ class JepsenInspiredInsertSpec
       runOn(n2, n3) {
         val readProbe = TestProbe()
         replicator.tell(Get(key, readMajority), readProbe.ref)
-        val result = readProbe.expectMsgPF() {
-          case g @ GetSuccess(`key`, _) ⇒ g.get(key)
-        }
+        val result =
+          readProbe.expectMsgPF() {
+            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+          }
         val survivors = result.elements.size
         result.elements should be(expectedData)
       }
@@ -318,9 +323,10 @@ class JepsenInspiredInsertSpec
         awaitAssert {
           val readProbe = TestProbe()
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
-          val result = readProbe.expectMsgPF() {
-            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
-          }
+          val result =
+            readProbe.expectMsgPF() {
+              case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+            }
           result.elements should be(expectedData)
         }
       }

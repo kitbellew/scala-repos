@@ -14,12 +14,13 @@ object Test {
     val threads =
       for (i <- (1 to 16))
         yield {
-          val t = new Thread {
-            override def run(): Unit = {
-              import reflect.runtime.universe._
-              typeOf[List[String]] <:< typeOf[Seq[_]]
+          val t =
+            new Thread {
+              override def run(): Unit = {
+                import reflect.runtime.universe._
+                typeOf[List[String]] <:< typeOf[Seq[_]]
+              }
             }
-          }
           t.start()
           t.join()
           WeakReference(t)

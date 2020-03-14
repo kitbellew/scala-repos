@@ -138,18 +138,18 @@ package dynamicguicemodule {
       // Expect configuration like:
       // hello.en = "myapp.EnglishHello"
       // hello.de = "myapp.GermanHello"
-      val helloConfiguration: Configuration =
-        configuration.getConfig("hello").getOrElse(Configuration.empty)
+      val helloConfiguration: Configuration = configuration
+        .getConfig("hello")
+        .getOrElse(Configuration.empty)
       val languages: Set[String] = helloConfiguration.subKeys
       // Iterate through all the languages and bind the
       // class associated with that language. Use Play's
       // ClassLoader to load the classes.
       for (l <- languages) {
         val bindingClassName: String = helloConfiguration.getString(l).get
-        val bindingClass: Class[_ <: Hello] =
-          environment.classLoader
-            .loadClass(bindingClassName)
-            .asSubclass(classOf[Hello])
+        val bindingClass: Class[_ <: Hello] = environment.classLoader
+          .loadClass(bindingClassName)
+          .asSubclass(classOf[Hello])
         bind(classOf[Hello])
           .annotatedWith(Names.named(l))
           .to(bindingClass)

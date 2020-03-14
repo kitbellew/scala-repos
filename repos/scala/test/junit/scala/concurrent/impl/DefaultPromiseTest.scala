@@ -142,10 +142,11 @@ class DefaultPromiseTest {
     def complete(p: PromiseId) {
       val r = Success(freshId())
       val (cid, chain) = promiseChain(p).get
-      val (completionEffect, newState) = chain.state match {
-        case Left(handlers)    => (HandlersFired(r, handlers), Right(r))
-        case Right(completion) => (IllegalThrown, chain.state)
-      }
+      val (completionEffect, newState) =
+        chain.state match {
+          case Left(handlers)    => (HandlersFired(r, handlers), Right(r))
+          case Right(completion) => (IllegalThrown, chain.state)
+        }
       checkEffect(completionEffect) {
         promises(p).complete(r)
       }
@@ -169,21 +170,22 @@ class DefaultPromiseTest {
       case class Merge(state: Either[Set[HandlerId], Try[Result]])
           extends MergeOp
 
-      val (linkEffect, mergeOp) = (chainA.state, chainB.state) match {
-        case (Left(handlers1), Left(handlers2)) =>
-          (NoEffect, Merge(Left(handlers1 ++ handlers2)))
-        case (Left(handlers), Right(result)) =>
-          (HandlersFired(result, handlers), Merge(Right(result)))
-        case (Right(result), Left(handlers)) =>
-          (HandlersFired(result, handlers), Merge(Right(result)))
-        case (Right(_), Right(_)) if (cidA == cidB) =>
-          (
-            MaybeIllegalThrown,
-            NoMerge
-          ) // Won't be thrown if happen to link a promise to itself
-        case (Right(_), Right(_)) =>
-          (IllegalThrown, NoMerge)
-      }
+      val (linkEffect, mergeOp) =
+        (chainA.state, chainB.state) match {
+          case (Left(handlers1), Left(handlers2)) =>
+            (NoEffect, Merge(Left(handlers1 ++ handlers2)))
+          case (Left(handlers), Right(result)) =>
+            (HandlersFired(result, handlers), Merge(Right(result)))
+          case (Right(result), Left(handlers)) =>
+            (HandlersFired(result, handlers), Merge(Right(result)))
+          case (Right(_), Right(_)) if (cidA == cidB) =>
+            (
+              MaybeIllegalThrown,
+              NoMerge
+            ) // Won't be thrown if happen to link a promise to itself
+          case (Right(_), Right(_)) =>
+            (IllegalThrown, NoMerge)
+        }
 
       // Perform the linking and merge the chains, if appropriate
 
@@ -191,18 +193,19 @@ class DefaultPromiseTest {
         promiseA.linkRootOf(promiseB)
       }
 
-      val (newCidA, newCidB) = mergeOp match {
-        case NoMerge => (cidA, cidB)
-        case Merge(newState) => {
-          chains = chains - cidA
-          chains = chains - cidB
-          val newCid = freshId()
-          chains = chains.updated(
-            newCid,
-            Chain(chainA.promises ++ chainB.promises, newState))
-          (newCid, newCid)
+      val (newCidA, newCidB) =
+        mergeOp match {
+          case NoMerge => (cidA, cidB)
+          case Merge(newState) => {
+            chains = chains - cidA
+            chains = chains - cidB
+            val newCid = freshId()
+            chains = chains.updated(
+              newCid,
+              Chain(chainA.promises ++ chainB.promises, newState))
+            (newCid, newCid)
+          }
         }
-      }
       assertPromiseValues()
       (newCidA, newCidB)
     }
@@ -215,20 +218,22 @@ class DefaultPromiseTest {
       val hid = freshId()
       val promise = promises(p)
       val (cid, chain) = promiseChain(p).get
-      val (attachEffect, newState) = chain.state match {
-        case Left(handlers) =>
-          (NoEffect, Left(handlers + hid))
-        case Right(result) =>
-          (HandlersFired(result, Set(hid)), Right(result))
-      }
-      implicit val ec = new ExecutionContext {
-        def execute(r: Runnable) {
-          r.run()
+      val (attachEffect, newState) =
+        chain.state match {
+          case Left(handlers) =>
+            (NoEffect, Left(handlers + hid))
+          case Right(result) =>
+            (HandlersFired(result, Set(hid)), Right(result))
         }
-        def reportFailure(t: Throwable) {
-          t.printStackTrace()
+      implicit val ec =
+        new ExecutionContext {
+          def execute(r: Runnable) {
+            r.run()
+          }
+          def reportFailure(t: Throwable) {
+            t.printStackTrace()
+          }
         }
-      }
 
       checkEffect(attachEffect) {
         promise.onComplete(result => handlerQueue.add((result, hid)))

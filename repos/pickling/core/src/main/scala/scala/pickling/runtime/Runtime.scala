@@ -56,10 +56,11 @@ abstract class PicklerRuntime(
     } else {
       // TODO: fix duplication w.r.t Tools.scala
       val tpeWithMaybeTparams = sym.asType.toType
-      val tparams = tpeWithMaybeTparams match {
-        case TypeRef(_, _, targs) => targs.map(_.typeSymbol)
-        case _                    => Nil
-      }
+      val tparams =
+        tpeWithMaybeTparams match {
+          case TypeRef(_, _, targs) => targs.map(_.typeSymbol)
+          case _                    => Nil
+        }
       existentialAbstraction(tparams, tpeWithMaybeTparams)
     }
   }
@@ -70,10 +71,11 @@ abstract class PicklerRuntime(
   val cir = newClassIR(tpe)
   //debug(s"PicklerRuntime: cir = $cir")
 
-  val shareAnalyzer = new ShareAnalyzer[ru.type](ru) {
-    def shareEverything = share.isInstanceOf[refs.ShareEverything]
-    def shareNothing = share.isInstanceOf[refs.ShareNothing]
-  }
+  val shareAnalyzer =
+    new ShareAnalyzer[ru.type](ru) {
+      def shareEverything = share.isInstanceOf[refs.ShareEverything]
+      def shareNothing = share.isInstanceOf[refs.ShareNothing]
+    }
   def shouldBotherAboutSharing(tpe: Type) =
     shareAnalyzer.shouldBotherAboutSharing(tpe)
   def shouldBotherAboutLooping(tpe: Type) =
@@ -92,10 +94,9 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
   def genPickler: Pickler[_] = {
     // build "interpreted" runtime pickler
     new Pickler[Any] with PickleTools {
-      val fields: List[(irs.FieldIR, Boolean)] =
-        cir.fields
-          .filter(_.hasGetter)
-          .map(fir => (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
+      val fields: List[(irs.FieldIR, Boolean)] = cir.fields
+        .filter(_.hasGetter)
+        .map(fir => (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
 
       def tag: FastTypeTag[Any] =
         FastTypeTag.mkRaw(clazz, mirror).asInstanceOf[FastTypeTag[Any]]
@@ -205,10 +206,11 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
   val cir = newClassIR(tpe)
   // debug("UnpicklerRuntime: cir = " + cir)
 
-  val shareAnalyzer = new ShareAnalyzer[ru.type](ru) {
-    def shareEverything = share.isInstanceOf[refs.ShareEverything]
-    def shareNothing = share.isInstanceOf[refs.ShareNothing]
-  }
+  val shareAnalyzer =
+    new ShareAnalyzer[ru.type](ru) {
+      def shareEverything = share.isInstanceOf[refs.ShareEverything]
+      def shareNothing = share.isInstanceOf[refs.ShareNothing]
+    }
   def shouldBotherAboutSharing(tpe: Type) =
     shareAnalyzer.shouldBotherAboutSharing(tpe)
   def shouldBotherAboutLooping(tpe: Type) =
@@ -285,8 +287,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
-            val inst =
-              scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
+            val inst = scala.concurrent.util.Unsafe.instance
+              .allocateInstance(clazz)
             if (shouldBotherAboutSharing(tpe))
               registerUnpicklee(inst, preregisterUnpicklee())
             val im = mirror.reflect(inst)
@@ -393,8 +395,8 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
-            val inst =
-              scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
+            val inst = scala.concurrent.util.Unsafe.instance
+              .allocateInstance(clazz)
             val im = mirror.reflect(inst)
 
             //debug(s"pendingFields: ${pendingFields.size}")

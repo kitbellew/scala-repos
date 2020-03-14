@@ -79,19 +79,20 @@ object KMeans {
 
     // Do a cross product to produce all point, cluster pairs
     // in scalding, the smaller pipe should go on the right.
-    val next = points
-      .leftCross(clusters)
-      // now compute the closest cluster for each vector
-      .map {
-        case ((oldId, vector), Some(centroids)) =>
-          val (id, newcentroid) = closest(vector, centroids)
-          if (id != oldId)
-            s.inc
-          (id, vector)
-        case (_, None) =>
-          sys.error("Missing clusters, this should never happen")
-      }
-      .forceToDiskExecution
+    val next =
+      points
+        .leftCross(clusters)
+        // now compute the closest cluster for each vector
+        .map {
+          case ((oldId, vector), Some(centroids)) =>
+            val (id, newcentroid) = closest(vector, centroids)
+            if (id != oldId)
+              s.inc
+            (id, vector)
+          case (_, None) =>
+            sys.error("Missing clusters, this should never happen")
+        }
+        .forceToDiskExecution
 
     // Now update the clusters:
     next.map { pipe =>
@@ -116,18 +117,19 @@ object KMeans {
       : (ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector]) = {
     val rng = new java.util.Random(123)
     // take a random k vectors:
-    val clusters = points
-      .map { v =>
-        (rng.nextDouble, v)
-      }
-      .groupAll
-      .sortedTake(k)(Ordering.by(_._1))
-      .mapValues { randk =>
-        randk.iterator.zipWithIndex.map {
-          case ((_, v), id) => (id, v)
-        }.toList
-      }
-      .values
+    val clusters =
+      points
+        .map { v =>
+          (rng.nextDouble, v)
+        }
+        .groupAll
+        .sortedTake(k)(Ordering.by(_._1))
+        .mapValues { randk =>
+          randk.iterator.zipWithIndex.map {
+            case ((_, v), id) => (id, v)
+          }.toList
+        }
+        .values
 
     // attach a random cluster to each vector
     val labeled = points.map { v =>

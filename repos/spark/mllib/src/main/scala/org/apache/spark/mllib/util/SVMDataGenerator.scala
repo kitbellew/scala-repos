@@ -74,9 +74,10 @@ object SVMDataGenerator {
       idx =>
         val rnd = new Random(42 + idx)
 
-        val x = Array.fill[Double](nfeatures) {
-          rnd.nextDouble() * 2.0 - 1.0
-        }
+        val x =
+          Array.fill[Double](nfeatures) {
+            rnd.nextDouble() * 2.0 - 1.0
+          }
         val yD = blas.ddot(trueWeights.length, x, 1, trueWeights, 1) + rnd
           .nextGaussian() * 0.1
         val y =

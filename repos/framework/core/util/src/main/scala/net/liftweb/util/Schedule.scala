@@ -70,8 +70,8 @@ sealed trait Schedule extends Loggable {
         })
 
   /** The underlying <code>java.util.concurrent.ScheduledExecutor</code> */
-  private var service: ScheduledExecutorService =
-    Executors.newSingleThreadScheduledExecutor(TF)
+  private var service: ScheduledExecutorService = Executors
+    .newSingleThreadScheduledExecutor(TF)
 
   private var pool = buildExecutor()
 
@@ -153,26 +153,28 @@ sealed trait Schedule extends Loggable {
     */
   def schedule(f: () => Unit, delay: TimeSpan): ScheduledFuture[Unit] =
     synchronized {
-      val r = new Runnable {
-        def run() {
-          try {
-            f.apply()
-          } catch {
-            case e: Exception => logger.error(e)
+      val r =
+        new Runnable {
+          def run() {
+            try {
+              f.apply()
+            } catch {
+              case e: Exception => logger.error(e)
+            }
           }
         }
-      }
 
-      val fast = new java.util.concurrent.Callable[Unit] {
-        def call(): Unit = {
-          try {
-            Schedule.this.restart
-            pool.execute(r)
-          } catch {
-            case e: Exception => logger.error(e)
+      val fast =
+        new java.util.concurrent.Callable[Unit] {
+          def call(): Unit = {
+            try {
+              Schedule.this.restart
+              pool.execute(r)
+            } catch {
+              case e: Exception => logger.error(e)
+            }
           }
         }
-      }
 
       try {
         this.restart

@@ -170,8 +170,9 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
       "Strict with non-binary MediaType and over 4096 bytes" in {
         val utf8Type = ContentTypes.`text/plain(UTF-8)`
         val longString = Random.alphanumeric.take(10000).mkString
-        val entity =
-          Strict(utf8Type, ByteString.apply(longString, utf8Type.charset.value))
+        val entity = Strict(
+          utf8Type,
+          ByteString.apply(longString, utf8Type.charset.value))
         entity must renderStrictDataAs(
           s"${longString.take(4095)} ... (10000 bytes total)")
       }

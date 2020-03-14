@@ -39,16 +39,17 @@ class BuildFileChangeBrowser(
     updatedChanges.addAll(
       getSelectedChanges map { myChange =>
         {
-          val changeSwapped =
-            BuildFileChange.swap(myChange.asInstanceOf[BuildFileChange])
+          val changeSwapped = BuildFileChange.swap(
+            myChange.asInstanceOf[BuildFileChange])
           fileChangesMap
             .get(changeSwapped.getVirtualFile)
             .map {
               case (modifiedStatus, modificationStamp) =>
-                val newModificationStamp = FileDocumentManager
-                  .getInstance()
-                  .getDocument(changeSwapped.getVirtualFile)
-                  .getModificationStamp
+                val newModificationStamp =
+                  FileDocumentManager
+                    .getInstance()
+                    .getDocument(changeSwapped.getVirtualFile)
+                    .getModificationStamp
 
                 if (newModificationStamp != modificationStamp) {
                   val newStatus = modifiedStatus.changeAfterManualModification()

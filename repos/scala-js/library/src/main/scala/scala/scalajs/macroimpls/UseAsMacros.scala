@@ -94,23 +94,24 @@ private[scalajs] object UseAsMacros {
         // Fail for required unsupported members
         jsMember match {
           case UnsupportedMember(sym, tpe) =>
-            val msg = tpe match {
-              case _: PolyType =>
-                "Polymorphic methods are currently " +
-                  s"not supported. Offending method: ${sym.fullName}"
+            val msg =
+              tpe match {
+                case _: PolyType =>
+                  "Polymorphic methods are currently " +
+                    s"not supported. Offending method: ${sym.fullName}"
 
-              case _: ExistentialType =>
-                "Methods with existential types are " +
-                  s"not supported. Offending method: ${sym.fullName}. This is " +
-                  "likely caused by an abstract type in the method signature"
+                case _: ExistentialType =>
+                  "Methods with existential types are " +
+                    s"not supported. Offending method: ${sym.fullName}. This is " +
+                    "likely caused by an abstract type in the method signature"
 
-              case _ =>
-                sys.error(
-                  "Unknown type in unsupported member. " +
-                    "Report this as a bug.\n" +
-                    s"Offending method: ${sym.fullName}\n" +
-                    s"Offending type: ${showRaw(tpe)}")
-            }
+                case _ =>
+                  sys.error(
+                    "Unknown type in unsupported member. " +
+                      "Report this as a bug.\n" +
+                      s"Offending method: ${sym.fullName}\n" +
+                      s"Offending type: ${showRaw(tpe)}")
+              }
 
             c.error(c.enclosingPosition, msg)
 
@@ -135,38 +136,39 @@ private[scalajs] object UseAsMacros {
             s"$srcTpe does not $membershipStr a $memberStr."
           }
 
-          val errMsg = jsMemberSelection match {
-            case JSNamedMember(name) =>
-              noSuchMember(name)
+          val errMsg =
+            jsMemberSelection match {
+              case JSNamedMember(name) =>
+                noSuchMember(name)
 
-            case JSMemberCall if !isRawJSType =>
-              s"$trgTpe defines an apply method. This cannot be implemented " +
-                "by any Scala exported type, since it would need to chain " +
-                "Function's prototype."
+              case JSMemberCall if !isRawJSType =>
+                s"$trgTpe defines an apply method. This cannot be implemented " +
+                  "by any Scala exported type, since it would need to chain " +
+                  "Function's prototype."
 
-            case JSMemberBracketAccess if !isRawJSType =>
-              s"$trgTpe defines a @JSMemberBracketAccess method. Existence " +
-                "of such a method cannot be statically checked for any " +
-                "Scala exported type."
+              case JSMemberBracketAccess if !isRawJSType =>
+                s"$trgTpe defines a @JSMemberBracketAccess method. Existence " +
+                  "of such a method cannot be statically checked for any " +
+                  "Scala exported type."
 
-            case JSMemberBracketCall if !isRawJSType =>
-              s"$trgTpe defines a @JSMemberBracketCall method. Existence of " +
-                "such a method cannot be statically checked for any Scala " +
-                "exported type."
+              case JSMemberBracketCall if !isRawJSType =>
+                s"$trgTpe defines a @JSMemberBracketCall method. Existence of " +
+                  "such a method cannot be statically checked for any Scala " +
+                  "exported type."
 
-            case JSMemberCall =>
-              noSuchMember("<apply>") + " (type is not callable)"
+              case JSMemberCall =>
+                noSuchMember("<apply>") + " (type is not callable)"
 
-            case JSMemberBracketAccess =>
-              noSuchMember("<bracketaccess>") + " (type doesn't support " +
-                "member selection via []). Add @JSBracketAccess to use a " +
-                "method for member selection."
+              case JSMemberBracketAccess =>
+                noSuchMember("<bracketaccess>") + " (type doesn't support " +
+                  "member selection via []). Add @JSBracketAccess to use a " +
+                  "method for member selection."
 
-            case JSMemberBracketCall =>
-              noSuchMember("<bracketcall>") + " (type doesn't support " +
-                "dynamically calling methods). Add @JSBracketCall to use a " +
-                "method for dynamic calls."
-          }
+              case JSMemberBracketCall =>
+                noSuchMember("<bracketcall>") + " (type doesn't support " +
+                  "dynamically calling methods). Add @JSBracketCall to use a " +
+                  "method for dynamic calls."
+            }
 
           c.error(c.enclosingPosition, errMsg)
         }
@@ -183,13 +185,14 @@ private[scalajs] object UseAsMacros {
         !member.asTerm.isParamWithDefault
       }
 
-      val tups = for {
-        member <- tpe.members
-        if isAPIMember(member)
-      } yield {
-        val memberMethod = member.asMethod
-        (jsMemberSelection(memberMethod), jsMemberFor(tpe, memberMethod))
-      }
+      val tups =
+        for {
+          member <- tpe.members
+          if isAPIMember(member)
+        } yield {
+          val memberMethod = member.asMethod
+          (jsMemberSelection(memberMethod), jsMemberFor(tpe, memberMethod))
+        }
 
       // Group by member selection
       for {
@@ -289,12 +292,13 @@ private[scalajs] object UseAsMacros {
     private def exportNames(sym: MethodSymbol, exportAll: Boolean) = {
       lazy val default = defaultName(sym)
 
-      val explicitNames = for {
-        annot <- memberAnnotations(sym)
-        if annotIs(annot, JSExportAnnotation)
-      } yield {
-        annotStringArg(annot).getOrElse(default)
-      }
+      val explicitNames =
+        for {
+          annot <- memberAnnotations(sym)
+          if annotIs(annot, JSExportAnnotation)
+        } yield {
+          annotStringArg(annot).getOrElse(default)
+        }
 
       if (exportAll && sym.isPublic)
         default :: explicitNames

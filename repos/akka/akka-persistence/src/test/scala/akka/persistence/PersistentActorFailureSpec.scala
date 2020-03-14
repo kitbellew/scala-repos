@@ -205,8 +205,10 @@ class PersistentActorFailureSpec
       expectTerminated(ref)
     }
     "call onRecoveryFailure when recovery from persisted events fails" in {
-      val props =
-        Props(classOf[OnRecoveryFailurePersistentActor], name, testActor)
+      val props = Props(
+        classOf[OnRecoveryFailurePersistentActor],
+        name,
+        testActor)
 
       val persistentActor = system.actorOf(props)
       persistentActor ! Cmd("corrupt")

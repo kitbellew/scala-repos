@@ -118,8 +118,9 @@ private[spark] class PythonRunner(
     if (reuse_worker) {
       envVars.put("SPARK_REUSE_WORKER", "1")
     }
-    val worker: Socket =
-      env.createPythonWorker(pythonExec, envVars.asScala.toMap)
+    val worker: Socket = env.createPythonWorker(
+      pythonExec,
+      envVars.asScala.toMap)
     // Whether is the worker released into idle pool
     @volatile var released = false
 
@@ -143,103 +144,105 @@ private[spark] class PythonRunner(
     new MonitorThread(env, worker, context).start()
 
     // Return an iterator that read lines from the process's stdout
-    val stream = new DataInputStream(
-      new BufferedInputStream(worker.getInputStream, bufferSize))
-    val stdoutIterator = new Iterator[Array[Byte]] {
-      override def next(): Array[Byte] = {
-        val obj = _nextObj
-        if (hasNext) {
-          _nextObj = read()
-        }
-        obj
-      }
-
-      private def read(): Array[Byte] = {
-        if (writerThread.exception.isDefined) {
-          throw writerThread.exception.get
-        }
-        try {
-          stream.readInt() match {
-            case length if length > 0 =>
-              val obj = new Array[Byte](length)
-              stream.readFully(obj)
-              obj
-            case 0                          => Array.empty[Byte]
-            case SpecialLengths.TIMING_DATA =>
-              // Timing data from worker
-              val bootTime = stream.readLong()
-              val initTime = stream.readLong()
-              val finishTime = stream.readLong()
-              val boot = bootTime - startTime
-              val init = initTime - bootTime
-              val finish = finishTime - initTime
-              val total = finishTime - startTime
-              logInfo(
-                "Times: total = %s, boot = %s, init = %s, finish = %s"
-                  .format(total, boot, init, finish))
-              val memoryBytesSpilled = stream.readLong()
-              val diskBytesSpilled = stream.readLong()
-              context.taskMetrics.incMemoryBytesSpilled(memoryBytesSpilled)
-              context.taskMetrics.incDiskBytesSpilled(diskBytesSpilled)
-              read()
-            case SpecialLengths.PYTHON_EXCEPTION_THROWN =>
-              // Signals that an exception has been thrown in python
-              val exLength = stream.readInt()
-              val obj = new Array[Byte](exLength)
-              stream.readFully(obj)
-              throw new PythonException(
-                new String(obj, StandardCharsets.UTF_8),
-                writerThread.exception.getOrElse(null))
-            case SpecialLengths.END_OF_DATA_SECTION =>
-              // We've finished the data section of the output, but we can still
-              // read some accumulator updates:
-              val numAccumulatorUpdates = stream.readInt()
-              (1 to numAccumulatorUpdates).foreach { _ =>
-                val updateLen = stream.readInt()
-                val update = new Array[Byte](updateLen)
-                stream.readFully(update)
-                accumulator += Collections.singletonList(update)
-              }
-              // Check whether the worker is ready to be re-used.
-              if (stream.readInt() == SpecialLengths.END_OF_STREAM) {
-                if (reuse_worker) {
-                  env.releasePythonWorker(
-                    pythonExec,
-                    envVars.asScala.toMap,
-                    worker)
-                  released = true
-                }
-              }
-              null
+    val stream =
+      new DataInputStream(
+        new BufferedInputStream(worker.getInputStream, bufferSize))
+    val stdoutIterator =
+      new Iterator[Array[Byte]] {
+        override def next(): Array[Byte] = {
+          val obj = _nextObj
+          if (hasNext) {
+            _nextObj = read()
           }
-        } catch {
-
-          case e: Exception if context.isInterrupted =>
-            logDebug("Exception thrown after task interruption", e)
-            throw new TaskKilledException
-
-          case e: Exception if env.isStopped =>
-            logDebug("Exception thrown after context is stopped", e)
-            null // exit silently
-
-          case e: Exception if writerThread.exception.isDefined =>
-            logError("Python worker exited unexpectedly (crashed)", e)
-            logError(
-              "This may have been caused by a prior exception:",
-              writerThread.exception.get)
-            throw writerThread.exception.get
-
-          case eof: EOFException =>
-            throw new SparkException(
-              "Python worker exited unexpectedly (crashed)",
-              eof)
+          obj
         }
+
+        private def read(): Array[Byte] = {
+          if (writerThread.exception.isDefined) {
+            throw writerThread.exception.get
+          }
+          try {
+            stream.readInt() match {
+              case length if length > 0 =>
+                val obj = new Array[Byte](length)
+                stream.readFully(obj)
+                obj
+              case 0                          => Array.empty[Byte]
+              case SpecialLengths.TIMING_DATA =>
+                // Timing data from worker
+                val bootTime = stream.readLong()
+                val initTime = stream.readLong()
+                val finishTime = stream.readLong()
+                val boot = bootTime - startTime
+                val init = initTime - bootTime
+                val finish = finishTime - initTime
+                val total = finishTime - startTime
+                logInfo(
+                  "Times: total = %s, boot = %s, init = %s, finish = %s"
+                    .format(total, boot, init, finish))
+                val memoryBytesSpilled = stream.readLong()
+                val diskBytesSpilled = stream.readLong()
+                context.taskMetrics.incMemoryBytesSpilled(memoryBytesSpilled)
+                context.taskMetrics.incDiskBytesSpilled(diskBytesSpilled)
+                read()
+              case SpecialLengths.PYTHON_EXCEPTION_THROWN =>
+                // Signals that an exception has been thrown in python
+                val exLength = stream.readInt()
+                val obj = new Array[Byte](exLength)
+                stream.readFully(obj)
+                throw new PythonException(
+                  new String(obj, StandardCharsets.UTF_8),
+                  writerThread.exception.getOrElse(null))
+              case SpecialLengths.END_OF_DATA_SECTION =>
+                // We've finished the data section of the output, but we can still
+                // read some accumulator updates:
+                val numAccumulatorUpdates = stream.readInt()
+                (1 to numAccumulatorUpdates).foreach { _ =>
+                  val updateLen = stream.readInt()
+                  val update = new Array[Byte](updateLen)
+                  stream.readFully(update)
+                  accumulator += Collections.singletonList(update)
+                }
+                // Check whether the worker is ready to be re-used.
+                if (stream.readInt() == SpecialLengths.END_OF_STREAM) {
+                  if (reuse_worker) {
+                    env.releasePythonWorker(
+                      pythonExec,
+                      envVars.asScala.toMap,
+                      worker)
+                    released = true
+                  }
+                }
+                null
+            }
+          } catch {
+
+            case e: Exception if context.isInterrupted =>
+              logDebug("Exception thrown after task interruption", e)
+              throw new TaskKilledException
+
+            case e: Exception if env.isStopped =>
+              logDebug("Exception thrown after context is stopped", e)
+              null // exit silently
+
+            case e: Exception if writerThread.exception.isDefined =>
+              logError("Python worker exited unexpectedly (crashed)", e)
+              logError(
+                "This may have been caused by a prior exception:",
+                writerThread.exception.get)
+              throw writerThread.exception.get
+
+            case eof: EOFException =>
+              throw new SparkException(
+                "Python worker exited unexpectedly (crashed)",
+                eof)
+          }
+        }
+
+        var _nextObj = read()
+
+        override def hasNext: Boolean = _nextObj != null
       }
-
-      var _nextObj = read()
-
-      override def hasNext: Boolean = _nextObj != null
-    }
     new InterruptibleIterator(context, stdoutIterator)
   }
 
@@ -437,8 +440,10 @@ private[spark] object PythonRDD extends Logging {
       partitions: JArrayList[Int]): Int = {
     type ByteArray = Array[Byte]
     type UnrolledPartition = Array[ByteArray]
-    val allPartitions: Array[UnrolledPartition] =
-      sc.runJob(rdd, (x: Iterator[ByteArray]) => x.toArray, partitions.asScala)
+    val allPartitions: Array[UnrolledPartition] = sc.runJob(
+      rdd,
+      (x: Iterator[ByteArray]) => x.toArray,
+      partitions.asScala)
     val flattenedPartition: UnrolledPartition = Array.concat(allPartitions: _*)
     serveIterator(
       flattenedPartition.iterator,
@@ -521,15 +526,15 @@ private[spark] object PythonRDD extends Logging {
       valueConverterClass: String,
       minSplits: Int,
       batchSize: Int): JavaRDD[Array[Byte]] = {
-    val keyClass =
-      Option(keyClassMaybeNull).getOrElse("org.apache.hadoop.io.Text")
-    val valueClass =
-      Option(valueClassMaybeNull).getOrElse("org.apache.hadoop.io.Text")
+    val keyClass = Option(keyClassMaybeNull).getOrElse(
+      "org.apache.hadoop.io.Text")
+    val valueClass = Option(valueClassMaybeNull).getOrElse(
+      "org.apache.hadoop.io.Text")
     val kc = Utils.classForName(keyClass).asInstanceOf[Class[K]]
     val vc = Utils.classForName(valueClass).asInstanceOf[Class[V]]
     val rdd = sc.sc.sequenceFile[K, V](path, kc, vc, minSplits)
-    val confBroadcasted =
-      sc.sc.broadcast(new SerializableConfiguration(sc.hadoopConfiguration()))
+    val confBroadcasted = sc.sc.broadcast(
+      new SerializableConfiguration(sc.hadoopConfiguration()))
     val converted = convertRDD(
       rdd,
       keyConverterClass,
@@ -555,16 +560,15 @@ private[spark] object PythonRDD extends Logging {
       confAsMap: java.util.HashMap[String, String],
       batchSize: Int): JavaRDD[Array[Byte]] = {
     val mergedConf = getMergedConf(confAsMap, sc.hadoopConfiguration())
-    val rdd =
-      newAPIHadoopRDDFromClassNames[K, V, F](
-        sc,
-        Some(path),
-        inputFormatClass,
-        keyClass,
-        valueClass,
-        mergedConf)
-    val confBroadcasted =
-      sc.sc.broadcast(new SerializableConfiguration(mergedConf))
+    val rdd = newAPIHadoopRDDFromClassNames[K, V, F](
+      sc,
+      Some(path),
+      inputFormatClass,
+      keyClass,
+      valueClass,
+      mergedConf)
+    val confBroadcasted = sc.sc.broadcast(
+      new SerializableConfiguration(mergedConf))
     val converted = convertRDD(
       rdd,
       keyConverterClass,
@@ -590,14 +594,13 @@ private[spark] object PythonRDD extends Logging {
       confAsMap: java.util.HashMap[String, String],
       batchSize: Int): JavaRDD[Array[Byte]] = {
     val conf = PythonHadoopUtil.mapToConf(confAsMap)
-    val rdd =
-      newAPIHadoopRDDFromClassNames[K, V, F](
-        sc,
-        None,
-        inputFormatClass,
-        keyClass,
-        valueClass,
-        conf)
+    val rdd = newAPIHadoopRDDFromClassNames[K, V, F](
+      sc,
+      None,
+      inputFormatClass,
+      keyClass,
+      valueClass,
+      conf)
     val confBroadcasted = sc.sc.broadcast(new SerializableConfiguration(conf))
     val converted = convertRDD(
       rdd,
@@ -641,16 +644,15 @@ private[spark] object PythonRDD extends Logging {
       confAsMap: java.util.HashMap[String, String],
       batchSize: Int): JavaRDD[Array[Byte]] = {
     val mergedConf = getMergedConf(confAsMap, sc.hadoopConfiguration())
-    val rdd =
-      hadoopRDDFromClassNames[K, V, F](
-        sc,
-        Some(path),
-        inputFormatClass,
-        keyClass,
-        valueClass,
-        mergedConf)
-    val confBroadcasted =
-      sc.sc.broadcast(new SerializableConfiguration(mergedConf))
+    val rdd = hadoopRDDFromClassNames[K, V, F](
+      sc,
+      Some(path),
+      inputFormatClass,
+      keyClass,
+      valueClass,
+      mergedConf)
+    val confBroadcasted = sc.sc.broadcast(
+      new SerializableConfiguration(mergedConf))
     val converted = convertRDD(
       rdd,
       keyConverterClass,
@@ -676,14 +678,13 @@ private[spark] object PythonRDD extends Logging {
       confAsMap: java.util.HashMap[String, String],
       batchSize: Int): JavaRDD[Array[Byte]] = {
     val conf = PythonHadoopUtil.mapToConf(confAsMap)
-    val rdd =
-      hadoopRDDFromClassNames[K, V, F](
-        sc,
-        None,
-        inputFormatClass,
-        keyClass,
-        valueClass,
-        conf)
+    val rdd = hadoopRDDFromClassNames[K, V, F](
+      sc,
+      None,
+      inputFormatClass,
+      keyClass,
+      valueClass,
+      conf)
     val confBroadcasted = sc.sc.broadcast(new SerializableConfiguration(conf))
     val converted = convertRDD(
       rdd,
@@ -793,10 +794,12 @@ private[spark] object PythonRDD extends Logging {
       valueConverterClass: String,
       defaultConverter: Converter[Any, Any])
       : (Converter[Any, Any], Converter[Any, Any]) = {
-    val keyConverter =
-      Converter.getInstance(Option(keyConverterClass), defaultConverter)
-    val valueConverter =
-      Converter.getInstance(Option(valueConverterClass), defaultConverter)
+    val keyConverter = Converter.getInstance(
+      Option(keyConverterClass),
+      defaultConverter)
+    val valueConverter = Converter.getInstance(
+      Option(valueConverterClass),
+      defaultConverter)
     (keyConverter, valueConverter)
   }
 
@@ -990,8 +993,9 @@ private class PythonAccumulatorParam(
         // This happens on the master, where we pass the updates to Python through a socket
         val socket = openSocket()
         val in = socket.getInputStream
-        val out = new DataOutputStream(
-          new BufferedOutputStream(socket.getOutputStream, bufferSize))
+        val out =
+          new DataOutputStream(
+            new BufferedOutputStream(socket.getOutputStream, bufferSize))
         out.writeInt(val2.size)
         for (array <- val2.asScala) {
           out.writeInt(array.length)

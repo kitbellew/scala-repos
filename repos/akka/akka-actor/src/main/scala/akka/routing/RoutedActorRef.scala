@@ -47,25 +47,26 @@ private[akka] class RoutedActorRef(
     _routerProps.routerConfig.verifyConfig(_path)
 
   override def newCell(old: UnstartedCell): Cell = {
-    val cell = props.routerConfig match {
-      case pool: Pool if pool.resizer.isDefined ⇒
-        new ResizablePoolCell(
-          system,
-          this,
-          props,
-          dispatcher,
-          _routeeProps,
-          supervisor,
-          pool)
-      case _ ⇒
-        new RoutedActorCell(
-          system,
-          this,
-          props,
-          dispatcher,
-          _routeeProps,
-          supervisor)
-    }
+    val cell =
+      props.routerConfig match {
+        case pool: Pool if pool.resizer.isDefined ⇒
+          new ResizablePoolCell(
+            system,
+            this,
+            props,
+            dispatcher,
+            _routeeProps,
+            supervisor,
+            pool)
+        case _ ⇒
+          new RoutedActorCell(
+            system,
+            this,
+            props,
+            dispatcher,
+            _routeeProps,
+            supervisor)
+      }
     cell.init(sendSupervise = false, mailboxType)
   }
 

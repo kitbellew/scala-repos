@@ -65,8 +65,7 @@ class ParquetHiveCompatibilitySuite
               case (typ, index) => s"  col_$index $typ"
             }
 
-            val ddl =
-              s"""CREATE TABLE parquet_compat(
+            val ddl = s"""CREATE TABLE parquet_compat(
                  |${fields.mkString(",\n")}
                  |)
                  |STORED AS PARQUET

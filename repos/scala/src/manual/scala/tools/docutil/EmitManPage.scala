@@ -15,8 +15,7 @@ object EmitManPage {
 
   val out = Console
 
-  def escape(text: String) =
-    text.replaceAll("-", "\\-")
+  def escape(text: String) = text.replaceAll("-", "\\-")
 
   def emitSection(section: Section, depth: Int) {
     def emitPara(text: AbstractText) {

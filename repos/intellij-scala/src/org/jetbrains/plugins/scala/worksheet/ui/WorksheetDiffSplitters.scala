@@ -68,10 +68,11 @@ object WorksheetDiffSplitters {
     ChangeList.build(original, viewer, project).getLineBlocks
 
   private def getVisibleInterval(editor: Editor) = {
-    val line = editor
-      .xyToLogicalPosition(
-        new Point(0, editor.getScrollingModel.getVerticalScrollOffset))
-      .line
+    val line =
+      editor
+        .xyToLogicalPosition(
+          new Point(0, editor.getScrollingModel.getVerticalScrollOffset))
+        .line
     (line, editor.getComponent.getHeight / editor.getLineHeight + 1)
   }
 
@@ -102,9 +103,11 @@ object WorksheetDiffSplitters {
       }
     })
 
-    private val visibleAreaListener = new VisibleAreaListener {
-      override def visibleAreaChanged(e: VisibleAreaEvent): Unit = redrawDiffs()
-    }
+    private val visibleAreaListener =
+      new VisibleAreaListener {
+        override def visibleAreaChanged(e: VisibleAreaEvent): Unit =
+          redrawDiffs()
+      }
 
     def getIntervals = intervals
 

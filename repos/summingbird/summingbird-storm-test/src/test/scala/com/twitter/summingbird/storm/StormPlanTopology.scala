@@ -63,9 +63,10 @@ object StormPlanTopology extends Properties("StormDag") {
       ReadableServiceFactory[Int, Int](() => ReadableStore.fromFn(fn))
     })
 
-  lazy val genDag: Gen[TailProducer[Storm, Any]] = for {
-    tail <- oneOf(summed, written)
-  } yield tail
+  lazy val genDag: Gen[TailProducer[Storm, Any]] =
+    for {
+      tail <- oneOf(summed, written)
+    } yield tail
 
   implicit def genProducer: Arbitrary[TailProducer[Storm, Any]] =
     Arbitrary(genDag)
@@ -80,8 +81,8 @@ object StormPlanTopology extends Properties("StormDag") {
   def dumpGraph(dag: StormDag) = {
     import java.io._
     import com.twitter.summingbird.viz.VizGraph
-    val writer2 = new PrintWriter(
-      new File("/tmp/failingGraph" + dumpNumber + ".dot"))
+    val writer2 =
+      new PrintWriter(new File("/tmp/failingGraph" + dumpNumber + ".dot"))
     VizGraph(dag, writer2)
     writer2.close()
     dumpNumber = dumpNumber + 1
@@ -90,8 +91,9 @@ object StormPlanTopology extends Properties("StormDag") {
   def dumpGraph(tail: Producer[Storm, Any]) = {
     import java.io._
     import com.twitter.summingbird.viz.VizGraph
-    val writer2 = new PrintWriter(
-      new File("/tmp/failingProducerGraph" + dumpNumber + ".dot"))
+    val writer2 =
+      new PrintWriter(
+        new File("/tmp/failingProducerGraph" + dumpNumber + ".dot"))
     VizGraph(tail, writer2)
     writer2.close()
     dumpNumber = dumpNumber + 1

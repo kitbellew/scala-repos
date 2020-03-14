@@ -43,8 +43,8 @@ class ConfigTest extends WordSpec with Matchers {
       val (oldDate, newConf) = Config.empty.maybeSetSubmittedTimestamp(date)
       oldDate shouldBe empty
       newConf.getSubmittedTimestamp should contain(date)
-      val (stillOld, new2) =
-        newConf.maybeSetSubmittedTimestamp(date + Seconds(1))
+      val (stillOld, new2) = newConf.maybeSetSubmittedTimestamp(
+        date + Seconds(1))
       stillOld should contain(date)
       new2 shouldBe newConf
     }

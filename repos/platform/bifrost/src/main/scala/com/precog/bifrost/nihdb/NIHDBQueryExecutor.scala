@@ -97,10 +97,12 @@ trait NIHDBQueryExecutorConfig
   lazy val jobPollFrequency: Duration =
     config[Int]("precog.evaluator.poll.cancellation", 3) seconds
 
-  lazy val howManyChefsInTheKitchen: Int =
-    config[Int]("precog.storage.chef_count", 4)
-  lazy val cookThreshold: Int =
-    config[Int]("precog.storage.cook_threshold", 20000)
+  lazy val howManyChefsInTheKitchen: Int = config[Int](
+    "precog.storage.chef_count",
+    4)
+  lazy val cookThreshold: Int = config[Int](
+    "precog.storage.cook_threshold",
+    20000)
   def maxSliceSize = cookThreshold
   lazy val storageTimeout: Timeout = Timeout(
     config[Int]("precog.storage.timeout", 300) seconds)
@@ -127,35 +129,37 @@ trait NIHDBQueryExecutorComponent {
       with GracefulStopSupport { platform =>
 
       type YggConfig = NIHDBQueryExecutorConfig
-      val yggConfig = new NIHDBQueryExecutorConfig {
-        override val config = config0.detach("queryExecutor")
-        val sortWorkDir = scratchDir
-        val memoizationBufferSize = sortBufferSize
-        val memoizationWorkDir = scratchDir
+      val yggConfig =
+        new NIHDBQueryExecutorConfig {
+          override val config = config0.detach("queryExecutor")
+          val sortWorkDir = scratchDir
+          val memoizationBufferSize = sortBufferSize
+          val memoizationWorkDir = scratchDir
 
-        val clock = blueeyes.util.Clock.System
-        val smallSliceSize = config[Int]("jdbm.small_slice_size", 8)
-        val timestampRequiredAfter = new Instant(
-          config[Long]("ingest.timestamp_required_after", 1363327426906L))
-        val schedulingTimeout = new Timeout(
-          config[Int]("scheduling.timeout_ms", 10000))
+          val clock = blueeyes.util.Clock.System
+          val smallSliceSize = config[Int]("jdbm.small_slice_size", 8)
+          val timestampRequiredAfter =
+            new Instant(
+              config[Long]("ingest.timestamp_required_after", 1363327426906L))
+          val schedulingTimeout =
+            new Timeout(config[Int]("scheduling.timeout_ms", 10000))
 
-        //TODO: Get a producer ID
-        val idSource = new FreshAtomicIdSource
-      }
+          //TODO: Get a producer ID
+          val idSource = new FreshAtomicIdSource
+        }
 
       val clock = blueeyes.util.Clock.System
 
       val defaultTimeout = yggConfig.maxEvalDuration
 
-      protected lazy val queryLogger =
-        LoggerFactory.getLogger("com.precog.bifrost.ShardQueryExecutor")
+      protected lazy val queryLogger = LoggerFactory.getLogger(
+        "com.precog.bifrost.ShardQueryExecutor")
 
       private val threadPooling = new PerAccountThreadPooling(extAccountFinder)
 
       implicit val actorSystem = ActorSystem("nihdbExecutorActorSystem")
-      implicit val executionContext =
-        ExecutionContext.defaultExecutionContext(actorSystem)
+      implicit val executionContext = ExecutionContext.defaultExecutionContext(
+        actorSystem)
       implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
       val jobActorSystem = ActorSystem("jobPollingActorSystem")
@@ -167,23 +171,25 @@ trait NIHDBQueryExecutorComponent {
               VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
               VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
       }
-      val masterChef =
-        actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+      val masterChef = actorSystem.actorOf(
+        Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
       //val accessControl = extApiKeyFinder
       val storageTimeout = yggConfig.storageTimeout
 
       val jobManager = extJobManager
-      val permissionsFinder = new PermissionsFinder(
-        extApiKeyFinder,
-        extAccountFinder,
-        yggConfig.timestampRequiredAfter)
-      val resourceBuilder = new ResourceBuilder(
-        actorSystem,
-        clock,
-        masterChef,
-        yggConfig.cookThreshold,
-        storageTimeout)
+      val permissionsFinder =
+        new PermissionsFinder(
+          extApiKeyFinder,
+          extAccountFinder,
+          yggConfig.timestampRequiredAfter)
+      val resourceBuilder =
+        new ResourceBuilder(
+          actorSystem,
+          clock,
+          masterChef,
+          yggConfig.cookThreshold,
+          storageTimeout)
 
       private val projectionsActor = actorSystem.actorOf(
         Props(
@@ -195,10 +201,11 @@ trait NIHDBQueryExecutorComponent {
             clock)))
       val ingestSystem = initShardActors(permissionsFinder, projectionsActor)
 
-      private val actorVFS = new ActorVFS(
-        projectionsActor,
-        yggConfig.storageTimeout,
-        yggConfig.storageTimeout)
+      private val actorVFS =
+        new ActorVFS(
+          projectionsActor,
+          yggConfig.storageTimeout,
+          yggConfig.storageTimeout)
       val vfs = new SecureVFS(actorVFS, permissionsFinder, jobManager, clock)
 
       private val (scheduleStorage, scheduleStorageStoppable) =
@@ -246,17 +253,19 @@ trait NIHDBQueryExecutorComponent {
 
       override def executor(implicit shardQueryMonad: JobQueryTFMonad)
           : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
-        implicit val mn = new (Future ~> JobQueryTF) {
-          def apply[A](fut: Future[A]) = fut.liftM[JobQueryT]
-        }
+        implicit val mn =
+          new (Future ~> JobQueryTF) {
+            def apply[A](fut: Future[A]) = fut.liftM[JobQueryT]
+          }
 
         new ShardQueryExecutor[JobQueryTF](shardQueryMonad)
           with IdSourceScannerModule {
           val M = shardQueryMonad.M
           type YggConfig = NIHDBQueryExecutorConfig
           val yggConfig = platform.yggConfig
-          val queryReport =
-            errorReport[Option[FaultPosition]](shardQueryMonad, implicitly)
+          val queryReport = errorReport[Option[FaultPosition]](
+            shardQueryMonad,
+            implicitly)
           override def freshIdScanner = platform.freshIdScanner
         } map {
           case (faults, result) =>

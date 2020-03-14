@@ -176,12 +176,13 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
       CSCMatrix.zeros[V](1, length)
     else {
       var ii = 0
-      val nIndex = Array.tabulate[Int](length + 1)((cp: Int) =>
-        if (ii < used && cp == index(ii)) {
-          ii += 1;
-          ii - 1
-        } else
-          ii)
+      val nIndex =
+        Array.tabulate[Int](length + 1)((cp: Int) =>
+          if (ii < used && cp == index(ii)) {
+            ii += 1;
+            ii - 1
+          } else
+            ii)
       assert(ii == used)
       new CSCMatrix[V](
         data,
@@ -465,8 +466,8 @@ object SparseVector
       : CanTranspose[SparseVector[Complex], CSCMatrix[Complex]] = {
     new CanTranspose[SparseVector[Complex], CSCMatrix[Complex]] {
       def apply(from: SparseVector[Complex]) = {
-        val transposedMtx: CSCMatrix[Complex] =
-          CSCMatrix.zeros[Complex](1, from.length)
+        val transposedMtx: CSCMatrix[Complex] = CSCMatrix
+          .zeros[Complex](1, from.length)
         var i = 0
         while (i < from.activeSize) {
           val c = from.index(i)

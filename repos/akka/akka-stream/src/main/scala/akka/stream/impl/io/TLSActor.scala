@@ -171,10 +171,11 @@ private[akka] class TLSActor(
   val hostnameVerifier = sslConfig.hostnameVerifier
 
   val engine: SSLEngine = {
-    val e = hostInfo match {
-      case Some((hostname, port)) ⇒ sslContext.createSSLEngine(hostname, port)
-      case None ⇒ sslContext.createSSLEngine()
-    }
+    val e =
+      hostInfo match {
+        case Some((hostname, port)) ⇒ sslContext.createSSLEngine(hostname, port)
+        case None ⇒ sslContext.createSSLEngine()
+      }
     sslConfig.sslEngineConfigurator.configure(e, sslContext)
     e.setUseClientMode(role == Client)
     e
@@ -247,27 +248,31 @@ private[akka] class TLSActor(
   var lastHandshakeStatus: HandshakeStatus = _
   var corkUser = true
 
-  val engineNeedsWrap = new TransferState {
-    def isReady = lastHandshakeStatus == NEED_WRAP
-    def isCompleted = engine.isOutboundDone
-  }
+  val engineNeedsWrap =
+    new TransferState {
+      def isReady = lastHandshakeStatus == NEED_WRAP
+      def isCompleted = engine.isOutboundDone
+    }
 
-  val engineInboundOpen = new TransferState {
-    def isReady = true
-    def isCompleted = engine.isInboundDone
-  }
+  val engineInboundOpen =
+    new TransferState {
+      def isReady = true
+      def isCompleted = engine.isInboundDone
+    }
 
-  val userHasData = new TransferState {
-    def isReady =
-      !corkUser && userInChoppingBlock.isReady && lastHandshakeStatus != NEED_UNWRAP
-    def isCompleted =
-      inputBunch.isCancelled(UserIn) || inputBunch.isDepleted(UserIn)
-  }
+  val userHasData =
+    new TransferState {
+      def isReady =
+        !corkUser && userInChoppingBlock.isReady && lastHandshakeStatus != NEED_UNWRAP
+      def isCompleted =
+        inputBunch.isCancelled(UserIn) || inputBunch.isDepleted(UserIn)
+    }
 
-  val userOutCancelled = new TransferState {
-    def isReady = outputBunch.isCancelled(UserOut)
-    def isCompleted = engine.isInboundDone || outputBunch.isErrored(UserOut)
-  }
+  val userOutCancelled =
+    new TransferState {
+      def isReady = outputBunch.isCancelled(UserOut)
+      def isCompleted = engine.isInboundDone || outputBunch.isErrored(UserOut)
+    }
 
   // bidirectional case
   val outbound =
@@ -281,61 +286,66 @@ private[akka] class TLSActor(
     engineNeedsWrap && outputBunch.demandAvailableFor(TransportOut)
   val inboundHalfClosed = transportInChoppingBlock && engineInboundOpen
 
-  val bidirectional = TransferPhase(outbound || inbound) { () ⇒
-    if (tracing)
-      log.debug("bidirectional")
-    val continue = doInbound(isOutboundClosed = false, inbound)
-    if (continue) {
+  val bidirectional =
+    TransferPhase(outbound || inbound) { () ⇒
       if (tracing)
-        log.debug("bidirectional continue")
-      doOutbound(isInboundClosed = false)
+        log.debug("bidirectional")
+      val continue = doInbound(isOutboundClosed = false, inbound)
+      if (continue) {
+        if (tracing)
+          log.debug("bidirectional continue")
+        doOutbound(isInboundClosed = false)
+      }
     }
-  }
 
-  val flushingOutbound = TransferPhase(outboundHalfClosed) { () ⇒
-    if (tracing)
-      log.debug("flushingOutbound")
-    try doWrap()
-    catch {
-      case ex: SSLException ⇒ nextPhase(completedPhase)
-    }
-  }
-
-  val awaitingClose = TransferPhase(
-    inputBunch.inputsAvailableFor(TransportIn) && engineInboundOpen) { () ⇒
-    if (tracing)
-      log.debug("awaitingClose")
-    transportInChoppingBlock.chopInto(transportInBuffer)
-    try doUnwrap(ignoreOutput = true)
-    catch {
-      case ex: SSLException ⇒ nextPhase(completedPhase)
-    }
-  }
-
-  val outboundClosed = TransferPhase(outboundHalfClosed || inbound) { () ⇒
-    if (tracing)
-      log.debug("outboundClosed")
-    val continue = doInbound(isOutboundClosed = true, inbound)
-    if (continue && outboundHalfClosed.isReady) {
+  val flushingOutbound =
+    TransferPhase(outboundHalfClosed) { () ⇒
       if (tracing)
-        log.debug("outboundClosed continue")
+        log.debug("flushingOutbound")
       try doWrap()
       catch {
         case ex: SSLException ⇒ nextPhase(completedPhase)
       }
     }
-  }
 
-  val inboundClosed = TransferPhase(outbound || inboundHalfClosed) { () ⇒
-    if (tracing)
-      log.debug("inboundClosed")
-    val continue = doInbound(isOutboundClosed = false, inboundHalfClosed)
-    if (continue) {
+  val awaitingClose =
+    TransferPhase(
+      inputBunch.inputsAvailableFor(TransportIn) && engineInboundOpen) { () ⇒
       if (tracing)
-        log.debug("inboundClosed continue")
-      doOutbound(isInboundClosed = true)
+        log.debug("awaitingClose")
+      transportInChoppingBlock.chopInto(transportInBuffer)
+      try doUnwrap(ignoreOutput = true)
+      catch {
+        case ex: SSLException ⇒ nextPhase(completedPhase)
+      }
     }
-  }
+
+  val outboundClosed =
+    TransferPhase(outboundHalfClosed || inbound) { () ⇒
+      if (tracing)
+        log.debug("outboundClosed")
+      val continue = doInbound(isOutboundClosed = true, inbound)
+      if (continue && outboundHalfClosed.isReady) {
+        if (tracing)
+          log.debug("outboundClosed continue")
+        try doWrap()
+        catch {
+          case ex: SSLException ⇒ nextPhase(completedPhase)
+        }
+      }
+    }
+
+  val inboundClosed =
+    TransferPhase(outbound || inboundHalfClosed) { () ⇒
+      if (tracing)
+        log.debug("inboundClosed")
+      val continue = doInbound(isOutboundClosed = false, inboundHalfClosed)
+      if (continue) {
+        if (tracing)
+          log.debug("inboundClosed continue")
+        doOutbound(isInboundClosed = true)
+      }
+    }
 
   def completeOrFlush(): Unit =
     if (engine.isOutboundDone)

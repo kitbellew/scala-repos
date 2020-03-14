@@ -38,8 +38,8 @@ class WSConfigParser @Inject() (
 
   def parse(): WSClientConfig = {
 
-    val config =
-      PlayConfig(configuration).getDeprecatedWithFallback("play.ws", "ws")
+    val config = PlayConfig(configuration)
+      .getDeprecatedWithFallback("play.ws", "ws")
 
     val connectionTimeout = config.get[Duration]("timeout.connection")
     val idleTimeout = config.get[Duration]("timeout.idle")
@@ -52,9 +52,10 @@ class WSConfigParser @Inject() (
 
     val compressionEnabled = config.get[Boolean]("compressionEnabled")
 
-    val sslConfig = new SSLConfigParser(
-      config.get[PlayConfig]("ssl"),
-      environment.classLoader).parse()
+    val sslConfig =
+      new SSLConfigParser(
+        config.get[PlayConfig]("ssl"),
+        environment.classLoader).parse()
 
     WSClientConfig(
       connectionTimeout = connectionTimeout,

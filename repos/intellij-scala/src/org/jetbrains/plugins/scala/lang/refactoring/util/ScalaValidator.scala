@@ -16,8 +16,7 @@ abstract class ScalaValidator(
     enclosingOne: PsiElement)
     extends NameValidator {
 
-  def getProject(): Project =
-    myProject
+  def getProject(): Project = myProject
 
   def enclosingContainer(allOcc: Boolean): PsiElement =
     if (allOcc)

@@ -124,7 +124,6 @@ object FutureCache {
     */
   def standard[K, V](
       fn: K => Future[V],
-      cache: FutureCache[K, V]): K => Future[V] =
-    default(fn, cache)
+      cache: FutureCache[K, V]): K => Future[V] = default(fn, cache)
 
 }

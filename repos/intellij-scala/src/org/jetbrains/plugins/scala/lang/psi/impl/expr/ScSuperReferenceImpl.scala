@@ -59,8 +59,8 @@ class ScSuperReferenceImpl(node: ASTNode)
                   drvTemplate.exists(td =>
                     !ScalaPsiUtil.cachedDeepIsInheritor(td, classes(0)))
                 } else {
-                  val clazz: Option[PsiClass] =
-                    classes.find(!_.isInstanceOf[ScObject])
+                  val clazz: Option[PsiClass] = classes.find(
+                    !_.isInstanceOf[ScObject])
                   clazz match {
                     case Some(psiClass) =>
                       drvTemplate.exists(td =>

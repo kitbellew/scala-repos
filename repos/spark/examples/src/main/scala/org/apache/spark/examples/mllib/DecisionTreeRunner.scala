@@ -73,90 +73,92 @@ object DecisionTreeRunner {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("DecisionTreeRunner") {
-      head("DecisionTreeRunner: an example decision tree app.")
-      opt[String]("algo")
-        .text(
-          s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
-        .action((x, c) => c.copy(algo = Algo.withName(x)))
-      opt[String]("impurity")
-        .text(s"impurity type (${ImpurityType.values.mkString(",")}), " +
-          s"default: ${defaultParams.impurity}")
-        .action((x, c) => c.copy(impurity = ImpurityType.withName(x)))
-      opt[Int]("maxDepth")
-        .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
-        .action((x, c) => c.copy(maxDepth = x))
-      opt[Int]("maxBins")
-        .text(s"max number of bins, default: ${defaultParams.maxBins}")
-        .action((x, c) => c.copy(maxBins = x))
-      opt[Int]("minInstancesPerNode")
-        .text(
-          s"min number of instances required at child nodes to create the parent split," +
-            s" default: ${defaultParams.minInstancesPerNode}")
-        .action((x, c) => c.copy(minInstancesPerNode = x))
-      opt[Double]("minInfoGain")
-        .text(
-          s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
-        .action((x, c) => c.copy(minInfoGain = x))
-      opt[Int]("numTrees")
-        .text(s"number of trees (1 = decision tree, 2+ = random forest)," +
-          s" default: ${defaultParams.numTrees}")
-        .action((x, c) => c.copy(numTrees = x))
-      opt[String]("featureSubsetStrategy")
-        .text(s"feature subset sampling strategy" +
-          s" (${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}), " +
-          s"default: ${defaultParams.featureSubsetStrategy}")
-        .action((x, c) => c.copy(featureSubsetStrategy = x))
-      opt[Double]("fracTest")
-        .text(
-          s"fraction of data to hold out for testing.  If given option testInput, " +
-            s"this option is ignored. default: ${defaultParams.fracTest}")
-        .action((x, c) => c.copy(fracTest = x))
-      opt[Boolean]("useNodeIdCache")
-        .text(s"whether to use node Id cache during training, " +
-          s"default: ${defaultParams.useNodeIdCache}")
-        .action((x, c) => c.copy(useNodeIdCache = x))
-      opt[String]("checkpointDir")
-        .text(
-          s"checkpoint directory where intermediate node Id caches will be stored, " +
-            s"default: ${defaultParams.checkpointDir match {
-              case Some(strVal) => strVal
-              case None         => "None"
-            }}")
-        .action((x, c) => c.copy(checkpointDir = Some(x)))
-      opt[Int]("checkpointInterval")
-        .text(s"how often to checkpoint the node Id cache, " +
-          s"default: ${defaultParams.checkpointInterval}")
-        .action((x, c) => c.copy(checkpointInterval = x))
-      opt[String]("testInput")
-        .text(
-          s"input path to test dataset.  If given, option fracTest is ignored." +
-            s" default: ${defaultParams.testInput}")
-        .action((x, c) => c.copy(testInput = x))
-      opt[String]("dataFormat")
-        .text("data format: libsvm (default), dense (deprecated in Spark v1.1)")
-        .action((x, c) => c.copy(dataFormat = x))
-      arg[String]("<input>")
-        .text("input path to labeled examples")
-        .required()
-        .action((x, c) => c.copy(input = x))
-      checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest > 1) {
-          failure(
-            s"fracTest ${params.fracTest} value incorrect; should be in [0,1].")
-        } else {
-          if (params.algo == Classification &&
-              (params.impurity == Gini || params.impurity == Entropy)) {
-            success
-          } else if (params.algo == Regression && params.impurity == Variance) {
-            success
-          } else {
+    val parser =
+      new OptionParser[Params]("DecisionTreeRunner") {
+        head("DecisionTreeRunner: an example decision tree app.")
+        opt[String]("algo")
+          .text(
+            s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
+          .action((x, c) => c.copy(algo = Algo.withName(x)))
+        opt[String]("impurity")
+          .text(s"impurity type (${ImpurityType.values.mkString(",")}), " +
+            s"default: ${defaultParams.impurity}")
+          .action((x, c) => c.copy(impurity = ImpurityType.withName(x)))
+        opt[Int]("maxDepth")
+          .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
+          .action((x, c) => c.copy(maxDepth = x))
+        opt[Int]("maxBins")
+          .text(s"max number of bins, default: ${defaultParams.maxBins}")
+          .action((x, c) => c.copy(maxBins = x))
+        opt[Int]("minInstancesPerNode")
+          .text(
+            s"min number of instances required at child nodes to create the parent split," +
+              s" default: ${defaultParams.minInstancesPerNode}")
+          .action((x, c) => c.copy(minInstancesPerNode = x))
+        opt[Double]("minInfoGain")
+          .text(
+            s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
+          .action((x, c) => c.copy(minInfoGain = x))
+        opt[Int]("numTrees")
+          .text(s"number of trees (1 = decision tree, 2+ = random forest)," +
+            s" default: ${defaultParams.numTrees}")
+          .action((x, c) => c.copy(numTrees = x))
+        opt[String]("featureSubsetStrategy")
+          .text(s"feature subset sampling strategy" +
+            s" (${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}), " +
+            s"default: ${defaultParams.featureSubsetStrategy}")
+          .action((x, c) => c.copy(featureSubsetStrategy = x))
+        opt[Double]("fracTest")
+          .text(
+            s"fraction of data to hold out for testing.  If given option testInput, " +
+              s"this option is ignored. default: ${defaultParams.fracTest}")
+          .action((x, c) => c.copy(fracTest = x))
+        opt[Boolean]("useNodeIdCache")
+          .text(s"whether to use node Id cache during training, " +
+            s"default: ${defaultParams.useNodeIdCache}")
+          .action((x, c) => c.copy(useNodeIdCache = x))
+        opt[String]("checkpointDir")
+          .text(
+            s"checkpoint directory where intermediate node Id caches will be stored, " +
+              s"default: ${defaultParams.checkpointDir match {
+                case Some(strVal) => strVal
+                case None         => "None"
+              }}")
+          .action((x, c) => c.copy(checkpointDir = Some(x)))
+        opt[Int]("checkpointInterval")
+          .text(s"how often to checkpoint the node Id cache, " +
+            s"default: ${defaultParams.checkpointInterval}")
+          .action((x, c) => c.copy(checkpointInterval = x))
+        opt[String]("testInput")
+          .text(
+            s"input path to test dataset.  If given, option fracTest is ignored." +
+              s" default: ${defaultParams.testInput}")
+          .action((x, c) => c.copy(testInput = x))
+        opt[String]("dataFormat")
+          .text(
+            "data format: libsvm (default), dense (deprecated in Spark v1.1)")
+          .action((x, c) => c.copy(dataFormat = x))
+        arg[String]("<input>")
+          .text("input path to labeled examples")
+          .required()
+          .action((x, c) => c.copy(input = x))
+        checkConfig { params =>
+          if (params.fracTest < 0 || params.fracTest > 1) {
             failure(
-              s"Algo ${params.algo} is not compatible with impurity ${params.impurity}.")
+              s"fracTest ${params.fracTest} value incorrect; should be in [0,1].")
+          } else {
+            if (params.algo == Classification &&
+                (params.impurity == Gini || params.impurity == Entropy)) {
+              success
+            } else if (params.algo == Regression && params.impurity == Variance) {
+              success
+            } else {
+              failure(
+                s"Algo ${params.algo} is not compatible with impurity ${params.impurity}.")
+            }
           }
         }
       }
-    }
 
     parser
       .parse(args, defaultParams)
@@ -186,77 +188,82 @@ object DecisionTreeRunner {
       algo: Algo,
       fracTest: Double): (RDD[LabeledPoint], RDD[LabeledPoint], Int) = {
     // Load training data and cache it.
-    val origExamples = dataFormat match {
-      case "dense"  => MLUtils.loadLabeledPoints(sc, input).cache()
-      case "libsvm" => MLUtils.loadLibSVMFile(sc, input).cache()
-    }
+    val origExamples =
+      dataFormat match {
+        case "dense"  => MLUtils.loadLabeledPoints(sc, input).cache()
+        case "libsvm" => MLUtils.loadLibSVMFile(sc, input).cache()
+      }
     // For classification, re-index classes if needed.
-    val (examples, classIndexMap, numClasses) = algo match {
-      case Classification => {
-        // classCounts: class --> # examples in class
-        val classCounts = origExamples.map(_.label).countByValue()
-        val sortedClasses = classCounts.keys.toList.sorted
-        val numClasses = classCounts.size
-        // classIndexMap: class --> index in 0,...,numClasses-1
-        val classIndexMap = {
-          if (classCounts.keySet != Set(0.0, 1.0)) {
-            sortedClasses.zipWithIndex.toMap
-          } else {
-            Map[Double, Int]()
-          }
-        }
-        val examples = {
-          if (classIndexMap.isEmpty) {
-            origExamples
-          } else {
-            origExamples.map(lp =>
-              LabeledPoint(classIndexMap(lp.label), lp.features))
-          }
-        }
-        val numExamples = examples.count()
-        println(s"numClasses = $numClasses.")
-        println(s"Per-class example fractions, counts:")
-        println(s"Class\tFrac\tCount")
-        sortedClasses.foreach { c =>
-          val frac = classCounts(c) / numExamples.toDouble
-          println(s"$c\t$frac\t${classCounts(c)}")
-        }
-        (examples, classIndexMap, numClasses)
-      }
-      case Regression =>
-        (origExamples, null, 0)
-      case _ =>
-        throw new IllegalArgumentException("Algo ${params.algo} not supported.")
-    }
-
-    // Create training, test sets.
-    val splits = if (testInput != "") {
-      // Load testInput.
-      val numFeatures = examples.take(1)(0).features.size
-      val origTestExamples = dataFormat match {
-        case "dense"  => MLUtils.loadLabeledPoints(sc, testInput)
-        case "libsvm" => MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
-      }
+    val (examples, classIndexMap, numClasses) =
       algo match {
         case Classification => {
           // classCounts: class --> # examples in class
-          val testExamples = {
-            if (classIndexMap.isEmpty) {
-              origTestExamples
+          val classCounts = origExamples.map(_.label).countByValue()
+          val sortedClasses = classCounts.keys.toList.sorted
+          val numClasses = classCounts.size
+          // classIndexMap: class --> index in 0,...,numClasses-1
+          val classIndexMap = {
+            if (classCounts.keySet != Set(0.0, 1.0)) {
+              sortedClasses.zipWithIndex.toMap
             } else {
-              origTestExamples.map(lp =>
+              Map[Double, Int]()
+            }
+          }
+          val examples = {
+            if (classIndexMap.isEmpty) {
+              origExamples
+            } else {
+              origExamples.map(lp =>
                 LabeledPoint(classIndexMap(lp.label), lp.features))
             }
           }
-          Array(examples, testExamples)
+          val numExamples = examples.count()
+          println(s"numClasses = $numClasses.")
+          println(s"Per-class example fractions, counts:")
+          println(s"Class\tFrac\tCount")
+          sortedClasses.foreach { c =>
+            val frac = classCounts(c) / numExamples.toDouble
+            println(s"$c\t$frac\t${classCounts(c)}")
+          }
+          (examples, classIndexMap, numClasses)
         }
         case Regression =>
-          Array(examples, origTestExamples)
+          (origExamples, null, 0)
+        case _ =>
+          throw new IllegalArgumentException(
+            "Algo ${params.algo} not supported.")
       }
-    } else {
-      // Split input into training, test.
-      examples.randomSplit(Array(1.0 - fracTest, fracTest))
-    }
+
+    // Create training, test sets.
+    val splits =
+      if (testInput != "") {
+        // Load testInput.
+        val numFeatures = examples.take(1)(0).features.size
+        val origTestExamples =
+          dataFormat match {
+            case "dense"  => MLUtils.loadLabeledPoints(sc, testInput)
+            case "libsvm" => MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
+          }
+        algo match {
+          case Classification => {
+            // classCounts: class --> # examples in class
+            val testExamples = {
+              if (classIndexMap.isEmpty) {
+                origTestExamples
+              } else {
+                origTestExamples.map(lp =>
+                  LabeledPoint(classIndexMap(lp.label), lp.features))
+              }
+            }
+            Array(examples, testExamples)
+          }
+          case Regression =>
+            Array(examples, origTestExamples)
+        }
+      } else {
+        // Split input into training, test.
+        examples.randomSplit(Array(1.0 - fracTest, fracTest))
+      }
     val training = splits(0).cache()
     val test = splits(1).cache()
 
@@ -285,24 +292,26 @@ object DecisionTreeRunner {
       params.algo,
       params.fracTest)
 
-    val impurityCalculator = params.impurity match {
-      case Gini     => impurity.Gini
-      case Entropy  => impurity.Entropy
-      case Variance => impurity.Variance
-    }
+    val impurityCalculator =
+      params.impurity match {
+        case Gini     => impurity.Gini
+        case Entropy  => impurity.Entropy
+        case Variance => impurity.Variance
+      }
 
     params.checkpointDir.foreach(sc.setCheckpointDir)
 
-    val strategy = new Strategy(
-      algo = params.algo,
-      impurity = impurityCalculator,
-      maxDepth = params.maxDepth,
-      maxBins = params.maxBins,
-      numClasses = numClasses,
-      minInstancesPerNode = params.minInstancesPerNode,
-      minInfoGain = params.minInfoGain,
-      useNodeIdCache = params.useNodeIdCache,
-      checkpointInterval = params.checkpointInterval)
+    val strategy =
+      new Strategy(
+        algo = params.algo,
+        impurity = impurityCalculator,
+        maxDepth = params.maxDepth,
+        maxBins = params.maxBins,
+        numClasses = numClasses,
+        minInstancesPerNode = params.minInstancesPerNode,
+        minInfoGain = params.minInfoGain,
+        useNodeIdCache = params.useNodeIdCache,
+        checkpointInterval = params.checkpointInterval)
     if (params.numTrees == 1) {
       val startTime = System.nanoTime()
       val model = DecisionTree.train(training, strategy)

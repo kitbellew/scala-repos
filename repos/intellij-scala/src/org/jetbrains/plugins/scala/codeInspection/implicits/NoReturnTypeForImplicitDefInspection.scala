@@ -31,9 +31,10 @@ class NoReturnTypeForImplicitDefInspection
           !fun.paramClauses.clauses.exists(_.isImplicit) &&
           fun.returnTypeElement.isEmpty =>
       val descr = description
-      val range = new TextRange(
-        0,
-        fun.parameterList.getTextRange.getEndOffset - fun.getModifierList.getTextRange.getStartOffset)
+      val range =
+        new TextRange(
+          0,
+          fun.parameterList.getTextRange.getEndOffset - fun.getModifierList.getTextRange.getStartOffset)
       holder.registerProblem(fun, range, descr, new AddReturnTypeQuickFix(fun))
   }
 }

@@ -92,12 +92,14 @@ class GraphZipWithSpec extends TwoStreamsSetup {
     }
 
     "work with one delayed completed and one nonempty publisher" in {
-      val subscriber1 =
-        setup(soonToCompletePublisher, nonemptyPublisher(1 to 4))
+      val subscriber1 = setup(
+        soonToCompletePublisher,
+        nonemptyPublisher(1 to 4))
       subscriber1.expectSubscriptionAndComplete()
 
-      val subscriber2 =
-        setup(nonemptyPublisher(1 to 4), soonToCompletePublisher)
+      val subscriber2 = setup(
+        nonemptyPublisher(1 to 4),
+        soonToCompletePublisher)
       subscriber2.expectSubscriptionAndComplete()
     }
 
@@ -149,28 +151,29 @@ class GraphZipWithSpec extends TwoStreamsSetup {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b ⇒
-          val sum19 = (
-              v1: Int,
-              v2: String,
-              v3: Int,
-              v4: String,
-              v5: Int,
-              v6: String,
-              v7: Int,
-              v8: String,
-              v9: Int,
-              v10: String,
-              v11: Int,
-              v12: String,
-              v13: Int,
-              v14: String,
-              v15: Int,
-              v16: String,
-              v17: Int,
-              v18: String,
-              v19: Int) ⇒
-            v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 +
-              v11 + v12 + v13 + v14 + v15 + v16 + v17 + v18 + v19
+          val sum19 =
+            (
+                v1: Int,
+                v2: String,
+                v3: Int,
+                v4: String,
+                v5: Int,
+                v6: String,
+                v7: Int,
+                v8: String,
+                v9: Int,
+                v10: String,
+                v11: Int,
+                v12: String,
+                v13: Int,
+                v14: String,
+                v15: Int,
+                v16: String,
+                v17: Int,
+                v18: String,
+                v19: Int) ⇒
+              v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 +
+                v11 + v12 + v13 + v14 + v15 + v16 + v17 + v18 + v19
 
           // odd input ports will be Int, even input ports will be String
           val zip = b.add(ZipWith(sum19))

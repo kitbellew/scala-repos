@@ -83,17 +83,19 @@ object ActorSubscriberSpec {
     var queue = Map.empty[Int, ActorRef]
 
     val router = {
-      val routees = Vector.fill(3) {
-        ActorRefRoutee(
-          context.actorOf(
-            Props[Worker].withDispatcher(context.props.dispatcher)))
-      }
+      val routees =
+        Vector.fill(3) {
+          ActorRefRoutee(
+            context.actorOf(
+              Props[Worker].withDispatcher(context.props.dispatcher)))
+        }
       Router(RoundRobinRoutingLogic(), routees)
     }
 
-    override val requestStrategy = new MaxInFlightRequestStrategy(max = 10) {
-      override def inFlightInternally: Int = queue.size
-    }
+    override val requestStrategy =
+      new MaxInFlightRequestStrategy(max = 10) {
+        override def inFlightInternally: Int = queue.size
+      }
 
     def receive = {
       case OnNext(Msg(id, replyTo)) ⇒
@@ -254,10 +256,11 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
 
     "implement MaxInFlight with batchSize=1 correctly" in {
       var queue = Set.empty[String]
-      val strat = new MaxInFlightRequestStrategy(max = 10) {
-        override def batchSize: Int = 1
-        def inFlightInternally: Int = queue.size
-      }
+      val strat =
+        new MaxInFlightRequestStrategy(max = 10) {
+          override def batchSize: Int = 1
+          def inFlightInternally: Int = queue.size
+        }
       strat.requestDemand(0) should be(10)
       strat.requestDemand(9) should be(1)
       queue += "a"
@@ -280,10 +283,11 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
 
     "implement MaxInFlight with batchSize=3 correctly" in {
       var queue = Set.empty[String]
-      val strat = new MaxInFlightRequestStrategy(max = 10) {
-        override def batchSize: Int = 3
-        override def inFlightInternally: Int = queue.size
-      }
+      val strat =
+        new MaxInFlightRequestStrategy(max = 10) {
+          override def batchSize: Int = 3
+          override def inFlightInternally: Int = queue.size
+        }
       strat.requestDemand(0) should be(10)
       queue += "a"
       strat.requestDemand(9) should be(0)
@@ -303,10 +307,11 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
 
     "implement MaxInFlight with batchSize=max correctly" in {
       var queue = Set.empty[String]
-      val strat = new MaxInFlightRequestStrategy(max = 3) {
-        override def batchSize: Int = 5 // will be bounded to max
-        override def inFlightInternally: Int = queue.size
-      }
+      val strat =
+        new MaxInFlightRequestStrategy(max = 3) {
+          override def batchSize: Int = 5 // will be bounded to max
+          override def inFlightInternally: Int = queue.size
+        }
       strat.requestDemand(0) should be(3)
       queue += "a"
       strat.requestDemand(2) should be(0)

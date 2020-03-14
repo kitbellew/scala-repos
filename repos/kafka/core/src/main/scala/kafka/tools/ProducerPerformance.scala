@@ -136,8 +136,9 @@ object ProducerPerformance extends Logging {
     val varyMessageSizeOpt = parser.accepts(
       "vary-message-size",
       "If set, message size will vary up to the given maximum.")
-    val syncOpt =
-      parser.accepts("sync", "If set, messages are sent synchronously.")
+    val syncOpt = parser.accepts(
+      "sync",
+      "If set, messages are sent synchronously.")
     val numThreadsOpt = parser
       .accepts("threads", "Number of sending threads.")
       .withRequiredArg
@@ -173,8 +174,9 @@ object ProducerPerformance extends Logging {
       .withRequiredArg
       .describedAs("metrics directory")
       .ofType(classOf[java.lang.String])
-    val useNewProducerOpt =
-      parser.accepts("new-producer", "Use the new producer implementation.")
+    val useNewProducerOpt = parser.accepts(
+      "new-producer",
+      "Use the new producer implementation.")
 
     val options = parser.parse(args: _*)
     CommandLineUtils.checkRequiredArgs(
@@ -203,13 +205,16 @@ object ProducerPerformance extends Logging {
     var initialMessageId: Int = 0
     if (seqIdMode)
       initialMessageId = options.valueOf(initialMessageIdOpt).intValue()
-    val producerRequestTimeoutMs =
-      options.valueOf(producerRequestTimeoutMsOpt).intValue()
-    val producerRequestRequiredAcks =
-      options.valueOf(producerRequestRequiredAcksOpt).intValue()
+    val producerRequestTimeoutMs = options
+      .valueOf(producerRequestTimeoutMsOpt)
+      .intValue()
+    val producerRequestRequiredAcks = options
+      .valueOf(producerRequestRequiredAcksOpt)
+      .intValue()
     val producerNumRetries = options.valueOf(producerNumRetriesOpt).intValue()
-    val producerRetryBackoffMs =
-      options.valueOf(producerRetryBackOffMsOpt).intValue()
+    val producerRetryBackoffMs = options
+      .valueOf(producerRetryBackOffMsOpt)
+      .intValue()
     val useNewProducer = options.has(useNewProducerOpt)
 
     val csvMetricsReporterEnabled = options.has(csvMetricsReporterEnabledOpt)
@@ -320,8 +325,9 @@ object ProducerPerformance extends Logging {
       // thread 1 IDs : 100 ~ 199
       // thread 2 IDs : 200 ~ 299
       // . . .
-      leftPaddedSeqId =
-        String.format("%0" + seqIdNumDigit + "d", long2Long(msgId))
+      leftPaddedSeqId = String.format(
+        "%0" + seqIdNumDigit + "d",
+        long2Long(msgId))
 
       val msgHeader = topicLabel + SEP +
         topic + SEP +
@@ -330,8 +336,9 @@ object ProducerPerformance extends Logging {
         messageIdLabel + SEP +
         leftPaddedSeqId + SEP
 
-      val seqMsgString =
-        String.format("%1$-" + msgSize + "s", msgHeader).replace(' ', 'x')
+      val seqMsgString = String
+        .format("%1$-" + msgSize + "s", msgHeader)
+        .replace(' ', 'x')
       debug(seqMsgString)
       seqMsgString.getBytes()
     }

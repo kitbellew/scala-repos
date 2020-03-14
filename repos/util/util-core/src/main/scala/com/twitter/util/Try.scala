@@ -292,8 +292,7 @@ final case class Return[+R](r: R) extends Try[R] {
       "this Try is not a Throw; did you fail to check isThrow?")
 
   def rescue[R2 >: R](
-      rescueException: PartialFunction[Throwable, Try[R2]]): Try[R2] =
-    this
+      rescueException: PartialFunction[Throwable, Try[R2]]): Try[R2] = this
 
   def apply(): R = r
 

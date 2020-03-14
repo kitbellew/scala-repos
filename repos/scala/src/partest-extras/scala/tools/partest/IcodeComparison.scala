@@ -70,8 +70,9 @@ abstract class IcodeComparison extends DirectTest {
     */
   def showComparison() = {
     val lines1 = collectIcode(s"-Xprint-icode:$printSuboptimalIcodeAfterPhase")
-    val lines2 =
-      collectIcode("-optimise", s"-Xprint-icode:$printIcodeAfterPhase")
+    val lines2 = collectIcode(
+      "-optimise",
+      s"-Xprint-icode:$printIcodeAfterPhase")
 
     println(compareContents(lines1, lines2))
   }

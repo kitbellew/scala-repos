@@ -300,8 +300,9 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
 
   // unused objects created by these constructors are eliminated by pushPop
   private lazy val sideEffectFreeConstructors: Set[(String, String)] = {
-    val ownerDesc = (p: (InternalName, MethodNameAndType)) =>
-      (p._1, p._2.methodType.descriptor)
+    val ownerDesc =
+      (p: (InternalName, MethodNameAndType)) =>
+        (p._1, p._2.methodType.descriptor)
     primitiveBoxConstructors.map(ownerDesc).toSet ++
       srRefConstructors.map(ownerDesc) ++
       tupleClassConstructors.map(ownerDesc) ++ Set(

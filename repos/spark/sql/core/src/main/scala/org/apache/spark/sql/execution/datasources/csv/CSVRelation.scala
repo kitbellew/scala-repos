@@ -65,13 +65,14 @@ object CSVRelation extends Logging {
 
     val schemaFields = schema.fields
     val requiredFields = StructType(requiredColumns.map(schema(_))).fields
-    val safeRequiredFields = if (params.dropMalformed) {
-      // If `dropMalformed` is enabled, then it needs to parse all the values
-      // so that we can decide which row is malformed.
-      requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
-    } else {
-      requiredFields
-    }
+    val safeRequiredFields =
+      if (params.dropMalformed) {
+        // If `dropMalformed` is enabled, then it needs to parse all the values
+        // so that we can decide which row is malformed.
+        requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
+      } else {
+        requiredFields
+      }
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
     schemaFields.zipWithIndex
       .filter {
@@ -162,8 +163,8 @@ private[sql] class CsvOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId =
-          configuration.get("spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration.get(
+          "spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId.csv$extension")
@@ -189,8 +190,9 @@ private[sql] class CsvOutputWriter(
 
   override protected[sql] def writeInternal(row: InternalRow): Unit = {
     // TODO: Instead of converting and writing every row, we should use the univocity buffer
-    val resultString =
-      csvWriter.writeRow(rowToString(row.toSeq(dataSchema)), firstRow)
+    val resultString = csvWriter.writeRow(
+      rowToString(row.toSeq(dataSchema)),
+      firstRow)
     if (firstRow) {
       firstRow = false
     }

@@ -53,20 +53,22 @@ class HeapBalancerTest
       new LoadedFactory(i.toString)
     }
     val factories = half1 ++ half2
-    val group =
-      Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories: _*)
-    val nonRng = new Random {
-      private[this] val i = new AtomicInteger(0)
-      override def nextInt(n: Int) = i.incrementAndGet() % n
-    }
+    val group = Group.mutable[ServiceFactory[Unit, LoadedFactory]](
+      factories: _*)
+    val nonRng =
+      new Random {
+        private[this] val i = new AtomicInteger(0)
+        override def nextInt(n: Int) = i.incrementAndGet() % n
+      }
 
     val exc = new NoBrokersAvailableException
 
-    val b = new HeapBalancer[Unit, LoadedFactory](
-      Activity(group.set map (Activity.Ok(_))),
-      statsReceiver,
-      exc,
-      nonRng)
+    val b =
+      new HeapBalancer[Unit, LoadedFactory](
+        Activity(group.set map (Activity.Ok(_))),
+        statsReceiver,
+        exc,
+        nonRng)
     val newFactory = new LoadedFactory("new")
 
     def assertGauge(name: String, value: Int) =
@@ -77,12 +79,13 @@ class HeapBalancerTest
 
   test("balancer with empty cluster has Closed status") {
     val emptyCluster = Group.empty[ServiceFactory[Unit, LoadedFactory]]
-    val b = new HeapBalancer[Unit, LoadedFactory](
-      Activity(emptyCluster.set.map(Activity.Ok(_))),
-      NullStatsReceiver,
-      new NoBrokersAvailableException,
-      new Random
-    )
+    val b =
+      new HeapBalancer[Unit, LoadedFactory](
+        Activity(emptyCluster.set.map(Activity.Ok(_))),
+        NullStatsReceiver,
+        new NoBrokersAvailableException,
+        new Random
+      )
     assert(b.status == Status.Closed)
   }
 
@@ -93,12 +96,13 @@ class HeapBalancerTest
 
       val cluster = Group.mutable[ServiceFactory[Unit, LoadedFactory]](node)
 
-      val b = new HeapBalancer[Unit, LoadedFactory](
-        Activity(cluster.set map (Activity.Ok(_))),
-        NullStatsReceiver,
-        new NoBrokersAvailableException,
-        new Random
-      )
+      val b =
+        new HeapBalancer[Unit, LoadedFactory](
+          Activity(cluster.set map (Activity.Ok(_))),
+          NullStatsReceiver,
+          new NoBrokersAvailableException,
+          new Random
+        )
       assert(b.status == status)
     }
   }
@@ -107,14 +111,16 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    val made = Seq.fill(N) {
-      Await.result(b())
-    }
+    val made =
+      Seq.fill(N) {
+        Await.result(b())
+      }
     for (f <- factories)
       assert(f.load == 1)
-    val made2 = Seq.fill(N) {
-      Await.result(b())
-    }
+    val made2 =
+      Seq.fill(N) {
+        Await.result(b())
+      }
     for (f <- factories)
       assert(f.load == 2)
 
@@ -153,9 +159,10 @@ class HeapBalancerTest
     import ctx._
 
     // initially N factories, load them twice
-    val made = Seq.fill(N * 2) {
-      Await.result(b())
-    }
+    val made =
+      Seq.fill(N * 2) {
+        Await.result(b())
+      }
     for (f <- factories)
       assert(f.load == 2)
 
@@ -172,9 +179,10 @@ class HeapBalancerTest
     // Further calls to make()() should not affect the
     // load on newFactory
     group() -= newFactory
-    val made2 = Seq.fill(N) {
-      Await.result(b())
-    }
+    val made2 =
+      Seq.fill(N) {
+        Await.result(b())
+      }
     for (f <- factories)
       assert(f.load == 3)
     assert(newFactory.load == 2)
@@ -184,9 +192,10 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    val made = Seq.fill(N) {
-      Await.result(b())
-    }
+    val made =
+      Seq.fill(N) {
+        Await.result(b())
+      }
     group() += newFactory
     val made2 = Await.result(b())
     for (f <- factories :+ newFactory)
@@ -201,9 +210,10 @@ class HeapBalancerTest
     val ctx = new Ctx
     import ctx._
 
-    val made = Seq.fill(N) {
-      Await.result(b())
-    }
+    val made =
+      Seq.fill(N) {
+        Await.result(b())
+      }
     group() --= half1
     Await.result(b()).close()
     for (f <- half1)
@@ -248,12 +258,13 @@ class HeapBalancerTest
     val ctx = new Ctx
 
     val heapBalancerEmptyGroup = "HeapBalancerEmptyGroup"
-    val b = new HeapBalancer[Unit, LoadedFactory](
-      Activity.value(Set.empty),
-      NullStatsReceiver,
-      new NoBrokersAvailableException(heapBalancerEmptyGroup),
-      new Random
-    )
+    val b =
+      new HeapBalancer[Unit, LoadedFactory](
+        Activity.value(Set.empty),
+        NullStatsReceiver,
+        new NoBrokersAvailableException(heapBalancerEmptyGroup),
+        new Random
+      )
     val exc = intercept[NoBrokersAvailableException] {
       Await.result(b())
     }
@@ -283,13 +294,14 @@ class HeapBalancerTest
     // Sequentially issue requests to the 2 nodes.
     // Requests should end up getting serviced by more than just one
     // of the nodes.
-    val results = (0 until N).foldLeft(Map.empty[LoadedFactory, Int]) {
-      case (map, i) =>
-        val sequentialRequest = Await.result(b())
-        val chosenNode = factories.filter(_.load == 1).head
-        sequentialRequest.close()
-        map + (chosenNode -> (map.getOrElse(chosenNode, 0) + 1))
-    }
+    val results =
+      (0 until N).foldLeft(Map.empty[LoadedFactory, Int]) {
+        case (map, i) =>
+          val sequentialRequest = Await.result(b())
+          val chosenNode = factories.filter(_.load == 1).head
+          sequentialRequest.close()
+          map + (chosenNode -> (map.getOrElse(chosenNode, 0) + 1))
+      }
 
     // Assert that all two nodes were chosen
     assert(results.keys.size == 2)
@@ -370,15 +382,16 @@ class HeapBalancerTest
     import ctx._
 
     val factories = Seq(new LoadedFactory("left"), new LoadedFactory("right"))
-    val group =
-      Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories: _*)
+    val group = Group.mutable[ServiceFactory[Unit, LoadedFactory]](
+      factories: _*)
 
-    val b = new HeapBalancer[Unit, LoadedFactory](
-      Activity(group.set map (Activity.Ok(_))),
-      statsReceiver,
-      new NoBrokersAvailableException,
-      new Random
-    )
+    val b =
+      new HeapBalancer[Unit, LoadedFactory](
+        Activity(group.set map (Activity.Ok(_))),
+        statsReceiver,
+        new NoBrokersAvailableException,
+        new Random
+      )
 
     b();
     b();

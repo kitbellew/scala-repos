@@ -17,9 +17,10 @@ abstract class ScalaGenerateTestBase
       text: String,
       assumedText: String,
       checkCaret: Boolean): Unit = {
-    val (nText, nResult) = (
-      text.stripMargin.replace("\r", "").trim,
-      assumedText.stripMargin.replace("\r", "").trim)
+    val (nText, nResult) =
+      (
+        text.stripMargin.replace("\r", "").trim,
+        assumedText.stripMargin.replace("\r", "").trim)
     val caretIndex = nText.indexOf(CARET_MARKER)
     myFixture.configureByText("dummy.scala", nText.replace(CARET_MARKER, ""))
     val caretModel = myFixture.getEditor.getCaretModel
@@ -45,10 +46,11 @@ abstract class ScalaGenerateTestBase
     myFixture.getEditor.getCaretModel.moveToOffset(caretIndex)
 
     val file: PsiFile = myFixture.getFile
-    val message = s"Generate action is${if (assumedResult)
-      " not"
-    else
-      ""} available"
+    val message =
+      s"Generate action is${if (assumedResult)
+        " not"
+      else
+        ""} available"
     assert(
       handler.isValidFor(myFixture.getEditor, file) == assumedResult,
       message)

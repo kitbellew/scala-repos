@@ -158,10 +158,11 @@ class UtilsTest extends JUnitSuite {
   @Test
   def testInLock() {
     val lock = new ReentrantLock()
-    val result = inLock(lock) {
-      assertTrue("Should be in lock", lock.isHeldByCurrentThread)
-      1 + 1
-    }
+    val result =
+      inLock(lock) {
+        assertTrue("Should be in lock", lock.isHeldByCurrentThread)
+        1 + 1
+      }
     assertEquals(2, result)
     assertFalse("Should be unlocked", lock.isLocked)
   }

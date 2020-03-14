@@ -102,8 +102,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   @Test
   def simplifyJumpsInTryCatchFinally(): Unit = {
-    val code =
-      """def f: Int =
+    val code = """def f: Int =
         |  try {
         |    return 1
         |  } catch {
@@ -128,8 +127,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
     //   - remove `ASTORE x; ALOAD x` if x is otherwise not live
     // in the example below, we have `ACONST_NULL; ASTORE x; ALOAD x`. in this case the store-load
     // should be removed (even though it looks like a null-store at first).
-    val code =
-      """class C {
+    val code = """class C {
         |  def t = {
         |    val x = null
         |    x.toString
@@ -236,8 +234,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   @Test
   def noElimImpureConstructor(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t(x: Int, y: Int): Int = {
         |    val a = new java.lang.Integer("nono")
         |    x + y
@@ -290,8 +287,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   @Test
   def elimUnusedClosure(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t(x: Int, y: Int): Int = {
         |    val f = (a: Int) => a + x + y
         |    val g = (b: Int) => b - x
@@ -694,8 +690,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   @Test
   def elimRedundantNullCheck(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t(x: Object) = {
         |    val bool = x == null
         |    if (x != null) 1 else 0
@@ -822,8 +817,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
   @Test
   def testCpp(): Unit = {
     // copied from an old test (run/test-cpp.scala)
-    val code =
-      """class C {
+    val code = """class C {
         |  import scala.util.Random._
         |
         |  def t1(x: Int) = {
@@ -887,8 +881,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   @Test
   def t7006(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t: Unit = {
         |    try {
         |      val x = 3
@@ -908,8 +901,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   @Test
   def booleanOrderingCompare(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def compare(x: Boolean, y: Boolean) = (x, y) match {
         |    case (false, true) => -1
         |    case (true, false) => 1
@@ -923,8 +915,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
   @Test
   def t8790(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t(x: Int, y: Int): String = (x, y) match {
         |    case (7, 8) => "a"
         |    case _ => "b"

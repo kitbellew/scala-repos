@@ -45,8 +45,9 @@ class Word2VecSuite
 
     val sentence = "a b " * 100 + "a c " * 10
     val numOfWords = sentence.split(" ").size
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
 
     val codes = Map(
       "a" -> Array(
@@ -103,8 +104,9 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a b " * 100 + "a c " * 10
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
 
     val codes = Map(
       "a" -> Array(
@@ -163,8 +165,9 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a b " * 100 + "a c " * 10
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
     val model = new Word2Vec()
@@ -175,14 +178,15 @@ class Word2VecSuite
       .fit(docDF)
 
     val expectedSimilarity = Array(0.2608488929093532, -0.8271274846926078)
-    val (synonyms, similarity) = model
-      .findSynonyms("a", 2)
-      .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
-      }
-      .collect()
-      .unzip
+    val (synonyms, similarity) =
+      model
+        .findSynonyms("a", 2)
+        .rdd
+        .map {
+          case Row(w: String, sim: Double) => (w, sim)
+        }
+        .collect()
+        .unzip
 
     assert(synonyms.toArray === Array("b", "c"))
     expectedSimilarity.zip(similarity).map {
@@ -197,8 +201,9 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a q s t q s t b b b s t m s t m q " * 100 + "a c " * 10
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
     val model = new Word2Vec()
@@ -209,14 +214,15 @@ class Word2VecSuite
       .setSeed(42L)
       .fit(docDF)
 
-    val (synonyms, similarity) = model
-      .findSynonyms("a", 6)
-      .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
-      }
-      .collect()
-      .unzip
+    val (synonyms, similarity) =
+      model
+        .findSynonyms("a", 6)
+        .rdd
+        .map {
+          case Row(w: String, sim: Double) => (w, sim)
+        }
+        .collect()
+        .unzip
 
     // Increase the window size
     val biggerModel = new Word2Vec()
@@ -227,14 +233,15 @@ class Word2VecSuite
       .setWindowSize(10)
       .fit(docDF)
 
-    val (synonymsLarger, similarityLarger) = model
-      .findSynonyms("a", 6)
-      .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
-      }
-      .collect()
-      .unzip
+    val (synonymsLarger, similarityLarger) =
+      model
+        .findSynonyms("a", 6)
+        .rdd
+        .map {
+          case Row(w: String, sim: Double) => (w, sim)
+        }
+        .collect()
+        .unzip
     // The similarity score should be very different with the larger window
     assert(math.abs(similarity(5) - similarityLarger(5) / similarity(5)) > 1e-5)
   }

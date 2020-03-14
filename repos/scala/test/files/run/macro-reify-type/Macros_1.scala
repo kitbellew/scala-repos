@@ -9,12 +9,13 @@ object StaticReflect {
     import c.universe._
     import internal._
 
-    val nameName: TermName = name.tree match {
-      case Literal(Constant(str: String)) => TermName(str)
-      case _ =>
-        c.error(c.enclosingPosition, s"Method name not constant.");
-        return reify(ru.NoType)
-    }
+    val nameName: TermName =
+      name.tree match {
+        case Literal(Constant(str: String)) => TermName(str)
+        case _ =>
+          c.error(c.enclosingPosition, s"Method name not constant.");
+          return reify(ru.NoType)
+      }
     val clazz = weakTypeOf[A]
 
     clazz member nameName match {

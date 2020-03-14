@@ -47,8 +47,9 @@ class AccountsTask(settings: Settings)
     "not create the same account twice" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
 
-      val body =
-        """{ "email": "%s", "password": "%s" }""".format(user, pass + "xyz")
+      val body = """{ "email": "%s", "password": "%s" }""".format(
+        user,
+        pass + "xyz")
       val post = (accounts / "") << body
       val result = Http(post OK as.String)
 

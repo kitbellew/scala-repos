@@ -24,12 +24,11 @@ class HealthCheckActorTest
     with Matchers
     with BeforeAndAfterAll {
 
-  override lazy implicit val system: ActorSystem =
-    ActorSystem(
-      name = "system",
-      defaultExecutionContext =
-        Some(CallerThreadExecutionContext.callerThreadExecutionContext)
-    )
+  override lazy implicit val system: ActorSystem = ActorSystem(
+    name = "system",
+    defaultExecutionContext = Some(
+      CallerThreadExecutionContext.callerThreadExecutionContext)
+  )
 
   // regression test for #934
   test("should not dispatch health checks for staging tasks") {

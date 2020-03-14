@@ -24,8 +24,9 @@ private[prediction] object Utils {
   // use dateTime() for strict ISO8601 format
   val dateTimeFormatter = ISODateTimeFormat.dateTime().withOffsetParsed()
 
-  val dateTimeNoMillisFormatter =
-    ISODateTimeFormat.dateTimeNoMillis().withOffsetParsed()
+  val dateTimeNoMillisFormatter = ISODateTimeFormat
+    .dateTimeNoMillis()
+    .withOffsetParsed()
 
   def stringToDateTime(dt: String): DateTime = {
     // We accept two formats.

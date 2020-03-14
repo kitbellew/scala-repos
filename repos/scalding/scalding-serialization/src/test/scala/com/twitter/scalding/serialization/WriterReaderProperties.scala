@@ -88,20 +88,22 @@ object WriterReaderProperties extends Properties("WriterReaderProperties") {
   property("Array[Byte] Writer/Reader") = writerReader[Array[Byte]]
   property("Array[Int] Writer/Reader") = writerReader[Array[Int]]
   property("Array[String] Writer/Reader") = writerReader[Array[String]]
-  property("List[String] Writer/Reader") =
-    writerReaderCollection[String, List[String]]
-  property("(Int, Array[String]) Writer/Reader") =
-    writerReader[(Int, Array[String])]
+  property("List[String] Writer/Reader") = writerReaderCollection[
+    String,
+    List[String]]
+  property("(Int, Array[String]) Writer/Reader") = writerReader[
+    (Int, Array[String])]
 
-  property("Option[(Int, Double)] Writer/Reader") =
-    writerReader[Option[(Int, Double)]]
+  property("Option[(Int, Double)] Writer/Reader") = writerReader[
+    Option[(Int, Double)]]
 
-  property("Option[Option[Unit]] Writer/Reader") =
-    writerReader[Option[Option[Unit]]]
+  property("Option[Option[Unit]] Writer/Reader") = writerReader[
+    Option[Option[Unit]]]
 
-  property("Either[Int, String] Writer/Reader") =
-    writerReader[Either[Int, String]]
+  property("Either[Int, String] Writer/Reader") = writerReader[
+    Either[Int, String]]
 
-  property("Map[Long, Byte] Writer/Reader") =
-    writerReaderCollection[(Long, Byte), Map[Long, Byte]]
+  property("Map[Long, Byte] Writer/Reader") = writerReaderCollection[
+    (Long, Byte),
+    Map[Long, Byte]]
 }

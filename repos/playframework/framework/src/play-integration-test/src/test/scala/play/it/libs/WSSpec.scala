@@ -94,8 +94,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
     "make GET Requests" in withServer { ws =>
       val req = ws.url("/get").get
-      val rep =
-        req.toCompletableFuture.get(10, TimeUnit.SECONDS) // AWait result
+      val rep = req.toCompletableFuture
+        .get(10, TimeUnit.SECONDS) // AWait result
 
       rep.getStatus aka "status" must_== 200 and (rep.asJson
         .path("origin")
@@ -152,10 +152,16 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     "consider query string in JSON conversion" in withServer { ws =>
-      val empty =
-        ws.url("/get?foo").get.toCompletableFuture.get(10, TimeUnit.SECONDS)
-      val bar =
-        ws.url("/get?foo=bar").get.toCompletableFuture.get(10, TimeUnit.SECONDS)
+      val empty = ws
+        .url("/get?foo")
+        .get
+        .toCompletableFuture
+        .get(10, TimeUnit.SECONDS)
+      val bar = ws
+        .url("/get?foo=bar")
+        .get
+        .toCompletableFuture
+        .get(10, TimeUnit.SECONDS)
 
       empty.asJson
         .path("args")
@@ -184,9 +190,10 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     "sending a simple multipart form body" in withServer { ws =>
-      val source = Source
-        .single(new Http.MultipartFormData.DataPart("hello", "world"))
-        .asJava
+      val source =
+        Source
+          .single(new Http.MultipartFormData.DataPart("hello", "world"))
+          .asJava
       val res = ws.url("/post").post(source)
       val body = res.toCompletableFuture.get().asJson()
 
@@ -197,11 +204,12 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       val file =
         new File(this.getClass.getResource("/testassets/bar.txt").toURI)
       val dp = new Http.MultipartFormData.DataPart("hello", "world")
-      val fp = new Http.MultipartFormData.FilePart(
-        "upload",
-        "bar.txt",
-        "text/plain",
-        FileIO.fromFile(file).asJava)
+      val fp =
+        new Http.MultipartFormData.FilePart(
+          "upload",
+          "bar.txt",
+          "text/plain",
+          FileIO.fromFile(file).asJava)
       val source = akka.stream.javadsl.Source.from(util.Arrays.asList(dp, fp))
 
       val res = ws.url("/post").post(source)

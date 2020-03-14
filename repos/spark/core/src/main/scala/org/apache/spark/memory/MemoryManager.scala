@@ -215,12 +215,13 @@ private[spark] abstract class MemoryManager(
         Runtime.getRuntime.availableProcessors()
     // Because of rounding to next power of 2, we may have safetyFactor as 8 in worst case
     val safetyFactor = 16
-    val maxTungstenMemory: Long = tungstenMemoryMode match {
-      case MemoryMode.ON_HEAP  => onHeapExecutionMemoryPool.poolSize
-      case MemoryMode.OFF_HEAP => offHeapExecutionMemoryPool.poolSize
-    }
-    val size =
-      ByteArrayMethods.nextPowerOf2(maxTungstenMemory / cores / safetyFactor)
+    val maxTungstenMemory: Long =
+      tungstenMemoryMode match {
+        case MemoryMode.ON_HEAP  => onHeapExecutionMemoryPool.poolSize
+        case MemoryMode.OFF_HEAP => offHeapExecutionMemoryPool.poolSize
+      }
+    val size = ByteArrayMethods.nextPowerOf2(
+      maxTungstenMemory / cores / safetyFactor)
     val default = math.min(maxPageSize, math.max(minPageSize, size))
     conf.getSizeAsBytes("spark.buffer.pageSize", default)
   }

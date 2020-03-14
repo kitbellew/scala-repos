@@ -90,8 +90,8 @@ abstract class MongoAccountManager(
     extends AccountManager[Future] {
   import Account._
 
-  private lazy val mamLogger =
-    LoggerFactory.getLogger("com.precog.accounts.MongoAccountManager")
+  private lazy val mamLogger = LoggerFactory.getLogger(
+    "com.precog.accounts.MongoAccountManager")
 
   private implicit val impTimeout = settings.timeout
 
@@ -177,8 +177,11 @@ abstract class MongoAccountManager(
       expiration: DateTime): Future[ResetTokenId] = {
     val tokenId = java.util.UUID.randomUUID.toString.replace("-", "")
 
-    val token =
-      ResetToken(tokenId, account.accountId, account.email, expiration)
+    val token = ResetToken(
+      tokenId,
+      account.accountId,
+      account.email,
+      expiration)
 
     logger.debug("Saving new reset token " + token)
     database(

@@ -29,13 +29,14 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
   }
 
   override def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
-    val varDef = GenerationUtil.elementOfTypeAtCaret(
-      editor,
-      file,
-      classOf[ScVariableDefinition]) match {
-      case Some(x) if x.isSimple && x.containingClass != null => x
-      case _                                                  => return
-    }
+    val varDef =
+      GenerationUtil.elementOfTypeAtCaret(
+        editor,
+        file,
+        classOf[ScVariableDefinition]) match {
+        case Some(x) if x.isSimple && x.containingClass != null => x
+        case _                                                  => return
+      }
 
     addPropertyMembers(varDef)
     varDef.delete()
@@ -59,8 +60,7 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
     val getterText = s"$modifiers def $name: $typeText = _$name"
     val getter_0 = createDefinition(getterText)
 
-    val setterText =
-      s"""$modifiers def ${name}_=(value: $typeText): Unit = {
+    val setterText = s"""$modifiers def ${name}_=(value: $typeText): Unit = {
         |  _$name = value
         |}""".stripMargin.replace("\r", "")
     val setter_0 = createDefinition(setterText)

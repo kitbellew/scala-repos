@@ -82,8 +82,8 @@ class AccountBalanceRetriever extends Actor with Aggregator {
       id: Long,
       types: Set[AccountType]) {
 
-    val results =
-      mutable.ArrayBuffer.empty[(AccountType, Option[List[(Long, BigDecimal)]])]
+    val results = mutable.ArrayBuffer
+      .empty[(AccountType, Option[List[(Long, BigDecimal)]])]
 
     if (types.size > 0)
       types foreach {

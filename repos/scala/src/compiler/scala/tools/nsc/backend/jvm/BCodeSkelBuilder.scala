@@ -222,14 +222,13 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      * can-multi-thread
      */
     private def addModuleInstanceField() {
-      val fv =
-        cnode.visitField(
-          GenBCode.PublicStaticFinal, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
-          strMODULE_INSTANCE_FIELD,
-          "L" + thisName + ";",
-          null, // no java-generic-signature
-          null // no initial value
-        )
+      val fv = cnode.visitField(
+        GenBCode.PublicStaticFinal, // TODO confirm whether we really don't want ACC_SYNTHETIC nor ACC_DEPRECATED
+        strMODULE_INSTANCE_FIELD,
+        "L" + thisName + ";",
+        null, // no java-generic-signature
+        null // no initial value
+      )
 
       fv.visitEnd()
     }
@@ -279,13 +278,14 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         val javagensig = getGenericSignature(f, claszSymbol)
         val flags = javaFieldFlags(f)
 
-        val jfield = new asm.tree.FieldNode(
-          flags,
-          f.javaSimpleName.toString,
-          symInfoTK(f).descriptor,
-          javagensig,
-          null // no initial value
-        )
+        val jfield =
+          new asm.tree.FieldNode(
+            flags,
+            f.javaSimpleName.toString,
+            symInfoTK(f).descriptor,
+            javagensig,
+            null // no initial value
+          )
         cnode.fields.add(jfield)
         emitAnnotations(jfield, f.annotations)
       }
@@ -395,11 +395,10 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
      */
     object locals {
 
-      private val slots =
-        mutable.Map.empty[
-          Symbol,
-          Local
-        ] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
+      private val slots = mutable.Map.empty[
+        Symbol,
+        Local
+      ] // (local-or-param-sym -> Local(BType, name, idx, isSynth))
 
       private var nxtIdx = -1 // next available index for local-var
 
@@ -445,8 +444,11 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       private def makeLocal(sym: Symbol, tk: BType): Local = {
         assert(!slots.contains(sym), "attempt to create duplicate local var.")
         assert(nxtIdx != -1, "not a valid start index")
-        val loc =
-          Local(tk, sym.javaSimpleName.toString, nxtIdx, sym.isSynthetic)
+        val loc = Local(
+          tk,
+          sym.javaSimpleName.toString,
+          nxtIdx,
+          sym.isSynthetic)
         slots += (sym -> loc)
         assert(tk.size > 0, "makeLocal called for a symbol whose type is Unit.")
         nxtIdx += tk.size
@@ -804,8 +806,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       // android creator code
       if (isCZParcelable) {
         // add a static field ("CREATOR") to this class to cache android.os.Parcelable$Creator
-        val andrFieldDescr = classBTypeFromSymbol(
-          AndroidCreatorClass).descriptor
+        val andrFieldDescr =
+          classBTypeFromSymbol(AndroidCreatorClass).descriptor
         cnode.visitField(
           asm.Opcodes.ACC_STATIC | asm.Opcodes.ACC_FINAL,
           "CREATOR",
@@ -814,8 +816,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           null
         )
         // INVOKESTATIC CREATOR(): android.os.Parcelable$Creator; -- TODO where does this Android method come from?
-        val callee =
-          definitions.getMember(claszSymbol.companionModule, androidFieldName)
+        val callee = definitions.getMember(
+          claszSymbol.companionModule,
+          androidFieldName)
         val jowner = internalName(callee.owner)
         val jname = callee.javaSimpleName.toString
         val jtype = methodBTypeFromSymbol(callee).descriptor

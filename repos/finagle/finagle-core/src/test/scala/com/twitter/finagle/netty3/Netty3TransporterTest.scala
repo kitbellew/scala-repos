@@ -92,15 +92,17 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
 
     it("newPipeline handles unresolved InetSocketAddresses") {
       val pipeline = Channels.pipeline()
-      val pipelineFactory = new ChannelPipelineFactory {
-        override def getPipeline(): ChannelPipeline = pipeline
-      }
+      val pipelineFactory =
+        new ChannelPipelineFactory {
+          override def getPipeline(): ChannelPipeline = pipeline
+        }
 
-      val transporter = new Netty3Transporter[Int, Int](
-        "name",
-        pipelineFactory,
-        socksProxy = Some(InetSocketAddress.createUnresolved("anAddr", 0))
-      )
+      val transporter =
+        new Netty3Transporter[Int, Int](
+          "name",
+          pipelineFactory,
+          socksProxy = Some(InetSocketAddress.createUnresolved("anAddr", 0))
+        )
 
       val unresolved = InetSocketAddress.createUnresolved("supdog", 0)
       val pl = transporter.newPipeline(unresolved, NullStatsReceiver)
@@ -109,10 +111,9 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
 
     // CSL-2175
     ignore("expose UnresolvedAddressException") {
-      val transporter =
-        Netty3Transporter[Int, Int](
-          "name",
-          Channels.pipelineFactory(Channels.pipeline()))
+      val transporter = Netty3Transporter[Int, Int](
+        "name",
+        Channels.pipelineFactory(Channels.pipeline()))
       val addr = InetSocketAddressUtil.parseHosts("localhost/127.0.0.1:1234")
       intercept[UnresolvedAddressException] {
         Await.result(transporter(addr.head, new InMemoryStatsReceiver))
@@ -125,14 +126,16 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
           writerTimeout: Duration,
           isHanlderExist: Boolean
       ) {
-        val transporter = new Netty3Transporter[Int, Int](
-          "name",
-          Channels.pipelineFactory(Channels.pipeline()),
-          channelReaderTimeout = readerTimeout,
-          channelWriterTimeout = writerTimeout
-        )
-        val pl =
-          transporter.newPipeline(new InetSocketAddress(0), NullStatsReceiver)
+        val transporter =
+          new Netty3Transporter[Int, Int](
+            "name",
+            Channels.pipelineFactory(Channels.pipeline()),
+            channelReaderTimeout = readerTimeout,
+            channelWriterTimeout = writerTimeout
+          )
+        val pl = transporter.newPipeline(
+          new InetSocketAddress(0),
+          NullStatsReceiver)
         val idleHandlerFound = pl.toMap.asScala.values.find {
           case _: IdleStateHandler => true
           case _                   => false
@@ -164,9 +167,10 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
 
       val firstPipeline = Channels.pipeline()
       val secondPipeline = Channels.pipeline()
-      val pipelineFactory = new ChannelPipelineFactory {
-        override def getPipeline(): ChannelPipeline = firstPipeline
-      }
+      val pipelineFactory =
+        new ChannelPipelineFactory {
+          override def getPipeline(): ChannelPipeline = firstPipeline
+        }
       val transporter = new Netty3Transporter[Int, Int]("name", pipelineFactory)
 
       val firstHandler = transporter.channelStatsHandler(sr.scope("first"))
@@ -175,14 +179,14 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
       firstPipeline.addFirst("channelStatsHandler", firstHandler)
       secondPipeline.addFirst("channelStatsHandler", secondHandler)
 
-      val firstChannel =
-        Netty3Transporter.channelFactory.newChannel(firstPipeline)
+      val firstChannel = Netty3Transporter.channelFactory.newChannel(
+        firstPipeline)
 
       hasConnections("first", 1)
       hasConnections("second", 0)
 
-      val secondChannel =
-        Netty3Transporter.channelFactory.newChannel(secondPipeline)
+      val secondChannel = Netty3Transporter.channelFactory.newChannel(
+        secondPipeline)
       Channels.close(firstChannel)
 
       eventually {
@@ -211,53 +215,61 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
         val pipelineFactory = Channels.pipelineFactory(Channels.pipeline())
         val transporter =
           new Netty3Transporter[Int, Int]("name", pipelineFactory)
-        val pipeline =
-          transporter.newPipeline(loopbackSockAddr, NullStatsReceiver)
+        val pipeline = transporter.newPipeline(
+          loopbackSockAddr,
+          NullStatsReceiver)
         assert(!hasSocksConnectHandler(pipeline))
       }
 
       it("is not added if proxy address is given but address isLoopback") {
         val pipelineFactory = Channels.pipelineFactory(Channels.pipeline())
-        val transporter = new Netty3Transporter[Int, Int](
-          "name",
-          pipelineFactory,
-          socksProxy = Some(loopbackSockAddr))
-        val pipeline =
-          transporter.newPipeline(loopbackSockAddr, NullStatsReceiver)
+        val transporter =
+          new Netty3Transporter[Int, Int](
+            "name",
+            pipelineFactory,
+            socksProxy = Some(loopbackSockAddr))
+        val pipeline = transporter.newPipeline(
+          loopbackSockAddr,
+          NullStatsReceiver)
         assert(!hasSocksConnectHandler(pipeline))
       }
 
       it("is not added if proxy address is given but address isLinkLocal") {
         val pipelineFactory = Channels.pipelineFactory(Channels.pipeline())
-        val transporter = new Netty3Transporter[Int, Int](
-          "name",
-          pipelineFactory,
-          socksProxy = Some(loopbackSockAddr))
-        val pipeline =
-          transporter.newPipeline(linkLocalSockAddr, NullStatsReceiver)
+        val transporter =
+          new Netty3Transporter[Int, Int](
+            "name",
+            pipelineFactory,
+            socksProxy = Some(loopbackSockAddr))
+        val pipeline = transporter.newPipeline(
+          linkLocalSockAddr,
+          NullStatsReceiver)
         assert(!hasSocksConnectHandler(pipeline))
       }
 
       it("is added if proxy address is given and addr is routable") {
         val pipelineFactory = Channels.pipelineFactory(Channels.pipeline())
-        val transporter = new Netty3Transporter[Int, Int](
-          "name",
-          pipelineFactory,
-          socksProxy = Some(loopbackSockAddr))
-        val pipeline =
-          transporter.newPipeline(routableSockAddr, NullStatsReceiver)
+        val transporter =
+          new Netty3Transporter[Int, Int](
+            "name",
+            pipelineFactory,
+            socksProxy = Some(loopbackSockAddr))
+        val pipeline = transporter.newPipeline(
+          routableSockAddr,
+          NullStatsReceiver)
         assert(hasSocksConnectHandler(pipeline))
       }
     }
 
     describe("SslHandler") {
       it("should close the channel if the remote peer closed TLS session") {
-        val result = new SSLEngineResult(
-          SSLEngineResult.Status.CLOSED,
-          SSLEngineResult.HandshakeStatus.NEED_UNWRAP,
-          0,
-          0
-        )
+        val result =
+          new SSLEngineResult(
+            SSLEngineResult.Status.CLOSED,
+            SSLEngineResult.HandshakeStatus.NEED_UNWRAP,
+            0,
+            0
+          )
 
         val session = mock[SSLSession]
         val engine = mock[SSLEngine]
@@ -277,11 +289,12 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
         )
 
         val pipelineFactory = Channels.pipelineFactory(Channels.pipeline())
-        val transporter = new Netty3Transporter[Int, Int](
-          "tls-enabled",
-          pipelineFactory,
-          tlsConfig = Some(mockTlsConfig)
-        )
+        val transporter =
+          new Netty3Transporter[Int, Int](
+            "tls-enabled",
+            pipelineFactory,
+            tlsConfig = Some(mockTlsConfig)
+          )
 
         // 21 - alert message, 3 - SSL3 major version,
         // 0 - SSL3 minor version, 0 1 - package length, 0 - close_notify

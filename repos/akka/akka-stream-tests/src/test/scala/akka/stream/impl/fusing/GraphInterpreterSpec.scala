@@ -46,13 +46,14 @@ class GraphInterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       val sink = new DownstreamProbe[Int]("sink")
 
       // Constructing an assembly by hand and resolving ambiguities
-      val assembly = new GraphAssembly(
-        stages = Array(identity, identity),
-        originalAttributes = Array(Attributes.none, Attributes.none),
-        ins = Array(identity.in, identity.in, null),
-        inOwners = Array(0, 1, -1),
-        outs = Array(null, identity.out, identity.out),
-        outOwners = Array(-1, 0, 1))
+      val assembly =
+        new GraphAssembly(
+          stages = Array(identity, identity),
+          originalAttributes = Array(Attributes.none, Attributes.none),
+          ins = Array(identity.in, identity.in, null),
+          inOwners = Array(0, 1, -1),
+          outs = Array(null, identity.out, identity.out),
+          outOwners = Array(-1, 0, 1))
 
       manualInit(assembly)
       interpreter.attachDownstreamBoundary(2, sink)
@@ -350,9 +351,10 @@ class GraphInterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     "implement buffer" in new TestSetup {
       val source = new UpstreamProbe[String]("source")
       val sink = new DownstreamProbe[String]("sink")
-      val buffer = new PushPullGraphStage[String, String, NotUsed](
-        (_) ⇒ new Buffer[String](2, OverflowStrategy.backpressure),
-        Attributes.none)
+      val buffer =
+        new PushPullGraphStage[String, String, NotUsed](
+          (_) ⇒ new Buffer[String](2, OverflowStrategy.backpressure),
+          Attributes.none)
 
       builder(buffer)
         .connect(source, buffer.shape.in)

@@ -60,8 +60,7 @@ class ReflectiveCallTest {
 
     def m[T](r: Object {
       def e(x: Tata): T
-    }): T =
-      r.e(new Tata("foo"))
+    }): T = r.e(new Tata("foo"))
 
     assertEquals("Tata(iei)", m[Tata](Rec).toString)
   }
@@ -201,9 +200,10 @@ class ReflectiveCallTest {
     type LEN = {
       def length: Int
     }
-    type CLONE = Any {
-      def clone(): Object
-    }
+    type CLONE =
+      Any {
+        def clone(): Object
+      }
 
     def upd(obj: UPD, i: Int, x: String): Unit = obj.update(i, x)
     def apl(obj: APL, i: Int): String = obj.apply(i)
@@ -230,9 +230,10 @@ class ReflectiveCallTest {
     type LEN = {
       def length: Int
     }
-    type CLONE = Any {
-      def clone(): Object
-    }
+    type CLONE =
+      Any {
+        def clone(): Object
+      }
 
     def upd(obj: UPD, i: Int, x: Int): Unit = obj.update(i, x)
     def apl(obj: APL, i: Int): Int = obj.apply(i)
@@ -252,8 +253,7 @@ class ReflectiveCallTest {
   @Test def should_work_with_Strings(): Unit = {
     def get(obj: {
       def codePointAt(str: Int): Int
-    }): Int =
-      obj.codePointAt(1)
+    }): Int = obj.codePointAt(1)
     assertEquals('i'.toInt, get("Hi"))
 
     def sub(x: {
@@ -312,10 +312,11 @@ class ReflectiveCallTest {
 
   @Test def should_work_on_java_lang_Object_notify_notifyAll_issue_303()
       : Unit = {
-    type ObjNotifyLike = Any {
-      def notify(): Unit
-      def notifyAll(): Unit
-    }
+    type ObjNotifyLike =
+      Any {
+        def notify(): Unit
+        def notifyAll(): Unit
+      }
     def objNotifyTest(obj: ObjNotifyLike): Int = {
       obj.notify()
       obj.notifyAll()
@@ -328,9 +329,10 @@ class ReflectiveCallTest {
   }
 
   @Test def should_work_on_java_lang_Object_clone_issue_303(): Unit = {
-    type ObjCloneLike = Any {
-      def clone(): AnyRef
-    }
+    type ObjCloneLike =
+      Any {
+        def clone(): AnyRef
+      }
     def objCloneTest(obj: ObjCloneLike): AnyRef = obj.clone()
 
     class B(val x: Int) extends Cloneable {
@@ -345,10 +347,11 @@ class ReflectiveCallTest {
   }
 
   @Test def should_work_on_scala_AnyRef_eq_ne_issue_303(): Unit = {
-    type ObjEqLike = Any {
-      def eq(that: AnyRef): Boolean
-      def ne(that: AnyRef): Boolean
-    }
+    type ObjEqLike =
+      Any {
+        def eq(that: AnyRef): Boolean
+        def ne(that: AnyRef): Boolean
+      }
     def objEqTest(obj: ObjEqLike, that: AnyRef): Boolean = obj eq that
     def objNeTest(obj: ObjEqLike, that: AnyRef): Boolean = obj ne that
 
@@ -365,10 +368,11 @@ class ReflectiveCallTest {
   }
 
   @Test def should_work_on_java_lang_Float_Double_isNaN_isInfinite(): Unit = {
-    type FloatingNumberLike = Any {
-      def isNaN(): Boolean
-      def isInfinite(): Boolean
-    }
+    type FloatingNumberLike =
+      Any {
+        def isNaN(): Boolean
+        def isInfinite(): Boolean
+      }
     def test(
         x: FloatingNumberLike,
         isNaN: Boolean,

@@ -37,8 +37,8 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
 
   override def findClass(
       className: String): Option[ClassRepresentation[AbstractFile]] = {
-    val (pkg, simpleClassName) =
-      PackageNameUtils.separatePkgAndClassNames(className)
+    val (pkg, simpleClassName) = PackageNameUtils.separatePkgAndClassNames(
+      className)
 
     @tailrec
     def findEntry[T <: ClassRepClassPathEntry](
@@ -109,11 +109,13 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
         val existing = mergedEntries(index)
 
         if (existing.binary.isEmpty && entry.binary.isDefined)
-          mergedEntries(index) =
-            ClassAndSourceFilesEntry(entry.binary.get, existing.source.get)
+          mergedEntries(index) = ClassAndSourceFilesEntry(
+            entry.binary.get,
+            existing.source.get)
         if (existing.source.isEmpty && entry.source.isDefined)
-          mergedEntries(index) =
-            ClassAndSourceFilesEntry(existing.binary.get, entry.source.get)
+          mergedEntries(index) = ClassAndSourceFilesEntry(
+            existing.binary.get,
+            entry.source.get)
       } else {
         indices(name) = count
         mergedEntries += entry

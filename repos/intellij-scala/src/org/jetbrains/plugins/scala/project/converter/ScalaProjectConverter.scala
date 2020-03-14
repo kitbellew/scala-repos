@@ -24,8 +24,8 @@ class ScalaProjectConverter(context: ConversionContext)
   private var createdSettingsFiles: Seq[File] = Seq.empty
 
   override def getAdditionalAffectedFiles = {
-    val filesToDelete =
-      obsoleteProjectLibraries.flatMap(_.libraryStorageFileIn(context))
+    val filesToDelete = obsoleteProjectLibraries.flatMap(
+      _.libraryStorageFileIn(context))
     val filesToUpdate = scalaProjectSettings.getFilesToUpdate(context)
     (filesToDelete ++ filesToUpdate).asJava
   }

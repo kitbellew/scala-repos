@@ -47,21 +47,22 @@ trait Extractors {
       symtab: SymbolTable,
       rtree: Tree): Tree = {
     val tparamu = newTypeName("U")
-    val (reifierBase, reifierName, reifierTpt, reifierUniverse) = flavor match {
-      case tpnme.REIFY_TYPECREATOR_PREFIX =>
-        (
-          TypeCreatorClass,
-          nme.apply,
-          SelectFromTypeTree(Ident(tparamu), tpnme.Type),
-          ApiUniverseClass)
-      case tpnme.REIFY_TREECREATOR_PREFIX =>
-        (
-          TreeCreatorClass,
-          nme.apply,
-          SelectFromTypeTree(Ident(tparamu), tpnme.Tree),
-          ApiUniverseClass)
-      case _ => throw new Error(s"unexpected flavor $flavor")
-    }
+    val (reifierBase, reifierName, reifierTpt, reifierUniverse) =
+      flavor match {
+        case tpnme.REIFY_TYPECREATOR_PREFIX =>
+          (
+            TypeCreatorClass,
+            nme.apply,
+            SelectFromTypeTree(Ident(tparamu), tpnme.Type),
+            ApiUniverseClass)
+        case tpnme.REIFY_TREECREATOR_PREFIX =>
+          (
+            TreeCreatorClass,
+            nme.apply,
+            SelectFromTypeTree(Ident(tparamu), tpnme.Tree),
+            ApiUniverseClass)
+        case _ => throw new Error(s"unexpected flavor $flavor")
+      }
     val reifierBody = {
       def gc(symtab: SymbolTable): SymbolTable = {
         def loop(symtab: SymbolTable): SymbolTable = {
@@ -157,8 +158,11 @@ trait Extractors {
   }
 
   private def mkWrapper(universe: Tree, mirror: Tree, wrappee: Tree): Tree = {
-    val universeAlias =
-      ValDef(NoMods, nme.UNIVERSE_SHORT, SingletonTypeTree(universe), universe)
+    val universeAlias = ValDef(
+      NoMods,
+      nme.UNIVERSE_SHORT,
+      SingletonTypeTree(universe),
+      universe)
     val mirrorAlias = ValDef(
       NoMods,
       nme.MIRROR_SHORT,
@@ -267,10 +271,11 @@ trait Extractors {
                                   Block(_ :: _ :: symbolTable2, rtpe)))))),
                         _))))))
             if udef.name == nme.UNIVERSE_SHORT && mdef.name == nme.MIRROR_SHORT =>
-          val tagFlavor = tagFactory match {
-            case Select(Select(_, tagFlavor), _) => tagFlavor
-            case Select(_, tagFlavor)            => tagFlavor
-          }
+          val tagFlavor =
+            tagFactory match {
+              case Select(Select(_, tagFlavor), _) => tagFlavor
+              case Select(_, tagFlavor)            => tagFlavor
+            }
           Some(
             (
               universe,
@@ -340,10 +345,11 @@ trait Extractors {
                               Block(_ :: _ :: symtab, rtpe)))))),
                     _))))
             if udef.name == nme.UNIVERSE_SHORT && mdef.name == nme.MIRROR_SHORT =>
-          val tagFlavor = tagFactory match {
-            case Select(Select(_, tagFlavor), _) => tagFlavor
-            case Select(_, tagFlavor)            => tagFlavor
-          }
+          val tagFlavor =
+            tagFactory match {
+              case Select(Select(_, tagFlavor), _) => tagFlavor
+              case Select(_, tagFlavor)            => tagFlavor
+            }
           Some(
             (
               universe,
@@ -358,8 +364,7 @@ trait Extractors {
   }
 
   object TreeSplice {
-    def apply(splicee: Tree): Tree =
-      Select(splicee, ExprSplice)
+    def apply(splicee: Tree): Tree = Select(splicee, ExprSplice)
 
     def unapply(tree: Tree): Option[Tree] =
       tree match {

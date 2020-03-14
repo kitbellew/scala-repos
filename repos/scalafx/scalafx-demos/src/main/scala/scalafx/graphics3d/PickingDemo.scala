@@ -45,33 +45,36 @@ object PickingDemo extends JFXApp {
     title = "Picking Demo"
     scene = new Scene(500, 500, true, SceneAntialiasing.Balanced) {
 
-      val box = new Box(400, 400, 400) {
-        material = new PhongMaterial {
-          diffuseColor = Color.Red
-          specularColor = Color.Pink
+      val box =
+        new Box(400, 400, 400) {
+          material = new PhongMaterial {
+            diffuseColor = Color.Red
+            specularColor = Color.Pink
+          }
+          translateZ = 225
+          id = "Box"
         }
-        translateZ = 225
-        id = "Box"
-      }
 
-      val sphere = new Sphere(200) {
-        material = new PhongMaterial {
-          diffuseColor = Color.Blue
-          specularColor = Color.LightBlue
+      val sphere =
+        new Sphere(200) {
+          material = new PhongMaterial {
+            diffuseColor = Color.Blue
+            specularColor = Color.LightBlue
+          }
+          translateZ = -225
+          id = "Sphere"
         }
-        translateZ = -225
-        id = "Sphere"
-      }
 
       // Put shapes in a groups so they can be rotated together
       val shapes = new Group(box, sphere)
 
-      val light = new PointLight {
-        color = Color.AntiqueWhite
-        translateX = -265
-        translateY = -260
-        translateZ = -625
-      }
+      val light =
+        new PointLight {
+          color = Color.AntiqueWhite
+          translateX = -265
+          translateY = -260
+          translateZ = -625
+        }
 
       root = new Group {
         // Put light outside of `shapes` group so it does not rotate
@@ -91,10 +94,11 @@ object PickingDemo extends JFXApp {
   /** Add mouse interaction to a scene, rotating given node. */
   private def addMouseInteraction(scene: Scene, group: Group) {
     val angleY = DoubleProperty(-50)
-    val yRotate = new Rotate {
-      angle <== angleY
-      axis = Rotate.YAxis
-    }
+    val yRotate =
+      new Rotate {
+        angle <== angleY
+        axis = Rotate.YAxis
+      }
     var anchorX: Double = 0
     var anchorAngleY: Double = 0
 

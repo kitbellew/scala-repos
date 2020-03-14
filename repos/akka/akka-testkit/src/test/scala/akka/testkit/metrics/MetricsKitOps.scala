@@ -81,9 +81,10 @@ private[akka] trait MetricsKitOps extends MetricKeyDSL {
     */
   def measureMemory(
       key: MetricKey): MemoryUsageGaugeSet with MemoryUsageSnapshotting = {
-    val gaugeSet = new jvm.MemoryUsageGaugeSet() with MemoryUsageSnapshotting {
-      val prefix = key / "mem"
-    }
+    val gaugeSet =
+      new jvm.MemoryUsageGaugeSet() with MemoryUsageSnapshotting {
+        val prefix = key / "mem"
+      }
 
     registry.registerAll(gaugeSet)
     gaugeSet

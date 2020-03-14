@@ -74,12 +74,13 @@ class TasksResourceTest
     val taskId2 = Task.Id.forApp(app2).idString
     val body = s"""{"ids": ["$taskId1", "$taskId2"]}"""
     val bodyBytes = body.toCharArray.map(_.toByte)
-    val deploymentPlan = new DeploymentPlan(
-      "plan",
-      Group.empty,
-      Group.empty,
-      Seq.empty[DeploymentStep],
-      Timestamp.zero)
+    val deploymentPlan =
+      new DeploymentPlan(
+        "plan",
+        Group.empty,
+        Group.empty,
+        Seq.empty[DeploymentStep],
+        Timestamp.zero)
 
     val task1 = MarathonTestHelper.runningTask(taskId1)
     val task2 = MarathonTestHelper.stagedTask(taskId2)
@@ -130,8 +131,11 @@ class TasksResourceTest
       Some(AppDefinition(appId)))
 
     When(s"kill task is called")
-    val killTasks =
-      taskResource.killTasks(scale = true, force = false, body, req)
+    val killTasks = taskResource.killTasks(
+      scale = true,
+      force = false,
+      body,
+      req)
     Then("we receive a NotAuthenticated response")
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
@@ -151,8 +155,11 @@ class TasksResourceTest
     groupManager.app(appId) returns Future.successful(None)
 
     When(s"kill task is called")
-    val killTasks =
-      taskResource.killTasks(scale = true, force = false, body, req)
+    val killTasks = taskResource.killTasks(
+      scale = true,
+      force = false,
+      body,
+      req)
     Then("we receive a NotAuthenticated response")
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
@@ -208,8 +215,11 @@ class TasksResourceTest
     taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.empty
 
     When(s"kill task is called")
-    val killTasks =
-      taskResource.killTasks(scale = false, force = false, body, req)
+    val killTasks = taskResource.killTasks(
+      scale = false,
+      force = false,
+      body,
+      req)
     Then("we receive a not authorized response")
     killTasks.getStatus should be(auth.UnauthorizedStatus)
   }

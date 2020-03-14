@@ -62,8 +62,8 @@ private[i18n] final class JsDump(path: String, pool: I18nPool, keys: I18nKeys) {
 
   private def write(messages: List[I18nKey])(lang: Lang) {
     val code = s"""lichess_translations = ${dumpFromDefault(messages, lang)};"""
-    val file = new File(
-      "%s/%s.js".format(pathFile.getCanonicalPath, lang.language))
+    val file =
+      new File("%s/%s.js".format(pathFile.getCanonicalPath, lang.language))
     val out = new PrintWriter(file)
     try {
       out.print(code)
@@ -107,8 +107,9 @@ private[i18n] final class JsDump(path: String, pool: I18nPool, keys: I18nKeys) {
   private def writeFullJson {
     pool.langs foreach { lang =>
       val code = dumpFromKey(keys.keys, lang)
-      val file = new File(
-        "%s/%s.all.json".format(pathFile.getCanonicalPath, lang.language))
+      val file =
+        new File(
+          "%s/%s.all.json".format(pathFile.getCanonicalPath, lang.language))
       val out = new PrintWriter(file)
       try {
         out.print(code)

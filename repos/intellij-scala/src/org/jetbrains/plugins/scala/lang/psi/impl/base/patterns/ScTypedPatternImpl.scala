@@ -59,8 +59,9 @@ class ScTypedPatternImpl(node: ASTNode)
       case Some(tp) =>
         if (tp.typeElement == null)
           return Failure("No type element for type pattern", Some(this))
-        val typeElementType: TypeResult[ScType] =
-          tp.typeElement.getType(ctx).map {
+        val typeElementType: TypeResult[ScType] = tp.typeElement
+          .getType(ctx)
+          .map {
             case tp: ScExistentialType =>
               val skolem = tp.skolem
               ScType.extractClassType(

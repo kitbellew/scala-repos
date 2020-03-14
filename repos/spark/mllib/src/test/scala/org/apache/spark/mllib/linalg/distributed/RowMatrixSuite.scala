@@ -89,19 +89,21 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("toBreeze") {
-    val expected =
-      BDM((0.0, 1.0, 2.0), (3.0, 4.0, 5.0), (6.0, 7.0, 8.0), (9.0, 0.0, 1.0))
+    val expected = BDM(
+      (0.0, 1.0, 2.0),
+      (3.0, 4.0, 5.0),
+      (6.0, 7.0, 8.0),
+      (9.0, 0.0, 1.0))
     for (mat <- Seq(denseMat, sparseMat)) {
       assert(mat.toBreeze() === expected)
     }
   }
 
   test("gram") {
-    val expected =
-      Matrices.dense(
-        n,
-        n,
-        Array(126.0, 54.0, 72.0, 54.0, 66.0, 78.0, 72.0, 78.0, 94.0))
+    val expected = Matrices.dense(
+      n,
+      n,
+      Array(126.0, 54.0, 72.0, 54.0, 66.0, 78.0, 72.0, 78.0, 94.0))
     for (mat <- Seq(denseMat, sparseMat)) {
       val G = mat.computeGramianMatrix()
       assert(G.toBreeze === expected.toBreeze)
@@ -170,8 +172,13 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
                 s.toBreeze.asInstanceOf[BDV[Double]] - localSigma(0 until k)))
           }
         }
-        val svdWithoutU =
-          mat.computeSVD(1, computeU = false, 1e-9, 300, 1e-10, mode)
+        val svdWithoutU = mat.computeSVD(
+          1,
+          computeU = false,
+          1e-9,
+          300,
+          1e-10,
+          mode)
         assert(svdWithoutU.U === null)
       }
     }
@@ -222,8 +229,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("pca") {
     for (mat <- Seq(denseMat, sparseMat);
          k <- 1 to n) {
-      val (pc, expVariance) =
-        mat.computePrincipalComponentsAndExplainedVariance(k)
+      val (pc, expVariance) = mat
+        .computePrincipalComponentsAndExplainedVariance(k)
       assert(pc.numRows === n)
       assert(pc.numCols === k)
       assertColumnEqualUpToSign(

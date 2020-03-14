@@ -128,26 +128,27 @@ object ScalaClassNameCompletionContributor {
         }
       } else
         Array.empty
-    val (position, inString) = dummyPosition.getNode.getElementType match {
-      case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
-        val position = dummyPosition
-        //It's ok here to use parameters.getPosition
-        val offsetInString =
-          parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
-        val interpolated =
-          ScalaPsiElementFactory.createExpressionFromText(
+    val (position, inString) =
+      dummyPosition.getNode.getElementType match {
+        case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
+          val position = dummyPosition
+          //It's ok here to use parameters.getPosition
+          val offsetInString =
+            parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
+          val interpolated = ScalaPsiElementFactory.createExpressionFromText(
             "s" + position.getText,
             position.getContext.getContext)
-        (interpolated.findElementAt(offsetInString), true)
-      case _ => (dummyPosition, false)
-    }
+          (interpolated.findElementAt(offsetInString), true)
+        case _ => (dummyPosition, false)
+      }
     val invocationCount = parameters.getInvocationCount
     if (!inString && !ScalaPsiUtil
           .fileContext(position)
           .isInstanceOf[ScalaFile])
       return true
-    val lookingForAnnotations: Boolean =
-      psiElement.afterLeaf("@").accepts(position)
+    val lookingForAnnotations: Boolean = psiElement
+      .afterLeaf("@")
+      .accepts(position)
     val isInImport = ScalaPsiUtil.getContextOfType(
       position,
       false,

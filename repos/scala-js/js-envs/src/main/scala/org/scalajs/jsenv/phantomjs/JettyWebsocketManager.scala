@@ -33,8 +33,7 @@ private[phantomjs] final class JettyWebsocketManager(
 
     override def doWebSocketConnect(
         request: HttpServletRequest,
-        protocol: String): WebSocket =
-      new ComWebSocketListener
+        protocol: String): WebSocket = new ComWebSocketListener
   })
 
   server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener {

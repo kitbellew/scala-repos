@@ -229,13 +229,14 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
 
       checkSchema[Data](dataRDD.schema)
       val dataArray = dataRDD.select("boundary", "prediction").collect()
-      val (boundaries, predictions) = dataArray
-        .map { x =>
-          (x.getDouble(0), x.getDouble(1))
-        }
-        .toList
-        .sortBy(_._1)
-        .unzip
+      val (boundaries, predictions) =
+        dataArray
+          .map { x =>
+            (x.getDouble(0), x.getDouble(1))
+          }
+          .toList
+          .sortBy(_._1)
+          .unzip
       (boundaries.toArray, predictions.toArray)
     }
   }
@@ -314,11 +315,12 @@ class IsotonicRegression private (private var isotonic: Boolean)
     */
   @Since("1.3.0")
   def run(input: RDD[(Double, Double, Double)]): IsotonicRegressionModel = {
-    val preprocessedInput = if (isotonic) {
-      input
-    } else {
-      input.map(x => (-x._1, x._2, x._3))
-    }
+    val preprocessedInput =
+      if (isotonic) {
+        input
+      } else {
+        input.map(x => (-x._1, x._2, x._3))
+      }
 
     val pooled = parallelPoolAdjacentViolators(preprocessedInput)
 

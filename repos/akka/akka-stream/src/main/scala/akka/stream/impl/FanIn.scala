@@ -105,8 +105,7 @@ private[akka] object FanIn {
     private[this] final def marked(index: Int, on: Boolean): Unit =
       setState(index, Marked, on)
 
-    override def toString: String =
-      s"""|InputBunch
+    override def toString: String = s"""|InputBunch
           |  marked:    ${states.iterator.map(marked(_)).mkString(", ")}
           |  pending:   ${states.iterator.map(pending(_)).mkString(", ")}
           |  depleted:  ${states.iterator.map(depleted(_)).mkString(", ")}
@@ -221,8 +220,7 @@ private[akka] object FanIn {
       elem
     }
 
-    def dequeueAndYield(): Any =
-      dequeueAndYield(idToDequeue())
+    def dequeueAndYield(): Any = dequeueAndYield(idToDequeue())
 
     def dequeueAndYield(id: Int): Any = {
       preferredId = id + 1
@@ -237,16 +235,18 @@ private[akka] object FanIn {
       dequeue(id)
     }
 
-    val AllOfMarkedInputs = new TransferState {
-      override def isCompleted: Boolean = markedDepleted > 0
-      override def isReady: Boolean = markedPending == markCount
-    }
+    val AllOfMarkedInputs =
+      new TransferState {
+        override def isCompleted: Boolean = markedDepleted > 0
+        override def isReady: Boolean = markedPending == markCount
+      }
 
-    val AnyOfMarkedInputs = new TransferState {
-      override def isCompleted: Boolean =
-        markedDepleted == markCount && markedPending == 0
-      override def isReady: Boolean = markedPending > 0
-    }
+    val AnyOfMarkedInputs =
+      new TransferState {
+        override def isCompleted: Boolean =
+          markedDepleted == markCount && markedPending == 0
+        override def isReady: Boolean = markedPending > 0
+      }
 
     def inputsAvailableFor(id: Int) =
       new TransferState {

@@ -39,9 +39,10 @@ object FizzBuzzExample {
   }
 
   sealed trait NatToFizzBuzzInstances1 {
-    type Aux[N <: Nat, FB <: FizzBuzz] = NatToFizzBuzz[N] {
-      type Out = FB
-    }
+    type Aux[N <: Nat, FB <: FizzBuzz] =
+      NatToFizzBuzz[N] {
+        type Out = FB
+      }
 
     implicit def other[N <: Nat]: Aux[N, Other[N]] =
       new NatToFizzBuzz[N] {
@@ -90,9 +91,10 @@ object FizzBuzzExample {
   }
 
   object RevFizzBuzz {
-    type Aux[N <: Nat, L <: HList] = RevFizzBuzz[N] {
-      type Out = L
-    }
+    type Aux[N <: Nat, L <: HList] =
+      RevFizzBuzz[N] {
+        type Out = L
+      }
     implicit def revFizzBuzzOne: Aux[_1, Other[_1] :: HNil] =
       new RevFizzBuzz[_1] {
         type Out = Other[_1] :: HNil
@@ -117,9 +119,10 @@ object FizzBuzzExample {
   }
 
   object FizzBuzzResult {
-    type Aux[N <: Nat, L <: HList] = FizzBuzzResult[N] {
-      type Out = L
-    }
+    type Aux[N <: Nat, L <: HList] =
+      FizzBuzzResult[N] {
+        type Out = L
+      }
 
     implicit def fizzBuzzResult[N <: Nat, L <: HList](implicit
         rfb: RevFizzBuzz.Aux[N, L],

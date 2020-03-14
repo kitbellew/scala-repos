@@ -57,16 +57,18 @@ trait PrecogLibSpecs[M[+_]]
   val echo =
     Join(WrapObject, Cross(None), const("url"), const("http://echo"))(line)
   // { "url": "http://wrapper", "options": { "field": "abc" } }
-  val wrapper = Join(
-    JoinObject,
-    Cross(None),
-    Join(WrapObject, Cross(None), const("url"), const("http://wrapper"))(line),
+  val wrapper =
     Join(
-      WrapObject,
+      JoinObject,
       Cross(None),
-      const("options"),
-      Join(WrapObject, Cross(None), const("field"), const("abc"))(line))(line)
-  )(line)
+      Join(WrapObject, Cross(None), const("url"), const("http://wrapper"))(
+        line),
+      Join(
+        WrapObject,
+        Cross(None),
+        const("options"),
+        Join(WrapObject, Cross(None), const("field"), const("abc"))(line))(line)
+    )(line)
   val misbehave =
     Join(WrapObject, Cross(None), const("url"), const("http://misbehave"))(line)
   val empty =
@@ -77,11 +79,12 @@ trait PrecogLibSpecs[M[+_]]
 
   "enrichment" should {
     "enrich a homogenous set" in {
-      val input = Join(
-        BuiltInFunction2Op(Enrichment),
-        Cross(None),
-        dag.AbsoluteLoad(const("/hom/numbers4"))(line),
-        echo)(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(Enrichment),
+          Cross(None),
+          dag.AbsoluteLoad(const("/hom/numbers4"))(line),
+          echo)(line)
 
       val result = testEval(input)
       result must haveSize(6)
@@ -92,11 +95,12 @@ trait PrecogLibSpecs[M[+_]]
     }
 
     "enrich a homogenous set by wrapping" in {
-      val input = Join(
-        BuiltInFunction2Op(Enrichment),
-        Cross(None),
-        dag.AbsoluteLoad(const("/hom/numbers4"))(line),
-        wrapper)(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(Enrichment),
+          Cross(None),
+          dag.AbsoluteLoad(const("/hom/numbers4"))(line),
+          wrapper)(line)
 
       val result = testEval(input)
       result must haveSize(6)
@@ -110,11 +114,12 @@ trait PrecogLibSpecs[M[+_]]
     }
 
     "enrich a heterogeneous set" in {
-      val input = Join(
-        BuiltInFunction2Op(Enrichment),
-        Cross(None),
-        dag.AbsoluteLoad(const("/het/numbers6"))(line),
-        echo)(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(Enrichment),
+          Cross(None),
+          dag.AbsoluteLoad(const("/het/numbers6"))(line),
+          echo)(line)
 
       val result = testEval(input)
       result must haveSize(18)
@@ -133,31 +138,34 @@ trait PrecogLibSpecs[M[+_]]
     }
 
     "misbehaving enricher fails" in {
-      val input = Join(
-        BuiltInFunction2Op(Enrichment),
-        Cross(None),
-        dag.AbsoluteLoad(const("/hom/numbers4"))(line),
-        misbehave)(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(Enrichment),
+          Cross(None),
+          dag.AbsoluteLoad(const("/hom/numbers4"))(line),
+          misbehave)(line)
 
       testEval(input) must throwA[Throwable]
     }
 
     "empty enricher fails" in {
-      val input = Join(
-        BuiltInFunction2Op(Enrichment),
-        Cross(None),
-        dag.AbsoluteLoad(const("/hom/numbers4"))(line),
-        empty)(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(Enrichment),
+          Cross(None),
+          dag.AbsoluteLoad(const("/hom/numbers4"))(line),
+          empty)(line)
 
       testEval(input) must throwA[Throwable]
     }
 
     "failing enricher fails" in {
-      val input = Join(
-        BuiltInFunction2Op(Enrichment),
-        Cross(None),
-        dag.AbsoluteLoad(const("/hom/numbers4"))(line),
-        serverError)(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(Enrichment),
+          Cross(None),
+          dag.AbsoluteLoad(const("/hom/numbers4"))(line),
+          serverError)(line)
 
       testEval(input) must throwA[Throwable]
     }

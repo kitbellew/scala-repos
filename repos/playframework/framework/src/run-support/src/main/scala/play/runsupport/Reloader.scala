@@ -104,8 +104,9 @@ object Reloader {
     // Or it can be defined in devSettings as "play.server.http.port"
     val httpPortString: Option[String] = otherArgs.headOption orElse prop(
       "http.port") orElse devSettings.toMap.get("play.server.http.port")
-    val httpPort: Option[Int] =
-      parsePortValue(httpPortString, Option(defaultHttpPort))
+    val httpPort: Option[Int] = parsePortValue(
+      httpPortString,
+      Option(defaultHttpPort))
 
     // https port can be defined as a -Dhttps.port argument or system property
     val httpsPortString: Option[String] =
@@ -121,8 +122,8 @@ object Reloader {
 
   def urls(cp: Classpath): Array[URL] = cp.map(_.toURI.toURL).toArray
 
-  val createURLClassLoader: ClassLoaderCreator = (name, urls, parent) =>
-    new NamedURLClassLoader(name, urls, parent)
+  val createURLClassLoader: ClassLoaderCreator =
+    (name, urls, parent) => new NamedURLClassLoader(name, urls, parent)
 
   val createDelegatedResourcesClassLoader: ClassLoaderCreator =
     (name, urls, parent) =>
@@ -179,8 +180,11 @@ object Reloader {
       runSbtTask: String => AnyRef,
       mainClassName: String): PlayDevServer = {
 
-    val (properties, httpPort, httpsPort, httpAddress) =
-      filterArgs(args, defaultHttpPort, defaultHttpAddress, devSettings)
+    val (properties, httpPort, httpsPort, httpAddress) = filterArgs(
+      args,
+      defaultHttpPort,
+      defaultHttpAddress,
+      devSettings)
     val systemProperties = extractSystemProperties(javaOptions)
 
     require(
@@ -243,15 +247,16 @@ object Reloader {
       * buildLoader. Also accesses the reloader resources to make these available
       * to the applicationLoader, creating a full circle for resource loading.
       */
-    lazy val delegatingLoader: ClassLoader = new DelegatingClassLoader(
-      commonClassLoader,
-      Build.sharedClasses,
-      buildLoader,
-      new ApplicationClassLoaderProvider {
-        def get: ClassLoader = {
-          reloader.getClassLoader.orNull
-        }
-      })
+    lazy val delegatingLoader: ClassLoader =
+      new DelegatingClassLoader(
+        commonClassLoader,
+        Build.sharedClasses,
+        buildLoader,
+        new ApplicationClassLoaderProvider {
+          def get: ClassLoader = {
+            reloader.getClassLoader.orNull
+          }
+        })
 
     lazy val applicationLoader = dependencyClassLoader(
       "PlayDependencyClassLoader",
@@ -259,15 +264,16 @@ object Reloader {
       delegatingLoader)
     lazy val assetsLoader = assetsClassLoader(applicationLoader)
 
-    lazy val reloader = new Reloader(
-      reloadCompile,
-      reloaderClassLoader,
-      assetsLoader,
-      projectPath,
-      devSettings,
-      monitoredFiles,
-      fileWatchService,
-      runSbtTask)
+    lazy val reloader =
+      new Reloader(
+        reloadCompile,
+        reloaderClassLoader,
+        assetsLoader,
+        projectPath,
+        devSettings,
+        monitoredFiles,
+        fileWatchService,
+        runSbtTask)
 
     try {
       // Now we're about to start, let's call the hooks:
@@ -280,21 +286,22 @@ object Reloader {
       val maybeDocsJarFile = docsJar map { f =>
         new JarFile(f)
       }
-      val docHandlerFactoryClass =
-        docsLoader.loadClass("play.docs.BuildDocHandlerFactory")
-      val buildDocHandler = maybeDocsJarFile match {
-        case Some(docsJarFile) =>
-          val factoryMethod = docHandlerFactoryClass.getMethod(
-            "fromJar",
-            classOf[JarFile],
-            classOf[String])
-          factoryMethod
-            .invoke(null, docsJarFile, "play/docs/content")
-            .asInstanceOf[BuildDocHandler]
-        case None =>
-          val factoryMethod = docHandlerFactoryClass.getMethod("empty")
-          factoryMethod.invoke(null).asInstanceOf[BuildDocHandler]
-      }
+      val docHandlerFactoryClass = docsLoader.loadClass(
+        "play.docs.BuildDocHandlerFactory")
+      val buildDocHandler =
+        maybeDocsJarFile match {
+          case Some(docsJarFile) =>
+            val factoryMethod = docHandlerFactoryClass.getMethod(
+              "fromJar",
+              classOf[JarFile],
+              classOf[String])
+            factoryMethod
+              .invoke(null, docsJarFile, "play/docs/content")
+              .asInstanceOf[BuildDocHandler]
+          case None =>
+            val factoryMethod = docHandlerFactoryClass.getMethod("empty")
+            factoryMethod.invoke(null).asInstanceOf[BuildDocHandler]
+        }
 
       val server = {
         val mainClass = applicationLoader.loadClass(mainClassName)
@@ -451,10 +458,11 @@ class Reloader(
               // We only want to reload if the classpath has changed.  Assets don't live on the classpath, so
               // they won't trigger a reload.
               // Use the SBT watch service, passing true as the termination to force it to break after one check
-              val (_, newState) = SourceModificationWatch.watch(
-                PathFinder.strict(classpath).***,
-                0,
-                watchState)(true)
+              val (_, newState) =
+                SourceModificationWatch.watch(
+                  PathFinder.strict(classpath).***,
+                  0,
+                  watchState)(true)
               // SBT has a quiet wait period, if that's set to true, sources were modified
               val triggered = newState.awaitingQuietPeriod
               watchState = newState

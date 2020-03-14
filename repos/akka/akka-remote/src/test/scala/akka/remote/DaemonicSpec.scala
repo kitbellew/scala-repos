@@ -33,8 +33,8 @@ class DaemonicSpec extends AkkaSpec {
 
     "shut down correctly after getting connection refused" in {
       // get all threads running before actor system i started
-      val origThreads: Set[Thread] =
-        Thread.getAllStackTraces().keySet().asScala.to[Set]
+      val origThreads
+          : Set[Thread] = Thread.getAllStackTraces().keySet().asScala.to[Set]
       // create a separate actor system that we can check the threads for
       val daemonicSystem = ActorSystem(
         "daemonic",
@@ -48,10 +48,10 @@ class DaemonicSpec extends AkkaSpec {
       """)
       )
 
-      val unusedAddress =
-        addr(daemonicSystem, "tcp").copy(port = Some(unusedPort))
-      val selection =
-        daemonicSystem.actorSelection(s"${unusedAddress}/user/SomeActor")
+      val unusedAddress = addr(daemonicSystem, "tcp")
+        .copy(port = Some(unusedPort))
+      val selection = daemonicSystem.actorSelection(
+        s"${unusedAddress}/user/SomeActor")
       selection ! "whatever"
       Thread.sleep(2.seconds.dilated.toMillis)
 

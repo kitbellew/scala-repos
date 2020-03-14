@@ -36,8 +36,8 @@ class JavaCompiler(
 
   private val listener = new JavaDiagnosticListener()
   private val silencer = new SilencedDiagnosticListener()
-  private val cp =
-    (config.allJars ++ config.targetClasspath).mkString(File.pathSeparator)
+  private val cp = (config.allJars ++ config.targetClasspath)
+    .mkString(File.pathSeparator)
   private var workingSet = new ConcurrentHashMap[String, JavaFileObject]()
 
   // Cache the filemanager so we can re-use jars on the classpath. This has
@@ -58,14 +58,18 @@ class JavaCompiler(
     // Note: we can't re-use the compiler, as that will
     // explode with 'Compilation in progress' on jdk6.
     // see comments on ensime-server/pull/1108
-    val fileManager = sharedFileManager match {
-      case Some(fm) => fm
-      case _        =>
-        // TODO: take a charset for each invocation
-        val fm = compiler.getStandardFileManager(listener, null, DefaultCharset)
-        sharedFileManager = Some(fm)
-        fm
-    }
+    val fileManager =
+      sharedFileManager match {
+        case Some(fm) => fm
+        case _        =>
+          // TODO: take a charset for each invocation
+          val fm = compiler.getStandardFileManager(
+            listener,
+            null,
+            DefaultCharset)
+          sharedFileManager = Some(fm)
+          fm
+      }
 
     compiler
       .getTask(
@@ -118,13 +122,14 @@ class JavaCompiler(
       case (info: CompilationInfo, path: TreePath) =>
         def withName(name: String): Option[SymbolInfo] = {
           val tpeMirror = Option(info.getTrees().getTypeMirror(path))
-          val nullTpe = new BasicTypeInfo(
-            "NA",
-            DeclaredAs.Nil,
-            "NA",
-            List.empty,
-            List.empty,
-            None)
+          val nullTpe =
+            new BasicTypeInfo(
+              "NA",
+              DeclaredAs.Nil,
+              "NA",
+              List.empty,
+              List.empty,
+              None)
           Some(
             SymbolInfo(
               fqn(info, path).map(_.toFqnString).getOrElse(name),
@@ -224,20 +229,22 @@ class JavaCompiler(
       inputs: List[SourceFileInfo]): Vector[CompilationInfo] = {
     // We only want the compilation units for inputs, but we need to typecheck them w.r.t
     // the full working set.
-    val inputJfos = inputs.map { sf =>
-      internSource(sf).toUri
-    }.toSet
+    val inputJfos =
+      inputs.map { sf =>
+        internSource(sf).toUri
+      }.toSet
     val task = getTask("none", silencer, workingSet.values)
     val t = System.currentTimeMillis()
     try {
-      val units = task
-        .parse()
-        .asScala
-        .filter { unit =>
-          inputJfos.contains(unit.getSourceFile.toUri)
-        }
-        .map(new CompilationInfo(task, _))
-        .toVector
+      val units =
+        task
+          .parse()
+          .asScala
+          .filter { unit =>
+            inputJfos.contains(unit.getSourceFile.toUri)
+          }
+          .map(new CompilationInfo(task, _))
+          .toVector
       task.analyze()
       log.info(
         "Parsed and analyzed for trees: " + (System

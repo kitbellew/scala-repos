@@ -85,10 +85,11 @@ trait MatchWarnings {
         // symbol in scope.  Errors will follow from the remaining cases, at least
         // once we make the above warning an error.
         else if (it.hasNext && (treeInfo isDefaultCase cdef)) {
-          val vpatName = cdef.pat match {
-            case Bind(name, _) => s" '$name'"
-            case _             => ""
-          }
+          val vpatName =
+            cdef.pat match {
+              case Bind(name, _) => s" '$name'"
+              case _             => ""
+            }
           vpat = s"variable pattern$vpatName on line ${cdef.pat.pos.line}"
           reporter.warning(
             cdef.pos,

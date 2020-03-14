@@ -169,8 +169,10 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
   }
 
   "The CSRF module" should {
-    val environment =
-      Environment(new java.io.File("."), getClass.getClassLoader, Mode.Test)
+    val environment = Environment(
+      new java.io.File("."),
+      getClass.getClassLoader,
+      Mode.Test)
     def fakeContext =
       Context(
         environment,

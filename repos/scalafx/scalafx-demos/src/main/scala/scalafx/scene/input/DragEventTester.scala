@@ -43,10 +43,11 @@ import scalafx.scene.layout.StackPane
   */
 object DragEventTester extends JFXApp {
 
-  val stackPane = new StackPane {
-    padding = Insets(10)
-    children = new Label("Drop things here...")
-  }
+  val stackPane =
+    new StackPane {
+      padding = Insets(10)
+      children = new Label("Drop things here...")
+    }
 
   stage = new PrimaryStage {
     title = "DragEvent Tester"

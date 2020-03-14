@@ -141,8 +141,8 @@ private class EncodedServletResponse(
   }
 
   override lazy val getWriter: PrintWriter = {
-    val writer = new PrintWriter(
-      new OutputStreamWriter(getOutputStream, getCharset))
+    val writer =
+      new PrintWriter(new OutputStreamWriter(getOutputStream, getCharset))
     toFlush = Some(writer)
     writer
   }

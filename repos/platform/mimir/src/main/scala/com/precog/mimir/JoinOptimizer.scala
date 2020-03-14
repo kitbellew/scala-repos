@@ -89,37 +89,38 @@ trait JoinOptimizerModule[M[+_]]
           )
         }
 
-        val rewritten = transformBottomUp(body) {
-          case j @ Join(_, _, Const(_), _) => j
+        val rewritten =
+          transformBottomUp(body) {
+            case j @ Join(_, _, Const(_), _) => j
 
-          case j @ Join(_, _, _, Const(_)) => j
+            case j @ Join(_, _, _, Const(_)) => j
 
-          case j @ Join(op, Cross(_), lhs, rhs)
-              if (compareAncestor(lhs, eqA) && compareAncestor(rhs, eqB)) ||
-                (compareAncestor(lhs, eqB) && compareAncestor(rhs, eqA)) => {
+            case j @ Join(op, Cross(_), lhs, rhs)
+                if (compareAncestor(lhs, eqA) && compareAncestor(rhs, eqB)) ||
+                  (compareAncestor(lhs, eqB) && compareAncestor(rhs, eqA)) => {
 
-            val (eqLHS, eqRHS) = {
-              if (compareAncestor(lhs, eqA))
-                (eqA, eqB)
-              else
-                (eqB, eqA)
+              val (eqLHS, eqRHS) = {
+                if (compareAncestor(lhs, eqA))
+                  (eqA, eqB)
+                else
+                  (eqB, eqA)
+              }
+
+              val ancestorLHS = findOrderAncestor(lhs, ctx) getOrElse lhs
+              val ancestorRHS = findOrderAncestor(rhs, ctx) getOrElse rhs
+
+              val liftedLHS = lift(eqLHS, ancestorLHS)
+              val liftedRHS = lift(eqRHS, ancestorRHS)
+
+              Join(
+                op,
+                ValueSort(sortId),
+                liftRewrite(lhs, ancestorLHS, liftedLHS),
+                liftRewrite(rhs, ancestorRHS, liftedRHS))(j.loc)
             }
 
-            val ancestorLHS = findOrderAncestor(lhs, ctx) getOrElse lhs
-            val ancestorRHS = findOrderAncestor(rhs, ctx) getOrElse rhs
-
-            val liftedLHS = lift(eqLHS, ancestorLHS)
-            val liftedRHS = lift(eqRHS, ancestorRHS)
-
-            Join(
-              op,
-              ValueSort(sortId),
-              liftRewrite(lhs, ancestorLHS, liftedLHS),
-              liftRewrite(rhs, ancestorRHS, liftedRHS))(j.loc)
+            case other => other
           }
-
-          case other => other
-        }
 
         if (rewritten == body)
           filter

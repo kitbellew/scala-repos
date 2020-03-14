@@ -13,15 +13,16 @@ final class LightUserApi(coll: Coll) {
 
   def invalidate = cache invalidate _
 
-  private implicit val lightUserReader = new BSONDocumentReader[LightUser] {
+  private implicit val lightUserReader =
+    new BSONDocumentReader[LightUser] {
 
-    def read(doc: BSONDocument) =
-      LightUser(
-        id = doc.getAs[String](F.id) err "LightUser id missing",
-        name = doc.getAs[String](F.username) err "LightUser username missing",
-        title = doc.getAs[String](F.title)
-      )
-  }
+      def read(doc: BSONDocument) =
+        LightUser(
+          id = doc.getAs[String](F.id) err "LightUser id missing",
+          name = doc.getAs[String](F.username) err "LightUser username missing",
+          title = doc.getAs[String](F.title)
+        )
+    }
 
   private val cache = lila.memo.MixedCache[String, Option[LightUser]](
     id =>

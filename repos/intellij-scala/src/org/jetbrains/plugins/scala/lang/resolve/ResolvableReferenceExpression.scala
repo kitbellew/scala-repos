@@ -114,15 +114,16 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       accessibilityCheck: Boolean = true): Array[ResolveResult] = {
     if (!accessibilityCheck)
       processor.doNotCheckAccessibility()
-    val actualProcessor = ref.qualifier match {
-      case None =>
-        resolveUnqalified(ref, processor)
-      case Some(superQ: ScSuperReference) =>
-        ResolveUtils.processSuperReference(superQ, processor, this)
-        processor
-      case Some(q) =>
-        processTypes(ref, q, processor)
-    }
+    val actualProcessor =
+      ref.qualifier match {
+        case None =>
+          resolveUnqalified(ref, processor)
+        case Some(superQ: ScSuperReference) =>
+          ResolveUtils.processSuperReference(superQ, processor, this)
+          processor
+        case Some(q) =>
+          processTypes(ref, q, processor)
+      }
     val res = actualProcessor.rrcandidates
     if (accessibilityCheck && res.length == 0)
       return doResolve(ref, processor, accessibilityCheck = false)
@@ -171,11 +172,12 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       treeWalkUp(place.getContext, place)
     }
     val context = ref.getContext
-    val contextElement = (context, processor) match {
-      case (x: ScAssignStmt, _) if x.getLExpression == ref => Some(context)
-      case (_, _: CompletionProcessor)                     => Some(ref)
-      case _                                               => None
-    }
+    val contextElement =
+      (context, processor) match {
+        case (x: ScAssignStmt, _) if x.getLExpression == ref => Some(context)
+        case (_, _: CompletionProcessor)                     => Some(ref)
+        case _                                               => None
+      }
 
     contextElement match {
       case Some(assign) => processAssignment(assign, ref, processor)
@@ -282,8 +284,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                   if (!ScalaPsiUtil.memberNamesEquals(
                         param.name,
                         ref.refName)) {
-                    state =
-                      state.put(ResolverEnv.nameKey, param.deprecatedName.get)
+                    state = state.put(
+                      ResolverEnv.nameKey,
+                      param.deprecatedName.get)
                   }
                   processor.execute(param, state)
                 case None =>
@@ -397,14 +400,15 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             }
           }
         case Some((clazz, subst)) =>
-          val processor: MethodResolveProcessor = new MethodResolveProcessor(
-            elem,
-            "this",
-            arguments.toList.map(_.exprs.map(Expression(_))),
-            typeArgs,
-            Seq.empty /* todo: ? */,
-            constructorResolve = true,
-            enableTupling = true)
+          val processor: MethodResolveProcessor =
+            new MethodResolveProcessor(
+              elem,
+              "this",
+              arguments.toList.map(_.exprs.map(Expression(_))),
+              typeArgs,
+              Seq.empty /* todo: ? */,
+              constructorResolve = true,
+              enableTupling = true)
           val state = ResolveState.initial.put(ScSubstitutor.key, subst)
           clazz match {
             case clazz: ScClass =>
@@ -491,26 +495,28 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
           )
         val typeArgs: Seq[ScTypeElement] = Seq.empty
         val arguments = s.arguments
-        val secondaryConstructors = (c: ScClass) => {
-          if (c != clazz)
-            Seq.empty
-          else {
-            c.secondaryConstructors.filter(f =>
-              !PsiTreeUtil.isContextAncestor(f, s, true) &&
-                f.getTextRange.getStartOffset < s.getTextRange.getStartOffset)
+        val secondaryConstructors =
+          (c: ScClass) => {
+            if (c != clazz)
+              Seq.empty
+            else {
+              c.secondaryConstructors.filter(f =>
+                !PsiTreeUtil.isContextAncestor(f, s, true) &&
+                  f.getTextRange.getStartOffset < s.getTextRange.getStartOffset)
+            }
           }
-        }
         processConstructor(s, tp, typeArgs, arguments, secondaryConstructors)
       case constr: ScConstructor =>
         val tp: ScType = constr.typeElement
           .getType(TypingContext.empty)
           .getOrElse(return
           )
-        val typeArgs: Seq[ScTypeElement] =
-          constr.typeArgList.map(_.typeArgs).getOrElse(Seq())
+        val typeArgs: Seq[ScTypeElement] = constr.typeArgList
+          .map(_.typeArgs)
+          .getOrElse(Seq())
         val arguments = constr.arguments
-        val secondaryConstructors = (clazz: ScClass) =>
-          clazz.secondaryConstructors
+        val secondaryConstructors =
+          (clazz: ScClass) => clazz.secondaryConstructors
         processConstructor(
           constr,
           tp,
@@ -594,29 +600,33 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       reference: ScReferenceExpression,
       e: ScExpression,
       processor: BaseProcessor): BaseProcessor = {
-    val shape = processor match {
-      case m: MethodResolveProcessor => m.isShapeResolve
-      case _                         => false
-    }
+    val shape =
+      processor match {
+        case m: MethodResolveProcessor => m.isShapeResolve
+        case _                         => false
+      }
 
-    val fromType = e match {
-      case ref: ScReferenceExpression =>
-        ref.bind() match {
-          case Some(ScalaResolveResult(self: ScSelfTypeElement, _)) => aType
-          case Some(r @ ScalaResolveResult(b: ScTypedDefinition, subst))
-              if b.isStable =>
-            r.fromType match {
-              case Some(fT) => ScProjectionType(fT, b, superReference = false)
-              case None     => ScType.designator(b)
-            }
-          case _ => aType
-        }
-      case _ => aType
-    }
-    val state: ResolveState = fromType match {
-      case ScDesignatorType(p: PsiPackage) => ResolveState.initial()
-      case _                               => ResolveState.initial.put(BaseProcessor.FROM_TYPE_KEY, fromType)
-    }
+    val fromType =
+      e match {
+        case ref: ScReferenceExpression =>
+          ref.bind() match {
+            case Some(ScalaResolveResult(self: ScSelfTypeElement, _)) => aType
+            case Some(r @ ScalaResolveResult(b: ScTypedDefinition, subst))
+                if b.isStable =>
+              r.fromType match {
+                case Some(fT) => ScProjectionType(fT, b, superReference = false)
+                case None     => ScType.designator(b)
+              }
+            case _ => aType
+          }
+        case _ => aType
+      }
+    val state: ResolveState =
+      fromType match {
+        case ScDesignatorType(p: PsiPackage) => ResolveState.initial()
+        case _ =>
+          ResolveState.initial.put(BaseProcessor.FROM_TYPE_KEY, fromType)
+      }
     processor.processType(aType, e, state)
 
     val candidates = processor.candidatesS
@@ -651,10 +661,11 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       reference: ScReferenceExpression,
       e: ScExpression,
       baseProcessor: BaseProcessor): BaseProcessor = {
-    val cachedClass = ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(getResolveScope, "scala.Dynamic")
-      .orNull
+    val cachedClass =
+      ScalaPsiManager
+        .instance(getProject)
+        .getCachedClass(getResolveScope, "scala.Dynamic")
+        .orNull
     if (cachedClass == null)
       return baseProcessor
     val dynamicType = ScDesignatorType(cachedClass)
@@ -662,41 +673,45 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     if (aType.conforms(dynamicType)) {
       baseProcessor match {
         case mrp: MethodResolveProcessor =>
-          val callOption = reference.getContext match {
-            case m: MethodInvocation if m.getInvokedExpr == reference => Some(m)
-            case _                                                    => None
-          }
+          val callOption =
+            reference.getContext match {
+              case m: MethodInvocation if m.getInvokedExpr == reference =>
+                Some(m)
+              case _ => None
+            }
           val argumentExpressions = callOption.map(_.argumentExpressions)
           val emptyStringExpression = ScalaPsiElementFactory
             .createExpressionFromText("\"\"", e.getManager)
           import org.jetbrains.plugins.scala.lang.resolve.ResolvableReferenceExpression._
-          val name = callOption match {
-            case Some(call) => getDynamicNameForMethodInvocation(call)
-            case _ =>
-              reference.getContext match {
-                case a: ScAssignStmt if a.getLExpression == reference =>
-                  UPDATE_DYNAMIC
-                case _ => SELECT_DYNAMIC
-              }
-          }
+          val name =
+            callOption match {
+              case Some(call) => getDynamicNameForMethodInvocation(call)
+              case _ =>
+                reference.getContext match {
+                  case a: ScAssignStmt if a.getLExpression == reference =>
+                    UPDATE_DYNAMIC
+                  case _ => SELECT_DYNAMIC
+                }
+            }
 
-          val newProcessor = new MethodResolveProcessor(
-            e,
-            name,
-            List(
-              List(emptyStringExpression),
-              argumentExpressions.toSeq.flatten),
-            mrp.typeArgElements,
-            mrp.prevTypeInfo,
-            mrp.kinds,
-            mrp.expectedOption,
-            mrp.isUnderscore,
-            mrp.isShapeResolve,
-            mrp.constructorResolve,
-            mrp.noImplicitsForArgs,
-            mrp.enableTupling,
-            mrp.selfConstructorResolve,
-            isDynamic = true)
+          val newProcessor =
+            new MethodResolveProcessor(
+              e,
+              name,
+              List(
+                List(emptyStringExpression),
+                argumentExpressions.toSeq.flatten),
+              mrp.typeArgElements,
+              mrp.prevTypeInfo,
+              mrp.kinds,
+              mrp.expectedOption,
+              mrp.isUnderscore,
+              mrp.isShapeResolve,
+              mrp.constructorResolve,
+              mrp.noImplicitsForArgs,
+              mrp.enableTupling,
+              mrp.selfConstructorResolve,
+              isDynamic = true)
 
           newProcessor.processType(
             aType,
@@ -717,8 +732,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       noImplicitsForArgs: Boolean) {
     processor match {
       case _: CompletionProcessor =>
-        val convertible: ScImplicitlyConvertible = new ScImplicitlyConvertible(
-          e)
+        val convertible: ScImplicitlyConvertible =
+          new ScImplicitlyConvertible(e)
         for (res <- convertible.implicitMap()) { //todo: args?
           ProgressManager.checkCanceled()
           var state = ResolveState.initial.put(ImportUsed.key, res.importUsed)
@@ -727,8 +742,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             .put(CachesUtil.IMPLICIT_TYPE, res.tp)
           res.getClazz match {
             case Some(cl: PsiClass) =>
-              state =
-                state.put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
+              state = state.put(
+                ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY,
+                cl)
             case _ =>
           }
           processor.processType(res.tp, e, state)
@@ -737,10 +753,11 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case m: MethodResolveProcessor => m.noImplicitsForArgs = true
       case _                         =>
     }
-    val name = processor match {
-      case rp: ResolveProcessor => rp.name // See SCL-2934.
-      case _                    => refName
-    }
+    val name =
+      processor match {
+        case rp: ResolveProcessor => rp.name // See SCL-2934.
+        case _                    => refName
+      }
     val res =
       ScalaPsiUtil.findImplicitConversion(
         e,

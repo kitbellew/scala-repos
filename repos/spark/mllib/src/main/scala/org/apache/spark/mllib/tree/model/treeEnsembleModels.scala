@@ -100,8 +100,10 @@ object RandomForestModel extends Loader[RandomForestModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val metadata = TreeEnsembleModel.SaveLoadV1_0.readMetadata(jsonMetadata)
         assert(metadata.treeWeights.forall(_ == 1.0))
-        val trees =
-          TreeEnsembleModel.SaveLoadV1_0.loadTrees(sc, path, metadata.treeAlgo)
+        val trees = TreeEnsembleModel.SaveLoadV1_0.loadTrees(
+          sc,
+          path,
+          metadata.treeAlgo)
         new RandomForestModel(Algo.fromString(metadata.algo), trees)
       case _ =>
         throw new Exception(
@@ -163,18 +165,19 @@ class GradientBoostedTreesModel @Since("1.2.0") (
       loss: Loss): Array[Double] = {
 
     val sc = data.sparkContext
-    val remappedData = algo match {
-      case Classification =>
-        data.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
-      case _ => data
-    }
+    val remappedData =
+      algo match {
+        case Classification =>
+          data.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        case _ => data
+      }
 
     val numIterations = trees.length
     val evaluationArray = Array.fill(numIterations)(0.0)
     val localTreeWeights = treeWeights
 
-    var predictionAndError =
-      GradientBoostedTreesModel.computeInitialPredictionAndError(
+    var predictionAndError = GradientBoostedTreesModel
+      .computeInitialPredictionAndError(
         remappedData,
         localTreeWeights(0),
         trees(0),
@@ -287,8 +290,10 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
       case (className, "1.0") if className == classNameV1_0 =>
         val metadata = TreeEnsembleModel.SaveLoadV1_0.readMetadata(jsonMetadata)
         assert(metadata.combiningStrategy == Sum.toString)
-        val trees =
-          TreeEnsembleModel.SaveLoadV1_0.loadTrees(sc, path, metadata.treeAlgo)
+        val trees = TreeEnsembleModel.SaveLoadV1_0.loadTrees(
+          sc,
+          path,
+          metadata.treeAlgo)
         new GradientBoostedTreesModel(
           Algo.fromString(metadata.algo),
           trees,

@@ -13,24 +13,25 @@ import akka.testkit.AkkaSpec
 object GraphFlowSpec {
   val source1 = Source(0 to 3)
 
-  val partialGraph = GraphDSL.create() { implicit b ⇒
-    import GraphDSL.Implicits._
-    val source2 = Source(4 to 9)
-    val source3 = Source.empty[Int]
-    val source4 = Source.empty[String]
+  val partialGraph =
+    GraphDSL.create() { implicit b ⇒
+      import GraphDSL.Implicits._
+      val source2 = Source(4 to 9)
+      val source3 = Source.empty[Int]
+      val source4 = Source.empty[String]
 
-    val inMerge = b.add(Merge[Int](2))
-    val outMerge = b.add(Merge[String](2))
-    val m2 = b.add(Merge[Int](2))
+      val inMerge = b.add(Merge[Int](2))
+      val outMerge = b.add(Merge[String](2))
+      val m2 = b.add(Merge[Int](2))
 
-    inMerge.out.map(_ * 2) ~> m2.in(0)
-    m2.out.map(_ / 2).map(i ⇒ (i + 1).toString) ~> outMerge.in(0)
+      inMerge.out.map(_ * 2) ~> m2.in(0)
+      m2.out.map(_ / 2).map(i ⇒ (i + 1).toString) ~> outMerge.in(0)
 
-    source2 ~> inMerge.in(0)
-    source3 ~> m2.in(1)
-    source4 ~> outMerge.in(1)
-    FlowShape(inMerge.in(1), outMerge.out)
-  }
+      source2 ~> inMerge.in(0)
+      source3 ~> m2.in(1)
+      source4 ~> outMerge.in(1)
+      FlowShape(inMerge.in(1), outMerge.out)
+    }
 
   val stdRequests = 10
   val stdResult = Set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
@@ -51,10 +52,11 @@ class GraphFlowSpec extends AkkaSpec {
       result: Set[Int]): Unit = {
     val subscription = probe.expectSubscription()
 
-    val collected = (1 to requests).map { _ ⇒
-      subscription.request(1)
-      probe.expectNext()
-    }.toSet
+    val collected =
+      (1 to requests).map { _ ⇒
+        subscription.request(1)
+        probe.expectNext()
+      }.toSet
 
     collected should be(result)
     probe.expectComplete()

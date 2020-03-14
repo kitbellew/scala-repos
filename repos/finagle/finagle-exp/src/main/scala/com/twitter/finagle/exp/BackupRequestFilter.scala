@@ -116,12 +116,13 @@ class BackupRequestFilter[Req, Rep] private[exp] (
   require(clipDuration < 1.hour)
   require(recalculateWindow >= 1)
 
-  private[this] val histo = new LatencyHistogram(
-    clipDuration.inMilliseconds,
-    quantileError,
-    history.inMilliseconds,
-    LatencyHistogram.DefaultSlices,
-    nowMs)
+  private[this] val histo =
+    new LatencyHistogram(
+      clipDuration.inMilliseconds,
+      quantileError,
+      history.inMilliseconds,
+      LatencyHistogram.DefaultSlices,
+      nowMs)
 
   @volatile
   private[this] var cachedCutoffMs = 0L
@@ -144,9 +145,10 @@ class BackupRequestFilter[Req, Rep] private[exp] (
   private[this] val timeouts = statsReceiver.counter("timeouts")
   private[this] val won = statsReceiver.counter("won")
   private[this] val lost = statsReceiver.counter("lost")
-  private[this] val cutoffGauge = statsReceiver.addGauge("cutoff_ms") {
-    cachedCutoffMs
-  }
+  private[this] val cutoffGauge =
+    statsReceiver.addGauge("cutoff_ms") {
+      cachedCutoffMs
+    }
 
   private[this] def record(
       f: Future[Rep],

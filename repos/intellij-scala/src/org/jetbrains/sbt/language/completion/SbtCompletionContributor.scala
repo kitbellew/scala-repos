@@ -45,8 +45,9 @@ import org.jetbrains.plugins.scala.lang.resolve.{
   */
 class SbtCompletionContributor extends ScalaCompletionContributor {
 
-  val afterInfixOperator =
-    PlatformPatterns.psiElement().withSuperParent(2, classOf[ScInfixExpr])
+  val afterInfixOperator = PlatformPatterns
+    .psiElement()
+    .withSuperParent(2, classOf[ScInfixExpr])
 
   extend(
     CompletionType.BASIC,
@@ -62,10 +63,11 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
         val place = positionFromParameters(parameters)
         val infixExpr = place.getContext.getContext.asInstanceOf[ScInfixExpr]
         val operator = infixExpr.operation
-        val parentRef = infixExpr.rOp match {
-          case ref: ScReferenceExpression => ref
-          case _                          => return
-        }
+        val parentRef =
+          infixExpr.rOp match {
+            case ref: ScReferenceExpression => ref
+            case _                          => return
+          }
 
         // Check if we're on the right side of expression
         if (parentRef != place.getContext)
@@ -113,15 +115,17 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             None
         }
 
-        val expectedTypes = Seq(
-          parentRef.expectedType().filterNot(_.isInstanceOf[NonValueType]),
-          extractSeqType,
-          getScopeType
-        ).flatten
-        val expectedType = expectedTypes match {
-          case Seq(t, rest @ _*) => t
-          case _                 => return
-        }
+        val expectedTypes =
+          Seq(
+            parentRef.expectedType().filterNot(_.isInstanceOf[NonValueType]),
+            extractSeqType,
+            getScopeType
+          ).flatten
+        val expectedType =
+          expectedTypes match {
+            case Seq(t, rest @ _*) => t
+            case _                 => return
+          }
 
         def isAccessible(cls: PsiMember): Boolean =
           ResolveUtils.isAccessible(cls, place, forCompletion = true)
@@ -132,14 +136,15 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             case obj: ScObject
                 if isAccessible(obj) && ScalaPsiUtil.hasStablePath(obj) =>
               def fetchAndApply(element: ScTypedDefinition) {
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(element),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup =
+                  LookupElementManager
+                    .getLookupElement(
+                      new ScalaResolveResult(element),
+                      isClassName = true,
+                      isOverloadedForClassName = false,
+                      shouldImport = true,
+                      isInStableCodeReference = false)
+                    .head
                 lookup.addLookupStrings(obj.name + "." + element.name)
                 applyVariant(lookup)
               }
@@ -157,11 +162,12 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             item.isSbtLookupItem = true
             result.addElement(item)
           }
-          val variant = variantObj match {
-            case el: ScalaLookupItem         => el
-            case ch: ScalaChainLookupElement => ch.element
-            case _                           => return
-          }
+          val variant =
+            variantObj match {
+              case el: ScalaLookupItem         => el
+              case ch: ScalaChainLookupElement => ch.element
+              case _                           => return
+            }
           variant.element match {
             case f: PsiField
                 if ScType
@@ -194,14 +200,15 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           case Some(p: PsiClass) if isAccessible(p) =>
             p.getFields.foreach(field => {
               if (field.hasModifierProperty("static") && isAccessible(field)) {
-                val lookup = LookupElementManager
-                  .getLookupElement(
-                    new ScalaResolveResult(field),
-                    isClassName = true,
-                    isOverloadedForClassName = false,
-                    shouldImport = true,
-                    isInStableCodeReference = false)
-                  .head
+                val lookup =
+                  LookupElementManager
+                    .getLookupElement(
+                      new ScalaResolveResult(field),
+                      isClassName = true,
+                      isOverloadedForClassName = false,
+                      shouldImport = true,
+                      isInStableCodeReference = false)
+                    .head
                 lookup.addLookupStrings(p.getName + "." + field.getName)
                 applyVariant(lookup)
               }

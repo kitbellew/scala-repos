@@ -25,15 +25,17 @@ object Line {
 
   private val invalidLine = UserLine("", "[invalid character]", true)
 
-  implicit val userLineBSONHandler = new BSONHandler[BSONString, UserLine] {
-    def read(bsonStr: BSONString) = strToUserLine(bsonStr.value) | invalidLine
-    def write(x: UserLine) = BSONString(userLineToStr(x))
-  }
+  implicit val userLineBSONHandler =
+    new BSONHandler[BSONString, UserLine] {
+      def read(bsonStr: BSONString) = strToUserLine(bsonStr.value) | invalidLine
+      def write(x: UserLine) = BSONString(userLineToStr(x))
+    }
 
-  implicit val lineBSONHandler = new BSONHandler[BSONString, Line] {
-    def read(bsonStr: BSONString) = strToLine(bsonStr.value) | invalidLine
-    def write(x: Line) = BSONString(lineToStr(x))
-  }
+  implicit val lineBSONHandler =
+    new BSONHandler[BSONString, Line] {
+      def read(bsonStr: BSONString) = strToLine(bsonStr.value) | invalidLine
+      def write(x: Line) = BSONString(lineToStr(x))
+    }
 
   private val UserLineRegex = """^([\w-]{2,})(\s|\!)(.+)$""".r
   def strToUserLine(str: String): Option[UserLine] =

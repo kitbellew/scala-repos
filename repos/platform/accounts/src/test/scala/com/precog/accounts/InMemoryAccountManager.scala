@@ -106,8 +106,11 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(
       expiration: DateTime): M[ResetTokenId] = {
     val tokenId = java.util.UUID.randomUUID.toString.replace("-", "")
 
-    val token =
-      ResetToken(tokenId, account.accountId, account.email, expiration)
+    val token = ResetToken(
+      tokenId,
+      account.accountId,
+      account.email,
+      expiration)
 
     resetTokens += (tokenId -> token)
 

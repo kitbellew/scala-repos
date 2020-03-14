@@ -32,8 +32,10 @@ class QueueSourceSpec extends AkkaSpec {
 
     "emit received messages to the stream" in {
       val s = TestSubscriber.manualProbe[Int]()
-      val queue =
-        Source.queue(10, OverflowStrategy.fail).to(Sink.fromSubscriber(s)).run()
+      val queue = Source
+        .queue(10, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
       val sub = s.expectSubscription
       for (i ← 1 to 3) {
         sub.request(1)
@@ -142,8 +144,10 @@ class QueueSourceSpec extends AkkaSpec {
 
     "fail stream on buffer overflow in fail mode" in assertAllStagesStopped {
       val s = TestSubscriber.manualProbe[Int]()
-      val queue =
-        Source.queue(1, OverflowStrategy.fail).to(Sink.fromSubscriber(s)).run()
+      val queue = Source
+        .queue(1, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
       s.expectSubscription
 
       queue.offer(1)
@@ -194,8 +198,10 @@ class QueueSourceSpec extends AkkaSpec {
 
     "complete watching future with failure if stream failed" in assertAllStagesStopped {
       val s = TestSubscriber.manualProbe[Int]()
-      val queue =
-        Source.queue(1, OverflowStrategy.fail).to(Sink.fromSubscriber(s)).run()
+      val queue = Source
+        .queue(1, OverflowStrategy.fail)
+        .to(Sink.fromSubscriber(s))
+        .run()
       queue.watchCompletion().pipeTo(testActor)
       queue.offer(
         1

@@ -34,8 +34,8 @@ trait ConnectorTestUtil extends Specification {
     val originalJson = parse(original).asInstanceOf[JObject]
     val eventJson = parse(event).asInstanceOf[JObject]
     // write and parse back to discard any JNothing field
-    val result =
-      parse(write(connector.toEventJson(originalJson))).asInstanceOf[JObject]
+    val result = parse(write(connector.toEventJson(originalJson)))
+      .asInstanceOf[JObject]
     result.obj must containTheSameElementsAs(eventJson.obj)
   }
 
@@ -46,8 +46,8 @@ trait ConnectorTestUtil extends Specification {
 
     val eventJson = parse(event).asInstanceOf[JObject]
     // write and parse back to discard any JNothing field
-    val result =
-      parse(write(connector.toEventJson(original))).asInstanceOf[JObject]
+    val result = parse(write(connector.toEventJson(original)))
+      .asInstanceOf[JObject]
 
     result.obj must containTheSameElementsAs(eventJson.obj)
   }

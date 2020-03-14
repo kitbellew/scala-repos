@@ -104,8 +104,10 @@ class IMain(
     */
   private var _classLoader: util.AbstractFileClassLoader =
     null // active classloader
-  private val _compiler: ReplGlobal =
-    newCompiler(settings, reporter) // our private compiler
+  private val _compiler: ReplGlobal = newCompiler(
+    settings,
+    reporter
+  ) // our private compiler
 
   private var _runtimeClassLoader: URLClassLoader =
     null // wrapper exposing addURL
@@ -173,9 +175,10 @@ class IMain(
   def initialize(postInitSignal: => Unit) {
     synchronized {
       if (_isInitialized == null) {
-        _isInitialized = Future(
-          try _initialize()
-          finally postInitSignal)(ExecutionContext.global)
+        _isInitialized =
+          Future(
+            try _initialize()
+            finally postInitSignal)(ExecutionContext.global)
       }
     }
   }
@@ -245,9 +248,10 @@ class IMain(
     val global: imain.global.type = imain.global
   } with StructuredTypeStrings
 
-  lazy val memberHandlers = new {
-    val intp: imain.type = imain
-  } with MemberHandlers
+  lazy val memberHandlers =
+    new {
+      val intp: imain.type = imain
+    } with MemberHandlers
   import memberHandlers._
 
   /** Temporarily be quiet */
@@ -565,11 +569,12 @@ class IMain(
       synthetic: Boolean): Either[IR.Result, Request] = {
     val content = line
 
-    val trees: List[global.Tree] = parse(content) match {
-      case parse.Incomplete(_)  => return Left(IR.Incomplete)
-      case parse.Error(_)       => return Left(IR.Error)
-      case parse.Success(trees) => trees
-    }
+    val trees: List[global.Tree] =
+      parse(content) match {
+        case parse.Incomplete(_)  => return Left(IR.Incomplete)
+        case parse.Error(_)       => return Left(IR.Error)
+        case parse.Success(trees) => trees
+      }
     repltrace(
       trees map (t => {
         // [Eugene to Paul] previously it just said `t map ...`
@@ -615,8 +620,9 @@ class IMain(
               val (raw1, raw2) = content splitAt lastpos0
               repldbg("[raw] " + raw1 + "   <--->   " + raw2)
 
-              val adjustment = (raw1.reverse takeWhile (ch =>
-                (ch != ';') && (ch != '\n'))).size
+              val adjustment =
+                (raw1.reverse takeWhile (ch =>
+                  (ch != ';') && (ch != '\n'))).size
               val lastpos = lastpos0 - adjustment
 
               // the source code split at the laboriously determined position.
@@ -738,12 +744,13 @@ class IMain(
       */
     @throws[ScriptException]
     def eval(context: ScriptContext): Object = {
-      val result = req.lineRep.evalEither match {
-        case Left(e: RuntimeException) => throw e
-        case Left(e: Exception)        => throw new ScriptException(e)
-        case Left(e)                   => throw e
-        case Right(result)             => result.asInstanceOf[Object]
-      }
+      val result =
+        req.lineRep.evalEither match {
+          case Left(e: RuntimeException) => throw e
+          case Left(e: Exception)        => throw new ScriptException(e)
+          case Left(e)                   => throw e
+          case Right(result)             => result.asInstanceOf[Object]
+        }
       if (!recorded) {
         recordRequest(req)
         recorded = true
@@ -1063,13 +1070,12 @@ class IMain(
       headerPreamble,
       importsPreamble,
       importsTrailer,
-      accessPath) =
-      exitingTyper(
-        importsCode(
-          referencedNames.toSet,
-          ObjectSourceCode,
-          definesClass,
-          generousImports))
+      accessPath) = exitingTyper(
+      importsCode(
+        referencedNames.toSet,
+        ObjectSourceCode,
+        definesClass,
+        generousImports))
 
     /** the line of code to compute */
     def toCompute = line
@@ -1151,11 +1157,12 @@ class IMain(
       /** We only want to generate this code when the result
         *  is a value which can be referred to as-is.
         */
-      val evalResult = Request.this.value match {
-        case NoSymbol => ""
-        case sym =>
-          "lazy val %s = %s".format(lineRep.resultName, originalPath(sym))
-      }
+      val evalResult =
+        Request.this.value match {
+          case NoSymbol => ""
+          case sym =>
+            "lazy val %s = %s".format(lineRep.resultName, originalPath(sym))
+        }
       // first line evaluates object to make sure constructor is run
       // initial "" so later code can uniformly be: + etc
       val preamble = """
@@ -1310,10 +1317,11 @@ class IMain(
 
   private lazy val importToGlobal = global mkImporter ru
   private lazy val importToRuntime = ru.internal createImporter global
-  private lazy val javaMirror = ru.rootMirror match {
-    case x: ru.JavaMirror => x
-    case _                => null
-  }
+  private lazy val javaMirror =
+    ru.rootMirror match {
+      case x: ru.JavaMirror => x
+      case _                => null
+    }
   private implicit def importFromRu(sym: ru.Symbol): Symbol =
     importToGlobal importSymbol sym
   private implicit def importToRu(sym: Symbol): ru.Symbol =
@@ -1332,9 +1340,10 @@ class IMain(
       def value() = {
         val sym0 = symbolOfTerm(id)
         val sym = (importToRuntime importSymbol sym0).asTerm
-        val module = runtimeMirror
-          .reflectModule(sym.owner.companionSymbol.asModule)
-          .instance
+        val module =
+          runtimeMirror
+            .reflectModule(sym.owner.companionSymbol.asModule)
+            .instance
         val module1 = runtimeMirror.reflect(module)
         val invoker = module1.reflectField(sym)
 
@@ -1431,8 +1440,7 @@ class IMain(
       }
   }
 
-  def symbolOfLine(code: String): Symbol =
-    exprTyper.symbolOfLine(code)
+  def symbolOfLine(code: String): Symbol = exprTyper.symbolOfLine(code)
 
   def typeOfExpression(expr: String, silent: Boolean = true): Type =
     exprTyper.typeOfExpression(expr, silent)

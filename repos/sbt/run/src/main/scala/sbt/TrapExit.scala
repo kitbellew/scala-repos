@@ -248,11 +248,12 @@ private final class TrapExit(delegateManager: SecurityManager)
     val id = nextID()
 
     /** The ThreadGroup to use to try to track created threads. */
-    val mainGroup: ThreadGroup = new ThreadGroup("run-main-group-" + id) {
-      private[this] val handler = new LoggingExceptionHandler(log, None)
-      override def uncaughtException(t: Thread, e: Throwable): Unit =
-        handler.uncaughtException(t, e)
-    }
+    val mainGroup: ThreadGroup =
+      new ThreadGroup("run-main-group-" + id) {
+        private[this] val handler = new LoggingExceptionHandler(log, None)
+        override def uncaughtException(t: Thread, e: Throwable): Unit =
+          handler.uncaughtException(t, e)
+      }
     val mainThread = new Thread(mainGroup, this, "run-main-" + id)
 
     /** Saves the ids of the creating thread and thread group to avoid tracking them as coming from this application. */
@@ -305,10 +306,11 @@ private final class TrapExit(delegateManager: SecurityManager)
     /** Registers the logging exception handler on `t`, delegating to the existing handler if it isn't the default. */
     private[this] def setExceptionHandler(t: Thread): Unit = {
       val group = t.getThreadGroup
-      val previousHandler = t.getUncaughtExceptionHandler match {
-        case null | `group` | (_: LoggingExceptionHandler) => None
-        case x                                             => Some(x) // delegate to a custom handler only
-      }
+      val previousHandler =
+        t.getUncaughtExceptionHandler match {
+          case null | `group` | (_: LoggingExceptionHandler) => None
+          case x                                             => Some(x) // delegate to a custom handler only
+        }
       t.setUncaughtExceptionHandler(
         new LoggingExceptionHandler(log, previousHandler))
     }

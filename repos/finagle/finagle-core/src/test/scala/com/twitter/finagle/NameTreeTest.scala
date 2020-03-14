@@ -87,9 +87,10 @@ class NameTreeTest extends FunSuite {
 
   test("NameTree.{read,show}") {
     def newPath(): NameTree[Path] = {
-      val elems = Seq.fill(1 + rng.nextInt(10)) {
-        pick(words)
-      }
+      val elems =
+        Seq.fill(1 + rng.nextInt(10)) {
+          pick(words)
+        }
       NameTree.Leaf(Path.Utf8(elems: _*))
     }
 
@@ -107,29 +108,32 @@ class NameTreeTest extends FunSuite {
         case 0               => newLeaf()
 
         case 1 =>
-          val trees = Seq.fill(1 + rng.nextInt(3)) {
-            // TODO(jdonham) test fractional weights
-            val weight = rng.nextInt(10).toDouble
-            NameTree.Weighted(weight, newTree(depth - 1))
-          }
+          val trees =
+            Seq.fill(1 + rng.nextInt(3)) {
+              // TODO(jdonham) test fractional weights
+              val weight = rng.nextInt(10).toDouble
+              NameTree.Weighted(weight, newTree(depth - 1))
+            }
           if (trees.size == 1)
             trees(0).tree
           else
             NameTree.Union(trees: _*)
 
         case 2 =>
-          val trees = Seq.fill(1 + rng.nextInt(3)) {
-            newTree(depth - 1)
-          }
+          val trees =
+            Seq.fill(1 + rng.nextInt(3)) {
+              newTree(depth - 1)
+            }
           if (trees.size == 1)
             trees(0)
           else
             NameTree.Alt(trees: _*)
       }
 
-    val trees = Seq.fill(100) {
-      newTree(2)
-    }
+    val trees =
+      Seq.fill(100) {
+        newTree(2)
+      }
     for (tree <- trees)
       try {
         assert(NameTree.read(tree.show) == tree)

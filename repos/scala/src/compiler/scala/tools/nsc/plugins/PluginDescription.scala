@@ -25,8 +25,7 @@ case class PluginDescription(name: String, classname: String) {
   /** An XML representation of this description.
     *  It should be stored inside the jar archive file.
     */
-  def toXML: String =
-    sm"""<plugin>
+  def toXML: String = sm"""<plugin>
          | <name>${name}</name>
          | <classname>${classname}</classname>
          |</plugin>"""
@@ -48,9 +47,10 @@ object PluginDescription {
 
   def fromXML(xml: java.io.InputStream): PluginDescription = {
     import javax.xml.parsers.DocumentBuilderFactory
-    val root = DocumentBuilderFactory.newInstance.newDocumentBuilder
-      .parse(xml)
-      .getDocumentElement
+    val root =
+      DocumentBuilderFactory.newInstance.newDocumentBuilder
+        .parse(xml)
+        .getDocumentElement
     root.normalize()
     if (root.getNodeName != "plugin")
       throw new RuntimeException(

@@ -267,8 +267,8 @@ private class PairwiseRRDD[T: ClassTag](
     }
   }
 
-  lazy val asJavaPairRDD: JavaPairRDD[Int, Array[Byte]] =
-    JavaPairRDD.fromRDD(this)
+  lazy val asJavaPairRDD: JavaPairRDD[Int, Array[Byte]] = JavaPairRDD.fromRDD(
+    this)
 }
 
 /**
@@ -415,10 +415,11 @@ private[r] object RRDD {
     */
   private def startStdoutThread(proc: Process): BufferedStreamThread = {
     val BUFFER_SIZE = 100
-    val thread = new BufferedStreamThread(
-      proc.getInputStream,
-      "stdout reader for R",
-      BUFFER_SIZE)
+    val thread =
+      new BufferedStreamThread(
+        proc.getInputStream,
+        "stdout reader for R",
+        BUFFER_SIZE)
     thread.setDaemon(true)
     thread.start()
     thread
@@ -454,8 +455,8 @@ private[r] object RRDD {
     * ProcessBuilder used to launch worker R processes.
     */
   def createRWorker(port: Int): BufferedStreamThread = {
-    val useDaemon =
-      SparkEnv.get.conf.getBoolean("spark.sparkr.use.daemon", true)
+    val useDaemon = SparkEnv.get.conf
+      .getBoolean("spark.sparkr.use.daemon", true)
     if (!Utils.isWindows && useDaemon) {
       synchronized {
         if (daemonChannel == null) {

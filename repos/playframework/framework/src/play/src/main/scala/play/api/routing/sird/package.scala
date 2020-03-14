@@ -110,8 +110,7 @@ package object sird
     * Allow multiple parameters to be extracted
     */
   object & {
-    def unapply[A](a: A): Option[(A, A)] =
-      Some((a, a))
+    def unapply[A](a: A): Option[(A, A)] = Some((a, a))
   }
 
   /**

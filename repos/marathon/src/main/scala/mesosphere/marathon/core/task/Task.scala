@@ -102,8 +102,8 @@ object Task {
               .MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
             if !hasStartedRunning =>
           val updated = copy(
-            status =
-              status.copy(startedAt = Some(now), mesosStatus = mesosStatus))
+            status = status
+              .copy(startedAt = Some(now), mesosStatus = mesosStatus))
           TaskStateChange.Update(updated)
 
         // case 2: terminal
@@ -112,12 +112,13 @@ object Task {
 
         // case 3: health or state updated
         case TaskStateOp.MesosUpdate(taskStatus, now) =>
-          val healthOrStateChange = for {
-            current <- status.mesosStatus
-            update <- taskStatus.mesosStatus
-            newStatus <- updatedHealthOrState(current, update)
-          } yield TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+          val healthOrStateChange =
+            for {
+              current <- status.mesosStatus
+              update <- taskStatus.mesosStatus
+              newStatus <- updatedHealthOrState(current, update)
+            } yield TaskStateChange.Update(
+              copy(status = status.copy(mesosStatus = Some(newStatus))))
 
           healthOrStateChange.getOrElse {
             log.debug(
@@ -206,8 +207,8 @@ object Task {
               .MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
             if !hasStartedRunning =>
           val updated = copy(
-            status =
-              status.copy(startedAt = Some(now), mesosStatus = mesosStatus))
+            status = status
+              .copy(startedAt = Some(now), mesosStatus = mesosStatus))
           TaskStateChange.Update(updated)
 
         // case 2: terminal
@@ -217,18 +218,19 @@ object Task {
             Task.Reserved(
               taskId = taskId,
               agentInfo = agentInfo,
-              reservation = reservation.copy(state =
-                Task.Reservation.State.Suspended(timeout = None))
+              reservation = reservation
+                .copy(state = Task.Reservation.State.Suspended(timeout = None))
             ))
 
         // case 3: health or state updated
         case TaskStateOp.MesosUpdate(taskStatus, now) =>
-          val healthOrStateChange = for {
-            current <- status.mesosStatus
-            update <- taskStatus.mesosStatus
-            newStatus <- updatedHealthOrState(current, update)
-          } yield TaskStateChange.Update(
-            copy(status = status.copy(mesosStatus = Some(newStatus))))
+          val healthOrStateChange =
+            for {
+              current <- status.mesosStatus
+              update <- taskStatus.mesosStatus
+              newStatus <- updatedHealthOrState(current, update)
+            } yield TaskStateChange.Update(
+              copy(status = status.copy(mesosStatus = Some(newStatus))))
 
           healthOrStateChange.getOrElse {
             log.debug(
@@ -272,8 +274,10 @@ object Task {
     tasks.iterator.map(task => task.taskId -> task).toMap
 
   case class Id(idString: String) {
-    lazy val mesosTaskId: MesosProtos.TaskID =
-      MesosProtos.TaskID.newBuilder().setValue(idString).build()
+    lazy val mesosTaskId: MesosProtos.TaskID = MesosProtos.TaskID
+      .newBuilder()
+      .setValue(idString)
+      .build()
     lazy val appId: PathId = Id.appId(idString)
     override def toString: String = s"task [$idString]"
   }
@@ -281,8 +285,8 @@ object Task {
   object Id {
     private val appDelimiter = "."
     private val TaskIdRegex = """^(.+)[\._]([^_\.]+)$""".r
-    private val uuidGenerator =
-      Generators.timeBasedGenerator(EthernetAddress.fromInterface())
+    private val uuidGenerator = Generators.timeBasedGenerator(
+      EthernetAddress.fromInterface())
 
     def appId(taskId: String): PathId = {
       taskId match {
@@ -370,8 +374,8 @@ object Task {
   }
 
   object LocalVolumeId {
-    private val uuidGenerator =
-      Generators.timeBasedGenerator(EthernetAddress.fromInterface())
+    private val uuidGenerator = Generators.timeBasedGenerator(
+      EthernetAddress.fromInterface())
     private val delimiter = "#"
     private val LocalVolumeEncoderRE =
       s"^([^.]+)[$delimiter]([^.]+)[$delimiter]([^.]+)$$".r

@@ -66,12 +66,14 @@ private[serverset2] object Descriptor {
       StringObj(s) <- d("select")
       selector <- Selector.parse(s)
     } yield {
-      val w = for {
-        DoubleObj(w) <- d("weight")
-      } yield w
-      val p = for {
-        IntObj(p) <- d("priority")
-      } yield p
+      val w =
+        for {
+          DoubleObj(w) <- d("weight")
+        } yield w
+      val p =
+        for {
+          IntObj(p) <- d("priority")
+        } yield p
       Descriptor(selector, w getOrElse 1.0, p getOrElse 1)
     }
 }
@@ -87,11 +89,12 @@ private[serverset2] case class Vector(vector: Seq[Descriptor]) {
 private[serverset2] object Vector {
   def parseJson(json: String): Option[Vector] = {
     val d = JsonDict(json)
-    val vec = for {
-      SeqObj(vec) <- d("vector").toSeq
-      DictObj(d) <- vec
-      desc <- Descriptor.parseDict(d)
-    } yield desc
+    val vec =
+      for {
+        SeqObj(vec) <- d("vector").toSeq
+        DictObj(d) <- vec
+        desc <- Descriptor.parseDict(d)
+      } yield desc
 
     Some(Vector(vec))
   }

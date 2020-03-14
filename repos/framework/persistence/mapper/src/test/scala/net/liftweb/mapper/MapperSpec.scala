@@ -87,8 +87,8 @@ class MapperSpec extends Specification with BeforeExample {
           archer.moose.get must_== Empty
           notNull.moose.get must_== Full(99L)
 
-          val disabled =
-            SampleModel.find(By(SampleModel.status, SampleStatus.Disabled))
+          val disabled = SampleModel.find(
+            By(SampleModel.status, SampleStatus.Disabled))
 
           val meow = SampleTag
             .find(By(SampleTag.tag, "Meow"))
@@ -212,9 +212,10 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "enforce FK constraint on DefaultConnection" in {
-          val supportsFK = DB.use(DefaultConnectionIdentifier) { conn =>
-            conn.driverType.supportsForeignKeys_?
-          }
+          val supportsFK =
+            DB.use(DefaultConnectionIdentifier) { conn =>
+              conn.driverType.supportsForeignKeys_?
+            }
           if (!supportsFK)
             skipped(
               "Driver %s does not support FK constraints".format(provider))
@@ -259,8 +260,8 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Non-deterministic Precache works" in {
-          val dogs =
-            Dog.findAll(By(Dog.name, "fido"), PreCache(Dog.owner, false))
+          val dogs = Dog
+            .findAll(By(Dog.name, "fido"), PreCache(Dog.owner, false))
           val oo = SampleTag.findAll(
             By(SampleTag.tag, "Meow"),
             PreCache(SampleTag.model, false))
@@ -288,12 +289,15 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "work with Mixed case" in {
-          val elwood =
-            Mixer.find(By(Mixer.name, "Elwood")).openOrThrowException("Test")
-          val madeline =
-            Mixer.find(By(Mixer.name, "Madeline")).openOrThrowException("Test")
-          val archer =
-            Mixer.find(By(Mixer.name, "Archer")).openOrThrowException("Test")
+          val elwood = Mixer
+            .find(By(Mixer.name, "Elwood"))
+            .openOrThrowException("Test")
+          val madeline = Mixer
+            .find(By(Mixer.name, "Madeline"))
+            .openOrThrowException("Test")
+          val archer = Mixer
+            .find(By(Mixer.name, "Archer"))
+            .openOrThrowException("Test")
 
           elwood.name.get must_== "Elwood"
           madeline.name.get must_== "Madeline"
@@ -305,13 +309,15 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "work with Mixed case update and delete" in {
-          val elwood =
-            Mixer.find(By(Mixer.name, "Elwood")).openOrThrowException("Test")
+          val elwood = Mixer
+            .find(By(Mixer.name, "Elwood"))
+            .openOrThrowException("Test")
           elwood.name.get must_== "Elwood"
           elwood.name("FruitBar").weight(966).save
 
-          val fb =
-            Mixer.find(By(Mixer.weight, 966)).openOrThrowException("Test")
+          val fb = Mixer
+            .find(By(Mixer.weight, 966))
+            .openOrThrowException("Test")
 
           fb.name.get must_== "FruitBar"
           fb.weight.get must_== 966
@@ -324,13 +330,15 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "work with Mixed case update and delete for Dog2" in {
-          val elwood =
-            Dog2.find(By(Dog2.name, "Elwood")).openOrThrowException("Test")
+          val elwood = Dog2
+            .find(By(Dog2.name, "Elwood"))
+            .openOrThrowException("Test")
           elwood.name.get must_== "Elwood"
           elwood.name("FruitBar").actualAge(966).save
 
-          val fb =
-            Dog2.find(By(Dog2.actualAge, 966)).openOrThrowException("Test")
+          val fb = Dog2
+            .find(By(Dog2.actualAge, 966))
+            .openOrThrowException("Test")
 
           fb.name.get must_== "FruitBar"
           fb.actualAge.get must_== 966
@@ -385,8 +393,8 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Non-deterministic Precache works with Mixed Case" in {
-          val dogs =
-            Dog2.findAll(By(Dog2.name, "fido"), PreCache(Dog2.owner, false))
+          val dogs = Dog2
+            .findAll(By(Dog2.name, "fido"), PreCache(Dog2.owner, false))
           val oo = SampleTag.findAll(
             By(SampleTag.tag, "Meow"),
             PreCache(SampleTag.model, false))

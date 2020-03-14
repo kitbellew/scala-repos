@@ -140,8 +140,8 @@ trait IndicesSpec[M[+_]]
 {"a": 1, "c": [666]}
 """
 
-    val table =
-      fromJson(JParser.parseManyFromString(json).valueOr(throw _).toStream)
+    val table = fromJson(
+      JParser.parseManyFromString(json).valueOr(throw _).toStream)
 
     val keySpecs = Array(groupkey("a"), groupkey("b"))
     val valSpec = valuekey("c")
@@ -211,21 +211,23 @@ trait IndicesSpec[M[+_]]
       test(Array(CString("foo"), CLong(999)), empty)
     }
 
-    val index1 = TableIndex
-      .createFromTable(
-        table,
-        Array(groupkey("a")),
-        valuekey("c")
-      )
-      .copoint
+    val index1 =
+      TableIndex
+        .createFromTable(
+          table,
+          Array(groupkey("a")),
+          valuekey("c")
+        )
+        .copoint
 
-    val index2 = TableIndex
-      .createFromTable(
-        table,
-        Array(groupkey("b")),
-        valuekey("c")
-      )
-      .copoint
+    val index2 =
+      TableIndex
+        .createFromTable(
+          table,
+          Array(groupkey("b")),
+          valuekey("c")
+        )
+        .copoint
 
     "efficiently combine to produce unions" in {
 
@@ -289,12 +291,13 @@ object IndicesSpec extends IndicesSpec[Need] {
 
   type YggConfig = IdSourceConfig with ColumnarTableModuleConfig
 
-  val yggConfig = new IdSourceConfig with ColumnarTableModuleConfig {
-    val maxSliceSize = 10
-    val smallSliceSize = 3
+  val yggConfig =
+    new IdSourceConfig with ColumnarTableModuleConfig {
+      val maxSliceSize = 10
+      val smallSliceSize = 3
 
-    val idSource = new FreshAtomicIdSource
-  }
+      val idSource = new FreshAtomicIdSource
+    }
 }
 
 // vim: set ts=4 sw=4 et:

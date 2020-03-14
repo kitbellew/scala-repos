@@ -150,10 +150,9 @@ abstract class ValType(override val name: String)
   }
 
   def apply(manager: PsiManager, scope: GlobalSearchScope): ScType = {
-    val clazz =
-      ScalaPsiManager
-        .instance(manager.getProject)
-        .getCachedClass(scope, "scala." + name)
+    val clazz = ScalaPsiManager
+      .instance(manager.getProject)
+      .getCachedClass(scope, "scala." + name)
     clazz.map(ScDesignatorType(_)).getOrElse(this)
   }
 

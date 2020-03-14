@@ -24,8 +24,8 @@ final class RankingApi(
     lightUser: String => Option[lila.common.LightUser]) {
 
   import RankingApi._
-  private implicit val rankingBSONHandler =
-    reactivemongo.bson.Macros.handler[Ranking]
+  private implicit val rankingBSONHandler = reactivemongo.bson.Macros
+    .handler[Ranking]
 
   def save(userId: User.ID, perfType: Option[PerfType], perfs: Perfs): Funit =
     perfType ?? { pt =>
@@ -157,12 +157,13 @@ final class RankingApi(
             )
           )
           .map { res =>
-            val hash = res.documents.flatMap { obj =>
-              for {
-                rating <- obj.getAs[Int]("_id")
-                nb <- obj.getAs[NbUsers]("nb")
-              } yield rating -> nb
-            }.toMap
+            val hash =
+              res.documents.flatMap { obj =>
+                for {
+                  rating <- obj.getAs[Int]("_id")
+                  nb <- obj.getAs[NbUsers]("nb")
+                } yield rating -> nb
+              }.toMap
             (800 to 2800 by Stat.group).map { r =>
               hash.getOrElse(r, 0)
             }.toList

@@ -887,21 +887,22 @@ object JsonAST {
       settings: RenderSettings) {
     for (i <- 0 until s.length) {
       val c = s.charAt(i)
-      val strReplacement = c match {
-        case '"'  => "\\\""
-        case '\\' => "\\\\"
-        case '\b' => "\\b"
-        case '\f' => "\\f"
-        case '\n' => "\\n"
-        case '\r' => "\\r"
-        case '\t' => "\\t"
-        case c
-            if ((c >= '\u0000' && c < '\u0020')) || settings.escapeChars
-              .contains(c) =>
-          "\\u%04x".format(c: Int)
+      val strReplacement =
+        c match {
+          case '"'  => "\\\""
+          case '\\' => "\\\\"
+          case '\b' => "\\b"
+          case '\f' => "\\f"
+          case '\n' => "\\n"
+          case '\r' => "\\r"
+          case '\t' => "\\t"
+          case c
+              if ((c >= '\u0000' && c < '\u0020')) || settings.escapeChars
+                .contains(c) =>
+            "\\u%04x".format(c: Int)
 
-        case _ => ""
-      }
+          case _ => ""
+        }
 
       // Use Char version of append if we can, as it's cheaper.
       if (strReplacement.isEmpty) {

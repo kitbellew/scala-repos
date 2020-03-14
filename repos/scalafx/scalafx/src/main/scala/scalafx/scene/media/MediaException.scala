@@ -55,8 +55,8 @@ object MediaException {
     /**
       * Indicates an error has occurred: although the media may exist, it is not accessible.
       */
-    val MediaInaccessible = new Type(
-      jfxsm.MediaException.Type.MEDIA_INACCESSIBLE)
+    val MediaInaccessible =
+      new Type(jfxsm.MediaException.Type.MEDIA_INACCESSIBLE)
     @deprecated(
       "Use MediaInaccessible; MEDIA_INACCESSIBLE will be removed in a future release",
       "8.0.60-R10")
@@ -92,8 +92,8 @@ object MediaException {
     /**
       * Indicates that an operation performed on the media is not supported by this platform.
       */
-    val OperationUnsupported = new Type(
-      jfxsm.MediaException.Type.OPERATION_UNSUPPORTED)
+    val OperationUnsupported =
+      new Type(jfxsm.MediaException.Type.OPERATION_UNSUPPORTED)
     @deprecated(
       "Use OperationUnsupported; OPERATION_UNSUPPORTED will be removed in a future release",
       "8.0.60-R10")

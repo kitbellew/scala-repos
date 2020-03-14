@@ -131,15 +131,17 @@ class CallGraphTest extends ClearAfterClass {
       "operand stack at the callsite in Test::t2(LD;)I contains more values"
     )
     var msgCount = 0
-    val checkMsg = (m: StoreReporter#Info) => {
-      msgCount += 1
-      ok exists (m.msg contains _)
-    }
+    val checkMsg =
+      (m: StoreReporter#Info) => {
+        msgCount += 1
+        ok exists (m.msg contains _)
+      }
     val List(cCls, cMod, dCls, testCls) = compile(code, checkMsg)
     assert(msgCount == 6, msgCount)
 
-    val List(cf1, cf2, cf3, cf4, cf5, cf6, cf7) =
-      findAsmMethods(cCls, _.startsWith("f"))
+    val List(cf1, cf2, cf3, cf4, cf5, cf6, cf7) = findAsmMethods(
+      cCls,
+      _.startsWith("f"))
     val List(df1, df3) = findAsmMethods(dCls, _.startsWith("f"))
     val g1 = findAsmMethod(cMod, "g1")
     val List(t1, t2) = findAsmMethods(testCls, _.startsWith("t"))
@@ -188,21 +190,21 @@ class CallGraphTest extends ClearAfterClass {
 
   @Test
   def callerSensitiveNotSafeToInline(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def m = java.lang.Class.forName("C")
         |}
       """.stripMargin
     val List(c) = compile(code)
     val m = findAsmMethod(c, "m")
     val List(fn) = callsInMethod(m)
-    val forNameMeth = byteCodeRepository
-      .methodNode(
-        "java/lang/Class",
-        "forName",
-        "(Ljava/lang/String;)Ljava/lang/Class;")
-      .get
-      ._1
+    val forNameMeth =
+      byteCodeRepository
+        .methodNode(
+          "java/lang/Class",
+          "forName",
+          "(Ljava/lang/String;)Ljava/lang/Class;")
+        .get
+        ._1
     val classTp = classBTypeFromInternalName("java/lang/Class")
     val r = callGraph.callsites(m)(fn)
     checkCallsite(
@@ -217,8 +219,7 @@ class CallGraphTest extends ClearAfterClass {
 
   @Test
   def checkArgInfos(): Unit = {
-    val code =
-      """abstract class C {
+    val code = """abstract class C {
         |  def h(f: Int => Int): Int = f(1)
         |  def t1 = h(x => x + 1)
         |  def t2(i: Int, f: Int => Int, z: Int) = h(f) + i - z

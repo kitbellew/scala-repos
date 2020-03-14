@@ -58,10 +58,11 @@ class RenameScalaMethodProcessor
       element: PsiElement,
       editor: Editor,
       renameCallback: Pass[PsiElement]) {
-    val named = element match {
-      case named: ScNamedElement => named;
-      case _                     => return
-    }
+    val named =
+      element match {
+        case named: ScNamedElement => named;
+        case _                     => return
+      }
     val guess = ScalaRenameUtil.findSubstituteElement(element)
     if (guess != element)
       renameCallback.pass(guess)
@@ -110,17 +111,19 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
       element: PsiElement,
       newName: String,
       allRenames: util.Map[PsiElement, String]) {
-    val function = element match {
-      case x: ScFunction => x
-      case _             => return
-    }
+    val function =
+      element match {
+        case x: ScFunction => x
+        case _             => return
+      }
     val buff = new ArrayBuffer[PsiNamedElement]
-    val getterOrSetter = function.getGetterOrSetterFunction match {
-      case Some(function2) =>
-        buff += function2
-        Some(function2)
-      case _ => None
-    }
+    val getterOrSetter =
+      function.getGetterOrSetterFunction match {
+        case Some(function2) =>
+          buff += function2
+          Some(function2)
+        case _ => None
+      }
     for (elem <- ScalaOverridingMemberSearcher.search(function, deep = true)) {
       allRenames.put(elem, newName)
       elem match {
@@ -160,9 +163,10 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
       if (ApplicationManager.getApplication.isUnitTestMode) {
         addGettersAndSetters()
       } else {
-        val dialog = new WarningDialog(
-          function.getProject,
-          ScalaBundle.message("rename.getters.and.setters.title"))
+        val dialog =
+          new WarningDialog(
+            function.getProject,
+            ScalaBundle.message("rename.getters.and.setters.title"))
         dialog.show()
         if (dialog.getExitCode == DialogWrapper.OK_EXIT_CODE || ApplicationManager.getApplication.isUnitTestMode) {
           addGettersAndSetters()

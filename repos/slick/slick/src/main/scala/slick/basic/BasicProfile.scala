@@ -173,8 +173,10 @@ trait BasicActionComponent { self: BasicProfile =>
     E] with ProfileAction[R, Streaming[T], E]
 
   @deprecated("Use `ProfileAction` instead of `DriverAction`", "3.2")
-  final type DriverAction[+R, +S <: NoStream, -E <: Effect] =
-    ProfileAction[R, S, E]
+  final type DriverAction[+R, +S <: NoStream, -E <: Effect] = ProfileAction[
+    R,
+    S,
+    E]
   @deprecated(
     "Use `StreamingProfileAction` instead of `StreamingDriverAction`",
     "3.2")

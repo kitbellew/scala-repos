@@ -162,8 +162,9 @@ class HttpClientDispatcherTest extends FunSuite {
     import OpTransport._
 
     val writep = new Promise[Unit]
-    val transport: OpTransport[Any, Any] =
-      OpTransport[Any, Any](Write(_ => true, writep), Close(Future.Done))
+    val transport: OpTransport[Any, Any] = OpTransport[Any, Any](
+      Write(_ => true, writep),
+      Close(Future.Done))
 
     val disp = new HttpClientDispatcher(transport)
     val req = Request()
@@ -268,8 +269,9 @@ class HttpClientDispatcherTest extends FunSuite {
     val futureResult = dispatcher(sentRequest)
 
     // get the netty request out of the other end of the transporter
-    val recvNettyReq =
-      Await.result(out.read()).asInstanceOf[NettyHttp.FullHttpRequest]
+    val recvNettyReq = Await
+      .result(out.read())
+      .asInstanceOf[NettyHttp.FullHttpRequest]
 
     // apply the bijection to convert the netty request to a finagle one
     val recvFinagleReq = Bijections.netty.requestToFinagle(recvNettyReq)
@@ -278,10 +280,11 @@ class HttpClientDispatcherTest extends FunSuite {
     val recvDtab = HttpDtab.read(recvFinagleReq).get()
 
     // send back an http ok to the dispatcher
-    val sentResult = new NettyHttp.DefaultHttpResponse(
-      NettyHttp.HttpVersion.HTTP_1_1,
-      NettyHttp.HttpResponseStatus.OK
-    )
+    val sentResult =
+      new NettyHttp.DefaultHttpResponse(
+        NettyHttp.HttpVersion.HTTP_1_1,
+        NettyHttp.HttpResponseStatus.OK
+      )
     out.write(sentResult)
 
     // block until the dispatcher presents us with the result
@@ -308,8 +311,9 @@ class HttpClientDispatcherTest extends FunSuite {
     val futureResult = dispatcher(sentRequest)
 
     // get the netty request out of the other end of the transporter
-    val recvNettyReq =
-      Await.result(out.read()).asInstanceOf[NettyHttp.FullHttpRequest]
+    val recvNettyReq = Await
+      .result(out.read())
+      .asInstanceOf[NettyHttp.FullHttpRequest]
 
     // apply the bijection to convert the netty request to a finagle one
     val recvFinagleReq = Bijections.netty.requestToFinagle(recvNettyReq)
@@ -318,10 +322,11 @@ class HttpClientDispatcherTest extends FunSuite {
     val recvDtab = HttpDtab.read(recvFinagleReq).get()
 
     // send back an http ok to the dispatcher
-    val sentResult = new NettyHttp.DefaultHttpResponse(
-      NettyHttp.HttpVersion.HTTP_1_1,
-      NettyHttp.HttpResponseStatus.OK
-    )
+    val sentResult =
+      new NettyHttp.DefaultHttpResponse(
+        NettyHttp.HttpVersion.HTTP_1_1,
+        NettyHttp.HttpResponseStatus.OK
+      )
     out.write(sentResult)
 
     // block until the dispatcher presents us with the result
@@ -349,8 +354,9 @@ class HttpClientDispatcherTest extends FunSuite {
       val futureResult = dispatcher(sentRequest)
 
       // get the netty request out of the other end of the transporter
-      val recvNettyReq =
-        Await.result(out.read()).asInstanceOf[NettyHttp.FullHttpRequest]
+      val recvNettyReq = Await
+        .result(out.read())
+        .asInstanceOf[NettyHttp.FullHttpRequest]
 
       // apply the bijection to convert the netty request to a finagle one
       val recvFinagleReq = Bijections.netty.requestToFinagle(recvNettyReq)
@@ -359,10 +365,11 @@ class HttpClientDispatcherTest extends FunSuite {
       val recvDtab = HttpDtab.read(recvFinagleReq).get()
 
       // send back an http ok to the dispatcher
-      val sentResult = new NettyHttp.DefaultHttpResponse(
-        NettyHttp.HttpVersion.HTTP_1_1,
-        NettyHttp.HttpResponseStatus.OK
-      )
+      val sentResult =
+        new NettyHttp.DefaultHttpResponse(
+          NettyHttp.HttpVersion.HTTP_1_1,
+          NettyHttp.HttpResponseStatus.OK
+        )
       out.write(sentResult)
 
       // block until the dispatcher presents us with the result
@@ -376,28 +383,29 @@ class HttpClientDispatcherTest extends FunSuite {
     }
   }
 
-  val failingT = new Transport[Any, Any] {
-    val closep = new Promise[Throwable]
-    def write(req: Any): Future[Unit] =
-      Future.exception(new RuntimeException("oh no"))
+  val failingT =
+    new Transport[Any, Any] {
+      val closep = new Promise[Throwable]
+      def write(req: Any): Future[Unit] =
+        Future.exception(new RuntimeException("oh no"))
 
-    def remoteAddress: SocketAddress = ???
+      def remoteAddress: SocketAddress = ???
 
-    def peerCertificate: Option[Certificate] = ???
+      def peerCertificate: Option[Certificate] = ???
 
-    def localAddress: SocketAddress = new java.net.SocketAddress {}
+      def localAddress: SocketAddress = new java.net.SocketAddress {}
 
-    def status: Status = ???
+      def status: Status = ???
 
-    def read(): Future[Any] = ???
+      def read(): Future[Any] = ???
 
-    val onClose: Future[Throwable] = closep
+      val onClose: Future[Throwable] = closep
 
-    def close(deadline: Time): Future[Unit] = {
-      closep.setException(new Exception("closed"))
-      closep.unit
+      def close(deadline: Time): Future[Unit] = {
+        closep.setException(new Exception("closed"))
+        closep.unit
+      }
     }
-  }
 
   test("write failures are wrapped as WriteExceptions") {
     val disp = new HttpClientDispatcher(failingT)
@@ -407,25 +415,26 @@ class HttpClientDispatcherTest extends FunSuite {
     }
   }
 
-  val stallT = new Transport[Any, Any] {
+  val stallT =
+    new Transport[Any, Any] {
 
-    def write(req: Any): Future[Unit] = Future.never
+      def write(req: Any): Future[Unit] = Future.never
 
-    def remoteAddress: SocketAddress = ???
+      def remoteAddress: SocketAddress = ???
 
-    def peerCertificate: Option[Certificate] = ???
+      def peerCertificate: Option[Certificate] = ???
 
-    def localAddress: SocketAddress = new java.net.SocketAddress {}
+      def localAddress: SocketAddress = new java.net.SocketAddress {}
 
-    def status: Status = ???
+      def status: Status = ???
 
-    def read(): Future[Any] = Future.never
+      def read(): Future[Any] = Future.never
 
-    val onClose: Future[Throwable] = Future.exception(new Exception)
+      val onClose: Future[Throwable] = Future.exception(new Exception)
 
-    def close(deadline: Time): Future[Unit] = Future.Done
+      def close(deadline: Time): Future[Unit] = Future.Done
 
-  }
+    }
   test("pending requests are failed") {
     val disp = new HttpClientDispatcher(stallT)
 

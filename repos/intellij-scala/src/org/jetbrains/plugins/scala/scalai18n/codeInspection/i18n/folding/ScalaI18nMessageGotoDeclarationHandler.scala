@@ -44,8 +44,9 @@ class ScalaI18nMessageGotoDeclarationHandler
       case methodCall: ScMethodCall =>
         var foldRegion: FoldRegion = null
         for (region <- editor.getFoldingModel.getAllFoldRegions) {
-          val psiElement: PsiElement =
-            EditorFoldingInfo.get(editor).getPsiElement(region)
+          val psiElement: PsiElement = EditorFoldingInfo
+            .get(editor)
+            .getPsiElement(region)
           if (methodCall == psiElement) {
             foldRegion = region
           }

@@ -5,9 +5,10 @@ object Test {
   trait D
 
   val x: A[C with D] = new B[C, D] {}
-  val y: A[C with D] = x match {
-    case b: B[u, v] => (new B[u, v] {}): A[u with v]
-  } // OK
+  val y: A[C with D] =
+    x match {
+      case b: B[u, v] => (new B[u, v] {}): A[u with v]
+    } // OK
 
   def f[T, U](p: A[T with U]): A[T with U] =
     p match {

@@ -50,18 +50,20 @@ object Chat {
   import BSONFields._
   import reactivemongo.bson.BSONDocument
 
-  implicit val mixedChatBSONHandler = new BSON[MixedChat] {
-    implicit def lineHandler = Line.lineBSONHandler
-    def reads(r: BSON.Reader): MixedChat =
-      MixedChat(id = r str id, lines = r.get[List[Line]](lines))
-    def writes(w: BSON.Writer, o: MixedChat) =
-      BSONDocument(id -> o.id, lines -> o.lines)
-  }
+  implicit val mixedChatBSONHandler =
+    new BSON[MixedChat] {
+      implicit def lineHandler = Line.lineBSONHandler
+      def reads(r: BSON.Reader): MixedChat =
+        MixedChat(id = r str id, lines = r.get[List[Line]](lines))
+      def writes(w: BSON.Writer, o: MixedChat) =
+        BSONDocument(id -> o.id, lines -> o.lines)
+    }
 
-  implicit val userChatBSONHandler = new BSON[UserChat] {
-    def reads(r: BSON.Reader): UserChat =
-      UserChat(id = r str id, lines = r.get[List[UserLine]](lines))
-    def writes(w: BSON.Writer, o: UserChat) =
-      BSONDocument(id -> o.id, lines -> o.lines)
-  }
+  implicit val userChatBSONHandler =
+    new BSON[UserChat] {
+      def reads(r: BSON.Reader): UserChat =
+        UserChat(id = r str id, lines = r.get[List[UserLine]](lines))
+      def writes(w: BSON.Writer, o: UserChat) =
+        BSONDocument(id -> o.id, lines -> o.lines)
+    }
 }

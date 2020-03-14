@@ -234,21 +234,22 @@ object WorkflowUtils extends Logging {
 
   // Extract debug string by recursively traversing the data.
   def debugString[D](data: D): String = {
-    val s: String = data match {
-      case rdd: RDD[_] => {
-        debugString(rdd.collect())
+    val s: String =
+      data match {
+        case rdd: RDD[_] => {
+          debugString(rdd.collect())
+        }
+        case javaRdd: JavaRDDLike[_, _] => {
+          debugString(javaRdd.collect())
+        }
+        case array: Array[_] => {
+          "[" + array.map(debugString).mkString(",") + "]"
+        }
+        case d: AnyRef => {
+          d.toString
+        }
+        case null => "null"
       }
-      case javaRdd: JavaRDDLike[_, _] => {
-        debugString(javaRdd.collect())
-      }
-      case array: Array[_] => {
-        "[" + array.map(debugString).mkString(",") + "]"
-      }
-      case d: AnyRef => {
-        d.toString
-      }
-      case null => "null"
-    }
     s
   }
 
@@ -422,11 +423,12 @@ class UpgradeCheckRunner(val component: String, val engine: String)
   val versionsHost = "http://direct.prediction.io/"
 
   def run(): Unit = {
-    val url = if (engine == "") {
-      s"$versionsHost$version/$component.json"
-    } else {
-      s"$versionsHost$version/$component/$engine.json"
-    }
+    val url =
+      if (engine == "") {
+        s"$versionsHost$version/$component.json"
+      } else {
+        s"$versionsHost$version/$component/$engine.json"
+      }
     try {
       val upgradeData = Source.fromURL(url)
     } catch {

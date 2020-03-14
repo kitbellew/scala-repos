@@ -12,11 +12,10 @@ private[video] final class Sheet(url: String, api: VideoApi) {
 
   private implicit val readGStr = Json.reads[GStr]
   private implicit val readEntry = Json.reads[Entry]
-  private implicit val readEntries: Reads[Seq[Entry]] =
-    (__ \ "feed" \ "entry").read(Reads seq readEntry)
+  private implicit val readEntries: Reads[Seq[Entry]] = (__ \ "feed" \ "entry")
+    .read(Reads seq readEntry)
 
-  def select(entry: Entry) =
-    entry.include && entry.lang == "en"
+  def select(entry: Entry) = entry.include && entry.lang == "en"
 
   def fetchAll: Funit =
     fetch map (_ filter select) flatMap { entries =>

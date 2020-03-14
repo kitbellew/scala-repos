@@ -26,21 +26,22 @@ object CheckIsEmpty extends SimplificationType {
     }
 
   def unapply(expr: ScExpression): Option[(ScExpression, Int, Int)] = {
-    val firstLevel = expr match {
-      case (coll `.sizeOrLength` ()) `==` literal("0") if coll != null =>
-        Some((coll, coll.end, expr.end))
-      case coll `.isEmpty` () if coll != null =>
-        Some((coll, coll.end, expr.end))
-      case `!`(CheckNonEmpty(coll, _, _)) if coll != null =>
-        Some((coll, expr.start, expr.end))
-      case `!`(CheckIsDefined(coll, _, _)) if coll != null =>
-        Some((coll, expr.start, expr.end))
-      case coll `==` scalaNone() if isOption(coll) =>
-        Some((coll, coll.end, expr.end))
-      case scalaNone() `==` coll if isOption(coll) =>
-        Some((coll, expr.start, coll.start))
-      case _ => None
-    }
+    val firstLevel =
+      expr match {
+        case (coll `.sizeOrLength` ()) `==` literal("0") if coll != null =>
+          Some((coll, coll.end, expr.end))
+        case coll `.isEmpty` () if coll != null =>
+          Some((coll, coll.end, expr.end))
+        case `!`(CheckNonEmpty(coll, _, _)) if coll != null =>
+          Some((coll, expr.start, expr.end))
+        case `!`(CheckIsDefined(coll, _, _)) if coll != null =>
+          Some((coll, expr.start, expr.end))
+        case coll `==` scalaNone() if isOption(coll) =>
+          Some((coll, coll.end, expr.end))
+        case scalaNone() `==` coll if isOption(coll) =>
+          Some((coll, expr.start, coll.start))
+        case _ => None
+      }
     extractInner(firstLevel)
   }
 
@@ -73,25 +74,26 @@ object CheckNonEmpty extends SimplificationType {
     }
 
   def unapply(expr: ScExpression): Option[(ScExpression, Int, Int)] = {
-    val firstLevel = expr match {
-      case qual `.nonEmpty` () if qual != null =>
-        Some((qual, qual.end, expr.end))
-      case (qual `.sizeOrLength` ()) `!=` literal("0") if qual != null =>
-        Some((qual, qual.end, expr.end))
-      case (qual `.sizeOrLength` ()) `>` literal("0") if qual != null =>
-        Some((qual, qual.end, expr.end))
-      case (qual `.sizeOrLength` ()) `>=` literal("1") if qual != null =>
-        Some((qual, qual.end, expr.end))
-      case `!`(CheckIsEmpty(qual, _, _)) if qual != null =>
-        Some(qual, expr.start, expr.end)
-      case qual `!=` scalaNone() if isOption(qual) =>
-        Some(qual, qual.end, expr.end)
-      case scalaNone() `!=` qual if isOption(qual) =>
-        Some(qual, expr.start, qual.start)
-      case qual `.isDefined` () if isOption(qual) =>
-        Some(qual, qual.end, expr.end)
-      case _ => None
-    }
+    val firstLevel =
+      expr match {
+        case qual `.nonEmpty` () if qual != null =>
+          Some((qual, qual.end, expr.end))
+        case (qual `.sizeOrLength` ()) `!=` literal("0") if qual != null =>
+          Some((qual, qual.end, expr.end))
+        case (qual `.sizeOrLength` ()) `>` literal("0") if qual != null =>
+          Some((qual, qual.end, expr.end))
+        case (qual `.sizeOrLength` ()) `>=` literal("1") if qual != null =>
+          Some((qual, qual.end, expr.end))
+        case `!`(CheckIsEmpty(qual, _, _)) if qual != null =>
+          Some(qual, expr.start, expr.end)
+        case qual `!=` scalaNone() if isOption(qual) =>
+          Some(qual, qual.end, expr.end)
+        case scalaNone() `!=` qual if isOption(qual) =>
+          Some(qual, expr.start, qual.start)
+        case qual `.isDefined` () if isOption(qual) =>
+          Some(qual, qual.end, expr.end)
+        case _ => None
+      }
     CheckIsEmpty.extractInner(firstLevel)
   }
 }

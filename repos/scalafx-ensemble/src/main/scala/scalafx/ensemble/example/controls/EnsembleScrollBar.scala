@@ -51,60 +51,64 @@ class EnsembleScrollBar extends EnsembleExample {
     xBarWidth + yBarWidth,
     xBarHeight + yBarHeight,
     Color.rgb(90, 90, 90))
-  val box = new Rectangle {
-    width = 100
-    height = 100
-    fill = Color.rgb(150, 150, 150)
-    translateX = 147
-    translateY = 147
-  }
+  val box =
+    new Rectangle {
+      width = 100
+      height = 100
+      fill = Color.rgb(150, 150, 150)
+      translateX = 147
+      translateY = 147
+    }
 
   // Moveable circle
-  val circle = new Circle {
-    centerX = 45
-    centerY = 45
-    radius = circleRadius
-    fill = Color.rgb(90, 210, 210)
-    opacity = 0.4
-    relocate(0, 15)
-  }
+  val circle =
+    new Circle {
+      centerX = 45
+      centerY = 45
+      radius = circleRadius
+      fill = Color.rgb(90, 210, 210)
+      opacity = 0.4
+      relocate(0, 15)
+    }
 
   // Horizontal ScrollBar
-  val xScrollBar = new ScrollBar {
-    minWidth = -1
-    minHeight = -1
-    prefWidth = xBarWidth
-    prefHeight = xBarHeight
-    maxWidth = xBarWidth
-    maxHeight = xBarHeight
-    visibleAmount = 50
-    max = xBarWidth - (2 * circleRadius)
-    unitIncrement = 20.0
-    value.onChange((_, _, _) => {
-      xScrollValue = value()
-      circle.relocate(xScrollValue, yScrollValue)
-    })
-  }
+  val xScrollBar =
+    new ScrollBar {
+      minWidth = -1
+      minHeight = -1
+      prefWidth = xBarWidth
+      prefHeight = xBarHeight
+      maxWidth = xBarWidth
+      maxHeight = xBarHeight
+      visibleAmount = 50
+      max = xBarWidth - (2 * circleRadius)
+      unitIncrement = 20.0
+      value.onChange((_, _, _) => {
+        xScrollValue = value()
+        circle.relocate(xScrollValue, yScrollValue)
+      })
+    }
 
   // Vertical ScrollBar
-  val yScrollBar = new ScrollBar {
-    minWidth = -1
-    minHeight = -1
-    prefWidth = yBarWidth
-    prefHeight = yBarHeight
-    maxWidth = yBarWidth
-    maxHeight = yBarHeight
-    unitIncrement = 20.0
-    visibleAmount = 50
-    max = yBarHeight - (2 * circleRadius)
-    value.onChange((_, _, _) => {
-      yScrollValue = value() + xBarHeight
-      circle.relocate(xScrollValue, yScrollValue)
-    })
-    translateX = yBarHeight
-    translateY = yBarWidth
-    orientation = Orientation.VERTICAL
-  }
+  val yScrollBar =
+    new ScrollBar {
+      minWidth = -1
+      minHeight = -1
+      prefWidth = yBarWidth
+      prefHeight = yBarHeight
+      maxWidth = yBarWidth
+      maxHeight = yBarHeight
+      unitIncrement = 20.0
+      visibleAmount = 50
+      max = yBarHeight - (2 * circleRadius)
+      value.onChange((_, _, _) => {
+        yScrollValue = value() + xBarHeight
+        circle.relocate(xScrollValue, yScrollValue)
+      })
+      translateX = yBarHeight
+      translateY = yBarWidth
+      orientation = Orientation.VERTICAL
+    }
 
   def getContent =
     new Pane {

@@ -72,8 +72,9 @@ private[http] object FrameEvent {
     FrameStart(
       FrameHeader(opcode, mask, data.length, fin, rsv1, rsv2, rsv3),
       data)
-  val emptyLastContinuationFrame: FrameStart =
-    empty(Protocol.Opcode.Continuation, fin = true)
+  val emptyLastContinuationFrame: FrameStart = empty(
+    Protocol.Opcode.Continuation,
+    fin = true)
 
   def closeFrame(
       closeCode: Int,

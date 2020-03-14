@@ -67,8 +67,8 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
     }
 
     "extract events from all elements at any depth" in {
-      val NodesAndEventJs(html, js) =
-        HtmlNormalizer.normalizeHtmlAndEventHandlers(
+      val NodesAndEventJs(html, js) = HtmlNormalizer
+        .normalizeHtmlAndEventHandlers(
           <html onevent="testJs1">
             <head onresult="testJs2">
               <script src="testscript" onmagic="testJs3"></script>
@@ -112,8 +112,8 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
     }
 
     "reuse ids when they are already on an element with an event" in {
-      val NodesAndEventJs(html, js) =
-        HtmlNormalizer.normalizeHtmlAndEventHandlers(
+      val NodesAndEventJs(html, js) = HtmlNormalizer
+        .normalizeHtmlAndEventHandlers(
           <myelement id="testid" onevent="doStuff" />,
           "/context-path",
           false
@@ -124,8 +124,8 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
     }
 
     "generate ids for elements with events if they don't have one" in {
-      val NodesAndEventJs(html, js) =
-        HtmlNormalizer.normalizeHtmlAndEventHandlers(
+      val NodesAndEventJs(html, js) = HtmlNormalizer
+        .normalizeHtmlAndEventHandlers(
           <myelement onevent="doStuff" />,
           "/context-path",
           false
@@ -138,16 +138,15 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
     }
 
     "extract event js correctly for multiple elements" in {
-      val NodesAndEventJs(_, js) =
-        HtmlNormalizer.normalizeHtmlAndEventHandlers(
-          <div>
+      val NodesAndEventJs(_, js) = HtmlNormalizer.normalizeHtmlAndEventHandlers(
+        <div>
             <myelement onevent="doStuff" />
             <myelement id="hello" onevent="doStuff2" />
             <myelement onevent="doStuff3" />
           </div>,
-          "/context-path",
-          false
-        )
+        "/context-path",
+        false
+      )
 
       js.toJsCmd must be matching ("""(?s)\Qlift.onEvent("lift-event-js-\E[^"]+\Q","event",function(event) {doStuff;});
         |lift.onEvent("hello","event",function(event) {doStuff2;});
@@ -159,8 +158,8 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
     }
 
     "extract events from hrefs and actions" in {
-      val NodesAndEventJs(html, js) =
-        HtmlNormalizer.normalizeHtmlAndEventHandlers(
+      val NodesAndEventJs(html, js) = HtmlNormalizer
+        .normalizeHtmlAndEventHandlers(
           <div>
             <myelement href="javascript:doStuff" />
             <myelement id="hello" action="javascript:doStuff2" />
@@ -187,8 +186,8 @@ class HtmlNormalizerSpec extends Specification with XmlMatchers with Mockito {
     }
 
     "not extract events from hrefs and actions without the proper prefix" in {
-      val NodesAndEventJs(html, js) =
-        HtmlNormalizer.normalizeHtmlAndEventHandlers(
+      val NodesAndEventJs(html, js) = HtmlNormalizer
+        .normalizeHtmlAndEventHandlers(
           <div>
             <myelement href="doStuff" />
             <myelement id="hello" action="javascrip:doStuff2" />

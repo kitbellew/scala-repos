@@ -34,11 +34,12 @@ class HeapBalancer[Req, Rep](
 
   import HeapBalancer._
 
-  private[this] val sizeGauge = statsReceiver.addGauge("size") {
-    synchronized {
-      size
+  private[this] val sizeGauge =
+    statsReceiver.addGauge("size") {
+      synchronized {
+        size
+      }
     }
-  }
   private[this] val adds = statsReceiver.counter("adds")
   private[this] val removes = statsReceiver.counter("removes")
 
@@ -95,25 +96,27 @@ class HeapBalancer[Req, Rep](
       ready.setDone()
   }
 
-  private[this] val availableGauge = statsReceiver.addGauge("available") {
-    val nodes = synchronized {
-      heap.drop(1)
-    }
-    nodes.count(_.factory.status == Status.Open)
-  }
-
-  private[this] val loadGauge = statsReceiver.addGauge("load") {
-    val loads = synchronized {
-      heap drop (1) map { n =>
-        if (n.load < 0)
-          n.load + Penalty
-        else
-          n.load
+  private[this] val availableGauge =
+    statsReceiver.addGauge("available") {
+      val nodes = synchronized {
+        heap.drop(1)
       }
+      nodes.count(_.factory.status == Status.Open)
     }
 
-    loads.sum
-  }
+  private[this] val loadGauge =
+    statsReceiver.addGauge("load") {
+      val loads = synchronized {
+        heap drop (1) map { n =>
+          if (n.load < 0)
+            n.load + Penalty
+          else
+            n.load
+        }
+      }
+
+      loads.sum
+    }
 
   private[this] def addNode(serviceFactory: ServiceFactory[Req, Rep]) {
     size += 1

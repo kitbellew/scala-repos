@@ -49,17 +49,19 @@ object Test {
     println(x(new C))
 
     {
-      val foo = new Other.Foo {
-        type R1 = Bippy;
-        type R2 = Bippy
-      }
+      val foo =
+        new Other.Foo {
+          type R1 = Bippy;
+          type R2 = Bippy
+        }
       println(foo.f(new Bippy))
     }
     {
-      val bar = new Other.Bar {
-        type R1 = Bippy with R0;
-        type R2 = R1
-      }
+      val bar =
+        new Other.Bar {
+          type R1 = Bippy with R0;
+          type R2 = R1
+        }
       println(bar.f(new Bippy with bar.R0))
     }
   }

@@ -81,9 +81,10 @@ class CharRegexTest {
   @Test(expected = classOf[MatchError])
   def failCorrectly(): Unit = {
     val headAndTail = """(\p{Lower})([a-z]+)""".r
-    val n = "cat" (0) match {
-      case headAndTail(ht @ _*) => ht.size
-    }
+    val n =
+      "cat" (0) match {
+        case headAndTail(ht @ _*) => ht.size
+      }
     assert(false, s"Match size $n")
   }
 }

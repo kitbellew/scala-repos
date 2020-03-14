@@ -3,14 +3,16 @@ object Test {
     val value: Int
   }
 
-  implicit val a: Box = new Box {
-    val value = 1
-  }
+  implicit val a: Box =
+    new Box {
+      val value = 1
+    }
 
   def main(args: Array[String]) {
-    implicit val b: Box = new Box {
-      val value = 2
-    }
+    implicit val b: Box =
+      new Box {
+        val value = 2
+      }
 
     new Object {
       new Test()

@@ -86,64 +86,65 @@ trait JobService
   implicit def executionContext: ExecutionContext
   implicit def M: Monad[Future]
 
-  val jobService = this.service("jobs", "1.0") {
-    requestLogging(timeout) {
-      help("/docs/api") {
-        healthMonitor("/health", timeout, List(eternity)) {
-          monitor => context =>
-            startup {
-              import context._
-              M.point {
-                val (resource, jobs) = jobManager(config)
-                JobServiceState(resource, jobs, authService(config), clock)
-              }
-            } ->
-              request {
-                case JobServiceState(_, jobs, auth, clock) =>
-                  import CORSHeaderHandler.allowOrigin
-                  allowOrigin("*", executionContext) {
-                    // Content type is set by the ResultHandler
-                    path("/jobs/") {
-                      path("'jobId") {
-                        path("/result") {
-                          put(new CreateResultHandler(jobs)) ~
-                            get(new GetResultHandler(jobs))
-                        }
-                      }
-                    } ~
-                      jsonp {
-                        produce(MimeTypes.application / MimeTypes.json) {
-                          path("/jobs/") {
-                            get(new ListJobsHandler(jobs)) ~
-                              post(new CreateJobHandler(jobs, auth, clock)) ~
-                              path("'jobId") {
-                                get(new GetJobHandler(jobs)) ~
-                                  path("/status") {
-                                    get(new GetJobStatusHandler(jobs)) ~
-                                      put(new UpdateJobStatusHandler(jobs))
-                                  } ~
-                                  path("/state") {
-                                    get(new GetJobStateHandler(jobs)) ~
-                                      put(new PutJobStateHandler(jobs))
-                                  } ~
-                                  path("/messages/") {
-                                    get(new ListChannelsHandler(jobs)) ~
-                                      path("'channel") {
-                                        post(new AddMessageHandler(jobs)) ~
-                                          get(new ListMessagesHandler(jobs))
-                                      }
-                                  }
-                              }
+  val jobService =
+    this.service("jobs", "1.0") {
+      requestLogging(timeout) {
+        help("/docs/api") {
+          healthMonitor("/health", timeout, List(eternity)) {
+            monitor => context =>
+              startup {
+                import context._
+                M.point {
+                  val (resource, jobs) = jobManager(config)
+                  JobServiceState(resource, jobs, authService(config), clock)
+                }
+              } ->
+                request {
+                  case JobServiceState(_, jobs, auth, clock) =>
+                    import CORSHeaderHandler.allowOrigin
+                    allowOrigin("*", executionContext) {
+                      // Content type is set by the ResultHandler
+                      path("/jobs/") {
+                        path("'jobId") {
+                          path("/result") {
+                            put(new CreateResultHandler(jobs)) ~
+                              get(new GetResultHandler(jobs))
                           }
                         }
-                      }
-                  }
-              } ->
-              shutdown { state =>
-                close(state.resource)
-              }
+                      } ~
+                        jsonp {
+                          produce(MimeTypes.application / MimeTypes.json) {
+                            path("/jobs/") {
+                              get(new ListJobsHandler(jobs)) ~
+                                post(new CreateJobHandler(jobs, auth, clock)) ~
+                                path("'jobId") {
+                                  get(new GetJobHandler(jobs)) ~
+                                    path("/status") {
+                                      get(new GetJobStatusHandler(jobs)) ~
+                                        put(new UpdateJobStatusHandler(jobs))
+                                    } ~
+                                    path("/state") {
+                                      get(new GetJobStateHandler(jobs)) ~
+                                        put(new PutJobStateHandler(jobs))
+                                    } ~
+                                    path("/messages/") {
+                                      get(new ListChannelsHandler(jobs)) ~
+                                        path("'channel") {
+                                          post(new AddMessageHandler(jobs)) ~
+                                            get(new ListMessagesHandler(jobs))
+                                        }
+                                    }
+                                }
+                            }
+                          }
+                        }
+                    }
+                } ->
+                shutdown { state =>
+                  close(state.resource)
+                }
+          }
         }
       }
     }
-  }
 }

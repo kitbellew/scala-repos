@@ -29,11 +29,12 @@ object ResponseClassifier {
     * theirClassier.applyOrElse(theirReqRep, ResponseClassifier.Default)
     * }}}
     */
-  val Default: ResponseClassifier = named("DefaultResponseClassifier") {
-    case ReqRep(_, Return(_)) => ResponseClass.Success
-    case ReqRep(_, Throw(RetryableWriteException(_))) =>
-      ResponseClass.RetryableFailure
-    case ReqRep(_, Throw(_)) => ResponseClass.NonRetryableFailure
-  }
+  val Default: ResponseClassifier =
+    named("DefaultResponseClassifier") {
+      case ReqRep(_, Return(_)) => ResponseClass.Success
+      case ReqRep(_, Throw(RetryableWriteException(_))) =>
+        ResponseClass.RetryableFailure
+      case ReqRep(_, Throw(_)) => ResponseClass.NonRetryableFailure
+    }
 
 }

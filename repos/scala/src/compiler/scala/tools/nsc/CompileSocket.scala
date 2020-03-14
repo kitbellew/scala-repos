@@ -58,15 +58,16 @@ class CompileSocket extends CompileOutputCommon {
   protected def cmdName = Properties.scalaCmd
 
   /** The vm part of the command to start a new scala compile server */
-  protected val vmCommand = Properties.scalaHome match {
-    case "" => cmdName
-    case dirname =>
-      val trial = File(dirname) / "bin" / cmdName
-      if (trial.canRead)
-        trial.path
-      else
-        cmdName
-  }
+  protected val vmCommand =
+    Properties.scalaHome match {
+      case "" => cmdName
+      case dirname =>
+        val trial = File(dirname) / "bin" / cmdName
+        if (trial.canRead)
+          trial.path
+        else
+          cmdName
+    }
 
   /** The class name of the scala compile server */
   protected val serverClass = "scala.tools.nsc.CompileServer"

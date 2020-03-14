@@ -395,8 +395,8 @@ abstract class DStream[T: ClassTag](
       ssc.sparkContext.getLocalProperty(CallSite.LONG_FORM)
     )
     val prevScope = ssc.sparkContext.getLocalProperty(scopeKey)
-    val prevScopeNoOverride =
-      ssc.sparkContext.getLocalProperty(scopeNoOverrideKey)
+    val prevScopeNoOverride = ssc.sparkContext.getLocalProperty(
+      scopeNoOverrideKey)
 
     try {
       if (displayInnerRDDOps) {
@@ -442,12 +442,13 @@ abstract class DStream[T: ClassTag](
   private[streaming] def generateJob(time: Time): Option[Job] = {
     getOrCompute(time) match {
       case Some(rdd) => {
-        val jobFunc = () => {
-          val emptyFunc = { (iterator: Iterator[T]) =>
-            {}
+        val jobFunc =
+          () => {
+            val emptyFunc = { (iterator: Iterator[T]) =>
+              {}
+            }
+            context.sparkContext.runJob(rdd, emptyFunc)
           }
-          context.sparkContext.runJob(rdd, emptyFunc)
-        }
         Some(new Job(time, jobFunc))
       }
       case None => None
@@ -718,10 +719,11 @@ abstract class DStream[T: ClassTag](
       // DStreams can't be serialized with closures, we can't proactively check
       // it for serializability and so we pass the optional false to SparkContext.clean
       val cleanedF = context.sparkContext.clean(transformFunc, false)
-      val realTransformFunc = (rdds: Seq[RDD[_]], time: Time) => {
-        assert(rdds.length == 1)
-        cleanedF(rdds.head.asInstanceOf[RDD[T]], time)
-      }
+      val realTransformFunc =
+        (rdds: Seq[RDD[_]], time: Time) => {
+          assert(rdds.length == 1)
+          cleanedF(rdds.head.asInstanceOf[RDD[T]], time)
+        }
       new TransformedDStream[U](Seq(this), realTransformFunc)
     }
 
@@ -756,12 +758,13 @@ abstract class DStream[T: ClassTag](
       // DStreams can't be serialized with closures, we can't proactively check
       // it for serializability and so we pass the optional false to SparkContext.clean
       val cleanedF = ssc.sparkContext.clean(transformFunc, false)
-      val realTransformFunc = (rdds: Seq[RDD[_]], time: Time) => {
-        assert(rdds.length == 2)
-        val rdd1 = rdds(0).asInstanceOf[RDD[T]]
-        val rdd2 = rdds(1).asInstanceOf[RDD[U]]
-        cleanedF(rdd1, rdd2, time)
-      }
+      val realTransformFunc =
+        (rdds: Seq[RDD[_]], time: Time) => {
+          assert(rdds.length == 2)
+          val rdd1 = rdds(0).asInstanceOf[RDD[T]]
+          val rdd2 = rdds(1).asInstanceOf[RDD[U]]
+          cleanedF(rdd1, rdd2, time)
+        }
       new TransformedDStream[V](Seq(this, other), realTransformFunc)
     }
 
@@ -953,13 +956,14 @@ abstract class DStream[T: ClassTag](
         throw new SparkException(this + " has not been initialized")
       }
 
-      val alignedToTime = if ((toTime - zeroTime).isMultipleOf(slideDuration)) {
-        toTime
-      } else {
-        logWarning(
-          s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
-        toTime.floor(slideDuration, zeroTime)
-      }
+      val alignedToTime =
+        if ((toTime - zeroTime).isMultipleOf(slideDuration)) {
+          toTime
+        } else {
+          logWarning(
+            s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
+          toTime.floor(slideDuration, zeroTime)
+        }
 
       val alignedFromTime =
         if ((fromTime - zeroTime).isMultipleOf(slideDuration)) {
@@ -991,10 +995,11 @@ abstract class DStream[T: ClassTag](
     */
   def saveAsObjectFiles(prefix: String, suffix: String = ""): Unit =
     ssc.withScope {
-      val saveFunc = (rdd: RDD[T], time: Time) => {
-        val file = rddToFileName(prefix, suffix, time)
-        rdd.saveAsObjectFile(file)
-      }
+      val saveFunc =
+        (rdd: RDD[T], time: Time) => {
+          val file = rddToFileName(prefix, suffix, time)
+          rdd.saveAsObjectFile(file)
+        }
       this.foreachRDD(saveFunc, displayInnerRDDOps = false)
     }
 
@@ -1005,10 +1010,11 @@ abstract class DStream[T: ClassTag](
     */
   def saveAsTextFiles(prefix: String, suffix: String = ""): Unit =
     ssc.withScope {
-      val saveFunc = (rdd: RDD[T], time: Time) => {
-        val file = rddToFileName(prefix, suffix, time)
-        rdd.saveAsTextFile(file)
-      }
+      val saveFunc =
+        (rdd: RDD[T], time: Time) => {
+          val file = rddToFileName(prefix, suffix, time)
+          rdd.saveAsTextFile(file)
+        }
       this.foreachRDD(saveFunc, displayInnerRDDOps = false)
     }
 

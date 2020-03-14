@@ -82,10 +82,10 @@ object MixedBag extends App {
     type Pair[+A] = (A, A)
     type Tree[A] = Free[Pair, A]
 
-    implicit val pairFunctor: Functor[Pair] = new Functor[Pair] {
-      def map[A, B](as: Pair[A])(f: A => B) =
-        f(as._1) -> f(as._2)
-    }
+    implicit val pairFunctor: Functor[Pair] =
+      new Functor[Pair] {
+        def map[A, B](as: Pair[A])(f: A => B) = f(as._1) -> f(as._2)
+      }
 
     def leaf[A](a: A): Tree[A] = Free.pure(a)
     def node[A](l: Tree[A], r: Tree[A]): Tree[A] = Free[Pair, A](l -> r)
@@ -107,23 +107,24 @@ object MixedBag extends App {
 
     val fileName = "abc.txt"
 
-    val oldExtensionAndNewName: Option[(String, String)] = for {
-      zipper <- list.toZipper(fileName.toList)
+    val oldExtensionAndNewName: Option[(String, String)] =
+      for {
+        zipper <- list.toZipper(fileName.toList)
 
-      // previousC from the first position rotates the focus to the last element
-      zipperAtLast = zipper.previousC
+        // previousC from the first position rotates the focus to the last element
+        zipperAtLast = zipper.previousC
 
-      // focus on the first preceding character, if found, that `== '.'`
-      zipperAtDot <- zipper.findPrevious(_ == '.')
+        // focus on the first preceding character, if found, that `== '.'`
+        zipperAtDot <- zipper.findPrevious(_ == '.')
 
-      // Zipper#rights contains the elements to the right of the focus
-      oldExtension = zipperAtDot.rights.mkString
+        // Zipper#rights contains the elements to the right of the focus
+        oldExtension = zipperAtDot.rights.mkString
 
-      // Change the extension.
-      changedExtZipper = zipperAtDot.copy(rights = "log".toStream)
+        // Change the extension.
+        changedExtZipper = zipperAtDot.copy(rights = "log".toStream)
 
-      // Convert the Zipper back to a string
-      newFileName = changedExtZipper.toStream.mkString
-    } yield (oldExtension, newFileName)
+        // Convert the Zipper back to a string
+        newFileName = changedExtZipper.toStream.mkString
+      } yield (oldExtension, newFileName)
   }
 }

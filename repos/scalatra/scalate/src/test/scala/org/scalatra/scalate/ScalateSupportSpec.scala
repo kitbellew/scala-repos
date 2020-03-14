@@ -93,9 +93,10 @@ class ScalateSupportSpec extends ScalatraSpec {
           .defaultLayouts mkString ";"
       }
 
-      val urlGeneration = get("/url-generation") {
-        layoutTemplate("/urlGeneration.jade")
-      }
+      val urlGeneration =
+        get("/url-generation") {
+          layoutTemplate("/urlGeneration.jade")
+        }
 
       val urlGenerationWithParams =
         get("/url-generation-with-params/:a/vs/:b") {

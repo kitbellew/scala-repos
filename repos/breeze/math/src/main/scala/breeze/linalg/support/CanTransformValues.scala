@@ -58,8 +58,7 @@ object CanTransformValues {
     }
   }
 
-  implicit def opArray[@specialized A] =
-    new OpArray[A]
+  implicit def opArray[@specialized A] = new OpArray[A]
 
   implicit object OpArrayII extends OpArray[Int]
 

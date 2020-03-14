@@ -310,18 +310,21 @@ private[hive] trait HiveInspectors {
       case mi: StandardConstantMapObjectInspector =>
         // take the value from the map inspector object, rather than the input data
         val keyValues = mi.getWritableConstantValue.asScala.toSeq
-        val keys = keyValues
-          .map(kv => unwrap(kv._1, mi.getMapKeyObjectInspector))
-          .toArray
-        val values = keyValues
-          .map(kv => unwrap(kv._2, mi.getMapValueObjectInspector))
-          .toArray
+        val keys =
+          keyValues
+            .map(kv => unwrap(kv._1, mi.getMapKeyObjectInspector))
+            .toArray
+        val values =
+          keyValues
+            .map(kv => unwrap(kv._2, mi.getMapValueObjectInspector))
+            .toArray
         ArrayBasedMapData(keys, values)
       case li: StandardConstantListObjectInspector =>
         // take the value from the list inspector object, rather than the input data
-        val values = li.getWritableConstantValue.asScala
-          .map(unwrap(_, li.getListElementObjectInspector))
-          .toArray
+        val values =
+          li.getWritableConstantValue.asScala
+            .map(unwrap(_, li.getListElementObjectInspector))
+            .toArray
         new GenericArrayData(values)
       // if the value is null, we don't care about the object inspector type
       case _ if data == null => null
@@ -387,12 +390,14 @@ private[hive] trait HiveInspectors {
           null
         } else {
           val keyValues = map.asScala.toSeq
-          val keys = keyValues
-            .map(kv => unwrap(kv._1, mi.getMapKeyObjectInspector))
-            .toArray
-          val values = keyValues
-            .map(kv => unwrap(kv._2, mi.getMapValueObjectInspector))
-            .toArray
+          val keys =
+            keyValues
+              .map(kv => unwrap(kv._1, mi.getMapKeyObjectInspector))
+              .toArray
+          val values =
+            keyValues
+              .map(kv => unwrap(kv._2, mi.getMapValueObjectInspector))
+              .toArray
           ArrayBasedMapData(keys, values)
         }
       // currently, hive doesn't provide the ConstantStructObjectInspector
@@ -454,8 +459,9 @@ private[hive] trait HiveInspectors {
 
       case soi: StandardStructObjectInspector =>
         val schema = dataType.asInstanceOf[StructType]
-        val wrappers =
-          soi.getAllStructFieldRefs.asScala.zip(schema.fields).map {
+        val wrappers = soi.getAllStructFieldRefs.asScala
+          .zip(schema.fields)
+          .map {
             case (ref, field) =>
               wrapperFor(ref.getFieldObjectInspector, field.dataType)
           }
@@ -500,8 +506,9 @@ private[hive] trait HiveInspectors {
       case moi: MapObjectInspector =>
         val mt = dataType.asInstanceOf[MapType]
         val keyWrapper = wrapperFor(moi.getMapKeyObjectInspector, mt.keyType)
-        val valueWrapper =
-          wrapperFor(moi.getMapValueObjectInspector, mt.valueType)
+        val valueWrapper = wrapperFor(
+          moi.getMapValueObjectInspector,
+          mt.valueType)
 
         (o: Any) => {
           if (o != null) {

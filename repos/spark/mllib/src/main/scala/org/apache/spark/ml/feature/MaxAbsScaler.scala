@@ -83,9 +83,10 @@ class MaxAbsScaler @Since("2.0.0") (override val uid: String)
     val minVals = summary.min.toArray
     val maxVals = summary.max.toArray
     val n = minVals.length
-    val maxAbs = Array.tabulate(n) { i =>
-      math.max(math.abs(minVals(i)), math.abs(maxVals(i)))
-    }
+    val maxAbs =
+      Array.tabulate(n) { i =>
+        math.max(math.abs(minVals(i)), math.abs(maxVals(i)))
+      }
 
     copyValues(
       new MaxAbsScalerModel(uid, Vectors.dense(maxAbs)).setParent(this))

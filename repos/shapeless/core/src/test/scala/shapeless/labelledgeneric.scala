@@ -36,8 +36,11 @@ object LabelledGenericTestsAux {
       inPrint: Boolean)
   case class BookWithMultipleAuthors(title: String, id: Int, authors: String*)
 
-  val tapl =
-    Book("Benjamin Pierce", "Types and Programming Languages", 262162091, 44.11)
+  val tapl = Book(
+    "Benjamin Pierce",
+    "Types and Programming Languages",
+    262162091,
+    44.11)
   val tapl2 = Book(
     "Benjamin Pierce",
     "Types and Programming Languages (2nd Ed.)",

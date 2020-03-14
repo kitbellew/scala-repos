@@ -22,8 +22,9 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
     for (field <- list) {
       val name: String = field.name
       if (name != null && name.startsWith("$outer")) {
-        val rv: ObjectReference =
-          objRef.getValue(field).asInstanceOf[ObjectReference]
+        val rv: ObjectReference = objRef
+          .getValue(field)
+          .asInstanceOf[ObjectReference]
         if (rv != null) {
           return rv
         }
@@ -36,26 +37,27 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     lazy val frameProxy: StackFrameProxyImpl = context.getFrameProxy
-    var objRef: Value = context.getThisObject match {
-      case null => //so we possibly in trait $class
-        try {
-          val variable: LocalVariableProxyImpl =
-            frameProxy.visibleVariableByName("$this")
-          if (variable == null)
-            null
-          else {
-            frameProxy.getValue(variable)
-          }
-        } catch {
-          case e: AbsentInformationException =>
-            val args = frameProxy.getArgumentValues
-            if (args.size() > 0)
-              args.get(0)
-            else
+    var objRef: Value =
+      context.getThisObject match {
+        case null => //so we possibly in trait $class
+          try {
+            val variable: LocalVariableProxyImpl = frameProxy
+              .visibleVariableByName("$this")
+            if (variable == null)
               null
-        }
-      case x => x
-    }
+            else {
+              frameProxy.getValue(variable)
+            }
+          } catch {
+            case e: AbsentInformationException =>
+              val args = frameProxy.getArgumentValues
+              if (args.size() > 0)
+                args.get(0)
+              else
+                null
+          }
+        case x => x
+      }
     if (iterations > 0) {
       var thisRef: ObjectReference = objRef.asInstanceOf[ObjectReference]
       var idx: Int = 0

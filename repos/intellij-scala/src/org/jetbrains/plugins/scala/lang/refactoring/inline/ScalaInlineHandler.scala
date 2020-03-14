@@ -97,55 +97,60 @@ class ScalaInlineHandler extends InlineHandler {
   def createInliner(
       element: PsiElement,
       settings: InlineHandler.Settings): InlineHandler.Inliner = {
-    val replacementValue = element match {
-      case rp: ScBindingPattern =>
-        PsiTreeUtil.getParentOfType(
-          rp,
-          classOf[ScDeclaredElementsHolder]) match {
-          case v @ ScPatternDefinition.expr(e)
-              if v.declaredElements == Seq(element) =>
-            e.getText
-          case v @ ScVariableDefinition.expr(e)
-              if v.declaredElements == Seq(element) =>
-            e.getText
-          case _ => return null
-        }
-      case funDef: ScFunctionDefinition if funDef.parameters.isEmpty =>
-        funDef.body.orNull.getText
-      case typeAlias: ScTypeAliasDefinition =>
-        typeAlias.aliasedTypeElement.getText
-      case _ => return null
-    }
+    val replacementValue =
+      element match {
+        case rp: ScBindingPattern =>
+          PsiTreeUtil.getParentOfType(
+            rp,
+            classOf[ScDeclaredElementsHolder]) match {
+            case v @ ScPatternDefinition.expr(e)
+                if v.declaredElements == Seq(element) =>
+              e.getText
+            case v @ ScVariableDefinition.expr(e)
+                if v.declaredElements == Seq(element) =>
+              e.getText
+            case _ => return null
+          }
+        case funDef: ScFunctionDefinition if funDef.parameters.isEmpty =>
+          funDef.body.orNull.getText
+        case typeAlias: ScTypeAliasDefinition =>
+          typeAlias.aliasedTypeElement.getText
+        case _ => return null
+      }
     new InlineHandler.Inliner {
       def inlineUsage(usage: UsageInfo, referenced: PsiElement) {
         val reference = usage.getReference
-        val replacementOpt = reference.getElement match {
-          case Parent(call: ScMethodCall) if call.argumentExpressions.isEmpty =>
-            Some(call)
-          case e: ScExpression => Some(e)
-          case Parent(reference: ScTypeElement) =>
-            Some(reference)
-          case _ => None
-        }
-        replacementOpt.foreach { replacement =>
-          val newValue = replacement match {
-            case expression: ScExpression =>
-              val oldValue = expression match {
-                case _ childOf (_: ScInterpolatedStringLiteral) =>
-                  s"{" + replacementValue + "}"
-                case _ =>
-                  replacementValue
-              }
-              expression.replaceExpression(
-                ScalaPsiElementFactory
-                  .createExpressionFromText(oldValue, replacement.getManager),
-                removeParenthesis = true)
-            case typeElement: ScTypeElement =>
-              replacement.replace(
-                ScalaPsiElementFactory.createTypeElementFromText(
-                  replacementValue,
-                  replacement.getManager))
+        val replacementOpt =
+          reference.getElement match {
+            case Parent(call: ScMethodCall)
+                if call.argumentExpressions.isEmpty =>
+              Some(call)
+            case e: ScExpression => Some(e)
+            case Parent(reference: ScTypeElement) =>
+              Some(reference)
+            case _ => None
           }
+        replacementOpt.foreach { replacement =>
+          val newValue =
+            replacement match {
+              case expression: ScExpression =>
+                val oldValue =
+                  expression match {
+                    case _ childOf (_: ScInterpolatedStringLiteral) =>
+                      s"{" + replacementValue + "}"
+                    case _ =>
+                      replacementValue
+                  }
+                expression.replaceExpression(
+                  ScalaPsiElementFactory
+                    .createExpressionFromText(oldValue, replacement.getManager),
+                  removeParenthesis = true)
+              case typeElement: ScTypeElement =>
+                replacement.replace(
+                  ScalaPsiElementFactory.createTypeElementFromText(
+                    replacementValue,
+                    replacement.getManager))
+            }
 
           val project = newValue.getProject
           val manager = FileEditorManager.getInstance(project)
@@ -193,18 +198,20 @@ class ScalaInlineHandler extends InlineHandler {
         psiNamedElement: PsiNamedElement,
         inlineTitleSuffix: String,
         inlineDescriptionSuffix: String): InlineHandler.Settings = {
-      val refs = ReferencesSearch
-        .search(psiNamedElement, psiNamedElement.getUseScope)
-        .findAll
-        .asScala
+      val refs =
+        ReferencesSearch
+          .search(psiNamedElement, psiNamedElement.getUseScope)
+          .findAll
+          .asScala
       val inlineTitle = title(inlineTitleSuffix)
       occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
         element.getProject,
         refs.map(_.getElement).toArray,
         editor)
-      val settings = new InlineHandler.Settings {
-        def isOnlyOneReferenceToInline: Boolean = false
-      }
+      val settings =
+        new InlineHandler.Settings {
+          def isOnlyOneReferenceToInline: Boolean = false
+        }
       if (refs.isEmpty)
         showErrorHint(
           ScalaBundle.message("cannot.inline.never.used"),
@@ -219,20 +226,22 @@ class ScalaInlineHandler extends InlineHandler {
           ScalaBundle.message("cannot.inline.stable.reference"),
           inlineTitleSuffix)
       else if (!ApplicationManager.getApplication.isUnitTestMode) {
-        val occurences = refs.size match {
-          case 1 => "(1 occurrence)"
-          case n => s"($n occurrences)"
-        }
+        val occurences =
+          refs.size match {
+            case 1 => "(1 occurrence)"
+            case n => s"($n occurrences)"
+          }
 
         val question =
           s"Inline $inlineDescriptionSuffix ${psiNamedElement.name}? $occurences"
-        val dialog = new RefactoringMessageDialog(
-          inlineTitle,
-          question,
-          HelpID.INLINE_VARIABLE,
-          "OptionPane.questionIcon",
-          true,
-          element.getProject)
+        val dialog =
+          new RefactoringMessageDialog(
+            inlineTitle,
+            question,
+            HelpID.INLINE_VARIABLE,
+            "OptionPane.questionIcon",
+            true,
+            element.getProject)
         dialog.show()
         if (!dialog.isOK) {
           occurrenceHighlighters.foreach(_.dispose())
@@ -268,11 +277,12 @@ class ScalaInlineHandler extends InlineHandler {
           if ScFunctionType
             .unapply(typedDef.getType().getOrAny)
             .exists(_._2.nonEmpty) =>
-        val message = typedDef match {
-          case _: ScFunctionDeclaration | _: ScFunctionDefinition =>
-            ScalaBundle.message("cannot.inline.function.with.parameters")
-          case _ => ScalaBundle.message("cannot.inline.value.functional.type")
-        }
+        val message =
+          typedDef match {
+            case _: ScFunctionDeclaration | _: ScFunctionDefinition =>
+              ScalaBundle.message("cannot.inline.function.with.parameters")
+            case _ => ScalaBundle.message("cannot.inline.value.functional.type")
+          }
         showErrorHint(message, "element")
       case named: ScNamedElement
           if named.getContainingFile != PsiDocumentManager

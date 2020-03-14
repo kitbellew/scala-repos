@@ -370,12 +370,13 @@ trait WebSocketSpec
 
       "clean up when closed" in cleanUpWhenClosed { app => cleanedUp =>
         WebSocket.using[String] { req =>
-          val tick = Enumerator.unfoldM(()) { _ =>
-            val p = Promise[Option[(Unit, String)]]()
-            app.actorSystem.scheduler
-              .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
-            p.future
-          }
+          val tick =
+            Enumerator.unfoldM(()) { _ =>
+              val p = Promise[Option[(Unit, String)]]()
+              app.actorSystem.scheduler
+                .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
+              p.future
+            }
           (
             Iteratee.ignore,
             tick.onDoneEnumerating {

@@ -143,13 +143,14 @@ trait StringHelpers {
     * @return the capified string
     */
   def capify(in: String): String = {
-    val tmp = ((in match {
-      case null => ""
-      case s    => s
-    }).trim match {
-      case "" => "n/a"
-      case s  => s
-    }).toLowerCase
+    val tmp =
+      ((in match {
+        case null => ""
+        case s    => s
+      }).trim match {
+        case "" => "n/a"
+        case s  => s
+      }).toLowerCase
     val sb = new GoodSB
     capify(tmp, 0, 250, false, false, sb)
     sb.toString
@@ -209,11 +210,12 @@ trait StringHelpers {
       if (pos >= size)
         sb
       else {
-        val randNum = if ((pos % 6) == 0) {
-          _random.synchronized(_random.nextInt)
-        } else {
-          lastRand
-        }
+        val randNum =
+          if ((pos % 6) == 0) {
+            _random.synchronized(_random.nextInt)
+          } else {
+            lastRand
+          }
 
         sb.append((randNum & 0x1f) match {
           case n if n < 26 => ('A' + n).toChar

@@ -31,11 +31,12 @@ class Path private (val elements: String*) {
   val path: String = elements.mkString("/", "/", "/").replaceAll("/+", "/")
   val length: Int = elements.length
 
-  lazy val parent: Option[Path] = elements.size match {
-    case 0 => None
-    case 1 => Some(Path.Root)
-    case _ => Some(new Path(elements.init: _*))
-  }
+  lazy val parent: Option[Path] =
+    elements.size match {
+      case 0 => None
+      case 1 => Some(Path.Root)
+      case _ => Some(new Path(elements.init: _*))
+    }
 
   lazy val ancestors: List[Path] = {
     val parentList = parent.toList

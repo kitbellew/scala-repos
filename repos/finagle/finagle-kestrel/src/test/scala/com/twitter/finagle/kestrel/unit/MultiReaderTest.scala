@@ -93,14 +93,15 @@ class MultiReaderTest
       }
     }
 
-    val hostQueuesMap = hosts.map { host =>
-      val queues = CacheBuilder
-        .newBuilder()
-        .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
-          def load(k: Buf) = new LinkedBlockingDeque[Buf]
-        })
-      (host, queues)
-    }.toMap
+    val hostQueuesMap =
+      hosts.map { host =>
+        val queues = CacheBuilder
+          .newBuilder()
+          .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
+            def load(k: Buf) = new LinkedBlockingDeque[Buf]
+          })
+        (host, queues)
+      }.toMap
 
     lazy val mockClientBuilder = {
       val result = mock[ClientBuilder[
@@ -111,23 +112,23 @@ class MultiReaderTest
         ClientConfig.Yes]]
 
       hosts.foreach { host =>
-        val mockHostClientBuilder =
-          mock[ClientBuilder[
-            Command,
-            Response,
-            ClientConfig.Yes,
-            ClientConfig.Yes,
-            ClientConfig.Yes]]
+        val mockHostClientBuilder = mock[ClientBuilder[
+          Command,
+          Response,
+          ClientConfig.Yes,
+          ClientConfig.Yes,
+          ClientConfig.Yes]]
         when(result.addrs(host)) thenReturn mockHostClientBuilder
 
         val queues = hostQueuesMap(host)
-        val factory = new ServiceFactory[Command, Response] {
-          // use an executor so readReliably doesn't block waiting on an empty queue
-          def apply(conn: ClientConnection) =
-            Future.value(newKestrelService(Some(executor), queues))
-          def close(deadline: Time) = Future.Done
-          override def toString() = "ServiceFactory for %s".format(host)
-        }
+        val factory =
+          new ServiceFactory[Command, Response] {
+            // use an executor so readReliably doesn't block waiting on an empty queue
+            def apply(conn: ClientConnection) =
+              Future.value(newKestrelService(Some(executor), queues))
+            def close(deadline: Time) = Future.Done
+            override def toString() = "ServiceFactory for %s".format(host)
+          }
         when(mockHostClientBuilder.buildFactory()) thenReturn factory
       }
       result
@@ -208,14 +209,15 @@ class MultiReaderTest
       }
     }
 
-    val hostQueuesMap = hosts.map { host =>
-      val queues = CacheBuilder
-        .newBuilder()
-        .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
-          def load(k: Buf) = new LinkedBlockingDeque[Buf]
-        })
-      (host, queues)
-    }.toMap
+    val hostQueuesMap =
+      hosts.map { host =>
+        val queues = CacheBuilder
+          .newBuilder()
+          .build(new CacheLoader[Buf, BlockingDeque[Buf]] {
+            def load(k: Buf) = new LinkedBlockingDeque[Buf]
+          })
+        (host, queues)
+      }.toMap
 
     lazy val mockClientBuilder = {
       val result = mock[ClientBuilder[
@@ -226,23 +228,23 @@ class MultiReaderTest
         ClientConfig.Yes]]
 
       hosts.foreach { host =>
-        val mockHostClientBuilder =
-          mock[ClientBuilder[
-            Command,
-            Response,
-            ClientConfig.Yes,
-            ClientConfig.Yes,
-            ClientConfig.Yes]]
+        val mockHostClientBuilder = mock[ClientBuilder[
+          Command,
+          Response,
+          ClientConfig.Yes,
+          ClientConfig.Yes,
+          ClientConfig.Yes]]
         when(result.addrs(Address(host))) thenReturn mockHostClientBuilder
 
         val queues = hostQueuesMap(host)
-        val factory = new ServiceFactory[Command, Response] {
-          // use an executor so readReliably doesn't block waiting on an empty queue
-          def apply(conn: ClientConnection) =
-            Future(newKestrelService(Some(executor), queues))
-          def close(deadline: Time) = Future.Done
-          override def toString() = "ServiceFactory for %s".format(host)
-        }
+        val factory =
+          new ServiceFactory[Command, Response] {
+            // use an executor so readReliably doesn't block waiting on an empty queue
+            def apply(conn: ClientConnection) =
+              Future(newKestrelService(Some(executor), queues))
+            def close(deadline: Time) = Future.Done
+            override def toString() = "ServiceFactory for %s".format(host)
+          }
         when(mockHostClientBuilder.buildFactory()) thenReturn factory
       }
       result
@@ -346,8 +348,9 @@ class MultiReaderTest
   test("Var[Addr]-based cluster should read messages from a ready cluster") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound(hosts: _*))
-      val handle =
-        MultiReader(va, queueName).clientBuilder(mockClientBuilder).build()
+      val handle = MultiReader(va, queueName)
+        .clientBuilder(mockClientBuilder)
+        .build()
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i =>
         "message %d".format(i)
@@ -371,8 +374,9 @@ class MultiReaderTest
     "Var[Addr]-based cluster should read messages as cluster hosts are added") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound(hosts.head))
-      val handle =
-        MultiReader(va, queueName).clientBuilder(mockClientBuilder).build()
+      val handle = MultiReader(va, queueName)
+        .clientBuilder(mockClientBuilder)
+        .build()
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i =>
         "message %d".format(i)
@@ -420,8 +424,9 @@ class MultiReaderTest
       var mutableHosts: Seq[Address] = hosts
       val va = Var(Addr.Bound(mutableHosts: _*))
       val rest = hosts.tail.reverse
-      val handle =
-        MultiReader(va, queueName).clientBuilder(mockClientBuilder).build()
+      val handle = MultiReader(va, queueName)
+        .clientBuilder(mockClientBuilder)
+        .build()
 
       val messages = configureMessageReader(handle)
       val sentMessages = 0 until N * 10 map { i =>
@@ -473,8 +478,9 @@ class MultiReaderTest
     "Var[Addr]-based cluster should wait for cluster to become ready before snapping initial hosts") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound())
-      val handle =
-        MultiReader(va, queueName).clientBuilder(mockClientBuilder).build()
+      val handle = MultiReader(va, queueName)
+        .clientBuilder(mockClientBuilder)
+        .build()
       val messages = configureMessageReader(handle)
       val error = handle.error.sync()
       val sentMessages = 0 until N * 10 map { i =>
@@ -504,8 +510,9 @@ class MultiReaderTest
     "Var[Addr]-based cluster should report an error if all hosts are removed") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound(hosts: _*))
-      val handle =
-        MultiReader(va, queueName).clientBuilder(mockClientBuilder).build()
+      val handle = MultiReader(va, queueName)
+        .clientBuilder(mockClientBuilder)
+        .build()
       val error = handle.error.sync()
       va.update(Addr.Bound())
 
@@ -518,8 +525,9 @@ class MultiReaderTest
     new AddrClusterHelper {
       val ex = new Exception("uh oh")
       val va: Var[Addr] with Updatable[Addr] = Var(Addr.Bound(hosts: _*))
-      val handle =
-        MultiReader(va, queueName).clientBuilder(mockClientBuilder).build()
+      val handle = MultiReader(va, queueName)
+        .clientBuilder(mockClientBuilder)
+        .build()
       val error = handle.error.sync()
       va.update(Addr.Failed(ex))
 

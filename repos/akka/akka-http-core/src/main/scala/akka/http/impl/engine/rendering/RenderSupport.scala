@@ -25,8 +25,8 @@ private object RenderSupport {
 
   def CrLf = Rendering.CrLf
 
-  implicit val trailerRenderer =
-    Renderer.genericSeqRenderer[Renderable, HttpHeader](CrLf, Rendering.Empty)
+  implicit val trailerRenderer = Renderer
+    .genericSeqRenderer[Renderable, HttpHeader](CrLf, Rendering.Empty)
 
   val defaultLastChunkBytes: ByteString = renderChunk(HttpEntity.LastChunk)
 

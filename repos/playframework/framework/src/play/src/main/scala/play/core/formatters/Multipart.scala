@@ -174,17 +174,18 @@ object Multipart {
           suppressInitialCrLf = !firstBoundaryRendered)
         firstBoundaryRendered = true
 
-        val (key, filename, contentType) = bodyPart match {
-          case MultipartFormData.DataPart(innerKey, _) =>
-            (innerKey, None, Option("text/plain"))
-          case MultipartFormData.FilePart(
-                innerKey,
-                innerFilename,
-                innerContentType,
-                _) =>
-            (innerKey, Option(innerFilename), innerContentType)
-          case _ => throw new UnsupportedOperationException()
-        }
+        val (key, filename, contentType) =
+          bodyPart match {
+            case MultipartFormData.DataPart(innerKey, _) =>
+              (innerKey, None, Option("text/plain"))
+            case MultipartFormData.FilePart(
+                  innerKey,
+                  innerFilename,
+                  innerContentType,
+                  _) =>
+              (innerKey, Option(innerFilename), innerContentType)
+            case _ => throw new UnsupportedOperationException()
+          }
         renderDisposition(f, key, filename)
         contentType.foreach { ct =>
           renderContentType(f, ct)

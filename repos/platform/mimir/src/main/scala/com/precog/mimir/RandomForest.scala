@@ -251,11 +251,12 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
       }
     }
 
-    val orders = (0 until opts.features).map { i =>
-      val order = (0 until dependent.length).toArray
-      order.qsortBy(independent(_)(i))
-      order
-    }.toArray
+    val orders =
+      (0 until opts.features).map { i =>
+        val order = (0 until dependent.length).toArray
+        order.qsortBy(independent(_)(i))
+        order
+      }.toArray
     growTree(orders)
   }
 }
@@ -588,8 +589,10 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       import trans._
       import TransSpecModule._
 
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JType.JUniverseT, JObjectUnfixedT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JType.JUniverseT,
+        JObjectUnfixedT)
 
       val independent = "predictors"
       val dependent = "dependent"
@@ -599,14 +602,17 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val sampleSize = 10000
       val maxForestSize = 2000
 
-      val independentSpec =
-        trans.DerefObjectStatic(TransSpec1.Id, CPathField(independent))
-      val dependentSpec =
-        trans.DerefObjectStatic(TransSpec1.Id, CPathField(dependent))
+      val independentSpec = trans.DerefObjectStatic(
+        TransSpec1.Id,
+        CPathField(independent))
+      val dependentSpec = trans.DerefObjectStatic(
+        TransSpec1.Id,
+        CPathField(dependent))
 
       override val idPolicy = IdentityPolicy.Retain.Merge
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Right, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Right,
+        alignCustom _)
 
       def extractDependent(table: Table): M[Array[A]]
 
@@ -675,19 +681,21 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
             def variance(values: List[Double]): Double = {
               val mean = meanSeq(values)
-              val sumSq = values.foldLeft(0d) { (acc, x) =>
-                val dx = x - mean
-                acc + dx * dx
-              }
+              val sumSq =
+                values.foldLeft(0d) { (acc, x) =>
+                  val dx = x - mean
+                  acc + dx * dx
+                }
               sumSq / (values.length - 1)
             }
 
             treesM flatMap { trees =>
-              val forests: List[F] = (1 to numChunks)
-                .foldLeft(Nil: List[F]) { (acc, i) =>
-                  (forest(trees take (i * chunkSize)) |+| prev) :: acc
-                }
-                .reverse
+              val forests: List[F] =
+                (1 to numChunks)
+                  .foldLeft(Nil: List[F]) { (acc, i) =>
+                    (forest(trees take (i * chunkSize)) |+| prev) :: acc
+                  }
+                  .reverse
 
               val errors: M[List[Double]] =
                 (forests zip validationSamples) traverse {
@@ -725,12 +733,13 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   ("model" + (i + 1)) -> elem
               })(collection.breakOut)
 
-            lazy val specs: Seq[TransSpec1] = models.map({
-              case (modelId, (jtype, _)) =>
-                trans.WrapObject(
-                  trans.TypedSubsumes(TransSpec1.Id, jtype),
-                  modelId)
-            })(collection.breakOut)
+            lazy val specs: Seq[TransSpec1] =
+              models.map({
+                case (modelId, (jtype, _)) =>
+                  trans.WrapObject(
+                    trans.TypedSubsumes(TransSpec1.Id, jtype),
+                    modelId)
+              })(collection.breakOut)
 
             lazy val spec: TransSpec1 = liftToValues(
               OuterObjectConcat(specs: _*))
@@ -788,19 +797,20 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               })
             }
 
-            val predictions = if (forests.isEmpty) {
-              Table.empty
-            } else {
-              Table(predict(objectTable.slices), objectTable.size)
-            }
+            val predictions =
+              if (forests.isEmpty) {
+                Table.empty
+              } else {
+                Table(predict(objectTable.slices), objectTable.size)
+              }
 
             M.point(predictions)
           }
         }
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
-        val trainingTable =
-          t1.transform(trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
+        val trainingTable = t1.transform(
+          trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
         val forestsM = makeForests(trainingTable)
 
         forestsM map { forests =>

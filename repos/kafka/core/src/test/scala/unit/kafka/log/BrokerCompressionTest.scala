@@ -51,17 +51,18 @@ class BrokerCompressionTest(
     */
   @Test
   def testBrokerSideCompression() {
-    val messageCompressionCode =
-      CompressionCodec.getCompressionCodec(messageCompression)
+    val messageCompressionCode = CompressionCodec.getCompressionCodec(
+      messageCompression)
     val logProps = new Properties()
     logProps.put(LogConfig.CompressionTypeProp, brokerCompression)
     /*configure broker-side compression  */
-    val log = new Log(
-      logDir,
-      LogConfig(logProps),
-      recoveryPoint = 0L,
-      time.scheduler,
-      time = time)
+    val log =
+      new Log(
+        logDir,
+        LogConfig(logProps),
+        recoveryPoint = 0L,
+        time.scheduler,
+        time = time)
 
     /* append two messages */
     log.append(
@@ -74,8 +75,8 @@ class BrokerCompressionTest(
       log.read(offset, 4096).messageSet.head.message
 
     if (!brokerCompression.equals("producer")) {
-      val brokerCompressionCode =
-        BrokerCompressionCodec.getCompressionCodec(brokerCompression)
+      val brokerCompressionCode = BrokerCompressionCodec.getCompressionCodec(
+        brokerCompression)
       assertEquals(
         "Compression at offset 0 should produce " + brokerCompressionCode.name,
         brokerCompressionCode,

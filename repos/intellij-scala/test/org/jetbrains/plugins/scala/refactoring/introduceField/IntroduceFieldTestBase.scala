@@ -92,13 +92,14 @@ abstract class IntroduceFieldTestBase()
       val aClass = expr.parents.toList
         .filter(_.isInstanceOf[ScTemplateDefinition])(selectedClassNumber)
         .asInstanceOf[ScTemplateDefinition]
-      val ifc = new IntroduceFieldContext[ScExpression](
-        getProjectAdapter,
-        editor,
-        scalaFile,
-        expr,
-        types,
-        aClass)
+      val ifc =
+        new IntroduceFieldContext[ScExpression](
+          getProjectAdapter,
+          editor,
+          scalaFile,
+          expr,
+          types,
+          aClass)
       val settings = new IntroduceFieldSettings[ScExpression](ifc)
       settings.replaceAll = replaceAll
       initInDecl.foreach(settings.initInDeclaration = _)
@@ -126,14 +127,15 @@ abstract class IntroduceFieldTestBase()
     }
 
     val text = lastPsi.getText
-    val output = lastPsi.getNode.getElementType match {
-      case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
-      case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
-        text.substring(2, text.length - 2).trim
-      case _ =>
-        assertTrue("Test result must be in last comment statement.", false)
-        ""
-    }
+    val output =
+      lastPsi.getNode.getElementType match {
+        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
+          text.substring(2, text.length - 2).trim
+        case _ =>
+          assertTrue("Test result must be in last comment statement.", false)
+          ""
+      }
     assertEquals(output, res)
   }
 }

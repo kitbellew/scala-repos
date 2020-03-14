@@ -191,14 +191,13 @@ case class Http(
         // ExpiringService do not propagate until all chunks have been read
         // Waiting on CSL-915 for a proper fix.
         underlying.map { u =>
-          val filters =
-            new ClientContextFilter[Request, Response].andThenIf(
-              !_streaming ->
-                new PayloadSizeFilter[Request, Response](
-                  params[param.Stats].statsReceiver,
-                  _.content.length,
-                  _.content.length
-                ))
+          val filters = new ClientContextFilter[Request, Response].andThenIf(
+            !_streaming ->
+              new PayloadSizeFilter[Request, Response](
+                params[param.Stats].statsReceiver,
+                _.content.length,
+                _.content.length
+              ))
 
           filters.andThen(new DelayedReleaseService(u))
         }
@@ -352,31 +351,32 @@ private object TraceInfo {
   import HttpTracing._
 
   def letTraceIdFromRequestHeaders[R](request: Request)(f: => R): R = {
-    val id = if (Header.Required.forall {
-                   request.headers.contains(_)
-                 }) {
-      val spanId = SpanId.fromString(request.headers.get(Header.SpanId))
+    val id =
+      if (Header.Required.forall {
+            request.headers.contains(_)
+          }) {
+        val spanId = SpanId.fromString(request.headers.get(Header.SpanId))
 
-      spanId map { sid =>
-        val traceId = SpanId.fromString(request.headers.get(Header.TraceId))
-        val parentSpanId =
-          SpanId.fromString(request.headers.get(Header.ParentSpanId))
+        spanId map { sid =>
+          val traceId = SpanId.fromString(request.headers.get(Header.TraceId))
+          val parentSpanId = SpanId.fromString(
+            request.headers.get(Header.ParentSpanId))
 
-        val sampled = Option(request.headers.get(Header.Sampled)) flatMap {
-          sampled => Try(sampled.toBoolean).toOption
+          val sampled = Option(request.headers.get(Header.Sampled)) flatMap {
+            sampled => Try(sampled.toBoolean).toOption
+          }
+
+          val flags = getFlags(request)
+          TraceId(traceId, parentSpanId, sid, sampled, flags)
         }
-
-        val flags = getFlags(request)
-        TraceId(traceId, parentSpanId, sid, sampled, flags)
+      } else if (request.headers.contains(Header.Flags)) {
+        // even if there are no id headers we want to get the debug flag
+        // this is to allow developers to just set the debug flag to ensure their
+        // trace is collected
+        Some(Trace.nextId.copy(flags = getFlags(request)))
+      } else {
+        Some(Trace.nextId)
       }
-    } else if (request.headers.contains(Header.Flags)) {
-      // even if there are no id headers we want to get the debug flag
-      // this is to allow developers to just set the debug flag to ensure their
-      // trace is collected
-      Some(Trace.nextId.copy(flags = getFlags(request)))
-    } else {
-      Some(Trace.nextId)
-    }
 
     // remove so the header is not visible to users
     Header.All foreach {

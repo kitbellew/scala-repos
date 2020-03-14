@@ -14,11 +14,12 @@ class CircuitBreakerMTSpec extends AkkaSpec {
     val callTimeout = 2.second.dilated
     val resetTimeout = 3.seconds.dilated
     val maxFailures = 5
-    val breaker = new CircuitBreaker(
-      system.scheduler,
-      maxFailures,
-      callTimeout,
-      resetTimeout)
+    val breaker =
+      new CircuitBreaker(
+        system.scheduler,
+        maxFailures,
+        callTimeout,
+        resetTimeout)
     val numberOfTestCalls = 100
 
     def openBreaker(): Unit = {

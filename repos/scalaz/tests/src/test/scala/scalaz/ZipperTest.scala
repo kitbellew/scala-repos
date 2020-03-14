@@ -398,10 +398,11 @@ object ZipperTest extends SpecLite {
     val size = 32 * 1024
     val n = size - 1
 
-    val f = for {
-      z <- Stream.from(1).take(size).toZipper
-      zm <- z.move(n)
-    } yield zm.focus
+    val f =
+      for {
+        z <- Stream.from(1).take(size).toZipper
+        zm <- z.move(n)
+      } yield zm.focus
 
     f must_=== (Some(size))
   }
@@ -496,10 +497,11 @@ object ZipperTest extends SpecLite {
   "findZ should not cause a stackoverflow error" in {
     val size = 32 * 1024
     val elem = size - 1
-    val r = for {
-      z <- Stream.from(1).take(size).toZipper
-      zf <- z.findZ(_ == elem)
-    } yield zf.focus
+    val r =
+      for {
+        z <- Stream.from(1).take(size).toZipper
+        zf <- z.findZ(_ == elem)
+      } yield zf.focus
 
     r must_=== (Some(elem))
   }
@@ -508,11 +510,12 @@ object ZipperTest extends SpecLite {
     z: Zipper[Int] => z.findBy(z => None)(x => x == z.focus).isEmpty
   }
 
-  val intZipperWithExistingElement: Gen[(Zipper[Int], Int)] = for {
-    z <- arbitrary[Zipper[Int]]
-    stream = z.toStream
-    i <- Gen.choose(0, stream.length - 1)
-  } yield (z, stream(i))
+  val intZipperWithExistingElement: Gen[(Zipper[Int], Int)] =
+    for {
+      z <- arbitrary[Zipper[Int]]
+      stream = z.toStream
+      i <- Gen.choose(0, stream.length - 1)
+    } yield (z, stream(i))
 
   "given nextC findBy should return Some if the element exists" ! forAll(
     intZipperWithExistingElement) {
@@ -601,9 +604,10 @@ object ZipperTest extends SpecLite {
 
   "positions should return a zippers with all possible positions of a zipper" ! forAll {
     z: Zipper[Int] =>
-      val indeces = z.positions.map {
-        _.index
-      }.toStream
+      val indeces =
+        z.positions.map {
+          _.index
+        }.toStream
       indeces.min must_=== (0)
       indeces.max must_=== (z.length - 1)
       indeces.sorted must_=== (indeces)

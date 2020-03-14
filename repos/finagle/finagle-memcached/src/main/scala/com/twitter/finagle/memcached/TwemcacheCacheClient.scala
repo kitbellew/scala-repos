@@ -67,9 +67,10 @@ trait TwemcacheConnectedClient extends TwemcacheClient {
     try {
       if (keys == null)
         throw new IllegalArgumentException("Invalid keys: keys cannot be null")
-      val bufs = keys.map {
-        Buf.Utf8(_)
-      }.toSeq
+      val bufs =
+        keys.map {
+          Buf.Utf8(_)
+        }.toSeq
       rawGet(Getv(bufs)).map {
         GetsResult(_)
       } // map to GetsResult as the response format are the same

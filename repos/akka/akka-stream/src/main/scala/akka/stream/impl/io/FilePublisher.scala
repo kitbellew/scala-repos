@@ -46,8 +46,8 @@ private[akka] object FilePublisher {
 
   private case object Continue extends DeadLetterSuppression
 
-  val Read =
-    java.util.Collections.singleton(java.nio.file.StandardOpenOption.READ)
+  val Read = java.util.Collections
+    .singleton(java.nio.file.StandardOpenOption.READ)
 }
 
 /** INTERNAL API */

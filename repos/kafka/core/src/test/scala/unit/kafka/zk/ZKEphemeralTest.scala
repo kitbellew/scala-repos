@@ -76,8 +76,9 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
 
   @Test
   def testEphemeralNodeCleanup = {
-    val config = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, "test", "1"))
+    val config =
+      new ConsumerConfig(
+        TestUtils.createConsumerProperties(zkConnect, "test", "1"))
     var zkUtils = ZkUtils(
       zkConnect,
       zkSessionTimeoutMs,

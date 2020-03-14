@@ -69,11 +69,12 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
     val peerCert = Some(mock[X509Certificate])
 
     val q = new AsyncQueue[ChannelBuffer]
-    val trans = new QueueTransport(q, q) {
-      override val localAddress: SocketAddress = local
-      override val remoteAddress: SocketAddress = remote
-      override def peerCertificate: Option[Certificate] = peerCert
-    }
+    val trans =
+      new QueueTransport(q, q) {
+        override val localAddress: SocketAddress = local
+        override val remoteAddress: SocketAddress = remote
+        override def peerCertificate: Option[Certificate] = peerCert
+      }
 
     val client = Handshake.client(
       trans = trans,
@@ -165,8 +166,8 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
 
   test("client handshake") {
     val version = 10: Short
-    val headers =
-      Seq(wrappedBuffer("key".getBytes) -> wrappedBuffer("value".getBytes))
+    val headers = Seq(
+      wrappedBuffer("key".getBytes) -> wrappedBuffer("value".getBytes))
     var negotiated = false
 
     val client = Handshake.client(
@@ -229,8 +230,8 @@ class HandshakeTest extends FunSuite with OneInstancePerTest with MockitoSugar {
 
   test("server handshake") {
     val version = 10: Short
-    val hdrs =
-      Seq(wrappedBuffer("key".getBytes) -> wrappedBuffer("value".getBytes))
+    val hdrs = Seq(
+      wrappedBuffer("key".getBytes) -> wrappedBuffer("value".getBytes))
     var negotiated = false
 
     val server = Handshake.server(

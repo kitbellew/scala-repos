@@ -107,32 +107,30 @@ class IntroSpec extends TypedSpec {
     //#chatroom-gabbler
     import ChatRoom._
 
-    val gabbler: Behavior[SessionEvent] =
-      Total {
-        case SessionDenied(reason) ⇒
-          println(s"cannot start chat room session: $reason")
-          Stopped
-        case SessionGranted(handle) ⇒
-          handle ! PostMessage("Hello World!")
-          Same
-        case MessagePosted(screenName, message) ⇒
-          println(s"message has been posted by '$screenName': $message")
-          Stopped
-      }
+    val gabbler: Behavior[SessionEvent] = Total {
+      case SessionDenied(reason) ⇒
+        println(s"cannot start chat room session: $reason")
+        Stopped
+      case SessionGranted(handle) ⇒
+        handle ! PostMessage("Hello World!")
+        Same
+      case MessagePosted(screenName, message) ⇒
+        println(s"message has been posted by '$screenName': $message")
+        Stopped
+    }
     //#chatroom-gabbler
 
     //#chatroom-main
-    val main: Behavior[Unit] =
-      Full {
-        case Sig(ctx, PreStart) ⇒
-          val chatRoom = ctx.spawn(Props(ChatRoom.behavior), "chatroom")
-          val gabblerRef = ctx.spawn(Props(gabbler), "gabbler")
-          ctx.watch(gabblerRef)
-          chatRoom ! GetSession("ol’ Gabbler", gabblerRef)
-          Same
-        case Sig(_, Terminated(ref)) ⇒
-          Stopped
-      }
+    val main: Behavior[Unit] = Full {
+      case Sig(ctx, PreStart) ⇒
+        val chatRoom = ctx.spawn(Props(ChatRoom.behavior), "chatroom")
+        val gabblerRef = ctx.spawn(Props(gabbler), "gabbler")
+        ctx.watch(gabblerRef)
+        chatRoom ! GetSession("ol’ Gabbler", gabblerRef)
+        Same
+      case Sig(_, Terminated(ref)) ⇒
+        Stopped
+    }
 
     val system = ActorSystem("ChatRoomDemo", Props(main))
     Await.result(system.whenTerminated, 1.second)

@@ -88,8 +88,7 @@ object Set extends ImmutableSetFactory[Set] {
       with Set[A]
       with Serializable {
     override def size: Int = 1
-    def contains(elem: A): Boolean =
-      elem == elem1
+    def contains(elem: A): Boolean = elem == elem1
     def +(elem: A): Set[A] =
       if (contains(elem))
         this
@@ -100,8 +99,7 @@ object Set extends ImmutableSetFactory[Set] {
         Set.empty
       else
         this
-    def iterator: Iterator[A] =
-      Iterator(elem1)
+    def iterator: Iterator[A] = Iterator(elem1)
     override def foreach[U](f: A => U): Unit = {
       f(elem1)
     }
@@ -133,8 +131,7 @@ object Set extends ImmutableSetFactory[Set] {
       with Set[A]
       with Serializable {
     override def size: Int = 2
-    def contains(elem: A): Boolean =
-      elem == elem1 || elem == elem2
+    def contains(elem: A): Boolean = elem == elem1 || elem == elem2
     def +(elem: A): Set[A] =
       if (contains(elem))
         this
@@ -147,8 +144,7 @@ object Set extends ImmutableSetFactory[Set] {
         new Set1(elem1)
       else
         this
-    def iterator: Iterator[A] =
-      Iterator(elem1, elem2)
+    def iterator: Iterator[A] = Iterator(elem1, elem2)
     override def foreach[U](f: A => U): Unit = {
       f(elem1);
       f(elem2)
@@ -199,8 +195,7 @@ object Set extends ImmutableSetFactory[Set] {
         new Set2(elem1, elem2)
       else
         this
-    def iterator: Iterator[A] =
-      Iterator(elem1, elem2, elem3)
+    def iterator: Iterator[A] = Iterator(elem1, elem2, elem3)
     override def foreach[U](f: A => U): Unit = {
       f(elem1);
       f(elem2);
@@ -256,8 +251,7 @@ object Set extends ImmutableSetFactory[Set] {
         new Set3(elem1, elem2, elem3)
       else
         this
-    def iterator: Iterator[A] =
-      Iterator(elem1, elem2, elem3, elem4)
+    def iterator: Iterator[A] = Iterator(elem1, elem2, elem3, elem4)
     override def foreach[U](f: A => U): Unit = {
       f(elem1);
       f(elem2);

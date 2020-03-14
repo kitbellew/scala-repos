@@ -19,8 +19,7 @@ trait CommonParams[A <: Stack.Parameterized[A]] {
     * The `label` value is used for stats reporting to scope stats reported
     * from different clients/servers to a single stats receiver.
     */
-  def withLabel(label: String): A =
-    self.configured(Label(label))
+  def withLabel(label: String): A = self.configured(Label(label))
 
   /**
     * Configures this server or client with given [[stats.StatsReceiver]]
@@ -33,15 +32,13 @@ trait CommonParams[A <: Stack.Parameterized[A]] {
     * Configures this server or client with given [[util.Monitor]]
     * (default: [[com.twitter.finagle.util.DefaultMonitor]]).
     */
-  def withMonitor(monitor: util.Monitor): A =
-    self.configured(Monitor(monitor))
+  def withMonitor(monitor: util.Monitor): A = self.configured(Monitor(monitor))
 
   /**
     * Configures this server or client with given [[tracing.Tracer]]
     * (default: [[com.twitter.finagle.tracing.DefaultTracer]]).
     */
-  def withTracer(tracer: tracing.Tracer): A =
-    self.configured(Tracer(tracer))
+  def withTracer(tracer: tracing.Tracer): A = self.configured(Tracer(tracer))
 
   /**
     * Configure a [[com.twitter.finagle.service.ResponseClassifier]]

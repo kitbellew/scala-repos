@@ -159,8 +159,7 @@ trait ImmutableNumericOps[+This] extends Any {
 
   /** Shaped solve of this by b. */
   def \[TT >: This, B, That](b: B)(
-      implicit op: OpSolveMatrixBy.Impl2[TT, B, That]) =
-    op.apply(repr, b)
+      implicit op: OpSolveMatrixBy.Impl2[TT, B, That]) = op.apply(repr, b)
 
   /** A transposed view of this object, followed by a slice. Sadly frequently necessary. */
   final def t[TT >: This, That, Slice1, Slice2, Result](a: Slice1, b: Slice2)(
@@ -224,8 +223,7 @@ trait NumericOps[+This] extends ImmutableNumericOps[This] {
 
   /** Alias for :*=(b) when b is a scalar. */
   final def *=[TT >: This, B](b: B)(
-      implicit op: OpMulScalar.InPlaceImpl2[TT, B]) =
-    this.:*=[TT, B](b)
+      implicit op: OpMulScalar.InPlaceImpl2[TT, B]) = this.:*=[TT, B](b)
 
   // Mutable
   /** Mutates this by element-wise subtraction of b from this */

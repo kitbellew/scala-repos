@@ -291,8 +291,7 @@ import simulacrum.typeclass
   def isEmpty[A](fa: F[A]): Boolean =
     foldRight(fa, Eval.True)((_, _) => Eval.False).value
 
-  def nonEmpty[A](fa: F[A]): Boolean =
-    !isEmpty(fa)
+  def nonEmpty[A](fa: F[A]): Boolean = !isEmpty(fa)
 
   /**
     * Compose this `Foldable[F]` with a `Foldable[G]` to create

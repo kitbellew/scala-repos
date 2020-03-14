@@ -18,8 +18,7 @@ abstract class LazyVals
   private val FLAGS_PER_BYTE: Int = 8 // Byte
   private def bitmapKind = ByteClass
 
-  def newTransformer(unit: CompilationUnit): Transformer =
-    new LazyValues(unit)
+  def newTransformer(unit: CompilationUnit): Transformer = new LazyValues(unit)
 
   private def lazyUnit(sym: Symbol) = sym.tpe.resultType.typeSymbol == UnitClass
 
@@ -112,66 +111,71 @@ abstract class LazyVals
 
         case DefDef(_, _, _, _, _, rhs) =>
           atOwner(tree.symbol) {
-            val (res, slowPathDef) = if (!sym.owner.isClass && sym.isLazy) {
-              val enclosingClassOrDummyOrMethod = {
-                val enclMethod = sym.enclMethod
+            val (res, slowPathDef) =
+              if (!sym.owner.isClass && sym.isLazy) {
+                val enclosingClassOrDummyOrMethod = {
+                  val enclMethod = sym.enclMethod
 
-                if (enclMethod != NoSymbol) {
-                  val enclClass = sym.enclClass
-                  if (enclClass != NoSymbol && enclMethod == enclClass.enclMethod)
-                    enclClass
-                  else
-                    enclMethod
-                } else
-                  sym.owner
+                  if (enclMethod != NoSymbol) {
+                    val enclClass = sym.enclClass
+                    if (enclClass != NoSymbol && enclMethod == enclClass.enclMethod)
+                      enclClass
+                    else
+                      enclMethod
+                  } else
+                    sym.owner
+                }
+                debuglog(
+                  s"determined enclosing class/dummy/method for lazy val as $enclosingClassOrDummyOrMethod given symbol $sym")
+                val idx = lazyVals(enclosingClassOrDummyOrMethod)
+                lazyVals(enclosingClassOrDummyOrMethod) = idx + 1
+                val (rhs1, sDef) = mkLazyDef(
+                  enclosingClassOrDummyOrMethod,
+                  transform(rhs),
+                  idx,
+                  sym)
+                sym.resetFlag(
+                  (if (lazyUnit(sym))
+                     0
+                   else
+                     LAZY) | ACCESSOR)
+                (rhs1, sDef)
+              } else if (sym.hasAllFlags(
+                           MODULE | METHOD) && !sym.owner.isTrait) {
+                rhs match {
+                  case b @ Block(
+                        (assign @ Assign(moduleRef, _)) :: Nil,
+                        expr) =>
+                    def cond =
+                      Apply(
+                        Select(moduleRef, Object_eq),
+                        List(Literal(Constant(null))))
+                    val (fastPath, slowPath) = mkFastPathBody(
+                      sym.owner.enclClass,
+                      moduleRef.symbol,
+                      cond,
+                      transform(assign) :: Nil,
+                      Nil,
+                      transform(expr))
+                    (
+                      localTyper.typedPos(tree.pos)(fastPath),
+                      localTyper.typedPos(tree.pos)(slowPath))
+                  case rhs =>
+                    global.reporter.error(
+                      tree.pos,
+                      "Unexpected tree on the RHS of a module accessor: " + rhs)
+                    (rhs, EmptyTree)
+                }
+              } else {
+                (transform(rhs), EmptyTree)
               }
-              debuglog(
-                s"determined enclosing class/dummy/method for lazy val as $enclosingClassOrDummyOrMethod given symbol $sym")
-              val idx = lazyVals(enclosingClassOrDummyOrMethod)
-              lazyVals(enclosingClassOrDummyOrMethod) = idx + 1
-              val (rhs1, sDef) = mkLazyDef(
-                enclosingClassOrDummyOrMethod,
-                transform(rhs),
-                idx,
-                sym)
-              sym.resetFlag(
-                (if (lazyUnit(sym))
-                   0
-                 else
-                   LAZY) | ACCESSOR)
-              (rhs1, sDef)
-            } else if (sym.hasAllFlags(MODULE | METHOD) && !sym.owner.isTrait) {
-              rhs match {
-                case b @ Block((assign @ Assign(moduleRef, _)) :: Nil, expr) =>
-                  def cond =
-                    Apply(
-                      Select(moduleRef, Object_eq),
-                      List(Literal(Constant(null))))
-                  val (fastPath, slowPath) = mkFastPathBody(
-                    sym.owner.enclClass,
-                    moduleRef.symbol,
-                    cond,
-                    transform(assign) :: Nil,
-                    Nil,
-                    transform(expr))
-                  (
-                    localTyper.typedPos(tree.pos)(fastPath),
-                    localTyper.typedPos(tree.pos)(slowPath))
-                case rhs =>
-                  global.reporter.error(
-                    tree.pos,
-                    "Unexpected tree on the RHS of a module accessor: " + rhs)
-                  (rhs, EmptyTree)
-              }
-            } else {
-              (transform(rhs), EmptyTree)
-            }
 
-            val ddef1 = deriveDefDef(tree)(_ =>
-              if (LocalLazyValFinder.find(res))
-                typed(addBitmapDefs(sym, res))
-              else
-                res)
+            val ddef1 =
+              deriveDefDef(tree)(_ =>
+                if (LocalLazyValFinder.find(res))
+                  typed(addBitmapDefs(sym, res))
+                else
+                  res)
             if (slowPathDef != EmptyTree) {
               // The contents of this block are flattened into the enclosing statement sequence, see flattenThickets
               // This is a poor man's version of dotty's Thicket: https://github.com/lampepfl/dotty/blob/d5280358d1/src/dotty/tools/dotc/ast/Trees.scala#L707
@@ -197,8 +201,8 @@ abstract class LazyVals
               if (!added && currentOwner.isClass && bitmaps.contains(
                     currentOwner)) {
                 // add bitmap to inner class if necessary
-                val toAdd0 =
-                  bitmaps(currentOwner).map(s => typed(ValDef(s, ZERO)))
+                val toAdd0 = bitmaps(currentOwner).map(s =>
+                  typed(ValDef(s, ZERO)))
                 toAdd0.foreach(t => {
                   if (currentOwner.info.decl(t.symbol.name) == NoSymbol) {
                     t.symbol.setFlag(PROTECTED)
@@ -318,8 +322,13 @@ abstract class LazyVals
         syncBody: List[Tree],
         stats: List[Tree],
         retVal: Tree): (Tree, Tree) = {
-      val slowPathDef: Tree =
-        mkSlowPathDef(clazz, lzyVal, cond, syncBody, stats, retVal)
+      val slowPathDef: Tree = mkSlowPathDef(
+        clazz,
+        lzyVal,
+        cond,
+        syncBody,
+        stats,
+        retVal)
       (If(cond, Apply(Ident(slowPathDef.symbol), Nil), retVal), slowPathDef)
     }
 
@@ -374,12 +383,13 @@ abstract class LazyVals
         BLOCK(stmt, mkSetFlag(bitmapSym, mask, bitmapRef), UNIT)
 
       debuglog(s"create complete lazy def in $methOrClass for $lazyVal")
-      val (block, res) = tree match {
-        case Block(List(assignment), res) if !lazyUnit(lazyVal) =>
-          (mkBlock(assignment), res)
-        case rhs =>
-          (mkBlock(rhs), UNIT)
-      }
+      val (block, res) =
+        tree match {
+          case Block(List(assignment), res) if !lazyUnit(lazyVal) =>
+            (mkBlock(assignment), res)
+          case rhs =>
+            (mkBlock(rhs), UNIT)
+        }
 
       def cond = (bitmapRef GEN_& (mask, bitmapKind)) GEN_== (ZERO, bitmapKind)
       val lazyDefs = mkFastPathBody(

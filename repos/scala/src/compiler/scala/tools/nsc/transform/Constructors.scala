@@ -23,10 +23,10 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
   protected def newTransformer(unit: CompilationUnit): Transformer =
     new ConstructorTransformer(unit)
 
-  private val guardedCtorStats: mutable.Map[Symbol, List[Tree]] =
-    perRunCaches.newMap[Symbol, List[Tree]]()
-  private val ctorParams: mutable.Map[Symbol, List[Symbol]] =
-    perRunCaches.newMap[Symbol, List[Symbol]]()
+  private val guardedCtorStats: mutable.Map[Symbol, List[Tree]] = perRunCaches
+    .newMap[Symbol, List[Tree]]()
+  private val ctorParams: mutable.Map[Symbol, List[Symbol]] = perRunCaches
+    .newMap[Symbol, List[Symbol]]()
 
   class ConstructorTransformer(unit: CompilationUnit) extends Transformer {
     /*
@@ -197,9 +197,11 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
       // no point traversing further once omittables is empty, all candidates ruled out already.
       object detectUsages extends Traverser {
-        lazy val bodyOfOuterAccessor = defs.collect {
-          case dd: DefDef if omittableOuterAcc(dd.symbol) => dd.symbol -> dd.rhs
-        }.toMap
+        lazy val bodyOfOuterAccessor =
+          defs.collect {
+            case dd: DefDef if omittableOuterAcc(dd.symbol) =>
+              dd.symbol -> dd.rhs
+          }.toMap
 
         override def traverse(tree: Tree): Unit =
           if (omittables.nonEmpty) {
@@ -284,8 +286,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       methodSym setInfoAndEnter MethodType(Nil, UnitTpe)
 
       // changeOwner needed because the `stats` contained in the DefDef were owned by the template, not long ago.
-      val blk =
-        Block(stats, gen.mkZero(UnitTpe)).changeOwner(impl.symbol -> methodSym)
+      val blk = Block(stats, gen.mkZero(UnitTpe))
+        .changeOwner(impl.symbol -> methodSym)
       val delayedDD = localTyper typed {
         DefDef(methodSym, Nil, blk)
       }
@@ -358,13 +360,14 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       val hookCallerClass =
         (new ConstructorTransformer(unit)) transform delayedInitClosure(
           delayedHookSym)
-      val delayedInitCall = localTyper.typedPos(impl.pos) {
-        gen.mkMethodCall(
-          This(clazz),
-          delayedInitMethod,
-          Nil,
-          List(New(hookCallerClass.symbol.tpe, This(clazz))))
-      }
+      val delayedInitCall =
+        localTyper.typedPos(impl.pos) {
+          gen.mkMethodCall(
+            This(clazz),
+            delayedInitMethod,
+            Nil,
+            List(New(hookCallerClass.symbol.tpe, This(clazz))))
+        }
 
       (List(delayedHook, hookCallerClass), List(delayedInitCall))
     }
@@ -408,18 +411,19 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
        */
       def rewriteArrayUpdate(tree: Tree): Tree = {
         val arrayUpdateMethod = currentRun.runDefinitions.arrayUpdateMethod
-        val adapter = new Transformer {
-          override def transform(t: Tree): Tree =
-            t match {
-              case Apply(fun @ Select(receiver, method), List(xs, idx, v))
-                  if fun.symbol == arrayUpdateMethod =>
-                localTyper.typed(
-                  Apply(
-                    gen.mkAttributedSelect(xs, arrayUpdateMethod),
-                    List(idx, v)))
-              case _ => super.transform(t)
-            }
-        }
+        val adapter =
+          new Transformer {
+            override def transform(t: Tree): Tree =
+              t match {
+                case Apply(fun @ Select(receiver, method), List(xs, idx, v))
+                    if fun.symbol == arrayUpdateMethod =>
+                  localTyper.typed(
+                    Apply(
+                      gen.mkAttributedSelect(xs, arrayUpdateMethod),
+                      List(idx, v)))
+                case _ => super.transform(t)
+              }
+          }
         adapter.transform(tree)
       }
 
@@ -430,11 +434,12 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
            stat = s.duplicate)
         yield {
           log("merge: looking at " + stat)
-          val stat1 = stat match {
-            case Assign(sel @ Select(This(_), field), _) =>
-              specializedAssignFor(sel.symbol).getOrElse(stat)
-            case _ => stat
-          }
+          val stat1 =
+            stat match {
+              case Assign(sel @ Select(This(_), field), _) =>
+                specializedAssignFor(sel.symbol).getOrElse(stat)
+              case _ => stat
+            }
           if (stat1 ne stat) {
             log("replaced " + stat + " with " + stat1)
             specBuf -= stat1
@@ -493,14 +498,13 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
           guardedCtorStats(clazz) = stats
           ctorParams(clazz) = primaryConstrParams
 
-          val tree =
-            If(
-              Apply(
-                CODE.NOT(
-                  Apply(gen.mkAttributedRef(hasSpecializedFieldsSym), List())),
-                List()),
-              Block(stats, Literal(Constant(()))),
-              EmptyTree)
+          val tree = If(
+            Apply(
+              CODE.NOT(
+                Apply(gen.mkAttributedRef(hasSpecializedFieldsSym), List())),
+              List()),
+            Block(stats, Literal(Constant(()))),
+            EmptyTree)
 
           List(localTyper.typed(tree))
         } else if (clazz.hasFlag(SPECIALIZED)) {
@@ -854,14 +858,15 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
           (Nil, remainingConstrStats)
 
       // Assemble final constructor
-      val primaryConstructor = deriveDefDef(primaryConstr)(_ => {
-        treeCopy.Block(
-          primaryConstrBody,
-          paramInits ::: constructorPrefix ::: uptoSuperStats ::: guardSpecializedInitializer(
-            remainingConstrStatsDelayedInit),
-          primaryConstrBody.expr
-        )
-      })
+      val primaryConstructor =
+        deriveDefDef(primaryConstr)(_ => {
+          treeCopy.Block(
+            primaryConstrBody,
+            paramInits ::: constructorPrefix ::: uptoSuperStats ::: guardSpecializedInitializer(
+              remainingConstrStatsDelayedInit),
+            primaryConstrBody.expr
+          )
+        })
 
       val constructors = primaryConstructor :: auxConstructors
 

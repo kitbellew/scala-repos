@@ -37,10 +37,11 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     val updateQ = users.filter(_.id === 2.bind).map(_.forUpdate)
     updateQ.updateStatement.length.should(_ > 0)
 
-    val q1 = for {
-      u <- users
-      u2 <- users
-    } yield u2
+    val q1 =
+      for {
+        u <- users
+        u2 <- users
+      } yield u2
 
     seq(
       users.schema.create,
@@ -270,10 +271,11 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     }
     val bs = TableQuery[BRow]
 
-    val q1 = for {
-      a <- as if a.data === 2
-      b <- bs if b.id === a.id
-    } yield (a, b)
+    val q1 =
+      for {
+        a <- as if a.data === 2
+        b <- bs if b.id === a.id
+      } yield (a, b)
 
     val q2 = as joinLeft bs
 
@@ -428,13 +430,14 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     }
     val bs = TableQuery[B]
 
-    val q1 = (for {
-      id :: b :: s :: HNil <- (for {
-        b <- bs
-      } yield b.id :: b.b :: b.s :: HNil) if !b
-    } yield id :: b :: (s ++ s) :: HNil).sortBy(h => h(2)).map {
-      case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
-    }
+    val q1 =
+      (for {
+        id :: b :: s :: HNil <- (for {
+          b <- bs
+        } yield b.id :: b.b :: b.s :: HNil) if !b
+      } yield id :: b :: (s ++ s) :: HNil).sortBy(h => h(2)).map {
+        case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
+      }
     val q2 = bs
       .map {
         case b => b.id :: b.b :: (b.s ++ b.s) :: HNil

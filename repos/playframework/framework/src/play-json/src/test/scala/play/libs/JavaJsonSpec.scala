@@ -17,8 +17,7 @@ class JavaJsonSpec extends Specification {
 
   private class JsonScope(val mapper: ObjectMapper = new ObjectMapper())
       extends Scope {
-    val testJsonString =
-      """{
+    val testJsonString = """{
         |  "foo" : "bar",
         |  "bar" : "baz",
         |  "instant" : 1425435861,
@@ -28,8 +27,8 @@ class JavaJsonSpec extends Specification {
         |  "baz" : [ 1, 2, 3 ]
         |}""".stripMargin
 
-    val testJsonInputStream = new ByteArrayInputStream(
-      testJsonString.getBytes("UTF-8"))
+    val testJsonInputStream =
+      new ByteArrayInputStream(testJsonString.getBytes("UTF-8"))
 
     val testJson = mapper.createObjectNode()
     testJson

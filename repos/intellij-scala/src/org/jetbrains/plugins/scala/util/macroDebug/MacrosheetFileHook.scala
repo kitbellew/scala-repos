@@ -70,11 +70,12 @@ class MacrosheetFileHook(private val project: Project)
       if (!ScalaMacroDebuggingUtil.isEnabled || ScalaFileType.DEFAULT_EXTENSION != file.getExtension)
         return
 
-      val document = source getSelectedEditor file match {
-        case txtEditor: TextEditor if txtEditor.getEditor != null =>
-          txtEditor.getEditor.getDocument
-        case _ => null
-      }
+      val document =
+        source getSelectedEditor file match {
+          case txtEditor: TextEditor if txtEditor.getEditor != null =>
+            txtEditor.getEditor.getDocument
+          case _ => null
+        }
       document.addDocumentListener(new MacrosheetSourceAutocopy(document))
 
       // MacrosheetFileHook.this.initActions(file,true)

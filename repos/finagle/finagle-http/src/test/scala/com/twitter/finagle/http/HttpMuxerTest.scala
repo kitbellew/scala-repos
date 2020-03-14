@@ -118,15 +118,15 @@ class HttpMuxerTest extends FunSuite {
   }
 
   test("""special cases "" and "/" are handled correctly""") {
-    val slashMux =
-      new HttpMuxer().withHandler("/", new DummyService(specialCase))
+    val slashMux = new HttpMuxer()
+      .withHandler("/", new DummyService(specialCase))
     assert(Await.result(slashMux(Request("/"))).contentString == specialCase)
     assert(Await.result(slashMux(Request(""))).status == Status.NotFound)
     assert(
       Await.result(slashMux(Request("/anything"))).contentString == specialCase)
 
-    val emptyStringMux =
-      new HttpMuxer().withHandler("", new DummyService(specialCase))
+    val emptyStringMux = new HttpMuxer()
+      .withHandler("", new DummyService(specialCase))
     assert(
       Await.result(emptyStringMux(Request("/"))).contentString == specialCase)
     assert(

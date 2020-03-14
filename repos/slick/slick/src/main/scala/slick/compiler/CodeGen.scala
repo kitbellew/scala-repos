@@ -18,18 +18,24 @@ abstract class CodeGen extends Phase {
       var nmap: Option[Node] = None
       var compileMap: Option[Node] = Some(rsm.map)
 
-      val nfrom = ClientSideOp.mapServerSide(rsm.from, keepType = true) { ss =>
-        logger.debug("Compiling server-side and mapping with server-side:", ss)
-        val (nss, nmapOpt) = compileServerSideAndMapping(ss, compileMap, state)
-        nmapOpt match {
-          case Some(_) =>
-            nmap = nmapOpt
-            compileMap = None
-          case None =>
+      val nfrom =
+        ClientSideOp.mapServerSide(rsm.from, keepType = true) { ss =>
+          logger.debug(
+            "Compiling server-side and mapping with server-side:",
+            ss)
+          val (nss, nmapOpt) = compileServerSideAndMapping(
+            ss,
+            compileMap,
+            state)
+          nmapOpt match {
+            case Some(_) =>
+              nmap = nmapOpt
+              compileMap = None
+            case None =>
+          }
+          logger.debug("Compiled server-side to:", nss)
+          nss
         }
-        logger.debug("Compiled server-side to:", nss)
-        nss
-      }
       rsm.copy(from = nfrom, map = nmap.get) :@ rsm.nodeType
     }
 

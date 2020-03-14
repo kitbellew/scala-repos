@@ -169,12 +169,12 @@ case class ScalaFieldEvaluator(
 
         def setValue(value: Value) {
           if (myEvaluatedQualifier.isInstanceOf[ReferenceType]) {
-            val classType: ClassType =
-              myEvaluatedQualifier.asInstanceOf[ClassType]
+            val classType: ClassType = myEvaluatedQualifier
+              .asInstanceOf[ClassType]
             classType.setValue(myEvaluatedField, value)
           } else {
-            val objRef: ObjectReference =
-              myEvaluatedQualifier.asInstanceOf[ObjectReference]
+            val objRef: ObjectReference = myEvaluatedQualifier
+              .asInstanceOf[ObjectReference]
             objRef.setValue(myEvaluatedField, value)
           }
         }

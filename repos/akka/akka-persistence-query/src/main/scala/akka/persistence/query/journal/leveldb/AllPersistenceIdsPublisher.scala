@@ -41,8 +41,8 @@ private[akka] class AllPersistenceIdsPublisher(
     with DeliveryBuffer[String]
     with ActorLogging {
 
-  val journal: ActorRef =
-    Persistence(context.system).journalFor(writeJournalPluginId)
+  val journal: ActorRef = Persistence(context.system)
+    .journalFor(writeJournalPluginId)
 
   def receive = init
 

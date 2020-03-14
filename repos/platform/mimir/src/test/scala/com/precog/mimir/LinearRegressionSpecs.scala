@@ -232,9 +232,10 @@ trait LinearRegressionSpecs[M[+_]]
 
     val allErrors = actualErrors zip combinedErrors
 
-    val okErrors = allErrors map {
-      case (e, es) => isOk(e, es)
-    } toArray
+    val okErrors =
+      allErrors map {
+        case (e, es) => isOk(e, es)
+      } toArray
 
     okThetas mustEqual Array.fill(num)(true)
     okErrors mustEqual Array.fill(num)(true)
@@ -264,11 +265,12 @@ trait LinearRegressionSpecs[M[+_]]
 
     //runs the linear regression function on `loops` sets of data generated from the same distribution
     while (i < loops) {
-      val cpaths = Seq(
-        CPath(CPathIndex(0), CPathField("foo")),
-        CPath(CPathIndex(0), CPathField("bar")),
-        CPath(CPathIndex(0), CPathField("baz")),
-        CPath(CPathIndex(1))) sorted
+      val cpaths =
+        Seq(
+          CPath(CPathIndex(0), CPathField("foo")),
+          CPath(CPathIndex(0), CPathField("bar")),
+          CPath(CPathIndex(0), CPathField("baz")),
+          CPath(CPathIndex(1))) sorted
 
       val (result, samples) = produceResult(cpaths, num, actualThetas)
 
@@ -349,9 +351,10 @@ trait LinearRegressionSpecs[M[+_]]
     }
 
     val allErrors = actualErrors zip combinedErrors
-    val okErrors = allErrors map {
-      case (e, es) => isOk(e, es)
-    } toArray
+    val okErrors =
+      allErrors map {
+        case (e, es) => isOk(e, es)
+      } toArray
 
     okThetas mustEqual Array.fill(num)(true)
     okErrors mustEqual Array.fill(num)(true)
@@ -390,17 +393,18 @@ trait LinearRegressionSpecs[M[+_]]
 
     //runs the linear regression function on `loops` sets of data generated from the same distribution
     while (i < loops) {
-      val cpaths = Seq(
-        CPath(CPathIndex(0), CPathField("ack"), CPathIndex(0)),
-        CPath(CPathIndex(0), CPathField("bak"), CPathField("bazoo")),
-        CPath(
-          CPathIndex(0),
-          CPathField("bar"),
-          CPathField("baz"),
-          CPathIndex(0)),
-        CPath(CPathIndex(0), CPathField("foo")),
-        CPath(CPathIndex(1))
-      ) sorted
+      val cpaths =
+        Seq(
+          CPath(CPathIndex(0), CPathField("ack"), CPathIndex(0)),
+          CPath(CPathIndex(0), CPathField("bak"), CPathField("bazoo")),
+          CPath(
+            CPathIndex(0),
+            CPathField("bar"),
+            CPathField("baz"),
+            CPathIndex(0)),
+          CPath(CPathIndex(0), CPathField("foo")),
+          CPath(CPathIndex(1))
+        ) sorted
 
       val samples = {
         val samples0 = createLinearSamplePoints(num, 100, actualThetas)
@@ -417,8 +421,8 @@ trait LinearRegressionSpecs[M[+_]]
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
 
       val pointsString0 = "filesystem" + tmpFile.toString
-      val pointsString =
-        pointsString0.take(pointsString0.length - suffix.length)
+      val pointsString = pointsString0.take(
+        pointsString0.length - suffix.length)
 
       val input = makeDAG(pointsString)
 
@@ -550,8 +554,10 @@ trait LinearRegressionSpecs[M[+_]]
   //more comprehensive linear prediction tests in muspelheim
   "linear prediction" should {
     "return empty set when given incorrectly formatted model" in {
-      val input =
-        morph2Input(LinearPrediction, "/hom/model1data", "/hom/model1")
+      val input = morph2Input(
+        LinearPrediction,
+        "/hom/model1data",
+        "/hom/model1")
       testEval(input) must beEmpty
     }
   }

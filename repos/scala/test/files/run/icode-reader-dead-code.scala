@@ -14,16 +14,14 @@ object Test extends DirectTest {
 
   def show(): Unit = {
     // The bytecode of f will be modified using ASM by `addDeadCode`
-    val aCode =
-      """
+    val aCode = """
         |package p
         |class A {
         |  @inline final def f = 1
         |}
       """.stripMargin
 
-    val bCode =
-      """
+    val bCode = """
         |package p
         |class B {
         |  def g = (new A()).f

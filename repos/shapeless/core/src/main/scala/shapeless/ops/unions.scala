@@ -36,9 +36,10 @@ object union {
   }
 
   trait LowPrioritySelector {
-    type Aux[C <: Coproduct, K, V0] = Selector[C, K] {
-      type V = V0
-    }
+    type Aux[C <: Coproduct, K, V0] =
+      Selector[C, K] {
+        type V = V0
+      }
 
     implicit def tlSelector[H, T <: Coproduct, K](
         implicit st: Selector[T, K]): Aux[H :+: T, K, st.V] =
@@ -84,9 +85,10 @@ object union {
   object Keys {
     def apply[U <: Coproduct](implicit keys: Keys[U]): Aux[U, keys.Out] = keys
 
-    type Aux[U <: Coproduct, Out0 <: HList] = Keys[U] {
-      type Out = Out0
-    }
+    type Aux[U <: Coproduct, Out0 <: HList] =
+      Keys[U] {
+        type Out = Out0
+      }
 
     implicit def cnilKeys[U <: CNil]: Aux[U, HNil] =
       new Keys[U] {
@@ -116,9 +118,10 @@ object union {
     def apply[U <: Coproduct](implicit values: Values[U]): Aux[U, values.Out] =
       values
 
-    type Aux[U <: Coproduct, Out0 <: Coproduct] = Values[U] {
-      type Out = Out0
-    }
+    type Aux[U <: Coproduct, Out0 <: Coproduct] =
+      Values[U] {
+        type Out = Out0
+      }
 
     implicit def cnilValues[U <: CNil]: Aux[U, CNil] =
       new Values[U] {
@@ -151,9 +154,10 @@ object union {
     def apply[U <: Coproduct](implicit fields: Fields[U]): Aux[U, fields.Out] =
       fields
 
-    type Aux[L <: Coproduct, Out0 <: Coproduct] = Fields[L] {
-      type Out = Out0
-    }
+    type Aux[L <: Coproduct, Out0 <: Coproduct] =
+      Fields[L] {
+        type Out = Out0
+      }
 
     implicit val cnilFields: Aux[CNil, CNil] =
       new Fields[CNil] {
@@ -191,10 +195,11 @@ object union {
     def apply[U <: Coproduct](
         implicit toMap: ToMap[U]): Aux[U, toMap.Key, toMap.Value] = toMap
 
-    type Aux[U <: Coproduct, Key0, Value0] = ToMap[U] {
-      type Key = Key0;
-      type Value = Value0
-    }
+    type Aux[U <: Coproduct, Key0, Value0] =
+      ToMap[U] {
+        type Key = Key0;
+        type Value = Value0
+      }
 
     implicit def cnilToMap[K, V]: Aux[CNil, K, V] =
       new ToMap[CNil] {
@@ -203,8 +208,8 @@ object union {
         def apply(l: CNil) = Map.empty
       }
 
-    implicit val cnilToMapAnyNothing: Aux[CNil, Any, Nothing] =
-      cnilToMap[Any, Nothing]
+    implicit val cnilToMapAnyNothing
+        : Aux[CNil, Any, Nothing] = cnilToMap[Any, Nothing]
 
     implicit def csingleToMap[K, V](implicit
         wk: Witness.Aux[K]
@@ -253,9 +258,10 @@ object union {
         implicit mapValues: MapValues[HF, U]): Aux[HF, U, mapValues.Out] =
       mapValues
 
-    type Aux[HF, U <: Coproduct, Out0 <: Coproduct] = MapValues[HF, U] {
-      type Out = Out0
-    }
+    type Aux[HF, U <: Coproduct, Out0 <: Coproduct] =
+      MapValues[HF, U] {
+        type Out = Out0
+      }
 
     implicit def cnilMapValues[HF]: Aux[HF, CNil, CNil] =
       new MapValues[HF, CNil] {

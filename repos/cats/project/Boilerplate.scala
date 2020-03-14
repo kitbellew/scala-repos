@@ -118,17 +118,19 @@ object Boilerplate {
       val params = (synVals zip tpes) map {
         case (v, t) => s"$v:$t"
       } mkString ", "
-      val next = if (arity + 1 <= maxArity) {
-        s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
-      } else {
-        ""
-      }
+      val next =
+        if (arity + 1 <= maxArity) {
+          s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
+        } else {
+          ""
+        }
 
-      val n = if (arity == 1) {
-        ""
-      } else {
-        arity.toString
-      }
+      val n =
+        if (arity == 1) {
+          ""
+        } else {
+          arity.toString
+        }
 
       val map =
         if (arity == 1)
@@ -148,11 +150,12 @@ object Boilerplate {
         else
           s"def imap[Z](f: (${`A..N`}) => Z)(g: Z => (${`A..N`}))(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[Z] = Cartesian.imap$n(${`a..n`})(f)(g)"
 
-      val tupled = if (arity != 1) {
-        s"def tupled(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[(${`A..N`})] = Cartesian.tuple$n(${`a..n`})"
-      } else {
-        ""
-      }
+      val tupled =
+        if (arity != 1) {
+          s"def tupled(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[(${`A..N`})] = Cartesian.tuple$n(${`a..n`})"
+        } else {
+          ""
+        }
 
       block"""
         |package cats
@@ -218,8 +221,7 @@ object Boilerplate {
           "a" + _
         } mkString ","
 
-      val apply =
-        block"""
+      val apply = block"""
           -    ${apN(b)}(${apN(a)}(map(f)(f =>
           -      ($argsA) => ($argsB) => f($allArgs)
           -    ))($fArgsA))($fArgsB)
@@ -254,9 +256,10 @@ object Boilerplate {
       } mkString ", "
       val fargsS = fargs mkString ", "
 
-      val nestedProducts = (0 until (arity - 2)).foldRight(
-        s"cartesian.product(f${arity - 2}, f${arity - 1})")((i, acc) =>
-        s"cartesian.product(f$i, $acc)")
+      val nestedProducts =
+        (0 until (arity - 2)).foldRight(
+          s"cartesian.product(f${arity - 2}, f${arity - 1})")((i, acc) =>
+          s"cartesian.product(f$i, $acc)")
       val `nested (a..n)` =
         (0 until (arity - 2)).foldRight(s"(a${arity - 2}, a${arity - 1})")(
           (i, acc) => s"(a$i, $acc)")

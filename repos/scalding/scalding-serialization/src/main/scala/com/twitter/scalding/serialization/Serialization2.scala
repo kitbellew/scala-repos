@@ -51,10 +51,11 @@ class Serialization2[A, B](
       resA
   }
 
-  override val staticSize = for {
-    a <- serA.staticSize
-    b <- serB.staticSize
-  } yield a + b
+  override val staticSize =
+    for {
+      a <- serA.staticSize
+      b <- serB.staticSize
+    } yield a + b
 
   override def dynamicSize(t: (A, B)) =
     if (staticSize.isDefined)

@@ -48,19 +48,18 @@ class FileSourceStrategySuite
   import testImplicits._
 
   test("unpartitioned table, single partition") {
-    val table =
-      createTable(
-        files = Seq(
-          "file1" -> 1,
-          "file2" -> 1,
-          "file3" -> 1,
-          "file4" -> 1,
-          "file5" -> 1,
-          "file6" -> 1,
-          "file7" -> 1,
-          "file8" -> 1,
-          "file9" -> 1,
-          "file10" -> 1))
+    val table = createTable(
+      files = Seq(
+        "file1" -> 1,
+        "file2" -> 1,
+        "file3" -> 1,
+        "file4" -> 1,
+        "file5" -> 1,
+        "file6" -> 1,
+        "file7" -> 1,
+        "file8" -> 1,
+        "file9" -> 1,
+        "file10" -> 1))
 
     checkScan(table.select('c1)) { partitions =>
       // 10 one byte files should fit in a single partition with 10 files.
@@ -76,8 +75,8 @@ class FileSourceStrategySuite
   }
 
   test("unpartitioned table, multiple partitions") {
-    val table =
-      createTable(files = Seq("file1" -> 5, "file2" -> 5, "file3" -> 5))
+    val table = createTable(
+      files = Seq("file1" -> 5, "file2" -> 5, "file3" -> 5))
 
     withSQLConf(SQLConf.FILES_MAX_PARTITION_BYTES.key -> "10") {
       checkScan(table.select('c1)) { partitions =>
@@ -97,8 +96,7 @@ class FileSourceStrategySuite
   }
 
   test("Unpartitioned table, large file that gets split") {
-    val table =
-      createTable(files = Seq("file1" -> 15, "file2" -> 4))
+    val table = createTable(files = Seq("file1" -> 15, "file2" -> 4))
 
     withSQLConf(SQLConf.FILES_MAX_PARTITION_BYTES.key -> "10") {
       checkScan(table.select('c1)) { partitions =>
@@ -122,8 +120,7 @@ class FileSourceStrategySuite
   }
 
   test("partitioned table") {
-    val table =
-      createTable(files = Seq("p1=1/file1" -> 10, "p1=2/file2" -> 10))
+    val table = createTable(files = Seq("p1=1/file1" -> 10, "p1=2/file2" -> 10))
 
     // Only one file should be read.
     checkScan(table.where("p1 = 1")) { partitions =>
@@ -149,8 +146,7 @@ class FileSourceStrategySuite
   }
 
   test("partitioned table - after scan filters") {
-    val table =
-      createTable(files = Seq("p1=1/file1" -> 10, "p1=2/file2" -> 10))
+    val table = createTable(files = Seq("p1=1/file1" -> 10, "p1=2/file2" -> 10))
 
     val df = table.where("p1 = 1 AND (p1 + c1) = 2 AND c1 = 1")
     // Filter on data only are advisory so we have to reevaluate.
@@ -162,18 +158,17 @@ class FileSourceStrategySuite
   }
 
   test("bucketed table") {
-    val table =
-      createTable(
-        files = Seq(
-          "p1=1/file1_0000" -> 1,
-          "p1=1/file2_0000" -> 1,
-          "p1=1/file3_0002" -> 1,
-          "p1=2/file4_0002" -> 1,
-          "p1=2/file5_0000" -> 1,
-          "p1=2/file6_0000" -> 1,
-          "p1=2/file7_0000" -> 1),
-        buckets = 3
-      )
+    val table = createTable(
+      files = Seq(
+        "p1=1/file1_0000" -> 1,
+        "p1=1/file2_0000" -> 1,
+        "p1=1/file3_0002" -> 1,
+        "p1=2/file4_0002" -> 1,
+        "p1=2/file5_0000" -> 1,
+        "p1=2/file6_0000" -> 1,
+        "p1=2/file7_0000" -> 1),
+      buckets = 3
+    )
 
     // No partition pruning
     checkScan(table) { partitions =>
@@ -194,12 +189,18 @@ class FileSourceStrategySuite
 
   // Helpers for checking the arguments passed to the FileFormat.
 
-  protected val checkPartitionSchema =
-    checkArgument("partition schema", _.partitionSchema, _: StructType)
-  protected val checkDataSchema =
-    checkArgument("data schema", _.dataSchema, _: StructType)
-  protected val checkDataFilters =
-    checkArgument("data filters", _.filters.toSet, _: Set[Filter])
+  protected val checkPartitionSchema = checkArgument(
+    "partition schema",
+    _.partitionSchema,
+    _: StructType)
+  protected val checkDataSchema = checkArgument(
+    "data schema",
+    _.dataSchema,
+    _: StructType)
+  protected val checkDataFilters = checkArgument(
+    "data filters",
+    _.filters.toSet,
+    _: Set[Filter])
 
   /** Helper for building checks on the arguments passed to the reader. */
   protected def checkArgument[T](
@@ -266,8 +267,8 @@ class FileSourceStrategySuite
     if (buckets > 0) {
       val bucketed = df.queryExecution.analyzed transform {
         case l @ LogicalRelation(r: HadoopFsRelation, _, _) =>
-          l.copy(relation = r.copy(bucketSpec =
-            Some(BucketSpec(numBuckets = buckets, "c1" :: Nil, Nil))))
+          l.copy(relation = r.copy(bucketSpec = Some(
+            BucketSpec(numBuckets = buckets, "c1" :: Nil, Nil))))
       }
       Dataset.newDataFrame(sqlContext, bucketed)
     } else {

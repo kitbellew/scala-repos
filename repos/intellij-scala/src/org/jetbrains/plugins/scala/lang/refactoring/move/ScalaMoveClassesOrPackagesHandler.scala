@@ -61,8 +61,8 @@ class ScalaMoveClassesOrPackagesHandler
       elements: Array[PsiElement],
       targetContainer: PsiElement): Boolean = {
     //sort of hack to save destinations here, need to be sure that it is called
-    val scalaElements =
-      elements.filter(_.getLanguage.isInstanceOf[ScalaLanguage])
+    val scalaElements = elements.filter(
+      _.getLanguage.isInstanceOf[ScalaLanguage])
     targetContainer match {
       case dir: PsiDirectory =>
         scalaElements.foreach(ScalaMoveUtil.saveMoveDestination(_, dir))
@@ -90,8 +90,8 @@ class ScalaMoveClassesOrPackagesHandler
     val initialTargetDirectory: PsiDirectory = MoveClassesOrPackagesImpl
       .getInitialTargetDirectory(initialTargetElement, adjustedElements)
     val isTargetDirectoryFixed: Boolean = initialTargetDirectory == null
-    val searchTextOccurences: Boolean =
-      adjustedElements.exists(TextOccurrencesUtil.isSearchTextOccurencesEnabled)
+    val searchTextOccurences: Boolean = adjustedElements.exists(
+      TextOccurrencesUtil.isSearchTextOccurencesEnabled)
     val moveDialog: MoveClassesOrPackagesDialog =
       new MoveClassesOrPackagesDialog(
         project,
@@ -169,18 +169,19 @@ class ScalaMoveClassesOrPackagesHandler
   private def addMoveCompanionChb(
       @Nullable panel: JComponent,
       elements: Iterable[PsiElement]): JComponent = {
-    val companions = for {
-      elem <- elements.collect {
-        case psiClass: PsiClass => psiClass
-      }
-      companion <- ScalaPsiUtil.getBaseCompanionModule(elem)
-    } yield companion
+    val companions =
+      for {
+        elem <- elements.collect {
+          case psiClass: PsiClass => psiClass
+        }
+        companion <- ScalaPsiUtil.getBaseCompanionModule(elem)
+      } yield companion
     if (companions.nonEmpty) {
       val result = new JPanel(new BorderLayout())
       if (panel != null)
         result.add(panel, BorderLayout.NORTH)
-      val chbMoveCompanion = new JCheckBox(
-        ScalaBundle.message("move.with.companion"))
+      val chbMoveCompanion =
+        new JCheckBox(ScalaBundle.message("move.with.companion"))
       chbMoveCompanion.setSelected(
         ScalaApplicationSettings.getInstance().MOVE_COMPANION)
       chbMoveCompanion.addActionListener(new ActionListener {

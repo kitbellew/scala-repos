@@ -117,13 +117,14 @@ object RecoverJson {
             buildState(next.copy(stack = next.stack push NullValue))
 
           case '"' =>
-            val next = accum.stack.headOption match {
-              case Some(NullValue) => accum.decrement
-              case Some(Key(Colon(value))) =>
-                val decremented = accum.decrement
-                decremented.copy(stack = decremented.stack push Colon(value))
-              case _ => accum
-            }
+            val next =
+              accum.stack.headOption match {
+                case Some(NullValue) => accum.decrement
+                case Some(Key(Colon(value))) =>
+                  val decremented = accum.decrement
+                  decremented.copy(stack = decremented.stack push Colon(value))
+                case _ => accum
+              }
 
             buildState(
               findEndString(buffers, next.bufferIndex, next.offset + 1) map {

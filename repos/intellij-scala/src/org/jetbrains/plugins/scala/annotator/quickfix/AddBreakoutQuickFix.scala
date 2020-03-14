@@ -60,8 +60,7 @@ class AddBreakoutQuickFix(expr: ScExpression) extends IntentionAction {
   override def isAvailable(
       project: Project,
       editor: Editor,
-      psiFile: PsiFile): Boolean =
-    AddBreakoutQuickFix.isAvailable(expr)
+      psiFile: PsiFile): Boolean = AddBreakoutQuickFix.isAvailable(expr)
 }
 
 object AddBreakoutQuickFix {

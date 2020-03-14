@@ -30,14 +30,16 @@ object Test {
       }
   }
 
-  val bcs1 = new BorderedColoredShape {
-    val thickness = 1
-    val color = 0
-  }
-  val bcs2 = new BorderedColoredShape {
-    val thickness = 2
-    val color = 0
-  }
+  val bcs1 =
+    new BorderedColoredShape {
+      val thickness = 1
+      val color = 0
+    }
+  val bcs2 =
+    new BorderedColoredShape {
+      val thickness = 2
+      val color = 0
+    }
   Console.println(bcs1 == bcs1)
   Console.println(bcs1 == bcs2)
 }

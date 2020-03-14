@@ -67,16 +67,18 @@ class FoldableTestsAdditional extends CatsSuite {
     // more basic checks
     val names = List("Aaron", "Betty", "Calvin", "Deirdra")
     F.foldMap(names)(_.length) should ===(names.map(_.length).sum)
-    val sumM = F.foldM(names, "") { (acc, x) =>
-      (Some(acc + x): Option[String])
-    }
-    assert(sumM == Some("AaronBettyCalvinDeirdra"))
-    val notCalvin = F.foldM(names, "") { (acc, x) =>
-      if (x == "Calvin")
-        (None: Option[String])
-      else
+    val sumM =
+      F.foldM(names, "") { (acc, x) =>
         (Some(acc + x): Option[String])
-    }
+      }
+    assert(sumM == Some("AaronBettyCalvinDeirdra"))
+    val notCalvin =
+      F.foldM(names, "") { (acc, x) =>
+        if (x == "Calvin")
+          (None: Option[String])
+        else
+          (Some(acc + x): Option[String])
+      }
     assert(notCalvin == None)
 
     // test trampolining
@@ -84,8 +86,9 @@ class FoldableTestsAdditional extends CatsSuite {
     assert(contains(large, 10000).value)
 
     // safely build large lists
-    val larger = F.foldRight(large, Now(List.empty[Int]))((x, lxs) =>
-      lxs.map((x + 1) :: _))
+    val larger =
+      F.foldRight(large, Now(List.empty[Int]))((x, lxs) =>
+        lxs.map((x + 1) :: _))
     larger.value should ===(large.map(_ + 1))
   }
 
@@ -118,12 +121,13 @@ class FoldableTestsAdditional extends CatsSuite {
     // handled lazily. it only needs to be evaluated if we reach the
     // "end" of the fold.
     val trap = Eval.later(bomb[Boolean])
-    val result = F.foldRight(1 #:: 2 #:: Stream.empty, trap) { (n, lb) =>
-      if (n == 2)
-        Now(true)
-      else
-        lb
-    }
+    val result =
+      F.foldRight(1 #:: 2 #:: Stream.empty, trap) { (n, lb) =>
+        if (n == 2)
+          Now(true)
+        else
+          lb
+      }
     assert(result.value)
 
     // test trampolining

@@ -137,9 +137,10 @@ class EncoderResolutionSuite extends PlanTest {
   }
 
   test("throw exception if real type is not compatible with encoder schema") {
-    val msg1 = intercept[AnalysisException] {
-      ExpressionEncoder[StringIntClass].resolve(Seq('a.string, 'b.long), null)
-    }.message
+    val msg1 =
+      intercept[AnalysisException] {
+        ExpressionEncoder[StringIntClass].resolve(Seq('a.string, 'b.long), null)
+      }.message
     assert(
       msg1 ==
         s"""
@@ -150,14 +151,15 @@ class EncoderResolutionSuite extends PlanTest {
          |You can either add an explicit cast to the input data or choose a higher precision type
        """.stripMargin.trim + " of the field in the target object")
 
-    val msg2 = intercept[AnalysisException] {
-      val structType = new StructType()
-        .add("a", StringType)
-        .add("b", DecimalType.SYSTEM_DEFAULT)
-      ExpressionEncoder[ComplexClass].resolve(
-        Seq('a.long, 'b.struct(structType)),
-        null)
-    }.message
+    val msg2 =
+      intercept[AnalysisException] {
+        val structType = new StructType()
+          .add("a", StringType)
+          .add("b", DecimalType.SYSTEM_DEFAULT)
+        ExpressionEncoder[ComplexClass].resolve(
+          Seq('a.long, 'b.struct(structType)),
+          null)
+      }.message
     assert(
       msg2 ==
         s"""

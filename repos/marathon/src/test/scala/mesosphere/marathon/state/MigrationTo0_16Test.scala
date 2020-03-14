@@ -18,18 +18,20 @@ class MigrationTo0_16Test
     lazy val metrics = new Metrics(new MetricRegistry)
     lazy val store = new InMemoryStore()
 
-    lazy val groupStore = new MarathonStore[Group](
-      store,
-      metrics,
-      () => Group.empty,
-      prefix = "group:")
+    lazy val groupStore =
+      new MarathonStore[Group](
+        store,
+        metrics,
+        () => Group.empty,
+        prefix = "group:")
     lazy val groupRepo =
       new GroupRepository(groupStore, maxVersions = None, metrics)
-    lazy val appStore = new MarathonStore[AppDefinition](
-      store,
-      metrics,
-      () => AppDefinition(),
-      prefix = "app:")
+    lazy val appStore =
+      new MarathonStore[AppDefinition](
+        store,
+        metrics,
+        () => AppDefinition(),
+        prefix = "app:")
     lazy val appRepo = new AppRepository(appStore, maxVersions = None, metrics)
 
     lazy val migration =
@@ -38,8 +40,9 @@ class MigrationTo0_16Test
 
   val emptyGroup = Group.empty
 
-  implicit val patienceConfig: PatienceConfig =
-    PatienceConfig(timeout = Span(3, Seconds))
+  implicit val patienceConfig: PatienceConfig = PatienceConfig(timeout = Span(
+    3,
+    Seconds))
 
   test("empty migration does nothing") {
     Given("no apps/groups")
@@ -100,8 +103,9 @@ class MigrationTo0_16Test
     f.appRepo.store(appV1).futureValue
     f.appRepo.store(appV2).futureValue
 
-    val groupWithApp =
-      emptyGroup.copy(apps = Set(appV2), version = Timestamp(2))
+    val groupWithApp = emptyGroup.copy(
+      apps = Set(appV2),
+      version = Timestamp(2))
     f.groupRepo.store(f.groupRepo.zkRootName, groupWithApp).futureValue
 
     When("migrating")
@@ -132,8 +136,8 @@ class MigrationTo0_16Test
           PathId("/test"),
           cmd = Some("true"),
           portDefinitions = PortDefinitions(1000, 1001),
-          versionInfo =
-            AppDefinition.VersionInfo.OnlyVersion(Timestamp(version))
+          versionInfo = AppDefinition.VersionInfo.OnlyVersion(
+            Timestamp(version))
         )
         with DeprecatedSerialization
 

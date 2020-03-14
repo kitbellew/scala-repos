@@ -106,12 +106,13 @@ trait Var[+T] { self =>
     * All changes to this Var are guaranteed to be published to the
     * Event.
     */
-  lazy val changes: Event[T] = new Event[T] {
-    def register(s: Witness[T]) =
-      self.observe { newv =>
-        s.notify(newv)
-      }
-  }
+  lazy val changes: Event[T] =
+    new Event[T] {
+      def register(s: Witness[T]) =
+        self.observe { newv =>
+          s.notify(newv)
+        }
+    }
 
   /**
     * Produce an [[Event]] reflecting the differences between
@@ -388,8 +389,8 @@ private[util] class UpdatableVar[T](init: T)
   import Var.Observer
 
   private[this] val n = new AtomicLong(0)
-  private[this] val state = new AtomicReference(
-    State[T](init, 0, immutable.SortedSet.empty))
+  private[this] val state =
+    new AtomicReference(State[T](init, 0, immutable.SortedSet.empty))
 
   @tailrec
   private[this] def cas(next: State[T] => State[T]): State[T] = {

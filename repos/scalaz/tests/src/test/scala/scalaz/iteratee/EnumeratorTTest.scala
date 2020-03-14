@@ -117,14 +117,15 @@ object EnumeratorTTest extends SpecLite {
     val effect = EnumeratorT.perform[Int, IO, Unit](IO(v = 1))
     val enum2 = enumStream[Int, IO](Stream(3, 4))
 
-    val testIter = IterateeT.fold[Int, IO, Boolean](true) {
-      case (false, _) => false
-      case (true, i) =>
-        if (i <= 2)
-          v == 0
-        else
-          v == 1
-    }
+    val testIter =
+      IterateeT.fold[Int, IO, Boolean](true) {
+        case (false, _) => false
+        case (true, i) =>
+          if (i <= 2)
+            v == 0
+          else
+            v == 1
+      }
 
     (testIter &= (enum |+| effect |+| enum2)).run.unsafePerformIO must_=== (true)
   }

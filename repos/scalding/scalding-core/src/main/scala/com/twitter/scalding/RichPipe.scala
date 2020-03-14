@@ -140,20 +140,21 @@ class RichPipe(val pipe: Pipe)
           flowDef: FlowDef,
           mode: Mode) = {
         conv.assertArityMatches(f)
-        val newPipe = new Each(
-          pipe,
-          f,
-          new SideEffectMapFunction(
-            bf,
-            fn,
-            new Function1[C, Unit] with java.io.Serializable {
-              def apply(c: C) {
-                c.release()
-              }
-            },
-            Fields.NONE,
-            conv,
-            set))
+        val newPipe =
+          new Each(
+            pipe,
+            f,
+            new SideEffectMapFunction(
+              bf,
+              fn,
+              new Function1[C, Unit] with java.io.Serializable {
+                def apply(c: C) {
+                  c.release()
+                }
+              },
+              Fields.NONE,
+              conv,
+              set))
         NullSource.writeFrom(newPipe)(flowDef, mode)
         newPipe
       }
@@ -166,17 +167,18 @@ class RichPipe(val pipe: Pipe)
           set: TupleSetter[T]) = {
         conv.assertArityMatches(fs._1)
         set.assertArityMatches(fs._2)
-        val mf = new SideEffectMapFunction(
-          bf,
-          fn,
-          new Function1[C, Unit] with java.io.Serializable {
-            def apply(c: C) {
-              c.release()
-            }
-          },
-          fs._2,
-          conv,
-          set)
+        val mf =
+          new SideEffectMapFunction(
+            bf,
+            fn,
+            new Function1[C, Unit] with java.io.Serializable {
+              def apply(c: C) {
+                c.release()
+              }
+            },
+            fs._2,
+            conv,
+            set)
         new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
       }
 
@@ -189,17 +191,18 @@ class RichPipe(val pipe: Pipe)
           set: TupleSetter[T]) = {
         conv.assertArityMatches(fs._1)
         set.assertArityMatches(fs._2)
-        val mf = new SideEffectFlatMapFunction(
-          bf,
-          fn,
-          new Function1[C, Unit] with java.io.Serializable {
-            def apply(c: C) {
-              c.release()
-            }
-          },
-          fs._2,
-          conv,
-          set)
+        val mf =
+          new SideEffectFlatMapFunction(
+            bf,
+            fn,
+            new Function1[C, Unit] with java.io.Serializable {
+              def apply(c: C) {
+                c.release()
+              }
+            },
+            fs._2,
+            conv,
+            set)
         new Each(pipe, fs._1, mf, defaultMode(fs._1, fs._2))
       }
     }
@@ -216,8 +219,7 @@ class RichPipe(val pipe: Pipe)
     * Discard the given fields, and keep the rest.
     * Kind of the opposite of project method.
     */
-  def discard(f: Fields): Pipe =
-    new Each(pipe, f, new NoOp, Fields.SWAP)
+  def discard(f: Fields): Pipe = new Each(pipe, f, new NoOp, Fields.SWAP)
 
   /**
     * Insert a function into the pipeline:
@@ -448,8 +450,7 @@ class RichPipe(val pipe: Pipe)
     * {{{ filter('name) { name: String => !(name contains "a") } }}}
     */
   def filterNot[A](f: Fields)(fn: (A) => Boolean)(
-      implicit conv: TupleConverter[A]): Pipe =
-    filter[A](f)(!fn(_))
+      implicit conv: TupleConverter[A]): Pipe = filter[A](f)(!fn(_))
 
   /**
     * Text files can have corrupted data. If you use this function and a
@@ -707,11 +708,12 @@ class RichPipe(val pipe: Pipe)
     in the second flatmap cascading will read from the written tsv for running it. However TSV's use toString and so is not a bijection.
     here we stick in an identity function before the tsv write to keep to force cascading to do any fork/split beforehand.
      */
-    val writePipe: Pipe = outsource match {
-      case t: Tsv =>
-        new Each(pipe, Fields.ALL, IdentityFunction, Fields.REPLACE)
-      case _ => pipe
-    }
+    val writePipe: Pipe =
+      outsource match {
+        case t: Tsv =>
+          new Each(pipe, Fields.ALL, IdentityFunction, Fields.REPLACE)
+        case _ => pipe
+      }
     outsource.writeFrom(writePipe)(flowDef, mode)
     pipe
   }
@@ -865,9 +867,10 @@ class RichPipe(val pipe: Pipe)
       val notSeen: Set[Pipe] =
         p.getPrevious.filter(i => !visited.contains(i)).toSet
       val nextVisited: Set[Pipe] = visited + p
-      val nextToVisit = notSeen.foldLeft(toVisit) {
-        case (prev, n) => prev.maybeAdd(n)
-      }
+      val nextToVisit =
+        notSeen.foldLeft(toVisit) {
+          case (prev, n) => prev.maybeAdd(n)
+        }
 
       nextToVisit.next match {
         case Some((h, innerNextToVisit)) => go(h, nextVisited, innerNextToVisit)

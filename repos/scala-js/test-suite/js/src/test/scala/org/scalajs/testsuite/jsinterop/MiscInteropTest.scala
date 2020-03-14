@@ -198,8 +198,7 @@ class MiscInteropTest {
     assumeFalse(executingInRhino)
     assumeFalse(isInFullOpt)
 
-    def nameOf(obj: Any): js.Any =
-      obj.asInstanceOf[js.Dynamic].constructor.name
+    def nameOf(obj: Any): js.Any = obj.asInstanceOf[js.Dynamic].constructor.name
 
     assertTrue(nameOf(new SomeScalaClass).toString.contains("SomeScalaClass"))
     assertTrue(nameOf(new SomeJSClass).toString.contains("SomeJSClass"))

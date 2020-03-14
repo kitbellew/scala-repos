@@ -207,8 +207,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         indices)
 
     /** Column models in ordinal position order */
-    final lazy val columns: Seq[m.Column] =
-      mColumns.map(c => createColumnBuilder(this, c).model)
+    final lazy val columns: Seq[m.Column] = mColumns.map(c =>
+      createColumnBuilder(this, c).model)
 
     /** Column models by name */
     final lazy val columnsByName: Map[String, m.Column] =

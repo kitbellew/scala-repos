@@ -47,8 +47,8 @@ private[scala] trait JavaMirrors
   }
 
   override type Mirror = JavaMirror
-  implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[JavaMirror])
+  implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[JavaMirror])
 
   override lazy val rootMirror: Mirror = createMirror(NoSymbol, rootClassLoader)
 
@@ -80,20 +80,25 @@ private[scala] trait JavaMirrors
       new definitions.RunDefinitions // only one "run" in the reflection universe
     import runDefinitions._
 
-    override lazy val RootPackage = (new RootPackage
-      with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
-    override lazy val RootClass = (new RootClass
-      with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
-    override lazy val EmptyPackage = (new EmptyPackage
-      with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
-    override lazy val EmptyPackageClass = (new EmptyPackageClass
-      with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val RootPackage =
+      (new RootPackage
+        with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val RootClass =
+      (new RootClass
+        with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val EmptyPackage =
+      (new EmptyPackage
+        with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val EmptyPackageClass =
+      (new EmptyPackageClass
+        with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
 
     /** The lazy type for root.
       */
-    override lazy val rootLoader = new LazyType with FlagAgnosticCompleter {
-      override def complete(sym: Symbol) = sym setInfo new LazyPackageType
-    }
+    override lazy val rootLoader =
+      new LazyType with FlagAgnosticCompleter {
+        override def complete(sym: Symbol) = sym setInfo new LazyPackageType
+      }
 
     // reflective mirrors can't know the exhaustive list of available packages
     // (that's because compiler mirrors are based on directories and reflective mirrors are based on classloaders,
@@ -355,9 +360,10 @@ private[scala] trait JavaMirrors
       lazy val boxer =
         runtimeClass(symbol.toType).getDeclaredConstructors().head
       lazy val unboxer = {
-        val fields @ (field :: _) = symbol.toType.decls.collect {
-          case ts: TermSymbol if ts.isParamAccessor && ts.isMethod => ts
-        }.toList
+        val fields @ (field :: _) =
+          symbol.toType.decls.collect {
+            case ts: TermSymbol if ts.isParamAccessor && ts.isMethod => ts
+          }.toList
         assert(fields.length == 1, s"$symbol: $fields")
         runtimeClass(symbol.asClass).getDeclaredMethod(field.name.toString)
       }
@@ -631,8 +637,8 @@ private[scala] trait JavaMirrors
     // TODO: vararg is only supported in the last parameter list (SI-6182), so we don't need to worry about the rest for now
     private class MethodMetadata(symbol: MethodSymbol) {
       private val params = symbol.paramss.flatten.toArray
-      private val vcMetadata =
-        params.map(p => new DerivedValueClassMetadata(p.info))
+      private val vcMetadata = params.map(p =>
+        new DerivedValueClassMetadata(p.info))
       val isByName = params.map(p => isByNameParam(p.info))
       def isDerivedValueClass(i: Int) = vcMetadata(i).isDerivedValueClass
       def paramUnboxers(i: Int) = vcMetadata(i).unboxer
@@ -980,11 +986,12 @@ private[scala] trait JavaMirrors
     private def copyAnnotations(sym: Symbol, jann: AnnotatedElement) {
       sym setAnnotations (jann.getAnnotations map JavaAnnotationProxy).toList
       // SI-7065: we're not using getGenericExceptionTypes here to be consistent with ClassfileParser
-      val jexTpes = jann match {
-        case jm: jMethod              => jm.getExceptionTypes.toList
-        case jconstr: jConstructor[_] => jconstr.getExceptionTypes.toList
-        case _                        => Nil
-      }
+      val jexTpes =
+        jann match {
+          case jm: jMethod              => jm.getExceptionTypes.toList
+          case jconstr: jConstructor[_] => jconstr.getExceptionTypes.toList
+          case _                        => Nil
+        }
       jexTpes foreach (jexTpe => sym.addThrowsAnnotation(classSymbol(jexTpe)))
     }
 
@@ -1257,8 +1264,9 @@ private[scala] trait JavaMirrors
       toScala(constructorCache, jconstr)(_ constructorToScala1 _)
 
     private def constructorToScala1(jconstr: jConstructor[_]): MethodSymbol = {
-      val owner =
-        followStatic(classToScala(jconstr.getDeclaringClass), jconstr.javaFlags)
+      val owner = followStatic(
+        classToScala(jconstr.getDeclaringClass),
+        jconstr.javaFlags)
       (lookup(owner, jconstr.getName) suchThat (erasesTo(
         _,
         jconstr)) orElse jconstrAsScala(jconstr)).asMethod
@@ -1494,8 +1502,9 @@ private[scala] trait JavaMirrors
     private def jclassAsScala1(jclazz: jClass[_]): ClassSymbol = {
       val owner = sOwner(jclazz)
       val name = scalaSimpleName(jclazz)
-      val completer = (clazz: Symbol, module: Symbol) =>
-        new FromJavaClassCompleter(clazz, module, jclazz)
+      val completer =
+        (clazz: Symbol, module: Symbol) =>
+          new FromJavaClassCompleter(clazz, module, jclazz)
 
       initAndEnterClassAndModule(owner, name, completer)._1
     }

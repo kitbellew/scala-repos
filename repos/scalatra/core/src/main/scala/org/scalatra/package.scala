@@ -27,8 +27,8 @@ package object scalatra
 
   type MultiParams = MultiMap
 
-  type Params = MultiMapHeadView[String, String]
-    with MapWithIndifferentAccess[String]
+  type Params =
+    MultiMapHeadView[String, String] with MapWithIndifferentAccess[String]
 
   type Action = () => Any
 
@@ -60,8 +60,7 @@ package object scalatra
   type CoreStackWithXsrf = CoreStack with XsrfTokenSupport
 
   type FullCoreStack = CoreStack with FileUploadSupport
-  type FileUploadStack = FutureSupport
-    with FlashMapSupport
-    with FileUploadSupport
+  type FileUploadStack =
+    FutureSupport with FlashMapSupport with FileUploadSupport
 
 }

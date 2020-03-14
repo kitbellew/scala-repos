@@ -44,32 +44,36 @@ object SimpleNestedTableView extends JFXApp {
   stage = new PrimaryStage {
     title = "Simple Table View Sorted"
     scene = new Scene {
-      val firstNameColumn = new TableColumn[Person, String] {
-        text = "First"
-        cellValueFactory = {
-          _.value.firstName
+      val firstNameColumn =
+        new TableColumn[Person, String] {
+          text = "First"
+          cellValueFactory = {
+            _.value.firstName
+          }
+          prefWidth = 180
         }
-        prefWidth = 180
-      }
-      val lastNameColumn = new TableColumn[Person, String] {
-        text = "Last"
-        cellValueFactory = {
-          _.value.lastName
+      val lastNameColumn =
+        new TableColumn[Person, String] {
+          text = "Last"
+          cellValueFactory = {
+            _.value.lastName
+          }
+          prefWidth = 180
         }
-        prefWidth = 180
-      }
-      val nameColumn = new TableColumn[Person, String] {
-        text = "Name"
-        columns += (firstNameColumn, lastNameColumn)
-      }
+      val nameColumn =
+        new TableColumn[Person, String] {
+          text = "Name"
+          columns += (firstNameColumn, lastNameColumn)
+        }
 
-      val phoneColumn = new TableColumn[Person, String] {
-        text = "Phone"
-        cellValueFactory = {
-          _.value.phone
+      val phoneColumn =
+        new TableColumn[Person, String] {
+          text = "Phone"
+          cellValueFactory = {
+            _.value.phone
+          }
+          prefWidth = 180
         }
-        prefWidth = 180
-      }
 
       content = new TableView[Person](characters) {
         columns += (nameColumn, phoneColumn)

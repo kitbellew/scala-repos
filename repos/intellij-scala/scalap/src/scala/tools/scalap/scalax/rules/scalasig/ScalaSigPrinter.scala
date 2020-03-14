@@ -92,17 +92,19 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     if (symbol.isSynthetic)
       return
     val shouldPrint = {
-      val accessibilityOk = verbosity match {
-        case ShowAll => true
-        case HideClassPrivate =>
-          !symbol.isPrivate || symbol.isInstanceOf[AliasSymbol] || level == 0
-        case HideInstancePrivate =>
-          !symbol.isLocal || symbol.isInstanceOf[AliasSymbol]
-      }
-      val paramAccessor = symbol match {
-        case m: MethodSymbol if m.isParamAccessor => true
-        case _                                    => false
-      }
+      val accessibilityOk =
+        verbosity match {
+          case ShowAll => true
+          case HideClassPrivate =>
+            !symbol.isPrivate || symbol.isInstanceOf[AliasSymbol] || level == 0
+          case HideInstancePrivate =>
+            !symbol.isLocal || symbol.isInstanceOf[AliasSymbol]
+        }
+      val paramAccessor =
+        symbol match {
+          case m: MethodSymbol if m.isParamAccessor => true
+          case _                                    => false
+        }
       accessibilityOk && !symbol.isCaseAccessor && !paramAccessor
     }
     if (shouldPrint) {
@@ -266,13 +268,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         print("class ")
       print(processName(c.name))
       val it = c.infoType
-      val (classType, typeParams) = it match {
-        case PolyType(typeRef, symbols) =>
-          (PolyTypeWithCons(typeRef, symbols, defaultConstructor), symbols)
-        case ClassInfoType(a, b) if !c.isTrait =>
-          (ClassInfoTypeWithCons(a, b, defaultConstructor), Seq.empty)
-        case _ => (it, Seq.empty)
-      }
+      val (classType, typeParams) =
+        it match {
+          case PolyType(typeRef, symbols) =>
+            (PolyTypeWithCons(typeRef, symbols, defaultConstructor), symbols)
+          case ClassInfoType(a, b) if !c.isTrait =>
+            (ClassInfoTypeWithCons(a, b, defaultConstructor), Seq.empty)
+          case _ => (it, Seq.empty)
+        }
       for (param <- typeParams)
         addTypeParameter(param)
       printType(classType)
@@ -519,11 +522,12 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     printModifiers(a)
     print("type ")
     print(processName(a.name))
-    val tp = a.infoType match {
-      case PolyType(typeRef, symbols) =>
-        printType(PolyTypeWithCons(typeRef, symbols, " = "))
-      case tp => printType(tp, " = ")
-    }
+    val tp =
+      a.infoType match {
+        case PolyType(typeRef, symbols) =>
+          printType(PolyTypeWithCons(typeRef, symbols, " = "))
+        case tp => printType(tp, " = ")
+      }
     print("\n")
     printChildren(level, a)
   }
@@ -698,51 +702,55 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
                 case None => false
               }
             }
-            val prefixStr = (prefix, symbol, toString(prefix)) match {
-              case (NoPrefixType, _, _) => ""
-              case (ThisType(objectSymbol), _, _)
-                  if objectSymbol.isModule && !objectSymbol.isStable =>
-                val name: String = objectSymbol.name
-                objectSymbol match {
-                  case classSymbol: ClassSymbol if name == "package" =>
-                    processName(classSymbol.symbolInfo.owner.path) + "."
-                  case _ => processName(name) + "."
-                }
-              case (ThisType(packSymbol), _, _) if !packSymbol.isType =>
-                processName(packSymbol.path.replace("<root>", "_root_")) + "."
-              case (ThisType(classSymbol: ClassSymbol), _, _)
-                  if refinementClass(classSymbol) =>
-                ""
-              case (
-                    ThisType(typeSymbol: ClassSymbol),
-                    ExternalSymbol(_, Some(parent), _),
-                    _)
-                  if typeSymbol.path != parent.path && checkContainsSelf(
-                    typeSymbol.selfType,
-                    parent) =>
-                processName(typeSymbol.name) + ".this."
-              case (ThisType(typeSymbol), ExternalSymbol(_, Some(parent), _), _)
-                  if typeSymbol.path != parent.path =>
-                processName(typeSymbol.name) + ".super[" + processName(
-                  parent.name) + "/*" + parent.path + "*/]."
-              case (_, _, SingletonTypePattern(a)) => a + "."
-              case (_, _, a)                       => a + "#"
-            }
+            val prefixStr =
+              (prefix, symbol, toString(prefix)) match {
+                case (NoPrefixType, _, _) => ""
+                case (ThisType(objectSymbol), _, _)
+                    if objectSymbol.isModule && !objectSymbol.isStable =>
+                  val name: String = objectSymbol.name
+                  objectSymbol match {
+                    case classSymbol: ClassSymbol if name == "package" =>
+                      processName(classSymbol.symbolInfo.owner.path) + "."
+                    case _ => processName(name) + "."
+                  }
+                case (ThisType(packSymbol), _, _) if !packSymbol.isType =>
+                  processName(packSymbol.path.replace("<root>", "_root_")) + "."
+                case (ThisType(classSymbol: ClassSymbol), _, _)
+                    if refinementClass(classSymbol) =>
+                  ""
+                case (
+                      ThisType(typeSymbol: ClassSymbol),
+                      ExternalSymbol(_, Some(parent), _),
+                      _)
+                    if typeSymbol.path != parent.path && checkContainsSelf(
+                      typeSymbol.selfType,
+                      parent) =>
+                  processName(typeSymbol.name) + ".this."
+                case (
+                      ThisType(typeSymbol),
+                      ExternalSymbol(_, Some(parent), _),
+                      _) if typeSymbol.path != parent.path =>
+                  processName(typeSymbol.name) + ".super[" + processName(
+                    parent.name) + "/*" + parent.path + "*/]."
+                case (_, _, SingletonTypePattern(a)) => a + "."
+                case (_, _, a)                       => a + "#"
+              }
             //remove package object reference
             val path = StringUtil.cutSubstring(prefixStr)(".`package`")
             val name = processName(symbol.name)
             val res = path + name
-            val typeBounds = if (name == "_") {
-              symbol match {
-                case ts: TypeSymbol =>
-                  ts.infoType match {
-                    case t: TypeBoundsType => toString(t)
-                    case _                 => ""
-                  }
-                case _ => ""
-              }
-            } else
-              ""
+            val typeBounds =
+              if (name == "_") {
+                symbol match {
+                  case ts: TypeSymbol =>
+                    ts.infoType match {
+                      case t: TypeBoundsType => toString(t)
+                      case _                 => ""
+                    }
+                  case _ => ""
+                }
+              } else
+                ""
             val ress = StringUtil.trimStart(res, "<empty>.") + typeArgString(
               typeArgs) + typeBounds
             ress
@@ -792,8 +800,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         toString(typeRef, sep)
       //case DeBruijnIndexType(typeLevel, typeIndex) =>
       case ExistentialType(typeRef, symbols) =>
-        val refs =
-          symbols.map(toString).filter(!_.startsWith("_")).map("type " + _)
+        val refs = symbols
+          .map(toString)
+          .filter(!_.startsWith("_"))
+          .map("type " + _)
         toString(typeRef, sep) + (if (refs.nonEmpty)
                                     refs.mkString(" forSome {", "; ", "}")
                                   else
@@ -813,18 +823,20 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def toString(symbol: Symbol): String =
     symbol match {
       case symbol: TypeSymbol =>
-        val attrs = (for (a <- symbol.attributes)
-          yield toString(a)).mkString(" ")
+        val attrs =
+          (for (a <- symbol.attributes)
+            yield toString(a)).mkString(" ")
         val atrs =
           if (attrs.length > 0)
             attrs.trim + " "
           else
             ""
-        val symbolType = symbol.infoType match {
-          case PolyType(typeRef, symbols) =>
-            PolyTypeWithCons(typeRef, symbols, "")
-          case tp => tp
-        }
+        val symbolType =
+          symbol.infoType match {
+            case PolyType(typeRef, symbols) =>
+              PolyTypeWithCons(typeRef, symbols, "")
+            case tp => tp
+          }
         val name: String = currentTypeParameters.getOrElse(symbol, symbol.name)
         atrs + getVariance(symbol) + processName(name) + toString(symbolType)
       case s => symbol.toString
@@ -873,48 +885,47 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
-  private val keywordList =
-    Set(
-      "true",
-      "false",
-      "null",
-      "abstract",
-      "case",
-      "catch",
-      "class",
-      "def",
-      "do",
-      "else",
-      "extends",
-      "final",
-      "finally",
-      "for",
-      "forSome",
-      "if",
-      "implicit",
-      "import",
-      "lazy",
-      "match",
-      "new",
-      "object",
-      "override",
-      "package",
-      "private",
-      "protected",
-      "return",
-      "sealed",
-      "super",
-      "this",
-      "throw",
-      "trait",
-      "try",
-      "type",
-      "val",
-      "var",
-      "while",
-      "with",
-      "yield"
-    )
+  private val keywordList = Set(
+    "true",
+    "false",
+    "null",
+    "abstract",
+    "case",
+    "catch",
+    "class",
+    "def",
+    "do",
+    "else",
+    "extends",
+    "final",
+    "finally",
+    "for",
+    "forSome",
+    "if",
+    "implicit",
+    "import",
+    "lazy",
+    "match",
+    "new",
+    "object",
+    "override",
+    "package",
+    "private",
+    "protected",
+    "return",
+    "sealed",
+    "super",
+    "this",
+    "throw",
+    "trait",
+    "try",
+    "type",
+    "val",
+    "var",
+    "while",
+    "with",
+    "yield"
+  )
 
   private def stripPrivatePrefix(name: String) = {
     val i = name.lastIndexOf("$$")

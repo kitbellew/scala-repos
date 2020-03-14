@@ -38,11 +38,12 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
 
   def testMultiModule() =
     runTest(new project("multiModule") {
-      lazy val foo = new module("foo") {
-        moduleDependencies += new dependency(bar) {
-          isExported := true
+      lazy val foo =
+        new module("foo") {
+          moduleDependencies += new dependency(bar) {
+            isExported := true
+          }
         }
-      }
 
       lazy val bar = new module("bar")
       lazy val root = new module("multiModule")
@@ -54,9 +55,10 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
     runTest(
       new project("unmanagedDependency") {
         modules += new module("unmanagedDependency") {
-          lazy val unmanagedLibrary = new library("SBT: unmanaged-jars") {
-            classes += (testProjectDir / "lib" / "unmanaged.jar").getAbsolutePath
-          }
+          lazy val unmanagedLibrary =
+            new library("SBT: unmanaged-jars") {
+              classes += (testProjectDir / "lib" / "unmanaged.jar").getAbsolutePath
+            }
           libraries += unmanagedLibrary
           libraryDependencies += unmanagedLibrary
         }
@@ -66,18 +68,21 @@ class ProjectImportingTest extends ImportingTestCase with InexactMatch {
   def testSharedSources() =
     runTest(
       new project("sharedSources") {
-        lazy val sharedSourcesModule = new module("sharedSources-sources") {
-          contentRoots += getProjectPath + "/shared"
-          ProjectStructureDsl.sources += "src/main/scala"
-        }
+        lazy val sharedSourcesModule =
+          new module("sharedSources-sources") {
+            contentRoots += getProjectPath + "/shared"
+            ProjectStructureDsl.sources += "src/main/scala"
+          }
 
-        lazy val foo = new module("foo") {
-          moduleDependencies += sharedSourcesModule
-        }
+        lazy val foo =
+          new module("foo") {
+            moduleDependencies += sharedSourcesModule
+          }
 
-        lazy val bar = new module("bar") {
-          moduleDependencies += sharedSourcesModule
-        }
+        lazy val bar =
+          new module("bar") {
+            moduleDependencies += sharedSourcesModule
+          }
 
         modules := Seq(foo, bar, sharedSourcesModule)
       }

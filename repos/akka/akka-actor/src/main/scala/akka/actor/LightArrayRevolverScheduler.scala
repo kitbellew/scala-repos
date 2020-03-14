@@ -43,23 +43,21 @@ class LightArrayRevolverScheduler(
   import Helpers.Requiring
   import Helpers.ConfigOps
 
-  val WheelSize =
-    config
-      .getInt("akka.scheduler.ticks-per-wheel")
-      .requiring(
-        ticks ⇒ (ticks & (ticks - 1)) == 0,
-        "ticks-per-wheel must be a power of 2")
-  val TickDuration =
-    config
-      .getMillisDuration("akka.scheduler.tick-duration")
-      .requiring(
-        _ >= 10.millis || !Helpers.isWindows,
-        "minimum supported akka.scheduler.tick-duration on Windows is 10ms")
-      .requiring(
-        _ >= 1.millis,
-        "minimum supported akka.scheduler.tick-duration is 1ms")
-  val ShutdownTimeout =
-    config.getMillisDuration("akka.scheduler.shutdown-timeout")
+  val WheelSize = config
+    .getInt("akka.scheduler.ticks-per-wheel")
+    .requiring(
+      ticks ⇒ (ticks & (ticks - 1)) == 0,
+      "ticks-per-wheel must be a power of 2")
+  val TickDuration = config
+    .getMillisDuration("akka.scheduler.tick-duration")
+    .requiring(
+      _ >= 10.millis || !Helpers.isWindows,
+      "minimum supported akka.scheduler.tick-duration on Windows is 10ms")
+    .requiring(
+      _ >= 1.millis,
+      "minimum supported akka.scheduler.tick-duration is 1ms")
+  val ShutdownTimeout = config.getMillisDuration(
+    "akka.scheduler.shutdown-timeout")
 
   import LightArrayRevolverScheduler._
 
@@ -232,8 +230,8 @@ class LightArrayRevolverScheduler(
       Future.successful(Nil)
   }
 
-  @volatile private var timerThread: Thread =
-    threadFactory.newThread(new Runnable {
+  @volatile private var timerThread: Thread = threadFactory.newThread(
+    new Runnable {
 
       var tick = 0
       val wheel = Array.fill(WheelSize)(new TaskQueue)
@@ -259,11 +257,12 @@ class LightArrayRevolverScheduler(
             node.value.ticks match {
               case 0 ⇒ node.value.executeTask()
               case ticks ⇒
-                val futureTick = ((
-                  time - start + // calculate the nanos since timer start
-                    (ticks * tickNanos) + // adding the desired delay
-                    tickNanos - 1 // rounding up
-                ) / tickNanos).toInt // and converting to slot number
+                val futureTick =
+                  ((
+                    time - start + // calculate the nanos since timer start
+                      (ticks * tickNanos) + // adding the desired delay
+                      tickNanos - 1 // rounding up
+                  ) / tickNanos).toInt // and converting to slot number
                 // tick is an Int that will wrap around, but toInt of futureTick gives us modulo operations
                 // and the difference (offset) will be correct in any case
                 val offset = futureTick - tick
@@ -349,8 +348,8 @@ class LightArrayRevolverScheduler(
 }
 
 object LightArrayRevolverScheduler {
-  private[this] val taskOffset =
-    unsafe.objectFieldOffset(classOf[TaskHolder].getDeclaredField("task"))
+  private[this] val taskOffset = unsafe.objectFieldOffset(
+    classOf[TaskHolder].getDeclaredField("task"))
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]
 
@@ -410,21 +409,25 @@ object LightArrayRevolverScheduler {
     override def isCancelled: Boolean = task eq CancelledTask
   }
 
-  private[this] val CancelledTask = new Runnable {
-    def run = ()
-  }
-  private[this] val ExecutedTask = new Runnable {
-    def run = ()
-  }
+  private[this] val CancelledTask =
+    new Runnable {
+      def run = ()
+    }
+  private[this] val ExecutedTask =
+    new Runnable {
+      def run = ()
+    }
 
-  private val NotCancellable: TimerTask = new TimerTask {
-    def cancel(): Boolean = false
-    def isCancelled: Boolean = false
-    def run(): Unit = ()
-  }
+  private val NotCancellable: TimerTask =
+    new TimerTask {
+      def cancel(): Boolean = false
+      def isCancelled: Boolean = false
+      def run(): Unit = ()
+    }
 
-  private val InitialRepeatMarker: Cancellable = new Cancellable {
-    def cancel(): Boolean = false
-    def isCancelled: Boolean = false
-  }
+  private val InitialRepeatMarker: Cancellable =
+    new Cancellable {
+      def cancel(): Boolean = false
+      def isCancelled: Boolean = false
+    }
 }

@@ -60,10 +60,11 @@ trait Inbox { this: ActorDSL.type ⇒
       mkChild(inboxProps, "inbox-" + inboxNr.incrementAndGet)
   }
 
-  private implicit val deadlineOrder: Ordering[Query] = new Ordering[Query] {
-    def compare(left: Query, right: Query): Int =
-      left.deadline.time compare right.deadline.time
-  }
+  private implicit val deadlineOrder: Ordering[Query] =
+    new Ordering[Query] {
+      def compare(left: Query, right: Query): Int =
+        left.deadline.time compare right.deadline.time
+    }
 
   private class InboxActor(size: Int) extends Actor with ActorLogging {
     var clients = Queue.empty[Query]
@@ -97,8 +98,8 @@ trait Inbox { this: ActorDSL.type ⇒
     }
 
     var currentSelect: Select = _
-    val messagePredicate: (Any ⇒ Boolean) = (msg) ⇒
-      currentSelect.predicate.isDefinedAt(msg)
+    val messagePredicate: (Any ⇒ Boolean) =
+      (msg) ⇒ currentSelect.predicate.isDefinedAt(msg)
 
     var currentDeadline: Option[(Deadline, Cancellable)] = None
 
@@ -193,8 +194,8 @@ trait Inbox { this: ActorDSL.type ⇒
     def getRef: ActorRef = receiver
     def send(target: ActorRef, msg: AnyRef): Unit = target.tell(msg, receiver)
 
-    private val defaultTimeout: FiniteDuration = Extension(
-      system).DSLDefaultTimeout
+    private val defaultTimeout: FiniteDuration =
+      Extension(system).DSLDefaultTimeout
 
     /**
       * Receive a single message from the internal `receiver` actor. The supplied

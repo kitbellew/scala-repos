@@ -19,7 +19,8 @@ class Play2ProjectData(
     extends AbstractExternalEntityData(owner)
 
 object Play2ProjectData {
-  val Key: Key[Play2ProjectData] = new Key(
-    classOf[Play2ProjectData].getName,
-    ProjectKeys.PROJECT.getProcessingWeight + 1)
+  val Key: Key[Play2ProjectData] =
+    new Key(
+      classOf[Play2ProjectData].getName,
+      ProjectKeys.PROJECT.getProcessingWeight + 1)
 }

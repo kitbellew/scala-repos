@@ -70,11 +70,12 @@ object LAPinger {
       to: SpecializedLiftActor[T],
       msg: T,
       delay: Long): ScheduledFuture[Unit] = {
-    val r = new Callable[Unit] {
-      def call: Unit = {
-        to ! msg
+    val r =
+      new Callable[Unit] {
+        def call: Unit = {
+          to ! msg
+        }
       }
-    }
     try {
       service.schedule(r, delay, TimeUnit.MILLISECONDS)
     } catch {

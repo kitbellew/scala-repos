@@ -69,9 +69,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     intp.reporter printUntruncatedMessage msg
   }
 
-  lazy val power = new Power(intp, new StdReplVals(this))(
-    tagOfStdReplVals,
-    classTag[StdReplVals])
+  lazy val power =
+    new Power(intp, new StdReplVals(this))(
+      tagOfStdReplVals,
+      classTag[StdReplVals])
   def history = in.history
 
   // classpath entries added via :cp
@@ -160,30 +161,31 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   /** Show the history */
-  lazy val historyCommand = new LoopCommand(
-    "history",
-    "show the history (optional num is commands to show)") {
-    override def usage = "[num]"
-    def defaultLines = 20
+  lazy val historyCommand =
+    new LoopCommand(
+      "history",
+      "show the history (optional num is commands to show)") {
+      override def usage = "[num]"
+      def defaultLines = 20
 
-    def apply(line: String): Result = {
-      if (history eq NoHistory)
-        return "No history available."
+      def apply(line: String): Result = {
+        if (history eq NoHistory)
+          return "No history available."
 
-      val xs = words(line)
-      val current = history.index
-      val count =
-        try xs.head.toInt
-        catch {
-          case _: Exception => defaultLines
-        }
-      val lines = history.asStrings takeRight count
-      val offset = current - lines.size + 1
+        val xs = words(line)
+        val current = history.index
+        val count =
+          try xs.head.toInt
+          catch {
+            case _: Exception => defaultLines
+          }
+        val lines = history.asStrings takeRight count
+        val offset = current - lines.size + 1
 
-      for ((line, index) <- lines.zipWithIndex)
-        echo("%3d  %s".format(index + offset, line))
+        for ((line, index) <- lines.zipWithIndex)
+          echo("%3d  %s".format(index + offset, line))
+      }
     }
-  }
 
   // When you know you are most likely breaking into the middle
   // of a line being typed.  This softens the blow.
@@ -347,11 +349,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private def findToolsJar() = PathResolver.SupplementalLocations.platformTools
 
   private def addToolsJarToLoader() = {
-    val cl = findToolsJar() match {
-      case Some(tools) =>
-        ScalaClassLoader.fromURLs(Seq(tools.toURL), intp.classLoader)
-      case _ => intp.classLoader
-    }
+    val cl =
+      findToolsJar() match {
+        case Some(tools) =>
+          ScalaClassLoader.fromURLs(Seq(tools.toURL), intp.classLoader)
+        case _ => intp.classLoader
+      }
     if (Javap.isAvailable(cl)) {
       repldbg(":javap available.")
       cl
@@ -740,20 +743,21 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   /** fork a shell and run a command */
-  lazy val shCommand = new LoopCommand(
-    "sh",
-    "run a shell command (result is implicitly => List[String])") {
-    override def usage = "<command line>"
-    def apply(line: String): Result =
-      line match {
-        case "" => showUsage()
-        case _ =>
-          val toRun =
-            s"new ${classOf[ProcessResult].getName}(${string2codeQuoted(line)})"
-          intp interpret toRun
-          ()
-      }
-  }
+  lazy val shCommand =
+    new LoopCommand(
+      "sh",
+      "run a shell command (result is implicitly => List[String])") {
+      override def usage = "<command line>"
+      def apply(line: String): Result =
+        line match {
+          case "" => showUsage()
+          case _ =>
+            val toRun =
+              s"new ${classOf[ProcessResult].getName}(${string2codeQuoted(line)})"
+            intp interpret toRun
+            ()
+        }
+    }
 
   def withFile[A](filename: String)(action: File => A): Option[A] = {
     val res = Some(File(filename)) filter (_.exists) map action
@@ -952,43 +956,48 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
         val (raw0, ss0) = maybeRaw(words(arg))
         val (margin0, ss1) = maybeHere(ss0)
-        val file0 = ss1 match {
-          case Nil      => null
-          case x :: Nil => x
-          case _ =>
-            echo("usage: :paste [-raw] file | < EOF");
-            return result
-        }
+        val file0 =
+          ss1 match {
+            case Nil      => null
+            case x :: Nil => x
+            case _ =>
+              echo("usage: :paste [-raw] file | < EOF");
+              return result
+          }
         (raw0, Option(file0), Option(margin0))
       }
-    val code = (file, margin) match {
-      case (Some(name), None) =>
-        withFile(name) { f =>
-          shouldReplay = Some(s":paste $arg")
-          val s = f.slurp.trim
-          if (s.isEmpty)
-            echo(s"File contains no code: $f")
+    val code =
+      (file, margin) match {
+        case (Some(name), None) =>
+          withFile(name) { f =>
+            shouldReplay = Some(s":paste $arg")
+            val s = f.slurp.trim
+            if (s.isEmpty)
+              echo(s"File contains no code: $f")
+            else
+              echo(s"Pasting file $f...")
+            s
+          } getOrElse ""
+        case (eof, _) =>
+          echo(
+            s"// Entering paste mode (${eof getOrElse "ctrl-D"} to finish)\n")
+          val delimiter = eof orElse replProps.pasteDelimiter.option
+          val input = readWhile(s =>
+            delimiter.isEmpty || delimiter.get != s) mkString "\n"
+          val text =
+            (
+              margin filter (_.nonEmpty) map {
+                case "-" => input.lines map (_.trim) mkString "\n"
+                case m =>
+                  input stripMargin m.head // ignore excess chars in "<<||"
+              } getOrElse input
+            ).trim
+          if (text.isEmpty)
+            echo("\n// Nothing pasted, nothing gained.\n")
           else
-            echo(s"Pasting file $f...")
-          s
-        } getOrElse ""
-      case (eof, _) =>
-        echo(s"// Entering paste mode (${eof getOrElse "ctrl-D"} to finish)\n")
-        val delimiter = eof orElse replProps.pasteDelimiter.option
-        val input =
-          readWhile(s => delimiter.isEmpty || delimiter.get != s) mkString "\n"
-        val text = (
-          margin filter (_.nonEmpty) map {
-            case "-" => input.lines map (_.trim) mkString "\n"
-            case m   => input stripMargin m.head // ignore excess chars in "<<||"
-          } getOrElse input
-        ).trim
-        if (text.isEmpty)
-          echo("\n// Nothing pasted, nothing gained.\n")
-        else
-          echo("\n// Exiting paste mode, now interpreting.\n")
-        text
-    }
+            echo("\n// Exiting paste mode, now interpreting.\n")
+          text
+      }
     def interpretCode() = {
       val res = intp interpret code
       // if input is incomplete, let the compiler try to say why
@@ -1183,8 +1192,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       createInterpreter()
 
       // sets in to some kind of reader depending on environmental cues
-      in = in0.fold(chooseReader(settings))(r =>
-        SimpleReader(r, out, interactive = true))
+      in =
+        in0.fold(chooseReader(settings))(r =>
+          SimpleReader(r, out, interactive = true))
       globalFuture = Future {
         intp.initializeSynchronous()
         loopPostInit()
@@ -1220,30 +1230,33 @@ object ILoop {
 
     stringFromStream { ostream =>
       Console.withOut(ostream) {
-        val output = new JPrintWriter(new OutputStreamWriter(ostream), true) {
-          // skip margin prefix for continuation lines, unless preserving session text for test
-          // should test for repl.paste.ContinueString or replProps.continueText.contains(ch)
-          override def write(str: String) =
-            if (!inSession && (str forall (ch => ch.isWhitespace || ch == '|')))
-              ()
-            else
-              super.write(str)
-        }
-        val input = new BufferedReader(new StringReader(code.trim + "\n")) {
-          override def readLine(): String = {
-            mark(1) // default buffer is 8k
-            val c = read()
-            if (c == -1 || c == 4) {
-              null
-            } else {
-              reset()
-              val s = super.readLine()
-              // helping out by printing the line being interpreted.
-              output.println(s)
-              s
+        val output =
+          new JPrintWriter(new OutputStreamWriter(ostream), true) {
+            // skip margin prefix for continuation lines, unless preserving session text for test
+            // should test for repl.paste.ContinueString or replProps.continueText.contains(ch)
+            override def write(str: String) =
+              if (!inSession && (str forall (ch =>
+                    ch.isWhitespace || ch == '|')))
+                ()
+              else
+                super.write(str)
+          }
+        val input =
+          new BufferedReader(new StringReader(code.trim + "\n")) {
+            override def readLine(): String = {
+              mark(1) // default buffer is 8k
+              val c = read()
+              if (c == -1 || c == 4) {
+                null
+              } else {
+                reset()
+                val s = super.readLine()
+                // helping out by printing the line being interpreted.
+                output.println(s)
+                s
+              }
             }
           }
-        }
         val repl = new ILoop(input, output)
         if (settings.classpath.isDefault)
           settings.classpath.value = sys.props("java.class.path")

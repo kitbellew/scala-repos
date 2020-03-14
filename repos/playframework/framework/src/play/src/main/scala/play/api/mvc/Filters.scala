@@ -59,11 +59,12 @@ trait Filter extends EssentialFilter {
         val bodyAccumulator = Promise[Accumulator[ByteString, Result]]()
 
         // Invoke the filter
-        val result = self.apply({ (rh: RequestHeader) =>
-          // Invoke the delegate
-          bodyAccumulator.success(next(rh))
-          promisedResult.future
-        })(rh)
+        val result =
+          self.apply({ (rh: RequestHeader) =>
+            // Invoke the delegate
+            bodyAccumulator.success(next(rh))
+            promisedResult.future
+          })(rh)
 
         result.onComplete({ resultTry =>
           // It is possible that the delegate function (the next filter in the chain) was never invoked by this Filter.
@@ -134,9 +135,10 @@ object FilterChain {
       filters: List[EssentialFilter]): EssentialAction =
     new EssentialAction {
       def apply(rh: RequestHeader): Accumulator[ByteString, Result] = {
-        val chain = filters.reverse.foldLeft(action) { (a, i) =>
-          i(a)
-        }
+        val chain =
+          filters.reverse.foldLeft(action) { (a, i) =>
+            i(a)
+          }
         chain(rh)
       }
     }

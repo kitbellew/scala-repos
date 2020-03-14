@@ -257,8 +257,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
           expr
         })
     } else {
-      val (valDef, identFn) =
-        mkPackedValDef(expr, owner, unit.freshTermName("ev$"))
+      val (valDef, identFn) = mkPackedValDef(
+        expr,
+        owner,
+        unit.freshTermName("ev$"))
       val containing = within(identFn)
       ensureNonOverlapping(containing, List(expr))
       Block(List(valDef), containing) setPos (containing.pos union expr.pos)
@@ -284,8 +286,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
             }
         }
       } else {
-        val (valDef, identFn) =
-          mkPackedValDef(expr, owner, unit.freshTermName("ev$"))
+        val (valDef, identFn) = mkPackedValDef(
+          expr,
+          owner,
+          unit.freshTermName("ev$"))
         vdefs += valDef
         exprs1 += identFn
       }
@@ -324,8 +328,9 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
         case head :: Nil => head
         case _           => Block(stats: _*)
       }
-    val sync =
-      mkSynchronized(attrThis, If(cond, blockOrStat(syncBody), EmptyTree))
+    val sync = mkSynchronized(
+      attrThis,
+      If(cond, blockOrStat(syncBody), EmptyTree))
     blockOrStat(sync :: stats)
   }
 
@@ -368,9 +373,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
 
     val methSym = owner.newMethod(name, fun.pos, FINAL | additionalFlags)
 
-    val paramSyms = map2(formals, fun.vparams) { (tp, vparam) =>
-      methSym.newSyntheticValueParam(tp, vparam.name)
-    }
+    val paramSyms =
+      map2(formals, fun.vparams) { (tp, vparam) =>
+        methSym.newSyntheticValueParam(tp, vparam.name)
+      }
 
     methSym setInfo MethodType(paramSyms, restpe.deconst)
 

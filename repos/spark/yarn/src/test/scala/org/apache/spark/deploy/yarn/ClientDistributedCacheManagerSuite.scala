@@ -63,20 +63,21 @@ class ClientDistributedCacheManagerSuite
     val distMgr = new ClientDistributedCacheManager()
     val fs = mock[FileSystem]
     val uri = new URI("/tmp/testing")
-    val realFileStatus = new FileStatus(
-      10,
-      false,
-      1,
-      1024,
-      10,
-      10,
-      null,
-      "testOwner",
-      null,
-      new Path("/tmp/testing"))
+    val realFileStatus =
+      new FileStatus(
+        10,
+        false,
+        1,
+        1024,
+        10,
+        10,
+        null,
+        "testOwner",
+        null,
+        new Path("/tmp/testing"))
     when(fs.getFileStatus(new Path(uri))).thenReturn(new FileStatus())
-    val statCache: Map[URI, FileStatus] =
-      HashMap[URI, FileStatus](uri -> realFileStatus)
+    val statCache: Map[URI, FileStatus] = HashMap[URI, FileStatus](
+      uri -> realFileStatus)
     val stat = distMgr.getFileStatus(fs, uri, statCache)
     assert(stat.getPath().toString() === "/tmp/testing")
   }
@@ -124,17 +125,18 @@ class ClientDistributedCacheManagerSuite
     assert(env.get("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES") === None)
 
     // add another one and verify both there and order correct
-    val realFileStatus = new FileStatus(
-      20,
-      false,
-      1,
-      1024,
-      10,
-      30,
-      null,
-      "testOwner",
-      null,
-      new Path("/tmp/testing2"))
+    val realFileStatus =
+      new FileStatus(
+        20,
+        false,
+        1,
+        1024,
+        10,
+        30,
+        null,
+        "testOwner",
+        null,
+        new Path("/tmp/testing2"))
     val destPath2 = new Path("file:///foo.invalid.com:8080/tmp/testing2")
     when(fs.getFileStatus(destPath2)).thenReturn(realFileStatus)
     distMgr.addResource(
@@ -202,17 +204,18 @@ class ClientDistributedCacheManagerSuite
     val destPath = new Path("file:///foo.invalid.com:8080/tmp/testing")
     val localResources = HashMap[String, LocalResource]()
     val statCache: Map[URI, FileStatus] = HashMap[URI, FileStatus]()
-    val realFileStatus = new FileStatus(
-      20,
-      false,
-      1,
-      1024,
-      10,
-      30,
-      null,
-      "testOwner",
-      null,
-      new Path("/tmp/testing"))
+    val realFileStatus =
+      new FileStatus(
+        20,
+        false,
+        1,
+        1024,
+        10,
+        30,
+        null,
+        "testOwner",
+        null,
+        new Path("/tmp/testing"))
     when(fs.getFileStatus(destPath)).thenReturn(realFileStatus)
 
     distMgr.addResource(
@@ -253,17 +256,18 @@ class ClientDistributedCacheManagerSuite
     val destPath = new Path("file:///foo.invalid.com:8080/tmp/testing")
     val localResources = HashMap[String, LocalResource]()
     val statCache: Map[URI, FileStatus] = HashMap[URI, FileStatus]()
-    val realFileStatus = new FileStatus(
-      20,
-      false,
-      1,
-      1024,
-      10,
-      30,
-      null,
-      "testOwner",
-      null,
-      new Path("/tmp/testing"))
+    val realFileStatus =
+      new FileStatus(
+        20,
+        false,
+        1,
+        1024,
+        10,
+        30,
+        null,
+        "testOwner",
+        null,
+        new Path("/tmp/testing"))
     when(fs.getFileStatus(destPath)).thenReturn(realFileStatus)
 
     distMgr.addResource(

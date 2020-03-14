@@ -107,16 +107,13 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
     import gen.{rootId, scalaDot}
 
-    def javaDot(name: Name): Tree =
-      Select(rootId(nme.java), name)
+    def javaDot(name: Name): Tree = Select(rootId(nme.java), name)
 
-    def javaLangDot(name: Name): Tree =
-      Select(javaDot(nme.lang), name)
+    def javaLangDot(name: Name): Tree = Select(javaDot(nme.lang), name)
 
     def javaLangObject(): Tree = javaLangDot(tpnme.Object)
 
-    def arrayOf(tpt: Tree) =
-      AppliedTypeTree(scalaDot(tpnme.Array), List(tpt))
+    def arrayOf(tpt: Tree) = AppliedTypeTree(scalaDot(tpnme.Array), List(tpt))
 
     def blankExpr = Ident(nme.WILDCARD)
 
@@ -262,23 +259,26 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     // -------------------- specific parsing routines ------------------
 
     def qualId(): RefTree = {
-      var t: RefTree = atPos(in.currentPos) {
-        Ident(ident())
-      }
+      var t: RefTree =
+        atPos(in.currentPos) {
+          Ident(ident())
+        }
       while (in.token == DOT) {
         in.nextToken()
-        t = atPos(in.currentPos) {
-          Select(t, ident())
-        }
+        t =
+          atPos(in.currentPos) {
+            Select(t, ident())
+          }
       }
       t
     }
 
     def optArrayBrackets(tpt: Tree): Tree =
       if (in.token == LBRACKET) {
-        val tpt1 = atPos(in.pos) {
-          arrayOf(tpt)
-        }
+        val tpt1 =
+          atPos(in.pos) {
+            arrayOf(tpt)
+          }
         in.nextToken()
         accept(RBRACKET)
         optArrayBrackets(tpt1)
@@ -350,23 +350,26 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == QMARK) {
           val pos = in.currentPos
           in.nextToken()
-          val hi = if (in.token == EXTENDS) {
-            in.nextToken();
-            typ()
-          } else
-            EmptyTree
-          val lo = if (in.token == SUPER) {
-            in.nextToken();
-            typ()
-          } else
-            EmptyTree
-          val tdef = atPos(pos) {
-            TypeDef(
-              Modifiers(Flags.JAVA | Flags.DEFERRED),
-              newTypeName("_$" + (wildcards.length + 1)),
-              List(),
-              TypeBoundsTree(lo, hi))
-          }
+          val hi =
+            if (in.token == EXTENDS) {
+              in.nextToken();
+              typ()
+            } else
+              EmptyTree
+          val lo =
+            if (in.token == SUPER) {
+              in.nextToken();
+              typ()
+            } else
+              EmptyTree
+          val tdef =
+            atPos(pos) {
+              TypeDef(
+                Modifiers(Flags.JAVA | Flags.DEFERRED),
+                newTypeName("_$" + (wildcards.length + 1)),
+                List(),
+                TypeBoundsTree(lo, hi))
+            }
           wildcards += tdef
           atPos(pos) {
             Ident(tdef.name)
@@ -482,11 +485,12 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def typeParam(): TypeDef =
       atPos(in.currentPos) {
         val name = identForType()
-        val hi = if (in.token == EXTENDS) {
-          in.nextToken();
-          bound()
-        } else
-          EmptyTree
+        val hi =
+          if (in.token == EXTENDS) {
+            in.nextToken();
+            bound()
+          } else
+            EmptyTree
         TypeDef(
           Modifiers(Flags.JAVA | Flags.DEFERRED | Flags.PARAM),
           name,
@@ -526,11 +530,12 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       var t = typ()
       if (in.token == DOTDOTDOT) {
         in.nextToken()
-        t = atPos(t.pos) {
-          AppliedTypeTree(
-            scalaDot(tpnme.JAVA_REPEATED_PARAM_CLASS_NAME),
-            List(t))
-        }
+        t =
+          atPos(t.pos) {
+            AppliedTypeTree(
+              scalaDot(tpnme.JAVA_REPEATED_PARAM_CLASS_NAME),
+              List(t))
+          }
       }
       varDecl(
         in.currentPos,
@@ -569,10 +574,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         } else
           typ()
       var pos = in.currentPos
-      val rtptName = rtpt match {
-        case Ident(name) => name
-        case _           => nme.EMPTY
-      }
+      val rtptName =
+        rtpt match {
+          case Ident(name) => name
+          case _           => nme.EMPTY
+        }
       if (in.token == LPAREN && rtptName != nme.EMPTY && !inInterface) {
         // constructor declaration
         val vparams = formalParams()
@@ -792,12 +798,13 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       } else {
         val qual = ((Ident(names.head): Tree) /: names.tail.init)(Select(_, _))
         val lastname = names.last
-        val selector = lastname match {
-          case nme.WILDCARD =>
-            ImportSelector(lastname, lastnameOffset, null, -1)
-          case _ =>
-            ImportSelector(lastname, lastnameOffset, lastname, lastnameOffset)
-        }
+        val selector =
+          lastname match {
+            case nme.WILDCARD =>
+              ImportSelector(lastname, lastnameOffset, null, -1)
+            case _ =>
+              ImportSelector(lastname, lastnameOffset, lastname, lastnameOffset)
+          }
         List(atPos(pos)(Import(qual, List(selector))))
       }
     }
@@ -974,8 +981,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           blankExpr)
       )
       accept(RBRACE)
-      val superclazz =
-        AppliedTypeTree(javaLangDot(tpnme.Enum), List(enumType))
+      val superclazz = AppliedTypeTree(javaLangDot(tpnme.Enum), List(enumType))
       val finalFlag =
         if (enumIsFinal)
           Flags.FINAL
@@ -998,25 +1004,27 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def enumConst(enumType: Tree): (ValDef, Boolean) = {
       annotations()
       var hasClassBody = false
-      val res = atPos(in.currentPos) {
-        val name = ident()
-        if (in.token == LPAREN) {
-          // skip arguments
-          skipAhead()
-          accept(RPAREN)
+      val res =
+        atPos(in.currentPos) {
+          val name = ident()
+          if (in.token == LPAREN) {
+            // skip arguments
+            skipAhead()
+            accept(RPAREN)
+          }
+          if (in.token == LBRACE) {
+            hasClassBody = true
+            // skip classbody
+            skipAhead()
+            accept(RBRACE)
+          }
+          ValDef(
+            Modifiers(
+              Flags.JAVA_ENUM | Flags.STABLE | Flags.JAVA | Flags.STATIC),
+            name.toTermName,
+            enumType,
+            blankExpr)
         }
-        if (in.token == LBRACE) {
-          hasClassBody = true
-          // skip classbody
-          skipAhead()
-          accept(RBRACE)
-        }
-        ValDef(
-          Modifiers(Flags.JAVA_ENUM | Flags.STABLE | Flags.JAVA | Flags.STATIC),
-          name.toTermName,
-          enumType,
-          blankExpr)
-      }
       (res, hasClassBody)
     }
 

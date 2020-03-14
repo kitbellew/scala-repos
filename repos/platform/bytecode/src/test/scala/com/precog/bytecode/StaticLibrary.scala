@@ -71,9 +71,10 @@ trait StaticLibrary extends Library {
     Morphism1(Vector(), "denseRank", 0x0003),
     flatten)
 
-  lazy val flatten = new Morphism1(Vector(), "flatten", 0x0100) {
-    override val idPolicy = IdentityPolicy.Synthesize
-  }
+  lazy val flatten =
+    new Morphism1(Vector(), "flatten", 0x0100) {
+      override val idPolicy = IdentityPolicy.Synthesize
+    }
 
   lazy val libMorphism2 = Set(
     M2RetainLeft,
@@ -152,8 +153,10 @@ trait StaticLibrary extends Library {
 
   case class Morphism2(namespace: Vector[String], name: String, opcode: Int)
       extends Morphism2Like {
-    val tpe =
-      BinaryOperationType(JType.JUniverseT, JType.JUniverseT, JType.JUniverseT)
+    val tpe = BinaryOperationType(
+      JType.JUniverseT,
+      JType.JUniverseT,
+      JType.JUniverseT)
     val rowLevel: Boolean = false
   }
 
@@ -167,8 +170,10 @@ trait StaticLibrary extends Library {
   case class Op2(namespace: Vector[String], name: String, opcode: Int)
       extends Op2Like
       with Morphism2Like {
-    val tpe =
-      BinaryOperationType(JType.JUniverseT, JType.JUniverseT, JType.JUniverseT)
+    val tpe = BinaryOperationType(
+      JType.JUniverseT,
+      JType.JUniverseT,
+      JType.JUniverseT)
     val rowLevel: Boolean = true
   }
 

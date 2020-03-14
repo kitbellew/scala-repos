@@ -42,10 +42,11 @@ object Tx {
   /**
     * A transaction that will always `ack()` with `Abort`.
     */
-  val aborted: Tx[Nothing] = new Tx[Nothing] {
-    def ack() = Future.value(Abort)
-    def nack() {}
-  }
+  val aborted: Tx[Nothing] =
+    new Tx[Nothing] {
+      def ack() = Future.value(Abort)
+      def nack() {}
+    }
 
   /**
     * A `Tx` that will always commit the given value immediately.

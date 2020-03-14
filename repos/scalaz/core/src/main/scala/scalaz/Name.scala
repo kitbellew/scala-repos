@@ -63,8 +63,7 @@ object Name {
       override def cojoin[A](a: Name[A]): Name[Name[A]] = Name(a)
       def copoint[A](p: Name[A]): A = p.value
       def distributeImpl[G[_], A, B](fa: G[A])(f: A => Name[B])(
-          implicit G: Functor[G]) =
-        Name(G.map(fa)(a => f(a).value))
+          implicit G: Functor[G]) = Name(G.map(fa)(a => f(a).value))
       @tailrec
       def tailrecM[A, B](f: A => Name[A \/ B])(a: A): Name[B] =
         f(a).value match {
@@ -131,8 +130,7 @@ object Need {
       override def cojoin[A](a: Need[A]): Need[Need[A]] = Need(a)
       def copoint[A](p: Need[A]): A = p.value
       def distributeImpl[G[_], A, B](fa: G[A])(f: A => Need[B])(
-          implicit G: Functor[G]) =
-        Need(G.map(fa)(a => f(a).value))
+          implicit G: Functor[G]) = Need(G.map(fa)(a => f(a).value))
       @tailrec
       def tailrecM[A, B](f: A => Need[A \/ B])(a: A): Need[B] =
         f(a).value match {
@@ -187,8 +185,7 @@ object Value {
       override def cojoin[A](a: Value[A]): Value[Value[A]] = Value(a)
       def copoint[A](p: Value[A]): A = p.value
       def distributeImpl[G[_], A, B](fa: G[A])(f: A => Value[B])(
-          implicit G: Functor[G]) =
-        Value(G.map(fa)(a => f(a).value))
+          implicit G: Functor[G]) = Value(G.map(fa)(a => f(a).value))
       @tailrec
       def tailrecM[A, B](f: A => Value[A \/ B])(a: A): Value[B] =
         f(a).value match {

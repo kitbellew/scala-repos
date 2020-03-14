@@ -133,9 +133,10 @@ class ScalaLineMarkerProvider(
       (parent, parent.getParent) match {
         case (method: ScFunction, _: ScTemplateBody)
             if method.nameId == element =>
-          val signatures: Seq[Signature] = mutable
-            .HashSet[Signature](method.superSignaturesIncludingSelfType: _*)
-            .toSeq
+          val signatures: Seq[Signature] =
+            mutable
+              .HashSet[Signature](method.superSignaturesIncludingSelfType: _*)
+              .toSeq
           val icon =
             if (GutterUtil.isOverrides(method, signatures))
               OVERRIDING_METHOD_ICON
@@ -148,10 +149,11 @@ class ScalaLineMarkerProvider(
         case (x @ (_: ScValue | _: ScVariable), _: ScTemplateBody)
             if containsNamedElement(x.asInstanceOf[ScDeclaredElementsHolder]) =>
           val signatures = new ArrayBuffer[Signature]
-          val bindings = x match {
-            case v: ScDeclaredElementsHolder => v.declaredElements
-            case _                           => return null
-          }
+          val bindings =
+            x match {
+              case v: ScDeclaredElementsHolder => v.declaredElements
+              case _                           => return null
+            }
           for (z <- bindings)
             signatures ++= ScalaPsiUtil.superValsSignatures(
               z,
@@ -163,15 +165,17 @@ class ScalaLineMarkerProvider(
               IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
           if (signatures.nonEmpty) {
-            val token = x match {
-              case v: ScValue    => v.getValToken
-              case v: ScVariable => v.getVarToken
-            }
+            val token =
+              x match {
+                case v: ScValue    => v.getValToken
+                case v: ScVariable => v.getVarToken
+              }
             return marker(token, icon, typez)
           }
         case (x: ScObject, _: ScTemplateBody) if x.nameId == element =>
-          val signatures =
-            ScalaPsiUtil.superValsSignatures(x, withSelfType = true)
+          val signatures = ScalaPsiUtil.superValsSignatures(
+            x,
+            withSelfType = true)
           val icon =
             if (GutterUtil.isOverrides(x, signatures))
               OVERRIDING_METHOD_ICON
@@ -271,18 +275,20 @@ private object GutterUtil {
     val inheritor = ClassInheritorsSearch.search(clazz, false).findFirst
     if (inheritor != null) {
       val offset = clazz.getTextOffset
-      val icon = clazz match {
-        case _: ScTrait => IMPLEMENTED_INTERFACE_MARKER_RENDERER
-        case _          => SUBCLASSED_CLASS_MARKER_RENDERER
-      }
+      val icon =
+        clazz match {
+          case _: ScTrait => IMPLEMENTED_INTERFACE_MARKER_RENDERER
+          case _          => SUBCLASSED_CLASS_MARKER_RENDERER
+        }
       val typez = ScalaMarkerType.SUBCLASSED_CLASS
-      val info = new LineMarkerInfo[PsiElement](
-        clazz.nameId,
-        offset,
-        icon,
-        Pass.UPDATE_OVERRIDEN_MARKERS,
-        typez.fun,
-        typez.handler)
+      val info =
+        new LineMarkerInfo[PsiElement](
+          clazz.nameId,
+          offset,
+          icon,
+          Pass.UPDATE_OVERRIDEN_MARKERS,
+          typez.fun,
+          typez.handler)
       result.add(info)
     }
   }
@@ -295,12 +301,13 @@ private object GutterUtil {
            .isConstructor) {
       ProgressManager.checkCanceled()
       val offset = member.getTextOffset
-      val members = member match {
-        case d: ScDeclaredElementsHolder => d.declaredElements.toArray
-        case td: ScTypeDefinition        => Array[PsiNamedElement](td)
-        case ta: ScTypeAlias             => Array[PsiNamedElement](ta)
-        case _                           => Array[PsiNamedElement]()
-      }
+      val members =
+        member match {
+          case d: ScDeclaredElementsHolder => d.declaredElements.toArray
+          case td: ScTypeDefinition        => Array[PsiNamedElement](td)
+          case ta: ScTypeAlias             => Array[PsiNamedElement](ta)
+          case _                           => Array[PsiNamedElement]()
+        }
       val overrides = new ArrayBuffer[PsiNamedElement]
       for (member <- members)
         overrides ++= ScalaOverridingMemberSearcher.search(
@@ -314,16 +321,17 @@ private object GutterUtil {
           else
             IMPLEMENTED_INTERFACE_MARKER_RENDERER
         val typez = ScalaMarkerType.OVERRIDDEN_MEMBER
-        val info = new LineMarkerInfo[PsiElement](
-          member match {
-            case memb: ScNamedElement => memb.nameId
-            case _                    => member
-          },
-          offset,
-          icon,
-          Pass.UPDATE_OVERRIDEN_MARKERS,
-          typez.fun,
-          typez.handler)
+        val info =
+          new LineMarkerInfo[PsiElement](
+            member match {
+              case memb: ScNamedElement => memb.nameId
+              case _                    => member
+            },
+            offset,
+            icon,
+            Pass.UPDATE_OVERRIDEN_MARKERS,
+            typez.fun,
+            typez.handler)
         result.add(info)
       }
     }

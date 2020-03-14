@@ -12,12 +12,13 @@ import com.intellij.psi.{PsiElement, PsiFile}
 class HoconFormattingModelBuilder extends FormattingModelBuilder {
   def createModel(element: PsiElement, settings: CodeStyleSettings) = {
     val containingFile = element.getContainingFile
-    val block = new HoconBlock(
-      new HoconFormatter(settings),
-      element.getNode,
-      null,
-      null,
-      null)
+    val block =
+      new HoconBlock(
+        new HoconFormatter(settings),
+        element.getNode,
+        null,
+        null,
+        null)
     new PsiBasedFormattingModel(
       containingFile,
       block,
@@ -27,6 +28,5 @@ class HoconFormattingModelBuilder extends FormattingModelBuilder {
   def getRangeAffectingIndent(
       file: PsiFile,
       offset: Int,
-      elementAtOffset: ASTNode) =
-    elementAtOffset.getTextRange
+      elementAtOffset: ASTNode) = elementAtOffset.getTextRange
 }

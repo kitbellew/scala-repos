@@ -133,26 +133,28 @@ private[mysql] class StdClient(factory: ServiceFactory[Request, Result])
     }
 
   def transaction[T](f: Client => Future[T]): Future[T] = {
-    val singleton = new ServiceFactory[Request, Result] {
-      val svc = factory()
-      // Because the `singleton` is used in the context of a `FactoryToService` we override
-      // `Service#close` to ensure that we can control the checkout lifetime of the `Service`.
-      val proxiedService = svc map { service =>
-        new ServiceProxy(service) {
-          override def close(deadline: Time) = Future.Done
+    val singleton =
+      new ServiceFactory[Request, Result] {
+        val svc = factory()
+        // Because the `singleton` is used in the context of a `FactoryToService` we override
+        // `Service#close` to ensure that we can control the checkout lifetime of the `Service`.
+        val proxiedService = svc map { service =>
+          new ServiceProxy(service) {
+            override def close(deadline: Time) = Future.Done
+          }
         }
+
+        def apply(conn: ClientConnection) = proxiedService
+        def close(deadline: Time): Future[Unit] = svc.flatMap(_.close(deadline))
       }
 
-      def apply(conn: ClientConnection) = proxiedService
-      def close(deadline: Time): Future[Unit] = svc.flatMap(_.close(deadline))
-    }
-
     val client = Client(singleton)
-    val transaction = for {
-      _ <- client.query("START TRANSACTION")
-      result <- f(client)
-      _ <- client.query("COMMIT")
-    } yield result
+    val transaction =
+      for {
+        _ <- client.query("START TRANSACTION")
+        result <- f(client)
+        _ <- client.query("COMMIT")
+      } yield result
 
     // handle failures and put connection back in the pool
 

@@ -55,14 +55,11 @@ object Digit extends DigitInstances {
 
   implicit def DigitLong(d: Digit): Long = d.toLong
 
-  def digitFromChar(c: Char): Option[Digit] =
-    digits.find(_.toChar == c)
+  def digitFromChar(c: Char): Option[Digit] = digits.find(_.toChar == c)
 
-  def digitFromInt(i: Int): Option[Digit] =
-    digits.find(_.toInt == i)
+  def digitFromInt(i: Int): Option[Digit] = digits.find(_.toInt == i)
 
-  def digitFromLong(i: Long): Option[Digit] =
-    digits.find(_.toLong == i)
+  def digitFromLong(i: Long): Option[Digit] = digits.find(_.toLong == i)
 
   def mod10Digit(i: Int): Digit =
     i match {
@@ -103,8 +100,7 @@ object Digit extends DigitInstances {
   }
 
   def traverseDigitsOr[F[_]](chars: F[Char], d: => F[Digit])(
-      implicit F: Traverse[F]): F[Digit] =
-    traverseDigits(chars) getOrElse d
+      implicit F: Traverse[F]): F[Digit] = traverseDigits(chars) getOrElse d
 }
 
 sealed abstract class DigitInstances {
@@ -141,11 +137,9 @@ sealed abstract class DigitInstances {
           case Digit._9 => Digit._8
         }
 
-      override def succn(n: Int, a: Digit) =
-        super.succn(n % 10, a)
+      override def succn(n: Int, a: Digit) = super.succn(n % 10, a)
 
-      override def predn(n: Int, a: Digit) =
-        super.predn(n % 10, a)
+      override def predn(n: Int, a: Digit) = super.predn(n % 10, a)
 
       override def min = Some(Digit._0)
 

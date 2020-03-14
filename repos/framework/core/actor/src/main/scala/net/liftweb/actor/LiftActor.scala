@@ -56,38 +56,39 @@ object LAScheduler extends LAScheduler with Loggable {
   @volatile var blockingQueueSize: Box[Int] = Full(200000)
 
   @volatile
-  var createExecutor: () => ILAExecute = () => {
-    new ILAExecute {
-      import java.util.concurrent._
+  var createExecutor: () => ILAExecute =
+    () => {
+      new ILAExecute {
+        import java.util.concurrent._
 
-      private val es = // Executors.newFixedThreadPool(threadPoolSize)
-        new ThreadPoolExecutor(
-          threadPoolSize,
-          maxThreadPoolSize,
-          60,
-          TimeUnit.SECONDS,
-          blockingQueueSize match {
-            case Full(x) =>
-              new ArrayBlockingQueue(x)
-            case _ => new LinkedBlockingQueue
+        private val es = // Executors.newFixedThreadPool(threadPoolSize)
+          new ThreadPoolExecutor(
+            threadPoolSize,
+            maxThreadPoolSize,
+            60,
+            TimeUnit.SECONDS,
+            blockingQueueSize match {
+              case Full(x) =>
+                new ArrayBlockingQueue(x)
+              case _ => new LinkedBlockingQueue
+            })
+
+        def execute(f: () => Unit): Unit =
+          es.execute(new Runnable {
+            def run() {
+              try {
+                f()
+              } catch {
+                case e: Exception => logger.error("Lift Actor Scheduler", e)
+              }
+            }
           })
 
-      def execute(f: () => Unit): Unit =
-        es.execute(new Runnable {
-          def run() {
-            try {
-              f()
-            } catch {
-              case e: Exception => logger.error("Lift Actor Scheduler", e)
-            }
-          }
-        })
-
-      def shutdown(): Unit = {
-        es.shutdown()
+        def shutdown(): Unit = {
+          es.shutdown()
+        }
       }
     }
-  }
 
   @volatile
   var exec: ILAExecute = _
@@ -483,8 +484,7 @@ trait LiftActor
     * up to timeout milliseconds for
     * the actor to process the message and reply.
     */
-  def !?(timeout: Long, message: Any): Box[Any] =
-    this !! (message, timeout)
+  def !?(timeout: Long, message: Any): Box[Any] = this !! (message, timeout)
 
   /**
     * Send a message to the Actor and wait for
@@ -577,24 +577,22 @@ object LiftActorJ {
   }
 
   private def buildPF(clz: Class[_]): DispatchVendor = {
-    val methods =
-      getBaseClasses(clz).flatMap(_.getDeclaredMethods.toList.filter(receiver))
+    val methods = getBaseClasses(clz).flatMap(
+      _.getDeclaredMethods.toList.filter(receiver))
 
-    val clzMap: Map[Class[_], Method] =
-      Map(methods.map { m =>
-        m.setAccessible(true) // access private and protected methods
-        m.getParameterTypes().apply(0) -> m
-      }: _*)
+    val clzMap: Map[Class[_], Method] = Map(methods.map { m =>
+      m.setAccessible(true) // access private and protected methods
+      m.getParameterTypes().apply(0) -> m
+    }: _*)
 
     new DispatchVendor(clzMap)
   }
 }
 
 private final class DispatchVendor(map: Map[Class[_], Method]) {
-  private val baseMap: Map[Class[_], Option[Method]] =
-    Map(map.map {
-      case (k, v) => (k, Some(v))
-    }.toList: _*)
+  private val baseMap: Map[Class[_], Option[Method]] = Map(map.map {
+    case (k, v) => (k, Some(v))
+  }.toList: _*)
 
   def vend(actor: LiftActorJ): PartialFunction[Any, Unit] =
     new PartialFunction[Any, Unit] {

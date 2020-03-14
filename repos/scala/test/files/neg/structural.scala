@@ -60,9 +60,10 @@ object Test extends App {
   }
 
   val tata = new Tata
-  val toto = new Toto[Tata] {
-    type B = Tata
-  }
+  val toto =
+    new Toto[Tata] {
+      type B = Tata
+    }
 
   //toto.f1[Tata](new Object{ type D = Tata; def m[E >: Null <: Object](x: Tata): Object = null; val x = tata })
   //toto.f2[Tata](new Object{ type D = Tata; def m[E >: Null <: Object](x: Tata): Object = null; val x = tata })
@@ -102,9 +103,10 @@ object Test extends App {
   type S1 = {
     def f(p: this.type): Unit
   }
-  val s1 = new {
-    def f(p: this.type): Unit = ()
-  }
+  val s1 =
+    new {
+      def f(p: this.type): Unit = ()
+    }
 
   type S2 = {
     type T;

@@ -16,11 +16,12 @@ class GuiceApplicationLoaderSpec extends Specification {
   "GuiceApplicationLoader" should {
 
     "allow adding additional modules" in {
-      val module = new AbstractModule {
-        def configure() = {
-          bind(classOf[Bar]) to classOf[MarsBar]
+      val module =
+        new AbstractModule {
+          def configure() = {
+            bind(classOf[Bar]) to classOf[MarsBar]
+          }
         }
-      }
       val builder = new GuiceApplicationBuilder().bindings(module)
       val loader = new GuiceApplicationLoader(builder)
       val app = loader.load(fakeContext)
@@ -43,15 +44,15 @@ class GuiceApplicationLoaderSpec extends Specification {
 
     "load dynamic Scala Guice modules from configuration" in {
       val loader = new GuiceApplicationLoader()
-      val app =
-        loader.load(fakeContextWithModule(classOf[ScalaConfiguredModule]))
+      val app = loader.load(
+        fakeContextWithModule(classOf[ScalaConfiguredModule]))
       app.injector.instanceOf[Foo] must beAnInstanceOf[ScalaConfiguredFoo]
     }
 
     "load dynamic Java Guice modules from configuration" in {
       val loader = new GuiceApplicationLoader()
-      val app =
-        loader.load(fakeContextWithModule(classOf[JavaConfiguredModule]))
+      val app = loader.load(
+        fakeContextWithModule(classOf[JavaConfiguredModule]))
       app.injector.instanceOf[Foo] must beAnInstanceOf[JavaConfiguredFoo]
     }
 

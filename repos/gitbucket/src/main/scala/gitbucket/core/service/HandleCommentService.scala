@@ -49,27 +49,28 @@ trait HandleCommentService {
           }
           .getOrElse(None -> None)
 
-        val commentId = (content, action) match {
-          case (None, None) => None
-          case (None, Some(action)) =>
-            Some(
-              createComment(
-                owner,
-                name,
-                userName,
-                issue.issueId,
-                action.capitalize,
-                action))
-          case (Some(content), _) =>
-            Some(
-              createComment(
-                owner,
-                name,
-                userName,
-                issue.issueId,
-                content,
-                action.map(_ + "_comment").getOrElse("comment")))
-        }
+        val commentId =
+          (content, action) match {
+            case (None, None) => None
+            case (None, Some(action)) =>
+              Some(
+                createComment(
+                  owner,
+                  name,
+                  userName,
+                  issue.issueId,
+                  action.capitalize,
+                  action))
+            case (Some(content), _) =>
+              Some(
+                createComment(
+                  owner,
+                  name,
+                  userName,
+                  issue.issueId,
+                  content,
+                  action.map(_ + "_comment").getOrElse("comment")))
+          }
 
         // record comment activity if comment is entered
         content foreach {
@@ -107,12 +108,13 @@ trait HandleCommentService {
                 context.loginAccount.get)
             }
           case Some(act) =>
-            val webHookAction = act match {
-              case "open"   => "opened"
-              case "reopen" => "reopened"
-              case "close"  => "closed"
-              case _        => act
-            }
+            val webHookAction =
+              act match {
+                case "open"   => "opened"
+                case "reopen" => "reopened"
+                case "close"  => "closed"
+                case _        => act
+              }
             if (issue.isPullRequest) {
               callPullRequestWebHook(
                 webHookAction,

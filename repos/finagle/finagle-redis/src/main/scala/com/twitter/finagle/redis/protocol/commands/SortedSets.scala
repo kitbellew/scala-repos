@@ -144,14 +144,16 @@ case class ZRangeByScore(
 
   def forChannelBuffer = {
     def command = Seq(key, min.toChannelBuffer, max.toChannelBuffer)
-    val scores: Seq[ChannelBuffer] = withScores match {
-      case Some(WithScores) => Seq(WithScores.toChannelBuffer)
-      case None             => Nil
-    }
-    val limits: Seq[ChannelBuffer] = limit match {
-      case Some(limit) => limit.toChannelBuffers
-      case None        => Nil
-    }
+    val scores: Seq[ChannelBuffer] =
+      withScores match {
+        case Some(WithScores) => Seq(WithScores.toChannelBuffer)
+        case None             => Nil
+      }
+    val limits: Seq[ChannelBuffer] =
+      limit match {
+        case Some(limit) => limit.toChannelBuffers
+        case None        => Nil
+      }
     (command ++ scores ++ limits)
   }
 }
@@ -170,8 +172,7 @@ case class ZRank(key: ChannelBuffer, member: ChannelBuffer) extends ZRankCmd {
   def commandBytes = CommandBytes.ZRANK
 }
 object ZRank extends ZRankCmdCompanion {
-  def get(key: ChannelBuffer, member: ChannelBuffer) =
-    new ZRank(key, member)
+  def get(key: ChannelBuffer, member: ChannelBuffer) = new ZRank(key, member)
 }
 
 case class ZRem(key: ChannelBuffer, members: Seq[ChannelBuffer])
@@ -273,14 +274,16 @@ case class ZRevRangeByScore(
 
   def forChannelBuffer = {
     def command = Seq(key, max.toChannelBuffer, min.toChannelBuffer)
-    val scores: Seq[ChannelBuffer] = withScores match {
-      case Some(WithScores) => Seq(WithScores.toChannelBuffer)
-      case None             => Nil
-    }
-    val limits: Seq[ChannelBuffer] = limit match {
-      case Some(limit) => limit.toChannelBuffers
-      case None        => Nil
-    }
+    val scores: Seq[ChannelBuffer] =
+      withScores match {
+        case Some(WithScores) => Seq(WithScores.toChannelBuffer)
+        case None             => Nil
+      }
+    val limits: Seq[ChannelBuffer] =
+      limit match {
+        case Some(limit) => limit.toChannelBuffers
+        case None        => Nil
+      }
     (command ++ scores ++ limits)
   }
 
@@ -301,8 +304,7 @@ case class ZRevRank(key: ChannelBuffer, member: ChannelBuffer)
   def commandBytes = CommandBytes.ZREVRANK
 }
 object ZRevRank extends ZRankCmdCompanion {
-  def get(key: ChannelBuffer, member: ChannelBuffer) =
-    new ZRevRank(key, member)
+  def get(key: ChannelBuffer, member: ChannelBuffer) = new ZRevRank(key, member)
 }
 
 case class ZScore(key: ChannelBuffer, member: ChannelBuffer)
@@ -372,23 +374,24 @@ object ZRangeResults {
   */
 case class ZInterval(value: String) {
   import ZInterval._
-  private val representation = value.toLowerCase match {
-    case N_INF => N_INF
-    case P_INF => P_INF
-    case double =>
-      double.head match {
-        case EXCLUSIVE =>
-          RequireClientProtocol.safe {
-            NumberFormat.toDouble(double.tail)
-            double
-          }
-        case f =>
-          RequireClientProtocol.safe {
-            NumberFormat.toDouble(value)
-            double
-          }
-      }
-  }
+  private val representation =
+    value.toLowerCase match {
+      case N_INF => N_INF
+      case P_INF => P_INF
+      case double =>
+        double.head match {
+          case EXCLUSIVE =>
+            RequireClientProtocol.safe {
+              NumberFormat.toDouble(double.tail)
+              double
+            }
+          case f =>
+            RequireClientProtocol.safe {
+              NumberFormat.toDouble(value)
+              double
+            }
+        }
+    }
   override def toString = value
   def toChannelBuffer = StringToChannelBuffer(value)
 }
@@ -791,10 +794,11 @@ abstract class ZRangeCmd extends StrictKeyCommand {
         key,
         StringToChannelBuffer(start.toString),
         StringToChannelBuffer(stop.toString))
-    val scored = withScores match {
-      case Some(WithScores) => commands :+ WithScores.toChannelBuffer
-      case None             => commands
-    }
+    val scored =
+      withScores match {
+        case Some(WithScores) => commands :+ WithScores.toChannelBuffer
+        case None             => commands
+      }
     scored
   }
 }

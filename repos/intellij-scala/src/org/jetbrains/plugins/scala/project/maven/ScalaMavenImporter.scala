@@ -95,8 +95,8 @@ class ScalaMavenImporter
       // TODO configuration.vmOptions
 
       val compilerOptions = {
-        val plugins =
-          configuration.plugins.map(id => mavenProject.localPathTo(id).getPath)
+        val plugins = configuration.plugins.map(id =>
+          mavenProject.localPathTo(id).getPath)
         configuration.compilerOptions ++ plugins.map(path => "-Xplugin:" + path)
       }
 
@@ -113,10 +113,10 @@ class ScalaMavenImporter
               compilerVersion.number + " for module " + module.getName))
 
       if (!scalaLibrary.isScalaSdk) {
-        val languageLevel =
-          compilerVersion.toLanguageLevel.getOrElse(ScalaLanguageLevel.Default)
-        val compilerClasspath =
-          configuration.compilerClasspath.map(mavenProject.localPathTo)
+        val languageLevel = compilerVersion.toLanguageLevel.getOrElse(
+          ScalaLanguageLevel.Default)
+        val compilerClasspath = configuration.compilerClasspath.map(
+          mavenProject.localPathTo)
 
         val libraryModel = modelsProvider
           .getModifiableLibraryModel(scalaLibrary)

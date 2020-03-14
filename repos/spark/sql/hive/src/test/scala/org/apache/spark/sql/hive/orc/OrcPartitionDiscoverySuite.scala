@@ -86,9 +86,10 @@ class OrcPartitionDiscoverySuite
         s"$k=$valueString"
     }
 
-    val partDir = partNames.foldLeft(basePath) { (parent, child) =>
-      new File(parent, child)
-    }
+    val partDir =
+      partNames.foldLeft(basePath) { (parent, child) =>
+        new File(parent, child)
+      }
 
     assert(partDir.mkdirs(), s"Couldn't create directory $partDir")
     partDir

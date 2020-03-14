@@ -70,22 +70,23 @@ case object Perf {
 
   val recentMaxSize = 12
 
-  implicit val perfBSONHandler = new BSON[Perf] {
+  implicit val perfBSONHandler =
+    new BSON[Perf] {
 
-    import Glicko.glickoBSONHandler
+      import Glicko.glickoBSONHandler
 
-    def reads(r: BSON.Reader): Perf =
-      Perf(
-        glicko = r.getO[Glicko]("gl") | Glicko.default,
-        nb = r intD "nb",
-        latest = r dateO "la",
-        recent = r intsD "re")
+      def reads(r: BSON.Reader): Perf =
+        Perf(
+          glicko = r.getO[Glicko]("gl") | Glicko.default,
+          nb = r intD "nb",
+          latest = r dateO "la",
+          recent = r intsD "re")
 
-    def writes(w: BSON.Writer, o: Perf) =
-      BSONDocument(
-        "gl" -> o.glicko,
-        "nb" -> w.int(o.nb),
-        "re" -> w.intsO(o.recent),
-        "la" -> o.latest.map(w.date))
-  }
+      def writes(w: BSON.Writer, o: Perf) =
+        BSONDocument(
+          "gl" -> o.glicko,
+          "nb" -> w.int(o.nb),
+          "re" -> w.intsO(o.recent),
+          "la" -> o.latest.map(w.date))
+    }
 }

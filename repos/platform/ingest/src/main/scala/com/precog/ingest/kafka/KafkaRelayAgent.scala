@@ -78,14 +78,15 @@ object KafkaRelayAgent extends Logging {
     val consumer =
       new SimpleConsumer(consumerHost, consumerPort, 5000, 64 * 1024)
 
-    val relayAgent = new KafkaRelayAgent(
-      permissionsFinder,
-      eventIdSeq,
-      consumer,
-      localTopic,
-      producer,
-      centralTopic,
-      maxMessageSize)
+    val relayAgent =
+      new KafkaRelayAgent(
+        permissionsFinder,
+        eventIdSeq,
+        consumer,
+        localTopic,
+        producer,
+        centralTopic,
+        maxMessageSize)
     val stoppable = Stoppable.fromFuture(relayAgent.stop map { _ =>
       consumer.close;
       producer.close
@@ -153,29 +154,33 @@ final class KafkaRelayAgent(
               "ACTIVE"))
       val fetchRequest = new FetchRequest(localTopic, 0, offset, bufferSize)
 
-      val ingestStep = for {
-        messages <- Future(
-          consumer.fetch(fetchRequest)
-        ) // try/catch is for this line. Okay to wrap in a future & flatMap instead?
-        _ <- forwardAll(messages.toList)
-      } yield {
-        val newDelay =
-          delayStrategy(messages.sizeInBytes.toInt, delay, waitCount)
+      val ingestStep =
+        for {
+          messages <- Future(
+            consumer.fetch(fetchRequest)
+          ) // try/catch is for this line. Okay to wrap in a future & flatMap instead?
+          _ <- forwardAll(messages.toList)
+        } yield {
+          val newDelay = delayStrategy(
+            messages.sizeInBytes.toInt,
+            delay,
+            waitCount)
 
-        val (newOffset, newWaitCount) = if (messages.size > 0) {
-          val o: Long = messages.last.offset
-          logger.debug(
-            "Kafka consumer batch size: %d offset: %d)"
-              .format(messages.size, o))
-          (o, 0L)
-        } else {
-          (offset, waitCount + 1)
+          val (newOffset, newWaitCount) =
+            if (messages.size > 0) {
+              val o: Long = messages.last.offset
+              logger.debug(
+                "Kafka consumer batch size: %d offset: %d)"
+                  .format(messages.size, o))
+              (o, 0L)
+            } else {
+              (offset, waitCount + 1)
+            }
+
+          Thread.sleep(newDelay)
+
+          ingestBatch(newOffset, batch + 1, newDelay, newWaitCount)
         }
-
-        Thread.sleep(newDelay)
-
-        ingestBatch(newOffset, batch + 1, newDelay, newWaitCount)
-      }
 
       ingestStep onFailure {
         case ex =>

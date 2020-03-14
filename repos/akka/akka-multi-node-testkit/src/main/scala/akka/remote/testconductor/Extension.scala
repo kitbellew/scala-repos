@@ -76,8 +76,8 @@ class TestConductorExt(val system: ExtendedActorSystem)
       config.getMillisDuration("barrier-timeout"))
     implicit val QueryTimeout = Timeout(
       config.getMillisDuration("query-timeout"))
-    val PacketSplitThreshold =
-      config.getMillisDuration("packet-split-threshold")
+    val PacketSplitThreshold = config.getMillisDuration(
+      "packet-split-threshold")
 
     private def computeWPS(config: Config): Int =
       ThreadPoolConfig.scaledPoolSize(

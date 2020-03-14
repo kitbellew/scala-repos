@@ -158,9 +158,10 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
 
     changeAclAndVerify(Set.empty[Acl], Set[Acl](allowAllAcl), Set.empty[Acl])
 
-    val session = new Session(
-      new KafkaPrincipal(KafkaPrincipal.USER_TYPE, "random"),
-      InetAddress.getByName("192.0.4.4"))
+    val session =
+      new Session(
+        new KafkaPrincipal(KafkaPrincipal.USER_TYPE, "random"),
+        InetAddress.getByName("192.0.4.4"))
     assertTrue(
       "allow all acl should allow access to all.",
       simpleAclAuthorizer.authorize(session, Read, resource))
@@ -172,12 +173,14 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
 
     changeAclAndVerify(Set.empty[Acl], Set[Acl](denyAllAcl), Set.empty[Acl])
 
-    val session1 = new Session(
-      new KafkaPrincipal(KafkaPrincipal.USER_TYPE, "superuser1"),
-      InetAddress.getByName("192.0.4.4"))
-    val session2 = new Session(
-      new KafkaPrincipal(KafkaPrincipal.USER_TYPE, "superuser2"),
-      InetAddress.getByName("192.0.4.4"))
+    val session1 =
+      new Session(
+        new KafkaPrincipal(KafkaPrincipal.USER_TYPE, "superuser1"),
+        InetAddress.getByName("192.0.4.4"))
+    val session2 =
+      new Session(
+        new KafkaPrincipal(KafkaPrincipal.USER_TYPE, "superuser2"),
+        InetAddress.getByName("192.0.4.4"))
 
     assertTrue(
       "superuser always has access, no matter what acls.",
@@ -422,10 +425,11 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
       }
     }
 
-    val expectedAcls = acls.filter { acl =>
-      val aclId = acl.principal.getName.toInt
-      aclId % 10 != 0
-    }.toSet
+    val expectedAcls =
+      acls.filter { acl =>
+        val aclId = acl.principal.getName.toInt
+        aclId % 10 != 0
+      }.toSet
 
     TestUtils.assertConcurrent(
       "Should support many concurrent calls",

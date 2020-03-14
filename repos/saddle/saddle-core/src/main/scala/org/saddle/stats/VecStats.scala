@@ -232,10 +232,11 @@ trait VecStats[@spec(Int, Long, Double) A] {
     if (c > 3) {
       val vari = variance
       val m: Double = mean
-      val acacc = r.filterFoldLeft(sa.notMissing)(0d) { (x, y) =>
-        val tmp = subOp(y, m)
-        x + (tmp * tmp * tmp * tmp) / (vari * vari)
-      }
+      val acacc =
+        r.filterFoldLeft(sa.notMissing)(0d) { (x, y) =>
+          val tmp = subOp(y, m)
+          x + (tmp * tmp * tmp * tmp) / (vari * vari)
+        }
       val coef1 = (c * (c + 1)) / ((c - 1) * (c - 2) * (c - 3))
       val coef2 = (c - 1) * (c - 1) / ((c - 2) * (c - 3))
       (coef1 * acacc - 3.0 * coef2)
@@ -418,10 +419,11 @@ trait VecStats[@spec(Int, Long, Double) A] {
       if (c == 1)
         vf(0)
       else {
-        val n = method match {
-          case PctMethod.Excel => (tile / 100.0) * (c - 1.0) + 1.0
-          case PctMethod.NIST  => (tile / 100.0) * (c + 1.0)
-        }
+        val n =
+          method match {
+            case PctMethod.Excel => (tile / 100.0) * (c - 1.0) + 1.0
+            case PctMethod.NIST  => (tile / 100.0) * (c + 1.0)
+          }
         val s = vf.sorted
         val k = math.floor(n).toInt
         val d = n - k
@@ -497,11 +499,12 @@ class IntStats(r: Vec[Int]) extends VecStats[Int] {
     if (r.count == 0)
       None
     else {
-      val res: Int = r.filterFoldLeft(si.notMissing)(si.inf)((x: Int, y: Int) =>
-        if (x < y)
-          x
-        else
-          y)
+      val res: Int =
+        r.filterFoldLeft(si.notMissing)(si.inf)((x: Int, y: Int) =>
+          if (x < y)
+            x
+          else
+            y)
       Some(res)
     }
 

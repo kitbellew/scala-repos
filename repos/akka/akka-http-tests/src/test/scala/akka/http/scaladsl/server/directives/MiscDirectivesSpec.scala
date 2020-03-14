@@ -85,10 +85,11 @@ class MiscDirectivesSpec extends RoutingSpec {
     def test(body: ((String*) ⇒ String) ⇒ Unit): Unit =
       s"properly handle `$acceptLanguageHeaderString`" in {
         val Array(name, value) = acceptLanguageHeaderString.split(':')
-        val acceptLanguageHeader = HttpHeader.parse(name.trim, value) match {
-          case HttpHeader.ParsingResult.Ok(h: `Accept-Language`, Nil) ⇒ h
-          case result ⇒ fail(result.toString)
-        }
+        val acceptLanguageHeader =
+          HttpHeader.parse(name.trim, value) match {
+            case HttpHeader.ParsingResult.Ok(h: `Accept-Language`, Nil) ⇒ h
+            case result ⇒ fail(result.toString)
+          }
         body { availableLangs ⇒
           val selected = Promise[String]()
           val first = Language(availableLangs.head)

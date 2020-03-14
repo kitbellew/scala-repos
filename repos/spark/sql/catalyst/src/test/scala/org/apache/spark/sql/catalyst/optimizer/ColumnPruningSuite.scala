@@ -175,8 +175,7 @@ class ColumnPruningSuite extends PlanTest {
         Project(Literal(1).as("1") :: Nil, input)).analyze
     comparePlans(Optimize.execute(query1), expected)
 
-    val query2 =
-      Project(Literal(1).as("1") :: Nil, Project(Nil, input)).analyze
+    val query2 = Project(Literal(1).as("1") :: Nil, Project(Nil, input)).analyze
     comparePlans(Optimize.execute(query2), expected)
 
     // to make sure the top Project will not be removed.
@@ -185,10 +184,9 @@ class ColumnPruningSuite extends PlanTest {
 
   test("column pruning for group") {
     val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
-    val originalQuery =
-      testRelation
-        .groupBy('a)('a, count('b))
-        .select('a)
+    val originalQuery = testRelation
+      .groupBy('a)('a, count('b))
+      .select('a)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
@@ -203,10 +201,9 @@ class ColumnPruningSuite extends PlanTest {
   test("column pruning for group with alias") {
     val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
 
-    val originalQuery =
-      testRelation
-        .groupBy('a)('a as 'c, count('b))
-        .select('c)
+    val originalQuery = testRelation
+      .groupBy('a)('a as 'c, count('b))
+      .select('c)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
@@ -221,11 +218,10 @@ class ColumnPruningSuite extends PlanTest {
   test("column pruning for Project(ne, Limit)") {
     val testRelation = LocalRelation('a.int, 'b.int, 'c.int)
 
-    val originalQuery =
-      testRelation
-        .select('a, 'b)
-        .limit(2)
-        .select('a)
+    val originalQuery = testRelation
+      .select('a, 'b)
+      .limit(2)
+      .select('a)
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
@@ -276,20 +272,19 @@ class ColumnPruningSuite extends PlanTest {
   test("Column pruning on Window with useless aggregate functions") {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
-    val originalQuery =
-      input
-        .groupBy('a, 'c, 'd)(
-          'a,
-          'c,
-          'd,
-          WindowExpression(
-            AggregateExpression(Count('b), Complete, isDistinct = false),
-            WindowSpecDefinition(
-              'a :: Nil,
-              SortOrder('b, Ascending) :: Nil,
-              UnspecifiedFrame)).as('window)
-        )
-        .select('a, 'c)
+    val originalQuery = input
+      .groupBy('a, 'c, 'd)(
+        'a,
+        'c,
+        'd,
+        WindowExpression(
+          AggregateExpression(Count('b), Complete, isDistinct = false),
+          WindowSpecDefinition(
+            'a :: Nil,
+            SortOrder('b, Ascending) :: Nil,
+            UnspecifiedFrame)).as('window)
+      )
+      .select('a, 'c)
 
     val correctAnswer =
       input.select('a, 'c, 'd).groupBy('a, 'c, 'd)('a, 'c).analyze
@@ -302,22 +297,21 @@ class ColumnPruningSuite extends PlanTest {
   test("Column pruning on Window with selected agg expressions") {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
-    val originalQuery =
-      input
-        .select(
-          'a,
-          'b,
-          'c,
-          'd,
-          WindowExpression(
-            AggregateExpression(Count('b), Complete, isDistinct = false),
-            WindowSpecDefinition(
-              'a :: Nil,
-              SortOrder('b, Ascending) :: Nil,
-              UnspecifiedFrame)).as('window)
-        )
-        .where('window > 1)
-        .select('a, 'c)
+    val originalQuery = input
+      .select(
+        'a,
+        'b,
+        'c,
+        'd,
+        WindowExpression(
+          AggregateExpression(Count('b), Complete, isDistinct = false),
+          WindowSpecDefinition(
+            'a :: Nil,
+            SortOrder('b, Ascending) :: Nil,
+            UnspecifiedFrame)).as('window)
+      )
+      .where('window > 1)
+      .select('a, 'c)
 
     val correctAnswer =
       input
@@ -345,21 +339,20 @@ class ColumnPruningSuite extends PlanTest {
   test("Column pruning on Window in select") {
     val input = LocalRelation('a.int, 'b.string, 'c.double, 'd.int)
 
-    val originalQuery =
-      input
-        .select(
-          'a,
-          'b,
-          'c,
-          'd,
-          WindowExpression(
-            AggregateExpression(Count('b), Complete, isDistinct = false),
-            WindowSpecDefinition(
-              'a :: Nil,
-              SortOrder('b, Ascending) :: Nil,
-              UnspecifiedFrame)).as('window)
-        )
-        .select('a, 'c)
+    val originalQuery = input
+      .select(
+        'a,
+        'b,
+        'c,
+        'd,
+        WindowExpression(
+          AggregateExpression(Count('b), Complete, isDistinct = false),
+          WindowSpecDefinition(
+            'a :: Nil,
+            SortOrder('b, Ascending) :: Nil,
+            UnspecifiedFrame)).as('window)
+      )
+      .select('a, 'c)
 
     val correctAnswer = input.select('a, 'c).analyze
 
@@ -372,12 +365,13 @@ class ColumnPruningSuite extends PlanTest {
     val input1 = LocalRelation('a.int, 'b.string, 'c.double)
     val input2 = LocalRelation('c.int, 'd.string, 'e.double)
     val query = Project('b :: Nil, Union(input1 :: input2 :: Nil)).analyze
-    val expected = Project(
-      'b :: Nil,
-      Union(
-        Project('b :: Nil, input1) :: Project(
-          'd :: Nil,
-          input2) :: Nil)).analyze
+    val expected =
+      Project(
+        'b :: Nil,
+        Union(
+          Project('b :: Nil, input1) :: Project(
+            'd :: Nil,
+            input2) :: Nil)).analyze
     comparePlans(Optimize.execute(query), expected)
   }
 

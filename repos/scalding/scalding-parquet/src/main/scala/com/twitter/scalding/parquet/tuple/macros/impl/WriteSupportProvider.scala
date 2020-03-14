@@ -66,8 +66,11 @@ object WriteSupportProvider {
         case tpe if tpe.erasure =:= typeOf[Option[Any]] =>
           val cacheName = newTermName(ctx.fresh(s"optionIndex"))
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
-          val (_, subTree) =
-            matchField(idx, innerType, q"$cacheName", groupName)
+          val (_, subTree) = matchField(
+            idx,
+            innerType,
+            q"$cacheName",
+            groupName)
           (
             idx + 1,
             q"""if($fValue.isDefined) {
@@ -98,8 +101,11 @@ object WriteSupportProvider {
           val List(keyType, valueType) = tpe.asInstanceOf[TypeRefApi].args
           val newGroupName = createGroupName()
           val (_, keySubTree) = matchField(0, keyType, q"key", newGroupName)
-          val (_, valueSubTree) =
-            matchField(1, valueType, q"value", newGroupName)
+          val (_, valueSubTree) = matchField(
+            1,
+            valueType,
+            q"value",
+            newGroupName)
           (
             idx + 1,
             writeCollectionField(

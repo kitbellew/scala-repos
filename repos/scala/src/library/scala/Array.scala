@@ -248,8 +248,7 @@ object Array extends FallbackArrayBuilding {
   }
 
   /** Creates array with given dimensions */
-  def ofDim[T: ClassTag](n1: Int): Array[T] =
-    new Array[T](n1)
+  def ofDim[T: ClassTag](n1: Int): Array[T] = new Array[T](n1)
 
   /** Creates a 2-dimensional array */
   def ofDim[T: ClassTag](n1: Int, n2: Int): Array[Array[T]] = {

@@ -1,7 +1,8 @@
 trait A
 
 object Test {
-  lazy val a = new A {
-    object Zenek
-  }
+  lazy val a =
+    new A {
+      object Zenek
+    }
 }

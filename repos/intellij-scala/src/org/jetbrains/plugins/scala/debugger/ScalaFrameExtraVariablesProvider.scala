@@ -74,8 +74,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       evaluationContext: EvaluationContext,
       alreadyCollected: util.Set[String]): util.Set[TextWithImports] = {
 
-    val method = Try(
-      evaluationContext.getFrameProxy.location().method()).toOption
+    val method =
+      Try(evaluationContext.getFrameProxy.location().method()).toOption
     if (method.isEmpty || DebuggerUtils.isSynthetic(
           method.get) || ScalaSyntheticProvider.isMacroDefined(method.get))
       return Collections.emptySet()
@@ -108,11 +108,12 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
             .contains(srr.name))
         .filter(canEvaluate(_, elem))
     }
-    val candidates =
-      initialCandidates.filter(canEvaluateLong(_, elem, evaluationContext))
-    val sorted = mutable.SortedSet()(
-      Ordering.by[ScalaResolveResult, Int](
-        _.getElement.getTextRange.getStartOffset))
+    val candidates = initialCandidates.filter(
+      canEvaluateLong(_, elem, evaluationContext))
+    val sorted =
+      mutable.SortedSet()(
+        Ordering.by[ScalaResolveResult, Int](
+          _.getElement.getTextRange.getStartOffset))
     inReadAction {
       candidates.foreach(sorted += _)
     }
@@ -135,15 +136,17 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
             elem,
             true)
         }
-        val funDef =
-          PsiTreeUtil.getParentOfType(place, classOf[ScFunctionDefinition])
-        val lazyVal = PsiTreeUtil.getParentOfType(
+        val funDef = PsiTreeUtil.getParentOfType(
           place,
-          classOf[ScPatternDefinition]) match {
-          case null         => null
-          case LazyVal(lzy) => lzy
-          case _            => null
-        }
+          classOf[ScFunctionDefinition])
+        val lazyVal =
+          PsiTreeUtil.getParentOfType(
+            place,
+            classOf[ScPatternDefinition]) match {
+            case null         => null
+            case LazyVal(lzy) => lzy
+            case _            => null
+          }
         notInThisClass(funDef) || notInThisClass(lazyVal)
       case named
           if ScalaEvaluatorBuilderUtil.isNotUsedEnumerator(named, place) =>
@@ -202,8 +205,9 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       named: PsiNamedElement,
       place: PsiElement): Boolean = {
     inReadAction {
-      val contextClass =
-        ScalaEvaluatorBuilderUtil.getContextClass(place, strict = false)
+      val contextClass = ScalaEvaluatorBuilderUtil.getContextClass(
+        place,
+        strict = false)
       val containingClass = ScalaEvaluatorBuilderUtil.getContextClass(named)
       if (contextClass == containingClass)
         return false
@@ -229,14 +233,15 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         val helper =
           new PsiSearchHelperImpl(place.getManager.asInstanceOf[PsiManagerEx])
         var used = false
-        val processor = new TextOccurenceProcessor {
-          override def execute(
-              element: PsiElement,
-              offsetInElement: Int): Boolean = {
-            used = true
-            false
+        val processor =
+          new TextOccurenceProcessor {
+            override def execute(
+                element: PsiElement,
+                offsetInElement: Int): Boolean = {
+              used = true
+              false
+            }
           }
-        }
         scopes.foreach { scope =>
           helper.processElementsWithWord(
             processor,
@@ -253,11 +258,12 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       named: PsiNamedElement,
       place: PsiElement): Boolean = {
     inReadAction {
-      val forStmt = ScalaPsiUtil.nameContext(named) match {
-        case nc @ (_: ScEnumerator | _: ScGenerator) =>
-          Option(PsiTreeUtil.getParentOfType(nc, classOf[ScForStatement]))
-        case _ => None
-      }
+      val forStmt =
+        ScalaPsiUtil.nameContext(named) match {
+          case nc @ (_: ScEnumerator | _: ScGenerator) =>
+            Option(PsiTreeUtil.getParentOfType(nc, classOf[ScForStatement]))
+          case _ => None
+        }
       forStmt.flatMap(_.enumerators).exists(_.isAncestorOf(named)) && forStmt
         .flatMap(_.body)
         .exists(!_.isAncestorOf(place))
@@ -294,10 +300,11 @@ private class CollectingProcessor(element: PsiElement)
 
   private def shouldShow(candidate: ScalaResolveResult): Boolean = {
     val candElem = candidate.getElement
-    val candElemContext = ScalaPsiUtil.nameContext(candElem) match {
-      case cc: ScCaseClause => cc.pattern.getOrElse(cc)
-      case other            => other
-    }
+    val candElemContext =
+      ScalaPsiUtil.nameContext(candElem) match {
+        case cc: ScCaseClause => cc.pattern.getOrElse(cc)
+        case other            => other
+      }
     def usedInContainingBlock = usedNames.contains(candElem.name)
     candElem.getContainingFile == containingFile && candElemContext.getTextRange.getEndOffset < startOffset && usedInContainingBlock
   }

@@ -39,10 +39,11 @@ object AddrMetadataExtraction {
         val LoadBalancerFactory.Dest(addr) = params[LoadBalancerFactory.Dest]
         val BindingFactory.Dest(name) = params[BindingFactory.Dest]
 
-        val idMetadata = name match {
-          case bound: Name.Bound => Addr.Metadata("id" -> bound.idStr)
-          case _                 => Addr.Metadata.empty
-        }
+        val idMetadata =
+          name match {
+            case bound: Name.Bound => Addr.Metadata("id" -> bound.idStr)
+            case _                 => Addr.Metadata.empty
+          }
 
         // delay construction of the ServiceFactory while Addr is Pending
         val futureFactory: Future[ServiceFactory[Req, Rep]] =

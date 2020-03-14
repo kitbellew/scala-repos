@@ -104,11 +104,12 @@ object Mux
         headers = Nil,
         negotiate = mux.Handshake.NoopNegotiator)
 
-      val session = new mux.ClientSession(
-        negotiatedTrans,
-        detectorConfig,
-        name,
-        sr.scope("mux"))
+      val session =
+        new mux.ClientSession(
+          negotiatedTrans,
+          detectorConfig,
+          name,
+          sr.scope("mux"))
 
       mux.ClientDispatcher.newRequestResponse(session)
     }

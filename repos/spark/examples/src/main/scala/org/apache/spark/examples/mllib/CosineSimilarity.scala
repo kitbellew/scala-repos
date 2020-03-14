@@ -48,26 +48,27 @@ object CosineSimilarity {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("CosineSimilarity") {
-      head("CosineSimilarity: an example app.")
-      opt[Double]("threshold")
-        .required()
-        .text(
-          s"threshold similarity: to tradeoff computation vs quality estimate")
-        .action((x, c) => c.copy(threshold = x))
-      arg[String]("<inputFile>")
-        .required()
-        .text(s"input file, one row per line, space-separated")
-        .action((x, c) => c.copy(inputFile = x))
-      note(
-        """
+    val parser =
+      new OptionParser[Params]("CosineSimilarity") {
+        head("CosineSimilarity: an example app.")
+        opt[Double]("threshold")
+          .required()
+          .text(
+            s"threshold similarity: to tradeoff computation vs quality estimate")
+          .action((x, c) => c.copy(threshold = x))
+        arg[String]("<inputFile>")
+          .required()
+          .text(s"input file, one row per line, space-separated")
+          .action((x, c) => c.copy(inputFile = x))
+        note(
+          """
           |For example, the following command runs this app on a dataset:
           |
           | ./bin/spark-submit  --class org.apache.spark.examples.mllib.CosineSimilarity \
           | examplesjar.jar \
           | --threshold 0.1 data/mllib/sample_svm_data.txt
         """.stripMargin)
-    }
+      }
 
     parser.parse(args, defaultParams).map { params =>
       run(params)

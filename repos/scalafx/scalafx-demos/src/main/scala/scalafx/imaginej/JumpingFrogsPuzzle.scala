@@ -179,33 +179,32 @@ object theModelValues {
 // model
 //
 class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
-  private def isAtRight(i: Int) =
-    i == NUMBER_OF_STONES - 1
+  private def isAtRight(i: Int) = i == NUMBER_OF_STONES - 1
 
   private def isAtRightOrOneButRight(i: Int) =
     i == NUMBER_OF_STONES - 1 || i == NUMBER_OF_STONES - 2
 
-  private def isAtLeft(i: Int) =
-    i == 0
+  private def isAtLeft(i: Int) = i == 0
 
-  private def isAtLeftOrOneButLeft(i: Int) =
-    i == 0 || i == 1
+  private def isAtLeftOrOneButLeft(i: Int) = i == 0 || i == 1
 
-  private val canMoveOneRightAt = (i: Int) =>
-    !isAtRight(i) && optionalFrogMap(i + 1) == None
+  private val canMoveOneRightAt =
+    (i: Int) => !isAtRight(i) && optionalFrogMap(i + 1) == None
 
-  private val canMoveTwoRightAt = (i: Int) =>
-    !isAtRightOrOneButRight(i) &&
-      optionalFrogMap(i + 1).get.movesToLeft &&
-      optionalFrogMap(i + 2) == None
+  private val canMoveTwoRightAt =
+    (i: Int) =>
+      !isAtRightOrOneButRight(i) &&
+        optionalFrogMap(i + 1).get.movesToLeft &&
+        optionalFrogMap(i + 2) == None
 
-  private val canMoveOneLeftAt = (i: Int) =>
-    !isAtLeft(i) && optionalFrogMap(i - 1) == None
+  private val canMoveOneLeftAt =
+    (i: Int) => !isAtLeft(i) && optionalFrogMap(i - 1) == None
 
-  private val canMoveTwoLeftAt = (i: Int) =>
-    !isAtLeftOrOneButLeft(i) &&
-      optionalFrogMap(i - 1).get.movesToRight &&
-      optionalFrogMap(i - 2) == None
+  private val canMoveTwoLeftAt =
+    (i: Int) =>
+      !isAtLeftOrOneButLeft(i) &&
+        optionalFrogMap(i - 1).get.movesToRight &&
+        optionalFrogMap(i - 2) == None
 
   private def positionSingleton(frog: Frog) =
     for {
@@ -214,18 +213,19 @@ class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
 
   private def update(next: Int => Int) =
     (frog: Frog) => {
-      optionalFrogMap = for {
-        entry @ (i, _) <- optionalFrogMap
-        j <- positionSingleton(frog)
-      } yield {
-        if (i == j) {
-          i -> None
-        } else if (i == next(j)) {
-          i -> Some(frog)
-        } else {
-          entry
+      optionalFrogMap =
+        for {
+          entry @ (i, _) <- optionalFrogMap
+          j <- positionSingleton(frog)
+        } yield {
+          if (i == j) {
+            i -> None
+          } else if (i == next(j)) {
+            i -> Some(frog)
+          } else {
+            entry
+          }
         }
-      }
     }
 
   val position = (frog: Frog) => positionSingleton(frog).head
@@ -300,8 +300,7 @@ case object theDummyFrogShape extends FrogShape(-1, theDummyFrog)
 // values
 //
 object theViewValues {
-  val canvasShape =
-    theCanvasShape
+  val canvasShape = theCanvasShape
 
   val stoneShapes =
     for {

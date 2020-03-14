@@ -38,9 +38,10 @@ class ConversionsSpecs extends Specification {
 
       case class A(i: Int)
 
-      val stringToOptionA = new TypeConverter[String, A] {
-        def apply(s: String) = Option(s).map(v => A(v.toInt))
-      }
+      val stringToOptionA =
+        new TypeConverter[String, A] {
+          def apply(s: String) = Option(s).map(v => A(v.toInt))
+        }
 
       val converted: TypeConverter[String, A] = stringToOptionA
 

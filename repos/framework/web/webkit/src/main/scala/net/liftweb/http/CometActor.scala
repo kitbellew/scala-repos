@@ -708,8 +708,10 @@ trait BaseCometActor
     */
   def jsonToIncludeInCode: JsCmd = _jsonToIncludeCode
 
-  private lazy val (_sendJson, _jsonToIncludeCode) =
-    S.createJsonFunc(Full(_defaultPrefix), onJsonError, receiveJson _)
+  private lazy val (_sendJson, _jsonToIncludeCode) = S.createJsonFunc(
+    Full(_defaultPrefix),
+    onJsonError,
+    receiveJson _)
 
   /**
     * Set this method to true to have the Json call code included in the Comet output
@@ -732,58 +734,59 @@ trait BaseCometActor
 
   protected override def messageHandler = {
     val what = composeFunction
-    val myPf: PartialFunction[Any, Unit] = new PartialFunction[Any, Unit] {
-      def apply(in: Any): Unit =
-        CurrentCometActor.doWith(BaseCometActor.this) {
-          S.initIfUninitted(theSession) {
-            RenderVersion.doWith(uniqueId) {
-              S.functionLifespan(true) {
-                try {
-                  what.apply(in)
-                } catch {
-                  case e if exceptionHandler.isDefinedAt(e) =>
-                    exceptionHandler(e)
-                  case e: Exception =>
-                    reportError("Message dispatch for " + in, e)
-                }
+    val myPf: PartialFunction[Any, Unit] =
+      new PartialFunction[Any, Unit] {
+        def apply(in: Any): Unit =
+          CurrentCometActor.doWith(BaseCometActor.this) {
+            S.initIfUninitted(theSession) {
+              RenderVersion.doWith(uniqueId) {
+                S.functionLifespan(true) {
+                  try {
+                    what.apply(in)
+                  } catch {
+                    case e if exceptionHandler.isDefinedAt(e) =>
+                      exceptionHandler(e)
+                    case e: Exception =>
+                      reportError("Message dispatch for " + in, e)
+                  }
 
-                val updatedJs = S.jsToAppend(clearAfterReading = true)
-                if (updatedJs.nonEmpty) {
-                  partialUpdate(updatedJs)
-                }
+                  val updatedJs = S.jsToAppend(clearAfterReading = true)
+                  if (updatedJs.nonEmpty) {
+                    partialUpdate(updatedJs)
+                  }
 
-                if (S.functionMap.size > 0) {
-                  theSession.updateFunctionMap(
-                    S.functionMap,
-                    uniqueId,
-                    lastRenderTime)
-                  S.clearFunctionMap
+                  if (S.functionMap.size > 0) {
+                    theSession.updateFunctionMap(
+                      S.functionMap,
+                      uniqueId,
+                      lastRenderTime)
+                    S.clearFunctionMap
+                  }
                 }
               }
             }
           }
-        }
 
-      def isDefinedAt(in: Any): Boolean =
-        CurrentCometActor.doWith(BaseCometActor.this) {
-          S.initIfUninitted(theSession) {
-            RenderVersion.doWith(uniqueId) {
-              S.functionLifespan(true) {
-                try {
-                  what.isDefinedAt(in)
-                } catch {
-                  case e if exceptionHandler.isDefinedAt(e) =>
-                    exceptionHandler(e);
-                    false
-                  case e: Exception =>
-                    reportError("Message test for " + in, e);
-                    false
+        def isDefinedAt(in: Any): Boolean =
+          CurrentCometActor.doWith(BaseCometActor.this) {
+            S.initIfUninitted(theSession) {
+              RenderVersion.doWith(uniqueId) {
+                S.functionLifespan(true) {
+                  try {
+                    what.isDefinedAt(in)
+                  } catch {
+                    case e if exceptionHandler.isDefinedAt(e) =>
+                      exceptionHandler(e);
+                      false
+                    case e: Exception =>
+                      reportError("Message test for " + in, e);
+                      false
+                  }
                 }
               }
             }
           }
-        }
-    }
+      }
 
     myPf
   }
@@ -980,19 +983,18 @@ trait BaseCometActor
 
     case ActionMessageSet(msgs, req) =>
       S.doCometParams(req.params) {
-        val computed: List[Any] =
-          msgs.flatMap { f =>
-            try {
-              List(f())
-            } catch {
-              case e if exceptionHandler.isDefinedAt(e) =>
-                exceptionHandler(e);
-                Nil
-              case e: Exception =>
-                reportError("Ajax function dispatch", e);
-                Nil
-            }
+        val computed: List[Any] = msgs.flatMap { f =>
+          try {
+            List(f())
+          } catch {
+            case e if exceptionHandler.isDefinedAt(e) =>
+              exceptionHandler(e);
+              Nil
+            case e: Exception =>
+              reportError("Ajax function dispatch", e);
+              Nil
           }
+        }
 
         reply(computed ::: List(S.noticesToJsCmd))
       }
@@ -1061,20 +1063,19 @@ trait BaseCometActor
       deltas = _deltaPruner(this, (delta :: deltas))
       if (!listeners.isEmpty) {
         val postPage = theSession.postPageJavaScript()
-        val rendered =
-          AnswerRender(
-            new XmlOrJsCmd(
-              spanId,
-              Empty,
-              Empty,
-              Full(cmd & postPage),
-              Empty,
-              buildSpan,
-              false,
-              notices.toList),
-            whosAsking openOr this,
-            time,
-            false)
+        val rendered = AnswerRender(
+          new XmlOrJsCmd(
+            spanId,
+            Empty,
+            Empty,
+            Full(cmd & postPage),
+            Empty,
+            buildSpan,
+            false,
+            notices.toList),
+          whosAsking openOr this,
+          time,
+          false)
         clearNotices
         listeners.foreach(_._2(rendered))
         listeners = Nil
@@ -1188,12 +1189,11 @@ trait BaseCometActor
 
     val out = lastRendering
 
-    val rendered: AnswerRender =
-      AnswerRender(
-        new XmlOrJsCmd(spanId, out, buildSpan _, notices.toList),
-        this,
-        lastRenderTime,
-        sendAll)
+    val rendered: AnswerRender = AnswerRender(
+      new XmlOrJsCmd(spanId, out, buildSpan _, notices.toList),
+      this,
+      lastRenderTime,
+      sendAll)
 
     clearNotices
     listeners.foreach(_._2(rendered))

@@ -79,11 +79,13 @@ trait PredicateClassifier { this: EventBus ⇒
   */
 trait LookupClassification { this: EventBus ⇒
 
-  protected final val subscribers = new Index[Classifier, Subscriber](
-    mapSize(),
-    new Comparator[Subscriber] {
-      def compare(a: Subscriber, b: Subscriber): Int = compareSubscribers(a, b)
-    })
+  protected final val subscribers =
+    new Index[Classifier, Subscriber](
+      mapSize(),
+      new Comparator[Subscriber] {
+        def compare(a: Subscriber, b: Subscriber): Int =
+          compareSubscribers(a, b)
+      })
 
   /**
     * This is a size hint for the number of Classifiers you expect to have (use powers of 2)
@@ -325,8 +327,9 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
   private val empty = immutable.TreeSet.empty[ActorRef]
 
   /** The unsubscriber takes care of unsubscribing actors, which have terminated. */
-  protected lazy val unsubscriber =
-    ActorClassificationUnsubscriber.start(system, this)
+  protected lazy val unsubscriber = ActorClassificationUnsubscriber.start(
+    system,
+    this)
 
   @tailrec
   protected final def associate(

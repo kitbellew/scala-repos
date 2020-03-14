@@ -75,53 +75,54 @@ object Batcher {
     * Returns a batcher that assigns every input tuple to the same
     * batch.
     */
-  val unit: Batcher = new AbstractBatcher {
-    override val currentBatch = BatchID(0L)
-    def batchOf(t: Timestamp) = currentBatch
-    def earliestTimeOf(batch: BatchID) = Timestamp.Min
+  val unit: Batcher =
+    new AbstractBatcher {
+      override val currentBatch = BatchID(0L)
+      def batchOf(t: Timestamp) = currentBatch
+      def earliestTimeOf(batch: BatchID) = Timestamp.Min
 
-    override def latestTimeOf(batch: BatchID) = Timestamp.Max
+      override def latestTimeOf(batch: BatchID) = Timestamp.Max
 
-    override def toInterval(b: BatchID): Interval[Timestamp] =
-      if (b == BatchID(0))
-        Intersection(
-          InclusiveLower(Timestamp.Min),
-          InclusiveUpper(Timestamp.Max)
-        )
-      else
-        Empty[Timestamp]()
+      override def toInterval(b: BatchID): Interval[Timestamp] =
+        if (b == BatchID(0))
+          Intersection(
+            InclusiveLower(Timestamp.Min),
+            InclusiveUpper(Timestamp.Max)
+          )
+        else
+          Empty[Timestamp]()
 
-    val totalBatchInterval = Intersection(
-      InclusiveLower(currentBatch),
-      ExclusiveUpper(currentBatch.next)
-    )
-    override def batchesCoveredBy(
-        interval: Interval[Timestamp]): Interval[BatchID] =
-      interval match {
-        case Empty()               => Empty()
-        case Universe()            => totalBatchInterval
-        case ExclusiveUpper(upper) => Empty()
-        case InclusiveLower(lower) =>
-          if (lower == Timestamp.Min)
-            totalBatchInterval
-          else
-            Empty()
-        case InclusiveUpper(upper) =>
-          if (upper == Timestamp.Max)
-            totalBatchInterval
-          else
-            Empty()
-        case ExclusiveLower(lower) => Empty()
-        case Intersection(low, high) =>
-          batchesCoveredBy(low) && batchesCoveredBy(high)
-      }
+      val totalBatchInterval = Intersection(
+        InclusiveLower(currentBatch),
+        ExclusiveUpper(currentBatch.next)
+      )
+      override def batchesCoveredBy(
+          interval: Interval[Timestamp]): Interval[BatchID] =
+        interval match {
+          case Empty()               => Empty()
+          case Universe()            => totalBatchInterval
+          case ExclusiveUpper(upper) => Empty()
+          case InclusiveLower(lower) =>
+            if (lower == Timestamp.Min)
+              totalBatchInterval
+            else
+              Empty()
+          case InclusiveUpper(upper) =>
+            if (upper == Timestamp.Max)
+              totalBatchInterval
+            else
+              Empty()
+          case ExclusiveLower(lower) => Empty()
+          case Intersection(low, high) =>
+            batchesCoveredBy(low) && batchesCoveredBy(high)
+        }
 
-    override def cover(interval: Interval[Timestamp]): Interval[BatchID] =
-      interval match {
-        case Empty() => Empty()
-        case _       => totalBatchInterval
-      }
-  }
+      override def cover(interval: Interval[Timestamp]): Interval[BatchID] =
+        interval match {
+          case Empty() => Empty()
+          case _       => totalBatchInterval
+        }
+    }
 }
 
 trait Batcher extends Serializable {
@@ -156,15 +157,17 @@ trait Batcher extends Serializable {
       case ExclusiveLower(lower)   => InclusiveLower(onIncLow(lower.next))
       case Intersection(low, high) =>
         // Convert to inclusive:
-        val lowdate = low match {
-          case InclusiveLower(lb) => lb
-          case ExclusiveLower(lb) => lb.next
-        }
+        val lowdate =
+          low match {
+            case InclusiveLower(lb) => lb
+            case ExclusiveLower(lb) => lb.next
+          }
         //convert it exclusive:
-        val highdate = high match {
-          case InclusiveUpper(hb) => hb.next
-          case ExclusiveUpper(hb) => hb
-        }
+        val highdate =
+          high match {
+            case InclusiveUpper(hb) => hb.next
+            case ExclusiveUpper(hb) => hb
+          }
         val upperBatch = onExcUp(highdate)
         val lowerBatch = onIncLow(lowdate)
         Interval.leftClosedRightOpen(lowerBatch, upperBatch)

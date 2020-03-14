@@ -94,15 +94,16 @@ private[kafka] class KafkaRDD[
     }
 
     // Determine in advance how many messages need to be taken from each partition
-    val parts = nonEmptyPartitions.foldLeft(Map[Int, Int]()) { (result, part) =>
-      val remain = num - result.values.sum
-      if (remain > 0) {
-        val taken = Math.min(remain, part.count)
-        result + (part.index -> taken.toInt)
-      } else {
-        result
+    val parts =
+      nonEmptyPartitions.foldLeft(Map[Int, Int]()) { (result, part) =>
+        val remain = num - result.values.sum
+        if (remain > 0) {
+          val taken = Math.min(remain, part.count)
+          result + (part.index -> taken.toInt)
+        } else {
+          result
+        }
       }
-    }
 
     val buf = new ArrayBuffer[R]
     val res = context.runJob(
@@ -289,16 +290,18 @@ private[kafka] object KafkaRDD {
       untilOffsets: Map[TopicAndPartition, LeaderOffset],
       messageHandler: MessageAndMetadata[K, V] => R
   ): KafkaRDD[K, V, U, T, R] = {
-    val leaders = untilOffsets.map {
-      case (tp, lo) =>
-        tp -> (lo.host, lo.port)
-    }.toMap
+    val leaders =
+      untilOffsets.map {
+        case (tp, lo) =>
+          tp -> (lo.host, lo.port)
+      }.toMap
 
-    val offsetRanges = fromOffsets.map {
-      case (tp, fo) =>
-        val uo = untilOffsets(tp)
-        OffsetRange(tp.topic, tp.partition, fo, uo.offset)
-    }.toArray
+    val offsetRanges =
+      fromOffsets.map {
+        case (tp, fo) =>
+          val uo = untilOffsets(tp)
+          OffsetRange(tp.topic, tp.partition, fo, uo.offset)
+      }.toArray
 
     new KafkaRDD[K, V, U, T, R](
       sc,

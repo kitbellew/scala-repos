@@ -63,10 +63,14 @@ class DistributedProfile(val profiles: RelationalProfile*)
         .asInstanceOf[R]
   }
 
-  type ProfileAction[+R, +S <: NoStream, -E <: Effect] =
-    FixedBasicAction[R, S, E]
-  type StreamingProfileAction[+R, +T, -E <: Effect] =
-    FixedBasicStreamingAction[R, T, E]
+  type ProfileAction[+R, +S <: NoStream, -E <: Effect] = FixedBasicAction[
+    R,
+    S,
+    E]
+  type StreamingProfileAction[+R, +T, -E <: Effect] = FixedBasicStreamingAction[
+    R,
+    T,
+    E]
 
   class QueryActionExtensionMethodsImpl[R, S <: NoStream](
       tree: Node,
@@ -106,8 +110,9 @@ class DistributedProfile(val profiles: RelationalProfile*)
           val idx = profiles.indexOf(profile)
           if (idx < 0)
             throw new SlickException("No session found for profile " + profile)
-          val profileSession =
-            session.sessions(idx).asInstanceOf[profile.Backend#Session]
+          val profileSession = session
+            .sessions(idx)
+            .asInstanceOf[profile.Backend#Session]
           val dv =
             profile.runSynchronousQuery[Any](compiled, param)(profileSession)
           val wr = wrapScalaValue(dv, n.nodeType)
@@ -121,8 +126,9 @@ class DistributedProfile(val profiles: RelationalProfile*)
           if (logger.isDebugEnabled)
             logDebug("Evaluating " + n)
           val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
-          val b =
-            cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
+          val b = cons
+            .createBuilder(el.classTag)
+            .asInstanceOf[Builder[Any, Any]]
           b ++= fromV.map(v =>
             converter
               .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]

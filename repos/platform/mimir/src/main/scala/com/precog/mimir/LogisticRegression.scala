@@ -113,26 +113,27 @@ trait LogisticRegressionLibModule[M[+_]]
         if (seq.isEmpty) {
           sys.error("empty sequence should never occur")
         } else {
-          val result = seq.foldLeft(0d) {
-            case (sum, colVal) => {
-              val xs = java.util.Arrays.copyOf(colVal, colVal.length - 1)
-              val y = colVal.last
+          val result =
+            seq.foldLeft(0d) {
+              case (sum, colVal) => {
+                val xs = java.util.Arrays.copyOf(colVal, colVal.length - 1)
+                val y = colVal.last
 
-              assert(xs.length == theta.length)
+                assert(xs.length == theta.length)
 
-              if (y == 1) {
-                val result = log(sigmoid(dotProduct(theta, xs)))
+                if (y == 1) {
+                  val result = log(sigmoid(dotProduct(theta, xs)))
 
-                sum + checkValue(result)
-              } else if (y == 0) {
-                val result = log(1 - sigmoid(dotProduct(theta, xs)))
+                  sum + checkValue(result)
+                } else if (y == 0) {
+                  val result = log(1 - sigmoid(dotProduct(theta, xs)))
 
-                sum + checkValue(result)
-              } else {
-                sys.error("unreachable case")
+                  sum + checkValue(result)
+                } else {
+                  sys.error("unreachable case")
+                }
               }
             }
-          }
 
           -result
         }
@@ -233,8 +234,9 @@ trait LogisticRegressionLibModule[M[+_]]
               val thetaLength = seq.headOption map {
                 _.length
               } getOrElse sys.error("unreachable: `res` would have been None")
-              val thetas = Seq.fill(100)(
-                Array.fill(thetaLength - 1)(Random.nextGaussian * 10))
+              val thetas =
+                Seq.fill(100)(
+                  Array.fill(thetaLength - 1)(Random.nextGaussian * 10))
 
               val (result, _) =
                 (thetas.tail).foldLeft((thetas.head, cost(seq, thetas.head))) {
@@ -255,8 +257,9 @@ trait LogisticRegressionLibModule[M[+_]]
 
             val finalTheta: Theta = gradloop(seq, initialTheta, initialAlpha)
 
-            val tree =
-              CPath.makeTree(cpaths, Range(1, finalTheta.length).toSeq :+ 0)
+            val tree = CPath.makeTree(
+              cpaths,
+              Range(1, finalTheta.length).toSeq :+ 0)
 
             val spec = TransSpec.concatChildren(tree)
 
@@ -268,8 +271,8 @@ trait LogisticRegressionLibModule[M[+_]]
 
             val result = theta.transform(spec)
 
-            val coeffsTable =
-              result.transform(trans.WrapObject(Leaf(Source), "coefficients"))
+            val coeffsTable = result.transform(
+              trans.WrapObject(Leaf(Source), "coefficients"))
 
             val valueTable = coeffsTable.transform(
               trans.WrapObject(Leaf(Source), paths.Value.name))
@@ -282,88 +285,94 @@ trait LogisticRegressionLibModule[M[+_]]
         } getOrElse Table.empty
       }
 
-      private val morph1 = new Morph1Apply {
-        def apply(table0: Table, ctx: MorphContext): M[Table] = {
-          val ySpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(0))
-          val xsSpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(1))
+      private val morph1 =
+        new Morph1Apply {
+          def apply(table0: Table, ctx: MorphContext): M[Table] = {
+            val ySpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(0))
+            val xsSpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(1))
 
-          val ySpec = trans.Map1(ySpec0, cf.util.CoerceToDouble)
-          val xsSpec = trans.DeepMap1(xsSpec0, cf.util.CoerceToDouble)
+            val ySpec = trans.Map1(ySpec0, cf.util.CoerceToDouble)
+            val xsSpec = trans.DeepMap1(xsSpec0, cf.util.CoerceToDouble)
 
-          // `arraySpec` generates the schema in which the Coefficients will be returned
-          val arraySpec =
-            InnerArrayConcat(trans.WrapArray(xsSpec), trans.WrapArray(ySpec))
-          val valueSpec = DerefObjectStatic(TransSpec1.Id, paths.Value)
-          val table = table0.transform(valueSpec).transform(arraySpec)
+            // `arraySpec` generates the schema in which the Coefficients will be returned
+            val arraySpec = InnerArrayConcat(
+              trans.WrapArray(xsSpec),
+              trans.WrapArray(ySpec))
+            val valueSpec = DerefObjectStatic(TransSpec1.Id, paths.Value)
+            val table = table0.transform(valueSpec).transform(arraySpec)
 
-          val schemas: M[Seq[JType]] = table.schemas map {
-            _.toSeq
-          }
-
-          val specs: M[Seq[TransSpec1]] = schemas map {
-            _ map { jtype =>
-              trans.Typed(
-                trans.DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble),
-                jtype)
+            val schemas: M[Seq[JType]] = table.schemas map {
+              _.toSeq
             }
-          }
 
-          val sampleTables: M[Seq[Table]] = specs flatMap { seq =>
-            table.sample(10000, seq)
-          }
-
-          val tablesWithType: M[Seq[(Table, JType)]] = for {
-            samples <- sampleTables
-            jtypes <- schemas
-          } yield {
-            samples zip jtypes
-          }
-
-          val tableReducer: (Table, JType) => M[Table] =
-            (table, jtype) =>
-              table
-                .toArray[Double]
-                .reduce(reducer)
-                .map(res => extract(res, jtype))
-
-          val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
-            _.map {
-              case (table, jtype) => tableReducer(table, jtype)
-            }.toStream.sequence map (_.toSeq)
-          }
-
-          val objectTables: M[Seq[Table]] = reducedTables map {
-            _.zipWithIndex map {
-              case (tbl, idx) =>
-                val modelId = "model" + (idx + 1)
-                tbl.transform(
-                  liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
+            val specs: M[Seq[TransSpec1]] = schemas map {
+              _ map { jtype =>
+                trans.Typed(
+                  trans.DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble),
+                  jtype)
+              }
             }
-          }
 
-          val spec = OuterObjectConcat(
-            DerefObjectStatic(Leaf(SourceLeft), paths.Value),
-            DerefObjectStatic(Leaf(SourceRight), paths.Value))
+            val sampleTables: M[Seq[Table]] = specs flatMap { seq =>
+              table.sample(10000, seq)
+            }
 
-          objectTables map {
-            _.reduceOption { (tl, tr) =>
-              tl.cross(tr)(buildConstantWrapSpec(spec))
-            } getOrElse Table.empty
+            val tablesWithType: M[Seq[(Table, JType)]] =
+              for {
+                samples <- sampleTables
+                jtypes <- schemas
+              } yield {
+                samples zip jtypes
+              }
+
+            val tableReducer: (Table, JType) => M[Table] =
+              (table, jtype) =>
+                table
+                  .toArray[Double]
+                  .reduce(reducer)
+                  .map(res => extract(res, jtype))
+
+            val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
+              _.map {
+                case (table, jtype) => tableReducer(table, jtype)
+              }.toStream.sequence map (_.toSeq)
+            }
+
+            val objectTables: M[Seq[Table]] = reducedTables map {
+              _.zipWithIndex map {
+                case (tbl, idx) =>
+                  val modelId = "model" + (idx + 1)
+                  tbl.transform(
+                    liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
+              }
+            }
+
+            val spec = OuterObjectConcat(
+              DerefObjectStatic(Leaf(SourceLeft), paths.Value),
+              DerefObjectStatic(Leaf(SourceRight), paths.Value))
+
+            objectTables map {
+              _.reduceOption { (tl, tr) =>
+                tl.cross(tr)(buildConstantWrapSpec(spec))
+              } getOrElse Table.empty
+            }
           }
         }
-      }
     }
 
     object LogisticPrediction
         extends Morphism2(Stats2Namespace, "predictLogistic")
         with LogisticPredictionBase {
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JObjectUnfixedT, JObjectUnfixedT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JObjectUnfixedT,
+        JObjectUnfixedT)
 
       override val idPolicy = IdentityPolicy.Retain.Merge
 
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Cross, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Cross,
+        alignCustom _)
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val spec = liftToValues(

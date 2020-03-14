@@ -81,8 +81,8 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     // Test whether the checkpoint file has been created
     if (reliableCheckpoint) {
       assert(operatedRDD.getCheckpointFile.nonEmpty)
-      val recoveredRDD =
-        sparkContext.checkpointFile[U](operatedRDD.getCheckpointFile.get)
+      val recoveredRDD = sparkContext.checkpointFile[U](
+        operatedRDD.getCheckpointFile.get)
       assert(collectFunc(recoveredRDD) === result)
       assert(recoveredRDD.partitioner === operatedRDD.partitioner)
     }
@@ -432,13 +432,11 @@ class CheckpointSuite
     val ones = sc.makeRDD(1 to 100, 10).map(x => x)
     checkpoint(ones, reliableCheckpoint) // checkpoint that MappedRDD
     val cartesian = new CartesianRDD(sc, ones, ones)
-    val splitBeforeCheckpoint =
-      serializeDeserialize(
-        cartesian.partitions.head.asInstanceOf[CartesianPartition])
+    val splitBeforeCheckpoint = serializeDeserialize(
+      cartesian.partitions.head.asInstanceOf[CartesianPartition])
     cartesian.count() // do the checkpointing
-    val splitAfterCheckpoint =
-      serializeDeserialize(
-        cartesian.partitions.head.asInstanceOf[CartesianPartition])
+    val splitAfterCheckpoint = serializeDeserialize(
+      cartesian.partitions.head.asInstanceOf[CartesianPartition])
     assert(
       (splitAfterCheckpoint.s1.getClass != splitBeforeCheckpoint.s1.getClass) &&
         (splitAfterCheckpoint.s2.getClass != splitBeforeCheckpoint.s2.getClass),
@@ -457,13 +455,11 @@ class CheckpointSuite
     val ones = sc.makeRDD(1 to 100, 10).map(x => x)
     checkpoint(ones, reliableCheckpoint) // checkpoint that MappedRDD
     val coalesced = new CoalescedRDD(ones, 2)
-    val splitBeforeCheckpoint =
-      serializeDeserialize(
-        coalesced.partitions.head.asInstanceOf[CoalescedRDDPartition])
+    val splitBeforeCheckpoint = serializeDeserialize(
+      coalesced.partitions.head.asInstanceOf[CoalescedRDDPartition])
     coalesced.count() // do the checkpointing
-    val splitAfterCheckpoint =
-      serializeDeserialize(
-        coalesced.partitions.head.asInstanceOf[CoalescedRDDPartition])
+    val splitAfterCheckpoint = serializeDeserialize(
+      coalesced.partitions.head.asInstanceOf[CoalescedRDDPartition])
     assert(
       splitAfterCheckpoint.parents.head.getClass != splitBeforeCheckpoint.parents.head.getClass,
       "CoalescedRDDPartition.parents not updated after parent RDD is checkpointed"
@@ -474,12 +470,13 @@ class CheckpointSuite
     val longLineageRDD1 = generateFatPairRDD()
 
     // Collect the RDD as sequences instead of arrays to enable equality tests in testRDD
-    val seqCollectFunc = (rdd: RDD[(Int, Array[Iterable[Int]])]) =>
-      rdd
-        .map {
-          case (p, a) => (p, a.toSeq)
-        }
-        .collect(): Any
+    val seqCollectFunc =
+      (rdd: RDD[(Int, Array[Iterable[Int]])]) =>
+        rdd
+          .map {
+            case (p, a) => (p, a.toSeq)
+          }
+          .collect(): Any
 
     testRDD(
       rdd => {
@@ -509,17 +506,16 @@ class CheckpointSuite
     // been checkpointed and parent partitions have been changed.
     // Note that this test is very specific to the implementation of ZippedPartitionsRDD.
     val rdd = generateFatRDD()
-    val zippedRDD =
-      rdd.zip(rdd.map(x => x)).asInstanceOf[ZippedPartitionsRDD2[_, _, _]]
+    val zippedRDD = rdd
+      .zip(rdd.map(x => x))
+      .asInstanceOf[ZippedPartitionsRDD2[_, _, _]]
     checkpoint(zippedRDD.rdd1, reliableCheckpoint)
     checkpoint(zippedRDD.rdd2, reliableCheckpoint)
-    val partitionBeforeCheckpoint =
-      serializeDeserialize(
-        zippedRDD.partitions.head.asInstanceOf[ZippedPartitionsPartition])
+    val partitionBeforeCheckpoint = serializeDeserialize(
+      zippedRDD.partitions.head.asInstanceOf[ZippedPartitionsPartition])
     zippedRDD.count()
-    val partitionAfterCheckpoint =
-      serializeDeserialize(
-        zippedRDD.partitions.head.asInstanceOf[ZippedPartitionsPartition])
+    val partitionAfterCheckpoint = serializeDeserialize(
+      zippedRDD.partitions.head.asInstanceOf[ZippedPartitionsPartition])
     assert(
       partitionAfterCheckpoint.partitions(0).getClass !=
         partitionBeforeCheckpoint.partitions(0).getClass &&

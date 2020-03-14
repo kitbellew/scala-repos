@@ -90,12 +90,11 @@ private[sql] case class InMemoryRelation(
   @transient val partitionStatistics = new PartitionStatistics(output)
 
   private def computeSizeInBytes = {
-    val sizeOfRow: Expression =
-      BindReferences.bindReference(
-        output
-          .map(a => partitionStatistics.forAttribute(a).sizeInBytes)
-          .reduce(Add),
-        partitionStatistics.schema)
+    val sizeOfRow: Expression = BindReferences.bindReference(
+      output
+        .map(a => partitionStatistics.forAttribute(a).sizeInBytes)
+        .reduce(Add),
+      partitionStatistics.schema)
 
     batchStats.value.map(row => sizeOfRow.eval(row).asInstanceOf[Long]).sum
   }
@@ -152,13 +151,14 @@ private[sql] case class InMemoryRelation(
       .mapPartitionsInternal { rowIterator =>
         new Iterator[CachedBatch] {
           def next(): CachedBatch = {
-            val columnBuilders = output.map { attribute =>
-              ColumnBuilder(
-                attribute.dataType,
-                batchSize,
-                attribute.name,
-                useCompression)
-            }.toArray
+            val columnBuilders =
+              output.map { attribute =>
+                ColumnBuilder(
+                  attribute.dataType,
+                  batchSize,
+                  attribute.name,
+                  useCompression)
+              }.toArray
 
             var rowCount = 0
             var totalSize = 0L
@@ -310,12 +310,11 @@ private[sql] case class InMemoryColumnarTableScan(
   val partitionFilters: Seq[Expression] = {
     predicates.flatMap { p =>
       val filter = buildFilter.lift(p)
-      val boundFilter =
-        filter.map(
-          BindReferences.bindReference(
-            _,
-            relation.partitionStatistics.schema,
-            allowFailures = true))
+      val boundFilter = filter.map(
+        BindReferences.bindReference(
+          _,
+          relation.partitionStatistics.schema,
+          allowFailures = true))
 
       boundFilter.foreach(_ =>
         filter.foreach(f =>
@@ -396,10 +395,11 @@ private[sql] case class InMemoryColumnarTableScan(
         batch
       }
 
-      val columnTypes = requestedColumnDataTypes.map {
-        case udt: UserDefinedType[_] => udt.sqlType
-        case other                   => other
-      }.toArray
+      val columnTypes =
+        requestedColumnDataTypes.map {
+          case udt: UserDefinedType[_] => udt.sqlType
+          case other                   => other
+        }.toArray
       val columnarIterator = GenerateColumnAccessor.generate(columnTypes)
       columnarIterator.initialize(
         withMetrics,

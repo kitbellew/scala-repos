@@ -46,20 +46,21 @@ case class VonMises(mu: Double, k: Double)(implicit rand: RandBasis = Rand)
   }
 
   // rejection sampler based on the colt implementation
-  private val myRandom = for {
-    v <- rand.uniform
-    u <- rand.uniform
-    z = cos(Pi * u)
-    w = (1.0 + r * z) / (r + z)
-    c = k * (r - w)
-    accept = v < (c * (2.0 - c)) || v <= c * exp(1.0 - c)
-    if accept
-    choice <- rand.uniform
-    theta = if (choice > 0.5)
-      mu + acos(w)
-    else
-      mu - acos(w)
-  } yield theta
+  private val myRandom =
+    for {
+      v <- rand.uniform
+      u <- rand.uniform
+      z = cos(Pi * u)
+      w = (1.0 + r * z) / (r + z)
+      c = k * (r - w)
+      accept = v < (c * (2.0 - c)) || v <= c * exp(1.0 - c)
+      if accept
+      choice <- rand.uniform
+      theta = if (choice > 0.5)
+        mu + acos(w)
+      else
+        mu - acos(w)
+    } yield theta
 
   def draw = {
     myRandom.draw

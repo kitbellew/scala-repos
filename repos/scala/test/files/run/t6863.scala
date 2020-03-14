@@ -117,10 +117,11 @@ object Test {
     }.apply == "42")
   }
   def matchCase() = {
-    var x = 100 match {
-      case 100 => "42"
-      case _   => "43"
-    }
+    var x =
+      100 match {
+        case 100 => "42"
+        case _   => "43"
+      }
     assert({ () =>
       x
     }.apply == "42")
@@ -135,11 +136,12 @@ object Test {
     }.apply == "42")
   }
   def labelDef() = {
-    var x = 100 match {
-      case 100 =>
-        try "42"
-        finally ()
-    }
+    var x =
+      100 match {
+        case 100 =>
+          try "42"
+          finally ()
+      }
     assert({ () =>
       x
     }.apply == "42")

@@ -37,12 +37,13 @@ trait PathFun {
 
   def contentHeader(url: URL): Future[Map[String, List[String]]] =
     Future {
-      val connection = url.openConnection() match {
-        case http: HttpURLConnection =>
-          http.setRequestMethod("HEAD")
-          http
-        case other: URLConnection => other
-      }
+      val connection =
+        url.openConnection() match {
+          case http: HttpURLConnection =>
+            http.setRequestMethod("HEAD")
+            http
+          case other: URLConnection => other
+        }
       scala.concurrent.blocking(connection.getHeaderFields).asScala.toMap.map {
         case (key, list) => (key, list.asScala.toList)
       }

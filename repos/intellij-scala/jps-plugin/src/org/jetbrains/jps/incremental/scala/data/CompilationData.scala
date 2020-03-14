@@ -45,10 +45,11 @@ object CompilationData {
     val output = target.getOutputDir
     checkOrCreate(output)
 
-    val classpath = ProjectPaths
-      .getCompilationClasspathFiles(chunk, chunk.containsTests, false, true)
-      .asScala
-      .toSeq
+    val classpath =
+      ProjectPaths
+        .getCompilationClasspathFiles(chunk, chunk.containsTests, false, true)
+        .asScala
+        .toSeq
     val compilerSettings = SettingsManager
       .getProjectSettings(module.getProject)
       .getCompilerSettings(chunk)
@@ -66,8 +67,8 @@ object CompilationData {
         throw new RuntimeException(
           "Unknown build target output directory: " + output))
 
-      val relevantOutputToCacheMap =
-        (outputToCacheMap - output).filter(p => classpath.contains(p._1))
+      val relevantOutputToCacheMap = (outputToCacheMap - output).filter(p =>
+        classpath.contains(p._1))
 
       val commonOptions = {
         val encoding = context.getProjectDescriptor.getEncodingConfiguration
@@ -167,8 +168,8 @@ object CompilationData {
 
   private def createOutputToCacheMap(
       context: CompileContext): Either[String, Map[File, File]] = {
-    val targetToOutput =
-      targetsIn(context).map(target => (target, target.getOutputDir))
+    val targetToOutput = targetsIn(context).map(target =>
+      (target, target.getOutputDir))
 
     outputClashesIn(targetToOutput).toLeft {
       val paths = context.getProjectDescriptor.dataManager.getDataPaths

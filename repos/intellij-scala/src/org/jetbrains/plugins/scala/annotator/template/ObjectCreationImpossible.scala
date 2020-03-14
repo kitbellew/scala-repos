@@ -41,17 +41,18 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
         case (refElement, Some(psiClass)) =>
           import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil._
 
-          val undefined = for {
-            member <- getMembersToImplement(definition)
-            if !member.isInstanceOf[ScAliasMember] // See SCL-2887
-          } yield {
-            try {
-              (member.getText, member.getParentNodeDelegate.getText)
-            } catch {
-              case iae: IllegalArgumentException =>
-                throw new RuntimeException("memer: " + member.getText, iae)
+          val undefined =
+            for {
+              member <- getMembersToImplement(definition)
+              if !member.isInstanceOf[ScAliasMember] // See SCL-2887
+            } yield {
+              try {
+                (member.getText, member.getParentNodeDelegate.getText)
+              } catch {
+                case iae: IllegalArgumentException =>
+                  throw new RuntimeException("memer: " + member.getText, iae)
+              }
             }
-          }
 
           if (undefined.nonEmpty) {
             val element =

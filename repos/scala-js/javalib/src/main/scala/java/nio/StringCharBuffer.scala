@@ -41,18 +41,14 @@ private[nio] final class StringCharBuffer private (
   }
 
   @noinline
-  def get(): Char =
-    GenBuffer(this).generic_get()
+  def get(): Char = GenBuffer(this).generic_get()
 
-  def put(c: Char): CharBuffer =
-    throw new ReadOnlyBufferException
+  def put(c: Char): CharBuffer = throw new ReadOnlyBufferException
 
   @noinline
-  def get(index: Int): Char =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Char = GenBuffer(this).generic_get(index)
 
-  def put(index: Int, c: Char): CharBuffer =
-    throw new ReadOnlyBufferException
+  def put(index: Int, c: Char): CharBuffer = throw new ReadOnlyBufferException
 
   @noinline
   override def get(dst: Array[Char], offset: Int, length: Int): CharBuffer =
@@ -61,8 +57,7 @@ private[nio] final class StringCharBuffer private (
   override def put(src: Array[Char], offset: Int, length: Int): CharBuffer =
     throw new ReadOnlyBufferException
 
-  def compact(): CharBuffer =
-    throw new ReadOnlyBufferException
+  def compact(): CharBuffer = throw new ReadOnlyBufferException
 
   override def toString(): String = {
     val offset = _csqOffset
@@ -74,8 +69,7 @@ private[nio] final class StringCharBuffer private (
   // Internal API
 
   @inline
-  private[nio] def load(index: Int): Char =
-    _csq.charAt(_csqOffset + index)
+  private[nio] def load(index: Int): Char = _csq.charAt(_csqOffset + index)
 
   @inline
   private[nio] def store(index: Int, elem: Char): Unit =
@@ -94,8 +88,7 @@ private[nio] final class StringCharBuffer private (
       startIndex: Int,
       src: Array[Char],
       offset: Int,
-      length: Int): Unit =
-    throw new ReadOnlyBufferException
+      length: Int): Unit = throw new ReadOnlyBufferException
 }
 
 private[nio] object StringCharBuffer {

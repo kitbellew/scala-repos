@@ -67,26 +67,26 @@ private[akka] trait Dispatch { this: ActorCell ⇒
     // we need to delay the failure to the point of actor creation so we can handle
     // it properly in the normal way
     val actorClass = props.actorClass
-    val createMessage = mailboxType match {
-      case _: ProducesMessageQueue[_]
-          if system.mailboxes.hasRequiredType(actorClass) ⇒
-        val req = system.mailboxes.getRequiredType(actorClass)
-        if (req isInstance mbox.messageQueue)
-          Create(None)
-        else {
-          val gotType =
-            if (mbox.messageQueue == null)
-              "null"
-            else
-              mbox.messageQueue.getClass.getName
-          Create(
-            Some(
-              ActorInitializationException(
+    val createMessage =
+      mailboxType match {
+        case _: ProducesMessageQueue[_]
+            if system.mailboxes.hasRequiredType(actorClass) ⇒
+          val req = system.mailboxes.getRequiredType(actorClass)
+          if (req isInstance mbox.messageQueue)
+            Create(None)
+          else {
+            val gotType =
+              if (mbox.messageQueue == null)
+                "null"
+              else
+                mbox.messageQueue.getClass.getName
+            Create(
+              Some(ActorInitializationException(
                 self,
                 s"Actor [$self] requires mailbox type [$req] got [$gotType]")))
-        }
-      case _ ⇒ Create(None)
-    }
+          }
+        case _ ⇒ Create(None)
+      }
 
     swapMailbox(mbox)
     mailbox.setActor(this)
@@ -167,10 +167,11 @@ private[akka] trait Dispatch { this: ActorCell ⇒
   def sendMessage(msg: Envelope): Unit =
     try {
       if (system.settings.SerializeAllMessages) {
-        val unwrapped = (msg.message match {
-          case DeadLetter(wrapped, _, _) ⇒ wrapped
-          case other ⇒ other
-        }).asInstanceOf[AnyRef]
+        val unwrapped =
+          (msg.message match {
+            case DeadLetter(wrapped, _, _) ⇒ wrapped
+            case other ⇒ other
+          }).asInstanceOf[AnyRef]
         if (!unwrapped.isInstanceOf[NoSerializationVerificationNeeded]) {
           val s = SerializationExtension(system)
           val serializer = s.findSerializerFor(unwrapped)

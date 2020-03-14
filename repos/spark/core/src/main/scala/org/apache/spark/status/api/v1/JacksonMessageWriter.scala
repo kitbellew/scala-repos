@@ -42,11 +42,12 @@ import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 @Produces(Array(MediaType.APPLICATION_JSON))
 private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
 
-  val mapper = new ObjectMapper() {
-    override def writeValueAsString(t: Any): String = {
-      super.writeValueAsString(t)
+  val mapper =
+    new ObjectMapper() {
+      override def writeValueAsString(t: Any): String = {
+        super.writeValueAsString(t)
+      }
     }
-  }
   mapper.registerModule(com.fasterxml.jackson.module.scala.DefaultScalaModule)
   mapper.enable(SerializationFeature.INDENT_OUTPUT)
   mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)

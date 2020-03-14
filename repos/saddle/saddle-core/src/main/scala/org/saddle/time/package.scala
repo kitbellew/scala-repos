@@ -190,13 +190,14 @@ package object time {
     * Enrichment methods for Vec[DateTime]
     */
   implicit def vecTimeAccessors(vec: Vec[DateTime]): TimeAccessors[Vec[Int]] = {
-    val (times, chrono: Chronology) = vec match {
-      case tv: VecTime => (tv.times, tv.chrono)
-      case _ => {
-        val tmp = new VecTime(vec.map(_.getMillis));
-        (tmp.times, tmp.chrono)
+    val (times, chrono: Chronology) =
+      vec match {
+        case tv: VecTime => (tv.times, tv.chrono)
+        case _ => {
+          val tmp = new VecTime(vec.map(_.getMillis));
+          (tmp.times, tmp.chrono)
+        }
       }
-    }
     new TimeAccessors(times, chrono, identity)
   }
 
@@ -205,13 +206,14 @@ package object time {
     */
   implicit def indexTimeAccessors(
       ix: Index[DateTime]): TimeAccessors[Index[Int]] = {
-    val (times, chrono: Chronology) = ix match {
-      case tv: IndexTime => (tv.times.toVec, tv.chrono)
-      case _ => {
-        val tmp = new IndexTime(ix.map(_.getMillis));
-        (tmp.times.toVec, tmp.chrono)
+    val (times, chrono: Chronology) =
+      ix match {
+        case tv: IndexTime => (tv.times.toVec, tv.chrono)
+        case _ => {
+          val tmp = new IndexTime(ix.map(_.getMillis));
+          (tmp.times.toVec, tmp.chrono)
+        }
       }
-    }
 
     new TimeAccessors(times, chrono, Index(_))
   }

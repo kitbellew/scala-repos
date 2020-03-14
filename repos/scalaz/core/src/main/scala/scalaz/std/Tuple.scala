@@ -29,13 +29,14 @@ sealed trait TupleInstances0 {
 }
 
 sealed trait TupleInstances1 extends TupleInstances0 {
-  implicit val tuple2Bitraverse: Bitraverse[Tuple2] = new Bitraverse[Tuple2] {
-    override def bimap[A, B, C, D](fab: (A, B))(f: A => C, g: B => D) =
-      (f(fab._1), g(fab._2))
-    def bitraverseImpl[G[_]: Applicative, A, B, C, D](
-        fab: (A, B))(f: A => G[C], g: B => G[D]) =
-      Applicative[G].tuple2(f(fab._1), g(fab._2))
-  }
+  implicit val tuple2Bitraverse: Bitraverse[Tuple2] =
+    new Bitraverse[Tuple2] {
+      override def bimap[A, B, C, D](fab: (A, B))(f: A => C, g: B => D) =
+        (f(fab._1), g(fab._2))
+      def bitraverseImpl[G[_]: Applicative, A, B, C, D](
+          fab: (A, B))(f: A => G[C], g: B => G[D]) =
+        Applicative[G].tuple2(f(fab._1), g(fab._2))
+    }
 
   implicit val tuple2Associative: Associative[Tuple2] =
     new Associative[Tuple2] {
@@ -850,20 +851,16 @@ private trait Tuple8Semigroup[A1, A2, A3, A4, A5, A6, A7, A8]
   }
 }
 private trait Tuple1Functor extends Traverse[Tuple1] {
-  override def map[A, B](fa: Tuple1[A])(f: A => B) =
-    Tuple1(f(fa._1))
+  override def map[A, B](fa: Tuple1[A])(f: A => B) = Tuple1(f(fa._1))
   def traverseImpl[G[_], A, B](fa: Tuple1[A])(f: A => G[B])(
-      implicit G: Applicative[G]) =
-    G.map(f(fa._1))(Tuple1.apply)
+      implicit G: Applicative[G]) = G.map(f(fa._1))(Tuple1.apply)
 }
 
 private trait Tuple1Cozip extends Cozip[Tuple1] {
-  override def cozip[A, B](x: Tuple1[A \/ B]) =
-    x._1.bimap(Tuple1(_), Tuple1(_))
+  override def cozip[A, B](x: Tuple1[A \/ B]) = x._1.bimap(Tuple1(_), Tuple1(_))
 }
 private trait Tuple2Cozip[A1] extends Cozip[(A1, ?)] {
-  override def cozip[A, B](x: (A1, A \/ B)) =
-    x._2.bimap((x._1, _), (x._1, _))
+  override def cozip[A, B](x: (A1, A \/ B)) = x._2.bimap((x._1, _), (x._1, _))
 }
 private trait Tuple3Cozip[A1, A2] extends Cozip[(A1, A2, ?)] {
   override def cozip[A, B](x: (A1, A2, A \/ B)) =
@@ -1008,8 +1005,7 @@ private trait Tuple8Equal[A1, A2, A3, A4, A5, A6, A7, A8]
 }
 private trait Tuple1Show[A1] extends Show[Tuple1[A1]] {
   implicit def _1: Show[A1]
-  override def show(f: Tuple1[A1]) =
-    Cord("(", _1.show(f._1), ")")
+  override def show(f: Tuple1[A1]) = Cord("(", _1.show(f._1), ")")
 }
 private trait Tuple2Show[A1, A2] extends Show[(A1, A2)] {
   implicit def _1: Show[A1]

@@ -58,8 +58,9 @@ object BsonDSLSpec extends Specification {
     }
 
     "Convert Pattern properly" in {
-      val ptrn: Pattern =
-        Pattern.compile("^Mongo", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE)
+      val ptrn: Pattern = Pattern.compile(
+        "^Mongo",
+        Pattern.MULTILINE | Pattern.CASE_INSENSITIVE)
       val qry: JObject = ("ptrn" -> ptrn)
       val dbo: DBObject = JObjectParser.parse(qry)(DefaultFormats)
       val ptrn2: Pattern = dbo.get("ptrn").asInstanceOf[Pattern]

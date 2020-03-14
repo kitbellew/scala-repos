@@ -189,10 +189,11 @@ class PowerIterationClustering private[clustering] (
   @Since("1.5.0")
   def run(graph: Graph[Double, Double]): PowerIterationClusteringModel = {
     val w = normalize(graph)
-    val w0 = initMode match {
-      case "random" => randomInit(w)
-      case "degree" => initDegreeVector(w)
-    }
+    val w0 =
+      initMode match {
+        case "random" => randomInit(w)
+        case "degree" => initDegreeVector(w)
+      }
     pic(w0)
   }
 
@@ -212,10 +213,11 @@ class PowerIterationClustering private[clustering] (
   def run(similarities: RDD[(Long, Long, Double)])
       : PowerIterationClusteringModel = {
     val w = normalize(similarities)
-    val w0 = initMode match {
-      case "random" => randomInit(w)
-      case "degree" => initDegreeVector(w)
-    }
+    val w0 =
+      initMode match {
+        case "random" => randomInit(w)
+        case "degree" => initDegreeVector(w)
+      }
     pic(w0)
   }
 

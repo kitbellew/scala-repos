@@ -32,10 +32,12 @@ object Docs {
     "apiDocsUseCache",
     "Whether to cache the doc inputs (can hit cache limit with dbuild)")
   val apiDocs = TaskKey[File]("apiDocs", "Generate the API docs")
-  val extractWebjars =
-    TaskKey[File]("extractWebjars", "Extract webjar contents")
-  val allConfs =
-    TaskKey[Seq[(String, File)]]("allConfs", "Gather all configuration files")
+  val extractWebjars = TaskKey[File](
+    "extractWebjars",
+    "Extract webjar contents")
+  val allConfs = TaskKey[Seq[(String, File)]](
+    "allConfs",
+    "Gather all configuration files")
 
   lazy val settings = Seq(
     apiDocsInclude := false,
@@ -116,19 +118,21 @@ object Docs {
   def apiDocsTask =
     Def.task {
 
-      val targetDir = new File(
-        target.value,
-        "scala-" + CrossVersion.binaryScalaVersion(scalaVersion.value))
+      val targetDir =
+        new File(
+          target.value,
+          "scala-" + CrossVersion.binaryScalaVersion(scalaVersion.value))
       val apiTarget = new File(targetDir, "apidocs")
 
       if ((publishArtifact in packageDoc).value) {
 
         val version = Keys.version.value
-        val sourceTree = if (version.endsWith("-SNAPSHOT")) {
-          BuildSettings.snapshotBranch
-        } else {
-          version
-        }
+        val sourceTree =
+          if (version.endsWith("-SNAPSHOT")) {
+            BuildSettings.snapshotBranch
+          } else {
+            version
+          }
 
         val scalaCache = new File(targetDir, "scalaapidocs.cache")
         val javaCache = new File(targetDir, "javaapidocs.cache")
@@ -215,15 +219,14 @@ object Docs {
 
       val projectId = moduleName in ref get structure.data
 
-      val confs =
-        (unmanagedResources in Compile in ref get structure.data).map(_.map {
-          resources =>
-            (for {
-              conf <- resources.filter(resource =>
-                resource.name == "reference.conf" || resource.name.endsWith(
-                  ".xml"))
-              id <- projectId.toSeq
-            } yield id -> conf).distinct
+      val confs = (unmanagedResources in Compile in ref get structure.data)
+        .map(_.map { resources =>
+          (for {
+            conf <- resources.filter(resource =>
+              resource.name == "reference.conf" || resource.name.endsWith(
+                ".xml"))
+            id <- projectId.toSeq
+          } yield id -> conf).distinct
         })
 
       // Join them
@@ -261,8 +264,9 @@ object Docs {
       val project = Project.getProject(projectRef, structure)
       val childRefs = project.toSeq.flatMap(_.aggregate)
       childRefs flatMap { childRef =>
-        val includeApiDocs =
-          (apiDocsInclude in childRef).get(structure.data).getOrElse(false)
+        val includeApiDocs = (apiDocsInclude in childRef)
+          .get(structure.data)
+          .getOrElse(false)
         if (includeApiDocs)
           childRef +: aggregated(childRef)
         else

@@ -510,8 +510,10 @@ class LocalServiceConnection[S <: LocalService](
     * Internal implementation for handling the service connection. You do not need to call this method.
     */
   def onServiceConnected(p1: ComponentName, b: IBinder) {
-    val svc =
-      b.asInstanceOf[LocalService#ScaloidServiceBinder].service.asInstanceOf[S]
+    val svc = b
+      .asInstanceOf[LocalService#ScaloidServiceBinder]
+      .service
+      .asInstanceOf[S]
     service = Option(svc)
     componentName = p1
     binder = b

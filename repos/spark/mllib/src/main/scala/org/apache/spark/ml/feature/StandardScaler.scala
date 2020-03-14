@@ -56,10 +56,11 @@ private[feature] trait StandardScalerParams
     * Default: true
     * @group param
     */
-  val withStd: BooleanParam = new BooleanParam(
-    this,
-    "withStd",
-    "Whether to scale the data to unit standard deviation")
+  val withStd: BooleanParam =
+    new BooleanParam(
+      this,
+      "withStd",
+      "Whether to scale the data to unit standard deviation")
 
   /** @group getParam */
   def getWithStd: Boolean = $(withStd)

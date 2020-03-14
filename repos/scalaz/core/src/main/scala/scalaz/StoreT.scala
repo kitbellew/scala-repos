@@ -14,8 +14,7 @@ final case class IndexedStoreT[F[_], +I, A, B](run: (F[A => B], I)) {
     indexedStoreT((F.map(set)(_ compose g), f(pos)))
 
   def bmap[X, Z >: I <: A](b: Bijection[Z, X])(
-      implicit F: Functor[F]): StoreT[F, X, B] =
-    xmap(b to _)(b from _)
+      implicit F: Functor[F]): StoreT[F, X, B] = xmap(b to _)(b from _)
 
   def imap[X](f: I => X): IndexedStoreT[F, X, A, B] =
     indexedStoreT((set, f(pos)))
@@ -27,29 +26,21 @@ final case class IndexedStoreT[F[_], +I, A, B](run: (F[A => B], I)) {
       implicit F: Functor[F]): IndexedStoreT[F, X, A, Y] =
     indexedStoreT((F.map(set)(g compose _), f(pos)))
 
-  def leftMap[X](f: I => X): IndexedStoreT[F, X, A, B] =
-    imap(f)
+  def leftMap[X](f: I => X): IndexedStoreT[F, X, A, B] = imap(f)
 
-  def put(a: A)(implicit F: Functor[F]): F[B] =
-    F.map(run._1)(_(a))
+  def put(a: A)(implicit F: Functor[F]): F[B] = F.map(run._1)(_(a))
 
-  def puts(f: I => A)(implicit F: Functor[F]): F[B] =
-    put(f(pos))
+  def puts(f: I => A)(implicit F: Functor[F]): F[B] = put(f(pos))
 
-  def set: F[A => B] =
-    run._1
+  def set: F[A => B] = run._1
 
-  def pos: I =
-    run._2
+  def pos: I = run._2
 
-  def peek(a: A)(implicit F: Comonad[F]): B =
-    F.copoint(set)(a)
+  def peek(a: A)(implicit F: Comonad[F]): B = F.copoint(set)(a)
 
-  def peeks(f: I => A)(implicit F: Comonad[F]): B =
-    F.copoint(set)(f(pos))
+  def peeks(f: I => A)(implicit F: Comonad[F]): B = F.copoint(set)(f(pos))
 
-  def seek[J](j: J): IndexedStoreT[F, J, A, B] =
-    indexedStoreT((set, j))
+  def seek[J](j: J): IndexedStoreT[F, J, A, B] = indexedStoreT((set, j))
 
   def seeks[J](f: I => J): IndexedStoreT[F, J, A, B] =
     indexedStoreT((set, f(pos)))
@@ -110,8 +101,7 @@ trait StoreTFunctions extends IndexedStoreTFunctions {
   def storeT[F[_], A, B](r: (F[A => B], A)): StoreT[F, A, B] =
     indexedStoreT[F, A, A, B](r)
 
-  def store[A, B](a: A)(f: A => B): Store[A, B] =
-    storeT[Id, A, B](f -> a)
+  def store[A, B](a: A)(f: A => B): Store[A, B] = storeT[Id, A, B](f -> a)
 }
 sealed abstract class IndexedStoreTInstances2 {
   implicit def indexedStoreTContravariant[F[_], I, B](

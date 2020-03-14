@@ -96,22 +96,23 @@ class ReplicaFetcherThread(
   // as the metrics tag to avoid metric name conflicts with
   // more than one fetcher thread to the same broker
   private val networkClient = {
-    val selector = new Selector(
-      NetworkReceive.UNLIMITED,
-      brokerConfig.connectionsMaxIdleMs,
-      metrics,
-      time,
-      "replica-fetcher",
-      Map(
-        "broker-id" -> sourceBroker.id.toString,
-        "fetcher-id" -> fetcherId.toString).asJava,
-      false,
-      ChannelBuilders.create(
-        brokerConfig.interBrokerSecurityProtocol,
-        Mode.CLIENT,
-        LoginType.SERVER,
-        brokerConfig.values)
-    )
+    val selector =
+      new Selector(
+        NetworkReceive.UNLIMITED,
+        brokerConfig.connectionsMaxIdleMs,
+        metrics,
+        time,
+        "replica-fetcher",
+        Map(
+          "broker-id" -> sourceBroker.id.toString,
+          "fetcher-id" -> fetcherId.toString).asJava,
+        false,
+        ChannelBuilders.create(
+          brokerConfig.interBrokerSecurityProtocol,
+          Mode.CLIENT,
+          LoginType.SERVER,
+          brokerConfig.values)
+      )
     new NetworkClient(
       selector,
       new ManualMetadataUpdater(),
@@ -163,8 +164,8 @@ class ReplicaFetcherThread(
               replica.logEndOffset.messageOffset,
               messageSet.sizeInBytes,
               topicAndPartition))
-      val followerHighWatermark =
-        replica.logEndOffset.messageOffset.min(partitionData.highWatermark)
+      val followerHighWatermark = replica.logEndOffset.messageOffset
+        .min(partitionData.highWatermark)
       // for the follower replica, we do not need to keep
       // its segment base offset the physical position,
       // these values will be computed upon making the leader
@@ -197,9 +198,10 @@ class ReplicaFetcherThread(
     * Handle a partition whose offset is out of range and return a new fetch offset.
     */
   def handleOffsetOutOfRange(topicAndPartition: TopicAndPartition): Long = {
-    val replica = replicaMgr
-      .getReplica(topicAndPartition.topic, topicAndPartition.partition)
-      .get
+    val replica =
+      replicaMgr
+        .getReplica(topicAndPartition.topic, topicAndPartition.partition)
+        .get
 
     /**
       * Unclean leader election: A follower goes down, in the meanwhile the leader keeps appending messages. The follower comes back up
@@ -288,8 +290,9 @@ class ReplicaFetcherThread(
             replica.logEndOffset.messageOffset,
             sourceBroker.id,
             leaderStartOffset))
-      val offsetToFetch =
-        Math.max(leaderStartOffset, replica.logEndOffset.messageOffset)
+      val offsetToFetch = Math.max(
+        leaderStartOffset,
+        replica.logEndOffset.messageOffset)
       // Only truncate log when current leader's log start offset is greater than follower's log end offset.
       if (leaderStartOffset > replica.logEndOffset.messageOffset)
         replicaMgr.logManager
@@ -320,8 +323,9 @@ class ReplicaFetcherThread(
       apiVersion: Option[Short],
       request: AbstractRequest): ClientResponse = {
     import kafka.utils.NetworkClientBlockingOps._
-    val header = apiVersion.fold(networkClient.nextRequestHeader(apiKey))(
-      networkClient.nextRequestHeader(apiKey, _))
+    val header =
+      apiVersion.fold(networkClient.nextRequestHeader(apiKey))(
+        networkClient.nextRequestHeader(apiKey, _))
     try {
       if (!networkClient.blockingReady(sourceNode, socketTimeout)(time))
         throw new SocketTimeoutException(
@@ -368,8 +372,8 @@ class ReplicaFetcherThread(
   protected def buildFetchRequest(
       partitionMap: Map[TopicAndPartition, PartitionFetchState])
       : FetchRequest = {
-    val requestMap =
-      mutable.Map.empty[TopicPartition, JFetchRequest.PartitionData]
+    val requestMap = mutable.Map
+      .empty[TopicPartition, JFetchRequest.PartitionData]
 
     partitionMap.foreach {
       case ((TopicAndPartition(topic, partition), partitionFetchState)) =>

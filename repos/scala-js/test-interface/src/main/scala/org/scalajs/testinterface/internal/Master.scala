@@ -52,10 +52,11 @@ final class Master(frameworkName: String) extends BridgeBase(frameworkName) {
   private def tasks(data: js.Dynamic): Try[String] = {
     ensureRunnerExists()
 
-    val taskDefs = data
-      .asInstanceOf[js.Array[js.Dynamic]]
-      .map(TaskDefSerializer.deserialize)
-      .toArray
+    val taskDefs =
+      data
+        .asInstanceOf[js.Array[js.Dynamic]]
+        .map(TaskDefSerializer.deserialize)
+        .toArray
 
     Try {
       val tasks = runner.tasks(taskDefs)

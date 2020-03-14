@@ -62,11 +62,12 @@ class StreamingLogisticRegressionWithSGD private[mllib] (
   @Since("1.3.0")
   def this() = this(0.1, 50, 1.0, 0.0)
 
-  protected val algorithm = new LogisticRegressionWithSGD(
-    stepSize,
-    numIterations,
-    regParam,
-    miniBatchFraction)
+  protected val algorithm =
+    new LogisticRegressionWithSGD(
+      stepSize,
+      numIterations,
+      regParam,
+      miniBatchFraction)
 
   protected var model: Option[LogisticRegressionModel] = None
 

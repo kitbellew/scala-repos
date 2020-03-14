@@ -35,8 +35,7 @@ abstract class Yoneda[F[_], A] { yo =>
     Yoneda(f(this))
 
   /** `Yoneda` is a monad in an endofunctor category */
-  def flatMap[G[_]](f: F ~> Yoneda[G, ?]): Yoneda[G, A] =
-    f(run)
+  def flatMap[G[_]](f: F ~> Yoneda[G, ?]): Yoneda[G, A] = f(run)
 }
 
 object Yoneda {

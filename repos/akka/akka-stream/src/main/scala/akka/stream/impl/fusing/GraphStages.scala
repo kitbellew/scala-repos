@@ -157,29 +157,31 @@ object GraphStages {
     case class FailAndCancel(ex: Throwable) extends Operation
 
     override val initialAttributes = Attributes.name("breaker")
-    override val shape =
-      FlowShape(Inlet[Any]("breaker.in"), Outlet[Any]("breaker.out"))
+    override val shape = FlowShape(
+      Inlet[Any]("breaker.in"),
+      Outlet[Any]("breaker.out"))
     override def toString: String = "Breaker"
 
     override def createLogicAndMaterializedValue(attr: Attributes) = {
       val promise = Promise[Breaker]
 
-      val logic = new GraphStageLogic(shape) {
+      val logic =
+        new GraphStageLogic(shape) {
 
-        passAlong(shape.in, shape.out)
-        setHandler(shape.out, eagerTerminateOutput)
+          passAlong(shape.in, shape.out)
+          setHandler(shape.out, eagerTerminateOutput)
 
-        override def preStart(): Unit = {
-          pull(shape.in)
-          promise.success(new Breaker(getAsyncCallback[Operation] {
-            case Complete ⇒ complete(shape.out)
-            case Cancel ⇒ cancel(shape.in)
-            case Fail(ex) ⇒ fail(shape.out, ex)
-            case CompleteAndCancel ⇒ completeStage()
-            case FailAndCancel(ex) ⇒ failStage(ex)
-          }.invoke))
+          override def preStart(): Unit = {
+            pull(shape.in)
+            promise.success(new Breaker(getAsyncCallback[Operation] {
+              case Complete ⇒ complete(shape.out)
+              case Cancel ⇒ cancel(shape.in)
+              case Fail(ex) ⇒ fail(shape.out, ex)
+              case CompleteAndCancel ⇒ completeStage()
+              case FailAndCancel(ex) ⇒ failStage(ex)
+            }.invoke))
+          }
         }
-      }
 
       (logic, promise.future)
     }
@@ -205,55 +207,56 @@ object GraphStages {
     override def createLogicAndMaterializedValue(attr: Attributes) = {
       val promise = Promise[Breaker]
 
-      val logic = new GraphStageLogic(shape) {
+      val logic =
+        new GraphStageLogic(shape) {
 
-        setHandler(
-          shape.in1,
-          new InHandler {
-            override def onPush(): Unit = push(shape.out1, grab(shape.in1))
-            override def onUpstreamFinish(): Unit = complete(shape.out1)
-            override def onUpstreamFailure(ex: Throwable): Unit =
-              fail(shape.out1, ex)
-          }
-        )
-        setHandler(
-          shape.in2,
-          new InHandler {
-            override def onPush(): Unit = push(shape.out2, grab(shape.in2))
-            override def onUpstreamFinish(): Unit = complete(shape.out2)
-            override def onUpstreamFailure(ex: Throwable): Unit =
-              fail(shape.out2, ex)
-          }
-        )
-        setHandler(
-          shape.out1,
-          new OutHandler {
-            override def onPull(): Unit = pull(shape.in1)
-            override def onDownstreamFinish(): Unit = cancel(shape.in1)
-          })
-        setHandler(
-          shape.out2,
-          new OutHandler {
-            override def onPull(): Unit = pull(shape.in2)
-            override def onDownstreamFinish(): Unit = cancel(shape.in2)
-          })
+          setHandler(
+            shape.in1,
+            new InHandler {
+              override def onPush(): Unit = push(shape.out1, grab(shape.in1))
+              override def onUpstreamFinish(): Unit = complete(shape.out1)
+              override def onUpstreamFailure(ex: Throwable): Unit =
+                fail(shape.out1, ex)
+            }
+          )
+          setHandler(
+            shape.in2,
+            new InHandler {
+              override def onPush(): Unit = push(shape.out2, grab(shape.in2))
+              override def onUpstreamFinish(): Unit = complete(shape.out2)
+              override def onUpstreamFailure(ex: Throwable): Unit =
+                fail(shape.out2, ex)
+            }
+          )
+          setHandler(
+            shape.out1,
+            new OutHandler {
+              override def onPull(): Unit = pull(shape.in1)
+              override def onDownstreamFinish(): Unit = cancel(shape.in1)
+            })
+          setHandler(
+            shape.out2,
+            new OutHandler {
+              override def onPull(): Unit = pull(shape.in2)
+              override def onDownstreamFinish(): Unit = cancel(shape.in2)
+            })
 
-        override def preStart(): Unit = {
-          promise.success(new Breaker(getAsyncCallback[Operation] {
-            case Complete ⇒
-              complete(shape.out1)
-              complete(shape.out2)
-            case Cancel ⇒
-              cancel(shape.in1)
-              cancel(shape.in2)
-            case Fail(ex) ⇒
-              fail(shape.out1, ex)
-              fail(shape.out2, ex)
-            case CompleteAndCancel ⇒ completeStage()
-            case FailAndCancel(ex) ⇒ failStage(ex)
-          }.invoke))
+          override def preStart(): Unit = {
+            promise.success(new Breaker(getAsyncCallback[Operation] {
+              case Complete ⇒
+                complete(shape.out1)
+                complete(shape.out2)
+              case Cancel ⇒
+                cancel(shape.in1)
+                cancel(shape.in2)
+              case Fail(ex) ⇒
+                fail(shape.out1, ex)
+                fail(shape.out2, ex)
+              case CompleteAndCancel ⇒ completeStage()
+              case FailAndCancel(ex) ⇒ failStage(ex)
+            }.invoke))
+          }
         }
-      }
 
       (logic, promise.future)
     }
@@ -346,29 +349,30 @@ object GraphStages {
       val cancelled = new AtomicBoolean(false)
       val cancellable = new TickSourceCancellable(cancelled)
 
-      val logic = new TimerGraphStageLogic(shape) {
-        override def preStart() = {
-          schedulePeriodicallyWithInitialDelay(
-            "TickTimer",
-            initialDelay,
-            interval)
-          val callback = getAsyncCallback[Unit]((_) ⇒ {
-            completeStage()
-            cancelled.set(true)
-          })
+      val logic =
+        new TimerGraphStageLogic(shape) {
+          override def preStart() = {
+            schedulePeriodicallyWithInitialDelay(
+              "TickTimer",
+              initialDelay,
+              interval)
+            val callback = getAsyncCallback[Unit]((_) ⇒ {
+              completeStage()
+              cancelled.set(true)
+            })
 
-          cancellable.cancelFuture.onComplete(_ ⇒ callback.invoke(()))(
-            interpreter.materializer.executionContext)
+            cancellable.cancelFuture.onComplete(_ ⇒ callback.invoke(()))(
+              interpreter.materializer.executionContext)
+          }
+
+          setHandler(out, eagerTerminateOutput)
+
+          override protected def onTimer(timerKey: Any) =
+            if (isAvailable(out))
+              push(out, tick)
+
+          override def toString: String = "TickSourceLogic"
         }
-
-        setHandler(out, eagerTerminateOutput)
-
-        override protected def onTimer(timerKey: Any) =
-          if (isAvailable(out))
-            push(out, tick)
-
-        override def toString: String = "TickSourceLogic"
-      }
 
       (logic, cancellable)
     }
@@ -443,10 +447,12 @@ object GraphStages {
           out,
           new OutHandler {
             override def onPull(): Unit = {
-              val cb = getAsyncCallback[Try[T]] {
-                case scala.util.Success(v) ⇒ emit(out, v, () ⇒ completeStage())
-                case scala.util.Failure(t) ⇒ failStage(t)
-              }.invoke _
+              val cb =
+                getAsyncCallback[Try[T]] {
+                  case scala.util.Success(v) ⇒
+                    emit(out, v, () ⇒ completeStage())
+                  case scala.util.Failure(t) ⇒ failStage(t)
+                }.invoke _
               future.onComplete(cb)(
                 ExecutionContexts.sameThreadExecutionContext)
               setHandler(

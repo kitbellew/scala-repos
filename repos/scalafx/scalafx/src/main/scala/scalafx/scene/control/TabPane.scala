@@ -61,8 +61,8 @@ object TabPane {
       * Only the currently selected tab will have the option to be closed, with a graphic next to the tab text being
       * shown.
       */
-    val SelectedTab = new TabClosingPolicy(
-      jfxsc.TabPane.TabClosingPolicy.SELECTED_TAB)
+    val SelectedTab =
+      new TabClosingPolicy(jfxsc.TabPane.TabClosingPolicy.SELECTED_TAB)
     @deprecated(
       "Use SelectedTab; SELECTED_TAB will be removed in a future release",
       "8.0.60-R10")
@@ -71,8 +71,8 @@ object TabPane {
     /**
       * Tabs can not be closed by the user.
       */
-    val Unavailable = new TabClosingPolicy(
-      jfxsc.TabPane.TabClosingPolicy.UNAVAILABLE)
+    val Unavailable =
+      new TabClosingPolicy(jfxsc.TabPane.TabClosingPolicy.UNAVAILABLE)
     @deprecated(
       "Use Unavailable; UNAVAILABLE will be removed in a future release",
       "8.0.60-R10")

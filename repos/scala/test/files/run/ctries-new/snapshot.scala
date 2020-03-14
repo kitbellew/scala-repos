@@ -142,9 +142,7 @@ object SnapshotSpec extends Spec {
       for (i <- 0 until sz)
         ct(new Wrap(i)) = i
       val readonly = ct.readOnlySnapshot()
-      val threads =
-        for (i <- 0 until W)
-          yield new Modifier(ct, i, N, sz)
+      val threads = for (i <- 0 until W) yield new Modifier(ct, i, N, sz)
 
       threads.foreach(_.start())
       consistentReadOnly("qm", readonly, sz, N)
@@ -162,9 +160,7 @@ object SnapshotSpec extends Spec {
       val ct = new TrieMap[Wrap, Int]
       for (i <- 0 until sz)
         ct(new Wrap(i)) = i
-      val threads =
-        for (i <- 0 until W)
-          yield new Remover(ct, i, W, sz)
+      val threads = for (i <- 0 until W) yield new Remover(ct, i, W, sz)
 
       threads.foreach(_.start())
       for (i <- 0 until S)
@@ -181,9 +177,7 @@ object SnapshotSpec extends Spec {
       val ct = new TrieMap[Wrap, Int]
       for (i <- 0 until sz)
         ct(new Wrap(i)) = i
-      val threads =
-        for (i <- 0 until W)
-          yield new Modifier(ct, i, N, sz)
+      val threads = for (i <- 0 until W) yield new Modifier(ct, i, N, sz)
 
       threads.foreach(_.start())
       for (i <- 0 until S)
@@ -266,9 +260,7 @@ object SnapshotSpec extends Spec {
       val ct = new TrieMap[Wrap, Int]
       for (i <- 0 until sz)
         ct(new Wrap(i)) = i
-      val threads =
-        for (i <- 0 until W)
-          yield new Modifier(ct, i, N, sz)
+      val threads = for (i <- 0 until W) yield new Modifier(ct, i, N, sz)
 
       threads.foreach(_.start())
       for (i <- 0 until S) {
@@ -301,12 +293,8 @@ object SnapshotSpec extends Spec {
         }
       }
 
-      val mods =
-        for (i <- 0 until W)
-          yield new Modifier(ct, i, modifytimes, sz)
-      val shooters =
-        for (i <- 0 until S)
-          yield new Snapshooter
+      val mods = for (i <- 0 until W) yield new Modifier(ct, i, modifytimes, sz)
+      val shooters = for (i <- 0 until S) yield new Snapshooter
       val threads = mods ++ shooters
       threads.foreach(_.start())
       threads.foreach(_.join())

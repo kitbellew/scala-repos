@@ -22,9 +22,10 @@ trait IterableView[+A, +Coll]
   *  `IterableView`s work. Its definitions are generally not accessed directly by clients.
   */
 object IterableView {
-  type Coll = TraversableView[_, C] forSome {
-    type C <: Traversable[_]
-  }
+  type Coll =
+    TraversableView[_, C] forSome {
+      type C <: Traversable[_]
+    }
   implicit def canBuildFrom[A]
       : CanBuildFrom[Coll, A, IterableView[A, Iterable[_]]] =
     new CanBuildFrom[Coll, A, IterableView[A, Iterable[_]]] {

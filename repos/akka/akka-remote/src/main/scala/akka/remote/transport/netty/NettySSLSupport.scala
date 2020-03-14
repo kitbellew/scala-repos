@@ -37,8 +37,8 @@ private[akka] class SSLSettings(config: Config) {
 
   val SSLTrustStorePassword = emptyIsNone(getString("trust-store-password"))
 
-  val SSLEnabledAlgorithms =
-    immutableSeq(getStringList("enabled-algorithms")).to[Set]
+  val SSLEnabledAlgorithms = immutableSeq(getStringList("enabled-algorithms"))
+    .to[Set]
 
   val SSLProtocol = emptyIsNone(getString("protocol"))
 
@@ -86,31 +86,32 @@ private[akka] object NettySSLSupport {
   def initializeCustomSecureRandom(
       rngName: Option[String],
       log: LoggingAdapter): SecureRandom = {
-    val rng = rngName match {
-      case Some(r @ ("AES128CounterSecureRNG" | "AES256CounterSecureRNG")) ⇒
-        log.debug("SSL random number generator set to: {}", r)
-        SecureRandom.getInstance(r, AkkaProvider)
-      case Some(r @ ("AES128CounterInetRNG" | "AES256CounterInetRNG")) ⇒
-        log.warning(
-          "SSL random number generator {} is deprecated, " +
-            "use AES128CounterSecureRNG or AES256CounterSecureRNG instead",
-          r)
-        SecureRandom.getInstance(r, AkkaProvider)
-      case Some(s @ ("SHA1PRNG" | "NativePRNG")) ⇒
-        log.debug("SSL random number generator set to: " + s)
-        // SHA1PRNG needs /dev/urandom to be the source on Linux to prevent problems with /dev/random blocking
-        // However, this also makes the seed source insecure as the seed is reused to avoid blocking (not a problem on FreeBSD).
-        SecureRandom.getInstance(s)
-      case Some(unknown) ⇒
-        log.warning(
-          "Unknown SSLRandomNumberGenerator [{}] falling back to SecureRandom",
-          unknown)
-        new SecureRandom
-      case None ⇒
-        log.debug(
-          "SSLRandomNumberGenerator not specified, falling back to SecureRandom")
-        new SecureRandom
-    }
+    val rng =
+      rngName match {
+        case Some(r @ ("AES128CounterSecureRNG" | "AES256CounterSecureRNG")) ⇒
+          log.debug("SSL random number generator set to: {}", r)
+          SecureRandom.getInstance(r, AkkaProvider)
+        case Some(r @ ("AES128CounterInetRNG" | "AES256CounterInetRNG")) ⇒
+          log.warning(
+            "SSL random number generator {} is deprecated, " +
+              "use AES128CounterSecureRNG or AES256CounterSecureRNG instead",
+            r)
+          SecureRandom.getInstance(r, AkkaProvider)
+        case Some(s @ ("SHA1PRNG" | "NativePRNG")) ⇒
+          log.debug("SSL random number generator set to: " + s)
+          // SHA1PRNG needs /dev/urandom to be the source on Linux to prevent problems with /dev/random blocking
+          // However, this also makes the seed source insecure as the seed is reused to avoid blocking (not a problem on FreeBSD).
+          SecureRandom.getInstance(s)
+        case Some(unknown) ⇒
+          log.warning(
+            "Unknown SSLRandomNumberGenerator [{}] falling back to SecureRandom",
+            unknown)
+          new SecureRandom
+        case None ⇒
+          log.debug(
+            "SSLRandomNumberGenerator not specified, falling back to SecureRandom")
+          new SecureRandom
+      }
     rng.nextInt() // prevent stall on first access
     rng
   }
@@ -127,8 +128,9 @@ private[akka] object NettySSLSupport {
         trustStorePassword: String,
         protocol: String): Option[SSLContext] =
       try {
-        val rng =
-          initializeCustomSecureRandom(settings.SSLRandomNumberGenerator, log)
+        val rng = initializeCustomSecureRandom(
+          settings.SSLRandomNumberGenerator,
+          log)
         val trustManagers: Array[TrustManager] = {
           val trustManagerFactory = TrustManagerFactory.getInstance(
             TrustManagerFactory.getDefaultAlgorithm)
@@ -204,10 +206,11 @@ private[akka] object NettySSLSupport {
         keyPassword: String,
         protocol: String): Option[SSLContext] =
       try {
-        val rng =
-          initializeCustomSecureRandom(settings.SSLRandomNumberGenerator, log)
-        val factory =
-          KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm)
+        val rng = initializeCustomSecureRandom(
+          settings.SSLRandomNumberGenerator,
+          log)
+        val factory = KeyManagerFactory.getInstance(
+          KeyManagerFactory.getDefaultAlgorithm)
         factory.init(
           {
             val keyStore = KeyStore.getInstance(KeyStore.getDefaultType)

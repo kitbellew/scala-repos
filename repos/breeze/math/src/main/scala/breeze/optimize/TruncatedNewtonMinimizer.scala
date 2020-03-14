@@ -84,11 +84,12 @@ class TruncatedNewtonMinimizer[T, H](
   def iterations(f: SecondOrderFunction[T, H], initial: T): Iterator[State] = {
     Iterator.iterate(initialState(f, initial)) { (state: State) =>
       import state._
-      val cg = new ConjugateGradient[T, H](
-        maxNormValue = delta,
-        tolerance = .1 * norm(adjGrad),
-        maxIterations = 400,
-        normSquaredPenalty = l2Regularization)
+      val cg =
+        new ConjugateGradient[T, H](
+          maxNormValue = delta,
+          tolerance = .1 * norm(adjGrad),
+          maxIterations = 400,
+          normSquaredPenalty = l2Regularization)
       // todo see if we can use something other than zeros as an initializer?
       val initStep = chooseDescentDirection(state)
       val (step, residual) = cg.minimizeAndReturnResidual(-adjGrad, h, initStep)
@@ -212,11 +213,12 @@ class TruncatedNewtonMinimizer[T, H](
     val grad = state.adjGrad
     val memStep = state.history.memStep
     val memGradDelta = state.history.memGradDelta
-    val diag = if (memStep.size > 0) {
-      computeDiagScale(memStep.head, memGradDelta.head)
-    } else {
-      1.0 / norm(grad)
-    }
+    val diag =
+      if (memStep.size > 0) {
+        computeDiagScale(memStep.head, memGradDelta.head)
+      } else {
+        1.0 / norm(grad)
+      }
 
     val dir: T = copy(grad)
     val as = new Array[Double](m)

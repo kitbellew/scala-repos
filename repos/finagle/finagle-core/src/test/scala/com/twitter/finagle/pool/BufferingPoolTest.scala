@@ -26,17 +26,13 @@ class BufferingPoolTest extends FunSuite with MockitoSugar {
     val h = new Helper
     import h._
 
-    val n2 =
-      for (_ <- 0 until N * 2)
-        yield Await.result(pool())
+    val n2 = for (_ <- 0 until N * 2) yield Await.result(pool())
     verify(service, times(0)).close(any[Time])
     verify(underlying, times(N * 2)).apply(any[ClientConnection])
     for (s <- n2 take N)
       s.close()
     verify(service, times(0)).close(any[Time])
-    val n1 =
-      for (_ <- 0 until N)
-        yield Await.result(pool())
+    val n1 = for (_ <- 0 until N) yield Await.result(pool())
     verify(underlying, times(N * 2)).apply(any[ClientConnection])
     for (s <- n1)
       s.close()
@@ -50,9 +46,7 @@ class BufferingPoolTest extends FunSuite with MockitoSugar {
     val h = new Helper
     import h._
 
-    val ns =
-      for (_ <- 0 until N)
-        yield Await.result(pool())
+    val ns = for (_ <- 0 until N) yield Await.result(pool())
     verify(service, times(0)).close(any[Time])
     for (s <- ns take (N - 1))
       s.close()

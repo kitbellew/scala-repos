@@ -100,8 +100,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
    * methods.
    */
 
-  def hasArrayBuffer(): Boolean =
-    _arrayBuffer != null && !isReadOnly
+  def hasArrayBuffer(): Boolean = _arrayBuffer != null && !isReadOnly
 
   def arrayBuffer(): ArrayBuffer = {
     val buffer = _arrayBuffer
@@ -124,8 +123,7 @@ abstract class Buffer private[nio] (val _capacity: Int) {
     view
   }
 
-  def hasTypedArray(): Boolean =
-    _typedArray != null && !isReadOnly
+  def hasTypedArray(): Boolean = _typedArray != null && !isReadOnly
 
   def typedArray(): TypedArrayType = {
     val array = _typedArray

@@ -37,8 +37,12 @@ object ExecutionApp {
 
   private[this] val dArgPattern = "-D([^=]+)=([^\\s]+)".r
 
-  private[this] val hadoopReservedArgs =
-    List("-fs", "-jt", "-files", "-libjars", "-archives")
+  private[this] val hadoopReservedArgs = List(
+    "-fs",
+    "-jt",
+    "-files",
+    "-libjars",
+    "-archives")
 
   def extractUserHadoopArgs(
       args: Array[String]): (HadoopArgs, NonHadoopArgs) = {
@@ -72,10 +76,11 @@ object ExecutionApp {
           (hadoopArgs, nonHadoop, Some(current))
       }
     // We can have something left in the last bucket, so extract it.
-    val nonHadoop = finalLast match {
-      case Some(x) => tmpNonHadoop :+ x
-      case None    => tmpNonHadoop
-    }
+    val nonHadoop =
+      finalLast match {
+        case Some(x) => tmpNonHadoop :+ x
+        case None    => tmpNonHadoop
+      }
 
     // Throwaway hadoop config
     // see which of our hadoop config args are not ones

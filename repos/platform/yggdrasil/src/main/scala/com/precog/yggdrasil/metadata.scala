@@ -38,15 +38,17 @@ package object metadata {
       def append(m1: ColumnMetadata, m2: => ColumnMetadata): ColumnMetadata = {
         m1.foldLeft(m2) {
           case (acc, (descriptor, mmap)) =>
-            val currentMmap: MetadataMap =
-              acc.getOrElse(descriptor, Map.empty[MetadataType, Metadata])
-            val newMmap: MetadataMap = mmap.foldLeft(currentMmap) {
-              case (macc, (mtype, m)) =>
-                macc + (mtype -> macc
-                  .get(mtype)
-                  .flatMap(_.merge(m))
-                  .getOrElse(m))
-            }
+            val currentMmap: MetadataMap = acc.getOrElse(
+              descriptor,
+              Map.empty[MetadataType, Metadata])
+            val newMmap: MetadataMap =
+              mmap.foldLeft(currentMmap) {
+                case (macc, (mtype, m)) =>
+                  macc + (mtype -> macc
+                    .get(mtype)
+                    .flatMap(_.merge(m))
+                    .getOrElse(m))
+              }
 
             acc + (descriptor -> newMmap)
         }

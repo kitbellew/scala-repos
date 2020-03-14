@@ -334,8 +334,7 @@ class RegressionTest {
 
       def get: Int = x
 
-      def foo(): Unit =
-        Seq(2).foreach(x = _)
+      def foo(): Unit = Seq(2).foreach(x = _)
     }
 
     val a = new A()
@@ -430,8 +429,7 @@ class RegressionTest {
      * reachable also for F.
      */
     class F extends Function1[Any, Unit] {
-      def apply(x: Any): Unit =
-        assertEquals(5, x.asInstanceOf[js.Any])
+      def apply(x: Any): Unit = assertEquals(5, x.asInstanceOf[js.Any])
     }
 
     // Make sure the specialized Function1.apply(Double)Double is reachable.
@@ -451,12 +449,13 @@ class RegressionTest {
   @Test def switch_match_with_2_guards_for_the_same_value_issue_1589(): Unit = {
     @noinline def genB(): Int = 0xE1
     val b = genB()
-    val x = b >> 4 match {
-      case 0xE if b == 0xE0 =>
-        4
-      case 0xE if b == 0xE1 =>
-        5
-    }
+    val x =
+      b >> 4 match {
+        case 0xE if b == 0xE0 =>
+          4
+        case 0xE if b == 0xE1 =>
+          5
+      }
     assertEquals(5, x)
   }
 

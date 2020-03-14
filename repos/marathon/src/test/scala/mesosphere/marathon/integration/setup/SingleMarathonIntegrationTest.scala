@@ -141,9 +141,10 @@ trait SingleMarathonIntegrationTest
   }
 
   def cleanMarathonState() {
-    val watcher = new Watcher {
-      override def process(event: WatchedEvent): Unit = println(event)
-    }
+    val watcher =
+      new Watcher {
+        override def process(event: WatchedEvent): Unit = println(event)
+      }
     val zooKeeper = new ZooKeeper(config.zkHostAndPort, 30 * 1000, watcher)
     def deletePath(path: String) {
       if (zooKeeper.exists(path, false) != null) {
@@ -334,8 +335,9 @@ trait SingleMarathonIntegrationTest
     events.clear()
     ExternalMarathonIntegrationTest.healthChecks.clear()
 
-    val deleteResult: RestResult[ITDeploymentResult] =
-      marathon.deleteGroup(testBasePath, force = true)
+    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteGroup(
+      testBasePath,
+      force = true)
     if (deleteResult.code != 404) {
       waitForChange(deleteResult)
     }

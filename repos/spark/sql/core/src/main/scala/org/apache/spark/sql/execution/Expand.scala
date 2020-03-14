@@ -151,9 +151,10 @@ case class Expand(
     // Size of sameOutput array should equal N.
     // If sameOutput(i) is true, then the i-th column has the same value for all output rows given
     // an input row.
-    val sameOutput: Array[Boolean] = output.indices.map { colIndex =>
-      projections.map(p => p(colIndex)).toSet.size == 1
-    }.toArray
+    val sameOutput: Array[Boolean] =
+      output.indices.map { colIndex =>
+        projections.map(p => p(colIndex)).toSet.size == 1
+      }.toArray
 
     // Part 1: declare variables for each column
     // If a column has the same value for all output rows, then we also generate its computation
@@ -166,10 +167,11 @@ case class Expand(
       } else {
         val isNull = ctx.freshName("isNull")
         val value = ctx.freshName("value")
-        val code = s"""
+        val code =
+          s"""
           |boolean $isNull = true;
           |${ctx.javaType(firstExpr.dataType)} $value = ${ctx.defaultValue(
-                        firstExpr.dataType)};
+               firstExpr.dataType)};
          """.stripMargin
         ExprCode(code, isNull, value)
       }
@@ -181,8 +183,9 @@ case class Expand(
         var updateCode = ""
         for (col <- exprs.indices) {
           if (!sameOutput(col)) {
-            val ev =
-              BindReferences.bindReference(exprs(col), child.output).gen(ctx)
+            val ev = BindReferences
+              .bindReference(exprs(col), child.output)
+              .gen(ctx)
             updateCode +=
               s"""
                |${ev.code}

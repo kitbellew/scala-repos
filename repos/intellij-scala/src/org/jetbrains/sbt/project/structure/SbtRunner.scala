@@ -24,13 +24,12 @@ class SbtRunner(
     customLauncher: Option[File],
     customStructureFile: Option[File]) {
   private val LauncherDir = getSbtLauncherDir
-  private val SbtLauncher =
-    customLauncher.getOrElse(LauncherDir / "sbt-launch.jar")
+  private val SbtLauncher = customLauncher.getOrElse(
+    LauncherDir / "sbt-launch.jar")
 
   private val cancellationFlag: AtomicBoolean = new AtomicBoolean(false)
 
-  def cancel(): Unit =
-    cancellationFlag.set(true)
+  def cancel(): Unit = cancellationFlag.set(true)
 
   def read(
       directory: File,
@@ -225,8 +224,9 @@ object SbtRunner {
   }
 
   private def sbtVersionInBootPropertiesOf(jar: File): Option[String] = {
-    val appProperties =
-      readSectionFromBootPropertiesOf(jar, sectionName = "app")
+    val appProperties = readSectionFromBootPropertiesOf(
+      jar,
+      sectionName = "app")
     for {
       name <- appProperties.get("name")
       if name == "sbt"

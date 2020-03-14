@@ -70,35 +70,33 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
         //  - filters that need to be evaluated again after the scan
         val filterSet = ExpressionSet(filters)
 
-        val partitionColumns =
-          AttributeSet(
-            l.resolve(
-              files.partitionSchema,
-              files.sqlContext.sessionState.analyzer.resolver))
-        val partitionKeyFilters =
-          ExpressionSet(filters.filter(_.references.subsetOf(partitionColumns)))
+        val partitionColumns = AttributeSet(
+          l.resolve(
+            files.partitionSchema,
+            files.sqlContext.sessionState.analyzer.resolver))
+        val partitionKeyFilters = ExpressionSet(
+          filters.filter(_.references.subsetOf(partitionColumns)))
         logInfo(
           s"Pruning directories with: ${partitionKeyFilters.mkString(",")}")
 
-        val bucketColumns =
-          AttributeSet(
-            files.bucketSpec
-              .map(_.bucketColumnNames)
-              .getOrElse(Nil)
-              .map(l
-                .resolveQuoted(_, files.sqlContext.conf.resolver)
-                .getOrElse(sys.error(""))))
+        val bucketColumns = AttributeSet(
+          files.bucketSpec
+            .map(_.bucketColumnNames)
+            .getOrElse(Nil)
+            .map(l
+              .resolveQuoted(_, files.sqlContext.conf.resolver)
+              .getOrElse(sys.error(""))))
 
         // Partition keys are not available in the statistics of the files.
-        val dataFilters =
-          filters.filter(_.references.intersect(partitionColumns).isEmpty)
+        val dataFilters = filters.filter(
+          _.references.intersect(partitionColumns).isEmpty)
 
         // Predicates with both partition keys and attributes need to be evaluated after the scan.
         val afterScanFilters = filterSet -- partitionKeyFilters
         logInfo(s"Post-Scan Filters: ${afterScanFilters.mkString(",")}")
 
-        val selectedPartitions =
-          files.location.listFiles(partitionKeyFilters.toSeq)
+        val selectedPartitions = files.location.listFiles(
+          partitionKeyFilters.toSeq)
 
         val filterAttributes = AttributeSet(afterScanFilters)
         val requiredExpressions: Seq[NamedExpression] =
@@ -106,13 +104,12 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
         val requiredAttributes =
           AttributeSet(requiredExpressions).map(_.name).toSet
 
-        val prunedDataSchema =
-          StructType(
-            files.dataSchema.filter(f => requiredAttributes.contains(f.name)))
+        val prunedDataSchema = StructType(
+          files.dataSchema.filter(f => requiredAttributes.contains(f.name)))
         logInfo(s"Pruned Data Schema: ${prunedDataSchema.simpleString(5)}")
 
-        val pushedDownFilters =
-          dataFilters.flatMap(DataSourceStrategy.translateFilter)
+        val pushedDownFilters = dataFilters.flatMap(
+          DataSourceStrategy.translateFilter)
         logInfo(s"Pushed Filters: ${pushedDownFilters.mkString(",")}")
 
         val readFile = files.fileFormat.buildReader(
@@ -122,11 +119,11 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           filters = pushedDownFilters,
           options = files.options)
 
-        val plannedPartitions = files.bucketSpec match {
-          case Some(bucketing) if files.sqlContext.conf.bucketingEnabled =>
-            logInfo(s"Planning with ${bucketing.numBuckets} buckets")
-            val bucketed =
-              selectedPartitions
+        val plannedPartitions =
+          files.bucketSpec match {
+            case Some(bucketing) if files.sqlContext.conf.bucketingEnabled =>
+              logInfo(s"Planning with ${bucketing.numBuckets} buckets")
+              val bucketed = selectedPartitions
                 .flatMap { p =>
                   p.files.map(f =>
                     PartitionedFile(
@@ -141,86 +138,86 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
                     .getOrElse(sys.error(s"Invalid bucket file ${f.filePath}"))
                 }
 
-            (0 until bucketing.numBuckets).map { bucketId =>
-              FilePartition(bucketId, bucketed.getOrElse(bucketId, Nil))
-            }
-
-          case _ =>
-            val maxSplitBytes = files.sqlContext.conf.filesMaxPartitionBytes
-            logInfo(
-              s"Planning scan with bin packing, max size: $maxSplitBytes bytes")
-
-            val splitFiles = selectedPartitions
-              .flatMap { partition =>
-                partition.files.flatMap { file =>
-                  assert(file.getLen != 0)
-                  (0L to file.getLen by maxSplitBytes).map { offset =>
-                    val remaining = file.getLen - offset
-                    val size =
-                      if (remaining > maxSplitBytes)
-                        maxSplitBytes
-                      else
-                        remaining
-                    PartitionedFile(
-                      partition.values,
-                      file.getPath.toUri.toString,
-                      offset,
-                      size)
-                  }
-                }
+              (0 until bucketing.numBuckets).map { bucketId =>
+                FilePartition(bucketId, bucketed.getOrElse(bucketId, Nil))
               }
-              .toArray
-              .sortBy(_.length)(implicitly[Ordering[Long]].reverse)
 
-            val partitions = new ArrayBuffer[FilePartition]
-            val currentFiles = new ArrayBuffer[PartitionedFile]
-            var currentSize = 0L
+            case _ =>
+              val maxSplitBytes = files.sqlContext.conf.filesMaxPartitionBytes
+              logInfo(
+                s"Planning scan with bin packing, max size: $maxSplitBytes bytes")
 
-            /** Add the given file to the current partition. */
-            def addFile(file: PartitionedFile): Unit = {
-              currentSize += file.length
-              currentFiles.append(file)
-            }
+              val splitFiles =
+                selectedPartitions
+                  .flatMap { partition =>
+                    partition.files.flatMap { file =>
+                      assert(file.getLen != 0)
+                      (0L to file.getLen by maxSplitBytes).map { offset =>
+                        val remaining = file.getLen - offset
+                        val size =
+                          if (remaining > maxSplitBytes)
+                            maxSplitBytes
+                          else
+                            remaining
+                        PartitionedFile(
+                          partition.values,
+                          file.getPath.toUri.toString,
+                          offset,
+                          size)
+                      }
+                    }
+                  }
+                  .toArray
+                  .sortBy(_.length)(implicitly[Ordering[Long]].reverse)
 
-            /** Close the current partition and move to the next. */
-            def closePartition(): Unit = {
-              if (currentFiles.nonEmpty) {
-                val newPartition =
-                  FilePartition(
+              val partitions = new ArrayBuffer[FilePartition]
+              val currentFiles = new ArrayBuffer[PartitionedFile]
+              var currentSize = 0L
+
+              /** Add the given file to the current partition. */
+              def addFile(file: PartitionedFile): Unit = {
+                currentSize += file.length
+                currentFiles.append(file)
+              }
+
+              /** Close the current partition and move to the next. */
+              def closePartition(): Unit = {
+                if (currentFiles.nonEmpty) {
+                  val newPartition = FilePartition(
                     partitions.size,
                     currentFiles.toArray.toSeq
                   ) // Copy to a new Array.
-                partitions.append(newPartition)
+                  partitions.append(newPartition)
+                }
+                currentFiles.clear()
+                currentSize = 0
               }
-              currentFiles.clear()
-              currentSize = 0
-            }
 
-            // Assign files to partitions using "First Fit Decreasing" (FFD)
-            // TODO: consider adding a slop factor here?
-            splitFiles.foreach { file =>
-              if (currentSize + file.length > maxSplitBytes) {
-                closePartition()
-                addFile(file)
-              } else {
-                addFile(file)
+              // Assign files to partitions using "First Fit Decreasing" (FFD)
+              // TODO: consider adding a slop factor here?
+              splitFiles.foreach { file =>
+                if (currentSize + file.length > maxSplitBytes) {
+                  closePartition()
+                  addFile(file)
+                } else {
+                  addFile(file)
+                }
               }
-            }
-            closePartition()
-            partitions
-        }
+              closePartition()
+              partitions
+          }
 
-        val scan =
-          DataSourceScan(
-            l.output,
-            new FileScanRDD(files.sqlContext, readFile, plannedPartitions),
-            files,
-            Map("format" -> files.fileFormat.toString))
+        val scan = DataSourceScan(
+          l.output,
+          new FileScanRDD(files.sqlContext, readFile, plannedPartitions),
+          files,
+          Map("format" -> files.fileFormat.toString))
 
-        val afterScanFilter =
-          afterScanFilters.toSeq.reduceOption(expressions.And)
-        val withFilter =
-          afterScanFilter.map(execution.Filter(_, scan)).getOrElse(scan)
+        val afterScanFilter = afterScanFilters.toSeq.reduceOption(
+          expressions.And)
+        val withFilter = afterScanFilter
+          .map(execution.Filter(_, scan))
+          .getOrElse(scan)
         val withProjections =
           if (projects.forall(_.isInstanceOf[AttributeReference])) {
             withFilter

@@ -31,18 +31,18 @@ sealed abstract class Leibniz[-L, +H >: L, A >: L <: H, B >: L <: H] {
   def onCov[FA](fa: FA)(implicit U: Unapply.AuxA[Functor, FA, A]): U.M[B] =
     subst(U(fa))
   def onContra[FA](fa: FA)(
-      implicit U: Unapply.AuxA[Contravariant, FA, A]): U.M[B] =
-    subst(U(fa))
+      implicit U: Unapply.AuxA[Contravariant, FA, A]): U.M[B] = subst(U(fa))
 }
 
 sealed abstract class LeibnizInstances {
   import Leibniz._
 
-  implicit val leibniz: Category[===] = new Category[===] {
-    def id[A]: (A === A) = refl[A]
+  implicit val leibniz: Category[===] =
+    new Category[===] {
+      def id[A]: (A === A) = refl[A]
 
-    def compose[A, B, C](bc: B === C, ab: A === B) = bc compose ab
-  }
+      def compose[A, B, C](bc: B === C, ab: A === B) = bc compose ab
+    }
 
   // TODO
   /*sealed class LeibnizGroupoid[L_, H_ >: L_] extends GeneralizedGroupoid with Hom {
@@ -81,8 +81,7 @@ object Leibniz extends LeibnizInstances {
   /** We can witness equality by using it to convert between types
     * We rely on subtyping to enable this to work for any Leibniz arrow
     */
-  implicit def witness[A, B](f: A === B): A => B =
-    f.subst[A => ?](identity)
+  implicit def witness[A, B](f: A === B): A => B = f.subst[A => ?](identity)
 
   implicit def subst[A, B](a: A)(implicit f: A === B): B = f.subst[Id](a)
 
@@ -98,8 +97,7 @@ object Leibniz extends LeibnizInstances {
   /** Equality is symmetric */
   def symm[L, H >: L, A >: L <: H, B >: L <: H](
       f: Leibniz[L, H, A, B]
-  ): Leibniz[L, H, B, A] =
-    f.subst[λ[`X>:L<:H` => Leibniz[L, H, X, A]]](refl)
+  ): Leibniz[L, H, B, A] = f.subst[λ[`X>:L<:H` => Leibniz[L, H, X, A]]](refl)
 
   /** We can lift equality into any type constructor */
   def lift[

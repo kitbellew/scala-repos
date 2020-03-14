@@ -520,8 +520,7 @@ sealed abstract class ByteString
   override def copyToArray[B >: Byte](
       xs: Array[B],
       start: Int,
-      len: Int): Unit =
-    iterator.copyToArray(xs, start, len)
+      len: Int): Unit = iterator.copyToArray(xs, start, len)
 
   override def foreach[@specialized U](f: Byte ⇒ U): Unit = iterator foreach f
 
@@ -931,8 +930,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   /**
     * Add a number of Bytes from an array to this builder.
     */
-  def putBytes(array: Array[Byte]): this.type =
-    putBytes(array, 0, array.length)
+  def putBytes(array: Array[Byte]): this.type = putBytes(array, 0, array.length)
 
   /**
     * Add a number of Bytes from an array to this builder.

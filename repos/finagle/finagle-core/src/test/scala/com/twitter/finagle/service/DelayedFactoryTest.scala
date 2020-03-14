@@ -43,19 +43,21 @@ class DelayedFactoryTest extends FunSuite {
   }
 
   trait ClosingDelayedHelper extends DelayedHelper {
-    val underlying = new ServiceFactory[Int, Int] {
-      override def apply(conn: ClientConnection): Future[Service[Int, Int]] = {
-        Future.value(service)
-      }
+    val underlying =
+      new ServiceFactory[Int, Int] {
+        override def apply(
+            conn: ClientConnection): Future[Service[Int, Int]] = {
+          Future.value(service)
+        }
 
-      override def close(deadline: Time): Future[Unit] = {
-        stat = Status.Closed
-        Future.Done
-      }
+        override def close(deadline: Time): Future[Unit] = {
+          stat = Status.Closed
+          Future.Done
+        }
 
-      var stat = Status.Open: Status
-      override def status: Status = stat
-    }
+        var stat = Status.Open: Status
+        override def status: Status = stat
+      }
 
     def factory: ServiceFactory[Int, Int]
   }

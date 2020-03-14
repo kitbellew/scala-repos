@@ -77,8 +77,7 @@ object WhitespaceApi {
   def Wrapper(WL: P0) = new Wrapper(WL)
   class Wrapper(WL: P0) {
     implicit def parserApi[T, V](p0: T)(
-        implicit c: T => P[V]): WhitespaceApi[V] =
-      new WhitespaceApi[V](p0, WL)
+        implicit c: T => P[V]): WhitespaceApi[V] = new WhitespaceApi[V](p0, WL)
   }
 }
 
@@ -111,8 +110,7 @@ class WhitespaceApi[+T](p0: P[T], WL: P0) extends ParserApiImpl(p0) {
         NoCut(WL))
   }
 
-  def ~~[V, R](p: P[V])(implicit ev: Sequencer[T, V, R]): P[R] =
-    p0 ~ p
+  def ~~[V, R](p: P[V])(implicit ev: Sequencer[T, V, R]): P[R] = p0 ~ p
 
   override def ~[V, R](p: P[V])(implicit ev: Sequencer[T, V, R]): P[R] = {
     assert(p != null)

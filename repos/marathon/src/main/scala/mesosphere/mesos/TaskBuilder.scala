@@ -50,17 +50,19 @@ class TaskBuilder(
       val staticHostPorts = hostPorts.filter(_ != 0)
       val numberDynamicHostPorts = hostPorts.count(_ == 0)
 
-      val maybeStatic: Option[String] = if (staticHostPorts.nonEmpty) {
-        Some(s"[${staticHostPorts.mkString(", ")}] required")
-      } else {
-        None
-      }
+      val maybeStatic: Option[String] =
+        if (staticHostPorts.nonEmpty) {
+          Some(s"[${staticHostPorts.mkString(", ")}] required")
+        } else {
+          None
+        }
 
-      val maybeDynamic: Option[String] = if (numberDynamicHostPorts > 0) {
-        Some(s"$numberDynamicHostPorts dynamic")
-      } else {
-        None
-      }
+      val maybeDynamic: Option[String] =
+        if (numberDynamicHostPorts > 0) {
+          Some(s"$numberDynamicHostPorts dynamic")
+        } else {
+          None
+        }
 
       val portStrings = Seq(maybeStatic, maybeDynamic).flatten.mkString(" + ")
 
@@ -95,12 +97,11 @@ class TaskBuilder(
       roles
     }
 
-    val resourceMatch =
-      ResourceMatcher.matchResources(
-        offer,
-        app,
-        runningTasks,
-        ResourceSelector(acceptedResourceRoles, reserved = false))
+    val resourceMatch = ResourceMatcher.matchResources(
+      offer,
+      app,
+      runningTasks,
+      ResourceSelector(acceptedResourceRoles, reserved = false))
 
     build(offer, resourceMatch)
   }
@@ -113,11 +114,12 @@ class TaskBuilder(
       volumeMatchOpt: Option[PersistentVolumeMatcher.VolumeMatch])
       : Some[(TaskInfo, Seq[Int])] = {
 
-    val executor: Executor = if (app.executor == "") {
-      config.executor
-    } else {
-      Executor.dispatch(app.executor)
-    }
+    val executor: Executor =
+      if (app.executor == "") {
+        config.executor
+      } else {
+        Executor.dispatch(app.executor)
+      }
 
     val host: Option[String] = Some(offer.getHostname)
 
@@ -160,16 +162,15 @@ class TaskBuilder(
         val executorPath = s"'$path'" // TODO: Really escape this.
         val cmd = app.cmd orElse app.args.map(_ mkString " ") getOrElse ""
         val shell = s"chmod ug+rx $executorPath && exec $executorPath $cmd"
-        val command =
-          TaskBuilder
-            .commandInfo(
-              app,
-              Some(taskId),
-              host,
-              resourceMatch.hostPorts,
-              envPrefix)
-            .toBuilder
-            .setValue(shell)
+        val command = TaskBuilder
+          .commandInfo(
+            app,
+            Some(taskId),
+            host,
+            resourceMatch.hostPorts,
+            envPrefix)
+          .toBuilder
+          .setValue(shell)
 
         val info = ExecutorInfo
           .newBuilder()
@@ -216,24 +217,25 @@ class TaskBuilder(
     discoveryInfoBuilder.setVisibility(
       org.apache.mesos.Protos.DiscoveryInfo.Visibility.FRAMEWORK)
 
-    val portProtos = app.ipAddress match {
-      case Some(IpAddress(_, _, DiscoveryInfo(ports))) if ports.nonEmpty =>
-        ports.map(_.toProto).asJava
-      case _ =>
-        // Serialize app.portDefinitions to protos. The port numbers are the service ports, we need to
-        // overwrite them the port numbers assigned to this particular task.
-        app.portDefinitions
-          .zip(hostPorts)
-          .map {
-            case (portDefinition, hostPort) =>
-              PortDefinitionSerializer
-                .toProto(portDefinition)
-                .toBuilder
-                .setNumber(hostPort)
-                .build
-          }
-          .asJava
-    }
+    val portProtos =
+      app.ipAddress match {
+        case Some(IpAddress(_, _, DiscoveryInfo(ports))) if ports.nonEmpty =>
+          ports.map(_.toProto).asJava
+        case _ =>
+          // Serialize app.portDefinitions to protos. The port numbers are the service ports, we need to
+          // overwrite them the port numbers assigned to this particular task.
+          app.portDefinitions
+            .zip(hostPorts)
+            .map {
+              case (portDefinition, hostPort) =>
+                PortDefinitionSerializer
+                  .toProto(portDefinition)
+                  .toBuilder
+                  .setNumber(hostPort)
+                  .build
+            }
+            .asJava
+      }
 
     val portsProto = org.apache.mesos.Protos.Ports.newBuilder
     portsProto.addAllPorts(portProtos)
@@ -271,15 +273,16 @@ class TaskBuilder(
           }
         }
 
-        val containerWithPortMappings = portMappings match {
-          case None => c
-          case Some(newMappings) =>
-            c.copy(
-              docker = c.docker.map {
-                _.copy(portMappings = newMappings)
-              }
-            )
-        }
+        val containerWithPortMappings =
+          portMappings match {
+            case None => c
+            case Some(newMappings) =>
+              c.copy(
+                docker = c.docker.map {
+                  _.copy(portMappings = newMappings)
+                }
+              )
+          }
         builder.mergeFrom(
           ContainerSerializer.toMesos(containerWithPortMappings))
       }
@@ -292,12 +295,11 @@ class TaskBuilder(
             case (key, value) =>
               Label.newBuilder.setKey(key).setValue(value).build()
           }.asJava)
-        val networkInfo: NetworkInfo.Builder =
-          NetworkInfo
-            .newBuilder()
-            .addAllGroups(ipAddress.groups.asJava)
-            .setLabels(ipAddressLabels)
-            .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
+        val networkInfo: NetworkInfo.Builder = NetworkInfo
+          .newBuilder()
+          .addAllGroups(ipAddress.groups.asJava)
+          .setLabels(ipAddressLabels)
+          .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
         builder.addNetworkInfos(networkInfo)
       }
 

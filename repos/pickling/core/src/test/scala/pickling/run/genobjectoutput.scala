@@ -33,8 +33,7 @@ class ExtData private (
 }
 
 object ExtData {
-  def apply(b: Byte, i: Int, c: Char, j: Int): ExtData =
-    new ExtData(b, i, c, j)
+  def apply(b: Byte, i: Int, c: Char, j: Int): ExtData = new ExtData(b, i, c, j)
 }
 
 class ExtData2 private (
@@ -65,8 +64,7 @@ class ExtData2 private (
       o.b == b && o.i == i && o.bytes.mkString == bytes.mkString && o.j == j
     }
 
-  override def toString: String =
-    s"ExtData2($b,$i,${bytes.mkString},$j)"
+  override def toString: String = s"ExtData2($b,$i,${bytes.mkString},$j)"
 }
 
 object ExtData2 {
@@ -107,8 +105,7 @@ class ExtData3 private (
       o.b == b && o.i == i && o.bytes.mkString == bytes.mkString && o.j == j
     }
 
-  override def toString: String =
-    s"ExtData2($b,$i,${bytes.mkString},$j)"
+  override def toString: String = s"ExtData2($b,$i,${bytes.mkString},$j)"
 }
 
 object ExtData3 {

@@ -10,12 +10,11 @@ import scalaz.Scalaz._
 
 object SwaggerCommandSupport {
 
-  private[this] val paramtypeMapping =
-    Map(
-      ValueSource.Body -> ParamType.Body,
-      ValueSource.Header -> ParamType.Header,
-      ValueSource.Query -> ParamType.Query,
-      ValueSource.Path -> ParamType.Path)
+  private[this] val paramtypeMapping = Map(
+    ValueSource.Body -> ParamType.Body,
+    ValueSource.Header -> ParamType.Header,
+    ValueSource.Query -> ParamType.Query,
+    ValueSource.Path -> ParamType.Path)
 
   def parametersFromCommand[T <: Command](obj: T)(
       implicit mf: Manifest[T]): (List[Parameter], Option[Model]) = {
@@ -62,14 +61,13 @@ object SwaggerCommandSupport {
     val (fields, parameters) = pars.partition(_.paramType == ParamType.Body)
     if (fields.nonEmpty) {
       val model = modelFromCommand(obj, fields)
-      val bodyParam =
-        Parameter(
-          "body",
-          DataType(model.id),
-          model.description,
-          None,
-          ParamType.Body,
-          None)
+      val bodyParam = Parameter(
+        "body",
+        DataType(model.id),
+        model.description,
+        None,
+        ParamType.Body,
+        None)
       (bodyParam :: parameters, Some(model))
     } else
       (parameters, None)

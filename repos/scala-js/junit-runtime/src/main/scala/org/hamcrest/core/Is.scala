@@ -12,8 +12,7 @@ import org.hamcrest.core.IsInstanceOf.instanceOf
 
 class Is[T](matcher: Matcher[T]) extends BaseMatcher[T] {
 
-  override def matches(arg: AnyRef): Boolean =
-    matcher.matches(arg)
+  override def matches(arg: AnyRef): Boolean = matcher.matches(arg)
 
   override def describeTo(description: Description): Unit =
     description.appendText("is ").appendDescriptionOf(matcher)
@@ -26,12 +25,9 @@ class Is[T](matcher: Matcher[T]) extends BaseMatcher[T] {
 }
 
 object Is {
-  def is[T](matcher: Matcher[T]): Matcher[T] =
-    new Is[T](matcher)
+  def is[T](matcher: Matcher[T]): Matcher[T] = new Is[T](matcher)
 
-  def is[T](value: T): Matcher[T] =
-    is(equalTo(value))
+  def is[T](value: T): Matcher[T] = is(equalTo(value))
 
-  def isA[T](typ: Class[T]): Matcher[T] =
-    is(instanceOf(typ))
+  def isA[T](typ: Class[T]): Matcher[T] = is(instanceOf(typ))
 }

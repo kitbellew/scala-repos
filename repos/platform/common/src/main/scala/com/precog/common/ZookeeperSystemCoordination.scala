@@ -71,8 +71,9 @@ object ZookeeperSystemCoordination {
   def extractServiceUID(config: Configuration): ServiceUID = {
     val systemId = config[String]("systemId", "test")
     val hostId = config[String]("hostId", InetAddress.getLocalHost.getHostName)
-    val serviceId =
-      config[String]("serviceId", System.getProperty("precog.serviceId", ""))
+    val serviceId = config[String](
+      "serviceId",
+      System.getProperty("precog.serviceId", ""))
     ServiceUID(systemId, hostId, serviceId)
   }
 }

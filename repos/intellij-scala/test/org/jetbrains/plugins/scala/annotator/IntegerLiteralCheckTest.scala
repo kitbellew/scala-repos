@@ -29,12 +29,13 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
 
   // how should I bound T to Int and Long only?
   def expandIntegerLiteral[T](x: T): List[String] = {
-    val (octalString, hexString) = x match {
-      case t: Int =>
-        (java.lang.Integer.toOctalString(t), java.lang.Integer.toHexString(t))
-      case t: Long =>
-        (java.lang.Long.toOctalString(t), java.lang.Long.toHexString(t))
-    }
+    val (octalString, hexString) =
+      x match {
+        case t: Int =>
+          (java.lang.Integer.toOctalString(t), java.lang.Integer.toHexString(t))
+        case t: Long =>
+          (java.lang.Long.toOctalString(t), java.lang.Long.toHexString(t))
+      }
     List(x.toString, "0" + octalString, "0x" + hexString, "0X" + hexString)
   }
 
@@ -57,10 +58,11 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   val numOfGenInteger = 10
 
   def testFine() {
-    val intStrings = (intValues ++ randomIntValues(numOfGenInteger))
-      .flatMap(expandIntegerLiteral)
-      .flatMap(prependSign)
-      .distinct
+    val intStrings =
+      (intValues ++ randomIntValues(numOfGenInteger))
+        .flatMap(expandIntegerLiteral)
+        .flatMap(prependSign)
+        .distinct
     for (s <- intStrings) {
       assertNothing(messages(s"val a = $s"))
     }
@@ -86,8 +88,8 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   }
 
   def testLiteralOverflowLong() {
-    val overflowLongStrings =
-      (longValues ++ randomLongValues(numOfGenInteger)).flatMap(x =>
+    val overflowLongStrings = (longValues ++ randomLongValues(numOfGenInteger))
+      .flatMap(x =>
         List(
           x.toString.padTo(21, '1'),
           "0x" + x.toHexString.padTo(17, '1'),

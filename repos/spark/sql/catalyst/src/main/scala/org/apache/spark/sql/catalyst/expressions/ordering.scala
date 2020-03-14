@@ -49,33 +49,37 @@ class InterpretedOrdering(ordering: Seq[SortOrder])
         else
           -1
       } else {
-        val comparison = order.dataType match {
-          case dt: AtomicType if order.direction == Ascending =>
-            dt.ordering.asInstanceOf[Ordering[Any]].compare(left, right)
-          case dt: AtomicType if order.direction == Descending =>
-            dt.ordering.asInstanceOf[Ordering[Any]].reverse.compare(left, right)
-          case a: ArrayType if order.direction == Ascending =>
-            a.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
-              .compare(left, right)
-          case a: ArrayType if order.direction == Descending =>
-            a.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
-              .reverse
-              .compare(left, right)
-          case s: StructType if order.direction == Ascending =>
-            s.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
-              .compare(left, right)
-          case s: StructType if order.direction == Descending =>
-            s.interpretedOrdering
-              .asInstanceOf[Ordering[Any]]
-              .reverse
-              .compare(left, right)
-          case other =>
-            throw new IllegalArgumentException(
-              s"Type $other does not support ordered operations")
-        }
+        val comparison =
+          order.dataType match {
+            case dt: AtomicType if order.direction == Ascending =>
+              dt.ordering.asInstanceOf[Ordering[Any]].compare(left, right)
+            case dt: AtomicType if order.direction == Descending =>
+              dt.ordering
+                .asInstanceOf[Ordering[Any]]
+                .reverse
+                .compare(left, right)
+            case a: ArrayType if order.direction == Ascending =>
+              a.interpretedOrdering
+                .asInstanceOf[Ordering[Any]]
+                .compare(left, right)
+            case a: ArrayType if order.direction == Descending =>
+              a.interpretedOrdering
+                .asInstanceOf[Ordering[Any]]
+                .reverse
+                .compare(left, right)
+            case s: StructType if order.direction == Ascending =>
+              s.interpretedOrdering
+                .asInstanceOf[Ordering[Any]]
+                .compare(left, right)
+            case s: StructType if order.direction == Descending =>
+              s.interpretedOrdering
+                .asInstanceOf[Ordering[Any]]
+                .reverse
+                .compare(left, right)
+            case other =>
+              throw new IllegalArgumentException(
+                s"Type $other does not support ordered operations")
+          }
         if (comparison != 0) {
           return comparison
         }

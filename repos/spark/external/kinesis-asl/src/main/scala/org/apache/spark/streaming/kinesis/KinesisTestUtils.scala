@@ -62,8 +62,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
   }
 
   private lazy val dynamoDB = {
-    val dynamoDBClient = new AmazonDynamoDBClient(
-      new DefaultAWSCredentialsProviderChain())
+    val dynamoDBClient =
+      new AmazonDynamoDBClient(new DefaultAWSCredentialsProviderChain())
     dynamoDBClient.setRegion(RegionUtils.getRegion(regionName))
     new DynamoDB(dynamoDBClient)
   }
@@ -149,8 +149,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
   private def describeStream(
       streamNameToDescribe: String): Option[StreamDescription] = {
     try {
-      val describeStreamRequest =
-        new DescribeStreamRequest().withStreamName(streamNameToDescribe)
+      val describeStreamRequest = new DescribeStreamRequest()
+        .withStreamName(streamNameToDescribe)
       val desc = kinesisClient
         .describeStream(describeStreamRequest)
         .getStreamDescription()

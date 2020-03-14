@@ -28,7 +28,8 @@ class AndroidFacetData(
     extends AbstractExternalEntityData(owner)
 
 object AndroidFacetData {
-  val Key: Key[AndroidFacetData] = new Key(
-    classOf[AndroidFacetData].getName,
-    ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight + 1)
+  val Key: Key[AndroidFacetData] =
+    new Key(
+      classOf[AndroidFacetData].getName,
+      ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight + 1)
 }

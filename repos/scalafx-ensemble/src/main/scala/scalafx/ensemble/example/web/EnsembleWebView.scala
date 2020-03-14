@@ -42,21 +42,24 @@ class EnsembleWebView extends EnsembleExample {
   def getContent = {
     // Default URL to load at first
     val defaultURL = "http://www.scala-lang.org/"
-    val locationField = new TextField {
-      text = defaultURL
-      hgrow = Priority.Always
-    }
-    val goButton = new Button {
-      text = "Go"
-      defaultButton = true
-    }
-    val webView = new WebView {
-      // Update location field is page is redirected
-      engine.location.onChange((_, _, newValue) =>
-        locationField.setText(newValue))
-      // Load default page
-      engine.load(defaultURL)
-    }
+    val locationField =
+      new TextField {
+        text = defaultURL
+        hgrow = Priority.Always
+      }
+    val goButton =
+      new Button {
+        text = "Go"
+        defaultButton = true
+      }
+    val webView =
+      new WebView {
+        // Update location field is page is redirected
+        engine.location.onChange((_, _, newValue) =>
+          locationField.setText(newValue))
+        // Load default page
+        engine.load(defaultURL)
+      }
 
     def validUrl(url: String) =
       if (url.startsWith("http://"))
@@ -64,8 +67,8 @@ class EnsembleWebView extends EnsembleExample {
       else
         "http://" + locationField.text()
 
-    val loadAction = (ae: ActionEvent) =>
-      webView.engine.load(validUrl(locationField.text()))
+    val loadAction =
+      (ae: ActionEvent) => webView.engine.load(validUrl(locationField.text()))
     goButton.onAction = loadAction
     locationField.onAction = loadAction
 

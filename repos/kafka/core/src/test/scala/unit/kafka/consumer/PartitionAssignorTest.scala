@@ -182,8 +182,8 @@ private object PartitionAssignorTest extends Logging {
   }
 
   private def setupZkClientMock(scenario: Scenario) = {
-    val consumers =
-      java.util.Arrays.asList(scenario.subscriptions.keys.toSeq: _*)
+    val consumers = java.util.Arrays
+      .asList(scenario.subscriptions.keys.toSeq: _*)
 
     val zkClient = EasyMock.createStrictMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, false)
@@ -232,17 +232,18 @@ private object PartitionAssignorTest extends Logging {
       verifyAssignmentIsUniform: Boolean = false) {
     val assignments = scenario.subscriptions.map {
       case (consumer, subscription) =>
-        val ctx = new AssignmentContext(
-          "g1",
-          consumer,
-          excludeInternalTopics = true,
-          zkUtils)
+        val ctx =
+          new AssignmentContext(
+            "g1",
+            consumer,
+            excludeInternalTopics = true,
+            zkUtils)
         assignor.assign(ctx).get(consumer)
     }
 
     // check for uniqueness (i.e., any partition should be assigned to exactly one consumer stream)
-    val globalAssignment =
-      collection.mutable.Map[TopicAndPartition, ConsumerThreadId]()
+    val globalAssignment = collection.mutable
+      .Map[TopicAndPartition, ConsumerThreadId]()
     assignments.foreach(assignment => {
       assignment.foreach {
         case (topicPartition, owner) =>
@@ -256,11 +257,12 @@ private object PartitionAssignorTest extends Logging {
 
     // check for coverage (i.e., all given partitions are owned)
     val assignedPartitions = globalAssignment.keySet
-    val givenPartitions = scenario.topicPartitionCounts.flatMap {
-      case (topic, partitionCount) =>
-        (0 until partitionCount).map(partition =>
-          TopicAndPartition(topic, partition))
-    }.toSet
+    val givenPartitions =
+      scenario.topicPartitionCounts.flatMap {
+        case (topic, partitionCount) =>
+          (0 until partitionCount).map(partition =>
+            TopicAndPartition(topic, partition))
+      }.toSet
     assertTrue(
       "Scenario %s: the list of given partitions and assigned partitions are different."
         .format(scenario),

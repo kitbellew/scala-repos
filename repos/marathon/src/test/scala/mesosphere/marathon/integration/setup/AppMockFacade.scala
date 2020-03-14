@@ -20,8 +20,10 @@ class AppMockFacade(https: Boolean = false, waitTime: Duration = 30.seconds)(
       Thread.sleep(waitForNextTry.toMillis)
       block
     })
-    val firstSuccess =
-      attempts.take(retries - 1).find(_.isSuccess).flatMap(_.toOption)
+    val firstSuccess = attempts
+      .take(retries - 1)
+      .find(_.isSuccess)
+      .flatMap(_.toOption)
     firstSuccess.getOrElse(block)
   }
 

@@ -52,8 +52,11 @@ class DeflateCompressor extends Compressor {
     drainDeflater(deflater, buffer)
   }
   protected def flushWithBuffer(buffer: Array[Byte]): ByteString = {
-    val written =
-      deflater.deflate(buffer, 0, buffer.length, Deflater.SYNC_FLUSH)
+    val written = deflater.deflate(
+      buffer,
+      0,
+      buffer.length,
+      Deflater.SYNC_FLUSH)
     ByteString.fromArray(buffer, 0, written)
   }
   protected def finishWithBuffer(buffer: Array[Byte]): ByteString = {
@@ -104,9 +107,10 @@ class DeflateDecompressor(
     new DecompressorParsingLogic {
       override val inflater: Inflater = new Inflater()
 
-      override val inflateState = new Inflate(true) {
-        override def onTruncation(): Unit = completeStage()
-      }
+      override val inflateState =
+        new Inflate(true) {
+          override def onTruncation(): Unit = completeStage()
+        }
 
       override def afterInflate = inflateState
       override def afterBytesRead(

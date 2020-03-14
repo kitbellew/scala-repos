@@ -732,13 +732,14 @@ class RichPresentationCompilerSpec
         // which changes its state.
 
         implicit val ensimeVFS = EnsimeVFS()
-        val cc1 = new RichPresentationCompiler(
-          cc.config,
-          cc.settings,
-          cc.reporter,
-          cc.parent,
-          cc.indexer,
-          cc.search)
+        val cc1 =
+          new RichPresentationCompiler(
+            cc.config,
+            cc.settings,
+            cc.reporter,
+            cc.parent,
+            cc.indexer,
+            cc.search)
 
         try {
           cc1.askReloadFile(usesFile)

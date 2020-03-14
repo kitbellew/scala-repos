@@ -81,20 +81,21 @@ object Package {
     }
     setVersion(main)
 
-    val cachedMakeJar = inputChanged(cacheFile / "inputs") {
-      (
-          inChanged,
-          inputs: Map[File, String] :+: FilesInfo[
-            ModifiedFileInfo] :+: Manifest :+: HNil) =>
-        val sources :+: _ :+: manifest :+: HNil = inputs
-        outputChanged(cacheFile / "output") {
-          (outChanged, jar: PlainFileInfo) =>
-            if (inChanged || outChanged)
-              makeJar(sources.toSeq, jar.file, manifest, log)
-            else
-              log.debug("Jar uptodate: " + jar.file)
-        }
-    }
+    val cachedMakeJar =
+      inputChanged(cacheFile / "inputs") {
+        (
+            inChanged,
+            inputs: Map[File, String] :+: FilesInfo[
+              ModifiedFileInfo] :+: Manifest :+: HNil) =>
+          val sources :+: _ :+: manifest :+: HNil = inputs
+          outputChanged(cacheFile / "output") {
+            (outChanged, jar: PlainFileInfo) =>
+              if (inChanged || outChanged)
+                makeJar(sources.toSeq, jar.file, manifest, log)
+              else
+                log.debug("Jar uptodate: " + jar.file)
+          }
+      }
 
     val map = conf.sources.toMap
     val inputs = map :+: lastModified(map.keySet) :+: manifest :+: HNil
@@ -110,8 +111,10 @@ object Package {
       version: String,
       orgName: String): PackageOption = {
     import Attributes.Name._
-    val attribKeys =
-      Seq(SPECIFICATION_TITLE, SPECIFICATION_VERSION, SPECIFICATION_VENDOR)
+    val attribKeys = Seq(
+      SPECIFICATION_TITLE,
+      SPECIFICATION_VERSION,
+      SPECIFICATION_VENDOR)
     val attribVals = Seq(name, version, orgName)
     ManifestAttributes(attribKeys zip attribVals: _*)
   }

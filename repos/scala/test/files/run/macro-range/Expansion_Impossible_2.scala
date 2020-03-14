@@ -28,12 +28,11 @@ object Impls {
         val body = Block(
           List(makeApply(f.tree, List(iref))),
           Assign(iref, makeBinop(iref, "$plus", Literal(Constant(1)))))
-        val generated =
-          Block(
-            List(
-              ValDef(Modifiers(MUTABLE), iname, TypeTree(), lo),
-              ValDef(Modifiers(), hname, TypeTree(), hi)),
-            makeWhile(labelname, cond, body))
+        val generated = Block(
+          List(
+            ValDef(Modifiers(MUTABLE), iname, TypeTree(), lo),
+            ValDef(Modifiers(), hname, TypeTree(), hi)),
+          makeWhile(labelname, cond, body))
         // todo. read the compiler config and print if -Ydebug is set
         //tools.nsc.util.trace("generated: ")(generated)
         generated

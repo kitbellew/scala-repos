@@ -50,9 +50,10 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
       .getPsiFile(editor.getDocument)
     psiFile match {
       case file: ScalaFile =>
-        val viewer = WorksheetEditorPrinter
-          .newMacrosheetUiFor(editor, file.getVirtualFile)
-          .getViewerEditor
+        val viewer =
+          WorksheetEditorPrinter
+            .newMacrosheetUiFor(editor, file.getVirtualFile)
+            .getViewerEditor
 
         val project = e.getProject
 

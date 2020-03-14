@@ -149,8 +149,9 @@ class ScModifierListImpl private (
             findChildByType[PsiElement](ScalaTokenTypes.kOVERRIDE).getNode)
       case "private" =>
         if (value) {
-          val node =
-            ScalaPsiElementFactory.createModifierFromText("private", getManager)
+          val node = ScalaPsiElementFactory.createModifierFromText(
+            "private",
+            getManager)
           addBefore(node)
         } else {
           for (child <- getChildren
@@ -178,8 +179,9 @@ class ScModifierListImpl private (
         }
       case "final" =>
         if (value) {
-          val node =
-            ScalaPsiElementFactory.createModifierFromText("final", getManager)
+          val node = ScalaPsiElementFactory.createModifierFromText(
+            "final",
+            getManager)
           addBefore(node)
         } else
           getNode.removeChild(
@@ -204,24 +206,27 @@ class ScModifierListImpl private (
             findChildByType[PsiElement](ScalaTokenTypes.kABSTRACT).getNode)
       case "sealed" =>
         if (value) {
-          val node =
-            ScalaPsiElementFactory.createModifierFromText("sealed", getManager)
+          val node = ScalaPsiElementFactory.createModifierFromText(
+            "sealed",
+            getManager)
           addBefore(node)
         } else
           getNode.removeChild(
             findChildByType[PsiElement](ScalaTokenTypes.kSEALED).getNode)
       case "lazy" =>
         if (value) {
-          val node =
-            ScalaPsiElementFactory.createModifierFromText("lazy", getManager)
+          val node = ScalaPsiElementFactory.createModifierFromText(
+            "lazy",
+            getManager)
           addBefore(node)
         } else
           getNode.removeChild(
             findChildByType[PsiElement](ScalaTokenTypes.kLAZY).getNode)
       case "case" =>
         if (value) {
-          val node =
-            ScalaPsiElementFactory.createModifierFromText("case", getManager)
+          val node = ScalaPsiElementFactory.createModifierFromText(
+            "case",
+            getManager)
           addAfter(node)
         } else
           getNode.removeChild(
@@ -237,8 +242,8 @@ class ScModifierListImpl private (
   def getAnnotations: Array[PsiAnnotation] = {
     val stub = getStub
     if (stub != null) {
-      val annotations: Array[ScAnnotations] =
-        stub.getParentStub.getChildrenByType(
+      val annotations: Array[ScAnnotations] = stub.getParentStub
+        .getChildrenByType(
           ScalaElementTypes.ANNOTATIONS,
           JavaArrayFactoryUtil.ScAnnotationsFactory)
       if (annotations.length > 0) {

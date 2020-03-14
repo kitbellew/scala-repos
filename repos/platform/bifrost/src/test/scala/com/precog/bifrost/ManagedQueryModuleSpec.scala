@@ -76,8 +76,8 @@ import ManagedQueryTestSupport._
 class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   val actorSystem = ActorSystem("managedQueryModuleSpec")
   val jobActorSystem = ActorSystem("managedQueryModuleSpecJobs")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
       executionContext,
@@ -124,30 +124,35 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     val timeout = ticksToTimeout map { t =>
       Duration(clock.duration * t, TimeUnit.MILLISECONDS)
     }
-    val ctx =
-      EvaluationContext(apiKey, account, Path.Root, Path.Root, clock.now())
+    val ctx = EvaluationContext(
+      apiKey,
+      account,
+      Path.Root,
+      Path.Root,
+      clock.now())
 
-    val result = for {
-      // TODO: No idea how to work with EitherT[TestFuture, so sys.error it is]
-      executor <- executorFor(apiKey) valueOr { err =>
-        sys.error(err.toString)
-      }
-      result0 <- executor
-        .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
-        .valueOr(err => sys.error(err.toString)) mapValue {
-        case (w, s) => (w, (w: Option[(JobId, AtomicInteger)], s))
-      }
-    } yield {
-      val (Some((jobId, ticks)), result) = result0
-
-      def count(n: Int, cs0: StreamT[Future, CharBuffer]): Future[Int] =
-        cs0.uncons flatMap {
-          case Some((_, cs)) => count(n + 1, cs)
-          case None          => Future(n)
+    val result =
+      for {
+        // TODO: No idea how to work with EitherT[TestFuture, so sys.error it is]
+        executor <- executorFor(apiKey) valueOr { err =>
+          sys.error(err.toString)
         }
+        result0 <- executor
+          .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
+          .valueOr(err => sys.error(err.toString)) mapValue {
+          case (w, s) => (w, (w: Option[(JobId, AtomicInteger)], s))
+        }
+      } yield {
+        val (Some((jobId, ticks)), result) = result0
 
-      (jobId, ticks, count(0, dropStreamToFuture(result)))
-    }
+        def count(n: Int, cs0: StreamT[Future, CharBuffer]): Future[Int] =
+          cs0.uncons flatMap {
+            case Some((_, cs)) => count(n + 1, cs)
+            case None          => Future(n)
+          }
+
+        (jobId, ticks, count(0, dropStreamToFuture(result)))
+      }
 
     result.value
   }
@@ -195,19 +200,21 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     }
 
     "complete successfully if not cancelled" in {
-      val ticks = for {
-        (_, _, query) <- execute(7)
-        ticks <- query
-      } yield ticks
+      val ticks =
+        for {
+          (_, _, query) <- execute(7)
+          ticks <- query
+        } yield ticks
 
       ticks.copoint must_== 7
     }
 
     "be cancellable" in {
-      val result = for {
-        (jobId, ticks, query) <- execute(10)
-        cancelled <- cancel(jobId, 5)
-      } yield (ticks, query)
+      val result =
+        for {
+          (jobId, ticks, query) <- execute(10)
+          cancelled <- cancel(jobId, 5)
+        } yield (ticks, query)
 
       result.copoint must beLike {
         case (ticks, query) =>
@@ -217,12 +224,13 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     }
 
     "be in an aborted state if cancelled successfully" in {
-      val job = for {
-        (jobId, _, query) <- execute(6)
-        cancelled <- cancel(jobId, 1)
-        _ <- waitFor(8)
-        job <- jobManager.findJob(jobId)
-      } yield job
+      val job =
+        for {
+          (jobId, _, query) <- execute(6)
+          cancelled <- cancel(jobId, 1)
+          _ <- waitFor(8)
+          job <- jobManager.findJob(jobId)
+        } yield job
 
       job.copoint must beLike {
         case Some(Job(_, _, _, _, _, Aborted(_, _, Cancelled(_, _, _)))) => ok
@@ -230,11 +238,12 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     }
 
     "cannot be cancelled after it has successfully completed" in {
-      val ticks = for {
-        (jobId, _, query) <- execute(3)
-        ticks <- query
-        cancelled <- cancel(jobId, 3)
-      } yield ticks
+      val ticks =
+        for {
+          (jobId, _, query) <- execute(3)
+          ticks <- query
+          cancelled <- cancel(jobId, 3)
+        } yield ticks
 
       ticks.copoint must_== 3
     }
@@ -258,11 +267,12 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     }
 
     "not expire queries that complete before expiration date" in {
-      val ticks = for {
-        (jobId, _, query) <- execute(1, Some(10))
-        _ <- waitFor(20)
-        ticks <- query
-      } yield ticks
+      val ticks =
+        for {
+          (jobId, _, query) <- execute(1, Some(10))
+          _ <- waitFor(20)
+          ticks <- query
+        } yield ticks
 
       ticks.copoint must_== 1
     }
@@ -307,8 +317,11 @@ trait TestManagedQueryModule
               query: String,
               ctx: EvaluationContext,
               opts: QueryOptions) = {
-            val userQuery =
-              UserQuery(query, ctx.basePath, opts.sortOn, opts.sortOrder)
+            val userQuery = UserQuery(
+              query,
+              ctx.basePath,
+              opts.sortOn,
+              opts.sortOrder)
             val numTicks = query.toInt
 
             EitherT.right[
@@ -321,18 +334,19 @@ trait TestManagedQueryModule
                   Some(userQuery.serialize),
                   opts.timeout) map { implicit M0 =>
                   val ticks = new AtomicInteger()
-                  val result = StreamT.unfoldM[JobQueryTF, CharBuffer, Int](0) {
-                    case i if i < numTicks =>
-                      schedule(1) {
-                        ticks.getAndIncrement()
-                        Some((CharBuffer.wrap("."), i + 1))
-                      }.liftM[JobQueryT]
+                  val result =
+                    StreamT.unfoldM[JobQueryTF, CharBuffer, Int](0) {
+                      case i if i < numTicks =>
+                        schedule(1) {
+                          ticks.getAndIncrement()
+                          Some((CharBuffer.wrap("."), i + 1))
+                        }.liftM[JobQueryT]
 
-                    case _ =>
-                      M0.point {
-                        None
-                      }
-                  }
+                      case _ =>
+                        M0.point {
+                          None
+                        }
+                    }
 
                   (Tag(M0.jobId map (_ -> ticks)), completeJob(result))
                 }

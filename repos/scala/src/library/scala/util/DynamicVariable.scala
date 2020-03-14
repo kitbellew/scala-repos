@@ -38,9 +38,10 @@ import java.lang.InheritableThreadLocal
   *  @version 1.1, 2007-5-21
   */
 class DynamicVariable[T](init: T) {
-  private val tl = new InheritableThreadLocal[T] {
-    override def initialValue = init.asInstanceOf[T with AnyRef]
-  }
+  private val tl =
+    new InheritableThreadLocal[T] {
+      override def initialValue = init.asInstanceOf[T with AnyRef]
+    }
 
   /** Retrieve the current value */
   def value: T = tl.get.asInstanceOf[T]

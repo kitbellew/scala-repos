@@ -45,8 +45,10 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null)
       return false
 
@@ -81,8 +83,10 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       }
     }
 
-    val expr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val expr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (expr == null || !expr.isValid)
       return
 
@@ -108,21 +112,22 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
         resolved match {
           case namedElement: PsiNamedElement =>
             val name = namedElement.name
-            val clazz: Option[ScTemplateDefinition] = expr.getParent match {
-              case _ if expr.isInstanceOf[ScClassParameter] =>
-                Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
-              case _: ScEarlyDefinitions =>
-                Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
-              case _: ScTemplateBody =>
-                Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
-              case _ => None
-            }
+            val clazz: Option[ScTemplateDefinition] =
+              expr.getParent match {
+                case _ if expr.isInstanceOf[ScClassParameter] =>
+                  Option(
+                    PsiTreeUtil
+                      .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                case _: ScEarlyDefinitions =>
+                  Option(
+                    PsiTreeUtil
+                      .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                case _: ScTemplateBody =>
+                  Option(
+                    PsiTreeUtil
+                      .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                case _ => None
+              }
 
             var flag = false
             if (clazz.isDefined) {

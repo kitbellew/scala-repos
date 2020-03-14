@@ -52,28 +52,29 @@ trait GameHelper {
       else
         "chess"
     import chess.Status._
-    val result = (game.winner, game.loser, game.status) match {
-      case (Some(w), _, Mate) => s"${playerText(w)} won by checkmate"
-      case (_, Some(l), Resign | Timeout | Cheat | NoStart) =>
-        s"${playerText(l)} resigned"
-      case (_, Some(l), Outoftime)                  => s"${playerText(l)} forfeits by time"
-      case (Some(w), _, UnknownFinish)              => s"${playerText(w)} won"
-      case (_, _, Draw | Stalemate | UnknownFinish) => "Game is a draw"
-      case (_, _, Aborted)                          => "Game has been aborted"
-      case (_, _, VariantEnd) =>
-        game.variant match {
-          case chess.variant.KingOfTheHill => "King in the center"
-          case chess.variant.ThreeCheck    => "Three checks"
-          case chess.variant.Antichess     => "Lose all your pieces to win"
-          case chess.variant.Atomic =>
-            "Explode or mate your opponent's king to win"
-          case chess.variant.Horde       => "Destroy the horde to win"
-          case chess.variant.RacingKings => "Race to the eighth rank to win"
-          case chess.variant.Crazyhouse  => "Drop captured pieces on the board"
-          case _                         => "Variant ending"
-        }
-      case _ => "Game is still being played"
-    }
+    val result =
+      (game.winner, game.loser, game.status) match {
+        case (Some(w), _, Mate) => s"${playerText(w)} won by checkmate"
+        case (_, Some(l), Resign | Timeout | Cheat | NoStart) =>
+          s"${playerText(l)} resigned"
+        case (_, Some(l), Outoftime)                  => s"${playerText(l)} forfeits by time"
+        case (Some(w), _, UnknownFinish)              => s"${playerText(w)} won"
+        case (_, _, Draw | Stalemate | UnknownFinish) => "Game is a draw"
+        case (_, _, Aborted)                          => "Game has been aborted"
+        case (_, _, VariantEnd) =>
+          game.variant match {
+            case chess.variant.KingOfTheHill => "King in the center"
+            case chess.variant.ThreeCheck    => "Three checks"
+            case chess.variant.Antichess     => "Lose all your pieces to win"
+            case chess.variant.Atomic =>
+              "Explode or mate your opponent's king to win"
+            case chess.variant.Horde       => "Destroy the horde to win"
+            case chess.variant.RacingKings => "Race to the eighth rank to win"
+            case chess.variant.Crazyhouse  => "Drop captured pieces on the board"
+            case _                         => "Variant ending"
+          }
+        case _ => "Game is still being played"
+      }
     val moves = s"${game.toChess.fullMoveNumber} moves"
     s"$p1 plays $p2 in a $mode $speedAndClock game of $variant. $result after $moves. Click to replay, analyse, and discuss the game!"
   }
@@ -152,16 +153,18 @@ trait GameHelper {
       player.userId.flatMap(lightUser) match {
         case None =>
           val klass = cssClass.??(" " + _)
-          val content = player.aiLevel.fold(player.name | User.anonymous) {
-            aiName(_, withRating)
-          }
+          val content =
+            player.aiLevel.fold(player.name | User.anonymous) {
+              aiName(_, withRating)
+            }
           s"""<span class="user_link$klass">$content$statusIcon</span>"""
         case Some(user) =>
           val klass = userClass(user.id, cssClass, withOnline)
-          val href = s"${routes.User show user.name}${if (mod)
-            "?mod"
-          else
-            ""}"
+          val href =
+            s"${routes.User show user.name}${if (mod)
+              "?mod"
+            else
+              ""}"
           val content = playerUsername(player, withRating)
           val diff =
             (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)

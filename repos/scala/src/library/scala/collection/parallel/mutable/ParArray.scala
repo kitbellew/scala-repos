@@ -56,8 +56,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
     with Serializable {
   self =>
 
-  @transient private var array: Array[Any] =
-    arrayseq.array.asInstanceOf[Array[Any]]
+  @transient private var array: Array[Any] = arrayseq.array
+    .asInstanceOf[Array[Any]]
 
   override def companion
       : GenericCompanion[ParArray] with GenericParCompanion[ParArray] = ParArray
@@ -586,15 +586,15 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       cb.sizeHint(remaining)
       cb.ifIs[ResizableParArrayCombiner[T]] { pac =>
         // with res. combiner:
-        val targetarr: Array[Any] =
-          pac.lastbuff.internalArray.asInstanceOf[Array[Any]]
+        val targetarr: Array[Any] = pac.lastbuff.internalArray
+          .asInstanceOf[Array[Any]]
         Array.copy(arr, i, targetarr, pac.lastbuff.size, until - i)
         pac.lastbuff.setInternalSize(remaining)
       } otherwise {
         cb.ifIs[UnrolledParArrayCombiner[T]] { pac =>
           // with unr. combiner:
-          val targetarr: Array[Any] =
-            pac.buff.lastPtr.array.asInstanceOf[Array[Any]]
+          val targetarr: Array[Any] = pac.buff.lastPtr.array
+            .asInstanceOf[Array[Any]]
           Array.copy(arr, i, targetarr, 0, until - i)
           pac.buff.size = pac.buff.size + until - i
           pac.buff.lastPtr.size = until - i
@@ -672,8 +672,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         // with res. combiner:
         val sz = remaining
         pac.sizeHint(sz)
-        val targetarr: Array[Any] =
-          pac.lastbuff.internalArray.asInstanceOf[Array[Any]]
+        val targetarr: Array[Any] = pac.lastbuff.internalArray
+          .asInstanceOf[Array[Any]]
         reverse2combiner_quick(targetarr, arr, 0, i, until)
         pac.lastbuff.setInternalSize(sz)
       } otherwise {
@@ -681,8 +681,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
           // with unr. combiner:
           val sz = remaining
           pac.sizeHint(sz)
-          val targetarr: Array[Any] =
-            pac.buff.lastPtr.array.asInstanceOf[Array[Any]]
+          val targetarr: Array[Any] = pac.buff.lastPtr.array
+            .asInstanceOf[Array[Any]]
           reverse2combiner_quick(targetarr, arr, 0, i, until)
           pac.buff.size = pac.buff.size + sz
           pac.buff.lastPtr.size = sz

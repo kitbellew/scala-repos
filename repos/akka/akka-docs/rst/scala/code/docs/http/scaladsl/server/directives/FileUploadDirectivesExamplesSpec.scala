@@ -25,12 +25,11 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
       }
 
     // tests:
-    val multipartForm =
-      Multipart.FormData(
-        Multipart.FormData.BodyPart.Strict(
-          "csv",
-          HttpEntity(ContentTypes.`text/plain(UTF-8)`, "1,5,7\n11,13,17"),
-          Map("filename" -> "data.csv")))
+    val multipartForm = Multipart.FormData(
+      Multipart.FormData.BodyPart.Strict(
+        "csv",
+        HttpEntity(ContentTypes.`text/plain(UTF-8)`, "1,5,7\n11,13,17"),
+        Map("filename" -> "data.csv")))
 
     Post("/", multipartForm) ~> route ~> check {
       status shouldEqual StatusCodes.OK
@@ -41,39 +40,37 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
   "fileUpload" in {
 
     // adding integers as a service ;)
-    val route =
-      extractRequestContext { ctx =>
-        implicit val materializer = ctx.materializer
-        implicit val ec = ctx.executionContext
+    val route = extractRequestContext { ctx =>
+      implicit val materializer = ctx.materializer
+      implicit val ec = ctx.executionContext
 
-        fileUpload("csv") {
-          case (metadata, byteSource) =>
-            val sumF: Future[Int] =
-              // sum the numbers as they arrive so that we can
-              // accept any size of file
-              byteSource
-                .via(Framing.delimiter(ByteString("\n"), 1024))
-                .mapConcat(_.utf8String.split(",").toVector)
-                .map(_.toInt)
-                .runFold(0) { (acc, n) =>
-                  acc + n
-                }
+      fileUpload("csv") {
+        case (metadata, byteSource) =>
+          val sumF: Future[Int] =
+            // sum the numbers as they arrive so that we can
+            // accept any size of file
+            byteSource
+              .via(Framing.delimiter(ByteString("\n"), 1024))
+              .mapConcat(_.utf8String.split(",").toVector)
+              .map(_.toInt)
+              .runFold(0) { (acc, n) =>
+                acc + n
+              }
 
-            onSuccess(sumF) { sum =>
-              complete(s"Sum: $sum")
-            }
-        }
+          onSuccess(sumF) { sum =>
+            complete(s"Sum: $sum")
+          }
       }
+    }
 
     // tests:
-    val multipartForm =
-      Multipart.FormData(
-        Multipart.FormData.BodyPart.Strict(
-          "csv",
-          HttpEntity(
-            ContentTypes.`text/plain(UTF-8)`,
-            "2,3,5\n7,11,13,17,23\n29,31,37\n"),
-          Map("filename" -> "primes.csv")))
+    val multipartForm = Multipart.FormData(
+      Multipart.FormData.BodyPart.Strict(
+        "csv",
+        HttpEntity(
+          ContentTypes.`text/plain(UTF-8)`,
+          "2,3,5\n7,11,13,17,23\n29,31,37\n"),
+        Map("filename" -> "primes.csv")))
 
     Post("/", multipartForm) ~> route ~> check {
       status shouldEqual StatusCodes.OK

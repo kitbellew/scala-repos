@@ -70,16 +70,17 @@ object Protocols {
       // Factories are created rarely while the creation of their TProtocol's
       // is a common event. Minimize counter creation to just once per Factory.
       val fastEncodeFailed = statsReceiver.counter("fast_encode_failed")
-      val largerThanTlOutBuffer =
-        statsReceiver.counter("larger_than_threadlocal_out_buffer")
+      val largerThanTlOutBuffer = statsReceiver.counter(
+        "larger_than_threadlocal_out_buffer")
       new TProtocolFactory {
         override def getProtocol(trans: TTransport): TProtocol = {
-          val proto = new TFinagleBinaryProtocol(
-            trans,
-            fastEncodeFailed,
-            largerThanTlOutBuffer,
-            strictRead,
-            strictWrite)
+          val proto =
+            new TFinagleBinaryProtocol(
+              trans,
+              fastEncodeFailed,
+              largerThanTlOutBuffer,
+              strictRead,
+              strictWrite)
           if (readLength != 0) {
             proto.setReadLength(readLength)
           }
@@ -137,16 +138,18 @@ object Protocols {
       }
       .getOrElse(Long.MinValue)
 
-    private val charsetEncoder = new ThreadLocal[CharsetEncoder] {
-      override def initialValue() = Charsets.UTF_8.newEncoder()
-    }
+    private val charsetEncoder =
+      new ThreadLocal[CharsetEncoder] {
+        override def initialValue() = Charsets.UTF_8.newEncoder()
+      }
 
     // Visible for testing purposes
     private[thrift] val OutBufferSize = 4096
 
-    private val outByteBuffer = new ThreadLocal[ByteBuffer] {
-      override def initialValue() = ByteBuffer.allocate(OutBufferSize)
-    }
+    private val outByteBuffer =
+      new ThreadLocal[ByteBuffer] {
+        override def initialValue() = ByteBuffer.allocate(OutBufferSize)
+      }
   }
 
   /**
@@ -192,14 +195,15 @@ object Protocols {
         }
       val charBuffer = CharBuffer.wrap(chars, offset, count)
 
-      val out = if (count * MultiByteMultiplierEstimate <= OutBufferSize) {
-        val o = outByteBuffer.get()
-        o.clear()
-        o
-      } else {
-        largerThanTlOutBuffer.incr()
-        ByteBuffer.allocate((count * MultiByteMultiplierEstimate).toInt)
-      }
+      val out =
+        if (count * MultiByteMultiplierEstimate <= OutBufferSize) {
+          val o = outByteBuffer.get()
+          o.clear()
+          o
+        } else {
+          largerThanTlOutBuffer.incr()
+          ByteBuffer.allocate((count * MultiByteMultiplierEstimate).toInt)
+        }
 
       val csEncoder = charsetEncoder.get()
       csEncoder.reset()

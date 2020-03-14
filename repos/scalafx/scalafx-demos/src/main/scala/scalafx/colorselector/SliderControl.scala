@@ -64,42 +64,50 @@ class SliderControl(title: String) extends HBox {
 
   val selectedControl = new BooleanProperty()
 
-  val chbSelected = new CheckBox {
-    id = "chbSelected"
-    selected <==> selectedControl
-  }
+  val chbSelected =
+    new CheckBox {
+      id = "chbSelected"
+      selected <==> selectedControl
+    }
 
-  val lblTitle = new Label {
-    id = "lblTitle"
-    text = title
-    style <== cssForeground
-  }
-  lblTitle.font =
-    Font.font(lblTitle.font().family, FontWeight.Bold, lblTitle.font().size)
+  val lblTitle =
+    new Label {
+      id = "lblTitle"
+      text = title
+      style <== cssForeground
+    }
+  lblTitle.font = Font.font(
+    lblTitle.font().family,
+    FontWeight.Bold,
+    lblTitle.font().size)
 
-  val sldValue = new Slider {
-    id = "sldValue"
-    blockIncrement = 1.0
-    majorTickUnit = 50.0
-    max = Max
-    min = Min
-    minorTickCount = 4
-    showTickLabels = true
-    showTickMarks = true
-    //    style = ".slider .axis {-fx-tick-label-fill: green;}"
-    hgrow = Priority.Always
-    style <== cssForeground
-    value <==> realValue
-  }
+  val sldValue =
+    new Slider {
+      id = "sldValue"
+      blockIncrement = 1.0
+      majorTickUnit = 50.0
+      max = Max
+      min = Min
+      minorTickCount = 4
+      showTickLabels = true
+      showTickMarks = true
+      //    style = ".slider .axis {-fx-tick-label-fill: green;}"
+      hgrow = Priority.Always
+      style <== cssForeground
+      value <==> realValue
+    }
 
-  val lblValue = new Label {
-    id = "lblValue"
-    text <== realValue.asString("%03.0f")
-    hgrow = Priority.Never
-    style <== cssForeground
-  }
-  lblValue.font =
-    Font.font(lblValue.font().family, FontWeight.Bold, lblValue.font().size)
+  val lblValue =
+    new Label {
+      id = "lblValue"
+      text <== realValue.asString("%03.0f")
+      hgrow = Priority.Never
+      style <== cssForeground
+    }
+  lblValue.font = Font.font(
+    lblValue.font().family,
+    FontWeight.Bold,
+    lblValue.font().size)
 
   children = List(chbSelected, lblTitle, sldValue, lblValue)
 

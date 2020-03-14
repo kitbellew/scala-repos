@@ -129,74 +129,78 @@ trait TestShardService
 
   val expiredPath = Path("expired")
 
-  val expiredAPIKey = apiKeyManager
-    .newStandardAPIKeyRecord("expired")
-    .map(_.apiKey)
-    .flatMap { expiredAPIKey =>
-      apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          testAPIKey,
-          testPermissions,
-          expiredAPIKey,
-          Some(new DateTime().minusYears(1000)))
-        .map(_ => expiredAPIKey)
-  } copoint
+  val expiredAPIKey =
+    apiKeyManager
+      .newStandardAPIKeyRecord("expired")
+      .map(_.apiKey)
+      .flatMap { expiredAPIKey =>
+        apiKeyManager
+          .deriveAndAddGrant(
+            None,
+            None,
+            testAPIKey,
+            testPermissions,
+            expiredAPIKey,
+            Some(new DateTime().minusYears(1000)))
+          .map(_ => expiredAPIKey)
+    } copoint
 
   def configureShardState(config: Configuration) =
     Future {
       val accountFinder = new StaticAccountFinder[Future]("test", testAPIKey)
       val scheduler = NoopScheduler[Future]
-      val platform = new TestPlatform
-        with SecureVFSModule[Future, Slice]
-        with InMemoryVFSModule[Future] {
-        override val jobActorSystem = self.actorSystem
-        override val actorSystem = self.actorSystem
-        override val executionContext = self.executionContext
-        override val accessControl =
-          new DirectAPIKeyFinder(self.apiKeyManager)(self.M)
+      val platform =
+        new TestPlatform
+          with SecureVFSModule[Future, Slice]
+          with InMemoryVFSModule[Future] {
+          override val jobActorSystem = self.actorSystem
+          override val actorSystem = self.actorSystem
+          override val executionContext = self.executionContext
+          override val accessControl =
+            new DirectAPIKeyFinder(self.apiKeyManager)(self.M)
 
-        val defaultTimeout = Duration(90, TimeUnit.SECONDS)
-        implicit val M = self.M
-        implicit val IOT = new (IO ~> Future) {
-          def apply[A](io: IO[A]) =
-            Future {
-              io.unsafePerformIO
+          val defaultTimeout = Duration(90, TimeUnit.SECONDS)
+          implicit val M = self.M
+          implicit val IOT =
+            new (IO ~> Future) {
+              def apply[A](io: IO[A]) =
+                Future {
+                  io.unsafePerformIO
+                }
             }
+
+          override val jobManager = self.jobManager
+
+          val ownerMap = Map(
+            Path("/") -> Set("root"),
+            Path("/test") -> Set("test"),
+            Path("/test/foo") -> Set("test"),
+            Path("/expired") -> Set("expired"),
+            Path("/inaccessible") -> Set("other"),
+            Path("/inaccessible/foo") -> Set("other")
+          )
+
+          def stubValue(authorities: Authorities)
+              : ((Array[Byte], MimeType) \/ Vector[JValue], Authorities) =
+            (
+              \/.right(
+                Vector(
+                  JObject("foo" -> JString("foov"), "bar" -> JNum(1)),
+                  JObject("foo" -> JString("foov2")))),
+              authorities)
+
+          val stubData = ownerMap mapValues { accounts =>
+            stubValue(Authorities.ifPresent(accounts).get)
+          }
+
+          val rawVFS = new InMemoryVFS(stubData, clock)
+          val permissionsFinder =
+            new PermissionsFinder(
+              self.apiKeyFinder,
+              accountFinder,
+              clock.instant())
+          val vfs = new SecureVFS(rawVFS, permissionsFinder, jobManager, clock)
         }
-
-        override val jobManager = self.jobManager
-
-        val ownerMap = Map(
-          Path("/") -> Set("root"),
-          Path("/test") -> Set("test"),
-          Path("/test/foo") -> Set("test"),
-          Path("/expired") -> Set("expired"),
-          Path("/inaccessible") -> Set("other"),
-          Path("/inaccessible/foo") -> Set("other")
-        )
-
-        def stubValue(authorities: Authorities)
-            : ((Array[Byte], MimeType) \/ Vector[JValue], Authorities) =
-          (
-            \/.right(
-              Vector(
-                JObject("foo" -> JString("foov"), "bar" -> JNum(1)),
-                JObject("foo" -> JString("foov2")))),
-            authorities)
-
-        val stubData = ownerMap mapValues { accounts =>
-          stubValue(Authorities.ifPresent(accounts).get)
-        }
-
-        val rawVFS = new InMemoryVFS(stubData, clock)
-        val permissionsFinder = new PermissionsFinder(
-          self.apiKeyFinder,
-          accountFinder,
-          clock.instant())
-        val vfs = new SecureVFS(rawVFS, permissionsFinder, jobManager, clock)
-      }
 
       ShardState(
         platform,
@@ -289,8 +293,9 @@ trait TestShardService
     .contentType[QueryResult](application / (MimeTypes.json))
     .path("/analytics/v2/analytics/queries")
 
-  override implicit val defaultFutureTimeouts: FutureTimeouts =
-    FutureTimeouts(1, Duration(3, "second"))
+  override implicit val defaultFutureTimeouts: FutureTimeouts = FutureTimeouts(
+    1,
+    Duration(3, "second"))
   val shortFutureTimeouts = FutureTimeouts(1, Duration(50, "millis"))
 }
 
@@ -379,36 +384,38 @@ class ShardServiceSpec extends TestShardService {
     }
 
     "create a job when an async query is posted" in {
-      val res = for {
-        HttpResponse(
-          HttpStatus(Accepted, _),
-          _,
-          Some(Left(res)),
-          _) <- asyncQuery(simpleQuery)
-        jobId = extractJobId(res)
-        job <- jobManager.findJob(jobId)
-      } yield job
+      val res =
+        for {
+          HttpResponse(
+            HttpStatus(Accepted, _),
+            _,
+            Some(Left(res)),
+            _) <- asyncQuery(simpleQuery)
+          jobId = extractJobId(res)
+          job <- jobManager.findJob(jobId)
+        } yield job
 
       res.copoint must beLike {
         case Some(Job(_, _, _, _, _, _)) => ok
       }
     }
     "results of an async job must eventually be made available" in {
-      val res = for {
-        HttpResponse(
-          HttpStatus(Accepted, _),
-          _,
-          Some(Left(res)),
-          _) <- asyncQuery(simpleQuery)
-        jobId = extractJobId(res)
-        _ <- waitForJobCompletion(jobId)
-        HttpResponse(
-          HttpStatus(OK, _),
-          _,
-          Some(Right(data)),
-          _) <- asyncQueryResults(jobId)
-        result <- extractResult(data)
-      } yield result
+      val res =
+        for {
+          HttpResponse(
+            HttpStatus(Accepted, _),
+            _,
+            Some(Left(res)),
+            _) <- asyncQuery(simpleQuery)
+          jobId = extractJobId(res)
+          _ <- waitForJobCompletion(jobId)
+          HttpResponse(
+            HttpStatus(OK, _),
+            _,
+            Some(Right(data)),
+            _) <- asyncQueryResults(jobId)
+          result <- extractResult(data)
+        } yield result
 
       val expected = JObject(
         JField("warnings", JArray(Nil)) ::
@@ -443,25 +450,27 @@ class ShardServiceSpec extends TestShardService {
       }
     }
     "return 400 and errors if format is 'simple'" in {
-      val result = for {
-        HttpResponse(
-          HttpStatus(BadRequest, _),
-          _,
-          Some(Left(result)),
-          _) <- query("bad query")
-      } yield result
+      val result =
+        for {
+          HttpResponse(
+            HttpStatus(BadRequest, _),
+            _,
+            Some(Left(result)),
+            _) <- query("bad query")
+        } yield result
 
       result.copoint must beLike {
         case JArray(JString("ERROR!") :: Nil) => ok
       }
     }
     "return warnings/errors if format is 'detailed'" in {
-      val result = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <- query(
-          simpleQuery,
-          format = Some("detailed"))
-        result <- extractResult(data)
-      } yield result
+      val result =
+        for {
+          HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <- query(
+            simpleQuery,
+            format = Some("detailed"))
+          result <- extractResult(data)
+        } yield result
 
       val expected = JObject(
         JField("serverErrors", JArray(Nil)) ::
@@ -474,12 +483,13 @@ class ShardServiceSpec extends TestShardService {
       result.copoint must_== expected
     }
     "return just the results if format is 'simple'" in {
-      val result = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <- query(
-          simpleQuery,
-          format = Some("simple"))
-        result <- extractResult(data)
-      } yield result
+      val result =
+        for {
+          HttpResponse(HttpStatus(OK, _), _, Some(Right(data)), _) <- query(
+            simpleQuery,
+            format = Some("simple"))
+          result <- extractResult(data)
+        } yield result
 
       val expected = JArray(JNum(2) :: Nil)
       result.copoint must_== expected
@@ -528,8 +538,8 @@ class ShardServiceSpec extends TestShardService {
 
   "Shard browse service" should {
     "handle browse for API key accessible path" in {
-      val obj =
-        JObject(Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
+      val obj = JObject(
+        Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
       browse().copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) => ok
         case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
@@ -575,8 +585,8 @@ class ShardServiceSpec extends TestShardService {
     }
 
     "handle metadata for API key accessible path" in {
-      val obj =
-        JObject(Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
+      val obj = JObject(
+        Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
       meta().copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) => ok
         case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>

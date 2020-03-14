@@ -32,6 +32,6 @@ class DefaultRuntime extends spi.PicklingRuntime {
     _root_.scala.reflect.runtime.currentMirror
 
   /** A registry of picklers for runtime lookup/usage. */
-  override val picklers: PicklerRegistry = new DefaultPicklerRegistry(
-    new DefaultRuntimePicklerGenerator(GRL))
+  override val picklers: PicklerRegistry =
+    new DefaultPicklerRegistry(new DefaultRuntimePicklerGenerator(GRL))
 }

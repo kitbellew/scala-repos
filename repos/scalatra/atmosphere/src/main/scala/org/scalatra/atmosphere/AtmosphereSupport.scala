@@ -109,18 +109,19 @@ trait AtmosphereSupport
 
   abstract override def initialize(config: ConfigT) {
     super.initialize(config)
-    val cfg: ServletConfig = config match {
-      case c: FilterConfig => c
-      case c: ServletConfig =>
-        new ServletConfig {
-          def getInitParameterNames: util.Enumeration[String] =
-            getServletContext.getInitParameterNames
-          def getServletName: String = c.getServletName
-          def getInitParameter(name: String): String =
-            getServletContext.getInitParameter(name)
-          def getServletContext: ServletContext = c.getServletContext
-        }
-    }
+    val cfg: ServletConfig =
+      config match {
+        case c: FilterConfig => c
+        case c: ServletConfig =>
+          new ServletConfig {
+            def getInitParameterNames: util.Enumeration[String] =
+              getServletContext.getInitParameterNames
+            def getServletName: String = c.getServletName
+            def getInitParameter(name: String): String =
+              getServletContext.getInitParameter(name)
+            def getServletContext: ServletContext = c.getServletContext
+          }
+      }
 
     allCatch.withApply(ex => logger.error(ex.getMessage, ex)) {
       atmosphereFramework.enableSessionSupport()
@@ -212,9 +213,10 @@ trait AtmosphereSupport
     } yield matched).headOption
 
   private[this] def configureBroadcasterFactory() {
-    val factory = new ScalatraBroadcasterFactory(
-      atmosphereFramework.getAtmosphereConfig,
-      broadcasterConfig)
+    val factory =
+      new ScalatraBroadcasterFactory(
+        atmosphereFramework.getAtmosphereConfig,
+        broadcasterConfig)
     atmosphereFramework.setDefaultBroadcasterClassName(
       broadcasterConfig.broadcasterClass.getName)
     atmosphereFramework.setBroadcasterFactory(factory)

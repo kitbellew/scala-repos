@@ -16,8 +16,7 @@ final case class TracedT[W[_], A, B](run: W[A => B]) {
       }
     )
 
-  def trans[M[_]](f: W ~> M): TracedT[M, A, B] =
-    TracedT(f(run))
+  def trans[M[_]](f: W ~> M): TracedT[M, A, B] = TracedT(f(run))
 
   def copoint(implicit W: Comonad[W], A: Monoid[A]): B =
     W.copoint(run).apply(A.zero)
@@ -143,8 +142,7 @@ object TracedT extends TracedTInstances {
 private trait TracedTFunctor[W[_], C] extends Functor[TracedT[W, C, ?]] {
   implicit def W: Functor[W]
 
-  override final def map[A, B](fa: TracedT[W, C, A])(f: A => B) =
-    fa map f
+  override final def map[A, B](fa: TracedT[W, C, A])(f: A => B) = fa map f
 }
 
 private trait TracedTDistributive[W[_], C]
@@ -192,8 +190,7 @@ private trait TracedTCobind[W[_], C]
   implicit def C: Semigroup[C]
 
   override final def cobind[A, B](fa: TracedT[W, C, A])(
-      f: TracedT[W, C, A] => B) =
-    fa cobind f
+      f: TracedT[W, C, A] => B) = fa cobind f
 }
 
 private trait TracedTComonad[W[_], C]
@@ -202,6 +199,5 @@ private trait TracedTComonad[W[_], C]
   implicit def W: Comonad[W]
   implicit def C: Monoid[C]
 
-  override final def copoint[A](p: TracedT[W, C, A]): A =
-    p.copoint
+  override final def copoint[A](p: TracedT[W, C, A]): A = p.copoint
 }

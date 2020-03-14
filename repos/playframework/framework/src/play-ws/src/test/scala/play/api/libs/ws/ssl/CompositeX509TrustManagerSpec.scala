@@ -23,9 +23,10 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
         val mockTrustManager1 = mock[X509TrustManager]
         val mockTrustManager2 = mock[X509TrustManager]
         val algorithmChecker = new AlgorithmChecker(Set(), Set())
-        val trustManager = new CompositeX509TrustManager(
-          trustManagers = Seq(mockTrustManager1, mockTrustManager2),
-          algorithmChecker)
+        val trustManager =
+          new CompositeX509TrustManager(
+            trustManagers = Seq(mockTrustManager1, mockTrustManager2),
+            algorithmChecker)
 
         val certificate = CertificateGenerator.generateRSAWithSHA256()
         val chain = Array[X509Certificate](certificate)
@@ -51,9 +52,10 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
       "returns true" in {
         val mockTrustManager = mock[X509TrustManager]
         val algorithmChecker = new AlgorithmChecker(Set(), Set())
-        val trustManager = new CompositeX509TrustManager(
-          trustManagers = Seq(mockTrustManager),
-          algorithmChecker)
+        val trustManager =
+          new CompositeX509TrustManager(
+            trustManagers = Seq(mockTrustManager),
+            algorithmChecker)
 
         val certificate = CertificateGenerator.generateRSAWithSHA256()
         val chain = Array[X509Certificate](certificate)
@@ -71,9 +73,10 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
         val mockTrustManager1 = mock[X509TrustManager]
         val mockTrustManager2 = mock[X509TrustManager]
         val algorithmChecker = new AlgorithmChecker(Set(), Set())
-        val trustManager = new CompositeX509TrustManager(
-          trustManagers = Seq(mockTrustManager1, mockTrustManager2),
-          algorithmChecker)
+        val trustManager =
+          new CompositeX509TrustManager(
+            trustManagers = Seq(mockTrustManager1, mockTrustManager2),
+            algorithmChecker)
 
         val certificate = CertificateGenerator.generateRSAWithSHA256()
         val chain = Array[X509Certificate](certificate)
@@ -93,9 +96,10 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
       "work fine" in {
         val mockTrustManager = mock[X509TrustManager]
         val algorithmChecker = new AlgorithmChecker(Set(), Set())
-        val trustManager = new CompositeX509TrustManager(
-          trustManagers = Seq(mockTrustManager),
-          algorithmChecker)
+        val trustManager =
+          new CompositeX509TrustManager(
+            trustManagers = Seq(mockTrustManager),
+            algorithmChecker)
         val certificate = CertificateGenerator.generateRSAWithSHA256()
         mockTrustManager.getAcceptedIssuers returns Array[X509Certificate](
           certificate)
@@ -107,9 +111,10 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
       "throw exception when input exception" in {
         val mockTrustManager = mock[X509TrustManager]
         val algorithmChecker = new AlgorithmChecker(Set(), Set())
-        val trustManager = new CompositeX509TrustManager(
-          trustManagers = Seq(mockTrustManager),
-          algorithmChecker)
+        val trustManager =
+          new CompositeX509TrustManager(
+            trustManagers = Seq(mockTrustManager),
+            algorithmChecker)
         mockTrustManager.getAcceptedIssuers throws new RuntimeException("fake")
 
         trustManager.getAcceptedIssuers.must(
@@ -126,9 +131,10 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
       "work fine" in {
         val mockTrustManager = mock[X509TrustManager]
         val algorithmChecker = new AlgorithmChecker(Set(), Set())
-        val trustManager = new CompositeX509TrustManager(
-          trustManagers = Seq(mockTrustManager),
-          algorithmChecker)
+        val trustManager =
+          new CompositeX509TrustManager(
+            trustManagers = Seq(mockTrustManager),
+            algorithmChecker)
         val certificate = CertificateGenerator.generateRSAWithSHA256()
         val chain = Array[X509Certificate](certificate)
         val authType = ""
@@ -141,9 +147,10 @@ object CompositeX509TrustManagerSpec extends Specification with Mockito {
         val mockTrustManager1 = mock[X509TrustManager]
         val mockTrustManager2 = mock[X509TrustManager]
         val algorithmChecker = new AlgorithmChecker(Set(), Set())
-        val trustManager = new CompositeX509TrustManager(
-          trustManagers = Seq(mockTrustManager1, mockTrustManager2),
-          algorithmChecker)
+        val trustManager =
+          new CompositeX509TrustManager(
+            trustManagers = Seq(mockTrustManager1, mockTrustManager2),
+            algorithmChecker)
 
         val certificate = CertificateGenerator.generateRSAWithSHA256()
         val chain = Array[X509Certificate](certificate)

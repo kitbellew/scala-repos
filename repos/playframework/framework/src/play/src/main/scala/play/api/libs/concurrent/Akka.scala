@@ -261,10 +261,11 @@ trait AkkaComponents {
   def configuration: Configuration
   def applicationLifecycle: ApplicationLifecycle
 
-  lazy val actorSystem: ActorSystem = new ActorSystemProvider(
-    environment,
-    configuration,
-    applicationLifecycle).get
+  lazy val actorSystem: ActorSystem =
+    new ActorSystemProvider(
+      environment,
+      configuration,
+      applicationLifecycle).get
 }
 
 /**
@@ -280,8 +281,9 @@ class ActorSystemProvider @Inject() (
   private val logger = Logger(classOf[ActorSystemProvider])
 
   lazy val get: ActorSystem = {
-    val (system, stopHook) =
-      ActorSystemProvider.start(environment.classLoader, configuration)
+    val (system, stopHook) = ActorSystemProvider.start(
+      environment.classLoader,
+      configuration)
     applicationLifecycle.addStopHook(stopHook)
     system
   }

@@ -57,8 +57,7 @@ final class DList[A] private[scalaz] (f: IList[A] => Trampoline[IList[A]]) {
     toIList.foldRight(z)((a, b) => f(a, b))
 
   /** Map over a difference list. */
-  def map[B](f: A => B): DList[B] =
-    DL(dl => (toIList.map(f)) ++ dl)
+  def map[B](f: A => B): DList[B] = DL(dl => (toIList.map(f)) ++ dl)
 
   /** Map over a difference list, then flatten. */
   def flatMap[B](f: A => DList[B]): DList[B] =
@@ -78,11 +77,9 @@ object DList extends DListInstances {
   def DL[A](f: (=> IList[A]) => IList[A]): DList[A] =
     mkDList(xs => return_(f(xs)))
 
-  def fromList[A](as: => List[A]): DList[A] =
-    fromIList(IList.fromList(as))
+  def fromList[A](as: => List[A]): DList[A] = fromIList(IList.fromList(as))
 
-  def fromIList[A](as: => IList[A]): DList[A] =
-    DL(bs => as ++ bs)
+  def fromIList[A](as: => IList[A]): DList[A] = DL(bs => as ++ bs)
 
   def concat[A](xs: IList[DList[A]]): DList[A] =
     xs.foldRight(DList[A]())(_ ++ _)
@@ -115,24 +112,25 @@ sealed abstract class DListInstances {
     with Traverse[DList]
     with BindRec[DList]
     with Zip[DList]
-    with IsEmpty[DList] = new MonadPlus[DList]
-    with Traverse[DList]
-    with BindRec[DList]
-    with Zip[DList]
-    with IsEmpty[DList] {
-    def point[A](a: => A) = DList(a)
-    def bind[A, B](as: DList[A])(f: A => DList[B]) = as flatMap f
-    def plus[A](a: DList[A], b: => DList[A]) = a ++ b
-    def empty[A] = DList()
-    def isEmpty[A](fa: DList[A]) = fa.isEmpty
-    def zip[A, B](a: => DList[A], b: => DList[B]): DList[(A, B)] = a zip b
-    def traverseImpl[F[_], A, B](fa: DList[A])(f: A => F[B])(
-        implicit F: Applicative[F]): F[DList[B]] =
-      fa.foldr(F.point(DList[B]()))((a, fbs) => F.apply2(f(a), fbs)(_ +: _))
+    with IsEmpty[DList] =
+    new MonadPlus[DList]
+      with Traverse[DList]
+      with BindRec[DList]
+      with Zip[DList]
+      with IsEmpty[DList] {
+      def point[A](a: => A) = DList(a)
+      def bind[A, B](as: DList[A])(f: A => DList[B]) = as flatMap f
+      def plus[A](a: DList[A], b: => DList[A]) = a ++ b
+      def empty[A] = DList()
+      def isEmpty[A](fa: DList[A]) = fa.isEmpty
+      def zip[A, B](a: => DList[A], b: => DList[B]): DList[(A, B)] = a zip b
+      def traverseImpl[F[_], A, B](fa: DList[A])(f: A => F[B])(
+          implicit F: Applicative[F]): F[DList[B]] =
+        fa.foldr(F.point(DList[B]()))((a, fbs) => F.apply2(f(a), fbs)(_ +: _))
 
-    def tailrecM[A, B](f: A => DList[A \/ B])(a: A): DList[B] =
-      DList.fromIList(BindRec[IList].tailrecM[A, B](f(_).toIList)(a))
-  }
+      def tailrecM[A, B](f: A => DList[A \/ B])(a: A): DList[B] =
+        DList.fromIList(BindRec[IList].tailrecM[A, B](f(_).toIList)(a))
+    }
   implicit def dlistEqual[A: Equal]: Equal[DList[A]] = {
     import std.list._
     Equal[List[A]].contramap((_: DList[A]).toList)

@@ -31,12 +31,11 @@ class InfoIntegrationTest
     (info \ "elected").as[Boolean] should be(true)
 
     And("the leader value in the JSON should match the one in the HTTP headers")
-    val headerLeader =
-      response.originalResponse.headers
-        .find(_.name.equals("X-Marathon-Leader"))
-        .get
-        .value
-        .replace("http://", "")
+    val headerLeader = response.originalResponse.headers
+      .find(_.name.equals("X-Marathon-Leader"))
+      .get
+      .value
+      .replace("http://", "")
     (info \ "leader").as[String] should be(headerLeader)
 
     And("the leader should match the value returned by /v2/leader")

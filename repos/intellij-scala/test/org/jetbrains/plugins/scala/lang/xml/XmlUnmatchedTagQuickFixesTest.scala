@@ -38,8 +38,7 @@ class XmlUnmatchedTagQuickFixesTest
   }
 
   def testNested() {
-    val text =
-      """
+    val text = """
         val xml = <aaa attr1="1">
                     <bbb>blah blah</bbb>
                     <ccc>
@@ -49,8 +48,7 @@ class XmlUnmatchedTagQuickFixesTest
                     </ccc>
                   </aaa>
       """
-    val assumedStub =
-      """
+    val assumedStub = """
         val xml = <aaa attr1="1">
                     <bbb>blah blah</bbb>
                     <ccc>
@@ -65,15 +63,13 @@ class XmlUnmatchedTagQuickFixesTest
   }
 
   def testInsideCase() {
-    val text =
-      """
+    val text = """
         <aa></aa> match {
           case <aaa><bbb>{1 + 2 + i}</ccc></aaa> =>
           case _ =>
         }
       """
-    val assumedStub =
-      """
+    val assumedStub = """
         <aa></aa> match {
           case <aaa><bbb>{1 + 2 + i}</bbb></aaa> =>
           case _ =>

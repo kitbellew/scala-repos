@@ -57,10 +57,11 @@ class ScForStatementImpl(node: ASTNode)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    val enumerators: ScEnumerators = this.enumerators match {
-      case None    => return true
-      case Some(x) => x
-    }
+    val enumerators: ScEnumerators =
+      this.enumerators match {
+        case None    => return true
+        case Some(x) => x
+      }
     if (lastParent == enumerators)
       return true
     enumerators.processDeclarations(processor, state, null, place)
@@ -82,10 +83,11 @@ class ScForStatementImpl(node: ASTNode)
   def getDesugarizedExprText(forDisplay: Boolean): Option[String] = {
     val exprText: StringBuilder = new StringBuilder
     val arrow = ScalaPsiUtil.functionArrow(getProject)
-    val (enums, gens, guards) = enumerators match {
-      case None    => return None
-      case Some(x) => (x.enumerators, x.generators, x.guards)
-    }
+    val (enums, gens, guards) =
+      enumerators match {
+        case None    => return None
+        case Some(x) => (x.enumerators, x.generators, x.guards)
+      }
     if (guards.isEmpty && enums.isEmpty && gens.length == 1) {
       val gen = gens.head
       if (gen.rvalue == null)
@@ -218,11 +220,12 @@ class ScForStatementImpl(node: ASTNode)
           gen.pattern.desugarizedPatternIndex = exprText.length
           exprText.append(gen.pattern.getText)
 
-          val (freshName1, freshName2) = if (forDisplay) {
-            ("x$1", "x$2")
-          } else {
-            ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2")
-          }
+          val (freshName1, freshName2) =
+            if (forDisplay) {
+              ("x$1", "x$2")
+            } else {
+              ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2")
+            }
 
           exprText
             .append(") <- (for (")
@@ -269,20 +272,24 @@ class ScForStatementImpl(node: ASTNode)
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)
   def getDesugarizedExpr: Option[ScExpression] = {
-    val res = getDesugarizedExprText(forDisplay = false) match {
-      case Some(text) =>
-        if (text == "")
-          None
-        else {
-          try {
-            Option(ScalaPsiElementFactory
-              .createExpressionWithContextFromText(text, this.getContext, this))
-          } catch {
-            case e: Throwable => None
+    val res =
+      getDesugarizedExprText(forDisplay = false) match {
+        case Some(text) =>
+          if (text == "")
+            None
+          else {
+            try {
+              Option(
+                ScalaPsiElementFactory.createExpressionWithContextFromText(
+                  text,
+                  this.getContext,
+                  this))
+            } catch {
+              case e: Throwable => None
+            }
           }
-        }
-      case _ => None
-    }
+        case _ => None
+      }
 
     val analogMap: mutable.HashMap[ScPattern, ScPattern] = mutable.HashMap.empty
 
@@ -311,10 +318,11 @@ class ScForStatementImpl(node: ASTNode)
       case _ =>
     }
 
-    val (enums, gens, guards) = enumerators match {
-      case None    => return None
-      case Some(x) => (x.enumerators, x.generators, x.guards)
-    }
+    val (enums, gens, guards) =
+      enumerators match {
+        case None    => return None
+        case Some(x) => (x.enumerators, x.generators, x.guards)
+      }
 
     def updateAnalog(f: ScForStatementImpl) {
       for {

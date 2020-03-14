@@ -727,12 +727,13 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
   private[akka] def processEvent(event: Event, source: AnyRef): Unit = {
     val stateFunc = stateFunctions(currentState.stateName)
-    val nextState = if (stateFunc isDefinedAt event) {
-      stateFunc(event)
-    } else {
-      // handleEventDefault ensures that this is always defined
-      handleEvent(event)
-    }
+    val nextState =
+      if (stateFunc isDefinedAt event) {
+        stateFunc(event)
+      } else {
+        // handleEventDefault ensures that this is always defined
+        handleEvent(event)
+      }
     applyState(nextState)
   }
 
@@ -813,8 +814,10 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       }
       currentState = nextState
 
-      val stopEvent =
-        StopEvent(reason, currentState.stateName, currentState.stateData)
+      val stopEvent = StopEvent(
+        reason,
+        currentState.stateName,
+        currentState.stateData)
       if (terminateEvent.isDefinedAt(stopEvent))
         terminateEvent(stopEvent)
     }
@@ -865,12 +868,13 @@ trait LoggingFSM[S, D] extends FSM[S, D] { this: Actor ⇒
       event: Event,
       source: AnyRef): Unit = {
     if (debugEvent) {
-      val srcstr = source match {
-        case s: String ⇒ s
-        case Timer(name, _, _, _) ⇒ "timer " + name
-        case a: ActorRef ⇒ a.toString
-        case _ ⇒ "unknown"
-      }
+      val srcstr =
+        source match {
+          case s: String ⇒ s
+          case Timer(name, _, _, _) ⇒ "timer " + name
+          case a: ActorRef ⇒ a.toString
+          case _ ⇒ "unknown"
+        }
       log.debug("processing " + event + " from " + srcstr)
     }
 

@@ -52,29 +52,37 @@ private[ui] class DriverPage(parent: MesosClusterUI)
     val commandEnvHeaders = Seq("Command environment variable", "Value")
     val launchedHeaders = Seq("Launched property", "Value")
     val commandHeaders = Seq("Command property", "Value")
-    val retryHeaders =
-      Seq("Last failed status", "Next retry time", "Retry count")
+    val retryHeaders = Seq(
+      "Last failed status",
+      "Next retry time",
+      "Retry count")
     val driverDescription = Iterable.apply(driverState.description)
     val submissionState = Iterable.apply(driverState.submissionState)
     val command = Iterable.apply(driverState.description.command)
-    val schedulerProperties =
-      Iterable.apply(driverState.description.schedulerProperties)
+    val schedulerProperties = Iterable.apply(
+      driverState.description.schedulerProperties)
     val commandEnv = Iterable.apply(driverState.description.command.environment)
-    val driverTable =
-      UIUtils.listingTable(driverHeaders, driverRow, driverDescription)
-    val commandTable =
-      UIUtils.listingTable(commandHeaders, commandRow, command)
-    val commandEnvTable =
-      UIUtils.listingTable(commandEnvHeaders, propertiesRow, commandEnv)
-    val schedulerTable =
-      UIUtils.listingTable(schedulerHeaders, propertiesRow, schedulerProperties)
-    val launchedTable =
-      UIUtils.listingTable(launchedHeaders, launchedRow, submissionState)
-    val retryTable =
-      UIUtils.listingTable(
-        retryHeaders,
-        retryRow,
-        Iterable.apply(driverState.description.retryState))
+    val driverTable = UIUtils.listingTable(
+      driverHeaders,
+      driverRow,
+      driverDescription)
+    val commandTable = UIUtils.listingTable(commandHeaders, commandRow, command)
+    val commandEnvTable = UIUtils.listingTable(
+      commandEnvHeaders,
+      propertiesRow,
+      commandEnv)
+    val schedulerTable = UIUtils.listingTable(
+      schedulerHeaders,
+      propertiesRow,
+      schedulerProperties)
+    val launchedTable = UIUtils.listingTable(
+      launchedHeaders,
+      launchedRow,
+      submissionState)
+    val retryTable = UIUtils.listingTable(
+      retryHeaders,
+      retryRow,
+      Iterable.apply(driverState.description.retryState))
     val content =
       <p>Driver state information for driver id {
         driverId

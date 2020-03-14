@@ -611,12 +611,11 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test(
     "mapConcurrent makes progress, even with blocking streams and blocking work") {
-    val gen =
-      Gen.zip(
-        Gen.choose(0, 10).label("numActions"),
-        Gen.choose(0, 10).flatMap(Gen.listOfN(_, Arbitrary.arbitrary[Int])),
-        Gen.choose(1, 11).label("concurrency")
-      )
+    val gen = Gen.zip(
+      Gen.choose(0, 10).label("numActions"),
+      Gen.choose(0, 10).flatMap(Gen.listOfN(_, Arbitrary.arbitrary[Int])),
+      Gen.choose(1, 11).label("concurrency")
+    )
 
     forAll(gen) {
       case (numActions, items, concurrency) =>
@@ -727,10 +726,11 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 }
 
 private object AsyncStreamTest {
-  val genListAndN = for {
-    as <- Arbitrary.arbitrary[List[Int]]
-    n <- Gen.choose(0, as.length)
-  } yield (as, n)
+  val genListAndN =
+    for {
+      as <- Arbitrary.arbitrary[List[Int]]
+      n <- Gen.choose(0, as.length)
+    } yield (as, n)
 
   def await[T](fut: Future[T]) = Await.result(fut, 100.milliseconds)
 

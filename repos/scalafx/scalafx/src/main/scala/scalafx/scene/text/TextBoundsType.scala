@@ -41,8 +41,8 @@ object TextBoundsType
     "8.0.60-R10")
   val LOGICAL = Logical
 
-  val LogicalVerticalCenter = new TextBoundsType(
-    jfxst.TextBoundsType.LOGICAL_VERTICAL_CENTER)
+  val LogicalVerticalCenter =
+    new TextBoundsType(jfxst.TextBoundsType.LOGICAL_VERTICAL_CENTER)
   @deprecated(
     "Use LogicalVerticalCenter; LOGICAL_VERTICAL_CENTER will be removed in a future release",
     "8.0.60-R10")

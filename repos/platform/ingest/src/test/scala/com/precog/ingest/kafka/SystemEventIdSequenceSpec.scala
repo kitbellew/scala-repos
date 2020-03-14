@@ -50,20 +50,22 @@ class SystemEventIdSequenceSpec extends Specification {
 
   "the system event id sequence" should {
     "reliably obtain a starting state" in {
-      val coordination = new MockCoordination {
-        def registerRelayAgent(agent: String, blockSize: Int) =
-          EventRelayState(0, 0, IdSequenceBlock(0, 0, 0)).success[Error]
-      }
+      val coordination =
+        new MockCoordination {
+          def registerRelayAgent(agent: String, blockSize: Int) =
+            EventRelayState(0, 0, IdSequenceBlock(0, 0, 0)).success[Error]
+        }
       val eventIdSequence = SystemEventIdSequence("test", coordination)
 
       eventIdSequence.getLastOffset() must be_>=(0L)
     }
 
     "not allow one to obtain a sequence with an invalid starting state" in {
-      val coordination = new MockCoordination {
-        def registerRelayAgent(agent: String, blockSize: Int) =
-          Error.invalid("bad relay").fail[EventRelayState]
-      }
+      val coordination =
+        new MockCoordination {
+          def registerRelayAgent(agent: String, blockSize: Int) =
+            Error.invalid("bad relay").fail[EventRelayState]
+        }
 
       SystemEventIdSequence("test", coordination) must throwAn[
         UnableToRetrieveRelayAgentState]

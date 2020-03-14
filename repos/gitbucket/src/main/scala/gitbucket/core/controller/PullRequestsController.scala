@@ -55,27 +55,29 @@ trait PullRequestsControllerBase extends ControllerBase {
     with MergeService
     with ProtectedBranchService =>
 
-  private val logger =
-    LoggerFactory.getLogger(classOf[PullRequestsControllerBase])
+  private val logger = LoggerFactory.getLogger(
+    classOf[PullRequestsControllerBase])
 
-  val pullRequestForm = mapping(
-    "title" -> trim(label("Title", text(required, maxlength(100)))),
-    "content" -> trim(label("Content", optional(text()))),
-    "targetUserName" -> trim(text(required, maxlength(100))),
-    "targetBranch" -> trim(text(required, maxlength(100))),
-    "requestUserName" -> trim(text(required, maxlength(100))),
-    "requestRepositoryName" -> trim(text(required, maxlength(100))),
-    "requestBranch" -> trim(text(required, maxlength(100))),
-    "commitIdFrom" -> trim(text(required, maxlength(40))),
-    "commitIdTo" -> trim(text(required, maxlength(40))),
-    "assignedUserName" -> trim(optional(text())),
-    "milestoneId" -> trim(optional(number())),
-    "labelNames" -> trim(optional(text()))
-  )(PullRequestForm.apply)
+  val pullRequestForm =
+    mapping(
+      "title" -> trim(label("Title", text(required, maxlength(100)))),
+      "content" -> trim(label("Content", optional(text()))),
+      "targetUserName" -> trim(text(required, maxlength(100))),
+      "targetBranch" -> trim(text(required, maxlength(100))),
+      "requestUserName" -> trim(text(required, maxlength(100))),
+      "requestRepositoryName" -> trim(text(required, maxlength(100))),
+      "requestBranch" -> trim(text(required, maxlength(100))),
+      "commitIdFrom" -> trim(text(required, maxlength(40))),
+      "commitIdTo" -> trim(text(required, maxlength(40))),
+      "assignedUserName" -> trim(optional(text())),
+      "milestoneId" -> trim(optional(number())),
+      "labelNames" -> trim(optional(text()))
+    )(PullRequestForm.apply)
 
-  val mergeForm = mapping(
-    "message" -> trim(label("Message", text(required)))
-  )(MergeForm.apply)
+  val mergeForm =
+    mapping(
+      "message" -> trim(label("Message", text(required)))
+    )(MergeForm.apply)
 
   case class PullRequestForm(
       title: String,
@@ -114,14 +116,13 @@ trait PullRequestsControllerBase extends ControllerBase {
           case (issue, pullreq) =>
             using(Git.open(getRepositoryDir(owner, name))) {
               git =>
-                val (commits, diffs) =
-                  getRequestCompareInfo(
-                    owner,
-                    name,
-                    pullreq.commitIdFrom,
-                    owner,
-                    name,
-                    pullreq.commitIdTo)
+                val (commits, diffs) = getRequestCompareInfo(
+                  owner,
+                  name,
+                  pullreq.commitIdFrom,
+                  owner,
+                  name,
+                  pullreq.commitIdTo)
                 html.pullreq(
                   issue,
                   pullreq,
@@ -159,17 +160,24 @@ trait PullRequestsControllerBase extends ControllerBase {
           val name = repository.name
           getPullRequest(owner, name, issueId) map {
             case (issue, pullreq) =>
-              val hasConflict = LockUtil.lock(s"${owner}/${name}") {
-                checkConflict(owner, name, pullreq.branch, issueId)
-              }
-              val hasMergePermission =
-                hasWritePermission(owner, name, context.loginAccount)
-              val branchProtection =
-                getProtectedBranchInfo(owner, name, pullreq.branch)
+              val hasConflict =
+                LockUtil.lock(s"${owner}/${name}") {
+                  checkConflict(owner, name, pullreq.branch, issueId)
+                }
+              val hasMergePermission = hasWritePermission(
+                owner,
+                name,
+                context.loginAccount)
+              val branchProtection = getProtectedBranchInfo(
+                owner,
+                name,
+                pullreq.branch)
               val mergeStatus = PullRequestService.MergeStatus(
                 hasConflict = hasConflict,
-                commitStatues =
-                  getCommitStatues(owner, name, pullreq.commitIdTo),
+                commitStatues = getCommitStatues(
+                  owner,
+                  name,
+                  pullreq.commitIdTo),
                 branchProtection = branchProtection,
                 branchIsOutOfDate =
                   JGitUtil.getShaByRef(owner, name, pullreq.branch) != Some(
@@ -250,8 +258,10 @@ trait PullRequestsControllerBase extends ControllerBase {
         name = pullreq.requestRepositoryName
         if hasWritePermission(owner, name, context.loginAccount)
       } yield {
-        val branchProtection =
-          getProtectedBranchInfo(owner, name, pullreq.requestBranch)
+        val branchProtection = getProtectedBranchInfo(
+          owner,
+          name,
+          pullreq.requestBranch)
         if (branchProtection.needStatusCheck(loginAccount.userName)) {
           flash += "error" -> s"branch ${pullreq.requestBranch} is protected need status check."
         } else {
@@ -289,13 +299,14 @@ trait PullRequestsControllerBase extends ControllerBase {
 
                     val newCommitId = git.getRepository.resolve(
                       s"refs/heads/${pullreq.requestBranch}")
-                    val commits = git.log
-                      .addRange(oldId, newCommitId)
-                      .call
-                      .iterator
-                      .asScala
-                      .map(c => new JGitUtil.CommitInfo(c))
-                      .toList
+                    val commits =
+                      git.log
+                        .addRange(oldId, newCommitId)
+                        .call
+                        .iterator
+                        .asScala
+                        .map(c => new JGitUtil.CommitInfo(c))
+                        .toList
 
                     commits.foreach { commit =>
                       if (!existIds.contains(commit.id)) {
@@ -505,10 +516,12 @@ trait PullRequestsControllerBase extends ControllerBase {
 
   get("/:owner/:repository/compare/*...*")(referrersOnly { forkedRepository =>
     val Seq(origin, forked) = multiParams("splat")
-    val (originOwner, originId) =
-      parseCompareIdentifie(origin, forkedRepository.owner)
-    val (forkedOwner, forkedId) =
-      parseCompareIdentifie(forked, forkedRepository.owner)
+    val (originOwner, originId) = parseCompareIdentifie(
+      origin,
+      forkedRepository.owner)
+    val (forkedOwner, forkedId) = parseCompareIdentifie(
+      forked,
+      forkedRepository.owner)
 
     (for (originRepositoryName <- if (originOwner == forkedOwner) {
             // Self repository
@@ -636,10 +649,12 @@ trait PullRequestsControllerBase extends ControllerBase {
   ajaxGet("/:owner/:repository/compare/*...*/mergecheck")(collaboratorsOnly {
     forkedRepository =>
       val Seq(origin, forked) = multiParams("splat")
-      val (originOwner, tmpOriginBranch) =
-        parseCompareIdentifie(origin, forkedRepository.owner)
-      val (forkedOwner, tmpForkedBranch) =
-        parseCompareIdentifie(forked, forkedRepository.owner)
+      val (originOwner, tmpOriginBranch) = parseCompareIdentifie(
+        origin,
+        forkedRepository.owner)
+      val (forkedOwner, tmpForkedBranch) = parseCompareIdentifie(
+        forked,
+        forkedRepository.owner)
 
       (for (originRepositoryName <- if (originOwner == forkedOwner) {
               Some(forkedRepository.name)
@@ -661,24 +676,27 @@ trait PullRequestsControllerBase extends ControllerBase {
               getRepositoryDir(forkedRepository.owner, forkedRepository.name))
           ) {
             case (oldGit, newGit) =>
-              val originBranch = JGitUtil
-                .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
-                .get
-                ._2
-              val forkedBranch = JGitUtil
-                .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
-                .get
-                ._2
-              val conflict = LockUtil.lock(
-                s"${originRepository.owner}/${originRepository.name}") {
-                checkConflict(
-                  originRepository.owner,
-                  originRepository.name,
-                  originBranch,
-                  forkedRepository.owner,
-                  forkedRepository.name,
-                  forkedBranch)
-              }
+              val originBranch =
+                JGitUtil
+                  .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
+                  .get
+                  ._2
+              val forkedBranch =
+                JGitUtil
+                  .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
+                  .get
+                  ._2
+              val conflict =
+                LockUtil.lock(
+                  s"${originRepository.owner}/${originRepository.name}") {
+                  checkConflict(
+                    originRepository.owner,
+                    originRepository.name,
+                    originBranch,
+                    forkedRepository.owner,
+                    forkedRepository.name,
+                    forkedBranch)
+                }
               html.mergecheck(conflict)
           }
         }) getOrElse NotFound

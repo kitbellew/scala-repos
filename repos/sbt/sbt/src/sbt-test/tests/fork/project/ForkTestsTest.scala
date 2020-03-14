@@ -8,8 +8,9 @@ object ForkTestsTest extends Build {
   val groupSize = 3
   val groups = 3
 
-  val check =
-    TaskKey[Unit]("check", "Check all files were created and remove them.")
+  val check = TaskKey[Unit](
+    "check",
+    "Check all files were created and remove them.")
 
   def groupId(idx: Int) = "group_" + (idx + 1)
   def groupPrefix(idx: Int) = groupId(idx) + "_file_"

@@ -26,11 +26,9 @@ class RichU64Long(l64: Long) {
 
   def u64ToBigInt: BigInt = u64ToBigint(l64)
 
-  def u64_/(y: Long): Long =
-    (u64ToBigInt / u64ToBigint(y)).longValue
+  def u64_/(y: Long): Long = (u64ToBigInt / u64ToBigint(y)).longValue
 
-  def u64_%(y: Long): Long =
-    (u64ToBigInt % u64ToBigint(y)).longValue
+  def u64_%(y: Long): Long = (u64ToBigInt % u64ToBigint(y)).longValue
 
   // Other arithmetic operations don't need unsigned equivalents
   // with 2s complement.

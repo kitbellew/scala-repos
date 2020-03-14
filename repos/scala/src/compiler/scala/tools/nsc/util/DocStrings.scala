@@ -120,8 +120,9 @@ object DocStrings {
     idxs.indexWhere(str.startsWith("@usecase", _)) match {
       case firstUCIndex if firstUCIndex != -1 =>
         val commentSections = idxs.take(firstUCIndex)
-        val usecaseSections =
-          idxs.drop(firstUCIndex).filter(str.startsWith("@usecase", _))
+        val usecaseSections = idxs
+          .drop(firstUCIndex)
+          .filter(str.startsWith("@usecase", _))
         commentSections ::: usecaseSections
       case _ =>
         idxs

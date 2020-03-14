@@ -7,6 +7,5 @@ object NetUtil {
     Seq(Ipv4Digit, Ipv4Digit, Ipv4Digit, Ipv4Digit).mkString("""\.""").r
 
   /* Check if string is an IPv4 address. */
-  def isIpv4Address(ip: String): Boolean =
-    Ipv4Regex.pattern.matcher(ip).matches
+  def isIpv4Address(ip: String): Boolean = Ipv4Regex.pattern.matcher(ip).matches
 }

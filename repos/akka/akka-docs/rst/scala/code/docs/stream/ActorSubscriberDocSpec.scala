@@ -36,16 +36,17 @@ object ActorSubscriberDocSpec {
     var queue = Map.empty[Int, ActorRef]
 
     val router = {
-      val routees = Vector.fill(3) {
-        ActorRefRoutee(context.actorOf(Props[Worker]))
-      }
+      val routees =
+        Vector.fill(3) {
+          ActorRefRoutee(context.actorOf(Props[Worker]))
+        }
       Router(RoundRobinRoutingLogic(), routees)
     }
 
-    override val requestStrategy = new MaxInFlightRequestStrategy(
-      max = MaxQueueSize) {
-      override def inFlightInternally: Int = queue.size
-    }
+    override val requestStrategy =
+      new MaxInFlightRequestStrategy(max = MaxQueueSize) {
+        override def inFlightInternally: Int = queue.size
+      }
 
     def receive = {
       case OnNext(Msg(id, replyTo)) =>

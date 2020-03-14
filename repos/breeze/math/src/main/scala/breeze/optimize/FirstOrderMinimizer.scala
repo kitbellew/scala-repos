@@ -100,8 +100,12 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
         logger.info(
           f"Val and Grad Norm: $adjValue%.6g (rel: $oneOffImprovement%.3g) ${norm(adjGrad)}%.6g")
         val history = updateHistory(x, grad, value, adjustedFun, state)
-        val newCInfo =
-          convergenceCheck.update(x, grad, value, state, state.convergenceInfo)
+        val newCInfo = convergenceCheck.update(
+          x,
+          grad,
+          value,
+          state,
+          state.convergenceInfo)
         failedOnce = false
         FirstOrderMinimizer.State(
           x,
@@ -453,8 +457,9 @@ object FirstOrderMinimizer {
       tolerance: Double = 1e-5,
       useStochastic: Boolean = false,
       randomSeed: Int = 0) {
-    private implicit val random = new RandBasis(
-      new ThreadLocalRandomGenerator(new MersenneTwister(randomSeed)))
+    private implicit val random =
+      new RandBasis(
+        new ThreadLocalRandomGenerator(new MersenneTwister(randomSeed)))
 
     @deprecated(
       "Use breeze.optimize.minimize(f, init, params) instead.",
@@ -478,11 +483,12 @@ object FirstOrderMinimizer {
     def iterations[T](f: BatchDiffFunction[T], init: T)(
         implicit space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, BatchDiffFunction[T]]#State] = {
-      val it = if (useStochastic) {
-        this.iterations(f.withRandomBatches(batchSize), init)(space)
-      } else {
-        iterations(f: DiffFunction[T], init)
-      }
+      val it =
+        if (useStochastic) {
+          this.iterations(f.withRandomBatches(batchSize), init)(space)
+        } else {
+          iterations(f: DiffFunction[T], init)
+        }
 
       it.asInstanceOf[Iterator[
         FirstOrderMinimizer[T, BatchDiffFunction[T]]#State]]
@@ -494,17 +500,18 @@ object FirstOrderMinimizer {
     def iterations[T](f: StochasticDiffFunction[T], init: T)(
         implicit space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, StochasticDiffFunction[T]]#State] = {
-      val r = if (useL1) {
-        new AdaptiveGradientDescent.L1Regularization[T](
-          regularization,
-          eta = alpha,
-          maxIter = maxIterations)(space, random)
-      } else { // L2
-        new AdaptiveGradientDescent.L2Regularization[T](
-          regularization,
-          alpha,
-          maxIterations)(space, random)
-      }
+      val r =
+        if (useL1) {
+          new AdaptiveGradientDescent.L1Regularization[T](
+            regularization,
+            eta = alpha,
+            maxIter = maxIterations)(space, random)
+        } else { // L2
+          new AdaptiveGradientDescent.L2Regularization[T](
+            regularization,
+            alpha,
+            maxIterations)(space, random)
+        }
       r.iterations(f, init)
     }
 

@@ -153,30 +153,31 @@ private[streaming] class InternalMapWithStateDStream[
   override def compute(
       validTime: Time): Option[RDD[MapWithStateRDDRecord[K, S, E]]] = {
     // Get the previous state or create a new empty state RDD
-    val prevStateRDD = getOrCompute(validTime - slideDuration) match {
-      case Some(rdd) =>
-        if (rdd.partitioner != Some(partitioner)) {
-          // If the RDD is not partitioned the right way, let us repartition it using the
-          // partition index as the key. This is to ensure that state RDD is always partitioned
-          // before creating another state RDD using it
-          MapWithStateRDD.createFromRDD[K, V, S, E](
-            rdd.flatMap {
-              _.stateMap.getAll()
-            },
+    val prevStateRDD =
+      getOrCompute(validTime - slideDuration) match {
+        case Some(rdd) =>
+          if (rdd.partitioner != Some(partitioner)) {
+            // If the RDD is not partitioned the right way, let us repartition it using the
+            // partition index as the key. This is to ensure that state RDD is always partitioned
+            // before creating another state RDD using it
+            MapWithStateRDD.createFromRDD[K, V, S, E](
+              rdd.flatMap {
+                _.stateMap.getAll()
+              },
+              partitioner,
+              validTime)
+          } else {
+            rdd
+          }
+        case None =>
+          MapWithStateRDD.createFromPairRDD[K, V, S, E](
+            spec
+              .getInitialStateRDD()
+              .getOrElse(new EmptyRDD[(K, S)](ssc.sparkContext)),
             partitioner,
-            validTime)
-        } else {
-          rdd
-        }
-      case None =>
-        MapWithStateRDD.createFromPairRDD[K, V, S, E](
-          spec
-            .getInitialStateRDD()
-            .getOrElse(new EmptyRDD[(K, S)](ssc.sparkContext)),
-          partitioner,
-          validTime
-        )
-    }
+            validTime
+          )
+      }
 
     // Compute the new state RDD with previous state RDD and partitioned data RDD
     // Even if there is no data RDD, use an empty one to create a new state RDD

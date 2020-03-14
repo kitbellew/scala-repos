@@ -56,11 +56,12 @@ class EnsembleDrilldownPieChart extends EnsembleExample {
       PieChart.Data("C", 10),
       PieChart.Data("D", 40)
     )
-    val pieChart = new PieChart {
-      data = pieChartData
-      title = "DrillDown Pie Chart"
-      stylesheets += drilldownPieChartCss
-    }
+    val pieChart =
+      new PieChart {
+        data = pieChartData
+        title = "DrillDown Pie Chart"
+        stylesheets += drilldownPieChartCss
+      }
 
     pieChartData.foreach(data => drillDownData(pieChart, data, data.name()))
 

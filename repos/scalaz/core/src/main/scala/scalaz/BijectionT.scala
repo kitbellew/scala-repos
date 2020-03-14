@@ -13,11 +13,9 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
 
   def flip: BijectionT[G, F, B, A] = new BijectionT[G, F, B, A](_from, _to)
 
-  def toK: Kleisli[F, A, B] =
-    Kleisli(_to)
+  def toK: Kleisli[F, A, B] = Kleisli(_to)
 
-  def fromK: Kleisli[G, B, A] =
-    Kleisli(_from)
+  def fromK: Kleisli[G, B, A] = Kleisli(_from)
 
   def lens(implicit evF: F[B] =:= Id[B], evG: G[A] =:= Id[A]): Lens[A, B] =
     Lens(a => Store(from(_), to(a)))
@@ -40,13 +38,11 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
 
   def ***[C, D](g: Bijection[C, D])(implicit
       evF: F[B] =:= Id[B],
-      evG: G[A] =:= Id[A]): Bijection[(A, C), (B, D)] =
-    bimap[C, Tuple2, D](g)
+      evG: G[A] =:= Id[A]): Bijection[(A, C), (B, D)] = bimap[C, Tuple2, D](g)
 
   def ^^^[C, D](g: Bijection[C, D])(implicit
       evF: F[B] =:= Id[B],
-      evG: G[A] =:= Id[A]): Bijection[A \/ C, B \/ D] =
-    bimap[C, \/, D](g)
+      evG: G[A] =:= Id[A]): Bijection[A \/ C, B \/ D] = bimap[C, \/, D](g)
 
   def compose[C](g: BijectionT[F, G, C, A])(implicit
       FM: Bind[F],
@@ -63,8 +59,7 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
 
   def andThen[C](that: BijectionT[F, G, B, C])(implicit
       M: Bind[F],
-      GM: Bind[G]): BijectionT[F, G, A, C] =
-    that compose this
+      GM: Bind[G]): BijectionT[F, G, A, C] = that compose this
 
   /** alias for `andThen` */
   def >=>[C](that: BijectionT[F, G, B, C])(implicit
@@ -75,16 +70,13 @@ final class BijectionT[F[_], G[_], A, B] private[scalaz] (
 object BijectionT extends BijectionTInstances {
   def bijection[F[_], G[_], A, B](
       t: A => F[B],
-      f: B => G[A]): BijectionT[F, G, A, B] =
-    new BijectionT[F, G, A, B](t, f)
+      f: B => G[A]): BijectionT[F, G, A, B] = new BijectionT[F, G, A, B](t, f)
 
   import std.list._, std.function._
 
-  type <@>[A, B] =
-    Bijection[A, B]
+  type <@>[A, B] = Bijection[A, B]
 
-  type Bijection[A, B] =
-    BijectionT[Id, Id, A, B]
+  type Bijection[A, B] = BijectionT[Id, Id, A, B]
 
   def liftBijection[F[_], G[_], A, B](t: A => B, f: B => A)(implicit
       PF: Applicative[F],

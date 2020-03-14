@@ -56,9 +56,10 @@ final class ScalaJSRunner private[testadapter] (
       val outData = taskDefs.toList.toJSON
       master.send("tasks:" + jsonToString(outData))
 
-      val taskInfos = ComUtils.receiveResponse(master) {
-        case ("ok", data) => fromJSON[List[TaskInfo]](readJSON(data))
-      }
+      val taskInfos =
+        ComUtils.receiveResponse(master) {
+          case ("ok", data) => fromJSON[List[TaskInfo]](readJSON(data))
+        }
 
       taskInfos.map(ScalaJSTask.fromInfo(this, _)).toArray
     }
@@ -94,9 +95,8 @@ final class ScalaJSRunner private[testadapter] (
       }
 
       // Now we wait for everyone to be completely stopped
-      val slavesStopped =
-        slaves.values.toList.map(s =>
-          Try(s.awaitOrStop(slavesDeadline.timeLeft)))
+      val slavesStopped = slaves.values.toList.map(s =>
+        Try(s.awaitOrStop(slavesDeadline.timeLeft)))
       val masterStopped = Try(master.awaitOrStop(masterDeadline.timeLeft))
 
       // Cleanup

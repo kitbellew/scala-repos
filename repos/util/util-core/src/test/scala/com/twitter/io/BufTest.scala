@@ -77,9 +77,10 @@ class BufTest
     val buf = Buf.ByteArray.Owned(a1) concat Buf.ByteArray.Owned(
       a2) concat Buf.ByteArray.Owned(a3)
     assert(buf.length == 9)
-    val x = Array.fill(9) {
-      0.toByte
-    }
+    val x =
+      Array.fill(9) {
+        0.toByte
+      }
     buf.write(x, 0)
     assert(x.toSeq == (a1 ++ a2 ++ a3).toSeq)
   }
@@ -173,15 +174,16 @@ class BufTest
   }
 
   test("Buf.Utf8.unapply with a non-Buf.ByteArray") {
-    val buf = new Buf {
-      protected val unsafeByteArrayBuf = None
-      def slice(i: Int, j: Int) = throw new Exception("not implemented")
-      def length = 12
-      def write(output: Array[Byte], off: Int) =
-        (off until off + length) foreach { i =>
-          output(i) = 'a'.toByte
-        }
-    }
+    val buf =
+      new Buf {
+        protected val unsafeByteArrayBuf = None
+        def slice(i: Int, j: Int) = throw new Exception("not implemented")
+        def length = 12
+        def write(output: Array[Byte], off: Int) =
+          (off until off + length) foreach { i =>
+            output(i) = 'a'.toByte
+          }
+      }
 
     val Buf.Utf8(str) = buf
     assert(str == "aaaaaaaaaaaa")
@@ -247,16 +249,16 @@ class BufTest
 
   test("Buf.ByteBuffer.Shared.apply is safe") {
     val bytes = Array.fill(10)(0.toByte)
-    val Buf.ByteBuffer.Owned(bb) =
-      Buf.ByteBuffer.Shared(java.nio.ByteBuffer.wrap(bytes))
+    val Buf.ByteBuffer
+      .Owned(bb) = Buf.ByteBuffer.Shared(java.nio.ByteBuffer.wrap(bytes))
     bytes(0) = 10.toByte
     assert(bb.get(0) !== 10)
   }
 
   test("Buf.ByteBuffer.Direct.apply is unsafe") {
     val bytes = Array.fill(10)(0.toByte)
-    val Buf.ByteBuffer.Owned(bb) =
-      Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(bytes))
+    val Buf.ByteBuffer
+      .Owned(bb) = Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(bytes))
     bytes(0) = 10.toByte
     assert(bb.get(0) == 10)
   }
@@ -293,8 +295,8 @@ class BufTest
   }
 
   test("ByteArray.coerce(ByteBuffer)") {
-    val orig =
-      Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
+    val orig = Buf.ByteBuffer.Owned(
+      java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
     val coerced = Buf.ByteArray.coerce(orig)
     assert(coerced == orig)
   }
@@ -306,8 +308,8 @@ class BufTest
   }
 
   test("ByteBuffer.coerce(ByteBuffer)") {
-    val orig =
-      Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
+    val orig = Buf.ByteBuffer.Owned(
+      java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
     val coerced = Buf.ByteBuffer.coerce(orig)
     assert(coerced eq orig)
   }
@@ -374,13 +376,14 @@ class BufTest
   })
 
   test("Buf num matching") {
-    val hasMatch = Buf.Empty match {
-      case Buf.U32BE(_, _) => true
-      case Buf.U64BE(_, _) => true
-      case Buf.U32LE(_, _) => true
-      case Buf.U64LE(_, _) => true
-      case _               => false
-    }
+    val hasMatch =
+      Buf.Empty match {
+        case Buf.U32BE(_, _) => true
+        case Buf.U64BE(_, _) => true
+        case Buf.U32LE(_, _) => true
+        case Buf.U64LE(_, _) => true
+        case _               => false
+      }
     assert(!hasMatch)
 
     val buf = Buf.Empty
@@ -423,22 +426,25 @@ class BufTest
   test("highly nested concat buffer shouldn't throw StackOverflowError") {
     val size = 50 * 1000
     val b = 'x'.toByte
-    val bigBuf = (1 to size).foldLeft(Buf.Empty) {
-      case (buf, _) => buf concat Buf.ByteArray.Owned(Array[Byte](b))
-    }
+    val bigBuf =
+      (1 to size).foldLeft(Buf.Empty) {
+        case (buf, _) => buf concat Buf.ByteArray.Owned(Array[Byte](b))
+      }
 
-    val expected = Array.fill(size) {
-      'x'.toByte
-    }
+    val expected =
+      Array.fill(size) {
+        'x'.toByte
+      }
     val output = Buf.ByteArray.Owned.extract(bigBuf)
     assert(bigBuf.length == size)
     assert(expected.toSeq == output.toSeq)
 
     val sliced = bigBuf.slice(1, size - 1)
     val size2 = size - 2
-    val expected2 = Array.fill(size2) {
-      'x'.toByte
-    }
+    val expected2 =
+      Array.fill(size2) {
+        'x'.toByte
+      }
     val output2 = Buf.ByteArray.Owned.extract(sliced)
     assert(sliced.length == size2)
     assert(expected2.toSeq == output2.toSeq)
@@ -464,12 +470,13 @@ class BufTest
   }
 
   test("Buf.slice") {
-    val bufSplits = for {
-      b <- Arbitrary.arbitrary[Buf]
-      i <- Gen.choose(0, b.length)
-      j <- Gen.choose(i, b.length)
-      k <- Gen.choose(j, b.length)
-    } yield (b, i, j, k)
+    val bufSplits =
+      for {
+        b <- Arbitrary.arbitrary[Buf]
+        i <- Gen.choose(0, b.length)
+        j <- Gen.choose(i, b.length)
+        k <- Gen.choose(j, b.length)
+      } yield (b, i, j, k)
 
     forAll(bufSplits) {
       case (buf, i, j, k) =>

@@ -66,26 +66,27 @@ class SbtProjectResolver
 
     var warnings = new StringBuilder()
 
-    val xml = runner.read(
-      new File(root),
-      !isPreview,
-      settings.resolveClassifiers,
-      settings.resolveJavadocs,
-      settings.resolveSbtClassifiers) { message =>
-      if (message.startsWith("[error] ") || message.startsWith("[warn] ")) {
-        warnings ++= message
-      }
-
-      listener.onStatusChange(
-        new ExternalSystemTaskNotificationEvent(id, message.trim))
-    } match {
-      case Left(errors) =>
-        errors match {
-          case _: SbtRunner.ImportCancelledException => return null
-          case _                                     => throw new ExternalSystemException(errors)
+    val xml =
+      runner.read(
+        new File(root),
+        !isPreview,
+        settings.resolveClassifiers,
+        settings.resolveJavadocs,
+        settings.resolveSbtClassifiers) { message =>
+        if (message.startsWith("[error] ") || message.startsWith("[warn] ")) {
+          warnings ++= message
         }
-      case Right(node) => node
-    }
+
+        listener.onStatusChange(
+          new ExternalSystemTaskNotificationEvent(id, message.trim))
+      } match {
+        case Left(errors) =>
+          errors match {
+            case _: SbtRunner.ImportCancelledException => return null
+            case _                                     => throw new ExternalSystemException(errors)
+          }
+        case Right(node) => node
+      }
 
     if (warnings.nonEmpty) {
       listener.onTaskOutput(id, WarningMessage(warnings.toString), false)
@@ -122,8 +123,8 @@ class SbtProjectResolver
         sbtVersion,
         root))
 
-    val newPlay2Data =
-      projects.flatMap(p => p.play2.map(d => (p.id, p.base, d)))
+    val newPlay2Data = projects.flatMap(p =>
+      p.play2.map(d => (p.id, p.base, d)))
     projectNode.add(
       new Play2ProjectNode(Play2OldStructureAdapter(newPlay2Data)))
 
@@ -131,8 +132,10 @@ class SbtProjectResolver
     projectNode.addAll(libraryNodes)
 
     val moduleFilesDirectory = new File(root + "/" + Sbt.ModulesDirectory)
-    val moduleNodes =
-      createModules(projects, libraryNodes, moduleFilesDirectory)
+    val moduleNodes = createModules(
+      projects,
+      libraryNodes,
+      moduleFilesDirectory)
     projectNode.addAll(moduleNodes)
 
     createModuleDependencies(projects, moduleNodes)
@@ -204,8 +207,8 @@ class SbtProjectResolver
       data: sbtStructure.StructureData,
       projects: Seq[sbtStructure.ProjectData]): Seq[LibraryNode] = {
     val repositoryModules = data.repository.map(_.modules).getOrElse(Seq.empty)
-    val (modulesWithoutBinaries, modulesWithBinaries) =
-      repositoryModules.partition(_.binaries.isEmpty)
+    val (modulesWithoutBinaries, modulesWithBinaries) = repositoryModules
+      .partition(_.binaries.isEmpty)
     val otherModuleIds =
       projects.flatMap(_.dependencies.modules.map(_.id)).toSet --
         repositoryModules.map(_.id).toSet
@@ -214,8 +217,8 @@ class SbtProjectResolver
       modulesWithBinaries.map(createResolvedLibrary) ++ otherModuleIds.map(
         createUnresolvedLibrary)
 
-    val modulesWithDocumentation =
-      modulesWithoutBinaries.filter(m => m.docs.nonEmpty || m.sources.nonEmpty)
+    val modulesWithDocumentation = modulesWithoutBinaries.filter(m =>
+      m.docs.nonEmpty || m.sources.nonEmpty)
     if (modulesWithDocumentation.isEmpty)
       return libs
 
@@ -233,8 +236,9 @@ class SbtProjectResolver
   private def createModuleExtData(
       project: sbtStructure.ProjectData): ModuleExtNode = {
     val scalaVersion = project.scala.map(s => Version(s.version))
-    val scalacClasspath = project.scala.fold(Seq.empty[File])(s =>
-      s.compilerJar +: s.libraryJar +: s.extraJars)
+    val scalacClasspath =
+      project.scala.fold(Seq.empty[File])(s =>
+        s.compilerJar +: s.libraryJar +: s.extraJars)
     val scalacOptions = project.scala.fold(Seq.empty[String])(_.options)
     val javacOptions = project.java.fold(Seq.empty[String])(_.options)
     val jdk = project.android
@@ -265,8 +269,11 @@ class SbtProjectResolver
 
   private def createUnresolvedLibrary(
       moduleId: sbtStructure.ModuleIdentifier): LibraryNode = {
-    val module =
-      sbtStructure.ModuleData(moduleId, Set.empty, Set.empty, Set.empty)
+    val module = sbtStructure.ModuleData(
+      moduleId,
+      Set.empty,
+      Set.empty,
+      Set.empty)
     createLibrary(module, resolved = false)
   }
 
@@ -301,12 +308,13 @@ class SbtProjectResolver
       moduleFilesDirectory: File): ModuleNode = {
     // TODO use both ID and Name when related flaws in the External System will be fixed
     // TODO explicit canonical path is needed until IDEA-126011 is fixed
-    val result = new ModuleNode(
-      StdModuleTypes.JAVA.getId,
-      project.id,
-      project.id,
-      moduleFilesDirectory.path,
-      project.base.canonicalPath)
+    val result =
+      new ModuleNode(
+        StdModuleTypes.JAVA.getId,
+        project.id,
+        project.id,
+        moduleFilesDirectory.path,
+        project.base.canonicalPath)
 
     result.setInheritProjectCompileOutputPath(false)
 
@@ -389,12 +397,13 @@ class SbtProjectResolver
 
     // TODO use both ID and Name when related flaws in the External System will be fixed
     // TODO explicit canonical path is needed until IDEA-126011 is fixed
-    val result = new ModuleNode(
-      SbtModuleType.instance.getId,
-      id,
-      id,
-      moduleFilesDirectory.path,
-      buildRoot.canonicalPath)
+    val result =
+      new ModuleNode(
+        SbtModuleType.instance.getId,
+        id,
+        id,
+        moduleFilesDirectory.path,
+        buildRoot.canonicalPath)
 
     result.setInheritProjectCompileOutputPath(false)
     result.setCompileOutputPath(
@@ -491,11 +500,12 @@ class SbtProjectResolver
       moduleData: ModuleData): Seq[LibraryDependencyNode] = {
     dependencies.groupBy(it => scopeFor(it.configurations)).toSeq.map {
       case (scope, dependency) =>
-        val name = scope match {
-          case DependencyScope.COMPILE => Sbt.UnmanagedLibraryName
-          case it =>
-            s"${Sbt.UnmanagedLibraryName}-${it.getDisplayName.toLowerCase}"
-        }
+        val name =
+          scope match {
+            case DependencyScope.COMPILE => Sbt.UnmanagedLibraryName
+            case it =>
+              s"${Sbt.UnmanagedLibraryName}-${it.getDisplayName.toLowerCase}"
+          }
         val files = dependency.map(_.file.path)
         createModuleLevelDependency(name, files, Seq.empty, Seq.empty, scope)(
           moduleData)

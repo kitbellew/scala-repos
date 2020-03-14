@@ -51,8 +51,9 @@ object TransformationFrontend {
       .withFallback(ConfigFactory.load())
 
     val system = ActorSystem("ClusterSystem", config)
-    val frontend =
-      system.actorOf(Props[TransformationFrontend], name = "frontend")
+    val frontend = system.actorOf(
+      Props[TransformationFrontend],
+      name = "frontend")
 
     val counter = new AtomicInteger
     import system.dispatcher

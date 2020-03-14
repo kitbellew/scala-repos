@@ -209,8 +209,8 @@ class ObjectPropertySpec
   it should "support implicit conversion to a String Binding" is (pending)
 
   it should "support implicit conversion from a ScalaFX ObjectProperty with a SFXDelegate of a type T to a JavaFX ObjectProperty of type T" in {
-    val scalaObjProperty: ObjectProperty[Button] =
-      ObjectProperty[Button](new Button("Test"))
+    val scalaObjProperty: ObjectProperty[Button] = ObjectProperty[Button](
+      new Button("Test"))
     val javaObjProperty: jfxbp.ObjectProperty[jfxsc.Button] = scalaObjProperty
 
     javaObjProperty.get should be(scalaObjProperty.get.delegate)

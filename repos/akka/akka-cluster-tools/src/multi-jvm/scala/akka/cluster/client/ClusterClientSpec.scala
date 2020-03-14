@@ -115,8 +115,9 @@ class ClusterClientSpec
       join(third, first)
       join(fourth, first)
       runOn(fourth) {
-        val service =
-          system.actorOf(Props(classOf[TestService], testActor), "testService")
+        val service = system.actorOf(
+          Props(classOf[TestService], testActor),
+          "testService")
         ClusterClientReceptionist(system).registerService(service)
       }
       runOn(first, second, third, fourth) {
@@ -204,8 +205,9 @@ class ClusterClientSpec
     "re-establish connection to another receptionist when server is shutdown" in within(
       30 seconds) {
       runOn(first, second, third, fourth) {
-        val service2 =
-          system.actorOf(Props(classOf[TestService], testActor), "service2")
+        val service2 = system.actorOf(
+          Props(classOf[TestService], testActor),
+          "service2")
         ClusterClientReceptionist(system).registerService(service2)
         awaitCount(8)
       }
@@ -223,10 +225,11 @@ class ClusterClientSpec
           localAffinity = true)
         val reply = expectMsgType[Reply]
         reply.msg should be("bonjour-ack")
-        val receptionistRoleName = roleName(reply.node) match {
-          case Some(r) ⇒ r
-          case None ⇒ fail("unexpected missing roleName: " + reply.node)
-        }
+        val receptionistRoleName =
+          roleName(reply.node) match {
+            case Some(r) ⇒ r
+            case None ⇒ fail("unexpected missing roleName: " + reply.node)
+          }
         testConductor.exit(receptionistRoleName, 0).await
         remainingServerRoleNames -= receptionistRoleName
         within(remaining - 3.seconds) {
@@ -262,10 +265,11 @@ class ClusterClientSpec
           localAffinity = true)
         val reply = expectMsgType[Reply]
         reply.msg should be("bonjour2-ack")
-        val receptionistRoleName = roleName(reply.node) match {
-          case Some(r) ⇒ r
-          case None ⇒ fail("unexpected missing roleName: " + reply.node)
-        }
+        val receptionistRoleName =
+          roleName(reply.node) match {
+            case Some(r) ⇒ r
+            case None ⇒ fail("unexpected missing roleName: " + reply.node)
+          }
         // shutdown all but the one that the client is connected to
         remainingServerRoleNames.foreach { r ⇒
           if (r != receptionistRoleName)
@@ -360,8 +364,9 @@ class ClusterClientSpec
               system).selfAddress.port.get)
             .withFallback(system.settings.config))
         Cluster(sys2).join(Cluster(sys2).selfAddress)
-        val service2 =
-          sys2.actorOf(Props(classOf[TestService], testActor), "service2")
+        val service2 = sys2.actorOf(
+          Props(classOf[TestService], testActor),
+          "service2")
         ClusterClientReceptionist(sys2).registerService(service2)
         Await.ready(sys2.whenTerminated, 20.seconds)
       }

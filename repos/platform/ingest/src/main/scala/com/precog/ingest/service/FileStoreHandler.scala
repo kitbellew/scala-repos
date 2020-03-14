@@ -183,10 +183,11 @@ class FileStoreHandler(
                     StreamRef.forWriteMode(storeMode, true))
                   _ <- right(eventStore.save(storeFile, ingestTimeout))
                 } yield {
-                  val resultsPath = (baseURI.path |+| Some(
-                    "/data/fs/" + fullPath.path)).map(_.replaceAll("//", "/"))
-                  val locationHeader =
-                    Location(baseURI.copy(path = resultsPath))
+                  val resultsPath =
+                    (baseURI.path |+| Some("/data/fs/" + fullPath.path))
+                      .map(_.replaceAll("//", "/"))
+                  val locationHeader = Location(
+                    baseURI.copy(path = resultsPath))
                   HttpResponse[JValue](
                     Accepted,
                     headers = HttpHeaders(List(locationHeader)))

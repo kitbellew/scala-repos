@@ -183,13 +183,14 @@ private[memcached] object Interpreter {
    * used as a cas token.
    */
   private[memcached] def generateCasUnique(value: Buf): Buf = {
-    val hashAsUnsignedLong = Hashing
-      .goodFastHash(32)
-      .newHasher(value.length)
-      .putBytes(Buf.ByteArray.Owned.extract(value))
-      .hash()
-      .padToLong
-      .abs
+    val hashAsUnsignedLong =
+      Hashing
+        .goodFastHash(32)
+        .newHasher(value.length)
+        .putBytes(Buf.ByteArray.Owned.extract(value))
+        .hash()
+        .padToLong
+        .abs
     Buf.Utf8(hashAsUnsignedLong.toString)
   }
 }

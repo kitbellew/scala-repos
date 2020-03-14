@@ -34,20 +34,21 @@ object IntroduceImplicitParameterIntention {
     def seekParams(fun: ScFunctionExpr): mutable.HashMap[String, Int] = {
       val map: mutable.HashMap[String, Int] = new mutable.HashMap[String, Int]()
       var clearMap = false
-      val visitor = new ScalaRecursiveElementVisitor {
-        override def visitReferenceExpression(expr: ScReferenceExpression) {
-          expr.resolve() match {
-            case p: ScParameter if fun.parameters.contains(p) =>
-              if (!map.keySet.contains(expr.getText)) {
-                map.put(expr.getText, expr.getTextRange.getStartOffset)
-              } else {
-                clearMap = true
-              }
-            case _ =>
+      val visitor =
+        new ScalaRecursiveElementVisitor {
+          override def visitReferenceExpression(expr: ScReferenceExpression) {
+            expr.resolve() match {
+              case p: ScParameter if fun.parameters.contains(p) =>
+                if (!map.keySet.contains(expr.getText)) {
+                  map.put(expr.getText, expr.getTextRange.getStartOffset)
+                } else {
+                  clearMap = true
+                }
+              case _ =>
+            }
+            super.visitReferenceExpression(expr)
           }
-          super.visitReferenceExpression(expr)
         }
-      }
       fun.accept(visitor)
       if (clearMap)
         map.clear()
@@ -95,13 +96,14 @@ object IntroduceImplicitParameterIntention {
     for (p <- expr.parameters.reverse) {
       val expectedType = p.expectedParamType
       val declaredType = p.typeElement
-      val newParam = declaredType match {
-        case None                       => "_"
-        case _ if withoutParameterTypes => "_"
-        case Some(t) if expectedType.exists(_.equiv(t.getType().getOrAny)) =>
-          "_"
-        case Some(t) => s"(_: ${p.typeElement.get.getText})"
-      }
+      val newParam =
+        declaredType match {
+          case None                       => "_"
+          case _ if withoutParameterTypes => "_"
+          case Some(t) if expectedType.exists(_.equiv(t.getType().getOrAny)) =>
+            "_"
+          case Some(t) => s"(_: ${p.typeElement.get.getText})"
+        }
 
       val offset = occurrences(p.name) - diff
       buf.replace(offset, offset + p.name.length, newParam)
@@ -130,8 +132,10 @@ class IntroduceImplicitParameterIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val expr: ScFunctionExpr =
-      PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr], false)
+    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScFunctionExpr],
+      false)
     if (expr == null)
       return false
 
@@ -151,8 +155,10 @@ class IntroduceImplicitParameterIntention
         HintManager.getInstance().showErrorHint(editor, hint)
     }
 
-    val expr: ScFunctionExpr =
-      PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr], false)
+    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScFunctionExpr],
+      false)
     if (expr == null || !expr.isValid)
       return
 

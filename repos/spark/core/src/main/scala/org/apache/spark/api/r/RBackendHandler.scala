@@ -119,25 +119,27 @@ private[r] class RBackendHandler(server: RBackend)
       dos: DataOutputStream): Unit = {
     var obj: Object = null
     try {
-      val cls = if (isStatic) {
-        Utils.classForName(objId)
-      } else {
-        JVMObjectTracker.get(objId) match {
-          case None =>
-            throw new IllegalArgumentException("Object not found " + objId)
-          case Some(o) =>
-            obj = o
-            o.getClass
+      val cls =
+        if (isStatic) {
+          Utils.classForName(objId)
+        } else {
+          JVMObjectTracker.get(objId) match {
+            case None =>
+              throw new IllegalArgumentException("Object not found " + objId)
+            case Some(o) =>
+              obj = o
+              o.getClass
+          }
         }
-      }
 
       val args = readArgs(numArgs, dis)
 
       val methods = cls.getMethods
       val selectedMethods = methods.filter(m => m.getName == methodName)
       if (selectedMethods.length > 0) {
-        val index =
-          findMatchedSignature(selectedMethods.map(_.getParameterTypes), args)
+        val index = findMatchedSignature(
+          selectedMethods.map(_.getParameterTypes),
+          args)
 
         if (index.isEmpty) {
           logWarning(

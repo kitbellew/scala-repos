@@ -61,8 +61,8 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       val name = stage.name
       val status = stage.getStatusString
       val submissionTime = stage.submissionTime.get
-      val completionTime =
-        stage.completionTime.getOrElse(System.currentTimeMillis())
+      val completionTime = stage.completionTime.getOrElse(
+        System.currentTimeMillis())
 
       // The timeline library treats contents as HTML, so we have to escape them; for the
       // data-title attribute string we have to escape them twice since that's in a string.
@@ -95,8 +95,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
     val events = ListBuffer[String]()
     executorUIDatas.foreach {
       case (executorId, event) =>
-        val addedEvent =
-          s"""
+        val addedEvent = s"""
              |{
              |  'className': 'executor added',
              |  'group': 'executors',
@@ -144,8 +143,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
     val stageEventJsonAsStrSeq = makeStageEvent(stages)
     val executorsJsonAsStrSeq = makeExecutorEvent(executors)
 
-    val groupJsonArrayAsStr =
-      s"""
+    val groupJsonArrayAsStr = s"""
           |[
           |  {
           |    'id': 'executors',
@@ -158,8 +156,8 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
           |]
         """.stripMargin
 
-    val eventArrayAsStr =
-      (stageEventJsonAsStrSeq ++ executorsJsonAsStrSeq).mkString("[", ",", "]")
+    val eventArrayAsStr = (stageEventJsonAsStrSeq ++ executorsJsonAsStrSeq)
+      .mkString("[", ",", "]")
 
     <span class="expand-job-timeline">
       <span class="expand-job-timeline-arrow arrow-closed"></span>

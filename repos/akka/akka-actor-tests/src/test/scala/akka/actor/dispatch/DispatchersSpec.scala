@@ -118,8 +118,8 @@ class DispatchersSpec
 
   def validTypes = typesAndValidators.keys.toList
 
-  val defaultDispatcherConfig =
-    settings.config.getConfig("akka.actor.default-dispatcher")
+  val defaultDispatcherConfig = settings.config.getConfig(
+    "akka.actor.default-dispatcher")
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
     validTypes
@@ -248,8 +248,9 @@ class DispatchersSpec
     }
 
     "use pool-dispatcher router of deployment config" in {
-      val pool =
-        system.actorOf(FromConfig.props(Props[ThreadNameEcho]), name = "pool1")
+      val pool = system.actorOf(
+        FromConfig.props(Props[ThreadNameEcho]),
+        name = "pool1")
       pool ! Identify(None)
       val routee = expectMsgType[ActorIdentity].ref.get
       routee ! "what's the name?"

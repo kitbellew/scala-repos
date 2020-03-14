@@ -98,11 +98,12 @@ class Migration @Inject() (
     }
 
   def migrate(): StorageVersion = {
-    val versionFuture = for {
-      _ <- initializeStore()
-      changes <- currentStorageVersion.flatMap(applyMigrationSteps)
-      storedVersion <- storeCurrentVersion
-    } yield storedVersion
+    val versionFuture =
+      for {
+        _ <- initializeStore()
+        changes <- currentStorageVersion.flatMap(applyMigrationSteps)
+        storedVersion <- storeCurrentVersion
+      } yield storedVersion
 
     val result = versionFuture
       .map { version =>
@@ -153,8 +154,9 @@ class MigrationTo0_11(
 
   def migrateApps(): Future[Unit] = {
     log.info("Start 0.11 migration")
-    val rootGroupFuture =
-      groupRepository.rootGroup().map(_.getOrElse(Group.empty))
+    val rootGroupFuture = groupRepository
+      .rootGroup()
+      .map(_.getOrElse(Group.empty))
     val appIdsFuture = appRepository.allPathIds()
 
     for {
@@ -170,13 +172,13 @@ class MigrationTo0_11(
   private[this] def storeUpdatedAppsInRootGroup(
       rootGroup: Group,
       updatedApps: Iterable[AppDefinition]): Future[Unit] = {
-    val updatedGroup = updatedApps.foldLeft(rootGroup) {
-      (updatedGroup, updatedApp) =>
+    val updatedGroup =
+      updatedApps.foldLeft(rootGroup) { (updatedGroup, updatedApp) =>
         updatedGroup.updateApp(
           updatedApp.id,
           _ => updatedApp,
           updatedApp.version)
-    }
+      }
     groupRepository.store(groupRepository.zkRootName, updatedGroup).map(_ => ())
   }
 
@@ -211,13 +213,13 @@ class MigrationTo0_11(
           case Some(lastApp) if !lastApp.isUpgrade(nextApp) =>
             log.info(
               s"Adding versionInfo to ${nextApp.id} (${nextApp.version}): scaling or restart")
-            nextApp.copy(versionInfo =
-              lastApp.versionInfo.withScaleOrRestartChange(nextApp.version))
+            nextApp.copy(versionInfo = lastApp.versionInfo
+              .withScaleOrRestartChange(nextApp.version))
           case _ =>
             log.info(
               s"Adding versionInfo to ${nextApp.id} (${nextApp.version}): new config")
-            nextApp.copy(versionInfo =
-              AppDefinition.VersionInfo.forNewConfig(nextApp.version))
+            nextApp.copy(versionInfo = AppDefinition.VersionInfo.forNewConfig(
+              nextApp.version))
         }
       }
     }
@@ -301,8 +303,8 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
         log.info("Found {} tasks in store", keys.size)
         // old format is appId:appId.taskId
         val oldFormatRegex = """^.*:.*\..*$""".r
-        val namesInOldFormat =
-          keys.filter(key => oldFormatRegex.pattern.matcher(key).matches)
+        val namesInOldFormat = keys.filter(key =>
+          oldFormatRegex.pattern.matcher(key).matches)
         log.info(
           "{} tasks in old format need to be migrated.",
           namesInOldFormat.size)
@@ -383,8 +385,9 @@ class MigrationTo0_16(
 
   def migrate(): Future[Unit] = {
     log.info("Start 0.16 migration")
-    val rootGroupFuture =
-      groupRepository.rootGroup().map(_.getOrElse(Group.empty))
+    val rootGroupFuture = groupRepository
+      .rootGroup()
+      .map(_.getOrElse(Group.empty))
 
     for {
       rootGroup <- rootGroupFuture

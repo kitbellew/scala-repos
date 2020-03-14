@@ -483,11 +483,12 @@ private[spark] object ExecutorsPage {
       listener: ExecutorsListener,
       statusId: Int,
       isActive: Boolean): ExecutorSummary = {
-    val status = if (isActive) {
-      listener.activeStorageStatusList(statusId)
-    } else {
-      listener.deadStorageStatusList(statusId)
-    }
+    val status =
+      if (isActive) {
+        listener.activeStorageStatusList(statusId)
+      } else {
+        listener.deadStorageStatusList(statusId)
+      }
     val execId = status.blockManagerId.executorId
     val hostPort = status.blockManagerId.hostPort
     val rddBlocks = status.numBlocks
@@ -504,8 +505,8 @@ private[spark] object ExecutorsPage {
     val totalGCTime = listener.executorToJvmGCTime.getOrElse(execId, 0L)
     val totalInputBytes = listener.executorToInputBytes.getOrElse(execId, 0L)
     val totalShuffleRead = listener.executorToShuffleRead.getOrElse(execId, 0L)
-    val totalShuffleWrite =
-      listener.executorToShuffleWrite.getOrElse(execId, 0L)
+    val totalShuffleWrite = listener.executorToShuffleWrite
+      .getOrElse(execId, 0L)
     val executorLogs = listener.executorToLogUrls.getOrElse(execId, Map.empty)
 
     new ExecutorSummary(

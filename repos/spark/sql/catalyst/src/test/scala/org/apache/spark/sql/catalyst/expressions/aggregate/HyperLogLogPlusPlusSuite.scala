@@ -101,16 +101,18 @@ class HyperLogLogPlusPlusSuite extends SparkFunSuite {
   test("random cardinality estimation") {
     val srng = new Random(323981238L)
     val seen = mutable.HashSet.empty[Int]
-    val update = (i: Int) => {
-      val value = srng.nextInt()
-      seen += value
-      value
-    }
-    val eval = (n: Int) => {
-      val cardinality = seen.size
-      seen.clear()
-      cardinality
-    }
+    val update =
+      (i: Int) => {
+        val value = srng.nextInt()
+        seen += value
+        value
+      }
+    val eval =
+      (n: Int) => {
+        val cardinality = seen.size
+        seen.clear()
+        cardinality
+      }
     testCardinalityEstimates(
       Seq(0.05, 0.01),
       Seq(100, 10000, 500000),

@@ -113,395 +113,399 @@ class ScalaAnnotator
   override def annotate(element: PsiElement, holder: AnnotationHolder) {
     val typeAware = isAdvancedHighlightingEnabled(element)
 
-    val (compiled, isInSources) = element.getContainingFile match {
-      case file: ScalaFile =>
-        val isInSources: Boolean = ScalaUtils.isUnderSources(file)
-        if (isInSources && (element eq file)) {
-          if (typeAware)
-            Stats.trigger("scala.file.with.type.aware.annotated")
-          else
-            Stats.trigger("scala.file.without.type.aware.annotated")
-        }
-        (file.isCompiled, isInSources)
-      case _ => (false, false)
-    }
-
-    val visitor = new ScalaElementVisitor {
-      private def expressionPart(expr: ScExpression) {
-        if (!compiled) {
-          checkExpressionType(expr, holder, typeAware)
-          checkExpressionImplicitParameters(expr, holder)
-          ByNameParameter.annotate(expr, holder, typeAware)
-        }
-
-        if (isAdvancedHighlightingEnabled(element)) {
-          expr.getTypeExt(TypingContext.empty) match {
-            case ExpressionTypeResult(
-                  Success(t, _),
-                  _,
-                  Some(implicitFunction)) =>
-              highlightImplicitView(expr, implicitFunction, t, expr, holder)
-            case _ =>
+    val (compiled, isInSources) =
+      element.getContainingFile match {
+        case file: ScalaFile =>
+          val isInSources: Boolean = ScalaUtils.isUnderSources(file)
+          if (isInSources && (element eq file)) {
+            if (typeAware)
+              Stats.trigger("scala.file.with.type.aware.annotated")
+            else
+              Stats.trigger("scala.file.without.type.aware.annotated")
           }
-        }
+          (file.isCompiled, isInSources)
+        case _ => (false, false)
       }
 
-      override def visitParameterizedTypeElement(
-          parameterized: ScParameterizedTypeElement) {
-        val tp =
-          parameterized.typeElement.getTypeNoConstructor(TypingContext.empty)
-        tp match {
-          case Success(res, _) =>
-            ScType.extractDesignated(res, withoutAliases = false) match {
-              case Some((t: ScTypeParametersOwner, subst)) =>
-                val typeParametersLength = t.typeParameters.length
-                val argsLength = parameterized.typeArgList.typeArgs.length
-                if (typeParametersLength != argsLength) {
-                  val error =
-                    "Wrong number of type parameters. Expected: " + typeParametersLength + ", actual: " + argsLength
-                  val leftBracket = parameterized.typeArgList.getNode
-                    .findChildByType(ScalaTokenTypes.tLSQBRACKET)
-                  if (leftBracket != null) {
-                    val annotation =
-                      holder.createErrorAnnotation(leftBracket, error)
-                    annotation.setHighlightType(ProblemHighlightType.ERROR)
-                  }
-                  val rightBracket = parameterized.typeArgList.getNode
-                    .findChildByType(ScalaTokenTypes.tRSQBRACKET)
-                  if (rightBracket != null) {
-                    val annotation =
-                      holder.createErrorAnnotation(rightBracket, error)
-                    annotation.setHighlightType(ProblemHighlightType.ERROR)
-                  }
-                }
+    val visitor =
+      new ScalaElementVisitor {
+        private def expressionPart(expr: ScExpression) {
+          if (!compiled) {
+            checkExpressionType(expr, holder, typeAware)
+            checkExpressionImplicitParameters(expr, holder)
+            ByNameParameter.annotate(expr, holder, typeAware)
+          }
+
+          if (isAdvancedHighlightingEnabled(element)) {
+            expr.getTypeExt(TypingContext.empty) match {
+              case ExpressionTypeResult(
+                    Success(t, _),
+                    _,
+                    Some(implicitFunction)) =>
+                highlightImplicitView(expr, implicitFunction, t, expr, holder)
               case _ =>
             }
-          case _ =>
+          }
         }
-        super.visitParameterizedTypeElement(parameterized)
-      }
 
-      override def visitExpression(expr: ScExpression) {
-        expressionPart(expr)
-        super.visitExpression(expr)
-      }
-
-      override def visitMacroDefinition(fun: ScMacroDefinition): Unit = {
-        if (isInSources)
-          Stats.trigger("scala.macro.definition")
-        super.visitMacroDefinition(fun)
-      }
-
-      override def visitReferenceExpression(ref: ScReferenceExpression) {
-        referencePart(ref)
-        visitExpression(ref)
-      }
-
-      override def visitEnumerator(enum: ScEnumerator) {
-        enum.valKeyword match {
-          case Some(valKeyword) =>
-            val annotation = holder.createWarningAnnotation(
-              valKeyword,
-              ScalaBundle.message("enumerator.val.keyword.deprecated"))
-            annotation.setHighlightType(ProblemHighlightType.LIKE_DEPRECATED)
-            annotation.registerFix(
-              new RemoveValFromEnumeratorIntentionAction(enum))
-          case _ =>
+        override def visitParameterizedTypeElement(
+            parameterized: ScParameterizedTypeElement) {
+          val tp = parameterized.typeElement.getTypeNoConstructor(
+            TypingContext.empty)
+          tp match {
+            case Success(res, _) =>
+              ScType.extractDesignated(res, withoutAliases = false) match {
+                case Some((t: ScTypeParametersOwner, subst)) =>
+                  val typeParametersLength = t.typeParameters.length
+                  val argsLength = parameterized.typeArgList.typeArgs.length
+                  if (typeParametersLength != argsLength) {
+                    val error =
+                      "Wrong number of type parameters. Expected: " + typeParametersLength + ", actual: " + argsLength
+                    val leftBracket = parameterized.typeArgList.getNode
+                      .findChildByType(ScalaTokenTypes.tLSQBRACKET)
+                    if (leftBracket != null) {
+                      val annotation = holder.createErrorAnnotation(
+                        leftBracket,
+                        error)
+                      annotation.setHighlightType(ProblemHighlightType.ERROR)
+                    }
+                    val rightBracket = parameterized.typeArgList.getNode
+                      .findChildByType(ScalaTokenTypes.tRSQBRACKET)
+                    if (rightBracket != null) {
+                      val annotation = holder.createErrorAnnotation(
+                        rightBracket,
+                        error)
+                      annotation.setHighlightType(ProblemHighlightType.ERROR)
+                    }
+                  }
+                case _ =>
+              }
+            case _ =>
+          }
+          super.visitParameterizedTypeElement(parameterized)
         }
-        super.visitEnumerator(enum)
-      }
 
-      override def visitGenerator(gen: ScGenerator) {
-        gen.valKeyword match {
-          case Some(valKeyword) =>
-            val annotation = holder.createWarningAnnotation(
-              valKeyword,
-              ScalaBundle.message("generator.val.keyword.removed"))
-            annotation.setHighlightType(
-              ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
-            annotation.registerFix(
-              new RemoveValFromGeneratorIntentionAction(gen))
-          case _ =>
+        override def visitExpression(expr: ScExpression) {
+          expressionPart(expr)
+          super.visitExpression(expr)
         }
-        super.visitGenerator(gen)
-      }
 
-      override def visitGenericCallExpression(call: ScGenericCall) {
-        //todo: if (typeAware) checkGenericCallExpression(call, holder)
-        super.visitGenericCallExpression(call)
-      }
-
-      override def visitTypeElement(te: ScTypeElement) {
-        checkTypeElementForm(te, holder)
-        super.visitTypeElement(te)
-      }
-
-      override def visitLiteral(l: ScLiteral) {
-        l match {
-          case interpolated: ScInterpolatedStringLiteral
-              if l.getFirstChild != null =>
-            highlightWrongInterpolatedString(interpolated, holder)
-          case _
-              if l.getFirstChild.getNode.getElementType == ScalaTokenTypes.tINTEGER => // the literal is a tINTEGER
-            checkIntegerLiteral(l, holder)
-          case _ =>
+        override def visitMacroDefinition(fun: ScMacroDefinition): Unit = {
+          if (isInSources)
+            Stats.trigger("scala.macro.definition")
+          super.visitMacroDefinition(fun)
         }
-        super.visitLiteral(l)
-      }
 
-      override def visitAnnotation(annotation: ScAnnotation) {
-        checkAnnotationType(annotation, holder)
-        PrivateBeanProperty.annotate(annotation, holder)
-        super.visitAnnotation(annotation)
-      }
-
-      override def visitForExpression(expr: ScForStatement) {
-        checkForStmtUsedTypes(expr, holder)
-        super.visitForExpression(expr)
-      }
-
-      override def visitVariableDefinition(varr: ScVariableDefinition) {
-        annotateVariableDefinition(varr, holder, typeAware)
-        super.visitVariableDefinition(varr)
-      }
-
-      override def visitVariableDeclaration(varr: ScVariableDeclaration) {
-        checkAbstractMemberPrivateModifier(
-          varr,
-          varr.declaredElements.map(_.nameId),
-          holder)
-        super.visitVariableDeclaration(varr)
-      }
-
-      override def visitTypedStmt(stmt: ScTypedStmt) {
-        annotateTypedStatement(stmt, holder, typeAware)
-        super.visitTypedStmt(stmt)
-      }
-
-      override def visitPatternDefinition(pat: ScPatternDefinition) {
-        if (!compiled) {
-          annotatePatternDefinition(pat, holder, typeAware)
+        override def visitReferenceExpression(ref: ScReferenceExpression) {
+          referencePart(ref)
+          visitExpression(ref)
         }
-        super.visitPatternDefinition(pat)
-      }
 
-      override def visitPattern(pat: ScPattern) {
-        annotatePattern(pat, holder, typeAware)
-        super.visitPattern(pat)
-      }
-
-      override def visitMethodCallExpression(call: ScMethodCall) {
-        checkMethodCallImplicitConversion(call, holder)
-        if (typeAware)
-          annotateMethodInvocation(call, holder)
-        super.visitMethodCallExpression(call)
-      }
-
-      override def visitInfixExpression(infix: ScInfixExpr): Unit = {
-        if (typeAware)
-          annotateMethodInvocation(infix, holder)
-        super.visitInfixExpression(infix)
-      }
-
-      override def visitSelfInvocation(self: ScSelfInvocation) {
-        checkSelfInvocation(self, holder)
-        super.visitSelfInvocation(self)
-      }
-
-      override def visitConstrBlock(constr: ScConstrBlock) {
-        annotateAuxiliaryConstructor(constr, holder)
-        super.visitConstrBlock(constr)
-      }
-
-      override def visitParameter(parameter: ScParameter) {
-        annotateParameter(parameter, holder)
-        super.visitParameter(parameter)
-      }
-
-      override def visitCatchBlock(c: ScCatchBlock) {
-        checkCatchBlockGeneralizedRule(c, holder, typeAware)
-        super.visitCatchBlock(c)
-      }
-
-      override def visitFunctionDefinition(fun: ScFunctionDefinition) {
-        if (!compiled && !fun.isConstructor)
-          annotateFunction(fun, holder, typeAware)
-        super.visitFunctionDefinition(fun)
-      }
-
-      override def visitFunctionDeclaration(fun: ScFunctionDeclaration) {
-        checkAbstractMemberPrivateModifier(fun, Seq(fun.nameId), holder)
-        super.visitFunctionDeclaration(fun)
-      }
-
-      override def visitFunction(fun: ScFunction) {
-        if (typeAware && !compiled && fun.getParent
-              .isInstanceOf[ScTemplateBody]) {
-          checkOverrideMethods(fun, holder, isInSources)
+        override def visitEnumerator(enum: ScEnumerator) {
+          enum.valKeyword match {
+            case Some(valKeyword) =>
+              val annotation = holder.createWarningAnnotation(
+                valKeyword,
+                ScalaBundle.message("enumerator.val.keyword.deprecated"))
+              annotation.setHighlightType(ProblemHighlightType.LIKE_DEPRECATED)
+              annotation.registerFix(
+                new RemoveValFromEnumeratorIntentionAction(enum))
+            case _ =>
+          }
+          super.visitEnumerator(enum)
         }
-        if (!fun.isConstructor)
-          checkFunctionForVariance(fun, holder)
-        super.visitFunction(fun)
-      }
 
-      override def visitAssignmentStatement(stmt: ScAssignStmt) {
-        annotateAssignment(stmt, holder, typeAware)
-        super.visitAssignmentStatement(stmt)
-      }
-
-      override def visitTypeProjection(proj: ScTypeProjection) {
-        referencePart(proj)
-        visitTypeElement(proj)
-      }
-
-      override def visitUnderscoreExpression(under: ScUnderscoreSection) {
-        checkUnboundUnderscore(under, holder)
-      }
-
-      private def referencePart(ref: ScReferenceElement) {
-        if (typeAware)
-          annotateReference(ref, holder)
-        ref.qualifier match {
-          case None    => checkNotQualifiedReferenceElement(ref, holder)
-          case Some(_) => checkQualifiedReferenceElement(ref, holder)
+        override def visitGenerator(gen: ScGenerator) {
+          gen.valKeyword match {
+            case Some(valKeyword) =>
+              val annotation = holder.createWarningAnnotation(
+                valKeyword,
+                ScalaBundle.message("generator.val.keyword.removed"))
+              annotation.setHighlightType(
+                ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+              annotation.registerFix(
+                new RemoveValFromGeneratorIntentionAction(gen))
+            case _ =>
+          }
+          super.visitGenerator(gen)
         }
-      }
 
-      override def visitReference(ref: ScReferenceElement) {
-        referencePart(ref)
-        super.visitReference(ref)
-      }
-
-      override def visitImportExpr(expr: ScImportExpr) {
-        checkImportExpr(expr, holder)
-        super.visitImportExpr(expr)
-      }
-
-      override def visitReturnStatement(ret: ScReturnStmt) {
-        checkExplicitTypeForReturnStatement(ret, holder)
-        super.visitReturnStatement(ret)
-      }
-
-      override def visitConstructor(constr: ScConstructor) {
-        if (typeAware)
-          annotateConstructor(constr, holder)
-        super.visitConstructor(constr)
-      }
-
-      override def visitModifierList(modifierList: ScModifierList) {
-        ModifierChecker.checkModifiers(modifierList, holder)
-        super.visitModifierList(modifierList)
-      }
-
-      override def visitParameters(parameters: ScParameters) {
-        annotateParameters(parameters, holder)
-        super.visitParameters(parameters)
-      }
-
-      override def visitTypeDefinition(typedef: ScTypeDefinition) {
-        super.visitTypeDefinition(typedef)
-      }
-
-      override def visitExistentialTypeElement(
-          exist: ScExistentialTypeElement): Unit = {
-        if (isInSources)
-          Stats.trigger("scala.existential.type")
-        super.visitExistentialTypeElement(exist)
-      }
-
-      override def visitTypeAlias(alias: ScTypeAlias) {
-        if (typeAware && !compiled && alias.getParent
-              .isInstanceOf[ScTemplateBody]) {
-          checkOverrideTypes(alias, holder)
+        override def visitGenericCallExpression(call: ScGenericCall) {
+          //todo: if (typeAware) checkGenericCallExpression(call, holder)
+          super.visitGenericCallExpression(call)
         }
-        if (!compoundType(alias))
-          checkBoundsVariance(
-            alias,
-            holder,
-            alias.nameId,
-            alias,
-            checkTypeDeclaredSameBracket = false)
-        super.visitTypeAlias(alias)
-      }
 
-      override def visitVariable(varr: ScVariable) {
-        if (typeAware && !compiled && (varr.getParent
-              .isInstanceOf[ScTemplateBody] ||
-            varr.getParent.isInstanceOf[ScEarlyDefinitions])) {
-          checkOverrideVars(varr, holder, isInSources)
+        override def visitTypeElement(te: ScTypeElement) {
+          checkTypeElementForm(te, holder)
+          super.visitTypeElement(te)
         }
-        varr.typeElement match {
-          case Some(typ) =>
-            checkBoundsVariance(
-              varr,
-              holder,
-              typ,
-              varr,
-              checkTypeDeclaredSameBracket = false)
-          case _ =>
+
+        override def visitLiteral(l: ScLiteral) {
+          l match {
+            case interpolated: ScInterpolatedStringLiteral
+                if l.getFirstChild != null =>
+              highlightWrongInterpolatedString(interpolated, holder)
+            case _
+                if l.getFirstChild.getNode.getElementType == ScalaTokenTypes.tINTEGER => // the literal is a tINTEGER
+              checkIntegerLiteral(l, holder)
+            case _ =>
+          }
+          super.visitLiteral(l)
         }
-        if (!childHasAnnotation(varr.typeElement, "uncheckedVariance")) {
-          checkValueAndVariableVariance(
+
+        override def visitAnnotation(annotation: ScAnnotation) {
+          checkAnnotationType(annotation, holder)
+          PrivateBeanProperty.annotate(annotation, holder)
+          super.visitAnnotation(annotation)
+        }
+
+        override def visitForExpression(expr: ScForStatement) {
+          checkForStmtUsedTypes(expr, holder)
+          super.visitForExpression(expr)
+        }
+
+        override def visitVariableDefinition(varr: ScVariableDefinition) {
+          annotateVariableDefinition(varr, holder, typeAware)
+          super.visitVariableDefinition(varr)
+        }
+
+        override def visitVariableDeclaration(varr: ScVariableDeclaration) {
+          checkAbstractMemberPrivateModifier(
             varr,
-            ScTypeParam.Covariant,
-            varr.declaredElements,
+            varr.declaredElements.map(_.nameId),
             holder)
-          checkValueAndVariableVariance(
-            varr,
-            ScTypeParam.Contravariant,
-            varr.declaredElements,
-            holder)
+          super.visitVariableDeclaration(varr)
         }
-        super.visitVariable(varr)
-      }
 
-      override def visitValueDeclaration(v: ScValueDeclaration) {
-        checkAbstractMemberPrivateModifier(
-          v,
-          v.declaredElements.map(_.nameId),
-          holder)
-        super.visitValueDeclaration(v)
-      }
-
-      override def visitValue(v: ScValue) {
-        if (typeAware && !compiled && (v.getParent
-              .isInstanceOf[ScTemplateBody] ||
-            v.getParent.isInstanceOf[ScEarlyDefinitions])) {
-          checkOverrideVals(v, holder, isInSources)
+        override def visitTypedStmt(stmt: ScTypedStmt) {
+          annotateTypedStatement(stmt, holder, typeAware)
+          super.visitTypedStmt(stmt)
         }
-        v.typeElement match {
-          case Some(typ) =>
+
+        override def visitPatternDefinition(pat: ScPatternDefinition) {
+          if (!compiled) {
+            annotatePatternDefinition(pat, holder, typeAware)
+          }
+          super.visitPatternDefinition(pat)
+        }
+
+        override def visitPattern(pat: ScPattern) {
+          annotatePattern(pat, holder, typeAware)
+          super.visitPattern(pat)
+        }
+
+        override def visitMethodCallExpression(call: ScMethodCall) {
+          checkMethodCallImplicitConversion(call, holder)
+          if (typeAware)
+            annotateMethodInvocation(call, holder)
+          super.visitMethodCallExpression(call)
+        }
+
+        override def visitInfixExpression(infix: ScInfixExpr): Unit = {
+          if (typeAware)
+            annotateMethodInvocation(infix, holder)
+          super.visitInfixExpression(infix)
+        }
+
+        override def visitSelfInvocation(self: ScSelfInvocation) {
+          checkSelfInvocation(self, holder)
+          super.visitSelfInvocation(self)
+        }
+
+        override def visitConstrBlock(constr: ScConstrBlock) {
+          annotateAuxiliaryConstructor(constr, holder)
+          super.visitConstrBlock(constr)
+        }
+
+        override def visitParameter(parameter: ScParameter) {
+          annotateParameter(parameter, holder)
+          super.visitParameter(parameter)
+        }
+
+        override def visitCatchBlock(c: ScCatchBlock) {
+          checkCatchBlockGeneralizedRule(c, holder, typeAware)
+          super.visitCatchBlock(c)
+        }
+
+        override def visitFunctionDefinition(fun: ScFunctionDefinition) {
+          if (!compiled && !fun.isConstructor)
+            annotateFunction(fun, holder, typeAware)
+          super.visitFunctionDefinition(fun)
+        }
+
+        override def visitFunctionDeclaration(fun: ScFunctionDeclaration) {
+          checkAbstractMemberPrivateModifier(fun, Seq(fun.nameId), holder)
+          super.visitFunctionDeclaration(fun)
+        }
+
+        override def visitFunction(fun: ScFunction) {
+          if (typeAware && !compiled && fun.getParent
+                .isInstanceOf[ScTemplateBody]) {
+            checkOverrideMethods(fun, holder, isInSources)
+          }
+          if (!fun.isConstructor)
+            checkFunctionForVariance(fun, holder)
+          super.visitFunction(fun)
+        }
+
+        override def visitAssignmentStatement(stmt: ScAssignStmt) {
+          annotateAssignment(stmt, holder, typeAware)
+          super.visitAssignmentStatement(stmt)
+        }
+
+        override def visitTypeProjection(proj: ScTypeProjection) {
+          referencePart(proj)
+          visitTypeElement(proj)
+        }
+
+        override def visitUnderscoreExpression(under: ScUnderscoreSection) {
+          checkUnboundUnderscore(under, holder)
+        }
+
+        private def referencePart(ref: ScReferenceElement) {
+          if (typeAware)
+            annotateReference(ref, holder)
+          ref.qualifier match {
+            case None    => checkNotQualifiedReferenceElement(ref, holder)
+            case Some(_) => checkQualifiedReferenceElement(ref, holder)
+          }
+        }
+
+        override def visitReference(ref: ScReferenceElement) {
+          referencePart(ref)
+          super.visitReference(ref)
+        }
+
+        override def visitImportExpr(expr: ScImportExpr) {
+          checkImportExpr(expr, holder)
+          super.visitImportExpr(expr)
+        }
+
+        override def visitReturnStatement(ret: ScReturnStmt) {
+          checkExplicitTypeForReturnStatement(ret, holder)
+          super.visitReturnStatement(ret)
+        }
+
+        override def visitConstructor(constr: ScConstructor) {
+          if (typeAware)
+            annotateConstructor(constr, holder)
+          super.visitConstructor(constr)
+        }
+
+        override def visitModifierList(modifierList: ScModifierList) {
+          ModifierChecker.checkModifiers(modifierList, holder)
+          super.visitModifierList(modifierList)
+        }
+
+        override def visitParameters(parameters: ScParameters) {
+          annotateParameters(parameters, holder)
+          super.visitParameters(parameters)
+        }
+
+        override def visitTypeDefinition(typedef: ScTypeDefinition) {
+          super.visitTypeDefinition(typedef)
+        }
+
+        override def visitExistentialTypeElement(
+            exist: ScExistentialTypeElement): Unit = {
+          if (isInSources)
+            Stats.trigger("scala.existential.type")
+          super.visitExistentialTypeElement(exist)
+        }
+
+        override def visitTypeAlias(alias: ScTypeAlias) {
+          if (typeAware && !compiled && alias.getParent
+                .isInstanceOf[ScTemplateBody]) {
+            checkOverrideTypes(alias, holder)
+          }
+          if (!compoundType(alias))
             checkBoundsVariance(
-              v,
+              alias,
               holder,
-              typ,
-              v,
+              alias.nameId,
+              alias,
               checkTypeDeclaredSameBracket = false)
-          case _ =>
+          super.visitTypeAlias(alias)
         }
-        if (!childHasAnnotation(v.typeElement, "uncheckedVariance")) {
-          checkValueAndVariableVariance(
+
+        override def visitVariable(varr: ScVariable) {
+          if (typeAware && !compiled && (varr.getParent
+                .isInstanceOf[ScTemplateBody] ||
+              varr.getParent.isInstanceOf[ScEarlyDefinitions])) {
+            checkOverrideVars(varr, holder, isInSources)
+          }
+          varr.typeElement match {
+            case Some(typ) =>
+              checkBoundsVariance(
+                varr,
+                holder,
+                typ,
+                varr,
+                checkTypeDeclaredSameBracket = false)
+            case _ =>
+          }
+          if (!childHasAnnotation(varr.typeElement, "uncheckedVariance")) {
+            checkValueAndVariableVariance(
+              varr,
+              ScTypeParam.Covariant,
+              varr.declaredElements,
+              holder)
+            checkValueAndVariableVariance(
+              varr,
+              ScTypeParam.Contravariant,
+              varr.declaredElements,
+              holder)
+          }
+          super.visitVariable(varr)
+        }
+
+        override def visitValueDeclaration(v: ScValueDeclaration) {
+          checkAbstractMemberPrivateModifier(
             v,
-            ScTypeParam.Covariant,
-            v.declaredElements,
+            v.declaredElements.map(_.nameId),
             holder)
+          super.visitValueDeclaration(v)
         }
-        super.visitValue(v)
-      }
 
-      override def visitClassParameter(parameter: ScClassParameter) {
-        if (typeAware && !compiled) {
-          checkOverrideClassParameters(parameter, holder)
+        override def visitValue(v: ScValue) {
+          if (typeAware && !compiled && (v.getParent
+                .isInstanceOf[ScTemplateBody] ||
+              v.getParent.isInstanceOf[ScEarlyDefinitions])) {
+            checkOverrideVals(v, holder, isInSources)
+          }
+          v.typeElement match {
+            case Some(typ) =>
+              checkBoundsVariance(
+                v,
+                holder,
+                typ,
+                v,
+                checkTypeDeclaredSameBracket = false)
+            case _ =>
+          }
+          if (!childHasAnnotation(v.typeElement, "uncheckedVariance")) {
+            checkValueAndVariableVariance(
+              v,
+              ScTypeParam.Covariant,
+              v.declaredElements,
+              holder)
+          }
+          super.visitValue(v)
         }
-        super.visitClassParameter(parameter)
-      }
 
-      override def visitClass(cl: ScClass): Unit = {
-        if (typeAware && ValueClassType.isValueClass(cl))
-          annotateValueClass(cl, holder)
-        super.visitClass(cl)
+        override def visitClassParameter(parameter: ScClassParameter) {
+          if (typeAware && !compiled) {
+            checkOverrideClassParameters(parameter, holder)
+          }
+          super.visitClassParameter(parameter)
+        }
+
+        override def visitClass(cl: ScClass): Unit = {
+          if (typeAware && ValueClassType.isValueClass(cl))
+            annotateValueClass(cl, holder)
+          super.visitClass(cl)
+        }
       }
-    }
     annotateScope(element, holder)
     element.accept(visitor)
     AnnotatorHighlighter.highlightElement(element, holder)
@@ -599,20 +603,22 @@ class ScalaAnnotator
     block.expression match {
       case Some(expr) =>
         val tp = expr.getType(TypingContext.empty).getOrAny
-        val throwable = ScalaPsiManager
-          .instance(expr.getProject)
-          .getCachedClass(expr.getResolveScope, "java.lang.Throwable")
-          .orNull
+        val throwable =
+          ScalaPsiManager
+            .instance(expr.getProject)
+            .getCachedClass(expr.getResolveScope, "java.lang.Throwable")
+            .orNull
         if (throwable == null)
           return
         val throwableType = ScDesignatorType(throwable)
         def checkMember(memberName: String, checkReturnTypeIsBoolean: Boolean) {
-          val processor = new MethodResolveProcessor(
-            expr,
-            memberName,
-            List(Seq(new Compatibility.Expression(throwableType))),
-            Seq.empty,
-            Seq.empty)
+          val processor =
+            new MethodResolveProcessor(
+              expr,
+              memberName,
+              List(Seq(new Compatibility.Expression(throwableType))),
+              Seq.empty,
+              Seq.empty)
           processor.processType(tp, expr)
           val candidates = processor.candidates
           if (candidates.length != 1) {
@@ -624,8 +630,9 @@ class ScalaAnnotator
             annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
           } else if (checkReturnTypeIsBoolean) {
             def error() {
-              val error =
-                ScalaBundle.message("expected.type.boolean", memberName)
+              val error = ScalaBundle.message(
+                "expected.type.boolean",
+                memberName)
               val annotation = holder.createErrorAnnotation(expr, error)
               annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
             }
@@ -645,11 +652,12 @@ class ScalaAnnotator
                   case Some((tp: ScType, _)) if tp equiv psi.types.Unit => //do nothing
                   case Some((tp: ScType, typeElement)) =>
                     import org.jetbrains.plugins.scala.lang.psi.types._
-                    val returnType = candidates(0) match {
-                      case ScalaResolveResult(fun: ScFunction, subst) =>
-                        fun.returnType.map(subst.subst)
-                      case _ => return
-                    }
+                    val returnType =
+                      candidates(0) match {
+                        case ScalaResolveResult(fun: ScFunction, subst) =>
+                          fun.returnType.map(subst.subst)
+                        case _ => return
+                      }
                     val expectedType = Success(tp, None)
                     val conformance = ScalaAnnotator.smartCheckConformance(
                       expectedType,
@@ -662,8 +670,8 @@ class ScalaAnnotator
                           "expr.type.does.not.conform.expected.type",
                           retTypeText,
                           expectedTypeText)
-                        val annotation: Annotation =
-                          holder.createErrorAnnotation(expr, error)
+                        val annotation: Annotation = holder
+                          .createErrorAnnotation(expr, error)
                         annotation.setHighlightType(
                           ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
                         typeElement match {
@@ -673,8 +681,9 @@ class ScalaAnnotator
                             val fix =
                               new ChangeTypeFix(te, returnType.getOrNothing)
                             annotation.registerFix(fix)
-                            val teAnnotation =
-                              annotationWithoutHighlighting(holder, te)
+                            val teAnnotation = annotationWithoutHighlighting(
+                              holder,
+                              te)
                             teAnnotation.registerFix(fix)
                           case _ =>
                         }
@@ -719,23 +728,26 @@ class ScalaAnnotator
       element: PsiElement,
       resolveResult: ScalaResolveResult,
       checkWrite: Boolean) {
-    val named = resolveResult.getActualElement match {
-      case isLightScNamedElement(e) => e
-      case e                        => e
-    }
+    val named =
+      resolveResult.getActualElement match {
+        case isLightScNamedElement(e) => e
+        case e                        => e
+      }
     val file = element.getContainingFile
     if (named.isValid && named.getContainingFile == file &&
         !PsiTreeUtil.isAncestor(
           named,
           element,
           true)) { //to filter recursive usages
-      val value: ValueUsed = element match {
-        case ref: ScReferenceExpression
-            if checkWrite &&
-              ScalaPsiUtil.isPossiblyAssignment(ref.asInstanceOf[PsiElement]) =>
-          WriteValueUsed(named)
-        case _ => ReadValueUsed(named)
-      }
+      val value: ValueUsed =
+        element match {
+          case ref: ScReferenceExpression
+              if checkWrite &&
+                ScalaPsiUtil.isPossiblyAssignment(
+                  ref.asInstanceOf[PsiElement]) =>
+            WriteValueUsed(named)
+          case _ => ReadValueUsed(named)
+        }
       val holder = ScalaRefCountHolder.getInstance(file)
       holder.registerValueUsed(value)
       // For use of unapply method, see SCL-3463
@@ -808,8 +820,9 @@ class ScalaAnnotator
     }
 
     def getFix: Seq[IntentionAction] = {
-      val classes =
-        ScalaImportTypeFix.getTypesToImport(refElement, refElement.getProject)
+      val classes = ScalaImportTypeFix.getTypesToImport(
+        refElement,
+        refElement.getProject)
       if (classes.length == 0)
         return Seq.empty
       Seq[IntentionAction](new ScalaImportTypeFix(classes, refElement))
@@ -958,8 +971,9 @@ class ScalaAnnotator
               .exists(!_.getElement.isInstanceOf[PsiPackage])) {
           // We can't resolve the method call A(arg1, arg2), but we can resolve A. Highlight this differently.
           val error = ScalaBundle.message(messageKey, refElement.refName)
-          val annotation =
-            holder.createErrorAnnotation(refElement.nameId, error)
+          val annotation = holder.createErrorAnnotation(
+            refElement.nameId,
+            error)
           annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
           annotation.registerFix(ReportHighlightingErrorQuickFix)
           refWithoutArgs match {
@@ -1009,10 +1023,11 @@ class ScalaAnnotator
       refElement: ScReferenceElement,
       fun: PsiNamedElement,
       holder: AnnotationHolder) {
-    val typeTo = resolveResult.implicitType match {
-      case Some(tp) => tp
-      case _        => psi.types.Any
-    }
+    val typeTo =
+      resolveResult.implicitType match {
+        case Some(tp) => tp
+        case _        => psi.types.Any
+      }
     highlightImplicitView(expr, fun, typeTo, refElement.nameId, holder)
   }
 
@@ -1100,8 +1115,8 @@ class ScalaAnnotator
       return
     resolve(0) match {
       case r: ScalaResolveResult if !r.isAccessible =>
-        val error =
-          "Symbol %s is inaccessible from this place".format(r.element.name)
+        val error = "Symbol %s is inaccessible from this place".format(
+          r.element.name)
         val annotation = holder.createErrorAnnotation(refElement.nameId, error)
         annotation.setHighlightType(
           ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
@@ -1143,27 +1158,29 @@ class ScalaAnnotator
         else
           params.append(')')
         val expr = l.getStringContextExpression.get
-        val shift = expr match {
-          case ScMethodCall(invoked, _) => invoked.getTextRange.getEndOffset
-          case _                        => return
-        }
-
-        val fakeAnnotator = new AnnotationHolderImpl(
-          Option(holder.getCurrentAnnotationSession)
-            .getOrElse(new AnnotationSession(l.getContainingFile))) {
-          override def createErrorAnnotation(
-              elt: PsiElement,
-              message: String): Annotation =
-            createErrorAnnotation(elt.getTextRange, message)
-
-          override def createErrorAnnotation(
-              range: TextRange,
-              message: String): Annotation = {
-            holder.createErrorAnnotation(
-              elementsMap.getOrElse(range.getStartOffset - shift, prefix),
-              message)
+        val shift =
+          expr match {
+            case ScMethodCall(invoked, _) => invoked.getTextRange.getEndOffset
+            case _                        => return
           }
-        }
+
+        val fakeAnnotator =
+          new AnnotationHolderImpl(
+            Option(holder.getCurrentAnnotationSession)
+              .getOrElse(new AnnotationSession(l.getContainingFile))) {
+            override def createErrorAnnotation(
+                elt: PsiElement,
+                message: String): Annotation =
+              createErrorAnnotation(elt.getTextRange, message)
+
+            override def createErrorAnnotation(
+                range: TextRange,
+                message: String): Annotation = {
+              holder.createErrorAnnotation(
+                elementsMap.getOrElse(range.getStartOffset - shift, prefix),
+                message)
+            }
+          }
 
         annotateReference(
           expr
@@ -1210,8 +1227,8 @@ class ScalaAnnotator
       holder: AnnotationHolder,
       typeAware: Boolean) {
     def checkExpressionTypeInner(fromUnderscore: Boolean) {
-      val ExpressionTypeResult(exprType, importUsed, implicitFunction) =
-        expr.getTypeAfterImplicitConversion(
+      val ExpressionTypeResult(exprType, importUsed, implicitFunction) = expr
+        .getTypeAfterImplicitConversion(
           expectedOption = expr.smartExpectedType(fromUnderscore),
           fromUnderscore = fromUnderscore)
       ImportTracker
@@ -1280,17 +1297,19 @@ class ScalaAnnotator
                     EffectType.LINE_UNDERSCORE, Color.LIGHT_GRAY)*/
                 case None => //do nothing
               }
-              val conformance =
-                ScalaAnnotator.smartCheckConformance(expectedType, exprType)
+              val conformance = ScalaAnnotator.smartCheckConformance(
+                expectedType,
+                exprType)
               if (!conformance) {
                 if (typeAware) {
-                  val markedPsi = (expr, expr.getParent) match {
-                    case (b: ScBlockExpr, _) =>
-                      b.getRBrace.map(_.getPsi).getOrElse(expr)
-                    case (_, b: ScBlockExpr) =>
-                      b.getRBrace.map(_.getPsi).getOrElse(expr)
-                    case _ => expr
-                  }
+                  val markedPsi =
+                    (expr, expr.getParent) match {
+                      case (b: ScBlockExpr, _) =>
+                        b.getRBrace.map(_.getPsi).getOrElse(expr)
+                      case (_, b: ScBlockExpr) =>
+                        b.getRBrace.map(_.getPsi).getOrElse(expr)
+                      case _ => expr
+                    }
 
                   val (exprTypeText, expectedTypeText) = ScTypePresentation
                     .different(exprType.getOrNothing, expectedType.get)
@@ -1298,8 +1317,9 @@ class ScalaAnnotator
                     "expr.type.does.not.conform.expected.type",
                     exprTypeText,
                     expectedTypeText)
-                  val annotation: Annotation =
-                    holder.createErrorAnnotation(markedPsi, error)
+                  val annotation: Annotation = holder.createErrorAnnotation(
+                    markedPsi,
+                    error)
                   annotation.setHighlightType(
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
                   if (WrapInOptionQuickFix.isAvailable(
@@ -1318,8 +1338,9 @@ class ScalaAnnotator
                         if te.getContainingFile == expr.getContainingFile =>
                       val fix = new ChangeTypeFix(te, exprType.getOrNothing)
                       annotation.registerFix(fix)
-                      val teAnnotation =
-                        annotationWithoutHighlighting(holder, te)
+                      val teAnnotation = annotationWithoutHighlighting(
+                        holder,
+                        te)
                       teAnnotation.registerFix(fix)
                     case _ =>
                   }
@@ -1362,16 +1383,18 @@ class ScalaAnnotator
         case varDef @ ScVariableDefinition.expr(expr)
             if varDef.expr.contains(under) =>
           if (varDef.containingClass == null) {
-            val error =
-              ScalaBundle.message("local.variables.must.be.initialized")
-            val annotation: Annotation =
-              holder.createErrorAnnotation(under, error)
+            val error = ScalaBundle.message(
+              "local.variables.must.be.initialized")
+            val annotation: Annotation = holder.createErrorAnnotation(
+              under,
+              error)
             annotation.setHighlightType(
               ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           } else if (varDef.typeElement.isEmpty) {
             val error = ScalaBundle.message("unbound.placeholder.parameter")
-            val annotation: Annotation =
-              holder.createErrorAnnotation(under, error)
+            val annotation: Annotation = holder.createErrorAnnotation(
+              under,
+              error)
             annotation.setHighlightType(
               ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
@@ -1391,8 +1414,9 @@ class ScalaAnnotator
     fun match {
       case null =>
         val error = ScalaBundle.message("return.outside.method.definition")
-        val annotation: Annotation =
-          holder.createErrorAnnotation(ret.returnKeyword, error)
+        val annotation: Annotation = holder.createErrorAnnotation(
+          ret.returnKeyword,
+          error)
         annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
       case _ if !fun.hasAssign || fun.returnType.exists(_ == psi.types.Unit) =>
       case _ =>
@@ -1405,14 +1429,15 @@ class ScalaAnnotator
                 return //nothing to check
               case _ =>
             }
-            val ExpressionTypeResult(_, importUsed, _) = ret.expr match {
-              case Some(e: ScExpression) => e.getTypeAfterImplicitConversion()
-              case None =>
-                ExpressionTypeResult(
-                  Success(psi.types.Unit, None),
-                  Set.empty,
-                  None)
-            }
+            val ExpressionTypeResult(_, importUsed, _) =
+              ret.expr match {
+                case Some(e: ScExpression) => e.getTypeAfterImplicitConversion()
+                case None =>
+                  ExpressionTypeResult(
+                    Success(psi.types.Unit, None),
+                    Set.empty,
+                    None)
+              }
             ImportTracker
               .getInstance(ret.getProject)
               .registerUsedImports(
@@ -1684,18 +1709,21 @@ class ScalaAnnotator
         text
     val parent = literal.getParent
     val scalaVersion = literal.scalaLanguageLevel
-    val isNegative = parent match {
-      // only "-1234" is negative, "- 1234" should be considered as positive 1234
-      case prefixExpr: ScPrefixExpr
-          if prefixExpr.getChildren.size == 2 && prefixExpr.getFirstChild.getText == "-" =>
-        true
-      case _ => false
-    }
-    val (number, base) = textWithoutL match {
-      case t if t.startsWith("0x") || t.startsWith("0X") => (t.substring(2), 16)
-      case t if t.startsWith("0") && t.length >= 2       => (t.substring(1), 8)
-      case t                                             => (t, 10)
-    }
+    val isNegative =
+      parent match {
+        // only "-1234" is negative, "- 1234" should be considered as positive 1234
+        case prefixExpr: ScPrefixExpr
+            if prefixExpr.getChildren.size == 2 && prefixExpr.getFirstChild.getText == "-" =>
+          true
+        case _ => false
+      }
+    val (number, base) =
+      textWithoutL match {
+        case t if t.startsWith("0x") || t.startsWith("0X") =>
+          (t.substring(2), 16)
+        case t if t.startsWith("0") && t.length >= 2 => (t.substring(1), 8)
+        case t                                       => (t, 10)
+      }
 
     // parse integer literal. the return is (Option(value), statusCode)
     // the Option(value) will be the real integer represented by the literal, if it cannot fit in Long, It's None
@@ -1752,8 +1780,9 @@ class ScalaAnnotator
         case Some(ScalaLanguageLevel.Scala_2_10) =>
           val deprecatedMeaasge =
             "Octal number is deprecated in Scala-2.10 and will be removed in Scala-2.11"
-          val annotation =
-            holder.createWarningAnnotation(literal, deprecatedMeaasge)
+          val annotation = holder.createWarningAnnotation(
+            literal,
+            deprecatedMeaasge)
           annotation.setHighlightType(ProblemHighlightType.LIKE_DEPRECATED)
           annotation.registerFix(convertFix)
         case Some(version) if version >= ScalaLanguageLevel.Scala_2_11 =>
@@ -1799,8 +1828,8 @@ class ScalaAnnotator
               .getOrElse(true)
 
         if (shouldRegisterFix) {
-          val addLtoLongFix: AddLToLongLiteralFix = new AddLToLongLiteralFix(
-            literal)
+          val addLtoLongFix: AddLToLongLiteralFix =
+            new AddLToLongLiteralFix(literal)
           annotation.registerFix(addLtoLongFix)
         }
       }
@@ -1809,11 +1838,11 @@ class ScalaAnnotator
 }
 
 object ScalaAnnotator {
-  val ignoreHighlightingKey: Key[(Long, mutable.HashSet[TextRange])] =
-    Key.create("ignore.highlighting.key")
+  val ignoreHighlightingKey: Key[(Long, mutable.HashSet[TextRange])] = Key
+    .create("ignore.highlighting.key")
 
-  val usedImportsKey: Key[mutable.HashSet[ImportUsed]] =
-    Key.create("used.imports.key")
+  val usedImportsKey: Key[mutable.HashSet[ImportUsed]] = Key.create(
+    "used.imports.key")
 
   /**
     * This method will return checked conformance if it's possible to check it.
@@ -1823,14 +1852,16 @@ object ScalaAnnotator {
   def smartCheckConformance(
       l: TypeResult[ScType],
       r: TypeResult[ScType]): Boolean = {
-    val leftType = l match {
-      case Success(res, _) => res
-      case _               => return true
-    }
-    val rightType = r match {
-      case Success(res, _) => res
-      case _               => return true
-    }
+    val leftType =
+      l match {
+        case Success(res, _) => res
+        case _               => return true
+      }
+    val rightType =
+      r match {
+        case Success(res, _) => res
+        case _               => return true
+      }
     Conformance.conforms(leftType, rightType)
   }
 }

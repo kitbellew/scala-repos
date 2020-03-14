@@ -140,12 +140,13 @@ object AutoUpdate {
                   dir.listFiles.foreach {
                     file =>
                       if (file.getName.indexOf('.') < 0) {
-                        val mimeType = MimeUtil2
-                          .getMostSpecificMimeType(
-                            mimeUtil.getMimeTypes(
-                              file,
-                              new MimeType("application/octet-stream")))
-                          .toString
+                        val mimeType =
+                          MimeUtil2
+                            .getMostSpecificMimeType(
+                              mimeUtil.getMimeTypes(
+                                file,
+                                new MimeType("application/octet-stream")))
+                            .toString
                         if (mimeType.startsWith("image/")) {
                           file.renameTo(
                             new File(

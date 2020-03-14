@@ -443,12 +443,13 @@ object Buf {
       buf match {
         case buf: ByteBuffer => buf
         case _ =>
-          val bb = buf.unsafeByteArrayBuf match {
-            case Some(ByteArray.Owned(bytes, begin, end)) =>
-              java.nio.ByteBuffer.wrap(bytes, begin, end - begin)
-            case None =>
-              java.nio.ByteBuffer.wrap(buf.copiedByteArray)
-          }
+          val bb =
+            buf.unsafeByteArrayBuf match {
+              case Some(ByteArray.Owned(bytes, begin, end)) =>
+                java.nio.ByteBuffer.wrap(bytes, begin, end - begin)
+              case None =>
+                java.nio.ByteBuffer.wrap(buf.copiedByteArray)
+            }
           new ByteBuffer(bb)
       }
 

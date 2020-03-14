@@ -60,9 +60,10 @@ class ParquetFilterSuite
       filterClass: Class[_ <: FilterPredicate],
       checker: (DataFrame, Seq[Row]) => Unit,
       expected: Seq[Row]): Unit = {
-    val output = predicate.collect {
-      case a: Attribute => a
-    }.distinct
+    val output =
+      predicate.collect {
+        case a: Attribute => a
+      }.distinct
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
@@ -86,10 +87,9 @@ class ParquetFilterSuite
           maybeAnalyzedPredicate.isDefined,
           "No filter is analyzed from the given query")
 
-        val (_, selectedFilters) =
-          DataSourceStrategy.selectFilters(
-            maybeRelation.get,
-            maybeAnalyzedPredicate.toSeq)
+        val (_, selectedFilters) = DataSourceStrategy.selectFilters(
+          maybeRelation.get,
+          maybeAnalyzedPredicate.toSeq)
         assert(selectedFilters.nonEmpty, "No filter is pushed down")
 
         selectedFilters.foreach { pred =>
@@ -683,12 +683,14 @@ class ParquetFilterSuite
           val df1 = sqlContext.read.parquet(path).where("not (b in (1))")
           assert(stripSparkFilter(df1).count == 3)
 
-          val df2 =
-            sqlContext.read.parquet(path).where("not (b in (1,3) or a <= 2)")
+          val df2 = sqlContext.read
+            .parquet(path)
+            .where("not (b in (1,3) or a <= 2)")
           assert(stripSparkFilter(df2).count == 2)
 
-          val df3 =
-            sqlContext.read.parquet(path).where("not (b in (1,3) and a <= 2)")
+          val df3 = sqlContext.read
+            .parquet(path)
+            .where("not (b in (1,3) and a <= 2)")
           assert(stripSparkFilter(df3).count == 4)
 
           val df4 = sqlContext.read.parquet(path).where("not (a <= 2)")

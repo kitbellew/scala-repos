@@ -126,8 +126,9 @@ abstract class SFXEnumDelegateSpec[
   }
 
   it should "generate all ScalaFX enums from JavaFX enums names" in {
-    val missingJavaEnumNames =
-      javaEnumConstants.map(_.name).filterNot(nameIsPresent(_))
+    val missingJavaEnumNames = javaEnumConstants
+      .map(_.name)
+      .filterNot(nameIsPresent(_))
 
     assert(
       missingJavaEnumNames.isEmpty,

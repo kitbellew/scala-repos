@@ -25,9 +25,10 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
   private type CFlatMapNode = FlatMapNode[P]
 
   private val depData = Dependants(tail)
-  private val forkedNodes = depData.nodes
-    .filter(depData.fanOut(_).exists(_ > 1))
-    .toSet
+  private val forkedNodes =
+    depData.nodes
+      .filter(depData.fanOut(_).exists(_ > 1))
+      .toSet
   private def distinctAddToList[T](l: List[T], n: T): List[T] =
     if (l.contains(n))
       l
@@ -146,47 +147,48 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
          * First we enumerate the cases where we need to split. Then, the other cases are where we
          * don't split
          */
-        val doSplit = activeBolt match {
-          /*
-           * If dep, the next node up the chain, has two dependants, we cannot pull it into this
-           * node
-           */
-          case _ if (forkedNodes.contains(dep)) => true
-          /*
-           * This next rule says: we can pull no-ops down into summer nodes, otherwise
-           * we split to enable map-side aggregation. If the Semigroup is not commutative,
-           * it might make possibly sense to pull value flatMap-ing down, but generally
-           * we want to push things higher up in the Dag, not further down.
-           */
-          case SummerNode(_) if !noOpProducer(dep) => true
-          /*
-           * Currently, SummerNodes cannot have any other logic than sum. So, we check to see
-           * if this node has something that is not no-op, and if the next node will be a summer, we split
-           * now
-           */
-          case _
-              if (!noOpNode(activeBolt) && dependsOnSummerProducer(
-                currentProducer)) =>
-            true
-          /*
-           * This should possibly be improved, but currently, we force a FlatMapNode just before a
-           * summer (to handle map-side aggregation). This check is here to prevent us from merging
-           * this current node all the way up to the source.
-           */
-          case FlatMapNode(_)
-              if hasSummerAsDependantProducer(
-                currentProducer) && allTransDepsMergeableWithSource(dep) =>
-            true
-          /*
-           * if the current node can't be merged with a source, but the transitive deps can
-           * then split now.
-           */
-          case _
-              if ((!mergableWithSource(
-                currentProducer)) && allTransDepsMergeableWithSource(dep)) =>
-            true
-          case _ => false
-        }
+        val doSplit =
+          activeBolt match {
+            /*
+             * If dep, the next node up the chain, has two dependants, we cannot pull it into this
+             * node
+             */
+            case _ if (forkedNodes.contains(dep)) => true
+            /*
+             * This next rule says: we can pull no-ops down into summer nodes, otherwise
+             * we split to enable map-side aggregation. If the Semigroup is not commutative,
+             * it might make possibly sense to pull value flatMap-ing down, but generally
+             * we want to push things higher up in the Dag, not further down.
+             */
+            case SummerNode(_) if !noOpProducer(dep) => true
+            /*
+             * Currently, SummerNodes cannot have any other logic than sum. So, we check to see
+             * if this node has something that is not no-op, and if the next node will be a summer, we split
+             * now
+             */
+            case _
+                if (!noOpNode(activeBolt) && dependsOnSummerProducer(
+                  currentProducer)) =>
+              true
+            /*
+             * This should possibly be improved, but currently, we force a FlatMapNode just before a
+             * summer (to handle map-side aggregation). This check is here to prevent us from merging
+             * this current node all the way up to the source.
+             */
+            case FlatMapNode(_)
+                if hasSummerAsDependantProducer(
+                  currentProducer) && allTransDepsMergeableWithSource(dep) =>
+              true
+            /*
+             * if the current node can't be merged with a source, but the transitive deps can
+             * then split now.
+             */
+            case _
+                if ((!mergableWithSource(
+                  currentProducer)) && allTransDepsMergeableWithSource(dep)) =>
+              true
+            case _ => false
+          }
         // Note the currentProducer is *ALREADY* a part of activeBolt
         if (doSplit) {
           // Note that FlatMapNode is used as the default empty node
@@ -251,8 +253,9 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
             producer,
             currentBolt.toSummer)
         case AlsoProducer(lProducer, rProducer) =>
-          val (updatedReg, updatedVisited) =
-            maybeSplitThenRecurse(dependantProducer, rProducer)
+          val (updatedReg, updatedVisited) = maybeSplitThenRecurse(
+            dependantProducer,
+            rProducer)
           recurse(lProducer, FlatMapNode(), updatedReg, updatedVisited)
         case Source(spout) =>
           (distinctAddToList(nodeSet, currentBolt.toSource), visitedWithN)
@@ -261,12 +264,14 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
           if (l == r)
             throw new Exception(
               "Online Planner doesn't support both the left and right sides of a join being the same node.")
-          val (otherMergeNodes, dependencies) =
-            mergeCollapse(dependantProducer, rootMerge = true)
+          val (otherMergeNodes, dependencies) = mergeCollapse(
+            dependantProducer,
+            rootMerge = true)
           val newCurrentBolt = otherMergeNodes.foldLeft(currentBolt)(_.add(_))
-          val visitedWithOther = otherMergeNodes.foldLeft(visitedWithN) {
-            (visited, n) => visited + n
-          }
+          val visitedWithOther =
+            otherMergeNodes.foldLeft(visitedWithN) { (visited, n) =>
+              visited + n
+            }
 
           // Recurse down all the newly generated dependencies
           dependencies.foldLeft(
@@ -277,8 +282,11 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
       }
     }
 
-  val (nodeSet, _) =
-    addWithDependencies(tail, FlatMapNode(), List[CNode](), Set())
+  val (nodeSet, _) = addWithDependencies(
+    tail,
+    FlatMapNode(),
+    List[CNode](),
+    Set())
   require(
     nodeSet.collect {
       case n @ SourceNode(_) => n

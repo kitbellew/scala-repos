@@ -113,8 +113,8 @@ private object Helper {
   def compress(str: String)(implicit encoding: ContentEncoding): Array[Byte] = {
     val out = new ByteArrayOutputStream()
 
-    val zout = new BufferedWriter(
-      new OutputStreamWriter(encoding.encode(out), "UTF-8"))
+    val zout =
+      new BufferedWriter(new OutputStreamWriter(encoding.encode(out), "UTF-8"))
     zout.write(str)
     zout.close()
 

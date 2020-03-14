@@ -260,11 +260,12 @@ class ScriptedRunner {
       bootProperties: File,
       launchOpts: Array[String],
       prescripted: File => Unit): Unit = {
-    val runner = new ScriptedTests(
-      resourceBaseDirectory,
-      bufferLog,
-      bootProperties,
-      launchOpts)
+    val runner =
+      new ScriptedTests(
+        resourceBaseDirectory,
+        bufferLog,
+        bootProperties,
+        launchOpts)
     val allTests = get(tests, resourceBaseDirectory, logger) flatMap {
       case ScriptedTest(group, name) =>
         runner.scriptedTest(group, name, prescripted, logger)

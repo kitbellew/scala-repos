@@ -88,11 +88,12 @@ abstract class AbstractCompiler extends Compiler {
         val severity = sev
       }
 
-      val kind = sev match {
-        case Severity.Info  => Kind.INFO
-        case Severity.Warn  => Kind.WARNING
-        case Severity.Error => Kind.ERROR
-      }
+      val kind =
+        sev match {
+          case Severity.Info  => Kind.INFO
+          case Severity.Warn  => Kind.WARNING
+          case Severity.Error => Kind.ERROR
+        }
 
       val source = toOption(pos.sourcePath).map(new File(_))
       val line = toOption(pos.line).map(_.toLong)

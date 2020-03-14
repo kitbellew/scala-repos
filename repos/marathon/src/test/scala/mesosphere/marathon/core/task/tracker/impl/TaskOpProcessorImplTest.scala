@@ -125,8 +125,8 @@ class TaskOpProcessorImplTest
 
     When("the processor processes an update")
 
-    var result: Try[Unit] =
-      Failure(new RuntimeException("test executing failed"))
+    var result: Try[Unit] = Failure(
+      new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
         f.processor
@@ -177,8 +177,8 @@ class TaskOpProcessorImplTest
 
     When("the processor processes an update")
 
-    var result: Try[Unit] =
-      Failure(new RuntimeException("test executing failed"))
+    var result: Try[Unit] = Failure(
+      new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
         f.processor
@@ -232,8 +232,8 @@ class TaskOpProcessorImplTest
       new RuntimeException("task failed"))
 
     When("the processor processes an update")
-    var result: Try[Unit] =
-      Failure(new RuntimeException("test executing failed"))
+    var result: Try[Unit] = Failure(
+      new RuntimeException("test executing failed"))
     val logs = CaptureLogEvents.forBlock {
       result = Try(
         f.processor
@@ -428,8 +428,9 @@ class TaskOpProcessorImplTest
     val launched: Task = f.toLaunched(unlaunched, taskLaunchedOp)
     val marathonTask = unlaunched.marathonTask
     val taskId = launched.taskId.mesosTaskId.getValue
-    val killed: TaskStatus =
-      MarathonTestHelper.statusForState(taskId, TaskState.TASK_KILLED)
+    val killed: TaskStatus = MarathonTestHelper.statusForState(
+      taskId,
+      TaskState.TASK_KILLED)
     f.taskRepository.store(marathonTask) returns Future.successful(marathonTask)
     f.statusUpdateResolver.resolve(Task.Id(taskId), killed) returns Future
       .successful(TaskOpProcessor.Action.Update(unlaunched))
@@ -462,12 +463,13 @@ class TaskOpProcessorImplTest
     lazy val config = MarathonTestHelper.defaultConfig()
     lazy val taskTrackerProbe = TestProbe()
     lazy val taskRepository = mock[TaskRepository]
-    lazy val statusUpdateResolver =
-      mock[TaskOpProcessorImpl.StatusUpdateActionResolver]
-    lazy val processor = new TaskOpProcessorImpl(
-      taskTrackerProbe.ref,
-      taskRepository,
-      statusUpdateResolver)
+    lazy val statusUpdateResolver = mock[
+      TaskOpProcessorImpl.StatusUpdateActionResolver]
+    lazy val processor =
+      new TaskOpProcessorImpl(
+        taskTrackerProbe.ref,
+        taskRepository,
+        statusUpdateResolver)
 
     def verifyNoMoreInteractions(): Unit = {
       taskTrackerProbe.expectNoMsg(0.seconds)

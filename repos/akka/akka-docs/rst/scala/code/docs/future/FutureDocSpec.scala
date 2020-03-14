@@ -47,13 +47,13 @@ class FutureDocSpec extends AkkaSpec {
   }
 
   "demonstrate usage custom ExecutionContext" in {
-    val yourExecutorServiceGoesHere =
-      java.util.concurrent.Executors.newSingleThreadExecutor()
+    val yourExecutorServiceGoesHere = java.util.concurrent.Executors
+      .newSingleThreadExecutor()
     //#diy-execution-context
     import scala.concurrent.{ExecutionContext, Promise}
 
-    implicit val ec =
-      ExecutionContext.fromExecutorService(yourExecutorServiceGoesHere)
+    implicit val ec = ExecutionContext.fromExecutorService(
+      yourExecutorServiceGoesHere)
 
     // Do stuff with your brand new shiny ExecutionContext
     val f = Promise.successful("foo")
@@ -183,12 +183,13 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of for comprehension" in {
     //#for-comprehension
-    val f = for {
-      a <- Future(10 / 2) // 10 / 2 = 5
-      b <- Future(a + 1) //  5 + 1 = 6
-      c <- Future(a - 1) //  5 - 1 = 4
-      if c > 3 // Future.filter
-    } yield b * c //  6 * 4 = 24
+    val f =
+      for {
+        a <- Future(10 / 2) // 10 / 2 = 5
+        b <- Future(a + 1) //  5 + 1 = 6
+        c <- Future(a - 1) //  5 - 1 = 4
+        if c > 3 // Future.filter
+      } yield b * c //  6 * 4 = 24
 
     // Note that the execution of futures a, b, and c
     // are not done in parallel.
@@ -237,11 +238,12 @@ class FutureDocSpec extends AkkaSpec {
     val f1 = ask(actor1, msg1)
     val f2 = ask(actor2, msg2)
 
-    val f3 = for {
-      a <- f1.mapTo[Int]
-      b <- f2.mapTo[Int]
-      c <- ask(actor3, (a + b)).mapTo[Int]
-    } yield c
+    val f3 =
+      for {
+        a <- f1.mapTo[Int]
+        b <- f2.mapTo[Int]
+        c <- ask(actor3, (a + b)).mapTo[Int]
+      } yield c
 
     f3 foreach println
     //#composing
@@ -269,8 +271,8 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of sequence" in {
     //#sequence
-    val futureList =
-      Future.sequence((1 to 100).toList.map(x => Future(x * 2 - 1)))
+    val futureList = Future.sequence(
+      (1 to 100).toList.map(x => Future(x * 2 - 1)))
     val oddSum = futureList.map(_.sum)
     oddSum foreach println
     //#sequence
@@ -289,9 +291,7 @@ class FutureDocSpec extends AkkaSpec {
   "demonstrate usage of fold" in {
     //#fold
     // Create a sequence of Futures
-    val futures =
-      for (i <- 1 to 1000)
-        yield Future(i * 2)
+    val futures = for (i <- 1 to 1000) yield Future(i * 2)
     val futureSum = Future.fold(futures)(0)(_ + _)
     futureSum foreach println
     //#fold
@@ -301,9 +301,7 @@ class FutureDocSpec extends AkkaSpec {
   "demonstrate usage of reduce" in {
     //#reduce
     // Create a sequence of Futures
-    val futures =
-      for (i <- 1 to 1000)
-        yield Future(i * 2)
+    val futures = for (i <- 1 to 1000) yield Future(i * 2)
     val futureSum = Future.reduce(futures)(_ + _)
     futureSum foreach println
     //#reduce
@@ -434,8 +432,8 @@ class FutureDocSpec extends AkkaSpec {
     val future = Future.successful("Yay!")
     //#successful
     //#failed
-    val otherFuture =
-      Future.failed[String](new IllegalArgumentException("Bang!"))
+    val otherFuture = Future.failed[String](
+      new IllegalArgumentException("Bang!"))
     //#failed
     //#promise
     val promise = Promise[String]()
@@ -454,8 +452,9 @@ class FutureDocSpec extends AkkaSpec {
     // TODO after is unfortunately shadowed by ScalaTest, fix as part of #3759
     // import akka.pattern.after
 
-    val delayed = akka.pattern.after(200 millis, using = system.scheduler)(
-      Future.failed(new IllegalStateException("OHNOES")))
+    val delayed =
+      akka.pattern.after(200 millis, using = system.scheduler)(
+        Future.failed(new IllegalStateException("OHNOES")))
     val future = Future {
       Thread.sleep(1000);
       "foo"

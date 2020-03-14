@@ -57,9 +57,10 @@ object ADTPartitionExample extends App {
   }
 
   object Partitioner {
-    type Aux[C <: Coproduct, Out0 <: HList] = Partitioner[C] {
-      type Out = Out0
-    }
+    type Aux[C <: Coproduct, Out0 <: HList] =
+      Partitioner[C] {
+        type Out = Out0
+      }
 
     implicit def cnilPartitioner: Aux[CNil, HNil] =
       new Partitioner[CNil] {
@@ -97,8 +98,7 @@ object ADTPartitionExample extends App {
     */
   def partitionRecord[A, C <: Coproduct, Out <: HList](as: List[A])(implicit
       gen: LabelledGeneric.Aux[A, C],
-      partitioner: Partitioner.Aux[C, Out]): Out =
-    partitioner(as.map(gen.to))
+      partitioner: Partitioner.Aux[C, Out]): Out = partitioner(as.map(gen.to))
 
   import ADTPartitionExampleTypes._
 
@@ -113,8 +113,10 @@ object ADTPartitionExample extends App {
 
   // The expected partition.
   val expectedApples: List[Apple] = List(Apple(1, 10), Apple(4, 6))
-  val expectedPears: List[Pear] =
-    List(Pear(2, "red"), Pear(3, "green"), Pear(5, "purple"))
+  val expectedPears: List[Pear] = List(
+    Pear(2, "red"),
+    Pear(3, "green"),
+    Pear(5, "purple"))
 
   // Partition the list into a tuple of lists.
   val (apples, pears) = partitionTuple(fruits)

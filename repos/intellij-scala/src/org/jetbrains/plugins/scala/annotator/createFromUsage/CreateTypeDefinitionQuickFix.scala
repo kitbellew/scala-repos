@@ -82,18 +82,19 @@ abstract class CreateTypeDefinitionQuickFix(
   }
 
   private def createClassInPackage(psiPackage: PsiPackage): Unit = {
-    val directory = psiPackage.getDirectories.filter(_.isWritable) match {
-      case Array(dir) => dir
-      case Array() =>
-        throw new IllegalStateException(
-          s"Cannot find directory for the package `${psiPackage.getName}`")
-      case dirs =>
-        val currentDir = dirs
-          .find(PsiTreeUtil.isAncestor(_, ref, true))
-          .orElse(
-            dirs.find(ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
-        currentDir.getOrElse(dirs(0))
-    }
+    val directory =
+      psiPackage.getDirectories.filter(_.isWritable) match {
+        case Array(dir) => dir
+        case Array() =>
+          throw new IllegalStateException(
+            s"Cannot find directory for the package `${psiPackage.getName}`")
+        case dirs =>
+          val currentDir = dirs
+            .find(PsiTreeUtil.isAncestor(_, ref, true))
+            .orElse(dirs.find(
+              ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
+          currentDir.getOrElse(dirs(0))
+      }
     createClassInDirectory(directory)
   }
 
@@ -133,35 +134,39 @@ abstract class CreateTypeDefinitionQuickFix(
   private def createClassWithLevelChoosing(
       editor: Editor,
       siblings: Seq[PsiElement]): Unit = {
-    val renderer = new PsiElementListCellRenderer[PsiElement] {
-      override def getElementText(element: PsiElement) =
-        element match {
-          case f: PsiFile                            => "New file"
-          case td: ScTypeDefinition if td.isTopLevel => "Top level in this file"
-          case _ childOf (tb: ScTemplateBody) =>
-            val containingClass =
-              PsiTreeUtil.getParentOfType(tb, classOf[ScTemplateDefinition])
-            s"Inner in ${containingClass.name}"
-          case _ => "Local scope"
-        }
+    val renderer =
+      new PsiElementListCellRenderer[PsiElement] {
+        override def getElementText(element: PsiElement) =
+          element match {
+            case f: PsiFile => "New file"
+            case td: ScTypeDefinition if td.isTopLevel =>
+              "Top level in this file"
+            case _ childOf (tb: ScTemplateBody) =>
+              val containingClass = PsiTreeUtil.getParentOfType(
+                tb,
+                classOf[ScTemplateDefinition])
+              s"Inner in ${containingClass.name}"
+            case _ => "Local scope"
+          }
 
-      override def getContainerText(element: PsiElement, name: String) = null
-      override def getIconFlags = 0
-      override def getIcon(element: PsiElement) = null
-    }
+        override def getContainerText(element: PsiElement, name: String) = null
+        override def getIconFlags = 0
+        override def getIcon(element: PsiElement) = null
+      }
     siblings match {
       case Seq()     =>
       case Seq(elem) => createClassAtLevel(elem)
       case _ =>
         val selection = siblings.head
-        val processor = new PsiElementProcessor[PsiElement] {
-          def execute(elem: PsiElement): Boolean = {
-            inWriteCommandAction(elem.getProject) {
-              createClassAtLevel(elem)
+        val processor =
+          new PsiElementProcessor[PsiElement] {
+            def execute(elem: PsiElement): Boolean = {
+              inWriteCommandAction(elem.getProject) {
+                createClassAtLevel(elem)
+              }
+              false
             }
-            false
           }
-        }
         NavigationUtil
           .getPsiElementPopup(
             siblings.toArray,
@@ -239,14 +244,15 @@ abstract class CreateTypeDefinitionQuickFix(
   private def addGenericParams(clazz: ScTypeDefinition): Unit =
     ref.getParent.getParent match {
       case pt: ScParameterizedTypeElement =>
-        val paramsText = pt.typeArgList.typeArgs match {
-          case args if args.size == 1 => "[T]"
-          case args =>
-            args.indices.map(i => s"T${i + 1}").mkString("[", ", ", "]")
-        }
+        val paramsText =
+          pt.typeArgList.typeArgs match {
+            case args if args.size == 1 => "[T]"
+            case args =>
+              args.indices.map(i => s"T${i + 1}").mkString("[", ", ", "]")
+          }
         val nameId = clazz.nameId
-        val clause =
-          ScalaPsiElementFactory.createTypeParameterClauseFromTextWithContext(
+        val clause = ScalaPsiElementFactory
+          .createTypeParameterClauseFromTextWithContext(
             paramsText,
             clazz,
             nameId)

@@ -57,15 +57,16 @@ object TreeTableViewWithTwoColumns extends JFXApp {
     new Employee("Susan Collins", "susan.collins@example.com")
   )
 
-  val depIcon = new ImageView(
-    getClass.getResource("department.png").toExternalForm)
+  val depIcon =
+    new ImageView(getClass.getResource("department.png").toExternalForm)
 
   assert(depIcon != null)
 
-  val rootNode = new TreeItem(new Employee("Sales Department", ""), depIcon) {
-    expanded = true
-    children = employees.map(new TreeItem(_))
-  }
+  val rootNode =
+    new TreeItem(new Employee("Sales Department", ""), depIcon) {
+      expanded = true
+      children = employees.map(new TreeItem(_))
+    }
 
   stage = new PrimaryStage {
     title = "TreeTableView with Two Columns"

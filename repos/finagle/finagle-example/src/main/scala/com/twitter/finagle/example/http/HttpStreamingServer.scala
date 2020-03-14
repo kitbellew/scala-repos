@@ -21,21 +21,22 @@ object HttpStreamingServer {
       AsyncStream.fromFuture(Future.sleep(100.millis)).flatMap(_ => ints())
 
   def main(args: Array[String]): Unit = {
-    val service = new Service[Request, Response] {
-      // Only one stream exists.
-      @volatile private[this] var messages: AsyncStream[Buf] =
-        ints().map(n => Buf.Utf8(n.toString))
+    val service =
+      new Service[Request, Response] {
+        // Only one stream exists.
+        @volatile private[this] var messages: AsyncStream[Buf] = ints().map(n =>
+          Buf.Utf8(n.toString))
 
-      // Allow the head of the stream to be collected.
-      messages.foreach(_ => messages = messages.drop(1))
+        // Allow the head of the stream to be collected.
+        messages.foreach(_ => messages = messages.drop(1))
 
-      def apply(request: Request) = {
-        val writable = Reader.writable()
-        // Start writing thread.
-        messages.foreachF(writable.write)
-        Future.value(Response(request.version, Status.Ok, writable))
+        def apply(request: Request) = {
+          val writable = Reader.writable()
+          // Start writing thread.
+          messages.foreachF(writable.write)
+          Future.value(Response(request.version, Status.Ok, writable))
+        }
       }
-    }
 
     Await.result(
       Http.server

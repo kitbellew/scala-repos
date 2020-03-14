@@ -57,8 +57,8 @@ trait ParameterDirectives extends ToNameReceptacleEnhancements {
 object ParameterDirectives extends ParameterDirectives {
   import BasicDirectives._
 
-  private val _parameterMap: Directive1[Map[String, String]] =
-    extract(_.request.uri.query().toMap)
+  private val _parameterMap: Directive1[Map[String, String]] = extract(
+    _.request.uri.query().toMap)
 
   private val _parameterMultiMap: Directive1[Map[String, List[String]]] =
     extract(_.request.uri.query().toMultiMap)
@@ -80,9 +80,10 @@ object ParameterDirectives extends ParameterDirectives {
       }
   }
 
-  type ParamDefAux[T, U] = ParamDef[T] {
-    type Out = U
-  }
+  type ParamDefAux[T, U] =
+    ParamDef[T] {
+      type Out = U
+    }
   sealed trait ParamDef[T] {
     type Out
     def apply(value: T): Out

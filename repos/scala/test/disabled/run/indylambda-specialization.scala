@@ -1,7 +1,7 @@
 object Test {
   def assertApply(expected: Boolean) = {
-    val frames =
-      Thread.currentThread.getStackTrace.takeWhile(_.getMethodName != "main")
+    val frames = Thread.currentThread.getStackTrace
+      .takeWhile(_.getMethodName != "main")
     val usesObjectApply = frames.exists(_.getMethodName == "apply")
     assert(expected == usesObjectApply, frames.mkString("\n"))
   }

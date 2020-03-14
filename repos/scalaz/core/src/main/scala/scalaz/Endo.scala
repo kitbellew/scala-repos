@@ -34,10 +34,11 @@ object Endo extends EndoInstances {
       def from: (A => A) => Endo[A] = endo
     }
 
-  val IsoFunctorEndo = new IsoFunctorTemplate[Endo, λ[α => α => α]] {
-    def to[A](fa: Endo[A]): A => A = fa.run
-    def from[A](ga: A => A): Endo[A] = endo(ga)
-  }
+  val IsoFunctorEndo =
+    new IsoFunctorTemplate[Endo, λ[α => α => α]] {
+      def to[A](fa: Endo[A]): A => A = fa.run
+      def from[A](ga: A => A): Endo[A] = endo(ga)
+    }
 }
 
 sealed abstract class EndoInstances {
@@ -50,21 +51,20 @@ sealed abstract class EndoInstances {
       def zero = Endo.idEndo
     }
   implicit val endoInstances
-      : Zip[Endo] with Unzip[Endo] with InvariantFunctor[Endo] = new Zip[Endo]
-    with Unzip[Endo]
-    with InvariantFunctor[Endo] {
-    def xmap[A, B](fa: Endo[A], f: A => B, g: B => A) =
-      Endo.endo(g andThen fa.run andThen f)
+      : Zip[Endo] with Unzip[Endo] with InvariantFunctor[Endo] =
+    new Zip[Endo] with Unzip[Endo] with InvariantFunctor[Endo] {
+      def xmap[A, B](fa: Endo[A], f: A => B, g: B => A) =
+        Endo.endo(g andThen fa.run andThen f)
 
-    def zip[A, B](a: => Endo[A], b: => Endo[B]) =
-      Endo {
-        case (x, y) => (a(x), b(y))
-      }
+      def zip[A, B](a: => Endo[A], b: => Endo[B]) =
+        Endo {
+          case (x, y) => (a(x), b(y))
+        }
 
-    // CAUTION: cheats with null
-    def unzip[A, B](a: Endo[(A, B)]) =
-      (
-        Endo(x => a((x, null.asInstanceOf[B]))._1),
-        Endo(x => a((null.asInstanceOf[A], x))._2))
-  }
+      // CAUTION: cheats with null
+      def unzip[A, B](a: Endo[(A, B)]) =
+        (
+          Endo(x => a((x, null.asInstanceOf[B]))._1),
+          Endo(x => a((null.asInstanceOf[A], x))._2))
+    }
 }

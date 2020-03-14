@@ -7,8 +7,11 @@ import org.jetbrains.plugins.scala.testingSupport.scalatest.generators.WordSpecG
   * @since 20.01.2015.
   */
 trait WordSpecSingleTestTest extends WordSpecGenerator {
-  val wordSpecTestPath =
-    List("[root]", "WordSpecTest", "WordSpecTest", "Run single test")
+  val wordSpecTestPath = List(
+    "[root]",
+    "WordSpecTest",
+    "WordSpecTest",
+    "Run single test")
 
   def testWordSpec() {
     addWordSpec()

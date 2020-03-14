@@ -60,14 +60,16 @@ class ExecutorClassLoader(
   // Allows HTTP connect and read timeouts to be controlled for testing / debugging purposes
   private[repl] var httpUrlConnectionTimeoutMillis: Int = -1
 
-  private val fetchFn: (String) => InputStream = uri.getScheme() match {
-    case "spark"                  => getClassFileInputStreamFromSparkRPC
-    case "http" | "https" | "ftp" => getClassFileInputStreamFromHttpServer
-    case _ =>
-      val fileSystem =
-        FileSystem.get(uri, SparkHadoopUtil.get.newConfiguration(conf))
-      getClassFileInputStreamFromFileSystem(fileSystem)
-  }
+  private val fetchFn: (String) => InputStream =
+    uri.getScheme() match {
+      case "spark"                  => getClassFileInputStreamFromSparkRPC
+      case "http" | "https" | "ftp" => getClassFileInputStreamFromHttpServer
+      case _ =>
+        val fileSystem = FileSystem.get(
+          uri,
+          SparkHadoopUtil.get.newConfiguration(conf))
+        getClassFileInputStreamFromFileSystem(fileSystem)
+    }
 
   override def getResource(name: String): URL = {
     parentLoader.getResource(name)
@@ -127,14 +129,16 @@ class ExecutorClassLoader(
 
   private def getClassFileInputStreamFromHttpServer(
       pathInDirectory: String): InputStream = {
-    val url = if (SparkEnv.get.securityManager.isAuthenticationEnabled()) {
-      val uri = new URI(classUri + "/" + urlEncode(pathInDirectory))
-      val newuri =
-        Utils.constructURIForAuthentication(uri, SparkEnv.get.securityManager)
-      newuri.toURL
-    } else {
-      new URL(classUri + "/" + urlEncode(pathInDirectory))
-    }
+    val url =
+      if (SparkEnv.get.securityManager.isAuthenticationEnabled()) {
+        val uri = new URI(classUri + "/" + urlEncode(pathInDirectory))
+        val newuri = Utils.constructURIForAuthentication(
+          uri,
+          SparkEnv.get.securityManager)
+        newuri.toURL
+      } else {
+        new URL(classUri + "/" + urlEncode(pathInDirectory))
+      }
     val connection: HttpURLConnection = Utils
       .setupSecureURLConnection(
         url.openConnection(),
@@ -213,8 +217,8 @@ class ExecutorClassLoader(
       // initialization code placed there by the REPL. The val or var will
       // be initialized later through reflection when it is used in a task.
       val cr = new ClassReader(in)
-      val cw = new ClassWriter(
-        ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
+      val cw =
+        new ClassWriter(ClassWriter.COMPUTE_FRAMES + ClassWriter.COMPUTE_MAXS)
       val cleaner = new ConstructorCleaner(name, cw)
       cr.accept(cleaner, 0)
       return cw.toByteArray

@@ -119,14 +119,15 @@ trait ObservableValue[@specialized(Int, Long, Float, Double, Boolean) T, J]
     */
   def onChange[J1 >: J](
       op: (ObservableValue[T, J], J1, J1) => Unit): Subscription = {
-    val listener = new jfxbv.ChangeListener[J1] {
-      def changed(
-          observable: jfxbv.ObservableValue[_ <: J1],
-          oldValue: J1,
-          newValue: J1) {
-        op(ObservableValue.this, oldValue, newValue)
+    val listener =
+      new jfxbv.ChangeListener[J1] {
+        def changed(
+            observable: jfxbv.ObservableValue[_ <: J1],
+            oldValue: J1,
+            newValue: J1) {
+          op(ObservableValue.this, oldValue, newValue)
+        }
       }
-    }
 
     delegate.addListener(listener)
 
@@ -144,14 +145,15 @@ trait ObservableValue[@specialized(Int, Long, Float, Double, Boolean) T, J]
     * @return $SUBRET
     */
   def onChange[J1 >: J](op: => Unit): Subscription = {
-    val listener = new jfxbv.ChangeListener[J1] {
-      def changed(
-          observable: jfxbv.ObservableValue[_ <: J1],
-          oldValue: J1,
-          newValue: J1) {
-        op
+    val listener =
+      new jfxbv.ChangeListener[J1] {
+        def changed(
+            observable: jfxbv.ObservableValue[_ <: J1],
+            oldValue: J1,
+            newValue: J1) {
+          op
+        }
       }
-    }
 
     delegate.addListener(listener)
 

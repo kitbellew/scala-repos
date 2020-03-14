@@ -77,14 +77,13 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
         val generatedMethods =
           for (member <- candidates)
             yield {
-              val prototype: ScFunctionDefinition =
-                ScalaPsiElementFactory
-                  .createMethodFromSignature(
-                    member.sign,
-                    aClass.getManager,
-                    specifyType,
-                    body = "???")
-                  .asInstanceOf[ScFunctionDefinition]
+              val prototype: ScFunctionDefinition = ScalaPsiElementFactory
+                .createMethodFromSignature(
+                  member.sign,
+                  aClass.getManager,
+                  specifyType,
+                  body = "???")
+                .asInstanceOf[ScFunctionDefinition]
               prototype.setModifierProperty(
                 "override",
                 value = member.isOverride)
@@ -143,26 +142,28 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     def paramClauseApplicationText(paramClause: ScParameterClause) = {
       paramClause.parameters.map(_.name).mkString("(", ", ", ")")
     }
-    val params = prototype.effectiveParameterClauses
-      .map(paramClauseApplicationText)
-      .mkString
+    val params =
+      prototype.effectiveParameterClauses
+        .map(paramClauseApplicationText)
+        .mkString
     ScalaPsiElementFactory.createExpressionFromText(
       s"$dText.$methodName$typeParamsForCall$params",
       prototype.getManager)
   }
 
   private def delegateText(delegate: ClassMember): String = {
-    val delegateText = delegate match {
-      case field @ (_: ScValueMember | _: ScVariableMember |
-          _: JavaFieldMember) =>
-        field.asInstanceOf[ScalaNamedMember].name
-      case methMember: ScMethodMember =>
-        methMember.sign.method match {
-          case m: PsiMethod if m.isAccessor       => m.getName
-          case f: ScFunction if f.isEmptyParen    => f.name + "()"
-          case f: ScFunction if f.isParameterless => f.name
-        }
-    }
+    val delegateText =
+      delegate match {
+        case field @ (_: ScValueMember | _: ScVariableMember |
+            _: JavaFieldMember) =>
+          field.asInstanceOf[ScalaNamedMember].name
+        case methMember: ScMethodMember =>
+          methMember.sign.method match {
+            case m: PsiMethod if m.isAccessor       => m.getName
+            case f: ScFunction if f.isEmptyParen    => f.name + "()"
+            case f: ScFunction if f.isParameterless => f.name
+          }
+      }
     delegateText
   }
 
@@ -187,13 +188,14 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     val members = toMethodMembers(candidates, place)
 
     if (!ApplicationManager.getApplication.isUnitTestMode) {
-      val chooser = new ScalaMemberChooser[ScMethodMember](
-        members.toArray,
-        false,
-        true,
-        false,
-        true,
-        aClass)
+      val chooser =
+        new ScalaMemberChooser[ScMethodMember](
+          members.toArray,
+          false,
+          true,
+          false,
+          true,
+          aClass)
       chooser.setTitle(
         CodeInsightBundle.message("generate.delegate.method.chooser.title"))
       chooser.show()
@@ -247,13 +249,14 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     if (elements == null || elements.length == 0)
       return null
     if (!ApplicationManager.getApplication.isUnitTestMode) {
-      val chooser = new ScalaMemberChooser(
-        elements,
-        false,
-        false,
-        false,
-        false,
-        classAtOffset(editor.getCaretModel.getOffset, file))
+      val chooser =
+        new ScalaMemberChooser(
+          elements,
+          false,
+          false,
+          false,
+          false,
+          classAtOffset(editor.getCaretModel.getOffset, file))
       chooser.setTitle(
         CodeInsightBundle.message("generate.delegate.target.chooser.title"))
       chooser.show()

@@ -27,8 +27,7 @@ object LatencyCompensation {
       (this, Compensator.param)
   }
   object Compensator {
-    implicit val param =
-      Stack.Param(Compensator(_ => Duration.Zero))
+    implicit val param = Stack.Param(Compensator(_ => Duration.Zero))
   }
 
   /**
@@ -65,8 +64,7 @@ object LatencyCompensation {
       (this, Compensation.param)
   }
   private[finagle] object Compensation {
-    implicit val param =
-      Stack.Param(Compensation(Duration.Zero))
+    implicit val param = Stack.Param(Compensation(Duration.Zero))
   }
 
   def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
@@ -83,10 +81,11 @@ object LatencyCompensation {
         // If the caller has configured a Compensator, use that.
         // If there is no configured compensator, look for a default override.
         val Compensator(configured) = prms[Compensator]
-        val compensator = DefaultOverride() match {
-          case Some(v) if !prms.contains[Compensator] => v.compensator
-          case _                                      => configured
-        }
+        val compensator =
+          DefaultOverride() match {
+            case Some(v) if !prms.contains[Compensator] => v.compensator
+            case _                                      => configured
+          }
 
         val AddrMetadata(metadata) = prms[AddrMetadata]
         val compensation = compensator(metadata)

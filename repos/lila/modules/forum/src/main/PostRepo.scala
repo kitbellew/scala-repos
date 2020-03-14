@@ -51,8 +51,7 @@ sealed abstract class PostRepo(troll: Boolean) {
       ) sort $sort.createdDesc,
       nb)
 
-  def removeByTopic(topicId: String): Fu[Unit] =
-    $remove(selectTopic(topicId))
+  def removeByTopic(topicId: String): Fu[Unit] = $remove(selectTopic(topicId))
 
   def hideByTopic(topicId: String, value: Boolean): Fu[Unit] =
     $update(

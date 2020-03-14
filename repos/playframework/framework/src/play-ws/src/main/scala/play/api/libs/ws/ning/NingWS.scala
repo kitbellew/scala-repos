@@ -77,8 +77,8 @@ object NingWSClient {
     */
   def apply(config: NingWSClientConfig = NingWSClientConfig())(
       implicit materializer: Materializer): NingWSClient = {
-    val client = new NingWSClient(
-      new NingAsyncHttpClientConfigBuilder(config).build())
+    val client =
+      new NingWSClient(new NingAsyncHttpClientConfigBuilder(config).build())
     new SystemConfiguration().configure(config.wsClientConfig)
     client
   }
@@ -100,19 +100,17 @@ trait NingWSComponents {
   private lazy val ahcWsClientConfig =
     new AhcWSClientConfigParser(wsClientConfig, configuration, environment)
       .parse()
-  lazy val ningWsClientConfig: NingWSClientConfig =
-    NingWSClientConfig(
-      wsClientConfig = wsClientConfig,
-      maxConnectionsPerHost = ahcWsClientConfig.maxConnectionsPerHost,
-      maxConnectionsTotal = ahcWsClientConfig.maxConnectionsTotal,
-      maxConnectionLifetime = ahcWsClientConfig.maxConnectionLifetime,
-      idleConnectionInPoolTimeout =
-        ahcWsClientConfig.idleConnectionInPoolTimeout,
-      maxNumberOfRedirects = ahcWsClientConfig.maxNumberOfRedirects,
-      maxRequestRetry = ahcWsClientConfig.maxRequestRetry,
-      disableUrlEncoding = ahcWsClientConfig.disableUrlEncoding,
-      keepAlive = ahcWsClientConfig.keepAlive
-    )
+  lazy val ningWsClientConfig: NingWSClientConfig = NingWSClientConfig(
+    wsClientConfig = wsClientConfig,
+    maxConnectionsPerHost = ahcWsClientConfig.maxConnectionsPerHost,
+    maxConnectionsTotal = ahcWsClientConfig.maxConnectionsTotal,
+    maxConnectionLifetime = ahcWsClientConfig.maxConnectionLifetime,
+    idleConnectionInPoolTimeout = ahcWsClientConfig.idleConnectionInPoolTimeout,
+    maxNumberOfRedirects = ahcWsClientConfig.maxNumberOfRedirects,
+    maxRequestRetry = ahcWsClientConfig.maxRequestRetry,
+    disableUrlEncoding = ahcWsClientConfig.disableUrlEncoding,
+    keepAlive = ahcWsClientConfig.keepAlive
+  )
 
   lazy val wsApi: WSAPI =
     new AhcWSAPI(environment, ahcWsClientConfig, applicationLifecycle)(

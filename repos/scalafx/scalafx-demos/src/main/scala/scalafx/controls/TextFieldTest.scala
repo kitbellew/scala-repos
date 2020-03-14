@@ -44,25 +44,27 @@ object TextFieldTest extends JFXApp {
 
   val textField = new TextField
 
-  val controlsPane = new VBox {
-    spacing = 5
-    fillWidth = true
-    alignment = Pos.Center
-    hgrow = Priority.Never
-    children = List(
-      new TextFieldControls(textField),
-      new TextInputControlControls(textField),
-      new ControlControls(textField))
-  }
-
-  val mainPane = new BorderPane {
-    top = new FlowPane {
-      children = List(textField)
+  val controlsPane =
+    new VBox {
+      spacing = 5
+      fillWidth = true
+      alignment = Pos.Center
+      hgrow = Priority.Never
+      children = List(
+        new TextFieldControls(textField),
+        new TextInputControlControls(textField),
+        new ControlControls(textField))
     }
-    center = controlsPane
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-  }
+
+  val mainPane =
+    new BorderPane {
+      top = new FlowPane {
+        children = List(textField)
+      }
+      center = controlsPane
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+    }
 
   stage = new JFXApp.PrimaryStage {
     title = "TextField Test"

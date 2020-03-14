@@ -7,8 +7,8 @@ trait Profile {
   /**
     * java.util.Date Mapped Column Types
     */
-  implicit val dateColumnType =
-    MappedColumnType.base[java.util.Date, java.sql.Timestamp](
+  implicit val dateColumnType = MappedColumnType
+    .base[java.util.Date, java.sql.Timestamp](
       d => new java.sql.Timestamp(d.getTime),
       t => new java.util.Date(t.getTime)
     )

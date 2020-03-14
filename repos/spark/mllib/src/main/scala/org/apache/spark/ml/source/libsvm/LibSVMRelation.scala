@@ -51,8 +51,8 @@ private[libsvm] class LibSVMOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId =
-          configuration.get("spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration.get(
+          "spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId$extension")

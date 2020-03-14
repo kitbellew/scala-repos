@@ -168,9 +168,10 @@ object Plugins extends PluginsFunctions {
     if (defined0.isEmpty)(_, _) => Nil
     else {
       // TODO: defined should return all the plugins
-      val allReqs = (defined0 flatMap {
-        asRequirements
-      }).toSet
+      val allReqs =
+        (defined0 flatMap {
+          asRequirements
+        }).toSet
       val diff = allReqs diff defined0.toSet
       val defined =
         if (diff.nonEmpty)
@@ -187,17 +188,20 @@ object Plugins extends PluginsFunctions {
       // Ignore clauses for plugins that does not require anything else.
       // Avoids the requirement for pure Nature strings *and* possible
       // circular dependencies in the logic.
-      val allRequirementsClause =
-        defined.filterNot(_.isRoot).flatMap(d => asRequirementsClauses(d))
-      val allEnabledByClause =
-        defined.filterNot(_.isRoot).flatMap(d => asEnabledByClauses(d))
+      val allRequirementsClause = defined
+        .filterNot(_.isRoot)
+        .flatMap(d => asRequirementsClauses(d))
+      val allEnabledByClause = defined
+        .filterNot(_.isRoot)
+        .flatMap(d => asEnabledByClauses(d))
 
       // Note: Here is where the function begins.  We're given a list of plugins now.
       (requestedPlugins, log) => {
         def explicitlyDisabled(p: AutoPlugin): Boolean =
           hasExclude(requestedPlugins, p)
-        val alwaysEnabled: List[AutoPlugin] =
-          defined.filter(_.isAlwaysEnabled).filterNot(explicitlyDisabled)
+        val alwaysEnabled: List[AutoPlugin] = defined
+          .filter(_.isAlwaysEnabled)
+          .filterNot(explicitlyDisabled)
         val knowlege0: Set[Atom] =
           ((flatten(requestedPlugins) ++ alwaysEnabled) collect {
             case x: AutoPlugin => Atom(x.label)
@@ -221,9 +225,10 @@ object Plugins extends PluginsFunctions {
                 a,
                 throw AutoPluginException(s"${a} was not found in atom map."))
             }
-            val forbidden: Set[AutoPlugin] = (selectedPlugins flatMap {
-              Plugins.asExclusions
-            }).toSet
+            val forbidden: Set[AutoPlugin] =
+              (selectedPlugins flatMap {
+                Plugins.asExclusions
+              }).toSet
             val c = selectedPlugins.toSet & forbidden
             if (c.nonEmpty) {
               exlusionConflictError(

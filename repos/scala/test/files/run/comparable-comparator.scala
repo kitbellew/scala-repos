@@ -10,9 +10,10 @@ object Test {
     override def toString = s
   }
 
-  implicit val cmp: Comparator[C2] = new Comparator[C2] {
-    def compare(p1: C2, p2: C2) = p2.s compareTo p1.s
-  }
+  implicit val cmp: Comparator[C2] =
+    new Comparator[C2] {
+      def compare(p1: C2, p2: C2) = p2.s compareTo p1.s
+    }
 
   val words = "zip foo bar baz aggle bing bong" split ' '
   val strs = words.toList

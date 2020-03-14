@@ -23,10 +23,11 @@ object TaskStatsByVersion {
       TaskStats.forSomeTasks(tasks.filter(task => versionTest(task.version)))
     }
 
-    val maybeFullVersionInfo = versionInfo match {
-      case full: FullVersionInfo => Some(full)
-      case _                     => None
-    }
+    val maybeFullVersionInfo =
+      versionInfo match {
+        case full: FullVersionInfo => Some(full)
+        case _                     => None
+      }
 
     TaskStatsByVersion(
       maybeTotalSummary = TaskStats.forSomeTasks(tasks),

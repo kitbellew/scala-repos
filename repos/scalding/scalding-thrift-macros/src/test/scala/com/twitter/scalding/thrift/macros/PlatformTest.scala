@@ -74,12 +74,11 @@ class PlatformTest
 
     HadoopPlatformJobTest(new CompareJob[T](input, _), cluster)
       .sink(TypedTsv[(Int, Long)]("output")) { out =>
-        val expected =
-          input
-            .groupBy(identity)
-            .map {
-              case (k, v) => (k.hashCode, v.size)
-            }
+        val expected = input
+          .groupBy(identity)
+          .map {
+            case (k, v) => (k.hashCode, v.size)
+          }
 
         out.toSet shouldBe expected.toSet
       }

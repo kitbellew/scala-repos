@@ -64,11 +64,12 @@ abstract class SparkPlan
   // sqlContext will be null when we are being deserialized on the slaves.  In this instance
   // the value of subexpressionEliminationEnabled will be set by the deserializer after the
   // constructor has run.
-  val subexpressionEliminationEnabled: Boolean = if (sqlContext != null) {
-    sqlContext.conf.subexpressionEliminationEnabled
-  } else {
-    false
-  }
+  val subexpressionEliminationEnabled: Boolean =
+    if (sqlContext != null) {
+      sqlContext.conf.subexpressionEliminationEnabled
+    } else {
+      false
+    }
 
   /**
     * Whether the "prepare" method is called.
@@ -166,11 +167,12 @@ abstract class SparkPlan
       case e: ScalarSubquery => e
     })
     allSubqueries.asInstanceOf[Seq[ScalarSubquery]].foreach { e =>
-      val futureResult = Future {
-        // Each subquery should return only one row (and one column). We take two here and throws
-        // an exception later if the number of rows is greater than one.
-        e.executedPlan.executeTake(2)
-      }(SparkPlan.subqueryExecutionContext)
+      val futureResult =
+        Future {
+          // Each subquery should return only one row (and one column). We take two here and throws
+          // an exception later if the number of rows is greater than one.
+          e.executedPlan.executeTake(2)
+        }(SparkPlan.subqueryExecutionContext)
       subqueryResults += e -> futureResult
     }
   }
@@ -336,8 +338,10 @@ abstract class SparkPlan
           numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt
         }
       }
-      numPartsToTry =
-        math.max(0, numPartsToTry) // guard against negative num of partitions
+      numPartsToTry = math.max(
+        0,
+        numPartsToTry
+      ) // guard against negative num of partitions
 
       val left = n - buf.size
       val p = partsScanned.until(
@@ -405,9 +409,8 @@ abstract class SparkPlan
 }
 
 object SparkPlan {
-  private[execution] val subqueryExecutionContext =
-    ExecutionContext.fromExecutorService(
-      ThreadUtils.newDaemonCachedThreadPool("subquery", 16))
+  private[execution] val subqueryExecutionContext = ExecutionContext
+    .fromExecutorService(ThreadUtils.newDaemonCachedThreadPool("subquery", 16))
 }
 
 private[sql] trait LeafNode extends SparkPlan {

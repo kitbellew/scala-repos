@@ -159,12 +159,14 @@ private[spark] class OpenHashMap[K: ClassTag,
   // to the "private" variables).
   // They also should have been val's. We use var's because there is a Scala compiler bug that
   // would throw illegal access error at runtime if they are declared as val's.
-  protected var grow = (newCapacity: Int) => {
-    _oldValues = _values
-    _values = new Array[V](newCapacity)
-  }
+  protected var grow =
+    (newCapacity: Int) => {
+      _oldValues = _values
+      _values = new Array[V](newCapacity)
+    }
 
-  protected var move = (oldPos: Int, newPos: Int) => {
-    _values(newPos) = _oldValues(oldPos)
-  }
+  protected var move =
+    (oldPos: Int, newPos: Int) => {
+      _values(newPos) = _oldValues(oldPos)
+    }
 }

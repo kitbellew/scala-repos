@@ -83,27 +83,29 @@ class A extends S {
     O
   }
 
-  val f: () => SE = () => {
-    object O extends SE {
-      def outer = A.this
+  val f: () => SE =
+    () => {
+      object O extends SE {
+        def outer = A.this
+      }
+      O
     }
-    O
-  }
 
   trait GetObj {
     def O: SE;
     def P: SE
   }
-  val a: GetObj = new GetObj with S {
-    def anonThis = this
-    object O extends SE {
-      def outer = anonThis
+  val a: GetObj =
+    new GetObj with S {
+      def anonThis = this
+      object O extends SE {
+        def outer = anonThis
+      }
+      private[this] object Op extends SE {
+        def outer = anonThis
+      }
+      def P: SE = Op
     }
-    private[this] object Op extends SE {
-      def outer = anonThis
-    }
-    def P: SE = Op
-  }
 }
 
 trait T extends S {
@@ -160,27 +162,29 @@ trait T extends S {
     O
   }
 
-  val f: () => SE = () => {
-    object O extends SE {
-      def outer = T.this
+  val f: () => SE =
+    () => {
+      object O extends SE {
+        def outer = T.this
+      }
+      O
     }
-    O
-  }
 
   trait GetObj {
     def O: SE;
     def P: SE
   }
-  val a: GetObj = new GetObj with S {
-    def anonThis = this
-    object O extends SE {
-      def outer = anonThis
+  val a: GetObj =
+    new GetObj with S {
+      def anonThis = this
+      object O extends SE {
+        def outer = anonThis
+      }
+      private[this] object Op extends SE {
+        def outer = anonThis
+      }
+      def P: SE = Op
     }
-    private[this] object Op extends SE {
-      def outer = anonThis
-    }
-    def P: SE = Op
-  }
 }
 
 class C extends T
@@ -305,10 +309,11 @@ object M extends S {
     O
   }
 
-  val f: () => S = () => {
-    object O extends S
-    O
-  }
+  val f: () => S =
+    () => {
+      object O extends S
+      O
+    }
 }
 
 object SerializingStaticModules {

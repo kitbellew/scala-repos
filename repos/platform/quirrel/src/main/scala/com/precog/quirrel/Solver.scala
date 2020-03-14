@@ -266,8 +266,7 @@ trait Solver extends parser.AST with typer.Binder {
       }
     }
 
-    def simplify(tree: Expr) =
-      search(Set(tree :: Nil), Set(), Set())
+    def simplify(tree: Expr) = search(Set(tree :: Nil), Set(), Set())
 
     @tailrec
     def search(
@@ -365,15 +364,16 @@ trait Solver extends parser.AST with typer.Binder {
     */
   def solveRelation(re: ComparisonOp, sigma: Sigma)(
       predicate: PartialFunction[Node, Boolean]): Option[Expr] = {
-    val leftRight: Option[(LineStream, Expr, Expr)] = re match {
-      case Lt(_, _, _)   => None
-      case LtEq(_, _, _) => None
-      case Gt(_, _, _)   => None
-      case GtEq(_, _, _) => None
+    val leftRight: Option[(LineStream, Expr, Expr)] =
+      re match {
+        case Lt(_, _, _)   => None
+        case LtEq(_, _, _) => None
+        case Gt(_, _, _)   => None
+        case GtEq(_, _, _) => None
 
-      case Eq(loc, left, right) => Some((loc, left, right))
-      case NotEq(_, _, _)       => None
-    }
+        case Eq(loc, left, right) => Some((loc, left, right))
+        case NotEq(_, _, _)       => None
+      }
 
     val result = leftRight flatMap {
       case (loc, left, right)

@@ -165,109 +165,112 @@ object Concurrent {
 
     val redeemed = Ref(None: Option[Try[Unit]])
 
-    val enumerator = new Enumerator[E] {
+    val enumerator =
+      new Enumerator[E] {
 
-      def apply[A](it: Iteratee[E, A]): Future[Iteratee[E, A]] = {
-        val result = Promise[Iteratee[E, A]]()
+        def apply[A](it: Iteratee[E, A]): Future[Iteratee[E, A]] = {
+          val result = Promise[Iteratee[E, A]]()
 
-        val finished = atomic { implicit txn =>
-          redeemed() match {
-            case None =>
-              iteratees.transform(
-                _ :+ (
-                  (
-                    it,
-                    (result: Promise[Iteratee[E, A]])
-                      .asInstanceOf[Promise[Iteratee[E, _]]])))
-              None
-            case Some(notWaiting) => Some(notWaiting)
+          val finished = atomic { implicit txn =>
+            redeemed() match {
+              case None =>
+                iteratees.transform(
+                  _ :+ (
+                    (
+                      it,
+                      (result: Promise[Iteratee[E, A]])
+                        .asInstanceOf[Promise[Iteratee[E, _]]])))
+                None
+              case Some(notWaiting) => Some(notWaiting)
+            }
           }
+          finished.foreach {
+            case Success(_) => result.success(it)
+            case Failure(e) => result.failure(e)
+          }
+          result.future
         }
-        finished.foreach {
-          case Success(_) => result.success(it)
-          case Failure(e) => result.failure(e)
-        }
-        result.future
-      }
 
-    }
+      }
 
     val mainIteratee = Ref(Cont(step))
 
-    val toPush = new Channel[E] {
+    val toPush =
+      new Channel[E] {
 
-      private val runQueue = new RunQueue()
-      private def schedule(body: => Unit) = runQueue.scheduleSimple(body)(dec)
+        private val runQueue = new RunQueue()
+        private def schedule(body: => Unit) = runQueue.scheduleSimple(body)(dec)
 
-      def push(chunk: Input[E]) =
-        schedule {
+        def push(chunk: Input[E]) =
+          schedule {
 
-          val itPromise = Promise[Iteratee[E, Unit]]()
+            val itPromise = Promise[Iteratee[E, Unit]]()
 
-          val current: Iteratee[E, Unit] =
-            mainIteratee.single.swap(Iteratee.flatten(itPromise.future))
+            val current: Iteratee[E, Unit] = mainIteratee.single.swap(
+              Iteratee.flatten(itPromise.future))
 
-          val next = current.pureFold {
-            case Step.Done(a, e)    => Done(a, e)
-            case Step.Cont(k)       => k(chunk)
-            case Step.Error(msg, e) => Error(msg, e)
-          }(dec)
+            val next =
+              current.pureFold {
+                case Step.Done(a, e)    => Done(a, e)
+                case Step.Cont(k)       => k(chunk)
+                case Step.Error(msg, e) => Error(msg, e)
+              }(dec)
 
-          next.onComplete {
-            case Success(it) => itPromise.success(it)
-            case Failure(e) => {
-              val its = atomic { implicit txn =>
-                redeemed() = Some(Failure(e))
-                iteratees.swap(List())
-              }
-              itPromise.failure(e)
-              its.foreach {
-                case (it, p) => p.success(it)
-              }
-            }
-          }(dec)
-        }
-
-      def end(e: Throwable) =
-        schedule {
-          val current: Iteratee[E, Unit] =
-            mainIteratee.single.swap(Done((), Input.Empty))
-          def endEveryone() =
-            Future {
-              val its = atomic { implicit txn =>
-                redeemed() = Some(Failure(e))
-                iteratees.swap(List())
-              }
-              its.foreach {
-                case (it, p) => p.failure(e)
+            next.onComplete {
+              case Success(it) => itPromise.success(it)
+              case Failure(e) => {
+                val its = atomic { implicit txn =>
+                  redeemed() = Some(Failure(e))
+                  iteratees.swap(List())
+                }
+                itPromise.failure(e)
+                its.foreach {
+                  case (it, p) => p.success(it)
+                }
               }
             }(dec)
+          }
 
-          current.fold {
-            case _ => endEveryone()
-          }(dec)
-        }
+        def end(e: Throwable) =
+          schedule {
+            val current: Iteratee[E, Unit] = mainIteratee.single.swap(
+              Done((), Input.Empty))
+            def endEveryone() =
+              Future {
+                val its = atomic { implicit txn =>
+                  redeemed() = Some(Failure(e))
+                  iteratees.swap(List())
+                }
+                its.foreach {
+                  case (it, p) => p.failure(e)
+                }
+              }(dec)
 
-      def end() =
-        schedule {
-          val current: Iteratee[E, Unit] =
-            mainIteratee.single.swap(Done((), Input.Empty))
-          def endEveryone() =
-            Future {
-              val its = atomic { implicit txn =>
-                redeemed() = Some(Success(()))
-                iteratees.swap(List())
-              }
-              its.foreach {
-                case (it, p) => p.success(it)
-              }
+            current.fold {
+              case _ => endEveryone()
             }(dec)
-          current.fold {
-            case _ => endEveryone()
-          }(dec)
-        }
+          }
 
-    }
+        def end() =
+          schedule {
+            val current: Iteratee[E, Unit] = mainIteratee.single.swap(
+              Done((), Input.Empty))
+            def endEveryone() =
+              Future {
+                val its = atomic { implicit txn =>
+                  redeemed() = Some(Success(()))
+                  iteratees.swap(List())
+                }
+                its.foreach {
+                  case (it, p) => p.success(it)
+                }
+              }(dec)
+            current.fold {
+              case _ => endEveryone()
+            }(dec)
+          }
+
+      }
     (enumerator, toPush)
   }
 
@@ -526,8 +529,8 @@ object Concurrent {
       import scala.concurrent.stm.Ref
 
       def apply[A](it: Iteratee[E, A]): Future[Iteratee[E, A]] = {
-        val promise: scala.concurrent.Promise[Iteratee[E, A]] =
-          Promise[Iteratee[E, A]]()
+        val promise: scala.concurrent.Promise[Iteratee[E, A]] = Promise[
+          Iteratee[E, A]]()
         val iteratee: Ref[Future[Option[Input[E] => Iteratee[E, A]]]] = Ref(
           it.pureFold {
             case Step.Cont(k) => Some(k);
@@ -536,78 +539,80 @@ object Concurrent {
               None
           }(dec))
 
-        val pushee = new Channel[E] {
+        val pushee =
+          new Channel[E] {
 
-          private val runQueue = new RunQueue()
-          private def schedule(body: => Unit) =
-            runQueue.scheduleSimple(body)(dec)
+            private val runQueue = new RunQueue()
+            private def schedule(body: => Unit) =
+              runQueue.scheduleSimple(body)(dec)
 
-          def close() =
-            schedule {
-              iteratee.single
-                .swap(Future.successful(None))
-                .onComplete {
-                  case Success(maybeK) =>
-                    maybeK.foreach { k =>
-                      promise.success(k(Input.EOF))
-                    }
-                  case Failure(e) => promise.failure(e)
-                }(dec)
-            }
+            def close() =
+              schedule {
+                iteratee.single
+                  .swap(Future.successful(None))
+                  .onComplete {
+                    case Success(maybeK) =>
+                      maybeK.foreach { k =>
+                        promise.success(k(Input.EOF))
+                      }
+                    case Failure(e) => promise.failure(e)
+                  }(dec)
+              }
 
-          def end(e: Throwable) =
-            schedule {
-              iteratee.single
-                .swap(Future.successful(None))
-                .onComplete {
-                  case Success(maybeK) =>
-                    maybeK.foreach(_ => promise.failure(e))
-                  case Failure(e) => promise.failure(e)
-                }(dec)
-            }
+            def end(e: Throwable) =
+              schedule {
+                iteratee.single
+                  .swap(Future.successful(None))
+                  .onComplete {
+                    case Success(maybeK) =>
+                      maybeK.foreach(_ => promise.failure(e))
+                    case Failure(e) => promise.failure(e)
+                  }(dec)
+              }
 
-          def end() =
-            schedule {
-              iteratee.single
-                .swap(Future.successful(None))
-                .onComplete { maybeK =>
-                  maybeK.get.foreach(k => promise.success(Cont(k)))
-                }(dec)
-            }
+            def end() =
+              schedule {
+                iteratee.single
+                  .swap(Future.successful(None))
+                  .onComplete { maybeK =>
+                    maybeK.get.foreach(k => promise.success(Cont(k)))
+                  }(dec)
+              }
 
-          def push(item: Input[E]) =
-            schedule {
-              val eventuallyNext = Promise[Option[Input[E] => Iteratee[E, A]]]()
-              iteratee.single
-                .swap(eventuallyNext.future)
-                .onComplete {
-                  case Success(None) => eventuallyNext.success(None)
-                  case Success(Some(k)) =>
-                    val n = {
-                      val next = k(item)
-                      next.fold {
-                        case Step.Done(a, in) => {
-                          Future(onComplete)(pec).map { _ =>
-                            promise.success(next)
-                            None
-                          }(dec)
-                        }
-                        case Step.Error(msg, e) =>
-                          Future(onError(msg, e))(pec).map { _ =>
-                            promise.success(next)
-                            None
-                          }(dec)
-                        case Step.Cont(k) =>
-                          Future.successful(Some(k))
-                      }(dec)
-                    }
-                    eventuallyNext.completeWith(n)
-                  case Failure(e) =>
-                    promise.failure(e)
-                    eventuallyNext.success(None)
-                }(dec)
-            }
-        }
+            def push(item: Input[E]) =
+              schedule {
+                val eventuallyNext = Promise[
+                  Option[Input[E] => Iteratee[E, A]]]()
+                iteratee.single
+                  .swap(eventuallyNext.future)
+                  .onComplete {
+                    case Success(None) => eventuallyNext.success(None)
+                    case Success(Some(k)) =>
+                      val n = {
+                        val next = k(item)
+                        next.fold {
+                          case Step.Done(a, in) => {
+                            Future(onComplete)(pec).map { _ =>
+                              promise.success(next)
+                              None
+                            }(dec)
+                          }
+                          case Step.Error(msg, e) =>
+                            Future(onError(msg, e))(pec).map { _ =>
+                              promise.success(next)
+                              None
+                            }(dec)
+                          case Step.Cont(k) =>
+                            Future.successful(Some(k))
+                        }(dec)
+                      }
+                      eventuallyNext.completeWith(n)
+                    case Failure(e) =>
+                      promise.failure(e)
+                      eventuallyNext.success(None)
+                  }(dec)
+              }
+          }
         Future(onStart(pushee))(pec).flatMap(_ => promise.future)(dec)
       }
 
@@ -686,46 +691,47 @@ object Concurrent {
 
       val commitDone: Ref[List[Int]] = Ref(List())
 
-      val ready = interested.zipWithIndex
-        .map {
-          case (t, index) =>
-            val p = t._2
-            t._1
-              .fold {
-                case Step.Done(a, e) =>
-                  p.success(Done(a, e))
-                  commitDone.single.transform(_ :+ index)
-                  Future.successful(())
+      val ready =
+        interested.zipWithIndex
+          .map {
+            case (t, index) =>
+              val p = t._2
+              t._1
+                .fold {
+                  case Step.Done(a, e) =>
+                    p.success(Done(a, e))
+                    commitDone.single.transform(_ :+ index)
+                    Future.successful(())
 
-                case Step.Cont(k) =>
-                  val next = k(in)
-                  next.pureFold {
-                    case Step.Done(a, e) => {
-                      p.success(Done(a, e))
-                      commitDone.single.transform(_ :+ index)
-                    }
-                    case Step.Cont(k) =>
-                      commitReady.single.transform(
-                        _ :+ (index -> (Cont(k) -> p)))
-                    case Step.Error(msg, e) => {
-                      p.success(Error(msg, e))
-                      commitDone.single.transform(_ :+ index)
-                    }
-                  }(dec)
+                  case Step.Cont(k) =>
+                    val next = k(in)
+                    next.pureFold {
+                      case Step.Done(a, e) => {
+                        p.success(Done(a, e))
+                        commitDone.single.transform(_ :+ index)
+                      }
+                      case Step.Cont(k) =>
+                        commitReady.single.transform(
+                          _ :+ (index -> (Cont(k) -> p)))
+                      case Step.Error(msg, e) => {
+                        p.success(Error(msg, e))
+                        commitDone.single.transform(_ :+ index)
+                      }
+                    }(dec)
 
-                case Step.Error(msg, e) =>
-                  p.success(Error(msg, e))
-                  commitDone.single.transform(_ :+ index)
-                  Future.successful(())
-              }(dec)
-              .andThen {
-                case Success(a) => a
-                case Failure(e) => p.failure(e)
-              }(dec)
-        }
-        .fold(Future.successful(())) { (s, p) =>
-          s.flatMap(_ => p)(dec)
-        }
+                  case Step.Error(msg, e) =>
+                    p.success(Error(msg, e))
+                    commitDone.single.transform(_ :+ index)
+                    Future.successful(())
+                }(dec)
+                .andThen {
+                  case Success(a) => a
+                  case Failure(e) => p.failure(e)
+                }(dec)
+          }
+          .fold(Future.successful(())) { (s, p) =>
+            s.flatMap(_ => p)(dec)
+          }
 
       Iteratee.flatten(ready.flatMap { _ =>
         val downToZero = atomic { implicit txn =>
@@ -908,8 +914,8 @@ object Concurrent {
         }
 
         Future(patcher(new PatchPanel[E] {
-          val ref: Ref[Ref[Iteratee[E, Option[A]]]] =
-            Ref(Ref(it.map(Some(_))(dec)))
+          val ref: Ref[Ref[Iteratee[E, Option[A]]]] = Ref(
+            Ref(it.map(Some(_))(dec)))
 
           def closed() = isClosed
 
@@ -942,40 +948,42 @@ object Concurrent {
     */
   def joined[A]: (Iteratee[A, Unit], Enumerator[A]) = {
     val promisedIteratee = Promise[Iteratee[A, Unit]]()
-    val enumerator = new Enumerator[A] {
-      def apply[B](i: Iteratee[A, B]) = {
-        val doneIteratee = Promise[Iteratee[A, B]]()
+    val enumerator =
+      new Enumerator[A] {
+        def apply[B](i: Iteratee[A, B]) = {
+          val doneIteratee = Promise[Iteratee[A, B]]()
 
-        // Equivalent to map, but allows us to handle failures
-        def wrap(delegate: Iteratee[A, B]): Iteratee[A, B] =
-          new Iteratee[A, B] {
-            def fold[C](folder: (Step[A, B]) => Future[C])(
-                implicit ec: ExecutionContext) = {
-              val toReturn = delegate.fold {
-                case done @ Step.Done(a, in) => {
-                  doneIteratee.success(done.it)
-                  folder(done)
-                }
-                case Step.Cont(k) => {
-                  folder(Step.Cont(k.andThen(wrap)))
-                }
-                case err => folder(err)
-              }(ec)
-              toReturn.onFailure {
-                case e => doneIteratee.failure(e)
-              }(dec)
-              toReturn
+          // Equivalent to map, but allows us to handle failures
+          def wrap(delegate: Iteratee[A, B]): Iteratee[A, B] =
+            new Iteratee[A, B] {
+              def fold[C](folder: (Step[A, B]) => Future[C])(
+                  implicit ec: ExecutionContext) = {
+                val toReturn =
+                  delegate.fold {
+                    case done @ Step.Done(a, in) => {
+                      doneIteratee.success(done.it)
+                      folder(done)
+                    }
+                    case Step.Cont(k) => {
+                      folder(Step.Cont(k.andThen(wrap)))
+                    }
+                    case err => folder(err)
+                  }(ec)
+                toReturn.onFailure {
+                  case e => doneIteratee.failure(e)
+                }(dec)
+                toReturn
+              }
             }
-          }
 
-        if (promisedIteratee.trySuccess(wrap(i).map(_ => ())(dec))) {
-          doneIteratee.future
-        } else {
-          throw new IllegalStateException(
-            "Joined enumerator may only be applied once")
+          if (promisedIteratee.trySuccess(wrap(i).map(_ => ())(dec))) {
+            doneIteratee.future
+          } else {
+            throw new IllegalStateException(
+              "Joined enumerator may only be applied once")
+          }
         }
       }
-    }
     (Iteratee.flatten(promisedIteratee.future), enumerator)
   }
 

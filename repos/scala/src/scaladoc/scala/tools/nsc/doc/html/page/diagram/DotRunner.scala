@@ -99,8 +99,9 @@ class DotProcess(settings: doc.Settings) {
       // process creation
       if (process == null) {
         val procIO = new ProcessIO(inputFn(_), outputFn(_), errorFn(_))
-        val processBuilder: ProcessBuilder =
-          Seq(settings.docDiagramsDotPath.value, "-Tsvg")
+        val processBuilder: ProcessBuilder = Seq(
+          settings.docDiagramsDotPath.value,
+          "-Tsvg")
         process = processBuilder.run(procIO)
       }
 
@@ -108,8 +109,8 @@ class DotProcess(settings: doc.Settings) {
       assert(!inputString.isSet)
       assert(!outputString.isSet)
       inputString.put(input)
-      var result =
-        outputString.take(settings.docDiagramsDotTimeout.value * 1000L)
+      var result = outputString.take(
+        settings.docDiagramsDotTimeout.value * 1000L)
       if (error)
         result = null
 

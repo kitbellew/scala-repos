@@ -85,11 +85,12 @@ class BacktestingEvaluator(val params: BacktestingParams)
     val data = prediction.data
       .map {
         case (ticker, pValue) => {
-          val dir = pValue match {
-            case p if p >= params.enterThreshold => 1
-            case p if p <= params.exitThreshold  => -1
-            case _                               => 0
-          }
+          val dir =
+            pValue match {
+              case p if p >= params.enterThreshold => 1
+              case p if p <= params.exitThreshold  => -1
+              case _                               => 0
+            }
           (ticker, dir, pValue)
         }
       }

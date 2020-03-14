@@ -79,11 +79,12 @@ class FileUploadSupportTest extends ScalatraFunSuite {
   addServlet(classOf[MaxSizeTestServlet], "/max-size/*")
 
   def multipartResponse(path: String = "/multipart") = {
-    val reqBody = new String(
-      IOUtils
-        .toString(getClass.getResourceAsStream("multipart_request.txt"))
-        .getBytes,
-      "iso-8859-1").getBytes("iso-8859-1")
+    val reqBody =
+      new String(
+        IOUtils
+          .toString(getClass.getResourceAsStream("multipart_request.txt"))
+          .getBytes,
+        "iso-8859-1").getBytes("iso-8859-1")
 
     val boundary = "---------------------------3924013385056820061124200860"
 

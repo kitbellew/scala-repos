@@ -101,152 +101,157 @@ trait SBTConsolePlatform
 object SBTConsole {
   val controlTimeout = Duration(30, "seconds")
 
-  val platform = new SBTConsolePlatform { console =>
-    implicit val actorSystem = ActorSystem("sbtConsoleActorSystem")
-    implicit val asyncContext =
-      ExecutionContext.defaultExecutionContext(actorSystem)
-    implicit val M: Monad[Future] with Comonad[Future] =
-      new UnsafeFutureComonad(asyncContext, yggConfig.maxEvalDuration)
+  val platform =
+    new SBTConsolePlatform { console =>
+      implicit val actorSystem = ActorSystem("sbtConsoleActorSystem")
+      implicit val asyncContext = ExecutionContext.defaultExecutionContext(
+        actorSystem)
+      implicit val M: Monad[Future] with Comonad[Future] =
+        new UnsafeFutureComonad(asyncContext, yggConfig.maxEvalDuration)
 
-    val yggConfig = new PlatformConfig {
-      val config = Configuration parse {
-        Option(System.getProperty("precog.storage.root")) map {
-          "precog.storage.root = " + _
-        } getOrElse {
-          ""
+      val yggConfig =
+        new PlatformConfig {
+          val config = Configuration parse {
+            Option(System.getProperty("precog.storage.root")) map {
+              "precog.storage.root = " + _
+            } getOrElse {
+              ""
+            }
+          }
+
+          val sortWorkDir = scratchDir
+          val memoizationBufferSize = sortBufferSize
+          val memoizationWorkDir = scratchDir
+
+          val storageTimeout = Timeout(Duration(120, "seconds"))
+          val quiescenceTimeout = Duration(300, "seconds")
+          val flatMapTimeout = storageTimeout.duration
+          val maxEvalDuration = storageTimeout.duration
+          val clock = blueeyes.util.Clock.System
+          val ingestConfig = None
+
+          val maxSliceSize = 20000
+          val cookThreshold = maxSliceSize
+          val smallSliceSize = 8
+
+          //TODO: Get a producer ID
+          val idSource = new FreshAtomicIdSource
         }
-      }
 
-      val sortWorkDir = scratchDir
-      val memoizationBufferSize = sortBufferSize
-      val memoizationWorkDir = scratchDir
+      val accountFinder = new StaticAccountFinder[Future]("", "")
+      val rawAPIKeyFinder = new InMemoryAPIKeyManager[Future](Clock.System)
+      val accessControl = new DirectAPIKeyFinder(rawAPIKeyFinder)
+      val permissionsFinder =
+        new PermissionsFinder(
+          accessControl,
+          accountFinder,
+          new org.joda.time.Instant())
 
-      val storageTimeout = Timeout(Duration(120, "seconds"))
-      val quiescenceTimeout = Duration(300, "seconds")
-      val flatMapTimeout = storageTimeout.duration
-      val maxEvalDuration = storageTimeout.duration
-      val clock = blueeyes.util.Clock.System
-      val ingestConfig = None
-
-      val maxSliceSize = 20000
-      val cookThreshold = maxSliceSize
-      val smallSliceSize = 8
-
-      //TODO: Get a producer ID
-      val idSource = new FreshAtomicIdSource
-    }
-
-    val accountFinder = new StaticAccountFinder[Future]("", "")
-    val rawAPIKeyFinder = new InMemoryAPIKeyManager[Future](Clock.System)
-    val accessControl = new DirectAPIKeyFinder(rawAPIKeyFinder)
-    val permissionsFinder = new PermissionsFinder(
-      accessControl,
-      accountFinder,
-      new org.joda.time.Instant())
-
-    val rootAPIKey = rawAPIKeyFinder.rootAPIKey.copoint
-    val rootAccount = AccountDetails(
-      "root",
-      "nobody@precog.com",
-      new DateTime,
-      rootAPIKey,
-      Path.Root,
-      AccountPlan.Root)
-    def evaluationContext =
-      EvaluationContext(
+      val rootAPIKey = rawAPIKeyFinder.rootAPIKey.copoint
+      val rootAccount = AccountDetails(
+        "root",
+        "nobody@precog.com",
+        new DateTime,
         rootAPIKey,
-        rootAccount,
         Path.Root,
-        Path.Root,
-        new DateTime)
+        AccountPlan.Root)
+      def evaluationContext =
+        EvaluationContext(
+          rootAPIKey,
+          rootAccount,
+          Path.Root,
+          Path.Root,
+          new DateTime)
 
-    val storageTimeout = yggConfig.storageTimeout
+      val storageTimeout = yggConfig.storageTimeout
 
-    val masterChef = actorSystem.actorOf(
-      Props(
-        Chef(
-          VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-          VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
+      val masterChef = actorSystem.actorOf(
+        Props(
+          Chef(
+            VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+            VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
 
-    val resourceBuilder = new ResourceBuilder(
-      actorSystem,
-      yggConfig.clock,
-      masterChef,
-      yggConfig.cookThreshold,
-      yggConfig.storageTimeout)
-    val projectionsActor = actorSystem.actorOf(
-      Props(
-        new PathRoutingActor(
-          yggConfig.dataDir,
-          yggConfig.storageTimeout.duration,
-          yggConfig.quiescenceTimeout,
-          100,
-          yggConfig.clock)))
+      val resourceBuilder =
+        new ResourceBuilder(
+          actorSystem,
+          yggConfig.clock,
+          masterChef,
+          yggConfig.cookThreshold,
+          yggConfig.storageTimeout)
+      val projectionsActor = actorSystem.actorOf(
+        Props(
+          new PathRoutingActor(
+            yggConfig.dataDir,
+            yggConfig.storageTimeout.duration,
+            yggConfig.quiescenceTimeout,
+            100,
+            yggConfig.clock)))
 
-    val jobManager = new InMemoryJobManager[Future]
-    val actorVFS = new ActorVFS(
-      projectionsActor,
-      yggConfig.storageTimeout,
-      yggConfig.storageTimeout)
-    val vfs =
-      new SecureVFS(actorVFS, permissionsFinder, jobManager, Clock.System)
+      val jobManager = new InMemoryJobManager[Future]
+      val actorVFS =
+        new ActorVFS(
+          projectionsActor,
+          yggConfig.storageTimeout,
+          yggConfig.storageTimeout)
+      val vfs =
+        new SecureVFS(actorVFS, permissionsFinder, jobManager, Clock.System)
 
-    def Evaluator[N[+_]](N0: Monad[N])(implicit
-        mn: Future ~> N,
-        nm: N ~> Future): EvaluatorLike[N] =
-      new Evaluator[N](N0) {
-        type YggConfig = PlatformConfig
-        val yggConfig = console.yggConfig
-        val report = LoggingQueryLogger[N](N0)
-        def freshIdScanner = console.freshIdScanner
-      }
-
-    def eval(str: String): Set[SValue] =
-      evalE(str) match {
-        case Success(results) => results.map(_._2)
-        case Failure(t)       => throw t
-      }
-
-    def evalE(str: String) = {
-      val dag = produceDAG(str)
-      consumeEval(dag, evaluationContext)
-    }
-
-    def produceDAG(str: String) = {
-      val forest = compile(str)
-      val validForest = forest filter {
-        _.errors.isEmpty
-      }
-
-      if (validForest.isEmpty) {
-        val strs = forest map { tree =>
-          tree.errors map showError mkString ("Set(\"", "\", \"", "\")")
+      def Evaluator[N[+_]](N0: Monad[N])(implicit
+          mn: Future ~> N,
+          nm: N ~> Future): EvaluatorLike[N] =
+        new Evaluator[N](N0) {
+          type YggConfig = PlatformConfig
+          val yggConfig = console.yggConfig
+          val report = LoggingQueryLogger[N](N0)
+          def freshIdScanner = console.freshIdScanner
         }
 
-        sys.error(strs mkString " | ")
+      def eval(str: String): Set[SValue] =
+        evalE(str) match {
+          case Success(results) => results.map(_._2)
+          case Failure(t)       => throw t
+        }
+
+      def evalE(str: String) = {
+        val dag = produceDAG(str)
+        consumeEval(dag, evaluationContext)
       }
 
-      if (validForest.size > 1) {
-        sys.error("ambiguous parse (good luck!)")
+      def produceDAG(str: String) = {
+        val forest = compile(str)
+        val validForest = forest filter {
+          _.errors.isEmpty
+        }
+
+        if (validForest.isEmpty) {
+          val strs = forest map { tree =>
+            tree.errors map showError mkString ("Set(\"", "\", \"", "\")")
+          }
+
+          sys.error(strs mkString " | ")
+        }
+
+        if (validForest.size > 1) {
+          sys.error("ambiguous parse (good luck!)")
+        }
+
+        val tree = validForest.head
+        val Right(dag) = decorate(emit(tree))
+        dag
       }
 
-      val tree = validForest.head
-      val Right(dag) = decorate(emit(tree))
-      dag
-    }
+      def startup() {
+        // start storage bifrost
+      }
 
-    def startup() {
-      // start storage bifrost
+      def shutdown() {
+        // stop storage bifrost
+        Await.result(
+          gracefulStop(projectionsActor, yggConfig.storageTimeout.duration),
+          yggConfig.storageTimeout.duration)
+        actorSystem.shutdown()
+      }
     }
-
-    def shutdown() {
-      // stop storage bifrost
-      Await.result(
-        gracefulStop(projectionsActor, yggConfig.storageTimeout.duration),
-        yggConfig.storageTimeout.duration)
-      actorSystem.shutdown()
-    }
-  }
 }
 
 // vim: set ts=4 sw=4 et:

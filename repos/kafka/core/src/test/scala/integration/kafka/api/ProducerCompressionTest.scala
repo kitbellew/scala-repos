@@ -92,9 +92,7 @@ class ProducerCompressionTest(compression: String)
       val partition = 0
 
       // prepare the messages
-      val messages =
-        for (i <- 0 until numRecords)
-          yield ("value" + i).getBytes
+      val messages = for (i <- 0 until numRecords) yield ("value" + i).getBytes
 
       // make sure the returned messages are correct
       val now = System.currentTimeMillis()

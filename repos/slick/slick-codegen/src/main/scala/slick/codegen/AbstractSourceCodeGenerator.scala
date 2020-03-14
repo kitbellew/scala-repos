@@ -94,9 +94,10 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
               ))
           .mkString(", ")
         if (classEnabled) {
-          val prns = (parents.take(1).map(" extends " + _) ++ parents
-            .drop(1)
-            .map(" with " + _)).mkString("")
+          val prns =
+            (parents.take(1).map(" extends " + _) ++ parents
+              .drop(1)
+              .map(" with " + _)).mkString("")
           s"""case class $name($args)$prns"""
         } else {
           s"""
@@ -198,15 +199,17 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
               s"$accessor.get"
         }
         val fac = s"$factory(${compoundValue(accessors)})"
-        val discriminator = columns.zipWithIndex.collect {
-          case (c, i) if !c.model.nullable =>
-            if (columns.size > 1)
-              tuple(i)
-            else
-              "r"
-        }.headOption
-        val expr =
-          discriminator.map(d => s"$d.map(_=> $fac)").getOrElse(s"None")
+        val discriminator =
+          columns.zipWithIndex.collect {
+            case (c, i) if !c.model.nullable =>
+              if (columns.size > 1)
+                tuple(i)
+              else
+                "r"
+          }.headOption
+        val expr = discriminator
+          .map(d => s"$d.map(_=> $fac)")
+          .getOrElse(s"None")
         if (columns.size > 1)
           s"{r=>import r._; $expr}"
         else

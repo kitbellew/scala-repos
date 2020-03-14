@@ -65,16 +65,17 @@ object Crypto {
 
   type CryptoException = play.api.libs.crypto.CryptoException
 
-  private val cryptoCache: (Application) => Crypto =
-    Application.instanceCache[Crypto]
+  private val cryptoCache: (Application) => Crypto = Application
+    .instanceCache[Crypto]
 
   def crypto: Crypto = {
     Play.privateMaybeApplication.fold {
-      val config = new CryptoConfigParser(
-        Environment.simple(),
-        Configuration.from(
-          Map("play.crypto.aes.transformation" -> "AES/CTR/NoPadding"))
-      ).get
+      val config =
+        new CryptoConfigParser(
+          Environment.simple(),
+          Configuration.from(
+            Map("play.crypto.aes.transformation" -> "AES/CTR/NoPadding"))
+        ).get
       val cookieSigner = new CookieSignerProvider(config).get
       val tokenSigner = new CSRFTokenSignerProvider(cookieSigner).get
       val crypter = new AESCTRCrypter(config)

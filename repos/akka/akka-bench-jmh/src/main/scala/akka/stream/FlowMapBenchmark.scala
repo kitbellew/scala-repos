@@ -78,37 +78,41 @@ class FlowMapBenchmark {
 
     // Important to use a synchronous, zero overhead source, otherwise the slowness of the source
     // might bias the benchmark, since the stream always adjusts the rate to the slowest stage.
-    val syncTestPublisher = new Publisher[Int] {
-      override def subscribe(s: Subscriber[_ >: Int]): Unit = {
-        val sub = new Subscription {
-          var counter = 0 // Piggyback on caller thread, no need for volatile
+    val syncTestPublisher =
+      new Publisher[Int] {
+        override def subscribe(s: Subscriber[_ >: Int]): Unit = {
+          val sub =
+            new Subscription {
+              var counter =
+                0 // Piggyback on caller thread, no need for volatile
 
-          override def request(n: Long): Unit = {
-            var i = n
-            while (i > 0) {
-              s.onNext(counter)
-              counter += 1
-              if (counter == 100000) {
-                s.onComplete()
-                return
+              override def request(n: Long): Unit = {
+                var i = n
+                while (i > 0) {
+                  s.onNext(counter)
+                  counter += 1
+                  if (counter == 100000) {
+                    s.onComplete()
+                    return
+                  }
+                  i -= 1
+                }
               }
-              i -= 1
+
+              override def cancel(): Unit = ()
             }
-          }
 
-          override def cancel(): Unit = ()
+          s.onSubscribe(sub)
         }
-
-        s.onSubscribe(sub)
       }
-    }
 
-    flow = mkMaps(Source.fromPublisher(syncTestPublisher), numberOfMapOps) {
-      if (UseGraphStageIdentity)
-        GraphStages.identity[Int]
-      else
-        Flow[Int].map(identity)
-    }
+    flow =
+      mkMaps(Source.fromPublisher(syncTestPublisher), numberOfMapOps) {
+        if (UseGraphStageIdentity)
+          GraphStages.identity[Int]
+        else
+          Flow[Int].map(identity)
+      }
   }
 
   @TearDown

@@ -59,13 +59,14 @@ object RandomDataGenerator {
       rand: Random,
       uniformRand: Random => T,
       interestingValues: Seq[T]): Some[() => T] = {
-    val f = () => {
-      if (rand.nextFloat() <= PROBABILITY_OF_INTERESTING_VALUE) {
-        interestingValues(rand.nextInt(interestingValues.length))
-      } else {
-        uniformRand(rand)
+    val f =
+      () => {
+        if (rand.nextFloat() <= PROBABILITY_OF_INTERESTING_VALUE) {
+          interestingValues(rand.nextInt(interestingValues.length))
+        } else {
+          uniformRand(rand)
+        }
       }
-    }
     Some(f)
   }
 
@@ -137,172 +138,176 @@ object RandomDataGenerator {
       dataType: DataType,
       nullable: Boolean = true,
       rand: Random = new Random): Option[() => Any] = {
-    val valueGenerator: Option[() => Any] = dataType match {
-      case StringType => Some(() => rand.nextString(rand.nextInt(MAX_STR_LEN)))
-      case BinaryType =>
-        Some(() => {
-          val arr = new Array[Byte](rand.nextInt(MAX_STR_LEN))
-          rand.nextBytes(arr)
-          arr
-        })
-      case BooleanType => Some(() => rand.nextBoolean())
-      case DateType =>
-        val generator =
-          () => {
-            var milliseconds = rand.nextLong() % 253402329599999L
-            // -62135740800000L is the number of milliseconds before January 1, 1970, 00:00:00 GMT
-            // for "0001-01-01 00:00:00.000000". We need to find a
-            // number that is greater or equals to this number as a valid timestamp value.
-            while (milliseconds < -62135740800000L) {
-              // 253402329599999L is the number of milliseconds since
-              // January 1, 1970, 00:00:00 GMT for "9999-12-31 23:59:59.999999".
-              milliseconds = rand.nextLong() % 253402329599999L
-            }
-            DateTimeUtils.toJavaDate(
-              (milliseconds / DateTimeUtils.MILLIS_PER_DAY).toInt)
-          }
-        Some(generator)
-      case TimestampType =>
-        val generator =
-          () => {
-            var milliseconds = rand.nextLong() % 253402329599999L
-            // -62135740800000L is the number of milliseconds before January 1, 1970, 00:00:00 GMT
-            // for "0001-01-01 00:00:00.000000". We need to find a
-            // number that is greater or equals to this number as a valid timestamp value.
-            while (milliseconds < -62135740800000L) {
-              // 253402329599999L is the number of milliseconds since
-              // January 1, 1970, 00:00:00 GMT for "9999-12-31 23:59:59.999999".
-              milliseconds = rand.nextLong() % 253402329599999L
-            }
-            // DateTimeUtils.toJavaTimestamp takes microsecond.
-            DateTimeUtils.toJavaTimestamp(milliseconds * 1000)
-          }
-        Some(generator)
-      case CalendarIntervalType =>
-        Some(() => {
-          val months = rand.nextInt(1000)
-          val ns = rand.nextLong()
-          new CalendarInterval(months, ns)
-        })
-      case DecimalType.Fixed(precision, scale) =>
-        Some(() =>
-          BigDecimal
-            .apply(
-              rand.nextLong() % math.pow(10, precision).toLong,
-              scale,
-              new MathContext(precision))
-            .bigDecimal)
-      case DoubleType =>
-        randomNumeric[Double](
-          rand,
-          r => longBitsToDouble(r.nextLong()),
-          Seq(
-            Double.MinValue,
-            Double.MinPositiveValue,
-            Double.MaxValue,
-            Double.PositiveInfinity,
-            Double.NegativeInfinity,
-            Double.NaN,
-            0.0)
-        )
-      case FloatType =>
-        randomNumeric[Float](
-          rand,
-          r => intBitsToFloat(r.nextInt()),
-          Seq(
-            Float.MinValue,
-            Float.MinPositiveValue,
-            Float.MaxValue,
-            Float.PositiveInfinity,
-            Float.NegativeInfinity,
-            Float.NaN,
-            0.0f)
-        )
-      case ByteType =>
-        randomNumeric[Byte](
-          rand,
-          _.nextInt().toByte,
-          Seq(Byte.MinValue, Byte.MaxValue, 0.toByte))
-      case IntegerType =>
-        randomNumeric[Int](
-          rand,
-          _.nextInt(),
-          Seq(Int.MinValue, Int.MaxValue, 0))
-      case LongType =>
-        randomNumeric[Long](
-          rand,
-          _.nextLong(),
-          Seq(Long.MinValue, Long.MaxValue, 0L))
-      case ShortType =>
-        randomNumeric[Short](
-          rand,
-          _.nextInt().toShort,
-          Seq(Short.MinValue, Short.MaxValue, 0.toShort))
-      case NullType => Some(() => null)
-      case ArrayType(elementType, containsNull) => {
-        forType(elementType, nullable = containsNull, rand).map {
-          elementGenerator => () =>
-            Seq.fill(rand.nextInt(MAX_ARR_SIZE))(elementGenerator())
-        }
-      }
-      case MapType(keyType, valueType, valueContainsNull) => {
-        for (keyGenerator <- forType(keyType, nullable = false, rand);
-             valueGenerator <- forType(
-               valueType,
-               nullable = valueContainsNull,
-               rand))
-          yield { () =>
-            {
-              val length = rand.nextInt(MAX_MAP_SIZE)
-              val keys = scala.collection.mutable
-                .HashSet(Seq.fill(length)(keyGenerator()): _*)
-              // In case the number of different keys is not enough, set a max iteration to avoid
-              // infinite loop.
-              var count = 0
-              while (keys.size < length && count < MAX_MAP_SIZE) {
-                keys += keyGenerator()
-                count += 1
+    val valueGenerator: Option[() => Any] =
+      dataType match {
+        case StringType =>
+          Some(() => rand.nextString(rand.nextInt(MAX_STR_LEN)))
+        case BinaryType =>
+          Some(() => {
+            val arr = new Array[Byte](rand.nextInt(MAX_STR_LEN))
+            rand.nextBytes(arr)
+            arr
+          })
+        case BooleanType => Some(() => rand.nextBoolean())
+        case DateType =>
+          val generator =
+            () => {
+              var milliseconds = rand.nextLong() % 253402329599999L
+              // -62135740800000L is the number of milliseconds before January 1, 1970, 00:00:00 GMT
+              // for "0001-01-01 00:00:00.000000". We need to find a
+              // number that is greater or equals to this number as a valid timestamp value.
+              while (milliseconds < -62135740800000L) {
+                // 253402329599999L is the number of milliseconds since
+                // January 1, 1970, 00:00:00 GMT for "9999-12-31 23:59:59.999999".
+                milliseconds = rand.nextLong() % 253402329599999L
               }
-              val values = Seq.fill(keys.size)(valueGenerator())
-              keys.zip(values).toMap
+              DateTimeUtils.toJavaDate(
+                (milliseconds / DateTimeUtils.MILLIS_PER_DAY).toInt)
             }
-          }
-      }
-      case StructType(fields) => {
-        val maybeFieldGenerators: Seq[Option[() => Any]] = fields.map { field =>
-          forType(field.dataType, nullable = field.nullable, rand)
-        }
-        if (maybeFieldGenerators.forall(_.isDefined)) {
-          val fieldGenerators: Seq[() => Any] = maybeFieldGenerators.map(_.get)
-          Some(() => Row.fromSeq(fieldGenerators.map(_.apply())))
-        } else {
-          None
-        }
-      }
-      case udt: UserDefinedType[_] => {
-        val maybeSqlTypeGenerator = forType(udt.sqlType, nullable, rand)
-        // Because random data generator at here returns scala value, we need to
-        // convert it to catalyst value to call udt's deserialize.
-        val toCatalystType =
-          CatalystTypeConverters.createToCatalystConverter(udt.sqlType)
-
-        if (maybeSqlTypeGenerator.isDefined) {
-          val sqlTypeGenerator = maybeSqlTypeGenerator.get
-          val generator = () => {
-            val generatedScalaValue = sqlTypeGenerator.apply()
-            if (generatedScalaValue == null) {
-              null
-            } else {
-              udt.deserialize(toCatalystType(generatedScalaValue))
-            }
-          }
           Some(generator)
-        } else {
-          None
+        case TimestampType =>
+          val generator =
+            () => {
+              var milliseconds = rand.nextLong() % 253402329599999L
+              // -62135740800000L is the number of milliseconds before January 1, 1970, 00:00:00 GMT
+              // for "0001-01-01 00:00:00.000000". We need to find a
+              // number that is greater or equals to this number as a valid timestamp value.
+              while (milliseconds < -62135740800000L) {
+                // 253402329599999L is the number of milliseconds since
+                // January 1, 1970, 00:00:00 GMT for "9999-12-31 23:59:59.999999".
+                milliseconds = rand.nextLong() % 253402329599999L
+              }
+              // DateTimeUtils.toJavaTimestamp takes microsecond.
+              DateTimeUtils.toJavaTimestamp(milliseconds * 1000)
+            }
+          Some(generator)
+        case CalendarIntervalType =>
+          Some(() => {
+            val months = rand.nextInt(1000)
+            val ns = rand.nextLong()
+            new CalendarInterval(months, ns)
+          })
+        case DecimalType.Fixed(precision, scale) =>
+          Some(() =>
+            BigDecimal
+              .apply(
+                rand.nextLong() % math.pow(10, precision).toLong,
+                scale,
+                new MathContext(precision))
+              .bigDecimal)
+        case DoubleType =>
+          randomNumeric[Double](
+            rand,
+            r => longBitsToDouble(r.nextLong()),
+            Seq(
+              Double.MinValue,
+              Double.MinPositiveValue,
+              Double.MaxValue,
+              Double.PositiveInfinity,
+              Double.NegativeInfinity,
+              Double.NaN,
+              0.0)
+          )
+        case FloatType =>
+          randomNumeric[Float](
+            rand,
+            r => intBitsToFloat(r.nextInt()),
+            Seq(
+              Float.MinValue,
+              Float.MinPositiveValue,
+              Float.MaxValue,
+              Float.PositiveInfinity,
+              Float.NegativeInfinity,
+              Float.NaN,
+              0.0f)
+          )
+        case ByteType =>
+          randomNumeric[Byte](
+            rand,
+            _.nextInt().toByte,
+            Seq(Byte.MinValue, Byte.MaxValue, 0.toByte))
+        case IntegerType =>
+          randomNumeric[Int](
+            rand,
+            _.nextInt(),
+            Seq(Int.MinValue, Int.MaxValue, 0))
+        case LongType =>
+          randomNumeric[Long](
+            rand,
+            _.nextLong(),
+            Seq(Long.MinValue, Long.MaxValue, 0L))
+        case ShortType =>
+          randomNumeric[Short](
+            rand,
+            _.nextInt().toShort,
+            Seq(Short.MinValue, Short.MaxValue, 0.toShort))
+        case NullType => Some(() => null)
+        case ArrayType(elementType, containsNull) => {
+          forType(elementType, nullable = containsNull, rand).map {
+            elementGenerator => () =>
+              Seq.fill(rand.nextInt(MAX_ARR_SIZE))(elementGenerator())
+          }
         }
+        case MapType(keyType, valueType, valueContainsNull) => {
+          for (keyGenerator <- forType(keyType, nullable = false, rand);
+               valueGenerator <- forType(
+                 valueType,
+                 nullable = valueContainsNull,
+                 rand))
+            yield { () =>
+              {
+                val length = rand.nextInt(MAX_MAP_SIZE)
+                val keys = scala.collection.mutable
+                  .HashSet(Seq.fill(length)(keyGenerator()): _*)
+                // In case the number of different keys is not enough, set a max iteration to avoid
+                // infinite loop.
+                var count = 0
+                while (keys.size < length && count < MAX_MAP_SIZE) {
+                  keys += keyGenerator()
+                  count += 1
+                }
+                val values = Seq.fill(keys.size)(valueGenerator())
+                keys.zip(values).toMap
+              }
+            }
+        }
+        case StructType(fields) => {
+          val maybeFieldGenerators: Seq[Option[() => Any]] = fields.map {
+            field => forType(field.dataType, nullable = field.nullable, rand)
+          }
+          if (maybeFieldGenerators.forall(_.isDefined)) {
+            val fieldGenerators: Seq[() => Any] = maybeFieldGenerators.map(
+              _.get)
+            Some(() => Row.fromSeq(fieldGenerators.map(_.apply())))
+          } else {
+            None
+          }
+        }
+        case udt: UserDefinedType[_] => {
+          val maybeSqlTypeGenerator = forType(udt.sqlType, nullable, rand)
+          // Because random data generator at here returns scala value, we need to
+          // convert it to catalyst value to call udt's deserialize.
+          val toCatalystType = CatalystTypeConverters.createToCatalystConverter(
+            udt.sqlType)
+
+          if (maybeSqlTypeGenerator.isDefined) {
+            val sqlTypeGenerator = maybeSqlTypeGenerator.get
+            val generator =
+              () => {
+                val generatedScalaValue = sqlTypeGenerator.apply()
+                if (generatedScalaValue == null) {
+                  null
+                } else {
+                  udt.deserialize(toCatalystType(generatedScalaValue))
+                }
+              }
+            Some(generator)
+          } else {
+            None
+          }
+        }
+        case unsupportedType => None
       }
-      case unsupportedType => None
-    }
     // Handle nullability by wrapping the non-null value generator:
     valueGenerator.map { valueGenerator =>
       if (nullable) { () =>
@@ -332,8 +337,10 @@ object RandomDataGenerator {
               val arr = mutable.ArrayBuffer.empty[Any]
               val n = 1 // rand.nextInt(10)
               var i = 0
-              val generator =
-                RandomDataGenerator.forType(childType, nullable, rand)
+              val generator = RandomDataGenerator.forType(
+                childType,
+                nullable,
+                rand)
               assert(generator.isDefined, "Unsupported type")
               val gen = generator.get
               while (i < n) {
@@ -348,8 +355,10 @@ object RandomDataGenerator {
           fields += randomRow(rand, StructType(children))
         }
         case _ =>
-          val generator =
-            RandomDataGenerator.forType(f.dataType, f.nullable, rand)
+          val generator = RandomDataGenerator.forType(
+            f.dataType,
+            f.nullable,
+            rand)
           assert(generator.isDefined, "Unsupported type")
           val gen = generator.get
           fields += gen()

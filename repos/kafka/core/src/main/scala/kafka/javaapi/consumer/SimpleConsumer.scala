@@ -31,12 +31,13 @@ class SimpleConsumer(
     val bufferSize: Int,
     val clientId: String) {
 
-  private val underlying = new kafka.consumer.SimpleConsumer(
-    host,
-    port,
-    soTimeout,
-    bufferSize,
-    clientId)
+  private val underlying =
+    new kafka.consumer.SimpleConsumer(
+      host,
+      port,
+      soTimeout,
+      bufferSize,
+      clientId)
 
   /**
     *  Fetch a set of messages from a topic. This version of the fetch method

@@ -950,25 +950,25 @@ object Enumeratee {
             input: Input[E]): Iteratee[E, Iteratee[E, A]] =
           input match {
             case in @ (Input.El(_) | Input.Empty) =>
-              val next: Future[Iteratee[E, Iteratee[E, A]]] = it
-                .pureFlatFold[E, Iteratee[E, A]] {
-                  case Step.Cont(k) =>
-                    val n = k(in)
-                    n.pureFlatFold[E, Iteratee[E, A]] {
-                      case Step.Cont(k) => Cont(step(n))
-                      case _            => Done(n, Input.Empty)
-                    }(dec)
-                  case other => Done(other.it, in)
-                }(dec)
-                .unflatten
-                .map({ s =>
-                  s.it
-                })(dec)
-                .recover({
-                  case NonFatal(e) =>
-                    f(e, in)
-                    Cont(step(it))
-                })(pec)
+              val next: Future[Iteratee[E, Iteratee[E, A]]] =
+                it.pureFlatFold[E, Iteratee[E, A]] {
+                    case Step.Cont(k) =>
+                      val n = k(in)
+                      n.pureFlatFold[E, Iteratee[E, A]] {
+                        case Step.Cont(k) => Cont(step(n))
+                        case _            => Done(n, Input.Empty)
+                      }(dec)
+                    case other => Done(other.it, in)
+                  }(dec)
+                  .unflatten
+                  .map({ s =>
+                    s.it
+                  })(dec)
+                  .recover({
+                    case NonFatal(e) =>
+                      f(e, in)
+                      Cont(step(it))
+                  })(pec)
               Iteratee.flatten(next)
             case Input.EOF =>
               Done(it, Input.Empty)

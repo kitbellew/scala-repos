@@ -153,8 +153,8 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
 
     // set flags that Scala scala doesn't (default access, static) - a hacky way to test all access modes.
     val names = ('a' to 'h').map(_.toString).toSet
-    val List(a, b, c, d, e, f, g, h) =
-      cCl.methods.asScala.toList.filter(m => names(m.name))
+    val List(a, b, c, d, e, f, g, h) = cCl.methods.asScala.toList.filter(m =>
+      names(m.name))
 
     def checkAccess(a: MethodNode, expected: Int): Unit = {
       assert(
@@ -187,8 +187,9 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     val List(raC, rbC, rcC, rdC, reC, rfC, rgC, rhC) =
       cCl.methods.asScala.toList.filter(_.name(0) == 'r').sortBy(_.name)
 
-    val List(rbD, rcD, rfD, rgD) =
-      dCl.methods.asScala.toList.filter(_.name(0) == 'r').sortBy(_.name)
+    val List(rbD, rcD, rfD, rgD) = dCl.methods.asScala.toList
+      .filter(_.name(0) == 'r')
+      .sortBy(_.name)
 
     def check(
         method: MethodNode,
@@ -204,10 +205,11 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
           .map(_._1))
     }
 
-    val cOrDOwner = (_: Option[AbstractInsnNode] @unchecked) match {
-      case Some(mi: MethodInsnNode) if Set("a/C", "a/D")(mi.owner) => ()
-      // MatchError otherwise
-    }
+    val cOrDOwner =
+      (_: Option[AbstractInsnNode] @unchecked) match {
+        case Some(mi: MethodInsnNode) if Set("a/C", "a/D")(mi.owner) => ()
+        // MatchError otherwise
+      }
 
     // PUBLIC
 

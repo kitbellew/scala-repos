@@ -47,20 +47,22 @@ object Resolve {
     if (mask.config)
       scope
     else {
-      val (resolvedRef, proj) = scope.project match {
-        case Select(ref) =>
-          val r = index resolveRef ref
-          (Some(r), index.projectFor(r))
-        case Global | This =>
-          (None, index.rootProject(index.root))
-      }
+      val (resolvedRef, proj) =
+        scope.project match {
+          case Select(ref) =>
+            val r = index resolveRef ref
+            (Some(r), index.projectFor(r))
+          case Global | This =>
+            (None, index.rootProject(index.root))
+        }
       val task = scope.task.toOption
       val keyIndex = index.keyIndex
-      val definesKey = (c: ScopeAxis[ConfigKey]) =>
-        keyIndex.keys(
-          resolvedRef,
-          c.toOption.map(_.name),
-          task) contains key.label
+      val definesKey =
+        (c: ScopeAxis[ConfigKey]) =>
+          keyIndex.keys(
+            resolvedRef,
+            c.toOption.map(_.name),
+            task) contains key.label
       val projectConfigs = index.configurations(proj).map(ck => Select(ck))
       val config: ScopeAxis[ConfigKey] =
         (Global +: projectConfigs) find definesKey getOrElse Global

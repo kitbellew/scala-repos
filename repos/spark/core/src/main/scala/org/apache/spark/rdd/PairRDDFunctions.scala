@@ -106,10 +106,11 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
             "Default partitioner cannot partition array keys.")
         }
       }
-      val aggregator = new Aggregator[K, V, C](
-        self.context.clean(createCombiner),
-        self.context.clean(mergeValue),
-        self.context.clean(mergeCombiners))
+      val aggregator =
+        new Aggregator[K, V, C](
+          self.context.clean(createCombiner),
+          self.context.clean(mergeValue),
+          self.context.clean(mergeCombiners))
       if (self.partitioner == Some(partitioner)) {
         self.mapPartitions(
           iter => {
@@ -203,8 +204,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       combOp: (U, U) => U): RDD[(K, U)] =
     self.withScope {
       // Serialize the zero value to a byte array so that we can get a new clone of it on each key
-      val zeroBuffer =
-        SparkEnv.get.serializer.newInstance().serialize(zeroValue)
+      val zeroBuffer = SparkEnv.get.serializer
+        .newInstance()
+        .serialize(zeroValue)
       val zeroArray = new Array[Byte](zeroBuffer.limit)
       zeroBuffer.get(zeroArray)
 
@@ -263,8 +265,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       func: (V, V) => V): RDD[(K, V)] =
     self.withScope {
       // Serialize the zero value to a byte array so that we can get a new clone of it on each key
-      val zeroBuffer =
-        SparkEnv.get.serializer.newInstance().serialize(zeroValue)
+      val zeroBuffer = SparkEnv.get.serializer
+        .newInstance()
+        .serialize(zeroValue)
       val zeroArray = new Array[Byte](zeroBuffer.limit)
       zeroBuffer.get(zeroArray)
 
@@ -325,19 +328,20 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         fractions.values.forall(v => v >= 0.0),
         "Negative sampling rates.")
 
-      val samplingFunc = if (withReplacement) {
-        StratifiedSamplingUtils.getPoissonSamplingFunction(
-          self,
-          fractions,
-          false,
-          seed)
-      } else {
-        StratifiedSamplingUtils.getBernoulliSamplingFunction(
-          self,
-          fractions,
-          false,
-          seed)
-      }
+      val samplingFunc =
+        if (withReplacement) {
+          StratifiedSamplingUtils.getPoissonSamplingFunction(
+            self,
+            fractions,
+            false,
+            seed)
+        } else {
+          StratifiedSamplingUtils.getBernoulliSamplingFunction(
+            self,
+            fractions,
+            false,
+            seed)
+        }
       self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
     }
 
@@ -366,19 +370,20 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         fractions.values.forall(v => v >= 0.0),
         "Negative sampling rates.")
 
-      val samplingFunc = if (withReplacement) {
-        StratifiedSamplingUtils.getPoissonSamplingFunction(
-          self,
-          fractions,
-          true,
-          seed)
-      } else {
-        StratifiedSamplingUtils.getBernoulliSamplingFunction(
-          self,
-          fractions,
-          true,
-          seed)
-      }
+      val samplingFunc =
+        if (withReplacement) {
+          StratifiedSamplingUtils.getPoissonSamplingFunction(
+            self,
+            fractions,
+            true,
+            seed)
+        } else {
+          StratifiedSamplingUtils.getBernoulliSamplingFunction(
+            self,
+            fractions,
+            true,
+            seed)
+        }
       self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
     }
 
@@ -427,34 +432,36 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
           "reduceByKeyLocally() does not support array keys")
       }
 
-      val reducePartition = (iter: Iterator[(K, V)]) =>
-        {
-          val map = new JHashMap[K, V]
-          iter.foreach { pair =>
-            val old = map.get(pair._1)
-            map.put(
-              pair._1,
-              if (old == null)
-                pair._2
-              else
-                cleanedF(old, pair._2))
-          }
-          Iterator(map)
-        }: Iterator[JHashMap[K, V]]
+      val reducePartition =
+        (iter: Iterator[(K, V)]) =>
+          {
+            val map = new JHashMap[K, V]
+            iter.foreach { pair =>
+              val old = map.get(pair._1)
+              map.put(
+                pair._1,
+                if (old == null)
+                  pair._2
+                else
+                  cleanedF(old, pair._2))
+            }
+            Iterator(map)
+          }: Iterator[JHashMap[K, V]]
 
-      val mergeMaps = (m1: JHashMap[K, V], m2: JHashMap[K, V]) =>
-        {
-          m2.asScala.foreach { pair =>
-            val old = m1.get(pair._1)
-            m1.put(
-              pair._1,
-              if (old == null)
-                pair._2
-              else
-                cleanedF(old, pair._2))
-          }
-          m1
-        }: JHashMap[K, V]
+      val mergeMaps =
+        (m1: JHashMap[K, V], m2: JHashMap[K, V]) =>
+          {
+            m2.asScala.foreach { pair =>
+              val old = m1.get(pair._1)
+              m1.put(
+                pair._1,
+                if (old == null)
+                  pair._2
+                else
+                  cleanedF(old, pair._2))
+            }
+            m1
+          }: JHashMap[K, V]
 
       self.mapPartitions(reducePartition).reduce(mergeMaps).asScala
     }
@@ -508,19 +515,22 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       require(p >= 4, s"p ($p) must be >= 4")
       require(sp <= 32, s"sp ($sp) must be <= 32")
       require(sp == 0 || p <= sp, s"p ($p) cannot be greater than sp ($sp)")
-      val createHLL = (v: V) => {
-        val hll = new HyperLogLogPlus(p, sp)
-        hll.offer(v)
-        hll
-      }
-      val mergeValueHLL = (hll: HyperLogLogPlus, v: V) => {
-        hll.offer(v)
-        hll
-      }
-      val mergeHLL = (h1: HyperLogLogPlus, h2: HyperLogLogPlus) => {
-        h1.addAll(h2)
-        h1
-      }
+      val createHLL =
+        (v: V) => {
+          val hll = new HyperLogLogPlus(p, sp)
+          hll.offer(v)
+          hll
+        }
+      val mergeValueHLL =
+        (hll: HyperLogLogPlus, v: V) => {
+          hll.offer(v)
+          hll
+        }
+      val mergeHLL =
+        (h1: HyperLogLogPlus, h2: HyperLogLogPlus) => {
+          h1.addAll(h2)
+          h1
+        }
 
       combineByKeyWithClassTag(createHLL, mergeValueHLL, mergeHLL, partitioner)
         .mapValues(_.cardinality())
@@ -1140,14 +1150,15 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       self.partitioner match {
         case Some(p) =>
           val index = p.getPartition(key)
-          val process = (it: Iterator[(K, V)]) =>
-            {
-              val buf = new ArrayBuffer[V]
-              for (pair <- it if pair._1 == key) {
-                buf += pair._2
-              }
-              buf
-            }: Seq[V]
+          val process =
+            (it: Iterator[(K, V)]) =>
+              {
+                val buf = new ArrayBuffer[V]
+                for (pair <- it if pair._1 == key) {
+                  buf += pair._2
+                }
+                buf
+              }: Seq[V]
           val res = self.context.runJob(self, process, Array(index))
           res(0)
         case None =>
@@ -1283,8 +1294,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       // When speculation is on and output committer class name contains "Direct", we should warn
       // users that they may loss data if they are using a direct output committer.
       val speculationEnabled = self.conf.getBoolean("spark.speculation", false)
-      val outputCommitterClass =
-        hadoopConf.get("mapred.output.committer.class", "")
+      val outputCommitterClass = hadoopConf.get(
+        "mapred.output.committer.class",
+        "")
       if (speculationEnabled && outputCommitterClass.contains("Direct")) {
         val warningMessage =
           s"$outputCommitterClass may be an output committer that writes data directly to " +
@@ -1329,56 +1341,58 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         jobFormat.checkOutputSpecs(job)
       }
 
-      val writeShard = (context: TaskContext, iter: Iterator[(K, V)]) =>
-        {
-          val config = wrappedConf.value
-          /* "reduce task" <split #> <attempt # = spark task #> */
-          val attemptId = new TaskAttemptID(
-            jobtrackerID,
-            stageId,
-            TaskType.REDUCE,
-            context.partitionId,
-            context.attemptNumber)
-          val hadoopContext = new TaskAttemptContextImpl(config, attemptId)
-          val format = outfmt.newInstance
-          format match {
-            case c: Configurable => c.setConf(config)
-            case _               => ()
-          }
-          val committer = format.getOutputCommitter(hadoopContext)
-          committer.setupTask(hadoopContext)
-
-          val outputMetricsAndBytesWrittenCallback
-              : Option[(OutputMetrics, () => Long)] =
-            initHadoopOutputMetrics(context)
-
-          val writer = format
-            .getRecordWriter(hadoopContext)
-            .asInstanceOf[NewRecordWriter[K, V]]
-          require(writer != null, "Unable to obtain RecordWriter")
-          var recordsWritten = 0L
-          Utils.tryWithSafeFinallyAndFailureCallbacks {
-            while (iter.hasNext) {
-              val pair = iter.next()
-              writer.write(pair._1, pair._2)
-
-              // Update bytes written metric every few records
-              maybeUpdateOutputMetrics(
-                outputMetricsAndBytesWrittenCallback,
-                recordsWritten)
-              recordsWritten += 1
+      val writeShard =
+        (context: TaskContext, iter: Iterator[(K, V)]) =>
+          {
+            val config = wrappedConf.value
+            /* "reduce task" <split #> <attempt # = spark task #> */
+            val attemptId =
+              new TaskAttemptID(
+                jobtrackerID,
+                stageId,
+                TaskType.REDUCE,
+                context.partitionId,
+                context.attemptNumber)
+            val hadoopContext = new TaskAttemptContextImpl(config, attemptId)
+            val format = outfmt.newInstance
+            format match {
+              case c: Configurable => c.setConf(config)
+              case _               => ()
             }
-          } {
-            writer.close(hadoopContext)
-          }
-          committer.commitTask(hadoopContext)
-          outputMetricsAndBytesWrittenCallback.foreach {
-            case (om, callback) =>
-              om.setBytesWritten(callback())
-              om.setRecordsWritten(recordsWritten)
-          }
-          1
-        }: Int
+            val committer = format.getOutputCommitter(hadoopContext)
+            committer.setupTask(hadoopContext)
+
+            val outputMetricsAndBytesWrittenCallback
+                : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(
+              context)
+
+            val writer = format
+              .getRecordWriter(hadoopContext)
+              .asInstanceOf[NewRecordWriter[K, V]]
+            require(writer != null, "Unable to obtain RecordWriter")
+            var recordsWritten = 0L
+            Utils.tryWithSafeFinallyAndFailureCallbacks {
+              while (iter.hasNext) {
+                val pair = iter.next()
+                writer.write(pair._1, pair._2)
+
+                // Update bytes written metric every few records
+                maybeUpdateOutputMetrics(
+                  outputMetricsAndBytesWrittenCallback,
+                  recordsWritten)
+                recordsWritten += 1
+              }
+            } {
+              writer.close(hadoopContext)
+            }
+            committer.commitTask(hadoopContext)
+            outputMetricsAndBytesWrittenCallback.foreach {
+              case (om, callback) =>
+                om.setBytesWritten(callback())
+                om.setRecordsWritten(recordsWritten)
+            }
+            1
+          }: Int
 
       val jobAttemptId =
         new TaskAttemptID(jobtrackerID, stageId, TaskType.MAP, 0, 0)
@@ -1441,42 +1455,43 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       val writer = new SparkHadoopWriter(hadoopConf)
       writer.preSetup()
 
-      val writeToFile = (context: TaskContext, iter: Iterator[(K, V)]) => {
-        // Hadoop wants a 32-bit task attempt ID, so if ours is bigger than Int.MaxValue, roll it
-        // around by taking a mod. We expect that no task will be attempted 2 billion times.
-        val taskAttemptId = (context.taskAttemptId % Int.MaxValue).toInt
+      val writeToFile =
+        (context: TaskContext, iter: Iterator[(K, V)]) => {
+          // Hadoop wants a 32-bit task attempt ID, so if ours is bigger than Int.MaxValue, roll it
+          // around by taking a mod. We expect that no task will be attempted 2 billion times.
+          val taskAttemptId = (context.taskAttemptId % Int.MaxValue).toInt
 
-        val outputMetricsAndBytesWrittenCallback
-            : Option[(OutputMetrics, () => Long)] =
-          initHadoopOutputMetrics(context)
+          val outputMetricsAndBytesWrittenCallback
+              : Option[(OutputMetrics, () => Long)] = initHadoopOutputMetrics(
+            context)
 
-        writer.setup(context.stageId, context.partitionId, taskAttemptId)
-        writer.open()
-        var recordsWritten = 0L
+          writer.setup(context.stageId, context.partitionId, taskAttemptId)
+          writer.open()
+          var recordsWritten = 0L
 
-        Utils.tryWithSafeFinallyAndFailureCallbacks {
-          while (iter.hasNext) {
-            val record = iter.next()
-            writer.write(
-              record._1.asInstanceOf[AnyRef],
-              record._2.asInstanceOf[AnyRef])
+          Utils.tryWithSafeFinallyAndFailureCallbacks {
+            while (iter.hasNext) {
+              val record = iter.next()
+              writer.write(
+                record._1.asInstanceOf[AnyRef],
+                record._2.asInstanceOf[AnyRef])
 
-            // Update bytes written metric every few records
-            maybeUpdateOutputMetrics(
-              outputMetricsAndBytesWrittenCallback,
-              recordsWritten)
-            recordsWritten += 1
+              // Update bytes written metric every few records
+              maybeUpdateOutputMetrics(
+                outputMetricsAndBytesWrittenCallback,
+                recordsWritten)
+              recordsWritten += 1
+            }
+          } {
+            writer.close()
           }
-        } {
-          writer.close()
+          writer.commit()
+          outputMetricsAndBytesWrittenCallback.foreach {
+            case (om, callback) =>
+              om.setBytesWritten(callback())
+              om.setRecordsWritten(recordsWritten)
+          }
         }
-        writer.commit()
-        outputMetricsAndBytesWrittenCallback.foreach {
-          case (om, callback) =>
-            om.setBytesWritten(callback())
-            om.setRecordsWritten(recordsWritten)
-        }
-      }
 
       self.context.runJob(self, writeToFile)
       writer.commitJob()
@@ -1488,8 +1503,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   // return type: (output metrics, bytes written callback), defined only if the latter is defined
   private def initHadoopOutputMetrics(
       context: TaskContext): Option[(OutputMetrics, () => Long)] = {
-    val bytesWrittenCallback =
-      SparkHadoopUtil.get.getFSBytesWrittenOnThreadCallback()
+    val bytesWrittenCallback = SparkHadoopUtil.get
+      .getFSBytesWrittenOnThreadCallback()
     bytesWrittenCallback.map { b =>
       (context.taskMetrics().registerOutputMetrics(DataWriteMethod.Hadoop), b)
     }
@@ -1527,8 +1542,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   // setting can take effect:
   private def isOutputSpecValidationEnabled: Boolean = {
     val validationDisabled = PairRDDFunctions.disableOutputSpecValidation.value
-    val enabledInConf =
-      self.conf.getBoolean("spark.hadoop.validateOutputSpecs", true)
+    val enabledInConf = self.conf
+      .getBoolean("spark.hadoop.validateOutputSpecs", true)
     enabledInConf && !validationDisabled
   }
 }

@@ -15,10 +15,11 @@ case class ExtractMethodOutput(
     needNewDefinition: Boolean,
     fromElement: ScTypedDefinition) {
 
-  val isVal = ScalaPsiUtil.nameContext(fromElement) match {
-    case _: ScValue | _: ScFunction => true
-    case _                          => false
-  }
+  val isVal =
+    ScalaPsiUtil.nameContext(fromElement) match {
+      case _: ScValue | _: ScFunction => true
+      case _                          => false
+    }
 }
 
 object ExtractMethodOutput {

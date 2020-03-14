@@ -61,78 +61,79 @@ object DesktopIngestShardServer
   val caveatMessage = None
 
   val actorSystem = ActorSystem("desktopExecutorActorSystem")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   def runGUI(config: Configuration): Option[Future[PrecogUnit]] = {
-    val guiNotifier = if (config[Boolean]("appwindow.enabled", false)) {
-      logger.info("Starting gui window")
-      // Add a window with a menu for shutdown
-      val notifyArea = new JTextArea(25, 80)
+    val guiNotifier =
+      if (config[Boolean]("appwindow.enabled", false)) {
+        logger.info("Starting gui window")
+        // Add a window with a menu for shutdown
+        val notifyArea = new JTextArea(25, 80)
 
-      EventQueue.invokeLater(new Runnable {
-        def run() {
-          val precogMenu = new JMenu("Precog for Desktop")
-          val quitItem = new JMenuItem("Quit", KeyEvent.VK_Q)
-          quitItem.addActionListener(new ActionListener {
-            def actionPerformed(ev: ActionEvent) = {
-              System.exit(0)
-            }
-          })
-
-          precogMenu.add(quitItem)
-
-          val labcoatMenu = new JMenu("Labcoat")
-          val launchItem = new JMenuItem("Launch", KeyEvent.VK_L)
-          launchItem.addActionListener(new ActionListener {
-            def actionPerformed(ev: ActionEvent) = {
-              LaunchLabcoat.launchBrowser(config)
-            }
-          })
-
-          labcoatMenu.add(launchItem)
-
-          val menubar = new JMenuBar
-          menubar.add(precogMenu)
-          menubar.add(labcoatMenu)
-
-          val appFrame = new JFrame("Precog for Desktop")
-          appFrame.setJMenuBar(menubar)
-
-          appFrame.addWindowListener(new WindowAdapter {
-            override def windowClosed(ev: WindowEvent) = {
-              System.exit(0)
-            }
-          })
-
-          notifyArea.setEditable(false)
-          appFrame.add(notifyArea)
-
-          appFrame.pack()
-
-          val iconUrl =
-            ClassLoader.getSystemClassLoader.getResource("LargeIcon.png")
-          logger.debug("Loaded icon: " + iconUrl)
-          appFrame.setIconImage(Toolkit.getDefaultToolkit.getImage(iconUrl))
-
-          appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-
-          appFrame.setVisible(true)
-        }
-      })
-
-      Some({ (msg: String) =>
         EventQueue.invokeLater(new Runnable {
           def run() {
-            notifyArea.append(msg + "\n")
+            val precogMenu = new JMenu("Precog for Desktop")
+            val quitItem = new JMenuItem("Quit", KeyEvent.VK_Q)
+            quitItem.addActionListener(new ActionListener {
+              def actionPerformed(ev: ActionEvent) = {
+                System.exit(0)
+              }
+            })
+
+            precogMenu.add(quitItem)
+
+            val labcoatMenu = new JMenu("Labcoat")
+            val launchItem = new JMenuItem("Launch", KeyEvent.VK_L)
+            launchItem.addActionListener(new ActionListener {
+              def actionPerformed(ev: ActionEvent) = {
+                LaunchLabcoat.launchBrowser(config)
+              }
+            })
+
+            labcoatMenu.add(launchItem)
+
+            val menubar = new JMenuBar
+            menubar.add(precogMenu)
+            menubar.add(labcoatMenu)
+
+            val appFrame = new JFrame("Precog for Desktop")
+            appFrame.setJMenuBar(menubar)
+
+            appFrame.addWindowListener(new WindowAdapter {
+              override def windowClosed(ev: WindowEvent) = {
+                System.exit(0)
+              }
+            })
+
+            notifyArea.setEditable(false)
+            appFrame.add(notifyArea)
+
+            appFrame.pack()
+
+            val iconUrl = ClassLoader.getSystemClassLoader.getResource(
+              "LargeIcon.png")
+            logger.debug("Loaded icon: " + iconUrl)
+            appFrame.setIconImage(Toolkit.getDefaultToolkit.getImage(iconUrl))
+
+            appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+
+            appFrame.setVisible(true)
           }
         })
-      })
-    } else {
-      logger.info("Skipping gui window")
-      None
-    }
+
+        Some({ (msg: String) =>
+          EventQueue.invokeLater(new Runnable {
+            def run() {
+              notifyArea.append(msg + "\n")
+            }
+          })
+        })
+      } else {
+        logger.info("Skipping gui window")
+        None
+      }
 
     guiNotifier.foreach(_("Starting internal services"))
     val zookeeper = startZookeeperStandalone(config.detach("zookeeper"))

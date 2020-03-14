@@ -156,11 +156,12 @@ object Template extends Logging {
           http.asString
         }
 
-        val body = if (response.code == 304) {
-          reposCache(repo).body
-        } else {
-          response.body
-        }
+        val body =
+          if (response.code == 304) {
+            reposCache(repo).body
+          } else {
+            response.body
+          }
 
         repo -> GitHubCache(headers = response.headers, body = body)
       }.toMap
@@ -177,8 +178,11 @@ object Template extends Logging {
   }
 
   def sub(repo: String, name: String, email: String, org: String): Unit = {
-    val data =
-      Map("repo" -> repo, "name" -> name, "email" -> email, "org" -> org)
+    val data = Map(
+      "repo" -> repo,
+      "name" -> name,
+      "email" -> email,
+      "org" -> org)
     try {
       httpOptionalProxy("http://update.prediction.io/templates.subscribe")
         .postData("json=" + write(data))
@@ -230,8 +234,10 @@ object Template extends Logging {
   }
 
   def get(ca: ConsoleArgs): Int = {
-    val repos =
-      getGitHubRepos(Seq(ca.template.repository), "tags", ".templates-cache")
+    val repos = getGitHubRepos(
+      Seq(ca.template.repository),
+      "tags",
+      ".templates-cache")
 
     repos.get(ca.template.repository).map { repo =>
       try {
@@ -338,8 +344,9 @@ object Template extends Logging {
     val zipFilename =
       s"${ca.template.repository.replace('/', '-')}-${tag.name}.zip"
     FileUtils.writeByteArrayToFile(new File(zipFilename), finalTrial.body)
-    val zis = new ZipInputStream(
-      new BufferedInputStream(new FileInputStream(zipFilename)))
+    val zis =
+      new ZipInputStream(
+        new BufferedInputStream(new FileInputStream(zipFilename)))
     val bufferSize = 4096
     val filesToModify = collection.mutable.ListBuffer[String]()
     var ze = zis.getNextEntry
@@ -350,9 +357,10 @@ object Template extends Logging {
       if (ze.isDirectory) {
         new File(destFilename).mkdirs
       } else {
-        val os = new BufferedOutputStream(
-          new FileOutputStream(destFilename),
-          bufferSize)
+        val os =
+          new BufferedOutputStream(
+            new FileOutputStream(destFilename),
+            bufferSize)
         val data = Array.ofDim[Byte](bufferSize)
         var count = zis.read(data, 0, bufferSize)
         while (count != -1) {
@@ -376,8 +384,7 @@ object Template extends Logging {
     zis.close()
     new File(zipFilename).delete
 
-    val engineJsonFile =
-      new File(ca.template.directory, "engine.json")
+    val engineJsonFile = new File(ca.template.directory, "engine.json")
 
     val engineJson =
       try {
@@ -406,8 +413,8 @@ object Template extends Logging {
       filesToModify.foreach { ftm =>
         println(s"Processing $ftm...")
         val fileContent = Source.fromFile(ftm).getLines()
-        val processedLines =
-          fileContent.map(_.replaceAllLiterally(pkgName, organization))
+        val processedLines = fileContent.map(
+          _.replaceAllLiterally(pkgName, organization))
         FileUtils.writeStringToFile(
           new File(ftm),
           processedLines.mkString("\n"))

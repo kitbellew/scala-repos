@@ -125,9 +125,10 @@ trait CoGroupable[K, +R]
           // recompute it on every value for the left if the smallerJf is non-trivial
           // we could see how long it is, and possible switch to a cached version the
           // second time through if it is small enough
-          val joinedRight = new Iterable[R1] {
-            def iterator = smallerJf(k, smallerHead.iterator, smallerTail)
-          }
+          val joinedRight =
+            new Iterable[R1] {
+              def iterator = smallerJf(k, smallerHead.iterator, smallerTail)
+            }
 
           fn(k, joinedLeft, joinedRight)
       }
@@ -180,8 +181,7 @@ trait CoGrouped[K, +R]
     * but it is not clear how to generalize that for general cogrouping functions.
     * For now, just do a normal take.
     */
-  override def bufferedTake(n: Int): CoGrouped[K, R] =
-    take(n)
+  override def bufferedTake(n: Int): CoGrouped[K, R] = take(n)
 
   // Filter the keys before doing the join
   override def filterKeys(fn: K => Boolean): CoGrouped[K, R] = {
@@ -240,107 +240,111 @@ trait CoGrouped[K, +R]
     val ord = keyOrdering
 
     TypedPipeFactory({ (flowDef, mode) =>
-      val newPipe = Grouped.maybeBox[K, Any](ord, flowDef) {
-        (tupset, ordKeyField) =>
-          if (firstCount == inputs.size) {
+      val newPipe =
+        Grouped.maybeBox[K, Any](ord, flowDef) {
+          (tupset, ordKeyField) =>
+            if (firstCount == inputs.size) {
 
-            /**
-              * This is a self-join
-              * Cascading handles this by sending the data only once, spilling to disk if
-              * the groups don't fit in RAM, then doing the join on this one set of data.
-              * This is fundamentally different than the case where the first item is
-              * not repeated. That case is below
-              */
-            val NUM_OF_SELF_JOINS = firstCount - 1
-            new CoGroup(
-              assignName(
-                inputs.head
-                  .toPipe[(K, Any)](("key", "value"))(flowDef, mode, tupset)),
-              ordKeyField,
-              NUM_OF_SELF_JOINS,
-              outFields(firstCount),
-              WrappedJoiner(
-                new DistinctCoGroupJoiner(
-                  firstCount,
-                  Grouped.keyGetter(ord),
-                  joinFunction)))
-          } else if (firstCount == 1) {
+              /**
+                * This is a self-join
+                * Cascading handles this by sending the data only once, spilling to disk if
+                * the groups don't fit in RAM, then doing the join on this one set of data.
+                * This is fundamentally different than the case where the first item is
+                * not repeated. That case is below
+                */
+              val NUM_OF_SELF_JOINS = firstCount - 1
+              new CoGroup(
+                assignName(
+                  inputs.head
+                    .toPipe[(K, Any)](("key", "value"))(flowDef, mode, tupset)),
+                ordKeyField,
+                NUM_OF_SELF_JOINS,
+                outFields(firstCount),
+                WrappedJoiner(
+                  new DistinctCoGroupJoiner(
+                    firstCount,
+                    Grouped.keyGetter(ord),
+                    joinFunction)))
+            } else if (firstCount == 1) {
 
-            def keyId(idx: Int): String = "key%d".format(idx)
+              def keyId(idx: Int): String = "key%d".format(idx)
 
-            /**
-              * As long as the first one appears only once, we can handle self joins on the others:
-              * Cascading does this by maybe spilling all the streams other than the first item.
-              * This is handled by a different CoGroup constructor than the above case.
-              */
-            def renamePipe(idx: Int, p: TypedPipe[(K, Any)]): Pipe =
-              p.toPipe[(K, Any)](List(keyId(idx), "value%d".format(idx)))(
-                flowDef,
-                mode,
-                tupset)
+              /**
+                * As long as the first one appears only once, we can handle self joins on the others:
+                * Cascading does this by maybe spilling all the streams other than the first item.
+                * This is handled by a different CoGroup constructor than the above case.
+                */
+              def renamePipe(idx: Int, p: TypedPipe[(K, Any)]): Pipe =
+                p.toPipe[(K, Any)](List(keyId(idx), "value%d".format(idx)))(
+                  flowDef,
+                  mode,
+                  tupset)
 
-            // This is tested for the properties we need (non-reordering)
-            val distincts = CoGrouped.distinctBy(inputs)(identity)
-            val dsize = distincts.size
-            val isize = inputs.size
+              // This is tested for the properties we need (non-reordering)
+              val distincts = CoGrouped.distinctBy(inputs)(identity)
+              val dsize = distincts.size
+              val isize = inputs.size
 
-            def makeFields(id: Int): Fields = {
-              val comp = ordKeyField.getComparators.apply(0)
-              val fieldName = keyId(id)
-              val f = new Fields(fieldName)
-              f.setComparator(fieldName, comp)
-              f
-            }
-
-            val groupFields: Array[Fields] = (0 until dsize)
-              .map(makeFields)
-              .toArray
-
-            val pipes: Array[Pipe] = distincts.zipWithIndex.map {
-              case (item, idx) => assignName(renamePipe(idx, item))
-            }.toArray
-
-            val cjoiner =
-              if (isize != dsize) {
-                // avoid capturing anything other than the mapping ints:
-                val mapping: Map[Int, Int] = inputs.zipWithIndex.map {
-                  case (item, idx) =>
-                    idx -> distincts.indexWhere(_ == item)
-                }.toMap
-
-                new CoGroupedJoiner(
-                  isize,
-                  Grouped.keyGetter(ord),
-                  joinFunction) {
-                  val distinctSize = dsize
-                  def distinctIndexOf(orig: Int) = mapping(orig)
-                }
-              } else {
-                new DistinctCoGroupJoiner(
-                  isize,
-                  Grouped.keyGetter(ord),
-                  joinFunction)
+              def makeFields(id: Int): Fields = {
+                val comp = ordKeyField.getComparators.apply(0)
+                val fieldName = keyId(id)
+                val f = new Fields(fieldName)
+                f.setComparator(fieldName, comp)
+                f
               }
 
-            new CoGroup(
-              pipes,
-              groupFields,
-              outFields(dsize),
-              WrappedJoiner(cjoiner))
-          } else {
+              val groupFields: Array[Fields] =
+                (0 until dsize)
+                  .map(makeFields)
+                  .toArray
 
-            /**
-              * This is non-trivial to encode in the type system, so we throw this exception
-              * at the planning phase.
-              */
-            sys.error(
-              "Except for self joins, where you are joining something with only itself,\n" +
-                "left-most pipe can only appear once. Firsts: " +
-                inputs.collect {
-                  case x if x == inputs.head => x
-                }.toString)
-          }
-      }
+              val pipes: Array[Pipe] =
+                distincts.zipWithIndex.map {
+                  case (item, idx) => assignName(renamePipe(idx, item))
+                }.toArray
+
+              val cjoiner =
+                if (isize != dsize) {
+                  // avoid capturing anything other than the mapping ints:
+                  val mapping: Map[Int, Int] =
+                    inputs.zipWithIndex.map {
+                      case (item, idx) =>
+                        idx -> distincts.indexWhere(_ == item)
+                    }.toMap
+
+                  new CoGroupedJoiner(
+                    isize,
+                    Grouped.keyGetter(ord),
+                    joinFunction) {
+                    val distinctSize = dsize
+                    def distinctIndexOf(orig: Int) = mapping(orig)
+                  }
+                } else {
+                  new DistinctCoGroupJoiner(
+                    isize,
+                    Grouped.keyGetter(ord),
+                    joinFunction)
+                }
+
+              new CoGroup(
+                pipes,
+                groupFields,
+                outFields(dsize),
+                WrappedJoiner(cjoiner))
+            } else {
+
+              /**
+                * This is non-trivial to encode in the type system, so we throw this exception
+                * at the planning phase.
+                */
+              sys.error(
+                "Except for self joins, where you are joining something with only itself,\n" +
+                  "left-most pipe can only appear once. Firsts: " +
+                  inputs.collect {
+                    case x if x == inputs.head => x
+                  }.toString)
+            }
+        }
       /*
        * the CoGrouped only populates the first two fields, the second two
        * are null. We then project out at the end of the method.
@@ -389,9 +393,10 @@ abstract class CoGroupedJoiner[K](
     }
     // This use of `_.get` is safe, but difficult to prove in the types.
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
-    val keyTuple = iters.collectFirst {
-      case iter if iter.nonEmpty => iter.head
-    }.get // One of these must have a key
+    val keyTuple =
+      iters.collectFirst {
+        case iter if iter.nonEmpty => iter.head
+      }.get // One of these must have a key
     val key = getter.get(keyTuple, 0)
 
     val leftMost = iters.head

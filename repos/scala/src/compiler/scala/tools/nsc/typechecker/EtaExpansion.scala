@@ -70,14 +70,15 @@ trait EtaExpansion { self: Analyzer =>
           val vname: Name = freshName()
           // Problem with ticket #2351 here
           defs += atPos(tree.pos) {
-            val rhs = if (byName) {
-              val res = typer.typed(Function(List(), tree))
-              new ChangeOwnerTraverser(
-                typer.context.owner,
-                res.symbol) traverse tree // SI-6274
-              res
-            } else
-              tree
+            val rhs =
+              if (byName) {
+                val res = typer.typed(Function(List(), tree))
+                new ChangeOwnerTraverser(
+                  typer.context.owner,
+                  res.symbol) traverse tree // SI-6274
+                res
+              } else
+                tree
             ValDef(Modifiers(SYNTHETIC), vname.toTermName, TypeTree(), rhs)
           }
           atPos(tree.pos.focus) {
@@ -87,35 +88,37 @@ trait EtaExpansion { self: Analyzer =>
               Ident(vname)
           }
         }
-      val tree1 = tree match {
-        // a partial application using named arguments has the following form:
-        // { val qual$1 = qual
-        //   val x$1 = arg1
-        //   [...]
-        //   val x$n = argn
-        //   qual$1.fun(x$1, ..)..(.., x$n) }
-        // Eta-expansion has to be performed on `fun`
-        case Block(stats, fun) =>
-          defs ++= stats
-          liftoutPrefix(fun)
-        case Apply(fn, args) =>
-          val byName: Int => Option[Boolean] =
-            fn.tpe.params.map(p => definitions.isByNameParamType(p.tpe)).lift
-          val newArgs = mapWithIndex(args) { (arg, i) =>
-            // with repeated params, there might be more or fewer args than params
-            liftout(arg, byName(i).getOrElse(false))
-          }
-          treeCopy.Apply(tree, liftoutPrefix(fn), newArgs).clearType()
-        case TypeApply(fn, args) =>
-          treeCopy.TypeApply(tree, liftoutPrefix(fn), args).clearType()
-        case Select(qual, name) =>
-          val name = tree.symbol.name // account for renamed imports, SI-7233
-          treeCopy
-            .Select(tree, liftout(qual, byName = false), name)
-            .clearType() setSymbol NoSymbol
-        case Ident(name) =>
-          tree
-      }
+      val tree1 =
+        tree match {
+          // a partial application using named arguments has the following form:
+          // { val qual$1 = qual
+          //   val x$1 = arg1
+          //   [...]
+          //   val x$n = argn
+          //   qual$1.fun(x$1, ..)..(.., x$n) }
+          // Eta-expansion has to be performed on `fun`
+          case Block(stats, fun) =>
+            defs ++= stats
+            liftoutPrefix(fun)
+          case Apply(fn, args) =>
+            val byName: Int => Option[Boolean] =
+              fn.tpe.params.map(p => definitions.isByNameParamType(p.tpe)).lift
+            val newArgs =
+              mapWithIndex(args) { (arg, i) =>
+                // with repeated params, there might be more or fewer args than params
+                liftout(arg, byName(i).getOrElse(false))
+              }
+            treeCopy.Apply(tree, liftoutPrefix(fn), newArgs).clearType()
+          case TypeApply(fn, args) =>
+            treeCopy.TypeApply(tree, liftoutPrefix(fn), args).clearType()
+          case Select(qual, name) =>
+            val name = tree.symbol.name // account for renamed imports, SI-7233
+            treeCopy
+              .Select(tree, liftout(qual, byName = false), name)
+              .clearType() setSymbol NoSymbol
+          case Ident(name) =>
+            tree
+        }
       if (tree1 ne tree)
         tree1 setPos tree1.pos.makeTransparent
       tree1

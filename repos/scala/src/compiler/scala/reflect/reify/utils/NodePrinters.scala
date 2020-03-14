@@ -30,8 +30,8 @@ trait NodePrinters {
             var s = line substring 2
             s = s.replace(nme.UNIVERSE_PREFIX.toString, "")
             s = s.replace(".apply", "")
-            s =
-              "([^\"])scala\\.collection\\.immutable\\.".r.replaceAllIn(s, "$1")
+            s = "([^\"])scala\\.collection\\.immutable\\.".r
+              .replaceAllIn(s, "$1")
             s = "List\\[List\\[.*?\\].*?\\]".r.replaceAllIn(s, "List")
             s = "List\\[.*?\\]".r.replaceAllIn(s, "List")
             s = s.replace("immutable.this.Nil", "List()")
@@ -42,8 +42,9 @@ trait NodePrinters {
                   flagsAreUsed = true
                   show(m.group(1).toLong)
                 })
-            s =
-              s.replace("Modifiers(0L, TypeName(\"\"), List())", "Modifiers()")
+            s = s.replace(
+              "Modifiers(0L, TypeName(\"\"), List())",
+              "Modifiers()")
             s =
               """Modifiers\((\d+)[lL], TypeName\("(.*?)"\), List\((.*?)\)\)""".r
                 .replaceAllIn(

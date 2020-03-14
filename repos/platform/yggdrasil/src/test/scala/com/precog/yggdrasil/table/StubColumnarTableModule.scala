@@ -49,9 +49,8 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
 
   implicit def M: Monad[M] with Comonad[M]
 
-  private var initialIndices =
-    collection.mutable
-      .Map[Path, Int]() // if we were doing this for real: j.u.c.HashMap
+  private var initialIndices = collection.mutable
+    .Map[Path, Int]() // if we were doing this for real: j.u.c.HashMap
   private var currentIndex =
     0 // if we were doing this for real: j.u.c.a.AtomicInteger
   private val indexLock =
@@ -80,11 +79,12 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
           WrapObject(sortKey, "0"),
           WrapObject(Leaf(Source), "1")))
 
-      implicit val jValueOrdering = if (sortOrder.isAscending) {
-        JValue.order.toScalaOrdering
-      } else {
-        JValue.order.toScalaOrdering.reverse
-      }
+      implicit val jValueOrdering =
+        if (sortOrder.isAscending) {
+          JValue.order.toScalaOrdering
+        } else {
+          JValue.order.toScalaOrdering.reverse
+        }
 
       tableWithSortKey.toJson
         .map { jvals =>

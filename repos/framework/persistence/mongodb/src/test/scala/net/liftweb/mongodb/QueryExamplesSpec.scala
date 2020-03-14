@@ -110,8 +110,8 @@ object QueryExamplesSpec extends Specification with MongoTestKit {
     pebblesParents.map(_._id).filterNot(rubblesIds.contains(_)) must_== List()
 
     // query for Bamm-Bamm's and Pebbles' parents using List[UUID]
-    val pebblesAndBammBammsParents =
-      Person.findAll(("childId" -> ("$in" -> List(pebblesId, bammbammId))))
+    val pebblesAndBammBammsParents = Person.findAll(
+      ("childId" -> ("$in" -> List(pebblesId, bammbammId))))
 
     pebblesAndBammBammsParents.length must_== 4
 

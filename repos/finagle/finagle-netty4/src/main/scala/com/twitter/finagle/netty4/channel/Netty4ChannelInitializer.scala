@@ -31,8 +31,8 @@ private[netty4] class Netty4ChannelInitializer(
 
   val Logger(logger) = params[Logger]
   val Label(label) = params[Label]
-  val Transport.Liveness(readTimeout, writeTimeout, _) =
-    params[Transport.Liveness]
+  val Transport
+    .Liveness(readTimeout, writeTimeout, _) = params[Transport.Liveness]
   val Timer(timer) = params[Timer]
   val Stats(stats) = params[Stats]
 
@@ -169,10 +169,9 @@ private[netty4] class ChannelExceptionHandler(
       case _                         =>
     }
 
-    val remoteAddr =
-      Option(ctx.channel.remoteAddress)
-        .map(_.toString)
-        .getOrElse("unknown remote address")
+    val remoteAddr = Option(ctx.channel.remoteAddress)
+      .map(_.toString)
+      .getOrElse("unknown remote address")
     val msg =
       s"Unhandled exception in connection with $remoteAddr, shutting down connection"
 

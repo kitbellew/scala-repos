@@ -6,14 +6,11 @@ final class ArrowOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
     implicit val F: Arrow[F])
     extends Ops[F[A, B]] {
   ////
-  final def ***[C, D](k: F[C, D]): F[(A, C), (B, D)] =
-    F.splitA(self, k)
+  final def ***[C, D](k: F[C, D]): F[(A, C), (B, D)] = F.splitA(self, k)
 
-  final def &&&[C](k: F[A, C]): F[A, (B, C)] =
-    F.combine(self, k)
+  final def &&&[C](k: F[A, C]): F[A, (B, C)] = F.combine(self, k)
 
-  final def product: F[(A, A), (B, B)] =
-    F.product(self)
+  final def product: F[(A, A), (B, B)] = F.product(self)
 
   ////
 }

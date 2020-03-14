@@ -45,18 +45,19 @@ import scalafx.scene.chart.XYChart
 class EnsembleAdvLineCategoryChart extends EnsembleExample {
   def getContent = {
     // add starting data
-    val series = new XYChart.Series[String, Number] {
-      name = "Data Series 1"
-      // create sample data
-      data = Seq(
-        XYChart.Data[String, Number]("Alpha", 50d),
-        XYChart.Data[String, Number]("Beta", 80d),
-        XYChart.Data[String, Number]("RC1", 90d),
-        XYChart.Data[String, Number]("RC2", 30d),
-        XYChart.Data[String, Number]("1.0", 120d),
-        XYChart.Data[String, Number]("1.1", 20d)
-      )
-    }
+    val series =
+      new XYChart.Series[String, Number] {
+        name = "Data Series 1"
+        // create sample data
+        data = Seq(
+          XYChart.Data[String, Number]("Alpha", 50d),
+          XYChart.Data[String, Number]("Beta", 80d),
+          XYChart.Data[String, Number]("RC1", 90d),
+          XYChart.Data[String, Number]("RC2", 30d),
+          XYChart.Data[String, Number]("1.0", 120d),
+          XYChart.Data[String, Number]("1.1", 20d)
+        )
+      }
 
     // setup chart
     new LineChart[String, Number](

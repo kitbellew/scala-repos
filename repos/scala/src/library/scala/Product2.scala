@@ -10,8 +10,7 @@
 package scala
 
 object Product2 {
-  def unapply[T1, T2](x: Product2[T1, T2]): Option[Product2[T1, T2]] =
-    Some(x)
+  def unapply[T1, T2](x: Product2[T1, T2]): Option[Product2[T1, T2]] = Some(x)
 }
 
 /** Product2 is a cartesian product of 2 components.

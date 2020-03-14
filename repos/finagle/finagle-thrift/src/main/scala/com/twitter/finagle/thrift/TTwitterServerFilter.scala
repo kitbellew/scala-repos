@@ -63,8 +63,8 @@ private[finagle] class TTwitterServerFilter(
         }
 
         Trace.recordRpc({
-          val msg =
-            new InputBuffer(request_, protocolFactory)().readMessageBegin()
+          val msg = new InputBuffer(request_, protocolFactory)()
+            .readMessageBegin()
           msg.name
         })
 

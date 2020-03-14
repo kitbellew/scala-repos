@@ -200,8 +200,8 @@ object SerializationExamples extends Specification {
 }
 
 object ShortTypeHintExamples extends TypeHintExamples {
-  implicit val formats =
-    Serialization.formats(ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil))
+  implicit val formats = Serialization.formats(
+    ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil))
 
   "Deserialization succeeds even if jsonClass is not the first field" in {
     val ser = """{"animals":[],"pet":{"name":"pluto","jsonClass":"Dog"}}"""
@@ -253,12 +253,13 @@ object FullTypeHintExamples extends TypeHintExamples {
 object CustomTypeHintFieldNameExample extends TypeHintExamples {
   import Serialization.{read, write => swrite}
 
-  implicit val formats = new Formats {
-    val dateFormat = DefaultFormats.lossless.dateFormat
-    override val typeHints = ShortTypeHints(
-      classOf[Fish] :: classOf[Dog] :: Nil)
-    override val typeHintFieldName = "$type$"
-  }
+  implicit val formats =
+    new Formats {
+      val dateFormat = DefaultFormats.lossless.dateFormat
+      override val typeHints = ShortTypeHints(
+        classOf[Fish] :: classOf[Dog] :: Nil)
+      override val typeHintFieldName = "$type$"
+    }
 
   "Serialized JSON contains configured field name" in {
     val animals = Animals(Dog("pluto") :: Fish(1.2) :: Nil, Dog("pluto"))
@@ -273,8 +274,9 @@ trait TypeHintExamples extends Specification {
   implicit val formats: Formats
 
   "Polymorphic List serialization example" in {
-    val animals =
-      Animals(Dog("pluto") :: Fish(1.2) :: Dog("devil") :: Nil, Dog("pluto"))
+    val animals = Animals(
+      Dog("pluto") :: Fish(1.2) :: Dog("devil") :: Nil,
+      Dog("pluto"))
     val ser = swrite(animals)
     read[Animals](ser) mustEqual animals
   }
@@ -421,16 +423,17 @@ object CustomClassWithTypeHintsExamples extends Specification {
   import Serialization.{read, write => swrite}
   import JsonAST._
 
-  val hints = new ShortTypeHints(classOf[DateTime] :: Nil) {
-    override def serialize: PartialFunction[Any, JObject] = {
-      case t: DateTime => JObject(JField("t", JInt(t.time)) :: Nil)
-    }
+  val hints =
+    new ShortTypeHints(classOf[DateTime] :: Nil) {
+      override def serialize: PartialFunction[Any, JObject] = {
+        case t: DateTime => JObject(JField("t", JInt(t.time)) :: Nil)
+      }
 
-    override def deserialize: PartialFunction[(String, JObject), Any] = {
-      case ("DateTime", JObject(JField("t", JInt(t)) :: Nil)) =>
-        new DateTime(t.longValue)
+      override def deserialize: PartialFunction[(String, JObject), Any] = {
+        case ("DateTime", JObject(JField("t", JInt(t)) :: Nil)) =>
+          new DateTime(t.longValue)
+      }
     }
-  }
   implicit val formats = Serialization.formats(hints)
 
   "Custom class serialization using provided serialization and deserialization functions" in {

@@ -47,25 +47,27 @@ private[redis] object RedisCodec {
   def toUnifiedFormat(
       args: Seq[ChannelBuffer],
       includeHeader: Boolean = true) = {
-    val header = includeHeader match {
-      case true =>
-        Seq(
-          ARG_COUNT_MARKER_BA,
-          StringToChannelBuffer(args.length.toString),
-          EOL_DELIMITER_BA)
-      case false => Nil
-    }
-    val buffers = args
-      .map({ arg =>
-        Seq(
-          ARG_SIZE_MARKER_BA,
-          StringToChannelBuffer(arg.readableBytes.toString),
-          EOL_DELIMITER_BA,
-          arg,
-          EOL_DELIMITER_BA
-        )
-      })
-      .flatten
+    val header =
+      includeHeader match {
+        case true =>
+          Seq(
+            ARG_COUNT_MARKER_BA,
+            StringToChannelBuffer(args.length.toString),
+            EOL_DELIMITER_BA)
+        case false => Nil
+      }
+    val buffers =
+      args
+        .map({ arg =>
+          Seq(
+            ARG_SIZE_MARKER_BA,
+            StringToChannelBuffer(arg.readableBytes.toString),
+            EOL_DELIMITER_BA,
+            arg,
+            EOL_DELIMITER_BA
+          )
+        })
+        .flatten
     ChannelBuffers.wrappedBuffer((header ++ buffers).toArray: _*)
   }
 

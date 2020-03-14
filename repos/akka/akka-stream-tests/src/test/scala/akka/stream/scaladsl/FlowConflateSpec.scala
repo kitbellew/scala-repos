@@ -105,26 +105,28 @@ class FlowConflateSpec extends AkkaSpec {
     }
 
     "work on a variable rate chain" in {
-      val future = Source(1 to 1000)
-        .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
-        .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean())
-            Thread.sleep(10);
-          i
-        }
-        .runFold(0)(_ + _)
+      val future =
+        Source(1 to 1000)
+          .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
+          .map { i ⇒
+            if (ThreadLocalRandom.current().nextBoolean())
+              Thread.sleep(10);
+            i
+          }
+          .runFold(0)(_ + _)
       Await.result(future, 10.seconds) should be(500500)
     }
 
     "work on a variable rate chain (simple conflate)" in {
-      val future = Source(1 to 1000)
-        .conflate(_ + _)
-        .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean())
-            Thread.sleep(10);
-          i
-        }
-        .runFold(0)(_ + _)
+      val future =
+        Source(1 to 1000)
+          .conflate(_ + _)
+          .map { i ⇒
+            if (ThreadLocalRandom.current().nextBoolean())
+              Thread.sleep(10);
+            i
+          }
+          .runFold(0)(_ + _)
       Await.result(future, 10.seconds) should be(500500)
     }
 
@@ -162,10 +164,11 @@ class FlowConflateSpec extends AkkaSpec {
     }
 
     "work with a buffer and fold" in {
-      val future = Source(1 to 50)
-        .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
-        .buffer(50, OverflowStrategy.backpressure)
-        .runFold(0)(_ + _)
+      val future =
+        Source(1 to 50)
+          .conflateWithSeed(seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
+          .buffer(50, OverflowStrategy.backpressure)
+          .runFold(0)(_ + _)
       Await.result(future, 3.seconds) should be((1 to 50).sum)
     }
 

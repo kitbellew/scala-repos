@@ -217,8 +217,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       addressFromProto(uniqueAddress.getAddress),
       uniqueAddress.getUid)
 
-  private val memberStatusToInt =
-    scala.collection.immutable.HashMap[MemberStatus, Int](
+  private val memberStatusToInt = scala.collection.immutable
+    .HashMap[MemberStatus, Int](
       MemberStatus.Joining -> cm.MemberStatus.Joining_VALUE,
       MemberStatus.Up -> cm.MemberStatus.Up_VALUE,
       MemberStatus.Leaving -> cm.MemberStatus.Leaving_VALUE,
@@ -232,8 +232,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     case (a, b) ⇒ (b, a)
   }
 
-  private val reachabilityStatusToInt =
-    scala.collection.immutable.HashMap[Reachability.ReachabilityStatus, Int](
+  private val reachabilityStatusToInt = scala.collection.immutable
+    .HashMap[Reachability.ReachabilityStatus, Int](
       Reachability.Reachable -> cm.ReachabilityStatus.Reachable_VALUE,
       Reachability.Unreachable -> cm.ReachabilityStatus.Unreachable_VALUE,
       Reachability.Terminated -> cm.ReachabilityStatus.Terminated_VALUE
@@ -334,8 +334,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
   private def vectorClockToProto(
       version: VectorClock,
       hashMapping: Map[String, Int]): cm.VectorClock.Builder = {
-    val versions: Iterable[cm.VectorClock.Version.Builder] =
-      version.versions.map {
+    val versions: Iterable[cm.VectorClock.Version.Builder] = version.versions
+      .map {
         case (n, t) ⇒
           cm.VectorClock.Version
             .newBuilder()
@@ -388,10 +388,11 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         observerReachability: Iterable[cm.ObserverReachability])
         : Reachability = {
       val recordBuilder = new immutable.VectorBuilder[Reachability.Record]
-      val versionsBuilder = new scala.collection.mutable.MapBuilder[
-        UniqueAddress,
-        Long,
-        Map[UniqueAddress, Long]](Map.empty)
+      val versionsBuilder =
+        new scala.collection.mutable.MapBuilder[
+          UniqueAddress,
+          Long,
+          Map[UniqueAddress, Long]](Map.empty)
       for (o ← observerReachability) {
         val observer = addressMapping(o.getAddressIndex)
         versionsBuilder += ((observer, o.getVersion))
@@ -466,9 +467,11 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     val allNodeMetrics = envelope.gossip.nodes
     val allAddresses: Vector[Address] = allNodeMetrics.map(_.address)(breakOut)
     val addressMapping = allAddresses.zipWithIndex.toMap
-    val allMetricNames: Vector[String] = allNodeMetrics
-      .foldLeft(Set.empty[String])((s, n) ⇒ s ++ n.metrics.iterator.map(_.name))
-      .toVector
+    val allMetricNames: Vector[String] =
+      allNodeMetrics
+        .foldLeft(Set.empty[String])((s, n) ⇒
+          s ++ n.metrics.iterator.map(_.name))
+        .toVector
     val metricNamesMapping = allMetricNames.zipWithIndex.toMap
     def mapAddress(address: Address) =
       mapWithErrorMessage(addressMapping, address, "address")
@@ -525,8 +528,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         .setTimestamp(nodeMetrics.timestamp)
         .addAllMetrics(nodeMetrics.metrics.map(metricToProto(_).build).asJava)
 
-    val nodeMetrics: Iterable[cm.NodeMetrics] =
-      allNodeMetrics.map(nodeMetricsToProto(_).build)
+    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics.map(
+      nodeMetricsToProto(_).build)
 
     cm.MetricsGossipEnvelope
       .newBuilder()
@@ -566,9 +569,10 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         case NumberType.Float_VALUE ⇒ jl.Float.intBitsToFloat(number.getValue32)
         case NumberType.Integer_VALUE ⇒ number.getValue32
         case NumberType.Serialized_VALUE ⇒
-          val in = new ClassLoaderObjectInputStream(
-            system.dynamicAccess.classLoader,
-            new ByteArrayInputStream(number.getSerialized.toByteArray))
+          val in =
+            new ClassLoaderObjectInputStream(
+              system.dynamicAccess.classLoader,
+              new ByteArrayInputStream(number.getSerialized.toByteArray))
           val obj = in.readObject
           in.close()
           obj.asInstanceOf[jl.Number]

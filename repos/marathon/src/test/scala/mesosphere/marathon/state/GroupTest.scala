@@ -120,15 +120,16 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
 
       When("the group will be updated")
       val timestamp = Timestamp.now()
-      val result = current.update(timestamp) { group =>
-        if (group.id == PathId("/test/group2"))
-          Group(
-            "/test/group3".toPath,
-            Set(AppDefinition("app2".toPath)),
-            version = timestamp)
-        else
-          group
-      }
+      val result =
+        current.update(timestamp) { group =>
+          if (group.id == PathId("/test/group2"))
+            Group(
+              "/test/group3".toPath,
+              Set(AppDefinition("app2".toPath)),
+              version = timestamp)
+          else
+            group
+        }
 
       Then("the update has been applied")
       result.version should be(timestamp)
@@ -228,10 +229,9 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
 
       Given(
         "an existing group /some/nested which does not directly or indirectly contain apps")
-      val current =
-        Group.empty
-          .makeGroup("/some/nested/path".toPath)
-          .makeGroup("/some/nested/path2".toPath)
+      val current = Group.empty
+        .makeGroup("/some/nested/path".toPath)
+        .makeGroup("/some/nested/path2".toPath)
 
       current.transitiveGroups.map(_.id.toString) should be(
         Set(
@@ -259,17 +259,14 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
 
     it("cannot replace a group with apps by an app definition") {
       Given("an existing group /some/nested which does contain an app")
-      val current =
-        Group.empty
-          .makeGroup("/some/nested/path".toPath)
-          .makeGroup("/some/nested/path2".toPath)
-          .updateApp(
-            "/some/nested/path2/app".toPath,
-            _ =>
-              AppDefinition(
-                "/some/nested/path2/app".toPath,
-                cmd = Some("true")),
-            Timestamp.now())
+      val current = Group.empty
+        .makeGroup("/some/nested/path".toPath)
+        .makeGroup("/some/nested/path2".toPath)
+        .updateApp(
+          "/some/nested/path2/app".toPath,
+          _ =>
+            AppDefinition("/some/nested/path2/app".toPath, cmd = Some("true")),
+          Timestamp.now())
 
       current.transitiveGroups.map(_.id.toString) should be(
         Set(
@@ -627,8 +624,9 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
       )
 
       When("App is updated")
-      val app =
-        AppDefinition("/test/service/test/app".toPath, cmd = Some("Foobar"))
+      val app = AppDefinition(
+        "/test/service/test/app".toPath,
+        cmd = Some("Foobar"))
       val group = Group(PathId("/"), Set(app))
       val updatedGroup = group.updateApp(
         app.id,

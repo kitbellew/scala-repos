@@ -51,8 +51,10 @@ class ScalaFieldNameAdjuster extends NodeDescriptorNameAdjuster {
 
           field.declaringType() match {
             case ct: ClassType =>
-              val traits =
-                ct.allInterfaces().asScala.filter(DebuggerUtil.isScala(_))
+              val traits = ct
+                .allInterfaces()
+                .asScala
+                .filter(DebuggerUtil.isScala(_))
               traits.exists(hasMethodForField)
             case _ => false
           }

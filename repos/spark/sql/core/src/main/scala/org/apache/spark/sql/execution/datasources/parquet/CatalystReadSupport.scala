@@ -60,16 +60,15 @@ private[parquet] class CatalystReadSupport
   override def init(context: InitContext): ReadContext = {
     catalystRequestedSchema = {
       val conf = context.getConfiguration
-      val schemaString =
-        conf.get(CatalystReadSupport.SPARK_ROW_REQUESTED_SCHEMA)
+      val schemaString = conf.get(
+        CatalystReadSupport.SPARK_ROW_REQUESTED_SCHEMA)
       assert(schemaString != null, "Parquet requested schema not set.")
       StructType.fromString(schemaString)
     }
 
-    val parquetRequestedSchema =
-      CatalystReadSupport.clipParquetSchema(
-        context.getFileSchema,
-        catalystRequestedSchema)
+    val parquetRequestedSchema = CatalystReadSupport.clipParquetSchema(
+      context.getFileSchema,
+      catalystRequestedSchema)
 
     new ReadContext(parquetRequestedSchema, Map.empty[String, String].asJava)
   }
@@ -116,8 +115,9 @@ private[parquet] object CatalystReadSupport {
   def clipParquetSchema(
       parquetSchema: MessageType,
       catalystSchema: StructType): MessageType = {
-    val clippedParquetFields =
-      clipParquetGroupFields(parquetSchema.asGroupType(), catalystSchema)
+    val clippedParquetFields = clipParquetGroupFields(
+      parquetSchema.asGroupType(),
+      catalystSchema)
     Types
       .buildMessage()
       .addFields(clippedParquetFields: _*)
@@ -244,13 +244,12 @@ private[parquet] object CatalystReadSupport {
     val parquetKeyType = repeatedGroup.getType(0)
     val parquetValueType = repeatedGroup.getType(1)
 
-    val clippedRepeatedGroup =
-      Types
-        .repeatedGroup()
-        .as(repeatedGroup.getOriginalType)
-        .addField(clipParquetType(parquetKeyType, keyType))
-        .addField(clipParquetType(parquetValueType, valueType))
-        .named(repeatedGroup.getName)
+    val clippedRepeatedGroup = Types
+      .repeatedGroup()
+      .as(repeatedGroup.getOriginalType)
+      .addField(clipParquetType(parquetKeyType, keyType))
+      .addField(clipParquetType(parquetValueType, valueType))
+      .named(repeatedGroup.getName)
 
     Types
       .buildGroup(parquetMap.getRepetition)
@@ -288,8 +287,8 @@ private[parquet] object CatalystReadSupport {
       structType: StructType): Seq[Type] = {
     val parquetFieldMap =
       parquetRecord.getFields.asScala.map(f => f.getName -> f).toMap
-    val toParquet = new CatalystSchemaConverter(
-      writeLegacyParquetFormat = false)
+    val toParquet =
+      new CatalystSchemaConverter(writeLegacyParquetFormat = false)
     structType.map { f =>
       parquetFieldMap
         .get(f.name)
@@ -308,8 +307,8 @@ private[parquet] object CatalystReadSupport {
           t.copy(keyType = expand(t.keyType), valueType = expand(t.valueType))
 
         case t: StructType =>
-          val expandedFields =
-            t.fields.map(f => f.copy(dataType = expand(f.dataType)))
+          val expandedFields = t.fields.map(f =>
+            f.copy(dataType = expand(f.dataType)))
           t.copy(fields = expandedFields)
 
         case t: UserDefinedType[_] =>

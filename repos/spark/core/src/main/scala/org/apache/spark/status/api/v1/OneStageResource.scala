@@ -165,22 +165,23 @@ private[v1] class OneStageResource(ui: SparkUI) {
 
 object OneStageResource {
   def ordering(taskSorting: TaskSorting): Ordering[TaskData] = {
-    val extractor: (TaskData => Long) = td =>
-      taskSorting match {
-        case ID => td.taskId
-        case INCREASING_RUNTIME =>
-          td.taskMetrics
-            .map {
-              _.executorRunTime
-            }
-            .getOrElse(-1L)
-        case DECREASING_RUNTIME =>
-          -td.taskMetrics
-            .map {
-              _.executorRunTime
-            }
-            .getOrElse(-1L)
-      }
+    val extractor: (TaskData => Long) =
+      td =>
+        taskSorting match {
+          case ID => td.taskId
+          case INCREASING_RUNTIME =>
+            td.taskMetrics
+              .map {
+                _.executorRunTime
+              }
+              .getOrElse(-1L)
+          case DECREASING_RUNTIME =>
+            -td.taskMetrics
+              .map {
+                _.executorRunTime
+              }
+              .getOrElse(-1L)
+        }
     Ordering.by(extractor)
   }
 }

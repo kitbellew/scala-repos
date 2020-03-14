@@ -264,12 +264,11 @@ trait CachePoolCluster extends Cluster[CacheNode] {
   * Cache pool config data object
   */
 object CachePoolConfig {
-  val jsonCodec: Codec[CachePoolConfig] =
-    JsonCodec.create(
-      classOf[CachePoolConfig],
-      new GsonBuilder()
-        .setExclusionStrategies(JsonCodec.getThriftExclusionStrategy())
-        .create())
+  val jsonCodec: Codec[CachePoolConfig] = JsonCodec.create(
+    classOf[CachePoolConfig],
+    new GsonBuilder()
+      .setExclusionStrategies(JsonCodec.getThriftExclusionStrategy())
+      .create())
 }
 
 /**
@@ -364,8 +363,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
 
   override def applyZKData(data: Array[Byte]): Unit = {
     if (data != null) {
-      val cachePoolConfig =
-        CachePoolConfig.jsonCodec.deserialize(new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
+        new ByteArrayInputStream(data))
 
       // apply the cache pool config to the cluster
       val expectedClusterSize = cachePoolConfig.cachePoolSize
@@ -456,8 +455,8 @@ class ZookeeperCacheNodeGroup(
 
   def applyZKData(data: Array[Byte]) {
     if (data != null) {
-      val cachePoolConfig =
-        CachePoolConfig.jsonCodec.deserialize(new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
+        new ByteArrayInputStream(data))
 
       detectKeyRemapping = cachePoolConfig.detectKeyRemapping
 

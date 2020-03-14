@@ -572,31 +572,33 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
 
   case class NotPredicate(op: OpTree) extends OpTree {
     def render(wrapped: Boolean): Tree = {
-      val unwrappedTree = q"""
+      val unwrappedTree =
+        q"""
         val mark = __saveState
         val saved = __enterNotPredicate()
         val matched = ${op.render(wrapped)}
         __exitNotPredicate(saved)
         ${if (wrapped)
-        q"matchEnd = cursor"
-      else
-        q"()"}
+          q"matchEnd = cursor"
+        else
+          q"()"}
         __restoreState(mark)
         !matched"""
       if (wrapped) {
-        val base = op match {
-          case x: TerminalOpTree ⇒
-            q"akka.parboiled2.RuleTrace.NotPredicate.Terminal(${x.ruleTraceTerminal})"
-          case x: RuleCall ⇒
-            q"akka.parboiled2.RuleTrace.NotPredicate.RuleCall(${x.calleeNameTree})"
-          case x: StringMatch ⇒
-            q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
-          case x: IgnoreCaseString ⇒
-            q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
-          case x: Named ⇒
-            q"akka.parboiled2.RuleTrace.NotPredicate.Named(${x.stringTree})"
-          case _ ⇒ q"akka.parboiled2.RuleTrace.NotPredicate.Anonymous"
-        }
+        val base =
+          op match {
+            case x: TerminalOpTree ⇒
+              q"akka.parboiled2.RuleTrace.NotPredicate.Terminal(${x.ruleTraceTerminal})"
+            case x: RuleCall ⇒
+              q"akka.parboiled2.RuleTrace.NotPredicate.RuleCall(${x.calleeNameTree})"
+            case x: StringMatch ⇒
+              q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
+            case x: IgnoreCaseString ⇒
+              q"""akka.parboiled2.RuleTrace.NotPredicate.Named('"' + ${x.stringTree} + '"')"""
+            case x: Named ⇒
+              q"akka.parboiled2.RuleTrace.NotPredicate.Named(${x.stringTree})"
+            case _ ⇒ q"akka.parboiled2.RuleTrace.NotPredicate.Anonymous"
+          }
         q"""
         var matchEnd = 0
         try $unwrappedTree || __registerMismatch()
@@ -682,13 +684,14 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
                     expand(x, wrapped)
                   case x ⇒ q"__push($x)"
                 }
-              val valDefs = args
-                .zip(argTypeTrees)
-                .map {
-                  case (a, t) ⇒
-                    q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
-                }
-                .reverse
+              val valDefs =
+                args
+                  .zip(argTypeTrees)
+                  .map {
+                    case (a, t) ⇒
+                      q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
+                  }
+                  .reverse
               block(valDefs, rewrite(body))
 
             case x ⇒
@@ -776,13 +779,15 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
   }
 
   def CharRange(lowerTree: Tree, upperTree: Tree): CharacterRange = {
-    val (lower, upper) = lowerTree -> upperTree match {
-      case (Literal(Constant(l: String)), Literal(Constant(u: String))) ⇒ l -> u
-      case _ ⇒
-        c.abort(
-          lowerTree.pos,
-          "Character ranges must be specified with string literals")
-    }
+    val (lower, upper) =
+      lowerTree -> upperTree match {
+        case (Literal(Constant(l: String)), Literal(Constant(u: String))) ⇒
+          l -> u
+        case _ ⇒
+          c.abort(
+            lowerTree.pos,
+            "Character ranges must be specified with string literals")
+      }
     if (lower.length != 1)
       c.abort(lowerTree.pos, "lower bound must be a single char string")
     if (upper.length != 1)
@@ -811,10 +816,11 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
 
   case class Action(actionTree: Tree, actionTypeTree: Tree)
       extends DefaultNonTerminalOpTree {
-    val actionType: List[Type] = actionTypeTree.tpe match {
-      case TypeRef(_, _, args) if args.nonEmpty ⇒ args
-      case x ⇒ c.abort(actionTree.pos, "Unexpected action type: " + x)
-    }
+    val actionType: List[Type] =
+      actionTypeTree.tpe match {
+        case TypeRef(_, _, args) if args.nonEmpty ⇒ args
+        case x ⇒ c.abort(actionTree.pos, "Unexpected action type: " + x)
+      }
     def ruleTraceNonTerminalKey = reify(RuleTrace.Action).tree
     def renderInner(wrapped: Boolean): Tree = {
       val argTypes = actionType dropRight 1
@@ -829,9 +835,10 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
           case Block(statements, res) ⇒ block(statements, actionBody(res))
 
           case x @ (Ident(_) | Select(_, _)) ⇒
-            val valNames: List[TermName] = argTypes.indices.map { i ⇒
-              newTermName("value" + i)
-            }(collection.breakOut)
+            val valNames: List[TermName] =
+              argTypes.indices.map { i ⇒
+                newTermName("value" + i)
+              }(collection.breakOut)
             val args = valNames map Ident.apply
             block(popToVals(valNames), q"__push($x(..$args))")
 
@@ -898,13 +905,14 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     new Collector(unit, unit, q"true", unit, unit)
   }
 
-  lazy val rule1Collector = new Collector(
-    valBuilder =
-      q"val builder = new scala.collection.immutable.VectorBuilder[Any]",
-    popToBuilder = q"builder += valueStack.pop()",
-    pushBuilderResult = q"valueStack.push(builder.result()); true",
-    pushSomePop = q"valueStack.push(Some(valueStack.pop()))",
-    pushNone = q"valueStack.push(None)")
+  lazy val rule1Collector =
+    new Collector(
+      valBuilder =
+        q"val builder = new scala.collection.immutable.VectorBuilder[Any]",
+      popToBuilder = q"builder += valueStack.pop()",
+      pushBuilderResult = q"valueStack.push(builder.result()); true",
+      pushSomePop = q"valueStack.push(Some(valueStack.pop()))",
+      pushNone = q"valueStack.push(None)")
 
   type Separator = Boolean ⇒ Tree
 

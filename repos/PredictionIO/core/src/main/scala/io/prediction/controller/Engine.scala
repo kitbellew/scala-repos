@@ -212,32 +212,35 @@ class Engine[TD, EI, PD, Q, P, A](
         Doer(algorithmClassMap(algoName), algoParams)
     }
 
-    val models = if (persistedModels.exists(m => m.isInstanceOf[Unit.type])) {
-      // If any of persistedModels is Unit, we need to re-train the model.
-      logger.info("Some persisted models are Unit, need to re-train.")
-      val (dataSourceName, dataSourceParams) = engineParams.dataSourceParams
-      val dataSource =
-        Doer(dataSourceClassMap(dataSourceName), dataSourceParams)
+    val models =
+      if (persistedModels.exists(m => m.isInstanceOf[Unit.type])) {
+        // If any of persistedModels is Unit, we need to re-train the model.
+        logger.info("Some persisted models are Unit, need to re-train.")
+        val (dataSourceName, dataSourceParams) = engineParams.dataSourceParams
+        val dataSource = Doer(
+          dataSourceClassMap(dataSourceName),
+          dataSourceParams)
 
-      val (preparatorName, preparatorParams) = engineParams.preparatorParams
-      val preparator =
-        Doer(preparatorClassMap(preparatorName), preparatorParams)
+        val (preparatorName, preparatorParams) = engineParams.preparatorParams
+        val preparator = Doer(
+          preparatorClassMap(preparatorName),
+          preparatorParams)
 
-      val td = dataSource.readTrainingBase(sc)
-      val pd = preparator.prepareBase(sc, td)
+        val td = dataSource.readTrainingBase(sc)
+        val pd = preparator.prepareBase(sc, td)
 
-      val models = algorithms.zip(persistedModels).map {
-        case (algo, m) =>
-          m match {
-            case Unit => algo.trainBase(sc, pd)
-            case _    => m
-          }
+        val models = algorithms.zip(persistedModels).map {
+          case (algo, m) =>
+            m match {
+              case Unit => algo.trainBase(sc, pd)
+              case _    => m
+            }
+        }
+        models
+      } else {
+        logger.info("Using persisted model")
+        persistedModels
       }
-      models
-    } else {
-      logger.info("Using persisted model")
-      persistedModels
-    }
 
     models
       .zip(algorithms)
@@ -372,8 +375,8 @@ class Engine[TD, EI, PD, Q, P, A](
     val engineLanguage = EngineLanguage.Scala
     // Extract EngineParams
     logger.info(s"Extracting datasource params...")
-    val dataSourceParams: (String, Params) =
-      WorkflowUtils.getParamsFromJsonByFieldAndClass(
+    val dataSourceParams: (String, Params) = WorkflowUtils
+      .getParamsFromJsonByFieldAndClass(
         variantJson,
         "datasource",
         dataSourceClassMap,
@@ -382,8 +385,8 @@ class Engine[TD, EI, PD, Q, P, A](
     logger.info(s"Datasource params: $dataSourceParams")
 
     logger.info(s"Extracting preparator params...")
-    val preparatorParams: (String, Params) =
-      WorkflowUtils.getParamsFromJsonByFieldAndClass(
+    val preparatorParams: (String, Params) = WorkflowUtils
+      .getParamsFromJsonByFieldAndClass(
         variantJson,
         "preparator",
         preparatorClassMap,
@@ -400,8 +403,8 @@ class Engine[TD, EI, PD, Q, P, A](
         algorithmsParamsJson match {
           case JArray(s) =>
             s.map { algorithmParamsJValue =>
-              val eap =
-                algorithmParamsJValue.extract[CreateWorkflow.AlgorithmParams]
+              val eap = algorithmParamsJValue
+                .extract[CreateWorkflow.AlgorithmParams]
               (
                 eap.name,
                 WorkflowUtils.extractParams(
@@ -416,8 +419,8 @@ class Engine[TD, EI, PD, Q, P, A](
       } getOrElse Seq(("", EmptyParams()))
 
     logger.info(s"Extracting serving params...")
-    val servingParams: (String, Params) =
-      WorkflowUtils.getParamsFromJsonByFieldAndClass(
+    val servingParams: (String, Params) = WorkflowUtils
+      .getParamsFromJsonByFieldAndClass(
         variantJson,
         "serving",
         servingClassMap,
@@ -440,8 +443,8 @@ class Engine[TD, EI, PD, Q, P, A](
     val engineLanguage = EngineLanguage.Scala
 
     val dataSourceParamsWithName: (String, Params) = {
-      val (name, params) =
-        read[(String, JValue)](engineInstance.dataSourceParams)
+      val (name, params) = read[(String, JValue)](
+        engineInstance.dataSourceParams)
       if (!dataSourceClassMap.contains(name)) {
         logger.error(
           s"Unable to find datasource class with name '$name'" +
@@ -457,8 +460,8 @@ class Engine[TD, EI, PD, Q, P, A](
     }
 
     val preparatorParamsWithName: (String, Params) = {
-      val (name, params) =
-        read[(String, JValue)](engineInstance.preparatorParams)
+      val (name, params) = read[(String, JValue)](
+        engineInstance.preparatorParams)
       if (!preparatorClassMap.contains(name)) {
         logger.error(
           s"Unable to find preparator class with name '$name'" +
@@ -473,16 +476,16 @@ class Engine[TD, EI, PD, Q, P, A](
       (name, extractedParams)
     }
 
-    val algorithmsParamsWithNames =
-      read[Seq[(String, JValue)]](engineInstance.algorithmsParams).map {
-        case (algoName, params) =>
-          val extractedParams = WorkflowUtils.extractParams(
-            engineLanguage,
-            compact(render(params)),
-            algorithmClassMap(algoName),
-            jsonExtractor)
-          (algoName, extractedParams)
-      }
+    val algorithmsParamsWithNames = read[Seq[(String, JValue)]](
+      engineInstance.algorithmsParams).map {
+      case (algoName, params) =>
+        val extractedParams = WorkflowUtils.extractParams(
+          engineLanguage,
+          compact(render(params)),
+          algorithmClassMap(algoName),
+          jsonExtractor)
+        (algoName, extractedParams)
+    }
 
     val servingParamsWithName: (String, Params) = {
       val (name, params) = read[(String, JValue)](engineInstance.servingParams)
@@ -586,8 +589,7 @@ object Engine {
     */
   object ServingMap {
     implicit def cToMap[Q, P](
-        c: Class[_ <: BaseServing[Q, P]]): ServingMap[Q, P] =
-      new ServingMap(c)
+        c: Class[_ <: BaseServing[Q, P]]): ServingMap[Q, P] = new ServingMap(c)
     implicit def mToMap[Q, P](
         m: Map[String, Class[_ <: BaseServing[Q, P]]]): ServingMap[Q, P] =
       new ServingMap(m)
@@ -771,11 +773,12 @@ object Engine {
         .toMap
     val algoCount = algoMap.size
 
-    val evalTupleMap: Map[EX, (TD, EI, RDD[(Q, A)])] = dataSource
-      .readEvalBase(sc)
-      .zipWithIndex
-      .map(_.swap)
-      .toMap
+    val evalTupleMap: Map[EX, (TD, EI, RDD[(Q, A)])] =
+      dataSource
+        .readEvalBase(sc)
+        .zipWithIndex
+        .map(_.swap)
+        .toMap
 
     val evalCount = evalTupleMap.size
 
@@ -805,8 +808,8 @@ object Engine {
       }
     }
 
-    val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] = (0 until evalCount).map {
-      ex =>
+    val algoPredictsMap: Map[EX, RDD[(QX, Seq[P])]] =
+      (0 until evalCount).map { ex =>
         {
           val modelMap: Map[AX, Any] = algoModelsMap(ex)
 
@@ -817,8 +820,10 @@ object Engine {
               {
                 val algo = algoMap(ax)
                 val model = modelMap(ax)
-                val rawPredicts: RDD[(QX, P)] =
-                  algo.batchPredictBase(sc, model, qs)
+                val rawPredicts: RDD[(QX, P)] = algo.batchPredictBase(
+                  sc,
+                  model,
+                  qs)
                 val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
                   case (qx, p) => {
                     (qx, (ax, p))
@@ -843,7 +848,7 @@ object Engine {
 
           (ex, unionAlgoPredicts)
         }
-    }.toMap
+      }.toMap
 
     val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap
       .map {

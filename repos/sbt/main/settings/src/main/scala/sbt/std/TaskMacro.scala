@@ -350,8 +350,7 @@ object TaskMacro {
   }
 
   def inputTaskMacroImpl[T: c.WeakTypeTag](c: Context)(
-      t: c.Expr[T]): c.Expr[Initialize[InputTask[T]]] =
-    inputTaskMacro0[T](c)(t)
+      t: c.Expr[T]): c.Expr[Initialize[InputTask[T]]] = inputTaskMacro0[T](c)(t)
   def inputTaskDynMacroImpl[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[Initialize[Task[T]]]): c.Expr[Initialize[InputTask[T]]] =
     inputTaskDynMacro0[T](c)(t)
@@ -359,9 +358,10 @@ object TaskMacro {
   private[this] def inputTaskMacro0[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[T]): c.Expr[Initialize[InputTask[T]]] =
     iInitializeMacro(c)(t) { et =>
-      val pt = iParserMacro(c)(et) { pt =>
-        iTaskMacro(c)(pt)
-      }
+      val pt =
+        iParserMacro(c)(et) { pt =>
+          iTaskMacro(c)(pt)
+        }
       c.universe.reify {
         InputTask.make(pt.splice)
       }
@@ -371,9 +371,10 @@ object TaskMacro {
       f: c.Expr[T] => c.Expr[M[T]])(implicit
       tt: c.WeakTypeTag[T],
       mt: c.WeakTypeTag[M[T]]): c.Expr[Initialize[M[T]]] = {
-    val inner: Transform[c.type, M] = new Transform[c.type, M] {
-      def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree
-    }
+    val inner: Transform[c.type, M] =
+      new Transform[c.type, M] {
+        def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree
+      }
     val cond = c.Expr[T](conditionInputTaskTree(c)(t.tree))
     Instance.contImpl[T, M](
       c,
@@ -427,9 +428,10 @@ object TaskMacro {
       f: c.Expr[T] => c.Expr[M[T]])(implicit
       tt: c.WeakTypeTag[T],
       mt: c.WeakTypeTag[M[T]]): c.Expr[State => Parser[M[T]]] = {
-    val inner: Transform[c.type, M] = new Transform[c.type, M] {
-      def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree
-    }
+    val inner: Transform[c.type, M] =
+      new Transform[c.type, M] {
+        def apply(in: c.Tree): c.Tree = f(c.Expr[T](in)).tree
+      }
     Instance.contImpl[T, M](c, ParserInstance, ParserConvert, MixedBuilder)(
       Left(t),
       inner)
@@ -457,8 +459,9 @@ object TaskMacro {
     val it = Ident(util.singleton(InputTask))
     val isParserWrapper = InitParserConvert.asPredicate(c)
     val isTaskWrapper = FullConvert.asPredicate(c)
-    val isAnyWrapper = (n: String, tpe: Type, tr: Tree) =>
-      isParserWrapper(n, tpe, tr) || isTaskWrapper(n, tpe, tr)
+    val isAnyWrapper =
+      (n: String, tpe: Type, tr: Tree) =>
+        isParserWrapper(n, tpe, tr) || isTaskWrapper(n, tpe, tr)
     val ttree = t.tree
     val defs = util.collectDefs(ttree, isAnyWrapper)
     val checkQual = util.checkReferences(defs, isAnyWrapper)
@@ -477,8 +480,11 @@ object TaskMacro {
         EmptyTree
       } else {
         qual.foreach(checkQual)
-        val vd =
-          util.freshValDef(tpe, qual.symbol.pos, functionSym) // val $x: <tpe>
+        val vd = util.freshValDef(
+          tpe,
+          qual.symbol.pos,
+          functionSym
+        ) // val $x: <tpe>
         result = Some((qual, tpe, vd))
         val tree = util.refVal(original, vd) // $x
         tree.setPos(
@@ -537,8 +543,9 @@ object TaskMacro {
         val fCore = util.createFunction(param :: Nil, tx, functionSym)
         val bodyTpe = wrapTag(tag).tpe
         val fTpe = util.functionType(tpe :: Nil, bodyTpe)
-        val fTag =
-          c.WeakTypeTag[Any](fTpe) // don't know the actual type yet, so use Any
+        val fTag = c.WeakTypeTag[Any](
+          fTpe
+        ) // don't know the actual type yet, so use Any
         val fInit = expandTask(false, fCore)(fTag).tree
         inputTaskCreate(InputTaskCreateDynName, tpe, tag.tpe, p, fInit)
       case None =>

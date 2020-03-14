@@ -67,8 +67,12 @@ object Load {
     val globalBase = getGlobalBase(state)
     val base = baseDirectory.getCanonicalFile
     val definesClass = FileValueCache(Locate.definesClass _)
-    val rawConfig =
-      defaultPreGlobal(state, base, definesClass.get, globalBase, log)
+    val rawConfig = defaultPreGlobal(
+      state,
+      base,
+      definesClass.get,
+      globalBase,
+      log)
     val config0 = defaultWithGlobal(state, base, rawConfig, globalBase, log)
     val config =
       if (isPlugin)
@@ -90,25 +94,27 @@ object Load {
     val stagingDirectory =
       getStagingDirectory(state, globalBase).getCanonicalFile
     val loader = getClass.getClassLoader
-    val classpath =
-      Attributed.blankSeq(provider.mainClasspath ++ scalaProvider.jars)
+    val classpath = Attributed.blankSeq(
+      provider.mainClasspath ++ scalaProvider.jars)
     val localOnly = false
     val lock = None
     val checksums = Nil
     val ivyPaths = new IvyPaths(baseDirectory, bootIvyHome(state.configuration))
-    val ivyConfiguration = new InlineIvyConfiguration(
-      ivyPaths,
-      Resolver.withDefaultResolvers(Nil),
-      Nil,
-      Nil,
-      localOnly,
-      lock,
-      checksums,
-      None,
-      log)
-    val compilers = Compiler.compilers(ClasspathOptions.boot, ivyConfiguration)(
-      state.configuration,
-      log)
+    val ivyConfiguration =
+      new InlineIvyConfiguration(
+        ivyPaths,
+        Resolver.withDefaultResolvers(Nil),
+        Nil,
+        Nil,
+        localOnly,
+        lock,
+        checksums,
+        None,
+        log)
+    val compilers =
+      Compiler.compilers(ClasspathOptions.boot, ivyConfiguration)(
+        state.configuration,
+        log)
     val evalPluginDef = EvaluateTask.evalPluginDef(log) _
     val delegates = defaultDelegates
     val initialID = baseDirectory.getName
@@ -162,15 +168,17 @@ object Load {
         const(Nil)
       else
         buildGlobalSettings(globalBase, files, config)
-    config.copy(injectSettings =
-      config.injectSettings.copy(projectLoaded = compiled))
+    config.copy(injectSettings = config.injectSettings.copy(projectLoaded =
+      compiled))
   }
   def buildGlobalSettings(
       base: File,
       files: Seq[File],
       config: sbt.LoadBuildConfiguration): ClassLoader => Seq[Setting[_]] = {
-    val eval =
-      mkEval(data(config.globalPluginClasspath), base, defaultEvalOptions)
+    val eval = mkEval(
+      data(config.globalPluginClasspath),
+      base,
+      defaultEvalOptions)
 
     val imports = BuildUtil.baseImports ++
       config.detectedGlobalPlugins.imports
@@ -254,10 +262,11 @@ object Load {
         getRootProject(projects),
         config.injectSettings))
     val delegates = config.delegates(loaded)
-    val data = Def.make(settings)(
-      delegates,
-      config.scopeLocal,
-      Project.showLoadingKey(loaded))
+    val data =
+      Def.make(settings)(
+        delegates,
+        config.scopeLocal,
+        Project.showLoadingKey(loaded))
     Project.checkTargets(data) foreach sys.error
     val index = structureIndex(data, settings, loaded.extra(data), projects)
     val streams = mkStreams(projects, loaded.root, data)
@@ -504,11 +513,13 @@ object Load {
   def builtinLoader(
       s: State,
       config: sbt.LoadBuildConfiguration): BuildLoader = {
-    val fail = (uri: URI) =>
-      sys.error("Invalid build URI (no handler available): " + uri)
+    val fail =
+      (uri: URI) =>
+        sys.error("Invalid build URI (no handler available): " + uri)
     val resolver = (info: BuildLoader.ResolveInfo) => RetrieveUnit(info)
-    val build = (info: BuildLoader.BuildInfo) =>
-      Some(() => loadUnit(info.uri, info.base, info.state, info.config))
+    val build =
+      (info: BuildLoader.BuildInfo) =>
+        Some(() => loadUnit(info.uri, info.base, info.state, info.config))
     val components = BuildLoader.components(
       resolver,
       build,
@@ -522,8 +533,11 @@ object Load {
       loaders: BuildLoader,
       extra: List[URI]): sbt.PartBuild = {
     IO.assertAbsolute(uri)
-    val (referenced, map, newLoaders) =
-      loadAll(uri :: extra, Map.empty, loaders, Map.empty)
+    val (referenced, map, newLoaders) = loadAll(
+      uri :: extra,
+      Map.empty,
+      loaders,
+      Map.empty)
     checkAll(referenced, map)
     val build = new sbt.PartBuild(uri, map)
     newLoaders transformAll build
@@ -650,8 +664,10 @@ object Load {
     val rootProject = getRootProject(builds)
     for ((uri, refs) <- referenced;
          ref <- refs) {
-      val ProjectRef(refURI, refID) =
-        Scope.resolveProjectRef(uri, rootProject, ref)
+      val ProjectRef(refURI, refID) = Scope.resolveProjectRef(
+        uri,
+        rootProject,
+        ref)
       val loadedUnit = builds(refURI)
       if (!(loadedUnit.defined contains refID)) {
         val projectIDs = loadedUnit.defined.keys.toSeq.sorted
@@ -695,8 +711,8 @@ object Load {
   def projects(unit: sbt.BuildUnit): Seq[Project] = {
     // we don't have the complete build graph loaded, so we don't have the rootProject function yet.
     //  Therefore, we use resolveProjectBuild instead of resolveProjectRef.  After all builds are loaded, we can fully resolve ProjectReferences.
-    val resolveBuild =
-      (_: Project).resolveBuild(ref => Scope.resolveProjectBuild(unit.uri, ref))
+    val resolveBuild = (_: Project).resolveBuild(ref =>
+      Scope.resolveProjectBuild(unit.uri, ref))
     // although the default loader will resolve the project base directory, other loaders may not, so run resolveBase here as well
     unit.definitions.projects
       .map(resolveBuild compose resolveBase(unit.localBase))
@@ -750,8 +766,10 @@ object Load {
     val defsScala = plugs.detected.builds.values
 
     // NOTE - because we create an eval here, we need a clean-eval later for this URI.
-    lazy val eval =
-      mkEval(plugs.classpath, defDir, plugs.pluginData.scalacOptions)
+    lazy val eval = mkEval(
+      plugs.classpath,
+      defDir,
+      plugs.pluginData.scalacOptions)
     val initialProjects = defsScala.flatMap(b => projectsFromBuild(b, normBase))
 
     val hasRootAlreadyDefined = defsScala.exists(_.rootProject.isDefined)
@@ -774,8 +792,9 @@ object Load {
       result
     }
 
-    val loadedProjectsRaw =
-      loadProjects(initialProjects, !hasRootAlreadyDefined)
+    val loadedProjectsRaw = loadProjects(
+      initialProjects,
+      !hasRootAlreadyDefined)
     // TODO - As of sbt 0.13.6 we should always have a default root project from
     //        here on, so the autogenerated build aggregated can be removed from this code. ( I think)
     // We may actually want to move it back here and have different flags in loadTransitive...
@@ -791,11 +810,14 @@ object Load {
       else {
         val existingIDs = loadedProjectsRaw.projects.map(_.id)
         val refs = existingIDs.map(id => ProjectRef(uri, id))
-        val defaultID =
-          autoID(normBase, config.pluginManagement.context, existingIDs)
+        val defaultID = autoID(
+          normBase,
+          config.pluginManagement.context,
+          existingIDs)
         val b = Build.defaultAggregated(defaultID, refs)
-        val defaultProjects =
-          loadProjects(projectsFromBuild(b, normBase), false)
+        val defaultProjects = loadProjects(
+          projectsFromBuild(b, normBase),
+          false)
         (
           defaultProjects.projects ++ loadedProjectsRaw.projects,
           b,
@@ -812,17 +834,19 @@ object Load {
         defsScala
     // HERE we pull out the defined vals from memoSettings and unify them all so
     // we can use them later.
-    val valDefinitions = memoSettings.values.foldLeft(DefinedSbtValues.empty) {
-      (prev, sbtFile) => prev.zip(sbtFile.definitions)
-    }
-    val loadedDefs = new sbt.LoadedDefinitions(
-      defDir,
-      Nil,
-      plugs.loader,
-      defs,
-      loadedProjects,
-      plugs.detected.builds.names,
-      valDefinitions)
+    val valDefinitions =
+      memoSettings.values.foldLeft(DefinedSbtValues.empty) { (prev, sbtFile) =>
+        prev.zip(sbtFile.definitions)
+      }
+    val loadedDefs =
+      new sbt.LoadedDefinitions(
+        defDir,
+        Nil,
+        plugs.loader,
+        defs,
+        loadedProjects,
+        plugs.detected.builds.names,
+        valDefinitions)
     new sbt.BuildUnit(uri, normBase, loadedDefs, plugs)
   }
 
@@ -1084,10 +1108,9 @@ object Load {
       lazy val defaultSbtFiles = configurationSources(transformedProject.base)
       // Grabs the plugin settings for old-style sbt plugins.
       def pluginSettings(f: Plugins) = {
-        val included =
-          loadedPlugins.detected.plugins.values.filter(
-            f.include
-          ) // don't apply the filter to AutoPlugins, only Plugins
+        val included = loadedPlugins.detected.plugins.values.filter(
+          f.include
+        ) // don't apply the filter to AutoPlugins, only Plugins
         included.flatMap(p =>
           p.settings.filter(isProjectThis) ++ p.projectSettings)
       }
@@ -1255,8 +1278,8 @@ object Load {
       config: sbt.LoadBuildConfiguration): sbt.LoadBuildConfiguration =
     config.globalPlugin match {
       case Some(gp) =>
-        config.copy(injectSettings =
-          config.injectSettings.copy(project = gp.inject))
+        config.copy(injectSettings = config.injectSettings.copy(project =
+          gp.inject))
       case None => config
     }
   def plugins(
@@ -1289,8 +1312,9 @@ object Load {
       dir: File,
       config: sbt.LoadBuildConfiguration,
       pluginData: PluginData): sbt.LoadedPlugins = {
-    val (definitionClasspath, pluginLoader) =
-      pluginDefinitionLoader(config, pluginData)
+    val (definitionClasspath, pluginLoader) = pluginDefinitionLoader(
+      config,
+      pluginData)
     loadPlugins(
       dir,
       pluginData.copy(dependencyClasspath = definitionClasspath),
@@ -1342,8 +1366,10 @@ object Load {
       s: State,
       config: sbt.LoadBuildConfiguration): PluginData = {
     val (eval, pluginDef) = apply(dir, s, config)
-    val pluginState =
-      Project.setProject(Load.initialSession(pluginDef, eval), pluginDef, s)
+    val pluginState = Project.setProject(
+      Load.initialSession(pluginDef, eval),
+      pluginDef,
+      s)
     config.evalPluginDef(Project.structure(pluginState), pluginState)
   }
 
@@ -1533,8 +1559,8 @@ final case class LoadBuildConfiguration(
     globalPlugin: Option[GlobalPlugin],
     extraBuilds: Seq[URI],
     log: Logger) {
-  lazy val (globalPluginClasspath, globalPluginLoader) =
-    Load.pluginDefinitionLoader(this, Load.globalPluginClasspath(globalPlugin))
+  lazy val (globalPluginClasspath, globalPluginLoader) = Load
+    .pluginDefinitionLoader(this, Load.globalPluginClasspath(globalPlugin))
   lazy val globalPluginNames =
     if (globalPluginClasspath.isEmpty)
       Nil
@@ -1542,20 +1568,22 @@ final case class LoadBuildConfiguration(
       Load.getPluginNames(globalPluginClasspath, globalPluginLoader)
 
   private[sbt] lazy val globalPluginDefs = {
-    val pluginData = globalPlugin match {
-      case Some(x) =>
-        PluginData(
-          x.data.fullClasspath,
-          x.data.internalClasspath,
-          Some(x.data.resolvers),
-          Some(x.data.updateReport),
-          Nil)
-      case None => PluginData(globalPluginClasspath, Nil, None, None, Nil)
-    }
-    val baseDir = globalPlugin match {
-      case Some(x) => x.base
-      case _       => stagingDirectory
-    }
+    val pluginData =
+      globalPlugin match {
+        case Some(x) =>
+          PluginData(
+            x.data.fullClasspath,
+            x.data.internalClasspath,
+            Some(x.data.resolvers),
+            Some(x.data.updateReport),
+            Nil)
+        case None => PluginData(globalPluginClasspath, Nil, None, None, Nil)
+      }
+    val baseDir =
+      globalPlugin match {
+        case Some(x) => x.base
+        case _       => stagingDirectory
+      }
     Load.loadPluginDefinition(baseDir, this, pluginData)
   }
   lazy val detectedGlobalPlugins = globalPluginDefs.detected

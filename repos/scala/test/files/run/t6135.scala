@@ -7,9 +7,10 @@ object Test extends App {
     def foo(t: S, a: A)(v: a.V)
   }
 
-  val b1 = new B[String] {
-    def foo(t: String, a: A)(v: a.V) = () // Bridge method required here!
-  }
+  val b1 =
+    new B[String] {
+      def foo(t: String, a: A)(v: a.V) = () // Bridge method required here!
+    }
 
   b1.foo("", null)(null)
 }

@@ -1049,12 +1049,13 @@ abstract class Node protected (override val delegate: jfxs.Node)
       callback: SnapshotResult => Unit,
       params: SnapshotParameters,
       image: WritableImage) {
-    val jfxCallback = new Callback[jfxs.SnapshotResult, java.lang.Void] {
-      override def call(result: jfxs.SnapshotResult): java.lang.Void = {
-        callback(new SnapshotResult(result))
-        null
+    val jfxCallback =
+      new Callback[jfxs.SnapshotResult, java.lang.Void] {
+        override def call(result: jfxs.SnapshotResult): java.lang.Void = {
+          callback(new SnapshotResult(result))
+          null
+        }
       }
-    }
     delegate.snapshot(jfxCallback, params, image)
   }
 

@@ -40,8 +40,9 @@ object TrainValidationSplitExample {
     val sqlContext = new SQLContext(sc)
 
     // Prepare training and test data.
-    val data =
-      sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val data = sqlContext.read
+      .format("libsvm")
+      .load("data/mllib/sample_libsvm_data.txt")
     val Array(training, test) = data.randomSplit(Array(0.9, 0.1), seed = 12345)
 
     val lr = new LinearRegression()

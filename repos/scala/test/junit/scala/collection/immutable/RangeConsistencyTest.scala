@@ -80,16 +80,17 @@ class RangeConsistencyTest {
       control.Breaks.breakable {
         val start = rn.nextInt
         val end = rn.nextInt
-        val step = rn.nextInt(4) match {
-          case 0 => 1
-          case 1 => -1
-          case 2 => (rn.nextInt(11) + 2) * (2 * rn.nextInt(2) + 1)
-          case 3 =>
-            var x = rn.nextInt;
-            while (x == 0)
-              x = rn.nextInt;
-            x
-        }
+        val step =
+          rn.nextInt(4) match {
+            case 0 => 1
+            case 1 => -1
+            case 2 => (rn.nextInt(11) + 2) * (2 * rn.nextInt(2) + 1)
+            case 3 =>
+              var x = rn.nextInt;
+              while (x == 0)
+                x = rn.nextInt;
+              x
+          }
         val r =
           if (rn.nextBoolean)
             Range.inclusive(start, end, step)
@@ -102,18 +103,20 @@ class RangeConsistencyTest {
           case iae: IllegalArgumentException => control.Breaks.break
         }
 
-        val lpuff = rn.nextInt(4) match {
-          case 0 => 1L
-          case 1 => rn.nextInt(11) + 2L
-          case 2 => 1L << rn.nextInt(60)
-          case 3 => math.max(1L, math.abs(rn.nextLong))
-        }
-        val lstride = rn.nextInt(4) match {
-          case 0 => lpuff
-          case 1 => 1L
-          case 2 => 1L << rn.nextInt(60)
-          case 3 => math.max(1L, math.abs(rn.nextLong))
-        }
+        val lpuff =
+          rn.nextInt(4) match {
+            case 0 => 1L
+            case 1 => rn.nextInt(11) + 2L
+            case 2 => 1L << rn.nextInt(60)
+            case 3 => math.max(1L, math.abs(rn.nextLong))
+          }
+        val lstride =
+          rn.nextInt(4) match {
+            case 0 => lpuff
+            case 1 => 1L
+            case 2 => 1L << rn.nextInt(60)
+            case 3 => math.max(1L, math.abs(rn.nextLong))
+          }
         val lr = r2nr[Long](
           r,
           lpuff,
@@ -136,16 +139,18 @@ class RangeConsistencyTest {
             )
         }
 
-        val bipuff = rn.nextInt(3) match {
-          case 0 => BigInt(1)
-          case 1 => BigInt(rn.nextLong) + Long.MaxValue + 2
-          case 2 => BigInt("1" + "0" * (rn.nextInt(100) + 1))
-        }
-        val bistride = rn.nextInt(3) match {
-          case 0 => bipuff
-          case 1 => BigInt(1)
-          case 2 => BigInt("1" + "0" * (rn.nextInt(100) + 1))
-        }
+        val bipuff =
+          rn.nextInt(3) match {
+            case 0 => BigInt(1)
+            case 1 => BigInt(rn.nextLong) + Long.MaxValue + 2
+            case 2 => BigInt("1" + "0" * (rn.nextInt(100) + 1))
+          }
+        val bistride =
+          rn.nextInt(3) match {
+            case 0 => bipuff
+            case 1 => BigInt(1)
+            case 2 => BigInt("1" + "0" * (rn.nextInt(100) + 1))
+          }
         val bir = r2nr[BigInt](r, bipuff, bistride, (a, b) => true, identity)
 
         bir.foreach {
@@ -204,18 +209,19 @@ class RangeConsistencyTest {
 
   @Test
   def test_SI9388() {
-    val possiblyNotDefaultNumeric = new scala.math.Numeric[Int] {
-      def fromInt(x: Int) = x
-      def minus(x: Int, y: Int): Int = x - y
-      def negate(x: Int): Int = -x
-      def plus(x: Int, y: Int): Int = x + y
-      def times(x: Int, y: Int): Int = x * y
-      def toDouble(x: Int): Double = x.toDouble
-      def toFloat(x: Int): Float = x.toFloat
-      def toInt(x: Int): Int = x
-      def toLong(x: Int): Long = x.toLong
-      def compare(x: Int, y: Int) = x compare y
-    }
+    val possiblyNotDefaultNumeric =
+      new scala.math.Numeric[Int] {
+        def fromInt(x: Int) = x
+        def minus(x: Int, y: Int): Int = x - y
+        def negate(x: Int): Int = -x
+        def plus(x: Int, y: Int): Int = x + y
+        def times(x: Int, y: Int): Int = x * y
+        def toDouble(x: Int): Double = x.toDouble
+        def toFloat(x: Int): Float = x.toFloat
+        def toInt(x: Int): Int = x
+        def toLong(x: Int): Long = x.toLong
+        def compare(x: Int, y: Int) = x compare y
+      }
     val r = (Int.MinValue to Int.MaxValue by (1 << 23))
     val nr = NumericRange(Int.MinValue, Int.MaxValue, 1 << 23)
     assert({

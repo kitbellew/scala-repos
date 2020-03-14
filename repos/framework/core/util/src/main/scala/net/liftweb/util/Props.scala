@@ -50,14 +50,15 @@ private[util] trait Props extends Logger {
         .headOption
     }
 
-    val interpolated = for {
-      interpolateRegex(before, key, after) <- interpolateRegex.findAllMatchIn(
-        value.toString)
-    } yield {
-      val lookedUp = lookup(key).getOrElse(("${" + key + "}"))
+    val interpolated =
+      for {
+        interpolateRegex(before, key, after) <- interpolateRegex.findAllMatchIn(
+          value.toString)
+      } yield {
+        val lookedUp = lookup(key).getOrElse(("${" + key + "}"))
 
-      before + lookedUp + after
-    }
+        before + lookedUp + after
+      }
 
     if (interpolated.isEmpty) {
       value.toString
@@ -243,25 +244,25 @@ private[util] trait Props extends Logger {
     * is referenced. (An attempt to customise this after the run-mode is
     * realised will have no effect and will instead log a warning.)
     */
-  val doesStackTraceContainKnownTestRunner = new RunModeProperty[
-    Array[StackTraceElement] => Boolean](
-    "doesStackTraceContainKnownTestRunner",
-    (st: Array[StackTraceElement]) => {
-      val names = List(
-        "org.apache.maven.surefire.booter.SurefireBooter",
-        "sbt.TestRunner",
-        "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner",
-        "org.scalatest.tools.Runner",
-        "org.scalatest.tools.ScalaTestFramework$ScalaTestRunner",
-        "org.scalatools.testing.Runner",
-        "org.scalatools.testing.Runner2",
-        "org.specs2.runner.TestInterfaceRunner", // sometimes specs2 runs tests on another thread
-        "org.specs2.runner.TestInterfaceConsoleReporter",
-        "org.specs2.specification.FragmentExecution",
-        "org.specs2.specification.core.Execution"
-      )
-      st.exists(e => names.exists(e.getClassName.startsWith))
-    })
+  val doesStackTraceContainKnownTestRunner =
+    new RunModeProperty[Array[StackTraceElement] => Boolean](
+      "doesStackTraceContainKnownTestRunner",
+      (st: Array[StackTraceElement]) => {
+        val names = List(
+          "org.apache.maven.surefire.booter.SurefireBooter",
+          "sbt.TestRunner",
+          "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner",
+          "org.scalatest.tools.Runner",
+          "org.scalatest.tools.ScalaTestFramework$ScalaTestRunner",
+          "org.scalatools.testing.Runner",
+          "org.scalatools.testing.Runner2",
+          "org.specs2.runner.TestInterfaceRunner", // sometimes specs2 runs tests on another thread
+          "org.specs2.runner.TestInterfaceConsoleReporter",
+          "org.specs2.specification.FragmentExecution",
+          "org.specs2.specification.core.Execution"
+        )
+        st.exists(e => names.exists(e.getClassName.startsWith))
+      })
 
   /**
     * When the `run.mode` environment variable isn't set or recognised, this function is invoked to determine the
@@ -271,15 +272,16 @@ private[util] trait Props extends Logger {
     * referenced. (An attempt to customise this after the run-mode is realised
     * will have no effect and will instead log a warning.)
     */
-  val autoDetectRunModeFn = new RunModeProperty[() => Props.RunModes.Value](
-    "autoDetectRunModeFn",
-    () => {
-      val st = Thread.currentThread.getStackTrace
-      if ((doesStackTraceContainKnownTestRunner.get)(st))
-        Test
-      else
-        Development
-    })
+  val autoDetectRunModeFn =
+    new RunModeProperty[() => Props.RunModes.Value](
+      "autoDetectRunModeFn",
+      () => {
+        val st = Thread.currentThread.getStackTrace
+        if ((doesStackTraceContainKnownTestRunner.get)(st))
+          Test
+        else
+          Development
+      })
 
   /**
     * Is the system running in production mode (apply full optimizations)
@@ -300,14 +302,15 @@ private[util] trait Props extends Logger {
   /**
     * The resource path segment corresponding to the current mode.
     */
-  lazy val modeName = mode match {
-    case Test       => "test"
-    case Staging    => "staging"
-    case Production => "production"
-    case Pilot      => "pilot"
-    case Profile    => "profile"
-    case _          => ""
-  }
+  lazy val modeName =
+    mode match {
+      case Test       => "test"
+      case Staging    => "staging"
+      case Production => "production"
+      case Pilot      => "pilot"
+      case Profile    => "profile"
+      case _          => ""
+    }
 
   private lazy val _modeName = dotLen(modeName)
 

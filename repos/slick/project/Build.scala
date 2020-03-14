@@ -448,8 +448,8 @@ object SlickBuild extends Build {
     )
   ) dependsOn (slickTestkitProject)
 
-  lazy val osgiBundleFiles =
-    taskKey[Seq[File]]("osgi-bundles that our tests rely on using.")
+  lazy val osgiBundleFiles = taskKey[Seq[File]](
+    "osgi-bundles that our tests rely on using.")
 
   lazy val osgiTestProject = (
     Project(id = "osgitests", base = file("osgi-tests"))
@@ -487,8 +487,8 @@ object SlickBuild extends Build {
   /* Test Configuration for running tests on doc sources */
   lazy val DocTest = config("doctest") extend (Test)
 
-  lazy val buildCapabilitiesTable =
-    taskKey[Unit]("Build the capabilities.csv table for the documentation")
+  lazy val buildCapabilitiesTable = taskKey[Unit](
+    "Build the capabilities.csv table for the documentation")
 
   /* FMPP Task */
   lazy val fmpp = TaskKey[Seq[File]]("fmpp")
@@ -528,16 +528,17 @@ object SlickBuild extends Build {
       sourceDirectory) map { (cp, r, output, s, srcDir) =>
       val fmppSrc = srcDir / "scala"
       val inFiles = (fmppSrc ** "*.fm").get.toSet
-      val cachedFun = FileFunction.cached(
-        s.cacheDirectory / "fmpp",
-        outStyle = FilesInfo.exists) { (in: Set[File]) =>
-        IO.delete((output ** "*.scala").get)
-        val args =
-          "--expert" :: "-q" :: "-S" :: fmppSrc.getPath :: "-O" :: output.getPath ::
-            "--replace-extensions=fm, scala" :: "-M" :: "execute(**/*.fm), ignore(**/*)" :: Nil
-        toError(r.run("fmpp.tools.CommandLine", cp.files, args, s.log))
-        (output ** "*.scala").get.toSet
-      }
+      val cachedFun =
+        FileFunction.cached(
+          s.cacheDirectory / "fmpp",
+          outStyle = FilesInfo.exists) { (in: Set[File]) =>
+          IO.delete((output ** "*.scala").get)
+          val args =
+            "--expert" :: "-q" :: "-S" :: fmppSrc.getPath :: "-O" :: output.getPath ::
+              "--replace-extensions=fm, scala" :: "-M" :: "execute(**/*.fm), ignore(**/*)" :: Nil
+          toError(r.run("fmpp.tools.CommandLine", cp.files, args, s.log))
+          (output ** "*.scala").get.toSet
+        }
       cachedFun(inFiles).toSeq
     }
 
@@ -582,24 +583,25 @@ object SlickBuild extends Build {
         val outDir = (output / "slick-codegen").getPath
         val inFiles =
           (src ** "*.scala").get.toSet ++ (slickSrc / "main/scala/slick/codegen" ** "*.scala").get.toSet ++ (slickSrc / "main/scala/slick/jdbc/meta" ** "*.scala").get.toSet
-        val cachedFun = FileFunction.cached(
-          s.cacheDirectory / "type-providers",
-          outStyle = FilesInfo.exists) { (in: Set[File]) =>
-          IO.delete((output ** "*.scala").get)
-          toError(
-            r.run(
-              "slick.test.codegen.GenerateMainSources",
-              cp.files,
-              Array(outDir),
-              s.log))
-          toError(
-            r.run(
-              "slick.test.codegen.GenerateRoundtripSources",
-              cp.files,
-              Array(outDir),
-              s.log))
-          (output ** "*.scala").get.toSet
-        }
+        val cachedFun =
+          FileFunction.cached(
+            s.cacheDirectory / "type-providers",
+            outStyle = FilesInfo.exists) { (in: Set[File]) =>
+            IO.delete((output ** "*.scala").get)
+            toError(
+              r.run(
+                "slick.test.codegen.GenerateMainSources",
+                cp.files,
+                Array(outDir),
+                s.log))
+            toError(
+              r.run(
+                "slick.test.codegen.GenerateRoundtripSources",
+                cp.files,
+                Array(outDir),
+                s.log))
+            (output ** "*.scala").get.toSet
+          }
         cachedFun(inFiles).toSeq
     }
 }

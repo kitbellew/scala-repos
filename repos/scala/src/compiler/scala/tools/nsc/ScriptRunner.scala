@@ -126,11 +126,13 @@ class ScriptRunner extends HasCompileSocket {
     }
 
     def hasClassToRun(d: Directory): Boolean = {
-      val cp = settings.YclasspathImpl.value match {
-        case ClassPathRepresentationType.Recursive =>
-          DefaultJavaContext.newClassPath(AbstractFile.getDirectory(d))
-        case ClassPathRepresentationType.Flat => DirectoryFlatClassPath(d.jfile)
-      }
+      val cp =
+        settings.YclasspathImpl.value match {
+          case ClassPathRepresentationType.Recursive =>
+            DefaultJavaContext.newClassPath(AbstractFile.getDirectory(d))
+          case ClassPathRepresentationType.Flat =>
+            DirectoryFlatClassPath(d.jfile)
+        }
       cp.findClass(mainClass).isDefined
     }
 

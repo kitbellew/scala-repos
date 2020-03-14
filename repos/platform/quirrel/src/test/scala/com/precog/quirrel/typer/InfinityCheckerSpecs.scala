@@ -48,56 +48,55 @@ object InfinityCheckerSpecs
 
   "do something right" should {
     "reject a distribution" in {
-      val expr @ Dispatch(_, _, _) =
-        parseSingle("std::random::foobar(5)")
+      val expr @ Dispatch(_, _, _) = parseSingle("std::random::foobar(5)")
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept an observation of a distribution" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("observe(5, std::random::foobar(5))")
+      val expr @ Observe(_, _, _) = parseSingle(
+        "observe(5, std::random::foobar(5))")
       expr.errors must beEmpty
     }
 
     "reject an observed count of a distribution" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("observe(5, count(std::random::foobar(5)))")
+      val expr @ Observe(_, _, _) = parseSingle(
+        "observe(5, count(std::random::foobar(5)))")
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept an op1 of a distribution" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("observe(5, std::math::floor(std::random::foobar(5)))")
+      val expr @ Observe(_, _, _) = parseSingle(
+        "observe(5, std::math::floor(std::random::foobar(5)))")
       expr.errors must beEmpty
     }
 
     "reject an unobserved op1 of a distribution" in {
-      val expr @ Dispatch(_, _, _) =
-        parseSingle("std::math::floor(std::random::foobar(5))")
+      val expr @ Dispatch(_, _, _) = parseSingle(
+        "std::math::floor(std::random::foobar(5))")
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject a count of a distribution" in {
-      val expr @ Dispatch(_, _, _) =
-        parseSingle("count(std::random::foobar(5))")
+      val expr @ Dispatch(_, _, _) = parseSingle(
+        "count(std::random::foobar(5))")
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject a distinct of a distribution" in {
-      val expr @ Dispatch(_, _, _) =
-        parseSingle("distinct(std::random::foobar(5))")
+      val expr @ Dispatch(_, _, _) = parseSingle(
+        "distinct(std::random::foobar(5))")
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject a distinct of a distribution through an observe" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("observe(4, distinct(std::random::foobar(5)))")
+      val expr @ Observe(_, _, _) = parseSingle(
+        "observe(4, distinct(std::random::foobar(5)))")
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept a distribution inside a let" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           f(x) := observe(5, std::random::foobar(x))
           f(12)
         """)
@@ -105,8 +104,7 @@ object InfinityCheckerSpecs
     }
 
     "reject unobserved distribution inside a let" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle("""
           f(x) := std::random::foobar(x)
           f(12)
         """)
@@ -114,8 +112,7 @@ object InfinityCheckerSpecs
     }
 
     "reject unobserved distribution actual" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle("""
           f(x) := x
           f(std::random::foobar(12))
         """)
@@ -123,8 +120,8 @@ object InfinityCheckerSpecs
     }
 
     "accept observed distribution actual" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           f(x) := x
           f(observe(5, std::random::foobar(12)))
         """)
@@ -132,9 +129,8 @@ object InfinityCheckerSpecs
     }
 
     "reject unobserved distribution in summand" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle(
-          """
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           f(x) := x
           f(observe(5, std::random::foobar(12))) + f(std::random::foobar(12))
         """)
@@ -142,16 +138,16 @@ object InfinityCheckerSpecs
     }
 
     "reject unobserved actual as solve condition" in {
-      val expr @ Solve(_, _, _) =
-        parseSingle("""
+      val expr @ Solve(_, _, _) = parseSingle(
+        """
           solve 'a = std::random::foobar(2) 'a
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject observation of a solve" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           z := solve 'a = std::random::foobar(2) 'a
           observe(5, z)
         """)
@@ -159,24 +155,24 @@ object InfinityCheckerSpecs
     }
 
     "reject another observation of a solve" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5, solve 'a = std::random::foobar(2) 'a)
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject a yet another observation of a solve" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5, solve 'a = 8 'a + std::random::foobar(12))
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject count of distribution" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           foo := //foo
           solve 'a = foo.a
           'a + count(std::math::floor(std::random::foobar(12)))
@@ -185,75 +181,70 @@ object InfinityCheckerSpecs
     }
 
     "reject union" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle(
-          """
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5, std::random::foobar(12) union std::math::floor(5))
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject intersect" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle(
-          """
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5, count(std::random::foobar(12)) intersect std::math::floor(5))
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept sum" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5, std::random::foobar(12) + std::math::floor(5))
         """)
       expr.errors must beEmpty
     }
 
     "reject object concat" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle(
-          """
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5, {a: std::random::foobar(12)} with {b: std::math::floor(5)})
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept array creation" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5, [std::random::foobar(12), std::math::floor(5)])
         """)
       expr.errors must beEmpty
     }
 
     "reject unobserved in object" in {
-      val expr @ With(_, _, _) =
-        parseSingle("""
+      val expr @ With(_, _, _) = parseSingle(
+        """
           {a: std::random::foobar(12)} with {b: std::math::floor(5)}
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject another unobserved in object" in {
-      val expr @ ObjectDef(_, _) =
-        parseSingle("""
+      val expr @ ObjectDef(_, _) = parseSingle("""
           {a: std::random::foobar(23)}
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "reject unobserved in array" in {
-      val expr @ ArrayDef(_, _) =
-        parseSingle("""
+      val expr @ ArrayDef(_, _) = parseSingle("""
           [std::random::foobar(12), 7]
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept observe of sum" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           rand := std::random::foobar(12)
           observe(3, rand + 2)
         """)
@@ -261,8 +252,8 @@ object InfinityCheckerSpecs
     }
 
     "reject unobserved filter" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           rand := std::random::foobar(12)
           rand where true
         """)
@@ -270,8 +261,8 @@ object InfinityCheckerSpecs
     }
 
     "reject filter" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           rand := std::random::foobar(12)
           observe(7, rand where rand > 0.5)
         """)
@@ -279,8 +270,8 @@ object InfinityCheckerSpecs
     }
 
     "reject unobserved filter" in {
-      val expr @ Let(_, _, _, _, _) =
-        parseSingle("""
+      val expr @ Let(_, _, _, _, _) = parseSingle(
+        """
           rand := std::random::foobar(12)
           rand where rand > 0.5
         """)
@@ -288,8 +279,7 @@ object InfinityCheckerSpecs
     }
 
     "accept observe through import" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle("""
           observe(5,
             import std::lib::* 
             std::random::foobar(12))
@@ -298,8 +288,7 @@ object InfinityCheckerSpecs
     }
 
     "reject through import" in {
-      val expr @ Import(_, _, _) =
-        parseSingle("""
+      val expr @ Import(_, _, _) = parseSingle("""
           import std::lib::* 
           std::random::foobar(12)
         """)
@@ -307,8 +296,8 @@ object InfinityCheckerSpecs
     }
 
     "reject through assert" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5,
             assert std::random::foobar(12) "baz")
         """)
@@ -316,16 +305,14 @@ object InfinityCheckerSpecs
     }
 
     "reject new" in {
-      val expr @ New(_, _) =
-        parseSingle("""
+      val expr @ New(_, _) = parseSingle("""
           new std::random::foobar(12)
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept observed new" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle("""
           observe(5,
             new std::random::foobar(12))
         """)
@@ -333,8 +320,8 @@ object InfinityCheckerSpecs
     }
 
     "accept observed op1" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5,
             new std::math::floor(std::random::foobar(12)))
         """)
@@ -342,8 +329,8 @@ object InfinityCheckerSpecs
     }
 
     "reject through relate" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5,
             std::random::foobar(12) ~ "beta" false)
         """)
@@ -351,8 +338,8 @@ object InfinityCheckerSpecs
     }
 
     "accept as 'in' of relate" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5,
             (new "gamma") ~ (new "beta") std::random::foobar(12))
         """)
@@ -360,8 +347,8 @@ object InfinityCheckerSpecs
     }
 
     "reject in cond" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5,
             if true then false else std::random::foobar(12))
         """)
@@ -369,8 +356,8 @@ object InfinityCheckerSpecs
     }
 
     "reject again in cond" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(5,
             if true then std::random::foobar(12) else false)
         """)
@@ -378,16 +365,16 @@ object InfinityCheckerSpecs
     }
 
     "accept as RHS of observe" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(std::random::foobar(12), true)
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)
     }
 
     "accept through sum" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(
             observe(8, std::random::foobar(12) + 9),
             std::random::foobar(13))
@@ -396,8 +383,8 @@ object InfinityCheckerSpecs
     }
 
     "both sides of observe infinite" in {
-      val expr @ Observe(_, _, _) =
-        parseSingle("""
+      val expr @ Observe(_, _, _) = parseSingle(
+        """
           observe(std::random::foobar(12), std::random::foobar(13))
         """)
       expr.errors mustEqual Set(CannotUseDistributionWithoutSampling)

@@ -81,8 +81,13 @@ class InMemoryAPIKeyManager[M[+_]](clock: Clock)(implicit val M: Monad[M])
       issuerKey: APIKey,
       apiKey: APIKey,
       grants: Set[GrantId]): M[APIKeyRecord] = {
-    val record =
-      APIKeyRecord(apiKey, name, description, issuerKey, grants, false)
+    val record = APIKeyRecord(
+      apiKey,
+      name,
+      description,
+      issuerKey,
+      grants,
+      false)
     apiKeys.put(record.apiKey, record)
     record.point[M]
   }

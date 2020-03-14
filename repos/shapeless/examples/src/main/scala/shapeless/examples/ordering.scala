@@ -56,11 +56,12 @@ object OrderingExamples extends App {
   import GenericOrdering._
 
   implicitly[Ordering[Int :: String :: HNil]]
-  val hs = List(
-    2 :: "b" :: HNil,
-    2 :: "a" :: HNil,
-    1 :: "c" :: HNil
-  ).sorted
+  val hs =
+    List(
+      2 :: "b" :: HNil,
+      2 :: "a" :: HNil,
+      1 :: "c" :: HNil
+    ).sorted
   assert(
     hs == List(
       1 :: "c" :: HNil,
@@ -71,11 +72,12 @@ object OrderingExamples extends App {
   case class Foo(i: Int, s: String)
 
   implicitly[Ordering[Foo]]
-  val fs = List(
-    Foo(2, "b"),
-    Foo(2, "a"),
-    Foo(1, "c")
-  ).sorted
+  val fs =
+    List(
+      Foo(2, "b"),
+      Foo(2, "a"),
+      Foo(1, "c")
+    ).sorted
   assert(
     fs == List(
       Foo(1, "c"),

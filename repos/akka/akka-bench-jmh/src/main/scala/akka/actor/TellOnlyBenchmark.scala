@@ -123,8 +123,7 @@ object TellOnlyBenchmark {
 
     final override def create(
         owner: Option[ActorRef],
-        system: Option[ActorSystem]): MessageQueue =
-      new DroppingMessageQueue
+        system: Option[ActorSystem]): MessageQueue = new DroppingMessageQueue
   }
 
   class DroppingDispatcher(

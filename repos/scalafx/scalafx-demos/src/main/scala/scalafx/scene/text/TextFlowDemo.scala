@@ -40,18 +40,21 @@ object TextFlowDemo extends JFXApp {
       root = new TextFlow {
         val family = "Helvetica"
         val size = 20d
-        val text1 = new Text {
-          text = "Hello "
-          font = Font(family, size)
-        }
-        val text2 = new Text {
-          text = "Bold"
-          font = Font(family, FontWeight.Bold, size)
-        }
-        val text3 = new Text {
-          text = " World"
-          font = Font(family, FontPosture.Italic, size)
-        }
+        val text1 =
+          new Text {
+            text = "Hello "
+            font = Font(family, size)
+          }
+        val text2 =
+          new Text {
+            text = "Bold"
+            font = Font(family, FontWeight.Bold, size)
+          }
+        val text3 =
+          new Text {
+            text = " World"
+            font = Font(family, FontPosture.Italic, size)
+          }
         children ++= Seq(text1, text2, text3)
         layoutX = 40
         layoutY = 40

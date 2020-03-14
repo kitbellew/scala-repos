@@ -117,11 +117,13 @@ trait HsqldbProfile extends JdbcProfile {
               Join(ls2, rs2, l2, r2, JoinType.Inner, on2),
               JoinType.Inner,
               on) =>
-          val on3 = (on, on2) match {
-            case (a, LiteralNode(true)) => a
-            case (LiteralNode(true), b) => b
-            case (a, b)                 => Apply(Library.And, ConstArray(a, b))(UnassignedType)
-          }
+          val on3 =
+            (on, on2) match {
+              case (a, LiteralNode(true)) => a
+              case (LiteralNode(true), b) => b
+              case (a, b) =>
+                Apply(Library.And, ConstArray(a, b))(UnassignedType)
+            }
           buildJoin(
             Join(
               rs,
@@ -146,13 +148,15 @@ trait HsqldbProfile extends JdbcProfile {
   }
 
   class JdbcTypes extends super.JdbcTypes {
-    override val byteArrayJdbcType = new ByteArrayJdbcType {
-      override def sqlTypeName(sym: Option[FieldSymbol]) = "LONGVARBINARY"
-    }
-    override val uuidJdbcType = new UUIDJdbcType {
-      override def sqlType = java.sql.Types.BINARY
-      override def sqlTypeName(sym: Option[FieldSymbol]) = "BINARY(16)"
-    }
+    override val byteArrayJdbcType =
+      new ByteArrayJdbcType {
+        override def sqlTypeName(sym: Option[FieldSymbol]) = "LONGVARBINARY"
+      }
+    override val uuidJdbcType =
+      new UUIDJdbcType {
+        override def sqlType = java.sql.Types.BINARY
+        override def sqlTypeName(sym: Option[FieldSymbol]) = "BINARY(16)"
+      }
   }
 
   class TableDDLBuilder(table: Table[_]) extends super.TableDDLBuilder(table) {

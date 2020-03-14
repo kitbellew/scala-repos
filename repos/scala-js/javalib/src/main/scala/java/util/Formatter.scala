@@ -64,14 +64,15 @@ final class Formatter(private val dest: Appendable)
             def hasFlag(flag: String) = flags.indexOf(flag) >= 0
 
             val indexStr = matchResult(1).getOrElse("")
-            val index = if (!indexStr.isEmpty) {
-              Integer.parseInt(indexStr)
-            } else if (hasFlag("<")) {
-              lastIndex
-            } else {
-              lastImplicitIndex += 1
-              lastImplicitIndex
-            }
+            val index =
+              if (!indexStr.isEmpty) {
+                Integer.parseInt(indexStr)
+              } else if (hasFlag("<")) {
+                lastIndex
+              } else {
+                lastImplicitIndex += 1
+                lastImplicitIndex
+              }
             lastIndex = index
             if (index <= 0 || index > args.length)
               throw new MissingFormatArgumentException(matchResult(5).get)
@@ -99,8 +100,7 @@ final class Formatter(private val dest: Appendable)
             val conversion = matchResult(5).get.charAt(0)
 
             // Avoid using conversion.isUpper not to depend on the Unicode database
-            @inline def isConversionUpperCase: scala.Boolean =
-              conversion <= 'Z'
+            @inline def isConversionUpperCase: scala.Boolean = conversion <= 'Z'
 
             def intArg: Int =
               (arg: Any) match {
@@ -242,10 +242,11 @@ final class Formatter(private val dest: Appendable)
               case 'd' =>
                 with_+(numberArg.toString())
               case 'o' =>
-                val str = (arg: Any) match {
-                  case arg: scala.Int  => Integer.toOctalString(arg)
-                  case arg: scala.Long => Long.toOctalString(arg)
-                }
+                val str =
+                  (arg: Any) match {
+                    case arg: scala.Int  => Integer.toOctalString(arg)
+                    case arg: scala.Long => Long.toOctalString(arg)
+                  }
                 padCaptureSign(
                   str,
                   if (hasFlag("#"))
@@ -253,10 +254,11 @@ final class Formatter(private val dest: Appendable)
                   else
                     "")
               case 'x' | 'X' =>
-                val str = (arg: Any) match {
-                  case arg: scala.Int  => Integer.toHexString(arg)
-                  case arg: scala.Long => Long.toHexString(arg)
-                }
+                val str =
+                  (arg: Any) match {
+                    case arg: scala.Int  => Integer.toHexString(arg)
+                    case arg: scala.Long => Long.toHexString(arg)
+                  }
                 padCaptureSign(
                   str,
                   if (hasFlag("#"))
@@ -355,8 +357,9 @@ object Formatter {
   private val RegularChunk = new RegExpExtractor(new js.RegExp("""^[^\x25]+"""))
   private val DoublePercent = new RegExpExtractor(new js.RegExp("""^\x25{2}"""))
   private val EOLChunk = new RegExpExtractor(new js.RegExp("""^\x25n"""))
-  private val FormattedChunk = new RegExpExtractor(
-    new js.RegExp(
-      """^\x25(?:([1-9]\d*)\$)?([-#+ 0,\(<]*)(\d*)(?:\.(\d+))?([A-Za-z])"""))
+  private val FormattedChunk =
+    new RegExpExtractor(
+      new js.RegExp(
+        """^\x25(?:([1-9]\d*)\$)?([-#+ 0,\(<]*)(\d*)(?:\.(\d+))?([A-Za-z])"""))
 
 }

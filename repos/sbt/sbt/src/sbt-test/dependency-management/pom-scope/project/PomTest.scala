@@ -38,20 +38,22 @@ object PomTest extends Build {
             .find(d => (d \ "artifactId").text == id)
             .getOrElse(sys.error(
               "Dependency '" + id + "' not written to pom:\n" + loaded))
-          val actualOpt =
-            java.lang.Boolean.parseBoolean((dep \\ "optional").text)
+          val actualOpt = java.lang.Boolean
+            .parseBoolean((dep \\ "optional").text)
           assert(
             opt == actualOpt,
             "Invalid 'optional' section '" + (dep \\ "optional") + "' for " + id + ", expected optional=" + opt)
 
-          val actualScope = (dep \\ "scope") match {
-            case Seq() => None;
-            case x     => Some(x.text)
-          }
-          val actualClassifier = (dep \\ "classifier") match {
-            case Seq() => None;
-            case x     => Some(x.text)
-          }
+          val actualScope =
+            (dep \\ "scope") match {
+              case Seq() => None;
+              case x     => Some(x.text)
+            }
+          val actualClassifier =
+            (dep \\ "classifier") match {
+              case Seq() => None;
+              case x     => Some(x.text)
+            }
           assert(
             actualScope == scope,
             "Invalid 'scope' section '" + (dep \\ "scope") + "' for " + id + ", expected scope=" + scope)

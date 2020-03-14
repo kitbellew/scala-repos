@@ -93,8 +93,11 @@ private[math] object Multiplication {
     } else {
       val resLength = aNumberLength + 1
       val resDigits = new Array[Int](resLength)
-      resDigits(aNumberLength) =
-        multiplyByInt(resDigits, aDigits, aNumberLength, factor)
+      resDigits(aNumberLength) = multiplyByInt(
+        resDigits,
+        aDigits,
+        aNumberLength,
+        factor)
       val result = new BigInteger(resSign, resLength, resDigits)
       result.cutOffLeadingZeroes()
       result
@@ -200,8 +203,9 @@ private[math] object Multiplication {
 
       var upper = karatsuba(upperOp1, upperOp2)
       val lower = karatsuba(lowerOp1, lowerOp2)
-      var middle =
-        karatsuba(upperOp1.subtract(lowerOp1), lowerOp2.subtract(upperOp2))
+      var middle = karatsuba(
+        upperOp1.subtract(lowerOp1),
+        lowerOp2.subtract(upperOp2))
       middle = middle.add(upper).add(lower)
       middle = middle.shiftLeft(ndiv2)
       upper = upper.shiftLeft(ndiv2 << 1)

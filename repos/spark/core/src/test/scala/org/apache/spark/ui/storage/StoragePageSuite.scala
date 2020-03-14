@@ -150,8 +150,10 @@ class StoragePageSuite extends SparkFunSuite {
         memSize = 0,
         diskSize = 100)
     )
-    val executor0 =
-      ExecutorStreamBlockStatus("0", "localhost:10000", blocksForExecutor0)
+    val executor0 = ExecutorStreamBlockStatus(
+      "0",
+      "localhost:10000",
+      blocksForExecutor0)
 
     val blocksForExecutor1 = Seq(
       BlockUIData(
@@ -167,8 +169,10 @@ class StoragePageSuite extends SparkFunSuite {
         memSize = 100,
         diskSize = 0)
     )
-    val executor1 =
-      ExecutorStreamBlockStatus("1", "localhost:10001", blocksForExecutor1)
+    val executor1 = ExecutorStreamBlockStatus(
+      "1",
+      "localhost:10001",
+      blocksForExecutor1)
     val xmlNodes = storagePage.receiverBlockTables(Seq(executor0, executor1))
 
     val executorTable = (xmlNodes \\ "table")(0)
@@ -189,8 +193,12 @@ class StoragePageSuite extends SparkFunSuite {
         Seq("1", "localhost:10001", "200.0 B", "0.0 B", "2"))
 
     val blockTable = (xmlNodes \\ "table")(1)
-    val blockHeaders =
-      Seq("Block ID", "Replication Level", "Location", "Storage Level", "Size")
+    val blockHeaders = Seq(
+      "Block ID",
+      "Replication Level",
+      "Location",
+      "Storage Level",
+      "Size")
     assert((blockTable \\ "th").map(_.text) === blockHeaders)
 
     assert((blockTable \\ "tr").size === 4)

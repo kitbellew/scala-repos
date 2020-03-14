@@ -500,9 +500,10 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
     */
   @implicitNotFound(msg = "Cannot prove that ${From} <:< ${To}.")
   sealed abstract class <:<[-From, +To] extends (From => To) with Serializable
-  private[this] final val singleton_<:< = new <:<[Any, Any] {
-    def apply(x: Any): Any = x
-  }
+  private[this] final val singleton_<:< =
+    new <:<[Any, Any] {
+      def apply(x: Any): Any = x
+    }
   // The dollar prefix is to dodge accidental shadowing of this method
   // by a user-defined method of the same name (SI-7788).
   // The collections rely on this method.
@@ -517,9 +518,10 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
     */
   @implicitNotFound(msg = "Cannot prove that ${From} =:= ${To}.")
   sealed abstract class =:=[From, To] extends (From => To) with Serializable
-  private[this] final val singleton_=:= = new =:=[Any, Any] {
-    def apply(x: Any): Any = x
-  }
+  private[this] final val singleton_=:= =
+    new =:=[Any, Any] {
+      def apply(x: Any): Any = x
+    }
   object =:= {
     implicit def tpEquals[A]: A =:= A = singleton_=:=.asInstanceOf[A =:= A]
   }

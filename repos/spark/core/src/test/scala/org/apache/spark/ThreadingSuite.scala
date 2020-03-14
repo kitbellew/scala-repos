@@ -68,8 +68,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
             printf("In thread %d: answer1 was %d\n", i, answer1)
             ok = false
           }
-          val answer2 =
-            nums.first() // This will run "locally" in the current thread
+          val answer2 = nums
+            .first() // This will run "locally" in the current thread
           if (answer2 != 1) {
             printf("In thread %d: answer2 was %d\n", i, answer2)
             ok = false
@@ -97,8 +97,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
             printf("In thread %d: answer1 was %d\n", i, answer1)
             ok = false
           }
-          val answer2 =
-            nums.first() // This will run "locally" in the current thread
+          val answer2 = nums
+            .first() // This will run "locally" in the current thread
           if (answer2 != 1) {
             printf("In thread %d: answer2 was %d\n", i, answer2)
             ok = false
@@ -230,16 +230,17 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     var threadTestValue: String = null
     sc.setLocalProperty("test", originalTestValue)
     var throwable: Option[Throwable] = None
-    val thread = new Thread {
-      override def run(): Unit = {
-        try {
-          threadTestValue = sc.getLocalProperty("test")
-        } catch {
-          case t: Throwable =>
-            throwable = Some(t)
+    val thread =
+      new Thread {
+        override def run(): Unit = {
+          try {
+            threadTestValue = sc.getLocalProperty("test")
+          } catch {
+            case t: Throwable =>
+              throwable = Some(t)
+          }
         }
       }
-    }
     sc.setLocalProperty("test", "this-should-not-be-inherited")
     thread.start()
     thread.join()

@@ -41,15 +41,16 @@ class UIAcknowledgementProvider(
       s"Some of your project's libraries have IDEA support features.</p>Would you like to load them?" +
         s"""<p/><a href="Yes">Yes</a> """ +
         s"""<a href="No">No</a>"""
-    val listener = new NotificationListener {
-      override def hyperlinkUpdate(
-          notification: Notification,
-          event: HyperlinkEvent): Unit = {
-        notification.expire()
-        if (event.getDescription == "Yes")
-          acceptCallback
+    val listener =
+      new NotificationListener {
+        override def hyperlinkUpdate(
+            notification: Notification,
+            event: HyperlinkEvent): Unit = {
+          notification.expire()
+          if (event.getDescription == "Yes")
+            acceptCallback
+        }
       }
-    }
     GROUP
       .createNotification(
         "IDEA Extensions",

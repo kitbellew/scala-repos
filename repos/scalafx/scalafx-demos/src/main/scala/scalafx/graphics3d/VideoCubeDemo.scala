@@ -80,20 +80,21 @@ object VideoCubeDemo extends JFXApp {
   val folderSysProperty = "scalafx.graphics3d.VideoCubeDemo.folder"
   val folderOption = Option[String](System.getProperty(folderSysProperty))
 
-  val folder = folderOption match {
-    case Some(folderName) => {
-      val file = new File(folderName)
-      if (file.exists() && file.isDirectory)
-        file
-      else
+  val folder =
+    folderOption match {
+      case Some(folderName) => {
+        val file = new File(folderName)
+        if (file.exists() && file.isDirectory)
+          file
+        else
+          throw new IllegalArgumentException(
+            "System property `" + folderSysProperty + " = " + folderName + "` " +
+              "has to point to an existing directory.")
+      }
+      case None =>
         throw new IllegalArgumentException(
-          "System property `" + folderSysProperty + " = " + folderName + "` " +
-            "has to point to an existing directory.")
+          "System property `" + folderSysProperty + "` is not defined.")
     }
-    case None =>
-      throw new IllegalArgumentException(
-        "System property `" + folderSysProperty + "` is not defined.")
-  }
 
   // You need your video files ;-) Cannot redistribute MOVIE FILES!!!
   // Substitute, for example, with your own family and vacation pictures
@@ -129,21 +130,22 @@ object VideoCubeDemo extends JFXApp {
   val lowY = -75
   val highX = 900
   val highY = 700
-  val starryBackground = new Group {
-    val stars = (1 to 500).map(x =>
-      new Rectangle {
-        x = lowX + scala.math.random * (highX - lowX)
-        y = lowY + scala.math.random * (highY - lowY)
-        //      printf("x=%5.1f, y=%5.1f\n", x.get(), y.get() )
-        val s = 1 + scala.math.random * 3
-        width = s
-        height = s
-        fill = Color.White
-      })
-    //    printf("stars=%s\n", stars)
-    children = stars
-    translateZ = 100.0
-  }
+  val starryBackground =
+    new Group {
+      val stars = (1 to 500).map(x =>
+        new Rectangle {
+          x = lowX + scala.math.random * (highX - lowX)
+          y = lowY + scala.math.random * (highY - lowY)
+          //      printf("x=%5.1f, y=%5.1f\n", x.get(), y.get() )
+          val s = 1 + scala.math.random * 3
+          width = s
+          height = s
+          fill = Color.White
+        })
+      //    printf("stars=%s\n", stars)
+      children = stars
+      translateZ = 100.0
+    }
 
   root.children.addAll(starryBackground, cubeSystem)
 
@@ -290,26 +292,28 @@ class VideoCube(val mediaPlayers: List[MediaPlayer], size: Double)
 
     def this(mediaPlayer: MediaPlayer) = this(mediaPlayer, 0.0)
 
-    val debugText = new Text {
-      font = new Font("Verdana", 36.0)
-      fill = Color.Orange
-      layoutX = size / 4
-      layoutY = size / 4
-    }
+    val debugText =
+      new Text {
+        font = new Font("Verdana", 36.0)
+        fill = Color.Orange
+        layoutX = size / 4
+        layoutY = size / 4
+      }
 
     val mediaView = new MediaView(mediaPlayer)
 
-    val backRect = new Rectangle {
-      x = 0
-      y = 0
-      translateZ = offset
-      width = size
-      height = size
-      fill = color.deriveColor(0.0, 1.0, 1 - 0.5 * shade, 1.0)
-      depthTest = DepthTest.Inherit
-      // JavaFX Rendering on 3D with planar surfaces and MediaView will improve
-      // opacity = 0.0
-    }
+    val backRect =
+      new Rectangle {
+        x = 0
+        y = 0
+        translateZ = offset
+        width = size
+        height = size
+        fill = color.deriveColor(0.0, 1.0, 1 - 0.5 * shade, 1.0)
+        depthTest = DepthTest.Inherit
+        // JavaFX Rendering on 3D with planar surfaces and MediaView will improve
+        // opacity = 0.0
+      }
 
     children = Seq(backRect, mediaView, debugText)
 

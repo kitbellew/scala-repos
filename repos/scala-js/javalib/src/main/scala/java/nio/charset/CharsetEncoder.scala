@@ -55,8 +55,10 @@ abstract class CharsetEncoder protected (
     @inline
     @tailrec
     def loop(outBufSize: Int): Boolean = {
-      val result =
-        decoder.decode(replBuf, CharBuffer.allocate(outBufSize), true)
+      val result = decoder.decode(
+        replBuf,
+        CharBuffer.allocate(outBufSize),
+        true)
       if (result.isOverflow) {
         loop(outBufSize * 2)
       } else {
@@ -124,15 +126,16 @@ abstract class CharsetEncoder protected (
             throw new CoderMalfunctionError(ex)
         }
 
-      val result2 = if (result1.isUnderflow) {
-        val remaining = in.remaining
-        if (endOfInput && remaining > 0)
-          CoderResult.malformedForLength(remaining)
-        else
+      val result2 =
+        if (result1.isUnderflow) {
+          val remaining = in.remaining
+          if (endOfInput && remaining > 0)
+            CoderResult.malformedForLength(remaining)
+          else
+            result1
+        } else {
           result1
-      } else {
-        result1
-      }
+        }
 
       if (result2.isUnderflow || result2.isOverflow) {
         result2
@@ -178,8 +181,7 @@ abstract class CharsetEncoder protected (
     }
   }
 
-  protected def implFlush(out: ByteBuffer): CoderResult =
-    CoderResult.UNDERFLOW
+  protected def implFlush(out: ByteBuffer): CoderResult = CoderResult.UNDERFLOW
 
   final def reset(): CharsetEncoder = {
     status = INIT

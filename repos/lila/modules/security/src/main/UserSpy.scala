@@ -60,8 +60,8 @@ object UserSpy {
       },
       uas = infos.map(_.ua).distinct,
       usersSharingIp = (sharingIp + user).toList.sortBy(-_.createdAt.getMillis),
-      usersSharingFingerprint =
-        (sharingFingerprint + user).toList.sortBy(-_.createdAt.getMillis)
+      usersSharingFingerprint = (sharingFingerprint + user).toList
+        .sortBy(-_.createdAt.getMillis)
     )
 
   private def exploreSimilar(field: String)(user: User): Fu[Set[User]] =

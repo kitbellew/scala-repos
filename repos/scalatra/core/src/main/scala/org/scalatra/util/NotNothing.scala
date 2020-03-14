@@ -9,9 +9,10 @@ sealed trait NotNothing[A] {
 
 object NotNothing {
 
-  implicit val nothing: NotNothing[Nothing] = new NotNothing[Nothing] {
-    type B = Unit
-  }
+  implicit val nothing: NotNothing[Nothing] =
+    new NotNothing[Nothing] {
+      type B = Unit
+    }
 
   implicit def notNothing[A]: NotNothing[A] =
     new NotNothing[A] {

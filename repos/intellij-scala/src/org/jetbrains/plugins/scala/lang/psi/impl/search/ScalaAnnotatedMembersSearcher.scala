@@ -35,15 +35,16 @@ class ScalaAnnotatedMembersSearcher
     val annotationFQN = annClass.qualifiedName
     assert(annotationFQN != null)
 
-    val scope = p.getScope match {
-      case x: GlobalSearchScope => x
-      case _                    => return true
-    }
+    val scope =
+      p.getScope match {
+        case x: GlobalSearchScope => x
+        case _                    => return true
+      }
 
     ApplicationManager.getApplication.runReadAction(new Computable[Boolean] {
       def compute: Boolean = {
-        val candidates: java.util.Collection[ScAnnotation] =
-          StubIndex.getElements(
+        val candidates: java.util.Collection[ScAnnotation] = StubIndex
+          .getElements(
             ScAnnotatedMemberIndex.KEY,
             annClass.name,
             annClass.getProject,

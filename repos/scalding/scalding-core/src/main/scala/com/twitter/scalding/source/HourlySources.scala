@@ -46,8 +46,7 @@ object HourlySuffixTypedTsv {
       dateRange: DateRange,
       mf: Manifest[T],
       conv: TupleConverter[T],
-      tset: TupleSetter[T]) =
-    new HourlySuffixTypedTsv[T](prefix)
+      tset: TupleSetter[T]) = new HourlySuffixTypedTsv[T](prefix)
 }
 
 class HourlySuffixTypedTsv[T](prefix: String)(implicit

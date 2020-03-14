@@ -155,19 +155,20 @@ class AdminClient(
         s"Response from broker contained no metadata for group ${groupId}")
 
     Errors.forCode(metadata.errorCode()).maybeThrow()
-    val members = metadata
-      .members()
-      .map { member =>
-        val metadata = Utils.readBytes(member.memberMetadata())
-        val assignment = Utils.readBytes(member.memberAssignment())
-        MemberSummary(
-          member.memberId(),
-          member.clientId(),
-          member.clientHost(),
-          metadata,
-          assignment)
-      }
-      .toList
+    val members =
+      metadata
+        .members()
+        .map { member =>
+          val metadata = Utils.readBytes(member.memberMetadata())
+          val assignment = Utils.readBytes(member.memberAssignment())
+          MemberSummary(
+            member.memberId(),
+            member.clientId(),
+            member.clientHost(),
+            metadata,
+            assignment)
+        }
+        .toList
     GroupSummary(
       metadata.state(),
       metadata.protocolType(),
@@ -258,35 +259,38 @@ object AdminClient {
     val metadata = new Metadata
     val channelBuilder = ClientUtils.createChannelBuilder(config.values())
 
-    val brokerUrls =
-      config.getList(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG)
+    val brokerUrls = config.getList(
+      CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG)
     val brokerAddresses = ClientUtils.parseAndValidateAddresses(brokerUrls)
     val bootstrapCluster = Cluster.bootstrap(brokerAddresses)
     metadata.update(bootstrapCluster, 0)
 
-    val selector = new Selector(
-      DefaultConnectionMaxIdleMs,
-      metrics,
-      time,
-      "admin",
-      channelBuilder)
+    val selector =
+      new Selector(
+        DefaultConnectionMaxIdleMs,
+        metrics,
+        time,
+        "admin",
+        channelBuilder)
 
-    val networkClient = new NetworkClient(
-      selector,
-      metadata,
-      "admin-" + AdminClientIdSequence.getAndIncrement(),
-      DefaultMaxInFlightRequestsPerConnection,
-      DefaultReconnectBackoffMs,
-      DefaultSendBufferBytes,
-      DefaultReceiveBufferBytes,
-      DefaultRequestTimeoutMs,
-      time)
+    val networkClient =
+      new NetworkClient(
+        selector,
+        metadata,
+        "admin-" + AdminClientIdSequence.getAndIncrement(),
+        DefaultMaxInFlightRequestsPerConnection,
+        DefaultReconnectBackoffMs,
+        DefaultSendBufferBytes,
+        DefaultReceiveBufferBytes,
+        DefaultRequestTimeoutMs,
+        time)
 
-    val highLevelClient = new ConsumerNetworkClient(
-      networkClient,
-      metadata,
-      time,
-      DefaultRetryBackoffMs)
+    val highLevelClient =
+      new ConsumerNetworkClient(
+        networkClient,
+        metadata,
+        time,
+        DefaultRetryBackoffMs)
 
     new AdminClient(
       time,

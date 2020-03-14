@@ -188,12 +188,12 @@ object TestLogCleaning {
     val consumedReader = externalSort(consumedDataFile)
     val produced = valuesIterator(producedReader)
     val consumed = valuesIterator(consumedReader)
-    val producedDedupedFile = new File(
-      producedDataFile.getAbsolutePath + ".deduped")
+    val producedDedupedFile =
+      new File(producedDataFile.getAbsolutePath + ".deduped")
     val producedDeduped =
       new BufferedWriter(new FileWriter(producedDedupedFile), 1024 * 1024)
-    val consumedDedupedFile = new File(
-      consumedDataFile.getAbsolutePath + ".deduped")
+    val consumedDedupedFile =
+      new File(consumedDataFile.getAbsolutePath + ".deduped")
     val consumedDeduped =
       new BufferedWriter(new FileWriter(consumedDedupedFile), 1024 * 1024)
     var total = 0
@@ -264,13 +264,14 @@ object TestLogCleaning {
   }
 
   def externalSort(file: File): BufferedReader = {
-    val builder = new ProcessBuilder(
-      "sort",
-      "--key=1,2",
-      "--stable",
-      "--buffer-size=20%",
-      "--temporary-directory=" + System.getProperty("java.io.tmpdir"),
-      file.getAbsolutePath)
+    val builder =
+      new ProcessBuilder(
+        "sort",
+        "--key=1,2",
+        "--stable",
+        "--buffer-size=20%",
+        "--temporary-directory=" + System.getProperty("java.io.tmpdir"),
+        file.getAbsolutePath)
     val process = builder.start()
     new Thread() {
       override def run() {
@@ -314,8 +315,9 @@ object TestLogCleaning {
     val producer = new KafkaProducer[Array[Byte], Array[Byte]](producerProps)
     val rand = new Random(1)
     val keyCount = (messages / dups).toInt
-    val producedFile =
-      File.createTempFile("kafka-log-cleaner-produced-", ".txt")
+    val producedFile = File.createTempFile(
+      "kafka-log-cleaner-produced-",
+      ".txt")
     println("Logging produce requests to " + producedFile.getAbsolutePath)
     val producedWriter =
       new BufferedWriter(new FileWriter(producedFile), 1024 * 1024)
@@ -362,8 +364,9 @@ object TestLogCleaning {
       topics.map(topic => (topic, 1)).toMap,
       new StringDecoder,
       new StringDecoder)
-    val consumedFile =
-      File.createTempFile("kafka-log-cleaner-consumed-", ".txt")
+    val consumedFile = File.createTempFile(
+      "kafka-log-cleaner-consumed-",
+      ".txt")
     println("Logging consumed messages to " + consumedFile.getAbsolutePath)
     val consumedWriter = new BufferedWriter(new FileWriter(consumedFile))
     for (topic <- topics) {

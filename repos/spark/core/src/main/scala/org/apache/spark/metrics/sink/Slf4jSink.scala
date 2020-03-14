@@ -36,15 +36,17 @@ private[spark] class Slf4jSink(
   val SLF4J_KEY_PERIOD = "period"
   val SLF4J_KEY_UNIT = "unit"
 
-  val pollPeriod = Option(property.getProperty(SLF4J_KEY_PERIOD)) match {
-    case Some(s) => s.toInt
-    case None    => SLF4J_DEFAULT_PERIOD
-  }
+  val pollPeriod =
+    Option(property.getProperty(SLF4J_KEY_PERIOD)) match {
+      case Some(s) => s.toInt
+      case None    => SLF4J_DEFAULT_PERIOD
+    }
 
-  val pollUnit: TimeUnit = Option(property.getProperty(SLF4J_KEY_UNIT)) match {
-    case Some(s) => TimeUnit.valueOf(s.toUpperCase())
-    case None    => TimeUnit.valueOf(SLF4J_DEFAULT_UNIT)
-  }
+  val pollUnit: TimeUnit =
+    Option(property.getProperty(SLF4J_KEY_UNIT)) match {
+      case Some(s) => TimeUnit.valueOf(s.toUpperCase())
+      case None    => TimeUnit.valueOf(SLF4J_DEFAULT_UNIT)
+    }
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 

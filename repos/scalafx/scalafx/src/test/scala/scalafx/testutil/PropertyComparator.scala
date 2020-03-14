@@ -57,13 +57,14 @@ trait PropertyComparator extends AbstractComparator {
 
   private def getProperties(javafxClass: Class[_]): Set[String] = {
     val javafxRegex = """(.*)Property""".r
-    val javaFxProperties = javafxClass.getDeclaredMethods
-      .filter(super.isPublicMethod)
-      .filterNot(m => super.isImplementation(m.getName))
-      .map(m => javafxRegex.findFirstMatchIn(m.getName))
-      .flatMap(x => x)
-      .map(_.group(1))
-      .toSet
+    val javaFxProperties =
+      javafxClass.getDeclaredMethods
+        .filter(super.isPublicMethod)
+        .filterNot(m => super.isImplementation(m.getName))
+        .map(m => javafxRegex.findFirstMatchIn(m.getName))
+        .flatMap(x => x)
+        .map(_.group(1))
+        .toSet
     javaFxProperties
   }
 

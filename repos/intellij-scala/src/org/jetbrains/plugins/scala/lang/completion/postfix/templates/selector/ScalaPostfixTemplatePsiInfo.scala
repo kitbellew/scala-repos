@@ -21,31 +21,33 @@ import org.jetbrains.plugins.scala.lang.surroundWith.surrounders.expression.Scal
   */
 class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
 
-  private val notSurrounder = new ScalaWithUnaryNotSurrounder() {
-    override def getTemplateAsString(elements: Array[PsiElement]) =
-      if (elements.length == 1) {
-        elements(0) match {
-          case literal: ScLiteral if literal.getText == "true"  => "false"
-          case literal: ScLiteral if literal.getText == "false" => "true"
-          case id: ScReferenceExpression
-              if id.getNode.getChildren(null).length == 1 &&
-                id.getNode
-                  .getChildren(null)
-                  .apply(0)
-                  .getElementType == ScalaTokenTypes.tIDENTIFIER =>
-            "!" + id.getText
-          case _ => super.getTemplateAsString(elements)
+  private val notSurrounder =
+    new ScalaWithUnaryNotSurrounder() {
+      override def getTemplateAsString(elements: Array[PsiElement]) =
+        if (elements.length == 1) {
+          elements(0) match {
+            case literal: ScLiteral if literal.getText == "true"  => "false"
+            case literal: ScLiteral if literal.getText == "false" => "true"
+            case id: ScReferenceExpression
+                if id.getNode.getChildren(null).length == 1 &&
+                  id.getNode
+                    .getChildren(null)
+                    .apply(0)
+                    .getElementType == ScalaTokenTypes.tIDENTIFIER =>
+              "!" + id.getText
+            case _ => super.getTemplateAsString(elements)
+          }
+        } else {
+          super.getTemplateAsString(elements)
         }
-      } else {
-        super.getTemplateAsString(elements)
-      }
-  }
+    }
 
   override def getNegatedExpression(element: PsiElement): PsiElement =
     element match {
       case expr if notSurrounder.isApplicable(Array(expr)) =>
-        var res =
-          notSurrounder.surroundPsi(Array(element)).asInstanceOf[ScExpression]
+        var res = notSurrounder
+          .surroundPsi(Array(element))
+          .asInstanceOf[ScExpression]
         if (DoubleNegationUtil.hasDoubleNegation(res)) {
           res = DoubleNegationUtil.removeDoubleNegation(res)
         }

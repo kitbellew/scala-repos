@@ -143,9 +143,10 @@ object InputTask {
 
   private[this] def dummyTask[I]: (AttributeKey[Option[I]], Task[I]) = {
     val key = localKey[Option[I]]
-    val f: () => I = () =>
-      sys.error(
-        s"Internal sbt error: InputTask stub was not substituted properly.")
+    val f: () => I =
+      () =>
+        sys.error(
+          s"Internal sbt error: InputTask stub was not substituted properly.")
     val t: Task[I] = Task(Info[I]().set(key, None), Pure(f, false))
     (key, t)
   }
@@ -154,22 +155,23 @@ object InputTask {
       value: I,
       task: Task[T]): Task[T] = {
     val seen = new java.util.IdentityHashMap[Task[_], Task[_]]
-    lazy val f: Task ~> Task = new (Task ~> Task) {
-      def apply[T](t: Task[T]): Task[T] = {
-        val t0 = seen.get(t)
-        if (t0 == null) {
-          val newAction =
-            if (t.info.get(marker).isDefined)
-              Pure(() => value.asInstanceOf[T], inline = true)
-            else
-              t.work.mapTask(f)
-          val newTask = Task(t.info, newAction)
-          seen.put(t, newTask)
-          newTask
-        } else
-          t0.asInstanceOf[Task[T]]
+    lazy val f: Task ~> Task =
+      new (Task ~> Task) {
+        def apply[T](t: Task[T]): Task[T] = {
+          val t0 = seen.get(t)
+          if (t0 == null) {
+            val newAction =
+              if (t.info.get(marker).isDefined)
+                Pure(() => value.asInstanceOf[T], inline = true)
+              else
+                t.work.mapTask(f)
+            val newTask = Task(t.info, newAction)
+            seen.put(t, newTask)
+            newTask
+          } else
+            t0.asInstanceOf[Task[T]]
+        }
       }
-    }
     f(task)
   }
 }

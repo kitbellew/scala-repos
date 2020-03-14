@@ -249,11 +249,12 @@ trait MatchTranslation {
     def translateMatch(match_ : Match): Tree = {
       val Match(selector, cases) = match_
 
-      val (nonSyntheticCases, defaultOverride) = cases match {
-        case init :+ last if treeInfo isSyntheticDefaultCase last =>
-          (init, Some(((scrut: Tree) => last.body)))
-        case _ => (cases, None)
-      }
+      val (nonSyntheticCases, defaultOverride) =
+        cases match {
+          case init :+ last if treeInfo isSyntheticDefaultCase last =>
+            (init, Some(((scrut: Tree) => last.body)))
+          case _ => (cases, None)
+        }
 
       if (!settings.XnoPatmatAnalysis)
         checkMatchVariablePatterns(nonSyntheticCases)
@@ -651,10 +652,11 @@ trait MatchTranslation {
         // binders corresponding to mutable fields should be stored (SI-5158, SI-6070)
         // make an exception for classes under the scala package as they should be well-behaved,
         // to optimize matching on List
-        val hasRepeated = paramAccessors.lastOption match {
-          case Some(x) => definitions.isRepeated(x)
-          case _       => false
-        }
+        val hasRepeated =
+          paramAccessors.lastOption match {
+            case Some(x) => definitions.isRepeated(x)
+            case _       => false
+          }
         val mutableBinders =
           (
             if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
@@ -758,8 +760,7 @@ trait MatchTranslation {
 
       protected def spliceApply(binder: Symbol): Tree = {
         object splice extends Transformer {
-          def binderRef(pos: Position): Tree =
-            REF(binder) setPos pos
+          def binderRef(pos: Position): Tree = REF(binder) setPos pos
           override def transform(t: Tree) =
             t match {
               // duplicated with the extractor Unapplied

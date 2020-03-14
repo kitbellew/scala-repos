@@ -16,11 +16,12 @@ final class Env(
   private val Writeable = config getBoolean "writeable"
   private val Endpoint = config getString "endpoint"
 
-  val makeClient = (index: Index) =>
-    if (Enabled)
-      new ESClientHttp(Endpoint, index, Writeable)
-    else
-      new ESClientStub
+  val makeClient =
+    (index: Index) =>
+      if (Enabled)
+        new ESClientHttp(Endpoint, index, Writeable)
+      else
+        new ESClientStub
 }
 
 object Env {

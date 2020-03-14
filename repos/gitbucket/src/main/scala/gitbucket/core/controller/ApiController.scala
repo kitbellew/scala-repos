@@ -407,14 +407,15 @@ trait ApiControllerBase extends ControllerBase {
                   val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
                   val newId = git.getRepository.resolve(pullreq.commitIdTo)
                   val repoFullName = RepositoryName(repository)
-                  val commits = git.log
-                    .addRange(oldId, newId)
-                    .call
-                    .iterator
-                    .asScala
-                    .map(c =>
-                      ApiCommitListItem(new CommitInfo(c), repoFullName))
-                    .toList
+                  val commits =
+                    git.log
+                      .addRange(oldId, newId)
+                      .call
+                      .iterator
+                      .asScala
+                      .map(c =>
+                        ApiCommitListItem(new CommitInfo(c), repoFullName))
+                      .toList
                   JsonFormat(commits)
               }
           }
@@ -500,8 +501,10 @@ trait ApiControllerBase extends ControllerBase {
         owner <- getAccountByUserName(repository.owner)
         sha <- JGitUtil.getShaByRef(repository.owner, repository.name, ref)
       } yield {
-        val statuses =
-          getCommitStatuesWithCreator(repository.owner, repository.name, sha)
+        val statuses = getCommitStatuesWithCreator(
+          repository.owner,
+          repository.name,
+          sha)
         JsonFormat(
           ApiCombinedCommitStatus(
             sha,

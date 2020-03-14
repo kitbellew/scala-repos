@@ -77,49 +77,53 @@ object SideEffectsUtil {
       case t: ScTuple                                   => t.exprs.forall(hasNoSideEffects)
       case inf: ScInfixExpr if inf.isAssignmentOperator => false
       case ScSugarCallExpr(baseExpr, operation, args) =>
-        val checkOperation = operation match {
-          case ref if hasImplicitConversion(ref)  => false
-          case ref if ref.refName.endsWith("_=")  => false
-          case ResolvesTo(_: ScSyntheticFunction) => true
-          case ResolvesTo(m: PsiMethod) =>
-            methodHasNoSideEffects(m, baseExpr.getType().toOption)
-          case _ => false
-        }
+        val checkOperation =
+          operation match {
+            case ref if hasImplicitConversion(ref)  => false
+            case ref if ref.refName.endsWith("_=")  => false
+            case ResolvesTo(_: ScSyntheticFunction) => true
+            case ResolvesTo(m: PsiMethod) =>
+              methodHasNoSideEffects(m, baseExpr.getType().toOption)
+            case _ => false
+          }
         checkOperation && hasNoSideEffects(baseExpr) && args.forall(
           hasNoSideEffects)
       case ScMethodCall(baseExpr, args) =>
-        val (checkQual, typeOfQual) = baseExpr match {
-          case ScReferenceExpression.withQualifier(qual) =>
-            (hasNoSideEffects(qual), qual.getType().toOption)
-          case _ => (true, None)
-        }
-        val checkBaseExpr = baseExpr match {
-          case _ if hasImplicitConversion(baseExpr) => false
-          case ResolvesTo(m: PsiMethod)             => methodHasNoSideEffects(m, typeOfQual)
-          case ResolvesTo(_: ScSyntheticFunction)   => true
-          case ResolvesTo(td: ScTypedDefinition) =>
-            val withApplyText = baseExpr.getText + ".apply" + args
-              .map(_.getText)
-              .mkString("(", ", ", ")")
-            val withApply =
-              ScalaPsiElementFactory.createExpressionWithContextFromText(
-                withApplyText,
-                expr.getContext,
-                expr)
-            withApply match {
-              case ScMethodCall(ResolvesTo(m: PsiMethod), _) =>
-                methodHasNoSideEffects(m, typeOfQual)
-              case _ => false
-            }
-          case _ => hasNoSideEffects(baseExpr)
-        }
+        val (checkQual, typeOfQual) =
+          baseExpr match {
+            case ScReferenceExpression.withQualifier(qual) =>
+              (hasNoSideEffects(qual), qual.getType().toOption)
+            case _ => (true, None)
+          }
+        val checkBaseExpr =
+          baseExpr match {
+            case _ if hasImplicitConversion(baseExpr) => false
+            case ResolvesTo(m: PsiMethod) =>
+              methodHasNoSideEffects(m, typeOfQual)
+            case ResolvesTo(_: ScSyntheticFunction) => true
+            case ResolvesTo(td: ScTypedDefinition) =>
+              val withApplyText = baseExpr.getText + ".apply" + args
+                .map(_.getText)
+                .mkString("(", ", ", ")")
+              val withApply = ScalaPsiElementFactory
+                .createExpressionWithContextFromText(
+                  withApplyText,
+                  expr.getContext,
+                  expr)
+              withApply match {
+                case ScMethodCall(ResolvesTo(m: PsiMethod), _) =>
+                  methodHasNoSideEffects(m, typeOfQual)
+                case _ => false
+              }
+            case _ => hasNoSideEffects(baseExpr)
+          }
         checkQual && checkBaseExpr && args.forall(hasNoSideEffects)
       case _ => false
     }
 
   private def listImmutableClasses = {
-    val excludeNonString =
-      Seq("StringBuffer._", "StringBuilder._").map("exclude:java.lang." + _)
+    val excludeNonString = Seq("StringBuffer._", "StringBuilder._").map(
+      "exclude:java.lang." + _)
 
     val javaWrappers = Seq(
       "Integer",
@@ -138,16 +142,28 @@ object SideEffectsUtil {
       "java.math.BigInteger._",
       "java.math.BigDecimal._")
 
-    val scalaValueClasses =
-      Seq("Boolean", "Byte", "Char", "Double", "Float", "Int", "Lont", "Unit")
-        .map(name => s"scala.$name._")
+    val scalaValueClasses = Seq(
+      "Boolean",
+      "Byte",
+      "Char",
+      "Double",
+      "Float",
+      "Int",
+      "Lont",
+      "Unit")
+      .map(name => s"scala.$name._")
 
-    val otherFromScalaPackage =
-      Seq("Option._", "Some._", "Tuple._", "Symbol._").map("scala." + _)
+    val otherFromScalaPackage = Seq("Option._", "Some._", "Tuple._", "Symbol._")
+      .map("scala." + _)
 
-    val fromScalaUtil =
-      Seq("Either", "Failure", "Left", "Right", "Success", "Try")
-        .map(name => s"scala.util.$name._")
+    val fromScalaUtil = Seq(
+      "Either",
+      "Failure",
+      "Left",
+      "Right",
+      "Success",
+      "Try")
+      .map(name => s"scala.util.$name._")
 
     val fromScalaMath = Seq("scala.math.BigInt._", "scala.math.BigDecimal._")
 
@@ -183,12 +199,13 @@ object SideEffectsUtil {
       case _ =>
     }
 
-    val clazzName = typeOfQual
-      .flatMap(ScType.extractDesignatorSingletonType)
-      .orElse(typeOfQual) match {
-      case Some(tp) => ScType.extractClass(tp).map(_.qualifiedName)
-      case None     => methodClazzName
-    }
+    val clazzName =
+      typeOfQual
+        .flatMap(ScType.extractDesignatorSingletonType)
+        .orElse(typeOfQual) match {
+        case Some(tp) => ScType.extractClass(tp).map(_.qualifiedName)
+        case None     => methodClazzName
+      }
 
     clazzName.map(_ + "." + m.name) match {
       case Some(name) =>

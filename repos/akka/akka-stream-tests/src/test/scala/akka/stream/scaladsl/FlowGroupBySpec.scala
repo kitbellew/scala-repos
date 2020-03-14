@@ -141,8 +141,8 @@ class FlowGroupBySpec extends AkkaSpec {
       new SubstreamsSupport(groupCount = 2) {
         StreamPuppet(getSubFlow(1).runWith(Sink.asPublisher(false))).cancel()
 
-        val substream =
-          StreamPuppet(getSubFlow(0).runWith(Sink.asPublisher(false)))
+        val substream = StreamPuppet(
+          getSubFlow(0).runWith(Sink.asPublisher(false)))
         substream.request(2)
         substream.expectNext(2)
         substream.expectNext(4)
@@ -223,8 +223,8 @@ class FlowGroupBySpec extends AkkaSpec {
       upstreamSubscription.sendNext(1)
 
       val (_, substream) = subscriber.expectNext()
-      val substreamPuppet =
-        StreamPuppet(substream.runWith(Sink.asPublisher(false)))
+      val substreamPuppet = StreamPuppet(
+        substream.runWith(Sink.asPublisher(false)))
 
       substreamPuppet.request(1)
       substreamPuppet.expectNext(1)
@@ -262,8 +262,8 @@ class FlowGroupBySpec extends AkkaSpec {
       upstreamSubscription.sendNext(1)
 
       val (_, substream) = subscriber.expectNext()
-      val substreamPuppet =
-        StreamPuppet(substream.runWith(Sink.asPublisher(false)))
+      val substreamPuppet = StreamPuppet(
+        substream.runWith(Sink.asPublisher(false)))
 
       substreamPuppet.request(1)
       substreamPuppet.expectNext(1)
@@ -301,8 +301,8 @@ class FlowGroupBySpec extends AkkaSpec {
       upstreamSubscription.sendNext(1)
 
       val (_, substream1) = subscriber.expectNext()
-      val substreamPuppet1 =
-        StreamPuppet(substream1.runWith(Sink.asPublisher(false)))
+      val substreamPuppet1 = StreamPuppet(
+        substream1.runWith(Sink.asPublisher(false)))
       substreamPuppet1.request(10)
       substreamPuppet1.expectNext(1)
 
@@ -310,8 +310,8 @@ class FlowGroupBySpec extends AkkaSpec {
       upstreamSubscription.sendNext(4)
 
       val (_, substream2) = subscriber.expectNext()
-      val substreamPuppet2 =
-        StreamPuppet(substream2.runWith(Sink.asPublisher(false)))
+      val substreamPuppet2 = StreamPuppet(
+        substream2.runWith(Sink.asPublisher(false)))
       substreamPuppet2.request(10)
       substreamPuppet2.expectNext(4) // note that 2 was dropped
 

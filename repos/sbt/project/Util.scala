@@ -58,9 +58,10 @@ object Util {
       run: ScalaRun,
       s: TaskStreams): Seq[File] = {
     def gen() = generateAPI(defs, cp, out, main, run, s)
-    val f = FileFunction.cached(s.cacheDirectory / "gen-api", FilesInfo.hash) {
-      _ => gen().toSet
-    } // TODO: check if output directory changed
+    val f =
+      FileFunction.cached(s.cacheDirectory / "gen-api", FilesInfo.hash) { _ =>
+        gen().toSet
+      } // TODO: check if output directory changed
     f(defs.toSet).toSeq
   }
   def generateAPI(
@@ -163,8 +164,7 @@ object Util {
     val init = keywords.map(tn => '"' + tn + '"').mkString("Set(", ", ", ")")
     val ObjectName = "ScalaKeywords"
     val PackageName = "sbt"
-    val keywordsSrc =
-      """package %s
+    val keywordsSrc = """package %s
 object %s {
 	val values = %s
 }""".format(PackageName, ObjectName, init)

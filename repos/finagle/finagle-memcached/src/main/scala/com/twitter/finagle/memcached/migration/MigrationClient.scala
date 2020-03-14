@@ -258,8 +258,7 @@ trait DarkWrite extends Client {
       flags: Int,
       expiry: Time,
       value: Buf,
-      casUnique: Buf) =
-    super.checkAndSet(key, flags, expiry, value, casUnique)
+      casUnique: Buf) = super.checkAndSet(key, flags, expiry, value, casUnique)
 
   abstract override def delete(key: String) = {
     val result = super.delete(key)

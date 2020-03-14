@@ -60,14 +60,15 @@ object LookupElementManager {
             qualifierType,
             withoutAliases = false) match {
             case Some((named, _)) =>
-              val clazz: Option[PsiClass] = named match {
-                case cl: PsiClass => Some(cl)
-                case tp: TypingContextOwner =>
-                  tp.getType(TypingContext.empty)
-                    .map(ScType.extractClass(_))
-                    .getOrElse(None)
-                case _ => None
-              }
+              val clazz: Option[PsiClass] =
+                named match {
+                  case cl: PsiClass => Some(cl)
+                  case tp: TypingContextOwner =>
+                    tp.getType(TypingContext.empty)
+                      .map(ScType.extractClass(_))
+                      .getOrElse(None)
+                  case _ => None
+                }
               checkIsExpectedClassMember(clazz)
             case _ => false
           }

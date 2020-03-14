@@ -270,8 +270,12 @@ final class JUnitExecuteTest(
         c(method, ERRMSG)
       else
         null
-    val formattedMsg =
-      formatLayout("Test ", packageName, c(className, NNAME1), fMethod, msg)
+    val formattedMsg = formatLayout(
+      "Test ",
+      packageName,
+      c(className, NNAME1),
+      fMethod,
+      msg)
     exOpt match {
       case Some(ex) => richLogger.error(formattedMsg, ex)
       case None     => richLogger.error(formattedMsg)

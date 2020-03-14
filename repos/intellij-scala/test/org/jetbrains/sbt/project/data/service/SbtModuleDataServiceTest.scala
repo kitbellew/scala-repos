@@ -35,8 +35,9 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
   def doTest(imports: Seq[String], resolvers: Set[SbtResolver]): Unit = {
     FileUtil.delete(SbtResolverIndexesManager.DEFAULT_INDEXES_DIR)
     importProjectData(generateProject(imports, resolvers))
-    val module =
-      ModuleManager.getInstance(getProject).findModuleByName("Module 1")
+    val module = ModuleManager
+      .getInstance(getProject)
+      .findModuleByName("Module 1")
 
     if (imports.nonEmpty)
       assert(SbtModule.getImportsFrom(module) == imports)
@@ -47,8 +48,7 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
     resolvers.forall(r => SbtResolverIndexesManager().find(r).isDefined)
   }
 
-  def testEmptyImportsAndResolvers(): Unit =
-    doTest(Seq.empty, Set.empty)
+  def testEmptyImportsAndResolvers(): Unit = doTest(Seq.empty, Set.empty)
 
   def testNonEmptyImports(): Unit =
     doTest(Seq("first import", "second import"), Set.empty)
@@ -79,12 +79,13 @@ class SbtModuleDataServiceTest extends ProjectDataServiceTestCase {
     )
 
   def testModuleIsNull(): Unit = {
-    val testProject = new project {
-      name := getProject.getName
-      ideDirectoryPath := getProject.getBasePath
-      linkedProjectPath := getProject.getBasePath
-      arbitraryNodes += new SbtModuleNode(Seq("some import"), Set.empty)
-    }.build.toDataNode
+    val testProject =
+      new project {
+        name := getProject.getName
+        ideDirectoryPath := getProject.getBasePath
+        linkedProjectPath := getProject.getBasePath
+        arbitraryNodes += new SbtModuleNode(Seq("some import"), Set.empty)
+      }.build.toDataNode
 
     importProjectData(testProject)
   }

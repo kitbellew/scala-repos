@@ -51,26 +51,28 @@ object DenseKMeans {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("DenseKMeans") {
-      head("DenseKMeans: an example k-means app for dense data.")
-      opt[Int]('k', "k")
-        .required()
-        .text(s"number of clusters, required")
-        .action((x, c) => c.copy(k = x))
-      opt[Int]("numIterations")
-        .text(s"number of iterations, default: ${defaultParams.numIterations}")
-        .action((x, c) => c.copy(numIterations = x))
-      opt[String]("initMode")
-        .text(
-          s"initialization mode (${InitializationMode.values.mkString(",")}), " +
-            s"default: ${defaultParams.initializationMode}")
-        .action((x, c) =>
-          c.copy(initializationMode = InitializationMode.withName(x)))
-      arg[String]("<input>")
-        .text("input paths to examples")
-        .required()
-        .action((x, c) => c.copy(input = x))
-    }
+    val parser =
+      new OptionParser[Params]("DenseKMeans") {
+        head("DenseKMeans: an example k-means app for dense data.")
+        opt[Int]('k', "k")
+          .required()
+          .text(s"number of clusters, required")
+          .action((x, c) => c.copy(k = x))
+        opt[Int]("numIterations")
+          .text(
+            s"number of iterations, default: ${defaultParams.numIterations}")
+          .action((x, c) => c.copy(numIterations = x))
+        opt[String]("initMode")
+          .text(
+            s"initialization mode (${InitializationMode.values.mkString(",")}), " +
+              s"default: ${defaultParams.initializationMode}")
+          .action((x, c) =>
+            c.copy(initializationMode = InitializationMode.withName(x)))
+        arg[String]("<input>")
+          .text("input paths to examples")
+          .required()
+          .action((x, c) => c.copy(input = x))
+      }
 
     parser
       .parse(args, defaultParams)
@@ -99,10 +101,11 @@ object DenseKMeans {
 
     println(s"numExamples = $numExamples.")
 
-    val initMode = params.initializationMode match {
-      case Random   => KMeans.RANDOM
-      case Parallel => KMeans.K_MEANS_PARALLEL
-    }
+    val initMode =
+      params.initializationMode match {
+        case Random   => KMeans.RANDOM
+        case Parallel => KMeans.K_MEANS_PARALLEL
+      }
 
     val model = new KMeans()
       .setInitializationMode(initMode)

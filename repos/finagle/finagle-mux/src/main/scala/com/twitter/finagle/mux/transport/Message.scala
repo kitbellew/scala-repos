@@ -162,28 +162,29 @@ private[twitter] object Message {
     import Treq._
     def typ = Types.Treq
     lazy val buf = {
-      val header = traceId match {
-        // Currently we require the 3-tuple, but this is not
-        // necessarily required.
-        case Some(traceId) =>
-          val hd = ChannelBuffers.buffer(1 + 1 + 1 + 24 + 1 + 1 + 1)
-          hd.writeByte(2) // 2 entries
+      val header =
+        traceId match {
+          // Currently we require the 3-tuple, but this is not
+          // necessarily required.
+          case Some(traceId) =>
+            val hd = ChannelBuffers.buffer(1 + 1 + 1 + 24 + 1 + 1 + 1)
+            hd.writeByte(2) // 2 entries
 
-          hd.writeByte(Keys.TraceId) // key 0 (traceid)
-          hd.writeByte(24) // key 0 size
-          hd.writeLong(traceId.spanId.toLong)
-          hd.writeLong(traceId.parentId.toLong)
-          hd.writeLong(traceId.traceId.toLong)
+            hd.writeByte(Keys.TraceId) // key 0 (traceid)
+            hd.writeByte(24) // key 0 size
+            hd.writeLong(traceId.spanId.toLong)
+            hd.writeLong(traceId.parentId.toLong)
+            hd.writeLong(traceId.traceId.toLong)
 
-          hd.writeByte(Keys.TraceFlag) // key 1 (traceflag)
-          hd.writeByte(1) // key 1 size
-          hd.writeByte(traceId.flags.toLong.toByte)
+            hd.writeByte(Keys.TraceFlag) // key 1 (traceflag)
+            hd.writeByte(1) // key 1 size
+            hd.writeByte(traceId.flags.toLong.toByte)
 
-          hd
+            hd
 
-        case None =>
-          bufOfChar(0) // 0 keys
-      }
+          case None =>
+            bufOfChar(0) // 0 keys
+        }
 
       ChannelBuffers.wrappedBuffer(header, req)
     }
@@ -376,8 +377,8 @@ private[twitter] object Message {
     def typ = ???
     def tag = ???
 
-    private[this] val cb = new ReadOnlyChannelBuffer(
-      encode(Tping(Tags.PingTag)))
+    private[this] val cb =
+      new ReadOnlyChannelBuffer(encode(Tping(Tags.PingTag)))
     cb.markReaderIndex()
 
     def buf = {
@@ -422,8 +423,9 @@ private[twitter] object Message {
 
   object Tlease {
     val MinLease = Duration.Zero
-    val MaxLease =
-      Duration.fromMilliseconds((1L << 32) - 1) // Unsigned Int max value
+    val MaxLease = Duration.fromMilliseconds(
+      (1L << 32) - 1
+    ) // Unsigned Int max value
 
     val MillisDuration: Byte = 0
 
@@ -498,10 +500,11 @@ private[twitter] object Message {
         throw BadMessageException("short Treq (header)")
 
       val key = buf.readByte()
-      val vsize = buf.readByte().toInt match {
-        case s if s < 0 => s + 256
-        case s          => s
-      }
+      val vsize =
+        buf.readByte().toInt match {
+          case s if s < 0 => s + 256
+          case s          => s
+        }
 
       if (buf.readableBytes < vsize)
         throw BadMessageException("short Treq (vsize)")
@@ -536,17 +539,18 @@ private[twitter] object Message {
       nkeys -= 1
     }
 
-    val id = trace3 match {
-      case Some((spanId, parentId, traceId)) =>
-        Some(
-          TraceId(
-            Some(traceId),
-            Some(parentId),
-            spanId,
-            None,
-            Flags(traceFlags)))
-      case None => None
-    }
+    val id =
+      trace3 match {
+        case Some((spanId, parentId, traceId)) =>
+          Some(
+            TraceId(
+              Some(traceId),
+              Some(parentId),
+              spanId,
+              None,
+              Flags(traceFlags)))
+        case None => None
+      }
 
     Treq(tag, id, buf.slice())
   }

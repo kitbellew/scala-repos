@@ -56,37 +56,40 @@ object MovieLensALS {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("MovieLensALS") {
-      head("MovieLensALS: an example app for ALS on MovieLens data.")
-      opt[Int]("rank")
-        .text(s"rank, default: ${defaultParams.rank}")
-        .action((x, c) => c.copy(rank = x))
-      opt[Int]("numIterations")
-        .text(s"number of iterations, default: ${defaultParams.numIterations}")
-        .action((x, c) => c.copy(numIterations = x))
-      opt[Double]("lambda")
-        .text(s"lambda (smoothing constant), default: ${defaultParams.lambda}")
-        .action((x, c) => c.copy(lambda = x))
-      opt[Unit]("kryo")
-        .text("use Kryo serialization")
-        .action((_, c) => c.copy(kryo = true))
-      opt[Int]("numUserBlocks")
-        .text(
-          s"number of user blocks, default: ${defaultParams.numUserBlocks} (auto)")
-        .action((x, c) => c.copy(numUserBlocks = x))
-      opt[Int]("numProductBlocks")
-        .text(
-          s"number of product blocks, default: ${defaultParams.numProductBlocks} (auto)")
-        .action((x, c) => c.copy(numProductBlocks = x))
-      opt[Unit]("implicitPrefs")
-        .text("use implicit preference")
-        .action((_, c) => c.copy(implicitPrefs = true))
-      arg[String]("<input>")
-        .required()
-        .text("input paths to a MovieLens dataset of ratings")
-        .action((x, c) => c.copy(input = x))
-      note(
-        """
+    val parser =
+      new OptionParser[Params]("MovieLensALS") {
+        head("MovieLensALS: an example app for ALS on MovieLens data.")
+        opt[Int]("rank")
+          .text(s"rank, default: ${defaultParams.rank}")
+          .action((x, c) => c.copy(rank = x))
+        opt[Int]("numIterations")
+          .text(
+            s"number of iterations, default: ${defaultParams.numIterations}")
+          .action((x, c) => c.copy(numIterations = x))
+        opt[Double]("lambda")
+          .text(
+            s"lambda (smoothing constant), default: ${defaultParams.lambda}")
+          .action((x, c) => c.copy(lambda = x))
+        opt[Unit]("kryo")
+          .text("use Kryo serialization")
+          .action((_, c) => c.copy(kryo = true))
+        opt[Int]("numUserBlocks")
+          .text(
+            s"number of user blocks, default: ${defaultParams.numUserBlocks} (auto)")
+          .action((x, c) => c.copy(numUserBlocks = x))
+        opt[Int]("numProductBlocks")
+          .text(
+            s"number of product blocks, default: ${defaultParams.numProductBlocks} (auto)")
+          .action((x, c) => c.copy(numProductBlocks = x))
+        opt[Unit]("implicitPrefs")
+          .text("use implicit preference")
+          .action((_, c) => c.copy(implicitPrefs = true))
+        arg[String]("<input>")
+          .required()
+          .text("input paths to a MovieLens dataset of ratings")
+          .action((x, c) => c.copy(input = x))
+        note(
+          """
           |For example, the following command runs this app on a synthetic dataset:
           |
           | bin/spark-submit --class org.apache.spark.examples.mllib.MovieLensALS \
@@ -94,7 +97,7 @@ object MovieLensALS {
           |  --rank 5 --numIterations 20 --lambda 1.0 --kryo \
           |  data/mllib/sample_movielens_data.txt
         """.stripMargin)
-    }
+      }
 
     parser.parse(args, defaultParams).map { params =>
       run(params)
@@ -151,25 +154,26 @@ object MovieLensALS {
 
     val splits = ratings.randomSplit(Array(0.8, 0.2))
     val training = splits(0).cache()
-    val test = if (params.implicitPrefs) {
-      /*
-       * 0 means "don't know" and positive values mean "confident that the prediction should be 1".
-       * Negative values means "confident that the prediction should be 0".
-       * We have in this case used some kind of weighted RMSE. The weight is the absolute value of
-       * the confidence. The error is the difference between prediction and either 1 or 0,
-       * depending on whether r is positive or negative.
-       */
-      splits(1).map(x =>
-        Rating(
-          x.user,
-          x.product,
-          if (x.rating > 0)
-            1.0
-          else
-            0.0))
-    } else {
-      splits(1)
-    }.cache()
+    val test =
+      if (params.implicitPrefs) {
+        /*
+         * 0 means "don't know" and positive values mean "confident that the prediction should be 1".
+         * Negative values means "confident that the prediction should be 0".
+         * We have in this case used some kind of weighted RMSE. The weight is the absolute value of
+         * the confidence. The error is the difference between prediction and either 1 or 0,
+         * depending on whether r is positive or negative.
+         */
+        splits(1).map(x =>
+          Rating(
+            x.user,
+            x.product,
+            if (x.rating > 0)
+              1.0
+            else
+              0.0))
+      } else {
+        splits(1)
+      }.cache()
 
     val numTraining = training.count()
     val numTest = test.count()
@@ -206,14 +210,15 @@ object MovieLensALS {
         r
     }
 
-    val predictions: RDD[Rating] =
-      model.predict(data.map(x => (x.user, x.product)))
-    val predictionsAndRatings = predictions
-      .map { x =>
-        ((x.user, x.product), mapPredictedRating(x.rating))
-      }
-      .join(data.map(x => ((x.user, x.product), x.rating)))
-      .values
+    val predictions: RDD[Rating] = model.predict(
+      data.map(x => (x.user, x.product)))
+    val predictionsAndRatings =
+      predictions
+        .map { x =>
+          ((x.user, x.product), mapPredictedRating(x.rating))
+        }
+        .join(data.map(x => ((x.user, x.product), x.rating)))
+        .values
     math.sqrt(
       predictionsAndRatings.map(x => (x._1 - x._2) * (x._1 - x._2)).mean())
   }

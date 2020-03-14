@@ -75,8 +75,7 @@ object PromiseMock {
       })
     }
 
-    def enqueue(f: js.Function0[Any]): Unit =
-      queue.push(f)
+    def enqueue(f: js.Function0[Any]): Unit = queue.push(f)
 
     def processQueue(): Unit = {
       while (queue.nonEmpty)

@@ -55,11 +55,12 @@ abstract class InlineRefactoringTestBase
 
     var res: String = null
     val firstPsi = scalaFile.findElementAt(0)
-    val warning = firstPsi.getNode.getElementType match {
-      case ScalaTokenTypes.tLINE_COMMENT =>
-        ScalaBundle.message(firstPsi.getText.substring(2).trim)
-      case _ => null
-    }
+    val warning =
+      firstPsi.getNode.getElementType match {
+        case ScalaTokenTypes.tLINE_COMMENT =>
+          ScalaBundle.message(firstPsi.getText.substring(2).trim)
+        case _ => null
+      }
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     //start to inline
     try {
@@ -87,14 +88,15 @@ abstract class InlineRefactoringTestBase
     }
 
     val text = lastPsi.getText
-    val output = lastPsi.getNode.getElementType match {
-      case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
-      case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
-        text.substring(2, text.length - 2).trim
-      case _ =>
-        assertTrue("Test result must be in last comment statement.", false)
-        ""
-    }
+    val output =
+      lastPsi.getNode.getElementType match {
+        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
+          text.substring(2, text.length - 2).trim
+        case _ =>
+          assertTrue("Test result must be in last comment statement.", false)
+          ""
+      }
     assertEquals(output, res.trim.trim.replace(caretMarker, ""))
   }
 }

@@ -84,8 +84,7 @@ class ArrayStack[T] private (
     *  @return      the element at the specified index
     *  @throws IndexOutOfBoundsException if the index is out of bounds
     */
-  def apply(n: Int): T =
-    table(index - 1 - n).asInstanceOf[T]
+  def apply(n: Int): T = table(index - 1 - n).asInstanceOf[T]
 
   /** The number of elements in the stack */
   def length = index

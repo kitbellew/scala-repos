@@ -13,8 +13,7 @@ class HKeySelfReference(key: HKey) extends PsiReference {
 
   def getElement: PsiElement = key
 
-  def isReferenceTo(element: PsiElement) =
-    element == resolve()
+  def isReferenceTo(element: PsiElement) = element == resolve()
 
   def bindToElement(element: PsiElement): PsiElement = null
 

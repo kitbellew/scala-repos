@@ -49,10 +49,11 @@ object TypedActorSpec {
       @tailrec
       def findNext: T = {
         val currentItems = current.get
-        val newItems = currentItems match {
-          case Nil ⇒ items
-          case xs ⇒ xs
-        }
+        val newItems =
+          currentItems match {
+            case Nil ⇒ items
+            case xs ⇒ xs
+          }
 
         if (current.compareAndSet(currentItems, newItems.tail))
           newItems.head
@@ -138,8 +139,8 @@ object TypedActorSpec {
     }
 
     def futureComposePigdogFrom(foo: Foo): Future[String] = {
-      implicit val timeout = TypedActor(
-        TypedActor.context.system).DefaultReturnTimeout
+      implicit val timeout =
+        TypedActor(TypedActor.context.system).DefaultReturnTimeout
       foo.futurePigdog(500 millis).map(_.toUpperCase)
     }
 
@@ -354,9 +355,7 @@ class TypedActorSpec
     "be able to call multiple Future-returning methods non-blockingly" in within(
       timeout.duration) {
       val t = newFooBar
-      val futures =
-        for (i ← 1 to 20)
-          yield (i, t.futurePigdog(20 millis, i))
+      val futures = for (i ← 1 to 20) yield (i, t.futurePigdog(20 millis, i))
       for ((i, f) ← futures) {
         Await.result(f, remaining) should ===("Pigdog" + i)
       }
@@ -395,10 +394,11 @@ class TypedActorSpec
     "be able to handle exceptions when calling methods" in {
       filterEvents(EventFilter[IllegalStateException]("expected")) {
         val boss = system.actorOf(Props(new Actor {
-          override val supervisorStrategy = OneForOneStrategy() {
-            case e: IllegalStateException if e.getMessage == "expected" ⇒
-              SupervisorStrategy.Resume
-          }
+          override val supervisorStrategy =
+            OneForOneStrategy() {
+              case e: IllegalStateException if e.getMessage == "expected" ⇒
+                SupervisorStrategy.Resume
+            }
           def receive = {
             case p: TypedProps[_] ⇒
               context.sender() ! TypedActor(context).typedActorOf(p)
@@ -471,8 +471,8 @@ class TypedActorSpec
     }
 
     "be able to support implementation only typed actors with complex interfaces" in {
-      val t: Stackable1 with Stackable2 =
-        TypedActor(system).typedActorOf(TypedProps[StackedImpl]())
+      val t: Stackable1 with Stackable2 = TypedActor(system).typedActorOf(
+        TypedProps[StackedImpl]())
       t.stackable1 should ===("foo")
       t.stackable2 should ===("bar")
       mustStop(t)
@@ -636,8 +636,8 @@ class TypedActorRouterSpec
 
       val router = system.actorOf(RoundRobinGroup(routees).props(), "router")
 
-      val typedRouter =
-        TypedActor(system).typedActorOf[Foo, Foo](TypedProps[Foo](), router)
+      val typedRouter = TypedActor(system)
+        .typedActorOf[Foo, Foo](TypedProps[Foo](), router)
 
       info("got = " + typedRouter.optionPigdog())
       info("got = " + typedRouter.optionPigdog())

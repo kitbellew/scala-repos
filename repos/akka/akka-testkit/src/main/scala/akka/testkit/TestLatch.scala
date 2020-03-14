@@ -35,12 +35,13 @@ class TestLatch(count: Int = 1)(implicit system: ActorSystem)
 
   @throws(classOf[TimeoutException])
   def ready(atMost: Duration)(implicit permit: CanAwait) = {
-    val waitTime = atMost match {
-      case f: FiniteDuration ⇒ f
-      case _ ⇒
-        throw new IllegalArgumentException(
-          "TestLatch does not support waiting for " + atMost)
-    }
+    val waitTime =
+      atMost match {
+        case f: FiniteDuration ⇒ f
+        case _ ⇒
+          throw new IllegalArgumentException(
+            "TestLatch does not support waiting for " + atMost)
+      }
     val opened = latch.await(waitTime.dilated.toNanos, TimeUnit.NANOSECONDS)
     if (!opened)
       throw new TimeoutException(

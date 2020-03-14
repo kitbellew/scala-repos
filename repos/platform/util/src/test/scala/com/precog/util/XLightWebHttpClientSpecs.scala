@@ -53,8 +53,8 @@ object XLightWebHttpClientSpecs
     "submit a test post" in {
       val body = "Silly fish had a purple dish; make a wish!"
       val client = HttpClient("http://posttestserver.com")
-      val request =
-        (Request(HttpMethod.POST) / "post.php").withBody("text/plain", body)
+      val request = (Request(HttpMethod.POST) / "post.php")
+        .withBody("text/plain", body)
       val data =
         (client.execute(request) | sys.error("...")).copoint.body getOrElse ""
 

@@ -51,8 +51,9 @@ object JavaScriptReverseRouter {
       import org.apache.commons.lang3.StringEscapeUtils.{
         escapeEcmaScript => esc
       }
-      val ajaxField = ajaxMethod.fold("")(m =>
-        s"ajax:function(c){c=c||{};c.url=r.url;c.type=r.method;return $m(c)},")
+      val ajaxField =
+        ajaxMethod.fold("")(m =>
+          s"ajax:function(c){c=c||{};c.url=r.url;c.type=r.method;return $m(c)},")
       val routesStr = routes
         .map { route =>
           val nameParts = route.name.split('.')

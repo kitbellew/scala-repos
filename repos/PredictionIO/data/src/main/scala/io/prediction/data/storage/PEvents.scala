@@ -108,13 +108,14 @@ trait PEvents extends Serializable {
       untilTime: Option[DateTime] = None,
       required: Option[Seq[String]] = None)(
       sc: SparkContext): RDD[(String, PropertyMap)] = {
-    val eventRDD = find(
-      appId = appId,
-      channelId = channelId,
-      startTime = startTime,
-      untilTime = untilTime,
-      entityType = Some(entityType),
-      eventNames = Some(PEventAggregator.eventNames))(sc)
+    val eventRDD =
+      find(
+        appId = appId,
+        channelId = channelId,
+        startTime = startTime,
+        untilTime = untilTime,
+        entityType = Some(entityType),
+        eventNames = Some(PEventAggregator.eventNames))(sc)
 
     val dmRDD = PEventAggregator.aggregateProperties(eventRDD)
 
@@ -139,29 +140,30 @@ trait PEvents extends Serializable {
       untilTime: Option[DateTime] = None,
       required: Option[Seq[String]] = None)(sc: SparkContext)(
       extract: DataMap => A): EntityMap[A] = {
-    val idToData: Map[String, A] = aggregateProperties(
-      appId = appId,
-      entityType = entityType,
-      startTime = startTime,
-      untilTime = untilTime,
-      required = required
-    )(sc)
-      .map {
-        case (id, dm) =>
-          try {
-            (id, extract(dm))
-          } catch {
-            case e: Exception => {
-              logger.error(
-                s"Failed to get extract entity from DataMap $dm of " +
-                  s"entityId $id.",
-                e)
-              throw e
+    val idToData: Map[String, A] =
+      aggregateProperties(
+        appId = appId,
+        entityType = entityType,
+        startTime = startTime,
+        untilTime = untilTime,
+        required = required
+      )(sc)
+        .map {
+          case (id, dm) =>
+            try {
+              (id, extract(dm))
+            } catch {
+              case e: Exception => {
+                logger.error(
+                  s"Failed to get extract entity from DataMap $dm of " +
+                    s"entityId $id.",
+                  e)
+                throw e
+              }
             }
-          }
-      }
-      .collectAsMap
-      .toMap
+        }
+        .collectAsMap
+        .toMap
 
     new EntityMap(idToData)
   }

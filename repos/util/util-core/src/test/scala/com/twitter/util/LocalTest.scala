@@ -23,13 +23,14 @@ class LocalTest extends FunSuite {
 
     local() = 123
 
-    val t = new Thread {
-      override def run() = {
-        assert(local() == None)
-        local() = 333
-        threadValue = local()
+    val t =
+      new Thread {
+        override def run() = {
+          assert(local() == None)
+          local() = 333
+          threadValue = local()
+        }
       }
-    }
 
     t.start()
     t.join()

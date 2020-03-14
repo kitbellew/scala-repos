@@ -39,8 +39,9 @@ class RegressionStrategy(params: RegressionStrategyParams)
   private def regress(
       calculatedData: Seq[Series[DateTime, Double]],
       retF1d: Series[DateTime, Double]) = {
-    val array = (calculatedData.map(_.toVec.contents).reduce(_ ++ _) ++
-      Array.fill(retF1d.length)(1.0)).toArray[Double]
+    val array =
+      (calculatedData.map(_.toVec.contents).reduce(_ ++ _) ++
+        Array.fill(retF1d.length)(1.0)).toArray[Double]
     val target = DenseVector[Double](retF1d.toVec.contents)
     val m = DenseMatrix.create[Double](
       retF1d.length,
@@ -86,15 +87,17 @@ class RegressionStrategy(params: RegressionStrategyParams)
     val tickers = price.colIx.toVec.contents
 
     // For each active ticker, pass in trained series into regress
-    val tickerModelMap = tickers
-      .filter(ticker => (active.firstCol(ticker).findOne(_ == false) == -1))
-      .map(ticker => {
-        val model = regress(
-          calcIndicator(price.firstCol(ticker)).map(_.slice(firstIdx, lastIdx)),
-          retF1d.firstCol(ticker).slice(firstIdx, lastIdx))
-        (ticker, model)
-      })
-      .toMap
+    val tickerModelMap =
+      tickers
+        .filter(ticker => (active.firstCol(ticker).findOne(_ == false) == -1))
+        .map(ticker => {
+          val model = regress(
+            calcIndicator(price.firstCol(ticker))
+              .map(_.slice(firstIdx, lastIdx)),
+            retF1d.firstCol(ticker).slice(firstIdx, lastIdx))
+          (ticker, model)
+        })
+        .toMap
 
     // tickers mapped to model
     tickerModelMap
@@ -106,13 +109,14 @@ class RegressionStrategy(params: RegressionStrategyParams)
       ticker: String,
       dataView: DataView): Double = {
 
-    val vecArray = params.indicators.map {
-      case (name, indicator) => {
-        val price = dataView.priceFrame(indicator.getMinWindowSize())
-        val logPrice = price.mapValues(math.log)
-        indicator.getOne(logPrice.firstCol(ticker))
-      }
-    }.toArray
+    val vecArray =
+      params.indicators.map {
+        case (name, indicator) => {
+          val price = dataView.priceFrame(indicator.getMinWindowSize())
+          val logPrice = price.mapValues(math.log)
+          indicator.getOne(logPrice.firstCol(ticker))
+        }
+      }.toArray
 
     val densVecArray = vecArray ++ Array[Double](1)
     val vec = DenseVector[Double](densVecArray)

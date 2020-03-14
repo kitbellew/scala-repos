@@ -360,9 +360,10 @@ class MetricsStatsReceiver(
   }
 
   protected[this] def registerGauge(names: Seq[String], f: => Float) {
-    val gauge = new AbstractGauge[java.lang.Double](format(names)) {
-      override def read = new java.lang.Double(f)
-    }
+    val gauge =
+      new AbstractGauge[java.lang.Double](format(names)) {
+        override def read = new java.lang.Double(f)
+      }
     registry.register(gauge)
   }
 

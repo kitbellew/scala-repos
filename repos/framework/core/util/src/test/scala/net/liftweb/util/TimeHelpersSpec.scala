@@ -109,23 +109,25 @@ object TimeHelpersSpec
       3.seconds.ago.getMillis must beCloseTo(expectedTime, 1000L)
     }
     "have a toString method returning the relevant number of weeks, days, hours, minutes, seconds, millis" in forAllTimeZones {
-      val conversionIsOk = forAll(timeAmounts)((t: TimeAmounts) => {
-        val (timeSpanToString, timeSpanAmounts) = t
-        timeSpanAmounts forall {
-          case (amount, unit) =>
-            amount >= 1 &&
-              timeSpanToString.contains(amount.toString) || true
-        }
-      })
-      val timeSpanStringIsPluralized = forAll(timeAmounts)((t: TimeAmounts) => {
-        val (timeSpanToString, timeSpanAmounts) = t
-        timeSpanAmounts forall {
-          case (amount, unit) =>
-            amount > 1 && timeSpanToString.contains(unit + "s") ||
-              amount == 1 && timeSpanToString.contains(unit) ||
-              amount == 0 && !timeSpanToString.contains(unit)
-        }
-      })
+      val conversionIsOk =
+        forAll(timeAmounts)((t: TimeAmounts) => {
+          val (timeSpanToString, timeSpanAmounts) = t
+          timeSpanAmounts forall {
+            case (amount, unit) =>
+              amount >= 1 &&
+                timeSpanToString.contains(amount.toString) || true
+          }
+        })
+      val timeSpanStringIsPluralized =
+        forAll(timeAmounts)((t: TimeAmounts) => {
+          val (timeSpanToString, timeSpanAmounts) = t
+          timeSpanAmounts forall {
+            case (amount, unit) =>
+              amount > 1 && timeSpanToString.contains(unit + "s") ||
+                amount == 1 && timeSpanToString.contains(unit) ||
+                amount == 0 && !timeSpanToString.contains(unit)
+          }
+        })
       conversionIsOk && timeSpanStringIsPluralized
     }
   }

@@ -226,9 +226,10 @@ trait CheckAnalysis {
           case s: Union
               if s.children.exists(
                 _.output.length != s.children.head.output.length) =>
-            val firstError = s.children
-              .find(_.output.length != s.children.head.output.length)
-              .get
+            val firstError =
+              s.children
+                .find(_.output.length != s.children.head.output.length)
+                .get
             failAnalysis(s"""
                 |Unions can only be performed on tables with the same number of columns,
                 | but one table has '${firstError.output.length}' columns and another table has
@@ -252,8 +253,8 @@ trait CheckAnalysis {
                  | ${exprs.map(_.sql).mkString(",")}""".stripMargin)
 
           case j: Join if !j.duplicateResolved =>
-            val conflictingAttributes =
-              j.left.outputSet.intersect(j.right.outputSet)
+            val conflictingAttributes = j.left.outputSet
+              .intersect(j.right.outputSet)
             failAnalysis(s"""
                  |Failure when resolving conflicting references in Join:
                  |$plan
@@ -261,8 +262,8 @@ trait CheckAnalysis {
                  |""".stripMargin)
 
           case i: Intersect if !i.duplicateResolved =>
-            val conflictingAttributes =
-              i.left.outputSet.intersect(i.right.outputSet)
+            val conflictingAttributes = i.left.outputSet
+              .intersect(i.right.outputSet)
             failAnalysis(s"""
                  |Failure when resolving conflicting references in Intersect:
                  |$plan

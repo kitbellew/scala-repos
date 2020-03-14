@@ -49,8 +49,9 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
     val ch1 = text.charAt(caretOffset - 1)
     val ch2 = text.charAt(caretOffset)
 
-    whiteSpaceAfterCaret =
-      text.substring(caretOffset).takeWhile(c => c == ' ' || c == '\t')
+    whiteSpaceAfterCaret = text
+      .substring(caretOffset)
+      .takeWhile(c => c == ' ' || c == '\t')
     document.deleteString(
       caretOffset,
       caretOffset + whiteSpaceAfterCaret.length)
@@ -187,18 +188,19 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
       if (wasSingleLine || lines.length == 3 &&
           (lines(0).endsWith("(") && lines(2).trim.startsWith(")") || lines(0)
             .endsWith("{") && lines(2).trim.startsWith("}"))) {
-        val trimmedStartLine =
-          getLineByNumber(document.getLineNumber(offset) - 1).trim()
-        val inConcatenation = literal.getParent match {
-          case ScInfixExpr(lit: ScLiteral, op, `literal`)
-              if op.refName == "+" && lit.isString =>
-            Option(lit)
-          case ScInfixExpr(expr, op, `literal`)
-              if op.refName == "+" && StringConcatenationParser.isString(
-                expr) =>
-            Option(expr)
-          case _ => None
-        }
+        val trimmedStartLine = getLineByNumber(
+          document.getLineNumber(offset) - 1).trim()
+        val inConcatenation =
+          literal.getParent match {
+            case ScInfixExpr(lit: ScLiteral, op, `literal`)
+                if op.refName == "+" && lit.isString =>
+              Option(lit)
+            case ScInfixExpr(expr, op, `literal`)
+                if op.refName == "+" && StringConcatenationParser.isString(
+                  expr) =>
+              Option(expr)
+            case _ => None
+          }
         val needInsertNLBefore = (!trimmedStartLine.startsWith(
           firstMLQuote) || inConcatenation.isDefined) && quotesOnNewLine
 
@@ -210,8 +212,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
           if (inConcatenation.isDefined)
             inConcatenation.map { expr =>
               val exprStart = expr.getTextRange.getStartOffset
-              val lineStart =
-                document.getLineStartOffset(document.getLineNumber(exprStart))
+              val lineStart = document.getLineStartOffset(
+                document.getLineNumber(exprStart))
               getSmartLength(document.getText.substring(lineStart, exprStart))
             }.get
           else
@@ -248,8 +250,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         }
 
         if (!wasSingleLine) {
-          val currentPrefix =
-            getPrefix(getLineByNumber(document.getLineNumber(caretOffset)))
+          val currentPrefix = getPrefix(
+            getLineByNumber(document.getLineNumber(caretOffset)))
           forceIndent(
             caretOffset + 1,
             getSmartLength(currentPrefix),
@@ -280,8 +282,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
             val beforeQuotes = prevLinePrefixAfterDelimiter(0)
             val elementStart =
               prevLine.indexOf(firstMLQuote) + firstMLQuoteLength
-            val prevLineWsPrefixAfterQuotes =
-              prevLinePrefixAfterDelimiter(elementStart)
+            val prevLineWsPrefixAfterQuotes = prevLinePrefixAfterDelimiter(
+              elementStart)
 
             val spacesToInsert =
               if (isPrevLineTrimmedFirst)
@@ -327,8 +329,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
             forceIndent(caretOffset, getSmartLength(prefix), marginCharOpt)
             document.insertString(caretOffset, getSpaces(wsAfterMargin))
             if (inBraces) {
-              val nextLineOffset =
-                document.getLineStartOffset(prevLineNumber + 2)
+              val nextLineOffset = document.getLineStartOffset(
+                prevLineNumber + 2)
               forceIndent(nextLineOffset, 0, None)
               document.insertString(
                 nextLineOffset,

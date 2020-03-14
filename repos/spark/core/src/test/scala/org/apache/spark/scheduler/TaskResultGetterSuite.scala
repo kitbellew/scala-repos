@@ -89,8 +89,8 @@ private class MyTaskResultGetter(env: SparkEnv, scheduler: TaskSchedulerImpl)
     extends TaskResultGetter(env, scheduler) {
 
   // Use the current thread so we can access its results synchronously
-  protected override val getTaskResultExecutor =
-    MoreExecutors.sameThreadExecutor()
+  protected override val getTaskResultExecutor = MoreExecutors
+    .sameThreadExecutor()
 
   // DirectTaskResults that we receive from the executors
   private val _taskResults = new ArrayBuffer[DirectTaskResult[_]]
@@ -131,10 +131,10 @@ class TaskResultGetterSuite
   test("handling results larger than max RPC message size") {
     sc = new SparkContext("local", "test", conf)
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
-    val result =
-      sc.parallelize(Seq(1), 1)
-        .map(x => 1.to(maxRpcMessageSize).toArray)
-        .reduce((x, y) => x)
+    val result = sc
+      .parallelize(Seq(1), 1)
+      .map(x => 1.to(maxRpcMessageSize).toArray)
+      .reduce((x, y) => x)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
     val RESULT_BLOCK_ID = TaskResultBlockId(0)
@@ -149,20 +149,21 @@ class TaskResultGetterSuite
     sc = new SparkContext("local[1,2]", "test", conf)
     // If this test hangs, it's probably because no resource offers were made after the task
     // failed.
-    val scheduler: TaskSchedulerImpl = sc.taskScheduler match {
-      case taskScheduler: TaskSchedulerImpl =>
-        taskScheduler
-      case _ =>
-        assert(false, "Expect local cluster to use TaskSchedulerImpl")
-        throw new ClassCastException
-    }
+    val scheduler: TaskSchedulerImpl =
+      sc.taskScheduler match {
+        case taskScheduler: TaskSchedulerImpl =>
+          taskScheduler
+        case _ =>
+          assert(false, "Expect local cluster to use TaskSchedulerImpl")
+          throw new ClassCastException
+      }
     val resultGetter = new ResultDeletingTaskResultGetter(sc.env, scheduler)
     scheduler.taskResultGetter = resultGetter
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
-    val result =
-      sc.parallelize(Seq(1), 1)
-        .map(x => 1.to(maxRpcMessageSize).toArray)
-        .reduce((x, y) => x)
+    val result = sc
+      .parallelize(Seq(1), 1)
+      .map(x => 1.to(maxRpcMessageSize).toArray)
+      .reduce((x, y) => x)
     assert(resultGetter.removeBlockSuccessfully)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
@@ -186,15 +187,19 @@ class TaskResultGetterSuite
     val tempDir = Utils.createTempDir()
     val srcDir = new File(tempDir, "repro/")
     srcDir.mkdirs()
-    val excSource = new JavaSourceFromString(
-      new File(srcDir, "MyException").getAbsolutePath,
-      """package repro;
+    val excSource =
+      new JavaSourceFromString(
+        new File(srcDir, "MyException").getAbsolutePath,
+        """package repro;
         |
         |public class MyException extends Exception {
         |}
       """.stripMargin)
-    val excFile =
-      TestUtils.createCompiledClass("MyException", srcDir, excSource, Seq.empty)
+    val excFile = TestUtils.createCompiledClass(
+      "MyException",
+      srcDir,
+      excSource,
+      Seq.empty)
     val jarFile =
       new File(tempDir, "testJar-%s.jar".format(System.currentTimeMillis()))
     TestUtils.createJar(Seq(excFile), jarFile, directoryPrefix = Some("repro"))
@@ -219,9 +224,10 @@ class TaskResultGetterSuite
 
       // the driver should not have any problems resolving the exception class and determining
       // why the task failed.
-      val exceptionMessage = intercept[SparkException] {
-        rdd.collect()
-      }.getMessage
+      val exceptionMessage =
+        intercept[SparkException] {
+          rdd.collect()
+        }.getMessage
 
       val expectedFailure = """(?s).*Lost task.*: repro.MyException.*""".r
       val unknownFailure = """(?s).*Lost task.*: UnknownReason.*""".r
@@ -261,10 +267,12 @@ class TaskResultGetterSuite
     assert(resultGetter.taskResults.size === 1)
     val resBefore = resultGetter.taskResults.head
     val resAfter = captor.getValue
-    val resSizeBefore =
-      resBefore.accumUpdates.find(_.name == Some(RESULT_SIZE)).flatMap(_.update)
-    val resSizeAfter =
-      resAfter.accumUpdates.find(_.name == Some(RESULT_SIZE)).flatMap(_.update)
+    val resSizeBefore = resBefore.accumUpdates
+      .find(_.name == Some(RESULT_SIZE))
+      .flatMap(_.update)
+    val resSizeAfter = resAfter.accumUpdates
+      .find(_.name == Some(RESULT_SIZE))
+      .flatMap(_.update)
     assert(resSizeBefore.exists(_ == 0L))
     assert(resSizeAfter.exists(_.toString.toLong > 0L))
   }

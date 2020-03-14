@@ -14,12 +14,14 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
 
   def showProgress(progress: Int, withTitle: Boolean = true) =
     Html {
-      val span = progress match {
-        case 0          => ""
-        case p if p > 0 => s"""<span class="positive" data-icon="N">$p</span>"""
-        case p if p < 0 =>
-          s"""<span class="negative" data-icon="M">${math.abs(p)}</span>"""
-      }
+      val span =
+        progress match {
+          case 0 => ""
+          case p if p > 0 =>
+            s"""<span class="positive" data-icon="N">$p</span>"""
+          case p if p < 0 =>
+            s"""<span class="negative" data-icon="M">${math.abs(p)}</span>"""
+        }
       val title =
         if (withTitle)
           """data-hint="Rating progression over the last twelve games""""

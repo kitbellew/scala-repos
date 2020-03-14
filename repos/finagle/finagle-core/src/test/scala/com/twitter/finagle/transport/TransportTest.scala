@@ -72,9 +72,10 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("Transport.copyToWriter - discard while writing") {
-    val failed = new Failed {
-      override def read() = Future.Done
-    }
+    val failed =
+      new Failed {
+        override def read() = Future.Done
+      }
     val reader = Reader.writable()
     val done = Transport.copyToWriter(failed, reader) { _ =>
       Future.value(Some(Buf.Empty))
@@ -94,9 +95,10 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test("Transport.copyToWriter - concurrent reads") {
     val p = new Promise[Unit]
-    val failed = new Failed {
-      override def read() = p
-    }
+    val failed =
+      new Failed {
+        override def read() = p
+      }
     val reader = Reader.writable()
     val done =
       Transport.copyToWriter(failed, reader)(_ => Future.None) respond {
@@ -205,22 +207,23 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
   })
 
   test("Transport.collate: discard while reading")(new Collate {
-    val trans1 = new Transport[String, String] {
-      val p = new Promise[String]
-      var theIntr: Throwable = null
-      p.setInterruptHandler {
-        case intr =>
-          theIntr = intr
+    val trans1 =
+      new Transport[String, String] {
+        val p = new Promise[String]
+        var theIntr: Throwable = null
+        p.setInterruptHandler {
+          case intr =>
+            theIntr = intr
+        }
+        def write(s: String) = ???
+        def read() = p
+        def status = ???
+        val onClose = Future.never
+        def localAddress = ???
+        def remoteAddress = ???
+        def peerCertificate = ???
+        def close(deadline: Time) = ???
       }
-      def write(s: String) = ???
-      def read() = p
-      def status = ???
-      val onClose = Future.never
-      def localAddress = ???
-      def remoteAddress = ???
-      def peerCertificate = ???
-      def close(deadline: Time) = ???
-    }
 
     val coll1 = Transport.collate(trans1, read)
     val r1 = coll1.read(10)

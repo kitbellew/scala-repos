@@ -84,8 +84,8 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val transformedDataset = ovaModel.transform(dataset)
 
     // check for label metadata in prediction col
-    val predictionColSchema =
-      transformedDataset.schema(ovaModel.getPredictionCol)
+    val predictionColSchema = transformedDataset.schema(
+      ovaModel.getPredictionCol)
     assert(MetadataUtils.getNumClasses(predictionColSchema) === Some(3))
 
     val ovaResults = transformedDataset.select("prediction", "label").rdd.map {
@@ -112,10 +112,11 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
     val ova = new OneVsRest()
     ova.setClassifier(new MockLogisticRegression)
 
-    val labelMetadata =
-      NominalAttribute.defaultAttr.withName("label").withNumValues(numClasses)
-    val labelWithMetadata =
-      dataset("label").as("label", labelMetadata.toMetadata())
+    val labelMetadata = NominalAttribute.defaultAttr
+      .withName("label")
+      .withNumValues(numClasses)
+    val labelWithMetadata = dataset("label")
+      .as("label", labelMetadata.toMetadata())
     val features = dataset("features").as("features")
     val datasetWithLabelMetadata = dataset.select(labelWithMetadata, features)
     ova.fit(datasetWithLabelMetadata)
@@ -173,8 +174,9 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
       ovr1.getClassifier.getOrDefault(lr.maxIter) === 10,
       "copy should handle extra classifier params")
 
-    val ovrModel =
-      ovr1.fit(dataset).copy(ParamMap(lr.thresholds -> Array(0.9, 0.1)))
+    val ovrModel = ovr1
+      .fit(dataset)
+      .copy(ParamMap(lr.thresholds -> Array(0.9, 0.1)))
     ovrModel.models.foreach {
       case m: LogisticRegressionModel =>
         require(m.getThreshold === 0.1, "copy should handle extra model params")

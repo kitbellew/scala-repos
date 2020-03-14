@@ -144,8 +144,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
           }
 
         var methodCallsites = Map.empty[MethodInsnNode, Callsite]
-        var methodClosureInstantiations =
-          Map.empty[InvokeDynamicInsnNode, ClosureInstantiation]
+        var methodClosureInstantiations = Map
+          .empty[InvokeDynamicInsnNode, ClosureInstantiation]
 
         // lazy so it is only computed if actually used by computeArgInfos
         lazy val prodCons =
@@ -154,42 +154,45 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
         methodNode.instructions.iterator.asScala foreach {
           case call: MethodInsnNode
               if a.frameAt(call) != null => // skips over unreachable code
-            val callee: Either[OptimizerWarning, Callee] = for {
-              (method, declarationClass) <- byteCodeRepository.methodNode(
-                call.owner,
-                call.name,
-                call.desc): Either[OptimizerWarning, (MethodNode, InternalName)]
-              (declarationClassNode, source) <- byteCodeRepository
-                .classNodeAndSource(declarationClass): Either[
-                OptimizerWarning,
-                (ClassNode, Source)]
-            } yield {
-              val declarationClassBType =
-                classBTypeFromClassNode(declarationClassNode)
-              val CallsiteInfo(
-                safeToInline,
-                safeToRewrite,
-                canInlineFromSource,
-                annotatedInline,
-                annotatedNoInline,
-                samParamTypes,
-                warning) = analyzeCallsite(
-                method,
-                declarationClassBType,
-                call.owner,
-                source)
-              Callee(
-                callee = method,
-                calleeDeclarationClass = declarationClassBType,
-                safeToInline = safeToInline,
-                safeToRewrite = false,
-                canInlineFromSource = canInlineFromSource,
-                annotatedInline = annotatedInline,
-                annotatedNoInline = annotatedNoInline,
-                samParamTypes = samParamTypes,
-                calleeInfoWarning = warning
-              )
-            }
+            val callee: Either[OptimizerWarning, Callee] =
+              for {
+                (method, declarationClass) <- byteCodeRepository.methodNode(
+                  call.owner,
+                  call.name,
+                  call.desc): Either[
+                  OptimizerWarning,
+                  (MethodNode, InternalName)]
+                (declarationClassNode, source) <- byteCodeRepository
+                  .classNodeAndSource(declarationClass): Either[
+                  OptimizerWarning,
+                  (ClassNode, Source)]
+              } yield {
+                val declarationClassBType = classBTypeFromClassNode(
+                  declarationClassNode)
+                val CallsiteInfo(
+                  safeToInline,
+                  safeToRewrite,
+                  canInlineFromSource,
+                  annotatedInline,
+                  annotatedNoInline,
+                  samParamTypes,
+                  warning) = analyzeCallsite(
+                  method,
+                  declarationClassBType,
+                  call.owner,
+                  source)
+                Callee(
+                  callee = method,
+                  calleeDeclarationClass = declarationClassBType,
+                  safeToInline = safeToInline,
+                  safeToRewrite = false,
+                  canInlineFromSource = canInlineFromSource,
+                  annotatedInline = annotatedInline,
+                  annotatedNoInline = annotatedNoInline,
+                  samParamTypes = samParamTypes,
+                  calleeInfoWarning = warning
+                )
+              }
 
             val argInfos = computeArgInfos(callee, call, prodCons)
 
@@ -288,11 +291,12 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
         if (prods.size != 1)
           None
         else {
-          val argInfo = prods.head match {
-            case LambdaMetaFactoryCall(_, _, _, _) => Some(FunctionLiteral)
-            case ParameterProducer(local)          => Some(ForwardedParam(local))
-            case _                                 => None
-          }
+          val argInfo =
+            prods.head match {
+              case LambdaMetaFactoryCall(_, _, _, _) => Some(FunctionLiteral)
+              case ParameterProducer(local)          => Some(ForwardedParam(local))
+              case _                                 => None
+            }
           argInfo.map((index, _))
         }
     }

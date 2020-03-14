@@ -43,14 +43,14 @@ object BaseProcessor {
 
   val FROM_TYPE_KEY: Key[ScType] = Key.create("from.type.key")
 
-  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] =
-    Key.create("unresolved.type.parameters.key")
+  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] = Key.create(
+    "unresolved.type.parameters.key")
 
-  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] =
-    Key.create("compound.type.this.type.key")
+  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] = Key.create(
+    "compound.type.this.type.key")
 
-  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] =
-    Key.create("forward.reference.key")
+  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] = Key.create(
+    "forward.reference.key")
 
   val guard = RecursionManager.createGuard("process.element.guard")
 
@@ -388,10 +388,11 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         }
 
         val scope = place.getResolveScope
-        val obj: PsiClass = ScalaPsiManager
-          .instance(place.getProject)
-          .getCachedClass(scope, "java.lang.Object")
-          .orNull
+        val obj: PsiClass =
+          ScalaPsiManager
+            .instance(place.getProject)
+            .getCachedClass(scope, "java.lang.Object")
+            .orNull
         if (obj != null) {
           val namesSet = Set("hashCode", "toString", "equals", "getClass")
           val methods = obj.getMethods.iterator
@@ -438,10 +439,9 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       visitedAliases: HashSet[ScTypeAlias],
       visitedTypeParameter: HashSet[ScTypeParameterType]): Boolean = {
     val subst = state.get(ScSubstitutor.key)
-    val compound =
-      state.get(
-        BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
-      ) //todo: looks like ugly workaround
+    val compound = state.get(
+      BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
+    ) //todo: looks like ugly workaround
     val newSubst =
       compound match {
         case Some(_) => subst

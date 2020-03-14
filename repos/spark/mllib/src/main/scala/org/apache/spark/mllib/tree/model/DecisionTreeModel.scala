@@ -361,13 +361,14 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         } else {
           val leftNode = constructNode(data.leftNodeId.get, dataMap, nodes)
           val rightNode = constructNode(data.rightNodeId.get, dataMap, nodes)
-          val stats = new InformationGainStats(
-            data.infoGain.get,
-            data.impurity,
-            leftNode.impurity,
-            rightNode.impurity,
-            leftNode.predict,
-            rightNode.predict)
+          val stats =
+            new InformationGainStats(
+              data.infoGain.get,
+              data.impurity,
+              leftNode.impurity,
+              rightNode.impurity,
+              leftNode.predict,
+              rightNode.predict)
           new Node(
             data.nodeId,
             data.predict.toPredict,

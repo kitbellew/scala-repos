@@ -64,8 +64,9 @@ trait ManagedExecution
     extends Execution[Future, StreamT[Future, Slice]]
     with ManagedQueryModule { self =>
   type AsyncExecution[M[+_]] = Execution[M, JobId]
-  type SyncExecution[M[+_]] =
-    Execution[M, (Option[JobId], StreamT[Future, Slice])]
+  type SyncExecution[M[+_]] = Execution[
+    M,
+    (Option[JobId], StreamT[Future, Slice])]
 
   /**
     * Returns an `Execution` whose execution returns a `JobId` rather
@@ -96,9 +97,10 @@ trait ManagedExecution
     implicit val M = shardQueryMonad.M
 
     shardQueryMonad.jobId map { jobId0 =>
-      val lift = new (Future ~> JobQueryTF) {
-        def apply[A](fa: Future[A]) = fa.liftM[JobQueryT]
-      }
+      val lift =
+        new (Future ~> JobQueryTF) {
+          def apply[A](fa: Future[A]) = fa.liftM[JobQueryT]
+        }
 
       new JobQueryLogger[JobQueryTF, A]
         with ShardQueryLogger[JobQueryTF, A]
@@ -168,8 +170,11 @@ trait ManagedExecution
         query: String,
         context: EvaluationContext,
         opts: QueryOptions): EitherT[Future, EvaluationError, A] = {
-      val userQuery =
-        UserQuery(query, context.basePath, opts.sortOn, opts.sortOrder)
+      val userQuery = UserQuery(
+        query,
+        context.basePath,
+        opts.sortOn,
+        opts.sortOrder)
 
       //TODO: this is craziness
       EitherT.right(

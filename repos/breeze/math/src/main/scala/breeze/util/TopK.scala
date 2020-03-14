@@ -35,11 +35,9 @@ class TopK[T](k: Int)(implicit ord: Ordering[T]) extends Iterable[T] {
     }
   }
 
-  override def iterator: Iterator[T] =
-    keys.descendingIterator;
+  override def iterator: Iterator[T] = keys.descendingIterator;
 
-  override def size =
-    keys.size;
+  override def size = keys.size;
 }
 
 object TopK {
@@ -52,9 +50,10 @@ object TopK {
 
   def apply[T, U](k: Int, items: TraversableOnce[T], scoreFn: (T => U))(
       implicit uord: Ordering[U]): TopK[T] = {
-    implicit val ord = new Ordering[T] {
-      override def compare(x: T, y: T) = uord.compare(scoreFn(x), scoreFn(y));
-    };
+    implicit val ord =
+      new Ordering[T] {
+        override def compare(x: T, y: T) = uord.compare(scoreFn(x), scoreFn(y));
+      };
     apply(k, items)(ord);
   }
 }
@@ -63,16 +62,14 @@ object TopK {
   * A rich iterable extension that adds the topk method.
   */
 class TopKIterable[T](val self: Iterable[T]) {
-  def topk(k: Int)(implicit ord: Ordering[T]): TopK[T] =
-    TopK(k, self);
+  def topk(k: Int)(implicit ord: Ordering[T]): TopK[T] = TopK(k, self);
 
   def topk[U](k: Int, scoreFn: (T => U))(implicit uord: Ordering[U]): TopK[T] =
     TopK(k, self, scoreFn)(uord);
 }
 
 class TopKIterator[T](val self: Iterator[T]) {
-  def topk(k: Int)(implicit ord: Ordering[T]): TopK[T] =
-    TopK(k, self);
+  def topk(k: Int)(implicit ord: Ordering[T]): TopK[T] = TopK(k, self);
 
   def topk[U](k: Int, scoreFn: (T => U))(implicit uord: Ordering[U]): TopK[T] =
     TopK(k, self, scoreFn)(uord);

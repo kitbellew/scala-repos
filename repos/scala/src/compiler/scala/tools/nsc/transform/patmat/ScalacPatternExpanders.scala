@@ -104,13 +104,14 @@ trait ScalacPatternExpanders {
             s"The result type of an $name method must contain a member `get` to be used as an extractor pattern, no such member exists in ${result}"
           )
         }
-        val expanded = getResult match {
-          case global.NoType =>
-            noGetError();
-            Nil
-          case rawGet if !hasSelectors(rawGet) => rawGet :: Nil
-          case rawGet                          => typesOfSelectors(rawGet)
-        }
+        val expanded =
+          getResult match {
+            case global.NoType =>
+              noGetError();
+              Nil
+            case rawGet if !hasSelectors(rawGet) => rawGet :: Nil
+            case rawGet                          => typesOfSelectors(rawGet)
+          }
         expanded match {
           case init :+ last if isSeq =>
             newExtractor(whole, init, repeatedFromSeq(last), getResult)
@@ -164,28 +165,30 @@ trait ScalacPatternExpanders {
     }
 
     def apply(context: Context, sel: Tree, args: List[Tree]): Aligned = {
-      val fn = sel match {
-        case Unapplied(fn) => fn
-        case _             => sel
-      }
+      val fn =
+        sel match {
+          case Unapplied(fn) => fn
+          case _             => sel
+        }
       val patterns = newPatterns(args)
       val isUnapply = sel.symbol.name == nme.unapply
 
-      val extractor = sel.symbol.name match {
-        case nme.unapply =>
-          unapplyMethodTypes(
-            context,
-            firstParamType(fn.tpe),
-            sel.tpe,
-            isSeq = false)
-        case nme.unapplySeq =>
-          unapplyMethodTypes(
-            context,
-            firstParamType(fn.tpe),
-            sel.tpe,
-            isSeq = true)
-        case _ => applyMethodTypes(fn.tpe)
-      }
+      val extractor =
+        sel.symbol.name match {
+          case nme.unapply =>
+            unapplyMethodTypes(
+              context,
+              firstParamType(fn.tpe),
+              sel.tpe,
+              isSeq = false)
+          case nme.unapplySeq =>
+            unapplyMethodTypes(
+              context,
+              firstParamType(fn.tpe),
+              sel.tpe,
+              isSeq = true)
+          case _ => applyMethodTypes(fn.tpe)
+        }
 
       /** Rather than let the error that is SI-6675 pollute the entire matching
         *  process, we will tuple the extractor before creation Aligned so that
@@ -200,19 +203,20 @@ trait ScalacPatternExpanders {
       val requiresTupling =
         isUnapply && patterns.totalArity == 1 && productArity > 1
 
-      val normalizedExtractor = if (requiresTupling) {
-        val tupled = extractor.asSinglePattern
-        if (effectivePatternArity(args) == 1 && isTupleType(
-              extractor.typeOfSinglePattern)) {
-          val sym = sel.symbol.owner
-          currentRun.reporting.deprecationWarning(
-            sel.pos,
-            sym,
-            s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
-        }
-        tupled
-      } else
-        extractor
+      val normalizedExtractor =
+        if (requiresTupling) {
+          val tupled = extractor.asSinglePattern
+          if (effectivePatternArity(args) == 1 && isTupleType(
+                extractor.typeOfSinglePattern)) {
+            val sym = sel.symbol.owner
+            currentRun.reporting.deprecationWarning(
+              sel.pos,
+              sym,
+              s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
+          }
+          tupled
+        } else
+          extractor
       validateAligned(context, fn, Aligned(patterns, normalizedExtractor))
     }
 

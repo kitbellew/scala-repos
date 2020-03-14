@@ -518,16 +518,16 @@ private[akka] class LocalActorRefProvider private[akka] (
 
   override val rootPath: ActorPath = RootActorPath(Address("akka", _systemName))
 
-  private[akka] val log: LoggingAdapter =
-    Logging(eventStream, getClass.getName + "(" + rootPath.address + ")")
+  private[akka] val log: LoggingAdapter = Logging(
+    eventStream,
+    getClass.getName + "(" + rootPath.address + ")")
 
-  override val deadLetters: InternalActorRef =
-    _deadLetters
-      .getOrElse((p: ActorPath) ⇒ new DeadLetterActorRef(this, p, eventStream))
-      .apply(rootPath / "deadLetters")
+  override val deadLetters: InternalActorRef = _deadLetters
+    .getOrElse((p: ActorPath) ⇒ new DeadLetterActorRef(this, p, eventStream))
+    .apply(rootPath / "deadLetters")
 
-  private[this] final val terminationPromise: Promise[Terminated] =
-    Promise[Terminated]()
+  private[this] final val terminationPromise
+      : Promise[Terminated] = Promise[Terminated]()
 
   def terminationFuture: Future[Terminated] = terminationPromise.future
 
@@ -649,8 +649,8 @@ private[akka] class LocalActorRefProvider private[akka] (
   private lazy val defaultDispatcher =
     system.dispatchers.defaultGlobalDispatcher
 
-  private lazy val defaultMailbox =
-    system.mailboxes.lookup(Mailboxes.DefaultMailboxId)
+  private lazy val defaultMailbox = system.mailboxes.lookup(
+    Mailboxes.DefaultMailboxId)
 
   override lazy val rootGuardian: LocalActorRef =
     new LocalActorRef(
@@ -679,14 +679,15 @@ private[akka] class LocalActorRefProvider private[akka] (
   override lazy val guardian: LocalActorRef = {
     val cell = rootGuardian.underlying
     cell.reserveChild("user")
-    val ref = new LocalActorRef(
-      system,
-      system.guardianProps.getOrElse(
-        Props(classOf[LocalActorRefProvider.Guardian], guardianStrategy)),
-      defaultDispatcher,
-      defaultMailbox,
-      rootGuardian,
-      rootPath / "user")
+    val ref =
+      new LocalActorRef(
+        system,
+        system.guardianProps.getOrElse(
+          Props(classOf[LocalActorRefProvider.Guardian], guardianStrategy)),
+        defaultDispatcher,
+        defaultMailbox,
+        rootGuardian,
+        rootPath / "user")
     cell.initChild(ref)
     ref.start()
     ref
@@ -695,16 +696,17 @@ private[akka] class LocalActorRefProvider private[akka] (
   override lazy val systemGuardian: LocalActorRef = {
     val cell = rootGuardian.underlying
     cell.reserveChild("system")
-    val ref = new LocalActorRef(
-      system,
-      Props(
-        classOf[LocalActorRefProvider.SystemGuardian],
-        systemGuardianStrategy,
-        guardian),
-      defaultDispatcher,
-      defaultMailbox,
-      rootGuardian,
-      rootPath / "system")
+    val ref =
+      new LocalActorRef(
+        system,
+        Props(
+          classOf[LocalActorRefProvider.SystemGuardian],
+          systemGuardianStrategy,
+          guardian),
+        defaultDispatcher,
+        defaultMailbox,
+        rootGuardian,
+        rootPath / "system")
     cell.initChild(ref)
     ref.start()
     ref
@@ -915,8 +917,8 @@ private[akka] class LocalActorRefProvider private[akka] (
         val routeeProps = p.withRouter(NoRouter)
 
         try {
-          val routerDispatcher =
-            system.dispatchers.lookup(p.routerConfig.routerDispatcher)
+          val routerDispatcher = system.dispatchers.lookup(
+            p.routerConfig.routerDispatcher)
           val routerMailbox = system.mailboxes
             .getMailboxType(routerProps, routerDispatcher.configurator.config)
 

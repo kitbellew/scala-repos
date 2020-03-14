@@ -90,8 +90,8 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
   private val _memoryBytesSpilled = getAccum(MEMORY_BYTES_SPILLED)
   private val _diskBytesSpilled = getAccum(DISK_BYTES_SPILLED)
   private val _peakExecutionMemory = getAccum(PEAK_EXECUTION_MEMORY)
-  private val _updatedBlockStatuses =
-    TaskMetrics.getAccum[Seq[(BlockId, BlockStatus)]](
+  private val _updatedBlockStatuses = TaskMetrics
+    .getAccum[Seq[(BlockId, BlockStatus)]](
       initialAccumsMap,
       UPDATED_BLOCK_STATUSES)
 
@@ -173,11 +173,9 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
   private[spark] def incPeakExecutionMemory(v: Long): Unit =
     _peakExecutionMemory.add(v)
   private[spark] def incUpdatedBlockStatuses(
-      v: Seq[(BlockId, BlockStatus)]): Unit =
-    _updatedBlockStatuses.add(v)
+      v: Seq[(BlockId, BlockStatus)]): Unit = _updatedBlockStatuses.add(v)
   private[spark] def setUpdatedBlockStatuses(
-      v: Seq[(BlockId, BlockStatus)]): Unit =
-    _updatedBlockStatuses.setValue(v)
+      v: Seq[(BlockId, BlockStatus)]): Unit = _updatedBlockStatuses.setValue(v)
 
   /**
     * Get a Long accumulator from the given map by name, assuming it exists.

@@ -60,8 +60,7 @@ sealed abstract class SafeLong
       case SafeLongBigInteger(n) => lhs % n
     }
 
-  final def /~(rhs: SafeLong): SafeLong =
-    lhs / rhs
+  final def /~(rhs: SafeLong): SafeLong = lhs / rhs
 
   final def /%(rhs: SafeLong): (SafeLong, SafeLong) =
     rhs match {
@@ -87,11 +86,9 @@ sealed abstract class SafeLong
       case SafeLongBigInteger(n) => lhs ^ n
     }
 
-  def ===(that: SafeLong): Boolean =
-    this == that
+  def ===(that: SafeLong): Boolean = this == that
 
-  def =!=(that: SafeLong): Boolean =
-    !(this === that)
+  def =!=(that: SafeLong): Boolean = !(this === that)
 
   def +(rhs: Long): SafeLong
   def -(rhs: Long): SafeLong
@@ -206,8 +203,7 @@ sealed abstract class SafeLong
 
   final def isWhole: Boolean = true
 
-  final def isProbablePrime(c: Int): Boolean =
-    toBigInteger.isProbablePrime(c)
+  final def isProbablePrime(c: Int): Boolean = toBigInteger.isProbablePrime(c)
 
   def bitLength: Int
 }

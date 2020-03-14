@@ -44,9 +44,10 @@ class HashedWheelTimerTest extends FunSuite with MockitoSugar {
         any[java.util.concurrent.TimeUnit])) thenReturn firstTimeout
 
     var task: TimerTask = null
-    task = t.schedule(1.second) {
-      task.cancel()
-    }
+    task =
+      t.schedule(1.second) {
+        task.cancel()
+      }
 
     taskCaptor.getValue.run(firstTimeout)
 

@@ -104,8 +104,9 @@ private[spark] class DistributedStopwatch(
     override val name: String)
     extends Stopwatch {
 
-  private val elapsedTime: Accumulator[Long] =
-    sc.accumulator(0L, s"DistributedStopwatch($name)")
+  private val elapsedTime: Accumulator[Long] = sc.accumulator(
+    0L,
+    s"DistributedStopwatch($name)")
 
   override def elapsed(): Long = elapsedTime.value
 

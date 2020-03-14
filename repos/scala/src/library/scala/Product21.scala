@@ -74,8 +74,7 @@ object Product21 {
     T18,
     T19,
     T20,
-    T21]] =
-    Some(x)
+    T21]] = Some(x)
 }
 
 /** Product21 is a cartesian product of 21 components.

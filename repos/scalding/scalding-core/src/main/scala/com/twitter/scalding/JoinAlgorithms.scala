@@ -68,9 +68,10 @@ trait JoinAlgorithms {
     * Use at your own risk.
     */
   def crossWithTiny(tiny: Pipe) = {
-    val tinyJoin = tiny.map(() -> '__joinTiny__) { (u: Unit) =>
-      1
-    }
+    val tinyJoin =
+      tiny.map(() -> '__joinTiny__) { (u: Unit) =>
+        1
+      }
     pipe
       .map(() -> '__joinBig__) { (u: Unit) =>
         1
@@ -85,9 +86,10 @@ trait JoinAlgorithms {
     * Prefer crossWithTiny
     */
   def crossWithSmaller(p: Pipe, replication: Int = 20) = {
-    val smallJoin = p.map(() -> '__joinSmall__) { (u: Unit) =>
-      1
-    }
+    val smallJoin =
+      p.map(() -> '__joinSmall__) { (u: Unit) =>
+        1
+      }
     pipe
       .map(() -> '__joinBig__) { (u: Unit) =>
         1
@@ -113,20 +115,22 @@ trait JoinAlgorithms {
     // convert to list, so we are explicit that ordering is fixed below:
     val renaming = collisions.toList
     val orig = new Fields(renaming: _*)
-    val temp = new Fields(renaming.map {
-      rename
-    }: _*)
+    val temp =
+      new Fields(renaming.map {
+        rename
+      }: _*)
     // Now construct the new join keys, where we check for a rename
     // otherwise use the original key:
-    val newJoinKeys = new Fields(
-      asList(fields)
-        .map { fname =>
-          // If we renamed, get the rename, else just use the field
-          if (collisions(fname)) {
-            rename(fname)
-          } else
-            fname
-        }: _*)
+    val newJoinKeys =
+      new Fields(
+        asList(fields)
+          .map { fname =>
+            // If we renamed, get the rename, else just use the field
+            if (collisions(fname)) {
+              rename(fname)
+            } else
+              fname
+          }: _*)
     val renamedPipe = p.rename(orig -> temp)
     (renamedPipe, newJoinKeys, temp)
   }
@@ -195,8 +199,10 @@ trait JoinAlgorithms {
        * For this (common) case, it doesn't matter if we drop one of the matching grouping fields.
        * So, we rename the right hand side to temporary names, then discard them after the operation
        */
-      val (renamedThat, newJoinFields, temp) =
-        renameCollidingFields(that, fs._2, intersection)
+      val (renamedThat, newJoinFields, temp) = renameCollidingFields(
+        that,
+        fs._2,
+        intersection)
       pipe
         .coGroupBy(fs._1, joiners._1) {
           _.coGroup(newJoinFields, renamedThat, joiners._2)
@@ -267,8 +273,10 @@ trait JoinAlgorithms {
         fs._2,
         WrappedJoiner(new InnerJoin))
     } else {
-      val (renamedThat, newJoinFields, temp) =
-        renameCollidingFields(that, fs._2, intersection)
+      val (renamedThat, newJoinFields, temp) = renameCollidingFields(
+        that,
+        fs._2,
+        intersection)
       (new HashJoin(
         assignName(pipe),
         fs._1,
@@ -337,8 +345,11 @@ trait JoinAlgorithms {
     val rightFields = new Fields("__RIGHT_I__", "__RIGHT_J__")
 
     // Add the new dummy replication fields
-    val newLeft =
-      addReplicationFields(pipe, leftFields, leftReplication, rightReplication)
+    val newLeft = addReplicationFields(
+      pipe,
+      leftFields,
+      leftReplication,
+      rightReplication)
     val newRight = addReplicationFields(
       otherPipe,
       rightFields,
@@ -492,44 +503,47 @@ trait JoinAlgorithms {
       * each task create a seed, a restart will change the computation,
       * and this could result in subtle bugs.
       */
-    val sampledLeft = pipe
-      .sample(sampleRate, Seed)
-      .groupBy(fs._1) {
-        _.size(leftSampledCountField)
-      }
-    val sampledRight = rightPipe
-      .sample(sampleRate, Seed)
-      .groupBy(rightResolvedJoinFields) {
-        _.size(rightSampledCountField)
-      }
-    val sampledCounts = sampledLeft
-      .joinWithSmaller(
-        fs._1 -> rightResolvedJoinFields,
-        sampledRight,
-        joiner = new OuterJoin)
-      .project(Fields.join(mergedJoinKeys, sampledCountFields))
-      .map(mergedJoinKeys -> mergedJoinKeys) { t: cascading.tuple.Tuple =>
-        // Make the outer join look like an inner join so that we can join
-        // either the left or right fields for every entry.
-        // Accomplished by replacing any null field with the corresponding
-        // field from the other half.  E.g.,
-        // (1, 2, "foo", null, null, null) -> (1, 2, "foo", 1, 2, "foo")
-        val keysSize = t.size / 2
-        val result = new cascading.tuple.Tuple(t)
-
-        for (index <- 0 until keysSize) {
-          val leftValue = result.getObject(index)
-          val rightValue = result.getObject(index + keysSize)
-
-          if (leftValue == null) {
-            result.set(index, rightValue)
-          } else if (rightValue == null) {
-            result.set(index + keysSize, leftValue)
-          }
+    val sampledLeft =
+      pipe
+        .sample(sampleRate, Seed)
+        .groupBy(fs._1) {
+          _.size(leftSampledCountField)
         }
+    val sampledRight =
+      rightPipe
+        .sample(sampleRate, Seed)
+        .groupBy(rightResolvedJoinFields) {
+          _.size(rightSampledCountField)
+        }
+    val sampledCounts =
+      sampledLeft
+        .joinWithSmaller(
+          fs._1 -> rightResolvedJoinFields,
+          sampledRight,
+          joiner = new OuterJoin)
+        .project(Fields.join(mergedJoinKeys, sampledCountFields))
+        .map(mergedJoinKeys -> mergedJoinKeys) { t: cascading.tuple.Tuple =>
+          // Make the outer join look like an inner join so that we can join
+          // either the left or right fields for every entry.
+          // Accomplished by replacing any null field with the corresponding
+          // field from the other half.  E.g.,
+          // (1, 2, "foo", null, null, null) -> (1, 2, "foo", 1, 2, "foo")
+          val keysSize = t.size / 2
+          val result = new cascading.tuple.Tuple(t)
 
-        result
-      }
+          for (index <- 0 until keysSize) {
+            val leftValue = result.getObject(index)
+            val rightValue = result.getObject(index + keysSize)
+
+            if (leftValue == null) {
+              result.set(index, rightValue)
+            } else if (rightValue == null) {
+              result.set(index + keysSize, leftValue)
+            }
+          }
+
+          result
+        }
 
     // 2. Now replicate each group of join keys in the left and right pipes, according to the sampled counts
     // from the previous step.
@@ -556,18 +570,18 @@ trait JoinAlgorithms {
 
     // 3. Finally, join the replicated pipes together.
     val leftJoinFields = Fields.join(fs._1, leftReplicationFields)
-    val rightJoinFields =
-      Fields.join(rightResolvedJoinFields, rightReplicationFields)
+    val rightJoinFields = Fields.join(
+      rightResolvedJoinFields,
+      rightReplicationFields)
 
-    val joinedPipe =
-      replicatedLeft
-        .joinWithSmaller(
-          leftJoinFields -> rightJoinFields,
-          replicatedRight,
-          joiner = new InnerJoin,
-          reducers)
-        .discard(leftReplicationFields)
-        .discard(rightReplicationFields)
+    val joinedPipe = replicatedLeft
+      .joinWithSmaller(
+        leftJoinFields -> rightJoinFields,
+        replicatedRight,
+        joiner = new InnerJoin,
+        reducers)
+      .discard(leftReplicationFields)
+      .discard(rightReplicationFields)
 
     if (intersection.isEmpty)
       joinedPipe
@@ -629,8 +643,10 @@ trait JoinAlgorithms {
       .using(new Random(Seed) with Stateful)
       .flatMap(countFields -> replicationFields) {
         (rand: Random, counts: (Int, Int)) =>
-          val (leftRep, rightRep) =
-            replicator.getReplications(counts._1, counts._2, numReducers)
+          val (leftRep, rightRep) = replicator.getReplications(
+            counts._1,
+            counts._2,
+            numReducers)
 
           val (rep, otherRep) =
             if (isPipeOnRight)

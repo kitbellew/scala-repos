@@ -51,9 +51,7 @@ class ScVariableStubImpl[ParentPsi <: PsiElement](
       parent,
       elemType
         .asInstanceOf[IStubElementType[StubElement[PsiElement], PsiElement]])
-    this.names =
-      for (name <- names)
-        yield StringRef.fromString(name)
+    this.names = for (name <- names) yield StringRef.fromString(name)
     this.declaration = isDeclaration
     this.typeText = StringRef.fromString(typeText)
     this.bodyText = StringRef.fromString(bodyText)

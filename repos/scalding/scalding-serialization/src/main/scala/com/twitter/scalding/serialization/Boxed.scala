@@ -1827,21 +1827,23 @@ object Boxed {
 
   def allClasses: Seq[Class[_ <: Boxed[_]]] = allBoxes.map(_._2)
 
-  private[this] val boxedCache = new java.util.concurrent.ConcurrentHashMap[
-    AnyRef,
-    (Any => Boxed[Any], Class[Boxed[Any]])]()
+  private[this] val boxedCache =
+    new java.util.concurrent.ConcurrentHashMap[
+      AnyRef,
+      (Any => Boxed[Any], Class[Boxed[Any]])]()
 
   private[scalding] def nextCached[K](
       cacheKey: Option[AnyRef]): (K => Boxed[K], Class[Boxed[K]]) =
     cacheKey match {
       case Some(cls) =>
-        val untypedRes = Option(boxedCache.get(cls)) match {
-          case Some(r) => r
-          case None =>
-            val r = next[Any]()
-            boxedCache.putIfAbsent(cls, r)
-            r
-        }
+        val untypedRes =
+          Option(boxedCache.get(cls)) match {
+            case Some(r) => r
+            case None =>
+              val r = next[Any]()
+              boxedCache.putIfAbsent(cls, r)
+              r
+          }
         untypedRes.asInstanceOf[(K => Boxed[K], Class[Boxed[K]])]
       case None => next[K]()
     }

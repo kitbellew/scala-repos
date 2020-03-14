@@ -178,10 +178,11 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
   }
 
   test("nack on restartable failures") {
-    val svc = new Service[Request, Response] {
-      def apply(req: Request) =
-        Future.exception(Failure.rejected("overloaded!"))
-    }
+    val svc =
+      new Service[Request, Response] {
+        def apply(req: Request) =
+          Future.exception(Failure.rejected("overloaded!"))
+      }
 
     val clientToServer = new AsyncQueue[Message]
     val serverToClient = new AsyncQueue[Message]
@@ -229,8 +230,9 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
         Message.Tdispatch(0, Seq.empty, Path.empty, Dtab.empty, buf))
       // one outstanding request
 
-      val drain =
-        server.close(Time.Top) // synchronously sends drain request to client
+      val drain = server.close(
+        Time.Top
+      ) // synchronously sends drain request to client
 
       clientToServer.offer(Message.Rdrain(1)) // client draining
 
@@ -276,8 +278,9 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
           ChannelBuffers.EMPTY_BUFFER))
       // two outstanding requests
 
-      val drain =
-        server.close(Time.Top) // synchronously sends drain request to client
+      val drain = server.close(
+        Time.Top
+      ) // synchronously sends drain request to client
 
       clientToServer.offer(Message.Rdrain(1)) // client draining
 
@@ -307,8 +310,9 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
         transport,
         Service.mk(req => Future.???))
 
-      val drain =
-        server.close(Time.Top) // synchronously sends drain request to client
+      val drain = server.close(
+        Time.Top
+      ) // synchronously sends drain request to client
 
       val Some(Return(tdrain)) = serverToClient.poll.poll
       val Message.Tdrain(tag) = tdrain
@@ -342,9 +346,10 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     Time.withCurrentTimeFrozen { ctl =>
       import Message._
 
-      val server = new Server(Service.mk { req: Request =>
-        Future.value(Response.empty)
-      })
+      val server =
+        new Server(Service.mk { req: Request =>
+          Future.value(Response.empty)
+        })
 
       server.request( // request before closing
         Message.Tdispatch(
@@ -355,10 +360,9 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
           ChannelBuffers.EMPTY_BUFFER))
       assert(server.read().isDefined)
 
-      val drain =
-        server.server.close(
-          Time.Top
-        ) // synchronously sends drain request to client
+      val drain = server.server.close(
+        Time.Top
+      ) // synchronously sends drain request to client
 
       val Some(Return(tdrain)) = server.read().poll
       val Tdrain(tag) = tdrain
@@ -394,15 +398,16 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     val okResponse = Response(Utf8("ok"))
     val failResponse = Response(Utf8("fail"))
 
-    val testService = new Service[Request, Response] {
-      override def apply(request: Request): Future[Response] =
-        Future.value {
-          if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert))
-            okResponse
-          else
-            failResponse
-        }
-    }
+    val testService =
+      new Service[Request, Response] {
+        override def apply(request: Request): Future[Response] =
+          Future.value {
+            if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert))
+              okResponse
+            else
+              failResponse
+          }
+      }
 
     val tag = 3
     val server = new Server(testService, Some(mockCert))
@@ -419,17 +424,18 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     val okResponse = Response(Utf8("ok"))
     val failResponse = Response(Utf8("fail"))
 
-    val testService = new Service[Request, Response] {
-      override def apply(request: Request): Future[Response] = {
-        val remoteInfo = Contexts.local.get(RemoteInfo.Upstream.AddressCtx)
-        val res =
-          if (remoteInfo == Some(mockAddr))
-            okResponse
-          else
-            failResponse
-        Future.value(res)
+    val testService =
+      new Service[Request, Response] {
+        override def apply(request: Request): Future[Response] = {
+          val remoteInfo = Contexts.local.get(RemoteInfo.Upstream.AddressCtx)
+          val res =
+            if (remoteInfo == Some(mockAddr))
+              okResponse
+            else
+              failResponse
+          Future.value(res)
+        }
       }
-    }
 
     val tag = 3
     val server = new Server(testService, None, mockAddr)
@@ -478,12 +484,13 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
     val serverToClient = new AsyncQueue[Message]
     val writep = new Promise[Unit]
 
-    val transport = new QueueTransport(serverToClient, clientToServer) {
-      override def write(in: Message) =
-        writep.before {
-          super.write(in)
-        }
-    }
+    val transport =
+      new QueueTransport(serverToClient, clientToServer) {
+        override def write(in: Message) =
+          writep.before {
+            super.write(in)
+          }
+      }
 
     val sr = new InMemoryStatsReceiver
 

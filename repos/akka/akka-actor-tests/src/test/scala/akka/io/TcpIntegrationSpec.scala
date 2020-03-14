@@ -182,9 +182,10 @@ class TcpIntegrationSpec extends AkkaSpec("""
       val endpoint = new InetSocketAddress("192.0.2.1", 23825)
       connectCommander.send(IO(Tcp), Connect(endpoint))
       // expecting CommandFailed or no reply (within timeout)
-      val replies = connectCommander.receiveWhile(1.second) {
-        case m: Connected ⇒ m
-      }
+      val replies =
+        connectCommander.receiveWhile(1.second) {
+          case m: Connected ⇒ m
+        }
       replies should ===(Nil)
     }
 

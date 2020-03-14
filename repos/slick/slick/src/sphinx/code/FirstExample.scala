@@ -131,10 +131,11 @@ object FirstExample extends App {
         //#join
         println("Manual join:")
         //#join
-        val q2 = for {
-          c <- coffees if c.price < 9.0
-          s <- suppliers if s.id === c.supID
-        } yield (c.name, s.name)
+        val q2 =
+          for {
+            c <- coffees if c.price < 9.0
+            s <- suppliers if s.id === c.supID
+          } yield (c.name, s.name)
         // Equivalent SQL code:
         // select c.COF_NAME, s.SUP_NAME from COFFEES c, SUPPLIERS s where c.PRICE < 9.0 and s.SUP_ID = c.SUP_ID
         //#join
@@ -146,10 +147,11 @@ object FirstExample extends App {
         // Do the same thing using the navigable foreign key
         println("Join by foreign key:")
         //#fkjoin
-        val q3 = for {
-          c <- coffees if c.price < 9.0
-          s <- c.supplier
-        } yield (c.name, s.name)
+        val q3 =
+          for {
+            c <- coffees if c.price < 9.0
+            s <- c.supplier
+          } yield (c.name, s.name)
         // Equivalent SQL code:
         // select c.COF_NAME, s.SUP_NAME from COFFEES c, SUPPLIERS s where c.PRICE < 9.0 and s.SUP_ID = c.SUP_ID
         //#fkjoin

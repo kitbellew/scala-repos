@@ -77,8 +77,12 @@ private[streaming] object MasterFailureTest extends Logging {
     val operation = (st: DStream[String]) => st.map(_.toInt)
 
     // Run streaming operation with multiple master failures
-    val output =
-      testOperation(directory, batchDuration, input, operation, expectedOutput)
+    val output = testOperation(
+      directory,
+      batchDuration,
+      input,
+      operation,
+      expectedOutput)
 
     logInfo("Expected output, size = " + expectedOutput.size)
     logInfo(expectedOutput.mkString("[", ",", "]"))
@@ -98,22 +102,29 @@ private[streaming] object MasterFailureTest extends Logging {
     val input =
       (1 to numBatches).map(i => (1 to i).map(_ => "a").mkString(" ")).toSeq
     // Expected output: time=1 ==> [ (a, 1) ] , time=2 ==> [ (a, 3) ] , time=3 ==> [ (a,6) ] , ...
-    val expectedOutput =
-      (1L to numBatches).map(i => (1L to i).sum).map(j => ("a", j))
+    val expectedOutput = (1L to numBatches)
+      .map(i => (1L to i).sum)
+      .map(j => ("a", j))
 
-    val operation = (st: DStream[String]) => {
-      val updateFunc = (values: Seq[Long], state: Option[Long]) => {
-        Some(values.foldLeft(0L)(_ + _) + state.getOrElse(0L))
+    val operation =
+      (st: DStream[String]) => {
+        val updateFunc =
+          (values: Seq[Long], state: Option[Long]) => {
+            Some(values.foldLeft(0L)(_ + _) + state.getOrElse(0L))
+          }
+        st.flatMap(_.split(" "))
+          .map(x => (x, 1L))
+          .updateStateByKey[Long](updateFunc)
+          .checkpoint(batchDuration * 5)
       }
-      st.flatMap(_.split(" "))
-        .map(x => (x, 1L))
-        .updateStateByKey[Long](updateFunc)
-        .checkpoint(batchDuration * 5)
-    }
 
     // Run streaming operation with multiple master failures
-    val output =
-      testOperation(directory, batchDuration, input, operation, expectedOutput)
+    val output = testOperation(
+      directory,
+      batchDuration,
+      input,
+      operation,
+      expectedOutput)
 
     logInfo(
       "Expected output, size = " + expectedOutput.size + "\n" + expectedOutput)
@@ -201,13 +212,14 @@ private[streaming] object MasterFailureTest extends Logging {
     setupCalled = true
 
     // Setup the streaming computation with the given operation
-    val ssc = new StreamingContext(
-      "local[4]",
-      "MasterFailureTest",
-      batchDuration,
-      null,
-      Nil,
-      Map())
+    val ssc =
+      new StreamingContext(
+        "local[4]",
+        "MasterFailureTest",
+        batchDuration,
+        null,
+        Nil,
+        Map())
     ssc.checkpoint(checkpointDir.toString)
     val inputStream = ssc.textFileStream(testDir.toString)
     val operatedStream = operation(inputStream)
@@ -236,11 +248,12 @@ private[streaming] object MasterFailureTest extends Logging {
 
     while (!isLastOutputGenerated && !isTimedOut) {
       // Get the output buffer
-      val outputQueue = ssc.graph
-        .getOutputStreams()
-        .head
-        .asInstanceOf[TestOutputStream[T]]
-        .output
+      val outputQueue =
+        ssc.graph
+          .getOutputStreams()
+          .head
+          .asInstanceOf[TestOutputStream[T]]
+          .output
       def output = outputQueue.asScala.flatten
 
       // Start the thread to kill the streaming after some time

@@ -53,11 +53,9 @@ class ConsistentHashingRouterDocSpec extends AkkaSpec with ImplicitSender {
       case Evict(key) => key
     }
 
-    val cache: ActorRef =
-      context.actorOf(
-        ConsistentHashingPool(10, hashMapping = hashMapping)
-          .props(Props[Cache]),
-        name = "cache")
+    val cache: ActorRef = context.actorOf(
+      ConsistentHashingPool(10, hashMapping = hashMapping).props(Props[Cache]),
+      name = "cache")
 
     cache ! ConsistentHashableEnvelope(
       message = Entry("hello", "HELLO"),

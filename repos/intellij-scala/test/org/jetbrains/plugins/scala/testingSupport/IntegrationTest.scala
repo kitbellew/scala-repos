@@ -141,13 +141,11 @@ trait IntegrationTest {
 
   protected def checkResultTreeHasExactNamedPath(
       root: AbstractTestProxy,
-      names: String*): Boolean =
-    checkResultTreeHasExactNamedPath(root, names)
+      names: String*): Boolean = checkResultTreeHasExactNamedPath(root, names)
 
   protected def checkResultTreeDoesNotHaveNodes(
       root: AbstractTestProxy,
-      names: String*): Boolean =
-    checkResultTreeDoesNotHaveNodes(root, names)
+      names: String*): Boolean = checkResultTreeDoesNotHaveNodes(root, names)
 
   protected def checkResultTreeDoesNotHaveNodes(
       root: AbstractTestProxy,
@@ -317,13 +315,16 @@ trait IntegrationTest {
       testNames: Iterable[String],
       sourceFile: String,
       sourceLine: Int) {
-    val testPathOpt =
-      getExactNamePathFromResultTree(testRoot, testNames, allowTail = true)
+    val testPathOpt = getExactNamePathFromResultTree(
+      testRoot,
+      testNames,
+      allowTail = true)
     assert(testPathOpt.isDefined)
     val test = testPathOpt.get.last
     val project = getProject
-    val location =
-      test.getLocation(project, GlobalSearchScope.projectScope(project))
+    val location = test.getLocation(
+      project,
+      GlobalSearchScope.projectScope(project))
     val psiElement = location.getPsiElement
     val psiFile = psiElement.getContainingFile
     val textRange = psiElement.getTextRange

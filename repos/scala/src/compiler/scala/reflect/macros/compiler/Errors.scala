@@ -22,10 +22,11 @@ trait Errors extends Traces {
 
   private def bundleRefError(message: String) = {
     val Applied(core, _, _) = macroDdef.rhs
-    val culprit = core match {
-      case Select(Applied(core, _, _), _) => core
-      case _                              => core
-    }
+    val culprit =
+      core match {
+        case Select(Applied(core, _, _), _) => core
+        case _                              => core
+      }
     abort(culprit.pos, message)
   }
 
@@ -115,10 +116,11 @@ trait Errors extends Traces {
           untypeMetalevel(tpe)
         else
           tpe
-      var pssPart = (pss map (ps =>
-        ps map (p =>
-          p.defStringSeenAs(
-            preprocess(p.info))) mkString ("(", ", ", ")"))).mkString
+      var pssPart =
+        (pss map (ps =>
+          ps map (p =>
+            p.defStringSeenAs(
+              preprocess(p.info))) mkString ("(", ", ", ")"))).mkString
       if (abbreviate)
         pssPart = abbreviateCoreAliases(pssPart)
       var retPart = preprocess(restpe).toString

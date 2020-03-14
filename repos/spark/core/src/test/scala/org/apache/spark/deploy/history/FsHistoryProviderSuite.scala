@@ -75,8 +75,10 @@ class FsHistoryProviderSuite
         EventLoggingListener.IN_PROGRESS
       else
         ""
-    val logUri =
-      EventLoggingListener.getLogPath(testDir.toURI, appId, appAttemptId)
+    val logUri = EventLoggingListener.getLogPath(
+      testDir.toURI,
+      appId,
+      appAttemptId)
     val logPath = new URI(logUri).getPath + ip
     new File(logPath)
   }
@@ -100,8 +102,11 @@ class FsHistoryProviderSuite
     )
 
     // Write a new-style application log.
-    val newAppCompressedComplete =
-      newLogFile("new1compressed", None, inProgress = false, Some("lzf"))
+    val newAppCompressedComplete = newLogFile(
+      "new1compressed",
+      None,
+      inProgress = false,
+      Some("lzf"))
     writeFile(
       newAppCompressedComplete,
       true,
@@ -358,9 +363,10 @@ class FsHistoryProviderSuite
   test("log cleaner") {
     val maxAge = TimeUnit.SECONDS.toMillis(10)
     val clock = new ManualClock(maxAge / 2)
-    val provider = new FsHistoryProvider(
-      createTestConf().set("spark.history.fs.cleaner.maxAge", s"${maxAge}ms"),
-      clock)
+    val provider =
+      new FsHistoryProvider(
+        createTestConf().set("spark.history.fs.cleaner.maxAge", s"${maxAge}ms"),
+        clock)
 
     val log1 = newLogFile("app1", Some("attempt1"), inProgress = false)
     writeFile(
@@ -417,8 +423,10 @@ class FsHistoryProviderSuite
   test("Event log copy") {
     val provider = new FsHistoryProvider(createTestConf())
     val logs = (1 to 2).map { i =>
-      val log =
-        newLogFile("downloadApp1", Some(s"attempt$i"), inProgress = false)
+      val log = newLogFile(
+        "downloadApp1",
+        Some(s"attempt$i"),
+        inProgress = false)
       writeFile(
         log,
         true,
@@ -439,19 +447,20 @@ class FsHistoryProviderSuite
       val outputStream = new ZipOutputStream(underlyingStream)
       provider.writeEventLogs("downloadApp1", Some(s"attempt$i"), outputStream)
       outputStream.close()
-      val inputStream = new ZipInputStream(
-        new ByteArrayInputStream(underlyingStream.toByteArray))
+      val inputStream =
+        new ZipInputStream(
+          new ByteArrayInputStream(underlyingStream.toByteArray))
       var totalEntries = 0
       var entry = inputStream.getNextEntry
       entry should not be null
       while (entry != null) {
-        val actual = new String(
-          ByteStreams.toByteArray(inputStream),
-          StandardCharsets.UTF_8)
-        val expected =
-          Files.toString(
-            logs.find(_.getName == entry.getName).get,
+        val actual =
+          new String(
+            ByteStreams.toByteArray(inputStream),
             StandardCharsets.UTF_8)
+        val expected = Files.toString(
+          logs.find(_.getName == entry.getName).get,
+          StandardCharsets.UTF_8)
         actual should be(expected)
         totalEntries += 1
         entry = inputStream.getNextEntry
@@ -541,8 +550,9 @@ class FsHistoryProviderSuite
       codec: Option[CompressionCodec],
       events: SparkListenerEvent*) = {
     val fstream = new FileOutputStream(file)
-    val cstream =
-      codec.map(_.compressedOutputStream(fstream)).getOrElse(fstream)
+    val cstream = codec
+      .map(_.compressedOutputStream(fstream))
+      .getOrElse(fstream)
     val bstream = new BufferedOutputStream(cstream)
     if (isNewFormat) {
       EventLoggingListener.initEventLog(new FileOutputStream(file))

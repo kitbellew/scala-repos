@@ -42,34 +42,36 @@ object Multipart {
       partHandler: Accumulator[Part[Source[ByteString, _]], Either[Result, A]])(
       implicit mat: Materializer): BodyParser[A] =
     BodyParser { request =>
-      val maybeBoundary = for {
-        mt <- request.mediaType
-        (_, value) <- mt.parameters.find(_._1.equalsIgnoreCase("boundary"))
-        boundary <- value
-      } yield boundary
+      val maybeBoundary =
+        for {
+          mt <- request.mediaType
+          (_, value) <- mt.parameters.find(_._1.equalsIgnoreCase("boundary"))
+          boundary <- value
+        } yield boundary
 
       maybeBoundary
         .map { boundary =>
-          val multipartFlow = Flow[ByteString]
-            .transform(() =>
-              new BodyPartParser(
-                boundary,
-                maxMemoryBufferSize,
-                maxHeaderBuffer))
-            .splitWhen(_.isLeft)
-            .prefixAndTail(1)
-            .map {
-              case (Seq(Left(part: FilePart[_])), body) =>
-                part.copy[Source[ByteString, _]](ref = body.collect {
-                  case Right(bytes) => bytes
-                })
-              case (Seq(Left(other)), ignored) =>
-                // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
-                // before it progresses onto the next element
-                ignored.runWith(Sink.cancelled)
-                other.asInstanceOf[Part[Nothing]]
-            }
-            .concatSubstreams
+          val multipartFlow =
+            Flow[ByteString]
+              .transform(() =>
+                new BodyPartParser(
+                  boundary,
+                  maxMemoryBufferSize,
+                  maxHeaderBuffer))
+              .splitWhen(_.isLeft)
+              .prefixAndTail(1)
+              .map {
+                case (Seq(Left(part: FilePart[_])), body) =>
+                  part.copy[Source[ByteString, _]](ref = body.collect {
+                    case Right(bytes) => bytes
+                  })
+                case (Seq(Left(other)), ignored) =>
+                  // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
+                  // before it progresses onto the next element
+                  ignored.runWith(Sink.cancelled)
+                  other.asInstanceOf[Part[Nothing]]
+              }
+              .concatSubstreams
 
           partHandler.through(multipartFlow)
 
@@ -91,13 +93,14 @@ object Multipart {
       implicit mat: Materializer): BodyParser[MultipartFormData[A]] =
     BodyParser { request =>
       partParser(maxMemoryBufferSize) {
-        val handleFileParts = Flow[Part[Source[ByteString, _]]].mapAsync(1) {
-          case filePart: FilePart[Source[ByteString, _]] =>
-            filePartHandler(
-              FileInfo(filePart.key, filePart.filename, filePart.contentType))
-              .run(filePart.ref)
-          case other: Part[Nothing] => Future.successful(other)
-        }
+        val handleFileParts =
+          Flow[Part[Source[ByteString, _]]].mapAsync(1) {
+            case filePart: FilePart[Source[ByteString, _]] =>
+              filePartHandler(
+                FileInfo(filePart.key, filePart.filename, filePart.contentType))
+                .run(filePart.ref)
+            case other: Part[Nothing] => Future.successful(other)
+          }
 
         val multipartAccumulator = Accumulator(
           Sink.fold[Seq[Part[A]], Part[A]](Vector.empty)(_ :+ _)).mapFuture {
@@ -402,12 +405,13 @@ object Multipart {
             "Header length exceeded buffer size of " + memoryBufferSize)
         case headerEnd =>
           val headerString = input.slice(headerStart, headerEnd).utf8String
-          val headers = headerString.lines.map { header =>
-            val key :: value = header.trim.split(":").toList
-            (
-              key.trim.toLowerCase(java.util.Locale.ENGLISH),
-              value.mkString(":").trim)
-          }.toMap
+          val headers =
+            headerString.lines.map { header =>
+              val key :: value = header.trim.split(":").toList
+              (
+                key.trim.toLowerCase(java.util.Locale.ENGLISH),
+                value.mkString(":").trim)
+            }.toMap
 
           val partStart = headerEnd + 4
 

@@ -35,12 +35,13 @@ private[saddle] object JoinHelper {
       rightLabels: Array[Int],
       max_groups: Int,
       how: JoinType): JoinResult = {
-    val (marker, counter) = how match {
-      case InnerJoin => (ijMarker, ijCounter)
-      case OuterJoin => (ojMarker, ojCounter)
-      case LeftJoin  => (ljMarker, ljCounter)
-      case RightJoin => sys.error("Cannot call directly with RightJoin")
-    }
+    val (marker, counter) =
+      how match {
+        case InnerJoin => (ijMarker, ijCounter)
+        case OuterJoin => (ojMarker, ojCounter)
+        case LeftJoin  => (ljMarker, ljCounter)
+        case RightJoin => sys.error("Cannot call directly with RightJoin")
+      }
 
     var count = 0
 

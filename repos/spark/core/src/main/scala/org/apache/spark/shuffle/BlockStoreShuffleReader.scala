@@ -42,18 +42,19 @@ private[spark] class BlockStoreShuffleReader[K, C](
 
   /** Read the combined key-values for this reduce task */
   override def read(): Iterator[Product2[K, C]] = {
-    val blockFetcherItr = new ShuffleBlockFetcherIterator(
-      context,
-      blockManager.shuffleClient,
-      blockManager,
-      mapOutputTracker.getMapSizesByExecutorId(
-        handle.shuffleId,
-        startPartition,
-        endPartition),
-      // Note: we use getSizeAsMb when no suffix is provided for backwards compatibility
-      SparkEnv.get.conf
-        .getSizeAsMb("spark.reducer.maxSizeInFlight", "48m") * 1024 * 1024,
-      SparkEnv.get.conf.getInt("spark.reducer.maxReqsInFlight", Int.MaxValue))
+    val blockFetcherItr =
+      new ShuffleBlockFetcherIterator(
+        context,
+        blockManager.shuffleClient,
+        blockManager,
+        mapOutputTracker.getMapSizesByExecutorId(
+          handle.shuffleId,
+          startPartition,
+          endPartition),
+        // Note: we use getSizeAsMb when no suffix is provided for backwards compatibility
+        SparkEnv.get.conf
+          .getSizeAsMb("spark.reducer.maxSizeInFlight", "48m") * 1024 * 1024,
+        SparkEnv.get.conf.getInt("spark.reducer.maxReqsInFlight", Int.MaxValue))
 
     // Wrap the streams for compression based on configuration
     val wrappedStreams = blockFetcherItr.map {
@@ -88,16 +89,16 @@ private[spark] class BlockStoreShuffleReader[K, C](
       if (dep.aggregator.isDefined) {
         if (dep.mapSideCombine) {
           // We are reading values that are already combined
-          val combinedKeyValuesIterator =
-            interruptibleIter.asInstanceOf[Iterator[(K, C)]]
+          val combinedKeyValuesIterator = interruptibleIter
+            .asInstanceOf[Iterator[(K, C)]]
           dep.aggregator.get
             .combineCombinersByKey(combinedKeyValuesIterator, context)
         } else {
           // We don't know the value type, but also don't care -- the dependency *should*
           // have made sure its compatible w/ this aggregator, which will convert the value
           // type to the combined type C
-          val keyValuesIterator =
-            interruptibleIter.asInstanceOf[Iterator[(K, Nothing)]]
+          val keyValuesIterator = interruptibleIter
+            .asInstanceOf[Iterator[(K, Nothing)]]
           dep.aggregator.get.combineValuesByKey(keyValuesIterator, context)
         }
       } else {

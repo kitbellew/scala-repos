@@ -28,8 +28,7 @@ sealed trait TextMessage extends Message {
 //#message-model
 object TextMessage {
   def apply(text: String): Strict = Strict(text)
-  def apply(textStream: Source[String, Any]): TextMessage =
-    Streamed(textStream)
+  def apply(textStream: Source[String, Any]): TextMessage = Streamed(textStream)
 
   /**
     * A strict [[TextMessage]] that contains the complete data as a [[String]].

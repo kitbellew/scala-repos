@@ -43,8 +43,7 @@ class SubFlow[-In, +Out, +Mat](
     *
     * This is identical in effect to `mergeSubstreamsWithParallelism(Integer.MAX_VALUE)`.
     */
-  def mergeSubstreams(): Flow[In, Out, Mat] =
-    new Flow(delegate.mergeSubstreams)
+  def mergeSubstreams(): Flow[In, Out, Mat] = new Flow(delegate.mergeSubstreams)
 
   /**
     * Flatten the sub-flows back into the super-flow by performing a merge
@@ -444,8 +443,7 @@ class SubFlow[-In, +Out, +Mat](
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-      : SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.reduce(f.apply))
+      : SubFlow[In, Out, Mat] = new SubFlow(delegate.reduce(f.apply))
 
   /**
     * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
@@ -572,8 +570,7 @@ class SubFlow[-In, +Out, +Mat](
     *
     * '''Cancels when''' downstream cancels
     */
-  def drop(n: Long): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.drop(n))
+  def drop(n: Long): SubFlow[In, Out, Mat] = new SubFlow(delegate.drop(n))
 
   /**
     * Discard the elements received within the given duration at beginning of the stream.
@@ -682,8 +679,7 @@ class SubFlow[-In, +Out, +Mat](
     *
     * '''Cancels when''' the defined number of elements has been taken or downstream cancels
     */
-  def take(n: Long): SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.take(n))
+  def take(n: Long): SubFlow[In, Out, Mat] = new SubFlow(delegate.take(n))
 
   /**
     * Terminate processing (and cancel the upstream publisher) after the given
@@ -936,8 +932,7 @@ class SubFlow[-In, +Out, +Mat](
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : SubFlow[In, T, Mat] =
-    new SubFlow(delegate.flatMapConcat(x ⇒ f(x)))
+      : SubFlow[In, T, Mat] = new SubFlow(delegate.flatMapConcat(x ⇒ f(x)))
 
   /**
     * Transform each input element into a `Source` of output elements that is
@@ -1298,8 +1293,7 @@ class SubFlow[-In, +Out, +Mat](
   /**
     * Put an asynchronous boundary around this `SubFlow`
     */
-  def async: SubFlow[In, Out, Mat] =
-    new SubFlow(delegate.async)
+  def async: SubFlow[In, Out, Mat] = new SubFlow(delegate.async)
 
   /**
     * Logs elements flowing through the stream as well as completion and erroring.

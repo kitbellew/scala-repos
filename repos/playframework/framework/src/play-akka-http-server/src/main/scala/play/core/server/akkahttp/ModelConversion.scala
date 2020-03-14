@@ -96,16 +96,17 @@ private[akkahttp] class ModelConversion(
     * Convert the request headers of an Akka `HttpRequest` to a Play `Headers` object.
     */
   private def convertRequestHeaders(request: HttpRequest): Headers = {
-    val entityHeaders: Seq[(String, String)] = request.entity match {
-      case HttpEntity.Strict(contentType, _) =>
-        Seq((CONTENT_TYPE, contentType.value))
-      case HttpEntity.Default(contentType, contentLength, _) =>
-        Seq(
-          (CONTENT_TYPE, contentType.value),
-          (CONTENT_LENGTH, contentLength.toString))
-      case HttpEntity.Chunked(contentType, _) =>
-        Seq((CONTENT_TYPE, contentType.value))
-    }
+    val entityHeaders: Seq[(String, String)] =
+      request.entity match {
+        case HttpEntity.Strict(contentType, _) =>
+          Seq((CONTENT_TYPE, contentType.value))
+        case HttpEntity.Default(contentType, contentLength, _) =>
+          Seq(
+            (CONTENT_TYPE, contentType.value),
+            (CONTENT_LENGTH, contentLength.toString))
+        case HttpEntity.Chunked(contentType, _) =>
+          Seq((CONTENT_TYPE, contentType.value))
+      }
     val normalHeaders: Seq[(String, String)] = request.headers
       .filter(_.isNot(`Raw-Request-URI`.lowercaseName))
       .map(rh => rh.name -> rh.value)
@@ -144,10 +145,14 @@ private[akkahttp] class ModelConversion(
     val result = ServerResultUtils.validateResult(requestHeaders, unvalidated)
     val convertedHeaders: AkkaHttpHeaders = convertResponseHeaders(
       result.header.headers)
-    val entity =
-      convertResultBody(requestHeaders, convertedHeaders, result, protocol)
-    val connectionHeader =
-      ServerResultUtils.determineConnectionHeader(requestHeaders, result)
+    val entity = convertResultBody(
+      requestHeaders,
+      convertedHeaders,
+      result,
+      protocol)
+    val connectionHeader = ServerResultUtils.determineConnectionHeader(
+      requestHeaders,
+      result)
     val closeHeader = connectionHeader.header.map(Connection(_))
     HttpResponse(
       status = result.header.status,
@@ -231,8 +236,8 @@ private[akkahttp] class ModelConversion(
     */
   private def convertResponseHeaders(
       playHeaders: Map[String, String]): AkkaHttpHeaders = {
-    val rawHeaders: Iterable[(String, String)] =
-      ServerResultUtils.splitSetCookieHeaders(playHeaders)
+    val rawHeaders: Iterable[(String, String)] = ServerResultUtils
+      .splitSetCookieHeaders(playHeaders)
     val convertedHeaders: Seq[HttpHeader] = convertHeaders(rawHeaders)
     val emptyHeaders = AkkaHttpHeaders(immutable.Seq.empty, None)
     convertedHeaders.foldLeft(emptyHeaders) {

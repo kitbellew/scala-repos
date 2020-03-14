@@ -297,10 +297,11 @@ class ScalaJSDefinedTest {
 
   @Test def anonymous_class_with_captures(): Unit = {
     val x = (() => 5)()
-    val obj = new js.Object {
-      val y = 10
-      def sum(z: Int): Int = x + y + z
-    }
+    val obj =
+      new js.Object {
+        val y = 10
+        def sum(z: Int): Int = x + y + z
+      }
 
     val dyn = obj.asInstanceOf[js.Dynamic]
     assertEquals(10, dyn.y)

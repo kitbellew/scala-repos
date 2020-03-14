@@ -44,12 +44,14 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
 
   object Resolved {
     def apply(name: String, addresses: Iterable[InetAddress]): Resolved = {
-      val ipv4: immutable.Seq[Inet4Address] = addresses.collect({
-        case a: Inet4Address ⇒ a
-      })(breakOut)
-      val ipv6: immutable.Seq[Inet6Address] = addresses.collect({
-        case a: Inet6Address ⇒ a
-      })(breakOut)
+      val ipv4: immutable.Seq[Inet4Address] =
+        addresses.collect({
+          case a: Inet4Address ⇒ a
+        })(breakOut)
+      val ipv6: immutable.Seq[Inet6Address] =
+        addresses.collect({
+          case a: Inet6Address ⇒ a
+        })(breakOut)
       Resolved(name, ipv4, ipv6)
     }
   }

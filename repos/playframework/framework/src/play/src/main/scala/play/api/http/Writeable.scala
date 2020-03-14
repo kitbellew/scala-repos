@@ -128,8 +128,8 @@ trait DefaultWriteables extends LowPriorityWriteables {
   /**
     * Straightforward `Writeable` for Array[Byte] values.
     */
-  implicit val wByteArray: Writeable[Array[Byte]] =
-    Writeable(bytes => ByteString(bytes))
+  implicit val wByteArray: Writeable[Array[Byte]] = Writeable(bytes =>
+    ByteString(bytes))
 
   /**
     * Straightforward `Writeable` for ByteString values.

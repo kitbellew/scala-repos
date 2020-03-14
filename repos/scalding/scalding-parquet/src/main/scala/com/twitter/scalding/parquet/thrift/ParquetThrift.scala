@@ -46,18 +46,20 @@ trait ParquetThriftBase[T]
   def config: ParquetValueScheme.Config[T] = {
     val config = new ParquetValueScheme.Config[T]
       .withRecordClass(mf.runtimeClass.asInstanceOf[Class[T]])
-    val configWithFp = withFilter match {
-      case Some(fp) => config.withFilterPredicate(fp)
-      case None     => config
-    }
+    val configWithFp =
+      withFilter match {
+        case Some(fp) => config.withFilterPredicate(fp)
+        case None     => config
+      }
 
-    val configWithProjection = columnProjectionString match {
-      case Some(s @ DeprecatedColumnProjectionString(_)) =>
-        configWithFp.withProjectionString(s.asSemicolonString)
-      case Some(s @ StrictColumnProjectionString(_)) =>
-        configWithFp.withStrictProjectionString(s.asSemicolonString)
-      case None => configWithFp
-    }
+    val configWithProjection =
+      columnProjectionString match {
+        case Some(s @ DeprecatedColumnProjectionString(_)) =>
+          configWithFp.withProjectionString(s.asSemicolonString)
+        case Some(s @ StrictColumnProjectionString(_)) =>
+          configWithFp.withStrictProjectionString(s.asSemicolonString)
+        case None => configWithFp
+      }
 
     configWithProjection
   }

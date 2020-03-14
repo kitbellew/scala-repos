@@ -37,9 +37,9 @@ private[math] object Conversion {
     *  Holds the maximal exponent for each radix, so that
     *  radix<sup>digitFitInInt[radix]</sup> fit in an {@code int} (32 bits).
     */
-  final val DigitFitInInt =
-    Array[Int](-1, -1, 31, 19, 15, 13, 11, 11, 10, 9, 9, 8, 8, 8, 8, 7, 7, 7, 7,
-      7, 7, 7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 5)
+  final val DigitFitInInt = Array[Int](-1, -1, 31, 19, 15, 13, 11, 11, 10, 9, 9,
+    8, 8, 8, 8, 7, 7, 7, 7, 7, 7, 7, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+    5)
 
   /** Precomputed maximal powers of radices.
     *

@@ -239,8 +239,9 @@ class HMACSHA1CookieSigner @Inject() (config: CryptoConfig)
     * @return A hexadecimal encoded signature.
     */
   def sign(message: String, key: Array[Byte]): String = {
-    val mac = config.provider.fold(Mac.getInstance("HmacSHA1"))(p =>
-      Mac.getInstance("HmacSHA1", p))
+    val mac =
+      config.provider.fold(Mac.getInstance("HmacSHA1"))(p =>
+        Mac.getInstance("HmacSHA1", p))
     mac.init(new SecretKeySpec(key, "HmacSHA1"))
     Codecs.toHexString(mac.doFinal(message.getBytes("utf-8")))
   }
@@ -525,31 +526,33 @@ class CryptoConfigParser @Inject() (
      *
      * To achieve 4, using the location of application.conf to generate the secret should ensure this.
      */
-    val secret = config.getDeprecated[Option[String]](
-      "play.crypto.secret",
-      "application.secret") match {
-      case (Some("changeme") | Some(Blank()) | None)
-          if environment.mode == Mode.Prod =>
-        logger.error(
-          "The application secret has not been set, and we are in prod mode. Your application is not secure.")
-        logger.error(
-          "To set the application secret, please read http://playframework.com/documentation/latest/ApplicationSecret")
-        throw new PlayException(
-          "Configuration error",
-          "Application secret not set")
-      case Some("changeme") | Some(Blank()) | None =>
-        val appConfLocation = environment.resource("application.conf")
-        // Try to generate a stable secret. Security is not the issue here, since this is just for tests and dev mode.
-        val secret = appConfLocation.fold(
-          // No application.conf?  Oh well, just use something hard coded.
-          "she sells sea shells on the sea shore"
-        )(_.toString)
-        val md5Secret = DigestUtils.md5Hex(secret)
-        logger.debug(
-          s"Generated dev mode secret $md5Secret for app at ${appConfLocation.getOrElse("unknown location")}")
-        md5Secret
-      case Some(s) => s
-    }
+    val secret =
+      config.getDeprecated[Option[String]](
+        "play.crypto.secret",
+        "application.secret") match {
+        case (Some("changeme") | Some(Blank()) | None)
+            if environment.mode == Mode.Prod =>
+          logger.error(
+            "The application secret has not been set, and we are in prod mode. Your application is not secure.")
+          logger.error(
+            "To set the application secret, please read http://playframework.com/documentation/latest/ApplicationSecret")
+          throw new PlayException(
+            "Configuration error",
+            "Application secret not set")
+        case Some("changeme") | Some(Blank()) | None =>
+          val appConfLocation = environment.resource("application.conf")
+          // Try to generate a stable secret. Security is not the issue here, since this is just for tests and dev mode.
+          val secret =
+            appConfLocation.fold(
+              // No application.conf?  Oh well, just use something hard coded.
+              "she sells sea shells on the sea shore"
+            )(_.toString)
+          val md5Secret = DigestUtils.md5Hex(secret)
+          logger.debug(
+            s"Generated dev mode secret $md5Secret for app at ${appConfLocation.getOrElse("unknown location")}")
+          md5Secret
+        case Some(s) => s
+      }
 
     val provider = config.get[Option[String]]("play.crypto.provider")
     val transformation = config.get[String]("play.crypto.aes.transformation")

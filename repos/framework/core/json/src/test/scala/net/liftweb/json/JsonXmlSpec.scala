@@ -36,17 +36,19 @@ object JsonXmlSpec
   import scala.xml.Node
 
   "Valid XML can be converted to JSON and back (symmetric op)" in {
-    val conversion = (xml: Node) => {
-      toXml(toJson(xml)).head == xml
-    }
+    val conversion =
+      (xml: Node) => {
+        toXml(toJson(xml)).head == xml
+      }
     forAll(conversion)
   }
 
   "JSON can be converted to XML, and back to valid JSON (non symmetric op)" in {
-    val conversion = (json: JValue) => {
-      parse(compactRender(toJson(toXml(json))));
-      true
-    }
+    val conversion =
+      (json: JValue) => {
+        parse(compactRender(toJson(toXml(json))));
+        true
+      }
     forAll(conversion)
   }
 

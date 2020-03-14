@@ -160,12 +160,13 @@ object Algorithms {
 
     val withAndPattern = new scala.util.matching.Regex("(?i)with|and")
     val tokens: Array[String] = "/".r.split(algorithm)
-    val elements = (for {
-      t <- tokens
-      name <- withAndPattern.split(t)
-    } yield {
-      name
-    }).toSet
+    val elements =
+      (for {
+        t <- tokens
+        name <- withAndPattern.split(t)
+      } yield {
+        name
+      }).toSet
 
     if (elements.contains("SHA1") && !elements.contains("SHA-1")) {
       elements + "SHA-1"

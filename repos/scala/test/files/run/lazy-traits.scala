@@ -7,8 +7,7 @@ trait A {
 
 /** Simple class which mixes in one lazy val. */
 class Cls extends AnyRef with A {
-  override def toString =
-    "z1 = " + z1
+  override def toString = "z1 = " + z1
 }
 
 /** Own lazy val + one mixed in. */
@@ -18,8 +17,7 @@ class Cls2 extends AnyRef with A {
     "lazy z2"
   }
 
-  override def toString =
-    "z1 = " + z1 + " z2 = " + z2
+  override def toString = "z1 = " + z1 + " z2 = " + z2
 }
 
 trait B extends A {
@@ -34,8 +32,7 @@ class ClsB extends Object with B {
     println("<forced zc1>")
     "lazy zc1"
   }
-  override def toString =
-    "z1 = " + z1 + " zb1 = " + zb1 + " zc1 = " + zc1
+  override def toString = "z1 = " + z1 + " zb1 = " + zb1 + " zc1 = " + zc1
 }
 
 /** Class with 32 lazy fields mixes in one more. */

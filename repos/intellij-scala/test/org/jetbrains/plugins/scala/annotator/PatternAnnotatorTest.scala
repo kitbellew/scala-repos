@@ -209,8 +209,7 @@ class PatternAnnotatorTest
   }
 
   def testIncompatibleExtractorMatchStmtNonFinalType() = {
-    val code =
-      """
+    val code = """
         |class B
         |case class Foo(i: B)
         |def foo(f: Foo) = f match {
@@ -240,8 +239,7 @@ class PatternAnnotatorTest
   }
 
   def testErrorFinalClass(): Unit = {
-    val code =
-      """
+    val code = """
         |object Test {
         |  def foo (b: Bar, a: A) = {
         |    b match {
@@ -273,20 +271,17 @@ class PatternAnnotatorTest
   }
 
   def testCannotBeUsed() {
-    val anyValCode =
-      """
+    val anyValCode = """
         |1 match {
         |  case _: AnyVal =>
         |}
       """.stripMargin.replace("\r", "")
-    val nullCode =
-      """
+    val nullCode = """
         |2 match {
         |  case n: Null =>
         |}
       """.stripMargin.replace("\r", "")
-    val nothingCode =
-      """
+    val nothingCode = """
         |3 match {
         |  case n: Nothing =>
         |}
@@ -316,8 +311,7 @@ class PatternAnnotatorTest
   }
 
   def testAliasesAreExpanded(): Unit = {
-    val code =
-      """
+    val code = """
         |case class Foo(x: Foo.Bar)
         |
         |object Foo {
@@ -347,8 +341,7 @@ class PatternAnnotatorTest
 
   def testExpectedTypeIsTupleIfThereIsOneArgumentAndMoreThanOneArgumentIsReturnedByUnapplySCL8115()
       : Unit = {
-    val code =
-      """
+    val code = """
         |object unapplier { def unapply(x: Int) = Some((x, x)) }
         |val tupleTaker = (_: (Int, Int)) => ()
         |
@@ -360,8 +353,7 @@ class PatternAnnotatorTest
   }
 
   def testVarAsStableIdentifierPattern(): Unit = {
-    val code =
-      """
+    val code = """
         |object CaseIdentifierBug {
         |  var ONE = 1   // note var, not val
         |  var two = 2
@@ -388,8 +380,7 @@ class PatternAnnotatorTest
   }
 
   def testVarClassParameterAsStableIdPattern(): Unit = {
-    val code =
-      """
+    val code = """
         |class Baz(var ONE: Int) {
         |  1 match {
         |    case ONE => println("1") // bad, but not flagged
@@ -470,8 +461,7 @@ class PatternAnnotatorTest
   }
 
   def testInfixExpressionVararsgs(): Unit = {
-    val code =
-      """
+    val code = """
         |object Bar {
         |  object Bar {
         |    val x: AnyRef = null
@@ -512,8 +502,7 @@ class PatternAnnotatorTest
   }
 
   def testNumberOfArgumentsCons(): Unit = {
-    val code =
-      """
+    val code = """
         |object Bar {
         |  List(1, 2, 3) match {
         |    case 1 :: 2 :: 3 :: Nil =>
@@ -550,8 +539,7 @@ class PatternAnnotatorTest
   }
 
   def testNonFinalConstructorPattern(): Unit = {
-    val text =
-      """
+    val text = """
         |object Moo {
         |  (1, 2) match {
         |    case ScFunctionType(_) =>

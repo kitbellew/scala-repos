@@ -73,89 +73,93 @@ object CanConvolve extends SerializableLogging {
 
         //the following will pad data on the left and right, depending upon OptOverhang
         //the padded data will be sent to a full correlation (correlateLoopNoOverhang)
-        val paddedData = overhang /*optConvolveOverhangParsed*/ match {
+        val paddedData =
+          overhang /*optConvolveOverhangParsed*/ match {
 
-          //No overhang
-          case OptOverhang.None => data
+            //No overhang
+            case OptOverhang.None => data
 
-          //Overhang as much as possible
-          case OptOverhang.Full =>
-            DenseVector.vertcat(
-              padding match {
-                case OptPadding.Cyclical => data(dl - (kl - 1) to dl - 1)
-                case OptPadding.Boundary =>
-                  DenseVector.ones[T](kernel.length - 1) * data(0)
-                case OptPadding.Zero => DenseVector.zeros[T](kernel.length - 1)
-                case OptPadding.ValueOpt(v: T) =>
-                  DenseVector.ones[T](kernel.length - 1) * v
-                case op =>
-                  require(false, "cannot handle OptPadding value " + op);
-                  DenseVector[T]()
-              },
-              data,
-              padding match {
-                case OptPadding.Cyclical => data(0 to kl - 1)
-                case OptPadding.Boundary =>
-                  DenseVector.ones[T](kernel.length - 1) * data(dl - 1)
-                case OptPadding.Zero => DenseVector.zeros[T](kernel.length - 1)
-                case OptPadding.ValueOpt(v: T) =>
-                  DenseVector.ones[T](kernel.length - 1) * v
-                case op =>
-                  require(false, "cannot handle OptPadding value " + op);
-                  DenseVector[T]()
-              }
-            )
+            //Overhang as much as possible
+            case OptOverhang.Full =>
+              DenseVector.vertcat(
+                padding match {
+                  case OptPadding.Cyclical => data(dl - (kl - 1) to dl - 1)
+                  case OptPadding.Boundary =>
+                    DenseVector.ones[T](kernel.length - 1) * data(0)
+                  case OptPadding.Zero =>
+                    DenseVector.zeros[T](kernel.length - 1)
+                  case OptPadding.ValueOpt(v: T) =>
+                    DenseVector.ones[T](kernel.length - 1) * v
+                  case op =>
+                    require(false, "cannot handle OptPadding value " + op);
+                    DenseVector[T]()
+                },
+                data,
+                padding match {
+                  case OptPadding.Cyclical => data(0 to kl - 1)
+                  case OptPadding.Boundary =>
+                    DenseVector.ones[T](kernel.length - 1) * data(dl - 1)
+                  case OptPadding.Zero =>
+                    DenseVector.zeros[T](kernel.length - 1)
+                  case OptPadding.ValueOpt(v: T) =>
+                    DenseVector.ones[T](kernel.length - 1) * v
+                  case op =>
+                    require(false, "cannot handle OptPadding value " + op);
+                    DenseVector[T]()
+                }
+              )
 
-          //Overhangs on both sides will sum to kernel.length - 1, thereby giving the same output length as input length
-          //Handy for FIR filtering
-          case OptOverhang.PreserveLength => {
+            //Overhangs on both sides will sum to kernel.length - 1, thereby giving the same output length as input length
+            //Handy for FIR filtering
+            case OptOverhang.PreserveLength => {
 
-            val leftPadding: Int =
-              if (isOdd(kernel.length))
-                (kernel.length - 1) / 2
-              else
-                (kernel.length / 2 - 1)
-            val rightPadding = kernel.length - leftPadding - 1
+              val leftPadding: Int =
+                if (isOdd(kernel.length))
+                  (kernel.length - 1) / 2
+                else
+                  (kernel.length / 2 - 1)
+              val rightPadding = kernel.length - leftPadding - 1
 
-            //Actual padding
-            DenseVector.vertcat(
-              padding match {
-                case OptPadding.Cyclical => data(dl - leftPadding to dl - 1)
-                case OptPadding.Boundary =>
-                  DenseVector.ones[T](leftPadding /*kernel.length-1*/ ) * data(
-                    0)
-                case OptPadding.Zero => DenseVector.zeros[T](leftPadding)
-                case OptPadding.ValueOpt(v: T) =>
-                  DenseVector.ones[T](leftPadding) * v
-                case op =>
-                  require(false, "cannot handle OptPadding value " + op);
-                  DenseVector[T]()
-              },
-              data,
-              padding match {
-                case OptPadding.Cyclical => data(0 to rightPadding - 1)
-                case OptPadding.Boundary =>
-                  DenseVector.ones[T](rightPadding) * data(dl - 1)
-                case OptPadding.Zero => DenseVector.zeros[T](rightPadding)
-                case OptPadding.ValueOpt(v: T) =>
-                  DenseVector.ones[T](rightPadding) * v
-                case op =>
-                  require(false, "cannot handle OptPadding value " + op);
-                  DenseVector[T]()
-              }
-            )
+              //Actual padding
+              DenseVector.vertcat(
+                padding match {
+                  case OptPadding.Cyclical => data(dl - leftPadding to dl - 1)
+                  case OptPadding.Boundary =>
+                    DenseVector.ones[T](
+                      leftPadding /*kernel.length-1*/ ) * data(0)
+                  case OptPadding.Zero => DenseVector.zeros[T](leftPadding)
+                  case OptPadding.ValueOpt(v: T) =>
+                    DenseVector.ones[T](leftPadding) * v
+                  case op =>
+                    require(false, "cannot handle OptPadding value " + op);
+                    DenseVector[T]()
+                },
+                data,
+                padding match {
+                  case OptPadding.Cyclical => data(0 to rightPadding - 1)
+                  case OptPadding.Boundary =>
+                    DenseVector.ones[T](rightPadding) * data(dl - 1)
+                  case OptPadding.Zero => DenseVector.zeros[T](rightPadding)
+                  case OptPadding.ValueOpt(v: T) =>
+                    DenseVector.ones[T](rightPadding) * v
+                  case op =>
+                    require(false, "cannot handle OptPadding value " + op);
+                    DenseVector[T]()
+                }
+              )
+            }
+            case oc =>
+              require(false, "cannot handle OptOverhang value " + oc);
+              data
           }
-          case oc =>
-            require(false, "cannot handle OptOverhang value " + oc);
-            data
-        }
 
         val fullOptRangeLength = paddedData.length - kernel.length + 1
-        val parsedOptRange = range match {
-          case OptRange.All => 0 until fullOptRangeLength
-          case RangeOpt(negativeR) =>
-            negativeR.getRangeWithoutNegativeIndexes(fullOptRangeLength)
-        }
+        val parsedOptRange =
+          range match {
+            case OptRange.All => 0 until fullOptRangeLength
+            case RangeOpt(negativeR) =>
+              negativeR.getRangeWithoutNegativeIndexes(fullOptRangeLength)
+          }
 
         //Actual implementation
         if (correlate)
@@ -213,8 +217,7 @@ object CanConvolve extends SerializableLogging {
       kernel: KernelType,
       range: Range)(implicit
       canCorrelateNoOverhang: CanCorrelateNoOverhang[Input, KernelType, Output])
-      : Output =
-    canCorrelateNoOverhang(data, kernel, range)
+      : Output = canCorrelateNoOverhang(data, kernel, range)
   @expand
   @expand.valify
   implicit def correlateLoopNoOverhangRangeT[@expand.args(
@@ -244,17 +247,18 @@ object CanConvolve extends SerializableLogging {
         val tempRange = range.par
         val zero = 0.asInstanceOf[T]
 
-        val tempArr = tempRange
-          .map((count: Int) => {
-            var ki: Int = 0
-            var sum = zero
-            while (ki < kernel.length) {
-              sum = sum + dataVect(count + ki) * kernelVect(ki)
-              ki = ki + 1
-            }
-            sum
-          })
-          .toArray
+        val tempArr =
+          tempRange
+            .map((count: Int) => {
+              var ki: Int = 0
+              var sum = zero
+              while (ki < kernel.length) {
+                sum = sum + dataVect(count + ki) * kernelVect(ki)
+                ki = ki + 1
+              }
+              sum
+            })
+            .toArray
 
         DenseVector(tempArr)
       }
@@ -288,17 +292,18 @@ object CanConvolve extends SerializableLogging {
         val kernelL = convert(kernel, Long).toScalaVector()
 
         val tempRange = range.par
-        val tempArr = tempRange
-          .map((count: Int) => {
-            var ki: Int = 0
-            var sum = 0L
-            while (ki < kernel.length) {
-              sum = sum + dataL(count + ki) * kernelL(ki)
-              ki = ki + 1
-            }
-            sum.toInt
-          })
-          .toArray
+        val tempArr =
+          tempRange
+            .map((count: Int) => {
+              var ki: Int = 0
+              var sum = 0L
+              while (ki < kernel.length) {
+                sum = sum + dataL(count + ki) * kernelL(ki)
+                ki = ki + 1
+              }
+              sum.toInt
+            })
+            .toArray
         DenseVector[Int](tempArr)
 //        val tempRangeVect = range.toVector
 //        val tempArr = Array[Int](tempRangeVect.length)

@@ -44,8 +44,9 @@ case class APIKeyRecord(
     isRoot: Boolean)
 
 object APIKeyRecord {
-  implicit val apiKeyRecordIso =
-    Iso.hlist(APIKeyRecord.apply _, APIKeyRecord.unapply _)
+  implicit val apiKeyRecordIso = Iso.hlist(
+    APIKeyRecord.apply _,
+    APIKeyRecord.unapply _)
 
   val schemaV1 =
     "apiKey" :: "name" :: "description" :: ("issuerKey" ||| "(undefined)") :: "grants" :: "isRoot" :: HNil
@@ -56,14 +57,18 @@ object APIKeyRecord {
   val schemaV0 =
     "tid" :: "name" :: "description" :: ("cid" ||| "(undefined)") :: "gids" :: ("isRoot" ||| false) :: HNil
 
-  val decomposerV1: Decomposer[APIKeyRecord] =
-    decomposerV[APIKeyRecord](schemaV1, Some("1.0".v))
-  val extractorV2: Extractor[APIKeyRecord] =
-    extractorV[APIKeyRecord](schemaV1, Some("1.0".v))
-  val extractorV1: Extractor[APIKeyRecord] =
-    extractorV[APIKeyRecord](schemaV1, None)
-  val extractorV0: Extractor[APIKeyRecord] =
-    extractorV[APIKeyRecord](schemaV0, None)
+  val decomposerV1: Decomposer[APIKeyRecord] = decomposerV[APIKeyRecord](
+    schemaV1,
+    Some("1.0".v))
+  val extractorV2: Extractor[APIKeyRecord] = extractorV[APIKeyRecord](
+    schemaV1,
+    Some("1.0".v))
+  val extractorV1: Extractor[APIKeyRecord] = extractorV[APIKeyRecord](
+    schemaV1,
+    None)
+  val extractorV0: Extractor[APIKeyRecord] = extractorV[APIKeyRecord](
+    schemaV0,
+    None)
 
   implicit val decomposer: Decomposer[APIKeyRecord] = decomposerV1
   implicit val extractor: Extractor[APIKeyRecord] =

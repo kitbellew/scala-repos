@@ -184,11 +184,12 @@ class ScalaControlFlowBuilder(
   override def visitReferenceExpression(ref: ScReferenceExpression) {
     ref.qualifier match {
       case None =>
-        val instr = new ReadWriteVariableInstruction(
-          inc,
-          ref,
-          policy.usedVariable(ref),
-          ScalaPsiUtil.isLValue(ref))
+        val instr =
+          new ReadWriteVariableInstruction(
+            inc,
+            ref,
+            policy.usedVariable(ref),
+            ScalaPsiUtil.isLValue(ref))
         addNode(instr)
         checkPendingEdges(instr)
       case Some(qual) => qual.accept(this)
@@ -465,36 +466,39 @@ class ScalaControlFlowBuilder(
   }
 
   private def addFreeVariables(paramOwner: ScalaPsiElement) {
-    val parameters = paramOwner match {
-      case owner: ScParameterOwner   => owner.parameters
-      case ScFunctionExpr(params, _) => params
-      case _                         => return
-    }
+    val parameters =
+      paramOwner match {
+        case owner: ScParameterOwner   => owner.parameters
+        case ScFunctionExpr(params, _) => params
+        case _                         => return
+      }
     val collectedRefs = ArrayBuffer[ScReferenceExpression]()
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitReferenceExpression(ref: ScReferenceExpression) {
-        if (ref.qualifier.nonEmpty)
-          return
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitReferenceExpression(ref: ScReferenceExpression) {
+          if (ref.qualifier.nonEmpty)
+            return
 
-        ref.resolve() match {
-          case p: ScParameter if parameters.contains(p) =>
-          case named: PsiNamedElement
-              if !PsiTreeUtil.isAncestor(paramOwner, named, false) && policy
-                .isElementAccepted(named) =>
-            collectedRefs += ref
-          case _ =>
+          ref.resolve() match {
+            case p: ScParameter if parameters.contains(p) =>
+            case named: PsiNamedElement
+                if !PsiTreeUtil.isAncestor(paramOwner, named, false) && policy
+                  .isElementAccepted(named) =>
+              collectedRefs += ref
+            case _ =>
+          }
         }
       }
-    }
 
     paramOwner.accept(visitor)
 
     for (ref <- collectedRefs) {
-      val instr = new ReadWriteVariableInstruction(
-        inc,
-        ref,
-        policy.usedVariable(ref),
-        ScalaPsiUtil.isLValue(ref))
+      val instr =
+        new ReadWriteVariableInstruction(
+          inc,
+          ref,
+          policy.usedVariable(ref),
+          ScalaPsiUtil.isLValue(ref))
       addNode(instr)
       checkPendingEdges(instr)
     }
@@ -525,23 +529,25 @@ class ScalaControlFlowBuilder(
   case class FinallyInfo(fb: ScFinallyBlock) extends HandleInfo(fb)
 
   override def visitTryExpression(tryStmt: ScTryStmt) {
-    val handledExnTypes = tryStmt.catchBlock match {
-      case None => Nil
-      case Some(cb) =>
-        cb.expression match {
-          case Some(b: ScBlockExpr) if b.hasCaseClauses =>
-            for (t <- b.caseClauses.toSeq.flatMap(_.caseClauses))
-              yield CatchInfo(t)
-          case _ => Nil
-        }
-    }
+    val handledExnTypes =
+      tryStmt.catchBlock match {
+        case None => Nil
+        case Some(cb) =>
+          cb.expression match {
+            case Some(b: ScBlockExpr) if b.hasCaseClauses =>
+              for (t <- b.caseClauses.toSeq.flatMap(_.caseClauses))
+                yield CatchInfo(t)
+            case _ => Nil
+          }
+      }
     myCatchedExnStack pushAll handledExnTypes
     var catchedExnCount = handledExnTypes.size
 
-    val fBlock = tryStmt.finallyBlock match {
-      case None    => null
-      case Some(x) => x
-    }
+    val fBlock =
+      tryStmt.finallyBlock match {
+        case None    => null
+        case Some(x) => x
+      }
     if (fBlock != null) {
       myCatchedExnStack push FinallyInfo(fBlock)
       catchedExnCount += 1

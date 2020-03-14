@@ -29,13 +29,15 @@ import java.util.UUID
 import scalaz.{Failure, Success}
 
 package object serialization {
-  implicit val uuidDecomposer: Decomposer[UUID] = new Decomposer[UUID] {
-    def decompose(u: UUID) = JString(u.toString)
-  }
+  implicit val uuidDecomposer: Decomposer[UUID] =
+    new Decomposer[UUID] {
+      def decompose(u: UUID) = JString(u.toString)
+    }
 
-  implicit val uuidExtractor: Extractor[UUID] = new Extractor[UUID] {
-    def validated(jv: JValue) = jv.validated[String].map(UUID.fromString)
-  }
+  implicit val uuidExtractor: Extractor[UUID] =
+    new Extractor[UUID] {
+      def validated(jv: JValue) = jv.validated[String].map(UUID.fromString)
+    }
 
   implicit val mimeTypeDecomposer: Decomposer[MimeType] =
     new Decomposer[MimeType] {

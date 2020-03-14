@@ -65,8 +65,8 @@ private[cluster] class Reachability private (
   private class Cache {
     val (observerRowsMap, allUnreachable, allTerminated) = {
       if (records.isEmpty) {
-        val observerRowsMap =
-          Map.empty[UniqueAddress, Map[UniqueAddress, Reachability.Record]]
+        val observerRowsMap = Map
+          .empty[UniqueAddress, Map[UniqueAddress, Reachability.Record]]
         val allTerminated = Set.empty[UniqueAddress]
         val allUnreachable = Set.empty[UniqueAddress]
         (observerRowsMap, allUnreachable, allTerminated)
@@ -80,10 +80,11 @@ private[cluster] class Reachability private (
           new SetBuilder[UniqueAddress, Set[UniqueAddress]](Set.empty)
 
         records foreach { r ⇒
-          val m = mapBuilder.get(r.observer) match {
-            case None ⇒ Map(r.subject -> r)
-            case Some(m) ⇒ m.updated(r.subject, r)
-          }
+          val m =
+            mapBuilder.get(r.observer) match {
+              case None ⇒ Map(r.subject -> r)
+              case Some(m) ⇒ m.updated(r.subject, r)
+            }
           mapBuilder += (r.observer -> m)
 
           if (r.status == Unreachable)
@@ -175,8 +176,9 @@ private[cluster] class Reachability private (
                   records.filterNot(_.observer == observer),
                   newVersions)
               } else {
-                val newRecords =
-                  records.updated(records.indexOf(oldRecord), newRecord)
+                val newRecords = records.updated(
+                  records.indexOf(oldRecord),
+                  newRecord)
                 new Reachability(newRecords, newVersions)
               }
             }
@@ -230,8 +232,8 @@ private[cluster] class Reachability private (
 
   def remove(nodes: Iterable[UniqueAddress]): Reachability = {
     val nodesSet = nodes.to[immutable.HashSet]
-    val newRecords =
-      records.filterNot(r ⇒ nodesSet(r.observer) || nodesSet(r.subject))
+    val newRecords = records.filterNot(r ⇒
+      nodesSet(r.observer) || nodesSet(r.subject))
     if (newRecords.size == records.size)
       this
     else {
@@ -334,17 +336,18 @@ private[cluster] class Reachability private (
     }
 
   override def toString: String = {
-    val rows = for {
-      observer ← versions.keys.toSeq.sorted
-      rowsOption = observerRows(observer)
-      if rowsOption.isDefined // compilation err for subject <- rowsOption
-      rows = rowsOption.get
-      subject ← rows.keys.toSeq.sorted
-    } yield {
-      val record = rows(subject)
-      val aggregated = status(subject)
-      s"${observer.address} -> ${subject.address}: ${record.status} [$aggregated] (${record.version})"
-    }
+    val rows =
+      for {
+        observer ← versions.keys.toSeq.sorted
+        rowsOption = observerRows(observer)
+        if rowsOption.isDefined // compilation err for subject <- rowsOption
+        rows = rowsOption.get
+        subject ← rows.keys.toSeq.sorted
+      } yield {
+        val record = rows(subject)
+        val aggregated = status(subject)
+        s"${observer.address} -> ${subject.address}: ${record.status} [$aggregated] (${record.version})"
+      }
 
     rows.mkString(", ")
   }

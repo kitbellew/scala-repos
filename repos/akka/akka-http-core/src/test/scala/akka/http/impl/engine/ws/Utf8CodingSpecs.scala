@@ -24,10 +24,9 @@ class Utf8CodingSpecs
       def isSurrogate(cp: Int): Boolean =
         cp >= Utf8Encoder.SurrogateFirst && cp <= 0xdfff
 
-      val cps =
-        Gen
-          .choose(0, 0x10ffff)
-          .filter(!isSurrogate(_))
+      val cps = Gen
+        .choose(0, 0x10ffff)
+        .filter(!isSurrogate(_))
 
       def codePointAsString(cp: Int): String = {
         if (cp < 0x10000)

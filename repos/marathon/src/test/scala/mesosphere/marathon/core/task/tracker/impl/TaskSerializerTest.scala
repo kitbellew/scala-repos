@@ -70,10 +70,9 @@ class TaskSerializerTest
 
     Given("a MarathonTask with all fields and host ports")
     val samplePorts = Iterable(80, 81)
-    val marathonTask =
-      f.completeTask.toBuilder
-        .addAllPorts(samplePorts.map(Integer.valueOf(_)).asJava)
-        .build()
+    val marathonTask = f.completeTask.toBuilder
+      .addAllPorts(samplePorts.map(Integer.valueOf(_)).asJava)
+      .build()
 
     When("we convert it to task")
     val taskState = TaskSerializer.fromProto(marathonTask)
@@ -95,10 +94,9 @@ class TaskSerializerTest
     val f = new Fixture
 
     Given("a MarathonTask with all fields and host ports")
-    val marathonTask =
-      f.completeTask.toBuilder
-        .addAllNetworks(f.sampleNetworks.asJava)
-        .build()
+    val marathonTask = f.completeTask.toBuilder
+      .addAllNetworks(f.sampleNetworks.asJava)
+      .build()
 
     When("we convert it to task")
     println(marathonTask)
@@ -179,26 +177,24 @@ class TaskSerializerTest
     private[this] val stagedAtLong: Long = 1
     private[this] val startedAtLong: Long = 2
     private[this] val appVersion: Timestamp = Timestamp(3)
-    private[this] val sampleTaskStatus: TaskStatus =
-      MesosProtos.TaskStatus
-        .newBuilder()
-        .setTaskId(MesosProtos.TaskID.newBuilder().setValue(taskId.idString))
-        .setState(MesosProtos.TaskState.TASK_RUNNING)
-        .build()
+    private[this] val sampleTaskStatus: TaskStatus = MesosProtos.TaskStatus
+      .newBuilder()
+      .setTaskId(MesosProtos.TaskID.newBuilder().setValue(taskId.idString))
+      .setState(MesosProtos.TaskState.TASK_RUNNING)
+      .build()
     private[this] val sampleSlaveId: MesosProtos.SlaveID.Builder =
       MesosProtos.SlaveID.newBuilder().setValue("slaveId")
-    val sampleNetworks: Iterable[MesosProtos.NetworkInfo] =
-      Iterable(
-        MesosProtos.NetworkInfo
-          .newBuilder()
-          .addIpAddresses(
-            MesosProtos.NetworkInfo.IPAddress
-              .newBuilder()
-              .setIpAddress("1.2.3.4"))
-          .build()
-      )
-    val fullSampleTaskStateWithoutNetworking: Task.LaunchedOnReservation =
-      Task.LaunchedOnReservation(
+    val sampleNetworks: Iterable[MesosProtos.NetworkInfo] = Iterable(
+      MesosProtos.NetworkInfo
+        .newBuilder()
+        .addIpAddresses(
+          MesosProtos.NetworkInfo.IPAddress
+            .newBuilder()
+            .setIpAddress("1.2.3.4"))
+        .build()
+    )
+    val fullSampleTaskStateWithoutNetworking: Task.LaunchedOnReservation = Task
+      .LaunchedOnReservation(
         taskId,
         Task.AgentInfo(
           host = sampleHost,
@@ -216,25 +212,24 @@ class TaskSerializerTest
           Task.Reservation.State.Launched)
       )
 
-    val completeTask =
-      MarathonTask
-        .newBuilder()
-        .setId(taskId.idString)
-        .setHost(sampleHost)
-        .addAllAttributes(sampleAttributes.asJava)
-        .setStagedAt(stagedAtLong)
-        .setStartedAt(startedAtLong)
-        .setVersion(appVersion.toString)
-        .setStatus(sampleTaskStatus)
-        .setSlaveId(sampleSlaveId)
-        .setReservation(
-          MarathonTask.Reservation.newBuilder
-            .addLocalVolumeIds(
-              LocalVolumeId(appId, "my-volume", "uuid-123").idString)
-            .setState(MarathonTask.Reservation.State
-              .newBuilder()
-              .setType(MarathonTask.Reservation.State.Type.Launched)))
-        .build()
+    val completeTask = MarathonTask
+      .newBuilder()
+      .setId(taskId.idString)
+      .setHost(sampleHost)
+      .addAllAttributes(sampleAttributes.asJava)
+      .setStagedAt(stagedAtLong)
+      .setStartedAt(startedAtLong)
+      .setVersion(appVersion.toString)
+      .setStatus(sampleTaskStatus)
+      .setSlaveId(sampleSlaveId)
+      .setReservation(
+        MarathonTask.Reservation.newBuilder
+          .addLocalVolumeIds(
+            LocalVolumeId(appId, "my-volume", "uuid-123").idString)
+          .setState(MarathonTask.Reservation.State
+            .newBuilder()
+            .setType(MarathonTask.Reservation.State.Type.Launched)))
+      .build()
 
     private[this] def attribute(
         name: String,
@@ -267,8 +262,10 @@ class TaskSerializerTest
       private[this] val mesosStatus = MarathonTestHelper.statusForState(
         taskId.idString,
         MesosProtos.TaskState.TASK_RUNNING)
-      private[this] val status =
-        Task.Status(stagedAt, Some(startedAt), Some(mesosStatus))
+      private[this] val status = Task.Status(
+        stagedAt,
+        Some(startedAt),
+        Some(mesosStatus))
       private[this] val hostPorts = Task.HostPorts(Seq(1, 2, 3))
 
       def reservedProto =

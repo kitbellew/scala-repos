@@ -72,22 +72,23 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
       call: ScMethodCall,
       element: PsiElement) = {
     var result: Option[String] = None
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitMethodCallExpression(call: ScMethodCall) =
-        call match {
-          case ScMethodCall(expr, Seq(_: ScLiteral, pathElt))
-              if expr.getText == "Project" =>
-            result = extractPathFromFileParam(pathElt)
-          case ScMethodCall(expr, Seq(pathElt))
-              if expr.getText.matches("^project.+?in$") =>
-            result = extractPathFromFileParam(pathElt)
-          case ScMethodCall(expr, _) if expr.getText.startsWith("project") =>
-            result = Some(element.getText)
-            super.visitMethodCallExpression(call)
-          case _ =>
-            super.visitMethodCallExpression(call)
-        }
-    }
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitMethodCallExpression(call: ScMethodCall) =
+          call match {
+            case ScMethodCall(expr, Seq(_: ScLiteral, pathElt))
+                if expr.getText == "Project" =>
+              result = extractPathFromFileParam(pathElt)
+            case ScMethodCall(expr, Seq(pathElt))
+                if expr.getText.matches("^project.+?in$") =>
+              result = extractPathFromFileParam(pathElt)
+            case ScMethodCall(expr, _) if expr.getText.startsWith("project") =>
+              result = Some(element.getText)
+              super.visitMethodCallExpression(call)
+            case _ =>
+              super.visitMethodCallExpression(call)
+          }
+      }
     call.accept(visitor)
     result
   }

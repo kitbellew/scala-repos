@@ -8,16 +8,18 @@ import org.scalatest.junit.JUnitRunner
 class BlacklistStatsReceiverTest extends FunSuite {
   test("BlacklistStatsReceiver blacklists properly") {
     val inmemory = new InMemoryStatsReceiver()
-    val bsr = new BlacklistStatsReceiver(
-      inmemory,
-      {
-        case _ => true
-      })
+    val bsr =
+      new BlacklistStatsReceiver(
+        inmemory,
+        {
+          case _ => true
+        })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") {
-      3.0f
-    }
+    val gauge =
+      bsr.addGauge("foo", "baz") {
+        3.0f
+      }
     val stat = bsr.stat("qux")
     stat.add(3)
 
@@ -28,16 +30,18 @@ class BlacklistStatsReceiverTest extends FunSuite {
 
   test("BlacklistStatsReceiver allows through properly") {
     val inmemory = new InMemoryStatsReceiver()
-    val bsr = new BlacklistStatsReceiver(
-      inmemory,
-      {
-        case _ => false
-      })
+    val bsr =
+      new BlacklistStatsReceiver(
+        inmemory,
+        {
+          case _ => false
+        })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") {
-      3.0f
-    }
+    val gauge =
+      bsr.addGauge("foo", "baz") {
+        3.0f
+      }
     val stat = bsr.stat("qux")
     stat.add(3)
 
@@ -48,16 +52,18 @@ class BlacklistStatsReceiverTest extends FunSuite {
 
   test("BlacklistStatsReceiver can go both ways properly") {
     val inmemory = new InMemoryStatsReceiver()
-    val bsr = new BlacklistStatsReceiver(
-      inmemory,
-      {
-        case seq => seq.length != 2
-      })
+    val bsr =
+      new BlacklistStatsReceiver(
+        inmemory,
+        {
+          case seq => seq.length != 2
+        })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") {
-      3.0f
-    }
+    val gauge =
+      bsr.addGauge("foo", "baz") {
+        3.0f
+      }
     val stat = bsr.stat("qux")
     stat.add(3)
 
@@ -68,16 +74,18 @@ class BlacklistStatsReceiverTest extends FunSuite {
 
   test("BlacklistStatsReceiver works scoped") {
     val inmemory = new InMemoryStatsReceiver()
-    val bsr = new BlacklistStatsReceiver(
-      inmemory,
-      {
-        case seq => seq == Seq("foo", "bar")
-      }).scope("foo")
+    val bsr =
+      new BlacklistStatsReceiver(
+        inmemory,
+        {
+          case seq => seq == Seq("foo", "bar")
+        }).scope("foo")
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
-    val gauge = bsr.addGauge("foo", "baz") {
-      3.0f
-    }
+    val gauge =
+      bsr.addGauge("foo", "baz") {
+        3.0f
+      }
     val stat = bsr.stat("bar")
     stat.add(3)
 

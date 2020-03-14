@@ -12,11 +12,12 @@ class StackTest extends FunSuite {
   val testRole3 = Stack.Role("TestRole3")
   val testRole4 = Stack.Role("TestRole4")
 
-  val testHead4 = new Stack.Head {
-    val role = testRole4
-    val description = testRole4.toString
-    val parameters = Nil
-  }
+  val testHead4 =
+    new Stack.Head {
+      val role = testRole4
+      val description = testRole4.toString
+      val parameters = Nil
+    }
 
   val empty = Stack.Params.empty
 
@@ -48,11 +49,12 @@ class StackTest extends FunSuite {
 
   test("Stack.insertBefore") {
     val stack = newStack()
-    val module = new Stack.Module0[List[Int]] {
-      val role = testRole4
-      val description = testRole4.toString
-      def make(next: List[Int]): List[Int] = 100 :: next
-    }
+    val module =
+      new Stack.Module0[List[Int]] {
+        val role = testRole4
+        val description = testRole4.toString
+        def make(next: List[Int]): List[Int] = 100 :: next
+      }
 
     assert(
       stack.insertBefore(testRole4, module).make(empty) ==
@@ -69,11 +71,12 @@ class StackTest extends FunSuite {
 
   test("Stack.insertAfter") {
     val stack = newStack()
-    val module = new Stack.Module0[List[Int]] {
-      val role = testRole4
-      val description = testRole4.toString
-      def make(next: List[Int]): List[Int] = 100 :: next
-    }
+    val module =
+      new Stack.Module0[List[Int]] {
+        val role = testRole4
+        val description = testRole4.toString
+        def make(next: List[Int]): List[Int] = 100 :: next
+      }
 
     assert(
       stack.insertAfter(testRole4, module).make(empty) ==
@@ -101,11 +104,12 @@ class StackTest extends FunSuite {
 
   test("Stack.replace") {
     val stack = newStack()
-    val module = new Stack.Module0[List[Int]] {
-      val role = testRole2
-      val description = testRole2.toString
-      def make(next: List[Int]): List[Int] = 100 :: next
-    }
+    val module =
+      new Stack.Module0[List[Int]] {
+        val role = testRole2
+        val description = testRole2.toString
+        def make(next: List[Int]): List[Int] = 100 :: next
+      }
 
     assert(
       stack.replace(testRole4, module).make(empty) == Seq(20, 10, 1, 2, 3, 4))
@@ -126,20 +130,22 @@ class StackTest extends FunSuite {
     val stk0 = newStack()
     assert(stk0.make(empty) == Seq(20, 10, 1, 2, 3, 4))
 
-    val m1 = new Stack.Module0[List[Int]] {
-      val role = testRole1
-      val description = testRole1.toString
-      def make(next: List[Int]): List[Int] = 30 :: next
-    }
+    val m1 =
+      new Stack.Module0[List[Int]] {
+        val role = testRole1
+        val description = testRole1.toString
+        def make(next: List[Int]): List[Int] = 30 :: next
+      }
 
     val stk1 = m1 +: stk0
     assert(stk1.make(empty) == Seq(30, 20, 10, 1, 2, 3, 4))
 
-    val m2 = new Stack.Module0[List[Int]] {
-      val role = testRole1
-      val description = testRole1.toString
-      def make(next: List[Int]): List[Int] = 40 :: next
-    }
+    val m2 =
+      new Stack.Module0[List[Int]] {
+        val role = testRole1
+        val description = testRole1.toString
+        def make(next: List[Int]): List[Int] = 40 :: next
+      }
 
     val stk2 = m2 +: stk1
     assert(stk2.make(empty) == Seq(40, 30, 20, 10, 1, 2, 3, 4))

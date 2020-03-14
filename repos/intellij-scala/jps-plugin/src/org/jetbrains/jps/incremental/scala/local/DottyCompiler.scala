@@ -21,9 +21,10 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
   override def compile(
       compilationData: CompilationData,
       client: Client): Unit = {
-    val cArgs = new CompilerArguments(
-      scalaInstance,
-      ClasspathOptions.javac(compiler = false))
+    val cArgs =
+      new CompilerArguments(
+        scalaInstance,
+        ClasspathOptions.javac(compiler = false))
     val scalaOptions = compilationData.scalaOptions.flatMap(splitArg)
     val args: Array[String] =
       cArgs(
@@ -37,8 +38,10 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
     try {
       System.setOut(emptyPrintStream)
 
-      val mainObj =
-        Class.forName("dotty.tools.dotc.Main$", true, scalaInstance.loader)
+      val mainObj = Class.forName(
+        "dotty.tools.dotc.Main$",
+        true,
+        scalaInstance.loader)
       mainObj.getClassLoader
       val moduleField = mainObj.getField("MODULE$")
       val mainInstance = moduleField.get(null)
@@ -60,9 +63,10 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
     }
   }
 
-  private val emptyPrintStream = new PrintStream(new OutputStream {
-    override def write(b: Int): Unit = {}
-  })
+  private val emptyPrintStream =
+    new PrintStream(new OutputStream {
+      override def write(b: Int): Unit = {}
+    })
 
   //options for these settings should be in the separate entry in the array of compiler arguments
   val argsToSplit = Set(

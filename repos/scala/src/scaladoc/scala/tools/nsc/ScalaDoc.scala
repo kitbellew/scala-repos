@@ -20,12 +20,13 @@ class ScalaDoc {
 
   def process(args: Array[String]): Boolean = {
     var reporter: ScalaDocReporter = null
-    val docSettings = new doc.Settings(
-      msg =>
-        reporter.error(
-          FakePos("scaladoc"),
-          msg + "\n  scaladoc -help  gives more information"),
-      msg => reporter.printMessage(msg))
+    val docSettings =
+      new doc.Settings(
+        msg =>
+          reporter.error(
+            FakePos("scaladoc"),
+            msg + "\n  scaladoc -help  gives more information"),
+        msg => reporter.printMessage(msg))
     reporter = new ScalaDocReporter(docSettings)
     val command = new ScalaDoc.Command(args.toList, docSettings)
     def hasFiles =

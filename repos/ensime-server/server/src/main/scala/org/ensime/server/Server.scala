@@ -33,14 +33,15 @@ class ServerActor(
 ) extends Actor
     with ActorLogging {
 
-  override val supervisorStrategy = OneForOneStrategy() {
-    case ex: Exception =>
-      log.error(s"Error with monitor actor ${ex.getMessage}", ex)
-      self ! ShutdownRequest(
-        s"Monitor actor failed with ${ex.getClass} - ${ex.toString}",
-        isError = true)
-      Stop
-  }
+  override val supervisorStrategy =
+    OneForOneStrategy() {
+      case ex: Exception =>
+        log.error(s"Error with monitor actor ${ex.getMessage}", ex)
+        self ! ShutdownRequest(
+          s"Monitor actor failed with ${ex.getClass} - ${ex.toString}",
+          isError = true)
+        Stop
+    }
 
   def initialiseChildren(): Unit = {
 
@@ -69,11 +70,12 @@ class ServerActor(
     // this is a bit ugly in a couple of ways
     // 1) web server creates handlers in the top domain
     // 2) We have to manually capture the failure to write the port file and lift the error to a failure.
-    val webserver = new WebServerImpl(project, broadcaster)(
-      config,
-      context.system,
-      mat,
-      timeout)
+    val webserver =
+      new WebServerImpl(project, broadcaster)(
+        config,
+        context.system,
+        mat,
+        timeout)
 
     // async start the HTTP Server
     val selfRef = self
@@ -149,42 +151,44 @@ object Server {
           throw e
       }
 
-    val protocol: Protocol = propOrElse("ensime.protocol", "swank") match {
-      case "swank" => new SwankProtocol
-      case "jerk"  => new JerkProtocol
-      case other =>
-        throw new IllegalArgumentException(
-          s"$other is not a valid ENSIME protocol")
-    }
+    val protocol: Protocol =
+      propOrElse("ensime.protocol", "swank") match {
+        case "swank" => new SwankProtocol
+        case "jerk"  => new JerkProtocol
+        case other =>
+          throw new IllegalArgumentException(
+            s"$other is not a valid ENSIME protocol")
+      }
 
     val system = ActorSystem("ENSIME")
     system.actorOf(Props(new ServerActor(config, protocol)), "ensime-main")
   }
 
   def shutdown(system: ActorSystem, request: ShutdownRequest): Unit = {
-    val t = new Thread(new Runnable {
-      def run(): Unit = {
-        if (request.isError)
-          log.error(
-            s"Shutdown requested due to internal error: ${request.reason}")
-        else
-          log.info(s"Shutdown requested: ${request.reason}")
-
-        log.info("Shutting down the ActorSystem")
-        Try(system.shutdown())
-
-        log.info("Awaiting actor system termination")
-        Try(system.awaitTermination())
-
-        log.info("Shutdown complete")
-        if (!propIsSet("ensime.server.test")) {
+    val t =
+      new Thread(new Runnable {
+        def run(): Unit = {
           if (request.isError)
-            System.exit(1)
+            log.error(
+              s"Shutdown requested due to internal error: ${request.reason}")
           else
-            System.exit(0)
+            log.info(s"Shutdown requested: ${request.reason}")
+
+          log.info("Shutting down the ActorSystem")
+          Try(system.shutdown())
+
+          log.info("Awaiting actor system termination")
+          Try(system.awaitTermination())
+
+          log.info("Shutdown complete")
+          if (!propIsSet("ensime.server.test")) {
+            if (request.isError)
+              System.exit(1)
+            else
+              System.exit(0)
+          }
         }
-      }
-    })
+      })
     t.start()
   }
 }

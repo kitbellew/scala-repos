@@ -36,9 +36,10 @@ class PoolSuite extends SparkFunSuite with LocalSparkContext {
       stageId: Int,
       numTasks: Int,
       taskScheduler: TaskSchedulerImpl): TaskSetManager = {
-    val tasks = Array.tabulate[Task[_]](numTasks) { i =>
-      new FakeTask(i, Nil)
-    }
+    val tasks =
+      Array.tabulate[Task[_]](numTasks) { i =>
+        new FakeTask(i, Nil)
+      }
     new TaskSetManager(
       taskScheduler,
       new TaskSet(tasks, stageId, 0, 0, null),
@@ -50,8 +51,8 @@ class PoolSuite extends SparkFunSuite with LocalSparkContext {
       rootPool: Pool,
       expectedStageId: Int) {
     val taskSetQueue = rootPool.getSortedTaskSetQueue
-    val nextTaskSetToSchedule =
-      taskSetQueue.find(t => (t.runningTasks + t.tasksSuccessful) < t.numTasks)
+    val nextTaskSetToSchedule = taskSetQueue.find(t =>
+      (t.runningTasks + t.tasksSuccessful) < t.numTasks)
     assert(nextTaskSetToSchedule.isDefined)
     nextTaskSetToSchedule.get.addRunningTask(taskId)
     assert(nextTaskSetToSchedule.get.stageId === expectedStageId)
@@ -86,8 +87,9 @@ class PoolSuite extends SparkFunSuite with LocalSparkContext {
     * algorithm properly orders the two scheduling pools.
     */
   test("Fair Scheduler Test") {
-    val xmlPath =
-      getClass.getClassLoader.getResource("fairscheduler.xml").getFile()
+    val xmlPath = getClass.getClassLoader
+      .getResource("fairscheduler.xml")
+      .getFile()
     val conf = new SparkConf().set("spark.scheduler.allocation.file", xmlPath)
     sc = new SparkContext("local", "TaskSchedulerImplSuite", conf)
     val taskScheduler = new TaskSchedulerImpl(sc)

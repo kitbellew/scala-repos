@@ -44,94 +44,96 @@ final private[stream] class OutputStreamSourceStage(
 
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes): (GraphStageLogic, OutputStream) = {
-    val maxBuffer = inheritedAttributes
-      .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-      .max
+    val maxBuffer =
+      inheritedAttributes
+        .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
+        .max
     require(maxBuffer > 0, "Buffer size must be greater than 0")
 
     val dataQueue = new LinkedBlockingQueue[ByteString](maxBuffer)
     val downstreamStatus = new AtomicReference[DownstreamStatus](Ok)
 
-    val logic = new GraphStageLogic(shape) with StageWithCallback {
-      var flush: Option[Promise[Unit]] = None
-      var close: Option[Promise[Unit]] = None
+    val logic =
+      new GraphStageLogic(shape) with StageWithCallback {
+        var flush: Option[Promise[Unit]] = None
+        var close: Option[Promise[Unit]] = None
 
-      private val downstreamCallback: AsyncCallback[Try[ByteString]] =
-        getAsyncCallback {
-          case Success(elem) ⇒ onPush(elem)
-          case Failure(ex) ⇒ failStage(ex)
+        private val downstreamCallback: AsyncCallback[Try[ByteString]] =
+          getAsyncCallback {
+            case Success(elem) ⇒ onPush(elem)
+            case Failure(ex) ⇒ failStage(ex)
+          }
+
+        private val upstreamCallback
+            : AsyncCallback[(AdapterToStageMessage, Promise[Unit])] =
+          getAsyncCallback(onAsyncMessage)
+
+        override def wakeUp(msg: AdapterToStageMessage): Future[Unit] = {
+          val p = Promise[Unit]()
+          upstreamCallback.invoke((msg, p))
+          p.future
         }
 
-      private val upstreamCallback
-          : AsyncCallback[(AdapterToStageMessage, Promise[Unit])] =
-        getAsyncCallback(onAsyncMessage)
-
-      override def wakeUp(msg: AdapterToStageMessage): Future[Unit] = {
-        val p = Promise[Unit]()
-        upstreamCallback.invoke((msg, p))
-        p.future
-      }
-
-      private def onAsyncMessage(
-          event: (AdapterToStageMessage, Promise[Unit])): Unit =
-        event._1 match {
-          case Flush ⇒
-            flush = Some(event._2)
-            sendResponseIfNeed()
-          case Close ⇒
-            close = Some(event._2)
-            if (dataQueue.isEmpty) {
-              downstreamStatus.set(Canceled)
-              completeStage()
-              unblockUpstream()
-            } else
+        private def onAsyncMessage(
+            event: (AdapterToStageMessage, Promise[Unit])): Unit =
+          event._1 match {
+            case Flush ⇒
+              flush = Some(event._2)
               sendResponseIfNeed()
-        }
+            case Close ⇒
+              close = Some(event._2)
+              if (dataQueue.isEmpty) {
+                downstreamStatus.set(Canceled)
+                completeStage()
+                unblockUpstream()
+              } else
+                sendResponseIfNeed()
+          }
 
-      private def unblockUpstream(): Boolean =
-        flush match {
-          case Some(p) ⇒
-            p.complete(Success(()))
-            flush = None
-            true
-          case None ⇒
-            close match {
-              case Some(p) ⇒
-                p.complete(Success(()))
-                close = None
-                true
-              case None ⇒ false
+        private def unblockUpstream(): Boolean =
+          flush match {
+            case Some(p) ⇒
+              p.complete(Success(()))
+              flush = None
+              true
+            case None ⇒
+              close match {
+                case Some(p) ⇒
+                  p.complete(Success(()))
+                  close = None
+                  true
+                case None ⇒ false
+              }
+          }
+
+        private def sendResponseIfNeed(): Unit =
+          if (downstreamStatus.get() == Canceled || dataQueue.isEmpty)
+            unblockUpstream()
+
+        private def onPush(data: ByteString): Unit =
+          if (downstreamStatus.get() == Ok) {
+            push(out, data)
+            sendResponseIfNeed()
+          }
+
+        setHandler(
+          out,
+          new OutHandler {
+            override def onDownstreamFinish(): Unit = {
+              //assuming there can be no further in messages
+              downstreamStatus.set(Canceled)
+              dataQueue.clear()
+              // if blocked reading, make sure the take() completes
+              dataQueue.put(ByteString())
+              completeStage()
             }
-        }
-
-      private def sendResponseIfNeed(): Unit =
-        if (downstreamStatus.get() == Canceled || dataQueue.isEmpty)
-          unblockUpstream()
-
-      private def onPush(data: ByteString): Unit =
-        if (downstreamStatus.get() == Ok) {
-          push(out, data)
-          sendResponseIfNeed()
-        }
-
-      setHandler(
-        out,
-        new OutHandler {
-          override def onDownstreamFinish(): Unit = {
-            //assuming there can be no further in messages
-            downstreamStatus.set(Canceled)
-            dataQueue.clear()
-            // if blocked reading, make sure the take() completes
-            dataQueue.put(ByteString())
-            completeStage()
+            override def onPull(): Unit = {
+              implicit val ex = interpreter.materializer.executionContext
+              Future(dataQueue.take()).onComplete(downstreamCallback.invoke)
+            }
           }
-          override def onPull(): Unit = {
-            implicit val ex = interpreter.materializer.executionContext
-            Future(dataQueue.take()).onComplete(downstreamCallback.invoke)
-          }
-        }
-      )
-    }
+        )
+      }
     (
       logic,
       new OutputStreamAdapter(
@@ -151,8 +153,8 @@ private[akka] class OutputStreamAdapter(
 
   var isActive = true
   var isPublisherAlive = true
-  val publisherClosedException = new IOException(
-    "Reactive stream is terminated, no writes are possible")
+  val publisherClosedException =
+    new IOException("Reactive stream is terminated, no writes are possible")
 
   @scala.throws(classOf[IOException])
   private[this] def send(sendAction: () ⇒ Unit): Unit = {

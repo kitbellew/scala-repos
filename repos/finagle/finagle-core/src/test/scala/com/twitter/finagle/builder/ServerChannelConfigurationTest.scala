@@ -67,9 +67,10 @@ class ServerChannelConfigCodec extends CodecFactory[String, String] {
 
 @RunWith(classOf[JUnitRunner])
 class ServerChannelConfigurationTest extends FunSuite {
-  val service = new Service[String, String] {
-    def apply(request: String) = Future.value(request)
-  }
+  val service =
+    new Service[String, String] {
+      def apply(request: String) = Future.value(request)
+    }
 
   test("close connection after max life time duration") {
     // create a server builder which will close connections in 2 seconds

@@ -54,15 +54,16 @@ class ScalaFindUsagesHandlerFactory(project: Project)
   override def createFindUsagesHandler(
       element: PsiElement,
       forHighlightUsages: Boolean): FindUsagesHandler = {
-    var replacedElement = element match {
-      case wrapper: PsiClassWrapper           => wrapper.definition
-      case p: PsiTypedDefinitionWrapper       => p.typedDefinition
-      case p: StaticPsiTypedDefinitionWrapper => p.typedDefinition
-      case f: ScFunctionWrapper               => f.function
-      case f: FakePsiMethod                   => f.navElement
-      case s: StaticPsiMethodWrapper          => s.method
-      case _                                  => element
-    }
+    var replacedElement =
+      element match {
+        case wrapper: PsiClassWrapper           => wrapper.definition
+        case p: PsiTypedDefinitionWrapper       => p.typedDefinition
+        case p: StaticPsiTypedDefinitionWrapper => p.typedDefinition
+        case f: ScFunctionWrapper               => f.function
+        case f: FakePsiMethod                   => f.navElement
+        case s: StaticPsiMethodWrapper          => s.method
+        case _                                  => element
+      }
     def chooseSuper(name: String, supers: Seq[PsiNamedElement]) {
       def showDialog() {
         val message = ScalaBundle.message("find.usages.member.has.supers", name)

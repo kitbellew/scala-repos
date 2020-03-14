@@ -35,8 +35,7 @@ object App {
 
   def main(args: Array[String]) {
     implicit def richBuffer[T, B[U] <: Buffer[U]](
-        buffer: B[T]): RichBuffer[T, B] =
-      new RichBuffer[T, B](buffer)
+        buffer: B[T]): RichBuffer[T, B] = new RichBuffer[T, B](buffer)
 
     implicit val rv = new ArrayBuffer[Int]
     val buf = new ArrayBuffer[Int]

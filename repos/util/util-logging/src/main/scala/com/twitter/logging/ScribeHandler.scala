@@ -340,9 +340,7 @@ class ScribeHandler(
 
   // should be private, make it visible to tests
   private[logging] def makeBuffer(count: Int): ByteBuffer = {
-    val texts =
-      for (i <- 0 until count)
-        yield queue.poll()
+    val texts = for (i <- 0 until count) yield queue.poll()
 
     val recordHeader = ByteBuffer.wrap(new Array[Byte](10 + category.length))
     recordHeader.order(ByteOrder.BIG_ENDIAN)
@@ -541,12 +539,14 @@ class ScribeHandler(
     val totalConnects = statsReceiver.counter("connects")
     val totalPublished = statsReceiver.counter("published")
     val totalCloses = statsReceiver.counter("closes")
-    val instances = statsReceiver.addGauge("instances") {
-      1
-    }
-    val unsentQueue = statsReceiver.addGauge("unsent_queue") {
-      queueSize
-    }
+    val instances =
+      statsReceiver.addGauge("instances") {
+        1
+      }
+    val unsentQueue =
+      statsReceiver.addGauge("unsent_queue") {
+        queueSize
+      }
 
     def incrSentRecords(count: Int): Unit = {
       sentRecords.addAndGet(count)

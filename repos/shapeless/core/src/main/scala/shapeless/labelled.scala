@@ -43,9 +43,10 @@ trait DefaultSymbolicLabelling[T] extends DepFn0 with Serializable {
 }
 
 object DefaultSymbolicLabelling {
-  type Aux[T, Out0] = DefaultSymbolicLabelling[T] {
-    type Out = Out0
-  }
+  type Aux[T, Out0] =
+    DefaultSymbolicLabelling[T] {
+      type Out = Out0
+    }
 
   def apply[T](implicit lab: DefaultSymbolicLabelling[T]): Aux[T, lab.Out] = lab
 
@@ -149,17 +150,15 @@ class LabelledMacros(val c: whitebox.Context)
       else
         tpeString.split(",").map(_.trim).map(_.split("->").map(_.trim)).map {
           case Array(key, value) =>
-            val keyTpe =
-              parseLiteralType(key)
-                .getOrElse(
-                  c.abort(c.enclosingPosition, s"Malformed literal type $key"))
+            val keyTpe = parseLiteralType(key)
+              .getOrElse(
+                c.abort(c.enclosingPosition, s"Malformed literal type $key"))
 
-            val valueTpe =
-              parseType(value)
-                .getOrElse(
-                  c.abort(
-                    c.enclosingPosition,
-                    s"Malformed literal or standard type $value"))
+            val valueTpe = parseType(value)
+              .getOrElse(
+                c.abort(
+                  c.enclosingPosition,
+                  s"Malformed literal or standard type $value"))
 
             (keyTpe, valueTpe)
 

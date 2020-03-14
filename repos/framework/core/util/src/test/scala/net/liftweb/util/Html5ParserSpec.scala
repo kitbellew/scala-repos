@@ -48,20 +48,21 @@ object Html5ParserSpec
   }
 
   "Html5 Parser" should {
-    val pages = for {
-      page1 <- tryo(
-        readWholeStream(
-          getClass.getResourceAsStream("Html5ParserSpec.page1.html")))
-        .filter(_ ne null)
-      page2 <- tryo(
-        readWholeStream(
-          getClass.getResourceAsStream("Html5ParserSpec.page2.html")))
-        .filter(_ ne null)
-      page3 <- tryo(
-        readWholeStream(
-          getClass.getResourceAsStream("Html5ParserSpec.page3.html")))
-        .filter(_ ne null)
-    } yield (page1, page2, page3)
+    val pages =
+      for {
+        page1 <- tryo(
+          readWholeStream(
+            getClass.getResourceAsStream("Html5ParserSpec.page1.html")))
+          .filter(_ ne null)
+        page2 <- tryo(
+          readWholeStream(
+            getClass.getResourceAsStream("Html5ParserSpec.page2.html")))
+          .filter(_ ne null)
+        page3 <- tryo(
+          readWholeStream(
+            getClass.getResourceAsStream("Html5ParserSpec.page3.html")))
+          .filter(_ ne null)
+      } yield (page1, page2, page3)
 
     pages match {
       case Full(p) =>
@@ -88,9 +89,8 @@ object Html5ParserSpec
     }
 
     "change <lift:head> to <head>" in {
-      val parsed =
-        parse("<div><lift:head>123</lift:head></div>").openOrThrowException(
-          "Test")
+      val parsed = parse("<div><lift:head>123</lift:head></div>")
+        .openOrThrowException("Test")
       val heads = parsed \\ "head"
       heads.length must_== 1
       heads.text must_== "123"

@@ -73,15 +73,17 @@ class InjectorReviewDialog(
   }
 
   override def createLeftSideActions(): Array[Action] = {
-    val next = new DialogWrapperAction("Next") {
-      putValue(Action.SMALL_ICON, AllIcons.Actions.Right)
-      override def doAction(e: ActionEvent): Unit = layout.next(editorsPanel)
-    }
-    val prev = new DialogWrapperAction("Prev") {
-      putValue(Action.SMALL_ICON, AllIcons.Actions.Left)
-      override def doAction(e: ActionEvent): Unit =
-        layout.previous(editorsPanel)
-    }
+    val next =
+      new DialogWrapperAction("Next") {
+        putValue(Action.SMALL_ICON, AllIcons.Actions.Right)
+        override def doAction(e: ActionEvent): Unit = layout.next(editorsPanel)
+      }
+    val prev =
+      new DialogWrapperAction("Prev") {
+        putValue(Action.SMALL_ICON, AllIcons.Actions.Left)
+        override def doAction(e: ActionEvent): Unit =
+          layout.previous(editorsPanel)
+      }
     Array(prev, next)
   }
 

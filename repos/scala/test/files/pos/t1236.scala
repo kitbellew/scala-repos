@@ -3,9 +3,10 @@ trait Empty[E[_]] {
 }
 
 object T {
-  val ListEmpty = new Empty[List] {
-    def e[A] = Nil
-  }
+  val ListEmpty =
+    new Empty[List] {
+      def e[A] = Nil
+    }
 
   def foo[F[_]](q: (String, String)) = "hello"
   def foo[F[_]](e: Empty[F]) = "world"

@@ -26,32 +26,34 @@ case class Timer(
     System.currentTimeMillis)
   private[this] val lock = new ReentrantReadWriteLock()
   private[this] var futures: SortedMap[Long, List[() => Unit]] = SortedMap()
-  private[this] val workerRunnable = new Runnable() {
-    def run() {
-      @tailrec
-      def innerRun() {
-        lastNow = alignTimeResolution(System.currentTimeMillis)
-        // Deal with stuff to expire.
-        futures.headOption match {
-          case Some((time, _)) if (time <= lastNow) => {
-            val expiredFutures: SortedMap[Long, List[() => Unit]] = withWrite {
-              val (past, future) = futures.span(pair => pair._1 < lastNow)
-              futures = future
-              past
+  private[this] val workerRunnable =
+    new Runnable() {
+      def run() {
+        @tailrec
+        def innerRun() {
+          lastNow = alignTimeResolution(System.currentTimeMillis)
+          // Deal with stuff to expire.
+          futures.headOption match {
+            case Some((time, _)) if (time <= lastNow) => {
+              val expiredFutures: SortedMap[Long, List[() => Unit]] =
+                withWrite {
+                  val (past, future) = futures.span(pair => pair._1 < lastNow)
+                  futures = future
+                  past
+                }
+              expireFutures(expiredFutures)
             }
-            expireFutures(expiredFutures)
+            case _ => ()
           }
-          case _ => ()
+          // Should we keep running?
+          if (continueRunning) {
+            Thread.sleep(safeTickMs)
+            innerRun()
+          }
         }
-        // Should we keep running?
-        if (continueRunning) {
-          Thread.sleep(safeTickMs)
-          innerRun()
-        }
+        innerRun()
       }
-      innerRun()
     }
-  }
   private[this] val workerThread = new Thread(workerRunnable, workerName)
   workerThread.start()
 
@@ -93,20 +95,21 @@ case class Timer(
   def valueWait[T](value: T, waitMs: Long): Future[T] = {
     withRead {
       if (continueRunning) {
-        val listen: (T => Unit) => Unit = callback =>
-          withWrite {
-            val waitTime = alignTimeResolution(
-              lastNow + (if (waitMs < 0)
-                           0
-                         else
-                           waitMs))
-            val timedCallback = () => callback(value)
-            // Lazy implementation for now.
-            futures = futures + futures
-              .get(waitTime)
-              .map(current => (waitTime, timedCallback :: current))
-              .getOrElse((waitTime, List(timedCallback)))
-          }
+        val listen: (T => Unit) => Unit =
+          callback =>
+            withWrite {
+              val waitTime = alignTimeResolution(
+                lastNow + (if (waitMs < 0)
+                             0
+                           else
+                             waitMs))
+              val timedCallback = () => callback(value)
+              // Lazy implementation for now.
+              futures = futures + futures
+                .get(waitTime)
+                .map(current => (waitTime, timedCallback :: current))
+                .getOrElse((waitTime, List(timedCallback)))
+            }
         Future.async(listen)
       } else {
         Future.now(value)
@@ -122,8 +125,8 @@ case class Timer(
   }
 
   def withTimeout[T](task: Task[T], timeout: Long): Task[Timeout \/ T] = {
-    val timeoutTask = new Task(
-      valueWait(Timeout, timeout).map(_.right[Throwable]))
+    val timeoutTask =
+      new Task(valueWait(Timeout, timeout).map(_.right[Throwable]))
     taskNondeterminism
       .choose(timeoutTask, task)
       .map(_.fold(_._1.left, _._2.right))

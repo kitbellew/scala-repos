@@ -133,8 +133,7 @@ trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
     abstract class Op1F1(namespace: Vector[String], name: String)
         extends Op1(namespace, name) {
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        trans.Map1(source, f1(ctx))
+          source: TransSpec[A]): TransSpec[A] = trans.Map1(source, f1(ctx))
 
       def f1(ctx: MorphContext): F1
 
@@ -180,8 +179,7 @@ trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
         extends Op2(namespace, name) {
       def spec[A <: SourceType](ctx: MorphContext)(
           left: TransSpec[A],
-          right: TransSpec[A]): TransSpec[A] =
-        trans.Map2(left, right, f2(ctx))
+          right: TransSpec[A]): TransSpec[A] = trans.Map2(left, right, f2(ctx))
 
       def f2(ctx: MorphContext): F2
 
@@ -230,10 +228,11 @@ trait ColumnarTableLibModule[M[+_]]
           def reduce(schema: CSchema, range: Range): Result = {
             jtypef match {
               case Some(f) =>
-                val cols0 = new CSchema {
-                  def columnRefs = schema.columnRefs
-                  def columns(tpe: JType) = schema.columns(f(tpe))
-                }
+                val cols0 =
+                  new CSchema {
+                    def columnRefs = schema.columnRefs
+                    def columns(tpe: JType) = schema.columns(f(tpe))
+                  }
                 r.reducer(ctx).reduce(cols0, range)
               case None =>
                 r.reducer(ctx).reduce(schema, range)
@@ -254,58 +253,61 @@ trait ColumnarTableLibModule[M[+_]]
           acc: Reduction): Reduction = {
         reductions match {
           case (x, jtypef) :: xs => {
-            val impl = new Reduction(Vector(), "") {
-              type Result = (x.Result, acc.Result)
+            val impl =
+              new Reduction(Vector(), "") {
+                type Result = (x.Result, acc.Result)
 
-              def reducer(ctx: MorphContext) =
-                new CReducer[Result] {
-                  def reduce(schema: CSchema, range: Range): Result = {
-                    jtypef match {
-                      case Some(f) =>
-                        val cols0 = new CSchema {
-                          def columnRefs = schema.columnRefs
-                          def columns(tpe: JType) = schema.columns(f(tpe))
-                        }
-                        (
-                          x.reducer(ctx).reduce(cols0, range),
-                          acc.reducer(ctx).reduce(schema, range))
-                      case None =>
-                        (
-                          x.reducer(ctx).reduce(schema, range),
-                          acc.reducer(ctx).reduce(schema, range))
+                def reducer(ctx: MorphContext) =
+                  new CReducer[Result] {
+                    def reduce(schema: CSchema, range: Range): Result = {
+                      jtypef match {
+                        case Some(f) =>
+                          val cols0 =
+                            new CSchema {
+                              def columnRefs = schema.columnRefs
+                              def columns(tpe: JType) = schema.columns(f(tpe))
+                            }
+                          (
+                            x.reducer(ctx).reduce(cols0, range),
+                            acc.reducer(ctx).reduce(schema, range))
+                        case None =>
+                          (
+                            x.reducer(ctx).reduce(schema, range),
+                            acc.reducer(ctx).reduce(schema, range))
+                      }
                     }
                   }
+
+                implicit val monoid: Monoid[Result] =
+                  new Monoid[Result] {
+                    def zero = (x.monoid.zero, acc.monoid.zero)
+                    def append(r1: Result, r2: => Result): Result = {
+                      (
+                        x.monoid.append(r1._1, r2._1),
+                        acc.monoid.append(r1._2, r2._2))
+                    }
+                  }
+
+                def extract(r: Result): Table = {
+                  import trans._
+
+                  val left = x.extract(r._1)
+                  val right = acc.extract(r._2)
+
+                  left.cross(right)(
+                    OuterArrayConcat(
+                      WrapArray(Leaf(SourceLeft)),
+                      Leaf(SourceRight)))
                 }
 
-              implicit val monoid: Monoid[Result] = new Monoid[Result] {
-                def zero = (x.monoid.zero, acc.monoid.zero)
-                def append(r1: Result, r2: => Result): Result = {
-                  (
-                    x.monoid.append(r1._1, r2._1),
-                    acc.monoid.append(r1._2, r2._2))
-                }
+                // TODO: Can't translate this into a CValue. Evaluator
+                // won't inline the results. See call to inlineNodeValue
+                def extractValue(res: Result) = None
+
+                val tpe = UnaryOperationType(
+                  JUnionT(x.tpe.arg, acc.tpe.arg),
+                  JArrayUnfixedT)
               }
-
-              def extract(r: Result): Table = {
-                import trans._
-
-                val left = x.extract(r._1)
-                val right = acc.extract(r._2)
-
-                left.cross(right)(
-                  OuterArrayConcat(
-                    WrapArray(Leaf(SourceLeft)),
-                    Leaf(SourceRight)))
-              }
-
-              // TODO: Can't translate this into a CValue. Evaluator
-              // won't inline the results. See call to inlineNodeValue
-              def extractValue(res: Result) = None
-
-              val tpe = UnaryOperationType(
-                JUnionT(x.tpe.arg, acc.tpe.arg),
-                JArrayUnfixedT)
-            }
 
             rec(xs, impl)
           }

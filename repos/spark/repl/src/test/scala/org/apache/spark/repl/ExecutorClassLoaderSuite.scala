@@ -51,8 +51,10 @@ class ExecutorClassLoaderSuite
     with Logging {
 
   val childClassNames = List("ReplFakeClass1", "ReplFakeClass2")
-  val parentClassNames =
-    List("ReplFakeClass1", "ReplFakeClass2", "ReplFakeClass3")
+  val parentClassNames = List(
+    "ReplFakeClass1",
+    "ReplFakeClass2",
+    "ReplFakeClass3")
   val parentResourceNames = List("fake-resource.txt")
   var tempDir1: File = _
   var tempDir2: File = _
@@ -140,8 +142,8 @@ class ExecutorClassLoaderSuite
     val classLoader =
       new ExecutorClassLoader(new SparkConf(), null, url1, parentLoader, true)
     val resourceName: String = parentResourceNames.head
-    val resources: util.Enumeration[URL] =
-      classLoader.getResources(resourceName)
+    val resources: util.Enumeration[URL] = classLoader.getResources(
+      resourceName)
     assert(resources.hasMoreElements, s"Resource $resourceName not found")
     val fileReader = Source
       .fromInputStream(resources.nextElement().openStream())
@@ -178,13 +180,14 @@ class ExecutorClassLoaderSuite
     // When the original bug occurs, the test thread becomes blocked in a classloading call
     // and does not respond to interrupts.  Therefore, use a custom ScalaTest interruptor to
     // shut down the HTTP server when the test times out
-    val interruptor: Interruptor = new Interruptor {
-      override def apply(thread: Thread): Unit = {
-        classServer.stop()
-        classServer = null
-        thread.interrupt()
+    val interruptor: Interruptor =
+      new Interruptor {
+        override def apply(thread: Thread): Unit = {
+          classServer.stop()
+          classServer = null
+          thread.interrupt()
+        }
       }
-    }
     def tryAndFailToLoadABunchOfClasses(): Unit = {
       // The number of trials here should be much larger than Jetty's thread / connection limit
       // in order to expose thread or connection leaks
@@ -217,12 +220,13 @@ class ExecutorClassLoaderSuite
         }
       })
 
-    val classLoader = new ExecutorClassLoader(
-      new SparkConf(),
-      env,
-      "spark://localhost:1234",
-      getClass().getClassLoader(),
-      false)
+    val classLoader =
+      new ExecutorClassLoader(
+        new SparkConf(),
+        env,
+        "spark://localhost:1234",
+        getClass().getClassLoader(),
+        false)
 
     val fakeClass = classLoader.loadClass("ReplFakeClass2").newInstance()
     val fakeClassVersion = fakeClass.toString

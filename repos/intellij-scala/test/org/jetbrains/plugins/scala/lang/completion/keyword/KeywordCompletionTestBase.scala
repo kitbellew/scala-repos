@@ -48,8 +48,9 @@ abstract class KeywordCompletionTestBase
     val myType = CompletionType.BASIC
     new CodeCompletionHandlerBase(myType, false, false, true)
       .invokeCompletion(getProjectAdapter, editor)
-    val lookup: LookupImpl =
-      LookupManager.getActiveLookup(editor).asInstanceOf[LookupImpl]
+    val lookup: LookupImpl = LookupManager
+      .getActiveLookup(editor)
+      .asInstanceOf[LookupImpl]
     val items: Array[String] =
       if (lookup == null)
         Array.empty
@@ -62,13 +63,14 @@ abstract class KeywordCompletionTestBase
 
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     val text = lastPsi.getText
-    val output = lastPsi.getNode.getElementType match {
-      case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
-      case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
-        text.substring(2, text.length - 2).trim
-      case _ =>
-        assertTrue("Test result must be in last comment statement.", false)
-    }
+    val output =
+      lastPsi.getNode.getElementType match {
+        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
+          text.substring(2, text.length - 2).trim
+        case _ =>
+          assertTrue("Test result must be in last comment statement.", false)
+      }
     assertEquals(output, res.trim)
   }
 }

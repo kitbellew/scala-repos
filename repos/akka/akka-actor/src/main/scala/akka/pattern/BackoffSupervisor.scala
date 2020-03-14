@@ -196,21 +196,21 @@ final class BackoffSupervisor(
   import context.dispatcher
 
   // to keep binary compatibility with 2.4.1
-  override val supervisorStrategy = strategy match {
-    case oneForOne: OneForOneStrategy ⇒
-      OneForOneStrategy(
-        oneForOne.maxNrOfRetries,
-        oneForOne.withinTimeRange,
-        oneForOne.loggingEnabled) {
-        case ex ⇒
-          val defaultDirective: Directive =
-            super.supervisorStrategy.decider
+  override val supervisorStrategy =
+    strategy match {
+      case oneForOne: OneForOneStrategy ⇒
+        OneForOneStrategy(
+          oneForOne.maxNrOfRetries,
+          oneForOne.withinTimeRange,
+          oneForOne.loggingEnabled) {
+          case ex ⇒
+            val defaultDirective: Directive = super.supervisorStrategy.decider
               .applyOrElse(ex, (_: Any) ⇒ Escalate)
 
-          strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective)
-      }
-    case s ⇒ s
-  }
+            strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective)
+        }
+      case s ⇒ s
+    }
 
   // for binary compatibility with 2.4.1
   def this(
@@ -247,8 +247,11 @@ final class BackoffSupervisor(
   def onTerminated: Receive = {
     case Terminated(ref) if child.contains(ref) ⇒
       child = None
-      val restartDelay =
-        calculateDelay(restartCount, minBackoff, maxBackoff, randomFactor)
+      val restartDelay = calculateDelay(
+        restartCount,
+        minBackoff,
+        maxBackoff,
+        randomFactor)
       context.system.scheduler.scheduleOnce(restartDelay, self, StartChild)
       restartCount += 1
   }

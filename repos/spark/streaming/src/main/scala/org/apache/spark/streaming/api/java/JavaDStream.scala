@@ -90,8 +90,7 @@ class JavaDStream[T](val dstream: DStream[T])(
     * Return a new DStream by unifying data of another DStream with this DStream.
     * @param that Another DStream having the same interval (i.e., slideDuration) as this DStream.
     */
-  def union(that: JavaDStream[T]): JavaDStream[T] =
-    dstream.union(that.dstream)
+  def union(that: JavaDStream[T]): JavaDStream[T] = dstream.union(that.dstream)
 
   /**
     * Return a new DStream with an increased or decreased level of parallelism. Each RDD in the

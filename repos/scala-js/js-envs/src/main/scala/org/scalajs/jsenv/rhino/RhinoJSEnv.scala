@@ -44,8 +44,7 @@ final class RhinoJSEnv private (
 
   def this(
       semantics: Semantics = Semantics.Defaults,
-      withDOM: Boolean = false) =
-    this(semantics, withDOM, sourceMap = true)
+      withDOM: Boolean = false) = this(semantics, withDOM, sourceMap = true)
 
   def withSourceMap(sourceMap: Boolean): RhinoJSEnv =
     new RhinoJSEnv(semantics, withDOM, sourceMap)
@@ -294,8 +293,9 @@ final class RhinoJSEnv private (
 
   /** Make sure Rhino does not do its magic for JVM top-level packages (#364) */
   private def disableLiveConnect(context: Context, scope: Scriptable): Unit = {
-    val PackagesObject =
-      ScriptableObject.getProperty(scope, "Packages").asInstanceOf[Scriptable]
+    val PackagesObject = ScriptableObject
+      .getProperty(scope, "Packages")
+      .asInstanceOf[Scriptable]
     val topLevelPackageIds = ScriptableObject.getPropertyIds(PackagesObject)
     for (id <- topLevelPackageIds)
       (id: Any) match {
@@ -337,9 +337,10 @@ final class RhinoJSEnv private (
 
         val deadline = Context.toNumber(args(1)).toInt.millis.fromNow
 
-        val task = new TimeoutTask(
-          deadline,
-          () => cb.call(context, scope, scope, args.slice(2, args.length)))
+        val task =
+          new TimeoutTask(
+            deadline,
+            () => cb.call(context, scope, scope, args.slice(2, args.length)))
 
         taskQ += task
 
@@ -357,10 +358,11 @@ final class RhinoJSEnv private (
         val interval = Context.toNumber(args(1)).toInt.millis
         val firstDeadline = interval.fromNow
 
-        val task = new IntervalTask(
-          firstDeadline,
-          interval,
-          () => cb.call(context, scope, scope, args.slice(2, args.length)))
+        val task =
+          new IntervalTask(
+            firstDeadline,
+            interval,
+            () => cb.call(context, scope, scope, args.slice(2, args.length)))
 
         taskQ += task
 
@@ -439,15 +441,16 @@ final class RhinoJSEnv private (
     // Setup sourceMapper
     if (sourceMap) {
       val oldScalaJSenv = ScriptableObject.getProperty(scope, "__ScalaJSEnv")
-      val scalaJSenv = oldScalaJSenv match {
-        case Scriptable.NOT_FOUND =>
-          val newScalaJSenv = context.newObject(scope)
-          ScriptableObject.putProperty(scope, "__ScalaJSEnv", newScalaJSenv)
-          newScalaJSenv
+      val scalaJSenv =
+        oldScalaJSenv match {
+          case Scriptable.NOT_FOUND =>
+            val newScalaJSenv = context.newObject(scope)
+            ScriptableObject.putProperty(scope, "__ScalaJSEnv", newScalaJSenv)
+            newScalaJSenv
 
-        case oldScalaJSenv: Scriptable =>
-          oldScalaJSenv
-      }
+          case oldScalaJSenv: Scriptable =>
+            oldScalaJSenv
+        }
 
       scalaJSenv.addFunction(
         "sourceMapper",

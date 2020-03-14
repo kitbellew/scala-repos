@@ -174,25 +174,28 @@ private[engine] final class HttpHeaderParser private (
       lineStart: Int,
       cursor: Int,
       nodeIx: Int): Int = {
-    val colonIx = scanHeaderNameAndReturnIndexOfColon(
-      input,
-      lineStart,
-      lineStart + 1 + maxHeaderNameLength)(cursor)
+    val colonIx =
+      scanHeaderNameAndReturnIndexOfColon(
+        input,
+        lineStart,
+        lineStart + 1 + maxHeaderNameLength)(cursor)
     val headerName = asciiString(input, lineStart, colonIx)
     try {
-      val valueParser = new RawHeaderValueParser(
-        headerName,
-        maxHeaderValueLength,
-        headerValueCacheLimit(headerName))
+      val valueParser =
+        new RawHeaderValueParser(
+          headerName,
+          maxHeaderValueLength,
+          headerValueCacheLimit(headerName))
       insert(input, valueParser)(cursor, colonIx + 1, nodeIx, colonIx)
       parseHeaderLine(input, lineStart)(cursor, nodeIx)
     } catch {
       case OutOfTrieSpaceException ⇒ // if we cannot insert we drop back to simply creating new header instances
-        val (headerValue, endIx) = scanHeaderValue(
-          this,
-          input,
-          colonIx + 1,
-          colonIx + maxHeaderValueLength + 3)()
+        val (headerValue, endIx) =
+          scanHeaderValue(
+            this,
+            input,
+            colonIx + 1,
+            colonIx + maxHeaderValueLength + 3)()
         resultHeader = RawHeader(headerName, headerValue.trim)
         endIx
     }
@@ -206,8 +209,11 @@ private[engine] final class HttpHeaderParser private (
       cursor: Int = valueStart,
       nodeIx: Int = branch.branchRootNodeIx): Int = {
     def parseAndInsertHeader() = {
-      val (header, endIx) =
-        branch.parser(this, input, valueStart, onIllegalHeader)
+      val (header, endIx) = branch.parser(
+        this,
+        input,
+        valueStart,
+        onIllegalHeader)
       if (branch.spaceLeft)
         try {
           insert(input, header)(cursor, endIx, nodeIx, colonIx = 0)
@@ -452,8 +458,11 @@ private[engine] final class HttpHeaderParser private (
                   "| "
                 else
                   "  "
-              val (matchLines, mainLineIx) =
-                recurseAndPrefixLines(branchData(rix + 1), p1, char + '-', p3)
+              val (matchLines, mainLineIx) = recurseAndPrefixLines(
+                branchData(rix + 1),
+                p1,
+                char + '-',
+                p3)
               (preLines ++ matchLines ++ postLines, mainLineIx + preLines.size)
           }
       }
@@ -655,11 +664,12 @@ private[http] object HttpHeaderParser {
         valueStart: Int,
         onIllegalHeader: ErrorInfo ⇒ Unit): (HttpHeader, Int) = {
       // TODO: optimize by running the header value parser directly on the input ByteString (rather than an extracted String)
-      val (headerValue, endIx) = scanHeaderValue(
-        hhp,
-        input,
-        valueStart,
-        valueStart + maxHeaderValueLength + 2)()
+      val (headerValue, endIx) =
+        scanHeaderValue(
+          hhp,
+          input,
+          valueStart,
+          valueStart + maxHeaderValueLength + 2)()
       val trimmedHeaderValue = headerValue.trim
       val header =
         HeaderParser.parseFull(headerName, trimmedHeaderValue, settings) match {
@@ -683,11 +693,12 @@ private[http] object HttpHeaderParser {
         input: ByteString,
         valueStart: Int,
         onIllegalHeader: ErrorInfo ⇒ Unit): (HttpHeader, Int) = {
-      val (headerValue, endIx) = scanHeaderValue(
-        hhp,
-        input,
-        valueStart,
-        valueStart + maxHeaderValueLength + 2)()
+      val (headerValue, endIx) =
+        scanHeaderValue(
+          hhp,
+          input,
+          valueStart,
+          valueStart + maxHeaderValueLength + 2)()
       RawHeader(headerName, headerValue.trim) -> endIx
     }
   }

@@ -28,8 +28,8 @@ class MultiDatabaseSuite
   private lazy val df = sqlContext.range(10).coalesce(1).toDF()
 
   private def checkTablePath(dbName: String, tableName: String): Unit = {
-    val metastoreTable =
-      hiveContext.sessionState.catalog.client.getTable(dbName, tableName)
+    val metastoreTable = hiveContext.sessionState.catalog.client
+      .getTable(dbName, tableName)
     val expectedPath =
       hiveContext.sessionState.catalog.client
         .getDatabase(dbName)
@@ -261,16 +261,18 @@ class MultiDatabaseSuite
 
   test("invalid database name and table names") {
     {
-      val message = intercept[AnalysisException] {
-        df.write.format("parquet").saveAsTable("`d:b`.`t:a`")
-      }.getMessage
+      val message =
+        intercept[AnalysisException] {
+          df.write.format("parquet").saveAsTable("`d:b`.`t:a`")
+        }.getMessage
       assert(message.contains("is not a valid name for metastore"))
     }
 
     {
-      val message = intercept[AnalysisException] {
-        df.write.format("parquet").saveAsTable("`d:b`.`table`")
-      }.getMessage
+      val message =
+        intercept[AnalysisException] {
+          df.write.format("parquet").saveAsTable("`d:b`.`table`")
+        }.getMessage
       assert(message.contains("is not a valid name for metastore"))
     }
 
@@ -278,28 +280,30 @@ class MultiDatabaseSuite
       val path = dir.getCanonicalPath
 
       {
-        val message = intercept[AnalysisException] {
-          sql(s"""
+        val message =
+          intercept[AnalysisException] {
+            sql(s"""
             |CREATE TABLE `d:b`.`t:a` (a int)
             |USING parquet
             |OPTIONS (
             |  path '$path'
             |)
             """.stripMargin)
-        }.getMessage
+          }.getMessage
         assert(message.contains("is not a valid name for metastore"))
       }
 
       {
-        val message = intercept[AnalysisException] {
-          sql(s"""
+        val message =
+          intercept[AnalysisException] {
+            sql(s"""
               |CREATE TABLE `d:b`.`table` (a int)
               |USING parquet
               |OPTIONS (
               |  path '$path'
               |)
               """.stripMargin)
-        }.getMessage
+          }.getMessage
         assert(message.contains("is not a valid name for metastore"))
       }
     }

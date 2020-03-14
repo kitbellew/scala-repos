@@ -25,9 +25,10 @@ class StatsFilterTest extends FunSuite {
     val statsFilter =
       new StatsFilter[String, String](receiver, exceptionStatsHandler)
     val promise = new Promise[String]
-    val service = new Service[String, String] {
-      def apply(request: String) = promise
-    }
+    val service =
+      new Service[String, String] {
+        def apply(request: String) = promise
+      }
 
     (promise, receiver, statsFilter andThen service)
   }
@@ -50,10 +51,11 @@ class StatsFilterTest extends FunSuite {
 
   test("latency stat in microseconds") {
     val sr = new InMemoryStatsReceiver()
-    val filter = new StatsFilter[String, String](
-      sr,
-      StatsFilter.DefaultExceptions,
-      TimeUnit.MICROSECONDS)
+    val filter =
+      new StatsFilter[String, String](
+        sr,
+        StatsFilter.DefaultExceptions,
+        TimeUnit.MICROSECONDS)
     val promise = new Promise[String]
     val svc = filter andThen new Service[String, String] {
       def apply(request: String) = promise
@@ -234,11 +236,12 @@ class StatsFilterTest extends FunSuite {
       case ReqRep(_, Return(i: Int)) if i == 5         => ResponseClass.RetryableFailure
       case ReqRep(_, Throw(x)) if x.getMessage == "-5" => ResponseClass.Success
     }
-    val statsFilter = new StatsFilter[Int, Int](
-      sr,
-      aClassifier,
-      StatsFilter.DefaultExceptions,
-      TimeUnit.MILLISECONDS)
+    val statsFilter =
+      new StatsFilter[Int, Int](
+        sr,
+        aClassifier,
+        StatsFilter.DefaultExceptions,
+        TimeUnit.MILLISECONDS)
 
     val service = statsFilter.andThen(svc)
 

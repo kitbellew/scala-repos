@@ -112,15 +112,18 @@ class NewScalaTypeDefinitionAction
   }
 
   private def isUnderSourceRoots(dataContext: DataContext): Boolean = {
-    val module: Module =
-      dataContext.getData(LangDataKeys.MODULE.getName).asInstanceOf[Module]
+    val module: Module = dataContext
+      .getData(LangDataKeys.MODULE.getName)
+      .asInstanceOf[Module]
     if (!Option(module).exists(_.hasScala)) {
       return false
     }
-    val view =
-      dataContext.getData(LangDataKeys.IDE_VIEW.getName).asInstanceOf[IdeView]
-    val project =
-      dataContext.getData(CommonDataKeys.PROJECT.getName).asInstanceOf[Project]
+    val view = dataContext
+      .getData(LangDataKeys.IDE_VIEW.getName)
+      .asInstanceOf[IdeView]
+    val project = dataContext
+      .getData(CommonDataKeys.PROJECT.getName)
+      .asInstanceOf[Project]
     if (view != null && project != null) {
       val projectFileIndex =
         ProjectRootManager.getInstance(project).getFileIndex
@@ -168,10 +171,12 @@ object NewScalaTypeDefinitionAction {
       templateName: String,
       parameters: String*): PsiFile = {
     val project = directory.getProject
-    val template: FileTemplate =
-      FileTemplateManager.getInstance(project).getInternalTemplate(templateName)
-    val properties: Properties = new Properties(
-      FileTemplateManager.getInstance(project).getDefaultProperties())
+    val template: FileTemplate = FileTemplateManager
+      .getInstance(project)
+      .getInternalTemplate(templateName)
+    val properties: Properties =
+      new Properties(
+        FileTemplateManager.getInstance(project).getDefaultProperties())
     JavaTemplateUtil.setPackageNameAttribute(properties, directory)
     properties.setProperty(NAME_TEMPLATE_PROPERTY, name)
     properties.setProperty(
@@ -196,8 +201,10 @@ object NewScalaTypeDefinitionAction {
           e)
     }
     val factory: PsiFileFactory = PsiFileFactory.getInstance(project)
-    val file: PsiFile =
-      factory.createFileFromText(fileName, ScalaFileType.SCALA_FILE_TYPE, text)
+    val file: PsiFile = factory.createFileFromText(
+      fileName,
+      ScalaFileType.SCALA_FILE_TYPE,
+      text)
     CodeStyleManager.getInstance(project).reformat(file)
     directory.add(file).asInstanceOf[PsiFile]
   }

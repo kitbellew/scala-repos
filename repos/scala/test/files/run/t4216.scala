@@ -2,8 +2,7 @@ import scala.tools.partest.ReplTest
 
 // t4216
 object Test extends ReplTest {
-  def code =
-    """
+  def code = """
       |import scala.reflect.ClassTag
       |def f[A: ClassTag](a: A) = java.util.Arrays.asList(Array(a): _*)
       |f(".")

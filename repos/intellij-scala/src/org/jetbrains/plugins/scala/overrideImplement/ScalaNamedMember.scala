@@ -37,15 +37,16 @@ class ScAliasMember(
 class ScMethodMember(val sign: PhysicalSignature, val isOverride: Boolean)
     extends {
   val name: String = sign.name
-  val scType: ScType = sign.method match {
-    case fun: ScFunction => sign.substitutor.subst(fun.returnType.getOrAny)
-    case method: PsiMethod =>
-      sign.substitutor.subst(
-        ScType.create(
-          Option(method.getReturnType).getOrElse(PsiType.VOID),
-          method.getProject,
-          method.getResolveScope))
-  }
+  val scType: ScType =
+    sign.method match {
+      case fun: ScFunction => sign.substitutor.subst(fun.returnType.getOrAny)
+      case method: PsiMethod =>
+        sign.substitutor.subst(
+          ScType.create(
+            Option(method.getReturnType).getOrElse(PsiType.VOID),
+            method.getProject,
+            method.getResolveScope))
+    }
   val text = ScalaPsiUtil.getMethodPresentableText(sign.method)
 } with PsiElementClassMember[PsiMethod](sign.method, text) with ScalaNamedMember
 with ScalaTypedMember

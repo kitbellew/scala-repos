@@ -94,8 +94,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] =
-        sc.accumulable(new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
+        new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
       d.foreach { x =>
         acc += x
@@ -112,8 +112,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] =
-        sc.accumulable(new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
+        new mutable.HashSet[Any]())
       val d = sc.parallelize(1 to maxI)
       an[SparkException] should be thrownBy {
         d.foreach { x =>
@@ -158,8 +158,8 @@ class AccumulatorSuite
     val maxI = 1000
     for (nThreads <- List(1, 10)) { // test single & multi-threaded
       sc = new SparkContext("local[" + nThreads + "]", "test")
-      val acc: Accumulable[mutable.Set[Any], Any] =
-        sc.accumulable(new mutable.HashSet[Any]())
+      val acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
+        new mutable.HashSet[Any]())
       val groupedInts = (1 to (maxI / 20)).map { x =>
         (20 * (x - 1) to 20 * x).toSet
       }
@@ -175,8 +175,8 @@ class AccumulatorSuite
   test("garbage collection") {
     // Create an accumulator and let it go out of scope to test that it's properly garbage collected
     sc = new SparkContext("local", "test")
-    var acc: Accumulable[mutable.Set[Any], Any] =
-      sc.accumulable(new mutable.HashSet[Any]())
+    var acc: Accumulable[mutable.Set[Any], Any] = sc.accumulable(
+      new mutable.HashSet[Any]())
     val accId = acc.id
     val ref = WeakReference(acc)
 
@@ -224,11 +224,12 @@ class AccumulatorSuite
   }
 
   test("only external accums are automatically registered") {
-    val accEx = new Accumulator(
-      0,
-      IntAccumulatorParam,
-      Some("external"),
-      internal = false)
+    val accEx =
+      new Accumulator(
+        0,
+        IntAccumulatorParam,
+        Some("external"),
+        internal = false)
     val accIn =
       new Accumulator(0, IntAccumulatorParam, Some("internal"), internal = true)
     assert(!accEx.isInternal)
@@ -238,12 +239,13 @@ class AccumulatorSuite
   }
 
   test("copy") {
-    val acc1 = new Accumulable[Long, Long](
-      456L,
-      LongAccumulatorParam,
-      Some("x"),
-      true,
-      false)
+    val acc1 =
+      new Accumulable[Long, Long](
+        456L,
+        LongAccumulatorParam,
+        Some("x"),
+        true,
+        false)
     val acc2 = acc1.copy()
     assert(acc1.id === acc2.id)
     assert(acc1.value === acc2.value)
@@ -292,10 +294,11 @@ class AccumulatorSuite
   }
 
   test("list accumulator param") {
-    val acc = new Accumulator(
-      Seq.empty[Int],
-      new ListAccumulatorParam[Int],
-      Some("numbers"))
+    val acc =
+      new Accumulator(
+        Seq.empty[Int],
+        new ListAccumulatorParam[Int],
+        Some("numbers"))
     assert(acc.value === Seq.empty[Int])
     acc.add(Seq(1, 2))
     assert(acc.value === Seq(1, 2))
@@ -312,11 +315,12 @@ class AccumulatorSuite
   test("value is reset on the executors") {
     val acc1 =
       new Accumulator(0, IntAccumulatorParam, Some("thing"), internal = false)
-    val acc2 = new Accumulator(
-      0L,
-      LongAccumulatorParam,
-      Some("thing2"),
-      internal = false)
+    val acc2 =
+      new Accumulator(
+        0L,
+        LongAccumulatorParam,
+        Some("thing2"),
+        internal = false)
     val externalAccums = Seq(acc1, acc2)
     val internalAccums = InternalAccumulator.createAll()
     // Set some values; these should not be observed later on the "executors"

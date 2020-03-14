@@ -217,11 +217,12 @@ trait DB extends Loggable {
           })
       })
 
-    val cmConn = for {
-      connectionManager <- threadLocalConnectionManagers.box.flatMap(
-        _.get(name)) or Box(connectionManagers.get(name))
-      connection <- cmSuperConnection(connectionManager)
-    } yield connection
+    val cmConn =
+      for {
+        connectionManager <- threadLocalConnectionManagers.box.flatMap(
+          _.get(name)) or Box(connectionManagers.get(name))
+        connection <- cmSuperConnection(connectionManager)
+      } yield connection
 
     val ret = cmConn or jndiSuperConnection
 
@@ -346,16 +347,17 @@ trait DB extends Loggable {
 
   private def getConnection(name: ConnectionIdentifier): SuperConnection = {
     logger.trace("Acquiring " + name + " On thread " + Thread.currentThread)
-    var ret = info.get(name) match {
-      case None =>
-        ConnectionHolder(
-          newConnection(name),
-          calcBaseCount(name) + 1,
-          Nil,
-          false)
-      case Some(ConnectionHolder(conn, cnt, post, rb)) =>
-        ConnectionHolder(conn, cnt + 1, post, rb)
-    }
+    var ret =
+      info.get(name) match {
+        case None =>
+          ConnectionHolder(
+            newConnection(name),
+            calcBaseCount(name) + 1,
+            Nil,
+            false)
+        case Some(ConnectionHolder(conn, cnt, post, rb)) =>
+          ConnectionHolder(conn, cnt + 1, post, rb)
+      }
     info(name) = ret
     logger.trace(
       "Acquired " + name + " on thread " + Thread.currentThread +

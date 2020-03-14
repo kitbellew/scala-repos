@@ -58,11 +58,12 @@ private[play] final class SerializableResult(constructorResult: Result)
 
     val body = {
       val hasContentType = in.readBoolean()
-      val contentType = if (hasContentType) {
-        Some(in.readUTF())
-      } else {
-        None
-      }
+      val contentType =
+        if (hasContentType) {
+          Some(in.readUTF())
+        } else {
+          None
+        }
       val sizeOfBody: Int = in.readInt()
       val buffer = new Array[Byte](sizeOfBody)
       @tailrec
@@ -100,12 +101,13 @@ private[play] final class SerializableResult(constructorResult: Result)
       cachedResult.body.contentType.foreach { ct =>
         out.writeUTF(ct)
       }
-      val body = cachedResult.body match {
-        case HttpEntity.Strict(data, _) => data
-        case other =>
-          throw new IllegalStateException(
-            "Non strict body cannot be materialized")
-      }
+      val body =
+        cachedResult.body match {
+          case HttpEntity.Strict(data, _) => data
+          case other =>
+            throw new IllegalStateException(
+              "Non strict body cannot be materialized")
+        }
       out.writeInt(body.length)
       out.write(body.toArray)
     }

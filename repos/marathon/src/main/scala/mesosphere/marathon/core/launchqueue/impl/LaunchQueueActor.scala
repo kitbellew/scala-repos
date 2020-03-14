@@ -62,8 +62,9 @@ private[impl] class LaunchQueueActor(
   var suspendedLauncherPathIds = Set.empty[PathId]
 
   /** ActorRefs of the actors have been currently suspended because we wait for their termination. */
-  var suspendedLaunchersMessages =
-    Map.empty[ActorRef, Vector[DeferredMessage]].withDefaultValue(Vector.empty)
+  var suspendedLaunchersMessages = Map
+    .empty[ActorRef, Vector[DeferredMessage]]
+    .withDefaultValue(Vector.empty)
 
   /** The timeout for asking any children of this actor. */
   implicit val askTimeout: Timeout =
@@ -164,8 +165,8 @@ private[impl] class LaunchQueueActor(
       import context.dispatcher
       launchers.get(update.appId) match {
         case Some(actorRef) =>
-          val eventualCount: Future[QueuedTaskInfo] =
-            (actorRef ? update).mapTo[QueuedTaskInfo]
+          val eventualCount: Future[QueuedTaskInfo] = (actorRef ? update)
+            .mapTo[QueuedTaskInfo]
           eventualCount.map(Some(_)).pipeTo(sender())
         case None => sender() ! None
       }
@@ -176,8 +177,9 @@ private[impl] class LaunchQueueActor(
       import context.dispatcher
       val scatter = launchers.keys
         .map(appId => (self ? Count(appId)).mapTo[Option[QueuedTaskInfo]])
-      val gather: Future[Seq[QueuedTaskInfo]] =
-        Future.sequence(scatter).map(_.flatten.to[Seq])
+      val gather: Future[Seq[QueuedTaskInfo]] = Future
+        .sequence(scatter)
+        .map(_.flatten.to[Seq])
       gather.pipeTo(sender())
 
     case Count(appId) =>

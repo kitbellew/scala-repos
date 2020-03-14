@@ -259,10 +259,11 @@ case class MSet(kv: Map[ChannelBuffer, ChannelBuffer]) extends MultiSet {
   val command = Commands.MSET
 
   def toChannelBuffer = {
-    val kvList: Seq[ChannelBuffer] = kv.flatMap {
-      case (k, v) =>
-        k :: v :: Nil
-    }(collection.breakOut)
+    val kvList: Seq[ChannelBuffer] =
+      kv.flatMap {
+        case (k, v) =>
+          k :: v :: Nil
+      }(collection.breakOut)
     RedisCodec.toUnifiedFormat(CommandBytes.MSET +: kvList)
   }
 }
@@ -276,10 +277,11 @@ case class MSetNx(kv: Map[ChannelBuffer, ChannelBuffer]) extends MultiSet {
   val command = Commands.MSETNX
 
   def toChannelBuffer = {
-    val kvList: Seq[ChannelBuffer] = kv.flatMap {
-      case (k, v) =>
-        k :: v :: Nil
-    }(collection.breakOut)
+    val kvList: Seq[ChannelBuffer] =
+      kv.flatMap {
+        case (k, v) =>
+          k :: v :: Nil
+      }(collection.breakOut)
     RedisCodec.toUnifiedFormat(CommandBytes.MSETNX +: kvList)
   }
 }
@@ -363,9 +365,10 @@ object Set {
     val key = ChannelBuffers.wrappedBuffer(args(0))
     val value = ChannelBuffers.wrappedBuffer(args(1))
 
-    val set = new Set(
-      ChannelBuffers.wrappedBuffer(args(0)),
-      ChannelBuffers.wrappedBuffer(args(1)))
+    val set =
+      new Set(
+        ChannelBuffers.wrappedBuffer(args(0)),
+        ChannelBuffers.wrappedBuffer(args(1)))
 
     def run(args: Seq[Array[Byte]], set: Set): Set = {
       args.headOption match {
@@ -389,8 +392,8 @@ object Set {
                 case Some(bytes) =>
                   run(
                     args.tail.tail,
-                    set.copy(ttl =
-                      Some(InMilliseconds(RequireClientProtocol.safe {
+                    set.copy(ttl = Some(
+                      InMilliseconds(RequireClientProtocol.safe {
                         NumberFormat.toLong(BytesToString(bytes))
                       }))))
               }
@@ -526,17 +529,18 @@ trait MultiSetCompanion {
       length % 2 == 0 && length > 0,
       "Expected even number of k/v pairs")
 
-    val map = args
-      .grouped(2)
-      .map {
-        case key :: value :: Nil =>
-          (
-            ChannelBuffers.wrappedBuffer(key),
-            ChannelBuffers.wrappedBuffer(value))
-        case _ =>
-          throw ClientError("Unexpected uneven pair of elements in MSET")
-      }
-      .toMap
+    val map =
+      args
+        .grouped(2)
+        .map {
+          case key :: value :: Nil =>
+            (
+              ChannelBuffers.wrappedBuffer(key),
+              ChannelBuffers.wrappedBuffer(value))
+          case _ =>
+            throw ClientError("Unexpected uneven pair of elements in MSET")
+        }
+        .toMap
     RequireClientProtocol(
       map.size == length / 2,
       "Broken mapping, map size not equal to group size")

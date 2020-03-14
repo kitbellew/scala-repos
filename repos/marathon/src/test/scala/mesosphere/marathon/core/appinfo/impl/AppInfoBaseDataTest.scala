@@ -40,13 +40,14 @@ class AppInfoBaseDataTest
     lazy val marathonSchedulerService = mock[MarathonSchedulerService]
     lazy val taskFailureRepository = mock[TaskFailureRepository]
 
-    lazy val baseData = new AppInfoBaseData(
-      clock,
-      taskTracker,
-      healthCheckManager,
-      marathonSchedulerService,
-      taskFailureRepository
-    )
+    lazy val baseData =
+      new AppInfoBaseData(
+        clock,
+        taskTracker,
+        healthCheckManager,
+        marathonSchedulerService,
+        taskFailureRepository
+      )
 
     def verifyNoMoreInteractions(): Unit = {
       noMoreInteractions(taskTracker)
@@ -182,10 +183,12 @@ class AppInfoBaseDataTest
     val f = new Fixture
     Given("One related and one unrelated deployment")
     val emptyGroup = Group.empty
-    val relatedDeployment =
-      DeploymentPlan(emptyGroup, emptyGroup.copy(apps = Set(app)))
-    val unrelatedDeployment =
-      DeploymentPlan(emptyGroup, emptyGroup.copy(apps = Set(other)))
+    val relatedDeployment = DeploymentPlan(
+      emptyGroup,
+      emptyGroup.copy(apps = Set(app)))
+    val unrelatedDeployment = DeploymentPlan(
+      emptyGroup,
+      emptyGroup.copy(apps = Set(other)))
     f.marathonSchedulerService.listRunningDeployments() returns Future
       .successful(
         Seq[DeploymentStepInfo](
@@ -248,9 +251,10 @@ class AppInfoBaseDataTest
       Some(TaskFailureTestHelper.taskFailure))
 
     When("Getting AppInfos with last task failures")
-    val appInfo = f.baseData
-      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
-      .futureValue
+    val appInfo =
+      f.baseData
+        .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
+        .futureValue
 
     Then("we get the failure in the app info")
     appInfo should be(
@@ -274,9 +278,10 @@ class AppInfoBaseDataTest
     f.taskFailureRepository.current(app.id) returns Future.successful(None)
 
     When("Getting AppInfos with last task failures")
-    val appInfo = f.baseData
-      .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
-      .futureValue
+    val appInfo =
+      f.baseData
+        .appInfoFuture(app, Set(AppInfo.Embed.LastTaskFailure))
+        .futureValue
 
     Then("we get no failure in the app info")
     appInfo should be(AppInfo(app))
@@ -362,11 +367,12 @@ class AppInfoBaseDataTest
       )
 
     When("Getting AppInfos with last task failures and deployments")
-    val appInfo = f.baseData
-      .appInfoFuture(
-        app,
-        Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Deployments))
-      .futureValue
+    val appInfo =
+      f.baseData
+        .appInfoFuture(
+          app,
+          Set(AppInfo.Embed.LastTaskFailure, AppInfo.Embed.Deployments))
+        .futureValue
 
     Then("we get the failure in the app info")
     appInfo should be(

@@ -27,12 +27,12 @@ private class ScalaModuleConversionProcessor(context: ConversionContext)
         throw new IllegalStateException(
           "Cannot find Scala facet in module: " + module.getModuleName))
 
-    val scalaStandardLibraryReference =
-      ScalaProjectConverter.findStandardScalaLibraryIn(module)
-    val scalaStandardLibrary =
-      scalaStandardLibraryReference.flatMap(_.resolveIn(context))
-    val scalaCompilerLibrary =
-      scalaFacet.compilerLibrary.flatMap(_.resolveIn(context))
+    val scalaStandardLibraryReference = ScalaProjectConverter
+      .findStandardScalaLibraryIn(module)
+    val scalaStandardLibrary = scalaStandardLibraryReference.flatMap(
+      _.resolveIn(context))
+    val scalaCompilerLibrary = scalaFacet.compilerLibrary.flatMap(
+      _.resolveIn(context))
 
     scalaCompilerLibrary.foreach { compilerLibrary =>
       val existingScalaSdk = createdSdks.find(_.isEquivalentTo(compilerLibrary))
@@ -44,8 +44,11 @@ private class ScalaModuleConversionProcessor(context: ConversionContext)
         val standardLibrary = scalaStandardLibrary.getOrElse(LibraryData.empty)
         val compilerClasspath = compilerLibrary.classesAsFileUrls
         val languageLevel = ScalaSdkData.languageLevelFrom(compilerClasspath)
-        val sdk =
-          ScalaSdkData(name, standardLibrary, languageLevel, compilerClasspath)
+        val sdk = ScalaSdkData(
+          name,
+          standardLibrary,
+          languageLevel,
+          compilerClasspath)
         createdSdks :+= sdk
         newSdkFiles ++= sdk.createIn(context)
         sdk

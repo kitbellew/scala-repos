@@ -18,8 +18,7 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
     statsReceiver: StatsReceiver)
     extends Service[Req, Rep] {
 
-  def this(trans: Transport[In, Out]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[In, Out]) = this(trans, NullStatsReceiver)
 
   private[this] val semaphore = new AsyncSemaphore(1)
 
@@ -28,17 +27,19 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
       semaphore.numWaiters
     }
 
-  private[this] val localAddress: InetSocketAddress = trans.localAddress match {
-    case ia: InetSocketAddress => ia
-    case _                     => new InetSocketAddress(0)
-  }
+  private[this] val localAddress: InetSocketAddress =
+    trans.localAddress match {
+      case ia: InetSocketAddress => ia
+      case _                     => new InetSocketAddress(0)
+    }
 
   // satisfy pending requests on transport close
   trans.onClose.respond { res =>
-    val exc = res match {
-      case Return(exc) => exc
-      case Throw(exc)  => exc
-    }
+    val exc =
+      res match {
+        case Return(exc) => exc
+        case Throw(exc)  => exc
+      }
 
     semaphore.fail(exc)
   }
@@ -119,8 +120,7 @@ class SerialClientDispatcher[Req, Rep](
 
   import GenSerialClientDispatcher.wrapWriteException
 
-  def this(trans: Transport[Req, Rep]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[Req, Rep]) = this(trans, NullStatsReceiver)
 
   private[this] val readTheTransport: Unit => Future[Rep] = _ => trans.read()
 

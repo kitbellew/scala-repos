@@ -20,8 +20,9 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
   var inst: ZkInstance = _
   val factory = new ZkClientFactory(zkTimeout)
 
-  implicit val patienceConfig =
-    PatienceConfig(timeout = toSpan(1.second), interval = toSpan(zkTimeout))
+  implicit val patienceConfig = PatienceConfig(
+    timeout = toSpan(1.second),
+    interval = toSpan(zkTimeout))
 
   before {
     inst = new ZkInstance
@@ -93,12 +94,11 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
       }
 
       // and 1 in a cluster filtered by shardid (== to the port in this case)
-      val filteredAddr =
-        new ZkResolver(factory).resolve(
-          Set(inst.zookeeperAddress),
-          path,
-          shardId = Some(ephAddr2.getPort)
-        )
+      val filteredAddr = new ZkResolver(factory).resolve(
+        Set(inst.zookeeperAddress),
+        path,
+        shardId = Some(ephAddr2.getPort)
+      )
       eventually {
         Var.sample(filteredAddr) match {
           case Addr.Bound(addrs, attrs) if addrs.size == 1 && attrs.isEmpty =>
@@ -183,12 +183,11 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
         assert(clust().size == 3)
       }
 
-      val filteredAddr =
-        new ZkResolver(factory).resolve(
-          Set(inst.zookeeperAddress),
-          path,
-          endpoint = Some(ephAddr1.getPort.toString)
-        )
+      val filteredAddr = new ZkResolver(factory).resolve(
+        Set(inst.zookeeperAddress),
+        path,
+        endpoint = Some(ephAddr1.getPort.toString)
+      )
 
       eventually {
         Var.sample(filteredAddr) match {

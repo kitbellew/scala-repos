@@ -86,15 +86,15 @@ private object PoolFlow {
           import settings._
           import GraphDSL.Implicits._
 
-          val conductor =
-            b.add(PoolConductor(maxConnections, pipeliningLimit, log))
+          val conductor = b.add(
+            PoolConductor(maxConnections, pipeliningLimit, log))
           val slots = Vector
             .tabulate(maxConnections)(
               PoolSlot(_, connectionFlow, remoteAddress, settings))
             .map(b.add(_))
           val responseMerge = b.add(Merge[ResponseContext](maxConnections))
-          val slotEventMerge =
-            b.add(Merge[PoolSlot.RawSlotEvent](maxConnections))
+          val slotEventMerge = b.add(
+            Merge[PoolSlot.RawSlotEvent](maxConnections))
 
           slotEventMerge.out ~> conductor.slotEventIn
           for ((slot, ix) ← slots.zipWithIndex) {

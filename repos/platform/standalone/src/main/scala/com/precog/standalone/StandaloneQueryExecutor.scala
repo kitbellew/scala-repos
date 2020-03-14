@@ -109,9 +109,10 @@ trait StandaloneQueryExecutor
 
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
       : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]] = {
-    implicit val mn = new (Future ~> JobQueryTF) {
-      def apply[A](fut: Future[A]) = fut.liftM[JobQueryT]
-    }
+    implicit val mn =
+      new (Future ~> JobQueryTF) {
+        def apply[A](fut: Future[A]) = fut.liftM[JobQueryT]
+      }
 
     new ShardQueryExecutor[JobQueryTF](shardQueryMonad) {
       val M = platform.M

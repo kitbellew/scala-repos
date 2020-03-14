@@ -29,9 +29,10 @@ object MakeJar {
   private val LOG = LoggerFactory.getLogger(getClass)
 
   def apply(classDir: File, jarName: Option[String] = None): File = {
-    val syntheticJar = new File(
-      System.getProperty("java.io.tmpdir"),
-      jarName.getOrElse(classDir.getAbsolutePath.replace("/", "_") + ".jar"))
+    val syntheticJar =
+      new File(
+        System.getProperty("java.io.tmpdir"),
+        jarName.getOrElse(classDir.getAbsolutePath.replace("/", "_") + ".jar"))
     LOG.debug("Creating synthetic jar: " + syntheticJar.getAbsolutePath)
     val manifest = new JarManifest
     manifest.getMainAttributes.put(Attributes.Name.MANIFEST_VERSION, "1.0")
@@ -49,11 +50,12 @@ object MakeJar {
       .replace("\\", "/")
     if (source.isDirectory) {
       if (!name.isEmpty) {
-        val entry = new JarEntry(
-          if (!name.endsWith("/"))
-            name + "/"
-          else
-            name)
+        val entry =
+          new JarEntry(
+            if (!name.endsWith("/"))
+              name + "/"
+            else
+              name)
         entry.setTime(source.lastModified())
         target.putNextEntry(entry)
         target.closeEntry()

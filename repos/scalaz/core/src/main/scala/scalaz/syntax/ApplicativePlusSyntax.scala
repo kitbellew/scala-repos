@@ -22,8 +22,7 @@ trait ToApplicativePlusOps
     with ToApplicativeOps
     with ToPlusEmptyOps {
   implicit def ToApplicativePlusOps[F[_], A](v: F[A])(
-      implicit F0: ApplicativePlus[F]) =
-    new ApplicativePlusOps[F, A](v)
+      implicit F0: ApplicativePlus[F]) = new ApplicativePlusOps[F, A](v)
 
   ////
 

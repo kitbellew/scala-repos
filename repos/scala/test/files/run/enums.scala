@@ -29,9 +29,7 @@ object Test2 {
   }
 
   def run: Int = {
-    val it =
-      for (s <- ThreadState.values; if s.id != 0)
-        yield s;
+    val it = for (s <- ThreadState.values; if s.id != 0) yield s;
     it.toList.length
   }
 }

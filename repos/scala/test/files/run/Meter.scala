@@ -5,8 +5,7 @@ package a {
   }
 
   class Meter(val underlying: Double) extends AnyVal with _root_.b.Printable {
-    def +(other: Meter): Meter =
-      new Meter(this.underlying + other.underlying)
+    def +(other: Meter): Meter = new Meter(this.underlying + other.underlying)
     def /(other: Meter)(implicit dummy: Meter.MeterArg = null): Double =
       this.underlying / other.underlying
     def /(factor: Double): Meter = new Meter(this.underlying / factor)
@@ -26,22 +25,23 @@ package a {
 
     def apply(x: Double): Meter = new Meter(x)
 
-    implicit val boxings = new BoxingConversions[Meter, Double] {
-      def box(x: Double) = new Meter(x)
-      def unbox(m: Meter) = m.underlying
-    }
+    implicit val boxings =
+      new BoxingConversions[Meter, Double] {
+        def box(x: Double) = new Meter(x)
+        def unbox(m: Meter) = m.underlying
+      }
   }
 
   class Foot(val unbox: Double) extends AnyVal {
-    def +(other: Foot): Foot =
-      new Foot(this.unbox + other.unbox)
+    def +(other: Foot): Foot = new Foot(this.unbox + other.unbox)
     override def toString = unbox.toString + "ft"
   }
   object Foot {
-    implicit val boxings = new BoxingConversions[Foot, Double] {
-      def box(x: Double) = new Foot(x)
-      def unbox(m: Foot) = m.unbox
-    }
+    implicit val boxings =
+      new BoxingConversions[Foot, Double] {
+        def box(x: Double) = new Foot(x)
+        def unbox(m: Foot) = m.unbox
+      }
   }
 
 }

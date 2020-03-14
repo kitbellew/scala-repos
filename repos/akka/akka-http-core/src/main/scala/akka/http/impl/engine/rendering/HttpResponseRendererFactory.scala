@@ -95,9 +95,10 @@ private[http] class HttpResponseRendererFactory(
                 completeStage()
           }
         )
-        val waitForDemandHandler = new OutHandler {
-          def onPull(): Unit = pull(in)
-        }
+        val waitForDemandHandler =
+          new OutHandler {
+            def onPull(): Unit = pull(in)
+          }
         setHandler(out, waitForDemandHandler)
         def transfer(outStream: Source[ResponseRenderingOutput, Any]): Unit = {
           transferring = true

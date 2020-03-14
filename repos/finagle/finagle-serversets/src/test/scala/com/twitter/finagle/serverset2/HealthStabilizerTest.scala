@@ -50,8 +50,8 @@ class HealthStabilizerTest extends FunSuite with BeforeAndAfter {
 
   test("Stabilizer immediately changes unhealthy to healthy") {
     val underlying = Event[ClientHealth]()
-    val stabilized =
-      stabilize(Var[ClientHealth](ClientHealth.Unhealthy, underlying))
+    val stabilized = stabilize(
+      Var[ClientHealth](ClientHealth.Unhealthy, underlying))
     underlying.notify(ClientHealth.Unhealthy)
     assert(stabilized.get() == ClientHealth.Unhealthy)
 

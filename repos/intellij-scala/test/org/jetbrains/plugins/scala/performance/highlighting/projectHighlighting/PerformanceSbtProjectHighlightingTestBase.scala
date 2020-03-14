@@ -21,10 +21,11 @@ abstract class PerformanceSbtProjectHighlightingTestBase
     extends DownloadingAndImportingTestCase {
   def doTest(filename: String, timeoutInMillis: Int): Unit = {
     val file = findFile(filename)
-    val fileManager: FileManager = PsiManager
-      .getInstance(myProject)
-      .asInstanceOf[PsiManagerEx]
-      .getFileManager
+    val fileManager: FileManager =
+      PsiManager
+        .getInstance(myProject)
+        .asInstanceOf[PsiManagerEx]
+        .getFileManager
     PlatformTestUtil
       .startPerformanceTest(
         s"Performance test $filename",
@@ -36,16 +37,17 @@ abstract class PerformanceSbtProjectHighlightingTestBase
 
             file.refresh(true, false)
             val psiFile = fileManager.findFile(file)
-            val visitor = new ScalaRecursiveElementVisitor {
-              override def visitElement(element: ScalaPsiElement) {
-                try {
-                  annotator.annotate(element, mock)
-                  super.visitElement(element)
-                } catch {
-                  case ignored: Throwable => //this should be checked in AllProjectHighlightingTest
+            val visitor =
+              new ScalaRecursiveElementVisitor {
+                override def visitElement(element: ScalaPsiElement) {
+                  try {
+                    annotator.annotate(element, mock)
+                    super.visitElement(element)
+                  } catch {
+                    case ignored: Throwable => //this should be checked in AllProjectHighlightingTest
+                  }
                 }
               }
-            }
             psiFile.accept(visitor)
             fileManager.cleanupForNextTest()
           }

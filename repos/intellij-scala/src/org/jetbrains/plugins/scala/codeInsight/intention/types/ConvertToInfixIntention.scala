@@ -43,10 +43,11 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
     val paramTypeElement: ScParameterizedTypeElement = PsiTreeUtil
       .getParentOfType(element, classOf[ScParameterizedTypeElement], false)
     val Seq(targ1, targ2) = paramTypeElement.typeArgList.typeArgs
-    val needParens = paramTypeElement.getParent match {
-      case _: ScTypeArgs | _: ScParenthesisedTypeElement => false
-      case _                                             => true
-    }
+    val needParens =
+      paramTypeElement.getParent match {
+        case _: ScTypeArgs | _: ScParenthesisedTypeElement => false
+        case _                                             => true
+      }
     val newTypeText = Seq(targ1, paramTypeElement.typeElement, targ2)
       .map(_.getText)
       .mkString(" ")

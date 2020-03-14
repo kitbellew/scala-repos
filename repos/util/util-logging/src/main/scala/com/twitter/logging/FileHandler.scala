@@ -40,12 +40,11 @@ object Policy {
   case object SigHup extends Policy
   case class MaxSize(size: StorageUnit) extends Policy
 
-  private[this] val singletonPolicyNames: Map[String, Policy] =
-    Map(
-      "never" -> Never,
-      "hourly" -> Hourly,
-      "daily" -> Daily,
-      "sighup" -> SigHup)
+  private[this] val singletonPolicyNames: Map[String, Policy] = Map(
+    "never" -> Never,
+    "hourly" -> Hourly,
+    "daily" -> Daily,
+    "sighup" -> SigHup)
 
   // Regex object that matches "Weekly(n)" and extracts the `dayOfWeek` number.
   private[this] val weeklyRegex = """(?i)weekly\(([1-7]+)\)""".r
@@ -144,10 +143,11 @@ class FileHandler(
   // Thread-safety is guarded by synchronized on this
   private var bytesWrittenToFile: Long = 0
 
-  private val maxFileSize: Option[StorageUnit] = rollPolicy match {
-    case Policy.MaxSize(size) => Some(size)
-    case _                    => None
-  }
+  private val maxFileSize: Option[StorageUnit] =
+    rollPolicy match {
+      case Policy.MaxSize(size) => Some(size)
+      case _                    => None
+    }
 
   openLog()
 
@@ -206,14 +206,15 @@ class FileHandler(
     * Compute the suffix for a rolled logfile, based on the roll policy.
     */
   def timeSuffix(date: Date) = {
-    val dateFormat = rollPolicy match {
-      case Policy.Never      => TwitterDateFormat("yyyy")
-      case Policy.SigHup     => TwitterDateFormat("yyyy")
-      case Policy.Hourly     => TwitterDateFormat("yyyyMMdd-HH")
-      case Policy.Daily      => TwitterDateFormat("yyyyMMdd")
-      case Policy.Weekly(_)  => TwitterDateFormat("yyyyMMdd")
-      case Policy.MaxSize(_) => TwitterDateFormat("yyyyMMdd-HHmmss")
-    }
+    val dateFormat =
+      rollPolicy match {
+        case Policy.Never      => TwitterDateFormat("yyyy")
+        case Policy.SigHup     => TwitterDateFormat("yyyy")
+        case Policy.Hourly     => TwitterDateFormat("yyyyMMdd-HH")
+        case Policy.Daily      => TwitterDateFormat("yyyyMMdd")
+        case Policy.Weekly(_)  => TwitterDateFormat("yyyyMMdd")
+        case Policy.MaxSize(_) => TwitterDateFormat("yyyyMMdd-HHmmss")
+      }
     dateFormat.setCalendar(formatter.calendar)
     dateFormat.format(date)
   }
@@ -232,25 +233,26 @@ class FileHandler(
       n
     }
 
-    val rv = rollPolicy match {
-      case Policy.MaxSize(_) | Policy.Never | Policy.SigHup => None
-      case Policy.Hourly => {
-        next.add(Calendar.HOUR_OF_DAY, 1)
-        Some(next)
-      }
-      case Policy.Daily => {
-        next.set(Calendar.HOUR_OF_DAY, 0)
-        next.add(Calendar.DAY_OF_MONTH, 1)
-        Some(next)
-      }
-      case Policy.Weekly(weekday) => {
-        next.set(Calendar.HOUR_OF_DAY, 0)
-        do {
+    val rv =
+      rollPolicy match {
+        case Policy.MaxSize(_) | Policy.Never | Policy.SigHup => None
+        case Policy.Hourly => {
+          next.add(Calendar.HOUR_OF_DAY, 1)
+          Some(next)
+        }
+        case Policy.Daily => {
+          next.set(Calendar.HOUR_OF_DAY, 0)
           next.add(Calendar.DAY_OF_MONTH, 1)
-        } while (next.get(Calendar.DAY_OF_WEEK) != weekday)
-        Some(next)
+          Some(next)
+        }
+        case Policy.Weekly(weekday) => {
+          next.set(Calendar.HOUR_OF_DAY, 0)
+          do {
+            next.add(Calendar.DAY_OF_MONTH, 1)
+          } while (next.get(Calendar.DAY_OF_WEEK) != weekday)
+          Some(next)
+        }
       }
-    }
 
     rv map {
       _.getTimeInMillis
@@ -265,17 +267,16 @@ class FileHandler(
     if (rotateCount >= 0) {
       // collect files which are not `filename`, but which share the prefix/suffix
       val prefixName = new File(filenamePrefix).getName
-      val rotatedFiles =
-        new File(filename)
-          .getParentFile()
-          .listFiles(
-            new FilenameFilter {
-              def accept(f: File, fname: String): Boolean =
-                fname != name && fname.startsWith(prefixName) && fname.endsWith(
-                  filenameSuffix)
-            }
-          )
-          .sortBy(_.getName)
+      val rotatedFiles = new File(filename)
+        .getParentFile()
+        .listFiles(
+          new FilenameFilter {
+            def accept(f: File, fname: String): Boolean =
+              fname != name && fname.startsWith(prefixName) && fname.endsWith(
+                filenameSuffix)
+          }
+        )
+        .sortBy(_.getName)
 
       val toDeleteCount = math.max(0, rotatedFiles.length - rotateCount)
       rotatedFiles.take(toDeleteCount).foreach(_.delete())

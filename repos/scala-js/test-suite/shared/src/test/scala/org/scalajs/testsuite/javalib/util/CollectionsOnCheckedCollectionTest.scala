@@ -93,6 +93,5 @@ class CollectionsOnCheckedCollectionConcurrentSkipListSetTest
 
 class CollectionsOnCheckedCollectionArrayDequeTest
     extends CollectionsCheckedCollectionTest {
-  def originalFactory: CollectionFactory =
-    new ArrayDequeFactory
+  def originalFactory: CollectionFactory = new ArrayDequeFactory
 }

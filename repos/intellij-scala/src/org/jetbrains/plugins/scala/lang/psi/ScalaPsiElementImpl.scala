@@ -28,9 +28,10 @@ abstract class ScalaPsiElementImpl(node: ASTNode)
     }
   }
 
-  private val _locked = new ThreadLocal[Boolean] {
-    override def initialValue: Boolean = false
-  }
+  private val _locked =
+    new ThreadLocal[Boolean] {
+      override def initialValue: Boolean = false
+    }
 
   override def getContext: PsiElement = {
     context match {
@@ -69,8 +70,7 @@ abstract class ScalaPsiElementImpl(node: ASTNode)
   }
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] =
-    findChildrenByClass[T](clazz)
+      clazz: Class[T]): Array[T] = findChildrenByClass[T](clazz)
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = findChildByClass[T](clazz)
@@ -171,8 +171,7 @@ abstract class ScalaStubBasedElementImpl[T <: PsiElement](
   }
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] =
-    findChildrenByClass[T](clazz)
+      clazz: Class[T]): Array[T] = findChildrenByClass[T](clazz)
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = findChildByClass[T](clazz)

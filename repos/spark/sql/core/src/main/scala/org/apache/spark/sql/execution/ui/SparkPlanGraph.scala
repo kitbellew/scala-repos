@@ -87,11 +87,12 @@ private[sql] object SparkPlanGraph {
       exchanges: mutable.HashMap[SparkPlanInfo, SparkPlanGraphNode]): Unit = {
     planInfo.nodeName match {
       case "WholeStageCodegen" =>
-        val cluster = new SparkPlanGraphCluster(
-          nodeIdGenerator.getAndIncrement(),
-          planInfo.nodeName,
-          planInfo.simpleString,
-          mutable.ArrayBuffer[SparkPlanGraphNode]())
+        val cluster =
+          new SparkPlanGraphCluster(
+            nodeIdGenerator.getAndIncrement(),
+            planInfo.nodeName,
+            planInfo.simpleString,
+            mutable.ArrayBuffer[SparkPlanGraphNode]())
         nodes += cluster
         buildSparkPlanGraphNode(
           planInfo.children.head,
@@ -131,12 +132,13 @@ private[sql] object SparkPlanGraph {
             metric.accumulatorId,
             SQLMetrics.getMetricParam(metric.metricParam))
         }
-        val node = new SparkPlanGraphNode(
-          nodeIdGenerator.getAndIncrement(),
-          planInfo.nodeName,
-          planInfo.simpleString,
-          planInfo.metadata,
-          metrics)
+        val node =
+          new SparkPlanGraphNode(
+            nodeIdGenerator.getAndIncrement(),
+            planInfo.nodeName,
+            planInfo.simpleString,
+            planInfo.metadata,
+            metrics)
         if (subgraph == null) {
           nodes += node
         } else {
@@ -179,12 +181,13 @@ private[ui] class SparkPlanGraphNode(
   def makeDotNode(metricsValue: Map[Long, String]): String = {
     val builder = new mutable.StringBuilder(name)
 
-    val values = for {
-      metric <- metrics
-      value <- metricsValue.get(metric.accumulatorId)
-    } yield {
-      metric.name + ": " + value
-    }
+    val values =
+      for {
+        metric <- metrics
+        value <- metricsValue.get(metric.accumulatorId)
+      } yield {
+        metric.name + ": " + value
+      }
 
     if (values.nonEmpty) {
       // If there are metrics, display each entry in a separate line.

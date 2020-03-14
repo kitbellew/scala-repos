@@ -22,11 +22,12 @@ object ApiCommitListItem {
       repositoryName: RepositoryName): ApiCommitListItem =
     ApiCommitListItem(
       sha = commit.id,
-      commit = Commit(
-        message = commit.fullMessage,
-        author = ApiPersonIdent.author(commit),
-        committer = ApiPersonIdent.committer(commit)
-      )(commit.id, repositoryName),
+      commit =
+        Commit(
+          message = commit.fullMessage,
+          author = ApiPersonIdent.author(commit),
+          committer = ApiPersonIdent.committer(commit)
+        )(commit.id, repositoryName),
       author = None,
       committer = None,
       parents = commit.parents.map(Parent(_)(repositoryName))

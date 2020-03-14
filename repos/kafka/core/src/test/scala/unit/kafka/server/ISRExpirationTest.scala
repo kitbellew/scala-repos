@@ -80,12 +80,18 @@ class IsrExpirationTest {
    */
   @Test
   def testIsrExpirationForStuckFollowers() {
-    val log =
-      getLogWithLogEndOffset(15L, 2) // set logEndOffset for leader to 15L
+    val log = getLogWithLogEndOffset(
+      15L,
+      2
+    ) // set logEndOffset for leader to 15L
 
     // create one partition and all replicas
-    val partition0 =
-      getPartitionWithAllReplicasInIsr(topic, 0, time, configs.head, log)
+    val partition0 = getPartitionWithAllReplicasInIsr(
+      topic,
+      0,
+      time,
+      configs.head,
+      log)
     assertEquals(
       "All replicas should be in ISR",
       configs.map(_.brokerId).toSet,
@@ -127,12 +133,18 @@ class IsrExpirationTest {
    */
   @Test
   def testIsrExpirationIfNoFetchRequestMade() {
-    val log =
-      getLogWithLogEndOffset(15L, 1) // set logEndOffset for leader to 15L
+    val log = getLogWithLogEndOffset(
+      15L,
+      1
+    ) // set logEndOffset for leader to 15L
 
     // create one partition and all replicas
-    val partition0 =
-      getPartitionWithAllReplicasInIsr(topic, 0, time, configs.head, log)
+    val partition0 = getPartitionWithAllReplicasInIsr(
+      topic,
+      0,
+      time,
+      configs.head,
+      log)
     assertEquals(
       "All replicas should be in ISR",
       configs.map(_.brokerId).toSet,
@@ -161,8 +173,12 @@ class IsrExpirationTest {
     // create leader replica
     val log = getLogWithLogEndOffset(15L, 4)
     // add one partition
-    val partition0 =
-      getPartitionWithAllReplicasInIsr(topic, 0, time, configs.head, log)
+    val partition0 = getPartitionWithAllReplicasInIsr(
+      topic,
+      0,
+      time,
+      configs.head,
+      log)
     assertEquals(
       "All replicas should be in ISR",
       configs.map(_.brokerId).toSet,

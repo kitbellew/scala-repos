@@ -67,13 +67,14 @@ private[deploy] class DriverRunner(
   }
 
   private var clock: Clock = new SystemClock()
-  private var sleeper = new Sleeper {
-    def sleep(seconds: Int): Unit =
-      (0 until seconds).takeWhile(f => {
-        Thread.sleep(1000);
-        !killed
-      })
-  }
+  private var sleeper =
+    new Sleeper {
+      def sleep(seconds: Int): Unit =
+        (0 until seconds).takeWhile(f => {
+          Thread.sleep(1000);
+          !killed
+        })
+    }
 
   /** Starts a thread to run and manage the driver. */
   private[worker] def start() = {
@@ -186,10 +187,11 @@ private[deploy] class DriverRunner(
       CommandUtils.redirectStream(process.getInputStream, stdout)
 
       val stderr = new File(baseDir, "stderr")
-      val formattedCommand =
-        builder.command.asScala.mkString("\"", "\" \"", "\"")
-      val header =
-        "Launch Command: %s\n%s\n\n".format(formattedCommand, "=" * 40)
+      val formattedCommand = builder.command.asScala
+        .mkString("\"", "\" \"", "\"")
+      val header = "Launch Command: %s\n%s\n\n".format(
+        formattedCommand,
+        "=" * 40)
       Files.append(header, stderr, StandardCharsets.UTF_8)
       CommandUtils.redirectStream(process.getErrorStream, stderr)
     }

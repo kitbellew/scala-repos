@@ -42,8 +42,8 @@ trait PartitionMergeSpec[M[+_]]
   import trans._
 
   def testPartitionMerge = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe(
+      """[
       { "key": [0], "value": { "a": "0a" } },
       { "key": [1], "value": { "a": "1a" } },
       { "key": [1], "value": { "a": "1b" } },
@@ -67,13 +67,14 @@ trait PartitionMergeSpec[M[+_]]
     val result: M[Table] =
       tbl.partitionMerge(DerefObjectStatic(Leaf(Source), CPathField("key"))) {
         table =>
-          val reducer = new Reducer[String] {
-            def reduce(schema: CSchema, range: Range): String = {
-              schema.columns(JTextT).head match {
-                case col: StrColumn => range.map(col).mkString(";")
+          val reducer =
+            new Reducer[String] {
+              def reduce(schema: CSchema, range: Range): String = {
+                schema.columns(JTextT).head match {
+                  case col: StrColumn => range.map(col).mkString(";")
+                }
               }
             }
-          }
 
           val derefed = table.transform(
             DerefObjectStatic(

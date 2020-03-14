@@ -93,11 +93,11 @@ class SerializabilitySpec extends WordSpec with Matchers {
     oos.close()
     // make sure to use correct class loader
     val loader = classOf[HttpRequest].getClassLoader
-    val ois = new ObjectInputStream(
-      new ByteArrayInputStream(baos.toByteArray)) {
-      override def resolveClass(desc: ObjectStreamClass): Class[_] =
-        Class.forName(desc.getName, false, loader)
-    }
+    val ois =
+      new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray)) {
+        override def resolveClass(desc: ObjectStreamClass): Class[_] =
+          Class.forName(desc.getName, false, loader)
+      }
 
     val rereadObj = ois.readObject()
     rereadObj == obj

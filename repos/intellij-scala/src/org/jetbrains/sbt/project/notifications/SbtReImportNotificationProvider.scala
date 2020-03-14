@@ -21,10 +21,11 @@ class SbtReImportNotificationProvider(
     notifications: EditorNotifications)
     extends SbtImportNotificationProvider(project, notifications) {
 
-  private val fileChangeListener = new VirtualFileAdapter {
-    override def contentsChanged(event: VirtualFileEvent): Unit =
-      notifications.updateNotifications(event.getFile)
-  }
+  private val fileChangeListener =
+    new VirtualFileAdapter {
+      override def contentsChanged(event: VirtualFileEvent): Unit =
+        notifications.updateNotifications(event.getFile)
+    }
 
   VirtualFileManager
     .getInstance()

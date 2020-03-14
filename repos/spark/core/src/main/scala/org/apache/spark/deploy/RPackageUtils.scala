@@ -254,8 +254,8 @@ private[deploy] object RPackageUtils extends Logging {
     if (!zipFile.delete()) {
       logWarning(s"Error deleting ${zipFile.getPath()}")
     }
-    val zipOutputStream = new ZipOutputStream(
-      new FileOutputStream(zipFile, false))
+    val zipOutputStream =
+      new ZipOutputStream(new FileOutputStream(zipFile, false))
     try {
       filesToBundle.foreach { file =>
         // get the relative paths for proper naming in the zip file

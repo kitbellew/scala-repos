@@ -15,8 +15,10 @@ class RequestHeaderSpec extends Specification {
 
     "handle host" in {
       "relative uri with host header" in {
-        val rh =
-          DummyRequestHeader("GET", "/", Headers(HOST -> "playframework.com"))
+        val rh = DummyRequestHeader(
+          "GET",
+          "/",
+          Headers(HOST -> "playframework.com"))
         rh.host must_== "playframework.com"
       }
       "absolute uri" in {

@@ -38,8 +38,9 @@ object ForkRun {
     val sbt = system.actorOf(
       SbtClient.props(new File(baseDirectory), log, logEvents),
       "sbt")
-    val forkRun =
-      system.actorOf(props(sbt, configKey, runArgs, log), "fork-run")
+    val forkRun = system.actorOf(
+      props(sbt, configKey, runArgs, log),
+      "fork-run")
 
     log.info("Setting up Play fork run ... (use Ctrl+D to cancel)")
     registerShutdownHook(log, system, forkRun)
@@ -81,27 +82,30 @@ object ForkRun {
       notifyStart: InetSocketAddress => Unit,
       reloadCompile: () => CompileResult,
       log: Logger): PlayDevServer = {
-    val notifyStartHook = new RunHook {
-      override def afterStarted(address: InetSocketAddress): Unit =
-        notifyStart(address)
-    }
+    val notifyStartHook =
+      new RunHook {
+        override def afterStarted(address: InetSocketAddress): Unit =
+          notifyStart(address)
+      }
 
-    val watchService = config.watchService match {
-      case ForkConfig.DefaultWatchService =>
-        FileWatchService.defaultWatchService(
-          config.targetDirectory,
-          config.pollInterval,
-          log)
-      case ForkConfig.JDK7WatchService => FileWatchService.jdk7(log)
-      case ForkConfig.JNotifyWatchService =>
-        FileWatchService.jnotify(config.targetDirectory)
-      case ForkConfig.PollingWatchService(pollInterval) =>
-        FileWatchService.sbt(pollInterval)
-    }
+    val watchService =
+      config.watchService match {
+        case ForkConfig.DefaultWatchService =>
+          FileWatchService.defaultWatchService(
+            config.targetDirectory,
+            config.pollInterval,
+            log)
+        case ForkConfig.JDK7WatchService => FileWatchService.jdk7(log)
+        case ForkConfig.JNotifyWatchService =>
+          FileWatchService.jnotify(config.targetDirectory)
+        case ForkConfig.PollingWatchService(pollInterval) =>
+          FileWatchService.sbt(pollInterval)
+      }
 
-    val runSbtTask = (s: String) =>
-      throw new UnsupportedOperationException(
-        "BuildLink.runTask is not supported in fork run")
+    val runSbtTask =
+      (s: String) =>
+        throw new UnsupportedOperationException(
+          "BuildLink.runTask is not supported in fork run")
 
     val server = Reloader.startDevMode(
       runHooks = Seq(notifyStartHook),
@@ -111,8 +115,8 @@ object ForkRun {
       reloadCompile = reloadCompile,
       reloaderClassLoader = Reloader.createDelegatedResourcesClassLoader,
       assetsClassLoader = Reloader.assetsClassLoader(config.allAssets),
-      commonClassLoader =
-        Reloader.commonClassLoader(config.dependencyClasspath),
+      commonClassLoader = Reloader.commonClassLoader(
+        config.dependencyClasspath),
       monitoredFiles = config.monitoredFiles,
       fileWatchService = watchService,
       docsClasspath = config.docsClasspath,
@@ -232,8 +236,12 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
       val notifyStart = ForkRun.sendStart(sbt, config, args)
       val reloadCompile =
         ForkRun.askForReload(self)(Timeout(config.compileTimeout.millis))
-      val server =
-        ForkRun.startServer(config, args, notifyStart, reloadCompile, log)
+      val server = ForkRun.startServer(
+        config,
+        args,
+        notifyStart,
+        reloadCompile,
+        log)
       context become running(server, config.reloadKey)
     } catch {
       case e: Exception => fail(e)

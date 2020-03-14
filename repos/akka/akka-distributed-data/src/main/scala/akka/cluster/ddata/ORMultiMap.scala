@@ -77,8 +77,7 @@ final class ORMultiMap[A] private[akka] (
   /**
     * Get the set associated with the key if there is one.
     */
-  def get(key: String): Option[Set[A]] =
-    underlying.get(key).map(_.elements)
+  def get(key: String): Option[Set[A]] = underlying.get(key).map(_.elements)
 
   /**
     * Scala API: Get the set associated with the key if there is one,
@@ -128,12 +127,12 @@ final class ORMultiMap[A] private[akka] (
       node: UniqueAddress,
       key: String,
       value: Set[A]): ORMultiMap[A] = {
-    val newUnderlying = underlying.updated(node, key, ORSet.empty[A]) {
-      existing ⇒
+    val newUnderlying =
+      underlying.updated(node, key, ORSet.empty[A]) { existing ⇒
         value.foldLeft(existing.clear(node)) { (s, element) ⇒
           s.add(node, element)
         }
-    }
+      }
     new ORMultiMap(newUnderlying)
   }
 
@@ -141,8 +140,7 @@ final class ORMultiMap[A] private[akka] (
     * Convenience for remove. Requires an implicit Cluster.
     * @see [[#remove]]
     */
-  def -(key: String)(implicit node: Cluster): ORMultiMap[A] =
-    remove(node, key)
+  def -(key: String)(implicit node: Cluster): ORMultiMap[A] = remove(node, key)
 
   /**
     * Remove an entire set associated with the key.

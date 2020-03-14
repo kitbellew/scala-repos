@@ -211,16 +211,17 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
       try {
         suspendNonRecursive()
         // suspend children
-        val skip: Set[ActorRef] = currentMessage match {
-          case Envelope(Failed(_, _, _), child) ⇒ {
-            setFailed(child);
-            Set(child)
+        val skip: Set[ActorRef] =
+          currentMessage match {
+            case Envelope(Failed(_, _, _), child) ⇒ {
+              setFailed(child);
+              Set(child)
+            }
+            case _ ⇒ {
+              setFailed(self);
+              Set.empty
+            }
           }
-          case _ ⇒ {
-            setFailed(self);
-            Set.empty
-          }
-        }
         suspendChildren(exceptFor = skip ++ childrenNotToSuspend)
         t match {
           // tell supervisor

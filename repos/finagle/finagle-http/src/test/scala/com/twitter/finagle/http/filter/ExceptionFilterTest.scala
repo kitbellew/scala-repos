@@ -10,20 +10,21 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class ExceptionFilterTest extends FunSuite {
 
-  val service = new Service[Request, Response] {
-    def apply(request: Request): Future[Response] = {
-      request.response.write("hello")
-      request.response.contentLength = 5
-      if (request.params.get("exception").isDefined)
-        throw new Exception
-      else if (request.params.get("throw").isDefined)
-        Future.exception(new Exception)
-      else if (request.params.get("cancel").isDefined)
-        Future.exception(new CancelledRequestException)
-      else
-        Future.value(request.response)
+  val service =
+    new Service[Request, Response] {
+      def apply(request: Request): Future[Response] = {
+        request.response.write("hello")
+        request.response.contentLength = 5
+        if (request.params.get("exception").isDefined)
+          throw new Exception
+        else if (request.params.get("throw").isDefined)
+          Future.exception(new Exception)
+        else if (request.params.get("cancel").isDefined)
+          Future.exception(new CancelledRequestException)
+        else
+          Future.value(request.response)
+      }
     }
-  }
 
   test("ignore success") {
     val request = Request()

@@ -42,43 +42,44 @@ trait ZookeeperStateMonitor {
   import ZookeeperStateMonitor._
 
   private[this] val zkWorkFailedCounter = statsReceiver.counter("zkWork.failed")
-  private[this] val zkWorkSucceededCounter =
-    statsReceiver.counter("zkWork.succeeded")
+  private[this] val zkWorkSucceededCounter = statsReceiver.counter(
+    "zkWork.succeeded")
   private[this] val loadZKDataCounter = statsReceiver.counter("loadZKData")
-  private[this] val loadZKChildrenCounter =
-    statsReceiver.counter("loadZKChildren")
+  private[this] val loadZKChildrenCounter = statsReceiver.counter(
+    "loadZKChildren")
   private[this] val reconnectZKCounter = statsReceiver.counter("reconnectZK")
 
   private[this] val zookeeperWorkQueue = new Broker[() => Unit]
 
   // zk watcher for connection, data, children event
-  private[this] val zkWatcher: Watcher = new Watcher() {
-    // NOTE: Ensure that the processing of events is not a blocking operation.
-    override def process(event: WatchedEvent) = {
-      event.getState match {
-        // actively trying to re-establish the zk connection (hence re-register the zk path
-        // data watcher) whenever an zookeeper connection expired or disconnected. We could also
-        // only do this when SyncConnected happens, but that would be assuming other components
-        // sharing the zk client (e.g. ZookeeperServerSetCluster) will always actively attempts
-        // to re-establish the zk connection. For now, I'm making it actively re-establishing
-        // the connection itself here.
-        case (KeeperState.Disconnected | KeeperState.Expired)
-            if event.getType == Watcher.Event.EventType.None =>
-          statsReceiver.counter("zkConnectionEvent." + event.getState).incr()
-          zookeeperWorkQueue ! reconnectZK
-        case KeeperState.SyncConnected =>
-          statsReceiver.counter("zkNodeChangeEvent." + event.getType).incr()
-          event.getType match {
-            case Watcher.Event.EventType.NodeDataChanged =>
-              zookeeperWorkQueue ! loadZKData
-            case Watcher.Event.EventType.NodeChildrenChanged =>
-              zookeeperWorkQueue ! loadZKChildren
-            case _ =>
-          }
-        case _ =>
+  private[this] val zkWatcher: Watcher =
+    new Watcher() {
+      // NOTE: Ensure that the processing of events is not a blocking operation.
+      override def process(event: WatchedEvent) = {
+        event.getState match {
+          // actively trying to re-establish the zk connection (hence re-register the zk path
+          // data watcher) whenever an zookeeper connection expired or disconnected. We could also
+          // only do this when SyncConnected happens, but that would be assuming other components
+          // sharing the zk client (e.g. ZookeeperServerSetCluster) will always actively attempts
+          // to re-establish the zk connection. For now, I'm making it actively re-establishing
+          // the connection itself here.
+          case (KeeperState.Disconnected | KeeperState.Expired)
+              if event.getType == Watcher.Event.EventType.None =>
+            statsReceiver.counter("zkConnectionEvent." + event.getState).incr()
+            zookeeperWorkQueue ! reconnectZK
+          case KeeperState.SyncConnected =>
+            statsReceiver.counter("zkNodeChangeEvent." + event.getType).incr()
+            event.getType match {
+              case Watcher.Event.EventType.NodeDataChanged =>
+                zookeeperWorkQueue ! loadZKData
+              case Watcher.Event.EventType.NodeChildrenChanged =>
+                zookeeperWorkQueue ! loadZKChildren
+              case _ =>
+            }
+          case _ =>
+        }
       }
     }
-  }
 
   /**
     * Read work items of the broker and schedule the work with future pool. If the scheduled work

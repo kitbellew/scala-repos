@@ -31,42 +31,50 @@ object Writer {
 
   def write[@specialized(Boolean, Byte, Short, Int, Long, Float, Double) T](
       os: OutputStream,
-      t: T)(implicit w: Writer[T]): Unit =
-    w.write(os, t)
+      t: T)(implicit w: Writer[T]): Unit = w.write(os, t)
   /*
    * Instances below
    */
-  implicit val unit: Writer[Unit] = new Writer[Unit] {
-    def write(os: OutputStream, u: Unit) = ()
-  }
-  implicit val boolean: Writer[Boolean] = new Writer[Boolean] {
-    def write(os: OutputStream, b: Boolean) = os.writeBoolean(b)
-  }
-  implicit val byte: Writer[Byte] = new Writer[Byte] {
-    def write(os: OutputStream, b: Byte) = os.write(b)
-  }
-  implicit val short: Writer[Short] = new Writer[Short] {
-    def write(os: OutputStream, s: Short) = os.writeShort(s)
-  }
-  implicit val int: Writer[Int] = new Writer[Int] {
-    def write(os: OutputStream, s: Int) = os.writeInt(s)
-  }
-  implicit val long: Writer[Long] = new Writer[Long] {
-    def write(os: OutputStream, s: Long) = os.writeLong(s)
-  }
-  implicit val float: Writer[Float] = new Writer[Float] {
-    def write(os: OutputStream, s: Float) = os.writeFloat(s)
-  }
-  implicit val double: Writer[Double] = new Writer[Double] {
-    def write(os: OutputStream, s: Double) = os.writeDouble(s)
-  }
-  implicit val string: Writer[String] = new Writer[String] {
-    def write(os: OutputStream, s: String) = {
-      val bytes = s.getBytes("UTF-8")
-      os.writePosVarInt(bytes.length)
-      os.writeBytes(bytes)
+  implicit val unit: Writer[Unit] =
+    new Writer[Unit] {
+      def write(os: OutputStream, u: Unit) = ()
     }
-  }
+  implicit val boolean: Writer[Boolean] =
+    new Writer[Boolean] {
+      def write(os: OutputStream, b: Boolean) = os.writeBoolean(b)
+    }
+  implicit val byte: Writer[Byte] =
+    new Writer[Byte] {
+      def write(os: OutputStream, b: Byte) = os.write(b)
+    }
+  implicit val short: Writer[Short] =
+    new Writer[Short] {
+      def write(os: OutputStream, s: Short) = os.writeShort(s)
+    }
+  implicit val int: Writer[Int] =
+    new Writer[Int] {
+      def write(os: OutputStream, s: Int) = os.writeInt(s)
+    }
+  implicit val long: Writer[Long] =
+    new Writer[Long] {
+      def write(os: OutputStream, s: Long) = os.writeLong(s)
+    }
+  implicit val float: Writer[Float] =
+    new Writer[Float] {
+      def write(os: OutputStream, s: Float) = os.writeFloat(s)
+    }
+  implicit val double: Writer[Double] =
+    new Writer[Double] {
+      def write(os: OutputStream, s: Double) = os.writeDouble(s)
+    }
+  implicit val string: Writer[String] =
+    new Writer[String] {
+      def write(os: OutputStream, s: String) = {
+        val bytes = s.getBytes("UTF-8")
+        os.writePosVarInt(bytes.length)
+        os.writeBytes(bytes)
+      }
+    }
 
   implicit def option[T: Writer]: Writer[Option[T]] =
     new Writer[Option[T]] {

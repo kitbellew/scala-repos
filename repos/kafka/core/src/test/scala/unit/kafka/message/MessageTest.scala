@@ -125,12 +125,13 @@ class MessageTest extends JUnitSuite {
       assertFalse("Should not equal null", v.message.equals(null))
       assertFalse("Should not equal a random string", v.message.equals("asdf"))
       assertTrue("Should equal itself", v.message.equals(v.message))
-      val copy = new Message(
-        bytes = v.payload,
-        key = v.key,
-        v.timestamp,
-        codec = v.codec,
-        v.magicValue)
+      val copy =
+        new Message(
+          bytes = v.payload,
+          key = v.key,
+          v.timestamp,
+          codec = v.codec,
+          v.magicValue)
       assertTrue(
         "Should equal another message with the same content.",
         v.message.equals(copy))

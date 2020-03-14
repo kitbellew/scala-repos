@@ -61,12 +61,13 @@ private[annotator] object AnnotatorUtils {
     expression.getTypeAfterImplicitConversion().tr.foreach { actual =>
       val expected = typeElement.calcType
       if (!actual.conforms(expected)) {
-        val expr = expression match {
-          case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
-          case _              => expression
-        }
-        val (actualText, expText) =
-          ScTypePresentation.different(actual, expected)
+        val expr =
+          expression match {
+            case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
+            case _              => expression
+          }
+        val (actualText, expText) = ScTypePresentation
+          .different(actual, expected)
         val annotation = holder.createErrorAnnotation(
           expr,
           ScalaBundle

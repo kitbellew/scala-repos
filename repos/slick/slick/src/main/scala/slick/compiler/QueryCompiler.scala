@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory
 
 /** An immutable, stateless query compiler consisting of a series of phases */
 class QueryCompiler(val phases: Vector[Phase]) extends Logging {
-  protected[this] lazy val benchmarkLogger = new SlickLogger(
-    LoggerFactory.getLogger(getClass.getName + "Benchmark"))
+  protected[this] lazy val benchmarkLogger =
+    new SlickLogger(LoggerFactory.getLogger(getClass.getName + "Benchmark"))
 
   /** Return a new compiler with the new phase added at the end. */
   def +(p: Phase) = new QueryCompiler(phases :+ p)
@@ -79,13 +79,14 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
         logger.debug("Source:", state.tree)
       }
     if (benchmarkLogger.isDebugEnabled) {
-      val (res, times) = it.foldLeft((state, Nil: List[(String, Long)])) {
-        case ((n, times), p) =>
-          val t0 = System.nanoTime()
-          val pout = runPhase(p, n)
-          val time = System.nanoTime() - t0
-          (pout, (p.name, time) :: times)
-      }
+      val (res, times) =
+        it.foldLeft((state, Nil: List[(String, Long)])) {
+          case ((n, times), p) =>
+            val t0 = System.nanoTime()
+            val pout = runPhase(p, n)
+            val time = System.nanoTime() - t0
+            (pout, (p.name, time) :: times)
+        }
       benchmarkLogger.debug("------------------- Phase: Time ---------")
       (("TOTAL", times.map(_._2).sum) :: times).reverse.foreach {
         case (name, nanos) =>

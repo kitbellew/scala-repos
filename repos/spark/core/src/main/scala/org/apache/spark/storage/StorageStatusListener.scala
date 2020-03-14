@@ -32,12 +32,13 @@ import org.apache.spark.scheduler._
 @DeveloperApi
 class StorageStatusListener(conf: SparkConf) extends SparkListener {
   // This maintains only blocks that are cached (i.e. storage level is not StorageLevel.NONE)
-  private[storage] val executorIdToStorageStatus =
-    mutable.Map[String, StorageStatus]()
+  private[storage] val executorIdToStorageStatus = mutable
+    .Map[String, StorageStatus]()
   private[storage] val deadExecutorStorageStatus =
     new mutable.ListBuffer[StorageStatus]()
-  private[this] val retainedDeadExecutors =
-    conf.getInt("spark.ui.retainedDeadExecutors", 100)
+  private[this] val retainedDeadExecutors = conf.getInt(
+    "spark.ui.retainedDeadExecutors",
+    100)
 
   def storageStatusList: Seq[StorageStatus] =
     synchronized {

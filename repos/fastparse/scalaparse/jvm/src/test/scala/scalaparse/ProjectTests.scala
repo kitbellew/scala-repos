@@ -25,31 +25,34 @@ object ProjectTests extends TestSuite {
           files.map(_.getPath) ++ dirs.flatMap(listFiles)
         }
 
-        val files = for {
-          f0 <- Option(listFiles(new java.io.File(path))).toVector
-          filename <- f0
-        } yield Future {
-          if (filename.endsWith(".scala") && filter(filename)) {
-            val code = new String(
-              java.nio.file.Files
-                .readAllBytes(java.nio.file.Paths.get(filename)))
-            if (!ScalacParser.checkParseFails(code)) {
-              print(".")
-              TestUtil.check(code, tag = filename)
+        val files =
+          for {
+            f0 <- Option(listFiles(new java.io.File(path))).toVector
+            filename <- f0
+          } yield Future {
+            if (filename.endsWith(".scala") && filter(filename)) {
+              val code =
+                new String(
+                  java.nio.file.Files
+                    .readAllBytes(java.nio.file.Paths.get(filename)))
+              if (!ScalacParser.checkParseFails(code)) {
+                print(".")
+                TestUtil.check(code, tag = filename)
+              }
             }
           }
-        }
 
         files.foreach(Await.result(_, Duration.Inf))
         println()
       }
 
       'test - {
-        val testSource = scala.io.Source
-          .fromInputStream(
-            getClass.getResourceAsStream("/scalaparse/Test.scala")
-          )
-          .mkString
+        val testSource =
+          scala.io.Source
+            .fromInputStream(
+              getClass.getResourceAsStream("/scalaparse/Test.scala")
+            )
+            .mkString
         TestUtil.check(testSource)
       }
       def checkRepo(filter: String => Boolean = _ => true)(

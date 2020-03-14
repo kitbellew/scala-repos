@@ -82,21 +82,23 @@ trait BaseReplState {
   }
 
   private[scalding] def printModeBanner(): Unit = {
-    val (modeString, homeDir) = mode match {
-      case localMode: Local => {
-        (localMode.toString, System.getProperty("user.dir"))
-      }
-      case hdfsMode: Hdfs => {
-        val defaultFs = FileSystem.get(hdfsMode.jobConf)
-        val m = customConfig.get(mr2Key) match {
-          case Some("local") =>
-            s"${hdfsMode.getClass.getSimpleName}Local(${hdfsMode.strict})"
-          case _ =>
-            s"${hdfsMode.getClass.getSimpleName}(${hdfsMode.strict})"
+    val (modeString, homeDir) =
+      mode match {
+        case localMode: Local => {
+          (localMode.toString, System.getProperty("user.dir"))
         }
-        (m, defaultFs.getWorkingDirectory.toString)
+        case hdfsMode: Hdfs => {
+          val defaultFs = FileSystem.get(hdfsMode.jobConf)
+          val m =
+            customConfig.get(mr2Key) match {
+              case Some("local") =>
+                s"${hdfsMode.getClass.getSimpleName}Local(${hdfsMode.strict})"
+              case _ =>
+                s"${hdfsMode.getClass.getSimpleName}(${hdfsMode.strict})"
+            }
+          (m, defaultFs.getWorkingDirectory.toString)
+        }
       }
-    }
     println(s"${Console.GREEN}#### Scalding mode: ${modeString}")
     println(s"#### User home: ${homeDir}${Console.RESET}")
   }

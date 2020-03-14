@@ -88,10 +88,11 @@ object HListSpec extends Specification {
       import CombinableBox._
       import HLists._
 
-      val res = for {
-        a :+: one :+: lst :+: _ <- (Full("a") ?~ "Yak" :&: Full(1) :&: Full(
-          List(1, 2, 3))) ?~! "Dude"
-      } yield a.length * one * lst.foldLeft(1)(_ * _)
+      val res =
+        for {
+          a :+: one :+: lst :+: _ <- (Full("a") ?~ "Yak" :&: Full(1) :&: Full(
+            List(1, 2, 3))) ?~! "Dude"
+        } yield a.length * one * lst.foldLeft(1)(_ * _)
 
       res must_== Full(6)
     }

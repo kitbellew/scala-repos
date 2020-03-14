@@ -31,8 +31,8 @@ object Rewind {
         castleLastMoveTime = CastleLastMoveTime(
           castles = rewindedHistory.castles,
           lastMove = rewindedHistory.lastMove.map(_.origDest),
-          lastMoveTime =
-            Some(((nowMillis - game.createdAt.getMillis) / 100).toInt),
+          lastMoveTime = Some(
+            ((nowMillis - game.createdAt.getMillis) / 100).toInt),
           check =
             if (rewindedSituation.check)
               rewindedSituation.kingPos

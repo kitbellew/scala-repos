@@ -46,9 +46,10 @@ class ScalaStatementGroupSelectioner extends ExtendWordSelectionHandlerBase {
       findGroupBoundary(e, forward, ScalaTokenTypes.tRBRACE),
       back)
 
-    val range: TextRange = new TextRange(
-      startElement.getTextRange.getStartOffset,
-      endElement.getTextRange.getEndOffset)
+    val range: TextRange =
+      new TextRange(
+        startElement.getTextRange.getStartOffset,
+        endElement.getTextRange.getEndOffset)
     ExtendWordSelectionHandlerBase.expandToWholeLine(editorText, range)
   }
 
@@ -64,8 +65,9 @@ class ScalaStatementGroupSelectioner extends ExtendWordSelectionHandlerBase {
           if (leaf.getElementType == stopAt)
             return current
           if (ScalaPsiUtil.isLineTerminator(leaf)) {
-            val strings: Array[String] =
-              LineTokenizer.tokenize(leaf.getText.toCharArray, false)
+            val strings: Array[String] = LineTokenizer.tokenize(
+              leaf.getText.toCharArray,
+              false)
             if (strings.length > 2) {
               return current
             }

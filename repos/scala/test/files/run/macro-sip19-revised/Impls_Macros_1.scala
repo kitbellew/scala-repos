@@ -4,8 +4,8 @@ object Macros {
   def impl(c: Context) = {
     import c.universe._
 
-    val inscope =
-      c.inferImplicitValue(c.mirror.staticClass("SourceLocation").toType)
+    val inscope = c.inferImplicitValue(
+      c.mirror.staticClass("SourceLocation").toType)
     val outer = c.Expr[SourceLocation](
       if (!inscope.isEmpty)
         inscope

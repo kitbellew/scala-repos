@@ -17,18 +17,19 @@ class LoadingFutureCacheTest extends FunSuite {
 
   trait Ctx {
     var cacheLoaderCount = 0
-    val cache = new LoadingFutureCache(
-      CacheBuilder
-        .newBuilder()
-        .build(
-          new CacheLoader[String, Future[Int]] {
-            override def load(k: String): Future[Int] = {
-              cacheLoaderCount += 1
-              Future.value(k.hashCode)
+    val cache =
+      new LoadingFutureCache(
+        CacheBuilder
+          .newBuilder()
+          .build(
+            new CacheLoader[String, Future[Int]] {
+              override def load(k: String): Future[Int] = {
+                cacheLoaderCount += 1
+                Future.value(k.hashCode)
+              }
             }
-          }
-        )
-    )
+          )
+      )
   }
 
   test("return CacheLoader result for unset keys") {
@@ -102,10 +103,11 @@ class LoadingFutureCacheTest extends FunSuite {
     cache.set("key", f)
 
     var mod = false
-    val result = cache.getOrElseUpdate("key") {
-      mod = true
-      Future.value(321)
-    }
+    val result =
+      cache.getOrElseUpdate("key") {
+        mod = true
+        Future.value(321)
+      }
     assert(Await.result(result) == 1234)
     assert(mod == false)
     assert(cacheLoaderCount == 0)
@@ -115,9 +117,10 @@ class LoadingFutureCacheTest extends FunSuite {
     val ctx = new Ctx {}
     import ctx._
 
-    val result = cache.getOrElseUpdate("key") {
-      Future.value(1234)
-    }
+    val result =
+      cache.getOrElseUpdate("key") {
+        Future.value(1234)
+      }
     assert(Await.result(result) == 1234)
     assert(cacheLoaderCount == 0)
   }

@@ -119,12 +119,11 @@ class LinearAlgebraTest
     val B = DenseMatrix((1, 2, 3), (4, 5, -6), (7, 8, 9))
     det(B) should be(-72.0 +- 1e-16)
 
-    val C =
-      DenseMatrix(
-        (1, 2, 3),
-        (2, 4, 6),
-        (0, -1, 0)
-      ) // 1st and 2nd row linearly dep.
+    val C = DenseMatrix(
+      (1, 2, 3),
+      (2, 4, 6),
+      (0, -1, 0)
+    ) // 1st and 2nd row linearly dep.
     det(C) should be(0.0 +- 1e-6)
 
     val D = DenseMatrix((-1, 1, -1), (1, 2, 3), (3, -10, 1))
@@ -142,12 +141,11 @@ class LinearAlgebraTest
     detB should be(math.log(72.0) +- 1e-15)
     assert(signB === -1.0)
 
-    val C =
-      DenseMatrix(
-        (1, 2, 3),
-        (2, 4, 6),
-        (0, -1, 0)
-      ) // 1st and 2nd row linearly dep.
+    val C = DenseMatrix(
+      (1, 2, 3),
+      (2, 4, 6),
+      (0, -1, 0)
+    ) // 1st and 2nd row linearly dep.
     val (signC, detC) = logdet(C)
     detC should be(Double.NegativeInfinity +- 1e-15)
     assert(signC === 0.0)
@@ -193,10 +191,11 @@ class LinearAlgebraTest
 
   test("cross") {
     // specific example; with prime elements
-    val (v1, v2, r) = (
-      DenseVector(13, 3, 7),
-      DenseVector(5, 11, 17),
-      DenseVector(-26, -186, 128))
+    val (v1, v2, r) =
+      (
+        DenseVector(13, 3, 7),
+        DenseVector(5, 11, 17),
+        DenseVector(-26, -186, 128))
     assert(cross(v1, v2) === r)
     assert(cross(v2, v1) === r * -1)
 
@@ -226,24 +225,21 @@ class LinearAlgebraTest
   }
 
   test("rank") {
-    val r1 =
-      DenseMatrix(
-        (1.0, 2.0, 3.0),
-        (1.0, 2.0, 3.0),
-        (1.0, 2.0, 3.0)
-      ) // rank 1 matrix
-    val r2 =
-      DenseMatrix(
-        (1.0, 2.0, 3.0),
-        (4.0, 5.0, 6.0),
-        (7.0, 8.0, 9.0)
-      ) // rank 2 matrix
-    val r3 =
-      DenseMatrix(
-        (1.0, 2.0, 3.0),
-        (4.0, 5.0, 6.0),
-        (6.0, 8.0, 9.0)
-      ) // rank 3 matrix
+    val r1 = DenseMatrix(
+      (1.0, 2.0, 3.0),
+      (1.0, 2.0, 3.0),
+      (1.0, 2.0, 3.0)
+    ) // rank 1 matrix
+    val r2 = DenseMatrix(
+      (1.0, 2.0, 3.0),
+      (4.0, 5.0, 6.0),
+      (7.0, 8.0, 9.0)
+    ) // rank 2 matrix
+    val r3 = DenseMatrix(
+      (1.0, 2.0, 3.0),
+      (4.0, 5.0, 6.0),
+      (6.0, 8.0, 9.0)
+    ) // rank 3 matrix
     assert(rank(r1) === 1)
     assert(rank(r2) === 2)
     assert(rank(r3) === 3)
@@ -355,8 +351,10 @@ class LinearAlgebraTest
   }
 
   test("qr float just[QR]") {
-    val A =
-      DenseMatrix((1.0f, 1.0f, 1.0f), (4.0f, 2.0f, 1.0f), (16.0f, 4.0f, 1.0f))
+    val A = DenseMatrix(
+      (1.0f, 1.0f, 1.0f),
+      (4.0f, 2.0f, 1.0f),
+      (16.0f, 4.0f, 1.0f))
     val QR(_Q, _R) = qr(A)
     val _Q2 = qr.justQ(A)
     assert(_Q2 === _Q)
@@ -457,8 +455,10 @@ class LinearAlgebraTest
   }
 
   test("qr float reduced A[m, n], m = n") {
-    val A =
-      DenseMatrix((1.0f, 1.0f, 1.0f), (4.0f, 2.0f, 1.0f), (16.0f, 4.0f, 1.0f))
+    val A = DenseMatrix(
+      (1.0f, 1.0f, 1.0f),
+      (4.0f, 2.0f, 1.0f),
+      (16.0f, 4.0f, 1.0f))
     val QR(_Q, _R) = qr.reduced(A)
 
     assert((_Q.rows, _Q.cols) == (A.rows, min(A.rows, A.cols)))
@@ -496,8 +496,10 @@ class LinearAlgebraTest
   }
 
   test("qr float reduced just[QR]") {
-    val A =
-      DenseMatrix((1.0f, 1.0f, 1.0f), (4.0f, 2.0f, 1.0f), (16.0f, 4.0f, 1.0f))
+    val A = DenseMatrix(
+      (1.0f, 1.0f, 1.0f),
+      (4.0f, 2.0f, 1.0f),
+      (16.0f, 4.0f, 1.0f))
     val QR(_Q, _R) = qr.reduced(A)
     val _Q2 = qr.reduced.justQ(A)
     assert(_Q2 === _Q)
@@ -567,8 +569,11 @@ class LinearAlgebraTest
   }
 
   test("svd float A(m, n), m > n") {
-    val m: DenseMatrix[Float] =
-      DenseMatrix((2.0f, 4.0f), (1.0f, 3.0f), (0.0f, 0.0f), (0.0f, 0.0f))
+    val m: DenseMatrix[Float] = DenseMatrix(
+      (2.0f, 4.0f),
+      (1.0f, 3.0f),
+      (0.0f, 0.0f),
+      (0.0f, 0.0f))
     val SVD(u, s, vt) = svd(m)
 
     // u and vt are unitary
@@ -765,14 +770,15 @@ class LinearAlgebraTest
   }
 
   test("svdr A[m, n], m < n") {
-    val m = DenseMatrix(
-      (2.0, 4.0, 0.0),
-      (1.0, 3.0, 4.0),
-      (5.0, 0.0, 0.9),
-      (3.0, 5.0, 0.5),
-      (7.5, 1.0, 6.0),
-      (0.0, 7.0, 0.0)
-    ).t
+    val m =
+      DenseMatrix(
+        (2.0, 4.0, 0.0),
+        (1.0, 3.0, 4.0),
+        (5.0, 0.0, 0.9),
+        (3.0, 5.0, 0.5),
+        (7.5, 1.0, 6.0),
+        (0.0, 7.0, 0.0)
+      ).t
 
     val SVD(u, sr, vt) = svdr(m, m.rows min m.cols)
 
@@ -918,34 +924,38 @@ class LinearAlgebraTest
 
     val bcsc = CSCMatrix.zeros[Int](5, 3)
     val rcsc = CSCMatrix.zeros[Int](3, 5)
-    val colRowGen = for {
-      r <- Gen.choose(0, 4)
-      c <- Gen.choose(0, 2)
-    } yield (r, c)
+    val colRowGen =
+      for {
+        r <- Gen.choose(0, 4)
+        c <- Gen.choose(0, 2)
+      } yield (r, c)
 
-    val pcLists = Prop.forAll(colRowGen) {
-      case (r: Int, c: Int) =>
-        val dld = c * 5 + r
-        bcsc(r, c) = dld
-        rcsc(dld % 3, dld / 3) = dld
-        reshape(bcsc, 3, 5) === rcsc &&
-        reshape(rcsc, 5, 3) === bcsc
-    }
+    val pcLists =
+      Prop.forAll(colRowGen) {
+        case (r: Int, c: Int) =>
+          val dld = c * 5 + r
+          bcsc(r, c) = dld
+          rcsc(dld % 3, dld / 3) = dld
+          reshape(bcsc, 3, 5) === rcsc &&
+          reshape(rcsc, 5, 3) === bcsc
+      }
     check(pcLists)
   }
 
   test("diag test") {
     val testDV = DenseVector(0.1, 1.1, 2.1, 3.1, 4.1)
-    val testDM = DenseMatrix.tabulate[Double](5, 5)((r, c) =>
-      if (r == c)
-        r.toDouble + 0.1
-      else
-        0.0)
-    val testCSC = CSCMatrix.tabulate[Double](5, 5)((r, c) =>
-      if (r == c)
-        r.toDouble + 0.1
-      else
-        0.0)
+    val testDM =
+      DenseMatrix.tabulate[Double](5, 5)((r, c) =>
+        if (r == c)
+          r.toDouble + 0.1
+        else
+          0.0)
+    val testCSC =
+      CSCMatrix.tabulate[Double](5, 5)((r, c) =>
+        if (r == c)
+          r.toDouble + 0.1
+        else
+          0.0)
     val testSV = SparseVector(0.1, 1.1, 2.1, 3.1, 4.1)
 
     assert(diag(testDV) === testDM)
@@ -1003,8 +1013,7 @@ class LinearAlgebraTest
         (0.6165555555555556, 0.6154444444444445),
         (0.6154444444444445, 0.7165555555555555))
 
-      val eigenvalues =
-        DenseVector(1.2840277121727839, 0.04908339893832735)
+      val eigenvalues = DenseVector(1.2840277121727839, 0.04908339893832735)
 
       val eigenvectors = DenseMatrix(
         (-0.6778733985280118, -0.735178655544408),

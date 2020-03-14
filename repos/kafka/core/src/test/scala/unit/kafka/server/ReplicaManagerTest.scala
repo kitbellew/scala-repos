@@ -49,20 +49,21 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
-    val rm = new ReplicaManager(
-      config,
-      metrics,
-      time,
-      jTime,
-      zkUtils,
-      new MockScheduler(time),
-      mockLogMgr,
-      new AtomicBoolean(false))
+    val rm =
+      new ReplicaManager(
+        config,
+        metrics,
+        time,
+        jTime,
+        zkUtils,
+        new MockScheduler(time),
+        mockLogMgr,
+        new AtomicBoolean(false))
     try {
       val partition = rm.getOrCreatePartition(topic, 1)
       partition.getOrCreateReplica(1)
@@ -81,20 +82,21 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
-    val rm = new ReplicaManager(
-      config,
-      metrics,
-      time,
-      jTime,
-      zkUtils,
-      new MockScheduler(time),
-      mockLogMgr,
-      new AtomicBoolean(false))
+    val rm =
+      new ReplicaManager(
+        config,
+        metrics,
+        time,
+        jTime,
+        zkUtils,
+        new MockScheduler(time),
+        mockLogMgr,
+        new AtomicBoolean(false))
     try {
       val partition = rm.getOrCreatePartition(topic, 1)
       partition.getOrCreateReplica(1)
@@ -112,21 +114,22 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
-    val rm = new ReplicaManager(
-      config,
-      metrics,
-      time,
-      jTime,
-      zkUtils,
-      new MockScheduler(time),
-      mockLogMgr,
-      new AtomicBoolean(false),
-      Option(this.getClass.getName))
+    val rm =
+      new ReplicaManager(
+        config,
+        metrics,
+        time,
+        jTime,
+        zkUtils,
+        new MockScheduler(time),
+        mockLogMgr,
+        new AtomicBoolean(false),
+        Option(this.getClass.getName))
     try {
       def callback(responseStatus: Map[TopicPartition, PartitionResponse]) = {
         assert(
@@ -156,20 +159,21 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
-    val rm = new ReplicaManager(
-      config,
-      metrics,
-      time,
-      jTime,
-      zkUtils,
-      new MockScheduler(time),
-      mockLogMgr,
-      new AtomicBoolean(false))
+    val rm =
+      new ReplicaManager(
+        config,
+        metrics,
+        time,
+        jTime,
+        zkUtils,
+        new MockScheduler(time),
+        mockLogMgr,
+        new AtomicBoolean(false))
 
     try {
       var produceCallbackFired = false
@@ -194,8 +198,9 @@ class ReplicaManagerTest {
         fetchCallbackFired = true
       }
 
-      val aliveBrokers =
-        Seq(new Broker(0, "host0", 0), new Broker(1, "host1", 1))
+      val aliveBrokers = Seq(
+        new Broker(0, "host0", 0),
+        new Broker(1, "host1", 1))
       val metadataCache = EasyMock.createMock(classOf[MetadataCache])
       EasyMock
         .expect(metadataCache.getAliveBrokers)
@@ -209,22 +214,23 @@ class ReplicaManagerTest {
       val partition = rm.getOrCreatePartition(topic, 0)
       partition.getOrCreateReplica(0)
       // Make this replica the leader.
-      val leaderAndIsrRequest1 = new LeaderAndIsrRequest(
-        0,
-        0,
-        collection.immutable
-          .Map(
-            new TopicPartition(topic, 0) -> new PartitionState(
-              0,
-              0,
-              0,
-              brokerList,
-              0,
-              brokerSet))
-          .asJava,
-        Set(
-          new BrokerEndPoint(0, "host1", 0),
-          new BrokerEndPoint(1, "host2", 1)).asJava)
+      val leaderAndIsrRequest1 =
+        new LeaderAndIsrRequest(
+          0,
+          0,
+          collection.immutable
+            .Map(
+              new TopicPartition(topic, 0) -> new PartitionState(
+                0,
+                0,
+                0,
+                brokerList,
+                0,
+                brokerSet))
+            .asJava,
+          Set(
+            new BrokerEndPoint(0, "host1", 0),
+            new BrokerEndPoint(1, "host2", 1)).asJava)
       rm.becomeLeaderOrFollower(
         0,
         leaderAndIsrRequest1,
@@ -254,22 +260,23 @@ class ReplicaManagerTest {
       )
 
       // Make this replica the follower
-      val leaderAndIsrRequest2 = new LeaderAndIsrRequest(
-        0,
-        0,
-        collection.immutable
-          .Map(
-            new TopicPartition(topic, 0) -> new PartitionState(
-              0,
-              1,
-              1,
-              brokerList,
-              0,
-              brokerSet))
-          .asJava,
-        Set(
-          new BrokerEndPoint(0, "host1", 0),
-          new BrokerEndPoint(1, "host2", 1)).asJava)
+      val leaderAndIsrRequest2 =
+        new LeaderAndIsrRequest(
+          0,
+          0,
+          collection.immutable
+            .Map(
+              new TopicPartition(topic, 0) -> new PartitionState(
+                0,
+                1,
+                1,
+                brokerList,
+                0,
+                brokerSet))
+            .asJava,
+          Set(
+            new BrokerEndPoint(0, "host1", 0),
+            new BrokerEndPoint(1, "host2", 1)).asJava)
       rm.becomeLeaderOrFollower(
         1,
         leaderAndIsrRequest2,

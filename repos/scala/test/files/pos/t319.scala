@@ -19,17 +19,19 @@ object test {
       };
   }
 
-  val a = new A {
-    type T = String
-  };
+  val a =
+    new A {
+      type T = String
+    };
 
   /** val b: B { type T = String } = functor(a) */
   val b: B {
     type T = String
   } = {
-    val tmp = new functor() {
-      val arg = a
-    };
+    val tmp =
+      new functor() {
+        val arg = a
+      };
     tmp.res
   }
 

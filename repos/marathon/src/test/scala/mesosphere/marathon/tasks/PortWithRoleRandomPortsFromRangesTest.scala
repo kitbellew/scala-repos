@@ -86,8 +86,9 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
     // if it is not implemented lazily, this will be really really slow
 
     def performTest(): Unit = {
-      val ports = PortWithRole.lazyRandomPortsFromRanges()(
-        Seq(portRange("role", 1, Integer.MAX_VALUE)))
+      val ports =
+        PortWithRole.lazyRandomPortsFromRanges()(
+          Seq(portRange("role", 1, Integer.MAX_VALUE)))
       assert(ports.take(3).toSet.size == 3)
     }
 
@@ -98,8 +99,9 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
     System.gc()
     val start = System.nanoTime()
     performTest()
-    val duration =
-      FiniteDuration(System.nanoTime() - start, TimeUnit.NANOSECONDS)
+    val duration = FiniteDuration(
+      System.nanoTime() - start,
+      TimeUnit.NANOSECONDS)
 
     val allowTimeForTest = benchmarkDuration
     log.info(
@@ -117,12 +119,14 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
 
     def performTest(seed: Int): Unit = {
       val rand = new Random(new util.Random(seed.toLong))
-      val ports = PortWithRole.lazyRandomPortsFromRanges(rand)(
-        (0 to numberOfRanges).map { i =>
-          val rangeSize: Long = Integer.MAX_VALUE.toLong / numberOfRanges.toLong
-          portRange("role", i * rangeSize, (i + 1) * rangeSize - 1)
-        }
-      )
+      val ports =
+        PortWithRole.lazyRandomPortsFromRanges(rand)(
+          (0 to numberOfRanges).map { i =>
+            val rangeSize: Long =
+              Integer.MAX_VALUE.toLong / numberOfRanges.toLong
+            portRange("role", i * rangeSize, (i + 1) * rangeSize - 1)
+          }
+        )
 
       val takenPorts = ports.take(3).toSet
       assert(takenPorts.size == 3, s"unexpected taken ports: $takenPorts")
@@ -138,8 +142,9 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
     val start = System.nanoTime()
     for (seed <- 1 to iterations)
       performTest(seed)
-    val duration =
-      FiniteDuration(System.nanoTime() - start, TimeUnit.NANOSECONDS)
+    val duration = FiniteDuration(
+      System.nanoTime() - start,
+      TimeUnit.NANOSECONDS)
 
     val allowTimeForTest = benchmarkDuration * 50
     log.info(

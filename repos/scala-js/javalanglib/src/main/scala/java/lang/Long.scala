@@ -11,8 +11,7 @@ final class Long private () extends Number with Comparable[Long] {
   def this(value: scala.Long) = this()
   def this(s: String) = this()
 
-  @inline def longValue(): scala.Long =
-    this.asInstanceOf[scala.Long]
+  @inline def longValue(): scala.Long = this.asInstanceOf[scala.Long]
 
   @inline override def byteValue(): scala.Byte = longValue.toByte
   @inline override def shortValue(): scala.Short = longValue.toShort
@@ -26,14 +25,12 @@ final class Long private () extends Number with Comparable[Long] {
       case _          => false
     }
 
-  @inline override def hashCode(): Int =
-    Long.hashCode(longValue)
+  @inline override def hashCode(): Int = Long.hashCode(longValue)
 
   @inline override def compareTo(that: Long): Int =
     Long.compare(longValue, that.longValue)
 
-  @inline override def toString(): String =
-    Long.toString(longValue)
+  @inline override def toString(): String = Long.toString(longValue)
 
 }
 
@@ -119,8 +116,7 @@ object Long {
   }
 
   // Intrinsic
-  @inline def toString(i: scala.Long): String =
-    toStringImpl(i, 10)
+  @inline def toString(i: scala.Long): String = toStringImpl(i, 10)
 
   @inline def toUnsignedString(i: scala.Long): String =
     toUnsignedStringImpl(i, 10)
@@ -207,8 +203,7 @@ object Long {
     }
   }
 
-  @inline def parseLong(s: String): scala.Long =
-    parseLong(s, 10)
+  @inline def parseLong(s: String): scala.Long = parseLong(s, 10)
 
   def parseUnsignedLong(s: String, radix: Int): scala.Long = {
     if (s == "")
@@ -264,8 +259,9 @@ object Long {
 
       @inline def parseChunk(chunkStart: Int, chunkEnd: Int): scala.Long = {
         val chunk = s.jsSubstring(chunkStart, chunkEnd)
-        val chunkValueDouble =
-          js.Dynamic.global.parseInt(chunk, radix).asInstanceOf[scala.Double]
+        val chunkValueDouble = js.Dynamic.global
+          .parseInt(chunk, radix)
+          .asInstanceOf[scala.Double]
         Integer.toUnsignedLong(chunkValueDouble.toInt)
       }
 
@@ -494,12 +490,9 @@ object Long {
       Integer.toOctalString(lp)
   }
 
-  @inline def sum(a: scala.Long, b: scala.Long): scala.Long =
-    a + b
+  @inline def sum(a: scala.Long, b: scala.Long): scala.Long = a + b
 
-  @inline def max(a: scala.Long, b: scala.Long): scala.Long =
-    Math.max(a, b)
+  @inline def max(a: scala.Long, b: scala.Long): scala.Long = Math.max(a, b)
 
-  @inline def min(a: scala.Long, b: scala.Long): scala.Long =
-    Math.min(a, b)
+  @inline def min(a: scala.Long, b: scala.Long): scala.Long = Math.min(a, b)
 }

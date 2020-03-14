@@ -37,10 +37,11 @@ object ClusterShardingGracefulShutdownSpec {
     case id: Int ⇒ (id.toString, id)
   }
 
-  val extractShardId: ShardRegion.ExtractShardId = msg ⇒
-    msg match {
-      case id: Int ⇒ id.toString
-    }
+  val extractShardId: ShardRegion.ExtractShardId =
+    msg ⇒
+      msg match {
+        case id: Int ⇒ id.toString
+      }
 
   //#graceful-shutdown
   class IllustrateGracefulShutdown extends Actor {
@@ -156,9 +157,10 @@ abstract class ClusterShardingGracefulShutdownSpec(
   }
 
   def startSharding(): Unit = {
-    val allocationStrategy = new ShardCoordinator.LeastShardAllocationStrategy(
-      rebalanceThreshold = 2,
-      maxSimultaneousRebalance = 1)
+    val allocationStrategy =
+      new ShardCoordinator.LeastShardAllocationStrategy(
+        rebalanceThreshold = 2,
+        maxSimultaneousRebalance = 1)
     ClusterSharding(system).start(
       typeName = "Entity",
       entityProps = Props[Entity],
@@ -197,11 +199,12 @@ abstract class ClusterShardingGracefulShutdownSpec(
 
       awaitAssert {
         val p = TestProbe()
-        val regionAddresses = (1 to 100).map { n ⇒
-          region.tell(n, p.ref)
-          p.expectMsg(1.second, n)
-          p.lastSender.path.address
-        }.toSet
+        val regionAddresses =
+          (1 to 100).map { n ⇒
+            region.tell(n, p.ref)
+            p.expectMsg(1.second, n)
+            p.lastSender.path.address
+          }.toSet
         regionAddresses.size should be(2)
       }
       enterBarrier("after-2")

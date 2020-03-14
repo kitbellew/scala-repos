@@ -43,13 +43,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val userStringIntMap = BiMap.stringInt(data.ratings.map(_.user))
 
     // HOWTO: collect Item as Map and convert ID to Int index
-    val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) ⇒
-          (itemStringIntMap(id), item)
-      }
-      .collectAsMap
-      .toMap
+    val items: Map[Int, Item] =
+      data.items
+        .map {
+          case (id, item) ⇒
+            (itemStringIntMap(id), item)
+        }
+        .collectAsMap
+        .toMap
 
     val mllibRatings = data.ratings
       .map { r =>
@@ -96,20 +97,21 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
   }
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
-    val queryFeatures =
-      model.items.keys.flatMap(model.productFeatures.lookup(_).headOption)
+    val queryFeatures = model.items.keys
+      .flatMap(model.productFeatures.lookup(_).headOption)
 
-    val indexScores = if (queryFeatures.isEmpty) {
-      logger.info(s"No productFeatures found for query ${query}.")
-      Array[(Int, Double)]()
-    } else {
-      model.productFeatures
-        .mapValues { f ⇒
-          queryFeatures.map(cosine(_, f)).reduce(_ + _)
-        }
-        .filter(_._2 > 0) // keep items with score > 0
-        .collect()
-    }
+    val indexScores =
+      if (queryFeatures.isEmpty) {
+        logger.info(s"No productFeatures found for query ${query}.")
+        Array[(Int, Double)]()
+      } else {
+        model.productFeatures
+          .mapValues { f ⇒
+            queryFeatures.map(cosine(_, f)).reduce(_ + _)
+          }
+          .filter(_._2 > 0) // keep items with score > 0
+          .collect()
+      }
 
     // HOWTO: filter predicted results by query.
     val filteredScores = filterItems(indexScores, model.items, query)

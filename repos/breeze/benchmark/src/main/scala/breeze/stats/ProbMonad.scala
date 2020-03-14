@@ -22,10 +22,11 @@ class ProbMonadBenchmark extends BreezeBenchmark {
     run(reps) {
       /* The purpose of this benchmark is to compare monadic usage of rand to non-monadic usage (see timeRaw).
        */
-      val monadic = for {
-        x <- gaussian
-        y <- gaussian
-      } yield (x + y)
+      val monadic =
+        for {
+          x <- gaussian
+          y <- gaussian
+        } yield (x + y)
       monadic.samplesVector(size)
     }
 
@@ -33,9 +34,10 @@ class ProbMonadBenchmark extends BreezeBenchmark {
     run(reps) {
       /* The purpose of this benchmark is to compare monadic usage of rand to non-monadic usage (see timeMonad).
        */
-      val nonmonadic = new Rand[Double] {
-        def draw() = gaussian.draw() + gaussian.draw()
-      }
+      val nonmonadic =
+        new Rand[Double] {
+          def draw() = gaussian.draw() + gaussian.draw()
+        }
       nonmonadic.samplesVector(size)
     }
 

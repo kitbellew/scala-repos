@@ -75,8 +75,8 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
       .map { jobUIData =>
         val jobId = jobUIData.jobId
         val status = jobUIData.status
-        val (jobName, jobDescription) =
-          getLastStageNameAndDescription(jobUIData)
+        val (jobName, jobDescription) = getLastStageNameAndDescription(
+          jobUIData)
         val displayJobDescription =
           if (jobDescription.isEmpty)
             jobName
@@ -84,14 +84,15 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
             jobDescription
         val submissionTime = jobUIData.submissionTime.get
         val completionTimeOpt = jobUIData.completionTime
-        val completionTime =
-          completionTimeOpt.getOrElse(System.currentTimeMillis())
-        val classNameByStatus = status match {
-          case JobExecutionStatus.SUCCEEDED => "succeeded"
-          case JobExecutionStatus.FAILED    => "failed"
-          case JobExecutionStatus.RUNNING   => "running"
-          case JobExecutionStatus.UNKNOWN   => "unknown"
-        }
+        val completionTime = completionTimeOpt.getOrElse(
+          System.currentTimeMillis())
+        val classNameByStatus =
+          status match {
+            case JobExecutionStatus.SUCCEEDED => "succeeded"
+            case JobExecutionStatus.FAILED    => "failed"
+            case JobExecutionStatus.RUNNING   => "running"
+            case JobExecutionStatus.UNKNOWN   => "unknown"
+          }
 
         // The timeline library treats contents as HTML, so we have to escape them; for the
         // data-title attribute string we have to escape them twice since that's in a string.
@@ -127,8 +128,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
     val events = ListBuffer[String]()
     executorUIDatas.foreach {
       case (executorId, event) =>
-        val addedEvent =
-          s"""
+        val addedEvent = s"""
              |{
              |  'className': 'executor added',
              |  'group': 'executors',
@@ -176,8 +176,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
     val jobEventJsonAsStrSeq = makeJobEvent(jobs)
     val executorEventJsonAsStrSeq = makeExecutorEvent(executors)
 
-    val groupJsonArrayAsStr =
-      s"""
+    val groupJsonArrayAsStr = s"""
           |[
           |  {
           |    'id': 'executors',
@@ -190,11 +189,8 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           |]
         """.stripMargin
 
-    val eventArrayAsStr =
-      (jobEventJsonAsStrSeq ++ executorEventJsonAsStrSeq).mkString(
-        "[",
-        ",",
-        "]")
+    val eventArrayAsStr = (jobEventJsonAsStrSeq ++ executorEventJsonAsStrSeq)
+      .mkString("[", ",", "]")
 
     <span class="expand-application-timeline">
       <span class="expand-application-timeline-arrow arrow-closed"></span>
@@ -247,13 +243,16 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           end - start
         }
       }
-      val formattedDuration =
-        duration.map(d => UIUtils.formatDuration(d)).getOrElse("Unknown")
-      val formattedSubmissionTime =
-        job.submissionTime.map(UIUtils.formatDate).getOrElse("Unknown")
+      val formattedDuration = duration
+        .map(d => UIUtils.formatDuration(d))
+        .getOrElse("Unknown")
+      val formattedSubmissionTime = job.submissionTime
+        .map(UIUtils.formatDate)
+        .getOrElse("Unknown")
       val basePathUri = UIUtils.prependBaseUri(parent.basePath)
-      val jobDescription =
-        UIUtils.makeDescription(lastStageDescription, basePathUri)
+      val jobDescription = UIUtils.makeDescription(
+        lastStageDescription,
+        basePathUri)
 
       val detailUrl = "%s/jobs/job?id=%s".format(basePathUri, job.jobId)
       <tr id={
@@ -340,12 +339,12 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
       val completedJobs = listener.completedJobs.reverse.toSeq
       val failedJobs = listener.failedJobs.reverse.toSeq
 
-      val activeJobsTable =
-        jobsTable(activeJobs.sortBy(_.submissionTime.getOrElse(-1L)).reverse)
-      val completedJobsTable =
-        jobsTable(completedJobs.sortBy(_.completionTime.getOrElse(-1L)).reverse)
-      val failedJobsTable =
-        jobsTable(failedJobs.sortBy(_.completionTime.getOrElse(-1L)).reverse)
+      val activeJobsTable = jobsTable(
+        activeJobs.sortBy(_.submissionTime.getOrElse(-1L)).reverse)
+      val completedJobsTable = jobsTable(
+        completedJobs.sortBy(_.completionTime.getOrElse(-1L)).reverse)
+      val failedJobsTable = jobsTable(
+        failedJobs.sortBy(_.completionTime.getOrElse(-1L)).reverse)
 
       val shouldShowActiveJobs = activeJobs.nonEmpty
       val shouldShowCompletedJobs = completedJobs.nonEmpty

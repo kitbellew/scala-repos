@@ -61,8 +61,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     context.processMessage(
       new ProgressMessage("Searching for compilable files..."))
 
-    val sourceDependencies =
-      SourceDependenciesProviderService.getSourceDependenciesFor(chunk)
+    val sourceDependencies = SourceDependenciesProviderService
+      .getSourceDependenciesFor(chunk)
     if (sourceDependencies.nonEmpty) {
       val message =
         "IDEA incremental compiler cannot handle shared source modules: " +
@@ -93,8 +93,9 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
           context)) { //rebuild
       packageObjectsData.clear()
     } else {
-      val additionalFiles =
-        packageObjectsData.invalidatedPackageObjects(sources).filter(_.exists)
+      val additionalFiles = packageObjectsData
+        .invalidatedPackageObjects(sources)
+        .filter(_.exists)
       if (additionalFiles.nonEmpty) {
         (sources ++ additionalFiles).foreach(f =>
           FSOperations.markDirty(context, CompilationRound.NEXT, f))
@@ -102,8 +103,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       }
     }
 
-    val delta =
-      context.getProjectDescriptor.dataManager.getMappings.createDelta()
+    val delta = context.getProjectDescriptor.dataManager.getMappings
+      .createDelta()
     val callback = delta.getCallback
 
     val modules = chunk.getModules.asScala.toSet
@@ -116,14 +117,15 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       else
         "scalac"
 
-    val client = new IdeClientIdea(
-      compilerName,
-      context,
-      modules.map(_.getName).toSeq,
-      outputConsumer,
-      callback,
-      successfullyCompiled,
-      packageObjectsData)
+    val client =
+      new IdeClientIdea(
+        compilerName,
+        context,
+        modules.map(_.getName).toSeq,
+        outputConsumer,
+        callback,
+        successfullyCompiled,
+        packageObjectsData)
 
     val scalaSources = sources.filter(_.getName.endsWith(".scala")).asJava
 
@@ -183,10 +185,11 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     val compileOrder =
       projectSettings(context).getCompilerSettings(chunk).getCompileOrder
-    val extensionsToCollect = compileOrder match {
-      case CompileOrder.Mixed => List(".scala", ".java")
-      case _                  => List(".scala")
-    }
+    val extensionsToCollect =
+      compileOrder match {
+        case CompileOrder.Mixed => List(".scala", ".java")
+        case _                  => List(".scala")
+      }
 
     def checkAndCollectFile(file: File): Boolean = {
       val fileName = file.getName

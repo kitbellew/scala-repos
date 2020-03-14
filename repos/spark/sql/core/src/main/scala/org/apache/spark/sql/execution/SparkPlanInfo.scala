@@ -51,10 +51,11 @@ class SparkPlanInfo(
 private[sql] object SparkPlanInfo {
 
   def fromSparkPlan(plan: SparkPlan): SparkPlanInfo = {
-    val children = plan match {
-      case ReusedExchange(_, child) => child :: Nil
-      case _                        => plan.children ++ plan.subqueries
-    }
+    val children =
+      plan match {
+        case ReusedExchange(_, child) => child :: Nil
+        case _                        => plan.children ++ plan.subqueries
+      }
     val metrics = plan.metrics.toSeq.map {
       case (key, metric) =>
         new SQLMetricInfo(

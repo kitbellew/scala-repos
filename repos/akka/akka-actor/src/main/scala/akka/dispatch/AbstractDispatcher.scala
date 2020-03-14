@@ -89,15 +89,17 @@ private[akka] object MessageDispatcher {
             " (terminated)"
           else
             " (alive)"
-        val messages = a match {
-          case r: ActorRefWithCell ⇒
-            " " + r.underlying.numberOfMessages + " messages"
-          case _ ⇒ " " + a.getClass
-        }
-        val parent = a match {
-          case i: InternalActorRef ⇒ ", parent: " + i.getParent
-          case _ ⇒ ""
-        }
+        val messages =
+          a match {
+            case r: ActorRefWithCell ⇒
+              " " + r.underlying.numberOfMessages + " messages"
+            case _ ⇒ " " + a.getClass
+          }
+        val parent =
+          a match {
+            case i: InternalActorRef ⇒ ", parent: " + i.getParent
+            case _ ⇒ ""
+          }
         println(" -> " + a + status + messages + parent)
       }
     }
@@ -127,8 +129,9 @@ abstract class MessageDispatcher(
     if (ret < 0) {
       // We haven't succeeded in decreasing the inhabitants yet but the simple fact that we're trying to
       // go below zero means that there is an imbalance and we might as well throw the exception
-      val e = new IllegalStateException(
-        "ACTOR SYSTEM CORRUPTED!!! A dispatcher can't have less than 0 inhabitants!")
+      val e =
+        new IllegalStateException(
+          "ACTOR SYSTEM CORRUPTED!!! A dispatcher can't have less than 0 inhabitants!")
       reportFailure(e)
       throw e
     }
@@ -228,9 +231,10 @@ abstract class MessageDispatcher(
     }
   }
 
-  private final val taskCleanup: () ⇒ Unit = () ⇒
-    if (addInhabitants(-1) == 0)
-      ifSensibleToDoSoThenScheduleShutdown()
+  private final val taskCleanup: () ⇒ Unit =
+    () ⇒
+      if (addInhabitants(-1) == 0)
+        ifSensibleToDoSoThenScheduleShutdown()
 
   /**
     * If you override it, you must call it. But only ever once. See "attach" for only invocation.
@@ -257,26 +261,27 @@ abstract class MessageDispatcher(
     mailBox.cleanUp()
   }
 
-  private val shutdownAction = new Runnable {
-    @tailrec
-    final def run() {
-      shutdownSchedule match {
-        case SCHEDULED ⇒
-          try {
-            if (inhabitants == 0)
-              shutdown() //Warning, racy
-          } finally {
-            while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
-          }
-        case RESCHEDULED ⇒
-          if (updateShutdownSchedule(RESCHEDULED, SCHEDULED))
-            scheduleShutdownAction()
-          else
-            run()
-        case UNSCHEDULED ⇒
+  private val shutdownAction =
+    new Runnable {
+      @tailrec
+      final def run() {
+        shutdownSchedule match {
+          case SCHEDULED ⇒
+            try {
+              if (inhabitants == 0)
+                shutdown() //Warning, racy
+            } finally {
+              while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
+            }
+          case RESCHEDULED ⇒
+            if (updateShutdownSchedule(RESCHEDULED, SCHEDULED))
+              scheduleShutdownAction()
+            else
+              run()
+          case UNSCHEDULED ⇒
+        }
       }
     }
-  }
 
   /**
     * When the dispatcher no longer has any actors registered, how long will it wait until it shuts itself down,
@@ -441,25 +446,24 @@ class ThreadPoolExecutorConfigurator(
       config: Config,
       prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {
     import akka.util.Helpers.ConfigOps
-    val builder =
-      ThreadPoolConfigBuilder(ThreadPoolConfig())
-        .setKeepAliveTime(config.getMillisDuration("keep-alive-time"))
-        .setAllowCoreThreadTimeout(config getBoolean "allow-core-timeout")
-        .configure(Some(config getInt "task-queue-size") flatMap {
-          case size if size > 0 ⇒
-            Some(config getString "task-queue-type") map {
-              case "array" ⇒
-                ThreadPoolConfig
-                  .arrayBlockingQueue(size, false) //TODO config fairness?
-              case "" | "linked" ⇒ ThreadPoolConfig.linkedBlockingQueue(size)
-              case x ⇒
-                throw new IllegalArgumentException(
-                  "[%s] is not a valid task-queue-type [array|linked]!" format x)
-            } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒
-              q.setQueueFactory(qf)
-            }
-          case _ ⇒ None
-        })
+    val builder = ThreadPoolConfigBuilder(ThreadPoolConfig())
+      .setKeepAliveTime(config.getMillisDuration("keep-alive-time"))
+      .setAllowCoreThreadTimeout(config getBoolean "allow-core-timeout")
+      .configure(Some(config getInt "task-queue-size") flatMap {
+        case size if size > 0 ⇒
+          Some(config getString "task-queue-type") map {
+            case "array" ⇒
+              ThreadPoolConfig
+                .arrayBlockingQueue(size, false) //TODO config fairness?
+            case "" | "linked" ⇒ ThreadPoolConfig.linkedBlockingQueue(size)
+            case x ⇒
+              throw new IllegalArgumentException(
+                "[%s] is not a valid task-queue-type [array|linked]!" format x)
+          } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒
+            q.setQueueFactory(qf)
+          }
+        case _ ⇒ None
+      })
 
     if (config.getString("fixed-pool-size") == "off")
       builder
@@ -580,21 +584,23 @@ class ForkJoinExecutorConfigurator(
   final def createExecutorServiceFactory(
       id: String,
       threadFactory: ThreadFactory): ExecutorServiceFactory = {
-    val tf = threadFactory match {
-      case m: MonitorableThreadFactory ⇒
-        // add the dispatcher id to the thread names
-        m.withName(m.name + "-" + id)
-      case other ⇒ other
-    }
+    val tf =
+      threadFactory match {
+        case m: MonitorableThreadFactory ⇒
+          // add the dispatcher id to the thread names
+          m.withName(m.name + "-" + id)
+        case other ⇒ other
+      }
 
-    val asyncMode = config.getString("task-peeking-mode") match {
-      case "FIFO" ⇒ true
-      case "LIFO" ⇒ false
-      case unsupported ⇒
-        throw new IllegalArgumentException(
-          "Cannot instantiate ForkJoinExecutorServiceFactory. " +
-            """"task-peeking-mode" in "fork-join-executor" section could only set to "FIFO" or "LIFO".""")
-    }
+    val asyncMode =
+      config.getString("task-peeking-mode") match {
+        case "FIFO" ⇒ true
+        case "LIFO" ⇒ false
+        case unsupported ⇒
+          throw new IllegalArgumentException(
+            "Cannot instantiate ForkJoinExecutorServiceFactory. " +
+              """"task-peeking-mode" in "fork-join-executor" section could only set to "FIFO" or "LIFO".""")
+      }
 
     new ForkJoinExecutorServiceFactory(
       validate(tf),

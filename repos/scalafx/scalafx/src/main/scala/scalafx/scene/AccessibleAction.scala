@@ -52,8 +52,8 @@ object AccessibleAction
     * A smaller decrement is requested using {@link #DECREMENT}.
     *
     */
-  val BlockDecrement = new AccessibleAction(
-    jfxs.AccessibleAction.BLOCK_DECREMENT)
+  val BlockDecrement =
+    new AccessibleAction(jfxs.AccessibleAction.BLOCK_DECREMENT)
 
   /**
     * Request that the node be incremented by a large value.
@@ -61,8 +61,8 @@ object AccessibleAction
 
     * Used by Slider, ScrollBar, and others
     */
-  val BlockIncrement = new AccessibleAction(
-    jfxs.AccessibleAction.BLOCK_INCREMENT)
+  val BlockIncrement =
+    new AccessibleAction(jfxs.AccessibleAction.BLOCK_INCREMENT)
 
   /**
     * Request that the node should become collapsed.
@@ -144,8 +144,8 @@ object AccessibleAction
     * <li> {@link java.lang.Integer} the end offset </li>
     * </ul>
     */
-  val ShowTextRange = new AccessibleAction(
-    jfxs.AccessibleAction.SHOW_TEXT_RANGE)
+  val ShowTextRange =
+    new AccessibleAction(jfxs.AccessibleAction.SHOW_TEXT_RANGE)
 
   /**
     * Request the node to set the selection to a list of items.
@@ -157,8 +157,8 @@ object AccessibleAction
     * <li> {@link javafx.collections.ObservableList}&lt;{@link Node}&gt; the items to select </li>
     * </ul>
     */
-  val SetSelectedItems = new AccessibleAction(
-    jfxs.AccessibleAction.SET_SELECTED_ITEMS)
+  val SetSelectedItems =
+    new AccessibleAction(jfxs.AccessibleAction.SET_SELECTED_ITEMS)
 
   /**
     * Request the node to set the selection to range of text.
@@ -171,8 +171,8 @@ object AccessibleAction
     * <li> {@link java.lang.Integer} the end offset </li>
     * </ul>
     */
-  val SetTextSelection = new AccessibleAction(
-    jfxs.AccessibleAction.SET_TEXT_SELECTION)
+  val SetTextSelection =
+    new AccessibleAction(jfxs.AccessibleAction.SET_TEXT_SELECTION)
 
   /**
     * Request the node to set the current text.

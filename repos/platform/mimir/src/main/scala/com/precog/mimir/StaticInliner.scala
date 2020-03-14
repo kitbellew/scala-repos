@@ -60,14 +60,15 @@ trait StdLibStaticInlinerModule[M[+_]]
                     newOp1.fold(
                       _ => Operate(op, child2)(graph.loc),
                       newOp1 => {
-                        val result = for {
-                          // No Op1F1 that can be applied to a complex RValues
-                          cvalue <- rValueToCValue(value)
-                          col <- newOp1
-                            .f1(MorphContext(ctx, graph))
-                            .apply(cvalue)
-                          if col isDefinedAt 0
-                        } yield col cValue 0
+                        val result =
+                          for {
+                            // No Op1F1 that can be applied to a complex RValues
+                            cvalue <- rValueToCValue(value)
+                            col <- newOp1
+                              .f1(MorphContext(ctx, graph))
+                              .apply(cvalue)
+                            if col isDefinedAt 0
+                          } yield col cValue 0
 
                         Const(result getOrElse CUndefined)(graph.loc)
                       }
@@ -182,38 +183,42 @@ trait StdLibStaticInlinerModule[M[+_]]
             val left2 = recurse(left)
             val right2 = recurse(right)
 
-            val graphM = for {
-              op2 <- op2ForBinOp(op)
-              op2F2 <- op2.fold(
-                op2 = const(None),
-                op2F2 = {
-                  Some(_)
-                })
-              result <- (left2, right2) match {
-                case (left2 @ Const(CUndefined), _) =>
-                  Some(Const(CUndefined)(left2.loc))
+            val graphM =
+              for {
+                op2 <- op2ForBinOp(op)
+                op2F2 <- op2.fold(
+                  op2 = const(None),
+                  op2F2 = {
+                    Some(_)
+                  })
+                result <- (left2, right2) match {
+                  case (left2 @ Const(CUndefined), _) =>
+                    Some(Const(CUndefined)(left2.loc))
 
-                case (_, right2 @ Const(CUndefined)) =>
-                  Some(Const(CUndefined)(right2.loc))
+                  case (_, right2 @ Const(CUndefined)) =>
+                    Some(Const(CUndefined)(right2.loc))
 
-                case (left2 @ Const(leftValue), right2 @ Const(rightValue)) => {
-                  val result = for {
-                    // No Op1F1 that can be applied to a complex RValues
-                    leftCValue <- rValueToCValue(leftValue)
-                    rightCValue <- rValueToCValue(rightValue)
-                    col <- op2F2
-                      .f2(MorphContext(ctx, graph))
-                      .partialLeft(leftCValue)
-                      .apply(rightCValue)
-                    if col isDefinedAt 0
-                  } yield col cValue 0
+                  case (
+                        left2 @ Const(leftValue),
+                        right2 @ Const(rightValue)) => {
+                    val result =
+                      for {
+                        // No Op1F1 that can be applied to a complex RValues
+                        leftCValue <- rValueToCValue(leftValue)
+                        rightCValue <- rValueToCValue(rightValue)
+                        col <- op2F2
+                          .f2(MorphContext(ctx, graph))
+                          .partialLeft(leftCValue)
+                          .apply(rightCValue)
+                        if col isDefinedAt 0
+                      } yield col cValue 0
 
-                  Some(Const(result getOrElse CUndefined)(graph.loc))
+                    Some(Const(result getOrElse CUndefined)(graph.loc))
+                  }
+
+                  case _ => None
                 }
-
-                case _ => None
-              }
-            } yield result
+              } yield result
 
             graphM getOrElse Join(op, sort, left2, right2)(graph.loc)
           }
@@ -222,11 +227,14 @@ trait StdLibStaticInlinerModule[M[+_]]
             val left2 = recurse(left)
             val right2 = recurse(right)
 
-            val back = (left2, right2) match {
-              case (_, Const(CUndefined)) => Some(Const(CUndefined)(graph.loc))
-              case (Const(CUndefined), _) => Some(Const(CUndefined)(graph.loc))
-              case _                      => None
-            }
+            val back =
+              (left2, right2) match {
+                case (_, Const(CUndefined)) =>
+                  Some(Const(CUndefined)(graph.loc))
+                case (Const(CUndefined), _) =>
+                  Some(Const(CUndefined)(graph.loc))
+                case _ => None
+              }
 
             back getOrElse Filter(sort, left2, right2)(graph.loc)
           }
@@ -235,13 +243,17 @@ trait StdLibStaticInlinerModule[M[+_]]
             val left2 = recurse(left)
             val right2 = recurse(right)
 
-            val back = (left2, right2) match {
-              case (_, Const(CUndefined))     => Some(Const(CUndefined)(graph.loc))
-              case (Const(CUndefined), _)     => Some(Const(CUndefined)(graph.loc))
-              case (_, right2 @ Const(CTrue)) => Some(left2)
-              case (_, right2 @ Const(_))     => Some(Const(CUndefined)(graph.loc))
-              case _                          => None
-            }
+            val back =
+              (left2, right2) match {
+                case (_, Const(CUndefined)) =>
+                  Some(Const(CUndefined)(graph.loc))
+                case (Const(CUndefined), _) =>
+                  Some(Const(CUndefined)(graph.loc))
+                case (_, right2 @ Const(CTrue)) => Some(left2)
+                case (_, right2 @ Const(_)) =>
+                  Some(Const(CUndefined)(graph.loc))
+                case _ => None
+              }
 
             back getOrElse Filter(sort, left2, right2)(graph.loc)
           }

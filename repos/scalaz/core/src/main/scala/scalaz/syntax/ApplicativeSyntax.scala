@@ -9,11 +9,9 @@ final class ApplicativeOps[F[_], A] private[syntax] (val self: F[A])(
   final def unlessM(cond: Boolean): F[Unit] =
     scalaz.std.boolean.unlessM(cond)(self)
   final def whenM(cond: Boolean): F[Unit] = scalaz.std.boolean.whenM(cond)(self)
-  final def replicateM(n: Int): F[List[A]] =
-    F.replicateM(n, self)
+  final def replicateM(n: Int): F[List[A]] = F.replicateM(n, self)
 
-  final def replicateM_(n: Int): F[Unit] =
-    F.replicateM_(n, self)
+  final def replicateM_(n: Int): F[Unit] = F.replicateM_(n, self)
   ////
 }
 

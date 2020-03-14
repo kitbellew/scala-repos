@@ -121,8 +121,9 @@ class PolynomialExpansionSuite
   }
 
   test("Polynomial expansion with degree 1 is identity on vectors") {
-    val df =
-      sqlContext.createDataFrame(data.zip(data)).toDF("features", "expected")
+    val df = sqlContext
+      .createDataFrame(data.zip(data))
+      .toDF("features", "expected")
 
     val polynomialExpansion = new PolynomialExpansion()
       .setInputCol("features")

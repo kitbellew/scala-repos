@@ -87,19 +87,22 @@ class MulticlassClassificationEvaluator @Since("1.5.0") (
     SchemaUtils.checkColumnType(schema, $(predictionCol), DoubleType)
     SchemaUtils.checkColumnType(schema, $(labelCol), DoubleType)
 
-    val predictionAndLabels =
-      dataset.select($(predictionCol), $(labelCol)).rdd.map {
+    val predictionAndLabels = dataset
+      .select($(predictionCol), $(labelCol))
+      .rdd
+      .map {
         case Row(prediction: Double, label: Double) =>
           (prediction, label)
       }
     val metrics = new MulticlassMetrics(predictionAndLabels)
-    val metric = $(metricName) match {
-      case "f1"                => metrics.weightedFMeasure
-      case "precision"         => metrics.precision
-      case "recall"            => metrics.recall
-      case "weightedPrecision" => metrics.weightedPrecision
-      case "weightedRecall"    => metrics.weightedRecall
-    }
+    val metric =
+      $(metricName) match {
+        case "f1"                => metrics.weightedFMeasure
+        case "precision"         => metrics.precision
+        case "recall"            => metrics.recall
+        case "weightedPrecision" => metrics.weightedPrecision
+        case "weightedRecall"    => metrics.weightedRecall
+      }
     metric
   }
 

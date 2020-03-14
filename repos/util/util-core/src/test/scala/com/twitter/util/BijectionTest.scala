@@ -8,14 +8,15 @@ import org.scalatest.junit.JUnitRunner
 class BijectionTest extends WordSpec {
   case class Foo(i: Int)
 
-  val fooject = new Bijection[Foo, Int] {
-    def apply(f: Foo) = f.i
-    def invert(i: Int) =
-      if (i % 2 == 0)
-        Foo(i)
-      else
-        fail("not really a bijection, natch")
-  }
+  val fooject =
+    new Bijection[Foo, Int] {
+      def apply(f: Foo) = f.i
+      def invert(i: Int) =
+        if (i % 2 == 0)
+          Foo(i)
+        else
+          fail("not really a bijection, natch")
+    }
 
   def isAFoo(i: Int) =
     i match {

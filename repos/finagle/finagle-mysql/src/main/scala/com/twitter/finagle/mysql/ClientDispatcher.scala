@@ -43,16 +43,18 @@ private[mysql] class PrepareCache(
 ) extends ServiceProxy[Request, Result](svc) {
 
   private[this] val fn = {
-    val listener = new RemovalListener[Request, Future[Result]] {
-      // make sure prepared futures get removed eventually
-      def onRemoval(
-          notification: RemovalNotification[Request, Future[Result]]): Unit = {
-        notification.getValue() onSuccess {
-          case r: PrepareOK => svc(CloseRequest(r.id))
-          case _            => // nop
+    val listener =
+      new RemovalListener[Request, Future[Result]] {
+        // make sure prepared futures get removed eventually
+        def onRemoval(
+            notification: RemovalNotification[Request, Future[Result]])
+            : Unit = {
+          notification.getValue() onSuccess {
+            case r: PrepareOK => svc(CloseRequest(r.id))
+            case _            => // nop
+          }
         }
       }
-    }
     val underlying = CacheBuilder
       .newBuilder()
       .maximumSize(max)
@@ -196,17 +198,18 @@ class ClientDispatcher(
         // decode PrepareOk Result: A header packet potentially followed
         // by two transmissions that contain parameter and column
         // information, respectively.
-        val result = for {
-          ok <- const(PrepareOK(packet))
-          (seq1, _) <- readTx(ok.numOfParams)
-          (seq2, _) <- readTx(ok.numOfCols)
-          ps <- Future.collect(seq1 map { p =>
-            const(Field(p))
-          })
-          cs <- Future.collect(seq2 map { p =>
-            const(Field(p))
-          })
-        } yield ok.copy(params = ps, columns = cs)
+        val result =
+          for {
+            ok <- const(PrepareOK(packet))
+            (seq1, _) <- readTx(ok.numOfParams)
+            (seq2, _) <- readTx(ok.numOfCols)
+            ps <- Future.collect(seq1 map { p =>
+              const(Field(p))
+            })
+            cs <- Future.collect(seq2 map { p =>
+              const(Field(p))
+            })
+          } yield ok.copy(params = ps, columns = cs)
 
         result ensure signal.setDone()
 
@@ -231,12 +234,13 @@ class ClientDispatcher(
           br.readLengthCodedBinary().toInt
         }
 
-        val result = for {
-          cnt <- const(numCols)
-          (fields, _) <- readTx(cnt)
-          (rows, _) <- readTx()
-          res <- const(ResultSet(isBinaryEncoded)(packet, fields, rows))
-        } yield res
+        val result =
+          for {
+            cnt <- const(numCols)
+            (fields, _) <- readTx(cnt)
+            (rows, _) <- readTx()
+            res <- const(ResultSet(isBinaryEncoded)(packet, fields, rows))
+          } yield res
 
         // TODO: When streaming is implemented the
         // done signal should dependent on the

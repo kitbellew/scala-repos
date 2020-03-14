@@ -80,9 +80,10 @@ private[python] class TransformFunction(
       rdd: Option[RDD[_]],
       rdd2: Option[RDD[_]],
       time: Time): Option[RDD[Array[Byte]]] = {
-    val rdds = List(
-      rdd.map(JavaRDD.fromRDD(_)).orNull,
-      rdd2.map(JavaRDD.fromRDD(_)).orNull).asJava
+    val rdds =
+      List(
+        rdd.map(JavaRDD.fromRDD(_)).orNull,
+        rdd2.map(JavaRDD.fromRDD(_)).orNull).asJava
     Option(callPythonTransformFunction(time.milliseconds, rdds)).map(_.rdd)
   }
 
@@ -345,15 +346,17 @@ private[python] class PythonReducedWindowedDStream(
       val oldRDDs = parent.slice(
         previous.beginTime + parent.slideDuration,
         current.beginTime)
-      val subtracted = if (oldRDDs.size > 0) {
-        invReduceFunc(previousRDD, Some(ssc.sc.union(oldRDDs)), validTime)
-      } else {
-        previousRDD
-      }
+      val subtracted =
+        if (oldRDDs.size > 0) {
+          invReduceFunc(previousRDD, Some(ssc.sc.union(oldRDDs)), validTime)
+        } else {
+          previousRDD
+        }
 
       // add the RDDs of the reduced values in "new time steps"
-      val newRDDs =
-        parent.slice(previous.endTime + parent.slideDuration, current.endTime)
+      val newRDDs = parent.slice(
+        previous.endTime + parent.slideDuration,
+        current.endTime)
       if (newRDDs.size > 0) {
         func(subtracted, Some(ssc.sc.union(newRDDs)), validTime)
       } else {
@@ -361,8 +364,9 @@ private[python] class PythonReducedWindowedDStream(
       }
     } else {
       // Get the RDDs of the reduced values in current window
-      val currentRDDs =
-        parent.slice(current.beginTime + parent.slideDuration, current.endTime)
+      val currentRDDs = parent.slice(
+        current.beginTime + parent.slideDuration,
+        current.endTime)
       if (currentRDDs.size > 0) {
         func(None, Some(ssc.sc.union(currentRDDs)), validTime)
       } else {

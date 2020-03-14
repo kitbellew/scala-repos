@@ -36,8 +36,8 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
     <properties>
       {
       // create a clone, defending against [[ConcurrentModificationException]]
-      val clonedProperties =
-        System.getProperties.clone.asInstanceOf[Hashtable[AnyRef, AnyRef]]
+      val clonedProperties = System.getProperties.clone
+        .asInstanceOf[Hashtable[AnyRef, AnyRef]]
       val iter = clonedProperties.entrySet.iterator
       val props: ListBuffer[XNode] = new ListBuffer()
       while (iter.hasNext) {
@@ -75,76 +75,78 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
       val (errors, failures, tests) =
         (count(TStatus.Error), count(TStatus.Failure), events.size)
 
-      val result = <testsuite hostname={
-        hostname
-      } name={
-        name
-      } tests={
-        tests + ""
-      } errors={
-        errors + ""
-      } failures={
-        failures + ""
-      } time={
-        (duration / 1000.0).toString
-      }>
+      val result =
+        <testsuite hostname={
+          hostname
+        } name={
+          name
+        } tests={
+          tests + ""
+        } errors={
+          errors + ""
+        } failures={
+          failures + ""
+        } time={
+          (duration / 1000.0).toString
+        }>
                      {
-        properties
-      }
+          properties
+        }
                      {
-        for (e <- events)
-          yield <testcase classname={
-            name
-          } name={
-            e.selector match {
-              case selector: TestSelector => selector.testName.split('.').last
-              case _                      => "(It is not a test)"
-            }
-          } time={
-            (e.duration() / 1000.0).toString
-          }>
+          for (e <- events)
+            yield <testcase classname={
+              name
+            } name={
+              e.selector match {
+                case selector: TestSelector => selector.testName.split('.').last
+                case _                      => "(It is not a test)"
+              }
+            } time={
+              (e.duration() / 1000.0).toString
+            }>
                                                  {
-            val trace: String = if (e.throwable.isDefined) {
-              val stringWriter = new StringWriter()
-              val writer = new PrintWriter(stringWriter)
-              e.throwable.get.printStackTrace(writer)
-              writer.flush()
-              stringWriter.toString
-            } else {
-              ""
+              val trace: String =
+                if (e.throwable.isDefined) {
+                  val stringWriter = new StringWriter()
+                  val writer = new PrintWriter(stringWriter)
+                  e.throwable.get.printStackTrace(writer)
+                  writer.flush()
+                  stringWriter.toString
+                } else {
+                  ""
+                }
+              e.status match {
+                case TStatus.Error if (e.throwable.isDefined) =>
+                  <error message={
+                    e.throwable.get.getMessage
+                  } type={
+                    e.throwable.get.getClass.getName
+                  }>{
+                    trace
+                  }</error>
+                case TStatus.Error =>
+                  <error message={
+                    "No Exception or message provided"
+                  }/>
+                case TStatus.Failure if (e.throwable.isDefined) =>
+                  <failure message={
+                    e.throwable.get.getMessage
+                  } type={
+                    e.throwable.get.getClass.getName
+                  }>{
+                    trace
+                  }</failure>
+                case TStatus.Failure =>
+                  <failure message={
+                    "No Exception or message provided"
+                  }/>
+                case TStatus.Skipped => <skipped/>
+                case _               => {}
+              }
             }
-            e.status match {
-              case TStatus.Error if (e.throwable.isDefined) =>
-                <error message={
-                  e.throwable.get.getMessage
-                } type={
-                  e.throwable.get.getClass.getName
-                }>{
-                  trace
-                }</error>
-              case TStatus.Error =>
-                <error message={
-                  "No Exception or message provided"
-                }/>
-              case TStatus.Failure if (e.throwable.isDefined) =>
-                <failure message={
-                  e.throwable.get.getMessage
-                } type={
-                  e.throwable.get.getClass.getName
-                }>{
-                  trace
-                }</failure>
-              case TStatus.Failure =>
-                <failure message={
-                  "No Exception or message provided"
-                }/>
-              case TStatus.Skipped => <skipped/>
-              case _               => {}
-            }
-          }
                                                </testcase>
 
-      }
+        }
                      <system-out><![CDATA[]]></system-out>
                      <system-err><![CDATA[]]></system-err>
                    </testsuite>
@@ -198,16 +200,17 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
     */
   override def endGroup(name: String, t: Throwable) = {
     // create our own event to record the error
-    val event = new TEvent {
-      def fullyQualifiedName = name
-      //def description =
-      //"Throwable escaped the test run of '%s'".format(name)
-      def duration = -1
-      def status = TStatus.Error
-      def fingerprint = null
-      def selector = null
-      def throwable = new OptionalThrowable(t)
-    }
+    val event =
+      new TEvent {
+        def fullyQualifiedName = name
+        //def description =
+        //"Throwable escaped the test run of '%s'".format(name)
+        def duration = -1
+        def status = TStatus.Error
+        def fingerprint = null
+        def selector = null
+        def throwable = new OptionalThrowable(t)
+      }
     testSuite.value.addEvent(event)
     writeSuite()
   }
@@ -225,9 +228,10 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   private[this] def normalizeName(s: String) = s.replaceAll("""\s+""", "-")
 
   private def writeSuite() = {
-    val file = new File(
-      targetDir,
-      s"${normalizeName(testSuite.value.name)}.xml").getAbsolutePath
+    val file =
+      new File(
+        targetDir,
+        s"${normalizeName(testSuite.value.name)}.xml").getAbsolutePath
     // TODO would be nice to have a logger and log this with level debug
     // System.err.println("Writing JUnit XML test report: " + file)
     XML.save(file, testSuite.value.stop(), "UTF-8", true, null)

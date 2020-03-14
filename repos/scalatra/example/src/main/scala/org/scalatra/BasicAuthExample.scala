@@ -43,8 +43,8 @@ object BasicAuthExample {
       case usr: MyUser => usr.id
     }
 
-    protected val scentryConfig =
-      (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]
+    protected val scentryConfig = (new ScentryConfig {})
+      .asInstanceOf[ScentryConfiguration]
 
     override protected def configureScentry = {
       scentry.unauthenticated {

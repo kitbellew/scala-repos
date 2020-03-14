@@ -133,27 +133,28 @@ class GoToImplicitConversionAction
       JListCompatibility.GoToImplicitConversionAction.setList(list)
 
       val builder = JBPopupFactory.getInstance.createListPopupBuilder(list)
-      val popup = builder
-        .setTitle("Choose implicit conversion method:")
-        .setAdText("Press Alt+Enter")
-        .setMovable(false)
-        .setResizable(false)
-        .setRequestFocus(true)
-        .setItemChoosenCallback(new Runnable {
-          def run() {
-            val entity = list.getSelectedValue.asInstanceOf[Parameters]
-            entity.getNewExpression match {
-              case f: ScFunction =>
-                f.getSyntheticNavigationElement match {
-                  case Some(n: NavigatablePsiElement) => n.navigate(true)
-                  case _                              => f.navigate(true)
-                }
-              case n: NavigatablePsiElement => n.navigate(true)
-              case _                        => //do nothing
+      val popup =
+        builder
+          .setTitle("Choose implicit conversion method:")
+          .setAdText("Press Alt+Enter")
+          .setMovable(false)
+          .setResizable(false)
+          .setRequestFocus(true)
+          .setItemChoosenCallback(new Runnable {
+            def run() {
+              val entity = list.getSelectedValue.asInstanceOf[Parameters]
+              entity.getNewExpression match {
+                case f: ScFunction =>
+                  f.getSyntheticNavigationElement match {
+                    case Some(n: NavigatablePsiElement) => n.navigate(true)
+                    case _                              => f.navigate(true)
+                  }
+                case n: NavigatablePsiElement => n.navigate(true)
+                case _                        => //do nothing
+              }
             }
-          }
-        })
-        .createPopup
+          })
+          .createPopup
       popup.showInBestPositionFor(editor)
 
       if (actualIndex >= 0 && actualIndex < list.getModel.getSize) {
@@ -186,13 +187,14 @@ class GoToImplicitConversionAction
       }
     } else {
       val offset = editor.getCaretModel.getOffset
-      val element: PsiElement = file.findElementAt(offset) match {
-        case w: PsiWhiteSpace
-            if w.getTextRange.getStartOffset == offset &&
-              w.getText.contains("\n") =>
-          file.findElementAt(offset - 1)
-        case p => p
-      }
+      val element: PsiElement =
+        file.findElementAt(offset) match {
+          case w: PsiWhiteSpace
+              if w.getTextRange.getStartOffset == offset &&
+                w.getText.contains("\n") =>
+            file.findElementAt(offset - 1)
+          case p => p
+        }
       def getExpressions(guard: Boolean): Array[ScExpression] = {
         val res = new ArrayBuffer[ScExpression]
         var parent = element
@@ -218,8 +220,8 @@ class GoToImplicitConversionAction
                   expr.getAdditionalExpression.get._1
                     .getImplicitConversions(
                       fromUnder = false,
-                      expectedOption =
-                        Some(expr.getAdditionalExpression.get._2))
+                      expectedOption = Some(
+                        expr.getAdditionalExpression.get._2))
                     ._2
                     .isDefined) =>
               res += expr
@@ -288,10 +290,13 @@ class GoToImplicitConversionAction
 
   class LightBulbHint(editor: Editor, project: Project, expr: ScExpression)
       extends JLabel {
-    private final val INACTIVE_BORDER: Border =
-      BorderFactory.createEmptyBorder(4, 4, 4, 4)
-    private final val ACTIVE_BORDER: Border =
-      BorderFactory.createCompoundBorder(
+    private final val INACTIVE_BORDER: Border = BorderFactory.createEmptyBorder(
+      4,
+      4,
+      4,
+      4)
+    private final val ACTIVE_BORDER: Border = BorderFactory
+      .createCompoundBorder(
         BorderFactory.createLineBorder(Color.BLACK, 1),
         BorderFactory.createEmptyBorder(3, 3, 3, 3))
     private final val INDENT = 20
@@ -364,8 +369,8 @@ class GoToImplicitConversionAction
       if (index < 0) {
         throw new RuntimeException("Index = " + index + " is less than zero.")
       }
-      val itemBounds: Rectangle =
-        GoToImplicitConversionAction.getList.getCellBounds(index, index)
+      val itemBounds: Rectangle = GoToImplicitConversionAction.getList
+        .getCellBounds(index, index)
       if (itemBounds == null) {
         throw new RuntimeException("No bounds for index = " + index + ".")
       }

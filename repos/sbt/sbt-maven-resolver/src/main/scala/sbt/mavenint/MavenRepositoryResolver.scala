@@ -61,8 +61,13 @@ object MavenRepositoryResolver {
   val MAVEN_METADATA_XML = "maven-metadata.xml"
   val CLASSIFIER_ATTRIBUTE = "e:classifier"
   // TODO - This may be duplciated in more than one location.  We need to consolidate.
-  val JarPackagings =
-    Set("eclipse-plugin", "hk2-jar", "orbit", "scala-jar", "jar", "bundle")
+  val JarPackagings = Set(
+    "eclipse-plugin",
+    "hk2-jar",
+    "orbit",
+    "scala-jar",
+    "jar",
+    "bundle")
   object JarPackaging {
     def unapply(in: String): Boolean = JarPackagings.contains(in)
   }
@@ -135,12 +140,13 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
   private def addLicenseInfo(
       md: DefaultModuleDescriptor,
       map: java.util.Map[String, AnyRef]) = {
-    val count = map.get(SbtPomExtraProperties.LICENSE_COUNT_KEY) match {
-      case null                 => 0
-      case x: java.lang.Integer => x.intValue
-      case x: String            => x.toInt
-      case _                    => 0
-    }
+    val count =
+      map.get(SbtPomExtraProperties.LICENSE_COUNT_KEY) match {
+        case null                 => 0
+        case x: java.lang.Integer => x.intValue
+        case x: String            => x.toInt
+        case _                    => 0
+      }
     for {
       i <- 0 until count
       name <- Option(map.get(SbtPomExtraProperties.makeLicenseName(i)))
@@ -309,9 +315,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
   final def checkJarArtifactExists(dd: ModuleRevisionId): Boolean = {
     // TODO - We really want this to be as fast/efficient as possible!
     val request = new AetherArtifactRequest()
-    val art = new AetherArtifact(
-      aetherCoordsFromMrid(dd, "jar"),
-      getArtifactProperties(dd))
+    val art =
+      new AetherArtifact(
+        aetherCoordsFromMrid(dd, "jar"),
+        getArtifactProperties(dd))
     request.setArtifact(art)
     addRepositories(request)
     try {
@@ -451,8 +458,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     // This is necessary for transitive maven-based sbt plugin dependencies, where we need to
     // attach the sbtVersion/scalaVersion to the dependency id otherwise we'll fail to resolve the
     // dependency correctly.
-    val extraAttributes =
-      PomExtraDependencyAttributes.readFromAether(result.getProperties)
+    val extraAttributes = PomExtraDependencyAttributes.readFromAether(
+      result.getProperties)
     for (d <- result.getDependencies.asScala) {
       // TODO - Is this correct for changing detection.  We should use the Ivy mechanism configured...
       val isChanging = d.getArtifact.getVersion.endsWith("-SNAPSHOT")
@@ -478,16 +485,19 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       // Note: The previous maven integration ALWAYS set force to true for dependnecies.  If we do not do this, for some
       //       reason, Ivy will create dummy nodes when doing dependnecy mediation (e.g. dependencyManagement of one pom overrides version of a dependency)
       //       which was leading to "data not found" exceptions as Ivy would pick the correct IvyNode in the dependency tree but never load it with data....
-      val dd = new DefaultDependencyDescriptor(
-        md,
-        drid, /* force  */ true,
-        isChanging,
-        true) {}
+      val dd =
+        new DefaultDependencyDescriptor(
+          md,
+          drid, /* force  */ true,
+          isChanging,
+          true) {}
 
       // TODO - Configuration mappings (are we grabbing scope correctly, or should the default not always be compile?)
       val scope = Option(d.getScope).filterNot(_.isEmpty).getOrElse("compile")
-      val mapping =
-        ReplaceMavenConfigurationMappings.addMappings(dd, scope, d.isOptional)
+      val mapping = ReplaceMavenConfigurationMappings.addMappings(
+        dd,
+        scope,
+        d.isOptional)
       Message.debug(
         s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
       // TODO - Unify this borrowed Java code into something a bit friendlier.
@@ -498,11 +508,12 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
             d.getArtifact.getExtension
           else
             "jar"
-        val ext: String = tpe match {
-          case "test-jar"     => "jar"
-          case JarPackaging() => "jar"
-          case other          => other
-        }
+        val ext: String =
+          tpe match {
+            case "test-jar"     => "jar"
+            case JarPackaging() => "jar"
+            case other          => other
+          }
         // Here we add the classifier, hopefully correctly...
         val extraAtt = new java.util.HashMap[String, AnyRef]()
         if (d.getArtifact.getClassifier != null) {

@@ -21,8 +21,8 @@ import scala.util.control.NonFatal
   */
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class RemoteInitErrorSpec extends FlatSpec with Matchers {
-  val conf =
-    ConfigFactory.parseString("""
+  val conf = ConfigFactory
+    .parseString("""
       akka {
         actor {
           provider = "akka.remote.RemoteActorRefProvider"
@@ -35,7 +35,8 @@ class RemoteInitErrorSpec extends FlatSpec with Matchers {
             }
         }
       }
-    """).resolve()
+    """)
+    .resolve()
 
   def currentThreadIds(): Set[Long] = {
     val threads = Thread.getAllStackTraces().keySet()

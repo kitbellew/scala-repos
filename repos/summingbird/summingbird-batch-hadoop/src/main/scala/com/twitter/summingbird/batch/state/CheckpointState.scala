@@ -96,8 +96,8 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
       Intersection(checkpointStore.startBatch, checkpointStore.endBatch)
         .mapNonDecreasing(checkpointStore.batcher.earliestTimeOf(_))
 
-    val earliestTimestamp =
-      checkpointStore.batcher.earliestTimeOf(checkpointStore.startBatch.lower)
+    val earliestTimestamp = checkpointStore.batcher.earliestTimeOf(
+      checkpointStore.startBatch.lower)
 
     private def matchesCurrentBatchStart(low: Option[Timestamp]): Boolean =
       low.map(Equiv[Timestamp].equiv(_, earliestTimestamp)).getOrElse(false)

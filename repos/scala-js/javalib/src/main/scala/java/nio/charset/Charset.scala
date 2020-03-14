@@ -43,14 +43,11 @@ abstract class Charset protected (canonicalName: String, aliases: Array[String])
       .onUnmappableCharacter(CodingErrorAction.REPLACE)
   }
 
-  final def decode(bb: ByteBuffer): CharBuffer =
-    cachedDecoder.decode(bb)
+  final def decode(bb: ByteBuffer): CharBuffer = cachedDecoder.decode(bb)
 
-  final def encode(cb: CharBuffer): ByteBuffer =
-    cachedEncoder.encode(cb)
+  final def encode(cb: CharBuffer): ByteBuffer = cachedEncoder.encode(cb)
 
-  final def encode(str: String): ByteBuffer =
-    encode(CharBuffer.wrap(str))
+  final def encode(str: String): ByteBuffer = encode(CharBuffer.wrap(str))
 
   def displayName(): String = name
 }
@@ -58,8 +55,7 @@ abstract class Charset protected (canonicalName: String, aliases: Array[String])
 object Charset {
   import StandardCharsets._
 
-  def defaultCharset(): Charset =
-    UTF_8
+  def defaultCharset(): Charset = UTF_8
 
   def forName(charsetName: String): Charset =
     CharsetMap.getOrElse(

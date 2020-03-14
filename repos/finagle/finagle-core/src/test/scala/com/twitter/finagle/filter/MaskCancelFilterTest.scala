@@ -18,12 +18,13 @@ class MaskCancelFilterTest extends FunSuite with MockitoSugar {
     val filter = new MaskCancelFilter[Int, Int]
 
     val filtered = filter andThen service
-    val p = new Promise[Int] {
-      @volatile var interrupted: Option[Throwable] = None
-      setInterruptHandler {
-        case exc => interrupted = Some(exc)
+    val p =
+      new Promise[Int] {
+        @volatile var interrupted: Option[Throwable] = None
+        setInterruptHandler {
+          case exc => interrupted = Some(exc)
+        }
       }
-    }
     when(service(1)).thenReturn(p)
 
     val f = filtered(1)

@@ -21,9 +21,10 @@ private class DeadlineSpanMap(
 
   private[this] val spanMap = new ConcurrentHashMap[TraceId, MutableSpan](64)
 
-  private[this] val timerTask = timer.schedule(ttl / 2) {
-    flush(ttl.ago)
-  }
+  private[this] val timerTask =
+    timer.schedule(ttl / 2) {
+      flush(ttl.ago)
+    }
 
   /**
     * Update the mutable span.
@@ -87,8 +88,7 @@ private class DeadlineSpanMap(
     *
     * @return Future indicating completion.
     */
-  def flush(): Future[Unit] =
-    flush(Time.Top)
+  def flush(): Future[Unit] = flush(Time.Top)
 }
 
 private final class MutableSpan(val traceId: TraceId, val started: Time) {

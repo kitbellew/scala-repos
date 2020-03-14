@@ -26,10 +26,11 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val file = element.getContainingFile match {
-      case sc: ScalaFile => sc
-      case _             => return false
-    }
+    val file =
+      element.getContainingFile match {
+        case sc: ScalaFile => sc
+        case _             => return false
+      }
     val selectionModel = editor.getSelectionModel
     selectionModel.hasSelection && {
       val selection = ScalaPsiUtil.getElementsRange(
@@ -43,12 +44,15 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Unit = {
-    val file = element.getContainingFile match {
-      case sf: ScalaFile => sf
-      case _             => return
-    }
-    val elements =
-      ScalaRefactoringUtil.selectedElements(editor, file, trimComments = true)
+    val file =
+      element.getContainingFile match {
+        case sf: ScalaFile => sf
+        case _             => return
+      }
+    val elements = ScalaRefactoringUtil.selectedElements(
+      editor,
+      file,
+      trimComments = true)
     TypeAdjuster.adjustFor(elements)
   }
 

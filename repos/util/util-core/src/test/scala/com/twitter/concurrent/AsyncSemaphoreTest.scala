@@ -135,14 +135,15 @@ class AsyncSemaphoreTest extends FunSpec {
       semHelper =>
         var counter = 0
         val queue = new mutable.Queue[Promise[Unit]]()
-        val func = new (() => Future[Unit]) {
-          def apply(): Future[Unit] = {
-            counter = counter + 1
-            val promise = new Promise[Unit]()
-            queue.enqueue(promise)
-            promise
+        val func =
+          new (() => Future[Unit]) {
+            def apply(): Future[Unit] = {
+              counter = counter + 1
+              val promise = new Promise[Unit]()
+              queue.enqueue(promise)
+              promise
+            }
           }
-        }
         assert(semHelper.sem.numPermitsAvailable == 2)
 
         semHelper.sem.acquireAndRun(func())
@@ -170,10 +171,11 @@ class AsyncSemaphoreTest extends FunSpec {
 
     it("should release permit even if queued up function throws an exception") {
       semHelper =>
-        val badFunc = new Function0[Future[Unit]] {
-          def apply(): Future[Unit] =
-            throw new RuntimeException("bad func calling")
-        }
+        val badFunc =
+          new Function0[Future[Unit]] {
+            def apply(): Future[Unit] =
+              throw new RuntimeException("bad func calling")
+          }
         semHelper.sem.acquireAndRun(badFunc())
         assert(semHelper.sem.numPermitsAvailable == 2)
     }
@@ -182,20 +184,22 @@ class AsyncSemaphoreTest extends FunSpec {
       semHelper =>
         var counter = 0
         val queue = new mutable.Queue[Promise[Unit]]()
-        val funcFuture = new (() => Future[Unit]) {
-          def apply(): Future[Unit] = {
-            counter = counter + 1
-            val promise = new Promise[Unit]()
-            queue.enqueue(promise)
-            promise
+        val funcFuture =
+          new (() => Future[Unit]) {
+            def apply(): Future[Unit] = {
+              counter = counter + 1
+              val promise = new Promise[Unit]()
+              queue.enqueue(promise)
+              promise
+            }
           }
-        }
-        val func = new (() => Int) {
-          def apply(): Int = {
-            counter = counter + 1
-            counter
+        val func =
+          new (() => Int) {
+            def apply(): Int = {
+              counter = counter + 1
+              counter
+            }
           }
-        }
         assert(semHelper.sem.numPermitsAvailable == 2)
 
         semHelper.sem.acquireAndRun(funcFuture())
@@ -223,19 +227,21 @@ class AsyncSemaphoreTest extends FunSpec {
       semHelper =>
         var counter = 0
         val queue = new mutable.Queue[Promise[Unit]]()
-        val funcFuture = new (() => Future[Unit]) {
-          def apply(): Future[Unit] = {
-            counter = counter + 1
-            val promise = new Promise[Unit]()
-            queue.enqueue(promise)
-            promise
+        val funcFuture =
+          new (() => Future[Unit]) {
+            def apply(): Future[Unit] = {
+              counter = counter + 1
+              val promise = new Promise[Unit]()
+              queue.enqueue(promise)
+              promise
+            }
           }
-        }
-        val badFunc = new (() => Int) {
-          def apply(): Int = {
-            throw new Exception("error!")
+        val badFunc =
+          new (() => Int) {
+            def apply(): Int = {
+              throw new Exception("error!")
+            }
           }
-        }
         assert(semHelper.sem.numPermitsAvailable == 2)
 
         semHelper.sem.acquireAndRun(funcFuture())

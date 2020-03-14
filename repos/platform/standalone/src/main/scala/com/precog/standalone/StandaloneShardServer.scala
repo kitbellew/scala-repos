@@ -113,77 +113,80 @@ trait StandaloneShardServer extends BlueEyesServer with ShardService {
         stoppable)
     }
 
-  val jettyService = this.service("labcoat", "1.0") { context =>
-    startup {
-      val rootConfig = context.rootConfig
-      val config = rootConfig.detach("services.analytics.v2")
-      val serverPort = config[Int]("labcoat.port", 8000)
-      val quirrelPort = rootConfig[Int]("server.port", 8888)
-      val rootKey = config[String]("security.masterAccount.apiKey")
+  val jettyService =
+    this.service("labcoat", "1.0") { context =>
+      startup {
+        val rootConfig = context.rootConfig
+        val config = rootConfig.detach("services.analytics.v2")
+        val serverPort = config[Int]("labcoat.port", 8000)
+        val quirrelPort = rootConfig[Int]("server.port", 8888)
+        val rootKey = config[String]("security.masterAccount.apiKey")
 
-      caveatMessage.foreach(logger.warn(_))
+        caveatMessage.foreach(logger.warn(_))
 
-      val server = new Server(serverPort)
+        val server = new Server(serverPort)
 
-      // Jetty doesn't map application/json by default
-      val mimeTypes = new MimeTypes
-      mimeTypes.addMimeMapping("json", "application/json")
+        // Jetty doesn't map application/json by default
+        val mimeTypes = new MimeTypes
+        mimeTypes.addMimeMapping("json", "application/json")
 
-      val resourceHandler = new ResourceHandler
-      resourceHandler.setMimeTypes(mimeTypes)
-      resourceHandler.setDirectoriesListed(false)
-      resourceHandler.setWelcomeFiles(new Array[String](0))
-      resourceHandler.setResourceBase(
-        this.getClass.getClassLoader.getResource("web").toString)
+        val resourceHandler = new ResourceHandler
+        resourceHandler.setMimeTypes(mimeTypes)
+        resourceHandler.setDirectoriesListed(false)
+        resourceHandler.setWelcomeFiles(new Array[String](0))
+        resourceHandler.setResourceBase(
+          this.getClass.getClassLoader.getResource("web").toString)
 
-      val corsHandler = new HandlerWrapper {
-        override def handle(
-            target: String,
-            baseRequest: Request,
-            request: HttpServletRequest,
-            response: HttpServletResponse): Unit = {
-          response.addHeader("Access-Control-Allow-Origin", "*")
-          _handler.handle(target, baseRequest, request, response)
-        }
-      }
-
-      corsHandler.setHandler(resourceHandler)
-
-      val rootHandler = new AbstractHandler {
-        def handle(
-            target: String,
-            baseRequest: Request,
-            request: HttpServletRequest,
-            response: HttpServletResponse): Unit = {
-          if (target == "/") {
-            val requestedHost = Option(request.getHeader("Host"))
-              .map(_.toLowerCase.split(':').head)
-              .getOrElse("localhost")
-            response.sendRedirect(
-              "http://%1$s:%2$d/index.html?apiKey=%3$s&analyticsService=http://%1$s:%4$d/&version=2"
-                .format(requestedHost, serverPort, rootKey, quirrelPort))
+        val corsHandler =
+          new HandlerWrapper {
+            override def handle(
+                target: String,
+                baseRequest: Request,
+                request: HttpServletRequest,
+                response: HttpServletResponse): Unit = {
+              response.addHeader("Access-Control-Allow-Origin", "*")
+              _handler.handle(target, baseRequest, request, response)
+            }
           }
-        }
-      }
 
-      val handlers = new HandlerList
+        corsHandler.setHandler(resourceHandler)
 
-      handlers.setHandlers(
-        Array[Handler](rootHandler, resourceHandler, new DefaultHandler))
-      corsHandler.setHandler(handlers)
+        val rootHandler =
+          new AbstractHandler {
+            def handle(
+                target: String,
+                baseRequest: Request,
+                request: HttpServletRequest,
+                response: HttpServletResponse): Unit = {
+              if (target == "/") {
+                val requestedHost = Option(request.getHeader("Host"))
+                  .map(_.toLowerCase.split(':').head)
+                  .getOrElse("localhost")
+                response.sendRedirect(
+                  "http://%1$s:%2$d/index.html?apiKey=%3$s&analyticsService=http://%1$s:%4$d/&version=2"
+                    .format(requestedHost, serverPort, rootKey, quirrelPort))
+              }
+            }
+          }
 
-      server.setHandler(corsHandler)
-      server.start()
+        val handlers = new HandlerList
 
-      Future(server)(executionContext)
-    } ->
-      request { (server: Server) =>
-        get { (req: HttpRequest[ByteChunk]) =>
-          Promise.successful(HttpResponse[ByteChunk]())(executionContext)
-        }
+        handlers.setHandlers(
+          Array[Handler](rootHandler, resourceHandler, new DefaultHandler))
+        corsHandler.setHandler(handlers)
+
+        server.setHandler(corsHandler)
+        server.start()
+
+        Future(server)(executionContext)
       } ->
-      shutdown { (server: Server) =>
-        Future(server.stop())(executionContext)
-      }
-  }
+        request { (server: Server) =>
+          get { (req: HttpRequest[ByteChunk]) =>
+            Promise.successful(HttpResponse[ByteChunk]())(executionContext)
+          }
+        } ->
+        shutdown { (server: Server) =>
+          Future(server.stop())(executionContext)
+        }
+    }
 }

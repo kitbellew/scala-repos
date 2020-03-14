@@ -22,8 +22,7 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
       $find.byOrderedIds[lila.game.Game](res.ids)
     }
 
-  def count(query: Query) =
-    client.count(query) map (_.count)
+  def count(query: Query) = client.count(query) map (_.count)
 
   def ids(query: Query, max: Int): Fu[List[String]] =
     client.search(query, From(0), Size(max)).map(_.ids)

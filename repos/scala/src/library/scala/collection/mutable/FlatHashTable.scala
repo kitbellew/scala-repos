@@ -36,8 +36,9 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
 
   /** The next size value at which to resize (capacity * load factor).
     */
-  @transient protected var threshold: Int =
-    newThreshold(_loadFactor, initialCapacity)
+  @transient protected var threshold: Int = newThreshold(
+    _loadFactor,
+    initialCapacity)
 
   /** The array keeping track of number of elements in 32 element blocks.
     */

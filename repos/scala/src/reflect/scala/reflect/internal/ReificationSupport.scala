@@ -75,8 +75,7 @@ trait ReificationSupport { self: SymbolTable =>
         .newNestedSymbol(name, pos, flags, isClass)
         .markFlagsCompleted(mask = AllFlags)
 
-    def newScopeWith(elems: Symbol*): Scope =
-      self.newScopeWith(elems: _*)
+    def newScopeWith(elems: Symbol*): Scope = self.newScopeWith(elems: _*)
 
     def setAnnotations[S <: Symbol](sym: S, annots: List[AnnotationInfo]): S =
       sym.setAnnotations(annots)
@@ -437,8 +436,8 @@ trait ReificationSupport { self: SymbolTable =>
         else {
           val (rawEdefs, rest) = tbody.span(treeInfo.isEarlyDef)
           val (gvdefs, etdefs) = rawEdefs.partition(treeInfo.isEarlyValDef)
-          val (fieldDefs, UnCtor(ctorMods, ctorVparamss, lvdefs) :: body) =
-            rest.splitAt(indexOfCtor(rest))
+          val (fieldDefs, UnCtor(ctorMods, ctorVparamss, lvdefs) :: body) = rest
+            .splitAt(indexOfCtor(rest))
           val evdefs = gvdefs.zip(lvdefs).map {
             case (
                   gvdef @ ValDef(_, _, tpt: TypeTree, _),
@@ -450,15 +449,18 @@ trait ReificationSupport { self: SymbolTable =>
             result(ctorMods, Nil, edefs, body)
           else {
             // undo conversion from (implicit ... ) to ()(implicit ... ) when it's the only parameter section
-            val vparamssRestoredImplicits = ctorVparamss match {
-              case Nil :: (tail @ ((head :: _) :: _)) if head.mods.isImplicit =>
-                tail
-              case other => other
-            }
+            val vparamssRestoredImplicits =
+              ctorVparamss match {
+                case Nil :: (tail @ ((head :: _) :: _))
+                    if head.mods.isImplicit =>
+                  tail
+                case other => other
+              }
             // undo flag modifications by merging flag info from constructor args and fieldDefs
-            val modsMap = fieldDefs.map {
-              case ValDef(mods, name, _, _) => name -> mods
-            }.toMap
+            val modsMap =
+              fieldDefs.map {
+                case ValDef(mods, name, _, _) => name -> mods
+              }.toMap
             def ctorArgsCorrespondToFields =
               vparamssRestoredImplicits.flatten.forall { vd =>
                 modsMap.contains(vd.name)
@@ -466,11 +468,12 @@ trait ReificationSupport { self: SymbolTable =>
             if (!ctorArgsCorrespondToFields)
               None
             else {
-              val vparamss = mmap(vparamssRestoredImplicits) { vd =>
-                val originalMods =
-                  modsMap(vd.name) | (vd.mods.flags & DEFAULTPARAM)
-                atPos(vd.pos)(ValDef(originalMods, vd.name, vd.tpt, vd.rhs))
-              }
+              val vparamss =
+                mmap(vparamssRestoredImplicits) { vd =>
+                  val originalMods =
+                    modsMap(vd.name) | (vd.mods.flags & DEFAULTPARAM)
+                  atPos(vd.pos)(ValDef(originalMods, vd.name, vd.tpt, vd.rhs))
+                }
               result(ctorMods, vparamss, edefs, body)
             }
           }
@@ -504,8 +507,10 @@ trait ReificationSupport { self: SymbolTable =>
                                             CASEACCESSOR
                                           else
                                             0L)
-        val vparamss0 =
-          mkParam(vparamss, extraFlags, excludeFlags = DEFERRED | PARAM)
+        val vparamss0 = mkParam(
+          vparamss,
+          extraFlags,
+          excludeFlags = DEFERRED | PARAM)
         val tparams0 = mkTparams(tparams)
         val parents0 = gen.mkParents(
           mods,
@@ -520,8 +525,12 @@ trait ReificationSupport { self: SymbolTable =>
             parents)
         val body0 = earlyDefs ::: body
         val selfType0 = mkSelfType(selfType)
-        val templ =
-          gen.mkTemplate(parents0, selfType0, constrMods, vparamss0, body0)
+        val templ = gen.mkTemplate(
+          parents0,
+          selfType0,
+          constrMods,
+          vparamss0,
+          body0)
         gen.mkClassDef(mods, name, tparams0, templ)
       }
 
@@ -1232,21 +1241,22 @@ trait ReificationSupport { self: SymbolTable =>
     // undo desugaring done in gen.mkFor
     protected object UnFor {
       def unapply(tree: Tree): Option[(List[Tree], Tree)] = {
-        val interm = tree match {
-          case UnFlatMap(
-                UnFilter(rhs, filters),
-                UnClosure(pat, UnFor(rest, body))) =>
-            Some(((pat, rhs), filters ::: rest, body))
-          case UnForeach(
-                UnFilter(rhs, filters),
-                UnClosure(pat, UnFor(rest, body))) =>
-            Some(((pat, rhs), filters ::: rest, body))
-          case UnMap(UnFilter(rhs, filters), UnClosure(pat, cbody)) =>
-            Some(((pat, rhs), filters, gen.Yield(cbody)))
-          case UnForeach(UnFilter(rhs, filters), UnClosure(pat, cbody)) =>
-            Some(((pat, rhs), filters, cbody))
-          case _ => None
-        }
+        val interm =
+          tree match {
+            case UnFlatMap(
+                  UnFilter(rhs, filters),
+                  UnClosure(pat, UnFor(rest, body))) =>
+              Some(((pat, rhs), filters ::: rest, body))
+            case UnForeach(
+                  UnFilter(rhs, filters),
+                  UnClosure(pat, UnFor(rest, body))) =>
+              Some(((pat, rhs), filters ::: rest, body))
+            case UnMap(UnFilter(rhs, filters), UnClosure(pat, cbody)) =>
+              Some(((pat, rhs), filters, gen.Yield(cbody)))
+            case UnForeach(UnFilter(rhs, filters), UnClosure(pat, cbody)) =>
+              Some(((pat, rhs), filters, cbody))
+            case _ => None
+          }
         interm.flatMap {
           case (
                 (
@@ -1711,8 +1721,7 @@ trait ReificationSupport { self: SymbolTable =>
     }
 
     object SyntacticAnnotatedType extends SyntacticAnnotatedTypeExtractor {
-      def apply(tpt: Tree, annot: Tree): Annotated =
-        Annotated(annot, tpt)
+      def apply(tpt: Tree, annot: Tree): Annotated = Annotated(annot, tpt)
       def unapply(tree: Tree): Option[(Tree, Tree)] =
         tree match {
           case MaybeTypeTreeOriginal(Annotated(annot, tpt)) =>

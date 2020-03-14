@@ -31,8 +31,8 @@ import scala.collection.JavaConverters._
   * 10/24/13
   */
 object ScalaMoveUtil {
-  val MOVE_DESTINATION: Key[PsiDirectory] =
-    Key.create[PsiDirectory]("MoveDestination")
+  val MOVE_DESTINATION: Key[PsiDirectory] = Key.create[PsiDirectory](
+    "MoveDestination")
   val MOVE_SOURCE: Key[PsiFile] = Key.create("MoveSource")
   private val PROCESSOR: ScalaCopyPastePostProcessor =
     new ScalaCopyPastePostProcessor
@@ -43,19 +43,21 @@ object ScalaMoveUtil {
       case (td1: ScTypeDefinition, td2: ScTypeDefinition)
           if td1.name == td2.name =>
         val classes = Seq(td1, td2)
-        val noFakeCompanions = classes.collect {
-          case td: ScTypeDefinition => td.fakeCompanionModule.isDefined
-        }.isEmpty
+        val noFakeCompanions =
+          classes.collect {
+            case td: ScTypeDefinition => td.fakeCompanionModule.isDefined
+          }.isEmpty
         classes.count(_.isInstanceOf[ScObject]) == 1 && noFakeCompanions
       case _ => false
     }
   }
 
   def classCanBeAdded(file: PsiFile, aClass: PsiClass): Boolean = {
-    val allClasses =
-      PsiTreeUtil.findChildrenOfType(file, classOf[ScTypeDefinition])
-    val withSameName =
-      allClasses.asScala.filter(_.name == ScalaNamesUtil.scalaName(aClass))
+    val allClasses = PsiTreeUtil.findChildrenOfType(
+      file,
+      classOf[ScTypeDefinition])
+    val withSameName = allClasses.asScala.filter(
+      _.name == ScalaNamesUtil.scalaName(aClass))
     withSameName.size == 1 && canBeCompanions(
       withSameName.head,
       aClass) || withSameName.isEmpty
@@ -104,13 +106,14 @@ object ScalaMoveUtil {
           }
           //create new file with template
           else {
-            val template: String = td match {
-              case _: ScClass  => ScalaFileTemplateUtil.SCALA_CLASS
-              case _: ScTrait  => ScalaFileTemplateUtil.SCALA_TRAIT
-              case _: ScObject => ScalaFileTemplateUtil.SCALA_OBJECT
-            }
-            val created: PsiClass =
-              ScalaDirectoryService.createClassFromTemplate(
+            val template: String =
+              td match {
+                case _: ScClass  => ScalaFileTemplateUtil.SCALA_CLASS
+                case _: ScTrait  => ScalaFileTemplateUtil.SCALA_TRAIT
+                case _: ScObject => ScalaFileTemplateUtil.SCALA_OBJECT
+              }
+            val created: PsiClass = ScalaDirectoryService
+              .createClassFromTemplate(
                 moveDestination,
                 td.name,
                 template,
@@ -170,8 +173,8 @@ object ScalaMoveUtil {
 
   def restoreAssociations(@NotNull aClass: PsiClass, withCompanion: Boolean) {
     def restoreInner(clazz: PsiClass) {
-      val associations: Associations =
-        clazz.getCopyableUserData(ASSOCIATIONS_KEY)
+      val associations: Associations = clazz.getCopyableUserData(
+        ASSOCIATIONS_KEY)
       if (associations != null) {
         try {
           PROCESSOR.restoreAssociations(
@@ -200,12 +203,13 @@ object ScalaMoveUtil {
   def saveMoveDestination(
       @NotNull element: PsiElement,
       moveDestination: PsiDirectory) = {
-    val classes = element match {
-      case c: PsiClass  => Seq(c)
-      case f: ScalaFile => f.typeDefinitions
-      case p: ScPackage => p.getClasses.toSeq
-      case _            => Nil
-    }
+    val classes =
+      element match {
+        case c: PsiClass  => Seq(c)
+        case f: ScalaFile => f.typeDefinitions
+        case p: ScPackage => p.getClasses.toSeq
+        case _            => Nil
+      }
     classes
       .flatMap {
         case td: ScTypeDefinition =>

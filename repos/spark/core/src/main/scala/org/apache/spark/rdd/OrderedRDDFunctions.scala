@@ -93,17 +93,18 @@ P <: Product2[K, V]: ClassTag] @DeveloperApi() (self: RDD[P])
       def inRange(k: K): Boolean =
         ordering.gteq(k, lower) && ordering.lteq(k, upper)
 
-      val rddToFilter: RDD[P] = self.partitioner match {
-        case Some(rp: RangePartitioner[K, V]) => {
-          val partitionIndicies =
-            (rp.getPartition(lower), rp.getPartition(upper)) match {
-              case (l, u) => Math.min(l, u) to Math.max(l, u)
-            }
-          PartitionPruningRDD.create(self, partitionIndicies.contains)
+      val rddToFilter: RDD[P] =
+        self.partitioner match {
+          case Some(rp: RangePartitioner[K, V]) => {
+            val partitionIndicies =
+              (rp.getPartition(lower), rp.getPartition(upper)) match {
+                case (l, u) => Math.min(l, u) to Math.max(l, u)
+              }
+            PartitionPruningRDD.create(self, partitionIndicies.contains)
+          }
+          case _ =>
+            self
         }
-        case _ =>
-          self
-      }
       rddToFilter.filter {
         case (k, v) => inRange(k)
       }

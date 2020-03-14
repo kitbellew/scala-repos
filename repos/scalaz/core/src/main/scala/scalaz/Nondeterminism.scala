@@ -91,8 +91,7 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
   /**
     * Apply a function to 2 results, nondeterminstically ordering their effects, alias of mapBoth
     */
-  def nmap2[A, B, C](a: F[A], b: F[B])(f: (A, B) => C): F[C] =
-    mapBoth(a, b)(f)
+  def nmap2[A, B, C](a: F[A], b: F[B])(f: (A, B) => C): F[C] = mapBoth(a, b)(f)
 
   /**
     * Apply a function to 3 results, nondeterminstically ordering their effects
@@ -220,9 +219,10 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     }
 
   ////
-  val nondeterminismSyntax = new scalaz.syntax.NondeterminismSyntax[F] {
-    def F = Nondeterminism.this
-  }
+  val nondeterminismSyntax =
+    new scalaz.syntax.NondeterminismSyntax[F] {
+      def F = Nondeterminism.this
+    }
 }
 
 object Nondeterminism {

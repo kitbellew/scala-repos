@@ -365,12 +365,13 @@ trait LinearRegressionLibModule[M[+_]]
               case arr => new Matrix(Array(arr))
             }
 
-            val matrixX = for {
-              (x, _) <- cleaned
-              y <- matrixY
-            } yield {
-              x.solve(y.transpose)
-            }
+            val matrixX =
+              for {
+                (x, _) <- cleaned
+                y <- matrixY
+              } yield {
+                x.solve(y.transpose)
+              }
 
             val res = matrixX map {
               _.getArray flatten
@@ -440,16 +441,18 @@ trait LinearRegressionLibModule[M[+_]]
               _.times((new Matrix(Array(weightedBeta))).transpose())
             }
 
-            val rssOpt = for {
-              actualY <- actualY0
-              predictedY <- predictedY0
-            } yield {
-              val difference = actualY.minus(predictedY)
-              val prod = difference.transpose() times difference
+            val rssOpt =
+              for {
+                actualY <- actualY0
+                predictedY <- predictedY0
+              } yield {
+                val difference = actualY.minus(predictedY)
+                val prod = difference.transpose() times difference
 
-              assert(prod.getRowDimension == 1 && prod.getColumnDimension == 1)
-              prod.getArray.head.head
-            }
+                assert(
+                  prod.getRowDimension == 1 && prod.getColumnDimension == 1)
+                prod.getArray.head.head
+              }
 
             val rss = rssOpt getOrElse {
               stdErrorMonoid.zero.rss
@@ -457,9 +460,10 @@ trait LinearRegressionLibModule[M[+_]]
 
             val yMean = y0.flatten.sum / y0.flatten.size
 
-            val tss = y0.flatten map { y =>
-              math.pow(y - yMean, 2d)
-            } sum
+            val tss =
+              y0.flatten map { y =>
+                math.pow(y - yMean, 2d)
+              } sum
 
             StdErrorAcc(rss, tss, matrixProduct)
           }
@@ -471,8 +475,9 @@ trait LinearRegressionLibModule[M[+_]]
           jtype: JType): Table = {
         val cpaths = Schema.cpath(jtype)
 
-        val tree =
-          CPath.makeTree(cpaths, Range(1, coeffs.beta.length).toSeq :+ 0)
+        val tree = CPath.makeTree(
+          cpaths,
+          Range(1, coeffs.beta.length).toSeq :+ 0)
 
         val spec = TransSpec.concatChildren(tree)
 
@@ -534,18 +539,21 @@ trait LinearRegressionLibModule[M[+_]]
             1 - (errors.rss / errors.tss)
         }
         val rSquaredTable0 = Table.fromRValues(Stream(CNum(rSquared)))
-        val rSquaredTable =
-          rSquaredTable0.transform(trans.WrapObject(Leaf(Source), "RSquared"))
+        val rSquaredTable = rSquaredTable0.transform(
+          trans.WrapObject(Leaf(Source), "RSquared"))
 
-        val result2 = coeffsTable.cross(rSquaredTable)(
-          InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
-        val result1 = result2.cross(varCovarTable)(
-          InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
-        val result = result1.cross(stdErrorTable)(
-          InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
+        val result2 =
+          coeffsTable.cross(rSquaredTable)(
+            InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
+        val result1 =
+          result2.cross(varCovarTable)(
+            InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
+        val result =
+          result1.cross(stdErrorTable)(
+            InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
 
-        val valueTable =
-          result.transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+        val valueTable = result.transform(
+          trans.WrapObject(Leaf(Source), paths.Value.name))
         val keyTable = Table.constEmptyArray.transform(
           trans.WrapObject(Leaf(Source), paths.Key.name))
 
@@ -553,105 +561,111 @@ trait LinearRegressionLibModule[M[+_]]
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
       }
 
-      private val morph1 = new Morph1Apply {
-        def apply(table0: Table, ctx: MorphContext) = {
-          val ySpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(0))
-          val xsSpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(1))
+      private val morph1 =
+        new Morph1Apply {
+          def apply(table0: Table, ctx: MorphContext) = {
+            val ySpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(0))
+            val xsSpec0 = DerefArrayStatic(TransSpec1.Id, CPathIndex(1))
 
-          val ySpec = trans.Map1(ySpec0, cf.util.CoerceToDouble)
-          val xsSpec = trans.DeepMap1(xsSpec0, cf.util.CoerceToDouble)
+            val ySpec = trans.Map1(ySpec0, cf.util.CoerceToDouble)
+            val xsSpec = trans.DeepMap1(xsSpec0, cf.util.CoerceToDouble)
 
-          // `arraySpec` generates the schema in which the Coefficients will be returned
-          val arraySpec =
-            InnerArrayConcat(trans.WrapArray(xsSpec), trans.WrapArray(ySpec))
-          val valueSpec = DerefObjectStatic(TransSpec1.Id, paths.Value)
-          val table = table0.transform(valueSpec).transform(arraySpec)
+            // `arraySpec` generates the schema in which the Coefficients will be returned
+            val arraySpec = InnerArrayConcat(
+              trans.WrapArray(xsSpec),
+              trans.WrapArray(ySpec))
+            val valueSpec = DerefObjectStatic(TransSpec1.Id, paths.Value)
+            val table = table0.transform(valueSpec).transform(arraySpec)
 
-          val schemas: M[Seq[JType]] = table.schemas map {
-            _.toSeq
-          }
-
-          val specs: M[Seq[TransSpec1]] = schemas map {
-            _ map { jtype =>
-              trans.Typed(TransSpec1.Id, jtype)
+            val schemas: M[Seq[JType]] = table.schemas map {
+              _.toSeq
             }
-          }
 
-          val tables: M[Seq[Table]] = specs map {
-            _ map {
-              table.transform
-            }
-          }
-
-          val tablesWithType: M[Seq[(Table, JType)]] = for {
-            tbls <- tables
-            jtypes <- schemas
-          } yield {
-            tbls zip jtypes
-          }
-
-          // important note: regression will explode if there are more than `sliceSize` columns due to rank-deficient matrix
-          // this could be remedied in the future by smarter choice of `sliceSize`
-          // though do we really want to allow people to run regression on >`sliceSize` columns?
-          val sliceSize = 10000
-          val tableReducer: (Table, JType) => M[Table] = { (table, jtype) =>
-            {
-              val arrayTable = table
-                .canonicalize(sliceSize, Some(sliceSize * 2))
-                .toArray[Double]
-
-              val coeffs0 = arrayTable.reduce(coefficientReducer)
-              val errors0 = coeffs0 flatMap { acc =>
-                arrayTable.reduce(stdErrorReducer(acc))
+            val specs: M[Seq[TransSpec1]] = schemas map {
+              _ map { jtype =>
+                trans.Typed(TransSpec1.Id, jtype)
               }
+            }
 
+            val tables: M[Seq[Table]] = specs map {
+              _ map {
+                table.transform
+              }
+            }
+
+            val tablesWithType: M[Seq[(Table, JType)]] =
               for {
-                coeffs <- coeffs0
-                errors <- errors0
+                tbls <- tables
+                jtypes <- schemas
               } yield {
-                extract(coeffs, errors, jtype)
+                tbls zip jtypes
+              }
+
+            // important note: regression will explode if there are more than `sliceSize` columns due to rank-deficient matrix
+            // this could be remedied in the future by smarter choice of `sliceSize`
+            // though do we really want to allow people to run regression on >`sliceSize` columns?
+            val sliceSize = 10000
+            val tableReducer: (Table, JType) => M[Table] = { (table, jtype) =>
+              {
+                val arrayTable = table
+                  .canonicalize(sliceSize, Some(sliceSize * 2))
+                  .toArray[Double]
+
+                val coeffs0 = arrayTable.reduce(coefficientReducer)
+                val errors0 = coeffs0 flatMap { acc =>
+                  arrayTable.reduce(stdErrorReducer(acc))
+                }
+
+                for {
+                  coeffs <- coeffs0
+                  errors <- errors0
+                } yield {
+                  extract(coeffs, errors, jtype)
+                }
               }
             }
-          }
 
-          val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
-            _.map {
-              case (table, jtype) => tableReducer(table, jtype)
-            }.toStream.sequence map (_.toSeq)
-          }
-
-          val objectTables: M[Seq[Table]] = reducedTables map {
-            _.zipWithIndex map {
-              case (tbl, idx) =>
-                val modelId = "model" + (idx + 1)
-                tbl.transform(
-                  liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
+            val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
+              _.map {
+                case (table, jtype) => tableReducer(table, jtype)
+              }.toStream.sequence map (_.toSeq)
             }
-          }
 
-          val spec = OuterObjectConcat(
-            DerefObjectStatic(Leaf(SourceLeft), paths.Value),
-            DerefObjectStatic(Leaf(SourceRight), paths.Value))
+            val objectTables: M[Seq[Table]] = reducedTables map {
+              _.zipWithIndex map {
+                case (tbl, idx) =>
+                  val modelId = "model" + (idx + 1)
+                  tbl.transform(
+                    liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
+              }
+            }
 
-          objectTables map {
-            _.reduceOption { (tl, tr) =>
-              tl.cross(tr)(buildConstantWrapSpec(spec))
-            } getOrElse Table.empty
+            val spec = OuterObjectConcat(
+              DerefObjectStatic(Leaf(SourceLeft), paths.Value),
+              DerefObjectStatic(Leaf(SourceRight), paths.Value))
+
+            objectTables map {
+              _.reduceOption { (tl, tr) =>
+                tl.cross(tr)(buildConstantWrapSpec(spec))
+              } getOrElse Table.empty
+            }
           }
         }
-      }
     }
 
     object LinearPrediction
         extends Morphism2(Stats2Namespace, "predictLinear")
         with LinearPredictionBase {
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JObjectUnfixedT, JObjectUnfixedT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JObjectUnfixedT,
+        JObjectUnfixedT)
 
       override val idPolicy = IdentityPolicy.Retain.Merge
 
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Cross, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Cross,
+        alignCustom _)
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val spec = liftToValues(

@@ -36,8 +36,8 @@ abstract class ScalaPsiTestCase extends PsiTestCase {
       ModuleRootManager.getInstance(getModule).getModifiableModel
 
     try {
-      val testDataRoot =
-        LocalFileSystem.getInstance.refreshAndFindFileByPath(rootPath)
+      val testDataRoot = LocalFileSystem.getInstance.refreshAndFindFileByPath(
+        rootPath)
       assert(testDataRoot != null)
 
       val contentEntry = rootModel.addContentEntry(testDataRoot)

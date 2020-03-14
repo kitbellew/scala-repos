@@ -11,11 +11,12 @@ import com.twitter.util.{Throw, Await, Try, Future}
 class ServiceTest extends FunSuite {
   test("Service should rescue") {
     val e = new RuntimeException("yargs")
-    val exceptionThrowingService = new Service[Int, Int] {
-      def apply(request: Int) = {
-        throw e
+    val exceptionThrowingService =
+      new Service[Int, Int] {
+        def apply(request: Int) = {
+          throw e
+        }
       }
-    }
 
     assert(
       Try(

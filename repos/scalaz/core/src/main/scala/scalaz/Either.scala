@@ -61,14 +61,12 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
   /** Spin in tail-position on the right value of this disjunction. */
   def loopr[AA >: A, BB >: B, X](
       left: AA => X,
-      right: BB => X \/ (AA \/ BB)): X =
-    \/.loopRight(this, left, right)
+      right: BB => X \/ (AA \/ BB)): X = \/.loopRight(this, left, right)
 
   /** Spin in tail-position on the left value of this disjunction. */
   def loopl[AA >: A, BB >: B, X](
       left: AA => X \/ (AA \/ BB),
-      right: BB => X): X =
-    \/.loopLeft(this, left, right)
+      right: BB => X): X = \/.loopLeft(this, left, right)
 
   /** Flip the left/right values in this disjunction. Alias for `unary_~` */
   def swap: (B \/ A) =
@@ -78,16 +76,13 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Flip the left/right values in this disjunction. Alias for `swap` */
-  def unary_~ : (B \/ A) =
-    swap
+  def unary_~ : (B \/ A) = swap
 
   /** Run the given function on this swapped value. Alias for `~` */
-  def swapped[AA, BB](k: (B \/ A) => (BB \/ AA)): (AA \/ BB) =
-    k(swap).swap
+  def swapped[AA, BB](k: (B \/ A) => (BB \/ AA)): (AA \/ BB) = k(swap).swap
 
   /** Run the given function on this swapped value. Alias for `swapped` */
-  def ~[AA, BB](k: (B \/ A) => (BB \/ AA)): (AA \/ BB) =
-    swapped(k)
+  def ~[AA, BB](k: (B \/ A) => (BB \/ AA)): (AA \/ BB) = swapped(k)
 
   /** Binary functor map on this disjunction. */
   def bimap[C, D](f: A => C, g: B => D): (C \/ D) =
@@ -125,8 +120,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Run the side-effect on the right of this disjunction. */
-  def foreach(g: B => Unit): Unit =
-    bimap(_ => (), g)
+  def foreach(g: B => Unit): Unit = bimap(_ => (), g)
 
   /** Apply a function in the environment of the right of this disjunction. */
   def ap[AA >: A, C](f: => AA \/ (B => C)): (AA \/ C) =
@@ -214,8 +208,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Return the right value of this disjunction or the given default if left. Alias for `getOrElse` */
-  def |[BB >: B](x: => BB): BB =
-    getOrElse(x)
+  def |[BB >: B](x: => BB): BB = getOrElse(x)
 
   /** Return the right value of this disjunction or run the given function on the left. */
   def valueOr[BB >: B](x: A => BB): BB =
@@ -232,8 +225,7 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Return this if it is a right, otherwise, return the given value. Alias for `orElse` */
-  def |||[C, BB >: B](x: => C \/ BB): C \/ BB =
-    orElse(x)
+  def |||[C, BB >: B](x: => C \/ BB): C \/ BB = orElse(x)
 
   /**
     * Sums up values inside disjunction, if both are left or right. Returns first left otherwise.
@@ -378,16 +370,13 @@ final case class \/-[+B](b: B) extends (Nothing \/ B)
 object \/ extends DisjunctionInstances {
 
   /** Construct a left disjunction value. */
-  def left[A, B]: A => A \/ B =
-    -\/(_)
+  def left[A, B]: A => A \/ B = -\/(_)
 
   /** Construct a right disjunction value. */
-  def right[A, B]: B => A \/ B =
-    \/-(_)
+  def right[A, B]: B => A \/ B = \/-(_)
 
   /** Construct a disjunction value from a standard `scala.Either`. */
-  def fromEither[A, B](e: Either[A, B]): A \/ B =
-    e fold (left, right)
+  def fromEither[A, B](e: Either[A, B]): A \/ B = e fold (left, right)
 
   def fromTryCatchThrowable[T, E <: Throwable](
       a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): E \/ T =
@@ -439,26 +428,21 @@ object \/ extends DisjunctionInstances {
 sealed abstract class DisjunctionInstances extends DisjunctionInstances0 {
   implicit def DisjunctionOrder[A: Order, B: Order]: Order[A \/ B] =
     new Order[A \/ B] {
-      def order(a1: A \/ B, a2: A \/ B) =
-        a1 compare a2
-      override def equal(a1: A \/ B, a2: A \/ B) =
-        a1 === a2
+      def order(a1: A \/ B, a2: A \/ B) = a1 compare a2
+      override def equal(a1: A \/ B, a2: A \/ B) = a1 === a2
     }
 
   implicit def DisjunctionMonoid[A: Semigroup, B: Monoid]: Monoid[A \/ B] =
     new Monoid[A \/ B] {
-      def append(a1: A \/ B, a2: => A \/ B) =
-        a1 +++ a2
-      def zero =
-        \/-(Monoid[B].zero)
+      def append(a1: A \/ B, a2: => A \/ B) = a1 +++ a2
+      def zero = \/-(Monoid[B].zero)
     }
 }
 
 sealed abstract class DisjunctionInstances0 extends DisjunctionInstances1 {
   implicit def DisjunctionEqual[A: Equal, B: Equal]: Equal[A \/ B] =
     new Equal[A \/ B] {
-      def equal(a1: A \/ B, a2: A \/ B) =
-        a1 === a2
+      def equal(a1: A \/ B, a2: A \/ B) = a1 === a2
     }
 
   implicit def DisjunctionShow[A: Show, B: Show]: Show[A \/ B] =
@@ -467,8 +451,7 @@ sealed abstract class DisjunctionInstances0 extends DisjunctionInstances1 {
   implicit def DisjunctionSemigroup[A: Semigroup, B: Semigroup]
       : Semigroup[A \/ B] =
     new Semigroup[A \/ B] {
-      def append(a1: A \/ B, a2: => A \/ B) =
-        a1 +++ a2
+      def append(a1: A \/ B, a2: => A \/ B) = a1 +++ a2
     }
 }
 
@@ -487,8 +470,7 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
       with Plus[L \/ ?]
       with Optional[L \/ ?]
       with MonadError[L \/ ?, L] {
-      override def map[A, B](fa: L \/ A)(f: A => B) =
-        fa map f
+      override def map[A, B](fa: L \/ A)(f: A => B) = fa map f
 
       @scala.annotation.tailrec
       def tailrecM[A, B](f: A => L \/ (A \/ B))(a: A): L \/ B =
@@ -498,11 +480,9 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
           case \/-(rb @ \/-(_)) => rb
         }
 
-      def bind[A, B](fa: L \/ A)(f: A => L \/ B) =
-        fa flatMap f
+      def bind[A, B](fa: L \/ A)(f: A => L \/ B) = fa flatMap f
 
-      def point[A](a: => A) =
-        \/-(a)
+      def point[A](a: => A) = \/-(a)
 
       def traverseImpl[G[_]: Applicative, A, B](fa: L \/ A)(f: A => G[B]) =
         fa.traverse(f)
@@ -520,8 +500,7 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
             }
         }
 
-      def plus[A](a: L \/ A, b: => L \/ A) =
-        a orElse b
+      def plus[A](a: L \/ A, b: => L \/ A) = a orElse b
 
       def pextract[B, A](fa: L \/ A): (L \/ B) \/ A =
         fa match {
@@ -529,8 +508,7 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
           case r @ \/-(_) => r
         }
 
-      def raiseError[A](e: L): L \/ A =
-        -\/(e)
+      def raiseError[A](e: L): L \/ A = -\/(e)
 
       def handleError[A](fa: L \/ A)(f: L => L \/ A): L \/ A =
         fa match {
@@ -541,32 +519,33 @@ sealed abstract class DisjunctionInstances1 extends DisjunctionInstances2 {
 }
 
 sealed abstract class DisjunctionInstances2 {
-  implicit val DisjunctionInstances2: Bitraverse[\/] = new Bitraverse[\/] {
-    override def bimap[A, B, C, D](fab: A \/ B)(f: A => C, g: B => D) =
-      fab bimap (f, g)
+  implicit val DisjunctionInstances2: Bitraverse[\/] =
+    new Bitraverse[\/] {
+      override def bimap[A, B, C, D](fab: A \/ B)(f: A => C, g: B => D) =
+        fab bimap (f, g)
 
-    def bitraverseImpl[G[_]: Applicative, A, B, C, D](
-        fab: A \/ B)(f: A => G[C], g: B => G[D]) =
-      fab.bitraverse(f, g)
-  }
+      def bitraverseImpl[G[_]: Applicative, A, B, C, D](
+          fab: A \/ B)(f: A => G[C], g: B => G[D]) = fab.bitraverse(f, g)
+    }
 
-  implicit val DisjunctionAssociative: Associative[\/] = new Associative[\/] {
-    def reassociateLeft[A, B, C](f: \/[A, \/[B, C]]) =
-      f.fold(
-        a => \/.left(\/.left(a)),
-        _.fold(
-          b => \/.left(\/.right(b)),
-          \/.right
+  implicit val DisjunctionAssociative: Associative[\/] =
+    new Associative[\/] {
+      def reassociateLeft[A, B, C](f: \/[A, \/[B, C]]) =
+        f.fold(
+          a => \/.left(\/.left(a)),
+          _.fold(
+            b => \/.left(\/.right(b)),
+            \/.right
+          )
         )
-      )
 
-    def reassociateRight[A, B, C](f: \/[\/[A, B], C]) =
-      f.fold(
-        _.fold(
-          \/.left,
-          b => \/.right(\/.left(b))
-        ),
-        c => \/.right(\/.right(c))
-      )
-  }
+      def reassociateRight[A, B, C](f: \/[\/[A, B], C]) =
+        f.fold(
+          _.fold(
+            \/.left,
+            b => \/.right(\/.left(b))
+          ),
+          c => \/.right(\/.right(c))
+        )
+    }
 }

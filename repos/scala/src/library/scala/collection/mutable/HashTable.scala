@@ -41,8 +41,8 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
 
   /** The actual hash table.
     */
-  @transient protected var table: Array[HashEntry[A, Entry]] = new Array(
-    initialCapacity)
+  @transient protected var table: Array[HashEntry[A, Entry]] =
+    new Array(initialCapacity)
 
   /** The number of mappings contained in this hash table.
     */

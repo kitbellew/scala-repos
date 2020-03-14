@@ -165,11 +165,12 @@ object ImportInfo {
           imp.qualifier.getContext,
           imp.qualifier)
         .asInstanceOf[ScStableCodeReferenceElementImpl]
-      val processor = new CompletionProcessor(
-        StdKinds.stableImportSelector,
-        reference,
-        collectImplicits = true,
-        includePrefixImports = false)
+      val processor =
+        new CompletionProcessor(
+          StdKinds.stableImportSelector,
+          reference,
+          collectImplicits = true,
+          includePrefixImports = false)
 
       reference.doResolve(reference, processor).foreach {
         case rr: ScalaResolveResult if shouldAddName(rr) =>
@@ -320,10 +321,13 @@ object ImportInfo {
             case _ => refName
           }
         case Some(ScalaResolveResult(f: PsiField, _)) =>
-          val clazzFqn = f.containingClass match {
-            case null  => throw new IllegalStateException() //somehting is wrong
-            case clazz => clazz.qualifiedName.split('.').map(name).mkString(".")
-          }
+          val clazzFqn =
+            f.containingClass match {
+              case null =>
+                throw new IllegalStateException() //somehting is wrong
+              case clazz =>
+                clazz.qualifiedName.split('.').map(name).mkString(".")
+            }
           clazzFqn + withDot(refName)
         case _ =>
           throw new IllegalStateException() //do not process invalid import

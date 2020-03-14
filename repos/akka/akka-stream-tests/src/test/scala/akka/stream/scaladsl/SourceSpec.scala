@@ -19,8 +19,9 @@ import akka.testkit.AkkaSpec
 class SourceSpec extends AkkaSpec with DefaultTimeout {
 
   implicit val materializer = ActorMaterializer()
-  implicit val config =
-    PatienceConfig(timeout = Span(timeout.duration.toMillis, Millis))
+  implicit val config = PatienceConfig(timeout = Span(
+    timeout.duration.toMillis,
+    Millis))
 
   "Single Source" must {
     "produce element" in {
@@ -101,12 +102,14 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
     "allow external triggering of empty completion" in Utils
       .assertAllStagesStopped {
         val neverSource = Source.maybe[Int].filter(_ ⇒ false)
-        val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒
-          acc + 1
-        }
+        val counterSink =
+          Sink.fold[Int, Int](0) { (acc, _) ⇒
+            acc + 1
+          }
 
-        val (neverPromise, counterFuture) =
-          neverSource.toMat(counterSink)(Keep.both).run()
+        val (neverPromise, counterFuture) = neverSource
+          .toMat(counterSink)(Keep.both)
+          .run()
 
         // external cancellation
         neverPromise.trySuccess(None) shouldEqual true
@@ -119,8 +122,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         val neverSource = Source.maybe[Int]
         val counterSink = Sink.head[Int]
 
-        val (neverPromise, counterFuture) =
-          neverSource.toMat(counterSink)(Keep.both).run()
+        val (neverPromise, counterFuture) = neverSource
+          .toMat(counterSink)(Keep.both)
+          .run()
 
         // external cancellation
         neverPromise.trySuccess(Some(6)) shouldEqual true
@@ -130,12 +134,14 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
 
     "allow external triggering of onError" in Utils.assertAllStagesStopped {
       val neverSource = Source.maybe[Int]
-      val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒
-        acc + 1
-      }
+      val counterSink =
+        Sink.fold[Int, Int](0) { (acc, _) ⇒
+          acc + 1
+        }
 
-      val (neverPromise, counterFuture) =
-        neverSource.toMat(counterSink)(Keep.both).run()
+      val (neverPromise, counterFuture) = neverSource
+        .toMat(counterSink)(Keep.both)
+        .run()
 
       // external cancellation
       neverPromise.failure(new Exception("Boom") with NoStackTrace)
@@ -173,25 +179,22 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       val sub = out.expectSubscription()
       sub.request(10)
 
-      val subs = for (i ← 0 to 4) {
-        val s = probes(i).expectSubscription()
-        s.expectRequest()
-        s.sendNext(i)
-        s.sendComplete()
-      }
+      val subs =
+        for (i ← 0 to 4) {
+          val s = probes(i).expectSubscription()
+          s.expectRequest()
+          s.sendNext(i)
+          s.sendComplete()
+        }
 
-      val gotten =
-        for (_ ← 0 to 4)
-          yield out.expectNext()
+      val gotten = for (_ ← 0 to 4) yield out.expectNext()
       gotten.toSet should ===(Set(0, 1, 2, 3, 4))
       out.expectComplete()
     }
 
     "combine from many inputs with simplified API" in {
       val probes = Seq.fill(3)(TestPublisher.manualProbe[Int]())
-      val source =
-        for (i ← 0 to 2)
-          yield Source.fromPublisher(probes(i))
+      val source = for (i ← 0 to 2) yield Source.fromPublisher(probes(i))
       val out = TestSubscriber.manualProbe[Int]
 
       Source
@@ -209,9 +212,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         s.sendComplete()
       }
 
-      val gotten =
-        for (_ ← 0 to 2)
-          yield out.expectNext()
+      val gotten = for (_ ← 0 to 2) yield out.expectNext()
       gotten.toSet should ===(Set(0, 1, 2))
       out.expectComplete()
     }
@@ -237,9 +238,7 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         s.sendComplete()
       }
 
-      val gotten =
-        for (_ ← 0 to 1)
-          yield out.expectNext()
+      val gotten = for (_ ← 0 to 1) yield out.expectNext()
       gotten.toSet should ===(Set(0, 1))
       out.expectComplete()
     }
@@ -330,8 +329,11 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
   "A Source" must {
     "suitably override attribute handling methods" in {
       import Attributes._
-      val s: Source[Int, NotUsed] =
-        Source.single(42).async.addAttributes(none).named("")
+      val s: Source[Int, NotUsed] = Source
+        .single(42)
+        .async
+        .addAttributes(none)
+        .named("")
     }
   }
 

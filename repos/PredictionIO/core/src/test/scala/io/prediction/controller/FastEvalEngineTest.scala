@@ -12,14 +12,15 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
   import io.prediction.controller.Engine0._
 
   test("Single Evaluation") {
-    val engine = new FastEvalEngine(
-      Map("" -> classOf[PDataSource2]),
-      Map("" -> classOf[PPreparator1]),
-      Map(
-        "PAlgo2" -> classOf[PAlgo2],
-        "PAlgo3" -> classOf[PAlgo3]
-      ),
-      Map("" -> classOf[LServing1]))
+    val engine =
+      new FastEvalEngine(
+        Map("" -> classOf[PDataSource2]),
+        Map("" -> classOf[PPreparator1]),
+        Map(
+          "PAlgo2" -> classOf[PAlgo2],
+          "PAlgo3" -> classOf[PAlgo3]
+        ),
+        Map("" -> classOf[LServing1]))
 
     val qn = 10
     val en = 3
@@ -82,11 +83,12 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
   }
 
   test("Batch Evaluation") {
-    val engine = new FastEvalEngine(
-      Map("" -> classOf[PDataSource2]),
-      Map("" -> classOf[PPreparator1]),
-      Map("" -> classOf[PAlgo2]),
-      Map("" -> classOf[LServing1]))
+    val engine =
+      new FastEvalEngine(
+        Map("" -> classOf[PDataSource2]),
+        Map("" -> classOf[PPreparator1]),
+        Map("" -> classOf[PAlgo2]),
+        Map("" -> classOf[LServing1]))
 
     val qn = 10
     val en = 3
@@ -99,13 +101,15 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     )
 
     val ep0 = baseEngineParams
-    val ep1 =
-      baseEngineParams.copy(algorithmParamsList = Seq(("", PAlgo2.Params(2))))
-    val ep2 =
-      baseEngineParams.copy(algorithmParamsList = Seq(("", PAlgo2.Params(20))))
+    val ep1 = baseEngineParams.copy(
+      algorithmParamsList = Seq(("", PAlgo2.Params(2))))
+    val ep2 = baseEngineParams.copy(
+      algorithmParamsList = Seq(("", PAlgo2.Params(20))))
 
-    val engineEvalDataSet =
-      engine.batchEval(sc, Seq(ep0, ep1, ep2), WorkflowParams())
+    val engineEvalDataSet = engine.batchEval(
+      sc,
+      Seq(ep0, ep1, ep2),
+      WorkflowParams())
 
     val evalDataSet0 = engineEvalDataSet(0)._2
     val evalDataSet1 = engineEvalDataSet(1)._2
@@ -139,11 +143,12 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
   test("Not cached when isEqual not implemented") {
     // PDataSource3.Params is a class not case class. Need to implement the
     // isEqual function for hashing.
-    val engine = new FastEvalEngine(
-      Map("" -> classOf[PDataSource4]),
-      Map("" -> classOf[PPreparator1]),
-      Map("" -> classOf[PAlgo2]),
-      Map("" -> classOf[LServing1]))
+    val engine =
+      new FastEvalEngine(
+        Map("" -> classOf[PDataSource4]),
+        Map("" -> classOf[PPreparator1]),
+        Map("" -> classOf[PAlgo2]),
+        Map("" -> classOf[LServing1]))
 
     val qn = 10
     val en = 3
@@ -156,16 +161,18 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     )
 
     val ep0 = baseEngineParams
-    val ep1 =
-      baseEngineParams.copy(algorithmParamsList = Seq(("", PAlgo2.Params(3))))
+    val ep1 = baseEngineParams.copy(
+      algorithmParamsList = Seq(("", PAlgo2.Params(3))))
     // ep2.dataSource is different from ep0.
     val ep2 = baseEngineParams.copy(
       dataSourceParams =
         ("", new PDataSource4.Params(id = 0, en = en, qn = qn)),
       algorithmParamsList = Seq(("", PAlgo2.Params(3))))
 
-    val engineEvalDataSet =
-      engine.batchEval(sc, Seq(ep0, ep1, ep2), WorkflowParams())
+    val engineEvalDataSet = engine.batchEval(
+      sc,
+      Seq(ep0, ep1, ep2),
+      WorkflowParams())
 
     val evalDataSet0 = engineEvalDataSet(0)._2
     val evalDataSet1 = engineEvalDataSet(1)._2

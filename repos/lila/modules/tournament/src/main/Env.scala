@@ -27,22 +27,23 @@ final class Env(
     trophyApi: lila.user.TrophyApi,
     scheduler: lila.common.Scheduler) {
 
-  private val settings = new {
-    val CollectionTournament = config getString "collection.tournament"
-    val CollectionPlayer = config getString "collection.player"
-    val CollectionPairing = config getString "collection.pairing"
-    val CollectionLeaderboard = config getString "collection.leaderboard"
-    val HistoryMessageTtl = config duration "history.message.ttl"
-    val CreatedCacheTtl = config duration "created.cache.ttl"
-    val LeaderboardCacheTtl = config duration "leaderboard.cache.ttl"
-    val RankingCacheTtl = config duration "ranking.cache.ttl"
-    val UidTimeout = config duration "uid.timeout"
-    val SocketTimeout = config duration "socket.timeout"
-    val SocketName = config getString "socket.name"
-    val ApiActorName = config getString "api_actor.name"
-    val SequencerTimeout = config duration "sequencer.timeout"
-    val NetDomain = config getString "net.domain"
-  }
+  private val settings =
+    new {
+      val CollectionTournament = config getString "collection.tournament"
+      val CollectionPlayer = config getString "collection.player"
+      val CollectionPairing = config getString "collection.pairing"
+      val CollectionLeaderboard = config getString "collection.leaderboard"
+      val HistoryMessageTtl = config duration "history.message.ttl"
+      val CreatedCacheTtl = config duration "created.cache.ttl"
+      val LeaderboardCacheTtl = config duration "leaderboard.cache.ttl"
+      val RankingCacheTtl = config duration "ranking.cache.ttl"
+      val UidTimeout = config duration "uid.timeout"
+      val SocketTimeout = config duration "socket.timeout"
+      val SocketName = config getString "socket.name"
+      val ApiActorName = config getString "api_actor.name"
+      val SequencerTimeout = config duration "sequencer.timeout"
+      val NetDomain = config getString "net.domain"
+    }
   import settings._
 
   lazy val forms = new DataForm
@@ -50,33 +51,35 @@ final class Env(
   lazy val cached =
     new Cached(createdTtl = CreatedCacheTtl, rankingTtl = RankingCacheTtl)
 
-  lazy val api = new TournamentApi(
-    cached = cached,
-    scheduleJsonView = scheduleJsonView,
-    system = system,
-    sequencers = sequencerMap,
-    autoPairing = autoPairing,
-    clearJsonViewCache = jsonView.clearCache,
-    router = hub.actor.router,
-    renderer = hub.actor.renderer,
-    timeline = hub.actor.timeline,
-    socketHub = socketHub,
-    site = hub.socket.site,
-    lobby = hub.socket.lobby,
-    trophyApi = trophyApi,
-    indexLeaderboard = leaderboardIndexer.indexOne _,
-    roundMap = roundMap,
-    roundSocketHub = roundSocketHub)
+  lazy val api =
+    new TournamentApi(
+      cached = cached,
+      scheduleJsonView = scheduleJsonView,
+      system = system,
+      sequencers = sequencerMap,
+      autoPairing = autoPairing,
+      clearJsonViewCache = jsonView.clearCache,
+      router = hub.actor.router,
+      renderer = hub.actor.renderer,
+      timeline = hub.actor.timeline,
+      socketHub = socketHub,
+      site = hub.socket.site,
+      lobby = hub.socket.lobby,
+      trophyApi = trophyApi,
+      indexLeaderboard = leaderboardIndexer.indexOne _,
+      roundMap = roundMap,
+      roundSocketHub = roundSocketHub)
 
   val tourAndRanks = api tourAndRanks _
 
   private lazy val performance = new Performance
 
-  lazy val socketHandler = new SocketHandler(
-    hub = hub,
-    socketHub = socketHub,
-    chat = hub.actor.chat,
-    flood = flood)
+  lazy val socketHandler =
+    new SocketHandler(
+      hub = hub,
+      socketHub = socketHub,
+      chat = hub.actor.chat,
+      flood = flood)
 
   lazy val winners =
     new Winners(mongoCache = mongoCache, ttl = LeaderboardCacheTtl)
@@ -88,9 +91,10 @@ final class Env(
   lazy val leaderboardApi =
     new LeaderboardApi(coll = leaderboardColl, maxPerPage = 20)
 
-  private lazy val leaderboardIndexer = new LeaderboardIndexer(
-    tournamentColl = tournamentColl,
-    leaderboardColl = leaderboardColl)
+  private lazy val leaderboardIndexer =
+    new LeaderboardIndexer(
+      tournamentColl = tournamentColl,
+      leaderboardColl = leaderboardColl)
 
   private val socketHub = system.actorOf(
     Props(new lila.socket.SocketHubActor.Default[Socket] {

@@ -5,16 +5,15 @@ import org.specs2.mutable._
 
 class ScalateUrlGeneratorSupportTest extends Specification {
 
-  val servlet = new ScalatraServlet
-    with ScalateSupport
-    with ScalateUrlGeneratorSupport {
+  val servlet =
+    new ScalatraServlet with ScalateSupport with ScalateUrlGeneratorSupport {
 
-    val cat: String = "meea"
+      val cat: String = "meea"
 
-    val simpleString = get("/foo") {}
+      val simpleString = get("/foo") {}
 
-    val singleNamed = get("/foo/:bar") {}
-  }
+      val singleNamed = get("/foo/:bar") {}
+    }
 
   "Routes extracted from the servlet" should {
     "exist" in {

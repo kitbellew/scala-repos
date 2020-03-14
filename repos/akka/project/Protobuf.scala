@@ -56,11 +56,12 @@ object Protobuf {
 
         (sourceDirs zip targetDirs) map {
           case (src, dst) =>
-            val relative = src
-              .relativeTo(sources)
-              .getOrElse(throw new Exception(
-                s"path $src is not a in source tree $sources"))
-              .toString
+            val relative =
+              src
+                .relativeTo(sources)
+                .getOrElse(throw new Exception(
+                  s"path $src is not a in source tree $sources"))
+                .toString
             val tmp = targets / "protoc" / relative
             IO.delete(tmp)
             generate(cmd, src, tmp, log)

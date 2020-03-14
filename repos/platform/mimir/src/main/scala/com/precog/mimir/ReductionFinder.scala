@@ -62,50 +62,55 @@ trait ReductionFinderModule[M[+_]]
     def findReductions(
         node: DepGraph,
         ctx: EvaluationContext): MegaReduceState = {
-      implicit val m = new Monoid[List[dag.Reduce]] {
-        def zero: List[dag.Reduce] = Nil
-        def append(x: List[dag.Reduce], y: => List[dag.Reduce]) = x ::: y
-      }
+      implicit val m =
+        new Monoid[List[dag.Reduce]] {
+          def zero: List[dag.Reduce] = Nil
+          def append(x: List[dag.Reduce], y: => List[dag.Reduce]) = x ::: y
+        }
 
-      val reduces = node
-        .foldDown[List[dag.Reduce]](true) {
-          case r: dag.Reduce => List(r)
-      } distinct
+      val reduces =
+        node
+          .foldDown[List[dag.Reduce]](true) {
+            case r: dag.Reduce => List(r)
+        } distinct
 
       val info: List[ReduceInfo] = reduces map {
         buildReduceInfo(_: dag.Reduce, ctx)
       }
 
       // for each reduce node, associate it with its ancestor
-      val (ancestorByReduce, specByParent) = info.foldLeft(
-        (Map[dag.Reduce, DepGraph](), Map[DepGraph, TransSpec1]())) {
-        case (
-              (ancestorByReduce, specByParent),
-              ReduceInfo(reduce, spec, ancestor)) =>
-          (
-            ancestorByReduce + (reduce -> ancestor),
-            specByParent + (reduce.parent -> spec))
-      }
+      val (ancestorByReduce, specByParent) =
+        info.foldLeft(
+          (Map[dag.Reduce, DepGraph](), Map[DepGraph, TransSpec1]())) {
+          case (
+                (ancestorByReduce, specByParent),
+                ReduceInfo(reduce, spec, ancestor)) =>
+            (
+              ancestorByReduce + (reduce -> ancestor),
+              specByParent + (reduce.parent -> spec))
+        }
 
       // for each ancestor, assemble a list of the parents it created
-      val parentsByAncestor = (info groupBy {
-        _.ancestor
-      }).foldLeft(Map[DepGraph, List[DepGraph]]()) {
-        case (parentsByAncestor, (ancestor, lst)) =>
-          parentsByAncestor + (ancestor -> (lst map {
-            _.reduce.parent
-          } distinct))
-      }
+      val parentsByAncestor =
+        (info groupBy {
+          _.ancestor
+        }).foldLeft(Map[DepGraph, List[DepGraph]]()) {
+          case (parentsByAncestor, (ancestor, lst)) =>
+            parentsByAncestor + (ancestor -> (lst map {
+              _.reduce.parent
+            } distinct))
+        }
 
       // for each parent, assemble a list of the reduces it created
-      val reducesByParent = (info groupBy {
-        _.reduce.parent
-      }).foldLeft(Map[DepGraph, List[dag.Reduce]]()) {
-        case (reducesByParent, (parent, lst)) =>
-          reducesByParent + (parent -> (lst map {
-            _.reduce
-          }))
-      }
+      val reducesByParent =
+        (info groupBy {
+          _.reduce.parent
+        }).foldLeft(Map[DepGraph, List[dag.Reduce]]()) {
+          case (reducesByParent, (parent, lst)) =>
+            reducesByParent + (parent -> (lst map {
+              _.reduce
+            }))
+        }
 
       MegaReduceState(
         ancestorByReduce,

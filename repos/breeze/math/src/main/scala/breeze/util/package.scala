@@ -21,8 +21,8 @@ package object util {
     * Deserializes an object using java serialization
     */
   def readObject[T](loc: File, ignoreSerialVersionUID: Boolean) = {
-    val stream = new BufferedInputStream(
-      new GZIPInputStream(new FileInputStream(loc)))
+    val stream =
+      new BufferedInputStream(new GZIPInputStream(new FileInputStream(loc)))
     val oin = nonstupidObjectInputStream(stream, ignoreSerialVersionUID)
     try {
       oin.readObject().asInstanceOf[T]
@@ -58,8 +58,8 @@ package object util {
 
       // from http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids
       override protected def readClassDescriptor(): ObjectStreamClass = {
-        var resultClassDescriptor =
-          super.readClassDescriptor(); // initially streams descriptor
+        var resultClassDescriptor = super
+          .readClassDescriptor(); // initially streams descriptor
         if (ignoreSerialVersionUID) {
 
           var localClass: Class[_] =
@@ -79,8 +79,9 @@ package object util {
             val localSUID = localClassDescriptor.getSerialVersionUID
             val streamSUID = resultClassDescriptor.getSerialVersionUID
             if (streamSUID != localSUID) { // check for serialVersionUID mismatch.
-              val s = new StringBuffer(
-                "Overriding serialized class version mismatch: ")
+              val s =
+                new StringBuffer(
+                  "Overriding serialized class version mismatch: ")
               s.append("local serialVersionUID = ").append(localSUID)
               s.append(" stream serialVersionUID = ").append(streamSUID)
               val e = new InvalidClassException(s.toString())
@@ -100,8 +101,10 @@ package object util {
     * Serializes an object using java serialization
     */
   def writeObject[T](out: File, parser: T): Unit = {
-    val stream = new ObjectOutputStream(
-      new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(out))))
+    val stream =
+      new ObjectOutputStream(
+        new BufferedOutputStream(
+          new GZIPOutputStream(new FileOutputStream(out))))
     stream.writeObject(parser)
     stream.close()
   }

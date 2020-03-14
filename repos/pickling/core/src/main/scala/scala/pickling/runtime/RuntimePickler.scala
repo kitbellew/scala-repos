@@ -17,8 +17,7 @@ class RuntimeTypeInfo(
 
   // debug(s"Initializing runtime type info for class '${clazz.getName}'...")
 
-  val mirror: ru.Mirror =
-    ru.runtimeMirror(classLoader)
+  val mirror: ru.Mirror = ru.runtimeMirror(classLoader)
 
   val sym =
     if (clazz != null)
@@ -50,10 +49,11 @@ class RuntimeTypeInfo(
   val tag = FastTypeTag(mirror, tpe, tpe.key)
   // debug(s"tag: $tag")
 
-  val shareAnalyzer = new ShareAnalyzer[ru.type](ru) {
-    def shareEverything = share.isInstanceOf[refs.ShareEverything]
-    def shareNothing = share.isInstanceOf[refs.ShareNothing]
-  }
+  val shareAnalyzer =
+    new ShareAnalyzer[ru.type](ru) {
+      def shareEverything = share.isInstanceOf[refs.ShareEverything]
+      def shareNothing = share.isInstanceOf[refs.ShareNothing]
+    }
   def shouldBotherAboutSharing(tpe: Type) =
     shareAnalyzer.shouldBotherAboutSharing(tpe)
   def shouldBotherAboutLooping(tpe: Type) =
@@ -75,13 +75,14 @@ class RuntimePickler(
   sealed abstract class Logic(fir: irs.FieldIR, isEffFinal: Boolean) {
     // debug(s"creating Logic for ${fir.name}")
     def run(builder: PBuilder, picklee: Any, im: ru.InstanceMirror): Unit = {
-      val fldValue: Any = if (fir.accessor.nonEmpty) {
-        val getterMirror = im.reflectMethod(fir.accessor.get)
-        getterMirror()
-      } else {
-        val fldMirror = im.reflectField(fir.field.get)
-        fldMirror.get
-      }
+      val fldValue: Any =
+        if (fir.accessor.nonEmpty) {
+          val getterMirror = im.reflectMethod(fir.accessor.get)
+          getterMirror()
+        } else {
+          val fldMirror = im.reflectField(fir.field.get)
+          fldMirror.get
+        }
       val fldClass =
         if (fldValue != null)
           fldValue.getClass

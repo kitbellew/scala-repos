@@ -25,14 +25,15 @@ object helpers
   def datetime(date: Date): String =
     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date)
 
-  val timeUnits = List(
-    (1000L, "second"),
-    (1000L * 60, "minute"),
-    (1000L * 60 * 60, "hour"),
-    (1000L * 60 * 60 * 24, "day"),
-    (1000L * 60 * 60 * 24 * 30, "month"),
-    (1000L * 60 * 60 * 24 * 365, "year")
-  ).reverse
+  val timeUnits =
+    List(
+      (1000L, "second"),
+      (1000L * 60, "minute"),
+      (1000L * 60 * 60, "hour"),
+      (1000L * 60 * 60 * 24, "day"),
+      (1000L * 60 * 60 * 24 * 30, "month"),
+      (1000L * 60 * 60 * 24 * 365, "year")
+    ).reverse
 
   /**
     * Format java.util.Date to "x {seconds/minutes/hours/days/months/years} ago"
@@ -405,20 +406,21 @@ object helpers
   def detectAndRenderLinks(text: String): Html = {
     val matches = detectAndRenderLinksRegex.findAllMatchIn(text).toSeq
 
-    val (x, pos) = matches.foldLeft((collection.immutable.Seq.empty[Html], 0)) {
-      case ((x, pos), m) =>
-        val url = m.group(0)
-        val href = url.replace("\"", "&quot;")
-        (
-          x ++ (Seq(
-            if (pos < m.start)
-              Some(HtmlFormat.escape(text.substring(pos, m.start)))
-            else
-              None,
-            Some(Html(s"""<a href="${href}">${url}</a>"""))
-          ).flatten),
-          m.end)
-    }
+    val (x, pos) =
+      matches.foldLeft((collection.immutable.Seq.empty[Html], 0)) {
+        case ((x, pos), m) =>
+          val url = m.group(0)
+          val href = url.replace("\"", "&quot;")
+          (
+            x ++ (Seq(
+              if (pos < m.start)
+                Some(HtmlFormat.escape(text.substring(pos, m.start)))
+              else
+                None,
+              Some(Html(s"""<a href="${href}">${url}</a>"""))
+            ).flatten),
+            m.end)
+      }
     // append rest fragment
     val out =
       if (pos < text.length)

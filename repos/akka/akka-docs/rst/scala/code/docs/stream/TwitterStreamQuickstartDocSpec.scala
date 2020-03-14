@@ -85,19 +85,17 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
     //#first-sample
 
     //#authors-filter-map
-    val authors: Source[Author, NotUsed] =
-      tweets
-        .filter(_.hashtags.contains(akka))
-        .map(_.author)
+    val authors: Source[Author, NotUsed] = tweets
+      .filter(_.hashtags.contains(akka))
+      .map(_.author)
     //#first-sample
     //#authors-filter-map
 
     trait Example3 {
       //#authors-collect
-      val authors: Source[Author, NotUsed] =
-        tweets.collect {
-          case t if t.hashtags.contains(akka) => t.author
-        }
+      val authors: Source[Author, NotUsed] = tweets.collect {
+        case t if t.hashtags.contains(akka) => t.author
+      }
       //#authors-collect
     }
 
@@ -165,15 +163,14 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
       import scala.concurrent.duration._
 
       //#backpressure-by-readline
-      val completion: Future[Done] =
-        Source(1 to 10)
-          .map(i => {
-            println(s"map => $i");
-            i
-          })
-          .runForeach { i =>
-            readLine(s"Element = $i; continue reading? [press enter]\n")
-          }
+      val completion: Future[Done] = Source(1 to 10)
+        .map(i => {
+          println(s"map => $i");
+          i
+        })
+        .runForeach { i =>
+          readLine(s"Element = $i; continue reading? [press enter]\n")
+        }
 
       Await.ready(completion, 1.minute)
       //#backpressure-by-readline

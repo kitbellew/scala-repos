@@ -116,10 +116,11 @@ class Log(
   loadSegments()
 
   /* Calculate the offset of the next message */
-  @volatile var nextOffsetMetadata = new LogOffsetMetadata(
-    activeSegment.nextOffset(),
-    activeSegment.baseOffset,
-    activeSegment.size.toInt)
+  @volatile var nextOffsetMetadata =
+    new LogOffsetMetadata(
+      activeSegment.nextOffset(),
+      activeSegment.baseOffset,
+      activeSegment.size.toInt)
 
   val topicAndPartition: TopicAndPartition = Log.parseTopicPartitionName(dir)
 
@@ -182,14 +183,14 @@ class Log(
         // we crashed in the middle of a swap operation, to recover:
         // if a log, delete the .index file, complete the swap operation later
         // if an index just delete it, it will be rebuilt
-        val baseName = new File(
-          CoreUtils.replaceSuffix(file.getPath, SwapFileSuffix, ""))
+        val baseName =
+          new File(CoreUtils.replaceSuffix(file.getPath, SwapFileSuffix, ""))
         if (baseName.getPath.endsWith(IndexFileSuffix)) {
           file.delete()
         } else if (baseName.getPath.endsWith(LogFileSuffix)) {
           // delete the index
-          val index = new File(
-            CoreUtils
+          val index =
+            new File(CoreUtils
               .replaceSuffix(baseName.getPath, LogFileSuffix, IndexFileSuffix))
           index.delete()
           swapFiles += file
@@ -202,8 +203,8 @@ class Log(
       val filename = file.getName
       if (filename.endsWith(IndexFileSuffix)) {
         // if it is an index file, make sure it has a corresponding .log file
-        val logFile = new File(
-          file.getAbsolutePath.replace(IndexFileSuffix, LogFileSuffix))
+        val logFile =
+          new File(file.getAbsolutePath.replace(IndexFileSuffix, LogFileSuffix))
         if (!logFile.exists) {
           warn(
             "Found an orphaned index file, %s, with no corresponding log file."
@@ -215,14 +216,15 @@ class Log(
         val start =
           filename.substring(0, filename.length - LogFileSuffix.length).toLong
         val indexFile = Log.indexFilename(dir, start)
-        val segment = new LogSegment(
-          dir = dir,
-          startOffset = start,
-          indexIntervalBytes = config.indexInterval,
-          maxIndexSize = config.maxIndexSize,
-          rollJitterMs = config.randomSegmentJitter,
-          time = time,
-          fileAlreadyExists = true)
+        val segment =
+          new LogSegment(
+            dir = dir,
+            startOffset = start,
+            indexIntervalBytes = config.indexInterval,
+            maxIndexSize = config.maxIndexSize,
+            rollJitterMs = config.randomSegmentJitter,
+            time = time,
+            fileAlreadyExists = true)
 
         if (indexFile.exists()) {
           try {
@@ -249,33 +251,37 @@ class Log(
     // log files that are replaced by the swap segment should be renamed to .deleted
     // before the swap file is restored as the new segment file.
     for (swapFile <- swapFiles) {
-      val logFile = new File(
-        CoreUtils.replaceSuffix(swapFile.getPath, SwapFileSuffix, ""))
+      val logFile =
+        new File(CoreUtils.replaceSuffix(swapFile.getPath, SwapFileSuffix, ""))
       val fileName = logFile.getName
       val startOffset =
         fileName.substring(0, fileName.length - LogFileSuffix.length).toLong
-      val indexFile = new File(
-        CoreUtils.replaceSuffix(
-          logFile.getPath,
-          LogFileSuffix,
-          IndexFileSuffix) + SwapFileSuffix)
-      val index = new OffsetIndex(
-        file = indexFile,
-        baseOffset = startOffset,
-        maxIndexSize = config.maxIndexSize)
-      val swapSegment = new LogSegment(
-        new FileMessageSet(file = swapFile),
-        index = index,
-        baseOffset = startOffset,
-        indexIntervalBytes = config.indexInterval,
-        rollJitterMs = config.randomSegmentJitter,
-        time = time)
+      val indexFile =
+        new File(
+          CoreUtils.replaceSuffix(
+            logFile.getPath,
+            LogFileSuffix,
+            IndexFileSuffix) + SwapFileSuffix)
+      val index =
+        new OffsetIndex(
+          file = indexFile,
+          baseOffset = startOffset,
+          maxIndexSize = config.maxIndexSize)
+      val swapSegment =
+        new LogSegment(
+          new FileMessageSet(file = swapFile),
+          index = index,
+          baseOffset = startOffset,
+          indexIntervalBytes = config.indexInterval,
+          rollJitterMs = config.randomSegmentJitter,
+          time = time)
       info(
         "Found log file %s from interrupted swap operation, repairing.".format(
           swapFile.getPath))
       swapSegment.recover(config.maxMessageSize)
-      val oldSegments =
-        logSegments(swapSegment.baseOffset, swapSegment.nextOffset)
+      val oldSegments = logSegments(
+        swapSegment.baseOffset,
+        swapSegment.nextOffset)
       replaceSegments(
         swapSegment,
         oldSegments.toSeq,
@@ -649,8 +655,11 @@ class Log(
           entry.getValue.size
         }
       }
-      val fetchInfo =
-        entry.getValue.read(startOffset, maxOffset, maxLength, maxPosition)
+      val fetchInfo = entry.getValue.read(
+        startOffset,
+        maxOffset,
+        maxLength,
+        maxPosition)
       if (fetchInfo == null) {
         entry = segments.higherEntry(entry.getKey)
       } else {
@@ -781,16 +790,17 @@ class Log(
           entry.getValue.log.trim()
         }
       }
-      val segment = new LogSegment(
-        dir,
-        startOffset = newOffset,
-        indexIntervalBytes = config.indexInterval,
-        maxIndexSize = config.maxIndexSize,
-        rollJitterMs = config.randomSegmentJitter,
-        time = time,
-        fileAlreadyExists = false,
-        initFileSize = initFileSize,
-        preallocate = config.preallocate)
+      val segment =
+        new LogSegment(
+          dir,
+          startOffset = newOffset,
+          indexIntervalBytes = config.indexInterval,
+          maxIndexSize = config.maxIndexSize,
+          rollJitterMs = config.randomSegmentJitter,
+          time = time,
+          fileAlreadyExists = false,
+          initFileSize = initFileSize,
+          preallocate = config.preallocate)
       val prev = addSegment(segment)
       if (prev != null)
         throw new KafkaException(
@@ -871,8 +881,8 @@ class Log(
       if (segments.firstEntry.getValue.baseOffset > targetOffset) {
         truncateFullyAndStartAt(targetOffset)
       } else {
-        val deletable =
-          logSegments.filter(segment => segment.baseOffset > targetOffset)
+        val deletable = logSegments.filter(segment =>
+          segment.baseOffset > targetOffset)
         deletable.foreach(deleteSegment(_))
         activeSegment.truncateTo(targetOffset)
         updateLogEndOffset(targetOffset)

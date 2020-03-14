@@ -17,8 +17,8 @@ class Netty3AssumptionsTest extends FunSuite {
   private[this] val executor = Executors.newCachedThreadPool()
 
   def makeServer() = {
-    val bootstrap = new ServerBootstrap(
-      new NioServerSocketChannelFactory(executor, executor))
+    val bootstrap =
+      new ServerBootstrap(new NioServerSocketChannelFactory(executor, executor))
     bootstrap.setPipelineFactory(new ChannelPipelineFactory {
       def getPipeline = {
         val pipeline = Channels.pipeline()

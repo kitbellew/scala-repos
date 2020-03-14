@@ -17,18 +17,20 @@ object StringTypeHandler {
       nullable: Boolean): scala.util.Try[List[ColumnFormat[c.type]]] = {
     import c.universe._
 
-    val helper = new {
-      val ctx: c.type = c
-      val cfieldName = fieldName
-      val cannotationInfo = annotationInfo
-    } with AnnotationHelper
+    val helper =
+      new {
+        val ctx: c.type = c
+        val cfieldName = fieldName
+        val cannotationInfo = annotationInfo
+      } with AnnotationHelper
 
-    val extracted = for {
-      (nextHelper, sizeAnno) <- helper.sizeAnnotation
-      (nextHelper, varcharAnno) <- nextHelper.varcharAnnotation
-      (nextHelper, textAnno) <- nextHelper.textAnnotation
-      _ <- nextHelper.validateFinished
-    } yield (sizeAnno, varcharAnno, textAnno)
+    val extracted =
+      for {
+        (nextHelper, sizeAnno) <- helper.sizeAnnotation
+        (nextHelper, varcharAnno) <- nextHelper.varcharAnnotation
+        (nextHelper, textAnno) <- nextHelper.textAnnotation
+        _ <- nextHelper.validateFinished
+      } yield (sizeAnno, varcharAnno, textAnno)
 
     extracted.flatMap { t =>
       t match {

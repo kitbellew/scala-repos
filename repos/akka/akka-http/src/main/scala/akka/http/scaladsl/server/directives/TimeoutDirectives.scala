@@ -12,8 +12,7 @@ import scala.concurrent.duration.Duration
 
 trait TimeoutDirectives {
 
-  def withoutRequestTimeout: Directive0 =
-    withRequestTimeout(Duration.Inf)
+  def withoutRequestTimeout: Directive0 = withRequestTimeout(Duration.Inf)
 
   /**
     * Tries to set a new request timeout and handler (if provided) at the same time.

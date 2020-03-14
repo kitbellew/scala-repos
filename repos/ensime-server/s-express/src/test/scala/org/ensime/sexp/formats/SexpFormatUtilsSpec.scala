@@ -33,12 +33,14 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
   }
 
   it should "combine readers and writers" in {
-    val reader = new SexpReader[SexpString] {
-      def read(o: Sexp) = o.asInstanceOf[SexpString]
-    }
-    val writer = new SexpWriter[SexpString] {
-      def write(o: SexpString) = o
-    }
+    val reader =
+      new SexpReader[SexpString] {
+        def read(o: Sexp) = o.asInstanceOf[SexpString]
+      }
+    val writer =
+      new SexpWriter[SexpString] {
+        def write(o: SexpString) = o
+      }
     val combo = sexpFormat(reader, writer)
 
     foo.convertTo[SexpString](combo) should ===(foo)

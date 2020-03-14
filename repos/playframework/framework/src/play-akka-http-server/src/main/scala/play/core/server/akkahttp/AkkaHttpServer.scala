@@ -61,8 +61,8 @@ class AkkaHttpServer(
 
     // TODO: pass in Inet.SocketOption, ServerSettings and LoggerAdapter params?
     val serverSource
-        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
-      Http().bind(
+        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] = Http()
+      .bind(
         interface = config.address,
         port = port,
         connectionContext = connectionContext)
@@ -76,8 +76,9 @@ class AkkaHttpServer(
             connectionContext.isSecure))
     }
 
-    val bindingFuture: Future[Http.ServerBinding] =
-      serverSource.to(connectionSink).run()
+    val bindingFuture: Future[Http.ServerBinding] = serverSource
+      .to(connectionSink)
+      .run()
 
     val bindTimeout = PlayConfig(config.configuration)
       .get[Duration]("play.akka.http-bind-timeout")
@@ -90,8 +91,9 @@ class AkkaHttpServer(
   private val httpsServerBinding = config.sslPort.map { port =>
     val connectionContext =
       try {
-        val engineProvider =
-          ServerSSLEngine.createSSLEngineProvider(config, applicationProvider)
+        val engineProvider = ServerSSLEngine.createSSLEngineProvider(
+          config,
+          applicationProvider)
         // There is a mismatch between the Play SSL API and the Akka IO SSL API, Akka IO takes an SSL context, and
         // couples it with all the configuration that it will eventually pass to the created SSLEngine. Play has a
         // factory for creating an SSLEngine, so the user can configure it themselves.  However, that means that in
@@ -113,9 +115,10 @@ class AkkaHttpServer(
   // instead of reading from the application configuration. At the moment we need to wait
   // until we have an Application available before we can read any configuration. :(
   private lazy val modelConversion: ModelConversion = {
-    val forwardedHeaderHandler = new ForwardedHeaderHandler(
-      ForwardedHeaderHandler.ForwardedHeaderHandlerConfig(
-        applicationProvider.get.toOption.map(_.configuration)))
+    val forwardedHeaderHandler =
+      new ForwardedHeaderHandler(
+        ForwardedHeaderHandler.ForwardedHeaderHandlerConfig(
+          applicationProvider.get.toOption.map(_.configuration)))
     new ModelConversion(forwardedHeaderHandler)
   }
 
@@ -124,8 +127,8 @@ class AkkaHttpServer(
       request: HttpRequest,
       secure: Boolean): Future[HttpResponse] = {
     val requestId = requestIDs.incrementAndGet()
-    val (convertedRequestHeader, requestBodySource) =
-      modelConversion.convertRequest(
+    val (convertedRequestHeader, requestBodySource) = modelConversion
+      .convertRequest(
         requestId = requestId,
         remoteAddress = remoteAddress,
         secureProtocol = secure,
@@ -233,26 +236,29 @@ class AkkaHttpServer(
     val actionAccumulator: Accumulator[ByteString, Result] = action(
       taggedRequestHeader)
 
-    val source = if (request.header[Expect].contains(Expect.`100-continue`)) {
-      // If we expect 100 continue, then we must not feed the source into the accumulator until the accumulator
-      // requests demand.  This is due to a semantic mismatch between Play and Akka-HTTP, Play signals to continue
-      // by requesting demand, Akka-HTTP signals to continue by attaching a sink to the source. See
-      // https://github.com/akka/akka/issues/17782 for more details.
-      requestBodySource
-        .map(source =>
-          Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
-        .orElse(Some(Source.empty))
-    } else {
-      requestBodySource
-    }
+    val source =
+      if (request.header[Expect].contains(Expect.`100-continue`)) {
+        // If we expect 100 continue, then we must not feed the source into the accumulator until the accumulator
+        // requests demand.  This is due to a semantic mismatch between Play and Akka-HTTP, Play signals to continue
+        // by requesting demand, Akka-HTTP signals to continue by attaching a sink to the source. See
+        // https://github.com/akka/akka/issues/17782 for more details.
+        requestBodySource
+          .map(source =>
+            Source.fromPublisher(new MaterializeOnDemandPublisher(source)))
+          .orElse(Some(Source.empty))
+      } else {
+        requestBodySource
+      }
 
-    val resultFuture: Future[Result] = source match {
-      case None    => actionAccumulator.run()
-      case Some(s) => actionAccumulator.run(s)
-    }
+    val resultFuture: Future[Result] =
+      source match {
+        case None    => actionAccumulator.run()
+        case Some(s) => actionAccumulator.run(s)
+      }
     val responseFuture: Future[HttpResponse] = resultFuture.map { result =>
-      val cleanedResult: Result =
-        ServerResultUtils.cleanFlashCookie(taggedRequestHeader, result)
+      val cleanedResult: Result = ServerResultUtils.cleanFlashCookie(
+        taggedRequestHeader,
+        result)
       modelConversion.convertResult(
         taggedRequestHeader,
         cleanedResult,

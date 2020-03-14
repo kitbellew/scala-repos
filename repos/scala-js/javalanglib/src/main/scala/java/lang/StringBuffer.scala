@@ -21,8 +21,7 @@ class StringBuffer(private var content: String)
   def append(b: scala.Boolean): StringBuffer = append(b.toString())
   def append(c: scala.Char): StringBuffer = append(c.toString())
 
-  def append(str: Array[scala.Char]): StringBuffer =
-    append(str, 0, str.length)
+  def append(str: Array[scala.Char]): StringBuffer = append(str, 0, str.length)
 
   def append(str: Array[scala.Char], offset: Int, len: Int): StringBuffer = {
     var i = 0

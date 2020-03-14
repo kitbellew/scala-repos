@@ -55,19 +55,20 @@ object TextFormatterWithChangeFilterDemo extends JFXApp {
 
   val prompt = "> "
 
-  val converter = new StringConverter[Message] {
-    override def fromString(s: String): Message = {
-      val r =
-        if (s.startsWith(prompt))
-          s.substring(prompt.length)
-        else
-          s
-      Message(r)
+  val converter =
+    new StringConverter[Message] {
+      override def fromString(s: String): Message = {
+        val r =
+          if (s.startsWith(prompt))
+            s.substring(prompt.length)
+          else
+            s
+        Message(r)
+      }
+      override def toString(v: Message): String = {
+        prompt + v.text
+      }
     }
-    override def toString(v: Message): String = {
-      prompt + v.text
-    }
-  }
 
   // Filter the change restoring prompt if it was removed and correcting caret position
   val filter: (Change) => Change = { change: Change =>
@@ -85,21 +86,23 @@ object TextFormatterWithChangeFilterDemo extends JFXApp {
   val formatter =
     new TextFormatter[Message](converter, Message("hello"), filter)
 
-  val outputTextArea = new TextArea {
-    editable = false
-    focusTraversable = false
-  }
-
-  val textField = new TextField {
-    text = prompt
-    textFormatter = formatter
-    onAction = (a: ActionEvent) => {
-      val str = text()
-      val message = converter.fromString(str) + "\n"
-      outputTextArea.text = message + outputTextArea.text()
-      text() = ""
+  val outputTextArea =
+    new TextArea {
+      editable = false
+      focusTraversable = false
     }
-  }
+
+  val textField =
+    new TextField {
+      text = prompt
+      textFormatter = formatter
+      onAction = (a: ActionEvent) => {
+        val str = text()
+        val message = converter.fromString(str) + "\n"
+        outputTextArea.text = message + outputTextArea.text()
+        text() = ""
+      }
+    }
 
   stage = new PrimaryStage {
     scene = new Scene(300, 300) {

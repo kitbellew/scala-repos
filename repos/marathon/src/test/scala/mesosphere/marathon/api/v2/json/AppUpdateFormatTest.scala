@@ -38,8 +38,8 @@ class AppUpdateFormatTest extends MarathonSpec with Matchers {
   }
 
   test("""FromJSON should parse "acceptedResourceRoles": ["*"] """) {
-    val json =
-      Json.parse(""" { "id": "test", "acceptedResourceRoles": ["*"] }""")
+    val json = Json.parse(
+      """ { "id": "test", "acceptedResourceRoles": ["*"] }""")
     val appUpdate = json.as[AppUpdate]
     appUpdate.acceptedResourceRoles should equal(Some(Set("*")))
   }

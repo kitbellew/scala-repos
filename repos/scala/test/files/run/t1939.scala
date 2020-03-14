@@ -19,9 +19,10 @@ object Test extends App {
 
   type mType = Module
 
-  type tType = T {
-    type moduleType <: mType
-  }
+  type tType =
+    T {
+      type moduleType <: mType
+    }
   // type tType = T { type moduleType <: Module } // runs successfully
   // type tType = T // runs successfully
 

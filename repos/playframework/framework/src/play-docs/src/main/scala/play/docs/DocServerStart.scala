@@ -26,43 +26,47 @@ class DocServerStart {
       port: java.lang.Integer): ServerWithStop = {
 
     val application: Application = {
-      val environment =
-        Environment(projectPath, this.getClass.getClassLoader, Mode.Test)
+      val environment = Environment(
+        projectPath,
+        this.getClass.getClassLoader,
+        Mode.Test)
       val context = ApplicationLoader.createContext(environment)
-      val components = new BuiltInComponentsFromContext(context) {
-        lazy val router = Router.empty
-      }
+      val components =
+        new BuiltInComponentsFromContext(context) {
+          lazy val router = Router.empty
+        }
       components.application
     }
 
     Play.start(application)
 
-    val applicationProvider = new ApplicationProvider {
+    val applicationProvider =
+      new ApplicationProvider {
 
-      override def get = Success(application)
-      override def handleWebCommand(request: RequestHeader) =
-        buildDocHandler
-          .maybeHandleDocRequest(request)
-          .asInstanceOf[Option[Result]]
-          .orElse(
-            if (request.path == "/@report") {
-              if (request.getQueryString("force").isDefined) {
-                forceTranslationReport.call()
-                Some(Results.Redirect("/@report"))
-              } else {
-                Some(
-                  Results.Ok.sendFile(
-                    translationReport.call(),
-                    inline = true,
-                    fileName = _ => "report.html"))
-              }
-            } else
-              None
-          )
-          .orElse(
-            Some(Results.Redirect("/@documentation"))
-          )
-    }
+        override def get = Success(application)
+        override def handleWebCommand(request: RequestHeader) =
+          buildDocHandler
+            .maybeHandleDocRequest(request)
+            .asInstanceOf[Option[Result]]
+            .orElse(
+              if (request.path == "/@report") {
+                if (request.getQueryString("force").isDefined) {
+                  forceTranslationReport.call()
+                  Some(Results.Redirect("/@report"))
+                } else {
+                  Some(
+                    Results.Ok.sendFile(
+                      translationReport.call(),
+                      inline = true,
+                      fileName = _ => "report.html"))
+                }
+              } else
+                None
+            )
+            .orElse(
+              Some(Results.Redirect("/@documentation"))
+            )
+      }
 
     val config = ServerConfig(
       rootDir = projectPath,

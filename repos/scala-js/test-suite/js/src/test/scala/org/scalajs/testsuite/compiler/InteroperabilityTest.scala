@@ -311,14 +311,15 @@ class InteroperabilityTest {
 
   @Test def should_protect_receiver_of_raw_JS_apply_if_its_a_select_issue_804()
       : Unit = {
-    val rawReceiver =
-      js.eval("""
+    val rawReceiver = js
+      .eval("""
       var interoperabilityTestRawReceiver = {
         member: 0xbad,
         check: function(raw) { return this.member ? this.member : raw; }
       };
       interoperabilityTestRawReceiver;
-    """).asInstanceOf[InteroperabilityTestRawReceiver]
+    """)
+      .asInstanceOf[InteroperabilityTestRawReceiver]
 
     assertEquals(7357, rawReceiver.check(7357))
 
@@ -441,13 +442,14 @@ class InteroperabilityTest {
   }
 
   @Test def should_box_Chars_given_to_a_JS_interop_method(): Unit = {
-    val obj =
-      js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         twice: function(c) { c = JSUtils().charToString(c); return c+c; }
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestCharParam]
+    """)
+      .asInstanceOf[InteroperabilityTestCharParam]
 
     assertEquals("xx", obj.twice('x'))
   }
@@ -482,13 +484,14 @@ class InteroperabilityTest {
     /* To test this, we verify that a purposefully ill-typed facade does not
      * throw a ClassCastException when called in statement position.
      */
-    val obj =
-      js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         test: function() { return 4; } // typed as String in the trait
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestNoUnboxResultInStatement]
+    """)
+      .asInstanceOf[InteroperabilityTestNoUnboxResultInStatement]
     obj.test() // in statement position, should not throw
     if (hasCompliantAsInstanceOfs)
       assertThrows(
@@ -500,8 +503,8 @@ class InteroperabilityTest {
   @Test def should_asInstanceOf_values_received_from_calling_a_JS_interop_method()
       : Unit = {
     assumeTrue("Requires compliant asInstanceOf", hasCompliantAsInstanceOfs)
-    val obj =
-      js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         testChar: function() { return 5; },
         testInt: function() { return 6.4; },
@@ -513,7 +516,8 @@ class InteroperabilityTest {
         testAny: function() { return {}; }
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestAsInstanceOfResult]
+    """)
+      .asInstanceOf[InteroperabilityTestAsInstanceOfResult]
 
     assertThrows(classOf[Exception], obj.testChar())
     assertThrows(classOf[Exception], obj.testInt())

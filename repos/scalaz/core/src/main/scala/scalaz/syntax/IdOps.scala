@@ -13,15 +13,12 @@ final class IdOps[A](val self: A) extends AnyVal {
       self
 
   /**Applies `self` to the provided function. The Thrush combinator. */
-  final def |>[B](f: A => B): B =
-    f(self)
+  final def |>[B](f: A => B): B = f(self)
 
   /**Applies `self` to the provided function. The Thrush combinator. */
-  final def ▹[B](f: A => B): B =
-    f(self)
+  final def ▹[B](f: A => B): B = f(self)
 
-  final def squared: (A, A) =
-    (self, self)
+  final def squared: (A, A) = (self, self)
 
   /**
     * @return the result of pf(value) if defined, otherwise the the Zero element of type B.

@@ -139,12 +139,14 @@ object PathId {
   private[this] val ID_PATH_SEGMENT_PATTERN =
     "^(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])|(\\.|\\.\\.)$".r
 
-  private val validPathChars = new Validator[PathId] {
-    override def apply(pathId: PathId): Result = {
-      validate(pathId.path)(validator = pathId.path.each should matchRegexFully(
-        ID_PATH_SEGMENT_PATTERN.pattern))
+  private val validPathChars =
+    new Validator[PathId] {
+      override def apply(pathId: PathId): Result = {
+        validate(pathId.path)(validator =
+          pathId.path.each should matchRegexFully(
+            ID_PATH_SEGMENT_PATTERN.pattern))
+      }
     }
-  }
 
   /**
     * For external usage. Needed to overwrite the whole description, e.g. id.path -> id.
@@ -176,7 +178,8 @@ object PathId {
   /**
     * Needed for AppDefinitionValidatorTest.testSchemaLessStrictForId.
     */
-  val absolutePathValidator = isTrue[PathId]("Path needs to be absolute") {
-    path => path.absolute
-  }
+  val absolutePathValidator =
+    isTrue[PathId]("Path needs to be absolute") { path =>
+      path.absolute
+    }
 }

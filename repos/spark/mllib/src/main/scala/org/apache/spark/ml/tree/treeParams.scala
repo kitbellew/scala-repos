@@ -66,13 +66,14 @@ private[ml] trait DecisionTreeParams
     * (default = 32)
     * @group param
     */
-  final val maxBins: IntParam = new IntParam(
-    this,
-    "maxBins",
-    "Max number of bins for" +
-      " discretizing continuous features.  Must be >=2 and >= number of categories for any" +
-      " categorical feature.",
-    ParamValidators.gtEq(2))
+  final val maxBins: IntParam =
+    new IntParam(
+      this,
+      "maxBins",
+      "Max number of bins for" +
+        " discretizing continuous features.  Must be >=2 and >= number of categories for any" +
+        " categorical feature.",
+      ParamValidators.gtEq(2))
 
   /**
     * Minimum number of instances each child must have after split.
@@ -82,35 +83,38 @@ private[ml] trait DecisionTreeParams
     * (default = 1)
     * @group param
     */
-  final val minInstancesPerNode: IntParam = new IntParam(
-    this,
-    "minInstancesPerNode",
-    "Minimum" +
-      " number of instances each child must have after split.  If a split causes the left or right" +
-      " child to have fewer than minInstancesPerNode, the split will be discarded as invalid." +
-      " Should be >= 1.",
-    ParamValidators.gtEq(1))
+  final val minInstancesPerNode: IntParam =
+    new IntParam(
+      this,
+      "minInstancesPerNode",
+      "Minimum" +
+        " number of instances each child must have after split.  If a split causes the left or right" +
+        " child to have fewer than minInstancesPerNode, the split will be discarded as invalid." +
+        " Should be >= 1.",
+      ParamValidators.gtEq(1))
 
   /**
     * Minimum information gain for a split to be considered at a tree node.
     * (default = 0.0)
     * @group param
     */
-  final val minInfoGain: DoubleParam = new DoubleParam(
-    this,
-    "minInfoGain",
-    "Minimum information gain for a split to be considered at a tree node.")
+  final val minInfoGain: DoubleParam =
+    new DoubleParam(
+      this,
+      "minInfoGain",
+      "Minimum information gain for a split to be considered at a tree node.")
 
   /**
     * Maximum memory in MB allocated to histogram aggregation.
     * (default = 256 MB)
     * @group expertParam
     */
-  final val maxMemoryInMB: IntParam = new IntParam(
-    this,
-    "maxMemoryInMB",
-    "Maximum memory in MB allocated to histogram aggregation.",
-    ParamValidators.gtEq(0))
+  final val maxMemoryInMB: IntParam =
+    new IntParam(
+      this,
+      "maxMemoryInMB",
+      "Maximum memory in MB allocated to histogram aggregation.",
+      ParamValidators.gtEq(0))
 
   /**
     * If false, the algorithm will pass trees to executors to match instances with nodes.
@@ -120,13 +124,14 @@ private[ml] trait DecisionTreeParams
     * (default = false)
     * @group expertParam
     */
-  final val cacheNodeIds: BooleanParam = new BooleanParam(
-    this,
-    "cacheNodeIds",
-    "If false, the" +
-      " algorithm will pass trees to executors to match instances with nodes. If true, the" +
-      " algorithm will cache node IDs for each instance. Caching can speed up training of deeper" +
-      " trees.")
+  final val cacheNodeIds: BooleanParam =
+    new BooleanParam(
+      this,
+      "cacheNodeIds",
+      "If false, the" +
+        " algorithm will pass trees to executors to match instances with nodes. If true, the" +
+        " algorithm will cache node IDs for each instance. Caching can speed up training of deeper" +
+        " trees.")
 
   setDefault(
     maxDepth -> 5,
@@ -223,14 +228,15 @@ private[ml] trait TreeClassifierParams extends Params {
     * (default = gini)
     * @group param
     */
-  final val impurity: Param[String] = new Param[String](
-    this,
-    "impurity",
-    "Criterion used for" +
-      " information gain calculation (case-insensitive). Supported options:" +
-      s" ${TreeClassifierParams.supportedImpurities.mkString(", ")}",
-    (value: String) =>
-      TreeClassifierParams.supportedImpurities.contains(value.toLowerCase))
+  final val impurity: Param[String] =
+    new Param[String](
+      this,
+      "impurity",
+      "Criterion used for" +
+        " information gain calculation (case-insensitive). Supported options:" +
+        s" ${TreeClassifierParams.supportedImpurities.mkString(", ")}",
+      (value: String) =>
+        TreeClassifierParams.supportedImpurities.contains(value.toLowerCase))
 
   setDefault(impurity -> "gini")
 
@@ -255,8 +261,8 @@ private[ml] trait TreeClassifierParams extends Params {
 
 private[ml] object TreeClassifierParams {
   // These options should be lowercase.
-  final val supportedImpurities: Array[String] =
-    Array("entropy", "gini").map(_.toLowerCase)
+  final val supportedImpurities: Array[String] = Array("entropy", "gini").map(
+    _.toLowerCase)
 }
 
 private[ml] trait DecisionTreeClassifierParams
@@ -274,14 +280,15 @@ private[ml] trait TreeRegressorParams extends Params {
     * (default = variance)
     * @group param
     */
-  final val impurity: Param[String] = new Param[String](
-    this,
-    "impurity",
-    "Criterion used for" +
-      " information gain calculation (case-insensitive). Supported options:" +
-      s" ${TreeRegressorParams.supportedImpurities.mkString(", ")}",
-    (value: String) =>
-      TreeRegressorParams.supportedImpurities.contains(value.toLowerCase))
+  final val impurity: Param[String] =
+    new Param[String](
+      this,
+      "impurity",
+      "Criterion used for" +
+        " information gain calculation (case-insensitive). Supported options:" +
+        s" ${TreeRegressorParams.supportedImpurities.mkString(", ")}",
+      (value: String) =>
+        TreeRegressorParams.supportedImpurities.contains(value.toLowerCase))
 
   setDefault(impurity -> "variance")
 
@@ -305,8 +312,8 @@ private[ml] trait TreeRegressorParams extends Params {
 
 private[ml] object TreeRegressorParams {
   // These options should be lowercase.
-  final val supportedImpurities: Array[String] =
-    Array("variance").map(_.toLowerCase)
+  final val supportedImpurities: Array[String] = Array("variance").map(
+    _.toLowerCase)
 }
 
 private[ml] trait DecisionTreeRegressorParams
@@ -318,8 +325,10 @@ private[ml] trait DecisionTreeRegressorParams
       schema: StructType,
       fitting: Boolean,
       featuresDataType: DataType): StructType = {
-    val newSchema =
-      super.validateAndTransformSchema(schema, fitting, featuresDataType)
+    val newSchema = super.validateAndTransformSchema(
+      schema,
+      fitting,
+      featuresDataType)
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
       SchemaUtils.appendColumn(newSchema, $(varianceCol), DoubleType)
     } else {
@@ -340,12 +349,13 @@ private[ml] trait TreeEnsembleParams extends DecisionTreeParams {
     * (default = 1.0)
     * @group param
     */
-  final val subsamplingRate: DoubleParam = new DoubleParam(
-    this,
-    "subsamplingRate",
-    "Fraction of the training data used for learning each decision tree, in range (0, 1].",
-    ParamValidators
-      .inRange(0, 1, lowerInclusive = false, upperInclusive = true))
+  final val subsamplingRate: DoubleParam =
+    new DoubleParam(
+      this,
+      "subsamplingRate",
+      "Fraction of the training data used for learning each decision tree, in range (0, 1].",
+      ParamValidators
+        .inRange(0, 1, lowerInclusive = false, upperInclusive = true))
 
   setDefault(subsamplingRate -> 1.0)
 
@@ -387,11 +397,12 @@ private[ml] trait RandomForestParams extends TreeEnsembleParams {
     * (default = 20)
     * @group param
     */
-  final val numTrees: IntParam = new IntParam(
-    this,
-    "numTrees",
-    "Number of trees to train (>= 1)",
-    ParamValidators.gtEq(1))
+  final val numTrees: IntParam =
+    new IntParam(
+      this,
+      "numTrees",
+      "Number of trees to train (>= 1)",
+      ParamValidators.gtEq(1))
 
   /**
     * The number of features to consider for splits at each tree node.
@@ -417,15 +428,16 @@ private[ml] trait RandomForestParams extends TreeEnsembleParams {
     *
     * @group param
     */
-  final val featureSubsetStrategy: Param[String] = new Param[String](
-    this,
-    "featureSubsetStrategy",
-    "The number of features to consider for splits at each tree node." +
-      s" Supported options: ${RandomForestParams.supportedFeatureSubsetStrategies
-        .mkString(", ")}",
-    (value: String) =>
-      RandomForestParams.supportedFeatureSubsetStrategies.contains(
-        value.toLowerCase))
+  final val featureSubsetStrategy: Param[String] =
+    new Param[String](
+      this,
+      "featureSubsetStrategy",
+      "The number of features to consider for splits at each tree node." +
+        s" Supported options: ${RandomForestParams.supportedFeatureSubsetStrategies
+          .mkString(", ")}",
+      (value: String) =>
+        RandomForestParams.supportedFeatureSubsetStrategies.contains(
+          value.toLowerCase))
 
   setDefault(numTrees -> 20, featureSubsetStrategy -> "auto")
 
@@ -446,8 +458,12 @@ private[ml] trait RandomForestParams extends TreeEnsembleParams {
 
 private[ml] object RandomForestParams {
   // These options should be lowercase.
-  final val supportedFeatureSubsetStrategies: Array[String] =
-    Array("auto", "all", "onethird", "sqrt", "log2").map(_.toLowerCase)
+  final val supportedFeatureSubsetStrategies: Array[String] = Array(
+    "auto",
+    "all",
+    "onethird",
+    "sqrt",
+    "log2").map(_.toLowerCase)
 }
 
 /**

@@ -655,8 +655,8 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
     "8.0.60-R10")
   val EXCLAMATION_MARK = ExclamationMark
 
-  val InvertedExclamationMark = new KeyCode(
-    jfxsi.KeyCode.INVERTED_EXCLAMATION_MARK)
+  val InvertedExclamationMark =
+    new KeyCode(jfxsi.KeyCode.INVERTED_EXCLAMATION_MARK)
   @deprecated(
     "Use InvertedExclamationMark; INVERTED_EXCLAMATION_MARK will be removed in a future release",
     "8.0.60-R10")

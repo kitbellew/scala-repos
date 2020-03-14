@@ -11,13 +11,15 @@ import scala.util.Random
 @RunWith(classOf[JUnitRunner])
 class ActivitySourceTest extends FunSuite with BeforeAndAfter {
 
-  val ok = new ActivitySource[String] {
-    def get(varName: String) = Activity.value(varName)
-  }
+  val ok =
+    new ActivitySource[String] {
+      def get(varName: String) = Activity.value(varName)
+    }
 
-  val failed = new ActivitySource[Nothing] {
-    def get(varName: String) = Activity.exception(new Exception(varName))
-  }
+  val failed =
+    new ActivitySource[Nothing] {
+      def get(varName: String) = Activity.exception(new Exception(varName))
+    }
 
   val tempFile = Random.alphanumeric.take(5).mkString
 
@@ -53,10 +55,11 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
   }
 
   test("CachingActivitySource") {
-    val cache = new CachingActivitySource[String](new ActivitySource[String] {
-      def get(varName: String) =
-        Activity.value(Random.alphanumeric.take(10).mkString)
-    })
+    val cache =
+      new CachingActivitySource[String](new ActivitySource[String] {
+        def get(varName: String) =
+          Activity.value(Random.alphanumeric.take(10).mkString)
+      })
 
     val a = cache.get("a")
     assert(a == cache.get("a"))
@@ -94,10 +97,11 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
   }
 
   test("ClassLoaderActivitySource") {
-    val classLoader = new ClassLoader() {
-      override def getResourceAsStream(name: String) =
-        new ByteArrayInputStream(name.getBytes("UTF-8"))
-    }
+    val classLoader =
+      new ClassLoader() {
+        override def getResourceAsStream(name: String) =
+          new ByteArrayInputStream(name.getBytes("UTF-8"))
+      }
 
     val loader =
       new ClassLoaderActivitySource(classLoader, FuturePool.immediatePool)

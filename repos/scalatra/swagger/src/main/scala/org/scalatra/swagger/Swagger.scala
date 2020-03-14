@@ -119,11 +119,12 @@ object Swagger {
               p.isPrimitive || ctorModels.exists(_.name == p.name))
             val subModels = (ctorModels.map(_.argType) ++ propModels.map(
               _.returnType)).toSet -- known
-            val topLevel = for {
-              tl <- subModels + descriptor.erasure
-              if !(tl.isCollection || tl.isMap || tl.isOption)
-              m <- modelToSwagger(tl)
-            } yield m
+            val topLevel =
+              for {
+                tl <- subModels + descriptor.erasure
+                if !(tl.isCollection || tl.isMap || tl.isOption)
+                m <- modelToSwagger(tl)
+              } yield m
 
             val nested =
               subModels.foldLeft((topLevel, known + descriptor.erasure)) {
@@ -185,12 +186,13 @@ object Swagger {
       val fields = klass.erasure.getDeclaredFields.toList collect {
         case f: Field if f.getAnnotation(classOf[ApiModelProperty]) != null =>
           val annot = f.getAnnotation(classOf[ApiModelProperty])
-          val asModelProperty = toModelProperty(
-            descr,
-            Some(annot.position()),
-            annot.required(),
-            annot.description().blankOption,
-            annot.allowableValues()) _
+          val asModelProperty =
+            toModelProperty(
+              descr,
+              Some(annot.position()),
+              annot.required(),
+              annot.description().blankOption,
+              annot.allowableValues()) _
           descr.properties.find(_.mangledName == f.getName) map asModelProperty
 
         case f: Field =>
@@ -267,12 +269,11 @@ object Swagger {
     } else {
       max = ranges(1).toFloat
     }
-    val allowableValues =
-      AllowableValues.AllowableRangeValues(
-        if (inclusive)
-          Range.inclusive(min.toInt, max.toInt)
-        else
-          Range(min.toInt, max.toInt))
+    val allowableValues = AllowableValues.AllowableRangeValues(
+      if (inclusive)
+        Range.inclusive(min.toInt, max.toInt)
+      else
+        Range(min.toInt, max.toInt))
     allowableValues
   }
 
@@ -452,11 +453,13 @@ object DataType {
     new ValueDataType(name, format, qualifiedName)
   def apply[T](implicit mf: Manifest[T]): DataType = fromManifest[T](mf)
 
-  private[this] val StringTypes =
-    Set[Class[_]](classOf[String], classOf[java.lang.String])
+  private[this] val StringTypes = Set[Class[_]](
+    classOf[String],
+    classOf[java.lang.String])
   private[this] def isString(klass: Class[_]) = StringTypes contains klass
-  private[this] val BoolTypes =
-    Set[Class[_]](classOf[Boolean], classOf[java.lang.Boolean])
+  private[this] val BoolTypes = Set[Class[_]](
+    classOf[Boolean],
+    classOf[java.lang.Boolean])
   private[this] def isBool(klass: Class[_]) = BoolTypes contains klass
 
   private[swagger] def fromManifest[T](implicit mf: Manifest[T]): DataType = {
@@ -529,30 +532,28 @@ object DataType {
     }
   }
 
-  private[this] val IntTypes =
-    Set[Class[_]](
-      classOf[Int],
-      classOf[java.lang.Integer],
-      classOf[Short],
-      classOf[java.lang.Short],
-      classOf[BigInt],
-      classOf[java.math.BigInteger])
+  private[this] val IntTypes = Set[Class[_]](
+    classOf[Int],
+    classOf[java.lang.Integer],
+    classOf[Short],
+    classOf[java.lang.Short],
+    classOf[BigInt],
+    classOf[java.math.BigInteger])
   private[this] def isInt(klass: Class[_]) = IntTypes.contains(klass)
 
-  private[this] val DecimalTypes =
-    Set[Class[_]](
-      classOf[Double],
-      classOf[java.lang.Double],
-      classOf[BigDecimal],
-      classOf[java.math.BigDecimal])
+  private[this] val DecimalTypes = Set[Class[_]](
+    classOf[Double],
+    classOf[java.lang.Double],
+    classOf[BigDecimal],
+    classOf[java.math.BigDecimal])
   private[this] def isDecimal(klass: Class[_]) = DecimalTypes contains klass
 
-  private[this] val DateTypes =
-    Set[Class[_]](classOf[DateMidnight])
+  private[this] val DateTypes = Set[Class[_]](classOf[DateMidnight])
   private[this] def isDate(klass: Class[_]) =
     DateTypes.exists(_.isAssignableFrom(klass))
-  private[this] val DateTimeTypes =
-    Set[Class[_]](classOf[JDate], classOf[DateTime])
+  private[this] val DateTimeTypes = Set[Class[_]](
+    classOf[JDate],
+    classOf[DateTime])
   private[this] def isDateTime(klass: Class[_]) =
     DateTimeTypes.exists(_.isAssignableFrom(klass))
   //

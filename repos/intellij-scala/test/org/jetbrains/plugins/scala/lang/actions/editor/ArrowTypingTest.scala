@@ -35,15 +35,13 @@ class ArrowTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   def testReplaceCaseArrow() {
     settings.REPLACE_CASE_ARROW_WITH_UNICODE_CHAR = true
 
-    val before =
-      s"""
+    val before = s"""
          | 123 match {
          |  case 321 =$CARET_MARKER
          | }
        """.stripMargin
 
-    val after =
-      s"""
+    val after = s"""
          | 123 match {
          |  case 321 ${ScalaTypedHandler.unicodeCaseArrow}$CARET_MARKER
          | }
@@ -55,13 +53,11 @@ class ArrowTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   def testReplaceFunTypeArrow() {
     settings.REPLACE_CASE_ARROW_WITH_UNICODE_CHAR = true
 
-    val before =
-      s"""
+    val before = s"""
          |val b: Int =$CARET_MARKER
        """.stripMargin
 
-    val after =
-      s"""
+    val after = s"""
          |val b: Int ${ScalaTypedHandler.unicodeCaseArrow}$CARET_MARKER
        """.stripMargin
 
@@ -84,13 +80,11 @@ class ArrowTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   def testReplaceMapArrow() {
     settings.REPLACE_MAP_ARROW_WITH_UNICODE_CHAR = true
 
-    val before =
-      s"""
+    val before = s"""
          |val map = Map(a -$CARET_MARKER)
        """.stripMargin
 
-    val after =
-      s"""
+    val after = s"""
          |val map = Map(a ${ScalaTypedHandler.unicodeMapArrow}$CARET_MARKER)
        """.stripMargin
 
@@ -100,13 +94,11 @@ class ArrowTypingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   def testReplaceForGeneratorArrow() {
     settings.REPLACE_FOR_GENERATOR_ARROW_WITH_UNICODE_CHAR = true
 
-    val before =
-      s"""
+    val before = s"""
          | for (j <$CARET_MARKER )
        """.stripMargin
 
-    val after =
-      s"""
+    val after = s"""
          | for (j ${ScalaTypedHandler.unicodeForGeneratorArrow}$CARET_MARKER )
        """.stripMargin
 

@@ -58,9 +58,8 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
           .parquet(partitionDir.toString)
       }
 
-      val dataSchemaWithPartition =
-        StructType(
-          dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
+      val dataSchemaWithPartition = StructType(
+        dataSchema.fields :+ StructField("p1", IntegerType, nullable = true))
 
       checkQueries(
         hiveContext.read
@@ -220,8 +219,10 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
       )
 
       val rdd = sqlContext.sparkContext.parallelize(data)
-      val df =
-        sqlContext.createDataFrame(rdd, schema).orderBy("index").coalesce(1)
+      val df = sqlContext
+        .createDataFrame(rdd, schema)
+        .orderBy("index")
+        .coalesce(1)
 
       df.write
         .mode("overwrite")

@@ -50,14 +50,14 @@ object CachedTestDefns {
         eqRepr: Lazy[Eq[R]]
     ): Eq[T] =
       new Eq[T] {
-        def eqv(x: T, y: T): Boolean =
-          eqRepr.value.eqv(gen.to(x), gen.to(y))
+        def eqv(x: T, y: T): Boolean = eqRepr.value.eqv(gen.to(x), gen.to(y))
       }
 
     // Base case for products
-    implicit val eqHNil: Eq[HNil] = new Eq[HNil] {
-      def eqv(x: HNil, y: HNil): Boolean = true
-    }
+    implicit val eqHNil: Eq[HNil] =
+      new Eq[HNil] {
+        def eqv(x: HNil, y: HNil): Boolean = true
+      }
 
     // Induction step for products
     implicit def eqHCons[H, T <: HList](implicit

@@ -34,8 +34,8 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
   * 5/30/13
   */
 object ConvertibleToMethodValueInspection {
-  val inspectionName =
-    InspectionBundle.message("convertible.to.method.value.name")
+  val inspectionName = InspectionBundle.message(
+    "convertible.to.method.value.name")
   val inspectionId = "ConvertibleToMethodValue"
 }
 

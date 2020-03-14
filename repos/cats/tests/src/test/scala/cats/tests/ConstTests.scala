@@ -10,8 +10,8 @@ import cats.laws.discipline.arbitrary.{constArbitrary, oneAndArbitrary}
 
 class ConstTests extends CatsSuite {
 
-  implicit val iso =
-    CartesianTests.Isomorphisms.invariant[Const[String, ?]](Const.constTraverse)
+  implicit val iso = CartesianTests.Isomorphisms
+    .invariant[Const[String, ?]](Const.constTraverse)
 
   checkAll(
     "Const[String, Int]",

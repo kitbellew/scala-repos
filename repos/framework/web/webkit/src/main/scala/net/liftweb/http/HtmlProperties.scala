@@ -327,8 +327,8 @@ final case class OldHtmlProperties(userAgent: Box[String])
     r.isChrome5 || r.isChrome6
   }
 
-  val maxOpenRequests: Int =
-    LiftRules.maxConcurrentRequests.vend(S.request openOr Req.nil)
+  val maxOpenRequests: Int = LiftRules.maxConcurrentRequests.vend(
+    S.request openOr Req.nil)
 }
 
 /**
@@ -357,8 +357,8 @@ final case class Html5Properties(userAgent: Box[String])
     r.isChrome5 || r.isChrome6
   }
 
-  val maxOpenRequests: Int =
-    LiftRules.maxConcurrentRequests.vend(S.request openOr Req.nil)
+  val maxOpenRequests: Int = LiftRules.maxConcurrentRequests.vend(
+    S.request openOr Req.nil)
 }
 
 /**
@@ -390,6 +390,6 @@ final case class XHtmlInHtml5OutProperties(userAgent: Box[String])
     r.isChrome5 || r.isChrome6
   }
 
-  val maxOpenRequests: Int =
-    LiftRules.maxConcurrentRequests.vend(S.request openOr Req.nil)
+  val maxOpenRequests: Int = LiftRules.maxConcurrentRequests.vend(
+    S.request openOr Req.nil)
 }

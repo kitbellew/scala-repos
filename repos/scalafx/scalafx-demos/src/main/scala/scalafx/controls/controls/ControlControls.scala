@@ -32,43 +32,51 @@ import scalafx.scene.control.{Control, Label, TextField, Tooltip}
 class ControlControls(target: Control)
     extends PropertiesNodes[Control](target, "Control Properties") {
 
-  val lblHeight = new Label {
-    text <== target.height.asString()
-  }
+  val lblHeight =
+    new Label {
+      text <== target.height.asString()
+    }
 
-  val lblWidth = new Label {
-    text <== target.width.asString()
-  }
+  val lblWidth =
+    new Label {
+      text <== target.width.asString()
+    }
 
   val originalMaxHeight = target.maxHeight
-  val sldMaxHeight = new SliderLabelControl(target.maxHeight) {
-    min = -10
-  }
+  val sldMaxHeight =
+    new SliderLabelControl(target.maxHeight) {
+      min = -10
+    }
 
   val originalPrefHeight = target.prefHeight
-  val sldPrefHeight = new SliderLabelControl(target.prefHeight) {
-    min = -10
-  }
+  val sldPrefHeight =
+    new SliderLabelControl(target.prefHeight) {
+      min = -10
+    }
 
   val originalMinHeight = target.minHeight
-  val sldMinHeight = new SliderLabelControl(target.minHeight) {
-    min = -10
-  }
+  val sldMinHeight =
+    new SliderLabelControl(target.minHeight) {
+      min = -10
+    }
 
   val originalMinWidth = target.minWidth
-  val sldMinWidth = new SliderLabelControl(target.minWidth) {
-    min = -10
-  }
+  val sldMinWidth =
+    new SliderLabelControl(target.minWidth) {
+      min = -10
+    }
 
   val originalPrefWidth = target.prefWidth
-  val sldPrefWidth = new SliderLabelControl(target.prefWidth) {
-    min = -10
-  }
+  val sldPrefWidth =
+    new SliderLabelControl(target.prefWidth) {
+      min = -10
+    }
 
   val originalMaxWidth = target.maxWidth
-  val sldMaxWidth = new SliderLabelControl(target.maxWidth) {
-    min = -10
-  }
+  val sldMaxWidth =
+    new SliderLabelControl(target.maxWidth) {
+      min = -10
+    }
 
   val txfTooltip = new TextField
   txfTooltip.text.onChange {

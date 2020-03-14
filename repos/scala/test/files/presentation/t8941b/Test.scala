@@ -44,9 +44,10 @@ object Test {
   }
 
   def test(code0: String) {
-    val t = new IdempotencyTest {
-      def code = code0
-    }
+    val t =
+      new IdempotencyTest {
+        def code = code0
+      }
     t.show()
   }
 }

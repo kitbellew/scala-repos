@@ -163,15 +163,16 @@ private[mutable] abstract class ParHashSetCombiner[T](
   private def seqPopulate: FlatHashTable.Contents[T] = {
     // construct it sequentially
     // TODO parallelize by keeping separate size maps and merging them
-    val tbl = new FlatHashTable[T] {
-      sizeMapInit(table.length)
-      seedvalue = ParHashSetCombiner.this.seedvalue
-      for {
-        buffer <- buckets
-        if buffer ne null
-        entry <- buffer
-      } addEntry(entry)
-    }
+    val tbl =
+      new FlatHashTable[T] {
+        sizeMapInit(table.length)
+        seedvalue = ParHashSetCombiner.this.seedvalue
+        for {
+          buffer <- buckets
+          if buffer ne null
+          entry <- buffer
+        } addEntry(entry)
+      }
     tbl.hashTableContents
   }
 
@@ -285,8 +286,10 @@ private[mutable] abstract class ParHashSetCombiner[T](
           (0, UnrolledBuffer[AnyRef]())
 
       // store the leftovers
-      val (leftoversIn, leftoversLeft) =
-        insertAll(blockStart(block), beforePos, leftovers)
+      val (leftoversIn, leftoversLeft) = insertAll(
+        blockStart(block),
+        beforePos,
+        leftovers)
 
       // return the no. of stored elements tupled with leftovers
       (elemsIn + leftoversIn, elemsLeft concat leftoversLeft)
@@ -338,8 +341,10 @@ private[mutable] abstract class ParHashSetCombiner[T](
       // take the leftovers from the left task, store them into the block of the right task
       val atPos = blockStart(that.offset)
       val beforePos = blockStart(that.offset + that.howmany)
-      val (inserted, remainingLeftovers) =
-        insertAll(atPos, beforePos, this.result._2)
+      val (inserted, remainingLeftovers) = insertAll(
+        atPos,
+        beforePos,
+        this.result._2)
 
       // anything left after trying the store the left leftovers is added to the right task leftovers
       // and a new leftovers set is produced in this way

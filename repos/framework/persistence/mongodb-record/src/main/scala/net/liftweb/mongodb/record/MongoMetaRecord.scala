@@ -220,8 +220,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   def findAll(
       qry: DBObject,
       sort: DBObject,
-      opts: FindOption*): List[BaseRecord] =
-    findAll(qry, Some(sort), opts: _*)
+      opts: FindOption*): List[BaseRecord] = findAll(qry, Some(sort), opts: _*)
 
   /**
     * Find all documents using a JObject query
@@ -371,9 +370,10 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
     * Update a record with a DBObject query
     */
   def update(obj: BaseRecord, update: DBObject): Unit = {
-    val query = (BasicDBObjectBuilder.start
-      .add("_id", idValue(obj))
-      .get)
+    val query =
+      (BasicDBObjectBuilder.start
+        .add("_id", idValue(obj))
+        .get)
     this.update(query, update)
   }
 

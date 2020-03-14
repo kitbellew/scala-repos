@@ -59,10 +59,11 @@ class ScFunctionExprImpl(node: ASTNode)
 
   protected override def innerType(ctx: TypingContext) = {
     val paramTypes = (parameters: Seq[ScParameter]).map(_.getType(ctx))
-    val resultType = result match {
-      case Some(r) => r.getType(ctx).getOrAny
-      case _       => Unit
-    }
+    val resultType =
+      result match {
+        case Some(r) => r.getType(ctx).getOrAny
+        case _       => Unit
+      }
     collectFailures(paramTypes, Nothing)(
       ScFunctionType(resultType, _)(getProject, getResolveScope))
   }

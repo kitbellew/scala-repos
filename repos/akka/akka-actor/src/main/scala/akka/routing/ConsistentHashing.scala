@@ -182,9 +182,10 @@ final case class ConsistentHashingRoutingLogic(
     copy(hashMapping = ConsistentHashingRouter.hashMappingAdapter(mapper))
 
   // tuple of routees and the ConsistentHash, updated together in updateConsistentHash
-  private val consistentHashRef = new AtomicReference[
-    (immutable.IndexedSeq[Routee], ConsistentHash[ConsistentRoutee])](
-    (null, null))
+  private val consistentHashRef =
+    new AtomicReference[
+      (immutable.IndexedSeq[Routee], ConsistentHash[ConsistentRoutee])](
+      (null, null))
 
   override def select(
       message: Any,

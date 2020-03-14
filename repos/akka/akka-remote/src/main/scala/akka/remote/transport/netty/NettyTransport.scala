@@ -110,21 +110,22 @@ class NettyTransportSettings(config: Config) {
   import akka.util.Helpers.ConfigOps
   import config._
 
-  val TransportMode: Mode = getString("transport-protocol") match {
-    case "tcp" ⇒ Tcp
-    case "udp" ⇒ Udp
-    case unknown ⇒
-      throw new ConfigurationException(s"Unknown transport: [$unknown]")
-  }
+  val TransportMode: Mode =
+    getString("transport-protocol") match {
+      case "tcp" ⇒ Tcp
+      case "udp" ⇒ Udp
+      case unknown ⇒
+        throw new ConfigurationException(s"Unknown transport: [$unknown]")
+    }
 
   val EnableSsl: Boolean = getBoolean(
     "enable-ssl") requiring (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
 
-  val UseDispatcherForIo: Option[String] = getString(
-    "use-dispatcher-for-io") match {
-    case "" | null ⇒ None
-    case dispatcher ⇒ Some(dispatcher)
-  }
+  val UseDispatcherForIo: Option[String] =
+    getString("use-dispatcher-for-io") match {
+      case "" | null ⇒ None
+      case dispatcher ⇒ Some(dispatcher)
+    }
 
   private[this] def optionSize(s: String): Option[Int] =
     getBytes(s).toInt match {
@@ -135,8 +136,8 @@ class NettyTransportSettings(config: Config) {
       case other ⇒ Some(other)
     }
 
-  val ConnectionTimeout: FiniteDuration =
-    config.getMillisDuration("connection-timeout")
+  val ConnectionTimeout: FiniteDuration = config.getMillisDuration(
+    "connection-timeout")
 
   val WriteBufferHighWaterMark: Option[Int] = optionSize(
     "write-buffer-high-water-mark")
@@ -160,29 +161,33 @@ class NettyTransportSettings(config: Config) {
 
   val TcpKeepalive: Boolean = getBoolean("tcp-keepalive")
 
-  val TcpReuseAddr: Boolean = getString("tcp-reuse-addr") match {
-    case "off-for-windows" ⇒ !Helpers.isWindows
-    case _ ⇒ getBoolean("tcp-reuse-addr")
-  }
+  val TcpReuseAddr: Boolean =
+    getString("tcp-reuse-addr") match {
+      case "off-for-windows" ⇒ !Helpers.isWindows
+      case _ ⇒ getBoolean("tcp-reuse-addr")
+    }
 
-  val Hostname: String = getString("hostname") match {
-    case "" ⇒ InetAddress.getLocalHost.getHostAddress
-    case value ⇒ value
-  }
+  val Hostname: String =
+    getString("hostname") match {
+      case "" ⇒ InetAddress.getLocalHost.getHostAddress
+      case value ⇒ value
+    }
 
-  val BindHostname: String = getString("bind-hostname") match {
-    case "" ⇒ Hostname
-    case value ⇒ value
-  }
+  val BindHostname: String =
+    getString("bind-hostname") match {
+      case "" ⇒ Hostname
+      case value ⇒ value
+    }
 
   @deprecated("WARNING: This should only be used by professionals.", "2.0")
   val PortSelector: Int = getInt("port")
 
   @deprecated("WARNING: This should only be used by professionals.", "2.4")
-  val BindPortSelector: Int = getString("bind-port") match {
-    case "" ⇒ PortSelector
-    case value ⇒ value.toInt
-  }
+  val BindPortSelector: Int =
+    getString("bind-port") match {
+      case "" ⇒ PortSelector
+      case value ⇒ value.toInt
+    }
 
   val SslSettings: Option[SSLSettings] =
     if (EnableSsl)
@@ -378,14 +383,13 @@ class NettyTransport(
   import NettyTransport._
   import settings._
 
-  implicit val executionContext: ExecutionContext =
-    settings.UseDispatcherForIo
-      .orElse(RARP(system).provider.remoteSettings.Dispatcher match {
-        case "" ⇒ None
-        case dispatcherName ⇒ Some(dispatcherName)
-      })
-      .map(system.dispatchers.lookup)
-      .getOrElse(system.dispatcher)
+  implicit val executionContext: ExecutionContext = settings.UseDispatcherForIo
+    .orElse(RARP(system).provider.remoteSettings.Dispatcher match {
+      case "" ⇒ None
+      case dispatcherName ⇒ Some(dispatcherName)
+    })
+    .map(system.dispatchers.lookup)
+    .getOrElse(system.dispatcher)
 
   override val schemeIdentifier: String = (if (EnableSsl)
                                              "ssl."
@@ -417,41 +421,44 @@ class NettyTransport(
    * The usage of this class is safe in the new remoting, as close() is called after unbind() is finished, and no
    * outbound connections are initiated in the shutdown phase.
    */
-  val channelGroup = new DefaultChannelGroup(
-    "akka-netty-transport-driver-channelgroup-" +
-      uniqueIdCounter.getAndIncrement)
+  val channelGroup =
+    new DefaultChannelGroup(
+      "akka-netty-transport-driver-channelgroup-" +
+        uniqueIdCounter.getAndIncrement)
 
-  private val clientChannelFactory: ChannelFactory = TransportMode match {
-    case Tcp ⇒
-      val boss, worker = createExecutorService()
-      // We need to create a HashedWheelTimer here since Netty creates one with a thread that
-      // doesn't respect the akka.daemonic setting
-      new NioClientSocketChannelFactory(
-        boss,
-        1,
-        new NioWorkerPool(worker, ClientSocketWorkerPoolSize),
-        new HashedWheelTimer(system.threadFactory))
-    case Udp ⇒
-      // This does not create a HashedWheelTimer internally
-      new NioDatagramChannelFactory(
-        createExecutorService(),
-        ClientSocketWorkerPoolSize)
-  }
+  private val clientChannelFactory: ChannelFactory =
+    TransportMode match {
+      case Tcp ⇒
+        val boss, worker = createExecutorService()
+        // We need to create a HashedWheelTimer here since Netty creates one with a thread that
+        // doesn't respect the akka.daemonic setting
+        new NioClientSocketChannelFactory(
+          boss,
+          1,
+          new NioWorkerPool(worker, ClientSocketWorkerPoolSize),
+          new HashedWheelTimer(system.threadFactory))
+      case Udp ⇒
+        // This does not create a HashedWheelTimer internally
+        new NioDatagramChannelFactory(
+          createExecutorService(),
+          ClientSocketWorkerPoolSize)
+    }
 
-  private val serverChannelFactory: ChannelFactory = TransportMode match {
-    case Tcp ⇒
-      val boss, worker = createExecutorService()
-      // This does not create a HashedWheelTimer internally
-      new NioServerSocketChannelFactory(
-        boss,
-        worker,
-        ServerSocketWorkerPoolSize)
-    case Udp ⇒
-      // This does not create a HashedWheelTimer internally
-      new NioDatagramChannelFactory(
-        createExecutorService(),
-        ServerSocketWorkerPoolSize)
-  }
+  private val serverChannelFactory: ChannelFactory =
+    TransportMode match {
+      case Tcp ⇒
+        val boss, worker = createExecutorService()
+        // This does not create a HashedWheelTimer internally
+        new NioServerSocketChannelFactory(
+          boss,
+          worker,
+          ServerSocketWorkerPoolSize)
+      case Udp ⇒
+        // This does not create a HashedWheelTimer internally
+        new NioDatagramChannelFactory(
+          createExecutorService(),
+          ServerSocketWorkerPoolSize)
+    }
 
   private def newPipeline: DefaultChannelPipeline = {
     val pipeline = new DefaultChannelPipeline
@@ -543,16 +550,17 @@ class NettyTransport(
     bootstrap
   }
 
-  private val inboundBootstrap: Bootstrap = settings.TransportMode match {
-    case Tcp ⇒
-      setupBootstrap(
-        new ServerBootstrap(serverChannelFactory),
-        serverPipelineFactory)
-    case Udp ⇒
-      setupBootstrap(
-        new ConnectionlessBootstrap(serverChannelFactory),
-        serverPipelineFactory)
-  }
+  private val inboundBootstrap: Bootstrap =
+    settings.TransportMode match {
+      case Tcp ⇒
+        setupBootstrap(
+          new ServerBootstrap(serverChannelFactory),
+          serverPipelineFactory)
+      case Udp ⇒
+        setupBootstrap(
+          new ConnectionlessBootstrap(serverChannelFactory),
+          serverPipelineFactory)
+    }
 
   private def outboundBootstrap(remoteAddress: Address): ClientBootstrap = {
     val bootstrap = setupBootstrap(
@@ -598,10 +606,11 @@ class NettyTransport(
         Address("", "", settings.BindHostname, settings.BindPortSelector))
     } yield {
       try {
-        val newServerChannel = inboundBootstrap match {
-          case b: ServerBootstrap ⇒ b.bind(address)
-          case b: ConnectionlessBootstrap ⇒ b.bind(address)
-        }
+        val newServerChannel =
+          inboundBootstrap match {
+            case b: ServerBootstrap ⇒ b.bind(address)
+            case b: ConnectionlessBootstrap ⇒ b.bind(address)
+          }
 
         // Block reads until a handler actor is registered
         newServerChannel.setReadable(false)
@@ -683,11 +692,12 @@ class NettyTransport(
           Future {
             readyChannel.getRemoteAddress match {
               case addr: InetSocketAddress ⇒
-                val handle = new UdpAssociationHandle(
-                  localAddress,
-                  remoteAddress,
-                  readyChannel,
-                  NettyTransport.this)
+                val handle =
+                  new UdpAssociationHandle(
+                    localAddress,
+                    remoteAddress,
+                    readyChannel,
+                    NettyTransport.this)
                 handle.readHandlerPromise.future.onSuccess {
                   case listener ⇒ udpConnectionTable.put(addr, listener)
                 }

@@ -41,8 +41,9 @@ object TfIdfExample {
         ))
       .toDF("label", "sentence")
 
-    val tokenizer =
-      new Tokenizer().setInputCol("sentence").setOutputCol("words")
+    val tokenizer = new Tokenizer()
+      .setInputCol("sentence")
+      .setOutputCol("words")
     val wordsData = tokenizer.transform(sentenceData)
     val hashingTF = new HashingTF()
       .setInputCol("words")

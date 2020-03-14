@@ -3,12 +3,13 @@ class Outer extends App {
   abstract class C {
     val x: Int
   }
-  val foo = new C {
-    class I {
-      val z = y
+  val foo =
+    new C {
+      class I {
+        val z = y
+      }
+      val x = (new I).z
     }
-    val x = (new I).z
-  }
 }
 
 object Test extends App {

@@ -87,23 +87,24 @@ case class HealthCheck(
 
   // Mesos supports COMMAND health checks, others to be added in the future
   def toMesos: MesosProtos.HealthCheck = {
-    val builder = this.protocol match {
-      case Protocol.COMMAND =>
-        assert(
-          command.isDefined,
-          "A command is required when using the COMMAND health check protocol."
-        )
-        MesosProtos.HealthCheck.newBuilder
-          .setCommand(this.command.get.toProto)
+    val builder =
+      this.protocol match {
+        case Protocol.COMMAND =>
+          assert(
+            command.isDefined,
+            "A command is required when using the COMMAND health check protocol."
+          )
+          MesosProtos.HealthCheck.newBuilder
+            .setCommand(this.command.get.toProto)
 
-      case Protocol.HTTP =>
-        throw new UnsupportedOperationException(
-          s"Mesos does not support health checks of type [$protocol]")
+        case Protocol.HTTP =>
+          throw new UnsupportedOperationException(
+            s"Mesos does not support health checks of type [$protocol]")
 
-      case _ =>
-        throw new UnsupportedOperationException(
-          s"Mesos does not support health checks of type [$protocol]")
-    }
+        case _ =>
+          throw new UnsupportedOperationException(
+            s"Mesos does not support health checks of type [$protocol]")
+      }
 
     builder
       .setDelaySeconds(0)

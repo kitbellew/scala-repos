@@ -14,14 +14,16 @@ class AddCallParentheses(e: ScExpression)
     val expr = getElement
     if (!expr.isValid)
       return
-    val exprToFix = expr.getParent match {
-      case postf: ScPostfixExpr => postf
-      case call: ScGenericCall  => call
-      case _                    => expr
-    }
+    val exprToFix =
+      expr.getParent match {
+        case postf: ScPostfixExpr => postf
+        case call: ScGenericCall  => call
+        case _                    => expr
+      }
     val text = s"${exprToFix.getText}()"
-    val call =
-      ScalaPsiElementFactory.createExpressionFromText(text, expr.getManager)
+    val call = ScalaPsiElementFactory.createExpressionFromText(
+      text,
+      expr.getManager)
     exprToFix.replace(call)
   }
 }
@@ -33,8 +35,9 @@ class AddGenericCallParentheses(e: ScGenericCall)
     if (!expr.isValid)
       return
     val text = s"${expr.getText}()"
-    val call =
-      ScalaPsiElementFactory.createExpressionFromText(text, expr.getManager)
+    val call = ScalaPsiElementFactory.createExpressionFromText(
+      text,
+      expr.getManager)
     expr.replace(call)
   }
 }

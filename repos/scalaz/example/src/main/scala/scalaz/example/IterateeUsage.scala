@@ -74,14 +74,15 @@ object IterateeUsage extends App {
   (m1 &= stream123).run assert_=== Some(1 -> 2)
 
   // As a monad using for comprehension (same as 'm1' example above)
-  val m2 = for {
-    b <- head[Int, Id]
-    b2 <- head[Int, Id]
-  } yield b tuple b2
+  val m2 =
+    for {
+      b <- head[Int, Id]
+      b2 <- head[Int, Id]
+    } yield b tuple b2
   (m2 &= stream123).run assert_=== Some(1 -> 2)
 
-  val colc =
-    takeWhile[IoExceptionOr[Char], List](_.fold(_ => false, _ != ' ')).up[IO]
+  val colc = takeWhile[IoExceptionOr[Char], List](_.fold(_ => false, _ != ' '))
+    .up[IO]
   ((colc &= r)
     .map(_ flatMap (_.toOption))
     .run unsafePerformIO ()) assert_=== List('f', 'i', 'l', 'e')

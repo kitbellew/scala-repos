@@ -36,9 +36,10 @@ trait DateTimeTypedField extends TypedField[Calendar] {
     cal
   }
 
-  val formats = new DefaultFormats {
-    override def dateFormatter = Helpers.internetDateFormatter
-  }
+  val formats =
+    new DefaultFormats {
+      override def dateFormatter = Helpers.internetDateFormatter
+    }
 
   def setFromAny(in: Any): Box[Calendar] =
     toDate(in).flatMap(d => setBox(Full(dateToCal(d)))) or genericSetFromAny(in)

@@ -30,13 +30,14 @@ trait ScClassParameter
   def isCaseClassVal =
     containingClass match {
       case c: ScClass if c.isCase =>
-        val isInPrimaryConstructorFirstParamSection = c.constructor match {
-          case Some(const) =>
-            const.effectiveFirstParameterSection.contains(this)
-          case None => false
-        }
-        val hasExplicitModifier =
-          Option(getModifierList).exists(_.hasExplicitModifiers)
+        val isInPrimaryConstructorFirstParamSection =
+          c.constructor match {
+            case Some(const) =>
+              const.effectiveFirstParameterSection.contains(this)
+            case None => false
+          }
+        val hasExplicitModifier = Option(getModifierList).exists(
+          _.hasExplicitModifiers)
         isInPrimaryConstructorFirstParamSection && !hasExplicitModifier
       case _ => false
     }

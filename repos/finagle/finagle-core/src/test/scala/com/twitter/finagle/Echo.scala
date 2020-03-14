@@ -13,8 +13,7 @@ private[finagle] object Echo
   def serve(addr: SocketAddress, service: ServiceFactory[String, String]) =
     stringServer.serve(addr, service)
 
-  def newClient(dest: Name, label: String) =
-    stringClient.newClient(dest, label)
+  def newClient(dest: Name, label: String) = stringClient.newClient(dest, label)
 
   def newService(dest: Name, label: String) =
     stringClient.newService(dest, label)

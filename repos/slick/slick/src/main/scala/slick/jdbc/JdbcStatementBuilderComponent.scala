@@ -92,8 +92,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       val ResultSetMapping(
         _,
         CompiledStatement(_, ibr: InsertBuilderResult, _),
-        CompiledMapping(rconv, _)) =
-        forceInsertCompiler.run(node).tree
+        CompiledMapping(rconv, _)) = forceInsertCompiler.run(node).tree
       if (ibr.table.baseIdentity != standardInsert.table.baseIdentity)
         throw new SlickException(
           "Returned key columns must be from same table as inserted columns (" +
@@ -170,10 +169,11 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     }
 
     protected def buildComprehension(c: Comprehension): Unit = {
-      val limit0 = c.fetch match {
-        case Some(LiteralNode(0L)) => true
-        case _                     => false
-      }
+      val limit0 =
+        c.fetch match {
+          case Some(LiteralNode(0L)) => true
+          case _                     => false
+        }
       scanJoins(ConstArray((c.sym, c.from)))
       val (from, on) = flattenJoins(c.sym, c.from)
       val oldUniqueFrom = currentUniqueFrom
@@ -369,10 +369,11 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
     protected def buildJoin(j: Join): Unit = {
       buildFrom(j.left, Some(j.leftGen))
-      val op = j.on match {
-        case LiteralNode(true) if j.jt == JoinType.Inner => "cross"
-        case _                                           => j.jt.sqlName
-      }
+      val op =
+        j.on match {
+          case LiteralNode(true) if j.jt == JoinType.Inner => "cross"
+          case _                                           => j.jt.sqlName
+        }
       b"\n$op join "
       if (j.right.isInstanceOf[Join] && parenthesizeNestedRHSJoin) {
         b"\["
@@ -390,13 +391,14 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     def expr(n: Node, skipParens: Boolean = false): Unit =
       n match {
         case p @ Path(path) =>
-          val (base, rest) = path
-            .foldRight[(Option[TermSymbol], List[TermSymbol])]((None, Nil)) {
-              case (ElementSymbol(idx), (Some(b), Nil)) =>
-                (Some(joins(b).generators(idx - 1)._1), Nil)
-              case (s, (None, Nil)) => (Some(s), Nil)
-              case (s, (b, r))      => (b, s :: r)
-            }
+          val (base, rest) =
+            path
+              .foldRight[(Option[TermSymbol], List[TermSymbol])]((None, Nil)) {
+                case (ElementSymbol(idx), (Some(b), Nil)) =>
+                  (Some(joins(b).generators(idx - 1)._1), Nil)
+                case (s, (None, Nil)) => (Some(s), Nil)
+                case (s, (b, r))      => (b, s :: r)
+              }
           if (base != currentUniqueFrom)
             b += symbolName(base.get) += '.'
           rest match {
@@ -604,40 +606,41 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     }
 
     def buildUpdate: SQLBuilder.Result = {
-      val (gen, from, where, select) = tree match {
-        case Comprehension(
-              sym,
-              from: TableNode,
-              Pure(select, _),
-              where,
-              None,
-              _,
-              None,
-              None,
-              None,
-              None) =>
-          select match {
-            case f @ Select(Ref(struct), _) if struct == sym =>
-              (sym, from, where, ConstArray(f.field))
-            case ProductNode(ch) if ch.forall {
-                  case Select(Ref(struct), _) if struct == sym => true;
-                  case _                                       => false
-                } =>
-              (
+      val (gen, from, where, select) =
+        tree match {
+          case Comprehension(
                 sym,
-                from,
+                from: TableNode,
+                Pure(select, _),
                 where,
-                ch.map {
-                  case Select(Ref(_), field) => field
-                })
-            case _ =>
-              throw new SlickException(
-                "A query for an UPDATE statement must select table columns only -- Unsupported shape: " + select)
-          }
-        case o =>
-          throw new SlickException(
-            "A query for an UPDATE statement must resolve to a comprehension with a single table -- Unsupported shape: " + o)
-      }
+                None,
+                _,
+                None,
+                None,
+                None,
+                None) =>
+            select match {
+              case f @ Select(Ref(struct), _) if struct == sym =>
+                (sym, from, where, ConstArray(f.field))
+              case ProductNode(ch) if ch.forall {
+                    case Select(Ref(struct), _) if struct == sym => true;
+                    case _                                       => false
+                  } =>
+                (
+                  sym,
+                  from,
+                  where,
+                  ch.map {
+                    case Select(Ref(_), field) => field
+                  })
+              case _ =>
+                throw new SlickException(
+                  "A query for an UPDATE statement must select table columns only -- Unsupported shape: " + select)
+            }
+          case o =>
+            throw new SlickException(
+              "A query for an UPDATE statement must resolve to a comprehension with a single table -- Unsupported shape: " + o)
+        }
 
       val qtn = quoteTableName(from)
       symbolName(gen) =
@@ -654,29 +657,30 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     def buildDelete: SQLBuilder.Result = {
       def fail(msg: String) =
         throw new SlickException("Invalid query for DELETE statement: " + msg)
-      val (gen, from, where) = tree match {
-        case Comprehension(
-              sym,
-              from,
-              Pure(select, _),
-              where,
-              _,
-              _,
-              None,
-              distinct,
-              fetch,
-              offset) =>
-          if (fetch.isDefined || offset.isDefined || distinct.isDefined)
-            fail(".take, .drop and .distinct are not supported for deleting")
-          from match {
-            case from: TableNode => (sym, from, where)
-            case from =>
-              fail("A single source table is required, found: " + from)
-          }
-        case o =>
-          fail(
-            "Unsupported shape: " + o + " -- A single SQL comprehension is required")
-      }
+      val (gen, from, where) =
+        tree match {
+          case Comprehension(
+                sym,
+                from,
+                Pure(select, _),
+                where,
+                _,
+                _,
+                None,
+                distinct,
+                fetch,
+                offset) =>
+            if (fetch.isDefined || offset.isDefined || distinct.isDefined)
+              fail(".take, .drop and .distinct are not supported for deleting")
+            from match {
+              case from: TableNode => (sym, from, where)
+              case from =>
+                fail("A single source table is required, found: " + from)
+            }
+          case o =>
+            fail(
+              "Unsupported shape: " + o + " -- A single SQL comprehension is required")
+        }
       val qtn = quoteTableName(from)
       symbolName(gen) =
         qtn // Alias table to itself because DELETE does not support aliases
@@ -700,8 +704,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       case Select(_, fs: FieldSymbol) => fs
     }
     protected lazy val allNames = syms.map(fs => quoteIdentifier(fs.name))
-    protected lazy val allVars =
-      syms.iterator.map(_ => "?").mkString("(", ",", ")")
+    protected lazy val allVars = syms.iterator
+      .map(_ => "?")
+      .mkString("(", ",", ")")
     protected lazy val tableName = quoteTableName(table)
 
     def buildInsert: InsertBuilderResult = {
@@ -734,16 +739,16 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         n: Node,
         order: IndexedSeq[FieldSymbol]): Node = {
       val newIndices = order.zipWithIndex.groupBy(_._1)
-      lazy val reordering: ConstArray[IndexedSeq[Int]] =
-        syms.map(fs => newIndices(fs).map(_._2 + 1))
+      lazy val reordering: ConstArray[IndexedSeq[Int]] = syms.map(fs =>
+        newIndices(fs).map(_._2 + 1))
       n.replace(
         {
           case InsertColumn(
                 ConstArray(Select(ref, ElementSymbol(idx))),
                 fs,
                 tpe) =>
-            val newPaths =
-              reordering(idx - 1).map(i => Select(ref, ElementSymbol(i)))
+            val newPaths = reordering(idx - 1).map(i =>
+              Select(ref, ElementSymbol(i)))
             InsertColumn(ConstArray.from(newPaths), fs, tpe) :@ tpe
         },
         keepType = true
@@ -753,18 +758,18 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
   /** Builder for upsert statements, builds standard SQL MERGE statements by default. */
   class UpsertBuilder(ins: Insert) extends InsertBuilder(ins) {
-    protected lazy val (pkSyms, softSyms) =
-      syms.toSeq.partition(_.options.contains(ColumnOption.PrimaryKey))
+    protected lazy val (pkSyms, softSyms) = syms.toSeq.partition(
+      _.options.contains(ColumnOption.PrimaryKey))
     protected lazy val pkNames = pkSyms.map { fs =>
       quoteIdentifier(fs.name)
     }
     protected lazy val softNames = softSyms.map { fs =>
       quoteIdentifier(fs.name)
     }
-    protected lazy val nonAutoIncSyms =
-      syms.filter(s => !(s.options contains ColumnOption.AutoInc))
-    protected lazy val nonAutoIncNames =
-      nonAutoIncSyms.map(fs => quoteIdentifier(fs.name))
+    protected lazy val nonAutoIncSyms = syms.filter(s =>
+      !(s.options contains ColumnOption.AutoInc))
+    protected lazy val nonAutoIncNames = nonAutoIncSyms.map(fs =>
+      quoteIdentifier(fs.name))
 
     override def buildInsert: InsertBuilderResult = {
       val start = buildMergeStart
@@ -820,10 +825,12 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
   /** Builder for various DDL statements. */
   class TableDDLBuilder(val table: Table[_]) { self =>
-    protected val tableNode =
-      table.toNode.asInstanceOf[TableExpansion].table.asInstanceOf[TableNode]
-    protected val columns: Iterable[ColumnDDLBuilder] =
-      table.create_*.map(fs => createColumnDDLBuilder(fs, table))
+    protected val tableNode = table.toNode
+      .asInstanceOf[TableExpansion]
+      .table
+      .asInstanceOf[TableNode]
+    protected val columns: Iterable[ColumnDDLBuilder] = table.create_*.map(fs =>
+      createColumnDDLBuilder(fs, table))
     protected val indexes: Iterable[Index] = table.indexes
     protected val foreignKeys: Iterable[ForeignKey] = table.foreignKeys
     protected val primaryKeys: Iterable[PrimaryKey] = table.primaryKeys

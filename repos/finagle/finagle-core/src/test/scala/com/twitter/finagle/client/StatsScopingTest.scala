@@ -21,17 +21,19 @@ class StatsScopingTest extends FunSuite with AssertionsForJUnit {
         Future.Done
       }
 
-    val counterServiceModule = new Stack.Module[ServiceFactory[String, Unit]] {
-      val role = Stack.Role("counterServiceModule")
-      val description = "Produce a test service that increments stats counters"
-      val parameters = Seq(implicitly[Stack.Param[StatsScoping.Scoper]])
-      def make(
-          params: Stack.Params,
-          next: Stack[ServiceFactory[String, Unit]]) = {
-        val Stats(stats0) = params[Stats]
-        Stack.Leaf(this, ServiceFactory.const(mkCounterService(stats0)))
+    val counterServiceModule =
+      new Stack.Module[ServiceFactory[String, Unit]] {
+        val role = Stack.Role("counterServiceModule")
+        val description =
+          "Produce a test service that increments stats counters"
+        val parameters = Seq(implicitly[Stack.Param[StatsScoping.Scoper]])
+        def make(
+            params: Stack.Params,
+            next: Stack[ServiceFactory[String, Unit]]) = {
+          val Stats(stats0) = params[Stats]
+          Stack.Leaf(this, ServiceFactory.const(mkCounterService(stats0)))
+        }
       }
-    }
 
     def mkService(metadata: Addr.Metadata)(
         scoper: StatsScoping.ScoperFunction) = {
@@ -50,9 +52,10 @@ class StatsScopingTest extends FunSuite with AssertionsForJUnit {
   }
 
   test("scope based on metadata")(new Ctx {
-    val service = mkService(Addr.Metadata("zone" -> "foo")) {
-      (stats0, metadata) => stats0.scope(metadata("zone").toString)
-    }
+    val service =
+      mkService(Addr.Metadata("zone" -> "foo")) { (stats0, metadata) =>
+        stats0.scope(metadata("zone").toString)
+      }
     assert(Map.empty == stats.counters)
 
     Await.result(service("bar"))

@@ -22,8 +22,8 @@ object ScalaSuppressableInspectionTool {
     def commentWithSuppression(elem: PsiElement): Option[PsiComment] = {
       for (comment <- commentsFor(elem)) {
         val text: String = comment.getText
-        val matcher: Matcher =
-          SuppressionUtil.SUPPRESS_IN_LINE_COMMENT_PATTERN.matcher(text)
+        val matcher: Matcher = SuppressionUtil.SUPPRESS_IN_LINE_COMMENT_PATTERN
+          .matcher(text)
         if (matcher.matches && SuppressionUtil.isInspectionToolIdMentioned(
               matcher.group(1),
               toolId)) {
@@ -54,8 +54,8 @@ object ScalaSuppressableInspectionTool {
   }
 
   def suppressActions(toolShortName: String): Array[SuppressQuickFix] = {
-    val displayKey: HighlightDisplayKey =
-      HighlightDisplayKey.find(toolShortName)
+    val displayKey: HighlightDisplayKey = HighlightDisplayKey.find(
+      toolShortName)
     if (displayKey != null)
       allFixesForKey(displayKey)
     else

@@ -41,17 +41,18 @@ object ComboBoxDemo extends JFXApp {
 
   val comboBoxControls = new ComboBoxControls(comboBox)
 
-  val mainPane = new BorderPane {
-    top = comboBox
-    center = new VBox {
-      children = List(
-        comboBoxControls,
-        new ComboBoxBaseControls[String](comboBox),
-        new ControlControls(comboBox))
+  val mainPane =
+    new BorderPane {
+      top = comboBox
+      center = new VBox {
+        children = List(
+          comboBoxControls,
+          new ComboBoxBaseControls[String](comboBox),
+          new ControlControls(comboBox))
+      }
+      vgrow = Priority.Always
+      hgrow = Priority.Always
     }
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-  }
 
   stage = new PrimaryStage {
     title = "ComboBox Test"

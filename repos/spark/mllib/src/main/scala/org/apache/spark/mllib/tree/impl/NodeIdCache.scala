@@ -113,8 +113,8 @@ private[spark] class NodeIdCache(
       case (point, node) => {
         var treeId = 0
         while (treeId < nodeIdUpdaters.length) {
-          val nodeIdUpdater =
-            nodeIdUpdaters(treeId).getOrElse(node(treeId), null)
+          val nodeIdUpdater = nodeIdUpdaters(treeId)
+            .getOrElse(node(treeId), null)
           if (nodeIdUpdater != null) {
             val newNodeIndex = nodeIdUpdater.updateNodeIndex(
               binnedFeatures = point.datum.binnedFeatures,

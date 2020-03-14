@@ -71,8 +71,10 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       checkpoint: Option[Boolean] = None,
       failoverTimeout: Option[Double] = None,
       frameworkId: Option[String] = None): SchedulerDriver = {
-    val fwInfoBuilder =
-      FrameworkInfo.newBuilder().setUser(sparkUser).setName(appName)
+    val fwInfoBuilder = FrameworkInfo
+      .newBuilder()
+      .setUser(sparkUser)
+      .setName(appName)
     val credBuilder = Credential.newBuilder()
     webuiUrl.foreach { url =>
       fwInfoBuilder.setWebuiUrl(url)
@@ -228,9 +230,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     }
 
     // Filter any resource that has depleted.
-    val filteredResources =
-      remainingResources.filter(r =>
-        r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
+    val filteredResources = remainingResources.filter(r =>
+      r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
 
     (filteredResources.toList, requestedResources.toList)
   }
@@ -262,12 +263,13 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       offerAttributes: JList[Attribute]): Map[String, GeneratedMessage] = {
     offerAttributes.asScala
       .map(attr => {
-        val attrValue = attr.getType match {
-          case Value.Type.SCALAR => attr.getScalar
-          case Value.Type.RANGES => attr.getRanges
-          case Value.Type.SET    => attr.getSet
-          case Value.Type.TEXT   => attr.getText
-        }
+        val attrValue =
+          attr.getType match {
+            case Value.Type.SCALAR => attr.getScalar
+            case Value.Type.RANGES => attr.getRanges
+            case Value.Type.SET    => attr.getSet
+            case Value.Type.TEXT   => attr.getText
+          }
         (attr.getName, attrValue)
       })
       .toMap

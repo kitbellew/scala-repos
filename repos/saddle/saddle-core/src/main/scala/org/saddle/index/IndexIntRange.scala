@@ -94,8 +94,7 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
         else
           guardLoc(i) + from))
 
-  def without(locs: Array[Int]): Index[Int] =
-    array.remove(asArr, locs)
+  def without(locs: Array[Int]): Index[Int] = array.remove(asArr, locs)
 
   def concat[B, C](x: Index[B])(implicit
       wd: Promoter[Int, B, C],
@@ -137,8 +136,7 @@ class IndexIntRange(val length: Int, val from: Int = 0) extends Index[Int] {
     JoinerImpl.join(this, other, how)
 
   def map[@spec(Boolean, Int, Long, Double) B: ST: ORD](
-      f: (Int) => B): Index[B] =
-    genIdx map f
+      f: (Int) => B): Index[B] = genIdx map f
 
   private[saddle] def toArray = asArr
 }

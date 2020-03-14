@@ -41,9 +41,10 @@ object Externalizables {
 
     // TODO: abort if T not a tuple type
 
-    val targs = tag.tpe match {
-      case TypeRef(_, _, args) => args
-    }
+    val targs =
+      tag.tpe match {
+        case TypeRef(_, _, args) => args
+      }
 
     // extract argument trees of `arg` tuple (to avoid allocating and destructuring a tuple)
     // note: passing a tuple created using `->` doesn't work
@@ -175,9 +176,10 @@ object Externalizables {
 
     // TODO: abort if T not a tuple type
 
-    val targs = tag.tpe match {
-      case TypeRef(_, _, args) => args
-    }
+    val targs =
+      tag.tpe match {
+        case TypeRef(_, _, args) => args
+      }
 
     /* see java.io.DataOutput:
        writeBoolean(boolean v)
@@ -275,7 +277,8 @@ object Externalizables {
       writeTree(perType.getOrElse(tpe, List[Int]()), tpeName)
 
     val dummyName = c.fresh(newTypeName("DummyObjectOutput"))
-    val instance: Tree = q"""
+    val instance: Tree =
+      q"""
       class $dummyName extends scala.pickling.util.ArrayObjectOutput {
         var state = -1
         ..$fields
@@ -298,8 +301,8 @@ object Externalizables {
         def flush(): Unit = ???
         def write(x1: Array[Byte],x2: Int,x3: Int): Unit = ???
         def write(x: Array[Byte]): Unit = ${finalTree(
-      typeOf[Array[Byte]],
-      "arrByte")}
+        typeOf[Array[Byte]],
+        "arrByte")}
         def write(x: Int): Unit = ???
         def writeObject(x: Any): Unit = ${finalTree(typeOf[AnyRef], "anyRef")}
       }

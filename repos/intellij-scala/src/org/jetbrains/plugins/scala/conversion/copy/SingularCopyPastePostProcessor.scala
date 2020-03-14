@@ -31,8 +31,11 @@ abstract class SingularCopyPastePostProcessor[T <: TextBlockTransferableData]
       startOffsets: Array[Int],
       endOffsets: Array[Int]) = {
 
-    val result =
-      collectTransferableData0(file, editor, startOffsets, endOffsets)
+    val result = collectTransferableData0(
+      file,
+      editor,
+      startOffsets,
+      endOffsets)
 
     if (result == null)
       emptyList()

@@ -50,11 +50,12 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
       myAnnotationHolder = new AnnotationHolderImpl(holder.getAnnotationSession)
       if (updateWholeFile) {
         val project: Project = file.getProject
-        val refCountHolder: ScalaRefCountHolder =
-          ScalaRefCountHolder.getInstance(file)
+        val refCountHolder: ScalaRefCountHolder = ScalaRefCountHolder
+          .getInstance(file)
         myRefCountHolder = refCountHolder
-        val document: Document =
-          PsiDocumentManager.getInstance(project).getDocument(file)
+        val document: Document = PsiDocumentManager
+          .getInstance(project)
+          .getDocument(file)
         val dirtyScope: TextRange =
           if (document == null)
             file.getTextRange

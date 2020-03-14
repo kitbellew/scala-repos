@@ -98,8 +98,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               //it's ok to use parameters here as we want just to calculate offset
               val offsetInString =
                 parameters.getOffset - parameters.getPosition.getTextRange.getStartOffset + 1
-              val interpolated =
-                ScalaPsiElementFactory.createExpressionFromText(
+              val interpolated = ScalaPsiElementFactory
+                .createExpressionFromText(
                   "s" + dummyPosition.getText,
                   dummyPosition.getContext)
               (interpolated.findElementAt(offsetInString), true, false)
@@ -113,8 +113,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                 return
 
               val interpolated = position.asInstanceOf[ScInterpolated]
-              val dummyInterpolated =
-                parameters.getPosition.getParent.asInstanceOf[ScInterpolated]
+              val dummyInterpolated = parameters.getPosition.getParent
+                .asInstanceOf[ScInterpolated]
 
               //we use here file copy as we want to work with offsets.
               val offset = parameters.getOffset
@@ -135,8 +135,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                 return
               val (exprStartInString, endPoint) = res.get
               val stringText = interpolated.getText
-              val newInterpolated =
-                ScalaPsiElementFactory.createExpressionFromText(
+              val newInterpolated = ScalaPsiElementFactory
+                .createExpressionFromText(
                   stringText.substring(0, exprStartInString) + "{" +
                     stringText.substring(exprStartInString, endPoint) + "}" +
                     stringText.substring(endPoint),
@@ -146,8 +146,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
           }
         result.restartCompletionWhenNothingMatches()
 
-        val (expectedTypesAfterNew, isAfterNew) =
-          ScalaAfterNewCompletionUtil.expectedTypesAfterNew(position, context)
+        val (expectedTypesAfterNew, isAfterNew) = ScalaAfterNewCompletionUtil
+          .expectedTypesAfterNew(position, context)
 
         //if prefix is capitalized, class name completion is enabled
         val classNameCompletion = shouldRunClassNameCompletion(
@@ -260,14 +260,14 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               val probablyContinigClass = Option(
                 PsiTreeUtil.getContextOfType(position, classOf[PsiClass]))
               val qualifierType = resolveResult.fromType.getOrElse(Nothing)
-              val lookupItems: Seq[ScalaLookupItem] =
-                LookupElementManager.getLookupElement(
+              val lookupItems: Seq[ScalaLookupItem] = LookupElementManager
+                .getLookupElement(
                   resolveResult,
                   isInImport = isInImport,
                   qualifierType = qualifierType,
                   containingClass = probablyContinigClass,
-                  isInStableCodeReference =
-                    ref.isInstanceOf[ScStableCodeReferenceElement]
+                  isInStableCodeReference = ref
+                    .isInstanceOf[ScStableCodeReferenceElement]
                 )
               lookupItems.foreach(applyVariant(_))
             }
@@ -325,32 +325,33 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
             }
 
             //adds runtime completions for evaluate expression in debugger
-            val runtimeQualifierType: ScType =
-              getQualifierCastType(ref, parameters)
+            val runtimeQualifierType: ScType = getQualifierCastType(
+              ref,
+              parameters)
             if (runtimeQualifierType != null) {
               def addElementWithDecorator(
                   elem: LookupElement,
                   decorator: InsertHandlerDecorator[LookupElement]) {
                 if (!addedElements.contains(elem.getLookupString)) {
-                  val newElem =
-                    LookupElementDecorator.withInsertHandler(elem, decorator)
+                  val newElem = LookupElementDecorator
+                    .withInsertHandler(elem, decorator)
                   result.addElement(newElem)
                   addedElements += elem.getLookupString
                 }
               }
               def postProcess(resolveResult: ScalaResolveResult): Unit = {
-                val lookupItems: Seq[ScalaLookupItem] =
-                  LookupElementManager.getLookupElement(
+                val lookupItems: Seq[ScalaLookupItem] = LookupElementManager
+                  .getLookupElement(
                     resolveResult,
                     isInImport = isInImport,
                     qualifierType = runtimeQualifierType,
-                    isInStableCodeReference =
-                      ref.isInstanceOf[ScStableCodeReferenceElement],
+                    isInStableCodeReference = ref
+                      .isInstanceOf[ScStableCodeReferenceElement],
                     isInSimpleString = inString,
                     isInInterpolatedString = inInterpolatedString
                   )
-                val decorator =
-                  castDecorator(runtimeQualifierType.canonicalText)
+                val decorator = castDecorator(
+                  runtimeQualifierType.canonicalText)
                 lookupItems.foreach(item =>
                   applyVariant(item, addElementWithDecorator(_, decorator)))
               }
@@ -419,8 +420,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
       qualType: ScType,
       context: PsiElement,
       child: PsiElement): ScReferenceElement = {
-    val text =
-      s"""|{
+    val text = s"""|{
           |  val xxx: ${qualType.canonicalText} = null
           |  xxx.xxx
           |}""".stripMargin
@@ -440,12 +440,11 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
         val file = PsiDocumentManager
           .getInstance(context.getProject)
           .getPsiFile(document)
-        val ref: ScReferenceElement =
-          PsiTreeUtil.findElementOfClassAtOffset(
-            file,
-            context.getStartOffset,
-            classOf[ScReferenceElement],
-            false)
+        val ref: ScReferenceElement = PsiTreeUtil.findElementOfClassAtOffset(
+          file,
+          context.getStartOffset,
+          classOf[ScReferenceElement],
+          false)
         if (ref != null) {
           ref.qualifier match {
             case None =>

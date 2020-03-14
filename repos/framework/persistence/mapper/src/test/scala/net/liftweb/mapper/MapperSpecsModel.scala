@@ -48,13 +48,14 @@ object MapperSpecsModel {
   // Simple name calculator
   def displayNameCalculator(bm: BaseMapper, l: Locale, name: String) = {
     val mapperName = bm.dbName
-    val displayName = name match {
-      case "firstName" if l == Locale.getDefault() =>
-        "DEFAULT:" + mapperName + "." + name
-      case "firstName" if l == new Locale("xx", "YY") =>
-        "xx_YY:" + mapperName + "." + name
-      case _ => name
-    }
+    val displayName =
+      name match {
+        case "firstName" if l == Locale.getDefault() =>
+          "DEFAULT:" + mapperName + "." + name
+        case "firstName" if l == new Locale("xx", "YY") =>
+          "xx_YY:" + mapperName + "." + name
+        case _ => name
+      }
     displayName
   }
 

@@ -78,11 +78,12 @@ trait FileStorageSpec[M[+_]] extends Specification {
     }
 
     "allow files to be overwritten" in {
-      val file = for {
-        _ <- fs.save("f2", data1)
-        _ <- fs.save("f2", data2)
-        file <- fs.load("f2")
-      } yield file
+      val file =
+        for {
+          _ <- fs.save("f2", data1)
+          _ <- fs.save("f2", data2)
+          file <- fs.load("f2")
+        } yield file
 
       file.copoint must beLike {
         case Some(FileData(Some(HTML), data)) =>
@@ -106,14 +107,15 @@ trait FileStorageSpec[M[+_]] extends Specification {
     }
 
     "allow removal of files" in {
-      val result = for {
-        _ <- fs.save("f4", data1)
-        e1 <- fs.exists("f4")
-        _ <- fs.remove("f4")
-        e2 <- fs.exists("f4")
-      } yield {
-        e1 -> e2
-      }
+      val result =
+        for {
+          _ <- fs.save("f4", data1)
+          e1 <- fs.exists("f4")
+          _ <- fs.remove("f4")
+          e2 <- fs.exists("f4")
+        } yield {
+          e1 -> e2
+        }
 
       result.copoint must beLike {
         case (true, false) => ok

@@ -125,10 +125,9 @@ class InputFormatInfo(
     SparkHadoopUtil.get.addCredentials(jobConf)
     FileInputFormat.setInputPaths(jobConf, path)
 
-    val instance: org.apache.hadoop.mapred.InputFormat[_, _] =
-      ReflectionUtils
-        .newInstance(inputFormatClazz.asInstanceOf[Class[_]], jobConf)
-        .asInstanceOf[org.apache.hadoop.mapred.InputFormat[_, _]]
+    val instance: org.apache.hadoop.mapred.InputFormat[_, _] = ReflectionUtils
+      .newInstance(inputFormatClazz.asInstanceOf[Class[_]], jobConf)
+      .asInstanceOf[org.apache.hadoop.mapred.InputFormat[_, _]]
 
     val retval = new ArrayBuffer[SplitInfo]()
     instance

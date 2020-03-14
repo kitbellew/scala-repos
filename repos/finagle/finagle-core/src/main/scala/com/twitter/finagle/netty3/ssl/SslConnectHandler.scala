@@ -121,11 +121,12 @@ class SslConnectHandler(
           }
         })
 
-        val wrappedEvent = new DownstreamChannelStateEvent(
-          de.getChannel,
-          wrappedConnectFuture,
-          de.getState,
-          de.getValue)
+        val wrappedEvent =
+          new DownstreamChannelStateEvent(
+            de.getChannel,
+            wrappedConnectFuture,
+            de.getState,
+            de.getValue)
 
         super.connectRequested(ctx, wrappedEvent)
 

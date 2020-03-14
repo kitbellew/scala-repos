@@ -167,8 +167,9 @@ class ScalaGradleDataServiceTest
         Some("2.10.4"),
         Set(new File("/tmp/test/scala-library-2.10.4.jar")),
         Some(options)))
-    val module =
-      ModuleManager.getInstance(getProject).findModuleByName("Module 1")
+    val module = ModuleManager
+      .getInstance(getProject)
+      .findModuleByName("Module 1")
     val compilerConfiguration = ScalaCompilerConfiguration
       .instanceIn(getProject)
       .getSettingsForModule(module)
@@ -200,17 +201,18 @@ class ScalaGradleDataServiceTest
   }
 
   def testModuleIsNull(): Unit = {
-    val testProject = new project {
-      name := getProject.getName
-      ideDirectoryPath := getProject.getBasePath
-      linkedProjectPath := getProject.getBasePath
+    val testProject =
+      new project {
+        name := getProject.getName
+        ideDirectoryPath := getProject.getBasePath
+        linkedProjectPath := getProject.getBasePath
 
-      arbitraryNodes += new Node[ScalaModelData] {
-        override protected val data: ScalaModelData =
-          new ScalaModelData(SbtProjectSystem.Id)
-        override protected def key: Key[ScalaModelData] = ScalaModelData.KEY
-      }
-    }.build.toDataNode
+        arbitraryNodes += new Node[ScalaModelData] {
+          override protected val data: ScalaModelData =
+            new ScalaModelData(SbtProjectSystem.Id)
+          override protected def key: Key[ScalaModelData] = ScalaModelData.KEY
+        }
+      }.build.toDataNode
 
     importProjectData(testProject)
   }

@@ -129,8 +129,8 @@ class XmlRenameHandler extends RenameHandler {
                       }
 
                       override def templateCancelled(template: Template) {
-                        val highlightManager =
-                          HighlightManager.getInstance(project)
+                        val highlightManager = HighlightManager.getInstance(
+                          project)
                         rangeHighlighters.foreach { a =>
                           highlightManager.removeSegmentHighlighter(editor, a)
                         }

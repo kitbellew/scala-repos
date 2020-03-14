@@ -224,15 +224,21 @@ class ExecuteRequestTest extends FunSuite {
     }
 
     test("java.sql.Date") {
-      val raw =
-        RawValue(Type.Date, Charset.Binary, true, br.readLengthCodedBytes())
+      val raw = RawValue(
+        Type.Date,
+        Charset.Binary,
+        true,
+        br.readLengthCodedBytes())
       val DateValue(d) = raw
       assert(d.toString == sqlDate.toString)
     }
 
     test("java.util.Date") {
-      val raw =
-        RawValue(Type.DateTime, Charset.Binary, true, br.readLengthCodedBytes())
+      val raw = RawValue(
+        Type.DateTime,
+        Charset.Binary,
+        true,
+        br.readLengthCodedBytes())
       val timestampValueLocal(dt) = raw
       assert(dt.getTime == timestamp.getTime)
     }

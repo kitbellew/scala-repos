@@ -12,27 +12,29 @@ final class Env(
     db: lila.db.Env,
     isDev: Boolean) {
 
-  private val settings = new {
-    val CollectionVideo = config getString "collection.video"
-    val CollectionView = config getString "collection.view"
-    val SheetUrl = config getString "sheet.url"
-    val SheetDelay = config duration "sheet.delay"
-    val YoutubeUrl = config getString "youtube.url"
-    val YoutubeApiKey = config getString "youtube.api_key"
-    val YoutubeMax = config getInt "youtube.max"
-    val YoutubeDelay = config duration "youtube.delay"
-  }
+  private val settings =
+    new {
+      val CollectionVideo = config getString "collection.video"
+      val CollectionView = config getString "collection.view"
+      val SheetUrl = config getString "sheet.url"
+      val SheetDelay = config duration "sheet.delay"
+      val YoutubeUrl = config getString "youtube.url"
+      val YoutubeApiKey = config getString "youtube.api_key"
+      val YoutubeMax = config getInt "youtube.max"
+      val YoutubeDelay = config duration "youtube.delay"
+    }
   import settings._
 
   lazy val api = new VideoApi(videoColl = videoColl, viewColl = viewColl)
 
   private lazy val sheet = new Sheet(url = SheetUrl, api = api)
 
-  private lazy val youtube = new Youtube(
-    url = YoutubeUrl,
-    apiKey = YoutubeApiKey,
-    max = YoutubeMax,
-    api = api)
+  private lazy val youtube =
+    new Youtube(
+      url = YoutubeUrl,
+      apiKey = YoutubeApiKey,
+      max = YoutubeMax,
+      api = api)
 
   if (!isDev) {
     scheduler.effect(SheetDelay, "video update from sheet") {

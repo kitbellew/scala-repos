@@ -92,16 +92,17 @@ object FastEvalEngineWorkflow {
         workflow.engine.dataSourceClassMap(prefix.dataSourceParams._1),
         prefix.dataSourceParams._2)
 
-      val result = dataSource
-        .readEvalBase(workflow.sc)
-        .map {
-          case (td, ei, qaRDD) => {
-            (td, ei, qaRDD.zipWithUniqueId().map(_.swap))
+      val result =
+        dataSource
+          .readEvalBase(workflow.sc)
+          .map {
+            case (td, ei, qaRDD) => {
+              (td, ei, qaRDD.zipWithUniqueId().map(_.swap))
+            }
           }
-        }
-        .zipWithIndex
-        .map(_.swap)
-        .toMap
+          .zipWithIndex
+          .map(_.swap)
+          .toMap
 
       cache += Tuple2(prefix, result)
     }
@@ -167,56 +168,59 @@ object FastEvalEngineWorkflow {
     val algoCount = algoMap.size
 
     // Model Train
-    val algoModelsMap: Map[EX, Map[AX, Any]] =
-      getPreparatorResult(workflow, new PreparatorPrefix(prefix))
-        .mapValues { pd =>
-          algoMap.mapValues(_.trainBase(workflow.sc, pd))
-        }
+    val algoModelsMap: Map[EX, Map[AX, Any]] = getPreparatorResult(
+      workflow,
+      new PreparatorPrefix(prefix))
+      .mapValues { pd =>
+        algoMap.mapValues(_.trainBase(workflow.sc, pd))
+      }
 
     // Predict
-    val dataSourceResult =
-      FastEvalEngineWorkflow.getDataSourceResult(
-        workflow = workflow,
-        prefix = new DataSourcePrefix(prefix))
+    val dataSourceResult = FastEvalEngineWorkflow.getDataSourceResult(
+      workflow = workflow,
+      prefix = new DataSourcePrefix(prefix))
 
-    val algoResult: Map[EX, RDD[(QX, Seq[P])]] = dataSourceResult.par
-      .map {
-        case (ex, (td, ei, iqaRDD)) => {
-          val modelsMap: Map[AX, Any] = algoModelsMap(ex)
-          val qs: RDD[(QX, Q)] = iqaRDD.mapValues(_._1)
+    val algoResult: Map[EX, RDD[(QX, Seq[P])]] =
+      dataSourceResult.par
+        .map {
+          case (ex, (td, ei, iqaRDD)) => {
+            val modelsMap: Map[AX, Any] = algoModelsMap(ex)
+            val qs: RDD[(QX, Q)] = iqaRDD.mapValues(_._1)
 
-          val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
-            .map { ax =>
-              {
-                val algo = algoMap(ax)
-                val model = modelsMap(ax)
-                val rawPredicts: RDD[(QX, P)] =
-                  algo.batchPredictBase(workflow.sc, model, qs)
+            val algoPredicts: Seq[RDD[(QX, (AX, P))]] = (0 until algoCount)
+              .map { ax =>
+                {
+                  val algo = algoMap(ax)
+                  val model = modelsMap(ax)
+                  val rawPredicts: RDD[(QX, P)] = algo.batchPredictBase(
+                    workflow.sc,
+                    model,
+                    qs)
 
-                val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
-                  case (qx, p) => (qx, (ax, p))
+                  val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
+                    case (qx, p) => (qx, (ax, p))
+                  }
+                  predicts
                 }
-                predicts
               }
-            }
 
-          val unionAlgoPredicts: RDD[(QX, Seq[P])] = workflow.sc
-            .union(algoPredicts)
-            .groupByKey
-            .mapValues { ps =>
-              {
-                assert(
-                  ps.size == algoCount,
-                  "Must have same length as algoCount")
-                // TODO. Check size == algoCount
-                ps.toSeq.sortBy(_._1).map(_._2)
+            val unionAlgoPredicts: RDD[(QX, Seq[P])] = workflow.sc
+              .union(algoPredicts)
+              .groupByKey
+              .mapValues { ps =>
+                {
+                  assert(
+                    ps.size == algoCount,
+                    "Must have same length as algoCount")
+                  // TODO. Check size == algoCount
+                  ps.toSeq.sortBy(_._1).map(_._2)
+                }
               }
-            }
-          (ex, unionAlgoPredicts)
+            (ex, unionAlgoPredicts)
+          }
         }
-      }
-      .seq
-      .toMap
+        .seq
+        .toMap
 
     algoResult
   }
@@ -269,11 +273,12 @@ object FastEvalEngineWorkflow {
           }
         }
 
-      val servingResult = (0 until evalQAsMap.size).map { ex =>
-        {
-          (evalInfoMap(ex), servingQPAMap(ex))
-        }
-      }.toSeq
+      val servingResult =
+        (0 until evalQAsMap.size).map { ex =>
+          {
+            (evalInfoMap(ex), servingQPAMap(ex))
+          }
+        }.toSeq
 
       cache += Tuple2(prefix, servingResult)
     }

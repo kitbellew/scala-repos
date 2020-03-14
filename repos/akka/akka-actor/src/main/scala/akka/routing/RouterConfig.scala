@@ -184,9 +184,10 @@ trait Group extends RouterConfig {
 }
 
 object Pool {
-  val defaultSupervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
-    case _ ⇒ SupervisorStrategy.Escalate
-  }
+  val defaultSupervisorStrategy: SupervisorStrategy =
+    OneForOneStrategy() {
+      case _ ⇒ SupervisorStrategy.Escalate
+    }
 }
 
 /**

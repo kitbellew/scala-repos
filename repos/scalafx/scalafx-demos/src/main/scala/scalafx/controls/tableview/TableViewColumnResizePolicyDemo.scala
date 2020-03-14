@@ -45,10 +45,11 @@ import scalafx.scene.layout.VBox
   */
 object TableViewColumnResizePolicyDemo extends JFXApp {
 
-  private val box = new VBox {
-    spacing = 15
-    autosize()
-  }
+  private val box =
+    new VBox {
+      spacing = 15
+      autosize()
+    }
 
   stage = new PrimaryStage {
     scene = new Scene(700, 400) {
@@ -87,32 +88,33 @@ object TableViewColumnResizePolicyDemo extends JFXApp {
 
   private def createTableView(
       data: ObservableBuffer[MyDomain]): TableView[MyDomain] = {
-    val table = new TableView[MyDomain] {
-      columns ++= Seq(
-        new TableColumn[MyDomain, String] {
-          text = "Title"
-          prefWidth = 100
-          cellValueFactory = {
-            _.value.name
-          }
-        }.delegate,
-        new TableColumn[MyDomain, String] {
-          text = "Description"
-          prefWidth = 250
-          cellValueFactory = {
-            _.value.description
-          }
-        }.delegate,
-        new TableColumn[MyDomain, String] {
-          text = "Color"
-          prefWidth = 100
-          cellValueFactory = {
-            _.value.color
-          }
-        }.delegate
-      )
-      items = data
-    }
+    val table =
+      new TableView[MyDomain] {
+        columns ++= Seq(
+          new TableColumn[MyDomain, String] {
+            text = "Title"
+            prefWidth = 100
+            cellValueFactory = {
+              _.value.name
+            }
+          }.delegate,
+          new TableColumn[MyDomain, String] {
+            text = "Description"
+            prefWidth = 250
+            cellValueFactory = {
+              _.value.description
+            }
+          }.delegate,
+          new TableColumn[MyDomain, String] {
+            text = "Color"
+            prefWidth = 100
+            cellValueFactory = {
+              _.value.color
+            }
+          }.delegate
+        )
+        items = data
+      }
 
     table
   }

@@ -631,25 +631,27 @@ class TestCreateNullValue {
     // Bring in all primitive types into the closure such that they become
     // parameters of the closure constructor. This allows us to test whether
     // null values are created correctly for each type.
-    val nestedClosure = () => {
-      // scalastyle:off println
-      if (s.toString == "123") { // Don't really output them to avoid noisy
-        println(bo)
-        println(c)
-        println(b)
-        println(s)
-        println(i)
-        println(l)
-        println(f)
-        println(d)
-      }
+    val nestedClosure =
+      () => {
+        // scalastyle:off println
+        if (s.toString == "123") { // Don't really output them to avoid noisy
+          println(bo)
+          println(c)
+          println(b)
+          println(s)
+          println(i)
+          println(l)
+          println(f)
+          println(d)
+        }
 
-      val closure = () => {
-        println(getX)
+        val closure =
+          () => {
+            println(getX)
+          }
+        // scalastyle:on println
+        ClosureCleaner.clean(closure)
       }
-      // scalastyle:on println
-      ClosureCleaner.clean(closure)
-    }
     nestedClosure()
   }
 }

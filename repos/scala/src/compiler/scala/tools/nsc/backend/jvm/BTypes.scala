@@ -191,18 +191,20 @@ abstract class BTypes {
   private def setClassInfoFromClassNode(
       classNode: ClassNode,
       classBType: ClassBType): ClassBType = {
-    val superClass = classNode.superName match {
-      case null =>
-        assert(
-          classNode.name == ObjectRef.internalName,
-          s"class with missing super type: ${classNode.name}")
-        None
-      case superName =>
-        Some(classBTypeFromParsedClassfile(superName))
-    }
+    val superClass =
+      classNode.superName match {
+        case null =>
+          assert(
+            classNode.name == ObjectRef.internalName,
+            s"class with missing super type: ${classNode.name}")
+          None
+        case superName =>
+          Some(classBTypeFromParsedClassfile(superName))
+      }
 
-    val interfaces: List[ClassBType] = classNode.interfaces.asScala
-      .map(classBTypeFromParsedClassfile)(collection.breakOut)
+    val interfaces: List[ClassBType] =
+      classNode.interfaces.asScala
+        .map(classBTypeFromParsedClassfile)(collection.breakOut)
 
     val flags = classNode.access
 
@@ -220,9 +222,10 @@ abstract class BTypes {
     def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
       (innerClassNode.outerName != null && innerClassNode.outerName == classNode.name) ||
       (innerClassNode.outerName == null && {
-        val classNodeForInnerClass = byteCodeRepository
-          .classNode(innerClassNode.name)
-          .get // TODO: don't get here, but set the info to Left at the end
+        val classNodeForInnerClass =
+          byteCodeRepository
+            .classNode(innerClassNode.name)
+            .get // TODO: don't get here, but set the info to Left at the end
         classNodeForInnerClass.outerClass == classNode.name
       })
     }
@@ -301,16 +304,17 @@ abstract class BTypes {
       // require special handling. Excluding is OK because they are never inlined.
       // Here we are parsing from a classfile and we don't need to do anything special. Many of these
       // primitives don't even exist, for example Any.isInstanceOf.
-      val methodInfos = classNode.methods.asScala
-        .map(methodNode => {
-          val info = MethodInlineInfo(
-            effectivelyFinal = BytecodeUtils.isFinalMethod(methodNode),
-            traitMethodWithStaticImplementation = false,
-            annotatedInline = false,
-            annotatedNoInline = false)
-          (methodNode.name + methodNode.desc, info)
-        })
-        .toMap
+      val methodInfos =
+        classNode.methods.asScala
+          .map(methodNode => {
+            val info = MethodInlineInfo(
+              effectivelyFinal = BytecodeUtils.isFinalMethod(methodNode),
+              traitMethodWithStaticImplementation = false,
+              annotatedInline = false,
+              annotatedNoInline = false)
+            (methodNode.name + methodNode.desc, info)
+          })
+          .toMap
       InlineInfo(
         traitImplClassSelfType = None,
         isEffectivelyFinal = BytecodeUtils.isFinalClass(classNode),

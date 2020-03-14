@@ -159,11 +159,12 @@ object PageRank extends Logging {
       // that didn't receive a message. Requires a shuffle for broadcasting updated ranks to the
       // edge partitions.
       prevRankGraph = rankGraph
-      val rPrb = if (personalized) { (src: VertexId, id: VertexId) =>
-        resetProb * delta(src, id)
-      } else { (src: VertexId, id: VertexId) =>
-        resetProb
-      }
+      val rPrb =
+        if (personalized) { (src: VertexId, id: VertexId) =>
+          resetProb * delta(src, id)
+        } else { (src: VertexId, id: VertexId) =>
+          resetProb
+        }
 
       rankGraph = rankGraph
         .joinVertices(rankUpdates) { (id, oldRank, msgSum) =>
@@ -302,12 +303,13 @@ object PageRank extends Logging {
         resetProb / (1.0 - resetProb)
 
     // Execute a dynamic version of Pregel.
-    val vp = if (personalized) {
-      (id: VertexId, attr: (Double, Double), msgSum: Double) =>
-        personalizedVertexProgram(id, attr, msgSum)
-    } else { (id: VertexId, attr: (Double, Double), msgSum: Double) =>
-      vertexProgram(id, attr, msgSum)
-    }
+    val vp =
+      if (personalized) {
+        (id: VertexId, attr: (Double, Double), msgSum: Double) =>
+          personalizedVertexProgram(id, attr, msgSum)
+      } else { (id: VertexId, attr: (Double, Double), msgSum: Double) =>
+        vertexProgram(id, attr, msgSum)
+      }
 
     Pregel(pagerankGraph, initialMessage, activeDirection = EdgeDirection.Out)(
       vp,

@@ -25,12 +25,10 @@ sealed trait FlatMapFn[+R]
     extends Function1[TupleEntry, TraversableOnce[R]]
     with java.io.Serializable {
 
-  def filter(fn2: R => Boolean): FlatMapFn[R] =
-    FilteredFn(this, fn2)
+  def filter(fn2: R => Boolean): FlatMapFn[R] = FilteredFn(this, fn2)
   def flatMap[R1](fn2: R => TraversableOnce[R1]): FlatMapFn[R1] =
     FlatMappedFn(this, fn2)
-  def map[R1](fn2: R => R1): FlatMapFn[R1] =
-    MapFn(this, fn2)
+  def map[R1](fn2: R => R1): FlatMapFn[R1] = MapFn(this, fn2)
 }
 
 /* This is the initial way we get a FlatMapFn */

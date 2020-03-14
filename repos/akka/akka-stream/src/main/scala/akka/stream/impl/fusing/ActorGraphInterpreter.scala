@@ -51,8 +51,7 @@ private[stream] final case class GraphModule(
     else
       this
 
-  override def toString: String =
-    s"""GraphModule
+  override def toString: String = s"""GraphModule
        |  ${assembly.toString.replace("\n", "\n  ")}
        |  shape=$shape, attributes=$attributes
        |  matVals=
@@ -205,8 +204,8 @@ private[stream] object ActorGraphInterpreter {
         if (inputBufferElements == size)
           throw new IllegalStateException("Input buffer overrun")
         inputBuffer(
-          (nextInputElementCursor + inputBufferElements) & IndexMask) =
-          elem.asInstanceOf[AnyRef]
+          (nextInputElementCursor + inputBufferElements) & IndexMask) = elem
+          .asInstanceOf[AnyRef]
         inputBufferElements += 1
         if (isAvailable(out))
           push(out, dequeue())
@@ -414,23 +413,24 @@ private[stream] final class GraphInterpreterShell(
 
   private var enqueueToShortCircuit: (Any) ⇒ Unit = _
 
-  lazy val interpreter: GraphInterpreter = new GraphInterpreter(
-    assembly,
-    mat,
-    log,
-    inHandlers,
-    outHandlers,
-    logics,
-    (logic, event, handler) ⇒ {
-      val asyncInput = AsyncInput(this, logic, event, handler)
-      val currentInterpreter = GraphInterpreter.currentInterpreterOrNull
-      if (currentInterpreter == null || (currentInterpreter.context ne self))
-        self ! asyncInput
-      else
-        enqueueToShortCircuit(asyncInput)
-    },
-    settings.fuzzingMode,
-    self)
+  lazy val interpreter: GraphInterpreter =
+    new GraphInterpreter(
+      assembly,
+      mat,
+      log,
+      inHandlers,
+      outHandlers,
+      logics,
+      (logic, event, handler) ⇒ {
+        val asyncInput = AsyncInput(this, logic, event, handler)
+        val currentInterpreter = GraphInterpreter.currentInterpreterOrNull
+        if (currentInterpreter == null || (currentInterpreter.context ne self))
+          self ! asyncInput
+        else
+          enqueueToShortCircuit(asyncInput)
+      },
+      settings.fuzzingMode,
+      self)
 
   private val inputs = new Array[BatchingActorInputBoundary](shape.inlets.size)
   private val outputs = new Array[ActorOutputBoundary](shape.outlets.size)
@@ -588,8 +588,8 @@ private[stream] final class GraphInterpreterShell(
   def runBatch(actorEventLimit: Int): Int = {
     try {
       val usingShellLimit = shellEventLimit < actorEventLimit
-      val remainingQuota =
-        interpreter.execute(Math.min(actorEventLimit, shellEventLimit))
+      val remainingQuota = interpreter.execute(
+        Math.min(actorEventLimit, shellEventLimit))
       if (interpreter.isCompleted) {
         // Cannot stop right away if not completely subscribed
         if (canShutDown)

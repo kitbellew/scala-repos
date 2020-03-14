@@ -398,10 +398,11 @@ class StopWordsRemover(override val uid: String)
     * Default: false
     * @group param
     */
-  val caseSensitive: BooleanParam = new BooleanParam(
-    this,
-    "caseSensitive",
-    "whether to do case-sensitive comparison during filtering")
+  val caseSensitive: BooleanParam =
+    new BooleanParam(
+      this,
+      "caseSensitive",
+      "whether to do case-sensitive comparison during filtering")
 
   /** @group setParam */
   def setCaseSensitive(value: Boolean): this.type = set(caseSensitive, value)
@@ -413,22 +414,24 @@ class StopWordsRemover(override val uid: String)
 
   override def transform(dataset: DataFrame): DataFrame = {
     val outputSchema = transformSchema(dataset.schema)
-    val t = if ($(caseSensitive)) {
-      val stopWordsSet = $(stopWords).toSet
-      udf { terms: Seq[String] =>
-        terms.filter(s => !stopWordsSet.contains(s))
+    val t =
+      if ($(caseSensitive)) {
+        val stopWordsSet = $(stopWords).toSet
+        udf { terms: Seq[String] =>
+          terms.filter(s => !stopWordsSet.contains(s))
+        }
+      } else {
+        val toLower =
+          (s: String) =>
+            if (s != null)
+              s.toLowerCase
+            else
+              s
+        val lowerStopWords = $(stopWords).map(toLower(_)).toSet
+        udf { terms: Seq[String] =>
+          terms.filter(s => !lowerStopWords.contains(toLower(s)))
+        }
       }
-    } else {
-      val toLower = (s: String) =>
-        if (s != null)
-          s.toLowerCase
-        else
-          s
-      val lowerStopWords = $(stopWords).map(toLower(_)).toSet
-      udf { terms: Seq[String] =>
-        terms.filter(s => !lowerStopWords.contains(toLower(s)))
-      }
-    }
 
     val metadata = outputSchema($(outputCol)).metadata
     dataset.select(col("*"), t(col($(inputCol))).as($(outputCol), metadata))

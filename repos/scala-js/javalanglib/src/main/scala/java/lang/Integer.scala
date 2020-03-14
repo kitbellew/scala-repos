@@ -10,8 +10,7 @@ final class Integer private () extends Number with Comparable[Integer] {
   def this(value: scala.Int) = this()
   def this(s: String) = this()
 
-  @inline def intValue(): scala.Int =
-    this.asInstanceOf[scala.Int]
+  @inline def intValue(): scala.Int = this.asInstanceOf[scala.Int]
 
   @inline override def byteValue(): scala.Byte = intValue.toByte
   @inline override def shortValue(): scala.Short = intValue.toShort
@@ -22,14 +21,12 @@ final class Integer private () extends Number with Comparable[Integer] {
   @inline override def equals(that: Any): scala.Boolean =
     this eq that.asInstanceOf[AnyRef]
 
-  @inline override def hashCode(): Int =
-    intValue
+  @inline override def hashCode(): Int = intValue
 
   @inline override def compareTo(that: Integer): Int =
     Integer.compare(intValue, that.intValue)
 
-  @inline override def toString(): String =
-    Integer.toString(intValue)
+  @inline override def toString(): String = Integer.toString(intValue)
 
   /* Methods of java.lang.Byte and java.lang.Short.
    * When calling a method of j.l.Byte or j.l.Short on a primitive value,
@@ -98,8 +95,9 @@ object Integer {
             fail
           i += 1
         }
-        val res =
-          js.Dynamic.global.parseInt(s, radix).asInstanceOf[scala.Double]
+        val res = js.Dynamic.global
+          .parseInt(s, radix)
+          .asInstanceOf[scala.Double]
 
         @inline def isOutOfBounds: scala.Boolean = {
           if (signed)
@@ -142,8 +140,7 @@ object Integer {
       -1
   }
 
-  @inline def toUnsignedLong(x: Int): scala.Long =
-    x.toLong & 0xFFFFFFFFL
+  @inline def toUnsignedLong(x: Int): scala.Long = x.toLong & 0xFFFFFFFFL
 
   def bitCount(i: scala.Int): scala.Int = {
     /* See http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel
@@ -182,8 +179,7 @@ object Integer {
     else
       (1 << 31) >>> numberOfLeadingZeros(i)
 
-  @inline def lowestOneBit(i: Int): Int =
-    i & -i
+  @inline def lowestOneBit(i: Int): Int = i & -i
 
   def reverseBytes(i: scala.Int): scala.Int = {
     val byte3 = i >>> 24

@@ -43,8 +43,10 @@ class MetricsSystemSuite
   }
 
   test("MetricsSystem with default config") {
-    val metricsSystem =
-      MetricsSystem.createMetricsSystem("default", conf, securityMgr)
+    val metricsSystem = MetricsSystem.createMetricsSystem(
+      "default",
+      conf,
+      securityMgr)
     metricsSystem.start()
     val sources = PrivateMethod[ArrayBuffer[Source]]('sources)
     val sinks = PrivateMethod[ArrayBuffer[Source]]('sinks)
@@ -55,8 +57,10 @@ class MetricsSystemSuite
   }
 
   test("MetricsSystem with sources add") {
-    val metricsSystem =
-      MetricsSystem.createMetricsSystem("test", conf, securityMgr)
+    val metricsSystem = MetricsSystem.createMetricsSystem(
+      "test",
+      conf,
+      securityMgr)
     metricsSystem.start()
     val sources = PrivateMethod[ArrayBuffer[Source]]('sources)
     val sinks = PrivateMethod[ArrayBuffer[Source]]('sinks)
@@ -71,10 +75,11 @@ class MetricsSystemSuite
   }
 
   test("MetricsSystem with Driver instance") {
-    val source = new Source {
-      override val sourceName = "dummySource"
-      override val metricRegistry = new MetricRegistry()
-    }
+    val source =
+      new Source {
+        override val sourceName = "dummySource"
+        override val metricRegistry = new MetricRegistry()
+      }
 
     val appId = "testId"
     val executorId = "driver"
@@ -82,52 +87,61 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "driver"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === s"$appId.$executorId.${source.sourceName}")
   }
 
   test("MetricsSystem with Driver instance and spark.app.id is not set") {
-    val source = new Source {
-      override val sourceName = "dummySource"
-      override val metricRegistry = new MetricRegistry()
-    }
+    val source =
+      new Source {
+        override val sourceName = "dummySource"
+        override val metricRegistry = new MetricRegistry()
+      }
 
     val executorId = "driver"
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "driver"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
   }
 
   test("MetricsSystem with Driver instance and spark.executor.id is not set") {
-    val source = new Source {
-      override val sourceName = "dummySource"
-      override val metricRegistry = new MetricRegistry()
-    }
+    val source =
+      new Source {
+        override val sourceName = "dummySource"
+        override val metricRegistry = new MetricRegistry()
+      }
 
     val appId = "testId"
     conf.set("spark.app.id", appId)
 
     val instanceName = "driver"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
   }
 
   test("MetricsSystem with Executor instance") {
-    val source = new Source {
-      override val sourceName = "dummySource"
-      override val metricRegistry = new MetricRegistry()
-    }
+    val source =
+      new Source {
+        override val sourceName = "dummySource"
+        override val metricRegistry = new MetricRegistry()
+      }
 
     val appId = "testId"
     val executorId = "1"
@@ -135,25 +149,30 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "executor"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === s"$appId.$executorId.${source.sourceName}")
   }
 
   test("MetricsSystem with Executor instance and spark.app.id is not set") {
-    val source = new Source {
-      override val sourceName = "dummySource"
-      override val metricRegistry = new MetricRegistry()
-    }
+    val source =
+      new Source {
+        override val sourceName = "dummySource"
+        override val metricRegistry = new MetricRegistry()
+      }
 
     val executorId = "1"
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "executor"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
@@ -161,27 +180,31 @@ class MetricsSystemSuite
 
   test(
     "MetricsSystem with Executor instance and spark.executor.id is not set") {
-    val source = new Source {
-      override val sourceName = "dummySource"
-      override val metricRegistry = new MetricRegistry()
-    }
+    val source =
+      new Source {
+        override val sourceName = "dummySource"
+        override val metricRegistry = new MetricRegistry()
+      }
 
     val appId = "testId"
     conf.set("spark.app.id", appId)
 
     val instanceName = "executor"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
   }
 
   test("MetricsSystem with instance which is neither Driver nor Executor") {
-    val source = new Source {
-      override val sourceName = "dummySource"
-      override val metricRegistry = new MetricRegistry()
-    }
+    val source =
+      new Source {
+        override val sourceName = "dummySource"
+        override val metricRegistry = new MetricRegistry()
+      }
 
     val appId = "testId"
     val executorId = "dummyExecutorId"
@@ -189,8 +212,10 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "testInstance"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
 

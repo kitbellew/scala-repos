@@ -26,14 +26,16 @@ class HoistClientOps extends Phase {
               .filter(t => t._2 ne t._3._1)
               .map(_._1)
               .mkString(", "))
-          val newDefsM = hoisted.iterator.map {
-            case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
-          }.toMap
+          val newDefsM =
+            hoisted.iterator.map {
+              case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+            }.toMap
           logger.debug("New defs: " + newDefsM)
-          val oldDefsM = hoisted.iterator.map {
-            case (ts, n, (n2, wrap)) =>
-              (ts, wrap(Select(Ref(rsm.generator), newDefsM(n2))))
-          }.toMap
+          val oldDefsM =
+            hoisted.iterator.map {
+              case (ts, n, (n2, wrap)) =>
+                (ts, wrap(Select(Ref(rsm.generator), newDefsM(n2))))
+            }.toMap
           val bind2 = rewriteDBSide(
             Bind(
               s2,
@@ -99,20 +101,22 @@ class HoistClientOps extends Phase {
                     .filter(t => t._2 ne t._3._1)
                     .map(_._1)
                     .mkString(", "))
-                val newDefsM = hoisted.iterator.map {
-                  case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
-                }.toMap
+                val newDefsM =
+                  hoisted.iterator.map {
+                    case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+                  }.toMap
                 logger.debug("New defs: " + newDefsM)
                 val bl2 = bl
-                  .copy(select =
-                    Pure(StructNode(ConstArray.from(newDefsM.map(_.swap)))))
+                  .copy(select = Pure(
+                    StructNode(ConstArray.from(newDefsM.map(_.swap)))))
                   .infer()
                 logger.debug(
                   "Translated left join side:",
                   Ellipsis(bl2, List(0)))
-                val repl = hoisted.iterator.map {
-                  case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
-                }.toMap
+                val repl =
+                  hoisted.iterator.map {
+                    case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
+                  }.toMap
                 (bl2, repl)
               } else
                 (bl, Map.empty)
@@ -128,20 +132,22 @@ class HoistClientOps extends Phase {
                     .filter(t => t._2 ne t._3._1)
                     .map(_._1)
                     .mkString(", "))
-                val newDefsM = hoisted.iterator.map {
-                  case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
-                }.toMap
+                val newDefsM =
+                  hoisted.iterator.map {
+                    case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+                  }.toMap
                 logger.debug("New defs: " + newDefsM)
                 val br2 = br
-                  .copy(select =
-                    Pure(StructNode(ConstArray.from(newDefsM.map(_.swap)))))
+                  .copy(select = Pure(
+                    StructNode(ConstArray.from(newDefsM.map(_.swap)))))
                   .infer()
                 logger.debug(
                   "Translated right join side:",
                   Ellipsis(br2, List(0)))
-                val repl = hoisted.iterator.map {
-                  case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
-                }.toMap
+                val repl =
+                  hoisted.iterator.map {
+                    case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
+                  }.toMap
                 (br2, repl)
               } else
                 (br, Map.empty)

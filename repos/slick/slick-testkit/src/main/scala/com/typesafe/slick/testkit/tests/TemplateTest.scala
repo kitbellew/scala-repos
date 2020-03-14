@@ -26,24 +26,27 @@ class TemplateTest extends AsyncTest[RelationalTestDB] {
         yield u.first
     def q1 = userNameByID1(3)
 
-    val userNameByID2 = for {
-      id <- Parameters[Int]
-      u <- users if u.id === id
-    } yield u.first
+    val userNameByID2 =
+      for {
+        id <- Parameters[Int]
+        u <- users if u.id === id
+      } yield u.first
     val q2 = userNameByID2(3)
 
-    val userNameByIDRange = for {
-      (min, max) <- Parameters[(Int, Int)]
-      u <- users if u.id >= min && u.id <= max
-    } yield u.first
+    val userNameByIDRange =
+      for {
+        (min, max) <- Parameters[(Int, Int)]
+        u <- users if u.id >= min && u.id <= max
+      } yield u.first
     val q3 = userNameByIDRange(2, 5)
 
-    val userNameByIDRangeAndProduct = for {
-      (min, (max, product)) <- Parameters[(Int, (Int, String))]
-      u <- users if u.id >= min && u.id <= max && orders
-        .filter(o => (u.id === o.userID) && (o.product === product))
-        .exists
-    } yield u.first
+    val userNameByIDRangeAndProduct =
+      for {
+        (min, (max, product)) <- Parameters[(Int, (Int, String))]
+        u <- users if u.id >= min && u.id <= max && orders
+          .filter(o => (u.id === o.userID) && (o.product === product))
+          .exists
+      } yield u.first
     val q4 = userNameByIDRangeAndProduct(2, (5, "Product A"))
 
     def userNameByIDOrAll(id: Option[Int]) =

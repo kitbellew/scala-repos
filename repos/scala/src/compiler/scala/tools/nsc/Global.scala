@@ -67,8 +67,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   override val useOffsetPositions = !currentSettings.Yrangepos
 
   type RuntimeClass = java.lang.Class[_]
-  implicit val RuntimeClassTag: ClassTag[RuntimeClass] =
-    ClassTag[RuntimeClass](classOf[RuntimeClass])
+  implicit val RuntimeClassTag: ClassTag[RuntimeClass] = ClassTag[RuntimeClass](
+    classOf[RuntimeClass])
 
   class GlobalMirror extends Roots(NoSymbol) {
     val universe: self.type = self
@@ -84,8 +84,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
     override def toString = "compiler mirror"
   }
-  implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[GlobalMirror])
+  implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[GlobalMirror])
 
   lazy val rootMirror: Mirror = {
     val rm = new GlobalMirror
@@ -109,8 +109,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def this(reporter: Reporter) =
     this(new Settings(err => reporter.error(null, err)), reporter)
 
-  def this(settings: Settings) =
-    this(settings, Global.reporter(settings))
+  def this(settings: Settings) = this(settings, Global.reporter(settings))
 
   def picklerPhase: Phase =
     if (currentRun.isDefined)
@@ -131,9 +130,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     val settings: Settings = Global.this.settings
   } with JavaPlatform
 
-  type ThisPlatform = JavaPlatform {
-    val global: Global.this.type
-  }
+  type ThisPlatform =
+    JavaPlatform {
+      val global: Global.this.type
+    }
   lazy val platform: ThisPlatform = new GlobalPlatform
 
   type PlatformClassPath = ClassPath[AbstractFile]
@@ -162,11 +162,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   /** A spare instance of TreeBuilder left for backwards compatibility. */
   lazy val treeBuilder: TreeBuilder {
     val global: Global.this.type
-  } = new TreeBuilder {
-    val global: Global.this.type = Global.this;
-    def unit = currentUnit
-    def source = currentUnit.source
-  }
+  } =
+    new TreeBuilder {
+      val global: Global.this.type = Global.this;
+      def unit = currentUnit
+      def source = currentUnit.source
+    }
 
   /** Fold constants */
   object constfold extends {
@@ -210,8 +211,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       if (unit.body == null)
         println(": tree is null")
       else {
-        val source =
-          util.stringFromWriter(w => newTreePrinter(w) print unit.body)
+        val source = util.stringFromWriter(w =>
+          newTreePrinter(w) print unit.body)
 
         // treePrinter show unit.body
         if (lastPrintedSource == source)
@@ -418,10 +419,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     getSourceFile(f)
   }
 
-  lazy val loaders = new {
-    val global: Global.this.type = Global.this
-    val platform: Global.this.platform.type = Global.this.platform
-  } with GlobalSymbolLoaders
+  lazy val loaders =
+    new {
+      val global: Global.this.type = Global.this
+      val platform: Global.this.platform.type = Global.this.platform
+    } with GlobalSymbolLoaders
 
   /** Returns the mirror that loaded given symbol */
   def mirrorThatLoaded(sym: Symbol): Mirror = rootMirror
@@ -481,13 +483,14 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   }
 
   // phaseName = "parser"
-  lazy val syntaxAnalyzer = new {
-    val global: Global.this.type = Global.this
-  } with SyntaxAnalyzer {
-    val runsAfter = List[String]()
-    val runsRightAfter = None
-    override val initial = true
-  }
+  lazy val syntaxAnalyzer =
+    new {
+      val global: Global.this.type = Global.this
+    } with SyntaxAnalyzer {
+      val runsAfter = List[String]()
+      val runsRightAfter = None
+      override val initial = true
+    }
 
   import syntaxAnalyzer.{UnitScanner, UnitParser}
 
@@ -499,9 +502,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   // I only changed analyzer.
   //
   // factory for phases: namer, packageobjects, typer
-  lazy val analyzer = new {
-    val global: Global.this.type = Global.this
-  } with Analyzer
+  lazy val analyzer =
+    new {
+      val global: Global.this.type = Global.this
+    } with Analyzer
 
   // phaseName = "patmat"
   object patmat extends {
@@ -829,19 +833,20 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             width: Int,
             precision: Int) {
           val p = elliptically(s, precision)
-          val w = if (width > 0 && p.length < width) {
-            import FormattableFlags.LEFT_JUSTIFY
-            val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
-            val sb = new StringBuilder
-            def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
-            if (!leftly)
-              pad()
-            sb.append(p)
-            if (leftly)
-              pad()
-            sb.toString
-          } else
-            p
+          val w =
+            if (width > 0 && p.length < width) {
+              import FormattableFlags.LEFT_JUSTIFY
+              val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
+              val sb = new StringBuilder
+              def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
+              if (!leftly)
+                pad()
+              sb.append(p)
+              if (leftly)
+                pad()
+              sb.toString
+            } else
+              p
           formatter.out.append(w)
         }
       }
@@ -1251,11 +1256,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def newCompilationUnit(code: String, filename: String = "<console>") =
     new CompilationUnit(newSourceFile(code, filename))
 
-  def newUnitScanner(unit: CompilationUnit): UnitScanner =
-    new UnitScanner(unit)
+  def newUnitScanner(unit: CompilationUnit): UnitScanner = new UnitScanner(unit)
 
-  def newUnitParser(unit: CompilationUnit): UnitParser =
-    new UnitParser(unit)
+  def newUnitParser(unit: CompilationUnit): UnitParser = new UnitParser(unit)
 
   def newUnitParser(code: String, filename: String = "<console>"): UnitParser =
     newUnitParser(newCompilationUnit(code, filename))
@@ -1850,15 +1853,16 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       phased(sym.info.baseClasses map (x => x.kindString + " " + x.fullName))
 
     // make the type/term selections walking from the root.
-    val syms = findMemberFromRoot(fullName) match {
-      // The name as given was not found, so we'll sift through every symbol in
-      // the run looking for plausible matches.
-      case NoSymbol =>
-        phased(currentRun.symSource.keys map (sym =>
-          findNamedMember(fullName, sym)) filterNot (_ == NoSymbol) toList)
-      // The name as given matched, so show only that.
-      case sym => List(sym)
-    }
+    val syms =
+      findMemberFromRoot(fullName) match {
+        // The name as given was not found, so we'll sift through every symbol in
+        // the run looking for plausible matches.
+        case NoSymbol =>
+          phased(currentRun.symSource.keys map (sym =>
+            findNamedMember(fullName, sym)) filterNot (_ == NoSymbol) toList)
+        // The name as given matched, so show only that.
+        case sym => List(sym)
+      }
 
     syms foreach { sym =>
       val name = "\n<<-- %s %s after phase '%s' -->>".format(

@@ -72,8 +72,8 @@ class ClientBuilderTest
         build
 
         val entries = GlobalRegistry.get.toSet
-        val unspecified =
-          entries.count(_.key.startsWith(Seq("client", "not-specified")))
+        val unspecified = entries.count(
+          _.key.startsWith(Seq("client", "not-specified")))
         assert(
           unspecified == 0,
           "saw registry keys with 'not-specified' protocol")
@@ -97,11 +97,12 @@ class ClientBuilderTest
 
   verifyProtocolRegistry("#codec(CodecFactory)", expected = "fancy") {
     val ctx = new ClientBuilderHelper {}
-    val cf = new CodecFactory[String, String] {
-      def client: Client = (_: ClientCodecConfig) => ctx.m.codec
-      def server: Server = ???
-      override def protocolLibraryName = "fancy"
-    }
+    val cf =
+      new CodecFactory[String, String] {
+        def client: Client = (_: ClientCodecConfig) => ctx.m.codec
+        def server: Server = ???
+        override def protocolLibraryName = "fancy"
+      }
 
     ClientBuilder()
       .name("test")
@@ -146,8 +147,11 @@ class ClientBuilderTest
 
   test("ClientBuilder should close properly") {
     new ClientBuilderHelper {
-      val svc =
-        ClientBuilder().hostConnectionLimit(1).codec(m.codec).hosts("").build()
+      val svc = ClientBuilder()
+        .hostConnectionLimit(1)
+        .codec(m.codec)
+        .hosts("")
+        .build()
       val f = svc.close()
       eventually {
         f.isDefined

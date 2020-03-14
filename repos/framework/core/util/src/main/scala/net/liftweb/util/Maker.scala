@@ -157,8 +157,7 @@ trait StackableMaker[T] extends Maker[T] {
   /**
     * Changes to the stack of Makers made by this method are thread-local!
     */
-  def doWith[F](value: T)(f: => F): F =
-    doWith(PValueHolder(Maker(value)))(f)
+  def doWith[F](value: T)(f: => F): F = doWith(PValueHolder(Maker(value)))(f)
 
   /**
     * Changes to the stack of Makers made by this method are thread-local!

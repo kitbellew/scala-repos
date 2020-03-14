@@ -58,8 +58,8 @@ class BoneConnectionPool @Inject() (environment: Environment)
 
     val datasource = new BoneCPDataSource
 
-    val autocommit =
-      config.getDeprecated[Boolean]("bonecp.autoCommit", "autocommit")
+    val autocommit = config
+      .getDeprecated[Boolean]("bonecp.autoCommit", "autocommit")
     val isolation = config
       .getDeprecated[Option[String]]("bonecp.isolation", "isolation")
       .map {

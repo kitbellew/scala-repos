@@ -28,8 +28,9 @@ class UpdateTaskTrackerStepImplTest
 
     Given("a running task and a working taskTracker")
     val existingTask = runningMarathonTask
-    val status =
-      runningTaskStatus.toBuilder.setState(TaskState.TASK_RUNNING).build()
+    val status = runningTaskStatus.toBuilder
+      .setState(TaskState.TASK_RUNNING)
+      .build()
     f.taskUpdater
       .statusUpdate(appId, status)
       .asInstanceOf[Future[Unit]] returns Future.successful(())
@@ -55,20 +56,22 @@ class UpdateTaskTrackerStepImplTest
 
     Given("a running task and a broken taskTracker")
     val existingTask = stagedMarathonTask
-    val status =
-      runningTaskStatus.toBuilder.setState(TaskState.TASK_RUNNING).build()
+    val status = runningTaskStatus.toBuilder
+      .setState(TaskState.TASK_RUNNING)
+      .build()
     f.taskUpdater.statusUpdate(appId, status).asInstanceOf[Future[Unit]] returns
       Future.failed(new RuntimeException("I'm broken"))
 
     When("processUpdate is called")
-    val eventualFailure = f.step
-      .processUpdate(
-        updateTimestamp,
-        existingTask,
-        status
-      )
-      .failed
-      .futureValue
+    val eventualFailure =
+      f.step
+        .processUpdate(
+          updateTimestamp,
+          existingTask,
+          status
+        )
+        .failed
+        .futureValue
 
     Then("taskTracker.statusUpdate is called")
     verify(f.taskUpdater).statusUpdate(appId, status)
@@ -89,23 +92,21 @@ class UpdateTaskTrackerStepImplTest
   private[this] val updateTimestamp = Timestamp(100)
   private[this] val taskStatusMessage = "some update"
 
-  private[this] val runningTaskStatus =
-    TaskStatus
-      .newBuilder()
-      .setState(TaskState.TASK_RUNNING)
-      .setTaskId(taskId.mesosTaskId)
-      .setSlaveId(slaveId)
-      .setMessage(taskStatusMessage)
-      .build()
+  private[this] val runningTaskStatus = TaskStatus
+    .newBuilder()
+    .setState(TaskState.TASK_RUNNING)
+    .setTaskId(taskId.mesosTaskId)
+    .setSlaveId(slaveId)
+    .setMessage(taskStatusMessage)
+    .build()
 
-  private[this] val stagedMarathonTask =
-    MarathonTestHelper
-      .stagedTask(taskId.idString, appVersion = version)
-      .withAgentInfo(_.copy(host = host))
-      .withNetworking(Task.HostPorts(portsList))
+  private[this] val stagedMarathonTask = MarathonTestHelper
+    .stagedTask(taskId.idString, appVersion = version)
+    .withAgentInfo(_.copy(host = host))
+    .withNetworking(Task.HostPorts(portsList))
 
-  private[this] val runningMarathonTask =
-    stagedMarathonTask.withStatus(_.copy(startedAt = Some(Timestamp(2))))
+  private[this] val runningMarathonTask = stagedMarathonTask.withStatus(
+    _.copy(startedAt = Some(Timestamp(2))))
 
   class Fixture {
     lazy val taskUpdater = mock[TaskUpdater]

@@ -73,78 +73,80 @@ object RandomForestExample {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("RandomForestExample") {
-      head("RandomForestExample: an example random forest app.")
-      opt[String]("algo")
-        .text(
-          s"algorithm (classification, regression), default: ${defaultParams.algo}")
-        .action((x, c) => c.copy(algo = x))
-      opt[Int]("maxDepth")
-        .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
-        .action((x, c) => c.copy(maxDepth = x))
-      opt[Int]("maxBins")
-        .text(s"max number of bins, default: ${defaultParams.maxBins}")
-        .action((x, c) => c.copy(maxBins = x))
-      opt[Int]("minInstancesPerNode")
-        .text(
-          s"min number of instances required at child nodes to create the parent split," +
-            s" default: ${defaultParams.minInstancesPerNode}")
-        .action((x, c) => c.copy(minInstancesPerNode = x))
-      opt[Double]("minInfoGain")
-        .text(
-          s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
-        .action((x, c) => c.copy(minInfoGain = x))
-      opt[Int]("numTrees")
-        .text(
-          s"number of trees in ensemble, default: ${defaultParams.numTrees}")
-        .action((x, c) => c.copy(numTrees = x))
-      opt[String]("featureSubsetStrategy")
-        .text(s"number of features to use per node (supported:" +
-          s" ${RandomForestClassifier.supportedFeatureSubsetStrategies.mkString(",")})," +
-          s" default: ${defaultParams.numTrees}")
-        .action((x, c) => c.copy(featureSubsetStrategy = x))
-      opt[Double]("fracTest")
-        .text(
-          s"fraction of data to hold out for testing.  If given option testInput, " +
-            s"this option is ignored. default: ${defaultParams.fracTest}")
-        .action((x, c) => c.copy(fracTest = x))
-      opt[Boolean]("cacheNodeIds")
-        .text(s"whether to use node Id cache during training, " +
-          s"default: ${defaultParams.cacheNodeIds}")
-        .action((x, c) => c.copy(cacheNodeIds = x))
-      opt[String]("checkpointDir")
-        .text(
-          s"checkpoint directory where intermediate node Id caches will be stored, " +
-            s"default: ${defaultParams.checkpointDir match {
-              case Some(strVal) => strVal
-              case None         => "None"
-            }}")
-        .action((x, c) => c.copy(checkpointDir = Some(x)))
-      opt[Int]("checkpointInterval")
-        .text(s"how often to checkpoint the node Id cache, " +
-          s"default: ${defaultParams.checkpointInterval}")
-        .action((x, c) => c.copy(checkpointInterval = x))
-      opt[String]("testInput")
-        .text(
-          s"input path to test dataset.  If given, option fracTest is ignored." +
-            s" default: ${defaultParams.testInput}")
-        .action((x, c) => c.copy(testInput = x))
-      opt[String]("dataFormat")
-        .text("data format: libsvm (default), dense (deprecated in Spark v1.1)")
-        .action((x, c) => c.copy(dataFormat = x))
-      arg[String]("<input>")
-        .text("input path to labeled examples")
-        .required()
-        .action((x, c) => c.copy(input = x))
-      checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest >= 1) {
-          failure(
-            s"fracTest ${params.fracTest} value incorrect; should be in [0,1).")
-        } else {
-          success
+    val parser =
+      new OptionParser[Params]("RandomForestExample") {
+        head("RandomForestExample: an example random forest app.")
+        opt[String]("algo")
+          .text(
+            s"algorithm (classification, regression), default: ${defaultParams.algo}")
+          .action((x, c) => c.copy(algo = x))
+        opt[Int]("maxDepth")
+          .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")
+          .action((x, c) => c.copy(maxDepth = x))
+        opt[Int]("maxBins")
+          .text(s"max number of bins, default: ${defaultParams.maxBins}")
+          .action((x, c) => c.copy(maxBins = x))
+        opt[Int]("minInstancesPerNode")
+          .text(
+            s"min number of instances required at child nodes to create the parent split," +
+              s" default: ${defaultParams.minInstancesPerNode}")
+          .action((x, c) => c.copy(minInstancesPerNode = x))
+        opt[Double]("minInfoGain")
+          .text(
+            s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
+          .action((x, c) => c.copy(minInfoGain = x))
+        opt[Int]("numTrees")
+          .text(
+            s"number of trees in ensemble, default: ${defaultParams.numTrees}")
+          .action((x, c) => c.copy(numTrees = x))
+        opt[String]("featureSubsetStrategy")
+          .text(s"number of features to use per node (supported:" +
+            s" ${RandomForestClassifier.supportedFeatureSubsetStrategies.mkString(",")})," +
+            s" default: ${defaultParams.numTrees}")
+          .action((x, c) => c.copy(featureSubsetStrategy = x))
+        opt[Double]("fracTest")
+          .text(
+            s"fraction of data to hold out for testing.  If given option testInput, " +
+              s"this option is ignored. default: ${defaultParams.fracTest}")
+          .action((x, c) => c.copy(fracTest = x))
+        opt[Boolean]("cacheNodeIds")
+          .text(s"whether to use node Id cache during training, " +
+            s"default: ${defaultParams.cacheNodeIds}")
+          .action((x, c) => c.copy(cacheNodeIds = x))
+        opt[String]("checkpointDir")
+          .text(
+            s"checkpoint directory where intermediate node Id caches will be stored, " +
+              s"default: ${defaultParams.checkpointDir match {
+                case Some(strVal) => strVal
+                case None         => "None"
+              }}")
+          .action((x, c) => c.copy(checkpointDir = Some(x)))
+        opt[Int]("checkpointInterval")
+          .text(s"how often to checkpoint the node Id cache, " +
+            s"default: ${defaultParams.checkpointInterval}")
+          .action((x, c) => c.copy(checkpointInterval = x))
+        opt[String]("testInput")
+          .text(
+            s"input path to test dataset.  If given, option fracTest is ignored." +
+              s" default: ${defaultParams.testInput}")
+          .action((x, c) => c.copy(testInput = x))
+        opt[String]("dataFormat")
+          .text(
+            "data format: libsvm (default), dense (deprecated in Spark v1.1)")
+          .action((x, c) => c.copy(dataFormat = x))
+        arg[String]("<input>")
+          .text("input path to labeled examples")
+          .required()
+          .action((x, c) => c.copy(input = x))
+        checkConfig { params =>
+          if (params.fracTest < 0 || params.fracTest >= 1) {
+            failure(
+              s"fracTest ${params.fracTest} value incorrect; should be in [0,1).")
+          } else {
+            success
+          }
         }
       }
-    }
 
     parser
       .parse(args, defaultParams)
@@ -165,8 +167,8 @@ object RandomForestExample {
     println(s"RandomForestExample with parameters:\n$params")
 
     // Load training and test data and cache it.
-    val (training: DataFrame, test: DataFrame) =
-      DecisionTreeExample.loadDatasets(
+    val (training: DataFrame, test: DataFrame) = DecisionTreeExample
+      .loadDatasets(
         sc,
         params.input,
         params.dataFormat,
@@ -196,34 +198,36 @@ object RandomForestExample {
       .setMaxCategories(10)
     stages += featuresIndexer
     // (3) Learn Random Forest
-    val dt = algo match {
-      case "classification" =>
-        new RandomForestClassifier()
-          .setFeaturesCol("indexedFeatures")
-          .setLabelCol(labelColName)
-          .setMaxDepth(params.maxDepth)
-          .setMaxBins(params.maxBins)
-          .setMinInstancesPerNode(params.minInstancesPerNode)
-          .setMinInfoGain(params.minInfoGain)
-          .setCacheNodeIds(params.cacheNodeIds)
-          .setCheckpointInterval(params.checkpointInterval)
-          .setFeatureSubsetStrategy(params.featureSubsetStrategy)
-          .setNumTrees(params.numTrees)
-      case "regression" =>
-        new RandomForestRegressor()
-          .setFeaturesCol("indexedFeatures")
-          .setLabelCol(labelColName)
-          .setMaxDepth(params.maxDepth)
-          .setMaxBins(params.maxBins)
-          .setMinInstancesPerNode(params.minInstancesPerNode)
-          .setMinInfoGain(params.minInfoGain)
-          .setCacheNodeIds(params.cacheNodeIds)
-          .setCheckpointInterval(params.checkpointInterval)
-          .setFeatureSubsetStrategy(params.featureSubsetStrategy)
-          .setNumTrees(params.numTrees)
-      case _ =>
-        throw new IllegalArgumentException("Algo ${params.algo} not supported.")
-    }
+    val dt =
+      algo match {
+        case "classification" =>
+          new RandomForestClassifier()
+            .setFeaturesCol("indexedFeatures")
+            .setLabelCol(labelColName)
+            .setMaxDepth(params.maxDepth)
+            .setMaxBins(params.maxBins)
+            .setMinInstancesPerNode(params.minInstancesPerNode)
+            .setMinInfoGain(params.minInfoGain)
+            .setCacheNodeIds(params.cacheNodeIds)
+            .setCheckpointInterval(params.checkpointInterval)
+            .setFeatureSubsetStrategy(params.featureSubsetStrategy)
+            .setNumTrees(params.numTrees)
+        case "regression" =>
+          new RandomForestRegressor()
+            .setFeaturesCol("indexedFeatures")
+            .setLabelCol(labelColName)
+            .setMaxDepth(params.maxDepth)
+            .setMaxBins(params.maxBins)
+            .setMinInstancesPerNode(params.minInstancesPerNode)
+            .setMinInfoGain(params.minInfoGain)
+            .setCacheNodeIds(params.cacheNodeIds)
+            .setCheckpointInterval(params.checkpointInterval)
+            .setFeatureSubsetStrategy(params.featureSubsetStrategy)
+            .setNumTrees(params.numTrees)
+        case _ =>
+          throw new IllegalArgumentException(
+            "Algo ${params.algo} not supported.")
+      }
     stages += dt
     val pipeline = new Pipeline().setStages(stages.toArray)
 
@@ -244,8 +248,8 @@ object RandomForestExample {
           println(rfModel) // Print model summary.
         }
       case "regression" =>
-        val rfModel =
-          pipelineModel.stages.last.asInstanceOf[RandomForestRegressionModel]
+        val rfModel = pipelineModel.stages.last
+          .asInstanceOf[RandomForestRegressionModel]
         if (rfModel.totalNumNodes < 30) {
           println(rfModel.toDebugString) // Print full model.
         } else {

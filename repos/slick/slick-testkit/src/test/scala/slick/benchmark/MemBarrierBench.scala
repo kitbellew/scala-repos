@@ -8,9 +8,10 @@ object MemBarrierBench extends App {
     def onNext(v: T): Unit
   }
 
-  val subscr = new Subscr[Unit] {
-    def onNext(v: Unit) = ()
-  }
+  val subscr =
+    new Subscr[Unit] {
+      def onNext(v: Unit) = ()
+    }
 
   def pushLocal(n: Long, s: Subscr[Unit]): Unit = {
     var i = 0L

@@ -59,10 +59,11 @@ private[orc] object OrcFilters extends Logging {
   def createFilter(filters: Array[Filter]): Option[SearchArgument] = {
     // First, tries to convert each filter individually to see whether it's convertible, and then
     // collect all convertible ones to build the final `SearchArgument`.
-    val convertibleFilters = for {
-      filter <- filters
-      _ <- buildSearchArgument(filter, SearchArgumentFactory.newBuilder())
-    } yield filter
+    val convertibleFilters =
+      for {
+        filter <- filters
+        _ <- buildSearchArgument(filter, SearchArgumentFactory.newBuilder())
+      } yield filter
 
     for {
       // Combines all convertible filters using `And` to produce a single conjunction

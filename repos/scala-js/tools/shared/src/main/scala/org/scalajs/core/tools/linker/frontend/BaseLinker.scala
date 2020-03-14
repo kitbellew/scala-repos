@@ -120,21 +120,22 @@ final class BaseLinker(
 
     if (checkIR) {
       logger.time("Linker: Check Infos") {
-        val infoAndTrees =
-          infoInput.map(info => (info, getTree(info.encodedName)._1))
+        val infoAndTrees = infoInput.map(info =>
+          (info, getTree(info.encodedName)._1))
         val errorCount = InfoChecker.check(infoAndTrees, logger)
         if (errorCount != 0)
           sys.error(s"There were $errorCount Info checking errors.")
       }
     }
 
-    val analysis = logger.time("Linker: Compute reachability") {
-      Analyzer.computeReachability(
-        semantics,
-        symbolRequirements,
-        infoInput,
-        allowAddingSyntheticMethods = true)
-    }
+    val analysis =
+      logger.time("Linker: Compute reachability") {
+        Analyzer.computeReachability(
+          semantics,
+          symbolRequirements,
+          infoInput,
+          allowAddingSyntheticMethods = true)
+      }
 
     if (analysis.errors.nonEmpty) {
       // TODO Make it always fatal when we can get rid of bypassLinkingErrors
@@ -155,9 +156,10 @@ final class BaseLinker(
         sys.error("There were linking errors")
     }
 
-    val linkResult = logger.time("Linker: Assemble LinkedClasses") {
-      assemble(infoInput, getTree, analysis)
-    }
+    val linkResult =
+      logger.time("Linker: Assemble LinkedClasses") {
+        assemble(infoInput, getTree, analysis)
+      }
 
     if (checkIR) {
       logger.time("Linker: Check IR") {
@@ -205,11 +207,12 @@ final class BaseLinker(
         .orElse(optDummyParent)
     }
 
-    val linkedClassDefs = for {
-      classInfo <- analysis.classInfos.values
-      if classInfo.isNeededAtAll
-      linkedClassDef <- optClassDef(classInfo)
-    } yield linkedClassDef
+    val linkedClassDefs =
+      for {
+        classInfo <- analysis.classInfos.values
+        if classInfo.isNeededAtAll
+        linkedClassDef <- optClassDef(classInfo)
+      } yield linkedClassDef
 
     new LinkingUnit(
       semantics,
@@ -330,8 +333,8 @@ final class BaseLinker(
       }
     }
 
-    val classExportInfo =
-      memberInfoByName.get(Definitions.ExportedConstructorsName)
+    val classExportInfo = memberInfoByName.get(
+      Definitions.ExportedConstructorsName)
 
     val kind =
       if (analyzerInfo.isModuleAccessed)
@@ -408,27 +411,30 @@ final class BaseLinker(
 
     implicit val pos = targetMDef.pos
 
-    val targetIdent =
-      targetMDef.name.asInstanceOf[Ident].copy() // for the new pos
+    val targetIdent = targetMDef.name
+      .asInstanceOf[Ident]
+      .copy() // for the new pos
     val proxyIdent = Ident(encodedName, None)
     val params = targetMDef.args.map(_.copy()) // for the new pos
     val currentClassType = ClassType(classInfo.encodedName)
 
-    val call = Apply(This()(currentClassType), targetIdent, params.map(_.ref))(
-      targetMDef.resultType)
+    val call =
+      Apply(This()(currentClassType), targetIdent, params.map(_.ref))(
+        targetMDef.resultType)
 
-    val body = if (targetName.endsWith("__C")) {
-      // A Char needs to be boxed
-      New(
-        ClassType(Definitions.BoxedCharacterClass),
-        Ident("init___C"),
-        List(call))
-    } else if (targetName.endsWith("__V")) {
-      // Materialize an `undefined` result for void methods
-      Block(call, Undefined())
-    } else {
-      call
-    }
+    val body =
+      if (targetName.endsWith("__C")) {
+        // A Char needs to be boxed
+        New(
+          ClassType(Definitions.BoxedCharacterClass),
+          Ident("init___C"),
+          List(call))
+      } else if (targetName.endsWith("__V")) {
+        // Materialize an `undefined` result for void methods
+        Block(call, Undefined())
+      } else {
+        call
+      }
 
     MethodDef(static = false, proxyIdent, params, AnyType, body)(
       OptimizerHints.empty,
@@ -448,17 +454,19 @@ final class BaseLinker(
 
     implicit val pos = targetMDef.pos
 
-    val targetIdent =
-      targetMDef.name.asInstanceOf[Ident].copy() // for the new pos
+    val targetIdent = targetMDef.name
+      .asInstanceOf[Ident]
+      .copy() // for the new pos
     val bridgeIdent = targetIdent
     val params = targetMDef.args.map(_.copy()) // for the new pos
     val currentClassType = ClassType(classInfo.encodedName)
 
-    val body = ApplyStatically(
-      This()(currentClassType),
-      ClassType(targetInterface),
-      targetIdent,
-      params.map(_.ref))(targetMDef.resultType)
+    val body =
+      ApplyStatically(
+        This()(currentClassType),
+        ClassType(targetInterface),
+        targetIdent,
+        params.map(_.ref))(targetMDef.resultType)
 
     MethodDef(static = false, bridgeIdent, params, targetMDef.resultType, body)(
       OptimizerHints.empty,

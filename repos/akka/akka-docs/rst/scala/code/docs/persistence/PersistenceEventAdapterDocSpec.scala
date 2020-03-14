@@ -152,8 +152,7 @@ class MyEventAdapter(system: ExtendedActorSystem) extends EventAdapter {
   override def manifest(event: Any): String =
     "" // when no manifest needed, return ""
 
-  override def toJournal(event: Any): Any =
-    event // identity
+  override def toJournal(event: Any): Any = event // identity
 
   override def fromJournal(event: Any, manifest: String): EventSeq =
     EventSeq.single(event) // identity
@@ -167,8 +166,7 @@ class MyEventAdapter(system: ExtendedActorSystem) extends EventAdapter {
 class MyAutoJsonEventAdapter(system: ExtendedActorSystem) extends EventAdapter {
   private val gson = new Gson
 
-  override def manifest(event: Any): String =
-    event.getClass.getCanonicalName
+  override def manifest(event: Any): String = event.getClass.getCanonicalName
 
   override def toJournal(event: Any): Any = gson.toJsonTree(event)
 

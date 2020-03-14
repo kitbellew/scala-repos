@@ -39,8 +39,7 @@ trait Codec[Req, Rep] {
     */
   def prepareServiceFactory(
       underlying: ServiceFactory[Req, Rep]
-  ): ServiceFactory[Req, Rep] =
-    underlying
+  ): ServiceFactory[Req, Rep] = underlying
 
   /**
     * Prepare a connection factory. Used to allow codec modifications

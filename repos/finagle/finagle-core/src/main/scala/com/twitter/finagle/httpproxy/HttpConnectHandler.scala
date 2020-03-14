@@ -76,10 +76,11 @@ class HttpConnectHandler(
       ctx: ChannelHandlerContext,
       e: ChannelStateEvent) {
     val hostNameWithPort = addr.getAddress.getHostName + ":" + addr.getPort
-    val req = new DefaultHttpRequest(
-      HttpVersion.HTTP_1_1,
-      HttpMethod.CONNECT,
-      hostNameWithPort)
+    val req =
+      new DefaultHttpRequest(
+        HttpVersion.HTTP_1_1,
+        HttpMethod.CONNECT,
+        hostNameWithPort)
     req.headers().set("Host", hostNameWithPort)
     proxyCredentials.foreach { creds =>
       req
@@ -120,11 +121,12 @@ class HttpConnectHandler(
           }
         })
 
-        val wrappedEvent = new DownstreamChannelStateEvent(
-          de.getChannel,
-          wrappedConnectFuture,
-          de.getState,
-          proxyAddr)
+        val wrappedEvent =
+          new DownstreamChannelStateEvent(
+            de.getChannel,
+            wrappedConnectFuture,
+            de.getState,
+            proxyAddr)
 
         super.connectRequested(ctx, wrappedEvent)
 
@@ -166,17 +168,19 @@ class HttpConnectHandler(
       ctx.getPipeline.remove(this)
       connectFuture.get.setSuccess()
     } else {
-      val cause = new Throwable(
-        "unexpected response status received by HttpConnectHandler:"
-          + resp.getStatus)
+      val cause =
+        new Throwable(
+          "unexpected response status received by HttpConnectHandler:"
+            + resp.getStatus)
 
       fail(e.getChannel, new ConnectionFailedException(cause, addr))
     }
   }
 
   private[this] def proxyAuthorizationHeader(creds: Credentials) = {
-    val bytes =
-      "%s:%s".format(creds.username, creds.password).getBytes(Charsets.Utf8)
+    val bytes = "%s:%s"
+      .format(creds.username, creds.password)
+      .getBytes(Charsets.Utf8)
     "Basic " + Base64StringEncoder.encode(bytes)
   }
 }

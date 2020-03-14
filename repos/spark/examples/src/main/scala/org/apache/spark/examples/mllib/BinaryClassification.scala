@@ -65,31 +65,32 @@ object BinaryClassification {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("BinaryClassification") {
-      head("BinaryClassification: an example app for binary classification.")
-      opt[Int]("numIterations")
-        .text("number of iterations")
-        .action((x, c) => c.copy(numIterations = x))
-      opt[Double]("stepSize")
-        .text("initial step size (ignored by logistic regression), " +
-          s"default: ${defaultParams.stepSize}")
-        .action((x, c) => c.copy(stepSize = x))
-      opt[String]("algorithm")
-        .text(s"algorithm (${Algorithm.values.mkString(",")}), " +
-          s"default: ${defaultParams.algorithm}")
-        .action((x, c) => c.copy(algorithm = Algorithm.withName(x)))
-      opt[String]("regType")
-        .text(s"regularization type (${RegType.values.mkString(",")}), " +
-          s"default: ${defaultParams.regType}")
-        .action((x, c) => c.copy(regType = RegType.withName(x)))
-      opt[Double]("regParam")
-        .text(s"regularization parameter, default: ${defaultParams.regParam}")
-      arg[String]("<input>")
-        .required()
-        .text("input paths to labeled examples in LIBSVM format")
-        .action((x, c) => c.copy(input = x))
-      note(
-        """
+    val parser =
+      new OptionParser[Params]("BinaryClassification") {
+        head("BinaryClassification: an example app for binary classification.")
+        opt[Int]("numIterations")
+          .text("number of iterations")
+          .action((x, c) => c.copy(numIterations = x))
+        opt[Double]("stepSize")
+          .text("initial step size (ignored by logistic regression), " +
+            s"default: ${defaultParams.stepSize}")
+          .action((x, c) => c.copy(stepSize = x))
+        opt[String]("algorithm")
+          .text(s"algorithm (${Algorithm.values.mkString(",")}), " +
+            s"default: ${defaultParams.algorithm}")
+          .action((x, c) => c.copy(algorithm = Algorithm.withName(x)))
+        opt[String]("regType")
+          .text(s"regularization type (${RegType.values.mkString(",")}), " +
+            s"default: ${defaultParams.regType}")
+          .action((x, c) => c.copy(regType = RegType.withName(x)))
+        opt[Double]("regParam")
+          .text(s"regularization parameter, default: ${defaultParams.regParam}")
+        arg[String]("<input>")
+          .required()
+          .text("input paths to labeled examples in LIBSVM format")
+          .action((x, c) => c.copy(input = x))
+        note(
+          """
           |For example, the following command runs this app on a synthetic dataset:
           |
           | bin/spark-submit --class org.apache.spark.examples.mllib.BinaryClassification \
@@ -97,7 +98,7 @@ object BinaryClassification {
           |  --algorithm LR --regType L2 --regParam 1.0 \
           |  data/mllib/sample_binary_classification_data.txt
         """.stripMargin)
-    }
+      }
 
     parser.parse(args, defaultParams).map { params =>
       run(params)
@@ -124,28 +125,30 @@ object BinaryClassification {
 
     examples.unpersist(blocking = false)
 
-    val updater = params.regType match {
-      case L1 => new L1Updater()
-      case L2 => new SquaredL2Updater()
-    }
+    val updater =
+      params.regType match {
+        case L1 => new L1Updater()
+        case L2 => new SquaredL2Updater()
+      }
 
-    val model = params.algorithm match {
-      case LR =>
-        val algorithm = new LogisticRegressionWithLBFGS()
-        algorithm.optimizer
-          .setNumIterations(params.numIterations)
-          .setUpdater(updater)
-          .setRegParam(params.regParam)
-        algorithm.run(training).clearThreshold()
-      case SVM =>
-        val algorithm = new SVMWithSGD()
-        algorithm.optimizer
-          .setNumIterations(params.numIterations)
-          .setStepSize(params.stepSize)
-          .setUpdater(updater)
-          .setRegParam(params.regParam)
-        algorithm.run(training).clearThreshold()
-    }
+    val model =
+      params.algorithm match {
+        case LR =>
+          val algorithm = new LogisticRegressionWithLBFGS()
+          algorithm.optimizer
+            .setNumIterations(params.numIterations)
+            .setUpdater(updater)
+            .setRegParam(params.regParam)
+          algorithm.run(training).clearThreshold()
+        case SVM =>
+          val algorithm = new SVMWithSGD()
+          algorithm.optimizer
+            .setNumIterations(params.numIterations)
+            .setStepSize(params.stepSize)
+            .setUpdater(updater)
+            .setRegParam(params.regParam)
+          algorithm.run(training).clearThreshold()
+      }
 
     val prediction = model.predict(test.map(_.features))
     val predictionAndLabel = prediction.zip(test.map(_.label))

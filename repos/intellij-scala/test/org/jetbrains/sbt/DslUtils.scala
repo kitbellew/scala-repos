@@ -36,8 +36,7 @@ object DslUtils {
   class AttributeDef[T: Manifest](
       attribute: Attribute[T],
       attributes: AttributeMap) {
-    def :=(newValue: => T): Unit =
-      attributes.put(attribute, newValue)
+    def :=(newValue: => T): Unit = attributes.put(attribute, newValue)
   }
 
   /**

@@ -42,9 +42,10 @@ class Issue091Spec extends FlatSpec with RunOnApplicationThread {
 
   "Issue 91 - cont" should "compile" in {
 
-    val drop = new Rectangle() {
-      effect = new Blend()
-    }
+    val drop =
+      new Rectangle() {
+        effect = new Blend()
+      }
     drop.effect() should not be null
 
     // Issue 91 is causing NPE exception in the following line, due to an attempted implicit conversion of `null`.

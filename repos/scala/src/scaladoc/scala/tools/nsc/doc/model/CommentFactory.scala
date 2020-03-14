@@ -24,8 +24,8 @@ trait CommentFactory extends base.CommentFactoryBase {
   val global: Global
   import global.{Symbol, NoSymbol}
 
-  protected val commentCache =
-    mutable.HashMap.empty[(Symbol, DocTemplateImpl), Option[Comment]]
+  protected val commentCache = mutable.HashMap
+    .empty[(Symbol, DocTemplateImpl), Option[Comment]]
 
   def comment(
       sym: Symbol,

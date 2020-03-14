@@ -32,23 +32,25 @@ private[simul] final class SimulRepo(simulColl: Coll) {
   private implicit val ClockBSONHandler = Macros.handler[SimulClock]
   private implicit val PlayerBSONHandler = Macros.handler[SimulPlayer]
   private implicit val ApplicantBSONHandler = Macros.handler[SimulApplicant]
-  private implicit val SimulPairingBSONHandler = new BSON[SimulPairing] {
-    def reads(r: BSON.Reader) =
-      SimulPairing(
-        player = r.get[SimulPlayer]("player"),
-        gameId = r str "gameId",
-        status = r.get[Status]("status"),
-        wins = r boolO "wins",
-        hostColor = r.strO("hostColor").flatMap(chess.Color.apply) | chess.White
-      )
-    def writes(w: BSON.Writer, o: SimulPairing) =
-      BSONDocument(
-        "player" -> o.player,
-        "gameId" -> o.gameId,
-        "status" -> o.status,
-        "wins" -> o.wins,
-        "hostColor" -> o.hostColor.name)
-  }
+  private implicit val SimulPairingBSONHandler =
+    new BSON[SimulPairing] {
+      def reads(r: BSON.Reader) =
+        SimulPairing(
+          player = r.get[SimulPlayer]("player"),
+          gameId = r str "gameId",
+          status = r.get[Status]("status"),
+          wins = r boolO "wins",
+          hostColor =
+            r.strO("hostColor").flatMap(chess.Color.apply) | chess.White
+        )
+      def writes(w: BSON.Writer, o: SimulPairing) =
+        BSONDocument(
+          "player" -> o.player,
+          "gameId" -> o.gameId,
+          "status" -> o.status,
+          "wins" -> o.wins,
+          "hostColor" -> o.hostColor.name)
+    }
 
   private implicit val SimulBSONHandler = Macros.handler[Simul]
 
@@ -122,8 +124,7 @@ private[simul] final class SimulRepo(simulColl: Coll) {
       .cursor[Simul]()
       .collect[List]()
 
-  def create(simul: Simul): Funit =
-    simulColl insert simul void
+  def create(simul: Simul): Funit = simulColl insert simul void
 
   def update(simul: Simul) =
     simulColl.update(BSONDocument("_id" -> simul.id), simul).void

@@ -12,14 +12,15 @@ import org.scalatest.junit.JUnitRunner
 class InetResolverTest extends FunSuite {
   val statsReceiver = new InMemoryStatsReceiver
 
-  val resolver = new InetResolver(statsReceiver, None) {
-    override def resolveHost(host: String): Future[Seq[InetAddress]] = {
-      if (host.equals("localhost"))
-        super.resolveHost(host)
-      else
-        Future.exception(new UnknownHostException())
+  val resolver =
+    new InetResolver(statsReceiver, None) {
+      override def resolveHost(host: String): Future[Seq[InetAddress]] = {
+        if (host.equals("localhost"))
+          super.resolveHost(host)
+        else
+          Future.exception(new UnknownHostException())
+      }
     }
-  }
 
   test("host not found") {
     val addr = resolver.bind("no_TLDs_for_old_humans:80")

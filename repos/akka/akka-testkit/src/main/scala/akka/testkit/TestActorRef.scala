@@ -23,33 +23,33 @@ class TestActorRef[T <: Actor](
     _supervisor: ActorRef,
     name: String)
     extends {
-  val props =
-    _props.withDispatcher(
-      if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven)
-        CallingThreadDispatcher.Id
-      else
-        _props.dispatcher)
+  val props = _props.withDispatcher(
+    if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven)
+      CallingThreadDispatcher.Id
+    else
+      _props.dispatcher)
   val dispatcher = _system.dispatchers.lookup(props.dispatcher)
-  private val disregard = _supervisor match {
-    case l: LocalActorRef ⇒ l.underlying.reserveChild(name)
-    case r: RepointableActorRef ⇒
-      r.underlying match {
-        case u: UnstartedCell ⇒
-          throw new IllegalStateException(
-            "cannot attach a TestActor to an unstarted top-level actor, ensure that it is started by sending a message and observing the reply")
-        case c: ActorCell ⇒ c.reserveChild(name)
-        case o ⇒
-          _system.log.error(
-            "trying to attach child {} to unknown type of supervisor cell {}, this is not going to end well",
-            name,
-            o.getClass)
-      }
-    case s ⇒
-      _system.log.error(
-        "trying to attach child {} to unknown type of supervisor {}, this is not going to end well",
-        name,
-        s.getClass)
-  }
+  private val disregard =
+    _supervisor match {
+      case l: LocalActorRef ⇒ l.underlying.reserveChild(name)
+      case r: RepointableActorRef ⇒
+        r.underlying match {
+          case u: UnstartedCell ⇒
+            throw new IllegalStateException(
+              "cannot attach a TestActor to an unstarted top-level actor, ensure that it is started by sending a message and observing the reply")
+          case c: ActorCell ⇒ c.reserveChild(name)
+          case o ⇒
+            _system.log.error(
+              "trying to attach child {} to unknown type of supervisor cell {}, this is not going to end well",
+              name,
+              o.getClass)
+        }
+      case s ⇒
+        _system.log.error(
+          "trying to attach child {} to unknown type of supervisor {}, this is not going to end well",
+          name,
+          s.getClass)
+    }
 } with LocalActorRef(
   _system.asInstanceOf[ActorSystemImpl],
   props,

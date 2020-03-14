@@ -111,24 +111,25 @@ object Menu extends DispatchSnippet {
            i <- Helpers.asInt(lvs))
         yield i
 
-    val toRender: Seq[MenuItem] = (S.attr("item"), S.attr("group")) match {
-      case (Full(item), _) =>
-        for {
-          sm <- LiftRules.siteMap.toList
-          req <- S.request.toList
-          loc <- sm.findLoc(item).toList
-          item <- buildItemMenu(loc, req.location, expandAll)
-        } yield item
+    val toRender: Seq[MenuItem] =
+      (S.attr("item"), S.attr("group")) match {
+        case (Full(item), _) =>
+          for {
+            sm <- LiftRules.siteMap.toList
+            req <- S.request.toList
+            loc <- sm.findLoc(item).toList
+            item <- buildItemMenu(loc, req.location, expandAll)
+          } yield item
 
-      case (_, Full(group)) =>
-        for {
-          sm <- LiftRules.siteMap.toList
-          loc <- sm.locForGroup(group)
-          req <- S.request.toList
-          item <- buildItemMenu(loc, req.location, expandAll)
-        } yield item
-      case _ => renderWhat(expandAll)
-    }
+        case (_, Full(group)) =>
+          for {
+            sm <- LiftRules.siteMap.toList
+            loc <- sm.locForGroup(group)
+            req <- S.request.toList
+            item <- buildItemMenu(loc, req.location, expandAll)
+          } yield item
+        case _ => renderWhat(expandAll)
+      }
 
     def ifExpandCurrent(f: => NodeSeq): NodeSeq =
       if (expandAny || expandAll)
@@ -276,18 +277,19 @@ object Menu extends DispatchSnippet {
             }
           }
 
-        val realMenuItems = level match {
-          case Full(lvl) if lvl > 0 =>
-            def findKids(cur: Seq[MenuItem], depth: Int): Seq[MenuItem] =
-              if (depth == 0)
-                cur
-              else
-                findKids(cur.flatMap(mi => mi.kids), depth - 1)
+        val realMenuItems =
+          level match {
+            case Full(lvl) if lvl > 0 =>
+              def findKids(cur: Seq[MenuItem], depth: Int): Seq[MenuItem] =
+                if (depth == 0)
+                  cur
+                else
+                  findKids(cur.flatMap(mi => mi.kids), depth - 1)
 
-            findKids(xs, lvl)
+              findKids(xs, lvl)
 
-          case _ => xs
-        }
+            case _ => xs
+          }
 
         buildUlLine(realMenuItems) match {
           case top: Elem => top % S.prefixedAttrsToMetaData("top")
@@ -336,8 +338,7 @@ object Menu extends DispatchSnippet {
           )
       }
 
-    def buildItems(in: Seq[MenuItem]): JsExp =
-      JsArray(in.map(buildItem): _*)
+    def buildItems(in: Seq[MenuItem]): JsExp = JsArray(in.map(buildItem): _*)
 
     Script(
       JsCrVar(
@@ -382,11 +383,12 @@ object Menu extends DispatchSnippet {
           {
             val rts = rt.text
             val idx = str.indexOf("%*%")
-            val bodyStr = if (idx >= 0) {
-              str.substring(0, idx) + rts + str.substring(idx + 3)
-            } else {
-              str + " " + rts
-            }
+            val bodyStr =
+              if (idx >= 0) {
+                str.substring(0, idx) + rts + str.substring(idx + 3)
+              } else {
+                str + " " + rts
+              }
 
             <title>{
               bodyStr
@@ -533,18 +535,20 @@ object Menu extends DispatchSnippet {
     val linkToSelf = (S.attr("linkToSelf") or S.attr("linktoself"))
       .map(Helpers.toBoolean) openOr false
 
-    val text = ("a" #> ((n: NodeSeq) =>
-      n match {
-        case e: Elem => e.child
-        case xs      => xs
-      })).apply(_text)
+    val text =
+      ("a" #> ((n: NodeSeq) =>
+        n match {
+          case e: Elem => e.child
+          case xs      => xs
+        })).apply(_text)
 
     for {
       name <- S.attr("name").toList
     } yield {
-      type T = Q forSome {
-        type Q
-      }
+      type T =
+        Q forSome {
+          type Q
+        }
 
       // Builds a link for the given loc
       def buildLink[T](loc: Loc[T]) = {

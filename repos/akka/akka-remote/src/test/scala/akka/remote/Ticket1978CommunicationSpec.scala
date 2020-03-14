@@ -215,12 +215,13 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
           }
         }),
         "echo")
-      val otherAddress = other
-        .asInstanceOf[ExtendedActorSystem]
-        .provider
-        .asInstanceOf[RemoteActorRefProvider]
-        .transport
-        .defaultAddress
+      val otherAddress =
+        other
+          .asInstanceOf[ExtendedActorSystem]
+          .provider
+          .asInstanceOf[RemoteActorRefProvider]
+          .transport
+          .defaultAddress
 
       "support tell" in within(timeout.duration) {
         val here = {

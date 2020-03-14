@@ -28,30 +28,30 @@ class StringTemplateSupport(
   }
 
   private val companionTemplate = {
-    val maybeSTG =
-      Option(new File(templateFile.absolutePath + ".stg"))
-        .filter(_.exists)
-        .map { cf =>
-          new STGroupFile(cf.absolutePath, '$', '$')
-        }
+    val maybeSTG = Option(new File(templateFile.absolutePath + ".stg"))
+      .filter(_.exists)
+      .map { cf =>
+        new STGroupFile(cf.absolutePath, '$', '$')
+      }
     new STCompanionTemplate(maybeSTG)
   }
 
   private val verDic = mapAsJavaMap(generateVersionRangeDictionary(version))
 
-  private val errorListener = new STErrorListener() {
-    import org.stringtemplate.v4.misc.STMessage
-    override def compileTimeError(msg: STMessage) = handle(msg)
-    override def runTimeError(msg: STMessage) = handle(msg)
-    override def IOError(msg: STMessage) = handle(msg)
-    override def internalError(msg: STMessage) = handle(msg)
+  private val errorListener =
+    new STErrorListener() {
+      import org.stringtemplate.v4.misc.STMessage
+      override def compileTimeError(msg: STMessage) = handle(msg)
+      override def runTimeError(msg: STMessage) = handle(msg)
+      override def IOError(msg: STMessage) = handle(msg)
+      override def internalError(msg: STMessage) = handle(msg)
 
-    private def handle(msg: STMessage) = {
-      logger.error("ERROR: " + templateFile.getAbsolutePath)
-      logger.error("Message: " + msg.toString)
-      logger.trace(msg.cause)
+      private def handle(msg: STMessage) = {
+        logger.error("ERROR: " + templateFile.getAbsolutePath)
+        logger.error("Message: " + msg.toString)
+        logger.trace(msg.cause)
+      }
     }
-  }
 
   private def baseGroup = {
     val g = new STGroup('$', '$')

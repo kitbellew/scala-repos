@@ -8,17 +8,14 @@ trait Names {
 
   def freshNameCreator = globalFreshNameCreator
 
-  def fresh(): String =
-    freshName()
+  def fresh(): String = freshName()
 
-  def fresh(name: String): String =
-    freshName(name)
+  def fresh(name: String): String = freshName(name)
 
   def fresh[NameType <: Name](name: NameType): NameType =
     freshName[NameType](name)
 
-  def freshName(): String =
-    freshName(nme.FRESH_PREFIX)
+  def freshName(): String = freshName(nme.FRESH_PREFIX)
 
   def freshName(name: String): String = {
     // In comparison with the first version of freshName, current "fresh" names

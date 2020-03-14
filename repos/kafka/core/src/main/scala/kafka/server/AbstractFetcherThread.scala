@@ -48,10 +48,11 @@ abstract class AbstractFetcherThread(
   type REQ <: FetchRequest
   type PD <: PartitionData
 
-  private val partitionMap = new mutable.HashMap[
-    TopicAndPartition,
-    PartitionFetchState
-  ] // a (topic, partition) -> partitionFetchState map
+  private val partitionMap =
+    new mutable.HashMap[
+      TopicAndPartition,
+      PartitionFetchState
+    ] // a (topic, partition) -> partitionFetchState map
   private val partitionMapLock = new ReentrantLock
   private val partitionMapCond = partitionMapLock.newCondition()
 
@@ -89,16 +90,17 @@ abstract class AbstractFetcherThread(
 
   override def doWork() {
 
-    val fetchRequest = inLock(partitionMapLock) {
-      val fetchRequest = buildFetchRequest(partitionMap)
-      if (fetchRequest.isEmpty) {
-        trace(
-          "There are no active partitions. Back off for %d ms before sending a fetch request"
-            .format(fetchBackOffMs))
-        partitionMapCond.await(fetchBackOffMs, TimeUnit.MILLISECONDS)
+    val fetchRequest =
+      inLock(partitionMapLock) {
+        val fetchRequest = buildFetchRequest(partitionMap)
+        if (fetchRequest.isEmpty) {
+          trace(
+            "There are no active partitions. Back off for %d ms before sending a fetch request"
+              .format(fetchBackOffMs))
+          partitionMapCond.await(fetchBackOffMs, TimeUnit.MILLISECONDS)
+        }
+        fetchRequest
       }
-      fetchRequest
-    }
 
     if (!fetchRequest.isEmpty)
       processFetchRequest(fetchRequest)
@@ -154,8 +156,8 @@ abstract class AbstractFetcherThread(
                           new PartitionFetchState(newOffset))
                         fetcherLagStats
                           .getFetcherLagStats(topic, partitionId)
-                          .lag =
-                          Math.max(0L, partitionData.highWatermark - newOffset)
+                          .lag = Math
+                          .max(0L, partitionData.highWatermark - newOffset)
                         fetcherStats.byteRate.mark(validBytes)
                         // Once we hand off the partition data to the subclass, we can't mess with it any more in this thread
                         processPartitionData(
@@ -181,8 +183,8 @@ abstract class AbstractFetcherThread(
                       }
                     case Errors.OFFSET_OUT_OF_RANGE =>
                       try {
-                        val newOffset =
-                          handleOffsetOutOfRange(topicAndPartition)
+                        val newOffset = handleOffsetOutOfRange(
+                          topicAndPartition)
                         partitionMap.put(
                           topicAndPartition,
                           new PartitionFetchState(newOffset))
@@ -311,8 +313,8 @@ class FetcherLagMetrics(metricId: ClientIdTopicPartition)
 }
 
 class FetcherLagStats(metricId: ClientIdAndBroker) {
-  private val valueFactory = (k: ClientIdTopicPartition) =>
-    new FetcherLagMetrics(k)
+  private val valueFactory =
+    (k: ClientIdTopicPartition) => new FetcherLagMetrics(k)
   val stats =
     new Pool[ClientIdTopicPartition, FetcherLagMetrics](Some(valueFactory))
 
@@ -328,8 +330,11 @@ class FetcherStats(metricId: ClientIdAndBroker) extends KafkaMetricsGroup {
     "brokerHost" -> metricId.brokerHost,
     "brokerPort" -> metricId.brokerPort.toString)
 
-  val requestRate =
-    newMeter("RequestsPerSec", "requests", TimeUnit.SECONDS, tags)
+  val requestRate = newMeter(
+    "RequestsPerSec",
+    "requests",
+    TimeUnit.SECONDS,
+    tags)
 
   val byteRate = newMeter("BytesPerSec", "bytes", TimeUnit.SECONDS, tags)
 }

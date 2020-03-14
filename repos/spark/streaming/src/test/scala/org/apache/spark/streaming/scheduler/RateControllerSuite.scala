@@ -47,10 +47,11 @@ class RateControllerSuite extends TestSuiteBase {
     val ssc = new StreamingContext(conf, batchDuration)
     withStreamingContext(ssc) { ssc =>
       val estimator = new ConstantEstimator(100)
-      val dstream = new RateTestInputDStream(ssc) {
-        override val rateController =
-          Some(new ReceiverRateController(id, estimator))
-      }
+      val dstream =
+        new RateTestInputDStream(ssc) {
+          override val rateController = Some(
+            new ReceiverRateController(id, estimator))
+        }
       dstream.register()
       ssc.start()
 

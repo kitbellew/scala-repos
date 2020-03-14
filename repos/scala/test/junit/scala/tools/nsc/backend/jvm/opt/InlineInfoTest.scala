@@ -46,8 +46,7 @@ class InlineInfoTest extends ClearAfterClass {
 
   @Test
   def inlineInfosFromSymbolAndAttribute(): Unit = {
-    val code =
-      """trait T {
+    val code = """trait T {
         |  @inline def f: Int
         |  @noinline final def g = 0
         |}

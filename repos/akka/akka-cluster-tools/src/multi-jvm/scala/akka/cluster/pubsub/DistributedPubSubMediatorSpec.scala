@@ -159,8 +159,9 @@ class DistributedPubSubMediatorSpec
   var chatUsers: Map[String, ActorRef] = Map.empty
 
   def createChatUser(name: String): ActorRef = {
-    var a =
-      system.actorOf(Props(classOf[TestChatUser], mediator, testActor), name)
+    var a = system.actorOf(
+      Props(classOf[TestChatUser], mediator, testActor),
+      name)
     chatUsers += (name -> a)
     a
   }
@@ -325,9 +326,10 @@ class DistributedPubSubMediatorSpec
       }
 
       runOn(first) {
-        val names = receiveWhile(messages = 2) {
-          case "hello all" ⇒ lastSender.path.name
-        }
+        val names =
+          receiveWhile(messages = 2) {
+            case "hello all" ⇒ lastSender.path.name
+          }
         names.toSet should ===(Set("u8", "u9"))
       }
       runOn(second) {

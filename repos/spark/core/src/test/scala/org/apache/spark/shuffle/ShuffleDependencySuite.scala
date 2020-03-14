@@ -46,16 +46,16 @@ class ShuffleDependencySuite extends SparkFunSuite with LocalSparkContext {
   test(
     "key, value, and combiner classes available in shuffle dependency with aggregation") {
     sc = new SparkContext("local", "test", conf.clone())
-    val rdd = sc
-      .parallelize(1 to 5, 4)
-      .map(key => (KeyClass(), ValueClass()))
-      .aggregateByKey(CombinerClass())(
-        {
-          case (a, b) => a
-        },
-        {
-          case (a, b) => a
-        })
+    val rdd =
+      sc.parallelize(1 to 5, 4)
+        .map(key => (KeyClass(), ValueClass()))
+        .aggregateByKey(CombinerClass())(
+          {
+            case (a, b) => a
+          },
+          {
+            case (a, b) => a
+          })
     val dep = rdd.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
     assert(
       dep.mapSideCombine && dep.aggregator.isDefined,

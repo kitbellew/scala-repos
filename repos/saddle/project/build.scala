@@ -41,32 +41,31 @@ object SaddleBuild extends sbt.Build {
       base = file(".")
     ) aggregate (core, hdf5, test_framework)
 
-  lazy val core =
-    project(
-      id = "saddle-core",
-      base = file("saddle-core"),
-      settings = Seq(
-        initialCommands := """
+  lazy val core = project(
+    id = "saddle-core",
+    base = file("saddle-core"),
+    settings = Seq(
+      initialCommands := """
                 |import org.joda.time.DateTime
                 |import org.saddle._
                 |import org.saddle.time._
                 |import org.saddle.io._""".stripMargin('|'),
-        unmanagedClasspath in (LocalProject(
-          "saddle-core"), Test) <++= (fullClasspath in (LocalProject(
-          "saddle-test-framework"), Test)),
-        libraryDependencies <++= scalaVersion(v =>
-          Seq(
-            "joda-time" % "joda-time" % "2.1",
-            "org.joda" % "joda-convert" % "1.2",
-            "org.scala-saddle" % "google-rfc-2445" % "20110304",
-            "com.googlecode.efficient-java-matrix-library" % "ejml" % "0.19",
-            "org.apache.commons" % "commons-math" % "2.2",
-            "it.unimi.dsi" % "fastutil" % "6.5.4",
-            "it.unimi.dsi" % "dsiutils" % "2.0.15"
-          ) ++ Shared.testDeps(v)),
-        testOptions in Test += Tests.Argument("console", "junitxml")
-      )
+      unmanagedClasspath in (LocalProject(
+        "saddle-core"), Test) <++= (fullClasspath in (LocalProject(
+        "saddle-test-framework"), Test)),
+      libraryDependencies <++= scalaVersion(v =>
+        Seq(
+          "joda-time" % "joda-time" % "2.1",
+          "org.joda" % "joda-convert" % "1.2",
+          "org.scala-saddle" % "google-rfc-2445" % "20110304",
+          "com.googlecode.efficient-java-matrix-library" % "ejml" % "0.19",
+          "org.apache.commons" % "commons-math" % "2.2",
+          "it.unimi.dsi" % "fastutil" % "6.5.4",
+          "it.unimi.dsi" % "dsiutils" % "2.0.15"
+        ) ++ Shared.testDeps(v)),
+      testOptions in Test += Tests.Argument("console", "junitxml")
     )
+  )
 
   lazy val hdf5 =
     project(

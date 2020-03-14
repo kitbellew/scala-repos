@@ -61,10 +61,11 @@ object LoggingDocSpec {
     override def mdc(currentMessage: Any): MDC = {
       reqId += 1
       val always = Map("requestId" -> reqId)
-      val perMessage = currentMessage match {
-        case r: Req => Map("visitorId" -> r.visitorId)
-        case _      => Map()
-      }
+      val perMessage =
+        currentMessage match {
+          case r: Req => Map("visitorId" -> r.visitorId)
+          case _      => Map()
+        }
       always ++ perMessage
     }
 
@@ -101,10 +102,11 @@ object LoggingDocSpec {
   import akka.event.LogSource
 
   object MyType {
-    implicit val logSource: LogSource[AnyRef] = new LogSource[AnyRef] {
-      def genString(o: AnyRef): String = o.getClass.getName
-      override def getClazz(o: AnyRef): Class[_] = o.getClass
-    }
+    implicit val logSource: LogSource[AnyRef] =
+      new LogSource[AnyRef] {
+        def genString(o: AnyRef): String = o.getClass.getName
+        override def getClazz(o: AnyRef): Class[_] = o.getClass
+      }
   }
 
   class MyType(system: ActorSystem) {

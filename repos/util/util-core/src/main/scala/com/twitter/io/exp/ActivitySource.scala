@@ -128,37 +128,40 @@ class FilePollingActivitySource private[exp] (
   import com.twitter.io.exp.ActivitySource._
 
   def get(name: String): Activity[Buf] = {
-    val v = Var.async[Activity.State[Buf]](Activity.Pending) { value =>
-      val timerTask = timer.schedule(Time.now, period) {
-        val file = new File(name)
+    val v =
+      Var.async[Activity.State[Buf]](Activity.Pending) { value =>
+        val timerTask =
+          timer.schedule(Time.now, period) {
+            val file = new File(name)
 
-        if (file.exists()) {
-          pool {
-            val reader = new InputStreamReader(
-              new FileInputStream(file),
-              InputStreamReader.DefaultMaxBufferSize,
-              pool)
-            Reader.readAll(reader) respond {
-              case Return(buf) =>
-                value() = Activity.Ok(buf)
-              case Throw(cause) =>
-                value() = Activity.Failed(cause)
-            } ensure {
-              // InputStreamReader ignores the deadline in close
-              reader.close(Time.Undefined)
+            if (file.exists()) {
+              pool {
+                val reader =
+                  new InputStreamReader(
+                    new FileInputStream(file),
+                    InputStreamReader.DefaultMaxBufferSize,
+                    pool)
+                Reader.readAll(reader) respond {
+                  case Return(buf) =>
+                    value() = Activity.Ok(buf)
+                  case Throw(cause) =>
+                    value() = Activity.Failed(cause)
+                } ensure {
+                  // InputStreamReader ignores the deadline in close
+                  reader.close(Time.Undefined)
+                }
+              }
+            } else {
+              value() = Activity.Failed(NotFound)
             }
           }
-        } else {
-          value() = Activity.Failed(NotFound)
-        }
-      }
 
-      Closable.make { _ =>
-        Future {
-          timerTask.cancel()
+        Closable.make { _ =>
+          Future {
+            timerTask.cancel()
+          }
         }
       }
-    }
 
     Activity(v)
   }
@@ -184,32 +187,33 @@ class ClassLoaderActivitySource private[exp] (
     val p = new Promise[Activity.State[Buf]]
 
     // Defer loading until the first observation
-    val v = Var.async[Activity.State[Buf]](Activity.Pending) { value =>
-      if (runOnce.compareAndSet(false, true)) {
-        pool {
-          classLoader.getResourceAsStream(name) match {
-            case null => p.setValue(Activity.Failed(NotFound))
-            case stream =>
-              val reader =
-                new InputStreamReader(
-                  stream,
-                  InputStreamReader.DefaultMaxBufferSize,
-                  pool)
-              Reader.readAll(reader) respond {
-                case Return(buf) =>
-                  p.setValue(Activity.Ok(buf))
-                case Throw(cause) =>
-                  p.setValue(Activity.Failed(cause))
-              } ensure {
-                // InputStreamReader ignores the deadline in close
-                reader.close(Time.Undefined)
-              }
+    val v =
+      Var.async[Activity.State[Buf]](Activity.Pending) { value =>
+        if (runOnce.compareAndSet(false, true)) {
+          pool {
+            classLoader.getResourceAsStream(name) match {
+              case null => p.setValue(Activity.Failed(NotFound))
+              case stream =>
+                val reader =
+                  new InputStreamReader(
+                    stream,
+                    InputStreamReader.DefaultMaxBufferSize,
+                    pool)
+                Reader.readAll(reader) respond {
+                  case Return(buf) =>
+                    p.setValue(Activity.Ok(buf))
+                  case Throw(cause) =>
+                    p.setValue(Activity.Failed(cause))
+                } ensure {
+                  // InputStreamReader ignores the deadline in close
+                  reader.close(Time.Undefined)
+                }
+            }
           }
         }
+        p.onSuccess(value() = _)
+        Closable.nop
       }
-      p.onSuccess(value() = _)
-      Closable.nop
-    }
 
     Activity(v)
   }

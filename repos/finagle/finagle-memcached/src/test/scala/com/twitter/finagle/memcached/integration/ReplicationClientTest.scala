@@ -49,11 +49,12 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       ZooKeeperClient.digestCredentials("user", "pass"))
 
     // start two memcached server and join the cluster
-    val firstPoolCluster = new ZookeeperServerSetCluster(
-      ServerSets.create(
-        zookeeperClient,
-        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-        firstPoolPath))
+    val firstPoolCluster =
+      new ZookeeperServerSetCluster(
+        ServerSets.create(
+          zookeeperClient,
+          ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+          firstPoolPath))
     (0 to 1) foreach { _ =>
       TestMemcachedServer.start() match {
         case Some(server) =>
@@ -63,11 +64,12 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       }
     }
 
-    val secondPoolCluster = new ZookeeperServerSetCluster(
-      ServerSets.create(
-        zookeeperClient,
-        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-        secondPoolPath))
+    val secondPoolCluster =
+      new ZookeeperServerSetCluster(
+        ServerSets.create(
+          zookeeperClient,
+          ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+          secondPoolPath))
     (0 to 1) foreach { _ =>
       TestMemcachedServer.start() match {
         case Some(server) =>
@@ -78,8 +80,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
     }
 
     // set cache pool config node data
-    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(
-      cachePoolSize = 2)
+    val cachePoolConfig: CachePoolConfig =
+      new CachePoolConfig(cachePoolSize = 2)
     val output: ByteArrayOutputStream = new ByteArrayOutputStream
     CachePoolConfig.jsonCodec.serialize(cachePoolConfig, output)
     zookeeperClient.get().setData(firstPoolPath, output.toByteArray, -1)
@@ -108,13 +110,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("base replication client set & getOne") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -179,13 +183,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("base replication client set & getAll") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -257,13 +263,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("base replication client delete") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -334,13 +342,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("base replication client getsAll & cas") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -486,13 +496,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("base replication client add & replace") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -600,13 +612,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("base replication client incr & decr") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -692,13 +706,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("base replication client many keys") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -732,8 +748,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
 
       (0 until count).foreach { n =>
         {
-          val ConsistentReplication(Some(Buf.Utf8(res))) =
-            Await.result(replicatedClient.getAll("foo" + n))
+          val ConsistentReplication(Some(Buf.Utf8(res))) = Await.result(
+            replicatedClient.getAll("foo" + n))
           assert(res == "bar" + n)
         }
       }
@@ -757,13 +773,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("base replication client replica down") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -826,13 +844,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("base replication client non supported operation") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -871,13 +891,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("simple replication client get & set") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -951,13 +973,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("simple replication client gets & cas") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -1013,13 +1037,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("simple replication client delete") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -1080,13 +1106,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("simple replication client add & replace") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -1155,13 +1183,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("simple replication client incr & decr") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -1212,13 +1242,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("simple replication client many keys") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -1278,13 +1310,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("simple replication client replica down") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships
@@ -1336,13 +1370,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1712
     test("simple replication client non supported operation") {
       // create my cluster client solely based on a zk client and a path
-      val mycluster1 =
-        CachePoolCluster.newZkCluster(firstPoolPath, zookeeperClient)
+      val mycluster1 = CachePoolCluster.newZkCluster(
+        firstPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster1.ready
       ) // give it sometime for the cluster to get the initial set of memberships
-      val mycluster2 =
-        CachePoolCluster.newZkCluster(secondPoolPath, zookeeperClient)
+      val mycluster2 = CachePoolCluster.newZkCluster(
+        secondPoolPath,
+        zookeeperClient)
       Await.result(
         mycluster2.ready
       ) // give it sometime for the cluster to get the initial set of memberships

@@ -23,8 +23,8 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
   /** JavaScript primitives, used in jscode */
   object jsPrimitives extends JSPrimitives { // scalastyle:ignore
     val global: JSGlobalAddons.this.global.type = JSGlobalAddons.this.global
-    val jsAddons: ThisJSGlobalAddons =
-      JSGlobalAddons.this.asInstanceOf[ThisJSGlobalAddons]
+    val jsAddons: ThisJSGlobalAddons = JSGlobalAddons.this
+      .asInstanceOf[ThisJSGlobalAddons]
   }
 
   /** global javascript interop related helpers */
@@ -33,8 +33,7 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
     import scala.reflect.internal.Flags
 
     /** Symbols of constructors and modules that are to be exported */
-    private val exportedSymbols =
-      mutable.Map.empty[Symbol, List[ExportInfo]]
+    private val exportedSymbols = mutable.Map.empty[Symbol, List[ExportInfo]]
 
     private val exportPrefix = "$js$exported$"
     private val methodExportPrefix = exportPrefix + "meth$"
@@ -52,8 +51,7 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
         "Can only register constructors or classes for export")
     }
 
-    def clearRegisteredExports(): Unit =
-      exportedSymbols.clear()
+    def clearRegisteredExports(): Unit = exportedSymbols.clear()
 
     def registerForExport(sym: Symbol, infos: List[ExportInfo]): Unit = {
       assert(!exportedSymbols.contains(sym), "Same symbol exported twice")

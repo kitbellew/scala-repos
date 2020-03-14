@@ -6,8 +6,7 @@ import cats.functor.Profunctor
 trait ProfunctorSyntax {
   // TODO: use simulacrum instances eventually
   implicit def profunctorSyntax[F[_, _]: Profunctor, A, B](
-      fab: F[A, B]): ProfunctorOps[F, A, B] =
-    new ProfunctorOps[F, A, B](fab)
+      fab: F[A, B]): ProfunctorOps[F, A, B] = new ProfunctorOps[F, A, B](fab)
 }
 
 final class ProfunctorOps[F[_, _], A, B](fab: F[A, B])(

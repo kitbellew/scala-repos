@@ -146,9 +146,10 @@ class MonitorFilterTest
     val requestFuture = client("123")
 
     assert(!requestFuture.isDefined)
-    val mockService = new Service[String, String] {
-      def apply(request: String): Future[String] = Future.exception(outer)
-    }
+    val mockService =
+      new Service[String, String] {
+        def apply(request: String): Future[String] = Future.exception(outer)
+      }
 
     preparedServicePromise() = Return(mockService)
     assert(requestFuture.poll == Some(Throw(outer)))

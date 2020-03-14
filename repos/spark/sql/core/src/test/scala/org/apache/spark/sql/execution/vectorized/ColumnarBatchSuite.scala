@@ -414,8 +414,10 @@ class ColumnarBatchSuite extends SparkFunSuite {
   test("Int Array") {
     (MemoryMode.ON_HEAP :: MemoryMode.OFF_HEAP :: Nil).foreach { memMode =>
       {
-        val column =
-          ColumnVector.allocate(10, new ArrayType(IntegerType, true), memMode)
+        val column = ColumnVector.allocate(
+          10,
+          new ArrayType(IntegerType, true),
+          memMode)
 
         // Fill the underlying data with all the arrays back to back.
         val data = column.arrayData();
@@ -483,8 +485,9 @@ class ColumnarBatchSuite extends SparkFunSuite {
   test("Struct Column") {
     (MemoryMode.ON_HEAP :: MemoryMode.OFF_HEAP :: Nil).foreach { memMode =>
       {
-        val schema =
-          new StructType().add("int", IntegerType).add("double", DoubleType)
+        val schema = new StructType()
+          .add("int", IntegerType)
+          .add("double", DoubleType)
         val column = ColumnVector.allocate(1024, schema, memMode)
 
         val c1 = column.getChildColumn(0)
@@ -762,8 +765,10 @@ class ColumnarBatchSuite extends SparkFunSuite {
           .add("d", DoubleType)
           .add("b", ByteType)
 
-        val batch =
-          ColumnVectorUtils.toBatch(schema, memMode, rows.iterator.asJava)
+        val batch = ColumnVectorUtils.toBatch(
+          schema,
+          memMode,
+          rows.iterator.asJava)
         assert(batch.numRows() == 2)
         assert(batch.numCols() == 5)
 
@@ -800,11 +805,12 @@ class ColumnarBatchSuite extends SparkFunSuite {
     val random = new Random(seed)
     var i = 0
     while (i < NUM_ITERS) {
-      val schema = if (flatSchema) {
-        RandomDataGenerator.randomSchema(random, numFields, types)
-      } else {
-        RandomDataGenerator.randomNestedSchema(random, numFields, types)
-      }
+      val schema =
+        if (flatSchema) {
+          RandomDataGenerator.randomSchema(random, numFields, types)
+        } else {
+          RandomDataGenerator.randomNestedSchema(random, numFields, types)
+        }
       val rows = mutable.ArrayBuffer.empty[Row]
       var j = 0
       while (j < NUM_ROWS) {
@@ -814,8 +820,10 @@ class ColumnarBatchSuite extends SparkFunSuite {
       }
       (MemoryMode.ON_HEAP :: MemoryMode.OFF_HEAP :: Nil).foreach { memMode =>
         {
-          val batch =
-            ColumnVectorUtils.toBatch(schema, memMode, rows.iterator.asJava)
+          val batch = ColumnVectorUtils.toBatch(
+            schema,
+            memMode,
+            rows.iterator.asJava)
           assert(batch.numRows() == NUM_ROWS)
 
           val it = batch.rowIterator()
@@ -857,8 +865,10 @@ class ColumnarBatchSuite extends SparkFunSuite {
       }
       (MemoryMode.ON_HEAP :: MemoryMode.OFF_HEAP :: Nil).foreach { memMode =>
         {
-          val batch =
-            ColumnVectorUtils.toBatch(schema, memMode, rows.iterator.asJava)
+          val batch = ColumnVectorUtils.toBatch(
+            schema,
+            memMode,
+            rows.iterator.asJava)
           batch.filterNullsInColumn(1)
           batch.setNumRows(NUM_ROWS)
           assert(batch.numRows() == NUM_ROWS)

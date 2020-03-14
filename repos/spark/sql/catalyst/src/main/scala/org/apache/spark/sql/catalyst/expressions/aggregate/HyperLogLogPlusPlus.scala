@@ -124,12 +124,13 @@ case class HyperLogLogPlusPlus(
     * 'alpha' corrects the raw cardinality estimate 'Z'. See the FlFuGaMe07 paper for its
     * derivation.
     */
-  private[this] val alphaM2 = p match {
-    case 4 => 0.673d * m * m
-    case 5 => 0.697d * m * m
-    case 6 => 0.709d * m * m
-    case _ => (0.7213d / (1.0d + 1.079d / m)) * m * m
-  }
+  private[this] val alphaM2 =
+    p match {
+      case 4 => 0.673d * m * m
+      case 5 => 0.697d * m * m
+      case 6 => 0.709d * m * m
+      case _ => (0.7213d / (1.0d + 1.079d / m)) * m * m
+    }
 
   /**
     * The number of words used to store the registers. We use Longs for storage because this is the
@@ -315,17 +316,18 @@ case class HyperLogLogPlusPlus(
       }
 
     // Estimate the cardinality.
-    val estimate = if (V > 0) {
-      // Use linear counting for small cardinality estimates.
-      val H = m * Math.log(m / V)
-      if (H <= THRESHOLDS(p - 4)) {
-        H
+    val estimate =
+      if (V > 0) {
+        // Use linear counting for small cardinality estimates.
+        val H = m * Math.log(m / V)
+        if (H <= THRESHOLDS(p - 4)) {
+          H
+        } else {
+          EBiasCorrected
+        }
       } else {
         EBiasCorrected
       }
-    } else {
-      EBiasCorrected
-    }
 
     // Round to the nearest long value.
     Math.round(estimate)

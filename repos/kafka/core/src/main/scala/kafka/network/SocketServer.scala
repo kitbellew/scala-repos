@@ -116,13 +116,14 @@ class SocketServer(
             metrics)
         }
 
-        val acceptor = new Acceptor(
-          endpoint,
-          sendBufferSize,
-          recvBufferSize,
-          brokerId,
-          processors.slice(processorBeginIndex, processorEndIndex),
-          connectionQuotas)
+        val acceptor =
+          new Acceptor(
+            endpoint,
+            sendBufferSize,
+            recvBufferSize,
+            brokerId,
+            processors.slice(processorBeginIndex, processorEndIndex),
+            connectionQuotas)
         acceptors.put(endpoint, acceptor)
         Utils
           .newThread(
@@ -467,15 +468,16 @@ private[kafka] class Processor(
     metricTags.asScala
   )
 
-  private val selector = new KSelector(
-    maxRequestSize,
-    connectionsMaxIdleMs,
-    metrics,
-    time,
-    "socket-server",
-    metricTags,
-    false,
-    channelBuilder)
+  private val selector =
+    new KSelector(
+      maxRequestSize,
+      connectionsMaxIdleMs,
+      metrics,
+      time,
+      "socket-server",
+      metricTags,
+      false,
+      channelBuilder)
 
   override def run() {
     startupComplete()
@@ -534,13 +536,14 @@ private[kafka] class Processor(
         }
 
         selector.disconnected.asScala.foreach { connectionId =>
-          val remoteHost = ConnectionId
-            .fromString(connectionId)
-            .getOrElse {
-              throw new IllegalStateException(
-                s"connectionId has unexpected format: $connectionId")
-            }
-            .remoteHost
+          val remoteHost =
+            ConnectionId
+              .fromString(connectionId)
+              .getOrElse {
+                throw new IllegalStateException(
+                  s"connectionId has unexpected format: $connectionId")
+              }
+              .remoteHost
           // the channel has been closed by the selector but the quotas still need to be updated
           connectionQuotas.dec(InetAddress.getByName(remoteHost))
         }

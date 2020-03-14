@@ -47,10 +47,11 @@ object ExistentialsConsideredHarmful {
   // Use pattern match to avoid opening the existential twice
   // Type annotation on bc is required ... possible compiler bug?
   // val bc : BoxCarrier[_ <: Animal] = aBox match {
-  val bc = aBox match {
-    case tb: TransportBox[a] =>
-      new BoxCarrier(tb) {
-        def speed: Int = 12
-      }
-  }
+  val bc =
+    aBox match {
+      case tb: TransportBox[a] =>
+        new BoxCarrier(tb) {
+          def speed: Int = 12
+        }
+    }
 }

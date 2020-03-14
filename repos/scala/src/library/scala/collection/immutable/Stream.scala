@@ -1388,15 +1388,13 @@ object Stream extends SeqFactory[Stream] {
     } // don't set to null if throw during filter
 
     def map[B, That](f: A => B)(
-        implicit bf: CanBuildFrom[Stream[A], B, That]): That =
-      filtered map f
+        implicit bf: CanBuildFrom[Stream[A], B, That]): That = filtered map f
 
     def flatMap[B, That](f: A => scala.collection.GenTraversableOnce[B])(
         implicit bf: CanBuildFrom[Stream[A], B, That]): That =
       filtered flatMap f
 
-    def foreach[U](f: A => U): Unit =
-      filtered foreach f
+    def foreach[U](f: A => U): Unit = filtered foreach f
 
     def withFilter(q: A => Boolean): FilterMonadic[A, Stream[A]] =
       new StreamWithFilter[A](filtered, q)

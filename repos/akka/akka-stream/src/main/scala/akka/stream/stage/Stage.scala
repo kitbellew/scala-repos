@@ -63,25 +63,26 @@ private[stream] object AbstractStage {
 
     {
       // No need to refer to the handle in a private val
-      val handler = new InHandler with OutHandler {
-        override def onPush(): Unit =
-          try {
-            currentStage.onPush(grab(shape.in), ctx)
-          } catch {
-            case NonFatal(ex) ⇒ onSupervision(ex)
-          }
+      val handler =
+        new InHandler with OutHandler {
+          override def onPush(): Unit =
+            try {
+              currentStage.onPush(grab(shape.in), ctx)
+            } catch {
+              case NonFatal(ex) ⇒ onSupervision(ex)
+            }
 
-        override def onPull(): Unit = currentStage.onPull(ctx)
+          override def onPull(): Unit = currentStage.onPull(ctx)
 
-        override def onUpstreamFinish(): Unit =
-          currentStage.onUpstreamFinish(ctx)
+          override def onUpstreamFinish(): Unit =
+            currentStage.onUpstreamFinish(ctx)
 
-        override def onUpstreamFailure(ex: Throwable): Unit =
-          currentStage.onUpstreamFailure(ex, ctx)
+          override def onUpstreamFailure(ex: Throwable): Unit =
+            currentStage.onUpstreamFailure(ex, ctx)
 
-        override def onDownstreamFinish(): Unit =
-          currentStage.onDownstreamFinish(ctx)
-      }
+          override def onDownstreamFinish(): Unit =
+            currentStage.onDownstreamFinish(ctx)
+        }
 
       setHandler(shape.in, handler)
       setHandler(shape.out, handler)
@@ -151,8 +152,9 @@ private[stream] object AbstractStage {
 
     final override def absorbTermination(): TerminationDirective = {
       if (isClosed(shape.out)) {
-        val ex = new UnsupportedOperationException(
-          "It is not allowed to call absorbTermination() from onDownstreamFinish.")
+        val ex =
+          new UnsupportedOperationException(
+            "It is not allowed to call absorbTermination() from onDownstreamFinish.")
         // This MUST be logged here, since the downstream has cancelled, i.e. there is no one to send onError to, the
         // stage is just about to finish so no one will catch it anyway just the interpreter
 
@@ -215,14 +217,13 @@ private[stream] object AbstractStage {
         Directive,
         Directive,
         Context[Out],
-        LifecycleContext] =
-        stageAndMat._1.asInstanceOf[AbstractStage[
-          In,
-          Out,
-          Directive,
-          Directive,
-          Context[Out],
-          LifecycleContext]]
+        LifecycleContext] = stageAndMat._1.asInstanceOf[AbstractStage[
+        In,
+        Out,
+        Directive,
+        Directive,
+        Context[Out],
+        LifecycleContext]]
       (
         new PushPullGraphLogic(shape, inheritedAttributes, stage),
         stageAndMat._2)
@@ -648,10 +649,11 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       else
         ctx.finish()
     } else {
-      val nextState = current match {
-        case es: EmittingState if emitting ⇒ es.copy(iter = es.iter ++ iter)
-        case _ ⇒ emittingState(iter, andThen = Finish)
-      }
+      val nextState =
+        current match {
+          case es: EmittingState if emitting ⇒ es.copy(iter = es.iter ++ iter)
+          case _ ⇒ emittingState(iter, andThen = Finish)
+        }
       become(nextState)
       ctx.absorbTermination()
     }

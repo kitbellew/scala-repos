@@ -227,8 +227,8 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
   test("dot product distributes - Matrix") {
     check(Prop.forAll { (trip: (M, M, M)) =>
       val (a, b, c) = trip
-      val res =
-        scalars.close(scalars.+(a dot b, a dot c), (a dot (b + c)), 1e-3)
+      val res = scalars
+        .close(scalars.+(a dot b, a dot c), (a dot (b + c)), 1e-3)
       if (!res)
         println(scalars.+(a dot b, a dot c) + " " + (a dot (b + c)))
       res

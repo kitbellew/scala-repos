@@ -143,8 +143,8 @@ object ReplayLogProducer extends Logging {
     val reportingInterval = options.valueOf(reportingIntervalOpt).intValue
     val isSync = options.has(syncOpt)
     import scala.collection.JavaConversions._
-    val producerProps =
-      CommandLineUtils.parseKeyValueArgs(options.valuesOf(propertyOpt))
+    val producerProps = CommandLineUtils.parseKeyValueArgs(
+      options.valuesOf(propertyOpt))
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList)
     producerProps.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,

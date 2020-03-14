@@ -31,14 +31,20 @@ class MultiJoinTest extends WordSpec {
   val longs = TypedPipe.from(addKeys(List(10L, 20L, 30L)))
   val strings = TypedPipe.from(addKeys(List("one", "two", "three")))
   val sets = TypedPipe.from(addKeys(List(Set(1), Set(2), Set(3))))
-  val maps =
-    TypedPipe.from(addKeys(List(Map(1 -> 1), Map(2 -> 2), Map(3 -> 3))))
+  val maps = TypedPipe.from(
+    addKeys(List(Map(1 -> 1), Map(2 -> 2), Map(3 -> 3))))
 
   val joined = doubles.join(longs).join(strings).join(sets).join(maps)
-  val leftJoined =
-    doubles.leftJoin(longs).leftJoin(strings).leftJoin(sets).leftJoin(maps)
-  val outerJoined =
-    doubles.outerJoin(longs).outerJoin(strings).outerJoin(sets).outerJoin(maps)
+  val leftJoined = doubles
+    .leftJoin(longs)
+    .leftJoin(strings)
+    .leftJoin(sets)
+    .leftJoin(maps)
+  val outerJoined = doubles
+    .outerJoin(longs)
+    .outerJoin(strings)
+    .outerJoin(sets)
+    .outerJoin(maps)
 
   // note that these tests are essentially compile-time tests, all
   // we are testing is that this compiles
@@ -59,10 +65,9 @@ class MultiJoinTest extends WordSpec {
             Option[Long],
             Option[String],
             Option[Set[Int]],
-            Option[Map[Int, Int]])] =
-        leftJoined.mapValues { x =>
-          flattenNestedTuple(x)
-        }
+            Option[Map[Int, Int]])] = leftJoined.mapValues { x =>
+        flattenNestedTuple(x)
+      }
 
       val outerJoinedFlat: CoGrouped[
         Int,
@@ -71,10 +76,9 @@ class MultiJoinTest extends WordSpec {
             Option[Long],
             Option[String],
             Option[Set[Int]],
-            Option[Map[Int, Int]])] =
-        outerJoined.mapValues { x =>
-          flattenNestedOptionTuple(x)
-        }
+            Option[Map[Int, Int]])] = outerJoined.mapValues { x =>
+        flattenNestedOptionTuple(x)
+      }
     }
 
     "Have implicit flattenValueTuple methods for low arity" in {
@@ -90,8 +94,7 @@ class MultiJoinTest extends WordSpec {
             Option[Long],
             Option[String],
             Option[Set[Int]],
-            Option[Map[Int, Int]])] =
-        leftJoined.flattenValueTuple
+            Option[Map[Int, Int]])] = leftJoined.flattenValueTuple
 
       val outerJoinedFlat: CoGrouped[
         Int,
@@ -100,8 +103,7 @@ class MultiJoinTest extends WordSpec {
             Option[Long],
             Option[String],
             Option[Set[Int]],
-            Option[Map[Int, Int]])] =
-        outerJoined.flattenValueTuple
+            Option[Map[Int, Int]])] = outerJoined.flattenValueTuple
     }
 
   }

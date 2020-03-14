@@ -19,16 +19,14 @@ object build extends Build {
     checkTask(expectedInter)
   )
 
-  lazy val expectedMongo =
-    <dependency>
+  lazy val expectedMongo = <dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>casbah_2.9.2</artifactId>
 			<version>2.4.1</version>
 			<type>pom</type>
 		</dependency>
 
-  lazy val expectedInter =
-    <dependency>
+  lazy val expectedInter = <dependency>
 			<groupId>org.example</groupId>
 			<artifactId>p1_2.9.2</artifactId>
 			<version>1.0</version>
@@ -38,10 +36,11 @@ object build extends Build {
     TaskKey[Unit]("check-pom") <<= makePom map { file =>
       val pom = xml.XML.loadFile(file)
       val actual = pom \\ "dependencies"
-      val expected = <d>
+      val expected =
+        <d>
 			{
-        expectedDep
-      }
+          expectedDep
+        }
 		</d>
       def dropTopElem(s: String): String =
         s.split("""\n""").drop(1).dropRight(1).mkString("\n")

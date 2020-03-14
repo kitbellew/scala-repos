@@ -247,14 +247,13 @@ object Tests {
         a(loader)
       }
 
-    val (frameworkSetup, runnables, frameworkCleanup) =
-      TestFramework.testTasks(
-        frameworks,
-        runners,
-        loader,
-        tests,
-        log,
-        testListeners)
+    val (frameworkSetup, runnables, frameworkCleanup) = TestFramework.testTasks(
+      frameworks,
+      runners,
+      loader,
+      tests,
+      log,
+      testListeners)
 
     val setupTasks = fj(partApp(userSetup) :+ frameworkSetup)
     val mainTasks =
@@ -264,8 +263,8 @@ object Tests {
         makeSerial(loader, runnables, setupTasks, config.tags)
     val taggedMainTasks = mainTasks.tagw(config.tags: _*)
     taggedMainTasks map processResults flatMap { results =>
-      val cleanupTasks =
-        fj(partApp(userCleanup) :+ frameworkCleanup(results.overall))
+      val cleanupTasks = fj(
+        partApp(userCleanup) :+ frameworkCleanup(results.overall))
       cleanupTasks map { _ =>
         results
       }
@@ -325,8 +324,9 @@ object Tests {
     val base = task {
       (name, fun.apply())
     }
-    val taggedBase =
-      base.tagw(tags: _*).tag(fun.tags.map(ConcurrentRestrictions.Tag(_)): _*)
+    val taggedBase = base
+      .tagw(tags: _*)
+      .tag(fun.tags.map(ConcurrentRestrictions.Tag(_)): _*)
     taggedBase flatMap {
       case (name, (result, nested)) =>
         val nestedRunnables = createNestedRunnables(loader, fun, nested)
@@ -354,8 +354,10 @@ object Tests {
         case hd :: rst =>
           val testFun = hd._2
           val (result, nestedTasks) = testFun.apply()
-          val nestedRunnables =
-            createNestedRunnables(loader, testFun, nestedTasks)
+          val nestedRunnables = createNestedRunnables(
+            loader,
+            testFun,
+            nestedTasks)
           processRunnable(
             nestedRunnables.toList ::: rst,
             (hd._1, result) :: acc)

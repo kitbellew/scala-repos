@@ -38,8 +38,8 @@ trait EvolutionsComponents {
   lazy val dynamicEvolutions: DynamicEvolutions = new DynamicEvolutions
   lazy val evolutionsConfig: EvolutionsConfig =
     new DefaultEvolutionsConfigParser(configuration).parse
-  lazy val evolutionsReader: EvolutionsReader = new EnvironmentEvolutionsReader(
-    environment)
+  lazy val evolutionsReader: EvolutionsReader =
+    new EnvironmentEvolutionsReader(environment)
   lazy val evolutionsApi: EvolutionsApi = new DefaultEvolutionsApi(dbApi)
   lazy val applicationEvolutions: ApplicationEvolutions =
     new ApplicationEvolutions(
@@ -63,12 +63,13 @@ class ApplicationEvolutionsProvider @Inject() (
     injector: Injector)
     extends Provider[ApplicationEvolutions] {
 
-  lazy val get = new ApplicationEvolutions(
-    config,
-    reader,
-    evolutions,
-    injector.instanceOf[DynamicEvolutions],
-    dbApi,
-    environment,
-    webCommands)
+  lazy val get =
+    new ApplicationEvolutions(
+      config,
+      reader,
+      evolutions,
+      injector.instanceOf[DynamicEvolutions],
+      dbApi,
+      environment,
+      webCommands)
 }

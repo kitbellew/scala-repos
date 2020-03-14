@@ -32,11 +32,9 @@ abstract class PluginSpec(val config: Config)
     _writerUuid = UUID.randomUUID.toString
   }
 
-  override protected def beforeAll(): Unit =
-    _extension = Persistence(system)
+  override protected def beforeAll(): Unit = _extension = Persistence(system)
 
-  override protected def afterAll(): Unit =
-    shutdown(system)
+  override protected def afterAll(): Unit = shutdown(system)
 
   def extension: Persistence = _extension
 

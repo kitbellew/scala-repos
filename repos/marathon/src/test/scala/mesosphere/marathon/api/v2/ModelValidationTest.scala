@@ -56,8 +56,9 @@ class ModelValidationTest
     val existingApp = createServicePortApp("/app1".toPath, 3200)
     val conflictingApp = createServicePortApp("/app2".toPath, 3200)
 
-    val group =
-      Group(id = PathId.empty, apps = Set(existingApp, conflictingApp))
+    val group = Group(
+      id = PathId.empty,
+      apps = Set(existingApp, conflictingApp))
     val result = validate(group)
 
     ValidationHelper
@@ -73,8 +74,9 @@ class ModelValidationTest
     val existingApp = createServicePortApp("/app1".toPath, 3200)
     val conflictingApp = createServicePortApp("/app2".toPath, 3201)
 
-    val group =
-      Group(id = PathId.empty, apps = Set(existingApp, conflictingApp))
+    val group = Group(
+      id = PathId.empty,
+      apps = Set(existingApp, conflictingApp))
     val result = validate(group)
 
     result.isSuccess should be(true)
@@ -84,8 +86,9 @@ class ModelValidationTest
     val existingApp = createServicePortApp("/app1".toPath, 3200)
     val conflictingApp = existingApp.copy(id = "/app2".toPath)
 
-    val group =
-      Group(id = PathId.empty, apps = Set(existingApp, conflictingApp))
+    val group = Group(
+      id = PathId.empty,
+      apps = Set(existingApp, conflictingApp))
     val result = validate(group)
 
     ValidationHelper
@@ -141,8 +144,8 @@ class ModelValidationTest
             Docker(
               image = "demothing",
               network = Some(Network.BRIDGE),
-              portMappings =
-                Some(Seq(PortMapping(2000, servicePort = servicePort)))
+              portMappings = Some(
+                Seq(PortMapping(2000, servicePort = servicePort)))
             ))
         ))
     )

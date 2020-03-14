@@ -99,119 +99,127 @@ trait CompletionControl {
         inputP.point
       )
 
-      val defaultPrefix = IdentRegexp.findFirstMatchIn(preceding) match {
-        case Some(m) => m.group(1)
-        case _       => ""
-      }
+      val defaultPrefix =
+        IdentRegexp.findFirstMatchIn(preceding) match {
+          case Some(m) => m.group(1)
+          case _       => ""
+        }
 
       val constructing =
         ConstructingRegexp.findFirstMatchIn(preceding).isDefined
 
-      val (src, p, patched) = if (defaultPrefix.isEmpty) {
+      val (src, p, patched) =
+        if (defaultPrefix.isEmpty) {
 
-        // Add a fake prefix if none was provided by the user. Otherwise the
-        // compiler will give us a weird tree.
-        val orig = origContents
+          // Add a fake prefix if none was provided by the user. Otherwise the
+          // compiler will give us a weird tree.
+          val orig = origContents
 
-        // Uses array logic to minimise memory spikes of large Strings
-        val contents = Array.ofDim[Char](orig.length + 1)
-        System.arraycopy(orig, 0, contents, 0, point)
-        contents(point) = 'a'
-        System.arraycopy(orig, point, contents, point + 1, orig.length - point)
+          // Uses array logic to minimise memory spikes of large Strings
+          val contents = Array.ofDim[Char](orig.length + 1)
+          System.arraycopy(orig, 0, contents, 0, point)
+          contents(point) = 'a'
+          System.arraycopy(
+            orig,
+            point,
+            contents,
+            point + 1,
+            orig.length - point)
 
-        // uses the same VirtualFile as the original
-        val src = new BatchSourceFile(inputP.source.file, contents)
+          // uses the same VirtualFile as the original
+          val src = new BatchSourceFile(inputP.source.file, contents)
 
-        (src, inputP.withSource(src).withShift(1), true)
-      } else {
-        (inputP.source, inputP, false)
-      }
+          (src, inputP.withSource(src).withShift(1), true)
+        } else {
+          (inputP.source, inputP, false)
+        }
       askReloadFile(src)
       val x = new Response[Tree]
       askTypeAt(p, x)
 
-      val contextOpt = x.get match {
-        case Left(tree) =>
-          logger.debug("Completing at tree:" + tree.summaryString)
-          tree match {
-            case Apply(fun, _) =>
-              fun match {
-                case Select(qualifier: New, name) =>
-                  Some(
-                    ScopeContext(
-                      src,
-                      qualifier.pos.endOrCursor,
-                      defaultPrefix,
-                      constructing = true))
-                case Select(qual, name)
-                    if qual.pos.isDefined && qual.pos.isRange =>
-                  val prefix =
-                    if (patched)
-                      ""
-                    else
-                      name.decoded
-                  Some(
-                    MemberContext(
-                      src,
-                      qual.pos.endOrCursor,
-                      prefix,
-                      constructing))
-                case _ =>
-                  val prefix =
-                    if (patched)
-                      ""
-                    else
-                      src.content
-                        .slice(fun.pos.startOrCursor, fun.pos.endOrCursor)
-                        .mkString
-                  Some(
-                    ScopeContext(
-                      src,
-                      fun.pos.endOrCursor,
-                      prefix,
-                      constructing))
-              }
-            case Literal(Constant(_)) => None
-            case New(name) =>
-              Some(
-                ScopeContext(
-                  src,
-                  name.pos.endOrCursor,
-                  defaultPrefix,
-                  constructing = true))
-            case Select(qualifier, name)
-                if qualifier.pos.isDefined && qualifier.pos.isRange =>
-              Some(
-                MemberContext(
-                  src,
-                  qualifier.pos.endOrCursor,
-                  defaultPrefix,
-                  constructing))
-            case Import(expr, _) =>
-              val topLevel =
-                ImportTopLevelRegexp.findFirstMatchIn(preceding).isDefined
-              if (topLevel) {
+      val contextOpt =
+        x.get match {
+          case Left(tree) =>
+            logger.debug("Completing at tree:" + tree.summaryString)
+            tree match {
+              case Apply(fun, _) =>
+                fun match {
+                  case Select(qualifier: New, name) =>
+                    Some(
+                      ScopeContext(
+                        src,
+                        qualifier.pos.endOrCursor,
+                        defaultPrefix,
+                        constructing = true))
+                  case Select(qual, name)
+                      if qual.pos.isDefined && qual.pos.isRange =>
+                    val prefix =
+                      if (patched)
+                        ""
+                      else
+                        name.decoded
+                    Some(
+                      MemberContext(
+                        src,
+                        qual.pos.endOrCursor,
+                        prefix,
+                        constructing))
+                  case _ =>
+                    val prefix =
+                      if (patched)
+                        ""
+                      else
+                        src.content
+                          .slice(fun.pos.startOrCursor, fun.pos.endOrCursor)
+                          .mkString
+                    Some(
+                      ScopeContext(
+                        src,
+                        fun.pos.endOrCursor,
+                        prefix,
+                        constructing))
+                }
+              case Literal(Constant(_)) => None
+              case New(name) =>
                 Some(
                   ScopeContext(
                     src,
-                    expr.pos.endOrCursor,
+                    name.pos.endOrCursor,
                     defaultPrefix,
-                    constructing = false))
-              } else {
+                    constructing = true))
+              case Select(qualifier, name)
+                  if qualifier.pos.isDefined && qualifier.pos.isRange =>
                 Some(
                   MemberContext(
                     src,
-                    expr.pos.endOrCursor,
+                    qualifier.pos.endOrCursor,
                     defaultPrefix,
-                    constructing = false))
-              }
-            case other =>
-              Some(ScopeContext(src, p.point, defaultPrefix, constructing))
-          }
-        case _ =>
-          logger.error("Unrecognized completion context.")
-          None
-      }
+                    constructing))
+              case Import(expr, _) =>
+                val topLevel =
+                  ImportTopLevelRegexp.findFirstMatchIn(preceding).isDefined
+                if (topLevel) {
+                  Some(
+                    ScopeContext(
+                      src,
+                      expr.pos.endOrCursor,
+                      defaultPrefix,
+                      constructing = false))
+                } else {
+                  Some(
+                    MemberContext(
+                      src,
+                      expr.pos.endOrCursor,
+                      defaultPrefix,
+                      constructing = false))
+                }
+              case other =>
+                Some(ScopeContext(src, p.point, defaultPrefix, constructing))
+            }
+          case _ =>
+            logger.error("Unrecognized completion context.")
+            None
+        }
       contextOpt match {
         case Some(context) =>
           CompletionInfoList(
@@ -282,14 +290,15 @@ trait CompletionControl {
     // Kick off an index search if the name looks like a type.
     // Do this before the lookups below, so the two can
     // proceed concurrently.
-    val typeSearch = context match {
-      case ScopeContext(_, _, prefix, _) =>
-        if (TypeNameRegex.findFirstMatchIn(prefix).isDefined) {
-          Some(fetchTypeSearchCompletions(prefix, maxResults, indexer))
-        } else
-          None
-      case _ => None
-    }
+    val typeSearch =
+      context match {
+        case ScopeContext(_, _, prefix, _) =>
+          if (TypeNameRegex.findFirstMatchIn(prefix).isDefined) {
+            Some(fetchTypeSearchCompletions(prefix, maxResults, indexer))
+          } else
+            None
+        case _ => None
+      }
 
     var members = List[Member]()
     val x = new Response[List[Member]]
@@ -425,11 +434,12 @@ trait Completion { self: RichPresentationCompiler =>
         }
         memberSyms
           .flatMap { s =>
-            val name = if (s.hasPackageFlag) {
-              s.nameString
-            } else {
-              typeShortName(s)
-            }
+            val name =
+              if (s.hasPackageFlag) {
+                s.nameString
+              } else {
+                typeShortName(s)
+              }
             if (name.startsWith(prefix))
               Some(
                 CompletionInfo(

@@ -45,15 +45,16 @@ object LruMapSpec extends Specification {
 
     "expire elements to func" in {
       var expCnt = 0
-      val lru = new LRUMap[Int, Int](
-        10,
-        Empty,
-        (k, v) => {
-          expCnt += 1;
-          k must_== v;
-          k must be > 0;
-          v must be < 11
-        })
+      val lru =
+        new LRUMap[Int, Int](
+          10,
+          Empty,
+          (k, v) => {
+            expCnt += 1;
+            k must_== v;
+            k must be > 0;
+            v must be < 11
+          })
       for (i <- 1 to 20)
         lru(i) = i
 
@@ -64,14 +65,15 @@ object LruMapSpec extends Specification {
 
     "not expire the recently accessed elements" in {
       var expCnt = 0
-      val lru = new LRUMap[Int, Int](
-        10,
-        Empty,
-        (k, v) => {
-          expCnt += 1;
-          k must_== v;
-          k must be > 0
-        })
+      val lru =
+        new LRUMap[Int, Int](
+          10,
+          Empty,
+          (k, v) => {
+            expCnt += 1;
+            k must_== v;
+            k must be > 0
+          })
       for (i <- 1 to 20) {
         for (q <- 1 to 10)
           lru.get(q)

@@ -4,11 +4,12 @@ import gitbucket.core.model.WebHook
 import org.scalatest.FunSuite
 
 class WebHookServiceSpec extends FunSuite with ServiceSpecBase {
-  lazy val service = new WebHookPullRequestService
-    with AccountService
-    with RepositoryService
-    with PullRequestService
-    with IssuesService
+  lazy val service =
+    new WebHookPullRequestService
+      with AccountService
+      with RepositoryService
+      with PullRequestService
+      with IssuesService
 
   test("WebHookPullRequestService.getPullRequestsByRequestForWebhook") {
     withTestDB { implicit session =>

@@ -59,38 +59,39 @@ trait TypeAdaptingTransformer {
           val ldef = deriveLabelDef(tree)(box1)
           ldef setType ldef.rhs.tpe
         case _ =>
-          val tree1 = tree.tpe match {
-            case ErasedValueType(clazz, _) =>
-              New(clazz, cast(tree, underlyingOfValueClass(clazz)))
-            case _ =>
-              tree.tpe.typeSymbol match {
-                case UnitClass =>
-                  if (treeInfo isExprSafeToInline tree)
-                    REF(BoxedUnit_UNIT)
-                  else
-                    BLOCK(tree, REF(BoxedUnit_UNIT))
-                case NothingClass =>
-                  tree // a non-terminating expression doesn't need boxing
-                case x =>
-                  assert(x != ArrayClass)
-                  tree match {
-                    /* Can't always remove a Box(Unbox(x)) combination because the process of boxing x
-                     * may lead to throwing an exception.
-                     *
-                     * This is important for specialization: calls to the super constructor should not box/unbox specialized
-                     * fields (see TupleX). (ID)
-                     */
-                    case Apply(boxFun, List(arg))
-                        if isSafelyRemovableUnbox(tree, arg) =>
-                      log(s"boxing an unbox: ${tree.symbol} -> ${arg.tpe}")
-                      arg
-                    case _ =>
-                      (REF(
-                        currentRun.runDefinitions.boxMethod(
-                          x)) APPLY tree) setPos (tree.pos) setType ObjectTpe
-                  }
-              }
-          }
+          val tree1 =
+            tree.tpe match {
+              case ErasedValueType(clazz, _) =>
+                New(clazz, cast(tree, underlyingOfValueClass(clazz)))
+              case _ =>
+                tree.tpe.typeSymbol match {
+                  case UnitClass =>
+                    if (treeInfo isExprSafeToInline tree)
+                      REF(BoxedUnit_UNIT)
+                    else
+                      BLOCK(tree, REF(BoxedUnit_UNIT))
+                  case NothingClass =>
+                    tree // a non-terminating expression doesn't need boxing
+                  case x =>
+                    assert(x != ArrayClass)
+                    tree match {
+                      /* Can't always remove a Box(Unbox(x)) combination because the process of boxing x
+                       * may lead to throwing an exception.
+                       *
+                       * This is important for specialization: calls to the super constructor should not box/unbox specialized
+                       * fields (see TupleX). (ID)
+                       */
+                      case Apply(boxFun, List(arg))
+                          if isSafelyRemovableUnbox(tree, arg) =>
+                        log(s"boxing an unbox: ${tree.symbol} -> ${arg.tpe}")
+                        arg
+                      case _ =>
+                        (REF(
+                          currentRun.runDefinitions.boxMethod(
+                            x)) APPLY tree) setPos (tree.pos) setType ObjectTpe
+                    }
+                }
+            }
           typer.typedPos(tree.pos)(tree1)
       }
 
@@ -117,36 +118,37 @@ trait TypeAdaptingTransformer {
           val ldef = deriveLabelDef(tree)(unbox(_, pt))
           ldef setType ldef.rhs.tpe
         case _ =>
-          val tree1 = pt match {
-            case ErasedValueType(clazz, underlying) =>
-              val tree0 =
-                if (tree.tpe.typeSymbol == NullClass &&
-                    isPrimitiveValueClass(underlying.typeSymbol)) {
-                  // convert `null` directly to underlying type, as going
-                  // via the unboxed type would yield a NPE (see SI-5866)
-                  unbox1(tree, underlying)
-                } else
-                  Apply(
-                    Select(
-                      adaptToType(tree, clazz.tpe),
-                      clazz.derivedValueClassUnbox),
-                    List())
-              cast(tree0, pt)
-            case _ =>
-              pt.typeSymbol match {
-                case UnitClass =>
-                  if (treeInfo isExprSafeToInline tree)
-                    UNIT
-                  else
-                    BLOCK(tree, UNIT)
-                case x =>
-                  assert(x != ArrayClass)
-                  // don't `setType pt` the Apply tree, as the Apply's fun won't be typechecked if the Apply tree already has a type
-                  Apply(
-                    currentRun.runDefinitions.unboxMethod(pt.typeSymbol),
-                    tree)
-              }
-          }
+          val tree1 =
+            pt match {
+              case ErasedValueType(clazz, underlying) =>
+                val tree0 =
+                  if (tree.tpe.typeSymbol == NullClass &&
+                      isPrimitiveValueClass(underlying.typeSymbol)) {
+                    // convert `null` directly to underlying type, as going
+                    // via the unboxed type would yield a NPE (see SI-5866)
+                    unbox1(tree, underlying)
+                  } else
+                    Apply(
+                      Select(
+                        adaptToType(tree, clazz.tpe),
+                        clazz.derivedValueClassUnbox),
+                      List())
+                cast(tree0, pt)
+              case _ =>
+                pt.typeSymbol match {
+                  case UnitClass =>
+                    if (treeInfo isExprSafeToInline tree)
+                      UNIT
+                    else
+                      BLOCK(tree, UNIT)
+                  case x =>
+                    assert(x != ArrayClass)
+                    // don't `setType pt` the Apply tree, as the Apply's fun won't be typechecked if the Apply tree already has a type
+                    Apply(
+                      currentRun.runDefinitions.unboxMethod(pt.typeSymbol),
+                      tree)
+                }
+            }
           typer.typedPos(tree.pos)(tree1)
       }
 

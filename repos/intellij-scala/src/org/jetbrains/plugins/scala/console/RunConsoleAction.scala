@@ -47,12 +47,12 @@ class RunConsoleAction extends AnAction {
         val runManagerEx = RunManagerEx.getInstanceEx(file.getProject)
         val configurationType = ConfigurationTypeUtil.findConfigurationType(
           classOf[ScalaConsoleConfigurationType])
-        val settings =
-          runManagerEx.getConfigurationSettingsList(configurationType)
+        val settings = runManagerEx.getConfigurationSettingsList(
+          configurationType)
 
         def execute(setting: RunnerAndConfigurationSettings) {
-          val configuration =
-            setting.getConfiguration.asInstanceOf[ScalaConsoleRunConfiguration]
+          val configuration = setting.getConfiguration
+            .asInstanceOf[ScalaConsoleRunConfiguration]
           runManagerEx.setSelectedConfiguration(setting)
           val runExecutor = DefaultRunExecutor.getRunExecutorInstance
           val runner = RunnerRegistry

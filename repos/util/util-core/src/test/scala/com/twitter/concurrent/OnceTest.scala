@@ -24,19 +24,20 @@ class OnceTest extends FunSuite {
       x += 1
     }
     val p = Promise[Unit]()
-    val t = new Thread(new Runnable {
-      def run(): Unit = {
-        once()
-        try {
-          assert(x == 1)
-        } catch {
-          case thr: Throwable =>
-            p.setException(thr)
-            throw thr
+    val t =
+      new Thread(new Runnable {
+        def run(): Unit = {
+          once()
+          try {
+            assert(x == 1)
+          } catch {
+            case thr: Throwable =>
+              p.setException(thr)
+              throw thr
+          }
+          p.setDone()
         }
-        p.setDone()
-      }
-    })
+      })
     once()
     t.start()
     assert(x == 1)

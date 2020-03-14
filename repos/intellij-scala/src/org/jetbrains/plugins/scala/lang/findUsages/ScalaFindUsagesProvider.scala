@@ -80,23 +80,24 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
   }
   @NotNull
   override def getDescriptiveName(element: PsiElement): String = {
-    val name = element match {
-      case x: PsiMethod =>
-        var res = PsiFormatUtil.formatMethod(
-          x,
-          PsiSubstitutor.EMPTY,
-          PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
-          PsiFormatUtilBase.SHOW_TYPE)
-        if (x.containingClass != null)
-          res = res + " of " + getDescriptiveName(x.containingClass)
-        res
-      case x: PsiVariable                               => x.name
-      case x: PsiFile                                   => x.name
-      case x: ScTypeDefinition                          => x.qualifiedName
-      case x: ScNamedElement                            => x.name
-      case c: PsiClass if !c.isInstanceOf[PsiClassFake] => c.qualifiedName
-      case _                                            => element.getText
-    }
+    val name =
+      element match {
+        case x: PsiMethod =>
+          var res = PsiFormatUtil.formatMethod(
+            x,
+            PsiSubstitutor.EMPTY,
+            PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
+            PsiFormatUtilBase.SHOW_TYPE)
+          if (x.containingClass != null)
+            res = res + " of " + getDescriptiveName(x.containingClass)
+          res
+        case x: PsiVariable                               => x.name
+        case x: PsiFile                                   => x.name
+        case x: ScTypeDefinition                          => x.qualifiedName
+        case x: ScNamedElement                            => x.name
+        case c: PsiClass if !c.isInstanceOf[PsiClassFake] => c.qualifiedName
+        case _                                            => element.getText
+      }
     Option(name) getOrElse "anonymous"
   }
 
@@ -104,28 +105,29 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
   override def getNodeText(
       element: PsiElement,
       useFullName: Boolean): String = {
-    val name = element match {
-      case c: PsiMethod =>
-        PsiFormatUtil.formatMethod(
-          c,
-          PsiSubstitutor.EMPTY,
-          PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
-          PsiFormatUtilBase.SHOW_TYPE)
-      case c: PsiVariable => c.name
-      case c: PsiFile     => c.name
-      case c: ScTypeDefinition =>
-        if (useFullName)
-          c.qualifiedName
-        else
-          c.name
-      case c: ScNamedElement => c.name
-      case c: PsiClass if !c.isInstanceOf[PsiClassFake] =>
-        if (useFullName)
-          c.qualifiedName
-        else
-          c.name
-      case _ => element.getText
-    }
+    val name =
+      element match {
+        case c: PsiMethod =>
+          PsiFormatUtil.formatMethod(
+            c,
+            PsiSubstitutor.EMPTY,
+            PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
+            PsiFormatUtilBase.SHOW_TYPE)
+        case c: PsiVariable => c.name
+        case c: PsiFile     => c.name
+        case c: ScTypeDefinition =>
+          if (useFullName)
+            c.qualifiedName
+          else
+            c.name
+        case c: ScNamedElement => c.name
+        case c: PsiClass if !c.isInstanceOf[PsiClassFake] =>
+          if (useFullName)
+            c.qualifiedName
+          else
+            c.name
+        case _ => element.getText
+      }
     Option(name) getOrElse "anonymous"
   }
 }

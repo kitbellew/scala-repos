@@ -28,8 +28,7 @@ private final class Storage(coll: Coll) {
   def fetchLast(userId: String): Fu[Option[Entry]] =
     coll.find(selectUserId(userId)).sort(sortAntiChronological).one[Entry]
 
-  def count(userId: String): Fu[Int] =
-    coll.count(selectUserId(userId).some)
+  def count(userId: String): Fu[Int] = coll.count(selectUserId(userId).some)
 
   def insert(p: Entry) = coll.insert(p).void
 

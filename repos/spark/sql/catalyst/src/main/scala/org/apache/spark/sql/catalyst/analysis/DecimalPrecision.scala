@@ -147,8 +147,9 @@ object DecimalPrecision extends Rule[LogicalPlan] {
     case Remainder(
           e1 @ DecimalType.Expression(p1, s1),
           e2 @ DecimalType.Expression(p2, s2)) =>
-      val resultType =
-        DecimalType.bounded(min(p1 - s1, p2 - s2) + max(s1, s2), max(s1, s2))
+      val resultType = DecimalType.bounded(
+        min(p1 - s1, p2 - s2) + max(s1, s2),
+        max(s1, s2))
       // resultType may have lower precision, so we cast them into wider type first.
       val widerType = widerDecimalType(p1, s1, p2, s2)
       CheckOverflow(
@@ -160,8 +161,9 @@ object DecimalPrecision extends Rule[LogicalPlan] {
     case Pmod(
           e1 @ DecimalType.Expression(p1, s1),
           e2 @ DecimalType.Expression(p2, s2)) =>
-      val resultType =
-        DecimalType.bounded(min(p1 - s1, p2 - s2) + max(s1, s2), max(s1, s2))
+      val resultType = DecimalType.bounded(
+        min(p1 - s1, p2 - s2) + max(s1, s2),
+        max(s1, s2))
       // resultType may have lower precision, so we cast them into wider type first.
       val widerType = widerDecimalType(p1, s1, p2, s2)
       CheckOverflow(

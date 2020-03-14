@@ -78,15 +78,16 @@ object KafkaEventStore {
         val eventIdSeq = SystemEventIdSequence(agent, coordination)
         val Some((eventStore, esStop)) = LocalKafkaEventStore(localConfig)
 
-        val stoppables = if (config[Boolean]("relay_data", true)) {
-          val (_, raStop) = KafkaRelayAgent(
-            permissionsFinder,
-            eventIdSeq,
-            localConfig,
-            centralConfig)
-          esStop.parent(raStop)
-        } else
-          esStop
+        val stoppables =
+          if (config[Boolean]("relay_data", true)) {
+            val (_, raStop) = KafkaRelayAgent(
+              permissionsFinder,
+              eventIdSeq,
+              localConfig,
+              centralConfig)
+            esStop.parent(raStop)
+          } else
+            esStop
 
         (eventStore, stoppables)
     }

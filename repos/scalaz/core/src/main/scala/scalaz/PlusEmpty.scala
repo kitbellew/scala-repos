@@ -39,13 +39,13 @@ trait PlusEmpty[F[_]] extends Plus[F] { self =>
       FA.equal(plus(empty[A], f1), f1)
   }
 
-  def plusEmptyLaw =
-    new EmptyLaw {}
+  def plusEmptyLaw = new EmptyLaw {}
 
   ////
-  val plusEmptySyntax = new scalaz.syntax.PlusEmptySyntax[F] {
-    def F = PlusEmpty.this
-  }
+  val plusEmptySyntax =
+    new scalaz.syntax.PlusEmptySyntax[F] {
+      def F = PlusEmpty.this
+    }
 }
 
 object PlusEmpty {

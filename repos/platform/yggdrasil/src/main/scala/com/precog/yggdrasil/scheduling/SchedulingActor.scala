@@ -111,14 +111,14 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
     private[this] final implicit val scheduleOrder
         : Ordering[(DateTime, ScheduledTask)] = Ordering.by(_._1.getMillis)
 
-    private[this] implicit val M: Monad[Future] = new FutureMonad(
-      context.dispatcher)
+    private[this] implicit val M: Monad[Future] =
+      new FutureMonad(context.dispatcher)
 
     private[this] implicit val executor = context.dispatcher
 
     // Although PriorityQueue is mutable, we're going to treat it as immutable since most methods on it act that way
-    private[this] var scheduleQueue =
-      PriorityQueue.empty[(DateTime, ScheduledTask)]
+    private[this] var scheduleQueue = PriorityQueue
+      .empty[(DateTime, ScheduledTask)]
 
     private[this] var scheduledAwake: Option[Cancellable] = None
 
@@ -156,8 +156,8 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
           new JodaDuration(new DateTime, head._1).getMillis,
           TimeUnit.MILLISECONDS)
 
-        scheduledAwake =
-          Some(context.system.scheduler.scheduleOnce(delay, self, WakeForRun))
+        scheduledAwake = Some(
+          context.system.scheduler.scheduleOnce(delay, self, WakeForRun))
       }
     }
 
@@ -220,20 +220,21 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
         // This cannot occur inside a Future, or we would be exposing Actor state outside of this thread
         running += ((task.source, task.sink) -> TaskInProgress(task, startedAt))
 
-        val execution = for {
-          basePath <- EitherT(M point {
-            task.source.prefix \/> invalidState(
-              "Path %s cannot be relativized.".format(task.source.path))
-          })
-          cachingResult <- platform.vfs.executeAndCache(
-            platform,
-            basePath,
-            task.context,
-            QueryOptions(timeout = task.timeout),
-            Some(task.sink),
-            Some(task.taskName))
+        val execution =
+          for {
+            basePath <- EitherT(M point {
+              task.source.prefix \/> invalidState(
+                "Path %s cannot be relativized.".format(task.source.path))
+            })
+            cachingResult <- platform.vfs.executeAndCache(
+              platform,
+              basePath,
+              task.context,
+              QueryOptions(timeout = task.timeout),
+              Some(task.sink),
+              Some(task.taskName))
 
-        } yield cachingResult
+          } yield cachingResult
 
         execution.fold[Future[PrecogUnit]](
           failure =>
@@ -302,15 +303,16 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
           source,
           sink,
           timeout)
-        val addResult: EitherT[Future, String, PrecogUnit] = repeat match {
-          case None =>
-            EitherT.right(executeTask(newTask))
+        val addResult: EitherT[Future, String, PrecogUnit] =
+          repeat match {
+            case None =>
+              EitherT.right(executeTask(newTask))
 
-          case Some(_) =>
-            storage.addTask(newTask) map { task =>
-              ourself ! AddTasksToQueue(Seq(task))
-            }
-        }
+            case Some(_) =>
+              storage.addTask(newTask) map { task =>
+                ourself ! AddTasksToQueue(Seq(task))
+              }
+          }
 
         addResult.run.map(_ => taskId) recover {
           case t: Throwable =>

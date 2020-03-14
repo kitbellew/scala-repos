@@ -13,8 +13,9 @@ class RemoveCallParentheses(call: ScMethodCall)
   def doApplyFix(project: Project) {
     val mCall = getElement
     val text = mCall.getInvokedExpr.getText
-    val exp =
-      ScalaPsiElementFactory.createExpressionFromText(text, mCall.getManager)
+    val exp = ScalaPsiElementFactory.createExpressionFromText(
+      text,
+      mCall.getManager)
     mCall.replace(exp)
   }
 }

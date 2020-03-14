@@ -181,9 +181,7 @@ object IteratorSpec extends Spec {
         iter.join()
       }
 
-      val threads =
-        for (_ <- 0 until W)
-          yield new Modifier
+      val threads = for (_ <- 0 until W) yield new Modifier
       threads.foreach(_.start())
       for (_ <- 0 until S)
         consistentIteration(ct, checks)

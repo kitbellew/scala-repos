@@ -76,39 +76,41 @@ class ReplyCodec extends UnifiedProtocolCodec {
   import com.twitter.finagle.redis.naggati.Stages._
   import RedisCodec._
 
-  val encode = new Encoder[Reply] {
-    def encode(obj: Reply) = Some(obj.toChannelBuffer)
-  }
-
-  val decode = readBytes(1) { bytes =>
-    bytes(0) match {
-      case STATUS_REPLY =>
-        readLine { line =>
-          emit(StatusReply(line))
-        }
-      case ERROR_REPLY =>
-        readLine { line =>
-          emit(ErrorReply(line))
-        }
-      case INTEGER_REPLY =>
-        readLine { line =>
-          RequireServerProtocol.safe {
-            emit(IntegerReply(NumberFormat.toLong(line)))
-          }
-        }
-      case BULK_REPLY =>
-        decodeBulkReply
-      case MBULK_REPLY =>
-        RequireServerProtocol.safe {
-          readLine { line =>
-            decodeMBulkReply(NumberFormat.toLong(line))
-          }
-        }
-      case b: Byte =>
-        throw new ServerError(
-          "Unknown response format(%c) found".format(b.asInstanceOf[Char]))
+  val encode =
+    new Encoder[Reply] {
+      def encode(obj: Reply) = Some(obj.toChannelBuffer)
     }
-  }
+
+  val decode =
+    readBytes(1) { bytes =>
+      bytes(0) match {
+        case STATUS_REPLY =>
+          readLine { line =>
+            emit(StatusReply(line))
+          }
+        case ERROR_REPLY =>
+          readLine { line =>
+            emit(ErrorReply(line))
+          }
+        case INTEGER_REPLY =>
+          readLine { line =>
+            RequireServerProtocol.safe {
+              emit(IntegerReply(NumberFormat.toLong(line)))
+            }
+          }
+        case BULK_REPLY =>
+          decodeBulkReply
+        case MBULK_REPLY =>
+          RequireServerProtocol.safe {
+            readLine { line =>
+              decodeMBulkReply(NumberFormat.toLong(line))
+            }
+          }
+        case b: Byte =>
+          throw new ServerError(
+            "Unknown response format(%c) found".format(b.asInstanceOf[Char]))
+      }
+    }
 
   def decodeBulkReply =
     readLine { line =>
@@ -129,19 +131,19 @@ class ReplyCodec extends UnifiedProtocolCodec {
       }
     }
 
-  def decodeMBulkReply(argCount: Long) =
-    decodeMBulkLines(argCount, Nil, Nil)
+  def decodeMBulkReply(argCount: Long) = decodeMBulkLines(argCount, Nil, Nil)
 
   def decodeMBulkLines(
       i: Long,
       stack: List[(Long, List[Reply])],
       lines: List[Reply]): NextStep = {
     if (i <= 0) {
-      val reply = (i, lines) match {
-        case (i, _) if i < 0 => NilMBulkReply()
-        case (0, Nil)        => EmptyMBulkReply()
-        case (0, lines)      => MBulkReply(lines.reverse)
-      }
+      val reply =
+        (i, lines) match {
+          case (i, _) if i < 0 => NilMBulkReply()
+          case (0, Nil)        => EmptyMBulkReply()
+          case (0, lines)      => MBulkReply(lines.reverse)
+        }
       stack match {
         case Nil                 => emit(reply)
         case (i, lines) :: stack => decodeMBulkLines(i, stack, reply :: lines)

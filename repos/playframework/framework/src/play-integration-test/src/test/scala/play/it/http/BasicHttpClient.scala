@@ -161,23 +161,25 @@ class BasicHttpClient(port: Int) {
         throw new IOException(s"No response $responseDesc: EOF reached")
       }
 
-      val (version, status, reasonPhrase) = statusLine.split(" ", 3) match {
-        case Array(v, s, r) => (v, s.toInt, r)
-        case Array(v, s)    => (v, s.toInt, "")
-        case _ =>
-          throw new RuntimeException(
-            "Invalid status line for response " + responseDesc + ": " + statusLine)
-      }
+      val (version, status, reasonPhrase) =
+        statusLine.split(" ", 3) match {
+          case Array(v, s, r) => (v, s.toInt, r)
+          case Array(v, s)    => (v, s.toInt, "")
+          case _ =>
+            throw new RuntimeException(
+              "Invalid status line for response " + responseDesc + ": " + statusLine)
+        }
       // Read headers
       def readHeaders: List[(String, String)] = {
         val header = reader.readLine()
         if (header.length == 0) {
           Nil
         } else {
-          val parsed = header.split(":", 2) match {
-            case Array(name, value) => (name.trim(), value.trim())
-            case Array(name)        => (name, "")
-          }
+          val parsed =
+            header.split(":", 2) match {
+              case Array(name, value) => (name.trim(), value.trim())
+              case Array(name)        => (name, "")
+            }
           parsed :: readHeaders
         }
       }

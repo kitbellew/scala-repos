@@ -65,12 +65,13 @@ object NotificationUtil {
       notificationType: NotificationType = NotificationType.WARNING,
       displayType: NotificationDisplayType = NotificationDisplayType.BALLOON,
       handler: Handler = IdHandler) {
-    val notification = new Notification(
-      group,
-      title,
-      message,
-      notificationType,
-      new HyperlinkListener(handler))
+    val notification =
+      new Notification(
+        group,
+        title,
+        message,
+        notificationType,
+        new HyperlinkListener(handler))
     Notifications.Bus.register(group, displayType)
     Notifications.Bus.notify(notification, project)
   }

@@ -28,115 +28,120 @@ object BijectionsTest {
 
   val arbKeys = Gen.oneOf("Foo", "Bar", "Foo-Bar", "Bar-Baz")
 
-  val arbUri = for {
-    scheme <- Gen.oneOf("http", "https")
-    hostLen <- Gen.choose(1, 20)
-    pathLen <- Gen.choose(1, 20)
-    tld <- Gen.oneOf(".net", ".com", "org", ".edu")
-    host = Random.alphanumeric.take(hostLen).mkString
-    path = Random.alphanumeric.take(pathLen).mkString
-  } yield (new URI(scheme, host + tld, "/" + path, null)).toASCIIString
+  val arbUri =
+    for {
+      scheme <- Gen.oneOf("http", "https")
+      hostLen <- Gen.choose(1, 20)
+      pathLen <- Gen.choose(1, 20)
+      tld <- Gen.oneOf(".net", ".com", "org", ".edu")
+      host = Random.alphanumeric.take(hostLen).mkString
+      path = Random.alphanumeric.take(pathLen).mkString
+    } yield (new URI(scheme, host + tld, "/" + path, null)).toASCIIString
 
-  val arbHeader = for {
-    key <- arbKeys
-    len <- Gen.choose(0, 10)
-  } yield (key, Random.alphanumeric.take(len).mkString)
+  val arbHeader =
+    for {
+      key <- arbKeys
+      len <- Gen.choose(0, 10)
+    } yield (key, Random.alphanumeric.take(len).mkString)
 
-  val arbResponse = for {
-    code <- Gen.chooseNum(100, 510)
-    version <- Gen.oneOf(Version.Http10, Version.Http11)
-    headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
-    body <- arbitrary[String]
-  } yield {
-    val res = Response(version, Status(code))
-    headers.foreach {
-      case (k, v) => res.headerMap.add(k, v)
+  val arbResponse =
+    for {
+      code <- Gen.chooseNum(100, 510)
+      version <- Gen.oneOf(Version.Http10, Version.Http11)
+      headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
+      body <- arbitrary[String]
+    } yield {
+      val res = Response(version, Status(code))
+      headers.foreach {
+        case (k, v) => res.headerMap.add(k, v)
+      }
+      res.contentString = body
+      (res, body)
     }
-    res.contentString = body
-    (res, body)
-  }
 
-  val arbRequest = for {
-    method <- arbMethod
-    uri <- arbUri
-    version <- Gen.oneOf(Version.Http10, Version.Http11)
-    headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
-    body <- arbitrary[String]
-  } yield {
+  val arbRequest =
+    for {
+      method <- arbMethod
+      uri <- arbUri
+      version <- Gen.oneOf(Version.Http10, Version.Http11)
+      headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
+      body <- arbitrary[String]
+    } yield {
 
-    val req = Request.apply(version, method, uri, BufReader(Buf.Utf8(body)))
-    headers.foreach {
-      case (k, v) => req.headers.add(k, v)
+      val req = Request.apply(version, method, uri, BufReader(Buf.Utf8(body)))
+      headers.foreach {
+        case (k, v) => req.headers.add(k, v)
+      }
+      req.setChunked(false)
+      req.contentString = body
+      req.headers.set(Fields.ContentLength, body.length.toString)
+      (req, body)
     }
-    req.setChunked(false)
-    req.contentString = body
-    req.headers.set(Fields.ContentLength, body.length.toString)
-    (req, body)
-  }
 
-  val arbNettyMethod =
-    Gen.oneOf(
-      HttpMethod.GET,
-      HttpMethod.POST
-    )
+  val arbNettyMethod = Gen.oneOf(
+    HttpMethod.GET,
+    HttpMethod.POST
+  )
 
-  val arbNettyStatus =
-    Gen.oneOf(
-      HttpResponseStatus.OK,
-      HttpResponseStatus.BAD_REQUEST,
-      HttpResponseStatus.SERVICE_UNAVAILABLE,
-      HttpResponseStatus.GATEWAY_TIMEOUT
-    )
+  val arbNettyStatus = Gen.oneOf(
+    HttpResponseStatus.OK,
+    HttpResponseStatus.BAD_REQUEST,
+    HttpResponseStatus.SERVICE_UNAVAILABLE,
+    HttpResponseStatus.GATEWAY_TIMEOUT
+  )
 
-  val arbNettyVersion =
-    Gen.oneOf(
-      HttpVersion.HTTP_1_0,
-      HttpVersion.HTTP_1_1,
-      new HttpVersion("SECURE-HTTP/1.4", true)
-    )
+  val arbNettyVersion = Gen.oneOf(
+    HttpVersion.HTTP_1_0,
+    HttpVersion.HTTP_1_1,
+    new HttpVersion("SECURE-HTTP/1.4", true)
+  )
 
-  val arbNettyRequest = for {
-    method <- arbNettyMethod
-    uri <- arbUri
-    version <- arbNettyVersion
-    kvHeaders <- Gen.containerOf[Seq, (String, String)](arbHeader)
-    body <- arbitrary[String]
-  } yield {
-    val headers = new DefaultHttpHeaders()
-    kvHeaders.foreach {
-      case (k, v) => headers.add(k, v)
+  val arbNettyRequest =
+    for {
+      method <- arbNettyMethod
+      uri <- arbUri
+      version <- arbNettyVersion
+      kvHeaders <- Gen.containerOf[Seq, (String, String)](arbHeader)
+      body <- arbitrary[String]
+    } yield {
+      val headers = new DefaultHttpHeaders()
+      kvHeaders.foreach {
+        case (k, v) => headers.add(k, v)
+      }
+      val req =
+        new DefaultFullHttpRequest(
+          version,
+          method,
+          uri,
+          Unpooled.wrappedBuffer(body.getBytes(UTF_8)),
+          headers,
+          EmptyHttpHeaders.INSTANCE
+        )
+      (req, body)
     }
-    val req = new DefaultFullHttpRequest(
-      version,
-      method,
-      uri,
-      Unpooled.wrappedBuffer(body.getBytes(UTF_8)),
-      headers,
-      EmptyHttpHeaders.INSTANCE
-    )
-    (req, body)
-  }
 
-  val arbNettyResponse = for {
-    method <- arbNettyMethod
-    version <- arbNettyVersion
-    status <- arbNettyStatus
-    kvHeaders <- Gen.containerOf[Seq, (String, String)](arbHeader)
-    body <- arbitrary[String]
-  } yield {
-    val headers = new DefaultHttpHeaders
-    kvHeaders.foreach {
-      case (k, v) => headers.add(k, v)
+  val arbNettyResponse =
+    for {
+      method <- arbNettyMethod
+      version <- arbNettyVersion
+      status <- arbNettyStatus
+      kvHeaders <- Gen.containerOf[Seq, (String, String)](arbHeader)
+      body <- arbitrary[String]
+    } yield {
+      val headers = new DefaultHttpHeaders
+      kvHeaders.foreach {
+        case (k, v) => headers.add(k, v)
+      }
+      val req =
+        new DefaultFullHttpResponse(
+          version,
+          status,
+          Unpooled.wrappedBuffer(body.getBytes(UTF_8)),
+          headers,
+          EmptyHttpHeaders.INSTANCE
+        )
+      (req, body)
     }
-    val req = new DefaultFullHttpResponse(
-      version,
-      status,
-      Unpooled.wrappedBuffer(body.getBytes(UTF_8)),
-      headers,
-      EmptyHttpHeaders.INSTANCE
-    )
-    (req, body)
-  }
 }
 
 @RunWith(classOf[JUnitRunner])

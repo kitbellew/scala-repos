@@ -266,8 +266,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `origin` as an external reference Ant parameter.
     *  @param input A reference to an origin path. */
-  def setSrcref(input: Reference) =
-    createSrc().setRefid(input)
+  def setSrcref(input: Reference) = createSrc().setRefid(input)
 
   /** Sets the `destdir` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `destination`. */
@@ -353,8 +352,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
 
   /** Sets the `extdirs` as an external reference Ant parameter.
     *  @param input A reference to an extensions path. */
-  def setExtdirsref(input: Reference) =
-    createExtdirs().setRefid(input)
+  def setExtdirsref(input: Reference) = createExtdirs().setRefid(input)
 
   /** Sets the `argfile` attribute. Used by [[http://ant.apache.org Ant]].
     *  @param input The value of `argfile`. */
@@ -588,8 +586,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   /** Transforms a file into a Scalac-readable string.
     *  @param file A file to convert.
     *  @return     A string-representation of the file like `/x/k/a.scala`. */
-  protected def asString(file: File): String =
-    file.getAbsolutePath()
+  protected def asString(file: File): String = file.getAbsolutePath()
 
   /*============================================================================*\
 **                      Hooks for variants of Scala                           **

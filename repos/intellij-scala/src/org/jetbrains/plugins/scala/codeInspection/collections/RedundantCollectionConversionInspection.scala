@@ -16,16 +16,18 @@ object RedundantCollectionConversion extends SimplificationType {
     InspectionBundle.message("redundant.collection.conversion")
 
   override def getSimplification(expr: ScExpression) = {
-    val withGeneric = expr match {
-      case ChildOf(gc: ScGenericCall) => gc
-      case ref                        => ref
-    }
+    val withGeneric =
+      expr match {
+        case ChildOf(gc: ScGenericCall) => gc
+        case ref                        => ref
+      }
     val typeAfterConversion = withGeneric.getType().getOrAny
     withGeneric match {
       case (base @ ExpressionType(baseType)) `.toCollection` ()
           if baseType.conforms(typeAfterConversion, checkWeak = false) =>
-        val simplification =
-          replace(withGeneric).withText(base.getText).highlightFrom(base)
+        val simplification = replace(withGeneric)
+          .withText(base.getText)
+          .highlightFrom(base)
         Some(simplification)
       case _ => None
     }

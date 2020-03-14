@@ -28,8 +28,9 @@ class CommandEncodingTest extends FunSuite {
     val command = mkCommand(Buf.Utf8(name), timeout)
     val enc = encoder.encode(null, null, command).asInstanceOf[Tokens]
 
-    val decoded =
-      decoder.parseNonStorageCommand(enc.tokens).asInstanceOf[GetCommand]
+    val decoded = decoder
+      .parseNonStorageCommand(enc.tokens)
+      .asInstanceOf[GetCommand]
 
     val Some((Buf.Utf8(queueName), expiry)) = extractCommand(decoded)
 
@@ -74,8 +75,8 @@ class CommandEncodingTest extends FunSuite {
       )
       .asInstanceOf[TokensWithData]
 
-    val Set(Buf.Utf8(queueName), expiry, Buf.Utf8(dataOut)) =
-      decoder.parseStorageCommand(msg.tokens, msg.data)
+    val Set(Buf.Utf8(queueName), expiry, Buf.Utf8(dataOut)) = decoder
+      .parseStorageCommand(msg.tokens, msg.data)
 
     assert(queueName == qName)
     assert(dataOut == data)

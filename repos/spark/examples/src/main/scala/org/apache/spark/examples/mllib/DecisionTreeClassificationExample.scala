@@ -67,8 +67,9 @@ object DecisionTreeClassificationExample {
 
     // Save and load model
     model.save(sc, "target/tmp/myDecisionTreeClassificationModel")
-    val sameModel =
-      DecisionTreeModel.load(sc, "target/tmp/myDecisionTreeClassificationModel")
+    val sameModel = DecisionTreeModel.load(
+      sc,
+      "target/tmp/myDecisionTreeClassificationModel")
     // $example off$
   }
 }

@@ -140,11 +140,13 @@ object Challenge {
       challenger: Either[String, User],
       destUser: Option[User],
       rematchOf: Option[String]): Challenge = {
-    val (colorChoice, finalColor) = color match {
-      case "white" => ColorChoice.White -> chess.White
-      case "black" => ColorChoice.Black -> chess.Black
-      case _       => ColorChoice.Random -> chess.Color(scala.util.Random.nextBoolean)
-    }
+    val (colorChoice, finalColor) =
+      color match {
+        case "white" => ColorChoice.White -> chess.White
+        case "black" => ColorChoice.Black -> chess.Black
+        case _ =>
+          ColorChoice.Random -> chess.Color(scala.util.Random.nextBoolean)
+      }
     new Challenge(
       _id = randomId,
       status = Status.Created,

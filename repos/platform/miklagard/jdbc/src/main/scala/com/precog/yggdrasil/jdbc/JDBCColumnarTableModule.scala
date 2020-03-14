@@ -156,98 +156,109 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     meta.getColumnType(index) match {
       case BIT | BOOLEAN =>
         val column = ArrayBoolColumn.empty
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getBoolean(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getBoolean(index))
+            }
         SingleDBColumn(ColumnRef(selector, CBoolean), column, update)
 
       case CHAR | LONGNVARCHAR | LONGVARCHAR | NCHAR | NVARCHAR | VARCHAR =>
         val column = ArrayStrColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getString(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getString(index))
+            }
         SingleDBColumn(ColumnRef(selector, CString), column, update)
 
       case TINYINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getByte(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getByte(index))
+            }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case SMALLINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getShort(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getShort(index))
+            }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case INTEGER =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getInt(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getInt(index))
+            }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case BIGINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getLong(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getLong(index))
+            }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case REAL =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getFloat(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getFloat(index))
+            }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DOUBLE | FLOAT =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getDouble(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getDouble(index))
+            }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DECIMAL | NUMERIC =>
         val column = ArrayNumColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, rs.getBigDecimal(index))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, rs.getBigDecimal(index))
+            }
         SingleDBColumn(ColumnRef(selector, CNum), column, update)
 
       case DATE =>
         val column = ArrayDateColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, new DateTime(rs.getDate(index).getTime))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, new DateTime(rs.getDate(index).getTime))
+            }
         SingleDBColumn(ColumnRef(selector, CDate), column, update)
 
       case TIMESTAMP =>
         val column = ArrayDateColumn.empty(yggConfig.maxSliceSize)
-        val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
-            column.update(rowId, new DateTime(rs.getTimestamp(index).getTime))
-          }
+        val update =
+          (rs: ResultSet, rowId: Int) =>
+            if (notNull(rs, index)) {
+              column.update(rowId, new DateTime(rs.getTimestamp(index).getTime))
+            }
         SingleDBColumn(ColumnRef(selector, CDate), column, update)
 
       case OTHER =>
         // Here's where things get tricky. We support postgresql for now, but this code needs changed if we want to support something else
         if (meta.getClass.toString.contains("postgresql")) {
           new DBColumns {
-            private[this] var buildColumns =
-              Map.empty[ColumnRef, ArrayColumn[_]]
+            private[this] var buildColumns = Map
+              .empty[ColumnRef, ArrayColumn[_]]
 
             def columns = buildColumns.toSeq
 
@@ -356,13 +367,14 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           fields
             .map {
               case (name, childType) =>
-                val newPaths = if (current.nonEmpty) {
-                  current.map { s =>
-                    s + "." + name
+                val newPaths =
+                  if (current.nonEmpty) {
+                    current.map { s =>
+                      s + "." + name
+                    }
+                  } else {
+                    Set(name)
                   }
-                } else {
-                  Set(name)
-                }
                 jTypeToProperties(childType, newPaths)
             }
             .toSet
@@ -372,11 +384,12 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       }
 
     case class Query(expr: String, limit: Int) {
-      private val baseQuery = if (limit > 0) {
-        expr + " LIMIT " + limit
-      } else {
-        expr
-      }
+      private val baseQuery =
+        if (limit > 0) {
+          expr + " LIMIT " + limit
+        } else {
+          expr
+        }
 
       def atOffset(offset: Long) =
         if (offset > 0) {
@@ -502,16 +515,18 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             rowIndex += 1
           }
 
-          val slice = new Slice {
-            val size = rowIndex
-            val columns = valColumns.flatMap(_.columns).toMap
-          }
+          val slice =
+            new Slice {
+              val size = rowIndex
+              val columns = valColumns.flatMap(_.columns).toMap
+            }
 
-          val nextSkip = if (rowIndex == yggConfig.maxSliceSize) {
-            Some(skip + yggConfig.maxSliceSize)
-          } else {
-            None
-          }
+          val nextSkip =
+            if (rowIndex == yggConfig.maxSliceSize) {
+              Some(skip + yggConfig.maxSliceSize)
+            } else {
+              None
+            }
 
           (slice, nextSkip)
         } finally {

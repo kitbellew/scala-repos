@@ -154,10 +154,12 @@ object TypeDefinitionMembers {
               addSignature(new Signature(dcl.name, Seq.empty, 0, subst, dcl))
               dcl.nameContext match {
                 case s: ScAnnotationsHolder =>
-                  val beanProperty =
-                    ScalaPsiUtil.isBeanProperty(s, noResolve = true)
-                  val booleanBeanProperty =
-                    ScalaPsiUtil.isBooleanBeanProperty(s, noResolve = true)
+                  val beanProperty = ScalaPsiUtil.isBeanProperty(
+                    s,
+                    noResolve = true)
+                  val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(
+                    s,
+                    noResolve = true)
                   if (beanProperty) {
                     addSignature(
                       new Signature(
@@ -183,10 +185,12 @@ object TypeDefinitionMembers {
               addSignature(new Signature(dcl.name, Seq.empty, 0, subst, dcl))
               dcl.nameContext match {
                 case s: ScAnnotationsHolder =>
-                  val beanProperty =
-                    ScalaPsiUtil.isBeanProperty(s, noResolve = true)
-                  val booleanBeanProperty =
-                    ScalaPsiUtil.isBooleanBeanProperty(s, noResolve = true)
+                  val beanProperty = ScalaPsiUtil.isBeanProperty(
+                    s,
+                    noResolve = true)
+                  val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(
+                    s,
+                    noResolve = true)
                   if (beanProperty) {
                     addSignature(
                       new Signature(
@@ -212,10 +216,12 @@ object TypeDefinitionMembers {
             for (param <- parameters if nonBridge(place, param)) {
               addSignature(
                 new Signature(param.name, Seq.empty, 0, subst, param))
-              val beanProperty =
-                ScalaPsiUtil.isBeanProperty(param, noResolve = true)
-              val booleanBeanProperty =
-                ScalaPsiUtil.isBooleanBeanProperty(param, noResolve = true)
+              val beanProperty = ScalaPsiUtil.isBeanProperty(
+                param,
+                noResolve = true)
+              val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(
+                param,
+                noResolve = true)
               if (beanProperty) {
                 addSignature(
                   new Signature(
@@ -473,10 +479,12 @@ object TypeDefinitionMembers {
                 new Signature(dcl.name + "_=", Seq(() => t), 1, subst, dcl))
               dcl.nameContext match {
                 case s: ScAnnotationsHolder =>
-                  val beanProperty =
-                    ScalaPsiUtil.isBeanProperty(s, noResolve = true)
-                  val booleanBeanProperty =
-                    ScalaPsiUtil.isBooleanBeanProperty(s, noResolve = true)
+                  val beanProperty = ScalaPsiUtil.isBeanProperty(
+                    s,
+                    noResolve = true)
+                  val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(
+                    s,
+                    noResolve = true)
                   if (beanProperty) {
                     addSignature(
                       new Signature(
@@ -511,10 +519,12 @@ object TypeDefinitionMembers {
               addSignature(new Signature(dcl.name, Seq.empty, 0, subst, dcl))
               dcl.nameContext match {
                 case s: ScAnnotationsHolder =>
-                  val beanProperty =
-                    ScalaPsiUtil.isBeanProperty(s, noResolve = true)
-                  val booleanBeanProperty =
-                    ScalaPsiUtil.isBooleanBeanProperty(s, noResolve = true)
+                  val beanProperty = ScalaPsiUtil.isBeanProperty(
+                    s,
+                    noResolve = true)
+                  val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(
+                    s,
+                    noResolve = true)
                   if (beanProperty) {
                     addSignature(
                       new Signature(
@@ -549,10 +559,12 @@ object TypeDefinitionMembers {
                     1,
                     subst,
                     param))
-              val beanProperty =
-                ScalaPsiUtil.isBeanProperty(param, noResolve = true)
-              val booleanBeanProperty =
-                ScalaPsiUtil.isBooleanBeanProperty(param, noResolve = true)
+              val beanProperty = ScalaPsiUtil.isBeanProperty(
+                param,
+                noResolve = true)
+              val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(
+                param,
+                noResolve = true)
               if (beanProperty) {
                 addSignature(
                   new Signature(
@@ -1034,8 +1046,8 @@ object TypeDefinitionMembers {
         true
       else {
         val decoded = NameTransformer.decode(s)
-        val beanPropertyNames =
-          Seq("is", "get", "set").map(_ + decoded.capitalize)
+        val beanPropertyNames = Seq("is", "get", "set").map(
+          _ + decoded.capitalize)
         beanPropertyNames.contains(decodedName)
       }
     }
@@ -1256,10 +1268,11 @@ object TypeDefinitionMembers {
           while (iterator.hasNext) {
             val (_, n) = iterator.next()
             ProgressManager.checkCanceled()
-            val method = n.info match {
-              case phys: PhysicalSignature => phys.method
-              case _                       => null
-            }
+            val method =
+              n.info match {
+                case phys: PhysicalSignature => phys.method
+                case _                       => null
+              }
             if (method != null && checkName(method.name)) {
               val substitutor = n.substitutor followed subst
               if (!processor.execute(

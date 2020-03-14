@@ -88,17 +88,18 @@ class SizedSink private[events] (capacity: Int, milliTime: () => Long)
 
   private[this] val pos = new AtomicLong(0)
 
-  private[this] val evs = Array.fill(capacity) {
-    new MutableEvent(
-      etype = null,
-      whenMillis = -1L,
-      longVal = Event.NoLong,
-      objectVal = Event.NoObject,
-      doubleVal = Event.NoDouble,
-      traceIdVal = Event.NoTraceId,
-      spanIdVal = Event.NoSpanId
-    )
-  }
+  private[this] val evs =
+    Array.fill(capacity) {
+      new MutableEvent(
+        etype = null,
+        whenMillis = -1L,
+        longVal = Event.NoLong,
+        objectVal = Event.NoObject,
+        doubleVal = Event.NoDouble,
+        traceIdVal = Event.NoTraceId,
+        spanIdVal = Event.NoSpanId
+      )
+    }
 
   override def event(
       etype: Type,

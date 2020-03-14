@@ -380,10 +380,11 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     if (!processor.isInstanceOf[BaseProcessor]) {
-      val lastChild = this match {
-        case s: ScalaStubBasedElementImpl[_] => s.getLastChildStub
-        case _                               => this.getLastChild
-      }
+      val lastChild =
+        this match {
+          case s: ScalaStubBasedElementImpl[_] => s.getLastChildStub
+          case _                               => this.getLastChild
+        }
       val languageLevel: LanguageLevel =
         processor match {
           case methodProcessor: MethodsProcessor =>
@@ -527,16 +528,17 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
   def addMember(member: ScMember, anchor: Option[PsiElement]): ScMember = {
     extendsBlock.templateBody match {
       case Some(body) =>
-        val before = anchor match {
-          case Some(a) => a.getNode
-          case None =>
-            val last = body.getNode.getLastChildNode
-            if (ScalaPsiUtil.isLineTerminator(last.getTreePrev.getPsi)) {
-              last.getTreePrev
-            } else {
-              last
-            }
-        }
+        val before =
+          anchor match {
+            case Some(a) => a.getNode
+            case None =>
+              val last = body.getNode.getLastChildNode
+              if (ScalaPsiUtil.isLineTerminator(last.getTreePrev.getPsi)) {
+                last.getTreePrev
+              } else {
+                last
+              }
+          }
         if (ScalaPsiUtil.isLineTerminator(before.getPsi))
           body.getNode.addChild(
             ScalaPsiElementFactory.createNewLineNode(member.getManager),
@@ -595,12 +597,13 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             val supersIterator = drg.supers.iterator
             while (supersIterator.hasNext) {
               val c = supersIterator.next()
-              val value = baseClass match {
-                case _: ScTrait if c.isInstanceOf[ScTrait]      => true
-                case _: ScClass if c.isInstanceOf[ScClass]      => true
-                case _ if !c.isInstanceOf[ScTemplateDefinition] => true
-                case _                                          => false
-              }
+              val value =
+                baseClass match {
+                  case _: ScTrait if c.isInstanceOf[ScTrait]      => true
+                  case _: ScClass if c.isInstanceOf[ScClass]      => true
+                  case _ if !c.isInstanceOf[ScTemplateDefinition] => true
+                  case _                                          => false
+                }
               if (value && c.name == baseName && c.qualifiedName == baseQualifiedName && value)
                 return true
               if (deep && isInheritorInner(base, c, deep))

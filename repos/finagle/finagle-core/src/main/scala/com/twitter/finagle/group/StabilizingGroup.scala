@@ -54,13 +54,15 @@ object StabilizingGroup {
     private[this] val newSet = new Broker[Set[T]]()
 
     @volatile private[this] var healthStat = Healthy.id
-    private[this] val health = statsReceiver.addGauge("health") {
-      healthStat
-    }
+    private[this] val health =
+      statsReceiver.addGauge("health") {
+        healthStat
+      }
 
-    private[this] val limbo = statsReceiver.addGauge("limbo") {
-      members.size - underlying.members.size
-    }
+    private[this] val limbo =
+      statsReceiver.addGauge("limbo") {
+        members.size - underlying.members.size
+      }
 
     protected[finagle] val set = Var(underlying.members)
 

@@ -52,24 +52,27 @@ class EnsembleColorPicker extends EnsembleExample {
     val initialColor = Color.Red
 
     // Label for ColorPicker
-    val labelColor = new Label {
-      text = "Colors"
-      font = new Font("Verdana", 53)
-      style = "-fx-font-weight:bold"
-      textFill = initialColor
-    }
+    val labelColor =
+      new Label {
+        text = "Colors"
+        font = new Font("Verdana", 53)
+        style = "-fx-font-weight:bold"
+        textFill = initialColor
+      }
     // Button for ColorPicker
-    val buttonColor = new Button("Colored Control") {
-      style = toStyle(initialColor)
-    }
+    val buttonColor =
+      new Button("Colored Control") {
+        style = toStyle(initialColor)
+      }
 
     // ColorPicker
-    val colorPicker = new ColorPicker(initialColor) {
-      onAction = (ae: ActionEvent) => {
-        labelColor.textFill = value()
-        buttonColor.style = toStyle(value())
+    val colorPicker =
+      new ColorPicker(initialColor) {
+        onAction = (ae: ActionEvent) => {
+          labelColor.textFill = value()
+          buttonColor.style = toStyle(value())
+        }
       }
-    }
 
     new VBox {
       vgrow = Priority.Always

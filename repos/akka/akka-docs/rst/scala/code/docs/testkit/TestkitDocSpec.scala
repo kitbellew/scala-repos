@@ -204,14 +204,15 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
     //#test-special-probe
     final case class Update(id: Int, value: String)
 
-    val probe = new TestProbe(system) {
-      def expectUpdate(x: Int) = {
-        expectMsgPF() {
-          case Update(id, _) if id == x => true
+    val probe =
+      new TestProbe(system) {
+        def expectUpdate(x: Int) = {
+          expectMsgPF() {
+            case Update(id, _) if id == x => true
+          }
+          sender() ! "ACK"
         }
-        sender() ! "ACK"
       }
-    }
     //#test-special-probe
   }
 
@@ -268,8 +269,8 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   "demonstrate calling thread dispatcher" in {
     //#calling-thread-dispatcher
     import akka.testkit.CallingThreadDispatcher
-    val ref =
-      system.actorOf(Props[MyActor].withDispatcher(CallingThreadDispatcher.Id))
+    val ref = system.actorOf(
+      Props[MyActor].withDispatcher(CallingThreadDispatcher.Id))
     //#calling-thread-dispatcher
   }
 

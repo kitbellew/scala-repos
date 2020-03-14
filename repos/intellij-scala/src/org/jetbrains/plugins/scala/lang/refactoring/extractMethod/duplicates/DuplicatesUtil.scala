@@ -95,8 +95,8 @@ object DuplicatesUtil {
     val highlighter = new util.ArrayList[RangeHighlighter](1)
     highlightDuplicate(project, editor, duplicate, highlighter)
     val range = duplicate.textRange
-    val logicalPosition: LogicalPosition =
-      editor.offsetToLogicalPosition(range.getStartOffset)
+    val logicalPosition: LogicalPosition = editor.offsetToLogicalPosition(
+      range.getStartOffset)
     expandAllRegionsCoveringRange(project, editor, range)
     editor.getScrollingModel.scrollTo(logicalPosition, ScrollType.MAKE_VISIBLE)
 

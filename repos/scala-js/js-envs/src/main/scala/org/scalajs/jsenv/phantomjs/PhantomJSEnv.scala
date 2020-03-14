@@ -113,8 +113,8 @@ class PhantomJSEnv(
         else
           getClass().getClassLoader()
 
-      val clazz =
-        loader.loadClass("org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
+      val clazz = loader.loadClass(
+        "org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
 
       val ctors = clazz.getConstructors()
       assert(ctors.length == 1, "JettyWebsocketManager may only have one ctor")
@@ -498,8 +498,9 @@ class PhantomJSEnv(
       val webTmpF = File.createTempFile("phantomjs-launcher-webpage", ".html")
       webTmpF.deleteOnExit()
 
-      val out = new BufferedWriter(
-        new OutputStreamWriter(new FileOutputStream(webTmpF), "UTF-8"))
+      val out =
+        new BufferedWriter(
+          new OutputStreamWriter(new FileOutputStream(webTmpF), "UTF-8"))
 
       try {
         writeWebpageLauncher(out)

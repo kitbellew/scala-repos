@@ -157,8 +157,9 @@ object SessionSettings {
 
   /** Checks to see if any session settings are being discarded and issues a warning. */
   def checkSession(newSession: SessionSettings, oldState: State): Unit = {
-    val oldSettings =
-      (oldState get Keys.sessionSettings).toList.flatMap(_.append).flatMap(_._2)
+    val oldSettings = (oldState get Keys.sessionSettings).toList
+      .flatMap(_.append)
+      .flatMap(_._2)
     if (newSession.append.isEmpty && oldSettings.nonEmpty)
       oldState.log.warn(
         "Discarding " + pluralize(
@@ -249,17 +250,18 @@ object SessionSettings {
     writeTo.createNewFile()
 
     val path = writeTo.getAbsolutePath
-    val (inFile, other, _) = ((
-      List[Setting[_]](),
-      List[Setting[_]](),
-      Set.empty[ScopedKey[_]]) /: original.reverse) {
-      case ((in, oth, keys), s) =>
-        s.pos match {
-          case RangePosition(`path`, _) if !keys.contains(s.key) =>
-            (s :: in, oth, keys + s.key)
-          case _ => (in, s :: oth, keys)
-        }
-    }
+    val (inFile, other, _) =
+      ((
+        List[Setting[_]](),
+        List[Setting[_]](),
+        Set.empty[ScopedKey[_]]) /: original.reverse) {
+        case ((in, oth, keys), s) =>
+          s.pos match {
+            case RangePosition(`path`, _) if !keys.contains(s.key) =>
+              (s :: in, oth, keys + s.key)
+            case _ => (in, s :: oth, keys)
+          }
+      }
 
     val (_, oldShifted, replace) =
       ((0, List[Setting[_]](), Seq[SessionSetting]()) /: inFile) {
@@ -279,8 +281,9 @@ object SessionSettings {
       }
     val newSettings = settings diff replace
     val oldContent = IO.readLines(writeTo)
-    val (_, exist) =
-      SbtRefactorings.applySessionSettings((writeTo, oldContent), replace)
+    val (_, exist) = SbtRefactorings.applySessionSettings(
+      (writeTo, oldContent),
+      replace)
     val adjusted =
       if (newSettings.nonEmpty && needsTrailingBlank(exist))
         exist :+ ""

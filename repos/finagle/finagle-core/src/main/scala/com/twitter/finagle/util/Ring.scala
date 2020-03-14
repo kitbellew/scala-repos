@@ -51,10 +51,11 @@ class Ring(positions: Array[Int]) {
   private[this] def index(pos: Long): Int = {
     // We don't search over the entire range here in case the position
     // is out of bounds, which in any case would snap to the last index.
-    var i = binarySearch(nodes, 0, N * 2, pos) match {
-      case i if i < 0 => -1 - i
-      case i          => i
-    }
+    var i =
+      binarySearch(nodes, 0, N * 2, pos) match {
+        case i if i < 0 => -1 - i
+        case i          => i
+      }
 
     // In the case where positions overlap, we always
     // select the first one. This is to support zero weights.
@@ -88,8 +89,7 @@ class Ring(positions: Array[Int]) {
   /**
     * Compute the index of the given position.
     */
-  def apply(pos: Int): Int =
-    index(pos) % N
+  def apply(pos: Int): Int = index(pos) % N
 
   /**
     * Pick a position within the given range, described
@@ -156,9 +156,10 @@ object Ring {
     require(numSlices > 0)
     require(width >= numSlices, "ring not wide enough")
     val unit = width / numSlices.toDouble
-    val positions = Array.tabulate(numSlices) { i =>
-      ((i + 1) * unit).toInt
-    }
+    val positions =
+      Array.tabulate(numSlices) { i =>
+        ((i + 1) * unit).toInt
+      }
     new Ring(positions)
   }
 }

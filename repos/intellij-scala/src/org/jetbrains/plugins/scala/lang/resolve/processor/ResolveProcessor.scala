@@ -90,10 +90,11 @@ class ResolveProcessor(
 
   protected def getPlace: PsiElement = ref
 
-  val isThisOrSuperResolve = ref.getParent match {
-    case _: ScThisReference | _: ScSuperReference => true
-    case _                                        => false
-  }
+  val isThisOrSuperResolve =
+    ref.getParent match {
+      case _: ScThisReference | _: ScSuperReference => true
+      case _                                        => false
+    }
 
   def emptyResultSet: Boolean = candidatesSet.isEmpty || levelSet.isEmpty
 
@@ -219,15 +220,16 @@ class ResolveProcessor(
       named: PsiNamedElement,
       state: ResolveState): Boolean = {
     val nameSet = state.get(ResolverEnv.nameKey)
-    val elName = if (nameSet == null) {
-      val name = named.name
-      if (name == null)
-        return false
-      if (name == "")
-        return false
-      name
-    } else
-      nameSet
+    val elName =
+      if (nameSet == null) {
+        val name = named.name
+        if (name == null)
+          return false
+        if (name == "")
+          return false
+        name
+      } else
+        nameSet
     val nameMatches = ScalaPsiUtil.memberNamesEquals(elName, name)
     nameMatches && kindMatches(named)
   }

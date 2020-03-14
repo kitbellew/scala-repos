@@ -54,24 +54,31 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
       val v3 = Vectors.sparse(n, indices, indices.map(i => a(i) + 0.5))
       val norm3 = Vectors.norm(v3, 2.0)
       val squaredDist = breezeSquaredDistance(v1.toBreeze, v2.toBreeze)
-      val fastSquaredDist1 =
-        fastSquaredDistance(v1, norm1, v2, norm2, precision)
+      val fastSquaredDist1 = fastSquaredDistance(
+        v1,
+        norm1,
+        v2,
+        norm2,
+        precision)
       assert(
         (fastSquaredDist1 - squaredDist) <= precision * squaredDist,
         s"failed with m = $m")
-      val fastSquaredDist2 =
-        fastSquaredDistance(
-          v1,
-          norm1,
-          Vectors.dense(v2.toArray),
-          norm2,
-          precision)
+      val fastSquaredDist2 = fastSquaredDistance(
+        v1,
+        norm1,
+        Vectors.dense(v2.toArray),
+        norm2,
+        precision)
       assert(
         (fastSquaredDist2 - squaredDist) <= precision * squaredDist,
         s"failed with m = $m")
       val squaredDist2 = breezeSquaredDistance(v2.toBreeze, v3.toBreeze)
-      val fastSquaredDist3 =
-        fastSquaredDistance(v2, norm2, v3, norm3, precision)
+      val fastSquaredDist3 = fastSquaredDistance(
+        v2,
+        norm2,
+        v3,
+        norm3,
+        precision)
       assert(
         (fastSquaredDist3 - squaredDist2) <= precision * squaredDist2,
         s"failed with m = $m")
@@ -82,8 +89,12 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
           indices.map(i => a(i) + 0.5).slice(0, m - 10))
         val norm4 = Vectors.norm(v4, 2.0)
         val squaredDist = breezeSquaredDistance(v2.toBreeze, v4.toBreeze)
-        val fastSquaredDist =
-          fastSquaredDistance(v2, norm2, v4, norm4, precision)
+        val fastSquaredDist = fastSquaredDistance(
+          v2,
+          norm2,
+          v4,
+          norm4,
+          precision)
         assert(
           (fastSquaredDist - squaredDist) <= precision * squaredDist,
           s"failed with m = $m")
@@ -92,8 +103,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("loadLibSVMFile") {
-    val lines =
-      """
+    val lines = """
         |1 1:1.0 3:2.0 5:3.0
         |0
         |0 2:4.0 4:5.0 6:6.0
@@ -131,8 +141,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test(
     "loadLibSVMFile throws IllegalArgumentException when indices is zero-based") {
-    val lines =
-      """
+    val lines = """
         |0
         |0 0:4.0 4:5.0 6:6.0
       """.stripMargin
@@ -149,8 +158,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test(
     "loadLibSVMFile throws IllegalArgumentException when indices is not in ascending order") {
-    val lines =
-      """
+    val lines = """
         |0
         |0 3:4.0 2:5.0 6:6.0
       """.stripMargin
@@ -175,11 +183,12 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val tempDir = Utils.createTempDir()
     val outputDir = new File(tempDir, "output")
     MLUtils.saveAsLibSVMFile(examples, outputDir.toURI.toString)
-    val lines = outputDir
-      .listFiles()
-      .filter(_.getName.startsWith("part-"))
-      .flatMap(Source.fromFile(_).getLines())
-      .toSet
+    val lines =
+      outputDir
+        .listFiles()
+        .filter(_.getName.startsWith("part-"))
+        .flatMap(Source.fromFile(_).getLines())
+        .toSet
     val expected = Set("1.1 1:1.23 3:4.56", "0.0 1:1.01 2:2.02 3:3.03")
     assert(lines === expected)
     Utils.deleteRecursively(tempDir)

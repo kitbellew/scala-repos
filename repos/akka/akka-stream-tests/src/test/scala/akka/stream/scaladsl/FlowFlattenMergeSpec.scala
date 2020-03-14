@@ -43,12 +43,13 @@ class FlowFlattenMergeSpec extends AkkaSpec {
     }
 
     "respect breadth" in {
-      val seq = Source(
-        List(src10(0), src10(10), src10(20), blocked, blocked, src10(30)))
-        .flatMapMerge(3, identity)
-        .take(40)
-        .runWith(toSeq)
-        .futureValue
+      val seq =
+        Source(
+          List(src10(0), src10(10), src10(20), blocked, blocked, src10(30)))
+          .flatMapMerge(3, identity)
+          .take(40)
+          .runWith(toSeq)
+          .futureValue
 
       seq.take(30).toSet should ===((0 until 30).toSet)
       seq.drop(30).toSet should ===((30 until 40).toSet)
@@ -161,10 +162,10 @@ class FlowFlattenMergeSpec extends AkkaSpec {
     "cancel substreams when being cancelled" in {
       val p1, p2 = TestPublisher.probe[Int]()
       val ex = new Exception("buh")
-      val sink =
-        Source(List(Source.fromPublisher(p1), Source.fromPublisher(p2)))
-          .flatMapMerge(5, identity)
-          .runWith(TestSink.probe)
+      val sink = Source(
+        List(Source.fromPublisher(p1), Source.fromPublisher(p2)))
+        .flatMapMerge(5, identity)
+        .runWith(TestSink.probe)
       sink.request(1)
       p1.expectRequest()
       p2.expectRequest()

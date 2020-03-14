@@ -139,13 +139,12 @@ abstract class CoderSpec
       util.Arrays.fill(array, 1.toByte)
       val compressed = streamEncode(ByteString(array))
       val limit = 10000
-      val resultBs =
-        Source
-          .single(compressed)
-          .via(Coder.withMaxBytesPerChunk(limit).decoderFlow)
-          .limit(4200)
-          .runWith(Sink.seq)
-          .awaitResult(1.second)
+      val resultBs = Source
+        .single(compressed)
+        .via(Coder.withMaxBytesPerChunk(limit).decoderFlow)
+        .limit(4200)
+        .runWith(Sink.seq)
+        .awaitResult(1.second)
 
       forAll(resultBs) { bs ⇒
         bs.length should be < limit

@@ -178,11 +178,12 @@ abstract class Task(settings: Settings) extends Specification {
       apiKey: String,
       tpe: Option[String] = None,
       prop: Option[String] = None)(f: Req => Req): JValue = {
-    val params = List(
-      Some("apiKey" -> apiKey),
-      tpe map ("type" -> _),
-      prop map ("property" -> _)
-    ).flatten
+    val params =
+      List(
+        Some("apiKey" -> apiKey),
+        tpe map ("type" -> _),
+        prop map ("property" -> _)
+      ).flatten
     val req = f(metadata / "fs") <<? params
     Http(req OK as.String).either
       .apply()

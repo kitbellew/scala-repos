@@ -89,8 +89,9 @@ class LimitPushdownSuite extends PlanTest {
 
   test(
     "Union: no limit to both sides if children having smaller limit values") {
-    val unionQuery =
-      Union(testRelation.limit(1), testRelation2.select('d).limit(1)).limit(2)
+    val unionQuery = Union(
+      testRelation.limit(1),
+      testRelation2.select('d).limit(1)).limit(2)
     val unionOptimized = Optimize.execute(unionQuery.analyze)
     val unionCorrectAnswer =
       Limit(
@@ -100,8 +101,9 @@ class LimitPushdownSuite extends PlanTest {
   }
 
   test("Union: limit to each sides if children having larger limit values") {
-    val testLimitUnion =
-      Union(testRelation.limit(3), testRelation2.select('d).limit(4))
+    val testLimitUnion = Union(
+      testRelation.limit(3),
+      testRelation2.select('d).limit(4))
     val unionQuery = testLimitUnion.limit(2)
     val unionOptimized = Optimize.execute(unionQuery.analyze)
     val unionCorrectAnswer =

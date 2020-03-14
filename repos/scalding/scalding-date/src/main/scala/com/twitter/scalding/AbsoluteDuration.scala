@@ -36,11 +36,12 @@ object AbsoluteDuration extends java.io.Serializable {
   val SEC_IN_MS = 1000
   val MIN_IN_MS = 60 * SEC_IN_MS
   val HOUR_IN_MS = 60 * MIN_IN_MS
-  val UTC_UNITS = List[TimeCons](
-    (Hours, HOUR_IN_MS),
-    (Minutes, MIN_IN_MS),
-    (Seconds, SEC_IN_MS),
-    (Millisecs, 1)).reverse
+  val UTC_UNITS =
+    List[TimeCons](
+      (Hours, HOUR_IN_MS),
+      (Minutes, MIN_IN_MS),
+      (Seconds, SEC_IN_MS),
+      (Millisecs, 1)).reverse
 
   def exact(fnms: TimeCons): (Long) => Option[AbsoluteDuration] = { ms: Long =>
     if (ms % fnms._2 == 0) {
@@ -77,12 +78,13 @@ object AbsoluteDuration extends java.io.Serializable {
           val thisDiff =
             diffInMs % nextSize // Keep only this amount of millis for this unit
           val theseUnits = thisDiff / tc0._2
-          val (newDiff, newAcc) = if (theseUnits != 0L) {
-            val dur = tc0._1(theseUnits.toInt)
-            (diffInMs - dur.toMillisecs, dur :: acc)
-          } else {
-            (diffInMs, acc)
-          }
+          val (newDiff, newAcc) =
+            if (theseUnits != 0L) {
+              val dur = tc0._1(theseUnits.toInt)
+              (diffInMs - dur.toMillisecs, dur :: acc)
+            } else {
+              (diffInMs, acc)
+            }
           fromMillisecs(newDiff, (tc1 :: tail), newAcc)
         }
         case (tc :: Nil) => {

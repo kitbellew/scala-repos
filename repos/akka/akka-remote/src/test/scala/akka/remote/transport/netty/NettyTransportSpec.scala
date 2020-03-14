@@ -51,8 +51,9 @@ class NettyTransportSpec extends WordSpec with Matchers with BindBehaviour {
           port = 0
         }
         """)
-      implicit val sys =
-        ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = ActorSystem(
+        "sys",
+        bindConfig.withFallback(commonConfig))
 
       getInternal should contain(getExternal.withProtocol("tcp"))
 
@@ -70,8 +71,9 @@ class NettyTransportSpec extends WordSpec with Matchers with BindBehaviour {
           bind-port = 0
         }
         """)
-      implicit val sys =
-        ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = ActorSystem(
+        "sys",
+        bindConfig.withFallback(commonConfig))
 
       getExternal should ===(address.toAkkaAddress("akka.tcp"))
       getInternal should not contain (address.toAkkaAddress("tcp"))
@@ -90,8 +92,9 @@ class NettyTransportSpec extends WordSpec with Matchers with BindBehaviour {
           bind-port = ${address.getPort}
         }
         """)
-      implicit val sys =
-        ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = ActorSystem(
+        "sys",
+        bindConfig.withFallback(commonConfig))
 
       getExternal should ===(address.toAkkaAddress("akka.tcp"))
       getInternal should contain(address.toAkkaAddress("tcp"))
@@ -107,8 +110,9 @@ class NettyTransportSpec extends WordSpec with Matchers with BindBehaviour {
           enabled-transports = ["akka.remote.netty.tcp", "akka.remote.netty.udp"]
         }
         """)
-      implicit val sys =
-        ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = ActorSystem(
+        "sys",
+        bindConfig.withFallback(commonConfig))
 
       getInternal should contain(getExternal.withProtocol("tcp"))
       getInternal.size should ===(2)
@@ -122,8 +126,9 @@ class NettyTransportSpec extends WordSpec with Matchers with BindBehaviour {
           netty.tcp.bind-hostname = "0.0.0.0"
         }
         """)
-      implicit val sys =
-        ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = ActorSystem(
+        "sys",
+        bindConfig.withFallback(commonConfig))
 
       getInternal.flatMap(_.port) should contain(getExternal.port.get)
       getInternal.map(
@@ -152,8 +157,9 @@ trait BindBehaviour { this: WordSpec with Matchers ⇒
           enabled-transports = ["akka.remote.netty.$proto"]
         }
         """)
-      implicit val sys =
-        ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = ActorSystem(
+        "sys",
+        bindConfig.withFallback(commonConfig))
 
       getExternal should ===(address.toAkkaAddress(s"akka.$proto"))
       getInternal should contain(address.toAkkaAddress(proto))
@@ -189,8 +195,9 @@ trait BindBehaviour { this: WordSpec with Matchers ⇒
           enabled-transports = ["akka.remote.netty.$proto"]
         }
         """)
-      implicit val sys =
-        ActorSystem("sys", bindConfig.withFallback(commonConfig))
+      implicit val sys = ActorSystem(
+        "sys",
+        bindConfig.withFallback(commonConfig))
 
       getExternal should ===(address.toAkkaAddress(s"akka.$proto"))
       getInternal should contain(bindAddress.toAkkaAddress(proto))

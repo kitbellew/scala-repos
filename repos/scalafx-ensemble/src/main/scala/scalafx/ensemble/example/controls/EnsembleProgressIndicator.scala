@@ -36,25 +36,29 @@ class EnsembleProgressIndicator extends EnsembleExample {
 
   def getContent = {
     // Progress Indicators 1, 2, 3, 4
-    val p1 = new ProgressIndicator {
-      prefWidth = 50
-      prefHeight = 50
-    }
-    val p2 = new ProgressIndicator {
-      prefWidth = 50
-      prefHeight = 50
-      progress = 0.25f
-    }
-    val p3 = new ProgressIndicator {
-      prefWidth = 50
-      prefHeight = 50
-      progress = 0.50f
-    }
-    val p4 = new ProgressIndicator {
-      prefWidth = 50
-      prefHeight = 50
-      progress = 1.0f
-    }
+    val p1 =
+      new ProgressIndicator {
+        prefWidth = 50
+        prefHeight = 50
+      }
+    val p2 =
+      new ProgressIndicator {
+        prefWidth = 50
+        prefHeight = 50
+        progress = 0.25f
+      }
+    val p3 =
+      new ProgressIndicator {
+        prefWidth = 50
+        prefHeight = 50
+        progress = 0.50f
+      }
+    val p4 =
+      new ProgressIndicator {
+        prefWidth = 50
+        prefHeight = 50
+        progress = 1.0f
+      }
     //Add all progress indicators in grid pane
     new GridPane() {
       hgap = 20

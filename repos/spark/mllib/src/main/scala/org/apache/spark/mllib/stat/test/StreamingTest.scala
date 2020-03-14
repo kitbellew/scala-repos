@@ -145,8 +145,8 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
   /** Compute summary statistics over each key and the specified test window size. */
   private[stat] def summarizeByKeyAndWindow(
       data: DStream[BinarySample]): DStream[(Boolean, StatCounter)] = {
-    val categoryValuePair =
-      data.map(sample => (sample.isExperiment, sample.value))
+    val categoryValuePair = data.map(sample =>
+      (sample.isExperiment, sample.value))
     if (this.windowSize == 0) {
       categoryValuePair.updateStateByKey[StatCounter](
         (newValues: Seq[Double], oldSummary: Option[StatCounter]) => {

@@ -97,11 +97,12 @@ class SecurityServiceSpec
   val apiKeyManager =
     new InMemoryAPIKeyManager[Future](blueeyes.util.Clock.System)
 
-  val tc = new AsyncHttpTranscoder[JValue, JValue] {
-    def apply(a: HttpRequest[JValue]): HttpRequest[JValue] = a
-    def unapply(
-        fb: Future[HttpResponse[JValue]]): Future[HttpResponse[JValue]] = fb
-  }
+  val tc =
+    new AsyncHttpTranscoder[JValue, JValue] {
+      def apply(a: HttpRequest[JValue]): HttpRequest[JValue] = a
+      def unapply(
+          fb: Future[HttpResponse[JValue]]): Future[HttpResponse[JValue]] = fb
+    }
 
   def getAPIKeys(authAPIKey: String) =
     authService.query("apiKey", authAPIKey).get("/apikeys/")
@@ -364,8 +365,10 @@ class SecurityServiceSpec
     }
 
     "create root-like API key with defaults" in {
-      val request =
-        v1.NewAPIKeyRequest(Some("root-like"), None, rootGrantRequests)
+      val request = v1.NewAPIKeyRequest(
+        Some("root-like"),
+        None,
+        rootGrantRequests)
       createAPIKey(rootAPIKey, request) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
@@ -394,14 +397,15 @@ class SecurityServiceSpec
         Some("non-root-2"),
         None,
         Set(mkNewGrantRequest(user1Grant)))
-      val result = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- createAPIKey(
-          user1.apiKey,
-          request)
-        apiKey = jid.deserialize[v1.APIKeyDetails].apiKey
-        HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) <- getAPIKeyDetails(
-          apiKey)
-      } yield jtd.deserialize[v1.APIKeyDetails]
+      val result =
+        for {
+          HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- createAPIKey(
+            user1.apiKey,
+            request)
+          apiKey = jid.deserialize[v1.APIKeyDetails].apiKey
+          HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) <- getAPIKeyDetails(
+            apiKey)
+        } yield jtd.deserialize[v1.APIKeyDetails]
 
       result must awaited(to) {
         beLike {
@@ -646,24 +650,27 @@ class SecurityServiceSpec
     }
 
     "retrieve permissions for a path we don't own" in {
-      val permsM = for {
-        HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- createAPIKeyGrant(
-          user1.apiKey,
-          v1.NewGrantRequest(
-            None,
-            None,
-            Set.empty,
-            Set(
-              ReadPermission(Path("/user1/public"), WrittenByAccount("user1"))),
-            None))
-        _ <- addAPIKeyGrant(
-          user1.apiKey,
-          user4.apiKey,
-          jid.deserialize[v1.GrantDetails].grantId)
-        HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) <- getPermissions(
-          user4.apiKey,
-          Path("/user1/public"))
-      } yield jperms.deserialize[Set[Permission]]
+      val permsM =
+        for {
+          HttpResponse(HttpStatus(OK, _), _, Some(jid), _) <- createAPIKeyGrant(
+            user1.apiKey,
+            v1.NewGrantRequest(
+              None,
+              None,
+              Set.empty,
+              Set(
+                ReadPermission(
+                  Path("/user1/public"),
+                  WrittenByAccount("user1"))),
+              None))
+          _ <- addAPIKeyGrant(
+            user1.apiKey,
+            user4.apiKey,
+            jid.deserialize[v1.GrantDetails].grantId)
+          HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) <- getPermissions(
+            user4.apiKey,
+            Path("/user1/public"))
+        } yield jperms.deserialize[Set[Permission]]
 
       permsM must awaited(to) {
         haveOneElementLike {

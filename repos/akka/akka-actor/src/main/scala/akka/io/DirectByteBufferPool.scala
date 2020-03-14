@@ -31,14 +31,11 @@ private[akka] class DirectByteBufferPool(
     new Array[ByteBuffer](maxPoolEntries)
   private[this] var buffersInPool: Int = 0
 
-  def acquire(): ByteBuffer =
-    takeBufferFromPool()
+  def acquire(): ByteBuffer = takeBufferFromPool()
 
-  def release(buf: ByteBuffer): Unit =
-    offerBufferToPool(buf)
+  def release(buf: ByteBuffer): Unit = offerBufferToPool(buf)
 
-  private def allocate(size: Int): ByteBuffer =
-    ByteBuffer.allocateDirect(size)
+  private def allocate(size: Int): ByteBuffer = ByteBuffer.allocateDirect(size)
 
   private final def takeBufferFromPool(): ByteBuffer = {
     val buffer = pool.synchronized {

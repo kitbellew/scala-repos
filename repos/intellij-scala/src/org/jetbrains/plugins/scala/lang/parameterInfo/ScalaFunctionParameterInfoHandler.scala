@@ -130,8 +130,8 @@ class ScalaFunctionParameterInfoHandler
       context: ParameterInfoContext): Array[Object] = {
     if (!item.isInstanceOf[LookupItem[_]])
       return null
-    val allElements =
-      JavaCompletionUtil.getAllPsiElements(item.asInstanceOf[LookupItem[_]])
+    val allElements = JavaCompletionUtil.getAllPsiElements(
+      item.asInstanceOf[LookupItem[_]])
 
     if (allElements != null &&
         allElements.size > 0 &&
@@ -592,31 +592,33 @@ class ScalaFunctionParameterInfoHandler
           case call: MethodInvocation =>
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             def collectResult() {
-              val canBeUpdate = call.getParent match {
-                case assignStmt: ScAssignStmt
-                    if call == assignStmt.getLExpression =>
-                  true
-                case notExpr
-                    if !notExpr.isInstanceOf[ScExpression] || notExpr
-                      .isInstanceOf[ScBlockExpr] =>
-                  true
-                case _ => false
-              }
+              val canBeUpdate =
+                call.getParent match {
+                  case assignStmt: ScAssignStmt
+                      if call == assignStmt.getLExpression =>
+                    true
+                  case notExpr
+                      if !notExpr.isInstanceOf[ScExpression] || notExpr
+                        .isInstanceOf[ScBlockExpr] =>
+                    true
+                  case _ => false
+                }
               val count = args.invocationCount
               val gen = args.callGeneric.getOrElse(null: ScGenericCall)
               def collectSubstitutor(element: PsiElement): ScSubstitutor = {
                 if (gen == null)
                   return ScSubstitutor.empty
-                val tp: Array[(String, PsiElement)] = element match {
-                  case tpo: ScTypeParametersOwner =>
-                    tpo.typeParameters
-                      .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
-                      .toArray
-                  case ptpo: PsiTypeParameterListOwner =>
-                    ptpo.getTypeParameters.map(p =>
-                      (p.name, ScalaPsiUtil.getPsiElementId(p)))
-                  case _ => return ScSubstitutor.empty
-                }
+                val tp: Array[(String, PsiElement)] =
+                  element match {
+                    case tpo: ScTypeParametersOwner =>
+                      tpo.typeParameters
+                        .map(p => (p.name, ScalaPsiUtil.getPsiElementId(p)))
+                        .toArray
+                    case ptpo: PsiTypeParameterListOwner =>
+                      ptpo.getTypeParameters.map(p =>
+                        (p.name, ScalaPsiUtil.getPsiElementId(p)))
+                    case _ => return ScSubstitutor.empty
+                  }
                 val typeArgs: Seq[ScTypeElement] = gen.arguments
                 val map =
                   new collection.mutable.HashMap[(String, PsiElement), ScType]
@@ -632,11 +634,12 @@ class ScalaFunctionParameterInfoHandler
                       -1
                     else
                       0
-                  val processor = new CompletionProcessor(
-                    StdKinds.refExprQualRef,
-                    call,
-                    true,
-                    Some(functionName))
+                  val processor =
+                    new CompletionProcessor(
+                      StdKinds.refExprQualRef,
+                      call,
+                      true,
+                      Some(functionName))
                   processor.processType(typez, call)
                   val variants: Array[ScalaResolveResult] = processor.candidates
                   for {
@@ -751,18 +754,20 @@ class ScalaFunctionParameterInfoHandler
                               (p.name, ScalaPsiUtil.getPsiElementId(p)))
                             val typeArgs: Seq[ScTypeElement] =
                               gen.typeArgList.typeArgs
-                            val map = new collection.mutable.HashMap[
-                              (String, PsiElement),
-                              ScType]
+                            val map =
+                              new collection.mutable.HashMap[
+                                (String, PsiElement),
+                                ScType]
                             for (i <- 0 to Math.min(
                                    tp.length,
                                    typeArgs.length) - 1) {
                               map += ((tp(i), typeArgs(i).calcType))
                             }
-                            val substitutor = new ScSubstitutor(
-                              Map(map.toSeq: _*),
-                              Map.empty,
-                              None)
+                            val substitutor =
+                              new ScSubstitutor(
+                                Map(map.toSeq: _*),
+                                Map.empty,
+                                None)
                             res += ((constr, substitutor.followed(subst), i))
                           case _ => res += ((constr, subst, i))
                         }
@@ -804,18 +809,20 @@ class ScalaFunctionParameterInfoHandler
                             (p.name, ScalaPsiUtil.getPsiElementId(p)))
                           val typeArgs: Seq[ScTypeElement] =
                             gen.typeArgList.typeArgs
-                          val map = new collection.mutable.HashMap[
-                            (String, PsiElement),
-                            ScType]
+                          val map =
+                            new collection.mutable.HashMap[
+                              (String, PsiElement),
+                              ScType]
                           for (i <- 0 to Math.min(
                                  tp.length,
                                  typeArgs.length) - 1) {
                             map += ((tp(i), typeArgs(i).calcType))
                           }
-                          val substitutor = new ScSubstitutor(
-                            Map(map.toSeq: _*),
-                            Map.empty,
-                            None)
+                          val substitutor =
+                            new ScSubstitutor(
+                              Map(map.toSeq: _*),
+                              Map.empty,
+                              None)
                           res += (
                             (
                               new PhysicalSignature(
@@ -837,8 +844,10 @@ class ScalaFunctionParameterInfoHandler
           case self: ScSelfInvocation =>
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             val i = self.arguments.indexOf(args.element)
-            val clazz =
-              PsiTreeUtil.getParentOfType(self, classOf[ScClass], true)
+            val clazz = PsiTreeUtil.getParentOfType(
+              self,
+              classOf[ScClass],
+              true)
             clazz match {
               case clazz: ScClass =>
                 clazz.constructor match {

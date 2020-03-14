@@ -8,13 +8,14 @@ abstract class PsiStackOverflowError {
     def children = List()
   }
 
-  val tree = new Tree[TreeItem.Min]() {
-    def setContent(trainingGroups: Iterable[String]) {
-      val rootNodes = trainingGroups.map(TGItem(_))
-      rootNodes.foreach( /* line: 26 */ addItemRecursively)
-      rootNodes.foreach(expandItemsRecursively)
+  val tree =
+    new Tree[TreeItem.Min]() {
+      def setContent(trainingGroups: Iterable[String]) {
+        val rootNodes = trainingGroups.map(TGItem(_))
+        rootNodes.foreach( /* line: 26 */ addItemRecursively)
+        rootNodes.foreach(expandItemsRecursively)
+      }
     }
-  }
 }
 object TreeItem {
   type Min = TreeItem[T forSome {

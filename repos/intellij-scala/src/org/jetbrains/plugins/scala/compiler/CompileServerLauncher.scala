@@ -60,11 +60,12 @@ class CompileServerLauncher extends ApplicationComponent {
 
     if (applicationSettings.COMPILE_SERVER_SDK == null) {
       // Try to find a suitable JDK
-      val choice =
-        Option(ProjectRootManager.getInstance(project).getProjectSdk).orElse {
-          val all = ProjectJdkTable.getInstance
-            .getSdksOfType(JavaSdk.getInstance())
-            .asScala
+      val choice = Option(ProjectRootManager.getInstance(project).getProjectSdk)
+        .orElse {
+          val all =
+            ProjectJdkTable.getInstance
+              .getSdksOfType(JavaSdk.getInstance())
+              .asScala
           all.headOption
         }
 
@@ -208,11 +209,11 @@ object CompileServerLauncher {
       classOf[CompileServerLauncher])
 
   def compilerJars: Seq[File] = {
-    val jpsBuildersJar = new File(
-      PathUtil.getJarPathForClass(classOf[BuilderService]))
+    val jpsBuildersJar =
+      new File(PathUtil.getJarPathForClass(classOf[BuilderService]))
     val utilJar = new File(PathUtil.getJarPathForClass(classOf[FileUtil]))
-    val trove4jJar = new File(
-      PathUtil.getJarPathForClass(classOf[TByteArrayList]))
+    val trove4jJar =
+      new File(PathUtil.getJarPathForClass(classOf[TByteArrayList]))
 
     val pluginRoot = pluginPath
     val jpsRoot = new File(pluginRoot, "jps")
@@ -292,9 +293,10 @@ object CompileServerLauncher {
     serverInstance match {
       case None => true
       case Some(instance) =>
-        val useProjectHome = ScalaCompileServerSettings
-          .getInstance()
-          .USE_PROJECT_HOME_AS_WORKING_DIR
+        val useProjectHome =
+          ScalaCompileServerSettings
+            .getInstance()
+            .USE_PROJECT_HOME_AS_WORKING_DIR
         val workingDirChanged = useProjectHome && projectHome(
           project) != serverInstance.map(_.workingDir)
         workingDirChanged || instance.bootClasspath != withTimestamps(

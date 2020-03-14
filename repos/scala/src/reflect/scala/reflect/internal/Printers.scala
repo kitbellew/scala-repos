@@ -283,10 +283,11 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
     def printAnnotations(tree: MemberDef) = {
       // SI-5885: by default this won't print annotations of not yet initialized symbols
-      val annots = tree.symbol.annotations match {
-        case Nil  => tree.mods.annotations
-        case anns => anns
-      }
+      val annots =
+        tree.symbol.annotations match {
+          case Nil  => tree.mods.annotations
+          case anns => anns
+        }
       annots foreach (annot => print(s"@$annot "))
     }
 
@@ -738,10 +739,11 @@ trait Printers extends api.Printers { self: SymbolTable =>
     }
 
     protected def isIntLitWithDecodedOp(qual: Tree, name: Name) = {
-      val qualIsIntLit = qual match {
-        case Literal(Constant(x: Int)) => true
-        case _                         => false
-      }
+      val qualIsIntLit =
+        qual match {
+          case Literal(Constant(x: Int)) => true
+          case _                         => false
+        }
       qualIsIntLit && name.isOperatorName
     }
 
@@ -984,59 +986,61 @@ trait Printers extends api.Printers { self: SymbolTable =>
             super.printTree(cl)
           printAnnotations(cl)
           // traits
-          val clParents: List[Tree] = if (mods.isTrait) {
-            // avoid abstract modifier for traits
-            printModifiers(tree, mods &~ ABSTRACT)
-            print("trait ", printedName(name))
-            printTypeParams(tparams)
+          val clParents: List[Tree] =
+            if (mods.isTrait) {
+              // avoid abstract modifier for traits
+              printModifiers(tree, mods &~ ABSTRACT)
+              print("trait ", printedName(name))
+              printTypeParams(tparams)
 
-            val build.SyntacticTraitDef(_, _, _, _, parents, _, _) = tree
-            parents
-            // classes
-          } else {
-            printModifiers(tree, mods)
-            print("class ", printedName(name))
-            printTypeParams(tparams)
+              val build.SyntacticTraitDef(_, _, _, _, parents, _, _) = tree
+              parents
+              // classes
+            } else {
+              printModifiers(tree, mods)
+              print("class ", printedName(name))
+              printTypeParams(tparams)
 
-            val build.SyntacticClassDef(
-              _,
-              _,
-              _,
-              ctorMods,
-              vparamss,
-              earlyDefs,
-              parents,
-              selfType,
-              body) = cl
+              val build.SyntacticClassDef(
+                _,
+                _,
+                _,
+                ctorMods,
+                vparamss,
+                earlyDefs,
+                parents,
+                selfType,
+                body) = cl
 
-            // constructor's modifier
-            if (ctorMods.hasFlag(AccessFlags) || ctorMods.hasAccessBoundary) {
-              print(" ")
-              printModifiers(ctorMods, primaryCtorParam = false)
-            }
-
-            def printConstrParams(ts: List[ValDef]): Unit = {
-              parenthesize() {
-                printImplicitInParamsList(ts)
-                printSeq(ts)(printParam(_, primaryCtorParam = true))(
-                  print(", "))
+              // constructor's modifier
+              if (ctorMods.hasFlag(AccessFlags) || ctorMods.hasAccessBoundary) {
+                print(" ")
+                printModifiers(ctorMods, primaryCtorParam = false)
               }
+
+              def printConstrParams(ts: List[ValDef]): Unit = {
+                parenthesize() {
+                  printImplicitInParamsList(ts)
+                  printSeq(ts)(printParam(_, primaryCtorParam = true))(
+                    print(", "))
+                }
+              }
+              // constructor's params processing (don't print single empty constructor param list)
+              vparamss match {
+                case Nil | List(Nil)
+                    if (!mods.isCase && !ctorMods.hasFlag(AccessFlags)) =>
+                case _                                                  => vparamss foreach printConstrParams
+              }
+              parents
             }
-            // constructor's params processing (don't print single empty constructor param list)
-            vparamss match {
-              case Nil | List(Nil)
-                  if (!mods.isCase && !ctorMods.hasFlag(AccessFlags)) =>
-              case _                                                  => vparamss foreach printConstrParams
-            }
-            parents
-          }
 
           // get trees without default classes and traits (when they are last)
-          val printedParents = removeDefaultTypesFromList(clParents)()(
-            if (mods.hasFlag(CASE))
-              defaultTraitsForCase
-            else
-              Nil)
+          val printedParents =
+            removeDefaultTypesFromList(clParents)()(
+              if (mods.hasFlag(CASE))
+                defaultTraitsForCase
+              else
+                Nil)
           print(
             if (mods.isDeferred)
               "<: "
@@ -1135,35 +1139,38 @@ trait Printers extends api.Printers { self: SymbolTable =>
             } getOrElse (parents)
 
           val primaryCtr = treeInfo.firstConstructor(body)
-          val ap: Option[Apply] = primaryCtr match {
-            case DefDef(_, _, _, _, _, Block(ctBody, _)) =>
-              val earlyDefs = treeInfo.preSuperFields(ctBody) ::: body.filter {
-                case td: TypeDef => treeInfo.isEarlyDef(td)
-                case _           => false
-              }
-              if (earlyDefs.nonEmpty) {
-                print("{")
-                printColumn(earlyDefs, "", ";", "")
-                print(
-                  "} " + (if (printedParents.nonEmpty)
-                            "with "
-                          else
-                            ""))
-              }
-              ctBody collectFirst {
-                case apply: Apply => apply
-              }
-            case _ => None
-          }
+          val ap: Option[Apply] =
+            primaryCtr match {
+              case DefDef(_, _, _, _, _, Block(ctBody, _)) =>
+                val earlyDefs =
+                  treeInfo.preSuperFields(ctBody) ::: body.filter {
+                    case td: TypeDef => treeInfo.isEarlyDef(td)
+                    case _           => false
+                  }
+                if (earlyDefs.nonEmpty) {
+                  print("{")
+                  printColumn(earlyDefs, "", ";", "")
+                  print(
+                    "} " + (if (printedParents.nonEmpty)
+                              "with "
+                            else
+                              ""))
+                }
+                ctBody collectFirst {
+                  case apply: Apply => apply
+                }
+              case _ => None
+            }
 
           if (printedParents.nonEmpty) {
             val (clParent :: traits) = printedParents
             print(clParent)
 
-            val constrArgss = ap match {
-              case Some(treeInfo.Applied(_, _, argss)) => argss
-              case _                                   => Nil
-            }
+            val constrArgss =
+              ap match {
+                case Some(treeInfo.Applied(_, _, argss)) => argss
+                case _                                   => Nil
+              }
             printArgss(constrArgss)
             if (traits.nonEmpty) {
               printRow(traits, " with ", " with ", "")
@@ -1246,10 +1253,11 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         case f @ Function(vparams, body) =>
           // parentheses are not allowed for val a: Int => Int = implicit x => x
-          val printParentheses = vparams match {
-            case head :: _ => !head.mods.isImplicit
-            case _         => true
-          }
+          val printParentheses =
+            vparams match {
+              case head :: _ => !head.mods.isImplicit
+              case _         => true
+            }
           printFunction(f)(
             printValueParams(vparams, inParentheses = printParentheses))
 

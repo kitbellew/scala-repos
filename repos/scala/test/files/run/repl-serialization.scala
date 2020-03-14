@@ -41,18 +41,20 @@ object Test {
     imain.directBind("extract", "(AnyRef => Unit)", extract)
     code.lines.foreach(imain.interpret)
 
-    val virtualFile: AbstractFile = extract.value.getClass.getClassLoader
-      .asInstanceOf[AbstractFileClassLoader]
-      .root
+    val virtualFile: AbstractFile =
+      extract.value.getClass.getClassLoader
+        .asInstanceOf[AbstractFileClassLoader]
+        .root
     val newLoader =
       new AbstractFileClassLoader(virtualFile, getClass.getClassLoader)
 
     def deserializeInNewLoader(string: Array[Byte]): AnyRef = {
       val bis = new ByteArrayInputStream(string)
-      val in = new ObjectInputStream(bis) {
-        override def resolveClass(desc: ObjectStreamClass) =
-          Class.forName(desc.getName, false, newLoader)
-      }
+      val in =
+        new ObjectInputStream(bis) {
+          override def resolveClass(desc: ObjectStreamClass) =
+            Class.forName(desc.getName, false, newLoader)
+        }
       in.readObject()
     }
     def serialize(o: AnyRef): Array[Byte] = {
@@ -65,8 +67,8 @@ object Test {
     println("== evaluating lambda")
     extract.value.asInstanceOf[() => Any].apply()
     println("== reconstituting into a fresh classloader")
-    val reconstituted =
-      deserializeInNewLoader(serialize(extract.value)).asInstanceOf[() => Any]
+    val reconstituted = deserializeInNewLoader(serialize(extract.value))
+      .asInstanceOf[() => Any]
     println("== evaluating reconstituted lambda")
     reconstituted.apply() // should not print("evaluating x") a second time
   }

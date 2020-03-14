@@ -61,8 +61,8 @@ class AppsResource @Inject() (
       @QueryParam("embed") embed: java.util.Set[String],
       @Context req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      val selector =
-        selectAuthorized(search(Option(cmd), Option(id), Option(label)))
+      val selector = selectAuthorized(
+        search(Option(cmd), Option(id), Option(label)))
       // additional embeds are deprecated!
       val resolvedEmbed = InfoEmbedResolver.resolveApp(embed.asScala.toSet) +
         AppInfo.Embed.Counts + AppInfo.Embed.Deployments
@@ -80,8 +80,8 @@ class AppsResource @Inject() (
       withValid(Json.parse(body).as[AppDefinition].withCanonizedIds()) {
         appDef =>
           val now = clock.now()
-          val app = appDef.copy(versionInfo =
-            AppDefinition.VersionInfo.OnlyVersion(now))
+          val app = appDef
+            .copy(versionInfo = AppDefinition.VersionInfo.OnlyVersion(now))
 
           checkAuthorization(CreateApp, app)
 
@@ -322,12 +322,13 @@ class AppsResource @Inject() (
       label: Option[String]): AppSelector = {
     def containCaseInsensitive(a: String, b: String): Boolean =
       b.toLowerCase contains a.toLowerCase
-    val selectors = Seq[Option[AppSelector]](
-      cmd.map(c => AppSelector(_.cmd.exists(containCaseInsensitive(c, _)))),
-      id.map(s =>
-        AppSelector(app => containCaseInsensitive(s, app.id.toString))),
-      label.map(new LabelSelectorParsers().parsed)
-    ).flatten
+    val selectors =
+      Seq[Option[AppSelector]](
+        cmd.map(c => AppSelector(_.cmd.exists(containCaseInsensitive(c, _)))),
+        id.map(s =>
+          AppSelector(app => containCaseInsensitive(s, app.id.toString))),
+        label.map(new LabelSelectorParsers().parsed)
+      ).flatten
     AppSelector.forall(selectors)
   }
 
@@ -339,10 +340,11 @@ class AppsResource @Inject() (
 
   def selectAuthorized(fn: => AppSelector)(
       implicit identity: Identity): AppSelector = {
-    val authSelector = new AppSelector {
-      override def matches(app: AppDefinition): Boolean =
-        isAuthorized(ViewApp, app)
-    }
+    val authSelector =
+      new AppSelector {
+        override def matches(app: AppDefinition): Boolean =
+          isAuthorized(ViewApp, app)
+      }
     AppSelector.forall(Seq(authSelector, fn))
   }
 }

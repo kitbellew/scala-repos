@@ -24,19 +24,22 @@ import scala.collection.mutable.Buffer
 class InnerProductJob(args: Args) extends Job(args) {
   val l = args.getOrElse("left", "1").toInt
   val r = args.getOrElse("right", "1").toInt
-  val j = args.getOrElse("joiner", "i") match {
-    case "i" => new InnerJoin
-    case "l" => new LeftJoin
-    case "r" => new RightJoin
-    case "o" => new OuterJoin
-  }
+  val j =
+    args.getOrElse("joiner", "i") match {
+      case "i" => new InnerJoin
+      case "l" => new LeftJoin
+      case "r" => new RightJoin
+      case "o" => new OuterJoin
+    }
 
-  val in0 = Tsv("input0").read.mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) {
-    input: (Int, Int, Int) => input
-  }
-  val in1 = Tsv("input1").read.mapTo((0, 1, 2) -> ('x2, 'y2, 's2)) {
-    input: (Int, Int, Int) => input
-  }
+  val in0 =
+    Tsv("input0").read.mapTo((0, 1, 2) -> ('x1, 'y1, 's1)) {
+      input: (Int, Int, Int) => input
+    }
+  val in1 =
+    Tsv("input1").read.mapTo((0, 1, 2) -> ('x2, 'y2, 's2)) {
+      input: (Int, Int, Int) => input
+    }
   in0
     .blockJoinWithSmaller(
       'y1 -> 'y2,
@@ -56,8 +59,11 @@ class InnerProductJob(args: Args) extends Job(args) {
 class BlockJoinPipeTest extends WordSpec with Matchers {
   "An InnerProductJob" should {
 
-    val in1 =
-      List(("0", "0", "1"), ("0", "1", "1"), ("1", "0", "2"), ("2", "0", "4"))
+    val in1 = List(
+      ("0", "0", "1"),
+      ("0", "1", "1"),
+      ("1", "0", "2"),
+      ("2", "0", "4"))
     val in2 = List(("0", "1", "1"), ("1", "0", "2"), ("2", "4", "5"))
     val correctOutput = Set((0, 1, 2.0), (0, 0, 1.0), (1, 1, 4.0), (2, 1, 8.0))
 

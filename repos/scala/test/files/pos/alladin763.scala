@@ -32,16 +32,18 @@ package p {
 
 object Test {
 
-  val f = new Foo {
-    type T = Int;
-    def apply() = 42
-  }
-
-  def main(args: Array[String]): Unit = {
-    val g = new Foo {
+  val f =
+    new Foo {
       type T = Int;
       def apply() = 42
     }
+
+  def main(args: Array[String]): Unit = {
+    val g =
+      new Foo {
+        type T = Int;
+        def apply() = 42
+      }
 
     (e: Foo)()
     val ee: Int = e()

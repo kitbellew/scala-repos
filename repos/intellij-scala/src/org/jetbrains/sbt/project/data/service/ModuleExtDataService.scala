@@ -50,8 +50,7 @@ object ModuleExtDataService {
         project,
         modelsProvider) {
 
-    override def importData(): Unit =
-      dataToImport.foreach(doImport)
+    override def importData(): Unit = dataToImport.foreach(doImport)
 
     private def doImport(dataNode: DataNode[ModuleExtData]): Unit = {
       for {
@@ -112,8 +111,8 @@ object ModuleExtDataService {
         .javaLanguageLevelFrom(javacOptions)
         .orElse(moduleSdk.flatMap(SdkUtils.defaultJavaLanguageLevelIn))
       languageLevel.foreach { level =>
-        val extension =
-          model.getModuleExtension(classOf[LanguageLevelModuleExtensionImpl])
+        val extension = model.getModuleExtension(
+          classOf[LanguageLevelModuleExtensionImpl])
         extension.setLanguageLevel(level)
       }
     }
@@ -132,11 +131,12 @@ object ModuleExtDataService {
     }
 
     private def showWarning(message: String): Unit = {
-      val notification = new NotificationData(
-        SbtBundle("sbt.notificationGroupTitle"),
-        message,
-        NotificationCategory.WARNING,
-        NotificationSource.PROJECT_SYNC)
+      val notification =
+        new NotificationData(
+          SbtBundle("sbt.notificationGroupTitle"),
+          message,
+          NotificationCategory.WARNING,
+          NotificationSource.PROJECT_SYNC)
       notification.setBalloonGroup(SbtBundle("sbt.notificationGroupName"))
       ExternalSystemNotificationManager
         .getInstance(project)

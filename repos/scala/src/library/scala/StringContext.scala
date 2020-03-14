@@ -219,34 +219,35 @@ object StringContext {
           var idx = next + 1
           if (idx >= len)
             throw new InvalidEscapeException(str, next)
-          val c = str(idx) match {
-            case 'b'  => '\b'
-            case 't'  => '\t'
-            case 'n'  => '\n'
-            case 'f'  => '\f'
-            case 'r'  => '\r'
-            case '"'  => '"'
-            case '\'' => '\''
-            case '\\' => '\\'
-            case o if '0' <= o && o <= '7' =>
-              if (strict)
-                throw new InvalidEscapeException(str, next)
-              val leadch = str(idx)
-              var oct = leadch - '0'
-              idx += 1
-              if (idx < len && '0' <= str(idx) && str(idx) <= '7') {
-                oct = oct * 8 + str(idx) - '0'
+          val c =
+            str(idx) match {
+              case 'b'  => '\b'
+              case 't'  => '\t'
+              case 'n'  => '\n'
+              case 'f'  => '\f'
+              case 'r'  => '\r'
+              case '"'  => '"'
+              case '\'' => '\''
+              case '\\' => '\\'
+              case o if '0' <= o && o <= '7' =>
+                if (strict)
+                  throw new InvalidEscapeException(str, next)
+                val leadch = str(idx)
+                var oct = leadch - '0'
                 idx += 1
-                if (idx < len && leadch <= '3' && '0' <= str(idx) && str(
-                      idx) <= '7') {
+                if (idx < len && '0' <= str(idx) && str(idx) <= '7') {
                   oct = oct * 8 + str(idx) - '0'
                   idx += 1
+                  if (idx < len && leadch <= '3' && '0' <= str(idx) && str(
+                        idx) <= '7') {
+                    oct = oct * 8 + str(idx) - '0'
+                    idx += 1
+                  }
                 }
-              }
-              idx -= 1 // retreat
-              oct.toChar
-            case _ => throw new InvalidEscapeException(str, next)
-          }
+                idx -= 1 // retreat
+                oct.toChar
+              case _ => throw new InvalidEscapeException(str, next)
+            }
           idx += 1 // advance
           b append c
           loop(idx, str.indexOf('\\', idx))

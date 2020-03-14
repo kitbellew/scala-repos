@@ -23,16 +23,17 @@ class ScalaMethodCallFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val args = psiElement match {
-      case call: ScMethodCall => call.args
-      case _                  => return NoOperation
-    }
+    val args =
+      psiElement match {
+        case call: ScMethodCall => call.args
+        case _                  => return NoOperation
+      }
 
     val methodCall = psiElement.asInstanceOf[ScMethodCall]
 
     if (args.lastChild.exists(_.getText == ")")) {
-      val ref =
-        Option(methodCall.deepestInvokedExpr).flatMap(_.getReference.toOption)
+      val ref = Option(methodCall.deepestInvokedExpr)
+        .flatMap(_.getReference.toOption)
 
       ref.map(_.resolve()) match {
         case Some(funDef: ScFunctionDefinition) =>

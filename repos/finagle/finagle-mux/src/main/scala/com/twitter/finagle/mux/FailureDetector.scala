@@ -92,8 +92,7 @@ object FailureDetector {
     * [[com.twitter.finagle.Stackable]] client
     */
   case class Param(param: Config) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
 
   case object Param {

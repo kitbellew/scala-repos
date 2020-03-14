@@ -145,8 +145,8 @@ trait StreamTest extends QueryTest with Timeouts {
 
   /** Signals that a failure is expected and should not kill the test. */
   case class ExpectFailure[T <: Throwable: ClassTag]() extends StreamAction {
-    val causeClass: Class[T] =
-      implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]
+    val causeClass: Class[T] = implicitly[ClassTag[T]].runtimeClass
+      .asInstanceOf[Class[T]]
     override def toString(): String =
       s"ExpectFailure[${causeClass.getCanonicalName}]"
   }
@@ -220,10 +220,9 @@ trait StreamTest extends QueryTest with Timeouts {
     var streamDeathCause: Throwable = null
 
     // If the test doesn't manually start the stream, we do it automatically at the beginning.
-    val startedManually =
-      actions
-        .takeWhile(!_.isInstanceOf[StreamMustBeRunning])
-        .contains(StartStream)
+    val startedManually = actions
+      .takeWhile(!_.isInstanceOf[StreamMustBeRunning])
+      .contains(StartStream)
     val startedTest =
       if (startedManually)
         actions

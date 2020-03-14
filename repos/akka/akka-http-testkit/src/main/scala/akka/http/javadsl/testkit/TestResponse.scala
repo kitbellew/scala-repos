@@ -32,8 +32,9 @@ abstract class TestResponse(
   /**
     * Returns the strictified entity of the response. It will be strictified on first access.
     */
-  lazy val entity: HttpEntity.Strict =
-    _response.entity.toStrict(awaitAtMost).awaitResult(awaitAtMost)
+  lazy val entity: HttpEntity.Strict = _response.entity
+    .toStrict(awaitAtMost)
+    .awaitResult(awaitAtMost)
 
   /**
     * Returns a copy of the underlying response with the strictified entity.

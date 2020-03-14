@@ -47,11 +47,12 @@ object CanHaarTr {
     */
   private def squareMatrix(m: DenseMatrix[Double]): DenseMatrix[Double] = {
     val maxd = Math.max(m.rows, m.cols)
-    val rows = if ((maxd & -maxd) == maxd) {
-      maxd
-    } else {
-      1 << (32 - Integer.numberOfLeadingZeros(Math.max(m.rows, m.cols)))
-    }
+    val rows =
+      if ((maxd & -maxd) == maxd) {
+        maxd
+      } else {
+        1 << (32 - Integer.numberOfLeadingZeros(Math.max(m.rows, m.cols)))
+      }
     val o = DenseMatrix.zeros[Double](rows, rows)
     for (r <- 0 until m.rows;
          c <- 0 until m.cols) {

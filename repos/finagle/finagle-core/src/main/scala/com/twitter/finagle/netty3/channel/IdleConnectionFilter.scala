@@ -31,8 +31,7 @@ object IdleConnectionFilter {
     * [[com.twitter.finagle.netty3.channel.IdleConnectionFilter]].
     */
   case class Param(thres: Option[OpenConnectionsThresholds]) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
     implicit val param = Stack.Param(Param(None))
@@ -85,9 +84,10 @@ class IdleConnectionFilter[Req, Rep](
   private[this] val queue =
     new BucketGenerationalQueue[ClientConnection](threshold.idleTimeout)
   private[this] val connectionCounter = new AtomicInteger(0)
-  private[this] val idle = statsReceiver.addGauge("idle") {
-    queue.collectAll(threshold.idleTimeout).size
-  }
+  private[this] val idle =
+    statsReceiver.addGauge("idle") {
+      queue.collectAll(threshold.idleTimeout).size
+    }
   private[this] val refused = statsReceiver.counter("refused")
   private[this] val closed = statsReceiver.counter("closed")
 

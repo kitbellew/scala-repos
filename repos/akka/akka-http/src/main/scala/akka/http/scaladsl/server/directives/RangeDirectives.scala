@@ -71,8 +71,8 @@ trait RangeDirectives {
       // See comment of the `range-coalescing-threshold` setting in `reference.conf` for the rationale of this behavior.
       def coalesceRanges(iRanges: Seq[IndexRange]): Seq[IndexRange] =
         iRanges.foldLeft(Seq.empty[IndexRange]) { (acc, iRange) ⇒
-          val (mergeCandidates, otherCandidates) =
-            acc.partition(_.distance(iRange) <= rangeCoalescingThreshold)
+          val (mergeCandidates, otherCandidates) = acc.partition(
+            _.distance(iRange) <= rangeCoalescingThreshold)
           val merged = mergeCandidates.foldLeft(iRange)(_ mergeWith _)
           otherCandidates :+ merged
         }
@@ -88,39 +88,42 @@ trait RangeDirectives {
         // Therefore, ranges need to be sorted to prevent that some selected ranges already start to accumulate data
         // but cannot be sent out because another range is blocking the queue.
         val coalescedRanges = coalesceRanges(iRanges).sortBy(_.start)
-        val source = coalescedRanges.size match {
-          case 0 ⇒ Source.empty
-          case 1 ⇒
-            val range = coalescedRanges.head
-            val flow =
-              StreamUtils.sliceBytesTransformer(range.start, range.length)
-            val bytes = entity.dataBytes.via(flow)
-            val part = Multipart.ByteRanges.BodyPart(
-              range.contentRange(length),
-              HttpEntity(entity.contentType, range.length, bytes))
-            Source.single(part)
-          case n ⇒
-            Source fromGraph GraphDSL.create() { implicit b ⇒
-              import GraphDSL.Implicits._
-              val bcast = b.add(Broadcast[ByteString](n))
-              val merge = b.add(Concat[Multipart.ByteRanges.BodyPart](n))
-              for (range ← coalescedRanges) {
-                val flow =
-                  StreamUtils.sliceBytesTransformer(range.start, range.length)
-                bcast ~> flow
-                  .buffer(16, OverflowStrategy.backpressure)
-                  .prefixAndTail(0)
-                  .map {
-                    case (_, bytes) ⇒
-                      Multipart.ByteRanges.BodyPart(
-                        range.contentRange(length),
-                        HttpEntity(entity.contentType, range.length, bytes))
-                  } ~> merge
+        val source =
+          coalescedRanges.size match {
+            case 0 ⇒ Source.empty
+            case 1 ⇒
+              val range = coalescedRanges.head
+              val flow = StreamUtils.sliceBytesTransformer(
+                range.start,
+                range.length)
+              val bytes = entity.dataBytes.via(flow)
+              val part = Multipart.ByteRanges.BodyPart(
+                range.contentRange(length),
+                HttpEntity(entity.contentType, range.length, bytes))
+              Source.single(part)
+            case n ⇒
+              Source fromGraph GraphDSL.create() { implicit b ⇒
+                import GraphDSL.Implicits._
+                val bcast = b.add(Broadcast[ByteString](n))
+                val merge = b.add(Concat[Multipart.ByteRanges.BodyPart](n))
+                for (range ← coalescedRanges) {
+                  val flow = StreamUtils.sliceBytesTransformer(
+                    range.start,
+                    range.length)
+                  bcast ~> flow
+                    .buffer(16, OverflowStrategy.backpressure)
+                    .prefixAndTail(0)
+                    .map {
+                      case (_, bytes) ⇒
+                        Multipart.ByteRanges.BodyPart(
+                          range.contentRange(length),
+                          HttpEntity(entity.contentType, range.length, bytes))
+                    } ~> merge
+                }
+                entity.dataBytes ~> bcast
+                SourceShape(merge.out)
               }
-              entity.dataBytes ~> bcast
-              SourceShape(merge.out)
-            }
-        }
+          }
         Multipart.ByteRanges(source)
       }
 

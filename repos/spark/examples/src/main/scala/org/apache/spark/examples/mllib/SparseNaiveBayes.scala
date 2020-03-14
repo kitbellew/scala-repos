@@ -44,22 +44,24 @@ object SparseNaiveBayes {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("SparseNaiveBayes") {
-      head("SparseNaiveBayes: an example naive Bayes app for LIBSVM data.")
-      opt[Int]("numPartitions")
-        .text("min number of partitions")
-        .action((x, c) => c.copy(minPartitions = x))
-      opt[Int]("numFeatures")
-        .text("number of features")
-        .action((x, c) => c.copy(numFeatures = x))
-      opt[Double]("lambda")
-        .text(s"lambda (smoothing constant), default: ${defaultParams.lambda}")
-        .action((x, c) => c.copy(lambda = x))
-      arg[String]("<input>")
-        .text("input paths to labeled examples in LIBSVM format")
-        .required()
-        .action((x, c) => c.copy(input = x))
-    }
+    val parser =
+      new OptionParser[Params]("SparseNaiveBayes") {
+        head("SparseNaiveBayes: an example naive Bayes app for LIBSVM data.")
+        opt[Int]("numPartitions")
+          .text("min number of partitions")
+          .action((x, c) => c.copy(minPartitions = x))
+        opt[Int]("numFeatures")
+          .text("number of features")
+          .action((x, c) => c.copy(numFeatures = x))
+        opt[Double]("lambda")
+          .text(
+            s"lambda (smoothing constant), default: ${defaultParams.lambda}")
+          .action((x, c) => c.copy(lambda = x))
+        arg[String]("<input>")
+          .text("input paths to labeled examples in LIBSVM format")
+          .required()
+          .action((x, c) => c.copy(input = x))
+      }
 
     parser
       .parse(args, defaultParams)
@@ -83,12 +85,11 @@ object SparseNaiveBayes {
       else
         sc.defaultMinPartitions
 
-    val examples =
-      MLUtils.loadLibSVMFile(
-        sc,
-        params.input,
-        params.numFeatures,
-        minPartitions)
+    val examples = MLUtils.loadLibSVMFile(
+      sc,
+      params.input,
+      params.numFeatures,
+      minPartitions)
     // Cache examples because it will be used in both training and evaluation.
     examples.cache()
 

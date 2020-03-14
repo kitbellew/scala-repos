@@ -119,29 +119,32 @@ class DescriptiveStatsTest extends WordSpec with Matchers {
 
     "bincountSparse should compute bins for DenseVector" in {
       val x = DenseVector[Int](0, 10, 20, 300, 10)
-      val result = new SparseVector[Int](
-        Array[Int](0, 10, 20, 300),
-        Array[Int](1, 2, 1, 1),
-        301)
+      val result =
+        new SparseVector[Int](
+          Array[Int](0, 10, 20, 300),
+          Array[Int](1, 2, 1, 1),
+          301)
       assert(result == bincount.sparse(x))
     }
 
     "bincountSparse should compute bins for other container with CanTraverseValues" in {
       val x = List[Int](0, 10, 20, 300, 10)
-      val result = new SparseVector[Int](
-        Array[Int](0, 10, 20, 300),
-        Array[Int](1, 2, 1, 1),
-        301)
+      val result =
+        new SparseVector[Int](
+          Array[Int](0, 10, 20, 300),
+          Array[Int](1, 2, 1, 1),
+          301)
       assert(result == bincount.sparse(x))
     }
 
     "bincountSparse should compute weighted bins for DenseVector" in {
       val x = DenseVector[Int](0, 10, 20, 300, 10)
       val weights = DenseVector[Double](1.0, 3.0, 1.0, 7.0, 1.0)
-      val result = new SparseVector[Double](
-        Array[Int](0, 10, 20, 300),
-        Array[Double](1.0, 4.0, 1.0, 7.0),
-        301)
+      val result =
+        new SparseVector[Double](
+          Array[Int](0, 10, 20, 300),
+          Array[Double](1.0, 4.0, 1.0, 7.0),
+          301)
       assert(result == bincount.sparse(x, weights))
     }
   }
@@ -192,15 +195,15 @@ class DescriptiveStatsTest2 extends FunSuite {
     val dataOddDuplicate = DenseVector(0, 0, 0, 1, 2, 2, 2, 3, 400000)
     val dataEven = DenseVector(0f, 1f, 2f, 100f)
     val dataEvenDuplicate = DenseVector(100, 200, 200, 300, 400, 500)
-    val dataEvenDuplicate2 =
-      DenseVector(200, 250, 400, 300, 100, 500, 550, 550, 550, 550)
+    val dataEvenDuplicate2 = DenseVector(200, 250, 400, 300, 100, 500, 550, 550,
+      550, 550)
 
     val dataOddSeq = Seq(0, 1, 2, 3, 400000)
     val dataOddDuplicateSeq = Seq(0, 0, 0, 1, 2, 2, 2, 3, 400000)
     val dataEvenSeq = Seq(0f, 1f, 2f, 100f)
     val dataEvenDuplicateSeq = Seq(100, 200, 200, 300, 400, 500)
-    val dataEvenDuplicate2Seq =
-      Seq(200, 250, 400, 300, 100, 500, 550, 550, 550, 550)
+    val dataEvenDuplicate2Seq = Seq(200, 250, 400, 300, 100, 500, 550, 550, 550,
+      550)
 
     assert(
       median(dataOdd) == 2,

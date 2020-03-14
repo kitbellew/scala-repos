@@ -54,12 +54,13 @@ class ScTryStmtImpl(node: ASTNode)
                     .getCachedClass(expr.getResolveScope, "java.lang.Throwable")
                   throwable.fold(lifted) { throwable =>
                     val throwableType = ScDesignatorType(throwable)
-                    val processor = new MethodResolveProcessor(
-                      expr,
-                      "apply",
-                      List(Seq(new Compatibility.Expression(throwableType))),
-                      Seq.empty,
-                      Seq.empty)
+                    val processor =
+                      new MethodResolveProcessor(
+                        expr,
+                        "apply",
+                        List(Seq(new Compatibility.Expression(throwableType))),
+                        Seq.empty,
+                        Seq.empty)
                     processor.processType(tp, expr)
                     val candidates = processor.candidates
                     if (candidates.length != 1)

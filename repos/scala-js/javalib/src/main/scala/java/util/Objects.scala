@@ -41,12 +41,10 @@ object Objects {
       o.hashCode()
 
   @inline
-  def hash(values: Array[AnyRef]): Int =
-    Arrays.hashCode(values)
+  def hash(values: Array[AnyRef]): Int = Arrays.hashCode(values)
 
   @inline
-  def toString(o: AnyRef): String =
-    String.valueOf(o)
+  def toString(o: AnyRef): String = String.valueOf(o)
 
   @inline
   def toString(o: AnyRef, nullDefault: String): String =
@@ -77,12 +75,10 @@ object Objects {
       obj
 
   @inline
-  def isNull(obj: AnyRef): Boolean =
-    obj == null
+  def isNull(obj: AnyRef): Boolean = obj == null
 
   @inline
-  def nonNull(obj: AnyRef): Boolean =
-    obj != null
+  def nonNull(obj: AnyRef): Boolean = obj != null
 
   // Requires the implementation of java.util.function
   // @inline

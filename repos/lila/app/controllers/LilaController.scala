@@ -27,8 +27,8 @@ private[controllers] trait LilaController
 
   protected val logger = lila.log("controller")
 
-  protected implicit val LilaResultZero =
-    Zero.instance[Result](Results.NotFound)
+  protected implicit val LilaResultZero = Zero.instance[Result](
+    Results.NotFound)
 
   protected implicit val LilaHtmlMonoid =
     lila.app.templating.Environment.LilaHtmlMonoid
@@ -172,8 +172,7 @@ private[controllers] trait LilaController
     ctx.me.??(_.booster).fold(Forbidden(views.html.site.noBooster()).fuccess, a)
 
   protected def NoLame[A <: Result](a: => Fu[A])(
-      implicit ctx: Context): Fu[Result] =
-    NoEngine(NoBooster(a))
+      implicit ctx: Context): Fu[Result] = NoEngine(NoBooster(a))
 
   protected def NoPlayban(a: => Fu[Result])(implicit ctx: Context): Fu[Result] =
     ctx.userId.??(Env.playban.api.currentBan) flatMap {
@@ -209,8 +208,7 @@ private[controllers] trait LilaController
     }
 
   protected def NoPlaybanOrCurrent(a: => Fu[Result])(
-      implicit ctx: Context): Fu[Result] =
-    NoPlayban(NoCurrentGame(a))
+      implicit ctx: Context): Fu[Result] = NoPlayban(NoCurrentGame(a))
 
   protected def JsonOk[A: Writes](fua: Fu[A]) =
     fua map { a =>
@@ -324,16 +322,13 @@ private[controllers] trait LilaController
 
   protected def isGranted(
       permission: Permission.type => Permission,
-      user: UserModel): Boolean =
-    Granter(permission(Permission))(user)
+      user: UserModel): Boolean = Granter(permission(Permission))(user)
 
   protected def isGranted(permission: Permission.type => Permission)(
-      implicit ctx: Context): Boolean =
-    isGranted(permission(Permission))
+      implicit ctx: Context): Boolean = isGranted(permission(Permission))
 
   protected def isGranted(permission: Permission)(
-      implicit ctx: Context): Boolean =
-    ctx.me ?? Granter(permission)
+      implicit ctx: Context): Boolean = ctx.me ?? Granter(permission)
 
   protected def authenticationFailed(implicit ctx: Context): Fu[Result] =
     negotiate(

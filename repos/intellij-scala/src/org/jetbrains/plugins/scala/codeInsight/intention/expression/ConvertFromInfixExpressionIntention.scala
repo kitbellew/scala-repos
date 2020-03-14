@@ -29,8 +29,10 @@ class ConvertFromInfixExpressionIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val infixExpr: ScInfixExpr =
-      PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScInfixExpr],
+      false)
     if (infixExpr == null)
       return false
     val range: TextRange = infixExpr.operation.nameId.getTextRange
@@ -39,8 +41,10 @@ class ConvertFromInfixExpressionIntention
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val infixExpr: ScInfixExpr =
-      PsiTreeUtil.getParentOfType(element, classOf[ScInfixExpr], false)
+    val infixExpr: ScInfixExpr = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScInfixExpr],
+      false)
     if (infixExpr == null || !infixExpr.isValid)
       return
 
@@ -49,11 +53,12 @@ class ConvertFromInfixExpressionIntention
       editor.getCaretModel.getOffset - infixExpr.operation.nameId.getTextRange.getStartOffset
 
     val methodCallExpr = ScalaPsiElementFactory.createEquivMethodCall(infixExpr)
-    val referenceExpr = methodCallExpr.getInvokedExpr match {
-      case ref: ScReferenceExpression => ref
-      case call: ScGenericCall =>
-        call.referencedExpr.asInstanceOf[ScReferenceExpression]
-    }
+    val referenceExpr =
+      methodCallExpr.getInvokedExpr match {
+        case ref: ScReferenceExpression => ref
+        case call: ScGenericCall =>
+          call.referencedExpr.asInstanceOf[ScReferenceExpression]
+      }
     val size = referenceExpr.nameId.getTextRange.getStartOffset -
       methodCallExpr.getTextRange.getStartOffset
 

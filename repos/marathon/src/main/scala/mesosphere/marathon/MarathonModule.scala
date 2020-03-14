@@ -192,12 +192,13 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       new ZKStore(client, client(conf.zooKeeperStatePath), compressionConf)
     }
     def mesosZK(): PersistentStore = {
-      val state = new ZooKeeperState(
-        conf.zkHosts,
-        conf.zkTimeoutDuration.toMillis,
-        TimeUnit.MILLISECONDS,
-        conf.zooKeeperStatePath
-      )
+      val state =
+        new ZooKeeperState(
+          conf.zkHosts,
+          conf.zkTimeoutDuration.toMillis,
+          TimeUnit.MILLISECONDS,
+          conf.zooKeeperStatePath
+        )
       new MesosStateStore(state, conf.zkTimeoutDuration)
     }
     conf.internalStoreBackend.get match {
@@ -229,9 +230,10 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       storage: StorageProvider,
       @Named(EventModule.busName) eventBus: EventStream,
       taskFailureRepository: TaskFailureRepository): ActorRef = {
-    val supervision = OneForOneStrategy() {
-      case NonFatal(_) => Restart
-    }
+    val supervision =
+      OneForOneStrategy() {
+        case NonFatal(_) => Restart
+      }
 
     import scala.concurrent.ExecutionContext.Implicits.global
     def createSchedulerActions(schedulerActor: ActorRef): SchedulerActions = {
@@ -304,13 +306,14 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       @Named(ModuleNames.HOST_PORT) hostPort: String): Option[Candidate] = {
     if (conf.highlyAvailable()) {
       log.info("Registering in ZooKeeper with hostPort:" + hostPort)
-      val candidate = new CandidateImpl(
-        new ZGroup(zk, ZooDefs.Ids.OPEN_ACL_UNSAFE, conf.zooKeeperLeaderPath),
-        new Supplier[Array[Byte]] {
-          def get(): Array[Byte] = {
-            hostPort.getBytes("UTF-8")
-          }
-        })
+      val candidate =
+        new CandidateImpl(
+          new ZGroup(zk, ZooDefs.Ids.OPEN_ACL_UNSAFE, conf.zooKeeperLeaderPath),
+          new Supplier[Array[Byte]] {
+            def get(): Array[Byte] = {
+              hostPort.getBytes("UTF-8")
+            }
+          })
       return Some(candidate) //scalastyle:off return
     }
     None
@@ -377,15 +380,16 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       storage: StorageProvider,
       @Named(EventModule.busName) eventBus: EventStream,
       metrics: Metrics): GroupManager = {
-    val groupManager: GroupManager = new GroupManager(
-      serializeUpdates,
-      scheduler,
-      groupRepo,
-      appRepo,
-      storage,
-      conf,
-      eventBus
-    )
+    val groupManager: GroupManager =
+      new GroupManager(
+        serializeUpdates,
+        scheduler,
+        groupRepo,
+        appRepo,
+        storage,
+        conf,
+        eventBus
+      )
 
     metrics.gauge(
       "service.mesosphere.marathon.app.count",

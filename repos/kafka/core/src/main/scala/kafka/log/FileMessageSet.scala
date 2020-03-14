@@ -189,10 +189,11 @@ class FileMessageSet private[kafka] (
     }
     val position = start + writePosition
     val count = math.min(size, sizeInBytes)
-    val bytesTransferred = (destChannel match {
-      case tl: TransportLayer => tl.transferFrom(channel, position, count)
-      case dc                 => channel.transferTo(position, count, dc)
-    }).toInt
+    val bytesTransferred =
+      (destChannel match {
+        case tl: TransportLayer => tl.transferFrom(channel, position, count)
+        case dc                 => channel.transferTo(position, count, dc)
+      }).toInt
     trace(
       "FileMessageSet " + file.getAbsolutePath + " : bytes transferred : " + bytesTransferred
         + " bytes requested for transfer : " + math.min(size, sizeInBytes))
@@ -210,8 +211,8 @@ class FileMessageSet private[kafka] (
       expectedMagicValue: Byte): Boolean = {
     var location = start
     val offsetAndSizeBuffer = ByteBuffer.allocate(MessageSet.LogOverhead)
-    val crcAndMagicByteBuffer =
-      ByteBuffer.allocate(Message.CrcLength + Message.MagicLength)
+    val crcAndMagicByteBuffer = ByteBuffer.allocate(
+      Message.CrcLength + Message.MagicLength)
     while (location < end) {
       offsetAndSizeBuffer.rewind()
       channel.read(offsetAndSizeBuffer, location)
@@ -430,6 +431,10 @@ object FileMessageSet {
 }
 
 object LogFlushStats extends KafkaMetricsGroup {
-  val logFlushTimer = new KafkaTimer(
-    newTimer("LogFlushRateAndTimeMs", TimeUnit.MILLISECONDS, TimeUnit.SECONDS))
+  val logFlushTimer =
+    new KafkaTimer(
+      newTimer(
+        "LogFlushRateAndTimeMs",
+        TimeUnit.MILLISECONDS,
+        TimeUnit.SECONDS))
 }

@@ -45,26 +45,27 @@ object ThriftServiceIfaceExample {
     import LoggerService._
 
     //#thriftclientapi
-    val clientServiceIface: LoggerService.ServiceIface =
-      Thrift.newServiceIface[LoggerService.ServiceIface]("localhost:1234")
+    val clientServiceIface: LoggerService.ServiceIface = Thrift
+      .newServiceIface[LoggerService.ServiceIface]("localhost:1234")
     //#thriftclientapi
 
     //#thriftclientapi-call
-    val result: Future[Log.Result] =
-      clientServiceIface.log(Log.Args("hello", 1))
+    val result: Future[Log.Result] = clientServiceIface.log(
+      Log.Args("hello", 1))
     //#thriftclientapi-call
 
     Await.result(result)
 
     //#thriftclientapi-filters
-    val uppercaseFilter = new SimpleFilter[Log.Args, Log.Result] {
-      def apply(
-          req: Log.Args,
-          service: Service[Log.Args, Log.Result]): Future[Log.Result] = {
-        val uppercaseRequest = req.copy(message = req.message.toUpperCase)
-        service(uppercaseRequest)
+    val uppercaseFilter =
+      new SimpleFilter[Log.Args, Log.Result] {
+        def apply(
+            req: Log.Args,
+            service: Service[Log.Args, Log.Result]): Future[Log.Result] = {
+          val uppercaseRequest = req.copy(message = req.message.toUpperCase)
+          service(uppercaseRequest)
+        }
       }
-    }
 
     def timeoutFilter[Req, Rep](duration: Duration) = {
       val exc = new IndividualRequestTimeoutException(duration)
@@ -94,16 +95,16 @@ object ThriftServiceIfaceExample {
     //#thriftclientapi-retries
 
     //#thriftclientapi-methodiface
-    val client: LoggerService.FutureIface =
-      Thrift.newIface[LoggerService.FutureIface]("localhost:1234")
+    val client: LoggerService.FutureIface = Thrift
+      .newIface[LoggerService.FutureIface]("localhost:1234")
     client.log("message", 4) onSuccess { response =>
       println("Client received response: " + response)
     }
     //#thriftclientapi-methodiface
 
     //#thriftclientapi-method-adapter
-    val filteredMethodIface: LoggerService[Future] =
-      Thrift.newMethodIface(clientServiceIface.copy(log = filteredLog))
+    val filteredMethodIface: LoggerService[Future] = Thrift.newMethodIface(
+      clientServiceIface.copy(log = filteredLog))
     Await.result(filteredMethodIface.log("ping", 3).map(println))
     //#thriftclientapi-method-adapter
   }

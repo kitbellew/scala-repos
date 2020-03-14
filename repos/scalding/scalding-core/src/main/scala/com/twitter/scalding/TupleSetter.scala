@@ -77,18 +77,20 @@ object TupleSetter extends GeneratedTupleSetters {
     }
 
   //Unit is like a Tuple0. It corresponds to Tuple.NULL
-  implicit lazy val UnitSetter: TupleSetter[Unit] = new TupleSetter[Unit] {
-    override def apply(arg: Unit) = CTuple.NULL
-    override def arity = 0
-  }
+  implicit lazy val UnitSetter: TupleSetter[Unit] =
+    new TupleSetter[Unit] {
+      override def apply(arg: Unit) = CTuple.NULL
+      override def arity = 0
+    }
 
   // Doesn't seem safe to make this implicit by default:
-  lazy val ProductSetter: TupleSetter[Product] = new TupleSetter[Product] {
-    def apply(in: Product) = {
-      val t = new CTuple
-      in.productIterator.foreach(t.add(_))
-      t
+  lazy val ProductSetter: TupleSetter[Product] =
+    new TupleSetter[Product] {
+      def apply(in: Product) = {
+        val t = new CTuple
+        in.productIterator.foreach(t.add(_))
+        t
+      }
+      def arity = -1
     }
-    def arity = -1
-  }
 }

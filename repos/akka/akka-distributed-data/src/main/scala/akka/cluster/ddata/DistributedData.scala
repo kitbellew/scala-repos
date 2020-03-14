@@ -29,8 +29,8 @@ object DistributedData
   */
 class DistributedData(system: ExtendedActorSystem) extends Extension {
 
-  private val config =
-    system.settings.config.getConfig("akka.cluster.distributed-data")
+  private val config = system.settings.config
+    .getConfig("akka.cluster.distributed-data")
   private val settings = ReplicatorSettings(config)
 
   /**

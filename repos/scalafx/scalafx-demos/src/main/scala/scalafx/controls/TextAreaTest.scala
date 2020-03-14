@@ -55,30 +55,33 @@ object TextAreaTest extends JFXApp {
     }
   }
 
-  lazy val textArea = new TextArea {
-    prefColumnCount = 20
-    //    prefHeight <== scene.height
-    //    hgrow = Priority.Always
-  }
+  lazy val textArea =
+    new TextArea {
+      prefColumnCount = 20
+      //    prefHeight <== scene.height
+      //    hgrow = Priority.Always
+    }
 
-  val controlsPane = new VBox {
-    spacing = 5
-    fillWidth = true
-    alignment = Pos.Center
-    prefHeight <== stage.scene().height
-    hgrow = Priority.Never
-    children = List(
-      new TextAreaControls(textArea),
-      new TextInputControlControls(textArea),
-      new ControlControls(textArea))
-  }
+  val controlsPane =
+    new VBox {
+      spacing = 5
+      fillWidth = true
+      alignment = Pos.Center
+      prefHeight <== stage.scene().height
+      hgrow = Priority.Never
+      children = List(
+        new TextAreaControls(textArea),
+        new TextInputControlControls(textArea),
+        new ControlControls(textArea))
+    }
 
-  lazy val mainPane = new BorderPane {
-    top = textArea
-    center = controlsPane
-    //    vgrow = Priority.Always
-    //    hgrow = Priority.Always
-  }
+  lazy val mainPane =
+    new BorderPane {
+      top = textArea
+      center = controlsPane
+      //    vgrow = Priority.Always
+      //    hgrow = Priority.Always
+    }
 
 }
 
@@ -86,9 +89,10 @@ class TextAreaControls(target: TextArea)
     extends PropertiesNodes[TextArea](target, "TextArea Properties") {
   // TODO: ChoiceBoxes are not really working. In JavaFX 2.1, bind their respective values with TextArea properties.
 
-  val chbPrefColumnCount = new ChoiceBox[Int] {
-    items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
-  }
+  val chbPrefColumnCount =
+    new ChoiceBox[Int] {
+      items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
+    }
   // In JAvaFX 2.1, bind TextArea.prefColumnCount with value
   chbPrefColumnCount.delegate.selectionModelProperty
     .addListener(new ChangeListener[Any] {
@@ -100,9 +104,10 @@ class TextAreaControls(target: TextArea)
       }
     })
 
-  val chbPrefRowCount = new ChoiceBox[Int] {
-    items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
-  }
+  val chbPrefRowCount =
+    new ChoiceBox[Int] {
+      items = ObservableBuffer[Int](0, 5, 10, 15, 20, 25, 30)
+    }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
   chbPrefRowCount.delegate.selectionModelProperty
     .addListener(new ChangeListener[Any] {
@@ -114,9 +119,10 @@ class TextAreaControls(target: TextArea)
       }
     })
 
-  val chbScrollLeft = new ChoiceBox[Double] {
-    items = ObservableBuffer[Double](-10, -5, 0, 5, 10, 15, 20)
-  }
+  val chbScrollLeft =
+    new ChoiceBox[Double] {
+      items = ObservableBuffer[Double](-10, -5, 0, 5, 10, 15, 20)
+    }
   //  chbScrollLeft.delegate.selectionModelProperty.set
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
   chbPrefRowCount.delegate.selectionModelProperty
@@ -125,14 +131,16 @@ class TextAreaControls(target: TextArea)
           observable: ObservableValue[_],
           oldValue: Any,
           newValue: Any) {
-        target.scrollLeft =
-          chbScrollLeft.items.get().get(newValue.toString.toInt)
+        target.scrollLeft = chbScrollLeft.items
+          .get()
+          .get(newValue.toString.toInt)
       }
     })
 
-  val chbScrollTop = new ChoiceBox[Double] {
-    items = ObservableBuffer[Double](-10, -5, 0, 5, 10, 15, 20)
-  }
+  val chbScrollTop =
+    new ChoiceBox[Double] {
+      items = ObservableBuffer[Double](-10, -5, 0, 5, 10, 15, 20)
+    }
   // In JAvaFX 2.1, bind TextArea.prefRowCount with value
   chbPrefRowCount.delegate.selectionModelProperty
     .addListener(new ChangeListener[Any] {
@@ -144,9 +152,10 @@ class TextAreaControls(target: TextArea)
       }
     })
 
-  val chbWrap = new CheckBox {
-    selected <==> target.wrapText
-  }
+  val chbWrap =
+    new CheckBox {
+      selected <==> target.wrapText
+    }
 
   // TODO: Add a label indicating number of Paragraphs
   val lblParagraphs = new Label

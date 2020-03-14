@@ -22,8 +22,8 @@ import TypeUtil.typeToTypeUtil
   * @param params The query parameters
   */
 class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
-  override protected[this] lazy val logger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[QueryInterpreter]))
+  override protected[this] lazy val logger =
+    new SlickLogger(LoggerFactory.getLogger(classOf[QueryInterpreter]))
   import QueryInterpreter._
 
   val scope = new HashMap[TermSymbol, Any]
@@ -38,429 +38,438 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
     if (logger.isDebugEnabled)
       logDebug("Evaluating " + n)
     indent += 1
-    val res = n match {
-      case Ref(sym) =>
-        scope.getOrElse(
-          sym,
-          throw new SlickException(s"Symbol $sym not found in scope"))
-      case Select(in, field) =>
-        val v = run(in)
-        field match {
-          case ElementSymbol(idx) => v.asInstanceOf[ProductValue].apply(idx - 1)
-          case (_: AnonSymbol | _: FieldSymbol) =>
-            v.asInstanceOf[StructValue].getBySymbol(field)
-        }
-      case n: StructNode =>
-        new StructValue(
-          n.children.toSeq.map(run),
-          n.nodeType.asInstanceOf[StructType].symbolToIndex)
-      case ProductNode(ch) =>
-        new ProductValue(ch.map(run).toSeq)
-      case Pure(n, _) => Vector(run(n))
-      case t: TableNode =>
-        val dbt = db.getTable(t.tableName)
-        val acc = dbt.columnIndexes
-        dbt.rows.view.map { row =>
-          new StructValue(row, acc)
-        }
-      case Bind(gen, from, sel) =>
-        val fromV = run(from).asInstanceOf[Coll]
-        val b = from.nodeType.asCollectionType.cons.iterableSubstitute
-          .createBuilder[Any]
-        fromV.foreach { v =>
-          scope(gen) = v
-          b ++= run(sel).asInstanceOf[Coll]
-        }
-        scope.remove(gen)
-        b.result()
-      case Join(_, _, left, RangeFrom(0), JoinType.Zip, LiteralNode(true)) =>
-        val leftV = run(left).asInstanceOf[Coll]
-        leftV.zipWithIndex.map {
-          case (l, r) => new ProductValue(Vector(l, r.toLong))
-        }
-      case Join(_, _, left, right, JoinType.Zip, LiteralNode(true)) =>
-        val leftV = run(left).asInstanceOf[Coll]
-        val rightV = run(right).asInstanceOf[Coll]
-        (leftV, rightV).zipped.map { (l, r) =>
-          new ProductValue(Vector(l, r))
-        }
-      case Join(leftGen, rightGen, left, right, JoinType.Inner, by) =>
-        val res = run(left).asInstanceOf[Coll].flatMap { l =>
-          scope(leftGen) = l
-          run(right)
-            .asInstanceOf[Coll]
-            .filter { r =>
-              scope(rightGen) = r
-              asBoolean(run(by))
-            }
-            .map { r =>
-              new ProductValue(Vector(l, r))
-            }
-        }
-        scope.remove(leftGen)
-        scope.remove(rightGen)
-        res
-      case Join(leftGen, rightGen, left, right, JoinType.Left, by) =>
-        val res = run(left).asInstanceOf[Coll].flatMap { l =>
-          scope(leftGen) = l
-          val inner = run(right)
-            .asInstanceOf[Coll]
-            .filter { r =>
-              scope(rightGen) = r
-              asBoolean(run(by))
-            }
-            .map { r =>
-              new ProductValue(Vector(l, r))
-            }
-          if (inner.headOption.isEmpty)
-            Vector(
-              new ProductValue(
-                Vector(
-                  l,
-                  createNullRow(right.nodeType.asCollectionType.elementType))))
-          else
-            inner
-        }
-        scope.remove(leftGen)
-        scope.remove(rightGen)
-        res
-      case Join(leftGen, rightGen, left, right, JoinType.Right, by) =>
-        val res = run(right).asInstanceOf[Coll].flatMap { r =>
-          scope(rightGen) = r
-          val inner = run(left)
-            .asInstanceOf[Coll]
-            .filter { l =>
-              scope(leftGen) = l
-              asBoolean(run(by))
-            }
-            .map { l =>
-              new ProductValue(Vector(l, r))
-            }
-          if (inner.headOption.isEmpty)
-            Vector(
-              new ProductValue(
-                Vector(
-                  createNullRow(left.nodeType.asCollectionType.elementType),
-                  r)))
-          else
-            inner
-        }
-        scope.remove(leftGen)
-        scope.remove(rightGen)
-        res
-      case Join(leftGen, rightGen, left, right, JoinType.Outer, by) =>
-        val leftJoinRes = run(left).asInstanceOf[Coll].flatMap { l =>
-          scope(leftGen) = l
-          val inner = run(right)
-            .asInstanceOf[Coll]
-            .filter { r =>
-              scope(rightGen) = r
-              asBoolean(run(by))
-            }
-            .map { r =>
-              new ProductValue(Vector(l, r))
-            }
-          if (inner.headOption.isEmpty)
-            Vector(
-              new ProductValue(
-                Vector(
-                  l,
-                  createNullRow(right.nodeType.asCollectionType.elementType))))
-          else
-            inner
-        }
-        scope.remove(leftGen)
-        scope.remove(rightGen)
-        val emptyRightRes = run(right)
-          .asInstanceOf[Coll]
-          .filter { r =>
-            scope(rightGen) = r
-            run(left)
+    val res =
+      n match {
+        case Ref(sym) =>
+          scope.getOrElse(
+            sym,
+            throw new SlickException(s"Symbol $sym not found in scope"))
+        case Select(in, field) =>
+          val v = run(in)
+          field match {
+            case ElementSymbol(idx) =>
+              v.asInstanceOf[ProductValue].apply(idx - 1)
+            case (_: AnonSymbol | _: FieldSymbol) =>
+              v.asInstanceOf[StructValue].getBySymbol(field)
+          }
+        case n: StructNode =>
+          new StructValue(
+            n.children.toSeq.map(run),
+            n.nodeType.asInstanceOf[StructType].symbolToIndex)
+        case ProductNode(ch) =>
+          new ProductValue(ch.map(run).toSeq)
+        case Pure(n, _) => Vector(run(n))
+        case t: TableNode =>
+          val dbt = db.getTable(t.tableName)
+          val acc = dbt.columnIndexes
+          dbt.rows.view.map { row =>
+            new StructValue(row, acc)
+          }
+        case Bind(gen, from, sel) =>
+          val fromV = run(from).asInstanceOf[Coll]
+          val b = from.nodeType.asCollectionType.cons.iterableSubstitute
+            .createBuilder[Any]
+          fromV.foreach { v =>
+            scope(gen) = v
+            b ++= run(sel).asInstanceOf[Coll]
+          }
+          scope.remove(gen)
+          b.result()
+        case Join(_, _, left, RangeFrom(0), JoinType.Zip, LiteralNode(true)) =>
+          val leftV = run(left).asInstanceOf[Coll]
+          leftV.zipWithIndex.map {
+            case (l, r) => new ProductValue(Vector(l, r.toLong))
+          }
+        case Join(_, _, left, right, JoinType.Zip, LiteralNode(true)) =>
+          val leftV = run(left).asInstanceOf[Coll]
+          val rightV = run(right).asInstanceOf[Coll]
+          (leftV, rightV).zipped.map { (l, r) =>
+            new ProductValue(Vector(l, r))
+          }
+        case Join(leftGen, rightGen, left, right, JoinType.Inner, by) =>
+          val res = run(left).asInstanceOf[Coll].flatMap { l =>
+            scope(leftGen) = l
+            run(right)
               .asInstanceOf[Coll]
-              .find { l =>
+              .filter { r =>
+                scope(rightGen) = r
+                asBoolean(run(by))
+              }
+              .map { r =>
+                new ProductValue(Vector(l, r))
+              }
+          }
+          scope.remove(leftGen)
+          scope.remove(rightGen)
+          res
+        case Join(leftGen, rightGen, left, right, JoinType.Left, by) =>
+          val res = run(left).asInstanceOf[Coll].flatMap { l =>
+            scope(leftGen) = l
+            val inner = run(right)
+              .asInstanceOf[Coll]
+              .filter { r =>
+                scope(rightGen) = r
+                asBoolean(run(by))
+              }
+              .map { r =>
+                new ProductValue(Vector(l, r))
+              }
+            if (inner.headOption.isEmpty)
+              Vector(
+                new ProductValue(Vector(
+                  l,
+                  createNullRow(right.nodeType.asCollectionType.elementType))))
+            else
+              inner
+          }
+          scope.remove(leftGen)
+          scope.remove(rightGen)
+          res
+        case Join(leftGen, rightGen, left, right, JoinType.Right, by) =>
+          val res = run(right).asInstanceOf[Coll].flatMap { r =>
+            scope(rightGen) = r
+            val inner = run(left)
+              .asInstanceOf[Coll]
+              .filter { l =>
                 scope(leftGen) = l
                 asBoolean(run(by))
               }
-              .isEmpty
-          }
-          .map { r =>
-            new ProductValue(
+              .map { l =>
+                new ProductValue(Vector(l, r))
+              }
+            if (inner.headOption.isEmpty)
               Vector(
-                createNullRow(left.nodeType.asCollectionType.elementType),
-                r))
+                new ProductValue(
+                  Vector(
+                    createNullRow(left.nodeType.asCollectionType.elementType),
+                    r)))
+            else
+              inner
           }
-        scope.remove(leftGen)
-        scope.remove(rightGen)
-        leftJoinRes ++ emptyRightRes
-      case Filter(gen, from, where) =>
-        val res = run(from).asInstanceOf[Coll].filter { v =>
-          scope(gen) = v
-          asBoolean(run(where))
-        }
-        scope.remove(gen)
-        res
-      case First(ch) => run(ch).asInstanceOf[Coll].toIterator.next()
-      case Distinct(gen, from, on) =>
-        val fromV = run(from).asInstanceOf[Coll]
-        val seen = mutable.HashSet[Any]()
-        val res = fromV.filter { v =>
-          scope(gen) = v
-          val onV = run(on)
-          if (seen contains onV)
-            false
-          else {
-            seen += onV
-            true
+          scope.remove(leftGen)
+          scope.remove(rightGen)
+          res
+        case Join(leftGen, rightGen, left, right, JoinType.Outer, by) =>
+          val leftJoinRes = run(left).asInstanceOf[Coll].flatMap { l =>
+            scope(leftGen) = l
+            val inner = run(right)
+              .asInstanceOf[Coll]
+              .filter { r =>
+                scope(rightGen) = r
+                asBoolean(run(by))
+              }
+              .map { r =>
+                new ProductValue(Vector(l, r))
+              }
+            if (inner.headOption.isEmpty)
+              Vector(
+                new ProductValue(Vector(
+                  l,
+                  createNullRow(right.nodeType.asCollectionType.elementType))))
+            else
+              inner
           }
-        }
-        scope.remove(gen)
-        res
-      case SortBy(gen, from, by) =>
-        val fromV = run(from).asInstanceOf[Coll]
-        val b = from.nodeType.asCollectionType.cons.iterableSubstitute
-          .createBuilder[Any]
-        val ords: IndexedSeq[scala.math.Ordering[Any]] = by.toSeq.map {
-          case (b, o) =>
-            b.nodeType.asInstanceOf[ScalaType[Any]].scalaOrderingFor(o)
-        }
-        b ++= fromV.toSeq.sortBy { v =>
-          scope(gen) = v
-          by.toSeq.map {
-            case (b, _) => run(b)
-          }: IndexedSeq[Any]
-        }(new scala.math.Ordering[IndexedSeq[Any]] {
-          def compare(x: IndexedSeq[Any], y: IndexedSeq[Any]): Int = {
-            var i = 0
-            while (i < ords.length) {
-              val v = ords(i).compare(x(i), y(i))
-              if (v != 0)
-                return v
-              i += 1
+          scope.remove(leftGen)
+          scope.remove(rightGen)
+          val emptyRightRes = run(right)
+            .asInstanceOf[Coll]
+            .filter { r =>
+              scope(rightGen) = r
+              run(left)
+                .asInstanceOf[Coll]
+                .find { l =>
+                  scope(leftGen) = l
+                  asBoolean(run(by))
+                }
+                .isEmpty
             }
-            0
+            .map { r =>
+              new ProductValue(
+                Vector(
+                  createNullRow(left.nodeType.asCollectionType.elementType),
+                  r))
+            }
+          scope.remove(leftGen)
+          scope.remove(rightGen)
+          leftJoinRes ++ emptyRightRes
+        case Filter(gen, from, where) =>
+          val res = run(from).asInstanceOf[Coll].filter { v =>
+            scope(gen) = v
+            asBoolean(run(where))
           }
-        })
-        scope.remove(gen)
-        b.result()
-      case GroupBy(gen, from, by, _) =>
-        val fromV = run(from).asInstanceOf[Coll]
-        val grouped = new HashMap[Any, ArrayBuffer[Any]]()
-        fromV.foreach { v =>
-          scope(gen) = v
-          grouped.getOrElseUpdate(run(by), new ArrayBuffer[Any]()) += v
-        }
-        scope.remove(gen)
-        val b = from.nodeType.asCollectionType.cons.iterableSubstitute
-          .createBuilder[Any]
-        grouped.foreach {
-          case (k, vs) => b += new ProductValue(Vector(k, vs))
-        }
-        b.result()
-      case Take(from, num) =>
-        val fromV = run(from).asInstanceOf[Coll]
-        val numV = run(num).asInstanceOf[Long]
-        val b = from.nodeType.asCollectionType.cons.iterableSubstitute
-          .createBuilder[Any]
-        b ++= fromV.toIterator.take(numV.toInt)
-        b.result()
-      case Drop(from, num) =>
-        val fromV = run(from).asInstanceOf[Coll]
-        val numV = run(num).asInstanceOf[Long]
-        val b = from.nodeType.asCollectionType.cons.iterableSubstitute
-          .createBuilder[Any]
-        b ++= fromV.toIterator.drop(numV.toInt)
-        b.result()
-      case Union(left, right, all) =>
-        val leftV = run(left).asInstanceOf[Coll]
-        val rightV = run(right).asInstanceOf[Coll]
-        if (all)
-          leftV ++ rightV
-        else
-          leftV ++ {
-            val s = leftV.toSet
-            rightV.filter(e => !s.contains(e))
+          scope.remove(gen)
+          res
+        case First(ch) => run(ch).asInstanceOf[Coll].toIterator.next()
+        case Distinct(gen, from, on) =>
+          val fromV = run(from).asInstanceOf[Coll]
+          val seen = mutable.HashSet[Any]()
+          val res = fromV.filter { v =>
+            scope(gen) = v
+            val onV = run(on)
+            if (seen contains onV)
+              false
+            else {
+              seen += onV
+              true
+            }
           }
-      case GetOrElse(ch, default) =>
-        run(ch).asInstanceOf[Option[Any]].getOrElse(default())
-      case OptionApply(ch) =>
-        Option(run(ch))
-      case c: IfThenElse =>
-        val opt = n.nodeType.asInstanceOf[ScalaType[_]].nullable
-        val take = c.ifThenClauses.find {
-          case (pred, _) => asBoolean(run(pred))
-        }
-        take match {
-          case Some((_, r)) =>
-            val res = run(r)
-            if (opt && !r.nodeType.asInstanceOf[ScalaType[_]].nullable)
-              Option(res)
-            else
-              res
-          case _ =>
-            val res = run(c.elseClause)
-            if (opt && !c.elseClause.nodeType
-                  .asInstanceOf[ScalaType[_]]
-                  .nullable)
-              Option(res)
-            else
-              res
-        }
-      case QueryParameter(extractor, _, _) =>
-        extractor(params)
-      case Library.SilentCast(ch) =>
-        val chV = run(ch)
-        (ch.nodeType, n.nodeType) match {
-          case (OptionType(tpe), tpe2) if tpe == tpe2 =>
-            chV.asInstanceOf[Option[Any]].get
-          case (tpe, OptionType(tpe2)) if tpe == tpe2 => Option(chV)
-        }
-      case Library.Exists(coll) =>
-        !run(coll).asInstanceOf[Coll].isEmpty
-      case Library.IfNull(cond, default) =>
-        val condV = run(cond)
-        if ((condV.asInstanceOf[AnyRef] eq null) || condV == None) {
-          val defaultV = run(default)
-          if (n.nodeType.isInstanceOf[OptionType] && !default.nodeType
-                .isInstanceOf[OptionType])
-            Some(defaultV)
+          scope.remove(gen)
+          res
+        case SortBy(gen, from, by) =>
+          val fromV = run(from).asInstanceOf[Coll]
+          val b = from.nodeType.asCollectionType.cons.iterableSubstitute
+            .createBuilder[Any]
+          val ords: IndexedSeq[scala.math.Ordering[Any]] = by.toSeq.map {
+            case (b, o) =>
+              b.nodeType.asInstanceOf[ScalaType[Any]].scalaOrderingFor(o)
+          }
+          b ++= fromV.toSeq.sortBy { v =>
+            scope(gen) = v
+            by.toSeq.map {
+              case (b, _) => run(b)
+            }: IndexedSeq[Any]
+          }(new scala.math.Ordering[IndexedSeq[Any]] {
+            def compare(x: IndexedSeq[Any], y: IndexedSeq[Any]): Int = {
+              var i = 0
+              while (i < ords.length) {
+                val v = ords(i).compare(x(i), y(i))
+                if (v != 0)
+                  return v
+                i += 1
+              }
+              0
+            }
+          })
+          scope.remove(gen)
+          b.result()
+        case GroupBy(gen, from, by, _) =>
+          val fromV = run(from).asInstanceOf[Coll]
+          val grouped = new HashMap[Any, ArrayBuffer[Any]]()
+          fromV.foreach { v =>
+            scope(gen) = v
+            grouped.getOrElseUpdate(run(by), new ArrayBuffer[Any]()) += v
+          }
+          scope.remove(gen)
+          val b = from.nodeType.asCollectionType.cons.iterableSubstitute
+            .createBuilder[Any]
+          grouped.foreach {
+            case (k, vs) => b += new ProductValue(Vector(k, vs))
+          }
+          b.result()
+        case Take(from, num) =>
+          val fromV = run(from).asInstanceOf[Coll]
+          val numV = run(num).asInstanceOf[Long]
+          val b = from.nodeType.asCollectionType.cons.iterableSubstitute
+            .createBuilder[Any]
+          b ++= fromV.toIterator.take(numV.toInt)
+          b.result()
+        case Drop(from, num) =>
+          val fromV = run(from).asInstanceOf[Coll]
+          val numV = run(num).asInstanceOf[Long]
+          val b = from.nodeType.asCollectionType.cons.iterableSubstitute
+            .createBuilder[Any]
+          b ++= fromV.toIterator.drop(numV.toInt)
+          b.result()
+        case Union(left, right, all) =>
+          val leftV = run(left).asInstanceOf[Coll]
+          val rightV = run(right).asInstanceOf[Coll]
+          if (all)
+            leftV ++ rightV
           else
-            defaultV
-        } else if (n.nodeType.isInstanceOf[OptionType] && !cond.nodeType
-                     .isInstanceOf[OptionType])
-          Some(condV)
-        else
-          condV
-      case Library.In(what, where) =>
-        val whatV = run(what)
-        val whereV = run(where)
-        val whatOpt = what.nodeType.isInstanceOf[OptionType]
-        if (whatOpt && (whatV.asInstanceOf[AnyRef].eq(null) || whatV == None))
-          None
-        else {
-          val whatBase =
-            if (whatOpt)
-              whatV.asInstanceOf[Option[Any]].get
-            else
-              whatV
-          where.nodeType match {
-            case ProductType(elTypes) =>
-              val p = whereV.asInstanceOf[ProductValue]
-              0.until(elTypes.length).iterator.map { i =>
-                if (elTypes(i).isInstanceOf[OptionType]) {
-                  p(i).asInstanceOf[Option[Any]] match {
-                    case Some(v) => whatBase == v
-                    case None    => false
-                  }
-                } else
-                  whatBase == p(i)
-              } contains true
-            case ct: CollectionType =>
-              val (els, singleType) =
-                unwrapSingleColumn(whereV.asInstanceOf[Coll], ct)
-              (if (singleType.isInstanceOf[OptionType])
-                 els.map(_.asInstanceOf[Option[Any]] match {
-                   case Some(v) => whatBase == v
-                   case None    => false
-                 })
-               else
-                 els.map(whatBase.==)) contains true
+            leftV ++ {
+              val s = leftV.toSet
+              rightV.filter(e => !s.contains(e))
+            }
+        case GetOrElse(ch, default) =>
+          run(ch).asInstanceOf[Option[Any]].getOrElse(default())
+        case OptionApply(ch) =>
+          Option(run(ch))
+        case c: IfThenElse =>
+          val opt = n.nodeType.asInstanceOf[ScalaType[_]].nullable
+          val take = c.ifThenClauses.find {
+            case (pred, _) => asBoolean(run(pred))
           }
-        }
-      case Library.Sum(ch) =>
-        val coll = run(ch).asInstanceOf[Coll]
-        val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
-        val (num, opt) = itType match {
-          case t: ScalaOptionType[_] =>
-            (t.elementType.asInstanceOf[ScalaNumericType[Any]].numeric, true)
-          case t => (t.asInstanceOf[ScalaNumericType[Any]].numeric, false)
-        }
-        reduceOptionIt[Any](it, opt, identity, (a, b) => num.plus(a, b))
-      case Library.Avg(ch) =>
-        val coll = run(ch).asInstanceOf[Coll]
-        val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
-        val (num, opt) = itType match {
-          case t: ScalaOptionType[_] =>
-            (t.elementType.asInstanceOf[ScalaNumericType[Any]].numeric, true)
-          case t => (t.asInstanceOf[ScalaNumericType[Any]].numeric, false)
-        }
-        reduceOptionIt[(Int, Any)](
-          it,
-          opt,
-          (1, _),
-          {
-            case ((ai, a), (bi, b)) => (ai + bi, num.plus(a, b))
-          }).map {
-          case (count, sum) =>
-            if (num.isInstanceOf[Fractional[_]])
-              num.asInstanceOf[Fractional[Any]].div(sum, num.fromInt(count))
+          take match {
+            case Some((_, r)) =>
+              val res = run(r)
+              if (opt && !r.nodeType.asInstanceOf[ScalaType[_]].nullable)
+                Option(res)
+              else
+                res
+            case _ =>
+              val res = run(c.elseClause)
+              if (opt && !c.elseClause.nodeType
+                    .asInstanceOf[ScalaType[_]]
+                    .nullable)
+                Option(res)
+              else
+                res
+          }
+        case QueryParameter(extractor, _, _) =>
+          extractor(params)
+        case Library.SilentCast(ch) =>
+          val chV = run(ch)
+          (ch.nodeType, n.nodeType) match {
+            case (OptionType(tpe), tpe2) if tpe == tpe2 =>
+              chV.asInstanceOf[Option[Any]].get
+            case (tpe, OptionType(tpe2)) if tpe == tpe2 => Option(chV)
+          }
+        case Library.Exists(coll) =>
+          !run(coll).asInstanceOf[Coll].isEmpty
+        case Library.IfNull(cond, default) =>
+          val condV = run(cond)
+          if ((condV.asInstanceOf[AnyRef] eq null) || condV == None) {
+            val defaultV = run(default)
+            if (n.nodeType.isInstanceOf[OptionType] && !default.nodeType
+                  .isInstanceOf[OptionType])
+              Some(defaultV)
             else
-              num.fromInt(num.toInt(sum) / count)
-        }
-      case Library.Min(ch) =>
-        val coll = run(ch).asInstanceOf[Coll]
-        val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
-        val (ord, opt) = itType match {
-          case t: ScalaOptionType[_] =>
-            (t.elementType.asInstanceOf[ScalaBaseType[Any]].ordering, true)
-          case t => (t.asInstanceOf[ScalaBaseType[Any]].ordering, false)
-        }
-        reduceOptionIt[Any](
-          it,
-          opt,
-          identity,
-          (a, b) =>
-            if (ord.lt(b, a))
-              b
-            else
-              a)
-      case Library.Max(ch) =>
-        val coll = run(ch).asInstanceOf[Coll]
-        val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
-        val (ord, opt) = itType match {
-          case t: ScalaOptionType[_] =>
-            (t.elementType.asInstanceOf[ScalaBaseType[Any]].ordering, true)
-          case t => (t.asInstanceOf[ScalaBaseType[Any]].ordering, false)
-        }
-        reduceOptionIt[Any](
-          it,
-          opt,
-          identity,
-          (a, b) =>
-            if (ord.gt(b, a))
-              b
-            else
-              a)
-      case Library.==(ch, LiteralNode(null)) =>
-        val chV = run(ch)
-        chV == null || chV.asInstanceOf[Option[_]].isEmpty
-      case Apply(sym, ch) =>
-        val chV = ch.map(n => (n.nodeType, run(n)))
-        logDebug("[chV: " + chV.mkString(", ") + "]")
-        if (n.nodeType.isInstanceOf[OptionType]) {
-          if (chV.exists {
-                case (t, v) => t.isInstanceOf[OptionType] && (v == None)
-              })
+              defaultV
+          } else if (n.nodeType.isInstanceOf[OptionType] && !cond.nodeType
+                       .isInstanceOf[OptionType])
+            Some(condV)
+          else
+            condV
+        case Library.In(what, where) =>
+          val whatV = run(what)
+          val whereV = run(where)
+          val whatOpt = what.nodeType.isInstanceOf[OptionType]
+          if (whatOpt && (whatV.asInstanceOf[AnyRef].eq(null) || whatV == None))
             None
           else {
-            val chPlainV = chV.map {
-              case (t: OptionType, v) =>
-                (t.elementType, v.asInstanceOf[Option[Any]].get)
-              case other => other
+            val whatBase =
+              if (whatOpt)
+                whatV.asInstanceOf[Option[Any]].get
+              else
+                whatV
+            where.nodeType match {
+              case ProductType(elTypes) =>
+                val p = whereV.asInstanceOf[ProductValue]
+                0.until(elTypes.length).iterator.map { i =>
+                  if (elTypes(i).isInstanceOf[OptionType]) {
+                    p(i).asInstanceOf[Option[Any]] match {
+                      case Some(v) => whatBase == v
+                      case None    => false
+                    }
+                  } else
+                    whatBase == p(i)
+                } contains true
+              case ct: CollectionType =>
+                val (els, singleType) = unwrapSingleColumn(
+                  whereV.asInstanceOf[Coll],
+                  ct)
+                (if (singleType.isInstanceOf[OptionType])
+                   els.map(_.asInstanceOf[Option[Any]] match {
+                     case Some(v) => whatBase == v
+                     case None    => false
+                   })
+                 else
+                   els.map(whatBase.==)) contains true
             }
-            logDebug("[chPlainV: " + chPlainV.mkString(", ") + "]")
-            Some(
-              evalFunction(
-                sym,
-                chPlainV.toSeq,
-                n.nodeType.asOptionType.elementType))
           }
-        } else
-          evalFunction(sym, chV.toSeq, n.nodeType)
-      //case Library.CountAll(ch) => run(ch).asInstanceOf[Coll].size
-      case l: LiteralNode        => l.value
-      case CollectionCast(ch, _) => run(ch)
-      case Subquery(ch, _)       => run(ch)
-    }
+        case Library.Sum(ch) =>
+          val coll = run(ch).asInstanceOf[Coll]
+          val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
+          val (num, opt) =
+            itType match {
+              case t: ScalaOptionType[_] =>
+                (
+                  t.elementType.asInstanceOf[ScalaNumericType[Any]].numeric,
+                  true)
+              case t => (t.asInstanceOf[ScalaNumericType[Any]].numeric, false)
+            }
+          reduceOptionIt[Any](it, opt, identity, (a, b) => num.plus(a, b))
+        case Library.Avg(ch) =>
+          val coll = run(ch).asInstanceOf[Coll]
+          val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
+          val (num, opt) =
+            itType match {
+              case t: ScalaOptionType[_] =>
+                (
+                  t.elementType.asInstanceOf[ScalaNumericType[Any]].numeric,
+                  true)
+              case t => (t.asInstanceOf[ScalaNumericType[Any]].numeric, false)
+            }
+          reduceOptionIt[(Int, Any)](
+            it,
+            opt,
+            (1, _),
+            {
+              case ((ai, a), (bi, b)) => (ai + bi, num.plus(a, b))
+            }).map {
+            case (count, sum) =>
+              if (num.isInstanceOf[Fractional[_]])
+                num.asInstanceOf[Fractional[Any]].div(sum, num.fromInt(count))
+              else
+                num.fromInt(num.toInt(sum) / count)
+          }
+        case Library.Min(ch) =>
+          val coll = run(ch).asInstanceOf[Coll]
+          val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
+          val (ord, opt) =
+            itType match {
+              case t: ScalaOptionType[_] =>
+                (t.elementType.asInstanceOf[ScalaBaseType[Any]].ordering, true)
+              case t => (t.asInstanceOf[ScalaBaseType[Any]].ordering, false)
+            }
+          reduceOptionIt[Any](
+            it,
+            opt,
+            identity,
+            (a, b) =>
+              if (ord.lt(b, a))
+                b
+              else
+                a)
+        case Library.Max(ch) =>
+          val coll = run(ch).asInstanceOf[Coll]
+          val (it, itType) = unwrapSingleColumn(coll, ch.nodeType)
+          val (ord, opt) =
+            itType match {
+              case t: ScalaOptionType[_] =>
+                (t.elementType.asInstanceOf[ScalaBaseType[Any]].ordering, true)
+              case t => (t.asInstanceOf[ScalaBaseType[Any]].ordering, false)
+            }
+          reduceOptionIt[Any](
+            it,
+            opt,
+            identity,
+            (a, b) =>
+              if (ord.gt(b, a))
+                b
+              else
+                a)
+        case Library.==(ch, LiteralNode(null)) =>
+          val chV = run(ch)
+          chV == null || chV.asInstanceOf[Option[_]].isEmpty
+        case Apply(sym, ch) =>
+          val chV = ch.map(n => (n.nodeType, run(n)))
+          logDebug("[chV: " + chV.mkString(", ") + "]")
+          if (n.nodeType.isInstanceOf[OptionType]) {
+            if (chV.exists {
+                  case (t, v) => t.isInstanceOf[OptionType] && (v == None)
+                })
+              None
+            else {
+              val chPlainV = chV.map {
+                case (t: OptionType, v) =>
+                  (t.elementType, v.asInstanceOf[Option[Any]].get)
+                case other => other
+              }
+              logDebug("[chPlainV: " + chPlainV.mkString(", ") + "]")
+              Some(
+                evalFunction(
+                  sym,
+                  chPlainV.toSeq,
+                  n.nodeType.asOptionType.elementType))
+            }
+          } else
+            evalFunction(sym, chV.toSeq, n.nodeType)
+        //case Library.CountAll(ch) => run(ch).asInstanceOf[Coll].size
+        case l: LiteralNode        => l.value
+        case CollectionCast(ch, _) => run(ch)
+        case Subquery(ch, _)       => run(ch)
+      }
     indent -= 1
     if (logger.isDebugEnabled)
       logDebug("Result: " + res)

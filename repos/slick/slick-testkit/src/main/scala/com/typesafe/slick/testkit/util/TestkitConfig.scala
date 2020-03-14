@@ -38,10 +38,11 @@ object TestkitConfig {
         ConfigValueFactory.fromAnyRef(
           new File(c.getString("testDir")).getAbsolutePath))
     }
-    val defaults = ref
-      .getObject("defaults")
-      .withValue("testkit", testkitConfig.root())
-      .toConfig
+    val defaults =
+      ref
+        .getObject("defaults")
+        .withValue("testkit", testkitConfig.root())
+        .toConfig
     (conf, testkitConfig, defaults, ref)
   }
 

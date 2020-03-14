@@ -72,8 +72,7 @@ object ByteBufferOrderedBuf {
       }
       """
       }
-      override def put(inputStream: ctx.TermName, element: ctx.TermName) =
-        q"""
+      override def put(inputStream: ctx.TermName, element: ctx.TermName) = q"""
       $inputStream.writePosVarInt($element.remaining)
       $inputStream.writeBytes($element.array, $element.arrayOffset + $element.position, $element.remaining)
       """

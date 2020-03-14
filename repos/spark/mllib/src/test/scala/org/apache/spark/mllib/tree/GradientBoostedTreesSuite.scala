@@ -41,12 +41,13 @@ class GradientBoostedTreesSuite
       case (numIterations, learningRate, subsamplingRate) =>
         val rdd = sc.parallelize(GradientBoostedTreesSuite.data, 2)
 
-        val treeStrategy = new Strategy(
-          algo = Regression,
-          impurity = Variance,
-          maxDepth = 2,
-          categoricalFeaturesInfo = Map.empty,
-          subsamplingRate = subsamplingRate)
+        val treeStrategy =
+          new Strategy(
+            algo = Regression,
+            impurity = Variance,
+            maxDepth = 2,
+            categoricalFeaturesInfo = Map.empty,
+            subsamplingRate = subsamplingRate)
         val boostingStrategy =
           new BoostingStrategy(
             treeStrategy,
@@ -70,8 +71,8 @@ class GradientBoostedTreesSuite
             throw e
         }
 
-        val remappedInput =
-          rdd.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = rdd.map(x =>
+          new LabeledPoint((x.label * 2) - 1, x.features))
         val dt = DecisionTree.train(remappedInput, treeStrategy)
 
         // Make sure trees are the same.
@@ -84,12 +85,13 @@ class GradientBoostedTreesSuite
       case (numIterations, learningRate, subsamplingRate) =>
         val rdd = sc.parallelize(GradientBoostedTreesSuite.data, 2)
 
-        val treeStrategy = new Strategy(
-          algo = Regression,
-          impurity = Variance,
-          maxDepth = 2,
-          categoricalFeaturesInfo = Map.empty,
-          subsamplingRate = subsamplingRate)
+        val treeStrategy =
+          new Strategy(
+            algo = Regression,
+            impurity = Variance,
+            maxDepth = 2,
+            categoricalFeaturesInfo = Map.empty,
+            subsamplingRate = subsamplingRate)
         val boostingStrategy =
           new BoostingStrategy(
             treeStrategy,
@@ -114,8 +116,8 @@ class GradientBoostedTreesSuite
             throw e
         }
 
-        val remappedInput =
-          rdd.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = rdd.map(x =>
+          new LabeledPoint((x.label * 2) - 1, x.features))
         val dt = DecisionTree.train(remappedInput, treeStrategy)
 
         // Make sure trees are the same.
@@ -128,13 +130,14 @@ class GradientBoostedTreesSuite
       case (numIterations, learningRate, subsamplingRate) =>
         val rdd = sc.parallelize(GradientBoostedTreesSuite.data, 2)
 
-        val treeStrategy = new Strategy(
-          algo = Classification,
-          impurity = Variance,
-          maxDepth = 2,
-          numClasses = 2,
-          categoricalFeaturesInfo = Map.empty,
-          subsamplingRate = subsamplingRate)
+        val treeStrategy =
+          new Strategy(
+            algo = Classification,
+            impurity = Variance,
+            maxDepth = 2,
+            numClasses = 2,
+            categoricalFeaturesInfo = Map.empty,
+            subsamplingRate = subsamplingRate)
         val boostingStrategy =
           new BoostingStrategy(
             treeStrategy,
@@ -158,8 +161,8 @@ class GradientBoostedTreesSuite
             throw e
         }
 
-        val remappedInput =
-          rdd.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = rdd.map(x =>
+          new LabeledPoint((x.label * 2) - 1, x.features))
         val ensembleStrategy = treeStrategy.copy
         ensembleStrategy.algo = Regression
         ensembleStrategy.impurity = Variance
@@ -219,11 +222,12 @@ class GradientBoostedTreesSuite
     val losses = Array(SquaredError, AbsoluteError, LogLoss)
     algos.zip(losses).foreach {
       case (algo, loss) =>
-        val treeStrategy = new Strategy(
-          algo = algo,
-          impurity = Variance,
-          maxDepth = 2,
-          categoricalFeaturesInfo = Map.empty)
+        val treeStrategy =
+          new Strategy(
+            algo = algo,
+            impurity = Variance,
+            maxDepth = 2,
+            categoricalFeaturesInfo = Map.empty)
         val boostingStrategy =
           new BoostingStrategy(
             treeStrategy,
@@ -272,12 +276,13 @@ class GradientBoostedTreesSuite
 
     val rdd = sc.parallelize(GradientBoostedTreesSuite.data, 2)
 
-    val treeStrategy = new Strategy(
-      algo = Regression,
-      impurity = Variance,
-      maxDepth = 2,
-      categoricalFeaturesInfo = Map.empty,
-      checkpointInterval = 2)
+    val treeStrategy =
+      new Strategy(
+        algo = Regression,
+        impurity = Variance,
+        maxDepth = 2,
+        categoricalFeaturesInfo = Map.empty,
+        checkpointInterval = 2)
     val boostingStrategy =
       new BoostingStrategy(treeStrategy, SquaredError, 5, 0.1)
 
@@ -292,13 +297,19 @@ class GradientBoostedTreesSuite
 private object GradientBoostedTreesSuite {
 
   // Combinations for estimators, learning rates and subsamplingRate
-  val testCombinations =
-    Array((10, 1.0, 1.0), (10, 0.1, 1.0), (10, 0.5, 0.75), (10, 0.1, 0.75))
+  val testCombinations = Array(
+    (10, 1.0, 1.0),
+    (10, 0.1, 1.0),
+    (10, 0.5, 0.75),
+    (10, 0.1, 0.75))
 
-  val data =
-    EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 10, 100)
-  val trainData =
-    EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 20, 120)
-  val validateData =
-    EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 20, 80)
+  val data = EnsembleTestHelper.generateOrderedLabeledPoints(
+    numFeatures = 10,
+    100)
+  val trainData = EnsembleTestHelper.generateOrderedLabeledPoints(
+    numFeatures = 20,
+    120)
+  val validateData = EnsembleTestHelper.generateOrderedLabeledPoints(
+    numFeatures = 20,
+    80)
 }

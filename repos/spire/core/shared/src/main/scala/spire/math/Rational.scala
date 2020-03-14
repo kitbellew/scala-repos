@@ -180,8 +180,9 @@ sealed abstract class Rational
 
     @tailrec
     def closest(l: Rational, u: Rational): Rational = {
-      val mediant =
-        Rational(l.numerator + u.numerator, l.denominator + u.denominator)
+      val mediant = Rational(
+        l.numerator + u.numerator,
+        l.denominator + u.denominator)
 
       if (mediant.denominator > limit) {
         if ((this - l).abs > (u - this).abs)
@@ -263,8 +264,7 @@ object Rational extends RationalInstances {
         java.lang.Double.longBitsToDouble(bits)
     }
 
-  def apply(n: BigInt, d: BigInt): Rational =
-    apply(SafeLong(n), SafeLong(d))
+  def apply(n: BigInt, d: BigInt): Rational = apply(SafeLong(n), SafeLong(d))
 
   def apply(n: Long, d: Long): Rational = {
     def build0(n: Long, d: Long) =
@@ -498,11 +498,13 @@ object Rational extends RationalInstances {
             val lden: Long = d / dgcd
             val rden: SafeLong = r.d / dgcd
             val num: SafeLong = rden * n + r.n * lden
-            val ngcd: Long = num match {
-              case SafeLongLong(x) => spire.math.gcd(x, dgcd)
-              case SafeLongBigInteger(x) =>
-                spire.math.gcd(dgcd, (x mod BigInteger.valueOf(dgcd)).longValue)
-            }
+            val ngcd: Long =
+              num match {
+                case SafeLongLong(x) => spire.math.gcd(x, dgcd)
+                case SafeLongBigInteger(x) =>
+                  spire.math
+                    .gcd(dgcd, (x mod BigInteger.valueOf(dgcd)).longValue)
+              }
 
             if (ngcd == 1L)
               Rational(num, SafeLong(lden) * r.d)
@@ -560,11 +562,13 @@ object Rational extends RationalInstances {
             val lden: Long = d / dgcd
             val rden: SafeLong = r.d / dgcd
             val num: SafeLong = rden * n - r.n * lden
-            val ngcd: Long = num match {
-              case SafeLongLong(x) => spire.math.gcd(x, dgcd)
-              case SafeLongBigInteger(x) =>
-                spire.math.gcd(dgcd, (x mod BigInteger.valueOf(dgcd)).longValue)
-            }
+            val ngcd: Long =
+              num match {
+                case SafeLongLong(x) => spire.math.gcd(x, dgcd)
+                case SafeLongBigInteger(x) =>
+                  spire.math
+                    .gcd(dgcd, (x mod BigInteger.valueOf(dgcd)).longValue)
+              }
 
             if (ngcd == 1L)
               Rational(num, SafeLong(lden) * r.d)
@@ -945,8 +949,7 @@ object Rational extends RationalInstances {
         case _                 => super.equals(that)
       }
 
-    override def hashCode: Int =
-      29 * (37 * n.## + d.##)
+    override def hashCode: Int = 29 * (37 * n.## + d.##)
 
     override def toString: String =
       if (isWhole)
@@ -977,8 +980,7 @@ trait RationalInstances {
   * These operations occur at Double precision.
   */
 private[math] trait RationalApproximateNRoot extends NRoot[Rational] {
-  def nroot(n: Rational, k: Int): Rational =
-    Rational(n.toDouble nroot k)
+  def nroot(n: Rational, k: Int): Rational = Rational(n.toDouble nroot k)
 
   def fpow(n: Rational, k: Rational): Rational =
     Rational(n.toDouble ** k.toDouble)

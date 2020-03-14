@@ -38,7 +38,8 @@ object PrinterHelper {
       }
 
     def wrapCode(source: String) = {
-      val context = sm"""
+      val context =
+        sm"""
       |trait PrintersContext {
       |  class baz extends scala.annotation.Annotation with scala.annotation.StaticAnnotation;
       |  class foo1[A, B] extends scala.annotation.Annotation with scala.annotation.StaticAnnotation;
@@ -47,8 +48,8 @@ object PrinterHelper {
       |  trait A1;
       |  trait B1;
       |${source.trim.lines map {
-        "  " + _
-      } mkString s"$LF"}
+          "  " + _
+        } mkString s"$LF"}
       |}"""
 
       if (wrap)
@@ -494,8 +495,7 @@ trait ClassPrintTests {
     assertPrintedCode(
       "class X(var i: scala.Int)(implicit val d: scala.Double, var f: scala.Float)")
 
-  @Test def testClassWithEarly =
-    assertPrintedCode(sm"""
+  @Test def testClassWithEarly = assertPrintedCode(sm"""
     |class X(var i: scala.Int) extends {
     |  val a = i;
     |  type B

@@ -47,8 +47,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val offset: Int = editor.getCaretModel.getOffset
     editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
     val element: PsiElement = file.findElementAt(offset)
-    val clazz =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTemplateDefinition])
     invokeOnClass(clazz, project, editor)
   }
 
@@ -56,15 +57,16 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       project: Project,
       elements: Array[PsiElement],
       dataContext: DataContext) = {
-    val clazz = elements match {
-      case Array(clazz: ScTemplateDefinition) => clazz
-      case _ =>
-        val parent = PsiTreeUtil.findCommonParent(elements: _*)
-        PsiTreeUtil.getParentOfType(
-          parent,
-          classOf[ScTemplateDefinition],
-          false)
-    }
+    val clazz =
+      elements match {
+        case Array(clazz: ScTemplateDefinition) => clazz
+        case _ =>
+          val parent = PsiTreeUtil.findCommonParent(elements: _*)
+          PsiTreeUtil.getParentOfType(
+            parent,
+            classOf[ScTemplateDefinition],
+            false)
+      }
 
     if (dataContext != null) {
       val editor: Editor = CommonDataKeys.EDITOR.getData(dataContext)
@@ -84,8 +86,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val offset: Int = editor.getCaretModel.getOffset
     editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
     val element: PsiElement = file.findElementAt(offset)
-    val clazz =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTemplateDefinition])
     val allMembers = ExtractSuperUtil.possibleMembersToExtract(clazz).asScala
     val memberInfos =
       if (onlyFirstMember)
@@ -105,15 +108,20 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         traitText,
         clazz.getContext,
         clazz)
-      val newTrtAdded = clazz match {
-        case anon: ScNewTemplateDefinition =>
-          val tBody =
-            PsiTreeUtil.getParentOfType(anon, classOf[ScTemplateBody], true)
-          val added =
-            tBody.addBefore(newTrt, tBody.getLastChild).asInstanceOf[ScTrait]
-          added
-        case _ => clazz.getParent.addAfter(newTrt, clazz).asInstanceOf[ScTrait]
-      }
+      val newTrtAdded =
+        clazz match {
+          case anon: ScNewTemplateDefinition =>
+            val tBody = PsiTreeUtil.getParentOfType(
+              anon,
+              classOf[ScTemplateBody],
+              true)
+            val added = tBody
+              .addBefore(newTrt, tBody.getLastChild)
+              .asInstanceOf[ScTrait]
+            added
+          case _ =>
+            clazz.getParent.addAfter(newTrt, clazz).asInstanceOf[ScTrait]
+        }
       finishExtractTrait(newTrtAdded, extractInfo)
     }
   }
@@ -173,12 +181,13 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
           .createTemplateDefinitionFromText(traitText, trt.getParent, trt)
         val selfTypeElem = dummyTrait.extendsBlock.selfTypeElement.get
         val extendsBlock = trt.extendsBlock
-        val templateBody = extendsBlock.templateBody match {
-          case Some(tb) => tb
-          case None =>
-            extendsBlock.add(
-              ScalaPsiElementFactory.createTemplateBody(trt.getManager))
-        }
+        val templateBody =
+          extendsBlock.templateBody match {
+            case Some(tb) => tb
+            case None =>
+              extendsBlock.add(
+                ScalaPsiElementFactory.createTemplateBody(trt.getManager))
+          }
 
         val lBrace = templateBody.getFirstChild
         val ste = templateBody.addAfter(selfTypeElem, lBrace)
@@ -192,8 +201,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
   private def addTypeParameters(trt: ScTrait, typeParamsText: String) {
     if (typeParamsText == null || typeParamsText.isEmpty)
       return
-    val clause =
-      ScalaPsiElementFactory.createTypeParameterClauseFromTextWithContext(
+    val clause = ScalaPsiElementFactory
+      .createTypeParameterClauseFromTextWithContext(
         typeParamsText,
         trt,
         trt.nameId)
@@ -209,8 +218,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       if (packageName == currentPackageName)
         clazz.getContainingFile.getContainingDirectory
       else {
-        val pckg =
-          JavaPsiFacade.getInstance(clazz.getProject).findPackage(packageName)
+        val pckg = JavaPsiFacade
+          .getInstance(clazz.getProject)
+          .findPackage(packageName)
         if (pckg == null || pckg.getDirectories.isEmpty)
           throw new IllegalArgumentException(
             "Cannot find directory for new trait")
@@ -328,14 +338,15 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     }
 
     private def collectTypeParameters(resolve: PsiElement) {
-      val visitor = new ScalaRecursiveElementVisitor {
-        override def visitReference(ref: ScReferenceElement) = {
-          ref.resolve() match {
-            case tp: ScTypeParam => typeParams += tp
-            case _               =>
+      val visitor =
+        new ScalaRecursiveElementVisitor {
+          override def visitReference(ref: ScReferenceElement) = {
+            ref.resolve() match {
+              case tp: ScTypeParam => typeParams += tp
+              case _               =>
+            }
           }
         }
-      }
 
       resolve match {
         case typeParam: ScTypeParam if typeParam.owner == clazz =>
@@ -346,14 +357,15 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     }
 
     def collect() {
-      val visitor = new ScalaRecursiveElementVisitor {
-        override def visitReference(ref: ScReferenceElement) {
-          val resolve = ref.resolve()
-          collectForSelfType(resolve)
-          collectConflicts(ref, resolve)
-          collectTypeParameters(resolve)
+      val visitor =
+        new ScalaRecursiveElementVisitor {
+          override def visitReference(ref: ScReferenceElement) {
+            val resolve = ref.resolve()
+            collectForSelfType(resolve)
+            collectConflicts(ref, resolve)
+            collectTypeParameters(resolve)
+          }
         }
-      }
 
       for {
         info <- memberInfos

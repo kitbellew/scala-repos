@@ -291,8 +291,7 @@ trait ImplicitPathMatcherConstruction {
     PathMatcher(segment :: Path.Empty, ())
 
   implicit def stringNameOptionReceptacle2PathMatcher(
-      nr: NameOptionReceptacle[String]): PathMatcher0 =
-    PathMatcher(nr.name).?
+      nr: NameOptionReceptacle[String]): PathMatcher0 = PathMatcher(nr.name).?
 
   /**
     * Creates a PathMatcher that consumes (a prefix of) the first path segment

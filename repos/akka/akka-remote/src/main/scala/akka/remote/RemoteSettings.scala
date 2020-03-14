@@ -29,17 +29,18 @@ final class RemoteSettings(val config: Config) {
   val TrustedSelectionPaths: Set[String] =
     immutableSeq(getStringList("akka.remote.trusted-selection-paths")).toSet
 
-  val RemoteLifecycleEventsLogLevel: LogLevel = getString(
-    "akka.remote.log-remote-lifecycle-events").toLowerCase(Locale.ROOT) match {
-    case "on" ⇒ Logging.DebugLevel
-    case other ⇒
-      Logging.levelFor(other) match {
-        case Some(level) ⇒ level
-        case None ⇒
-          throw new ConfigurationException(
-            "Logging level must be one of (on, off, debug, info, warning, error)")
-      }
-  }
+  val RemoteLifecycleEventsLogLevel: LogLevel =
+    getString("akka.remote.log-remote-lifecycle-events").toLowerCase(
+      Locale.ROOT) match {
+      case "on" ⇒ Logging.DebugLevel
+      case other ⇒
+        Logging.levelFor(other) match {
+          case Some(level) ⇒ level
+          case None ⇒
+            throw new ConfigurationException(
+              "Logging level must be one of (on, off, debug, info, warning, error)")
+        }
+    }
 
   val Dispatcher: String = getString("akka.remote.use-dispatcher")
 

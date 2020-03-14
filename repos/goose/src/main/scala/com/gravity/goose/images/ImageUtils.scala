@@ -63,22 +63,23 @@ object ImageUtils extends Logging {
     }
     val infoParts = spaceRegex.split(imageInfo)
     val mimeType = infoParts.lift(1).getOrElse(string.empty)
-    val (width, height) = infoParts.lift(2) match {
-      case Some(dimensions) => {
-        val pair = xRegex.split(dimensions)
-        if (pair.length > 1) {
-          val wStr = pair(0)
-          val hStr = pair(1)
+    val (width, height) =
+      infoParts.lift(2) match {
+        case Some(dimensions) => {
+          val pair = xRegex.split(dimensions)
+          if (pair.length > 1) {
+            val wStr = pair(0)
+            val hStr = pair(1)
 
-          (
-            string.tryToInt(wStr).getOrElse(0),
-            string.tryToInt(hStr).getOrElse(0))
-        } else {
-          (0, 0)
+            (
+              string.tryToInt(wStr).getOrElse(0),
+              string.tryToInt(hStr).getOrElse(0))
+          } else {
+            (0, 0)
+          }
         }
+        case None => (0, 0)
       }
-      case None => (0, 0)
-    }
     imageDetails.setMimeType(mimeType)
     imageDetails.setWidth(width)
     imageDetails.setHeight(height)
@@ -207,13 +208,14 @@ object ImageUtils extends Logging {
     * or even have .jpg extensions, so we use ImageMagick to tell us the truth
     */
   private def getFileExtensionName(imageDetails: ImageDetails) = {
-    val mimeType = imageDetails.getMimeType.toLowerCase match {
-      case "png"  => ".png"
-      case "jpg"  => ".jpg"
-      case "jpeg" => ".jpg"
-      case ".gif" => ".gif"
-      case _      => "NA"
-    }
+    val mimeType =
+      imageDetails.getMimeType.toLowerCase match {
+        case "png"  => ".png"
+        case "jpg"  => ".jpg"
+        case "jpeg" => ".jpg"
+        case ".gif" => ".gif"
+        case _      => "NA"
+      }
     mimeType
   }
 
@@ -226,8 +228,9 @@ object ImageUtils extends Logging {
     if (imageFile.exists()) {
       try {
         trace("Reading image from disk: " + localImageName)
-        val imageDetails =
-          getImageDimensions(config.imagemagickIdentifyPath, localImageName)
+        val imageDetails = getImageDimensions(
+          config.imagemagickIdentifyPath,
+          localImageName)
         val fileExtension = getFileExtensionName(imageDetails)
         Some(
           LocallyStoredImage(

@@ -139,8 +139,7 @@ object Transport {
       writeTimeout: Duration,
       keepAlive: Option[Boolean]
   ) {
-    def mk(): (Liveness, Stack.Param[Liveness]) =
-      (this, Liveness.param)
+    def mk(): (Liveness, Stack.Param[Liveness]) = (this, Liveness.param)
   }
   object Liveness {
     implicit val param = Stack.Param(Liveness(Duration.Top, Duration.Top, None))
@@ -151,8 +150,7 @@ object Transport {
     * written to [[com.twitter.finagle.param.Logger]].
     */
   case class Verbose(enabled: Boolean) {
-    def mk(): (Verbose, Stack.Param[Verbose]) =
-      (this, Verbose.param)
+    def mk(): (Verbose, Stack.Param[Verbose]) = (this, Verbose.param)
   }
   object Verbose {
     implicit val param = Stack.Param(Verbose(enabled = false))
@@ -195,8 +193,8 @@ object Transport {
   }
 
   object Options {
-    implicit val param: Stack.Param[Options] =
-      Stack.Param(Options(noDelay = true, reuseAddr = true))
+    implicit val param: Stack.Param[Options] = Stack.Param(
+      Options(noDelay = true, reuseAddr = true))
   }
 
   /**

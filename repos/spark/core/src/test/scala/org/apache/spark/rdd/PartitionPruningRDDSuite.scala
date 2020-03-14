@@ -28,18 +28,19 @@ class PartitionPruningRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("Pruned Partitions inherit locality prefs correctly") {
 
-    val rdd = new RDD[Int](sc, Nil) {
-      override protected def getPartitions = {
-        Array[Partition](
-          new TestPartition(0, 1),
-          new TestPartition(1, 1),
-          new TestPartition(2, 1))
-      }
+    val rdd =
+      new RDD[Int](sc, Nil) {
+        override protected def getPartitions = {
+          Array[Partition](
+            new TestPartition(0, 1),
+            new TestPartition(1, 1),
+            new TestPartition(2, 1))
+        }
 
-      def compute(split: Partition, context: TaskContext) = {
-        Iterator()
+        def compute(split: Partition, context: TaskContext) = {
+          Iterator()
+        }
       }
-    }
     val prunedRDD = PartitionPruningRDD.create(rdd, _ == 2)
     assert(prunedRDD.partitions.length == 1)
     val p = prunedRDD.partitions(0)
@@ -49,18 +50,19 @@ class PartitionPruningRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("Pruned Partitions can be unioned ") {
 
-    val rdd = new RDD[Int](sc, Nil) {
-      override protected def getPartitions = {
-        Array[Partition](
-          new TestPartition(0, 4),
-          new TestPartition(1, 5),
-          new TestPartition(2, 6))
-      }
+    val rdd =
+      new RDD[Int](sc, Nil) {
+        override protected def getPartitions = {
+          Array[Partition](
+            new TestPartition(0, 4),
+            new TestPartition(1, 5),
+            new TestPartition(2, 6))
+        }
 
-      def compute(split: Partition, context: TaskContext) = {
-        List(split.asInstanceOf[TestPartition].testValue).iterator
+        def compute(split: Partition, context: TaskContext) = {
+          List(split.asInstanceOf[TestPartition].testValue).iterator
+        }
       }
-    }
     val prunedRDD1 = PartitionPruningRDD.create(rdd, _ == 0)
 
     val prunedRDD2 = PartitionPruningRDD.create(rdd, _ == 2)

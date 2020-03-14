@@ -82,14 +82,15 @@ package object testPackage extends Assertions {
     val curCallSite =
       sc.getCallSite().shortForm // note: 2 lines after definition of "rdd"
 
-    val rddCreationLine = rddCreationSite match {
-      case CALL_SITE_REGEX(func, file, line) => {
-        assert(func === "makeRDD")
-        assert(file === "SparkContextInfoSuite.scala")
-        line.toInt
+    val rddCreationLine =
+      rddCreationSite match {
+        case CALL_SITE_REGEX(func, file, line) => {
+          assert(func === "makeRDD")
+          assert(file === "SparkContextInfoSuite.scala")
+          line.toInt
+        }
+        case _ => fail("Did not match expected call site format")
       }
-      case _ => fail("Did not match expected call site format")
-    }
 
     curCallSite match {
       case CALL_SITE_REGEX(func, file, line) => {

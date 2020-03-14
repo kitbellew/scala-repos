@@ -143,14 +143,15 @@ class SizedTests {
     val s = cl.get.size
     val evens = cl.get.filter(_ % 2 == 0)
 
-    val p = cl.get match {
-      case Sized(a, b, _*) => {
-        typed[Int](a)
-        typed[Int](b)
-        (a - b, a + b)
+    val p =
+      cl.get match {
+        case Sized(a, b, _*) => {
+          typed[Int](a)
+          typed[Int](b)
+          (a - b, a + b)
+        }
+        case _ => (9, 10)
       }
-      case _ => (9, 10)
-    }
     typed[(Int, Int)](p)
     assertEquals((-1, 3), p)
 
@@ -283,8 +284,12 @@ class SizedTests {
     m2iExist :: m2sExist :: m2iExist :: m2iExist :: m2dExist :: HNil
   val m2eim2esm2eim2eem2edList =
     m2iExist :: m2sExist :: m2iExist :: m2iExist :: m2dExist :: Nil
-  val m2eim2esm2eim2eem2edSized =
-    Sized[List](m2iExist, m2sExist, m2iExist, m2iExist, m2dExist)
+  val m2eim2esm2eim2eem2edSized = Sized[List](
+    m2iExist,
+    m2sExist,
+    m2iExist,
+    m2iExist,
+    m2dExist)
   @Test
   def testToHList {
     def equalInferredTypes[A, B](a: A, b: B)(implicit eq: A =:= B) {}

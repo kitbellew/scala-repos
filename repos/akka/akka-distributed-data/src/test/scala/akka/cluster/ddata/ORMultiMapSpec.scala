@@ -16,8 +16,9 @@ class ORMultiMapSpec extends WordSpec with Matchers {
   "A ORMultiMap" must {
 
     "be able to add entries" in {
-      val m =
-        ORMultiMap().addBinding(node1, "a", "A").addBinding(node1, "b", "B")
+      val m = ORMultiMap()
+        .addBinding(node1, "a", "A")
+        .addBinding(node1, "b", "B")
       m.entries should be(Map("a" -> Set("A"), "b" -> Set("B")))
 
       val m2 = m.addBinding(node1, "a", "C")
@@ -40,8 +41,9 @@ class ORMultiMapSpec extends WordSpec with Matchers {
     }
 
     "be able to have its entries correctly merged with another ORMultiMap with other entries" in {
-      val m1 =
-        ORMultiMap().addBinding(node1, "a", "A").addBinding(node1, "b", "B")
+      val m1 = ORMultiMap()
+        .addBinding(node1, "a", "A")
+        .addBinding(node1, "b", "B")
       val m2 = ORMultiMap().addBinding(node2, "c", "C")
 
       // merge both ways
@@ -116,8 +118,9 @@ class ORMultiMapSpec extends WordSpec with Matchers {
   }
 
   "have unapply extractor" in {
-    val m1 =
-      ORMultiMap.empty.put(node1, "a", Set(1L, 2L)).put(node2, "b", Set(3L))
+    val m1 = ORMultiMap.empty
+      .put(node1, "a", Set(1L, 2L))
+      .put(node2, "b", Set(3L))
     val m2: ORMultiMap[Long] = m1
     val ORMultiMap(entries1) = m1
     val entries2: Map[String, Set[Long]] = entries1

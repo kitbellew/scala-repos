@@ -289,8 +289,7 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
   }
 
   private def evalTo(expect: JValue*)(implicit fs: FS): Matcher[String] = {
-    def doEval(q: String) =
-      eval(compileSingle(q))(fs.map)
+    def doEval(q: String) = eval(compileSingle(q))(fs.map)
 
     def inner(q: String): Boolean = {
       val actual = doEval(q)

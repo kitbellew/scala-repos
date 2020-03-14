@@ -131,8 +131,7 @@ class HoconObjectEntryMover extends LineMover {
     def lineRange(el: PsiElement) =
       new LineRange(startLine(el), endLine(el) + 1)
 
-    def singleLineRange(line: Int) =
-      new LineRange(line, line + 1)
+    def singleLineRange(line: Int) = new LineRange(line, line + 1)
 
     def adjacentMovableEntry(entry: HObjectEntry) =
       if (down)
@@ -198,14 +197,15 @@ class HoconObjectEntryMover extends LineMover {
         prefixToRemove <- {
           val prefix =
             adjacentField.keyedField.fieldsInPathForward.map(keyString).toList
-          val removablePrefix = field.keyedField.fieldsInPathForward
-            .takeWhile {
-              case prefixed: HPrefixedField =>
-                prefixed.subField.getTextRange.contains(offset)
-              case _ => false
-            }
-            .map(keyString)
-            .toList
+          val removablePrefix =
+            field.keyedField.fieldsInPathForward
+              .takeWhile {
+                case prefixed: HPrefixedField =>
+                  prefixed.subField.getTextRange.contains(offset)
+                case _ => false
+              }
+              .map(keyString)
+              .toList
           if (removablePrefix.startsWith(prefix))
             Some(prefix)
           else
@@ -239,9 +239,10 @@ class HoconObjectEntryMover extends LineMover {
             else
               new LineRange(endLine(adjacentField), sourceRange.startLine)
           val prefixStr = prefixToRemove.mkString("", ".", ".")
-          val needsGuard = document.getCharsSequence
-            .charAt(objField.getTextOffset + prefixStr.length)
-            .isWhitespace
+          val needsGuard =
+            document.getCharsSequence
+              .charAt(objField.getTextOffset + prefixStr.length)
+              .isWhitespace
           val mod = PrefixModification(
             objField.getTextOffset,
             prefixStr.length,

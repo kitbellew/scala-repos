@@ -226,10 +226,11 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   )
 
   test("constant null testing timestamp") {
-    val r1 = sql(
-      "SELECT IF(FALSE, CAST(NULL AS TIMESTAMP), CAST(1 AS TIMESTAMP)) AS COL20")
-      .collect()
-      .head
+    val r1 =
+      sql(
+        "SELECT IF(FALSE, CAST(NULL AS TIMESTAMP), CAST(1 AS TIMESTAMP)) AS COL20")
+        .collect()
+        .head
     assert(new Timestamp(1000) == r1.getTimestamp(0))
   }
 
@@ -295,9 +296,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   // Jdk version leads to different query output for double, so not use createQueryTest here
   test("division") {
-    val res = sql("SELECT 2 / 1, 1 / 2, 1 / 3, 1 / COUNT(*) FROM src LIMIT 1")
-      .collect()
-      .head
+    val res =
+      sql("SELECT 2 / 1, 1 / 2, 1 / 3, 1 / COUNT(*) FROM src LIMIT 1")
+        .collect()
+        .head
     Seq(2.0, 0.5, 0.3333333333333333, 0.002)
       .zip(res.toSeq)
       .foreach(x => assert(x._1 == x._2.asInstanceOf[Double]))
@@ -503,8 +505,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     sql("INSERT OVERWRITE TABLE small_src SELECT key, value FROM src LIMIT 10")
 
     val expected = sql("SELECT key FROM small_src").collect().head
-    val res = sql(
-      """
+    val res =
+      sql("""
         |SELECT TRANSFORM (key) ROW FORMAT SERDE
         |'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
         |WITH SERDEPROPERTIES ('avro.schema.literal'='{"namespace":
@@ -781,19 +783,21 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("implement identity function using case statement") {
-    val actual = sql("SELECT (CASE key WHEN key THEN key END) FROM src").rdd
-      .map {
-        case Row(i: Int) => i
-      }
-      .collect()
-      .toSet
+    val actual =
+      sql("SELECT (CASE key WHEN key THEN key END) FROM src").rdd
+        .map {
+          case Row(i: Int) => i
+        }
+        .collect()
+        .toSet
 
-    val expected = sql("SELECT key FROM src").rdd
-      .map {
-        case Row(i: Int) => i
-      }
-      .collect()
-      .toSet
+    val expected =
+      sql("SELECT key FROM src").rdd
+        .map {
+          case Row(i: Int) => i
+        }
+        .collect()
+        .toSet
 
     assert(actual === expected)
   }
@@ -812,10 +816,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SELECT srcalias.KEY, SRCALIAS.value FROM sRc SrCAlias WHERE SrCAlias.kEy < 15")
 
   test("case sensitivity: registered table") {
-    val testData =
-      TestHive.sparkContext.parallelize(
-        TestData(1, "str1") ::
-          TestData(2, "str2") :: Nil)
+    val testData = TestHive.sparkContext.parallelize(
+      TestData(1, "str1") ::
+        TestData(2, "str2") :: Nil)
     testData.toDF().registerTempTable("REGisteredTABle")
 
     assertResult(Array(Row(2, "str2"))) {
@@ -842,19 +845,21 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("SPARK-2180: HAVING support in GROUP BY clauses (positive)") {
-    val fixture =
-      List(("foo", 2), ("bar", 1), ("foo", 4), ("bar", 3)).zipWithIndex.map {
-        case ((value, attr), key) => HavingRow(key, value, attr)
-      }
+    val fixture = List(
+      ("foo", 2),
+      ("bar", 1),
+      ("foo", 4),
+      ("bar", 3)).zipWithIndex.map {
+      case ((value, attr), key) => HavingRow(key, value, attr)
+    }
     TestHive.sparkContext
       .parallelize(fixture)
       .toDF()
       .registerTempTable("having_test")
-    val results =
-      sql(
-        "SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
-        .collect()
-        .map(x => (x.getString(0), x.getInt(1)))
+    val results = sql(
+      "SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
+      .collect()
+      .map(x => (x.getString(0), x.getInt(1)))
 
     assert(results === Array(("foo", 4)))
     TestHive.reset()
@@ -1017,10 +1022,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     // Describe a registered temporary table.
-    val testData =
-      TestHive.sparkContext.parallelize(
-        TestData(1, "str1") ::
-          TestData(1, "str2") :: Nil)
+    val testData = TestHive.sparkContext.parallelize(
+      TestData(1, "str1") ::
+        TestData(1, "str2") :: Nil)
     testData.toDF().registerTempTable("test_describe_commands2")
 
     assertResult(
@@ -1391,15 +1395,16 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
     assert(e.getMessage.contains("undefined function not_a_udf"))
     var success = false
-    val t = new Thread("test") {
-      override def run(): Unit = {
-        val e = intercept[AnalysisException] {
-          range(1).selectExpr("not_a_udf()")
+    val t =
+      new Thread("test") {
+        override def run(): Unit = {
+          val e = intercept[AnalysisException] {
+            range(1).selectExpr("not_a_udf()")
+          }
+          assert(e.getMessage.contains("undefined function not_a_udf"))
+          success = true
         }
-        assert(e.getMessage.contains("undefined function not_a_udf"))
-        success = true
       }
-    }
     t.start()
     t.join()
     assert(success)

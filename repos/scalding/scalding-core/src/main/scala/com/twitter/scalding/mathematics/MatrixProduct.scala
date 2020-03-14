@@ -155,9 +155,10 @@ object MatrixProduct extends java.io.Serializable {
       LiteralScalar[ValT],
       Matrix[Row, Col, ValT]] {
       def apply(left: Matrix[Row, Col, ValT], right: LiteralScalar[ValT]) = {
-        val newPipe = left.pipe.map(left.valSym -> left.valSym) { (v: ValT) =>
-          ring.times(v, right.value)
-        }
+        val newPipe =
+          left.pipe.map(left.valSym -> left.valSym) { (v: ValT) =>
+            ring.times(v, right.value)
+          }
         new Matrix[Row, Col, ValT](
           left.rowSym,
           left.colSym,
@@ -171,9 +172,10 @@ object MatrixProduct extends java.io.Serializable {
       : MatrixProduct[Matrix[Row, Col, ValT], ValT, Matrix[Row, Col, ValT]] =
     new MatrixProduct[Matrix[Row, Col, ValT], ValT, Matrix[Row, Col, ValT]] {
       def apply(left: Matrix[Row, Col, ValT], right: ValT) = {
-        val newPipe = left.pipe.map(left.valSym -> left.valSym) { (v: ValT) =>
-          ring.times(v, right)
-        }
+        val newPipe =
+          left.pipe.map(left.valSym -> left.valSym) { (v: ValT) =>
+            ring.times(v, right)
+          }
         new Matrix[Row, Col, ValT](
           left.rowSym,
           left.colSym,
@@ -193,9 +195,10 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[Row, Col, ValT],
       Matrix[Row, Col, ValT]] {
       def apply(left: LiteralScalar[ValT], right: Matrix[Row, Col, ValT]) = {
-        val newPipe = right.pipe.map(right.valSym -> right.valSym) {
-          (v: ValT) => ring.times(left.value, v)
-        }
+        val newPipe =
+          right.pipe.map(right.valSym -> right.valSym) { (v: ValT) =>
+            ring.times(left.value, v)
+          }
         new Matrix[Row, Col, ValT](
           right.rowSym,
           right.colSym,
@@ -499,8 +502,7 @@ object MatrixProduct extends java.io.Serializable {
   def vectorInnerProduct[IdxT, ValT](implicit ring: Ring[ValT]): MatrixProduct[
     RowVector[IdxT, ValT],
     ColVector[IdxT, ValT],
-    Scalar[ValT]] =
-    rowColProduct(ring)
+    Scalar[ValT]] = rowColProduct(ring)
 
   implicit def rowColProduct[IdxT, ValT](
       implicit ring: Ring[ValT]): MatrixProduct[
@@ -661,25 +663,24 @@ object MatrixProduct extends java.io.Serializable {
           (right.rowSym, right.colSym, right.valSym),
           right.pipe)
         val newHint = left.sizeHint * right.sizeHint
-        val productPipe = Matrix.filterOutZeros(right.valSym, ring) {
-          getJoiner(left.sizeHint, right.sizeHint)
-          // TODO: we should use the size hints to set the number of reducers:
-            .apply(
-              left.pipe,
-              (left.idxSym -> getField(newRightFields, 0)),
-              newRightPipe)
-            // Do the product:
-            .map(
-              (left.valSym.append(getField(newRightFields, 2))) -> getField(
-                newRightFields,
-                2)) { pair: (ValT, ValT) =>
-              ring.times(pair._1, pair._2)
-            }
-            // Keep the names from the right:
-            .project(newRightFields)
-            .rename(
-              newRightFields -> (right.rowSym, right.colSym, right.valSym))
-        }
+        val productPipe =
+          Matrix.filterOutZeros(right.valSym, ring) {
+            getJoiner(left.sizeHint, right.sizeHint)
+            // TODO: we should use the size hints to set the number of reducers:
+              .apply(
+                left.pipe,
+                (left.idxSym -> getField(newRightFields, 0)),
+                newRightPipe)
+              // Do the product:
+              .map((left.valSym.append(
+                getField(newRightFields, 2))) -> getField(newRightFields, 2)) {
+                pair: (ValT, ValT) => ring.times(pair._1, pair._2)
+              }
+              // Keep the names from the right:
+              .project(newRightFields)
+              .rename(
+                newRightFields -> (right.rowSym, right.colSym, right.valSym))
+          }
         new Matrix[RowT, ColT, ValT](
           right.rowSym,
           right.colSym,

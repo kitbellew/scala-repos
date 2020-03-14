@@ -37,9 +37,10 @@ object Play2OldStructureAdapter {
       data: Play2Data): Seq[(ProjectId, String, ParsedValue[_])] = {
     val playVersion =
       data.playVersion.map(v => (PLAY_VERSION, new StringParsedValue(v))).toSeq
-    val confDirectory = data.confDirectory
-      .map(d => (PLAY_CONF_DIR, new StringParsedValue(d.getCanonicalPath)))
-      .toSeq
+    val confDirectory =
+      data.confDirectory
+        .map(d => (PLAY_CONF_DIR, new StringParsedValue(d.getCanonicalPath)))
+        .toSeq
 
     val keyValues = playVersion ++ confDirectory ++ Seq(
       (TEMPLATES_IMPORT, new SeqStringParsedValue(data.templatesImports)),

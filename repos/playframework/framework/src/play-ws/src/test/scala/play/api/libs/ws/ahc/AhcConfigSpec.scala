@@ -34,10 +34,11 @@ object AhcConfigSpec extends Specification with Mockito {
         ConfigFactory
           .parseString(input)
           .withFallback(ConfigFactory.defaultReference()))
-      val parser = new AhcWSClientConfigParser(
-        defaultWsConfig,
-        config,
-        app.injector.instanceOf[Environment])
+      val parser =
+        new AhcWSClientConfigParser(
+          defaultWsConfig,
+          config,
+          app.injector.instanceOf[Environment])
       parser.parse()
     }
 
@@ -46,8 +47,8 @@ object AhcConfigSpec extends Specification with Mockito {
     }
 
     "parse ws ahc section" in new WithApplication {
-      val actual =
-        parseThis("""
+      val actual = parseThis(
+        """
                                |play.ws.ahc.maxConnectionsPerHost = 3
                                |play.ws.ahc.maxConnectionsTotal = 6
                                |play.ws.ahc.maxConnectionLifetime = 1 minute
@@ -265,8 +266,8 @@ object AhcConfigSpec extends Specification with Mockito {
           val config = defaultConfig.copy(wsClientConfig = wsConfig)
           val builder = new AhcConfigBuilder(config)
           // this only works with test:test, has a different type in test:testQuick and test:testOnly!
-          val logger =
-            builder.logger.asInstanceOf[ch.qos.logback.classic.Logger]
+          val logger = builder.logger
+            .asInstanceOf[ch.qos.logback.classic.Logger]
           val appender =
             new ch.qos.logback.core.read.ListAppender[ILoggingEvent]()
           val lc = LoggerFactory.getILoggerFactory().asInstanceOf[LoggerContext]
@@ -292,8 +293,8 @@ object AhcConfigSpec extends Specification with Mockito {
         }
 
         "should disable the hostname verifier if loose.acceptAnyCertificate is enabled" in {
-          val sslConfig =
-            SSLConfig(loose = SSLLooseConfig(acceptAnyCertificate = true))
+          val sslConfig = SSLConfig(
+            loose = SSLLooseConfig(acceptAnyCertificate = true))
           val wsConfig = defaultWsConfig.copy(ssl = sslConfig)
           val config = defaultConfig.copy(wsClientConfig = wsConfig)
           val builder = new AhcConfigBuilder(config)
@@ -319,8 +320,8 @@ object AhcConfigSpec extends Specification with Mockito {
         }
 
         "provide explicit protocols if specified" in {
-          val sslConfig =
-            SSLConfig(enabledProtocols = Some(Seq("derp", "baz", "quux")))
+          val sslConfig = SSLConfig(enabledProtocols = Some(
+            Seq("derp", "baz", "quux")))
           val wsConfig = defaultWsConfig.copy(ssl = sslConfig)
           val config = defaultConfig.copy(wsClientConfig = wsConfig)
           val builder = new AhcConfigBuilder(config)
@@ -343,8 +344,12 @@ object AhcConfigSpec extends Specification with Mockito {
           val builder = new AhcConfigBuilder(config)
 
           // The existing protocols is larger than the enabled list, and out of order.
-          val existingProtocols =
-            Array("goodTwo", "badOne", "badTwo", deprecatedProtocol, "goodOne")
+          val existingProtocols = Array(
+            "goodTwo",
+            "badOne",
+            "badTwo",
+            deprecatedProtocol,
+            "goodOne")
 
           builder
             .configureProtocols(existingProtocols, sslConfig)
@@ -365,8 +370,12 @@ object AhcConfigSpec extends Specification with Mockito {
           val builder = new AhcConfigBuilder(config)
 
           // The existing protocols is larger than the enabled list, and out of order.
-          val existingProtocols =
-            Array("goodTwo", "badOne", "badTwo", deprecatedProtocol, "goodOne")
+          val existingProtocols = Array(
+            "goodTwo",
+            "badOne",
+            "badTwo",
+            deprecatedProtocol,
+            "goodOne")
 
           val actual = builder.configureProtocols(existingProtocols, sslConfig)
 
@@ -392,8 +401,10 @@ object AhcConfigSpec extends Specification with Mockito {
         }
 
         "throw exception on deprecated ciphers from the explicit cipher list" in {
-          val enabledCiphers =
-            Seq(Ciphers.deprecatedCiphers.head, "goodone", "goodtwo")
+          val enabledCiphers = Seq(
+            Ciphers.deprecatedCiphers.head,
+            "goodone",
+            "goodtwo")
 
           val sslConfig = SSLConfig(enabledCipherSuites = Some(enabledCiphers))
           val wsConfig = defaultWsConfig.copy(ssl = sslConfig)

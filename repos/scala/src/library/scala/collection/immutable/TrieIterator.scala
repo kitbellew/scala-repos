@@ -222,8 +222,8 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
           )
         } else {
           // 3b) arrayD has more free elements
-          val (fst, snd) =
-            arrayD.splitAt(arrayD.length - (arrayD.length - posD + 1) / 2)
+          val (fst, snd) = arrayD.splitAt(
+            arrayD.length - (arrayD.length - posD + 1) / 2)
           arrayD = fst
           (iteratorWithSize(snd), this)
         }

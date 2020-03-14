@@ -1269,8 +1269,7 @@ trait Internals { self: Universe =>
 
     /** @see [[InternalApi.newScopeWith]] */
     @deprecated("Use `internal.newScopeWith` instead", "2.11.0")
-    def newScopeWith(elems: Symbol*): Scope =
-      internal.newScopeWith(elems: _*)
+    def newScopeWith(elems: Symbol*): Scope = internal.newScopeWith(elems: _*)
 
     /** Scala 2.10 compatibility enrichments for BuildApi. */
     implicit class CompatibleBuildApi(api: BuildApi) {

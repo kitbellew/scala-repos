@@ -12,8 +12,7 @@ class RuleTest extends FunSuite {
       Nil
     }
 
-  private def idOfNamed(name: String): String =
-    withName(name).id
+  private def idOfNamed(name: String): String = withName(name).id
 
   test("id") {
     assert("abc" == idOfNamed("abc"))

@@ -65,9 +65,10 @@ trait LogisticRegressionTestSupport[M[+_]]
 
     val testSeqX = {
       def createXs: Array[Double] = {
-        val seq = Seq.fill(length - 1)(Random.nextDouble) map { x =>
-          x * 2.0 - 1.0
-        } toArray
+        val seq =
+          Seq.fill(length - 1)(Random.nextDouble) map { x =>
+            x * 2.0 - 1.0
+          } toArray
 
         arraySum(seq, direction)
       }
@@ -174,18 +175,20 @@ trait LogisticRegressionSpecs[M[+_]]
           val SObject(fields) = elems("model1")
           val SArray(arr) = fields("coefficients")
 
-          val SDecimal(theta1) = (arr(0): @unchecked) match {
-            case SArray(elems2) =>
-              (elems2(0): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
-              }
-          }
+          val SDecimal(theta1) =
+            (arr(0): @unchecked) match {
+              case SArray(elems2) =>
+                (elems2(0): @unchecked) match {
+                  case SObject(obj) =>
+                    returnestimate(obj)
+                }
+            }
 
-          val SDecimal(theta0) = (arr(1): @unchecked) match {
-            case SObject(obj) =>
-              returnestimate(obj)
-          }
+          val SDecimal(theta0) =
+            (arr(1): @unchecked) match {
+              case SObject(obj) =>
+                returnestimate(obj)
+            }
 
           List(theta0.toDouble, theta1.toDouble)
       }
@@ -216,11 +219,12 @@ trait LogisticRegressionSpecs[M[+_]]
 
     //runs the logistic regression function on 50 sets of data generated from the same distribution
     while (i < 50) {
-      val cpaths = Seq(
-        CPath(CPathIndex(0), CPathField("foo")),
-        CPath(CPathIndex(0), CPathField("bar")),
-        CPath(CPathIndex(0), CPathField("baz")),
-        CPath(CPathIndex(1))) sorted
+      val cpaths =
+        Seq(
+          CPath(CPathIndex(0), CPathField("foo")),
+          CPath(CPathIndex(0), CPathField("bar")),
+          CPath(CPathIndex(0), CPathField("baz")),
+          CPath(CPathIndex(1))) sorted
 
       val samples = createLogisticSamplePoints(num, 100, actualThetas)
       val points = jvalues(samples, cpaths) map {
@@ -245,31 +249,35 @@ trait LogisticRegressionSpecs[M[+_]]
           val SObject(fields) = elems("model1")
           val SArray(arr) = fields("coefficients")
 
-          val SDecimal(theta1) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("bar"): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
-              }
-          }
-          val SDecimal(theta2) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("baz"): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
-              }
-          }
-          val SDecimal(theta3) = (arr(0): @unchecked) match {
-            case SObject(map) =>
-              (map("foo"): @unchecked) match {
-                case SObject(obj) =>
-                  returnestimate(obj)
-              }
-          }
-          val SDecimal(theta0) = (arr(1): @unchecked) match {
-            case SObject(obj) =>
-              returnestimate(obj)
-          }
+          val SDecimal(theta1) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("bar"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnestimate(obj)
+                }
+            }
+          val SDecimal(theta2) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("baz"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnestimate(obj)
+                }
+            }
+          val SDecimal(theta3) =
+            (arr(0): @unchecked) match {
+              case SObject(map) =>
+                (map("foo"): @unchecked) match {
+                  case SObject(obj) =>
+                    returnestimate(obj)
+                }
+            }
+          val SDecimal(theta0) =
+            (arr(1): @unchecked) match {
+              case SObject(obj) =>
+                returnestimate(obj)
+            }
 
           List(
             theta0.toDouble,
@@ -308,17 +316,18 @@ trait LogisticRegressionSpecs[M[+_]]
 
     //runs the logistic regression function on 50 sets of data generated from the same distribution
     while (i < 50) {
-      val cpaths = Seq(
-        CPath(CPathIndex(0), CPathField("ack"), CPathIndex(0)),
-        CPath(CPathIndex(0), CPathField("bak"), CPathField("bazoo")),
-        CPath(
-          CPathIndex(0),
-          CPathField("bar"),
-          CPathField("baz"),
-          CPathIndex(0)),
-        CPath(CPathIndex(0), CPathField("foo")),
-        CPath(CPathIndex(1))
-      ) sorted
+      val cpaths =
+        Seq(
+          CPath(CPathIndex(0), CPathField("ack"), CPathIndex(0)),
+          CPath(CPathIndex(0), CPathField("bak"), CPathField("bazoo")),
+          CPath(
+            CPathIndex(0),
+            CPathField("bar"),
+            CPathField("baz"),
+            CPathIndex(0)),
+          CPath(CPathIndex(0), CPathField("foo")),
+          CPath(CPathIndex(1))
+        ) sorted
 
       val samples = {
         val samples0 = createLogisticSamplePoints(num, 100, actualThetas)
@@ -335,8 +344,8 @@ trait LogisticRegressionSpecs[M[+_]]
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
 
       val pointsString0 = "filesystem" + tmpFile.toString
-      val pointsString =
-        pointsString0.take(pointsString0.length - suffix.length)
+      val pointsString = pointsString0.take(
+        pointsString0.length - suffix.length)
 
       val input = makeDAG(pointsString)
 
@@ -353,32 +362,35 @@ trait LogisticRegressionSpecs[M[+_]]
             val SObject(fields) = elems(model)
             val SArray(arr) = fields("coefficients")
 
-            val SDecimal(theta1) = (arr(0): @unchecked) match {
-              case SObject(map) =>
-                (map("bar"): @unchecked) match {
-                  case SObject(map) =>
-                    (map("baz"): @unchecked) match {
-                      case SArray(elems) =>
-                        (elems(0): @unchecked) match {
-                          case SObject(obj) =>
-                            returnestimate(obj)
-                        }
-                    }
-                }
-            }
+            val SDecimal(theta1) =
+              (arr(0): @unchecked) match {
+                case SObject(map) =>
+                  (map("bar"): @unchecked) match {
+                    case SObject(map) =>
+                      (map("baz"): @unchecked) match {
+                        case SArray(elems) =>
+                          (elems(0): @unchecked) match {
+                            case SObject(obj) =>
+                              returnestimate(obj)
+                          }
+                      }
+                  }
+              }
 
-            val SDecimal(theta2) = (arr(0): @unchecked) match {
-              case SObject(map) =>
-                (map("foo"): @unchecked) match {
-                  case SObject(obj) =>
-                    returnestimate(obj)
-                }
-            }
+            val SDecimal(theta2) =
+              (arr(0): @unchecked) match {
+                case SObject(map) =>
+                  (map("foo"): @unchecked) match {
+                    case SObject(obj) =>
+                      returnestimate(obj)
+                  }
+              }
 
-            val SDecimal(theta0) = (arr(1): @unchecked) match {
-              case SObject(map) =>
-                returnestimate(map)
-            }
+            val SDecimal(theta0) =
+              (arr(1): @unchecked) match {
+                case SObject(map) =>
+                  returnestimate(map)
+              }
 
             List(theta0.toDouble, theta1.toDouble, theta2.toDouble)
           }
@@ -421,8 +433,10 @@ trait LogisticRegressionSpecs[M[+_]]
     "predict simple case" in {
       val line = Line(0, 0, "")
 
-      val input =
-        predictionInput(LogisticPrediction, "/hom/model1data", "/hom/model1")
+      val input = predictionInput(
+        LogisticPrediction,
+        "/hom/model1data",
+        "/hom/model1")
 
       val result0 = testEval(input)
 
@@ -497,8 +511,10 @@ trait LogisticRegressionSpecs[M[+_]]
     "predict case with repeated model names and arrays" in {
       val line = Line(0, 0, "")
 
-      val input =
-        predictionInput(LogisticPrediction, "/hom/model2data", "/hom/model2")
+      val input = predictionInput(
+        LogisticPrediction,
+        "/hom/model2data",
+        "/hom/model2")
 
       val result0 = testEval(input)
 

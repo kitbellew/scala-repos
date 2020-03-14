@@ -37,23 +37,25 @@ class EstimatorTest extends FunSuite {
 object EstimatorApp extends App {
   import com.twitter.conversions.storage._
 
-  val estimator = args match {
-    case Array("kalman", n, error) =>
-      new KalmanGaussianError(n.toInt, error.toDouble)
-    case Array("windowed", n, windows) =>
-      new WindowedMeans(
-        n.toInt,
-        windows.split(",") map { w =>
-          w.split(":") match {
-            case Array(w, i) => (w.toInt, i.toInt)
-            case _ =>
-              throw new IllegalArgumentException("bad weight, count pair " + w)
-          }
-        })
-    case Array("load", interval) =>
-      new LoadAverage(interval.toDouble)
-    case _ => throw new IllegalArgumentException("bad args ")
-  }
+  val estimator =
+    args match {
+      case Array("kalman", n, error) =>
+        new KalmanGaussianError(n.toInt, error.toDouble)
+      case Array("windowed", n, windows) =>
+        new WindowedMeans(
+          n.toInt,
+          windows.split(",") map { w =>
+            w.split(":") match {
+              case Array(w, i) => (w.toInt, i.toInt)
+              case _ =>
+                throw new IllegalArgumentException(
+                  "bad weight, count pair " + w)
+            }
+          })
+      case Array("load", interval) =>
+        new LoadAverage(interval.toDouble)
+      case _ => throw new IllegalArgumentException("bad args ")
+    }
 
   val lines = scala.io.Source.stdin.getLines().drop(1)
   val states =

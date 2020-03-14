@@ -476,16 +476,13 @@ trait MapTest {
 
     assertTrue(keySet.contains("THREE"))
 
-    val coll1 =
-      asJavaCollection(Set("ONE", "TWO", "THREE"))
+    val coll1 = asJavaCollection(Set("ONE", "TWO", "THREE"))
     assertTrue(keySet.containsAll(coll1))
 
-    val coll2 =
-      asJavaCollection(Set("ONE", "TWO", "THREE", "FOUR"))
+    val coll2 = asJavaCollection(Set("ONE", "TWO", "THREE", "FOUR"))
     assertFalse(keySet.containsAll(coll2))
 
-    val coll3 =
-      asJavaCollection(Set("ONE", "TWO", "THREE", null))
+    val coll3 = asJavaCollection(Set("ONE", "TWO", "THREE", null))
     assertFalse(keySet.containsAll(coll2))
 
     val nummp = factory.empty[Double, Double]

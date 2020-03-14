@@ -49,8 +49,15 @@ object RoundingMode {
   final val UNNECESSARY =
     new RoundingMode("UNNECESSARY", BigDecimal.ROUND_UNNECESSARY)
 
-  private val _values: Array[RoundingMode] =
-    Array(UP, DOWN, CEILING, FLOOR, HALF_UP, HALF_DOWN, HALF_EVEN, UNNECESSARY)
+  private val _values: Array[RoundingMode] = Array(
+    UP,
+    DOWN,
+    CEILING,
+    FLOOR,
+    HALF_UP,
+    HALF_DOWN,
+    HALF_EVEN,
+    UNNECESSARY)
 
   def values(): Array[RoundingMode] = _values.clone()
 

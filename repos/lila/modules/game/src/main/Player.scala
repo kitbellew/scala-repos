@@ -164,49 +164,51 @@ object Player {
   private val ratingRange = safeRange(0 to 4000, "rating") _
   private val ratingDiffRange = safeRange(-1000 to 1000, "ratingDiff") _
 
-  implicit val playerBSONHandler = new BSON[Builder] {
+  implicit val playerBSONHandler =
+    new BSON[Builder] {
 
-    import BSONFields._
+      import BSONFields._
 
-    def reads(r: BSON.Reader) =
-      color =>
-        id =>
-          userId =>
-            win =>
-              Player(
-                id = id,
-                color = color,
-                aiLevel = r intO aiLevel,
-                isWinner = win,
-                isOfferingDraw = r boolD isOfferingDraw,
-                isOfferingRematch = r boolD isOfferingRematch,
-                lastDrawOffer = r intO lastDrawOffer,
-                proposeTakebackAt = r intD proposeTakebackAt,
-                userId = userId,
-                rating = r intO rating flatMap ratingRange(userId),
-                ratingDiff = r intO ratingDiff flatMap ratingDiffRange(userId),
-                provisional = r boolD provisional,
-                blurs = r intD blurs,
-                holdAlert = r.getO[HoldAlert](holdAlert),
-                berserk = r boolD berserk,
-                name = r strO name
-              )
+      def reads(r: BSON.Reader) =
+        color =>
+          id =>
+            userId =>
+              win =>
+                Player(
+                  id = id,
+                  color = color,
+                  aiLevel = r intO aiLevel,
+                  isWinner = win,
+                  isOfferingDraw = r boolD isOfferingDraw,
+                  isOfferingRematch = r boolD isOfferingRematch,
+                  lastDrawOffer = r intO lastDrawOffer,
+                  proposeTakebackAt = r intD proposeTakebackAt,
+                  userId = userId,
+                  rating = r intO rating flatMap ratingRange(userId),
+                  ratingDiff =
+                    r intO ratingDiff flatMap ratingDiffRange(userId),
+                  provisional = r boolD provisional,
+                  blurs = r intD blurs,
+                  holdAlert = r.getO[HoldAlert](holdAlert),
+                  berserk = r boolD berserk,
+                  name = r strO name
+                )
 
-    def writes(w: BSON.Writer, o: Builder) =
-      o(chess.White)("0000")(none)(none) |> { p =>
-        BSONDocument(
-          aiLevel -> p.aiLevel,
-          isOfferingDraw -> w.boolO(p.isOfferingDraw),
-          isOfferingRematch -> w.boolO(p.isOfferingRematch),
-          lastDrawOffer -> p.lastDrawOffer,
-          proposeTakebackAt -> w.intO(p.proposeTakebackAt),
-          rating -> p.rating,
-          ratingDiff -> p.ratingDiff,
-          provisional -> w.boolO(p.provisional),
-          blurs -> w.intO(p.blurs),
-          holdAlert -> p.holdAlert,
-          name -> p.name
-        )
-      }
-  }
+      def writes(w: BSON.Writer, o: Builder) =
+        o(chess.White)("0000")(none)(none) |> { p =>
+          BSONDocument(
+            aiLevel -> p.aiLevel,
+            isOfferingDraw -> w.boolO(p.isOfferingDraw),
+            isOfferingRematch -> w.boolO(p.isOfferingRematch),
+            lastDrawOffer -> p.lastDrawOffer,
+            proposeTakebackAt -> w.intO(p.proposeTakebackAt),
+            rating -> p.rating,
+            ratingDiff -> p.ratingDiff,
+            provisional -> w.boolO(p.provisional),
+            blurs -> w.intO(p.blurs),
+            holdAlert -> p.holdAlert,
+            name -> p.name
+          )
+        }
+    }
 }

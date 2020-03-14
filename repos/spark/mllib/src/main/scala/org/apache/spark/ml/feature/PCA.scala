@@ -207,28 +207,32 @@ object PCAModel extends MLReadable[PCAModel] {
 
       // explainedVariance field is not present in Spark <= 1.6
       val versionRegex = "([0-9]+)\\.([0-9]+).*".r
-      val hasExplainedVariance = metadata.sparkVersion match {
-        case versionRegex(major, minor) =>
-          (major.toInt >= 2 || (major.toInt == 1 && minor.toInt > 6))
-        case _ => false
-      }
+      val hasExplainedVariance =
+        metadata.sparkVersion match {
+          case versionRegex(major, minor) =>
+            (major.toInt >= 2 || (major.toInt == 1 && minor.toInt > 6))
+          case _ => false
+        }
 
       val dataPath = new Path(path, "data").toString
-      val model = if (hasExplainedVariance) {
-        val Row(pc: DenseMatrix, explainedVariance: DenseVector) =
-          sqlContext.read
+      val model =
+        if (hasExplainedVariance) {
+          val Row(pc: DenseMatrix, explainedVariance: DenseVector) =
+            sqlContext.read
+              .parquet(dataPath)
+              .select("pc", "explainedVariance")
+              .head()
+          new PCAModel(metadata.uid, pc, explainedVariance)
+        } else {
+          val Row(pc: DenseMatrix) = sqlContext.read
             .parquet(dataPath)
-            .select("pc", "explainedVariance")
+            .select("pc")
             .head()
-        new PCAModel(metadata.uid, pc, explainedVariance)
-      } else {
-        val Row(pc: DenseMatrix) =
-          sqlContext.read.parquet(dataPath).select("pc").head()
-        new PCAModel(
-          metadata.uid,
-          pc,
-          Vectors.dense(Array.empty[Double]).asInstanceOf[DenseVector])
-      }
+          new PCAModel(
+            metadata.uid,
+            pc,
+            Vectors.dense(Array.empty[Double]).asInstanceOf[DenseVector])
+        }
       DefaultParamsReader.getAndSetParams(model, metadata)
       model
     }

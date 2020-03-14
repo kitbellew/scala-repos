@@ -302,8 +302,7 @@ class PrintWriterTest {
       _closed = true
     }
 
-    override def append(c: Char): StringWriter =
-      writeOp(super.append(c))
+    override def append(c: Char): StringWriter = writeOp(super.append(c))
 
     override def append(csq: CharSequence): StringWriter =
       writeOp(super.append(csq))
@@ -311,17 +310,14 @@ class PrintWriterTest {
     override def append(csq: CharSequence, start: Int, end: Int): StringWriter =
       writeOp(super.append(csq, start, end))
 
-    override def write(c: Int): Unit =
-      writeOp(super.write(c))
+    override def write(c: Int): Unit = writeOp(super.write(c))
 
-    override def write(cbuf: Array[Char]): Unit =
-      writeOp(super.write(cbuf))
+    override def write(cbuf: Array[Char]): Unit = writeOp(super.write(cbuf))
 
     override def write(cbuf: Array[Char], off: Int, len: Int): Unit =
       writeOp(super.write(cbuf, off, len))
 
-    override def write(str: String): Unit =
-      writeOp(super.write(str))
+    override def write(str: String): Unit = writeOp(super.write(str))
 
     override def write(str: String, off: Int, len: Int): Unit =
       writeOp(super.write(str, off, len))

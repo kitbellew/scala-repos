@@ -64,9 +64,8 @@ private[hive] class HiveFunctionRegistry(
     Try(underlying.lookupFunction(name, children)).getOrElse {
       // We only look it up to see if it exists, but do not include it in the HiveUDF since it is
       // not always serializable.
-      val functionInfo: FunctionInfo =
-        Option(getFunctionInfo(name.toLowerCase))
-          .getOrElse(throw new AnalysisException(s"undefined function $name"))
+      val functionInfo: FunctionInfo = Option(getFunctionInfo(name.toLowerCase))
+        .getOrElse(throw new AnalysisException(s"undefined function $name"))
 
       val functionClassName = functionInfo.getFunctionClass.getName
 
@@ -161,8 +160,8 @@ private[hive] class HiveFunctionRegistry(
       .lookupFunction(name)
       .orElse(Try {
         val info = getFunctionInfo(name)
-        val annotation =
-          info.getFunctionClass.getAnnotation(classOf[Description])
+        val annotation = info.getFunctionClass.getAnnotation(
+          classOf[Description])
         if (annotation != null) {
           Some(
             new ExpressionInfo(
@@ -199,9 +198,8 @@ private[hive] case class HiveSimpleUDF(
   lazy val function = funcWrapper.createFunction[UDF]()
 
   @transient
-  private lazy val method =
-    function.getResolver.getEvalMethod(
-      children.map(_.dataType.toTypeInfo).asJava)
+  private lazy val method = function.getResolver.getEvalMethod(
+    children.map(_.dataType.toTypeInfo).asJava)
 
   @transient
   private lazy val arguments = children.map(toInspector).toArray
@@ -222,8 +220,8 @@ private[hive] case class HiveSimpleUDF(
   override lazy val dataType = javaClassToDataType(method.getReturnType)
 
   @transient
-  lazy val returnInspector =
-    ObjectInspectorFactory.getReflectionObjectInspector(
+  lazy val returnInspector = ObjectInspectorFactory
+    .getReflectionObjectInspector(
       method.getGenericReturnType(),
       ObjectInspectorOptions.JAVA)
 
@@ -236,8 +234,11 @@ private[hive] case class HiveSimpleUDF(
 
   // TODO: Finish input output types.
   override def eval(input: InternalRow): Any = {
-    val inputs =
-      wrap(children.map(c => c.eval(input)), arguments, cached, inputDataTypes)
+    val inputs = wrap(
+      children.map(c => c.eval(input)),
+      arguments,
+      cached,
+      inputDataTypes)
     val ret = FunctionRegistry.invoke(
       method,
       function,
@@ -366,8 +367,8 @@ private[hive] case class HiveGenericUDTF(
   protected lazy val inputInspectors = children.map(toInspector)
 
   @transient
-  protected lazy val outputInspector =
-    function.initialize(inputInspectors.toArray)
+  protected lazy val outputInspector = function.initialize(
+    inputInspectors.toArray)
 
   @transient
   protected lazy val udtInput = new Array[AnyRef](children.length)
@@ -375,8 +376,8 @@ private[hive] case class HiveGenericUDTF(
   @transient
   protected lazy val collector = new UDTFCollector
 
-  override lazy val elementTypes =
-    outputInspector.getAllStructFieldRefs.asScala.map { field =>
+  override lazy val elementTypes = outputInspector.getAllStructFieldRefs.asScala
+    .map { field =>
       (
         inspectorToDataType(field.getFieldObjectInspector),
         true,

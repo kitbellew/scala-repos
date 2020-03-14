@@ -55,8 +55,9 @@ class ProducerFeatureTest
       val producer = system.actorOf(
         Props(new TestProducer("direct:producer-test-2", true)),
         name = "01-direct-producer-2")
-      val message =
-        CamelMessage("test", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "test",
+        Map(CamelMessage.MessageExchangeId -> "123"))
       producer.tell(message, testActor)
       expectMsg(
         CamelMessage(
@@ -92,8 +93,9 @@ class ProducerFeatureTest
         Props(new TestProducer("direct:producer-test-2")),
         testActor)
       val producer = receiveOne(timeoutDuration).asInstanceOf[ActorRef]
-      val message =
-        CamelMessage("fail", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "fail",
+        Map(CamelMessage.MessageExchangeId -> "123"))
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
         expectMsgPF(timeoutDuration) {
@@ -133,8 +135,9 @@ class ProducerFeatureTest
       val producer = system.actorOf(
         Props(new TestProducer("direct:producer-test-3")),
         name = "10-direct-producer-test-3")
-      val message =
-        CamelMessage("test", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "test",
+        Map(CamelMessage.MessageExchangeId -> "123"))
       producer.tell(message, testActor)
       expectMsg(
         CamelMessage(
@@ -146,8 +149,9 @@ class ProducerFeatureTest
       val producer = system.actorOf(
         Props(new TestProducer("direct:producer-test-3")),
         name = "11-direct-producer-test-3-receive-failure")
-      val message =
-        CamelMessage("fail", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "fail",
+        Map(CamelMessage.MessageExchangeId -> "123"))
 
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
@@ -166,8 +170,9 @@ class ProducerFeatureTest
       val producer = system.actorOf(
         Props(new TestForwarder("direct:producer-test-2", target)),
         name = "12-direct-producer-test-2-forwarder")
-      val message =
-        CamelMessage("test", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "test",
+        Map(CamelMessage.MessageExchangeId -> "123"))
       producer.tell(message, testActor)
       expectMsg(
         CamelMessage(
@@ -182,8 +187,9 @@ class ProducerFeatureTest
       val producer = system.actorOf(
         Props(new TestForwarder("direct:producer-test-2", target)),
         name = "13-direct-producer-test-2-forwarder-failure")
-      val message =
-        CamelMessage("fail", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "fail",
+        Map(CamelMessage.MessageExchangeId -> "123"))
 
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
@@ -233,8 +239,9 @@ class ProducerFeatureTest
       val producer = system.actorOf(
         Props(new TestForwarder("direct:producer-test-3", target)),
         name = "16-direct-producer-test-3-to-replying-actor")
-      val message =
-        CamelMessage("test", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "test",
+        Map(CamelMessage.MessageExchangeId -> "123"))
 
       producer.tell(message, testActor)
       expectMsg(
@@ -251,8 +258,9 @@ class ProducerFeatureTest
         Props(new TestForwarder("direct:producer-test-3", target)),
         name = "17-direct-producer-test-3-forward-failure")
 
-      val message =
-        CamelMessage("fail", Map(CamelMessage.MessageExchangeId -> "123"))
+      val message = CamelMessage(
+        "fail",
+        Map(CamelMessage.MessageExchangeId -> "123"))
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
         expectMsgPF(timeoutDuration) {

@@ -115,9 +115,10 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
   }
 
   test("HasRemoteInfo exception contains remote info in message") {
-    val exc = new HasRemoteInfo {
-      override def exceptionMessage = "foo"
-    }
+    val exc =
+      new HasRemoteInfo {
+        override def exceptionMessage = "foo"
+      }
     val traceId = TraceId(None, None, SpanId(1L), None)
     val downstreamAddr = new InetSocketAddress("1.2.3.4", 100)
     val downstreamId = "downstream"
@@ -138,11 +139,12 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
   }
 
   test("NoBrokersAvailableException includes dtabs in error message") {
-    val ex = new NoBrokersAvailableException(
-      "/s/cool/story",
-      Dtab.base,
-      Dtab.read("/foo=>/$/com.twitter.butt")
-    )
+    val ex =
+      new NoBrokersAvailableException(
+        "/s/cool/story",
+        Dtab.base,
+        Dtab.read("/foo=>/$/com.twitter.butt")
+      )
 
     assert(
       ex.getMessage ==

@@ -235,8 +235,7 @@ object StreamLayout {
         that: Module,
         from: OutPort,
         to: InPort,
-        f: (A, B) ⇒ C): Module =
-      this.compose(that, f).wire(from, to)
+        f: (A, B) ⇒ C): Module = this.compose(that, f).wire(from, to)
 
     /**
       * Creates a new Module based on the current Module but with
@@ -1105,8 +1104,7 @@ private[stream] abstract class MaterializerSession(
 
   protected def mergeAttributes(
       parent: Attributes,
-      current: Attributes): Attributes =
-    parent and current
+      current: Attributes): Attributes = parent and current
 
   def registerSrc(ms: MaterializedValueSource[Any]): Unit = {
     if (MaterializerSession.Debug)
@@ -1127,8 +1125,9 @@ private[stream] abstract class MaterializerSession(
         f"entering module [${System.identityHashCode(module)}%08x] (${Logging.simpleName(module)})")
 
     for (submodule ← module.subModules) {
-      val subEffectiveAttributes =
-        mergeAttributes(effectiveAttributes, submodule.attributes)
+      val subEffectiveAttributes = mergeAttributes(
+        effectiveAttributes,
+        submodule.attributes)
       submodule match {
         case atomic: AtomicModule ⇒
           materializeAtomic(atomic, subEffectiveAttributes, materializedValues)
@@ -1189,15 +1188,16 @@ private[stream] abstract class MaterializerSession(
       spaces: Int): Any = {
     if (MaterializerSession.Debug)
       println(" " * spaces + matNode)
-    val ret = matNode match {
-      case Atomic(m) ⇒ matVal.get(m)
-      case Combine(f, d1, d2) ⇒
-        f(
-          resolveMaterialized(d1, matVal, spaces + 2),
-          resolveMaterialized(d2, matVal, spaces + 2))
-      case Transform(f, d) ⇒ f(resolveMaterialized(d, matVal, spaces + 2))
-      case Ignore ⇒ NotUsed
-    }
+    val ret =
+      matNode match {
+        case Atomic(m) ⇒ matVal.get(m)
+        case Combine(f, d1, d2) ⇒
+          f(
+            resolveMaterialized(d1, matVal, spaces + 2),
+            resolveMaterialized(d2, matVal, spaces + 2))
+        case Transform(f, d) ⇒ f(resolveMaterialized(d, matVal, spaces + 2))
+        case Ignore ⇒ NotUsed
+      }
     if (MaterializerSession.Debug)
       println(" " * spaces + s"result = $ret")
     matValSrc.remove(matNode) match {

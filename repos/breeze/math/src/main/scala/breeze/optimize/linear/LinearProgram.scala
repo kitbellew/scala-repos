@@ -312,9 +312,10 @@ object LinearProgram {
     def maximize(lp: LinearProgram)(objective: lp.Problem): lp.Result = {
       import lp._
 
-      val obj = new LinearObjectiveFunction(
-        objective.objective.coefficients.toDenseVector.data,
-        objective.objective.scalarComponent)
+      val obj =
+        new LinearObjectiveFunction(
+          objective.objective.coefficients.toDenseVector.data,
+          objective.objective.scalarComponent)
 
       val constraintSet = buildConstraints(lp)(objective)
 
@@ -326,9 +327,10 @@ object LinearProgram {
     def minimize(lp: LinearProgram)(objective: lp.Problem): lp.Result = {
       import lp._
 
-      val obj = new LinearObjectiveFunction(
-        objective.objective.coefficients.toDenseVector.data,
-        objective.objective.scalarComponent)
+      val obj =
+        new LinearObjectiveFunction(
+          objective.objective.coefficients.toDenseVector.data,
+          objective.objective.scalarComponent)
 
       val constraintSet = buildConstraints(lp)(objective)
 

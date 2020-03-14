@@ -88,28 +88,30 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
   def getQuickNavigateInfo(
       element: PsiElement,
       originalElement: PsiElement): String = {
-    val substitutor = originalElement match {
-      case ref: ScReferenceElement =>
-        ref.bind() match {
-          case Some(ScalaResolveResult(_, subst)) => subst
-          case _                                  => ScSubstitutor.empty
-        }
-      case _ => ScSubstitutor.empty
-    }
+    val substitutor =
+      originalElement match {
+        case ref: ScReferenceElement =>
+          ref.bind() match {
+            case Some(ScalaResolveResult(_, subst)) => subst
+            case _                                  => ScSubstitutor.empty
+          }
+        case _ => ScSubstitutor.empty
+      }
 
-    val text = element match {
-      case clazz: ScTypeDefinition => generateClassInfo(clazz, substitutor)
-      case function: ScFunction    => generateFunctionInfo(function, substitutor)
-      case value: ScNamedElement
-          if ScalaPsiUtil.nameContext(value).isInstanceOf[ScValue]
-            || ScalaPsiUtil.nameContext(value).isInstanceOf[ScVariable] =>
-        generateValueInfo(value, substitutor)
-      case alias: ScTypeAlias => generateTypeAliasInfo(alias, substitutor)
-      case parameter: ScParameter =>
-        generateParameterInfo(parameter, substitutor)
-      case b: ScBindingPattern => generateBindingPatternInfo(b, substitutor)
-      case _                   => null
-    }
+    val text =
+      element match {
+        case clazz: ScTypeDefinition => generateClassInfo(clazz, substitutor)
+        case function: ScFunction    => generateFunctionInfo(function, substitutor)
+        case value: ScNamedElement
+            if ScalaPsiUtil.nameContext(value).isInstanceOf[ScValue]
+              || ScalaPsiUtil.nameContext(value).isInstanceOf[ScVariable] =>
+          generateValueInfo(value, substitutor)
+        case alias: ScTypeAlias => generateTypeAliasInfo(alias, substitutor)
+        case parameter: ScParameter =>
+          generateParameterInfo(parameter, substitutor)
+        case b: ScBindingPattern => generateBindingPatternInfo(b, substitutor)
+        case _                   => null
+      }
 
     if (text != null)
       text.replace("<", "&lt;")
@@ -337,12 +339,13 @@ object ScalaDocumentationProvider {
     "#org.jetbrains.plugins.scala.editor.documentationProvider.ScalaDocumentationProvider")
 
   private def debugMessage(msg: String, elem: PsiElement) {
-    val footer = if (!elem.isValid) {
-      s"[Invalid Element: ${elem.getNode} ${elem.getClass.getName}]"
-    } else if (elem.getContainingFile == null) {
-      s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: NULL]"
-    } else
-      s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: ${elem.getContainingFile.getName}] [Language: ${elem.getContainingFile.getLanguage}]"
+    val footer =
+      if (!elem.isValid) {
+        s"[Invalid Element: ${elem.getNode} ${elem.getClass.getName}]"
+      } else if (elem.getContainingFile == null) {
+        s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: NULL]"
+      } else
+        s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: ${elem.getContainingFile.getName}] [Language: ${elem.getContainingFile.getLanguage}]"
 
     LOG debug s"[ScalaDocProvider] [ $msg ] $footer"
   }
@@ -389,12 +392,13 @@ object ScalaDocumentationProvider {
             c.getTags.filter(_.getName == MyScaladocParsing.DEFINE_TAG) map {
               case tag: ScDocTag =>
                 val vEl = tag.getValueElement
-                val a = (
-                  if (vEl != null)
-                    vEl.getText
-                  else
-                    "",
-                  tag.getAllText(handler).trim)
+                val a =
+                  (
+                    if (vEl != null)
+                      vEl.getText
+                    else
+                      "",
+                    tag.getAllText(handler).trim)
 
                 if (a._1 != "")
                   myCache += a
@@ -482,10 +486,11 @@ object ScalaDocumentationProvider {
       elem: ScTypedDefinition,
       typeToString: ScType => String): String = {
     val buffer: StringBuilder = new StringBuilder(": ")
-    val typez = elem match {
-      case fun: ScFunction => fun.returnType.getOrAny
-      case _               => elem.getType(TypingContext.empty).getOrAny
-    }
+    val typez =
+      elem match {
+        case fun: ScFunction => fun.returnType.getOrAny
+        case _               => elem.getType(TypingContext.empty).getOrAny
+      }
     buffer.append(typeToString(typez))
     buffer.toString()
   }
@@ -595,9 +600,8 @@ object ScalaDocumentationProvider {
             .append(paramText.substring(0, paramText.lastIndexOf("\n") + 1))
         } else if (inheritedTParams.contains("<" + tparam + ">")) {
           val paramTag = inheritedTParams.get("<" + tparam.name + ">").get
-          val descriptionText =
-            paramTag.getText.substring(
-              paramTag.getValueElement.getTextOffset + paramTag.getValueElement.getTextLength)
+          val descriptionText = paramTag.getText.substring(
+            paramTag.getValueElement.getTextOffset + paramTag.getValueElement.getTextLength)
           val parameterName = paramTag.getValueElement.getText
 
           buffer
@@ -836,8 +840,13 @@ object ScalaDocumentationProvider {
         }
       case None => ""
     })
-    val modifiers =
-      Array("abstract", "final", "sealed", "implicit", "lazy", "override")
+    val modifiers = Array(
+      "abstract",
+      "final",
+      "sealed",
+      "implicit",
+      "lazy",
+      "override")
     for (modifier <- modifiers if elem.hasModifierPropertyScala(modifier))
       buffer.append(modifier + " ")
     buffer.toString()
@@ -895,48 +904,51 @@ object ScalaDocumentationProvider {
           else
             x.getText
 
-        val text = elem match {
-          case clazz: ScClass =>
-            "\nclass A {\n " + xText + " \npublic " + getTypeParams(
-              clazz) + "void f" +
-              getParams(clazz) + " {\n}\n}"
-          case typeAlias: ScTypeAlias =>
-            xText + "\n class A" + getTypeParams(typeAlias) + " {}"
-          case _: ScTypeDefinition => xText + "\nclass A {\n }"
-          case f: ScFunction =>
-            "class A {\n" + xText + "\npublic " + getTypeParams(
-              f) + "int f" + getParams(f) + " {}\n}"
-          case m: PsiMethod =>
-            "class A {\n" + m.getText + "\n}"
-          case _ => xText + "\nclass A"
-        }
+        val text =
+          elem match {
+            case clazz: ScClass =>
+              "\nclass A {\n " + xText + " \npublic " + getTypeParams(
+                clazz) + "void f" +
+                getParams(clazz) + " {\n}\n}"
+            case typeAlias: ScTypeAlias =>
+              xText + "\n class A" + getTypeParams(typeAlias) + " {}"
+            case _: ScTypeDefinition => xText + "\nclass A {\n }"
+            case f: ScFunction =>
+              "class A {\n" + xText + "\npublic " + getTypeParams(
+                f) + "int f" + getParams(f) + " {}\n}"
+            case m: PsiMethod =>
+              "class A {\n" + m.getText + "\n}"
+            case _ => xText + "\nclass A"
+          }
         val dummyFile = PsiFileFactory
           .getInstance(elem.getProject)
           .createFileFromText("dummy", StdFileTypes.JAVA, text)
           .asInstanceOf[PsiJavaFile]
-        val javadoc: String = elem match {
-          case _: ScFunction | _: ScClass =>
-            JavaDocumentationProvider.generateExternalJavadoc(
-              dummyFile.getClasses.apply(0).getAllMethods.apply(0))
-          case _: ScTypeDefinition | _: ScTypeAlias =>
-            JavaDocumentationProvider.generateExternalJavadoc(
-              dummyFile.getClasses.apply(0))
-          case _: PsiMethod =>
-            JavaDocumentationProvider.generateExternalJavadoc(
-              dummyFile.getClasses.apply(0).getAllMethods.apply(0))
-          case _ =>
-            JavaDocumentationProvider.generateExternalJavadoc(
-              dummyFile.getClasses.apply(0))
-        }
-        val (s1, s2) = elem.containingClass match {
-          case e: PsiClass if withDescription =>
-            (
-              "<b>Description copied from class: </b><a href=\"psi_element://" +
-                escapeHtml(e.qualifiedName) + "\"><code>" + escapeHtml(
-                e.name) + "</code></a><p>",
-              "</p>")
-          case _ => ("", "")
-        }
+        val javadoc: String =
+          elem match {
+            case _: ScFunction | _: ScClass =>
+              JavaDocumentationProvider.generateExternalJavadoc(
+                dummyFile.getClasses.apply(0).getAllMethods.apply(0))
+            case _: ScTypeDefinition | _: ScTypeAlias =>
+              JavaDocumentationProvider.generateExternalJavadoc(
+                dummyFile.getClasses.apply(0))
+            case _: PsiMethod =>
+              JavaDocumentationProvider.generateExternalJavadoc(
+                dummyFile.getClasses.apply(0).getAllMethods.apply(0))
+            case _ =>
+              JavaDocumentationProvider.generateExternalJavadoc(
+                dummyFile.getClasses.apply(0))
+          }
+        val (s1, s2) =
+          elem.containingClass match {
+            case e: PsiClass if withDescription =>
+              (
+                "<b>Description copied from class: </b><a href=\"psi_element://" +
+                  escapeHtml(e.qualifiedName) + "\"><code>" + escapeHtml(
+                  e.name) + "</code></a><p>",
+                "</p>")
+            case _ => ("", "")
+          }
         s1 + (elem match {
           case _: ScFunction | _: ScTypeAlias | _: PsiMethod |
               _: ScTypeDefinition | _: ScPatternDefinition =>
@@ -1032,13 +1044,14 @@ object ScalaDocumentationProvider {
                 result.append("<dl><dt><b>See Also:</b></dt>")
 
               case MyScaladocParsing.INHERITDOC_TAG =>
-                val inherited = element.getParent.getParent.getParent match {
-                  case fun: ScFunction =>
-                    (fun.superMethod map (_.getDocComment)).orNull
-                  case clazz: ScTemplateDefinition =>
-                    (clazz.supers.headOption map (_.getDocComment)).orNull
-                  case _ => null
-                }
+                val inherited =
+                  element.getParent.getParent.getParent match {
+                    case fun: ScFunction =>
+                      (fun.superMethod map (_.getDocComment)).orNull
+                    case clazz: ScTemplateDefinition =>
+                      (clazz.supers.headOption map (_.getDocComment)).orNull
+                    case _ => null
+                  }
 
                 if (inherited != null) {
                   val (inheritedBody, _) =
@@ -1155,25 +1168,27 @@ object ScalaDocumentationProvider {
   private def replaceWikiWithTags(comment: PsiDocComment): PsiDocComment = {
     if (!comment.isInstanceOf[ScDocComment])
       return comment
-    val macroFinder = new MacroFinderImpl(
-      comment.asInstanceOf[ScDocComment],
-      { element =>
-        val a = getWikiTextRepresentation(new MacroFinderDummy)(element)
-        a._1.result()
-      })
+    val macroFinder =
+      new MacroFinderImpl(
+        comment.asInstanceOf[ScDocComment],
+        { element =>
+          val a = getWikiTextRepresentation(new MacroFinderDummy)(element)
+          a._1.result()
+        })
 
     val (commentBody, tagsPart) =
       getWikiTextRepresentation(macroFinder)(comment)
-    val scalaComment = ScalaPsiElementFactory
-      .createScalaFile(
-        commentBody
-          .append("<br/>\n")
-          .append(tagsPart)
-          .toString() + " class a {}",
-        comment.getManager)
-      .typeDefinitions
-      .head
-      .getDocComment
+    val scalaComment =
+      ScalaPsiElementFactory
+        .createScalaFile(
+          commentBody
+            .append("<br/>\n")
+            .append(tagsPart)
+            .toString() + " class a {}",
+          comment.getManager)
+        .typeDefinitions
+        .head
+        .getDocComment
 
     scalaComment
   }
@@ -1282,10 +1297,11 @@ object ScalaDocumentationProvider {
   }
 
   def generateValueInfo(field: ScNamedElement, subst: ScSubstitutor): String = {
-    val member = ScalaPsiUtil.nameContext(field) match {
-      case x: ScMember => x
-      case _           => return null
-    }
+    val member =
+      ScalaPsiUtil.nameContext(field) match {
+        case x: ScMember => x
+        case _           => return null
+      }
     val buffer = new StringBuilder
     buffer.append(getMemberHeader(member))
     buffer.append(
@@ -1333,8 +1349,8 @@ object ScalaDocumentationProvider {
     val buffer = new StringBuilder
     buffer.append("Pattern: ")
     buffer.append(binding.name)
-    val typez =
-      subst.subst(subst.subst(binding.getType(TypingContext.empty).getOrAny))
+    val typez = subst.subst(
+      subst.subst(binding.getType(TypingContext.empty).getOrAny))
     if (typez != null)
       buffer.append(": " + ScType.presentableText(typez))
 
@@ -1365,13 +1381,15 @@ object ScalaDocumentationProvider {
   def generateParameterInfo(
       parameter: ScParameter,
       subst: ScSubstitutor): String = {
-    val defaultText = s"${parameter.name}: ${ScType.presentableText(
-      subst.subst(parameter.getType(TypingContext.empty).getOrAny))}"
+    val defaultText =
+      s"${parameter.name}: ${ScType.presentableText(
+        subst.subst(parameter.getType(TypingContext.empty).getOrAny))}"
 
     (parameter match {
       case clParameter: ScClassParameter =>
-        val clazz =
-          PsiTreeUtil.getParentOfType(clParameter, classOf[ScTypeDefinition])
+        val clazz = PsiTreeUtil.getParentOfType(
+          clParameter,
+          classOf[ScTypeDefinition])
 
         if (clazz == null)
           defaultText

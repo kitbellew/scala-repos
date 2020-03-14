@@ -42,8 +42,8 @@ object ScalaSmartEnterProcessor {
 }
 
 class ScalaSmartEnterProcessor extends SmartEnterProcessor {
-  private final val SMART_ENTER_TIMESTAMP: Key[Long] =
-    Key.create("smartEnterOriginalTimestamp")
+  private final val SMART_ENTER_TIMESTAMP: Key[Long] = Key.create(
+    "smartEnterOriginalTimestamp")
 
   def process(project: Project, editor: Editor, psiFile: PsiFile) = {
     FeatureUsageTracker.getInstance.triggerFeatureUsed(
@@ -153,8 +153,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
         case _                                            => false
       }
 
-    val buffer =
-      scala.collection.mutable.ArrayBuffer((caret, doNotVisit(caret)))
+    val buffer = scala.collection.mutable
+      .ArrayBuffer((caret, doNotVisit(caret)))
     var idx = 0
 
     while (idx < buffer.size) {
@@ -180,15 +180,14 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
           .isInstanceOf[PsiArrayInitializerExpression])
       return null
 
-    var statementAtCaret: PsiElement =
-      PsiTreeUtil.getParentOfType(
-        atCaret,
-        classOf[ScPatternDefinition],
-        classOf[ScIfStmt],
-        classOf[ScWhileStmt],
-        classOf[ScForStatement],
-        classOf[ScCatchBlock],
-        classOf[ScMethodCall])
+    var statementAtCaret: PsiElement = PsiTreeUtil.getParentOfType(
+      atCaret,
+      classOf[ScPatternDefinition],
+      classOf[ScIfStmt],
+      classOf[ScWhileStmt],
+      classOf[ScForStatement],
+      classOf[ScCatchBlock],
+      classOf[ScMethodCall])
 
     if (statementAtCaret.isInstanceOf[PsiBlockStatement])
       return null

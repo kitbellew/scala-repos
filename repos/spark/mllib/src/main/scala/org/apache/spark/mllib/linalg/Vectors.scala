@@ -443,13 +443,14 @@ object Vectors {
       p >= 1.0,
       "To compute the p-norm of the vector, we require that you specify a p>=1. " +
         s"You specified p=$p.")
-    val values = vector match {
-      case DenseVector(vs)          => vs
-      case SparseVector(n, ids, vs) => vs
-      case v =>
-        throw new IllegalArgumentException(
-          "Do not support vector type " + v.getClass)
-    }
+    val values =
+      vector match {
+        case DenseVector(vs)          => vs
+        case SparseVector(n, ids, vs) => vs
+        case v =>
+          throw new IllegalArgumentException(
+            "Do not support vector type " + v.getClass)
+      }
     val size = values.length
 
     if (p == 1) {
@@ -913,16 +914,18 @@ class SparseVector @Since("1.0.0") (
     */
   private[spark] def slice(selectedIndices: Array[Int]): SparseVector = {
     var currentIdx = 0
-    val (sliceInds, sliceVals) = selectedIndices.flatMap { origIdx =>
-      val iIdx = java.util.Arrays.binarySearch(this.indices, origIdx)
-      val i_v = if (iIdx >= 0) {
-        Iterator((currentIdx, this.values(iIdx)))
-      } else {
-        Iterator()
-      }
-      currentIdx += 1
-      i_v
-    }.unzip
+    val (sliceInds, sliceVals) =
+      selectedIndices.flatMap { origIdx =>
+        val iIdx = java.util.Arrays.binarySearch(this.indices, origIdx)
+        val i_v =
+          if (iIdx >= 0) {
+            Iterator((currentIdx, this.values(iIdx)))
+          } else {
+            Iterator()
+          }
+        currentIdx += 1
+        i_v
+      }.unzip
     new SparseVector(
       selectedIndices.length,
       sliceInds.toArray,

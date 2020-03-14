@@ -32,9 +32,10 @@ trait Cozip[F[_]] { self =>
       cozip(_) map (cozip(_) map (cozip(_) map (cozip(_) map (cozip(_))))))
 
   ////
-  val cozipSyntax = new scalaz.syntax.CozipSyntax[F] {
-    def F = Cozip.this
-  }
+  val cozipSyntax =
+    new scalaz.syntax.CozipSyntax[F] {
+      def F = Cozip.this
+    }
 }
 
 object Cozip {

@@ -25,8 +25,8 @@ class DeploymentsResourceTest
     Given("An unauthenticated request")
     auth.authenticated = false
     val req = auth.request
-    val targetGroup =
-      Group.empty.copy(apps = Set(AppDefinition(PathId("/test"))))
+    val targetGroup = Group.empty
+      .copy(apps = Set(AppDefinition(PathId("/test"))))
     val deployment = DeploymentStepInfo(
       DeploymentPlan(Group.empty, targetGroup),
       DeploymentStep(Seq.empty),
@@ -49,8 +49,8 @@ class DeploymentsResourceTest
     auth.authenticated = true
     auth.authorized = false
     val req = auth.request
-    val targetGroup =
-      Group.empty.copy(apps = Set(AppDefinition(PathId("/test"))))
+    val targetGroup = Group.empty
+      .copy(apps = Set(AppDefinition(PathId("/test"))))
     val deployment = DeploymentStepInfo(
       DeploymentPlan(Group.empty, targetGroup),
       DeploymentStep(Seq.empty),

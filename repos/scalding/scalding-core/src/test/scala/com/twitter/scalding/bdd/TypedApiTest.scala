@@ -176,12 +176,13 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
             case (
                   (((name: String, gender: String), age: Int), income: Long),
                   smoker) =>
-              val lifeExpectancy = (gender, smoker) match {
-                case ("M", true)  => 68
-                case ("M", false) => 72
-                case (_, true)    => 76
-                case (_, false)   => 80
-              }
+              val lifeExpectancy =
+                (gender, smoker) match {
+                  case ("M", true)  => 68
+                  case ("M", false) => 72
+                  case (_, true)    => 76
+                  case (_, false)   => 80
+                }
 
               Some(
                 EstimatedContribution(

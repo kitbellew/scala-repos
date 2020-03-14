@@ -85,8 +85,10 @@ object BuildSummer {
         }
       }
     } else {
-      val softMemoryFlush =
-        storm.getOrElse(dag, node, DEFAULT_SOFT_MEMORY_FLUSH_PERCENT)
+      val softMemoryFlush = storm.getOrElse(
+        dag,
+        node,
+        DEFAULT_SOFT_MEMORY_FLUSH_PERCENT)
       logger.info(s"[$nodeName] softMemoryFlush : ${softMemoryFlush.get}")
 
       val flushFrequency = storm.getOrElse(dag, node, DEFAULT_FLUSH_FREQUENCY)
@@ -117,8 +119,10 @@ object BuildSummer {
         val asyncPoolSize = storm.getOrElse(dag, node, DEFAULT_ASYNC_POOL_SIZE)
         logger.info(s"[$nodeName] asyncPoolSize : ${asyncPoolSize.get}")
 
-        val valueCombinerCrushSize =
-          storm.getOrElse(dag, node, DEFAULT_VALUE_COMBINER_CACHE_SIZE)
+        val valueCombinerCrushSize = storm.getOrElse(
+          dag,
+          node,
+          DEFAULT_VALUE_COMBINER_CACHE_SIZE)
         logger.info(
           s"[$nodeName] valueCombinerCrushSize : ${valueCombinerCrushSize.get}")
 
@@ -129,20 +133,21 @@ object BuildSummer {
                 Map[K, V]] = {
             val executor = Executors.newFixedThreadPool(asyncPoolSize.get)
             val futurePool = FuturePool(executor)
-            val summer = new AsyncListSum[K, V](
-              BufferSize(cacheSize.lowerBound),
-              FlushFrequency(flushFrequency.get),
-              MemoryFlushPercent(softMemoryFlush.get),
-              memoryCounter,
-              timeoutCounter,
-              insertCounter,
-              insertFailCounter,
-              sizeCounter,
-              tupleInCounter,
-              tupleOutCounter,
-              futurePool,
-              Compact(false),
-              CompactionSize(0))
+            val summer =
+              new AsyncListSum[K, V](
+                BufferSize(cacheSize.lowerBound),
+                FlushFrequency(flushFrequency.get),
+                MemoryFlushPercent(softMemoryFlush.get),
+                memoryCounter,
+                timeoutCounter,
+                insertCounter,
+                insertFailCounter,
+                sizeCounter,
+                tupleInCounter,
+                tupleOutCounter,
+                futurePool,
+                Compact(false),
+                CompactionSize(0))
             summer.withCleanup(() => {
               Future {
                 executor.shutdown

@@ -28,8 +28,8 @@ class ReachingDefsTest extends LightCodeInsightFixtureTestCase {
   }
 
   def doTest() {
-    val input: java.util.List[String] =
-      TestUtils.readInput(getBasePath + getTestName(true) + ".test")
+    val input: java.util.List[String] = TestUtils.readInput(
+      getBasePath + getTestName(true) + ".test")
     myFixture.configureByText(ScalaFileType.SCALA_FILE_TYPE, input.get(0))
     val file: ScalaFile = myFixture.getFile.asInstanceOf[ScalaFile]
     val model: SelectionModel = myFixture.getEditor.getSelectionModel
@@ -53,10 +53,11 @@ class ReachingDefsTest extends LightCodeInsightFixtureTestCase {
 
     import org.jetbrains.plugins.scala.lang.psi.dataFlow.impl.reachingDefs.ReachingDefinitions._
 
-    val engine = new DfaEngine(
-      instructions,
-      ReachingDefinitionsInstance,
-      ReachingDefinitionsLattice)
+    val engine =
+      new DfaEngine(
+        instructions,
+        ReachingDefinitionsInstance,
+        ReachingDefinitionsLattice)
     val markup: mutable.Map[Instruction, Set[Instruction]] = engine.performDFA
 
     val cf: String = dumpDataFlow(markup)

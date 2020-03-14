@@ -27,12 +27,13 @@ class KafkaMetricsConfig(props: VerifiableProperties) {
     * Comma-separated list of reporter types. These classes should be on the
     * classpath and will be instantiated at run-time.
     */
-  val reporters =
-    CoreUtils.parseCsvList(props.getString("kafka.metrics.reporters", ""))
+  val reporters = CoreUtils.parseCsvList(
+    props.getString("kafka.metrics.reporters", ""))
 
   /**
     * The metrics polling interval (in seconds).
     */
-  val pollingIntervalSecs =
-    props.getInt("kafka.metrics.polling.interval.secs", 10)
+  val pollingIntervalSecs = props.getInt(
+    "kafka.metrics.polling.interval.secs",
+    10)
 }

@@ -35,10 +35,11 @@ object NeedsToBeAbstract extends AnnotatorPart[ScTemplateDefinition] {
     if (isAbstract(definition))
       return
 
-    val undefined = for {
-      member <- getMembersToImplement(definition, withOwn = true)
-      if !member.isInstanceOf[ScAliasMember] // See SCL-2887
-    } yield (member.getText, member.getParentNodeDelegate.getText)
+    val undefined =
+      for {
+        member <- getMembersToImplement(definition, withOwn = true)
+        if !member.isInstanceOf[ScAliasMember] // See SCL-2887
+      } yield (member.getText, member.getParentNodeDelegate.getText)
 
     if (undefined.nonEmpty) {
       val annotation = holder.createErrorAnnotation(

@@ -114,8 +114,8 @@ abstract class StatsSampleSingleMasterSpec
         ClusterSingletonManager.props(
           singletonProps = Props[StatsService],
           terminationMessage = PoisonPill,
-          settings =
-            ClusterSingletonManagerSettings(system).withRole("compute")),
+          settings = ClusterSingletonManagerSettings(system).withRole(
+            "compute")),
         name = "statsService"
       )
 

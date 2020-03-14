@@ -91,33 +91,34 @@ private[http] object Handshake {
           version.exists(_.hasVersion(CurrentWebSocketVersion)) &&
           key.exists(k ⇒ k.isValid)) {
 
-        val header = new UpgradeToWebSocketLowLevel {
-          def requestedProtocols: Seq[String] = clientSupportedSubprotocols
+        val header =
+          new UpgradeToWebSocketLowLevel {
+            def requestedProtocols: Seq[String] = clientSupportedSubprotocols
 
-          def handle(
-              handler: Either[
-                Graph[FlowShape[FrameEvent, FrameEvent], Any],
-                Graph[FlowShape[Message, Message], Any]],
-              subprotocol: Option[String]): HttpResponse = {
-            require(
-              subprotocol.forall(chosen ⇒
-                clientSupportedSubprotocols.contains(chosen)),
-              s"Tried to choose invalid subprotocol '$subprotocol' which wasn't offered by the client: [${requestedProtocols
-                .mkString(", ")}]"
-            )
-            buildResponse(key.get, handler, subprotocol)
+            def handle(
+                handler: Either[
+                  Graph[FlowShape[FrameEvent, FrameEvent], Any],
+                  Graph[FlowShape[Message, Message], Any]],
+                subprotocol: Option[String]): HttpResponse = {
+              require(
+                subprotocol.forall(chosen ⇒
+                  clientSupportedSubprotocols.contains(chosen)),
+                s"Tried to choose invalid subprotocol '$subprotocol' which wasn't offered by the client: [${requestedProtocols
+                  .mkString(", ")}]"
+              )
+              buildResponse(key.get, handler, subprotocol)
+            }
+
+            def handleFrames(
+                handlerFlow: Graph[FlowShape[FrameEvent, FrameEvent], Any],
+                subprotocol: Option[String]): HttpResponse =
+              handle(Left(handlerFlow), subprotocol)
+
+            override def handleMessages(
+                handlerFlow: Graph[FlowShape[Message, Message], Any],
+                subprotocol: Option[String] = None): HttpResponse =
+              handle(Right(handlerFlow), subprotocol)
           }
-
-          def handleFrames(
-              handlerFlow: Graph[FlowShape[FrameEvent, FrameEvent], Any],
-              subprotocol: Option[String]): HttpResponse =
-            handle(Left(handlerFlow), subprotocol)
-
-          override def handleMessages(
-              handlerFlow: Graph[FlowShape[Message, Message], Any],
-              subprotocol: Option[String] = None): HttpResponse =
-            handle(Right(handlerFlow), subprotocol)
-        }
         Some(header)
       } else
         None

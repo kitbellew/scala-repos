@@ -121,9 +121,10 @@ class TimerTest
   test("ScheduledThreadPoolTimer should cancel schedule(when)") {
     val timer = new ScheduledThreadPoolTimer
     val counter = new AtomicInteger(0)
-    val task = timer.schedule(Time.now + 200.millis) {
-      counter.incrementAndGet()
-    }
+    val task =
+      timer.schedule(Time.now + 200.millis) {
+        counter.incrementAndGet()
+      }
     task.cancel()
     Thread.sleep(1.seconds.inMillis)
     assert(counter.get() != 1)
@@ -138,12 +139,13 @@ class TimerTest
     var errors = 0
     var latch = new CountDownLatch(1)
 
-    val timer = new JavaTimer {
-      override def logError(t: Throwable) {
-        errors += 1
-        latch.countDown()
+    val timer =
+      new JavaTimer {
+        override def logError(t: Throwable) {
+          errors += 1
+          latch.countDown()
+        }
       }
-    }
 
     timer.schedule(Time.now) {
       throw new scala.MatchError("huh")
@@ -194,9 +196,10 @@ class TimerTest
   test("JavaTimer should cancel schedule(when)") {
     val timer = new JavaTimer
     val counter = new AtomicInteger(0)
-    val task = timer.schedule(Time.now + 20.millis) {
-      counter.incrementAndGet()
-    }
+    val task =
+      timer.schedule(Time.now + 20.millis) {
+        counter.incrementAndGet()
+      }
     task.cancel()
     Thread.sleep(1.seconds.inMillis)
     assert(counter.get() != 1)

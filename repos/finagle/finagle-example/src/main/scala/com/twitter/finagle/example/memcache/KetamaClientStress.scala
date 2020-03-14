@@ -20,20 +20,21 @@ import scala.language.reflectiveCalls
 
 object KetamaClientStress extends App {
 
-  private[this] val config = new {
-    val hosts: Flag[String] = flag("host", "localhost:11211", "host")
-    val replicas: Flag[String] = flag("replicas", "replicas")
-    val op: Flag[String] = flag("op", "set", "op")
-    val keysize: Flag[Int] = flag("keysize", 55, "keysize")
-    val valuesize: Flag[Int] = flag("valuesize", 1, "valuesize")
-    val numkeys: Flag[Int] = flag("numkeys", 1, "numkeys")
-    val rwRatio: Flag[Int] = flag("rwRatio", 99, "rwRatio")
-    val loadrate: Flag[Int] = flag("loadrate", 0, "loadrate")
-    val concurrency: Flag[Int] = flag("concurrency", 1, "concurrency")
-    val stats: Flag[Boolean] = flag("stats", true, "stats")
-    val tracing: Flag[Boolean] = flag("tracing", true, "tracing")
-    val cap: Flag[Int] = flag("cap", Int.MaxValue, "cap")
-  }
+  private[this] val config =
+    new {
+      val hosts: Flag[String] = flag("host", "localhost:11211", "host")
+      val replicas: Flag[String] = flag("replicas", "replicas")
+      val op: Flag[String] = flag("op", "set", "op")
+      val keysize: Flag[Int] = flag("keysize", 55, "keysize")
+      val valuesize: Flag[Int] = flag("valuesize", 1, "valuesize")
+      val numkeys: Flag[Int] = flag("numkeys", 1, "numkeys")
+      val rwRatio: Flag[Int] = flag("rwRatio", 99, "rwRatio")
+      val loadrate: Flag[Int] = flag("loadrate", 0, "loadrate")
+      val concurrency: Flag[Int] = flag("concurrency", 1, "concurrency")
+      val stats: Flag[Boolean] = flag("stats", true, "stats")
+      val tracing: Flag[Boolean] = flag("tracing", true, "tracing")
+      val cap: Flag[Int] = flag("cap", Int.MaxValue, "cap")
+    }
 
   private[this] val throughput_count = new AtomicLong
   private[this] val load_count = new AtomicLong
@@ -47,13 +48,14 @@ object KetamaClientStress extends App {
         proc(op, 0)
       }
     else if (qps > 0)
-      loadTask = timer.schedule(Time.now, 1.seconds) {
-        1 to qps foreach { _ =>
-          op() ensure {
-            throughput_count.incrementAndGet()
+      loadTask =
+        timer.schedule(Time.now, 1.seconds) {
+          1 to qps foreach { _ =>
+            op() ensure {
+              throughput_count.incrementAndGet()
+            }
           }
         }
-      }
     else
       1 to (qps * -1) foreach { _ =>
         proc(op, 0)
@@ -99,11 +101,12 @@ object KetamaClientStress extends App {
     println(builder)
 
     // the test keys/values
-    val keyValueSet: Seq[(String, Buf)] = List.fill(config.numkeys()) {
-      (
-        randomString(config.keysize()),
-        Buf.Utf8(randomString(config.valuesize())))
-    }
+    val keyValueSet: Seq[(String, Buf)] =
+      List.fill(config.numkeys()) {
+        (
+          randomString(config.keysize()),
+          Buf.Utf8(randomString(config.valuesize())))
+      }
 
     def nextKeyValue: (String, Buf) =
       keyValueSet((load_count.getAndIncrement() % config.numkeys()).toInt)
@@ -114,10 +117,11 @@ object KetamaClientStress extends App {
     adminService.start()
 
     val primaryPool = createCluster(config.hosts())
-    val replicaPool = config.replicas.get match {
-      case Some(r) if r != "" => createCluster(r)
-      case _                  => null
-    }
+    val replicaPool =
+      config.replicas.get match {
+        case Some(r) if r != "" => createCluster(r)
+        case _                  => null
+      }
 
     if (replicaPool == null) {
       val ketamaClient = memcached
@@ -127,76 +131,80 @@ object KetamaClientStress extends App {
         .failureAccrualParams(Int.MaxValue, Duration.Top)
         .build()
 
-      val operation = config.op() match {
-        case "set" =>
-          () => {
-            val (key, value) = nextKeyValue
-            ketamaClient.set(key, value)
-          }
-        case "getHit" =>
-          keyValueSet foreach {
-            case (k, v) => ketamaClient.set(k, v)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            ketamaClient.get(key)
-          }
-        case "getMiss" =>
-          keyValueSet foreach {
-            case (k, _) => ketamaClient.delete(k)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            ketamaClient.get(key)
-          }
-        case "gets" =>
-          keyValueSet foreach {
-            case (k, v) => ketamaClient.set(k, v)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            ketamaClient.gets(key)
-          }
-        case "getsMiss" =>
-          keyValueSet foreach {
-            case (k, _) => ketamaClient.delete(k)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            ketamaClient.gets(key)
-          }
-        case "getsThenCas" =>
-          keyValueSet.map {
-            case (k, v) => ketamaClient.set(k, v)()
-          }
-          val casMap = mutable.Map.empty[String, (Buf, Buf)]
-
-          () => {
-            val (key, value) = nextKeyValue
-            casMap.remove(key) match {
-              case Some((_, unique)) => ketamaClient.cas(key, value, unique)
-              case None =>
-                ketamaClient.gets(key).map {
-                  case Some(r) => casMap(key) = r
-                  case None    => // not expecting
-                }
+      val operation =
+        config.op() match {
+          case "set" =>
+            () => {
+              val (key, value) = nextKeyValue
+              ketamaClient.set(key, value)
             }
-          }
-        case "add" =>
-          val (key, value) = (
-            randomString(config.keysize()),
-            Buf.Utf8(randomString(config.valuesize())))
-          () =>
-            ketamaClient.add(key + load_count.getAndIncrement().toString, value)
-        case "replace" =>
-          keyValueSet foreach {
-            case (k, v) => ketamaClient.set(k, v)()
-          }
-          () => {
-            val (key, value) = nextKeyValue
-            ketamaClient.replace(key, value)
-          }
-      }
+          case "getHit" =>
+            keyValueSet foreach {
+              case (k, v) => ketamaClient.set(k, v)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              ketamaClient.get(key)
+            }
+          case "getMiss" =>
+            keyValueSet foreach {
+              case (k, _) => ketamaClient.delete(k)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              ketamaClient.get(key)
+            }
+          case "gets" =>
+            keyValueSet foreach {
+              case (k, v) => ketamaClient.set(k, v)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              ketamaClient.gets(key)
+            }
+          case "getsMiss" =>
+            keyValueSet foreach {
+              case (k, _) => ketamaClient.delete(k)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              ketamaClient.gets(key)
+            }
+          case "getsThenCas" =>
+            keyValueSet.map {
+              case (k, v) => ketamaClient.set(k, v)()
+            }
+            val casMap = mutable.Map.empty[String, (Buf, Buf)]
+
+            () => {
+              val (key, value) = nextKeyValue
+              casMap.remove(key) match {
+                case Some((_, unique)) => ketamaClient.cas(key, value, unique)
+                case None =>
+                  ketamaClient.gets(key).map {
+                    case Some(r) => casMap(key) = r
+                    case None    => // not expecting
+                  }
+              }
+            }
+          case "add" =>
+            val (key, value) =
+              (
+                randomString(config.keysize()),
+                Buf.Utf8(randomString(config.valuesize())))
+            () =>
+              ketamaClient.add(
+                key + load_count.getAndIncrement().toString,
+                value)
+          case "replace" =>
+            keyValueSet foreach {
+              case (k, v) => ketamaClient.set(k, v)()
+            }
+            () => {
+              val (key, value) = nextKeyValue
+              ketamaClient.replace(key, value)
+            }
+        }
 
       proc(operation, config.loadrate())
     } else {
@@ -206,121 +214,123 @@ object KetamaClientStress extends App {
         None,
         (Int.MaxValue, () => Duration.Top))
 
-      val operation = config.op() match {
-        case "set" =>
-          () => {
-            val (key, value) = nextKeyValue
-            replicationClient.set(key, value)
-          }
-        case "getAllHit" =>
-          keyValueSet foreach {
-            case (k, v) => replicationClient.set(k, v)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            replicationClient.getAll(key)
-          }
-        case "getAllMiss" =>
-          keyValueSet foreach {
-            case (k, _) => replicationClient.delete(k)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            replicationClient.getAll(key)
-          }
-        case "getOneHit" =>
-          keyValueSet foreach {
-            case (k, v) => replicationClient.set(k, v)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            replicationClient.getOne(key, false)
-          }
-        case "getOneMiss" =>
-          keyValueSet foreach {
-            case (k, _) => replicationClient.delete(k)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            replicationClient.getOne(key, false)
-          }
-        case "getSetMix" =>
-          assert(config.rwRatio() >= 0 && config.rwRatio() < 100)
-          keyValueSet foreach {
-            case (k, v) => replicationClient.set(k, v)()
-          }
-          () => {
-            val c = load_count.getAndIncrement()
-            val (key, value) = keyValueSet((c % config.numkeys()).toInt)
-            if (c % 100 >= config.rwRatio())
+      val operation =
+        config.op() match {
+          case "set" =>
+            () => {
+              val (key, value) = nextKeyValue
               replicationClient.set(key, value)
-            else
-              replicationClient.getOne(key, false)
-          }
-        case "getsAll" =>
-          keyValueSet foreach {
-            case (k, v) => replicationClient.set(k, v)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            replicationClient.getsAll(key)
-          }
-        case "getsAllMiss" =>
-          keyValueSet foreach {
-            case (k, _) => replicationClient.delete(k)()
-          }
-          () => {
-            val (key, _) = nextKeyValue
-            replicationClient.getsAll(key)
-          }
-        case "getsAllThenCas" =>
-          keyValueSet.map {
-            case (k, v) => replicationClient.set(k, v)()
-          }
-          val casMap: scala.collection.mutable.Map[
-            String,
-            ReplicationStatus[Option[(Buf, ReplicaCasUnique)]]] =
-            scala.collection.mutable.Map()
-
-          () => {
-            val (key, value) = nextKeyValue
-            casMap.remove(key) match {
-              case Some(
-                    ConsistentReplication(Some((_, RCasUnique(uniques))))) =>
-                replicationClient.checkAndSet(key, value, uniques)
-              case Some(ConsistentReplication(None)) =>
-                // not expecting this to ever happen
-                replicationClient.set(key, value)
-              case Some(InconsistentReplication(resultSeq)) =>
-                // not expecting this to ever happen
-                replicationClient.set(key, value)
-              case Some(FailedReplication(failureSeq)) =>
-                // not expecting this to ever happen
-                replicationClient.set(key, value)
-              case None =>
-                replicationClient.getsAll(key).map {
-                  casMap(key) = _
-                }
             }
-          }
-        case "add" =>
-          val (key, value) = (
-            randomString(config.keysize()),
-            Buf.Utf8(randomString(config.valuesize())))
-          () => {
-            replicationClient.add(
-              key + load_count.getAndIncrement().toString,
-              value)
-          }
-        case "replace" =>
-          keyValueSet foreach {
-            case (k, v) => replicationClient.set(k, v)()
-          }
-          () => {
-            val (key, value) = nextKeyValue
-            replicationClient.replace(key, value)
-          }
-      }
+          case "getAllHit" =>
+            keyValueSet foreach {
+              case (k, v) => replicationClient.set(k, v)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              replicationClient.getAll(key)
+            }
+          case "getAllMiss" =>
+            keyValueSet foreach {
+              case (k, _) => replicationClient.delete(k)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              replicationClient.getAll(key)
+            }
+          case "getOneHit" =>
+            keyValueSet foreach {
+              case (k, v) => replicationClient.set(k, v)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              replicationClient.getOne(key, false)
+            }
+          case "getOneMiss" =>
+            keyValueSet foreach {
+              case (k, _) => replicationClient.delete(k)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              replicationClient.getOne(key, false)
+            }
+          case "getSetMix" =>
+            assert(config.rwRatio() >= 0 && config.rwRatio() < 100)
+            keyValueSet foreach {
+              case (k, v) => replicationClient.set(k, v)()
+            }
+            () => {
+              val c = load_count.getAndIncrement()
+              val (key, value) = keyValueSet((c % config.numkeys()).toInt)
+              if (c % 100 >= config.rwRatio())
+                replicationClient.set(key, value)
+              else
+                replicationClient.getOne(key, false)
+            }
+          case "getsAll" =>
+            keyValueSet foreach {
+              case (k, v) => replicationClient.set(k, v)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              replicationClient.getsAll(key)
+            }
+          case "getsAllMiss" =>
+            keyValueSet foreach {
+              case (k, _) => replicationClient.delete(k)()
+            }
+            () => {
+              val (key, _) = nextKeyValue
+              replicationClient.getsAll(key)
+            }
+          case "getsAllThenCas" =>
+            keyValueSet.map {
+              case (k, v) => replicationClient.set(k, v)()
+            }
+            val casMap: scala.collection.mutable.Map[
+              String,
+              ReplicationStatus[Option[(Buf, ReplicaCasUnique)]]] =
+              scala.collection.mutable.Map()
+
+            () => {
+              val (key, value) = nextKeyValue
+              casMap.remove(key) match {
+                case Some(
+                      ConsistentReplication(Some((_, RCasUnique(uniques))))) =>
+                  replicationClient.checkAndSet(key, value, uniques)
+                case Some(ConsistentReplication(None)) =>
+                  // not expecting this to ever happen
+                  replicationClient.set(key, value)
+                case Some(InconsistentReplication(resultSeq)) =>
+                  // not expecting this to ever happen
+                  replicationClient.set(key, value)
+                case Some(FailedReplication(failureSeq)) =>
+                  // not expecting this to ever happen
+                  replicationClient.set(key, value)
+                case None =>
+                  replicationClient.getsAll(key).map {
+                    casMap(key) = _
+                  }
+              }
+            }
+          case "add" =>
+            val (key, value) =
+              (
+                randomString(config.keysize()),
+                Buf.Utf8(randomString(config.valuesize())))
+            () => {
+              replicationClient.add(
+                key + load_count.getAndIncrement().toString,
+                value)
+            }
+          case "replace" =>
+            keyValueSet foreach {
+              case (k, v) => replicationClient.set(k, v)()
+            }
+            () => {
+              val (key, value) = nextKeyValue
+              replicationClient.replace(key, value)
+            }
+        }
       proc(operation, config.loadrate())
     }
 

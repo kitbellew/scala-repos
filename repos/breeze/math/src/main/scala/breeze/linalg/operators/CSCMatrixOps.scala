@@ -29,13 +29,14 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     new OpMulMatrix.Impl2[SparseVector[T], CSCMatrix[T], CSCMatrix[T]] {
       def apply(v: SparseVector[T], v2: CSCMatrix[T]): CSCMatrix[T] = {
         require(v2.rows == 1)
-        val csc = new CSCMatrix[T](
-          v.data,
-          v.length,
-          1,
-          Array(0, v.activeSize),
-          v.activeSize,
-          v.index)
+        val csc =
+          new CSCMatrix[T](
+            v.data,
+            v.length,
+            1,
+            Array(0, v.activeSize),
+            v.activeSize,
+            v.index)
         op(csc, v2)
       }
     }
@@ -253,10 +254,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         else if (b.activeSize == 0)
           a.copy
         else {
-          val bldr = new CSCMatrix.Builder[T](
-            rows,
-            cols,
-            math.max(a.activeSize, b.activeSize))
+          val bldr =
+            new CSCMatrix.Builder[T](
+              rows,
+              cols,
+              math.max(a.activeSize, b.activeSize))
           var ci = 0 // column index [0 ... cols)
           var apStop = a.colPtrs(0) // pointer into row indices and data
           var bpStop = b.colPtrs(0) // pointer into row indices and data
@@ -519,10 +521,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         if (a.activeSize == 0 || b.activeSize == 0)
           CSCMatrix.zeros[T](rows, cols)
         else {
-          val res = new CSCMatrix.Builder[T](
-            rows,
-            cols,
-            math.min(a.activeSize, b.activeSize))
+          val res =
+            new CSCMatrix.Builder[T](
+              rows,
+              cols,
+              math.min(a.activeSize, b.activeSize))
           var ci = 0 // column index [0 ... cols)
           var apStop = a.colPtrs(0) // pointer into row indices and data
           var bpStop = b.colPtrs(0) // pointer into row indices and data
@@ -583,10 +586,11 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
         else if (b.activeSize == 0)
           a.copy
         else {
-          val bldr = new CSCMatrix.Builder[T](
-            rows,
-            cols,
-            math.max(a.activeSize, b.activeSize))
+          val bldr =
+            new CSCMatrix.Builder[T](
+              rows,
+              cols,
+              math.max(a.activeSize, b.activeSize))
           var ci = 0 // column index [0 ... cols)
           var apStop = a.colPtrs(0) // pointer into row indices and data
           var bpStop = b.colPtrs(0) // pointer into row indices and data
@@ -1133,8 +1137,9 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             val v = b(j, i)
             var k = a.colPtrs(j)
             while (k < a.colPtrs(j + 1)) {
-              res(a.rowIndices(k), i) =
-                ring.+(res(a.rowIndices(k), i), ring.*(v, a.data(k)))
+              res(a.rowIndices(k), i) = ring.+(
+                res(a.rowIndices(k), i),
+                ring.*(v, a.data(k)))
               k += 1
             }
             j += 1
@@ -1459,10 +1464,11 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         if (a.activeSize == 0 || b.activeSize == 0)
           CSCMatrix.zeros[A](rows, cols)
         else {
-          val res = new CSCMatrix.Builder[A](
-            rows,
-            cols,
-            math.min(a.activeSize, b.activeSize))
+          val res =
+            new CSCMatrix.Builder[A](
+              rows,
+              cols,
+              math.min(a.activeSize, b.activeSize))
           var ci = 0 // column index [0 ... cols)
           var apStop = a.colPtrs(0) // pointer into row indices and data
           var bpStop = b.colPtrs(0) // pointer into row indices and data
@@ -1521,10 +1527,11 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         else if (b.activeSize == 0)
           a.copy
         else {
-          val bldr = new CSCMatrix.Builder[A](
-            rows,
-            cols,
-            math.max(a.activeSize, b.activeSize))
+          val bldr =
+            new CSCMatrix.Builder[A](
+              rows,
+              cols,
+              math.max(a.activeSize, b.activeSize))
           var ci = 0 // column index [0 ... cols)
           var apStop = a.colPtrs(0) // pointer into row indices and data
           var bpStop = b.colPtrs(0) // pointer into row indices and data
@@ -1585,10 +1592,11 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         else if (b.activeSize == 0)
           a.copy
         else {
-          val bldr = new CSCMatrix.Builder[A](
-            rows,
-            cols,
-            math.max(a.activeSize, b.activeSize))
+          val bldr =
+            new CSCMatrix.Builder[A](
+              rows,
+              cols,
+              math.max(a.activeSize, b.activeSize))
           var ci = 0 // column index [0 ... cols)
           var apStop = a.colPtrs(0) // pointer into row indices and data
           var bpStop = b.colPtrs(0) // pointer into row indices and data

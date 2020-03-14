@@ -81,8 +81,8 @@ class Analyzer(
       case None =>
         log.warning("scala-library.jar not present, enabling Odersky mode")
     }
-    settings.classpath.value =
-      config.compileClasspath.mkString(JFile.pathSeparator)
+    settings.classpath.value = config.compileClasspath.mkString(
+      JFile.pathSeparator)
     settings.processArguments(config.compilerArgs, processAll = false)
     presCompLog.debug("Presentation Compiler settings:\n" + settings)
 

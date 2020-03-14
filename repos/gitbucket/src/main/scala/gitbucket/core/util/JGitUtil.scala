@@ -117,12 +117,13 @@ object JGitUtil {
 
     val summary = getSummaryMessage(fullMessage, shortMessage)
 
-    val description = defining(fullMessage.trim.indexOf("\n")) { i =>
-      if (i >= 0) {
-        Some(fullMessage.trim.substring(i).trim)
-      } else
-        None
-    }
+    val description =
+      defining(fullMessage.trim.indexOf("\n")) { i =>
+        if (i >= 0) {
+          Some(fullMessage.trim.substring(i).trim)
+        } else
+          None
+      }
 
     def isDifferentFromAuthor: Boolean =
       authorName != committerName || authorEmailAddress != committerEmailAddress
@@ -213,10 +214,11 @@ object JGitUtil {
     */
   def getRevCommitFromId(git: Git, objectId: ObjectId): RevCommit = {
     val revWalk = new RevWalk(git.getRepository)
-    val revCommit = revWalk.parseAny(objectId) match {
-      case r: RevTag => revWalk.parseCommit(r.getObject)
-      case _         => revWalk.parseCommit(objectId)
-    }
+    val revCommit =
+      revWalk.parseAny(objectId) match {
+        case r: RevTag => revWalk.parseCommit(r.getObject)
+        case _         => revWalk.parseCommit(objectId)
+      }
     revWalk.dispose
     revCommit
   }
@@ -385,12 +387,13 @@ object JGitUtil {
       var fileList: List[(ObjectId, FileMode, String, Option[String])] = Nil
       useTreeWalk(revCommit) { treeWalk =>
         while (treeWalk.next()) {
-          val linkUrl = if (treeWalk.getFileMode(0) == FileMode.GITLINK) {
-            getSubmodules(git, revCommit.getTree)
-              .find(_.path == treeWalk.getPathString)
-              .map(_.url)
-          } else
-            None
+          val linkUrl =
+            if (treeWalk.getFileMode(0) == FileMode.GITLINK) {
+              getSubmodules(git, revCommit.getTree)
+                .find(_.path == treeWalk.getPathString)
+                .map(_.url)
+            } else
+              None
           fileList +:= (treeWalk.getObjectId(0), treeWalk.getFileMode(
             0), treeWalk.getNameString, linkUrl)
         }
@@ -640,12 +643,13 @@ object JGitUtil {
 
       if (commits.length >= 2) {
         // not initial commit
-        val oldCommit = if (revCommit.getParentCount >= 2) {
-          // merge commit
-          revCommit.getParents.head
-        } else {
-          commits(1)
-        }
+        val oldCommit =
+          if (revCommit.getParentCount >= 2) {
+            // merge commit
+            revCommit.getParents.head
+          } else {
+            commits(1)
+          }
         (
           getDiffs(git, oldCommit.getName, id, fetchContent),
           Some(oldCommit.getName))
@@ -1188,31 +1192,33 @@ object JGitUtil {
         try {
           val defaultCommit = walk.parseCommit(defaultObject)
           val branchName = ref.getName.stripPrefix("refs/heads/")
-          val branchCommit = if (branchName == defaultBranch) {
-            defaultCommit
-          } else {
-            walk.parseCommit(ref.getObjectId)
-          }
+          val branchCommit =
+            if (branchName == defaultBranch) {
+              defaultCommit
+            } else {
+              walk.parseCommit(ref.getObjectId)
+            }
           val when = branchCommit.getCommitterIdent.getWhen
           val committer = branchCommit.getCommitterIdent.getName
           val committerEmail = branchCommit.getCommitterIdent.getEmailAddress
-          val mergeInfo = if (origin && branchName == defaultBranch) {
-            None
-          } else {
-            walk.reset()
-            walk.setRevFilter(RevFilter.MERGE_BASE)
-            walk.markStart(branchCommit)
-            walk.markStart(defaultCommit)
-            val mergeBase = walk.next()
-            walk.reset()
-            walk.setRevFilter(RevFilter.ALL)
-            Some(
-              BranchMergeInfo(
-                ahead = RevWalkUtils.count(walk, branchCommit, mergeBase),
-                behind = RevWalkUtils.count(walk, defaultCommit, mergeBase),
-                isMerged = walk.isMergedInto(branchCommit, defaultCommit)
-              ))
-          }
+          val mergeInfo =
+            if (origin && branchName == defaultBranch) {
+              None
+            } else {
+              walk.reset()
+              walk.setRevFilter(RevFilter.MERGE_BASE)
+              walk.markStart(branchCommit)
+              walk.markStart(defaultCommit)
+              val mergeBase = walk.next()
+              walk.reset()
+              walk.setRevFilter(RevFilter.ALL)
+              Some(
+                BranchMergeInfo(
+                  ahead = RevWalkUtils.count(walk, branchCommit, mergeBase),
+                  behind = RevWalkUtils.count(walk, defaultCommit, mergeBase),
+                  isMerged = walk.isMergedInto(branchCommit, defaultCommit)
+                ))
+            }
           BranchInfo(
             branchName,
             committer,

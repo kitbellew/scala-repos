@@ -20,8 +20,10 @@ class FlowFoldSpec extends AkkaSpec {
     val input = 1 to 100
     val expected = input.sum
     val inputSource = Source(input).filter(_ ⇒ true).map(identity)
-    val foldSource =
-      inputSource.fold[Int](0)(_ + _).filter(_ ⇒ true).map(identity)
+    val foldSource = inputSource
+      .fold[Int](0)(_ + _)
+      .filter(_ ⇒ true)
+      .map(identity)
     val foldFlow = Flow[Int]
       .filter(_ ⇒ true)
       .map(identity)
@@ -56,23 +58,25 @@ class FlowFoldSpec extends AkkaSpec {
 
     "propagate an error" in assertAllStagesStopped {
       val error = new Exception with NoStackTrace
-      val future = inputSource
-        .map(x ⇒
-          if (x > 50)
-            throw error
-          else
-            x)
-        .runFold[NotUsed](NotUsed)(Keep.none)
+      val future =
+        inputSource
+          .map(x ⇒
+            if (x > 50)
+              throw error
+            else
+              x)
+          .runFold[NotUsed](NotUsed)(Keep.none)
       the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
     }
 
     "complete future with failure when folding function throws" in assertAllStagesStopped {
       val error = new Exception with NoStackTrace
-      val future = inputSource.runFold(0)((x, y) ⇒
-        if (x > 50)
-          throw error
-        else
-          x + y)
+      val future =
+        inputSource.runFold(0)((x, y) ⇒
+          if (x > 50)
+            throw error
+          else
+            x + y)
       the[Exception] thrownBy Await.result(future, 3.seconds) should be(error)
     }
 

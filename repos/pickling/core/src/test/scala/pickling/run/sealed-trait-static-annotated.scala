@@ -65,15 +65,15 @@ class SealedTraitStaticAnnotatedTest extends FunSuite {
     // if we are only using static (un)picklers, then the Banana
     // unpickler should not know a thing about Cucumber, but duck typing
     // should work anyhow.
-    val b =
-      JSONPickle(bananaString.replace("Banana", "Cucumber")).unpickle[Banana]
+    val b = JSONPickle(bananaString.replace("Banana", "Cucumber"))
+      .unpickle[Banana]
     assert(b == banana)
 
     // the Fruit unpickler should not know anything about Cucumber, and
     // it should fail because it doesn't know to duck-type into Banana
     try {
-      val f =
-        JSONPickle(bananaString.replace("Banana", "Cucumber")).unpickle[Fruit]
+      val f = JSONPickle(bananaString.replace("Banana", "Cucumber"))
+        .unpickle[Fruit]
       throw new Exception(
         s"Should have thrown on unpickle but instead parsed $f")
     } catch {
@@ -86,8 +86,8 @@ class SealedTraitStaticAnnotatedTest extends FunSuite {
     // a thing about Apple either, even though it's a subtype of
     // Fruit.
     try {
-      val f =
-        JSONPickle(bananaString.replace("Banana", "Apple")).unpickle[Fruit]
+      val f = JSONPickle(bananaString.replace("Banana", "Apple"))
+        .unpickle[Fruit]
       throw new Exception(
         s"Should have thrown on unpickle but instead parsed $f")
     } catch {

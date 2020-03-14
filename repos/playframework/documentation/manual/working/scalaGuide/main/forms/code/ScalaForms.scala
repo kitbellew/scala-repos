@@ -88,12 +88,12 @@ package scalaguide.forms.scalaforms {
       "handling form with errors" in {
         val userFormConstraints2 = controllers.Application.userFormConstraints2
 
-        implicit val request =
-          FakeRequest().withFormUrlEncodedBody("name" -> "", "age" -> "25")
+        implicit val request = FakeRequest()
+          .withFormUrlEncodedBody("name" -> "", "age" -> "25")
 
         //#userForm-constraints-2-with-errors
-        val boundForm =
-          userFormConstraints2.bind(Map("bob" -> "", "age" -> "25"))
+        val boundForm = userFormConstraints2.bind(
+          Map("bob" -> "", "age" -> "25"))
         boundForm.hasErrors must beTrue
         //#userForm-constraints-2-with-errors
       }
@@ -101,8 +101,8 @@ package scalaguide.forms.scalaforms {
       "handling binding failure" in {
         val userForm = controllers.Application.userFormConstraints
 
-        implicit val request =
-          FakeRequest().withFormUrlEncodedBody("name" -> "", "age" -> "25")
+        implicit val request = FakeRequest()
+          .withFormUrlEncodedBody("name" -> "", "age" -> "25")
 
         val boundForm = userForm.bindFromRequest
         boundForm.hasErrors must beTrue
@@ -244,25 +244,28 @@ package scalaguide.forms.scalaforms {
         }
 
       // #form-bodyparser
-      val userPost = Action(parse.form(userForm)) { implicit request =>
-        val userData = request.body
-        val newUser = models.User(userData.name, userData.age)
-        val id = models.User.create(newUser)
-        Redirect(routes.Application.home(id))
-      }
+      val userPost =
+        Action(parse.form(userForm)) { implicit request =>
+          val userData = request.body
+          val newUser = models.User(userData.name, userData.age)
+          val id = models.User.create(newUser)
+          Redirect(routes.Application.home(id))
+        }
       // #form-bodyparser
 
       // #form-bodyparser-errors
-      val userPostWithErrors = Action(
-        parse.form(
-          userForm,
-          onErrors = (formWithErrors: Form[UserData]) =>
-            BadRequest(views.html.user(formWithErrors)))) { implicit request =>
-        val userData = request.body
-        val newUser = models.User(userData.name, userData.age)
-        val id = models.User.create(newUser)
-        Redirect(routes.Application.home(id))
-      }
+      val userPostWithErrors =
+        Action(
+          parse.form(
+            userForm,
+            onErrors = (formWithErrors: Form[UserData]) =>
+              BadRequest(views.html.user(formWithErrors)))) {
+          implicit request =>
+            val userData = request.body
+            val newUser = models.User(userData.name, userData.age)
+            val id = models.User.create(newUser)
+            Redirect(routes.Application.home(id))
+        }
       // #form-bodyparser-errors
 
       def submit =

@@ -38,40 +38,42 @@ import scalafx.scene.paint.Color
 
 object MenuTest extends JFXApp {
 
-  val menu = new Menu("File") {
-    items = List(
-      new MenuItem("Open") {
-        onAction = (ae: ActionEvent) =>
-          history.children += new Label("Selected item `Open`")
-      },
-      new SeparatorMenuItem,
-      new MenuItem("Close") {
-        onAction = (ae: ActionEvent) =>
-          history.children += new Label("Selected item `Close`")
-      }
-    )
+  val menu =
+    new Menu("File") {
+      items = List(
+        new MenuItem("Open") {
+          onAction = (ae: ActionEvent) =>
+            history.children += new Label("Selected item `Open`")
+        },
+        new SeparatorMenuItem,
+        new MenuItem("Close") {
+          onAction = (ae: ActionEvent) =>
+            history.children += new Label("Selected item `Close`")
+        }
+      )
 
-    onShowing = handle {
-      printEvent("on showing")
+      onShowing = handle {
+        printEvent("on showing")
+      }
+      onShown = handle {
+        printEvent("on shown")
+      }
+      onHiding = handle {
+        printEvent("on hiding")
+      }
+      onHidden = handle {
+        printEvent("on hidden")
+      }
     }
-    onShown = handle {
-      printEvent("on shown")
-    }
-    onHiding = handle {
-      printEvent("on hiding")
-    }
-    onHidden = handle {
-      printEvent("on hidden")
-    }
-  }
 
   val history = new VBox()
 
-  val menuBar = new MenuBar {
-    useSystemMenuBar = true
-    minWidth = 100
-    menus.add(menu)
-  }
+  val menuBar =
+    new MenuBar {
+      useSystemMenuBar = true
+      minWidth = 100
+      menus.add(menu)
+    }
 
   stage = new PrimaryStage {
     title = "Menu test"

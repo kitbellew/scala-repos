@@ -54,8 +54,7 @@ abstract class Response extends Message with HttpResponseProxy {
     buffer.toString(Charsets.UTF_8)
   }
 
-  override def toString =
-    "Response(\"" + version + " " + status + "\")"
+  override def toString = "Response(\"" + version + " " + status + "\")"
 }
 
 object Response {
@@ -81,8 +80,9 @@ object Response {
 
   /** Decode a [[Response]] from a byte array */
   def decodeBytes(b: Array[Byte]): Response = {
-    val decoder = new DecoderEmbedder(
-      new HttpResponseDecoder(Int.MaxValue, Int.MaxValue, Int.MaxValue))
+    val decoder =
+      new DecoderEmbedder(
+        new HttpResponseDecoder(Int.MaxValue, Int.MaxValue, Int.MaxValue))
     decoder.offer(ChannelBuffers.wrappedBuffer(b))
     val res = decoder.poll().asInstanceOf[HttpResponse]
     assert(res ne null)
@@ -90,8 +90,7 @@ object Response {
   }
 
   /** Create Response. */
-  def apply(): Response =
-    apply(Version.Http11, Status.Ok)
+  def apply(): Response = apply(Version.Http11, Status.Ok)
 
   /** Create Response from version and status. */
   def apply(version: Version, status: Status): Response =
@@ -118,8 +117,7 @@ object Response {
     }
 
   /** Create Response from status. */
-  def apply(status: Status): Response =
-    apply(Version.Http11, status)
+  def apply(status: Status): Response = apply(Version.Http11, status)
 
   /** Create Response from Request. */
   private[http] def apply(httpRequest: Request): Response =

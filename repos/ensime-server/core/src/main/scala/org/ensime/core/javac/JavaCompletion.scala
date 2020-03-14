@@ -53,10 +53,11 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
 
     log.info("PRECEDING: " + preceding)
 
-    val defaultPrefix = JavaIdentRegexp.findFirstMatchIn(preceding) match {
-      case Some(m) => m.group(1)
-      case _       => ""
-    }
+    val defaultPrefix =
+      JavaIdentRegexp.findFirstMatchIn(preceding) match {
+        case Some(m) => m.group(1)
+        case _       => ""
+      }
 
     log.info("PREFIX: " + defaultPrefix)
 
@@ -130,8 +131,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
                constructing)
            }
          }) map { scopeCandidates =>
-           val typeSearchResult =
-             typeSearch.flatMap(Await.result(_, Duration.Inf)).getOrElse(List())
+           val typeSearchResult = typeSearch
+             .flatMap(Await.result(_, Duration.Inf))
+             .getOrElse(List())
            scopeCandidates ++ typeSearchResult
          }
 
@@ -176,12 +178,13 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       caseSense: Boolean
   ): List[CompletionInfo] = {
     val pkg = selectedPackageName(select)
-    val candidates = (Option(info.getElements.getPackageElement(pkg)) map {
-      p: PackageElement =>
-        p.getEnclosedElements().flatMap { e =>
-          filterElement(info, e, prefix, caseSense, true, false)
-        }
-    }).getOrElse(List())
+    val candidates =
+      (Option(info.getElements.getPackageElement(pkg)) map {
+        p: PackageElement =>
+          p.getEnclosedElements().flatMap { e =>
+            filterElement(info, e, prefix, caseSense, true, false)
+          }
+      }).getOrElse(List())
     candidates.toList
   }
 

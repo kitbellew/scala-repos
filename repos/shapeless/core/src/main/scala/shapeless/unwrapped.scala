@@ -25,9 +25,10 @@ trait Unwrapped[W] extends Serializable {
 }
 
 object Unwrapped extends UnwrappedInstances {
-  type Aux[W, U0] = Unwrapped[W] {
-    type U = U0
-  }
+  type Aux[W, U0] =
+    Unwrapped[W] {
+      type U = U0
+    }
   def apply[W](implicit w: Unwrapped[W]): Aux[W, w.U] = w
 }
 
@@ -49,16 +50,18 @@ trait UnwrappedInstances extends LowPriorityUnwrappedInstances {
     def wrap(u: U): Repr
   }
   object AnyValHelper {
-    type Aux[Repr, U0] = AnyValHelper[Repr] {
-      type U = U0
-    }
+    type Aux[Repr, U0] =
+      AnyValHelper[Repr] {
+        type U = U0
+      }
     implicit def sizeOneHListHelper[T] =
       SizeOneHListHelper.asInstanceOf[AnyValHelper.Aux[T :: HNil, T]]
-    val SizeOneHListHelper = new AnyValHelper[Any :: HNil] {
-      type U = Any
-      def unwrap(hl: Any :: HNil): Any = hl.head
-      def wrap(t: Any): Any :: HNil = t :: HNil
-    }
+    val SizeOneHListHelper =
+      new AnyValHelper[Any :: HNil] {
+        type U = Any
+        def unwrap(hl: Any :: HNil): Any = hl.head
+        def wrap(t: Any): Any :: HNil = t :: HNil
+      }
   }
 
   implicit def newtypeUnwrapped[UI, Ops, UF](implicit

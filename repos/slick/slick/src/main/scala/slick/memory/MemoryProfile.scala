@@ -112,8 +112,9 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
                 from,
                 CompiledMapping(converter, _)) :@ CollectionType(cons, el) =>
             val fromV = run(from).asInstanceOf[TraversableOnce[Any]]
-            val b =
-              cons.createBuilder(el.classTag).asInstanceOf[Builder[Any, Any]]
+            val b = cons
+              .createBuilder(el.classTag)
+              .asInstanceOf[Builder[Any, Any]]
             b ++= fromV.map(v =>
               converter
                 .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
@@ -154,10 +155,14 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       new DDL(tables ++ other.asInstanceOf[DDL].tables)
   }
 
-  type ProfileAction[+R, +S <: NoStream, -E <: Effect] =
-    FixedBasicAction[R, S, E]
-  type StreamingProfileAction[+R, +T, -E <: Effect] =
-    FixedBasicStreamingAction[R, T, E]
+  type ProfileAction[+R, +S <: NoStream, -E <: Effect] = FixedBasicAction[
+    R,
+    S,
+    E]
+  type StreamingProfileAction[+R, +T, -E <: Effect] = FixedBasicStreamingAction[
+    R,
+    T,
+    E]
 
   protected[this] def dbAction[R, S <: NoStream, E <: Effect](
       f: Backend#Session => R): ProfileAction[R, S, E] =
@@ -178,10 +183,11 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     protected[this] def getIterator(ctx: Backend#Context): Iterator[T] = {
       val inter = createInterpreter(ctx.session.database, param)
       val ResultSetMapping(_, from, CompiledMapping(converter, _)) = tree
-      val pvit = inter
-        .run(from)
-        .asInstanceOf[TraversableOnce[QueryInterpreter.ProductValue]]
-        .toIterator
+      val pvit =
+        inter
+          .run(from)
+          .asInstanceOf[TraversableOnce[QueryInterpreter.ProductValue]]
+          .toIterator
       pvit.map(
         converter
           .asInstanceOf[ResultConverter[MemoryResultConverterDomain, T]]

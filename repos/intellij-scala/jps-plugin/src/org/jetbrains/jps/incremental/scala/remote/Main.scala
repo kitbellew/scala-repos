@@ -39,14 +39,15 @@ object Main {
     var hasErrors = false
 
     val client = {
-      val eventHandler = (event: Event) => {
-        val encode = Base64Converter.encode(event.toBytes)
-        out.write(
-          (if (standalone && !encode.endsWith("="))
-             encode + "="
-           else
-             encode).getBytes)
-      }
+      val eventHandler =
+        (event: Event) => {
+          val encode = Base64Converter.encode(event.toBytes)
+          out.write(
+            (if (standalone && !encode.endsWith("="))
+               encode + "="
+             else
+               encode).getBytes)
+        }
       new EventGeneratingClient(eventHandler, out.checkError) {
         override def error(
             text: String,
@@ -111,9 +112,10 @@ object Main {
     val delay = Option(System.getProperty("shutdown.delay")).map(_.toInt)
     delay.foreach { t =>
       val delayMs = t * 60 * 1000
-      val shutdownTask = new TimerTask {
-        override def run(): Unit = context.getNGServer.shutdown(true)
-      }
+      val shutdownTask =
+        new TimerTask {
+          override def run(): Unit = context.getNGServer.shutdown(true)
+        }
       shutdownTimer = new Timer()
       shutdownTimer.schedule(shutdownTask, delayMs)
     }

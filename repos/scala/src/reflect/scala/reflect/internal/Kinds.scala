@@ -214,8 +214,9 @@ trait Kinds {
             val declaredBounds = transform(
               hkparam.info.instantiateTypeParams(tparams, targs).bounds,
               paramowner)
-            val declaredBoundsInst =
-              transform(bindHKParams(declaredBounds), owner)
+            val declaredBoundsInst = transform(
+              bindHKParams(declaredBounds),
+              owner)
             val argumentBounds = transform(hkarg.info.bounds, owner)
 
             kindCheck(
@@ -372,10 +373,11 @@ trait Kinds {
         }
       // Replace Head(o, Some(1), a) with Head(o, None, a) if countByOrder(o) <= 1, so F1[A] becomes F[A]
       def removeOnes: StringState = {
-        val maxOrder = (tokens map {
-          case Head(o, _, _) => o
-          case _             => 0
-        }).max
+        val maxOrder =
+          (tokens map {
+            case Head(o, _, _) => o
+            case _             => 0
+          }).max
         StringState((tokens /: (0 to maxOrder)) {
           (ts: Seq[ScalaNotation], o: Int) =>
             if (countByOrder(o) <= 1)

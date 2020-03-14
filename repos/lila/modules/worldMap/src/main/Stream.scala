@@ -28,10 +28,11 @@ private final class Stream(geoIp: MaxMindIpGeo, geoIpCacheTtl: Duration)
   def receive = {
     case SocketEvent.OwnerJoin(id, color, ip) =>
       ipCache get ip foreach { point =>
-        val game = games get id match {
-          case Some(game) => game withPoint point
-          case None       => Stream.Game(id, List(point))
-        }
+        val game =
+          games get id match {
+            case Some(game) => game withPoint point
+            case None       => Stream.Game(id, List(point))
+          }
         games += (id -> game)
         channel push Stream.Event.Add(game)
       }

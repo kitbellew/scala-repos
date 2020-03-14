@@ -169,14 +169,16 @@ private[kinesis] class KinesisSequenceRangeIterator(
 
         // If the internal iterator has not been initialized,
         // then fetch records from starting sequence number
-        internalIterator =
-          getRecords(ShardIteratorType.AT_SEQUENCE_NUMBER, range.fromSeqNumber)
+        internalIterator = getRecords(
+          ShardIteratorType.AT_SEQUENCE_NUMBER,
+          range.fromSeqNumber)
       } else if (!internalIterator.hasNext) {
 
         // If the internal iterator does not have any more records,
         // then fetch more records after the last consumed sequence number
-        internalIterator =
-          getRecords(ShardIteratorType.AFTER_SEQUENCE_NUMBER, lastSeqNumber)
+        internalIterator = getRecords(
+          ShardIteratorType.AFTER_SEQUENCE_NUMBER,
+          lastSeqNumber)
       }
 
       if (!internalIterator.hasNext) {
@@ -226,10 +228,11 @@ private[kinesis] class KinesisSequenceRangeIterator(
     val getRecordsRequest = new GetRecordsRequest
     getRecordsRequest.setRequestCredentials(credentials)
     getRecordsRequest.setShardIterator(shardIterator)
-    val getRecordsResult = retryOrTimeout[GetRecordsResult](
-      s"getting records using shard iterator") {
-      client.getRecords(getRecordsRequest)
-    }
+    val getRecordsResult =
+      retryOrTimeout[GetRecordsResult](
+        s"getting records using shard iterator") {
+        client.getRecords(getRecordsRequest)
+      }
     // De-aggregate records, if KPL was used in producing the records. The KCL automatically
     // handles de-aggregation during regular operation. This code path is used during recovery
     val recordIterator = UserRecord.deaggregate(getRecordsResult.getRecords)
@@ -249,10 +252,11 @@ private[kinesis] class KinesisSequenceRangeIterator(
     getShardIteratorRequest.setShardId(shardId)
     getShardIteratorRequest.setShardIteratorType(iteratorType.toString)
     getShardIteratorRequest.setStartingSequenceNumber(sequenceNumber)
-    val getShardIteratorResult = retryOrTimeout[GetShardIteratorResult](
-      s"getting shard iterator from sequence number $sequenceNumber") {
-      client.getShardIterator(getShardIteratorRequest)
-    }
+    val getShardIteratorResult =
+      retryOrTimeout[GetShardIteratorResult](
+        s"getting shard iterator from sequence number $sequenceNumber") {
+        client.getShardIterator(getShardIteratorRequest)
+      }
     getShardIteratorResult.getShardIterator
   }
 

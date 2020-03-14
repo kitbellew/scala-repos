@@ -177,24 +177,26 @@ class ParquetPartitionDiscoverySuite
 
   test("parse partition") {
     def check(path: String, expected: Option[PartitionValues]): Unit = {
-      val actual = parsePartition(
-        new Path(path),
-        defaultPartitionName,
-        true,
-        Set.empty[Path])._1
+      val actual =
+        parsePartition(
+          new Path(path),
+          defaultPartitionName,
+          true,
+          Set.empty[Path])._1
       assert(expected === actual)
     }
 
     def checkThrows[T <: Throwable: Manifest](
         path: String,
         expected: String): Unit = {
-      val message = intercept[T] {
-        parsePartition(
-          new Path(path),
-          defaultPartitionName,
-          true,
-          Set.empty[Path])
-      }.getMessage
+      val message =
+        intercept[T] {
+          parsePartition(
+            new Path(path),
+            defaultPartitionName,
+            true,
+            Set.empty[Path])
+        }.getMessage
 
       assert(message.contains(expected))
     }
@@ -247,12 +249,11 @@ class ParquetPartitionDiscoverySuite
         paths: Seq[String],
         spec: PartitionSpec,
         rootPaths: Set[Path] = Set.empty[Path]): Unit = {
-      val actualSpec =
-        parsePartitions(
-          paths.map(new Path(_)),
-          defaultPartitionName,
-          true,
-          rootPaths)
+      val actualSpec = parsePartitions(
+        paths.map(new Path(_)),
+        defaultPartitionName,
+        true,
+        rootPaths)
       assert(actualSpec === spec)
     }
 
@@ -356,12 +357,11 @@ class ParquetPartitionDiscoverySuite
 
   test("parse partitions with type inference disabled") {
     def check(paths: Seq[String], spec: PartitionSpec): Unit = {
-      val actualSpec =
-        parsePartitions(
-          paths.map(new Path(_)),
-          defaultPartitionName,
-          false,
-          Set.empty[Path])
+      val actualSpec = parsePartitions(
+        paths.map(new Path(_)),
+        defaultPartitionName,
+        false,
+        Set.empty[Path])
       assert(actualSpec === spec)
     }
 
@@ -481,8 +481,11 @@ class ParquetPartitionDiscoverySuite
         pi <- Seq(1, 2)
         ps <- Seq("foo", "bar")
       } {
-        val dir =
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps)
+        val dir = makePartitionDir(
+          base,
+          defaultPartitionName,
+          "pi" -> pi,
+          "ps" -> ps)
         makeParquetFile((1 to 10).map(i => ParquetData(i, i.toString)), dir)
         // Introduce _temporary dir to test the robustness of the schema discovery process.
         new File(dir.toString, "_temporary").mkdir()
@@ -585,8 +588,9 @@ class ParquetPartitionDiscoverySuite
           makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
       }
 
-      val parquetRelation =
-        sqlContext.read.format("parquet").load(base.getCanonicalPath)
+      val parquetRelation = sqlContext.read
+        .format("parquet")
+        .load(base.getCanonicalPath)
       parquetRelation.registerTempTable("t")
 
       withTempTable("t") {
@@ -627,8 +631,9 @@ class ParquetPartitionDiscoverySuite
           makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
       }
 
-      val parquetRelation =
-        sqlContext.read.format("parquet").load(base.getCanonicalPath)
+      val parquetRelation = sqlContext.read
+        .format("parquet")
+        .load(base.getCanonicalPath)
       parquetRelation.registerTempTable("t")
 
       withTempTable("t") {
@@ -704,44 +709,43 @@ class ParquetPartitionDiscoverySuite
   }
 
   test("Various partition value types") {
-    val row =
-      Row(
-        100.toByte,
-        40000.toShort,
-        Int.MaxValue,
-        Long.MaxValue,
-        1.5.toFloat,
-        4.5,
-        new java.math.BigDecimal(new BigInteger("212500"), 5),
-        new java.math.BigDecimal(2.125),
-        java.sql.Date.valueOf("2015-05-23"),
-        new Timestamp(0),
-        "This is a string, /[]?=:",
-        "This is not a partition column"
-      )
+    val row = Row(
+      100.toByte,
+      40000.toShort,
+      Int.MaxValue,
+      Long.MaxValue,
+      1.5.toFloat,
+      4.5,
+      new java.math.BigDecimal(new BigInteger("212500"), 5),
+      new java.math.BigDecimal(2.125),
+      java.sql.Date.valueOf("2015-05-23"),
+      new Timestamp(0),
+      "This is a string, /[]?=:",
+      "This is not a partition column"
+    )
 
     // BooleanType is not supported yet
-    val partitionColumnTypes =
-      Seq(
-        ByteType,
-        ShortType,
-        IntegerType,
-        LongType,
-        FloatType,
-        DoubleType,
-        DecimalType(10, 5),
-        DecimalType.SYSTEM_DEFAULT,
-        DateType,
-        TimestampType,
-        StringType)
+    val partitionColumnTypes = Seq(
+      ByteType,
+      ShortType,
+      IntegerType,
+      LongType,
+      FloatType,
+      DoubleType,
+      DecimalType(10, 5),
+      DecimalType.SYSTEM_DEFAULT,
+      DateType,
+      TimestampType,
+      StringType)
 
     val partitionColumns = partitionColumnTypes.zipWithIndex.map {
       case (t, index) => StructField(s"p_$index", t)
     }
 
     val schema = StructType(partitionColumns :+ StructField(s"i", StringType))
-    val df =
-      sqlContext.createDataFrame(sparkContext.parallelize(row :: Nil), schema)
+    val df = sqlContext.createDataFrame(
+      sparkContext.parallelize(row :: Nil),
+      schema)
 
     withTempPath { dir =>
       df.write
@@ -823,12 +827,11 @@ class ParquetPartitionDiscoverySuite
         .partitionBy("b", "c", "d")
         .save(tablePath.getCanonicalPath)
 
-      val twoPartitionsDF =
-        sqlContext.read
-          .option("basePath", tablePath.getCanonicalPath)
-          .parquet(
-            s"${tablePath.getCanonicalPath}/b=1",
-            s"${tablePath.getCanonicalPath}/b=2")
+      val twoPartitionsDF = sqlContext.read
+        .option("basePath", tablePath.getCanonicalPath)
+        .parquet(
+          s"${tablePath.getCanonicalPath}/b=1",
+          s"${tablePath.getCanonicalPath}/b=2")
 
       checkAnswer(twoPartitionsDF, df.filter("b != 3"))
 

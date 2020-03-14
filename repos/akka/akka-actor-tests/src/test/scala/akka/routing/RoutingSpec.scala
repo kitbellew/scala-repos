@@ -61,8 +61,8 @@ class RoutingSpec
   "routers in general" must {
 
     "evict terminated routees" in {
-      val router =
-        system.actorOf(RoundRobinPool(2).props(routeeProps = Props[Echo]))
+      val router = system.actorOf(
+        RoundRobinPool(2).props(routeeProps = Props[Echo]))
       router ! ""
       router ! ""
       val c1, c2 = expectMsgType[ActorRef]
@@ -74,9 +74,10 @@ class RoutingSpec
       awaitCond {
         router ! ""
         router ! ""
-        val res = receiveWhile(100 millis, messages = 2) {
-          case x: ActorRef ⇒ x
-        }
+        val res =
+          receiveWhile(100 millis, messages = 2) {
+            case x: ActorRef ⇒ x
+          }
         res == Seq(c1, c1)
       }
       system.stop(c1)
@@ -85,13 +86,15 @@ class RoutingSpec
 
     "not terminate when resizer is used" in {
       val latch = TestLatch(1)
-      val resizer = new Resizer {
-        def isTimeForResize(messageCounter: Long): Boolean = messageCounter == 0
-        def resize(currentRoutees: immutable.IndexedSeq[Routee]): Int = {
-          latch.countDown()
-          2
+      val resizer =
+        new Resizer {
+          def isTimeForResize(messageCounter: Long): Boolean =
+            messageCounter == 0
+          def resize(currentRoutees: immutable.IndexedSeq[Routee]): Int = {
+            latch.countDown()
+            2
+          }
         }
-      }
       val router = system.actorOf(
         RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
           .props(routeeProps = Props[TestActor]))
@@ -129,13 +132,15 @@ class RoutingSpec
 
     "use specified resizer when resizer not configured" in {
       val latch = TestLatch(1)
-      val resizer = new Resizer {
-        def isTimeForResize(messageCounter: Long): Boolean = messageCounter == 0
-        def resize(currentRoutees: immutable.IndexedSeq[Routee]): Int = {
-          latch.countDown()
-          3
+      val resizer =
+        new Resizer {
+          def isTimeForResize(messageCounter: Long): Boolean =
+            messageCounter == 0
+          def resize(currentRoutees: immutable.IndexedSeq[Routee]): Int = {
+            latch.countDown()
+            3
+          }
         }
-      }
       val router = system.actorOf(
         RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
           .props(routeeProps = Props[TestActor]),
@@ -148,13 +153,14 @@ class RoutingSpec
 
     "set supplied supervisorStrategy" in {
       //#supervision
-      val escalator = OneForOneStrategy() {
-        //#custom-strategy
-        case e ⇒
-          testActor ! e;
-          SupervisorStrategy.Escalate
-        //#custom-strategy
-      }
+      val escalator =
+        OneForOneStrategy() {
+          //#custom-strategy
+          case e ⇒
+            testActor ! e;
+            SupervisorStrategy.Escalate
+          //#custom-strategy
+        }
       val router = system.actorOf(
         RoundRobinPool(1, supervisorStrategy = escalator)
           .props(routeeProps = Props[TestActor]))
@@ -177,11 +183,12 @@ class RoutingSpec
     }
 
     "set supplied supervisorStrategy for FromConfig" in {
-      val escalator = OneForOneStrategy() {
-        case e ⇒
-          testActor ! e;
-          SupervisorStrategy.Escalate
-      }
+      val escalator =
+        OneForOneStrategy() {
+          case e ⇒
+            testActor ! e;
+            SupervisorStrategy.Escalate
+        }
       val router = system.actorOf(
         FromConfig
           .withSupervisorStrategy(escalator)
@@ -195,11 +202,12 @@ class RoutingSpec
     }
 
     "default to all-for-one-always-escalate strategy" in {
-      val restarter = OneForOneStrategy() {
-        case e ⇒
-          testActor ! e;
-          SupervisorStrategy.Restart
-      }
+      val restarter =
+        OneForOneStrategy() {
+          case e ⇒
+            testActor ! e;
+            SupervisorStrategy.Restart
+        }
       val supervisor = system.actorOf(Props(new Supervisor(restarter)))
       supervisor ! RoundRobinPool(3).props(routeeProps = Props(new Actor {
         def receive = {
@@ -244,8 +252,8 @@ class RoutingSpec
         }
       }
 
-      val routedActor =
-        system.actorOf(NoRouter.props(routeeProps = Props(new Actor1)))
+      val routedActor = system.actorOf(
+        NoRouter.props(routeeProps = Props(new Actor1)))
       routedActor ! "hello"
       routedActor ! "end"
 

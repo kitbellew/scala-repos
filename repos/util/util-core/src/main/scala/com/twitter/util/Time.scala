@@ -334,97 +334,100 @@ object Time extends TimeLikeOps[Time] {
     * equal only to itself. It may be used as a sentinel value,
     * representing a time infinitely far into the future.
     */
-  val Top: Time = new Time(Long.MaxValue) {
-    override def toString = "Time.Top"
+  val Top: Time =
+    new Time(Long.MaxValue) {
+      override def toString = "Time.Top"
 
-    override def compare(that: Time) =
-      if (that eq Undefined)
-        -1
-      else if (that eq Top)
-        0
-      else
-        1
+      override def compare(that: Time) =
+        if (that eq Undefined)
+          -1
+        else if (that eq Top)
+          0
+        else
+          1
 
-    override def equals(other: Any) =
-      other match {
-        case t: Time => t eq this
-        case _       => false
-      }
+      override def equals(other: Any) =
+        other match {
+          case t: Time => t eq this
+          case _       => false
+        }
 
-    override def +(delta: Duration) =
-      delta match {
-        case Duration.Bottom | Duration.Undefined => Undefined
-        case _                                    => this // Top or finite.
-      }
+      override def +(delta: Duration) =
+        delta match {
+          case Duration.Bottom | Duration.Undefined => Undefined
+          case _                                    => this // Top or finite.
+        }
 
-    override def diff(that: Time) =
-      that match {
-        case Top | Undefined => Duration.Undefined
-        case other           => Duration.Top
-      }
+      override def diff(that: Time) =
+        that match {
+          case Top | Undefined => Duration.Undefined
+          case other           => Duration.Top
+        }
 
-    override def isFinite = false
+      override def isFinite = false
 
-    private def writeReplace(): Object = TimeBox.Top()
-  }
+      private def writeReplace(): Object = TimeBox.Top()
+    }
 
   /**
     * Time `Bottom` is smaller than any other time, and is equal only
     * to itself. It may be used as a sentinel value, representing a
     * time infinitely far in the past.
     */
-  val Bottom: Time = new Time(Long.MinValue) {
-    override def toString = "Time.Bottom"
+  val Bottom: Time =
+    new Time(Long.MinValue) {
+      override def toString = "Time.Bottom"
 
-    override def compare(that: Time) =
-      if (this eq that)
-        0
-      else
-        -1
+      override def compare(that: Time) =
+        if (this eq that)
+          0
+        else
+          -1
 
-    override def equals(other: Any) =
-      other match {
-        case t: Time => t eq this
-        case _       => false
-      }
+      override def equals(other: Any) =
+        other match {
+          case t: Time => t eq this
+          case _       => false
+        }
 
-    override def +(delta: Duration) =
-      delta match {
-        case Duration.Top | Duration.Undefined => Undefined
-        case _                                 => this
-      }
+      override def +(delta: Duration) =
+        delta match {
+          case Duration.Top | Duration.Undefined => Undefined
+          case _                                 => this
+        }
 
-    override def diff(that: Time) =
-      that match {
-        case Bottom | Undefined => Duration.Undefined
-        case other              => Duration.Bottom
-      }
+      override def diff(that: Time) =
+        that match {
+          case Bottom | Undefined => Duration.Undefined
+          case other              => Duration.Bottom
+        }
 
-    override def isFinite = false
+      override def isFinite = false
 
-    private def writeReplace(): Object = TimeBox.Bottom()
-  }
+      private def writeReplace(): Object = TimeBox.Bottom()
+    }
 
-  val Undefined: Time = new Time(0) {
-    override def toString = "Time.Undefined"
+  val Undefined: Time =
+    new Time(0) {
+      override def toString = "Time.Undefined"
 
-    override def equals(other: Any) =
-      other match {
-        case t: Time => t eq this
-        case _       => false
-      }
+      override def equals(other: Any) =
+        other match {
+          case t: Time => t eq this
+          case _       => false
+        }
 
-    override def compare(that: Time) =
-      if (this eq that)
-        0
-      else
-        1
-    override def +(delta: Duration) = this
-    override def diff(that: Time) = Duration.Undefined
-    override def isFinite = false
+      override def compare(that: Time) =
+        if (this eq that)
+          0
+        else
+          1
+      override def +(delta: Duration) = this
+      override def diff(that: Time) = Duration.Undefined
+      override def isFinite = false
 
-    private def writeReplace(): Object = TimeBox.Undefined()
-  }
+      private def writeReplace(): Object = TimeBox.Undefined()
+    }
 
   /**
     * Returns the current [[Time]].
@@ -476,20 +479,21 @@ object Time extends TimeLikeOps[Time] {
 
     Time.localGetTime.let(() => tf()) {
       Time.localGetTimer.let(tmr) {
-        val timeControl = new TimeControl {
-          def set(time: Time): Unit = {
-            tf = () => time
-            tmr.tick()
-          }
-          def advance(delta: Duration): Unit = {
-            val newTime = tf() + delta
-            /* Modifying the var here instead of resetting the local allows this method
+        val timeControl =
+          new TimeControl {
+            def set(time: Time): Unit = {
+              tf = () => time
+              tmr.tick()
+            }
+            def advance(delta: Duration): Unit = {
+              val newTime = tf() + delta
+              /* Modifying the var here instead of resetting the local allows this method
              to work inside filters or between the creation and fulfillment of Promises.
              See BackupRequestFilterTest in Finagle as an example. */
-            tf = () => newTime
-            tmr.tick()
+              tf = () => newTime
+              tmr.tick()
+            }
           }
-        }
 
         body(timeControl)
       }

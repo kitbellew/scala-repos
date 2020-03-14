@@ -33,6 +33,7 @@ object MongoRules extends SimpleInjector {
     *
     *  RecordRules.collectionName.default.set((_,name) => StringHelpers.snakify(name))
     */
-  val collectionName = new Inject[(ConnectionIdentifier, String) => String](
-    defaultCollectionNameFunc _) {}
+  val collectionName =
+    new Inject[(ConnectionIdentifier, String) => String](
+      defaultCollectionNameFunc _) {}
 }

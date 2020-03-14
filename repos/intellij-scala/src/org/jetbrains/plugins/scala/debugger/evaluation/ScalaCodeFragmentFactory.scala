@@ -46,20 +46,22 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
         val semaphore: Semaphore = new Semaphore
         semaphore.down()
         val nameRef = new AtomicReference[PsiClass]
-        val worker = new ScalaRuntimeTypeEvaluator(
-          null,
-          expr,
-          debuggerContext,
-          ProgressManager.getInstance.getProgressIndicator) {
-          override def typeCalculationFinished(psiType: PsiType): Unit = {
-            val psiClass = psiType match {
-              case tp: PsiClassType => tp.resolve()
-              case _                => null
+        val worker =
+          new ScalaRuntimeTypeEvaluator(
+            null,
+            expr,
+            debuggerContext,
+            ProgressManager.getInstance.getProgressIndicator) {
+            override def typeCalculationFinished(psiType: PsiType): Unit = {
+              val psiClass =
+                psiType match {
+                  case tp: PsiClassType => tp.resolve()
+                  case _                => null
+                }
+              nameRef.set(psiClass)
+              semaphore.up()
             }
-            nameRef.set(psiClass)
-            semaphore.up()
           }
-        }
         debuggerContext.getDebugProcess.getManagerThread.invoke(worker)
         var i: Int = 0
         while (i < 50 && !semaphore.waitFor(20)) {
@@ -133,13 +135,16 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
         val (variablesText, reverseMap): (String, Map[String, Value]) =
           markupVariablesText(markupMap)
         val offset: Int = variablesText.length - 1
-        val textWithImports: TextWithImportsImpl = new TextWithImportsImpl(
-          CodeFragmentKind.CODE_BLOCK,
-          variablesText,
-          "",
-          getFileType)
-        val codeFragment: JavaCodeFragment =
-          createCodeFragmentInner(textWithImports, context, project)
+        val textWithImports: TextWithImportsImpl =
+          new TextWithImportsImpl(
+            CodeFragmentKind.CODE_BLOCK,
+            variablesText,
+            "",
+            getFileType)
+        val codeFragment: JavaCodeFragment = createCodeFragmentInner(
+          textWithImports,
+          context,
+          project)
         codeFragment.accept(new ScalaRecursiveElementVisitor() {
           override def visitPatternDefinition(
               pat: ScPatternDefinition): Unit = {

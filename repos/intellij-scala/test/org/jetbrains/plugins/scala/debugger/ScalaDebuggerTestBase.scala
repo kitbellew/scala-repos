@@ -86,9 +86,10 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   }
 
   override def getIprFile: File = {
-    val file = new File(
-      testDataBasePath,
-      testClassName + ProjectFileType.DOT_DEFAULT_EXTENSION)
+    val file =
+      new File(
+        testDataBasePath,
+        testClassName + ProjectFileType.DOT_DEFAULT_EXTENSION)
     FileUtil.createIfDoesntExist(file)
     file
   }
@@ -110,10 +111,11 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   override def invokeTestRunnable(runnable: Runnable): Unit = runnable.run()
 
   protected def getRunProfile(module: Module, className: String) = {
-    val configuration: ApplicationConfiguration = new ApplicationConfiguration(
-      "app",
-      module.getProject,
-      ApplicationConfigurationType.getInstance)
+    val configuration: ApplicationConfiguration =
+      new ApplicationConfiguration(
+        "app",
+        module.getProject,
+        ApplicationConfigurationType.getInstance)
     configuration.setModule(module)
     configuration.setMainClassName(className)
     configuration
@@ -189,8 +191,10 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     val isSource =
       file.getName.endsWith(".java") || file.getName.endsWith(".scala")
     if (isSource) {
-      val text =
-        scala.io.Source.fromFile(file, "UTF-8").mkString.replace("\r", "")
+      val text = scala.io.Source
+        .fromFile(file, "UTF-8")
+        .mkString
+        .replace("\r", "")
       md.digest(text.getBytes("UTF8"))
     } else {
       md.digest(FileUtil.loadBytes(new FileInputStream(file)))

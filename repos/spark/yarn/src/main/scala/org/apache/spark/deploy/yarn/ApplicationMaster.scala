@@ -110,8 +110,9 @@ private[spark] class ApplicationMaster(
   // requests to RM.
   private val heartbeatInterval = {
     // Ensure that progress is sent before YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS elapses.
-    val expiryInterval =
-      yarnConf.getInt(YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS, 120000)
+    val expiryInterval = yarnConf.getInt(
+      YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS,
+      120000)
     math.max(
       0,
       math.min(expiryInterval / 2, sparkConf.get(RM_HEARTBEAT_INTERVAL)))
@@ -119,8 +120,9 @@ private[spark] class ApplicationMaster(
 
   // Initial wait interval before allocator poll, to allow for quicker ramp up when executors are
   // being requested.
-  private val initialAllocationInterval =
-    math.min(heartbeatInterval, sparkConf.get(INITIAL_HEARTBEAT_INTERVAL))
+  private val initialAllocationInterval = math.min(
+    heartbeatInterval,
+    sparkConf.get(INITIAL_HEARTBEAT_INTERVAL))
 
   // Next wait interval before allocator poll.
   private var nextAllocationInterval = initialAllocationInterval
@@ -308,26 +310,26 @@ private[spark] class ApplicationMaster(
 
     val appId = client.getAttemptId().getApplicationId().toString()
     val attemptId = client.getAttemptId().getAttemptId().toString()
-    val historyAddress =
-      sparkConf
-        .get(HISTORY_SERVER_ADDRESS)
-        .map { text =>
-          SparkHadoopUtil.get.substituteHadoopVariables(text, yarnConf)
-        }
-        .map { address =>
-          s"${address}${HistoryServer.UI_PATH_PREFIX}/${appId}/${attemptId}"
-        }
-        .getOrElse("")
+    val historyAddress = sparkConf
+      .get(HISTORY_SERVER_ADDRESS)
+      .map { text =>
+        SparkHadoopUtil.get.substituteHadoopVariables(text, yarnConf)
+      }
+      .map { address =>
+        s"${address}${HistoryServer.UI_PATH_PREFIX}/${appId}/${attemptId}"
+      }
+      .getOrElse("")
 
     val _sparkConf =
       if (sc != null)
         sc.getConf
       else
         sparkConf
-    val driverUrl = RpcEndpointAddress(
-      _sparkConf.get("spark.driver.host"),
-      _sparkConf.get("spark.driver.port").toInt,
-      CoarseGrainedSchedulerBackend.ENDPOINT_NAME).toString
+    val driverUrl =
+      RpcEndpointAddress(
+        _sparkConf.get("spark.driver.host"),
+        _sparkConf.get("spark.driver.port").toInt,
+        CoarseGrainedSchedulerBackend.ENDPOINT_NAME).toString
     allocator = client.register(
       driverUrl,
       driverRef,
@@ -416,72 +418,75 @@ private[spark] class ApplicationMaster(
     // The number of failures in a row until Reporter thread give up
     val reporterMaxFailures = sparkConf.get(MAX_REPORTER_THREAD_FAILURES)
 
-    val t = new Thread {
-      override def run() {
-        var failureCount = 0
-        while (!finished) {
-          try {
-            if (allocator.getNumExecutorsFailed >= maxNumExecutorFailures) {
-              finish(
-                FinalApplicationStatus.FAILED,
-                ApplicationMaster.EXIT_MAX_EXECUTOR_FAILURES,
-                s"Max number of executor failures ($maxNumExecutorFailures) reached")
-            } else {
-              logDebug("Sending progress")
-              allocator.allocateResources()
-            }
-            failureCount = 0
-          } catch {
-            case i: InterruptedException =>
-            case e: Throwable => {
-              failureCount += 1
-              // this exception was introduced in hadoop 2.4 and this code would not compile
-              // with earlier versions if we refer it directly.
-              if ("org.apache.hadoop.yarn.exceptions.ApplicationAttemptNotFoundException" ==
-                    e.getClass().getName()) {
-                logError("Exception from Reporter thread.", e)
+    val t =
+      new Thread {
+        override def run() {
+          var failureCount = 0
+          while (!finished) {
+            try {
+              if (allocator.getNumExecutorsFailed >= maxNumExecutorFailures) {
                 finish(
                   FinalApplicationStatus.FAILED,
-                  ApplicationMaster.EXIT_REPORTER_FAILURE,
-                  e.getMessage)
-              } else if (!NonFatal(e) || failureCount >= reporterMaxFailures) {
-                finish(
-                  FinalApplicationStatus.FAILED,
-                  ApplicationMaster.EXIT_REPORTER_FAILURE,
-                  "Exception was thrown " +
-                    s"$failureCount time(s) from Reporter thread.")
+                  ApplicationMaster.EXIT_MAX_EXECUTOR_FAILURES,
+                  s"Max number of executor failures ($maxNumExecutorFailures) reached")
               } else {
-                logWarning(
-                  s"Reporter thread fails $failureCount time(s) in a row.",
-                  e)
+                logDebug("Sending progress")
+                allocator.allocateResources()
+              }
+              failureCount = 0
+            } catch {
+              case i: InterruptedException =>
+              case e: Throwable => {
+                failureCount += 1
+                // this exception was introduced in hadoop 2.4 and this code would not compile
+                // with earlier versions if we refer it directly.
+                if ("org.apache.hadoop.yarn.exceptions.ApplicationAttemptNotFoundException" ==
+                      e.getClass().getName()) {
+                  logError("Exception from Reporter thread.", e)
+                  finish(
+                    FinalApplicationStatus.FAILED,
+                    ApplicationMaster.EXIT_REPORTER_FAILURE,
+                    e.getMessage)
+                } else if (!NonFatal(
+                             e) || failureCount >= reporterMaxFailures) {
+                  finish(
+                    FinalApplicationStatus.FAILED,
+                    ApplicationMaster.EXIT_REPORTER_FAILURE,
+                    "Exception was thrown " +
+                      s"$failureCount time(s) from Reporter thread.")
+                } else {
+                  logWarning(
+                    s"Reporter thread fails $failureCount time(s) in a row.",
+                    e)
+                }
               }
             }
-          }
-          try {
-            val numPendingAllocate = allocator.getPendingAllocate.size
-            allocatorLock.synchronized {
-              val sleepInterval =
-                if (numPendingAllocate > 0 || allocator.getNumPendingLossReasonRequests > 0) {
-                  val currentAllocationInterval =
-                    math.min(heartbeatInterval, nextAllocationInterval)
-                  nextAllocationInterval =
-                    currentAllocationInterval * 2 // avoid overflow
-                  currentAllocationInterval
-                } else {
-                  nextAllocationInterval = initialAllocationInterval
-                  heartbeatInterval
-                }
-              logDebug(
-                s"Number of pending allocations is $numPendingAllocate. " +
-                  s"Sleeping for $sleepInterval.")
-              allocatorLock.wait(sleepInterval)
+            try {
+              val numPendingAllocate = allocator.getPendingAllocate.size
+              allocatorLock.synchronized {
+                val sleepInterval =
+                  if (numPendingAllocate > 0 || allocator.getNumPendingLossReasonRequests > 0) {
+                    val currentAllocationInterval = math.min(
+                      heartbeatInterval,
+                      nextAllocationInterval)
+                    nextAllocationInterval =
+                      currentAllocationInterval * 2 // avoid overflow
+                    currentAllocationInterval
+                  } else {
+                    nextAllocationInterval = initialAllocationInterval
+                    heartbeatInterval
+                  }
+                logDebug(
+                  s"Number of pending allocations is $numPendingAllocate. " +
+                    s"Sleeping for $sleepInterval.")
+                allocatorLock.wait(sleepInterval)
+              }
+            } catch {
+              case e: InterruptedException =>
             }
-          } catch {
-            case e: InterruptedException =>
           }
         }
       }
-    }
     // setting to daemon status, though this is usually not a good idea.
     t.setDaemon(true)
     t.setName("Reporter")
@@ -575,8 +580,8 @@ private[spark] class ApplicationMaster(
 
   /** Add the Yarn IP filter that is required for properly securing the UI. */
   private def addAmIpFilter() = {
-    val proxyBase =
-      System.getenv(ApplicationConstants.APPLICATION_WEB_PROXY_BASE_ENV)
+    val proxyBase = System.getenv(
+      ApplicationConstants.APPLICATION_WEB_PROXY_BASE_ENV)
     val amFilter = "org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter"
     val params = client.getAmIpFilterParams(yarnConf, proxyBase)
     if (isClusterMode) {
@@ -623,33 +628,34 @@ private[spark] class ApplicationMaster(
       .loadClass(args.userClass)
       .getMethod("main", classOf[Array[String]])
 
-    val userThread = new Thread {
-      override def run() {
-        try {
-          mainMethod.invoke(null, userArgs.toArray)
-          finish(
-            FinalApplicationStatus.SUCCEEDED,
-            ApplicationMaster.EXIT_SUCCESS)
-          logDebug("Done running users class")
-        } catch {
-          case e: InvocationTargetException =>
-            e.getCause match {
-              case _: InterruptedException =>
-              // Reporter thread can interrupt to stop user class
-              case SparkUserAppException(exitCode) =>
-                val msg = s"User application exited with status $exitCode"
-                logError(msg)
-                finish(FinalApplicationStatus.FAILED, exitCode, msg)
-              case cause: Throwable =>
-                logError("User class threw exception: " + cause, cause)
-                finish(
-                  FinalApplicationStatus.FAILED,
-                  ApplicationMaster.EXIT_EXCEPTION_USER_CLASS,
-                  "User class threw exception: " + cause)
-            }
+    val userThread =
+      new Thread {
+        override def run() {
+          try {
+            mainMethod.invoke(null, userArgs.toArray)
+            finish(
+              FinalApplicationStatus.SUCCEEDED,
+              ApplicationMaster.EXIT_SUCCESS)
+            logDebug("Done running users class")
+          } catch {
+            case e: InvocationTargetException =>
+              e.getCause match {
+                case _: InterruptedException =>
+                // Reporter thread can interrupt to stop user class
+                case SparkUserAppException(exitCode) =>
+                  val msg = s"User application exited with status $exitCode"
+                  logError(msg)
+                  finish(FinalApplicationStatus.FAILED, exitCode, msg)
+                case cause: Throwable =>
+                  logError("User class threw exception: " + cause, cause)
+                  finish(
+                    FinalApplicationStatus.FAILED,
+                    ApplicationMaster.EXIT_EXCEPTION_USER_CLASS,
+                    "User class threw exception: " + cause)
+              }
+          }
         }
       }
-    }
     userThread.setContextClassLoader(userClassLoader)
     userThread.setName("Driver")
     userThread.start()

@@ -115,9 +115,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       txLogSchedulerSize: Int = 20)
       extends Logging { // default for now, should come from config in the future
 
-    private final val txLogScheduler = new ScheduledThreadPoolExecutor(
-      txLogSchedulerSize,
-      new ThreadFactoryBuilder().setNameFormat("HOWL-sched-%03d").build())
+    private final val txLogScheduler =
+      new ScheduledThreadPoolExecutor(
+        txLogSchedulerSize,
+        new ThreadFactoryBuilder().setNameFormat("HOWL-sched-%03d").build())
 
     private implicit val futureMonad = new FutureMonad(actorSystem.dispatcher)
 
@@ -245,8 +246,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         blobResult <- IOT {
           writeResult traverse { size =>
             logger.debug("Write complete on " + file)
-            val metadata =
-              BlobMetadata(mimeType, size, clock.now(), authorities)
+            val metadata = BlobMetadata(
+              mimeType,
+              size,
+              clock.now(),
+              authorities)
             //val metadataStore = PersistentJValue(versionDir, blobMetadataFilename)
             //metadataStore.json = metadata.serialize
             IOUtils.writeToFile(
@@ -688,11 +692,12 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         versionLog.find(version) map {
           case VersionEntry(v, _, _) =>
             val dir = versionDir(v)
-            val openf = if (NIHDB.hasProjection(dir)) {
-              resourceBuilder.openNIHDB _
-            } else {
-              resourceBuilder.openBlob _
-            }
+            val openf =
+              if (NIHDB.hasProjection(dir)) {
+                resourceBuilder.openNIHDB _
+              } else {
+                resourceBuilder.openBlob _
+              }
 
             for {
               resource <- EitherT {
@@ -932,8 +937,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
             case StreamRef.Append =>
               logger.trace("Received append for %s".format(path.path))
-              val streamId =
-                versionLog.current.map(_.id).getOrElse(UUID.randomUUID())
+              val streamId = versionLog.current
+                .map(_.id)
+                .getOrElse(UUID.randomUUID())
               for {
                 _ <- persistNIHDB(
                   canCreate(msg.path, permissions(apiKey), msg.writeAs),
@@ -1018,22 +1024,24 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         logger.debug("Received Read request " + msg)
 
         val requestor = sender
-        val io: IO[ReadResult] = version match {
-          case Version.Current =>
-            versionLog.current map { v =>
-              openResource(v.id)
-                .fold(PathOpFailure(path, _), ReadSuccess(path, _))
-            } getOrElse {
-              IO(
-                PathOpFailure(
-                  path,
-                  NotFound(
-                    "No current version found for path %s".format(path.path))))
-            }
+        val io: IO[ReadResult] =
+          version match {
+            case Version.Current =>
+              versionLog.current map { v =>
+                openResource(v.id)
+                  .fold(PathOpFailure(path, _), ReadSuccess(path, _))
+              } getOrElse {
+                IO(
+                  PathOpFailure(
+                    path,
+                    NotFound("No current version found for path %s".format(
+                      path.path))))
+              }
 
-          case Version.Archived(id) =>
-            openResource(id).fold(PathOpFailure(path, _), ReadSuccess(path, _))
-        }
+            case Version.Archived(id) =>
+              openResource(id)
+                .fold(PathOpFailure(path, _), ReadSuccess(path, _))
+          }
 
         io.map(requestor ! _).unsafePerformIO
 

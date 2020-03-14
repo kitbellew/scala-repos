@@ -41,11 +41,12 @@ object LocSpec extends Specification {
     }
 
     "calculate href for menu with parameters" in {
-      val loc = (Menu.param[Param](
-        "Test",
-        "Test",
-        s => Full(Param(s)),
-        p => p.s) / "foo" / "bar" / *).toLoc
+      val loc =
+        (Menu.param[Param](
+          "Test",
+          "Test",
+          s => Full(Param(s)),
+          p => p.s) / "foo" / "bar" / *).toLoc
       loc.calcHref(Param("myparam")) mustEqual "/foo/bar/myparam"
     }
 
@@ -99,8 +100,8 @@ object LocSpec extends Specification {
       testS(mockReq) {
         testReq(mockReq) { req =>
           val rrq = new RewriteRequest(req.path, GetRequest, req.request)
-          val rewriteFn =
-            testLoc.rewrite.openOrThrowException("No rewrite function")
+          val rewriteFn = testLoc.rewrite.openOrThrowException(
+            "No rewrite function")
 
           rewriteFn(rrq) must not(throwA[Exception])
           rewriteFn(rrq)._2 must_== Empty

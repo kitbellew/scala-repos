@@ -34,12 +34,10 @@ class StatsReceiverBenchmark extends StdBenchAnnotations {
     add(addState, state.ostrichStat)
 
   @Benchmark
-  def incrOstrich(state: CounterState): Unit =
-    state.ostrichCounter.incr()
+  def incrOstrich(state: CounterState): Unit = state.ostrichCounter.incr()
 
   @Benchmark
-  def queryOstrich(state: QueryState): StatsSummary =
-    state.ostrichGet()
+  def queryOstrich(state: QueryState): StatsSummary = state.ostrichGet()
 
   // ----- Commons Metrics ------
 
@@ -80,8 +78,7 @@ class StatsReceiverBenchmark extends StdBenchAnnotations {
     add(addState, state.statsStat)
 
   @Benchmark
-  def incrStatsCommons(state: CounterState): Unit =
-    state.statsCounter.incr()
+  def incrStatsCommons(state: CounterState): Unit = state.statsCounter.incr()
 
   @Benchmark
   def queryStatsCommons(state: QueryState): java.lang.Iterable[CStat[_]] =
@@ -91,15 +88,17 @@ class StatsReceiverBenchmark extends StdBenchAnnotations {
 object StatsReceiverBenchmark {
   private[this] val ostrich = new OstrichStatsReceiver
 
-  private[this] val metrics = new MetricsStatsReceiver(
-    Metrics.createDetached(),
-    Sink.default,
-    (n: String) => new Histogram(n))
+  private[this] val metrics =
+    new MetricsStatsReceiver(
+      Metrics.createDetached(),
+      Sink.default,
+      (n: String) => new Histogram(n))
 
-  private[this] val metricsBucketed = new MetricsStatsReceiver(
-    Metrics.createDetached(),
-    Sink.default,
-    (n: String) => new MetricsBucketedHistogram(n))
+  private[this] val metricsBucketed =
+    new MetricsStatsReceiver(
+      Metrics.createDetached(),
+      Sink.default,
+      (n: String) => new MetricsBucketedHistogram(n))
 
   private[this] val stats = new CommonsStatsReceiver
 

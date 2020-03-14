@@ -116,11 +116,12 @@ trait ContentHelpers {
       onReceiveBody: (Context, Intent) => Any)(implicit
       ctx: Context,
       reg: Registerable) {
-    val receiver = new BroadcastReceiver {
-      def onReceive(context: Context, intent: Intent) {
-        onReceiveBody(context, intent)
+    val receiver =
+      new BroadcastReceiver {
+        def onReceive(context: Context, intent: Intent) {
+          onReceiveBody(context, intent)
+        }
       }
-    }
     reg.onRegister(ctx.registerReceiver(receiver, filter))
     reg.onUnregister(ctx.unregisterReceiver(receiver))
   }
@@ -141,11 +142,12 @@ trait ContentHelpers {
     */
   def broadcastReceiver(filterString: String)(
       onReceiveBody: => Any)(implicit ctx: Context, reg: Registerable) {
-    val receiver = new BroadcastReceiver {
-      def onReceive(context: Context, intent: Intent) {
-        onReceiveBody
+    val receiver =
+      new BroadcastReceiver {
+        def onReceive(context: Context, intent: Intent) {
+          onReceiveBody
+        }
       }
-    }
     val filter = new IntentFilter()
     filter.addAction(filterString)
     reg.onRegister(ctx.registerReceiver(receiver, filter))

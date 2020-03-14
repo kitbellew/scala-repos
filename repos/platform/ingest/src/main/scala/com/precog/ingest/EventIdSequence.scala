@@ -84,8 +84,8 @@ object SystemEventIdSequence {
       extends Exception("Unable to retrieve relay agent state.")
 
   private[ingest] case class InternalState(eventRelayState: EventRelayState) {
-    private val nextSequenceId = new AtomicInteger(
-      eventRelayState.nextSequenceId)
+    private val nextSequenceId =
+      new AtomicInteger(eventRelayState.nextSequenceId)
 
     val block = eventRelayState.idSequenceBlock
     val lastOffset = eventRelayState.offset

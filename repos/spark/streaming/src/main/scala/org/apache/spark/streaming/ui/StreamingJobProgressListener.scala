@@ -34,8 +34,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
   private val waitingBatchUIData = new HashMap[Time, BatchUIData]
   private val runningBatchUIData = new HashMap[Time, BatchUIData]
   private val completedBatchUIData = new Queue[BatchUIData]
-  private val batchUIDataLimit =
-    ssc.conf.getInt("spark.streaming.ui.retainedBatches", 1000)
+  private val batchUIDataLimit = ssc.conf
+    .getInt("spark.streaming.ui.retainedBatches", 1000)
   private var totalCompletedBatches = 0L
   private var totalReceivedRecords = 0L
   private var totalProcessedRecords = 0L
@@ -94,8 +94,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
   override def onBatchSubmitted(
       batchSubmitted: StreamingListenerBatchSubmitted): Unit = {
     synchronized {
-      waitingBatchUIData(batchSubmitted.batchInfo.batchTime) =
-        BatchUIData(batchSubmitted.batchInfo)
+      waitingBatchUIData(batchSubmitted.batchInfo.batchTime) = BatchUIData(
+        batchSubmitted.batchInfo)
     }
   }
 
@@ -147,8 +147,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     synchronized {
       getBatchTimeAndOutputOpId(jobStart.properties).foreach {
         case (batchTime, outputOpId) =>
-          var outputOpIdToSparkJobIds =
-            batchTimeToOutputOpIdSparkJobIdPair.get(batchTime)
+          var outputOpIdToSparkJobIds = batchTimeToOutputOpIdSparkJobIdPair.get(
+            batchTime)
           if (outputOpIdToSparkJobIds == null) {
             outputOpIdToSparkJobIds =
               new ConcurrentLinkedQueue[OutputOpIdAndSparkJobId]()
@@ -168,8 +168,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
       // Not submitted from JobScheduler
       None
     } else {
-      val outputOpId =
-        properties.getProperty(JobScheduler.OUTPUT_OP_ID_PROPERTY_KEY)
+      val outputOpId = properties.getProperty(
+        JobScheduler.OUTPUT_OP_ID_PROPERTY_KEY)
       assert(outputOpId != null)
       Some(Time(batchTime.toLong) -> outputOpId.toInt)
     }
@@ -257,8 +257,8 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
 
   def lastReceivedBatchRecords: Map[Int, Long] =
     synchronized {
-      val lastReceivedBlockInfoOption =
-        lastReceivedBatch.map(_.streamIdToInputInfo.mapValues(_.numRecords))
+      val lastReceivedBlockInfoOption = lastReceivedBatch.map(
+        _.streamIdToInputInfo.mapValues(_.numRecords))
       lastReceivedBlockInfoOption
         .map { lastReceivedBlockInfo =>
           streamIds.map { streamId =>
@@ -302,9 +302,9 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
       batchUIData.foreach { _batchUIData =>
         // We use an Iterable rather than explicitly converting to a seq so that updates
         // will propagate
-        val outputOpIdToSparkJobIds: Iterable[OutputOpIdAndSparkJobId] =
-          Option(batchTimeToOutputOpIdSparkJobIdPair.get(batchTime).asScala)
-            .getOrElse(Seq.empty)
+        val outputOpIdToSparkJobIds: Iterable[OutputOpIdAndSparkJobId] = Option(
+          batchTimeToOutputOpIdSparkJobIdPair.get(batchTime).asScala)
+          .getOrElse(Seq.empty)
         _batchUIData.outputOpIdSparkJobIdPairs = outputOpIdToSparkJobIds
       }
       batchUIData

@@ -31,8 +31,8 @@ object InlineWarningTest extends ClearAfterClass.Clearable {
   val argsNoWarn = "-Yopt:l:classpath"
   val args = argsNoWarn + " -Yopt-warnings"
   var compiler = newCompiler(extraArgs = args)
-  var compilerWarnAll =
-    newCompiler(extraArgs = argsNoWarn + " -Yopt-warnings:_")
+  var compilerWarnAll = newCompiler(extraArgs =
+    argsNoWarn + " -Yopt-warnings:_")
   def clear(): Unit = {
     compiler = null;
     compilerWarnAll = null
@@ -56,8 +56,7 @@ class InlineWarningTest extends ClearAfterClass {
 
   @Test
   def nonFinal(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  @inline def m1 = 1
         |}
         |trait T {
@@ -90,11 +89,12 @@ class InlineWarningTest extends ClearAfterClass {
     val codeA = "trait T { @inline final def f = 1 }"
     val codeB = "class C { def t1(t: T) = t.f }"
 
-    val removeImpl = (outDir: AbstractFile) => {
-      val f = outDir.lookupName("T$class.class", directory = false)
-      if (f != null)
-        f.delete()
-    }
+    val removeImpl =
+      (outDir: AbstractFile) => {
+        val f = outDir.lookupName("T$class.class", directory = false)
+        if (f != null)
+          f.delete()
+      }
 
     val warn =
       """T::f()I is annotated @inline but cannot be inlined: the trait method call could not be rewritten to the static implementation method. Possible reason:
@@ -142,14 +142,12 @@ class InlineWarningTest extends ClearAfterClass {
 
   @Test
   def mixedWarnings(): Unit = {
-    val javaCode =
-      """public class A {
+    val javaCode = """public class A {
         |  public static final int bar() { return 100; }
         |}
       """.stripMargin
 
-    val scalaCode =
-      """class B {
+    val scalaCode = """class B {
         |  @inline final def flop = A.bar
         |  def g = flop
         |}
@@ -197,8 +195,7 @@ class InlineWarningTest extends ClearAfterClass {
 
   @Test
   def cannotInlinePrivateCallIntoDifferentClass(): Unit = {
-    val code =
-      """class M {
+    val code = """class M {
         |  @inline final def f = {
         |    @noinline def nested = 0
         |    nested
@@ -229,8 +226,7 @@ class InlineWarningTest extends ClearAfterClass {
 
   @Test
   def dontWarnWhenNotIlnineAnnotated(): Unit = {
-    val code =
-      """class M {
+    val code = """class M {
         |  final def f(t: Int => Int) = {
         |    @noinline def nested = 0
         |    nested + t(1)
@@ -262,8 +258,7 @@ class InlineWarningTest extends ClearAfterClass {
 
   @Test
   def cannotMixStrictfp(): Unit = {
-    val code =
-      """import annotation.strictfp
+    val code = """import annotation.strictfp
         |class C {
         |  @strictfp @inline final def f = 0
         |  @strictfp def t1 = f
@@ -271,8 +266,7 @@ class InlineWarningTest extends ClearAfterClass {
         |}
       """.stripMargin
 
-    val warn =
-      """C::f()I is annotated @inline but could not be inlined:
+    val warn = """C::f()I is annotated @inline but could not be inlined:
         |The callsite method C::t2()I
         |does not have the same strictfp mode as the callee C::f()I.""".stripMargin
 

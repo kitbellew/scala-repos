@@ -59,10 +59,11 @@ class TopicConfigHandler(
           None
     }
 
-    val logs = logManager.logsByTopicPartition
-      .filterKeys(_.topic == topic)
-      .values
-      .toBuffer
+    val logs =
+      logManager.logsByTopicPartition
+        .filterKeys(_.topic == topic)
+        .values
+        .toBuffer
     if (logs.nonEmpty) {
       /* combine the default properties with the overrides in zk to create the new LogConfig */
       val props = new Properties()

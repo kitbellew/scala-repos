@@ -37,29 +37,29 @@ object InputMethodHighlight
       jfxsi.InputMethodHighlight,
       InputMethodHighlight] {
 
-  val UnselectedRaw = new InputMethodHighlight(
-    jfxsi.InputMethodHighlight.UNSELECTED_RAW)
+  val UnselectedRaw =
+    new InputMethodHighlight(jfxsi.InputMethodHighlight.UNSELECTED_RAW)
   @deprecated(
     "Use UnselectedRaw; UNSELECTED_RAW will be removed in a future release",
     "8.0.60-R10")
   val UNSELECTED_RAW = UnselectedRaw
 
-  val SelectedRaw = new InputMethodHighlight(
-    jfxsi.InputMethodHighlight.SELECTED_RAW)
+  val SelectedRaw =
+    new InputMethodHighlight(jfxsi.InputMethodHighlight.SELECTED_RAW)
   @deprecated(
     "Use SelectedRaw; SELECTED_RAW will be removed in a future release",
     "8.0.60-R10")
   val SELECTED_RAW = SelectedRaw
 
-  val UnselectedConverted = new InputMethodHighlight(
-    jfxsi.InputMethodHighlight.UNSELECTED_CONVERTED)
+  val UnselectedConverted =
+    new InputMethodHighlight(jfxsi.InputMethodHighlight.UNSELECTED_CONVERTED)
   @deprecated(
     "Use UnselectedConverted; UNSELECTED_CONVERTED will be removed in a future release",
     "8.0.60-R10")
   val UNSELECTED_CONVERTED = UnselectedConverted
 
-  val SelectedConverted = new InputMethodHighlight(
-    jfxsi.InputMethodHighlight.SELECTED_CONVERTED)
+  val SelectedConverted =
+    new InputMethodHighlight(jfxsi.InputMethodHighlight.SELECTED_CONVERTED)
   @deprecated(
     "Use SelectedConverted; SELECTED_CONVERTED will be removed in a future release",
     "8.0.60-R10")

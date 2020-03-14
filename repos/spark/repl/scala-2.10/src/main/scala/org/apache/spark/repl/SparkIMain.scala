@@ -106,8 +106,9 @@ class SparkIMain(
 
   /** Local directory to save .class files too */
   private[repl] val outputDir = {
-    val rootDir =
-      conf.getOption("spark.repl.classdir").getOrElse(Utils.getLocalDir(conf))
+    val rootDir = conf
+      .getOption("spark.repl.classdir")
+      .getOrElse(Utils.getLocalDir(conf))
     Utils.createTempDir(root = rootDir, namePrefix = "repl")
   }
   if (SPARK_DEBUG_REPL) {
@@ -142,8 +143,10 @@ class SparkIMain(
     *  on the future.
     */
   private var _classLoader: AbstractFileClassLoader = null // active classloader
-  private val _compiler: Global =
-    newCompiler(settings, reporter) // our private compiler
+  private val _compiler: Global = newCompiler(
+    settings,
+    reporter
+  ) // our private compiler
 
   private trait ExposeAddUrl extends URLClassLoader {
     def addNewUrl(url: URL) = this.addURL(url)
@@ -190,15 +193,17 @@ class SparkIMain(
     this(settings, new NewLinePrintWriter(new ConsoleWriter, true))
   def this() = this(new Settings())
 
-  private lazy val repllog: Logger = new Logger {
-    val out: JPrintWriter = imain.out
-    val isInfo: Boolean = BooleanProp keyExists "scala.repl.info"
-    val isDebug: Boolean = BooleanProp keyExists "scala.repl.debug"
-    val isTrace: Boolean = BooleanProp keyExists "scala.repl.trace"
-  }
-  private[repl] lazy val formatting: Formatting = new Formatting {
-    val prompt = Properties.shellPromptString
-  }
+  private lazy val repllog: Logger =
+    new Logger {
+      val out: JPrintWriter = imain.out
+      val isInfo: Boolean = BooleanProp keyExists "scala.repl.info"
+      val isDebug: Boolean = BooleanProp keyExists "scala.repl.debug"
+      val isTrace: Boolean = BooleanProp keyExists "scala.repl.trace"
+    }
+  private[repl] lazy val formatting: Formatting =
+    new Formatting {
+      val prompt = Properties.shellPromptString
+    }
 
   // NOTE: Exposed to repl package since used by SparkExprTyper and SparkILoop
   private[repl] lazy val reporter: ConsoleReporter =
@@ -334,9 +339,10 @@ class SparkIMain(
   } with StructuredTypeStrings
 
   // NOTE: Exposed to repl package since used by SparkImports
-  private[repl] lazy val memberHandlers = new {
-    val intp: imain.type = imain
-  } with SparkMemberHandlers
+  private[repl] lazy val memberHandlers =
+    new {
+      val intp: imain.type = imain
+    } with SparkMemberHandlers
   import memberHandlers._
 
   /**
@@ -468,9 +474,10 @@ class SparkIMain(
     val newClassPath = mergeUrlsIntoClassPath(platform, urls: _*)
 
     // NOTE: Must use reflection until this is exposed/fixed upstream in Scala
-    val fieldSetter = platform.getClass.getMethods
-      .find(_.getName.endsWith("currentClassPath_$eq"))
-      .get
+    val fieldSetter =
+      platform.getClass.getMethods
+        .find(_.getName.endsWith("currentClassPath_$eq"))
+        .get
     fieldSetter.invoke(platform, Some(newClassPath))
 
     // Reload all jars specified into our compiler
@@ -481,22 +488,25 @@ class SparkIMain(
       platform: JavaPlatform,
       urls: URL*): MergedClassPath[AbstractFile] = {
     // Collect our new jars/directories and add them to the existing set of classpaths
-    val allClassPaths = (
-      platform.classPath.asInstanceOf[MergedClassPath[AbstractFile]].entries ++
-        urls.map(url => {
-          platform.classPath.context.newClassPath(
-            if (url.getProtocol == "file") {
-              val f = new File(url.getPath)
-              if (f.isDirectory)
-                io.AbstractFile.getDirectory(f)
-              else
-                io.AbstractFile.getFile(f)
-            } else {
-              io.AbstractFile.getURL(url)
-            }
-          )
-        })
-    ).distinct
+    val allClassPaths =
+      (
+        platform.classPath
+          .asInstanceOf[MergedClassPath[AbstractFile]]
+          .entries ++
+          urls.map(url => {
+            platform.classPath.context.newClassPath(
+              if (url.getProtocol == "file") {
+                val f = new File(url.getPath)
+                if (f.isDirectory)
+                  io.AbstractFile.getDirectory(f)
+                else
+                  io.AbstractFile.getFile(f)
+              } else {
+                io.AbstractFile.getURL(url)
+              }
+            )
+          })
+      ).distinct
 
     // Combine all of our classpaths (old and new) into one merged classpath
     new MergedClassPath(allClassPaths, platform.classPath.context)
@@ -793,11 +803,12 @@ class SparkIMain(
       line: String,
       synthetic: Boolean): Either[IR.Result, Request] = {
     val content = indentCode(line)
-    val trees = parse(content) match {
-      case None        => return Left(IR.Incomplete)
-      case Some(Nil)   => return Left(IR.Error) // parse error or empty input
-      case Some(trees) => trees
-    }
+    val trees =
+      parse(content) match {
+        case None        => return Left(IR.Incomplete)
+        case Some(Nil)   => return Left(IR.Error) // parse error or empty input
+        case Some(trees) => trees
+      }
     logDebug(
       trees map (t => {
         // [Eugene to Paul] previously it just said `t map ...`
@@ -842,8 +853,9 @@ class SparkIMain(
               val (raw1, raw2) = content splitAt lastpos0
               logDebug("[raw] " + raw1 + "   <--->   " + raw2)
 
-              val adjustment = (raw1.reverse takeWhile (ch =>
-                (ch != ';') && (ch != '\n'))).size
+              val adjustment =
+                (raw1.reverse takeWhile (ch =>
+                  (ch != ';') && (ch != '\n'))).size
               val lastpos = lastpos0 - adjustment
 
               // the source code split at the laboriously determined position.
@@ -1209,12 +1221,13 @@ class SparkIMain(
     }
 
     lazy val evalClass = load(evalPath)
-    lazy val evalValue = callEither(resultName) match {
-      case Left(ex) =>
-        evalCaught = Some(ex);
-        None
-      case Right(result) => Some(result)
-    }
+    lazy val evalValue =
+      callEither(resultName) match {
+        case Left(ex) =>
+          evalCaught = Some(ex);
+          None
+        case Right(result) => Some(result)
+      }
 
     def compile(source: String): Boolean =
       compileAndSaveRun("<console>", source)
@@ -1226,10 +1239,9 @@ class SparkIMain(
       // val readRoot  = getRequiredModule(readPath)   // the outermost wrapper
       // MATEI: Changed this to getClass because the root object is no longer a module (Scala singleton object)
 
-      val readRoot =
-        rootMirror.getClassByName(
-          newTypeName(readPath)
-        ) // the outermost wrapper
+      val readRoot = rootMirror.getClassByName(
+        newTypeName(readPath)
+      ) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
         case (sym, "")   => sym
         case (sym, name) => afterTyper(termMember(sym, name))
@@ -1597,8 +1609,7 @@ class SparkIMain(
     * @return Some containing term name (id) class if exists, else None
     */
   @DeveloperApi
-  def classOfTerm(id: String): Option[JClass] =
-    valueOfTerm(id) map (_.getClass)
+  def classOfTerm(id: String): Option[JClass] = valueOfTerm(id) map (_.getClass)
 
   /**
     * Retrieves the type representing the id (variable name, method name,
@@ -1714,8 +1725,7 @@ class SparkIMain(
     * @return The Symbol or NoSymbol (found under scala.reflect.internal)
     */
   @DeveloperApi
-  def symbolOfLine(code: String): Symbol =
-    exprTyper.symbolOfLine(code)
+  def symbolOfLine(code: String): Symbol = exprTyper.symbolOfLine(code)
 
   /**
     * Constructs type information based on the provided expression's final
@@ -1791,8 +1801,7 @@ class SparkIMain(
 
   /** Translate a repl-defined identifier into a Symbol.
     */
-  private def apply(name: String): Symbol =
-    types(name) orElse terms(name)
+  private def apply(name: String): Symbol = types(name) orElse terms(name)
 
   private def types(name: String): Symbol = {
     val tpname = newTypeName(name)

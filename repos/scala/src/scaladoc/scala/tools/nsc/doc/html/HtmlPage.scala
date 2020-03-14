@@ -96,11 +96,9 @@ abstract class HtmlPage extends Page { thisPage =>
     (comment map (commentToHtml(_))) getOrElse NodeSeq.Empty
 
   /** Transforms a comment into an styled HTML tree representing its body. */
-  def commentToHtml(comment: Comment): NodeSeq =
-    bodyToHtml(comment.body)
+  def commentToHtml(comment: Comment): NodeSeq = bodyToHtml(comment.body)
 
-  def bodyToHtml(body: Body): NodeSeq =
-    body.blocks flatMap (blockToHtml(_))
+  def bodyToHtml(body: Body): NodeSeq = body.blocks flatMap (blockToHtml(_))
 
   def blockToHtml(block: Block): NodeSeq =
     block match {

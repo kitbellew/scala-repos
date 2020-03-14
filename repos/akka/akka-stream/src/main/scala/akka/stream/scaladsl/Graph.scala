@@ -191,10 +191,11 @@ final class MergePreferred[T] private (
 
       setHandler(out, eagerTerminateOutput)
 
-      val pullMe = Array.tabulate(secondaryPorts)(i ⇒ {
-        val port = in(i)
-        () ⇒ tryPull(port)
-      })
+      val pullMe =
+        Array.tabulate(secondaryPorts)(i ⇒ {
+          val port = in(i)
+          () ⇒ tryPull(port)
+        })
 
       /*
        * This determines the unfairness of the merge:
@@ -221,13 +222,14 @@ final class MergePreferred[T] private (
             tryPull(preferred)
           }
 
-          val emitted = () ⇒ {
-            preferredEmitting -= 1
-            if (isAvailable(preferred))
-              emitPreferred()
-            else if (preferredEmitting == 0)
-              emitSecondary()
-          }
+          val emitted =
+            () ⇒ {
+              preferredEmitting -= 1
+              if (isAvailable(preferred))
+                emitPreferred()
+              else if (preferredEmitting == 0)
+                emitSecondary()
+            }
 
           def emitSecondary(): Unit = {
             var i = 0
@@ -319,10 +321,11 @@ final class Interleave[T] private (
       private def switchToNextInput(): Unit = {
         @tailrec
         def nextInletIndex(index: Int): Int = {
-          val successor = index + 1 match {
-            case `inputPorts` ⇒ 0
-            case x ⇒ x
-          }
+          val successor =
+            index + 1 match {
+              case `inputPorts` ⇒ 0
+              case x ⇒ x
+            }
           if (!isClosed(in(successor)))
             successor
           else {
@@ -418,22 +421,24 @@ final class MergeSorted[T: Ordering] extends GraphStage[FanInShape2[T, T, T]] {
 
       val dispatchR = dispatch(other, _: T)
       val dispatchL = dispatch(_: T, other)
-      val passR = () ⇒
-        emit(
-          out,
-          other,
-          () ⇒ {
-            nullOut();
-            passAlong(right, out, doPull = true)
-          })
-      val passL = () ⇒
-        emit(
-          out,
-          other,
-          () ⇒ {
-            nullOut();
-            passAlong(left, out, doPull = true)
-          })
+      val passR =
+        () ⇒
+          emit(
+            out,
+            other,
+            () ⇒ {
+              nullOut();
+              passAlong(right, out, doPull = true)
+            })
+      val passL =
+        () ⇒
+          emit(
+            out,
+            other,
+            () ⇒ {
+              nullOut();
+              passAlong(left, out, doPull = true)
+            })
       val readR = () ⇒ read(right)(dispatchR, passL)
       val readL = () ⇒ read(left)(dispatchL, passR)
 
@@ -595,8 +600,9 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
   val in: Inlet[T] = Inlet[T]("Partition.in")
   val out: Seq[Outlet[T]] =
     Seq.tabulate(outputPorts)(i ⇒ Outlet[T]("Partition.out" + i))
-  override val shape: UniformFanOutShape[T, T] =
-    UniformFanOutShape[T, T](in, out: _*)
+  override val shape: UniformFanOutShape[T, T] = UniformFanOutShape[T, T](
+    in,
+    out: _*)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) {
@@ -717,8 +723,9 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
   val out: immutable.IndexedSeq[Outlet[T]] =
     Vector.tabulate(outputPorts)(i ⇒ Outlet[T]("Balance.out" + i))
   override def initialAttributes = DefaultAttributes.balance
-  override val shape: UniformFanOutShape[T, T] =
-    UniformFanOutShape[T, T](in, out: _*)
+  override val shape: UniformFanOutShape[T, T] = UniformFanOutShape[T, T](
+    in,
+    out: _*)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) {
@@ -959,8 +966,7 @@ object GraphDSL extends GraphApply {
       */
     private[GraphDSL] def addEdge[T, U >: T](
         from: Outlet[T],
-        to: Inlet[U]): Unit =
-      moduleInProgress = moduleInProgress.wire(from, to)
+        to: Inlet[U]): Unit = moduleInProgress = moduleInProgress.wire(from, to)
 
     /**
       * Import a graph into this module, performing a deep copy, discarding its
@@ -1041,11 +1047,13 @@ object GraphDSL extends GraphApply {
        * the source would not be triggered.
        */
       if (moduleInProgress.isInstanceOf[CopiedModule]) {
-        moduleInProgress =
-          CompositeModule(moduleInProgress, moduleInProgress.shape)
+        moduleInProgress = CompositeModule(
+          moduleInProgress,
+          moduleInProgress.shape)
       }
-      val source = new MaterializedValueSource[M](
-        moduleInProgress.materializedValueComputation)
+      val source =
+        new MaterializedValueSource[M](
+          moduleInProgress.materializedValueComputation)
       moduleInProgress = moduleInProgress.composeNoMat(source.module)
       source.out
     }
@@ -1374,16 +1382,14 @@ object GraphDSL extends GraphApply {
     import scala.language.implicitConversions
 
     implicit def port2flow[T](from: Outlet[T])(
-        implicit b: Builder[_]): PortOps[T] =
-      new PortOpsImpl(from, b)
+        implicit b: Builder[_]): PortOps[T] = new PortOpsImpl(from, b)
 
     implicit def fanOut2flow[I, O](j: UniformFanOutShape[I, O])(
         implicit b: Builder[_]): PortOps[O] =
       new PortOpsImpl(findOut(b, j, 0), b)
 
     implicit def flow2flow[I, O](f: FlowShape[I, O])(
-        implicit b: Builder[_]): PortOps[O] =
-      new PortOpsImpl(f.out, b)
+        implicit b: Builder[_]): PortOps[O] = new PortOpsImpl(f.out, b)
 
     implicit final class SourceArrow[T](val s: Graph[SourceShape[T], _])
         extends AnyVal

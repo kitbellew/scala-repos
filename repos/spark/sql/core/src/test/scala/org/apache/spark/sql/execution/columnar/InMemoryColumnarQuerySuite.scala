@@ -33,8 +33,12 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
 
   test("simple columnar query") {
     val plan = sqlContext.executePlan(testData.logicalPlan).sparkPlan
-    val scan =
-      InMemoryRelation(useCompression = true, 5, MEMORY_ONLY, plan, None)
+    val scan = InMemoryRelation(
+      useCompression = true,
+      5,
+      MEMORY_ONLY,
+      plan,
+      None)
 
     checkAnswer(scan, testData.collect().toSeq)
   }
@@ -58,11 +62,16 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("projection") {
-    val plan = sqlContext
-      .executePlan(testData.select('value, 'key).logicalPlan)
-      .sparkPlan
-    val scan =
-      InMemoryRelation(useCompression = true, 5, MEMORY_ONLY, plan, None)
+    val plan =
+      sqlContext
+        .executePlan(testData.select('value, 'key).logicalPlan)
+        .sparkPlan
+    val scan = InMemoryRelation(
+      useCompression = true,
+      5,
+      MEMORY_ONLY,
+      plan,
+      None)
 
     checkAnswer(
       scan,
@@ -77,8 +86,12 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
   test(
     "SPARK-1436 regression: in-memory columns must be able to be accessed multiple times") {
     val plan = sqlContext.executePlan(testData.logicalPlan).sparkPlan
-    val scan =
-      InMemoryRelation(useCompression = true, 5, MEMORY_ONLY, plan, None)
+    val scan = InMemoryRelation(
+      useCompression = true,
+      5,
+      MEMORY_ONLY,
+      plan,
+      None)
 
     checkAnswer(scan, testData.collect().toSeq)
     checkAnswer(scan, testData.collect().toSeq)
@@ -156,30 +169,28 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
 
   test("test different data types") {
     // Create the schema.
-    val struct =
-      StructType(
-        StructField("f1", FloatType, true) ::
-          StructField("f2", ArrayType(BooleanType), true) :: Nil)
-    val dataTypes =
-      Seq(
-        StringType,
-        BinaryType,
-        NullType,
-        BooleanType,
-        ByteType,
-        ShortType,
-        IntegerType,
-        LongType,
-        FloatType,
-        DoubleType,
-        DecimalType(25, 5),
-        DecimalType(6, 5),
-        DateType,
-        TimestampType,
-        ArrayType(IntegerType),
-        MapType(StringType, LongType),
-        struct
-      )
+    val struct = StructType(
+      StructField("f1", FloatType, true) ::
+        StructField("f2", ArrayType(BooleanType), true) :: Nil)
+    val dataTypes = Seq(
+      StringType,
+      BinaryType,
+      NullType,
+      BooleanType,
+      ByteType,
+      ShortType,
+      IntegerType,
+      LongType,
+      FloatType,
+      DoubleType,
+      DecimalType(25, 5),
+      DecimalType(6, 5),
+      DateType,
+      TimestampType,
+      ArrayType(IntegerType),
+      MapType(StringType, LongType),
+      struct
+    )
     val fields = dataTypes.zipWithIndex.map {
       case (dataType, index) =>
         StructField(s"col$index", dataType, true)
@@ -188,28 +199,27 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
     val schema = StructType(fields)
 
     // Create a RDD for the schema
-    val rdd =
-      sparkContext.parallelize((1 to 10000), 10).map { i =>
-        Row(
-          s"str${i}: test cache.",
-          s"binary${i}: test cache.".getBytes(StandardCharsets.UTF_8),
-          null,
-          i % 2 == 0,
-          i.toByte,
-          i.toShort,
-          i,
-          Long.MaxValue - i.toLong,
-          (i + 0.25).toFloat,
-          (i + 0.75),
-          BigDecimal(Long.MaxValue.toString + ".12345"),
-          new java.math.BigDecimal(s"${i % 9 + 1}" + ".23456"),
-          new Date(i),
-          new Timestamp(i * 1000000L),
-          (i to i + 10).toSeq,
-          (i to i + 10).map(j => s"map_key_$j" -> (Long.MaxValue - j)).toMap,
-          Row((i - 0.25).toFloat, Seq(true, false, null))
-        )
-      }
+    val rdd = sparkContext.parallelize((1 to 10000), 10).map { i =>
+      Row(
+        s"str${i}: test cache.",
+        s"binary${i}: test cache.".getBytes(StandardCharsets.UTF_8),
+        null,
+        i % 2 == 0,
+        i.toByte,
+        i.toShort,
+        i,
+        Long.MaxValue - i.toLong,
+        (i + 0.25).toFloat,
+        (i + 0.75),
+        BigDecimal(Long.MaxValue.toString + ".12345"),
+        new java.math.BigDecimal(s"${i % 9 + 1}" + ".23456"),
+        new Date(i),
+        new Timestamp(i * 1000000L),
+        (i to i + 10).toSeq,
+        (i to i + 10).map(j => s"map_key_$j" -> (Long.MaxValue - j)).toMap,
+        Row((i - 0.25).toFloat, Seq(true, false, null))
+      )
+    }
     sqlContext
       .createDataFrame(rdd, schema)
       .registerTempTable("InMemoryCache_different_data_types")

@@ -10,8 +10,7 @@ import LinkingInfo.Semantics._
 object SemanticsUtils {
 
   @inline
-  private def asInstanceOfs: Int =
-    linkingInfo.semantics.asInstanceOfs
+  private def asInstanceOfs: Int = linkingInfo.semantics.asInstanceOfs
 
   /** Tests for an erroneous condition governed by the `asInstanceOfs`
     *  semantics.

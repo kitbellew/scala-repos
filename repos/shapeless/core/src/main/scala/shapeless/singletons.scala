@@ -31,12 +31,14 @@ trait Witness extends Serializable {
 }
 
 object Witness extends Dynamic {
-  type Aux[T0] = Witness {
-    type T = T0
-  }
-  type Lt[Lub] = Witness {
-    type T <: Lub
-  }
+  type Aux[T0] =
+    Witness {
+      type T = T0
+    }
+  type Lt[Lub] =
+    Witness {
+      type T <: Lub
+    }
 
   implicit def apply[T]: Witness.Aux[T] =
     macro SingletonTypeMacros.materializeImpl[T]
@@ -75,17 +77,18 @@ trait LowPriorityWitnessWith {
     ({
       type λ[X] = TC2[S, X]
     })#λ,
-    T] =
-    macro SingletonTypeMacros.convertInstanceImpl2[H, TC2, S]
+    T] = macro SingletonTypeMacros.convertInstanceImpl2[H, TC2, S]
 }
 
 object WitnessWith extends LowPriorityWitnessWith {
-  type Aux[TC[_], T0] = WitnessWith[TC] {
-    type T = T0
-  }
-  type Lt[TC[_], Lub] = WitnessWith[TC] {
-    type T <: Lub
-  }
+  type Aux[TC[_], T0] =
+    WitnessWith[TC] {
+      type T = T0
+    }
+  type Lt[TC[_], Lub] =
+    WitnessWith[TC] {
+      type T <: Lub
+    }
 
   implicit def apply1[TC[_], T](t: T): WitnessWith.Lt[TC, T] =
     macro SingletonTypeMacros.convertInstanceImpl1[TC]
@@ -98,17 +101,17 @@ trait NatWith[TC[_ <: Nat]] {
 }
 
 object NatWith {
-  type Aux[TC[_ <: Nat], N0 <: Nat] = NatWith[TC] {
-    type N = N0
-  }
+  type Aux[TC[_ <: Nat], N0 <: Nat] =
+    NatWith[TC] {
+      type N = N0
+    }
 
   implicit def apply[TC[_ <: Nat]](i: Any): NatWith[TC] =
     macro SingletonTypeMacros.convertInstanceImplNat[TC]
 
   implicit def apply2[B, T <: B, TC[_ <: B, _ <: Nat]](i: Int): NatWith[({
     type λ[t <: Nat] = TC[T, t]
-  })#λ] =
-    macro SingletonTypeMacros.convertInstanceImplNat1[B, T, TC]
+  })#λ] = macro SingletonTypeMacros.convertInstanceImplNat1[B, T, TC]
 }
 
 /**
@@ -137,9 +140,10 @@ trait Widen[T] extends DepFn1[T] {
 object Widen {
   def apply[T](implicit widen: Widen[T]): Aux[T, widen.Out] = widen
 
-  type Aux[T, Out0 >: T] = Widen[T] {
-    type Out = Out0
-  }
+  type Aux[T, Out0 >: T] =
+    Widen[T] {
+      type Out = Out0
+    }
 
   def instance[T, Out0 >: T](f: T => Out0): Aux[T, Out0] =
     new Widen[T] {
@@ -237,8 +241,7 @@ trait SingletonTypeUtils extends ReprTypes {
   def parseType(typeStr: String): Option[Type] =
     parseStandardType(typeStr) orElse parseLiteralType(typeStr)
 
-  def typeCarrier(tpe: Type) =
-    mkTypeCarrier(tq"{ type T = $tpe }")
+  def typeCarrier(tpe: Type) = mkTypeCarrier(tq"{ type T = $tpe }")
 
   def fieldTypeCarrier(tpe: Type) =
     mkTypeCarrier(
@@ -467,10 +470,8 @@ class SingletonTypeMacros(val c: whitebox.Context)
 
   def witnessTypeImpl(tpeSelector: Tree): Tree = {
     val q"${tpeString: String}" = tpeSelector
-    val tpe =
-      parseLiteralType(tpeString)
-        .getOrElse(
-          c.abort(c.enclosingPosition, s"Malformed literal $tpeString"))
+    val tpe = parseLiteralType(tpeString)
+      .getOrElse(c.abort(c.enclosingPosition, s"Malformed literal $tpeString"))
 
     fieldTypeCarrier(tpe)
   }
@@ -478,10 +479,11 @@ class SingletonTypeMacros(val c: whitebox.Context)
   def materializeWiden[T: WeakTypeTag, Out: WeakTypeTag]: Tree = {
     val tpe = weakTypeOf[T].dealias
 
-    val widenTpe = tpe match {
-      case SingletonSymbolType(s) => symbolTpe
-      case _                      => tpe.widen
-    }
+    val widenTpe =
+      tpe match {
+        case SingletonSymbolType(s) => symbolTpe
+        case _                      => tpe.widen
+      }
 
     if (widenTpe =:= tpe)
       c.abort(c.enclosingPosition, s"Don't know how to widen $tpe")

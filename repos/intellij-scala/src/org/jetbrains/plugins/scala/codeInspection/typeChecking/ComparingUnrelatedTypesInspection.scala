@@ -27,8 +27,8 @@ import scala.annotation.tailrec
   * 5/30/13
   */
 object ComparingUnrelatedTypesInspection {
-  val inspectionName =
-    InspectionBundle.message("comparing.unrelated.types.name")
+  val inspectionName = InspectionBundle.message(
+    "comparing.unrelated.types.name")
   val inspectionId = "ComparingUnrelatedTypes"
 
   private val seqFunctions = Seq("contains", "indexOf", "lastIndexOf")
@@ -87,15 +87,16 @@ class ComparingUnrelatedTypesInspection
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case MethodRepr(expr, Some(left), Some(oper), Seq(right))
         if Seq("==", "!=", "ne", "eq", "equals") contains oper.refName =>
-      val needHighlighting = oper.resolve() match {
-        case synth: ScSyntheticFunction              => true
-        case m: PsiMethod if MethodUtils.isEquals(m) => true
-        case _                                       => false
-      }
+      val needHighlighting =
+        oper.resolve() match {
+          case synth: ScSyntheticFunction              => true
+          case m: PsiMethod if MethodUtils.isEquals(m) => true
+          case _                                       => false
+        }
       if (needHighlighting) {
         //getType() for the reference on the left side returns singleton type, little hack here
-        val leftOnTheRight =
-          ScalaPsiElementFactory.createExpressionWithContextFromText(
+        val leftOnTheRight = ScalaPsiElementFactory
+          .createExpressionWithContextFromText(
             left.getText,
             right.getParent,
             right)
@@ -121,8 +122,9 @@ class ComparingUnrelatedTypesInspection
         argType <- arg.getType()
         if cannotBeCompared(elemType, argType)
       } {
-        val (elemTypeText, argTypeText) =
-          ScTypePresentation.different(elemType, argType)
+        val (elemTypeText, argTypeText) = ScTypePresentation.different(
+          elemType,
+          argType)
         val message = InspectionBundle.message(
           "comparing.unrelated.types.hint",
           elemTypeText,
@@ -133,10 +135,11 @@ class ComparingUnrelatedTypesInspection
           ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
       }
     case IsInstanceOfCall(call) =>
-      val qualType = call.referencedExpr match {
-        case ScReferenceExpression.withQualifier(q) => q.getType().toOption
-        case _                                      => None
-      }
+      val qualType =
+        call.referencedExpr match {
+          case ScReferenceExpression.withQualifier(q) => q.getType().toOption
+          case _                                      => None
+        }
       val argType = call.arguments.headOption.flatMap(_.getType().toOption)
       for {
         t1 <- qualType

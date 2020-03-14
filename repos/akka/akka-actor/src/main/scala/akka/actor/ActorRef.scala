@@ -341,8 +341,12 @@ private[akka] class LocalActorRef private[akka] (
    * actorCell before we call init and start, since we can start using "this"
    * object from another thread as soon as we run init.
    */
-  private val actorCell: ActorCell =
-    newActorCell(_system, this, _props, _dispatcher, _supervisor)
+  private val actorCell: ActorCell = newActorCell(
+    _system,
+    this,
+    _props,
+    _dispatcher,
+    _supervisor)
   actorCell.init(sendSupervise = true, _mailboxType)
 
   protected def newActorCell(
@@ -410,11 +414,12 @@ private[akka] class LocalActorRef private[akka] (
     def rec(ref: InternalActorRef, name: Iterator[String]): InternalActorRef =
       ref match {
         case l: LocalActorRef ⇒
-          val next = name.next() match {
-            case ".." ⇒ l.getParent
-            case "" ⇒ l
-            case any ⇒ l.getSingleChild(any)
-          }
+          val next =
+            name.next() match {
+              case ".." ⇒ l.getParent
+              case "" ⇒ l
+              case any ⇒ l.getSingleChild(any)
+            }
           if (next == Nobody || name.isEmpty)
             next
           else

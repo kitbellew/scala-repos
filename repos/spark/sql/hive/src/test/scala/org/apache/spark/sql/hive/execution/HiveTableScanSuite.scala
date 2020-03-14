@@ -75,10 +75,9 @@ class HiveTableScanSuite extends HiveComparisonTest {
         FIELDS TERMINATED BY ','
         LINES TERMINATED BY '\n'
       """.stripMargin)
-    val location =
-      Utils.getSparkClassLoader
-        .getResource("data/files/issue-4077-data.txt")
-        .getFile()
+    val location = Utils.getSparkClassLoader
+      .getResource("data/files/issue-4077-data.txt")
+      .getFile()
 
     TestHive.sql(
       s"LOAD DATA LOCAL INPATH '$location' INTO TABLE timestamp_query_null")

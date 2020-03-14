@@ -20,9 +20,10 @@ import org.scalatest.matchers.Matcher
 
 class CodingDirectivesExamplesSpec extends RoutingSpec {
   "responseEncodingAccepted" in {
-    val route = responseEncodingAccepted(gzip) {
-      complete("content")
-    }
+    val route =
+      responseEncodingAccepted(gzip) {
+        complete("content")
+      }
 
     Get("/") ~> route ~> check {
       responseAs[String] shouldEqual "content"
@@ -51,9 +52,10 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "encodeResponseWith" in {
-    val route = encodeResponseWith(Gzip) {
-      complete("content")
-    }
+    val route =
+      encodeResponseWith(Gzip) {
+        complete("content")
+      }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -73,12 +75,11 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
   val helloGzipped = compress("Hello", Gzip)
   val helloDeflated = compress("Hello", Deflate)
   "decodeRequest" in {
-    val route =
-      decodeRequest {
-        entity(as[String]) { content: String =>
-          complete(s"Request content: '$content'")
-        }
+    val route = decodeRequest {
+      entity(as[String]) { content: String =>
+        complete(s"Request content: '$content'")
       }
+    }
 
     // tests:
     Post("/", helloGzipped) ~> `Content-Encoding`(gzip) ~> route ~> check {

@@ -51,8 +51,8 @@ private[play] object WebSocketActor {
     @volatile var shutdown = false
 
     // The actor to handle the WebSocket
-    val webSocketActor =
-      context.watch(context.actorOf(createHandler(self), "handler"))
+    val webSocketActor = context.watch(
+      context.actorOf(createHandler(self), "handler"))
 
     // Use a broadcast enumerator to imperatively push messages into the WebSocket
     val channel = {
@@ -64,9 +64,10 @@ private[play] object WebSocketActor {
 
     // Use a foreach iteratee to consume the WebSocket and feed it into the Actor
     // It's very important that we use the trampoline execution context here, otherwise it's possible that
-    val consumer = Iteratee.foreach[In] { msg =>
-      webSocketActor ! msg
-    }(play.api.libs.iteratee.Execution.trampoline)
+    val consumer =
+      Iteratee.foreach[In] { msg =>
+        webSocketActor ! msg
+      }(play.api.libs.iteratee.Execution.trampoline)
 
     (enumerator |>> consumer).onComplete { _ =>
       // When the WebSocket is complete, either due to an error or not, shutdown

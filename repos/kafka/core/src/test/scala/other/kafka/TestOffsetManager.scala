@@ -77,20 +77,26 @@ object TestOffsetManager {
 
     private val groupId = "group-" + id
     private val metadata = "Metadata from commit thread " + id
-    private var offsetsChannel =
-      ClientUtils.channelToOffsetManager(groupId, zkUtils, SocketTimeoutMs)
+    private var offsetsChannel = ClientUtils.channelToOffsetManager(
+      groupId,
+      zkUtils,
+      SocketTimeoutMs)
     private var offset = 0L
     val numErrors = new AtomicInteger(0)
     val numCommits = new AtomicInteger(0)
-    val timer =
-      newTimer("commit-thread", TimeUnit.MILLISECONDS, TimeUnit.SECONDS)
+    val timer = newTimer(
+      "commit-thread",
+      TimeUnit.MILLISECONDS,
+      TimeUnit.SECONDS)
     private val commitTimer = new KafkaTimer(timer)
     val shutdownLock = new Object
 
     private def ensureConnected() {
       if (!offsetsChannel.isConnected)
-        offsetsChannel =
-          ClientUtils.channelToOffsetManager(groupId, zkUtils, SocketTimeoutMs)
+        offsetsChannel = ClientUtils.channelToOffsetManager(
+          groupId,
+          zkUtils,
+          SocketTimeoutMs)
     }
 
     override def doWork() {
@@ -106,8 +112,8 @@ object TestOffsetManager {
         offsetsChannel.send(commitRequest)
         numCommits.getAndIncrement
         commitTimer.time {
-          val response =
-            OffsetCommitResponse.readFrom(offsetsChannel.receive().payload())
+          val response = OffsetCommitResponse.readFrom(
+            offsetsChannel.receive().payload())
           if (response.commitStatus.exists(_._2 != Errors.NONE.code))
             numErrors.getAndIncrement
         }
@@ -148,13 +154,16 @@ object TestOffsetManager {
       extends ShutdownableThread("fetch-thread")
       with KafkaMetricsGroup {
 
-    private val timer =
-      newTimer("fetch-thread", TimeUnit.MILLISECONDS, TimeUnit.SECONDS)
+    private val timer = newTimer(
+      "fetch-thread",
+      TimeUnit.MILLISECONDS,
+      TimeUnit.SECONDS)
     private val fetchTimer = new KafkaTimer(timer)
 
     private val channels = mutable.Map[Int, BlockingChannel]()
-    private var metadataChannel =
-      ClientUtils.channelToAnyBroker(zkUtils, SocketTimeoutMs)
+    private var metadataChannel = ClientUtils.channelToAnyBroker(
+      zkUtils,
+      SocketTimeoutMs)
 
     private val numErrors = new AtomicInteger(0)
 
@@ -183,13 +192,14 @@ object TestOffsetManager {
 
         try {
           // send the offset fetch request
-          val fetchRequest =
-            OffsetFetchRequest(group, Seq(TopicAndPartition("topic-" + id, 1)))
+          val fetchRequest = OffsetFetchRequest(
+            group,
+            Seq(TopicAndPartition("topic-" + id, 1)))
           channel.send(fetchRequest)
 
           fetchTimer.time {
-            val response =
-              OffsetFetchResponse.readFrom(channel.receive().payload())
+            val response = OffsetFetchResponse.readFrom(
+              channel.receive().payload())
             if (response.requestInfo.exists(_._2.error != Errors.NONE.code)) {
               numErrors.getAndIncrement
             }
@@ -212,8 +222,9 @@ object TestOffsetManager {
               .format(metadataChannel.host, metadataChannel.port))
           metadataChannel.disconnect()
           println("Creating new query channel.")
-          metadataChannel =
-            ClientUtils.channelToAnyBroker(zkUtils, SocketTimeoutMs)
+          metadataChannel = ClientUtils.channelToAnyBroker(
+            zkUtils,
+            SocketTimeoutMs)
       } finally {
         Thread.sleep(fetchIntervalMs)
       }

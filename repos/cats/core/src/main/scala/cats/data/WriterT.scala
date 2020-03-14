@@ -4,11 +4,9 @@ package data
 import cats.functor.Bifunctor
 
 final case class WriterT[F[_], L, V](run: F[(L, V)]) {
-  def written(implicit functorF: Functor[F]): F[L] =
-    functorF.map(run)(_._1)
+  def written(implicit functorF: Functor[F]): F[L] = functorF.map(run)(_._1)
 
-  def value(implicit functorF: Functor[F]): F[V] =
-    functorF.map(run)(_._2)
+  def value(implicit functorF: Functor[F]): F[V] = functorF.map(run)(_._2)
 
   def ap[Z](f: WriterT[F, L, V => Z])(implicit
       F: Apply[F],
@@ -54,8 +52,7 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
 
   def reset(implicit
       monoidL: Monoid[L],
-      functorF: Functor[F]): WriterT[F, L, V] =
-    mapWritten(_ => monoidL.empty)
+      functorF: Functor[F]): WriterT[F, L, V] = mapWritten(_ => monoidL.empty)
 
   def show(implicit F: Show[F[(L, V)]]): String = F.show(run)
 }
@@ -69,8 +66,7 @@ private[data] sealed abstract class WriterTInstances extends WriterTInstances0 {
   // The Eq[(L, V)] can be derived from an Eq[L] and Eq[V], but we are waiting
   // on an algebra release that includes https://github.com/non/algebra/pull/82
   implicit def writerTIdEq[L, V](
-      implicit E: Eq[(L, V)]): Eq[WriterT[Id, L, V]] =
-    writerTEq[Id, L, V]
+      implicit E: Eq[(L, V)]): Eq[WriterT[Id, L, V]] = writerTEq[Id, L, V]
 
   implicit def writerTBifunctor[F[_]: Functor]: Bifunctor[WriterT[F, ?, ?]] =
     new Bifunctor[WriterT[F, ?, ?]] {
@@ -119,8 +115,7 @@ private[data] sealed abstract class WriterTInstances0
     writerTFlatMap[Id, L]
 
   implicit def writerTEq[F[_], L, V](
-      implicit F: Eq[F[(L, V)]]): Eq[WriterT[F, L, V]] =
-    F.on(_.run)
+      implicit F: Eq[F[(L, V)]]): Eq[WriterT[F, L, V]] = F.on(_.run)
 }
 
 private[data] sealed abstract class WriterTInstances1
@@ -212,8 +207,7 @@ private[data] sealed trait WriterTFunctor[F[_], L]
     extends Functor[WriterT[F, L, ?]] {
   implicit def F0: Functor[F]
 
-  def map[A, B](fa: WriterT[F, L, A])(f: A => B): WriterT[F, L, B] =
-    fa.map(f)
+  def map[A, B](fa: WriterT[F, L, A])(f: A => B): WriterT[F, L, B] = fa.map(f)
 }
 
 private[data] sealed trait WriterTApply[F[_], L]
@@ -223,8 +217,7 @@ private[data] sealed trait WriterTApply[F[_], L]
   implicit def L0: Semigroup[L]
 
   def ap[A, B](f: WriterT[F, L, A => B])(
-      fa: WriterT[F, L, A]): WriterT[F, L, B] =
-    fa ap f
+      fa: WriterT[F, L, A]): WriterT[F, L, B] = fa ap f
   def product[A, B](
       fa: WriterT[F, L, A],
       fb: WriterT[F, L, B]): WriterT[F, L, (A, B)] =
@@ -240,8 +233,7 @@ private[data] sealed trait WriterTFlatMap[F[_], L]
   implicit def L0: Semigroup[L]
 
   def flatMap[A, B](fa: WriterT[F, L, A])(
-      f: A => WriterT[F, L, B]): WriterT[F, L, B] =
-    fa flatMap f
+      f: A => WriterT[F, L, B]): WriterT[F, L, B] = fa flatMap f
 }
 
 private[data] sealed trait WriterTApplicative[F[_], L]
@@ -250,8 +242,7 @@ private[data] sealed trait WriterTApplicative[F[_], L]
   override implicit def F0: Applicative[F]
   override implicit def L0: Monoid[L]
 
-  def pure[A](a: A): WriterT[F, L, A] =
-    WriterT.value[F, L, A](a)
+  def pure[A](a: A): WriterT[F, L, A] = WriterT.value[F, L, A](a)
 }
 
 private[data] sealed trait WriterTMonad[F[_], L]
@@ -261,8 +252,7 @@ private[data] sealed trait WriterTMonad[F[_], L]
   override implicit def L0: Monoid[L]
 
   def flatMap[A, B](fa: WriterT[F, L, A])(
-      f: A => WriterT[F, L, B]): WriterT[F, L, B] =
-    fa.flatMap(f)
+      f: A => WriterT[F, L, B]): WriterT[F, L, B] = fa.flatMap(f)
 }
 
 private[data] sealed trait WriterTSemigroupK[F[_], L]

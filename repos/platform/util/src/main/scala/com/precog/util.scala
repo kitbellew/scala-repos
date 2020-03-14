@@ -133,13 +133,14 @@ package object util {
     result
   }
 
-  implicit val InstantOrdering: Ordering[Instant] =
-    Ordering.Long.on[Instant](_.getMillis)
+  implicit val InstantOrdering: Ordering[Instant] = Ordering.Long
+    .on[Instant](_.getMillis)
 
-  implicit val FutureBind: Bind[Future] = new Bind[Future] {
-    def map[A, B](fut: Future[A])(f: A => B) = fut.map(f)
-    def bind[A, B](fut: Future[A])(f: A => Future[B]) = fut.flatMap(f)
-  }
+  implicit val FutureBind: Bind[Future] =
+    new Bind[Future] {
+      def map[A, B](fut: Future[A])(f: A => B) = fut.map(f)
+      def bind[A, B](fut: Future[A])(f: A => Future[B]) = fut.flatMap(f)
+    }
 }
 
 // vim: set ts=4 sw=4 et:

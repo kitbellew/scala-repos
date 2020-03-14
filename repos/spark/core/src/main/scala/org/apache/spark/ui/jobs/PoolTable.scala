@@ -61,10 +61,11 @@ private[ui] class PoolTable(pools: Seq[Schedulable], parent: StagesTab) {
       p: Schedulable,
       poolToActiveStages: HashMap[String, HashMap[Int, StageInfo]])
       : Seq[Node] = {
-    val activeStages = poolToActiveStages.get(p.name) match {
-      case Some(stages) => stages.size
-      case None         => 0
-    }
+    val activeStages =
+      poolToActiveStages.get(p.name) match {
+        case Some(stages) => stages.size
+        case None         => 0
+      }
     val href = "%s/stages/pool?poolname=%s"
       .format(
         UIUtils.prependBaseUri(parent.basePath),

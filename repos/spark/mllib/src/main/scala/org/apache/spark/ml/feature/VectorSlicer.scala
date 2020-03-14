@@ -55,12 +55,13 @@ final class VectorSlicer(override val uid: String)
     * Default: Empty array
     * @group param
     */
-  val indices = new IntArrayParam(
-    this,
-    "indices",
-    "An array of indices to select features from a vector column." +
-      " There can be no overlap with names.",
-    VectorSlicer.validIndices)
+  val indices =
+    new IntArrayParam(
+      this,
+      "indices",
+      "An array of indices to select features from a vector column." +
+        " There can be no overlap with names.",
+      VectorSlicer.validIndices)
 
   setDefault(indices -> Array.empty[Int])
 
@@ -77,12 +78,13 @@ final class VectorSlicer(override val uid: String)
     * Default: Empty Array
     * @group param
     */
-  val names = new StringArrayParam(
-    this,
-    "names",
-    "An array of feature names to select features from a vector column." +
-      " There can be no overlap with indices.",
-    VectorSlicer.validNames)
+  val names =
+    new StringArrayParam(
+      this,
+      "names",
+      "An array of feature names to select features from a vector column." +
+        " There can be no overlap with indices.",
+      VectorSlicer.validNames)
 
   setDefault(names -> Array.empty[String])
 
@@ -114,10 +116,11 @@ final class VectorSlicer(override val uid: String)
     val selectedAttrs: Option[Array[Attribute]] = inputAttr.attributes.map {
       attrs => inds.map(index => attrs(index))
     }
-    val outputAttr = selectedAttrs match {
-      case Some(attrs) => new AttributeGroup($(outputCol), attrs)
-      case None        => new AttributeGroup($(outputCol), inds.length)
-    }
+    val outputAttr =
+      selectedAttrs match {
+        case Some(attrs) => new AttributeGroup($(outputCol), attrs)
+        case None        => new AttributeGroup($(outputCol), inds.length)
+      }
 
     // Select features
     val slicer = udf { vec: Vector =>
@@ -134,8 +137,9 @@ final class VectorSlicer(override val uid: String)
 
   /** Get the feature indices in order: indices, names */
   private def getSelectedFeatureIndices(schema: StructType): Array[Int] = {
-    val nameFeatures =
-      MetadataUtils.getFeatureIndicesFromNames(schema($(inputCol)), $(names))
+    val nameFeatures = MetadataUtils.getFeatureIndicesFromNames(
+      schema($(inputCol)),
+      $(names))
     val indFeatures = $(indices)
     val numDistinctFeatures = (nameFeatures ++ indFeatures).distinct.length
     lazy val errMsg = "VectorSlicer requires indices and names to be disjoint" +

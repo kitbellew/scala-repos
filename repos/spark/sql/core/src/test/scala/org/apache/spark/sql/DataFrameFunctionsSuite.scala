@@ -326,9 +326,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
         Row(null, null))
     )
 
-    val df2 =
-      Seq((Array[Array[Int]](Array(2), Array(1), Array(2, 4), null), "x"))
-        .toDF("a", "b")
+    val df2 = Seq(
+      (Array[Array[Int]](Array(2), Array(1), Array(2, 4), null), "x"))
+      .toDF("a", "b")
     checkAnswer(
       df2.selectExpr("sort_array(a, true)", "sort_array(a, false)"),
       Seq(

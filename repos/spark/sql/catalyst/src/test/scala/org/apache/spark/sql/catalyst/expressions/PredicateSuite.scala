@@ -32,8 +32,9 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
     test(s"3VL $name") {
       truthTable.foreach {
         case (l, r, answer) =>
-          val expr =
-            op(Literal.create(l, BooleanType), Literal.create(r, BooleanType))
+          val expr = op(
+            Literal.create(l, BooleanType),
+            Literal.create(r, BooleanType))
           checkEvaluation(expr, answer)
       }
     }
@@ -180,24 +181,26 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
       TimestampType)
     primitiveTypes.map { t =>
       val dataGen = RandomDataGenerator.forType(t, nullable = true).get
-      val inputData = Seq.fill(10) {
-        val value = dataGen.apply()
-        value match {
-          case d: Double if d.isNaN => 0.0d
-          case f: Float if f.isNaN  => 0.0f
-          case _                    => value
+      val inputData =
+        Seq.fill(10) {
+          val value = dataGen.apply()
+          value match {
+            case d: Double if d.isNaN => 0.0d
+            case f: Float if f.isNaN  => 0.0f
+            case _                    => value
+          }
         }
-      }
       val input = inputData.map(Literal.create(_, t))
-      val expected = if (inputData(0) == null) {
-        null
-      } else if (inputData.slice(1, 10).contains(inputData(0))) {
-        true
-      } else if (inputData.slice(1, 10).contains(null)) {
-        null
-      } else {
-        false
-      }
+      val expected =
+        if (inputData(0) == null) {
+          null
+        } else if (inputData.slice(1, 10).contains(inputData(0))) {
+          true
+        } else if (inputData.slice(1, 10).contains(null)) {
+          null
+        } else {
+          false
+        }
       checkEvaluation(In(input(0), input.slice(1, 10)), expected)
     }
   }
@@ -231,40 +234,63 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
       TimestampType)
     primitiveTypes.map { t =>
       val dataGen = RandomDataGenerator.forType(t, nullable = true).get
-      val inputData = Seq.fill(10) {
-        val value = dataGen.apply()
-        value match {
-          case d: Double if d.isNaN => 0.0d
-          case f: Float if f.isNaN  => 0.0f
-          case _                    => value
+      val inputData =
+        Seq.fill(10) {
+          val value = dataGen.apply()
+          value match {
+            case d: Double if d.isNaN => 0.0d
+            case f: Float if f.isNaN  => 0.0f
+            case _                    => value
+          }
         }
-      }
       val input = inputData.map(Literal(_))
-      val expected = if (inputData(0) == null) {
-        null
-      } else if (inputData.slice(1, 10).contains(inputData(0))) {
-        true
-      } else if (inputData.slice(1, 10).contains(null)) {
-        null
-      } else {
-        false
-      }
+      val expected =
+        if (inputData(0) == null) {
+          null
+        } else if (inputData.slice(1, 10).contains(inputData(0))) {
+          true
+        } else if (inputData.slice(1, 10).contains(null)) {
+          null
+        } else {
+          false
+        }
       checkEvaluation(InSet(input(0), inputData.slice(1, 10).toSet), expected)
     }
   }
 
-  private val smallValues =
-    Seq(1, Decimal(1), Array(1.toByte), "a", 0f, 0d, false).map(Literal(_))
-  private val largeValues =
-    Seq(2, Decimal(2), Array(2.toByte), "b", Float.NaN, Double.NaN, true)
-      .map(Literal(_))
+  private val smallValues = Seq(
+    1,
+    Decimal(1),
+    Array(1.toByte),
+    "a",
+    0f,
+    0d,
+    false).map(Literal(_))
+  private val largeValues = Seq(
+    2,
+    Decimal(2),
+    Array(2.toByte),
+    "b",
+    Float.NaN,
+    Double.NaN,
+    true).map(Literal(_))
 
-  private val equalValues1 =
-    Seq(1, Decimal(1), Array(1.toByte), "a", Float.NaN, Double.NaN, true)
-      .map(Literal(_))
-  private val equalValues2 =
-    Seq(1, Decimal(1), Array(1.toByte), "a", Float.NaN, Double.NaN, true)
-      .map(Literal(_))
+  private val equalValues1 = Seq(
+    1,
+    Decimal(1),
+    Array(1.toByte),
+    "a",
+    Float.NaN,
+    Double.NaN,
+    true).map(Literal(_))
+  private val equalValues2 = Seq(
+    1,
+    Decimal(1),
+    Array(1.toByte),
+    "a",
+    Float.NaN,
+    Double.NaN,
+    true).map(Literal(_))
 
   test("BinaryComparison consistency check") {
     DataTypeTestUtils.ordered.foreach { dt =>

@@ -72,8 +72,8 @@ abstract class ScalaRenameTestBase
 
       val oldName = doRename(editor, file, newName)
 
-      val dirAfter =
-        LocalFileSystem.getInstance.refreshAndFindFileByPath(rootAfter)
+      val dirAfter = LocalFileSystem.getInstance.refreshAndFindFileByPath(
+        rootAfter)
       PlatformTestUtil.assertDirectoriesEqual(dirAfter, myDirectory)
 
       //rename back for next caret position
@@ -162,8 +162,9 @@ abstract class ScalaRenameTestBase
       }
     }
     PsiDocumentManager.getInstance(getProjectAdapter).commitAllDocuments()
-    val document =
-      PsiDocumentManager.getInstance(getProjectAdapter).getDocument(file)
+    val document = PsiDocumentManager
+      .getInstance(getProjectAdapter)
+      .getDocument(file)
     PsiDocumentManager
       .getInstance(getProjectAdapter)
       .doPostponedOperationsAndUnblockDocument(document)

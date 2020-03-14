@@ -45,6 +45,5 @@ import simulacrum.typeclass
       implicit U: Unapply[Applicative, GA]): U.M[F[U.A]] =
     traverse(fga)(U.subst)(U.TC)
 
-  override def map[A, B](fa: F[A])(f: A => B): F[B] =
-    traverse[Id, A, B](fa)(f)
+  override def map[A, B](fa: F[A])(f: A => B): F[B] = traverse[Id, A, B](fa)(f)
 }

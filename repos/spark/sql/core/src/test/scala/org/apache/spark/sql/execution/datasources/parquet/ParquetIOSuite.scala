@@ -152,8 +152,14 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         .coalesce(1)
     }
 
-    val combinations =
-      Seq((5, 2), (1, 0), (1, 1), (18, 10), (18, 17), (19, 0), (38, 37))
+    val combinations = Seq(
+      (5, 2),
+      (1, 0),
+      (1, 1),
+      (18, 10),
+      (18, 17),
+      (19, 0),
+      (38, 37))
     for ((precision, scale) <- combinations) {
       withTempPath { dir =>
         val data = makeDecimalRDD(DecimalType(precision, scale))
@@ -195,8 +201,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   testStandardAndLegacyModes("array and double") {
-    val data =
-      (1 to 4).map(i => (i.toDouble, Seq(i.toDouble, (i + 1).toDouble)))
+    val data = (1 to 4).map(i =>
+      (i.toDouble, Seq(i.toDouble, (i + 1).toDouble)))
     checkParquetFile(data)
   }
 
@@ -239,12 +245,13 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("nulls") {
-    val allNulls = (
-      null.asInstanceOf[java.lang.Boolean],
-      null.asInstanceOf[Integer],
-      null.asInstanceOf[java.lang.Long],
-      null.asInstanceOf[java.lang.Float],
-      null.asInstanceOf[java.lang.Double])
+    val allNulls =
+      (
+        null.asInstanceOf[java.lang.Boolean],
+        null.asInstanceOf[Integer],
+        null.asInstanceOf[java.lang.Long],
+        null.asInstanceOf[java.lang.Float],
+        null.asInstanceOf[java.lang.Double])
 
     withParquetDataFrame(allNulls :: Nil) { df =>
       val rows = df.collect()
@@ -254,10 +261,11 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("nones") {
-    val allNones = (
-      None.asInstanceOf[Option[Int]],
-      None.asInstanceOf[Option[Long]],
-      None.asInstanceOf[Option[String]])
+    val allNones =
+      (
+        None.asInstanceOf[Option[Int]],
+        None.asInstanceOf[Option[Long]],
+        None.asInstanceOf[Option[String]])
 
     withParquetDataFrame(allNones :: Nil) { df =>
       val rows = df.collect()
@@ -267,8 +275,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("SPARK-10113 Support for unsigned Parquet logical types") {
-    val parquetSchema =
-      MessageTypeParser.parseMessageType("""message root {
+    val parquetSchema = MessageTypeParser.parseMessageType(
+      """message root {
         |  required int32 c(UINT_32);
         |}
       """.stripMargin)
@@ -277,17 +285,18 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       val path = new Path(location.getCanonicalPath)
       val conf = sparkContext.hadoopConfiguration
       writeMetadata(parquetSchema, path, conf)
-      val errorMessage = intercept[Throwable] {
-        sqlContext.read.parquet(path.toString).printSchema()
-      }.toString
+      val errorMessage =
+        intercept[Throwable] {
+          sqlContext.read.parquet(path.toString).printSchema()
+        }.toString
       assert(errorMessage.contains("Parquet type not supported"))
     }
   }
 
   test(
     "SPARK-11692 Support for Parquet logical types, JSON and BSON (embedded types)") {
-    val parquetSchema =
-      MessageTypeParser.parseMessageType("""message root {
+    val parquetSchema = MessageTypeParser.parseMessageType(
+      """message root {
         |  required binary a(JSON);
         |  required binary b(BSON);
         |}
@@ -299,21 +308,24 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       val path = new Path(location.getCanonicalPath)
       val conf = sparkContext.hadoopConfiguration
       writeMetadata(parquetSchema, path, conf)
-      val sparkTypes =
-        sqlContext.read.parquet(path.toString).schema.map(_.dataType)
+      val sparkTypes = sqlContext.read
+        .parquet(path.toString)
+        .schema
+        .map(_.dataType)
       assert(sparkTypes === expectedSparkTypes)
     }
   }
 
   test("compression codec") {
     def compressionCodecFor(path: String, codecName: String): String = {
-      val codecs = for {
-        footer <- readAllFootersWithoutSummaryFiles(
-          new Path(path),
-          hadoopConfiguration)
-        block <- footer.getParquetMetadata.getBlocks.asScala
-        column <- block.getColumns.asScala
-      } yield column.getCodec.name()
+      val codecs =
+        for {
+          footer <- readAllFootersWithoutSummaryFiles(
+            new Path(path),
+            hadoopConfiguration)
+          block <- footer.getParquetMetadata.getBlocks.asScala
+          column <- block.getColumns.asScala
+        } yield column.getCodec.name()
 
       assert(codecs.distinct === Seq(codecName))
       codecs.head
@@ -385,8 +397,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     withTempPath { file =>
       val path = new Path(file.toURI.toString)
       val fs = FileSystem.getLocal(hadoopConfiguration)
-      val schema =
-        StructType.fromAttributes(ScalaReflection.attributesFor[(Int, String)])
+      val schema = StructType.fromAttributes(
+        ScalaReflection.attributesFor[(Int, String)])
       writeMetadata(schema, path, hadoopConfiguration)
 
       assert(
@@ -428,14 +440,15 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     val data = (1 to 10).map(i => (i, i.toString))
     withParquetFile(data) { file =>
       val newData = (11 to 20).map(i => (i, i.toString))
-      val errorMessage = intercept[Throwable] {
-        newData
-          .toDF()
-          .write
-          .format("parquet")
-          .mode(SaveMode.ErrorIfExists)
-          .save(file)
-      }.getMessage
+      val errorMessage =
+        intercept[Throwable] {
+          newData
+            .toDF()
+            .write
+            .format("parquet")
+            .mode(SaveMode.ErrorIfExists)
+            .save(file)
+        }.getMessage
       assert(errorMessage.contains("already exists"))
     }
   }
@@ -469,8 +482,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       """.stripMargin)
 
     withTempPath { location =>
-      val extraMetadata =
-        Map(CatalystReadSupport.SPARK_METADATA_KEY -> sparkSchema.toString)
+      val extraMetadata = Map(
+        CatalystReadSupport.SPARK_METADATA_KEY -> sparkSchema.toString)
       val path = new Path(location.getCanonicalPath)
       val conf = sparkContext.hadoopConfiguration
       writeMetadata(parquetSchema, path, conf, extraMetadata)
@@ -559,9 +572,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         classOf[JobCommitFailureParquetOutputCommitter].getCanonicalName)
 
       try {
-        val message = intercept[SparkException] {
-          sqlContext.range(0, 1).write.parquet(dir.getCanonicalPath)
-        }.getCause.getMessage
+        val message =
+          intercept[SparkException] {
+            sqlContext.range(0, 1).write.parquet(dir.getCanonicalPath)
+          }.getCause.getMessage
         assert(message === "Intentional exception for testing purposes")
       } finally {
         // Hadoop 1 doesn't have `Configuration.unset`
@@ -578,9 +592,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     intercept[Throwable] {
       sqlContext.read.parquet("file:///nonexistent")
     }
-    val errorMessage = intercept[Throwable] {
-      sqlContext.read.parquet("hdfs://nonexistent")
-    }.toString
+    val errorMessage =
+      intercept[Throwable] {
+        sqlContext.read.parquet("hdfs://nonexistent")
+      }.toString
     assert(errorMessage.contains("UnknownHostException"))
   }
 
@@ -598,17 +613,22 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       // `commitTask()` and `abortTask()` try to close output writers.
 
       withTempPath { dir =>
-        val m1 = intercept[SparkException] {
-          sqlContext.range(1).coalesce(1).write.parquet(dir.getCanonicalPath)
-        }.getCause.getMessage
+        val m1 =
+          intercept[SparkException] {
+            sqlContext.range(1).coalesce(1).write.parquet(dir.getCanonicalPath)
+          }.getCause.getMessage
         assert(m1.contains("Intentional exception for testing purposes"))
       }
 
       withTempPath { dir =>
-        val m2 = intercept[SparkException] {
-          val df = sqlContext.range(1).select('id as 'a, 'id as 'b).coalesce(1)
-          df.write.partitionBy("a").parquet(dir.getCanonicalPath)
-        }.getCause.getMessage
+        val m2 =
+          intercept[SparkException] {
+            val df = sqlContext
+              .range(1)
+              .select('id as 'a, 'id as 'b)
+              .coalesce(1)
+            df.write.partitionBy("a").parquet(dir.getCanonicalPath)
+          }.getCause.getMessage
         assert(m2.contains("Intentional exception for testing purposes"))
       }
     } finally {

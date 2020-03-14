@@ -11,8 +11,7 @@ class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
     with Cloneable
     with Serializable {
 
-  def this() =
-    this(mutable.HashMap.empty[Box[Any], V])
+  def this() = this(mutable.HashMap.empty[Box[Any], V])
 
   def this(initialCapacity: Int) = this()
 
@@ -23,26 +22,20 @@ class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
     putAll(t)
   }
 
-  def size(): Int =
-    inner.size
+  def size(): Int = inner.size
 
-  def isEmpty: Boolean =
-    inner.isEmpty
+  def isEmpty: Boolean = inner.isEmpty
 
   def keys(): ju.Enumeration[K] =
     inner.keysIterator.map(_.inner.asInstanceOf[K])
 
-  def elements(): ju.Enumeration[V] =
-    inner.valuesIterator
+  def elements(): ju.Enumeration[V] = inner.valuesIterator
 
-  def contains(value: Any): Boolean =
-    containsValue(value)
+  def contains(value: Any): Boolean = containsValue(value)
 
-  def containsValue(value: Any): Boolean =
-    inner.containsValue(value)
+  def containsValue(value: Any): Boolean = inner.containsValue(value)
 
-  def containsKey(key: Any): Boolean =
-    inner.contains(Box(key))
+  def containsKey(key: Any): Boolean = inner.contains(Box(key))
 
   def get(key: Any): V = {
     if (key == null)
@@ -67,17 +60,14 @@ class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
   def putAll(m: ju.Map[_ <: K, _ <: V]): Unit =
     m.iterator.foreach(kv => inner.put(Box(kv._1.asInstanceOf[AnyRef]), kv._2))
 
-  def clear(): Unit =
-    inner.clear()
+  def clear(): Unit = inner.clear()
 
-  override def clone(): AnyRef =
-    new ju.Hashtable[K, V](this)
+  override def clone(): AnyRef = new ju.Hashtable[K, V](this)
 
   override def toString(): String =
     inner.iterator.map(kv => kv._1.inner + "=" + kv._2).mkString("{", ", ", "}")
 
-  def keySet(): ju.Set[K] =
-    inner.keySet.map(_.inner.asInstanceOf[K])
+  def keySet(): ju.Set[K] = inner.keySet.map(_.inner.asInstanceOf[K])
 
   def entrySet(): ju.Set[ju.Map.Entry[K, V]] = {
     class UnboxedEntry(
@@ -96,6 +86,5 @@ class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
     setAsJavaSet(inner.entrySet().map(new UnboxedEntry(_)))
   }
 
-  def values(): ju.Collection[V] =
-    inner.values
+  def values(): ju.Collection[V] = inner.values
 }

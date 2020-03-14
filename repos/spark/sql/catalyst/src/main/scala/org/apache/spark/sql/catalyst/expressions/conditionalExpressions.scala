@@ -210,17 +210,19 @@ case class CaseWhen(
   }
 
   override def toString: String = {
-    val cases = branches.map {
-      case (c, v) => s" WHEN $c THEN $v"
-    }.mkString
+    val cases =
+      branches.map {
+        case (c, v) => s" WHEN $c THEN $v"
+      }.mkString
     val elseCase = elseValue.map(" ELSE " + _).getOrElse("")
     "CASE" + cases + elseCase + " END"
   }
 
   override def sql: String = {
-    val cases = branches.map {
-      case (c, v) => s" WHEN ${c.sql} THEN ${v.sql}"
-    }.mkString
+    val cases =
+      branches.map {
+        case (c, v) => s" WHEN ${c.sql} THEN ${v.sql}"
+      }.mkString
     val elseCase = elseValue.map(" ELSE " + _.sql).getOrElse("")
     "CASE" + cases + elseCase + " END"
   }
@@ -244,14 +246,15 @@ object CaseWhen {
     *                 position are branch values.
     */
   def createFromParser(branches: Seq[Expression]): CaseWhen = {
-    val cases = branches
-      .grouped(2)
-      .flatMap {
-        case cond :: value :: Nil => Some((cond, value))
-        case value :: Nil         => None
-      }
-      .toArray
-      .toSeq // force materialization to make the seq serializable
+    val cases =
+      branches
+        .grouped(2)
+        .flatMap {
+          case cond :: value :: Nil => Some((cond, value))
+          case value :: Nil         => None
+        }
+        .toArray
+        .toSeq // force materialization to make the seq serializable
     val elseValue =
       if (branches.size % 2 == 1)
         Some(branches.last)
@@ -267,14 +270,15 @@ object CaseWhen {
   */
 object CaseKeyWhen {
   def apply(key: Expression, branches: Seq[Expression]): CaseWhen = {
-    val cases = branches
-      .grouped(2)
-      .flatMap {
-        case cond :: value :: Nil => Some((EqualTo(key, cond), value))
-        case value :: Nil         => None
-      }
-      .toArray
-      .toSeq // force materialization to make the seq serializable
+    val cases =
+      branches
+        .grouped(2)
+        .flatMap {
+          case cond :: value :: Nil => Some((EqualTo(key, cond), value))
+          case value :: Nil         => None
+        }
+        .toArray
+        .toSeq // force materialization to make the seq serializable
     val elseValue =
       if (branches.size % 2 == 1)
         Some(branches.last)

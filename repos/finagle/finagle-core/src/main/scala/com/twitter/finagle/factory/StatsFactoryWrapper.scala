@@ -35,8 +35,8 @@ class StatsFactoryWrapper[Req, Rep](
     statsReceiver: StatsReceiver)
     extends ServiceFactoryProxy[Req, Rep](self) {
   private[this] val failureStats = statsReceiver.scope("failures")
-  private[this] val latencyStat =
-    statsReceiver.stat("service_acquisition_latency_ms")
+  private[this] val latencyStat = statsReceiver.stat(
+    "service_acquisition_latency_ms")
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
     val elapsed = Stopwatch.start()

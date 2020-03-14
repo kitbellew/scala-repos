@@ -384,11 +384,12 @@ abstract class SupervisorStrategy {
       cause: Throwable,
       decision: Directive): Unit =
     if (loggingEnabled) {
-      val logMessage = cause match {
-        case e: ActorInitializationException if e.getCause ne null ⇒
-          e.getCause.getMessage
-        case e ⇒ e.getMessage
-      }
+      val logMessage =
+        cause match {
+          case e: ActorInitializationException if e.getCause ne null ⇒
+            e.getCause.getMessage
+          case e ⇒ e.getMessage
+        }
       decision match {
         case Resume ⇒
           publish(context, Warning(child.path.toString, getClass, logMessage))
@@ -511,17 +512,17 @@ case class AllForOneStrategy(
     * Java API: compatible with lambda expressions
     * This is an EXPERIMENTAL feature and is subject to change until it has received more real world testing.
     */
-  def this(decider: SupervisorStrategy.Decider) =
-    this()(decider)
+  def this(decider: SupervisorStrategy.Decider) = this()(decider)
 
   /*
    *  this is a performance optimization to avoid re-allocating the pairs upon
    *  every call to requestRestartPermission, assuming that strategies are shared
    *  across actors and thus this field does not take up much space
    */
-  private val retriesWindow = (
-    maxNrOfRetriesOption(maxNrOfRetries),
-    withinTimeRangeOption(withinTimeRange).map(_.toMillis.toInt))
+  private val retriesWindow =
+    (
+      maxNrOfRetriesOption(maxNrOfRetries),
+      withinTimeRangeOption(withinTimeRange).map(_.toMillis.toInt))
 
   def handleChildTerminated(
       context: ActorContext,
@@ -618,19 +619,19 @@ case class OneForOneStrategy(
     * Java API: compatible with lambda expressions
     * This is an EXPERIMENTAL feature and is subject to change until it has received more real world testing.
     */
-  def this(decider: SupervisorStrategy.Decider) =
-    this()(decider)
+  def this(decider: SupervisorStrategy.Decider) = this()(decider)
 
   /*
    *  this is a performance optimization to avoid re-allocating the pairs upon
    *  every call to requestRestartPermission, assuming that strategies are shared
    *  across actors and thus this field does not take up much space
    */
-  private val retriesWindow = (
-    SupervisorStrategy.maxNrOfRetriesOption(maxNrOfRetries),
-    SupervisorStrategy
-      .withinTimeRangeOption(withinTimeRange)
-      .map(_.toMillis.toInt))
+  private val retriesWindow =
+    (
+      SupervisorStrategy.maxNrOfRetriesOption(maxNrOfRetries),
+      SupervisorStrategy
+        .withinTimeRangeOption(withinTimeRange)
+        .map(_.toMillis.toInt))
 
   def handleChildTerminated(
       context: ActorContext,

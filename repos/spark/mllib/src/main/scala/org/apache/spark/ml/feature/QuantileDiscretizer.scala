@@ -45,12 +45,13 @@ private[feature] trait QuantileDiscretizerBase
     * default: 2
     * @group param
     */
-  val numBuckets = new IntParam(
-    this,
-    "numBuckets",
-    "Maximum number of buckets (quantiles, or " +
-      "categories) into which data points are grouped. Must be >= 2.",
-    ParamValidators.gtEq(2))
+  val numBuckets =
+    new IntParam(
+      this,
+      "numBuckets",
+      "Maximum number of buckets (quantiles, or " +
+        "categories) into which data points are grouped. Must be >= 2.",
+      ParamValidators.gtEq(2))
   setDefault(numBuckets -> 2)
 
   /** @group getParam */
@@ -102,8 +103,9 @@ final class QuantileDiscretizer(override val uid: String)
       .map {
         case Row(feature: Double) => feature
       }
-    val candidates =
-      QuantileDiscretizer.findSplitCandidates(samples, $(numBuckets) - 1)
+    val candidates = QuantileDiscretizer.findSplitCandidates(
+      samples,
+      $(numBuckets) - 1)
     val splits = QuantileDiscretizer.getSplits(candidates)
     val bucketizer = new Bucketizer(uid).setSplits(splits)
     copyValues(bucketizer.setParent(this))
@@ -150,9 +152,10 @@ object QuantileDiscretizer
   private[feature] def findSplitCandidates(
       samples: Array[Double],
       numSplits: Int): Array[Double] = {
-    val valueCountMap = samples.foldLeft(Map.empty[Double, Int]) { (m, x) =>
-      m + ((x, m.getOrElse(x, 0) + 1))
-    }
+    val valueCountMap =
+      samples.foldLeft(Map.empty[Double, Int]) { (m, x) =>
+        m + ((x, m.getOrElse(x, 0) + 1))
+      }
     val valueCounts =
       valueCountMap.toSeq.sortBy(_._1).toArray ++ Array((Double.MaxValue, 1))
     val possibleSplits = valueCounts.length - 1
@@ -190,20 +193,21 @@ object QuantileDiscretizer
     * needed, and adding a default split value of 0 if no good candidates are found.
     */
   private[feature] def getSplits(candidates: Array[Double]): Array[Double] = {
-    val effectiveValues = if (candidates.nonEmpty) {
-      if (candidates.head == Double.NegativeInfinity
-          && candidates.last == Double.PositiveInfinity) {
-        candidates.drop(1).dropRight(1)
-      } else if (candidates.head == Double.NegativeInfinity) {
-        candidates.drop(1)
-      } else if (candidates.last == Double.PositiveInfinity) {
-        candidates.dropRight(1)
+    val effectiveValues =
+      if (candidates.nonEmpty) {
+        if (candidates.head == Double.NegativeInfinity
+            && candidates.last == Double.PositiveInfinity) {
+          candidates.drop(1).dropRight(1)
+        } else if (candidates.head == Double.NegativeInfinity) {
+          candidates.drop(1)
+        } else if (candidates.last == Double.PositiveInfinity) {
+          candidates.dropRight(1)
+        } else {
+          candidates
+        }
       } else {
         candidates
       }
-    } else {
-      candidates
-    }
 
     if (effectiveValues.isEmpty) {
       Array(Double.NegativeInfinity, 0, Double.PositiveInfinity)

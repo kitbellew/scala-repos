@@ -65,34 +65,38 @@ object UpdateOffsetsInZK {
 
     var numParts = 0
     for (partition <- partitions) {
-      val brokerHostingPartition =
-        zkUtils.getLeaderForPartition(topic, partition)
+      val brokerHostingPartition = zkUtils.getLeaderForPartition(
+        topic,
+        partition)
 
-      val broker = brokerHostingPartition match {
-        case Some(b) => b
-        case None =>
-          throw new KafkaException(
-            "Broker " + brokerHostingPartition + " is unavailable. Cannot issue " +
-              "getOffsetsBefore request")
-      }
+      val broker =
+        brokerHostingPartition match {
+          case Some(b) => b
+          case None =>
+            throw new KafkaException(
+              "Broker " + brokerHostingPartition + " is unavailable. Cannot issue " +
+                "getOffsetsBefore request")
+        }
 
       zkUtils.getBrokerInfo(broker) match {
         case Some(brokerInfo) =>
-          val consumer = new SimpleConsumer(
-            brokerInfo.getBrokerEndPoint(SecurityProtocol.PLAINTEXT).host,
-            brokerInfo.getBrokerEndPoint(SecurityProtocol.PLAINTEXT).port,
-            10000,
-            100 * 1024,
-            "UpdateOffsetsInZk")
+          val consumer =
+            new SimpleConsumer(
+              brokerInfo.getBrokerEndPoint(SecurityProtocol.PLAINTEXT).host,
+              brokerInfo.getBrokerEndPoint(SecurityProtocol.PLAINTEXT).port,
+              10000,
+              100 * 1024,
+              "UpdateOffsetsInZk")
           val topicAndPartition = TopicAndPartition(topic, partition)
           val request = OffsetRequest(
             Map(
               topicAndPartition -> PartitionOffsetRequestInfo(offsetOption, 1)))
-          val offset = consumer
-            .getOffsetsBefore(request)
-            .partitionErrorAndOffsets(topicAndPartition)
-            .offsets
-            .head
+          val offset =
+            consumer
+              .getOffsetsBefore(request)
+              .partitionErrorAndOffsets(topicAndPartition)
+              .offsets
+              .head
           val topicDirs = new ZKGroupTopicDirs(config.groupId, topic)
 
           println(

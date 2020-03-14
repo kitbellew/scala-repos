@@ -28,9 +28,10 @@ class DateTimeSpec extends WordSpec with Matchers {
     }
     "behave exactly as a corresponding formatting via SimpleDateFormat" in {
       val Rfc1123Format = {
-        val fmt = new java.text.SimpleDateFormat(
-          "EEE, dd MMM yyyy HH:mm:ss z",
-          java.util.Locale.US)
+        val fmt =
+          new java.text.SimpleDateFormat(
+            "EEE, dd MMM yyyy HH:mm:ss z",
+            java.util.Locale.US)
         fmt.setTimeZone(GMT)
         fmt
       }

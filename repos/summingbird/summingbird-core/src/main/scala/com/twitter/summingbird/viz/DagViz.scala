@@ -68,15 +68,17 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
       case ((definitions, mappings, nameLookupTable), nextNode) =>
         val dependants = dependantState.dependantsOf(nextNode).getOrElse(Set())
 
-        val (updatedLookupTable, uniqueNodeName) =
-          getName(nameLookupTable, nextNode)
+        val (updatedLookupTable, uniqueNodeName) = getName(
+          nameLookupTable,
+          nextNode)
         val nodeName = "\"" + uniqueNodeName + "\""
 
         val (newMappings, innerNameLookupTable) =
           dependants.foldLeft((List[String](), updatedLookupTable)) {
             case ((mappings, innerNameLookupTable), childNode) =>
-              val (updatedLookupTable2, uniqueChildName) =
-                getName(innerNameLookupTable, childNode)
+              val (updatedLookupTable2, uniqueChildName) = getName(
+                innerNameLookupTable,
+                childNode)
               val childName = "\"" + uniqueChildName + "\""
               val mappingStr = "%s -> %s\n".format(nodeName, childName)
 
@@ -96,8 +98,9 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
         case (
               (clusters, producerMappings, nameLookupTable, nodeShortName),
               node) =>
-          val (nodeDefinitions, mappings, newNameLookupTable) =
-            getSubGraphStr(nameLookupTable, node)
+          val (nodeDefinitions, mappings, newNameLookupTable) = getSubGraphStr(
+            nameLookupTable,
+            node)
           val shortName = "cluster_" + node.hashCode.toHexString
           val newNodeShortName = nodeShortName + (node -> shortName)
           val nextCluster = "subgraph %s {\n\tlabel=\"%s\"\n%s\n}\n".format(

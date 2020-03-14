@@ -399,8 +399,9 @@ object AhcWSSpec extends PlaySpecification with Mockito {
 
     "support patch method" in new WithServer(patchFakeApp) {
       // NOTE: if you are using a client proxy like Privoxy or Polipo, your proxy may not support PATCH & return 400.
-      val futureResponse =
-        WS.url("http://localhost:" + port + "/").patch("body")
+      val futureResponse = WS
+        .url("http://localhost:" + port + "/")
+        .patch("body")
 
       // This test experiences CI timeouts. Give it more time.
       val reallyLongTimeout = Timeout(defaultAwaitTimeout.duration * 3)
@@ -494,15 +495,16 @@ object AhcWSSpec extends PlaySpecification with Mockito {
     "return -1 values of expires and maxAge as None" in {
       val ahcResponse: AHCResponse = mock[AHCResponse]
 
-      val ahcCookie: AHCCookie = new AHCCookie(
-        "someName",
-        "value",
-        true,
-        "domain",
-        "path",
-        -1L,
-        false,
-        false)
+      val ahcCookie: AHCCookie =
+        new AHCCookie(
+          "someName",
+          "value",
+          true,
+          "domain",
+          "path",
+          -1L,
+          false,
+          false)
       ahcResponse.getCookies returns util.Arrays.asList(ahcCookie)
 
       val response = AhcWSResponse(ahcResponse)

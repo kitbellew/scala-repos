@@ -35,11 +35,12 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
   def eliminateEmpty(): Unit = {
     val handlers = List(
       ExceptionHandler(Label(1), Label(2), Label(2), Some(exceptionDescriptor)))
-    val asmMethod = genMethod(handlers = handlers)(
-      Label(1),
-      Label(2),
-      Op(RETURN)
-    )
+    val asmMethod =
+      genMethod(handlers = handlers)(
+        Label(1),
+        Label(2),
+        Op(RETURN)
+      )
     assertTrue(convertMethod(asmMethod).handlers.length == 1)
     LocalOptImpls.removeEmptyExceptionHandlers(asmMethod)
     assertTrue(convertMethod(asmMethod).handlers.isEmpty)
@@ -49,17 +50,18 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
   def eliminateHandlersGuardingNops(): Unit = {
     val handlers = List(
       ExceptionHandler(Label(1), Label(2), Label(2), Some(exceptionDescriptor)))
-    val asmMethod = genMethod(handlers = handlers)(
-      Label(1), // nops only
-      Jump(GOTO, Label(3)),
-      Label(3),
-      Jump(GOTO, Label(4)),
-      Label(2), // handler
-      Op(ACONST_NULL),
-      Op(ATHROW),
-      Label(4), // return
-      Op(RETURN)
-    )
+    val asmMethod =
+      genMethod(handlers = handlers)(
+        Label(1), // nops only
+        Jump(GOTO, Label(3)),
+        Label(3),
+        Jump(GOTO, Label(4)),
+        Label(2), // handler
+        Op(ACONST_NULL),
+        Op(ATHROW),
+        Label(4), // return
+        Op(RETURN)
+      )
     assertTrue(convertMethod(asmMethod).handlers.length == 1)
     LocalOptImpls.removeEmptyExceptionHandlers(asmMethod)
     assertTrue(convertMethod(asmMethod).handlers.isEmpty)
@@ -88,8 +90,7 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
 
   @Test
   def keepAliveHandlers(): Unit = {
-    val code =
-      """def f: Int = {
+    val code = """def f: Int = {
         |  println(0)
         |  try { 1 }
         |  catch { case _: Exception => 2 }

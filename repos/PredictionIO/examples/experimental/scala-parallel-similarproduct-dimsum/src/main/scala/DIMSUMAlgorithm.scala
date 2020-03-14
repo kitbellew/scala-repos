@@ -82,13 +82,14 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
     val itemStringIntMap = BiMap.stringInt(data.items.keys)
 
     // collect Item as Map and convert ID to Int index
-    val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
-      }
-      .collectAsMap
-      .toMap
+    val items: Map[Int, Item] =
+      data.items
+        .map {
+          case (id, item) =>
+            (itemStringIntMap(id), item)
+        }
+        .collectAsMap
+        .toMap
     val itemCount = items.size
 
     // each row is a sparse vector of rated items by this user
@@ -156,10 +157,10 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
   def predict(model: DIMSUMModel, query: Query): PredictedResult = {
     // convert the white and black list items to Int index
-    val whiteList: Option[Set[Int]] =
-      query.whiteList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
-    val blackList: Option[Set[Int]] =
-      query.blackList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
+      set.map(model.itemStringIntMap.get(_)).flatten)
+    val blackList: Option[Set[Int]] = query.blackList.map(set =>
+      set.map(model.itemStringIntMap.get(_)).flatten)
 
     val queryList: Set[Int] =
       query.items.map(model.itemStringIntMap.get(_)).flatten.toSet
@@ -204,19 +205,21 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
         }
     }
 
-    val aggregatedScores = indexScores
-      .groupBy(_._1)
-      .mapValues(_.foldLeft[Double](0)((b, a) => b + a._2))
-      .toList
+    val aggregatedScores =
+      indexScores
+        .groupBy(_._1)
+        .mapValues(_.foldLeft[Double](0)((b, a) => b + a._2))
+        .toList
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
-    val itemScores = getTopN(aggregatedScores, query.num)(ord).map {
-      case (i, s) =>
-        new ItemScore(
-          item = model.itemIntStringMap(i),
-          score = s
-        )
-    }.toArray
+    val itemScores =
+      getTopN(aggregatedScores, query.num)(ord).map {
+        case (i, s) =>
+          new ItemScore(
+            item = model.itemIntStringMap(i),
+            score = s
+          )
+      }.toArray
 
     new PredictedResult(itemScores)
   }

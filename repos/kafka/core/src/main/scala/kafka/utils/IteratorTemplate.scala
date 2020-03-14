@@ -76,8 +76,7 @@ abstract class IteratorTemplate[T]
     null.asInstanceOf[T]
   }
 
-  def remove =
-    throw new UnsupportedOperationException("Removal not supported")
+  def remove = throw new UnsupportedOperationException("Removal not supported")
 
   protected def resetState() {
     state = NOT_READY

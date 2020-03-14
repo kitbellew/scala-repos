@@ -63,41 +63,47 @@ import scalafx.scene.text.Font
   *
   */
 object ScalaFX_Controls_02 extends JFXApp {
-  val label = new Label {
-    font = Font.font("Times New Roman", 22)
-    textFill = Color.web("#464646")
-  }
-
-  val okImageView = new ImageView {
-    image = new Image(this, "images/ok.png")
-  }
-
-  val koImageView = new ImageView {
-    image = new Image(this, "images/ko.png")
-  }
-
-  val okButton1 = new Button {
-    graphic = okImageView
-    text = "Accept"
-    style = "-fx-font: 22 arial; -fx-base: #b6e7c9;"
-    onAction = { (_: ActionEvent) =>
-      label.text = "Accepted"
+  val label =
+    new Label {
+      font = Font.font("Times New Roman", 22)
+      textFill = Color.web("#464646")
     }
-  }
 
-  val okButton2 = new Button {
-    text = "Accept"
-    onAction = { (_: ActionEvent) =>
-      label.text = "Accepted"
+  val okImageView =
+    new ImageView {
+      image = new Image(this, "images/ok.png")
     }
-  }
 
-  val koButton1 = new Button {
-    text = "Decline"
-    onAction = { (_: ActionEvent) =>
-      label.text = "Declined"
+  val koImageView =
+    new ImageView {
+      image = new Image(this, "images/ko.png")
     }
-  }
+
+  val okButton1 =
+    new Button {
+      graphic = okImageView
+      text = "Accept"
+      style = "-fx-font: 22 arial; -fx-base: #b6e7c9;"
+      onAction = { (_: ActionEvent) =>
+        label.text = "Accepted"
+      }
+    }
+
+  val okButton2 =
+    new Button {
+      text = "Accept"
+      onAction = { (_: ActionEvent) =>
+        label.text = "Accepted"
+      }
+    }
+
+  val koButton1 =
+    new Button {
+      text = "Decline"
+      onAction = { (_: ActionEvent) =>
+        label.text = "Declined"
+      }
+    }
 
   koButton1 addOnMouseEnteredHandler { (_: MouseEvent) =>
     koButton1.effect = new DropShadow()
@@ -107,48 +113,53 @@ object ScalaFX_Controls_02 extends JFXApp {
     koButton1.effect = null
   }
 
-  val hBox1 = new HBox {
-    spacing = 10
-    alignment = Pos.BottomCenter
-    children = List(
-      okButton2,
-      koButton1,
-      label
-    )
-  }
-
-  val okButton3 = new Button {
-    graphic = okImageView
-    onAction = { (_: ActionEvent) =>
-      label.text = "Accepted"
+  val hBox1 =
+    new HBox {
+      spacing = 10
+      alignment = Pos.BottomCenter
+      children = List(
+        okButton2,
+        koButton1,
+        label
+      )
     }
-  }
 
-  val koButton2 = new Button {
-    graphic = koImageView
-    onAction = { (_: ActionEvent) =>
-      label.text = "Declined"
+  val okButton3 =
+    new Button {
+      graphic = okImageView
+      onAction = { (_: ActionEvent) =>
+        label.text = "Accepted"
+      }
     }
-  }
 
-  val hBox2 = new HBox {
-    spacing = 25
-    children = List(
-      okButton3,
-      koButton2
-    )
-  }
+  val koButton2 =
+    new Button {
+      graphic = koImageView
+      onAction = { (_: ActionEvent) =>
+        label.text = "Declined"
+      }
+    }
 
-  val vBox = new VBox {
-    layoutX = 20
-    layoutY = 20
-    spacing = 10
-    children = List(
-      okButton1,
-      hBox1,
-      hBox2
-    )
-  }
+  val hBox2 =
+    new HBox {
+      spacing = 25
+      children = List(
+        okButton3,
+        koButton2
+      )
+    }
+
+  val vBox =
+    new VBox {
+      layoutX = 20
+      layoutY = 20
+      spacing = 10
+      children = List(
+        okButton1,
+        hBox1,
+        hBox2
+      )
+    }
   stage = new PrimaryStage {
     title = "ScalaFX Controls 02"
     width = 300

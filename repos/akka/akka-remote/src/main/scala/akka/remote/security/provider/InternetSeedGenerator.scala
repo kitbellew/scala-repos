@@ -42,11 +42,10 @@ object InternetSeedGenerator {
   private final val Instance: InternetSeedGenerator = new InternetSeedGenerator
 
   /**Delegate generators. */
-  private final val Generators: immutable.Seq[SeedGenerator] =
-    List(
-      new RandomDotOrgSeedGenerator, // first try the Internet seed generator
-      new SecureRandomSeedGenerator
-    ) // this is last because it always works
+  private final val Generators: immutable.Seq[SeedGenerator] = List(
+    new RandomDotOrgSeedGenerator, // first try the Internet seed generator
+    new SecureRandomSeedGenerator
+  ) // this is last because it always works
 }
 
 final class InternetSeedGenerator extends SeedGenerator {

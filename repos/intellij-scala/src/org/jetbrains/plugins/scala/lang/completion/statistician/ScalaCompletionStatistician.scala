@@ -21,8 +21,8 @@ class ScalaCompletionStatistician extends CompletionStatistician {
   def serialize(
       element: LookupElement,
       location: CompletionLocation): StatisticsInfo = {
-    val currentElement =
-      Option(element.as(LookupItem.CLASS_CONDITION_KEY)).getOrElse(return null)
+    val currentElement = Option(element.as(LookupItem.CLASS_CONDITION_KEY))
+      .getOrElse(return null)
 
     ScalaLookupItem.original(currentElement) match {
       case s: ScalaLookupItem
@@ -60,8 +60,9 @@ class ScalaCompletionStatistician extends CompletionStatistician {
           case _ =>
             val containingClass = member.getContainingClass
             if (containingClass != null) {
-              val context =
-                ScalaStatisticManager.memberKey(containingClass).getOrElse("")
+              val context = ScalaStatisticManager
+                .memberKey(containingClass)
+                .getOrElse("")
               new StatisticsInfo("scalaMember#" + context, key)
             } else {
               StatisticsInfo.EMPTY

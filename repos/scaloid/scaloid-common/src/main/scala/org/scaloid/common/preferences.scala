@@ -92,30 +92,37 @@ class Preferences(val preferences: SharedPreferences) extends Dynamic {
         None
   }
 
-  val String = new TypedPreferences[String] {
-    override def get(name: String): String = preferences.getString(name, "")
-  }
+  val String =
+    new TypedPreferences[String] {
+      override def get(name: String): String = preferences.getString(name, "")
+    }
 
-  val Int = new TypedPreferences[Int] {
-    override def get(name: String): Int = preferences.getInt(name, 0)
-  }
+  val Int =
+    new TypedPreferences[Int] {
+      override def get(name: String): Int = preferences.getInt(name, 0)
+    }
 
-  val Long = new TypedPreferences[Long] {
-    override def get(name: String): Long = preferences.getLong(name, 0L)
-  }
+  val Long =
+    new TypedPreferences[Long] {
+      override def get(name: String): Long = preferences.getLong(name, 0L)
+    }
 
-  val Boolean = new TypedPreferences[Boolean] {
-    override def get(name: String): Boolean = preferences.getBoolean(name, true)
-  }
+  val Boolean =
+    new TypedPreferences[Boolean] {
+      override def get(name: String): Boolean =
+        preferences.getBoolean(name, true)
+    }
 
-  val Float = new TypedPreferences[Float] {
-    override def get(name: String): Float = preferences.getFloat(name, 0f)
-  }
+  val Float =
+    new TypedPreferences[Float] {
+      override def get(name: String): Float = preferences.getFloat(name, 0f)
+    }
 
-  val StringSet = new TypedPreferences[Set[String]] {
-    override def get(name: String): Set[String] =
-      preferences.getStringSet(name, null).toSet
-  }
+  val StringSet =
+    new TypedPreferences[Set[String]] {
+      override def get(name: String): Set[String] =
+        preferences.getStringSet(name, null).toSet
+    }
 }
 
 object Preferences {

@@ -30,8 +30,8 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
   override def beforeAll(): Unit = {
     super.beforeAll()
     path = Utils.createTempDir()
-    val rdd =
-      sparkContext.parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""))
+    val rdd = sparkContext.parallelize(
+      (1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""))
     caseInsensitiveContext.read.json(rdd).registerTempTable("jt")
     sql(s"""
         |CREATE TEMPORARY TABLE jsonTable (a int, b string)
@@ -85,11 +85,12 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
 
   test(
     "SELECT clause generating a different number of columns is not allowed.") {
-    val message = intercept[RuntimeException] {
-      sql(s"""
+    val message =
+      intercept[RuntimeException] {
+        sql(s"""
         |INSERT OVERWRITE TABLE jsonTable SELECT a FROM jt
       """.stripMargin)
-    }.getMessage
+      }.getMessage
     assert(
       message.contains("generates the same number of columns as its schema"),
       "SELECT clause generating a different number of columns should not be not allowed."
@@ -162,11 +163,12 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
   }
 
   test("it is not allowed to write to a table while querying it.") {
-    val message = intercept[AnalysisException] {
-      sql(s"""
+    val message =
+      intercept[AnalysisException] {
+        sql(s"""
         |INSERT OVERWRITE TABLE jsonTable SELECT a, b FROM jsonTable
       """.stripMargin)
-    }.getMessage
+      }.getMessage
     assert(
       message.contains("Cannot overwrite a path that is also being read from."),
       "INSERT OVERWRITE to a table while querying it should not be allowed.")
@@ -237,11 +239,12 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
       (1 to 10).map(Row(_)).toSeq
     )
 
-    val message = intercept[AnalysisException] {
-      sql(s"""
+    val message =
+      intercept[AnalysisException] {
+        sql(s"""
         |INSERT OVERWRITE TABLE oneToTen SELECT CAST(a AS INT) FROM jt
         """.stripMargin)
-    }.getMessage
+      }.getMessage
     assert(
       message.contains("does not allow insertion."),
       "It is not allowed to insert into a table that is not an InsertableRelation."

@@ -55,27 +55,29 @@ object NIHDBShardServer
   val clock = Clock.System
 
   val actorSystem = ActorSystem("PrecogShard")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   override def configureShardState(config: Configuration) =
     M.point {
-      val apiKeyFinder = new CachingAPIKeyFinder(
-        WebAPIKeyFinder(config.detach("security"))
-          .map(_.withM[Future]) valueOr { errs =>
-          sys.error(
-            "Unable to build new WebAPIKeyFinder: " + errs.list
-              .mkString("\n", "\n", ""))
-        })
+      val apiKeyFinder =
+        new CachingAPIKeyFinder(
+          WebAPIKeyFinder(config.detach("security"))
+            .map(_.withM[Future]) valueOr { errs =>
+            sys.error(
+              "Unable to build new WebAPIKeyFinder: " + errs.list
+                .mkString("\n", "\n", ""))
+          })
 
-      val accountFinder = new CachingAccountFinder(
-        WebAccountFinder(config.detach("accounts"))
-          .map(_.withM[Future]) valueOr { errs =>
-          sys.error(
-            "Unable to build new WebAccountFinder: " + errs.list
-              .mkString("\n", "\n", ""))
-        })
+      val accountFinder =
+        new CachingAccountFinder(
+          WebAccountFinder(config.detach("accounts"))
+            .map(_.withM[Future]) valueOr { errs =>
+            sys.error(
+              "Unable to build new WebAccountFinder: " + errs.list
+                .mkString("\n", "\n", ""))
+          })
 
       val (asyncQueries, jobManager) = {
         if (config[Boolean]("jobs.service.in_memory", false)) {
@@ -93,8 +95,11 @@ object NIHDBShardServer
         }
       }
 
-      val platform =
-        nihdbPlatform(config, apiKeyFinder, accountFinder, jobManager)
+      val platform = nihdbPlatform(
+        config,
+        apiKeyFinder,
+        accountFinder,
+        jobManager)
 
       ShardState(
         platform,

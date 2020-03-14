@@ -243,8 +243,7 @@ trait BigStream[A] extends Iterable[A] with IterableLike[A, BigStream[A]] {
     loop(this)
   }
 
-  override def newBuilder: Builder[A, BigStream[A]] =
-    BigStream.newBuilder[A]
+  override def newBuilder: Builder[A, BigStream[A]] = BigStream.newBuilder[A]
 }
 
 class BigCons[A](override val head: A, t: => BigStream[A])

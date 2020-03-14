@@ -93,8 +93,8 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
 
   // Hadoop configuration is not serializable, so broadcast it as a serializable.
   @transient private val hadoopConfig = sc.hadoopConfiguration
-  private val broadcastedHadoopConf = new SerializableConfiguration(
-    hadoopConfig)
+  private val broadcastedHadoopConf =
+    new SerializableConfiguration(hadoopConfig)
 
   override def isValid(): Boolean = true
 
@@ -142,9 +142,10 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
         // FileBasedWriteAheadLog will not create any file or directory at that path. Also,
         // this dummy directory should not already exist otherwise the WAL will try to recover
         // past events from the directory and throw errors.
-        val nonExistentDirectory = new File(
-          System.getProperty("java.io.tmpdir"),
-          UUID.randomUUID().toString).getAbsolutePath
+        val nonExistentDirectory =
+          new File(
+            System.getProperty("java.io.tmpdir"),
+            UUID.randomUUID().toString).getAbsolutePath
         writeAheadLog = WriteAheadLogUtils.createLogForReceiver(
           SparkEnv.get.conf,
           nonExistentDirectory,
@@ -197,11 +198,12 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
     */
   override def getPreferredLocations(split: Partition): Seq[String] = {
     val partition = split.asInstanceOf[WriteAheadLogBackedBlockRDDPartition]
-    val blockLocations = if (partition.isBlockIdValid) {
-      getBlockIdLocations().get(partition.blockId)
-    } else {
-      None
-    }
+    val blockLocations =
+      if (partition.isBlockIdValid) {
+        getBlockIdLocations().get(partition.blockId)
+      } else {
+        None
+      }
 
     blockLocations.getOrElse {
       partition.walRecordHandle match {

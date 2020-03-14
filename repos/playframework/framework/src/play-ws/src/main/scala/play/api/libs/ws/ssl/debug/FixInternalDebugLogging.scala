@@ -59,8 +59,10 @@ object FixInternalDebugLogging {
     def run() {
       System.setProperty("javax.net.debug", newOptions)
 
-      val debugType: Class[_] =
-        Thread.currentThread().getContextClassLoader.loadClass(debugClassName)
+      val debugType: Class[_] = Thread
+        .currentThread()
+        .getContextClassLoader
+        .loadClass(debugClassName)
 
       val newDebug: AnyRef = debugType.newInstance().asInstanceOf[AnyRef]
       logger.debug(s"run: debugType = $debugType")

@@ -55,224 +55,227 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
 
   val size = source.size
 
-  val columns = source.columns.keySet.foldLeft(Map.empty[ColumnRef, Column]) {
-    case (acc, ColumnRef(CPath(_, xs @ _*), ctype)) =>
-      val resultRef = ColumnRef(CPath(xs: _*), ctype)
+  val columns =
+    source.columns.keySet.foldLeft(Map.empty[ColumnRef, Column]) {
+      case (acc, ColumnRef(CPath(_, xs @ _*), ctype)) =>
+        val resultRef = ColumnRef(CPath(xs: _*), ctype)
 
-      lazy val resultCol = ctype match {
-        case CBoolean =>
-          new BoolColumn {
-            private var row0: Int = -1
-            private var refCol0: BoolColumn = _
-            @inline private def refCol(row: Int): BoolColumn =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[BoolColumn]
+        lazy val resultCol =
+          ctype match {
+            case CBoolean =>
+              new BoolColumn {
+                private var row0: Int = -1
+                private var refCol0: BoolColumn = _
+                @inline private def refCol(row: Int): BoolColumn =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[BoolColumn]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
-          }
 
-        case CLong =>
-          new LongColumn {
-            private var row0: Int = -1
-            private var refCol0: LongColumn = _
-            @inline private def refCol(row: Int): LongColumn =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[LongColumn]
+            case CLong =>
+              new LongColumn {
+                private var row0: Int = -1
+                private var refCol0: LongColumn = _
+                @inline private def refCol(row: Int): LongColumn =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[LongColumn]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
-          }
 
-        case CDouble =>
-          new DoubleColumn {
-            private var row0: Int = -1
-            private var refCol0: DoubleColumn = _
-            @inline private def refCol(row: Int): DoubleColumn =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[DoubleColumn]
+            case CDouble =>
+              new DoubleColumn {
+                private var row0: Int = -1
+                private var refCol0: DoubleColumn = _
+                @inline private def refCol(row: Int): DoubleColumn =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[DoubleColumn]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
-          }
 
-        case CNum =>
-          new NumColumn {
-            private var row0: Int = -1
-            private var refCol0: NumColumn = _
-            @inline private def refCol(row: Int): NumColumn =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[NumColumn]
+            case CNum =>
+              new NumColumn {
+                private var row0: Int = -1
+                private var refCol0: NumColumn = _
+                @inline private def refCol(row: Int): NumColumn =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[NumColumn]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
-          }
 
-        case CString =>
-          new StrColumn {
-            private var row0: Int = -1
-            private var refCol0: StrColumn = _
-            @inline private def refCol(row: Int): StrColumn =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[StrColumn]
+            case CString =>
+              new StrColumn {
+                private var row0: Int = -1
+                private var refCol0: StrColumn = _
+                @inline private def refCol(row: Int): StrColumn =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[StrColumn]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
-          }
 
-        case CDate =>
-          new DateColumn {
-            private var row0: Int = -1
-            private var refCol0: DateColumn = _
-            @inline private def refCol(row: Int): DateColumn =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[DateColumn]
+            case CDate =>
+              new DateColumn {
+                private var row0: Int = -1
+                private var refCol0: DateColumn = _
+                @inline private def refCol(row: Int): DateColumn =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[DateColumn]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
-          }
 
-        case CPeriod =>
-          new PeriodColumn {
-            private var row0: Int = -1
-            private var refCol0: PeriodColumn = _
-            @inline private def refCol(row: Int): PeriodColumn =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[PeriodColumn]
+            case CPeriod =>
+              new PeriodColumn {
+                private var row0: Int = -1
+                private var refCol0: PeriodColumn = _
+                @inline private def refCol(row: Int): PeriodColumn =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[PeriodColumn]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
-          }
 
-        case cArrayType: CArrayType[a] =>
-          new HomogeneousArrayColumn[a] {
-            val tpe = cArrayType
-            private var row0: Int = -1
-            private var refCol0: HomogeneousArrayColumn[a] = _
-            @inline private def refCol(row: Int): HomogeneousArrayColumn[a] =
-              derefColumns(derefBy(row))
-                .flatMap(_.get(resultRef))
-                .orNull
-                .asInstanceOf[HomogeneousArrayColumn[a]]
+            case cArrayType: CArrayType[a] =>
+              new HomogeneousArrayColumn[a] {
+                val tpe = cArrayType
+                private var row0: Int = -1
+                private var refCol0: HomogeneousArrayColumn[a] = _
+                @inline private def refCol(
+                    row: Int): HomogeneousArrayColumn[a] =
+                  derefColumns(derefBy(row))
+                    .flatMap(_.get(resultRef))
+                    .orNull
+                    .asInstanceOf[HomogeneousArrayColumn[a]]
 
-            def apply(row: Int) = refCol0(row)
+                def apply(row: Int) = refCol0(row)
 
-            def isDefinedAt(row: Int) = {
-              derefBy.isDefinedAt(row) && {
-                if (row0 != row) {
-                  row0 = row;
-                  refCol0 = refCol(row)
+                def isDefinedAt(row: Int) = {
+                  derefBy.isDefinedAt(row) && {
+                    if (row0 != row) {
+                      row0 = row;
+                      refCol0 = refCol(row)
+                    }
+                    refCol0 != null && refCol0.isDefinedAt(row)
+                  }
                 }
-                refCol0 != null && refCol0.isDefinedAt(row)
               }
-            }
+
+            case CEmptyObject =>
+              new EmptyObjectColumn {
+                def isDefinedAt(row: Int) =
+                  derefBy.isDefinedAt(row) &&
+                    derefColumns(derefBy(row))
+                      .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
+              }
+
+            case CEmptyArray =>
+              new EmptyArrayColumn {
+                def isDefinedAt(row: Int) =
+                  derefBy.isDefinedAt(row) &&
+                    derefColumns(derefBy(row))
+                      .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
+              }
+
+            case CNull =>
+              new NullColumn {
+                def isDefinedAt(row: Int) =
+                  derefBy.isDefinedAt(row) && derefColumns(derefBy(row)).exists(
+                    cols => cols(resultRef).isDefinedAt(row))
+              }
+
+            case CUndefined => UndefinedColumn.raw
           }
 
-        case CEmptyObject =>
-          new EmptyObjectColumn {
-            def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) &&
-                derefColumns(derefBy(row))
-                  .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
-          }
-
-        case CEmptyArray =>
-          new EmptyArrayColumn {
-            def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) &&
-                derefColumns(derefBy(row))
-                  .exists(_.get(resultRef).exists(_.isDefinedAt(row)))
-          }
-
-        case CNull =>
-          new NullColumn {
-            def isDefinedAt(row: Int) =
-              derefBy.isDefinedAt(row) && derefColumns(derefBy(row)).exists(
-                cols => cols(resultRef).isDefinedAt(row))
-          }
-
-        case CUndefined => UndefinedColumn.raw
-      }
-
-      acc + (resultRef -> acc.getOrElse(resultRef, resultCol))
-  }
+        acc + (resultRef -> acc.getOrElse(resultRef, resultCol))
+    }
 }
 
 /* A strict version

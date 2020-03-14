@@ -115,12 +115,13 @@ class ReceivedBlockHandlerSuite
       testBlockStoring(handler) {
         case (data, blockIds, storeResults) =>
           // Verify the data in block manager is correct
-          val storedData = blockIds.flatMap { blockId =>
-            blockManager
-              .getLocalValues(blockId)
-              .map(_.data.map(_.toString).toList)
-              .getOrElse(List.empty)
-          }.toList
+          val storedData =
+            blockIds.flatMap { blockId =>
+              blockManager
+                .getLocalValues(blockId)
+                .map(_.data.map(_.toString).toList)
+                .getOrElse(List.empty)
+            }.toList
           storedData shouldEqual data
 
           // Verify that the store results are instances of BlockManagerBasedStoreResult
@@ -145,12 +146,13 @@ class ReceivedBlockHandlerSuite
       testBlockStoring(handler) {
         case (data, blockIds, storeResults) =>
           // Verify the data in block manager is correct
-          val storedData = blockIds.flatMap { blockId =>
-            blockManager
-              .getLocalValues(blockId)
-              .map(_.data.map(_.toString).toList)
-              .getOrElse(List.empty)
-          }.toList
+          val storedData =
+            blockIds.flatMap { blockId =>
+              blockManager
+                .getLocalValues(blockId)
+                .map(_.data.map(_.toString).toList)
+                .getOrElse(List.empty)
+            }.toList
           storedData shouldEqual data
 
           // Verify that the store results are instances of WriteAheadLogBasedStoreResult
@@ -165,11 +167,12 @@ class ReceivedBlockHandlerSuite
             result.asInstanceOf[WriteAheadLogBasedStoreResult].walRecordHandle
           }
           val loggedData = walSegments.flatMap { walSegment =>
-            val fileSegment =
-              walSegment.asInstanceOf[FileBasedWriteAheadLogSegment]
-            val reader = new FileBasedWriteAheadLogRandomReader(
-              fileSegment.path,
-              hadoopConf)
+            val fileSegment = walSegment
+              .asInstanceOf[FileBasedWriteAheadLogSegment]
+            val reader =
+              new FileBasedWriteAheadLogRandomReader(
+                fileSegment.path,
+                hadoopConf)
             val bytes = reader.read(fileSegment)
             reader.close()
             blockManager.dataDeserialize(generateBlockId(), bytes).toList
@@ -187,9 +190,10 @@ class ReceivedBlockHandlerSuite
 
   test("WriteAheadLogBasedBlockHandler - clean old blocks") {
     withWriteAheadLogBasedBlockHandler { handler =>
-      val blocks = Seq.tabulate(10) { i =>
-        IteratorBlock(Iterator(1 to i))
-      }
+      val blocks =
+        Seq.tabulate(10) { i =>
+          IteratorBlock(Iterator(1 to i))
+        }
       storeBlocks(handler, blocks)
 
       val preCleanupLogFiles = getWriteAheadLogFiles()
@@ -336,18 +340,19 @@ class ReceivedBlockHandlerSuite
       new StaticMemoryManager(conf, Long.MaxValue, maxMem, numCores = 1)
     val transfer =
       new NettyBlockTransferService(conf, securityMgr, numCores = 1)
-    val blockManager = new BlockManager(
-      name,
-      rpcEnv,
-      blockManagerMaster,
-      serializer,
-      conf,
-      memManager,
-      mapOutputTracker,
-      shuffleManager,
-      transfer,
-      securityMgr,
-      0)
+    val blockManager =
+      new BlockManager(
+        name,
+        rpcEnv,
+        blockManagerMaster,
+        serializer,
+        conf,
+        memManager,
+        mapOutputTracker,
+        shuffleManager,
+        transfer,
+        securityMgr,
+        0)
     memManager.setMemoryStore(blockManager.memoryStore)
     blockManager.initialize("app-id")
     blockManagerBuffer += blockManager
@@ -371,8 +376,9 @@ class ReceivedBlockHandlerSuite
       if (isBlockManagedBasedBlockHandler) {
         // test received block with BlockManager based handler
         withBlockManagerBasedBlockHandler { handler =>
-          val (blockId, blockStoreResult) =
-            storeSingleBlock(handler, receivedBlock)
+          val (blockId, blockStoreResult) = storeSingleBlock(
+            handler,
+            receivedBlock)
           bId = blockId
           assert(
             blockStoreResult.numRecords === expectedNumRecords,
@@ -384,8 +390,9 @@ class ReceivedBlockHandlerSuite
       } else {
         // test received block with WAL based handler
         withWriteAheadLogBasedBlockHandler { handler =>
-          val (blockId, blockStoreResult) =
-            storeSingleBlock(handler, receivedBlock)
+          val (blockId, blockStoreResult) = storeSingleBlock(
+            handler,
+            receivedBlock)
           bId = blockId
           assert(
             blockStoreResult.numRecords === expectedNumRecords,
@@ -410,9 +417,10 @@ class ReceivedBlockHandlerSuite
           Seq[String],
           Seq[StreamBlockId],
           Seq[ReceivedBlockStoreResult]) => Unit) {
-    val data = Seq.tabulate(100) {
-      _.toString
-    }
+    val data =
+      Seq.tabulate(100) {
+        _.toString
+      }
 
     def storeAndVerify(blocks: Seq[ReceivedBlock]) {
       blocks should not be empty
@@ -476,14 +484,15 @@ class ReceivedBlockHandlerSuite
       body: WriteAheadLogBasedBlockHandler => Unit) {
     require(
       WriteAheadLogUtils.getRollingIntervalSecs(conf, isDriver = false) === 1)
-    val receivedBlockHandler = new WriteAheadLogBasedBlockHandler(
-      blockManager,
-      1,
-      storageLevel,
-      conf,
-      hadoopConf,
-      tempDirectory.toString,
-      manualClock)
+    val receivedBlockHandler =
+      new WriteAheadLogBasedBlockHandler(
+        blockManager,
+        1,
+        storageLevel,
+        conf,
+        hadoopConf,
+        tempDirectory.toString,
+        manualClock)
     try {
       body(receivedBlockHandler)
     } finally {
@@ -497,17 +506,18 @@ class ReceivedBlockHandlerSuite
       blocks: Seq[ReceivedBlock]
   ): (Seq[StreamBlockId], Seq[ReceivedBlockStoreResult]) = {
     val blockIds = Seq.fill(blocks.size)(generateBlockId())
-    val storeResults = blocks
-      .zip(blockIds)
-      .map {
-        case (block, id) =>
-          manualClock.advance(
-            500
-          ) // log rolling interval set to 1000 ms through SparkConf
-          logDebug("Inserting block " + id)
-          receivedBlockHandler.storeBlock(id, block)
-      }
-      .toList
+    val storeResults =
+      blocks
+        .zip(blockIds)
+        .map {
+          case (block, id) =>
+            manualClock.advance(
+              500
+            ) // log rolling interval set to 1000 ms through SparkConf
+            logDebug("Inserting block " + id)
+            receivedBlockHandler.storeBlock(id, block)
+        }
+        .toList
     logDebug("Done inserting")
     (blockIds, storeResults)
   }

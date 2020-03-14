@@ -67,15 +67,19 @@ class ScaldingSerializationSpecs extends WordSpec {
         case (item, time) => (time.toLong, item)
       }
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val testStore =
-        TestStore[Int, Int]("test", batcher, Iterable.empty, inWithTime.size)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        Iterable.empty,
+        inWithTime.size)
       val (buffer, source) = TestSource(inWithTime)
 
-      val summer = TestGraphs.singleStepJob[Scalding, (Long, Int), Int, Int](
-        source,
-        testStore) { tup =>
-        List((1 -> tup._2))
-      }
+      val summer =
+        TestGraphs.singleStepJob[Scalding, (Long, Int), Int, Int](
+          source,
+          testStore) { tup =>
+          List((1 -> tup._2))
+        }
 
       val mode = HadoopTest(
         new Configuration,

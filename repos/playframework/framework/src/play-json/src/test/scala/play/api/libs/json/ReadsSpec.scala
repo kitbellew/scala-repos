@@ -30,8 +30,9 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     @inline def dateTime(input: String) =
       LocalDateTime.parse(input, DateTimeFormatter.ISO_DATE_TIME)
 
-    lazy val correctedReads =
-      Reads.localDateTimeReads(DateTimeFormatter.ISO_DATE_TIME, _.drop(1))
+    lazy val correctedReads = Reads.localDateTimeReads(
+      DateTimeFormatter.ISO_DATE_TIME,
+      _.drop(1))
 
     val CustomReads2 = Reads.localDateTimeReads(
       DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss"),
@@ -233,8 +234,9 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     @inline def dateTime(input: String) = ZonedDateTime.parse(input)
 
-    lazy val correctedReads =
-      Reads.zonedDateTimeReads(DateTimeFormatter.ISO_DATE_TIME, _.drop(1))
+    lazy val correctedReads = Reads.zonedDateTimeReads(
+      DateTimeFormatter.ISO_DATE_TIME,
+      _.drop(1))
 
     val CustomReads2 = Reads.zonedDateTimeReads(
       DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ssVV"),
@@ -335,11 +337,13 @@ object ReadsSpec extends org.specs2.mutable.Specification {
 
     @inline def date(input: String) = LocalDate.parse(input)
 
-    lazy val correctedReads =
-      Reads.localDateReads(DateTimeFormatter.ISO_DATE, _.drop(1))
+    lazy val correctedReads = Reads.localDateReads(
+      DateTimeFormatter.ISO_DATE,
+      _.drop(1))
 
-    val CustomReads2 =
-      Reads.localDateReads(DateTimeFormatter.ofPattern("dd/MM/yyyy"), _.drop(2))
+    val CustomReads2 = Reads.localDateReads(
+      DateTimeFormatter.ofPattern("dd/MM/yyyy"),
+      _.drop(2))
 
     "be successfully read from number" in {
       val beforeMidnight = Instant.parse("1970-01-01T23:55:00Z")

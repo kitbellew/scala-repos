@@ -232,10 +232,10 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
   protected def groupOpWithValueSort[V2](valueSort: Option[Ordering[_ >: V1]])(
       gb: GroupBuilder => GroupBuilder): TypedPipe[(K, V2)] =
     TypedPipeFactory({ (fd, mode) =>
-      val pipe = Grouped.maybeBox[K, V1](keyOrdering, fd) {
-        (tupleSetter, fields) =>
-          val (sortOpt, ts) =
-            valueSort
+      val pipe =
+        Grouped.maybeBox[K, V1](keyOrdering, fd) {
+          (tupleSetter, fields) =>
+            val (sortOpt, ts) = valueSort
               .map {
                 vs =>
                   vs match {
@@ -244,8 +244,8 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
                       // and that sort is an ordered serialization
                       // We now need a boxed serializer for this type
                       // Then we set the comparator on the field, and finally we box the value with our tupleSetter
-                      val (boxfn, boxordSer) =
-                        Grouped.getBoxFnAndOrder[V1](ordser, fd)
+                      val (boxfn, boxordSer) = Grouped
+                        .getBoxFnAndOrder[V1](ordser, fd)
                       val valueF = new Fields("value")
                       valueF.setComparator(
                         "value",
@@ -262,13 +262,13 @@ sealed trait ReduceStep[K, V1] extends KeyedPipe[K] {
               }
               .getOrElse((None, tupleSetter))
 
-          mapped
-            .toPipe(Grouped.kvFields)(fd, mode, ts)
-            .groupBy(fields) { inGb =>
-              val withSort = sortOpt.fold(inGb)(inGb.sortBy)
-              gb(withSort)
-            }
-      }
+            mapped
+              .toPipe(Grouped.kvFields)(fd, mode, ts)
+              .groupBy(fields) { inGb =>
+                val withSort = sortOpt.fold(inGb)(inGb.sortBy)
+                gb(withSort)
+              }
+        }
       TypedPipe.from(pipe, Grouped.kvFields)(
         fd,
         mode,
@@ -297,8 +297,7 @@ case class IdentityReduce[K, V1](
     * before sending to the mappers. This is a big help if there are relatively
     * few keys and n is relatively small.
     */
-  override def bufferedTake(n: Int) =
-    toUIR.bufferedTake(n)
+  override def bufferedTake(n: Int) = toUIR.bufferedTake(n)
 
   override def withSortOrdering[U >: V1](
       so: Ordering[U]): IdentityValueSortedReduce[K, V1] =
@@ -315,8 +314,7 @@ case class IdentityReduce[K, V1](
   override def withDescription(description: String): IdentityReduce[K, V1] =
     copy(descriptions = descriptions :+ description)
 
-  override def filterKeys(fn: K => Boolean) =
-    toUIR.filterKeys(fn)
+  override def filterKeys(fn: K => Boolean) = toUIR.filterKeys(fn)
 
   override def mapGroup[V3](fn: (K, Iterator[V1]) => Iterator[V3]) = {
     // Only pass non-Empty iterators to subsequent functions
@@ -330,8 +328,7 @@ case class IdentityReduce[K, V1](
 
   // It would be nice to return IdentityReduce here, but
   // the type constraints prevent it currently
-  override def mapValues[V2](fn: V1 => V2) =
-    toUIR.mapValues(fn)
+  override def mapValues[V2](fn: V1 => V2) = toUIR.mapValues(fn)
 
   // This is not correct in the type-system, but would be nice to encode
   //override def mapValues[V3](fn: V1 => V3) = IdentityReduce(keyOrdering, mapped.mapValues(fn), reducers)
@@ -346,14 +343,15 @@ case class IdentityReduce[K, V1](
       descriptions).sumLeft
   }
 
-  override lazy val toTypedPipe = reducers match {
-    case None       => mapped // free case
-    case Some(reds) =>
-      // This is weird, but it is sometimes used to force a partition
-      groupOp {
-        _.reducers(reds).setDescriptions(descriptions)
-      }
-  }
+  override lazy val toTypedPipe =
+    reducers match {
+      case None       => mapped // free case
+      case Some(reds) =>
+        // This is weird, but it is sometimes used to force a partition
+        groupOp {
+          _.reducers(reds).setDescriptions(descriptions)
+        }
+    }
 
   /** This is just an identity that casts the result to V1 */
   override def joinFunction = CoGroupable.castingJoinFunction[V1]
@@ -450,14 +448,15 @@ case class UnsortedIdentityReduce[K, V1](
       descriptions).sumLeft
   }
 
-  override lazy val toTypedPipe = reducers match {
-    case None       => mapped // free case
-    case Some(reds) =>
-      // This is weird, but it is sometimes used to force a partition
-      groupOp {
-        _.reducers(reds).setDescriptions(descriptions)
-      }
-  }
+  override lazy val toTypedPipe =
+    reducers match {
+      case None       => mapped // free case
+      case Some(reds) =>
+        // This is weird, but it is sometimes used to force a partition
+        groupOp {
+          _.reducers(reds).setDescriptions(descriptions)
+        }
+    }
 
   /** This is just an identity that casts the result to V1 */
   override def joinFunction = CoGroupable.castingJoinFunction[V1]
@@ -699,21 +698,20 @@ case class IteratorMappedReduce[K, V1, V2](
     copy(reduceFn = newReduce)
   }
 
-  override lazy val toTypedPipe =
-    groupOp {
-      _.every(
-        new cascading.pipe.Every(
-          _,
-          Grouped.valueField,
-          new TypedBufferOp(
-            Grouped.keyConverter(keyOrdering),
-            TupleConverter.singleConverter[V1],
-            reduceFn,
-            Grouped.valueField),
-          Fields.REPLACE))
-        .reducers(reducers.getOrElse(-1))
-        .setDescriptions(descriptions)
-    }
+  override lazy val toTypedPipe = groupOp {
+    _.every(
+      new cascading.pipe.Every(
+        _,
+        Grouped.valueField,
+        new TypedBufferOp(
+          Grouped.keyConverter(keyOrdering),
+          TupleConverter.singleConverter[V1],
+          reduceFn,
+          Grouped.valueField),
+        Fields.REPLACE))
+      .reducers(reducers.getOrElse(-1))
+      .setDescriptions(descriptions)
+  }
 
   override def joinFunction = {
     // don't make a closure

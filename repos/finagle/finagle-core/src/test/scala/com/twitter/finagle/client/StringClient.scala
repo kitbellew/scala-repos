@@ -17,10 +17,11 @@ import org.jboss.netty.handler.codec.string.{StringEncoder, StringDecoder}
 
 private class DelimEncoder(delim: Char) extends SimpleChannelHandler {
   override def writeRequested(ctx: ChannelHandlerContext, evt: MessageEvent) = {
-    val newMessage = evt.getMessage match {
-      case m: String => m + delim
-      case m         => m
-    }
+    val newMessage =
+      evt.getMessage match {
+        case m: String => m + delim
+        case m         => m
+      }
 
     Channels.write(ctx, evt.getFuture, newMessage, evt.getRemoteAddress)
   }
@@ -65,8 +66,7 @@ private[finagle] trait StringClient {
 
     protected def newDispatcher(
         transport: Transport[In, Out]
-    ): Service[String, String] =
-      new SerialClientDispatcher(transport)
+    ): Service[String, String] = new SerialClientDispatcher(transport)
   }
 
   val stringClient = Client()

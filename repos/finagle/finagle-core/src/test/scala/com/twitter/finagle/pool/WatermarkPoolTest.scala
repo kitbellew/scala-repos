@@ -358,12 +358,13 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
   describe("WatermarkPool does not propagate interrupts") {
     it("should cache the connection when it comes back") {
       new WatermarkPoolLowOneHighFive {
-        val slowService = new Promise[Service[Int, Int]] {
-          @volatile var interrupted: Option[Throwable] = None
-          setInterruptHandler {
-            case exc => interrupted = Some(exc)
+        val slowService =
+          new Promise[Service[Int, Int]] {
+            @volatile var interrupted: Option[Throwable] = None
+            setInterruptHandler {
+              case exc => interrupted = Some(exc)
+            }
           }
-        }
         when(factory()).thenReturn(slowService)
 
         val f = pool()
@@ -394,11 +395,12 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
       val lowWatermark = 5
       val highWatermark = 10
       val maxWaiters = 3
-      val pool = new WatermarkPool(
-        factory,
-        lowWatermark,
-        highWatermark,
-        maxWaiters = maxWaiters)
+      val pool =
+        new WatermarkPool(
+          factory,
+          lowWatermark,
+          highWatermark,
+          maxWaiters = maxWaiters)
 
       val services = 0 until highWatermark map { _ =>
         new Promise[Service[Int, Int]]

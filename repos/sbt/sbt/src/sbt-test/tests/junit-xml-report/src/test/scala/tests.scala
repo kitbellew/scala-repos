@@ -39,8 +39,7 @@ package console.test.pkg {
     def multiThreadedHello(): Unit = {
       for (i <- 1 to 5) {
         new Thread("t-" + i) {
-          override def run(): Unit =
-            println("Hello from thread " + i)
+          override def run(): Unit = println("Hello from thread " + i)
         }.start()
       }
     }

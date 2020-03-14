@@ -118,8 +118,9 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   @Test
   def constructorCall(): Unit = {
-    val List(m) = compileMethods(noOptCompiler)(
-      "def f = { val a = new Object; a.toString }")
+    val List(m) =
+      compileMethods(noOptCompiler)(
+        "def f = { val a = new Object; a.toString }")
     val a = newNullnessAnalyzer(m)
 
     // for reference, the output of showAllNullnessFrames(a, m) - note that the frame represents the state *before* executing the instr.
@@ -182,8 +183,9 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   @Test
   def newArraynotNull() {
-    val List(m) = compileMethods(noOptCompiler)(
-      "def f = { val a = new Array[Int](2); a(0) }")
+    val List(m) =
+      compileMethods(noOptCompiler)(
+        "def f = { val a = new Array[Int](2); a(0) }")
     val a = newNullnessAnalyzer(m)
     testNullness(a, m, "+NEWARRAY T_INT", 2, NotNullValue) // new array on stack
     testNullness(a, m, "+ASTORE 1", 1, NotNullValue) // local var (a)
@@ -191,8 +193,7 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   @Test
   def mergeNullNotNull(): Unit = {
-    val code =
-      """def f(o: Object) = {
+    val code = """def f(o: Object) = {
         |  var a: Object = o
         |  var c: Object = null
         |  if ("".trim eq "-") {

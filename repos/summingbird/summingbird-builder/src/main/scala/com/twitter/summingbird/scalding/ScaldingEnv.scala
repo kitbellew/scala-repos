@@ -100,13 +100,14 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
     // forces any side effects caused by that constructor (building up
     // of the environment and defining the builder).
     val ajob = abstractJob
-    val scaldingBuilder =
-      builder.asInstanceOf[CompletedBuilder[Scalding, Any, Any]]
+    val scaldingBuilder = builder
+      .asInstanceOf[CompletedBuilder[Scalding, Any, Any]]
     val name = args.optional("name").getOrElse(ajob.getClass.getName)
 
     // Perform config transformations before Hadoop job submission
-    val opts = SourceBuilder.adjust(scaldingBuilder.opts, scaldingBuilder.id)(
-      _.set(Reducers(reducers)))
+    val opts =
+      SourceBuilder.adjust(scaldingBuilder.opts, scaldingBuilder.id)(
+        _.set(Reducers(reducers)))
 
     // Support for the old setting based writing
     val toRun: TailProducer[Scalding, (Any, (Option[Any], Any))] =

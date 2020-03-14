@@ -31,9 +31,10 @@ object adjoin {
   trait Adjoin[A] extends DepFn1[A] with Serializable
 
   trait LowPriorityAdjoin {
-    type Aux[A, Out0] = Adjoin[A] {
-      type Out = Out0
-    }
+    type Aux[A, Out0] =
+      Adjoin[A] {
+        type Out = Out0
+      }
 
     implicit def hlistAdjoin0[H, T <: HList](implicit
         adjoinT: Adjoin[T] {

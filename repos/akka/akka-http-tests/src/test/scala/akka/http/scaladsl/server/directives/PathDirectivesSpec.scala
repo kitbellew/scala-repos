@@ -393,9 +393,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   import akka.http.scaladsl.model.StatusCodes._
 
   "the `redirectToTrailingSlashIfMissing` directive" should {
-    val route = redirectToTrailingSlashIfMissing(Found) {
-      completeOk
-    }
+    val route =
+      redirectToTrailingSlashIfMissing(Found) {
+        completeOk
+      }
 
     "pass if the request path already has a trailing slash" in {
       Get("/foo/bar/") ~> route ~> check {
@@ -432,9 +433,10 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "the `redirectToNoTrailingSlashIfPresent` directive" should {
-    val route = redirectToNoTrailingSlashIfPresent(Found) {
-      completeOk
-    }
+    val route =
+      redirectToNoTrailingSlashIfPresent(Found) {
+        completeOk
+      }
 
     "pass if the request path already doesn't have a trailing slash" in {
       Get("/foo/bar") ~> route ~> check {

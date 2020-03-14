@@ -61,8 +61,7 @@ class DeploymentFormatsTest extends MarathonSpec {
   }
 
   test("Can read Group json") {
-    val json =
-      """
+    val json = """
         |{
         |  "id": "a",
         |  "apps": [

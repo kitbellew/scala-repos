@@ -215,11 +215,12 @@ trait PrepJSExports { this: PrepJSInterop =>
     }
 
     // Annotations that are directly on the member
-    val directAnnots = for {
-      annot <- trgSym.annotations
-      if annot.symbol == JSExportAnnotation ||
-        annot.symbol == JSExportNamedAnnotation
-    } yield annot
+    val directAnnots =
+      for {
+        annot <- trgSym.annotations
+        if annot.symbol == JSExportAnnotation ||
+          annot.symbol == JSExportNamedAnnotation
+      } yield annot
 
     // Is this a member export (i.e. not a class or module export)?
     val isMember = sym.isMethod && !sym.isConstructor
@@ -350,40 +351,44 @@ trait PrepJSExports { this: PrepJSInterop =>
         else
           JSExportDescendentClassesAnnotation
 
-      val forcingSymInfos = for {
-        forcingSym <- trgSym.ancestors
-        annot <- forcingSym.annotations
-        if annot.symbol == trgAnnot
-      } yield {
-        val ignoreInvalid = annot.constantAtIndex(0).fold(false)(_.booleanValue)
-        (forcingSym, ignoreInvalid)
-      }
+      val forcingSymInfos =
+        for {
+          forcingSym <- trgSym.ancestors
+          annot <- forcingSym.annotations
+          if annot.symbol == trgAnnot
+        } yield {
+          val ignoreInvalid =
+            annot.constantAtIndex(0).fold(false)(_.booleanValue)
+          (forcingSym, ignoreInvalid)
+        }
 
       // The dominating forcing symbol, is the first that does not ignore
       // or the first otherwise
-      val forcingSymInfo =
-        forcingSymInfos.find(!_._2).orElse(forcingSymInfos.headOption)
+      val forcingSymInfo = forcingSymInfos
+        .find(!_._2)
+        .orElse(forcingSymInfos.headOption)
 
       val name = decodedFullName(trgSym)
       val nameValid = !name.contains("__")
 
-      val optExport = for {
-        (forcingSym, ignoreInvalid) <- forcingSymInfo
-        if nameValid || !ignoreInvalid
-      } yield {
-        // Enfore no __ in name
-        if (!nameValid) {
-          // Get all annotation positions for error message
-          reporter.error(
-            sym.pos,
-            s"${trgSym.name} may not have a double underscore (`__`) in " +
-              "its fully qualified name, since it is forced to be exported by " +
-              s"a @${trgAnnot.name} on $forcingSym"
-          )
-        }
+      val optExport =
+        for {
+          (forcingSym, ignoreInvalid) <- forcingSymInfo
+          if nameValid || !ignoreInvalid
+        } yield {
+          // Enfore no __ in name
+          if (!nameValid) {
+            // Get all annotation positions for error message
+            reporter.error(
+              sym.pos,
+              s"${trgSym.name} may not have a double underscore (`__`) in " +
+                "its fully qualified name, since it is forced to be exported by " +
+                s"a @${trgAnnot.name} on $forcingSym"
+            )
+          }
 
-        ExportInfo(name, sym.pos, false, ignoreInvalid)
-      }
+          ExportInfo(name, sym.pos, false, ignoreInvalid)
+        }
 
       optExport.toList
     }
@@ -402,8 +407,9 @@ trait PrepJSExports { this: PrepJSInterop =>
   /** generate an exporter for a DefDef including default parameter methods */
   private def genExportDefs(defSym: Symbol, jsName: String, pos: Position) = {
     val clsSym = defSym.owner
-    val scalaName =
-      jsInterop.scalaExportName(jsName, jsInterop.isJSProperty(defSym))
+    val scalaName = jsInterop.scalaExportName(
+      jsName,
+      jsInterop.isJSProperty(defSym))
 
     // Create symbol for new method
     val expSym = defSym.cloneSymbol
@@ -445,10 +451,11 @@ trait PrepJSExports { this: PrepJSInterop =>
     val exporter = genProxyDefDef(clsSym, defSym, expSym, pos)
 
     // Construct exporters for default getters
-    val defaultGetters = for {
-      (param, i) <- expSym.paramss.flatten.zipWithIndex
-      if param.hasFlag(Flags.DEFAULTPARAM)
-    } yield genExportDefaultGetter(clsSym, defSym, expSym, i + 1, pos)
+    val defaultGetters =
+      for {
+        (param, i) <- expSym.paramss.flatten.zipWithIndex
+        if param.hasFlag(Flags.DEFAULTPARAM)
+      } yield genExportDefaultGetter(clsSym, defSym, expSym, i + 1, pos)
 
     exporter :: defaultGetters
   }
@@ -461,8 +468,10 @@ trait PrepJSExports { this: PrepJSInterop =>
     val scalaName = jsInterop.scalaExportName(jsName, false)
 
     // Create symbol for the new exporter method
-    val expSym =
-      clsSym.newMethodSymbol(scalaName, pos, Flags.SYNTHETIC | Flags.FINAL)
+    val expSym = clsSym.newMethodSymbol(
+      scalaName,
+      pos,
+      Flags.SYNTHETIC | Flags.FINAL)
 
     // Mark the symbol to be a named export
     expSym.addAnnotation(JSExportNamedAnnotation)
@@ -498,8 +507,8 @@ trait PrepJSExports { this: PrepJSInterop =>
       pos: Position) = {
 
     // Get default getter method we'll copy
-    val trgGetter =
-      clsSym.tpe.member(nme.defaultGetterName(trgMethod.name, paramPos))
+    val trgGetter = clsSym.tpe.member(
+      nme.defaultGetterName(trgMethod.name, paramPos))
 
     assert(trgGetter.exists)
 

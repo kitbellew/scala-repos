@@ -19,8 +19,7 @@ object ScalaJSCrossVersion {
   private val scalaJSVersionMap: String => String =
     version => s"sjs${currentBinaryVersion}_$version"
 
-  private final val ReleaseVersion =
-    raw"""(\d+)\.(\d+)\.(\d+)""".r
+  private final val ReleaseVersion = raw"""(\d+)\.(\d+)\.(\d+)""".r
   private final val MinorSnapshotVersion =
     raw"""(\d+)\.(\d+)\.([1-9]\d*)-SNAPSHOT""".r
 

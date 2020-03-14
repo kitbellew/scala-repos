@@ -28,8 +28,7 @@ class RingTest extends FunSuite {
       case (map, which) => map + (which -> (map.getOrElse(which, 0) + 1))
     }
 
-  def run(mk: => Seq[Int]) =
-    histo(Seq.fill(N)(mk).flatten)
+  def run(mk: => Seq[Int]) = histo(Seq.fill(N)(mk).flatten)
 
   test("pick: full range") {
     val rng = newRng()

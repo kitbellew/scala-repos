@@ -25,12 +25,15 @@ class TfIdfJob(args: Args) extends Job(args) {
   val docFreq = docWordMatrix.binarizeAs[Double].sumRowVectors
 
   // compute the inverse document frequency vector
-  val invDocFreqVct =
-    docFreq.toMatrix(1).rowL1Normalize.mapValues(x => log2(1 / x))
+  val invDocFreqVct = docFreq
+    .toMatrix(1)
+    .rowL1Normalize
+    .mapValues(x => log2(1 / x))
 
   // zip the row vector along the entire document - word matrix
-  val invDocFreqMat =
-    docWordMatrix.zip(invDocFreqVct.getRow(1)).mapValues(pair => pair._2)
+  val invDocFreqMat = docWordMatrix
+    .zip(invDocFreqVct.getRow(1))
+    .mapValues(pair => pair._2)
 
   // multiply the term frequency with the inverse document frequency and keep the top nrWords
   docWordMatrix

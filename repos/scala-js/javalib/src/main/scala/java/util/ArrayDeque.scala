@@ -18,19 +18,16 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
       throw new IllegalArgumentException
   }
 
-  def this() =
-    this(16)
+  def this() = this(16)
 
   def this(c: Collection[_ <: E]) = {
     this()
     addAll(c)
   }
 
-  def addFirst(e: E): Unit =
-    offerFirst(e)
+  def addFirst(e: E): Unit = offerFirst(e)
 
-  def addLast(e: E): Unit =
-    offerLast(e)
+  def addLast(e: E): Unit = offerLast(e)
 
   def offerFirst(e: E): Boolean = {
     if (e == null) {
@@ -185,8 +182,7 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
     }
   }
 
-  def iterator(): Iterator[E] =
-    failFastIterator(-1, x => (x + 1))
+  def iterator(): Iterator[E] = failFastIterator(-1, x => (x + 1))
 
   def descendingIterator(): Iterator[E] =
     failFastIterator(inner.size, x => (x - 1))

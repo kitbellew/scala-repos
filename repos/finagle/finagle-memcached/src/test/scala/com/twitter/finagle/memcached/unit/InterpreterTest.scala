@@ -35,11 +35,12 @@ class InterpreterTest extends FunSuite {
     val value3 = Buf.Utf8("value3")
     interpreter(Set(key, 0, Time.epoch, value1))
     assert(interpreter(Get(Seq(key))) == Values(Seq(Value(key, value1))))
-    val hashValue1 = interpreter(Gets(Seq(key)))
-      .asInstanceOf[Values]
-      .values
-      .last
-      .casUnique
+    val hashValue1 =
+      interpreter(Gets(Seq(key)))
+        .asInstanceOf[Values]
+        .values
+        .last
+        .casUnique
     assert(
       interpreter(Gets(Seq(key))) == Values(
         Seq(Value(key, value1, hashValue1))))

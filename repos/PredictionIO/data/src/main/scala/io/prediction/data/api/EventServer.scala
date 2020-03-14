@@ -155,8 +155,8 @@ class EventServiceActor(
   )
 
   lazy val statsActorRef = actorRefFactory.actorSelection("/user/StatsActor")
-  lazy val pluginsActorRef =
-    actorRefFactory.actorSelection("/user/PluginsActor")
+  lazy val pluginsActorRef = actorRefFactory.actorSelection(
+    "/user/PluginsActor")
 
   val route: Route =
     pathSingleSlash {
@@ -237,16 +237,16 @@ class EventServiceActor(
                 respondWithMediaType(MediaTypes.`application/json`) {
                   complete {
                     logger.debug(s"GET event ${eventId}.")
-                    val data =
-                      eventClient.futureGet(eventId, appId, channelId).map {
-                        eventOpt =>
-                          eventOpt
-                            .map(event => (StatusCodes.OK, event))
-                            .getOrElse(
-                              (
-                                StatusCodes.NotFound,
-                                Map("message" -> "Not Found"))
-                            )
+                    val data = eventClient
+                      .futureGet(eventId, appId, channelId)
+                      .map { eventOpt =>
+                        eventOpt
+                          .map(event => (StatusCodes.OK, event))
+                          .getOrElse(
+                            (
+                              StatusCodes.NotFound,
+                              Map("message" -> "Not Found"))
+                          )
                       }
                     data
                   }
@@ -305,22 +305,19 @@ class EventServiceActor(
                             channelId = channelId,
                             event = event),
                           pluginContext))
-                      val data =
-                        eventClient.futureInsert(event, appId, channelId).map {
-                          id =>
-                            pluginsActorRef ! EventInfo(
-                              appId = appId,
-                              channelId = channelId,
-                              event = event)
-                            val result =
-                              (StatusCodes.Created, Map("eventId" -> s"${id}"))
-                            if (config.stats) {
-                              statsActorRef ! Bookkeeping(
-                                appId,
-                                result._1,
-                                event)
-                            }
-                            result
+                      val data = eventClient
+                        .futureInsert(event, appId, channelId)
+                        .map { id =>
+                          pluginsActorRef ! EventInfo(
+                            appId = appId,
+                            channelId = channelId,
+                            event = event)
+                          val result =
+                            (StatusCodes.Created, Map("eventId" -> s"${id}"))
+                          if (config.stats) {
+                            statsActorRef ! Bookkeeping(appId, result._1, event)
+                          }
+                          result
                         }
                       data
                     } else {
@@ -378,10 +375,10 @@ class EventServiceActor(
                           )
 
                           val parseTime = Future {
-                            val startTime =
-                              startTimeStr.map(Utils.stringToDateTime(_))
-                            val untilTime =
-                              untilTimeStr.map(Utils.stringToDateTime(_))
+                            val startTime = startTimeStr.map(
+                              Utils.stringToDateTime(_))
+                            val untilTime = untilTimeStr.map(
+                              Utils.stringToDateTime(_))
                             (startTime, untilTime)
                           }
 
@@ -397,10 +394,10 @@ class EventServiceActor(
                                     entityType = entityType,
                                     entityId = entityId,
                                     eventNames = eventName.map(List(_)),
-                                    targetEntityType =
-                                      targetEntityType.map(Some(_)),
-                                    targetEntityId =
-                                      targetEntityId.map(Some(_)),
+                                    targetEntityType = targetEntityType.map(
+                                      Some(_)),
+                                    targetEntityId = targetEntityId.map(
+                                      Some(_)),
                                     limit = limit.orElse(Some(20)),
                                     reversed = reversed
                                   )

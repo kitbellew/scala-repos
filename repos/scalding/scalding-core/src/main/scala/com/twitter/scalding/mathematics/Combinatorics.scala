@@ -59,20 +59,22 @@ object Combinatorics {
       (pipe, num)
     })
 
-    val res = pipes
-      .reduceLeft((a, b) => {
-        val num = b._2
-        val prevname = Symbol("n" + (num - 1))
-        val myname = Symbol("n" + num)
-        val mypipe = a._1
-          .crossWithSmaller(b._1)
-          .filter(prevname, myname) { foo: (Int, Int) =>
-            val (nn1, nn2) = foo
-            nn1 < nn2
-          }
-        (mypipe, -1)
-      })
-      ._1
+    val res =
+      pipes
+        .reduceLeft((a, b) => {
+          val num = b._2
+          val prevname = Symbol("n" + (num - 1))
+          val myname = Symbol("n" + num)
+          val mypipe =
+            a._1
+              .crossWithSmaller(b._1)
+              .filter(prevname, myname) { foo: (Int, Int) =>
+                val (nn1, nn2) = foo
+                nn1 < nn2
+              }
+          (mypipe, -1)
+        })
+        ._1
 
     (1 to k).foldLeft(res)((a, b) => {
       val myname = Symbol("n" + b)
@@ -105,16 +107,17 @@ object Combinatorics {
     val pipes = allc.map(x => IterableSource(1 to n, x).read)
 
     // on a given row, we cannot have duplicate columns in a permutation
-    val res = pipes
-      .reduceLeft((a, b) => {
-        a.crossWithSmaller(b)
-      })
-      .filter(allc) { x: TupleEntry =>
-        Boolean
-        val values = (0 until allc.size).map(i =>
-          x.getInteger(i.asInstanceOf[java.lang.Integer]))
-        values.size == values.distinct.size
-      }
+    val res =
+      pipes
+        .reduceLeft((a, b) => {
+          a.crossWithSmaller(b)
+        })
+        .filter(allc) { x: TupleEntry =>
+          Boolean
+          val values = (0 until allc.size).map(i =>
+            x.getInteger(i.asInstanceOf[java.lang.Integer]))
+          values.size == values.distinct.size
+        }
 
     // map numerals to actual data
     (1 to k).foldLeft(res)((a, b) => {

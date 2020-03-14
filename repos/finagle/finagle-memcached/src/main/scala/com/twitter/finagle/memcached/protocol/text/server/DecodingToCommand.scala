@@ -47,11 +47,13 @@ abstract class AbstractDecodingToCommand[C <: AnyRef] extends OneToOneDecoder {
   protected def parseStorageCommand(tokens: Seq[Buf], data: Buf): C
 
   protected def validateStorageCommand(tokens: Seq[Buf], data: Buf) = {
-    val expiry = tokens(2).toInt match {
-      case 0                                       => 0.seconds.afterEpoch
-      case unixtime if unixtime > RealtimeMaxdelta => Time.fromSeconds(unixtime)
-      case delta                                   => delta.seconds.fromNow
-    }
+    val expiry =
+      tokens(2).toInt match {
+        case 0 => 0.seconds.afterEpoch
+        case unixtime if unixtime > RealtimeMaxdelta =>
+          Time.fromSeconds(unixtime)
+        case delta => delta.seconds.fromNow
+      }
     (tokens(0), tokens(1).toInt, expiry, data)
   }
 

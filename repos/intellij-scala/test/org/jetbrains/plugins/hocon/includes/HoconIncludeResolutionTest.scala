@@ -39,12 +39,14 @@ trait HoconIncludeResolutionTest {
 
     psiFile.depthFirst.foreach {
       case it: HIncludeTarget =>
-        val prevComments = it.parent
-          .map(_.parent.map(_.nonWhitespaceChildren).getOrElse(Iterator.empty))
-          .getOrElse(Iterator.empty)
-          .takeWhile(e =>
-            e.getNode.getElementType == HoconTokenType.HashComment)
-          .toVector
+        val prevComments =
+          it.parent
+            .map(
+              _.parent.map(_.nonWhitespaceChildren).getOrElse(Iterator.empty))
+            .getOrElse(Iterator.empty)
+            .takeWhile(e =>
+              e.getNode.getElementType == HoconTokenType.HashComment)
+            .toVector
 
         val references = it.getFileReferences
         @inline def parentText =
@@ -60,19 +62,21 @@ trait HoconIncludeResolutionTest {
             case _ =>
           }
 
-          val expectedFiles = prevComments
-            .map(_.getText.stripPrefix("#"))
-            .mkString(",")
-            .split(',')
-            .iterator
-            .map(_.trim)
-            .filter(_.nonEmpty)
-            .map(findFile)
-            .toSet
+          val expectedFiles =
+            prevComments
+              .map(_.getText.stripPrefix("#"))
+              .mkString(",")
+              .split(',')
+              .iterator
+              .map(_.trim)
+              .filter(_.nonEmpty)
+              .map(findFile)
+              .toSet
 
-          val actualFiles = resolveResults.iterator
-            .map(_.getElement.asInstanceOf[PsiFile].getVirtualFile)
-            .toSet
+          val actualFiles =
+            resolveResults.iterator
+              .map(_.getElement.asInstanceOf[PsiFile].getVirtualFile)
+              .toSet
 
           assertEquals(parentText, expectedFiles, actualFiles)
         } else {

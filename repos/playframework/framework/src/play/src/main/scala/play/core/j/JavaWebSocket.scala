@@ -67,14 +67,15 @@ object JavaWebSocket extends JavaHelpers {
               val source = Source
                 .actorRef[A](256, OverflowStrategy.dropNew)
                 .mapMaterializedValue { actor =>
-                  val socketOut = new JWebSocket.Out[A] {
-                    def write(frame: A) = {
-                      actor ! frame
+                  val socketOut =
+                    new JWebSocket.Out[A] {
+                      def write(frame: A) = {
+                        actor ! frame
+                      }
+                      def close() = {
+                        actor ! Status.Success(())
+                      }
                     }
-                    def close() = {
-                      actor ! Status.Success(())
-                    }
-                  }
 
                   jws.onReady(socketIn, socketOut)
                 }
@@ -94,8 +95,7 @@ object JavaWebSocket extends JavaHelpers {
 
   def promiseOfBytes(
       retrieveWebSocket: => CompletionStage[LegacyWebSocket[Array[Byte]]])
-      : WebSocket =
-    webSocketWrapper[Array[Byte]](retrieveWebSocket)
+      : WebSocket = webSocketWrapper[Array[Byte]](retrieveWebSocket)
 
   // -- String
 
@@ -105,13 +105,12 @@ object JavaWebSocket extends JavaHelpers {
 
   def promiseOfString(
       retrieveWebSocket: => CompletionStage[LegacyWebSocket[String]])
-      : WebSocket =
-    webSocketWrapper[String](retrieveWebSocket)
+      : WebSocket = webSocketWrapper[String](retrieveWebSocket)
 
   // -- Json (JsonNode)
 
-  implicit val jsonFrame =
-    MessageFlowTransformer.stringMessageFlowTransformer.map(
+  implicit val jsonFrame = MessageFlowTransformer.stringMessageFlowTransformer
+    .map(
       play.libs.Json.parse,
       play.libs.Json.stringify
     )
@@ -122,6 +121,5 @@ object JavaWebSocket extends JavaHelpers {
 
   def promiseOfJson(
       retrieveWebSocket: => CompletionStage[LegacyWebSocket[JsonNode]])
-      : WebSocket =
-    webSocketWrapper[JsonNode](retrieveWebSocket)
+      : WebSocket = webSocketWrapper[JsonNode](retrieveWebSocket)
 }

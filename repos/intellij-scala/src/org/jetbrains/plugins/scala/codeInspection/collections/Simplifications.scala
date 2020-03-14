@@ -24,10 +24,11 @@ case class Simplification(
 class SimplificationBuilder private[collections] (
     val exprToReplace: ScExpression) {
   private var rangeInParent: TextRange = {
-    val exprToHighlightFrom: ScExpression = exprToReplace match {
-      case MethodRepr(_, Some(base), _, _) => base
-      case _                               => exprToReplace
-    }
+    val exprToHighlightFrom: ScExpression =
+      exprToReplace match {
+        case MethodRepr(_, Some(base), _, _) => base
+        case _                               => exprToReplace
+      }
     rightRangeInParent(exprToHighlightFrom, exprToReplace)
   }
 
@@ -45,14 +46,14 @@ class SimplificationBuilder private[collections] (
     highlightElem(refNameId(exprToReplace).getOrElse(exprToReplace))
 
   def highlightElem(elem: PsiElement) = {
-    this.rangeInParent =
-      elem.getTextRange.shiftRight(-exprToReplace.getTextOffset)
+    this.rangeInParent = elem.getTextRange.shiftRight(
+      -exprToReplace.getTextOffset)
     this
   }
 
   def highlightRange(start: Int, end: Int) = {
-    this.rangeInParent =
-      new TextRange(start, end).shiftRight(-exprToReplace.getTextOffset)
+    this.rangeInParent = new TextRange(start, end)
+      .shiftRight(-exprToReplace.getTextOffset)
     this
   }
 

@@ -31,11 +31,9 @@ class CumulativeGaugeBenchmark extends StdBenchAnnotations {
   }
 
   @TearDown(Level.Iteration)
-  def teardown(): Unit =
-    gauges.foreach(_.remove())
+  def teardown(): Unit = gauges.foreach(_.remove())
   @Benchmark
-  def getValue: Float =
-    theGauge()
+  def getValue: Float = theGauge()
 
   @Benchmark
   @Warmup(batchSize = 100)
@@ -61,8 +59,7 @@ object CumulativeGaugeBenchmark {
 
     override protected[this] def registerGauge(
         name: Seq[String],
-        f: => Float): Unit =
-      gauges += name -> (() => f)
+        f: => Float): Unit = gauges += name -> (() => f)
 
     override protected[this] def deregisterGauge(name: Seq[String]): Unit =
       gauges -= name

@@ -65,13 +65,14 @@ object FilesSpec extends Specification with After {
             new java.io.File("."),
             ApplicationLoader.getClass.getClassLoader,
             Mode.Test))
-        val appLoader = new ApplicationLoader {
-          def load(context: Context) = {
-            (new BuiltInComponentsFromContext(context) {
-              lazy val router = Router.empty
-            }).application
+        val appLoader =
+          new ApplicationLoader {
+            def load(context: Context) = {
+              (new BuiltInComponentsFromContext(context) {
+                lazy val router = Router.empty
+              }).application
+            }
           }
-        }
         val app = appLoader.load(context)
         Play.start(app)
         val tempFile =

@@ -55,10 +55,11 @@ object MarathonTestHelper {
   lazy val clock = Clock()
 
   def makeConfig(args: String*): AllConf = {
-    val opts = new AllConf(args) {
-      // scallop will trigger sys exit
-      override protected def onError(e: Throwable): Unit = throw e
-    }
+    val opts =
+      new AllConf(args) {
+        // scallop will trigger sys exit
+        override protected def onError(e: Throwable): Unit = throw e
+      }
     opts.afterInit()
     opts
   }
@@ -109,11 +110,10 @@ object MarathonTestHelper {
       reservation match {
         case Some(reservationLabels) =>
           val labels = reservationLabels.mesosLabels
-          val reservation =
-            Mesos.Resource.ReservationInfo
-              .newBuilder()
-              .setPrincipal("marathon")
-              .setLabels(labels)
+          val reservation = Mesos.Resource.ReservationInfo
+            .newBuilder()
+            .setPrincipal("marathon")
+            .setLabels(labels)
           resource.toBuilder.setReservation(reservation).build()
         case None =>
           resource
@@ -126,17 +126,18 @@ object MarathonTestHelper {
       ScalarResource(Resource.MEM, mem, role = role))
     val diskResource = heedReserved(
       ScalarResource(Resource.DISK, disk, role = role))
-    val portsResource = if (beginPort <= endPort) {
-      Some(
-        heedReserved(
-          RangesResource(
-            Resource.PORTS,
-            Seq(Range(beginPort.toLong, endPort.toLong)),
-            role
-          )))
-    } else {
-      None
-    }
+    val portsResource =
+      if (beginPort <= endPort) {
+        Some(
+          heedReserved(
+            RangesResource(
+              Resource.PORTS,
+              Seq(Range(beginPort.toLong, endPort.toLong)),
+              role
+            )))
+      } else {
+        None
+      }
     val offerBuilder = Offer.newBuilder
       .setId(OfferID("1"))
       .setFrameworkId(frameworkID)
@@ -341,8 +342,8 @@ object MarathonTestHelper {
     import mesosphere.marathon.api.v2.json.Formats._
     // TODO: Revalidate the decision to disallow null values in schema
     // Possible resolution: Do not render null values in our formats by default anymore.
-    val appStr =
-      Json.prettyPrint(JsonTestHelper.removeNullFieldValues(Json.toJson(app)))
+    val appStr = Json.prettyPrint(
+      JsonTestHelper.removeNullFieldValues(Json.toJson(app)))
     validateJsonSchemaForString(appStr, valid)
   }
 
@@ -362,19 +363,20 @@ object MarathonTestHelper {
       metrics: Metrics = new Metrics(new MetricRegistry)): TaskTrackerModule = {
 
     val metrics = new Metrics(new MetricRegistry)
-    val taskRepo = new TaskRepository(
-      new MarathonStore[MarathonTaskState](
-        store = store,
-        metrics = metrics,
-        newState = () =>
-          MarathonTaskState(
-            MarathonTask
-              .newBuilder()
-              .setId(UUID.randomUUID().toString)
-              .build()),
-        prefix = TaskRepository.storePrefix),
-      metrics
-    )
+    val taskRepo =
+      new TaskRepository(
+        new MarathonStore[MarathonTaskState](
+          store = store,
+          metrics = metrics,
+          newState = () =>
+            MarathonTaskState(
+              MarathonTask
+                .newBuilder()
+                .setId(UUID.randomUUID().toString)
+                .build()),
+          prefix = TaskRepository.storePrefix),
+        metrics
+      )
 
     new TaskTrackerModule(
       clock,
@@ -646,8 +648,8 @@ object MarathonTestHelper {
     import scala.collection.JavaConverters._
     MarathonTestHelper
       .makeBasicOffer(
-        reservation =
-          Some(TaskLabels.labelsForTask(frameworkId, Task.Id(taskId))),
+        reservation = Some(
+          TaskLabels.labelsForTask(frameworkId, Task.Id(taskId))),
         role = "test"
       )
       .addAllResources(
@@ -701,8 +703,8 @@ object MarathonTestHelper {
         mesosStatus = None
       ),
       networking = Task.NoNetworking,
-      reservation =
-        Task.Reservation(localVolumeIds, Task.Reservation.State.Launched)
+      reservation = Task
+        .Reservation(localVolumeIds, Task.Reservation.State.Launched)
     )
   }
 
@@ -712,8 +714,9 @@ object MarathonTestHelper {
       volumes = Seq[Volume](
         PersistentVolume(
           containerPath = "persistent-volume",
-          persistent =
-            PersistentVolumeInfo(10), // must match persistentVolumeResources
+          persistent = PersistentVolumeInfo(
+            10
+          ), // must match persistentVolumeResources
           mode = Mesos.Volume.Mode.RW
         )
       ),
@@ -735,15 +738,15 @@ object MarathonTestHelper {
       def withAgentInfo(update: Task.AgentInfo => Task.AgentInfo): Task =
         task match {
           case launchedEphemeral: Task.LaunchedEphemeral =>
-            launchedEphemeral.copy(agentInfo =
-              update(launchedEphemeral.agentInfo))
+            launchedEphemeral
+              .copy(agentInfo = update(launchedEphemeral.agentInfo))
 
           case reserved: Task.Reserved =>
             reserved.copy(agentInfo = update(reserved.agentInfo))
 
           case launchedOnReservation: Task.LaunchedOnReservation =>
-            launchedOnReservation.copy(agentInfo =
-              update(launchedOnReservation.agentInfo))
+            launchedOnReservation
+              .copy(agentInfo = update(launchedOnReservation.agentInfo))
         }
 
       def withNetworking(update: Task.Networking): Task =
@@ -763,8 +766,8 @@ object MarathonTestHelper {
             launchedEphemeral.copy(status = update(launchedEphemeral.status))
 
           case launchedOnReservation: Task.LaunchedOnReservation =>
-            launchedOnReservation.copy(status =
-              update(launchedOnReservation.status))
+            launchedOnReservation
+              .copy(status = update(launchedOnReservation.status))
 
           case reserved: Task.Reserved =>
             throw new scala.RuntimeException(

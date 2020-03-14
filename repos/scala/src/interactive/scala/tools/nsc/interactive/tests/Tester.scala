@@ -94,9 +94,10 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     def deleteOne() {
       val sf = inputs(sfidx)
       deleted = sf.content(pos) :: deleted
-      val sf1 = new BatchSourceFile(
-        sf.file,
-        sf.content.take(pos) ++ sf.content.drop(pos + 1))
+      val sf1 =
+        new BatchSourceFile(
+          sf.file,
+          sf.content.take(pos) ++ sf.content.drop(pos + 1))
       inputs(sfidx) = sf1
       askReload(sf1)
     }
@@ -147,8 +148,9 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     }
     def otherTest() {
       if (testPositions.nonEmpty) {
-        val pos =
-          Position.offset(inputs(sfidx), rand.nextInt(testPositions.length))
+        val pos = Position.offset(
+          inputs(sfidx),
+          rand.nextInt(testPositions.length))
         rand.nextInt(3) match {
           case 0 => askTypeAt(pos)
           case 1 => askTypeCompletion(pos)
@@ -157,15 +159,16 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
       }
     }
     for (i <- 0 until randomBatchesPerSourceFile()) {
-      val changes = Vector.fill( /**/ randomChangesPerBatch()) {
+      val changes =
+        Vector.fill( /**/ randomChangesPerBatch()) {
 
-        /**/
-        new Change(
-          sfidx,
-          randomPositionIn(inputs(sfidx)),
-          randomNumChars(),
-          rand.nextBoolean())
-      }
+          /**/
+          new Change(
+            sfidx,
+            randomPositionIn(inputs(sfidx)),
+            randomNumChars(),
+            rand.nextBoolean())
+        }
       doTest(sfidx, changes, testPositions, otherTest) match {
         case Some(errortrace) =>
           println(errortrace)
@@ -229,8 +232,9 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
 object Tester {
   def main(args: Array[String]) {
     val settings = new Settings()
-    val (_, filenames) =
-      settings.processArguments(args.toList.tail, processAll = true)
+    val (_, filenames) = settings.processArguments(
+      args.toList.tail,
+      processAll = true)
     println("filenames = " + filenames)
     val files = filenames.toArray map (str =>
       new BatchSourceFile(AbstractFile.getFile(str)): SourceFile)

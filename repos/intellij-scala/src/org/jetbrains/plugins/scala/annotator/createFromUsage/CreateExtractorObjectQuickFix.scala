@@ -24,10 +24,11 @@ class CreateExtractorObjectQuickFix(ref: ScReferenceElement, p: ScPattern)
   override protected def addMoreElementsToTemplate(
       builder: TemplateBuilder,
       clazz: ScTypeDefinition): Unit = {
-    val method = clazz.members match {
-      case Seq(fun: ScFunction) => fun
-      case _                    => return
-    }
+    val method =
+      clazz.members match {
+        case Seq(fun: ScFunction) => fun
+        case _                    => return
+      }
 
     addQmarksToTemplate(method, builder)
     addParametersToTemplate(method, builder)
@@ -36,8 +37,9 @@ class CreateExtractorObjectQuickFix(ref: ScReferenceElement, p: ScPattern)
 
   private def addUnapplyMethod(clazz: ScTypeDefinition): Unit = {
     val methodText = unapplyMethodText(p)
-    val method =
-      ScalaPsiElementFactory.createMethodFromText(methodText, clazz.getManager)
+    val method = ScalaPsiElementFactory.createMethodFromText(
+      methodText,
+      clazz.getManager)
     clazz.addMember(method, None)
   }
 }

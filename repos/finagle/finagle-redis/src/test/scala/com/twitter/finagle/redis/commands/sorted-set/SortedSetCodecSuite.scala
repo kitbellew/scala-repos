@@ -314,9 +314,10 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
   private def testZRangeBytes(key: Array[Byte]) = {
     val zrange = ZRange.get(ChannelBuffers.wrappedBuffer(key), 0, 1, None)
-    val keyBack = zrange match {
-      case ZRange(key, start, stop, withScores) => key
-    }
+    val keyBack =
+      zrange match {
+        case ZRange(key, start, stop, withScores) => key
+      }
     val bytesBack = keyBack.toByteBuffer.array
     assert(key.toSeq == bytesBack.toSeq)
   }

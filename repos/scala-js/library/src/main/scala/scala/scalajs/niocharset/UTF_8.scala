@@ -245,8 +245,7 @@ private[niocharset] object UTF_8
       loop()
     }
 
-    @inline private def isInvalidNextByte(b: Int): Boolean =
-      (b & 0xc0) != 0x80
+    @inline private def isInvalidNextByte(b: Int): Boolean = (b & 0xc0) != 0x80
 
     @inline private def decode2(b1: Int, b2: Int): DecodedMultiByte = {
       if (isInvalidNextByte(b2))

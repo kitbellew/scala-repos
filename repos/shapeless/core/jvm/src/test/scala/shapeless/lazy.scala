@@ -60,8 +60,7 @@ class LazyStrictTestsJVM {
     implicit def listTC[T](implicit underlying: A[TC[T]]): TC[List[T]] =
       TC.instance(depth => s"List(${underlying.value.repr(depth - 1)})")
 
-    implicit def hnilTC: TC[HNil] =
-      TC.instance(_ => "HNil")
+    implicit def hnilTC: TC[HNil] = TC.instance(_ => "HNil")
 
     implicit def hconsTC[H, T <: HList](implicit
         headTC: B[TC[H]],

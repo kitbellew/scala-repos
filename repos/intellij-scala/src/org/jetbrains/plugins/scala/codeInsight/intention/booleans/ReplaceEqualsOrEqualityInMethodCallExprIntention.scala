@@ -31,25 +31,29 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null)
       return false
 
     if (!methodCallExpr.getInvokedExpr.isInstanceOf[ScReferenceExpression])
       return false
 
-    val oper = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getText
+    val oper =
+      methodCallExpr.getInvokedExpr
+        .asInstanceOf[ScReferenceExpression]
+        .nameId
+        .getText
     if (oper != "equals" && oper != "==")
       return false
 
-    val range: TextRange = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
+    val range: TextRange =
+      methodCallExpr.getInvokedExpr
+        .asInstanceOf[ScReferenceExpression]
+        .nameId
+        .getTextRange
     val offset = editor.getCaretModel.getOffset
     if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
       return false
@@ -66,8 +70,10 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null || !methodCallExpr.isValid)
       return
 
@@ -75,10 +81,11 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
 
     val expr = new StringBuilder
     val replaceOper = Map("equals" -> "==", "==" -> "equals")
-    val oper = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getText
+    val oper =
+      methodCallExpr.getInvokedExpr
+        .asInstanceOf[ScReferenceExpression]
+        .nameId
+        .getText
 
     expr
       .append(

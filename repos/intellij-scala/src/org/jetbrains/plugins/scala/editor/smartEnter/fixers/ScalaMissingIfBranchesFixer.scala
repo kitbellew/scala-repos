@@ -17,8 +17,10 @@ class ScalaMissingIfBranchesFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val ifStatement =
-      PsiTreeUtil.getParentOfType(psiElement, classOf[ScIfStmt], false)
+    val ifStatement = PsiTreeUtil.getParentOfType(
+      psiElement,
+      classOf[ScIfStmt],
+      false)
     if (ifStatement == null)
       return NoOperation
 

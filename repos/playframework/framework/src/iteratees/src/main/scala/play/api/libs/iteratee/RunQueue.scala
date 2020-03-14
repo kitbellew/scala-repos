@@ -103,10 +103,11 @@ private[play] final class RunQueue {
   @tailrec
   private def schedule(op: Op): Unit = {
     val prevState = state.get
-    val newState = prevState match {
-      case null    => Vector.empty
-      case pending => pending :+ op
-    }
+    val newState =
+      prevState match {
+        case null    => Vector.empty
+        case pending => pending :+ op
+      }
     if (state.compareAndSet(prevState, newState)) {
       prevState match {
         case null =>
@@ -133,13 +134,14 @@ private[play] final class RunQueue {
   @tailrec
   private def opExecutionComplete(): Unit = {
     val prevState = state.get
-    val newState = prevState match {
-      case null =>
-        throw new IllegalStateException(
-          "Can't be inactive, must have a queue of pending elements")
-      case pending if pending.isEmpty => null
-      case pending                    => pending.tail
-    }
+    val newState =
+      prevState match {
+        case null =>
+          throw new IllegalStateException(
+            "Can't be inactive, must have a queue of pending elements")
+        case pending if pending.isEmpty => null
+        case pending                    => pending.tail
+      }
     if (state.compareAndSet(prevState, newState)) {
       prevState match {
         // We have a pending operation to execute

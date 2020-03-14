@@ -19,20 +19,17 @@ class AutoTuplingInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
   val hint = MakeTuplesExplicitFix.hint
 
   def testBasic(): Unit = {
-    val text =
-      s"""
+    val text = s"""
         |def foo(a: Any) = {}
         |foo$START(1, 2)$END
       """.stripMargin
     checkTextHasError(text)
 
-    val code =
-      """
+    val code = """
         |def foo(a: Any) = {}
         |foo(<caret>1, 2)
       """.stripMargin
-    val result =
-      """
+    val result = """
         |def foo(a: Any) = {}
         |foo((1, 2))
       """.stripMargin
@@ -40,8 +37,7 @@ class AutoTuplingInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
   }
 
   def testSAMNotHighlighted(): Unit = {
-    val text =
-      """
+    val text = """
         |trait SAM {
         |  def foo(): Int
         |}
@@ -52,20 +48,17 @@ class AutoTuplingInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
   }
 
   def testAutoTupledSAMsAreHighlighted(): Unit = {
-    val text =
-      s"""
+    val text = s"""
          |def foo(a: Any) = {}
          |foo$START(() => println("foo"),  () => 2)$END
       """.stripMargin
     checkTextHasError(text)
 
-    val code =
-      """
+    val code = """
         |def foo(a: Any) = {}
         |foo(<caret>() => println("foo"),  () => 2)
       """.stripMargin
-    val result =
-      """
+    val result = """
         |def foo(a: Any) = {}
         |foo((() => println("foo"), () => 2))
       """.stripMargin
@@ -74,8 +67,7 @@ class AutoTuplingInspectionTest extends ScalaLightInspectionFixtureTestAdapter {
 
   def testSAMNotHighlightedWhenTypesOfParametersOfAnonymousFunctionAreInferred()
       : Unit = {
-    val text =
-      """
+    val text = """
         |trait SAM {
         |  def foo(s: String): Char
         |}

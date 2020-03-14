@@ -208,8 +208,8 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
   def completeJob[N[+_], A](result: StreamT[JobQueryTF, A])(implicit
       M: JobQueryTFMonad,
       t: JobQueryTF ~> N): StreamT[N, A] = {
-    val finish: StreamT[JobQueryTF, A] =
-      StreamT[JobQueryTF, A](M.point(StreamT.Skip {
+    val finish: StreamT[JobQueryTF, A] = StreamT[JobQueryTF, A](
+      M.point(StreamT.Skip {
         M.jobId map (jobManager.finish(_, yggConfig.clock.now()))
         StreamT.empty[JobQueryTF, A]
       }))

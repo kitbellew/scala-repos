@@ -530,20 +530,23 @@ trait Contexts { self: Analyzer =>
         scope: Scope = scope,
         unit: CompilationUnit = unit,
         reporter: ContextReporter = this.reporter): Context = {
-      val isTemplateOrPackage = tree match {
-        case _: Template | _: PackageDef => true
-        case _                           => false
-      }
-      val isDefDef = tree match {
-        case _: DefDef => true
-        case _         => false
-      }
-      val isImport = tree match {
-        // The guard is for SI-8403. It prevents adding imports again in the context created by
-        // `Namer#createInnerNamer`
-        case _: Import if tree != this.tree => true
-        case _                              => false
-      }
+      val isTemplateOrPackage =
+        tree match {
+          case _: Template | _: PackageDef => true
+          case _                           => false
+        }
+      val isDefDef =
+        tree match {
+          case _: DefDef => true
+          case _         => false
+        }
+      val isImport =
+        tree match {
+          // The guard is for SI-8403. It prevents adding imports again in the context created by
+          // `Namer#createInnerNamer`
+          case _: Import if tree != this.tree => true
+          case _                              => false
+        }
       val sameOwner = owner == this.owner
       val prefixInChild =
         if (isTemplateOrPackage)
@@ -657,12 +660,14 @@ trait Contexts { self: Analyzer =>
       * accessible.
       */
     def makeConstructorContext = {
-      val baseContext =
-        enclClass.outer.nextEnclosing(!_.tree.isInstanceOf[Template])
+      val baseContext = enclClass.outer.nextEnclosing(
+        !_.tree.isInstanceOf[Template])
       // must propagate reporter!
       // (caught by neg/t3649 when refactoring reporting to be specified only by this.reporter and not also by this.contextMode)
-      val argContext =
-        baseContext.makeNewScope(tree, owner, reporter = this.reporter)
+      val argContext = baseContext.makeNewScope(
+        tree,
+        owner,
+        reporter = this.reporter)
       argContext.contextMode = contextMode
       argContext.inSelfSuperCall = true
       def enterElems(c: Context) {
@@ -787,8 +792,7 @@ trait Contexts { self: Analyzer =>
         case x => s"${tree.shortClass}${treeIdString}:${treeTruncated}"
       }
 
-    override def toString =
-      sm"""|Context($unit) {
+    override def toString = sm"""|Context($unit) {
            |   owner       = $owner
            |   tree        = $treeString
            |   scope       = ${scope.size} decls
@@ -1256,8 +1260,9 @@ trait Contexts { self: Analyzer =>
         val found0 = lookupInPrefix(name)
         val found1 = found0 filter accessibleInPrefix
         if (found0.exists && !found1.exists && inaccessible == null)
-          inaccessible =
-            LookupInaccessible(found0, analyzer.lastAccessCheckDetails)
+          inaccessible = LookupInaccessible(
+            found0,
+            analyzer.lastAccessCheckDetails)
 
         found1
       }
@@ -1276,12 +1281,13 @@ trait Contexts { self: Analyzer =>
         return {
           val enclClassSym = cx.enclClass.owner
           val scope = cx.enclClass.prefix.baseType(enclClassSym).decls
-          val constructorSym = lookupInScope(scope) match {
-            case Nil       => NoSymbol
-            case hd :: Nil => hd.sym
-            case entries =>
-              newOverloaded(enclClassSym, cx.enclClass.prefix, entries)
-          }
+          val constructorSym =
+            lookupInScope(scope) match {
+              case Nil       => NoSymbol
+              case hd :: Nil => hd.sym
+              case entries =>
+                newOverloaded(enclClassSym, cx.enclClass.prefix, entries)
+            }
           finishDefSym(constructorSym, cx.enclClass.prefix)
         }
 

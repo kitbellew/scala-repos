@@ -19,18 +19,19 @@ final class SpanId(val self: Long) extends Proxy {
 object SpanId {
   // StringBuilder.appendAll(char..) seems to be faster than
   // StringBuilder.append(string..)
-  private val lut: Array[Array[Char]] = (
-    for (b <- Byte.MinValue to Byte.MaxValue)
-      yield {
-        val bb =
-          if (b < 0)
-            b + 256
-          else
-            b
-        val s = "%02x".format(bb)
-        Array(s(0), s(1))
-      }
-  ).toArray
+  private val lut: Array[Array[Char]] =
+    (
+      for (b <- Byte.MinValue to Byte.MaxValue)
+        yield {
+          val bb =
+            if (b < 0)
+              b + 256
+            else
+              b
+          val s = "%02x".format(bb)
+          Array(s(0), s(1))
+        }
+    ).toArray
 
   private def byteToChars(b: Byte): Array[Char] = lut(b + 128)
 
@@ -68,21 +69,21 @@ object TraceId {
       parentId: Option[SpanId],
       spanId: SpanId,
       sampled: Option[Boolean]
-  ): TraceId =
-    TraceId(traceId, parentId, spanId, sampled, Flags())
+  ): TraceId = TraceId(traceId, parentId, spanId, sampled, Flags())
 
   /**
     * Serialize a TraceId into an array of bytes.
     */
   def serialize(traceId: TraceId): Array[Byte] = {
-    val flags = traceId._sampled match {
-      case None =>
-        traceId.flags
-      case Some(true) =>
-        traceId.flags.setFlag(Flags.SamplingKnown | Flags.Sampled)
-      case Some(false) =>
-        traceId.flags.setFlag(Flags.SamplingKnown)
-    }
+    val flags =
+      traceId._sampled match {
+        case None =>
+          traceId.flags
+        case Some(true) =>
+          traceId.flags.setFlag(Flags.SamplingKnown | Flags.Sampled)
+        case Some(false) =>
+          traceId.flags.setFlag(Flags.SamplingKnown)
+      }
 
     val bytes = new Array[Byte](32)
     ByteArrays.put64be(bytes, 0, traceId.spanId.toLong)
@@ -105,10 +106,11 @@ object TraceId {
       val flags64 = ByteArrays.get64be(bytes, 24)
 
       val flags = Flags(flags64)
-      val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
-        Some(flags.isFlagSet(Flags.Sampled))
-      } else
-        None
+      val sampled =
+        if (flags.isFlagSet(Flags.SamplingKnown)) {
+          Some(flags.isFlagSet(Flags.Sampled))
+        } else
+          None
 
       val traceId = TraceId(
         if (trace64 == parent64)
@@ -170,8 +172,7 @@ final case class TraceId(
       case _              => false
     }
 
-  override def hashCode(): Int =
-    ids.hashCode()
+  override def hashCode(): Int = ids.hashCode()
 
   override def toString = s"$traceId.$spanId<:$parentId"
 }

@@ -10,16 +10,19 @@ trait Two[M[_, _]] {
 
 object Test {
   // Works.
-  val x = new Two[Map] {
-    val x = 5
-  }
+  val x =
+    new Two[Map] {
+      val x = 5
+    }
 
-  val o = new One[java.util.List] {
-    val x = 1
-  }
+  val o =
+    new One[java.util.List] {
+      val x = 1
+    }
 
   // Does not work
-  val y = new Two[java.util.concurrent.ConcurrentHashMap] {
-    val x = 3
-  }
+  val y =
+    new Two[java.util.concurrent.ConcurrentHashMap] {
+      val x = 3
+    }
 }

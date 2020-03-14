@@ -43,13 +43,14 @@ abstract class ParallelArrayCheck[T](tp: String)
     pa
   }
 
-  property("array mappings must be equal") = forAll(collectionPairs) {
-    case (t, coll) =>
-      val results =
-        for ((f, ind) <- mapFunctions.zipWithIndex)
-          yield ("op index: " + ind) |: t.map(f) == coll.map(f)
-      results.reduceLeft(_ && _)
-  }
+  property("array mappings must be equal") =
+    forAll(collectionPairs) {
+      case (t, coll) =>
+        val results =
+          for ((f, ind) <- mapFunctions.zipWithIndex)
+            yield ("op index: " + ind) |: t.map(f) == coll.map(f)
+        results.reduceLeft(_ && _)
+    }
 
 }
 

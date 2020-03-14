@@ -45,18 +45,19 @@ class ScalaIntroduceParameterDialog(
   override def createNorthPanel(): JComponent = {
     val panel = super.createNorthPanel() //to initialize fields
     val northPanel = new JPanel(new GridBagLayout())
-    val gbc: GridBagConstraints = new GridBagConstraints(
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      GridBagConstraints.WEST,
-      GridBagConstraints.HORIZONTAL,
-      new Insets(0, 0, 0, 0),
-      0,
-      0)
+    val gbc: GridBagConstraints =
+      new GridBagConstraints(
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        GridBagConstraints.WEST,
+        GridBagConstraints.HORIZONTAL,
+        new Insets(0, 0, 0, 0),
+        0,
+        0)
 
     val paramNamePanel = createParamNamePanel()
     val paramTypePanel = createParamTypePanel()
@@ -168,8 +169,8 @@ class ScalaIntroduceParameterDialog(
     typeCombobox = new ComboBox()
     val typeLabel = new JLabel("Type:")
     typeLabel.setLabelFor(typeCombobox)
-    typeMap =
-      ScalaRefactoringUtil.getCompatibleTypeNames(introduceData.possibleTypes)
+    typeMap = ScalaRefactoringUtil.getCompatibleTypeNames(
+      introduceData.possibleTypes)
     for (typeName <- typeMap.keySet.asScala) {
       JListCompatibility.addItem(typeCombobox, typeName)
     }

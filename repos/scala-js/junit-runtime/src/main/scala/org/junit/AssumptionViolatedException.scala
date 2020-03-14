@@ -29,8 +29,7 @@ class AssumptionViolatedException protected (
       fMatcher = matcher,
       fValue = expected.asInstanceOf[AnyRef])
 
-  def this(message: String) =
-    this(message, false, null, null)
+  def this(message: String) = this(message, false, null, null)
 
   def this(assumption: String, t: Throwable) = {
     this(assumption, false, null, null)

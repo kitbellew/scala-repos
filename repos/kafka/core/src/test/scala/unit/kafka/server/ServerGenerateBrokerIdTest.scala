@@ -130,10 +130,11 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
   @Test
   def testConsistentBrokerIdFromUserConfigAndMetaProps() {
     // check if configured brokerId and stored brokerId are equal or throw InconsistentBrokerException
-    var server1 = new KafkaServer(
-      config1,
-      threadNamePrefix = Option(this.getClass.getName)
-    ) //auto generate broker Id
+    var server1 =
+      new KafkaServer(
+        config1,
+        threadNamePrefix = Option(this.getClass.getName)
+      ) //auto generate broker Id
     server1.startup()
     server1.shutdown()
     server1 = new KafkaServer(
@@ -191,8 +192,9 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
 
   def verifyBrokerMetadata(logDirs: Seq[String], brokerId: Int): Boolean = {
     for (logDir <- logDirs) {
-      val brokerMetadataOpt = (new BrokerMetadataCheckpoint(
-        new File(logDir + File.separator + brokerMetaPropsFile))).read()
+      val brokerMetadataOpt =
+        (new BrokerMetadataCheckpoint(
+          new File(logDir + File.separator + brokerMetaPropsFile))).read()
       brokerMetadataOpt match {
         case Some(brokerMetadata: BrokerMetadata) =>
           if (brokerMetadata.brokerId != brokerId)

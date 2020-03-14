@@ -19,9 +19,10 @@ import scala.reflect.NameTransformer
 object ScalaNamesUtil {
   val keywordNames = ScalaTokenTypes.KEYWORDS.getTypes.map(_.toString).toSet
 
-  private val lexerCache = new ThreadLocal[ScalaLexer] {
-    override def initialValue(): ScalaLexer = new ScalaLexer()
-  }
+  private val lexerCache =
+    new ThreadLocal[ScalaLexer] {
+      override def initialValue(): ScalaLexer = new ScalaLexer()
+    }
 
   private def checkGeneric(
       text: String,
@@ -101,10 +102,11 @@ object ScalaNamesUtil {
   }
 
   def toJavaName(name: String) = {
-    val toEncode = name match {
-      case ScalaNamesUtil.isBacktickedName(s) => s
-      case _                                  => name
-    }
+    val toEncode =
+      name match {
+        case ScalaNamesUtil.isBacktickedName(s) => s
+        case _                                  => name
+      }
     NameTransformer.encode(toEncode)
   }
 

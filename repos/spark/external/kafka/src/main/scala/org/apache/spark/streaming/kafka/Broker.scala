@@ -52,11 +52,9 @@ final class Broker private (
   */
 @Experimental
 object Broker {
-  def create(host: String, port: Int): Broker =
-    new Broker(host, port)
+  def create(host: String, port: Int): Broker = new Broker(host, port)
 
-  def apply(host: String, port: Int): Broker =
-    new Broker(host, port)
+  def apply(host: String, port: Int): Broker = new Broker(host, port)
 
   def unapply(broker: Broker): Option[(String, Int)] = {
     if (broker == null) {

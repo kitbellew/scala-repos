@@ -20,15 +20,18 @@ import akka.event.Logging
   * Top level supervisor for internal Camel actors
   */
 private[camel] class CamelSupervisor extends Actor with CamelSupport {
-  private val activationTracker =
-    context.actorOf(Props[ActivationTracker], "activationTracker")
-  private val registry: ActorRef =
-    context.actorOf(Props(classOf[Registry], activationTracker), "registry")
+  private val activationTracker = context.actorOf(
+    Props[ActivationTracker],
+    "activationTracker")
+  private val registry: ActorRef = context.actorOf(
+    Props(classOf[Registry], activationTracker),
+    "registry")
 
-  override val supervisorStrategy = OneForOneStrategy() {
-    case NonFatal(e) ⇒
-      Resume
-  }
+  override val supervisorStrategy =
+    OneForOneStrategy() {
+      case NonFatal(e) ⇒
+        Resume
+    }
 
   def receive = {
     case AddWatch(actorRef) ⇒ context.watch(actorRef)
@@ -139,18 +142,19 @@ private[camel] class Registry(activationTracker: ActorRef)
       }
   }
 
-  override val supervisorStrategy = new RegistryLogStrategy()({
-    case e: ActorActivationException ⇒
-      activationTracker ! EndpointFailedToActivate(e.actorRef, e.getCause)
-      stop(e.actorRef)
-      Resume
-    case e: ActorDeActivationException ⇒
-      activationTracker ! EndpointFailedToDeActivate(e.actorRef, e.getCause)
-      stop(e.actorRef)
-      Resume
-    case NonFatal(e) ⇒
-      Resume
-  })
+  override val supervisorStrategy =
+    new RegistryLogStrategy()({
+      case e: ActorActivationException ⇒
+        activationTracker ! EndpointFailedToActivate(e.actorRef, e.getCause)
+        stop(e.actorRef)
+        Resume
+      case e: ActorDeActivationException ⇒
+        activationTracker ! EndpointFailedToDeActivate(e.actorRef, e.getCause)
+        stop(e.actorRef)
+        Resume
+      case NonFatal(e) ⇒
+        Resume
+    })
 
   def receive = {
     case msg @ Register(consumer, _, Some(_)) ⇒

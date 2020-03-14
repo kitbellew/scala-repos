@@ -12,18 +12,19 @@ final class Env(
     captcher: akka.actor.ActorSelection,
     appPath: String) {
 
-  private val settings = new {
-    val WebPathRelative = config getString "web_path.relative"
-    val FilePathRelative = config getString "file_path.relative"
-    val UpstreamUrlPattern = config getString "upstream.url_pattern"
-    val HideCallsCookieName = config getString "hide_calls.cookie.name"
-    val HideCallsCookieMaxAge = config getInt "hide_calls.cookie.max_age"
-    val CollectionTranslation = config getString "collection.translation"
-    val ContextGitUrl = config getString "context.git.url"
-    val ContextGitFile = config getString "context.git.file"
-    val CdnDomain = config getString "cdn_domain"
-    val CallThreshold = config getInt "call.threshold"
-  }
+  private val settings =
+    new {
+      val WebPathRelative = config getString "web_path.relative"
+      val FilePathRelative = config getString "file_path.relative"
+      val UpstreamUrlPattern = config getString "upstream.url_pattern"
+      val HideCallsCookieName = config getString "hide_calls.cookie.name"
+      val HideCallsCookieMaxAge = config getInt "hide_calls.cookie.max_age"
+      val CollectionTranslation = config getString "collection.translation"
+      val ContextGitUrl = config getString "context.git.url"
+      val ContextGitFile = config getString "context.git.file"
+      val CdnDomain = config getString "cdn_domain"
+      val CallThreshold = config getInt "call.threshold"
+    }
   import settings._
 
   // public settings
@@ -31,9 +32,10 @@ final class Env(
 
   private[i18n] lazy val translationColl = db(CollectionTranslation)
 
-  lazy val pool = new I18nPool(
-    langs = Lang.availables(play.api.Play.current).toSet,
-    default = I18nKey.en)
+  lazy val pool =
+    new I18nPool(
+      langs = Lang.availables(play.api.Play.current).toSet,
+      default = I18nKey.en)
 
   lazy val translator = new Translator(messages = messages, pool = pool)
 
@@ -45,11 +47,12 @@ final class Env(
   lazy val jsDump =
     new JsDump(path = appPath + "/" + WebPathRelative, pool = pool, keys = keys)
 
-  lazy val fileFix = new FileFix(
-    path = appPath + "/" + FilePathRelative,
-    pool = pool,
-    keys = keys,
-    messages = messages)
+  lazy val fileFix =
+    new FileFix(
+      path = appPath + "/" + FilePathRelative,
+      pool = pool,
+      keys = keys,
+      messages = messages)
 
   lazy val transInfos = TransInfos(messages = messages, keys = keys)
 
@@ -58,17 +61,19 @@ final class Env(
 
   def upstreamFetch = new UpstreamFetch(id => UpstreamUrlPattern format id)
 
-  lazy val gitWrite = new GitWrite(
-    transRelPath = FilePathRelative,
-    repoPath = appPath,
-    system = system)
+  lazy val gitWrite =
+    new GitWrite(
+      transRelPath = FilePathRelative,
+      repoPath = appPath,
+      system = system)
 
   lazy val context = new Context(ContextGitUrl, ContextGitFile, keys)
 
-  private lazy val callApi = new CallApi(
-    hideCallsCookieName = hideCallsCookieName,
-    minGames = CallThreshold,
-    transInfos = transInfos)
+  private lazy val callApi =
+    new CallApi(
+      hideCallsCookieName = hideCallsCookieName,
+      minGames = CallThreshold,
+      transInfos = transInfos)
 
   val call = callApi.apply _
 

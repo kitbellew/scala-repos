@@ -29,8 +29,9 @@ import scala.collection.JavaConverters._
 class SbtModuleSettingsEditor(state: ModuleConfigurationState)
     extends ModuleElementsEditor(state) {
   private val myForm = new SbtModuleSettingsForm
-  private val modelWrapper = new CollectionListModelWrapper(
-    new CollectionListModel[String](new util.ArrayList[String]))
+  private val modelWrapper =
+    new CollectionListModelWrapper(
+      new CollectionListModel[String](new util.ArrayList[String]))
   private val resolvers = SbtModule.getResolversFrom(getModel.getModule).toSeq
 
   def getDisplayName = SbtBundle("sbt.settings.sbtModuleSettings")

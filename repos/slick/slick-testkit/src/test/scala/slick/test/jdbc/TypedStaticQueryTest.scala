@@ -151,8 +151,8 @@ class TypedStaticQueryTest {
     import dc.profile.api._
     try {
       case class Supplier(id: Int, name: String)
-      implicit val supplierGetter = (arg: (Int, String)) =>
-        Supplier(arg._1, arg._2)
+      implicit val supplierGetter =
+        (arg: (Int, String)) => Supplier(arg._1, arg._2)
 
       def supplierForID(id: Int) =
         tsql"select SUP_ID, SUP_NAME from SUPPLIERS where SUP_ID = $id"
@@ -195,8 +195,8 @@ class TypedStaticQueryTest {
     import dc.profile.api._
     try {
       case class Supplier(id: Int, name: String)
-      implicit val supplierGetter = (arg: (Int, String)) =>
-        Supplier(arg._1, arg._2)
+      implicit val supplierGetter =
+        (arg: (Int, String)) => Supplier(arg._1, arg._2)
 
       val testUnitDML = (x: Vector[Int]) => assertEquals(1, x.head)
 

@@ -41,15 +41,16 @@ private[changeSignature] trait ScalaNamedElementUsageInfo {
 
   def namedElement: ScNamedElement
 
-  val paramClauses: Option[ScParameters] = namedElement match {
-    case fun: ScFunction => Some(fun.paramClauses)
-    case cl: ScClass     => cl.clauses
-    case _               => None
-  }
+  val paramClauses: Option[ScParameters] =
+    namedElement match {
+      case fun: ScFunction => Some(fun.paramClauses)
+      case cl: ScClass     => cl.clauses
+      case _               => None
+    }
   val scParams: Seq[ScParameter] = paramClauses.toSeq.flatMap(_.params)
   val parameters: Seq[Parameter] = scParams.map(new Parameter(_))
-  val defaultValues: Seq[Option[String]] =
-    scParams.map(_.getActualDefaultExpression.map(_.getText))
+  val defaultValues: Seq[Option[String]] = scParams.map(
+    _.getActualDefaultExpression.map(_.getText))
 }
 
 private[changeSignature] object ScalaNamedElementUsageInfo {
@@ -62,10 +63,11 @@ private[changeSignature] object ScalaNamedElementUsageInfo {
 
   def apply(
       named: PsiNamedElement): UsageInfo with ScalaNamedElementUsageInfo = {
-    val unwrapped = named match {
-      case isWrapper(elem) => elem
-      case _               => named
-    }
+    val unwrapped =
+      named match {
+        case isWrapper(elem) => elem
+        case _               => named
+      }
     unwrapped match {
       case fun: ScFunction      => FunUsageInfo(fun)
       case bp: ScBindingPattern => OverriderValUsageInfo(bp)
@@ -238,15 +240,16 @@ private[changeSignature] object UsageUtil {
   def returnType(
       change: ChangeInfo,
       usage: ScalaNamedElementUsageInfo): Option[ScType] = {
-    val newType = change match {
-      case sc: ScalaChangeInfo => sc.newType
-      case jc: JavaChangeInfo =>
-        val method = jc.getMethod
-        val javaType = jc.getNewReturnType
-          .getType(method.getParameterList, method.getManager)
-        ScType.create(javaType, method.getProject)
-      case _ => return None
-    }
+    val newType =
+      change match {
+        case sc: ScalaChangeInfo => sc.newType
+        case jc: JavaChangeInfo =>
+          val method = jc.getMethod
+          val javaType = jc.getNewReturnType
+            .getType(method.getParameterList, method.getManager)
+          ScType.create(javaType, method.getProject)
+        case _ => return None
+      }
 
     val substType = substitutor(usage).subst(newType)
     Some(substType)

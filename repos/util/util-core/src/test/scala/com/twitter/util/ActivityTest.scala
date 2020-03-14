@@ -71,11 +71,12 @@ class ActivityTest extends FunSuite {
   }
 
   test("Activity.collect") {
-    val (acts, wits) = Seq
-      .fill(10) {
-        Activity[Int]()
-      }
-      .unzip
+    val (acts, wits) =
+      Seq
+        .fill(10) {
+          Activity[Int]()
+        }
+        .unzip
     val ref = new AtomicReference(Seq.empty: Seq[Try[Seq[Int]]])
     Activity.collect(acts).values.build.register(Witness(ref))
 

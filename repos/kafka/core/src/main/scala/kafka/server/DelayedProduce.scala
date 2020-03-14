@@ -101,13 +101,14 @@ class DelayedProduce(
           val partitionOpt = replicaManager.getPartition(
             topicAndPartition.topic,
             topicAndPartition.partition)
-          val (hasEnough, errorCode) = partitionOpt match {
-            case Some(partition) =>
-              partition.checkEnoughReplicasReachOffset(status.requiredOffset)
-            case None =>
-              // Case A
-              (false, Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
-          }
+          val (hasEnough, errorCode) =
+            partitionOpt match {
+              case Some(partition) =>
+                partition.checkEnoughReplicasReachOffset(status.requiredOffset)
+              case None =>
+                // Case A
+                (false, Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
+            }
           if (errorCode != Errors.NONE.code) {
             // Case B.1
             status.acksPending = false
@@ -140,25 +141,29 @@ class DelayedProduce(
     * Upon completion, return the current response status along with the error code per partition
     */
   override def onComplete() {
-    val responseStatus =
-      produceMetadata.produceStatus.mapValues(status => status.responseStatus)
+    val responseStatus = produceMetadata.produceStatus.mapValues(status =>
+      status.responseStatus)
     responseCallback(responseStatus)
   }
 }
 
 object DelayedProduceMetrics extends KafkaMetricsGroup {
 
-  private val aggregateExpirationMeter =
-    newMeter("ExpiresPerSec", "requests", TimeUnit.SECONDS)
+  private val aggregateExpirationMeter = newMeter(
+    "ExpiresPerSec",
+    "requests",
+    TimeUnit.SECONDS)
 
-  private val partitionExpirationMeterFactory = (key: TopicPartition) =>
-    newMeter(
-      "ExpiresPerSec",
-      "requests",
-      TimeUnit.SECONDS,
-      tags = Map("topic" -> key.topic, "partition" -> key.partition.toString))
-  private val partitionExpirationMeters = new Pool[TopicPartition, Meter](
-    valueFactory = Some(partitionExpirationMeterFactory))
+  private val partitionExpirationMeterFactory =
+    (key: TopicPartition) =>
+      newMeter(
+        "ExpiresPerSec",
+        "requests",
+        TimeUnit.SECONDS,
+        tags = Map("topic" -> key.topic, "partition" -> key.partition.toString))
+  private val partitionExpirationMeters =
+    new Pool[TopicPartition, Meter](
+      valueFactory = Some(partitionExpirationMeterFactory))
 
   def recordExpiration(partition: TopicPartition) {
     aggregateExpirationMeter.mark()

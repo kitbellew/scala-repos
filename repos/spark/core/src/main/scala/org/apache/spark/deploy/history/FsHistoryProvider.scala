@@ -81,16 +81,19 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
   private val NOT_STARTED = "<Not Started>"
 
   // Interval between safemode checks.
-  private val SAFEMODE_CHECK_INTERVAL_S =
-    conf.getTimeAsSeconds("spark.history.fs.safemodeCheck.interval", "5s")
+  private val SAFEMODE_CHECK_INTERVAL_S = conf.getTimeAsSeconds(
+    "spark.history.fs.safemodeCheck.interval",
+    "5s")
 
   // Interval between each check for event log updates
-  private val UPDATE_INTERVAL_S =
-    conf.getTimeAsSeconds("spark.history.fs.update.interval", "10s")
+  private val UPDATE_INTERVAL_S = conf.getTimeAsSeconds(
+    "spark.history.fs.update.interval",
+    "10s")
 
   // Interval between each cleaner checks for event logs to delete
-  private val CLEAN_INTERVAL_S =
-    conf.getTimeAsSeconds("spark.history.fs.cleaner.interval", "1d")
+  private val CLEAN_INTERVAL_S = conf.getTimeAsSeconds(
+    "spark.history.fs.cleaner.interval",
+    "1d")
 
   private val logDir = conf
     .getOption("spark.history.fs.logDirectory")
@@ -168,21 +171,22 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
     // Cannot probe anything while the FS is in safe mode, so spawn a new thread that will wait
     // for the FS to leave safe mode before enabling polling. This allows the main history server
     // UI to be shown (so that the user can see the HDFS status).
-    val initThread = new Thread(new Runnable() {
-      override def run(): Unit = {
-        try {
-          while (isFsInSafeMode()) {
-            logInfo("HDFS is still in safe mode. Waiting...")
-            val deadline = clock.getTimeMillis() +
-              TimeUnit.SECONDS.toMillis(SAFEMODE_CHECK_INTERVAL_S)
-            clock.waitTillTime(deadline)
+    val initThread =
+      new Thread(new Runnable() {
+        override def run(): Unit = {
+          try {
+            while (isFsInSafeMode()) {
+              logInfo("HDFS is still in safe mode. Waiting...")
+              val deadline = clock.getTimeMillis() +
+                TimeUnit.SECONDS.toMillis(SAFEMODE_CHECK_INTERVAL_S)
+              clock.waitTillTime(deadline)
+            }
+            startPolling()
+          } catch {
+            case _: InterruptedException =>
           }
-          startPolling()
-        } catch {
-          case _: InterruptedException =>
         }
-      }
-    })
+      })
     initThread.setDaemon(true)
     initThread.setName(s"${getClass().getSimpleName()}-init")
     initThread.setUncaughtExceptionHandler(
@@ -262,8 +266,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
             fs.getFileStatus(new Path(logDir, attempt.logPath)),
             replayBus)
           appAttemptInfo.map { info =>
-            val uiAclsEnabled =
-              conf.getBoolean("spark.history.ui.acls.enable", false)
+            val uiAclsEnabled = conf
+              .getBoolean("spark.history.ui.acls.enable", false)
             ui.getSecurityManager.setAcls(uiAclsEnabled)
             // make sure to set admin acls before view acls so they are properly picked up
             ui.getSecurityManager.setAdminAcls(
@@ -281,11 +285,12 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
   }
 
   override def getConfig(): Map[String, String] = {
-    val safeMode = if (isFsInSafeMode()) {
-      Map("HDFS State" -> "In safe mode, application logs not available.")
-    } else {
-      Map()
-    }
+    val safeMode =
+      if (isFsInSafeMode()) {
+        Map("HDFS State" -> "In safe mode, application logs not available.")
+      } else {
+        Map()
+      }
     Map("Event log directory" -> logDir.toString) ++ safeMode
   }
 
@@ -633,18 +638,19 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
       // Without an app ID, new logs will render incorrectly in the listing page, so do not list or
       // try to show their UI.
       if (appListener.appId.isDefined) {
-        val attemptInfo = new FsApplicationAttemptInfo(
-          logPath.getName(),
-          appListener.appName.getOrElse(NOT_STARTED),
-          appListener.appId.getOrElse(logPath.getName()),
-          appListener.appAttemptId,
-          appListener.startTime.getOrElse(-1L),
-          appListener.endTime.getOrElse(-1L),
-          eventLog.getModificationTime(),
-          appListener.sparkUser.getOrElse(NOT_STARTED),
-          appCompleted,
-          eventLog.getLen()
-        )
+        val attemptInfo =
+          new FsApplicationAttemptInfo(
+            logPath.getName(),
+            appListener.appName.getOrElse(NOT_STARTED),
+            appListener.appId.getOrElse(logPath.getName()),
+            appListener.appAttemptId,
+            appListener.startTime.getOrElse(-1L),
+            appListener.endTime.getOrElse(-1L),
+            eventLog.getModificationTime(),
+            appListener.sparkUser.getOrElse(NOT_STARTED),
+            appCompleted,
+            eventLog.getLen()
+          )
         fileToAppInfo(logPath) = attemptInfo
         Some(attemptInfo)
       } else {

@@ -79,10 +79,11 @@ final object Aggregation {
     import complete._
     val log = state.log
     val extracted = Project extract state
-    val success = results match {
-      case Value(_) => true;
-      case Inc(_)   => false
-    }
+    val success =
+      results match {
+        case Value(_) => true;
+        case Inc(_)   => false
+      }
     results.toEither.right.foreach { r =>
       if (show.taskValues)
         printSettings(r, show.print)
@@ -99,19 +100,21 @@ final object Aggregation {
 
     val extracted = Project extract s
     import extracted.structure
-    val toRun = ts map {
-      case KeyValue(k, t) => t.map(v => KeyValue(k, v))
-    } join;
+    val toRun =
+      ts map {
+        case KeyValue(k, t) => t.map(v => KeyValue(k, v))
+      } join;
     val roots = ts map {
       case KeyValue(k, _) => k
     }
     val config = extractedTaskConfig(extracted, structure, s)
 
     val start = System.currentTimeMillis
-    val (newS, result) = withStreams(structure, s) { str =>
-      val transform = nodeView(s, str, roots, extra)
-      runTask(toRun, s, str, structure.index.triggers, config)(transform)
-    }
+    val (newS, result) =
+      withStreams(structure, s) { str =>
+        val transform = nodeView(s, str, roots, extra)
+        runTask(toRun, s, str, structure.index.triggers, config)(transform)
+      }
     val stop = System.currentTimeMillis
     Complete(start, stop, result, newS)
   }
@@ -200,21 +203,22 @@ final object Aggregation {
     // to make the call sites clearer
     def separate[L](in: Seq[KeyValue[_]])(
         f: KeyValue[_] => Either[KeyValue[L], KeyValue[_]])
-        : (Seq[KeyValue[L]], Seq[KeyValue[_]]) =
-      Util.separate(in)(f)
+        : (Seq[KeyValue[L]], Seq[KeyValue[_]]) = Util.separate(in)(f)
 
     val kvs = keys.toList
     if (kvs.isEmpty)
       failure("No such setting/task")
     else {
-      val (inputTasks, other) = separate[InputTask[_]](kvs) {
-        case KeyValue(k, v: InputTask[_]) => Left(KeyValue(k, v))
-        case kv                           => Right(kv)
-      }
-      val (tasks, settings) = separate[Task[_]](other) {
-        case KeyValue(k, v: Task[_]) => Left(KeyValue(k, v))
-        case kv                      => Right(kv)
-      }
+      val (inputTasks, other) =
+        separate[InputTask[_]](kvs) {
+          case KeyValue(k, v: InputTask[_]) => Left(KeyValue(k, v))
+          case kv                           => Right(kv)
+        }
+      val (tasks, settings) =
+        separate[Task[_]](other) {
+          case KeyValue(k, v: Task[_]) => Left(KeyValue(k, v))
+          case kv                      => Right(kv)
+        }
       // currently, disallow input tasks to be mixed with normal tasks.
       // This occurs in `all` or `show`, which support multiple tasks.
       // Previously, multiple tasks could be run in one execution, but they were all for the same key, just in different scopes.
@@ -224,10 +228,12 @@ final object Aggregation {
       // Once that is addressed, the tasks constructed by the input tasks would need to be combined with the explicit tasks.
       if (inputTasks.nonEmpty) {
         if (other.nonEmpty) {
-          val inputStrings =
-            inputTasks.map(_.key).mkString("Input task(s):\n\t", "\n\t", "\n")
-          val otherStrings =
-            other.map(_.key).mkString("Task(s)/setting(s):\n\t", "\n\t", "\n")
+          val inputStrings = inputTasks
+            .map(_.key)
+            .mkString("Input task(s):\n\t", "\n\t", "\n")
+          val otherStrings = other
+            .map(_.key)
+            .mkString("Task(s)/setting(s):\n\t", "\n\t", "\n")
           failure(
             s"Cannot mix input tasks with plain tasks/settings.  $inputStrings $otherStrings")
         } else

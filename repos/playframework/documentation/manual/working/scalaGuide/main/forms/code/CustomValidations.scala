@@ -22,11 +22,12 @@ package scalaguide.forms.scalaforms {
 
     val passwordCheckConstraint: Constraint[String] =
       Constraint("constraints.passwordcheck")({ plainText =>
-        val errors = plainText match {
-          case allNumbers() => Seq(ValidationError("Password is all numbers"))
-          case allLetters() => Seq(ValidationError("Password is all letters"))
-          case _            => Nil
-        }
+        val errors =
+          plainText match {
+            case allNumbers() => Seq(ValidationError("Password is all numbers"))
+            case allLetters() => Seq(ValidationError("Password is all letters"))
+            case _            => Nil
+          }
         if (errors.isEmpty) {
           Valid
         } else {

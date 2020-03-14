@@ -41,9 +41,10 @@ import scalafx.scene.media.{Media, MediaPlayer, MediaView}
   */
 object SnapshotNPETester extends JFXApp {
   val movie = "http://download.oracle.com/otndocs/products/javafx/oow2010-2.flv"
-  val mediaView = new MediaView(new MediaPlayer(new Media(movie)) {
-    autoPlay.value = true
-  })
+  val mediaView =
+    new MediaView(new MediaPlayer(new Media(movie)) {
+      autoPlay.value = true
+    })
 
   test(mediaView)
 
@@ -59,9 +60,10 @@ object SnapshotNPETester extends JFXApp {
   }
 
   def test(mediaNode: Node) = {
-    val param = new SnapshotParameters {
-      viewport = new Rectangle2D(0, 0, 200, 200)
-    }
+    val param =
+      new SnapshotParameters {
+        viewport = new Rectangle2D(0, 0, 200, 200)
+      }
     // This call was resulting in NPE - Issue #217.
     val textureImage: WritableImage = mediaNode.snapshot(param, null)
   }

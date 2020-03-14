@@ -118,32 +118,34 @@ abstract class IntroduceParameterTestBase
                     classOf[ScFunctionDefinition])
                   (fun, fun.returnType.getOrAny)
                 }
-              val collectedData =
-                handler.collectData(exprWithTypes, elems, methodLike, editor)
+              val collectedData = handler
+                .collectData(exprWithTypes, elems, methodLike, editor)
               assert(
                 collectedData.isDefined,
                 "Could not collect data for introduce parameter")
               val data = collectedData.get
                 .copy(paramName = paramName, replaceAll = replaceAllOccurrences)
 
-              val paramInfo = new ScalaParameterInfo(
-                data.paramName,
-                -1,
-                data.tp,
-                project,
-                false,
-                false,
-                data.defaultArg,
-                isIntroducedParameter = true)
+              val paramInfo =
+                new ScalaParameterInfo(
+                  data.paramName,
+                  -1,
+                  data.tp,
+                  project,
+                  false,
+                  false,
+                  data.defaultArg,
+                  isIntroducedParameter = true)
               val descriptor: ScalaMethodDescriptor = handler
                 .createMethodDescriptor(data.methodToSearchFor, paramInfo)
-              val changeInfo = new ScalaChangeInfo(
-                descriptor.getVisibility,
-                data.methodToSearchFor,
-                descriptor.getName,
-                returnType,
-                descriptor.parameters,
-                isDefaultParam)
+              val changeInfo =
+                new ScalaChangeInfo(
+                  descriptor.getVisibility,
+                  data.methodToSearchFor,
+                  descriptor.getName,
+                  returnType,
+                  descriptor.parameters,
+                  isDefaultParam)
 
               changeInfo.introducedParameterData = Some(data)
               new ScalaChangeSignatureProcessor(project, changeInfo).run()
@@ -162,14 +164,15 @@ abstract class IntroduceParameterTestBase
     }
 
     val text = lastPsi.getText
-    val output = lastPsi.getNode.getElementType match {
-      case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
-      case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
-        text.substring(2, text.length - 2).trim
-      case _ =>
-        assertTrue("Test result must be in last comment statement.", false)
-        ""
-    }
+    val output =
+      lastPsi.getNode.getElementType match {
+        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
+          text.substring(2, text.length - 2).trim
+        case _ =>
+          assertTrue("Test result must be in last comment statement.", false)
+          ""
+      }
     assertEquals(output, res.trim)
   }
 }

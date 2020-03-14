@@ -20,14 +20,15 @@ object MessagesSpec extends Specification {
     "fr" -> Map("title" -> "Titre francais", "foo" -> "foo francais"),
     "fr-CH" -> Map("title" -> "Titre suisse")
   )
-  val api = new DefaultMessagesApi(
-    new Environment(new File("."), this.getClass.getClassLoader, Mode.Dev),
-    Configuration.reference,
-    new DefaultLangs(
-      Configuration.reference ++ Configuration.from(
-        Map("play.i18n.langs" -> Seq("en", "fr", "fr-CH"))))) {
-    override protected def loadAllMessages = testMessages
-  }
+  val api =
+    new DefaultMessagesApi(
+      new Environment(new File("."), this.getClass.getClassLoader, Mode.Dev),
+      Configuration.reference,
+      new DefaultLangs(
+        Configuration.reference ++ Configuration.from(
+          Map("play.i18n.langs" -> Seq("en", "fr", "fr-CH"))))) {
+      override protected def loadAllMessages = testMessages
+    }
 
   def translate(msg: String, lang: String, reg: String): Option[String] = {
     api.translate(msg, Nil)(Lang(lang, reg))
@@ -64,10 +65,11 @@ object MessagesSpec extends Specification {
     }
 
     "support setting the language on a result" in {
-      val cookie = Cookies
-        .decodeSetCookieHeader(
-          api.setLang(Results.Ok, Lang("en-AU")).header.headers("Set-Cookie"))
-        .head
+      val cookie =
+        Cookies
+          .decodeSetCookieHeader(
+            api.setLang(Results.Ok, Lang("en-AU")).header.headers("Set-Cookie"))
+          .head
       cookie.name must_== "PLAY_LANG"
       cookie.value must_== "en-AU"
     }
@@ -132,11 +134,12 @@ backslash.dummy=\a\b\c\e\f
   "MessagesPlugin" should {
     "parse file" in {
 
-      val parser = new Messages.MessagesParser(
-        new MessageSource {
-          def read = testMessageFile
-        },
-        "messages")
+      val parser =
+        new Messages.MessagesParser(
+          new MessageSource {
+            def read = testMessageFile
+          },
+          "messages")
 
       val messages =
         parser.parse.right.toSeq.flatten.map(x => x.key -> x.pattern).toMap

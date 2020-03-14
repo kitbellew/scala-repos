@@ -24,12 +24,13 @@ class StopOnFirstMatchingOfferMatcherTest
     with ScalaFutures {
   test("returns first match if non-empty") {
     Given("a sequence of matchers, the first matching")
-    val f = new Fixture {
-      override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(someMatch),
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId))
-      )
-    }
+    val f =
+      new Fixture {
+        override lazy val matchers: Seq[OfferMatcher] = Seq(
+          offerMatcher(someMatch),
+          offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId))
+        )
+      }
 
     When("matching")
     val m = f.stopOnFirstMatching.matchOffer(f.deadline, f.offer).futureValue
@@ -40,12 +41,13 @@ class StopOnFirstMatchingOfferMatcherTest
 
   test("returns second match if first empty") {
     Given("a sequence of matchers, the second matching")
-    val f = new Fixture {
-      override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId)),
-        offerMatcher(someMatch)
-      )
-    }
+    val f =
+      new Fixture {
+        override lazy val matchers: Seq[OfferMatcher] = Seq(
+          offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId)),
+          offerMatcher(someMatch)
+        )
+      }
 
     When("matching")
     val m = f.stopOnFirstMatching.matchOffer(f.deadline, f.offer).futureValue
@@ -56,16 +58,17 @@ class StopOnFirstMatchingOfferMatcherTest
 
   test("returns last match if all empty (resend = false)") {
     Given("a sequence of matchers, the second matching")
-    val f = new Fixture {
-      override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = true)),
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = false))
-      )
-    }
+    val f =
+      new Fixture {
+        override lazy val matchers: Seq[OfferMatcher] = Seq(
+          offerMatcher(
+            OfferMatcher.MatchedTaskOps
+              .noMatch(offer.getId, resendThisOffer = true)),
+          offerMatcher(
+            OfferMatcher.MatchedTaskOps
+              .noMatch(offer.getId, resendThisOffer = false))
+        )
+      }
 
     When("matching")
     val m = f.stopOnFirstMatching.matchOffer(f.deadline, f.offer).futureValue
@@ -77,16 +80,17 @@ class StopOnFirstMatchingOfferMatcherTest
 
   test("returns last match if all empty (resend = true)") {
     Given("a sequence of matchers, the second matching")
-    val f = new Fixture {
-      override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = false)),
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = true))
-      )
-    }
+    val f =
+      new Fixture {
+        override lazy val matchers: Seq[OfferMatcher] = Seq(
+          offerMatcher(
+            OfferMatcher.MatchedTaskOps
+              .noMatch(offer.getId, resendThisOffer = false)),
+          offerMatcher(
+            OfferMatcher.MatchedTaskOps
+              .noMatch(offer.getId, resendThisOffer = true))
+        )
+      }
 
     When("matching")
     val m = f.stopOnFirstMatching.matchOffer(f.deadline, f.offer).futureValue
@@ -97,8 +101,9 @@ class StopOnFirstMatchingOfferMatcherTest
   }
 
   class Fixture {
-    lazy val offer: MesosProtos.Offer =
-      MarathonTestHelper.makeBasicOffer().build()
+    lazy val offer: MesosProtos.Offer = MarathonTestHelper
+      .makeBasicOffer()
+      .build()
     lazy val deadline = Timestamp.now() + 30.seconds
 
     lazy val someMatch: OfferMatcher.MatchedTaskOps = {
@@ -119,7 +124,7 @@ class StopOnFirstMatchingOfferMatcherTest
       }
 
     lazy val matchers: Seq[OfferMatcher] = Seq.empty
-    lazy val stopOnFirstMatching = new StopOnFirstMatchingOfferMatcher(
-      matchers: _*)
+    lazy val stopOnFirstMatching =
+      new StopOnFirstMatchingOfferMatcher(matchers: _*)
   }
 }

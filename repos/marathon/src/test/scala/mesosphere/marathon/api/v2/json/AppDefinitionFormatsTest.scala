@@ -162,15 +162,17 @@ class AppDefinitionFormatsTest
   }
 
   test("""ToJSON should correctly handle missing acceptedResourceRoles""") {
-    val appDefinition =
-      AppDefinition(id = PathId("test"), acceptedResourceRoles = None)
+    val appDefinition = AppDefinition(
+      id = PathId("test"),
+      acceptedResourceRoles = None)
     val json = Json.toJson(appDefinition)
     (json \ "acceptedResourceRoles").asOpt[Set[String]] should be(None)
   }
 
   test("""ToJSON should correctly handle acceptedResourceRoles""") {
-    val appDefinition =
-      AppDefinition(id = PathId("test"), acceptedResourceRoles = Some(Set("a")))
+    val appDefinition = AppDefinition(
+      id = PathId("test"),
+      acceptedResourceRoles = Some(Set("a")))
     val json = Json.toJson(appDefinition)
     (json \ "acceptedResourceRoles").asOpt[Set[String]] should be(
       Some(Set("a")))
@@ -185,8 +187,8 @@ class AppDefinitionFormatsTest
   }
 
   test("""FromJSON should parse "acceptedResourceRoles": ["*"] """) {
-    val json =
-      Json.parse(""" { "id": "test", "acceptedResourceRoles": ["*"] }""")
+    val json = Json.parse(
+      """ { "id": "test", "acceptedResourceRoles": ["*"] }""")
     val appDef = json.as[AppDefinition]
     appDef.acceptedResourceRoles should equal(Some(Set("*")))
   }

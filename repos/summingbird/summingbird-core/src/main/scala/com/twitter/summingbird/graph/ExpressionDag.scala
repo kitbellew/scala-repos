@@ -116,8 +116,7 @@ sealed trait ExpressionDag[N[_]] { self =>
       def nextId = id
     }
 
-  override def toString: String =
-    "ExpressionDag(idToExp = %s)".format(idToExp)
+  override def toString: String = "ExpressionDag(idToExp = %s)".format(idToExp)
 
   // This is a cache of Id[T] => Option[N[T]]
   private val idToN =
@@ -147,14 +146,15 @@ sealed trait ExpressionDag[N[_]] { self =>
     // This is a constant function at the type level
     type IdSet[t] = Set[Id[_]]
     def expand(s: Set[Id[_]]): Set[Id[_]] = {
-      val partial = new GenPartial[HMap[Id, E]#Pair, IdSet] {
-        def apply[T] = {
-          case (id, Const(_)) if s(id)            => s
-          case (id, Var(v)) if s(id)              => s + v
-          case (id, Unary(id0, _)) if s(id)       => s + id0
-          case (id, Binary(id0, id1, _)) if s(id) => (s + id0) + id1
+      val partial =
+        new GenPartial[HMap[Id, E]#Pair, IdSet] {
+          def apply[T] = {
+            case (id, Const(_)) if s(id)            => s
+            case (id, Var(v)) if s(id)              => s + v
+            case (id, Unary(id0, _)) if s(id)       => s + id0
+            case (id, Binary(id0, id1, _)) if s(id) => (s + id0) + id1
+          }
         }
-      }
       // Note this Stream must always be non-empty as long as roots are
       idToExp
         .collect[IdSet](partial)
@@ -213,17 +213,18 @@ sealed trait ExpressionDag[N[_]] { self =>
     * it, and return from there.
     */
   def applyOnce(rule: Rule[N]): ExpressionDag[N] = {
-    val getN = new GenPartial[HMap[Id, E]#Pair, HMap[Id, N]#Pair] {
-      def apply[U] = {
-        val fn = rule.apply[U](self)
+    val getN =
+      new GenPartial[HMap[Id, E]#Pair, HMap[Id, N]#Pair] {
+        def apply[U] = {
+          val fn = rule.apply[U](self)
 
-        {
-          case (id, exp) if fn(exp.evaluate(idToExp)).isDefined =>
-            // Sucks to have to call fn, twice, but oh well
-            (id, fn(exp.evaluate(idToExp)).get)
+          {
+            case (id, exp) if fn(exp.evaluate(idToExp)).isDefined =>
+              // Sucks to have to call fn, twice, but oh well
+              (id, fn(exp.evaluate(idToExp)).get)
+          }
         }
       }
-    }
     idToExp.collect[HMap[Id, N]#Pair](getN).headOption match {
       case None      => this
       case Some(tup) =>
@@ -254,11 +255,12 @@ sealed trait ExpressionDag[N[_]] { self =>
   def find[T](node: N[T]): Option[Id[T]] =
     nodeToId.getOrElseUpdate(
       node, {
-        val partial = new GenPartial[HMap[Id, E]#Pair, Id] {
-          def apply[T] = {
-            case (thisId, expr) if node == expr.evaluate(idToExp) => thisId
+        val partial =
+          new GenPartial[HMap[Id, E]#Pair, Id] {
+            def apply[T] = {
+              case (thisId, expr) if node == expr.evaluate(idToExp) => thisId
+            }
           }
-        }
         idToExp.collect(partial).headOption.asInstanceOf[Option[Id[T]]]
       }
     )
@@ -319,11 +321,12 @@ sealed trait ExpressionDag[N[_]] { self =>
   def evaluateOption[T](id: Id[T]): Option[N[T]] =
     idToN.getOrElseUpdate(
       id, {
-        val partial = new GenPartial[HMap[Id, E]#Pair, N] {
-          def apply[T] = {
-            case (thisId, expr) if (id == thisId) => expr.evaluate(idToExp)
+        val partial =
+          new GenPartial[HMap[Id, E]#Pair, N] {
+            def apply[T] = {
+              case (thisId, expr) if (id == thisId) => expr.evaluate(idToExp)
+            }
           }
-        }
         idToExp.collect(partial).headOption.asInstanceOf[Option[N[T]]]
       }
     )
@@ -336,19 +339,20 @@ sealed trait ExpressionDag[N[_]] { self =>
     */
   def fanOut(id: Id[_]): Int = {
     // We make a fake IntT[T] which is just Int
-    val partial = new GenPartial[
-      E,
-      ({
-        type IntT[T] = Int
-      })#IntT] {
-      def apply[T] = {
-        case Var(id1) if (id1 == id)                            => 1
-        case Unary(id1, fn) if (id1 == id)                      => 1
-        case Binary(id1, id2, fn) if (id1 == id) && (id2 == id) => 2
-        case Binary(id1, id2, fn) if (id1 == id) || (id2 == id) => 1
-        case _                                                  => 0
+    val partial =
+      new GenPartial[
+        E,
+        ({
+          type IntT[T] = Int
+        })#IntT] {
+        def apply[T] = {
+          case Var(id1) if (id1 == id)                            => 1
+          case Unary(id1, fn) if (id1 == id)                      => 1
+          case Binary(id1, id2, fn) if (id1 == id) && (id2 == id) => 2
+          case Binary(id1, id2, fn) if (id1 == id) || (id2 == id) => 1
+          case _                                                  => 0
+        }
       }
-    }
     idToExp
       .collectValues[({
         type IntT[T] = Int

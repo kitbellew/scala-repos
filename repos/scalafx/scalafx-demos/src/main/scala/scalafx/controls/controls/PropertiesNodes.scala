@@ -50,19 +50,21 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
 
   protected def resetProperties() {}
 
-  protected val btnReset = new Button {
-    text = "Reset"
-    onAction = handle {
-      resetProperties()
+  protected val btnReset =
+    new Button {
+      text = "Reset"
+      onAction = handle {
+        resetProperties()
+      }
+      alignmentInParent = Pos.Center
     }
-    alignmentInParent = Pos.Center
-  }
 
-  private val controlsPane = new GridPane {
-    hgap = 5
-    vgap = 5
-    hgrow = Priority.Never
-  }
+  private val controlsPane =
+    new GridPane {
+      hgap = 5
+      vgap = 5
+      hgrow = Priority.Never
+    }
 
   /**
     * Add a Control Node with its respective title

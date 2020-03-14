@@ -53,10 +53,11 @@ class RenameScalaVariableProcessor
       element: PsiElement,
       newName: String,
       allRenames: util.Map[PsiElement, String]) {
-    val namedElement = element match {
-      case x: PsiNamedElement => x
-      case _                  => return
-    }
+    val namedElement =
+      element match {
+        case x: PsiNamedElement => x
+        case _                  => return
+      }
     def addBeanMethods(element: PsiElement, newName: String) {
       element match {
         case t: ScTypedDefinition =>
@@ -137,10 +138,11 @@ class RenameScalaVariableProcessor
       element: PsiElement,
       editor: Editor,
       renameCallback: Pass[PsiElement]) {
-    val named = element match {
-      case named: ScNamedElement => named;
-      case _                     => return
-    }
+    val named =
+      element match {
+        case named: ScNamedElement => named;
+        case _                     => return
+      }
     RenameSuperMembersUtil.chooseAndProcessSuper(
       named,
       new PsiElementProcessor[PsiNamedElement] {

@@ -25,8 +25,7 @@ class MockScheduledExecutorService
       command: Runnable,
       initialDelay: Long,
       delay: Long,
-      unit: TimeUnit) =
-    throw new Exception
+      unit: TimeUnit) = throw new Exception
   def execute(command: Runnable) = throw new Exception
   def awaitTermination(timeout: Long, unit: TimeUnit) = throw new Exception
   def isTerminated() = throw new Exception

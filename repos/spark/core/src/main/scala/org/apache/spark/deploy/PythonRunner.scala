@@ -37,10 +37,9 @@ object PythonRunner {
     val pythonFile = args(0)
     val pyFiles = args(1)
     val otherArgs = args.slice(2, args.length)
-    val pythonExec =
-      sys.env.getOrElse(
-        "PYSPARK_DRIVER_PYTHON",
-        sys.env.getOrElse("PYSPARK_PYTHON", "python"))
+    val pythonExec = sys.env.getOrElse(
+      "PYSPARK_DRIVER_PYTHON",
+      sys.env.getOrElse("PYSPARK_PYTHON", "python"))
 
     // Format python file paths before adding them to the PYTHONPATH
     val formattedPythonFile = formatPath(pythonFile)
@@ -49,12 +48,13 @@ object PythonRunner {
     // Launch a Py4J gateway server for the process to connect to; this will let it see our
     // Java system properties and such
     val gatewayServer = new py4j.GatewayServer(null, 0)
-    val thread = new Thread(new Runnable() {
-      override def run(): Unit =
-        Utils.logUncaughtExceptions {
-          gatewayServer.start()
-        }
-    })
+    val thread =
+      new Thread(new Runnable() {
+        override def run(): Unit =
+          Utils.logUncaughtExceptions {
+            gatewayServer.start()
+          }
+      })
     thread.setName("py4j-gateway-init")
     thread.setDaemon(true)
     thread.start()
@@ -74,8 +74,9 @@ object PythonRunner {
     val pythonPath = PythonUtils.mergePythonPaths(pathElements: _*)
 
     // Launch Python process
-    val builder = new ProcessBuilder(
-      (Seq(pythonExec, formattedPythonFile) ++ otherArgs).asJava)
+    val builder =
+      new ProcessBuilder(
+        (Seq(pythonExec, formattedPythonFile) ++ otherArgs).asJava)
     val env = builder.environment()
     env.put("PYTHONPATH", pythonPath)
     // This is equivalent to setting the -u flag; we use it because ipython doesn't support -u:
@@ -117,11 +118,12 @@ object PythonRunner {
     }
     // get path when scheme is file.
     val uri = Try(new URI(path)).getOrElse(new File(path).toURI)
-    var formattedPath = uri.getScheme match {
-      case null             => path
-      case "file" | "local" => uri.getPath
-      case _                => null
-    }
+    var formattedPath =
+      uri.getScheme match {
+        case null             => path
+        case "file" | "local" => uri.getPath
+        case _                => null
+      }
 
     // Guard against malformed paths potentially throwing NPE
     if (formattedPath == null) {

@@ -58,8 +58,9 @@ object ReflectionUtils {
             .root
             .canonicalPath
         case null =>
-          val loadBootCp = (flavor: String) =>
-            scala.util.Properties.propOrNone(flavor + ".boot.class.path")
+          val loadBootCp =
+            (flavor: String) =>
+              scala.util.Properties.propOrNone(flavor + ".boot.class.path")
           loadBootCp("sun") orElse loadBootCp("java") getOrElse "<unknown>"
         case _ =>
           "<unknown>"
@@ -100,8 +101,8 @@ object ReflectionUtils {
       if (clazz == null)
         None
       else {
-        val declaredAccessor =
-          clazz.getDeclaredMethods.find(_.getName == accessorName)
+        val declaredAccessor = clazz.getDeclaredMethods.find(
+          _.getName == accessorName)
         declaredAccessor orElse singletonAccessor(clazz.getSuperclass)
       }
 

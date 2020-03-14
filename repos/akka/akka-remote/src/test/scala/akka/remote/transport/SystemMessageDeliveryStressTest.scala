@@ -210,8 +210,9 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
         val start = System.currentTimeMillis()
         probeB.expectMsg(10.minutes, m)
         probeA.expectMsg(10.minutes, m)
-        maxDelay =
-          math.max(maxDelay, (System.currentTimeMillis() - start) / 1000)
+        maxDelay = math.max(
+          maxDelay,
+          (System.currentTimeMillis() - start) / 1000)
       }
     }
   }

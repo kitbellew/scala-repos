@@ -70,8 +70,8 @@ class Matrix2Sum3(args: Args) extends Job(args) {
   import com.twitter.scalding.TDsl._
 
   val p1: Pipe = Tsv("mat1", ('x1, 'y1, 'v1)).read
-  val tp1 =
-    p1.toTypedPipe[(Int, Int, (Double, Double, Double))](('x1, 'y1, 'v1))
+  val tp1 = p1
+    .toTypedPipe[(Int, Int, (Double, Double, Double))](('x1, 'y1, 'v1))
   val mat1 = MatrixLiteral(tp1, NoClue)
 
   val sum = mat1 + mat1

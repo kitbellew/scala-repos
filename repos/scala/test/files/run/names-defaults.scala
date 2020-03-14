@@ -160,11 +160,12 @@ object Test extends App {
   println(a2.print)
   val b1 = new B("dklfj")(e = "nixda")
   println(b1.printB)
-  val c1 = new C(
-    a = "dlkf",
-    c = new {
-      override def toString() = "struct"
-    })(e = "???")
+  val c1 =
+    new C(
+      a = "dlkf",
+      c = new {
+        override def toString() = "struct"
+      })(e = "???")
   println(c1.print)
   val c2 = C("dflkj", c = Some(209): Option[Int])(None, "!!")
   println(c2.print)
@@ -206,11 +207,10 @@ object Test extends App {
     argName = 5
   }
   println(argName) // should be 5
-  val a: Unit =
-    test1(
-      a = 10,
-      b = "2"
-    ) // local values a and b exist, but it's not ambiguous since they're vals
+  val a: Unit = test1(
+    a = 10,
+    b = "2"
+  ) // local values a and b exist, but it's not ambiguous since they're vals
 
   // dependent types and copy method
   val a11 = new A2
@@ -361,17 +361,20 @@ object Test extends App {
 
   object Test3207_1 {
     val p = new P3207[Int] {}
-    val q = new p.Inner() {
-      def g = 0
-    }
+    val q =
+      new p.Inner() {
+        def g = 0
+      }
   }
 
   object Test3207_2 {
-    val p = new P3207[Int] {
-      val inner = new Inner() {
-        def g = 0
+    val p =
+      new P3207[Int] {
+        val inner =
+          new Inner() {
+            def g = 0
+          }
       }
-    }
   }
 
   // #3344

@@ -93,18 +93,20 @@ object ScalaElementPresentation {
   def getPresentableText(elem: PsiElement): String = elem.getText
 
   def getValOrVarPresentableText(elem: ScNamedElement): String = {
-    val typeText = elem match {
-      case typed: TypingContextOwner =>
-        ": " + typed.getType().getOrAny.presentableText
-      case _ => ""
-    }
-    val keyword = ScalaPsiUtil.nameContext(elem) match {
-      case _: ScVariable                          => ScalaKeyword.VAR
-      case _: ScValue                             => ScalaKeyword.VAL
-      case param: ScClassParameter if param.isVar => ScalaKeyword.VAR
-      case param: ScClassParameter if param.isVal => ScalaKeyword.VAL
-      case _                                      => ""
-    }
+    val typeText =
+      elem match {
+        case typed: TypingContextOwner =>
+          ": " + typed.getType().getOrAny.presentableText
+        case _ => ""
+      }
+    val keyword =
+      ScalaPsiUtil.nameContext(elem) match {
+        case _: ScVariable                          => ScalaKeyword.VAR
+        case _: ScValue                             => ScalaKeyword.VAL
+        case param: ScClassParameter if param.isVar => ScalaKeyword.VAR
+        case param: ScClassParameter if param.isVal => ScalaKeyword.VAL
+        case _                                      => ""
+      }
     s"$keyword ${elem.name}$typeText"
   }
 }

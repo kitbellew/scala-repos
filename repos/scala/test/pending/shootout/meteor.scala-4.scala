@@ -247,9 +247,7 @@ final class Board {
   }
 
   private def boardCells() = {
-    val a =
-      for (i <- Array.range(0, Board.size))
-        yield new BoardCell(i)
+    val a = for (i <- Array.range(0, Board.size)) yield new BoardCell(i)
     val m = (Board.size / Board.cols) - 1
 
     for (i <- Iterator.range(0, a.length)) {
@@ -344,9 +342,7 @@ final class Piece(_number: Int) {
   }
 
   private def pieceOrientation(k: Int) = {
-    val cells =
-      for (i <- Array.range(0, Piece.size))
-        yield new PieceCell()
+    val cells = for (i <- Array.range(0, Piece.size)) yield new PieceCell()
     makePiece(number, cells)
 
     var i = 0

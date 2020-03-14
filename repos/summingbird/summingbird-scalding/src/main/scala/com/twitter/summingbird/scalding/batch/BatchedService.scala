@@ -87,9 +87,10 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
         // could not bother to load streams outside the covers, but
         // probably we aren't anyway assuming the time spans are not
         // wildly mismatched
-        val right = streams.foldLeft(liftedLast) { (merged, item) =>
-          merged ++ (item._2(flowMode))
-        }
+        val right =
+          streams.foldLeft(liftedLast) { (merged, item) =>
+            merged ++ (item._2(flowMode))
+          }
         lookup(left, right)
     }
 
@@ -105,8 +106,8 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
       readLast(coveringBatches.min, mode).right.flatMap {
         batchLastFlow =>
           val (startingBatch, init) = batchLastFlow
-          val streamBatches =
-            BatchID.range(startingBatch.next, coveringBatches.max)
+          val streamBatches = BatchID
+            .range(startingBatch.next, coveringBatches.max)
           val batchStreams = streamBatches.map { b =>
             (b, readStream(b, mode))
           }
@@ -130,9 +131,8 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
               BatchID
                 .toInterval(inBatches)
                 .get // by construction this is an interval, so this can't throw
-            val toRead =
-              batchOps
-                .intersect(bInt, timeSpan) // No need to read more than this
+            val toRead = batchOps
+              .intersect(bInt, timeSpan) // No need to read more than this
             getKeys((toRead, mode)).right
               .map {
                 case ((available, outM), getFlow) =>

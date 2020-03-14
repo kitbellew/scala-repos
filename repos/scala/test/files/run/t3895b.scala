@@ -5,10 +5,11 @@ class DryRun {
   val settings = new Settings()
   settings.classpath.value = System.getProperty("java.class.path")
   val command = new CompilerCommand(List(), settings)
-  val reporter = new ConsoleReporter(
-    settings,
-    scala.Console.in,
-    new java.io.PrintWriter(new java.io.PrintStream(scala.Console.out)))
+  val reporter =
+    new ConsoleReporter(
+      settings,
+      scala.Console.in,
+      new java.io.PrintWriter(new java.io.PrintStream(scala.Console.out)))
   object compiler extends Global(command.settings, reporter) {
     object test1
     lazy val test2 = 1

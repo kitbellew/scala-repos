@@ -130,9 +130,10 @@ class FSMTimingSpec extends AkkaSpec with ImplicitSender {
 
     "receive and cancel a repeated timer" taggedAs TimingTest in {
       fsm ! TestRepeatedTimer
-      val seq = receiveWhile(2 seconds) {
-        case Tick ⇒ Tick
-      }
+      val seq =
+        receiveWhile(2 seconds) {
+          case Tick ⇒ Tick
+        }
       seq should have length 5
       within(500 millis) {
         expectMsg(Transition(fsm, TestRepeatedTimer, Initial))

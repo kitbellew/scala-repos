@@ -112,19 +112,21 @@ private[akka] object RemoteConnection {
       handler: ChannelUpstreamHandler): Channel = {
     role match {
       case Client ⇒
-        val socketfactory = new NioClientSocketChannelFactory(
-          Executors.newCachedThreadPool,
-          Executors.newCachedThreadPool,
-          poolSize)
+        val socketfactory =
+          new NioClientSocketChannelFactory(
+            Executors.newCachedThreadPool,
+            Executors.newCachedThreadPool,
+            poolSize)
         val bootstrap = new ClientBootstrap(socketfactory)
         bootstrap.setPipelineFactory(new TestConductorPipelineFactory(handler))
         bootstrap.setOption("tcpNoDelay", true)
         bootstrap.connect(sockaddr).getChannel
       case Server ⇒
-        val socketfactory = new NioServerSocketChannelFactory(
-          Executors.newCachedThreadPool,
-          Executors.newCachedThreadPool,
-          poolSize)
+        val socketfactory =
+          new NioServerSocketChannelFactory(
+            Executors.newCachedThreadPool,
+            Executors.newCachedThreadPool,
+            poolSize)
         val bootstrap = new ServerBootstrap(socketfactory)
         bootstrap.setPipelineFactory(new TestConductorPipelineFactory(handler))
         bootstrap.setOption("reuseAddress", !Helpers.isWindows)

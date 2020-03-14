@@ -91,8 +91,8 @@ trait ScExpression
         case _ => default
       }
     } else {
-      val expected: ScType =
-        expectedOption.getOrElse(expectedType(fromUnderscore).orNull)
+      val expected: ScType = expectedOption.getOrElse(
+        expectedType(fromUnderscore).orNull)
       if (expected == null) {
         ExpressionTypeResult(
           getTypeWithoutImplicits(ignoreBaseTypes, fromUnderscore),
@@ -116,13 +116,14 @@ trait ScExpression
 
               val functionType =
                 ScFunctionType(expected, Seq(tp))(getProject, getResolveScope)
-              val results = new ImplicitCollector(
-                ScExpression.this,
-                functionType,
-                functionType,
-                None,
-                isImplicitConversion = true,
-                isExtensionConversion = false).collect()
+              val results =
+                new ImplicitCollector(
+                  ScExpression.this,
+                  functionType,
+                  functionType,
+                  None,
+                  isImplicitConversion = true,
+                  isExtensionConversion = false).collect()
               if (results.length == 1) {
                 val res = results.head
                 val paramType = InferUtil.extractImplicitParameterType(res)
@@ -244,8 +245,8 @@ trait ScExpression
             }
           }
 
-          val checkImplicitParameters =
-            ScalaPsiUtil.withEtaExpansion(ScExpression.this)
+          val checkImplicitParameters = ScalaPsiUtil.withEtaExpansion(
+            ScExpression.this)
           if (checkImplicitParameters) {
             val tuple = InferUtil.updateTypeWithImplicitParameters(
               res,
@@ -333,41 +334,43 @@ trait ScExpression
               if (expected.removeAbstracts equiv Unit)
                 return Success(Unit, Some(ScExpression.this))
               //numeric literal narrowing
-              val needsNarrowing = ScExpression.this match {
-                case _: ScLiteral =>
-                  getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER
-                case p: ScPrefixExpr =>
-                  p.operand match {
-                    case l: ScLiteral =>
-                      l.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER &&
-                        Set("+", "-").contains(p.operation.getText)
-                    case _ => false
-                  }
-                case _ => false
-              }
+              val needsNarrowing =
+                ScExpression.this match {
+                  case _: ScLiteral =>
+                    getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER
+                  case p: ScPrefixExpr =>
+                    p.operand match {
+                      case l: ScLiteral =>
+                        l.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tINTEGER &&
+                          Set("+", "-").contains(p.operation.getText)
+                      case _ => false
+                    }
+                  case _ => false
+                }
 
               def checkNarrowing: Option[TypeResult[ScType]] = {
                 try {
-                  lazy val i = ScExpression.this match {
-                    case l: ScLiteral =>
-                      l.getValue match {
-                        case i: Integer => i.intValue
-                        case _          => scala.Int.MaxValue
-                      }
-                    case p: ScPrefixExpr =>
-                      val mult =
-                        if (p.operation.getText == "-")
-                          -1
-                        else
-                          1
-                      p.operand match {
-                        case l: ScLiteral =>
-                          l.getValue match {
-                            case i: Integer => mult * i.intValue
-                            case _          => scala.Int.MaxValue
-                          }
-                      }
-                  }
+                  lazy val i =
+                    ScExpression.this match {
+                      case l: ScLiteral =>
+                        l.getValue match {
+                          case i: Integer => i.intValue
+                          case _          => scala.Int.MaxValue
+                        }
+                      case p: ScPrefixExpr =>
+                        val mult =
+                          if (p.operation.getText == "-")
+                            -1
+                          else
+                            1
+                        p.operand match {
+                          case l: ScLiteral =>
+                            l.getValue match {
+                              case i: Integer => mult * i.intValue
+                              case _          => scala.Int.MaxValue
+                            }
+                        }
+                    }
                   expected.removeAbstracts match {
                     case types.Char =>
                       if (i >= scala.Char.MinValue.toInt && i <= scala.Char.MaxValue.toInt) {
@@ -534,11 +537,11 @@ trait ScExpression
       else {
         val params = unders.zipWithIndex.map {
           case (u, index) =>
-            val tpe = u
-              .getNonValueType(TypingContext.empty, ignoreBaseType)
-              .getOrAny
-              .inferValueType
-              .unpackedType
+            val tpe =
+              u.getNonValueType(TypingContext.empty, ignoreBaseType)
+                .getOrAny
+                .inferValueType
+                .unpackedType
             new Parameter("", None, tpe, false, false, false, index)
         }
         val methType =
@@ -570,12 +573,13 @@ trait ScExpression
         .asInstanceOf[ScExpression]
         .replaceExpression(expr, removeParenthesis = true)
     }
-    val newExpr: ScExpression = if (ScalaPsiUtil.needParentheses(this, expr)) {
-      ScalaPsiElementFactory.createExpressionFromText(
-        "(" + expr.getText + ")",
-        getManager)
-    } else
-      expr
+    val newExpr: ScExpression =
+      if (ScalaPsiUtil.needParentheses(this, expr)) {
+        ScalaPsiElementFactory.createExpressionFromText(
+          "(" + expr.getText + ")",
+          getManager)
+      } else
+        expr
     val parentNode = oldParent.getNode
     val newNode = newExpr.copy.getNode
     parentNode.replaceChild(this.getNode, newNode)
@@ -653,31 +657,32 @@ trait ScExpression
     val map = new ScImplicitlyConvertible(this)
       .implicitMap(fromUnder = fromUnder, args = expectedTypes(fromUnder).toSeq)
     val implicits: Seq[PsiNamedElement] = map.map(_.element)
-    val implicitFunction: Option[PsiNamedElement] = getParent match {
-      case ref: ScReferenceExpression =>
-        val resolve = ref.multiResolve(false)
-        if (resolve.length == 1) {
-          resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
-        } else
-          None
-      case inf: ScInfixExpr
-          if (inf.isLeftAssoc && this == inf.rOp) || (!inf.isLeftAssoc && this == inf.lOp) =>
-        val resolve = inf.operation.multiResolve(false)
-        if (resolve.length == 1) {
-          resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
-        } else
-          None
-      case call: ScMethodCall => call.getImplicitFunction
-      case gen: ScGenerator =>
-        gen.getParent match {
-          case call: ScMethodCall => call.getImplicitFunction
-          case _                  => None
-        }
-      case _ =>
-        getTypeAfterImplicitConversion(
-          expectedOption = expectedOption,
-          fromUnderscore = fromUnder).implicitFunction
-    }
+    val implicitFunction: Option[PsiNamedElement] =
+      getParent match {
+        case ref: ScReferenceExpression =>
+          val resolve = ref.multiResolve(false)
+          if (resolve.length == 1) {
+            resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
+          } else
+            None
+        case inf: ScInfixExpr
+            if (inf.isLeftAssoc && this == inf.rOp) || (!inf.isLeftAssoc && this == inf.lOp) =>
+          val resolve = inf.operation.multiResolve(false)
+          if (resolve.length == 1) {
+            resolve.apply(0).asInstanceOf[ScalaResolveResult].implicitFunction
+          } else
+            None
+        case call: ScMethodCall => call.getImplicitFunction
+        case gen: ScGenerator =>
+          gen.getParent match {
+            case call: ScMethodCall => call.getImplicitFunction
+            case _                  => None
+          }
+        case _ =>
+          getTypeAfterImplicitConversion(
+            expectedOption = expectedOption,
+            fromUnderscore = fromUnder).implicitFunction
+      }
     (
       implicits,
       implicitFunction,
@@ -760,12 +765,13 @@ trait ScExpression
         applyProc,
         noImplicitsForArgs = false) match {
         case Some(res) =>
-          var state =
-            ResolveState.initial.put(CachesUtil.IMPLICIT_FUNCTION, res.element)
+          var state = ResolveState.initial
+            .put(CachesUtil.IMPLICIT_FUNCTION, res.element)
           res.getClazz match {
             case Some(cl: PsiClass) =>
-              state =
-                state.put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
+              state = state.put(
+                ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY,
+                cl)
             case _ =>
           }
           applyProc.processType(

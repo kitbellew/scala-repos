@@ -13,19 +13,21 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
   import EscapingStringInterpolation._
 
   def marshal(value: EnsimeServerMessage, via: Option[String]): Unit = {
-    val envelope = value match {
-      case r: RpcResponse => RpcResponseEnvelope(Some(666), value)
-      case e: EnsimeEvent => RpcResponseEnvelope(None, value)
-    }
-    val sexp = envelope.toSexp match {
-      case SexpList(
-            SexpSymbol(":return") ::
-            SexpList(SexpSymbol(":ok") :: payload :: Nil) ::
-            SexpNumber(callId) :: Nil
-          ) if callId == 666 =>
-        payload
-      case payload => payload
-    }
+    val envelope =
+      value match {
+        case r: RpcResponse => RpcResponseEnvelope(Some(666), value)
+        case e: EnsimeEvent => RpcResponseEnvelope(None, value)
+      }
+    val sexp =
+      envelope.toSexp match {
+        case SexpList(
+              SexpSymbol(":return") ::
+              SexpList(SexpSymbol(":ok") :: payload :: Nil) ::
+              SexpNumber(callId) :: Nil
+            ) if callId == 666 =>
+          payload
+        case payload => payload
+      }
     via match {
       case None => println(s"$value = ${sexp.compactPrint}")
       // using String form because SexpSymbol("nil") for BasicTypeHint is not commutative

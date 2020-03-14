@@ -83,8 +83,8 @@ class ShuffleDependency[K: ClassTag, V: ClassTag, C: ClassTag](
     reflect.classTag[V].runtimeClass.getName
   // Note: It's possible that the combiner class tag is null, if the combineByKey
   // methods in PairRDDFunctions are used instead of combineByKeyWithClassTag.
-  private[spark] val combinerClassName: Option[String] =
-    Option(reflect.classTag[C]).map(_.runtimeClass.getName)
+  private[spark] val combinerClassName: Option[String] = Option(
+    reflect.classTag[C]).map(_.runtimeClass.getName)
 
   val shuffleId: Int = _rdd.context.newShuffleId()
 

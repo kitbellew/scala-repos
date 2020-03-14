@@ -73,8 +73,7 @@ private[summingbird] object HDFSMetadata {
   def put[T: JsonNodeInjection](
       conf: Configuration,
       path: String,
-      obj: Option[T]) =
-    apply(conf, path).mostRecentVersion.get.put(obj)
+      obj: Option[T]) = apply(conf, path).mostRecentVersion.get.put(obj)
 }
 
 /**

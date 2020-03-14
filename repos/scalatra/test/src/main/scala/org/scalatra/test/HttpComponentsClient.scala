@@ -118,16 +118,17 @@ trait HttpComponentsClient extends Client {
   }
 
   private def createMethod(method: String, url: String) = {
-    val req = method match {
-      case "GET"     => new HttpGet(url)
-      case "HEAD"    => new HttpHead(url)
-      case "OPTIONS" => new HttpOptions(url)
-      case "DELETE"  => new HttpDelete(url)
-      case "TRACE"   => new HttpTrace(url)
-      case "POST"    => new HttpPost(url)
-      case "PUT"     => new HttpPut(url)
-      case "PATCH"   => new HttpPatch(url)
-    }
+    val req =
+      method match {
+        case "GET"     => new HttpGet(url)
+        case "HEAD"    => new HttpHead(url)
+        case "OPTIONS" => new HttpOptions(url)
+        case "DELETE"  => new HttpDelete(url)
+        case "TRACE"   => new HttpTrace(url)
+        case "POST"    => new HttpPost(url)
+        case "PUT"     => new HttpPut(url)
+        case "PATCH"   => new HttpPatch(url)
+      }
 
     req.setConfig(RequestConfig.custom().setCookieSpec("compatibility").build())
 
@@ -164,8 +165,8 @@ trait HttpComponentsClient extends Client {
 
     req match {
       case r: HttpEntityEnclosingRequestBase =>
-        val multipartEntity = new MultipartEntity(
-          HttpMultipartMode.BROWSER_COMPATIBLE)
+        val multipartEntity =
+          new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
         params.foreach {
           case (name, value) =>
             multipartEntity.addPart(

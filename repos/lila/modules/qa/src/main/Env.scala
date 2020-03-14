@@ -17,16 +17,18 @@ final class Env(
 
   private lazy val questionColl = db(CollectionQuestion)
 
-  lazy val api = new QaApi(
-    questionColl = questionColl,
-    answerColl = db(CollectionAnswer),
-    mongoCache = mongoCache,
-    notifier = notifier)
+  lazy val api =
+    new QaApi(
+      questionColl = questionColl,
+      answerColl = db(CollectionAnswer),
+      mongoCache = mongoCache,
+      notifier = notifier)
 
-  private lazy val notifier = new Notifier(
-    sender = NotifierSender,
-    messenger = hub.actor.messenger,
-    timeline = hub.actor.timeline)
+  private lazy val notifier =
+    new Notifier(
+      sender = NotifierSender,
+      messenger = hub.actor.messenger,
+      timeline = hub.actor.timeline)
 
   lazy val search = new Search(questionColl)
 
@@ -38,8 +40,8 @@ object Env {
   lazy val current = "qa" boot new Env(
     config = lila.common.PlayApp loadConfig "qa",
     hub = lila.hub.Env.current,
-    detectLanguage =
-      DetectLanguage(lila.common.PlayApp loadConfig "detectlanguage"),
+    detectLanguage = DetectLanguage(
+      lila.common.PlayApp loadConfig "detectlanguage"),
     mongoCache = lila.memo.Env.current.mongoCache,
     db = lila.db.Env.current)
 }

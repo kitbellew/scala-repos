@@ -57,10 +57,11 @@ private[ml] trait ValidatorParams extends Params {
     *
     * @group param
     */
-  val evaluator: Param[Evaluator] = new Param(
-    this,
-    "evaluator",
-    "evaluator used to select hyper-parameters that maximize the validated metric")
+  val evaluator: Param[Evaluator] =
+    new Param(
+      this,
+      "evaluator",
+      "evaluator used to select hyper-parameters that maximize the validated metric")
 
   /** @group getParam */
   def getEvaluator: Evaluator = $(evaluator)

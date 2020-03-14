@@ -85,8 +85,7 @@ abstract class TreeBrowsers {
       packChildren(parent)(index)
 
     /** Return the number of children this 'parent' has */
-    def getChildCount(parent: AnyRef): Int =
-      packChildren(parent).length
+    def getChildCount(parent: AnyRef): Int = packChildren(parent).length
 
     /** Return the index of the given child */
     def getIndexOfChild(parent: AnyRef, child: AnyRef): Int =
@@ -249,52 +248,56 @@ abstract class TreeBrowsers {
           .getSystemEventQueue()
           .postEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
 
-      val jmiCancel = new JMenuItem(
-        new AbstractAction("Cancel Compilation") {
-          putValue(
-            Action.ACCELERATOR_KEY,
-            KeyStroke.getKeyStroke(KeyEvent.VK_Q, menuKey + shiftKey, false))
-          override def actionPerformed(e: ActionEvent) {
-            closeWindow()
-            global.currentRun.cancel()
+      val jmiCancel =
+        new JMenuItem(
+          new AbstractAction("Cancel Compilation") {
+            putValue(
+              Action.ACCELERATOR_KEY,
+              KeyStroke.getKeyStroke(KeyEvent.VK_Q, menuKey + shiftKey, false))
+            override def actionPerformed(e: ActionEvent) {
+              closeWindow()
+              global.currentRun.cancel()
+            }
           }
-        }
-      )
+        )
       jmFile add jmiCancel
 
-      val jmiExit = new JMenuItem(
-        new AbstractAction("Exit") {
-          putValue(
-            Action.ACCELERATOR_KEY,
-            KeyStroke.getKeyStroke(KeyEvent.VK_Q, menuKey, false))
-          override def actionPerformed(e: ActionEvent) = closeWindow()
-        }
-      )
+      val jmiExit =
+        new JMenuItem(
+          new AbstractAction("Exit") {
+            putValue(
+              Action.ACCELERATOR_KEY,
+              KeyStroke.getKeyStroke(KeyEvent.VK_Q, menuKey, false))
+            override def actionPerformed(e: ActionEvent) = closeWindow()
+          }
+        )
       jmFile add jmiExit
       add(jmFile)
 
       val jmView = new JMenu("View")
-      val jmiExpand = new JMenuItem(
-        new AbstractAction("Expand All Nodes") {
-          putValue(
-            Action.ACCELERATOR_KEY,
-            KeyStroke.getKeyStroke(KeyEvent.VK_E, menuKey, false))
-          override def actionPerformed(e: ActionEvent) {
-            expandAll(jTree)
+      val jmiExpand =
+        new JMenuItem(
+          new AbstractAction("Expand All Nodes") {
+            putValue(
+              Action.ACCELERATOR_KEY,
+              KeyStroke.getKeyStroke(KeyEvent.VK_E, menuKey, false))
+            override def actionPerformed(e: ActionEvent) {
+              expandAll(jTree)
+            }
           }
-        }
-      )
+        )
       jmView add jmiExpand
-      val jmiCollapse = new JMenuItem(
-        new AbstractAction("Collapse All Nodes") {
-          putValue(
-            Action.ACCELERATOR_KEY,
-            KeyStroke.getKeyStroke(KeyEvent.VK_L, menuKey, false))
-          override def actionPerformed(e: ActionEvent) {
-            collapseAll(jTree)
+      val jmiCollapse =
+        new JMenuItem(
+          new AbstractAction("Collapse All Nodes") {
+            putValue(
+              Action.ACCELERATOR_KEY,
+              KeyStroke.getKeyStroke(KeyEvent.VK_L, menuKey, false))
+            override def actionPerformed(e: ActionEvent) {
+              collapseAll(jTree)
+            }
           }
-        }
-      )
+        )
       jmView add jmiCollapse
       add(jmView)
     }
@@ -580,8 +583,7 @@ abstract class TreeBrowsers {
 
     implicit def view(n: String): Document = DocText(n)
 
-    def toDocument(sym: Symbol): Document =
-      toDocument(sym.info)
+    def toDocument(sym: Symbol): Document = toDocument(sym.info)
 
     def symsToDocument(syms: List[Symbol]): Document =
       syms match {

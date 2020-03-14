@@ -58,8 +58,9 @@ class DictionaryEncodingSuite extends SparkFunSuite {
         columnStats,
         columnType,
         DictionaryEncoding)
-      val (values, rows) =
-        makeUniqueValuesAndSingleValueRows(columnType, uniqueValueCount)
+      val (values, rows) = makeUniqueValuesAndSingleValueRows(
+        columnType,
+        uniqueValueCount)
       val dictValues = stableDistinct(inputSeq)
 
       inputSeq.foreach(i => builder.appendFrom(rows(i), 0))

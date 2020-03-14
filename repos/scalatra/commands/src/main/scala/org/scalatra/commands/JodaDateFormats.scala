@@ -53,8 +53,8 @@ object JodaDateFormats extends DateParser {
   }
 
   object Iso8601NoMillis extends DateFormat {
-    val dateTimeFormat =
-      ISODateTimeFormat.dateTimeNoMillis.withZone(DateTimeZone.UTC)
+    val dateTimeFormat = ISODateTimeFormat.dateTimeNoMillis.withZone(
+      DateTimeZone.UTC)
   }
 
   object HttpDate extends DateFormat {

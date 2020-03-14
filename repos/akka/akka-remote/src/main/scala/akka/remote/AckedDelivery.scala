@@ -8,21 +8,22 @@ import akka.AkkaException
 
 object SeqNo {
 
-  implicit val ord: Ordering[SeqNo] = new Ordering[SeqNo] {
-    override def compare(x: SeqNo, y: SeqNo): Int = {
-      val sgn =
-        if (x.rawValue < y.rawValue)
-          -1
-        else if (x.rawValue > y.rawValue)
-          1
+  implicit val ord: Ordering[SeqNo] =
+    new Ordering[SeqNo] {
+      override def compare(x: SeqNo, y: SeqNo): Int = {
+        val sgn =
+          if (x.rawValue < y.rawValue)
+            -1
+          else if (x.rawValue > y.rawValue)
+            1
+          else
+            0
+        if (((x.rawValue - y.rawValue) * sgn) < 0L)
+          -sgn
         else
-          0
-      if (((x.rawValue - y.rawValue) * sgn) < 0L)
-        -sgn
-      else
-        sgn
+          sgn
+      }
     }
-  }
 
 }
 

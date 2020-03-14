@@ -16,10 +16,11 @@ class ScInterpolatedStringPartReference(node: ASTNode)
   override def toString = s"InterpolatedStringPartReference: $getText"
 
   override def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
-    val parent = getParent match {
-      case p: ScInterpolatedStringLiteral => p
-      case _                              => return Array[ResolveResult]()
-    }
+    val parent =
+      getParent match {
+        case p: ScInterpolatedStringLiteral => p
+        case _                              => return Array[ResolveResult]()
+      }
 
     parent.getStringContextExpression match {
       case Some(expr) =>

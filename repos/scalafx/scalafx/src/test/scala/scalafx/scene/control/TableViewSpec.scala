@@ -86,9 +86,10 @@ class TableViewSpec[S]
       "Raccoon",
       "555-6798")
 
-    val tableView = new TableView[String](characters) {
-      columns += new TableColumn[String, String]("Name")
-    }
+    val tableView =
+      new TableView[String](characters) {
+        columns += new TableColumn[String, String]("Name")
+      }
 
     tableView.getSelectionModel.select(rocky)
     tableView.getSelectionModel.selectedItem.value should equal(rocky)

@@ -60,27 +60,30 @@ object TriangleMeshDemo extends JFXApp {
       fill = Color.Beige
 
       // Create a tetrahedron and add to a mesh view. Configure it.
-      val tetra = new MeshView(tetrahedron(500.0)) {
-        val image = new Image(this, "images/TetrahedronMap.png")
-        material = new PhongMaterial {
-          specularColor = Color.White
-          diffuseMap = image
+      val tetra =
+        new MeshView(tetrahedron(500.0)) {
+          val image = new Image(this, "images/TetrahedronMap.png")
+          material = new PhongMaterial {
+            specularColor = Color.White
+            diffuseMap = image
+          }
         }
-      }
 
       // Put shapes in a group so they can be rotated together
       val shapes = new Group(tetra)
 
-      val pointLight = new PointLight {
-        color = Color.AntiqueWhite
-        translateX = -300.0
-        translateY = -300.0
-        translateZ = -700.0
-      }
+      val pointLight =
+        new PointLight {
+          color = Color.AntiqueWhite
+          translateX = -300.0
+          translateY = -300.0
+          translateZ = -700.0
+        }
 
-      val ambientLight = new AmbientLight {
-        color = Color.White
-      }
+      val ambientLight =
+        new AmbientLight {
+          color = Color.White
+        }
 
       root = new Group {
         children = new Group(shapes, pointLight, ambientLight)
@@ -224,10 +227,11 @@ object TriangleMeshDemo extends JFXApp {
   /** Add mouse interaction to a scene, rotating given node. */
   private def addMouseInteraction(scene: Scene, node: Node) {
     val angleY = DoubleProperty(0)
-    val yRotate = new Rotate {
-      angle <== angleY
-      axis = Rotate.YAxis
-    }
+    val yRotate =
+      new Rotate {
+        angle <== angleY
+        axis = Rotate.YAxis
+      }
     var anchorX: Double = 0
     var anchorAngleY: Double = 0
 

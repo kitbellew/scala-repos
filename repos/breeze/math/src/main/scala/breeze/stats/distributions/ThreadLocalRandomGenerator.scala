@@ -9,9 +9,10 @@ import org.apache.commons.math3.random.RandomGenerator
  **/
 class ThreadLocalRandomGenerator(genThunk: => RandomGenerator)
     extends RandomGenerator {
-  private val genTL = new ThreadLocal[RandomGenerator] {
-    override def initialValue(): RandomGenerator = genThunk
-  }
+  private val genTL =
+    new ThreadLocal[RandomGenerator] {
+      override def initialValue(): RandomGenerator = genThunk
+    }
   def nextBytes(bytes: Array[Byte]) = genTL.get().nextBytes(bytes)
 
   def setSeed(seed: Long) = genTL.get().setSeed(seed)

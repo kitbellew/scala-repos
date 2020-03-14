@@ -66,8 +66,10 @@ class HoconPsiParser extends PsiParser {
             resultSoFar
         }
 
-        val dsCommentsStart =
-          goThrough(DoubleSlashComment, tokens.size, tokens.size - 1)
+        val dsCommentsStart = goThrough(
+          DoubleSlashComment,
+          tokens.size,
+          tokens.size - 1)
         goThrough(HashComment, dsCommentsStart, dsCommentsStart - 1)
       }
     }

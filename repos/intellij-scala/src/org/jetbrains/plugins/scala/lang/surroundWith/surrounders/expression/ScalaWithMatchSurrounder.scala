@@ -57,14 +57,15 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
   override def getTemplateDescription = "match"
 
   override def getSurroundSelectionRange(withMatchNode: ASTNode): TextRange = {
-    val element: PsiElement = withMatchNode.getPsi match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
-          case Some(y) => y
-          case _       => return x.getTextRange
-        }
-      case x => x
-    }
+    val element: PsiElement =
+      withMatchNode.getPsi match {
+        case x: ScParenthesisedExpr =>
+          x.expr match {
+            case Some(y) => y
+            case _       => return x.getTextRange
+          }
+        case x => x
+      }
 
     val whileStmt = element.asInstanceOf[ScMatchStmt]
 

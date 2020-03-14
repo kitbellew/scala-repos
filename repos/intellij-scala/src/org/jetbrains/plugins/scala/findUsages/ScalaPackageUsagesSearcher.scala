@@ -19,17 +19,17 @@ class ScalaPackageUsagesSearcher
       @NotNull parameters: ReferencesSearch.SearchParameters,
       @NotNull consumer: Processor[PsiReference]) {
     val target: PsiElement = parameters.getElementToSearch
-    val scPack = target match {
-      case pack: PsiPackage => ScPackageImpl(pack)
-      case _                => return
-    }
+    val scPack =
+      target match {
+        case pack: PsiPackage => ScPackageImpl(pack)
+        case _                => return
+      }
     val name = scPack.name
     if (name == null || StringUtil.isEmptyOrSpaces(name))
       return
-    val scope: SearchScope =
-      inReadAction(
-        parameters.getEffectiveSearchScope
-      ) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
+    val scope: SearchScope = inReadAction(
+      parameters.getEffectiveSearchScope
+    ) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
     val collector: SearchRequestCollector = parameters.getOptimizer
     val session: SearchSession = collector.getSearchSession
     collector.searchWord(

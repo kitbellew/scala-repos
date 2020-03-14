@@ -113,8 +113,8 @@ object FakeKeyStore {
 
     // Validity
     val validFrom = new Date()
-    val validTo = new Date(
-      validFrom.getTime + 50L * 365L * 24L * 60L * 60L * 1000L)
+    val validTo =
+      new Date(validFrom.getTime + 50L * 365L * 24L * 60L * 60L * 1000L)
     val validity = new CertificateValidity(validFrom, validTo)
     certInfo.set(X509CertInfo.VALIDITY, validity)
 
@@ -149,8 +149,9 @@ object FakeKeyStore {
 
     // Since the signature provider may have a different algorithm ID to what we think it should be,
     // we need to reset the algorithm ID, and resign the certificate
-    val actualAlgorithm =
-      cert.get(X509CertImpl.SIG_ALG).asInstanceOf[AlgorithmId]
+    val actualAlgorithm = cert
+      .get(X509CertImpl.SIG_ALG)
+      .asInstanceOf[AlgorithmId]
     certInfo.set(
       CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM,
       actualAlgorithm)

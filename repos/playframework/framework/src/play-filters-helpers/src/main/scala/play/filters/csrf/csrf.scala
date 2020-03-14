@@ -78,8 +78,8 @@ case class CSRFConfig(
       checkContentType: ju.function.Predicate[Optional[String]]) =
     copy(checkContentType = checkContentType.asScala.compose(_.asJava))
   def withShouldProtect(shouldProtect: ju.function.Predicate[JRequestHeader]) =
-    copy(shouldProtect =
-      shouldProtect.asScala.compose(new JRequestHeaderImpl(_)))
+    copy(shouldProtect = shouldProtect.asScala.compose(
+      new JRequestHeaderImpl(_)))
   def withBypassCorsTrustedOrigins(bypass: Boolean) =
     copy(bypassCorsTrustedOrigins = bypass)
 }
@@ -103,21 +103,22 @@ object CSRFConfig {
       .getOrElse(CSRFConfig())
 
   def fromConfiguration(conf: Configuration): CSRFConfig = {
-    val config =
-      PlayConfig(conf).getDeprecatedWithFallback("play.filters.csrf", "csrf")
+    val config = PlayConfig(conf)
+      .getDeprecatedWithFallback("play.filters.csrf", "csrf")
 
     val methodWhiteList = config.get[Seq[String]]("method.whiteList").toSet
     val methodBlackList = config.get[Seq[String]]("method.blackList").toSet
 
-    val checkMethod: String => Boolean = if (methodWhiteList.nonEmpty) {
-      !methodWhiteList.contains(_)
-    } else {
-      if (methodBlackList.isEmpty) { _ =>
-        true
+    val checkMethod: String => Boolean =
+      if (methodWhiteList.nonEmpty) {
+        !methodWhiteList.contains(_)
       } else {
-        methodBlackList.contains
+        if (methodBlackList.isEmpty) { _ =>
+          true
+        } else {
+          methodBlackList.contains
+        }
       }
-    }
 
     val contentTypeWhiteList =
       config.get[Seq[String]]("contentType.whiteList").toSet
@@ -231,10 +232,11 @@ object CSRF {
       config: CSRFConfig,
       tokenSigner: CSRFTokenSigner)
       extends Provider[TokenProvider] {
-    override val get = config.signTokens match {
-      case true  => new SignedTokenProvider(tokenSigner)
-      case false => new UnsignedTokenProvider(tokenSigner)
-    }
+    override val get =
+      config.signTokens match {
+        case true  => new SignedTokenProvider(tokenSigner)
+        case false => new UnsignedTokenProvider(tokenSigner)
+      }
   }
 
   class ConfigTokenProvider(config: => CSRFConfig, tokenSigner: CSRFTokenSigner)
@@ -339,12 +341,13 @@ trait CSRFComponents {
   lazy val csrfConfig: CSRFConfig = CSRFConfig.fromConfiguration(configuration)
   lazy val csrfTokenProvider: CSRF.TokenProvider =
     new CSRF.TokenProviderProvider(csrfConfig, csrfTokenSigner).get
-  lazy val csrfErrorHandler: CSRF.ErrorHandler = new CSRFHttpErrorHandler(
-    httpErrorHandler)
-  lazy val csrfFilter: CSRFFilter = new CSRFFilter(
-    csrfConfig,
-    csrfTokenSigner,
-    csrfTokenProvider,
-    csrfErrorHandler)
+  lazy val csrfErrorHandler: CSRF.ErrorHandler =
+    new CSRFHttpErrorHandler(httpErrorHandler)
+  lazy val csrfFilter: CSRFFilter =
+    new CSRFFilter(
+      csrfConfig,
+      csrfTokenSigner,
+      csrfTokenProvider,
+      csrfErrorHandler)
 
 }

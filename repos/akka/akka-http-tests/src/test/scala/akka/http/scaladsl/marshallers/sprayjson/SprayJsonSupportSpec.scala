@@ -19,13 +19,14 @@ class SprayJsonSupportSpec extends JsonSupportSpec {
   }
   import EmployeeJsonProtocol._
 
-  implicit val orderedFieldPrint: JsonPrinter = new PrettyPrinter {
-    override protected def printObject(
-        members: Map[String, JsValue],
-        sb: StringBuilder,
-        indent: Int): Unit =
-      super.printObject(ListMap(members.toSeq.sortBy(_._1): _*), sb, indent)
-  }
+  implicit val orderedFieldPrint: JsonPrinter =
+    new PrettyPrinter {
+      override protected def printObject(
+          members: Map[String, JsValue],
+          sb: StringBuilder,
+          indent: Int): Unit =
+        super.printObject(ListMap(members.toSeq.sortBy(_._1): _*), sb, indent)
+    }
 
   implicit def marshaller: ToEntityMarshaller[Employee] =
     SprayJsonSupport.sprayJsonMarshaller[Employee]

@@ -113,10 +113,10 @@ class RowFormatSpec
 
   implicit lazy val arbColumnRefs = Arbitrary(genColumnRefs)
 
-  implicit val shrinkCValues: Shrink[List[CValue]] =
-    Shrink.shrinkAny[List[CValue]]
-  implicit val shrinkRows: Shrink[List[List[CValue]]] =
-    Shrink.shrinkAny[List[List[CValue]]]
+  implicit val shrinkCValues: Shrink[List[CValue]] = Shrink
+    .shrinkAny[List[CValue]]
+  implicit val shrinkRows: Shrink[List[List[CValue]]] = Shrink
+    .shrinkAny[List[List[CValue]]]
 
   "ValueRowFormat" should {
     checkRoundTrips(RowFormat.forValues(_))
@@ -168,8 +168,8 @@ class RowFormatSpec
       check { refs: List[ColumnRef] =>
         val valueRowFormat = RowFormat.forValues(refs)
         val sortingKeyRowFormat = RowFormat.forSortingKey(refs)
-        implicit val arbRows: Arbitrary[List[List[CValue]]] =
-          Arbitrary(Gen.listOfN(10, genCValuesForColumnRefs(refs)))
+        implicit val arbRows: Arbitrary[List[List[CValue]]] = Arbitrary(
+          Gen.listOfN(10, genCValuesForColumnRefs(refs)))
 
         check { (vals: List[List[CValue]]) =>
           val valueEncoded = vals map (valueRowFormat.encode(_))
@@ -194,8 +194,8 @@ class RowFormatSpec
     "survive round-trip from CValue -> Array[Byte] -> CValue" in {
       check { (refs: List[ColumnRef]) =>
         val rowFormat = toRowFormat(refs)
-        implicit val arbColumnValues: Arbitrary[List[CValue]] =
-          Arbitrary(genCValuesForColumnRefs(refs))
+        implicit val arbColumnValues: Arbitrary[List[CValue]] = Arbitrary(
+          genCValuesForColumnRefs(refs))
 
         check { (vals: List[CValue]) =>
           assert(refs.size == vals.size)
@@ -208,8 +208,8 @@ class RowFormatSpec
 
       check { (refs: List[ColumnRef]) =>
         val rowFormat = toRowFormat(refs)
-        implicit val arbRows: Arbitrary[List[List[CValue]]] =
-          Arbitrary(Gen.listOfN(size, genCValuesForColumnRefs(refs)))
+        implicit val arbRows: Arbitrary[List[List[CValue]]] = Arbitrary(
+          Gen.listOfN(size, genCValuesForColumnRefs(refs)))
 
         check { (rows: List[List[CValue]]) =>
           val columns = arrayColumnsFor(size, refs)

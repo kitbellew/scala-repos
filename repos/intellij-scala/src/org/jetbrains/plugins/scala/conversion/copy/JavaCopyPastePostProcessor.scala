@@ -38,10 +38,11 @@ class JavaCopyPastePostProcessor
     extends SingularCopyPastePostProcessor[TextBlockTransferableData] {
   private val Log = Logger.getInstance(classOf[JavaCopyPastePostProcessor])
 
-  private lazy val referenceProcessor = Extensions
-    .getExtensions(CopyPastePostProcessor.EP_NAME)
-    .find(_.isInstanceOf[JavaCopyPasteReferenceProcessor])
-    .get
+  private lazy val referenceProcessor =
+    Extensions
+      .getExtensions(CopyPastePostProcessor.EP_NAME)
+      .find(_.isInstanceOf[JavaCopyPasteReferenceProcessor])
+      .get
 
   private lazy val scalaProcessor = Extensions
     .getExtensions(CopyPastePostProcessor.EP_NAME)
@@ -145,10 +146,11 @@ class JavaCopyPastePostProcessor
           case TextPart(s) =>
             resultNode.addChild(LiteralExpression(s))
           case ElementPart(element) =>
-            val result = JavaToScala.convertPsiToIntermdeiate(element, null)(
-              associationsHelper,
-              data,
-              withComments = true)
+            val result =
+              JavaToScala.convertPsiToIntermdeiate(element, null)(
+                associationsHelper,
+                data,
+                withComments = true)
             resultNode.addChild(result)
         }
       }
@@ -158,8 +160,9 @@ class JavaCopyPastePostProcessor
       val text = visitor.stringResult
       val rangeMap = visitor.rangedElementsMap
 
-      val updatedAssociations =
-        associationsHelper.filter(_.itype.isInstanceOf[TypedElement]).map { a =>
+      val updatedAssociations = associationsHelper
+        .filter(_.itype.isInstanceOf[TypedElement])
+        .map { a =>
           val typedElement = a.itype.asInstanceOf[TypedElement].getType
           val range = rangeMap.getOrElse(typedElement, new TextRange(0, 0))
           new Association(a.kind, range, a.path)
@@ -211,15 +214,17 @@ class JavaCopyPastePostProcessor
       return
     if (value == null)
       return
-    val file =
-      PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
+    val file = PsiDocumentManager
+      .getInstance(project)
+      .getPsiFile(editor.getDocument)
     if (!file.isInstanceOf[ScalaFile])
       return
     val dialog = new ScalaPasteFromJavaDialog(project)
-    val (text, associations) = value match {
-      case code: ConvertedCode => (code.data, code.associations)
-      case _                   => ("", Array.empty[Association])
-    }
+    val (text, associations) =
+      value match {
+        case code: ConvertedCode => (code.data, code.associations)
+        case _                   => ("", Array.empty[Association])
+      }
     if (text == "")
       return //copy as usually
     if (!ScalaProjectSettings.getInstance(project).isDontShowConversionDialog)

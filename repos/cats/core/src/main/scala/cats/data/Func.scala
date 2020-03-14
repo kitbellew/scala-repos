@@ -62,8 +62,7 @@ private[data] abstract class FuncInstances1 {
 
 sealed trait FuncFunctor[F[_], C] extends Functor[Lambda[X => Func[F, C, X]]] {
   def F: Functor[F]
-  def map[A, B](fa: Func[F, C, A])(f: A => B): Func[F, C, B] =
-    fa.map(f)(F)
+  def map[A, B](fa: Func[F, C, A])(f: A => B): Func[F, C, B] = fa.map(f)(F)
 }
 
 sealed trait FuncApply[F[_], C]
@@ -80,8 +79,7 @@ sealed trait FuncApplicative[F[_], C]
     extends Applicative[Lambda[X => Func[F, C, X]]]
     with FuncApply[F, C] {
   def F: Applicative[F]
-  def pure[A](a: A): Func[F, C, A] =
-    Func.func(c => F.pure(a))
+  def pure[A](a: A): Func[F, C, A] = Func.func(c => F.pure(a))
 }
 
 /**
@@ -135,8 +133,7 @@ private[data] abstract class AppFuncInstances {
 private[data] sealed trait AppFuncApplicative[F[_], C]
     extends Applicative[Lambda[X => AppFunc[F, C, X]]] {
   def F: Applicative[F]
-  def map[A, B](fa: AppFunc[F, C, A])(f: A => B): AppFunc[F, C, B] =
-    fa.map(f)
+  def map[A, B](fa: AppFunc[F, C, A])(f: A => B): AppFunc[F, C, B] = fa.map(f)
   def ap[A, B](f: AppFunc[F, C, A => B])(
       fa: AppFunc[F, C, A]): AppFunc[F, C, B] =
     Func.appFunc[F, C, B](c => F.ap(f.run(c))(fa.run(c)))(F)
@@ -144,6 +141,5 @@ private[data] sealed trait AppFuncApplicative[F[_], C]
       fa: AppFunc[F, C, A],
       fb: AppFunc[F, C, B]): AppFunc[F, C, (A, B)] =
     Func.appFunc[F, C, (A, B)](c => F.product(fa.run(c), fb.run(c)))(F)
-  def pure[A](a: A): AppFunc[F, C, A] =
-    Func.appFunc[F, C, A](c => F.pure(a))(F)
+  def pure[A](a: A): AppFunc[F, C, A] = Func.appFunc[F, C, A](c => F.pure(a))(F)
 }

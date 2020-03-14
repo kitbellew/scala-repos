@@ -45,8 +45,8 @@ class CoronerSpec extends WordSpec with Matchers {
 
     "display thread counts if enabled" in {
       val (_, report) = captureOutput(out ⇒ {
-        val coroner =
-          Coroner.watch(60.seconds, "XXXX", out, displayThreadCounts = true)
+        val coroner = Coroner
+          .watch(60.seconds, "XXXX", out, displayThreadCounts = true)
         coroner.cancel()
         Await.ready(coroner, 1.second)
       })
@@ -75,31 +75,32 @@ class CoronerSpec extends WordSpec with Matchers {
           initialLocks: List[ReentrantLock]): LockingThread = {
         val ready = new Semaphore(0)
         val proceed = new Semaphore(0)
-        val t = new Thread(
-          new Runnable {
-            def run =
-              try recursiveLock(initialLocks)
-              catch {
-                case _: InterruptedException ⇒ ()
-              }
+        val t =
+          new Thread(
+            new Runnable {
+              def run =
+                try recursiveLock(initialLocks)
+                catch {
+                  case _: InterruptedException ⇒ ()
+                }
 
-            def recursiveLock(locks: List[ReentrantLock]) {
-              locks match {
-                case Nil ⇒ ()
-                case lock :: rest ⇒ {
-                  ready.release()
-                  proceed.acquire()
-                  lock.lockInterruptibly() // Allows us to break deadlock and free threads
-                  try {
-                    recursiveLock(rest)
-                  } finally {
-                    lock.unlock()
+              def recursiveLock(locks: List[ReentrantLock]) {
+                locks match {
+                  case Nil ⇒ ()
+                  case lock :: rest ⇒ {
+                    ready.release()
+                    proceed.acquire()
+                    lock.lockInterruptibly() // Allows us to break deadlock and free threads
+                    try {
+                      recursiveLock(rest)
+                    } finally {
+                      lock.unlock()
+                    }
                   }
                 }
               }
-            }
-          },
-          name)
+            },
+            name)
         t.start()
         LockingThread(name, t, ready, proceed)
       }

@@ -43,12 +43,13 @@ class SimpleConsumer(
 
   ConsumerConfig.validateClientId(clientId)
   private val lock = new Object()
-  private val blockingChannel = new BlockingChannel(
-    host,
-    port,
-    bufferSize,
-    BlockingChannel.UseDefaultBufferSize,
-    soTimeout)
+  private val blockingChannel =
+    new BlockingChannel(
+      host,
+      port,
+      bufferSize,
+      BlockingChannel.UseDefaultBufferSize,
+      soTimeout)
   private val fetchRequestAndResponseStats =
     FetchRequestAndResponseStatsRegistry.getFetchRequestAndResponseStats(
       clientId)
@@ -135,9 +136,10 @@ class SimpleConsumer(
     */
   def fetch(request: FetchRequest): FetchResponse = {
     var response: NetworkReceive = null
-    val specificTimer = fetchRequestAndResponseStats
-      .getFetchRequestAndResponseStats(host, port)
-      .requestTimer
+    val specificTimer =
+      fetchRequestAndResponseStats
+        .getFetchRequestAndResponseStats(host, port)
+        .requestTimer
     val aggregateTimer =
       fetchRequestAndResponseStats.getFetchRequestAndResponseAllBrokersStats.requestTimer
     aggregateTimer.time {
@@ -145,8 +147,9 @@ class SimpleConsumer(
         response = sendRequest(request)
       }
     }
-    val fetchResponse =
-      FetchResponse.readFrom(response.payload(), request.versionId)
+    val fetchResponse = FetchResponse.readFrom(
+      response.payload(),
+      request.versionId)
     val fetchedSize = fetchResponse.sizeInBytes
     fetchRequestAndResponseStats
       .getFetchRequestAndResponseStats(host, port)
@@ -214,12 +217,13 @@ class SimpleConsumer(
         topicAndPartition -> PartitionOffsetRequestInfo(earliestOrLatest, 1)),
       clientId = clientId,
       replicaId = consumerId)
-    val partitionErrorAndOffset =
-      getOffsetsBefore(request).partitionErrorAndOffsets(topicAndPartition)
-    val offset = partitionErrorAndOffset.error match {
-      case ErrorMapping.NoError => partitionErrorAndOffset.offsets.head
-      case _                    => throw ErrorMapping.exceptionFor(partitionErrorAndOffset.error)
-    }
+    val partitionErrorAndOffset = getOffsetsBefore(request)
+      .partitionErrorAndOffsets(topicAndPartition)
+    val offset =
+      partitionErrorAndOffset.error match {
+        case ErrorMapping.NoError => partitionErrorAndOffset.offsets.head
+        case _                    => throw ErrorMapping.exceptionFor(partitionErrorAndOffset.error)
+      }
     offset
   }
 }

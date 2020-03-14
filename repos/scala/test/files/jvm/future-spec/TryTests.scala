@@ -100,36 +100,40 @@ class TryTests extends MinimalScalaTest {
 
     "for" in {
       "with no Failure values" in {
-        val result = for {
-          i <- Success(1)
-          j <- Success(1)
-        } yield (i + j)
+        val result =
+          for {
+            i <- Success(1)
+            j <- Success(1)
+          } yield (i + j)
         result mustEqual Success(2)
       }
 
       "with Failure values" in {
         "throws before" in {
-          val result = for {
-            i <- Failure[Int](e)
-            j <- Success(1)
-          } yield (i + j)
+          val result =
+            for {
+              i <- Failure[Int](e)
+              j <- Success(1)
+            } yield (i + j)
           result mustEqual Failure(e)
         }
 
         "throws after" in {
-          val result = for {
-            i <- Success(1)
-            j <- Failure[Int](e)
-          } yield (i + j)
+          val result =
+            for {
+              i <- Success(1)
+              j <- Failure[Int](e)
+            } yield (i + j)
           result mustEqual Failure(e)
         }
 
         "returns the FIRST Failure" in {
           val e2 = new Exception
-          val result = for {
-            i <- Failure[Int](e)
-            j <- Failure[Int](e2)
-          } yield (i + j)
+          val result =
+            for {
+              i <- Failure[Int](e)
+              j <- Failure[Int](e2)
+            } yield (i + j)
           result mustEqual Failure(e)
         }
       }

@@ -34,20 +34,23 @@ class MonocleInjector extends SyntheticMembersInjector {
         case (f: ScClassParameterImpl, _) => f
       })
       .filter(_.isCaseClassVal)
-    val prefix = Option(
-      clazz
-        .findAnnotation("monocle.macros.Lenses")
-        .findAttributeValue("value")) match {
-      case Some(literal: ScLiteralImpl) => literal.getValue.toString
-      case _                            => ""
-    }
-    fields.foreach({ i =>
-      val template = if (clazz.typeParameters.isEmpty)
-        s"def $prefix${i.name}: _root_.monocle.Lens[${clazz.qualifiedName}, ${i.getType(TypingContext.empty).map(_.canonicalText).getOrElse("Any")}] = ???"
-      else {
-        val tparams = s"[${clazz.typeParameters.map(_.getText).mkString(",")}]"
-        s"def $prefix${i.name}$tparams: _root_.monocle.Lens[${clazz.qualifiedName}$tparams, ${i.typeElement.get.calcType}] = ???"
+    val prefix =
+      Option(
+        clazz
+          .findAnnotation("monocle.macros.Lenses")
+          .findAttributeValue("value")) match {
+        case Some(literal: ScLiteralImpl) => literal.getValue.toString
+        case _                            => ""
       }
+    fields.foreach({ i =>
+      val template =
+        if (clazz.typeParameters.isEmpty)
+          s"def $prefix${i.name}: _root_.monocle.Lens[${clazz.qualifiedName}, ${i.getType(TypingContext.empty).map(_.canonicalText).getOrElse("Any")}] = ???"
+        else {
+          val tparams =
+            s"[${clazz.typeParameters.map(_.getText).mkString(",")}]"
+          s"def $prefix${i.name}$tparams: _root_.monocle.Lens[${clazz.qualifiedName}$tparams, ${i.typeElement.get.calcType}] = ???"
+        }
       buffer += template
     })
     buffer

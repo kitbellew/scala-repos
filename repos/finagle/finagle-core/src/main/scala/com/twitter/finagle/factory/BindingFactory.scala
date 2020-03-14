@@ -281,10 +281,11 @@ private[finagle] class BindingFactory[Req, Rep](
   private[this] val dtabCache = {
     val newFactory: ((Dtab, Dtab)) => ServiceFactory[Req, Rep] = {
       case (baseDtab, localDtab) =>
-        val factory = new DynNameFactory(
-          NameInterpreter.bind(baseDtab ++ localDtab, path),
-          nameTreeCache,
-          statsReceiver = statsReceiver)
+        val factory =
+          new DynNameFactory(
+            NameInterpreter.bind(baseDtab ++ localDtab, path),
+            nameTreeCache,
+            statsReceiver = statsReceiver)
 
         new ServiceFactoryProxy(factory) {
           private val pathShow = path.show
@@ -330,8 +331,7 @@ object BindingFactory {
     * [[com.twitter.finagle.Name]] to bind.
     */
   case class Dest(dest: Name) {
-    def mk(): (Dest, Stack.Param[Dest]) =
-      (this, Dest.param)
+    def mk(): (Dest, Stack.Param[Dest]) = (this, Dest.param)
   }
   object Dest {
     implicit val param = Stack.Param(Dest(Name.Path(Path.read("/$/fail"))))
@@ -345,8 +345,7 @@ object BindingFactory {
     * [[com.twitter.finagle.Dtab]].
     */
   case class BaseDtab(baseDtab: () => Dtab) {
-    def mk(): (BaseDtab, Stack.Param[BaseDtab]) =
-      (this, BaseDtab.param)
+    def mk(): (BaseDtab, Stack.Param[BaseDtab]) = (this, BaseDtab.param)
   }
   object BaseDtab {
     implicit val param = Stack.Param(BaseDtab(DefaultBaseDtab))
@@ -396,17 +395,18 @@ object BindingFactory {
         boundPathFilter(bound.path) andThen client
       }
 
-      val factory = dest match {
-        case bound @ Name.Bound(addr) => newStack(label, bound)
+      val factory =
+        dest match {
+          case bound @ Name.Bound(addr) => newStack(label, bound)
 
-        case Name.Path(path) =>
-          val BaseDtab(baseDtab) = params[BaseDtab]
-          new BindingFactory(
-            path,
-            newStack(path.show, _),
-            baseDtab,
-            stats.scope("namer"))
-      }
+          case Name.Path(path) =>
+            val BaseDtab(baseDtab) = params[BaseDtab]
+            new BindingFactory(
+              path,
+              newStack(path.show, _),
+              baseDtab,
+              stats.scope("namer"))
+        }
 
       Stack.Leaf(role, factory)
     }

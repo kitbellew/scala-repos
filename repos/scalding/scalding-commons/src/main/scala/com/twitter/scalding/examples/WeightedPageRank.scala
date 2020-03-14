@@ -166,33 +166,34 @@ class WeightedPageRank(args: Args) extends Job(args) {
       .discard('src_id_input)
 
     // 'src_id, 'mass_n
-    val pagerankNext = nodeJoined
-      .flatMapTo(('dst_ids, 'weights, 'mass_input) -> ('src_id, 'mass_n)) {
-        args: (Array[Int], Array[Float], Double) =>
-          {
-            if (args._1.length > 0) {
-              if (WEIGHTED) {
-                // weighted distribution
-                val total: Double = args._2.sum
-                (args._1 zip args._2).map { idWeight: (Int, Float) =>
-                  (idWeight._1, args._3 * idWeight._2 / total)
+    val pagerankNext =
+      nodeJoined
+        .flatMapTo(('dst_ids, 'weights, 'mass_input) -> ('src_id, 'mass_n)) {
+          args: (Array[Int], Array[Float], Double) =>
+            {
+              if (args._1.length > 0) {
+                if (WEIGHTED) {
+                  // weighted distribution
+                  val total: Double = args._2.sum
+                  (args._1 zip args._2).map { idWeight: (Int, Float) =>
+                    (idWeight._1, args._3 * idWeight._2 / total)
+                  }
+                } else {
+                  // equal distribution
+                  val dist: Double = args._3 / args._1.length
+                  args._1.map { id: Int =>
+                    (id, dist)
+                  }
                 }
               } else {
-                // equal distribution
-                val dist: Double = args._3 / args._1.length
-                args._1.map { id: Int =>
-                  (id, dist)
-                }
+                //Here is a node that points to no other nodes (dangling)
+                Nil
               }
-            } else {
-              //Here is a node that points to no other nodes (dangling)
-              Nil
             }
-          }
-      }
-      .groupBy('src_id) {
-        _.sum[Double]('mass_n)
-      }
+        }
+        .groupBy('src_id) {
+          _.sum[Double]('mass_n)
+        }
 
     // 'sum_mass
     val sumPagerankNext = pagerankNext.groupAll {
@@ -211,24 +212,26 @@ class WeightedPageRank(args: Args) extends Job(args) {
 
     // 'src_id_r, 'mass_n_r
     // random jump probability plus dead page rank
-    val randomPagerank = nodeJoined
-      .crossWithTiny(deadPagerank)
-      .mapTo(
-        (
-          'src_id,
-          'mass_prior,
-          'deadMass,
-          'mass_input) -> ('src_id, 'mass_n, 'mass_input)) {
-        ranks: (Int, Double, Double, Double) =>
-          (ranks._1, ranks._2 * ALPHA + ranks._3 * (1 - ALPHA), ranks._4)
-      }
+    val randomPagerank =
+      nodeJoined
+        .crossWithTiny(deadPagerank)
+        .mapTo(
+          (
+            'src_id,
+            'mass_prior,
+            'deadMass,
+            'mass_input) -> ('src_id, 'mass_n, 'mass_input)) {
+          ranks: (Int, Double, Double, Double) =>
+            (ranks._1, ranks._2 * ALPHA + ranks._3 * (1 - ALPHA), ranks._4)
+        }
 
     // 'src_id, 'mass_n
     // scale next page rank to 1-ALPHA
-    val pagerankNextScaled = pagerankNext
-      .map('mass_n -> ('mass_n, 'mass_input)) { m: Double =>
-        ((1 - ALPHA) * m, 0.0)
-      }
+    val pagerankNextScaled =
+      pagerankNext
+        .map('mass_n -> ('mass_n, 'mass_input)) { m: Double =>
+          ((1 - ALPHA) * m, 0.0)
+        }
 
     // 'src_id, 'mass_n, 'mass_input
     // random probability + next probability

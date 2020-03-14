@@ -136,10 +136,12 @@ trait DashboardControllerBase extends ControllerBase {
     import IssuesService._
 
     val userName = context.loginAccount.get.userName
-    val condition =
-      getOrCreateCondition(Keys.Session.DashboardIssues, filter, userName)
-    val userRepos =
-      getUserRepositories(userName, true).map(repo => repo.owner -> repo.name)
+    val condition = getOrCreateCondition(
+      Keys.Session.DashboardIssues,
+      filter,
+      userName)
+    val userRepos = getUserRepositories(userName, true).map(repo =>
+      repo.owner -> repo.name)
     val page = IssueSearchCondition.page(request)
 
     html.issues(
@@ -167,8 +169,10 @@ trait DashboardControllerBase extends ControllerBase {
     import PullRequestService._
 
     val userName = context.loginAccount.get.userName
-    val condition =
-      getOrCreateCondition(Keys.Session.DashboardPulls, filter, userName)
+    val condition = getOrCreateCondition(
+      Keys.Session.DashboardPulls,
+      filter,
+      userName)
     val allRepos = getAllRepositories(userName)
     val page = IssueSearchCondition.page(request)
 

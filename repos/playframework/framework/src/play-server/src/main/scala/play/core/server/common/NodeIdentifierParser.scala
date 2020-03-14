@@ -31,22 +31,23 @@ private[common] class NodeIdentifierParser(version: ForwardedHeaderVersion)
     case x ~ y => x -> y
   }
 
-  private lazy val nodename = version match {
-    case Rfc7239 =>
-      // RFC 7239 recognises IPv4 addresses, escaped IPv6 addresses, unknown and obfuscated addresses
-      (ipv4Address | "[" ~> ipv6Address <~ "]" | "unknown" | obfnode) ^^ {
-        case x: Inet4Address => Ip(x)
-        case x: Inet6Address => Ip(x)
-        case "unknown"       => UnknownIp
-        case x               => ObfuscatedIp(x.toString)
-      }
-    case Xforwarded =>
-      // X-Forwarded-For recognises IPv4 and escaped or unescaped IPv6 addresses
-      (ipv4Address | "[" ~> ipv6Address <~ "]" | ipv6Address) ^^ {
-        case x: Inet4Address => Ip(x)
-        case x: Inet6Address => Ip(x)
-      }
-  }
+  private lazy val nodename =
+    version match {
+      case Rfc7239 =>
+        // RFC 7239 recognises IPv4 addresses, escaped IPv6 addresses, unknown and obfuscated addresses
+        (ipv4Address | "[" ~> ipv6Address <~ "]" | "unknown" | obfnode) ^^ {
+          case x: Inet4Address => Ip(x)
+          case x: Inet6Address => Ip(x)
+          case "unknown"       => UnknownIp
+          case x               => ObfuscatedIp(x.toString)
+        }
+      case Xforwarded =>
+        // X-Forwarded-For recognises IPv4 and escaped or unescaped IPv6 addresses
+        (ipv4Address | "[" ~> ipv6Address <~ "]" | ipv6Address) ^^ {
+          case x: Inet4Address => Ip(x)
+          case x: Inet6Address => Ip(x)
+        }
+    }
 
   private lazy val ipv4Address = regex("[\\d\\.]{7,15}".r) ^? inetAddress
 

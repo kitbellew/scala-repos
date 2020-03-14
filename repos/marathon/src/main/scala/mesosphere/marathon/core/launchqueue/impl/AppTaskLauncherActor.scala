@@ -392,8 +392,11 @@ private class AppTaskLauncherActor(
       sender ! MatchedTaskOps(offer.getId, Seq.empty)
 
     case ActorOfferMatcher.MatchOffer(deadline, offer) =>
-      val matchRequest =
-        TaskOpFactory.Request(app, offer, tasksMap, tasksToLaunch)
+      val matchRequest = TaskOpFactory.Request(
+        app,
+        offer,
+        tasksMap,
+        tasksToLaunch)
       val taskOp: Option[TaskOp] = taskOpFactory.buildTaskOp(matchRequest)
       taskOp match {
         case Some(op) => handleTaskOp(op, offer)
@@ -462,11 +465,12 @@ private class AppTaskLauncherActor(
     tasksToLaunch > 0 && !backoffActive
 
   private[this] def status: String = {
-    val backoffStr = backOffUntil match {
-      case Some(until) if until > clock.now() =>
-        s"currently waiting for backoff($until)"
-      case _ => "not backing off"
-    }
+    val backoffStr =
+      backOffUntil match {
+        case Some(until) if until > clock.now() =>
+          s"currently waiting for backoff($until)"
+        case _ => "not backing off"
+      }
 
     val inFlight = inFlightTaskOperations.size
     val tasksLaunchedOrRunning =

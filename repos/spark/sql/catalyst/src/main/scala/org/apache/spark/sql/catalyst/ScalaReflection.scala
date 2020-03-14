@@ -93,20 +93,21 @@ object ScalaReflection extends ScalaReflection {
     */
   private def arrayClassFor(tpe: `Type`): DataType =
     ScalaReflectionLock.synchronized {
-      val cls = tpe match {
-        case t if t <:< definitions.IntTpe     => classOf[Array[Int]]
-        case t if t <:< definitions.LongTpe    => classOf[Array[Long]]
-        case t if t <:< definitions.DoubleTpe  => classOf[Array[Double]]
-        case t if t <:< definitions.FloatTpe   => classOf[Array[Float]]
-        case t if t <:< definitions.ShortTpe   => classOf[Array[Short]]
-        case t if t <:< definitions.ByteTpe    => classOf[Array[Byte]]
-        case t if t <:< definitions.BooleanTpe => classOf[Array[Boolean]]
-        case other                             =>
-          // There is probably a better way to do this, but I couldn't find it...
-          val elementType = dataTypeFor(other).asInstanceOf[ObjectType].cls
-          java.lang.reflect.Array.newInstance(elementType, 1).getClass
+      val cls =
+        tpe match {
+          case t if t <:< definitions.IntTpe     => classOf[Array[Int]]
+          case t if t <:< definitions.LongTpe    => classOf[Array[Long]]
+          case t if t <:< definitions.DoubleTpe  => classOf[Array[Double]]
+          case t if t <:< definitions.FloatTpe   => classOf[Array[Float]]
+          case t if t <:< definitions.ShortTpe   => classOf[Array[Short]]
+          case t if t <:< definitions.ByteTpe    => classOf[Array[Byte]]
+          case t if t <:< definitions.BooleanTpe => classOf[Array[Boolean]]
+          case other                             =>
+            // There is probably a better way to do this, but I couldn't find it...
+            val elementType = dataTypeFor(other).asInstanceOf[ObjectType].cls
+            java.lang.reflect.Array.newInstance(elementType, 1).getClass
 
-      }
+        }
       ObjectType(cls)
     }
 
@@ -280,16 +281,17 @@ object ScalaReflection extends ScalaReflection {
           val TypeRef(_, _, Seq(elementType)) = t
 
           // TODO: add runtime null check for primitive array
-          val primitiveMethod = elementType match {
-            case t if t <:< definitions.IntTpe     => Some("toIntArray")
-            case t if t <:< definitions.LongTpe    => Some("toLongArray")
-            case t if t <:< definitions.DoubleTpe  => Some("toDoubleArray")
-            case t if t <:< definitions.FloatTpe   => Some("toFloatArray")
-            case t if t <:< definitions.ShortTpe   => Some("toShortArray")
-            case t if t <:< definitions.ByteTpe    => Some("toByteArray")
-            case t if t <:< definitions.BooleanTpe => Some("toBooleanArray")
-            case _                                 => None
-          }
+          val primitiveMethod =
+            elementType match {
+              case t if t <:< definitions.IntTpe     => Some("toIntArray")
+              case t if t <:< definitions.LongTpe    => Some("toLongArray")
+              case t if t <:< definitions.DoubleTpe  => Some("toDoubleArray")
+              case t if t <:< definitions.FloatTpe   => Some("toFloatArray")
+              case t if t <:< definitions.ShortTpe   => Some("toShortArray")
+              case t if t <:< definitions.ByteTpe    => Some("toByteArray")
+              case t if t <:< definitions.BooleanTpe => Some("toBooleanArray")
+              case _                                 => None
+            }
 
           primitiveMethod
             .map { method =>
@@ -315,14 +317,15 @@ object ScalaReflection extends ScalaReflection {
           val newTypePath =
             s"""- array element class: "$className"""" +: walkedTypePath
 
-          val mapFunction: Expression => Expression = p => {
-            val converter = constructorFor(elementType, Some(p), newTypePath)
-            if (nullable) {
-              converter
-            } else {
-              AssertNotNull(converter, newTypePath)
+          val mapFunction: Expression => Expression =
+            p => {
+              val converter = constructorFor(elementType, Some(p), newTypePath)
+              if (nullable) {
+                converter
+              } else {
+                AssertNotNull(converter, newTypePath)
+              }
             }
-          }
 
           val array = Invoke(
             MapObjects(mapFunction, getPath, dataType),
@@ -339,32 +342,30 @@ object ScalaReflection extends ScalaReflection {
           // TODO: add walked type path for map
           val TypeRef(_, _, Seq(keyType, valueType)) = t
 
-          val keyData =
-            Invoke(
-              MapObjects(
-                p => constructorFor(keyType, Some(p), walkedTypePath),
-                Invoke(
-                  getPath,
-                  "keyArray",
-                  ArrayType(schemaFor(keyType).dataType)),
-                schemaFor(keyType).dataType),
-              "array",
-              ObjectType(classOf[Array[Any]])
-            )
+          val keyData = Invoke(
+            MapObjects(
+              p => constructorFor(keyType, Some(p), walkedTypePath),
+              Invoke(
+                getPath,
+                "keyArray",
+                ArrayType(schemaFor(keyType).dataType)),
+              schemaFor(keyType).dataType),
+            "array",
+            ObjectType(classOf[Array[Any]])
+          )
 
-          val valueData =
-            Invoke(
-              MapObjects(
-                p => constructorFor(valueType, Some(p), walkedTypePath),
-                Invoke(
-                  getPath,
-                  "valueArray",
-                  ArrayType(schemaFor(valueType).dataType)),
-                schemaFor(valueType).dataType
-              ),
-              "array",
-              ObjectType(classOf[Array[Any]])
-            )
+          val valueData = Invoke(
+            MapObjects(
+              p => constructorFor(valueType, Some(p), walkedTypePath),
+              Invoke(
+                getPath,
+                "valueArray",
+                ArrayType(schemaFor(valueType).dataType)),
+              schemaFor(valueType).dataType
+            ),
+            "array",
+            ObjectType(classOf[Array[Any]])
+          )
 
           StaticInvoke(
             ArrayBasedMapData.getClass,
@@ -403,8 +404,11 @@ object ScalaReflection extends ScalaReflection {
               }
           }
 
-          val newInstance =
-            NewInstance(cls, arguments, ObjectType(cls), propagateNull = false)
+          val newInstance = NewInstance(
+            cls,
+            arguments,
+            ObjectType(cls),
+            propagateNull = false)
 
           if (path.nonEmpty) {
             expressions.If(
@@ -554,13 +558,15 @@ object ScalaReflection extends ScalaReflection {
                 val newPath =
                   s"""- option value class: "$className"""" +: walkedTypePath
 
-                val optionObjectType: DataType = other match {
-                  // Special handling is required for arrays, as getClassFromType(<Array>) will fail
-                  // since Scala Arrays map to native Java constructs. E.g. "Array[Int]" will map to
-                  // the Java type "[I".
-                  case arr if arr <:< localTypeOf[Array[_]] => arrayClassFor(t)
-                  case cls                                  => ObjectType(getClassFromType(cls))
-                }
+                val optionObjectType: DataType =
+                  other match {
+                    // Special handling is required for arrays, as getClassFromType(<Array>) will fail
+                    // since Scala Arrays map to native Java constructs. E.g. "Array[Int]" will map to
+                    // the Java type "[I".
+                    case arr if arr <:< localTypeOf[Array[_]] =>
+                      arrayClassFor(t)
+                    case cls => ObjectType(getClassFromType(cls))
+                  }
                 val unwrapped = UnwrapOption(optionObjectType, inputObject)
 
                 expressions.If(
@@ -574,8 +580,10 @@ object ScalaReflection extends ScalaReflection {
             val params = getConstructorParameters(t)
             val nonNullOutput = CreateNamedStruct(params.flatMap {
               case (fieldName, fieldType) =>
-                val fieldValue =
-                  Invoke(inputObject, fieldName, dataTypeFor(fieldType))
+                val fieldValue = Invoke(
+                  inputObject,
+                  fieldName,
+                  dataTypeFor(fieldType))
                 val clsName = getClassNameFromType(fieldType)
                 val newPath =
                   s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
@@ -584,8 +592,8 @@ object ScalaReflection extends ScalaReflection {
                   fieldType,
                   newPath) :: Nil
             })
-            val nullOutput =
-              expressions.Literal.create(null, nonNullOutput.dataType)
+            val nullOutput = expressions.Literal
+              .create(null, nonNullOutput.dataType)
             expressions.If(IsNull(inputObject), nullOutput, nonNullOutput)
 
           case t if t <:< localTypeOf[Array[_]] =>
@@ -599,24 +607,22 @@ object ScalaReflection extends ScalaReflection {
           case t if t <:< localTypeOf[Map[_, _]] =>
             val TypeRef(_, _, Seq(keyType, valueType)) = t
 
-            val keys =
+            val keys = Invoke(
               Invoke(
-                Invoke(
-                  inputObject,
-                  "keysIterator",
-                  ObjectType(classOf[scala.collection.Iterator[_]])),
-                "toSeq",
-                ObjectType(classOf[scala.collection.Seq[_]]))
+                inputObject,
+                "keysIterator",
+                ObjectType(classOf[scala.collection.Iterator[_]])),
+              "toSeq",
+              ObjectType(classOf[scala.collection.Seq[_]]))
             val convertedKeys = toCatalystArray(keys, keyType)
 
-            val values =
+            val values = Invoke(
               Invoke(
-                Invoke(
-                  inputObject,
-                  "valuesIterator",
-                  ObjectType(classOf[scala.collection.Iterator[_]])),
-                "toSeq",
-                ObjectType(classOf[scala.collection.Seq[_]]))
+                inputObject,
+                "valuesIterator",
+                ObjectType(classOf[scala.collection.Iterator[_]])),
+              "toSeq",
+              ObjectType(classOf[scala.collection.Seq[_]]))
             val convertedValues = toCatalystArray(values, valueType)
 
             val Schema(keyDataType, _) = schemaFor(keyType)
@@ -913,8 +919,8 @@ trait ScalaReflection {
     * Returns classes of input parameters of scala function object.
     */
   def getParameterTypes(func: AnyRef): Seq[Class[_]] = {
-    val methods =
-      func.getClass.getMethods.filter(m => m.getName == "apply" && !m.isBridge)
+    val methods = func.getClass.getMethods.filter(m =>
+      m.getName == "apply" && !m.isBridge)
     assert(methods.length == 1)
     methods.head.getParameterTypes
   }
@@ -936,20 +942,21 @@ trait ScalaReflection {
 
   protected def constructParams(tpe: Type): Seq[Symbol] = {
     val constructorSymbol = tpe.member(nme.CONSTRUCTOR)
-    val params = if (constructorSymbol.isMethod) {
-      constructorSymbol.asMethod.paramss
-    } else {
-      // Find the primary constructor, and use its parameter ordering.
-      val primaryConstructorSymbol: Option[Symbol] =
-        constructorSymbol.asTerm.alternatives.find(s =>
-          s.isMethod && s.asMethod.isPrimaryConstructor)
-      if (primaryConstructorSymbol.isEmpty) {
-        sys.error(
-          "Internal SQL error: Product object did not have a primary constructor.")
+    val params =
+      if (constructorSymbol.isMethod) {
+        constructorSymbol.asMethod.paramss
       } else {
-        primaryConstructorSymbol.get.asMethod.paramss
+        // Find the primary constructor, and use its parameter ordering.
+        val primaryConstructorSymbol: Option[Symbol] =
+          constructorSymbol.asTerm.alternatives.find(s =>
+            s.isMethod && s.asMethod.isPrimaryConstructor)
+        if (primaryConstructorSymbol.isEmpty) {
+          sys.error(
+            "Internal SQL error: Product object did not have a primary constructor.")
+        } else {
+          primaryConstructorSymbol.get.asMethod.paramss
+        }
       }
-    }
     params.flatten
   }
 

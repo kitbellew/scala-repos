@@ -23,12 +23,14 @@ class ScalaMemberChooser[T <: ClassMember: scala.reflect.ClassTag](
     needSpecifyRetTypeChb: Boolean,
     targetClass: ScTemplateDefinition)
     extends {
-  val specifyRetTypeChb: JCheckBox = new NonFocusableCheckBox(
-    ScalaBundle.message("specify.return.type.explicitly"))
-  val addOverrideModifierChb = new NonFocusableCheckBox(
-    ScalaBundle.message("add.override.modifier"))
-  private val checkboxes =
-    Array[JComponent](specifyRetTypeChb, addOverrideModifierChb)
+  val specifyRetTypeChb: JCheckBox =
+    new NonFocusableCheckBox(
+      ScalaBundle.message("specify.return.type.explicitly"))
+  val addOverrideModifierChb =
+    new NonFocusableCheckBox(ScalaBundle.message("add.override.modifier"))
+  private val checkboxes = Array[JComponent](
+    specifyRetTypeChb,
+    addOverrideModifierChb)
   private val sortedElements = ScalaMemberChooser.sorted(elements, targetClass)
 } with MemberChooser[T](
   sortedElements.toArray[T],
@@ -65,18 +67,19 @@ object ScalaMemberChooser {
       val supers = targetClass.supers
       sortedClasses ++= supers
     }
-    val ordering = new Ordering[PsiClass] {
-      override def compare(c1: PsiClass, c2: PsiClass): Int = {
-        val less = c1.isInheritor(c2, /*checkDeep =*/ true)
-        val more = c2.isInheritor(c1, /*checkDeep =*/ true)
-        if (less && more)
-          0 //it is possible to have cyclic inheritance for generic traits in scala
-        else if (less)
-          -1
-        else
-          1
+    val ordering =
+      new Ordering[PsiClass] {
+        override def compare(c1: PsiClass, c2: PsiClass): Int = {
+          val less = c1.isInheritor(c2, /*checkDeep =*/ true)
+          val more = c2.isInheritor(c1, /*checkDeep =*/ true)
+          if (less && more)
+            0 //it is possible to have cyclic inheritance for generic traits in scala
+          else if (less)
+            -1
+          else
+            1
+        }
       }
-    }
     sortedClasses ++= groupedMembers.keys.toSeq.sorted(ordering)
 
     sortedClasses.flatMap(c => groupedMembers.getOrElse(c, Seq.empty)).toSeq

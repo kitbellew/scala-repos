@@ -196,14 +196,16 @@ trait EntityPage extends HtmlPage {
               isParent = (pack eq tpl.toRoot.tail.head))
         }
 
-      val parent = tpl.toRoot match {
-        case _ :: parent :: _ if !parent.isRootPackage => Some(parent)
-        case _                                         => None
-      }
+      val parent =
+        tpl.toRoot match {
+          case _ :: parent :: _ if !parent.isRootPackage => Some(parent)
+          case _                                         => None
+        }
 
-      val parentSub = parent.fold(Seq[TemplateEntity with MemberEntity](tpl)) {
-        p => p.templates.filter(_.isPackage).sortBy(_.name)
-      }
+      val parentSub =
+        parent.fold(Seq[TemplateEntity with MemberEntity](tpl)) { p =>
+          p.templates.filter(_.isPackage).sortBy(_.name)
+        }
 
       // If current entity is a package, take its containing entities - otherwise take parent's containing entities
       val currentPackageTpls =
@@ -298,10 +300,11 @@ trait EntityPage extends HtmlPage {
     tpl.abstractTypes ++ tpl.aliasTypes ++ tpl.templates.filter(x =>
       x.isTrait || x.isClass) sorted (implicitly[Ordering[MemberEntity]])
 
-  val constructors = (tpl match {
-    case cls: Class => (cls.constructors: List[MemberEntity]).sorted
-    case _          => Nil
-  })
+  val constructors =
+    (tpl match {
+      case cls: Class => (cls.constructors: List[MemberEntity]).sorted
+      case _          => Nil
+    })
 
   /* for body, there is a special case for AnyRef, otherwise AnyRef appears
    * like a package/object this problem should be fixed, this implementation
@@ -312,19 +315,20 @@ trait EntityPage extends HtmlPage {
         "root package"
       else
         tpl.name
-    val displayName = tpl.companion match {
-      case Some(companion)
-          if (companion.visibility.isPublic && companion.inSource != None) =>
-        <a href={
-          relativeLinkTo(companion)
-        } title={
-          docEntityKindToCompanionTitle(tpl)
-        }>{
+    val displayName =
+      tpl.companion match {
+        case Some(companion)
+            if (companion.visibility.isPublic && companion.inSource != None) =>
+          <a href={
+            relativeLinkTo(companion)
+          } title={
+            docEntityKindToCompanionTitle(tpl)
+          }>{
+            templateName
+          }</a>
+        case _ =>
           templateName
-        }</a>
-      case _ =>
-        templateName
-    }
+      }
     val owner = {
       if (tpl.isRootPackage || tpl.inTemplate.isRootPackage)
         NodeSeq.Empty
@@ -656,17 +660,18 @@ trait EntityPage extends HtmlPage {
       indentation: Int = 0
   ): NodeSeq = {
     // Sometimes it's same, do we need signatureCompat still?
-    val sig = if (mbr.signature == mbr.signatureCompat) {
-      <a id={
-        mbr.signature
-      }/>
-    } else {
-      <a id={
-        mbr.signature
-      }/><a id={
-        mbr.signatureCompat
-      }/>
-    }
+    val sig =
+      if (mbr.signature == mbr.signatureCompat) {
+        <a id={
+          mbr.signature
+        }/>
+      } else {
+        <a id={
+          mbr.signature
+        }/><a id={
+          mbr.signatureCompat
+        }/>
+      }
 
     val memberComment = memberToCommentHtml(mbr, inTpl, isSelf = false)
     <li name={
@@ -800,13 +805,14 @@ trait EntityPage extends HtmlPage {
       </div>
 
     val paramComments = {
-      val prs: List[ParameterEntity] = mbr match {
-        case cls: Class       => cls.typeParams ::: cls.valueParams.flatten
-        case trt: Trait       => trt.typeParams
-        case dfe: Def         => dfe.typeParams ::: dfe.valueParams.flatten
-        case ctr: Constructor => ctr.valueParams.flatten
-        case _                => Nil
-      }
+      val prs: List[ParameterEntity] =
+        mbr match {
+          case cls: Class       => cls.typeParams ::: cls.valueParams.flatten
+          case trt: Trait       => trt.typeParams
+          case dfe: Def         => dfe.typeParams ::: dfe.valueParams.flatten
+          case ctr: Constructor => ctr.valueParams.flatten
+          case _                => Nil
+        }
 
       def paramCommentToHtml(
           prs: List[ParameterEntity],
@@ -858,103 +864,111 @@ trait EntityPage extends HtmlPage {
       }
     }
 
-    val implicitInformation = mbr.byConversion match {
-      case Some(conv) =>
-        <dt class="implicit">Implicit</dt> ++ {
-          val targetType = typeToHtml(conv.targetType, hasLinks = true)
-          val conversionMethod = conv.convertorMethod match {
-            case Left(member) => Text(member.name)
-            case Right(name)  => Text(name)
-          }
-
-          // strip off the package object endings, they make things harder to follow
-          val conversionOwnerQualifiedNane =
-            conv.convertorOwner.qualifiedName.stripSuffix(".package")
-          val conversionOwner =
-            templateToHtml(conv.convertorOwner, conversionOwnerQualifiedNane)
-
-          val constraintText = conv.constraints match {
-            case Nil =>
-              NodeSeq.Empty
-            case List(constraint) =>
-              scala.xml.Text(
-                "This conversion will take place only if ") ++ constraintToHtml(
-                constraint) ++ scala.xml.Text(".")
-            case List(constraint1, constraint2) =>
-              scala.xml.Text(
-                "This conversion will take place only if ") ++ constraintToHtml(
-                constraint1) ++
-                scala.xml.Text(" and at the same time ") ++ constraintToHtml(
-                constraint2) ++ scala.xml.Text(".")
-            case constraints =>
-              <br/> ++ "This conversion will take place only if all of the following constraints are met:" ++ <br/> ++ {
-                var index = 0
-                constraints map { constraint =>
-                  scala.xml.Text({
-                    index += 1;
-                    index
-                  } + ". ") ++ constraintToHtml(constraint) ++ <br/>
-                }
+    val implicitInformation =
+      mbr.byConversion match {
+        case Some(conv) =>
+          <dt class="implicit">Implicit</dt> ++ {
+            val targetType = typeToHtml(conv.targetType, hasLinks = true)
+            val conversionMethod =
+              conv.convertorMethod match {
+                case Left(member) => Text(member.name)
+                case Right(name)  => Text(name)
               }
-          }
 
-          <dd>
+            // strip off the package object endings, they make things harder to follow
+            val conversionOwnerQualifiedNane = conv.convertorOwner.qualifiedName
+              .stripSuffix(".package")
+            val conversionOwner = templateToHtml(
+              conv.convertorOwner,
+              conversionOwnerQualifiedNane)
+
+            val constraintText =
+              conv.constraints match {
+                case Nil =>
+                  NodeSeq.Empty
+                case List(constraint) =>
+                  scala.xml.Text(
+                    "This conversion will take place only if ") ++ constraintToHtml(
+                    constraint) ++ scala.xml.Text(".")
+                case List(constraint1, constraint2) =>
+                  scala.xml.Text(
+                    "This conversion will take place only if ") ++ constraintToHtml(
+                    constraint1) ++
+                    scala.xml.Text(
+                      " and at the same time ") ++ constraintToHtml(
+                    constraint2) ++ scala.xml.Text(".")
+                case constraints =>
+                  <br/> ++ "This conversion will take place only if all of the following constraints are met:" ++ <br/> ++ {
+                    var index = 0
+                    constraints map { constraint =>
+                      scala.xml.Text({
+                        index += 1;
+                        index
+                      } + ". ") ++ constraintToHtml(constraint) ++ <br/>
+                    }
+                  }
+              }
+
+            <dd>
             This member is added by an implicit conversion from {
-            typeToHtml(inTpl.resultType, hasLinks = true)
-          } to
+              typeToHtml(inTpl.resultType, hasLinks = true)
+            } to
             {
-            targetType
-          } performed by method {
-            conversionMethod
-          } in {
-            conversionOwner
-          }.
+              targetType
+            } performed by method {
+              conversionMethod
+            } in {
+              conversionOwner
+            }.
             {
-            constraintText
-          }
-          </dd>
-        } ++ {
-          if (mbr.isShadowedOrAmbiguousImplicit) {
-            // These are the members that are shadowing or ambiguating the current implicit
-            // see ImplicitMemberShadowing trait for more information
-            val shadowingSuggestion = {
-              val params = mbr match {
-                case d: Def =>
-                  d.valueParams map (_ map (_ name) mkString ("(", ", ", ")")) mkString
-                case _ => "" // no parameters
-              }
-              <br/> ++ scala.xml.Text("To access this member you can use a ") ++
-                <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala"
-                target="_blank">type ascription</a> ++ scala.xml.Text(":") ++
-                <br/> ++ <div class="cmt"><pre>{
-                "(" + EntityPage.lowerFirstLetter(
-                  tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
-              }</pre></div>
+              constraintText
             }
+          </dd>
+          } ++ {
+            if (mbr.isShadowedOrAmbiguousImplicit) {
+              // These are the members that are shadowing or ambiguating the current implicit
+              // see ImplicitMemberShadowing trait for more information
+              val shadowingSuggestion = {
+                val params =
+                  mbr match {
+                    case d: Def =>
+                      d.valueParams map (_ map (_ name) mkString ("(", ", ", ")")) mkString
+                    case _ => "" // no parameters
+                  }
+                <br/> ++ scala.xml.Text(
+                  "To access this member you can use a ") ++
+                  <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala"
+                target="_blank">type ascription</a> ++ scala.xml.Text(":") ++
+                  <br/> ++ <div class="cmt"><pre>{
+                  "(" + EntityPage.lowerFirstLetter(
+                    tpl.name) + ": " + conv.targetType.name + ")." + mbr.name + params
+                }</pre></div>
+              }
 
-            val shadowingWarning: NodeSeq =
-              if (mbr.isShadowedImplicit)
-                scala.xml.Text(
-                  "This implicitly inherited member is shadowed by one or more members in this " +
-                    "class.") ++ shadowingSuggestion
-              else if (mbr.isAmbiguousImplicit)
-                scala.xml.Text("This implicitly inherited member is ambiguous. One or more implicitly " +
-                  "inherited members have similar signatures, so calling this member may produce an ambiguous " +
-                  "implicit conversion compiler error.") ++ shadowingSuggestion
-              else
-                NodeSeq.Empty
+              val shadowingWarning: NodeSeq =
+                if (mbr.isShadowedImplicit)
+                  scala.xml.Text(
+                    "This implicitly inherited member is shadowed by one or more members in this " +
+                      "class.") ++ shadowingSuggestion
+                else if (mbr.isAmbiguousImplicit)
+                  scala.xml.Text(
+                    "This implicitly inherited member is ambiguous. One or more implicitly " +
+                      "inherited members have similar signatures, so calling this member may produce an ambiguous " +
+                      "implicit conversion compiler error.") ++ shadowingSuggestion
+                else
+                  NodeSeq.Empty
 
-            <dt class="implicit">Shadowing</dt> ++
-              <dd>{
-                shadowingWarning
-              }</dd>
+              <dt class="implicit">Shadowing</dt> ++
+                <dd>{
+                  shadowingWarning
+                }</dd>
 
-          } else
-            NodeSeq.Empty
-        }
-      case _ =>
-        NodeSeq.Empty
-    }
+            } else
+              NodeSeq.Empty
+          }
+        case _ =>
+          NodeSeq.Empty
+      }
 
     // --- start attributes block vals
     val attributes: NodeSeq = {
@@ -1001,20 +1015,23 @@ trait EntityPage extends HtmlPage {
       }
     }
 
-    val selfType: NodeSeq = mbr match {
-      case dtpl: DocTemplateEntity
-          if (isSelf && !dtpl.selfType.isEmpty && !isReduced) =>
-        <dt>Self Type</dt>
+    val selfType: NodeSeq =
+      mbr match {
+        case dtpl: DocTemplateEntity
+            if (isSelf && !dtpl.selfType.isEmpty && !isReduced) =>
+          <dt>Self Type</dt>
         <dd>{
-          typeToHtml(dtpl.selfType.get, hasLinks = true)
-        }</dd>
-      case _ => NodeSeq.Empty
-    }
+            typeToHtml(dtpl.selfType.get, hasLinks = true)
+          }</dd>
+        case _ => NodeSeq.Empty
+      }
 
     val annotations: NodeSeq = {
       // A list of annotations which don't show their arguments, e. g. because they are shown separately.
-      val annotationsWithHiddenArguments =
-        List("deprecated", "Deprecated", "migration")
+      val annotationsWithHiddenArguments = List(
+        "deprecated",
+        "Deprecated",
+        "migration")
 
       def showArguments(annotation: Annotation) =
         !(annotationsWithHiddenArguments.contains(annotation.qualifiedName))
@@ -1040,20 +1057,21 @@ trait EntityPage extends HtmlPage {
         NodeSeq.Empty
     }
 
-    val sourceLink: NodeSeq = mbr match {
-      case dtpl: DocTemplateEntity
-          if (isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource.isDefined && !isReduced) =>
-        val (absFile, _) = dtpl.inSource.get
-        <dt>Source</dt>
+    val sourceLink: NodeSeq =
+      mbr match {
+        case dtpl: DocTemplateEntity
+            if (isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource.isDefined && !isReduced) =>
+          val (absFile, _) = dtpl.inSource.get
+          <dt>Source</dt>
         <dd>{
-          <a href={
-            dtpl.sourceUrl.get.toString
-          } target="_blank">{
-            Text(absFile.file.getName)
-          }</a>
-        }</dd>
-      case _ => NodeSeq.Empty
-    }
+            <a href={
+              dtpl.sourceUrl.get.toString
+            } target="_blank">{
+              Text(absFile.file.getName)
+            }</a>
+          }</dd>
+        case _ => NodeSeq.Empty
+      }
 
     val deprecation: NodeSeq =
       mbr.deprecation match {
@@ -1075,107 +1093,108 @@ trait EntityPage extends HtmlPage {
         case _ => NodeSeq.Empty
       }
 
-    val mainComment: NodeSeq = mbr.comment match {
-      case Some(comment) if (!isReduced) =>
-        def orEmpty[T](it: Iterable[T])(gen: => NodeSeq): NodeSeq =
-          if (it.isEmpty)
-            NodeSeq.Empty
-          else
-            gen
+    val mainComment: NodeSeq =
+      mbr.comment match {
+        case Some(comment) if (!isReduced) =>
+          def orEmpty[T](it: Iterable[T])(gen: => NodeSeq): NodeSeq =
+            if (it.isEmpty)
+              NodeSeq.Empty
+            else
+              gen
 
-        val example =
-          orEmpty(comment.example) {
-            <div class="block">Example{
-              if (comment.example.length > 1)
-                "s"
-              else
-                ""
-            }:
+          val example =
+            orEmpty(comment.example) {
+              <div class="block">Example{
+                if (comment.example.length > 1)
+                  "s"
+                else
+                  ""
+              }:
                <ol>{
-              val exampleXml: List[NodeSeq] =
-                for (ex <- comment.example)
-                  yield <li class="cmt">{
-                    bodyToHtml(ex)
-                  }</li>
-              exampleXml.reduceLeft(_ ++ Text(", ") ++ _)
-            }</ol>
+                val exampleXml: List[NodeSeq] =
+                  for (ex <- comment.example)
+                    yield <li class="cmt">{
+                      bodyToHtml(ex)
+                    }</li>
+                exampleXml.reduceLeft(_ ++ Text(", ") ++ _)
+              }</ol>
             </div>
-          }
+            }
 
-        val version: NodeSeq =
-          orEmpty(comment.version) {
-            <dt>Version</dt>
+          val version: NodeSeq =
+            orEmpty(comment.version) {
+              <dt>Version</dt>
             <dd>{
-              for (body <- comment.version.toList)
-                yield bodyToHtml(body)
-            }</dd>
-          }
+                for (body <- comment.version.toList)
+                  yield bodyToHtml(body)
+              }</dd>
+            }
 
-        val sinceVersion: NodeSeq =
-          orEmpty(comment.since) {
-            <dt>Since</dt>
+          val sinceVersion: NodeSeq =
+            orEmpty(comment.since) {
+              <dt>Since</dt>
             <dd>{
-              for (body <- comment.since.toList)
-                yield bodyToHtml(body)
-            }</dd>
-          }
+                for (body <- comment.since.toList)
+                  yield bodyToHtml(body)
+              }</dd>
+            }
 
-        val note: NodeSeq =
-          orEmpty(comment.note) {
-            <dt>Note</dt>
+          val note: NodeSeq =
+            orEmpty(comment.note) {
+              <dt>Note</dt>
             <dd>{
-              val noteXml: List[NodeSeq] =
-                for (note <- comment.note)
-                  yield <span class="cmt">{
-                    bodyToHtml(note)
-                  }</span>
-              noteXml.reduceLeft(_ ++ Text(", ") ++ _)
-            }</dd>
-          }
+                val noteXml: List[NodeSeq] =
+                  for (note <- comment.note)
+                    yield <span class="cmt">{
+                      bodyToHtml(note)
+                    }</span>
+                noteXml.reduceLeft(_ ++ Text(", ") ++ _)
+              }</dd>
+            }
 
-        val seeAlso: NodeSeq =
-          orEmpty(comment.see) {
-            <dt>See also</dt>
+          val seeAlso: NodeSeq =
+            orEmpty(comment.see) {
+              <dt>See also</dt>
             <dd>{
-              val seeXml: List[NodeSeq] =
-                for (see <- comment.see)
-                  yield <span class="cmt">{
-                    bodyToHtml(see)
-                  }</span>
-              seeXml.reduceLeft(_ ++ _)
-            }</dd>
-          }
+                val seeXml: List[NodeSeq] =
+                  for (see <- comment.see)
+                    yield <span class="cmt">{
+                      bodyToHtml(see)
+                    }</span>
+                seeXml.reduceLeft(_ ++ _)
+              }</dd>
+            }
 
-        val exceptions: NodeSeq =
-          orEmpty(comment.throws) {
-            <dt>Exceptions thrown</dt>
+          val exceptions: NodeSeq =
+            orEmpty(comment.throws) {
+              <dt>Exceptions thrown</dt>
             <dd>{
-              val exceptionsXml: List[NodeSeq] =
-                for ((name, body) <- comment.throws.toList.sortBy(_._1))
-                  yield <span class="cmt">{
-                    bodyToHtml(body)
-                  }</span>
-              exceptionsXml.reduceLeft(_ ++ Text("") ++ _)
-            }</dd>
-          }
+                val exceptionsXml: List[NodeSeq] =
+                  for ((name, body) <- comment.throws.toList.sortBy(_._1))
+                    yield <span class="cmt">{
+                      bodyToHtml(body)
+                    }</span>
+                exceptionsXml.reduceLeft(_ ++ Text("") ++ _)
+              }</dd>
+            }
 
-        val todo: NodeSeq =
-          orEmpty(comment.todo) {
-            <dt>To do</dt>
+          val todo: NodeSeq =
+            orEmpty(comment.todo) {
+              <dt>To do</dt>
             <dd>{
-              val todoXml: List[NodeSeq] =
-                (for (todo <- comment.todo)
-                  yield <span class="cmt">{
-                    bodyToHtml(todo)
-                  }</span>)
-              todoXml.reduceLeft(_ ++ _)
-            }</dd>
-          }
+                val todoXml: List[NodeSeq] =
+                  (for (todo <- comment.todo)
+                    yield <span class="cmt">{
+                      bodyToHtml(todo)
+                    }</span>)
+                todoXml.reduceLeft(_ ++ _)
+              }</dd>
+            }
 
-        example ++ version ++ sinceVersion ++ exceptions ++ todo ++ note ++ seeAlso
+          example ++ version ++ sinceVersion ++ exceptions ++ todo ++ note ++ seeAlso
 
-      case _ => NodeSeq.Empty
-    }
+        case _ => NodeSeq.Empty
+      }
     // end attributes block vals ---
 
     val attributesInfo =
@@ -1188,48 +1207,50 @@ trait EntityPage extends HtmlPage {
           attributesInfo
         }</dl>
 
-    val linearization = mbr match {
-      case dtpl: DocTemplateEntity
-          if isSelf && !isReduced && dtpl.linearizationTemplates.nonEmpty =>
-        <div class="toggleContainer block">
+    val linearization =
+      mbr match {
+        case dtpl: DocTemplateEntity
+            if isSelf && !isReduced && dtpl.linearizationTemplates.nonEmpty =>
+          <div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
           <div class="superTypes hiddenContent">{
-          typesToHtml(
-            dtpl.linearizationTypes,
-            hasLinks = true,
-            sep = scala.xml.Text(", "))
-        }</div>
+            typesToHtml(
+              dtpl.linearizationTypes,
+              hasLinks = true,
+              sep = scala.xml.Text(", "))
+          }</div>
         </div>
-      case _ => NodeSeq.Empty
-    }
+        case _ => NodeSeq.Empty
+      }
 
-    val subclasses = mbr match {
-      case dtpl: DocTemplateEntity if isSelf && !isReduced =>
-        val subs = mutable.HashSet.empty[DocTemplateEntity]
-        def transitive(dtpl: DocTemplateEntity) {
-          for (sub <- dtpl.directSubClasses if !(subs contains sub)) {
-            subs add sub
-            transitive(sub)
+    val subclasses =
+      mbr match {
+        case dtpl: DocTemplateEntity if isSelf && !isReduced =>
+          val subs = mutable.HashSet.empty[DocTemplateEntity]
+          def transitive(dtpl: DocTemplateEntity) {
+            for (sub <- dtpl.directSubClasses if !(subs contains sub)) {
+              subs add sub
+              transitive(sub)
+            }
           }
-        }
-        transitive(dtpl)
-        if (subs.nonEmpty)
-          <div class="toggleContainer block">
+          transitive(dtpl)
+          if (subs.nonEmpty)
+            <div class="toggleContainer block">
             <span class="toggle">
               Known Subclasses
             </span>
             <div class="subClasses hiddenContent">{
-            templatesToHtml(
-              subs.toList.sorted(Entity.EntityOrdering),
-              scala.xml.Text(", "))
-          }</div>
+              templatesToHtml(
+                subs.toList.sorted(Entity.EntityOrdering),
+                scala.xml.Text(", "))
+            }</div>
           </div>
-        else
-          NodeSeq.Empty
-      case _ => NodeSeq.Empty
-    }
+          else
+            NodeSeq.Empty
+        case _ => NodeSeq.Empty
+      }
 
     def createDiagram(
         f: DocTemplateEntity => Option[Diagram],
@@ -1274,8 +1295,10 @@ trait EntityPage extends HtmlPage {
       _.inheritanceDiagram,
       "Type Hierarchy",
       "inheritance-diagram")
-    val contentHierarchy =
-      createDiagram(_.contentDiagram, "Content Hierarchy", "content-diagram")
+    val contentHierarchy = createDiagram(
+      _.contentDiagram,
+      "Content Hierarchy",
+      "content-diagram")
 
     memberComment ++ authorComment ++ paramComments ++ attributesBlock ++ linearization ++ subclasses ++ typeHierarchy ++ contentHierarchy
   }

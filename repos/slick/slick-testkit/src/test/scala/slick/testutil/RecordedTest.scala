@@ -26,8 +26,9 @@ abstract class RecordedTest {
       Console.withOut(logP)(run)
       val logA = log.toByteArray
       Console.out.write(logA)
-      val r = new BufferedReader(
-        new InputStreamReader(new ByteArrayInputStream(logA)))
+      val r =
+        new BufferedReader(
+          new InputStreamReader(new ByteArrayInputStream(logA)))
       val masked = new StringWriter()
       val w = new BufferedWriter(masked)
       var line: String = null

@@ -110,9 +110,10 @@ private[json] object ScalaSigReader {
   private def findArgTypeForField(
       s: MethodSymbol,
       typeArgIdx: Int): Class[_] = {
-    val t = s.infoType match {
-      case NullaryMethodType(TypeRefType(_, _, args)) => args(typeArgIdx)
-    }
+    val t =
+      s.infoType match {
+        case NullaryMethodType(TypeRefType(_, _, args)) => args(typeArgIdx)
+      }
 
     @scala.annotation.tailrec
     def findPrimitive(t: Type): Symbol =

@@ -216,8 +216,7 @@ trait Creators { this: ActorDSL.type ⇒
     *        where the latter is always implicitly available within an [[akka.actor.Actor]].
     */
   def actor[T <: Actor: ClassTag](factory: ActorRefFactory, name: String)(
-      ctor: ⇒ T): ActorRef =
-    actor(name)(ctor)(implicitly[ClassTag[T]], factory)
+      ctor: ⇒ T): ActorRef = actor(name)(ctor)(implicitly[ClassTag[T]], factory)
 
   /**
     * Create an actor with an automatically generated name from the given thunk

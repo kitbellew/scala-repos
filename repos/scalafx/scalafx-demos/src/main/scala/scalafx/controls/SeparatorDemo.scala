@@ -43,35 +43,39 @@ object SeparatorDemo extends JFXApp {
 
   val separator = new Separator
 
-  val pnlSeparator = new FlowPane {
-    children = List(
-      new Button {
-        text = "Button 1"
-      },
-      separator,
-      new Button {
-        text = "Button 2"
-      })
-    minHeight = 100
-    prefHeight = 100
-    minWidth = 100
-    prefWidth = 300
-  }
+  val pnlSeparator =
+    new FlowPane {
+      children = List(
+        new Button {
+          text = "Button 1"
+        },
+        separator,
+        new Button {
+          text = "Button 2"
+        })
+      minHeight = 100
+      prefHeight = 100
+      minWidth = 100
+      prefWidth = 300
+    }
 
-  val controlsPane = new VBox {
-    spacing = 5
-    fillWidth = true
-    alignment = Pos.Center
-    alignmentInParent = Pos.TopCenter
-    hgrow = Priority.Always
-    children =
-      List(new SeparatorControls(separator), new ControlControls(separator))
-  }
+  val controlsPane =
+    new VBox {
+      spacing = 5
+      fillWidth = true
+      alignment = Pos.Center
+      alignmentInParent = Pos.TopCenter
+      hgrow = Priority.Always
+      children = List(
+        new SeparatorControls(separator),
+        new ControlControls(separator))
+    }
 
-  val mainPane = new BorderPane {
-    top = pnlSeparator
-    center = controlsPane
-  }
+  val mainPane =
+    new BorderPane {
+      top = pnlSeparator
+      center = controlsPane
+    }
 
   stage = new PrimaryStage {
     title = "Tooltip Test"
@@ -88,21 +92,28 @@ object SeparatorDemo extends JFXApp {
 class SeparatorControls(target: Separator)
     extends PropertiesNodes[Separator](target, "Separator Controls") {
 
-  val chbHPos = new ChoiceBox[jfxg.HPos] {
-    items = ObservableBuffer(HPos.Center, HPos.Left, HPos.Right)
-    value <==> target.halignment
-  }
+  val chbHPos =
+    new ChoiceBox[jfxg.HPos] {
+      items = ObservableBuffer(HPos.Center, HPos.Left, HPos.Right)
+      value <==> target.halignment
+    }
 
-  val chbOrientation = new ChoiceBox[jfxg.Orientation] {
-    items = ObservableBuffer(Orientation.Horizontal, Orientation.Vertical)
-    value <==> target.orientation
-  }
+  val chbOrientation =
+    new ChoiceBox[jfxg.Orientation] {
+      items = ObservableBuffer(Orientation.Horizontal, Orientation.Vertical)
+      value <==> target.orientation
+    }
 
   // NOTE: The type of ChoiceBox is using javafx.geometry.VPos due to current limitations of binding implementation
-  val chbVPos = new ChoiceBox[jfxg.VPos] {
-    items = ObservableBuffer(VPos.Baseline, VPos.Bottom, VPos.Center, VPos.Top)
-    value <==> target.valignment
-  }
+  val chbVPos =
+    new ChoiceBox[jfxg.VPos] {
+      items = ObservableBuffer(
+        VPos.Baseline,
+        VPos.Bottom,
+        VPos.Center,
+        VPos.Top)
+      value <==> target.valignment
+    }
 
   super.addNode("HPos", chbHPos)
   super.addNode("VPos", chbVPos)

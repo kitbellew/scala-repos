@@ -258,16 +258,17 @@ class LogSegmentTest {
       initFileSize: Int = 0,
       preallocate: Boolean = false): LogSegment = {
     val tempDir = TestUtils.tempDir()
-    val seg = new LogSegment(
-      tempDir,
-      offset,
-      10,
-      1000,
-      0,
-      SystemTime,
-      fileAlreadyExists = fileAlreadyExists,
-      initFileSize = initFileSize,
-      preallocate = preallocate)
+    val seg =
+      new LogSegment(
+        tempDir,
+        offset,
+        10,
+        1000,
+        0,
+        SystemTime,
+        fileAlreadyExists = fileAlreadyExists,
+        initFileSize = initFileSize,
+        preallocate = preallocate)
     segments += seg
     seg
   }
@@ -288,16 +289,17 @@ class LogSegmentTest {
   @Test
   def testCreateWithInitFileSizeClearShutdown() {
     val tempDir = TestUtils.tempDir()
-    val seg = new LogSegment(
-      tempDir,
-      40,
-      10,
-      1000,
-      0,
-      SystemTime,
-      false,
-      512 * 1024 * 1024,
-      true)
+    val seg =
+      new LogSegment(
+        tempDir,
+        40,
+        10,
+        1000,
+        0,
+        SystemTime,
+        false,
+        512 * 1024 * 1024,
+        true)
 
     val ms = messages(50, "hello", "there")
     seg.append(50, ms)
@@ -313,20 +315,23 @@ class LogSegmentTest {
     //After close, file should be trimmed
     assertEquals(oldSize, seg.log.file.length)
 
-    val segReopen = new LogSegment(
-      tempDir,
-      40,
-      10,
-      1000,
-      0,
-      SystemTime,
-      true,
-      512 * 1024 * 1024,
-      true)
+    val segReopen =
+      new LogSegment(
+        tempDir,
+        40,
+        10,
+        1000,
+        0,
+        SystemTime,
+        true,
+        512 * 1024 * 1024,
+        true)
     segments += segReopen
 
-    val readAgain =
-      segReopen.read(startOffset = 55, maxSize = 200, maxOffset = None)
+    val readAgain = segReopen.read(
+      startOffset = 55,
+      maxSize = 200,
+      maxOffset = None)
     assertEquals(ms2.toList, readAgain.messageSet.toList)
     val size = segReopen.log.sizeInBytes()
     val position = segReopen.log.channel.position

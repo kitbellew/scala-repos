@@ -67,8 +67,8 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
 
   test("basic row serialization") {
     val rows = Seq(Row("Hello", 1), Row("World", 2))
-    val unsafeRows =
-      rows.map(row => toUnsafeRow(row, Array(StringType, IntegerType)))
+    val unsafeRows = rows.map(row =>
+      toUnsafeRow(row, Array(StringType, IntegerType)))
     val serializer = new UnsafeRowSerializer(numFields = 2).newInstance()
     val baos = new ByteArrayOutputStream()
     val serializerStream = serializer.serializeStream(baos)
@@ -119,19 +119,21 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
         (i, converter(Row(i)))
       }
       val taskMemoryManager = new TaskMemoryManager(sc.env.memoryManager, 0)
-      val taskContext = new TaskContextImpl(
-        0,
-        0,
-        0,
-        0,
-        taskMemoryManager,
-        null,
-        InternalAccumulator.create(sc))
+      val taskContext =
+        new TaskContextImpl(
+          0,
+          0,
+          0,
+          0,
+          taskMemoryManager,
+          null,
+          InternalAccumulator.create(sc))
 
-      val sorter = new ExternalSorter[Int, UnsafeRow, UnsafeRow](
-        taskContext,
-        partitioner = Some(new HashPartitioner(10)),
-        serializer = new UnsafeRowSerializer(numFields = 1))
+      val sorter =
+        new ExternalSorter[Int, UnsafeRow, UnsafeRow](
+          taskContext,
+          partitioner = Some(new HashPartitioner(10)),
+          serializer = new UnsafeRowSerializer(numFields = 1))
 
       // Ensure we spilled something and have to merge them later
       assert(sorter.numSpills === 0)

@@ -39,9 +39,10 @@ class Compiler(classpath: Array[URL], val settings: Settings) {
         "args_$eq",
         Array(classOf[Array[String]]),
         Array(settingsArray))
-      val result =
-        foreignInvoke("compile", Array(classOf[Array[File]]), Array(files))
-          .asInstanceOf[Int]
+      val result = foreignInvoke(
+        "compile",
+        Array(classOf[Array[File]]),
+        Array(files)).asInstanceOf[Int]
       (result >> 16, result & 0x00FF)
     } catch {
       case ex: Exception => throw CompilationFailure(ex.getMessage, ex)

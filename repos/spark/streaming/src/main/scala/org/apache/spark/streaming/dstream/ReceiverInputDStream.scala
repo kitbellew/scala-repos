@@ -85,12 +85,14 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
         // Otherwise, ask the tracker for all the blocks that have been allocated to this stream
         // for this batch
         val receiverTracker = ssc.scheduler.receiverTracker
-        val blockInfos =
-          receiverTracker.getBlocksOfBatch(validTime).getOrElse(id, Seq.empty)
+        val blockInfos = receiverTracker
+          .getBlocksOfBatch(validTime)
+          .getOrElse(id, Seq.empty)
 
         // Register the input blocks information into InputInfoTracker
-        val inputInfo =
-          StreamInputInfo(id, blockInfos.flatMap(_.numRecords).sum)
+        val inputInfo = StreamInputInfo(
+          id,
+          blockInfos.flatMap(_.numRecords).sum)
         ssc.scheduler.inputInfoTracker.reportInfo(validTime, inputInfo)
 
         // Create the BlockRDD
@@ -105,9 +107,10 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
       blockInfos: Seq[ReceivedBlockInfo]): RDD[T] = {
 
     if (blockInfos.nonEmpty) {
-      val blockIds = blockInfos.map {
-        _.blockId.asInstanceOf[BlockId]
-      }.toArray
+      val blockIds =
+        blockInfos.map {
+          _.blockId.asInstanceOf[BlockId]
+        }.toArray
 
       // Are WAL record handles present with all the blocks
       val areWALRecordHandlesPresent = blockInfos.forall {
@@ -116,12 +119,14 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
 
       if (areWALRecordHandlesPresent) {
         // If all the blocks have WAL record handle, then create a WALBackedBlockRDD
-        val isBlockIdValid = blockInfos.map {
-          _.isBlockIdValid()
-        }.toArray
-        val walRecordHandles = blockInfos.map {
-          _.walRecordHandleOption.get
-        }.toArray
+        val isBlockIdValid =
+          blockInfos.map {
+            _.isBlockIdValid()
+          }.toArray
+        val walRecordHandles =
+          blockInfos.map {
+            _.walRecordHandleOption.get
+          }.toArray
         new WriteAheadLogBackedBlockRDD[T](
           ssc.sparkContext,
           blockIds,

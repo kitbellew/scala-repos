@@ -20,32 +20,26 @@ private[nio] final class TypedArrayIntBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): IntBuffer =
-    GenTypedArrayBuffer(this).generic_slice()
+  def slice(): IntBuffer = GenTypedArrayBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): IntBuffer =
-    GenTypedArrayBuffer(this).generic_duplicate()
+  def duplicate(): IntBuffer = GenTypedArrayBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): IntBuffer =
     GenTypedArrayBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Int =
-    GenBuffer(this).generic_get()
+  def get(): Int = GenBuffer(this).generic_get()
 
   @noinline
-  def put(c: Int): IntBuffer =
-    GenBuffer(this).generic_put(c)
+  def put(c: Int): IntBuffer = GenBuffer(this).generic_put(c)
 
   @noinline
-  def get(index: Int): Int =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Int = GenBuffer(this).generic_get(index)
 
   @noinline
-  def put(index: Int, c: Int): IntBuffer =
-    GenBuffer(this).generic_put(index, c)
+  def put(index: Int, c: Int): IntBuffer = GenBuffer(this).generic_put(index, c)
 
   @noinline
   override def get(dst: Array[Int], offset: Int, length: Int): IntBuffer =
@@ -56,11 +50,9 @@ private[nio] final class TypedArrayIntBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): IntBuffer =
-    GenTypedArrayBuffer(this).generic_compact()
+  def compact(): IntBuffer = GenTypedArrayBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    ByteOrder.nativeOrder()
+  def order(): ByteOrder = ByteOrder.nativeOrder()
 
   // Internal API
 
@@ -77,8 +69,7 @@ private[nio] final class TypedArrayIntBuffer private (
     GenTypedArrayBuffer(this).generic_dataView
 
   @inline
-  private[nio] def load(index: Int): Int =
-    _typedArray(index)
+  private[nio] def load(index: Int): Int = _typedArray(index)
 
   @inline
   private[nio] def store(index: Int, elem: Int): Unit =

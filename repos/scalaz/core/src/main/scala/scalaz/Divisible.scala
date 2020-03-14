@@ -23,9 +23,10 @@ trait Divisible[F[_]] extends Divide[F] { self =>
   def divisibleLaw = new DivisibleLaw {}
 
   ////
-  val divisibleSyntax = new scalaz.syntax.DivisibleSyntax[F] {
-    def F = Divisible.this
-  }
+  val divisibleSyntax =
+    new scalaz.syntax.DivisibleSyntax[F] {
+      def F = Divisible.this
+    }
 }
 
 object Divisible {

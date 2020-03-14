@@ -8,16 +8,14 @@ package lang.completeStatement
   */
 class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   def testWhileCondition1() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {
         |    while <caret>
         |  }
         |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {
         |    while (<caret>) {
@@ -31,16 +29,14 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   }
 
   def testWhileCondition2() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {
         |    while<caret>
         |  }
         |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {
         |    while (<caret>) {
@@ -54,16 +50,14 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   }
 
   def testWhileCondition3() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {
         |    while (<caret>
         |  }
         |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {
         |    while (<caret>) {
@@ -77,8 +71,7 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   }
 
   def testWhileCondition4() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {
         |    while (true<caret>) {
@@ -87,8 +80,7 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
         |  }
         |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {
         |    while (true) {
@@ -102,16 +94,14 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   }
 
   def testWhileCondition5() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {
         |    while (true) {<caret>
         |  }
         |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {
         |    while (true) {
@@ -125,8 +115,7 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   }
 
   def testWhileCondition6() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {
         |    while (true<caret>) {
@@ -135,8 +124,7 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
         |  }
         |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {
         |    while (true) {
@@ -151,16 +139,14 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   }
 
   def testWhileCondition7() {
-    val fileText =
-      """
+    val fileText = """
         |class B {
         |  def method() {
         |    while ()<caret>
         |  }
         |}
       """.stripMargin
-    val resultText =
-      """
+    val resultText = """
         |class B {
         |  def method() {
         |    while (<caret>) {
@@ -174,15 +160,13 @@ class ScalaCompleteWhileConditionTest extends ScalaCompleteStatementTestBase {
   }
 
   def testWhileCondition8() {
-    val fileText =
-      """
+    val fileText = """
         |object A {
         |  while (true)<caret>
         |}
       """.stripMargin
 
-    val resultText =
-      """
+    val resultText = """
         |object A {
         |  while (true) {
         |    <caret>

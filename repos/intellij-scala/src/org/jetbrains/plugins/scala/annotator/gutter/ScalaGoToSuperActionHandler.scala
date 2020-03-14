@@ -34,8 +34,8 @@ class ScalaGoToSuperActionHandler extends LanguageCodeInsightActionHandler {
 
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     val offset = editor.getCaretModel.getOffset
-    val (superClasses, superSignatureElements) =
-      ScalaGoToSuperActionHandler.findSuperElements(file, offset)
+    val (superClasses, superSignatureElements) = ScalaGoToSuperActionHandler
+      .findSuperElements(file, offset)
 
     def popupChooser(superElements: Seq[PsiElement], title: String) {
       NavigationUtil

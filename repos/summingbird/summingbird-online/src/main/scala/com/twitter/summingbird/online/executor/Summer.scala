@@ -86,8 +86,8 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
 
   lazy val sSummer: AsyncSummer[
     (Key, (Seq[InputState[S]], Value)),
-    Map[Key, (Seq[InputState[S]], Value)]] =
-    summerBuilder.getSummer[Key, (Seq[InputState[S]], Value)](
+    Map[Key, (Seq[InputState[S]], Value)]] = summerBuilder
+    .getSummer[Key, (Seq[InputState[S]], Value)](
       implicitly[Semigroup[(Seq[InputState[S]], Value)]])
 
   val exceptionHandlerBox = Externalizer(exceptionHandler.handlerFn.lift)

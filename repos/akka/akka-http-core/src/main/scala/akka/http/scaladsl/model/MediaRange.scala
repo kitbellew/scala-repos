@@ -155,36 +155,44 @@ object MediaRanges extends ObjectRegistry[String, MediaRange] {
         this
   }
 
-  val `*/*` = new PredefinedMediaRange("*/*") {
-    def matches(mediaType: MediaType) = true
-  }
+  val `*/*` =
+    new PredefinedMediaRange("*/*") {
+      def matches(mediaType: MediaType) = true
+    }
   val `*/*;q=MIN` = `*/*`.withQValue(Float.MinPositiveValue)
-  val `application/*` = new PredefinedMediaRange("application/*") {
-    def matches(mediaType: MediaType) = mediaType.isApplication
-    override def isApplication = true
-  }
-  val `audio/*` = new PredefinedMediaRange("audio/*") {
-    def matches(mediaType: MediaType) = mediaType.isAudio
-    override def isAudio = true
-  }
-  val `image/*` = new PredefinedMediaRange("image/*") {
-    def matches(mediaType: MediaType) = mediaType.isImage
-    override def isImage = true
-  }
-  val `message/*` = new PredefinedMediaRange("message/*") {
-    def matches(mediaType: MediaType) = mediaType.isMessage
-    override def isMessage = true
-  }
-  val `multipart/*` = new PredefinedMediaRange("multipart/*") {
-    def matches(mediaType: MediaType) = mediaType.isMultipart
-    override def isMultipart = true
-  }
-  val `text/*` = new PredefinedMediaRange("text/*") {
-    def matches(mediaType: MediaType) = mediaType.isText
-    override def isText = true
-  }
-  val `video/*` = new PredefinedMediaRange("video/*") {
-    def matches(mediaType: MediaType) = mediaType.isVideo
-    override def isVideo = true
-  }
+  val `application/*` =
+    new PredefinedMediaRange("application/*") {
+      def matches(mediaType: MediaType) = mediaType.isApplication
+      override def isApplication = true
+    }
+  val `audio/*` =
+    new PredefinedMediaRange("audio/*") {
+      def matches(mediaType: MediaType) = mediaType.isAudio
+      override def isAudio = true
+    }
+  val `image/*` =
+    new PredefinedMediaRange("image/*") {
+      def matches(mediaType: MediaType) = mediaType.isImage
+      override def isImage = true
+    }
+  val `message/*` =
+    new PredefinedMediaRange("message/*") {
+      def matches(mediaType: MediaType) = mediaType.isMessage
+      override def isMessage = true
+    }
+  val `multipart/*` =
+    new PredefinedMediaRange("multipart/*") {
+      def matches(mediaType: MediaType) = mediaType.isMultipart
+      override def isMultipart = true
+    }
+  val `text/*` =
+    new PredefinedMediaRange("text/*") {
+      def matches(mediaType: MediaType) = mediaType.isText
+      override def isText = true
+    }
+  val `video/*` =
+    new PredefinedMediaRange("video/*") {
+      def matches(mediaType: MediaType) = mediaType.isVideo
+      override def isVideo = true
+    }
 }

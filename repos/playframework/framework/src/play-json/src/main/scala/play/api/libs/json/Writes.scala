@@ -351,41 +351,42 @@ trait DefaultWrites {
     * The default typeclass to write a `java.time.LocalDateTime`,
     * using '2011-12-03T10:15:30' format.
     */
-  implicit val DefaultLocalDateTimeWrites =
-    temporalWrites[LocalDateTime, DateTimeFormatter](
-      DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+  implicit val DefaultLocalDateTimeWrites = temporalWrites[
+    LocalDateTime,
+    DateTimeFormatter](DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
   /**
     * The default typeclass to write a `java.time.OffsetDateTime`,
     * using '2011-12-03T10:15:30+02:00' format.
     */
-  implicit val DefaultOffsetDateTimeWrites =
-    temporalWrites[OffsetDateTime, DateTimeFormatter](
-      DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+  implicit val DefaultOffsetDateTimeWrites = temporalWrites[
+    OffsetDateTime,
+    DateTimeFormatter](DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
   /**
     * The default typeclass to write a `java.time.ZonedDateTime`,
     * using '2011-12-03T10:15:30+01:00[Europe/Paris]' format.
     */
-  implicit val DefaultZonedDateTimeWrites =
-    temporalWrites[ZonedDateTime, DateTimeFormatter](
-      DateTimeFormatter.ISO_ZONED_DATE_TIME)
+  implicit val DefaultZonedDateTimeWrites = temporalWrites[
+    ZonedDateTime,
+    DateTimeFormatter](DateTimeFormatter.ISO_ZONED_DATE_TIME)
 
   /**
     * The default typeclass to write a `java.time.LocalDate`,
     * using '2011-12-03' format.
     */
-  implicit val DefaultLocalDateWrites =
-    temporalWrites[LocalDate, DateTimeFormatter](
-      DateTimeFormatter.ISO_LOCAL_DATE)
+  implicit val DefaultLocalDateWrites = temporalWrites[
+    LocalDate,
+    DateTimeFormatter](DateTimeFormatter.ISO_LOCAL_DATE)
 
   /**
     * The default typeclass to write a `java.time.Instant`,
     * using '2011-12-03T10:15:30Z' format.
     */
-  implicit val DefaultInstantWrites = new Writes[Instant] {
-    def writes(i: Instant): JsValue = JsString(i.toString)
-  }
+  implicit val DefaultInstantWrites =
+    new Writes[Instant] {
+      def writes(i: Instant): JsValue = JsString(i.toString)
+    }
 
   /**
     * Serializer for `java.time.LocalDateTime` as JSON number.
@@ -429,12 +430,13 @@ trait DefaultWrites {
     * implicit val ldnWrites = Writes.LocalDateNumberWrites
     * }}}
     */
-  val LocalDateNumberWrites: Writes[LocalDate] = new Writes[LocalDate] {
-    def writes(t: LocalDate): JsValue =
-      JsNumber(
-        BigDecimal.valueOf(
-          t.atStartOfDay.toInstant(ZoneOffset.UTC).toEpochMilli))
-  }
+  val LocalDateNumberWrites: Writes[LocalDate] =
+    new Writes[LocalDate] {
+      def writes(t: LocalDate): JsValue =
+        JsNumber(
+          BigDecimal.valueOf(
+            t.atStartOfDay.toInstant(ZoneOffset.UTC).toEpochMilli))
+    }
 
   /**
     * Serializer for `java.time.Instant` as JSON number.
@@ -446,10 +448,11 @@ trait DefaultWrites {
     * implicit val inWrites = Writes.InstantNumberWrites
     * }}}
     */
-  val InstantNumberWrites: Writes[Instant] = new Writes[Instant] {
-    def writes(t: Instant): JsValue =
-      JsNumber(BigDecimal valueOf t.toEpochMilli)
-  }
+  val InstantNumberWrites: Writes[Instant] =
+    new Writes[Instant] {
+      def writes(t: Instant): JsValue =
+        JsNumber(BigDecimal valueOf t.toEpochMilli)
+    }
 
   /**
     * Serializer for org.joda.time.DateTime

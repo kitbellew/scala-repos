@@ -35,8 +35,7 @@ final class JSDependency(
 
   def dependsOn(names: String*): JSDependency =
     copy(dependencies = dependencies ++ names)
-  def commonJSName(name: String): JSDependency =
-    copy(commonJSName = Some(name))
+  def commonJSName(name: String): JSDependency = copy(commonJSName = Some(name))
   def minified(name: String): JSDependency =
     copy(minifiedResourceName = Some(name))
 

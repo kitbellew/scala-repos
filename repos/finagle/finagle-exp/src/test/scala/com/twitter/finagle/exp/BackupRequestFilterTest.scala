@@ -26,24 +26,25 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
       val statsReceiver = new InMemoryStatsReceiver
       val underlying = mock[Service[String, String]]
       when(underlying.close(anyObject())).thenReturn(Future.Done)
-      val filter = new BackupRequestFilter[String, String](
-        95,
-        maxDuration,
-        timer,
-        statsReceiver,
-        Duration.Top,
-        Stopwatch.timeMillis,
-        1,
-        0.05)
+      val filter =
+        new BackupRequestFilter[String, String](
+          95,
+          maxDuration,
+          timer,
+          statsReceiver,
+          Duration.Top,
+          Stopwatch.timeMillis,
+          1,
+          0.05)
       val service = filter andThen underlying
 
-      def cutoff() =
-        Duration.fromMilliseconds(filter.cutoffMs())
+      def cutoff() = Duration.fromMilliseconds(filter.cutoffMs())
 
       val rng = new Random(123)
-      val latencies = Seq.fill(100) {
-        Duration.fromMilliseconds(rng.nextInt()).abs % (maxDuration / 2)
-      }
+      val latencies =
+        Seq.fill(100) {
+          Duration.fromMilliseconds(rng.nextInt()).abs % (maxDuration / 2)
+        }
     }
 
   test("maintain cutoffs") {

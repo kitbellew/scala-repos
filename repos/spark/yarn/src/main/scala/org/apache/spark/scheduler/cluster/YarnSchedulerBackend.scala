@@ -225,8 +225,8 @@ private[spark] abstract class YarnSchedulerBackend(
       with Logging {
     private var amEndpoint: Option[RpcEndpointRef] = None
 
-    private val askAmThreadPool =
-      ThreadUtils.newDaemonCachedThreadPool("yarn-scheduler-ask-am-thread-pool")
+    private val askAmThreadPool = ThreadUtils.newDaemonCachedThreadPool(
+      "yarn-scheduler-ask-am-thread-pool")
     implicit val askAmExecutor = ExecutionContext.fromExecutor(askAmThreadPool)
 
     private[YarnSchedulerBackend] def handleExecutorDisconnectedFromDriver(

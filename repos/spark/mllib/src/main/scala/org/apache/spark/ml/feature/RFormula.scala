@@ -176,8 +176,9 @@ class RFormula(override val uid: String)
         .setOutputCol($(labelCol))
     }
 
-    val pipelineModel =
-      new Pipeline(uid).setStages(encoderStages.toArray).fit(dataset)
+    val pipelineModel = new Pipeline(uid)
+      .setStages(encoderStages.toArray)
+      .fit(dataset)
     copyValues(
       new RFormulaModel(uid, resolvedFormula, pipelineModel).setParent(this))
   }
@@ -232,10 +233,11 @@ class RFormulaModel private[feature] (
     if (hasLabelCol(withFeatures)) {
       withFeatures
     } else if (schema.exists(_.name == resolvedFormula.label)) {
-      val nullable = schema(resolvedFormula.label).dataType match {
-        case _: NumericType | BooleanType => false
-        case _                            => true
-      }
+      val nullable =
+        schema(resolvedFormula.label).dataType match {
+          case _: NumericType | BooleanType => false
+          case _                            => true
+        }
       StructType(
         withFeatures.fields :+ StructField($(labelCol), DoubleType, nullable))
     } else {
@@ -406,8 +408,10 @@ private object ColumnPruner extends MLReadable[ColumnPruner] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data =
-        sqlContext.read.parquet(dataPath).select("columnsToPrune").head()
+      val data = sqlContext.read
+        .parquet(dataPath)
+        .select("columnsToPrune")
+        .head()
       val columnsToPrune = data.getAs[Seq[String]](0).toSet
       val pruner = new ColumnPruner(metadata.uid, columnsToPrune)
 

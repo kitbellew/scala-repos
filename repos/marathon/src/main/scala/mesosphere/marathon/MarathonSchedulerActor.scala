@@ -123,25 +123,27 @@ class MarathonSchedulerActor private (
       case ReconcileTasks =>
         import akka.pattern.pipe
         import context.dispatcher
-        val reconcileFuture = activeReconciliation match {
-          case None =>
-            log.info("initiate task reconciliation")
-            val newFuture = schedulerActions.reconcileTasks(driver)
-            activeReconciliation = Some(newFuture)
-            newFuture.onFailure {
-              case NonFatal(e) => log.error(e, "error while reconciling tasks")
-            }
-            newFuture
-            // the self notification MUST happen before informing the initiator
-            // if we want to ensure that we trigger a new reconciliation for
-            // the first call after the last ReconcileTasks.answer has been received.
-              .andThen {
-                case _ => self ! ReconcileFinished
+        val reconcileFuture =
+          activeReconciliation match {
+            case None =>
+              log.info("initiate task reconciliation")
+              val newFuture = schedulerActions.reconcileTasks(driver)
+              activeReconciliation = Some(newFuture)
+              newFuture.onFailure {
+                case NonFatal(e) =>
+                  log.error(e, "error while reconciling tasks")
               }
-          case Some(active) =>
-            log.info("task reconciliation still active, reusing result")
-            active
-        }
+              newFuture
+              // the self notification MUST happen before informing the initiator
+              // if we want to ensure that we trigger a new reconciliation for
+              // the first call after the last ReconcileTasks.answer has been received.
+                .andThen {
+                  case _ => self ! ReconcileFinished
+                }
+            case Some(active) =>
+              log.info("task reconciliation still active, reusing result")
+              active
+          }
         reconcileFuture.map(_ => ReconcileTasks.answer).pipeTo(sender)
 
       case ReconcileFinished =>
@@ -179,10 +181,11 @@ class MarathonSchedulerActor private (
           context.actorOf(
             TaskKillActor
               .props(driver, appId, taskTracker, eventBus, taskIds, promise))
-          val res = for {
-            _ <- promise.future
-            Some(app) <- appRepository.currentVersion(appId)
-          } yield schedulerActions.scale(driver, app)
+          val res =
+            for {
+              _ <- promise.future
+              Some(app) <- appRepository.currentVersion(appId)
+            } yield schedulerActions.scale(driver, app)
 
           res onComplete { _ =>
             self ! cmd.answer // unlock app
@@ -232,8 +235,9 @@ class MarathonSchedulerActor private (
       }
     } orElse {
       case CancellationTimeoutExceeded =>
-        val reason = new TimeoutException(
-          "Exceeded timeout for canceling conflicting deployments.")
+        val reason =
+          new TimeoutException(
+            "Exceeded timeout for canceling conflicting deployments.")
         deploymentFailed(plan, reason)
         origSender ! CommandFailed(Deploy(plan, force = true), reason)
         unstashAll()
@@ -293,9 +297,10 @@ class MarathonSchedulerActor private (
     val plan = cmd.plan
     val ids = plan.affectedApplicationIds
 
-    val res = withLockFor(ids) {
-      deploy(driver, plan)
-    }
+    val res =
+      withLockFor(ids) {
+        deploy(driver, plan)
+      }
 
     res match {
       case Success(_) =>
@@ -561,8 +566,10 @@ class SchedulerActions(
       log.info(
         s"Need to scale ${app.id} from $launchedCount up to $targetCount instances")
 
-      val queuedOrRunning =
-        taskQueue.get(app.id).map(_.finalTaskCount).getOrElse(launchedCount)
+      val queuedOrRunning = taskQueue
+        .get(app.id)
+        .map(_.finalTaskCount)
+        .getOrElse(launchedCount)
       val toQueue = targetCount - queuedOrRunning
 
       if (toQueue > 0) {

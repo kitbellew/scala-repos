@@ -57,8 +57,9 @@ private[hive] object HiveShim {
    * This function in hive-0.13 become private, but we have to do this to walkaround hive bug
    */
   private def appendReadColumnNames(conf: Configuration, cols: Seq[String]) {
-    val old: String =
-      conf.get(ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR, "")
+    val old: String = conf.get(
+      ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR,
+      "")
     val result: StringBuilder = new StringBuilder(old)
     var first: Boolean = old.isEmpty
 

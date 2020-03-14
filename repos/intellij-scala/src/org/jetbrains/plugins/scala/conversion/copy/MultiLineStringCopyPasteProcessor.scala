@@ -54,9 +54,10 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
       return text
 
     val marginChar = getMarginChar(element)
-    val textRange = new TextRange(
-      document.getLineStartOffset(document.getLineNumber(offset)),
-      offset)
+    val textRange =
+      new TextRange(
+        document.getLineStartOffset(document.getLineNumber(offset)),
+        offset)
 
     (if (document.getText(textRange).trim.length == 0 && (text
            .trim()
@@ -87,9 +88,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
 }
 
 object MultiLineStringCopyPasteProcessor {
-  private val SAFE_ELEMENTS =
-    TokenSet.create(
-      ScalaTokenTypes.tMULTILINE_STRING,
-      ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING,
-      ScalaTokenTypes.tINTERPOLATED_STRING_ID)
+  private val SAFE_ELEMENTS = TokenSet.create(
+    ScalaTokenTypes.tMULTILINE_STRING,
+    ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING,
+    ScalaTokenTypes.tINTERPOLATED_STRING_ID)
 }

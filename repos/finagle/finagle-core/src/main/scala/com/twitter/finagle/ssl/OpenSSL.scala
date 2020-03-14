@@ -45,16 +45,18 @@ object OpenSSL {
     val bufferPoolCtor = bufferPoolClass.getConstructor(classOf[Int])
 
     val configurationClass = classNamed("ssl.SSLConfiguration")
-    val configurationCtor =
-      configurationClass.getConstructor(classOf[MapOfStrings])
+    val configurationCtor = configurationClass.getConstructor(
+      classOf[MapOfStrings])
 
     val contextHolderClass = classNamed("ssl.SSLContextHolder")
-    val contextHolderCtor =
-      contextHolderClass.getConstructor(classOf[Long], configurationClass)
+    val contextHolderCtor = contextHolderClass.getConstructor(
+      classOf[Long],
+      configurationClass)
 
     val sslEngineClass = classNamed("ssl.OpenSSLEngine")
-    val sslEngineCtor =
-      sslEngineClass.getConstructor(contextHolderClass, bufferPoolClass)
+    val sslEngineCtor = sslEngineClass.getConstructor(
+      contextHolderClass,
+      bufferPoolClass)
 
     if (initializedLibrary.compareAndSet(false, true)) {
       aprInitMethod.invoke(aprClass, null)

@@ -42,8 +42,7 @@ object ThreadPoolConfig {
   def linkedBlockingQueue(capacity: Int): QueueFactory =
     () => new LinkedBlockingQueue[Runnable](capacity)
 
-  def reusableQueue(queue: BlockingQueue[Runnable]): QueueFactory =
-    () => queue
+  def reusableQueue(queue: BlockingQueue[Runnable]): QueueFactory = () => queue
 
   def reusableQueue(queueFactory: QueueFactory): QueueFactory = {
     val queue = queueFactory()
@@ -59,8 +58,8 @@ case class ThreadPoolConfig(
     threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
     flowHandler: ThreadPoolConfig.FlowHandler =
       ThreadPoolConfig.defaultFlowHandler,
-    queueFactory: ThreadPoolConfig.QueueFactory =
-      ThreadPoolConfig.linkedBlockingQueue()) {
+    queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig
+      .linkedBlockingQueue()) {
 
   final def createLazyExecutorService(
       threadFactory: ThreadFactory): ExecutorService =
@@ -70,24 +69,26 @@ case class ThreadPoolConfig(
       threadFactory: ThreadFactory): ExecutorService = {
     flowHandler match {
       case Left(rejectHandler) =>
-        val service = new ThreadPoolExecutor(
-          corePoolSize,
-          maxPoolSize,
-          threadTimeout.length,
-          threadTimeout.unit,
-          queueFactory(),
-          threadFactory,
-          rejectHandler)
+        val service =
+          new ThreadPoolExecutor(
+            corePoolSize,
+            maxPoolSize,
+            threadTimeout.length,
+            threadTimeout.unit,
+            queueFactory(),
+            threadFactory,
+            rejectHandler)
         service.allowCoreThreadTimeOut(allowCorePoolTimeout)
         service
       case Right(bounds) =>
-        val service = new ThreadPoolExecutor(
-          corePoolSize,
-          maxPoolSize,
-          threadTimeout.length,
-          threadTimeout.unit,
-          queueFactory(),
-          threadFactory)
+        val service =
+          new ThreadPoolExecutor(
+            corePoolSize,
+            maxPoolSize,
+            threadTimeout.length,
+            threadTimeout.unit,
+            queueFactory(),
+            threadFactory)
         service.allowCoreThreadTimeOut(allowCorePoolTimeout)
         new BoundedExecutorDecorator(service, bounds)
     }

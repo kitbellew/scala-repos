@@ -16,11 +16,12 @@ import lila.hub.actorApi.map.Tell
 
 final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
 
-  private implicit val PosBSONHandler = new BSONHandler[BSONString, Pos] {
-    def read(bsonStr: BSONString): Pos =
-      Pos.posAt(bsonStr.value) err s"No such pos: ${bsonStr.value}"
-    def write(x: Pos) = BSONString(x.key)
-  }
+  private implicit val PosBSONHandler =
+    new BSONHandler[BSONString, Pos] {
+      def read(bsonStr: BSONString): Pos =
+        Pos.posAt(bsonStr.value) err s"No such pos: ${bsonStr.value}"
+      def write(x: Pos) = BSONString(x.key)
+    }
 
   private implicit val stepBSONHandler = Macros.handler[Step]
   private implicit val forecastBSONHandler = Macros.handler[Forecast]

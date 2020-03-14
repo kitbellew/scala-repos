@@ -115,10 +115,11 @@ object Dependency {
               if function.isSynthetic || function.name == "apply" || function.name == "unapply" =>
             withEntity(obj.qualifiedName)
           case (member: ScMember) && ContainingClass(obj: ScObject) =>
-            val memberName = member match {
-              case named: ScNamedElement => named.name
-              case _                     => member.getName
-            }
+            val memberName =
+              member match {
+                case named: ScNamedElement => named.name
+                case _                     => member.getName
+              }
             withMember(obj.qualifiedName, memberName)
           case (pattern: ScReferencePattern) && Parent(
                 Parent(ContainingClass(obj: ScObject))) =>
@@ -136,10 +137,11 @@ object Dependency {
             fromType.flatMap(it =>
               ScType.extractClass(it, Some(e.getProject))) match {
               case Some(entity: ScObject) =>
-                val memberName = member match {
-                  case named: ScNamedElement => named.name
-                  case _                     => member.getName
-                }
+                val memberName =
+                  member match {
+                    case named: ScNamedElement => named.name
+                    case _                     => member.getName
+                  }
                 withMember(entity.qualifiedName, memberName)
               case _ => None
             }

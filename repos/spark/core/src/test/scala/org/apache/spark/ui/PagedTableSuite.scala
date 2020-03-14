@@ -53,27 +53,28 @@ class PagedDataSourceSuite extends SparkFunSuite {
 class PagedTableSuite extends SparkFunSuite {
   test("pageNavigation") {
     // Create a fake PagedTable to test pageNavigation
-    val pagedTable = new PagedTable[Int] {
-      override def tableId: String = ""
+    val pagedTable =
+      new PagedTable[Int] {
+        override def tableId: String = ""
 
-      override def tableCssClass: String = ""
+        override def tableCssClass: String = ""
 
-      override def dataSource: PagedDataSource[Int] = null
+        override def dataSource: PagedDataSource[Int] = null
 
-      override def pageLink(page: Int): String = page.toString
+        override def pageLink(page: Int): String = page.toString
 
-      override def headers: Seq[Node] = Nil
+        override def headers: Seq[Node] = Nil
 
-      override def row(t: Int): Seq[Node] = Nil
+        override def row(t: Int): Seq[Node] = Nil
 
-      override def pageSizeFormField: String = "pageSize"
+        override def pageSizeFormField: String = "pageSize"
 
-      override def prevPageSizeFormField: String = "prevPageSize"
+        override def prevPageSizeFormField: String = "prevPageSize"
 
-      override def pageNumberFormField: String = "page"
+        override def pageNumberFormField: String = "page"
 
-      override def goButtonFormPath: String = ""
-    }
+        override def goButtonFormPath: String = ""
+      }
 
     assert(pagedTable.pageNavigation(1, 10, 1) === Nil)
     assert(

@@ -180,22 +180,21 @@ class TypeClassTests {
   case class CaseA[A, B](a: A) extends Cases[A, B]
   case class CaseB[A, B](b1: B, b2: B) extends Cases[A, B]
 
-  val casesResult =
-    Project(
+  val casesResult = Project(
+    Sum(
+      Project(Product(Atom("int"), "a", EmptyProduct)),
+      "CaseA",
       Sum(
-        Project(Product(Atom("int"), "a", EmptyProduct)),
-        "CaseA",
-        Sum(
-          Project(
-            Product(
-              Atom("string"),
-              "b1",
-              Product(Atom("string"), "b2", EmptyProduct))),
-          "CaseB",
-          EmptyCoproduct
-        )
+        Project(
+          Product(
+            Atom("string"),
+            "b1",
+            Product(Atom("string"), "b2", EmptyProduct))),
+        "CaseB",
+        EmptyCoproduct
       )
     )
+  )
 
   @Test
   def testManualSingle {

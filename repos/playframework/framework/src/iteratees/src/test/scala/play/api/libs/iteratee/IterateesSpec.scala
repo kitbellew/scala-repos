@@ -262,8 +262,9 @@ object IterateesSpec
 
       import ExecutionContext.Implicits.global
       val unitDone: Iteratee[Unit, Unit] = Done(())
-      val flatMapped: Iteratee[Unit, Unit] = (0 until overflowDepth)
-        .foldLeft[Iteratee[Unit, Unit]](Cont(_ => unitDone)) {
+      val flatMapped: Iteratee[Unit, Unit] =
+        (0 until overflowDepth).foldLeft[Iteratee[Unit, Unit]](Cont(_ =>
+          unitDone)) {
           case (it, _) => it.flatMap(_ => unitDone)
         }
       await(await(flatMapped.feed(Input.EOF)).unflatten) must equalTo(
@@ -515,8 +516,8 @@ object IterateesSpec
         ).recover {
           case t: Throwable => expected
         }
-        val actual =
-          await(Enumerator(unexpected, unexpected, unexpected) |>>> it)
+        val actual = await(
+          Enumerator(unexpected, unexpected, unexpected) |>>> it)
         actual must equalTo(expected)
       }
     }
@@ -529,9 +530,10 @@ object IterateesSpec
 
     "do nothing on a Done iteratee" in {
       mustExecute(1) { implicit foldEC =>
-        val it = done(expected).recoverM {
-          case t: Throwable => Future.successful(unexpected)
-        }(foldEC)
+        val it =
+          done(expected).recoverM {
+            case t: Throwable => Future.successful(unexpected)
+          }(foldEC)
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
       }
@@ -539,9 +541,10 @@ object IterateesSpec
 
     "do nothing on a Done iteratee even if the recover block gets a failed Future" in {
       mustExecute(1) { implicit foldEC =>
-        val it = done(expected).recoverM {
-          case t: Throwable => Future.failed(new RuntimeException(unexpected))
-        }(foldEC)
+        val it =
+          done(expected).recoverM {
+            case t: Throwable => Future.failed(new RuntimeException(unexpected))
+          }(foldEC)
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
       }
@@ -549,9 +552,10 @@ object IterateesSpec
 
     "recover with the expected fallback Future from an Error iteratee" in {
       mustExecute(2) { implicit foldEC =>
-        val it = error(unexpected).recoverM {
-          case t: Throwable => Future.successful(expected)
-        }(foldEC)
+        val it =
+          error(unexpected).recoverM {
+            case t: Throwable => Future.successful(expected)
+          }(foldEC)
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
       }
@@ -559,9 +563,10 @@ object IterateesSpec
 
     "leave the Error iteratee unchanged if the Exception type doesn't match the partial function" in {
       mustExecute(1) { implicit foldEC =>
-        val it = error(expected).recoverM {
-          case t: IllegalArgumentException => Future.successful(unexpected)
-        }(foldEC)
+        val it =
+          error(expected).recoverM {
+            case t: IllegalArgumentException => Future.successful(unexpected)
+          }(foldEC)
         val actual = await((Enumerator(unexpected) |>>> it).failed)
         actual.getMessage must equalTo(expected)
       }
@@ -782,8 +787,9 @@ object IterateesSpec
       // Work out how many arrays we'd need to create to trigger an OutOfMemoryError
       val arraySize = 1000000
       val tooManyArrays = (Runtime.getRuntime.maxMemory / arraySize).toInt + 1
-      val iterator =
-        Iterator.range(0, tooManyArrays).map(_ => new Array[Byte](arraySize))
+      val iterator = Iterator
+        .range(0, tooManyArrays)
+        .map(_ => new Array[Byte](arraySize))
       import play.api.libs.iteratee.Execution.Implicits.defaultExecutionContext
       await(
         Enumerator.enumerate(iterator) |>>> Iteratee

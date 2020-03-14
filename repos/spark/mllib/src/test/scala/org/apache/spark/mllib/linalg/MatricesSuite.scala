@@ -219,12 +219,13 @@ class MatricesSuite extends SparkFunSuite {
         4,
         3,
         Array(0.0, 1.0, 0.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 3.0))
-    val sA = new SparseMatrix(
-      4,
-      3,
-      Array(0, 1, 3, 4),
-      Array(1, 0, 2, 3),
-      Array(1.0, 2.0, 1.0, 3.0))
+    val sA =
+      new SparseMatrix(
+        4,
+        3,
+        Array(0, 1, 3, 4),
+        Array(1, 0, 2, 3),
+        Array(1.0, 2.0, 1.0, 3.0))
 
     val dAT = dA.transpose.asInstanceOf[DenseMatrix]
     val sAT = sA.transpose.asInstanceOf[SparseMatrix]
@@ -543,8 +544,10 @@ class MatricesSuite extends SparkFunSuite {
   test("row/col iterator") {
     val dm = new DenseMatrix(3, 2, Array(0, 1, 2, 3, 4, 0))
     val sm = dm.toSparse
-    val rows =
-      Seq(Vectors.dense(0, 3), Vectors.dense(1, 4), Vectors.dense(2, 0))
+    val rows = Seq(
+      Vectors.dense(0, 3),
+      Vectors.dense(1, 4),
+      Vectors.dense(2, 0))
     val cols = Seq(Vectors.dense(0, 1, 2), Vectors.dense(3, 4, 0))
     for (m <- Seq(dm, sm)) {
       assert(m.rowIter.toSeq === rows)

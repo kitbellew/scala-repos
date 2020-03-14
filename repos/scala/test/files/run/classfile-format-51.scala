@@ -147,11 +147,12 @@ object Test extends DirectTest {
       null,
       null)
     test.visitCode()
-    val bootstrapHandle = new Handle(
-      H_INVOKESTATIC,
-      invokerClassName,
-      bootstrapMethodName,
-      bootStrapMethodType)
+    val bootstrapHandle =
+      new Handle(
+        H_INVOKESTATIC,
+        invokerClassName,
+        bootstrapMethodName,
+        bootStrapMethodType)
     test.visitInvokeDynamicInsn("invoke", targetMethodType, bootstrapHandle)
     test.visitInsn(ARETURN)
     test.visitMaxs(1, 1)
@@ -160,15 +161,15 @@ object Test extends DirectTest {
     cw.visitEnd()
     val bytes = cw.toByteArray()
 
-    val fos = new FileOutputStream(
-      new File(s"${testOutput.path}/$invokerClassName.class"))
+    val fos =
+      new FileOutputStream(
+        new File(s"${testOutput.path}/$invokerClassName.class"))
     try fos write bytes
     finally fos.close()
 
   }
 
-  def code =
-    """
+  def code = """
 object Driver {
   val invoker = new DynamicInvoker()
   println(invoker.test())

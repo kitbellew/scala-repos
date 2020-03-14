@@ -119,8 +119,7 @@ trait ListHelpers {
     *
     * @return a Box containing the found element (or Empty if not found)
     */
-  def first_?[B](in: Seq[B])(f: => B => Boolean): Box[B] =
-    Box(in.find(f))
+  def first_?[B](in: Seq[B])(f: => B => Boolean): Box[B] = Box(in.find(f))
 
   /**
     * Returns the first application of f to an element of in that

@@ -57,13 +57,14 @@ class CompactHessian(
     val D = diag(DenseVector.tabulate[Double](k) { i =>
       S(i) dot Y(i)
     })
-    val L = DenseMatrix.tabulate[Double](k, k) { (i, j) =>
-      if (i > j) {
-        S(i) dot Y(j)
-      } else {
-        0.0
+    val L =
+      DenseMatrix.tabulate[Double](k, k) { (i, j) =>
+        if (i > j) {
+          S(i) dot Y(j)
+        } else {
+          0.0
+        }
       }
-    }
     val SM = collectionOfVectorsToMatrix(S)
     // S_k^T S_k is the symmetric k x k matrix with element (i,j) given by <s_i, s_j>
     val STS = (SM * SM.t) * sigma
@@ -120,8 +121,8 @@ class ProjectedQuasiNewton(
       relativeTolerance: Boolean = true)(
       implicit space: MutableInnerProductModule[DenseVector[Double], Double]) =
     this(
-      convergenceCheck =
-        FirstOrderMinimizer.defaultConvergenceCheck[DenseVector[Double]](
+      convergenceCheck = FirstOrderMinimizer
+        .defaultConvergenceCheck[DenseVector[Double]](
           maxIter,
           tolerance,
           relativeTolerance),
@@ -169,11 +170,12 @@ class ProjectedQuasiNewton(
       // Update the limited-memory BFGS approximation to the Hessian
       //B.update(y, s)
       // Solve subproblem; we use the current iterate x as a guess
-      val subprob = new ProjectedQuasiNewton.QuadraticSubproblem(
-        state.adjustedValue,
-        x,
-        grad,
-        history)
+      val subprob =
+        new ProjectedQuasiNewton.QuadraticSubproblem(
+          state.adjustedValue,
+          x,
+          grad,
+          history)
       val spgResult = innerOptimizer.minimizeAndReturnState(
         new CachedDiffFunction(subprob),
         x)
@@ -202,14 +204,15 @@ class ProjectedQuasiNewton(
     val grad = state.grad
 
     val ff = LineSearch.functionFromSearchDirection(f, x, dir)
-    val search = new BacktrackingLineSearch(
-      state.value,
-      maxIterations = maxSrchIt,
-      shrinkStep =
-        if (state.iter < 1)
-          0.1
-        else
-          0.5)
+    val search =
+      new BacktrackingLineSearch(
+        state.value,
+        maxIterations = maxSrchIt,
+        shrinkStep =
+          if (state.iter < 1)
+            0.1
+          else
+            0.5)
     var alpha =
       if (state.iter == 0.0)
         min(1.0, 1.0 / norm(dir))

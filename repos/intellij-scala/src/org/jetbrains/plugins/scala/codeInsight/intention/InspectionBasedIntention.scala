@@ -40,10 +40,11 @@ class InspectionBasedIntention(
 
   private def findProblemFrom(
       element: PsiElement): Option[ProblemDescriptor] = {
-    val holder = new ProblemsHolder(
-      InspectionManager.getInstance(element.getProject),
-      element.getContainingFile,
-      true)
+    val holder =
+      new ProblemsHolder(
+        InspectionManager.getInstance(element.getProject),
+        element.getContainingFile,
+        true)
     val visitor = inspection.buildVisitor(holder, true)
     var e = element
     do {

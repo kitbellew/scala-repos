@@ -60,11 +60,12 @@ class StreamingLinearRegressionWithSGD private[mllib] (
   def this() = this(0.1, 50, 0.0, 1.0)
 
   @Since("1.1.0")
-  val algorithm = new LinearRegressionWithSGD(
-    stepSize,
-    numIterations,
-    regParam,
-    miniBatchFraction)
+  val algorithm =
+    new LinearRegressionWithSGD(
+      stepSize,
+      numIterations,
+      regParam,
+      miniBatchFraction)
 
   protected var model: Option[LinearRegressionModel] = None
 

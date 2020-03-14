@@ -35,19 +35,21 @@ class ScalaWithIfConditionSurrounder extends ScalaExpressionSurrounder {
     }
   }
   override def getSurroundSelectionRange(withIfNode: ASTNode): TextRange = {
-    val element: PsiElement = withIfNode.getPsi match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
-          case Some(y) => y
-          case _       => return x.getTextRange
-        }
-      case x => x
-    }
+    val element: PsiElement =
+      withIfNode.getPsi match {
+        case x: ScParenthesisedExpr =>
+          x.expr match {
+            case Some(y) => y
+            case _       => return x.getTextRange
+          }
+        case x => x
+      }
 
     val ifStmt: ScIfStmt = element.asInstanceOf[ScIfStmt]
-    val body = (ifStmt.thenBranch: @unchecked) match {
-      case Some(x) => x
-    }
+    val body =
+      (ifStmt.thenBranch: @unchecked) match {
+        case Some(x) => x
+      }
     val offset = body.getTextRange.getStartOffset + 1
     new TextRange(offset, offset)
   }

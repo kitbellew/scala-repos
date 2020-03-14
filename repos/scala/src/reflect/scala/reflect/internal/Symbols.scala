@@ -348,8 +348,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final def newValue(
         name: TermName,
         pos: Position = NoPosition,
-        newFlags: Long = 0L): TermSymbol =
-      newTermSymbol(name, pos, newFlags)
+        newFlags: Long = 0L): TermSymbol = newTermSymbol(name, pos, newFlags)
     final def newVariable(
         name: TermName,
         pos: Position = NoPosition,
@@ -376,8 +375,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       createMethodSymbol(name, pos, METHOD | newFlags)
     final def newLabel(
         name: TermName,
-        pos: Position = NoPosition): MethodSymbol =
-      newMethod(name, pos, LABEL)
+        pos: Position = NoPosition): MethodSymbol = newMethod(name, pos, LABEL)
 
     /** Propagates ConstrFlags (JAVA, specifically) from owner to constructor. */
     final def newConstructor(pos: Position, newFlags: Long = 0L): MethodSymbol =
@@ -392,8 +390,10 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       newConstructor(pos) setInfo MethodType(Nil, this.tpe)
 
     def newLinkedModule(clazz: Symbol, newFlags: Long = 0L): ModuleSymbol = {
-      val m =
-        newModuleSymbol(clazz.name.toTermName, clazz.pos, MODULE | newFlags)
+      val m = newModuleSymbol(
+        clazz.name.toTermName,
+        clazz.pos,
+        MODULE | newFlags)
       connectModuleToClass(m, clazz.asInstanceOf[ClassSymbol])
     }
     final def newModule(
@@ -402,8 +402,10 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         newFlags0: Long = 0L): ModuleSymbol = {
       val newFlags = newFlags0 | MODULE
       val m = newModuleSymbol(name, pos, newFlags)
-      val clazz =
-        newModuleClass(name.toTypeName, pos, newFlags & ModuleToClassFlags)
+      val clazz = newModuleClass(
+        name.toTypeName,
+        pos,
+        newFlags & ModuleToClassFlags)
       connectModuleToClass(m, clazz)
     }
 
@@ -629,8 +631,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final def newClass(
         name: TypeName,
         pos: Position = NoPosition,
-        newFlags: Long = 0L): ClassSymbol =
-      newClassSymbol(name, pos, newFlags)
+        newFlags: Long = 0L): ClassSymbol = newClassSymbol(name, pos, newFlags)
 
     /** A new class with its info set to a ClassInfoType with given scope and parents. */
     def newClassWithInfo(
@@ -1194,13 +1195,11 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       isConstructor && owner.primaryConstructor == this
 
     /** Does this symbol denote an auxiliary constructor of its enclosing class? */
-    final def isAuxiliaryConstructor =
-      isConstructor && !isPrimaryConstructor
+    final def isAuxiliaryConstructor = isConstructor && !isPrimaryConstructor
 
     /** Is this symbol a synthetic apply or unapply method in a companion object of a case class? */
     // xeno-by: why this obscure use of the CASE flag? why not simply compare name with nme.apply and nme.unapply?
-    final def isCaseApplyOrUnapply =
-      isMethod && isCase && isSynthetic
+    final def isCaseApplyOrUnapply = isMethod && isCase && isSynthetic
 
     /** Is this symbol a synthetic copy method in a case class? */
     final def isCaseCopy =
@@ -1241,8 +1240,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       isStaticMember && isClassConstructor
 
     /** Is this symbol a static member of its class? (i.e. needs to be implemented as a Java static?) */
-    final def isStaticMember: Boolean =
-      hasFlag(STATIC)
+    final def isStaticMember: Boolean = hasFlag(STATIC)
 
     /** Does this symbol denote a class that defines static symbols? */
     final def isStaticOwner: Boolean =
@@ -1344,10 +1342,11 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     def exists: Boolean =
       !isTopLevel || {
-        val isSourceLoader = rawInfo match {
-          case sl: SymLoader => sl.fromSource
-          case _             => false
-        }
+        val isSourceLoader =
+          rawInfo match {
+            case sl: SymLoader => sl.fromSource
+            case _             => false
+          }
         def warnIfSourceLoader() {
           if (isSourceLoader)
             // Predef is completed early due to its autoimport; we used to get here when type checking its
@@ -1365,8 +1364,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         }
       }
 
-    final def isInitialized: Boolean =
-      validTo != NoPeriod
+    final def isInitialized: Boolean = validTo != NoPeriod
 
     /** We consider a symbol to be thread-safe, when multiple concurrent threads can call its methods
       *  (either directly or indirectly via public reflection or internal compiler infrastructure),
@@ -2275,8 +2273,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     def withAnnotations(annots: List[AnnotationInfo]): this.type =
       setAnnotations(annots ::: annotations)
 
-    def withoutAnnotations: this.type =
-      setAnnotations(Nil)
+    def withoutAnnotations: this.type = setAnnotations(Nil)
 
     def filterAnnotations(p: AnnotationInfo => Boolean): this.type =
       setAnnotations(annotations filter p)
@@ -2402,8 +2399,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 // ------ cloneing -------------------------------------------------------------------
 
     /** A clone of this symbol. */
-    final def cloneSymbol: TypeOfClonedSymbol =
-      cloneSymbol(owner)
+    final def cloneSymbol: TypeOfClonedSymbol = cloneSymbol(owner)
 
     /** A clone of this symbol, but with given owner. */
     final def cloneSymbol(newOwner: Symbol): TypeOfClonedSymbol =
@@ -3185,16 +3181,13 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     /** Accurate string representation of symbols' kind, suitable for developers. */
-    final def accurateKindString: String =
-      symbolKind.accurate
+    final def accurateKindString: String = symbolKind.accurate
 
     /** String representation of symbol's kind, suitable for the masses. */
-    private def sanitizedKindString: String =
-      symbolKind.sanitized
+    private def sanitizedKindString: String = symbolKind.sanitized
 
     /** String representation of symbol's kind, suitable for the masses. */
-    protected[scala] def abbreviatedKindString: String =
-      symbolKind.abbreviation
+    protected[scala] def abbreviatedKindString: String = symbolKind.abbreviation
 
     final def kindString: String =
       if (settings.debug.value)
@@ -3348,11 +3341,12 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     def infosString = infos.toString
     def debugLocationString = {
-      val pre = flagString match {
-        case ""                  => ""
-        case s if s contains ' ' => "(" + s + ") "
-        case s                   => s + " "
-      }
+      val pre =
+        flagString match {
+          case ""                  => ""
+          case s if s contains ' ' => "(" + s + ") "
+          case s                   => s + " "
+        }
       pre + fullLocationString
     }
 
@@ -4181,8 +4175,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     def implicitMembers: Scope = {
       val tp = info
       if ((implicitMembersCacheKey1 ne tp) || (implicitMembersCacheKey2 ne tp.decls.elems)) {
-        implicitMembersCacheValue =
-          tp.membersBasedOnFlags(BridgeFlags, IMPLICIT)
+        implicitMembersCacheValue = tp.membersBasedOnFlags(
+          BridgeFlags,
+          IMPLICIT)
         implicitMembersCacheKey1 = tp
         implicitMembersCacheKey2 = tp.decls.elems
       }
@@ -4305,8 +4300,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final override def asFreeTerm = this
     def value = value0
   }
-  implicit val FreeTermSymbolTag =
-    ClassTag[FreeTermSymbol](classOf[FreeTermSymbol])
+  implicit val FreeTermSymbolTag = ClassTag[FreeTermSymbol](
+    classOf[FreeTermSymbol])
 
   class FreeTypeSymbol(name0: TypeName, val origin: String)
       extends TypeSkolem(NoSymbol, NoPosition, name0, NoSymbol)
@@ -4315,8 +4310,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final override def isFreeType = true
     final override def asFreeType = this
   }
-  implicit val FreeTypeSymbolTag =
-    ClassTag[FreeTypeSymbol](classOf[FreeTypeSymbol])
+  implicit val FreeTypeSymbolTag = ClassTag[FreeTypeSymbol](
+    classOf[FreeTypeSymbol])
 
   /** An object representing a missing symbol */
   class NoSymbol protected[Symbols] ()
@@ -4546,8 +4541,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
 // ----- Hoisted closures and convenience methods, for compile time reductions -------
 
-  private[scala] final val symbolIsPossibleInRefinement = (sym: Symbol) =>
-    sym.isPossibleInRefinement
+  private[scala] final val symbolIsPossibleInRefinement =
+    (sym: Symbol) => sym.isPossibleInRefinement
 
   @tailrec private[scala] final def allSymbolsHaveOwner(
       syms: List[Symbol],

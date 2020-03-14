@@ -476,8 +476,11 @@ object Graph {
       vertexStorageLevel: StorageLevel = StorageLevel.MEMORY_ONLY)
       : Graph[VD, Int] = {
     val edges = rawEdges.map(p => Edge(p._1, p._2, 1))
-    val graph =
-      GraphImpl(edges, defaultValue, edgeStorageLevel, vertexStorageLevel)
+    val graph = GraphImpl(
+      edges,
+      defaultValue,
+      edgeStorageLevel,
+      vertexStorageLevel)
     uniqueEdges match {
       case Some(p) => graph.partitionBy(p).groupEdges((a, b) => a + b)
       case None    => graph

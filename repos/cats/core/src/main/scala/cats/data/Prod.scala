@@ -130,8 +130,7 @@ sealed trait ProdMonoidK[F[_], G[_]]
     with ProdSemigroupK[F, G] {
   def F: MonoidK[F]
   def G: MonoidK[G]
-  override def empty[A]: Prod[F, G, A] =
-    Prod(F.empty[A], G.empty[A])
+  override def empty[A]: Prod[F, G, A] = Prod(F.empty[A], G.empty[A])
 }
 
 sealed trait ProdAlternative[F[_], G[_]]

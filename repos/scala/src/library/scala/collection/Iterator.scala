@@ -33,11 +33,12 @@ object Iterator {
     }
 
   /** The iterator which produces no values. */
-  val empty: Iterator[Nothing] = new AbstractIterator[Nothing] {
-    def hasNext: Boolean = false
-    def next(): Nothing =
-      throw new NoSuchElementException("next on empty iterator")
-  }
+  val empty: Iterator[Nothing] =
+    new AbstractIterator[Nothing] {
+      def hasNext: Boolean = false
+      def next(): Nothing =
+        throw new NoSuchElementException("next on empty iterator")
+    }
 
   /** Creates an iterator which produces a single element.
     *  '''Note:''' Equivalent, but more efficient than Iterator(elem)
@@ -871,46 +872,47 @@ trait Iterator[+A] extends TraversableOnce[A] {
 
     val leading = new Leading
 
-    val trailing = new AbstractIterator[A] {
-      private[this] var myLeading = leading
-      /* Status flags meanings:
-       *   -1 not yet accesssed
-       *   0 single element waiting in leading
-       *   1 defer to self
-       */
-      private[this] var status = -1
-      def hasNext = {
-        if (status > 0)
-          self.hasNext
-        else {
-          if (status == 0)
-            true
-          else if (myLeading.finish()) {
-            status = 0
-            true
-          } else {
-            status = 1
-            myLeading = null
+    val trailing =
+      new AbstractIterator[A] {
+        private[this] var myLeading = leading
+        /* Status flags meanings:
+         *   -1 not yet accesssed
+         *   0 single element waiting in leading
+         *   1 defer to self
+         */
+        private[this] var status = -1
+        def hasNext = {
+          if (status > 0)
             self.hasNext
+          else {
+            if (status == 0)
+              true
+            else if (myLeading.finish()) {
+              status = 0
+              true
+            } else {
+              status = 1
+              myLeading = null
+              self.hasNext
+            }
           }
         }
-      }
-      def next() = {
-        if (hasNext) {
-          if (status > 0)
-            self.next()
-          else {
-            status = 1
-            val ans = myLeading.hd
-            myLeading = null
-            ans
-          }
-        } else
-          Iterator.empty.next()
-      }
+        def next() = {
+          if (hasNext) {
+            if (status > 0)
+              self.next()
+            else {
+              status = 1
+              val ans = myLeading.hd
+              myLeading = null
+              ans
+            }
+          } else
+            Iterator.empty.next()
+        }
 
-      override def toString = "unknown-if-empty iterator"
-    }
+        override def toString = "unknown-if-empty iterator"
+      }
 
     (leading, trailing)
   }
@@ -1233,8 +1235,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
         hd
       }
 
-      def hasNext =
-        hdDefined || self.hasNext
+      def hasNext = hdDefined || self.hasNext
 
       def next() =
         if (hdDefined) {

@@ -120,8 +120,8 @@ trait TreeAndTypeAnalysis extends Debugging {
         case modSym: ModuleClassSymbol if !grouped =>
           List(List(tp))
         case sym: RefinementClassSymbol =>
-          val parentSubtypes =
-            tp.parents.flatMap(parent => enumerateSubtypes(parent, grouped))
+          val parentSubtypes = tp.parents.flatMap(parent =>
+            enumerateSubtypes(parent, grouped))
           if (parentSubtypes exists (_.nonEmpty)) {
             // If any of the parents is enumerable, then the refinement type is enumerable.
             // We must only include subtypes of the parents that conform to `tp`.
@@ -141,12 +141,16 @@ trait TreeAndTypeAnalysis extends Debugging {
               // so that we can rule out stuff like: sealed trait X[T]; class XInt extends X[Int] --> XInt not valid when enumerating X[String]
               // however, must approximate abstract types in
 
-              val memberType =
-                nestedMemberType(sym, pre, tpApprox.typeSymbol.owner)
-              val subTp =
-                appliedType(memberType, sym.typeParams.map(_ => WildcardType))
-              val subTpApprox =
-                typer.infer.approximateAbstracts(subTp) // TODO: needed?
+              val memberType = nestedMemberType(
+                sym,
+                pre,
+                tpApprox.typeSymbol.owner)
+              val subTp = appliedType(
+                memberType,
+                sym.typeParams.map(_ => WildcardType))
+              val subTpApprox = typer.infer.approximateAbstracts(
+                subTp
+              ) // TODO: needed?
               // debug.patmat("subtp"+(subTpApprox <:< tpApprox, subTpApprox, tpApprox))
               if (subTpApprox <:< tpApprox)
                 Some(checkableType(subTp))
@@ -175,23 +179,24 @@ trait TreeAndTypeAnalysis extends Debugging {
                   // put each trait in a new group, since traits could belong to the same
                   // group as a derived class
                   val (traits, nonTraits) = children.partition(_.isTrait)
-                  val filtered =
-                    (traits.map(List(_)) ++ List(nonTraits)).map(filterChildren)
+                  val filtered = (traits.map(List(_)) ++ List(nonTraits))
+                    .map(filterChildren)
                   groupChildren(tl ++ children, acc ++ filtered)
                 case Nil => acc
               }
 
             groupChildren(sym :: Nil, Nil)
           } else {
-            val subclasses = debug.patmatResult(
-              s"enum $sym sealed, subclasses")(
-              // symbols which are both sealed and abstract need not be covered themselves, because
-              // all of their children must be and they cannot otherwise be created.
-              sym.sealedDescendants.toList
-                sortBy (_.sealedSortName)
-                filterNot (x =>
-                  x.isSealed && x.isAbstractClass && !isPrimitiveValueClass(x))
-            )
+            val subclasses =
+              debug.patmatResult(s"enum $sym sealed, subclasses")(
+                // symbols which are both sealed and abstract need not be covered themselves, because
+                // all of their children must be and they cannot otherwise be created.
+                sym.sealedDescendants.toList
+                  sortBy (_.sealedSortName)
+                  filterNot (x =>
+                    x.isSealed && x.isAbstractClass && !isPrimitiveValueClass(
+                      x))
+              )
 
             List(
               debug.patmatResult(s"enum sealed tp=$tp, tpApprox=$tpApprox as") {
@@ -374,11 +379,10 @@ trait MatchApproximation
             boundFrom map (CODE.REF(_)))
           // debug.patmat ("normalize subst: "+ normalize)
 
-          val okSubst =
-            Substitution(
-              unboundFrom,
-              unboundTo map (normalize(_))
-            ) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
+          val okSubst = Substitution(
+            unboundFrom,
+            unboundTo map (normalize(_))
+          ) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
           pointsToBound ++= ((okSubst.from, okSubst.to).zipped filter {
             (f, t) => pointsToBound exists (sym => t.exists(_.symbol == sym))
           })._1
@@ -566,14 +570,15 @@ trait MatchAnalysis extends MatchApproximation {
         approximate(False) map (t => Not(caseWithoutBodyToProp(t)))
 
       try {
-        val (eqAxiomsFail, symbolicCasesFail) =
-          removeVarEq(propsCasesFail, modelNull = true)
-        val (eqAxiomsOk, symbolicCasesOk) =
-          removeVarEq(propsCasesOk, modelNull = true)
-        val eqAxioms =
-          simplify(
-            And(eqAxiomsOk, eqAxiomsFail)
-          ) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
+        val (eqAxiomsFail, symbolicCasesFail) = removeVarEq(
+          propsCasesFail,
+          modelNull = true)
+        val (eqAxiomsOk, symbolicCasesOk) = removeVarEq(
+          propsCasesOk,
+          modelNull = true)
+        val eqAxioms = simplify(
+          And(eqAxiomsOk, eqAxiomsFail)
+        ) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
 
         val prefix = mutable.ArrayBuffer[Prop]()
         prefix += eqAxioms
@@ -688,8 +693,9 @@ trait MatchAnalysis extends MatchApproximation {
 
           try {
             // find the models (under which the match fails)
-            val matchFailModels =
-              findAllModelsFor(propToSolvable(matchFails), prevBinder.pos)
+            val matchFailModels = findAllModelsFor(
+              propToSolvable(matchFails),
+              prevBinder.pos)
 
             val scrutVar = Var(prevBinderTree)
             val counterExamples = {
@@ -878,37 +884,41 @@ trait MatchAnalysis extends MatchApproximation {
 
       // group symbols that assign values to the same variables (i.e., symbols are mutually exclusive)
       // (thus the groups are sets of disjoint assignments to variables)
-      val groupedByVar: Map[Var, List[Sym]] =
-        solution.unassigned.groupBy(_.variable)
+      val groupedByVar: Map[Var, List[Sym]] = solution.unassigned.groupBy(
+        _.variable)
 
-      val expanded = for {
-        (variable, syms) <- groupedByVar.toList
-      } yield {
+      val expanded =
+        for {
+          (variable, syms) <- groupedByVar.toList
+        } yield {
 
-        val (equal, notEqual) = varAssignment.getOrElse(variable, Nil -> Nil)
+          val (equal, notEqual) = varAssignment.getOrElse(variable, Nil -> Nil)
 
-        def addVarAssignment(equalTo: List[Const], notEqualTo: List[Const]) =
-          Map(variable -> ((equal ++ equalTo, notEqual ++ notEqualTo)))
+          def addVarAssignment(equalTo: List[Const], notEqualTo: List[Const]) =
+            Map(variable -> ((equal ++ equalTo, notEqual ++ notEqualTo)))
 
-        // this assignment is needed in case that
-        // there exists already an assign
-        val allNotEqual = addVarAssignment(Nil, syms.map(_.const))
+          // this assignment is needed in case that
+          // there exists already an assign
+          val allNotEqual = addVarAssignment(Nil, syms.map(_.const))
 
-        // this assignment is conflicting on purpose:
-        // a list counter example could contain wildcards: e.g. `List(_,_)`
-        val allEqual = addVarAssignment(syms.map(_.const), Nil)
+          // this assignment is conflicting on purpose:
+          // a list counter example could contain wildcards: e.g. `List(_,_)`
+          val allEqual = addVarAssignment(syms.map(_.const), Nil)
 
-        if (equal.isEmpty) {
-          val oneHot = for {
-            s <- syms
-          } yield {
-            addVarAssignment(List(s.const), syms.filterNot(_ == s).map(_.const))
+          if (equal.isEmpty) {
+            val oneHot =
+              for {
+                s <- syms
+              } yield {
+                addVarAssignment(
+                  List(s.const),
+                  syms.filterNot(_ == s).map(_.const))
+              }
+            allEqual :: allNotEqual :: oneHot
+          } else {
+            allEqual :: allNotEqual :: Nil
           }
-          allEqual :: allNotEqual :: oneHot
-        } else {
-          allEqual :: allNotEqual :: Nil
         }
-      }
 
       if (expanded.isEmpty) {
         List(varAssignment)
@@ -971,8 +981,8 @@ trait MatchAnalysis extends MatchApproximation {
         private def unique(variable: Var): VariableAssignment =
           uniques.getOrElseUpdate(
             variable, {
-              val (eqTo, neqTo) =
-                varAssignment.getOrElse(variable, (Nil, Nil)) // TODO
+              val (eqTo, neqTo) = varAssignment
+                .getOrElse(variable, (Nil, Nil)) // TODO
               VariableAssignment(variable, eqTo.toList, neqTo.toList)
             })
 
@@ -1012,10 +1022,11 @@ trait MatchAnalysis extends MatchApproximation {
           variable.domainSyms.exists(_.exists(_.const.tp =:= const.tp)))
         private lazy val prunedEqualTo = uniqueEqualTo filterNot (subsumed =>
           variable.staticTpCheckable <:< subsumed.tp)
-        private lazy val ctor = (prunedEqualTo match {
-          case List(TypeConst(tp)) => tp
-          case _                   => variable.staticTpCheckable
-        }).typeSymbol.primaryConstructor
+        private lazy val ctor =
+          (prunedEqualTo match {
+            case List(TypeConst(tp)) => tp
+            case _                   => variable.staticTpCheckable
+          }).typeSymbol.primaryConstructor
         private lazy val ctorParams =
           if (ctor.paramss.isEmpty)
             Nil
@@ -1056,78 +1067,80 @@ trait MatchAnalysis extends MatchApproximation {
                   fields,
                   cls,
                   allFieldAssignmentsLegal)))
-            val res = prunedEqualTo match {
-              // a definite assignment to a value
-              case List(eq: ValueConst) if fields.isEmpty =>
-                Some(ValueExample(eq))
+            val res =
+              prunedEqualTo match {
+                // a definite assignment to a value
+                case List(eq: ValueConst) if fields.isEmpty =>
+                  Some(ValueExample(eq))
 
-              // constructor call
-              // or we did not gather any information about equality but we have information about the fields
-              //  --> typical example is when the scrutinee is a tuple and all the cases first unwrap that tuple and only then test something interesting
-              case _
-                  if cls != NoSymbol && !isPrimitiveValueClass(cls) &&
-                    (uniqueEqualTo.nonEmpty
-                      || (fields.nonEmpty && prunedEqualTo.isEmpty && notEqualTo.isEmpty)) =>
-                def args(brevity: Boolean = beBrief) = {
-                  // figure out the constructor arguments from the field assignment
-                  val argLen = (caseFieldAccs.length min ctorParams.length)
+                // constructor call
+                // or we did not gather any information about equality but we have information about the fields
+                //  --> typical example is when the scrutinee is a tuple and all the cases first unwrap that tuple and only then test something interesting
+                case _
+                    if cls != NoSymbol && !isPrimitiveValueClass(cls) &&
+                      (uniqueEqualTo.nonEmpty
+                        || (fields.nonEmpty && prunedEqualTo.isEmpty && notEqualTo.isEmpty)) =>
+                  def args(brevity: Boolean = beBrief) = {
+                    // figure out the constructor arguments from the field assignment
+                    val argLen = (caseFieldAccs.length min ctorParams.length)
 
-                  val examples = (0 until argLen)
-                    .map(i =>
-                      fields
-                        .get(caseFieldAccs(i))
-                        .map(_.toCounterExample(brevity)) getOrElse Some(
-                        WildcardExample))
-                    .toList
-                  sequence(examples)
-                }
+                    val examples =
+                      (0 until argLen)
+                        .map(i =>
+                          fields
+                            .get(caseFieldAccs(i))
+                            .map(_.toCounterExample(brevity)) getOrElse Some(
+                            WildcardExample))
+                        .toList
+                    sequence(examples)
+                  }
 
-                cls match {
-                  case ConsClass =>
-                    args()
-                      .map {
-                        case List(NoExample, l: ListExample) =>
-                          // special case for neg/t7020.scala:
-                          // if we find a counter example `??::*` we report `*::*` instead
-                          // since the `??` originates from uniqueEqualTo containing several instanced of the same type
-                          List(WildcardExample, l)
-                        case args => args
-                      }
-                      .map(ListExample)
-                  case _ if isTupleSymbol(cls) =>
-                    args(brevity = true).map(TupleExample)
-                  case _ if cls.isSealed && cls.isAbstractClass =>
-                    // don't report sealed abstract classes, since
-                    // 1) they can't be instantiated
-                    // 2) we are already reporting any missing subclass (since we know the full domain)
-                    // (see patmatexhaust.scala)
-                    None
-                  case _ => args().map(ConstructorExample(cls, _))
-                }
+                  cls match {
+                    case ConsClass =>
+                      args()
+                        .map {
+                          case List(NoExample, l: ListExample) =>
+                            // special case for neg/t7020.scala:
+                            // if we find a counter example `??::*` we report `*::*` instead
+                            // since the `??` originates from uniqueEqualTo containing several instanced of the same type
+                            List(WildcardExample, l)
+                          case args => args
+                        }
+                        .map(ListExample)
+                    case _ if isTupleSymbol(cls) =>
+                      args(brevity = true).map(TupleExample)
+                    case _ if cls.isSealed && cls.isAbstractClass =>
+                      // don't report sealed abstract classes, since
+                      // 1) they can't be instantiated
+                      // 2) we are already reporting any missing subclass (since we know the full domain)
+                      // (see patmatexhaust.scala)
+                      None
+                    case _ => args().map(ConstructorExample(cls, _))
+                  }
 
-              // a definite assignment to a type
-              case List(eq) if fields.isEmpty => Some(TypeExample(eq))
+                // a definite assignment to a type
+                case List(eq) if fields.isEmpty => Some(TypeExample(eq))
 
-              // negative information
-              case Nil if nonTrivialNonEqualTo.nonEmpty =>
-                // negation tends to get pretty verbose
-                if (beBrief)
-                  Some(WildcardExample)
-                else {
-                  val eqTo = equalTo.headOption getOrElse TypeConst(
-                    variable.staticTpCheckable)
-                  Some(NegativeExample(eqTo, nonTrivialNonEqualTo))
-                }
+                // negative information
+                case Nil if nonTrivialNonEqualTo.nonEmpty =>
+                  // negation tends to get pretty verbose
+                  if (beBrief)
+                    Some(WildcardExample)
+                  else {
+                    val eqTo = equalTo.headOption getOrElse TypeConst(
+                      variable.staticTpCheckable)
+                    Some(NegativeExample(eqTo, nonTrivialNonEqualTo))
+                  }
 
-              // if uniqueEqualTo contains more than one symbol of the same domain
-              // then we can safely ignore these counter examples since we will eventually encounter
-              // both counter examples separately
-              case _ if inSameDomain => None
+                // if uniqueEqualTo contains more than one symbol of the same domain
+                // then we can safely ignore these counter examples since we will eventually encounter
+                // both counter examples separately
+                case _ if inSameDomain => None
 
-              // not a valid counter-example, possibly since we have a definite type but there was a field mismatch
-              // TODO: improve reasoning -- in the mean time, a false negative is better than an annoying false positive
-              case _ => Some(NoExample)
-            }
+                // not a valid counter-example, possibly since we have a definite type but there was a field mismatch
+                // TODO: improve reasoning -- in the mean time, a false negative is better than an annoying false positive
+                case _ => Some(NoExample)
+              }
             debug.patmatResult("described as")(res)
           }
 

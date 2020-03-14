@@ -38,11 +38,12 @@ object EitherTTest extends SpecLite {
   }
 
   "consistent Bifoldable" ! forAll { a: EitherTList[Int, Int] =>
-    val F = new Bitraverse[EitherTList] {
-      def bitraverseImpl[G[_]: Applicative, A, B, C, D](
-          fab: EitherTList[A, B])(f: A => G[C], g: B => G[D]) =
-        EitherT.eitherTBitraverse[List].bitraverseImpl(fab)(f, g)
-    }
+    val F =
+      new Bitraverse[EitherTList] {
+        def bitraverseImpl[G[_]: Applicative, A, B, C, D](
+            fab: EitherTList[A, B])(f: A => G[C], g: B => G[D]) =
+          EitherT.eitherTBitraverse[List].bitraverseImpl(fab)(f, g)
+      }
 
     Bifoldable[EitherTList].bifoldMap(a)(_ :: Nil)(_ :: Nil) must_=== F
       .bifoldMap(a)(_ :: Nil)(_ :: Nil)
@@ -64,8 +65,8 @@ object EitherTTest extends SpecLite {
 
   "orElse only executes the left hand monad once" should {
     val counter = new AtomicInteger(0)
-    val inc: EitherTComputation[Int] =
-      EitherT.right(() => counter.incrementAndGet())
+    val inc: EitherTComputation[Int] = EitherT.right(() =>
+      counter.incrementAndGet())
     val other: EitherTComputation[Int] = EitherT.right(() => 0) // does nothing
 
     (inc orElse other).run.apply() must_== \/-(1)
@@ -105,10 +106,11 @@ object EitherTTest extends SpecLite {
 
       case class ABC(s: String)
 
-      implicit val m = new Monoid[(ABC, Int)] {
-        def zero: (ABC, Int) = (null, -1)
-        def append(f1: (ABC, Int), f2: => (ABC, Int)): (ABC, Int) = f1
-      }
+      implicit val m =
+        new Monoid[(ABC, Int)] {
+          def zero: (ABC, Int) = (null, -1)
+          def append(f1: (ABC, Int), f2: => (ABC, Int)): (ABC, Int) = f1
+        }
 
       def brokenMethod: EitherT[Option, (ABC, Int), (ABC, String)] =
         EitherT(Some((ABC("abcData"), "Success").right))

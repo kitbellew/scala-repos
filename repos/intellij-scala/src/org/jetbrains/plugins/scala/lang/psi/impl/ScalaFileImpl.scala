@@ -74,8 +74,7 @@ class ScalaFileImpl(
   override def toString = "ScalaFile:" + getName
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] =
-    findChildrenByClass[T](clazz)
+      clazz: Class[T]): Array[T] = findChildrenByClass[T](clazz)
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = findChildByClass[T](clazz)
@@ -133,8 +132,9 @@ class ScalaFileImpl(
       // Look in libraries' sources
       val vFile = getContainingFile.getVirtualFile
       val index = ProjectRootManager.getInstance(getProject).getFileIndex
-      val entries =
-        index.getOrderEntriesForFile(vFile).toArray(OrderEntry.EMPTY_ARRAY)
+      val entries = index
+        .getOrderEntriesForFile(vFile)
+        .toArray(OrderEntry.EMPTY_ARRAY)
       var entryIterator = entries.iterator
       while (entryIterator.hasNext) {
         val entry = entryIterator.next()
@@ -267,11 +267,12 @@ class ScalaFileImpl(
       // Handle package object
       case TypeDefinitions(obj: ScObject)
           if obj.isPackageObject && obj.name != "`package`" =>
-        val (packageName, objectName) = name match {
-          case ScalaFileImpl.QualifiedPackagePattern(qualifier, simpleName) =>
-            (qualifier, simpleName)
-          case s => ("", name)
-        }
+        val (packageName, objectName) =
+          name match {
+            case ScalaFileImpl.QualifiedPackagePattern(qualifier, simpleName) =>
+              (qualifier, simpleName)
+            case s => ("", name)
+          }
 
         setPackageName(basePackageName, packageName)
         typeDefinitions.headOption.foreach(_.name = objectName)
@@ -571,18 +572,20 @@ object ScalaFileImpl {
 
   val DefaultImplicitlyImportedPackages = Seq("scala", "java.lang")
 
-  val DefaultImplicitlyImportedObjects =
-    Seq("scala.Predef", "scala" /* package object*/ )
+  val DefaultImplicitlyImportedObjects = Seq(
+    "scala.Predef",
+    "scala" /* package object*/ )
 
   /**
     * @param _place actual place, can be null, if null => false
     * @return true, if place is out of source content root, or in Scala Worksheet.
     */
   def isProcessLocalClasses(_place: PsiElement): Boolean = {
-    val place = _place match {
-      case s: ScalaPsiElement => s.getDeepSameElementInContext
-      case _                  => _place
-    }
+    val place =
+      _place match {
+        case s: ScalaPsiElement => s.getDeepSameElementInContext
+        case _                  => _place
+      }
     if (place == null)
       return false
     val containingFile: PsiFile = place.getContainingFile

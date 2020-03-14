@@ -72,16 +72,17 @@ class HttpModelIntegrationSpec
       // HttpHeaders by getting their name and value. We convert Content-Type
       // and Content-Length by using the toString of their values.
 
-      val partialTextHeaders: Seq[(String, String)] =
-        request.headers.map(h ⇒ (h.name, h.value))
-      val entityTextHeaders: Seq[(String, String)] = request.entity match {
-        case HttpEntity.Default(contentType, contentLength, _) ⇒
-          Seq(
-            ("Content-Type", contentType.toString),
-            ("Content-Length", contentLength.toString))
-        case _ ⇒
-          ???
-      }
+      val partialTextHeaders: Seq[(String, String)] = request.headers.map(h ⇒
+        (h.name, h.value))
+      val entityTextHeaders: Seq[(String, String)] =
+        request.entity match {
+          case HttpEntity.Default(contentType, contentLength, _) ⇒
+            Seq(
+              ("Content-Type", contentType.toString),
+              ("Content-Length", contentLength.toString))
+          case _ ⇒
+            ???
+        }
       val textHeaders: Seq[(String, String)] =
         entityTextHeaders ++ partialTextHeaders
       textHeaders shouldEqual Seq(
@@ -156,8 +157,8 @@ class HttpModelIntegrationSpec
       // Finally we can create our HttpResponse.
 
       HttpResponse(
-        entity =
-          HttpEntity.Default(contentType.get, contentLength.get, publisherBody))
+        entity = HttpEntity
+          .Default(contentType.get, contentLength.get, publisherBody))
     }
 
     "be able to wrap HttpHeaders with custom typed headers" in {
@@ -192,10 +193,11 @@ class HttpModelIntegrationSpec
 
         // Headers can be created from strings.
         def header(name: String, value: String): TypedHeader = {
-          val parsedHeader = HttpHeader.parse(name, value) match {
-            case HttpHeader.ParsingResult.Ok(h, Nil) ⇒ h
-            case x ⇒ sys.error(s"Failed to parse: ${x.errors}")
-          }
+          val parsedHeader =
+            HttpHeader.parse(name, value) match {
+              case HttpHeader.ParsingResult.Ok(h, Nil) ⇒ h
+              case x ⇒ sys.error(s"Failed to parse: ${x.errors}")
+            }
           parsedHeader match {
             case `Content-Type`(contentType) ⇒ ContentTypeHeader(contentType)
             case `Content-Length`(length) ⇒ ContentLengthHeader(length)

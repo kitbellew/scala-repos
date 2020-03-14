@@ -22,10 +22,12 @@ object AdjunctUsage extends App {
 
   // traverse the list with our stateful computation, producing a list
   // of booleans for "was this a repeat of the previous"
-  val res1: List[Boolean] =
-    Traverse[List].traverseS(nonRepeating)(checkForRepeats).eval(None)
-  val res2: List[Boolean] =
-    Traverse[List].traverseS(repeating)(checkForRepeats).eval(None)
+  val res1: List[Boolean] = Traverse[List]
+    .traverseS(nonRepeating)(checkForRepeats)
+    .eval(None)
+  val res2: List[Boolean] = Traverse[List]
+    .traverseS(repeating)(checkForRepeats)
+    .eval(None)
 
   // when we collapse the lists of booleans, we expect the non-repeating list to all be false
   assert(Tag.unwrap(res1.foldMap(Tags.Disjunction(_))) === false)
@@ -114,8 +116,10 @@ object AdjunctUsage extends App {
 
   // with the above function we can combine the two stateful
   // computations with a function that throws away the Unit from sum.
-  val checkForRepeatsAdjAndSum: Int ⇒ ROIRIWW[Boolean] =
-    run2RWState(checkForRepeatsAdj, sum, (a: Boolean, _: Any) ⇒ a)
+  val checkForRepeatsAdjAndSum: Int ⇒ ROIRIWW[Boolean] = run2RWState(
+    checkForRepeatsAdj,
+    sum,
+    (a: Boolean, _: Any) ⇒ a)
 
   // since the adjunctions compose, we can run both stateful
   // computations with a single traverse of the list. This

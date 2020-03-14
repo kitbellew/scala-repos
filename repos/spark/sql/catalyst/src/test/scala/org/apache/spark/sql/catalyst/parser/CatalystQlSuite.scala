@@ -47,35 +47,13 @@ class CatalystQlSuite extends PlanTest {
 
   test("test Union Distinct operator") {
     val parsed1 = parser.parsePlan("SELECT * FROM t0 UNION SELECT * FROM t1")
-    val parsed2 =
-      parser.parsePlan("SELECT * FROM t0 UNION DISTINCT SELECT * FROM t1")
-    val expected =
-      Project(
-        UnresolvedAlias(UnresolvedStar(None)) :: Nil,
-        SubqueryAlias(
-          "u_1",
-          Distinct(
-            Union(
-              Project(
-                UnresolvedAlias(UnresolvedStar(None)) :: Nil,
-                UnresolvedRelation(TableIdentifier("t0"), None)),
-              Project(
-                UnresolvedAlias(UnresolvedStar(None)) :: Nil,
-                UnresolvedRelation(TableIdentifier("t1"), None))
-            ))
-        )
-      )
-    comparePlans(parsed1, expected)
-    comparePlans(parsed2, expected)
-  }
-
-  test("test Union All operator") {
-    val parsed = parser.parsePlan("SELECT * FROM t0 UNION ALL SELECT * FROM t1")
-    val expected =
-      Project(
-        UnresolvedAlias(UnresolvedStar(None)) :: Nil,
-        SubqueryAlias(
-          "u_1",
+    val parsed2 = parser.parsePlan(
+      "SELECT * FROM t0 UNION DISTINCT SELECT * FROM t1")
+    val expected = Project(
+      UnresolvedAlias(UnresolvedStar(None)) :: Nil,
+      SubqueryAlias(
+        "u_1",
+        Distinct(
           Union(
             Project(
               UnresolvedAlias(UnresolvedStar(None)) :: Nil,
@@ -83,9 +61,29 @@ class CatalystQlSuite extends PlanTest {
             Project(
               UnresolvedAlias(UnresolvedStar(None)) :: Nil,
               UnresolvedRelation(TableIdentifier("t1"), None))
-          )
+          ))
+      )
+    )
+    comparePlans(parsed1, expected)
+    comparePlans(parsed2, expected)
+  }
+
+  test("test Union All operator") {
+    val parsed = parser.parsePlan("SELECT * FROM t0 UNION ALL SELECT * FROM t1")
+    val expected = Project(
+      UnresolvedAlias(UnresolvedStar(None)) :: Nil,
+      SubqueryAlias(
+        "u_1",
+        Union(
+          Project(
+            UnresolvedAlias(UnresolvedStar(None)) :: Nil,
+            UnresolvedRelation(TableIdentifier("t0"), None)),
+          Project(
+            UnresolvedAlias(UnresolvedStar(None)) :: Nil,
+            UnresolvedRelation(TableIdentifier("t1"), None))
         )
       )
+    )
     comparePlans(parsed, expected)
   }
 

@@ -32,8 +32,9 @@ class MavenCacheRepositoryResolver(val repo: MavenCache, settings: IvySettings)
   setName(repo.name)
   protected val system = MavenRepositorySystemFactory.newRepositorySystemImpl
   IO.createDirectory(repo.rootFile)
-  protected val session =
-    MavenRepositorySystemFactory.newSessionImpl(system, repo.rootFile)
+  protected val session = MavenRepositorySystemFactory.newSessionImpl(
+    system,
+    repo.rootFile)
   protected def setRepository(
       request: AetherMetadataRequest): AetherMetadataRequest = request
   protected def addRepositories(

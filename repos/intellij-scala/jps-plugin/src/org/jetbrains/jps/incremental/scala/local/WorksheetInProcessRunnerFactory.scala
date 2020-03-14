@@ -62,46 +62,47 @@ class WorksheetInProcessRunnerFactory {
     private val TRACE_PREFIX = 21
     private val WORKSHEET = "#worksheet#"
 
-    private val myOut = new OutputStream {
-      private var capacity = 1200
-      private var buffer = ByteBuffer.allocate(capacity)
+    private val myOut =
+      new OutputStream {
+        private var capacity = 1200
+        private var buffer = ByteBuffer.allocate(capacity)
 
-      override def write(b: Int) {
-        if (b == '\r')
-          return
+        override def write(b: Int) {
+          if (b == '\r')
+            return
 
-        if (buffer.position() < capacity)
-          buffer.put(b.toByte)
-        else {
-          val copy = buffer.array().clone()
-          capacity *= 2
-          buffer = ByteBuffer.allocate(capacity)
-          buffer put copy
-          buffer put b.toByte
+          if (buffer.position() < capacity)
+            buffer.put(b.toByte)
+          else {
+            val copy = buffer.array().clone()
+            capacity *= 2
+            buffer = ByteBuffer.allocate(capacity)
+            buffer put copy
+            buffer put b.toByte
+          }
+
+          if (b == '\n')
+            flush()
         }
 
-        if (b == '\n')
+        override def close() {
           flush()
-      }
+        }
 
-      override def close() {
-        flush()
+        override def flush() {
+          if (buffer.position() == 0)
+            return
+          val event = WorksheetOutputEvent(
+            new String(buffer.array(), 0, buffer.position()))
+          buffer.clear()
+          val encode = Base64Converter.encode(event.toBytes)
+          out.write(
+            if (standalone && !encode.endsWith("="))
+              (encode + "=").getBytes
+            else
+              encode.getBytes)
+        }
       }
-
-      override def flush() {
-        if (buffer.position() == 0)
-          return
-        val event = WorksheetOutputEvent(
-          new String(buffer.array(), 0, buffer.position()))
-        buffer.clear()
-        val encode = Base64Converter.encode(event.toBytes)
-        out.write(
-          if (standalone && !encode.endsWith("="))
-            (encode + "=").getBytes
-          else
-            encode.getBytes)
-      }
-    }
 
     def loadAndRun(arguments: Arguments, client: EventGeneratingClient) {
       arguments.worksheetFiles.headOption.map {
@@ -115,14 +116,15 @@ class WorksheetInProcessRunnerFactory {
 
           val worksheetUrls = arguments.worksheetFiles.tail.map(toUrlSpec)
           val compilerUrlSeq = compilerUrls.map(toUrlSpec)
-          val classpathUrls =
-            arguments.compilationData.classpath.map(_.toURI.toURL)
+          val classpathUrls = arguments.compilationData.classpath
+            .map(_.toURI.toURL)
 
-          val classLoader = new URLClassLoader(
-            worksheetUrls.toArray,
-            getClassLoader(
-              compilerUrlSeq,
-              classpathUrls diff worksheetUrls.map(_.toURI.toURL)))
+          val classLoader =
+            new URLClassLoader(
+              worksheetUrls.toArray,
+              getClassLoader(
+                compilerUrlSeq,
+                classpathUrls diff worksheetUrls.map(_.toURI.toURL)))
 
           try {
             val cl = Class.forName(className, true, classLoader)

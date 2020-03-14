@@ -42,23 +42,24 @@ class ObjectTraitReferenceSearcher
     }
     toProcess.foreach {
       case (elem, name) =>
-        val processor = new TextOccurenceProcessor {
-          def execute(element: PsiElement, offsetInElement: Int): Boolean = {
-            val references = inReadAction(element.getReferences)
-            for (ref <- references
-                 if ref.getRangeInElement.contains(offsetInElement)) {
-              inReadAction {
-                if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
-                  if (!consumer.process(ref))
-                    return false
+        val processor =
+          new TextOccurenceProcessor {
+            def execute(element: PsiElement, offsetInElement: Int): Boolean = {
+              val references = inReadAction(element.getReferences)
+              for (ref <- references
+                   if ref.getRangeInElement.contains(offsetInElement)) {
+                inReadAction {
+                  if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
+                    if (!consumer.process(ref))
+                      return false
+                  }
                 }
               }
+              true
             }
-            true
           }
-        }
-        val helper: PsiSearchHelper =
-          PsiSearchHelper.SERVICE.getInstance(queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
+          queryParameters.getProject)
         try {
           helper.processElementsWithWord(
             processor,

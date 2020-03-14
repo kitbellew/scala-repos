@@ -39,9 +39,10 @@ import scalafx.scene.paint.Color
 
 object CheckBoxTest extends JFXApp {
 
-  val check = new CheckBox {
-    text = "CheckBox"
-  }
+  val check =
+    new CheckBox {
+      text = "CheckBox"
+    }
   check.onAction = (event: ActionEvent) => {
     lblCheckState.text =
       if (check.indeterminate.get)
@@ -50,35 +51,40 @@ object CheckBoxTest extends JFXApp {
         check.selected.get().toString
   }
 
-  val lblCheckState = new Label {
-    text = check.selected.get().toString
-  }
+  val lblCheckState =
+    new Label {
+      text = check.selected.get().toString
+    }
 
-  val btnAllowIndeterminate = new scalafx.scene.control.Button {
-    text = "Allow Indeterminate"
-  }
+  val btnAllowIndeterminate =
+    new scalafx.scene.control.Button {
+      text = "Allow Indeterminate"
+    }
   btnAllowIndeterminate.onAction = (event: ActionEvent) => {
     check.allowIndeterminate = !check.allowIndeterminate.get()
   }
 
-  val lblAllowIndeterminate = new Label {
-    text <== when(
-      check.allowIndeterminate) choose "Can be Indeterminate" otherwise "Can not be Indeterminate"
-  }
+  val lblAllowIndeterminate =
+    new Label {
+      text <== when(
+        check.allowIndeterminate) choose "Can be Indeterminate" otherwise "Can not be Indeterminate"
+    }
 
-  val btnFire = new Button {
-    text = "Fire!"
-  }
+  val btnFire =
+    new Button {
+      text = "Fire!"
+    }
   btnFire.onAction = (event: ActionEvent) => check.fire()
 
   val txfText = new TextField
   txfText.delegate.textProperty.bindBidirectional(check.text)
 
-  val grid = new GridPane {
-    padding = Insets(10)
-    hgap = 5
-    vgap = 5
-  }
+  val grid =
+    new GridPane {
+      padding = Insets(10)
+      hgap = 5
+      vgap = 5
+    }
   grid.add(check, 0, 0)
   grid.add(lblCheckState, 1, 0)
   grid.add(btnAllowIndeterminate, 0, 1)

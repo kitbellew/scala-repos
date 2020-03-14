@@ -66,15 +66,16 @@ class ScalaImportOptimizer extends ImportOptimizer {
   def processFile(
       file: PsiFile,
       progressIndicator: ProgressIndicator = null): Runnable = {
-    val scalaFile = file match {
-      case scFile: ScalaFile => scFile
-      case multiRootFile: PsiFile
-          if multiRootFile.getViewProvider.getLanguages contains ScalaFileType.SCALA_LANGUAGE =>
-        multiRootFile.getViewProvider
-          .getPsi(ScalaFileType.SCALA_LANGUAGE)
-          .asInstanceOf[ScalaFile]
-      case _ => return EmptyRunnable.getInstance()
-    }
+    val scalaFile =
+      file match {
+        case scFile: ScalaFile => scFile
+        case multiRootFile: PsiFile
+            if multiRootFile.getViewProvider.getLanguages contains ScalaFileType.SCALA_LANGUAGE =>
+          multiRootFile.getViewProvider
+            .getPsi(ScalaFileType.SCALA_LANGUAGE)
+            .asInstanceOf[ScalaFile]
+        case _ => return EmptyRunnable.getInstance()
+      }
 
     val project: Project = scalaFile.getProject
     val documentManager = PsiDocumentManager.getInstance(project)
@@ -159,8 +160,9 @@ class ScalaImportOptimizer extends ImportOptimizer {
       }
     }
 
-    val importsInfo =
-      collectRanges(namesAtRangeStart, createInfo(_, isImportUsed))
+    val importsInfo = collectRanges(
+      namesAtRangeStart,
+      createInfo(_, isImportUsed))
 
     val optimized = importsInfo.map {
       case (range, rangeInfo) =>
@@ -276,10 +278,11 @@ class ScalaImportOptimizer extends ImportOptimizer {
     var rangeStart = -1
     var rangeEnd = -1
     var namesAtStart: Set[String] = Set.empty
-    val isLocalRange = holder match {
-      case _: ScalaFile | _: ScPackaging => false
-      case _                             => true
-    }
+    val isLocalRange =
+      holder match {
+        case _: ScalaFile | _: ScPackaging => false
+        case _                             => true
+      }
     val infos = ArrayBuffer[ImportInfo]()
     val allUsedImportedNames = collectUsedImportedNamesSorted(holder)
 
@@ -356,8 +359,8 @@ object ScalaImportOptimizer {
   }
 
   def findOptimizerFor(file: ScalaFile): Option[ImportOptimizer] = {
-    val topLevelFile =
-      file.getViewProvider.getPsi(file.getViewProvider.getBaseLanguage)
+    val topLevelFile = file.getViewProvider.getPsi(
+      file.getViewProvider.getBaseLanguage)
     val optimizers = LanguageImportStatements.INSTANCE.forFile(topLevelFile)
     if (optimizers.isEmpty)
       return None
@@ -377,12 +380,13 @@ object ScalaImportOptimizer {
   }
 
   def isLanguageFeatureImport(used: ImportUsed): Boolean = {
-    val expr = used match {
-      case ImportExprUsed(e) => e
-      case ImportSelectorUsed(selector) =>
-        PsiTreeUtil.getParentOfType(selector, classOf[ScImportExpr])
-      case ImportWildcardSelectorUsed(e) => e
-    }
+    val expr =
+      used match {
+        case ImportExprUsed(e) => e
+        case ImportSelectorUsed(selector) =>
+          PsiTreeUtil.getParentOfType(selector, classOf[ScImportExpr])
+        case ImportWildcardSelectorUsed(e) => e
+      }
     if (expr == null)
       return false
     if (expr.qualifier == null)
@@ -538,10 +542,11 @@ object ScalaImportOptimizer {
       val mayUpdate =
         info.hiddenNames.isEmpty && info.renames.isEmpty && !info.wildcardHasUnusedImplicit
       if (needUpdate && mayUpdate) {
-        val explicitNames = infos.flatMap {
-          case `info` => Seq.empty
-          case other  => other.singleNames
-        }.toSet
+        val explicitNames =
+          infos.flatMap {
+            case `info` => Seq.empty
+            case other  => other.singleNames
+          }.toSet
         val namesFromOtherWildcards = infos.flatMap {
           case `info` => Seq.empty
           case other  => other.allNames
@@ -578,8 +583,10 @@ object ScalaImportOptimizer {
     }
 
     def replace(oldInfos: Seq[ImportInfo], newInfos: Seq[ImportInfo]) = {
-      val oldIndices =
-        oldInfos.map(infos.indexOf).filter(_ >= 0).sorted(Ordering[Int].reverse)
+      val oldIndices = oldInfos
+        .map(infos.indexOf)
+        .filter(_ >= 0)
+        .sorted(Ordering[Int].reverse)
       if (oldIndices.nonEmpty) {
         val minIndex = oldIndices.last
         oldIndices.foreach(infos.remove)
@@ -615,12 +622,12 @@ object ScalaImportOptimizer {
 
     val actuallyInserted = withAliasedQualifier(infoToInsert)
 
-    val (samePrefixInfos, otherInfos) =
-      infos.partition(_.prefixQualifier == actuallyInserted.prefixQualifier)
+    val (samePrefixInfos, otherInfos) = infos.partition(
+      _.prefixQualifier == actuallyInserted.prefixQualifier)
     val samePrefixWithNewSplitted =
       samePrefixInfos.flatMap(_.split) ++ actuallyInserted.split
-    val (simpleInfos, notSimpleInfos) =
-      samePrefixWithNewSplitted.partition(_.singleNames.nonEmpty)
+    val (simpleInfos, notSimpleInfos) = samePrefixWithNewSplitted.partition(
+      _.singleNames.nonEmpty)
 
     def insertInfoWithWildcard(): Unit = {
       val (wildcard, withArrows) = notSimpleInfos.partition(_.hasWildcard)
@@ -642,8 +649,8 @@ object ScalaImportOptimizer {
 
       val notSimpleMerged = ImportInfo.merge(withArrows ++ wildcard)
       if (collectImports) {
-        val simpleMerged =
-          ImportInfo.merge(simpleInfosToRemain ++ notSimpleMerged)
+        val simpleMerged = ImportInfo.merge(
+          simpleInfosToRemain ++ notSimpleMerged)
         replace(samePrefixInfos, simpleMerged.toSeq)
       } else {
         replace(samePrefixInfos, simpleInfosToRemain ++ notSimpleMerged)
@@ -745,16 +752,17 @@ object ScalaImportOptimizer {
       group != ScalaCodeStyleSettings.BLANK_LINE && (group == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS ||
       info.startsWith(group))
     }
-    val elem = suitable.tail.foldLeft(suitable.head) { (l, r) =>
-      if (l == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
-        r
-      else if (r == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
-        l
-      else if (r.startsWith(l))
-        r
-      else
-        l
-    }
+    val elem =
+      suitable.tail.foldLeft(suitable.head) { (l, r) =>
+        if (l == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+          r
+        else if (r == ScalaCodeStyleSettings.ALL_OTHER_IMPORTS)
+          l
+        else if (r.startsWith(l))
+          r
+        else
+          l
+      }
 
     groups.indexOf(elem)
   }

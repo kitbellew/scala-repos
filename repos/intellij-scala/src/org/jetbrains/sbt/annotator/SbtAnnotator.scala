@@ -24,12 +24,11 @@ class SbtAnnotator extends Annotator {
   def annotate(element: PsiElement, holder: AnnotationHolder): Unit =
     element match {
       case file: SbtFileImpl =>
-        val sbtVersion =
-          SbtSystemSettings
-            .getInstance(file.getProject)
-            .getLinkedProjectSettings(file)
-            .safeMap(_.sbtVersion)
-            .getOrElse(Sbt.LatestVersion)
+        val sbtVersion = SbtSystemSettings
+          .getInstance(file.getProject)
+          .getLinkedProjectSettings(file)
+          .safeMap(_.sbtVersion)
+          .getOrElse(Sbt.LatestVersion)
         new Worker(file.children.toVector, sbtVersion, holder).annotate()
       case _ =>
     }
@@ -103,6 +102,7 @@ class SbtAnnotator extends Annotator {
 }
 
 object SbtAnnotator {
-  val AllowedTypes =
-    List("Seq[Def.SettingsDefinition]", "Def.SettingsDefinition")
+  val AllowedTypes = List(
+    "Seq[Def.SettingsDefinition]",
+    "Def.SettingsDefinition")
 }

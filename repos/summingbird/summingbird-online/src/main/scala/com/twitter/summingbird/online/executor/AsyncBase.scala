@@ -34,8 +34,8 @@ abstract class AsyncBase[I, O, S, D, RC](
     extends Serializable
     with OperationContainer[I, O, S, D, RC] {
 
-  @transient protected lazy val logger: Logger =
-    LoggerFactory.getLogger(getClass)
+  @transient protected lazy val logger: Logger = LoggerFactory.getLogger(
+    getClass)
 
   /**
     * If you can use Future.value below, do so. The double Future is here to deal with
@@ -49,8 +49,8 @@ abstract class AsyncBase[I, O, S, D, RC](
     Future.value(Nil)
 
   private lazy val outstandingFutures = Queue.linkedNonBlocking[Future[Unit]]
-  private lazy val responses =
-    Queue.linkedNonBlocking[(Seq[S], Try[TraversableOnce[O]])]
+  private lazy val responses = Queue
+    .linkedNonBlocking[(Seq[S], Try[TraversableOnce[O]])]
 
   override def executeTick =
     finishExecute(tick.onFailure { thr =>
@@ -75,21 +75,22 @@ abstract class AsyncBase[I, O, S, D, RC](
     fut.onSuccess {
       iter: TraversableOnce[(Seq[S], Future[TraversableOnce[O]])] =>
         // Collect the result onto our responses
-        val iterSize = iter.foldLeft(0) {
-          case (iterSize, (tups, res)) =>
-            res.onSuccess { t =>
-              responses.put(((tups, Success(t))))
-            }
-            res.onFailure { t =>
-              responses.put(((tups, Failure(t))))
-            }
-            // Make sure there are not too many outstanding:
-            if (addOutstandingFuture(res.unit)) {
-              iterSize + 1
-            } else {
-              iterSize
-            }
-        }
+        val iterSize =
+          iter.foldLeft(0) {
+            case (iterSize, (tups, res)) =>
+              res.onSuccess { t =>
+                responses.put(((tups, Success(t))))
+              }
+              res.onFailure { t =>
+                responses.put(((tups, Failure(t))))
+              }
+              // Make sure there are not too many outstanding:
+              if (addOutstandingFuture(res.unit)) {
+                iterSize + 1
+              } else {
+                iterSize
+              }
+          }
         if (outstandingFutures.size > maxWaitingFutures.get) {
           /*
            * This can happen on large key expansion.

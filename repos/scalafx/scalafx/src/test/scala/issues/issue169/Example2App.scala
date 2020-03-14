@@ -44,26 +44,27 @@ import scalafx.collections.ObservableBuffer
 object Example2App extends App {
   val items: ObservableBuffer[String] = ObservableBuffer()
 
-  val listener = new jfxc.ListChangeListener[String] {
-    def onChanged(change: jfxc.ListChangeListener.Change[_ <: String]) {
-      println(change)
-      var order = 0
-      while (change.next()) {
-        order += 1
-        println(order)
-        if (change.wasPermutated)
-          println("permutated")
-        if (change.wasAdded)
-          println("added")
-        if (change.wasRemoved)
-          println("removed")
-        if (change.wasReplaced)
-          println("replaced")
-        if (change.wasUpdated)
-          println("updated")
+  val listener =
+    new jfxc.ListChangeListener[String] {
+      def onChanged(change: jfxc.ListChangeListener.Change[_ <: String]) {
+        println(change)
+        var order = 0
+        while (change.next()) {
+          order += 1
+          println(order)
+          if (change.wasPermutated)
+            println("permutated")
+          if (change.wasAdded)
+            println("added")
+          if (change.wasRemoved)
+            println("removed")
+          if (change.wasReplaced)
+            println("replaced")
+          if (change.wasUpdated)
+            println("updated")
+        }
       }
     }
-  }
 
   items.delegate.addListener(listener)
 

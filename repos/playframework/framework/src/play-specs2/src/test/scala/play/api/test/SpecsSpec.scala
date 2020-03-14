@@ -30,9 +30,10 @@ object SpecsSpec extends Specification {
   }
 
   "WithApplicationLoader" should {
-    val myModule = new AbstractModule {
-      def configure() = bind(classOf[Int]).toInstance(42)
-    }
+    val myModule =
+      new AbstractModule {
+        def configure() = bind(classOf[Int]).toInstance(42)
+      }
     val builder = new GuiceApplicationBuilder().bindings(myModule)
     class WithMyApplicationLoader
         extends WithApplicationLoader(new GuiceApplicationLoader(builder))

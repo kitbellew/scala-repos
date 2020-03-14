@@ -110,10 +110,11 @@ case class SiteMap(
     * Build a menu based on the current location
     */
   def buildMenu(current: Box[Loc[_]]): CompleteMenu = {
-    val path: List[Loc[_]] = current match {
-      case Full(loc) => loc.breadCrumbs
-      case _         => Nil
-    }
+    val path: List[Loc[_]] =
+      current match {
+        case Full(loc) => loc.breadCrumbs
+        case _         => Nil
+      }
     CompleteMenu(kids.flatMap(_.makeMenuItem(path)))
   }
 }
@@ -169,8 +170,7 @@ sealed class SiteMapSingleton {
             List(menu.rebuild(doAMenuItem _))
         }
 
-      def doAMenuItem(in: List[Menu]): List[Menu] =
-        in.flatMap(theFunc)
+      def doAMenuItem(in: List[Menu]): List[Menu] = in.flatMap(theFunc)
 
       val ret = sm.rebuild(_.flatMap(theFunc))
 
@@ -247,20 +247,22 @@ sealed class SiteMapSingleton {
       })
 
   def buildLink(name: String, text: NodeSeq): NodeSeq = {
-    val options = for {
-      loc <- findAndTestLoc(name).toList
-      link <- loc.createDefaultLink
-    } yield {
-      val linkText = text match {
-        case x if x.length > 0 => x
-        case _                 => loc.linkText openOr Text(loc.name)
+    val options =
+      for {
+        loc <- findAndTestLoc(name).toList
+        link <- loc.createDefaultLink
+      } yield {
+        val linkText =
+          text match {
+            case x if x.length > 0 => x
+            case _                 => loc.linkText openOr Text(loc.name)
+          }
+        <a href={
+          link
+        }>{
+          linkText
+        }</a>
       }
-      <a href={
-        link
-      }>{
-        linkText
-      }</a>
-    }
 
     options.headOption getOrElse NodeSeq.Empty
   }
@@ -270,8 +272,7 @@ sealed class SiteMapSingleton {
   /**
     * A Java-callable method that builds a SiteMap
     */
-  def build(kids: Array[ConvertableToMenu]): SiteMap =
-    this.apply(kids: _*)
+  def build(kids: Array[ConvertableToMenu]): SiteMap = this.apply(kids: _*)
 
   def apply(kids: ConvertableToMenu*) = new SiteMap(Nil, kids: _*)
 

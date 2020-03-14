@@ -26,8 +26,10 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null)
       return false
 
@@ -68,17 +70,20 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 
     val expr = new StringBuilder
     val outerCondition = ifStmt.condition.get.getText
-    val innerIfStmt = ifStmt.thenBranch.get match {
-      case c: ScBlockExpr => c.exprs(0).asInstanceOf[ScIfStmt]
-      case c: ScIfStmt    => c
-    }
+    val innerIfStmt =
+      ifStmt.thenBranch.get match {
+        case c: ScBlockExpr => c.exprs(0).asInstanceOf[ScIfStmt]
+        case c: ScIfStmt    => c
+      }
     val innerThenBranch = innerIfStmt.thenBranch.get
     val innerCondition = innerIfStmt.condition.get.getText
 

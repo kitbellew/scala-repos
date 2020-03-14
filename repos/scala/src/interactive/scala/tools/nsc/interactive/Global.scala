@@ -90,11 +90,12 @@ trait InteractiveAnalyzer extends Analyzer {
           .decl(sym.name.toTermName)
           .filter(sym => sym.isSynthetic && sym.isMethod)
         existingDerivedSym.alternatives foreach (owningInfo.decls.unlink)
-        val defTree = tree match {
-          case dd: DocDef =>
-            dd.definition // See SI-9011, Scala IDE's presentation compiler incorporates ScaladocGlobal with InteractiveGlobal, so we have to unwrap DocDefs.
-          case _ => tree
-        }
+        val defTree =
+          tree match {
+            case dd: DocDef =>
+              dd.definition // See SI-9011, Scala IDE's presentation compiler incorporates ScaladocGlobal with InteractiveGlobal, so we have to unwrap DocDefs.
+            case _ => tree
+          }
         enterImplicitWrapper(defTree.asInstanceOf[ClassDef])
       }
       super.enterExistingSym(sym, tree)
@@ -177,21 +178,22 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
   /** A map of all loaded files to the rich compilation units that correspond to them.
     */
-  val unitOfFile = mapAsScalaMapConverter(
-    new ConcurrentHashMap[AbstractFile, RichCompilationUnit] {
-      override def put(key: AbstractFile, value: RichCompilationUnit) = {
-        val r = super.put(key, value)
-        if (r == null)
-          debugLog("added unit for " + key)
-        r
-      }
-      override def remove(key: Any) = {
-        val r = super.remove(key)
-        if (r != null)
-          debugLog("removed unit for " + key)
-        r
-      }
-    }).asScala
+  val unitOfFile =
+    mapAsScalaMapConverter(
+      new ConcurrentHashMap[AbstractFile, RichCompilationUnit] {
+        override def put(key: AbstractFile, value: RichCompilationUnit) = {
+          val r = super.put(key, value)
+          if (r == null)
+            debugLog("added unit for " + key)
+          r
+        }
+        override def remove(key: Any) = {
+          val r = super.remove(key)
+          if (r != null)
+            debugLog("removed unit for " + key)
+          r
+        }
+      }).asScala
 
   /** A set containing all those files that need to be removed
     *  Units are removed by getUnit, typically once a unit is finished compiled.
@@ -235,9 +237,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
     }
   }
 
-  override lazy val analyzer = new {
-    val global: Global.this.type = Global.this
-  } with InteractiveAnalyzer
+  override lazy val analyzer =
+    new {
+      val global: Global.this.type = Global.this
+    } with InteractiveAnalyzer
 
   private def cleanAllResponses() {
     cleanResponses(waitLoadedTypeResponses)
@@ -403,8 +406,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
   /** The top level classes and objects no longer seen in the presentation compiler
     */
-  val deletedTopLevelSyms = new mutable.LinkedHashSet[Symbol]
-    with mutable.SynchronizedSet[Symbol]
+  val deletedTopLevelSyms =
+    new mutable.LinkedHashSet[Symbol] with mutable.SynchronizedSet[Symbol]
 
   /** Called from typechecker every time a top-level class or object is entered.
     */
@@ -412,19 +415,21 @@ with ContextTrees with RichCompilationUnits with Picklers {
     currentTopLevelSyms += sym
   }
 
-  protected type SymbolLoadersInInteractive = GlobalSymbolLoaders {
-    val global: Global.this.type
-    val platform: Global.this.platform.type
-  }
+  protected type SymbolLoadersInInteractive =
+    GlobalSymbolLoaders {
+      val global: Global.this.type
+      val platform: Global.this.platform.type
+    }
 
   /** Symbol loaders in the IDE parse all source files loaded from a package for
     *  top-level idents. Therefore, we can detect top-level symbols that have a name
     *  different from their source file
     */
-  override lazy val loaders: SymbolLoadersInInteractive = new {
-    val global: Global.this.type = Global.this
-    val platform: Global.this.platform.type = Global.this.platform
-  } with BrowsingLoaders
+  override lazy val loaders: SymbolLoadersInInteractive =
+    new {
+      val global: Global.this.type = Global.this
+      val platform: Global.this.platform.type = Global.this.platform
+    } with BrowsingLoaders
 
   // ----------------- Polling ---------------------------------------
 
@@ -930,8 +935,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
   private def withTempUnits[T](sources: List[SourceFile])(
       f: (SourceFile => RichCompilationUnit) => T): T = {
-    val unitOfSrc: SourceFile => RichCompilationUnit = src =>
-      unitOfFile(src.file)
+    val unitOfSrc: SourceFile => RichCompilationUnit =
+      src => unitOfFile(src.file)
     sources filterNot (getUnit(_).isDefined) match {
       case Nil =>
         f(unitOfSrc)
@@ -1209,17 +1214,19 @@ with ContextTrees with RichCompilationUnits with Picklers {
     //   If pos leads to a Select, type the qualifier as long as it is not erroneous
     //     (this implies discarding the possibly incomplete name in the Select node)
     //   Otherwise, type the tree found at 'pos' directly.
-    val tree0 = typedTreeAt(pos) match {
-      case sel @ Select(qual, _) if sel.tpe == ErrorType => qual
-      case Import(expr, _)                               => expr
-      case t                                             => t
-    }
+    val tree0 =
+      typedTreeAt(pos) match {
+        case sel @ Select(qual, _) if sel.tpe == ErrorType => qual
+        case Import(expr, _)                               => expr
+        case t                                             => t
+      }
     val context = doLocateContext(pos)
-    val shouldTypeQualifier = tree0.tpe match {
-      case null           => true
-      case mt: MethodType => mt.isImplicit
-      case _              => false
-    }
+    val shouldTypeQualifier =
+      tree0.tpe match {
+        case null           => true
+        case mt: MethodType => mt.isImplicit
+        case _              => false
+      }
 
     // TODO: guard with try/catch to deal with ill-typed qualifiers.
     val tree =
@@ -1239,18 +1246,19 @@ with ContextTrees with RichCompilationUnits with Picklers {
         viaView: Symbol) = {
       val implicitlyAdded = viaView != NoSymbol
       members.add(sym, pre, implicitlyAdded) { (s, st) =>
-        val result = new TypeMember(
-          s,
-          st,
-          context.isAccessible(
-            if (s.hasGetter)
-              s.getterIn(s.owner)
-            else
-              s,
-            pre,
-            superAccess && !implicitlyAdded),
-          inherited,
-          viaView)
+        val result =
+          new TypeMember(
+            s,
+            st,
+            context.isAccessible(
+              if (s.hasGetter)
+                s.getterIn(s.owner)
+              else
+                s,
+              pre,
+              superAccess && !implicitlyAdded),
+            inherited,
+            viaView)
         result.prefix = pre
         result
 
@@ -1269,12 +1277,13 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
     val pre = stabilizedType(tree)
 
-    val ownerTpe = tree.tpe match {
-      case ImportType(expr)         => expr.tpe
-      case null                     => pre
-      case MethodType(List(), rtpe) => rtpe
-      case _                        => tree.tpe
-    }
+    val ownerTpe =
+      tree.tpe match {
+        case ImportType(expr)         => expr.tpe
+        case null                     => pre
+        case MethodType(List(), rtpe) => rtpe
+        case _                        => tree.tpe
+      }
 
     //print("add members")
     for (sym <- ownerTpe.members)
@@ -1289,8 +1298,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             tree,
             functionType(List(ownerTpe), AnyTpe),
             isView = true,
-            context0 =
-              context.makeImplicit(reportAmbiguousErrors = false)).allImplicits
+            context0 = context.makeImplicit(reportAmbiguousErrors =
+              false)).allImplicits
       for (view <- applicableViews) {
         val vtree = viewApply(view)
         val vpre = stabilizedType(vtree)
@@ -1414,10 +1423,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
       val qualPos = qual.pos
       val allTypeMembers = typeMembers(qualPos).toList.flatten
       val positionDelta: Int = pos.start - nameStart
-      val subName: Name = name
-        .newName(
-          new String(pos.source.content, nameStart, pos.start - nameStart))
-        .encodedName
+      val subName: Name =
+        name
+          .newName(
+            new String(pos.source.content, nameStart, pos.start - nameStart))
+          .encodedName
       CompletionResult.TypeMembers(
         positionDelta,
         qual,

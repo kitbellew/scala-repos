@@ -202,8 +202,9 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     }
 
     // Check if failureReasons contains the correct error message
-    val failureReasons =
-      startStreamingContextAndCollectFailureReasons(ssc, isFailed = true)
+    val failureReasons = startStreamingContextAndCollectFailureReasons(
+      ssc,
+      isFailed = true)
     assert(failureReasons != null)
     assert(failureReasons.size === 1)
     assert(failureReasons.contains(0))
@@ -221,8 +222,9 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     }
 
     // Check if failureReasons contains the correct error messages
-    val failureReasons =
-      startStreamingContextAndCollectFailureReasons(ssc, isFailed = true)
+    val failureReasons = startStreamingContextAndCollectFailureReasons(
+      ssc,
+      isFailed = true)
     assert(failureReasons != null)
     assert(failureReasons.size === 2)
     assert(failureReasons.contains(0))

@@ -65,10 +65,11 @@ case class Perfs(
   def bestRating: Int = bestRatingIn(PerfType.leaderboardable)
 
   def bestRatingIn(types: List[PerfType]): Int = {
-    val ps = types map apply match {
-      case Nil => List(standard)
-      case x   => x
-    }
+    val ps =
+      types map apply match {
+        case Nil => List(standard)
+        case x   => x
+      }
     val minNb = ps.foldLeft(0)(_ + _.nb) / 10
     ps.foldLeft(none[Int]) {
       case (ro, p) if p.nb >= minNb =>
@@ -188,53 +189,54 @@ case object Perfs {
       case Speed.Correspondence => perfs => perfs.correspondence
     }
 
-  val perfsBSONHandler = new BSON[Perfs] {
+  val perfsBSONHandler =
+    new BSON[Perfs] {
 
-    implicit def perfHandler = Perf.perfBSONHandler
-    import BSON.MapDocument._
+      implicit def perfHandler = Perf.perfBSONHandler
+      import BSON.MapDocument._
 
-    def reads(r: BSON.Reader): Perfs = {
-      def perf(key: String) = r.getO[Perf](key) getOrElse Perf.default
-      Perfs(
-        standard = perf("standard"),
-        chess960 = perf("chess960"),
-        kingOfTheHill = perf("kingOfTheHill"),
-        threeCheck = perf("threeCheck"),
-        antichess = perf("antichess"),
-        atomic = perf("atomic"),
-        horde = perf("horde"),
-        racingKings = perf("racingKings"),
-        crazyhouse = perf("crazyhouse"),
-        bullet = perf("bullet"),
-        blitz = perf("blitz"),
-        classical = perf("classical"),
-        correspondence = perf("correspondence"),
-        puzzle = perf("puzzle"),
-        opening = perf("opening")
-      )
+      def reads(r: BSON.Reader): Perfs = {
+        def perf(key: String) = r.getO[Perf](key) getOrElse Perf.default
+        Perfs(
+          standard = perf("standard"),
+          chess960 = perf("chess960"),
+          kingOfTheHill = perf("kingOfTheHill"),
+          threeCheck = perf("threeCheck"),
+          antichess = perf("antichess"),
+          atomic = perf("atomic"),
+          horde = perf("horde"),
+          racingKings = perf("racingKings"),
+          crazyhouse = perf("crazyhouse"),
+          bullet = perf("bullet"),
+          blitz = perf("blitz"),
+          classical = perf("classical"),
+          correspondence = perf("correspondence"),
+          puzzle = perf("puzzle"),
+          opening = perf("opening")
+        )
+      }
+
+      private def notNew(p: Perf): Option[Perf] = p.nb > 0 option p
+
+      def writes(w: BSON.Writer, o: Perfs) =
+        BSONDocument(
+          "standard" -> notNew(o.standard),
+          "chess960" -> notNew(o.chess960),
+          "kingOfTheHill" -> notNew(o.kingOfTheHill),
+          "threeCheck" -> notNew(o.threeCheck),
+          "antichess" -> notNew(o.antichess),
+          "atomic" -> notNew(o.atomic),
+          "horde" -> notNew(o.horde),
+          "racingKings" -> notNew(o.racingKings),
+          "crazyhouse" -> notNew(o.crazyhouse),
+          "bullet" -> notNew(o.bullet),
+          "blitz" -> notNew(o.blitz),
+          "classical" -> notNew(o.classical),
+          "correspondence" -> notNew(o.correspondence),
+          "puzzle" -> notNew(o.puzzle),
+          "opening" -> notNew(o.opening)
+        )
     }
-
-    private def notNew(p: Perf): Option[Perf] = p.nb > 0 option p
-
-    def writes(w: BSON.Writer, o: Perfs) =
-      BSONDocument(
-        "standard" -> notNew(o.standard),
-        "chess960" -> notNew(o.chess960),
-        "kingOfTheHill" -> notNew(o.kingOfTheHill),
-        "threeCheck" -> notNew(o.threeCheck),
-        "antichess" -> notNew(o.antichess),
-        "atomic" -> notNew(o.atomic),
-        "horde" -> notNew(o.horde),
-        "racingKings" -> notNew(o.racingKings),
-        "crazyhouse" -> notNew(o.crazyhouse),
-        "bullet" -> notNew(o.bullet),
-        "blitz" -> notNew(o.blitz),
-        "classical" -> notNew(o.classical),
-        "correspondence" -> notNew(o.correspondence),
-        "puzzle" -> notNew(o.puzzle),
-        "opening" -> notNew(o.opening)
-      )
-  }
 
   case class Leaderboards(
       bullet: List[User.LightPerf],

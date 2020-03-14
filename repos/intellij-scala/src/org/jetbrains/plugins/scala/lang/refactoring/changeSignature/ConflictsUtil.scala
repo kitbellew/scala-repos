@@ -49,13 +49,14 @@ private[changeSignature] object ConflictsUtil {
       result: ConflictsMap): Unit = {
 
     if (change.getNewParameters.nonEmpty) {
-      val (member: ScMember, kind, isSimple) = bp match {
-        case ScalaPsiUtil.inNameContext(pd: ScPatternDefinition) =>
-          (pd, "pattern definition", pd.isSimple)
-        case ScalaPsiUtil.inNameContext(vd: ScVariableDefinition) =>
-          (vd, "variable definition", vd.isSimple)
-        case _ => return
-      }
+      val (member: ScMember, kind, isSimple) =
+        bp match {
+          case ScalaPsiUtil.inNameContext(pd: ScPatternDefinition) =>
+            (pd, "pattern definition", pd.isSimple)
+          case ScalaPsiUtil.inNameContext(vd: ScVariableDefinition) =>
+            (vd, "variable definition", vd.isSimple)
+          case _ => return
+        }
 
       if (!isSimple) {
         val className = member.containingClass.qualifiedName

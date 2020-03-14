@@ -58,8 +58,12 @@ class AppClientSuite
     */
   override def beforeAll(): Unit = {
     super.beforeAll()
-    masterRpcEnv =
-      RpcEnv.create(Master.SYSTEM_NAME, "localhost", 0, conf, securityManager)
+    masterRpcEnv = RpcEnv.create(
+      Master.SYSTEM_NAME,
+      "localhost",
+      0,
+      conf,
+      securityManager)
     workerRpcEnvs = (0 until numWorkers).map { i =>
       RpcEnv.create(
         Worker.SYSTEM_NAME + i,
@@ -167,16 +171,17 @@ class AppClientSuite
   private def makeWorkers(cores: Int, memory: Int): Seq[Worker] = {
     (0 until numWorkers).map { i =>
       val rpcEnv = workerRpcEnvs(i)
-      val worker = new Worker(
-        rpcEnv,
-        0,
-        cores,
-        memory,
-        Array(masterRpcEnv.address),
-        Worker.ENDPOINT_NAME,
-        null,
-        conf,
-        securityManager)
+      val worker =
+        new Worker(
+          rpcEnv,
+          0,
+          cores,
+          memory,
+          Array(masterRpcEnv.address),
+          Worker.ENDPOINT_NAME,
+          null,
+          conf,
+          securityManager)
       rpcEnv.setupEndpoint(Worker.ENDPOINT_NAME, worker)
       worker
     }
@@ -233,15 +238,20 @@ class AppClientSuite
 
   /** Create AppClient and supporting objects */
   private class AppClientInst(masterUrl: String) {
-    val rpcEnv =
-      RpcEnv.create("spark", Utils.localHostName(), 0, conf, securityManager)
-    private val cmd = new Command(
-      TestExecutor.getClass.getCanonicalName.stripSuffix("$"),
-      List(),
-      Map(),
-      Seq(),
-      Seq(),
-      Seq())
+    val rpcEnv = RpcEnv.create(
+      "spark",
+      Utils.localHostName(),
+      0,
+      conf,
+      securityManager)
+    private val cmd =
+      new Command(
+        TestExecutor.getClass.getCanonicalName.stripSuffix("$"),
+        List(),
+        Map(),
+        Seq(),
+        Seq(),
+        Seq())
     private val desc =
       new ApplicationDescription("AppClientSuite", Some(1), 512, cmd, "ignored")
     val listener = new AppClientCollector

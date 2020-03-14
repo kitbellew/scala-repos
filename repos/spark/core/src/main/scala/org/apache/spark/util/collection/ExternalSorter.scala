@@ -125,8 +125,9 @@ private[spark] class ExternalSorter[K, V, C](
   //
   // NOTE: Setting this too low can cause excessive copying when serializing, since some serializers
   // grow internal data structures by growing + copying every time the number of objects doubles.
-  private val serializerBatchSize =
-    conf.getLong("spark.shuffle.spill.batchSize", 10000)
+  private val serializerBatchSize = conf.getLong(
+    "spark.shuffle.spill.batchSize",
+    10000)
 
   // Data structures to store in-memory objects before we spill. Depending on whether we have an
   // Aggregator set, we either put objects into an AppendOnlyMap where we combine them, or we
@@ -147,8 +148,8 @@ private[spark] class ExternalSorter[K, V, C](
   // user. (A partial ordering means that equal keys have comparator.compare(k, k) = 0, but some
   // non-equal keys also have this, so we need to do a later pass to find truly equal keys).
   // Note that we ignore this if no aggregator and no ordering are given.
-  private val keyComparator: Comparator[K] =
-    ordering.getOrElse(new Comparator[K] {
+  private val keyComparator: Comparator[K] = ordering.getOrElse(
+    new Comparator[K] {
       override def compare(a: K, b: K): Int = {
         val h1 =
           if (a == null)
@@ -203,12 +204,13 @@ private[spark] class ExternalSorter[K, V, C](
       val mergeValue = aggregator.get.mergeValue
       val createCombiner = aggregator.get.createCombiner
       var kv: Product2[K, V] = null
-      val update = (hadValue: Boolean, oldValue: C) => {
-        if (hadValue)
-          mergeValue(oldValue, kv._2)
-        else
-          createCombiner(kv._2)
-      }
+      val update =
+        (hadValue: Boolean, oldValue: C) => {
+          if (hadValue)
+            mergeValue(oldValue, kv._2)
+          else
+            createCombiner(kv._2)
+        }
       while (records.hasNext) {
         addElementsRead()
         kv = records.next()
@@ -299,8 +301,8 @@ private[spark] class ExternalSorter[K, V, C](
 
     var success = false
     try {
-      val it =
-        collection.destructiveSortedWritablePartitionedIterator(comparator)
+      val it = collection.destructiveSortedWritablePartitionedIterator(
+        comparator)
       while (it.hasNext) {
         val partitionId = it.nextPartition()
         require(
@@ -386,11 +388,12 @@ private[spark] class ExternalSorter[K, V, C](
       comparator: Comparator[K]): Iterator[Product2[K, C]] = {
     val bufferedIters = iterators.filter(_.hasNext).map(_.buffered)
     type Iter = BufferedIterator[Product2[K, C]]
-    val heap = new mutable.PriorityQueue[Iter]()(new Ordering[Iter] {
-      // Use the reverse of comparator.compare because PriorityQueue dequeues the max
-      override def compare(x: Iter, y: Iter): Int =
-        -comparator.compare(x.head._1, y.head._1)
-    })
+    val heap =
+      new mutable.PriorityQueue[Iter]()(new Ordering[Iter] {
+        // Use the reverse of comparator.compare because PriorityQueue dequeues the max
+        override def compare(x: Iter, y: Iter): Int =
+          -comparator.compare(x.head._1, y.head._1)
+      })
     heap.enqueue(
       bufferedIters: _*
     ) // Will contain only the iterators with hasNext = true
@@ -544,10 +547,11 @@ private[spark] class ExternalSorter[K, V, C](
           "start = " + start + ", end = " + end +
             ", batchOffsets = " + batchOffsets.mkString("[", ", ", "]"))
 
-        val bufferedStream = new BufferedInputStream(
-          ByteStreams.limit(fileStream, end - start))
-        val compressedStream =
-          blockManager.wrapForCompression(spill.blockId, bufferedStream)
+        val bufferedStream =
+          new BufferedInputStream(ByteStreams.limit(fileStream, end - start))
+        val compressedStream = blockManager.wrapForCompression(
+          spill.blockId,
+          bufferedStream)
         serInstance.deserializeStream(compressedStream)
       } else {
         // No more batches left
@@ -705,8 +709,8 @@ private[spark] class ExternalSorter[K, V, C](
           map
         else
           buffer
-      val it =
-        collection.destructiveSortedWritablePartitionedIterator(comparator)
+      val it = collection.destructiveSortedWritablePartitionedIterator(
+        comparator)
       while (it.hasNext) {
         val writer = blockManager.getDiskWriter(
           blockId,

@@ -78,25 +78,27 @@ object ScalaDirectoryService {
   private def templateForUnitTest(
       templateName: String,
       name: String): FileTemplate = {
-    val kind = templateName match {
-      case ScalaFileTemplateUtil.SCALA_CLASS  => "class "
-      case ScalaFileTemplateUtil.SCALA_TRAIT  => "trait "
-      case ScalaFileTemplateUtil.SCALA_OBJECT => "object "
-      case _                                  => ""
-    }
+    val kind =
+      templateName match {
+        case ScalaFileTemplateUtil.SCALA_CLASS  => "class "
+        case ScalaFileTemplateUtil.SCALA_TRAIT  => "trait "
+        case ScalaFileTemplateUtil.SCALA_OBJECT => "object "
+        case _                                  => ""
+      }
     val packageLine =
       "#if ((${PACKAGE_NAME} && ${PACKAGE_NAME} != \"\"))package ${PACKAGE_NAME} #end"
     val nameAndBraces = name + " {\n\n}"
     val templateText = packageLine + "\n" + kind + nameAndBraces
 
-    val template = new FileTemplateBase {
-      def setExtension(extension: String) {}
-      def setName(name: String) {}
-      def getName: String = templateName
-      def isDefault: Boolean = true
-      def getDescription: String = ""
-      def getExtension: String = "scala"
-    }
+    val template =
+      new FileTemplateBase {
+        def setExtension(extension: String) {}
+        def setName(name: String) {}
+        def getName: String = templateName
+        def isDefault: Boolean = true
+        def getDescription: String = ""
+        def getExtension: String = "scala"
+      }
 
     template.setText(templateText)
     template

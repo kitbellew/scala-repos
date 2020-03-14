@@ -33,23 +33,26 @@ class ScalaConsoleRunConfiguration(
   def getState(
       executor: Executor,
       env: ExecutionEnvironment): RunProfileState = {
-    val state = new JavaCommandLineState(env) {
-      protected override def createJavaParameters: JavaParameters = {
-        val params = createParams
-        params.getProgramParametersList.addParametersString(consoleArgs)
-        params
+    val state =
+      new JavaCommandLineState(env) {
+        protected override def createJavaParameters: JavaParameters = {
+          val params = createParams
+          params.getProgramParametersList.addParametersString(consoleArgs)
+          params
+        }
       }
-    }
 
-    val consoleBuilder = new TextConsoleBuilderImpl(project) {
-      override def getConsole: ConsoleView = {
-        val consoleView = new ScalaLanguageConsole(
-          project,
-          ScalaLanguageConsoleView.SCALA_CONSOLE)
-        consoleView.setPrompt(null)
-        consoleView
+    val consoleBuilder =
+      new TextConsoleBuilderImpl(project) {
+        override def getConsole: ConsoleView = {
+          val consoleView =
+            new ScalaLanguageConsole(
+              project,
+              ScalaLanguageConsoleView.SCALA_CONSOLE)
+          consoleView.setPrompt(null)
+          consoleView
+        }
       }
-    }
     state.setConsoleBuilder(consoleBuilder)
     state
   }

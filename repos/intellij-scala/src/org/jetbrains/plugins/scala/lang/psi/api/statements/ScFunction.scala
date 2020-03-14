@@ -188,42 +188,43 @@ trait ScFunction
     returnTypeElement match {
       case Some(_) => returnType.toOption
       case None =>
-        val superReturnType = superMethodAndSubstitutor match {
-          case Some((fun: ScFunction, subst)) =>
-            var typeParamSubst = ScSubstitutor.empty
-            fun.typeParameters.zip(typeParameters).foreach {
-              case (oldParam: ScTypeParam, newParam: ScTypeParam) =>
-                typeParamSubst = typeParamSubst.bindT(
-                  (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
-                  new ScTypeParameterType(newParam, subst))
-            }
-            fun.returnType.toOption.map(typeParamSubst.followed(subst).subst)
-          case Some((fun: ScSyntheticFunction, subst)) =>
-            var typeParamSubst = ScSubstitutor.empty
-            fun.typeParameters.zip(typeParameters).foreach {
-              case (
-                    oldParam: ScSyntheticTypeParameter,
-                    newParam: ScTypeParam) =>
-                typeParamSubst = typeParamSubst.bindT(
-                  (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
-                  new ScTypeParameterType(newParam, subst))
-            }
-            Some(subst.subst(fun.retType))
-          case Some((fun: PsiMethod, subst)) =>
-            var typeParamSubst = ScSubstitutor.empty
-            fun.getTypeParameters.zip(typeParameters).foreach {
-              case (oldParam: PsiTypeParameter, newParam: ScTypeParam) =>
-                typeParamSubst = typeParamSubst.bindT(
-                  (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
-                  new ScTypeParameterType(newParam, subst))
-            }
-            Some(
-              typeParamSubst
-                .followed(subst)
-                .subst(ScType
-                  .create(fun.getReturnType, getProject, getResolveScope)))
-          case _ => None
-        }
+        val superReturnType =
+          superMethodAndSubstitutor match {
+            case Some((fun: ScFunction, subst)) =>
+              var typeParamSubst = ScSubstitutor.empty
+              fun.typeParameters.zip(typeParameters).foreach {
+                case (oldParam: ScTypeParam, newParam: ScTypeParam) =>
+                  typeParamSubst = typeParamSubst.bindT(
+                    (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
+                    new ScTypeParameterType(newParam, subst))
+              }
+              fun.returnType.toOption.map(typeParamSubst.followed(subst).subst)
+            case Some((fun: ScSyntheticFunction, subst)) =>
+              var typeParamSubst = ScSubstitutor.empty
+              fun.typeParameters.zip(typeParameters).foreach {
+                case (
+                      oldParam: ScSyntheticTypeParameter,
+                      newParam: ScTypeParam) =>
+                  typeParamSubst = typeParamSubst.bindT(
+                    (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
+                    new ScTypeParameterType(newParam, subst))
+              }
+              Some(subst.subst(fun.retType))
+            case Some((fun: PsiMethod, subst)) =>
+              var typeParamSubst = ScSubstitutor.empty
+              fun.getTypeParameters.zip(typeParameters).foreach {
+                case (oldParam: PsiTypeParameter, newParam: ScTypeParam) =>
+                  typeParamSubst = typeParamSubst.bindT(
+                    (oldParam.name, ScalaPsiUtil.getPsiElementId(oldParam)),
+                    new ScTypeParameterType(newParam, subst))
+              }
+              Some(
+                typeParamSubst
+                  .followed(subst)
+                  .subst(ScType
+                    .create(fun.getReturnType, getProject, getResolveScope)))
+            case _ => None
+          }
         superReturnType
     }
   }
@@ -277,10 +278,11 @@ trait ScFunction
     */
   def methodType(result: Option[ScType]): ScType = {
     val clauses = effectiveParameterClauses
-    val resultType = result match {
-      case None    => returnType.getOrAny
-      case Some(x) => x
-    }
+    val resultType =
+      result match {
+        case None    => returnType.getOrAny
+        case Some(x) => x
+      }
     if (!hasParameterClause)
       return resultType
     val res =
@@ -331,8 +333,8 @@ trait ScFunction
   def hasExplicitType = returnTypeElement.isDefined
 
   def removeExplicitType() {
-    val colon =
-      children.find(_.getNode.getElementType == ScalaTokenTypes.tCOLON)
+    val colon = children.find(
+      _.getNode.getElementType == ScalaTokenTypes.tCOLON)
     (colon, returnTypeElement) match {
       case (Some(first), Some(last)) => deleteChildRange(first, last)
       case _                         =>
@@ -354,12 +356,13 @@ trait ScFunction
       if (data != null)
         returnTypeInner
       else {
-        val children = parent match {
-          case stub: ScalaStubBasedElementImpl[_] if stub.getStub != null =>
-            import scala.collection.JavaConverters._
-            stub.getStub.getChildrenStubs.asScala.map(_.getPsi)
-          case _ => parent.getChildren.toSeq
-        }
+        val children =
+          parent match {
+            case stub: ScalaStubBasedElementImpl[_] if stub.getStub != null =>
+              import scala.collection.JavaConverters._
+              stub.getStub.getChildrenStubs.asScala.map(_.getPsi)
+            case _ => parent.getChildren.toSeq
+          }
         children.foreach {
           case fun: ScFunction if fun.importantOrderFunction() =>
             ProgressManager.checkCanceled()
@@ -623,17 +626,18 @@ trait ScFunction
     val s = new PhysicalSignature(this, ScSubstitutor.empty)
     if (clazz == null)
       return Seq(s)
-    val t = TypeDefinitionMembers
-      .getSignatures(clazz)
-      .forName(ScalaPsiUtil.convertMemberName(name))
-      ._1
-      .fastPhysicalSignatureGet(s) match {
-      case Some(x) =>
-        x.supers.map {
-          _.info
-        }
-      case None => Seq[Signature]()
-    }
+    val t =
+      TypeDefinitionMembers
+        .getSignatures(clazz)
+        .forName(ScalaPsiUtil.convertMemberName(name))
+        ._1
+        .fastPhysicalSignatureGet(s) match {
+        case Some(x) =>
+          x.supers.map {
+            _.info
+          }
+        case None => Seq[Signature]()
+      }
     t
   }
 
@@ -644,10 +648,11 @@ trait ScFunction
       return Seq(s)
     val withSelf = clazz.selfType.isDefined
     if (withSelf) {
-      val signs = TypeDefinitionMembers
-        .getSelfTypeSignatures(clazz)
-        .forName(ScalaPsiUtil.convertMemberName(name))
-        ._1
+      val signs =
+        TypeDefinitionMembers
+          .getSelfTypeSignatures(clazz)
+          .forName(ScalaPsiUtil.convertMemberName(name))
+          ._1
       signs.fastPhysicalSignatureGet(s) match {
         case Some(x) if x.info.namedElement == this =>
           x.supers.map {
@@ -778,8 +783,9 @@ trait ScFunction
           val paramTypes = cl.parameters.map(_.getType(ctx))
           res match {
             case Success(t: ScType, _) =>
-              res = collectFailures(paramTypes, Nothing)(
-                ScFunctionType(t, _)(getProject, getResolveScope))
+              res =
+                collectFailures(paramTypes, Nothing)(
+                  ScFunctionType(t, _)(getProject, getResolveScope))
             case _ =>
           }
           i = i - 1
@@ -839,8 +845,8 @@ trait ScFunction
     val ccontainingClass = containingClass
     if (ccontainingClass == null)
       return this
-    val originalClass: PsiClass =
-      ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
+    val originalClass: PsiClass = ccontainingClass.getOriginalElement
+      .asInstanceOf[PsiClass]
     if (ccontainingClass eq originalClass)
       return this
     if (!originalClass.isInstanceOf[ScTypeDefinition])
@@ -858,8 +864,8 @@ trait ScFunction
     else if (buf.length == 1)
       buf(0)
     else {
-      val filter =
-        buf.filter(isSimilarMemberForNavigation(_, strictCheck = true))
+      val filter = buf.filter(
+        isSimilarMemberForNavigation(_, strictCheck = true))
       if (filter.isEmpty)
         buf(0)
       else
@@ -891,8 +897,8 @@ trait ScFunction
     while (i >= 0) {
       val cl = paramClauses.clauses.apply(i)
       if (!cl.isImplicit) {
-        val paramTypes: Seq[TypeResult[ScType]] =
-          cl.parameters.map(_.getType(TypingContext.empty))
+        val paramTypes: Seq[TypeResult[ScType]] = cl.parameters.map(
+          _.getType(TypingContext.empty))
         if (paramTypes.exists(_.isEmpty))
           return None
         res += paramTypes.map(_.get)
@@ -920,8 +926,12 @@ object ScFunction {
     val WithFilter = "withFilter"
 
     val Unapplies: Set[String] = Set(Unapply, UnapplySeq)
-    val ForComprehensions: Set[String] =
-      Set(Foreach, Map, FlatMap, Filter, WithFilter)
+    val ForComprehensions: Set[String] = Set(
+      Foreach,
+      Map,
+      FlatMap,
+      Filter,
+      WithFilter)
     val Special: Set[String] =
       Set(Apply, Update) ++ Unapplies ++ ForComprehensions
   }
@@ -929,8 +939,8 @@ object ScFunction {
   /** Is this function sometimes invoked without it's name appearing at the call site? */
   def isSpecial(name: String): Boolean = Name.Special(name)
 
-  private val calculatedBlockKey: Key[java.lang.Boolean] =
-    Key.create("calculated.function.returns.block")
+  private val calculatedBlockKey: Key[java.lang.Boolean] = Key.create(
+    "calculated.function.returns.block")
 
   @tailrec
   def getCompoundCopy(

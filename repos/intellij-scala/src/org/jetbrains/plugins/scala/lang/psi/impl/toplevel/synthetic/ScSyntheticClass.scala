@@ -81,8 +81,7 @@ class ScSyntheticTypeParameter(
   def getOwner = null
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] =
-    findChildrenByClass[T](clazz)
+      clazz: Class[T]): Array[T] = findChildrenByClass[T](clazz)
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = findChildByClass[T](clazz)
@@ -214,10 +213,9 @@ class ScSyntheticFunction(
       },
       Seq.empty)
 
-  val typeParams: Seq[ScSyntheticTypeParameter] =
-    typeParameterNames.map { name =>
-      new ScSyntheticTypeParameter(manager, name, this)
-    }
+  val typeParams: Seq[ScSyntheticTypeParameter] = typeParameterNames.map {
+    name => new ScSyntheticTypeParameter(manager, name, this)
+  }
   override def typeParameters = typeParams
 
   override def getIcon(flags: Int) = icons.Icons.FUNCTION
@@ -327,8 +325,8 @@ class SyntheticClasses(project: Project)
               false,
               false,
               0)))
-        override val retType: ScType =
-          ScalaPsiManager.typeVariable(typeParams(0))
+        override val retType: ScType = ScalaPsiManager.typeVariable(
+          typeParams(0))
       })
 
     registerClass(AnyVal, "AnyVal")
@@ -395,10 +393,11 @@ class SyntheticClasses(project: Project)
             Seq(Seq(ic1.t))))
       ic.addMethod(new ScSyntheticFunction(manager, "unary_~", ic.t, Seq.empty))
 
-      val ret = ic.t match {
-        case Long => Long
-        case _    => Int
-      }
+      val ret =
+        ic.t match {
+          case Long => Long
+          case _    => Int
+        }
       for (op <- bitwise_shift_ops) {
         ic.addMethod(new ScSyntheticFunction(manager, op, ret, Seq(Seq(Int))))
         ic.addMethod(new ScSyntheticFunction(manager, op, ret, Seq(Seq(Long))))
@@ -588,9 +587,10 @@ object Unit
 
   def registerClass(t: StdType, name: String) = {
     val manager = PsiManager.getInstance(project)
-    val clazz = new ScSyntheticClass(manager, name, t) {
-      override def getQualifiedName = "scala." + name
-    }
+    val clazz =
+      new ScSyntheticClass(manager, name, t) {
+        override def getQualifiedName = "scala." + name
+      }
 
     all += ((name, clazz));
     clazz

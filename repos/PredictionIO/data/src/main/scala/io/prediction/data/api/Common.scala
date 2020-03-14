@@ -43,12 +43,13 @@ object Common {
         StatusCodes.NotFound,
         Map("message" -> s"missing required query parameter ${msg}."))
     case AuthenticationFailedRejection(cause, challengeHeaders) :: _ => {
-      val msg = cause match {
-        case AuthenticationFailedRejection.CredentialsRejected =>
-          "Invalid accessKey."
-        case AuthenticationFailedRejection.CredentialsMissing =>
-          "Missing accessKey."
-      }
+      val msg =
+        cause match {
+          case AuthenticationFailedRejection.CredentialsRejected =>
+            "Invalid accessKey."
+          case AuthenticationFailedRejection.CredentialsMissing =>
+            "Missing accessKey."
+        }
       complete(
         StatusCodes.Unauthorized,
         challengeHeaders,

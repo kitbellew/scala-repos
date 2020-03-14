@@ -367,30 +367,34 @@ object ScalaCompletionUtil {
     val element = file.findElementAt(offset)
     val ref = file.findReferenceAt(offset)
     if (element != null && ref != null) {
-      val text = ref match {
-        case ref: PsiElement => ref.getText
-        case ref: PsiReference =>
-          ref.getElement.getText //this case for anonymous method in ScAccessModifierImpl
-      }
-      val id = if (isOpChar(text(text.length - 1))) {
-        "+++++++++++++++++++++++"
-      } else {
-        val rest = ref match {
-          case ref: PsiElement =>
-            text.substring(offset - ref.getTextRange.getStartOffset + 1)
+      val text =
+        ref match {
+          case ref: PsiElement => ref.getText
           case ref: PsiReference =>
-            val from = offset - ref.getElement.getTextRange.getStartOffset + 1
-            if (from < text.length && from >= 0)
-              text.substring(from)
-            else
-              ""
+            ref.getElement.getText //this case for anonymous method in ScAccessModifierImpl
         }
-        if (ScalaNamesUtil.isKeyword(rest)) {
-          CompletionUtil.DUMMY_IDENTIFIER
+      val id =
+        if (isOpChar(text(text.length - 1))) {
+          "+++++++++++++++++++++++"
         } else {
-          CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
+          val rest =
+            ref match {
+              case ref: PsiElement =>
+                text.substring(offset - ref.getTextRange.getStartOffset + 1)
+              case ref: PsiReference =>
+                val from =
+                  offset - ref.getElement.getTextRange.getStartOffset + 1
+                if (from < text.length && from >= 0)
+                  text.substring(from)
+                else
+                  ""
+            }
+          if (ScalaNamesUtil.isKeyword(rest)) {
+            CompletionUtil.DUMMY_IDENTIFIER
+          } else {
+            CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
+          }
         }
-      }
 
       if (ref.getElement != null &&
           ref.getElement.getPrevSibling != null &&

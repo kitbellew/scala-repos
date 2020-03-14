@@ -167,8 +167,9 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
 
     object count {
 
-      private val cache =
-        AsyncCache.single(f = videoColl.count(none), timeToLive = 1.day)
+      private val cache = AsyncCache.single(
+        f = videoColl.count(none),
+        timeToLive = 1.day)
 
       def clearCache = cache.clear
 

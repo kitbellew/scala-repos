@@ -366,19 +366,17 @@ class TcpSpec
       val tcpWriteProbe2 = new TcpWriteProbe()
       val outgoingConnection = Tcp().outgoingConnection(server.address)
 
-      val conn1F =
-        Source
-          .fromPublisher(tcpWriteProbe1.publisherProbe)
-          .viaMat(outgoingConnection)(Keep.right)
-          .to(Sink.fromSubscriber(tcpReadProbe1.subscriberProbe))
-          .run()
+      val conn1F = Source
+        .fromPublisher(tcpWriteProbe1.publisherProbe)
+        .viaMat(outgoingConnection)(Keep.right)
+        .to(Sink.fromSubscriber(tcpReadProbe1.subscriberProbe))
+        .run()
       val serverConnection1 = server.waitAccept()
-      val conn2F =
-        Source
-          .fromPublisher(tcpWriteProbe2.publisherProbe)
-          .viaMat(outgoingConnection)(Keep.right)
-          .to(Sink.fromSubscriber(tcpReadProbe2.subscriberProbe))
-          .run()
+      val conn2F = Source
+        .fromPublisher(tcpWriteProbe2.publisherProbe)
+        .viaMat(outgoingConnection)(Keep.right)
+        .to(Sink.fromSubscriber(tcpReadProbe2.subscriberProbe))
+        .run()
       val serverConnection2 = server.waitAccept()
 
       validateServerClientCommunication(
@@ -413,19 +411,18 @@ class TcpSpec
           Sink.ignore,
           Source.single(ByteString("Early response")))(Keep.right)
 
-      val binding =
-        Await.result(
-          Tcp()
-            .bind(
-              serverAddress.getHostName,
-              serverAddress.getPort,
-              halfClose = false)
-            .toMat(Sink.foreach { conn ⇒
-              conn.flow.join(writeButIgnoreRead).run()
-            })(Keep.left)
-            .run(),
-          3.seconds
-        )
+      val binding = Await.result(
+        Tcp()
+          .bind(
+            serverAddress.getHostName,
+            serverAddress.getPort,
+            halfClose = false)
+          .toMat(Sink.foreach { conn ⇒
+            conn.flow.join(writeButIgnoreRead).run()
+          })(Keep.left)
+          .run(),
+        3.seconds
+      )
 
       val (promise, result) = Source
         .maybe[ByteString]
@@ -443,23 +440,23 @@ class TcpSpec
     "Echo should work even if server is in full close mode" in {
       val serverAddress = temporaryServerAddress()
 
-      val binding =
-        Await.result(
-          Tcp()
-            .bind(
-              serverAddress.getHostName,
-              serverAddress.getPort,
-              halfClose = false)
-            .toMat(Sink.foreach { conn ⇒
-              conn.flow.join(Flow[ByteString]).run()
-            })(Keep.left)
-            .run(),
-          3.seconds
-        )
+      val binding = Await.result(
+        Tcp()
+          .bind(
+            serverAddress.getHostName,
+            serverAddress.getPort,
+            halfClose = false)
+          .toMat(Sink.foreach { conn ⇒
+            conn.flow.join(Flow[ByteString]).run()
+          })(Keep.left)
+          .run(),
+        3.seconds
+      )
 
-      val result = Source(immutable.Iterable.fill(1000)(ByteString(0)))
-        .via(Tcp().outgoingConnection(serverAddress, halfClose = true))
-        .runFold(0)(_ + _.size)
+      val result =
+        Source(immutable.Iterable.fill(1000)(ByteString(0)))
+          .via(Tcp().outgoingConnection(serverAddress, halfClose = true))
+          .runFold(0)(_ + _.size)
 
       Await.result(result, 3.seconds) should ===(1000)
 
@@ -472,15 +469,17 @@ class TcpSpec
       val mat2 = ActorMaterializer.create(system2)
 
       val serverAddress = temporaryServerAddress()
-      val binding = Tcp(system2).bindAndHandle(
-        Flow[ByteString],
-        serverAddress.getHostName,
-        serverAddress.getPort)(mat2)
+      val binding =
+        Tcp(system2).bindAndHandle(
+          Flow[ByteString],
+          serverAddress.getHostName,
+          serverAddress.getPort)(mat2)
 
-      val result = Source
-        .maybe[ByteString]
-        .via(Tcp(system2).outgoingConnection(serverAddress))
-        .runFold(0)(_ + _.size)(mat2)
+      val result =
+        Source
+          .maybe[ByteString]
+          .via(Tcp(system2).outgoingConnection(serverAddress))
+          .runFold(0)(_ + _.size)(mat2)
 
       // Getting rid of existing connection actors by using a blunt instrument
       system2.actorSelection(
@@ -508,14 +507,13 @@ class TcpSpec
 
     "be able to implement echo" in {
       val serverAddress = temporaryServerAddress()
-      val (bindingFuture, echoServerFinish) =
-        Tcp()
-          .bind(
-            serverAddress.getHostName,
-            serverAddress.getPort
-          ) // TODO getHostString in Java7
-          .toMat(echoHandler)(Keep.both)
-          .run()
+      val (bindingFuture, echoServerFinish) = Tcp()
+        .bind(
+          serverAddress.getHostName,
+          serverAddress.getPort
+        ) // TODO getHostString in Java7
+        .toMat(echoHandler)(Keep.both)
+        .run()
 
       // make sure that the server has bound to the socket
       val binding = Await.result(bindingFuture, 100.millis)
@@ -534,14 +532,13 @@ class TcpSpec
 
     "work with a chain of echoes" in {
       val serverAddress = temporaryServerAddress()
-      val (bindingFuture, echoServerFinish) =
-        Tcp()
-          .bind(
-            serverAddress.getHostName,
-            serverAddress.getPort
-          ) // TODO getHostString in Java7
-          .toMat(echoHandler)(Keep.both)
-          .run()
+      val (bindingFuture, echoServerFinish) = Tcp()
+        .bind(
+          serverAddress.getHostName,
+          serverAddress.getPort
+        ) // TODO getHostString in Java7
+        .toMat(echoHandler)(Keep.both)
+        .run()
 
       // make sure that the server has bound to the socket
       val binding = Await.result(bindingFuture, 100.millis)
@@ -572,14 +569,14 @@ class TcpSpec
         }
         val address = temporaryServerAddress()
         val probe1 = TestSubscriber.manualProbe[Tcp.IncomingConnection]()
-        val bind =
-          Tcp(system).bind(
-            address.getHostName,
-            address.getPort
-          ) // TODO getHostString in Java7
+        val bind = Tcp(system).bind(
+          address.getHostName,
+          address.getPort
+        ) // TODO getHostString in Java7
         // Bind succeeded, we have a local address
-        val binding1 =
-          Await.result(bind.to(Sink.fromSubscriber(probe1)).run(), 3.second)
+        val binding1 = Await.result(
+          bind.to(Sink.fromSubscriber(probe1)).run(),
+          3.second)
 
         probe1.expectSubscription()
 
@@ -604,8 +601,9 @@ class TcpSpec
 
         val probe4 = TestSubscriber.manualProbe[Tcp.IncomingConnection]()
         // Bind succeeded, we have a local address
-        val binding4 =
-          Await.result(bind.to(Sink.fromSubscriber(probe4)).run(), 3.second)
+        val binding4 = Await.result(
+          bind.to(Sink.fromSubscriber(probe4)).run(),
+          3.second)
         probe4.expectSubscription()
 
         // clean up
@@ -621,9 +619,10 @@ class TcpSpec
           tcp.flow.join(Flow[ByteString]).run()
       }
 
-      val total = Source(immutable.Iterable.fill(1000)(ByteString(0)))
-        .via(Tcp().outgoingConnection(address))
-        .runFold(0)(_ + _.size)
+      val total =
+        Source(immutable.Iterable.fill(1000)(ByteString(0)))
+          .via(Tcp().outgoingConnection(address))
+          .runFold(0)(_ + _.size)
 
       Await.result(total, 3.seconds) should ===(1000)
     }
@@ -644,10 +643,11 @@ class TcpSpec
         .via(takeTwoAndDropSecond)
         .runForeach(_.flow.join(Flow[ByteString]).run())
 
-      val folder = Source(immutable.Iterable.fill(100)(ByteString(0)))
-        .via(Tcp().outgoingConnection(address))
-        .fold(0)(_ + _.size)
-        .toMat(Sink.head)(Keep.right)
+      val folder =
+        Source(immutable.Iterable.fill(100)(ByteString(0)))
+          .via(Tcp().outgoingConnection(address))
+          .fold(0)(_ + _.size)
+          .toMat(Sink.head)(Keep.right)
 
       val total = folder.run()
 

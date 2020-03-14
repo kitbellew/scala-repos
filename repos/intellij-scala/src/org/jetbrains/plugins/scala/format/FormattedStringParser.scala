@@ -44,10 +44,11 @@ object FormattedStringParser extends StringParser {
               ContainingClass(owner: ScTrait)),
             arg)
           if literal.isString && isFormatMethod(owner.qualifiedName, f.name) =>
-        val args = arg match {
-          case tuple: ScTuple => tuple.exprs
-          case it             => Seq(it)
-        }
+        val args =
+          arg match {
+            case tuple: ScTuple => tuple.exprs
+            case it             => Seq(it)
+          }
         (literal, args)
 
       // 1.formatted("%d")
@@ -156,10 +157,11 @@ object FormattedStringParser extends StringParser {
       case _        => true
     }
 
-    val unusedArguments = remainingArguments
-      .filterNot(refferredArguments.contains)
-      .map(UnboundExpression)
-      .toList
+    val unusedArguments =
+      remainingArguments
+        .filterNot(refferredArguments.contains)
+        .map(UnboundExpression)
+        .toList
 
     prefix ++ unusedArguments
   }

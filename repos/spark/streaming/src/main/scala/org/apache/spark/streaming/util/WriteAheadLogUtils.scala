@@ -141,11 +141,12 @@ private[streaming] object WriteAheadLogUtils extends Logging {
       fileWalHadoopConf: Configuration
   ): WriteAheadLog = {
 
-    val classNameOption = if (isDriver) {
-      sparkConf.getOption(DRIVER_WAL_CLASS_CONF_KEY)
-    } else {
-      sparkConf.getOption(RECEIVER_WAL_CLASS_CONF_KEY)
-    }
+    val classNameOption =
+      if (isDriver) {
+        sparkConf.getOption(DRIVER_WAL_CLASS_CONF_KEY)
+      } else {
+        sparkConf.getOption(RECEIVER_WAL_CLASS_CONF_KEY)
+      }
     val wal = classNameOption
       .map { className =>
         try {

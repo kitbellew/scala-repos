@@ -52,14 +52,15 @@ private[server] object WebSocketHandler {
     val bytes = builder.result()
     ReferenceCountUtil.release(frame)
 
-    val messageType = frame match {
-      case _: TextWebSocketFrame         => MessageType.Text
-      case _: BinaryWebSocketFrame       => MessageType.Binary
-      case close: CloseWebSocketFrame    => MessageType.Close
-      case _: PingWebSocketFrame         => MessageType.Ping
-      case _: PongWebSocketFrame         => MessageType.Pong
-      case _: ContinuationWebSocketFrame => MessageType.Continuation
-    }
+    val messageType =
+      frame match {
+        case _: TextWebSocketFrame         => MessageType.Text
+        case _: BinaryWebSocketFrame       => MessageType.Binary
+        case close: CloseWebSocketFrame    => MessageType.Close
+        case _: PingWebSocketFrame         => MessageType.Ping
+        case _: PongWebSocketFrame         => MessageType.Pong
+        case _: ContinuationWebSocketFrame => MessageType.Continuation
+      }
 
     RawMessage(messageType, bytes, frame.isFinalFragment)
   }

@@ -20,8 +20,9 @@ class SbtOrderEnumeratorHandler extends OrderEnumerationHandler {
       settings: OrderEnumeratorSettings): AddDependencyType = {
     (orderEntry, settings) match {
       case (library: LibraryOrderEntry, enumerator: ModuleOrderEnumerator) =>
-        val isTransitive = getModuleFromEnumerator(enumerator).fold(false)(
-          _ != library.getOwnerModule)
+        val isTransitive =
+          getModuleFromEnumerator(enumerator).fold(false)(
+            _ != library.getOwnerModule)
         if (isTransitive)
           AddDependencyType.DO_NOT_ADD
         else

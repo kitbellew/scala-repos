@@ -209,8 +209,9 @@ class PersistentActorJournalProtocolSpec
       "using large number of persist() calls" in {
         val subject = startActor("test-4")
         subject ! Multi(Vector.tabulate(30)(i ⇒ Persist(i, s"a-$i")): _*)
-        val w1 =
-          expectWrite(subject, Vector.tabulate(30)(i ⇒ Msgs(s"a-$i")): _*)
+        val w1 = expectWrite(
+          subject,
+          Vector.tabulate(30)(i ⇒ Msgs(s"a-$i")): _*)
         confirm(w1)
         for (i ← 0 until 30)
           expectMsg(Done(i, 1))

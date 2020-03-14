@@ -38,8 +38,11 @@ class TaskReplaceActor(
   var maxCapacity =
     (app.instances * (1 + app.upgradeStrategy.maximumOverCapacity)).toInt
   var outstandingKills = Set.empty[Task.Id]
-  val periodicalRetryKills: Cancellable =
-    context.system.scheduler.schedule(15.seconds, 15.seconds, self, RetryKills)
+  val periodicalRetryKills: Cancellable = context.system.scheduler.schedule(
+    15.seconds,
+    15.seconds,
+    self,
+    RetryKills)
 
   override def preStart(): Unit = {
     eventBus.subscribe(self, classOf[MesosStatusUpdateEvent])
@@ -154,8 +157,9 @@ class TaskReplaceActor(
   }
 
   def reconcileNewTasks(): Unit = {
-    val leftCapacity =
-      math.max(0, maxCapacity - oldTaskIds.size - newTasksStarted)
+    val leftCapacity = math.max(
+      0,
+      maxCapacity - oldTaskIds.size - newTasksStarted)
     val tasksNotStartedYet = math.max(0, app.instances - newTasksStarted)
     val tasksToStartNow = math.min(tasksNotStartedYet, leftCapacity)
     if (tasksToStartNow > 0) {

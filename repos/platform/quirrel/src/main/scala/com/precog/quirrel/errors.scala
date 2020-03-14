@@ -28,10 +28,11 @@ trait Errors extends Phases {
 trait RawErrors extends Errors with Phases {
   type Error = ErrorType
 
-  override val Error: ErrorCompanion = new ErrorCompanion {
-    def apply(expr: Expr, tp: ErrorType) = tp
-    def unapply(tp: ErrorType) = Some(tp)
-  }
+  override val Error: ErrorCompanion =
+    new ErrorCompanion {
+      def apply(expr: Expr, tp: ErrorType) = tp
+      def unapply(tp: ErrorType) = Some(tp)
+    }
 
   def showError(error: Error) = error.toString
 
@@ -49,10 +50,11 @@ trait LineErrors extends Errors with Phases with parser.AST {
   def showError(error: Error) =
     error.loc.formatError(ErrorPattern format error.tp)
 
-  override val Error: ErrorCompanion = new ErrorCompanion {
-    def apply(expr: Expr, tp: ErrorType): Error = new Error(expr.loc, tp)
-    def unapply(error: Error): Option[ErrorType] = Some(error.tp)
-  }
+  override val Error: ErrorCompanion =
+    new ErrorCompanion {
+      def apply(expr: Expr, tp: ErrorType): Error = new Error(expr.loc, tp)
+      def unapply(error: Error): Option[ErrorType] = Some(error.tp)
+    }
 
   override def isWarning(error: Error) =
     error match {

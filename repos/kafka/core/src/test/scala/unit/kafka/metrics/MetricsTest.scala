@@ -104,8 +104,9 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
       producerId: String): Unit = {
     sendMessages(servers, topic, nMessages)
     // create a consumer
-    val consumerConfig1 = new ConsumerConfig(
-      TestUtils.createConsumerProperties(zkConnect, group, consumerId))
+    val consumerConfig1 =
+      new ConsumerConfig(
+        TestUtils.createConsumerProperties(zkConnect, group, consumerId))
     val zkConsumerConnector1 =
       new ZookeeperConsumerConnector(consumerConfig1, true)
     val topicMessageStreams1 = zkConsumerConnector1.createMessageStreams(
@@ -119,8 +120,10 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
 
   private def checkTopicMetricsExists(topic: String): Boolean = {
     val topicMetricRegex = new Regex(".*(" + topic + ")$")
-    val metricGroups =
-      Metrics.defaultRegistry().groupedMetrics(MetricPredicate.ALL).entrySet()
+    val metricGroups = Metrics
+      .defaultRegistry()
+      .groupedMetrics(MetricPredicate.ALL)
+      .entrySet()
     for (metricGroup <- metricGroups) {
       if (topicMetricRegex.pattern.matcher(metricGroup.getKey()).matches)
         return true

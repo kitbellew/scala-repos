@@ -65,10 +65,11 @@ object EvaluatePython {
   def takeAndServe(df: DataFrame, n: Int): Int = {
     registerPicklers()
     df.withNewExecutionId {
-      val iter = new SerDeUtil.AutoBatchedPickler(
-        df.queryExecution.executedPlan.executeTake(n).iterator.map { row =>
-          EvaluatePython.toJava(row, df.schema)
-        })
+      val iter =
+        new SerDeUtil.AutoBatchedPickler(
+          df.queryExecution.executedPlan.executeTake(n).iterator.map { row =>
+            EvaluatePython.toJava(row, df.schema)
+          })
       PythonRDD.serveIterator(iter, s"serve-DataFrame")
     }
   }

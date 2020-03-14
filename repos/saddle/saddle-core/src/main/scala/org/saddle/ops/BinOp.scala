@@ -118,8 +118,8 @@ object BinOp {
   implicit val subDD: BDDD[Subtract] = new BinOpImplDD[Subtract](_ - _)
 
   type BDLD[T <: OpType] = BinOp[T, Double, Long, Double]
-  implicit val powDL: BDLD[Power] = new BinOpImplDL[Power, Long]((x, y) =>
-    fpow(x, y))
+  implicit val powDL: BDLD[Power] =
+    new BinOpImplDL[Power, Long]((x, y) => fpow(x, y))
   implicit val modDL: BDLD[Mod] = new BinOpImplDL[Mod, Long](_ % _)
   implicit val addDL: BDLD[Add] = new BinOpImplDL[Add, Long](_ + _)
   implicit val mulDL: BDLD[Multiply] = new BinOpImplDL[Multiply, Long](_ * _)
@@ -127,8 +127,8 @@ object BinOp {
   implicit val subDL: BDLD[Subtract] = new BinOpImplDL[Subtract, Long](_ - _)
 
   type BLDD[T <: OpType] = BinOp[T, Long, Double, Double]
-  implicit val powLD: BLDD[Power] = new BinOpImplLD[Power, Long]((x, y) =>
-    fpow(x, y))
+  implicit val powLD: BLDD[Power] =
+    new BinOpImplLD[Power, Long]((x, y) => fpow(x, y))
   implicit val modLD: BLDD[Mod] = new BinOpImplLD[Mod, Long](_ % _)
   implicit val addLD: BLDD[Add] = new BinOpImplLD[Add, Long](_ + _)
   implicit val mulLD: BLDD[Multiply] = new BinOpImplLD[Multiply, Long](_ * _)
@@ -136,8 +136,8 @@ object BinOp {
   implicit val subLD: BLDD[Subtract] = new BinOpImplLD[Subtract, Long](_ - _)
 
   type BIDD[T <: OpType] = BinOp[T, Int, Double, Double]
-  implicit val powDI: BIDD[Power] = new BinOpImplLD[Power, Int]((x, y) =>
-    fpow(x, y))
+  implicit val powDI: BIDD[Power] =
+    new BinOpImplLD[Power, Int]((x, y) => fpow(x, y))
   implicit val modDI: BIDD[Mod] = new BinOpImplLD[Mod, Int](_ % _)
   implicit val addDI: BIDD[Add] = new BinOpImplLD[Add, Int](_ + _)
   implicit val mulDI: BIDD[Multiply] = new BinOpImplLD[Multiply, Int](_ * _)
@@ -145,8 +145,8 @@ object BinOp {
   implicit val subDI: BIDD[Subtract] = new BinOpImplLD[Subtract, Int](_ - _)
 
   type BDID[T <: OpType] = BinOp[T, Double, Int, Double]
-  implicit val powID: BDID[Power] = new BinOpImplDL[Power, Int]((x, y) =>
-    fpow(x, y))
+  implicit val powID: BDID[Power] =
+    new BinOpImplDL[Power, Int]((x, y) => fpow(x, y))
   implicit val modID: BDID[Mod] = new BinOpImplDL[Mod, Int](_ % _)
   implicit val addID: BDID[Add] = new BinOpImplDL[Add, Int](_ + _)
   implicit val mulID: BDID[Multiply] = new BinOpImplDL[Multiply, Int](_ * _)
@@ -242,15 +242,18 @@ object BinOp {
 
   // (Bool, Bool) => Bool ops
 
-  implicit val andBB = new BinOp[AndOp, Boolean, Boolean, Boolean] {
-    def apply(a: Boolean, b: Boolean) = a && b
-  }
-  implicit val orBB = new BinOp[OrOp, Boolean, Boolean, Boolean] {
-    def apply(a: Boolean, b: Boolean) = a || b
-  }
-  implicit val xorBB = new BinOp[XorOp, Boolean, Boolean, Boolean] {
-    def apply(a: Boolean, b: Boolean) = a && b || !a && !b
-  }
+  implicit val andBB =
+    new BinOp[AndOp, Boolean, Boolean, Boolean] {
+      def apply(a: Boolean, b: Boolean) = a && b
+    }
+  implicit val orBB =
+    new BinOp[OrOp, Boolean, Boolean, Boolean] {
+      def apply(a: Boolean, b: Boolean) = a || b
+    }
+  implicit val xorBB =
+    new BinOp[XorOp, Boolean, Boolean, Boolean] {
+      def apply(a: Boolean, b: Boolean) = a && b || !a && !b
+    }
 
   /* comparisons ops */
 

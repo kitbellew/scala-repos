@@ -52,19 +52,21 @@ object ClientUtils extends Logging {
       correlationId: Int): TopicMetadataResponse = {
     var fetchMetaDataSucceeded: Boolean = false
     var i: Int = 0
-    val topicMetadataRequest = new TopicMetadataRequest(
-      TopicMetadataRequest.CurrentVersion,
-      correlationId,
-      producerConfig.clientId,
-      topics.toSeq)
+    val topicMetadataRequest =
+      new TopicMetadataRequest(
+        TopicMetadataRequest.CurrentVersion,
+        correlationId,
+        producerConfig.clientId,
+        topics.toSeq)
     var topicMetadataResponse: TopicMetadataResponse = null
     var t: Throwable = null
     // shuffle the list of brokers before sending metadata requests so that most requests don't get routed to the
     // same broker
     val shuffledBrokers = Random.shuffle(brokers)
     while (i < shuffledBrokers.size && !fetchMetaDataSucceeded) {
-      val producer: SyncProducer =
-        ProducerPool.createSyncProducer(producerConfig, shuffledBrokers(i))
+      val producer: SyncProducer = ProducerPool.createSyncProducer(
+        producerConfig,
+        shuffledBrokers(i))
       info(
         "Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
           .format(shuffledBrokers(i), correlationId, topics.size, topics))
@@ -140,8 +142,8 @@ object ClientUtils extends Logging {
     var channel: BlockingChannel = null
     var connected = false
     while (!connected) {
-      val allBrokers =
-        zkUtils.getAllBrokerEndPointsForChannel(SecurityProtocol.PLAINTEXT)
+      val allBrokers = zkUtils.getAllBrokerEndPointsForChannel(
+        SecurityProtocol.PLAINTEXT)
       Random.shuffle(allBrokers).find { broker =>
         trace("Connecting to broker %s:%d.".format(broker.host, broker.port))
         try {
@@ -202,8 +204,8 @@ object ClientUtils extends Logging {
               .format(queryChannel.host, queryChannel.port, group))
           queryChannel.send(GroupCoordinatorRequest(group))
           val response = queryChannel.receive()
-          val consumerMetadataResponse =
-            GroupCoordinatorResponse.readFrom(response.payload())
+          val consumerMetadataResponse = GroupCoordinatorResponse.readFrom(
+            response.payload())
           debug(
             "Consumer metadata response: " + consumerMetadataResponse.toString)
           if (consumerMetadataResponse.errorCode == Errors.NONE.code)

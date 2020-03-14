@@ -19,8 +19,9 @@ class ScalaSyntheticProvider extends SyntheticTypeComponentProvider {
 
 object ScalaSyntheticProvider {
   def isSynthetic(typeComponent: TypeComponent): Boolean = {
-    val isScala =
-      DebuggerUtil.isScala(typeComponent.declaringType(), default = false)
+    val isScala = DebuggerUtil.isScala(
+      typeComponent.declaringType(),
+      default = false)
     if (!isScala)
       return false
 
@@ -109,8 +110,10 @@ object ScalaSyntheticProvider {
       case ct: ClassType =>
         val interfaces = ct.allInterfaces().asScala
         val vm = ct.virtualMachine()
-        val allTraitImpls =
-          vm.allClasses().asScala.filter(_.name().endsWith("$class"))
+        val allTraitImpls = vm
+          .allClasses()
+          .asScala
+          .filter(_.name().endsWith("$class"))
         for {
           interface <- interfaces
           traitImpl <- allTraitImpls

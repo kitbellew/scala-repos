@@ -64,11 +64,12 @@ private[clustering] trait KMeansParams
     * @group expertParam
     */
   @Since("1.5.0")
-  final val initMode = new Param[String](
-    this,
-    "initMode",
-    "initialization algorithm",
-    (value: String) => MLlibKMeans.validateInitMode(value))
+  final val initMode =
+    new Param[String](
+      this,
+      "initMode",
+      "initialization algorithm",
+      (value: String) => MLlibKMeans.validateInitMode(value))
 
   /** @group expertGetParam */
   @Since("1.5.0")
@@ -80,11 +81,12 @@ private[clustering] trait KMeansParams
     * @group expertParam
     */
   @Since("1.5.0")
-  final val initSteps = new IntParam(
-    this,
-    "initSteps",
-    "number of steps for k-means||",
-    (value: Int) => value > 0)
+  final val initSteps =
+    new IntParam(
+      this,
+      "initSteps",
+      "number of steps for k-means||",
+      (value: Int) => value > 0)
 
   /** @group expertGetParam */
   @Since("1.5.0")
@@ -213,8 +215,10 @@ object KMeansModel extends MLReadable[KMeansModel] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data =
-        sqlContext.read.parquet(dataPath).select("clusterCenters").head()
+      val data = sqlContext.read
+        .parquet(dataPath)
+        .select("clusterCenters")
+        .head()
       val clusterCenters = data.getAs[Seq[Vector]](0).toArray
       val model =
         new KMeansModel(metadata.uid, new MLlibKMeansModel(clusterCenters))
@@ -298,10 +302,11 @@ class KMeans @Since("1.5.0") (@Since("1.5.0") override val uid: String)
       .setEpsilon($(tol))
     val parentModel = algo.run(rdd)
     val model = copyValues(new KMeansModel(uid, parentModel).setParent(this))
-    val summary = new KMeansSummary(
-      model.transform(dataset),
-      $(predictionCol),
-      $(featuresCol))
+    val summary =
+      new KMeansSummary(
+        model.transform(dataset),
+        $(predictionCol),
+        $(featuresCol))
     model.setSummary(summary)
   }
 

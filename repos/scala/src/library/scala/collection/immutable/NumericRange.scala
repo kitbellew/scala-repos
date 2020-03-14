@@ -51,8 +51,11 @@ abstract class NumericRange[T](
   import num._
 
   // See comment in Range for why this must be lazy.
-  private lazy val numRangeElements: Int =
-    NumericRange.count(start, end, step, isInclusive)
+  private lazy val numRangeElements: Int = NumericRange.count(
+    start,
+    end,
+    step,
+    isInclusive)
 
   override def length = numRangeElements
   override def isEmpty = length == 0
@@ -440,11 +443,9 @@ object NumericRange {
   }
 
   def apply[T](start: T, end: T, step: T)(
-      implicit num: Integral[T]): Exclusive[T] =
-    new Exclusive(start, end, step)
+      implicit num: Integral[T]): Exclusive[T] = new Exclusive(start, end, step)
   def inclusive[T](start: T, end: T, step: T)(
-      implicit num: Integral[T]): Inclusive[T] =
-    new Inclusive(start, end, step)
+      implicit num: Integral[T]): Inclusive[T] = new Inclusive(start, end, step)
 
   private[collection] val defaultOrdering = Map[Numeric[_], Ordering[_]](
     Numeric.BigIntIsIntegral -> Ordering.BigInt,

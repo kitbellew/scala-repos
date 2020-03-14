@@ -55,14 +55,15 @@ class AsyncProducerTest {
   @Test
   def testProducerQueueSize() {
     // a mock event handler that blocks
-    val mockEventHandler = new EventHandler[String, String] {
+    val mockEventHandler =
+      new EventHandler[String, String] {
 
-      def handle(events: Seq[KeyedMessage[String, String]]) {
-        Thread.sleep(500)
+        def handle(events: Seq[KeyedMessage[String, String]]) {
+          Thread.sleep(500)
+        }
+
+        def close {}
       }
-
-      def close {}
-    }
 
     val props = new Properties()
     props.put("serializer.class", "kafka.serializer.StringEncoder")
@@ -110,8 +111,8 @@ class AsyncProducerTest {
       *  Send a total of 10 messages with batch size of 5. Expect 2 calls to the handler, one for each batch.
       */
     val producerDataList = getProduceData(10)
-    val mockHandler =
-      EasyMock.createStrictMock(classOf[DefaultEventHandler[String, String]])
+    val mockHandler = EasyMock.createStrictMock(
+      classOf[DefaultEventHandler[String, String]])
     mockHandler.handle(producerDataList.take(5))
     EasyMock.expectLastCall
     mockHandler.handle(producerDataList.takeRight(5))
@@ -144,8 +145,8 @@ class AsyncProducerTest {
       *  Expect 1 calls to the handler after 200ms.
       */
     val producerDataList = getProduceData(2)
-    val mockHandler =
-      EasyMock.createStrictMock(classOf[DefaultEventHandler[String, String]])
+    val mockHandler = EasyMock.createStrictMock(
+      classOf[DefaultEventHandler[String, String]])
     mockHandler.handle(producerDataList)
     EasyMock.expectLastCall
     EasyMock.replay(mockHandler)
@@ -222,31 +223,26 @@ class AsyncProducerTest {
     topicPartitionInfos.put("topic1", topic1Metadata)
     topicPartitionInfos.put("topic2", topic2Metadata)
 
-    val intPartitioner = new Partitioner {
-      def partition(key: Any, numPartitions: Int): Int =
-        key.asInstanceOf[Int] % numPartitions
-    }
+    val intPartitioner =
+      new Partitioner {
+        def partition(key: Any, numPartitions: Int): Int =
+          key.asInstanceOf[Int] % numPartitions
+      }
     val config = new ProducerConfig(props)
 
     val producerPool = new ProducerPool(config)
-    val handler = new DefaultEventHandler[Int, String](
-      config,
-      partitioner = intPartitioner,
-      encoder = null.asInstanceOf[Encoder[String]],
-      keyEncoder = new IntEncoder(),
-      producerPool = producerPool,
-      topicPartitionInfos = topicPartitionInfos)
+    val handler =
+      new DefaultEventHandler[Int, String](
+        config,
+        partitioner = intPartitioner,
+        encoder = null.asInstanceOf[Encoder[String]],
+        keyEncoder = new IntEncoder(),
+        producerPool = producerPool,
+        topicPartitionInfos = topicPartitionInfos)
 
-    val topic1Broker1Data =
-      ArrayBuffer[KeyedMessage[Int, Message]](
-        new KeyedMessage[Int, Message](
-          "topic1",
-          0,
-          new Message("msg1".getBytes)),
-        new KeyedMessage[Int, Message](
-          "topic1",
-          2,
-          new Message("msg3".getBytes)))
+    val topic1Broker1Data = ArrayBuffer[KeyedMessage[Int, Message]](
+      new KeyedMessage[Int, Message]("topic1", 0, new Message("msg1".getBytes)),
+      new KeyedMessage[Int, Message]("topic1", 2, new Message("msg3".getBytes)))
     val topic1Broker2Data = ArrayBuffer[KeyedMessage[Int, Message]](
       new KeyedMessage[Int, Message](
         "topic1",
@@ -291,13 +287,14 @@ class AsyncProducerTest {
 
     val producerPool = new ProducerPool(config)
 
-    val handler = new DefaultEventHandler[String, String](
-      config,
-      partitioner = null.asInstanceOf[Partitioner],
-      encoder = new StringEncoder,
-      keyEncoder = new StringEncoder,
-      producerPool = producerPool,
-      topicPartitionInfos = topicPartitionInfos)
+    val handler =
+      new DefaultEventHandler[String, String](
+        config,
+        partitioner = null.asInstanceOf[Partitioner],
+        encoder = new StringEncoder,
+        keyEncoder = new StringEncoder,
+        producerPool = producerPool,
+        topicPartitionInfos = topicPartitionInfos)
 
     val serializedData = handler.serialize(produceData)
     val deserializedData = serializedData.map(d =>
@@ -337,13 +334,14 @@ class AsyncProducerTest {
 
     val producerPool = new ProducerPool(config)
 
-    val handler = new DefaultEventHandler[String, String](
-      config,
-      partitioner = new NegativePartitioner,
-      encoder = null.asInstanceOf[Encoder[String]],
-      keyEncoder = null.asInstanceOf[Encoder[String]],
-      producerPool = producerPool,
-      topicPartitionInfos = topicPartitionInfos)
+    val handler =
+      new DefaultEventHandler[String, String](
+        config,
+        partitioner = new NegativePartitioner,
+        encoder = null.asInstanceOf[Encoder[String]],
+        keyEncoder = null.asInstanceOf[Encoder[String]],
+        producerPool = producerPool,
+        topicPartitionInfos = topicPartitionInfos)
     try {
       handler.partitionAndCollate(producerDataList)
     } catch {
@@ -370,13 +368,14 @@ class AsyncProducerTest {
 
     val producerDataList = new ArrayBuffer[KeyedMessage[String, String]]
     producerDataList.append(new KeyedMessage[String, String]("topic1", "msg1"))
-    val handler = new DefaultEventHandler[String, String](
-      config,
-      partitioner = null.asInstanceOf[Partitioner],
-      encoder = new StringEncoder,
-      keyEncoder = new StringEncoder,
-      producerPool = producerPool,
-      topicPartitionInfos = topicPartitionInfos)
+    val handler =
+      new DefaultEventHandler[String, String](
+        config,
+        partitioner = null.asInstanceOf[Partitioner],
+        encoder = new StringEncoder,
+        keyEncoder = new StringEncoder,
+        producerPool = producerPool,
+        topicPartitionInfos = topicPartitionInfos)
     try {
       handler.handle(producerDataList)
       fail("Should fail with FailedToSendMessageException")
@@ -422,13 +421,14 @@ class AsyncProducerTest {
     topicPartitionInfos.put("topic2", topic2Metadata)
 
     val producerPool = new ProducerPool(config)
-    val handler = new DefaultEventHandler[String, String](
-      config,
-      partitioner = null.asInstanceOf[Partitioner],
-      encoder = null.asInstanceOf[Encoder[String]],
-      keyEncoder = null.asInstanceOf[Encoder[String]],
-      producerPool = producerPool,
-      topicPartitionInfos = topicPartitionInfos)
+    val handler =
+      new DefaultEventHandler[String, String](
+        config,
+        partitioner = null.asInstanceOf[Partitioner],
+        encoder = null.asInstanceOf[Encoder[String]],
+        keyEncoder = null.asInstanceOf[Encoder[String]],
+        producerPool = producerPool,
+        topicPartitionInfos = topicPartitionInfos)
     val producerDataList = new ArrayBuffer[KeyedMessage[String, Message]]
     producerDataList.append(
       new KeyedMessage[String, Message]("topic1", new Message("msg1".getBytes)))
@@ -465,8 +465,12 @@ class AsyncProducerTest {
     val config = new ProducerConfig(props)
 
     val topic1 = "topic1"
-    val topic1Metadata =
-      getTopicMetadata(topic1, Array(0, 1), 0, "localhost", 9092)
+    val topic1Metadata = getTopicMetadata(
+      topic1,
+      Array(0, 1),
+      0,
+      "localhost",
+      9092)
     val topicPartitionInfos =
       new collection.mutable.HashMap[String, TopicMetadata]
     topicPartitionInfos.put("topic1", topic1Metadata)
@@ -539,19 +543,21 @@ class AsyncProducerTest {
       .times(4)
     EasyMock.expect(producerPool.close())
     EasyMock.replay(producerPool)
-    val time = new Time {
-      override def nanoseconds: Long = 0L
-      override def milliseconds: Long = 0L
-      override def sleep(ms: Long): Unit = {}
-    }
-    val handler = new DefaultEventHandler[Int, String](
-      config,
-      partitioner = new FixedValuePartitioner(),
-      encoder = new StringEncoder(),
-      keyEncoder = new NullEncoder[Int](),
-      producerPool = producerPool,
-      topicPartitionInfos = topicPartitionInfos,
-      time = time)
+    val time =
+      new Time {
+        override def nanoseconds: Long = 0L
+        override def milliseconds: Long = 0L
+        override def sleep(ms: Long): Unit = {}
+      }
+    val handler =
+      new DefaultEventHandler[Int, String](
+        config,
+        partitioner = new FixedValuePartitioner(),
+        encoder = new StringEncoder(),
+        keyEncoder = new NullEncoder[Int](),
+        producerPool = producerPool,
+        topicPartitionInfos = topicPartitionInfos,
+        time = time)
     val data =
       msgs.map(m => new KeyedMessage[Int, String](topic1, 0, m)) ++ msgs.map(
         m => new KeyedMessage[Int, String](topic1, 1, m))
@@ -566,15 +572,15 @@ class AsyncProducerTest {
   def testJavaProducer() {
     val topic = "topic1"
     val msgs = TestUtils.getMsgStrings(5)
-    val scalaProducerData =
-      msgs.map(m => new KeyedMessage[String, String](topic, m))
+    val scalaProducerData = msgs.map(m =>
+      new KeyedMessage[String, String](topic, m))
     val javaProducerData: java.util.List[KeyedMessage[String, String]] = {
       import scala.collection.JavaConversions._
       scalaProducerData
     }
 
-    val mockScalaProducer =
-      EasyMock.createMock(classOf[kafka.producer.Producer[String, String]])
+    val mockScalaProducer = EasyMock.createMock(
+      classOf[kafka.producer.Producer[String, String]])
     mockScalaProducer.send(scalaProducerData.head)
     EasyMock.expectLastCall()
     mockScalaProducer.send(scalaProducerData: _*)

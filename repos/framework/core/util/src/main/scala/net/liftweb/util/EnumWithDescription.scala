@@ -34,16 +34,17 @@ abstract class EnumWithDescription {
   def values = _values
 
   // possibly not a good idea using this directly
-  val enum = new Enumeration {
-    def Value(
-        inName: String,
-        inDescription: String): Value with ValueWithDescription = {
-      new Val(nextId, inName) with ValueWithDescription {
-        def description = inDescription
-        def name = inName
+  val enum =
+    new Enumeration {
+      def Value(
+          inName: String,
+          inDescription: String): Value with ValueWithDescription = {
+        new Val(nextId, inName) with ValueWithDescription {
+          def description = inDescription
+          def name = inName
+        }
       }
     }
-  }
 
   def Value(name: String, description: String): Value = {
     val value = enum.Value(name, description)

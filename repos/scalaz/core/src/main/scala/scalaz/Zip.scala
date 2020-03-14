@@ -32,23 +32,19 @@ trait Zip[F[_]] { self =>
       case (a, b) => f(a, b)
     }
 
-  def apzip[A, B](f: => F[A] => F[B], a: => F[A]): F[(A, B)] =
-    zip(a, f(a))
+  def apzip[A, B](f: => F[A] => F[B], a: => F[A]): F[(A, B)] = zip(a, f(a))
 
   def apzipPL[A, B](f: => F[A] @?> F[B], a: => F[A])(
-      implicit M: Monoid[F[B]]): F[(A, B)] =
-    apzip(f.getOrZ(_), a)
+      implicit M: Monoid[F[B]]): F[(A, B)] = apzip(f.getOrZ(_), a)
 
   def ap(implicit F: Functor[F]): Apply[F] =
     new Apply[F] {
       def ap[A, B](fa: => F[A])(f: => F[A => B]) =
         zipWith(fa, f)((a, g) => g(a))
-      def map[A, B](fa: F[A])(f: A => B) =
-        F.map(fa)(f)
+      def map[A, B](fa: F[A])(f: A => B) = F.map(fa)(f)
       override def apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C) =
         zipWith(fa, fb)(f)
-      override def tuple2[A, B](fa: => F[A], fb: => F[B]) =
-        self.zip(fa, fb)
+      override def tuple2[A, B](fa: => F[A], fb: => F[B]) = self.zip(fa, fb)
     }
 
   trait ZipLaw {
@@ -68,9 +64,10 @@ trait Zip[F[_]] { self =>
   def zipLaw = new ZipLaw {}
 
   ////
-  val zipSyntax = new scalaz.syntax.ZipSyntax[F] {
-    def F = Zip.this
-  }
+  val zipSyntax =
+    new scalaz.syntax.ZipSyntax[F] {
+      def F = Zip.this
+    }
 }
 
 object Zip {
@@ -79,7 +76,6 @@ object Zip {
   ////
 
   def fzip[F[_], A, B](t: LazyTuple2[F[A], F[B]])(
-      implicit F: Zip[F]): F[(A, B)] =
-    F.zip(t._1, t._2)
+      implicit F: Zip[F]): F[(A, B)] = F.zip(t._1, t._2)
   ////
 }

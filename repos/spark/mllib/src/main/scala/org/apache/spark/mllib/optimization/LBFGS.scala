@@ -200,18 +200,17 @@ object LBFGS extends Logging {
 
     val numExamples = data.count()
 
-    val costFun =
-      new CostFun(data, gradient, updater, regParam, numExamples)
+    val costFun = new CostFun(data, gradient, updater, regParam, numExamples)
 
-    val lbfgs = new BreezeLBFGS[BDV[Double]](
-      maxNumIterations,
-      numCorrections,
-      convergenceTol)
+    val lbfgs =
+      new BreezeLBFGS[BDV[Double]](
+        maxNumIterations,
+        numCorrections,
+        convergenceTol)
 
-    val states =
-      lbfgs.iterations(
-        new CachedDiffFunction(costFun),
-        initialWeights.toBreeze.toDenseVector)
+    val states = lbfgs.iterations(
+      new CachedDiffFunction(costFun),
+      initialWeights.toBreeze.toDenseVector)
 
     /**
       * NOTE: lossSum and loss is computed using the weights from the previous iteration
@@ -253,20 +252,21 @@ object LBFGS extends Logging {
       val bcW = data.context.broadcast(w)
       val localGradient = gradient
 
-      val (gradientSum, lossSum) = data.treeAggregate((Vectors.zeros(n), 0.0))(
-        seqOp = (c, v) =>
-          (c, v) match {
-            case ((grad, loss), (label, features)) =>
-              val l = localGradient.compute(features, label, bcW.value, grad)
-              (grad, loss + l)
-          },
-        combOp = (c1, c2) =>
-          (c1, c2) match {
-            case ((grad1, loss1), (grad2, loss2)) =>
-              axpy(1.0, grad2, grad1)
-              (grad1, loss1 + loss2)
-          }
-      )
+      val (gradientSum, lossSum) =
+        data.treeAggregate((Vectors.zeros(n), 0.0))(
+          seqOp = (c, v) =>
+            (c, v) match {
+              case ((grad, loss), (label, features)) =>
+                val l = localGradient.compute(features, label, bcW.value, grad)
+                (grad, loss + l)
+            },
+          combOp = (c1, c2) =>
+            (c1, c2) match {
+              case ((grad1, loss1), (grad2, loss2)) =>
+                axpy(1.0, grad2, grad1)
+                (grad1, loss1 + loss2)
+            }
+        )
 
       /**
         * regVal is sum of weight squares if it's L2 updater;

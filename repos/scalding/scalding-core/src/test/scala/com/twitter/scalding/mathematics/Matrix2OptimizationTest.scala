@@ -216,8 +216,9 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
       (simplePlanCost, simplePlan) shouldBe result
     }
     "handle an example with 6 matrices" in {
-      val result =
-        optimizeProductChain(productSequence, Some(ring, MatrixJoiner2.default))
+      val result = optimizeProductChain(
+        productSequence,
+        Some(ring, MatrixJoiner2.default))
       (optimizedPlanCost, optimizedPlan) shouldBe result
     }
 
@@ -359,9 +360,10 @@ object Matrix2Props extends Properties("Matrix2") {
   implicit def arbT: Arbitrary[Matrix2[Any, Any, Double]] =
     Arbitrary(genFormula(0))
 
-  val genProdSeq = for {
-    v <- Gen.choose(1, 10)
-  } yield productChainGen(0, v, 0, Nil).toIndexedSeq
+  val genProdSeq =
+    for {
+      v <- Gen.choose(1, 10)
+    } yield productChainGen(0, v, 0, Nil).toIndexedSeq
 
   implicit def arbSeq: Arbitrary[IndexedSeq[MatrixLiteral[Any, Any, Double]]] =
     Arbitrary(genProdSeq)

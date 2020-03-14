@@ -311,8 +311,7 @@ trait JavaDStreamLike[
   def transform[U](transformFunc: JFunction[R, JavaRDD[U]]): JavaDStream[U] = {
     implicit val cm: ClassTag[U] = fakeClassTag
 
-    def scalaTransform(in: RDD[T]): RDD[U] =
-      transformFunc.call(wrapRDD(in)).rdd
+    def scalaTransform(in: RDD[T]): RDD[U] = transformFunc.call(wrapRDD(in)).rdd
     dstream.transform(scalaTransform(_))
   }
 

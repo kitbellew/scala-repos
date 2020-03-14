@@ -54,14 +54,13 @@ class NotifyLaunchQueueStepImplTest
   private[this] val updateTimestamp = Timestamp(100)
   private[this] val taskStatusMessage = "some update"
 
-  private[this] val runningTaskStatus =
-    TaskStatus
-      .newBuilder()
-      .setState(TaskState.TASK_RUNNING)
-      .setTaskId(taskId)
-      .setSlaveId(slaveId)
-      .setMessage(taskStatusMessage)
-      .build()
+  private[this] val runningTaskStatus = TaskStatus
+    .newBuilder()
+    .setState(TaskState.TASK_RUNNING)
+    .setTaskId(taskId)
+    .setSlaveId(slaveId)
+    .setMessage(taskStatusMessage)
+    .build()
 
   class Fixture {
     val launchQueue = mock[LaunchQueue]

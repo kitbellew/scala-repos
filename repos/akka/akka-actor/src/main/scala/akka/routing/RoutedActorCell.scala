@@ -79,10 +79,11 @@ private[akka] class RoutedActorCell(
       routees: immutable.Iterable[Routee],
       stopChild: Boolean): Unit = {
     val r = _router
-    val newRoutees = routees.foldLeft(r.routees) { (xs, x) ⇒
-      unwatch(x);
-      xs.filterNot(_ == x)
-    }
+    val newRoutees =
+      routees.foldLeft(r.routees) { (xs, x) ⇒
+        unwatch(x);
+        xs.filterNot(_ == x)
+      }
     _router = r.withRoutees(newRoutees)
     if (stopChild)
       routees foreach stopIfChild
@@ -175,12 +176,13 @@ private[akka] class RoutedActorCell(
   * INTERNAL API
   */
 private[akka] class RouterActor extends Actor {
-  val cell = context match {
-    case x: RoutedActorCell ⇒ x
-    case _ ⇒
-      throw ActorInitializationException(
-        "Router actor can only be used in RoutedActorRef, not in " + context.getClass)
-  }
+  val cell =
+    context match {
+      case x: RoutedActorCell ⇒ x
+      case _ ⇒
+        throw ActorInitializationException(
+          "Router actor can only be used in RoutedActorRef, not in " + context.getClass)
+    }
 
   val routingLogicController: Option[ActorRef] = cell.routerConfig
     .routingLogicController(cell.router.logic)
@@ -220,12 +222,13 @@ private[akka] class RouterPoolActor(
     override val supervisorStrategy: SupervisorStrategy)
     extends RouterActor {
 
-  val pool = cell.routerConfig match {
-    case x: Pool ⇒ x
-    case other ⇒
-      throw ActorInitializationException(
-        "RouterPoolActor can only be used with Pool, not " + other.getClass)
-  }
+  val pool =
+    cell.routerConfig match {
+      case x: Pool ⇒ x
+      case other ⇒
+        throw ActorInitializationException(
+          "RouterPoolActor can only be used with Pool, not " + other.getClass)
+    }
 
   override def receive =
     ({

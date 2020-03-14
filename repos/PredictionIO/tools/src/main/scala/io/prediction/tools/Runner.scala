@@ -98,11 +98,10 @@ object Runner extends Logging {
       ca: ConsoleArgs,
       extraJars: Seq[URI]): Int = {
     // Return error for unsupported cases
-    val deployMode =
-      argumentValue(ca.common.sparkPassThrough, "--deploy-mode")
-        .getOrElse("client")
-    val master =
-      argumentValue(ca.common.sparkPassThrough, "--master").getOrElse("local")
+    val deployMode = argumentValue(ca.common.sparkPassThrough, "--deploy-mode")
+      .getOrElse("client")
+    val master = argumentValue(ca.common.sparkPassThrough, "--master")
+      .getOrElse("local")
 
     (ca.common.scratchUri, deployMode, master) match {
       case (Some(u), "client", m) if m != "yarn-cluster" =>
@@ -127,8 +126,8 @@ object Runner extends Logging {
       .mkString(",")
 
     // Location of Spark
-    val sparkHome =
-      ca.common.sparkHome.getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
+    val sparkHome = ca.common.sparkHome
+      .getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
 
     // Local path to PredictionIO assembly JAR
     val mainJar = handleScratchFile(
@@ -156,34 +155,38 @@ object Runner extends Logging {
       handleScratchFile(fs, ca.common.scratchUri, new File(j))
     }
 
-    val sparkSubmitCommand =
-      Seq(Seq(sparkHome, "bin", "spark-submit").mkString(File.separator))
+    val sparkSubmitCommand = Seq(
+      Seq(sparkHome, "bin", "spark-submit").mkString(File.separator))
 
-    val sparkSubmitJars = if (extraJars.nonEmpty) {
-      Seq("--jars", deployedJars.map(_.toString).mkString(","))
-    } else {
-      Nil
-    }
+    val sparkSubmitJars =
+      if (extraJars.nonEmpty) {
+        Seq("--jars", deployedJars.map(_.toString).mkString(","))
+      } else {
+        Nil
+      }
 
-    val sparkSubmitFiles = if (extraFiles.nonEmpty) {
-      Seq("--files", extraFiles.mkString(","))
-    } else {
-      Nil
-    }
+    val sparkSubmitFiles =
+      if (extraFiles.nonEmpty) {
+        Seq("--files", extraFiles.mkString(","))
+      } else {
+        Nil
+      }
 
-    val sparkSubmitExtraClasspaths = if (extraClasspaths.nonEmpty) {
-      Seq("--driver-class-path", extraClasspaths.mkString(":"))
-    } else {
-      Nil
-    }
+    val sparkSubmitExtraClasspaths =
+      if (extraClasspaths.nonEmpty) {
+        Seq("--driver-class-path", extraClasspaths.mkString(":"))
+      } else {
+        Nil
+      }
 
-    val sparkSubmitKryo = if (ca.common.sparkKryo) {
-      Seq(
-        "--conf",
-        "spark.serializer=org.apache.spark.serializer.KryoSerializer")
-    } else {
-      Nil
-    }
+    val sparkSubmitKryo =
+      if (ca.common.sparkKryo) {
+        Seq(
+          "--conf",
+          "spark.serializer=org.apache.spark.serializer.KryoSerializer")
+      } else {
+        Nil
+      }
 
     val verbose =
       if (ca.common.verbose)

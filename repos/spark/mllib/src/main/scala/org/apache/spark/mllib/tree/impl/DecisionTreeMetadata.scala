@@ -119,10 +119,11 @@ private[spark] object DecisionTreeMetadata extends Logging {
           s"but was given by empty one.")
     }
     val numExamples = input.count()
-    val numClasses = strategy.algo match {
-      case Classification => strategy.numClasses
-      case Regression     => 0
-    }
+    val numClasses =
+      strategy.algo match {
+        case Classification => strategy.numClasses
+        case Regression     => 0
+      }
 
     val maxPossibleBins = math.min(strategy.maxBins, numExamples).toInt
     if (maxPossibleBins < strategy.maxBins) {
@@ -185,26 +186,28 @@ private[spark] object DecisionTreeMetadata extends Logging {
     }
 
     // Set number of features to use per node (for random forests).
-    val _featureSubsetStrategy = featureSubsetStrategy match {
-      case "auto" =>
-        if (numTrees == 1) {
-          "all"
-        } else {
-          if (strategy.algo == Classification) {
-            "sqrt"
+    val _featureSubsetStrategy =
+      featureSubsetStrategy match {
+        case "auto" =>
+          if (numTrees == 1) {
+            "all"
           } else {
-            "onethird"
+            if (strategy.algo == Classification) {
+              "sqrt"
+            } else {
+              "onethird"
+            }
           }
-        }
-      case _ => featureSubsetStrategy
-    }
-    val numFeaturesPerNode: Int = _featureSubsetStrategy match {
-      case "all"  => numFeatures
-      case "sqrt" => math.sqrt(numFeatures).ceil.toInt
-      case "log2" =>
-        math.max(1, (math.log(numFeatures) / math.log(2)).ceil.toInt)
-      case "onethird" => (numFeatures / 3.0).ceil.toInt
-    }
+        case _ => featureSubsetStrategy
+      }
+    val numFeaturesPerNode: Int =
+      _featureSubsetStrategy match {
+        case "all"  => numFeatures
+        case "sqrt" => math.sqrt(numFeatures).ceil.toInt
+        case "log2" =>
+          math.max(1, (math.log(numFeatures) / math.log(2)).ceil.toInt)
+        case "onethird" => (numFeatures / 3.0).ceil.toInt
+      }
 
     new DecisionTreeMetadata(
       numFeatures,

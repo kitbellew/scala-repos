@@ -6,9 +6,10 @@ import TaskGen._
 import Task._
 
 object TaskRunnerCircularTest extends Properties("TaskRunner Circular") {
-  property("Catches circular references") = forAll(MaxTasksGen, MaxWorkersGen) {
-    checkCircularReferences _
-  }
+  property("Catches circular references") =
+    forAll(MaxTasksGen, MaxWorkersGen) {
+      checkCircularReferences _
+    }
   property("Allows references to completed tasks") =
     forAllNoShrink(MaxTasksGen, MaxWorkersGen) {
       allowedReference _

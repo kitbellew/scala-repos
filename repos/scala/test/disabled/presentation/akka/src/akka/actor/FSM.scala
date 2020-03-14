@@ -454,12 +454,13 @@ trait FSM[S, D] extends ListenerManagement {
   private def processEvent(value: Any) = {
     val event = Event(value, currentState.stateData)
     val stateFunc = stateFunctions(currentState.stateName)
-    val nextState = if (stateFunc isDefinedAt event) {
-      stateFunc(event)
-    } else {
-      // handleEventDefault ensures that this is always defined
-      handleEvent(event)
-    }
+    val nextState =
+      if (stateFunc isDefinedAt event) {
+        stateFunc(event)
+      } else {
+        // handleEventDefault ensures that this is always defined
+        handleEvent(event)
+      }
     nextState.stopReason match {
       case Some(reason) => terminate(reason)
       case None         => makeTransition(nextState)

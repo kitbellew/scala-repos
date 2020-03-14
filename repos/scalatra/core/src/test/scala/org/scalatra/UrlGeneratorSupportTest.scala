@@ -5,15 +5,17 @@ import org.scalatra.test.scalatest.ScalatraFunSuite
 class UrlGeneratorContextTestServlet
     extends ScalatraServlet
     with UrlGeneratorSupport {
-  val servletRoute: Route = get("/foo") {
-    url(servletRoute)
-  }
+  val servletRoute: Route =
+    get("/foo") {
+      url(servletRoute)
+    }
 }
 
 class UrlGeneratorContextTestFilter extends ScalatraFilter {
-  val filterRoute: Route = get("/filtered/foo") {
-    UrlGenerator.url(filterRoute)
-  }
+  val filterRoute: Route =
+    get("/filtered/foo") {
+      UrlGenerator.url(filterRoute)
+    }
 }
 
 class UrlGeneratorSupportTest extends ScalatraFunSuite {

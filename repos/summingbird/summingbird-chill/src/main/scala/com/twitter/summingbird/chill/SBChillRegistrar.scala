@@ -57,10 +57,10 @@ object SBChillRegistrar {
   def apply(
       cfg: SummingbirdConfig,
       iterableRegistrars: List[IKryoRegistrar]): SummingbirdConfig = {
-    val kryoConfig = new com.twitter.chill.config.Config
-    with MutableStringConfig {
-      def summingbirdConfig = cfg
-    }
+    val kryoConfig =
+      new com.twitter.chill.config.Config with MutableStringConfig {
+        def summingbirdConfig = cfg
+      }
 
     val defaults = List(
       new ReflectingRegistrar(classOf[BatchID], classOf[BatchIDSerializer]),

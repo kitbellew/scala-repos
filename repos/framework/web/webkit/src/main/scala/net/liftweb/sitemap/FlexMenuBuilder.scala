@@ -70,24 +70,25 @@ trait FlexMenuBuilder {
     * Compute the MenuItems to be rendered by looking at the 'item' and 'group' attributes
     */
   def toRender: Seq[MenuItem] = {
-    val res = (S.attr("item"), S.attr("group")) match {
-      case (Full(item), _) =>
-        for {
-          sm <- LiftRules.siteMap.toList
-          req <- S.request.toList
-          loc <- sm.findLoc(item).toList
-          item <- buildItemMenu(loc, req.location, expandAll)
-        } yield item
+    val res =
+      (S.attr("item"), S.attr("group")) match {
+        case (Full(item), _) =>
+          for {
+            sm <- LiftRules.siteMap.toList
+            req <- S.request.toList
+            loc <- sm.findLoc(item).toList
+            item <- buildItemMenu(loc, req.location, expandAll)
+          } yield item
 
-      case (_, Full(group)) =>
-        for {
-          sm <- LiftRules.siteMap.toList
-          loc <- sm.locForGroup(group)
-          req <- S.request.toList
-          item <- buildItemMenu(loc, req.location, expandAll)
-        } yield item
-      case _ => renderWhat(expandAll)
-    }
+        case (_, Full(group)) =>
+          for {
+            sm <- LiftRules.siteMap.toList
+            loc <- sm.locForGroup(group)
+            req <- S.request.toList
+            item <- buildItemMenu(loc, req.location, expandAll)
+          } yield item
+        case _ => renderWhat(expandAll)
+      }
     res
 
   }
@@ -303,18 +304,19 @@ trait FlexMenuBuilder {
             renderOuterTag(in.flatMap(buildANavItem), top)
           }
 
-        val realMenuItems = level match {
-          case Full(lvl) if lvl > 0 =>
-            def findKids(cur: Seq[MenuItem], depth: Int): Seq[MenuItem] =
-              if (depth == 0)
-                cur
-              else
-                findKids(cur.flatMap(mi => mi.kids), depth - 1)
+        val realMenuItems =
+          level match {
+            case Full(lvl) if lvl > 0 =>
+              def findKids(cur: Seq[MenuItem], depth: Int): Seq[MenuItem] =
+                if (depth == 0)
+                  cur
+                else
+                  findKids(cur.flatMap(mi => mi.kids), depth - 1)
 
-            findKids(xs, lvl)
+              findKids(xs, lvl)
 
-          case _ => xs
-        }
+            case _ => xs
+          }
         buildUlLine(realMenuItems, true)
     }
   }

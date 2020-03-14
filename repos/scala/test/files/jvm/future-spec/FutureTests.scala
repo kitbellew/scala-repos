@@ -25,10 +25,11 @@ class FutureTests extends MinimalScalaTest {
 
   def ECNotUsed[T](f: ExecutionContext => T): T = {
     val p = Promise[Runnable]()
-    val unusedEC: ExecutionContext = new ExecutionContext {
-      def execute(r: Runnable) = p.success(r)
-      def reportFailure(t: Throwable): Unit = p.failure(t)
-    }
+    val unusedEC: ExecutionContext =
+      new ExecutionContext {
+        def execute(r: Runnable) = p.success(r)
+        def reportFailure(t: Throwable): Unit = p.failure(t)
+      }
     val t = f(unusedEC)
     assert(p.future.value == None, "Future executed logic!")
     t
@@ -40,8 +41,8 @@ class FutureTests extends MinimalScalaTest {
 
   "A future with custom ExecutionContext" should {
     "shouldHandleThrowables" in {
-      val ms = new mutable.HashSet[Throwable]
-        with mutable.SynchronizedSet[Throwable]
+      val ms =
+        new mutable.HashSet[Throwable] with mutable.SynchronizedSet[Throwable]
       implicit val ec = scala.concurrent.ExecutionContext.fromExecutor(
         new java.util.concurrent.ForkJoinPool(),
         { t =>
@@ -198,16 +199,17 @@ class FutureTests extends MinimalScalaTest {
   "The Future companion object" should {
     "call ExecutionContext.prepare on apply" in {
       val p = Promise[Boolean]()
-      val ec = new ExecutionContext {
-        val delegate = ExecutionContext.global
-        override def prepare(): ExecutionContext = {
-          p.success(true)
-          delegate.prepare
+      val ec =
+        new ExecutionContext {
+          val delegate = ExecutionContext.global
+          override def prepare(): ExecutionContext = {
+            p.success(true)
+            delegate.prepare
+          }
+          override def execute(r: Runnable) = delegate.execute(r)
+          override def reportFailure(t: Throwable): Unit =
+            delegate.reportFailure(t)
         }
-        override def execute(r: Runnable) = delegate.execute(r)
-        override def reportFailure(t: Throwable): Unit =
-          delegate.reportFailure(t)
-      }
 
       val f = Future("foo")(ec)
       Await.result(f, defaultTimeout) mustBe ("foo")
@@ -301,8 +303,9 @@ class FutureTests extends MinimalScalaTest {
     "report uncaught exceptions" in {
       val p = Promise[Throwable]()
       val logThrowable: Throwable => Unit = p.trySuccess(_)
-      val ec: ExecutionContext =
-        ExecutionContext.fromExecutor(null, logThrowable)
+      val ec: ExecutionContext = ExecutionContext.fromExecutor(
+        null,
+        logThrowable)
 
       val t = new InterruptedException()
       val f = Future(throw t)(ec)
@@ -322,21 +325,23 @@ class FutureTests extends MinimalScalaTest {
         "five!".length
       }
 
-      val future1 = for {
-        a <- future0.mapTo[Int] // returns 5
-        b <- async(a) // returns "10"
-        c <- async(7) // returns "14"
-      } yield b + "-" + c
+      val future1 =
+        for {
+          a <- future0.mapTo[Int] // returns 5
+          b <- async(a) // returns "10"
+          c <- async(7) // returns "14"
+        } yield b + "-" + c
 
-      val future2 = for {
-        a <- future0.mapTo[Int]
-        b <- (Future {
-          (a * 2).toString
-        }).mapTo[Int]
-        c <- Future {
-          (7 * 2).toString
-        }
-      } yield b + "-" + c
+      val future2 =
+        for {
+          a <- future0.mapTo[Int]
+          b <- (Future {
+            (a * 2).toString
+          }).mapTo[Int]
+          c <- Future {
+            (7 * 2).toString
+          }
+        } yield b + "-" + c
 
       Await.result(future1, defaultTimeout) mustBe ("10-14")
       assert(checkType(future1, manifest[String]))
@@ -360,17 +365,19 @@ class FutureTests extends MinimalScalaTest {
             }
         }
 
-      val future1 = for {
-        Res(a: Int) <- async(Req("Hello"))
-        Res(b: String) <- async(Req(a))
-        Res(c: String) <- async(Req(7))
-      } yield b + "-" + c
+      val future1 =
+        for {
+          Res(a: Int) <- async(Req("Hello"))
+          Res(b: String) <- async(Req(a))
+          Res(c: String) <- async(Req(7))
+        } yield b + "-" + c
 
-      val future2 = for {
-        Res(a: Int) <- async(Req("Hello"))
-        Res(b: Int) <- async(Req(a))
-        Res(c: Int) <- async(Req(7))
-      } yield b + "-" + c
+      val future2 =
+        for {
+          Res(a: Int) <- async(Req("Hello"))
+          Res(b: Int) <- async(Req(a))
+          Res(c: Int) <- async(Req(7))
+        } yield b + "-" + c
 
       Await.result(future1, defaultTimeout) mustBe ("10-14")
       intercept[NoSuchElementException] {
@@ -714,9 +721,10 @@ class FutureTests extends MinimalScalaTest {
         }
       Await.result(successful, timeout) mustBe (("foo", "foo"))
 
-      val failure = Future.successful("foo").zipWith(Future.successful("foo")) {
-        (_, _) => throw f
-      }
+      val failure =
+        Future.successful("foo").zipWith(Future.successful("foo")) { (_, _) =>
+          throw f
+        }
       intercept[IllegalStateException] {
         Await.result(failure, timeout)
       } mustBe (f)
@@ -754,12 +762,13 @@ class FutureTests extends MinimalScalaTest {
         (0 to 9) map { idx =>
           async(idx, idx * 20)
         }
-      val folded = futures.foldLeft(Future(0)) {
-        case (fr, fa) =>
-          for (r <- fr;
-               a <- fa)
-            yield (r + a)
-      }
+      val folded =
+        futures.foldLeft(Future(0)) {
+          case (fr, fa) =>
+            for (r <- fr;
+                 a <- fa)
+              yield (r + a)
+        }
       Await.result(folded, timeout) mustBe (45)
     }
 
@@ -787,10 +796,11 @@ class FutureTests extends MinimalScalaTest {
       import scala.collection.mutable.ArrayBuffer
       def test(testNumber: Int) {
         val fs = (0 to 1000) map (i => Future(i))
-        val f = Future.fold(fs)(ArrayBuffer.empty[AnyRef]) {
-          case (l, i) if i % 2 == 0 => l += i.asInstanceOf[AnyRef]
-          case (l, _)               => l
-        }
+        val f =
+          Future.fold(fs)(ArrayBuffer.empty[AnyRef]) {
+            case (l, i) if i % 2 == 0 => l += i.asInstanceOf[AnyRef]
+            case (l, _)               => l
+          }
         val result = Await.result(f.mapTo[ArrayBuffer[Int]], 10000 millis).sum
 
         assert(result == 250500)
@@ -863,11 +873,12 @@ class FutureTests extends MinimalScalaTest {
           }
       }
 
-      val oddFutures = List
-        .fill(100)(Future {
-          counter.incAndGet()
-        })
-        .iterator
+      val oddFutures =
+        List
+          .fill(100)(Future {
+            counter.incAndGet()
+          })
+          .iterator
       val traversed = Future.sequence(oddFutures)
       Await.result(traversed, defaultTimeout).sum mustBe (10000)
 

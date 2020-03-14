@@ -37,11 +37,12 @@ case class Sum(child: Expression) extends DeclarativeAggregate {
   override def checkInputDataTypes(): TypeCheckResult =
     TypeUtils.checkForNumericExpr(child.dataType, "function sum")
 
-  private lazy val resultType = child.dataType match {
-    case DecimalType.Fixed(precision, scale) =>
-      DecimalType.bounded(precision + 10, scale)
-    case _ => child.dataType
-  }
+  private lazy val resultType =
+    child.dataType match {
+      case DecimalType.Fixed(precision, scale) =>
+        DecimalType.bounded(precision + 10, scale)
+      case _ => child.dataType
+    }
 
   private lazy val sumDataType = resultType
 

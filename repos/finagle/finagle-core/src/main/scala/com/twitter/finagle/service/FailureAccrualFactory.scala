@@ -46,8 +46,8 @@ object FailureAccrualFactory {
   // previous requests, it is likely to do so again. The recent
   // "failure history" should influence how long to mark the endpoint
   // dead for.
-  private[finagle] val jitteredBackoff: Stream[Duration] =
-    Backoff.equalJittered(5.seconds, 300.seconds)
+  private[finagle] val jitteredBackoff: Stream[Duration] = Backoff
+    .equalJittered(5.seconds, 300.seconds)
 
   private[finagle] val defaultPolicy =
     () =>
@@ -88,8 +88,8 @@ object FailureAccrualFactory {
     case class Replaced(factory: Timer => ServiceFactoryWrapper) extends Param
     case object Disabled extends Param
 
-    implicit val param: Stack.Param[Param] =
-      Stack.Param(Param.Configured(defaultPolicy))
+    implicit val param: Stack.Param[Param] = Stack.Param(
+      Param.Configured(defaultPolicy))
   }
 
   // -Implementation notes-
@@ -148,8 +148,7 @@ object FailureAccrualFactory {
     * returned by the given function `factory`.
     */
   private[finagle] def Replaced(
-      factory: Timer => ServiceFactoryWrapper): Param =
-    Param.Replaced(factory)
+      factory: Timer => ServiceFactoryWrapper): Param = Param.Replaced(factory)
 
   /**
     * Replaces the [[FailureAccrualFactory]] with the given [[ServiceFactoryWrapper]] `factory`.
@@ -359,9 +358,10 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
 
       state = Dead
 
-      val timerTask = timer.schedule(duration.fromNow) {
-        startProbing()
-      }
+      val timerTask =
+        timer.schedule(duration.fromNow) {
+          startProbing()
+        }
 
       reviveTimerTask = Some(timerTask)
 

@@ -54,8 +54,8 @@ private[ml] object GradientBoostedTrees extends Logging {
           validate = false)
       case OldAlgo.Classification =>
         // Map labels to -1, +1 so binary classification can be treated as regression.
-        val remappedInput =
-          input.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = input.map(x =>
+          new LabeledPoint((x.label * 2) - 1, x.features))
         GradientBoostedTrees.boost(
           remappedInput,
           remappedInput,
@@ -93,8 +93,8 @@ private[ml] object GradientBoostedTrees extends Logging {
           validate = true)
       case OldAlgo.Classification =>
         // Map labels to -1, +1 so binary classification can be treated as regression.
-        val remappedInput =
-          input.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
+        val remappedInput = input.map(x =>
+          new LabeledPoint((x.label * 2) - 1, x.features))
         val remappedValidationInput = validationInput.map(x =>
           new LabeledPoint((x.label * 2) - 1, x.features))
         GradientBoostedTrees.boost(
@@ -197,17 +197,19 @@ private[ml] object GradientBoostedTrees extends Logging {
     treeStrategy.assertValid()
 
     // Cache input
-    val persistedInput = if (input.getStorageLevel == StorageLevel.NONE) {
-      input.persist(StorageLevel.MEMORY_AND_DISK)
-      true
-    } else {
-      false
-    }
+    val persistedInput =
+      if (input.getStorageLevel == StorageLevel.NONE) {
+        input.persist(StorageLevel.MEMORY_AND_DISK)
+        true
+      } else {
+        false
+      }
 
     // Prepare periodic checkpointers
-    val predErrorCheckpointer = new PeriodicRDDCheckpointer[(Double, Double)](
-      treeStrategy.getCheckpointInterval,
-      input.sparkContext)
+    val predErrorCheckpointer =
+      new PeriodicRDDCheckpointer[(Double, Double)](
+        treeStrategy.getCheckpointInterval,
+        input.sparkContext)
     val validatePredErrorCheckpointer =
       new PeriodicRDDCheckpointer[(Double, Double)](
         treeStrategy.getCheckpointInterval,
@@ -227,12 +229,11 @@ private[ml] object GradientBoostedTrees extends Logging {
     baseLearners(0) = firstTreeModel
     baseLearnerWeights(0) = firstTreeWeight
 
-    var predError: RDD[(Double, Double)] =
-      computeInitialPredictionAndError(
-        input,
-        firstTreeWeight,
-        firstTreeModel,
-        loss)
+    var predError: RDD[(Double, Double)] = computeInitialPredictionAndError(
+      input,
+      firstTreeWeight,
+      firstTreeModel,
+      loss)
     predErrorCheckpointer.update(predError)
     logDebug("error of gbt = " + predError.values.mean())
 

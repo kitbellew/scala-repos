@@ -14,17 +14,14 @@ abstract class AbstractList[E] protected ()
     true
   }
 
-  def set(index: Int, element: E): E =
-    throw new UnsupportedOperationException
+  def set(index: Int, element: E): E = throw new UnsupportedOperationException
 
   def add(index: Int, element: E): Unit =
     throw new UnsupportedOperationException
 
-  def remove(index: Int): E =
-    throw new UnsupportedOperationException
+  def remove(index: Int): E = throw new UnsupportedOperationException
 
-  def indexOf(o: Any): Int =
-    iterator().indexWhere(_ === o)
+  def indexOf(o: Any): Int = iterator().indexWhere(_ === o)
 
   def lastIndexOf(o: Any): Int = {
     @tailrec
@@ -39,8 +36,7 @@ abstract class AbstractList[E] protected ()
     findIndex(listIterator(size))
   }
 
-  override def clear(): Unit =
-    removeRange(0, size)
+  override def clear(): Unit = removeRange(0, size)
 
   def addAll(index: Int, c: Collection[_ <: E]): Boolean = {
     checkIndexOnBounds(index)
@@ -49,11 +45,9 @@ abstract class AbstractList[E] protected ()
     c.nonEmpty
   }
 
-  def iterator(): Iterator[E] =
-    listIterator()
+  def iterator(): Iterator[E] = listIterator()
 
-  def listIterator(): ListIterator[E] =
-    listIterator(0)
+  def listIterator(): ListIterator[E] = listIterator(0)
 
   def listIterator(index: Int): ListIterator[E] = {
     checkIndexOnBounds(index)
@@ -163,8 +157,7 @@ private abstract class AbstractListView[E](
     elementsAdded != 0
   }
 
-  override def addAll(c: Collection[_ <: E]): Boolean =
-    addAll(size, c)
+  override def addAll(c: Collection[_ <: E]): Boolean = addAll(size, c)
 
   def get(index: Int): E = {
     checkIndexInBounds(index)
@@ -183,12 +176,10 @@ private abstract class AbstractListView[E](
     list.set(fromIndex + index, e)
   }
 
-  def size(): Int =
-    toIndex - fromIndex
+  def size(): Int = toIndex - fromIndex
 
   @inline
-  protected def changeViewSize(delta: Int): Unit =
-    toIndex += delta
+  protected def changeViewSize(delta: Int): Unit = toIndex += delta
 }
 
 /* BackedUpListIterator implementation assumes that the underling list is not
@@ -203,17 +194,13 @@ private class BackedUpListIterator[E](
     extends ListIterator[E]
     with SizeChangeEvent {
 
-  def hasNext(): Boolean =
-    i < end
+  def hasNext(): Boolean = i < end
 
-  def next(): E =
-    innerIterator.next()
+  def next(): E = innerIterator.next()
 
-  def hasPrevious(): Boolean =
-    0 < i
+  def hasPrevious(): Boolean = 0 < i
 
-  def previous(): E =
-    innerIterator.previous()
+  def previous(): E = innerIterator.previous()
 
   def nextIndex(): Int = i
 
@@ -224,16 +211,14 @@ private class BackedUpListIterator[E](
     changeSize(-1)
   }
 
-  def set(e: E): Unit =
-    innerIterator.set(e)
+  def set(e: E): Unit = innerIterator.set(e)
 
   def add(e: E): Unit = {
     innerIterator.add(e)
     changeSize(1)
   }
 
-  private def i: Int =
-    innerIterator.nextIndex - fromIndex
+  private def i: Int = innerIterator.nextIndex - fromIndex
 }
 
 /* RandomAccessListIterator implementation assumes that the has an efficient
@@ -246,15 +231,11 @@ private class RandomAccessListIterator[E](
     end: Int)
     extends AbstractRandomAccessListIterator[E](i, start, end) {
 
-  protected def get(index: Int): E =
-    list.get(index)
+  protected def get(index: Int): E = list.get(index)
 
-  protected def set(index: Int, e: E): Unit =
-    list.set(index, e)
+  protected def set(index: Int, e: E): Unit = list.set(index, e)
 
-  protected def remove(index: Int): Unit =
-    list.remove(index)
+  protected def remove(index: Int): Unit = list.remove(index)
 
-  protected def add(index: Int, e: E): Unit =
-    list.add(index, e)
+  protected def add(index: Int, e: E): Unit = list.add(index, e)
 }

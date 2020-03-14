@@ -9,20 +9,21 @@ object Test {
       new java.lang.Long(x.toLong),
       new java.lang.Integer(x)
     )
-    val extras = List(
-      if (x >= Short.MinValue && x <= Short.MaxValue)
-        List(new java.lang.Short(x.toShort))
-      else
-        Nil,
-      if (x >= Byte.MinValue && x <= Byte.MaxValue)
-        List(new java.lang.Byte(x.toByte))
-      else
-        Nil,
-      if (x >= Char.MinValue && x <= Char.MaxValue)
-        List(new java.lang.Character(x.toChar))
-      else
-        Nil
-    ).flatten
+    val extras =
+      List(
+        if (x >= Short.MinValue && x <= Short.MaxValue)
+          List(new java.lang.Short(x.toShort))
+        else
+          Nil,
+        if (x >= Byte.MinValue && x <= Byte.MaxValue)
+          List(new java.lang.Byte(x.toByte))
+        else
+          Nil,
+        if (x >= Char.MinValue && x <= Char.MaxValue)
+          List(new java.lang.Character(x.toChar))
+        else
+          Nil
+      ).flatten
 
     base ::: extras
   }

@@ -83,10 +83,11 @@ trait Timer {
         }
       }
 
-    val task = schedule(time) {
-      if (isFirst())
-        p.update(Try(f))
-    }
+    val task =
+      schedule(time) {
+        if (isFirst())
+          p.update(Try(f))
+      }
 
     p.setInterruptHandler {
       case cause =>
@@ -145,8 +146,7 @@ class ThreadStoppingTimer(underlying: Timer, executor: ExecutorService)
     underlying.schedule(when)(f)
 
   protected def schedulePeriodically(when: Time, period: Duration)(
-      f: => Unit): TimerTask =
-    underlying.schedule(when, period)(f)
+      f: => Unit): TimerTask = underlying.schedule(when, period)(f)
 
   def stop(): Unit = {
     executor.submit(new Runnable {
@@ -189,8 +189,7 @@ class ReferenceCountingTimer(factory: () => Timer)
     underlying.schedule(when)(f)
 
   protected def schedulePeriodically(when: Time, period: Duration)(
-      f: => Unit): TimerTask =
-    underlying.schedule(when, period)(f)
+      f: => Unit): TimerTask = underlying.schedule(when, period)(f)
 }
 
 /**
@@ -205,10 +204,11 @@ class JavaTimer(isDaemon: Boolean, name: Option[String]) extends Timer {
   def this(isDaemon: Boolean) = this(isDaemon, None)
   def this() = this(false)
 
-  private[this] val underlying = name match {
-    case Some(n) => new java.util.Timer(n, isDaemon)
-    case None    => new java.util.Timer(isDaemon)
-  }
+  private[this] val underlying =
+    name match {
+      case Some(n) => new java.util.Timer(n, isDaemon)
+      case None    => new java.util.Timer(isDaemon)
+    }
 
   private[this] val catcher: PartialFunction[Throwable, Unit] = {
     case NonFatal(t) =>
@@ -289,12 +289,13 @@ class ScheduledThreadPoolTimer(
       makeDaemons: Boolean = false) =
     this(poolSize, new NamedPoolThreadFactory(name, makeDaemons), None)
 
-  private[this] val underlying = rejectedExecutionHandler match {
-    case None =>
-      new ScheduledThreadPoolExecutor(poolSize, threadFactory)
-    case Some(h: RejectedExecutionHandler) =>
-      new ScheduledThreadPoolExecutor(poolSize, threadFactory, h)
-  }
+  private[this] val underlying =
+    rejectedExecutionHandler match {
+      case None =>
+        new ScheduledThreadPoolExecutor(poolSize, threadFactory)
+      case Some(h: RejectedExecutionHandler) =>
+        new ScheduledThreadPoolExecutor(poolSize, threadFactory, h)
+    }
 
   private[this] def toRunnable(f: => Unit): Runnable =
     new Runnable {
@@ -316,8 +317,7 @@ class ScheduledThreadPoolTimer(
   }
 
   protected def schedulePeriodically(when: Time, period: Duration)(
-      f: => Unit): TimerTask =
-    schedule(when.sinceNow, period)(f)
+      f: => Unit): TimerTask = schedule(when.sinceNow, period)(f)
 
   def schedule(wait: Duration, period: Duration)(f: => Unit): TimerTask = {
     val runnable = toRunnable(f)
@@ -334,12 +334,10 @@ class ScheduledThreadPoolTimer(
     }
   }
 
-  def stop(): Unit =
-    underlying.shutdown()
+  def stop(): Unit = underlying.shutdown()
 
   /** exposed for testing, stops and cancels any pending tasks */
-  private[util] def stopWithPending(): Unit =
-    underlying.shutdownNow()
+  private[util] def stopWithPending(): Unit = underlying.shutdownNow()
 
 }
 
@@ -396,12 +394,13 @@ class MockTimer extends Timer {
       f: => Unit): TimerTask = {
     var isCancelled = false
 
-    val task = new TimerTask {
-      def cancel(): Unit =
-        MockTimer.this.synchronized {
-          isCancelled = true
-        }
-    }
+    val task =
+      new TimerTask {
+        def cancel(): Unit =
+          MockTimer.this.synchronized {
+            isCancelled = true
+          }
+      }
 
     def runAndReschedule(): Unit =
       MockTimer.this.synchronized {

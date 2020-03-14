@@ -209,22 +209,23 @@ object SampleData extends CValueGenerators {
   def undefineRowsForColumn(
       sample: Arbitrary[SampleData],
       path: JPath): Arbitrary[SampleData] = {
-    val gen = for {
-      sampleData <- arbitrary(sample)
-    } yield {
-      val rows =
-        for (row <- sampleData.data)
-          yield {
-            if (false && Random.nextDouble >= 0.25) {
-              row
-            } else if (row.get(path) != null && row.get(path) != JUndefined) {
-              row.set(path, JUndefined)
-            } else {
-              row
+    val gen =
+      for {
+        sampleData <- arbitrary(sample)
+      } yield {
+        val rows =
+          for (row <- sampleData.data)
+            yield {
+              if (false && Random.nextDouble >= 0.25) {
+                row
+              } else if (row.get(path) != null && row.get(path) != JUndefined) {
+                row.set(path, JUndefined)
+              } else {
+                row
+              }
             }
-          }
-      SampleData(rows, sampleData.schema)
-    }
+        SampleData(rows, sampleData.schema)
+      }
 
     Arbitrary(gen)
   }

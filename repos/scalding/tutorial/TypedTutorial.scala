@@ -34,8 +34,7 @@ class TypedTutorial(args: Args) extends Job(args) {
       val textSource = TextLine(args("input"))
 
       // Create a type-safe pipe from the TextLine.
-      val lines: TypedPipe[String] =
-        TypedPipe.from[String](textSource)
+      val lines: TypedPipe[String] = TypedPipe.from[String](textSource)
 
       // Write the typed pipe out to a tab-delimited file.
       lines.write(TypedTsv[String](args("output")))
@@ -138,8 +137,8 @@ class TypedTutorial(args: Args) extends Job(args) {
       // get the lines, this time from an 'OffsetTextLine' which is a
       // typed wrapper on 'TextLine' that contains the 'byte offset' and
       // text of each line in the file.
-      val lines: TypedPipe[(Long, String)] =
-        TypedPipe.from(OffsetTextLine(args("input")))
+      val lines: TypedPipe[(Long, String)] = TypedPipe.from(
+        OffsetTextLine(args("input")))
 
       // Split lines into words, but keep their original line offset with them.
       val wordsWithLine: Grouped[String, Long] =
@@ -211,8 +210,8 @@ class TypedTutorial(args: Args) extends Job(args) {
 
       // To convert to a typed pipe, we must specify the fields we want
       // and their types:
-      val lines: TypedPipe[(Long, String)] =
-        TypedPipe.from[(Long, String)](rawPipe, ('offset, 'line))
+      val lines: TypedPipe[(Long, String)] = TypedPipe
+        .from[(Long, String)](rawPipe, ('offset, 'line))
 
       // We can operate on this typed pipe as above, and come up with a
       // different set of fields

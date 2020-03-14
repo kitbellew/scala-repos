@@ -58,14 +58,14 @@ object ConditionalFeature
     "Use InputMethod; INPUT_METHOD will be removed in a future release",
     "2.2.60")
   val INPUT_METHOD = InputMethod
-  val InputMultitouch = new ConditionalFeature(
-    jfxa.ConditionalFeature.INPUT_MULTITOUCH)
+  val InputMultitouch =
+    new ConditionalFeature(jfxa.ConditionalFeature.INPUT_MULTITOUCH)
   @deprecated(
     "Use InputMultitouch; INPUT_MULTITOUCH will be removed in a future releas",
     "8.0.5")
   val INPUT_MULTITOUCH = InputMultitouch
-  val InputPointer = new ConditionalFeature(
-    jfxa.ConditionalFeature.INPUT_POINTER)
+  val InputPointer =
+    new ConditionalFeature(jfxa.ConditionalFeature.INPUT_POINTER)
   @deprecated(
     "Use InputPointer; INPUT_POINTER will be removed in a future releas",
     "8.0.5")
@@ -92,26 +92,26 @@ object ConditionalFeature
   @deprecated("Use Swing; SWING will be removed in a future releas", "8.0.5")
   val SWING = Swing
   val SWT = new ConditionalFeature(jfxa.ConditionalFeature.SWT)
-  val TransparentWindow = new ConditionalFeature(
-    jfxa.ConditionalFeature.TRANSPARENT_WINDOW)
+  val TransparentWindow =
+    new ConditionalFeature(jfxa.ConditionalFeature.TRANSPARENT_WINDOW)
   @deprecated(
     "Use TransparentWindow; TRANSPARENT_WINDOW will be removed in a future release",
     "2.2.60")
   val TRANSPARENT_WINDOW = TransparentWindow
-  val TwoLevelFocus = new ConditionalFeature(
-    jfxa.ConditionalFeature.TWO_LEVEL_FOCUS)
+  val TwoLevelFocus =
+    new ConditionalFeature(jfxa.ConditionalFeature.TWO_LEVEL_FOCUS)
   @deprecated(
     "Use TwoLevelFocus; TWO_LEVEL_FOCUS will be removed in a future releas",
     "8.0.5")
   val TWO_LEVEL_FOCUS = TwoLevelFocus
-  val UnifiedWindow = new ConditionalFeature(
-    jfxa.ConditionalFeature.UNIFIED_WINDOW)
+  val UnifiedWindow =
+    new ConditionalFeature(jfxa.ConditionalFeature.UNIFIED_WINDOW)
   @deprecated(
     "Use UnifiedWindow; UNIFIED_WINDOW will be removed in a future releas",
     "8.0.5")
   val UNIFIED_WINDOW = UnifiedWindow
-  val VirtualKeyboard = new ConditionalFeature(
-    jfxa.ConditionalFeature.VIRTUAL_KEYBOARD)
+  val VirtualKeyboard =
+    new ConditionalFeature(jfxa.ConditionalFeature.VIRTUAL_KEYBOARD)
   @deprecated(
     "Use VirtualKeyboard; VIRTUAL_KEYBOARD will be removed in a future releas",
     "8.0.5")

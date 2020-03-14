@@ -47,11 +47,12 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
     * `object a { def foo { def bar = 0 }}`
     */
   def containingClass: ScTemplateDefinition = {
-    val stub: StubElement[_ <: PsiElement] = this match {
-      case file: PsiFileImpl                => file.getStub
-      case st: ScalaStubBasedElementImpl[_] => st.getStub
-      case _                                => null
-    }
+    val stub: StubElement[_ <: PsiElement] =
+      this match {
+        case file: PsiFileImpl                => file.getStub
+        case st: ScalaStubBasedElementImpl[_] => st.getStub
+        case _                                => null
+      }
     stub match {
       case m: ScMemberOrLocal if m.isLocal => return null
       case _                               =>
@@ -77,11 +78,12 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
   }
 
   def getContainingClassLoose: ScTemplateDefinition = {
-    val stub: StubElement[_ <: PsiElement] = this match {
-      case file: PsiFileImpl                => file.getStub
-      case st: ScalaStubBasedElementImpl[_] => st.getStub
-      case _                                => null
-    }
+    val stub: StubElement[_ <: PsiElement] =
+      this match {
+        case file: PsiFileImpl                => file.getStub
+        case st: ScalaStubBasedElementImpl[_] => st.getStub
+        case _                                => null
+      }
     if (stub != null) {
       stub.getParentStubOfType(classOf[ScTemplateDefinition])
     } else {
@@ -106,11 +108,12 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
   }
 
   def isLocal: Boolean = {
-    val stub: StubElement[_ <: PsiElement] = this match {
-      case file: PsiFileImpl                => file.getStub
-      case st: ScalaStubBasedElementImpl[_] => st.getStub
-      case _                                => null
-    }
+    val stub: StubElement[_ <: PsiElement] =
+      this match {
+        case file: PsiFileImpl                => file.getStub
+        case st: ScalaStubBasedElementImpl[_] => st.getStub
+        case _                                => null
+      }
     stub match {
       case memberOrLocal: ScMemberOrLocal =>
         return memberOrLocal.isLocal
@@ -217,25 +220,26 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       }
     }
 
-    val fromModifierOrContext = this match {
-      case _ if accessModifier.exists(mod => mod.isPrivate && mod.isThis) =>
-        Option(containingClass)
-          .orElse(containingFile)
-          .map(new LocalSearchScope(_))
-      case _ if accessModifier.exists(_.isUnqualifiedPrivateOrThis) =>
-        containingClass match {
-          case null => containingFile.map(new LocalSearchScope(_))
-          case c    => Some(ScalaPsiUtil.withCompanionSearchScope(c))
-        }
-      case cp: ScClassParameter =>
-        Option(cp.containingClass)
-          .map(_.getUseScope)
-          .orElse(Option(super.getUseScope))
-      case fun: ScFunction if fun.isSynthetic =>
-        fun.getSyntheticNavigationElement.map(_.getUseScope)
-      case _ =>
-        fromQualifiedPrivate().orElse(fromContainingBlockOrMember())
-    }
+    val fromModifierOrContext =
+      this match {
+        case _ if accessModifier.exists(mod => mod.isPrivate && mod.isThis) =>
+          Option(containingClass)
+            .orElse(containingFile)
+            .map(new LocalSearchScope(_))
+        case _ if accessModifier.exists(_.isUnqualifiedPrivateOrThis) =>
+          containingClass match {
+            case null => containingFile.map(new LocalSearchScope(_))
+            case c    => Some(ScalaPsiUtil.withCompanionSearchScope(c))
+          }
+        case cp: ScClassParameter =>
+          Option(cp.containingClass)
+            .map(_.getUseScope)
+            .orElse(Option(super.getUseScope))
+        case fun: ScFunction if fun.isSynthetic =>
+          fun.getSyntheticNavigationElement.map(_.getUseScope)
+        case _ =>
+          fromQualifiedPrivate().orElse(fromContainingBlockOrMember())
+      }
     ScalaPsiUtil.intersectScopes(super.getUseScope, fromModifierOrContext)
   }
 }

@@ -79,8 +79,10 @@ with LightScalaMethod {
       case Some(i) if returnType == null =>
         val param = constr.parameters(i - 1)
         val scalaType = param.getType(TypingContext.empty).getOrAny
-        returnType =
-          ScType.toPsi(scalaType, constr.getProject, constr.getResolveScope)
+        returnType = ScType.toPsi(
+          scalaType,
+          constr.getProject,
+          constr.getResolveScope)
       case _ =>
     }
     returnType
@@ -190,13 +192,12 @@ with LightScalaMethod {
         if (typeParameters.nonEmpty) {
           val methodTypeParameters = getTypeParameters
           if (typeParameters.length == methodTypeParameters.length) {
-            val tvs =
-              typeParameters.zip(methodTypeParameters).map {
-                case (param: ScTypeParam, parameter: PsiTypeParameter) =>
-                  (
-                    (param.name, ScalaPsiUtil.getPsiElementId(param)),
-                    ScDesignatorType(parameter))
-              }
+            val tvs = typeParameters.zip(methodTypeParameters).map {
+              case (param: ScTypeParam, parameter: PsiTypeParameter) =>
+                (
+                  (param.name, ScalaPsiUtil.getPsiElementId(param)),
+                  ScDesignatorType(parameter))
+            }
             new ScSubstitutor(tvs.toMap, Map.empty, None)
           } else
             ScSubstitutor.empty
@@ -304,13 +305,14 @@ object ScFunctionWrapper {
       case _ =>
     }
 
-    val params =
-      function.effectiveParameterClauses.flatMap(_.effectiveParameters)
+    val params = function.effectiveParameterClauses.flatMap(
+      _.effectiveParameters)
 
-    val defaultParam = forDefault match {
-      case Some(i) => Some(params(i - 1))
-      case None    => None
-    }
+    val defaultParam =
+      forDefault match {
+        case Some(i) => Some(params(i - 1))
+        case None    => None
+      }
 
     def evalType(typeResult: TypeResult[ScType]) {
       typeResult match {
@@ -337,12 +339,14 @@ object ScFunctionWrapper {
     }
 
     builder.append(" ")
-    val name = forDefault match {
-      case Some(i) if function.isConstructor => "$lessinit$greater$default$" + i
-      case Some(i)                           => function.getName + "$default$" + i
-      case _ if function.isConstructor       => function.containingClass.getName
-      case _                                 => function.getName
-    }
+    val name =
+      forDefault match {
+        case Some(i) if function.isConstructor =>
+          "$lessinit$greater$default$" + i
+        case Some(i)                     => function.getName + "$default$" + i
+        case _ if function.isConstructor => function.containingClass.getName
+        case _                           => function.getName
+      }
     builder.append(name)
 
     builder.append(
@@ -358,8 +362,9 @@ object ScFunctionWrapper {
           case param =>
             val builder = new StringBuilder
             val varargs: Boolean = param.isRepeatedParameter && isJavaVarargs
-            val paramAnnotations =
-              JavaConversionUtil.annotations(param).mkString(" ")
+            val paramAnnotations = JavaConversionUtil
+              .annotations(param)
+              .mkString(" ")
             if (!paramAnnotations.isEmpty)
               builder.append(paramAnnotations).append(" ")
             val tt =

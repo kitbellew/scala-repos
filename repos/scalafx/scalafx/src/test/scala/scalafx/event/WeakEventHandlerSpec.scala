@@ -47,7 +47,6 @@ class WeakEventHandlerSpec
     new WeakEventHandler(getJavaClassInstance)
 
   override protected def getJavaClassInstance
-      : jfxe.WeakEventHandler[jfxe.Event] =
-    new jfxe.WeakEventHandler(null)
+      : jfxe.WeakEventHandler[jfxe.Event] = new jfxe.WeakEventHandler(null)
 
 }

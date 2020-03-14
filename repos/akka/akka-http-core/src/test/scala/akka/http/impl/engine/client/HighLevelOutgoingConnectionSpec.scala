@@ -24,8 +24,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
 
     "be able to handle 100 pipelined requests across one connection" in Utils
       .assertAllStagesStopped {
-        val (_, serverHostName, serverPort) =
-          TestUtils.temporaryServerHostnameAndPort()
+        val (_, serverHostName, serverPort) = TestUtils
+          .temporaryServerHostnameAndPort()
 
         val binding = Http().bindAndHandleSync(
           r ⇒
@@ -35,18 +35,19 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
           serverPort)
 
         val N = 100
-        val result = Source
-          .fromIterator(() ⇒ Iterator.from(1))
-          .take(N)
-          .map(id ⇒ HttpRequest(uri = s"/r$id"))
-          .via(Http().outgoingConnection(serverHostName, serverPort))
-          .mapAsync(4)(_.entity.toStrict(1.second))
-          .map { r ⇒
-            val s = r.data.utf8String;
-            log.debug(s);
-            s.toInt
-          }
-          .runFold(0)(_ + _)
+        val result =
+          Source
+            .fromIterator(() ⇒ Iterator.from(1))
+            .take(N)
+            .map(id ⇒ HttpRequest(uri = s"/r$id"))
+            .via(Http().outgoingConnection(serverHostName, serverPort))
+            .mapAsync(4)(_.entity.toStrict(1.second))
+            .map { r ⇒
+              val s = r.data.utf8String;
+              log.debug(s);
+              s.toInt
+            }
+            .runFold(0)(_ + _)
 
         result.futureValue(
           PatienceConfig(10.seconds)) shouldEqual N * (N + 1) / 2
@@ -55,8 +56,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
 
     "be able to handle 100 pipelined requests across 4 connections (client-flow is reusable)" in Utils
       .assertAllStagesStopped {
-        val (_, serverHostName, serverPort) =
-          TestUtils.temporaryServerHostnameAndPort()
+        val (_, serverHostName, serverPort) = TestUtils
+          .temporaryServerHostnameAndPort()
 
         val binding = Http().bindAndHandleSync(
           r ⇒
@@ -80,18 +81,19 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
         })
 
         val N = 100
-        val result = Source
-          .fromIterator(() ⇒ Iterator.from(1))
-          .take(N)
-          .map(id ⇒ HttpRequest(uri = s"/r$id"))
-          .via(doubleConnection)
-          .mapAsync(4)(_.entity.toStrict(1.second))
-          .map { r ⇒
-            val s = r.data.utf8String;
-            log.debug(s);
-            s.toInt
-          }
-          .runFold(0)(_ + _)
+        val result =
+          Source
+            .fromIterator(() ⇒ Iterator.from(1))
+            .take(N)
+            .map(id ⇒ HttpRequest(uri = s"/r$id"))
+            .via(doubleConnection)
+            .mapAsync(4)(_.entity.toStrict(1.second))
+            .map { r ⇒
+              val s = r.data.utf8String;
+              log.debug(s);
+              s.toInt
+            }
+            .runFold(0)(_ + _)
 
         result.futureValue(
           PatienceConfig(10.seconds)) shouldEqual C * N * (N + 1) / 2
@@ -99,8 +101,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
       }
 
     "catch response stream truncation" in Utils.assertAllStagesStopped {
-      val (_, serverHostName, serverPort) =
-        TestUtils.temporaryServerHostnameAndPort()
+      val (_, serverHostName, serverPort) = TestUtils
+        .temporaryServerHostnameAndPort()
 
       val binding = Http().bindAndHandleSync(
         {

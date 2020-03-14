@@ -90,12 +90,13 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
         selectionEnvelope.getMessageManifest.toStringUtf8
       else
         ""
-    val msg = serialization
-      .deserialize(
-        selectionEnvelope.getEnclosedMessage.toByteArray,
-        selectionEnvelope.getSerializerId,
-        manifest)
-      .get
+    val msg =
+      serialization
+        .deserialize(
+          selectionEnvelope.getEnclosedMessage.toByteArray,
+          selectionEnvelope.getSerializerId,
+          manifest)
+        .get
 
     import scala.collection.JavaConverters._
     val elements: immutable.Iterable[SelectionPathElement] =

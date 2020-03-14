@@ -130,8 +130,9 @@ class FakeTaskScheduler(
 
   def addExecutor(execId: String, host: String) {
     executors.put(execId, host)
-    val executorsOnHost =
-      executorsByHost.getOrElseUpdate(host, new mutable.HashSet[String])
+    val executorsOnHost = executorsByHost.getOrElseUpdate(
+      host,
+      new mutable.HashSet[String])
     executorsOnHost += execId
     executorIdToHost += execId -> host
     for (rack <- getRackForHost(host)) {
@@ -303,11 +304,12 @@ class TaskSetManagerSuite
 
   test("delay scheduling with fallback") {
     sc = new SparkContext("local", "test")
-    val sched = new FakeTaskScheduler(
-      sc,
-      ("exec1", "host1"),
-      ("exec2", "host2"),
-      ("exec3", "host3"))
+    val sched =
+      new FakeTaskScheduler(
+        sc,
+        ("exec1", "host1"),
+        ("exec2", "host2"),
+        ("exec3", "host3"))
     val taskSet = FakeTask.createTaskSet(
       5,
       Seq(TaskLocation("host1")),
@@ -346,11 +348,12 @@ class TaskSetManagerSuite
 
   test("delay scheduling with failed hosts") {
     sc = new SparkContext("local", "test")
-    val sched = new FakeTaskScheduler(
-      sc,
-      ("exec1", "host1"),
-      ("exec2", "host2"),
-      ("exec3", "host3"))
+    val sched =
+      new FakeTaskScheduler(
+        sc,
+        ("exec1", "host1"),
+        ("exec2", "host2"),
+        ("exec3", "host3"))
     val taskSet = FakeTask.createTaskSet(
       3,
       Seq(TaskLocation("host1")),
@@ -441,11 +444,12 @@ class TaskSetManagerSuite
 
     sc = new SparkContext("local", "test", conf)
     // two executors on same host, one on different.
-    val sched = new FakeTaskScheduler(
-      sc,
-      ("exec1", "host1"),
-      ("exec1.1", "host1"),
-      ("exec2", "host2"))
+    val sched =
+      new FakeTaskScheduler(
+        sc,
+        ("exec1", "host1"),
+        ("exec1.1", "host1"),
+        ("exec2", "host2"))
     // affinity to exec1 on host1 - which we will fail.
     val taskSet = FakeTask.createTaskSet(1, Seq(TaskLocation("host1", "exec1")))
     val clock = new ManualClock
@@ -614,11 +618,12 @@ class TaskSetManagerSuite
     // Assign host3 to rack2
     FakeRackUtil.assignHostToRack("host3", "rack2")
     sc = new SparkContext("local", "test")
-    val sched = new FakeTaskScheduler(
-      sc,
-      ("execA", "host1"),
-      ("execB", "host2"),
-      ("execC", "host3"))
+    val sched =
+      new FakeTaskScheduler(
+        sc,
+        ("execA", "host1"),
+        ("execB", "host2"),
+        ("execC", "host3"))
     val taskSet = FakeTask.createTaskSet(
       2,
       Seq(TaskLocation("host1", "execA")),
@@ -672,14 +677,15 @@ class TaskSetManagerSuite
     sc = new SparkContext("local", "test")
     val sched = new FakeTaskScheduler(sc, ("exec1", "host1"))
 
-    val taskSet = new TaskSet(
-      Array(
-        new NotSerializableFakeTask(1, 0),
-        new NotSerializableFakeTask(0, 1)),
-      0,
-      0,
-      0,
-      null)
+    val taskSet =
+      new TaskSet(
+        Array(
+          new NotSerializableFakeTask(1, 0),
+          new NotSerializableFakeTask(0, 1)),
+        0,
+        0,
+        0,
+        null)
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES)
 
     intercept[TaskNotSerializableException] {
@@ -719,11 +725,12 @@ class TaskSetManagerSuite
 
   test("speculative and noPref task should be scheduled after node-local") {
     sc = new SparkContext("local", "test")
-    val sched = new FakeTaskScheduler(
-      sc,
-      ("execA", "host1"),
-      ("execB", "host2"),
-      ("execC", "host3"))
+    val sched =
+      new FakeTaskScheduler(
+        sc,
+        ("execA", "host1"),
+        ("execB", "host2"),
+        ("execC", "host3"))
     val taskSet = FakeTask.createTaskSet(
       4,
       Seq(TaskLocation("host1", "execA")),
@@ -753,11 +760,12 @@ class TaskSetManagerSuite
     "node-local tasks should be scheduled right away " +
       "when there are only node-local and no-preference tasks") {
     sc = new SparkContext("local", "test")
-    val sched = new FakeTaskScheduler(
-      sc,
-      ("execA", "host1"),
-      ("execB", "host2"),
-      ("execC", "host3"))
+    val sched =
+      new FakeTaskScheduler(
+        sc,
+        ("execA", "host1"),
+        ("execB", "host2"),
+        ("execC", "host3"))
     val taskSet = FakeTask.createTaskSet(
       4,
       Seq(TaskLocation("host1")),
@@ -866,11 +874,12 @@ class TaskSetManagerSuite
     "Test that locations with HDFSCacheTaskLocation are treated as PROCESS_LOCAL.") {
     // Regression test for SPARK-2931
     sc = new SparkContext("local", "test")
-    val sched = new FakeTaskScheduler(
-      sc,
-      ("execA", "host1"),
-      ("execB", "host2"),
-      ("execC", "host3"))
+    val sched =
+      new FakeTaskScheduler(
+        sc,
+        ("execA", "host1"),
+        ("execB", "host2"),
+        ("execC", "host3"))
     val taskSet = FakeTask.createTaskSet(
       3,
       Seq(TaskLocation("host1")),
@@ -907,8 +916,8 @@ class TaskSetManagerSuite
 
   private def createTaskResult(
       id: Int,
-      accumUpdates: Seq[AccumulableInfo] = Seq.empty[AccumulableInfo])
-      : DirectTaskResult[Int] = {
+      accumUpdates: Seq[AccumulableInfo] = Seq
+        .empty[AccumulableInfo]): DirectTaskResult[Int] = {
     val valueSer = SparkEnv.get.serializer.newInstance()
     new DirectTaskResult[Int](valueSer.serialize(id), accumUpdates)
   }

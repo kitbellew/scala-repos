@@ -51,8 +51,8 @@ object ConnectionTestApp {
   }
 
   def sendPoolFuture(uri: Uri, id: Int): Unit = {
-    val responseFuture: Future[HttpResponse] =
-      Http().singleRequest(buildRequest(uri))
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(
+      buildRequest(uri))
 
     responseFuture.onComplete(r ⇒ handleResponse(r, id))
   }
@@ -61,17 +61,15 @@ object ConnectionTestApp {
     val connectionFlow
         : Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] =
       Http().outgoingConnection(uri.authority.host.address, uri.authority.port)
-    val responseFuture: Future[HttpResponse] =
-      Source
-        .single(buildRequest(uri))
-        .via(connectionFlow)
-        .runWith(Sink.head)
+    val responseFuture: Future[HttpResponse] = Source
+      .single(buildRequest(uri))
+      .via(connectionFlow)
+      .runWith(Sink.head)
 
     responseFuture.onComplete(r ⇒ handleResponse(r, id))
   }
 
-  private def buildRequest(uri: Uri): HttpRequest =
-    HttpRequest(uri = uri)
+  private def buildRequest(uri: Uri): HttpRequest = HttpRequest(uri = uri)
 
   private def handleResponse(httpResp: Try[HttpResponse], id: Int): Unit = {
     httpResp match {

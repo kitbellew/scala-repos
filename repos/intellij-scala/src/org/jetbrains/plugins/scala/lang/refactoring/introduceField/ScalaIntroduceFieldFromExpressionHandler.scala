@@ -79,8 +79,8 @@ class ScalaIntroduceFieldFromExpressionHandler
       editor: Editor,
       file: PsiFile,
       dataContext: DataContext) {
-    val canBeIntroduced: (ScExpression) => Boolean =
-      ScalaRefactoringUtil.checkCanBeIntroduced(_)
+    val canBeIntroduced: (ScExpression) => Boolean = ScalaRefactoringUtil
+      .checkCanBeIntroduced(_)
     ScalaRefactoringUtil.afterExpressionChoosing(
       project,
       editor,
@@ -143,8 +143,10 @@ class ScalaIntroduceFieldFromExpressionHandler
       else
         mainOcc
     val aClass = ifc.aClass
-    val checkAnchor: PsiElement =
-      anchorForNewDeclaration(expression, occurrencesToReplace, aClass)
+    val checkAnchor: PsiElement = anchorForNewDeclaration(
+      expression,
+      occurrencesToReplace,
+      aClass)
     if (checkAnchor == null) {
       showErrorMessage(
         "Cannot find place for the new field",
@@ -172,8 +174,9 @@ class ScalaIntroduceFieldFromExpressionHandler
           expression,
           manager)
     } else {
-      val underscore =
-        ScalaPsiElementFactory.createExpressionFromText("_", manager)
+      val underscore = ScalaPsiElementFactory.createExpressionFromText(
+        "_",
+        manager)
       createdDeclaration = ScalaPsiElementFactory
         .createDeclaration(
           name,
@@ -215,8 +218,9 @@ class ScalaIntroduceFieldFromExpressionHandler
     anchor match {
       case (tp: ScTemplateParents) childOf (extBl: ScExtendsBlock) =>
         val earlyDef = extBl.addEarlyDefinitions()
-        createdDeclaration =
-          earlyDef.addAfter(createdDeclaration, earlyDef.getFirstChild)
+        createdDeclaration = earlyDef.addAfter(
+          createdDeclaration,
+          earlyDef.getFirstChild)
       case _ childOf (ed: ScEarlyDefinitions)
           if onOneLine(document, ed.getTextRange) =>
         def isBlockStmtOrMember(elem: PsiElement) =
@@ -242,9 +246,10 @@ class ScalaIntroduceFieldFromExpressionHandler
   def runRefactoring(
       ifc: IntroduceFieldContext[ScExpression],
       settings: IntroduceFieldSettings[ScExpression]) {
-    val runnable = new Runnable {
-      def run() = runRefactoringInside(ifc, settings)
-    }
+    val runnable =
+      new Runnable {
+        def run() = runRefactoringInside(ifc, settings)
+      }
     ScalaUtils.runWriteAction(runnable, ifc.project, REFACTORING_NAME)
     ifc.editor.getSelectionModel.removeSelection()
   }

@@ -58,8 +58,8 @@ trait Resizer {
 object Resizer {
   def fromConfig(parentConfig: Config): Option[Resizer] = {
     val defaultResizerConfig = parentConfig.getConfig("resizer")
-    val metricsBasedResizerConfig =
-      parentConfig.getConfig("optimal-size-exploring-resizer")
+    val metricsBasedResizerConfig = parentConfig.getConfig(
+      "optimal-size-exploring-resizer")
     (
       defaultResizerConfig.getBoolean("enabled"),
       metricsBasedResizerConfig.getBoolean("enabled")) match {
@@ -335,8 +335,8 @@ private[akka] final class ResizablePoolCell(
           addRoutees(newRoutees)
         } else if (requestedCapacity < 0) {
           val currentRoutees = router.routees
-          val abandon =
-            currentRoutees.drop(currentRoutees.length + requestedCapacity)
+          val abandon = currentRoutees.drop(
+            currentRoutees.length + requestedCapacity)
           removeRoutees(abandon, stopChild = true)
         }
       } finally resizeInProgress.set(false)
@@ -369,12 +369,13 @@ private[akka] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
     extends RouterPoolActor(supervisorStrategy) {
   import ResizablePoolActor._
 
-  val resizerCell = context match {
-    case x: ResizablePoolCell ⇒ x
-    case _ ⇒
-      throw ActorInitializationException(
-        "Resizable router actor can only be used when resizer is defined, not in " + context.getClass)
-  }
+  val resizerCell =
+    context match {
+      case x: ResizablePoolCell ⇒ x
+      case _ ⇒
+        throw ActorInitializationException(
+          "Resizable router actor can only be used when resizer is defined, not in " + context.getClass)
+    }
 
   override def receive =
     ({

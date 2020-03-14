@@ -23,10 +23,11 @@ object MethodRepr {
       Seq[ScExpression])] = {
     expr match {
       case call: ScMethodCall =>
-        val args = call.args match {
-          case exprList: ScArgumentExprList => exprList.exprs.map(stripped)
-          case _                            => Nil
-        }
+        val args =
+          call.args match {
+            case exprList: ScArgumentExprList => exprList.exprs.map(stripped)
+            case _                            => Nil
+          }
         call.getEffectiveInvokedExpr match {
           case baseExpr: ScExpression
               if call.isApplyOrUpdateCall && !call.isUpdateCall =>
@@ -43,10 +44,11 @@ object MethodRepr {
           case other                  => Some(expr, None, None, args)
         }
       case infix: ScInfixExpr =>
-        val args = infix.getArgExpr match {
-          case tuple: ScTuple => tuple.exprs
-          case _              => Seq(infix.getArgExpr)
-        }
+        val args =
+          infix.getArgExpr match {
+            case tuple: ScTuple => tuple.exprs
+            case _              => Seq(infix.getArgExpr)
+          }
         Some(
           expr,
           Some(stripped(infix.getBaseExpr)),

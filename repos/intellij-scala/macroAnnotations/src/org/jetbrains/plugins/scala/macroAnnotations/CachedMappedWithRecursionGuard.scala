@@ -68,19 +68,20 @@ object CachedMappedWithRecursionGuard {
         val flatParams = paramss.flatten
         val parameterTypes = flatParams.map(_.tpt)
         val parameterNames: List[c.universe.TermName] = flatParams.map(_.name)
-        val parameterDefinitions: List[c.universe.Tree] = flatParams match {
-          case param :: Nil =>
-            List(ValDef(NoMods, param.name, param.tpt, q"$dataName"))
-          case _ =>
-            flatParams.zipWithIndex.map {
-              case (param, i) =>
-                ValDef(
-                  NoMods,
-                  param.name,
-                  param.tpt,
-                  q"$dataName.${TermName("_" + (i + 1))}")
-            }
-        }
+        val parameterDefinitions: List[c.universe.Tree] =
+          flatParams match {
+            case param :: Nil =>
+              List(ValDef(NoMods, param.name, param.tpt, q"$dataName"))
+            case _ =>
+              flatParams.zipWithIndex.map {
+                case (param, i) =>
+                  ValDef(
+                    NoMods,
+                    param.name,
+                    param.tpt,
+                    q"$dataName.${TermName("_" + (i + 1))}")
+              }
+          }
 
         val actualCalculation =
           transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
@@ -92,11 +93,12 @@ object CachedMappedWithRecursionGuard {
           }
           """
 
-        val updatedRhs = q"""
+        val updatedRhs =
+          q"""
           ${if (analyzeCaches)
-          q"$cacheStatsName.aboutToEnterCachedArea()"
-        else
-          EmptyTree}
+            q"$cacheStatsName.aboutToEnterCachedArea()"
+          else
+            EmptyTree}
           type $dataTypeName = (..$parameterTypes)
           val $dataName = (..$parameterNames)
           $cachesUtilFQN.incrementModCountForFunsWithModifiedReturn()
@@ -186,8 +188,13 @@ object CachedMappedWithRecursionGuard {
           } else
             EmptyTree
 
-        val updatedDef =
-          DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
+        val updatedDef = DefDef(
+          mods,
+          name,
+          tpParams,
+          paramss,
+          retTp,
+          updatedRhs)
         val res = q"""
           private val $key = $cachesUtilFQN.getOrCreateKey[$mappedKeyTypeFQN[(..$parameterTypes), $retTp]]($keyId)
           ..$cacheStatsField

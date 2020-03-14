@@ -168,21 +168,22 @@ class BatchCounter(ssc: StreamingContext) {
   private var numStartedBatches = 0
   private var lastCompletedBatchTime: Time = null
 
-  private val listener = new StreamingListener {
-    override def onBatchStarted(
-        batchStarted: StreamingListenerBatchStarted): Unit =
-      BatchCounter.this.synchronized {
-        numStartedBatches += 1
-        BatchCounter.this.notifyAll()
-      }
-    override def onBatchCompleted(
-        batchCompleted: StreamingListenerBatchCompleted): Unit =
-      BatchCounter.this.synchronized {
-        numCompletedBatches += 1
-        lastCompletedBatchTime = batchCompleted.batchInfo.batchTime
-        BatchCounter.this.notifyAll()
-      }
-  }
+  private val listener =
+    new StreamingListener {
+      override def onBatchStarted(
+          batchStarted: StreamingListenerBatchStarted): Unit =
+        BatchCounter.this.synchronized {
+          numStartedBatches += 1
+          BatchCounter.this.notifyAll()
+        }
+      override def onBatchCompleted(
+          batchCompleted: StreamingListenerBatchCompleted): Unit =
+        BatchCounter.this.synchronized {
+          numCompletedBatches += 1
+          lastCompletedBatchTime = batchCompleted.batchInfo.batchTime
+          BatchCounter.this.notifyAll()
+        }
+    }
   ssc.addStreamingListener(listener)
 
   def getNumCompletedBatches: Int =
@@ -362,9 +363,10 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     // Setup the stream computation
     val inputStream = new TestInputStream(ssc, input, numPartitions)
     val operatedStream = operation(inputStream)
-    val outputStream = new TestOutputStreamWithPartitions(
-      operatedStream,
-      new ConcurrentLinkedQueue[Seq[Seq[V]]])
+    val outputStream =
+      new TestOutputStreamWithPartitions(
+        operatedStream,
+        new ConcurrentLinkedQueue[Seq[Seq[V]]])
     outputStream.register()
     ssc
   }
@@ -388,9 +390,10 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     val inputStream1 = new TestInputStream(ssc, input1, numInputPartitions)
     val inputStream2 = new TestInputStream(ssc, input2, numInputPartitions)
     val operatedStream = operation(inputStream1, inputStream2)
-    val outputStream = new TestOutputStreamWithPartitions(
-      operatedStream,
-      new ConcurrentLinkedQueue[Seq[Seq[W]]])
+    val outputStream =
+      new TestOutputStreamWithPartitions(
+        operatedStream,
+        new ConcurrentLinkedQueue[Seq[Seq[W]]])
     outputStream.register()
     ssc
   }

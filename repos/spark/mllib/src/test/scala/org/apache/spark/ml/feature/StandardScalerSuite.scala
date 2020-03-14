@@ -95,8 +95,9 @@ class StandardScalerSuite
     val df2 = sqlContext
       .createDataFrame(data.zip(resWithMean))
       .toDF("features", "expected")
-    val df3 =
-      sqlContext.createDataFrame(data.zip(data)).toDF("features", "expected")
+    val df3 = sqlContext
+      .createDataFrame(data.zip(data))
+      .toDF("features", "expected")
 
     val standardScaler1 = new StandardScaler()
       .setInputCol("features")
@@ -134,10 +135,11 @@ class StandardScalerSuite
   }
 
   test("StandardScalerModel read/write") {
-    val instance = new StandardScalerModel(
-      "myStandardScalerModel",
-      Vectors.dense(1.0, 2.0),
-      Vectors.dense(3.0, 4.0))
+    val instance =
+      new StandardScalerModel(
+        "myStandardScalerModel",
+        Vectors.dense(1.0, 2.0),
+        Vectors.dense(3.0, 4.0))
     val newInstance = testDefaultReadWrite(instance)
     assert(newInstance.std === instance.std)
     assert(newInstance.mean === instance.mean)

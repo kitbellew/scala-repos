@@ -13,8 +13,7 @@ import akka.testkit._
 object PerformanceSpec {
   // multiply cycles with 200 for more
   // accurate throughput measurements
-  val config =
-    """
+  val config = """
       akka.persistence.performance.cycles.load = 1000
     """
 
@@ -139,8 +138,8 @@ class PerformanceSpec
     with ImplicitSender {
   import PerformanceSpec._
 
-  val loadCycles =
-    system.settings.config.getInt("akka.persistence.performance.cycles.load")
+  val loadCycles = system.settings.config
+    .getInt("akka.persistence.performance.cycles.load")
 
   def stressPersistentActor(
       persistentActor: ActorRef,
@@ -160,8 +159,8 @@ class PerformanceSpec
   }
 
   def stressCommandsourcedPersistentActor(failAt: Option[Long]): Unit = {
-    val persistentActor =
-      namedPersistentActor[CommandsourcedTestPersistentActor]
+    val persistentActor = namedPersistentActor[
+      CommandsourcedTestPersistentActor]
     stressPersistentActor(persistentActor, failAt, "persistent commands")
   }
 
@@ -179,8 +178,8 @@ class PerformanceSpec
   }
 
   def stressStashingPersistentActor(): Unit = {
-    val persistentActor =
-      namedPersistentActor[StashingEventsourcedTestPersistentActor]
+    val persistentActor = namedPersistentActor[
+      StashingEventsourcedTestPersistentActor]
     val m = new Measure(loadCycles)
     m.startMeasure()
     val cmds = 1 to (loadCycles / 3) flatMap (_ ⇒ List("a", "b", "c"))

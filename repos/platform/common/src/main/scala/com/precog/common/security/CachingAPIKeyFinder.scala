@@ -48,8 +48,8 @@ class CachingAPIKeyFinder[M[+_]: Monad](
     delegate: APIKeyFinder[M],
     settings: CachingAPIKeyFinderSettings = CachingAPIKeyFinderSettings.Default)
     extends APIKeyFinder[M] {
-  private val apiKeyCache =
-    Cache.simple[APIKey, v1.APIKeyDetails](settings.apiKeyCacheSettings: _*)
+  private val apiKeyCache = Cache.simple[APIKey, v1.APIKeyDetails](
+    settings.apiKeyCacheSettings: _*)
 
   protected def add(r: v1.APIKeyDetails) =
     IO {

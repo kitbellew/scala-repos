@@ -30,8 +30,8 @@ import java.util.concurrent.TimeUnit
 private[finagle] case class Netty4ListenerTLSConfig(newEngine: () => Engine)
 
 private[finagle] object Netty4Listener {
-  val TrafficClass: ChannelOption[JInt] =
-    ChannelOption.newInstance("trafficClass")
+  val TrafficClass: ChannelOption[JInt] = ChannelOption.newInstance(
+    "trafficClass")
 }
 
 private[netty4] case class PipelineInit(cf: ChannelPipeline => Unit) {
@@ -60,12 +60,12 @@ private[finagle] case class Netty4Listener[In, Out](
   private[this] val PipelineInit(pipelineInit) = params[PipelineInit]
 
   // transport params
-  private[this] val Transport.Liveness(_, _, keepAlive) =
-    params[Transport.Liveness]
-  private[this] val Transport.BufferSizes(sendBufSize, recvBufSize) =
-    params[Transport.BufferSizes]
-  private[this] val Transport.Options(noDelay, reuseAddr) =
-    params[Transport.Options]
+  private[this] val Transport
+    .Liveness(_, _, keepAlive) = params[Transport.Liveness]
+  private[this] val Transport
+    .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
+  private[this] val Transport
+    .Options(noDelay, reuseAddr) = params[Transport.Options]
 
   // listener params
   private[this] val Listener.Backlog(backlog) = params[Listener.Backlog]
@@ -82,11 +82,12 @@ private[finagle] case class Netty4Listener[In, Out](
       serveTransport: Transport[In, Out] => Unit): ListeningServer =
     new ListeningServer with CloseAwaitably {
 
-      val newBridge = () =>
-        new ServerBridge(
-          transportFactory,
-          serveTransport
-        )
+      val newBridge =
+        () =>
+          new ServerBridge(
+            transportFactory,
+            serveTransport
+          )
 
       val bossLoop: EventLoopGroup =
         new NioEventLoopGroup(

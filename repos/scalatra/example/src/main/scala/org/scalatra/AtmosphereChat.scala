@@ -120,8 +120,7 @@ class AtmosphereChat
     case t: Throwable => t.printStackTrace()
   }
 
-  val bodyHtml =
-    <div class="row">
+  val bodyHtml = <div class="row">
       <div id="header" class="span6 offset3"><h5>Atmosphere Chat. Default transport is WebSocket, fallback is long-polling</h5></div>
       <div id="detect" class="span6 offset3"><h5>Detecting what the browser and server are supporting</h5></div>
       <div id="content" class="span6 offset3"></div>

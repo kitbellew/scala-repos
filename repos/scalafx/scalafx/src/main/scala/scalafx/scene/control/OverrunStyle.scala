@@ -39,8 +39,8 @@ object OverrunStyle
     "Use CenterEllipsis; CENTER_ELLIPSIS will be removed in a future release",
     "2.2.60")
   val CENTER_ELLIPSIS = CenterEllipsis
-  val CenterWordEllipsis = new OverrunStyle(
-    jfxsc.OverrunStyle.CENTER_WORD_ELLIPSIS)
+  val CenterWordEllipsis =
+    new OverrunStyle(jfxsc.OverrunStyle.CENTER_WORD_ELLIPSIS)
   @deprecated(
     "Use CenterWordEllipsis; CENTER_WORD_ELLIPSIS will be removed in a future release",
     "2.2.60")
@@ -58,8 +58,8 @@ object OverrunStyle
     "Use LeadingEllipsis; LEADING_ELLIPSIS will be removed in a future release",
     "2.2.60")
   val LEADING_ELLIPSIS = LeadingEllipsis
-  val LeadingWordEllipsis = new OverrunStyle(
-    jfxsc.OverrunStyle.LEADING_WORD_ELLIPSIS)
+  val LeadingWordEllipsis =
+    new OverrunStyle(jfxsc.OverrunStyle.LEADING_WORD_ELLIPSIS)
   @deprecated(
     "Use LeadingWordEllipsis; LEADING_WORD_ELLIPSIS will be removed in a future release",
     "2.2.60")

@@ -39,8 +39,9 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
     ddl.create.statements.toSeq.length.should(_ >= 2)
     users.map(u => (u.first, u.last)).insertStatement
 
-    val q1 = (for (u <- users)
-      yield (u.id, u.first, u.last)).sortBy(_._1)
+    val q1 =
+      (for (u <- users)
+        yield (u.id, u.first, u.last)).sortBy(_._1)
     q1.result.statements.toSeq.length.should(_ >= 1)
 
     val q1b =
@@ -52,9 +53,7 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
           (Case If u.id < 3 Then "low" If u.id < 6 Then "medium" Else "high"))
     q1b.result.statements.toSeq.length.should(_ >= 1)
 
-    val q2 =
-      for (u <- users if u.first === "Apu".bind)
-        yield (u.last, u.id)
+    val q2 = for (u <- users if u.first === "Apu".bind) yield (u.last, u.id)
     q2.result.statements.toSeq.length.should(_ >= 1)
 
     val expectedUserTuples = List(
@@ -133,13 +132,14 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         materialize(db.stream(q3.result)).map(s => s.length shouldBe 8)
       }
       .flatMap { _ =>
-        val q4 = for {
-          u <- users
-          o <- u.orders
-          if (o.orderID === (for {
-            o2 <- orders filter (o.userID === _.userID)
-          } yield o2.orderID).max)
-        } yield (u.first, o.orderID)
+        val q4 =
+          for {
+            u <- users
+            o <- u.orders
+            if (o.orderID === (for {
+              o2 <- orders filter (o.userID === _.userID)
+            } yield o2.orderID).max)
+          } yield (u.first, o.orderID)
         q4.result.statements.toSeq.length.should(_ >= 1)
 
         def maxOfPer[T <: Table[_], C[_]](
@@ -251,14 +251,13 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
         } yield ())
       }
       .flatMap { _ =>
-        val q8 =
-          for (u <- users if u.last.isEmpty)
-            yield (u.first, u.last)
+        val q8 = for (u <- users if u.last.isEmpty) yield (u.first, u.last)
         q8.updateStatement
         val q9 = users.length
         q9.result.statements.toSeq.length.should(_ >= 1)
-        val q10 =
-          users.filter(_.last inSetBind Seq()).map(u => (u.first, u.last))
+        val q10 = users
+          .filter(_.last inSetBind Seq())
+          .map(u => (u.first, u.last))
 
         db.run(for {
           updated2 <- q8.update("n/a", Some("n/a"))

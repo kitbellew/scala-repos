@@ -852,15 +852,18 @@ object MixedCCNonCCNested {
 
 object EnumDefns0 {
   sealed trait EnumVal
-  val BarA = new EnumVal {
-    val name = "A"
-  }
-  val BarB = new EnumVal {
-    val name = "B"
-  }
-  val BarC = new EnumVal {
-    val name = "C"
-  }
+  val BarA =
+    new EnumVal {
+      val name = "A"
+    }
+  val BarB =
+    new EnumVal {
+      val name = "B"
+    }
+  val BarC =
+    new EnumVal {
+      val name = "C"
+    }
 }
 
 object EnumDefns1 {
@@ -897,15 +900,18 @@ object EnumDefns3 {
 object EnumDefns4 {
   sealed trait EnumVal
   object EnumVal {
-    val BarA = new EnumVal {
-      val name = "A"
-    }
-    val BarB = new EnumVal {
-      val name = "B"
-    }
-    val BarC = new EnumVal {
-      val name = "C"
-    }
+    val BarA =
+      new EnumVal {
+        val name = "A"
+      }
+    val BarB =
+      new EnumVal {
+        val name = "B"
+      }
+    val BarC =
+      new EnumVal {
+        val name = "C"
+      }
   }
 }
 

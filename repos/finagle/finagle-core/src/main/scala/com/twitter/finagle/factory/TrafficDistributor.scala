@@ -164,34 +164,36 @@ private[finagle] class TrafficDistributor[Req, Rep](
         // Note, if an update contains multiple `Address` instances
         // with duplicate `weight` metadata, only one of the instances and its associated
         // factory is cached. Last write wins.
-        val weightedAddrs: Set[(Address, Double)] =
-          addrs.map(WeightedAddress.extract)
-        val merged = weightedAddrs.foldLeft(active) {
-          case (cache, (addr, weight)) =>
-            cache.get(addr) match {
-              // An update with an existing Address that has a new weight
-              // results in the the weight being overwritten but the [[ServiceFactory]]
-              // instance is maintained.
-              case Some(wf @ WeightedFactory(_, _, w)) if w != weight =>
-                cache.updated(addr, wf.copy(weight = weight))
-              case None =>
-                // The `closeGate` allows us to defer closing an endpoint service
-                // factory until it is removed from this cache. Without it, an endpoint may
-                // be closed prematurely when moving across weight classes if the
-                // weight class is removed.
-                val closeGate = new Promise[Unit]
-                val endpoint = new ServiceFactoryProxy(newEndpoint(addr)) {
-                  override def close(when: Time) =
-                    (closeGate or outerClose).before {
-                      super.close(when)
+        val weightedAddrs: Set[(Address, Double)] = addrs.map(
+          WeightedAddress.extract)
+        val merged =
+          weightedAddrs.foldLeft(active) {
+            case (cache, (addr, weight)) =>
+              cache.get(addr) match {
+                // An update with an existing Address that has a new weight
+                // results in the the weight being overwritten but the [[ServiceFactory]]
+                // instance is maintained.
+                case Some(wf @ WeightedFactory(_, _, w)) if w != weight =>
+                  cache.updated(addr, wf.copy(weight = weight))
+                case None =>
+                  // The `closeGate` allows us to defer closing an endpoint service
+                  // factory until it is removed from this cache. Without it, an endpoint may
+                  // be closed prematurely when moving across weight classes if the
+                  // weight class is removed.
+                  val closeGate = new Promise[Unit]
+                  val endpoint =
+                    new ServiceFactoryProxy(newEndpoint(addr)) {
+                      override def close(when: Time) =
+                        (closeGate or outerClose).before {
+                          super.close(when)
+                        }
                     }
-                }
-                cache.updated(
-                  addr,
-                  WeightedFactory(endpoint, closeGate, weight))
-              case _ => cache
-            }
-        }
+                  cache.updated(
+                    addr,
+                    WeightedFactory(endpoint, closeGate, weight))
+                case _ => cache
+              }
+          }
 
         // Remove stale cache entries. When `eagerEviction` is false cache
         // entries are only removed in subsequent stream updates.
@@ -229,25 +231,27 @@ private[finagle] class TrafficDistributor[Req, Rep](
         val weightedGroups: Map[Double, Set[WeightedFactory[Req, Rep]]] =
           activeSet.groupBy(_.weight)
 
-        val merged = weightedGroups.foldLeft(balancers) {
-          case (cache, (weight, factories)) =>
-            val unweighted = factories.map {
-              case WeightedFactory(f, _, _) => f
-            }
-            val newCacheEntry = if (cache.contains(weight)) {
-              // an update that contains an existing weight class updates
-              // the balancers backing collection.
-              val cached = cache(weight)
-              cached.endpoints.update(Activity.Ok(unweighted))
-              cached.copy(size = unweighted.size)
-            } else {
-              val endpoints: BalancerEndpoints[Req, Rep] =
-                Var(Activity.Ok(unweighted))
-              val lb = newBalancer(Activity(endpoints))
-              CachedBalancer(lb, endpoints, unweighted.size)
-            }
-            cache + (weight -> newCacheEntry)
-        }
+        val merged =
+          weightedGroups.foldLeft(balancers) {
+            case (cache, (weight, factories)) =>
+              val unweighted = factories.map {
+                case WeightedFactory(f, _, _) => f
+              }
+              val newCacheEntry =
+                if (cache.contains(weight)) {
+                  // an update that contains an existing weight class updates
+                  // the balancers backing collection.
+                  val cached = cache(weight)
+                  cached.endpoints.update(Activity.Ok(unweighted))
+                  cached.copy(size = unweighted.size)
+                } else {
+                  val endpoints: BalancerEndpoints[Req, Rep] = Var(
+                    Activity.Ok(unweighted))
+                  val lb = newBalancer(Activity(endpoints))
+                  CachedBalancer(lb, endpoints, unweighted.size)
+                }
+              cache + (weight -> newCacheEntry)
+          }
 
         // weight classes that no longer exist in the update are removed from
         // the cache and the associated balancer instances are closed.
@@ -279,9 +283,10 @@ private[finagle] class TrafficDistributor[Req, Rep](
   @volatile
   private[this] var meanWeight = 0.0f
 
-  private[this] val meanWeightGauge = statsReceiver.addGauge("meanweight") {
-    meanWeight
-  }
+  private[this] val meanWeightGauge =
+    statsReceiver.addGauge("meanweight") {
+      meanWeight
+    }
 
   private[this] def updateMeanWeight(
       classes: Iterable[WeightClass[Req, Rep]]): Unit = {

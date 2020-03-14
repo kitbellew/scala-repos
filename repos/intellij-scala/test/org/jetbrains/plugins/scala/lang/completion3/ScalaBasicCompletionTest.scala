@@ -11,15 +11,13 @@ import org.junit.Assert
   */
 class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   def testInImportSelector() {
-    val fileText =
-      """
+    val fileText = """
       |import scala.collection.immutable.{VBuil<caret>}
       """.stripMargin('|').replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |import scala.collection.immutable.{VectorBuilder<caret>}
       """.stripMargin('|').replaceAll("\r", "").trim()
 
@@ -29,8 +27,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testPrivateFromCompanionModule() {
-    val fileText =
-      """
+    val fileText = """
         |class A {
         |  A.<caret>
         |}
@@ -41,8 +38,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |class A {
         |  A.xxxxx<caret>
         |}
@@ -57,8 +53,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testVarCompletion() {
-    val fileText =
-      """
+    val fileText = """
         |class A {
         |  A.<caret>
         |}
@@ -69,8 +64,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |class A {
         |  A.xxxxx<caret>
         |}
@@ -87,8 +81,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testVarCompletion2() {
-    val fileText =
-      """
+    val fileText = """
         |class A {
         |  A.<caret>
         |}
@@ -99,8 +92,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |class A {
         |  A.xxxxx_=(<caret>)
         |}
@@ -115,8 +107,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testNewInnerClass() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  class BBBBB
       |  new BBBB<caret>
@@ -125,8 +116,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  class BBBBB
       |  new BBBBB<caret>
@@ -139,8 +129,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBeanProperty() {
-    val fileText =
-      """
+    val fileText = """
         |import scala.reflect.BeanProperty
         |abstract class Foo {
         |  def setGoo(foo : String) {}
@@ -160,16 +149,14 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testSCL3546() {
-    val fileText =
-      """
+    val fileText = """
       |class C(private[this] val abcdef: Any)
       |new C(abcde<caret> = 0)
       """.stripMargin('|').replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class C(private[this] val abcdef: Any)
       |new C(abcdef<caret> = 0)
       """.stripMargin('|').replaceAll("\r", "").trim()
@@ -180,8 +167,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testRecursion() {
-    val fileText =
-      """
+    val fileText = """
       |object Main {
       |  class A {
       |    val brrrrr = 1
@@ -200,8 +186,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |object Main {
       |  class A {
       |    val brrrrr = 1
@@ -224,8 +209,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testObjectCompletion() {
-    val fileText =
-      """
+    val fileText = """
       |object States {
       |  class Nested
       |}
@@ -236,8 +220,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |object States {
       |  class Nested
       |}
@@ -252,8 +235,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testImportObjectCompletion() {
-    val fileText =
-      """
+    val fileText = """
         |object States {
         |  class Nested
         |}
@@ -264,8 +246,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |object States {
         |  class Nested
         |}
@@ -280,8 +261,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testObjectCompletionDotChar() {
-    val fileText =
-      """
+    val fileText = """
       |object States {
       |  class Nested
       |}
@@ -292,8 +272,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |object States {
       |  class Nested
       |}
@@ -309,8 +288,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testPrivateMethod() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  private def fooaa = 1
       |  def goo {
@@ -321,8 +299,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  private def fooaa = 1
       |  def goo {
@@ -337,16 +314,14 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testParenthCompletionChar() {
-    val fileText =
-      """
+    val fileText = """
       |val theMap = Map()
       |th<caret>
       """.stripMargin('|').replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |val theMap = Map()
       |theMap(<caret>)
       """.stripMargin('|').replaceAll("\r", "").trim()
@@ -358,8 +333,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testAfterNew() {
-    val fileText =
-      """
+    val fileText = """
       |import collection.mutable.ListBuffer
       |class A {
       |  val f = new <caret>
@@ -368,8 +342,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |import collection.mutable.ListBuffer
       |class A {
       |  val f = new ListBuffer[<caret>]
@@ -383,8 +356,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testAfterNewWithImport() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  val f = new LBuff<caret>
       |}
@@ -392,8 +364,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |import scala.collection.mutable.ListBuffer
       |
       |class A {
@@ -408,8 +379,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testSeq() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  val f = Se<caret>
       |}
@@ -417,8 +387,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(0, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  val f = Seq(<caret>)
       |}
@@ -431,8 +400,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testClosingParentheses() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  def foo(x: AnR<caret>)
       |}
@@ -440,8 +408,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(0, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  def foo(x: AnyRef)<caret>
       |}
@@ -454,8 +421,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testDeprecated() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  @dep<caret>
       |  def foo {}
@@ -464,8 +430,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(0, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  @deprecated<caret>
       |  def foo {}
@@ -479,8 +444,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testStringLength() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  "".len<caret>
       |}
@@ -488,8 +452,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(0, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  "".length<caret>
       |}
@@ -502,8 +465,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testNamedParametersCompletion() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  def foo(xxxx: Int) {
       |    foo(xxx<caret>)
@@ -516,8 +478,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testHiding1() {
-    val fileText =
-      """
+    val fileText = """
       |class SmartValueInitializerCompletion {
       |  def foo(x: Int) {}
       |  def foo(x: Boolean) {}
@@ -534,8 +495,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testHiding2() {
-    val fileText =
-      """
+    val fileText = """
       |class SmartValueInitializerCompletion {
       |  def foo(x: Int) {}
       |  def foo(x: Boolean) {}
@@ -552,8 +512,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testHiding3() {
-    val fileText =
-      """
+    val fileText = """
       |class SmartValueInitializerCompletion {
       |  val foo: Int = 1
       |  def goo(foo: Int) {
@@ -567,8 +526,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testHidingImplicits() {
-    val fileText =
-      """
+    val fileText = """
       |"".<caret>
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
@@ -577,8 +535,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBasicRenamed() {
-    val fileText =
-      """
+    val fileText = """
       |import java.util.{ArrayList => BLLLL}
       |object Test extends App {
       |  val al: java.util.List[Int] = new BL<caret>
@@ -587,8 +544,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |import java.util.{ArrayList => BLLLL}
       |object Test extends App {
       |  val al: java.util.List[Int] = new BLLLL[Int](<caret>)
@@ -602,8 +558,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testYield() {
-    val fileText =
-      """
+    val fileText = """
         |object Test extends App {
         |  Thread.<caret>
         |}
@@ -611,8 +566,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |object Test extends App {
       |  Thread.`yield`()
       |}
@@ -625,8 +579,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testInfix() {
-    val fileText =
-      """
+    val fileText = """
       |class a {
       |  def foo(x: Int): Boolean = false
       |  false || this.fo<caret>
@@ -635,8 +588,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class a {
       |  def foo(x: Int): Boolean = false
       |  false || this.foo(<caret>)
@@ -650,8 +602,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testPrefixedThis() {
-    val fileText =
-      """
+    val fileText = """
       |class aaa {
       |  a<caret>
       |}
@@ -659,8 +610,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class aaa {
       |  aaa.this<caret>
       |}
@@ -673,8 +623,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testPrefixedSuper() {
-    val fileText =
-      """
+    val fileText = """
       |class aaa {
       |  a<caret>
       |}
@@ -682,8 +631,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class aaa {
       |  aaa.super<caret>
       |}
@@ -696,8 +644,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testCompanionObjectName() {
-    val fileText =
-      """
+    val fileText = """
       |class aaa {
       |}
       |object a<caret>
@@ -705,8 +652,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class aaa {
       |}
       |object aaa<caret>
@@ -719,8 +665,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testNoBeanCompletion() {
-    val fileText =
-      """
+    val fileText = """
       |class Foo {
       |  val bar = 10
       |}
@@ -734,8 +679,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBasicTypeCompletion() {
-    val fileText =
-      """
+    val fileText = """
         |class Foo {
         |  val bar: Int<caret>
         |}
@@ -747,8 +691,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBasicTypeCompletionNoMethods() {
-    val fileText =
-      """
+    val fileText = """
         |class Foo {
         |  def foo(): Int = 1
         |
@@ -762,8 +705,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBraceCompletionChar() {
-    val fileText =
-      """
+    val fileText = """
         |class aaa {
         |  Seq(1, 2, 3).ma<caret>
         |}
@@ -771,8 +713,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |class aaa {
         |  Seq(1, 2, 3).map {<caret>}
         |}
@@ -785,8 +726,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testTailrecBasicCompletion() {
-    val fileText =
-      """
+    val fileText = """
         |class aaa {
         |  @tail<caret>
         |  def goo() {}
@@ -795,8 +735,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |import scala.annotation.tailrec
         |
         |class aaa {
@@ -855,15 +794,13 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testSCL4837() {
-    val fileText =
-      """
+    val fileText = """
         |System.current<caret>TimeMillis()
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |System.currentTimeMillis()<caret>
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -875,16 +812,14 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testParethsExists() {
-    val fileText =
-      """
+    val fileText = """
         |def foo(x: Int) = 1
         |fo<caret>()
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |def foo(x: Int) = 1
         |foo(<caret>)
       """.stripMargin.replaceAll("\r", "").trim()
@@ -897,15 +832,13 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBracketsExists() {
-    val fileText =
-      """
+    val fileText = """
         |clas<caret>[]
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |classOf[<caret>]
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -917,15 +850,13 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBracketsExistsForType() {
-    val fileText =
-      """
+    val fileText = """
         |val x: Opti<caret>[]
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |val x: Option[<caret>]
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -941,15 +872,13 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBracketsWithoutParentheses() {
-    val fileText =
-      """
+    val fileText = """
         |Array.app<caret>
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |Array.apply[<caret>]
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -961,15 +890,13 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testParenthesesCompletionChar() {
-    val fileText =
-      """
+    val fileText = """
         |System.c<caret>
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |System.currentTimeMillis(<caret>)
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -981,15 +908,13 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testNoEtaExpansion() {
-    val fileText =
-      """
+    val fileText = """
         |List(1, 2, 3) takeRight<caret>
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |List(1, 2, 3) takeRight <caret>
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -1001,8 +926,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testTypeIsFirst() {
-    val fileText =
-      """
+    val fileText = """
         |class A {
         |  def typeSomething = 1
         |
@@ -1018,8 +942,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testBackticks() {
-    val fileText =
-      """
+    val fileText = """
         |object Z {
         |  def `foo` = 123
         |
@@ -1029,8 +952,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |object Z {
         |  def `foo` = 123
         |
@@ -1045,8 +967,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testStringSimple() {
-    val fileText =
-      """
+    val fileText = """
         |object Z {
         |  val xxx = 1
         |  "$<caret>"
@@ -1055,8 +976,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |object Z {
         |  val xxx = 1
         |  s"$xxx<caret>"
@@ -1069,8 +989,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testStringSimpleFunctionParameter() {
-    val fileText =
-      """
+    val fileText = """
         |object Z {
         |  def xxx(yyy: Int) = "$<caret>"
         |}
@@ -1078,8 +997,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |object Z {
         |  def xxx(yyy: Int) = s"$yyy<caret>"
         |}
@@ -1091,8 +1009,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testStringNeedBraces() {
-    val fileText =
-      """
+    val fileText = """
         |object Z {
         |  val xxx = 1
         |  "$<caret>asdfas"
@@ -1101,8 +1018,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |object Z {
         |  val xxx = 1
         |  s"${xxx<caret>}asdfas"
@@ -1117,8 +1033,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testStringFunction() {
-    val fileText =
-      """
+    val fileText = """
         |object Z {
         |  def xxx() = 1
         |  "$<caret>"
@@ -1127,8 +1042,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |object Z {
         |  def xxx() = 1
         |  s"${xxx()<caret>}"
@@ -1141,8 +1055,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testInterpolatedStringDotCompletion() {
-    val fileText =
-      """
+    val fileText = """
         |object Z {
         |  def xxx: String = "abc"
         |  s"$xxx.<caret>"
@@ -1151,8 +1064,7 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |object Z {
         |  def xxx: String = "abc"
         |  s"${xxx.substring(<caret>)}"

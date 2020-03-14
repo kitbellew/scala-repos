@@ -269,7 +269,8 @@ object JsResult {
         }
     }
 
-  implicit val functorJsResult: Functor[JsResult] = new Functor[JsResult] {
-    override def fmap[A, B](m: JsResult[A], f: A => B) = m map f
-  }
+  implicit val functorJsResult: Functor[JsResult] =
+    new Functor[JsResult] {
+      override def fmap[A, B](m: JsResult[A], f: A => B) = m map f
+    }
 }

@@ -277,11 +277,12 @@ object VertexRDD {
     * @param vertices the collection of vertex-attribute pairs
     */
   def apply[VD: ClassTag](vertices: RDD[(VertexId, VD)]): VertexRDD[VD] = {
-    val vPartitioned: RDD[(VertexId, VD)] = vertices.partitioner match {
-      case Some(p) => vertices
-      case None =>
-        vertices.partitionBy(new HashPartitioner(vertices.partitions.length))
-    }
+    val vPartitioned: RDD[(VertexId, VD)] =
+      vertices.partitioner match {
+        case Some(p) => vertices
+        case None =>
+          vertices.partitionBy(new HashPartitioner(vertices.partitions.length))
+      }
     val vertexPartitions = vPartitioned.mapPartitions(
       iter => Iterator(ShippableVertexPartition(iter)),
       preservesPartitioning = true)
@@ -324,11 +325,12 @@ object VertexRDD {
       defaultVal: VD,
       mergeFunc: (VD, VD) => VD
   ): VertexRDD[VD] = {
-    val vPartitioned: RDD[(VertexId, VD)] = vertices.partitioner match {
-      case Some(p) => vertices
-      case None =>
-        vertices.partitionBy(new HashPartitioner(vertices.partitions.length))
-    }
+    val vPartitioned: RDD[(VertexId, VD)] =
+      vertices.partitioner match {
+        case Some(p) => vertices
+        case None =>
+          vertices.partitionBy(new HashPartitioner(vertices.partitions.length))
+      }
     val routingTables = createRoutingTables(edges, vPartitioned.partitioner.get)
     val vertexPartitions =
       vPartitioned.zipPartitions(routingTables, preservesPartitioning = true) {
@@ -363,8 +365,9 @@ object VertexRDD {
       edges: EdgeRDD[_],
       numPartitions: Int,
       defaultVal: VD): VertexRDD[VD] = {
-    val routingTables =
-      createRoutingTables(edges, new HashPartitioner(numPartitions))
+    val routingTables = createRoutingTables(
+      edges,
+      new HashPartitioner(numPartitions))
     val vertexPartitions = routingTables.mapPartitions(
       { routingTableIter =>
         val routingTable =

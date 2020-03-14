@@ -35,8 +35,8 @@ object Play2Keys {
         return None
 
       val keyName = elem.label
-      val children =
-        elem.child.filterNot(_.text.forall(c => c == '\n' || c == ' '))
+      val children = elem.child.filterNot(_.text.forall(c =>
+        c == '\n' || c == ' '))
 
       if (children.forall(_.child.forall {
             case _: Text => true;
@@ -50,11 +50,12 @@ object Play2Keys {
               .toMap))
       } else if (children.forall(_.child.forall(node =>
                    node.label == ENTRY_SEQ_NAME || node.isInstanceOf[Text]))) {
-        val values = children.flatMap {
-          case _: Text => None
-          case projectKey =>
-            Some((projectKey.label, projectKey \ ENTRY_SEQ_NAME map (_.text)))
-        }.toMap
+        val values =
+          children.flatMap {
+            case _: Text => None
+            case projectKey =>
+              Some((projectKey.label, projectKey \ ENTRY_SEQ_NAME map (_.text)))
+          }.toMap
         Some(new SeqStringXmlKey(keyName, values))
       } else
         None

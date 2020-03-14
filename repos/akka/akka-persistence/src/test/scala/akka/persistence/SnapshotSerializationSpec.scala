@@ -32,10 +32,11 @@ object SnapshotSerializationSpec {
     def toBinary(obj: AnyRef): Array[Byte] = {
       val bStream = new ByteArrayOutputStream()
       val pStream = new PrintStream(bStream)
-      val msg: String = obj match {
-        case s: MySnapshot ⇒ s.id
-        case _ ⇒ "unknown"
-      }
+      val msg: String =
+        obj match {
+          case s: MySnapshot ⇒ s.id
+          case _ ⇒ "unknown"
+        }
       pStream.println(msg)
       bStream.toByteArray
     }
@@ -90,14 +91,14 @@ class SnapshotSerializationSpec
 
   "A PersistentActor with custom Serializer" must {
     "be able to handle serialization header of more than 255 bytes" in {
-      val sPersistentActor =
-        system.actorOf(Props(classOf[TestPersistentActor], name, testActor))
+      val sPersistentActor = system.actorOf(
+        Props(classOf[TestPersistentActor], name, testActor))
       val persistenceId = name
 
       sPersistentActor ! "blahonga"
       expectMsg(0)
-      val lPersistentActor =
-        system.actorOf(Props(classOf[TestPersistentActor], name, testActor))
+      val lPersistentActor = system.actorOf(
+        Props(classOf[TestPersistentActor], name, testActor))
       expectMsgPF() {
         case (SnapshotMetadata(`persistenceId`, 0, timestamp), state) ⇒
           state should ===(new MySnapshot("blahonga"))

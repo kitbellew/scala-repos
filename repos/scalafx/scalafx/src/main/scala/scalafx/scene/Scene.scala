@@ -786,12 +786,13 @@ class Scene(
     * @since 2.2
     */
   def snapshot(callback: SnapshotResult => Unit, image: WritableImage) {
-    val javaCallback = new jfxu.Callback[jfxs.SnapshotResult, java.lang.Void] {
-      def call(result: jfxs.SnapshotResult): java.lang.Void = {
-        callback(new SnapshotResult(result))
-        null
+    val javaCallback =
+      new jfxu.Callback[jfxs.SnapshotResult, java.lang.Void] {
+        def call(result: jfxs.SnapshotResult): java.lang.Void = {
+          callback(new SnapshotResult(result))
+          null
+        }
       }
-    }
     delegate.snapshot(javaCallback, image)
   }
 

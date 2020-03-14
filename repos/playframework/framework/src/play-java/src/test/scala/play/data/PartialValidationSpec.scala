@@ -15,15 +15,17 @@ import javax.validation.Validation
 
 class PartialValidationSpec extends Specification {
 
-  val messagesApi = new DefaultMessagesApi(
-    Environment.simple(),
-    Configuration.reference,
-    new DefaultLangs(Configuration.reference))
+  val messagesApi =
+    new DefaultMessagesApi(
+      Environment.simple(),
+      Configuration.reference,
+      new DefaultLangs(Configuration.reference))
   val jMessagesApi = new play.i18n.MessagesApi(messagesApi)
-  val formFactory = new FormFactory(
-    jMessagesApi,
-    new Formatters(jMessagesApi),
-    Validation.buildDefaultValidatorFactory().getValidator())
+  val formFactory =
+    new FormFactory(
+      jMessagesApi,
+      new Formatters(jMessagesApi),
+      Validation.buildDefaultValidatorFactory().getValidator())
 
   "partial validation" should {
     "not fail when fields not in the same group fail validation" in {
@@ -41,8 +43,9 @@ class PartialValidationSpec extends Specification {
     }
 
     "support multiple validations for the same group" in {
-      val form1 =
-        formFactory.form(classOf[SomeForm]).bind(Map("prop2" -> "Hello").asJava)
+      val form1 = formFactory
+        .form(classOf[SomeForm])
+        .bind(Map("prop2" -> "Hello").asJava)
       form1.hasErrors must_== true
       val form2 = formFactory
         .form(classOf[SomeForm])

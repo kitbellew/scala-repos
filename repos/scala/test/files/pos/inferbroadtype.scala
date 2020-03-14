@@ -7,8 +7,9 @@ object Test {
   }
   def getBase: Base = new Concrete
 
-  var c = new Base {
-    val changesBaseClasses = true
-  }
+  var c =
+    new Base {
+      val changesBaseClasses = true
+    }
   c = getBase
 }

@@ -98,11 +98,12 @@ trait MarathonCallbackTestSupport extends ExternalMarathonIntegrationTest {
       val receivedEvents = Vector.newBuilder[CallbackEvent]
 
       while (eventsToWaitFor.nonEmpty) {
-        val event = waitForEventMatching(
-          s"event $eventsToWaitFor to arrive",
-          deadline.timeLeft) { event =>
-          eventsToWaitFor.contains(event.eventType)
-        }
+        val event =
+          waitForEventMatching(
+            s"event $eventsToWaitFor to arrive",
+            deadline.timeLeft) { event =>
+            eventsToWaitFor.contains(event.eventType)
+          }
         receivedEvents += event
 
         // Remove received event kind. Only remove one element for duplicates.

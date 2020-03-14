@@ -94,13 +94,14 @@ object GetOffsetShell {
     val nOffsets = options.valueOf(nOffsetsOpt).intValue
     val maxWaitMs = options.valueOf(maxWaitMsOpt).intValue()
 
-    val topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic),
-        metadataTargetBrokers,
-        clientId,
-        maxWaitMs)
-      .topicsMetadata
+    val topicsMetadata =
+      ClientUtils
+        .fetchTopicMetadata(
+          Set(topic),
+          metadataTargetBrokers,
+          clientId,
+          maxWaitMs)
+        .topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
       System.err.println(
         ("Error: no valid topic metadata for topic: %s, " + " probably the topic does not exist, run ")
@@ -121,22 +122,24 @@ object GetOffsetShell {
         case Some(metadata) =>
           metadata.leader match {
             case Some(leader) =>
-              val consumer = new SimpleConsumer(
-                leader.host,
-                leader.port,
-                10000,
-                100000,
-                clientId)
+              val consumer =
+                new SimpleConsumer(
+                  leader.host,
+                  leader.port,
+                  10000,
+                  100000,
+                  clientId)
               val topicAndPartition = TopicAndPartition(topic, partitionId)
               val request = OffsetRequest(
                 Map(
                   topicAndPartition -> PartitionOffsetRequestInfo(
                     time,
                     nOffsets)))
-              val offsets = consumer
-                .getOffsetsBefore(request)
-                .partitionErrorAndOffsets(topicAndPartition)
-                .offsets
+              val offsets =
+                consumer
+                  .getOffsetsBefore(request)
+                  .partitionErrorAndOffsets(topicAndPartition)
+                  .offsets
 
               println(
                 "%s:%d:%s".format(topic, partitionId, offsets.mkString(",")))

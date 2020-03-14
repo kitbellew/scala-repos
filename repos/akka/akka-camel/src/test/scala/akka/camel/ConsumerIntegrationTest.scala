@@ -233,8 +233,9 @@ class ConsumerIntegrationTest
         new ErrorRespondingConsumer("direct:error-responding-consumer-1"),
         "error-responding-consumer")
       filterEvents(EventFilter[TestException](occurrences = 1)) {
-        val response =
-          camel.sendTo("direct:error-responding-consumer-1", "some body")
+        val response = camel.sendTo(
+          "direct:error-responding-consumer-1",
+          "some body")
         response should ===("some body has an error")
       }
       stop(ref)

@@ -167,8 +167,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
       case _ => super.defaultSqlTypeName(tmd, sym)
     }
 
-  protected lazy val defaultStringType =
-    profileConfig.getStringOpt("defaultStringType")
+  protected lazy val defaultStringType = profileConfig.getStringOpt(
+    "defaultStringType")
 
   class MySQLResolveZipJoins extends ResolveZipJoins {
     // MySQL does not support ROW_NUMBER() but you can manually increment a variable in the SELECT
@@ -321,14 +321,15 @@ trait MySQLProfile extends JdbcProfile { profile =>
       if (!seq._cycle && (seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc))
         throw new SlickException(
           "Sequences with limited size and without CYCLE are not supported by MySQLProfile's sequence emulation")
-      val incExpr = if (seq._cycle) {
-        if (desc)
-          "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
-        else
-          "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
-      } else {
-        "id+(" + increment + ")"
-      }
+      val incExpr =
+        if (seq._cycle) {
+          if (desc)
+            "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
+          else
+            "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
+        } else {
+          "id+(" + increment + ")"
+        }
       DDL(
         Iterable(
           "create table " + quoteIdentifier(
@@ -354,40 +355,42 @@ trait MySQLProfile extends JdbcProfile { profile =>
   }
 
   class JdbcTypes extends super.JdbcTypes {
-    override val stringJdbcType = new StringJdbcType {
-      override def valueToSQLLiteral(value: String) =
-        if (value eq null)
-          "NULL"
-        else {
-          val sb = new StringBuilder
-          sb append '\''
-          for (c <- value)
-            c match {
-              case '\'' => sb append "\\'"
-              case '"'  => sb append "\\\""
-              case 0    => sb append "\\0"
-              case 26   => sb append "\\Z"
-              case '\b' => sb append "\\b"
-              case '\n' => sb append "\\n"
-              case '\r' => sb append "\\r"
-              case '\t' => sb append "\\t"
-              case '\\' => sb append "\\\\"
-              case _    => sb append c
-            }
-          sb append '\''
-          sb.toString
-        }
-    }
+    override val stringJdbcType =
+      new StringJdbcType {
+        override def valueToSQLLiteral(value: String) =
+          if (value eq null)
+            "NULL"
+          else {
+            val sb = new StringBuilder
+            sb append '\''
+            for (c <- value)
+              c match {
+                case '\'' => sb append "\\'"
+                case '"'  => sb append "\\\""
+                case 0    => sb append "\\0"
+                case 26   => sb append "\\Z"
+                case '\b' => sb append "\\b"
+                case '\n' => sb append "\\n"
+                case '\r' => sb append "\\r"
+                case '\t' => sb append "\\t"
+                case '\\' => sb append "\\\\"
+                case _    => sb append c
+              }
+            sb append '\''
+            sb.toString
+          }
+      }
 
     import java.util.UUID
 
-    override val uuidJdbcType = new UUIDJdbcType {
-      override def sqlType = java.sql.Types.BINARY
-      override def sqlTypeName(sym: Option[FieldSymbol]) = "BINARY(16)"
+    override val uuidJdbcType =
+      new UUIDJdbcType {
+        override def sqlType = java.sql.Types.BINARY
+        override def sqlTypeName(sym: Option[FieldSymbol]) = "BINARY(16)"
 
-      override def valueToSQLLiteral(value: UUID): String =
-        "x'" + value.toString.replace("-", "") + "'"
-    }
+        override def valueToSQLLiteral(value: UUID): String =
+          "x'" + value.toString.replace("-", "") + "'"
+      }
   }
 }
 

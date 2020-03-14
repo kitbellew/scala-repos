@@ -52,8 +52,8 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
     val length = 5000
     val expressions = List.fill(length)(EqualTo(Literal(1), Literal(1)))
     val plan = GenerateMutableProjection.generate(expressions)()
-    val actual =
-      plan(new GenericMutableRow(length)).toSeq(expressions.map(_.dataType))
+    val actual = plan(new GenericMutableRow(length))
+      .toSeq(expressions.map(_.dataType))
     val expected = Seq.fill(length)(true)
 
     if (!checkResult(actual, expected)) {
@@ -79,41 +79,43 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
     val expression = CaseWhen((1 to cases).map(generateCase(_)))
 
     val plan = GenerateMutableProjection.generate(Seq(expression))()
-    val input = new GenericMutableRow(
-      Array[Any](UTF8String.fromString(s"${clauses}:${cases}")))
+    val input =
+      new GenericMutableRow(
+        Array[Any](UTF8String.fromString(s"${clauses}:${cases}")))
     val actual = plan(input).toSeq(Seq(expression.dataType))
 
     assert(actual(0) == cases)
   }
 
   test("test generated safe and unsafe projection") {
-    val schema = new StructType(
-      Array(
-        StructField("a", StringType, true),
-        StructField("b", IntegerType, true),
-        StructField(
-          "c",
-          new StructType(
-            Array(
-              StructField("aa", StringType, true),
-              StructField("bb", IntegerType, true)
-            )),
-          true),
-        StructField(
-          "d",
-          new StructType(
-            Array(
-              StructField(
-                "a",
-                new StructType(
-                  Array(
-                    StructField("b", StringType, true),
-                    StructField("", IntegerType, true)
-                  )),
-                true)
-            )),
-          true)
-      ))
+    val schema =
+      new StructType(
+        Array(
+          StructField("a", StringType, true),
+          StructField("b", IntegerType, true),
+          StructField(
+            "c",
+            new StructType(
+              Array(
+                StructField("aa", StringType, true),
+                StructField("bb", IntegerType, true)
+              )),
+            true),
+          StructField(
+            "d",
+            new StructType(
+              Array(
+                StructField(
+                  "a",
+                  new StructType(
+                    Array(
+                      StructField("b", StringType, true),
+                      StructField("", IntegerType, true)
+                    )),
+                  true)
+              )),
+            true)
+        ))
     val row = Row("a", 1, Row("b", 2), Row(Row("c", 3)))
     val lit = Literal.create(row, schema)
     val internalRow = lit.value.asInstanceOf[InternalRow]

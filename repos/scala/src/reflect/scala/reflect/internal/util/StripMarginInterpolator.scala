@@ -33,10 +33,11 @@ trait StripMarginInterpolator {
       val (pre, post) = s.span(c => !isLineBreak(c))
       pre + post.stripMargin
     }
-    val stripped: List[String] = stringContext.parts.toList match {
-      case head :: tail => head.stripMargin :: (tail map stripTrailingPart)
-      case Nil          => Nil
-    }
+    val stripped: List[String] =
+      stringContext.parts.toList match {
+        case head :: tail => head.stripMargin :: (tail map stripTrailingPart)
+        case Nil          => Nil
+      }
     new StringContext(stripped: _*).raw(args: _*)
   }
 }

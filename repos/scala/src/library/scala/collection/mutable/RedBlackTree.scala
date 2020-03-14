@@ -591,14 +591,12 @@ private[collection] object RedBlackTree {
   def keysIterator[A: Ordering](
       tree: Tree[A, _],
       start: Option[A] = None,
-      end: Option[A] = None): Iterator[A] =
-    new KeysIterator(tree, start, end)
+      end: Option[A] = None): Iterator[A] = new KeysIterator(tree, start, end)
 
   def valuesIterator[A: Ordering, B](
       tree: Tree[A, B],
       start: Option[A] = None,
-      end: Option[A] = None): Iterator[B] =
-    new ValuesIterator(tree, start, end)
+      end: Option[A] = None): Iterator[B] = new ValuesIterator(tree, start, end)
 
   private[this] abstract class TreeIterator[A, B, R](
       tree: Tree[A, B],
@@ -619,10 +617,11 @@ private[collection] object RedBlackTree {
           nextResult(node)
       }
 
-    private[this] var nextNode: Node[A, B] = start match {
-      case None       => minNode(tree.root)
-      case Some(from) => minNodeAfter(tree.root, from)
-    }
+    private[this] var nextNode: Node[A, B] =
+      start match {
+        case None       => minNode(tree.root)
+        case Some(from) => minNodeAfter(tree.root, from)
+      }
 
     private[this] def setNullIfAfterEnd(): Unit =
       if (end.isDefined && (nextNode ne null) && ord.compare(

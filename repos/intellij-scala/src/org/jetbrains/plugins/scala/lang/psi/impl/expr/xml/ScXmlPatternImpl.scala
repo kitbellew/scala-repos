@@ -50,10 +50,11 @@ class ScXmlPatternImpl(node: ASTNode)
   override def toString: String = "XmlPattern"
 
   override def getType(ctx: TypingContext): TypeResult[ScType] = {
-    val clazz = ScalaPsiManager
-      .instance(getProject)
-      .getCachedClass(getResolveScope, "scala.xml.Node")
-      .orNull
+    val clazz =
+      ScalaPsiManager
+        .instance(getProject)
+        .getCachedClass(getResolveScope, "scala.xml.Node")
+        .orNull
     if (clazz == null)
       return Failure("not found scala.xml.Node", Some(this))
     Success(ScDesignatorType(clazz), Some(this))

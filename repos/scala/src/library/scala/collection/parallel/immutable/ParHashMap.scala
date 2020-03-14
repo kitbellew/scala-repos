@@ -238,10 +238,11 @@ private[parallel] abstract class HashMapCombiner[K, V]
     else if (sz == 1)
       new ParHashMap[K, Repr](root(0).asInstanceOf[HashMap[K, Repr]])
     else {
-      val trie = new HashMap.HashTrieMap(
-        bitmap,
-        root.asInstanceOf[Array[HashMap[K, Repr]]],
-        sz)
+      val trie =
+        new HashMap.HashTrieMap(
+          bitmap,
+          root.asInstanceOf[Array[HashMap[K, Repr]]],
+          sz)
       new ParHashMap[K, Repr](trie)
     }
   }
@@ -330,19 +331,20 @@ private[parallel] abstract class HashMapCombiner[K, V]
           val hc = trie.computeHash(kv._1)
 
           // check to see if already present
-          val cmb: Combiner[V, Repr] = trie.get0(kv._1, hc, rootbits) match {
-            case Some(cmb) => cmb
-            case None =>
-              val cmb: Combiner[V, Repr] = cbf()
-              trie = trie.updated0[Combiner[V, Repr]](
-                kv._1,
-                hc,
-                rootbits,
-                cmb,
-                null,
-                null)
-              cmb
-          }
+          val cmb: Combiner[V, Repr] =
+            trie.get0(kv._1, hc, rootbits) match {
+              case Some(cmb) => cmb
+              case None =>
+                val cmb: Combiner[V, Repr] = cbf()
+                trie = trie.updated0[Combiner[V, Repr]](
+                  kv._1,
+                  hc,
+                  rootbits,
+                  cmb,
+                  null,
+                  null)
+                cmb
+            }
           cmb += kv._2
           i += 1
         }
@@ -366,8 +368,8 @@ private[parallel] abstract class HashMapCombiner[K, V]
         case htm: HashMap.HashTrieMap[k, v] =>
           var i = 0
           while (i < htm.elems.length) {
-            htm.elems(i) =
-              evaluateCombiners(htm.elems(i)).asInstanceOf[HashMap[k, v]]
+            htm.elems(i) = evaluateCombiners(htm.elems(i))
+              .asInstanceOf[HashMap[k, v]]
             i += 1
           }
           htm.asInstanceOf[HashMap[K, Repr]]

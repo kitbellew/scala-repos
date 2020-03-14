@@ -68,19 +68,17 @@ class MongoRecordSpec extends Specification with MongoTestKit {
     }
 
     "correctly look up fields by name" in {
-      val fields =
-        allExpectedFieldNames.flatMap { name =>
-          rec.fieldByName(name)
-        }
+      val fields = allExpectedFieldNames.flatMap { name =>
+        rec.fieldByName(name)
+      }
 
       fields.length must_== allExpectedFieldNames.length
     }
 
     "not look up fields by bogus names" in {
-      val fields =
-        allExpectedFieldNames.flatMap { name =>
-          rec.fieldByName("x" + name + "y")
-        }
+      val fields = allExpectedFieldNames.flatMap { name =>
+        rec.fieldByName("x" + name + "y")
+      }
 
       fields.length must_== 0
     }
@@ -512,15 +510,15 @@ class MongoRecordSpec extends Specification with MongoTestKit {
     }
 
     "get set from json string using lift-json parser" in {
-      val mfftrFromJson =
-        MongoFieldTypeTestRecord.fromJsonString(compactRender(mfttrJson))
+      val mfftrFromJson = MongoFieldTypeTestRecord.fromJsonString(
+        compactRender(mfttrJson))
       mfftrFromJson.isDefined must_== true
       mfftrFromJson foreach { tr =>
         tr mustEqual mfttr
       }
 
-      val pftrFromJson =
-        PatternFieldTestRecord.fromJsonString(compactRender(pftrJson))
+      val pftrFromJson = PatternFieldTestRecord.fromJsonString(
+        compactRender(pftrJson))
       pftrFromJson.isDefined must_== true
       pftrFromJson foreach { tr =>
         tr mustEqual pftr
@@ -538,8 +536,8 @@ class MongoRecordSpec extends Specification with MongoTestKit {
         tr mustEqual mtr
       }
 
-      val joftrFromJson =
-        JObjectFieldTestRecord.fromJsonString(compactRender(joftrJson))
+      val joftrFromJson = JObjectFieldTestRecord.fromJsonString(
+        compactRender(joftrJson))
       joftrFromJson must_== Full(joftr)
     }
 

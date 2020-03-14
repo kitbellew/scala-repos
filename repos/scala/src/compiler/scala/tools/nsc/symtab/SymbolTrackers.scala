@@ -68,8 +68,8 @@ trait SymbolTrackers {
     private def current = currentMap.keySet
     private def prev = prevMap.keySet
 
-    private var history =
-      List[Change](Change(Set(), Set(), Map(), Map(), Map()))
+    private var history = List[Change](
+      Change(Set(), Set(), Map(), Map(), Map()))
     private var prevFlags = Map[Symbol, Long]()
     private var prevOwners = Map[Symbol, Symbol]()
 
@@ -192,16 +192,18 @@ trait SymbolTrackers {
       def changedFlags(sym: Symbol) =
         prevFlags get sym filter (_ != (sym.flags & flagsMask))
 
-      val owners = ({
-        for (sym <- steady;
-             old <- changedOwner(sym))
-          yield (sym, old)
-      }).toMap
-      val flags = ({
-        for (sym <- steady;
-             old <- changedFlags(sym))
-          yield (sym, old)
-      }).toMap
+      val owners =
+        ({
+          for (sym <- steady;
+               old <- changedOwner(sym))
+            yield (sym, old)
+        }).toMap
+      val flags =
+        ({
+          for (sym <- steady;
+               old <- changedFlags(sym))
+            yield (sym, old)
+        }).toMap
 
       val change = Change(added, removed, prevMap, owners, flags)
 
@@ -214,15 +216,16 @@ trait SymbolTrackers {
       val hierarchy = Node(current)
       val Change(_, removed, symMap, _, _) = history.head
       def detailString(sym: Symbol) = {
-        val ownerString = sym.ownerChain splitAt 3 match {
-          case (front, back) =>
-            val xs =
-              if (back.isEmpty)
-                front
-              else
-                front :+ "..."
-            xs mkString " -> "
-        }
+        val ownerString =
+          sym.ownerChain splitAt 3 match {
+            case (front, back) =>
+              val xs =
+                if (back.isEmpty)
+                  front
+                else
+                  front :+ "..."
+              xs mkString " -> "
+          }
         val treeStrings = symMap(sym) map { t =>
           "%10s: %s".format(t.shortClass, t)
         }

@@ -44,8 +44,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters =
-        outputTypes.map(CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes.map(
+        CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -67,8 +67,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters =
-        outputTypes.map(CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes.map(
+        CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -162,24 +162,26 @@ private[sql] case class DataSourceScan(
     "numOutputRows" -> SQLMetrics
       .createLongMetric(sparkContext, "number of output rows"))
 
-  val outputUnsafeRows = relation match {
-    case r: HadoopFsRelation if r.fileFormat.isInstanceOf[ParquetSource] =>
-      !SQLContext
-        .getActive()
-        .get
-        .conf
-        .getConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED)
-    case _: HadoopFsRelation => true
-    case _                   => false
-  }
+  val outputUnsafeRows =
+    relation match {
+      case r: HadoopFsRelation if r.fileFormat.isInstanceOf[ParquetSource] =>
+        !SQLContext
+          .getActive()
+          .get
+          .conf
+          .getConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED)
+      case _: HadoopFsRelation => true
+      case _                   => false
+    }
 
   override val outputPartitioning = {
-    val bucketSpec = relation match {
-      // TODO: this should be closer to bucket planning.
-      case r: HadoopFsRelation if r.sqlContext.conf.bucketingEnabled =>
-        r.bucketSpec
-      case _ => None
-    }
+    val bucketSpec =
+      relation match {
+        // TODO: this should be closer to bucket planning.
+        case r: HadoopFsRelation if r.sqlContext.conf.bucketingEnabled =>
+          r.bucketSpec
+        case _ => None
+      }
 
     def toAttribute(colName: String): Attribute =
       output.find(_.name == colName).getOrElse {
@@ -200,14 +202,15 @@ private[sql] case class DataSourceScan(
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
-    val unsafeRow = if (outputUnsafeRows) {
-      rdd
-    } else {
-      rdd.mapPartitionsInternal { iter =>
-        val proj = UnsafeProjection.create(schema)
-        iter.map(proj)
+    val unsafeRow =
+      if (outputUnsafeRows) {
+        rdd
+      } else {
+        rdd.mapPartitionsInternal { iter =>
+          val proj = UnsafeProjection.create(schema)
+          iter.map(proj)
+        }
       }
-    }
 
     val numOutputRows = longMetric("numOutputRows")
     unsafeRow.map { r =>

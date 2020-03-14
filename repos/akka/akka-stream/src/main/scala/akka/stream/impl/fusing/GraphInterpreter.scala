@@ -159,13 +159,14 @@ private[akka] object GraphInterpreter {
           idx += 1
         }
 
-        val stage = stages(i) match {
-          case mv: MaterializedValueSource[_] ⇒
-            val copy = mv.copySrc.asInstanceOf[MaterializedValueSource[Any]]
-            register(copy)
-            copy
-          case x ⇒ x
-        }
+        val stage =
+          stages(i) match {
+            case mv: MaterializedValueSource[_] ⇒
+              val copy = mv.copySrc.asInstanceOf[MaterializedValueSource[Any]]
+              register(copy)
+              copy
+            case x ⇒ x
+          }
 
         val logicAndMat = stage.createLogicAndMaterializedValue(
           inheritedAttributes and originalAttributes(i))
@@ -251,13 +252,17 @@ private[akka] object GraphInterpreter {
         connectionCount > 0,
         s"sum of inlets ({$inletsSize}) & outlets ({$outletsSize}) must be > 0")
 
-      val assembly = new GraphAssembly(
-        stages.toArray,
-        GraphInterpreter.singleNoAttribute,
-        add(inlets.iterator, Array.ofDim(connectionCount), 0),
-        markBoundary(Array.ofDim(connectionCount), inletsSize, connectionCount),
-        add(outlets.iterator, Array.ofDim(connectionCount), inletsSize),
-        markBoundary(Array.ofDim(connectionCount), 0, inletsSize))
+      val assembly =
+        new GraphAssembly(
+          stages.toArray,
+          GraphInterpreter.singleNoAttribute,
+          add(inlets.iterator, Array.ofDim(connectionCount), 0),
+          markBoundary(
+            Array.ofDim(connectionCount),
+            inletsSize,
+            connectionCount),
+          add(outlets.iterator, Array.ofDim(connectionCount), inletsSize),
+          markBoundary(Array.ofDim(connectionCount), 0, inletsSize))
 
       assembly
     }
@@ -266,14 +271,15 @@ private[akka] object GraphInterpreter {
   /**
     * INTERNAL API
     */
-  private val _currentInterpreter = new ThreadLocal[Array[AnyRef]] {
-    /*
-     * Using an Object-array avoids holding on to the GraphInterpreter class
-     * when this accidentally leaks onto threads that are not stopped when this
-     * class should be unloaded.
-     */
-    override def initialValue = new Array(1)
-  }
+  private val _currentInterpreter =
+    new ThreadLocal[Array[AnyRef]] {
+      /*
+       * Using an Object-array avoids holding on to the GraphInterpreter class
+       * when this accidentally leaks onto threads that are not stopped when this
+       * class should be unloaded.
+       */
+      override def initialValue = new Array(1)
+    }
 
   /**
     * INTERNAL API
@@ -399,11 +405,11 @@ private[stream] final class GraphInterpreter(
   private[this] var runningStages = assembly.stages.length
 
   // Counts how many active connections a stage has. Once it reaches zero, the stage is automatically stopped.
-  private[this] val shutdownCounter = Array.tabulate(assembly.stages.length) {
-    i ⇒
+  private[this] val shutdownCounter =
+    Array.tabulate(assembly.stages.length) { i ⇒
       val shape = assembly.stages(i).shape
       shape.inlets.size + shape.outlets.size
-  }
+    }
 
   private var _subFusingMaterializer: Materializer = _
   def subFusingMaterializer: Materializer = _subFusingMaterializer

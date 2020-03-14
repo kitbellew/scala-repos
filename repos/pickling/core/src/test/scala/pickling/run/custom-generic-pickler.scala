@@ -31,8 +31,9 @@ class MyClassPickler[A](implicit
   override def unpickle(tagKey: String, reader: PReader): MyClass[A] = {
     // TODO - use unpickle entry, save a few lines of code.
     val tag = reader.beginEntry()
-    val myStringUnpickled =
-      stringUnpickler.unpickle(tag, reader).asInstanceOf[String]
+    val myStringUnpickled = stringUnpickler
+      .unpickle(tag, reader)
+      .asInstanceOf[String]
     reader.endEntry()
     val aTag = reader.beginEntry()
     val aUnpickled = aUnpickler.unpickle(aTag, reader).asInstanceOf[A]
@@ -45,8 +46,7 @@ class MyClassPickler[A](implicit
 class CustomGenericPicklerTest extends FunSuite {
 
   implicit def myClassPickler[A: Pickler: Unpickler: FastTypeTag](
-      implicit pf: PickleFormat) =
-    new MyClassPickler
+      implicit pf: PickleFormat) = new MyClassPickler
 
   test("main") {
     val inst = MyClass("test", 42)

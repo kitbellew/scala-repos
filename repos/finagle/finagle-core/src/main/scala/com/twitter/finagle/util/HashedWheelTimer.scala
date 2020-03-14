@@ -30,17 +30,19 @@ private class HashedWheelTimer(underlying: netty.Timer) extends Timer {
   ): TimerTask =
     new TimerTask {
       var isCancelled = false
-      var ref: TimerTask = schedule(when) {
-        loop()
-      }
+      var ref: TimerTask =
+        schedule(when) {
+          loop()
+        }
 
       def loop(): Unit = {
         f
         synchronized {
           if (!isCancelled)
-            ref = schedule(period.fromNow) {
-              loop()
-            }
+            ref =
+              schedule(period.fromNow) {
+                loop()
+              }
         }
       }
 
@@ -92,11 +94,12 @@ object HashedWheelTimer {
       threadFactory: ThreadFactory,
       tickDuration: Duration,
       ticksPerWheel: Int): Timer = {
-    val hwt = new netty.HashedWheelTimer(
-      threadFactory,
-      tickDuration.inNanoseconds,
-      TimeUnit.NANOSECONDS,
-      ticksPerWheel)
+    val hwt =
+      new netty.HashedWheelTimer(
+        threadFactory,
+        tickDuration.inNanoseconds,
+        TimeUnit.NANOSECONDS,
+        ticksPerWheel)
     new HashedWheelTimer(hwt)
   }
 
@@ -133,11 +136,12 @@ object HashedWheelTimer {
   // Note: this uses the default `ticksPerWheel` size of 512 and 10 millisecond
   // ticks, which gives ~5100 milliseconds worth of scheduling. This should
   // suffice for most usage without having tasks scheduled for a later round.
-  private[finagle] val nettyHwt = new netty.HashedWheelTimer(
-    new NamedPoolThreadFactory("Finagle Default Timer", /*daemons = */ true),
-    TickDuration.inMilliseconds,
-    TimeUnit.MILLISECONDS,
-    TicksPerWheel)
+  private[finagle] val nettyHwt =
+    new netty.HashedWheelTimer(
+      new NamedPoolThreadFactory("Finagle Default Timer", /*daemons = */ true),
+      TickDuration.inMilliseconds,
+      TimeUnit.MILLISECONDS,
+      TicksPerWheel)
 
   val Default: Timer = new HashedWheelTimer(nettyHwt)
 

@@ -58,19 +58,20 @@ object accumulateAndCount extends UFunc {
       : Impl[T, (Scalar, Int)] =
     new Impl[T, (Scalar, Int)] {
       def apply(v: T): (Scalar, Int) = {
-        val visit = new ValuesVisitor[Scalar] {
-          var sum = zero
-          var n = 0
-          def visit(a: Scalar): Unit = {
-            sum += a
-            n += 1
-          }
+        val visit =
+          new ValuesVisitor[Scalar] {
+            var sum = zero
+            var n = 0
+            def visit(a: Scalar): Unit = {
+              sum += a
+              n += 1
+            }
 
-          def zeros(numZero: Int, zeroValue: Scalar): Unit = {
-            sum += (numZero * zeroValue)
-            n += numZero
+            def zeros(numZero: Int, zeroValue: Scalar): Unit = {
+              sum += (numZero * zeroValue)
+              n += numZero
+            }
           }
-        }
         iter.traverse(v, visit)
 
         (visit.sum, visit.n)
@@ -90,22 +91,23 @@ trait DescriptiveStats {
         @expand.sequence[S](0f, 0d, Complex.zero) z: S): Impl[T, S] =
       new Impl[T, S] {
         def apply(v: T): S = {
-          val visit = new ValuesVisitor[S] {
-            var mu: S = z
-            var n: Long = 0
+          val visit =
+            new ValuesVisitor[S] {
+              var mu: S = z
+              var n: Long = 0
 
-            def visit(y: S): Unit = {
-              n += 1
-              val d = y - mu
-              mu = mu + d / n
-            }
+              def visit(y: S): Unit = {
+                n += 1
+                val d = y - mu
+                mu = mu + d / n
+              }
 
-            def zeros(numZero: Int, zeroValue: S): Unit = {
-              if (numZero != 0)
-                mu = mu * n / (n + numZero)
-              n += numZero
+              def zeros(numZero: Int, zeroValue: S): Unit = {
+                if (numZero != 0)
+                  mu = mu * n / (n + numZero)
+                n += numZero
+              }
             }
-          }
           iter.traverse(v, visit)
           import visit._
           mu
@@ -125,23 +127,24 @@ trait DescriptiveStats {
         implicit iter: CanTraverseValues[T, S]): Impl[T, MeanAndVariance] =
       new Impl[T, MeanAndVariance] {
         def apply(v: T): MeanAndVariance = {
-          val visit = new ValuesVisitor[S] {
-            var mu: S = 0
-            var s: S = 0
-            var n: Long = 0
+          val visit =
+            new ValuesVisitor[S] {
+              var mu: S = 0
+              var s: S = 0
+              var n: Long = 0
 
-            def visit(y: S): Unit = {
-              n += 1
-              val d = y - mu
-              mu = mu + d / n
-              s = s + (n - 1) * d / n * d
-            }
+              def visit(y: S): Unit = {
+                n += 1
+                val d = y - mu
+                mu = mu + d / n
+                s = s + (n - 1) * d / n * d
+              }
 
-            def zeros(numZero: Int, zeroValue: S): Unit = {
-              for (i <- 0 until numZero)
-                visit(zeroValue)
+              def zeros(numZero: Int, zeroValue: S): Unit = {
+                for (i <- 0 until numZero)
+                  visit(zeroValue)
+              }
             }
-          }
           iter.traverse(v, visit)
           import visit._
           if (n > 1) {

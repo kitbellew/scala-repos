@@ -44,8 +44,9 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
 
   test(
     "Metrics#className should strip 'EnhancerByGuice' from the metric names") {
-    val instance =
-      Guice.createInjector(new TestModule).getInstance(classOf[FooBar])
+    val instance = Guice
+      .createInjector(new TestModule)
+      .getInstance(classOf[FooBar])
     assert(instance.getClass.getName.contains("EnhancerByGuice"))
 
     assert(
@@ -68,8 +69,10 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     "Metrics#name should use a dot to separate the class name and the method name") {
     val expectedName =
       "service.mesosphere.marathon.core.task.tracker.TaskTracker.write-request-time"
-    val actualName =
-      metrics.name("service", classOf[TaskTracker], "write-request-time")
+    val actualName = metrics.name(
+      "service",
+      classOf[TaskTracker],
+      "write-request-time")
 
     assert(expectedName.equals(actualName))
   }

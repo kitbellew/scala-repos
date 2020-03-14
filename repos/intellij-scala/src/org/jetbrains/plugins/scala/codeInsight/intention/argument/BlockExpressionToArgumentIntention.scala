@@ -34,13 +34,14 @@ class BlockExpressionToArgumentIntention extends PsiElementBaseIntentionAction {
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val block = element.getParent.asInstanceOf[ScBlockExpr]
     val s = block.getText
-    val text =
-      "foo(%s)".format(s.substring(1, s.length - 1).replaceAll("\n", ""))
-    val arguments = ScalaPsiElementFactory
-      .createExpressionFromText(text, block.getManager)
-      .children
-      .findByType(classOf[ScArgumentExprList])
-      .get
+    val text = "foo(%s)".format(
+      s.substring(1, s.length - 1).replaceAll("\n", ""))
+    val arguments =
+      ScalaPsiElementFactory
+        .createExpressionFromText(text, block.getManager)
+        .children
+        .findByType(classOf[ScArgumentExprList])
+        .get
     val replacement = block.getParent.replace(arguments)
     replacement.getPrevSibling match {
       case ws: PsiWhiteSpace => ws.delete()

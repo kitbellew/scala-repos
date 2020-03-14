@@ -88,14 +88,13 @@ object Box extends BoxTrait with Tryo {
     **/
     def toSingleBox(failureErrorMessage: String): Box[List[T]] = {
       if (theListOfBoxes.exists(_.isInstanceOf[Failure])) {
-        val failureChain =
-          theListOfBoxes
-            .collect {
-              case fail: Failure => fail
-            }
-            .reduceRight { (topmostFailure, latestFailure) =>
-              topmostFailure.copy(chain = Full(latestFailure))
-            }
+        val failureChain = theListOfBoxes
+          .collect {
+            case fail: Failure => fail
+          }
+          .reduceRight { (topmostFailure, latestFailure) =>
+            topmostFailure.copy(chain = Full(latestFailure))
+          }
 
         ParamFailure(
           failureErrorMessage,
@@ -857,10 +856,11 @@ final case class Full[+A](value: A) extends Box[A] {
   override def isA[B](clsOrg: Class[B]): Box[B] =
     value match {
       case value: AnyRef =>
-        val cls = Box.primitiveMap.get(clsOrg) match {
-          case Some(c) => c
-          case _       => clsOrg
-        }
+        val cls =
+          Box.primitiveMap.get(clsOrg) match {
+            case Some(c) => c
+            case _       => clsOrg
+          }
 
         if (cls.isAssignableFrom(value.getClass))
           Full(value.asInstanceOf[B])
@@ -985,8 +985,7 @@ sealed case class Failure(
   /**
     * Flatten the `Failure` chain to a List where this Failure is at the head.
     */
-  def failureChain: List[Failure] =
-    this :: chain.toList.flatMap(_.failureChain)
+  def failureChain: List[Failure] = this :: chain.toList.flatMap(_.failureChain)
 
   /**
     * Reduce this `Failure`'s message and the messages of all chained failures a
@@ -1029,8 +1028,7 @@ object ParamFailure {
       msg: String,
       exception: Box[Throwable],
       chain: Box[Failure],
-      param: T) =
-    new ParamFailure(msg, exception, chain, param)
+      param: T) = new ParamFailure(msg, exception, chain, param)
 
   def apply[T](msg: String, param: T) =
     new ParamFailure(msg, Empty, Empty, param)
@@ -1122,8 +1120,7 @@ sealed trait BoxOrRaw[T] {
   * masquerade as the appropriate types.
   */
 object BoxOrRaw {
-  implicit def rawToBoxOrRaw[T, Q <: T](r: Q): BoxOrRaw[T] =
-    RawBoxOrRaw(r: T)
+  implicit def rawToBoxOrRaw[T, Q <: T](r: Q): BoxOrRaw[T] = RawBoxOrRaw(r: T)
 
   implicit def boxToBoxOrRaw[T, Q <% T](r: Box[Q]): BoxOrRaw[T] = {
     BoxedBoxOrRaw(r.map(v => v: T))

@@ -73,1363 +73,1364 @@ case class ScalaUDF(
   def userDefinedFunc(): AnyRef = function
   def getChildren(): Seq[Expression] = children
 
-  private[this] val f = children.size match {
-    case 0 =>
-      val func = function.asInstanceOf[() => Any]
-      (input: InternalRow) => {
-        func()
-      }
+  private[this] val f =
+    children.size match {
+      case 0 =>
+        val func = function.asInstanceOf[() => Any]
+        (input: InternalRow) => {
+          func()
+        }
 
-    case 1 =>
-      val func = function.asInstanceOf[(Any) => Any]
-      val child0 = children(0)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      (input: InternalRow) => {
-        func(converter0(child0.eval(input)))
-      }
+      case 1 =>
+        val func = function.asInstanceOf[(Any) => Any]
+        val child0 = children(0)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        (input: InternalRow) => {
+          func(converter0(child0.eval(input)))
+        }
 
-    case 2 =>
-      val func = function.asInstanceOf[(Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      (input: InternalRow) => {
-        func(converter0(child0.eval(input)), converter1(child1.eval(input)))
-      }
+      case 2 =>
+        val func = function.asInstanceOf[(Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        (input: InternalRow) => {
+          func(converter0(child0.eval(input)), converter1(child1.eval(input)))
+        }
 
-    case 3 =>
-      val func = function.asInstanceOf[(Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)))
-      }
+      case 3 =>
+        val func = function.asInstanceOf[(Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)))
+        }
 
-    case 4 =>
-      val func = function.asInstanceOf[(Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)))
-      }
+      case 4 =>
+        val func = function.asInstanceOf[(Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)))
+        }
 
-    case 5 =>
-      val func = function.asInstanceOf[(Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input))
-        )
-      }
+      case 5 =>
+        val func = function.asInstanceOf[(Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input))
+          )
+        }
 
-    case 6 =>
-      val func = function.asInstanceOf[(Any, Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input))
-        )
-      }
+      case 6 =>
+        val func = function.asInstanceOf[(Any, Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input))
+          )
+        }
 
-    case 7 =>
-      val func =
-        function.asInstanceOf[(Any, Any, Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input))
-        )
-      }
+      case 7 =>
+        val func = function
+          .asInstanceOf[(Any, Any, Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input))
+          )
+        }
 
-    case 8 =>
-      val func =
-        function.asInstanceOf[(Any, Any, Any, Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input))
-        )
-      }
+      case 8 =>
+        val func = function
+          .asInstanceOf[(Any, Any, Any, Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input))
+          )
+        }
 
-    case 9 =>
-      val func = function
-        .asInstanceOf[(Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input))
-        )
-      }
+      case 9 =>
+        val func = function
+          .asInstanceOf[(Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input))
+          )
+        }
 
-    case 10 =>
-      val func = function
-        .asInstanceOf[(Any, Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input))
-        )
-      }
+      case 10 =>
+        val func = function.asInstanceOf[
+          (Any, Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input))
+          )
+        }
 
-    case 11 =>
-      val func = function.asInstanceOf[
-        (Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input))
-        )
-      }
+      case 11 =>
+        val func = function.asInstanceOf[
+          (Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input))
+          )
+        }
 
-    case 12 =>
-      val func = function.asInstanceOf[
-        (Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input))
-        )
-      }
+      case 12 =>
+        val func = function.asInstanceOf[
+          (Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input))
+          )
+        }
 
-    case 13 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input))
-        )
-      }
+      case 13 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input))
+          )
+        }
 
-    case 14 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input))
-        )
-      }
+      case 14 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input))
+          )
+        }
 
-    case 15 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input))
-        )
-      }
+      case 15 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input))
+          )
+        }
 
-    case 16 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      val child15 = children(15)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      lazy val converter15 =
-        CatalystTypeConverters.createToScalaConverter(child15.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input)),
-          converter15(child15.eval(input))
-        )
-      }
+      case 16 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        val child15 = children(15)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        lazy val converter15 = CatalystTypeConverters.createToScalaConverter(
+          child15.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input)),
+            converter15(child15.eval(input))
+          )
+        }
 
-    case 17 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      val child15 = children(15)
-      val child16 = children(16)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      lazy val converter15 =
-        CatalystTypeConverters.createToScalaConverter(child15.dataType)
-      lazy val converter16 =
-        CatalystTypeConverters.createToScalaConverter(child16.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input)),
-          converter15(child15.eval(input)),
-          converter16(child16.eval(input))
-        )
-      }
+      case 17 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        val child15 = children(15)
+        val child16 = children(16)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        lazy val converter15 = CatalystTypeConverters.createToScalaConverter(
+          child15.dataType)
+        lazy val converter16 = CatalystTypeConverters.createToScalaConverter(
+          child16.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input)),
+            converter15(child15.eval(input)),
+            converter16(child16.eval(input))
+          )
+        }
 
-    case 18 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      val child15 = children(15)
-      val child16 = children(16)
-      val child17 = children(17)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      lazy val converter15 =
-        CatalystTypeConverters.createToScalaConverter(child15.dataType)
-      lazy val converter16 =
-        CatalystTypeConverters.createToScalaConverter(child16.dataType)
-      lazy val converter17 =
-        CatalystTypeConverters.createToScalaConverter(child17.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input)),
-          converter15(child15.eval(input)),
-          converter16(child16.eval(input)),
-          converter17(child17.eval(input))
-        )
-      }
+      case 18 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        val child15 = children(15)
+        val child16 = children(16)
+        val child17 = children(17)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        lazy val converter15 = CatalystTypeConverters.createToScalaConverter(
+          child15.dataType)
+        lazy val converter16 = CatalystTypeConverters.createToScalaConverter(
+          child16.dataType)
+        lazy val converter17 = CatalystTypeConverters.createToScalaConverter(
+          child17.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input)),
+            converter15(child15.eval(input)),
+            converter16(child16.eval(input)),
+            converter17(child17.eval(input))
+          )
+        }
 
-    case 19 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      val child15 = children(15)
-      val child16 = children(16)
-      val child17 = children(17)
-      val child18 = children(18)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      lazy val converter15 =
-        CatalystTypeConverters.createToScalaConverter(child15.dataType)
-      lazy val converter16 =
-        CatalystTypeConverters.createToScalaConverter(child16.dataType)
-      lazy val converter17 =
-        CatalystTypeConverters.createToScalaConverter(child17.dataType)
-      lazy val converter18 =
-        CatalystTypeConverters.createToScalaConverter(child18.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input)),
-          converter15(child15.eval(input)),
-          converter16(child16.eval(input)),
-          converter17(child17.eval(input)),
-          converter18(child18.eval(input))
-        )
-      }
+      case 19 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        val child15 = children(15)
+        val child16 = children(16)
+        val child17 = children(17)
+        val child18 = children(18)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        lazy val converter15 = CatalystTypeConverters.createToScalaConverter(
+          child15.dataType)
+        lazy val converter16 = CatalystTypeConverters.createToScalaConverter(
+          child16.dataType)
+        lazy val converter17 = CatalystTypeConverters.createToScalaConverter(
+          child17.dataType)
+        lazy val converter18 = CatalystTypeConverters.createToScalaConverter(
+          child18.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input)),
+            converter15(child15.eval(input)),
+            converter16(child16.eval(input)),
+            converter17(child17.eval(input)),
+            converter18(child18.eval(input))
+          )
+        }
 
-    case 20 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      val child15 = children(15)
-      val child16 = children(16)
-      val child17 = children(17)
-      val child18 = children(18)
-      val child19 = children(19)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      lazy val converter15 =
-        CatalystTypeConverters.createToScalaConverter(child15.dataType)
-      lazy val converter16 =
-        CatalystTypeConverters.createToScalaConverter(child16.dataType)
-      lazy val converter17 =
-        CatalystTypeConverters.createToScalaConverter(child17.dataType)
-      lazy val converter18 =
-        CatalystTypeConverters.createToScalaConverter(child18.dataType)
-      lazy val converter19 =
-        CatalystTypeConverters.createToScalaConverter(child19.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input)),
-          converter15(child15.eval(input)),
-          converter16(child16.eval(input)),
-          converter17(child17.eval(input)),
-          converter18(child18.eval(input)),
-          converter19(child19.eval(input))
-        )
-      }
+      case 20 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        val child15 = children(15)
+        val child16 = children(16)
+        val child17 = children(17)
+        val child18 = children(18)
+        val child19 = children(19)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        lazy val converter15 = CatalystTypeConverters.createToScalaConverter(
+          child15.dataType)
+        lazy val converter16 = CatalystTypeConverters.createToScalaConverter(
+          child16.dataType)
+        lazy val converter17 = CatalystTypeConverters.createToScalaConverter(
+          child17.dataType)
+        lazy val converter18 = CatalystTypeConverters.createToScalaConverter(
+          child18.dataType)
+        lazy val converter19 = CatalystTypeConverters.createToScalaConverter(
+          child19.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input)),
+            converter15(child15.eval(input)),
+            converter16(child16.eval(input)),
+            converter17(child17.eval(input)),
+            converter18(child18.eval(input)),
+            converter19(child19.eval(input))
+          )
+        }
 
-    case 21 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      val child15 = children(15)
-      val child16 = children(16)
-      val child17 = children(17)
-      val child18 = children(18)
-      val child19 = children(19)
-      val child20 = children(20)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      lazy val converter15 =
-        CatalystTypeConverters.createToScalaConverter(child15.dataType)
-      lazy val converter16 =
-        CatalystTypeConverters.createToScalaConverter(child16.dataType)
-      lazy val converter17 =
-        CatalystTypeConverters.createToScalaConverter(child17.dataType)
-      lazy val converter18 =
-        CatalystTypeConverters.createToScalaConverter(child18.dataType)
-      lazy val converter19 =
-        CatalystTypeConverters.createToScalaConverter(child19.dataType)
-      lazy val converter20 =
-        CatalystTypeConverters.createToScalaConverter(child20.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input)),
-          converter15(child15.eval(input)),
-          converter16(child16.eval(input)),
-          converter17(child17.eval(input)),
-          converter18(child18.eval(input)),
-          converter19(child19.eval(input)),
-          converter20(child20.eval(input))
-        )
-      }
+      case 21 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        val child15 = children(15)
+        val child16 = children(16)
+        val child17 = children(17)
+        val child18 = children(18)
+        val child19 = children(19)
+        val child20 = children(20)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        lazy val converter15 = CatalystTypeConverters.createToScalaConverter(
+          child15.dataType)
+        lazy val converter16 = CatalystTypeConverters.createToScalaConverter(
+          child16.dataType)
+        lazy val converter17 = CatalystTypeConverters.createToScalaConverter(
+          child17.dataType)
+        lazy val converter18 = CatalystTypeConverters.createToScalaConverter(
+          child18.dataType)
+        lazy val converter19 = CatalystTypeConverters.createToScalaConverter(
+          child19.dataType)
+        lazy val converter20 = CatalystTypeConverters.createToScalaConverter(
+          child20.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input)),
+            converter15(child15.eval(input)),
+            converter16(child16.eval(input)),
+            converter17(child17.eval(input)),
+            converter18(child18.eval(input)),
+            converter19(child19.eval(input)),
+            converter20(child20.eval(input))
+          )
+        }
 
-    case 22 =>
-      val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
-      val child0 = children(0)
-      val child1 = children(1)
-      val child2 = children(2)
-      val child3 = children(3)
-      val child4 = children(4)
-      val child5 = children(5)
-      val child6 = children(6)
-      val child7 = children(7)
-      val child8 = children(8)
-      val child9 = children(9)
-      val child10 = children(10)
-      val child11 = children(11)
-      val child12 = children(12)
-      val child13 = children(13)
-      val child14 = children(14)
-      val child15 = children(15)
-      val child16 = children(16)
-      val child17 = children(17)
-      val child18 = children(18)
-      val child19 = children(19)
-      val child20 = children(20)
-      val child21 = children(21)
-      lazy val converter0 =
-        CatalystTypeConverters.createToScalaConverter(child0.dataType)
-      lazy val converter1 =
-        CatalystTypeConverters.createToScalaConverter(child1.dataType)
-      lazy val converter2 =
-        CatalystTypeConverters.createToScalaConverter(child2.dataType)
-      lazy val converter3 =
-        CatalystTypeConverters.createToScalaConverter(child3.dataType)
-      lazy val converter4 =
-        CatalystTypeConverters.createToScalaConverter(child4.dataType)
-      lazy val converter5 =
-        CatalystTypeConverters.createToScalaConverter(child5.dataType)
-      lazy val converter6 =
-        CatalystTypeConverters.createToScalaConverter(child6.dataType)
-      lazy val converter7 =
-        CatalystTypeConverters.createToScalaConverter(child7.dataType)
-      lazy val converter8 =
-        CatalystTypeConverters.createToScalaConverter(child8.dataType)
-      lazy val converter9 =
-        CatalystTypeConverters.createToScalaConverter(child9.dataType)
-      lazy val converter10 =
-        CatalystTypeConverters.createToScalaConverter(child10.dataType)
-      lazy val converter11 =
-        CatalystTypeConverters.createToScalaConverter(child11.dataType)
-      lazy val converter12 =
-        CatalystTypeConverters.createToScalaConverter(child12.dataType)
-      lazy val converter13 =
-        CatalystTypeConverters.createToScalaConverter(child13.dataType)
-      lazy val converter14 =
-        CatalystTypeConverters.createToScalaConverter(child14.dataType)
-      lazy val converter15 =
-        CatalystTypeConverters.createToScalaConverter(child15.dataType)
-      lazy val converter16 =
-        CatalystTypeConverters.createToScalaConverter(child16.dataType)
-      lazy val converter17 =
-        CatalystTypeConverters.createToScalaConverter(child17.dataType)
-      lazy val converter18 =
-        CatalystTypeConverters.createToScalaConverter(child18.dataType)
-      lazy val converter19 =
-        CatalystTypeConverters.createToScalaConverter(child19.dataType)
-      lazy val converter20 =
-        CatalystTypeConverters.createToScalaConverter(child20.dataType)
-      lazy val converter21 =
-        CatalystTypeConverters.createToScalaConverter(child21.dataType)
-      (input: InternalRow) => {
-        func(
-          converter0(child0.eval(input)),
-          converter1(child1.eval(input)),
-          converter2(child2.eval(input)),
-          converter3(child3.eval(input)),
-          converter4(child4.eval(input)),
-          converter5(child5.eval(input)),
-          converter6(child6.eval(input)),
-          converter7(child7.eval(input)),
-          converter8(child8.eval(input)),
-          converter9(child9.eval(input)),
-          converter10(child10.eval(input)),
-          converter11(child11.eval(input)),
-          converter12(child12.eval(input)),
-          converter13(child13.eval(input)),
-          converter14(child14.eval(input)),
-          converter15(child15.eval(input)),
-          converter16(child16.eval(input)),
-          converter17(child17.eval(input)),
-          converter18(child18.eval(input)),
-          converter19(child19.eval(input)),
-          converter20(child20.eval(input)),
-          converter21(child21.eval(input))
-        )
-      }
-  }
+      case 22 =>
+        val func = function.asInstanceOf[
+          (
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any,
+              Any) => Any]
+        val child0 = children(0)
+        val child1 = children(1)
+        val child2 = children(2)
+        val child3 = children(3)
+        val child4 = children(4)
+        val child5 = children(5)
+        val child6 = children(6)
+        val child7 = children(7)
+        val child8 = children(8)
+        val child9 = children(9)
+        val child10 = children(10)
+        val child11 = children(11)
+        val child12 = children(12)
+        val child13 = children(13)
+        val child14 = children(14)
+        val child15 = children(15)
+        val child16 = children(16)
+        val child17 = children(17)
+        val child18 = children(18)
+        val child19 = children(19)
+        val child20 = children(20)
+        val child21 = children(21)
+        lazy val converter0 = CatalystTypeConverters.createToScalaConverter(
+          child0.dataType)
+        lazy val converter1 = CatalystTypeConverters.createToScalaConverter(
+          child1.dataType)
+        lazy val converter2 = CatalystTypeConverters.createToScalaConverter(
+          child2.dataType)
+        lazy val converter3 = CatalystTypeConverters.createToScalaConverter(
+          child3.dataType)
+        lazy val converter4 = CatalystTypeConverters.createToScalaConverter(
+          child4.dataType)
+        lazy val converter5 = CatalystTypeConverters.createToScalaConverter(
+          child5.dataType)
+        lazy val converter6 = CatalystTypeConverters.createToScalaConverter(
+          child6.dataType)
+        lazy val converter7 = CatalystTypeConverters.createToScalaConverter(
+          child7.dataType)
+        lazy val converter8 = CatalystTypeConverters.createToScalaConverter(
+          child8.dataType)
+        lazy val converter9 = CatalystTypeConverters.createToScalaConverter(
+          child9.dataType)
+        lazy val converter10 = CatalystTypeConverters.createToScalaConverter(
+          child10.dataType)
+        lazy val converter11 = CatalystTypeConverters.createToScalaConverter(
+          child11.dataType)
+        lazy val converter12 = CatalystTypeConverters.createToScalaConverter(
+          child12.dataType)
+        lazy val converter13 = CatalystTypeConverters.createToScalaConverter(
+          child13.dataType)
+        lazy val converter14 = CatalystTypeConverters.createToScalaConverter(
+          child14.dataType)
+        lazy val converter15 = CatalystTypeConverters.createToScalaConverter(
+          child15.dataType)
+        lazy val converter16 = CatalystTypeConverters.createToScalaConverter(
+          child16.dataType)
+        lazy val converter17 = CatalystTypeConverters.createToScalaConverter(
+          child17.dataType)
+        lazy val converter18 = CatalystTypeConverters.createToScalaConverter(
+          child18.dataType)
+        lazy val converter19 = CatalystTypeConverters.createToScalaConverter(
+          child19.dataType)
+        lazy val converter20 = CatalystTypeConverters.createToScalaConverter(
+          child20.dataType)
+        lazy val converter21 = CatalystTypeConverters.createToScalaConverter(
+          child21.dataType)
+        (input: InternalRow) => {
+          func(
+            converter0(child0.eval(input)),
+            converter1(child1.eval(input)),
+            converter2(child2.eval(input)),
+            converter3(child3.eval(input)),
+            converter4(child4.eval(input)),
+            converter5(child5.eval(input)),
+            converter6(child6.eval(input)),
+            converter7(child7.eval(input)),
+            converter8(child8.eval(input)),
+            converter9(child9.eval(input)),
+            converter10(child10.eval(input)),
+            converter11(child11.eval(input)),
+            converter12(child12.eval(input)),
+            converter13(child13.eval(input)),
+            converter14(child14.eval(input)),
+            converter15(child15.eval(input)),
+            converter16(child16.eval(input)),
+            converter17(child17.eval(input)),
+            converter18(child18.eval(input)),
+            converter19(child19.eval(input)),
+            converter20(child20.eval(input)),
+            converter21(child21.eval(input))
+          )
+        }
+    }
 
   // scalastyle:on line.size.limit
 
@@ -1501,14 +1502,15 @@ case class ScalaUDF(
     // such as IntegerType, its javaType is `int` and the returned type of user-defined
     // function is Object. Trying to convert an Object to `int` will cause casting exception.
     val evalCode = evals.map(_.code).mkString
-    val (converters, funcArguments) = converterTerms.zipWithIndex.map {
-      case (converter, i) =>
-        val eval = evals(i)
-        val argTerm = ctx.freshName("arg")
-        val convert =
-          s"Object $argTerm = ${eval.isNull} ? null : $converter.apply(${eval.value});"
-        (convert, argTerm)
-    }.unzip
+    val (converters, funcArguments) =
+      converterTerms.zipWithIndex.map {
+        case (converter, i) =>
+          val eval = evals(i)
+          val argTerm = ctx.freshName("arg")
+          val convert =
+            s"Object $argTerm = ${eval.isNull} ? null : $converter.apply(${eval.value});"
+          (convert, argTerm)
+      }.unzip
 
     val callFunc = s"${ctx.boxedType(dataType)} $resultTerm = " +
       s"(${ctx.boxedType(dataType)})${catalystConverterTerm}" +
@@ -1527,8 +1529,8 @@ case class ScalaUDF(
     """
   }
 
-  private[this] val converter =
-    CatalystTypeConverters.createToCatalystConverter(dataType)
+  private[this] val converter = CatalystTypeConverters
+    .createToCatalystConverter(dataType)
 
   override def eval(input: InternalRow): Any = converter(f(input))
 }

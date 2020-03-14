@@ -38,12 +38,13 @@ class FailFastFactoryTest
       when(underlying.close(any[Time])).thenReturn(Future.Done)
       val stats = new InMemoryStatsReceiver
       val label = "test"
-      val failfast = new FailFastFactory(
-        underlying,
-        stats,
-        timer,
-        label,
-        backoffs = backoffs)
+      val failfast =
+        new FailFastFactory(
+          underlying,
+          stats,
+          timer,
+          label,
+          backoffs = backoffs)
 
       val p, q, r = new Promise[Service[Int, Int]]
       when(underlying()).thenReturn(p)
@@ -178,11 +179,12 @@ class FailFastFactoryTest
       assert(timer.tasks.isEmpty)
       assert(failfast.status == underlying.status)
 
-      val status = underlying.status match {
-        case Status.Open   => Status.Closed
-        case Status.Closed => Status.Open
-        case status        => fail(s"bad status $status")
-      }
+      val status =
+        underlying.status match {
+          case Status.Open   => Status.Closed
+          case Status.Closed => Status.Open
+          case status        => fail(s"bad status $status")
+        }
       when(underlying.status).thenReturn(status)
       assert(failfast.status == underlying.status)
     }
@@ -252,12 +254,13 @@ class FailFastFactoryTest
       val ctx = newCtx()
       import ctx._
 
-      val failfast = new FailFastFactory(
-        underlying,
-        stats,
-        timer,
-        label,
-        backoffs = Stream.empty)
+      val failfast =
+        new FailFastFactory(
+          underlying,
+          stats,
+          timer,
+          label,
+          backoffs = Stream.empty)
       failfast()
     }
   }

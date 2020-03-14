@@ -328,11 +328,12 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
 
   private def sendRecords(numRecords: Int, tp: TopicPartition) {
     val futures = (0 until numRecords).map { i =>
-      val record = new ProducerRecord(
-        tp.topic(),
-        tp.partition(),
-        s"$i".getBytes,
-        s"$i".getBytes)
+      val record =
+        new ProducerRecord(
+          tp.topic(),
+          tp.partition(),
+          s"$i".getBytes,
+          s"$i".getBytes)
       debug(s"Sending this record: $record")
       this.producers.head.send(record)
     }

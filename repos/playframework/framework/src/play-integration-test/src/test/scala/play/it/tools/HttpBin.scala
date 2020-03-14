@@ -26,15 +26,16 @@ import play.filters.gzip.GzipFilter
   */
 object HttpBinApplication {
 
-  private val requestHeaderWriter = new Writes[RequestHeader] {
-    def writes(r: RequestHeader): JsValue =
-      Json.obj(
-        "origin" -> r.remoteAddress,
-        "url" -> "",
-        "args" -> r.queryString.mapValues(_.head),
-        "headers" -> r.headers.toSimpleMap
-      )
-  }
+  private val requestHeaderWriter =
+    new Writes[RequestHeader] {
+      def writes(r: RequestHeader): JsValue =
+        Json.obj(
+          "origin" -> r.remoteAddress,
+          "url" -> "",
+          "args" -> r.queryString.mapValues(_.head),
+          "headers" -> r.headers.toSimpleMap
+        )
+    }
 
   private def requestWriter[A] =
     new Writes[Request[A]] {

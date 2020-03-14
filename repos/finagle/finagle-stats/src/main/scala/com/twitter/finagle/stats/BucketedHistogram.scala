@@ -28,20 +28,21 @@ private[twitter] object BucketedHistogram {
     }
     require(error > 0.0 && error <= 1.0, error)
 
-    val values = build(Int.MaxValue.toDouble, 1.0 + (error * 2), 1.0)
-      .map(
-        _.toInt + 1
-      ) // this ensures that the smallest value is 2 (below we prepend `1`)
-      .distinct
-      .force
+    val values =
+      build(Int.MaxValue.toDouble, 1.0 + (error * 2), 1.0)
+        .map(
+          _.toInt + 1
+        ) // this ensures that the smallest value is 2 (below we prepend `1`)
+        .distinct
+        .force
     (Seq(1) ++ values).toArray
   }
 
   // 0.5% error => 1797 buckets, 7188 bytes, max 11 compares on binary search
   private[stats] val DefaultErrorPercent = 0.005
 
-  private[this] val DefaultLimits: Array[Int] =
-    makeLimitsFor(DefaultErrorPercent)
+  private[this] val DefaultLimits: Array[Int] = makeLimitsFor(
+    DefaultErrorPercent)
 
   /** check all the limits are non-negative and increasing in value. */
   private def assertLimits(limits: Array[Int]): Unit = {
@@ -59,8 +60,7 @@ private[twitter] object BucketedHistogram {
   /**
     * Creates an instance using the default bucket limits.
     */
-  def apply(): BucketedHistogram =
-    new BucketedHistogram(DefaultLimits)
+  def apply(): BucketedHistogram = new BucketedHistogram(DefaultLimits)
 
 }
 
@@ -123,16 +123,17 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     * @inheritdoc
     */
   def add(value: Long): Unit = {
-    val index = if (value >= Int.MaxValue) {
-      total += Int.MaxValue
-      countsLength - 1
-    } else {
-      total += value
-      val asInt = value.toInt
-      // recall that limits represent upper bounds, exclusive — so take the next position (+1).
-      // we assume that no inputs can be larger than the largest value in the limits array.
-      Math.abs(util.Arrays.binarySearch(limits, asInt) + 1)
-    }
+    val index =
+      if (value >= Int.MaxValue) {
+        total += Int.MaxValue
+        countsLength - 1
+      } else {
+        total += value
+        val asInt = value.toInt
+        // recall that limits represent upper bounds, exclusive — so take the next position (+1).
+        // we assume that no inputs can be larger than the largest value in the limits array.
+        Math.abs(util.Arrays.binarySearch(limits, asInt) + 1)
+      }
     counts(index) += 1
     num += 1
   }
@@ -227,8 +228,7 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     }
   }
 
-  override def getQuantile(quantile: Double): Long =
-    percentile(quantile)
+  override def getQuantile(quantile: Double): Long = percentile(quantile)
 
   override def getQuantiles(quantiles: Array[Double]): Array[Long] = {
     val ps = new Array[Long](quantiles.length)

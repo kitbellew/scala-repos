@@ -48,9 +48,10 @@ class SparkSubmitSuite
     System.setProperty("spark.testing", "true")
   }
 
-  private val noOpOutputStream = new OutputStream {
-    def write(b: Int) = {}
-  }
+  private val noOpOutputStream =
+    new OutputStream {
+      def write(b: Int) = {}
+    }
 
   /** Simple PrintStream that reads data into a buffer */
   private class BufferPrintStream extends PrintStream(noOpOutputStream) {
@@ -70,18 +71,19 @@ class SparkSubmitSuite
     @volatile var exitedCleanly = false
     SparkSubmit.exitFn = (_) => exitedCleanly = true
 
-    val thread = new Thread {
-      override def run() =
-        try {
-          SparkSubmit.main(input)
-        } catch {
-          // If exceptions occur after the "exit" has happened, fine to ignore them.
-          // These represent code paths not reachable during normal execution.
-          case e: Exception =>
-            if (!exitedCleanly)
-              throw e
-        }
-    }
+    val thread =
+      new Thread {
+        override def run() =
+          try {
+            SparkSubmit.main(input)
+          } catch {
+            // If exceptions occur after the "exit" has happened, fine to ignore them.
+            // These represent code paths not reachable during normal execution.
+            case e: Exception =>
+              if (!exitedCleanly)
+                throw e
+          }
+      }
     thread.start()
     thread.join()
     val joined = printStream.lineBuffer.mkString("\n")
@@ -229,8 +231,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     val childArgsStr = childArgs.mkString(" ")
     childArgsStr should include("--class org.SomeClass")
     childArgsStr should include("--executor-memory 5g")
@@ -283,8 +285,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     childArgs.mkString(" ") should be("arg1 arg2")
     mainClass should be("org.SomeClass")
     classpath should have length (4)
@@ -386,8 +388,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     childArgs.mkString(" ") should be("arg1 arg2")
     mainClass should be("org.SomeClass")
     classpath should have length (1)
@@ -418,8 +420,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     childArgs.mkString(" ") should be("arg1 arg2")
     mainClass should be("org.SomeClass")
     classpath should have length (1)
@@ -532,9 +534,13 @@ class SparkSubmitSuite
     val main = MavenCoordinate("my.great.lib", "mylib", "0.1")
     val sparkHome = sys.props
       .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
-    val rScriptDir =
-      Seq(sparkHome, "R", "pkg", "inst", "tests", "packageInAJarTest.R")
-        .mkString(File.separator)
+    val rScriptDir = Seq(
+      sparkHome,
+      "R",
+      "pkg",
+      "inst",
+      "tests",
+      "packageInAJarTest.R").mkString(File.separator)
     assert(new File(rScriptDir).exists)
     IvyTestUtils.withRepository(main, None, None, withR = true) { repo =>
       val args = Seq(
@@ -680,8 +686,8 @@ class SparkSubmitSuite
   }
 
   test("user classpath first in driver") {
-    val systemJar =
-      TestUtils.createJarWithFiles(Map("test.resource" -> "SYSTEM"))
+    val systemJar = TestUtils.createJarWithFiles(
+      Map("test.resource" -> "SYSTEM"))
     val userJar = TestUtils.createJarWithFiles(Map("test.resource" -> "USER"))
     val args = Seq(
       "--class",
@@ -733,9 +739,10 @@ class SparkSubmitSuite
       Map("SPARK_TESTING" -> "1", "SPARK_HOME" -> sparkHome))
 
     try {
-      val exitCode = failAfter(60 seconds) {
-        process.waitFor()
-      }
+      val exitCode =
+        failAfter(60 seconds) {
+          process.waitFor()
+        }
       if (exitCode != 0) {
         fail(
           s"Process returned with exit code $exitCode. See the log4j logs for more detail.")
@@ -750,9 +757,10 @@ class SparkSubmitSuite
     val tmpDir = Utils.createTempDir()
 
     val defaultsConf = new File(tmpDir.getAbsolutePath, "spark-defaults.conf")
-    val writer = new OutputStreamWriter(
-      new FileOutputStream(defaultsConf),
-      StandardCharsets.UTF_8)
+    val writer =
+      new OutputStreamWriter(
+        new FileOutputStream(defaultsConf),
+        StandardCharsets.UTF_8)
     for ((key, value) <- defaults)
       writer.write(s"$key $value\n")
 
@@ -801,11 +809,11 @@ object SimpleApplicationTest {
     val configs = Seq("spark.master", "spark.app.name")
     for (config <- configs) {
       val masterValue = conf.get(config)
-      val executorValues = sc
-        .makeRDD(1 to 100, 10)
-        .map(x => SparkEnv.get.conf.get(config))
-        .collect()
-        .distinct
+      val executorValues =
+        sc.makeRDD(1 to 100, 10)
+          .map(x => SparkEnv.get.conf.get(config))
+          .collect()
+          .distinct
       if (executorValues.size != 1) {
         throw new SparkException(
           s"Inconsistent values for $config: $executorValues")

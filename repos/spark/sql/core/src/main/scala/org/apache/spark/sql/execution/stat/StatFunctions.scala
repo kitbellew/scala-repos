@@ -71,10 +71,11 @@ private[sql] object StatFunctions extends Logging {
           " is not supported.")
       Column(Cast(Column(colName).expr, DoubleType))
     }
-    val emptySummaries = Array.fill(cols.size)(
-      new QuantileSummaries(
-        QuantileSummaries.defaultCompressThreshold,
-        relativeError))
+    val emptySummaries =
+      Array.fill(cols.size)(
+        new QuantileSummaries(
+          QuantileSummaries.defaultCompressThreshold,
+          relativeError))
 
     // Note that it works more or less by accident as `rdd.aggregate` is not a pure function:
     // this function returns the same array as given in the input (because `aggregate` reuses
@@ -217,10 +218,9 @@ private[sql] object StatFunctions extends Logging {
       val inserted = this.withHeadBufferInserted
       assert(inserted.headSampled.isEmpty)
       assert(inserted.count == count + headSampled.size)
-      val compressed =
-        compressImmut(
-          inserted.sampled,
-          mergeThreshold = 2 * relativeError * inserted.count)
+      val compressed = compressImmut(
+        inserted.sampled,
+        mergeThreshold = 2 * relativeError * inserted.count)
       new QuantileSummaries(
         compressThreshold,
         relativeError,
@@ -260,8 +260,9 @@ private[sql] object StatFunctions extends Logging {
         // TODO: could replace full sort by ordered merge, the two lists are known to be sorted
         // already.
         val res = (sampled ++ other.sampled).sortBy(_.value)
-        val comp =
-          compressImmut(res, mergeThreshold = 2 * relativeError * count)
+        val comp = compressImmut(
+          res,
+          mergeThreshold = 2 * relativeError * count)
         new QuantileSummaries(
           other.compressThreshold,
           other.relativeError,
@@ -490,23 +491,24 @@ private[sql] object StatFunctions extends Logging {
       columnSize < 1e4,
       s"The number of distinct values for $col2, can't " +
         s"exceed 1e4. Currently $columnSize")
-    val table = counts
-      .groupBy(_.get(0))
-      .map {
-        case (col1Item, rows) =>
-          val countsRow = new GenericMutableRow(columnSize + 1)
-          rows.foreach { (row: Row) =>
-            // row.get(0) is column 1
-            // row.get(1) is column 2
-            // row.get(2) is the frequency
-            val columnIndex = distinctCol2.get(cleanElement(row.get(1))).get
-            countsRow.setLong(columnIndex + 1, row.getLong(2))
-          }
-          // the value of col1 is the first value, the rest are the counts
-          countsRow.update(0, UTF8String.fromString(cleanElement(col1Item)))
-          countsRow
-      }
-      .toSeq
+    val table =
+      counts
+        .groupBy(_.get(0))
+        .map {
+          case (col1Item, rows) =>
+            val countsRow = new GenericMutableRow(columnSize + 1)
+            rows.foreach { (row: Row) =>
+              // row.get(0) is column 1
+              // row.get(1) is column 2
+              // row.get(2) is the frequency
+              val columnIndex = distinctCol2.get(cleanElement(row.get(1))).get
+              countsRow.setLong(columnIndex + 1, row.getLong(2))
+            }
+            // the value of col1 is the first value, the rest are the counts
+            countsRow.update(0, UTF8String.fromString(cleanElement(col1Item)))
+            countsRow
+        }
+        .toSeq
     // Back ticks can't exist in DataFrame column names, therefore drop them. To be able to accept
     // special keywords and `.`, wrap the column names in ``.
     def cleanColumnName(name: String): String = {

@@ -8,8 +8,7 @@ class LinkedHashMap[K, V] private (
     extends HashMap[K, V](inner) {
   self =>
 
-  def this() =
-    this(mutable.LinkedHashMap.empty[Box[K], V], false)
+  def this() = this(mutable.LinkedHashMap.empty[Box[K], V], false)
 
   def this(initialCapacity: Int, loadFactor: Float, accessOrder: Boolean) = {
     this(mutable.LinkedHashMap.empty[Box[K], V], accessOrder)

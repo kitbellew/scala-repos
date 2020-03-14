@@ -58,8 +58,9 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
       else
         commentPrefix.length,
       commentText.length)
-    val fileTypeHandler: QuoteHandler =
-      TypedHandler.getQuoteHandler(containingFile, editor)
+    val fileTypeHandler: QuoteHandler = TypedHandler.getQuoteHandler(
+      containingFile,
+      editor)
     val javaLikeQuoteHandler: JavaLikeQuoteHandler =
       fileTypeHandler match {
         case quoteHandler: JavaLikeQuoteHandler => quoteHandler
@@ -72,8 +73,9 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
       }
       if (javaLikeQuoteHandler != null && javaLikeQuoteHandler.getStringTokenTypes != null &&
           javaLikeQuoteHandler.getStringTokenTypes.contains(tokenType)) {
-        val text: String =
-          commentText.substring(lexer.getTokenStart, lexer.getTokenEnd)
+        val text: String = commentText.substring(
+          lexer.getTokenStart,
+          lexer.getTokenEnd)
         val endOffset: Int = comment.getTextRange.getEndOffset
         if (text.endsWith(
               expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText

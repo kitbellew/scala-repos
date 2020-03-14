@@ -49,9 +49,8 @@ package object codegen {
 
     def apply(obj: Any): Unit = {
       val generatedClass = obj.getClass
-      val classLoader =
-        generatedClass.getClassLoader
-          .asInstanceOf[scala.tools.nsc.interpreter.AbstractFileClassLoader]
+      val classLoader = generatedClass.getClassLoader
+        .asInstanceOf[scala.tools.nsc.interpreter.AbstractFileClassLoader]
       val generatedBytes = classLoader.classBytes(generatedClass.getName)
 
       val packageDir =

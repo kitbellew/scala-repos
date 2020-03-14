@@ -44,8 +44,10 @@ private[akka] trait IntegrationRoutingSpec
       val binding = Http().bindAndHandle(p.route, host, port)
 
       try {
-        val targetUri =
-          p.request.uri.withHost(host).withPort(port).withScheme("http")
+        val targetUri = p.request.uri
+          .withHost(host)
+          .withPort(port)
+          .withScheme("http")
         val response =
           Http().singleRequest(p.request.withUri(targetUri)).futureValue
         checking(response)

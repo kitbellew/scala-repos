@@ -178,8 +178,9 @@ private[spark] class MetricsSystem private (
 
   private def registerSources() {
     val instConfig = metricsConfig.getInstance(instance)
-    val sourceConfigs =
-      metricsConfig.subProperties(instConfig, MetricsSystem.SOURCE_REGEX)
+    val sourceConfigs = metricsConfig.subProperties(
+      instConfig,
+      MetricsSystem.SOURCE_REGEX)
 
     // Register all the sources related to instance
     sourceConfigs.foreach { kv =>
@@ -196,8 +197,9 @@ private[spark] class MetricsSystem private (
 
   private def registerSinks() {
     val instConfig = metricsConfig.getInstance(instance)
-    val sinkConfigs =
-      metricsConfig.subProperties(instConfig, MetricsSystem.SINK_REGEX)
+    val sinkConfigs = metricsConfig.subProperties(
+      instConfig,
+      MetricsSystem.SINK_REGEX)
 
     sinkConfigs.foreach { kv =>
       val classPath = kv._2.getProperty("class")

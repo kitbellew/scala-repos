@@ -71,12 +71,11 @@ object SourceCodeGenerator {
       user: Option[String],
       password: Option[String],
       ignoreInvalidDefaults: Boolean): Unit = {
-    val profileInstance: JdbcProfile =
-      Class
-        .forName(profile + "$")
-        .getField("MODULE$")
-        .get(null)
-        .asInstanceOf[JdbcProfile]
+    val profileInstance: JdbcProfile = Class
+      .forName(profile + "$")
+      .getField("MODULE$")
+      .get(null)
+      .asInstanceOf[JdbcProfile]
     val dbFactory = profileInstance.api.Database
     val db = dbFactory.forURL(
       url,
@@ -101,8 +100,8 @@ object SourceCodeGenerator {
       ignoreInvalidDefaults: Boolean = true): Unit = {
     val dc = DatabaseConfig.forURI[JdbcProfile](uri)
     val pkg = dc.config.getString("codegen.package")
-    val out =
-      outputDir.getOrElse(dc.config.getStringOr("codegen.outputDir", "."))
+    val out = outputDir.getOrElse(
+      dc.config.getStringOr("codegen.outputDir", "."))
     val profile =
       if (dc.profileIsObject)
         dc.profileName

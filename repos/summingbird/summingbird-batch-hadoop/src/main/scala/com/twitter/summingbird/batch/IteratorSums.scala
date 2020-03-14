@@ -39,13 +39,14 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
         if (items.isEmpty)
           None
         else {
-          val op = new BufferOp[(T1, T2)](blockSize) {
-            def operate(items: Seq[(T1, T2)]): Option[(T1, T2)] =
-              for {
-                t1 <- Semigroup.sumOption(items.iterator.map(_._1))
-                t2 <- Semigroup.sumOption(items.iterator.map(_._2))
-              } yield (t1, t2)
-          }
+          val op =
+            new BufferOp[(T1, T2)](blockSize) {
+              def operate(items: Seq[(T1, T2)]): Option[(T1, T2)] =
+                for {
+                  t1 <- Semigroup.sumOption(items.iterator.map(_._1))
+                  t2 <- Semigroup.sumOption(items.iterator.map(_._2))
+                } yield (t1, t2)
+            }
           items.foreach(op.put(_))
           op.flush
         }

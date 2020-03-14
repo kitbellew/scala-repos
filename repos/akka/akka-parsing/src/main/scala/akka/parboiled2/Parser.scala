@@ -245,10 +245,11 @@ abstract class Parser(
         val principalErrorIndex = phase1_establishPrincipalErrorIndex()
         val p2 = phase2_establishReportedErrorIndex(principalErrorIndex)
         val reportQuiet = phase3_determineReportQuiet(principalErrorIndex)
-        val parseError = phase4_collectRuleTraces(
-          p2.reportedErrorIndex,
-          principalErrorIndex,
-          reportQuiet)()
+        val parseError =
+          phase4_collectRuleTraces(
+            p2.reportedErrorIndex,
+            principalErrorIndex,
+            reportQuiet)()
         scheme.parseError(parseError)
       }
     } catch {
@@ -588,10 +589,11 @@ abstract class Parser(
     def bubbleUp(key: RuleTrace.NonTerminalKey, start: Int): Nothing =
       throw prepend(key, start)
     def prepend(key: RuleTrace.NonTerminalKey, start: Int): this.type = {
-      val offset = phase match {
-        case x: CollectingRuleTraces ⇒ start - x.minErrorIndex
-        case _ ⇒ throw new IllegalStateException
-      }
+      val offset =
+        phase match {
+          case x: CollectingRuleTraces ⇒ start - x.minErrorIndex
+          case _ ⇒ throw new IllegalStateException
+        }
       _trace = _trace.copy(prefix =
         RuleTrace.NonTerminal(key, offset) :: _trace.prefix)
       this
@@ -738,37 +740,40 @@ object ParserMacros {
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
-  type RunnableRuleContext[L <: HList] = Context {
-    type PrefixType = Rule.Runnable[L]
-  }
+  type RunnableRuleContext[L <: HList] =
+    Context {
+      type PrefixType = Rule.Runnable[L]
+    }
 
   def runImpl[L <: HList: c.WeakTypeTag](c: RunnableRuleContext[L])()(
       scheme: c.Expr[Parser.DeliveryScheme[L]]): c.Expr[scheme.value.Result] = {
     import c.universe._
-    val runCall = c.prefix.tree match {
-      case q"parboiled2.this.Rule.Runnable[$l]($ruleExpr)" ⇒
-        ruleExpr match {
-          case q"$p.$r" if p.tpe <:< typeOf[Parser] ⇒
-            q"val p = $p; p.__run[$l](p.$r)($scheme)"
-          case q"$p.$r($args)" if p.tpe <:< typeOf[Parser] ⇒
-            q"val p = $p; p.__run[$l](p.$r($args))($scheme)"
-          case q"$p.$r[$t]" if p.tpe <:< typeOf[Parser] ⇒
-            q"val p = $p; p.__run[$l](p.$r[$t])($scheme)"
-          case q"$p.$r[$t]" if p.tpe <:< typeOf[RuleX] ⇒
-            q"__run[$l]($ruleExpr)($scheme)"
-          case x ⇒ c.abort(x.pos, "Illegal `.run()` call base: " + x)
-        }
-      case x ⇒ c.abort(x.pos, "Illegal `Runnable.apply` call: " + x)
-    }
+    val runCall =
+      c.prefix.tree match {
+        case q"parboiled2.this.Rule.Runnable[$l]($ruleExpr)" ⇒
+          ruleExpr match {
+            case q"$p.$r" if p.tpe <:< typeOf[Parser] ⇒
+              q"val p = $p; p.__run[$l](p.$r)($scheme)"
+            case q"$p.$r($args)" if p.tpe <:< typeOf[Parser] ⇒
+              q"val p = $p; p.__run[$l](p.$r($args))($scheme)"
+            case q"$p.$r[$t]" if p.tpe <:< typeOf[Parser] ⇒
+              q"val p = $p; p.__run[$l](p.$r[$t])($scheme)"
+            case q"$p.$r[$t]" if p.tpe <:< typeOf[RuleX] ⇒
+              q"__run[$l]($ruleExpr)($scheme)"
+            case x ⇒ c.abort(x.pos, "Illegal `.run()` call base: " + x)
+          }
+        case x ⇒ c.abort(x.pos, "Illegal `Runnable.apply` call: " + x)
+      }
     c.Expr[scheme.value.Result](runCall)
   }
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
-  type ParserContext = Context {
-    type PrefixType = Parser
-  }
+  type ParserContext =
+    Context {
+      type PrefixType = Parser
+    }
 
   def ruleImpl[I <: HList: ctx.WeakTypeTag, O <: HList: ctx.WeakTypeTag](
       ctx: ParserContext)(r: ctx.Expr[Rule[I, O]]): ctx.Expr[Rule[I, O]] = {
@@ -785,9 +790,10 @@ object ParserMacros {
   def namedRuleImpl[I <: HList: ctx.WeakTypeTag, O <: HList: ctx.WeakTypeTag](
       ctx: ParserContext)(name: ctx.Expr[String])(
       r: ctx.Expr[Rule[I, O]]): ctx.Expr[Rule[I, O]] = {
-    val opTreeCtx = new OpTreeContext[ctx.type] {
-      val c: ctx.type = ctx
-    }
+    val opTreeCtx =
+      new OpTreeContext[ctx.type] {
+        val c: ctx.type = ctx
+      }
     val opTree = opTreeCtx.RuleCall(Left(opTreeCtx.OpTree(r.tree)), name.tree)
     import ctx.universe._
     val ruleTree = q"""

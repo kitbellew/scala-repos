@@ -400,35 +400,40 @@ object ShapedValue {
     val rSym = symbolOf[R]
     if (!rSym.isClass || !rSym.asClass.isCaseClass)
       c.abort(c.enclosingPosition, s"${rSym.fullName} must be a case class")
-    val rModule = rSym.companion match {
-      case NoSymbol =>
-        q"${rSym.name.toTermName}" // This can happen for case classes defined inside of methods
-      case s => q"$s"
-    }
-    val fields = rTag.tpe.decls.collect {
-      case s: TermSymbol if s.isVal && s.isCaseAccessor =>
-        (
-          TermName(s.name.toString.trim),
-          s.typeSignature,
-          TermName(c.freshName()))
-    }.toIndexedSeq
+    val rModule =
+      rSym.companion match {
+        case NoSymbol =>
+          q"${rSym.name.toTermName}" // This can happen for case classes defined inside of methods
+        case s => q"$s"
+      }
+    val fields =
+      rTag.tpe.decls.collect {
+        case s: TermSymbol if s.isVal && s.isCaseAccessor =>
+          (
+            TermName(s.name.toString.trim),
+            s.typeSignature,
+            TermName(c.freshName()))
+      }.toIndexedSeq
     val (f, g) =
       if (uTag.tpe <:< c
             .typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
-        val rTypeAsHList = fields.foldRight[Tree](
-          tq"_root_.slick.collection.heterogeneous.HNil.type") {
-          case ((_, t, _), z) =>
-            tq"_root_.slick.collection.heterogeneous.HCons[$t, $z]"
-        }
-        val pat = fields.foldRight[Tree](
-          pq"_root_.slick.collection.heterogeneous.HNil") {
-          case ((_, _, n), z) =>
-            pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
-        }
-        val cons = fields.foldRight[Tree](
-          q"_root_.slick.collection.heterogeneous.HNil") {
-          case ((n, _, _), z) => q"v.$n :: $z"
-        }
+        val rTypeAsHList =
+          fields.foldRight[Tree](
+            tq"_root_.slick.collection.heterogeneous.HNil.type") {
+            case ((_, t, _), z) =>
+              tq"_root_.slick.collection.heterogeneous.HCons[$t, $z]"
+          }
+        val pat =
+          fields.foldRight[Tree](
+            pq"_root_.slick.collection.heterogeneous.HNil") {
+            case ((_, _, n), z) =>
+              pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
+          }
+        val cons =
+          fields.foldRight[Tree](
+            q"_root_.slick.collection.heterogeneous.HNil") {
+            case ((n, _, _), z) => q"v.$n :: $z"
+          }
         (
           q"({ case $pat => new $rTag(..${fields.map(
             _._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
@@ -499,8 +504,8 @@ object ProvenShape {
       implicit sh: Shape[_ <: FlatShapeLevel, T, U, _]): ProvenShape[U] =
     new ProvenShape[U] {
       def value = v
-      val shape: Shape[_ <: FlatShapeLevel, _, U, _] =
-        sh.asInstanceOf[Shape[FlatShapeLevel, _, U, _]]
+      val shape: Shape[_ <: FlatShapeLevel, _, U, _] = sh
+        .asInstanceOf[Shape[FlatShapeLevel, _, U, _]]
       def packedValue[R](
           implicit ev: Shape[_ <: FlatShapeLevel, _, U, R]): ShapedValue[R, U] =
         ShapedValue(

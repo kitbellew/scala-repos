@@ -176,14 +176,15 @@ object JdbcRDD {
       numPartitions: Int,
       mapRow: JFunction[ResultSet, T]): JavaRDD[T] = {
 
-    val jdbcRDD = new JdbcRDD[T](
-      sc.sc,
-      () => connectionFactory.getConnection,
-      sql,
-      lowerBound,
-      upperBound,
-      numPartitions,
-      (resultSet: ResultSet) => mapRow.call(resultSet))(fakeClassTag)
+    val jdbcRDD =
+      new JdbcRDD[T](
+        sc.sc,
+        () => connectionFactory.getConnection,
+        sql,
+        lowerBound,
+        upperBound,
+        numPartitions,
+        (resultSet: ResultSet) => mapRow.call(resultSet))(fakeClassTag)
 
     new JavaRDD[T](jdbcRDD)(fakeClassTag)
   }
@@ -212,11 +213,12 @@ object JdbcRDD {
       upperBound: Long,
       numPartitions: Int): JavaRDD[Array[Object]] = {
 
-    val mapRow = new JFunction[ResultSet, Array[Object]] {
-      override def call(resultSet: ResultSet): Array[Object] = {
-        resultSetToObjectArray(resultSet)
+    val mapRow =
+      new JFunction[ResultSet, Array[Object]] {
+        override def call(resultSet: ResultSet): Array[Object] = {
+          resultSetToObjectArray(resultSet)
+        }
       }
-    }
 
     create(
       sc,

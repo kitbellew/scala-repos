@@ -70,10 +70,11 @@ object OptimizationPackage {
       if (params.useL1)
         throw new UnsupportedOperationException(
           "Can't use L1 with second order optimizer right now")
-      val minimizer = new TruncatedNewtonMinimizer[Vector, Hessian](
-        params.maxIterations,
-        params.tolerance,
-        params.regularization)
+      val minimizer =
+        new TruncatedNewtonMinimizer[Vector, Hessian](
+          params.maxIterations,
+          params.tolerance,
+          params.regularization)
       minimizer.iterations(fn, init)
     }
   }
@@ -158,9 +159,10 @@ trait OptimizationPackageLowPriority {
       require(
         !params.useL1,
         "Sorry, we can't use L1 with immutable objects right now...")
-      val lbfgs: LBFGS[Wrapper] = new LBFGS[Wrapper](
-        tolerance = params.tolerance,
-        maxIter = params.maxIterations)
+      val lbfgs: LBFGS[Wrapper] =
+        new LBFGS[Wrapper](
+          tolerance = params.tolerance,
+          maxIter = params.maxIterations)
       val res = lbfgs.minimize(
         DiffFunction.withL2Regularization(wrapped, params.regularization),
         wrap(init))

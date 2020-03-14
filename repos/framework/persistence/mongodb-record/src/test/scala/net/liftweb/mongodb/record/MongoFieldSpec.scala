@@ -225,12 +225,13 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
           val formXml = mandatory.toForm
           formXml.isDefined must_== true
           formXml foreach { fprime =>
-            val f = ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
-              ns.filter {
-                case e: Elem =>
-                  e.attribute("selected").map(_.text) == Some("selected")
-                case _ => false
-              }) andThen "* [value]" #> ".*"))(fprime)
+            val f =
+              ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
+                ns.filter {
+                  case e: Elem =>
+                    e.attribute("selected").map(_.text) == Some("selected")
+                  case _ => false
+                }) andThen "* [value]" #> ".*"))(fprime)
             val ret: Boolean = Helpers.compareXml(f, fp)
 
             ret must_== true
@@ -640,9 +641,10 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
               ("$flags" -> subRec.pattern.value.flags)) ~
           ("uuid" -> ("$uuid" -> subRec.uuid.value.toString))
 
-      val srJsExp = new JsExp {
-        def toJsCmd = compactRender(srJson)
-      }
+      val srJsExp =
+        new JsExp {
+          def toJsCmd = compactRender(srJson)
+        }
 
       passBasicTests(
         subRec,
@@ -698,12 +700,14 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
               ("$flags" -> lst(1).pattern.value.flags)) ~
           ("uuid" -> ("$uuid" -> lst(1).uuid.value.toString))
 
-      val sr1JsExp = new JsExp {
-        def toJsCmd = compactRender(sr1Json)
-      }
-      val sr2JsExp = new JsExp {
-        def toJsCmd = compactRender(sr2Json)
-      }
+      val sr1JsExp =
+        new JsExp {
+          def toJsCmd = compactRender(sr1Json)
+        }
+      val sr2JsExp =
+        new JsExp {
+          def toJsCmd = compactRender(sr2Json)
+        }
 
       passBasicTests(
         lst,

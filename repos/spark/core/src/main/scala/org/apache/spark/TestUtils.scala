@@ -113,8 +113,9 @@ private[spark] object TestUtils {
       new JarOutputStream(jarFileStream, new java.util.jar.Manifest())
 
     for (file <- files) {
-      val jarEntry = new JarEntry(
-        Paths.get(directoryPrefix.getOrElse(""), file.getName).toString)
+      val jarEntry =
+        new JarEntry(
+          Paths.get(directoryPrefix.getOrElse(""), file.getName).toString)
       jarStream.putNextEntry(jarEntry)
 
       val in = new FileInputStream(file)
@@ -148,17 +149,18 @@ private[spark] object TestUtils {
 
     // Calling this outputs a class file in pwd. It's easier to just rename the files than
     // build a custom FileManager that controls the output location.
-    val options = if (classpathUrls.nonEmpty) {
-      Seq(
-        "-classpath",
-        classpathUrls
-          .map {
-            _.getFile
-          }
-          .mkString(File.pathSeparator))
-    } else {
-      Seq()
-    }
+    val options =
+      if (classpathUrls.nonEmpty) {
+        Seq(
+          "-classpath",
+          classpathUrls
+            .map {
+              _.getFile
+            }
+            .mkString(File.pathSeparator))
+      } else {
+        Seq()
+      }
     compiler
       .getTask(
         null,
@@ -196,10 +198,11 @@ private[spark] object TestUtils {
         s" extends ${c}"
       }
       .getOrElse("")
-    val sourceFile = new JavaSourceFromString(
-      className,
-      "public class " + className + extendsText + " implements java.io.Serializable {" +
-        "  @Override public String toString() { return \"" + toStringValue + "\"; }}")
+    val sourceFile =
+      new JavaSourceFromString(
+        className,
+        "public class " + className + extendsText + " implements java.io.Serializable {" +
+          "  @Override public String toString() { return \"" + toStringValue + "\"; }}")
     createCompiledClass(className, destDir, sourceFile, classpathUrls)
   }
 

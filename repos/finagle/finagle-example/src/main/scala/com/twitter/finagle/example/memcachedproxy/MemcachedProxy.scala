@@ -23,9 +23,10 @@ object MemcachedProxy {
       .hostConnectionLimit(1)
       .build()
 
-    val proxyService = new Service[Command, Response] {
-      def apply(request: Command) = client(request)
-    }
+    val proxyService =
+      new Service[Command, Response] {
+        def apply(request: Command) = client(request)
+      }
 
     val server: Server = ServerBuilder()
       .codec(Memcached())

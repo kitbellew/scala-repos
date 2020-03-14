@@ -28,26 +28,27 @@ private[prediction] object MailChimpConnector extends FormConnector {
 
   override def toEventJson(data: Map[String, String]): JObject = {
 
-    val json = data.get("type") match {
-      case Some("subscribe") => subscribeToEventJson(data)
-      // UNSUBSCRIBE
-      case Some("unsubscribe") => unsubscribeToEventJson(data)
-      // PROFILE UPDATES
-      case Some("profile") => profileToEventJson(data)
-      // EMAIL UPDATE
-      case Some("upemail") => upemailToEventJson(data)
-      // CLEANED EMAILS
-      case Some("cleaned") => cleanedToEventJson(data)
-      // CAMPAIGN SENDING STATUS
-      case Some("campaign") => campaignToEventJson(data)
-      // invalid type
-      case Some(x) =>
-        throw new ConnectorException(
-          s"Cannot convert unknown MailChimp data type ${x} to event JSON")
-      case None =>
-        throw new ConnectorException(
-          s"The field 'type' is required for MailChimp data.")
-    }
+    val json =
+      data.get("type") match {
+        case Some("subscribe") => subscribeToEventJson(data)
+        // UNSUBSCRIBE
+        case Some("unsubscribe") => unsubscribeToEventJson(data)
+        // PROFILE UPDATES
+        case Some("profile") => profileToEventJson(data)
+        // EMAIL UPDATE
+        case Some("upemail") => upemailToEventJson(data)
+        // CLEANED EMAILS
+        case Some("cleaned") => cleanedToEventJson(data)
+        // CAMPAIGN SENDING STATUS
+        case Some("campaign") => campaignToEventJson(data)
+        // invalid type
+        case Some(x) =>
+          throw new ConnectorException(
+            s"Cannot convert unknown MailChimp data type ${x} to event JSON")
+        case None =>
+          throw new ConnectorException(
+            s"The field 'type' is required for MailChimp data.")
+      }
     json
   }
 
@@ -79,8 +80,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     // TODO: handle optional fields
     val json =
@@ -128,8 +129,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "unsubscribe") ~
@@ -172,8 +173,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "profile") ~
@@ -208,8 +209,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "upemail") ~
@@ -242,8 +243,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "cleaned") ~
@@ -275,8 +276,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "campaign") ~

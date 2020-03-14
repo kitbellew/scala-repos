@@ -83,8 +83,7 @@ package object js {
 
   /** Makes explicit an implicitly available `ConstructorTag[T]`. */
   def constructorTag[T <: js.Any](
-      implicit tag: ConstructorTag[T]): ConstructorTag[T] =
-    tag
+      implicit tag: ConstructorTag[T]): ConstructorTag[T] = tag
 
   /** Invokes any available debugging functionality.
     *  If no debugging functionality is available, this statement has no effect.
@@ -99,8 +98,7 @@ package object js {
   def debugger(): Unit = sys.error("stub")
 
   /** Evaluates JavaScript code and returns the result. */
-  @inline def eval(x: String): Any =
-    js.Dynamic.global.eval(x)
+  @inline def eval(x: String): Any = js.Dynamic.global.eval(x)
 
   /** Marks the annotated class, trait or object as a native JS entity.
     *

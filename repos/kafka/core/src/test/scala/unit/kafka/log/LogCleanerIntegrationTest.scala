@@ -66,9 +66,10 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     // wait until cleaning up to base_offset, note that cleaning happens only when "log dirty ratio" is higher than LogConfig.MinCleanableDirtyRatioProp
     cleaner.awaitCleaned("log", 0, firstDirty)
     val compactedSize = log.logSegments.map(_.size).sum
-    val lastCleaned = cleaner.cleanerManager.allCleanerCheckpoints
-      .get(TopicAndPartition("log", 0))
-      .get
+    val lastCleaned =
+      cleaner.cleanerManager.allCleanerCheckpoints
+        .get(TopicAndPartition("log", 0))
+        .get
     assertTrue(
       s"log cleaner should have processed up to offset $firstDirty, but lastCleaned=$lastCleaned",
       lastCleaned >= firstDirty)
@@ -92,9 +93,10 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     val firstDirty2 = log.activeSegment.baseOffset
     cleaner.awaitCleaned("log", 0, firstDirty2)
 
-    val lastCleaned2 = cleaner.cleanerManager.allCleanerCheckpoints
-      .get(TopicAndPartition("log", 0))
-      .get
+    val lastCleaned2 =
+      cleaner.cleanerManager.allCleanerCheckpoints
+        .get(TopicAndPartition("log", 0))
+        .get
     assertTrue(
       s"log cleaner should have processed up to offset $firstDirty2",
       lastCleaned2 >= firstDirty2);
@@ -112,8 +114,9 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     cleaner.logs.remove(topics(0))
 
     cleaner.updateCheckpoints(logDir)
-    val checkpoints = new OffsetCheckpoint(
-      new File(logDir, cleaner.cleanerManager.offsetCheckpointFile)).read()
+    val checkpoints =
+      new OffsetCheckpoint(
+        new File(logDir, cleaner.cleanerManager.offsetCheckpointFile)).read()
 
     // we expect partition 0 to be gone
     assert(!checkpoints.contains(topics(0)))
@@ -189,12 +192,13 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
         LogConfig.MinCleanableDirtyRatioProp,
         minCleanableDirtyRatio: java.lang.Float)
 
-      val log = new Log(
-        dir = dir,
-        LogConfig(logProps),
-        recoveryPoint = 0L,
-        scheduler = time.scheduler,
-        time = time)
+      val log =
+        new Log(
+          dir = dir,
+          LogConfig(logProps),
+          recoveryPoint = 0L,
+          scheduler = time.scheduler,
+          time = time)
       logs.put(TopicAndPartition("log", i), log)
     }
 

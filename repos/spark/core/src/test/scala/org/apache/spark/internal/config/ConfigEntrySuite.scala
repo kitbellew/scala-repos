@@ -65,8 +65,8 @@ class ConfigEntrySuite extends SparkFunSuite {
   test("conf entry: fallback") {
     val conf = new SparkConf()
     val parentConf = ConfigBuilder("spark.int").intConf.withDefault(1)
-    val confWithFallback =
-      ConfigBuilder("spark.fallback").fallbackConf(parentConf)
+    val confWithFallback = ConfigBuilder("spark.fallback").fallbackConf(
+      parentConf)
     assert(conf.get(confWithFallback) === 1)
     conf.set(confWithFallback, 2)
     assert(conf.get(parentConf) === 1)
@@ -95,8 +95,8 @@ class ConfigEntrySuite extends SparkFunSuite {
 
   test("conf entry: string seq") {
     val conf = new SparkConf()
-    val seq =
-      ConfigBuilder("spark.seq").stringConf.toSequence.withDefault(Seq())
+    val seq = ConfigBuilder("spark.seq").stringConf.toSequence
+      .withDefault(Seq())
     conf.set(seq.key, "1,,2, 3 , , 4")
     assert(conf.get(seq) === Seq("1", "2", "3", "4"))
     conf.set(seq, Seq("1", "2"))

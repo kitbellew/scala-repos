@@ -75,11 +75,12 @@ trait Adaptations {
       // at this point if the class is java defined) is a "leaky target" for
       // which we should be especially reluctant to insert () or auto-tuple.
       def isLeakyTarget = {
-        val oneArgObject = t.symbol.paramss match {
-          case (param :: Nil) :: Nil =>
-            ObjectClass isSubClass param.tpe.typeSymbol
-          case _ => false
-        }
+        val oneArgObject =
+          t.symbol.paramss match {
+            case (param :: Nil) :: Nil =>
+              ObjectClass isSubClass param.tpe.typeSymbol
+            case _ => false
+          }
         // Unfortunately various "universal" methods and the manner in which
         // they are used limits our ability to enforce anything sensible until
         // an opt-in compiler option is given.

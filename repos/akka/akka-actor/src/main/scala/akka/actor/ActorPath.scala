@@ -402,17 +402,21 @@ final class ChildActorPath private[akka] (
 
   override def toSerializationFormat: String = {
     val length = toStringLength
-    val sb =
-      buildToString(new JStringBuilder(length + 12), length, 0, _.toString)
+    val sb = buildToString(
+      new JStringBuilder(length + 12),
+      length,
+      0,
+      _.toString)
     appendUidFragment(sb).toString
   }
 
   private def toStringLength: Int = toStringOffset + name.length
 
-  private val toStringOffset: Int = parent match {
-    case r: RootActorPath ⇒ r.address.toString.length + r.name.length
-    case c: ChildActorPath ⇒ c.toStringLength + 1
-  }
+  private val toStringOffset: Int =
+    parent match {
+      case r: RootActorPath ⇒ r.address.toString.length + r.name.length
+      case c: ChildActorPath ⇒ c.toStringLength + 1
+    }
 
   override def toStringWithAddress(addr: Address): String = {
     val diff = addressStringLengthDiff(addr)

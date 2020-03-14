@@ -573,8 +573,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
   override implicit def StringCodec = Codec.Utf8Codec
 
   @transient
-  abstract override implicit lazy val BigDecimalCodec: Codec[BigDecimal] =
-    Codec.CompositeCodec[Double, BigDecimal, BigDecimal](
+  abstract override implicit lazy val BigDecimalCodec: Codec[BigDecimal] = Codec
+    .CompositeCodec[Double, BigDecimal, BigDecimal](
       Codec[Double],
       super.BigDecimalCodec,
       bd => (bd.toDouble, bd),
@@ -710,16 +710,17 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     import scalaz.syntax.traverse._
     import scalaz.std.list._
 
-    val writes: ByteBufferPoolS[List[Unit]] = cvals.map {
-      case v: CNullValue =>
-        writeFlagFor(v.cType)
+    val writes: ByteBufferPoolS[List[Unit]] =
+      cvals.map {
+        case v: CNullValue =>
+          writeFlagFor(v.cType)
 
-      case v: CWrappedValue[_] =>
-        for {
-          _ <- writeFlagFor(v.cType)
-          _ <- codecForCValueType(v.cType).write(v.value)
-        } yield ()
-    }.sequence
+        case v: CWrappedValue[_] =>
+          for {
+            _ <- writeFlagFor(v.cType)
+            _ <- codecForCValueType(v.cType).write(v.value)
+          } yield ()
+      }.sequence
 
     pool.run(for {
       _ <- writes
@@ -732,12 +733,13 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     val buf = ByteBuffer.wrap(bytes)
 
     def readForSelector(cTypes: List[CType]): List[CValue] = {
-      val cValue = cTypeForFlag(buf.get()) match {
-        case cType: CValueType[_] =>
-          cType(codecForCValueType(cType).read(buf))
-        case cType: CNullType =>
-          cType
-      }
+      val cValue =
+        cTypeForFlag(buf.get()) match {
+          case cType: CValueType[_] =>
+            cType(codecForCValueType(cType).read(buf))
+          case cType: CNullType =>
+            cType
+        }
 
       val cType = cValue.cType
       cTypes map {
@@ -1039,10 +1041,11 @@ trait IdentitiesRowFormat extends RowFormat {
 
   def ColumnEncoder(cols: Seq[Column]) = {
 
-    val longCols: Array[LongColumn] = cols.map({
-      case col: LongColumn => col
-      case col             => sys.error("Expecing LongColumn, but found: " + col)
-    })(collection.breakOut)
+    val longCols: Array[LongColumn] =
+      cols.map({
+        case col: LongColumn => col
+        case col             => sys.error("Expecing LongColumn, but found: " + col)
+      })(collection.breakOut)
 
     new ColumnEncoder {
       def encodeFromRow(row: Int): Array[Byte] = {
@@ -1070,10 +1073,11 @@ trait IdentitiesRowFormat extends RowFormat {
 
   def ColumnDecoder(cols: Seq[ArrayColumn[_]]) = {
 
-    val longCols: Array[ArrayLongColumn] = cols.map({
-      case col: ArrayLongColumn => col
-      case col                  => sys.error("Expecing ArrayLongColumn, but found: " + col)
-    })(collection.breakOut)
+    val longCols: Array[ArrayLongColumn] =
+      cols.map({
+        case col: ArrayLongColumn => col
+        case col                  => sys.error("Expecing ArrayLongColumn, but found: " + col)
+      })(collection.breakOut)
 
     new ColumnDecoder {
       def decodeToRow(row: Int, src: Array[Byte], offset: Int = 0) {

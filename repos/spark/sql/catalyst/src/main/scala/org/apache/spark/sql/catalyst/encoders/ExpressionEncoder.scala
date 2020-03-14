@@ -61,16 +61,19 @@ object ExpressionEncoder {
     val cls = mirror.runtimeClass(typeTag[T].tpe)
     val flat = !classOf[Product].isAssignableFrom(cls)
 
-    val inputObject =
-      BoundReference(0, ScalaReflection.dataTypeFor[T], nullable = false)
+    val inputObject = BoundReference(
+      0,
+      ScalaReflection.dataTypeFor[T],
+      nullable = false)
     val toRowExpression = ScalaReflection.extractorsFor[T](inputObject)
     val fromRowExpression = ScalaReflection.constructorFor[T]
 
-    val schema = ScalaReflection.schemaFor[T] match {
-      case ScalaReflection.Schema(s: StructType, _) => s
-      case ScalaReflection.Schema(dt, nullable) =>
-        new StructType().add("value", dt, nullable)
-    }
+    val schema =
+      ScalaReflection.schemaFor[T] match {
+        case ScalaReflection.Schema(s: StructType, _) => s
+        case ScalaReflection.Schema(dt, nullable) =>
+          new StructType().add("value", dt, nullable)
+      }
 
     new ExpressionEncoder[T](
       schema,
@@ -106,11 +109,12 @@ object ExpressionEncoder {
 
     val schema = StructType(encoders.zipWithIndex.map {
       case (e, i) =>
-        val (dataType, nullable) = if (e.flat) {
-          e.schema.head.dataType -> e.schema.head.nullable
-        } else {
-          e.schema -> true
-        }
+        val (dataType, nullable) =
+          if (e.flat) {
+            e.schema.head.dataType -> e.schema.head.nullable
+          } else {
+            e.schema -> true
+          }
         StructField(s"_${i + 1}", dataType, nullable)
     })
 
@@ -152,12 +156,11 @@ object ExpressionEncoder {
         }
     }
 
-    val fromRowExpression =
-      NewInstance(
-        cls,
-        fromRowExpressions,
-        ObjectType(cls),
-        propagateNull = false)
+    val fromRowExpression = NewInstance(
+      cls,
+      fromRowExpressions,
+      ObjectType(cls),
+      propagateNull = false)
 
     new ExpressionEncoder[Any](
       schema,
@@ -216,15 +219,15 @@ case class ExpressionEncoder[T](
     require(toRowExpressions.size == 1)
 
   @transient
-  private lazy val extractProjection =
-    GenerateUnsafeProjection.generate(toRowExpressions)
+  private lazy val extractProjection = GenerateUnsafeProjection.generate(
+    toRowExpressions)
 
   @transient
   private lazy val inputRow = new GenericMutableRow(1)
 
   @transient
-  private lazy val constructProjection =
-    GenerateSafeProjection.generate(fromRowExpression :: Nil)
+  private lazy val constructProjection = GenerateSafeProjection.generate(
+    fromRowExpression :: Nil)
 
   /**
     * Returns this encoder where it has been bound to its own output (i.e. no remaping of columns
@@ -327,8 +330,8 @@ case class ExpressionEncoder[T](
       case b: BoundReference => schema(b.ordinal)
     }
 
-    val exprToMaxOrdinal =
-      scala.collection.mutable.HashMap.empty[Expression, Int]
+    val exprToMaxOrdinal = scala.collection.mutable.HashMap
+      .empty[Expression, Int]
     unbound.foreach {
       case g: GetStructField =>
         val maxOrdinal = exprToMaxOrdinal.getOrElse(g.child, -1)
@@ -371,8 +374,8 @@ case class ExpressionEncoder[T](
     * resolve before bind.
     */
   def bind(schema: Seq[Attribute]): ExpressionEncoder[T] = {
-    copy(fromRowExpression =
-      BindReferences.bindReference(fromRowExpression, schema))
+    copy(fromRowExpression = BindReferences
+      .bindReference(fromRowExpression, schema))
   }
 
   /**
@@ -390,13 +393,12 @@ case class ExpressionEncoder[T](
     case b: BoundReference      => s"[${b.ordinal}]"
   })
 
-  protected val schemaString =
-    schema
-      .zip(attrs)
-      .map {
-        case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}"
-      }
-      .mkString(", ")
+  protected val schemaString = schema
+    .zip(attrs)
+    .map {
+      case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}"
+    }
+    .mkString(", ")
 
   override def toString: String = s"class[$schemaString]"
 }

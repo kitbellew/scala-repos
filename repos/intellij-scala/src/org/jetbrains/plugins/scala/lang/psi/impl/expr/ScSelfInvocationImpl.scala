@@ -61,21 +61,23 @@ class ScSelfInvocationImpl(node: ASTNode)
     val method = PsiTreeUtil.getContextOfType(this, classOf[ScFunction])
     if (method == null)
       return Seq.empty
-    val expressions: Seq[Expression] = args match {
-      case Some(arguments) => arguments.exprs.map(new Expression(_))
-      case None            => Seq.empty
-    }
-    val proc = new MethodResolveProcessor(
-      this,
-      "this",
-      List(expressions),
-      Seq.empty,
-      Seq.empty /*todo: ? */,
-      StdKinds.methodsOnly,
-      constructorResolve = true,
-      isShapeResolve = shapeResolve,
-      enableTupling = true,
-      selfConstructorResolve = true)
+    val expressions: Seq[Expression] =
+      args match {
+        case Some(arguments) => arguments.exprs.map(new Expression(_))
+        case None            => Seq.empty
+      }
+    val proc =
+      new MethodResolveProcessor(
+        this,
+        "this",
+        List(expressions),
+        Seq.empty,
+        Seq.empty /*todo: ? */,
+        StdKinds.methodsOnly,
+        constructorResolve = true,
+        isShapeResolve = shapeResolve,
+        enableTupling = true,
+        selfConstructorResolve = true)
     for (constr <- clazz.secondaryConstructors.filter(_ != method)
          if constr != method) {
       proc.execute(constr, ResolveState.initial)
@@ -90,20 +92,21 @@ class ScSelfInvocationImpl(node: ASTNode)
   private def workWithBindInternal(
       bindInternal: Option[PsiElement],
       i: Int): TypeResult[ScType] = {
-    val (res: ScType, clazz: ScTemplateDefinition) = bindInternal match {
-      case Some(c: ScMethodLike) =>
-        val methodType = ScType
-          .nested(c.methodType, i)
-          .getOrElse(
-            return Failure("Not enough parameter sections", Some(this)))
-        (methodType, c.containingClass)
-      case _ =>
-        return Failure("Cannot shape resolve self invocation", Some(this))
-    }
+    val (res: ScType, clazz: ScTemplateDefinition) =
+      bindInternal match {
+        case Some(c: ScMethodLike) =>
+          val methodType = ScType
+            .nested(c.methodType, i)
+            .getOrElse(
+              return Failure("Not enough parameter sections", Some(this)))
+          (methodType, c.containingClass)
+        case _ =>
+          return Failure("Cannot shape resolve self invocation", Some(this))
+      }
     clazz match {
       case tp: ScTypeParametersOwner if tp.typeParameters.length > 0 =>
-        val params: Seq[TypeParameter] =
-          tp.typeParameters.map(new TypeParameter(_))
+        val params: Seq[TypeParameter] = tp.typeParameters.map(
+          new TypeParameter(_))
         Success(ScTypePolymorphicType(res, params), Some(this))
       case _ => Success(res, Some(this))
     }

@@ -627,8 +627,8 @@ object LongMap {
   private final val VacantBit = 0x40000000
   private final val MissVacant = 0xC0000000
 
-  private val exceptionDefault: Long => Nothing = (k: Long) =>
-    throw new NoSuchElementException(k.toString)
+  private val exceptionDefault: Long => Nothing =
+    (k: Long) => throw new NoSuchElementException(k.toString)
 
   implicit def canBuildFrom[V, U]
       : CanBuildFrom[LongMap[V], (Long, U), LongMap[U]] =

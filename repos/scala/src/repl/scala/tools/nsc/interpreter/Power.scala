@@ -142,8 +142,7 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     |Try :help or completions for vals._ and power._
   """.stripMargin.trim
 
-  private def initImports =
-    """scala.tools.nsc._
+  private def initImports = """scala.tools.nsc._
     |scala.collection.JavaConverters._
     |intp.global.{ error => _, _ }
     |definitions.{ getClass => _, _ }
@@ -361,9 +360,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   }
 
   lazy val rutil: ReplUtilities = new ReplUtilities {}
-  lazy val phased: Phased = new {
-    val global: intp.global.type = intp.global
-  } with Phased {}
+  lazy val phased: Phased =
+    new {
+      val global: intp.global.type = intp.global
+    } with Phased {}
 
   def unit(code: String) = newCompilationUnit(code)
   def trees(code: String) =

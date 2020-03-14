@@ -58,9 +58,10 @@ object StatsFilter {
     }
 
   /** Basic categorizer with all exceptions under 'failures'. */
-  val DefaultExceptions = new MultiCategorizingExceptionStatsHandler(
-    mkFlags = Failure.flagsOf,
-    mkSource = SourcedException.unapply)
+  val DefaultExceptions =
+    new MultiCategorizingExceptionStatsHandler(
+      mkFlags = Failure.flagsOf,
+      mkSource = SourcedException.unapply)
 
   private val SyntheticException =
     new ResponseClassificationSyntheticException()
@@ -136,11 +137,12 @@ class StatsFilter[Req, Rep](
   private[this] val outstandingRequestCount = new LongAdder()
   private[this] val dispatchCount = statsReceiver.counter("requests")
   private[this] val successCount = statsReceiver.counter("success")
-  private[this] val latencyStat =
-    statsReceiver.stat(s"request_latency_$latencyStatSuffix")
-  private[this] val loadGauge = statsReceiver.addGauge("load") {
-    outstandingRequestCount.sum()
-  }
+  private[this] val latencyStat = statsReceiver.stat(
+    s"request_latency_$latencyStatSuffix")
+  private[this] val loadGauge =
+    statsReceiver.addGauge("load") {
+      outstandingRequestCount.sum()
+    }
   private[this] val outstandingRequestCountGauge =
     statsReceiver.addGauge("pending") {
       outstandingRequestCount.sum()
@@ -217,10 +219,11 @@ class StatsServiceFactory[Req, Rep](
     factory: ServiceFactory[Req, Rep],
     statsReceiver: StatsReceiver)
     extends ServiceFactoryProxy[Req, Rep](factory) {
-  private[this] val availableGauge = statsReceiver.addGauge("available") {
-    if (isAvailable)
-      1f
-    else
-      0f
-  }
+  private[this] val availableGauge =
+    statsReceiver.addGauge("available") {
+      if (isAvailable)
+        1f
+      else
+        0f
+    }
 }

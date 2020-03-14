@@ -42,13 +42,14 @@ private[sbt] object SettingCompletions {
   def setAll(extracted: Extracted, settings: Seq[Setting[_]]): SetResult = {
     import extracted._
     val r = relation(extracted.structure, true)
-    val allDefs = Def
-      .flattenLocals(
-        Def.compiled(extracted.structure.settings, true)(
-          structure.delegates,
-          structure.scopeLocal,
-          implicitly[Show[ScopedKey[_]]]))
-      .keys
+    val allDefs =
+      Def
+        .flattenLocals(
+          Def.compiled(extracted.structure.settings, true)(
+            structure.delegates,
+            structure.scopeLocal,
+            implicitly[Show[ScopedKey[_]]]))
+        .keys
     val projectScope = Load.projectScope(currentRef)
     def resolve(s: Setting[_]): Seq[Setting[_]] =
       Load.transformSettings(
@@ -85,13 +86,14 @@ private[sbt] object SettingCompletions {
       currentRef.build,
       rootProject,
       settings)
-    val newSession =
-      session.appendSettings(append map (a => (a, arg.split('\n').toList)))
+    val newSession = session.appendSettings(
+      append map (a => (a, arg.split('\n').toList)))
     val struct = extracted.structure
-    val r = relation(newSession.mergeSettings, true)(
-      structure.delegates,
-      structure.scopeLocal,
-      implicitly)
+    val r =
+      relation(newSession.mergeSettings, true)(
+        structure.delegates,
+        structure.scopeLocal,
+        implicitly)
     setResult(newSession, r, append)
   }
 
@@ -168,9 +170,10 @@ private[sbt] object SettingCompletions {
       rawKeyMap: Map[String, AttributeKey[_]],
       context: ResolvedProject): Parser[String] = {
     val cutoff = KeyRanks.MainCutoff
-    val keyMap: Map[String, AttributeKey[_]] = rawKeyMap.map {
-      case (k, v) => (keyScalaID(k), v)
-    } toMap;
+    val keyMap: Map[String, AttributeKey[_]] =
+      rawKeyMap.map {
+        case (k, v) => (keyScalaID(k), v)
+      } toMap;
     def inputScopedKey(pred: AttributeKey[_] => Boolean): Parser[ScopedKey[_]] =
       scopedKeyParser(
         keyMap.filter {
@@ -178,14 +181,15 @@ private[sbt] object SettingCompletions {
         },
         settings,
         context)
-    val full = for {
-      defineKey <- scopedKeyParser(keyMap, settings, context)
-      a <- assign(defineKey)
-      deps <- valueParser(
-        defineKey,
-        a,
-        inputScopedKey(keyFilter(defineKey.key)))
-    } yield () // parser is currently only for completion and the parsed data structures are not used
+    val full =
+      for {
+        defineKey <- scopedKeyParser(keyMap, settings, context)
+        a <- assign(defineKey)
+        deps <- valueParser(
+          defineKey,
+          a,
+          inputScopedKey(keyFilter(defineKey.key)))
+      } yield () // parser is currently only for completion and the parsed data structures are not used
 
     matched(full) | any.+.string
   }
@@ -476,8 +480,8 @@ private[sbt] object SettingCompletions {
     * This string representation is currently a cleaned up toString of the underlying Manifest.
     */
   def keyTypeString[T](key: AttributeKey[_]): String = {
-    val mfToString = (mf: Manifest[_]) =>
-      complete.TypeString.cleanup(mf.toString)
+    val mfToString =
+      (mf: Manifest[_]) => complete.TypeString.cleanup(mf.toString)
     keyType(key)(mfToString, mfToString, mfToString)
   }
 

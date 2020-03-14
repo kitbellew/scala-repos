@@ -97,51 +97,59 @@ object FakeState {
 
     val data: Settings[Scope] =
       Def.make(settings)(delegates, scopeLocal, Def.showFullKey)
-    val extra: KeyIndex => BuildUtil[_] = (keyIndex) =>
-      BuildUtil(base.toURI, Map.empty, keyIndex, data)
-    val structureIndex: StructureIndex =
-      Load.structureIndex(data, settings, extra, Map.empty)
+    val extra: KeyIndex => BuildUtil[_] =
+      (keyIndex) => BuildUtil(base.toURI, Map.empty, keyIndex, data)
+    val structureIndex: StructureIndex = Load.structureIndex(
+      data,
+      settings,
+      extra,
+      Map.empty)
     val streams: (State) => BuildStreams.Streams = null
 
-    val loadedDefinitions: LoadedDefinitions = new LoadedDefinitions(
-      base,
-      Nil,
-      ClassLoader.getSystemClassLoader,
-      Nil,
-      Seq(testProject),
-      Nil
-    )
+    val loadedDefinitions: LoadedDefinitions =
+      new LoadedDefinitions(
+        base,
+        Nil,
+        ClassLoader.getSystemClassLoader,
+        Nil,
+        Seq(testProject),
+        Nil
+      )
 
     val pluginData = PluginData(Nil, Nil, None, None, Nil)
     val detectedModules: DetectedModules[Plugin] = new DetectedModules(Nil)
     val builds: DetectedModules[Build] = new DetectedModules[Build](Nil)
 
-    val detectedAutoPlugins: Seq[DetectedAutoPlugin] =
-      plugins.map(p => DetectedAutoPlugin(p.label, p, hasAutoImport = false))
+    val detectedAutoPlugins: Seq[DetectedAutoPlugin] = plugins.map(p =>
+      DetectedAutoPlugin(p.label, p, hasAutoImport = false))
     val detectedPlugins =
       new DetectedPlugins(detectedModules, detectedAutoPlugins, builds)
-    val loadedPlugins = new LoadedPlugins(
-      base,
-      pluginData,
-      ClassLoader.getSystemClassLoader,
-      detectedPlugins)
+    val loadedPlugins =
+      new LoadedPlugins(
+        base,
+        pluginData,
+        ClassLoader.getSystemClassLoader,
+        detectedPlugins)
     val buildUnit =
       new BuildUnit(base.toURI, base, loadedDefinitions, loadedPlugins)
 
     val (partBuildUnit: PartBuildUnit, _) = Load.loaded(buildUnit)
-    val loadedBuildUnit =
-      Load.resolveProjects(base.toURI, partBuildUnit, _ => testProject.id)
+    val loadedBuildUnit = Load.resolveProjects(
+      base.toURI,
+      partBuildUnit,
+      _ => testProject.id)
 
     val units = Map(base.toURI -> loadedBuildUnit)
-    val buildStructure = new BuildStructure(
-      units,
-      base.toURI,
-      settings,
-      data,
-      structureIndex,
-      streams,
-      delegates,
-      scopeLocal)
+    val buildStructure =
+      new BuildStructure(
+        units,
+        base.toURI,
+        settings,
+        data,
+        structureIndex,
+        streams,
+        delegates,
+        scopeLocal)
 
     val attributes = AttributeMap.empty ++ AttributeMap(
       AttributeEntry(Keys.sessionSettings, sessionSettings),

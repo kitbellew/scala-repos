@@ -629,8 +629,7 @@ object MimeTypes {
       .map(parts => parts(0) -> parts.drop(1).mkString)
       .toMap
 
-  lazy val additionalText =
-    """
+  lazy val additionalText = """
         application/json
         application/javascript
     """.split('\n').map(_.trim).filter(_.size > 0).filter(_(0) != '#')

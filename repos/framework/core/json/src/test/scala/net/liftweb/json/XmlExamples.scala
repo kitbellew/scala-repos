@@ -100,8 +100,7 @@ object XmlExamples extends Specification {
 }""")
   }
 
-  val band =
-    <b:band>
+  val band = <b:band>
       <name>The Fall</name>
       <genre>rock</genre>
       <influence/>
@@ -123,8 +122,7 @@ object XmlExamples extends Specification {
       json) mustEqual """{"g":{"group":"foobar","url":"http://example.com/test"}}"""
   }
 
-  val users1 =
-    <users count="2">
+  val users1 = <users count="2">
       <user disabled="true">
         <id>1</id>
         <name>Harry</name>
@@ -135,8 +133,7 @@ object XmlExamples extends Specification {
       </user>
     </users>
 
-  val users2 =
-    <users>
+  val users2 = <users>
       <user>
         <id>1</id>
         <name>Harry</name>
@@ -191,8 +188,7 @@ object XmlExamples extends Specification {
   val expected1 =
     """{"message":{"expiry_date":"20091126","word":"ant","text":"text","self":"me","stats":{"count":0},"messages":{"href":"https://domain.com/message/ant"}}}"""
 
-  val messageXml2 =
-    <message expiry_date="20091126">
+  val messageXml2 = <message expiry_date="20091126">
       <stats count="0"></stats>
     </message>
 

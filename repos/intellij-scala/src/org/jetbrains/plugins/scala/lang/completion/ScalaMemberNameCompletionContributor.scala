@@ -43,11 +43,12 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
           case o: ScObject => objectNames += o.name
           case _           =>
         }
-        val shouldCompleteFileName = parent match {
-          case f: ScalaFile   => true
-          case p: ScPackaging => true
-          case _              => false
-        }
+        val shouldCompleteFileName =
+          parent match {
+            case f: ScalaFile   => true
+            case p: ScPackaging => true
+            case _              => false
+          }
         if (shouldCompleteFileName && !classesNames.contains(
               fileName) && !objectNames.contains(fileName)) {
           result.addElement(LookupElementBuilder.create(fileName))

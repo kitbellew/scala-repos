@@ -36,38 +36,47 @@ object Reader {
   /*
    * Instances below
    */
-  implicit val unit: Reader[Unit] = new Reader[Unit] {
-    def read(is: InputStream) = ()
-  }
-  implicit val boolean: Reader[Boolean] = new Reader[Boolean] {
-    def read(is: InputStream) = is.readBoolean
-  }
-  implicit val byte: Reader[Byte] = new Reader[Byte] {
-    def read(is: InputStream) = is.readByte
-  }
-  implicit val short: Reader[Short] = new Reader[Short] {
-    def read(is: InputStream) = is.readShort
-  }
-  implicit val int: Reader[Int] = new Reader[Int] {
-    def read(is: InputStream) = is.readInt
-  }
-  implicit val long: Reader[Long] = new Reader[Long] {
-    def read(is: InputStream) = is.readLong
-  }
-  implicit val float: Reader[Float] = new Reader[Float] {
-    def read(is: InputStream) = is.readFloat
-  }
-  implicit val double: Reader[Double] = new Reader[Double] {
-    def read(is: InputStream) = is.readDouble
-  }
-  implicit val string: Reader[String] = new Reader[String] {
-    def read(is: InputStream) = {
-      val size = is.readPosVarInt
-      val bytes = new Array[Byte](size)
-      is.readFully(bytes)
-      new String(bytes, "UTF-8")
+  implicit val unit: Reader[Unit] =
+    new Reader[Unit] {
+      def read(is: InputStream) = ()
     }
-  }
+  implicit val boolean: Reader[Boolean] =
+    new Reader[Boolean] {
+      def read(is: InputStream) = is.readBoolean
+    }
+  implicit val byte: Reader[Byte] =
+    new Reader[Byte] {
+      def read(is: InputStream) = is.readByte
+    }
+  implicit val short: Reader[Short] =
+    new Reader[Short] {
+      def read(is: InputStream) = is.readShort
+    }
+  implicit val int: Reader[Int] =
+    new Reader[Int] {
+      def read(is: InputStream) = is.readInt
+    }
+  implicit val long: Reader[Long] =
+    new Reader[Long] {
+      def read(is: InputStream) = is.readLong
+    }
+  implicit val float: Reader[Float] =
+    new Reader[Float] {
+      def read(is: InputStream) = is.readFloat
+    }
+  implicit val double: Reader[Double] =
+    new Reader[Double] {
+      def read(is: InputStream) = is.readDouble
+    }
+  implicit val string: Reader[String] =
+    new Reader[String] {
+      def read(is: InputStream) = {
+        val size = is.readPosVarInt
+        val bytes = new Array[Byte](size)
+        is.readFully(bytes)
+        new String(bytes, "UTF-8")
+      }
+    }
 
   implicit def option[T: Reader]: Reader[Option[T]] =
     new Reader[Option[T]] {

@@ -33,8 +33,8 @@ class NoStackLineNumberTest extends WordSpec {
       implicit val fd = new FlowDef
       implicit val m = new Hdfs(false, new Configuration)
 
-      val pipeFut =
-        com.twitter.example.scalding.typed.InAnotherPackage.buildF.map { tp =>
+      val pipeFut = com.twitter.example.scalding.typed.InAnotherPackage.buildF
+        .map { tp =>
           tp.toPipe('a, 'b)
         }
       val pipe = Await.result(pipeFut, SDuration.Inf)

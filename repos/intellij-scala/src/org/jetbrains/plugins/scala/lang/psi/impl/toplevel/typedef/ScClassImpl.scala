@@ -86,10 +86,9 @@ class ScClassImpl private (
   def constructor: Option[ScPrimaryConstructor] = {
     val stub = getStub
     if (stub != null) {
-      val array =
-        stub.getChildrenByType(
-          ScalaElementTypes.PRIMARY_CONSTRUCTOR,
-          JavaArrayFactoryUtil.ScPrimaryConstructorFactory)
+      val array = stub.getChildrenByType(
+        ScalaElementTypes.PRIMARY_CONSTRUCTOR,
+        JavaArrayFactoryUtil.ScPrimaryConstructorFactory)
       return array.headOption
     }
     findChild(classOf[ScPrimaryConstructor])
@@ -173,10 +172,11 @@ class ScClassImpl private (
     res ++= getConstructors
 
     TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      val isInterface = node.info.namedElement match {
-        case t: ScTypedDefinition if t.isAbstractMember => true
-        case _                                          => false
-      }
+      val isInterface =
+        node.info.namedElement match {
+          case t: ScTypedDefinition if t.isAbstractMember => true
+          case _                                          => false
+        }
       this.processPsiMethodsForNode(
         node,
         isStatic = false,
@@ -201,8 +201,10 @@ class ScClassImpl private (
       )
 
       caseClassGeneratedFunctions.foreach { funText =>
-        val fun: ScFunction =
-          ScalaPsiElementFactory.createMethodWithContext(funText, this, this)
+        val fun: ScFunction = ScalaPsiElementFactory.createMethodWithContext(
+          funText,
+          this,
+          this)
         fun.setSynthetic(this)
         res += fun
       }
@@ -256,11 +258,12 @@ class ScClassImpl private (
     if (isCase && !hasModifierProperty("abstract") && parameters.nonEmpty) {
       constructor match {
         case Some(x: ScPrimaryConstructor) =>
-          val hasCopy = !TypeDefinitionMembers
-            .getSignatures(this)
-            .forName("copy")
-            ._1
-            .isEmpty
+          val hasCopy =
+            !TypeDefinitionMembers
+              .getSignatures(this)
+              .forName("copy")
+              ._1
+              .isEmpty
           val addCopy =
             !hasCopy && !x.parameterList.clauses.exists(_.hasRepeatedParam)
           if (addCopy) {
@@ -297,10 +300,11 @@ class ScClassImpl private (
             "("
         c.parameters
           .map { p =>
-            val paramType = p.typeElement match {
-              case Some(te) => te.getText
-              case None     => "Any"
-            }
+            val paramType =
+              p.typeElement match {
+                case Some(te) => te.getText
+                case None     => "Any"
+              }
             p.name + " : " + paramType + " = this." + p.name
           }
           .mkString(start, ", ", ")")
@@ -333,26 +337,27 @@ class ScClassImpl private (
           .mkString("[", ", ", "]")
       })
       .getOrElse("")
-    val parametersText = constr.parameterList.clauses.map {
-      case clause: ScParameterClause =>
-        clause.parameters
-          .map {
-            case parameter: ScParameter =>
-              val paramText =
-                s"${parameter.name} : ${parameter.typeElement.map(_.getText).getOrElse("Nothing")}"
-              parameter.getDefaultExpression match {
-                case Some(expr) => s"$paramText = ${expr.getText}"
-                case _          => paramText
-              }
-          }
-          .mkString(
-            if (clause.isImplicit)
-              "(implicit "
-            else
-              "(",
-            ", ",
-            ")")
-    }.mkString
+    val parametersText =
+      constr.parameterList.clauses.map {
+        case clause: ScParameterClause =>
+          clause.parameters
+            .map {
+              case parameter: ScParameter =>
+                val paramText =
+                  s"${parameter.name} : ${parameter.typeElement.map(_.getText).getOrElse("Nothing")}"
+                parameter.getDefaultExpression match {
+                  case Some(expr) => s"$paramText = ${expr.getText}"
+                  case _          => paramText
+                }
+            }
+            .mkString(
+              if (clause.isImplicit)
+                "(implicit "
+              else
+                "(",
+              ", ",
+              ")")
+      }.mkString
     getModifierList.accessModifier
       .map(am => am.getText + " ")
       .getOrElse("") + "implicit def " + name +
@@ -382,28 +387,30 @@ class ScClassImpl private (
   }
 
   override def getFields: Array[PsiField] = {
-    val fields = constructor match {
-      case Some(constr) =>
-        constr.parameters.map { param =>
-          param.getType(TypingContext.empty) match {
-            case Success(tp: ScTypeParameterType, _)
-                if tp.param.findAnnotation("scala.specialized") != null =>
-              val factory: PsiElementFactory =
-                PsiElementFactory.SERVICE.getInstance(getProject)
-              val psiTypeText: String =
-                ScType.toPsi(tp, getProject, getResolveScope).getCanonicalText
-              val text = s"public final $psiTypeText ${param.name};"
-              val elem = new LightField(
-                getManager,
-                factory.createFieldFromText(text, this),
-                this)
-              elem.setNavigationElement(param)
-              Option(elem)
-            case _ => None
+    val fields =
+      constructor match {
+        case Some(constr) =>
+          constr.parameters.map { param =>
+            param.getType(TypingContext.empty) match {
+              case Success(tp: ScTypeParameterType, _)
+                  if tp.param.findAnnotation("scala.specialized") != null =>
+                val factory: PsiElementFactory = PsiElementFactory.SERVICE
+                  .getInstance(getProject)
+                val psiTypeText: String =
+                  ScType.toPsi(tp, getProject, getResolveScope).getCanonicalText
+                val text = s"public final $psiTypeText ${param.name};"
+                val elem =
+                  new LightField(
+                    getManager,
+                    factory.createFieldFromText(text, this),
+                    this)
+                elem.setNavigationElement(param)
+                Option(elem)
+              case _ => None
+            }
           }
-        }
-      case _ => Seq.empty
-    }
+        case _ => Seq.empty
+      }
     super.getFields ++ fields.flatten
   }
 

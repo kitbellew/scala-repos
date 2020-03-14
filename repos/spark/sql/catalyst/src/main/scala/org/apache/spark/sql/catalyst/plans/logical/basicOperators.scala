@@ -330,11 +330,12 @@ case class Join(
 
   // if not a natural join, use `resolvedExceptNatural`. if it is a natural join or
   // using join, we still need to eliminate natural or using before we mark it resolved.
-  override lazy val resolved: Boolean = joinType match {
-    case NaturalJoin(_)  => false
-    case UsingJoin(_, _) => false
-    case _               => resolvedExceptNatural
-  }
+  override lazy val resolved: Boolean =
+    joinType match {
+      case NaturalJoin(_)  => false
+      case UsingJoin(_, _) => false
+      case _               => resolvedExceptNatural
+    }
 }
 
 /**
@@ -405,8 +406,9 @@ case class Sort(order: Seq[SortOrder], global: Boolean, child: LogicalPlan)
 /** Factory for constructing new `Range` nodes. */
 object Range {
   def apply(start: Long, end: Long, step: Long, numSlices: Int): Range = {
-    val output = StructType(
-      StructField("id", LongType, nullable = false) :: Nil).toAttributes
+    val output =
+      StructType(
+        StructField("id", LongType, nullable = false) :: Nil).toAttributes
     new Range(start, end, step, numSlices, output)
   }
 }

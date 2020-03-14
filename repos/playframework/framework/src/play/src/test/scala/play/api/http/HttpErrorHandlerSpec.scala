@@ -88,8 +88,8 @@ object HttpErrorHandlerSpec extends Specification {
   }
 
   def handler(handlerClass: String, mode: Mode.Mode) = {
-    val config =
-      Configuration.from(Map("play.http.errorHandler" -> handlerClass))
+    val config = Configuration.from(
+      Map("play.http.errorHandler" -> handlerClass))
     val env = Environment.simple(mode = mode)
     Fakes
       .injectorFromBindings(
@@ -108,8 +108,7 @@ object HttpErrorHandlerSpec extends Specification {
     def onClientError(
         request: RequestHeader,
         statusCode: Int,
-        message: String) =
-      Future.successful(Results.Ok)
+        message: String) = Future.successful(Results.Ok)
     def onServerError(request: RequestHeader, exception: Throwable) =
       Future.successful(Results.Ok)
   }
@@ -118,8 +117,7 @@ object HttpErrorHandlerSpec extends Specification {
     def onClientError(
         req: play.mvc.Http.RequestHeader,
         status: Int,
-        msg: String) =
-      CompletableFuture.completedFuture(play.mvc.Results.ok())
+        msg: String) = CompletableFuture.completedFuture(play.mvc.Results.ok())
     def onServerError(req: play.mvc.Http.RequestHeader, exception: Throwable) =
       CompletableFuture.completedFuture(play.mvc.Results.ok())
   }

@@ -22,8 +22,9 @@ class SimpleBuildFileModifier(
     val libDependencies: Seq[String],
     val resolvers: Seq[String],
     val scalacOptions: Seq[String],
-    val buildFileProviders: List[BuildFileProvider] =
-      List(SimpleModuleBuildFileProvider, ProjectRootBuildFileProvider),
+    val buildFileProviders: List[BuildFileProvider] = List(
+      SimpleModuleBuildFileProvider,
+      ProjectRootBuildFileProvider),
     val buildFileLocationProviders: List[
       BuildFileModificationLocationProvider] = List(EndOfFileLocationProvider))
     extends BuildFileModifier {

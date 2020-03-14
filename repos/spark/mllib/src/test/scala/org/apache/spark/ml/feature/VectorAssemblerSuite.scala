@@ -94,8 +94,9 @@ class VectorAssemblerSuite
   }
 
   test("transform should throw an exception in case of unsupported type") {
-    val df =
-      sqlContext.createDataFrame(Seq(("a", "b", "c"))).toDF("a", "b", "c")
+    val df = sqlContext
+      .createDataFrame(Seq(("a", "b", "c")))
+      .toDF("a", "b", "c")
     val assembler = new VectorAssembler()
       .setInputCols(Array("a", "b", "c"))
       .setOutputCol("features")
@@ -107,22 +108,26 @@ class VectorAssemblerSuite
   }
 
   test("ML attributes") {
-    val browser =
-      NominalAttribute.defaultAttr.withValues("chrome", "firefox", "safari")
+    val browser = NominalAttribute.defaultAttr.withValues(
+      "chrome",
+      "firefox",
+      "safari")
     val hour = NumericAttribute.defaultAttr.withMin(0.0).withMax(24.0)
-    val user = new AttributeGroup(
-      "user",
-      Array(
-        NominalAttribute.defaultAttr
-          .withName("gender")
-          .withValues("male", "female"),
-        NumericAttribute.defaultAttr.withName("salary")))
-    val row = (
-      1.0,
-      0.5,
-      1,
-      Vectors.dense(1.0, 1000.0),
-      Vectors.sparse(2, Array(1), Array(2.0)))
+    val user =
+      new AttributeGroup(
+        "user",
+        Array(
+          NominalAttribute.defaultAttr
+            .withName("gender")
+            .withValues("male", "female"),
+          NumericAttribute.defaultAttr.withName("salary")))
+    val row =
+      (
+        1.0,
+        0.5,
+        1,
+        Vectors.dense(1.0, 1000.0),
+        Vectors.sparse(2, Array(1), Array(2.0)))
     val df = sqlContext
       .createDataFrame(Seq(row))
       .toDF("browser", "hour", "count", "user", "ad")

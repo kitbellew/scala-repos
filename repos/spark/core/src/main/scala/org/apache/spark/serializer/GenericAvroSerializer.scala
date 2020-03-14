@@ -87,10 +87,11 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
   def decompress(schemaBytes: ByteBuffer): Schema =
     decompressCache.getOrElseUpdate(
       schemaBytes, {
-        val bis = new ByteArrayInputStream(
-          schemaBytes.array(),
-          schemaBytes.arrayOffset() + schemaBytes.position(),
-          schemaBytes.remaining())
+        val bis =
+          new ByteArrayInputStream(
+            schemaBytes.array(),
+            schemaBytes.arrayOffset() + schemaBytes.position(),
+            schemaBytes.remaining())
         val bytes = IOUtils.toByteArray(codec.compressedInputStream(bis))
         new Schema.Parser().parse(new String(bytes, StandardCharsets.UTF_8))
       }
@@ -160,12 +161,10 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
   override def write(
       kryo: Kryo,
       output: KryoOutput,
-      datum: GenericRecord): Unit =
-    serializeDatum(datum, output)
+      datum: GenericRecord): Unit = serializeDatum(datum, output)
 
   override def read(
       kryo: Kryo,
       input: KryoInput,
-      datumClass: Class[GenericRecord]): GenericRecord =
-    deserializeDatum(input)
+      datumClass: Class[GenericRecord]): GenericRecord = deserializeDatum(input)
 }

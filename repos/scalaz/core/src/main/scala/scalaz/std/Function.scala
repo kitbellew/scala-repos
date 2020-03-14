@@ -74,23 +74,17 @@ trait FunctionInstances extends FunctionInstances0 {
       with BindRec[Function0]
       with Comonad[Function0]
       with Distributive[Function0] {
-      def point[A](a: => A) =
-        () => a
+      def point[A](a: => A) = () => a
 
-      def copoint[A](p: () => A) =
-        p()
+      def copoint[A](p: () => A) = p()
 
-      def cobind[A, B](fa: Function0[A])(f: Function0[A] => B) =
-        () => f(fa)
+      def cobind[A, B](fa: Function0[A])(f: Function0[A] => B) = () => f(fa)
 
-      override def cojoin[A](a: Function0[A]): Function0[Function0[A]] =
-        () => a
+      override def cojoin[A](a: Function0[A]): Function0[Function0[A]] = () => a
 
-      def bind[A, B](fa: () => A)(f: (A) => () => B) =
-        () => f(fa())()
+      def bind[A, B](fa: () => A)(f: (A) => () => B) = () => f(fa())()
 
-      override def map[A, B](fa: () => A)(f: A => B) =
-        () => f(fa())
+      override def map[A, B](fa: () => A)(f: A => B) = () => f(fa())
 
       def traverseImpl[G[_]: Applicative, A, B](fa: () => A)(f: A => G[B]) =
         Applicative[G].map(f(fa()))((b: B) => () => b)
@@ -99,8 +93,7 @@ trait FunctionInstances extends FunctionInstances0 {
         f(fa(), z)
 
       def distributeImpl[G[_], A, B](fa: G[A])(f: A => () => B)(
-          implicit G: Functor[G]): () => G[B] =
-        () => G.map(fa)(a => f(a)())
+          implicit G: Functor[G]): () => G[B] = () => G.map(fa)(a => f(a)())
 
       def tailrecM[A, B](f: A => () => A \/ B)(a: A): () => B =
         () => {
@@ -156,21 +149,16 @@ trait FunctionInstances extends FunctionInstances0 {
       with Zip[T => ?]
       with Unzip[T => ?]
       with Distributive[T => ?] {
-      def point[A](a: => A) =
-        _ => a
+      def point[A](a: => A) = _ => a
 
-      def bind[A, B](fa: T => A)(f: A => T => B) =
-        t => f(fa(t))(t)
+      def bind[A, B](fa: T => A)(f: A => T => B) = t => f(fa(t))(t)
 
-      def zip[A, B](a: => T => A, b: => T => B) =
-        t => (a(t), b(t))
+      def zip[A, B](a: => T => A, b: => T => B) = t => (a(t), b(t))
 
-      def unzip[A, B](a: T => (A, B)) =
-        (a(_)._1, a(_)._2)
+      def unzip[A, B](a: T => (A, B)) = (a(_)._1, a(_)._2)
 
       def distributeImpl[G[_]: Functor, A, B](fa: G[A])(
-          f: A => T => B): T => G[B] =
-        t => Functor[G].map(fa)(a => f(a)(t))
+          f: A => T => B): T => G[B] = t => Functor[G].map(fa)(a => f(a)(t))
 
       def tailrecM[A, B](f: A => T => A \/ B)(a: A): T => B =
         t => {
@@ -192,8 +180,7 @@ trait FunctionInstances extends FunctionInstances0 {
   implicit def function2Instance[T1, T2]
       : Monad[(T1, T2) => ?] with BindRec[(T1, T2) => ?] =
     new Monad[(T1, T2) => ?] with BindRec[(T1, T2) => ?] {
-      def point[A](a: => A) =
-        (_, _) => a
+      def point[A](a: => A) = (_, _) => a
 
       def bind[A, B](fa: (T1, T2) => A)(f: (A) => (T1, T2) => B) =
         (t1, t2) => f(fa(t1, t2))(t1, t2)
@@ -213,8 +200,7 @@ trait FunctionInstances extends FunctionInstances0 {
   implicit def function3Instance[T1, T2, T3]
       : Monad[(T1, T2, T3) => ?] with BindRec[(T1, T2, T3) => ?] =
     new Monad[(T1, T2, T3) => ?] with BindRec[(T1, T2, T3) => ?] {
-      def point[A](a: => A) =
-        (_, _, _) => a
+      def point[A](a: => A) = (_, _, _) => a
 
       def bind[A, B](fa: (T1, T2, T3) => A)(f: (A) => (T1, T2, T3) => B) =
         (t1, t2, t3) => f(fa(t1, t2, t3))(t1, t2, t3)
@@ -235,8 +221,7 @@ trait FunctionInstances extends FunctionInstances0 {
   implicit def function4Instance[T1, T2, T3, T4]
       : Monad[(T1, T2, T3, T4) => ?] with BindRec[(T1, T2, T3, T4) => ?] =
     new Monad[(T1, T2, T3, T4) => ?] with BindRec[(T1, T2, T3, T4) => ?] {
-      def point[A](a: => A) =
-        (_, _, _, _) => a
+      def point[A](a: => A) = (_, _, _, _) => a
 
       def bind[A, B](fa: (T1, T2, T3, T4) => A)(
           f: (A) => (T1, T2, T3, T4) => B) =
@@ -260,8 +245,7 @@ trait FunctionInstances extends FunctionInstances0 {
         with BindRec[(T1, T2, T3, T4, T5) => ?] =
     new Monad[(T1, T2, T3, T4, T5) => ?]
       with BindRec[(T1, T2, T3, T4, T5) => ?] {
-      def point[A](a: => A) =
-        (_, _, _, _, _) => a
+      def point[A](a: => A) = (_, _, _, _, _) => a
 
       def bind[A, B](fa: (T1, T2, T3, T4, T5) => A)(
           f: (A) => (T1, T2, T3, T4, T5) => B) =
@@ -285,8 +269,7 @@ trait FunctionInstances extends FunctionInstances0 {
         with BindRec[(T1, T2, T3, T4, T5, T6) => ?] =
     new Monad[(T1, T2, T3, T4, T5, T6) => ?]
       with BindRec[(T1, T2, T3, T4, T5, T6) => ?] {
-      def point[A](a: => A) =
-        (_, _, _, _, _, _) => a
+      def point[A](a: => A) = (_, _, _, _, _, _) => a
 
       def bind[A, B](fa: (T1, T2, T3, T4, T5, T6) => A)(
           f: (A) => (T1, T2, T3, T4, T5, T6) => B) =
@@ -311,8 +294,7 @@ trait FunctionInstances extends FunctionInstances0 {
         with BindRec[(T1, T2, T3, T4, T5, T6, T7) => ?] =
     new Monad[(T1, T2, T3, T4, T5, T6, T7) => ?]
       with BindRec[(T1, T2, T3, T4, T5, T6, T7) => ?] {
-      def point[A](a: => A) =
-        (_, _, _, _, _, _, _) => a
+      def point[A](a: => A) = (_, _, _, _, _, _, _) => a
 
       def bind[A, B](fa: (T1, T2, T3, T4, T5, T6, T7) => A)(
           f: (A) => (T1, T2, T3, T4, T5, T6, T7) => B) =
@@ -337,8 +319,7 @@ trait FunctionInstances extends FunctionInstances0 {
         with BindRec[(T1, T2, T3, T4, T5, T6, T7, T8) => ?] =
     new Monad[(T1, T2, T3, T4, T5, T6, T7, T8) => ?]
       with BindRec[(T1, T2, T3, T4, T5, T6, T7, T8) => ?] {
-      def point[A](a: => A) =
-        (_, _, _, _, _, _, _, _) => a
+      def point[A](a: => A) = (_, _, _, _, _, _, _, _) => a
 
       def bind[A, B](fa: (T1, T2, T3, T4, T5, T6, T7, T8) => A)(
           f: (A) => (T1, T2, T3, T4, T5, T6, T7, T8) => B) =

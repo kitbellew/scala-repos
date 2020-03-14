@@ -24,8 +24,8 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
     withRedisClient { client =>
       val k = StringToChannelBuffer("mykey")
       val v = StringToChannelBuffer("10")
-      val expectedBytes: Array[Byte] =
-        Array(0, -64, 10, 6, 0, -8, 114, 63, -59, -5, -5, 95, 40)
+      val expectedBytes: Array[Byte] = Array(0, -64, 10, 6, 0, -8, 114, 63, -59,
+        -5, -5, 95, 40)
 
       Await.result(client.set(k, v))
       assert(
@@ -73,10 +73,11 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
 
       assert(Await.result(client.expire(foo, time)) == true)
 
-      val result = Await.result(client.ttl(foo)) match {
-        case Some(num) => num
-        case None      => fail("Could not retrieve key for TTL test")
-      }
+      val result =
+        Await.result(client.ttl(foo)) match {
+          case Some(num) => num
+          case None      => fail("Could not retrieve key for TTL test")
+        }
       assert(result <= time)
     }
   }
@@ -91,10 +92,11 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
 
       assert(Await.result(client.expireAt(foo, ttl)) == true)
 
-      val result = Await.result(client.ttl(foo)) match {
-        case Some(num) => num
-        case None      => fail("Could not retrieve key for TTL")
-      }
+      val result =
+        Await.result(client.ttl(foo)) match {
+          case Some(num) => num
+          case None      => fail("Could not retrieve key for TTL")
+        }
       assert(result <= ttl)
     }
   }
@@ -125,10 +127,11 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
       Await.result(client.set(foo, bar))
       assert(Await.result(client.pExpire(foo, ttl)) == true)
 
-      val result = Await.result(client.pTtl(foo)) match {
-        case Some(num) => num
-        case None      => fail("Could not retrieve pTtl for key")
-      }
+      val result =
+        Await.result(client.pTtl(foo)) match {
+          case Some(num) => num
+          case None      => fail("Could not retrieve pTtl for key")
+        }
       assert(result <= ttl)
     }
   }
@@ -143,10 +146,11 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
       Await.result(client.set(foo, bar))
       assert(Await.result(client.pExpireAt(foo, ttl)) == true)
 
-      val result = Await.result(client.pTtl(foo)) match {
-        case Some(num) => num
-        case None      => fail("Could not retrieve pTtl for key")
-      }
+      val result =
+        Await.result(client.pTtl(foo)) match {
+          case Some(num) => num
+          case None      => fail("Could not retrieve pTtl for key")
+        }
       assert(result <= horizon)
     }
   }

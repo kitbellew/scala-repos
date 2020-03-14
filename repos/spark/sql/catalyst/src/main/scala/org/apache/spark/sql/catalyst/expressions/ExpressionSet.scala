@@ -71,8 +71,9 @@ class ExpressionSet protected (
 
   override def -(elem: Expression): ExpressionSet = {
     val newBaseSet = baseSet.clone().filterNot(_ == elem.canonicalized)
-    val newOriginals =
-      originals.clone().filterNot(_.canonicalized == elem.canonicalized)
+    val newOriginals = originals
+      .clone()
+      .filterNot(_.canonicalized == elem.canonicalized)
     new ExpressionSet(newBaseSet, newOriginals)
   }
 
@@ -82,8 +83,7 @@ class ExpressionSet protected (
     * Returns a string containing both the post [[Canonicalize]] expressions and the original
     * expressions in this set.
     */
-  def toDebugString: String =
-    s"""
+  def toDebugString: String = s"""
        |baseSet: ${baseSet.mkString(", ")}
        |originals: ${originals.mkString(", ")}
      """.stripMargin

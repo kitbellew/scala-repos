@@ -15,14 +15,13 @@ import scala.language.postfixOps
 
 class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
 
-  val baseCircuitBreakerPropsBuilder =
-    CircuitBreakerPropsBuilder(
-      maxFailures = 2,
-      callTimeout = 200 millis,
-      resetTimeout = 1 second,
-      failureDetector = {
-        _ == "FAILURE"
-      })
+  val baseCircuitBreakerPropsBuilder = CircuitBreakerPropsBuilder(
+    maxFailures = 2,
+    callTimeout = 200 millis,
+    resetTimeout = 1 second,
+    failureDetector = {
+      _ == "FAILURE"
+    })
 
   trait CircuitBreakerScenario {
     val sender = TestProbe()

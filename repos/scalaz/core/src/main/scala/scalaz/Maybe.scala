@@ -29,12 +29,10 @@ sealed abstract class Maybe[A] {
     }
 
   /** Return the underlying value if present, otherwise the provided fallback value */
-  final def getOrElse(a: => A): A =
-    cata(identity, a)
+  final def getOrElse(a: => A): A = cata(identity, a)
 
   /** alias for [[getOrElse]] */
-  final def |(a: => A): A =
-    getOrElse(a)
+  final def |(a: => A): A = getOrElse(a)
 
   /** Turn the underlying value into a failure validation if present, otherwise
     * return a success validation with the provided fallback value */
@@ -48,43 +46,33 @@ sealed abstract class Maybe[A] {
 
   /** Turn the underlying value into a left disjunction if present, otherwise
     * return a right disjunction with the provided fallback value */
-  final def toLeft[B](b: => B): A \/ B =
-    cata(\/.left, \/.right(b))
+  final def toLeft[B](b: => B): A \/ B = cata(\/.left, \/.right(b))
 
   /** alias for [[toLeft]] */
-  final def <\/[B](b: => B): A \/ B =
-    toLeft(b)
+  final def <\/[B](b: => B): A \/ B = toLeft(b)
 
   /** Turn the underlying value into a right disjunction if present, otherwise
     * return a left disjunction with the provided fallback value */
-  final def toRight[B](b: => B): B \/ A =
-    cata(\/.right, \/.left(b))
+  final def toRight[B](b: => B): B \/ A = cata(\/.right, \/.left(b))
 
   /** alias for [[toRight]] */
-  final def \/>[B](b: => B): B \/ A =
-    toRight(b)
+  final def \/>[B](b: => B): B \/ A = toRight(b)
 
   /** True if an underlying value is present */
-  final def isJust: Boolean =
-    cata(_ => true, false)
+  final def isJust: Boolean = cata(_ => true, false)
 
   /** True if no underlying value is present */
-  final def isEmpty: Boolean =
-    cata(_ => false, true)
+  final def isEmpty: Boolean = cata(_ => false, true)
 
-  final def map[B](f: A => B): Maybe[B] =
-    cata(f andThen just[B], empty[B])
+  final def map[B](f: A => B): Maybe[B] = cata(f andThen just[B], empty[B])
 
-  final def flatMap[B](f: A => Maybe[B]) =
-    cata(f, empty[B])
+  final def flatMap[B](f: A => Maybe[B]) = cata(f, empty[B])
 
   /** Convert to a standard library `Option` */
-  final def toOption: Option[A] =
-    cata(Some(_), None)
+  final def toOption: Option[A] = cata(Some(_), None)
 
   /** Return this instance if it is a [[Maybe.Just]], otherwise the provided fallback */
-  final def orElse(oa: => Maybe[A]): Maybe[A] =
-    cata(_ => this, oa)
+  final def orElse(oa: => Maybe[A]): Maybe[A] = cata(_ => this, oa)
 
   /** Tag with [[Tags.First]] */
   final def first: FirstMaybe[A] = Tag(this)
@@ -100,8 +88,7 @@ sealed abstract class Maybe[A] {
 
   final def cojoin: Maybe[Maybe[A]] = map(just)
 
-  final def cobind[B](f: Maybe[A] => B): Maybe[B] =
-    map(_ => f(this))
+  final def cobind[B](f: Maybe[A] => B): Maybe[B] = map(_ => f(this))
 
   final def zip[B](fb: Maybe[B]): Maybe[(A, B)] =
     for {
@@ -122,26 +109,21 @@ sealed abstract class Maybe[A] {
       else
         empty)
 
-  final def filterNot(f: A => Boolean): Maybe[A] =
-    filter(f.andThen(!_))
+  final def filterNot(f: A => Boolean): Maybe[A] = filter(f.andThen(!_))
 
   /** Return `true` if this is a [[Maybe.Empty]] or if this is a [[Maybe.Just]]
     * and the underlying value satisfies the provided predicate */
-  final def forall(f: A => Boolean): Boolean =
-    cata(f, true)
+  final def forall(f: A => Boolean): Boolean = cata(f, true)
 
   /** Return `true` if this is a [[Maybe.Just]] and the underlying value
     * satisfies the provided predicate */
-  final def exists(f: A => Boolean): Boolean =
-    cata(f, false)
+  final def exists(f: A => Boolean): Boolean = cata(f, false)
 
   /** Return the underlying value if present, otherwise the monoid zero */
-  final def orZero(implicit F: Monoid[A]): A =
-    getOrElse(F.zero)
+  final def orZero(implicit F: Monoid[A]): A = getOrElse(F.zero)
 
   /** alias for [[orZero]] */
-  final def unary_~(implicit z: Monoid[A]): A =
-    orZero
+  final def unary_~(implicit z: Monoid[A]): A = orZero
 
   /**
     * Return the underlying value wrapped in type `F` if present, otherwise the
@@ -364,11 +346,9 @@ sealed abstract class MaybeInstances {
             a => fb.cata(b => just(f(\&/.Both(a, b))), just(f(\&/.This(a)))),
             fb.cata(b => just(f(\&/.That(b))), empty))
 
-      def cobind[A, B](fa: Maybe[A])(f: Maybe[A] => B) =
-        fa.cobind(f)
+      def cobind[A, B](fa: Maybe[A])(f: Maybe[A] => B) = fa.cobind(f)
 
-      override def cojoin[A](a: Maybe[A]) =
-        a.cojoin
+      override def cojoin[A](a: Maybe[A]) = a.cojoin
 
       def pextract[B, A](fa: Maybe[A]): Maybe[B] \/ A =
         fa.cata(\/.right, \/.left(empty))

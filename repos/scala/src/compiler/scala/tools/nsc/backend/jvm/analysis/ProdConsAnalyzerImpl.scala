@@ -137,8 +137,9 @@ trait ProdConsAnalyzerImpl {
             // prevent infinite recursion if an instruction is its own producer or consumer
             // see cyclicProdCons in ProdConsAnalyzerTest
             _initialProducersCache(key) = Set.empty
-            val (sourceValue, sourceValueSlot) =
-              copyOperationSourceValue(insn, producedSlot)
+            val (sourceValue, sourceValueSlot) = copyOperationSourceValue(
+              insn,
+              producedSlot)
             sourceValue.insns.iterator.asScala
               .flatMap(initialProducers(_, sourceValueSlot))
               .toSet
@@ -196,11 +197,12 @@ trait ProdConsAnalyzerImpl {
     insn match {
       case _: UninitializedLocalProducer => Set.empty
       case _ =>
-        lazy val next = insn match {
-          case _: ParameterProducer               => methodNode.instructions.getFirst
-          case ExceptionProducer(handlerLabel, _) => handlerLabel
-          case _                                  => insn.getNext
-        }
+        lazy val next =
+          insn match {
+            case _: ParameterProducer               => methodNode.instructions.getFirst
+            case ExceptionProducer(handlerLabel, _) => handlerLabel
+            case _                                  => insn.getNext
+          }
         outputValueSlots(insn)
           .flatMap(slot => ultimateConsumersOfValueAt(next, slot))
           .toSet

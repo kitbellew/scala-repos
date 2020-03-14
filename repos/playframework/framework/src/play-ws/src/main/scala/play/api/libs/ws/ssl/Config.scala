@@ -191,8 +191,10 @@ case class SSLConfig(
     enabledProtocols: Option[Seq[String]] = Some(
       Seq("TLSv1.2", "TLSv1.1", "TLSv1")),
     disabledSignatureAlgorithms: Seq[String] = Seq("MD2", "MD4", "MD5"),
-    disabledKeyAlgorithms: Seq[String] =
-      Seq("RSA keySize < 2048", "DSA keySize < 2048", "EC keySize < 224"),
+    disabledKeyAlgorithms: Seq[String] = Seq(
+      "RSA keySize < 2048",
+      "DSA keySize < 2048",
+      "EC keySize < 224"),
     keyManagerConfig: KeyManagerConfig = KeyManagerConfig(),
     trustManagerConfig: TrustManagerConfig = TrustManagerConfig(),
     secureRandom: Option[SecureRandom] = None,
@@ -225,13 +227,13 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
     val debug = parseDebug(c.get[PlayConfig]("debug"))
     val looseOptions = parseLooseOptions(c.get[PlayConfig]("loose"))
 
-    val ciphers =
-      Some(c.get[Seq[String]]("enabledCipherSuites")).filter(_.nonEmpty)
-    val protocols =
-      Some(c.get[Seq[String]]("enabledProtocols")).filter(_.nonEmpty)
+    val ciphers = Some(c.get[Seq[String]]("enabledCipherSuites"))
+      .filter(_.nonEmpty)
+    val protocols = Some(c.get[Seq[String]]("enabledProtocols"))
+      .filter(_.nonEmpty)
 
-    val disabledSignatureAlgorithms =
-      c.get[Seq[String]]("disabledSignatureAlgorithms")
+    val disabledSignatureAlgorithms = c.get[Seq[String]](
+      "disabledSignatureAlgorithms")
     val disabledKeyAlgorithms = c.get[Seq[String]]("disabledKeyAlgorithms")
 
     val keyManagers = parseKeyManager(c.get[PlayConfig]("keyManager"))
@@ -263,8 +265,8 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
     val allowWeakProtocols = config.get[Boolean]("allowWeakProtocols")
     val allowWeakCiphers = config.get[Boolean]("allowWeakCiphers")
     val allowMessages = config.get[Option[Boolean]]("allowLegacyHelloMessages")
-    val allowUnsafeRenegotiation =
-      config.get[Option[Boolean]]("allowUnsafeRenegotiation")
+    val allowUnsafeRenegotiation = config.get[Option[Boolean]](
+      "allowUnsafeRenegotiation")
     val acceptAnyCertificate = config.get[Boolean]("acceptAnyCertificate")
 
     SSLLooseConfig(
@@ -294,13 +296,14 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
         } else
           None
 
-      val handshake = if (config.get[Boolean]("handshake")) {
-        val data = config.get[Boolean]("data")
-        val verbose = config.get[Boolean]("verbose")
-        Some(SSLDebugHandshakeOptions(data = data, verbose = verbose))
-      } else {
-        None
-      }
+      val handshake =
+        if (config.get[Boolean]("handshake")) {
+          val data = config.get[Boolean]("data")
+          val verbose = config.get[Boolean]("verbose")
+          Some(SSLDebugHandshakeOptions(data = data, verbose = verbose))
+        } else {
+          None
+        }
 
       val keygen = config.get[Boolean]("keygen")
       val session = config.get[Boolean]("session")
@@ -333,8 +336,9 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
     * Parses the "ws.ssl.keyManager { stores = [ ... ]" section of configuration.
     */
   def parseKeyStoreInfo(config: PlayConfig): KeyStoreConfig = {
-    val storeType =
-      config.get[Option[String]]("type").getOrElse(KeyStore.getDefaultType)
+    val storeType = config
+      .get[Option[String]]("type")
+      .getOrElse(KeyStore.getDefaultType)
     val path = config.get[Option[String]]("path")
     val data = config.get[Option[String]]("data")
     val password = config.get[Option[String]]("password")
@@ -350,8 +354,9 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
     * Parses the "ws.ssl.trustManager { stores = [ ... ]" section of configuration.
     */
   def parseTrustStoreInfo(config: PlayConfig): TrustStoreConfig = {
-    val storeType =
-      config.get[Option[String]]("type").getOrElse(KeyStore.getDefaultType)
+    val storeType = config
+      .get[Option[String]]("type")
+      .getOrElse(KeyStore.getDefaultType)
     val path = config.get[Option[String]]("path")
     val data = config.get[Option[String]]("data")
 
@@ -363,10 +368,11 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
     */
   def parseKeyManager(config: PlayConfig): KeyManagerConfig = {
 
-    val algorithm = config.get[Option[String]]("algorithm") match {
-      case None        => KeyManagerFactory.getDefaultAlgorithm
-      case Some(other) => other
-    }
+    val algorithm =
+      config.get[Option[String]]("algorithm") match {
+        case None        => KeyManagerFactory.getDefaultAlgorithm
+        case Some(other) => other
+      }
 
     val keyStoreInfos = config.getPrototypedSeq("stores").map { store =>
       parseKeyStoreInfo(store)
@@ -379,10 +385,11 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
     * Parses the "ws.ssl.trustManager" section of configuration.
     */
   def parseTrustManager(config: PlayConfig): TrustManagerConfig = {
-    val algorithm = config.get[Option[String]]("algorithm") match {
-      case None        => TrustManagerFactory.getDefaultAlgorithm
-      case Some(other) => other
-    }
+    val algorithm =
+      config.get[Option[String]]("algorithm") match {
+        case None        => TrustManagerFactory.getDefaultAlgorithm
+        case Some(other) => other
+      }
 
     val trustStoreInfos = config.getPrototypedSeq("stores").map { store =>
       parseTrustStoreInfo(store)

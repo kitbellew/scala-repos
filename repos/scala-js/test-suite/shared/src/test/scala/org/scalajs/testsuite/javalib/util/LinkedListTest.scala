@@ -182,9 +182,7 @@ class LinkedListTest extends AbstractListTest {
 }
 
 class LinkedListFactory extends AbstractListFactory {
-  override def implementationName: String =
-    "java.util.LinkedList"
+  override def implementationName: String = "java.util.LinkedList"
 
-  override def empty[E: ClassTag]: LinkedList[E] =
-    new LinkedList[E]()
+  override def empty[E: ClassTag]: LinkedList[E] = new LinkedList[E]()
 }

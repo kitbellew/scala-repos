@@ -38,8 +38,8 @@ case object Both extends SaslSetupMode
  * currently to setup a keytab and jaas files.
  */
 trait SaslSetup {
-  private val workDir = new File(
-    System.getProperty("test.dir", "build/tmp/test-workDir"))
+  private val workDir =
+    new File(System.getProperty("test.dir", "build/tmp/test-workDir"))
   private val kdcConf = MiniKdc.createConf()
   private val kdc = new MiniKdc(kdcConf, workDir)
 
@@ -67,14 +67,15 @@ trait SaslSetup {
 
   private def createKeytabAndJaasFiles(mode: SaslSetupMode): (File, File) = {
     val keytabFile = TestUtils.tempFile()
-    val jaasFileName: String = mode match {
-      case ZkSasl =>
-        JaasTestUtils.genZkFile
-      case KafkaSasl =>
-        JaasTestUtils.genKafkaFile(keytabFile.getAbsolutePath)
-      case _ =>
-        JaasTestUtils.genZkAndKafkaFile(keytabFile.getAbsolutePath)
-    }
+    val jaasFileName: String =
+      mode match {
+        case ZkSasl =>
+          JaasTestUtils.genZkFile
+        case KafkaSasl =>
+          JaasTestUtils.genKafkaFile(keytabFile.getAbsolutePath)
+        case _ =>
+          JaasTestUtils.genZkAndKafkaFile(keytabFile.getAbsolutePath)
+      }
     val jaasFile = new File(jaasFileName)
 
     (keytabFile, jaasFile)

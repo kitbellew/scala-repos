@@ -282,36 +282,39 @@ final case class Intersperse[T](start: Option[T], inject: T, end: Option[T])
 
   override def createLogic(attr: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) {
-      val startInHandler = new InHandler {
-        override def onPush(): Unit = {
-          // if else (to avoid using Iterator[T].flatten in hot code)
-          if (start.isDefined)
-            emitMultiple(out, Iterator(start.get, grab(in)))
-          else
-            emit(out, grab(in))
-          setHandler(in, restInHandler) // switch handler
+      val startInHandler =
+        new InHandler {
+          override def onPush(): Unit = {
+            // if else (to avoid using Iterator[T].flatten in hot code)
+            if (start.isDefined)
+              emitMultiple(out, Iterator(start.get, grab(in)))
+            else
+              emit(out, grab(in))
+            setHandler(in, restInHandler) // switch handler
+          }
+
+          override def onUpstreamFinish(): Unit = {
+            emitMultiple(out, Iterator(start, end).flatten)
+            completeStage()
+          }
         }
 
-        override def onUpstreamFinish(): Unit = {
-          emitMultiple(out, Iterator(start, end).flatten)
-          completeStage()
+      val restInHandler =
+        new InHandler {
+          override def onPush(): Unit =
+            emitMultiple(out, Iterator(inject, grab(in)))
+
+          override def onUpstreamFinish(): Unit = {
+            if (end.isDefined)
+              emit(out, end.get)
+            completeStage()
+          }
         }
-      }
 
-      val restInHandler = new InHandler {
-        override def onPush(): Unit =
-          emitMultiple(out, Iterator(inject, grab(in)))
-
-        override def onUpstreamFinish(): Unit = {
-          if (end.isDefined)
-            emit(out, end.get)
-          completeStage()
+      val outHandler =
+        new OutHandler {
+          override def onPull(): Unit = pull(in)
         }
-      }
-
-      val outHandler = new OutHandler {
-        override def onPull(): Unit = pull(in)
-      }
 
       setHandler(in, startInHandler)
       setHandler(out, outHandler)
@@ -802,19 +805,18 @@ private[akka] final case class MapAsync[In, Out](
             pushOne()
         }
 
-      val futureCB =
-        getAsyncCallback[(Holder[Try[Out]], Try[Out])]({
-          case (holder, f: Failure[_]) ⇒ failOrPull(holder, f)
-          case (holder, s @ Success(elem)) ⇒
-            if (elem == null) {
-              val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
-              failOrPull(holder, Failure(ex))
-            } else {
-              holder.elem = s
-              if (isAvailable(out))
-                pushOne()
-            }
-        })
+      val futureCB = getAsyncCallback[(Holder[Try[Out]], Try[Out])]({
+        case (holder, f: Failure[_]) ⇒ failOrPull(holder, f)
+        case (holder, s @ Success(elem)) ⇒
+          if (elem == null) {
+            val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
+            failOrPull(holder, Failure(ex))
+          } else {
+            holder.elem = s
+            if (isAvailable(out))
+              pushOne()
+          }
+      })
 
       setHandler(
         in,
@@ -868,11 +870,10 @@ private[akka] final case class MapAsyncUnordered[In, Out](
       override def toString =
         s"MapAsyncUnordered.Logic(inFlight=$inFlight, buffer=$buffer)"
 
-      val decider =
-        inheritedAttributes
-          .get[SupervisionStrategy]
-          .map(_.decider)
-          .getOrElse(Supervision.stoppingDecider)
+      val decider = inheritedAttributes
+        .get[SupervisionStrategy]
+        .map(_.decider)
+        .getOrElse(Supervision.stoppingDecider)
 
       var inFlight = 0
       var buffer: BufferImpl[Out] = _
@@ -1037,19 +1038,21 @@ private[akka] object Log {
     * Must be located here to be visible for implicit resolution, when LifecycleContext is passed to [[Logging]]
     * More specific LogSource than `fromString`, which would add the ActorSystem name in addition to the supervision to the log source.
     */
-  final val fromLifecycleContext = new LogSource[LifecycleContext] {
+  final val fromLifecycleContext =
+    new LogSource[LifecycleContext] {
 
-    // do not expose private context classes (of OneBoundedInterpreter)
-    override def getClazz(t: LifecycleContext): Class[_] = classOf[Materializer]
+      // do not expose private context classes (of OneBoundedInterpreter)
+      override def getClazz(t: LifecycleContext): Class[_] =
+        classOf[Materializer]
 
-    override def genString(t: LifecycleContext): String = {
-      try s"$DefaultLoggerName(${ActorMaterializer.downcast(t.materializer).supervisor.path})"
-      catch {
-        case ex: Exception ⇒ LogSource.fromString.genString(DefaultLoggerName)
+      override def genString(t: LifecycleContext): String = {
+        try s"$DefaultLoggerName(${ActorMaterializer.downcast(t.materializer).supervisor.path})"
+        catch {
+          case ex: Exception ⇒ LogSource.fromString.genString(DefaultLoggerName)
+        }
       }
-    }
 
-  }
+    }
 
   private final val DefaultLoggerName = "akka.stream.Log"
   private final val OffInt = LogLevels.Off.asInt
@@ -1294,8 +1297,7 @@ private[stream] final class TakeWithin[T](timeout: FiniteDuration)
           override def onPull(): Unit = pull(in)
         })
 
-      final override protected def onTimer(key: Any): Unit =
-        completeStage()
+      final override protected def onTimer(key: Any): Unit = completeStage()
 
       override def preStart(): Unit = scheduleOnce("TakeWithinTimer", timeout)
     }
@@ -1427,12 +1429,13 @@ private[stream] final class RecoverWith[T, M](
             completeStage()
         }
 
-        val outHandler = new OutHandler {
-          override def onPull(): Unit =
-            if (sinkIn.isAvailable)
-              pushOut()
-          override def onDownstreamFinish(): Unit = sinkIn.cancel()
-        }
+        val outHandler =
+          new OutHandler {
+            override def onPull(): Unit =
+              if (sinkIn.isAvailable)
+                pushOut()
+            override def onDownstreamFinish(): Unit = sinkIn.cancel()
+          }
 
         Source
           .fromGraph(source)

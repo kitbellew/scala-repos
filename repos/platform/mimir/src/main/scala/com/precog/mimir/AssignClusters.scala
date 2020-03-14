@@ -57,86 +57,90 @@ trait AssignClusterModule[M[+_]]
       private type ClusterId = String
       private type ModelId = String
 
-      protected val reducer: CReducer[Models] = new CReducer[Models] {
-        private val kPath = CPath(TableModule.paths.Key)
-        private val vPath = CPath(TableModule.paths.Value)
+      protected val reducer: CReducer[Models] =
+        new CReducer[Models] {
+          private val kPath = CPath(TableModule.paths.Key)
+          private val vPath = CPath(TableModule.paths.Value)
 
-        def reduce(schema: CSchema, range: Range): Models = {
+          def reduce(schema: CSchema, range: Range): Models = {
 
-          val rowIdentities = Model.createRowIdentities(schema)
+            val rowIdentities = Model.createRowIdentities(schema)
 
-          val rowModels: Int => Set[Model] = {
-            val modelTuples: Map[
-              ModelId,
-              Set[(ModelId, ClusterId, CPath, DoubleColumn)]] = {
-              schema.columnRefs.flatMap {
-                case ref @ ColumnRef(
-                      CPath(
-                        TableModule.paths.Value,
-                        CPathField(modelName),
-                        CPathField(clusterName),
-                        rest @ _*),
-                      ctype) =>
-                  Schema.mkType(ref :: Nil) flatMap {
-                    case jType =>
-                      schema.columns(jType) collectFirst {
-                        case (col: DoubleColumn) => col
+            val rowModels: Int => Set[Model] = {
+              val modelTuples: Map[
+                ModelId,
+                Set[(ModelId, ClusterId, CPath, DoubleColumn)]] = {
+                schema.columnRefs.flatMap {
+                  case ref @ ColumnRef(
+                        CPath(
+                          TableModule.paths.Value,
+                          CPathField(modelName),
+                          CPathField(clusterName),
+                          rest @ _*),
+                        ctype) =>
+                    Schema.mkType(ref :: Nil) flatMap {
+                      case jType =>
+                        schema.columns(jType) collectFirst {
+                          case (col: DoubleColumn) => col
+                        }
+                    } map { col =>
+                      (
+                        modelName,
+                        clusterName,
+                        CPath((TableModule.paths.Value +: rest): _*),
+                        col)
+                    }
+
+                  case _ => None
+                } groupBy {
+                  _._1
+                }
+              }
+
+              val modelsByCluster = modelTuples map {
+                case (modelId, models) =>
+                  (modelId, models.groupBy(_._2))
+              }
+
+              { (i: Int) =>
+                val models0 =
+                  modelsByCluster.map {
+                    case (modelId, clusters) =>
+                      val modelClusters0: Array[ModelCluster] =
+                        clusters.map {
+                          case (clusterId, colInfo) =>
+                            val featureValues =
+                              colInfo.collect {
+                                case (_, _, cpath, col) if col.isDefinedAt(i) =>
+                                  cpath -> col(i)
+                              }.toMap
+
+                            ModelCluster(clusterId, featureValues)
+                        }.toArray
+
+                      val modelClusters = modelClusters0 filter {
+                        case ModelCluster(_, featureValues) =>
+                          !featureValues.isEmpty
                       }
-                  } map { col =>
-                    (
-                      modelName,
-                      clusterName,
-                      CPath((TableModule.paths.Value +: rest): _*),
-                      col)
-                  }
 
-                case _ => None
-              } groupBy {
-                _._1
+                      Model(modelId, modelClusters)
+                  }.toSet
+
+                models0 filter {
+                  case Model(_, modelClusters) => !modelClusters.isEmpty
+                }
               }
             }
 
-            val modelsByCluster = modelTuples map {
-              case (modelId, models) =>
-                (modelId, models.groupBy(_._2))
+            range.toList flatMap { i =>
+              val models = rowModels(i)
+              if (models.isEmpty)
+                None
+              else
+                Some(ModelSet(rowIdentities(i), models))
             }
-
-            { (i: Int) =>
-              val models0 = modelsByCluster.map {
-                case (modelId, clusters) =>
-                  val modelClusters0: Array[ModelCluster] = clusters.map {
-                    case (clusterId, colInfo) =>
-                      val featureValues = colInfo.collect {
-                        case (_, _, cpath, col) if col.isDefinedAt(i) =>
-                          cpath -> col(i)
-                      }.toMap
-
-                      ModelCluster(clusterId, featureValues)
-                  }.toArray
-
-                  val modelClusters = modelClusters0 filter {
-                    case ModelCluster(_, featureValues) =>
-                      !featureValues.isEmpty
-                  }
-
-                  Model(modelId, modelClusters)
-              }.toSet
-
-              models0 filter {
-                case Model(_, modelClusters) => !modelClusters.isEmpty
-              }
-            }
-          }
-
-          range.toList flatMap { i =>
-            val models = rowModels(i)
-            if (models.isEmpty)
-              None
-            else
-              Some(ModelSet(rowIdentities(i), models))
           }
         }
-      }
 
       protected def morph1Apply(models: Models): Morph1Apply =
         new Morph1Apply {
@@ -150,18 +154,20 @@ trait AssignClusterModule[M[+_]]
                   cols: Map[ColumnRef, Column],
                   range: Range): (A, Map[ColumnRef, Column]) = {
                 def included(model: Model): Map[ColumnRef, Column] = {
-                  val featurePaths = (model.clusters).flatMap {
-                    _.featureValues.keys
-                  }.toSet
+                  val featurePaths =
+                    (model.clusters).flatMap {
+                      _.featureValues.keys
+                    }.toSet
 
                   val res = cols filter {
                     case (ColumnRef(cpath, ctype), col) =>
                       featurePaths.contains(cpath)
                   }
 
-                  val resPaths = res map {
-                    case (ColumnRef(cpath, _), _) => cpath
-                  } toSet
+                  val resPaths =
+                    res map {
+                      case (ColumnRef(cpath, _), _) => cpath
+                    } toSet
 
                   if (resPaths == featurePaths)
                     res
@@ -300,16 +306,17 @@ trait AssignClusterModule[M[+_]]
 
                         val pref = CPath(TableModule.paths.Value)
 
-                        val centers: Map[ColumnRef, Column] = zipped.collect {
-                          case (col, path) if path.hasPrefix(pref) =>
-                            val path0 = CPath(
-                              TableModule.paths.Value,
-                              CPathField(model.name),
-                              CPathField("clusterCenter"))
-                            ColumnRef(
-                              path0 \ path.dropPrefix(pref).get,
-                              CDouble) -> col
-                        }.toMap
+                        val centers: Map[ColumnRef, Column] =
+                          zipped.collect {
+                            case (col, path) if path.hasPrefix(pref) =>
+                              val path0 = CPath(
+                                TableModule.paths.Value,
+                                CPathField(model.name),
+                                CPathField("clusterCenter"))
+                              ColumnRef(
+                                path0 \ path.dropPrefix(pref).get,
+                                CDouble) -> col
+                          }.toMap
 
                         val idPath = CPath(
                           TableModule.paths.Value,
@@ -329,8 +336,8 @@ trait AssignClusterModule[M[+_]]
                 implicit val semigroup = Column.unionRightSemigroup
                 val monoidCols = implicitly[Monoid[Map[ColumnRef, Column]]]
 
-                val reduced: Map[ColumnRef, Column] =
-                  result.toSet.suml(monoidCols)
+                val reduced: Map[ColumnRef, Column] = result.toSet.suml(
+                  monoidCols)
 
                 ((), reduced)
               }

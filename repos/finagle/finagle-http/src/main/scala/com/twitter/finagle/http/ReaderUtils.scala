@@ -20,8 +20,8 @@ private[http] object ReaderUtils {
         Future.value(Some(ChannelBufferBuf.Owned(chunk.getContent.duplicate)))
 
       case invalid =>
-        val exc = new IllegalArgumentException(
-          "invalid message \"%s\"".format(invalid))
+        val exc =
+          new IllegalArgumentException("invalid message \"%s\"".format(invalid))
         Future.exception(exc)
     }
 

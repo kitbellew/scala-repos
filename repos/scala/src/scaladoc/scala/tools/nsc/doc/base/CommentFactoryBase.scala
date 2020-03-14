@@ -122,8 +122,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
   /** The body of a line, dropping the (optional) start star-marker,
     * one leading whitespace and all trailing whitespace. */
-  private val CleanCommentLine =
-    new Regex("""(?:\s*\*\s?)?(.*)""")
+  private val CleanCommentLine = new Regex("""(?:\s*\*\s?)?(.*)""")
 
   /** Dangerous HTML tags that should be replaced by something safer,
     * such as wiki syntax, or that should be dropped. */
@@ -174,12 +173,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
   private val safeTagMarker = '\u000E'
 
   /** A Scaladoc tag not linked to a symbol and not followed by text */
-  private val SingleTagRegex =
-    new Regex("""\s*@(\S+)\s*""")
+  private val SingleTagRegex = new Regex("""\s*@(\S+)\s*""")
 
   /** A Scaladoc tag not linked to a symbol. Returns the name of the tag, and the rest of the line. */
-  private val SimpleTagRegex =
-    new Regex("""\s*@(\S+)\s+(.*)""")
+  private val SimpleTagRegex = new Regex("""\s*@(\S+)\s+(.*)""")
 
   /** A Scaladoc tag linked to a symbol. Returns the name of the tag, the name
     * of the symbol, and the rest of the line. */
@@ -237,13 +234,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         safeComment, {
           javadocReplacement(_)
         })
-      val markedTagComment =
-        SafeTags.replaceAllIn(
-          javadoclessComment,
-          { mtch =>
-            java.util.regex.Matcher
-              .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker)
-          })
+      val markedTagComment = SafeTags.replaceAllIn(
+        javadoclessComment,
+        { mtch =>
+          java.util.regex.Matcher
+            .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker)
+        })
       markedTagComment.lines.toList map (cleanLine(_))
     }
 
@@ -380,16 +376,17 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         }
 
         case line :: ls if (lastTagKey.isDefined) => {
-          val newtags = if (!line.isEmpty) {
-            val key = lastTagKey.get
-            val value =
-              ((tags get key): @unchecked) match {
-                case Some(b :: bs) => (b + endOfLine + line) :: bs
-                case None          => oops("lastTagKey set when no tag exists for key")
-              }
-            tags + (key -> value)
-          } else
-            tags
+          val newtags =
+            if (!line.isEmpty) {
+              val key = lastTagKey.get
+              val value =
+                ((tags get key): @unchecked) match {
+                  case Some(b :: bs) => (b + endOfLine + line) :: bs
+                  case None          => oops("lastTagKey set when no tag exists for key")
+                }
+              tags + (key -> value)
+            } else
+              tags
           parse0(docBody, newtags, lastTagKey, ls, inCodeBlock)
         }
 
@@ -422,11 +419,11 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             contentDiagramTag,
             SimpleTagKey("template"),
             SimpleTagKey("documentable"))
-          val tagsWithoutDiagram =
-            tags.filterNot(pair => stripTags.contains(pair._1))
+          val tagsWithoutDiagram = tags.filterNot(pair =>
+            stripTags.contains(pair._1))
 
-          val bodyTags: mutable.Map[TagKey, List[Body]] =
-            mutable.Map(tagsWithoutDiagram mapValues { tag =>
+          val bodyTags: mutable.Map[TagKey, List[Body]] = mutable.Map(
+            tagsWithoutDiagram mapValues { tag =>
               tag map (parseWikiAtSymbol(_, pos, site))
             } toSeq: _*)
 
@@ -481,13 +478,14 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             m.map {
               case (name, body) =>
                 val link = memberLookup(pos, name, site)
-                val newBody = body match {
-                  case Body(List(Paragraph(Chain(content)))) =>
-                    val descr = Text(" ") +: content
-                    val entityLink = EntityLink(Monospace(Text(name)), link)
-                    Body(List(Paragraph(Chain(entityLink +: descr))))
-                  case _ => body
-                }
+                val newBody =
+                  body match {
+                    case Body(List(Paragraph(Chain(content)))) =>
+                      val descr = Text(" ") +: content
+                      val entityLink = EntityLink(Monospace(Text(name)), link)
+                      Body(List(Paragraph(Chain(entityLink +: descr))))
+                    case _ => body
+                  }
                 (name, newBody)
             }
           }
@@ -503,8 +501,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             version0 = oneTag(SimpleTagKey("version")),
             since0 = oneTag(SimpleTagKey("since")),
             todo0 = allTags(SimpleTagKey("todo")),
-            deprecated0 =
-              oneTag(SimpleTagKey("deprecated"), filterEmpty = false),
+            deprecated0 = oneTag(
+              SimpleTagKey("deprecated"),
+              filterEmpty = false),
             note0 = allTags(SimpleTagKey("note")),
             example0 = allTags(SimpleTagKey("example")),
             constructor0 = oneTag(SimpleTagKey("constructor")),
@@ -515,8 +514,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             groupDesc0 = allSymsOneTag(SimpleTagKey("groupdesc")),
             groupNames0 = allSymsOneTag(SimpleTagKey("groupname")),
             groupPrio0 = allSymsOneTag(SimpleTagKey("groupprio")),
-            hideImplicitConversions0 =
-              allTags(SimpleTagKey("hideImplicitConversion")),
+            hideImplicitConversions0 = allTags(
+              SimpleTagKey("hideImplicitConversion")),
             shortDescription0 = allTags(SimpleTagKey("shortDescription"))
           )
 
@@ -635,9 +634,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
 
       val indent = countWhitespace
-      val style = (listStyles.keys find {
-        checkSkipInitWhitespace(_)
-      }).getOrElse(listStyles.keys.head)
+      val style =
+        (listStyles.keys find {
+          checkSkipInitWhitespace(_)
+        }).getOrElse(listStyles.keys.head)
       listLevel(indent, style)
     }
 
@@ -768,12 +768,13 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         val iss = mutable.ListBuffer.empty[Inline]
         iss += inline0()
         while (!isInlineEnd && !checkParaEnded) {
-          val skipEndOfLine = if (char == endOfLine) {
-            nextChar()
-            true
-          } else {
-            false
-          }
+          val skipEndOfLine =
+            if (char == endOfLine) {
+              nextChar()
+              true
+            } else {
+              false
+            }
 
           val current = inline0()
           (iss.last, current) match {
@@ -911,10 +912,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       */
     def normalizeIndentation(_code: String): String = {
 
-      val code =
-        _code
-          .replaceAll("\\s+$", "")
-          .dropWhile(_ == '\n') // right-trim + remove all leading '\n'
+      val code = _code
+        .replaceAll("\\s+$", "")
+        .dropWhile(_ == '\n') // right-trim + remove all leading '\n'
       val lines = code.split("\n")
 
       // maxSkip - size of the longest common whitespace prefix of non-empty lines

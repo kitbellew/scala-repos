@@ -15,17 +15,13 @@ object CommonUtil {
     TokenSet.create(token)
 
   implicit class TokenSetOps(val tokenSet: TokenSet) {
-    def |(otherTokenSet: TokenSet) =
-      TokenSet.orSet(tokenSet, otherTokenSet)
+    def |(otherTokenSet: TokenSet) = TokenSet.orSet(tokenSet, otherTokenSet)
 
-    def &(otherTokenSet: TokenSet) =
-      TokenSet.andSet(tokenSet, otherTokenSet)
+    def &(otherTokenSet: TokenSet) = TokenSet.andSet(tokenSet, otherTokenSet)
 
-    def &^(otherTokenSet: TokenSet) =
-      TokenSet.andNot(tokenSet, otherTokenSet)
+    def &^(otherTokenSet: TokenSet) = TokenSet.andNot(tokenSet, otherTokenSet)
 
-    def unapply(tokenType: IElementType) =
-      tokenSet.contains(tokenType)
+    def unapply(tokenType: IElementType) = tokenSet.contains(tokenType)
 
     val extractor = this
   }
@@ -38,8 +34,7 @@ object CommonUtil {
       cs.length >= str.length && str.contentEquals(
         cs.subSequence(0, str.length))
 
-    def charIterator =
-      Iterator.range(0, cs.length).map(cs.charAt)
+    def charIterator = Iterator.range(0, cs.length).map(cs.charAt)
   }
 
   implicit class NodeOps(val node: ASTNode) extends AnyVal {
@@ -48,8 +43,7 @@ object CommonUtil {
         .iterate(node.getFirstChildNode)(_.getTreeNext)
         .takeWhile(_ != null)
 
-    def children =
-      childrenIterator.toVector: Seq[ASTNode]
+    def children = childrenIterator.toVector: Seq[ASTNode]
 
     def hasSingleChild =
       node.getFirstChildNode != null && node.getFirstChildNode.getTreeNext == null
@@ -57,8 +51,7 @@ object CommonUtil {
   }
 
   implicit class StringOps(val str: String) extends AnyVal {
-    def indent(ind: String) =
-      ind + str.replaceAllLiterally("\n", "\n" + ind)
+    def indent(ind: String) = ind + str.replaceAllLiterally("\n", "\n" + ind)
   }
 
   implicit class any2opt[T](val t: T) extends AnyVal {
@@ -97,8 +90,7 @@ object CommonUtil {
       m => jl.Short.parseShort(m.group(1), 16).toChar.toString)
   }
 
-  def uncaps(str: String) =
-    str.replace('_', ' ').toLowerCase
+  def uncaps(str: String) = str.replace('_', ' ').toLowerCase
 
   object TextRange {
     def unapply(textRange: TextRange) =

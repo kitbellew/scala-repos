@@ -41,9 +41,10 @@ class OrcFilterSuite extends QueryTest with OrcTest {
       df: DataFrame,
       predicate: Predicate,
       checker: (SearchArgument) => Unit): Unit = {
-    val output = predicate.collect {
-      case a: Attribute => a
-    }.distinct
+    val output =
+      predicate.collect {
+        case a: Attribute => a
+      }.distinct
     val query = df
       .select(output.map(e => Column(e)): _*)
       .where(Column(predicate))
@@ -64,10 +65,9 @@ class OrcFilterSuite extends QueryTest with OrcTest {
       maybeAnalyzedPredicate.isDefined,
       "No filter is analyzed from the given query")
 
-    val (_, selectedFilters) =
-      DataSourceStrategy.selectFilters(
-        maybeRelation.get,
-        maybeAnalyzedPredicate.toSeq)
+    val (_, selectedFilters) = DataSourceStrategy.selectFilters(
+      maybeRelation.get,
+      maybeAnalyzedPredicate.toSeq)
     assert(selectedFilters.nonEmpty, "No filter is pushed down")
 
     val maybeFilter = OrcFilters.createFilter(selectedFilters.toArray)

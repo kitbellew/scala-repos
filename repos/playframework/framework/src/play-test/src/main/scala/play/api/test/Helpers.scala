@@ -114,16 +114,17 @@ trait PlayRunners extends HttpVerbs {
     * The port to use for a test server. Defaults to 19001. May be configured using the system property
     * testserver.port
     */
-  lazy val testServerPort =
-    Option(System.getProperty("testserver.port")).map(_.toInt).getOrElse(19001)
+  lazy val testServerPort = Option(System.getProperty("testserver.port"))
+    .map(_.toInt)
+    .getOrElse(19001)
 
   /**
     * Constructs a in-memory (h2) database configuration to add to a FakeApplication.
     */
   def inMemoryDatabase(
       name: String = "default",
-      options: Map[String, String] = Map.empty[String, String])
-      : Map[String, String] = {
+      options: Map[String, String] = Map
+        .empty[String, String]): Map[String, String] = {
     val optionsForDbUrl = options
       .map {
         case (k, v) => k + "=" + v
@@ -227,8 +228,7 @@ trait EssentialActionCaller {
     */
   def call[T](action: EssentialAction, req: Request[T])(implicit
       w: Writeable[T],
-      mat: Materializer): Future[Result] =
-    call(action, req, req.body)
+      mat: Materializer): Future[Result] = call(action, req, req.body)
 
   /**
     * Execute an [[play.api.mvc.EssentialAction]].

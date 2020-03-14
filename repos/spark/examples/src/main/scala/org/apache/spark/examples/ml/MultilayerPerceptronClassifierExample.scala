@@ -31,8 +31,8 @@ import org.apache.spark.sql.SQLContext
 object MultilayerPerceptronClassifierExample {
 
   def main(args: Array[String]): Unit = {
-    val conf =
-      new SparkConf().setAppName("MultilayerPerceptronClassifierExample")
+    val conf = new SparkConf()
+      .setAppName("MultilayerPerceptronClassifierExample")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 

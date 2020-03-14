@@ -28,15 +28,16 @@ class RecipeReduceByKey extends RecipeSpec {
             .fill(1000)("rocks!"))
 
       //#word-count
-      val counts: Source[(String, Int), NotUsed] = words
-      // split the words into separate streams first
-        .groupBy(MaximumDistinctWords, identity)
-        //transform each element to pair with number of words in it
-        .map(_ -> 1)
-        // add counting logic to the streams
-        .reduce((l, r) => (l._1, l._2 + r._2))
-        // get a stream of word counts
-        .mergeSubstreams
+      val counts: Source[(String, Int), NotUsed] =
+        words
+        // split the words into separate streams first
+          .groupBy(MaximumDistinctWords, identity)
+          //transform each element to pair with number of words in it
+          .map(_ -> 1)
+          // add counting logic to the streams
+          .reduce((l, r) => (l._1, l._2 + r._2))
+          // get a stream of word counts
+          .mergeSubstreams
       //#word-count
 
       Await

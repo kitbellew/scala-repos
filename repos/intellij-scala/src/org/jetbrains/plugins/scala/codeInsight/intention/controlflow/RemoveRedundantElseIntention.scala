@@ -27,8 +27,10 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null)
       return false
 
@@ -64,8 +66,10 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     val manager: PsiManager = PsiManager.getInstance(project)
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null || !ifStmt.isValid)
       return
 

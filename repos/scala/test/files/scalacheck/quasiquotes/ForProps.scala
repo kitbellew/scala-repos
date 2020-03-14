@@ -31,15 +31,17 @@ object ForProps extends QuasiquoteProperties("for") {
 
   property("construct-reconstruct for") = forAll {
     (enums: ForEnums, body: Tree) =>
-      val SyntacticFor(recoveredEnums, recoveredBody) =
-        SyntacticFor(enums.value, body)
+      val SyntacticFor(recoveredEnums, recoveredBody) = SyntacticFor(
+        enums.value,
+        body)
       recoveredEnums ≈ enums.value && recoveredBody ≈ body
   }
 
   property("construct-reconstruct for-yield") = forAll {
     (enums: ForEnums, body: Tree) =>
-      val SyntacticForYield(recoveredEnums, recoveredBody) =
-        SyntacticForYield(enums.value, body)
+      val SyntacticForYield(recoveredEnums, recoveredBody) = SyntacticForYield(
+        enums.value,
+        body)
       recoveredEnums ≈ enums.value && recoveredBody ≈ body
   }
 

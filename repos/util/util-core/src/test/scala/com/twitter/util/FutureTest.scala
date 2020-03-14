@@ -42,8 +42,7 @@ class FutureTest
     def scheduleOnce(when: Time)(f: => Unit): TimerTask =
       throw new Exception("schedule called")
     def schedulePeriodically(when: Time, period: Duration)(
-        f: => Unit): TimerTask =
-      throw new Exception("schedule called")
+        f: => Unit): TimerTask = throw new Exception("schedule called")
     def stop() = ()
   }
 
@@ -71,14 +70,15 @@ class FutureTest
           var complete = false
           var failure = false
           var ninterrupt = 0
-          val iteration = Future.times(3) {
-            val promise = new Promise[Unit]
-            promise.setInterruptHandler {
-              case _ => ninterrupt += 1
+          val iteration =
+            Future.times(3) {
+              val promise = new Promise[Unit]
+              promise.setInterruptHandler {
+                case _ => ninterrupt += 1
+              }
+              queue add promise
+              promise
             }
-            queue add promise
-            promise
-          }
           iteration onSuccess { _ =>
             complete = true
           } onFailure { f =>
@@ -156,12 +156,13 @@ class FutureTest
           val queue = new ConcurrentLinkedQueue[HandledPromise[Unit]]
           var complete = false
           var failure = false
-          val iteration = Future.whileDo(i < 3) {
-            i += 1
-            val promise = new HandledPromise[Unit]
-            queue add promise
-            promise
-          }
+          val iteration =
+            Future.whileDo(i < 3) {
+              i += 1
+              val promise = new HandledPromise[Unit]
+              queue add promise
+              promise
+            }
 
           iteration onSuccess { _ =>
             complete = true
@@ -427,16 +428,17 @@ class FutureTest
 
           Time.withCurrentTimeFrozen { control =>
             val blocker = new Promise[Unit]
-            val thread = new Thread {
-              override def run() {
-                when(f(result)) thenReturn (Future.value(Seq(7, 8, 9)))
-                batcher(4)
-                batcher(5)
-                batcher(6)
-                verify(f).apply(result)
-                blocker.setValue(())
+            val thread =
+              new Thread {
+                override def run() {
+                  when(f(result)) thenReturn (Future.value(Seq(7, 8, 9)))
+                  batcher(4)
+                  batcher(5)
+                  batcher(6)
+                  verify(f).apply(result)
+                  blocker.setValue(())
+                }
               }
-            }
 
             when(f(Seq(1, 2, 3))) thenAnswer {
               new Answer[Future[Seq[Int]]] {
@@ -505,10 +507,11 @@ class FutureTest
         class TraverseTestSpy() {
           var goWasCalled = false
           var promise = Promise[Int]()
-          val go = () => {
-            goWasCalled = true
-            promise
-          }
+          val go =
+            () => {
+              goWasCalled = true
+              promise
+            }
         }
 
         "execute futures in order" in {
@@ -1035,12 +1038,13 @@ class FutureTest
               f.poll.get.get
             }
 
-            val g = e.getCause match {
-              case t: NonLocalReturnControl[_] =>
-                t.asInstanceOf[NonLocalReturnControl[String]]
-              case _ =>
-                fail()
-            }
+            val g =
+              e.getCause match {
+                case t: NonLocalReturnControl[_] =>
+                  t.asInstanceOf[NonLocalReturnControl[String]]
+                case _ =>
+                  fail()
+              }
             assert(g.value == "OK")
             "bleh"
           }
@@ -1464,12 +1468,13 @@ class FutureTest
           (otherValue, local())
         }
 
-        val t = new Thread {
-          override def run() {
-            local() = 1010
-            promise() = Return(local())
+        val t =
+          new Thread {
+            override def run() {
+              local() = 1010
+              promise() = Return(local())
+            }
           }
-        }
 
         t.run()
         t.join()
@@ -2012,10 +2017,11 @@ class FutureTest
     "iterate until an exception is thrown" in {
       val exc = new Exception("done")
       var next: Future[Int] = Future.value(10)
-      val done = Future.each(next) {
-        case 0 => next = Future.exception(exc)
-        case n => next = Future.value(n - 1)
-      }
+      val done =
+        Future.each(next) {
+          case 0 => next = Future.exception(exc)
+          case n => next = Future.value(n - 1)
+        }
 
       assert(done.poll == Some(Throw(exc)))
     }
@@ -2044,10 +2050,11 @@ class FutureTest
           i += 1;
           i
         })
-      val done = Future.each(next()) {
-        case 10 => throw exc
-        case _  =>
-      }
+      val done =
+        Future.each(next()) {
+          case 10 => throw exc
+          case _  =>
+        }
 
       assert(done.poll == Some(Throw(exc)))
       assert(i == 10)
@@ -2056,9 +2063,10 @@ class FutureTest
     "terminate when 'next' throws" in {
       val exc = new Exception
       def next(): Future[Int] = throw exc
-      val done = Future.each(next()) { _ =>
-        throw exc
-      }
+      val done =
+        Future.each(next()) { _ =>
+          throw exc
+        }
 
       assert(done.poll == Some(Throw(Future.NextThrewException(exc))))
     }

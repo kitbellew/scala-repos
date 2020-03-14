@@ -35,37 +35,38 @@ class JavaValsUsagesSearcher
       case _ if inReadAction(!element.isValid) => true
       case scalaValue(vals) =>
         val name: String = vals.getName
-        val processor = new TextOccurenceProcessor {
-          def execute(element: PsiElement, offsetInElement: Int): Boolean = {
-            val references = inReadAction(element.getReferences)
-            for (ref <- references) {
-              inReadAction {
-                ref match {
-                  case refElement: PsiReferenceExpression
-                      if ref.getRangeInElement.contains(offsetInElement) =>
-                    refElement.resolve match {
-                      case f: FakePsiMethod if f.navElement == vals =>
-                        if (!consumer.process(refElement))
-                          return false
-                      case t: StaticPsiTypedDefinitionWrapper
-                          if t.typedDefinition == vals =>
-                        if (!consumer.process(refElement))
-                          return false
-                      case t: PsiTypedDefinitionWrapper
-                          if t.typedDefinition == vals =>
-                        if (!consumer.process(refElement))
-                          return false
-                      case _ =>
-                    }
-                  case _ =>
+        val processor =
+          new TextOccurenceProcessor {
+            def execute(element: PsiElement, offsetInElement: Int): Boolean = {
+              val references = inReadAction(element.getReferences)
+              for (ref <- references) {
+                inReadAction {
+                  ref match {
+                    case refElement: PsiReferenceExpression
+                        if ref.getRangeInElement.contains(offsetInElement) =>
+                      refElement.resolve match {
+                        case f: FakePsiMethod if f.navElement == vals =>
+                          if (!consumer.process(refElement))
+                            return false
+                        case t: StaticPsiTypedDefinitionWrapper
+                            if t.typedDefinition == vals =>
+                          if (!consumer.process(refElement))
+                            return false
+                        case t: PsiTypedDefinitionWrapper
+                            if t.typedDefinition == vals =>
+                          if (!consumer.process(refElement))
+                            return false
+                        case _ =>
+                      }
+                    case _ =>
+                  }
                 }
               }
+              true
             }
-            true
           }
-        }
-        val helper: PsiSearchHelper =
-          PsiSearchHelper.SERVICE.getInstance(queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
+          queryParameters.getProject)
         helper.processElementsWithWord(
           processor,
           scope,
@@ -74,36 +75,37 @@ class JavaValsUsagesSearcher
           true)
       case wrapper: PsiTypedDefinitionWrapper => //only this is added for find usages factory
         val name: String = wrapper.getName
-        val processor = new TextOccurenceProcessor {
-          def execute(element: PsiElement, offsetInElement: Int): Boolean = {
-            val references = inReadAction(element.getReferences)
-            for (ref <- references) {
-              inReadAction {
-                ref match {
-                  case refElement: PsiReferenceExpression
-                      if ref.getRangeInElement.contains(offsetInElement) =>
-                    refElement.resolve match {
-                      case t: PsiTypedDefinitionWrapper
-                          if t.typedDefinition == wrapper.typedDefinition &&
-                            t.getName == wrapper.getName =>
-                        if (!consumer.process(refElement))
-                          return false
-                      case t: StaticPsiTypedDefinitionWrapper
-                          if t.typedDefinition == wrapper.typedDefinition &&
-                            t.getName == wrapper.getName =>
-                        if (!consumer.process(refElement))
-                          return false
-                      case _ =>
-                    }
-                  case _ =>
+        val processor =
+          new TextOccurenceProcessor {
+            def execute(element: PsiElement, offsetInElement: Int): Boolean = {
+              val references = inReadAction(element.getReferences)
+              for (ref <- references) {
+                inReadAction {
+                  ref match {
+                    case refElement: PsiReferenceExpression
+                        if ref.getRangeInElement.contains(offsetInElement) =>
+                      refElement.resolve match {
+                        case t: PsiTypedDefinitionWrapper
+                            if t.typedDefinition == wrapper.typedDefinition &&
+                              t.getName == wrapper.getName =>
+                          if (!consumer.process(refElement))
+                            return false
+                        case t: StaticPsiTypedDefinitionWrapper
+                            if t.typedDefinition == wrapper.typedDefinition &&
+                              t.getName == wrapper.getName =>
+                          if (!consumer.process(refElement))
+                            return false
+                        case _ =>
+                      }
+                    case _ =>
+                  }
                 }
               }
+              true
             }
-            true
           }
-        }
-        val helper: PsiSearchHelper =
-          PsiSearchHelper.SERVICE.getInstance(queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
+          queryParameters.getProject)
         helper.processElementsWithWord(
           processor,
           scope,

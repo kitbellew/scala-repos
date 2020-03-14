@@ -51,8 +51,9 @@ trait Reporting extends scala.reflect.internal.Reporting {
               "was"
             else
               "were"
-          val warningCount =
-            countElementsAsString(numWarnings, s"$what warning")
+          val warningCount = countElementsAsString(
+            numWarnings,
+            s"$what warning")
 
           reporter.warning(
             NoPosition,
@@ -68,10 +69,11 @@ trait Reporting extends scala.reflect.internal.Reporting {
       new ConditionalWarning("unchecked", settings.unchecked)
     private val _featureWarnings =
       new ConditionalWarning("feature", settings.feature)
-    private val _inlinerWarnings = new ConditionalWarning(
-      "inliner",
-      () => !settings.YoptWarningsSummaryOnly,
-      settings.YoptWarnings)
+    private val _inlinerWarnings =
+      new ConditionalWarning(
+        "inliner",
+        () => !settings.YoptWarningsSummaryOnly,
+        settings.YoptWarnings)
     private val _allConditionalWarnings = List(
       _deprecationWarnings,
       _uncheckedWarnings,
@@ -99,10 +101,11 @@ trait Reporting extends scala.reflect.internal.Reporting {
     def deprecationWarning(pos: Position, sym: Symbol, msg: String): Unit =
       _deprecationWarnings.warn(pos, msg)
     def deprecationWarning(pos: Position, sym: Symbol): Unit = {
-      val suffix = sym.deprecationMessage match {
-        case Some(msg) => ": " + msg
-        case _         => ""
-      }
+      val suffix =
+        sym.deprecationMessage match {
+          case Some(msg) => ": " + msg
+          case _         => ""
+        }
       deprecationWarning(
         pos,
         sym,

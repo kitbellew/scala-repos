@@ -32,26 +32,30 @@ class FlipComparisonInMethodCallExprIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null)
       return false
     if (!methodCallExpr.getInvokedExpr.isInstanceOf[ScReferenceExpression])
       return false
 
-    val oper = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getText
+    val oper =
+      methodCallExpr.getInvokedExpr
+        .asInstanceOf[ScReferenceExpression]
+        .nameId
+        .getText
 
     if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" && oper != "ne" &&
         oper != ">" && oper != "<" && oper != ">=" && oper != "<=")
       return false
 
-    val range: TextRange = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .nameId
-      .getTextRange
+    val range: TextRange =
+      methodCallExpr.getInvokedExpr
+        .asInstanceOf[ScReferenceExpression]
+        .nameId
+        .getTextRange
     val offset = editor.getCaretModel.getOffset
     if (!(range.getStartOffset <= offset && offset <= range.getEndOffset))
       return false
@@ -73,8 +77,10 @@ class FlipComparisonInMethodCallExprIntention
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null || !methodCallExpr.isValid)
       return
 
@@ -102,10 +108,11 @@ class FlipComparisonInMethodCallExprIntention
 
     IntentionUtils.analyzeMethodCallArgs(methodCallExpr.args, argsBuilder)
 
-    val qual = methodCallExpr.getInvokedExpr
-      .asInstanceOf[ScReferenceExpression]
-      .qualifier
-      .get
+    val qual =
+      methodCallExpr.getInvokedExpr
+        .asInstanceOf[ScReferenceExpression]
+        .qualifier
+        .get
     qualBuilder.append(qual.getText)
     var newArgs = qual.getText
     if (!(newArgs.startsWith("(") && newArgs.endsWith(")"))) {

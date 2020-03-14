@@ -14,8 +14,11 @@ object SchedulerPatternSpec {
   //#schedule-constructor
   class ScheduleInConstructor extends Actor {
     import context.dispatcher
-    val tick =
-      context.system.scheduler.schedule(500 millis, 1000 millis, self, "tick")
+    val tick = context.system.scheduler.schedule(
+      500 millis,
+      1000 millis,
+      self,
+      "tick")
     //#schedule-constructor
     // this var and constructor is declared here to not show up in the docs
     var target: ActorRef = null

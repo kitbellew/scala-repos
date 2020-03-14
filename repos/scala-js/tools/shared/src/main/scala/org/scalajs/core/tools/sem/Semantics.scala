@@ -113,17 +113,18 @@ final class Semantics private (
 }
 
 object Semantics {
-  private val HashSeed =
-    scala.util.hashing.MurmurHash3.stringHash(classOf[Semantics].getName)
+  private val HashSeed = scala.util.hashing.MurmurHash3
+    .stringHash(classOf[Semantics].getName)
 
   type RuntimeClassNameFunction = LinkedClass => String
 
-  val Defaults: Semantics = new Semantics(
-    asInstanceOfs = CheckedBehavior.Fatal,
-    moduleInit = CheckedBehavior.Unchecked,
-    strictFloats = false,
-    productionMode = false,
-    runtimeClassName = _.fullName)
+  val Defaults: Semantics =
+    new Semantics(
+      asInstanceOfs = CheckedBehavior.Fatal,
+      moduleInit = CheckedBehavior.Unchecked,
+      strictFloats = false,
+      productionMode = false,
+      runtimeClassName = _.fullName)
 
   def compliantTo(semantics: Traversable[String]): Semantics = {
     import Defaults._

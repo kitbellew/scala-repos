@@ -147,14 +147,15 @@ trait ScParameter
   }
 
   abstract override def getUseScope = {
-    val specificScope = getDeclarationScope match {
-      case null                           => GlobalSearchScope.EMPTY_SCOPE
-      case expr: ScFunctionExpr           => new LocalSearchScope(expr)
-      case clazz: ScClass if clazz.isCase => clazz.getUseScope
-      case clazz: ScClass if this.isInstanceOf[ScClassParameter] =>
-        clazz.getUseScope //for named parameters
-      case d => d.getUseScope
-    }
+    val specificScope =
+      getDeclarationScope match {
+        case null                           => GlobalSearchScope.EMPTY_SCOPE
+        case expr: ScFunctionExpr           => new LocalSearchScope(expr)
+        case clazz: ScClass if clazz.isCase => clazz.getUseScope
+        case clazz: ScClass if this.isInstanceOf[ScClassParameter] =>
+          clazz.getUseScope //for named parameters
+        case d => d.getUseScope
+      }
     specificScope.intersectWith(super.getUseScope)
   }
 
@@ -254,8 +255,10 @@ trait ScParameter
       getContainingFile match {
         case file: ScalaFile =>
           if (file.isCompiled) {
-            val containingMember =
-              PsiTreeUtil.getContextOfType(this, true, classOf[ScMember])
+            val containingMember = PsiTreeUtil.getContextOfType(
+              this,
+              true,
+              classOf[ScMember])
             if (containingMember == null)
               res
             else {

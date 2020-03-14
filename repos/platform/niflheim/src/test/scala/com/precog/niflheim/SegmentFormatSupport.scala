@@ -187,8 +187,12 @@ trait SegmentFormatMatchers { self: Specification with ScalaCheck =>
 }
 
 final class StubSegmentFormat extends SegmentFormat {
-  val TheOneSegment =
-    NullSegment(42L, CPath("w.t.f"), CNull, BitSetUtil.create(), 100)
+  val TheOneSegment = NullSegment(
+    42L,
+    CPath("w.t.f"),
+    CNull,
+    BitSetUtil.create(),
+    100)
 
   object reader extends SegmentReader {
     def readSegmentId(

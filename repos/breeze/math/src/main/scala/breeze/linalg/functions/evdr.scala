@@ -31,8 +31,7 @@ object evdr extends UFunc {
         M: DenseMatrix[Double],
         s: Int,
         nOversamples: Int,
-        nIter: Int): DenseEigSym =
-      doEigSymDouble(M, s, nOversamples, nIter)
+        nIter: Int): DenseEigSym = doEigSymDouble(M, s, nOversamples, nIter)
   }
 
   /**

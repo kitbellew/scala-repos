@@ -471,9 +471,10 @@ package object extensions {
   def inWriteCommandAction[T](
       project: Project,
       commandName: String = "Undefined")(body: => T): T = {
-    val computable = new Computable[T] {
-      override def compute(): T = body
-    }
+    val computable =
+      new Computable[T] {
+        override def compute(): T = body
+      }
     new WriteCommandAction[T](project, commandName) {
       protected def run(@NotNull result: Result[T]) {
         result.setResult(computable.compute())
@@ -503,13 +504,14 @@ package object extensions {
       body: ((String => Unit) => T)): Try[T] = {
     val progressManager = ProgressManager.getInstance
 
-    val computable = new ThrowableComputable[T, Exception] {
-      @throws(classOf[Exception])
-      def compute: T = {
-        val progressIndicator = progressManager.getProgressIndicator
-        body(progressIndicator.setText)
+    val computable =
+      new ThrowableComputable[T, Exception] {
+        @throws(classOf[Exception])
+        def compute: T = {
+          val progressIndicator = progressManager.getProgressIndicator
+          body(progressIndicator.setText)
+        }
       }
-    }
 
     catching(classOf[Exception]).withTry {
       progressManager.runProcessWithProgressSynchronously(
@@ -603,10 +605,11 @@ package object extensions {
         case f: FakePsiParameter => f.parameter.paramType
         case param: ScParameter  => param.getType(TypingContext.empty).getOrAny
         case _ =>
-          val paramType = param.getType match {
-            case p: PsiArrayType if param.isVarArgs => p.getComponentType
-            case tp                                 => tp
-          }
+          val paramType =
+            param.getType match {
+              case p: PsiArrayType if param.isVarArgs => p.getComponentType
+              case tp                                 => tp
+            }
           ScType.create(
             paramType,
             param.getProject,

@@ -11,16 +11,17 @@ import org.scalatest.junit.JUnitRunner
 class HeadFilterTest extends FunSuite {
   val Body = "hello world"
 
-  val dummyService = new Service[Request, Response] {
-    def apply(request: Request) = {
-      assert(request.method == Method.Get)
+  val dummyService =
+    new Service[Request, Response] {
+      def apply(request: Request) = {
+        assert(request.method == Method.Get)
 
-      val response = request.response
-      response.status = Status.Ok
-      response.write(Body)
-      Future.value(response)
+        val response = request.response
+        response.status = Status.Ok
+        response.write(Body)
+        Future.value(response)
+      }
     }
-  }
 
   test("convert GET to HEAD") {
     val request = Request("/test.json")

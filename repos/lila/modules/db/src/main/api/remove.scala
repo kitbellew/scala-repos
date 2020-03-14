@@ -10,8 +10,7 @@ object $remove {
   def apply[A: InColl](selector: JsObject): Funit =
     implicitly[InColl[A]].coll remove selector void
 
-  def byId[ID: Writes, A: InColl](id: ID): Funit =
-    apply($select(id))
+  def byId[ID: Writes, A: InColl](id: ID): Funit = apply($select(id))
   def byId[A: InColl](id: String): Funit = byId[String, A](id)
 
   def byIds[ID: Writes, A: InColl](ids: Seq[ID]): Funit =

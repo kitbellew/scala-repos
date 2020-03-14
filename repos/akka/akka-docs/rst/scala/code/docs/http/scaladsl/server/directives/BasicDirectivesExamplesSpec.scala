@@ -25,10 +25,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   "0extract" in {
     //#0extract
     val uriLength = extract(_.request.uri.toString.length)
-    val route =
-      uriLength { len =>
-        complete(s"The length of the request URI is $len")
-      }
+    val route = uriLength { len =>
+      complete(s"The length of the request URI is $len")
+    }
 
     // tests:
     Get("/abcdef") ~> route ~> check {
@@ -38,11 +37,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "0extractLog" in {
     //#0extractLog
-    val route =
-      extractLog { log =>
-        log.debug("I'm logging things in much detail..!")
-        complete("It's amazing!")
-      }
+    val route = extractLog { log =>
+      log.debug("I'm logging things in much detail..!")
+      complete("It's amazing!")
+    }
 
     // tests:
     Get("/abcdef") ~> route ~> check {
@@ -190,27 +188,27 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "withSettings-0" in compileOnlySpec {
     //#withSettings-0
-    val special =
-      RoutingSettings(system).withFileIODispatcher("special-io-dispatcher")
+    val special = RoutingSettings(system).withFileIODispatcher(
+      "special-io-dispatcher")
 
     def sample() =
       path("sample") {
         complete {
           // internally uses the configured fileIODispatcher:
           val source = FileIO.fromFile(new File("example.json"))
-          HttpResponse(entity =
-            HttpEntity(ContentTypes.`application/json`, source))
+          HttpResponse(entity = HttpEntity(
+            ContentTypes.`application/json`,
+            source))
         }
       }
 
-    val route =
-      get {
-        pathPrefix("special") {
-          withSettings(special) {
-            sample() // `special` file-io-dispatcher will be used to read the file
-          }
-        } ~ sample() // default file-io-dispatcher will be used to read the file
-      }
+    val route = get {
+      pathPrefix("special") {
+        withSettings(special) {
+          sample() // `special` file-io-dispatcher will be used to read the file
+        }
+      } ~ sample() // default file-io-dispatcher will be used to read the file
+    }
 
     // tests:
     Post("/special/sample") ~> route ~> check {
@@ -227,10 +225,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       val uri = ctx.request.uri
       (uri.path, uri.query())
     }
-    val route =
-      pathAndQuery { (p, query) =>
-        complete(s"The path is $p and the query is $query")
-      }
+    val route = pathAndQuery { (p, query) =>
+      complete(s"The path is $p and the query is $query")
+    }
 
     // tests:
     Get("/abcdef?ghi=12") ~> route ~> check {
@@ -272,8 +269,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
       private val log = Logging(system, "ApiRoutes")
 
-      private val NullJsonEntity =
-        HttpEntity(ContentTypes.`application/json`, "{}")
+      private val NullJsonEntity = HttpEntity(
+        ContentTypes.`application/json`,
+        "{}")
 
       private def nonSuccessToEmptyJsonEntity(
           response: HttpResponse): HttpResponse =
@@ -294,18 +292,18 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
 
     import StatusCodes._
     val __system = system
-    val routes = new ApiRoutes {
-      override protected def system = __system
-    }
+    val routes =
+      new ApiRoutes {
+        override protected def system = __system
+      }
     import routes.apiRoute
 
     //#1mapResponse-advanced
-    val route: Route =
-      apiRoute {
-        get {
-          complete(InternalServerError)
-        }
+    val route: Route = apiRoute {
+      get {
+        complete(InternalServerError)
       }
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -325,11 +323,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
     }
 
-    val route =
-      makeEverythingOk {
-        // will actually render as 200 OK (!)
-        complete(StatusCodes.Accepted)
-      }
+    val route = makeEverythingOk {
+      // will actually render as 200 OK (!)
+      complete(StatusCodes.Accepted)
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -349,10 +346,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       }
     }
 
-    val route =
-      tryRecoverAddServer {
-        complete("Hello world!")
-      }
+    val route = tryRecoverAddServer {
+      complete("Hello world!")
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -382,17 +378,16 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   "mapResponseHeaders" in {
     //#mapResponseHeaders
     // adds all request headers to the response
-    val echoRequestHeaders =
-      extract(_.request.headers).flatMap(respondWithHeaders)
+    val echoRequestHeaders = extract(_.request.headers)
+      .flatMap(respondWithHeaders)
 
-    val removeIdHeader =
-      mapResponseHeaders(_.filterNot(_.lowercaseName == "id"))
-    val route =
-      removeIdHeader {
-        echoRequestHeaders {
-          complete("test")
-        }
+    val removeIdHeader = mapResponseHeaders(
+      _.filterNot(_.lowercaseName == "id"))
+    val route = removeIdHeader {
+      echoRequestHeaders {
+        complete("test")
       }
+    }
 
     // tests:
     Get("/") ~> RawHeader("id", "12345") ~> RawHeader(
@@ -405,21 +400,19 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "mapInnerRoute" in {
     //#mapInnerRoute
-    val completeWithInnerException =
-      mapInnerRoute { route => ctx =>
-        try {
-          route(ctx)
-        } catch {
-          case NonFatal(e) =>
-            ctx.complete(s"Got ${e.getClass.getSimpleName} '${e.getMessage}'")
-        }
+    val completeWithInnerException = mapInnerRoute { route => ctx =>
+      try {
+        route(ctx)
+      } catch {
+        case NonFatal(e) =>
+          ctx.complete(s"Got ${e.getClass.getSimpleName} '${e.getMessage}'")
       }
+    }
 
-    val route =
-      completeWithInnerException {
-        complete(
-          throw new IllegalArgumentException("BLIP! BLOP! Everything broke"))
-      }
+    val route = completeWithInnerException {
+      complete(
+        throw new IllegalArgumentException("BLIP! BLOP! Everything broke"))
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -430,12 +423,11 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   "mapRejections" in {
     //#mapRejections
     // ignore any rejections and replace them by AuthorizationFailedRejection
-    val replaceByAuthorizationFailed =
-      mapRejections(_ => List(AuthorizationFailedRejection))
-    val route =
-      replaceByAuthorizationFailed {
-        path("abc")(complete("abc"))
-      }
+    val replaceByAuthorizationFailed = mapRejections(_ =>
+      List(AuthorizationFailedRejection))
+    val route = replaceByAuthorizationFailed {
+      path("abc")(complete("abc"))
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -463,21 +455,20 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     val neverAuth: Authenticator[String] = creds => None
     val alwaysAuth: Authenticator[String] = creds => Some("id")
 
-    val route =
-      authRejectionsToNothingToSeeHere {
-        pathPrefix("auth") {
-          path("never") {
-            authenticateBasic("my-realm", neverAuth) { user =>
-              complete("Welcome to the bat-cave!")
+    val route = authRejectionsToNothingToSeeHere {
+      pathPrefix("auth") {
+        path("never") {
+          authenticateBasic("my-realm", neverAuth) { user =>
+            complete("Welcome to the bat-cave!")
+          }
+        } ~
+          path("always") {
+            authenticateBasic("my-realm", alwaysAuth) { user =>
+              complete("Welcome to the secret place!")
             }
-          } ~
-            path("always") {
-              authenticateBasic("my-realm", alwaysAuth) { user =>
-                complete("Welcome to the secret place!")
-              }
-            }
-        }
+          }
       }
+    }
 
     // tests:
     Get("/auth/never") ~> route ~> check {
@@ -507,16 +498,15 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     }
     val neverAuth: Authenticator[String] = creds => None
 
-    val route =
-      authRejectionsToNothingToSeeHere {
-        pathPrefix("auth") {
-          path("never") {
-            authenticateBasic("my-realm", neverAuth) { user =>
-              complete("Welcome to the bat-cave!")
-            }
+    val route = authRejectionsToNothingToSeeHere {
+      pathPrefix("auth") {
+        path("never") {
+          authenticateBasic("my-realm", neverAuth) { user =>
+            complete("Welcome to the bat-cave!")
           }
         }
       }
+    }
 
     // tests:
     Get("/auth/never") ~> route ~> check {
@@ -543,15 +533,14 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "mapRequestContext" in {
     //#mapRequestContext
-    val replaceRequest =
-      mapRequestContext(_.withRequest(HttpRequest(HttpMethods.POST)))
+    val replaceRequest = mapRequestContext(
+      _.withRequest(HttpRequest(HttpMethods.POST)))
 
-    val route =
-      replaceRequest {
-        extractRequest { req =>
-          complete(req.method.value)
-        }
+    val route = replaceRequest {
+      extractRequest { req =>
+        complete(req.method.value)
       }
+    }
 
     // tests:
     Get("/abc/def/ghi") ~> route ~> check {
@@ -565,10 +554,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       mapRouteResult {
         case _ => Rejected(List(AuthorizationFailedRejection))
       }
-    val route =
-      rejectAll {
-        complete("abc")
-      }
+    val route = rejectAll {
+      complete("abc")
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -583,10 +571,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       mapRouteResultPF {
         case Rejected(_) => Rejected(List(AuthorizationFailedRejection))
       }
-    val route =
-      rejectRejections {
-        reject(MyCustomRejection)
-      }
+    val route = rejectRejections {
+      reject(MyCustomRejection)
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -601,10 +588,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       mapRouteResultWithPF {
         case Rejected(_) => Future(Rejected(List(AuthorizationFailedRejection)))
       }
-    val route =
-      rejectRejections {
-        reject(MyCustomRejection)
-      }
+    val route = rejectRejections {
+      reject(MyCustomRejection)
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -623,10 +609,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
           case _ => Future(res)
         }
       }
-    val route =
-      rejectRejections {
-        reject(MyCustomRejection)
-      }
+    val route = rejectRejections {
+      reject(MyCustomRejection)
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -698,11 +683,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "extractRequest-example" in {
     //#extractRequest-example
-    val route =
-      extractRequest { request =>
-        complete(
-          s"Request method is ${request.method.name} and content-type is ${request.entity.contentType}")
-      }
+    val route = extractRequest { request =>
+      complete(
+        s"Request method is ${request.method.name} and content-type is ${request.entity.contentType}")
+    }
 
     // tests:
     Post("/", "text") ~> route ~> check {
@@ -715,11 +699,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "extractSettings-examples" in {
     //#extractSettings-examples
-    val route =
-      extractSettings { settings: RoutingSettings =>
-        complete(
-          s"RoutingSettings.renderVanityFooter = ${settings.renderVanityFooter}")
-      }
+    val route = extractSettings { settings: RoutingSettings =>
+      complete(
+        s"RoutingSettings.renderVanityFooter = ${settings.renderVanityFooter}")
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -734,13 +717,12 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       settings.withFileGetConditional(false)
     }
 
-    val route =
-      tunedSettings {
-        extractSettings { settings: RoutingSettings =>
-          complete(
-            s"RoutingSettings.fileGetConditional = ${settings.fileGetConditional}")
-        }
+    val route = tunedSettings {
+      extractSettings { settings: RoutingSettings =>
+        complete(
+          s"RoutingSettings.fileGetConditional = ${settings.fileGetConditional}")
       }
+    }
 
     // tests:
     Get("/") ~> route ~> check {
@@ -751,14 +733,13 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "extractRequestContext-example" in {
     //#extractRequestContext-example
-    val route =
-      extractRequestContext { ctx =>
-        ctx.log.debug(
-          "Using access to additional context availablethings, like the logger.")
-        val request = ctx.request
-        complete(
-          s"Request method is ${request.method.name} and content-type is ${request.entity.contentType}")
-      }
+    val route = extractRequestContext { ctx =>
+      ctx.log.debug(
+        "Using access to additional context availablethings, like the logger.")
+      val request = ctx.request
+      complete(
+        s"Request method is ${request.method.name} and content-type is ${request.entity.contentType}")
+    }
 
     // tests:
     Post("/", "text") ~> route ~> check {
@@ -771,10 +752,9 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   }
   "extractUri-example" in {
     //#extractUri-example
-    val route =
-      extractUri { uri =>
-        complete(s"Full URI: $uri")
-      }
+    val route = extractUri { uri =>
+      complete(s"Full URI: $uri")
+    }
 
     // tests:
     Get("/") ~> route ~> check {

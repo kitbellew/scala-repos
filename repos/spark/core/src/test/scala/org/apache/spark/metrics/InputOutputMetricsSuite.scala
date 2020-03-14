@@ -383,8 +383,9 @@ class InputOutputMetricsSuite
         rdd.saveAsTextFile(outPath.toString)
         sc.listenerBus.waitUntilEmpty(500)
         assert(taskBytesWritten.length == 2)
-        val outFiles =
-          fs.listStatus(outPath).filter(_.getPath.getName != "_SUCCESS")
+        val outFiles = fs
+          .listStatus(outPath)
+          .filter(_.getPath.getName != "_SUCCESS")
         taskBytesWritten.zip(outFiles).foreach {
           case (bytes, fileStatus) =>
             assert(bytes >= fileStatus.getLen)
@@ -447,11 +448,12 @@ class OldCombineTextRecordReaderWrapper(
     idx: Integer)
     extends OldRecordReader[LongWritable, Text] {
 
-  val fileSplit = new OldFileSplit(
-    split.getPath(idx),
-    split.getOffset(idx),
-    split.getLength(idx),
-    split.getLocations())
+  val fileSplit =
+    new OldFileSplit(
+      split.getPath(idx),
+      split.getOffset(idx),
+      split.getLength(idx),
+      split.getLocations())
 
   val delegate: OldLineRecordReader = new OldTextInputFormat()
     .getRecordReader(fileSplit, conf.asInstanceOf[JobConf], reporter)
@@ -487,11 +489,12 @@ class NewCombineTextRecordReaderWrapper(
     idx: Integer)
     extends NewRecordReader[LongWritable, Text] {
 
-  val fileSplit = new NewFileSplit(
-    split.getPath(idx),
-    split.getOffset(idx),
-    split.getLength(idx),
-    split.getLocations())
+  val fileSplit =
+    new NewFileSplit(
+      split.getPath(idx),
+      split.getOffset(idx),
+      split.getLength(idx),
+      split.getLocations())
 
   val delegate = new NewTextInputFormat().createRecordReader(fileSplit, context)
 

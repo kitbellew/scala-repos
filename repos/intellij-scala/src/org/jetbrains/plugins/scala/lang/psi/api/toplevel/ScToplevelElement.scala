@@ -37,11 +37,12 @@ trait ScToplevelElement extends ScalaPsiElement {
   }
 
   def immediateTypeDefinitions: Seq[ScTypeDefinition] = {
-    val stub: StubElement[_ <: PsiElement] = this match {
-      case file: PsiFileImpl   => file.getStub
-      case st: ScPackagingImpl => st.getStub
-      case _                   => null
-    }
+    val stub: StubElement[_ <: PsiElement] =
+      this match {
+        case file: PsiFileImpl   => file.getStub
+        case st: ScPackagingImpl => st.getStub
+        case _                   => null
+      }
     if (stub != null) {
       stub.getChildrenByType[ScTypeDefinition](
         TokenSets.TMPL_DEF_BIT_SET,
@@ -51,11 +52,12 @@ trait ScToplevelElement extends ScalaPsiElement {
   }
 
   def packagings: Seq[ScPackaging] = {
-    val stub: StubElement[_ <: PsiElement] = this match {
-      case file: PsiFileImpl   => file.getStub
-      case st: ScPackagingImpl => st.getStub
-      case _                   => null
-    }
+    val stub: StubElement[_ <: PsiElement] =
+      this match {
+        case file: PsiFileImpl   => file.getStub
+        case st: ScPackagingImpl => st.getStub
+        case _                   => null
+      }
     if (stub != null) {
       stub.getChildrenByType[ScPackaging](
         ScalaElementTypes.PACKAGING,

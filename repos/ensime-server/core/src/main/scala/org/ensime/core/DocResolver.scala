@@ -155,8 +155,8 @@ class DocResolver(
   private def resolveWellKnownUri(sig: DocSigPair): Option[String] = {
     if (sig.java.fqn.javaStdLib) {
       val path = javaFqnToPath(sig.java.fqn)
-      val rawVersion =
-        forceJavaVersion.getOrElse(scala.util.Properties.javaVersion)
+      val rawVersion = forceJavaVersion.getOrElse(
+        scala.util.Properties.javaVersion)
       val version =
         if (rawVersion.startsWith("1.8"))
           "8"
@@ -197,10 +197,11 @@ class DocResolver(
 
   def receive: Receive = {
     case p: DocSigPair =>
-      val response = resolve(p) match {
-        case Some(path) => StringResponse(path)
-        case None       => FalseResponse
-      }
+      val response =
+        resolve(p) match {
+          case Some(path) => StringResponse(path)
+          case None       => FalseResponse
+        }
       sender() ! response
   }
 

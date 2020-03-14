@@ -249,8 +249,7 @@ package object prime {
     prime.Siever(SieveSize, cutoff)
   }
 
-  def nth(n: Long): SafeLong =
-    sieverUpToNth(n).nth(n)
+  def nth(n: Long): SafeLong = sieverUpToNth(n).nth(n)
 
   import SafeLong.{two, three}
 
@@ -288,8 +287,7 @@ package object prime {
       loop(1, three)
     }
 
-  def stream: Stream[SafeLong] =
-    stream(SieveSize, SafeLong(1000000))
+  def stream: Stream[SafeLong] = stream(SieveSize, SafeLong(1000000))
 
   def stream(chunkSize: Int, cutoff: SafeLong): Stream[SafeLong] =
     two #:: three #:: prime.Siever(chunkSize, cutoff).streamAfter(three)

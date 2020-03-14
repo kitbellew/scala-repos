@@ -26,24 +26,27 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
           puzzleRating,
           data.isWin.fold(Glicko.Result.Win, Glicko.Result.Loss))
         val date = DateTime.now
-        val puzzlePerf = puzzle.perf.addOrReset(
-          _.puzzle.crazyGlicko,
-          s"puzzle ${puzzle.id} user")(puzzleRating, date)
-        val userPerf = user.perfs.puzzle.addOrReset(
-          _.puzzle.crazyGlicko,
-          s"puzzle ${puzzle.id}")(userRating, date)
-        val a = new Attempt(
-          id = Attempt.makeId(puzzle.id, user.id),
-          puzzleId = puzzle.id,
-          userId = user.id,
-          date = DateTime.now,
-          win = data.isWin,
-          time = math.min(data.time, maxTime),
-          vote = none,
-          puzzleRating = puzzle.perf.intRating,
-          puzzleRatingDiff = puzzlePerf.intRating - puzzle.perf.intRating,
-          userRating = user.perfs.puzzle.intRating,
-          userRatingDiff = userPerf.intRating - user.perfs.puzzle.intRating)
+        val puzzlePerf =
+          puzzle.perf.addOrReset(
+            _.puzzle.crazyGlicko,
+            s"puzzle ${puzzle.id} user")(puzzleRating, date)
+        val userPerf =
+          user.perfs.puzzle.addOrReset(
+            _.puzzle.crazyGlicko,
+            s"puzzle ${puzzle.id}")(userRating, date)
+        val a =
+          new Attempt(
+            id = Attempt.makeId(puzzle.id, user.id),
+            puzzleId = puzzle.id,
+            userId = user.id,
+            date = DateTime.now,
+            win = data.isWin,
+            time = math.min(data.time, maxTime),
+            vote = none,
+            puzzleRating = puzzle.perf.intRating,
+            puzzleRatingDiff = puzzlePerf.intRating - puzzle.perf.intRating,
+            userRating = user.perfs.puzzle.intRating,
+            userRatingDiff = userPerf.intRating - user.perfs.puzzle.intRating)
         ((api.attempt add a) >> {
           puzzleColl.update(
             BSONDocument("_id" -> puzzle.id),

@@ -573,8 +573,7 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     * 'Poly2' argument is defined at their intersection.
     */
   def zipWith[R <: HList, P <: Poly2](r: R)(p: P)(
-      implicit zipWith: ZipWith[L, R, P]): zipWith.Out =
-    zipWith(l, r)
+      implicit zipWith: ZipWith[L, R, P]): zipWith.Out = zipWith(l, r)
 
   /**
     * Zips this `HList` with its element indices,  resulting in a 'HList' of  tuples of the form

@@ -114,9 +114,10 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     }
 
   test("Balances evenly") {
-    val init = Vector.tabulate(N) { i =>
-      new LoadedFactory(i)
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        new LoadedFactory(i)
+      }
     val bal = newBal(Var.value(init))
     for (_ <- 0 until R)
       bal()
@@ -125,9 +126,10 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
 
   test("Balance evenly when load varies") {
     val rng = Rng(12345L)
-    val init = Vector.tabulate(N) { i =>
-      LoadedFactory(i)
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        LoadedFactory(i)
+      }
     var pending = Set[Service[Unit, Int]]()
     val bal = newBal(Var.value(init))
 
@@ -149,9 +151,10 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Dynamically incorporates updates") {
-    val init = Vector.tabulate(N) { i =>
-      LoadedFactory(i)
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        LoadedFactory(i)
+      }
     val vec = Var(init)
     val bal = newBal(vec)
 
@@ -178,13 +181,15 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Skip downed nodes; revive them") {
-    val init = Vector.tabulate(N) { i =>
-      new LoadedFactory(i)
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        new LoadedFactory(i)
+      }
     val bal = newBal(Var.value(init))
 
-    var byIndex = new mutable.HashMap[Int, mutable.Set[Closable]]
-      with mutable.MultiMap[Int, Closable]
+    var byIndex =
+      new mutable.HashMap[Int, mutable.Set[Closable]]
+        with mutable.MultiMap[Int, Closable]
 
     def run(n: Int) {
       for (_ <- 0 until n) {
@@ -240,9 +245,10 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Balance all-downed nodes.") {
-    val init = Vector.tabulate(N) { i =>
-      new LoadedFactory(i)
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        new LoadedFactory(i)
+      }
     val bal = newBal(Var.value(init))
 
     for (_ <- 0 until R)
@@ -300,9 +306,10 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     vec()(0).stat = Status.Closed
     assert(stats.available == 1)
 
-    val svcs = Seq.fill(R) {
-      Await.result(bal())
-    }
+    val svcs =
+      Seq.fill(R) {
+        Await.result(bal())
+      }
     assert(stats.load == R)
     assert(vec()(0).load == 0)
     assert(vec()(1).load == R)
@@ -312,9 +319,10 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
   }
 
   test("Closes") {
-    val init = Vector.tabulate(N) { i =>
-      new LoadedFactory(i)
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        new LoadedFactory(i)
+      }
     val bal = newBal(Var.value(init))
     // Give it some traffic.
     for (_ <- 0 until R)
@@ -393,17 +401,19 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
   }
 
   test("Balances evenly across identical nodes") {
-    val init = Vector.tabulate(N) { i =>
-      LatentFactory(i, Function.const(5))
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        LatentFactory(i, Function.const(5))
+      }
     run(init, R)
     assertEven(init)
   }
 
   test("Probe a node without latency history at most once") {
-    val init = Vector.tabulate(N) { i =>
-      LatentFactory(i, Function.const(1))
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        LatentFactory(i, Function.const(1))
+      }
     val vec = init :+ LatentFactory(N + 1, Function.const(R * 2))
     run(vec, R)
     assertEven(vec.init)
@@ -412,9 +422,10 @@ class P2CBalancerEwmaTest extends FunSuite with App with P2CSuite {
 
   test("Balances proportionally across nodes with varying latencies") {
     val latency = 5
-    val init = Vector.tabulate(N) { i =>
-      LatentFactory(i, Function.const(latency))
-    }
+    val init =
+      Vector.tabulate(N) { i =>
+        LatentFactory(i, Function.const(latency))
+      }
     // This is dependent on decayTime for N+1 to receive 1/2 the the load of the rest.
     // There is probably an elegant way to normalize our load as a function of decayTime,
     // but it wasn't obvious to me. This also verifies that we are actually decaying

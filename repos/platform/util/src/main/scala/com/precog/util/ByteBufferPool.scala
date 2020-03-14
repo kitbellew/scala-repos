@@ -50,8 +50,8 @@ final class ByteBufferPool(
   private val _hits = new AtomicLong()
   private val _misses = new AtomicLong()
 
-  val fixedBufferQueue: BlockingQueue[ByteBuffer] = new ArrayBlockingQueue(
-    fixedBufferCount)
+  val fixedBufferQueue: BlockingQueue[ByteBuffer] =
+    new ArrayBlockingQueue(fixedBufferCount)
   val flexBufferQueue: BlockingQueue[SoftReference[ByteBuffer]] =
     new LinkedBlockingQueue()
 
@@ -170,10 +170,11 @@ object ByteBufferPool {
     }
 
   def getBytesFrom(buffers: List[ByteBuffer]): Array[Byte] = {
-    val size = buffers.foldLeft(0) { (size, buf) =>
-      buf.flip()
-      size + buf.remaining()
-    }
+    val size =
+      buffers.foldLeft(0) { (size, buf) =>
+        buf.flip()
+        size + buf.remaining()
+      }
     val bytes = new Array[Byte](size)
     buffers.foldLeft(0) { (offset, buf) =>
       val length = buf.remaining()

@@ -46,30 +46,32 @@ class PCA @Since("1.4.0") (@Since("1.4.0") val k: Int) {
       s"source vector size is ${sources.first().size} must be greater than k=$k")
 
     val mat = new RowMatrix(sources)
-    val (pc, explainedVariance) =
-      mat.computePrincipalComponentsAndExplainedVariance(k)
-    val densePC = pc match {
-      case dm: DenseMatrix =>
-        dm
-      case sm: SparseMatrix =>
-        /* Convert a sparse matrix to dense.
-         *
-         * RowMatrix.computePrincipalComponents always returns a dense matrix.
-         * The following code is a safeguard.
-         */
-        sm.toDense
-      case m =>
-        throw new IllegalArgumentException(
-          "Unsupported matrix format. Expected " +
-            s"SparseMatrix or DenseMatrix. Instead got: ${m.getClass}")
+    val (pc, explainedVariance) = mat
+      .computePrincipalComponentsAndExplainedVariance(k)
+    val densePC =
+      pc match {
+        case dm: DenseMatrix =>
+          dm
+        case sm: SparseMatrix =>
+          /* Convert a sparse matrix to dense.
+           *
+           * RowMatrix.computePrincipalComponents always returns a dense matrix.
+           * The following code is a safeguard.
+           */
+          sm.toDense
+        case m =>
+          throw new IllegalArgumentException(
+            "Unsupported matrix format. Expected " +
+              s"SparseMatrix or DenseMatrix. Instead got: ${m.getClass}")
 
-    }
-    val denseExplainedVariance = explainedVariance match {
-      case dv: DenseVector =>
-        dv
-      case sv: SparseVector =>
-        sv.toDense
-    }
+      }
+    val denseExplainedVariance =
+      explainedVariance match {
+        case dv: DenseVector =>
+          dv
+        case sv: SparseVector =>
+          sv.toDense
+      }
     new PCAModel(k, densePC, denseExplainedVariance)
   }
 
@@ -107,9 +109,10 @@ class PCAModel private[spark] (
         pc.transpose.multiply(dv)
       case SparseVector(size, indices, values) =>
         /* SparseVector -> single row SparseMatrix */
-        val sm = Matrices
-          .sparse(size, 1, Array(0, indices.length), indices, values)
-          .transpose
+        val sm =
+          Matrices
+            .sparse(size, 1, Array(0, indices.length), indices, values)
+            .transpose
         val projection = sm.multiply(pc)
         Vectors.dense(projection.values)
       case _ =>

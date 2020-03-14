@@ -21,17 +21,17 @@ object Common {
   def unmanagedJarsFrom(
       sdkDirectory: File,
       subdirectories: String*): Classpath = {
-    val sdkPathFinder = subdirectories.foldLeft(PathFinder.empty) {
-      (finder, dir) => finder +++ (sdkDirectory / dir)
-    }
+    val sdkPathFinder =
+      subdirectories.foldLeft(PathFinder.empty) { (finder, dir) =>
+        finder +++ (sdkDirectory / dir)
+      }
     (sdkPathFinder * globFilter("*.jar")).classpath
   }
 
   def filterTestClasspath(classpath: Def.Classpath): Def.Classpath =
     classpath.filterNot(_.data.getName.endsWith("lucene-core-2.4.1.jar"))
 
-  val slowTestsCategory: String =
-    "org.jetbrains.plugins.scala.SlowTests"
+  val slowTestsCategory: String = "org.jetbrains.plugins.scala.SlowTests"
 
   val testConfigDir: File =
     Path.userHome / ".IdeaData" / "IDEA-15" / "scala" / "test-config"

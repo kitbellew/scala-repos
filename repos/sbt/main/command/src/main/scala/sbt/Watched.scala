@@ -77,10 +77,11 @@ object Watched {
 
     val (triggered, newWatchState, newState) =
       try {
-        val (triggered, newWatchState) = SourceModificationWatch.watch(
-          sourcesFinder,
-          watched.pollInterval,
-          watchState)(shouldTerminate)
+        val (triggered, newWatchState) =
+          SourceModificationWatch.watch(
+            sourcesFinder,
+            watched.pollInterval,
+            watchState)(shouldTerminate)
         (triggered, newWatchState, s)
       } catch {
         case e: Exception =>

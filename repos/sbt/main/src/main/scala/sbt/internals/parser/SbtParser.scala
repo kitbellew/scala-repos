@@ -85,8 +85,9 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
           }
           val errorMessage = seq.mkString(EOL)
 
-          val error = if (errorMessage.contains(XML_ERROR)) {
-            s"""
+          val error =
+            if (errorMessage.contains(XML_ERROR)) {
+              s"""
                |$errorMessage
                |Probably problem with parsing xml group, please add parens or semicolons:
                |Replace:
@@ -97,17 +98,18 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
                |val xmlGroup = <a/><b/>;
                |
              """.stripMargin
-          } else {
-            errorMessage
-          }
+            } else {
+              errorMessage
+            }
           throw new MessageOnlyException(error)
       }
-    val parsedTrees = parsed match {
-      case Block(stmt, expr) =>
-        stmt :+ expr
-      case t: Tree =>
-        Seq(t)
-    }
+    val parsedTrees =
+      parsed match {
+        case Block(stmt, expr) =>
+          stmt :+ expr
+        case t: Tree =>
+          Seq(t)
+      }
 
     // Check No val (a,b) = foo *or* val a,b = foo as these are problematic to range positions and the WHOLE architecture.
     def isBadValDef(t: Tree): Boolean =
@@ -136,14 +138,19 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
       * @return originalStatement or originalStatement with missing bracket
       */
     def parseStatementAgain(t: Tree, originalStatement: String): String = {
-      val statement = scala.util.Try(toolbox.parse(originalStatement)) match {
-        case scala.util.Failure(th) =>
-          val missingText =
-            findMissingText(content, t.pos.end, t.pos.line, fileName, th)
-          originalStatement + missingText
-        case _ =>
-          originalStatement
-      }
+      val statement =
+        scala.util.Try(toolbox.parse(originalStatement)) match {
+          case scala.util.Failure(th) =>
+            val missingText = findMissingText(
+              content,
+              t.pos.end,
+              t.pos.line,
+              fileName,
+              th)
+            originalStatement + missingText
+          case _ =>
+            originalStatement
+        }
       statement
     }
 
@@ -152,8 +159,9 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
         case NoPosition =>
           None
         case position =>
-          val originalStatement =
-            content.substring(position.start, position.end)
+          val originalStatement = content.substring(
+            position.start,
+            position.end)
           val statement = parseStatementAgain(t, originalStatement)
           val numberLines = countLines(statement)
           Some(
@@ -216,10 +224,11 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
   private def extractLine(
       modifiedContent: String,
       importsInOneLine: Seq[((Int, Int), Int)]): String = {
-    val (begin, end) = importsInOneLine.foldLeft((Int.MaxValue, Int.MinValue)) {
-      case ((min, max), ((start, end), _)) =>
-        (min.min(start), max.max(end))
-    }
+    val (begin, end) =
+      importsInOneLine.foldLeft((Int.MaxValue, Int.MinValue)) {
+        case ((min, max), ((start, end), _)) =>
+          (min.min(start), max.max(end))
+      }
     modifiedContent.substring(begin, end)
   }
 

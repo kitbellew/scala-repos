@@ -56,8 +56,9 @@ trait StructuredTypeStrings extends DestructureTypes {
       nodes: List[TypeNode]): String = {
     val threshold = 70
 
-    val try1 = str(level)(
-      name + grouping.join(nodes map (_.show(0, grouping.labels)): _*))
+    val try1 =
+      str(level)(
+        name + grouping.join(nodes map (_.show(0, grouping.labels)): _*))
     if (try1.length < threshold)
       try1
     else
@@ -191,19 +192,22 @@ trait TypeStrings {
     "double",
     "boolean",
     "void")
-  private val primitiveMap = (primitives.toList map { x =>
-    val key = x match {
-      case "int"  => "Integer"
-      case "char" => "Character"
-      case s      => s.capitalize
-    }
-    val value = x match {
-      case "void" => "Unit"
-      case s      => s.capitalize
-    }
+  private val primitiveMap =
+    (primitives.toList map { x =>
+      val key =
+        x match {
+          case "int"  => "Integer"
+          case "char" => "Character"
+          case s      => s.capitalize
+        }
+      val value =
+        x match {
+          case "void" => "Unit"
+          case s      => s.capitalize
+        }
 
-    ("java.lang." + key) -> ("scala." + value)
-  }).toMap
+      ("java.lang." + key) -> ("scala." + value)
+    }).toMap
 
   def isAnonClass(cl: Class[_]) = {
     val xs = cl.getName.reverse takeWhile (_ != '$')

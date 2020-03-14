@@ -201,8 +201,9 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Comparing a standard normal sample to a standard normal distribution
     val result1 = Statistics.kolmogorovSmirnovTest(sampledNorm, "norm", 0, 1)
-    val referenceStat1 =
-      ksTest.kolmogorovSmirnovStatistic(stdNormalDist, sampledNorm.collect())
+    val referenceStat1 = ksTest.kolmogorovSmirnovStatistic(
+      stdNormalDist,
+      sampledNorm.collect())
     val referencePVal1 = 1 - ksTest.cdf(referenceStat1, n)
     // Verify vs apache math commons ks test
     assert(result1.statistic ~== referenceStat1 relTol 1e-4)
@@ -212,8 +213,9 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Comparing an exponential sample to a standard normal distribution
     val result2 = Statistics.kolmogorovSmirnovTest(sampledExp, "norm", 0, 1)
-    val referenceStat2 =
-      ksTest.kolmogorovSmirnovStatistic(stdNormalDist, sampledExp.collect())
+    val referenceStat2 = ksTest.kolmogorovSmirnovStatistic(
+      stdNormalDist,
+      sampledExp.collect())
     val referencePVal2 = 1 - ksTest.cdf(referenceStat2, n)
     // verify vs apache math commons ks test
     assert(result2.statistic ~== referenceStat2 relTol 1e-4)

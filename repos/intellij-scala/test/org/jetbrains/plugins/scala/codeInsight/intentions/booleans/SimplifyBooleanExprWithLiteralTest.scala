@@ -18,21 +18,17 @@ class SimplifyBooleanExprWithLiteralTest extends ScalaIntentionTestBase {
   }
 
   def test_TrueEqualsA() {
-    val text =
-      """val a = true
+    val text = """val a = true
         |<caret>true == a"""
-    val result =
-      """val a = true
+    val result = """val a = true
         |a"""
     doTest(text, result)
   }
 
   def test_TrueAndA() {
-    val text =
-      """val a = true
+    val text = """val a = true
         |true <caret>&& a"""
-    val result =
-      """val a = true
+    val result = """val a = true
         |a"""
     doTest(text, result)
   }
@@ -44,40 +40,33 @@ class SimplifyBooleanExprWithLiteralTest extends ScalaIntentionTestBase {
   }
 
   def test_TwoExpressions() {
-    val text =
-      """
+    val text = """
         |val a = true
         |<caret>true && (a || false)
       """
-    val result =
-      """val a = true
+    val result = """val a = true
         |a"""
     doTest(text, result)
   }
 
   def test_TrueNotEqualsA() {
-    val text =
-      """val a = true
+    val text = """val a = true
         |val flag: Boolean = <caret>true != a"""
-    val result =
-      """val a = true
+    val result = """val a = true
         |val flag: Boolean = !a"""
     doTest(text, result)
   }
 
   def test_SimplifyInParentheses() {
-    val text =
-      """val a = true
+    val text = """val a = true
         |!(<caret>true != a)"""
-    val result =
-      """val a = true
+    val result = """val a = true
         |!(!a)"""
     doTest(text, result)
   }
 
   def test_TrueAsAny() {
-    val text =
-      """
+    val text = """
         |def trueAsAny: Any = {
         |  true
         |}

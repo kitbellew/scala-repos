@@ -115,8 +115,9 @@ trait ApiFormats extends ScalatraBase {
 
   private[this] def getFromAcceptHeader(
       implicit request: HttpServletRequest): Option[String] = {
-    val hdrs = request.contentType.fold(acceptHeader)(contentType =>
-      (acceptHeader ::: List(contentType)).distinct)
+    val hdrs =
+      request.contentType.fold(acceptHeader)(contentType =>
+        (acceptHeader ::: List(contentType)).distinct)
     formatForMimeTypes(hdrs: _*)
   }
 
@@ -135,20 +136,22 @@ trait ApiFormats extends ScalatraBase {
 
     request.headers.get("Accept") map { s =>
       val fmts = s.split(",").map(_.trim)
-      val accepted = fmts.foldLeft(Map.empty[Int, List[String]]) { (acc, f) =>
-        val parts = f.split(";").map(_.trim)
-        val i = if (parts.size > 1) {
-          val pars = parts(1)
-            .split("=")
-            .map(_.trim)
-            .grouped(2)
-            .find(isValidQPair)
-            .getOrElse(Array("q", "0"))
-          (pars(1).toDouble * 10).ceil.toInt
-        } else
-          10
-        acc + (i -> (parts(0) :: acc.get(i).getOrElse(List.empty)))
-      }
+      val accepted =
+        fmts.foldLeft(Map.empty[Int, List[String]]) { (acc, f) =>
+          val parts = f.split(";").map(_.trim)
+          val i =
+            if (parts.size > 1) {
+              val pars = parts(1)
+                .split("=")
+                .map(_.trim)
+                .grouped(2)
+                .find(isValidQPair)
+                .getOrElse(Array("q", "0"))
+              (pars(1).toDouble * 10).ceil.toInt
+            } else
+              10
+          acc + (i -> (parts(0) :: acc.get(i).getOrElse(List.empty)))
+        }
       accepted.toList
         .sortWith((kv1, kv2) => kv1._1 > kv2._1)
         .flatMap(_._2.reverse)

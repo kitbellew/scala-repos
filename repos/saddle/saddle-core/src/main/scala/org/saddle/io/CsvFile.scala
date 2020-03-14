@@ -40,10 +40,11 @@ class CsvFile(path: String, encoding: String = UTF8) extends CsvSource {
   private val file = new RandomAccessFile(path, "r")
   private val chan = file.getChannel
 
-  private val stream =
-    ByteBufferInputStream.map(chan, FileChannel.MapMode.READ_ONLY)
-  private val reader = new BufferedReader(
-    new InputStreamReader(stream, encoding))
+  private val stream = ByteBufferInputStream.map(
+    chan,
+    FileChannel.MapMode.READ_ONLY)
+  private val reader =
+    new BufferedReader(new InputStreamReader(stream, encoding))
 
   def readLine = {
     val line = reader.readLine()

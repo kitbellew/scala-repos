@@ -38,9 +38,10 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   private var tempIvyPath: String = _
 
-  private val noOpOutputStream = new OutputStream {
-    def write(b: Int) = {}
-  }
+  private val noOpOutputStream =
+    new OutputStream {
+      def write(b: Int) = {}
+    }
 
   /** Simple PrintStream that reads data into a buffer */
   private class BufferPrintStream extends PrintStream(noOpOutputStream) {
@@ -60,8 +61,16 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("incorrect maven coordinate throws error") {
-    val coordinates =
-      Seq("a:b: ", " :a:b", "a: :b", "a:b:", ":a:b", "a::b", "::", "a:b", "a")
+    val coordinates = Seq(
+      "a:b: ",
+      " :a:b",
+      "a: :b",
+      "a:b:",
+      ":a:b",
+      "a::b",
+      "::",
+      "a:b",
+      "a")
     for (coordinate <- coordinates) {
       intercept[IllegalArgumentException] {
         SparkSubmitUtils.extractMavenCoordinates(coordinate)
@@ -96,8 +105,9 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
         .getName === "spark-packages")
 
     val repos = "a/1,b/2,c/3"
-    val resolver2 =
-      SparkSubmitUtils.createRepoResolvers(Option(repos), settings)
+    val resolver2 = SparkSubmitUtils.createRepoResolvers(
+      Option(repos),
+      settings)
     assert(resolver2.getResolvers.size() === 7)
     val expected = repos.split(",").map(r => s"$r/")
     resolver2.getResolvers.toArray.zipWithIndex.foreach {

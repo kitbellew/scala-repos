@@ -20,20 +20,21 @@ class ZipInputStream(in: InputStream) extends InflaterInputStream(in) {
   private[this] val entryIter = {
     import js.Dynamic.{global => g}
 
-    val data = in match {
-      case in: ArrayBufferInputStream =>
-        // Simulate reading all the data
-        while (in.skip(in.available()) > 0) {}
-        new Uint8Array(in.buffer, in.offset, in.length)
-      case _ =>
-        val arr = new js.Array[Int]
-        var x = in.read()
-        while (x != -1) {
-          arr.push(x)
-          x = in.read()
-        }
-        new Uint8Array(arr)
-    }
+    val data =
+      in match {
+        case in: ArrayBufferInputStream =>
+          // Simulate reading all the data
+          while (in.skip(in.available()) > 0) {}
+          new Uint8Array(in.buffer, in.offset, in.length)
+        case _ =>
+          val arr = new js.Array[Int]
+          var x = in.read()
+          while (x != -1) {
+            arr.push(x)
+            x = in.read()
+          }
+          new Uint8Array(arr)
+      }
 
     val zip = js.Dynamic.newInstance(g.JSZip)(data)
     val entries = zip.files.asInstanceOf[js.Dictionary[js.Dynamic]]

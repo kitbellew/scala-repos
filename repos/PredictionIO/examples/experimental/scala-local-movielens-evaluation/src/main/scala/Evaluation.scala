@@ -31,17 +31,18 @@ object CommonParams {
   val PreparatorParams =
     new PreparatorParams(actions = Map("rate" -> None), conflict = "latest")
 
-  val MahoutAlgoParams0 = new ItemBasedAlgoParams(
-    booleanData = true,
-    itemSimilarity = "LogLikelihoodSimilarity",
-    weighted = false,
-    nearestN = 10,
-    threshold = 4.9e-324,
-    numSimilarItems = 50,
-    numUserActions = 50,
-    freshness = 0,
-    freshnessTimeUnit = 86400,
-    recommendationTime = Some(DateTime.now.millis))
+  val MahoutAlgoParams0 =
+    new ItemBasedAlgoParams(
+      booleanData = true,
+      itemSimilarity = "LogLikelihoodSimilarity",
+      weighted = false,
+      nearestN = 10,
+      threshold = 4.9e-324,
+      numSimilarItems = 50,
+      numUserActions = 50,
+      freshness = 0,
+      freshnessTimeUnit = 86400,
+      recommendationTime = Some(DateTime.now.millis))
 
   val CompleteDataSourceParams = EventsDataSourceParams(
     appId = 9,
@@ -71,21 +72,23 @@ object Evaluation1 {
           evalCount = 3))
     )
 
-    val engineParams = new EngineParams(
-      dataSourceParams = dsp,
-      preparatorParams = CommonParams.PreparatorParams,
-      algorithmParamsList = Seq(
-        ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
-    )
+    val engineParams =
+      new EngineParams(
+        dataSourceParams = dsp,
+        preparatorParams = CommonParams.PreparatorParams,
+        algorithmParamsList = Seq(
+          ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
+      )
 
     // Evaluator Setting
-    val evaluatorParams = new DetailedEvaluatorParams(
-      ratingParams = new BinaryRatingParams(
-        actionsMap = Map("rate" -> None),
-        goodThreshold = 3),
-      measureType = MeasureType.PrecisionAtK,
-      measureK = 10
-    )
+    val evaluatorParams =
+      new DetailedEvaluatorParams(
+        ratingParams = new BinaryRatingParams(
+          actionsMap = Map("rate" -> None),
+          goodThreshold = 3),
+        measureType = MeasureType.PrecisionAtK,
+        measureK = 10
+      )
 
     // Run
     Workflow.runEngine(
@@ -103,21 +106,23 @@ object Evaluation2 {
     // Engine Settings
     val engine = ItemRankEngine()
 
-    val engineParams = new EngineParams(
-      dataSourceParams = CommonParams.CompleteDataSourceParams,
-      preparatorParams = CommonParams.PreparatorParams,
-      algorithmParamsList = Seq(
-        ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
-    )
+    val engineParams =
+      new EngineParams(
+        dataSourceParams = CommonParams.CompleteDataSourceParams,
+        preparatorParams = CommonParams.PreparatorParams,
+        algorithmParamsList = Seq(
+          ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
+      )
 
     // Evaluator Setting
-    val evaluatorParams = new DetailedEvaluatorParams(
-      ratingParams = new BinaryRatingParams(
-        actionsMap = Map("rate" -> None),
-        goodThreshold = 3),
-      measureType = MeasureType.PrecisionAtK,
-      measureK = 10
-    )
+    val evaluatorParams =
+      new DetailedEvaluatorParams(
+        ratingParams = new BinaryRatingParams(
+          actionsMap = Map("rate" -> None),
+          goodThreshold = 3),
+        measureType = MeasureType.PrecisionAtK,
+        measureK = 10
+      )
 
     // Run
     Workflow.runEngine(

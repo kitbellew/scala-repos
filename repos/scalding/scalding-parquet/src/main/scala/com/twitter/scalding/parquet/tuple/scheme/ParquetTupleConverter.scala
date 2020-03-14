@@ -236,18 +236,19 @@ abstract class ListConverter[T]
 
   def appendValue(v: T): Unit = value = value :+ v
 
-  lazy val listElement: GroupConverter = new GroupConverter() {
-    override def getConverter(i: Int): Converter = {
-      if (i != 0)
-        throw new IllegalArgumentException(
-          "lists have only one element field. can't reach " + i)
-      child
+  lazy val listElement: GroupConverter =
+    new GroupConverter() {
+      override def getConverter(i: Int): Converter = {
+        if (i != 0)
+          throw new IllegalArgumentException(
+            "lists have only one element field. can't reach " + i)
+        child
+      }
+
+      override def end(): Unit = ()
+
+      override def start(): Unit = ()
     }
-
-    override def end(): Unit = ()
-
-    override def start(): Unit = ()
-  }
 
   override def getConverter(i: Int): Converter = {
     if (i != 0)
@@ -343,28 +344,28 @@ abstract class MapKeyValueConverter[K, V](parent: CollectionConverter[(K, V)])
 
   val valueConverter: TupleFieldConverter[V]
 
-  override lazy val delegate: TupleFieldConverter[(K, V)] = new GroupConverter
-    with TupleFieldConverter[(K, V)] {
-    override def currentValue: (K, V) =
-      (keyConverter.currentValue, valueConverter.currentValue)
+  override lazy val delegate: TupleFieldConverter[(K, V)] =
+    new GroupConverter with TupleFieldConverter[(K, V)] {
+      override def currentValue: (K, V) =
+        (keyConverter.currentValue, valueConverter.currentValue)
 
-    override def reset(): Unit = {
-      keyConverter.reset()
-      valueConverter.reset()
+      override def reset(): Unit = {
+        keyConverter.reset()
+        valueConverter.reset()
+      }
+
+      override def getConverter(i: Int): Converter = {
+        if (i == 0)
+          keyConverter
+        else if (i == 1)
+          valueConverter
+        else
+          throw new IllegalArgumentException(
+            "key_value has only the key (0) and value (1) fields expected: " + i)
+      }
+
+      override def end(): Unit = ()
+
+      override def start(): Unit = reset()
     }
-
-    override def getConverter(i: Int): Converter = {
-      if (i == 0)
-        keyConverter
-      else if (i == 1)
-        valueConverter
-      else
-        throw new IllegalArgumentException(
-          "key_value has only the key (0) and value (1) fields expected: " + i)
-    }
-
-    override def end(): Unit = ()
-
-    override def start(): Unit = reset()
-  }
 }

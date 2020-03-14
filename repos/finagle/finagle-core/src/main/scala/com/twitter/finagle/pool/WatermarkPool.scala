@@ -41,18 +41,20 @@ class WatermarkPool[Req, Rep](
   @volatile private[this] var isOpen = true
 
   private[this] val numWaiters = statsReceiver.counter("pool_num_waited")
-  private[this] val tooManyWaiters =
-    statsReceiver.counter("pool_num_too_many_waiters")
-  private[this] val waitersStat = statsReceiver.addGauge("pool_waiters") {
-    thePool.synchronized {
-      waiters.size
+  private[this] val tooManyWaiters = statsReceiver.counter(
+    "pool_num_too_many_waiters")
+  private[this] val waitersStat =
+    statsReceiver.addGauge("pool_waiters") {
+      thePool.synchronized {
+        waiters.size
+      }
     }
-  }
-  private[this] val sizeStat = statsReceiver.addGauge("pool_size") {
-    thePool.synchronized {
-      numServices
+  private[this] val sizeStat =
+    statsReceiver.addGauge("pool_size") {
+      thePool.synchronized {
+        numServices
+      }
     }
-  }
 
   /**
     * Flush waiters by creating new services for them. This must
@@ -161,8 +163,9 @@ class WatermarkPool[Req, Rep](
     }
     p.setInterruptHandler {
       case e =>
-        val failure =
-          Failure.adapt(e, Failure.Restartable | Failure.Interrupted)
+        val failure = Failure.adapt(
+          e,
+          Failure.Restartable | Failure.Interrupted)
         if (p.updateIfEmpty(Throw(failure)))
           underlying.onSuccess {
             _.close()

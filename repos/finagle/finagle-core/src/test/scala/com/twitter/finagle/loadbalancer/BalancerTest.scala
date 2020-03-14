@@ -30,8 +30,8 @@ private class BalancerTest
     def emptyException: Throwable = ???
 
     def stats: InMemoryStatsReceiver = statsReceiver
-    protected[this] val maxEffortExhausted =
-      statsReceiver.counter("max_effort_exhausted")
+    protected[this] val maxEffortExhausted = statsReceiver.counter(
+      "max_effort_exhausted")
 
     def nodes: Vector[Node] = dist.vector
     def factories: Set[ServiceFactory[Unit, Unit]] = nodes.map(_.factory).toSet
@@ -102,11 +102,9 @@ private class BalancerTest
 
   val genStatus = Gen.oneOf(Status.Open, Status.Busy, Status.Closed)
   val genSvcFac = genStatus.map(newFac)
-  val genLoadedNode =
-    for (fac <- genSvcFac)
-      yield fac
-  val genNodes =
-    Gen.containerOf[List, ServiceFactory[Unit, Unit]](genLoadedNode)
+  val genLoadedNode = for (fac <- genSvcFac) yield fac
+  val genNodes = Gen.containerOf[List, ServiceFactory[Unit, Unit]](
+    genLoadedNode)
 
   test("status: balancer with no nodes is Closed") {
     val bal = new TestBalancer
@@ -118,8 +116,8 @@ private class BalancerTest
     forAll(genNodes) { loadedNodes =>
       val bal = new TestBalancer
       bal.update(loadedNodes)
-      val best =
-        Status.bestOf[ServiceFactory[Unit, Unit]](loadedNodes, _.status)
+      val best = Status
+        .bestOf[ServiceFactory[Unit, Unit]](loadedNodes, _.status)
       assert(bal.status == best)
     }
   }
@@ -200,18 +198,19 @@ private class BalancerTest
       val conductor = new Conductor
       import conductor._
 
-      val bal = new TestBalancer {
-        val beat = new AtomicInteger(1)
-        @volatile var updateThreads: Set[Long] = Set.empty
+      val bal =
+        new TestBalancer {
+          val beat = new AtomicInteger(1)
+          @volatile var updateThreads: Set[Long] = Set.empty
 
-        override def rebuildDistributor() {
-          synchronized {
-            updateThreads += Thread.currentThread.getId()
+          override def rebuildDistributor() {
+            synchronized {
+              updateThreads += Thread.currentThread.getId()
+            }
+            waitForBeat(beat.getAndIncrement())
+            waitForBeat(beat.getAndIncrement())
           }
-          waitForBeat(beat.getAndIncrement())
-          waitForBeat(beat.getAndIncrement())
         }
-      }
       val f1, f2, f3 = newFac()
 
       @volatile var thread1Id: Long = -1

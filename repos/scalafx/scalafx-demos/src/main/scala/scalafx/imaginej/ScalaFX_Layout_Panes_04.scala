@@ -61,47 +61,53 @@ import scalafx.scene.text.{Font, FontWeight, Text}
   *
   */
 object ScalaFX_Layout_Panes_04 extends JFXApp {
-  val currentButton = new Button {
-    text = "Current"
-    prefWidth = 100
-    prefHeight = 20
-  }
-  val projectedButton = new Button {
-    text = "Projected"
-    prefWidth = 100
-    prefHeight = 20
-  }
-  val questionText: Text = new Text {
-    fill = Color.White
-    stroke = Color.DarkBlue
-    font = Font.font("Amble Cn", FontWeight.Bold, 18)
-    text = " ? "
-  }
-  val questionRectangle = new Rectangle {
-    fill = Color.LightBlue
-    stroke = Color.White
-    arcHeight = 3.5
-    arcWidth = 3.5
-    width = questionText.boundsInLocal.getValue.getWidth + 10
-    height = questionText.boundsInLocal.getValue.getHeight + 10
-  }
-  val stackPane = new StackPane {
-    alignment = Pos.Center
-    children = List(questionRectangle, questionText)
-  }
-  val hBox = new HBox {
-    spacing = 10
-    padding = Insets(15, 12, 15, 12)
-    style = "-fx-background-color: #336699"
-    children = List(
-      currentButton,
-      projectedButton,
-      new Rectangle {
-        width = 200
-      },
-      stackPane
-    )
-  }
+  val currentButton =
+    new Button {
+      text = "Current"
+      prefWidth = 100
+      prefHeight = 20
+    }
+  val projectedButton =
+    new Button {
+      text = "Projected"
+      prefWidth = 100
+      prefHeight = 20
+    }
+  val questionText: Text =
+    new Text {
+      fill = Color.White
+      stroke = Color.DarkBlue
+      font = Font.font("Amble Cn", FontWeight.Bold, 18)
+      text = " ? "
+    }
+  val questionRectangle =
+    new Rectangle {
+      fill = Color.LightBlue
+      stroke = Color.White
+      arcHeight = 3.5
+      arcWidth = 3.5
+      width = questionText.boundsInLocal.getValue.getWidth + 10
+      height = questionText.boundsInLocal.getValue.getHeight + 10
+    }
+  val stackPane =
+    new StackPane {
+      alignment = Pos.Center
+      children = List(questionRectangle, questionText)
+    }
+  val hBox =
+    new HBox {
+      spacing = 10
+      padding = Insets(15, 12, 15, 12)
+      style = "-fx-background-color: #336699"
+      children = List(
+        currentButton,
+        projectedButton,
+        new Rectangle {
+          width = 200
+        },
+        stackPane
+      )
+    }
   val data = List(
     new Text {
       font = Font.font("Amble CN", FontWeight.Bold, 14)
@@ -120,17 +126,19 @@ object ScalaFX_Layout_Panes_04 extends JFXApp {
       text = "  Costs"
     }
   )
-  val vBox = new VBox {
-    spacing = 10
-    padding = Insets(10, 10, 10, 10)
-    children = data
-  }
+  val vBox =
+    new VBox {
+      spacing = 10
+      padding = Insets(10, 10, 10, 10)
+      children = data
+    }
 
-  val rectangle = new Rectangle {
-    width = 380
-    height = 220
-    fill = Color.White
-  }
+  val rectangle =
+    new Rectangle {
+      width = 380
+      height = 220
+      fill = Color.White
+    }
 
   stage = new PrimaryStage {
     title = "ScalaFX Layout Panes 04"

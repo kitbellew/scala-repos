@@ -25,17 +25,18 @@ object XmlBugs extends Specification {
 
   "HarryH's XML parses correctly" in {
     val xml1 = <venue><id>123</id></venue>
-    val xml2 = <venue> <id>{
-      "1"
-    }{
-      "23"
-    }</id> </venue>
+    val xml2 =
+      <venue> <id>{
+        "1"
+      }{
+        "23"
+      }</id> </venue>
     Xml.toJson(xml1) must_== Xml.toJson(xml2)
   }
 
   "HarryH's XML with attributes parses correctly" in {
-    val json =
-      toJson(<tips><group type="Nearby"><tip><id>10</id></tip></group></tips>)
+    val json = toJson(
+      <tips><group type="Nearby"><tip><id>10</id></tip></group></tips>)
     compactRender(
       json) mustEqual """{"tips":{"group":{"type":"Nearby","tip":{"id":"10"}}}}"""
   }
@@ -62,8 +63,7 @@ object XmlBugs extends Specification {
   }
 
   "Nodes with attributes converted to correct JSON" in {
-    val xml =
-      <root>
+    val xml = <root>
         <n id="10" x="abc" />
         <n id="11" x="bcd" />
       </root>

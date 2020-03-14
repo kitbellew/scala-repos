@@ -29,8 +29,7 @@ trait Roots[A] extends Iterable[A] { self =>
 
   override def size: Int = count
 
-  override def toString: String =
-    mkString("Roots(", ", ", ")")
+  override def toString: String = mkString("Roots(", ", ", ")")
 }
 
 object Roots {
@@ -43,12 +42,13 @@ object Roots {
     */
   final def removeFractions(poly: Polynomial[Rational]): Polynomial[BigInt] = {
     val coeffs = poly.coeffsArray
-    val factors = coeffs.foldLeft(BigInt(1)) { (acc, coeff) =>
-      val d = coeff.denominator.toBigInt
-      acc * (d / acc.gcd(d))
-    }
-    val zCoeffs =
-      coeffs.map(n => (n.numerator * (factors / n.denominator)).toBigInt)
+    val factors =
+      coeffs.foldLeft(BigInt(1)) { (acc, coeff) =>
+        val d = coeff.denominator.toBigInt
+        acc * (d / acc.gcd(d))
+      }
+    val zCoeffs = coeffs.map(n =>
+      (n.numerator * (factors / n.denominator)).toBigInt)
     Polynomial.dense(zCoeffs)
   }
 
@@ -96,8 +96,7 @@ object Roots {
   /**
     * Returns an lower bit bound on the roots of the polynomial `p`.
     */
-  def lowerBound(p: Polynomial[BigInt]): Int =
-    -upperBound(p.reciprocal)
+  def lowerBound(p: Polynomial[BigInt]): Int = -upperBound(p.reciprocal)
 }
 
 private[poly] class BigDecimalSimpleRoots(
@@ -157,8 +156,8 @@ private[poly] class BigDecimalRelativeRoots(
 private[poly] class FixedRealRoots(
     val poly: Polynomial[Real]
 ) extends Roots[Real] {
-  private val zpoly: Polynomial[BigInt] =
-    Roots.removeFractions(poly.map(_.toRational))
+  private val zpoly: Polynomial[BigInt] = Roots.removeFractions(
+    poly.map(_.toRational))
   private val isolated: Vector[Interval[Rational]] = Roots.isolateRoots(zpoly)
 
   def count: Int = isolated.size
@@ -185,9 +184,10 @@ private[poly] class FixedRealRoots(
 private[poly] class NumberRoots(
     val poly: Polynomial[Number]
 ) extends Roots[Number] {
-  private val roots = new BigDecimalRelativeRoots(
-    poly.map(_.toBigDecimal),
-    BigDecimal.defaultMathContext)
+  private val roots =
+    new BigDecimalRelativeRoots(
+      poly.map(_.toBigDecimal),
+      BigDecimal.defaultMathContext)
 
   def count: Int = roots.count
 

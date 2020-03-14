@@ -55,15 +55,18 @@ private[kinesis] class KinesisInputDStream[T: ClassTag](
 
     if (allBlocksHaveRanges) {
       // Create a KinesisBackedBlockRDD, even when there are no blocks
-      val blockIds = blockInfos.map {
-        _.blockId.asInstanceOf[BlockId]
-      }.toArray
-      val seqNumRanges = blockInfos.map {
-        _.metadataOption.get.asInstanceOf[SequenceNumberRanges]
-      }.toArray
-      val isBlockIdValid = blockInfos.map {
-        _.isBlockIdValid()
-      }.toArray
+      val blockIds =
+        blockInfos.map {
+          _.blockId.asInstanceOf[BlockId]
+        }.toArray
+      val seqNumRanges =
+        blockInfos.map {
+          _.metadataOption.get.asInstanceOf[SequenceNumberRanges]
+        }.toArray
+      val isBlockIdValid =
+        blockInfos.map {
+          _.isBlockIdValid()
+        }.toArray
       logDebug(
         s"Creating KinesisBackedBlockRDD for $time with ${seqNumRanges.length} " +
           s"seq number ranges: ${seqNumRanges.mkString(", ")} ")

@@ -151,9 +151,10 @@ object ChiSqSelectorModel extends Loader[ChiSqSelectorModel] {
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.
-      val dataArray = Array.tabulate(model.selectedFeatures.length) { i =>
-        Data(model.selectedFeatures(i))
-      }
+      val dataArray =
+        Array.tabulate(model.selectedFeatures.length) { i =>
+          Data(model.selectedFeatures(i))
+        }
       sc.parallelize(dataArray, 1).toDF().write.parquet(Loader.dataPath(path))
 
     }
@@ -202,17 +203,18 @@ class ChiSqSelector @Since("1.3.0") (@Since("1.3.0") val numTopFeatures: Int)
     */
   @Since("1.3.0")
   def fit(data: RDD[LabeledPoint]): ChiSqSelectorModel = {
-    val indices = Statistics
-      .chiSqTest(data)
-      .zipWithIndex
-      .sortBy {
-        case (res, _) => -res.statistic
-      }
-      .take(numTopFeatures)
-      .map {
-        case (_, indices) => indices
-      }
-      .sorted
+    val indices =
+      Statistics
+        .chiSqTest(data)
+        .zipWithIndex
+        .sortBy {
+          case (res, _) => -res.statistic
+        }
+        .take(numTopFeatures)
+        .map {
+          case (_, indices) => indices
+        }
+        .sorted
     new ChiSqSelectorModel(indices)
   }
 }

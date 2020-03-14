@@ -44,27 +44,28 @@ class CaseClassPickling(
           }
 
           // Here we need to unify the fields with the constructor names.  We assume they have the same name.
-          val fields = for {
-            name <- c.parameterNames.flatten.toSeq
-            // NOTE: here we use the vars list, because it's already filtered out transient vars.
-            m <- vars.find(_.methodName == name)
-          } yield FieldInfo(name, m)
+          val fields =
+            for {
+              name <- c.parameterNames.flatten.toSeq
+              // NOTE: here we use the vars list, because it's already filtered out transient vars.
+              m <- vars.find(_.methodName == name)
+            } yield FieldInfo(name, m)
           if (fields.length == c.parameterNames.flatten.length) {
             val pickle = PickleBehavior(Seq(PickleEntry(fields.map { field =>
               GetField(field.name, field.sym)
             }.toSeq ++ standAloneVars.map { field =>
               GetField(field.methodName, field)
             })))
-            val unpickle =
-              UnpickleBehavior(Seq(CallConstructor(fields.map(_.name), c)) ++
-                standAloneVars.map { field =>
-                  field.setter match {
-                    case Some(mth) => SetField(field.methodName, mth)
-                    case _ =>
-                      sys.error(
-                        s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
-                  }
-                })
+            val unpickle = UnpickleBehavior(Seq(
+              CallConstructor(fields.map(_.name), c)) ++
+              standAloneVars.map { field =>
+                field.setter match {
+                  case Some(mth) => SetField(field.methodName, mth)
+                  case _ =>
+                    sys.error(
+                      s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
+                }
+              })
             if (!allowReflection && (pickle.requiresReflection || unpickle.requiresReflection)) {
               def reflectionErrorMessage(ast: IrAst): List[String] =
                 ast match {
@@ -130,10 +131,11 @@ class CaseClassPickling(
           s"Warning: ${tpe.className} has a member var not represented in the constructor.  Pickling is not guaranteed to handle this correctly.")
       }
       val fieldNameList = factoryMethod.parameterNames.flatten.toSeq
-      val fields = for {
-        name <- fieldNameList
-        m <- vars.find(_.methodName == name)
-      } yield FieldInfo(name, m)
+      val fields =
+        for {
+          name <- fieldNameList
+          m <- vars.find(_.methodName == name)
+        } yield FieldInfo(name, m)
       if (fields.length == factoryMethod.parameterNames.flatten.length) {
         val pickle = PickleBehavior(Seq(PickleEntry(fields.map { field =>
           GetField(field.name, field.sym)

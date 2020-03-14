@@ -15,8 +15,13 @@ class VectorTest extends FunSuite {
       Int.MinValue,
       Endpoint.Status.Alive,
       "1234")
-    val ep2 =
-      Endpoint(Array(null), "1.0.0.2", port, 3, Endpoint.Status.Alive, "12345")
+    val ep2 = Endpoint(
+      Array(null),
+      "1.0.0.2",
+      port,
+      3,
+      Endpoint.Status.Alive,
+      "12345")
 
     val host = Selector.Host("10.0.0.1", port)
     assert(host matches ep1)

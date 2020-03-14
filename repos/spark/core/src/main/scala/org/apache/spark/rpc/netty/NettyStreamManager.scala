@@ -50,14 +50,15 @@ private[netty] class NettyStreamManager(rpcEnv: NettyRpcEnv)
 
   override def openStream(streamId: String): ManagedBuffer = {
     val Array(ftype, fname) = streamId.stripPrefix("/").split("/", 2)
-    val file = ftype match {
-      case "files" => files.get(fname)
-      case "jars"  => jars.get(fname)
-      case other =>
-        val dir = dirs.get(ftype)
-        require(dir != null, s"Invalid stream URI: $ftype not found.")
-        new File(dir, fname)
-    }
+    val file =
+      ftype match {
+        case "files" => files.get(fname)
+        case "jars"  => jars.get(fname)
+        case other =>
+          val dir = dirs.get(ftype)
+          require(dir != null, s"Invalid stream URI: $ftype not found.")
+          new File(dir, fname)
+      }
 
     if (file != null && file.isFile()) {
       new FileSegmentManagedBuffer(rpcEnv.transportConf, file, 0, file.length())

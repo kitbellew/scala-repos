@@ -30,10 +30,11 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "inject element between existing elements, when downstream is fold" in {
-      val concated = Source(List(1, 2, 3))
-        .map(_.toString)
-        .intersperse(",")
-        .runFold("")(_ + _)
+      val concated =
+        Source(List(1, 2, 3))
+          .map(_.toString)
+          .intersperse(",")
+          .runFold("")(_ + _)
 
       concated.futureValue should ===("1,2,3")
     }
@@ -80,11 +81,12 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "complete the stage when the Source has been completed" in {
-      val (p1, p2) = TestSource
-        .probe[String]
-        .intersperse(",")
-        .toMat(TestSink.probe[String])(Keep.both)
-        .run
+      val (p1, p2) =
+        TestSource
+          .probe[String]
+          .intersperse(",")
+          .toMat(TestSink.probe[String])(Keep.both)
+          .run
       p2.request(10)
       p1.sendNext("a")
         .sendNext("b")
@@ -96,11 +98,12 @@ class FlowIntersperseSpec extends AkkaSpec {
     }
 
     "complete the stage when the Sink has been cancelled" in {
-      val (p1, p2) = TestSource
-        .probe[String]
-        .intersperse(",")
-        .toMat(TestSink.probe[String])(Keep.both)
-        .run
+      val (p1, p2) =
+        TestSource
+          .probe[String]
+          .intersperse(",")
+          .toMat(TestSink.probe[String])(Keep.both)
+          .run
       p2.request(10)
       p1.sendNext("a")
         .sendNext("b")

@@ -9,8 +9,7 @@ class Properties(protected val defaults: Properties)
 
   def this() = this(null)
 
-  def setProperty(key: String, value: String): AnyRef =
-    put(key, value)
+  def setProperty(key: String, value: String): AnyRef = put(key, value)
 
   // def load(reader: Reader): Unit
   // def load(inStream: InputStream): Unit
@@ -21,8 +20,7 @@ class Properties(protected val defaults: Properties)
   // def storeToXML(os: OutputStream, comment: String): Unit
   // def storeToXML(os: OutputStream, comment: String, encoding: String): Unit
 
-  def getProperty(key: String): String =
-    getProperty(key, defaultValue = null)
+  def getProperty(key: String): String = getProperty(key, defaultValue = null)
 
   def getProperty(key: String, defaultValue: String): String = {
     get(key) match {

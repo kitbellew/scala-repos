@@ -16,9 +16,10 @@ abstract class IdempotencyTest { self =>
 
   private object Break extends scala.util.control.ControlThrowable
 
-  private val compilerReporter: CompilerReporter = new InteractiveReporter {
-    override def compiler = self.compiler
-  }
+  private val compilerReporter: CompilerReporter =
+    new InteractiveReporter {
+      override def compiler = self.compiler
+    }
 
   object compiler extends Global(settings, compilerReporter) {
     override def checkForMoreWork(pos: Position) {}

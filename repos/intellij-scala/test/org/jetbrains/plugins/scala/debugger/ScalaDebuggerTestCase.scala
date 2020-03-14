@@ -68,9 +68,10 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
           saveChecksums()
         }
         addBreakpoints()
-        val runner = ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
-          _.getClass == classOf[GenericDebuggerRunner]
-        }.get
+        val runner =
+          ProgramRunner.PROGRAM_RUNNER_EP.getExtensions.find {
+            _.getClass == classOf[GenericDebuggerRunner]
+          }.get
         processHandler = runProcess(
           mainClass,
           getModule,
@@ -100,14 +101,15 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
       executorClass: Class[_ <: Executor],
       listener: ProcessListener,
       runner: ProgramRunner[_ <: RunnerSettings]): ProcessHandler = {
-    val configuration: ApplicationConfiguration = new ApplicationConfiguration(
-      "app",
-      module.getProject,
-      ApplicationConfigurationType.getInstance)
+    val configuration: ApplicationConfiguration =
+      new ApplicationConfiguration(
+        "app",
+        module.getProject,
+        ApplicationConfigurationType.getInstance)
     configuration.setModule(module)
     configuration.setMainClassName(className)
-    val executor: Executor =
-      Executor.EXECUTOR_EXTENSION_NAME.findExtension(executorClass)
+    val executor: Executor = Executor.EXECUTOR_EXTENSION_NAME.findExtension(
+      executorClass)
     val executionEnvironmentBuilder: ExecutionEnvironmentBuilder =
       new ExecutionEnvironmentBuilder(module.getProject, executor)
     executionEnvironmentBuilder.runProfile(configuration)
@@ -248,41 +250,41 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
   protected def evalResult(codeText: String): String = {
     val semaphore = new Semaphore()
     semaphore.down()
-    val result =
-      managed[String] {
-        val ctx: EvaluationContextImpl = evaluationContext()
-        val factory = new ScalaCodeFragmentFactory()
-        val kind =
-          if (codeText.contains("\n"))
-            CodeFragmentKind.CODE_BLOCK
-          else
-            CodeFragmentKind.EXPRESSION
-        val codeFragment: PsiCodeFragment = inReadAction {
-          val result =
-            new CodeFragmentFactoryContextWrapper(factory).createCodeFragment(
-              new TextWithImportsImpl(kind, codeText),
-              ContextUtil.getContextElement(ctx),
-              getProject)
-          result.forceResolveScope(GlobalSearchScope.allScope(getProject))
-          DebuggerUtils.checkSyntax(result)
-          result
-        }
-        val evaluatorBuilder: EvaluatorBuilder = factory.getEvaluatorBuilder
+    val result = managed[String] {
+      val ctx: EvaluationContextImpl = evaluationContext()
+      val factory = new ScalaCodeFragmentFactory()
+      val kind =
+        if (codeText.contains("\n"))
+          CodeFragmentKind.CODE_BLOCK
+        else
+          CodeFragmentKind.EXPRESSION
+      val codeFragment: PsiCodeFragment = inReadAction {
+        val result = new CodeFragmentFactoryContextWrapper(factory)
+          .createCodeFragment(
+            new TextWithImportsImpl(kind, codeText),
+            ContextUtil.getContextElement(ctx),
+            getProject)
+        result.forceResolveScope(GlobalSearchScope.allScope(getProject))
+        DebuggerUtils.checkSyntax(result)
+        result
+      }
+      val evaluatorBuilder: EvaluatorBuilder = factory.getEvaluatorBuilder
 
-        val value = Try {
-          val evaluator = inReadAction(
-            evaluatorBuilder.build(codeFragment, currentSourcePosition))
-          evaluator.evaluate(ctx)
-        }
-        val res = value match {
+      val value = Try {
+        val evaluator = inReadAction(
+          evaluatorBuilder.build(codeFragment, currentSourcePosition))
+        evaluator.evaluate(ctx)
+      }
+      val res =
+        value match {
           case Success(v: VoidValue)         => "undefined"
           case Success(v)                    => DebuggerUtils.getValueAsString(ctx, v)
           case Failure(e: EvaluateException) => e.getMessage
           case Failure(e: Throwable)         => "Other error: " + e.getMessage
         }
-        semaphore.up()
-        res
-      }
+      semaphore.up()
+      res
+    }
     assert(
       semaphore.waitFor(10000),
       "Too long evaluate expression: " + codeText)
@@ -335,8 +337,10 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
           .getSourcePosition(location)
           .getLine
       }
-      val actual =
-        format(location.sourceName, location.method().name(), actualLine + 1)
+      val actual = format(
+        location.sourceName,
+        location.method().name(),
+        actualLine + 1)
       Assert.assertEquals("Wrong location:", expected, actual)
     }
   }

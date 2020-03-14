@@ -15,8 +15,8 @@ object MarathonClusterIntegrationTest {
   */
 trait MarathonClusterIntegrationTest extends SingleMarathonIntegrationTest {
   self: Suite =>
-  lazy val marathonFacades: Seq[MarathonFacade] =
-    config.marathonUrls.map(url => new MarathonFacade(url, testBasePath))
+  lazy val marathonFacades: Seq[MarathonFacade] = config.marathonUrls.map(url =>
+    new MarathonFacade(url, testBasePath))
 
   override protected def beforeAll(configMap: ConfigMap): Unit = {
     super.beforeAll(configMap)

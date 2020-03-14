@@ -33,9 +33,10 @@ class UnwrappedTests {
     def wrapped(u: U): T
   }
   object Pass {
-    type Aux[T, U0] = Pass[T] {
-      type U = U0
-    }
+    type Aux[T, U0] =
+      Pass[T] {
+        type U = U0
+      }
     implicit def unwrappedPasses[W, U0](
         implicit uw: Unwrapped.Aux[W, U0]): Pass.Aux[W, U0] =
       new Pass[W] {

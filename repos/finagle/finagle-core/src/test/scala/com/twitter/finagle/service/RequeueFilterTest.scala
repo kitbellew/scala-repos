@@ -17,13 +17,14 @@ class RequeueFilterTest extends FunSuite {
 
     val minRetries = 10
     val percentRequeues = 0.5
-    val filter = new RequeueFilter[Throwable, Int](
-      RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis),
-      Backoff.constant(Duration.Zero),
-      stats,
-      () => true,
-      percentRequeues,
-      DefaultTimer.twitter)
+    val filter =
+      new RequeueFilter[Throwable, Int](
+        RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis),
+        Backoff.constant(Duration.Zero),
+        stats,
+        () => true,
+        percentRequeues,
+        DefaultTimer.twitter)
 
     val svc = filter.andThen(Service.mk(Future.exception))
 
@@ -46,13 +47,14 @@ class RequeueFilterTest extends FunSuite {
 
     val minRetries = 10
     val percentRequeues = 2.0
-    val filter = new RequeueFilter[Throwable, Int](
-      RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis),
-      Backoff.constant(Duration.Zero),
-      stats,
-      () => true,
-      percentRequeues,
-      DefaultTimer.twitter)
+    val filter =
+      new RequeueFilter[Throwable, Int](
+        RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis),
+        Backoff.constant(Duration.Zero),
+        stats,
+        () => true,
+        percentRequeues,
+        DefaultTimer.twitter)
 
     val svc = filter.andThen(Service.mk(Future.exception))
 
@@ -67,20 +69,23 @@ class RequeueFilterTest extends FunSuite {
 
   test("tracks requeues_per_request") {
     val stats = new InMemoryStatsReceiver()
-    def perReqRequeues: Seq[Float] =
-      stats.stat("requeues_per_request")()
+    def perReqRequeues: Seq[Float] = stats.stat("requeues_per_request")()
 
     val minRetries = 10
     val percentRequeues = 0.5 // allow only 50% to be used
-    val retryBudget =
-      RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis)
-    val filter = new RequeueFilter[String, Int](
-      retryBudget,
-      Backoff.constant(Duration.Zero),
-      stats,
-      () => true,
-      percentRequeues,
-      DefaultTimer.twitter)
+    val retryBudget = RetryBudget(
+      1.second,
+      minRetries,
+      0.0,
+      Stopwatch.timeMillis)
+    val filter =
+      new RequeueFilter[String, Int](
+        retryBudget,
+        Backoff.constant(Duration.Zero),
+        stats,
+        () => true,
+        percentRequeues,
+        DefaultTimer.twitter)
 
     var numNos = 0
     val svc = filter.andThen(Service.mk { s: String =>
@@ -119,13 +124,14 @@ class RequeueFilterTest extends FunSuite {
       val scheduleLength = 3
       val schedule = Backoff.exponential(minDelay, 2).take(scheduleLength)
 
-      val filter = new RequeueFilter[Throwable, Int](
-        RetryBudget(1.second, 10, 0.0, Stopwatch.timeMillis),
-        schedule,
-        stats,
-        () => true,
-        1.0,
-        timer)
+      val filter =
+        new RequeueFilter[Throwable, Int](
+          RetryBudget(1.second, 10, 0.0, Stopwatch.timeMillis),
+          schedule,
+          stats,
+          () => true,
+          1.0,
+          timer)
 
       val svc = filter.andThen(Service.mk(Future.exception))
       val response = svc(new FailedFastException("12345"))

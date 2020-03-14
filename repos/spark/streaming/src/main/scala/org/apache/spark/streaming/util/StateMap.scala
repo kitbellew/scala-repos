@@ -231,10 +231,11 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
 
   /** Get all the data of this map as string formatted as a tree based on the delta depth */
   override def toDebugString(): String = {
-    val tabs = if (deltaChainLength > 0) {
-      ("    " * (deltaChainLength - 1)) + "+--- "
-    } else
-      ""
+    val tabs =
+      if (deltaChainLength > 0) {
+        ("    " * (deltaChainLength - 1)) + "+--- "
+      } else
+        ""
     parentStateMap.toDebugString() + "\n" + deltaMap.iterator.mkString(
       tabs,
       "\n" + tabs,
@@ -265,18 +266,19 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     // Write the data in the parent state map while copying the data into a new parent map for
     // compaction (if needed)
     val doCompaction = shouldCompact
-    val newParentSessionStore = if (doCompaction) {
-      val initCapacity =
-        if (approxSize > 0)
-          approxSize
-        else
-          64
-      new OpenHashMapBasedStateMap[K, S](
-        initialCapacity = initCapacity,
-        deltaChainThreshold)
-    } else {
-      null
-    }
+    val newParentSessionStore =
+      if (doCompaction) {
+        val initCapacity =
+          if (approxSize > 0)
+            approxSize
+          else
+            64
+        new OpenHashMapBasedStateMap[K, S](
+          initialCapacity = initCapacity,
+          deltaChainThreshold)
+      } else {
+        null
+      }
 
     val iterOfActiveSessions = parentStateMap.getAll()
 
@@ -312,11 +314,12 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   private def readObjectInternal(inputStream: ObjectInput): Unit = {
     // Read the data of the delta
     val deltaMapSize = inputStream.readInt()
-    deltaMap = if (deltaMapSize != 0) {
-      new OpenHashMap[K, StateInfo[S]](deltaMapSize)
-    } else {
-      new OpenHashMap[K, StateInfo[S]](initialCapacity)
-    }
+    deltaMap =
+      if (deltaMapSize != 0) {
+        new OpenHashMap[K, StateInfo[S]](deltaMapSize)
+      } else {
+        new OpenHashMap[K, StateInfo[S]](initialCapacity)
+      }
     var deltaMapCount = 0
     while (deltaMapCount < deltaMapSize) {
       val key = inputStream.readObject().asInstanceOf[K]
@@ -329,11 +332,13 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     // First read the approximate number of records to expect and allocate properly size
     // OpenHashMap
     val parentStateMapSizeHint = inputStream.readInt()
-    val newStateMapInitialCapacity =
-      math.max(parentStateMapSizeHint, DEFAULT_INITIAL_CAPACITY)
-    val newParentSessionStore = new OpenHashMapBasedStateMap[K, S](
-      initialCapacity = newStateMapInitialCapacity,
-      deltaChainThreshold)
+    val newStateMapInitialCapacity = math.max(
+      parentStateMapSizeHint,
+      DEFAULT_INITIAL_CAPACITY)
+    val newParentSessionStore =
+      new OpenHashMapBasedStateMap[K, S](
+        initialCapacity = newStateMapInitialCapacity,
+        deltaChainThreshold)
 
     // Read the records until the limit marking object has been reached
     var parentSessionLoopDone = false

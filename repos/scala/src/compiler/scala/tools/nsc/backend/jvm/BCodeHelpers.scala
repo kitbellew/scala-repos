@@ -211,20 +211,20 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     if (isAnonymousOrLocalClass(
           classSym) && !considerAsTopLevelImplementationArtifact(classSym)) {
       val enclosingClass = enclosingClassForEnclosingMethodAttribute(classSym)
-      val methodOpt = enclosingMethodForEnclosingMethodAttribute(
-        classSym) match {
-        case some @ Some(m) =>
-          if (m.owner != enclosingClass) {
-            // This should never happen. In case it does, it prevents emitting an invalid
-            // EnclosingMethod attribute: if the attribute specifies an enclosing method,
-            // it needs to exist in the specified enclosing class.
-            devWarning(
-              s"the owner of the enclosing method ${m.locationString} should be the same as the enclosing class $enclosingClass")
-            None
-          } else
-            some
-        case none => none
-      }
+      val methodOpt =
+        enclosingMethodForEnclosingMethodAttribute(classSym) match {
+          case some @ Some(m) =>
+            if (m.owner != enclosingClass) {
+              // This should never happen. In case it does, it prevents emitting an invalid
+              // EnclosingMethod attribute: if the attribute specifies an enclosing method,
+              // it needs to exist in the specified enclosing class.
+              devWarning(
+                s"the owner of the enclosing method ${m.locationString} should be the same as the enclosing class $enclosingClass")
+              None
+            } else
+              some
+          case none => none
+        }
       Some(
         EnclosingMethodEntry(
           classDesc(enclosingClass),
@@ -276,16 +276,17 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       classSym: Symbol,
       classSymToInternalName: Symbol => InternalName,
       methodSymToDescriptor: Symbol => String): InlineInfo = {
-    val traitSelfType = if (classSym.isTrait) {
-      // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
-      val selfSym = classSym.typeOfThis.typeSymbol
-      if (selfSym != classSym)
-        Some(classSymToInternalName(selfSym))
-      else
+    val traitSelfType =
+      if (classSym.isTrait) {
+        // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
+        val selfSym = classSym.typeOfThis.typeSymbol
+        if (selfSym != classSym)
+          Some(classSymToInternalName(selfSym))
+        else
+          None
+      } else {
         None
-    } else {
-      None
-    }
+      }
 
     val isEffectivelyFinal = classSym.isEffectivelyFinal
 
@@ -307,37 +308,39 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
     // Primitive methods cannot be inlined, so there's no point in building a MethodInlineInfo. Also, some
     // primitive methods (e.g., `isInstanceOf`) have non-erased types, which confuses [[typeToBType]].
-    val methodInlineInfos = classSym.info.decls.iterator
-      .filter(m => m.isMethod && !scalaPrimitives.isPrimitive(m))
-      .flatMap({
-        case methodSym =>
-          if (completeSilentlyAndCheckErroneous(methodSym)) {
-            // Happens due to SI-9111. Just don't provide any MethodInlineInfo for that method, we don't need fail the compiler.
-            if (!classSym.isJavaDefined)
-              devWarning("SI-9111 should only be possible for Java classes")
-            warning = Some(ClassSymbolInfoFailureSI9111(classSym.fullName))
-            None
-          } else {
-            val name = methodSym.javaSimpleName.toString // same as in genDefDef
-            val signature = name + methodSymToDescriptor(methodSym)
+    val methodInlineInfos =
+      classSym.info.decls.iterator
+        .filter(m => m.isMethod && !scalaPrimitives.isPrimitive(m))
+        .flatMap({
+          case methodSym =>
+            if (completeSilentlyAndCheckErroneous(methodSym)) {
+              // Happens due to SI-9111. Just don't provide any MethodInlineInfo for that method, we don't need fail the compiler.
+              if (!classSym.isJavaDefined)
+                devWarning("SI-9111 should only be possible for Java classes")
+              warning = Some(ClassSymbolInfoFailureSI9111(classSym.fullName))
+              None
+            } else {
+              val name =
+                methodSym.javaSimpleName.toString // same as in genDefDef
+              val signature = name + methodSymToDescriptor(methodSym)
 
-            // Some detours are required here because of changing flags (lateDEFERRED):
-            // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
-            //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
-            //    but non-overridden methods of sealed traits from being inlined.
-            val effectivelyFinal = exitingPickler(
-              methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner.isTrait && methodSym.isModule)
+              // Some detours are required here because of changing flags (lateDEFERRED):
+              // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
+              //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
+              //    but non-overridden methods of sealed traits from being inlined.
+              val effectivelyFinal = exitingPickler(
+                methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner.isTrait && methodSym.isModule)
 
-            val info = MethodInlineInfo(
-              effectivelyFinal = effectivelyFinal,
-              traitMethodWithStaticImplementation = false,
-              annotatedInline = methodSym.hasAnnotation(ScalaInlineClass),
-              annotatedNoInline = methodSym.hasAnnotation(ScalaNoInlineClass)
-            )
-            Some((signature, info))
-          }
-      })
-      .toMap
+              val info = MethodInlineInfo(
+                effectivelyFinal = effectivelyFinal,
+                traitMethodWithStaticImplementation = false,
+                annotatedInline = methodSym.hasAnnotation(ScalaInlineClass),
+                annotatedNoInline = methodSym.hasAnnotation(ScalaNoInlineClass)
+              )
+              Some((signature, info))
+            }
+        })
+        .toMap
 
     InlineInfo(
       traitSelfType,
@@ -836,10 +839,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
               case ClazzTag =>
                 av.visit(name, typeToBType(const.typeValue).toASMType)
               case EnumTag =>
-                val edesc =
-                  descriptor(
-                    const.tpe
-                  ) // the class descriptor of the enumeration class.
+                val edesc = descriptor(
+                  const.tpe
+                ) // the class descriptor of the enumeration class.
                 val evalue =
                   const.symbolValue.name.toString // value the actual enumeration value.
                 av.visitEnum(name, edesc, evalue)
@@ -869,10 +871,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         case NestedAnnotArg(annInfo) =>
           val AnnotationInfo(typ, args, assocs) = annInfo
           assert(args.isEmpty, args)
-          val desc =
-            descriptor(
-              typ
-            ) // the class descriptor of the nested annotation class
+          val desc = descriptor(
+            typ
+          ) // the class descriptor of the nested annotation class
           val nestedVisitor = av.visitAnnotation(name, desc)
           emitAssocs(nestedVisitor, assocs)
       }
@@ -947,8 +948,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
            annot <- annots) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
-        val pannVisitor: asm.AnnotationVisitor =
-          jmethod.visitParameterAnnotation(
+        val pannVisitor: asm.AnnotationVisitor = jmethod
+          .visitParameterAnnotation(
             idx,
             descriptor(typ),
             isRuntimeVisible(annot))

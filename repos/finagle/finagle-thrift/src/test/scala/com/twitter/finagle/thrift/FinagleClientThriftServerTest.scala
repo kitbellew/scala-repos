@@ -29,38 +29,41 @@ class FinagleClientThriftServerTest extends FunSuite {
   def makeServer(
       transportFactory: TTransportFactory,
       somewayPromise: Promise[Unit])(f: (Int, Int) => Int) = {
-    val processor = new B.Iface {
-      def multiply(a: Int, b: Int): Int = f(a, b)
-      def add(a: Int, b: Int): Int = {
-        throw new AnException
+    val processor =
+      new B.Iface {
+        def multiply(a: Int, b: Int): Int = f(a, b)
+        def add(a: Int, b: Int): Int = {
+          throw new AnException
+        }
+        def add_one(a: Int, b: Int) = {}
+        def complex_return(someString: String) = new SomeStruct(123, someString)
+        def someway() {
+          somewayPromise() = Return.Unit
+        }
+        def show_me_your_dtab() = ""
+        def show_me_your_dtab_size() = 0
       }
-      def add_one(a: Int, b: Int) = {}
-      def complex_return(someString: String) = new SomeStruct(123, someString)
-      def someway() {
-        somewayPromise() = Return.Unit
-      }
-      def show_me_your_dtab() = ""
-      def show_me_your_dtab_size() = 0
-    }
 
     val (thriftServerAddr, thriftServer) = {
       val loopback = InetAddress.getLoopbackAddress
       val socket = new ServerSocket(0, 50, loopback)
       val serverSocketTransport = new TServerSocket(socket)
 
-      val server = new TSimpleServer(
-        new B.Processor(processor),
-        serverSocketTransport,
-        transportFactory,
-        new TBinaryProtocol.Factory()
-      )
+      val server =
+        new TSimpleServer(
+          new B.Processor(processor),
+          serverSocketTransport,
+          transportFactory,
+          new TBinaryProtocol.Factory()
+        )
 
       (socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress], server)
     }
 
-    val thriftServerThread = new Thread("thriftServer") {
-      override def run() = thriftServer.serve()
-    }
+    val thriftServerThread =
+      new Thread("thriftServer") {
+        override def run() = thriftServer.serve()
+      }
     thriftServerThread.start()
 
     new TestServer {
@@ -82,9 +85,10 @@ class FinagleClientThriftServerTest extends FunSuite {
 
       // TODO: interleave requests (to test seqids, etc.)
 
-      val testServer = makeServer(transportFactory, somewayPromise) { (a, b) =>
-        a + b
-      }
+      val testServer =
+        makeServer(transportFactory, somewayPromise) { (a, b) =>
+          a + b
+        }
 
       // ** Set up the client & query the server.
       val service = ClientBuilder()
@@ -105,9 +109,10 @@ class FinagleClientThriftServerTest extends FunSuite {
         .format(named)) {
       val somewayPromise = new Promise[Unit]
 
-      val testServer = makeServer(transportFactory, somewayPromise) { (a, b) =>
-        a + b
-      }
+      val testServer =
+        makeServer(transportFactory, somewayPromise) { (a, b) =>
+          a + b
+        }
 
       // ** Set up the client & query the server.
       val service = ClientBuilder()
@@ -128,9 +133,10 @@ class FinagleClientThriftServerTest extends FunSuite {
       "%s:finagle client vs. synchronous thrift server should handle void returns"
         .format(named)) {
       val somewayPromise = new Promise[Unit]
-      val testServer = makeServer(transportFactory, somewayPromise) { (a, b) =>
-        a + b
-      }
+      val testServer =
+        makeServer(transportFactory, somewayPromise) { (a, b) =>
+          a + b
+        }
 
       // ** Set up the client & query the server.
       val service = ClientBuilder()
@@ -151,9 +157,10 @@ class FinagleClientThriftServerTest extends FunSuite {
       "%s:finagle client vs. synchronous thrift server should handle one-way calls"
         .format(named)) {
       val somewayPromise = new Promise[Unit]
-      val testServer = makeServer(transportFactory, somewayPromise) { (a, b) =>
-        a + b
-      }
+      val testServer =
+        makeServer(transportFactory, somewayPromise) { (a, b) =>
+          a + b
+        }
 
       // ** Set up the client & query the server.
       val service = ClientBuilder()

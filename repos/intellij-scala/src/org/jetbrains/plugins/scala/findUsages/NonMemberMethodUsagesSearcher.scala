@@ -26,13 +26,14 @@ class NonMemberMethodUsagesSearcher
       val method: PsiMethod = p.getMethod
       val collector: SearchRequestCollector = p.getOptimizer
       val searchScope: SearchScope = p.getEffectiveSearchScope
-      val newConsumer = new Processor[PsiReference] {
-        def process(t: PsiReference): Boolean = {
-          if (method.isConstructor)
-            return true
-          consumer.process(t)
+      val newConsumer =
+        new Processor[PsiReference] {
+          def process(t: PsiReference): Boolean = {
+            if (method.isConstructor)
+              return true
+            consumer.process(t)
+          }
         }
-      }
       ReferencesSearch.searchOptimized(
         method,
         searchScope,

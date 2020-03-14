@@ -96,28 +96,31 @@ object BatchID {
       case ExclusiveLower(lower) => range(lower.next, Max)
       case InclusiveLower(lower) => range(lower, Max)
       case Intersection(low, high) =>
-        val lowbatch = low match {
-          case InclusiveLower(lb) => lb
-          case ExclusiveLower(lb) => lb.next
-        }
-        val highbatch = high match {
-          case InclusiveUpper(hb) => hb
-          case ExclusiveUpper(hb) => hb.prev
-        }
+        val lowbatch =
+          low match {
+            case InclusiveLower(lb) => lb
+            case ExclusiveLower(lb) => lb.next
+          }
+        val highbatch =
+          high match {
+            case InclusiveUpper(hb) => hb
+            case ExclusiveUpper(hb) => hb.prev
+          }
         range(lowbatch, highbatch)
     }
 
   val Max = BatchID(Long.MaxValue)
   val Min = BatchID(Long.MinValue)
 
-  implicit val monoid: Monoid[BatchID] = new Monoid[BatchID] {
-    override val zero = BatchID(Long.MinValue)
-    override def plus(l: BatchID, r: BatchID) =
-      if (l >= r)
-        l
-      else
-        r
-  }
+  implicit val monoid: Monoid[BatchID] =
+    new Monoid[BatchID] {
+      override val zero = BatchID(Long.MinValue)
+      override def plus(l: BatchID, r: BatchID) =
+        if (l >= r)
+          l
+        else
+          r
+    }
 
   implicit val batchID2String: Injection[BatchID, String] =
     Injection.buildCatchInvert[BatchID, String] {
@@ -133,8 +136,8 @@ object BatchID {
       BatchID(_)
     }
 
-  implicit val batchID2Bytes: Injection[BatchID, Array[Byte]] =
-    Injection.connect[BatchID, Long, Array[Byte]]
+  implicit val batchID2Bytes: Injection[BatchID, Array[Byte]] = Injection
+    .connect[BatchID, Long, Array[Byte]]
 
   implicit val batchIdOrdering: Ordering[BatchID] = Ordering.by(_.id)
 }

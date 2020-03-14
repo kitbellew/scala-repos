@@ -74,8 +74,7 @@ class Scale(override val delegate: jfxst.Scale = new jfxst.Scale)
       z: Double,
       pivotX: Double,
       pivotY: Double,
-      pivotZ: Double) =
-    this(new jfxst.Scale(x, y, z, pivotX, pivotY, pivotZ))
+      pivotZ: Double) = this(new jfxst.Scale(x, y, z, pivotX, pivotY, pivotZ))
 
   /**
     * Defines the X coordinate about which point the scale occurs.

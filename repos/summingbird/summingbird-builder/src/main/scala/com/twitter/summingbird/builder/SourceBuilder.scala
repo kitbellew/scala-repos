@@ -57,8 +57,7 @@ object SourceBuilder {
   def adjust[T](m: Map[T, Options], k: T)(f: Options => Options) =
     m.updated(k, f(m.getOrElse(k, Options())))
 
-  implicit def sg[T]: Semigroup[SourceBuilder[T]] =
-    Semigroup.from(_ ++ _)
+  implicit def sg[T]: Semigroup[SourceBuilder[T]] = Semigroup.from(_ ++ _)
 
   def nextName[T: Manifest]: String =
     "%s_%d".format(manifest[T], nextId.getAndIncrement)
@@ -68,8 +67,8 @@ object SourceBuilder {
       eventCodec: Codec[T]) = {
     implicit val te = TimeExtractor[T](timeOf(_).getTime)
     val newID = nextName[T]
-    val scaldingSource =
-      eventSource.offline.map(s => Scalding.pipeFactory(s.scaldingSource(_)))
+    val scaldingSource = eventSource.offline.map(s =>
+      Scalding.pipeFactory(s.scaldingSource(_)))
     val stormSource = eventSource.spout.map(Storm.toStormSource(_))
     new SourceBuilder[T](
       Source[PlatformPair, T]((scaldingSource, stormSource)),
@@ -111,17 +110,16 @@ case class SourceBuilder[T: Manifest] private (
       implicit
       batcher: Batcher,
       mf: Manifest[U]): SourceBuilder[T] = {
-    val newNode =
-      node
-        .flatMap(conversion)
-        .write(
-          sink.offline.map(new BatchedSinkFromOffline[U](batcher, _)),
-          sink.online.map { supplier =>
-            new StormSink[U] {
-              lazy val toFn = supplier()
-            }
+    val newNode = node
+      .flatMap(conversion)
+      .write(
+        sink.offline.map(new BatchedSinkFromOffline[U](batcher, _)),
+        sink.online.map { supplier =>
+          new StormSink[U] {
+            lazy val toFn = supplier()
           }
-        )
+        }
+      )
     copy(
       node = node.either(newNode).flatMap[T] {
         case Left(t)  => Some(t)
@@ -210,59 +208,60 @@ case class SourceBuilder[T: Manifest] private (
       batcher: Batcher,
       monoid: Monoid[V]): CompletedBuilder[_, K, V] = {
 
-    val cb = env match {
-      case scalding: ScaldingEnv =>
-        val givenStore = store.offlineStore.getOrElse(
-          sys.error("No offline store given in Scalding mode"))
-        // Set the store to reset if needed
-        val batchSetStore = scalding
-          .initialBatch(batcher)
-          .map {
-            givenStore.withInitialBatch(_)
-          }
-          .getOrElse(givenStore)
+    val cb =
+      env match {
+        case scalding: ScaldingEnv =>
+          val givenStore = store.offlineStore.getOrElse(
+            sys.error("No offline store given in Scalding mode"))
+          // Set the store to reset if needed
+          val batchSetStore = scalding
+            .initialBatch(batcher)
+            .map {
+              givenStore.withInitialBatch(_)
+            }
+            .getOrElse(givenStore)
 
-        val newNode = OptionalUnzip2[Scalding, Storm]()(node)._1
-          .map { p =>
-            Producer
-              .evToKeyed(p.name(id))
-              .sumByKey(batchSetStore)
-          }
-          .getOrElse(sys.error(
-            "Scalding mode specified alongside some online-only Source, Service or Sink."))
-        CompletedBuilder(
-          newNode,
-          registrar,
-          batcher,
-          keyCodec,
-          valCodec,
-          nextName[(K, V)],
-          opts)
+          val newNode = OptionalUnzip2[Scalding, Storm]()(node)._1
+            .map { p =>
+              Producer
+                .evToKeyed(p.name(id))
+                .sumByKey(batchSetStore)
+            }
+            .getOrElse(sys.error(
+              "Scalding mode specified alongside some online-only Source, Service or Sink."))
+          CompletedBuilder(
+            newNode,
+            registrar,
+            batcher,
+            keyCodec,
+            valCodec,
+            nextName[(K, V)],
+            opts)
 
-      case storm: StormEnv =>
-        val supplier = store.onlineSupplier.getOrElse(
-          sys.error("No online store given in Storm mode"))
-        val givenStore = MergeableStoreFactory.from(supplier())
+        case storm: StormEnv =>
+          val supplier = store.onlineSupplier.getOrElse(
+            sys.error("No online store given in Storm mode"))
+          val givenStore = MergeableStoreFactory.from(supplier())
 
-        val newNode = OptionalUnzip2[Scalding, Storm]()(node)._2
-          .map { p =>
-            Producer
-              .evToKeyed(p.name(id))
-              .sumByKey(givenStore)
-          }
-          .getOrElse(sys.error(
-            "Storm mode specified alongside some offline-only Source, Service or Sink."))
-        CompletedBuilder(
-          newNode,
-          registrar,
-          batcher,
-          keyCodec,
-          valCodec,
-          nextName[(K, V)],
-          opts)
+          val newNode = OptionalUnzip2[Scalding, Storm]()(node)._2
+            .map { p =>
+              Producer
+                .evToKeyed(p.name(id))
+                .sumByKey(givenStore)
+            }
+            .getOrElse(sys.error(
+              "Storm mode specified alongside some offline-only Source, Service or Sink."))
+          CompletedBuilder(
+            newNode,
+            registrar,
+            batcher,
+            keyCodec,
+            valCodec,
+            nextName[(K, V)],
+            opts)
 
-      case _ => sys.error("Unknown environment: " + env)
-    }
+        case _ => sys.error("Unknown environment: " + env)
+      }
     env.builder = cb
     cb
   }

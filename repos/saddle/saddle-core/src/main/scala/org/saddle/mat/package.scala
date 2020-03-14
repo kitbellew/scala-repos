@@ -152,9 +152,7 @@ package object mat {
           yield v)
       Mat(n, v.length, tmp)
     } else {
-      val tmp =
-        for (i <- array.range(0, n))
-          yield v
+      val tmp = for (i <- array.range(0, n)) yield v
       Mat(tmp)
     }
   }

@@ -44,8 +44,9 @@ class SpecializeParameters extends Phase {
               _,
               Some(fetch: QueryParameter),
               _)) =>
-        val compiledFetchParam =
-          QueryParameter(fetch.extractor, ScalaBaseType.longType)
+        val compiledFetchParam = QueryParameter(
+          fetch.extractor,
+          ScalaBaseType.longType)
         val guarded = n.replace(
           {
             case c2: Comprehension if c2 == c =>

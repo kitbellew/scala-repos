@@ -293,8 +293,9 @@ trait IndicesModule[M[+_]]
     private[table] def getRowsForKeys(
         keyIds: Seq[Int],
         keyValues: Seq[RValue]): ArrayIntList = {
-      var rows: ArrayIntList =
-        dict.getOrElse((keyIds(0), keyValues(0)), emptyBuffer)
+      var rows: ArrayIntList = dict.getOrElse(
+        (keyIds(0), keyValues(0)),
+        emptyBuffer)
       var i: Int = 1
       while (i < keyIds.length && !rows.isEmpty) {
         rows = intersectBuffers(
@@ -314,10 +315,11 @@ trait IndicesModule[M[+_]]
     }
 
     // we can use this to avoid allocating/remapping empty slices
-    private val emptySlice = new Slice {
-      val size = 0
-      val columns = Map.empty[ColumnRef, Column]
-    }
+    private val emptySlice =
+      new Slice {
+        val size = 0
+        val columns = Map.empty[ColumnRef, Column]
+      }
 
     /**
       * Given a set of rows, builds the appropriate slice.
@@ -479,16 +481,17 @@ trait IndicesModule[M[+_]]
         k += 1
       }
 
-      val back = (0 until keys.length)
-        .foldLeft(M.point(Vector.fill[Array[RValue]](numKeys)(null))) {
-          case (accM, i) => {
-            val arrM = keys(i)
+      val back =
+        (0 until keys.length)
+          .foldLeft(M.point(Vector.fill[Array[RValue]](numKeys)(null))) {
+            case (accM, i) => {
+              val arrM = keys(i)
 
-            M.apply2(accM, arrM) { (acc, arr) =>
-              acc.updated(i, arr)
+              M.apply2(accM, arrM) { (acc, arr) =>
+                acc.updated(i, arr)
+              }
             }
           }
-        }
 
       back map {
         _.toArray

@@ -59,8 +59,7 @@ private[io] class OutputStreamWriter(out: OutputStream, bufsize: Int)
           Future.exception(cause)
       }
 
-  def fail(cause: Throwable): Unit =
-    done.updateIfEmpty(Throw(cause))
+  def fail(cause: Throwable): Unit = done.updateIfEmpty(Throw(cause))
 
   def close(deadline: Time): Future[Unit] =
     if (done.updateIfEmpty(Throw(CloseExc)))

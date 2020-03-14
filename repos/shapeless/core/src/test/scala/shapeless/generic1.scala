@@ -314,8 +314,9 @@ class Generic1Tests {
 
   @Test
   def testIsHCons1: Unit = {
-    type L[t] = Id[t] :: t :: String :: (t, t) :: List[Option[t]] :: Option[
-      t] :: List[t] :: HNil
+    type L[t] =
+      Id[t] :: t :: String :: (t, t) :: List[Option[t]] :: Option[t] :: List[
+        t] :: HNil
 
     val ihc = the[IsHCons1[L, TC1, TC2]]
     val l: L[Int] = 23 :: 13 :: "foo" :: (7, 13) :: List(Some(5)) :: Some(
@@ -423,26 +424,24 @@ class Generic1Tests {
     assertEquals(expectedProd, p1)
 
     // Any ADT has a Functor ... even with recursion
-    val tree =
+    val tree = Node(
+      Leaf("quux"),
       Node(
-        Leaf("quux"),
-        Node(
-          Leaf("foo"),
-          Leaf("wibble")
-        )
+        Leaf("foo"),
+        Leaf("wibble")
       )
+    )
 
     val t0 = transform(tree)(_.length)
     val t1 = tree.map(_.length) // they also have Functor syntax ...
 
-    val expectedTree =
+    val expectedTree = Node(
+      Leaf(4),
       Node(
-        Leaf(4),
-        Node(
-          Leaf(3),
-          Leaf(6)
-        )
+        Leaf(3),
+        Leaf(6)
       )
+    )
     assertEquals(expectedTree, t0)
     assertEquals(expectedTree, t1)
   }

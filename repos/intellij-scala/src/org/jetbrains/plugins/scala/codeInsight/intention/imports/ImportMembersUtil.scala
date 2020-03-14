@@ -69,8 +69,8 @@ object ImportMembersUtil {
             _)) =>
         val call = ScalaPsiElementFactory.createEquivMethodCall(inf)
         val replacedCall = inf.replace(call).asInstanceOf[ScMethodCall]
-        val ref =
-          replacedCall.getInvokedExpr.asInstanceOf[ScReferenceExpression]
+        val ref = replacedCall.getInvokedExpr
+          .asInstanceOf[ScReferenceExpression]
         replaceWithName(ref, name)
       case _ childOf (postfix @ ScPostfixExpr(
             qual: ScReferenceExpression,
@@ -120,28 +120,30 @@ object ImportMembersUtil {
             val replacedCall = inf
               .replaceExpression(call, removeParenthesis = true)
               .asInstanceOf[ScMethodCall]
-            val ref =
-              replacedCall.getInvokedExpr.asInstanceOf[ScReferenceExpression]
+            val ref = replacedCall.getInvokedExpr
+              .asInstanceOf[ScReferenceExpression]
             replaceAndBind(ref, name, toBind)
           case _ childOf (postfix @ ScPostfixExpr(
                 qual: ScReferenceExpression,
                 `oldRef`)) =>
-            val refExpr =
-              ScalaPsiElementFactory.createEquivQualifiedReference(postfix)
+            val refExpr = ScalaPsiElementFactory.createEquivQualifiedReference(
+              postfix)
             val withDot = postfix
               .replaceExpression(refExpr, removeParenthesis = true)
               .asInstanceOf[ScReferenceExpression]
             replaceAndBind(withDot, name, toBind)
           case expr: ScReferenceExpression =>
-            val clazz = toBind match {
-              case m: PsiMember => Option(m.getContainingClass)
-              case _            => None
-            }
+            val clazz =
+              toBind match {
+                case m: PsiMember => Option(m.getContainingClass)
+                case _            => None
+              }
             val refExpr = ScalaPsiElementFactory.createExpressionFromText(
               name,
               oldRef.getManager)
-            val replaced =
-              expr.replaceExpression(refExpr, removeParenthesis = true)
+            val replaced = expr.replaceExpression(
+              refExpr,
+              removeParenthesis = true)
             replaced
               .asInstanceOf[ScReferenceExpression]
               .bindToElement(toBind, clazz)

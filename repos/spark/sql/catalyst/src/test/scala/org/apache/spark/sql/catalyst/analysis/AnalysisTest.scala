@@ -26,8 +26,8 @@ trait AnalysisTest extends PlanTest {
 
   val (caseSensitiveAnalyzer, caseInsensitiveAnalyzer) = {
     val caseSensitiveConf = new SimpleCatalystConf(caseSensitiveAnalysis = true)
-    val caseInsensitiveConf = new SimpleCatalystConf(
-      caseSensitiveAnalysis = false)
+    val caseInsensitiveConf =
+      new SimpleCatalystConf(caseSensitiveAnalysis = false)
 
     val caseSensitiveCatalog = new SimpleCatalog(caseSensitiveConf)
     val caseInsensitiveCatalog = new SimpleCatalog(caseInsensitiveConf)

@@ -197,8 +197,9 @@ class TaskStatusUpdateProcessorImplTest
   lazy val task = MarathonTestHelper
     .makeOneCPUTask(Task.Id.forApp(appId).mesosTaskId.getValue)
     .build()
-  lazy val taskState =
-    MarathonTestHelper.stagedTask(task.getTaskId.getValue, appVersion = version)
+  lazy val taskState = MarathonTestHelper.stagedTask(
+    task.getTaskId.getValue,
+    appVersion = version)
   lazy val marathonTask = taskState.marathonTask
 
   after {
@@ -224,34 +225,35 @@ class TaskStatusUpdateProcessorImplTest
       holder
     }
 
-    lazy val notifyHealthCheckManager = new NotifyHealthCheckManagerStepImpl(
-      healthCheckManager)
+    lazy val notifyHealthCheckManager =
+      new NotifyHealthCheckManagerStepImpl(healthCheckManager)
     lazy val notifyRateLimiter =
       new NotifyRateLimiterStepImpl(launchQueue, appRepository)
     lazy val updateTaskTrackerStep = new UpdateTaskTrackerStepImpl(taskUpdater)
     lazy val postToEventStream = new PostToEventStreamStepImpl(eventBus)
     lazy val notifyLaunchQueue = new NotifyLaunchQueueStepImpl(launchQueue)
-    lazy val emitUpdate = new TaskStatusEmitterPublishStepImpl(
-      taskStatusEmitter)
+    lazy val emitUpdate =
+      new TaskStatusEmitterPublishStepImpl(taskStatusEmitter)
     lazy val scaleApp = new ScaleAppUpdateStepImpl(schedulerActor.ref)
     lazy val guiceModule = new CoreGuiceModule
 
-    lazy val updateProcessor = new TaskStatusUpdateProcessorImpl(
-      new Metrics(new MetricRegistry),
-      clock,
-      taskTracker,
-      marathonSchedulerDriverHolder,
-      // Use module method to ensure that we keep the list of steps in sync with the test.
-      guiceModule.taskStatusUpdateSteps(
-        notifyHealthCheckManager,
-        notifyRateLimiter,
-        updateTaskTrackerStep,
-        notifyLaunchQueue,
-        emitUpdate,
-        postToEventStream,
-        scaleApp
+    lazy val updateProcessor =
+      new TaskStatusUpdateProcessorImpl(
+        new Metrics(new MetricRegistry),
+        clock,
+        taskTracker,
+        marathonSchedulerDriverHolder,
+        // Use module method to ensure that we keep the list of steps in sync with the test.
+        guiceModule.taskStatusUpdateSteps(
+          notifyHealthCheckManager,
+          notifyRateLimiter,
+          updateTaskTrackerStep,
+          notifyLaunchQueue,
+          emitUpdate,
+          postToEventStream,
+          scaleApp
+        )
       )
-    )
 
     def verifyNoMoreInteractions(): Unit = {
       noMoreInteractions(eventBus)

@@ -33,8 +33,9 @@ object PicklingSpec {
 
   case class WithIntArray(a: Array[Int])
 
-  implicit val arbitraryWithIntArray: Arbitrary[WithIntArray] =
-    Arbitrary[WithIntArray](arbitrary[Array[Int]].map(WithIntArray(_)))
+  implicit
+  val arbitraryWithIntArray: Arbitrary[WithIntArray] = Arbitrary[WithIntArray](
+    arbitrary[Array[Int]].map(WithIntArray(_)))
 
   case class Person(name: String, age: Int)
 
@@ -85,8 +86,7 @@ object PicklingJsonSpec extends Properties("pickling-json") {
     x1 == x
   }
 
-  def emptyOrUnicode(s: String) =
-    s == "" || s.exists(_.toInt > 255)
+  def emptyOrUnicode(s: String) = s == "" || s.exists(_.toInt > 255)
 
   /* The following two tests subsume test tuple2-primitive.scala */
 
@@ -304,11 +304,12 @@ object PicklingJsonSpec extends Properties("pickling-json") {
     x1 == bi
   }
 
-  property("Date") = forAll(randomDates) { (date) =>
-    val pickle: JSONPickle = date.pickle
-    val x1 = pickle.unpickle[Date]
-    x1.compareTo(date) == 0
-  }
+  property("Date") =
+    forAll(randomDates) { (date) =>
+      val pickle: JSONPickle = date.pickle
+      val x1 = pickle.unpickle[Date]
+      x1.compareTo(date) == 0
+    }
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~
@@ -337,8 +338,7 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
     x1 == x
   }
 
-  def emptyOrUnicode(s: String) =
-    s == "" || s.exists(_.toInt > 255)
+  def emptyOrUnicode(s: String) = s == "" || s.exists(_.toInt > 255)
 
   /* The following two tests subsume test tuple2-primitive.scala */
 
@@ -556,9 +556,10 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
     x1 == bi
   }
 
-  property("Date") = forAll(randomDates) { (date) =>
-    val pickle: BinaryPickle = date.pickle
-    val x1 = pickle.unpickle[Date]
-    x1.compareTo(date) == 0
-  }
+  property("Date") =
+    forAll(randomDates) { (date) =>
+      val pickle: BinaryPickle = date.pickle
+      val x1 = pickle.unpickle[Date]
+      x1.compareTo(date) == 0
+    }
 }

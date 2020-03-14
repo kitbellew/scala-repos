@@ -23,15 +23,16 @@ object SuperMethodTestUtil {
         val signs = method.superSignaturesIncludingSelfType
         val res: StringBuilder = new StringBuilder("")
         for (sign <- signs) {
-          val s = ScalaPsiUtil.nameContext(sign.namedElement) match {
-            case member: PsiMember =>
-              val clazz = member.containingClass
-              if (clazz != null)
-                clazz.qualifiedName + "."
-              else
-                ""
-            case _ => ""
-          }
+          val s =
+            ScalaPsiUtil.nameContext(sign.namedElement) match {
+              case member: PsiMember =>
+                val clazz = member.containingClass
+                if (clazz != null)
+                  clazz.qualifiedName + "."
+                else
+                  ""
+              case _ => ""
+            }
           res.append(s + sign.namedElement.name + "\n")
         }
         resa =

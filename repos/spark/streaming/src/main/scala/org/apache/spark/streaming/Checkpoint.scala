@@ -115,12 +115,14 @@ private[streaming] object Checkpoint extends Logging {
       fsOption: Option[FileSystem] = None): Seq[Path] = {
 
     def sortFunc(path1: Path, path2: Path): Boolean = {
-      val (time1, bk1) = path1.getName match {
-        case REGEX(x, y) => (x.toLong, !y.isEmpty)
-      }
-      val (time2, bk2) = path2.getName match {
-        case REGEX(x, y) => (x.toLong, !y.isEmpty)
-      }
+      val (time1, bk1) =
+        path1.getName match {
+          case REGEX(x, y) => (x.toLong, !y.isEmpty)
+        }
+      val (time2, bk2) =
+        path2.getName match {
+          case REGEX(x, y) => (x.toLong, !y.isEmpty)
+        }
       (time1 < time2) || (time1 == time2 && bk1)
     }
 
@@ -220,10 +222,12 @@ private[streaming] class CheckpointWriter(
       //
       // Note: there is only one thread writing the checkpoint files, so we don't need to worry
       // about thread-safety.
-      val checkpointFile =
-        Checkpoint.checkpointFile(checkpointDir, latestCheckpointTime)
-      val backupFile =
-        Checkpoint.checkpointBackupFile(checkpointDir, latestCheckpointTime)
+      val checkpointFile = Checkpoint.checkpointFile(
+        checkpointDir,
+        latestCheckpointTime)
+      val backupFile = Checkpoint.checkpointBackupFile(
+        checkpointDir,
+        latestCheckpointTime)
 
       while (attempts < MAX_ATTEMPTS && !stopped) {
         attempts += 1
@@ -261,8 +265,9 @@ private[streaming] class CheckpointWriter(
           }
 
           // Delete old checkpoint files
-          val allCheckpointFiles =
-            Checkpoint.getCheckpointFiles(checkpointDir, Some(fs))
+          val allCheckpointFiles = Checkpoint.getCheckpointFiles(
+            checkpointDir,
+            Some(fs))
           if (allCheckpointFiles.size > 10) {
             allCheckpointFiles
               .take(allCheckpointFiles.size - 10)
@@ -320,8 +325,9 @@ private[streaming] class CheckpointWriter(
 
       executor.shutdown()
       val startTime = System.currentTimeMillis()
-      val terminated =
-        executor.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)
+      val terminated = executor.awaitTermination(
+        10,
+        java.util.concurrent.TimeUnit.SECONDS)
       if (!terminated) {
         executor.shutdownNow()
       }

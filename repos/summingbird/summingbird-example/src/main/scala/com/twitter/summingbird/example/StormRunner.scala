@@ -60,13 +60,14 @@ object StormRunner {
     *
     * http://tugdualgrall.blogspot.com/2012/11/couchbase-create-large-dataset-using.html
     */
-  lazy val config = new ConfigurationBuilder()
-    .setOAuthConsumerKey("mykey")
-    .setOAuthConsumerSecret("mysecret")
-    .setOAuthAccessToken("token")
-    .setOAuthAccessTokenSecret("tokensecret")
-    .setJSONStoreEnabled(true) // required for JSON serialization
-    .build
+  lazy val config =
+    new ConfigurationBuilder()
+      .setOAuthConsumerKey("mykey")
+      .setOAuthConsumerSecret("mysecret")
+      .setOAuthAccessToken("token")
+      .setOAuthAccessTokenSecret("tokensecret")
+      .setJSONStoreEnabled(true) // required for JSON serialization
+      .build
 
   /**
     * "spout" is a concrete Storm source for Status data. This will
@@ -94,15 +95,15 @@ object StormRunner {
     *
     * First, the backing store:
     */
-  lazy val stringLongStore =
-    Memcache.mergeable[(String, BatchID), Long]("urlCount")
+  lazy val stringLongStore = Memcache.mergeable[(String, BatchID), Long](
+    "urlCount")
 
   /**
     * the param to store is by name, so this is still not created created
     * yet
     */
-  val storeSupplier: MergeableStoreFactory[(String, BatchID), Long] =
-    Storm.store(stringLongStore)
+  val storeSupplier: MergeableStoreFactory[(String, BatchID), Long] = Storm
+    .store(stringLongStore)
 
   /**
     * This function will be called by the storm runner to request the info

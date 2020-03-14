@@ -61,20 +61,22 @@ private[akka] class RemoteMetricsOff extends RemoteMetrics {
 private[akka] class RemoteMetricsOn(system: ExtendedActorSystem)
     extends RemoteMetrics {
 
-  private val logFrameSizeExceeding: Int = system.settings.config
-    .getBytes("akka.remote.log-frame-size-exceeding")
-    .toInt
+  private val logFrameSizeExceeding: Int =
+    system.settings.config
+      .getBytes("akka.remote.log-frame-size-exceeding")
+      .toInt
   private val log = Logging(system, this.getClass)
   private val maxPayloadBytes: ConcurrentHashMap[Class[_], Integer] =
     new ConcurrentHashMap
 
   override def logPayloadBytes(msg: Any, payloadBytes: Int): Unit =
     if (payloadBytes >= logFrameSizeExceeding) {
-      val clazz = msg match {
-        case x: ActorSelectionMessage ⇒ x.msg.getClass
-        case x: RouterEnvelope ⇒ x.message.getClass
-        case _ ⇒ msg.getClass
-      }
+      val clazz =
+        msg match {
+          case x: ActorSelectionMessage ⇒ x.msg.getClass
+          case x: RouterEnvelope ⇒ x.message.getClass
+          case _ ⇒ msg.getClass
+        }
 
       // 10% threshold until next log
       def newMax = (payloadBytes * 1.1).toInt

@@ -51,8 +51,8 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
               JField("chain", chain) ::
               JField("paramType", JString(paramType)) ::
               JField("param", param) :: Nil) =>
-          val clazz =
-            Thread.currentThread.getContextClassLoader.loadClass(paramType)
+          val clazz = Thread.currentThread.getContextClassLoader
+            .loadClass(paramType)
           ParamFailure(
             msg,
             deserializeException(exception),
@@ -93,11 +93,12 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
           JField("chain", decompose(chain)) :: Nil)
   }
 
-  private val typeHoldingFailure = new ParameterizedType {
-    def getActualTypeArguments = Array(classOf[Failure])
-    def getOwnerType = classOf[Box[Failure]]
-    def getRawType = classOf[Box[Failure]]
-  }
+  private val typeHoldingFailure =
+    new ParameterizedType {
+      def getActualTypeArguments = Array(classOf[Failure])
+      def getOwnerType = classOf[Box[Failure]]
+      def getRawType = classOf[Box[Failure]]
+    }
 
   private def serializeException(exception: Box[Throwable]) =
     exception match {
@@ -119,8 +120,8 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
   }
 
   private def javaDeserialize(s: String): Any = {
-    val bytes = new ByteArrayInputStream(
-      (new Base64).decode(s.getBytes("UTF-8")))
+    val bytes =
+      new ByteArrayInputStream((new Base64).decode(s.getBytes("UTF-8")))
     val in = new ObjectInputStream(bytes)
     in.readObject
   }

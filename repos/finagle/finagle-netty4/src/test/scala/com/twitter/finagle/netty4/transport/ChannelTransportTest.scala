@@ -143,8 +143,8 @@ class ChannelTransportTest
     })
 
     forAll { s: String =>
-      val thrown =
-        intercept[Exception](Await.result(transport.write(s), timeout))
+      val thrown = intercept[Exception](
+        Await.result(transport.write(s), timeout))
       assert(thrown.isInstanceOf[CancelledWriteException])
     }
   }
@@ -155,8 +155,8 @@ class ChannelTransportTest
     assert(transport.status == Status.Busy)
 
     forAll { s: String =>
-      val thrown =
-        intercept[Exception](Await.result(transport.write(s), timeout))
+      val thrown = intercept[Exception](
+        Await.result(transport.write(s), timeout))
       assert(thrown.isInstanceOf[DroppedWriteException])
     }
   }

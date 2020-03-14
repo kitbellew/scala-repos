@@ -35,9 +35,10 @@ object Test {
   def t2() = {
     System.setSecurityManager(Mgr)
 
-    val b = new Bar {
-      def bar = println("bar")
-    }
+    val b =
+      new Bar {
+        def bar = println("bar")
+      }
     b.bar
 
     val structural = b.asInstanceOf[{

@@ -74,8 +74,9 @@ class SimulacrumInjection extends SyntheticMembersInjector {
               else
                 None
             val additionalWithComma = tpAdditional.map(", " + _).getOrElse("")
-            val additionalWithBracket =
-              tpAdditional.map("[" + _ + "]").getOrElse("")
+            val additionalWithBracket = tpAdditional
+              .map("[" + _ + "]")
+              .getOrElse("")
             def isProperTpt(tp: ScType): Option[Option[ScTypeParameterType]] = {
               tp match {
                 case ScTypeParameterType(_, _, _, _, param)
@@ -95,8 +96,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                     .flatMap(_.getType(TypingContext.empty).toOption)
                     .flatMap(tp => isProperTpt(tp)) match {
                     case Some(funTypeParamToLift) =>
-                      val annotation =
-                        f.findAnnotationNoAliases("simulacrum.op")
+                      val annotation = f.findAnnotationNoAliases(
+                        "simulacrum.op")
                       val names =
                         annotation match {
                           case a: ScAnnotation =>
@@ -133,21 +134,22 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                         }
                       names.map {
                         case name =>
-                          val substOpt = funTypeParamToLift match {
-                            case Some(typeParam) if tpAdditional.nonEmpty =>
-                              val subst = ScSubstitutor.empty.bindT(
-                                (typeParam.name, typeParam.getId),
-                                new ScTypeParameterType(
-                                  ScalaPsiElementFactory
-                                    .createTypeParameterFromText(
-                                      tpAdditional.get,
-                                      source.getManager),
-                                  ScSubstitutor.empty
+                          val substOpt =
+                            funTypeParamToLift match {
+                              case Some(typeParam) if tpAdditional.nonEmpty =>
+                                val subst = ScSubstitutor.empty.bindT(
+                                  (typeParam.name, typeParam.getId),
+                                  new ScTypeParameterType(
+                                    ScalaPsiElementFactory
+                                      .createTypeParameterFromText(
+                                        tpAdditional.get,
+                                        source.getManager),
+                                    ScSubstitutor.empty
+                                  )
                                 )
-                              )
-                              Some(subst)
-                            case _ => None
-                          }
+                                Some(subst)
+                              case _ => None
+                            }
                           def paramText(p: ScParameter): String = {
                             substOpt match {
                               case Some(subst) =>
@@ -169,8 +171,9 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                 ", ",
                                 ")")
                           }
-                          val typeParamClasue =
-                            f.typeParametersClause.map(_.getText).getOrElse("")
+                          val typeParamClasue = f.typeParametersClause
+                            .map(_.getText)
+                            .getOrElse("")
                           val headParams =
                             f.paramClauses.clauses.head.parameters.tail
                               .map(paramText)
@@ -182,11 +185,12 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                           val restClauses = f.paramClauses.clauses.tail
                             .map(clauseText)
                             .mkString("")
-                          val rt = substOpt match {
-                            case Some(subst) =>
-                              subst.subst(f.returnType.getOrAny).canonicalText
-                            case None => f.returnType.getOrAny.canonicalText
-                          }
+                          val rt =
+                            substOpt match {
+                              case Some(subst) =>
+                                subst.subst(f.returnType.getOrAny).canonicalText
+                              case None => f.returnType.getOrAny.canonicalText
+                            }
                           s"def $name$typeParamClasue$restHeadClause$restClauses: $rt = ???"
                       }
                     case _ => Seq.empty
@@ -199,49 +203,48 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                |  def self: $tpName$additionalWithBracket
                                |  $ops
                                |}""".stripMargin
-            val ToOpsTrait =
-              s"""trait To${className}Ops {
+            val ToOpsTrait = s"""trait To${className}Ops {
                  |  implicit def to${className}Ops[$tpText$additionalWithComma](target: $tpName$additionalWithBracket)(implicit tc: $className[$tpName]): $className.Ops[$tpName$additionalWithComma] = ???
                  |}
                """.stripMargin
 
-            val AllOpsSupers = clazz.extendsBlock.templateParents.toSeq
-              .flatMap(parents =>
-                parents.typeElements.flatMap {
-                  case te =>
-                    te.getType(TypingContext.empty) match {
-                      case Success(ScParameterizedType(classType, Seq(tp)), _)
-                          if isProperTpt(tp).isDefined =>
-                        def fromType: Seq[String] = {
-                          ScType.extractClass(
-                            classType,
-                            Some(clazz.getProject)) match {
-                            case Some(cl: ScTypeDefinition) =>
-                              Seq(
-                                s" with ${cl.qualifiedName}.AllOps[$tpName$additionalWithComma]")
-                            case _ => Seq.empty
+            val AllOpsSupers =
+              clazz.extendsBlock.templateParents.toSeq
+                .flatMap(parents =>
+                  parents.typeElements.flatMap {
+                    case te =>
+                      te.getType(TypingContext.empty) match {
+                        case Success(ScParameterizedType(classType, Seq(tp)), _)
+                            if isProperTpt(tp).isDefined =>
+                          def fromType: Seq[String] = {
+                            ScType.extractClass(
+                              classType,
+                              Some(clazz.getProject)) match {
+                              case Some(cl: ScTypeDefinition) =>
+                                Seq(
+                                  s" with ${cl.qualifiedName}.AllOps[$tpName$additionalWithComma]")
+                              case _ => Seq.empty
+                            }
                           }
-                        }
-                        //in most cases we have to resolve exactly the same reference
-                        //but with .AllOps it will go into companion object
-                        (for {
-                          ScParameterizedTypeElement(pte, _) <- Option(te)
-                          ScSimpleTypeElement(Some(ref)) <- Option(pte)
-                        } yield Seq(
-                          s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]"))
-                          .getOrElse(fromType)
-                      case _ => Seq.empty
-                    }
-                })
-              .mkString
+                          //in most cases we have to resolve exactly the same reference
+                          //but with .AllOps it will go into companion object
+                          (for {
+                            ScParameterizedTypeElement(pte, _) <- Option(te)
+                            ScSimpleTypeElement(Some(ref)) <- Option(pte)
+                          } yield Seq(
+                            s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]"))
+                            .getOrElse(fromType)
+                        case _ => Seq.empty
+                      }
+                  })
+                .mkString
 
             val AllOpsTrait =
               s"""trait AllOps[$tpText$additionalWithComma] extends $className.Ops[$tpName$additionalWithComma]$AllOpsSupers {
                  |  def typClassInstance: $className[$tpName]
                  |}
                """.stripMargin
-            val opsObject =
-              s"""object ops {
+            val opsObject = s"""object ops {
                  |  implicit def toAll${className}Ops[$tpText$additionalWithComma](target: $tpName$additionalWithBracket)(implicit tc: $className[$tpName]): $className.AllOps[$tpName$additionalWithComma] = ???
                  |}
                """.stripMargin

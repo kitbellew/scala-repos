@@ -18,9 +18,10 @@ object CommandStrings {
   val BootCommand = "boot"
 
   val EvalCommand = "eval"
-  val evalBrief = (
-    EvalCommand + " <expression>",
-    "Evaluates a Scala expression and prints the result and type.")
+  val evalBrief =
+    (
+      EvalCommand + " <expression>",
+      "Evaluates a Scala expression and prints the result and type.")
   val evalDetailed =
     EvalCommand + """ <expression>
 
@@ -35,8 +36,7 @@ object CommandStrings {
 
   def multiTaskHelp =
     Help(MultiTaskCommand, (multiTaskSyntax, multiTaskBrief), multiTaskDetailed)
-  def multiTaskDetailed =
-    s"""$multiTaskSyntax
+  def multiTaskDetailed = s"""$multiTaskSyntax
 
 	$multiTaskBrief"""
   def multiTaskSyntax = s"""$MultiTaskCommand <task>+"""
@@ -46,8 +46,7 @@ object CommandStrings {
     Help(ShowCommand, (s"$ShowCommand <key>", showBrief), showDetailed)
   def showBrief =
     "Displays the result of evaluating the setting or task associated with 'key'."
-  def showDetailed =
-    s"""$ShowCommand <setting>
+  def showDetailed = s"""$ShowCommand <setting>
 
 	Displays the value of the specified setting.
 
@@ -65,9 +64,10 @@ $ShowCommand <task>
   val ExportCommand = "export"
   val ExportStream = "export"
 
-  val lastGrepBrief = (
-    LastGrepCommand,
-    "Shows lines from the last output for 'key' that match 'pattern'.")
+  val lastGrepBrief =
+    (
+      LastGrepCommand,
+      "Shows lines from the last output for 'key' that match 'pattern'.")
   val lastGrepDetailed =
     LastGrepCommand + """ <pattern>
 	Displays lines from the logging of previous commands that match `pattern`.
@@ -78,9 +78,10 @@ $ShowCommand <task>
 	<pattern> is a regular expression interpreted by java.util.Pattern.  Matching text is highlighted (when highlighting is supported and enabled).
 	See also '""" + LastCommand + "'."
 
-  val lastBrief = (
-    LastCommand,
-    "Displays output from a previous command or the output from a specific task.")
+  val lastBrief =
+    (
+      LastCommand,
+      "Displays output from a previous command or the output from a specific task.")
   val lastDetailed =
     LastCommand + """
 	Prints the logging for the previous command, typically at a more verbose level.
@@ -90,11 +91,11 @@ $ShowCommand <task>
 
 	See also '""" + LastGrepCommand + "'."
 
-  val exportBrief = (
-    ExportCommand + " <tasks>+",
-    "Executes tasks and displays the equivalent command lines.")
-  val exportDetailed =
-    s"""$ExportCommand [--last] <task>+
+  val exportBrief =
+    (
+      ExportCommand + " <tasks>+",
+      "Executes tasks and displays the equivalent command lines.")
+  val exportDetailed = s"""$ExportCommand [--last] <task>+
 	Runs the specified tasks and prints the equivalent command lines or other exportable information for those runs.
 
 	--last
@@ -108,9 +109,10 @@ $ShowCommand <task>
 """
 
   val InspectCommand = "inspect"
-  val inspectBrief = (
-    InspectCommand + " [uses|tree|definitions] <key>",
-    "Prints the value for 'key', the defining scope, delegates, related definitions, and dependencies.")
+  val inspectBrief =
+    (
+      InspectCommand + " [uses|tree|definitions] <key>",
+      "Prints the value for 'key', the defining scope, delegates, related definitions, and dependencies.")
   val inspectDetailed = s"""
     |$InspectCommand <key>
     |
@@ -149,9 +151,10 @@ $ShowCommand <task>
   """.stripMargin.trim
 
   val SetCommand = "set"
-  val setBrief = (
-    s"$SetCommand [every] <setting>",
-    "Evaluates a Setting and applies it to the current project.")
+  val setBrief =
+    (
+      s"$SetCommand [every] <setting>",
+      "Evaluates a Setting and applies it to the current project.")
   val setDetailed =
     SetCommand + """ [every] <setting-expression>
 
@@ -336,8 +339,7 @@ defaults
   def crossHelp: Help = Help.more(CrossCommand, CrossDetailed)
   def switchHelp: Help = Help.more(SwitchCommand, SwitchDetailed)
 
-  def CrossDetailed =
-    s"""$CrossCommand <command>
+  def CrossDetailed = s"""$CrossCommand <command>
 	Runs <command> for each Scala version specified for cross-building.
 
 	For each string in `crossScalaVersions` in the current project, this command sets the
@@ -348,8 +350,7 @@ defaults
 	See also `help $SwitchCommand`
 """
 
-  def SwitchDetailed =
-    s"""$SwitchCommand <scala-version> [<command>]
+  def SwitchDetailed = s"""$SwitchCommand <scala-version> [<command>]
 	Changes the Scala version and runs a command.
 
 	Sets the `scalaVersion` of all projects to <scala-version> and reloads the build.

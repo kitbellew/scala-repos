@@ -49,74 +49,79 @@ private[stream] class ConnectionSourceStage(
       : (GraphStageLogic, Future[ServerBinding]) = {
     val bindingPromise = Promise[ServerBinding]
 
-    val logic = new TimerGraphStageLogic(shape) {
-      implicit def self: ActorRef = stageActor.ref
+    val logic =
+      new TimerGraphStageLogic(shape) {
+        implicit def self: ActorRef = stageActor.ref
 
-      val connectionFlowsAwaitingInitialization = new AtomicLong()
-      var listener: ActorRef = _
-      var unbindPromise = Promise[Unit]()
+        val connectionFlowsAwaitingInitialization = new AtomicLong()
+        var listener: ActorRef = _
+        var unbindPromise = Promise[Unit]()
 
-      override def preStart(): Unit = {
-        getStageActor(receive)
-        tcpManager ! Tcp.Bind(self, endpoint, backlog, options, pullMode = true)
-      }
-
-      private def receive(evt: (ActorRef, Any)): Unit = {
-        val sender = evt._1
-        val msg = evt._2
-        msg match {
-          case Bound(localAddress) ⇒
-            listener = sender
-            stageActor.watch(listener)
-            if (isAvailable(out))
-              listener ! ResumeAccepting(1)
-            val target = self
-            bindingPromise.success(ServerBinding(localAddress)(() ⇒ {
-              target ! Unbind;
-              unbindPromise.future
-            }))
-          case f: CommandFailed ⇒
-            val ex = BindFailedException
-            bindingPromise.failure(ex)
-            unbindPromise.success(() ⇒ Future.successful(()))
-            failStage(ex)
-          case c: Connected ⇒
-            push(out, connectionFor(c, sender))
-          case Unbind ⇒
-            if (!isClosed(out) && (listener ne null))
-              tryUnbind()
-          case Unbound ⇒ // If we're unbound then just shut down
-            if (connectionFlowsAwaitingInitialization.get() == 0)
-              completeStage()
-            else
-              scheduleOnce(BindShutdownTimer, bindShutdownTimeout)
-          case Terminated(ref) if ref == listener ⇒
-            failStage(
-              new IllegalStateException(
-                "IO Listener actor terminated unexpectedly"))
+        override def preStart(): Unit = {
+          getStageActor(receive)
+          tcpManager ! Tcp.Bind(
+            self,
+            endpoint,
+            backlog,
+            options,
+            pullMode = true)
         }
-      }
 
-      setHandler(
-        out,
-        new OutHandler {
-          override def onPull(): Unit = {
-            // Ignore if still binding
-            if (listener ne null)
-              listener ! ResumeAccepting(1)
+        private def receive(evt: (ActorRef, Any)): Unit = {
+          val sender = evt._1
+          val msg = evt._2
+          msg match {
+            case Bound(localAddress) ⇒
+              listener = sender
+              stageActor.watch(listener)
+              if (isAvailable(out))
+                listener ! ResumeAccepting(1)
+              val target = self
+              bindingPromise.success(ServerBinding(localAddress)(() ⇒ {
+                target ! Unbind;
+                unbindPromise.future
+              }))
+            case f: CommandFailed ⇒
+              val ex = BindFailedException
+              bindingPromise.failure(ex)
+              unbindPromise.success(() ⇒ Future.successful(()))
+              failStage(ex)
+            case c: Connected ⇒
+              push(out, connectionFor(c, sender))
+            case Unbind ⇒
+              if (!isClosed(out) && (listener ne null))
+                tryUnbind()
+            case Unbound ⇒ // If we're unbound then just shut down
+              if (connectionFlowsAwaitingInitialization.get() == 0)
+                completeStage()
+              else
+                scheduleOnce(BindShutdownTimer, bindShutdownTimeout)
+            case Terminated(ref) if ref == listener ⇒
+              failStage(
+                new IllegalStateException(
+                  "IO Listener actor terminated unexpectedly"))
           }
-
-          override def onDownstreamFinish(): Unit = tryUnbind()
         }
-      )
 
-      private def connectionFor(
-          connected: Connected,
-          connection: ActorRef): StreamTcp.IncomingConnection = {
-        connectionFlowsAwaitingInitialization.incrementAndGet()
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = {
+              // Ignore if still binding
+              if (listener ne null)
+                listener ! ResumeAccepting(1)
+            }
 
-        val tcpFlow =
-          Flow
+            override def onDownstreamFinish(): Unit = tryUnbind()
+          }
+        )
+
+        private def connectionFor(
+            connected: Connected,
+            connection: ActorRef): StreamTcp.IncomingConnection = {
+          connectionFlowsAwaitingInitialization.incrementAndGet()
+
+          val tcpFlow = Flow
             .fromGraph(
               new IncomingConnectionStage(
                 connection,
@@ -128,41 +133,42 @@ private[stream] class ConnectionSourceStage(
               m
             }
 
-        // FIXME: Previous code was wrong, must add new tests
-        val handler = idleTimeout match {
-          case d: FiniteDuration ⇒
-            tcpFlow.join(
-              BidiFlow.bidirectionalIdleTimeout[ByteString, ByteString](d))
-          case _ ⇒ tcpFlow
+          // FIXME: Previous code was wrong, must add new tests
+          val handler =
+            idleTimeout match {
+              case d: FiniteDuration ⇒
+                tcpFlow.join(
+                  BidiFlow.bidirectionalIdleTimeout[ByteString, ByteString](d))
+              case _ ⇒ tcpFlow
+            }
+
+          StreamTcp.IncomingConnection(
+            connected.localAddress,
+            connected.remoteAddress,
+            handler)
         }
 
-        StreamTcp.IncomingConnection(
-          connected.localAddress,
-          connected.remoteAddress,
-          handler)
-      }
-
-      private def tryUnbind(): Unit = {
-        if (listener ne null) {
-          stageActor.unwatch(listener)
-          setKeepGoing(true)
-          listener ! Unbind
-        }
-      }
-
-      override def onTimer(timerKey: Any): Unit =
-        timerKey match {
-          case BindShutdownTimer ⇒
-            completeStage() // TODO need to manually shut down instead right?
+        private def tryUnbind(): Unit = {
+          if (listener ne null) {
+            stageActor.unwatch(listener)
+            setKeepGoing(true)
+            listener ! Unbind
+          }
         }
 
-      override def postStop(): Unit = {
-        unbindPromise.trySuccess(())
-        bindingPromise.tryFailure(
-          new NoSuchElementException(
-            "Binding was unbound before it was completely finished"))
+        override def onTimer(timerKey: Any): Unit =
+          timerKey match {
+            case BindShutdownTimer ⇒
+              completeStage() // TODO need to manually shut down instead right?
+          }
+
+        override def postStop(): Unit = {
+          unbindPromise.trySuccess(())
+          bindingPromise.tryFailure(
+            new NoSuchElementException(
+              "Binding was unbound before it was completely finished"))
+        }
       }
-    }
 
     (logic, bindingPromise.future)
   }
@@ -295,20 +301,21 @@ private[stream] object TcpConnectionStage {
       }
     }
 
-    val readHandler = new OutHandler {
-      override def onPull(): Unit = {
-        connection ! ResumeReading
-      }
-
-      override def onDownstreamFinish(): Unit = {
-        if (!isClosed(bytesIn))
+    val readHandler =
+      new OutHandler {
+        override def onPull(): Unit = {
           connection ! ResumeReading
-        else {
-          connection ! Abort
-          completeStage()
+        }
+
+        override def onDownstreamFinish(): Unit = {
+          if (!isClosed(bytesIn))
+            connection ! ResumeReading
+          else {
+            connection ! Abort
+            completeStage()
+          }
         }
       }
-    }
 
     setHandler(
       bytesIn,
@@ -409,24 +416,26 @@ private[stream] class OutgoingConnectionStage(
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes)
       : (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) = {
     // FIXME: A method like this would make soo much sense on Duration (i.e. toOption)
-    val connTimeout = connectTimeout match {
-      case x: FiniteDuration ⇒ Some(x)
-      case _ ⇒ None
-    }
+    val connTimeout =
+      connectTimeout match {
+        case x: FiniteDuration ⇒ Some(x)
+        case _ ⇒ None
+      }
 
     val localAddressPromise = Promise[InetSocketAddress]
-    val logic = new TcpStreamLogic(
-      shape,
-      Outbound(
-        manager,
-        Connect(
-          remoteAddress,
-          localAddress,
-          options,
-          connTimeout,
-          pullMode = true),
-        localAddressPromise,
-        halfClose))
+    val logic =
+      new TcpStreamLogic(
+        shape,
+        Outbound(
+          manager,
+          Connect(
+            remoteAddress,
+            localAddress,
+            options,
+            connTimeout,
+            pullMode = true),
+          localAddressPromise,
+          halfClose))
 
     (
       logic,

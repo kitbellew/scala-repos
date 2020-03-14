@@ -76,8 +76,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
   }
 
   override protected def startProcess: OSProcessHandler = {
-    val handler: OSProcessHandler =
-      JavaCommandLineStateUtil.startProcess(createCommandLine)
+    val handler: OSProcessHandler = JavaCommandLineStateUtil.startProcess(
+      createCommandLine)
     if (showInBrowser) {
       handler.addProcessListener(new ProcessAdapter {
         override def processTerminated(event: ProcessEvent) {
@@ -94,8 +94,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
   private def visitAll(
       file: VirtualFile,
       scope: AnalysisScope,
-      acc: mutable.MutableList[VirtualFile] =
-        mutable.MutableList[VirtualFile]()): List[VirtualFile] = {
+      acc: mutable.MutableList[VirtualFile] = mutable
+        .MutableList[VirtualFile]()): List[VirtualFile] = {
 
     def visitInner(
         file: VirtualFile,
@@ -199,11 +199,12 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
     val modules = ModuleManager.getInstance(project).getModules
 
-    val sourcePath = OrderEnumerator
-      .orderEntries(project)
-      .withoutLibraries()
-      .withoutSdk()
-      .getAllSourceRoots
+    val sourcePath =
+      OrderEnumerator
+        .orderEntries(project)
+        .withoutLibraries()
+        .withoutSdk()
+        .getAllSourceRoots
     val documentableFilesList = ListBuffer.apply[String]()
     val allModules = MutableHashSet.apply(modules: _*)
     val modulesNeeded = MutableHashSet.apply[Module]()
@@ -311,10 +312,11 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
     if (JdkUtil.useDynamicClasspath(project)) {
       try {
-        val tempParamsFile: File =
-          File.createTempFile("scaladocfileargs", ".tmp")
-        val pw: PrintStream = new PrintStream(
-          new FileOutputStream(tempParamsFile))
+        val tempParamsFile: File = File.createTempFile(
+          "scaladocfileargs",
+          ".tmp")
+        val pw: PrintStream =
+          new PrintStream(new FileOutputStream(tempParamsFile))
 
         for (param <- paramListSimple) {
           var paramEsc = param

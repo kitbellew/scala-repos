@@ -557,8 +557,7 @@ sealed abstract class IntMap[+T]
   def intersection[R](that: IntMap[R]): IntMap[T] =
     this.intersectionWith(that, (key: Int, value: T, value2: R) => value)
 
-  def ++[S >: T](that: IntMap[S]) =
-    this.unionWith[S](that, (key, x, y) => y)
+  def ++[S >: T](that: IntMap[S]) = this.unionWith[S](that, (key, x, y) => y)
 
   /**
     * The entry with the lowest key value considered in unsigned order.

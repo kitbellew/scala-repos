@@ -124,12 +124,18 @@ class DeploymentPlanTest
 
   test("can compute affected app ids") {
     val versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(10))
-    val app: AppDefinition =
-      AppDefinition("/app".toPath, Some("sleep 10"), versionInfo = versionInfo)
-    val app2: AppDefinition =
-      AppDefinition("/app2".toPath, Some("cmd2"), versionInfo = versionInfo)
-    val app3: AppDefinition =
-      AppDefinition("/app3".toPath, Some("cmd3"), versionInfo = versionInfo)
+    val app: AppDefinition = AppDefinition(
+      "/app".toPath,
+      Some("sleep 10"),
+      versionInfo = versionInfo)
+    val app2: AppDefinition = AppDefinition(
+      "/app2".toPath,
+      Some("cmd2"),
+      versionInfo = versionInfo)
+    val app3: AppDefinition = AppDefinition(
+      "/app3".toPath,
+      Some("cmd3"),
+      versionInfo = versionInfo)
     val unchanged: AppDefinition = AppDefinition(
       "/unchanged".toPath,
       Some("unchanged"),
@@ -226,9 +232,10 @@ class DeploymentPlanTest
 
     val instances: Int = 10
 
-    val apps: Set[AppDefinition] = (1 to 4).map { i =>
-      AppDefinition(s"/test/$i".toPath, Some("cmd"), instances = instances)
-    }.toSet
+    val apps: Set[AppDefinition] =
+      (1 to 4).map { i =>
+        AppDefinition(s"/test/$i".toPath, Some("cmd"), instances = instances)
+      }.toSet
 
     val targetGroup = Group(
       id = "/test".toPath,
@@ -429,8 +436,8 @@ class DeploymentPlanTest
 
   // regression test for #765
   test("Should create non-empty deployment plan when only args have changed") {
-    val versionInfo: FullVersionInfo =
-      AppDefinition.VersionInfo.forNewConfig(Timestamp(10))
+    val versionInfo: FullVersionInfo = AppDefinition.VersionInfo.forNewConfig(
+      Timestamp(10))
     val app = AppDefinition(
       id = "/test".toPath,
       cmd = Some("sleep 5"),
@@ -574,8 +581,8 @@ class DeploymentPlanTest
     val vol1 = persistentVolume("foo")
     val vol2 = persistentVolume("bla")
     val vol3 = persistentVolume("test")
-    val validResident =
-      residentApp("/app1", Seq(vol1, vol2)).copy(upgradeStrategy = zero)
+    val validResident = residentApp("/app1", Seq(vol1, vol2))
+      .copy(upgradeStrategy = zero)
     val group = Group(PathId("/test"), apps = Set(validResident))
   }
 }

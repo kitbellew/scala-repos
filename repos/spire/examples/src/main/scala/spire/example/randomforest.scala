@@ -43,9 +43,10 @@ object RandomForestExample extends App {
     println(s"\n${dataset.describe}\n")
     println(
       s"Cross-validating ${dataset.name} with random forest classification...")
-    val accuracy = crossValidateClassification(dataset) {
-      implicit space => data => RandomForest.classification(data, opts)
-    }
+    val accuracy =
+      crossValidateClassification(dataset) { implicit space => data =>
+        RandomForest.classification(data, opts)
+      }
     println("... accuracy of %.2f%%\n" format (real.toDouble(accuracy) * 100))
   }
 
@@ -60,9 +61,10 @@ object RandomForestExample extends App {
     println(s"\n${dataset.describe}\n")
     println(
       s"Cross-validating ${dataset.name} with random forest regression...")
-    val rSquared = crossValidateRegression(dataset) { implicit space => data =>
-      RandomForest.regression(data, opts)
-    }
+    val rSquared =
+      crossValidateRegression(dataset) { implicit space => data =>
+        RandomForest.regression(data, opts)
+      }
     println("... R^2 of %.3f" format real.toDouble(rSquared))
   }
 }

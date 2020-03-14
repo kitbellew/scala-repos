@@ -55,15 +55,16 @@ object PlayDocsValidation {
     */
   case class CodeSamplesReport(files: Seq[FileWithCodeSamples]) {
     lazy val byFile = files.map(f => f.name -> f).toMap
-    lazy val byName = files
-      .filterNot(_.name.endsWith("_Sidebar.md"))
-      .map { file =>
-        val filename = file.name
-        val name =
-          filename.takeRight(filename.length - filename.lastIndexOf('/'))
-        name -> file
-      }
-      .toMap
+    lazy val byName =
+      files
+        .filterNot(_.name.endsWith("_Sidebar.md"))
+        .map { file =>
+          val filename = file.name
+          val name = filename.takeRight(
+            filename.length - filename.lastIndexOf('/'))
+          name -> file
+        }
+        .toMap
   }
   case class FileWithCodeSamples(
       name: String,
@@ -119,120 +120,128 @@ object PlayDocsValidation {
 
     def parseMarkdownFile(markdownFile: File): String = {
 
-      val processor = new PegDownProcessor(
-        Extensions.ALL,
-        PegDownPlugins
-          .builder()
-          .withPlugin(classOf[CodeReferenceParser])
-          .build)
+      val processor =
+        new PegDownProcessor(
+          Extensions.ALL,
+          PegDownPlugins
+            .builder()
+            .withPlugin(classOf[CodeReferenceParser])
+            .build)
 
       // Link renderer will also verify that all wiki links exist
-      val linkRenderer = new LinkRenderer {
-        override def render(node: WikiLinkNode) = {
-          node.getText match {
+      val linkRenderer =
+        new LinkRenderer {
+          override def render(node: WikiLinkNode) = {
+            node.getText match {
 
-            case link if link.contains("|") =>
-              val parts = link.split('|')
-              val desc = parts.head
-              val page = stripFragment(parts.tail.head.trim)
-              wikiLinks += LinkRef(
-                page,
-                markdownFile,
-                node.getStartIndex + desc.length + 3)
+              case link if link.contains("|") =>
+                val parts = link.split('|')
+                val desc = parts.head
+                val page = stripFragment(parts.tail.head.trim)
+                wikiLinks += LinkRef(
+                  page,
+                  markdownFile,
+                  node.getStartIndex + desc.length + 3)
 
-            case image if image.endsWith(".png") =>
-              image match {
-                case full if full.startsWith("http://") =>
-                  externalLinks += LinkRef(
-                    full,
-                    markdownFile,
-                    node.getStartIndex + 2)
-                case absolute if absolute.startsWith("/") =>
-                  resourceLinks += LinkRef(
-                    "manual" + absolute,
-                    markdownFile,
-                    node.getStartIndex + 2)
-                case relative =>
-                  val link = markdownFile.getParentFile.getCanonicalPath
-                    .stripPrefix(base.getCanonicalPath)
-                    .stripPrefix("/") + "/" + relative
-                  resourceLinks += LinkRef(
-                    link,
-                    markdownFile,
-                    node.getStartIndex + 2)
-              }
+              case image if image.endsWith(".png") =>
+                image match {
+                  case full if full.startsWith("http://") =>
+                    externalLinks += LinkRef(
+                      full,
+                      markdownFile,
+                      node.getStartIndex + 2)
+                  case absolute if absolute.startsWith("/") =>
+                    resourceLinks += LinkRef(
+                      "manual" + absolute,
+                      markdownFile,
+                      node.getStartIndex + 2)
+                  case relative =>
+                    val link = markdownFile.getParentFile.getCanonicalPath
+                      .stripPrefix(base.getCanonicalPath)
+                      .stripPrefix("/") + "/" + relative
+                    resourceLinks += LinkRef(
+                      link,
+                      markdownFile,
+                      node.getStartIndex + 2)
+                }
 
-            case link =>
-              wikiLinks += LinkRef(
-                link.trim,
-                markdownFile,
-                node.getStartIndex + 2)
+              case link =>
+                wikiLinks += LinkRef(
+                  link.trim,
+                  markdownFile,
+                  node.getStartIndex + 2)
 
-          }
-          new LinkRenderer.Rendering("foo", "bar")
-        }
-
-        override def render(node: AutoLinkNode) = addLink(node.getText, node, 1)
-        override def render(node: ExpLinkNode, text: String) =
-          addLink(node.url, node, text.length + 3)
-
-        private def addLink(url: String, node: Node, offset: Int) = {
-          url match {
-            case full
-                if full.startsWith("http://") || full.startsWith("https://") =>
-              externalLinks += LinkRef(
-                full,
-                markdownFile,
-                node.getStartIndex + offset)
-            case fragment if fragment.startsWith("#") => // ignore fragments, no validation of them for now
-            case relative =>
-              relativeLinks += LinkRef(
-                relative,
-                markdownFile,
-                node.getStartIndex + offset)
-          }
-          new LinkRenderer.Rendering("foo", "bar")
-        }
-      }
-
-      val codeReferenceSerializer = new ToHtmlSerializerPlugin() {
-        def visit(node: Node, visitor: Visitor, printer: Printer) =
-          node match {
-            case code: CodeReferenceNode => {
-
-              // Label is after the #, or if no #, then is the link label
-              val (source, label) = code.getSource.split("#", 2) match {
-                case Array(source, label) => (source, label)
-                case Array(source)        => (source, code.getLabel)
-              }
-
-              // The file is either relative to current page page or absolute, under the root
-              val sourceFile = if (source.startsWith("/")) {
-                source.drop(1)
-              } else {
-                markdownFile.getParentFile.getCanonicalPath
-                  .stripPrefix(base.getCanonicalPath)
-                  .stripPrefix("/") + "/" + source
-              }
-
-              val sourcePos = code.getStartIndex + code.getLabel.length + 4
-              val labelPos = if (code.getSource.contains("#")) {
-                sourcePos + source.length + 1
-              } else {
-                code.getStartIndex + 2
-              }
-
-              codeSamples += CodeSampleRef(
-                sourceFile,
-                label,
-                markdownFile,
-                sourcePos,
-                labelPos)
-              true
             }
-            case _ => false
+            new LinkRenderer.Rendering("foo", "bar")
           }
-      }
+
+          override def render(node: AutoLinkNode) =
+            addLink(node.getText, node, 1)
+          override def render(node: ExpLinkNode, text: String) =
+            addLink(node.url, node, text.length + 3)
+
+          private def addLink(url: String, node: Node, offset: Int) = {
+            url match {
+              case full
+                  if full.startsWith("http://") || full.startsWith(
+                    "https://") =>
+                externalLinks += LinkRef(
+                  full,
+                  markdownFile,
+                  node.getStartIndex + offset)
+              case fragment if fragment.startsWith("#") => // ignore fragments, no validation of them for now
+              case relative =>
+                relativeLinks += LinkRef(
+                  relative,
+                  markdownFile,
+                  node.getStartIndex + offset)
+            }
+            new LinkRenderer.Rendering("foo", "bar")
+          }
+        }
+
+      val codeReferenceSerializer =
+        new ToHtmlSerializerPlugin() {
+          def visit(node: Node, visitor: Visitor, printer: Printer) =
+            node match {
+              case code: CodeReferenceNode => {
+
+                // Label is after the #, or if no #, then is the link label
+                val (source, label) =
+                  code.getSource.split("#", 2) match {
+                    case Array(source, label) => (source, label)
+                    case Array(source)        => (source, code.getLabel)
+                  }
+
+                // The file is either relative to current page page or absolute, under the root
+                val sourceFile =
+                  if (source.startsWith("/")) {
+                    source.drop(1)
+                  } else {
+                    markdownFile.getParentFile.getCanonicalPath
+                      .stripPrefix(base.getCanonicalPath)
+                      .stripPrefix("/") + "/" + source
+                  }
+
+                val sourcePos = code.getStartIndex + code.getLabel.length + 4
+                val labelPos =
+                  if (code.getSource.contains("#")) {
+                    sourcePos + source.length + 1
+                  } else {
+                    code.getStartIndex + 2
+                  }
+
+                codeSamples += CodeSampleRef(
+                  sourceFile,
+                  label,
+                  markdownFile,
+                  sourcePos,
+                  labelPos)
+                true
+              }
+              case _ => false
+            }
+        }
 
       val astRoot = processor.parseMarkdown(IO.read(markdownFile).toCharArray)
       new ToHtmlSerializer(
@@ -259,45 +268,50 @@ object PlayDocsValidation {
 
     val codeSamples = ListBuffer.empty[CodeSample]
 
-    val processor = new PegDownProcessor(
-      Extensions.ALL,
-      PegDownPlugins
-        .builder()
-        .withPlugin(classOf[CodeReferenceParser])
-        .build)
+    val processor =
+      new PegDownProcessor(
+        Extensions.ALL,
+        PegDownPlugins
+          .builder()
+          .withPlugin(classOf[CodeReferenceParser])
+          .build)
 
-    val codeReferenceSerializer = new ToHtmlSerializerPlugin() {
-      def visit(node: Node, visitor: Visitor, printer: Printer) =
-        node match {
-          case code: CodeReferenceNode => {
+    val codeReferenceSerializer =
+      new ToHtmlSerializerPlugin() {
+        def visit(node: Node, visitor: Visitor, printer: Printer) =
+          node match {
+            case code: CodeReferenceNode => {
 
-            // Label is after the #, or if no #, then is the link label
-            val (source, label) = code.getSource.split("#", 2) match {
-              case Array(source, label) => (source, label)
-              case Array(source)        => (source, code.getLabel)
+              // Label is after the #, or if no #, then is the link label
+              val (source, label) =
+                code.getSource.split("#", 2) match {
+                  case Array(source, label) => (source, label)
+                  case Array(source)        => (source, code.getLabel)
+                }
+
+              // The file is either relative to current page page or absolute, under the root
+              val sourceFile =
+                if (source.startsWith("/")) {
+                  source.drop(1)
+                } else {
+                  filename.dropRight(
+                    filename.length - filename.lastIndexOf('/') + 1) + source
+                }
+
+              val sourcePos = code.getStartIndex + code.getLabel.length + 4
+              val labelPos =
+                if (code.getSource.contains("#")) {
+                  sourcePos + source.length + 1
+                } else {
+                  code.getStartIndex + 2
+                }
+
+              codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
+              true
             }
-
-            // The file is either relative to current page page or absolute, under the root
-            val sourceFile = if (source.startsWith("/")) {
-              source.drop(1)
-            } else {
-              filename.dropRight(
-                filename.length - filename.lastIndexOf('/') + 1) + source
-            }
-
-            val sourcePos = code.getStartIndex + code.getLabel.length + 4
-            val labelPos = if (code.getSource.contains("#")) {
-              sourcePos + source.length + 1
-            } else {
-              code.getStartIndex + 2
-            }
-
-            codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
-            true
+            case _ => false
           }
-          case _ => false
-        }
-    }
+      }
 
     val astRoot = processor.parseMarkdown(markdownSource.toCharArray)
     new ToHtmlSerializer(
@@ -313,18 +327,19 @@ object PlayDocsValidation {
       case Some(jarFile) =>
         import scala.collection.JavaConversions._
         val jar = new JarFile(jarFile)
-        val parsedFiles = jar
-          .entries()
-          .toIterator
-          .collect {
-            case entry
-                if entry.getName.endsWith(".md") && entry.getName.startsWith(
-                  "play/docs/content/manual") =>
-              val fileName = entry.getName.stripPrefix("play/docs/content")
-              val contents = IO.readStream(jar.getInputStream(entry))
-              extractCodeSamples(fileName, contents)
-          }
-          .toList
+        val parsedFiles =
+          jar
+            .entries()
+            .toIterator
+            .collect {
+              case entry
+                  if entry.getName.endsWith(".md") && entry.getName.startsWith(
+                    "play/docs/content/manual") =>
+                val fileName = entry.getName.stripPrefix("play/docs/content")
+                val contents = IO.readStream(jar.getInputStream(entry))
+                extractCodeSamples(fileName, contents)
+            }
+            .toList
         jar.close()
         CodeSamplesReport(parsedFiles)
       case None =>
@@ -359,12 +374,12 @@ object PlayDocsValidation {
       (upstream.byFile.keySet -- report.byFile.keySet).toList.sorted
     val introducedFiles =
       (report.byFile.keySet -- upstream.byFile.keySet).toList.sorted
-    val matchingFilesByName =
-      (report.byName.keySet & upstream.byName.keySet).map { name =>
+    val matchingFilesByName = (report.byName.keySet & upstream.byName.keySet)
+      .map { name =>
         report.byName(name) -> upstream.byName(name)
       }
-    val (matchingFiles, changedPathFiles) =
-      matchingFilesByName.partition(f => f._1.name == f._2.name)
+    val (matchingFiles, changedPathFiles) = matchingFilesByName.partition(f =>
+      f._1.name == f._2.name)
     val (codeSampleIssues, okFiles) = matchingFiles
       .map {
         case (actualFile, upstreamFile) =>
@@ -524,8 +539,8 @@ object PlayDocsValidation {
       },
       "Could not find resource")
 
-    val (existing, nonExisting) =
-      report.codeSamples.partition(sample => fileExists(sample.source))
+    val (existing, nonExisting) = report.codeSamples.partition(sample =>
+      fileExists(sample.source))
 
     assertLinksNotMissing(
       "Missing source files test",
@@ -536,10 +551,11 @@ object PlayDocsValidation {
     def segmentExists(sample: CodeSampleRef) = {
       if (sample.segment.nonEmpty) {
         // Find the code segment
-        val sourceCode = combinedRepo
-          .loadFile(sample.source)(is =>
-            IO.readLines(new BufferedReader(new InputStreamReader(is))))
-          .get
+        val sourceCode =
+          combinedRepo
+            .loadFile(sample.source)(is =>
+              IO.readLines(new BufferedReader(new InputStreamReader(is))))
+            .get
         val notLabel = (s: String) => !s.contains("#" + sample.segment)
         val segment =
           sourceCode dropWhile (notLabel) drop (1) takeWhile (notLabel)
@@ -597,14 +613,15 @@ object PlayDocsValidation {
         _._1
       }
 
-    implicit val ec =
-      ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(50))
+    implicit val ec = ExecutionContext.fromExecutorService(
+      Executors.newFixedThreadPool(50))
 
     val futures = grouped.map { entry =>
       Future {
         val (url, refs) = entry
-        val connection =
-          new URL(url).openConnection().asInstanceOf[HttpURLConnection]
+        val connection = new URL(url)
+          .openConnection()
+          .asInstanceOf[HttpURLConnection]
         try {
           connection.setRequestProperty(
             "User-Agent",

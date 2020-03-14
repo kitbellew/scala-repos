@@ -96,8 +96,9 @@ class VectorSlicerSuite
       StructType(
         Array(attrGroup.toStructField(), resultAttrGroup.toStructField())))
 
-    val vectorSlicer =
-      new VectorSlicer().setInputCol("features").setOutputCol("result")
+    val vectorSlicer = new VectorSlicer()
+      .setInputCol("features")
+      .setOutputCol("result")
 
     def validateResults(df: DataFrame): Unit = {
       df.select("result", "expected").collect().foreach {
@@ -105,8 +106,8 @@ class VectorSlicerSuite
           assert(vec1 === vec2)
       }
       val resultMetadata = AttributeGroup.fromStructField(df.schema("result"))
-      val expectedMetadata =
-        AttributeGroup.fromStructField(df.schema("expected"))
+      val expectedMetadata = AttributeGroup.fromStructField(
+        df.schema("expected"))
       assert(resultMetadata.numAttributes === expectedMetadata.numAttributes)
       resultMetadata.attributes.get
         .zip(expectedMetadata.attributes.get)

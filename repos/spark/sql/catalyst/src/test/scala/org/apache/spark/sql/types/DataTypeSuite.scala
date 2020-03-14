@@ -107,8 +107,9 @@ class DataTypeSuite extends SparkFunSuite {
 
     val mapped = StructType.fieldsMap(struct.fields)
 
-    val expected =
-      Map("a" -> StructField("a", LongType), "b" -> StructField("b", FloatType))
+    val expected = Map(
+      "a" -> StructField("a", LongType),
+      "b" -> StructField("b", FloatType))
 
     assert(mapped === expected)
   }

@@ -436,28 +436,29 @@ class IntervalCheck
       Array.empty[Rational]
     } else {
       import spire.math.interval.ValueBound
-      val underlyingf: () => Rational = (int.lowerBound, int.upperBound) match {
-        case (ValueBound(x), ValueBound(y)) =>
-          () =>
-            rng.nextInt(10) match {
-              case 0 => x
-              case 9 => y
-              case _ => x + Rational(rng.nextDouble) * (y - x)
-            }
-        case (ValueBound(x), _) =>
-          () =>
-            rng.nextInt(5) match {
-              case 0 => x
-              case _ => x + (Rational(rng.nextGaussian).abs * Long.MaxValue)
-            }
-        case (_, ValueBound(y)) =>
-          () =>
-            rng.nextInt(5) match {
-              case 4 => y
-              case _ => y - (Rational(rng.nextGaussian).abs * Long.MaxValue)
-            }
-        case (_, _) => () => Rational(rng.nextGaussian) * Long.MaxValue
-      }
+      val underlyingf: () => Rational =
+        (int.lowerBound, int.upperBound) match {
+          case (ValueBound(x), ValueBound(y)) =>
+            () =>
+              rng.nextInt(10) match {
+                case 0 => x
+                case 9 => y
+                case _ => x + Rational(rng.nextDouble) * (y - x)
+              }
+          case (ValueBound(x), _) =>
+            () =>
+              rng.nextInt(5) match {
+                case 0 => x
+                case _ => x + (Rational(rng.nextGaussian).abs * Long.MaxValue)
+              }
+          case (_, ValueBound(y)) =>
+            () =>
+              rng.nextInt(5) match {
+                case 4 => y
+                case _ => y - (Rational(rng.nextGaussian).abs * Long.MaxValue)
+              }
+          case (_, _) => () => Rational(rng.nextGaussian) * Long.MaxValue
+        }
 
       def nextf(): Rational = {
         val r = underlyingf()
@@ -695,8 +696,11 @@ class IntervalIteratorCheck
           Try(xs.iterator(0)).isFailure shouldBe true
         }
       } else {
-        val triples =
-          List((cu, true, 1), (ou, false, 1), (uc, true, -1), (uo, false, -1))
+        val triples = List(
+          (cu, true, 1),
+          (ou, false, 1),
+          (uc, true, -1),
+          (uo, false, -1))
         triples.foreach {
           case (interval, hasN, mult) =>
             val step = step0 * mult

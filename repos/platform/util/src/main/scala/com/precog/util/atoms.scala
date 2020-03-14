@@ -82,13 +82,14 @@ class Atom[A] extends Source[A] with Sink[A] {
       lock.lock()
       try {
         if (!isForced || setterThread != null) {
-          val builder = if (value == null) { // TODO gross!
-            cbf()
-          } else {
-            val back = cbf(value)
-            back ++= value
-            back
-          }
+          val builder =
+            if (value == null) { // TODO gross!
+              cbf()
+            } else {
+              val back = cbf(value)
+              back ++= value
+              back
+            }
 
           builder += b
 
@@ -112,13 +113,14 @@ class Atom[A] extends Source[A] with Sink[A] {
       lock.lock()
       try {
         if (!isForced || setterThread != null) {
-          val builder = if (value == null) { // TODO gross!
-            cbf()
-          } else {
-            val back = cbf(value)
-            back ++= value
-            back
-          }
+          val builder =
+            if (value == null) { // TODO gross!
+              cbf()
+            } else {
+              val back = cbf(value)
+              back ++= value
+              back
+            }
 
           builder ++= evidence2(c)
 
@@ -142,14 +144,15 @@ class Atom[A] extends Source[A] with Sink[A] {
       lock.lock()
       try {
         if (!isForced || setterThread != null) {
-          val builder = if (value == null) { // TODO gross!
-            cbf()
-          } else {
-            val current = evidence(value)
-            val back = cbf(current)
-            back ++= current
-            back
-          }
+          val builder =
+            if (value == null) { // TODO gross!
+              cbf()
+            } else {
+              val current = evidence(value)
+              val back = cbf(current)
+              back ++= current
+              back
+            }
 
           // not thread safe, basically horrible
           if (a.value != null) {

@@ -32,9 +32,10 @@ object ShutdownHookThread {
     *  given code.
     */
   def apply(body: => Unit): ShutdownHookThread = {
-    val t = new ShutdownHookThread(hookName()) {
-      override def run() = body
-    }
+    val t =
+      new ShutdownHookThread(hookName()) {
+        override def run() = body
+      }
     runtime addShutdownHook t
     t
   }

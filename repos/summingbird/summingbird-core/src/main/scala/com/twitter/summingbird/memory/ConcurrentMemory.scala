@@ -271,8 +271,9 @@ class ConcurrentMemory(
     /*
      * Register the counters
      */
-    val registeredCounters: Seq[(Group, Name)] =
-      JobCounters.getCountersForJob(jobID).getOrElse(Nil)
+    val registeredCounters: Seq[(Group, Name)] = JobCounters
+      .getCountersForJob(jobID)
+      .getOrElse(Nil)
 
     if (!registeredCounters.isEmpty) {
       MemoryStatProvider.registerCounters(jobID, registeredCounters)

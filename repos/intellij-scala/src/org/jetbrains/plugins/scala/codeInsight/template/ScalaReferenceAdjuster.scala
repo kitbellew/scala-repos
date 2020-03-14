@@ -68,14 +68,15 @@ class ScalaReferenceAdjuster extends ReferenceAdjuster {
     if (psi.getLanguage != ScalaFileType.SCALA_LANGUAGE)
       return //do not process other languages
     val buffer = new ArrayBuffer[ScalaPsiElement]()
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitElement(element: ScalaPsiElement): Unit = {
-        if (element.getTextRange.getStartOffset >= startOffset && element.getTextRange.getEndOffset <= endOffset) {
-          buffer += element
-        } else
-          super.visitElement(element)
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitElement(element: ScalaPsiElement): Unit = {
+          if (element.getTextRange.getStartOffset >= startOffset && element.getTextRange.getEndOffset <= endOffset) {
+            buffer += element
+          } else
+            super.visitElement(element)
+        }
       }
-    }
     psi.accept(visitor)
     TypeAdjuster.adjustFor(buffer, addImports)
   }

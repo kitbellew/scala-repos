@@ -40,11 +40,12 @@ object RemoteException {
     def deserialize(x: JSON): RemoteException = {
       val obj = new JSONObjExtractor(x)
 
-      val e = new RemoteException(
-        obj.fld[String]("message"),
-        obj.fld[String]("toString"),
-        obj.opt[RemoteException]("cause").orNull,
-        obj.fld[String]("class"))
+      val e =
+        new RemoteException(
+          obj.fld[String]("message"),
+          obj.fld[String]("toString"),
+          obj.opt[RemoteException]("cause").orNull,
+          obj.fld[String]("class"))
 
       e.setStackTrace(obj.fld[List[StackTraceElement]]("stackTrace").toArray)
 

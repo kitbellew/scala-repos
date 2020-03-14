@@ -19,8 +19,7 @@ class InetResolverBenchmark extends StdBenchAnnotations {
   @Param(Array("api.twitter.com"))
   var hostname = ""
 
-  private[this] val inetResolver =
-    InetResolver(new InMemoryStatsReceiver())
+  private[this] val inetResolver = InetResolver(new InMemoryStatsReceiver())
 
   private[this] val timeout = 1.second
 
@@ -28,11 +27,9 @@ class InetResolverBenchmark extends StdBenchAnnotations {
     Await.result(addrs.changes.filter(_ != Addr.Pending).toFuture(), timeout)
 
   @Benchmark
-  def bindIp(): Addr =
-    notPending(inetResolver.bind(ip))
+  def bindIp(): Addr = notPending(inetResolver.bind(ip))
 
   @Benchmark
-  def bindHostname(): Addr =
-    notPending(inetResolver.bind(hostname))
+  def bindHostname(): Addr = notPending(inetResolver.bind(hostname))
 
 }

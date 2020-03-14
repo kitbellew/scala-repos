@@ -50,8 +50,10 @@ class YarnSparkHadoopUtilSuite
 
   val hasBash =
     try {
-      val exitCode =
-        Runtime.getRuntime().exec(Array("bash", "--version")).waitFor()
+      val exitCode = Runtime
+        .getRuntime()
+        .exec(Array("bash", "--version"))
+        .waitFor()
       exitCode == 0
     } catch {
       case e: IOException =>
@@ -69,21 +71,29 @@ class YarnSparkHadoopUtilSuite
       ignore(name)(fn)
 
   bashTest("shell script escaping") {
-    val scriptFile =
-      File.createTempFile("script.", ".sh", Utils.createTempDir())
-    val args =
-      Array("arg1", "${arg.2}", "\"arg3\"", "'arg4'", "$arg5", "\\arg6")
+    val scriptFile = File.createTempFile(
+      "script.",
+      ".sh",
+      Utils.createTempDir())
+    val args = Array(
+      "arg1",
+      "${arg.2}",
+      "\"arg3\"",
+      "'arg4'",
+      "$arg5",
+      "\\arg6")
     try {
-      val argLine =
-        args.map(a => YarnSparkHadoopUtil.escapeForShell(a)).mkString(" ")
+      val argLine = args
+        .map(a => YarnSparkHadoopUtil.escapeForShell(a))
+        .mkString(" ")
       Files.write(
         ("bash -c \"echo " + argLine + "\"").getBytes(StandardCharsets.UTF_8),
         scriptFile)
       scriptFile.setExecutable(true)
 
       val proc = Runtime.getRuntime().exec(Array(scriptFile.getAbsolutePath()))
-      val out =
-        new String(ByteStreams.toByteArray(proc.getInputStream())).trim()
+      val out = new String(ByteStreams.toByteArray(proc.getInputStream()))
+        .trim()
       val err = new String(ByteStreams.toByteArray(proc.getErrorStream()))
       val exitCode = proc.waitFor()
       exitCode should be(0)
@@ -257,10 +267,9 @@ class YarnSparkHadoopUtilSuite
   test("check token renewer default") {
     val hadoopConf = new Configuration()
     val util = new YarnSparkHadoopUtil
-    val caught =
-      intercept[SparkException] {
-        util.getTokenRenewer(hadoopConf)
-      }
+    val caught = intercept[SparkException] {
+      util.getTokenRenewer(hadoopConf)
+    }
     assert(
       caught.getMessage === "Can't get Master Kerberos principal for use as renewer")
   }

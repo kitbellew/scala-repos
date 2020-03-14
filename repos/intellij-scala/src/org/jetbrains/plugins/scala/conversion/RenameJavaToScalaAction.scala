@@ -76,11 +76,11 @@ class RenameJavaToScalaAction extends AnAction {
               new Runnable {
                 def run() {
                   val directory = jFile.getContainingDirectory
-                  val name =
-                    jFile.getName.substring(0, jFile.getName.length - 5)
+                  val name = jFile.getName
+                    .substring(0, jFile.getName.length - 5)
                   val nameWithExtension: String = name + ".scala"
-                  val existingFile: VirtualFile =
-                    directory.getVirtualFile.findChild(nameWithExtension)
+                  val existingFile: VirtualFile = directory.getVirtualFile
+                    .findChild(nameWithExtension)
                   if (existingFile != null) {
                     NotificationUtil
                       .builder(
@@ -102,8 +102,8 @@ class RenameJavaToScalaAction extends AnAction {
                   PsiDocumentManager
                     .getInstance(file.getProject)
                     .commitDocument(document)
-                  val manager: CodeStyleManager =
-                    CodeStyleManager.getInstance(file.getProject)
+                  val manager: CodeStyleManager = CodeStyleManager.getInstance(
+                    file.getProject)
                   val settings = CodeStyleSettingsManager
                     .getSettings(file.getProject)
                     .getCommonSettings(ScalaFileType.SCALA_LANGUAGE)

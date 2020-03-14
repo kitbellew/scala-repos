@@ -57,32 +57,35 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     } catch {
       case e: ClassNotFoundException
           if clockClass.startsWith("org.apache.spark.streaming") =>
-        val newClockClass =
-          clockClass.replace("org.apache.spark.streaming", "org.apache.spark")
+        val newClockClass = clockClass.replace(
+          "org.apache.spark.streaming",
+          "org.apache.spark")
         Utils.classForName(newClockClass).newInstance().asInstanceOf[Clock]
     }
   }
 
-  private val timer = new RecurringTimer(
-    clock,
-    ssc.graph.batchDuration.milliseconds,
-    longTime => eventLoop.post(GenerateJobs(new Time(longTime))),
-    "JobGenerator")
+  private val timer =
+    new RecurringTimer(
+      clock,
+      ssc.graph.batchDuration.milliseconds,
+      longTime => eventLoop.post(GenerateJobs(new Time(longTime))),
+      "JobGenerator")
 
   // This is marked lazy so that this is initialized after checkpoint duration has been set
   // in the context and the generator has been started.
   private lazy val shouldCheckpoint =
     ssc.checkpointDuration != null && ssc.checkpointDir != null
 
-  private lazy val checkpointWriter = if (shouldCheckpoint) {
-    new CheckpointWriter(
-      this,
-      ssc.conf,
-      ssc.checkpointDir,
-      ssc.sparkContext.hadoopConfiguration)
-  } else {
-    null
-  }
+  private lazy val checkpointWriter =
+    if (shouldCheckpoint) {
+      new CheckpointWriter(
+        this,
+        ssc.conf,
+        ssc.checkpointDir,
+        ssc.sparkContext.hadoopConfiguration)
+    } else {
+      null
+    }
 
   // eventLoop is created when generator starts.
   // This not being null means the scheduler has been started and not stopped
@@ -238,8 +241,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     // Batches when the master was down, that is,
     // between the checkpoint and current restart time
     val checkpointTime = ssc.initialCheckpoint.checkpointTime
-    val restartTime = new Time(
-      timer.getRestartTime(graph.zeroTime.milliseconds))
+    val restartTime =
+      new Time(timer.getRestartTime(graph.zeroTime.milliseconds))
     val downTimes = checkpointTime.until(restartTime, batchDuration)
     logInfo(
       "Batches during down time (" + downTimes.size + " batches): "

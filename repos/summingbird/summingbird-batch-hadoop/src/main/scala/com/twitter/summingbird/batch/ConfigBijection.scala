@@ -44,6 +44,6 @@ private[summingbird] object ConfigBijection {
             m + (k -> v)
           }
     }
-  val fromJavaMap: Bijection[JMap[String, AnyRef], Configuration] =
-    Bijection.connect[JMap[String, AnyRef], Map[String, AnyRef], Configuration]
+  val fromJavaMap: Bijection[JMap[String, AnyRef], Configuration] = Bijection
+    .connect[JMap[String, AnyRef], Map[String, AnyRef], Configuration]
 }

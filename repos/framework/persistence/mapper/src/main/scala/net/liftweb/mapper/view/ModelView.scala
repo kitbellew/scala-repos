@@ -49,9 +49,10 @@ trait ModelSnippet[T <: Mapper[T]] extends StatefulSnippet {
   /**
     * Action when save is successful. Defaults to using the ModelView's redirectOnSave
     */
-  var onSave = (view: MV[T]) => {
-    view.redirectOnSave.foreach(redirectTo)
-  }
+  var onSave =
+    (view: MV[T]) => {
+      view.redirectOnSave.foreach(redirectTo)
+    }
 
   /**
     * The list snippet
@@ -105,8 +106,7 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
   /**
     * Delete the entity
     */
-  def remove =
-    entity.delete_!
+  def remove = entity.delete_!
 
   /**
     * This function is used as a snippet in the edit view

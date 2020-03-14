@@ -157,8 +157,7 @@ sealed trait Producer[P <: Platform[P], +T] {
     * like optionMap but convenient with case syntax in scala
     * prod.collect { case x if fn(x) => g(x) }
     */
-  def collect[U](fn: PartialFunction[T, U]): Producer[P, U] =
-    optionMap(fn.lift)
+  def collect[U](fn: PartialFunction[T, U]): Producer[P, U] = optionMap(fn.lift)
 
   /** Keep only the items that satisfy the fn */
   def filter(fn: T => Boolean): Producer[P, T] =

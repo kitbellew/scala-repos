@@ -126,10 +126,11 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     node match {
       case Token("TOK_SHOWFUNCTIONS", args) =>
         // Skip LIKE.
-        val pattern = args match {
-          case like :: nodes if like.text.toUpperCase == "LIKE" => nodes
-          case nodes                                            => nodes
-        }
+        val pattern =
+          args match {
+            case like :: nodes if like.text.toUpperCase == "LIKE" => nodes
+            case nodes                                            => nodes
+          }
 
         // Extract Database and Function name
         pattern match {
@@ -209,10 +210,11 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               )
             }
 
-            val relations = fromClause match {
-              case Some(f) => nodeToRelation(f)
-              case None    => OneRowRelation
-            }
+            val relations =
+              fromClause match {
+                case Some(f) => nodeToRelation(f)
+                case None    => OneRowRelation
+              }
 
             val withLateralView = lateralViewClause
               .map { lv =>
@@ -230,16 +232,16 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             val select = (selectClause orElse selectDistinctClause)
               .getOrElse(sys.error("No select clause."))
 
-            val transformation =
-              nodeToTransformation(select.children.head, withWhere)
+            val transformation = nodeToTransformation(
+              select.children.head,
+              withWhere)
 
             // The projection of the query can either be a normal projection, an aggregation
             // (if there is a group by) or a script transformation.
             val withProject: LogicalPlan = transformation.getOrElse {
-              val selectExpressions =
-                select.children
-                  .flatMap(selExprNodeToExpr)
-                  .map(UnresolvedAlias(_))
+              val selectExpressions = select.children
+                .flatMap(selExprNodeToExpr)
+                .map(UnresolvedAlias(_))
               Seq(
                 groupByClause.map(e =>
                   e match {
@@ -287,9 +289,10 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             // Handle HAVING clause.
             val withHaving = havingClause
               .map { h =>
-                val havingExpr = h.children match {
-                  case Seq(hexpr) => nodeToExpr(hexpr)
-                }
+                val havingExpr =
+                  h.children match {
+                    case Seq(hexpr) => nodeToExpr(hexpr)
+                  }
                 // Note that we added a cast to boolean. If the expression itself is already boolean,
                 // the optimizer will get rid of the unnecessary cast.
                 Filter(Cast(havingExpr, BooleanType), withProject)
@@ -351,11 +354,10 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
                     "Unsupported set of ordering / distribution clauses.")
               }
 
-            val withLimit =
-              limitClause
-                .map(l => nodeToExpr(l.children.head))
-                .map(Limit(_, withSort))
-                .getOrElse(withSort)
+            val withLimit = limitClause
+              .map(l => nodeToExpr(l.children.head))
+              .map(Limit(_, withSort))
+              .getOrElse(withSort)
 
             // Collect all window specifications defined in the WINDOW clause.
             val windowDefinitions = windowClause.map(_.children.collect {
@@ -380,16 +382,14 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               }
             }
 
-            val withWindowDefinitions =
-              resolvedCrossReference
-                .map(WithWindowDefinition(_, withLimit))
-                .getOrElse(withLimit)
+            val withWindowDefinitions = resolvedCrossReference
+              .map(WithWindowDefinition(_, withLimit))
+              .getOrElse(withLimit)
 
             // TOK_INSERT_INTO means to add files to the table.
             // TOK_DESTINATION means to overwrite the table.
-            val resultDestination =
-              (intoClause orElse destClause).getOrElse(
-                sys.error("No destination found."))
+            val resultDestination = (intoClause orElse destClause).getOrElse(
+              sys.error("No destination found."))
             val overwrite = intoClause.isEmpty
             nodeToDest(resultDestination, withWindowDefinitions, overwrite)
         }
@@ -517,20 +517,21 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       joinToken: String,
       joinConditionToken: Seq[ASTNode],
       node: ASTNode): (JoinType, Option[Expression]) = {
-    val joinType = joinToken match {
-      case "TOK_JOIN"                  => Inner
-      case "TOK_CROSSJOIN"             => Inner
-      case "TOK_RIGHTOUTERJOIN"        => RightOuter
-      case "TOK_LEFTOUTERJOIN"         => LeftOuter
-      case "TOK_FULLOUTERJOIN"         => FullOuter
-      case "TOK_LEFTSEMIJOIN"          => LeftSemi
-      case "TOK_UNIQUEJOIN"            => noParseRule("Unique Join", node)
-      case "TOK_ANTIJOIN"              => noParseRule("Anti Join", node)
-      case "TOK_NATURALJOIN"           => NaturalJoin(Inner)
-      case "TOK_NATURALRIGHTOUTERJOIN" => NaturalJoin(RightOuter)
-      case "TOK_NATURALLEFTOUTERJOIN"  => NaturalJoin(LeftOuter)
-      case "TOK_NATURALFULLOUTERJOIN"  => NaturalJoin(FullOuter)
-    }
+    val joinType =
+      joinToken match {
+        case "TOK_JOIN"                  => Inner
+        case "TOK_CROSSJOIN"             => Inner
+        case "TOK_RIGHTOUTERJOIN"        => RightOuter
+        case "TOK_LEFTOUTERJOIN"         => LeftOuter
+        case "TOK_FULLOUTERJOIN"         => FullOuter
+        case "TOK_LEFTSEMIJOIN"          => LeftSemi
+        case "TOK_UNIQUEJOIN"            => noParseRule("Unique Join", node)
+        case "TOK_ANTIJOIN"              => noParseRule("Anti Join", node)
+        case "TOK_NATURALJOIN"           => NaturalJoin(Inner)
+        case "TOK_NATURALRIGHTOUTERJOIN" => NaturalJoin(RightOuter)
+        case "TOK_NATURALLEFTOUTERJOIN"  => NaturalJoin(LeftOuter)
+        case "TOK_NATURALFULLOUTERJOIN"  => NaturalJoin(FullOuter)
+      }
 
     joinConditionToken match {
       case Token("TOK_USING", columnList :: Nil) :: Nil =>
@@ -565,8 +566,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         query
 
       case Token(destinationToken(), Token("TOK_TAB", tableArgs) :: Nil) =>
-        val Some(tableNameParts) :: partitionClause :: Nil =
-          getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
+        val Some(tableNameParts) :: partitionClause :: Nil = getClauses(
+          Seq("TOK_TABNAME", "TOK_PARTSPEC"),
+          tableArgs)
 
         val tableIdent = extractTableIdent(tableNameParts)
 
@@ -593,8 +595,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             destinationToken(),
             Token("TOK_TAB", tableArgs) ::
             Token("TOK_IFNOTEXISTS", ifNotExists) :: Nil) =>
-        val Some(tableNameParts) :: partitionClause :: Nil =
-          getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
+        val Some(tableNameParts) :: partitionClause :: Nil = getClauses(
+          Seq("TOK_TABNAME", "TOK_PARTSPEC"),
+          tableArgs)
 
         val tableIdent = extractTableIdent(tableNameParts)
 
@@ -814,10 +817,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             minValue ::
             maxValue :: Nil) =>
         val targetExpression = nodeToExpr(target)
-        val betweenExpr =
-          And(
-            GreaterThanOrEqual(targetExpression, nodeToExpr(minValue)),
-            LessThanOrEqual(targetExpression, nodeToExpr(maxValue)))
+        val betweenExpr = And(
+          GreaterThanOrEqual(targetExpression, nodeToExpr(minValue)),
+          LessThanOrEqual(targetExpression, nodeToExpr(maxValue)))
         kw match {
           case Token("KW_FALSE", Nil) => betweenExpr
           case Token("KW_TRUE", Nil)  => Not(betweenExpr)
@@ -927,20 +929,21 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           // The interval node will always contain children for all possible time units. A child node
           // is only useful when it contains exactly one (numeric) child.
           case e @ Token(name, Token(value, Nil) :: Nil) =>
-            val unit = name match {
-              case "TOK_INTERVAL_YEAR_LITERAL"        => "year"
-              case "TOK_INTERVAL_MONTH_LITERAL"       => "month"
-              case "TOK_INTERVAL_WEEK_LITERAL"        => "week"
-              case "TOK_INTERVAL_DAY_LITERAL"         => "day"
-              case "TOK_INTERVAL_HOUR_LITERAL"        => "hour"
-              case "TOK_INTERVAL_MINUTE_LITERAL"      => "minute"
-              case "TOK_INTERVAL_SECOND_LITERAL"      => "second"
-              case "TOK_INTERVAL_MILLISECOND_LITERAL" => "millisecond"
-              case "TOK_INTERVAL_MICROSECOND_LITERAL" => "microsecond"
-              case _                                  => noParseRule(s"Interval($name)", e)
-            }
-            interval =
-              interval.add(CalendarInterval.fromSingleUnitString(unit, value))
+            val unit =
+              name match {
+                case "TOK_INTERVAL_YEAR_LITERAL"        => "year"
+                case "TOK_INTERVAL_MONTH_LITERAL"       => "month"
+                case "TOK_INTERVAL_WEEK_LITERAL"        => "week"
+                case "TOK_INTERVAL_DAY_LITERAL"         => "day"
+                case "TOK_INTERVAL_HOUR_LITERAL"        => "hour"
+                case "TOK_INTERVAL_MINUTE_LITERAL"      => "minute"
+                case "TOK_INTERVAL_SECOND_LITERAL"      => "second"
+                case "TOK_INTERVAL_MILLISECOND_LITERAL" => "millisecond"
+                case "TOK_INTERVAL_MICROSECOND_LITERAL" => "microsecond"
+                case _                                  => noParseRule(s"Interval($name)", e)
+              }
+            interval = interval.add(
+              CalendarInterval.fromSingleUnitString(unit, value))
             updated = true
           case _ =>
         }
@@ -970,10 +973,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           orderSpec = Nil,
           frameSpecification = UnspecifiedFrame)
       case spec =>
-        val (partitionClause :: rowFrame :: rangeFrame :: Nil) =
-          getClauses(
-            Seq("TOK_PARTITIONINGSPEC", "TOK_WINDOWRANGE", "TOK_WINDOWVALUES"),
-            spec)
+        val (partitionClause :: rowFrame :: rangeFrame :: Nil) = getClauses(
+          Seq("TOK_PARTITIONINGSPEC", "TOK_WINDOWRANGE", "TOK_WINDOWVALUES"),
+          spec)
 
         // Handle Partition By and Order By.
         val (partitionSpec, orderSpec) = partitionClause
@@ -1075,14 +1077,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     val alias = cleanIdentifier(
       getClause("TOK_TABALIAS", clauses).children.head.text)
 
-    val generator = clauses.head match {
-      case Token("TOK_FUNCTION", Token(explode(), Nil) :: childNode :: Nil) =>
-        Explode(nodeToExpr(childNode))
-      case Token("TOK_FUNCTION", Token(jsonTuple(), Nil) :: children) =>
-        JsonTuple(children.map(nodeToExpr))
-      case other =>
-        nodeToGenerator(other)
-    }
+    val generator =
+      clauses.head match {
+        case Token("TOK_FUNCTION", Token(explode(), Nil) :: childNode :: Nil) =>
+          Explode(nodeToExpr(childNode))
+        case Token("TOK_FUNCTION", Token(jsonTuple(), Nil) :: children) =>
+          JsonTuple(children.map(nodeToExpr))
+        case other =>
+          nodeToGenerator(other)
+      }
 
     val attributes = clauses.collect {
       case Token(a, Nil) => UnresolvedAttribute(cleanIdentifier(a.toLowerCase))

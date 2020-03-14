@@ -48,8 +48,10 @@ class ScThisReferenceImpl(node: ASTNode)
           case _ => None
         }
       case None => {
-        val encl =
-          PsiTreeUtil.getContextOfType(this, false, classOf[ScTemplateBody])
+        val encl = PsiTreeUtil.getContextOfType(
+          this,
+          false,
+          classOf[ScTemplateBody])
         if (encl != null)
           Some(
             PsiTreeUtil

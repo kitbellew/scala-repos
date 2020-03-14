@@ -658,9 +658,10 @@ class ObservableBufferSpec[T]
 
     type ElementType = jfxc.ObservableList[String]
 
-    val items = new ObservableBuffer(
-      jfxc.FXCollections.observableArrayList[ElementType]((elem: ElementType) =>
-        Array[jfxb.Observable](elem)))
+    val items =
+      new ObservableBuffer(
+        jfxc.FXCollections.observableArrayList[ElementType](
+          (elem: ElementType) => Array[jfxb.Observable](elem)))
 
     items.append(jfxc.FXCollections.observableArrayList("test"))
 

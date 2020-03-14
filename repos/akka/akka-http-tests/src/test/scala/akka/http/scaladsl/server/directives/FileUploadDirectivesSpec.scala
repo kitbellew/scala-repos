@@ -17,12 +17,11 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
       val xml = "<int>42</int>"
 
-      val simpleMultipartUpload =
-        Multipart.FormData(
-          Multipart.FormData.BodyPart.Strict(
-            "fieldName",
-            HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml),
-            Map("filename" -> "age.xml")))
+      val simpleMultipartUpload = Multipart.FormData(
+        Multipart.FormData.BodyPart.Strict(
+          "fieldName",
+          HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml),
+          Map("filename" -> "age.xml")))
 
       @volatile var file: Option[File] = None
 
@@ -56,9 +55,10 @@ class FileUploadDirectivesSpec extends RoutingSpec {
         fileUpload("field1") {
           case (info, bytes) ⇒
             // stream the bytes somewhere
-            val allBytesF = bytes.runFold(ByteString()) { (all, bytes) ⇒
-              all ++ bytes
-            }
+            val allBytesF =
+              bytes.runFold(ByteString()) { (all, bytes) ⇒
+                all ++ bytes
+              }
 
             // sum all individual file sizes
             onSuccess(allBytesF) { allBytes ⇒
@@ -73,12 +73,11 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
       // tests:
       val str1 = "some data"
-      val multipartForm =
-        Multipart.FormData(
-          Multipart.FormData.BodyPart.Strict(
-            "field1",
-            HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
-            Map("filename" -> "data1.txt")))
+      val multipartForm = Multipart.FormData(
+        Multipart.FormData.BodyPart.Strict(
+          "field1",
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
+          Map("filename" -> "data1.txt")))
 
       Post("/", multipartForm) ~> route ~> check {
         status shouldEqual StatusCodes.OK
@@ -94,17 +93,16 @@ class FileUploadDirectivesSpec extends RoutingSpec {
       // tests:
       val str1 = "some data"
       val str2 = "other data"
-      val multipartForm =
-        Multipart.FormData(
-          Multipart.FormData.BodyPart.Strict(
-            "field1",
-            HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
-            Map("filename" -> "data1.txt")),
-          Multipart.FormData.BodyPart.Strict(
-            "field1",
-            HttpEntity(ContentTypes.`text/plain(UTF-8)`, str2),
-            Map("filename" -> "data2.txt"))
-        )
+      val multipartForm = Multipart.FormData(
+        Multipart.FormData.BodyPart.Strict(
+          "field1",
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
+          Map("filename" -> "data1.txt")),
+        Multipart.FormData.BodyPart.Strict(
+          "field1",
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, str2),
+          Map("filename" -> "data2.txt"))
+      )
 
       Post("/", multipartForm) ~> route ~> check {
         status shouldEqual StatusCodes.OK
@@ -115,32 +113,31 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
     "reject the file upload if the field name is missing" in {
       // byte count as a service ;)
-      val route =
-        extractRequestContext { ctx ⇒
-          implicit val mat = ctx.materializer
+      val route = extractRequestContext { ctx ⇒
+        implicit val mat = ctx.materializer
 
-          fileUpload("missing") {
-            case (info, bytes) ⇒
-              // stream the bytes somewhere
-              val allBytesF = bytes.runFold(ByteString()) { (all, bytes) ⇒
+        fileUpload("missing") {
+          case (info, bytes) ⇒
+            // stream the bytes somewhere
+            val allBytesF =
+              bytes.runFold(ByteString()) { (all, bytes) ⇒
                 all ++ bytes
               }
 
-              // sum all individual file sizes
-              onSuccess(allBytesF) { allBytes ⇒
-                complete(allBytes)
-              }
-          }
+            // sum all individual file sizes
+            onSuccess(allBytesF) { allBytes ⇒
+              complete(allBytes)
+            }
         }
+      }
 
       // tests:
       val str1 = "some data"
-      val multipartForm =
-        Multipart.FormData(
-          Multipart.FormData.BodyPart.Strict(
-            "field1",
-            HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
-            Map("filename" -> "data1.txt")))
+      val multipartForm = Multipart.FormData(
+        Multipart.FormData.BodyPart.Strict(
+          "field1",
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
+          Map("filename" -> "data1.txt")))
 
       Post("/", multipartForm) ~> route ~> check {
         rejection === MissingFormFieldRejection("missing")

@@ -55,35 +55,37 @@ case class Assessible(analysed: Analysed) {
   private def rankCheating(color: Color): GameAssessment = {
     import GameAssessment._
     val flags = mkFlags(color)
-    val assessment = flags match {
-      //               SF1 SF2 BLR1 BLR2 MTs1 MTs2 Holds
-      case PlayerFlags(T, T, T, T, T, T, T) => Cheating // all T, obvious cheat
-      case PlayerFlags(T, _, T, _, _, T, _) =>
-        Cheating // high accuracy, high blurs, no fast moves
+    val assessment =
+      flags match {
+        //               SF1 SF2 BLR1 BLR2 MTs1 MTs2 Holds
+        case PlayerFlags(T, T, T, T, T, T, T) =>
+          Cheating // all T, obvious cheat
+        case PlayerFlags(T, _, T, _, _, T, _) =>
+          Cheating // high accuracy, high blurs, no fast moves
 
-      case PlayerFlags(_, _, _, _, _, _, T) =>
-        LikelyCheating // Holds are bad, hmk?
-      case PlayerFlags(T, _, _, T, _, T, _) =>
-        LikelyCheating // high accuracy, moderate blurs, no fast moves
-      case PlayerFlags(_, T, _, T, T, _, _) =>
-        LikelyCheating // always has advantage, moderate blurs, highly consistent move times
-      case PlayerFlags(_, T, T, _, _, _, _) =>
-        LikelyCheating // always has advantage, high blurs
+        case PlayerFlags(_, _, _, _, _, _, T) =>
+          LikelyCheating // Holds are bad, hmk?
+        case PlayerFlags(T, _, _, T, _, T, _) =>
+          LikelyCheating // high accuracy, moderate blurs, no fast moves
+        case PlayerFlags(_, T, _, T, T, _, _) =>
+          LikelyCheating // always has advantage, moderate blurs, highly consistent move times
+        case PlayerFlags(_, T, T, _, _, _, _) =>
+          LikelyCheating // always has advantage, high blurs
 
-      case PlayerFlags(_, T, _, _, T, T, _) =>
-        Unclear // always has advantage, consistent move times
-      case PlayerFlags(T, _, _, _, T, T, _) =>
-        Unclear // high accuracy, consistent move times, no fast moves
-      case PlayerFlags(T, _, _, F, F, T, _) =>
-        Unclear // high accuracy, no fast moves, but doesn't blur or flat line
+        case PlayerFlags(_, T, _, _, T, T, _) =>
+          Unclear // always has advantage, consistent move times
+        case PlayerFlags(T, _, _, _, T, T, _) =>
+          Unclear // high accuracy, consistent move times, no fast moves
+        case PlayerFlags(T, _, _, F, F, T, _) =>
+          Unclear // high accuracy, no fast moves, but doesn't blur or flat line
 
-      case PlayerFlags(T, _, _, _, _, F, _) =>
-        UnlikelyCheating // high accuracy, but has fast moves
+        case PlayerFlags(T, _, _, _, _, F, _) =>
+          UnlikelyCheating // high accuracy, but has fast moves
 
-      case PlayerFlags(F, F, _, _, _, _, _) =>
-        NotCheating // low accuracy, doesn't hold advantage
-      case _ => NotCheating
-    }
+        case PlayerFlags(F, F, _, _, _, _, _) =>
+          NotCheating // low accuracy, doesn't hold advantage
+        case _ => NotCheating
+      }
 
     if (flags.suspiciousHoldAlert)
       assessment

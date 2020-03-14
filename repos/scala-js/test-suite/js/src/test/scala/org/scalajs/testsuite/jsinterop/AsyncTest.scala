@@ -165,11 +165,12 @@ class AsyncTest {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
-      val p = new js.Promise[Int]({
-        (
-            resolve: js.Function1[Int | js.Thenable[Int], _],
-            reject: js.Function1[Any, _]) => resolve(42)
-      })
+      val p =
+        new js.Promise[Int]({
+          (
+              resolve: js.Function1[Int | js.Thenable[Int], _],
+              reject: js.Function1[Any, _]) => resolve(42)
+        })
 
       val f = p.toFuture
       val fAssertType: Future[Int] = f
@@ -215,11 +216,12 @@ class AsyncTest {
     PromiseMock.withMockedPromise { processQueue =>
       implicit val ec = QueueExecutionContext.promises()
 
-      val initialPromise = new js.Promise[Int]({
-        (
-            resolve: js.Function1[Int | js.Thenable[Int], _],
-            reject: js.Function1[Any, _]) => resolve(42)
-      })
+      val initialPromise =
+        new js.Promise[Int]({
+          (
+              resolve: js.Function1[Int | js.Thenable[Int], _],
+              reject: js.Function1[Any, _]) => resolve(42)
+        })
 
       val f = Future {
         initialPromise

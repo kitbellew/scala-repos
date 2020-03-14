@@ -23,8 +23,8 @@ object Props extends AbstractProps {
   /**
     * The defaultCreator, simply throws an UnsupportedOperationException when applied, which is used when creating a Props
     */
-  final val defaultCreator: () ⇒ Actor = () ⇒
-    throw new UnsupportedOperationException("No actor creator specified!")
+  final val defaultCreator: () ⇒ Actor =
+    () ⇒ throw new UnsupportedOperationException("No actor creator specified!")
 
   /**
     * The defaultRoutedProps is NoRouter which is used when creating a Props
@@ -44,8 +44,10 @@ object Props extends AbstractProps {
   /**
     * The default Props instance, uses the settings from the Props object starting with default*.
     */
-  final val default =
-    Props(defaultDeploy, classOf[CreatorFunctionConsumer], List(defaultCreator))
+  final val default = Props(
+    defaultDeploy,
+    classOf[CreatorFunctionConsumer],
+    List(defaultCreator))
 
   /**
     * INTERNAL API

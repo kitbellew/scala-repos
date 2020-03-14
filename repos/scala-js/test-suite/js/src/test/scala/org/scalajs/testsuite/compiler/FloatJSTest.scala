@@ -16,8 +16,7 @@ object FloatJSTest extends Requires.StrictFloats
 
 class FloatJSTest {
 
-  @noinline def froundNotInlined(x: Double): Float =
-    x.toFloat
+  @noinline def froundNotInlined(x: Double): Float = x.toFloat
 
   @Test def fround_for_special_values(): Unit = {
     assertTrue(froundNotInlined(Double.NaN).isNaN)

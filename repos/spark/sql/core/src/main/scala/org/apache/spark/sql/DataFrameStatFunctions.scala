@@ -446,21 +446,22 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     val singleCol = df.select(col)
     val colType = singleCol.schema.head.dataType
 
-    val updater: (CountMinSketch, InternalRow) => Unit = colType match {
-      // For string type, we can get bytes of our `UTF8String` directly, and call the `addBinary`
-      // instead of `addString` to avoid unnecessary conversion.
-      case StringType =>
-        (sketch, row) => sketch.addBinary(row.getUTF8String(0).getBytes)
-      case ByteType    => (sketch, row) => sketch.addLong(row.getByte(0))
-      case ShortType   => (sketch, row) => sketch.addLong(row.getShort(0))
-      case IntegerType => (sketch, row) => sketch.addLong(row.getInt(0))
-      case LongType    => (sketch, row) => sketch.addLong(row.getLong(0))
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Count-min Sketch only supports string type and integral types, " +
-            s"and does not support type $colType."
-        )
-    }
+    val updater: (CountMinSketch, InternalRow) => Unit =
+      colType match {
+        // For string type, we can get bytes of our `UTF8String` directly, and call the `addBinary`
+        // instead of `addString` to avoid unnecessary conversion.
+        case StringType =>
+          (sketch, row) => sketch.addBinary(row.getUTF8String(0).getBytes)
+        case ByteType    => (sketch, row) => sketch.addLong(row.getByte(0))
+        case ShortType   => (sketch, row) => sketch.addLong(row.getShort(0))
+        case IntegerType => (sketch, row) => sketch.addLong(row.getInt(0))
+        case LongType    => (sketch, row) => sketch.addLong(row.getLong(0))
+        case _ =>
+          throw new IllegalArgumentException(
+            s"Count-min Sketch only supports string type and integral types, " +
+              s"and does not support type $colType."
+          )
+      }
 
     singleCol.queryExecution.toRdd.aggregate(zero)(
       (sketch: CountMinSketch, row: InternalRow) => {
@@ -541,21 +542,22 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
       colType == StringType || colType.isInstanceOf[IntegralType],
       s"Bloom filter only supports string type and integral types, but got $colType.")
 
-    val updater: (BloomFilter, InternalRow) => Unit = colType match {
-      // For string type, we can get bytes of our `UTF8String` directly, and call the `putBinary`
-      // instead of `putString` to avoid unnecessary conversion.
-      case StringType =>
-        (filter, row) => filter.putBinary(row.getUTF8String(0).getBytes)
-      case ByteType    => (filter, row) => filter.putLong(row.getByte(0))
-      case ShortType   => (filter, row) => filter.putLong(row.getShort(0))
-      case IntegerType => (filter, row) => filter.putLong(row.getInt(0))
-      case LongType    => (filter, row) => filter.putLong(row.getLong(0))
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Bloom filter only supports string type and integral types, " +
-            s"and does not support type $colType."
-        )
-    }
+    val updater: (BloomFilter, InternalRow) => Unit =
+      colType match {
+        // For string type, we can get bytes of our `UTF8String` directly, and call the `putBinary`
+        // instead of `putString` to avoid unnecessary conversion.
+        case StringType =>
+          (filter, row) => filter.putBinary(row.getUTF8String(0).getBytes)
+        case ByteType    => (filter, row) => filter.putLong(row.getByte(0))
+        case ShortType   => (filter, row) => filter.putLong(row.getShort(0))
+        case IntegerType => (filter, row) => filter.putLong(row.getInt(0))
+        case LongType    => (filter, row) => filter.putLong(row.getLong(0))
+        case _ =>
+          throw new IllegalArgumentException(
+            s"Bloom filter only supports string type and integral types, " +
+              s"and does not support type $colType."
+          )
+      }
 
     singleCol.queryExecution.toRdd.aggregate(zero)(
       (filter: BloomFilter, row: InternalRow) => {

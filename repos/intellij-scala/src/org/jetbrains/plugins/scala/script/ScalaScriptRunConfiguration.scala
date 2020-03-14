@@ -101,39 +101,43 @@ class ScalaScriptRunConfiguration(
       throw new ExecutionException("Module is not specified")
 
     val script = VcsUtil.getVirtualFile(scriptPath)
-    val state = new JavaCommandLineState(env) {
-      protected override def createJavaParameters: JavaParameters = {
-        val params = new JavaParameters()
+    val state =
+      new JavaCommandLineState(env) {
+        protected override def createJavaParameters: JavaParameters = {
+          val params = new JavaParameters()
 
-        params.setCharset(null)
-        params.getVMParametersList.addParametersString(getJavaOptions)
-        params.setWorkingDirectory(getWorkingDirectory)
+          params.setCharset(null)
+          params.getVMParametersList.addParametersString(getJavaOptions)
+          params.setWorkingDirectory(getWorkingDirectory)
 //        params.getVMParametersList.addParametersString("-Xnoagent -Djava.compiler=NONE -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5009")
 //        params.getVMParametersList.add(SCALA_HOME  + scalaSdkPath)
-        params.getVMParametersList.add(CLASSPATH)
-        params.getVMParametersList.add(EMACS)
+          params.getVMParametersList.add(CLASSPATH)
+          params.getVMParametersList.add(EMACS)
 
-        params.setMainClass(MAIN_CLASS)
-        params.getProgramParametersList.add(
-          "-nocompdaemon"
-        ) //todo: seems to be a bug in scala compiler. Ticket #1498
-        params.getProgramParametersList.add("-classpath")
-        params.configureByModule(
-          module,
-          JavaParameters.JDK_AND_CLASSES_AND_TESTS)
-        params.getProgramParametersList.add(params.getClassPath.getPathsString)
-        params.getClassPath.addAllFiles(
-          module.scalaSdk.map(_.compilerClasspath).getOrElse(Seq.empty))
-        val array = getConsoleArgs.trim.split("\\s+").filter(!_.trim().isEmpty)
-        params.getProgramParametersList.addAll(array: _*)
-        params.getProgramParametersList.add(scriptPath)
-        params.getProgramParametersList.addParametersString(scriptArgs)
-        params
+          params.setMainClass(MAIN_CLASS)
+          params.getProgramParametersList.add(
+            "-nocompdaemon"
+          ) //todo: seems to be a bug in scala compiler. Ticket #1498
+          params.getProgramParametersList.add("-classpath")
+          params.configureByModule(
+            module,
+            JavaParameters.JDK_AND_CLASSES_AND_TESTS)
+          params.getProgramParametersList.add(
+            params.getClassPath.getPathsString)
+          params.getClassPath.addAllFiles(
+            module.scalaSdk.map(_.compilerClasspath).getOrElse(Seq.empty))
+          val array = getConsoleArgs.trim
+            .split("\\s+")
+            .filter(!_.trim().isEmpty)
+          params.getProgramParametersList.addAll(array: _*)
+          params.getProgramParametersList.add(scriptPath)
+          params.getProgramParametersList.addParametersString(scriptArgs)
+          params
+        }
       }
-    }
 
-    val consoleBuilder =
-      TextConsoleBuilderFactory.getInstance.createBuilder(getProject)
+    val consoleBuilder = TextConsoleBuilderFactory.getInstance.createBuilder(
+      getProject)
     consoleBuilder.addFilter(getFilter(script))
     state.setConsoleBuilder(consoleBuilder)
     state
@@ -187,11 +191,12 @@ class ScalaScriptRunConfiguration(
         var end = entireLength - line.length
         if (line.startsWith("(fragment of ")) {
           try {
-            var cache =
-              line.replaceFirst("[(][f][r][a][g][m][e][n][t][ ][o][f][ ]", "")
+            var cache = line.replaceFirst(
+              "[(][f][r][a][g][m][e][n][t][ ][o][f][ ]",
+              "")
             cache = cache.replaceFirst("[^)]*[)][:]", "")
-            val lineNumber =
-              Integer.parseInt(cache.substring(0, cache.indexOf(":")))
+            val lineNumber = Integer.parseInt(
+              cache.substring(0, cache.indexOf(":")))
             cache = cache.replaceFirst("[^:]", "")
             end += line.length - cache.length
             val hyperlink =

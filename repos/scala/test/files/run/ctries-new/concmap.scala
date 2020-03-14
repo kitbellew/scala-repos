@@ -94,18 +94,14 @@ object ConcurrentMapSpec extends Spec {
         }
       }
 
-      val threads =
-        for (i <- 0 until 16)
-          yield new Updater(i, sz / 32 * i)
+      val threads = for (i <- 0 until 16) yield new Updater(i, sz / 32 * i)
       threads.foreach(_.start())
       threads.foreach(_.join())
 
       for (i <- 0 until sz)
         assertEqual(ct(new Wrap(i)), i)
 
-      val threads2 =
-        for (i <- 0 until 15)
-          yield new Updater(i, sz / 32 * i)
+      val threads2 = for (i <- 0 until 15) yield new Updater(i, sz / 32 * i)
       threads2.foreach(_.start())
       threads2.foreach(_.join())
 
@@ -127,9 +123,7 @@ object ConcurrentMapSpec extends Spec {
         }
       }
 
-      val threads =
-        for (i <- 0 until 16)
-          yield new Updater(sz / 32 * i)
+      val threads = for (i <- 0 until 16) yield new Updater(sz / 32 * i)
       threads.foreach(_.start())
       threads.foreach(_.join())
 
@@ -153,9 +147,7 @@ object ConcurrentMapSpec extends Spec {
         }
       }
 
-      val threads =
-        for (i <- 0 until 16)
-          yield new Remover(sz / 32 * i)
+      val threads = for (i <- 0 until 16) yield new Remover(sz / 32 * i)
       threads.foreach(_.start())
       threads.foreach(_.join())
 
@@ -186,9 +178,7 @@ object ConcurrentMapSpec extends Spec {
       }
 
       def modify(n: Int) = {
-        val threads =
-          for (i <- 0 until n)
-            yield new Modifier(i, sz / n * i)
+        val threads = for (i <- 0 until n) yield new Modifier(i, sz / n * i)
         threads.foreach(_.start())
         threads.foreach(_.join())
       }

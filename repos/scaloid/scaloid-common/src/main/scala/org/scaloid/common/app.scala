@@ -135,15 +135,17 @@ trait SActivity
   def onRegister(body: => Any) = onResume(body)
   def onUnregister(body: => Any) = onPause(body)
 
-  val onStartStop = new Registerable {
-    def onRegister(body: => Any) = onStart(body)
-    def onUnregister(body: => Any) = onStop(body)
-  }
+  val onStartStop =
+    new Registerable {
+      def onRegister(body: => Any) = onStart(body)
+      def onUnregister(body: => Any) = onStop(body)
+    }
 
-  val onCreateDestroy = new Registerable {
-    def onRegister(body: => Any) = onCreate(body)
-    def onUnregister(body: => Any) = onDestroy(body)
-  }
+  val onCreateDestroy =
+    new Registerable {
+      def onRegister(body: => Any) = onCreate(body)
+      def onUnregister(body: => Any) = onDestroy(body)
+    }
 
   protected override def onCreate(b: Bundle) {
     super.onCreate(b)

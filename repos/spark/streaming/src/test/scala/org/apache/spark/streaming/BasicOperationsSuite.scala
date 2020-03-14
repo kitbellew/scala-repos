@@ -278,14 +278,15 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(),
       Seq()
     )
-    val operation = (s1: DStream[String], s2: DStream[String]) => {
-      val t1 = s1.map(x => (x, 1))
-      val t2 = s2.map(x => (x, "x"))
-      t1.transformWith( // RDD.join in transform
-        t2,
-        (rdd1: RDD[(String, Int)], rdd2: RDD[(String, String)]) =>
-          rdd1.join(rdd2))
-    }
+    val operation =
+      (s1: DStream[String], s2: DStream[String]) => {
+        val t1 = s1.map(x => (x, 1))
+        val t2 = s2.map(x => (x, "x"))
+        t1.transformWith( // RDD.join in transform
+          t2,
+          (rdd1: RDD[(String, Int)], rdd2: RDD[(String, String)]) =>
+            rdd1.join(rdd2))
+      }
     testOperation(inputData1, inputData2, operation, outputData, true)
   }
 
@@ -298,11 +299,12 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq("")
     )
 
-    val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1.transformWith( // RDD.join in transform
-        s2,
-        (rdd1: RDD[String], rdd2: RDD[String]) => rdd1.union(rdd2))
-    }
+    val operation =
+      (s1: DStream[String], s2: DStream[String]) => {
+        s1.transformWith( // RDD.join in transform
+          s2,
+          (rdd1: RDD[String], rdd2: RDD[String]) => rdd1.union(rdd2))
+      }
 
     intercept[SparkException] {
       testOperation(
@@ -320,14 +322,15 @@ class BasicOperationsSuite extends TestSuiteBase {
     val output = Seq(1 to 12, 101 to 112, 201 to 212)
 
     // transform over 3 DStreams by doing union of the 3 RDDs
-    val operation = (s: DStream[Int]) => {
-      s.context.transform(
-        Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
-        (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
-      )
-    }
+    val operation =
+      (s: DStream[Int]) => {
+        s.context.transform(
+          Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
+          (rdds: Seq[RDD[_]], time: Time) =>
+            rdds.head.context
+              .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+        )
+      }
 
     testOperation(input, operation, output)
   }
@@ -337,14 +340,15 @@ class BasicOperationsSuite extends TestSuiteBase {
     val output = Seq(1 to 12, 101 to 112, 201 to 212)
 
     // transform over 3 DStreams by doing union of the 3 RDDs
-    val operation = (s: DStream[Int]) => {
-      s.context.transform(
-        Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
-        (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
-      )
-    }
+    val operation =
+      (s: DStream[Int]) => {
+        s.context.transform(
+          Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
+          (rdds: Seq[RDD[_]], time: Time) =>
+            rdds.head.context
+              .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+        )
+      }
 
     intercept[SparkException] {
       testOperation(input, operation, output, input.length, false)
@@ -363,11 +367,12 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("", (Seq(1), Seq()))),
       Seq()
     )
-    val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1.map(x => (x, 1))
-        .cogroup(s2.map(x => (x, "x")))
-        .mapValues(x => (x._1.toSeq, x._2.toSeq))
-    }
+    val operation =
+      (s1: DStream[String], s2: DStream[String]) => {
+        s1.map(x => (x, 1))
+          .cogroup(s2.map(x => (x, "x")))
+          .mapValues(x => (x._1.toSeq, x._2.toSeq))
+      }
     testOperation(inputData1, inputData2, operation, outputData, true)
   }
 
@@ -380,9 +385,10 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(),
       Seq()
     )
-    val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1.map(x => (x, 1)).join(s2.map(x => (x, "x")))
-    }
+    val operation =
+      (s1: DStream[String], s2: DStream[String]) => {
+        s1.map(x => (x, 1)).join(s2.map(x => (x, "x")))
+      }
     testOperation(inputData1, inputData2, operation, outputData, true)
   }
 
@@ -395,9 +401,10 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("", (1, None))),
       Seq()
     )
-    val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1.map(x => (x, 1)).leftOuterJoin(s2.map(x => (x, "x")))
-    }
+    val operation =
+      (s1: DStream[String], s2: DStream[String]) => {
+        s1.map(x => (x, 1)).leftOuterJoin(s2.map(x => (x, "x")))
+      }
     testOperation(inputData1, inputData2, operation, outputData, true)
   }
 
@@ -410,9 +417,10 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(),
       Seq(("", (None, "x")))
     )
-    val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1.map(x => (x, 1)).rightOuterJoin(s2.map(x => (x, "x")))
-    }
+    val operation =
+      (s1: DStream[String], s2: DStream[String]) => {
+        s1.map(x => (x, 1)).rightOuterJoin(s2.map(x => (x, "x")))
+      }
     testOperation(inputData1, inputData2, operation, outputData, true)
   }
 
@@ -428,39 +436,40 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("", (Some(1), None))),
       Seq(("", (None, Some("x"))))
     )
-    val operation = (s1: DStream[String], s2: DStream[String]) => {
-      s1.map(x => (x, 1)).fullOuterJoin(s2.map(x => (x, "x")))
-    }
+    val operation =
+      (s1: DStream[String], s2: DStream[String]) => {
+        s1.map(x => (x, 1)).fullOuterJoin(s2.map(x => (x, "x")))
+      }
     testOperation(inputData1, inputData2, operation, outputData, true)
   }
 
   test("updateStateByKey") {
-    val inputData =
-      Seq(
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 1)),
-        Seq(("a", 2), ("b", 1)),
-        Seq(("a", 3), ("b", 2), ("c", 1)),
-        Seq(("a", 4), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1))
-      )
+    val outputData = Seq(
+      Seq(("a", 1)),
+      Seq(("a", 2), ("b", 1)),
+      Seq(("a", 3), ("b", 2), ("c", 1)),
+      Seq(("a", 4), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1))
+    )
 
-    val updateStateOperation = (s: DStream[String]) => {
-      val updateFunc = (values: Seq[Int], state: Option[Int]) => {
-        Some(values.sum + state.getOrElse(0))
+    val updateStateOperation =
+      (s: DStream[String]) => {
+        val updateFunc =
+          (values: Seq[Int], state: Option[Int]) => {
+            Some(values.sum + state.getOrElse(0))
+          }
+        s.map(x => (x, 1)).updateStateByKey[Int](updateFunc)
       }
-      s.map(x => (x, 1)).updateStateByKey[Int](updateFunc)
-    }
 
     testOperation(inputData, updateStateOperation, outputData, true)
   }
@@ -468,37 +477,37 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("updateStateByKey - simple with initial value RDD") {
     val initial = Seq(("a", 1), ("c", 2))
 
-    val inputData =
-      Seq(
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 2), ("c", 2)),
-        Seq(("a", 3), ("b", 1), ("c", 2)),
-        Seq(("a", 4), ("b", 2), ("c", 3)),
-        Seq(("a", 5), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3))
-      )
+    val outputData = Seq(
+      Seq(("a", 2), ("c", 2)),
+      Seq(("a", 3), ("b", 1), ("c", 2)),
+      Seq(("a", 4), ("b", 2), ("c", 3)),
+      Seq(("a", 5), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3))
+    )
 
-    val updateStateOperation = (s: DStream[String]) => {
-      val initialRDD = s.context.sparkContext.makeRDD(initial)
-      val updateFunc = (values: Seq[Int], state: Option[Int]) => {
-        Some(values.sum + state.getOrElse(0))
+    val updateStateOperation =
+      (s: DStream[String]) => {
+        val initialRDD = s.context.sparkContext.makeRDD(initial)
+        val updateFunc =
+          (values: Seq[Int], state: Option[Int]) => {
+            Some(values.sum + state.getOrElse(0))
+          }
+        s.map(x => (x, 1))
+          .updateStateByKey[Int](
+            updateFunc,
+            new HashPartitioner(numInputPartitions),
+            initialRDD)
       }
-      s.map(x => (x, 1))
-        .updateStateByKey[Int](
-          updateFunc,
-          new HashPartitioner(numInputPartitions),
-          initialRDD)
-    }
 
     testOperation(inputData, updateStateOperation, outputData, true)
   }
@@ -506,90 +515,90 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("updateStateByKey - with initial value RDD") {
     val initial = Seq(("a", 1), ("c", 2))
 
-    val inputData =
-      Seq(
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 2), ("c", 2)),
-        Seq(("a", 3), ("b", 1), ("c", 2)),
-        Seq(("a", 4), ("b", 2), ("c", 3)),
-        Seq(("a", 5), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3))
-      )
+    val outputData = Seq(
+      Seq(("a", 2), ("c", 2)),
+      Seq(("a", 3), ("b", 1), ("c", 2)),
+      Seq(("a", 4), ("b", 2), ("c", 3)),
+      Seq(("a", 5), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3))
+    )
 
-    val updateStateOperation = (s: DStream[String]) => {
-      val initialRDD = s.context.sparkContext.makeRDD(initial)
-      val updateFunc = (values: Seq[Int], state: Option[Int]) => {
-        Some(values.sum + state.getOrElse(0))
+    val updateStateOperation =
+      (s: DStream[String]) => {
+        val initialRDD = s.context.sparkContext.makeRDD(initial)
+        val updateFunc =
+          (values: Seq[Int], state: Option[Int]) => {
+            Some(values.sum + state.getOrElse(0))
+          }
+        val newUpdateFunc =
+          (iterator: Iterator[(String, Seq[Int], Option[Int])]) => {
+            iterator.flatMap(t => updateFunc(t._2, t._3).map(s => (t._1, s)))
+          }
+        s.map(x => (x, 1))
+          .updateStateByKey[Int](
+            newUpdateFunc,
+            new HashPartitioner(numInputPartitions),
+            true,
+            initialRDD)
       }
-      val newUpdateFunc =
-        (iterator: Iterator[(String, Seq[Int], Option[Int])]) => {
-          iterator.flatMap(t => updateFunc(t._2, t._3).map(s => (t._1, s)))
-        }
-      s.map(x => (x, 1))
-        .updateStateByKey[Int](
-          newUpdateFunc,
-          new HashPartitioner(numInputPartitions),
-          true,
-          initialRDD)
-    }
 
     testOperation(inputData, updateStateOperation, outputData, true)
   }
 
   test("updateStateByKey - object lifecycle") {
-    val inputData =
-      Seq(
-        Seq("a", "b"),
-        null,
-        Seq("a", "c", "a"),
-        Seq("c"),
-        null,
-        null
-      )
+    val inputData = Seq(
+      Seq("a", "b"),
+      null,
+      Seq("a", "c", "a"),
+      Seq("c"),
+      null,
+      null
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 1), ("b", 1)),
-        Seq(("a", 1), ("b", 1)),
-        Seq(("a", 3), ("c", 1)),
-        Seq(("a", 3), ("c", 2)),
-        Seq(("c", 2)),
-        Seq()
-      )
+    val outputData = Seq(
+      Seq(("a", 1), ("b", 1)),
+      Seq(("a", 1), ("b", 1)),
+      Seq(("a", 3), ("c", 1)),
+      Seq(("a", 3), ("c", 2)),
+      Seq(("c", 2)),
+      Seq()
+    )
 
-    val updateStateOperation = (s: DStream[String]) => {
-      class StateObject(var counter: Int = 0, var expireCounter: Int = 0)
-          extends Serializable
+    val updateStateOperation =
+      (s: DStream[String]) => {
+        class StateObject(var counter: Int = 0, var expireCounter: Int = 0)
+            extends Serializable
 
-      // updateFunc clears a state when a StateObject is seen without new values twice in a row
-      val updateFunc = (values: Seq[Int], state: Option[StateObject]) => {
-        val stateObj = state.getOrElse(new StateObject)
-        values.sum match {
-          case 0 => stateObj.expireCounter += 1 // no new values
-          case n => { // has new values, increment and reset expireCounter
-            stateObj.counter += n
-            stateObj.expireCounter = 0
+        // updateFunc clears a state when a StateObject is seen without new values twice in a row
+        val updateFunc =
+          (values: Seq[Int], state: Option[StateObject]) => {
+            val stateObj = state.getOrElse(new StateObject)
+            values.sum match {
+              case 0 => stateObj.expireCounter += 1 // no new values
+              case n => { // has new values, increment and reset expireCounter
+                stateObj.counter += n
+                stateObj.expireCounter = 0
+              }
+            }
+            stateObj.expireCounter match {
+              case 2 => None // seen twice with no new values, give it the boot
+              case _ => Option(stateObj)
+            }
           }
-        }
-        stateObj.expireCounter match {
-          case 2 => None // seen twice with no new values, give it the boot
-          case _ => Option(stateObj)
-        }
+        s.map(x => (x, 1))
+          .updateStateByKey[StateObject](updateFunc)
+          .mapValues(_.counter)
       }
-      s.map(x => (x, 1))
-        .updateStateByKey[StateObject](updateFunc)
-        .mapValues(_.counter)
-    }
 
     testOperation(inputData, updateStateOperation, outputData, true)
   }
@@ -641,8 +650,8 @@ class BasicOperationsSuite extends TestSuiteBase {
       numExpectedOutput = cleanupTestInput.size / 2,
       rememberDuration = Seconds(3))
     val windowedStream2 = operatedStream.asInstanceOf[WindowedDStream[_]]
-    val windowedStream1 =
-      windowedStream2.dependencies.head.asInstanceOf[WindowedDStream[_]]
+    val windowedStream1 = windowedStream2.dependencies.head
+      .asInstanceOf[WindowedDStream[_]]
     val mappedStream = windowedStream1.dependencies.head
 
     // Checkpoint remember durations
@@ -674,9 +683,10 @@ class BasicOperationsSuite extends TestSuiteBase {
   }
 
   test("rdd cleanup - updateStateByKey") {
-    val updateFunc = (values: Seq[Int], state: Option[Int]) => {
-      Some(values.sum + state.getOrElse(0))
-    }
+    val updateFunc =
+      (values: Seq[Int], state: Option[Int]) => {
+        Some(values.sum + state.getOrElse(0))
+      }
     val stateStream = runCleanupTest(
       conf,
       _.map(_ -> 1).updateStateByKey(updateFunc).checkpoint(Seconds(3)))
@@ -696,11 +706,10 @@ class BasicOperationsSuite extends TestSuiteBase {
         val batchCounter = new BatchCounter(ssc)
 
         // Set up the streaming context and input streams
-        val networkStream =
-          ssc.socketTextStream(
-            "localhost",
-            testServer.port,
-            StorageLevel.MEMORY_AND_DISK)
+        val networkStream = ssc.socketTextStream(
+          "localhost",
+          testServer.port,
+          StorageLevel.MEMORY_AND_DISK)
         val mappedStream = networkStream.map(_ + ".").persist()
         val outputQueue = new ConcurrentLinkedQueue[Seq[String]]
         val outputStream = new TestOutputStream(mappedStream, outputQueue)
@@ -753,8 +762,8 @@ class BasicOperationsSuite extends TestSuiteBase {
         import Time._
 
         val latestPersistedRddId = persistentRddIds(persistentRddIds.keySet.max)
-        val earliestPersistedRddId =
-          persistentRddIds(persistentRddIds.keySet.min)
+        val earliestPersistedRddId = persistentRddIds(
+          persistentRddIds.keySet.min)
         val latestBlockRdd = blockRdds(blockRdds.keySet.max)
         val earliestBlockRdd = blockRdds(blockRdds.keySet.min)
         // verify that the latest mapped RDD is persisted but the earliest one has been unpersisted
@@ -786,17 +795,18 @@ class BasicOperationsSuite extends TestSuiteBase {
       batchDuration === Seconds(1),
       "Batch duration has changed from 1 second, check cleanup tests")
     withStreamingContext(setupStreams(cleanupTestInput, operation)) { ssc =>
-      val operatedStream =
-        ssc.graph
-          .getOutputStreams()
-          .head
-          .dependencies
-          .head
-          .asInstanceOf[DStream[T]]
+      val operatedStream = ssc.graph
+        .getOutputStreams()
+        .head
+        .dependencies
+        .head
+        .asInstanceOf[DStream[T]]
       if (rememberDuration != null)
         ssc.remember(rememberDuration)
-      val output =
-        runStreams[(Int, Int)](ssc, cleanupTestInput.size, numExpectedOutput)
+      val output = runStreams[(Int, Int)](
+        ssc,
+        cleanupTestInput.size,
+        numExpectedOutput)
       val clock = ssc.scheduler.clock.asInstanceOf[Clock]
       assert(clock.getTimeMillis() === Seconds(10).milliseconds)
       assert(output.size === numExpectedOutput)

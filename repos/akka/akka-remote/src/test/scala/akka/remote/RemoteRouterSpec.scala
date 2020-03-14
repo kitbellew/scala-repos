@@ -81,8 +81,9 @@ class RemoteRouterSpec
 
     "deploy its children on remote host driven by configuration" in {
       val probe = TestProbe()(masterSystem)
-      val router =
-        masterSystem.actorOf(RoundRobinPool(2).props(Props[Echo]), "blub")
+      val router = masterSystem.actorOf(
+        RoundRobinPool(2).props(Props[Echo]),
+        "blub")
       val replies =
         for (i ← 1 to 5)
           yield {
@@ -121,8 +122,9 @@ class RemoteRouterSpec
 
     "deploy dynamic resizable number of children on remote host driven by configuration" in {
       val probe = TestProbe()(masterSystem)
-      val router =
-        masterSystem.actorOf(FromConfig.props(Props[Echo]), "elastic-blub")
+      val router = masterSystem.actorOf(
+        FromConfig.props(Props[Echo]),
+        "elastic-blub")
       val replies =
         for (i ← 1 to 5000)
           yield {
@@ -139,8 +141,9 @@ class RemoteRouterSpec
 
     "deploy remote routers based on configuration" in {
       val probe = TestProbe()(masterSystem)
-      val router =
-        masterSystem.actorOf(FromConfig.props(Props[Echo]), "remote-blub")
+      val router = masterSystem.actorOf(
+        FromConfig.props(Props[Echo]),
+        "remote-blub")
       router.path.address.toString should ===(
         s"akka.tcp://${sysName}@localhost:${port}")
       val replies =
@@ -269,11 +272,12 @@ class RemoteRouterSpec
 
     "set supplied supervisorStrategy" in {
       val probe = TestProbe()(masterSystem)
-      val escalator = OneForOneStrategy() {
-        case e ⇒
-          probe.ref ! e;
-          SupervisorStrategy.Escalate
-      }
+      val escalator =
+        OneForOneStrategy() {
+          case e ⇒
+            probe.ref ! e;
+            SupervisorStrategy.Escalate
+        }
       val router = masterSystem.actorOf(
         new RemoteRouterConfig(
           RoundRobinPool(1, supervisorStrategy = escalator),

@@ -65,33 +65,34 @@ object softmax extends UFunc {
           return Double.NegativeInfinity
         }
 
-        val visit = new ValuesVisitor[Double] {
-          var accum = 0.0
-          def visit(a: Double): Unit = {
-            accum += scala.math.exp(a - max)
-          }
-
-          def zeros(numZero: Int, zeroValue: Double): Unit = {
-            if (numZero != 0) {
-              accum += (numZero * scala.math.exp(zeroValue - max))
-            }
-          }
-
-          override def visitArray(
-              arr: Array[Double],
-              offset: Int,
-              length: Int,
-              stride: Int): Unit = {
-            var i = 0
-            var off = offset
-            while (i < length) {
-              accum += scala.math.exp(arr(off) - max)
-              i += 1
-              off += stride
+        val visit =
+          new ValuesVisitor[Double] {
+            var accum = 0.0
+            def visit(a: Double): Unit = {
+              accum += scala.math.exp(a - max)
             }
 
+            def zeros(numZero: Int, zeroValue: Double): Unit = {
+              if (numZero != 0) {
+                accum += (numZero * scala.math.exp(zeroValue - max))
+              }
+            }
+
+            override def visitArray(
+                arr: Array[Double],
+                offset: Int,
+                length: Int,
+                stride: Int): Unit = {
+              var i = 0
+              var off = offset
+              while (i < length) {
+                accum += scala.math.exp(arr(off) - max)
+                i += 1
+                off += stride
+              }
+
+            }
           }
-        }
 
         iter.traverse(v, visit)
 
@@ -116,35 +117,36 @@ object softmax extends UFunc {
           return Float.NegativeInfinity
         }
 
-        val visit = new ValuesVisitor[Float] {
-          var accum = 0.0f
-          def visit(a: Float): Unit = {
-            accum += scala.math.exp(a - max).toFloat
-          }
+        val visit =
+          new ValuesVisitor[Float] {
+            var accum = 0.0f
+            def visit(a: Float): Unit = {
+              accum += scala.math.exp(a - max).toFloat
+            }
 
-          def zeros(numZero: Int, zeroValue: Float): Unit = {
-            if (numZero != 0) {
-              accum += (numZero * scala.math.exp(zeroValue - max)).toFloat
+            def zeros(numZero: Int, zeroValue: Float): Unit = {
+              if (numZero != 0) {
+                accum += (numZero * scala.math.exp(zeroValue - max)).toFloat
+              }
+            }
+
+            override def visitArray(
+                arr: Array[Float],
+                offset: Int,
+                length: Int,
+                stride: Int): Unit = {
+              var i = 0
+              var off = offset
+              var cur = 0.0f
+
+              while (i < length) {
+                cur += scala.math.exp(arr(off) - max).toFloat
+                i += 1
+                off += stride
+              }
+              accum += cur
             }
           }
-
-          override def visitArray(
-              arr: Array[Float],
-              offset: Int,
-              length: Int,
-              stride: Int): Unit = {
-            var i = 0
-            var off = offset
-            var cur = 0.0f
-
-            while (i < length) {
-              cur += scala.math.exp(arr(off) - max).toFloat
-              i += 1
-              off += stride
-            }
-            accum += cur
-          }
-        }
 
         iter.traverse(v, visit)
 

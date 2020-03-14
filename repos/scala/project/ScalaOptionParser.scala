@@ -8,13 +8,13 @@ object ScalaOptionParser {
 
   /** A SBT parser for the Scala command line runners (scala, scalac, etc) */
   def scalaParser(entryPoint: String, globalBase: File): Parser[String] = {
-    def BooleanSetting(name: String): Parser[String] =
-      token(name)
+    def BooleanSetting(name: String): Parser[String] = token(name)
     def StringSetting(name: String): Parser[String] = {
-      val valueParser = name match {
-        case "-d" => JarOrDirectoryParser
-        case _    => token(StringBasic, TokenCompletions.displayOnly("<value>"))
-      }
+      val valueParser =
+        name match {
+          case "-d" => JarOrDirectoryParser
+          case _    => token(StringBasic, TokenCompletions.displayOnly("<value>"))
+        }
       concat(concat(token(name ~ Space.string)) ~ valueParser)
     }
     def MultiStringSetting(name: String): Parser[String] =
@@ -110,26 +110,28 @@ object ScalaOptionParser {
     )
     val ScalaDocOpt = ScalacOpt | ScalaDocExtraSettings
 
-    val P = entryPoint match {
-      case "scala" =>
-        val runnable = token(
-          StringBasicNotStartingWithDash,
-          TokenCompletions.displayOnly("<script|class|object|jar>"))
-          .filter(!_.startsWith("-"), x => x)
-        val runnableAndArgs = concat(
-          runnable ~ Opt(
-            concat(
-              Space.string ~ repsep(
-                token(StringBasic, TokenCompletions.displayOnly("<arg>")),
-                Space).map(_.mkString(" ")))))
-        val options = rep1sep(ScalaOpt, Space).map(_.mkString(" "))
-        Opt(Space ~> (options | concat(
-          concat(options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs))
-      case "scaladoc" =>
-        Opt(Space ~> Opt(repsep(ScalaDocOpt, Space).map(_.mkString(" "))))
-      case "scalac" =>
-        Opt(Space ~> repsep(ScalacOpt, Space).map(_.mkString(" ")))
-    }
+    val P =
+      entryPoint match {
+        case "scala" =>
+          val runnable = token(
+            StringBasicNotStartingWithDash,
+            TokenCompletions.displayOnly("<script|class|object|jar>"))
+            .filter(!_.startsWith("-"), x => x)
+          val runnableAndArgs = concat(
+            runnable ~ Opt(
+              concat(
+                Space.string ~ repsep(
+                  token(StringBasic, TokenCompletions.displayOnly("<arg>")),
+                  Space).map(_.mkString(" ")))))
+          val options = rep1sep(ScalaOpt, Space).map(_.mkString(" "))
+          Opt(
+            Space ~> (options | concat(concat(
+              options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs))
+        case "scaladoc" =>
+          Opt(Space ~> Opt(repsep(ScalaDocOpt, Space).map(_.mkString(" "))))
+        case "scalac" =>
+          Opt(Space ~> repsep(ScalacOpt, Space).map(_.mkString(" ")))
+      }
     P <~ token(OptSpace)
   }
 

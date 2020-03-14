@@ -267,11 +267,10 @@ class ReliableProxy(
   val resendTimer = "resend"
   val reconnectTimer = "reconnect"
 
-  val retryGateClosedFor =
-    Try(
-      context.system.settings.config.getDuration(
-        "akka.remote.retry-gate-closed-for",
-        TimeUnit.MILLISECONDS)).map(_.longValue).getOrElse(5000L)
+  val retryGateClosedFor = Try(
+    context.system.settings.config.getDuration(
+      "akka.remote.retry-gate-closed-for",
+      TimeUnit.MILLISECONDS)).map(_.longValue).getOrElse(5000L)
 
   val defaultConnectInterval =
     Try(

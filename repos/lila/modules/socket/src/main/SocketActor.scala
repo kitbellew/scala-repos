@@ -165,16 +165,17 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
   def showSpectators(lightUser: String => Option[LightUser])(
       watchers: Iterable[SocketMember]): JsValue = {
 
-    val (total, anons, userIds) = watchers.foldLeft((0, 0, Set.empty[String])) {
-      case ((total, anons, userIds), member) =>
-        member.userId match {
-          case Some(userId)
-              if !userIds(userId) && userIds.size < maxSpectatorUsers =>
-            (total + 1, anons, userIds + userId)
-          case Some(_) => (total + 1, anons, userIds)
-          case _       => (total + 1, anons + 1, userIds)
-        }
-    }
+    val (total, anons, userIds) =
+      watchers.foldLeft((0, 0, Set.empty[String])) {
+        case ((total, anons, userIds), member) =>
+          member.userId match {
+            case Some(userId)
+                if !userIds(userId) && userIds.size < maxSpectatorUsers =>
+              (total + 1, anons, userIds + userId)
+            case Some(_) => (total + 1, anons, userIds)
+            case _       => (total + 1, anons + 1, userIds)
+          }
+      }
 
     if (total == 0)
       JsNull

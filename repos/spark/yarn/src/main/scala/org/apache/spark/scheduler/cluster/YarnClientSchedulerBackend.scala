@@ -85,15 +85,14 @@ private[spark] class YarnClientSchedulerBackend(
   private def getExtraClientArguments: Seq[String] = {
     val extraArgs = new ArrayBuffer[String]
     // List of (target Client argument, environment variable, Spark property)
-    val optionTuples =
-      List(
-        ("--executor-memory", "SPARK_WORKER_MEMORY", "spark.executor.memory"),
-        ("--executor-memory", "SPARK_EXECUTOR_MEMORY", "spark.executor.memory"),
-        ("--executor-cores", "SPARK_WORKER_CORES", "spark.executor.cores"),
-        ("--executor-cores", "SPARK_EXECUTOR_CORES", "spark.executor.cores"),
-        ("--queue", "SPARK_YARN_QUEUE", "spark.yarn.queue"),
-        ("--py-files", null, "spark.submit.pyFiles")
-      )
+    val optionTuples = List(
+      ("--executor-memory", "SPARK_WORKER_MEMORY", "spark.executor.memory"),
+      ("--executor-memory", "SPARK_EXECUTOR_MEMORY", "spark.executor.memory"),
+      ("--executor-cores", "SPARK_WORKER_CORES", "spark.executor.cores"),
+      ("--executor-cores", "SPARK_EXECUTOR_CORES", "spark.executor.cores"),
+      ("--queue", "SPARK_YARN_QUEUE", "spark.yarn.queue"),
+      ("--py-files", null, "spark.submit.pyFiles")
+    )
     // Warn against the following deprecated environment variables: env var -> suggestion
     val deprecatedEnvVars = Map(
       "SPARK_WORKER_MEMORY" -> "SPARK_EXECUTOR_MEMORY or --executor-memory through spark-submit",
@@ -129,8 +128,10 @@ private[spark] class YarnClientSchedulerBackend(
     assert(
       client != null && appId.isDefined,
       "Application has not been submitted yet!")
-    val (state, _) =
-      client.monitorApplication(appId.get, returnOnRunning = true) // blocking
+    val (state, _) = client.monitorApplication(
+      appId.get,
+      returnOnRunning = true
+    ) // blocking
     if (state == YarnApplicationState.FINISHED ||
         state == YarnApplicationState.FAILED ||
         state == YarnApplicationState.KILLED) {
@@ -155,8 +156,9 @@ private[spark] class YarnClientSchedulerBackend(
 
     override def run() {
       try {
-        val (state, _) =
-          client.monitorApplication(appId.get, logApplicationReport = false)
+        val (state, _) = client.monitorApplication(
+          appId.get,
+          logApplicationReport = false)
         logError(s"Yarn application has already exited with state $state!")
         allowInterrupt = false
         sc.stop()

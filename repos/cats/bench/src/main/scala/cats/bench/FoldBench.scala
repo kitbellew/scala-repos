@@ -13,8 +13,7 @@ class FoldBench {
 
   /** Benchmark fold of Foldable[List] */
   @Benchmark
-  def fold(): String =
-    Foldable[List].fold(chars)
+  def fold(): String = Foldable[List].fold(chars)
 
   /** Benchmark fold using traverse with Const */
   @Benchmark

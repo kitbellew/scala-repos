@@ -71,8 +71,9 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
       expression: ScLiteral,
       result: java.util.ArrayList[FoldingDescriptor]) {
     if (ScalaI18nUtil.isI18nProperty(project, expression)) {
-      val property: IProperty =
-        ScalaI18nUtil.getI18nProperty(project, expression)
+      val property: IProperty = ScalaI18nUtil.getI18nProperty(
+        project,
+        expression)
       val set = new java.util.HashSet[AnyRef]
       if (property != null)
         set.add(property)
@@ -82,8 +83,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
         case expressions: ScArgumentExprList =>
           val exprs = expressions.exprsArray
           if (!(msg == expression.getText) && (exprs(0) eq expression)) {
-            val count: Int =
-              ScalaI18nUtil.getPropertyValueParamsMaxCount(expression)
+            val count: Int = ScalaI18nUtil.getPropertyValueParamsMaxCount(
+              expression)
             val args: Array[ScExpression] = expressions.exprsArray
             if (args.length == 1 + count && parent.getParent
                   .isInstanceOf[ScMethodCall]) {

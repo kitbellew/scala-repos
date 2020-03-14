@@ -86,14 +86,12 @@ object ServerConfig {
     new FinagleServer[Req, Rep] {
       def serve(
           addr: SocketAddress,
-          service: ServiceFactory[Req, Rep]): ListeningServer =
-        NullServer
+          service: ServiceFactory[Req, Rep]): ListeningServer = NullServer
     }
 
   // params specific to ServerBuilder
   private[builder] case class BindTo(addr: SocketAddress) {
-    def mk(): (BindTo, Stack.Param[BindTo]) =
-      (this, BindTo.param)
+    def mk(): (BindTo, Stack.Param[BindTo]) = (this, BindTo.param)
   }
   private[builder] object BindTo {
     implicit val param = Stack.Param(BindTo(new SocketAddress {
@@ -111,8 +109,7 @@ object ServerConfig {
   }
 
   private[builder] case class Daemonize(onOrOff: Boolean) {
-    def mk(): (Daemonize, Stack.Param[Daemonize]) =
-      (this, Daemonize.param)
+    def mk(): (Daemonize, Stack.Param[Daemonize]) = (this, Daemonize.param)
   }
   private[builder] object Daemonize {
     implicit val param = Stack.Param(Daemonize(false))
@@ -276,8 +273,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
           // in StackServer#newStack. Then we can thread through "closes"
           // via ClientConnection.
           val Timer(timer) = params[Timer]
-          val ExpiringService.Param(idleTime, lifeTime) =
-            params[ExpiringService.Param]
+          val ExpiringService
+            .Param(idleTime, lifeTime) = params[ExpiringService.Param]
           val Stats(sr) = params[Stats]
           val idle =
             if (idleTime.isFinite)
@@ -333,8 +330,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   @deprecated("Use stack(server: StackBasedServer)", "7.0.0")
   def stack[Req1, Rep1](
       mk: Stack.Params => FinagleServer[Req1, Rep1]
-  ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
-    copy(params, mk)
+  ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] = copy(params, mk)
 
   /**
     * Overrides the stack and [[com.twitter.finagle.Server]] that will be used
@@ -355,8 +351,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     copy(params, withParams)
   }
 
-  def reportTo(receiver: StatsReceiver): This =
-    configured(Stats(receiver))
+  def reportTo(receiver: StatsReceiver): This = configured(Stats(receiver))
 
   def name(value: String): ServerBuilder[Req, Rep, HasCodec, HasBindTo, Yes] =
     configured(Label(value))
@@ -367,8 +362,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def recvBufferSize(value: Int): This =
     configured(params[Transport.BufferSizes].copy(recv = Some(value)))
 
-  def backlog(value: Int): This =
-    configured(Listener.Backlog(Some(value)))
+  def backlog(value: Int): This = configured(Listener.Backlog(Some(value)))
 
   def bindTo(
       address: SocketAddress): ServerBuilder[Req, Rep, HasCodec, Yes, HasName] =
@@ -383,8 +377,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
   def logger(logger: java.util.logging.Logger): This =
     configured(Logger(logger))
 
-  def logChannelActivity(v: Boolean): This =
-    configured(Transport.Verbose(v))
+  def logChannelActivity(v: Boolean): This = configured(Transport.Verbose(v))
 
   def tls(
       certificatePath: String,
@@ -456,8 +449,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
 
   // API compatibility method
   @deprecated("Use tracer() instead", "7.0.0")
-  def tracerFactory(t: com.twitter.finagle.tracing.Tracer): This =
-    tracer(t)
+  def tracerFactory(t: com.twitter.finagle.tracing.Tracer): This = tracer(t)
 
   def tracer(t: com.twitter.finagle.tracing.Tracer): This =
     configured(Tracer(t))
@@ -494,8 +486,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     * process can only exit only when all remaining servers are daemonized.
     * False by default.
     */
-  def daemon(daemonize: Boolean): This =
-    configured(Daemonize(daemonize))
+  def daemon(daemonize: Boolean): This = configured(Daemonize(daemonize))
 
   /**
     * Configure a [[com.twitter.finagle.service.ResponseClassifier]]

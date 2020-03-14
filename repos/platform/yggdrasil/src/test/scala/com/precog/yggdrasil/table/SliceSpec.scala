@@ -164,10 +164,11 @@ class SliceSpec extends Specification with ArbitrarySlice with ScalaCheck {
       }
     }
 
-    val emptySlice = new Slice {
-      val size = 0
-      val columns: Map[ColumnRef, Column] = Map.empty
-    }
+    val emptySlice =
+      new Slice {
+        val size = 0
+        val columns: Map[ColumnRef, Column] = Map.empty
+      }
 
     "concat empty slices correctly" in {
       implicit def arbSlice = Arbitrary(genSlice(0, concatProjDesc, 23))

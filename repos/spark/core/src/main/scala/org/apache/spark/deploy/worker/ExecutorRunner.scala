@@ -171,8 +171,9 @@ private[deploy] class ExecutorRunner(
       builder.environment.put("SPARK_LOG_URL_STDOUT", s"${baseUrl}stdout")
 
       process = builder.start()
-      val header =
-        "Spark Executor Command: %s\n%s\n\n".format(formattedCommand, "=" * 40)
+      val header = "Spark Executor Command: %s\n%s\n\n".format(
+        formattedCommand,
+        "=" * 40)
 
       // Redirect its stdout and stderr to files
       val stdout = new File(executorDir, "stdout")

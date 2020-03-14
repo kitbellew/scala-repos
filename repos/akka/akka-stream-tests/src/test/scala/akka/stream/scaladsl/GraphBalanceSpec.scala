@@ -125,15 +125,16 @@ class GraphBalanceSpec extends AkkaSpec {
     }
 
     "work with one-way merge" in {
-      val result = Source
-        .fromGraph(GraphDSL.create() { implicit b ⇒
-          val balance = b.add(Balance[Int](1))
-          val source = b.add(Source(1 to 3))
+      val result =
+        Source
+          .fromGraph(GraphDSL.create() { implicit b ⇒
+            val balance = b.add(Balance[Int](1))
+            val source = b.add(Source(1 to 3))
 
-          source ~> balance.in
-          SourceShape(balance.out(0))
-        })
-        .runFold(Seq[Int]())(_ :+ _)
+            source ~> balance.in
+            SourceShape(balance.out(0))
+          })
+          .runFold(Seq[Int]())(_ :+ _)
 
       Await.result(result, 3.seconds) should ===(Seq(1, 2, 3))
     }

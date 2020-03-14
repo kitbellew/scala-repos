@@ -70,20 +70,22 @@ object VersionBatchLaws extends Properties("VersionBatchLaws") {
   }
   property("BatchID -> version -> BatchID") = forAll { (bint: Int) =>
     val b = BatchID(bint)
-    val vbs = new store.VersionedBatchStore[Int, Int, Array[Byte], Array[Byte]](
-      null,
-      0,
-      Batcher.ofHours(1))(null)(null)
+    val vbs =
+      new store.VersionedBatchStore[Int, Int, Array[Byte], Array[Byte]](
+        null,
+        0,
+        Batcher.ofHours(1))(null)(null)
     val v = vbs.batchIDToVersion(b)
     vbs.versionToBatchID(v) == b
   }
   property("version is an upperbound on time") = forAll { (lBig: Long) =>
     val l = lBig / 1000L
     val batcher = Batcher.ofHours(1)
-    val vbs = new store.VersionedBatchStore[Int, Int, Array[Byte], Array[Byte]](
-      null,
-      0,
-      batcher)(null)(null)
+    val vbs =
+      new store.VersionedBatchStore[Int, Int, Array[Byte], Array[Byte]](
+        null,
+        0,
+        batcher)(null)(null)
     val b = vbs.versionToBatchID(l)
     (batcher.earliestTimeOf(b.next).milliSinceEpoch <= l) &&
     (batcher.earliestTimeOf(b).milliSinceEpoch < l)

@@ -53,19 +53,20 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
     Time.withCurrentTimeFrozen { tc =>
       // it'd be great if we could just use a mock.
       // the problem was that stubs are evaluated once, eagerly, at creation time.
-      val underlying = new Reader {
-        private var reads = 0
-        def discard(): Unit = ()
-        def read(n: Int): Future[Option[Buf]] = {
-          reads += 1
-          if (reads == 2) {
-            // now take 10 seconds to read 1 more byte,
-            // which would put us at 0.2 bps, and thus below the threshold.
-            tc.advance(10.seconds)
+      val underlying =
+        new Reader {
+          private var reads = 0
+          def discard(): Unit = ()
+          def read(n: Int): Future[Option[Buf]] = {
+            reads += 1
+            if (reads == 2) {
+              // now take 10 seconds to read 1 more byte,
+              // which would put us at 0.2 bps, and thus below the threshold.
+              tc.advance(10.seconds)
+            }
+            Future.value(Some(buf))
           }
-          Future.value(Some(buf))
         }
-      }
 
       val reader = MinimumThroughput.reader(
         underlying,
@@ -173,19 +174,20 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
     Time.withCurrentTimeFrozen { tc =>
       // it'd be great if we could just use a mock.
       // the problem was that stubs are evaluated once, eagerly, at creation time.
-      val underlying = new Writer {
-        private var writes = 0
-        def fail(cause: Throwable): Unit = ()
-        def write(buf: Buf): Future[Unit] = {
-          writes += 1
-          if (writes == 2) {
-            // now take 10 seconds to write 1 more byte,
-            // which would put us at 0.2 bps, and thus below the threshold.
-            tc.advance(10.seconds)
+      val underlying =
+        new Writer {
+          private var writes = 0
+          def fail(cause: Throwable): Unit = ()
+          def write(buf: Buf): Future[Unit] = {
+            writes += 1
+            if (writes == 2) {
+              // now take 10 seconds to write 1 more byte,
+              // which would put us at 0.2 bps, and thus below the threshold.
+              tc.advance(10.seconds)
+            }
+            Future.Done
           }
-          Future.Done
         }
-      }
 
       val writer = MinimumThroughput.writer(
         underlying,

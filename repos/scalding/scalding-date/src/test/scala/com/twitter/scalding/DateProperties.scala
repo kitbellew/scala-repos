@@ -27,12 +27,11 @@ object DateProperties extends Properties("Date Properties") {
 
   implicit def dateParser: DateParser = DateParser.default
 
-  implicit val durationArb: Arbitrary[Duration] =
-    Arbitrary {
-      choose(0, 10000).map {
-        Millisecs(_)
-      }
+  implicit val durationArb: Arbitrary[Duration] = Arbitrary {
+    choose(0, 10000).map {
+      Millisecs(_)
     }
+  }
 
   implicit val richDateArb: Arbitrary[RichDate] = Arbitrary {
     for (v <- choose(0L, 1L << 32))
@@ -43,16 +42,15 @@ object DateProperties extends Properties("Date Properties") {
          v2 <- choose(v1, 1L << 33))
       yield DateRange(RichDate(v1), RichDate(v2))
   }
-  implicit val absdur: Arbitrary[AbsoluteDuration] =
-    Arbitrary {
-      implicitly[Arbitrary[Long]].arbitrary
-      // Ignore Longs that are too big to fit, and make sure we can add any random 3 together
-      // Long.MaxValue / 1200 ms is the biggest that will fit, we divide by 3 to make sure
-      // we can add three together in tests
-        .map { ms =>
-          fromMillisecs(ms / (1200 * 3))
-        }
-    }
+  implicit val absdur: Arbitrary[AbsoluteDuration] = Arbitrary {
+    implicitly[Arbitrary[Long]].arbitrary
+    // Ignore Longs that are too big to fit, and make sure we can add any random 3 together
+    // Long.MaxValue / 1200 ms is the biggest that will fit, we divide by 3 to make sure
+    // we can add three together in tests
+      .map { ms =>
+        fromMillisecs(ms / (1200 * 3))
+      }
+  }
 
   property("Shifting DateRanges breaks containment") = forAll {
     (dr: DateRange, r: Duration) =>

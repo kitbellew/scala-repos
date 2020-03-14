@@ -114,54 +114,56 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
   protected case class Rebuild(cur: Distributor) extends Update
   protected case class Invoke(fn: Distributor => Unit) extends Update
 
-  private[this] val updater = new Updater[Update] {
-    protected def preprocess(updates: Seq[Update]): Seq[Update] = {
-      if (updates.size == 1)
-        return updates
+  private[this] val updater =
+    new Updater[Update] {
+      protected def preprocess(updates: Seq[Update]): Seq[Update] = {
+        if (updates.size == 1)
+          return updates
 
-      val types = updates.reverse.groupBy(_.getClass)
+        val types = updates.reverse.groupBy(_.getClass)
 
-      val update: Seq[Update] = types.get(classOf[NewList]) match {
-        case Some(Seq(last, _*)) => Seq(last)
-        case None                => types.getOrElse(classOf[Rebuild], Nil).take(1)
+        val update: Seq[Update] =
+          types.get(classOf[NewList]) match {
+            case Some(Seq(last, _*)) => Seq(last)
+            case None                => types.getOrElse(classOf[Rebuild], Nil).take(1)
+          }
+
+        update ++ types.getOrElse(classOf[Invoke], Nil).reverse
       }
 
-      update ++ types.getOrElse(classOf[Invoke], Nil).reverse
+      def handle(u: Update): Unit =
+        u match {
+          case NewList(svcFactories) =>
+            val newFactories = svcFactories.toSet
+            val (transfer, closed) = dist.vector.partition { node =>
+              newFactories.contains(node.factory)
+            }
+
+            for (node <- closed)
+              node.close()
+            removes.incr(closed.size)
+
+            // we could demand that 'n' proxies hashCode, equals (i.e. is a Proxy)
+            val transferNodes = transfer.map(n => n.factory -> n).toMap
+            var numNew = 0
+            val newNodes = svcFactories.map {
+              case f if transferNodes.contains(f) => transferNodes(f)
+              case f =>
+                numNew += 1
+                newNode(f, statsReceiver.scope(f.toString))
+            }
+
+            dist = dist.rebuild(newNodes.toVector)
+            adds.incr(numNew)
+
+          case Rebuild(_dist) if _dist == dist =>
+            dist = dist.rebuild()
+
+          case Rebuild(_stale) =>
+          case Invoke(fn) =>
+            fn(dist)
+        }
     }
-
-    def handle(u: Update): Unit =
-      u match {
-        case NewList(svcFactories) =>
-          val newFactories = svcFactories.toSet
-          val (transfer, closed) = dist.vector.partition { node =>
-            newFactories.contains(node.factory)
-          }
-
-          for (node <- closed)
-            node.close()
-          removes.incr(closed.size)
-
-          // we could demand that 'n' proxies hashCode, equals (i.e. is a Proxy)
-          val transferNodes = transfer.map(n => n.factory -> n).toMap
-          var numNew = 0
-          val newNodes = svcFactories.map {
-            case f if transferNodes.contains(f) => transferNodes(f)
-            case f =>
-              numNew += 1
-              newNode(f, statsReceiver.scope(f.toString))
-          }
-
-          dist = dist.rebuild(newNodes.toVector)
-          adds.incr(numNew)
-
-        case Rebuild(_dist) if _dist == dist =>
-          dist = dist.rebuild()
-
-        case Rebuild(_stale) =>
-        case Invoke(fn) =>
-          fn(dist)
-      }
-  }
 
   /**
     * Update the load balancer's service list. After the update, which

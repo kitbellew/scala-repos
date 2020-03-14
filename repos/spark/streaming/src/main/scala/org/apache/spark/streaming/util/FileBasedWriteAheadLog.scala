@@ -65,8 +65,8 @@ private[streaming] class FileBasedWriteAheadLog(
     "WriteAheadLogManager" + callerName.map(c => s" for $c").getOrElse("")
   }
   private val forkJoinPool = ThreadUtils.newForkJoinPool(threadpoolName, 20)
-  private val executionContext =
-    ExecutionContext.fromExecutorService(forkJoinPool)
+  private val executionContext = ExecutionContext.fromExecutorService(
+    forkJoinPool)
 
   override protected def logName = {
     getClass.getName.stripSuffix("$") +
@@ -201,9 +201,10 @@ private[streaming] class FileBasedWriteAheadLog(
     oldLogFiles.foreach { logInfo =>
       if (!executionContext.isShutdown) {
         try {
-          val f = Future {
-            deleteFile(logInfo)
-          }(executionContext)
+          val f =
+            Future {
+              deleteFile(logInfo)
+            }(executionContext)
           if (waitForCompletion) {
             import scala.concurrent.duration._
             Await.ready(f, 1 second)
@@ -242,9 +243,10 @@ private[streaming] class FileBasedWriteAheadLog(
         }
         currentLogWriterStartTime = currentTime
         currentLogWriterStopTime = currentTime + (rollingIntervalSecs * 1000)
-        val newLogPath = new Path(
-          logDirectory,
-          timeToLogFile(currentLogWriterStartTime, currentLogWriterStopTime))
+        val newLogPath =
+          new Path(
+            logDirectory,
+            timeToLogFile(currentLogWriterStartTime, currentLogWriterStopTime))
         currentLogPath = Some(newLogPath.toString)
         currentLogWriter =
           new FileBasedWriteAheadLogWriter(currentLogPath.get, hadoopConf)
@@ -256,13 +258,14 @@ private[streaming] class FileBasedWriteAheadLog(
   private def initializeOrRecover(): Unit =
     synchronized {
       val logDirectoryPath = new Path(logDirectory)
-      val fileSystem =
-        HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
+      val fileSystem = HdfsUtils.getFileSystemForPath(
+        logDirectoryPath,
+        hadoopConf)
 
       if (fileSystem.exists(logDirectoryPath) &&
           fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
-        val logFileInfo =
-          logFilesTologInfo(fileSystem.listStatus(logDirectoryPath).map {
+        val logFileInfo = logFilesTologInfo(
+          fileSystem.listStatus(logDirectoryPath).map {
             _.getPath
           })
         pastLogs.clear()

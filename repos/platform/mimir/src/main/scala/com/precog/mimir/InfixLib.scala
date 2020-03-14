@@ -103,95 +103,97 @@ trait InfixLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val Mul = new InfixOp2("multiply", _ * _, _ * _, _ * _)
 
       // div needs to make sure to use Double even for division with longs
-      val Div = new Op2F2(InfixNamespace, "divide") {
-        def doublef(x: Double, y: Double) = x / y
+      val Div =
+        new Op2F2(InfixNamespace, "divide") {
+          def doublef(x: Double, y: Double) = x / y
 
-        val context = java.math.MathContext.DECIMAL128
-        def numf(x: BigDecimal, y: BigDecimal) = x(context) / y(context)
+          val context = java.math.MathContext.DECIMAL128
+          def numf(x: BigDecimal, y: BigDecimal) = x(context) / y(context)
 
-        val tpe = BinaryOperationType(JNumberT, JNumberT, JNumberT)
-        def f2(ctx: MorphContext): F2 =
-          CF2P("builtin::infix::div") {
-            case (c1: LongColumn, c2: LongColumn) =>
-              new DoubleFrom.LL(c1, c2, doubleNeZero, doublef)
+          val tpe = BinaryOperationType(JNumberT, JNumberT, JNumberT)
+          def f2(ctx: MorphContext): F2 =
+            CF2P("builtin::infix::div") {
+              case (c1: LongColumn, c2: LongColumn) =>
+                new DoubleFrom.LL(c1, c2, doubleNeZero, doublef)
 
-            case (c1: LongColumn, c2: DoubleColumn) =>
-              new NumFrom.LD(c1, c2, numNeZero, numf)
+              case (c1: LongColumn, c2: DoubleColumn) =>
+                new NumFrom.LD(c1, c2, numNeZero, numf)
 
-            case (c1: LongColumn, c2: NumColumn) =>
-              new NumFrom.LN(c1, c2, numNeZero, numf)
+              case (c1: LongColumn, c2: NumColumn) =>
+                new NumFrom.LN(c1, c2, numNeZero, numf)
 
-            case (c1: DoubleColumn, c2: LongColumn) =>
-              new NumFrom.DL(c1, c2, numNeZero, numf)
+              case (c1: DoubleColumn, c2: LongColumn) =>
+                new NumFrom.DL(c1, c2, numNeZero, numf)
 
-            case (c1: DoubleColumn, c2: DoubleColumn) =>
-              new DoubleFrom.DD(c1, c2, doubleNeZero, doublef)
+              case (c1: DoubleColumn, c2: DoubleColumn) =>
+                new DoubleFrom.DD(c1, c2, doubleNeZero, doublef)
 
-            case (c1: DoubleColumn, c2: NumColumn) =>
-              new NumFrom.DN(c1, c2, numNeZero, numf)
+              case (c1: DoubleColumn, c2: NumColumn) =>
+                new NumFrom.DN(c1, c2, numNeZero, numf)
 
-            case (c1: NumColumn, c2: LongColumn) =>
-              new NumFrom.NL(c1, c2, numNeZero, numf)
+              case (c1: NumColumn, c2: LongColumn) =>
+                new NumFrom.NL(c1, c2, numNeZero, numf)
 
-            case (c1: NumColumn, c2: DoubleColumn) =>
-              new NumFrom.ND(c1, c2, numNeZero, numf)
+              case (c1: NumColumn, c2: DoubleColumn) =>
+                new NumFrom.ND(c1, c2, numNeZero, numf)
 
-            case (c1: NumColumn, c2: NumColumn) =>
-              new NumFrom.NN(c1, c2, numNeZero, numf)
-          }
-      }
+              case (c1: NumColumn, c2: NumColumn) =>
+                new NumFrom.NN(c1, c2, numNeZero, numf)
+            }
+        }
 
-      val Mod = new Op2F2(InfixNamespace, "mod") {
-        val tpe = BinaryOperationType(JNumberT, JNumberT, JNumberT)
+      val Mod =
+        new Op2F2(InfixNamespace, "mod") {
+          val tpe = BinaryOperationType(JNumberT, JNumberT, JNumberT)
 
-        def longMod(x: Long, y: Long) =
-          if ((x ^ y) < 0)
-            (x % y) + y
-          else
-            x % y
+          def longMod(x: Long, y: Long) =
+            if ((x ^ y) < 0)
+              (x % y) + y
+            else
+              x % y
 
-        def doubleMod(x: Double, y: Double) =
-          if (x.signum * y.signum == -1)
-            x % y + y
-          else
-            x % y
+          def doubleMod(x: Double, y: Double) =
+            if (x.signum * y.signum == -1)
+              x % y + y
+            else
+              x % y
 
-        def numMod(x: BigDecimal, y: BigDecimal) =
-          if (x.signum * y.signum == -1)
-            x % y + y
-          else
-            x % y
+          def numMod(x: BigDecimal, y: BigDecimal) =
+            if (x.signum * y.signum == -1)
+              x % y + y
+            else
+              x % y
 
-        def f2(ctx: MorphContext): F2 =
-          CF2P("builtin::infix::mod") {
-            case (c1: LongColumn, c2: LongColumn) =>
-              new LongFrom.LL(c1, c2, longNeZero, longMod)
+          def f2(ctx: MorphContext): F2 =
+            CF2P("builtin::infix::mod") {
+              case (c1: LongColumn, c2: LongColumn) =>
+                new LongFrom.LL(c1, c2, longNeZero, longMod)
 
-            case (c1: LongColumn, c2: DoubleColumn) =>
-              new NumFrom.LD(c1, c2, numNeZero, numMod)
+              case (c1: LongColumn, c2: DoubleColumn) =>
+                new NumFrom.LD(c1, c2, numNeZero, numMod)
 
-            case (c1: LongColumn, c2: NumColumn) =>
-              new NumFrom.LN(c1, c2, numNeZero, numMod)
+              case (c1: LongColumn, c2: NumColumn) =>
+                new NumFrom.LN(c1, c2, numNeZero, numMod)
 
-            case (c1: DoubleColumn, c2: LongColumn) =>
-              new NumFrom.DL(c1, c2, numNeZero, numMod)
+              case (c1: DoubleColumn, c2: LongColumn) =>
+                new NumFrom.DL(c1, c2, numNeZero, numMod)
 
-            case (c1: DoubleColumn, c2: DoubleColumn) =>
-              new DoubleFrom.DD(c1, c2, doubleNeZero, doubleMod)
+              case (c1: DoubleColumn, c2: DoubleColumn) =>
+                new DoubleFrom.DD(c1, c2, doubleNeZero, doubleMod)
 
-            case (c1: DoubleColumn, c2: NumColumn) =>
-              new NumFrom.DN(c1, c2, numNeZero, numMod)
+              case (c1: DoubleColumn, c2: NumColumn) =>
+                new NumFrom.DN(c1, c2, numNeZero, numMod)
 
-            case (c1: NumColumn, c2: LongColumn) =>
-              new NumFrom.NL(c1, c2, numNeZero, numMod)
+              case (c1: NumColumn, c2: LongColumn) =>
+                new NumFrom.NL(c1, c2, numNeZero, numMod)
 
-            case (c1: NumColumn, c2: DoubleColumn) =>
-              new NumFrom.ND(c1, c2, numNeZero, numMod)
+              case (c1: NumColumn, c2: DoubleColumn) =>
+                new NumFrom.ND(c1, c2, numNeZero, numMod)
 
-            case (c1: NumColumn, c2: NumColumn) =>
-              new NumFrom.NN(c1, c2, numNeZero, numMod)
-          }
-      }
+              case (c1: NumColumn, c2: NumColumn) =>
+                new NumFrom.NN(c1, c2, numNeZero, numMod)
+            }
+        }
 
       // Separate trait for use in MathLib
       trait Power {
@@ -330,22 +332,25 @@ trait InfixLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val And = new BoolOp2("and", _ && _)
       val Or = new BoolOp2("or", _ || _)
 
-      val concatString = new Op2F2(InfixNamespace, "concatString") {
-        //@deprecated, see the DEPRECATED comment in StringLib
-        val tpe = BinaryOperationType(StrAndDateT, StrAndDateT, JTextT)
+      val concatString =
+        new Op2F2(InfixNamespace, "concatString") {
+          //@deprecated, see the DEPRECATED comment in StringLib
+          val tpe = BinaryOperationType(StrAndDateT, StrAndDateT, JTextT)
 
-        private def build(c1: StrColumn, c2: StrColumn) =
-          new StrFrom.SS(c1, c2, _ != null && _ != null, _ + _)
+          private def build(c1: StrColumn, c2: StrColumn) =
+            new StrFrom.SS(c1, c2, _ != null && _ != null, _ + _)
 
-        def f2(ctx: MorphContext): F2 =
-          CF2P("builtin::infix:concatString") {
-            case (c1: StrColumn, c2: StrColumn)  => build(c1, c2)
-            case (c1: DateColumn, c2: StrColumn) => build(dateToStrCol(c1), c2)
-            case (c1: StrColumn, c2: DateColumn) => build(c1, dateToStrCol(c2))
-            case (c1: DateColumn, c2: DateColumn) =>
-              build(dateToStrCol(c1), dateToStrCol(c2))
-          }
-      }
+          def f2(ctx: MorphContext): F2 =
+            CF2P("builtin::infix:concatString") {
+              case (c1: StrColumn, c2: StrColumn) => build(c1, c2)
+              case (c1: DateColumn, c2: StrColumn) =>
+                build(dateToStrCol(c1), c2)
+              case (c1: StrColumn, c2: DateColumn) =>
+                build(c1, dateToStrCol(c2))
+              case (c1: DateColumn, c2: DateColumn) =>
+                build(dateToStrCol(c1), dateToStrCol(c2))
+            }
+        }
     }
   }
 }

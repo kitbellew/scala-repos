@@ -76,17 +76,18 @@ abstract class AbstractTestFramework extends JavaTestFramework {
 
   override def setupLibrary(module: Module) {
     import org.jetbrains.plugins.scala.project._
-    val (libraries, resolvers, options) = module.scalaSdk match {
-      case Some(scalaSdk) =>
-        val compilerVersion = scalaSdk.compilerVersion
-        (
-          getLibraryDependencies(compilerVersion),
-          getLibraryResolvers(compilerVersion),
-          getAdditionalBuildCommands(compilerVersion))
-      case None =>
-        throw new RuntimeException(
-          "Failed to download test library jars: scala SDK is not specified to module" + module.getName)
-    }
+    val (libraries, resolvers, options) =
+      module.scalaSdk match {
+        case Some(scalaSdk) =>
+          val compilerVersion = scalaSdk.compilerVersion
+          (
+            getLibraryDependencies(compilerVersion),
+            getLibraryResolvers(compilerVersion),
+            getAdditionalBuildCommands(compilerVersion))
+        case None =>
+          throw new RuntimeException(
+            "Failed to download test library jars: scala SDK is not specified to module" + module.getName)
+      }
     val modifier = new SimpleBuildFileModifier(libraries, resolvers, options)
     modifier.modify(module, needPreviewChanges = true)
   }

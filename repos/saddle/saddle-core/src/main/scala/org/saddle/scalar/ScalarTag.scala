@@ -162,6 +162,5 @@ trait SpecializedFactory[@spec(Boolean, Int, Long, Float, Double) T] {
     * don't want to extract elements that way.
     */
   protected def altMatConstructor(r: Int, c: Int, arr: Array[Vec[T]])(
-      implicit st: ST[T]): Mat[T] =
-    makeMat(c, r, st.concat(arr).toArray).T
+      implicit st: ST[T]): Mat[T] = makeMat(c, r, st.concat(arr).toArray).T
 }

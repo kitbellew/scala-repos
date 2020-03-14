@@ -24,8 +24,9 @@ trait DebugConf extends ScallopConf {
     prefix = "disable_"
   )
 
-  lazy val deprecatedDebugTracing =
-    opt[Boolean]("enable_tracing", hidden = true)
+  lazy val deprecatedDebugTracing = opt[Boolean](
+    "enable_tracing",
+    hidden = true)
 
   mutuallyExclusive(debugTracing, deprecatedDebugTracing)
   lazy val enableDebugTracing = debugTracing() || deprecatedDebugTracing()
@@ -45,8 +46,10 @@ trait DebugConf extends ScallopConf {
     prefix = "disable_"
   )
 
-  lazy val deprecatedEnableMetrics =
-    opt[Boolean]("enable_metrics", default = Some(false), hidden = true)
+  lazy val deprecatedEnableMetrics = opt[Boolean](
+    "enable_metrics",
+    default = Some(false),
+    hidden = true)
 
   mutuallyExclusive(metrics, deprecatedEnableMetrics)
 
@@ -80,8 +83,9 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     override def invoke(in: MethodInvocation): AnyRef = {
       val className = metrics.get.className(in.getThis.getClass)
       val logger = LoggerFactory.getLogger(className)
-      val method = s"""$className.${in.getMethod.getName}(${in.getArguments
-        .mkString(", ")})"""
+      val method =
+        s"""$className.${in.getMethod.getName}(${in.getArguments.mkString(
+          ", ")})"""
       logger.trace(s">>> $method")
       val result = in.proceed()
       logger.trace(s"<<< $method")

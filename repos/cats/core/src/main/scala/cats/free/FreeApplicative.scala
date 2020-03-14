@@ -72,13 +72,11 @@ object FreeApplicative {
   private final case class Ap[F[_], P, A](pivot: F[P], fn: FA[F, P => A])
       extends FA[F, A]
 
-  final def pure[F[_], A](a: A): FA[F, A] =
-    Pure(a)
+  final def pure[F[_], A](a: A): FA[F, A] = Pure(a)
 
   final def ap[F[_], P, A](fp: F[P])(f: FA[F, P => A]): FA[F, A] = Ap(fp, f)
 
-  final def lift[F[_], A](fa: F[A]): FA[F, A] =
-    ap(fa)(Pure(a => a))
+  final def lift[F[_], A](fa: F[A]): FA[F, A] = ap(fa)(Pure(a => a))
 
   implicit final def freeApplicative[S[_]]: Applicative[FA[S, ?]] = {
     new Applicative[FA[S, ?]] {

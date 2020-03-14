@@ -27,12 +27,13 @@ class ScFunctionalTypeElementImpl(node: ASTNode)
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)
   def desugarizedInfixType: Option[ScParameterizedTypeElement] = {
-    val paramTypes = paramTypeElement match {
-      case tup: ScTupleTypeElement => tup.components
-      case par: ScParenthesisedTypeElement if par.typeElement.isEmpty =>
-        Seq.empty
-      case other => Seq(other)
-    }
+    val paramTypes =
+      paramTypeElement match {
+        case tup: ScTupleTypeElement => tup.components
+        case par: ScParenthesisedTypeElement if par.typeElement.isEmpty =>
+          Seq.empty
+        case other => Seq(other)
+      }
     val n = paramTypes.length
     val newTypeText =
       s"_root_.scala.Function$n[${paramTypes.map(_.getText).mkString(",")}${if (n == 0)

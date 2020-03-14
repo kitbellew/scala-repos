@@ -162,27 +162,28 @@ trait MethodSynthesis {
 
     // TODO: see if we can link symbol creation & tree derivation by sharing the Field/Getter/Setter factories
     def enterGetterSetter(tree: ValDef): Unit = {
-      tree.symbol = if (tree.mods.isLazy) {
-        val lazyValGetter = LazyValGetter(tree).createAndEnterSymbol()
-        enterLazyVal(tree, lazyValGetter)
-      } else {
-        val getter = Getter(tree)
-        val getterSym = getter.createAndEnterSymbol()
+      tree.symbol =
+        if (tree.mods.isLazy) {
+          val lazyValGetter = LazyValGetter(tree).createAndEnterSymbol()
+          enterLazyVal(tree, lazyValGetter)
+        } else {
+          val getter = Getter(tree)
+          val getterSym = getter.createAndEnterSymbol()
 
-        // Create the setter if necessary.
-        if (getter.needsSetter)
-          Setter(tree).createAndEnterSymbol()
+          // Create the setter if necessary.
+          if (getter.needsSetter)
+            Setter(tree).createAndEnterSymbol()
 
-        // If the getter's abstract the tree gets the getter's symbol,
-        // otherwise, create a field (assume the getter requires storage).
-        // NOTE: we cannot look at symbol info, since we're in the process of deriving them
-        // (luckily, they only matter for lazy vals, which we've ruled out in this else branch,
-        // and `doNotDeriveField` will skip them if `!mods.isLazy`)
-        if (Field.noFieldFor(tree))
-          getterSym setPos tree.pos
-        else
-          enterStrictVal(tree)
-      }
+          // If the getter's abstract the tree gets the getter's symbol,
+          // otherwise, create a field (assume the getter requires storage).
+          // NOTE: we cannot look at symbol info, since we're in the process of deriving them
+          // (luckily, they only matter for lazy vals, which we've ruled out in this else branch,
+          // and `doNotDeriveField` will skip them if `!mods.isLazy`)
+          if (Field.noFieldFor(tree))
+            getterSym setPos tree.pos
+          else
+            enterStrictVal(tree)
+        }
 
       enterBeans(tree)
     }
@@ -389,23 +390,24 @@ trait MethodSynthesis {
         //
         // TODO: these defaults can be surprising for annotations not meant for accessors/fields -- should we revisit?
         // (In order to have `@foo val X` result in the X getter being annotated with `@foo`, foo needs to be meta-annotated with @getter)
-        val annotFilter: AnnotationInfo => Boolean = this match {
-          case _: Param =>
-            annotationFilter(ParamTargetClass, defaultRetention = true)
-          // By default annotations go to the field, except if the field is generated for a class parameter (PARAMACCESSOR).
-          case _: Field =>
-            annotationFilter(
-              FieldTargetClass,
-              defaultRetention = !mods.isParamAccessor)
-          case _: BaseGetter =>
-            annotationFilter(GetterTargetClass, defaultRetention = false)
-          case _: Setter =>
-            annotationFilter(SetterTargetClass, defaultRetention = false)
-          case _: BeanSetter =>
-            annotationFilter(BeanSetterTargetClass, defaultRetention = false)
-          case _: AnyBeanGetter =>
-            annotationFilter(BeanGetterTargetClass, defaultRetention = false)
-        }
+        val annotFilter: AnnotationInfo => Boolean =
+          this match {
+            case _: Param =>
+              annotationFilter(ParamTargetClass, defaultRetention = true)
+            // By default annotations go to the field, except if the field is generated for a class parameter (PARAMACCESSOR).
+            case _: Field =>
+              annotationFilter(
+                FieldTargetClass,
+                defaultRetention = !mods.isParamAccessor)
+            case _: BaseGetter =>
+              annotationFilter(GetterTargetClass, defaultRetention = false)
+            case _: Setter =>
+              annotationFilter(SetterTargetClass, defaultRetention = false)
+            case _: BeanSetter =>
+              annotationFilter(BeanSetterTargetClass, defaultRetention = false)
+            case _: AnyBeanGetter =>
+              annotationFilter(BeanGetterTargetClass, defaultRetention = false)
+          }
 
         // The annotations amongst those found on the original symbol which
         // should be propagated to this kind of accessor.
@@ -507,15 +509,16 @@ trait MethodSynthesis {
         // expects to be able to identify escaping locals in typedDefDef, and fails to
         // spot that brand of them. In other words it's an artifact of the implementation.
         val getterTp = derivedSym.tpe_*.finalResultType
-        val tpt = getterTp.widen match {
-          // Range position errors ensue if we don't duplicate this in some
-          // circumstances (at least: concrete vals with existential types.)
-          case _: ExistentialType =>
-            TypeTree() setOriginal (tree.tpt.duplicate setPos tree.tpt.pos.focus)
-          case _ if isDeferred =>
-            TypeTree() setOriginal tree.tpt // keep type tree of original abstract field
-          case _ => TypeTree(getterTp)
-        }
+        val tpt =
+          getterTp.widen match {
+            // Range position errors ensue if we don't duplicate this in some
+            // circumstances (at least: concrete vals with existential types.)
+            case _: ExistentialType =>
+              TypeTree() setOriginal (tree.tpt.duplicate setPos tree.tpt.pos.focus)
+            case _ if isDeferred =>
+              TypeTree() setOriginal tree.tpt // keep type tree of original abstract field
+            case _ => TypeTree(getterTp)
+          }
         tpt setPos tree.tpt.pos.focus
       }
       override def derivedTree: DefDef =

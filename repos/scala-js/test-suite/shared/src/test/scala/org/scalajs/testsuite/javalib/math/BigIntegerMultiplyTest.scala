@@ -37,8 +37,8 @@ class BigIntegerMultiplyTest {
   @Test def testCase10(): Unit = {
     val aBytes = Array[Byte](1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 1, 2, 3, 4, 5)
     val aSign = -1
-    val rBytes =
-      Array[Byte](-2, -3, -4, -5, -6, -7, -8, -2, -3, -4, -2, -3, -4, -5, -5)
+    val rBytes = Array[Byte](-2, -3, -4, -5, -6, -7, -8, -2, -3, -4, -2, -3, -4,
+      -5, -5)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = BigInteger.ONE
     val result = aNumber.multiply(bNumber)

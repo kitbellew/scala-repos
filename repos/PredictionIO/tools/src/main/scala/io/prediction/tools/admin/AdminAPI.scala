@@ -135,11 +135,12 @@ object AdminServer {
   def createAdminServer(config: AdminServerConfig): Unit = {
     implicit val system = ActorSystem("AdminServerSystem")
 
-    val commandClient = new CommandClient(
-      appClient = Storage.getMetaDataApps,
-      accessKeyClient = Storage.getMetaDataAccessKeys,
-      eventClient = Storage.getLEvents()
-    )
+    val commandClient =
+      new CommandClient(
+        appClient = Storage.getMetaDataApps,
+        accessKeyClient = Storage.getMetaDataAccessKeys,
+        eventClient = Storage.getLEvents()
+      )
 
     val serverActor = system.actorOf(
       Props(classOf[AdminServerActor], commandClient),

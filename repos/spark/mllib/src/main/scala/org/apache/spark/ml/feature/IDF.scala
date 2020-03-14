@@ -43,10 +43,11 @@ private[feature] trait IDFBase
     * Default: 0
     * @group param
     */
-  final val minDocFreq = new IntParam(
-    this,
-    "minDocFreq",
-    "minimum of documents in which a term should appear for filtering")
+  final val minDocFreq =
+    new IntParam(
+      this,
+      "minDocFreq",
+      "minimum of documents in which a term should appear for filtering")
 
   setDefault(minDocFreq -> 0)
 

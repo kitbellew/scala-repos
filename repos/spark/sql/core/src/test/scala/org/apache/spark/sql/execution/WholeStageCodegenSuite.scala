@@ -67,8 +67,9 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
       Seq(Row(1, "1"), Row(1, "1"), Row(2, "2")))
     val schema = new StructType().add("k", IntegerType).add("v", StringType)
     val smallDF = sqlContext.createDataFrame(rdd, schema)
-    val df =
-      sqlContext.range(10).join(broadcast(smallDF), col("k") === col("id"))
+    val df = sqlContext
+      .range(10)
+      .join(broadcast(smallDF), col("k") === col("id"))
     assert(
       df.queryExecution.executedPlan
         .find(p =>

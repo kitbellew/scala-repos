@@ -94,13 +94,14 @@ trait Helpers { self: Global =>
       }
     }
 
-    val name = if (sym.isType) {
-      typeIndexerName(sym)
-    } else if (sym.isModule) {
-      typeIndexerName(sym) + "$"
-    } else {
-      symbolIndexerName(sym.owner) + "." + sym.encodedName
-    }
+    val name =
+      if (sym.isType) {
+        typeIndexerName(sym)
+      } else if (sym.isModule) {
+        typeIndexerName(sym) + "$"
+      } else {
+        symbolIndexerName(sym.owner) + "." + sym.encodedName
+      }
     name
       .replaceAll("\\.package\\$\\$", ".")
       .replaceAll("\\.package\\$\\.", ".")
@@ -128,11 +129,12 @@ trait Helpers { self: Global =>
       else
         typeSym.enclosingPackage.fullName + "."
 
-    val withoutArgs = if (typeSym.isNestedClass) {
-      prefix + nestedClassName(typeSym)
-    } else {
-      prefix + typeShortName(typeSym)
-    }
+    val withoutArgs =
+      if (typeSym.isNestedClass) {
+        prefix + nestedClassName(typeSym)
+      } else {
+        prefix + typeShortName(typeSym)
+      }
     if (withTpeArgs) {
       withoutArgs + (if (tpe.typeArgs.size > 0) {
                        "[" +
@@ -209,9 +211,10 @@ trait Helpers { self: Global =>
     // Special convenience handling for the case where name is a top-level
     // package, e.g., 'java'.
     val s = segments(name)
-    val sym = s.foldLeft[Symbol](rootSymbol) { (sym, name) =>
-      sym.info.member(name)
-    }
+    val sym =
+      s.foldLeft[Symbol](rootSymbol) { (sym, name) =>
+        sym.info.member(name)
+      }
     try {
       sym match {
         case NoSymbol    => None

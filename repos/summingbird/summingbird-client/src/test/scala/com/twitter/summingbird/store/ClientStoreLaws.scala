@@ -24,10 +24,11 @@ case class TestStore[K, +V](m: Map[K, Option[V]]) extends ReadableStore[K, V] {
 class ClientStoreLaws extends WordSpec {
 
   /** Batcher that always returns a batch of 10. */
-  implicit val batcher = new AbstractBatcher {
-    def batchOf(t: Timestamp) = BatchID(10)
-    def earliestTimeOf(batch: BatchID) = Timestamp(0)
-  }
+  implicit val batcher =
+    new AbstractBatcher {
+      def batchOf(t: Timestamp) = BatchID(10)
+      def earliestTimeOf(batch: BatchID) = Timestamp(0)
+    }
 
   val offline = TestStore[String, (BatchID, Int)](
     Map(

@@ -38,21 +38,24 @@ class StatusTrackerSuite
       .map(identity)
       .groupBy(identity)
       .collectAsync()
-    val jobId: Int = eventually(timeout(10 seconds)) {
-      val jobIds = jobFuture.jobIds
-      jobIds.size should be(1)
-      jobIds.head
-    }
-    val jobInfo = eventually(timeout(10 seconds)) {
-      sc.statusTracker.getJobInfo(jobId).get
-    }
+    val jobId: Int =
+      eventually(timeout(10 seconds)) {
+        val jobIds = jobFuture.jobIds
+        jobIds.size should be(1)
+        jobIds.head
+      }
+    val jobInfo =
+      eventually(timeout(10 seconds)) {
+        sc.statusTracker.getJobInfo(jobId).get
+      }
     jobInfo.status() should not be FAILED
     val stageIds = jobInfo.stageIds()
     stageIds.size should be(2)
 
-    val firstStageInfo = eventually(timeout(10 seconds)) {
-      sc.statusTracker.getStageInfo(stageIds(0)).get
-    }
+    val firstStageInfo =
+      eventually(timeout(10 seconds)) {
+        sc.statusTracker.getStageInfo(stageIds(0)).get
+      }
     firstStageInfo.stageId() should be(stageIds(0))
     firstStageInfo.currentAttemptId() should be(0)
     firstStageInfo.numTasks() should be(2)
@@ -68,9 +71,10 @@ class StatusTrackerSuite
     sc = new SparkContext("local", "test", new SparkConf(false))
     // Passing `null` should return jobs that were not run in a job group:
     val defaultJobGroupFuture = sc.parallelize(1 to 1000).countAsync()
-    val defaultJobGroupJobId = eventually(timeout(10 seconds)) {
-      defaultJobGroupFuture.jobIds.head
-    }
+    val defaultJobGroupJobId =
+      eventually(timeout(10 seconds)) {
+        defaultJobGroupFuture.jobIds.head
+      }
     eventually(timeout(10 seconds)) {
       sc.statusTracker.getJobIdsForGroup(null).toSet should be(
         Set(defaultJobGroupJobId))
@@ -79,17 +83,19 @@ class StatusTrackerSuite
     sc.setJobGroup("my-job-group", "description")
     sc.statusTracker.getJobIdsForGroup("my-job-group") should be(Seq.empty)
     val firstJobFuture = sc.parallelize(1 to 1000).countAsync()
-    val firstJobId = eventually(timeout(10 seconds)) {
-      firstJobFuture.jobIds.head
-    }
+    val firstJobId =
+      eventually(timeout(10 seconds)) {
+        firstJobFuture.jobIds.head
+      }
     eventually(timeout(10 seconds)) {
       sc.statusTracker.getJobIdsForGroup("my-job-group") should be(
         Seq(firstJobId))
     }
     val secondJobFuture = sc.parallelize(1 to 1000).countAsync()
-    val secondJobId = eventually(timeout(10 seconds)) {
-      secondJobFuture.jobIds.head
-    }
+    val secondJobId =
+      eventually(timeout(10 seconds)) {
+        secondJobFuture.jobIds.head
+      }
     eventually(timeout(10 seconds)) {
       sc.statusTracker.getJobIdsForGroup("my-job-group").toSet should be(
         Set(firstJobId, secondJobId))
@@ -101,9 +107,10 @@ class StatusTrackerSuite
     sc.setJobGroup("my-job-group2", "description")
     sc.statusTracker.getJobIdsForGroup("my-job-group2") shouldBe empty
     val firstJobFuture = sc.parallelize(1 to 1000, 1).takeAsync(1)
-    val firstJobId = eventually(timeout(10 seconds)) {
-      firstJobFuture.jobIds.head
-    }
+    val firstJobId =
+      eventually(timeout(10 seconds)) {
+        firstJobFuture.jobIds.head
+      }
     eventually(timeout(10 seconds)) {
       sc.statusTracker.getJobIdsForGroup("my-job-group2") should be(
         Seq(firstJobId))
@@ -115,9 +122,10 @@ class StatusTrackerSuite
     sc.setJobGroup("my-job-group2", "description")
     sc.statusTracker.getJobIdsForGroup("my-job-group2") shouldBe empty
     val firstJobFuture = sc.parallelize(1 to 1000, 2).takeAsync(999)
-    val firstJobId = eventually(timeout(10 seconds)) {
-      firstJobFuture.jobIds.head
-    }
+    val firstJobId =
+      eventually(timeout(10 seconds)) {
+        firstJobFuture.jobIds.head
+      }
     eventually(timeout(10 seconds)) {
       sc.statusTracker.getJobIdsForGroup("my-job-group2") should have size 2
     }

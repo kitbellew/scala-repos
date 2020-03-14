@@ -66,8 +66,9 @@ class OffersWantedForReconciliationActorTest
 
     When("the deployment for a resident app stops")
     val valAfterDeploymentStepSuccess = f.futureOffersWanted()
-    val app =
-      AppDefinition(PathId("/resident"), residency = Some(Residency.default))
+    val app = AppDefinition(
+      PathId("/resident"),
+      residency = Some(Residency.default))
     val plan = DeploymentPlan(
       original = Group.empty.copy(apps = Set(app)),
       target = Group.empty)
@@ -92,8 +93,8 @@ class OffersWantedForReconciliationActorTest
   }
 
   class Fixture {
-    lazy val reviveOffersConfig: ReviveOffersConfig =
-      MarathonTestHelper.defaultConfig()
+    lazy val reviveOffersConfig: ReviveOffersConfig = MarathonTestHelper
+      .defaultConfig()
     lazy val clock: ConstantClock = ConstantClock()
     lazy val eventStream: EventStream = system.eventStream
     lazy val offersWanted: Subject[Boolean] = PublishSubject()
@@ -114,15 +115,16 @@ class OffersWantedForReconciliationActorTest
         cancellable
       }
 
-    lazy val actorInstance = new OffersWantedForReconciliationActor(
-      reviveOffersConfig,
-      clock,
-      eventStream,
-      offersWanted
-    ) {
-      override protected def scheduleNextCheck: Cancellable =
-        Fixture.this.scheduleNextCheck
-    }
+    lazy val actorInstance =
+      new OffersWantedForReconciliationActor(
+        reviveOffersConfig,
+        clock,
+        eventStream,
+        offersWanted
+      ) {
+        override protected def scheduleNextCheck: Cancellable =
+          Fixture.this.scheduleNextCheck
+      }
     lazy val actor = TestActorRef(actorInstance)
 
     def stop(): Unit = {

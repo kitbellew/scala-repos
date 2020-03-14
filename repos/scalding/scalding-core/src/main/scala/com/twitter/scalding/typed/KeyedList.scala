@@ -155,8 +155,7 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     * This is just short hand for mapValueStream(identity), it makes sure the
     * planner sees that you want to force a shuffle. For expert tuning
     */
-  def forceToReducers: This[K, T] =
-    mapValueStream(identity)
+  def forceToReducers: This[K, T] = mapValueStream(identity)
 
   /**
     * Use this to get the first value encountered.

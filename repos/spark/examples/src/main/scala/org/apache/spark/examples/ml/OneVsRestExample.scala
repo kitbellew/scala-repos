@@ -64,49 +64,51 @@ object OneVsRestExample {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("OneVsRest Example") {
-      head("OneVsRest Example: multiclass to binary reduction using OneVsRest")
-      opt[String]("input")
-        .text("input path to labeled examples. This path must be specified")
-        .required()
-        .action((x, c) => c.copy(input = x))
-      opt[Double]("fracTest")
-        .text(
-          s"fraction of data to hold out for testing.  If given option testInput, " +
-            s"this option is ignored. default: ${defaultParams.fracTest}")
-        .action((x, c) => c.copy(fracTest = x))
-      opt[String]("testInput")
-        .text(
-          "input path to test dataset.  If given, option fracTest is ignored")
-        .action((x, c) => c.copy(testInput = Some(x)))
-      opt[Int]("maxIter")
-        .text(s"maximum number of iterations for Logistic Regression." +
-          s" default: ${defaultParams.maxIter}")
-        .action((x, c) => c.copy(maxIter = x))
-      opt[Double]("tol")
-        .text(
-          s"the convergence tolerance of iterations for Logistic Regression." +
-            s" default: ${defaultParams.tol}")
-        .action((x, c) => c.copy(tol = x))
-      opt[Boolean]("fitIntercept")
-        .text(s"fit intercept for Logistic Regression." +
-          s" default: ${defaultParams.fitIntercept}")
-        .action((x, c) => c.copy(fitIntercept = x))
-      opt[Double]("regParam")
-        .text(s"the regularization parameter for Logistic Regression.")
-        .action((x, c) => c.copy(regParam = Some(x)))
-      opt[Double]("elasticNetParam")
-        .text(s"the ElasticNet mixing parameter for Logistic Regression.")
-        .action((x, c) => c.copy(elasticNetParam = Some(x)))
-      checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest >= 1) {
-          failure(
-            s"fracTest ${params.fracTest} value incorrect; should be in [0,1).")
-        } else {
-          success
+    val parser =
+      new OptionParser[Params]("OneVsRest Example") {
+        head(
+          "OneVsRest Example: multiclass to binary reduction using OneVsRest")
+        opt[String]("input")
+          .text("input path to labeled examples. This path must be specified")
+          .required()
+          .action((x, c) => c.copy(input = x))
+        opt[Double]("fracTest")
+          .text(
+            s"fraction of data to hold out for testing.  If given option testInput, " +
+              s"this option is ignored. default: ${defaultParams.fracTest}")
+          .action((x, c) => c.copy(fracTest = x))
+        opt[String]("testInput")
+          .text(
+            "input path to test dataset.  If given, option fracTest is ignored")
+          .action((x, c) => c.copy(testInput = Some(x)))
+        opt[Int]("maxIter")
+          .text(s"maximum number of iterations for Logistic Regression." +
+            s" default: ${defaultParams.maxIter}")
+          .action((x, c) => c.copy(maxIter = x))
+        opt[Double]("tol")
+          .text(
+            s"the convergence tolerance of iterations for Logistic Regression." +
+              s" default: ${defaultParams.tol}")
+          .action((x, c) => c.copy(tol = x))
+        opt[Boolean]("fitIntercept")
+          .text(s"fit intercept for Logistic Regression." +
+            s" default: ${defaultParams.fitIntercept}")
+          .action((x, c) => c.copy(fitIntercept = x))
+        opt[Double]("regParam")
+          .text(s"the regularization parameter for Logistic Regression.")
+          .action((x, c) => c.copy(regParam = Some(x)))
+        opt[Double]("elasticNetParam")
+          .text(s"the ElasticNet mixing parameter for Logistic Regression.")
+          .action((x, c) => c.copy(elasticNetParam = Some(x)))
+        checkConfig { params =>
+          if (params.fracTest < 0 || params.fracTest >= 1) {
+            failure(
+              s"fracTest ${params.fracTest} value incorrect; should be in [0,1).")
+          } else {
+            success
+          }
         }
       }
-    }
     parser
       .parse(args, defaultParams)
       .map { params =>
@@ -125,21 +127,22 @@ object OneVsRestExample {
     // $example on$
     val inputData = sqlContext.read.format("libsvm").load(params.input)
     // compute the train/test split: if testInput is not provided use part of input.
-    val data = params.testInput match {
-      case Some(t) => {
-        // compute the number of features in the training set.
-        val numFeatures = inputData.first().getAs[Vector](1).size
-        val testData = sqlContext.read
-          .option("numFeatures", numFeatures.toString)
-          .format("libsvm")
-          .load(t)
-        Array[DataFrame](inputData, testData)
+    val data =
+      params.testInput match {
+        case Some(t) => {
+          // compute the number of features in the training set.
+          val numFeatures = inputData.first().getAs[Vector](1).size
+          val testData = sqlContext.read
+            .option("numFeatures", numFeatures.toString)
+            .format("libsvm")
+            .load(t)
+          Array[DataFrame](inputData, testData)
+        }
+        case None => {
+          val f = params.fracTest
+          inputData.randomSplit(Array(1 - f, f), seed = 12345)
+        }
       }
-      case None => {
-        val f = params.fracTest
-        inputData.randomSplit(Array(1 - f, f), seed = 12345)
-      }
-    }
     val Array(train, test) = data.map(_.cache())
 
     // instantiate the base classifier
@@ -176,8 +179,8 @@ object OneVsRestExample {
     // compute the false positive rate per label
     val predictionColSchema = predictions.schema("prediction")
     val numClasses = MetadataUtils.getNumClasses(predictionColSchema).get
-    val fprs =
-      Range(0, numClasses).map(p => (p, metrics.falsePositiveRate(p.toDouble)))
+    val fprs = Range(0, numClasses).map(p =>
+      (p, metrics.falsePositiveRate(p.toDouble)))
 
     println(s" Training Time ${trainingDuration} sec\n")
 

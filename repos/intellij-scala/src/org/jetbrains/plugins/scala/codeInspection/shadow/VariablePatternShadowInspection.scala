@@ -28,11 +28,12 @@ class VariablePatternShadowInspection
   }
 
   private def check(refPat: ScReferencePattern, holder: ProblemsHolder) {
-    val isInCaseClause =
-      ScalaPsiUtil.nameContext(refPat).isInstanceOf[ScCaseClause]
+    val isInCaseClause = ScalaPsiUtil
+      .nameContext(refPat)
+      .isInstanceOf[ScCaseClause]
     if (isInCaseClause) {
-      val dummyRef: ScStableCodeReferenceElement =
-        ScalaPsiElementFactory.createReferenceFromText(
+      val dummyRef: ScStableCodeReferenceElement = ScalaPsiElementFactory
+        .createReferenceFromText(
           refPat.name,
           refPat.getContext.getContext,
           refPat)

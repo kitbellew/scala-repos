@@ -58,14 +58,12 @@ object Local {
       v
   }
 
-  private def clear(i: Int): Unit =
-    set(i, None)
+  private def clear(i: Int): Unit = set(i, None)
 
   /**
     * Clear all locals in the current context.
     */
-  def clear(): Unit =
-    localCtx.set(null)
+  def clear(): Unit = localCtx.set(null)
 
   /**
     * Execute a block with the given Locals, restoring current values upon completion.

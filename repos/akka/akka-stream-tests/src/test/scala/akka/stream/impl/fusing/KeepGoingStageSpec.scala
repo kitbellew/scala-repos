@@ -51,43 +51,44 @@ class KeepGoingStageSpec extends AkkaSpec {
         inheritedAttributes: Attributes): (GraphStageLogic, Future[PingRef]) = {
       val promise = Promise[PingRef]()
 
-      val logic = new GraphStageLogic(shape) {
-        private var listener: Option[ActorRef] = None
+      val logic =
+        new GraphStageLogic(shape) {
+          private var listener: Option[ActorRef] = None
 
-        override def preStart(): Unit = {
-          setKeepGoing(keepAlive)
-          promise.trySuccess(PingRef(getAsyncCallback(onCommand)))
+          override def preStart(): Unit = {
+            setKeepGoing(keepAlive)
+            promise.trySuccess(PingRef(getAsyncCallback(onCommand)))
+          }
+
+          private def onCommand(cmd: PingCmd): Unit =
+            cmd match {
+              case Register(probe) ⇒ listener = Some(probe)
+              case Ping ⇒ listener.foreach(_ ! Pong)
+              case CompleteStage ⇒
+                completeStage()
+                listener.foreach(_ ! EndOfEventHandler)
+              case FailStage ⇒
+                failStage(TE("test"))
+                listener.foreach(_ ! EndOfEventHandler)
+              case Throw ⇒
+                try {
+                  throw TE("test")
+                } finally listener.foreach(_ ! EndOfEventHandler)
+            }
+
+          setHandler(
+            shape.in,
+            new InHandler {
+              override def onPush(): Unit = pull(shape.in)
+
+              // Ignore finish
+              override def onUpstreamFinish(): Unit =
+                listener.foreach(_ ! UpstreamCompleted)
+            }
+          )
+
+          override def postStop(): Unit = listener.foreach(_ ! PostStop)
         }
-
-        private def onCommand(cmd: PingCmd): Unit =
-          cmd match {
-            case Register(probe) ⇒ listener = Some(probe)
-            case Ping ⇒ listener.foreach(_ ! Pong)
-            case CompleteStage ⇒
-              completeStage()
-              listener.foreach(_ ! EndOfEventHandler)
-            case FailStage ⇒
-              failStage(TE("test"))
-              listener.foreach(_ ! EndOfEventHandler)
-            case Throw ⇒
-              try {
-                throw TE("test")
-              } finally listener.foreach(_ ! EndOfEventHandler)
-          }
-
-        setHandler(
-          shape.in,
-          new InHandler {
-            override def onPush(): Unit = pull(shape.in)
-
-            // Ignore finish
-            override def onUpstreamFinish(): Unit =
-              listener.foreach(_ ! UpstreamCompleted)
-          }
-        )
-
-        override def postStop(): Unit = listener.foreach(_ ! PostStop)
-      }
 
       (logic, promise.future)
     }

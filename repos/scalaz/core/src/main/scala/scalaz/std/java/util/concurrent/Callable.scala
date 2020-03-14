@@ -10,20 +10,21 @@ trait CallableInstances {
         Order[A].order(f1.call, f2.call)
     }
 
-  implicit val callableMonad: Monad[Callable] = new Monad[Callable] {
-    override def map[A, B](fa: Callable[A])(f: A => B) =
-      new Callable[B] {
-        def call() = f(fa.call)
-      }
-    def bind[A, B](fa: Callable[A])(f: A => Callable[B]) =
-      new Callable[B] {
-        def call() = f(fa.call).call
-      }
-    def point[A](a: => A) =
-      new Callable[A] {
-        def call() = a
-      }
-  }
+  implicit val callableMonad: Monad[Callable] =
+    new Monad[Callable] {
+      override def map[A, B](fa: Callable[A])(f: A => B) =
+        new Callable[B] {
+          def call() = f(fa.call)
+        }
+      def bind[A, B](fa: Callable[A])(f: A => Callable[B]) =
+        new Callable[B] {
+          def call() = f(fa.call).call
+        }
+      def point[A](a: => A) =
+        new Callable[A] {
+          def call() = a
+        }
+    }
 }
 
 object callable extends CallableInstances

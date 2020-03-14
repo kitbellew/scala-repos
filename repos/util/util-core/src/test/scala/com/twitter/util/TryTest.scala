@@ -149,35 +149,39 @@ class TryTest extends FunSuite {
   }
 
   test("Try in for comprehension with no Throw values") {
-    val result = for {
-      i <- Return(1)
-      j <- Return(1)
-    } yield (i + j)
+    val result =
+      for {
+        i <- Return(1)
+        j <- Return(1)
+      } yield (i + j)
     assert(result == Return(2))
   }
 
   test("Try in for comprehension with Throw values throws before") {
-    val result = for {
-      i <- Throw[Int](e)
-      j <- Return(1)
-    } yield (i + j)
+    val result =
+      for {
+        i <- Throw[Int](e)
+        j <- Return(1)
+      } yield (i + j)
     assert(result == Throw(e))
   }
 
   test("Try in for comprehension with Throw values throws after") {
-    val result = for {
-      i <- Return(1)
-      j <- Throw[Int](e)
-    } yield (i + j)
+    val result =
+      for {
+        i <- Return(1)
+        j <- Throw[Int](e)
+      } yield (i + j)
     assert(result == Throw(e))
   }
 
   test("Try in for comprehension with Throw values returns the FIRST Throw") {
     val e2 = new Exception
-    val result = for {
-      i <- Throw[Int](e)
-      j <- Throw[Int](e2)
-    } yield (i + j)
+    val result =
+      for {
+        i <- Throw[Int](e)
+        j <- Throw[Int](e2)
+      } yield (i + j)
     assert(result == Throw(e))
   }
 

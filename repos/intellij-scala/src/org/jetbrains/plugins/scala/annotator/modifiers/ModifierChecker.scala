@@ -146,14 +146,15 @@ private[annotator] object ModifierChecker {
                 case e: ScMember
                     if e.getParent.isInstanceOf[ScTemplateBody] || e.getParent
                       .isInstanceOf[ScEarlyDefinitions] =>
-                  val redundant = (e.containingClass, e) match {
-                    case (obj: ScObject, valMember: ScPatternDefinition)
-                        if valMember.typeElement.isEmpty &&
-                          valMember.pList.allPatternsSimple =>
-                      false // SCL-899
-                    case (cls, _) if cls.hasFinalModifier => true
-                    case _                                => false
-                  }
+                  val redundant =
+                    (e.containingClass, e) match {
+                      case (obj: ScObject, valMember: ScPatternDefinition)
+                          if valMember.typeElement.isEmpty &&
+                            valMember.pList.allPatternsSimple =>
+                        false // SCL-899
+                      case (cls, _) if cls.hasFinalModifier => true
+                      case _                                => false
+                    }
                   if (redundant) {
                     if (checkDublicates(modifierPsi, "final")) {
                       proccessWarning(
@@ -260,13 +261,14 @@ private[annotator] object ModifierChecker {
             case "implicit" =>
               owner match {
                 case c @ (_: ScClass | _: ScObject) =>
-                  val onTopLevel = c.getContext match {
-                    case file: ScalaFile
-                        if !file.isScriptFile() && !file.isWorksheetFile =>
-                      true
-                    case p: ScPackaging => true
-                    case _              => false
-                  }
+                  val onTopLevel =
+                    c.getContext match {
+                      case file: ScalaFile
+                          if !file.isScriptFile() && !file.isWorksheetFile =>
+                        true
+                      case p: ScPackaging => true
+                      case _              => false
+                    }
                   if (onTopLevel) {
                     proccessError(
                       "'implicit' modifier cannot be used for top-level objects",

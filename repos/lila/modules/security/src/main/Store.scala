@@ -44,8 +44,8 @@ object Store {
     }
 
   case class UserIdAndFingerprint(user: String, fp: Option[String])
-  private implicit val UserIdAndFingerprintBSONReader =
-    Macros.reader[UserIdAndFingerprint]
+  private implicit val UserIdAndFingerprintBSONReader = Macros
+    .reader[UserIdAndFingerprint]
 
   def userIdAndFingerprint(
       sessionId: String): Fu[Option[UserIdAndFingerprint]] =

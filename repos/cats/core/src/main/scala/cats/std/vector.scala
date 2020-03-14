@@ -18,15 +18,13 @@ trait VectorInstances {
 
       def pure[A](x: A): Vector[A] = Vector(x)
 
-      override def map[A, B](fa: Vector[A])(f: A => B): Vector[B] =
-        fa.map(f)
+      override def map[A, B](fa: Vector[A])(f: A => B): Vector[B] = fa.map(f)
 
       def flatMap[A, B](fa: Vector[A])(f: A => Vector[B]): Vector[B] =
         fa.flatMap(f)
 
       override def map2[A, B, Z](fa: Vector[A], fb: Vector[B])(
-          f: (A, B) => Z): Vector[Z] =
-        fa.flatMap(a => fb.map(b => f(a, b)))
+          f: (A, B) => Z): Vector[Z] = fa.flatMap(a => fb.map(b => f(a, b)))
 
       def coflatMap[A, B](fa: Vector[A])(f: Vector[A] => B): Vector[B] = {
         @tailrec def loop(builder: VectorBuilder[B], as: Vector[A]): Vector[B] =

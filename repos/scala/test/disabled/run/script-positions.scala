@@ -4,8 +4,7 @@ import util.stringFromStream
 // Testing "scripts" without the platform delights which accompany actual scripts.
 object Scripts {
 
-  val test1 =
-    """#!/bin/sh 
+  val test1 = """#!/bin/sh 
   exec scala $0 $@ 
 !#
 
@@ -19,8 +18,7 @@ println("statement 3")
 println("statement 2".thisisborked)
                       ^
 one error found"""
-  val test2 =
-    """#!scala
+  val test2 = """#!scala
 // foo
 // bar
 !#
@@ -29,8 +27,7 @@ val x = "line 6"
 val y = "line 7"
 val z "line 8""""
 
-  val output2 =
-    """bob.scala:8: error: '=' expected but string literal found.
+  val output2 = """bob.scala:8: error: '=' expected but string literal found.
 val z "line 8"
       ^
 bob.scala:8: error: illegal start of simple expression

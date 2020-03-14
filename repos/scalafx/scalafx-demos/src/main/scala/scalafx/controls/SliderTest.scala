@@ -40,26 +40,29 @@ import scalafx.util.converter.DoubleStringConverter
 
 object SliderTest extends JFXApp {
 
-  val slider = new Slider {
-    alignmentInParent = Pos.Center
-  }
-
-  val controlsPane = new VBox {
-    spacing = 5
-    fillWidth = true
-    alignment = Pos.Center
-    hgrow = Priority.Never
-    children = List(new SliderControls(slider), new ControlControls(slider))
-  }
-
-  val mainPane = new BorderPane {
-    top = new FlowPane {
-      children = List(slider)
+  val slider =
+    new Slider {
+      alignmentInParent = Pos.Center
     }
-    center = controlsPane
-    vgrow = Priority.Always
-    hgrow = Priority.Always
-  }
+
+  val controlsPane =
+    new VBox {
+      spacing = 5
+      fillWidth = true
+      alignment = Pos.Center
+      hgrow = Priority.Never
+      children = List(new SliderControls(slider), new ControlControls(slider))
+    }
+
+  val mainPane =
+    new BorderPane {
+      top = new FlowPane {
+        children = List(slider)
+      }
+      center = controlsPane
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+    }
 
   stage = new PrimaryStage {
     title = "Slider Test"
@@ -99,9 +102,10 @@ class SliderControls(target: Slider)
   }
 
   val originalBlockIncrement = target.blockIncrement.get
-  val txfBlockIncrement = new TextField {
-    text = originalBlockIncrement.get.toString
-  }
+  val txfBlockIncrement =
+    new TextField {
+      text = originalBlockIncrement.get.toString
+    }
   target.blockIncrement
     .onChange(txfBlockIncrement.text = target.blockIncrement.get.toString)
   txfBlockIncrement.onAction = handle {
@@ -116,9 +120,10 @@ class SliderControls(target: Slider)
   })
 
   val originalMajorTickUnit = target.majorTickUnit.get()
-  val txfMajorTickUnit = new TextField {
-    text = originalMajorTickUnit.toString
-  }
+  val txfMajorTickUnit =
+    new TextField {
+      text = originalMajorTickUnit.toString
+    }
   target.majorTickUnit
     .onChange(txfMajorTickUnit.text = target.majorTickUnit.get.toString)
   txfMajorTickUnit.onAction = handle {
@@ -126,18 +131,20 @@ class SliderControls(target: Slider)
   }
 
   val originalMax = target.max.get()
-  val txfMax = new TextField {
-    text = originalMax.toString
-  }
+  val txfMax =
+    new TextField {
+      text = originalMax.toString
+    }
   target.max.onChange(txfMax.text = target.max.get.toString)
   txfMax.onAction = handle {
     fillDoublePropertyFromText(target.max, txfMax, false)
   }
 
   val originalMinorTickCount = target.minorTickCount.get()
-  val txfMinorTickCount = new TextField {
-    text = originalMinorTickCount.toString
-  }
+  val txfMinorTickCount =
+    new TextField {
+      text = originalMinorTickCount.toString
+    }
   target.minorTickCount
     .onChange(txfMinorTickCount.text = target.minorTickCount.get.toString)
   txfMinorTickCount.onAction = handle {
@@ -145,44 +152,51 @@ class SliderControls(target: Slider)
   }
 
   val originalMin = target.min.get()
-  val txfMin = new TextField {
-    text = originalMin.toString
-  }
+  val txfMin =
+    new TextField {
+      text = originalMin.toString
+    }
   target.min.onChange(txfMin.text = target.min.get.toString)
   txfMin.onAction = handle {
     fillDoublePropertyFromText(target.min, txfMin, false)
   }
 
   val originalShowTickLabels = target.showTickLabels.get
-  val chbShowTickLabels = new CheckBox {
-    selected <==> target.showTickLabels
-  }
+  val chbShowTickLabels =
+    new CheckBox {
+      selected <==> target.showTickLabels
+    }
 
   val originalShowTickMarks = target.showTickMarks.get
-  val chbShowTickMarks = new CheckBox {
-    selected <==> target.showTickMarks
-  }
+  val chbShowTickMarks =
+    new CheckBox {
+      selected <==> target.showTickMarks
+    }
 
   val originalSnapToTicks = target.snapToTicks.get()
-  val chbSnapToTicks = new CheckBox {
-    selected <==> target.snapToTicks
-  }
+  val chbSnapToTicks =
+    new CheckBox {
+      selected <==> target.snapToTicks
+    }
 
   val originalValueChanging = target.valueChanging.get()
-  val chbValueChanging = new CheckBox {
-    selected <==> target.valueChanging
-  }
+  val chbValueChanging =
+    new CheckBox {
+      selected <==> target.valueChanging
+    }
 
   val originalOrientation = target.orientation.get()
   val tggOrientation = new ToggleGroup
-  val rdbHorizontal = new RadioButton {
-    text = Orientation.Horizontal.toString
-    toggleGroup = tggOrientation
-  }
-  val rdbVertical = new RadioButton {
-    text = Orientation.Vertical.toString
-    toggleGroup = tggOrientation
-  }
+  val rdbHorizontal =
+    new RadioButton {
+      text = Orientation.Horizontal.toString
+      toggleGroup = tggOrientation
+    }
+  val rdbVertical =
+    new RadioButton {
+      text = Orientation.Vertical.toString
+      toggleGroup = tggOrientation
+    }
   rdbHorizontal.selected = (target.orientation.get() == Orientation.Horizontal)
   target.orientation.onChange(rdbHorizontal.selected =
     (target.orientation.get() == Orientation.Horizontal))

@@ -21,17 +21,18 @@ trait ScaladocGlobalTrait extends Global {
       val runsRightAfter = None
     }
 
-  override lazy val loaders = new {
-    val global: outer.type = outer
-    val platform: outer.platform.type = outer.platform
-  } with GlobalSymbolLoaders {
-    // SI-5593 Scaladoc's current strategy is to visit all packages in search of user code that can be documented
-    // therefore, it will rummage through the classpath triggering errors whenever it encounters package objects
-    // that are not in their correct place (see bug for details)
-    override protected def signalError(root: Symbol, ex: Throwable) {
-      log(s"Suppressing error involving $root: $ex")
+  override lazy val loaders =
+    new {
+      val global: outer.type = outer
+      val platform: outer.platform.type = outer.platform
+    } with GlobalSymbolLoaders {
+      // SI-5593 Scaladoc's current strategy is to visit all packages in search of user code that can be documented
+      // therefore, it will rummage through the classpath triggering errors whenever it encounters package objects
+      // that are not in their correct place (see bug for details)
+      override protected def signalError(root: Symbol, ex: Throwable) {
+        log(s"Suppressing error involving $root: $ex")
+      }
     }
-  }
 }
 
 class ScaladocGlobal(settings: doc.Settings, reporter: Reporter)
@@ -44,7 +45,8 @@ class ScaladocGlobal(settings: doc.Settings, reporter: Reporter)
     phasesSet += analyzer.typerFactory
   }
   override def forScaladoc = true
-  override lazy val analyzer = new {
-    val global: ScaladocGlobal.this.type = ScaladocGlobal.this
-  } with ScaladocAnalyzer
+  override lazy val analyzer =
+    new {
+      val global: ScaladocGlobal.this.type = ScaladocGlobal.this
+    } with ScaladocAnalyzer
 }

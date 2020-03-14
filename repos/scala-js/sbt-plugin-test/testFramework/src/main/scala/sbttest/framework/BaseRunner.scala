@@ -8,8 +8,7 @@ abstract class BaseRunner(
     private[framework] val testClassLoader: ClassLoader
 ) extends Runner {
 
-  protected def newTask(taskDef: TaskDef): Task =
-    new DummyTask(taskDef, this)
+  protected def newTask(taskDef: TaskDef): Task = new DummyTask(taskDef, this)
 
   /** Called by task when it has finished executing */
   private[framework] def taskDone(): Unit

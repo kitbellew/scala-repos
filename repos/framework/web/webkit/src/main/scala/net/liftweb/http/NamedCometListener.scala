@@ -56,16 +56,17 @@ object NamedCometListener extends Loggable {
       val liftActor: LAFuture[LiftActor] = new LAFuture()
       Schedule { () =>
         {
-          val ret = disptchers.get(name) match {
-            case Some(actor) => actor
-            case None => {
-              val ret = new NamedCometDispatcher(str)
-              disptchers += name -> ret
-              logger.debug(
-                "Our map of NamedCometDispatchers is: %s".format(disptchers));
-              ret
+          val ret =
+            disptchers.get(name) match {
+              case Some(actor) => actor
+              case None => {
+                val ret = new NamedCometDispatcher(str)
+                disptchers += name -> ret
+                logger.debug(
+                  "Our map of NamedCometDispatchers is: %s".format(disptchers));
+                ret
+              }
             }
-          }
           liftActor.satisfy(ret)
         }
       }
@@ -85,10 +86,11 @@ object NamedCometListener extends Loggable {
       val liftActor: LAFuture[Box[LiftActor]] = new LAFuture()
       Schedule { () =>
         {
-          val ret = disptchers.get(name) match {
-            case Some(actor) => Full(actor)
-            case None        => Empty
-          }
+          val ret =
+            disptchers.get(name) match {
+              case Some(actor) => Full(actor)
+              case None        => Empty
+            }
           liftActor.satisfy(ret)
         }
       }

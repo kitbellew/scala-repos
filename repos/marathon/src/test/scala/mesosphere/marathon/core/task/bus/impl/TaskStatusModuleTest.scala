@@ -28,8 +28,8 @@ class TaskStatusModuleTest extends FunSuite with BeforeAndAfter {
 
   test("observable forAll unsubscribe works") {
     var received = List.empty[TaskStatusUpdate]
-    val subscription =
-      module.taskStatusObservables.forAll.subscribe(received :+= _)
+    val subscription = module.taskStatusObservables.forAll
+      .subscribe(received :+= _)
     subscription.unsubscribe()
     val aa: TaskStatusUpdate =
       TaskStatusUpdateTestHelper.running.withAppId("/a/a").wrapped

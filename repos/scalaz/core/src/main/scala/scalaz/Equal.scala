@@ -34,9 +34,10 @@ trait Equal[F] { self =>
   }
   def equalLaw = new EqualLaw {}
   ////
-  val equalSyntax = new scalaz.syntax.EqualSyntax[F] {
-    def F = Equal.this
-  }
+  val equalSyntax =
+    new scalaz.syntax.EqualSyntax[F] {
+      def F = Equal.this
+    }
 }
 
 object Equal {
@@ -58,18 +59,19 @@ object Equal {
 
   def equalBy[A, B: Equal](f: A => B): Equal[A] = Equal[B] contramap f
 
-  implicit val equalContravariant: Divisible[Equal] = new Divisible[Equal] {
-    def contramap[A, B](r: Equal[A])(f: B => A) = r.contramap(f)
+  implicit val equalContravariant: Divisible[Equal] =
+    new Divisible[Equal] {
+      def contramap[A, B](r: Equal[A])(f: B => A) = r.contramap(f)
 
-    override def conquer[A] = Equal.equal((_, _) => true)
+      override def conquer[A] = Equal.equal((_, _) => true)
 
-    override def divide[A, B, C](fa: Equal[A], fb: Equal[B])(f: C => (A, B)) =
-      Equal.equal[C] { (c1, c2) =>
-        val (a1, b1) = f(c1)
-        val (a2, b2) = f(c2)
-        fa.equal(a1, a2) && fb.equal(b1, b2)
-      }
-  }
+      override def divide[A, B, C](fa: Equal[A], fb: Equal[B])(f: C => (A, B)) =
+        Equal.equal[C] { (c1, c2) =>
+          val (a1, b1) = f(c1)
+          val (a2, b2) = f(c2)
+          fa.equal(a1, a2) && fb.equal(b1, b2)
+        }
+    }
 
   def equal[A](f: (A, A) => Boolean): Equal[A] =
     new Equal[A] {

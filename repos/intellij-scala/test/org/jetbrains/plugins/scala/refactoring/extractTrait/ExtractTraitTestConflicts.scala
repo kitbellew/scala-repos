@@ -7,8 +7,7 @@ package refactoring.extractTrait
   */
 class ExtractTraitTestConflicts extends ExtractTraitTestBase {
   def testPrivateMember() {
-    val text =
-      """
+    val text = """
         |class A {<caret>
         |
         |  def foo() = bar()
@@ -27,8 +26,7 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
       onlyDeclarations = false,
       onlyFirstMember = true)
 
-    val result =
-      """
+    val result = """
         |class A extends ExtractedTrait {
         |
         |  override def foo() = bar()
@@ -45,8 +43,7 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
   }
 
   def testFromAnonymousClass() {
-    val text =
-      """
+    val text = """
         |object A {
         |  val x = new Runnable {<caret>
         |    def run() = bar()
@@ -66,8 +63,7 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
       onlyDeclarations = false,
       onlyFirstMember = true)
 
-    val result =
-      """
+    val result = """
         |object A {
         |  val x = new Runnable with ExtractedTrait
         |
@@ -84,8 +80,7 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
   }
 
   def testSuperReference() {
-    val text =
-      """
+    val text = """
         |class A extends AA {<caret>
         |  def foo() = super.bar()
         |}
@@ -105,8 +100,7 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
   }
 
   def testClassTypeParams() {
-    val text =
-      """
+    val text = """
         |class A extends AA[Int] {<caret>
         |  def foo() = bar()
         |}
@@ -115,8 +109,9 @@ class ExtractTraitTestConflicts extends ExtractTraitTestBase {
         |  def bar() {}
         |}
       """.stripMargin
-    val message =
-      ScalaBundle.message("type.parameters.for.self.type.not.supported", "AA")
+    val message = ScalaBundle.message(
+      "type.parameters.for.self.type.not.supported",
+      "AA")
     checkException(
       text,
       message,

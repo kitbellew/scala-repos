@@ -41,8 +41,8 @@ class EvalTest extends WordSpec {
       val res: String = e(sourceFile)
       assert(res == "hello")
       val className = e.fileToClassName(sourceFile)
-      val processedSource =
-        e.sourceForString(Source.fromFile(sourceFile).getLines().mkString("\n"))
+      val processedSource = e.sourceForString(
+        Source.fromFile(sourceFile).getLines().mkString("\n"))
       val fullClassName = "Evaluator__%s_%s.class".format(
         className,
         e.uniqueId(processedSource, None))
@@ -62,8 +62,8 @@ class EvalTest extends WordSpec {
 
       // make sure it created a class file with the expected name
       val className = e.fileToClassName(sourceFile)
-      val processedSource =
-        e.sourceForString(Source.fromFile(sourceFile).getLines().mkString("\n"))
+      val processedSource = e.sourceForString(
+        Source.fromFile(sourceFile).getLines().mkString("\n"))
       val fullClassName = "Evaluator__%s_%s.class".format(
         className,
         e.uniqueId(processedSource, None))
@@ -149,8 +149,8 @@ class EvalTest extends WordSpec {
     }
 
     "toSource returns post-processed code" in {
-      val derived =
-        Eval.toSource(TempFile.fromResourcePath("/DerivedWithInclude.scala"))
+      val derived = Eval.toSource(
+        TempFile.fromResourcePath("/DerivedWithInclude.scala"))
       assert(derived.contains("hello, joe"))
       assert(derived.contains("new Base"))
     }
@@ -181,25 +181,26 @@ class EvalTest extends WordSpec {
 
     "allow custom error reporting" when {
       class Ctx {
-        val eval = new Eval {
-          @volatile var errors: Seq[(String, String)] = Nil
+        val eval =
+          new Eval {
+            @volatile var errors: Seq[(String, String)] = Nil
 
-          override lazy val compilerMessageHandler: Option[Reporter] =
-            Some(new AbstractReporter {
-              override val settings: Settings = compilerSettings
-              override def displayPrompt(): Unit = ()
-              override def display(
-                  pos: Position,
-                  msg: String,
-                  severity: this.type#Severity): Unit = {
-                errors = errors :+ ((msg, severity.toString))
-              }
-              override def reset() = {
-                super.reset()
-                errors = Nil
-              }
-            })
-        }
+            override lazy val compilerMessageHandler: Option[Reporter] = Some(
+              new AbstractReporter {
+                override val settings: Settings = compilerSettings
+                override def displayPrompt(): Unit = ()
+                override def display(
+                    pos: Position,
+                    msg: String,
+                    severity: this.type#Severity): Unit = {
+                  errors = errors :+ ((msg, severity.toString))
+                }
+                override def reset() = {
+                  super.reset()
+                  errors = Nil
+                }
+              })
+          }
       }
 
       "not report errors on success" in {

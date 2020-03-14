@@ -345,8 +345,7 @@ final case class OneVersionVector private[akka] (
       Timestamp.Zero
 
   /** INTERNAL API */
-  private[akka] override def contains(n: UniqueAddress): Boolean =
-    n == node
+  private[akka] override def contains(n: UniqueAddress): Boolean = n == node
 
   /** INTERNAL API */
   private[akka] override def versionsIterator: Iterator[(UniqueAddress, Long)] =
@@ -390,8 +389,7 @@ final case class OneVersionVector private[akka] (
     else
       this
 
-  override def toString: String =
-    s"VersionVector($node -> $version)"
+  override def toString: String = s"VersionVector($node -> $version)"
 
 }
 
@@ -430,8 +428,9 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
       case ManyVersionVector(vs2) ⇒
         var mergedVersions = vs2
         for ((node, time) ← versions) {
-          val mergedVersionsCurrentTime =
-            mergedVersions.getOrElse(node, Timestamp.Zero)
+          val mergedVersionsCurrentTime = mergedVersions.getOrElse(
+            node,
+            Timestamp.Zero)
           if (time > mergedVersionsCurrentTime)
             mergedVersions = mergedVersions.updated(node, time)
         }

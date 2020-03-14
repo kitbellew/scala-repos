@@ -56,15 +56,16 @@ class SerialServerDispatcherTest extends FunSuite with MockitoSugar {
   test("Inject the transport certificate if present")(new Ctx {
     val mockCert = mock[X509Certificate]
     when(trans.peerCertificate).thenReturn(Some(mockCert))
-    val service = new Service[String, String] {
-      override def apply(request: String): Future[String] =
-        Future.value {
-          if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert))
-            "ok"
-          else
-            "not ok"
-        }
-    }
+    val service =
+      new Service[String, String] {
+        override def apply(request: String): Future[String] =
+          Future.value {
+            if (Contexts.local.get(Transport.peerCertCtx) == Some(mockCert))
+              "ok"
+            else
+              "not ok"
+          }
+      }
 
     val disp = new SerialServerDispatcher(trans, service)
 
@@ -75,16 +76,17 @@ class SerialServerDispatcherTest extends FunSuite with MockitoSugar {
   test("Inject the transport remote address")(new Ctx {
     val mockAddr = mock[SocketAddress]
     when(trans.remoteAddress).thenReturn(mockAddr)
-    val service = new Service[String, String] {
-      override def apply(request: String): Future[String] =
-        Future.value {
-          if (Contexts.local.get(RemoteInfo.Upstream.AddressCtx) == Some(
-                mockAddr))
-            "ok"
-          else
-            "not ok"
-        }
-    }
+    val service =
+      new Service[String, String] {
+        override def apply(request: String): Future[String] =
+          Future.value {
+            if (Contexts.local.get(RemoteInfo.Upstream.AddressCtx) == Some(
+                  mockAddr))
+              "ok"
+            else
+              "not ok"
+          }
+      }
 
     val disp = new SerialServerDispatcher(trans, service)
 
@@ -96,14 +98,15 @@ class SerialServerDispatcherTest extends FunSuite with MockitoSugar {
     val l = new Local[String]
     var ncall = 0
 
-    val s = new Service[String, String] {
-      def apply(req: String) = {
-        ncall += 1
-        val prev = l() getOrElse "undefined"
-        l() = req
-        Future.value(prev)
+    val s =
+      new Service[String, String] {
+        def apply(req: String) = {
+          ncall += 1
+          val prev = l() getOrElse "undefined"
+          l() = req
+          Future.value(prev)
+        }
       }
-    }
 
     l() = "orig"
     val disp = new SerialServerDispatcher(trans, s)
@@ -123,12 +126,13 @@ class SerialServerDispatcherTest extends FunSuite with MockitoSugar {
     when(trans.peerCertificate).thenReturn(None)
     val service = mock[Service[String, String]]
     when(service.close(any[Time])).thenReturn(Future.Done)
-    val replyp = new Promise[String] {
-      @volatile var interrupted: Option[Throwable] = None
-      setInterruptHandler {
-        case exc => interrupted = Some(exc)
+    val replyp =
+      new Promise[String] {
+        @volatile var interrupted: Option[Throwable] = None
+        setInterruptHandler {
+          case exc => interrupted = Some(exc)
+        }
       }
-    }
     when(service("ok")).thenReturn(replyp)
 
     val readp = new Promise[String]

@@ -874,8 +874,9 @@ class HttpServerSpec
       "have a programmatically set timeout handler" in new RequestTimeoutTestSetup(
         10.millis) {
         send("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-        val timeoutResponse =
-          HttpResponse(StatusCodes.InternalServerError, entity = "OOPS!")
+        val timeoutResponse = HttpResponse(
+          StatusCodes.InternalServerError,
+          entity = "OOPS!")
         expectRequest()
           .header[`Timeout-Access`]
           .foreach(_.timeoutAccess.updateHandler(_ ⇒ timeoutResponse))
@@ -967,12 +968,13 @@ class HttpServerSpec
                     _,
                     entity @ HttpEntity.Default(_, `actualSize`, _),
                     _) ⇒
-                val error = the[Exception]
-                  .thrownBy(
-                    entity.dataBytes
-                      .runFold(ByteString.empty)(_ ++ _)
-                      .awaitResult(100.millis))
-                  .getCause
+                val error =
+                  the[Exception]
+                    .thrownBy(
+                      entity.dataBytes
+                        .runFold(ByteString.empty)(_ ++ _)
+                        .awaitResult(100.millis))
+                    .getCause
                 error shouldEqual EntityStreamSizeException(
                   limit,
                   Some(actualSize))
@@ -995,12 +997,13 @@ class HttpServerSpec
           def expectChunkedEntityWithSizeError(limit: Int) =
             inside(request) {
               case HttpRequest(POST, _, _, entity: HttpEntity.Chunked, _) ⇒
-                val error = the[Exception]
-                  .thrownBy(
-                    entity.dataBytes
-                      .runFold(ByteString.empty)(_ ++ _)
-                      .awaitResult(100.millis))
-                  .getCause
+                val error =
+                  the[Exception]
+                    .thrownBy(
+                      entity.dataBytes
+                        .runFold(ByteString.empty)(_ ++ _)
+                        .awaitResult(100.millis))
+                    .getCause
                 error shouldEqual EntityStreamSizeException(limit, None)
                 error.getMessage should include("exceeded content length limit")
 

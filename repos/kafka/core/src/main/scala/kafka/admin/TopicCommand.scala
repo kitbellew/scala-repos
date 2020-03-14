@@ -167,8 +167,10 @@ object TopicCommand extends Logging {
           opts.options.valueOf(opts.zkConnectOpt)))
     }
     topics.foreach { topic =>
-      val configs =
-        AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
+      val configs = AdminUtils.fetchEntityConfig(
+        zkUtils,
+        ConfigType.Topic,
+        topic)
       if (opts.options.has(opts.configOpt) || opts.options.has(
             opts.deleteConfigOpt)) {
         println(
@@ -194,8 +196,8 @@ object TopicCommand extends Logging {
           "WARNING: If partitions are increased for a topic that has a key, the partition " +
             "logic or ordering of the messages will be affected")
         val nPartitions = opts.options.valueOf(opts.partitionsOpt).intValue
-        val replicaAssignmentStr =
-          opts.options.valueOf(opts.replicaAssignmentOpt)
+        val replicaAssignmentStr = opts.options.valueOf(
+          opts.replicaAssignmentOpt)
         AdminUtils.addPartitions(
           zkUtils,
           topic,
@@ -278,11 +280,13 @@ object TopicCommand extends Logging {
           val describeConfigs: Boolean =
             !reportUnavailablePartitions && !reportUnderReplicatedPartitions
           val describePartitions: Boolean = !reportOverriddenConfigs
-          val sortedPartitions =
-            topicPartitionAssignment.toList.sortWith((m1, m2) => m1._1 < m2._1)
+          val sortedPartitions = topicPartitionAssignment.toList.sortWith(
+            (m1, m2) => m1._1 < m2._1)
           if (describeConfigs) {
-            val configs =
-              AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
+            val configs = AdminUtils.fetchEntityConfig(
+              zkUtils,
+              ConfigType.Topic,
+              topic)
             if (!reportOverriddenConfigs || configs.size() != 0) {
               val numPartitions = topicPartitionAssignment.size
               val replicationFactor = topicPartitionAssignment.head._2.size
@@ -297,8 +301,9 @@ object TopicCommand extends Logging {
           }
           if (describePartitions) {
             for ((partitionId, assignedReplicas) <- sortedPartitions) {
-              val inSyncReplicas =
-                zkUtils.getInSyncReplicasForPartition(topic, partitionId)
+              val inSyncReplicas = zkUtils.getInSyncReplicasForPartition(
+                topic,
+                partitionId)
               val leader = zkUtils.getLeaderForPartition(topic, partitionId)
               if ((!reportUnderReplicatedPartitions && !reportUnavailablePartitions) ||
                   (reportUnderReplicatedPartitions && inSyncReplicas.size < assignedReplicas.size) ||
@@ -323,8 +328,9 @@ object TopicCommand extends Logging {
   }
 
   def parseTopicConfigsToBeAdded(opts: TopicCommandOptions): Properties = {
-    val configsToBeAdded =
-      opts.options.valuesOf(opts.configOpt).map(_.split("""\s*=\s*"""))
+    val configsToBeAdded = opts.options
+      .valuesOf(opts.configOpt)
+      .map(_.split("""\s*=\s*"""))
     require(
       configsToBeAdded.forall(config => config.length == 2),
       "Invalid topic config: all configs to be added must be in the format \"key=val\".")
@@ -343,8 +349,9 @@ object TopicCommand extends Logging {
 
   def parseTopicConfigsToBeDeleted(opts: TopicCommandOptions): Seq[String] = {
     if (opts.options.has(opts.deleteConfigOpt)) {
-      val configsToBeDeleted =
-        opts.options.valuesOf(opts.deleteConfigOpt).map(_.trim())
+      val configsToBeDeleted = opts.options
+        .valuesOf(opts.deleteConfigOpt)
+        .map(_.trim())
       val propsToBeDeleted = new Properties
       configsToBeDeleted.foreach(propsToBeDeleted.setProperty(_, ""))
       LogConfig.validateNames(propsToBeDeleted)
@@ -388,8 +395,9 @@ object TopicCommand extends Logging {
     val alterOpt = parser.accepts(
       "alter",
       "Alter the number of partitions, replica assignment, and/or configuration for the topic.")
-    val describeOpt =
-      parser.accepts("describe", "List details for the given topics.")
+    val describeOpt = parser.accepts(
+      "describe",
+      "List details for the given topics.")
     val helpOpt = parser.accepts("help", "Print usage information.")
     val topicOpt = parser
       .accepts(
@@ -465,8 +473,12 @@ object TopicCommand extends Logging {
       "Disable rack aware replica assignment")
     val options = parser.parse(args: _*)
 
-    val allTopicLevelOpts: Set[OptionSpec[_]] =
-      Set(alterOpt, createOpt, describeOpt, listOpt, deleteOpt)
+    val allTopicLevelOpts: Set[OptionSpec[_]] = Set(
+      alterOpt,
+      createOpt,
+      describeOpt,
+      listOpt,
+      deleteOpt)
 
     def checkArgs() {
       // check required args
@@ -537,10 +549,11 @@ object TopicCommand extends Logging {
     }
   }
   def warnOnMaxMessagesChange(configs: Properties, replicas: Integer): Unit = {
-    val maxMessageBytes = configs.get(LogConfig.MaxMessageBytesProp) match {
-      case n: String => n.toInt
-      case _         => -1
-    }
+    val maxMessageBytes =
+      configs.get(LogConfig.MaxMessageBytesProp) match {
+        case n: String => n.toInt
+        case _         => -1
+      }
     if (maxMessageBytes > Defaults.MaxMessageSize)
       if (replicas > 1) {
         error(longMessageSizeWarning(maxMessageBytes))

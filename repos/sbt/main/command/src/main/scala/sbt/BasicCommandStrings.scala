@@ -53,14 +53,14 @@ object BasicCommandStrings {
   def logLevelHelp = {
     val levels = Level.values.toSeq
     val levelList = levels.mkString(", ")
-    val brief = (
-      "<log-level>",
-      "Sets the logging level to 'log-level'.  Valid levels: " + levelList)
+    val brief =
+      (
+        "<log-level>",
+        "Sets the logging level to 'log-level'.  Valid levels: " + levelList)
     val detailed = levels.map(l => (l.toString, logLevelDetail(l))).toMap
     Help(brief, detailed)
   }
-  private[this] def logLevelDetail(level: Level.Value): String =
-    s"""$level
+  private[this] def logLevelDetail(level: Level.Value): String = s"""$level
 
 	Sets the global logging level to $level.
 	This will be used as the default level for logging from commands, settings, and tasks.
@@ -88,11 +88,11 @@ ${runEarly(level.toString)}
   }
 
   val EarlyCommand = "--"
-  val EarlyCommandBrief = (
-    s"$EarlyCommand<command>",
-    "Schedules a command to run before other commands on startup.")
-  val EarlyCommandDetailed =
-    s"""$EarlyCommand<command>
+  val EarlyCommandBrief =
+    (
+      s"$EarlyCommand<command>",
+      "Schedules a command to run before other commands on startup.")
+  val EarlyCommandDetailed = s"""$EarlyCommand<command>
 
 	Schedules an early command, which will be run before other commands on the command line.
 	The order is preserved between all early commands, so `sbt --a --b` executes `a` and `b` in order.
@@ -214,8 +214,7 @@ ${runEarly(level.toString)}
   def IfLast = "iflast"
   def IfLastCommon =
     "If there are no more commands after this one, 'command' is run."
-  def IfLastDetailed =
-    IfLast + """ <command>
+  def IfLastDetailed = IfLast + """ <command>
 
 	""" + IfLastCommon
 

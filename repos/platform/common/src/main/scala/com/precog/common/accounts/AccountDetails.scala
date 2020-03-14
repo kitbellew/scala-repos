@@ -63,14 +63,17 @@ object AccountDetails {
       profile)
   }
 
-  implicit val accountDetailsIso =
-    Iso.hlist(AccountDetails.apply _, AccountDetails.unapply _)
+  implicit val accountDetailsIso = Iso.hlist(
+    AccountDetails.apply _,
+    AccountDetails.unapply _)
 
   val schema =
     "accountId" :: "email" :: "accountCreationDate" :: "apiKey" :: "rootPath" :: "plan" :: "lastPasswordChangeTime" :: "profile" :: HNil
 
-  implicit val accountDetailsDecomposer =
-    decomposerV[AccountDetails](schema, None)
-  implicit val accountDetailsExtractor =
-    extractorV[AccountDetails](schema, None)
+  implicit val accountDetailsDecomposer = decomposerV[AccountDetails](
+    schema,
+    None)
+  implicit val accountDetailsExtractor = extractorV[AccountDetails](
+    schema,
+    None)
 }

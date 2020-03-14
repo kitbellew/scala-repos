@@ -52,9 +52,9 @@ final class QaApi(
     def edit(data: QuestionData, id: QuestionId): Fu[Option[Question]] =
       findById(id) flatMap {
         _ ?? { q =>
-          val q2 = q
-            .copy(title = data.title, body = data.body, tags = data.tags)
-            .editNow
+          val q2 =
+            q.copy(title = data.title, body = data.body, tags = data.tags)
+              .editNow
           questionColl.update(BSONDocument("_id" -> q2.id), q2) >>
             tag.clearCache >>
             relation.clearCache inject q2.some
@@ -362,8 +362,8 @@ final class QaApi(
   }
 
   object relation {
-    private val questionsCache: Cache[List[Question]] =
-      LruCache(timeToLive = 3.hours)
+    private val questionsCache: Cache[List[Question]] = LruCache(timeToLive =
+      3.hours)
 
     def questions(q: Question, max: Int): Fu[List[Question]] =
       questionsCache(q.id -> max) {

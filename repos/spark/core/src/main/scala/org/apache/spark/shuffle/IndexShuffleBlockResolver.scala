@@ -46,8 +46,8 @@ private[spark] class IndexShuffleBlockResolver(
     extends ShuffleBlockResolver
     with Logging {
 
-  private lazy val blockManager =
-    Option(_blockManager).getOrElse(SparkEnv.get.blockManager)
+  private lazy val blockManager = Option(_blockManager).getOrElse(
+    SparkEnv.get.blockManager)
 
   private val transportConf = SparkTransportConf.fromSparkConf(conf, "shuffle")
 
@@ -146,8 +146,9 @@ private[spark] class IndexShuffleBlockResolver(
       dataTmp: File): Unit = {
     val indexFile = getIndexFile(shuffleId, mapId)
     val indexTmp = Utils.tempFileWith(indexFile)
-    val out = new DataOutputStream(
-      new BufferedOutputStream(new FileOutputStream(indexTmp)))
+    val out =
+      new DataOutputStream(
+        new BufferedOutputStream(new FileOutputStream(indexTmp)))
     Utils.tryWithSafeFinally {
       // We take in lengths of each block, need to convert it to offsets.
       var offset = 0L
@@ -164,8 +165,10 @@ private[spark] class IndexShuffleBlockResolver(
     // There is only one IndexShuffleBlockResolver per executor, this synchronization make sure
     // the following check and rename are atomic.
     synchronized {
-      val existingLengths =
-        checkIndexAndDataFile(indexFile, dataFile, lengths.length)
+      val existingLengths = checkIndexAndDataFile(
+        indexFile,
+        dataFile,
+        lengths.length)
       if (existingLengths != null) {
         // Another attempt for the same task has already written our map outputs successfully,
         // so just use the existing partition lengths and delete our temporary map outputs.

@@ -57,8 +57,9 @@ private class PoolInterfaceActor(
     with ActorLogging {
   import PoolInterfaceActor._
 
-  private[this] val inputBuffer =
-    Buffer[PoolRequest](hcps.setup.settings.maxOpenRequests, fm)
+  private[this] val inputBuffer = Buffer[PoolRequest](
+    hcps.setup.settings.maxOpenRequests,
+    fm)
   private[this] var activeIdleTimeout: Option[Cancellable] = None
 
   log.debug("(Re-)starting host connection pool to {}:{}", hcps.host, hcps.port)
@@ -71,23 +72,24 @@ private class PoolInterfaceActor(
     import hcps._
     import setup._
 
-    val connectionFlow = connectionContext match {
-      case httpsContext: HttpsConnectionContext ⇒
-        Http().outgoingConnectionHttps(
-          host,
-          port,
-          httpsContext,
-          None,
-          settings.connectionSettings,
-          setup.log)
-      case _ ⇒
-        Http().outgoingConnection(
-          host,
-          port,
-          None,
-          settings.connectionSettings,
-          setup.log)
-    }
+    val connectionFlow =
+      connectionContext match {
+        case httpsContext: HttpsConnectionContext ⇒
+          Http().outgoingConnectionHttps(
+            host,
+            port,
+            httpsContext,
+            None,
+            settings.connectionSettings,
+            setup.log)
+        case _ ⇒
+          Http().outgoingConnection(
+            host,
+            port,
+            None,
+            settings.connectionSettings,
+            setup.log)
+      }
 
     val poolFlow = PoolFlow(
       Flow[HttpRequest].viaMat(connectionFlow)(Keep.right),
@@ -189,12 +191,12 @@ private class PoolInterfaceActor(
 
   def dispatchRequest(pr: PoolRequest): Unit = {
     val scheme = Uri.httpScheme(hcps.setup.connectionContext.isSecure)
-    val hostHeader =
-      headers.Host(hcps.host, Uri.normalizePort(hcps.port, scheme))
-    val effectiveRequest =
-      pr.request
-        .withUri(pr.request.uri.toHttpRequestTargetOriginForm)
-        .withDefaultHeaders(hostHeader)
+    val hostHeader = headers.Host(
+      hcps.host,
+      Uri.normalizePort(hcps.port, scheme))
+    val effectiveRequest = pr.request
+      .withUri(pr.request.uri.toHttpRequestTargetOriginForm)
+      .withDefaultHeaders(hostHeader)
     val retries =
       if (pr.request.method.isIdempotent)
         hcps.setup.settings.maxRetries

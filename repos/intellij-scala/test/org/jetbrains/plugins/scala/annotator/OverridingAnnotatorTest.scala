@@ -173,8 +173,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
   //SCL-3258
   def testOverrideVarWithFunctions(): Unit = {
-    val code =
-      """
+    val code = """
         |
         |abstract class Parent {
         |  var id: Int
@@ -193,8 +192,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
   //SCL-4036
   def testDefOverrideValVar(): Unit = {
-    val code =
-      """
+    val code = """
       |object ppp {
       |class A(val oof = 42, var rab = 24) {
       |  val foo = 42
@@ -224,49 +222,50 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
     val element: PsiElement = (Header + code).parse
 
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitFunction(fun: ScFunction): Unit = {
-        if (fun.getParent.isInstanceOf[ScTemplateBody]) {
-          annotator.checkOverrideMethods(fun, mock, isInSources = false)
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitFunction(fun: ScFunction): Unit = {
+          if (fun.getParent.isInstanceOf[ScTemplateBody]) {
+            annotator.checkOverrideMethods(fun, mock, isInSources = false)
+          }
+          super.visitFunction(fun)
         }
-        super.visitFunction(fun)
-      }
 
-      override def visitTypeDefinition(typedef: ScTypeDefinition): Unit = {
-        if (typedef.getParent.isInstanceOf[ScTemplateBody]) {
-          annotator.checkOverrideTypes(typedef, mock)
+        override def visitTypeDefinition(typedef: ScTypeDefinition): Unit = {
+          if (typedef.getParent.isInstanceOf[ScTemplateBody]) {
+            annotator.checkOverrideTypes(typedef, mock)
+          }
+          super.visitTypeDefinition(typedef)
         }
-        super.visitTypeDefinition(typedef)
-      }
 
-      override def visitTypeAlias(alias: ScTypeAlias): Unit = {
-        if (alias.getParent.isInstanceOf[ScTemplateBody]) {
-          annotator.checkOverrideTypes(alias, mock)
+        override def visitTypeAlias(alias: ScTypeAlias): Unit = {
+          if (alias.getParent.isInstanceOf[ScTemplateBody]) {
+            annotator.checkOverrideTypes(alias, mock)
+          }
+          super.visitTypeAlias(alias)
         }
-        super.visitTypeAlias(alias)
-      }
 
-      override def visitVariable(varr: ScVariable): Unit = {
-        if (varr.getParent.isInstanceOf[ScTemplateBody] ||
-            varr.getParent.isInstanceOf[ScEarlyDefinitions]) {
-          annotator.checkOverrideVars(varr, mock, isInSources = false)
+        override def visitVariable(varr: ScVariable): Unit = {
+          if (varr.getParent.isInstanceOf[ScTemplateBody] ||
+              varr.getParent.isInstanceOf[ScEarlyDefinitions]) {
+            annotator.checkOverrideVars(varr, mock, isInSources = false)
+          }
+          super.visitVariable(varr)
         }
-        super.visitVariable(varr)
-      }
 
-      override def visitValue(v: ScValue): Unit = {
-        if (v.getParent.isInstanceOf[ScTemplateBody] ||
-            v.getParent.isInstanceOf[ScEarlyDefinitions]) {
-          annotator.checkOverrideVals(v, mock, isInSources = false)
+        override def visitValue(v: ScValue): Unit = {
+          if (v.getParent.isInstanceOf[ScTemplateBody] ||
+              v.getParent.isInstanceOf[ScEarlyDefinitions]) {
+            annotator.checkOverrideVals(v, mock, isInSources = false)
+          }
+          super.visitValue(v)
         }
-        super.visitValue(v)
-      }
 
-      override def visitClassParameter(parameter: ScClassParameter): Unit = {
-        annotator.checkOverrideClassParameters(parameter, mock)
-        super.visitClassParameter(parameter)
+        override def visitClassParameter(parameter: ScClassParameter): Unit = {
+          annotator.checkOverrideClassParameters(parameter, mock)
+          super.visitClassParameter(parameter)
+        }
       }
-    }
 
     element.accept(visitor)
 

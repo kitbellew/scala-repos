@@ -128,9 +128,10 @@ abstract class DefaultDatabase(
   lazy val driver: Option[Driver] = {
     databaseConfig.driver.map { driverClassName =>
       try {
-        val proxyDriver = new ProxyDriver(
-          Reflect
-            .createInstance[Driver](driverClassName, environment.classLoader))
+        val proxyDriver =
+          new ProxyDriver(
+            Reflect
+              .createInstance[Driver](driverClassName, environment.classLoader))
         DriverManager.registerDriver(proxyDriver)
         proxyDriver
       } catch {
@@ -232,8 +233,10 @@ class PooledDatabase(
       new HikariCPConnectionPool(Environment.simple()))
 
   def createDataSource(): DataSource = {
-    val datasource: DataSource =
-      pool.create(name, databaseConfig, configuration)
+    val datasource: DataSource = pool.create(
+      name,
+      databaseConfig,
+      configuration)
     if (configuration.getBoolean("logSql")) {
       val proxyDatasource = new LogSqlDataSource()
       proxyDatasource.setTargetDSDirect(datasource)

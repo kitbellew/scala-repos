@@ -53,9 +53,10 @@ trait Optional[F[_]] { self =>
   def toMaybe[A](fa: F[A]): Maybe[A] = pextract(fa).toMaybe
 
   ////
-  val optionalSyntax = new scalaz.syntax.OptionalSyntax[F] {
-    def F = Optional.this
-  }
+  val optionalSyntax =
+    new scalaz.syntax.OptionalSyntax[F] {
+      def F = Optional.this
+    }
 }
 
 object Optional {

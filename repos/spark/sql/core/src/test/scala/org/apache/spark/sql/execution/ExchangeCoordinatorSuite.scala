@@ -62,8 +62,8 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
       case (bytesByPartitionId, index) =>
         new MapOutputStatistics(index, bytesByPartitionId)
     }
-    val estimatedPartitionStartIndices =
-      coordinator.estimatePartitionStartIndices(mapOutputStatistics)
+    val estimatedPartitionStartIndices = coordinator
+      .estimatePartitionStartIndices(mapOutputStatistics)
     assert(estimatedPartitionStartIndices === expectedPartitionStartIndices)
   }
 
@@ -140,10 +140,9 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
       // we should see an assertion error.
       val bytesByPartitionId1 = Array[Long](0, 0, 0, 0, 0)
       val bytesByPartitionId2 = Array[Long](0, 0, 0, 0, 0, 0)
-      val mapOutputStatistics =
-        Array(
-          new MapOutputStatistics(0, bytesByPartitionId1),
-          new MapOutputStatistics(1, bytesByPartitionId2))
+      val mapOutputStatistics = Array(
+        new MapOutputStatistics(0, bytesByPartitionId1),
+        new MapOutputStatistics(1, bytesByPartitionId2))
       intercept[AssertionError](
         coordinator.estimatePartitionStartIndices(mapOutputStatistics))
     }
@@ -283,18 +282,17 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
       f: SQLContext => Unit,
       targetNumPostShufflePartitions: Int,
       minNumPostShufflePartitions: Option[Int]): Unit = {
-    val sparkConf =
-      new SparkConf(false)
-        .setMaster("local[*]")
-        .setAppName("test")
-        .set("spark.ui.enabled", "false")
-        .set("spark.driver.allowMultipleContexts", "true")
-        .set(SQLConf.SHUFFLE_PARTITIONS.key, "5")
-        .set(SQLConf.ADAPTIVE_EXECUTION_ENABLED.key, "true")
-        .set(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key, "-1")
-        .set(
-          SQLConf.SHUFFLE_TARGET_POSTSHUFFLE_INPUT_SIZE.key,
-          targetNumPostShufflePartitions.toString)
+    val sparkConf = new SparkConf(false)
+      .setMaster("local[*]")
+      .setAppName("test")
+      .set("spark.ui.enabled", "false")
+      .set("spark.driver.allowMultipleContexts", "true")
+      .set(SQLConf.SHUFFLE_PARTITIONS.key, "5")
+      .set(SQLConf.ADAPTIVE_EXECUTION_ENABLED.key, "true")
+      .set(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key, "-1")
+      .set(
+        SQLConf.SHUFFLE_TARGET_POSTSHUFFLE_INPUT_SIZE.key,
+        targetNumPostShufflePartitions.toString)
     minNumPostShufflePartitions match {
       case Some(numPartitions) =>
         sparkConf.set(
@@ -310,18 +308,18 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   Seq(Some(3), None).foreach { minNumPostShufflePartitions =>
-    val testNameNote = minNumPostShufflePartitions match {
-      case Some(numPartitions) => "(minNumPostShufflePartitions: 3)"
-      case None                => ""
-    }
+    val testNameNote =
+      minNumPostShufflePartitions match {
+        case Some(numPartitions) => "(minNumPostShufflePartitions: 3)"
+        case None                => ""
+      }
 
     test(
       s"determining the number of reducers: aggregate operator$testNameNote") {
       val test = { sqlContext: SQLContext =>
-        val df =
-          sqlContext
-            .range(0, 1000, 1, numInputPartitions)
-            .selectExpr("id % 20 as key", "id as value")
+        val df = sqlContext
+          .range(0, 1000, 1, numInputPartitions)
+          .selectExpr("id % 20 as key", "id as value")
         val agg = df.groupBy("key").count
 
         // Check the answer first.
@@ -359,28 +357,25 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     test(s"determining the number of reducers: join operator$testNameNote") {
       val test = { sqlContext: SQLContext =>
-        val df1 =
-          sqlContext
-            .range(0, 1000, 1, numInputPartitions)
-            .selectExpr("id % 500 as key1", "id as value1")
-        val df2 =
-          sqlContext
-            .range(0, 1000, 1, numInputPartitions)
-            .selectExpr("id % 500 as key2", "id as value2")
+        val df1 = sqlContext
+          .range(0, 1000, 1, numInputPartitions)
+          .selectExpr("id % 500 as key1", "id as value1")
+        val df2 = sqlContext
+          .range(0, 1000, 1, numInputPartitions)
+          .selectExpr("id % 500 as key2", "id as value2")
 
         val join = df1
           .join(df2, col("key1") === col("key2"))
           .select(col("key1"), col("value2"))
 
         // Check the answer first.
-        val expectedAnswer =
-          sqlContext
-            .range(0, 1000)
-            .selectExpr("id % 500 as key", "id as value")
-            .unionAll(
-              sqlContext
-                .range(0, 1000)
-                .selectExpr("id % 500 as key", "id as value"))
+        val expectedAnswer = sqlContext
+          .range(0, 1000)
+          .selectExpr("id % 500 as key", "id as value")
+          .unionAll(
+            sqlContext
+              .range(0, 1000)
+              .selectExpr("id % 500 as key", "id as value"))
         checkAnswer(join, expectedAnswer.collect())
 
         // Then, let's look at the number of post-shuffle partitions estimated
@@ -413,30 +408,27 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     test(s"determining the number of reducers: complex query 1$testNameNote") {
       val test = { sqlContext: SQLContext =>
-        val df1 =
-          sqlContext
-            .range(0, 1000, 1, numInputPartitions)
-            .selectExpr("id % 500 as key1", "id as value1")
-            .groupBy("key1")
-            .count
-            .toDF("key1", "cnt1")
-        val df2 =
-          sqlContext
-            .range(0, 1000, 1, numInputPartitions)
-            .selectExpr("id % 500 as key2", "id as value2")
-            .groupBy("key2")
-            .count
-            .toDF("key2", "cnt2")
+        val df1 = sqlContext
+          .range(0, 1000, 1, numInputPartitions)
+          .selectExpr("id % 500 as key1", "id as value1")
+          .groupBy("key1")
+          .count
+          .toDF("key1", "cnt1")
+        val df2 = sqlContext
+          .range(0, 1000, 1, numInputPartitions)
+          .selectExpr("id % 500 as key2", "id as value2")
+          .groupBy("key2")
+          .count
+          .toDF("key2", "cnt2")
 
         val join = df1
           .join(df2, col("key1") === col("key2"))
           .select(col("key1"), col("cnt2"))
 
         // Check the answer first.
-        val expectedAnswer =
-          sqlContext
-            .range(0, 500)
-            .selectExpr("id", "2 as cnt")
+        val expectedAnswer = sqlContext
+          .range(0, 500)
+          .selectExpr("id", "2 as cnt")
         checkAnswer(join, expectedAnswer.collect())
 
         // Then, let's look at the number of post-shuffle partitions estimated
@@ -469,28 +461,24 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     test(s"determining the number of reducers: complex query 2$testNameNote") {
       val test = { sqlContext: SQLContext =>
-        val df1 =
-          sqlContext
-            .range(0, 1000, 1, numInputPartitions)
-            .selectExpr("id % 500 as key1", "id as value1")
-            .groupBy("key1")
-            .count
-            .toDF("key1", "cnt1")
-        val df2 =
-          sqlContext
-            .range(0, 1000, 1, numInputPartitions)
-            .selectExpr("id % 500 as key2", "id as value2")
+        val df1 = sqlContext
+          .range(0, 1000, 1, numInputPartitions)
+          .selectExpr("id % 500 as key1", "id as value1")
+          .groupBy("key1")
+          .count
+          .toDF("key1", "cnt1")
+        val df2 = sqlContext
+          .range(0, 1000, 1, numInputPartitions)
+          .selectExpr("id % 500 as key2", "id as value2")
 
-        val join =
-          df1
-            .join(df2, col("key1") === col("key2"))
-            .select(col("key1"), col("cnt1"), col("value2"))
+        val join = df1
+          .join(df2, col("key1") === col("key2"))
+          .select(col("key1"), col("cnt1"), col("value2"))
 
         // Check the answer first.
-        val expectedAnswer =
-          sqlContext
-            .range(0, 1000)
-            .selectExpr("id % 500 as key", "2 as cnt", "id as value")
+        val expectedAnswer = sqlContext
+          .range(0, 1000)
+          .selectExpr("id % 500 as key", "2 as cnt", "id as value")
         checkAnswer(join, expectedAnswer.collect())
 
         // Then, let's look at the number of post-shuffle partitions estimated

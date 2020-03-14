@@ -26,10 +26,11 @@ class ApacheZooKeeperTest
   val watchedZK = {
     val apacheWatcher = new ApacheWatcher(statsReceiver)
     val zkImpl = new ApacheZooKeeper(mockZK)
-    val zkStats = new StatsReader with StatsWriter {
-      val underlying = zkImpl
-      val stats = statsReceiver
-    }
+    val zkStats =
+      new StatsReader with StatsWriter {
+        val underlying = zkImpl
+        val stats = statsReceiver
+      }
     Watched(zkStats, apacheWatcher.state)
   }
   val zk = watchedZK.value
@@ -73,9 +74,8 @@ class ApacheZooKeeperTest
     classOf[org.apache.zookeeper.AsyncCallback.ACLCallback])
   val statCB = ArgumentCaptor.forClass(
     classOf[org.apache.zookeeper.AsyncCallback.StatCallback])
-  val childrenCB =
-    ArgumentCaptor.forClass(
-      classOf[org.apache.zookeeper.AsyncCallback.Children2Callback])
+  val childrenCB = ArgumentCaptor.forClass(
+    classOf[org.apache.zookeeper.AsyncCallback.Children2Callback])
 
   val watcher = ArgumentCaptor.forClass(classOf[ApacheWatcher])
 

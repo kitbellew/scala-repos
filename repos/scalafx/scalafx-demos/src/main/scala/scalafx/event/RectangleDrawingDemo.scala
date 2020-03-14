@@ -56,9 +56,10 @@ object RectangleDrawingDemo extends JFXApp {
     private var _start = new Point2D(0, 0)
     private var _end = new Point2D(0, 0)
 
-    val rectangle = new Rectangle {
-      fill = Color.Blue
-    }
+    val rectangle =
+      new Rectangle {
+        fill = Color.Blue
+      }
 
     /** Update location of the rectangle proving two defining point (along the diameter) */
     def update(start: Point2D = _start, end: Point2D = _end) {
@@ -71,10 +72,11 @@ object RectangleDrawingDemo extends JFXApp {
     }
   }
 
-  val pane = new Pane {
-    // Add rectangle that will be updated with user interactions
-    children += Updater.rectangle
-  }
+  val pane =
+    new Pane {
+      // Add rectangle that will be updated with user interactions
+      children += Updater.rectangle
+    }
 
   // Define handling of mouse events
   pane.handleEvent(MouseEvent.Any) { me: MouseEvent =>

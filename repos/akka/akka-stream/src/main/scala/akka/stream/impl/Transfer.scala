@@ -43,14 +43,16 @@ private[akka] trait Inputs {
   * INTERNAL API
   */
 private[akka] trait DefaultInputTransferStates extends Inputs {
-  override val NeedsInput: TransferState = new TransferState {
-    def isReady = inputsAvailable
-    def isCompleted = inputsDepleted
-  }
-  override val NeedsInputOrComplete: TransferState = new TransferState {
-    def isReady = inputsAvailable || inputsDepleted
-    def isCompleted = false
-  }
+  override val NeedsInput: TransferState =
+    new TransferState {
+      def isReady = inputsAvailable
+      def isCompleted = inputsDepleted
+    }
+  override val NeedsInputOrComplete: TransferState =
+    new TransferState {
+      def isReady = inputsAvailable || inputsDepleted
+      def isCompleted = false
+    }
 }
 
 /**
@@ -79,10 +81,11 @@ private[akka] trait Outputs {
   * INTERNAL API
   */
 private[akka] trait DefaultOutputTransferStates extends Outputs {
-  override val NeedsDemand: TransferState = new TransferState {
-    def isReady = demandAvailable
-    def isCompleted = isClosed
-  }
+  override val NeedsDemand: TransferState =
+    new TransferState {
+      def isReady = demandAvailable
+      def isCompleted = isClosed
+    }
   override def NeedsDemandOrCancel: TransferState =
     new TransferState {
       def isReady = demandAvailable || isClosed
@@ -207,10 +210,11 @@ private[akka] trait Pump {
 
   final def isPumpFinished: Boolean = transferState.isCompleted
 
-  protected final val completedPhase = TransferPhase(Completed) { () ⇒
-    throw new IllegalStateException(
-      "The action of completed phase must be never executed")
-  }
+  protected final val completedPhase =
+    TransferPhase(Completed) { () ⇒
+      throw new IllegalStateException(
+        "The action of completed phase must be never executed")
+    }
 
   // Exchange input buffer elements and output buffer "requests" until one of them becomes empty.
   // Generate upstream requestMore for every Nth consumed input element

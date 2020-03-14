@@ -40,8 +40,16 @@ object Level {
   case object TRACE extends Level("TRACE", 400)
   case object ALL extends Level("ALL", Int.MinValue)
 
-  private[logging] val AllLevels: Seq[Level] =
-    Seq(OFF, FATAL, CRITICAL, ERROR, WARNING, INFO, DEBUG, TRACE, ALL)
+  private[logging] val AllLevels: Seq[Level] = Seq(
+    OFF,
+    FATAL,
+    CRITICAL,
+    ERROR,
+    WARNING,
+    INFO,
+    DEBUG,
+    TRACE,
+    ALL)
 
   /**
     * Associate [[java.util.logging.Level]] and `Level` by their integer

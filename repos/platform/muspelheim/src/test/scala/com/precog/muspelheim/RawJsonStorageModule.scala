@@ -71,8 +71,8 @@ trait RawJsonStorageModule[M[+_]] { self =>
   private var structures: Map[Path, Set[ColumnRef]] = Map.empty
 
   private def load(path: Path) = {
-    val resourceName =
-      ("/test_data" + path.toString.init + ".json").replaceAll("/+", "/")
+    val resourceName = ("/test_data" + path.toString.init + ".json")
+      .replaceAll("/+", "/")
 
     using(getClass.getResourceAsStream(resourceName)) { in =>
       // FIXME: Refactor as soon as JParser can parse from InputStreams
@@ -91,11 +91,12 @@ trait RawJsonStorageModule[M[+_]] { self =>
 
       projections += (path -> json.elements)
 
-      val structure: Set[ColumnRef] = json.elements
-        .foldLeft(Map.empty[ColumnRef, ArrayColumn[_]]) { (acc, jv) =>
-          Slice.withIdsAndValues(jv, acc, 0, 1)
-        }
-        .keySet
+      val structure: Set[ColumnRef] =
+        json.elements
+          .foldLeft(Map.empty[ColumnRef, ArrayColumn[_]]) { (acc, jv) =>
+            Slice.withIdsAndValues(jv, acc, 0, 1)
+          }
+          .keySet
       structures += (path -> structure)
     }
   }
@@ -105,58 +106,61 @@ trait RawJsonStorageModule[M[+_]] { self =>
   import scala.collection.JavaConverters._
   import java.util.regex.Pattern
 
-  val reflections = new Reflections(
-    new ConfigurationBuilder()
-      .setUrls(ClasspathHelper.forPackage("test_data"))
-      .setScanners(new ResourcesScanner()))
+  val reflections =
+    new Reflections(
+      new ConfigurationBuilder()
+        .setUrls(ClasspathHelper.forPackage("test_data"))
+        .setScanners(new ResourcesScanner()))
   val jsonFiles = reflections.getResources(Pattern.compile(".*\\.json"))
   for (resource <- jsonFiles.asScala)
     load(Path(resource.replaceAll("test_data/", "").replaceAll("\\.json", "")))
 
-  val vfs: VFSMetadata[M] = new VFSMetadata[M] {
-    import com.precog.yggdrasil.metadata._
-    import PathMetadata._
-    def findDirectChildren(
-        apiKey: APIKey,
-        path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
-      EitherT.right {
-        M.point(
-          projections.keySet
-            .filter(_.isDirectChildOf(path))
-            .map(PathMetadata(_, DataOnly(FileContent.XQuirrelData)))
-        )
-      }
-
-    def pathStructure(
-        apiKey: APIKey,
-        path: Path,
-        property: CPath,
-        version: Version): EitherT[M, ResourceError, PathStructure] =
-      EitherT.right {
-        M.point {
-          val structs = structures.getOrElse(path, Set.empty[ColumnRef])
-          val types: Map[CType, Long] = structs
-            .collect {
-              // FIXME: This should use real counts
-              case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
-                (ctype, 0L)
-            }
-            .groupBy(_._1)
-            .map {
-              case (tpe, values) => (tpe, values.map(_._2).sum)
-            }
-
-          PathStructure(types, structs.map(_.selector))
+  val vfs: VFSMetadata[M] =
+    new VFSMetadata[M] {
+      import com.precog.yggdrasil.metadata._
+      import PathMetadata._
+      def findDirectChildren(
+          apiKey: APIKey,
+          path: Path): EitherT[M, ResourceError, Set[PathMetadata]] =
+        EitherT.right {
+          M.point(
+            projections.keySet
+              .filter(_.isDirectChildOf(path))
+              .map(PathMetadata(_, DataOnly(FileContent.XQuirrelData)))
+          )
         }
-      }
 
-    def size(
-        apiKey: APIKey,
-        path: Path,
-        version: Version): EitherT[M, ResourceError, Long] = {
-      EitherT.right(M.point(0L))
+      def pathStructure(
+          apiKey: APIKey,
+          path: Path,
+          property: CPath,
+          version: Version): EitherT[M, ResourceError, PathStructure] =
+        EitherT.right {
+          M.point {
+            val structs = structures.getOrElse(path, Set.empty[ColumnRef])
+            val types: Map[CType, Long] = structs
+              .collect {
+                // FIXME: This should use real counts
+                case ColumnRef(selector, ctype)
+                    if selector.hasPrefix(selector) =>
+                  (ctype, 0L)
+              }
+              .groupBy(_._1)
+              .map {
+                case (tpe, values) => (tpe, values.map(_._2).sum)
+              }
+
+            PathStructure(types, structs.map(_.selector))
+          }
+        }
+
+      def size(
+          apiKey: APIKey,
+          path: Path,
+          version: Version): EitherT[M, ResourceError, Long] = {
+        EitherT.right(M.point(0L))
+      }
     }
-  }
 }
 
 trait RawJsonColumnarTableStorageModule[M[+_]]

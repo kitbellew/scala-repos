@@ -25,8 +25,8 @@ abstract class LightScalaTestCase extends LightCodeInsightFixtureTestCase {
 
   override def setUp() {
     super.setUp()
-    val syntheticClasses =
-      myFixture.getProject.getComponent(classOf[SyntheticClasses])
+    val syntheticClasses = myFixture.getProject.getComponent(
+      classOf[SyntheticClasses])
     if (!syntheticClasses.isClassesRegistered) {
       syntheticClasses.registerClasses()
     }
@@ -34,27 +34,28 @@ abstract class LightScalaTestCase extends LightCodeInsightFixtureTestCase {
 }
 
 object LightScalaTestCase {
-  val SCALA_DESCRIPTOR = new LightProjectDescriptor {
-    override def getModuleType: ModuleType[T] forSome {
-      type T <: ModuleBuilder
-    } = StdModuleTypes.JAVA
-    override def getSdk = IdeaTestUtil.getMockJdk14
-    override def configureModule(
-        module: Module,
-        model: ModifiableRootModel,
-        contentEntry: ContentEntry) {
-      val modifiableModel =
-        model.getModuleLibraryTable.createLibrary("SCALA").getModifiableModel
-      val scalaLib = TestUtils.getScalaLibraryPath + "!/"
-      val scalaJar =
-        JarFileSystem.getInstance.refreshAndFindFileByPath(scalaLib)
-      modifiableModel.addRoot(scalaJar, OrderRootType.CLASSES)
-      val srcRoot = new File(TestUtils.getScalaLibrarySrc)
-      modifiableModel.addRoot(
-        VfsUtil.getUrlForLibraryRoot(srcRoot),
-        OrderRootType.SOURCES)
-      // do not forget to commit a model!
-      modifiableModel.commit()
+  val SCALA_DESCRIPTOR =
+    new LightProjectDescriptor {
+      override def getModuleType: ModuleType[T] forSome {
+        type T <: ModuleBuilder
+      } = StdModuleTypes.JAVA
+      override def getSdk = IdeaTestUtil.getMockJdk14
+      override def configureModule(
+          module: Module,
+          model: ModifiableRootModel,
+          contentEntry: ContentEntry) {
+        val modifiableModel =
+          model.getModuleLibraryTable.createLibrary("SCALA").getModifiableModel
+        val scalaLib = TestUtils.getScalaLibraryPath + "!/"
+        val scalaJar = JarFileSystem.getInstance.refreshAndFindFileByPath(
+          scalaLib)
+        modifiableModel.addRoot(scalaJar, OrderRootType.CLASSES)
+        val srcRoot = new File(TestUtils.getScalaLibrarySrc)
+        modifiableModel.addRoot(
+          VfsUtil.getUrlForLibraryRoot(srcRoot),
+          OrderRootType.SOURCES)
+        // do not forget to commit a model!
+        modifiableModel.commit()
+      }
     }
-  }
 }

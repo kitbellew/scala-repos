@@ -97,23 +97,17 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     upper1 > upper2 || upper1 === upper2 && (isClosedUpper(
       flags1) || isOpenUpper(flags2))
 
-  def isEmpty: Boolean =
-    this.isInstanceOf[Empty[_]]
+  def isEmpty: Boolean = this.isInstanceOf[Empty[_]]
 
-  def nonEmpty: Boolean =
-    !isEmpty
+  def nonEmpty: Boolean = !isEmpty
 
-  def isPoint: Boolean =
-    this.isInstanceOf[Point[_]]
+  def isPoint: Boolean = this.isInstanceOf[Point[_]]
 
-  def contains(t: A): Boolean =
-    hasAtOrBelow(t) && hasAtOrAbove(t)
+  def contains(t: A): Boolean = hasAtOrBelow(t) && hasAtOrAbove(t)
 
-  def doesNotContain(t: A): Boolean =
-    !hasAtOrBelow(t) || !hasAtOrAbove(t)
+  def doesNotContain(t: A): Boolean = !hasAtOrBelow(t) || !hasAtOrAbove(t)
 
-  def crosses(t: A): Boolean =
-    hasBelow(t) && hasAbove(t)
+  def crosses(t: A): Boolean = hasBelow(t) && hasAbove(t)
 
   def crossesZero(implicit ev: AdditiveMonoid[A]): Boolean =
     hasBelow(ev.zero) && hasAbove(ev.zero)
@@ -131,8 +125,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
   def mapBounds[B: Order](f: A => B): Interval[B] =
     Interval.fromBounds(lowerBound.map(f), upperBound.map(f))
 
-  def fold[B](f: (Bound[A], Bound[A]) => B): B =
-    f(lowerBound, upperBound)
+  def fold[B](f: (Bound[A], Bound[A]) => B): B = f(lowerBound, upperBound)
 
   def isSupersetOf(rhs: Interval[A]): Boolean =
     (lhs, rhs) match {
@@ -173,11 +166,9 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
   def isProperSupersetOf(rhs: Interval[A]): Boolean =
     lhs != rhs && (lhs isSupersetOf rhs)
 
-  def isSubsetOf(rhs: Interval[A]): Boolean =
-    rhs isSupersetOf lhs
+  def isSubsetOf(rhs: Interval[A]): Boolean = rhs isSupersetOf lhs
 
-  def isProperSubsetOf(rhs: Interval[A]): Boolean =
-    rhs isProperSupersetOf lhs
+  def isProperSubsetOf(rhs: Interval[A]): Boolean = rhs isProperSupersetOf lhs
 
   // Does this interval contain any points above t ?
   def hasAbove(t: A): Boolean =
@@ -233,11 +224,9 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       case _        => false
     }
 
-  def intersects(rhs: Interval[A]): Boolean =
-    !(lhs intersect rhs).isEmpty
+  def intersects(rhs: Interval[A]): Boolean = !(lhs intersect rhs).isEmpty
 
-  def &(rhs: Interval[A]): Interval[A] =
-    lhs intersect rhs
+  def &(rhs: Interval[A]): Interval[A] = lhs intersect rhs
 
   def intersect(rhs: Interval[A]): Interval[A] =
     Interval.fromBounds(
@@ -284,8 +273,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       case (a, b) => (f(a), f(b))
     }
 
-  def |(rhs: Interval[A]): Interval[A] =
-    lhs union rhs
+  def |(rhs: Interval[A]): Interval[A] = lhs union rhs
 
   def union(rhs: Interval[A]): Interval[A] =
     Interval.fromBounds(
@@ -641,8 +629,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       case (_, _)         => lhs * rhs.reciprocal
     }
 
-  def /(rhs: A)(implicit ev: Field[A]): Interval[A] =
-    lhs * rhs.reciprocal
+  def /(rhs: A)(implicit ev: Field[A]): Interval[A] = lhs * rhs.reciprocal
 
   def +(rhs: A)(implicit ev: AdditiveSemigroup[A]): Interval[A] =
     this match {
@@ -653,8 +640,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       case All() | Empty()      => this
     }
 
-  def -(rhs: A)(implicit ev: AdditiveGroup[A]): Interval[A] =
-    this + (-rhs)
+  def -(rhs: A)(implicit ev: AdditiveGroup[A]): Interval[A] = this + (-rhs)
 
   def unary_-()(implicit ev: AdditiveGroup[A]): Interval[A] =
     this match {

@@ -33,8 +33,8 @@ trait JavaReflectionRuntimes {
                 case Array(param) if isMacroContext(param) => true
                 case _                                     => false
               }
-            val Array(bundleCtor) =
-              implClass.getConstructors.filter(isBundleCtor)
+            val Array(bundleCtor) = implClass.getConstructors.filter(
+              isBundleCtor)
             bundleCtor.newInstance(args.c)
           } else
             ReflectionUtils.staticSingletonInstance(implClass)

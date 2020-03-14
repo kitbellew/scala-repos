@@ -126,8 +126,9 @@ trait BytecodeWriters {
         val cnode = new asm.tree.ClassNode()
         val cr = new asm.ClassReader(jclassBytes)
         cr.accept(cnode, 0)
-        val trace = new scala.tools.asm.util.TraceClassVisitor(
-          new java.io.PrintWriter(new java.io.StringWriter()))
+        val trace =
+          new scala.tools.asm.util.TraceClassVisitor(
+            new java.io.PrintWriter(new java.io.StringWriter()))
         cnode.accept(trace)
         trace.p.print(pw)
       } finally pw.close()
@@ -177,9 +178,10 @@ trait BytecodeWriters {
       super.writeClass(label, jclassName, jclassBytes, outfile)
 
       val pathName = jclassName
-      val dumpFile = pathName
-        .split("[./]")
-        .foldLeft(baseDir: Path)(_ / _) changeExtension "class" toFile;
+      val dumpFile =
+        pathName
+          .split("[./]")
+          .foldLeft(baseDir: Path)(_ / _) changeExtension "class" toFile;
       dumpFile.parent.createDirectory()
       val outstream = new DataOutputStream(new FileOutputStream(dumpFile.path))
 

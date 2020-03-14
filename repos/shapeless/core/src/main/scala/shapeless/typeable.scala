@@ -59,40 +59,52 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
   }
 
   /** Typeable instance for `Byte`. */
-  implicit val byteTypeable: Typeable[Byte] =
-    ValueTypeable[Byte, jl.Byte](classOf[jl.Byte], "Byte")
+  implicit val byteTypeable: Typeable[Byte] = ValueTypeable[Byte, jl.Byte](
+    classOf[jl.Byte],
+    "Byte")
 
   /** Typeable instance for `Short`. */
-  implicit val shortTypeable: Typeable[Short] =
-    ValueTypeable[Short, jl.Short](classOf[jl.Short], "Short")
+  implicit val shortTypeable: Typeable[Short] = ValueTypeable[Short, jl.Short](
+    classOf[jl.Short],
+    "Short")
 
   /** Typeable instance for `Char`. */
-  implicit val charTypeable: Typeable[Char] =
-    ValueTypeable[Char, jl.Character](classOf[jl.Character], "Char")
+  implicit val charTypeable: Typeable[Char] = ValueTypeable[Char, jl.Character](
+    classOf[jl.Character],
+    "Char")
 
   /** Typeable instance for `Int`. */
-  implicit val intTypeable: Typeable[Int] =
-    ValueTypeable[Int, jl.Integer](classOf[jl.Integer], "Int")
+  implicit val intTypeable: Typeable[Int] = ValueTypeable[Int, jl.Integer](
+    classOf[jl.Integer],
+    "Int")
 
   /** Typeable instance for `Long`. */
-  implicit val longTypeable: Typeable[Long] =
-    ValueTypeable[Long, jl.Long](classOf[jl.Long], "Long")
+  implicit val longTypeable: Typeable[Long] = ValueTypeable[Long, jl.Long](
+    classOf[jl.Long],
+    "Long")
 
   /** Typeable instance for `Float`. */
-  implicit val floatTypeable: Typeable[Float] =
-    ValueTypeable[Float, jl.Float](classOf[jl.Float], "Float")
+  implicit val floatTypeable: Typeable[Float] = ValueTypeable[Float, jl.Float](
+    classOf[jl.Float],
+    "Float")
 
   /** Typeable instance for `Double`. */
-  implicit val doubleTypeable: Typeable[Double] =
-    ValueTypeable[Double, jl.Double](classOf[jl.Double], "Double")
+  implicit val doubleTypeable
+      : Typeable[Double] = ValueTypeable[Double, jl.Double](
+    classOf[jl.Double],
+    "Double")
 
   /** Typeable instance for `Boolean`. */
-  implicit val booleanTypeable: Typeable[Boolean] =
-    ValueTypeable[Boolean, jl.Boolean](classOf[jl.Boolean], "Boolean")
+  implicit val booleanTypeable
+      : Typeable[Boolean] = ValueTypeable[Boolean, jl.Boolean](
+    classOf[jl.Boolean],
+    "Boolean")
 
   /** Typeable instance for `Unit`. */
-  implicit val unitTypeable: Typeable[Unit] =
-    ValueTypeable[Unit, runtime.BoxedUnit](classOf[runtime.BoxedUnit], "Unit")
+  implicit val unitTypeable
+      : Typeable[Unit] = ValueTypeable[Unit, runtime.BoxedUnit](
+    classOf[runtime.BoxedUnit],
+    "Unit")
 
   def isValClass[T](clazz: Class[T]) =
     (classOf[jl.Number] isAssignableFrom clazz) ||
@@ -457,8 +469,8 @@ class TypeableMacros(val c: blackbox.Context) extends SingletonTypeUtils {
         val tArgs = dealiased.typeArgs
         val normalized = appliedType(dealiased.typeConstructor, tArgs)
 
-        val normalizedTypeable =
-          c.inferImplicitValue(appliedType(typeableTpe, List(normalized)))
+        val normalizedTypeable = c.inferImplicitValue(
+          appliedType(typeableTpe, List(normalized)))
         if (normalizedTypeable == EmptyTree)
           c.abort(
             c.enclosingPosition,

@@ -265,8 +265,8 @@ object ClusterSingletonManager {
       val cluster = Cluster(context.system)
       // sort by age, oldest first
       val ageOrdering = Member.ageOrdering
-      var membersByAge: immutable.SortedSet[Member] =
-        immutable.SortedSet.empty(ageOrdering)
+      var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
+        ageOrdering)
 
       var changes = Vector.empty[AnyRef]
 
@@ -295,9 +295,10 @@ object ClusterSingletonManager {
           ageOrdering) union state.members.filter(m ⇒
           (m.status == MemberStatus.Up || m.status == MemberStatus.Leaving) && matchingRole(
             m))
-        val safeToBeOldest = !state.members.exists { m ⇒
-          (m.status == MemberStatus.Down || m.status == MemberStatus.Exiting)
-        }
+        val safeToBeOldest =
+          !state.members.exists { m ⇒
+            (m.status == MemberStatus.Down || m.status == MemberStatus.Exiting)
+          }
         val initial = InitialOldestState(
           membersByAge.headOption.map(_.address),
           safeToBeOldest)

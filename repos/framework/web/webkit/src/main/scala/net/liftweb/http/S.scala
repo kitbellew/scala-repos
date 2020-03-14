@@ -97,8 +97,7 @@ object S extends S {
       add(HTTPCookie(name, "").setMaxAge(0))
     }
 
-    def delete(old: HTTPCookie) =
-      add(old.setMaxAge(0).setValue(""))
+    def delete(old: HTTPCookie) = add(old.setMaxAge(0).setValue(""))
   }
 
   final case class PFPromoter[A, B](pff: () => PartialFunction[A, B])
@@ -253,8 +252,8 @@ object S extends S {
       session: LiftSession)
       extends AFuncHolder {
     private val loc = S.location
-    private val snapshot: Function1[Function0[Any], Any] =
-      RequestVarHandler.generateSnapshotRestorer()
+    private val snapshot: Function1[Function0[Any], Any] = RequestVarHandler
+      .generateSnapshotRestorer()
     override def sessionLife: Boolean = false
 
     def apply(in: List[String]): Any = {
@@ -271,8 +270,7 @@ object S extends S {
     * The companion object that generates AFuncHolders from other functions
     */
   object AFuncHolder {
-    implicit def strToAnyAF(f: String => Any): AFuncHolder =
-      SFuncHolder(f)
+    implicit def strToAnyAF(f: String => Any): AFuncHolder = SFuncHolder(f)
 
     implicit def unitToAF(f: () => Any): AFuncHolder = NFuncHolder(f)
 
@@ -345,8 +343,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # attrs
     * @see # attr
     */
-  private val _attrs = new ThreadGlobal[
-    (MetaData, List[(Either[String, (String, String)], String)])]
+  private val _attrs =
+    new ThreadGlobal[
+      (MetaData, List[(Either[String, (String, String)], String)])]
 
   /**
     * Holds the per-request LiftSession instance.
@@ -625,8 +624,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see LiftRules.timeZoneCalculator ( HTTPRequest )
     * @see java.util.TimeZone
     */
-  def timeZone: TimeZone =
-    LiftRules.timeZoneCalculator(containerRequest)
+  def timeZone: TimeZone = LiftRules.timeZoneCalculator(containerRequest)
 
   /**
     * A boolean indicating whether or not the response should be rendered with
@@ -1008,12 +1006,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     import js.JsCmds._
 
     val globalJs = _globalJsToAppend.is.toList
-    val postPageJs =
-      S.session.toList.flatMap { session =>
-        session.postPageJavaScript(
-          RenderVersion.get ::
-            currentCometActor.map(_.uniqueId).toList)
-      }
+    val postPageJs = S.session.toList.flatMap { session =>
+      session.postPageJavaScript(
+        RenderVersion.get ::
+          currentCometActor.map(_.uniqueId).toList)
+    }
     val cometJs = commandsForComets
 
     val allJs =
@@ -1143,12 +1140,13 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                 tryo {
                   val clz = this.getClass.getClassLoader
                     .loadClass("java.util.ResourceBundle")
-                  val meth = clz.getDeclaredMethods
-                    .filter { m =>
-                      m.getName == "clearCache" && m.getParameterTypes.length == 0
-                    }
-                    .toList
-                    .head
+                  val meth =
+                    clz.getDeclaredMethods
+                      .filter { m =>
+                        m.getName == "clearCache" && m.getParameterTypes.length == 0
+                      }
+                      .toList
+                      .head
                   meth.invoke(null)
                 }
               }
@@ -1944,8 +1942,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *
     * @see LiftRules.unusedFunctionsLifeTime
     */
-  def functionLifespan[T](span: Boolean)(f: => T): T =
-    _lifeTime.doWith(span)(f)
+  def functionLifespan[T](span: Boolean)(f: => T): T = _lifeTime.doWith(span)(f)
 
   /**
     * Returns whether functions are currently extended to the lifetime of the session.
@@ -2871,8 +2868,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     val num: Int = formItemNumber.is
     formItemNumber.set(num + 1)
     import java.text._
-    val prefix: String =
-      new DecimalFormat("00000000000000000").format(bump + num)
+    val prefix: String = new DecimalFormat("00000000000000000")
+      .format(bump + num)
     // take the first 2 non-Lift/non-Scala stack frames for use as hash issue 174
     "f" + prefix + "_" + Helpers.hashHex(
       (new Exception).getStackTrace.toList

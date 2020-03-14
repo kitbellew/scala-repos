@@ -47,8 +47,8 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
         ((year == afterYear).fold(afterMonth + 1, 1) to
           (year == until.getYear).fold(until.getMonthOfYear, 12)).map { month =>
           mixedLeaderboard(
-            after =
-              new DateTime(year, month, 1, 0, 0).pp("compute mod history"),
+            after = new DateTime(year, month, 1, 0, 0).pp(
+              "compute mod history"),
             before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some
           ).map {
             _.headOption.map { champ =>

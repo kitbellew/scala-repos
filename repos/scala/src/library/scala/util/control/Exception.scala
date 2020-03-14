@@ -51,8 +51,7 @@ object Exception {
     mkCatcher(isDef, f)
 
   implicit def throwableSubtypeToCatcher[Ex <: Throwable: ClassTag, T](
-      pf: PartialFunction[Ex, T]) =
-    mkCatcher(pf.isDefinedAt _, pf.apply _)
+      pf: PartialFunction[Ex, T]) = mkCatcher(pf.isDefinedAt _, pf.apply _)
 
   /** !!! Not at all sure of every factor which goes into this,
     *  and/or whether we need multiple standard variations.
@@ -143,10 +142,11 @@ object Exception {
     /** Create a `Catch` object with the same `isDefinedAt` logic as this one,
       * but with the supplied `apply` method replacing the current one. */
     def withApply[U](f: Throwable => U): Catch[U] = {
-      val pf2 = new Catcher[U] {
-        def isDefinedAt(x: Throwable) = pf isDefinedAt x
-        def apply(x: Throwable) = f(x)
-      }
+      val pf2 =
+        new Catcher[U] {
+          def isDefinedAt(x: Throwable) = pf isDefinedAt x
+          def apply(x: Throwable) = f(x)
+        }
       new Catch(pf2, fin, rethrow)
     }
 
@@ -156,8 +156,9 @@ object Exception {
     def toTry: Catch[scala.util.Try[T]] = withApply(x => Failure(x))
   }
 
-  final val nothingCatcher: Catcher[Nothing] =
-    mkThrowableCatcher(_ => false, throw _)
+  final val nothingCatcher: Catcher[Nothing] = mkThrowableCatcher(
+    _ => false,
+    throw _)
   final def nonFatalCatcher[T]: Catcher[T] =
     mkThrowableCatcher(
       {

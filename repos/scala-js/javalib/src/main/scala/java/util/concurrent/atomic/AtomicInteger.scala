@@ -8,11 +8,9 @@ class AtomicInteger(private[this] var value: Int)
 
   final def get(): Int = value
 
-  final def set(newValue: Int): Unit =
-    value = newValue
+  final def set(newValue: Int): Unit = value = newValue
 
-  final def lazySet(newValue: Int): Unit =
-    set(newValue)
+  final def lazySet(newValue: Int): Unit = set(newValue)
 
   final def getAndSet(newValue: Int): Int = {
     val old = value
@@ -32,11 +30,9 @@ class AtomicInteger(private[this] var value: Int)
   final def weakCompareAndSet(expect: Int, update: Int): Boolean =
     compareAndSet(expect, update)
 
-  final def getAndIncrement(): Int =
-    getAndAdd(1)
+  final def getAndIncrement(): Int = getAndAdd(1)
 
-  final def getAndDecrement(): Int =
-    getAndAdd(-1)
+  final def getAndDecrement(): Int = getAndAdd(-1)
 
   @inline final def getAndAdd(delta: Int): Int = {
     val old = value
@@ -44,11 +40,9 @@ class AtomicInteger(private[this] var value: Int)
     old
   }
 
-  final def incrementAndGet(): Int =
-    addAndGet(1)
+  final def incrementAndGet(): Int = addAndGet(1)
 
-  final def decrementAndGet(): Int =
-    addAndGet(-1)
+  final def decrementAndGet(): Int = addAndGet(-1)
 
   @inline final def addAndGet(delta: Int): Int = {
     val newValue = value + delta
@@ -56,8 +50,7 @@ class AtomicInteger(private[this] var value: Int)
     newValue
   }
 
-  override def toString(): String =
-    value.toString()
+  override def toString(): String = value.toString()
 
   def intValue(): Int = value
   def longValue(): Long = value.toLong

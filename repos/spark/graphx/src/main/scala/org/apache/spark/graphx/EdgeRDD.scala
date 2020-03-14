@@ -52,8 +52,8 @@ abstract class EdgeRDD[ED](sc: SparkContext, deps: Seq[Dependency[_]])
   override def compute(
       part: Partition,
       context: TaskContext): Iterator[Edge[ED]] = {
-    val p =
-      firstParent[(PartitionID, EdgePartition[ED, _])].iterator(part, context)
+    val p = firstParent[(PartitionID, EdgePartition[ED, _])]
+      .iterator(part, context)
     if (p.hasNext) {
       p.next()._2.iterator.map(_.copy())
     } else {

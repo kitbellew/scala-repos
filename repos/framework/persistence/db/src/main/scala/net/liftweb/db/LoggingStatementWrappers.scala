@@ -446,8 +446,9 @@ object DBLog {
 
     protected def chain(method: Method, args: Array[Object]): Object =
       try {
-        val m =
-          representative.getMethod(method.getName, method.getParameterTypes: _*)
+        val m = representative.getMethod(
+          method.getName,
+          method.getParameterTypes: _*)
 
         m.invoke(underlying, args: _*)
       } catch {

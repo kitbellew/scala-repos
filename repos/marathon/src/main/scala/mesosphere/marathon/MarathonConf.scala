@@ -142,8 +142,8 @@ trait MarathonConf
       case None       => Set("*")
     }
 
-  lazy val defaultAcceptedResourceRolesSet =
-    defaultAcceptedResourceRoles.get.getOrElse(expectedResourceRoles)
+  lazy val defaultAcceptedResourceRolesSet = defaultAcceptedResourceRoles.get
+    .getOrElse(expectedResourceRoles)
 
   lazy val defaultAcceptedResourceRoles = opt[String](
     "default_accepted_resource_roles",
@@ -156,8 +156,7 @@ trait MarathonConf
   ).map(parseDefaultAcceptedResourceRoles)
 
   private[this] def parseDefaultAcceptedResourceRoles(
-      str: String): Set[String] =
-    str.split(',').map(_.trim).toSet
+      str: String): Set[String] = str.split(',').map(_.trim).toSet
 
   private[this] def validateDefaultAcceptedResourceRoles(
       str: String): Boolean = {

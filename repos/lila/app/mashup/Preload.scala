@@ -26,21 +26,22 @@ final class Preload(
     getPlayban: String => Fu[Option[TempBan]],
     lightUser: String => Option[LightUser]) {
 
-  private type Response = (
-      JsObject,
-      List[Entry],
-      List[MiniForumPost],
-      List[Tournament],
-      List[Simul],
-      Option[Game],
-      List[User.LightPerf],
-      List[Winner],
-      Option[lila.puzzle.DailyPuzzle],
-      List[StreamOnAir],
-      List[lila.blog.MiniPost],
-      Option[TempBan],
-      Option[Preload.CurrentGame],
-      Int)
+  private type Response =
+    (
+        JsObject,
+        List[Entry],
+        List[MiniForumPost],
+        List[Tournament],
+        List[Simul],
+        Option[Game],
+        List[User.LightPerf],
+        List[Winner],
+        Option[lila.puzzle.DailyPuzzle],
+        List[StreamOnAir],
+        List[lila.blog.MiniPost],
+        Option[TempBan],
+        Option[Preload.CurrentGame],
+        Int)
 
   def apply(
       posts: Fu[List[MiniForumPost]],

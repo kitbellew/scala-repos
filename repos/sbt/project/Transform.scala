@@ -3,19 +3,19 @@ import Keys._
 
 object Transform {
   lazy val transformSources = TaskKey[Seq[File]]("transform-sources")
-  lazy val inputSourceDirectories =
-    SettingKey[Seq[File]]("input-source-directories")
+  lazy val inputSourceDirectories = SettingKey[Seq[File]](
+    "input-source-directories")
   lazy val inputSourceDirectory = SettingKey[File]("input-source-directory")
   lazy val inputSources = TaskKey[Seq[File]]("input-sources")
   lazy val sourceProperties = TaskKey[Map[String, String]]("source-properties")
 
   lazy val transformResources = TaskKey[Seq[File]]("transform-resources")
-  lazy val inputResourceDirectories =
-    SettingKey[Seq[File]]("input-resource-directories")
+  lazy val inputResourceDirectories = SettingKey[Seq[File]](
+    "input-resource-directories")
   lazy val inputResourceDirectory = SettingKey[File]("input-resource-directory")
   lazy val inputResources = TaskKey[Seq[File]]("input-resources")
-  lazy val resourceProperties =
-    TaskKey[Map[String, String]]("resource-properties")
+  lazy val resourceProperties = TaskKey[Map[String, String]](
+    "resource-properties")
 
   lazy val conscriptConfigs = TaskKey[Unit]("conscript-configs")
 
@@ -116,8 +116,9 @@ object Transform {
   def transform(in: File, out: File, map: Map[String, String]): File = {
     def get(key: String): String =
       map.getOrElse(key, sys.error("No value defined for key '" + key + "'"))
-    val newString =
-      Property.replaceAllIn(IO.read(in), mtch => get(mtch.group(1)))
+    val newString = Property.replaceAllIn(
+      IO.read(in),
+      mtch => get(mtch.group(1)))
     if (Some(newString) != read(out))
       IO.write(out, newString)
     out

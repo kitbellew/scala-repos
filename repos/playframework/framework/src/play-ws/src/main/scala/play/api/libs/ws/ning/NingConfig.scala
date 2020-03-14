@@ -163,18 +163,19 @@ class NingAsyncHttpClientConfigBuilder(
   def configureProtocols(
       existingProtocols: Array[String],
       sslConfig: SSLConfig): Array[String] = {
-    val definedProtocols = sslConfig.enabledProtocols match {
-      case Some(configuredProtocols) =>
-        // If we are given a specific list of protocols, then return it in exactly that order,
-        // assuming that it's actually possible in the SSL context.
-        configuredProtocols.filter(existingProtocols.contains).toArray
+    val definedProtocols =
+      sslConfig.enabledProtocols match {
+        case Some(configuredProtocols) =>
+          // If we are given a specific list of protocols, then return it in exactly that order,
+          // assuming that it's actually possible in the SSL context.
+          configuredProtocols.filter(existingProtocols.contains).toArray
 
-      case None =>
-        // Otherwise, we return the default protocols in the given list.
-        Protocols.recommendedProtocols
-          .filter(existingProtocols.contains)
-          .toArray
-    }
+        case None =>
+          // Otherwise, we return the default protocols in the given list.
+          Protocols.recommendedProtocols
+            .filter(existingProtocols.contains)
+            .toArray
+      }
 
     if (!sslConfig.loose.allowWeakProtocols) {
       val deprecatedProtocols = Protocols.deprecatedProtocols
@@ -191,14 +192,15 @@ class NingAsyncHttpClientConfigBuilder(
   def configureCipherSuites(
       existingCiphers: Array[String],
       sslConfig: SSLConfig): Array[String] = {
-    val definedCiphers = sslConfig.enabledCipherSuites match {
-      case Some(configuredCiphers) =>
-        // If we are given a specific list of ciphers, return it in that order.
-        configuredCiphers.filter(existingCiphers.contains(_)).toArray
+    val definedCiphers =
+      sslConfig.enabledCipherSuites match {
+        case Some(configuredCiphers) =>
+          // If we are given a specific list of ciphers, return it in that order.
+          configuredCiphers.filter(existingCiphers.contains(_)).toArray
 
-      case None =>
-        Ciphers.recommendedCiphers.filter(existingCiphers.contains(_)).toArray
-    }
+        case None =>
+          Ciphers.recommendedCiphers.filter(existingCiphers.contains(_)).toArray
+      }
 
     if (!sslConfig.loose.allowWeakCiphers) {
       val deprecatedCiphers = Ciphers.deprecatedCiphers
@@ -218,20 +220,21 @@ class NingAsyncHttpClientConfigBuilder(
   def configureSSL(sslConfig: SSLConfig) {
 
     // context!
-    val sslContext = if (sslConfig.default) {
-      logger.info(
-        "buildSSLContext: ws.ssl.default is true, using default SSLContext")
-      validateDefaultTrustManager(sslConfig)
-      SSLContext.getDefault
-    } else {
-      // break out the static methods as much as we can...
-      val keyManagerFactory = buildKeyManagerFactory(sslConfig)
-      val trustManagerFactory = buildTrustManagerFactory(sslConfig)
-      new ConfigSSLContextBuilder(
-        sslConfig,
-        keyManagerFactory,
-        trustManagerFactory).build()
-    }
+    val sslContext =
+      if (sslConfig.default) {
+        logger.info(
+          "buildSSLContext: ws.ssl.default is true, using default SSLContext")
+        validateDefaultTrustManager(sslConfig)
+        SSLContext.getDefault
+      } else {
+        // break out the static methods as much as we can...
+        val keyManagerFactory = buildKeyManagerFactory(sslConfig)
+        val trustManagerFactory = buildTrustManagerFactory(sslConfig)
+        new ConfigSSLContextBuilder(
+          sslConfig,
+          keyManagerFactory,
+          trustManagerFactory).build()
+      }
 
     // protocols!
     val defaultParams = sslContext.getDefaultSSLParameters
@@ -272,21 +275,24 @@ class NingAsyncHttpClientConfigBuilder(
     //
     // http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7-b147/sun/security/ssl/SSLContextImpl.java#79
 
-    val tmf =
-      TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm)
+    val tmf = TrustManagerFactory.getInstance(
+      TrustManagerFactory.getDefaultAlgorithm)
     tmf.init(null.asInstanceOf[KeyStore])
-    val trustManager: X509TrustManager =
-      tmf.getTrustManagers()(0).asInstanceOf[X509TrustManager]
+    val trustManager: X509TrustManager = tmf
+      .getTrustManagers()(0)
+      .asInstanceOf[X509TrustManager]
 
-    val constraints = sslConfig.disabledKeyAlgorithms
-      .map(a =>
-        AlgorithmConstraintsParser
-          .parseAll(AlgorithmConstraintsParser.expression, a)
-          .get)
-      .toSet
-    val algorithmChecker = new AlgorithmChecker(
-      keyConstraints = constraints,
-      signatureConstraints = Set())
+    val constraints =
+      sslConfig.disabledKeyAlgorithms
+        .map(a =>
+          AlgorithmConstraintsParser
+            .parseAll(AlgorithmConstraintsParser.expression, a)
+            .get)
+        .toSet
+    val algorithmChecker =
+      new AlgorithmChecker(
+        keyConstraints = constraints,
+        signatureConstraints = Set())
     for (cert <- trustManager.getAcceptedIssuers) {
       try {
         algorithmChecker.checkKeyAlgorithms(cert)

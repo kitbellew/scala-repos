@@ -10,8 +10,8 @@ object TestPlugin extends AutoPlugin {
   object autoImport {
     val savedReporter = settingKey[xsbti.Reporter](
       "Saved reporter that collects compilation failures.")
-    val problems =
-      taskKey[Array[xsbti.Problem]]("Problems reported during compilation.")
+    val problems = taskKey[Array[xsbti.Problem]](
+      "Problems reported during compilation.")
   }
   import autoImport._
   override def projectSettings =

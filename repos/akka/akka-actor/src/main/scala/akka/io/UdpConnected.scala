@@ -153,13 +153,13 @@ object UdpConnected
 
 class UdpConnectedExt(system: ExtendedActorSystem) extends IO.Extension {
 
-  val settings: UdpSettings = new UdpSettings(
-    system.settings.config.getConfig("akka.io.udp-connected"))
+  val settings: UdpSettings =
+    new UdpSettings(system.settings.config.getConfig("akka.io.udp-connected"))
 
   val manager: ActorRef = {
     system.systemActorOf(
-      props =
-        Props(classOf[UdpConnectedManager], this).withDeploy(Deploy.local),
+      props = Props(classOf[UdpConnectedManager], this)
+        .withDeploy(Deploy.local),
       name = "IO-UDP-CONN")
   }
 
@@ -168,9 +168,10 @@ class UdpConnectedExt(system: ExtendedActorSystem) extends IO.Extension {
     */
   def getManager: ActorRef = manager
 
-  val bufferPool: BufferPool = new DirectByteBufferPool(
-    settings.DirectBufferSize,
-    settings.MaxDirectBufferPoolSize)
+  val bufferPool: BufferPool =
+    new DirectByteBufferPool(
+      settings.DirectBufferSize,
+      settings.MaxDirectBufferPoolSize)
 
 }
 

@@ -16,15 +16,14 @@ import mutable.ListBuffer
 
 trait Picklers { self: Global =>
 
-  lazy val freshRunReq =
-    unitPickler
-      .wrapped { _ =>
-        new FreshRunReq
-      } { x =>
-        ()
-      }
-      .labelled("FreshRunReq")
-      .cond(_.isInstanceOf[FreshRunReq])
+  lazy val freshRunReq = unitPickler
+    .wrapped { _ =>
+      new FreshRunReq
+    } { x =>
+      ()
+    }
+    .labelled("FreshRunReq")
+    .cond(_.isInstanceOf[FreshRunReq])
 
   lazy val shutdownReq = singletonPickler(ShutdownReq)
 
@@ -45,9 +44,10 @@ trait Picklers { self: Global =>
       }
       .asClass(classOf[PlainFile])
 
-  private val sourceFilesSeen = new mutable.HashMap[AbstractFile, Array[Char]] {
-    override def default(key: AbstractFile) = Array()
-  }
+  private val sourceFilesSeen =
+    new mutable.HashMap[AbstractFile, Array[Char]] {
+      override def default(key: AbstractFile) = Array()
+    }
 
   type Diff = (Int /*start*/, Int /*end*/, String /*replacement*/ )
 
@@ -82,14 +82,13 @@ trait Picklers { self: Global =>
       }
       .asClass(classOf[BatchSourceFile])
 
-  lazy val offsetPosition: CondPickler[Position] =
-    (pkl[SourceFile] ~ pkl[Int])
-      .wrapped {
-        case x ~ y => Position.offset(x, y)
-      } { p =>
-        p.source ~ p.point
-      }
-      .asClass(classOf[Position])
+  lazy val offsetPosition: CondPickler[Position] = (pkl[SourceFile] ~ pkl[Int])
+    .wrapped {
+      case x ~ y => Position.offset(x, y)
+    } { p =>
+      p.source ~ p.point
+    }
+    .asClass(classOf[Position])
 
   lazy val rangePosition: CondPickler[Position] =
     (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int])
@@ -178,10 +177,11 @@ trait Picklers { self: Global =>
   }
 
   implicit def interruptReq: Pickler[InterruptReq] = {
-    val emptyIR: InterruptReq = new InterruptReq {
-      type R = Unit;
-      val todo = () => ()
-    }
+    val emptyIR: InterruptReq =
+      new InterruptReq {
+        type R = Unit;
+        val todo = () => ()
+      }
     pkl[Unit].wrapped { _ =>
       emptyIR
     } { _ =>

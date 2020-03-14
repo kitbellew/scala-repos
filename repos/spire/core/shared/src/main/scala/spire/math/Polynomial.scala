@@ -37,12 +37,10 @@ object Polynomial extends PolynomialInstances {
   }
 
   def sparse[@sp(Double) C: Semiring: Eq: ClassTag](
-      data: Map[Int, C]): PolySparse[C] =
-    PolySparse(data)
+      data: Map[Int, C]): PolySparse[C] = PolySparse(data)
 
   def apply[@sp(Double) C: Semiring: Eq: ClassTag](
-      data: Map[Int, C]): PolySparse[C] =
-    sparse(data)
+      data: Map[Int, C]): PolySparse[C] = sparse(data)
 
   def apply[@sp(Double) C: Semiring: Eq: ClassTag](
       terms: Iterable[Term[C]]): PolySparse[C] =
@@ -50,8 +48,7 @@ object Polynomial extends PolynomialInstances {
 
   def apply[@sp(Double) C: Semiring: Eq: ClassTag](
       c: C,
-      e: Int): PolySparse[C] =
-    PolySparse.safe(Array(e), Array(c))
+      e: Int): PolySparse[C] = PolySparse.safe(Array(e), Array(c))
 
   import scala.util.{Try, Success, Failure}
 
@@ -71,12 +68,10 @@ object Polynomial extends PolynomialInstances {
       Polynomial(Map((1, c)))
   def linear[@sp(Double) C: Eq: Semiring: ClassTag](
       c1: C,
-      c0: C): Polynomial[C] =
-    Polynomial(Map((1, c1), (0, c0)))
+      c0: C): Polynomial[C] = Polynomial(Map((1, c1), (0, c0)))
   def quadratic[@sp(Double) C: Eq: Semiring: ClassTag](
       c1: C,
-      c0: C): Polynomial[C] =
-    Polynomial(Map((1, c1), (0, c0)))
+      c0: C): Polynomial[C] = Polynomial(Map((1, c1), (0, c0)))
   def quadratic[@sp(Double) C: Eq: Semiring: ClassTag](c: C): Polynomial[C] =
     if (c === Semiring[C].zero)
       zero[C]
@@ -85,8 +80,7 @@ object Polynomial extends PolynomialInstances {
   def quadratic[@sp(Double) C: Eq: Semiring: ClassTag](
       c2: C,
       c1: C,
-      c0: C): Polynomial[C] =
-    Polynomial(Map((2, c2), (1, c1), (0, c0)))
+      c0: C): Polynomial[C] = Polynomial(Map((2, c2), (1, c1), (0, c0)))
   def cubic[@sp(Double) C: Eq: Semiring: ClassTag](c: C): Polynomial[C] =
     if (c === Semiring[C].zero)
       zero[C]
@@ -100,8 +94,7 @@ object Polynomial extends PolynomialInstances {
     Polynomial(Map((3, c3), (2, c2), (1, c1), (0, c0)))
   def one[@sp(Double) C: Eq: Rig: ClassTag]: Polynomial[C] =
     constant(Rig[C].one)
-  def x[@sp(Double) C: Eq: Rig: ClassTag]: Polynomial[C] =
-    linear(Rig[C].one)
+  def x[@sp(Double) C: Eq: Rig: ClassTag]: Polynomial[C] = linear(Rig[C].one)
   def twox[@sp(Double) C: Eq: Rig: ClassTag]: Polynomial[C] =
     linear(Rig[C].one + Rig[C].one)
 
@@ -120,14 +113,15 @@ object Polynomial extends PolynomialInstances {
       if (s.isEmpty) {
         ts
       } else {
-        val (op, s2) = operRe.findPrefixMatchOf(s) match {
-          case Some(m) => (m.group(1), s.substring(m.end))
-          case None =>
-            if (ts.isEmpty)
-              ("+", s)
-            else
-              throw new IllegalArgumentException(s)
-        }
+        val (op, s2) =
+          operRe.findPrefixMatchOf(s) match {
+            case Some(m) => (m.group(1), s.substring(m.end))
+            case None =>
+              if (ts.isEmpty)
+                ("+", s)
+              else
+                throw new IllegalArgumentException(s)
+          }
 
         val m2 = termRe
           .findPrefixMatchOf(s2)
@@ -203,9 +197,10 @@ object Polynomial extends PolynomialInstances {
           p
         case (x, y) :: tail =>
           val c = Polynomial.constant((y - p(x)) / xs.map(x - _).qproduct)
-          val prod = xs.foldLeft(Polynomial.one[C]) { (prod, xn) =>
-            prod * (Polynomial.x[C] - constant(xn))
-          }
+          val prod =
+            xs.foldLeft(Polynomial.one[C]) { (prod, xn) =>
+              prod * (Polynomial.x[C] - constant(xn))
+            }
           loop(p + c * prod, x :: xs, tail)
       }
     loop(Polynomial.zero[C], Nil, points.toList)
@@ -270,8 +265,9 @@ trait Polynomial[@sp(Double) C] { lhs =>
 
   /** Returns a map from exponent to coefficient of this polynomial. */
   def data(implicit ring: Semiring[C], eq: Eq[C]): Map[Int, C] = {
-    val bldr = new scala.collection.mutable.MapBuilder[Int, C, Map[Int, C]](
-      Map.empty[Int, C])
+    val bldr =
+      new scala.collection.mutable.MapBuilder[Int, C, Map[Int, C]](
+        Map.empty[Int, C])
     foreachNonZero { (e, c) =>
       bldr += ((e, c))
     }
@@ -296,8 +292,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
     * @param finder a root finder to extract roots with
     * @return the real roots of this polynomial
     */
-  def roots(implicit finder: RootFinder[C]): Roots[C] =
-    finder.findRoots(this)
+  def roots(implicit finder: RootFinder[C]): Roots[C] = finder.findRoots(this)
 
   /** Returns the coefficient of the n-th degree term. */
   def nth(n: Int)(implicit ring: Semiring[C]): C
@@ -318,8 +313,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
   }
 
   /** Returns `true` iff this polynomial is constant. */
-  def isConstant: Boolean =
-    degree == 0
+  def isConstant: Boolean = degree == 0
 
   /** Returns the degree of this polynomial. */
   def degree: Int
@@ -403,8 +397,7 @@ trait Polynomial[@sp(Double) C] { lhs =>
 
   def mapTerms[D: Semiring: Eq: ClassTag](f: Term[C] => Term[D])(implicit
       ring: Semiring[C],
-      eq: Eq[C]): Polynomial[D] =
-    Polynomial(terms map f)
+      eq: Eq[C]): Polynomial[D] = Polynomial(terms map f)
 
   /**
     * Returns this polynomial shifted by `h`. Equivalent to calling

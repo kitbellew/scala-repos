@@ -219,57 +219,58 @@ class ScalaImportTypeFix(
     }
 
     def chooseClass() {
-      val popup = new BaseListPopupStep[TypeToImport](
-        QuickFixBundle.message("class.to.import.chooser.title"),
-        classes: _*) {
-        override def getIconFor(aValue: TypeToImport): Icon = {
-          aValue.getIcon
-        }
-
-        override def getTextFor(value: TypeToImport): String = {
-          ObjectUtils.assertNotNull(value.qualifiedName)
-        }
-
-        override def isAutoSelectionEnabled: Boolean = false
-
-        import com.intellij.openapi.ui.popup.PopupStep.FINAL_CHOICE
-
-        override def onChosen(
-            selectedValue: TypeToImport,
-            finalChoice: Boolean): PopupStep[_] = {
-          if (selectedValue == null) {
-            return FINAL_CHOICE
+      val popup =
+        new BaseListPopupStep[TypeToImport](
+          QuickFixBundle.message("class.to.import.chooser.title"),
+          classes: _*) {
+          override def getIconFor(aValue: TypeToImport): Icon = {
+            aValue.getIcon
           }
-          if (finalChoice) {
-            PsiDocumentManager.getInstance(project).commitAllDocuments()
-            addImportOrReference(selectedValue)
-            return FINAL_CHOICE
+
+          override def getTextFor(value: TypeToImport): String = {
+            ObjectUtils.assertNotNull(value.qualifiedName)
           }
-          val qname: String = selectedValue.qualifiedName
-          if (qname == null)
-            return FINAL_CHOICE
-          val toExclude: java.util.List[String] =
-            AddImportAction.getAllExcludableStrings(qname)
-          new BaseListPopupStep[String](null, toExclude) {
-            override def onChosen(
-                selectedValue: String,
-                finalChoice: Boolean): PopupStep[_] = {
-              if (finalChoice) {
-                AddImportAction.excludeFromImport(project, selectedValue)
+
+          override def isAutoSelectionEnabled: Boolean = false
+
+          import com.intellij.openapi.ui.popup.PopupStep.FINAL_CHOICE
+
+          override def onChosen(
+              selectedValue: TypeToImport,
+              finalChoice: Boolean): PopupStep[_] = {
+            if (selectedValue == null) {
+              return FINAL_CHOICE
+            }
+            if (finalChoice) {
+              PsiDocumentManager.getInstance(project).commitAllDocuments()
+              addImportOrReference(selectedValue)
+              return FINAL_CHOICE
+            }
+            val qname: String = selectedValue.qualifiedName
+            if (qname == null)
+              return FINAL_CHOICE
+            val toExclude: java.util.List[String] = AddImportAction
+              .getAllExcludableStrings(qname)
+            new BaseListPopupStep[String](null, toExclude) {
+              override def onChosen(
+                  selectedValue: String,
+                  finalChoice: Boolean): PopupStep[_] = {
+                if (finalChoice) {
+                  AddImportAction.excludeFromImport(project, selectedValue)
+                }
+                super.onChosen(selectedValue, finalChoice)
               }
-              super.onChosen(selectedValue, finalChoice)
-            }
 
-            override def getTextFor(value: String): String = {
-              "Exclude '" + value + "' from auto-import"
+              override def getTextFor(value: String): String = {
+                "Exclude '" + value + "' from auto-import"
+              }
             }
           }
-        }
 
-        override def hasSubstep(selectedValue: TypeToImport): Boolean = {
-          true
+          override def hasSubstep(selectedValue: TypeToImport): Boolean = {
+            true
+          }
         }
-      }
       JBPopupFactory.getInstance
         .createListPopup(popup)
         .showInBestPositionFor(editor)
@@ -437,8 +438,9 @@ object ScalaImportTypeFix {
       }
     }
 
-    val typeAliases =
-      cache.getStableAliasesByName(ref.refName, ref.getResolveScope)
+    val typeAliases = cache.getStableAliasesByName(
+      ref.refName,
+      ref.getResolveScope)
     for (alias <- typeAliases) {
       val containingClass = alias.containingClass
       if (containingClass != null && ScalaPsiUtil.hasStablePath(alias) &&

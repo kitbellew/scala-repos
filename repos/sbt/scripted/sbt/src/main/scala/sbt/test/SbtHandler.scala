@@ -95,12 +95,13 @@ final class SbtHandler(
       "java" :: (launchOpts.toList ++ (globalBase :: "-jar" :: launcherJar :: ("<" + server.port) :: Nil))
     val io = BasicIO(false, log).withInput(_.close())
     val p = Process(args, directory) run (io)
-    val thread = new Thread() {
-      override def run() = {
-        p.exitValue();
-        server.close()
+    val thread =
+      new Thread() {
+        override def run() = {
+          p.exitValue();
+          server.close()
+        }
       }
-    }
     thread.start()
     try {
       receive("Remote sbt initialization failed", server)

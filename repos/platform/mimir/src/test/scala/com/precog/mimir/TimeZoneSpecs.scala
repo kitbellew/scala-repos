@@ -59,11 +59,12 @@ trait TimeZoneSpecs[M[+_]]
 
   "changing time zones (homogenous case)" should {
     "change to the correct time zone" in {
-      val input = Join(
-        BuiltInFunction2Op(ChangeTimeZone),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
-        Const(CString("-10:00"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(ChangeTimeZone),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
+          Const(CString("-10:00"))(line))(line)
 
       val result = testEval(input) collect {
         case (ids, SString(d)) if ids.length == 1 => d.toString
@@ -79,11 +80,12 @@ trait TimeZoneSpecs[M[+_]]
     }
 
     "not modify millisecond value" in {
-      val input = Join(
-        BuiltInFunction2Op(ChangeTimeZone),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
-        Const(CString("-10:00"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(ChangeTimeZone),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
+          Const(CString("-10:00"))(line))(line)
 
       val result = testEval(input)
 
@@ -107,11 +109,12 @@ trait TimeZoneSpecs[M[+_]]
     }
 
     "work correctly for fractional zones" in {
-      val input = Join(
-        BuiltInFunction2Op(ChangeTimeZone),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
-        Const(CString("-10:30"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(ChangeTimeZone),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
+          Const(CString("-10:30"))(line))(line)
 
       val result = testEval(input)
 
@@ -133,11 +136,12 @@ trait TimeZoneSpecs[M[+_]]
 
   "changing time zones (heterogeneous case)" should {
     "change to the correct time zone" in {
-      val input = Join(
-        BuiltInFunction2Op(ChangeTimeZone),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line),
-        Const(CString("-10:00"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(ChangeTimeZone),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line),
+          Const(CString("-10:00"))(line))(line)
 
       val result = testEval(input)
 
@@ -157,11 +161,12 @@ trait TimeZoneSpecs[M[+_]]
     }
 
     "not modify millisecond value" in {
-      val input = Join(
-        BuiltInFunction2Op(ChangeTimeZone),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
-        Const(CString("-10:00"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(ChangeTimeZone),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/hom/iso8601"))(line))(line),
+          Const(CString("-10:00"))(line))(line)
 
       val result = testEval(input)
 
@@ -185,11 +190,12 @@ trait TimeZoneSpecs[M[+_]]
     }
 
     "work correctly for fractional zones" in {
-      val input = Join(
-        BuiltInFunction2Op(ChangeTimeZone),
-        Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line),
-        Const(CString("-10:30"))(line))(line)
+      val input =
+        Join(
+          BuiltInFunction2Op(ChangeTimeZone),
+          Cross(None),
+          dag.AbsoluteLoad(Const(CString("/het/iso8601"))(line))(line),
+          Const(CString("-10:30"))(line))(line)
 
       val result = testEval(input)
 

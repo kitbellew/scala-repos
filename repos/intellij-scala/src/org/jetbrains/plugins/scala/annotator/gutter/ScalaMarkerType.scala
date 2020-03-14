@@ -80,10 +80,11 @@ object ScalaMarkerType {
                 .message("overrides.method.from.super", clazz.qualifiedName)
           case _: ScValue | _: ScVariable =>
             val signatures = new ArrayBuffer[Signature]
-            val bindings = elem match {
-              case v: ScDeclaredElementsHolder => v.declaredElements
-              case _                           => return null
-            }
+            val bindings =
+              elem match {
+                case v: ScDeclaredElementsHolder => v.declaredElements
+                case _                           => return null
+              }
             for (z <- bindings)
               signatures ++= ScalaPsiUtil
                 .superValsSignatures(z, withSelfType = true)
@@ -141,10 +142,11 @@ object ScalaMarkerType {
             }
           case _: ScValue | _: ScVariable =>
             val signatures = new ArrayBuffer[Signature]
-            val bindings = elem match {
-              case v: ScDeclaredElementsHolder => v.declaredElements
-              case _                           => return
-            }
+            val bindings =
+              elem match {
+                case v: ScDeclaredElementsHolder => v.declaredElements
+                case _                           => return
+              }
             for (z <- bindings)
               signatures ++= ScalaPsiUtil
                 .superValsSignatures(z, withSelfType = true)
@@ -221,11 +223,12 @@ object ScalaMarkerType {
             elem = PsiTreeUtil.getParentOfType(element, classOf[PsiMember])
           case _ =>
         }
-        val members = elem match {
-          case memb: PsiNamedElement       => Array[PsiNamedElement](memb)
-          case d: ScDeclaredElementsHolder => d.declaredElements.toArray
-          case _                           => return
-        }
+        val members =
+          elem match {
+            case memb: PsiNamedElement       => Array[PsiNamedElement](memb)
+            case d: ScDeclaredElementsHolder => d.declaredElements.toArray
+            case _                           => return
+          }
         val overrides = new ArrayBuffer[PsiNamedElement]
         for (member <- members)
           overrides ++= ScalaOverridingMemberSearcher
@@ -279,27 +282,29 @@ object ScalaMarkerType {
         if (element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
           elem = PsiTreeUtil.getParentOfType(element, classOf[ScNamedElement])
         }
-        val clazz = elem match {
-          case x: PsiClass => x
-          case _           => return
-        }
+        val clazz =
+          elem match {
+            case x: PsiClass => x
+            case _           => return
+          }
         val inheritors = ClassInheritorsSearch
           .search(clazz, clazz.getUseScope, true)
           .toArray(PsiClass.EMPTY_ARRAY)
         if (inheritors.isEmpty)
           return
-        val title = clazz match {
-          case _: ScTrait =>
-            ScalaBundle.message(
-              "goto.implementation.chooser.title",
-              clazz.name,
-              "" + inheritors.length)
-          case _ =>
-            ScalaBundle.message(
-              "navigation.title.subclass",
-              clazz.name,
-              "" + inheritors.length)
-        }
+        val title =
+          clazz match {
+            case _: ScTrait =>
+              ScalaBundle.message(
+                "goto.implementation.chooser.title",
+                clazz.name,
+                "" + inheritors.length)
+            case _ =>
+              ScalaBundle.message(
+                "navigation.title.subclass",
+                clazz.name,
+                "" + inheritors.length)
+          }
         val renderer = new PsiClassListCellRenderer
         util.Arrays.sort(inheritors, renderer.getComparator)
         PsiElementListNavigator.openTargets(

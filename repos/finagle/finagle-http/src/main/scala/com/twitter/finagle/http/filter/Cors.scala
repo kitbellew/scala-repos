@@ -146,8 +146,7 @@ object Cors {
      */
 
     protected[this] object Preflight {
-      def unapply(request: Request): Boolean =
-        request.method == Method.Options
+      def unapply(request: Request): Boolean = request.method == Method.Options
     }
 
     /** Let method be the value as result of parsing the Access-Control-Request-Method header. */
@@ -236,17 +235,18 @@ object Cors {
     def apply(
         request: Request,
         service: Service[Request, Response]): Future[Response] = {
-      val response = request match {
-        case Preflight() =>
-          Future {
-            // If preflight is not acceptable, just return a 200 without CORS headers
-            handlePreflight(request) getOrElse request.response
-          }
-        case _ =>
-          service(request) map {
-            handleSimple(request, _)
-          }
-      }
+      val response =
+        request match {
+          case Preflight() =>
+            Future {
+              // If preflight is not acceptable, just return a 200 without CORS headers
+              handlePreflight(request) getOrElse request.response
+            }
+          case _ =>
+            service(request) map {
+              handleSimple(request, _)
+            }
+        }
       response map {
         setVary(_)
       }

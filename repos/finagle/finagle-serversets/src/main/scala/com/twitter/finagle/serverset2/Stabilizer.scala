@@ -36,13 +36,14 @@ private[serverset2] object Stabilizer {
   // Use our own timer to avoid doing work in the global timer's thread and causing timer deviation
   // the notify() run each epoch can trigger some slow work.
   // nettyHwt required to get TimerStats
-  private val nettyHwt = new netty.HashedWheelTimer(
-    new NamedPoolThreadFactory(
-      "finagle-serversets Stabilizer timer",
-      true /*daemons*/ ),
-    HashedWheelTimer.TickDuration.inMilliseconds,
-    TimeUnit.MILLISECONDS,
-    HashedWheelTimer.TicksPerWheel)
+  private val nettyHwt =
+    new netty.HashedWheelTimer(
+      new NamedPoolThreadFactory(
+        "finagle-serversets Stabilizer timer",
+        true /*daemons*/ ),
+      HashedWheelTimer.TickDuration.inMilliseconds,
+      TimeUnit.MILLISECONDS,
+      HashedWheelTimer.TicksPerWheel)
   private val epochTimer = HashedWheelTimer(nettyHwt)
 
   TimerStats.deviation(
@@ -176,8 +177,9 @@ private[serverset2] object Stabilizer {
 
       val addrs = states.map {
         case State(limbo, active, last) =>
-          val all =
-            merge(limbo.getOrElse(Set.empty), active.getOrElse(Set.empty))
+          val all = merge(
+            limbo.getOrElse(Set.empty),
+            active.getOrElse(Set.empty))
           if (all.nonEmpty) {
             Addr.Bound(all)
           } else if (limbo != None || active != None) {
@@ -189,40 +191,39 @@ private[serverset2] object Stabilizer {
 
       // Trigger at most one change to state per batchEpoch
       val init = States(Some(Addr.Pending), Addr.Pending, None, Time.Zero)
-      val batchedUpdates =
-        (addrs select batchEpoch.event)
-          .foldLeft(init) {
-            case (st, ev) =>
-              val now = Time.now
-              ev match {
-                case Left(newAddr) =>
-                  // There's a change to the serverset but it's not different. Noop
-                  if (newAddr == st.last)
-                    st.copy(publish = None)
-                  // There's a change to the serverset, but we have published in < batchEpoch. Hold change.
-                  else if (now - st.lastEmit < batchEpoch.period)
-                    st.copy(publish = None, next = Some(newAddr))
-                  // There's a change to the serverset and we haven't published in >= batchEpoch. Publish.
-                  else
-                    States(Some(newAddr), newAddr, None, now)
+      val batchedUpdates = (addrs select batchEpoch.event)
+        .foldLeft(init) {
+          case (st, ev) =>
+            val now = Time.now
+            ev match {
+              case Left(newAddr) =>
+                // There's a change to the serverset but it's not different. Noop
+                if (newAddr == st.last)
+                  st.copy(publish = None)
+                // There's a change to the serverset, but we have published in < batchEpoch. Hold change.
+                else if (now - st.lastEmit < batchEpoch.period)
+                  st.copy(publish = None, next = Some(newAddr))
+                // There's a change to the serverset and we haven't published in >= batchEpoch. Publish.
+                else
+                  States(Some(newAddr), newAddr, None, now)
 
-                case Right(_) =>
-                  st.next match {
-                    // Epoch turned, but we have published in < batchEpoch. Noop
-                    case _ if now - st.lastEmit < batchEpoch.period =>
-                      st.copy(publish = None)
-                    // Epoch turned but there is no next state. Noop
-                    case None =>
-                      st.copy(publish = None)
-                    // Epoch turned, there's a next state, and we haven't published in >= batchEpoch. Publish.
-                    case Some(next) =>
-                      States(Some(next), next, None, now)
-                  }
-              }
-          }
-          .collect {
-            case States(Some(publish), _, _, _) => publish
-          }
+              case Right(_) =>
+                st.next match {
+                  // Epoch turned, but we have published in < batchEpoch. Noop
+                  case _ if now - st.lastEmit < batchEpoch.period =>
+                    st.copy(publish = None)
+                  // Epoch turned but there is no next state. Noop
+                  case None =>
+                    st.copy(publish = None)
+                  // Epoch turned, there's a next state, and we haven't published in >= batchEpoch. Publish.
+                  case Some(next) =>
+                    States(Some(next), next, None, now)
+                }
+            }
+        }
+        .collect {
+          case States(Some(publish), _, _, _) => publish
+        }
 
       batchedUpdates.register(Witness(u))
     }

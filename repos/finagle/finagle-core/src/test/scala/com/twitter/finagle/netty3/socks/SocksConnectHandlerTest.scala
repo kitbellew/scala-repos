@@ -34,18 +34,20 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     val portByte1 = (port >> 8).toByte
     val portByte2 = (port & 0xFF).toByte
 
-    val remoteAddress = new InetSocketAddress(
-      InetAddress.getByAddress(null, Array[Byte](0x7F, 0x0, 0x0, 0x1)),
-      port)
+    val remoteAddress =
+      new InetSocketAddress(
+        InetAddress.getByAddress(null, Array[Byte](0x7F, 0x0, 0x0, 0x1)),
+        port)
     when(channel.getRemoteAddress) thenReturn remoteAddress
     val proxyAddress = mock[SocketAddress]
 
     val connectFuture = Channels.future(channel, true)
-    val connectRequested = new DownstreamChannelStateEvent(
-      channel,
-      connectFuture,
-      ChannelState.CONNECTED,
-      remoteAddress)
+    val connectRequested =
+      new DownstreamChannelStateEvent(
+        channel,
+        connectFuture,
+        ChannelState.CONNECTED,
+        remoteAddress)
 
     def sendBytesToServer(x: Byte, xs: Byte*) {
       val ec = ArgumentCaptor.forClass(classOf[DownstreamMessageEvent])
@@ -251,10 +253,11 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
 
     val username = "u"
     val password = "pass"
-    val ch = new SocksConnectHandler(
-      proxyAddress,
-      remoteAddress,
-      Seq(UsernamePassAuthenticationSetting(username, password)))
+    val ch =
+      new SocksConnectHandler(
+        proxyAddress,
+        remoteAddress,
+        Seq(UsernamePassAuthenticationSetting(username, password)))
     ch.handleDownstream(ctx, connectRequested)
 
     ch.handleUpstream(
@@ -322,10 +325,11 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
 
     val username = "u"
     val password = "pass"
-    val ch = new SocksConnectHandler(
-      proxyAddress,
-      remoteAddress,
-      Seq(UsernamePassAuthenticationSetting(username, password)))
+    val ch =
+      new SocksConnectHandler(
+        proxyAddress,
+        remoteAddress,
+        Seq(UsernamePassAuthenticationSetting(username, password)))
     ch.handleDownstream(ctx, connectRequested)
 
     ch.handleUpstream(

@@ -170,13 +170,11 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "parameterMap" in {
-    val route =
-      parameterMap { params =>
-        def paramString(param: (String, String)): String =
-          s"""${param._1} = '${param._2}'"""
-        complete(
-          s"The parameters are ${params.map(paramString).mkString(", ")}")
-      }
+    val route = parameterMap { params =>
+      def paramString(param: (String, String)): String =
+        s"""${param._1} = '${param._2}'"""
+      complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+    }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
@@ -188,11 +186,10 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "parameterMultiMap" in {
-    val route =
-      parameterMultiMap { params =>
-        complete(
-          s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
-      }
+    val route = parameterMultiMap { params =>
+      complete(
+        s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
+    }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
@@ -204,13 +201,11 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "parameterSeq" in {
-    val route =
-      parameterSeq { params =>
-        def paramString(param: (String, String)): String =
-          s"""${param._1} = '${param._2}'"""
-        complete(
-          s"The parameters are ${params.map(paramString).mkString(", ")}")
-      }
+    val route = parameterSeq { params =>
+      def paramString(param: (String, String)): String =
+        s"""${param._1} = '${param._2}'"""
+      complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+    }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {

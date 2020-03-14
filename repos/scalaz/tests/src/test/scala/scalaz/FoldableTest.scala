@@ -137,8 +137,7 @@ object FoldableTest extends SpecLite {
     def found(z: Int): State[Int, Option[Int]] =
       State(n => (n + 1, Some(z * 2)))
 
-    def notfound: State[Int, Option[Int]] =
-      State(n => (n + 1, None))
+    def notfound: State[Int, Option[Int]] = State(n => (n + 1, None))
 
     "findMapM: finding the first element performs transform and only runs only necessary effects" ! forAll {
       (x: Int, xs: List[Int]) =>

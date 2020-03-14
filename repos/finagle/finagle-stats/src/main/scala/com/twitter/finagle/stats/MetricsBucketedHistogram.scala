@@ -74,8 +74,9 @@ private[stats] class MetricsBucketedHistogram(
         val _max = snap.max
         val _min = snap.min
         val _avg = snap.avg
-        val ps = new Array[Percentile](
-          MetricsBucketedHistogram.this.percentiles.length)
+        val ps =
+          new Array[Percentile](
+            MetricsBucketedHistogram.this.percentiles.length)
         var i = 0
         while (i < ps.length) {
           ps(i) = new Percentile(

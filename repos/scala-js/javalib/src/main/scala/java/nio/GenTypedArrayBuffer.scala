@@ -42,8 +42,8 @@ private[nio] final class GenTypedArrayBuffer[B <: Buffer](val self: B)
     extends AnyVal {
   import self._
 
-  type NewThisTypedArrayBuffer =
-    GenTypedArrayBuffer.NewTypedArrayBuffer[BufferType]
+  type NewThisTypedArrayBuffer = GenTypedArrayBuffer.NewTypedArrayBuffer[
+    BufferType]
 
   @inline
   def generic_slice()(
@@ -87,12 +87,10 @@ private[nio] final class GenTypedArrayBuffer[B <: Buffer](val self: B)
   }
 
   @inline
-  def generic_arrayBuffer: ArrayBuffer =
-    _typedArray.buffer
+  def generic_arrayBuffer: ArrayBuffer = _typedArray.buffer
 
   @inline
-  def generic_arrayBufferOffset: Int =
-    _typedArray.byteOffset
+  def generic_arrayBufferOffset: Int = _typedArray.byteOffset
 
   @inline
   def generic_dataView(

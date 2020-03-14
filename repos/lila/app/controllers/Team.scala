@@ -22,10 +22,11 @@ object Team extends LilaController {
   private def forms = Env.team.forms
   private def api = Env.team.api
   private def paginator = Env.team.paginator
-  private lazy val teamInfo = mashup.TeamInfo(
-    api = api,
-    getForumNbPosts = Env.forum.categApi.teamNbPosts _,
-    getForumPosts = Env.forum.recent.team _) _
+  private lazy val teamInfo =
+    mashup.TeamInfo(
+      api = api,
+      getForumNbPosts = Env.forum.categApi.teamNbPosts _,
+      getForumPosts = Env.forum.recent.team _) _
 
   def all(page: Int) =
     Open { implicit ctx =>

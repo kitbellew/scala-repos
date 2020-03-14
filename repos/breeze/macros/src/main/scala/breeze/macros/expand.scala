@@ -73,29 +73,31 @@ object expand {
     import c.mirror.universe._
     annottees.head.tree match {
       case tree @ DefDef(mods, name, targs, vargs, tpt, rhs) =>
-        val (typesToExpand, typesLeftAbstract) =
-          targs.partition(shouldExpand(c)(_))
+        val (typesToExpand, typesLeftAbstract) = targs.partition(
+          shouldExpand(c)(_))
 
         val exclusions = getExclusions(c)(mods, targs.map(_.name))
         val shouldValify = checkValify(c)(mods)
 
-        val typesToUnrollAs: Map[c.Name, List[c.Type]] = typesToExpand.map {
-          td => (td.name: Name) -> typeMappings(c)(td)
-        }.toMap
+        val typesToUnrollAs: Map[c.Name, List[c.Type]] =
+          typesToExpand.map { td =>
+            (td.name: Name) -> typeMappings(c)(td)
+          }.toMap
 
         val (valsToExpand, valsToLeave) =
           vargs.map(_.partition(shouldExpandVarg(c)(_))).unzip
 
         val valsToExpand2 = valsToExpand.flatten
 
-        val configurations =
-          makeTypeMaps(c)(typesToUnrollAs).filterNot(exclusions.toSet)
-        val valExpansions = valsToExpand2
-          .map { v =>
-            v.name -> solveSequence(c)(v, typesToUnrollAs)
-          }
-          .asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]]
-          .toMap
+        val configurations = makeTypeMaps(c)(typesToUnrollAs)
+          .filterNot(exclusions.toSet)
+        val valExpansions =
+          valsToExpand2
+            .map { v =>
+              v.name -> solveSequence(c)(v, typesToUnrollAs)
+            }
+            .asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]]
+            .toMap
 
         val newDefs = configurations.map { typeMap =>
           val grounded = substitute(c)(typeMap, valExpansions, rhs)
@@ -218,20 +220,21 @@ object expand {
       td: c.mirror.universe.TypeDef): List[c.mirror.universe.Type] = {
     import c.mirror.universe._
 
-    val mods = td.mods.annotations.collect {
-      case tree @ q"new expand.args(...$args)" =>
-        val flatArgs: Seq[Tree] = args.flatten
-        flatArgs.map(c.typeCheck(_)).map { tree =>
-          try {
-            tree.symbol.asModule.companionSymbol.asType.toType
-          } catch {
-            case ex: Exception =>
-              c.abort(
-                tree.pos,
-                s"${tree.symbol} does not have a companion. Is it maybe an alias?")
+    val mods =
+      td.mods.annotations.collect {
+        case tree @ q"new expand.args(...$args)" =>
+          val flatArgs: Seq[Tree] = args.flatten
+          flatArgs.map(c.typeCheck(_)).map { tree =>
+            try {
+              tree.symbol.asModule.companionSymbol.asType.toType
+            } catch {
+              case ex: Exception =>
+                c.abort(
+                  tree.pos,
+                  s"${tree.symbol} does not have a companion. Is it maybe an alias?")
+            }
           }
-        }
-    }.flatten
+      }.flatten
     mods
   }
 

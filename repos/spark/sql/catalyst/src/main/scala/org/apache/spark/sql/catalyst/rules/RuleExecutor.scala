@@ -87,23 +87,24 @@ abstract class RuleExecutor[TreeType <: TreeNode[_]] extends Logging {
 
       // Run until fix point (or the max number of iterations as specified in the strategy.
       while (continue) {
-        curPlan = batch.rules.foldLeft(curPlan) {
-          case (plan, rule) =>
-            val startTime = System.nanoTime()
-            val result = rule(plan)
-            val runTime = System.nanoTime() - startTime
-            RuleExecutor.timeMap.addAndGet(rule.ruleName, runTime)
+        curPlan =
+          batch.rules.foldLeft(curPlan) {
+            case (plan, rule) =>
+              val startTime = System.nanoTime()
+              val result = rule(plan)
+              val runTime = System.nanoTime() - startTime
+              RuleExecutor.timeMap.addAndGet(rule.ruleName, runTime)
 
-            if (!result.fastEquals(plan)) {
-              logTrace(s"""
+              if (!result.fastEquals(plan)) {
+                logTrace(s"""
                   |=== Applying Rule ${rule.ruleName} ===
                   |${sideBySide(plan.treeString, result.treeString).mkString(
-                            "\n")}
+                              "\n")}
                 """.stripMargin)
-            }
+              }
 
-            result
-        }
+              result
+          }
         iteration += 1
         if (iteration > batch.strategy.maxIterations) {
           // Only log if this is a rule that is supposed to run more than once.

@@ -9,8 +9,7 @@ import org.junit.Ignore
 
 class JSInteropTest extends DirectTest with TestHelpers {
 
-  override def preamble: String =
-    """
+  override def preamble: String = """
     import scala.scalajs.js
     import scala.scalajs.js.annotation._
     """

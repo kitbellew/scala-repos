@@ -172,14 +172,15 @@ private[spark] abstract class ImpurityCalculator(val stats: Array[Double])
     * Fails if the array is empty.
     */
   protected def indexOfLargestArrayElement(array: Array[Double]): Int = {
-    val result = array.foldLeft(-1, Double.MinValue, 0) {
-      case ((maxIndex, maxValue, currentIndex), currentValue) =>
-        if (currentValue > maxValue) {
-          (currentIndex, currentValue, currentIndex + 1)
-        } else {
-          (maxIndex, maxValue, currentIndex + 1)
-        }
-    }
+    val result =
+      array.foldLeft(-1, Double.MinValue, 0) {
+        case ((maxIndex, maxValue, currentIndex), currentValue) =>
+          if (currentValue > maxValue) {
+            (currentIndex, currentValue, currentIndex + 1)
+          } else {
+            (maxIndex, maxValue, currentIndex + 1)
+          }
+      }
     if (result._1 < 0) {
       throw new RuntimeException(
         "ImpurityCalculator internal error:" +

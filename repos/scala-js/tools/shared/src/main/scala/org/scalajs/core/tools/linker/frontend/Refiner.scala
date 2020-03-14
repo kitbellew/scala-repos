@@ -23,13 +23,14 @@ final class Refiner {
       unit: LinkingUnit,
       symbolRequirements: SymbolRequirement,
       logger: Logger): LinkingUnit = {
-    val analysis = logger.time("Refiner: Compute reachability") {
-      Analyzer.computeReachability(
-        unit.semantics,
-        symbolRequirements,
-        unit.infos.values.toList,
-        allowAddingSyntheticMethods = false)
-    }
+    val analysis =
+      logger.time("Refiner: Compute reachability") {
+        Analyzer.computeReachability(
+          unit.semantics,
+          symbolRequirements,
+          unit.infos.values.toList,
+          allowAddingSyntheticMethods = false)
+      }
 
     /* There really should not be linking errors at this point. If there are,
      * it is most likely a bug in the optimizer. We should crash here, but we
@@ -40,8 +41,8 @@ final class Refiner {
     analysis.errors.foreach(Analysis.logError(_, logger, Level.Warn))
 
     logger.time("Refiner: Assemble LinkedClasses") {
-      val linkedClassesByName =
-        Map(unit.classDefs.map(c => c.encodedName -> c): _*)
+      val linkedClassesByName = Map(
+        unit.classDefs.map(c => c.encodedName -> c): _*)
 
       def optClassDef(analyzerInfo: Analysis.ClassInfo) = {
         val encodedName = analyzerInfo.encodedName
@@ -60,11 +61,12 @@ final class Refiner {
           .orElse(optDummyParent)
       }
 
-      val linkedClassDefs = for {
-        classInfo <- analysis.classInfos.values
-        if classInfo.isNeededAtAll
-        linkedClassDef <- optClassDef(classInfo)
-      } yield linkedClassDef
+      val linkedClassDefs =
+        for {
+          classInfo <- analysis.classInfos.values
+          if classInfo.isNeededAtAll
+          linkedClassDef <- optClassDef(classInfo)
+        } yield linkedClassDef
 
       unit.updated(
         classDefs = linkedClassDefs.toList,

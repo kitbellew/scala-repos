@@ -21,20 +21,22 @@ object DependencyResolver {
       dependencyFilter: DependencyFilter): List[ResolvedJSDependency] = {
 
     val resourceNames = collectAllResourceNames(manifests)
-    val resolvedJSLibs =
-      resolveAllResourceNames(resourceNames, availableLibs.keys)
+    val resolvedJSLibs = resolveAllResourceNames(
+      resourceNames,
+      availableLibs.keys)
 
-    val allFlatDeps = for {
-      manifest <- manifests
-      dep <- manifest.libDeps
-    } yield {
-      new FlatJSDependency(
-        manifest.origin,
-        resolvedJSLibs(dep.resourceName),
-        dep.dependencies.map(resolvedJSLibs),
-        dep.commonJSName,
-        dep.minifiedResourceName.map(resolvedJSLibs))
-    }
+    val allFlatDeps =
+      for {
+        manifest <- manifests
+        dep <- manifest.libDeps
+      } yield {
+        new FlatJSDependency(
+          manifest.origin,
+          resolvedJSLibs(dep.resourceName),
+          dep.dependencies.map(resolvedJSLibs),
+          dep.commonJSName,
+          dep.minifiedResourceName.map(resolvedJSLibs))
+      }
 
     val flatDeps = dependencyFilter(allFlatDeps)
     val includeList = createIncludeList(flatDeps)
@@ -59,11 +61,12 @@ object DependencyResolver {
     def allResources(dep: JSDependency) =
       dep.resourceName :: dep.dependencies ::: dep.minifiedResourceName.toList
 
-    val nameOriginPairs = for {
-      manifest <- manifests.toList
-      dep <- manifest.libDeps
-      resourceName <- allResources(dep)
-    } yield (resourceName, manifest.origin)
+    val nameOriginPairs =
+      for {
+        manifest <- manifests.toList
+        dep <- manifest.libDeps
+        resourceName <- allResources(dep)
+      } yield (resourceName, manifest.origin)
 
     nameOriginPairs.groupBy(_._1).mapValues(_.map(_._2))
   }
@@ -94,10 +97,11 @@ object DependencyResolver {
       resourceName: String,
       origins: List[Origin],
       relPaths: Traversable[String]): Either[Problem, String] = {
-    val candidates = (relPaths collect {
-      case relPath if ("/" + relPath).endsWith("/" + resourceName) =>
-        relPath
-    }).toList
+    val candidates =
+      (relPaths collect {
+        case relPath if ("/" + relPath).endsWith("/" + resourceName) =>
+          relPath
+      }).toList
 
     candidates match {
       case relPath :: Nil =>
@@ -180,10 +184,11 @@ object DependencyResolver {
           (x.relPath == y.relPath ^ x.commonJSName == y.commonJSName)
       )
 
-    val conflicts = for {
-      dep <- flatDeps
-      if flatDeps.exists(hasConflict(dep, _))
-    } yield dep
+    val conflicts =
+      for {
+        dep <- flatDeps
+        if flatDeps.exists(hasConflict(dep, _))
+      } yield dep
 
     if (conflicts.nonEmpty)
       throw new ConflictingNameException(conflicts.toList)
@@ -200,10 +205,11 @@ object DependencyResolver {
           x.relPathMinified != y.relPathMinified
       )
 
-    val conflicts = for {
-      (_, deps) <- byRelPath
-      x <- deps if deps.exists(y => hasConflict(x, y))
-    } yield x
+    val conflicts =
+      for {
+        (_, deps) <- byRelPath
+        x <- deps if deps.exists(y => hasConflict(x, y))
+      } yield x
 
     if (conflicts.nonEmpty)
       throw new ConflictingMinifiedJSException(conflicts.toList)

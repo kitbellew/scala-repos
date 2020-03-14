@@ -144,12 +144,13 @@ class ReaderTest
   }
 
   test("Writer.fromOutputStream - error") {
-    val os = new OutputStream {
-      def write(b: Int) {}
-      override def write(b: Array[Byte], n: Int, m: Int) {
-        throw new Exception
+    val os =
+      new OutputStream {
+        def write(b: Int) {}
+        override def write(b: Array[Byte], n: Int, m: Int) {
+          throw new Exception
+        }
       }
-    }
     val f = Writer.fromOutputStream(os).write(Buf.Utf8("."))
     intercept[Exception] {
       Await.result(f)
@@ -159,15 +160,16 @@ class ReaderTest
   test("Writer.fromOutputStream") {
     val closep = new Promise[Unit]
     val writep = new Promise[Array[Byte]]
-    val os = new OutputStream {
-      def write(b: Int) {}
-      override def write(b: Array[Byte], n: Int, m: Int) {
-        writep.setValue(b)
+    val os =
+      new OutputStream {
+        def write(b: Int) {}
+        override def write(b: Array[Byte], n: Int, m: Int) {
+          writep.setValue(b)
+        }
+        override def close() {
+          closep.setDone()
+        }
       }
-      override def close() {
-        closep.setDone()
-      }
-    }
     val w = Writer.fromOutputStream(os)
     assert(!writep.isDefined)
     assert(!closep.isDefined)
@@ -516,10 +518,11 @@ class ReaderTest
 
   test("Reader.concat - discard") {
     val p = new Promise[Option[Buf]]
-    val head = new Reader {
-      def read(n: Int) = p
-      def discard() = p.setException(new Reader.ReaderDiscarded)
-    }
+    val head =
+      new Reader {
+        def read(n: Int) = p
+        def discard() = p.setException(new Reader.ReaderDiscarded)
+      }
     val reader = Reader.concat(head +:: undefined)
     reader.discard()
     assert(p.isDefined)
@@ -527,29 +530,32 @@ class ReaderTest
 
   test("Reader.concat - read while reading") {
     val p = new Promise[Option[Buf]]
-    val head = new Reader {
-      def read(n: Int) = p
-      def discard() = p.setException(new Reader.ReaderDiscarded)
-    }
+    val head =
+      new Reader {
+        def read(n: Int) = p
+        def discard() = p.setException(new Reader.ReaderDiscarded)
+      }
     val reader = Reader.concat(head +:: undefined)
     assertReadWhileReading(reader)
   }
 
   test("Reader.concat - failed") {
     val p = new Promise[Option[Buf]]
-    val head = new Reader {
-      def read(n: Int) = p
-      def discard() = p.setException(new Reader.ReaderDiscarded)
-    }
+    val head =
+      new Reader {
+        def read(n: Int) = p
+        def discard() = p.setException(new Reader.ReaderDiscarded)
+      }
     val reader = Reader.concat(head +:: undefined)
     assertFailed(reader, p)
   }
 
   test("Reader.concat - lazy tail") {
-    val head = new Reader {
-      def read(n: Int) = Future.exception(new Exception)
-      def discard() {}
-    }
+    val head =
+      new Reader {
+        def read(n: Int) = Future.exception(new Exception)
+        def discard() {}
+      }
     val p = new Promise[Unit]
     def tail: AsyncStream[Reader] = {
       p.setDone()

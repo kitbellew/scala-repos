@@ -130,10 +130,11 @@ object ProductLike {
           }
       }
 
-    val combinedDynamic = dynamicFunctions.foldLeft(q"""$constSize""") {
-      case (prev, t) =>
-        q"$prev + $t"
-    }
+    val combinedDynamic =
+      dynamicFunctions.foldLeft(q"""$constSize""") {
+        case (prev, t) =>
+          q"$prev + $t"
+      }
 
     if (noLength > 0) {
       NoLengthCalculationAvailable(c)

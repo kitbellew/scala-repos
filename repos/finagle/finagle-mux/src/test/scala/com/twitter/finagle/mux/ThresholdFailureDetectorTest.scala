@@ -34,16 +34,17 @@ class ThresholdFailureDetectorTest
     val sr = new InMemoryStatsReceiver
 
     val timer = new MockTimer
-    val d = new ThresholdFailureDetector(
-      ping,
-      minPeriod = 10.milliseconds,
-      threshold = 2,
-      windowSize = 5,
-      closeTimeout = closeTimeout,
-      nanoTime = nanoTime,
-      statsReceiver = sr,
-      timer = timer
-    )
+    val d =
+      new ThresholdFailureDetector(
+        ping,
+        minPeriod = 10.milliseconds,
+        threshold = 2,
+        windowSize = 5,
+        closeTimeout = closeTimeout,
+        nanoTime = nanoTime,
+        statsReceiver = sr,
+        timer = timer
+      )
   }
 
   testt("pings every minPeriod") { tc =>
@@ -182,16 +183,17 @@ class ThresholdFailureDetectorTest
         Future.Done
     }
 
-    val d = new ThresholdFailureDetector(
-      ping,
-      minPeriod = 10.milliseconds,
-      threshold = 2,
-      windowSize = 5,
-      closeTimeout = Duration.Top,
-      nanoTime = nanoTime,
-      timer = timer,
-      statsReceiver = sr
-    )
+    val d =
+      new ThresholdFailureDetector(
+        ping,
+        minPeriod = 10.milliseconds,
+        threshold = 2,
+        windowSize = 5,
+        closeTimeout = Duration.Top,
+        nanoTime = nanoTime,
+        timer = timer,
+        statsReceiver = sr
+      )
 
     for (i <- 1 until failAfter) {
       assert(n.get == i)

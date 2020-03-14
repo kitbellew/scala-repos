@@ -9,10 +9,8 @@ object Implicits {
   private class SbtLoggerWrapper(underlying: SbtLogger) extends Logger {
     def log(level: Level, message: => String): Unit =
       underlying.log(level, message)
-    def success(message: => String): Unit =
-      underlying.success(message)
-    def trace(t: => Throwable): Unit =
-      underlying.trace(t)
+    def success(message: => String): Unit = underlying.success(message)
+    def trace(t: => Throwable): Unit = underlying.trace(t)
   }
 
   implicit def sbtLogger2ToolsLogger(logger: SbtLogger): Logger =

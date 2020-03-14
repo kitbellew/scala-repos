@@ -20,13 +20,14 @@ case class Opening(
   lazy val goal = qualityMoves.count(_.quality == Quality.Good) min 4
 
   lazy val qualityMoves: List[QualityMove] = {
-    val bestCp = moves.foldLeft(Int.MaxValue) {
-      case (cp, move) =>
-        if (move.cp < cp)
-          move.cp
-        else
-          cp
-    }
+    val bestCp =
+      moves.foldLeft(Int.MaxValue) {
+        case (cp, move) =>
+          if (move.cp < cp)
+            move.cp
+          else
+            cp
+      }
     moves.map { move =>
       QualityMove(move, Quality(move.cp - bestCp))
     }
@@ -77,23 +78,24 @@ object Opening {
   import lila.db.BSON
   import BSON.BSONJodaDateTimeHandler
 
-  implicit val moveBSONHandler = new BSON[Move] {
+  implicit val moveBSONHandler =
+    new BSON[Move] {
 
-    def reads(r: BSON.Reader): Move =
-      Move(
-        first = r str "first",
-        cp = r int "cp",
-        line =
-          chess.format.pgn.Binary.readMoves(r.bytes("line").value.toList).get)
+      def reads(r: BSON.Reader): Move =
+        Move(
+          first = r str "first",
+          cp = r int "cp",
+          line =
+            chess.format.pgn.Binary.readMoves(r.bytes("line").value.toList).get)
 
-    def writes(w: BSON.Writer, o: Move) =
-      BSONDocument(
-        "first" -> o.first,
-        "cp" -> o.cp,
-        "line" -> lila.db.ByteArray {
-          chess.format.pgn.Binary.writeMoves(o.line).get.toArray
-        })
-  }
+      def writes(w: BSON.Writer, o: Move) =
+        BSONDocument(
+          "first" -> o.first,
+          "cp" -> o.cp,
+          "line" -> lila.db.ByteArray {
+            chess.format.pgn.Binary.writeMoves(o.line).get.toArray
+          })
+    }
 
   object BSONFields {
     val id = "_id"
@@ -107,32 +109,33 @@ object Opening {
     val rating = s"$perf.gl.r"
   }
 
-  implicit val openingBSONHandler = new BSON[Opening] {
+  implicit val openingBSONHandler =
+    new BSON[Opening] {
 
-    import BSONFields._
-    import Perf.perfBSONHandler
+      import BSONFields._
+      import Perf.perfBSONHandler
 
-    def reads(r: BSON.Reader): Opening =
-      Opening(
-        id = r int id,
-        fen = r str fen,
-        moves = r.get[List[Move]](moves),
-        color = Color(r bool white),
-        date = r date date,
-        perf = r.get[Perf](perf),
-        attempts = r int attempts,
-        wins = r int wins
-      )
+      def reads(r: BSON.Reader): Opening =
+        Opening(
+          id = r int id,
+          fen = r str fen,
+          moves = r.get[List[Move]](moves),
+          color = Color(r bool white),
+          date = r date date,
+          perf = r.get[Perf](perf),
+          attempts = r int attempts,
+          wins = r int wins
+        )
 
-    def writes(w: BSON.Writer, o: Opening) =
-      BSONDocument(
-        id -> o.id,
-        fen -> o.fen,
-        moves -> o.moves,
-        white -> o.color.white,
-        date -> o.date,
-        perf -> o.perf,
-        attempts -> o.attempts,
-        wins -> o.wins)
-  }
+      def writes(w: BSON.Writer, o: Opening) =
+        BSONDocument(
+          id -> o.id,
+          fen -> o.fen,
+          moves -> o.moves,
+          white -> o.color.white,
+          date -> o.date,
+          perf -> o.perf,
+          attempts -> o.attempts,
+          wins -> o.wins)
+    }
 }

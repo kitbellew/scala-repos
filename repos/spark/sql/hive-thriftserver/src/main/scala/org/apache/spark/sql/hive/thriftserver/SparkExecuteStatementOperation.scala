@@ -109,8 +109,8 @@ private[hive] class SparkExecuteStatementOperation(
       case TimestampType =>
         to += from.getAs[Timestamp](ordinal)
       case BinaryType | _: ArrayType | _: StructType | _: MapType =>
-        val hiveString =
-          HiveContext.toHiveString((from.get(ordinal), dataTypes(ordinal)))
+        val hiveString = HiveContext.toHiveString(
+          (from.get(ordinal), dataTypes(ordinal)))
         to += hiveString
     }
   }
@@ -119,8 +119,9 @@ private[hive] class SparkExecuteStatementOperation(
     validateDefaultFetchOrientation(order)
     assertState(OperationState.FINISHED)
     setHasResultSet(true)
-    val resultRowSet: RowSet =
-      RowSetFactory.create(getResultSetSchema, getProtocolVersion)
+    val resultRowSet: RowSet = RowSetFactory.create(
+      getResultSetSchema,
+      getProtocolVersion)
     if (!iter.hasNext) {
       resultRowSet
     } else {
@@ -159,39 +160,40 @@ private[hive] class SparkExecuteStatementOperation(
 
       // Runnable impl to call runInternal asynchronously,
       // from a different thread
-      val backgroundOperation = new Runnable() {
+      val backgroundOperation =
+        new Runnable() {
 
-        override def run(): Unit = {
-          val doAsAction = new PrivilegedExceptionAction[Unit]() {
-            override def run(): Unit = {
-              try {
-                execute()
-              } catch {
-                case e: HiveSQLException =>
-                  setOperationException(e)
-                  log.error("Error running hive query: ", e)
+          override def run(): Unit = {
+            val doAsAction =
+              new PrivilegedExceptionAction[Unit]() {
+                override def run(): Unit = {
+                  try {
+                    execute()
+                  } catch {
+                    case e: HiveSQLException =>
+                      setOperationException(e)
+                      log.error("Error running hive query: ", e)
+                  }
+                }
               }
+
+            try {
+              sparkServiceUGI.doAs(doAsAction)
+            } catch {
+              case e: Exception =>
+                setOperationException(new HiveSQLException(e))
+                logError(
+                  "Error running hive query as user : " +
+                    sparkServiceUGI.getShortUserName(),
+                  e)
             }
           }
-
-          try {
-            sparkServiceUGI.doAs(doAsAction)
-          } catch {
-            case e: Exception =>
-              setOperationException(new HiveSQLException(e))
-              logError(
-                "Error running hive query as user : " +
-                  sparkServiceUGI.getShortUserName(),
-                e)
-          }
         }
-      }
       try {
         // This submit blocks if no background threads are available to run this operation
-        val backgroundHandle =
-          parentSession
-            .getSessionManager()
-            .submitBackgroundOperation(backgroundOperation)
+        val backgroundHandle = parentSession
+          .getSessionManager()
+          .submitBackgroundOperation(backgroundOperation)
         setBackgroundHandle(backgroundHandle)
       } catch {
         case rejected: RejectedExecutionException =>

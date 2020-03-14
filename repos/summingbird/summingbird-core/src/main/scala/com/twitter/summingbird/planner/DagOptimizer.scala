@@ -180,8 +180,7 @@ trait DagOptimizer[P <: Platform[P]] {
     // the keyed have to be cast because
     // all the keyed get inferred types (Any, Any), not
     // (K, V) <: T, which is what they are
-    def cast[K, V](tup: (M, L[(K, V)])): (M, L[T]) =
-      tup.asInstanceOf[(M, L[T])]
+    def cast[K, V](tup: (M, L[(K, V)])): (M, L[T]) = tup.asInstanceOf[(M, L[T])]
 
     hm.get(prod) match {
       case Some(lit) => (hm, lit)
@@ -216,11 +215,12 @@ trait DagOptimizer[P <: Platform[P]] {
     * optimized producer
     */
   def expressionDag[T](p: Producer[P, T]): (ExpressionDag[Prod], Id[T]) = {
-    val prodToLit = new GenFunction[Prod, LitProd] {
-      def apply[T] = { p =>
-        toLiteral(p)
+    val prodToLit =
+      new GenFunction[Prod, LitProd] {
+        def apply[T] = { p =>
+          toLiteral(p)
+        }
       }
-    }
     ExpressionDag[T, Prod](p, prodToLit)
   }
 

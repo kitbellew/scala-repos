@@ -100,11 +100,12 @@ object FunctionTupleSyntacticSugarInspection {
       val typeElement = getElement
 
       val typeTextWithParens = {
-        val needParens = typeElement.getContext match {
-          case ft: ScFunctionalTypeElement =>
-            true // (Tuple2[A, B]) => B  ==>> ((A, B)) => C
-          case _ => false
-        }
+        val needParens =
+          typeElement.getContext match {
+            case ft: ScFunctionalTypeElement =>
+              true // (Tuple2[A, B]) => B  ==>> ((A, B)) => C
+            case _ => false
+          }
         ("(" + typeElement.typeArgList.getText.drop(1).dropRight(1) + ")")
           .parenthesisedIf(needParens)
       }
@@ -128,20 +129,23 @@ object FunctionTupleSyntacticSugarInspection {
           ScalaPsiUtil.getElementsRange(paramTypes.head, paramTypes.last)
 
       val returnTypeTextWithParens = {
-        val returnTypeNeedParens = returnType match {
-          case ft: ScFunctionalTypeElement => true
-          case ft: ScInfixTypeElement      => true
-          case _                           => false
-        }
+        val returnTypeNeedParens =
+          returnType match {
+            case ft: ScFunctionalTypeElement => true
+            case ft: ScInfixTypeElement      => true
+            case _                           => false
+          }
         returnType.getText.parenthesisedIf(returnTypeNeedParens)
       }
       val typeTextWithParens = {
-        val needParens = typeElement.getContext match {
-          case ft: ScFunctionalTypeElement                              => true
-          case ft: ScInfixTypeElement                                   => true
-          case _: ScConstructor | _: ScTraitParents | _: ScClassParents => true
-          case _                                                        => false
-        }
+        val needParens =
+          typeElement.getContext match {
+            case ft: ScFunctionalTypeElement => true
+            case ft: ScInfixTypeElement      => true
+            case _: ScConstructor | _: ScTraitParents | _: ScClassParents =>
+              true
+            case _ => false
+          }
         val arrow = ScalaPsiUtil.functionArrow(project)
         s"(${elemsInParamTypes.map(_.getText).mkString}) $arrow $returnTypeTextWithParens"
           .parenthesisedIf(needParens)

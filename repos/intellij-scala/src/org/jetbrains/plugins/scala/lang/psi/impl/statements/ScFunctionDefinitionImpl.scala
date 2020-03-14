@@ -123,8 +123,9 @@ class ScFunctionDefinitionImpl protected (
     body match {
       case Some(block: ScBlockExpr) => // do nothing
       case Some(exp: ScExpression) =>
-        val block =
-          ScalaPsiElementFactory.createBlockFromExpr(exp, exp.getManager)
+        val block = ScalaPsiElementFactory.createBlockFromExpr(
+          exp,
+          exp.getManager)
         exp.replace(block)
       case _ =>
     }

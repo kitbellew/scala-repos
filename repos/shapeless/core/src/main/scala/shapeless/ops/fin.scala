@@ -30,9 +30,10 @@ object fin {
     def apply[M <: Nat, N <: Succ[_]](
         implicit fromNat: FromNat[M, N]): Aux[M, N, fromNat.Out] = fromNat
 
-    type Aux[M <: Nat, N <: Succ[_], Out0 <: Fin[N]] = FromNat[M, N] {
-      type Out = Out0
-    }
+    type Aux[M <: Nat, N <: Succ[_], Out0 <: Fin[N]] =
+      FromNat[M, N] {
+        type Out = Out0
+      }
 
     implicit def finZeroFromNat[N <: Succ[_]]: Aux[_0, N, FinZero[N]] =
       new FromNat[_0, N] {
@@ -61,9 +62,10 @@ object fin {
   object ToNat {
     def apply[F <: Fin[_]](implicit toNat: ToNat[F]): Aux[F, toNat.Out] = toNat
 
-    type Aux[F <: Fin[_], Out0 <: Nat] = ToNat[F] {
-      type Out = Out0
-    }
+    type Aux[F <: Fin[_], Out0 <: Nat] =
+      ToNat[F] {
+        type Out = Out0
+      }
 
     implicit def finZeroToNat[N <: Succ[_]]: Aux[FinZero[N], Nat._0] =
       new ToNat[FinZero[N]] {

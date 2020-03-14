@@ -183,8 +183,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToListString") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -201,8 +202,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToListInt") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -219,8 +221,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToStringIntMap") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -238,8 +241,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToIntIntMap") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -343,9 +347,10 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       // HiveSimpleUDF
       sql(
         s"CREATE TEMPORARY FUNCTION testUDFTwoListList AS '${classOf[UDFTwoListList].getName}'")
-      val message = intercept[AnalysisException] {
-        sql("SELECT testUDFTwoListList() FROM testUDF")
-      }.getMessage
+      val message =
+        intercept[AnalysisException] {
+          sql("SELECT testUDFTwoListList() FROM testUDF")
+        }.getMessage
       assert(message.contains("No handler for Hive udf"))
       sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFTwoListList")
     }
@@ -354,9 +359,10 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       // HiveGenericUDF
       sql(
         s"CREATE TEMPORARY FUNCTION testUDFAnd AS '${classOf[GenericUDFOPAnd].getName}'")
-      val message = intercept[AnalysisException] {
-        sql("SELECT testUDFAnd() FROM testUDF")
-      }.getMessage
+      val message =
+        intercept[AnalysisException] {
+          sql("SELECT testUDFAnd() FROM testUDF")
+        }.getMessage
       assert(message.contains("No handler for Hive udf"))
       sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFAnd")
     }
@@ -365,9 +371,10 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       // Hive UDAF
       sql(
         s"CREATE TEMPORARY FUNCTION testUDAFPercentile AS '${classOf[UDAFPercentile].getName}'")
-      val message = intercept[AnalysisException] {
-        sql("SELECT testUDAFPercentile(a) FROM testUDF GROUP BY b")
-      }.getMessage
+      val message =
+        intercept[AnalysisException] {
+          sql("SELECT testUDAFPercentile(a) FROM testUDF GROUP BY b")
+        }.getMessage
       assert(message.contains("No handler for Hive udf"))
       sql("DROP TEMPORARY FUNCTION IF EXISTS testUDAFPercentile")
     }
@@ -376,9 +383,10 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       // AbstractGenericUDAFResolver
       sql(
         s"CREATE TEMPORARY FUNCTION testUDAFAverage AS '${classOf[GenericUDAFAverage].getName}'")
-      val message = intercept[AnalysisException] {
-        sql("SELECT testUDAFAverage() FROM testUDF GROUP BY b")
-      }.getMessage
+      val message =
+        intercept[AnalysisException] {
+          sql("SELECT testUDAFAverage() FROM testUDF GROUP BY b")
+        }.getMessage
       assert(message.contains("No handler for Hive udf"))
       sql("DROP TEMPORARY FUNCTION IF EXISTS testUDAFAverage")
     }
@@ -387,9 +395,10 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       // Hive UDTF
       sql(
         s"CREATE TEMPORARY FUNCTION testUDTFExplode AS '${classOf[GenericUDTFExplode].getName}'")
-      val message = intercept[AnalysisException] {
-        sql("SELECT testUDTFExplode() FROM testUDF")
-      }.getMessage
+      val message =
+        intercept[AnalysisException] {
+          sql("SELECT testUDTFExplode() FROM testUDF")
+        }.getMessage
       assert(message.contains("No handler for Hive udf"))
       sql("DROP TEMPORARY FUNCTION IF EXISTS testUDTFExplode")
     }
@@ -435,12 +444,14 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         LOCATION '$tempDir'
       """)
 
-      val answer1 =
-        sql("SELECT input_file_name() FROM csv_table").head().getString(0)
+      val answer1 = sql("SELECT input_file_name() FROM csv_table")
+        .head()
+        .getString(0)
       assert(answer1.contains("data1") || answer1.contains("data2"))
 
-      val count1 =
-        sql("SELECT input_file_name() FROM csv_table").distinct().count()
+      val count1 = sql("SELECT input_file_name() FROM csv_table")
+        .distinct()
+        .count()
       assert(count1 == 2)
       sql("DROP TABLE csv_table")
 
@@ -451,15 +462,15 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         LOCATION '$tempDir'
       """)
 
-      val answer2 =
-        sql("SELECT input_file_name() as file FROM external_t5")
-          .head()
-          .getString(0)
+      val answer2 = sql("SELECT input_file_name() as file FROM external_t5")
+        .head()
+        .getString(0)
       assert(answer1.contains("data1") || answer1.contains("data2"))
 
-      val count2 = sql("SELECT input_file_name() as file FROM external_t5")
-        .distinct()
-        .count
+      val count2 =
+        sql("SELECT input_file_name() as file FROM external_t5")
+          .distinct()
+          .count
       assert(count2 == 2)
       sql("DROP TABLE external_t5")
     }
@@ -475,15 +486,16 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         LOCATION '$parquetLocation'
       """)
 
-      val answer3 =
-        sql("SELECT input_file_name() as file FROM external_parquet")
-          .head()
-          .getString(0)
+      val answer3 = sql(
+        "SELECT input_file_name() as file FROM external_parquet")
+        .head()
+        .getString(0)
       assert(answer3.contains("external_parquet"))
 
-      val count3 = sql("SELECT input_file_name() as file FROM external_parquet")
-        .distinct()
-        .count
+      val count3 =
+        sql("SELECT input_file_name() as file FROM external_parquet")
+          .distinct()
+          .count
       assert(count3 == 1)
       sql("DROP TABLE external_parquet")
     }
@@ -495,10 +507,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         " STORED AS parquet " +
         " AS SELECT 1, 2")
 
-    val answer4 =
-      sql("SELECT input_file_name() as file FROM parquet_tmp")
-        .head()
-        .getString(0)
+    val answer4 = sql("SELECT input_file_name() as file FROM parquet_tmp")
+      .head()
+      .getString(0)
     assert(answer4.contains("parquet_tmp"))
 
     val count4 =

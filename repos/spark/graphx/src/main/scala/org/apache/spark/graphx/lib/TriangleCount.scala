@@ -53,8 +53,10 @@ object TriangleCount {
 
   def run[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED]): Graph[Int, ED] = {
     // Transform the edge data something cheap to shuffle and then canonicalize
-    val canonicalGraph =
-      graph.mapEdges(e => true).removeSelfEdges().convertToCanonicalEdges()
+    val canonicalGraph = graph
+      .mapEdges(e => true)
+      .removeSelfEdges()
+      .convertToCanonicalEdges()
     // Get the triangle counts
     val counters = runPreCanonicalized(canonicalGraph).vertices
     // Join them bath with the original graph
@@ -66,8 +68,9 @@ object TriangleCount {
   def runPreCanonicalized[VD: ClassTag, ED: ClassTag](
       graph: Graph[VD, ED]): Graph[Int, ED] = {
     // Construct set representations of the neighborhoods
-    val nbrSets: VertexRDD[VertexSet] =
-      graph.collectNeighborIds(EdgeDirection.Either).mapValues { (vid, nbrs) =>
+    val nbrSets: VertexRDD[VertexSet] = graph
+      .collectNeighborIds(EdgeDirection.Either)
+      .mapValues { (vid, nbrs) =>
         val set = new VertexSet(nbrs.length)
         var i = 0
         while (i < nbrs.length) {
@@ -81,17 +84,19 @@ object TriangleCount {
       }
 
     // join the sets with the graph
-    val setGraph: Graph[VertexSet, ED] = graph.outerJoinVertices(nbrSets) {
-      (vid, _, optSet) => optSet.getOrElse(null)
-    }
+    val setGraph: Graph[VertexSet, ED] =
+      graph.outerJoinVertices(nbrSets) { (vid, _, optSet) =>
+        optSet.getOrElse(null)
+      }
 
     // Edge function computes intersection of smaller vertex with larger vertex
     def edgeFunc(ctx: EdgeContext[VertexSet, ED, Int]) {
-      val (smallSet, largeSet) = if (ctx.srcAttr.size < ctx.dstAttr.size) {
-        (ctx.srcAttr, ctx.dstAttr)
-      } else {
-        (ctx.dstAttr, ctx.srcAttr)
-      }
+      val (smallSet, largeSet) =
+        if (ctx.srcAttr.size < ctx.dstAttr.size) {
+          (ctx.srcAttr, ctx.dstAttr)
+        } else {
+          (ctx.dstAttr, ctx.srcAttr)
+        }
       val iter = smallSet.iterator
       var counter: Int = 0
       while (iter.hasNext) {

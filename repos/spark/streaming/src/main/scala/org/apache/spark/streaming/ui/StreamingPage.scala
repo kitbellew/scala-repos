@@ -244,11 +244,10 @@ private[ui] class StreamingPage(parent: StreamingTab)
   private def generateTimeMap(times: Seq[Long]): Seq[Node] = {
     val js = "var timeFormat = {};\n" + times
       .map { time =>
-        val formattedTime =
-          UIUtils.formatBatchTime(
-            time,
-            listener.batchDuration,
-            showYYYYMMSS = false)
+        val formattedTime = UIUtils.formatBatchTime(
+          time,
+          listener.batchDuration,
+          showYYYYMMSS = false)
         s"timeFormat[$time] = '$formattedTime';"
       }
       .mkString("\n")
@@ -273,23 +272,25 @@ private[ui] class StreamingPage(parent: StreamingTab)
       else
         batchTimes.max
 
-    val eventRateForAllStreams = new EventRateUIData(batches.map { batchInfo =>
-      (
-        batchInfo.batchTime.milliseconds,
-        batchInfo.numRecords * 1000.0 / listener.batchDuration)
-    })
+    val eventRateForAllStreams =
+      new EventRateUIData(batches.map { batchInfo =>
+        (
+          batchInfo.batchTime.milliseconds,
+          batchInfo.numRecords * 1000.0 / listener.batchDuration)
+      })
 
-    val schedulingDelay = new MillisecondsStatUIData(batches.flatMap {
-      batchInfo =>
+    val schedulingDelay =
+      new MillisecondsStatUIData(batches.flatMap { batchInfo =>
         batchInfo.schedulingDelay.map(batchInfo.batchTime.milliseconds -> _)
-    })
-    val processingTime = new MillisecondsStatUIData(batches.flatMap {
-      batchInfo =>
+      })
+    val processingTime =
+      new MillisecondsStatUIData(batches.flatMap { batchInfo =>
         batchInfo.processingDelay.map(batchInfo.batchTime.milliseconds -> _)
-    })
-    val totalDelay = new MillisecondsStatUIData(batches.flatMap { batchInfo =>
-      batchInfo.totalDelay.map(batchInfo.batchTime.milliseconds -> _)
-    })
+      })
+    val totalDelay =
+      new MillisecondsStatUIData(batches.flatMap { batchInfo =>
+        batchInfo.totalDelay.map(batchInfo.batchTime.milliseconds -> _)
+      })
 
     // Use the max value of "schedulingDelay", "processingTime", and "totalDelay" to make the
     // Y axis ranges same.
@@ -305,12 +306,14 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     // Use the max input rate for all InputDStreams' graphs to make the Y axis ranges same.
     // If it's not an integral number, just use its ceil integral number.
-    val maxEventRate =
-      eventRateForAllStreams.max.map(_.ceil.toLong).getOrElse(0L)
+    val maxEventRate = eventRateForAllStreams.max
+      .map(_.ceil.toLong)
+      .getOrElse(0L)
     val minEventRate = 0L
 
-    val batchInterval =
-      UIUtils.convertToTimeUnit(listener.batchDuration, normalizedUnit)
+    val batchInterval = UIUtils.convertToTimeUnit(
+      listener.batchDuration,
+      normalizedUnit)
 
     val jsCollector = new JsCollector
 
@@ -522,20 +525,21 @@ private[ui] class StreamingPage(parent: StreamingTab)
       .map(_.ceil.toLong)
       .getOrElse(0L)
 
-    val content = listener.receivedEventRateWithBatchTime.toList
-      .sortBy(_._1)
-      .map {
-        case (streamId, eventRates) =>
-          generateInputDStreamRow(
-            jsCollector,
-            streamId,
-            eventRates,
-            minX,
-            maxX,
-            minY,
-            maxYCalculated)
-      }
-      .foldLeft[Seq[Node]](Nil)(_ ++ _)
+    val content =
+      listener.receivedEventRateWithBatchTime.toList
+        .sortBy(_._1)
+        .map {
+          case (streamId, eventRates) =>
+            generateInputDStreamRow(
+              jsCollector,
+              streamId,
+              eventRates,
+              minX,
+              maxX,
+              minY,
+              maxYCalculated)
+        }
+        .foldLeft[Seq[Node]](Nil)(_ ++ _)
 
     // scalastyle:off
     <table class="table table-bordered" style="width: auto">
@@ -750,8 +754,7 @@ private[ui] class JsCollector {
     * Generate a html snippet that will execute all scripts when the DOM has finished loading.
     */
   def toHtml: Seq[Node] = {
-    val js =
-      s"""
+    val js = s"""
          |$$(document).ready(function() {
          |    ${preparedStatements.mkString("\n")}
          |    ${statements.mkString("\n")}

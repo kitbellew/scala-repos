@@ -76,13 +76,18 @@ abstract class JDBCSource extends Source with ColumnDefiner with JdbcDriver {
   protected def createJDBCTap =
     try {
       val ConnectionSpec(url, uName, passwd) = currentConfig
-      val tap = new JDBCTap(
-        url.get,
-        uName.get,
-        passwd.get,
-        driver.get,
-        getTableDesc(tableName, columnNames, columnDefinitions),
-        getJDBCScheme(columnNames, filterCondition, updateBy, replaceOnInsert))
+      val tap =
+        new JDBCTap(
+          url.get,
+          uName.get,
+          passwd.get,
+          driver.get,
+          getTableDesc(tableName, columnNames, columnDefinitions),
+          getJDBCScheme(
+            columnNames,
+            filterCondition,
+            updateBy,
+            replaceOnInsert))
       tap.setConcurrentReads(maxConcurrentReads)
       tap.setBatchSize(batchSize)
       tap

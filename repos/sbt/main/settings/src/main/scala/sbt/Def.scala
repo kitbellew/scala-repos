@@ -186,10 +186,11 @@ object Def extends Init[Scope] with TaskMacroExtra {
     "is-dummy-task",
     "Internal: used to identify dummy tasks.  sbt injects values for these tasks at the start of task execution.",
     Invisible)
-  private[sbt] val (stateKey, dummyState) =
-    dummy[State]("state", "Current build state.")
-  private[sbt] val (streamsManagerKey, dummyStreamsManager) =
-    Def.dummy[std.Streams[ScopedKey[_]]](
+  private[sbt] val (stateKey, dummyState) = dummy[State](
+    "state",
+    "Current build state.")
+  private[sbt] val (streamsManagerKey, dummyStreamsManager) = Def
+    .dummy[std.Streams[ScopedKey[_]]](
       "streams-manager",
       "Streams manager, which provides streams for different contexts.")
 }

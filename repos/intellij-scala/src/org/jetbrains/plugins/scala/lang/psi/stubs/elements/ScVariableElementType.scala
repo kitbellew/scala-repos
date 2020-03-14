@@ -30,10 +30,11 @@ abstract class ScVariableElementType[Variable <: ScVariable](debugName: String)
       psi: ScVariable,
       parentStub: StubElement[ParentPsi]): ScVariableStub = {
     val isDecl = psi.isInstanceOf[ScVariableDeclaration]
-    val typeText = psi.typeElement match {
-      case Some(te) => te.getText
-      case None     => ""
-    }
+    val typeText =
+      psi.typeElement match {
+        case Some(te) => te.getText
+        case None     => ""
+      }
     val bodyText =
       if (!isDecl)
         psi.asInstanceOf[ScVariableDefinition].expr.map(_.getText).getOrElse("")

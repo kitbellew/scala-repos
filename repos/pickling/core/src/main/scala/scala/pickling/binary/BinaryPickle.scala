@@ -244,36 +244,36 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
   def atPrimitive: Boolean = primitives.contains(lastTagRead)
 
   def readPrimitive(): Any = {
-    val res = lastTagRead match {
-      case KEY_NULL    => null
-      case KEY_REF     => lookupUnpicklee(in.getInt)
-      case KEY_BYTE    => in.getByte
-      case KEY_SHORT   => in.getShort
-      case KEY_CHAR    => in.getChar
-      case KEY_INT     => in.getInt
-      case KEY_LONG    => in.getLong
-      case KEY_BOOLEAN => in.getBoolean
-      case KEY_FLOAT   => in.getFloat
-      case KEY_DOUBLE  => in.getDouble
+    val res =
+      lastTagRead match {
+        case KEY_NULL    => null
+        case KEY_REF     => lookupUnpicklee(in.getInt)
+        case KEY_BYTE    => in.getByte
+        case KEY_SHORT   => in.getShort
+        case KEY_CHAR    => in.getChar
+        case KEY_INT     => in.getInt
+        case KEY_LONG    => in.getLong
+        case KEY_BOOLEAN => in.getBoolean
+        case KEY_FLOAT   => in.getFloat
+        case KEY_DOUBLE  => in.getDouble
 
-      case KEY_STRING => in.getString
+        case KEY_STRING => in.getString
 
-      case KEY_ARRAY_BYTE    => in.getByteArray
-      case KEY_ARRAY_SHORT   => in.getShortArray
-      case KEY_ARRAY_CHAR    => in.getCharArray
-      case KEY_ARRAY_INT     => in.getIntArray
-      case KEY_ARRAY_LONG    => in.getLongArray
-      case KEY_ARRAY_BOOLEAN => in.getBooleanArray
-      case KEY_ARRAY_FLOAT   => in.getFloatArray
-      case KEY_ARRAY_DOUBLE  => in.getDoubleArray
-    }
+        case KEY_ARRAY_BYTE    => in.getByteArray
+        case KEY_ARRAY_SHORT   => in.getShortArray
+        case KEY_ARRAY_CHAR    => in.getCharArray
+        case KEY_ARRAY_INT     => in.getIntArray
+        case KEY_ARRAY_LONG    => in.getLongArray
+        case KEY_ARRAY_BOOLEAN => in.getBooleanArray
+        case KEY_ARRAY_FLOAT   => in.getFloatArray
+        case KEY_ARRAY_DOUBLE  => in.getDoubleArray
+      }
     res
   }
 
   def atObject: Boolean = !atPrimitive
 
-  def readField(name: String): BinaryPickleReader =
-    this
+  def readField(name: String): BinaryPickleReader = this
 
   def endEntry(): Unit = {
     /* do nothing */

@@ -25,15 +25,16 @@ import org.apache.spark.tags.DockerTest
 
 @DockerTest
 class MySQLIntegrationSuite extends DockerJDBCIntegrationSuite {
-  override val db = new DatabaseOnDocker {
-    override val imageName = "mysql:5.7.9"
-    override val env = Map(
-      "MYSQL_ROOT_PASSWORD" -> "rootpass"
-    )
-    override val jdbcPort: Int = 3306
-    override def getJdbcUrl(ip: String, port: Int): String =
-      s"jdbc:mysql://$ip:$port/mysql?user=root&password=rootpass"
-  }
+  override val db =
+    new DatabaseOnDocker {
+      override val imageName = "mysql:5.7.9"
+      override val env = Map(
+        "MYSQL_ROOT_PASSWORD" -> "rootpass"
+      )
+      override val jdbcPort: Int = 3306
+      override def getJdbcUrl(ip: String, port: Int): String =
+        s"jdbc:mysql://$ip:$port/mysql?user=root&password=rootpass"
+    }
 
   override def dataPreparation(conn: Connection): Unit = {
     conn.prepareStatement("CREATE DATABASE foo").executeUpdate()

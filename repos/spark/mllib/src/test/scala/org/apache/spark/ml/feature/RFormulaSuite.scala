@@ -55,8 +55,9 @@ class RFormulaSuite
 
   test("features column already exists") {
     val formula = new RFormula().setFormula("y ~ x").setFeaturesCol("x")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1.0), (2, 2.0))).toDF("x", "y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1.0), (2, 2.0)))
+      .toDF("x", "y")
     intercept[IllegalArgumentException] {
       formula.fit(original)
     }
@@ -67,8 +68,9 @@ class RFormulaSuite
 
   test("label column already exists") {
     val formula = new RFormula().setFormula("y ~ x").setLabelCol("y")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1.0), (2, 2.0))).toDF("x", "y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1.0), (2, 2.0)))
+      .toDF("x", "y")
     val model = formula.fit(original)
     val resultSchema = model.transformSchema(original.schema)
     assert(resultSchema.length == 3)
@@ -77,8 +79,9 @@ class RFormulaSuite
 
   test("label column already exists but is not double type") {
     val formula = new RFormula().setFormula("y ~ x").setLabelCol("y")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1), (2, 2))).toDF("x", "y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1), (2, 2)))
+      .toDF("x", "y")
     val model = formula.fit(original)
     intercept[IllegalArgumentException] {
       model.transformSchema(original.schema)
@@ -90,8 +93,9 @@ class RFormulaSuite
 
   test("allow missing label column for test datasets") {
     val formula = new RFormula().setFormula("y ~ x").setLabelCol("label")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1.0), (2, 2.0))).toDF("x", "_not_y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1.0), (2, 2.0)))
+      .toDF("x", "_not_y")
     val model = formula.fit(original)
     val resultSchema = model.transformSchema(original.schema)
     assert(resultSchema.length == 3)
@@ -161,12 +165,13 @@ class RFormulaSuite
     val model = formula.fit(original)
     val result = model.transform(original)
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
-    val expectedAttrs = new AttributeGroup(
-      "features",
-      Array(
-        new BinaryAttribute(Some("a_bar"), Some(1)),
-        new BinaryAttribute(Some("a_foo"), Some(2)),
-        new NumericAttribute(Some("b"), Some(3))))
+    val expectedAttrs =
+      new AttributeGroup(
+        "features",
+        Array(
+          new BinaryAttribute(Some("a_bar"), Some(1)),
+          new BinaryAttribute(Some("a_foo"), Some(2)),
+          new NumericAttribute(Some("b"), Some(3))))
     assert(attrs === expectedAttrs)
   }
 
@@ -180,11 +185,12 @@ class RFormulaSuite
     val model = formula.fit(original)
     val result = model.transform(original)
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
-    val expectedAttrs = new AttributeGroup(
-      "features",
-      Array[Attribute](
-        new NumericAttribute(Some("vec_0"), Some(1)),
-        new NumericAttribute(Some("vec_1"), Some(2))))
+    val expectedAttrs =
+      new AttributeGroup(
+        "features",
+        Array[Attribute](
+          new NumericAttribute(Some("vec_0"), Some(1)),
+          new NumericAttribute(Some("vec_1"), Some(2))))
     assert(attrs === expectedAttrs)
   }
 
@@ -195,21 +201,24 @@ class RFormulaSuite
         Seq((1, Vectors.dense(0.0, 1.0)), (2, Vectors.dense(1.0, 2.0)))
       )
       .toDF("id", "vec")
-    val metadata = new AttributeGroup(
-      "vec2",
-      Array[Attribute](
-        NumericAttribute.defaultAttr,
-        NumericAttribute.defaultAttr)).toMetadata
-    val original =
-      base.select(base.col("id"), base.col("vec").as("vec2", metadata))
+    val metadata =
+      new AttributeGroup(
+        "vec2",
+        Array[Attribute](
+          NumericAttribute.defaultAttr,
+          NumericAttribute.defaultAttr)).toMetadata
+    val original = base.select(
+      base.col("id"),
+      base.col("vec").as("vec2", metadata))
     val model = formula.fit(original)
     val result = model.transform(original)
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
-    val expectedAttrs = new AttributeGroup(
-      "features",
-      Array[Attribute](
-        new NumericAttribute(Some("vec2_0"), Some(1)),
-        new NumericAttribute(Some("vec2_1"), Some(2))))
+    val expectedAttrs =
+      new AttributeGroup(
+        "features",
+        Array[Attribute](
+          new NumericAttribute(Some("vec2_0"), Some(1)),
+          new NumericAttribute(Some("vec2_1"), Some(2))))
     assert(attrs === expectedAttrs)
   }
 
@@ -231,9 +240,10 @@ class RFormulaSuite
       .toDF("a", "b", "c", "d", "features", "label")
     assert(result.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
-    val expectedAttrs = new AttributeGroup(
-      "features",
-      Array[Attribute](new NumericAttribute(Some("b:c:d"), Some(1))))
+    val expectedAttrs =
+      new AttributeGroup(
+        "features",
+        Array[Attribute](new NumericAttribute(Some("b:c:d"), Some(1))))
     assert(attrs === expectedAttrs)
   }
 
@@ -266,12 +276,13 @@ class RFormulaSuite
       .toDF("id", "a", "b", "features", "label")
     assert(result.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
-    val expectedAttrs = new AttributeGroup(
-      "features",
-      Array[Attribute](
-        new NumericAttribute(Some("a_baz:b"), Some(1)),
-        new NumericAttribute(Some("a_bar:b"), Some(2)),
-        new NumericAttribute(Some("a_foo:b"), Some(3))))
+    val expectedAttrs =
+      new AttributeGroup(
+        "features",
+        Array[Attribute](
+          new NumericAttribute(Some("a_baz:b"), Some(1)),
+          new NumericAttribute(Some("a_bar:b"), Some(2)),
+          new NumericAttribute(Some("a_foo:b"), Some(3))))
     assert(attrs === expectedAttrs)
   }
 
@@ -294,14 +305,15 @@ class RFormulaSuite
       .toDF("id", "a", "b", "features", "label")
     assert(result.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
-    val expectedAttrs = new AttributeGroup(
-      "features",
-      Array[Attribute](
-        new NumericAttribute(Some("a_bar:b_zq"), Some(1)),
-        new NumericAttribute(Some("a_bar:b_zz"), Some(2)),
-        new NumericAttribute(Some("a_foo:b_zq"), Some(3)),
-        new NumericAttribute(Some("a_foo:b_zz"), Some(4))
-      ))
+    val expectedAttrs =
+      new AttributeGroup(
+        "features",
+        Array[Attribute](
+          new NumericAttribute(Some("a_bar:b_zq"), Some(1)),
+          new NumericAttribute(Some("a_bar:b_zz"), Some(2)),
+          new NumericAttribute(Some("a_foo:b_zq"), Some(3)),
+          new NumericAttribute(Some("a_foo:b_zz"), Some(4))
+        ))
     assert(attrs === expectedAttrs)
   }
 

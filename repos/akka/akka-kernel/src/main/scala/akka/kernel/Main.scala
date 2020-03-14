@@ -120,8 +120,8 @@ object Main {
 
     val nestedJars = jars flatMap { jar ⇒
       val jarFile = new JarFile(jar)
-      val jarEntries =
-        jarFile.entries.asScala.toArray.filter(_.getName.endsWith(".jar"))
+      val jarEntries = jarFile.entries.asScala.toArray
+        .filter(_.getName.endsWith(".jar"))
       jarEntries map { entry ⇒
         new File("jar:file:%s!/%s" format (jarFile.getName, entry.getName))
       }

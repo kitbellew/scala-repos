@@ -90,8 +90,9 @@ object SizeEstimator extends Logging {
 
   // A cache of ClassInfo objects for each class
   // We use weakKeys to allow GC of dynamically created classes
-  private val classInfos =
-    new MapMaker().weakKeys().makeMap[Class[_], ClassInfo]()
+  private val classInfos = new MapMaker()
+    .weakKeys()
+    .makeMap[Class[_], ClassInfo]()
 
   // Object and pointer sizes are arch dependent
   private var is64bit = false
@@ -150,8 +151,8 @@ object SizeEstimator extends Logging {
 
       // NOTE: This should throw an exception in non-Sun JVMs
       // scalastyle:off classforname
-      val hotSpotMBeanClass =
-        Class.forName("com.sun.management.HotSpotDiagnosticMXBean")
+      val hotSpotMBeanClass = Class.forName(
+        "com.sun.management.HotSpotDiagnosticMXBean")
       val getVMMethod = hotSpotMBeanClass.getDeclaredMethod(
         "getVMOption",
         Class.forName("java.lang.String"))
@@ -384,8 +385,9 @@ object SizeEstimator extends Logging {
     for (size <- fieldSizes if sizeCount(size) > 0) {
       val count = sizeCount(size).toLong
       // If there are internal gaps, smaller field can fit in.
-      alignedSize =
-        math.max(alignedSize, alignSizeUp(shellSize, size) + size * count)
+      alignedSize = math.max(
+        alignedSize,
+        alignSizeUp(shellSize, size) + size * count)
       shellSize += size * count
     }
 

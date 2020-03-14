@@ -151,8 +151,8 @@ final case class AdaptiveLoadBalancingPool(
 
   def this(config: Config, dynamicAccess: DynamicAccess) =
     this(
-      nrOfInstances =
-        ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
+      nrOfInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
+        config),
       metricsSelector = MetricsSelector.fromConfig(config, dynamicAccess),
       usePoolDispatcher = config.hasPath("pool-dispatcher"))
 
@@ -297,10 +297,11 @@ case object HeapMetricsSelector extends CapacityMetricsSelector {
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
     nodeMetrics.collect {
       case HeapMemory(address, _, used, committed, max) ⇒
-        val capacity = max match {
-          case None ⇒ (committed - used).toDouble / committed
-          case Some(m) ⇒ (m - used).toDouble / m
-        }
+        val capacity =
+          max match {
+            case None ⇒ (committed - used).toDouble / committed
+            case Some(m) ⇒ (m - used).toDouble / m
+          }
         (address, capacity)
     }.toMap
   }
@@ -418,8 +419,8 @@ abstract class MixMetricsSelectorBase(
     this(immutableSeq(selectors).toVector)
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
-    val combined: immutable.IndexedSeq[(Address, Double)] =
-      selectors.flatMap(_.capacity(nodeMetrics).toSeq)
+    val combined: immutable.IndexedSeq[(Address, Double)] = selectors.flatMap(
+      _.capacity(nodeMetrics).toSeq)
     // aggregated average of the capacities by address
     combined
       .foldLeft(Map.empty[Address, (Double, Int)].withDefaultValue((0.0, 0))) {
@@ -529,10 +530,11 @@ private[metrics] class WeightedRoutees(
   // from 1 to the total sum of the used weights.
   private val buckets: Array[Int] = {
     def fullAddress(routee: Routee): Address = {
-      val a = routee match {
-        case ActorRefRoutee(ref) ⇒ ref.path.address
-        case ActorSelectionRoutee(sel) ⇒ sel.anchor.path.address
-      }
+      val a =
+        routee match {
+          case ActorRefRoutee(ref) ⇒ ref.path.address
+          case ActorSelectionRoutee(sel) ⇒ sel.anchor.path.address
+        }
       a match {
         case Address(_, _, None, None) ⇒ selfAddress
         case a ⇒ a
@@ -544,10 +546,9 @@ private[metrics] class WeightedRoutees(
         1
       else
         weights.values.sum / weights.size
-    val w =
-      weights.withDefaultValue(
-        meanWeight
-      ) // we don’t necessarily have metrics for all addresses
+    val w = weights.withDefaultValue(
+      meanWeight
+    ) // we don’t necessarily have metrics for all addresses
     var i = 0
     var sum = 0
     routees foreach { r ⇒

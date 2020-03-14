@@ -96,16 +96,14 @@ class ConvertFromInfixExpressionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testConvertFromInfixExpression12(): Unit = {
-    val text =
-      """
+    val text = """
         |case class M[A](a: A) {
         |  def map[B](f: A => B): M[B] = M(f(a))
         |}
         |
         |M(1) <caret>map[String] (_.toString)
       """.stripMargin
-    val resultText =
-      """
+    val resultText = """
         |case class M[A](a: A) {
         |  def map[B](f: A => B): M[B] = M(f(a))
         |}

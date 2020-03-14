@@ -35,10 +35,11 @@ object DefaultRoutines {
   private def rawResBundle(
       loc: Locale,
       path: List[String]): Box[ResourceBundle] = {
-    val realPath = path match {
-      case Nil => List("_resources")
-      case x   => x
-    }
+    val realPath =
+      path match {
+        case Nil => List("_resources")
+        case x   => x
+      }
 
     for {
       xml <- Templates(realPath, loc) or

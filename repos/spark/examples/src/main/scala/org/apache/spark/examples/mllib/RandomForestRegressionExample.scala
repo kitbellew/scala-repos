@@ -70,8 +70,9 @@ object RandomForestRegressionExample {
 
     // Save and load model
     model.save(sc, "target/tmp/myRandomForestRegressionModel")
-    val sameModel =
-      RandomForestModel.load(sc, "target/tmp/myRandomForestRegressionModel")
+    val sameModel = RandomForestModel.load(
+      sc,
+      "target/tmp/myRandomForestRegressionModel")
     // $example off$
   }
 }

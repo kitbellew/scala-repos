@@ -57,8 +57,9 @@ trait ManagedMongoJobManagerModule {
 
     val database = config[String]("mongo.database", "jobs_v1")
 
-    val timeout =
-      config[Long]("mongo.timeout", default.queryTimeout.duration.toMillis)
+    val timeout = config[Long](
+      "mongo.timeout",
+      default.queryTimeout.duration.toMillis)
     val jobs = config[String]("mongo.jobsCollection", default.jobs)
     val messages = config[String]("mongo.messagesCollection", default.messages)
 
@@ -75,8 +76,10 @@ case class MongoJobManagerSettings(
     jobs: String,
     messages: String)
 object MongoJobManagerSettings {
-  val default: MongoJobManagerSettings =
-    MongoJobManagerSettings(5000, "jobs", "jog_messages")
+  val default: MongoJobManagerSettings = MongoJobManagerSettings(
+    5000,
+    "jobs",
+    "jog_messages")
 }
 
 final class MongoJobManager(

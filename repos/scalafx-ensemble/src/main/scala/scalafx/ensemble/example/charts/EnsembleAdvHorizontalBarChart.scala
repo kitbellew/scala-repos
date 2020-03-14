@@ -47,47 +47,52 @@ class EnsembleAdvHorizontalBarChart extends EnsembleExample {
     // Category/x values
     val years = Seq("2007", "2008", "2009")
 
-    val yAxis = new CategoryAxis {
-      label = "Year"
-      categories = ObservableBuffer(years)
-    }
+    val yAxis =
+      new CategoryAxis {
+        label = "Year"
+        categories = ObservableBuffer(years)
+      }
 
-    val xAxis = new NumberAxis {
-      label = "Price"
-      tickLabelFormatter = NumberAxis.DefaultFormatter(this, "$", "")
-    }
+    val xAxis =
+      new NumberAxis {
+        label = "Price"
+        tickLabelFormatter = NumberAxis.DefaultFormatter(this, "$", "")
+      }
 
     //
     // Create data series.
     // To illustrate different possibilities, each series data is created using different approach.
     //
 
-    val series1 = new XYChart.Series[Number, String] {
-      name = "Data Series 1"
-      // Example of assigning data directly
-      data() += XYChart.Data[Number, String](567, years(0))
-      data() += XYChart.Data[Number, String](1292, years(1))
-      data() += XYChart.Data[Number, String](2180, years(2))
-    }
+    val series1 =
+      new XYChart.Series[Number, String] {
+        name = "Data Series 1"
+        // Example of assigning data directly
+        data() += XYChart.Data[Number, String](567, years(0))
+        data() += XYChart.Data[Number, String](1292, years(1))
+        data() += XYChart.Data[Number, String](2180, years(2))
+      }
 
-    val series2 = new XYChart.Series[Number, String] {
-      name = "Data Series 2"
-      // Example of assigning data using a container
-      data = ObservableBuffer(
-        XYChart.Data[Number, String](956, years(0)),
-        XYChart.Data[Number, String](1665, years(1)),
-        XYChart.Data[Number, String](2450, years(2))
-      )
-    }
+    val series2 =
+      new XYChart.Series[Number, String] {
+        name = "Data Series 2"
+        // Example of assigning data using a container
+        data = ObservableBuffer(
+          XYChart.Data[Number, String](956, years(0)),
+          XYChart.Data[Number, String](1665, years(1)),
+          XYChart.Data[Number, String](2450, years(2))
+        )
+      }
 
-    val series3 = new XYChart.Series[Number, String] {
-      name = "Data Series 3"
-      // Assign data by mapping x and y values to XYChart.Data
-      val prices = Seq(800, 1000, 2000)
-      data = ObservableBuffer(prices zip years map {
-        case (x, y) => XYChart.Data[Number, String](x, y)
-      })
-    }
+    val series3 =
+      new XYChart.Series[Number, String] {
+        name = "Data Series 3"
+        // Assign data by mapping x and y values to XYChart.Data
+        val prices = Seq(800, 1000, 2000)
+        data = ObservableBuffer(prices zip years map {
+          case (x, y) => XYChart.Data[Number, String](x, y)
+        })
+      }
 
     // Assign data using a helper function
     def xyData(xs: Seq[Number]) =

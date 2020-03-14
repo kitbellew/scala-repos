@@ -89,34 +89,38 @@ object Grant extends Logging {
     "grantId" :: "name" :: "description" :: ("issuerKey" ||| "(undefined)") :: "parentIds" :: "permissions" :: ("createdAt" ||| new Instant(
       0L)) :: "expirationDate" :: HNil
 
-  val decomposerV1: Decomposer[Grant] =
-    decomposerV[Grant](schemaV1, Some("1.0".v))
+  val decomposerV1: Decomposer[Grant] = decomposerV[Grant](
+    schemaV1,
+    Some("1.0".v))
   val extractorV2: Extractor[Grant] = extractorV[Grant](schemaV1, Some("1.0".v))
   val extractorV1: Extractor[Grant] = extractorV[Grant](schemaV1, None)
 
   @deprecated(
     "V0 serialization schemas should be removed when legacy data is no longer needed",
     "2.1.5")
-  val extractorV0: Extractor[Grant] = new Extractor[Grant] {
-    override def validated(obj: JValue) = {
-      (obj.validated[GrantId]("gid") |@|
-        obj.validated[Option[APIKey]]("cid").map(_.getOrElse("(undefined)")) |@|
-        obj.validated[Option[GrantId]]("issuer") |@|
-        obj.validated[Permission]("permission")(Permission.extractorV0) |@|
-        obj.validated[Option[DateTime]]("permission.expirationDate")).apply {
-        (gid, cid, issuer, permission, expiration) =>
-          Grant(
-            gid,
-            None,
-            None,
-            cid,
-            issuer.toSet,
-            Set(permission),
-            new Instant(0L),
-            expiration)
+  val extractorV0: Extractor[Grant] =
+    new Extractor[Grant] {
+      override def validated(obj: JValue) = {
+        (obj.validated[GrantId]("gid") |@|
+          obj
+            .validated[Option[APIKey]]("cid")
+            .map(_.getOrElse("(undefined)")) |@|
+          obj.validated[Option[GrantId]]("issuer") |@|
+          obj.validated[Permission]("permission")(Permission.extractorV0) |@|
+          obj.validated[Option[DateTime]]("permission.expirationDate")).apply {
+          (gid, cid, issuer, permission, expiration) =>
+            Grant(
+              gid,
+              None,
+              None,
+              cid,
+              issuer.toSet,
+              Set(permission),
+              new Instant(0L),
+              expiration)
+        }
       }
     }
-  }
 
   implicit val decomposer: Decomposer[Grant] = decomposerV1
   implicit val extractor: Extractor[Grant] =
@@ -169,12 +173,13 @@ object Grant extends Logging {
           case _ => Set()
         }
 
-      val distinct = grants
-        .groupBy { g =>
-          (g.permissions, g.expirationDate)
-        }
-        .map(_._2.head)
-        .toList
+      val distinct =
+        grants
+          .groupBy { g =>
+            (g.permissions, g.expirationDate)
+          }
+          .map(_._2.head)
+          .toList
       minimize(tsort(distinct), perms.toList)
     }
   }

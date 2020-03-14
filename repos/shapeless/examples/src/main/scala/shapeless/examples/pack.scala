@@ -68,10 +68,11 @@ object PackExamples extends App {
     }
 
     object IsPCons {
-      type Aux[F[_], L <: HList, H0, T0 <: HList] = IsPCons[F, L] {
-        type H = H0;
-        type T = T0
-      }
+      type Aux[F[_], L <: HList, H0, T0 <: HList] =
+        IsPCons[F, L] {
+          type H = H0;
+          type T = T0
+        }
       implicit def hlistIsPCons[F[_], H0, T0 <: HList]
           : Aux[F, H0 :: T0, H0, T0] =
         new IsPCons[F, H0 :: T0] {
@@ -102,15 +103,18 @@ object PackExamples extends App {
   val b = new B {}
   val c = new C {}
 
-  implicit val sa = new Show[A] {
-    def show = "A"
-  }
-  implicit val sb = new Show[B] {
-    def show = "B"
-  }
-  implicit val sc = new Show[C] {
-    def show = "C"
-  }
+  implicit val sa =
+    new Show[A] {
+      def show = "A"
+    }
+  implicit val sb =
+    new Show[B] {
+      def show = "B"
+    }
+  implicit val sc =
+    new Show[C] {
+      def show = "C"
+    }
 
   def use3[T, U, V](t: T, u: U, v: V)(
       implicit pack: Pack[Show, T :: U :: V :: HNil]) = {

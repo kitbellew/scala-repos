@@ -20,10 +20,11 @@ import java.io.File
 
 object Framework {
   // as partest is not driven by test classes discovered by sbt, need to add this marker fingerprint to definedTests
-  val fingerprint = new AnnotatedFingerprint {
-    def isModule = true;
-    def annotationName = "partest"
-  }
+  val fingerprint =
+    new AnnotatedFingerprint {
+      def isModule = true;
+      def annotationName = "partest"
+    }
 
   // TODO how can we export `fingerprint` so that a user can just add this to their build.sbt
   // definedTests in Test += new sbt.TestDefinition("partest", fingerprint, true, Array())
@@ -93,16 +94,18 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
       eventHandler: EventHandler,
       loggers: Array[Logger]): Array[Task] = {
     val forkedCp = scala.util.Properties.javaClassPath
-    val classLoader = new URLClassLoader(
-      forkedCp.split(java.io.File.pathSeparator).map(new File(_).toURI.toURL))
+    val classLoader =
+      new URLClassLoader(
+        forkedCp.split(java.io.File.pathSeparator).map(new File(_).toURI.toURL))
 
     if (Runtime.getRuntime().maxMemory() / (1024 * 1024) < 800)
       loggers foreach (_.warn(s"""Low heap size detected (~ ${Runtime
         .getRuntime()
         .maxMemory() / (1024 * 1024)}M). Please add the following to your build.sbt: javaOptions in Test += "-Xmx1G""""))
 
-    val maybeOptions =
-      ScalaJSPartestOptions(args, str => loggers.foreach(_.error(str)))
+    val maybeOptions = ScalaJSPartestOptions(
+      args,
+      str => loggers.foreach(_.error(str)))
 
     maybeOptions foreach { options =>
       val runner = SBTRunner(
@@ -149,8 +152,8 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
       scalacArgs: Array[String],
       options: ScalaJSPartestOptions,
       scalaVersion: String): SBTRunner = {
-    val runnerClass =
-      Class.forName("scala.tools.partest.scalajs.ScalaJSSBTRunner")
+    val runnerClass = Class.forName(
+      "scala.tools.partest.scalajs.ScalaJSSBTRunner")
     runnerClass
       .getConstructors()(0)
       .newInstance(

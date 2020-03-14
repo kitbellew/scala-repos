@@ -74,22 +74,21 @@ private[spark] class AppClient(
     // A thread pool for registering with masters. Because registering with a master is a blocking
     // action, this thread pool must be able to create "masterRpcAddresses.size" threads at the same
     // time so that we can register with all masters.
-    private val registerMasterThreadPool =
-      ThreadUtils.newDaemonCachedThreadPool(
+    private val registerMasterThreadPool = ThreadUtils
+      .newDaemonCachedThreadPool(
         "appclient-register-master-threadpool",
         masterRpcAddresses.length // Make sure we can register with all masters at the same time
       )
 
     // A scheduled executor for scheduling the registration actions
-    private val registrationRetryThread =
-      ThreadUtils.newDaemonSingleThreadScheduledExecutor(
+    private val registrationRetryThread = ThreadUtils
+      .newDaemonSingleThreadScheduledExecutor(
         "appclient-registration-retry-thread")
 
     // A thread pool to perform receive then reply actions in a thread so as not to block the
     // event loop.
-    private val askAndReplyThreadPool =
-      ThreadUtils.newDaemonCachedThreadPool(
-        "appclient-receive-and-reply-threadpool")
+    private val askAndReplyThreadPool = ThreadUtils.newDaemonCachedThreadPool(
+      "appclient-receive-and-reply-threadpool")
 
     override def onStart(): Unit = {
       try {
@@ -116,8 +115,8 @@ private[spark] class AppClient(
                 }
                 logInfo(
                   "Connecting to master " + masterAddress.toSparkURL + "...")
-                val masterRef =
-                  rpcEnv.setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+                val masterRef = rpcEnv
+                  .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
                 masterRef.send(RegisterApplication(appDescription, self))
               } catch {
                 case ie: InterruptedException => // Cancelled

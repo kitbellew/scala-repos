@@ -80,16 +80,18 @@ class MacrosUnitTests extends WordSpec with Matchers {
     t
   }
 
-  private val dummy = new TupleConverter[Nothing] {
-    def apply(te: TupleEntry) = sys.error("dummy")
-    override val arity = 1
-  }
+  private val dummy =
+    new TupleConverter[Nothing] {
+      def apply(te: TupleEntry) = sys.error("dummy")
+      override val arity = 1
+    }
 
-  private val dummy2 = new TypeDescriptor[Nothing] {
-    def setter = sys.error("dummy")
-    def converter = sys.error("dummy")
-    def fields = sys.error("dummy")
-  }
+  private val dummy2 =
+    new TypeDescriptor[Nothing] {
+      def setter = sys.error("dummy")
+      def converter = sys.error("dummy")
+      def fields = sys.error("dummy")
+    }
 
   def isMacroTupleConverterAvailable[T](implicit
       proof: TupleConverter[T] = dummy.asInstanceOf[TupleConverter[T]]) =
@@ -304,10 +306,10 @@ class MacrosUnitTests extends WordSpec with Matchers {
       shouldRoundTrip(SampleClassD(Some(c)))
       shouldRoundTrip(SampleClassD(None))
 
-      implicit val tupSetterG =
-        Macros.caseClassTupleSetterWithUnknown[SampleClassG]
-      implicit val tupConverterG =
-        Macros.caseClassTupleConverterWithUnknown[SampleClassG]
+      implicit val tupSetterG = Macros
+        .caseClassTupleSetterWithUnknown[SampleClassG]
+      implicit val tupConverterG = Macros
+        .caseClassTupleConverterWithUnknown[SampleClassG]
       shouldRoundTrip(SampleClassG(new java.util.Date(123412L)))
     }
 

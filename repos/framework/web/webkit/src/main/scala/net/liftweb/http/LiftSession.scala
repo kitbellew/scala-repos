@@ -194,10 +194,11 @@ object LiftSession {
         snippetClassMap.putIfAbsent(
           name, {
             // Name might contain some relative packages, so split them out and put them in the proper argument of findClass
-            val (packageSuffix, terminal) = name.lastIndexOf('.') match {
-              case -1 => ("", name)
-              case i  => ("." + name.substring(0, i), name.substring(i + 1))
-            }
+            val (packageSuffix, terminal) =
+              name.lastIndexOf('.') match {
+                case -1 => ("", name)
+                case i  => ("." + name.substring(0, i), name.substring(i + 1))
+              }
             findClass(
               terminal,
               LiftRules.buildPackage("snippet").map(_ + packageSuffix) :::
@@ -235,15 +236,16 @@ private[http] object RenderVersion {
           case f: S.PageStateHolder => f
         }
       } yield {
-        val tret = ver.doWith(v) {
-          val ret = func.runInContext(f)
+        val tret =
+          ver.doWith(v) {
+            val ret = func.runInContext(f)
 
-          if (S.functionMap.size > 0) {
-            sess.updateFunctionMap(S.functionMap, this.get, millis)
-            S.clearFunctionMap
+            if (S.functionMap.size > 0) {
+              sess.updateFunctionMap(S.functionMap, this.get, millis)
+              S.clearFunctionMap
+            }
+            ret
           }
-          ret
-        }
         tret
       }
 
@@ -275,8 +277,7 @@ trait HowStateful {
     * to be stateless and not generate a session, but if a valid
     * session is presented, they have the scope of that session/User
     */
-  def doAsStateless[A](f: => A): A =
-    howStateful.doWith(false)(f)
+  def doAsStateless[A](f: => A): A = howStateful.doWith(false)(f)
 }
 
 /**
@@ -430,8 +431,8 @@ class LiftSession(
     * See LiftServlet.handleAjax for how we determine we no longer need
     * to hold a reference to an AJAX request.
     */
-  private var ajaxRequests =
-    scala.collection.mutable.Map[String, List[AjaxRequestInfo]]()
+  private var ajaxRequests = scala.collection.mutable
+    .Map[String, List[AjaxRequestInfo]]()
 
   private[http] def withAjaxRequests[T](
       fn: (
@@ -792,10 +793,9 @@ class LiftSession(
         for {
           (version, requestInfos) <- currentAjaxRequests
         } {
-          val remaining =
-            requestInfos.filter { info =>
-              (now - info.lastSeen) <= LiftRules.unusedFunctionsLifeTime
-            }
+          val remaining = requestInfos.filter { info =>
+            (now - info.lastSeen) <= LiftRules.unusedFunctionsLifeTime
+          }
 
           if (remaining.length > 0)
             currentAjaxRequests += (version -> remaining)
@@ -842,15 +842,14 @@ class LiftSession(
         // The page or cometactor that the functions are associated with
         val rv: String = RenderVersion.get
 
-        val old =
-          postPageFunctions.getOrElse(
+        val old = postPageFunctions.getOrElse(
+          rv,
+          PostPageFunctions(
             rv,
-            PostPageFunctions(
-              rv,
-              0,
-              S.currentCometActor.isDefined,
-              Helpers.millis,
-              Nil))
+            0,
+            S.currentCometActor.isDefined,
+            Helpers.millis,
+            Nil))
 
         val updated = PostPageFunctions(
           old.renderVersion,
@@ -1334,10 +1333,11 @@ class LiftSession(
       field: List[String]): NodeSeq => NodeSeq = {
     def retFunc(ns: NodeSeq): NodeSeq = {
       val cur = currentSourceContext.get
-      val value = field match {
-        case Nil => cur
-        case x   => findField(x, cur)
-      }
+      val value =
+        field match {
+          case Nil => cur
+          case x   => findField(x, cur)
+        }
 
       val func: NodeSeq => NodeSeq =
         value match {
@@ -1407,13 +1407,14 @@ class LiftSession(
       path: ParsePath,
       session: Req): Box[NodeSeq] = {
     val tpath = path.partPath
-    val splits = tpath.toList.filter { a =>
-      !a.startsWith("_") && !a.startsWith(".") && a.toLowerCase.indexOf(
-        "-hidden") == -1
-    } match {
-      case s @ _ if !s.isEmpty => s
-      case _                   => List("index")
-    }
+    val splits =
+      tpath.toList.filter { a =>
+        !a.startsWith("_") && !a.startsWith(".") && a.toLowerCase.indexOf(
+          "-hidden") == -1
+      } match {
+        case s @ _ if !s.isEmpty => s
+        case _                   => List("index")
+      }
     Templates.findTopLevelTemplate(
       splits,
       S.locale,
@@ -1422,13 +1423,14 @@ class LiftSession(
   }
 
   private[liftweb] def findTemplate(name: String): Box[NodeSeq] = {
-    val splits = (if (name.startsWith("/"))
-                    name
-                  else
-                    "/" + name).split("/").toList.drop(1) match {
-      case Nil => List("index")
-      case s   => s
-    }
+    val splits =
+      (if (name.startsWith("/"))
+         name
+       else
+         "/" + name).split("/").toList.drop(1) match {
+        case Nil => List("index")
+        case s   => s
+      }
 
     Templates("templates-hidden" :: splits, S.locale) match {
       case Full(x)                     => Full(x)
@@ -1671,8 +1673,8 @@ class LiftSession(
     val currentMap = snippetMap.is
     val curLoc = S.location
 
-    val requestVarFunc: Function1[Function0[Any], Any] =
-      RequestVarHandler.generateSnapshotRestorer()
+    val requestVarFunc: Function1[Function0[Any], Any] = RequestVarHandler
+      .generateSnapshotRestorer()
     new S.ProxyFuncHolder(f) {
       override def apply(in: List[String]): Any =
         requestVarFunc(() =>
@@ -1950,19 +1952,21 @@ class LiftSession(
                             .invokeMethod(inst.getClass, inst, method)) match {
                           case CheckNodeSeq(md) => md
                           case it =>
-                            val intersection = if (Props.devMode) {
-                              val methodNames = inst.getClass
-                                .getMethods()
-                                .map(_.getName)
-                                .toList
-                                .distinct
-                              val methodAlts = List(
-                                method,
-                                Helpers.camelify(method),
-                                Helpers.camelifyMethod(method))
-                              methodNames intersect methodAlts
-                            } else
-                              Nil
+                            val intersection =
+                              if (Props.devMode) {
+                                val methodNames =
+                                  inst.getClass
+                                    .getMethods()
+                                    .map(_.getName)
+                                    .toList
+                                    .distinct
+                                val methodAlts = List(
+                                  method,
+                                  Helpers.camelify(method),
+                                  Helpers.camelifyMethod(method))
+                                methodNames intersect methodAlts
+                              } else
+                                Nil
 
                             reportSnippetError(
                               page,
@@ -2200,9 +2204,10 @@ class LiftSession(
 
       val renderVersion = RenderVersion.get
 
-      val theNode = <lift_deferred:node id={
-        nodeId
-      }/>
+      val theNode =
+        <lift_deferred:node id={
+          nodeId
+        }/>
 
       // take a snapshot of the hashmap used to communicate between threads
       val hash = deferredSnippets.is
@@ -2404,81 +2409,83 @@ class LiftSession(
       shutdownFunc: Box[LiftActor => Unit] = Empty,
       dataFilter: Any => Any = a => a): LiftActor = {
     testStatefulFeature {
-      val ca = new CometActor {
+      val ca =
+        new CometActor {
 
-        /**
-          * It's the main method to override, to define what is rendered by the CometActor
-          *
-          * There are implicit conversions for a bunch of stuff to
-          * RenderOut (including NodeSeq).  Thus, if you don't declare the return
-          * turn to be something other than RenderOut and return something that's
-          * coercible into RenderOut, the compiler "does the right thing"(tm) for you.
-          * <br/>
-          * There are implicit conversions for NodeSeq, so you can return a pile of
-          * XML right here.  There's an implicit conversion for NodeSeq => NodeSeq,
-          * so you can return a function (e.g., a CssBindFunc) that will convert
-          * the defaultHtml to the correct output.  There's an implicit conversion
-          * from JsCmd, so you can return a pile of JavaScript that'll be shipped
-          * to the browser.<br/>
-          * Note that the render method will be called each time a new browser tab
-          * is opened to the comet component or the comet component is otherwise
-          * accessed during a full page load (this is true if a partialUpdate
-          * has occurred.)  You may want to look at the fixedRender method which is
-          * only called once and sets up a stable rendering state.
-          */
-        def render: RenderOut = NodeSeq.Empty
+          /**
+            * It's the main method to override, to define what is rendered by the CometActor
+            *
+            * There are implicit conversions for a bunch of stuff to
+            * RenderOut (including NodeSeq).  Thus, if you don't declare the return
+            * turn to be something other than RenderOut and return something that's
+            * coercible into RenderOut, the compiler "does the right thing"(tm) for you.
+            * <br/>
+            * There are implicit conversions for NodeSeq, so you can return a pile of
+            * XML right here.  There's an implicit conversion for NodeSeq => NodeSeq,
+            * so you can return a function (e.g., a CssBindFunc) that will convert
+            * the defaultHtml to the correct output.  There's an implicit conversion
+            * from JsCmd, so you can return a pile of JavaScript that'll be shipped
+            * to the browser.<br/>
+            * Note that the render method will be called each time a new browser tab
+            * is opened to the comet component or the comet component is otherwise
+            * accessed during a full page load (this is true if a partialUpdate
+            * has occurred.)  You may want to look at the fixedRender method which is
+            * only called once and sets up a stable rendering state.
+            */
+          def render: RenderOut = NodeSeq.Empty
 
-        override def localSetup(): Unit = {
-          super.localSetup()
-          Helpers.tryo(setupFunc.foreach(_(this)))
-        }
+          override def localSetup(): Unit = {
+            super.localSetup()
+            Helpers.tryo(setupFunc.foreach(_(this)))
+          }
 
-        override def localShutdown(): Unit = {
-          super.localShutdown()
-          Helpers.tryo(shutdownFunc.foreach(_(this)))
-        }
+          override def localShutdown(): Unit = {
+            super.localShutdown()
+            Helpers.tryo(shutdownFunc.foreach(_(this)))
+          }
 
-        override def lifespan =
-          Full(LiftRules.clientActorLifespan.vend.apply(this))
+          override def lifespan =
+            Full(LiftRules.clientActorLifespan.vend.apply(this))
 
-        override def hasOuter = false
+          override def hasOuter = false
 
-        override def parentTag = <div style="display: none"/>
+          override def parentTag = <div style="display: none"/>
 
-        override def lowPriority: PartialFunction[Any, Unit] =
-          new PartialFunction[Any, Unit] {
-            def isDefinedAt(x: Any) = true
-            def apply(x: Any): Unit = {
-              dataFilter(x) match {
-                case jsCmd: JsCmd =>
-                  partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsCmd, false)))
-                case jsExp: JsExp =>
-                  partialUpdate(
-                    JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
-                case jv: JsonAST.JValue => {
-                  val s: String = json.prettyRender(jv)
-                  partialUpdate(
-                    JsCmds.JsSchedule(
-                      JsCmds.JsTry(JsRaw(toCall + "(" + s + ")").cmd, false)))
+          override def lowPriority: PartialFunction[Any, Unit] =
+            new PartialFunction[Any, Unit] {
+              def isDefinedAt(x: Any) = true
+              def apply(x: Any): Unit = {
+                dataFilter(x) match {
+                  case jsCmd: JsCmd =>
+                    partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsCmd, false)))
+                  case jsExp: JsExp =>
+                    partialUpdate(
+                      JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
+                  case jv: JsonAST.JValue => {
+                    val s: String = json.prettyRender(jv)
+                    partialUpdate(
+                      JsCmds.JsSchedule(
+                        JsCmds.JsTry(JsRaw(toCall + "(" + s + ")").cmd, false)))
+                  }
+                  case x: AnyRef => {
+                    import json._
+                    implicit val formats = Serialization.formats(NoTypeHints)
+
+                    val ser: Box[String] = Helpers.tryo(Serialization.write(x))
+
+                    ser.foreach(s =>
+                      partialUpdate(
+                        JsCmds.JsSchedule(JsCmds
+                          .JsTry(JsRaw(toCall + "(" + s + ")").cmd, false))))
+
+                  }
+
+                  case _ => // this will never happen because the message is boxed
+
                 }
-                case x: AnyRef => {
-                  import json._
-                  implicit val formats = Serialization.formats(NoTypeHints)
-
-                  val ser: Box[String] = Helpers.tryo(Serialization.write(x))
-
-                  ser.foreach(s =>
-                    partialUpdate(JsCmds.JsSchedule(
-                      JsCmds.JsTry(JsRaw(toCall + "(" + s + ")").cmd, false))))
-
-                }
-
-                case _ => // this will never happen because the message is boxed
-
               }
             }
-          }
-      }
+        }
 
       nasyncComponents.put(CometId("Server Push Actor", ca.name), ca)
       nasyncById.put(ca.uniqueId, ca)
@@ -2705,8 +2712,12 @@ class LiftSession(
     val castClass = cometManifest.runtimeClass.asInstanceOf[Class[T]]
     val typeName = castClass.getSimpleName
 
-    val creationInfo =
-      CometCreationInfo(typeName, cometName, cometHtml, cometAttributes, this)
+    val creationInfo = CometCreationInfo(
+      typeName,
+      cometName,
+      cometHtml,
+      cometAttributes,
+      this)
 
     findOrBuildComet(
       creationInfo,
@@ -2726,8 +2737,12 @@ class LiftSession(
       cometHtml: NodeSeq = NodeSeq.Empty,
       cometAttributes: Map[String, String] = Map.empty
   ): Box[LiftCometActor] = {
-    val creationInfo =
-      CometCreationInfo(cometType, cometName, cometHtml, cometAttributes, this)
+    val creationInfo = CometCreationInfo(
+      cometType,
+      cometName,
+      cometHtml,
+      cometAttributes,
+      this)
 
     findOrBuildComet(
       creationInfo,
@@ -2778,10 +2793,9 @@ class LiftSession(
       newCometFn: (CometCreationInfo) => Box[T])(
       creationInfo: CometCreationInfo): Box[T] = {
     newCometFn(creationInfo).map { comet =>
-      val initialRequest =
-        S.request
-          .filter(_ => comet.sendInitialReq_?)
-          .map(_.snapshot)
+      val initialRequest = S.request
+        .filter(_ => comet.sendInitialReq_?)
+        .map(_.snapshot)
       comet ! PerformSetupComet2(initialRequest)
       comet.setCometActorLocale(S.locale)
 
@@ -2804,11 +2818,10 @@ class LiftSession(
   private def buildCometByCreationInfo(
       creationInfo: CometCreationInfo): Box[LiftCometActor] = {
     LiftRules.cometCreationFactory.vend.apply(creationInfo) or {
-      val cometType =
-        findType[LiftCometActor](
-          creationInfo.cometType,
-          LiftRules.buildPackage("comet") ::: ("lift.app.comet" :: Nil)
-        )
+      val cometType = findType[LiftCometActor](
+        creationInfo.cometType,
+        LiftRules.buildPackage("comet") ::: ("lift.app.comet" :: Nil)
+      )
 
       cometType.flatMap { cometClass =>
         buildCometByClass(cometClass)(creationInfo)
@@ -2935,57 +2948,60 @@ class LiftSession(
   def buildRoundtrip(info: Seq[RoundTripInfo]): JsExp = {
     testStatefulFeature {
 
-      val ca = new CometActor {
+      val ca =
+        new CometActor {
 
-        /**
-          * It's the main method to override, to define what is rendered by the CometActor
-          *
-          * There are implicit conversions for a bunch of stuff to
-          * RenderOut (including NodeSeq).  Thus, if you don't declare the return
-          * turn to be something other than RenderOut and return something that's
-          * coercible into RenderOut, the compiler "does the right thing"(tm) for you.
-          * <br/>
-          * There are implicit conversions for NodeSeq, so you can return a pile of
-          * XML right here.  There's an implicit conversion for NodeSeq => NodeSeq,
-          * so you can return a function (e.g., a CssBindFunc) that will convert
-          * the defaultHtml to the correct output.  There's an implicit conversion
-          * from JsCmd, so you can return a pile of JavaScript that'll be shipped
-          * to the browser.<br/>
-          * Note that the render method will be called each time a new browser tab
-          * is opened to the comet component or the comet component is otherwise
-          * accessed during a full page load (this is true if a partialUpdate
-          * has occurred.)  You may want to look at the fixedRender method which is
-          * only called once and sets up a stable rendering state.
-          */
-        def render: RenderOut = NodeSeq.Empty
+          /**
+            * It's the main method to override, to define what is rendered by the CometActor
+            *
+            * There are implicit conversions for a bunch of stuff to
+            * RenderOut (including NodeSeq).  Thus, if you don't declare the return
+            * turn to be something other than RenderOut and return something that's
+            * coercible into RenderOut, the compiler "does the right thing"(tm) for you.
+            * <br/>
+            * There are implicit conversions for NodeSeq, so you can return a pile of
+            * XML right here.  There's an implicit conversion for NodeSeq => NodeSeq,
+            * so you can return a function (e.g., a CssBindFunc) that will convert
+            * the defaultHtml to the correct output.  There's an implicit conversion
+            * from JsCmd, so you can return a pile of JavaScript that'll be shipped
+            * to the browser.<br/>
+            * Note that the render method will be called each time a new browser tab
+            * is opened to the comet component or the comet component is otherwise
+            * accessed during a full page load (this is true if a partialUpdate
+            * has occurred.)  You may want to look at the fixedRender method which is
+            * only called once and sets up a stable rendering state.
+            */
+          def render: RenderOut = NodeSeq.Empty
 
-        override def lifespan =
-          Full(LiftRules.clientActorLifespan.vend.apply(this))
+          override def lifespan =
+            Full(LiftRules.clientActorLifespan.vend.apply(this))
 
-        override def hasOuter = false
+          override def hasOuter = false
 
-        override def parentTag = <div style="display: none"/>
+          override def parentTag = <div style="display: none"/>
 
-        override def lowPriority: PartialFunction[Any, Unit] = {
-          case jsCmd: JsCmd =>
-            partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsCmd, false)))
-          case jsExp: JsExp =>
-            partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
+          override def lowPriority: PartialFunction[Any, Unit] = {
+            case jsCmd: JsCmd =>
+              partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsCmd, false)))
+            case jsExp: JsExp =>
+              partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
 
-          case ItemMsg(guid, value) =>
-            partialUpdate(JsCmds.JsSchedule(JsRaw(
-              s"lift.sendEvent(${guid.encJs}, {'success': ${compactRender(value)}} )").cmd))
-          case DoneMsg(guid) =>
-            partialUpdate(
-              JsCmds.JsSchedule(
-                JsRaw(s"lift.sendEvent(${guid.encJs}, {'done': true} )").cmd))
+            case ItemMsg(guid, value) =>
+              partialUpdate(
+                JsCmds.JsSchedule(JsRaw(
+                  s"lift.sendEvent(${guid.encJs}, {'success': ${compactRender(
+                    value)}} )").cmd))
+            case DoneMsg(guid) =>
+              partialUpdate(
+                JsCmds.JsSchedule(
+                  JsRaw(s"lift.sendEvent(${guid.encJs}, {'done': true} )").cmd))
 
-          case FailMsg(guid, msg) =>
-            partialUpdate(JsCmds.JsSchedule(JsRaw(
-              s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
-          case _ =>
+            case FailMsg(guid, msg) =>
+              partialUpdate(JsCmds.JsSchedule(JsRaw(
+                s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
+            case _ =>
+          }
         }
-      }
 
       nasyncComponents.put(
         CometId(ca.theType openOr "Roundtrip Comet Actor", ca.name),
@@ -3275,13 +3291,14 @@ private object SnippetNode {
             elm)
         } yield {
           val (par, nonLift) = liftAttrsAndParallel(elm.attributes)
-          val newElm = new Elem(
-            elm.prefix,
-            elm.label,
-            nonLift,
-            elm.scope,
-            elm.minimizeEmpty,
-            elm.child: _*)
+          val newElm =
+            new Elem(
+              elm.prefix,
+              elm.label,
+              nonLift,
+              elm.scope,
+              elm.minimizeEmpty,
+              elm.child: _*)
           (
             newElm,
             newElm,
@@ -3318,12 +3335,10 @@ sealed trait RoundTripInfo {
   */
 object RoundTripInfo {
   implicit def streamBuilder[T](in: (String, T => Stream[Any]))(
-      implicit m: Manifest[T]): RoundTripInfo =
-    StreamRoundTrip(in._1, in._2)(m)
+      implicit m: Manifest[T]): RoundTripInfo = StreamRoundTrip(in._1, in._2)(m)
 
   implicit def simpleBuilder[T](in: (String, T => Any))(
-      implicit m: Manifest[T]): RoundTripInfo =
-    SimpleRoundTrip(in._1, in._2)(m)
+      implicit m: Manifest[T]): RoundTripInfo = SimpleRoundTrip(in._1, in._2)(m)
 
   implicit def handledBuilder[T](
       in: (String, (T, RoundTripHandlerFunc) => Unit))(

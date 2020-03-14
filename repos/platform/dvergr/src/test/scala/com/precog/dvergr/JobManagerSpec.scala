@@ -77,16 +77,17 @@ class WebJobManagerSpec extends TestJobService { self =>
     implicit val M: Monad[Future] with Comonad[Future] =
       new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
 
-    val jobs = (new WebJobManager {
-      val executionContext = self.executionContext
-      val M = self.M
-      protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
-        f(client.path("/jobs/v1/"))
-    }).withM[Future](
-      ResponseAsFuture(M),
-      FutureAsResponse(M),
-      Monad[Response],
-      M)
+    val jobs =
+      (new WebJobManager {
+        val executionContext = self.executionContext
+        val M = self.M
+        protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
+          f(client.path("/jobs/v1/"))
+      }).withM[Future](
+        ResponseAsFuture(M),
+        FutureAsResponse(M),
+        Monad[Response],
+        M)
   })
 }
 
@@ -103,10 +104,11 @@ class MongoJobManagerSpec extends Specification with RealMongoSpecSupport {
     val validAPIKey = "Anything should work!"
     implicit lazy val M: Monad[Future] with Comonad[Future] =
       new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
-    lazy val jobs = new MongoJobManager(
-      mongo.database("jobs"),
-      MongoJobManagerSettings.default,
-      new InMemoryFileStorage[Future])
+    lazy val jobs =
+      new MongoJobManager(
+        mongo.database("jobs"),
+        MongoJobManagerSettings.default,
+        new InMemoryFileStorage[Future])
   })
 
   step {
@@ -160,9 +162,10 @@ trait JobManagerSpec[M[+_]] extends Specification {
           JField("b", JNum(1.675))
         ))
 
-      val job = jobs
-        .createJob(validAPIKey, "name", "job type", Some(data), None)
-        .copoint
+      val job =
+        jobs
+          .createJob(validAPIKey, "name", "job type", Some(data), None)
+          .copoint
       val job2 = jobs.findJob(job.id).copoint
       job must beLike {
         case Job(_, _, "name", "job type", Some(`data`), NotStarted) => ok
@@ -177,9 +180,10 @@ trait JobManagerSpec[M[+_]] extends Specification {
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
       val jobId = job.id
       val status1 = jobs.updateStatus(job.id, None, "1", 0.0, "%", None).copoint
-      val status2 = jobs
-        .updateStatus(job.id, None, "2", 5.0, "%", Some(JString("...")))
-        .copoint
+      val status2 =
+        jobs
+          .updateStatus(job.id, None, "2", 5.0, "%", Some(JString("...")))
+          .copoint
       val (s0, s5) = (BigDecimal(0), BigDecimal(5))
       status1 must beLike {
         case Right(Status(`jobId`, _, "1", `s0`, "%", None)) => ok
@@ -194,11 +198,12 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val job =
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
       val jobId = job.id
-      val status1 = jobs
-        .updateStatus(job.id, None, "1", 0.0, "%", None)
-        .copoint
-        .right
-        .toOption
+      val status1 =
+        jobs
+          .updateStatus(job.id, None, "1", 0.0, "%", None)
+          .copoint
+          .right
+          .toOption
       val status1x = jobs.getStatus(job.id).copoint
 
       status1 must_== status1x
@@ -207,11 +212,18 @@ trait JobManagerSpec[M[+_]] extends Specification {
 
       status1 must beLike {
         case Some(Status(`jobId`, id, "1", `s0`, "%", None)) =>
-          val status2 = jobs
-            .updateStatus(job.id, Some(id), "2", 5.0, "%", Some(JString("...")))
-            .copoint
-            .right
-            .toOption
+          val status2 =
+            jobs
+              .updateStatus(
+                job.id,
+                Some(id),
+                "2",
+                5.0,
+                "%",
+                Some(JString("...")))
+              .copoint
+              .right
+              .toOption
           val status2x = jobs.getStatus(job.id).copoint
           status2 must_== status2x
           status2 must beLike {
@@ -223,15 +235,17 @@ trait JobManagerSpec[M[+_]] extends Specification {
     }
 
     "refuse to update a job's status if given incorrect previous status" in {
-      val jobId = jobs
-        .createJob(validAPIKey, "b", "c", None, Some(new DateTime))
-        .copoint
-        .id
-      val status1 = jobs
-        .updateStatus(jobId, None, "1", 0.0, "%", None)
-        .copoint
-        .right
-        .toOption
+      val jobId =
+        jobs
+          .createJob(validAPIKey, "b", "c", None, Some(new DateTime))
+          .copoint
+          .id
+      val status1 =
+        jobs
+          .updateStatus(jobId, None, "1", 0.0, "%", None)
+          .copoint
+          .right
+          .toOption
       val status1x = jobs.getStatus(jobId).copoint
 
       status1 must_== status1x
@@ -239,15 +253,16 @@ trait JobManagerSpec[M[+_]] extends Specification {
 
       status1 must beLike {
         case Some(Status(`jobId`, id, "1", `s0`, "%", None)) =>
-          val status2 = jobs
-            .updateStatus(
-              jobId,
-              Some(id + 1),
-              "2",
-              5.0,
-              "%",
-              Some(JString("...")))
-            .copoint
+          val status2 =
+            jobs
+              .updateStatus(
+                jobId,
+                Some(id + 1),
+                "2",
+                5.0,
+                "%",
+                Some(JString("...")))
+              .copoint
           val status2x = jobs.getStatus(jobId).copoint
           status2x must_== status1
           status2 must beLike {
@@ -281,14 +296,16 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val job2 =
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
       val m1 = jobs.addMessage(job1.id, "abc", JString("Hello, world!")).copoint
-      val m2 = jobs
-        .addMessage(job1.id, "group therapy", JString("My name is: Bob"))
-        .copoint
+      val m2 =
+        jobs
+          .addMessage(job1.id, "group therapy", JString("My name is: Bob"))
+          .copoint
       val m3 =
         jobs.addMessage(job1.id, "group therapy", JString("Hi Bob!")).copoint
-      val m4 = jobs
-        .addMessage(job2.id, "cba", JString("Goodbye, cruel world!"))
-        .copoint
+      val m4 =
+        jobs
+          .addMessage(job2.id, "cba", JString("Goodbye, cruel world!"))
+          .copoint
 
       val abc = jobs.listMessages(job1.id, "abc", None).copoint.toList
       val therapy =
@@ -324,9 +341,10 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val m4 =
         jobs.addMessage(job.id, "chat", say("Bob", "Not so great.")).copoint
       val m5 = jobs.addMessage(job.id, "chat", say("Tom", "Why?")).copoint
-      val m6 = jobs
-        .addMessage(job.id, "chat", say("Bob", "Because I'm writing tests."))
-        .copoint
+      val m6 =
+        jobs
+          .addMessage(job.id, "chat", say("Bob", "Because I'm writing tests."))
+          .copoint
       val m7 =
         jobs.addMessage(job.id, "chat", say("Tom", "That sucks.")).copoint
 
@@ -419,10 +437,11 @@ trait JobManagerSpec[M[+_]] extends Specification {
           ok
       }
 
-      val job2Id = jobs
-        .createJob(validAPIKey, "b", "c", None, Some(new DateTime))
-        .copoint
-        .id
+      val job2Id =
+        jobs
+          .createJob(validAPIKey, "b", "c", None, Some(new DateTime))
+          .copoint
+          .id
       jobs.cancel(job2Id, "Muwahaha").copoint must beLike {
         case Right(job2) =>
           val job2State = job2.state
@@ -484,8 +503,9 @@ trait JobManagerSpec[M[+_]] extends Specification {
 
       val job = jobs.createJob(validAPIKey, "b", "c", None, None).copoint
       jobs.start(job.id).copoint
-      val result =
-        JobResult(List(MimeTypes.text / plain), "Hello, world!".getBytes())
+      val result = JobResult(
+        List(MimeTypes.text / plain),
+        "Hello, world!".getBytes())
       jobs.finish(job.id).copoint must beLike {
         case Right(Job(_, _, _, _, _, Finished(_, _))) => ok
       }

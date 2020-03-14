@@ -74,8 +74,7 @@ trait DecorateAsJava {
     * @return An object with an `asJava` method that returns a Java `Iterator` view of the argument.
     */
   implicit def asJavaIteratorConverter[A](
-      i: Iterator[A]): AsJava[ju.Iterator[A]] =
-    new AsJava(asJavaIterator(i))
+      i: Iterator[A]): AsJava[ju.Iterator[A]] = new AsJava(asJavaIterator(i))
 
   /**
     * Adds an `asJavaEnumeration` method that implicitly converts a Scala
@@ -93,8 +92,7 @@ trait DecorateAsJava {
     *         `Enumeration` view of the argument.
     */
   implicit def asJavaEnumerationConverter[A](
-      i: Iterator[A]): AsJavaEnumeration[A] =
-    new AsJavaEnumeration(i)
+      i: Iterator[A]): AsJavaEnumeration[A] = new AsJavaEnumeration(i)
 
   /**
     * Adds an `asJava` method that implicitly converts a Scala `Iterable` to
@@ -113,8 +111,7 @@ trait DecorateAsJava {
     *         `Iterable` view of the argument.
     */
   implicit def asJavaIterableConverter[A](
-      i: Iterable[A]): AsJava[jl.Iterable[A]] =
-    new AsJava(asJavaIterable(i))
+      i: Iterable[A]): AsJava[jl.Iterable[A]] = new AsJava(asJavaIterable(i))
 
   /**
     * Adds an `asJavaCollection` method that implicitly converts a Scala
@@ -129,8 +126,7 @@ trait DecorateAsJava {
     *         `Collection` view of the argument.
     */
   implicit def asJavaCollectionConverter[A](
-      i: Iterable[A]): AsJavaCollection[A] =
-    new AsJavaCollection(i)
+      i: Iterable[A]): AsJavaCollection[A] = new AsJavaCollection(i)
 
   /**
     * Adds an `asJava` method that implicitly converts a Scala mutable `Buffer`
@@ -208,8 +204,7 @@ trait DecorateAsJava {
     *         of the argument.
     */
   implicit def mutableSetAsJavaSetConverter[A](
-      s: mutable.Set[A]): AsJava[ju.Set[A]] =
-    new AsJava(mutableSetAsJavaSet(s))
+      s: mutable.Set[A]): AsJava[ju.Set[A]] = new AsJava(mutableSetAsJavaSet(s))
 
   /**
     * Adds an `asJava` method that implicitly converts a Scala `Set` to a
@@ -267,8 +262,7 @@ trait DecorateAsJava {
     *         Java `Dictionary` view of the argument.
     */
   implicit def asJavaDictionaryConverter[A, B](
-      m: mutable.Map[A, B]): AsJavaDictionary[A, B] =
-    new AsJavaDictionary(m)
+      m: mutable.Map[A, B]): AsJavaDictionary[A, B] = new AsJavaDictionary(m)
 
   /**
     * Adds an `asJava` method that implicitly converts a Scala `Map` to

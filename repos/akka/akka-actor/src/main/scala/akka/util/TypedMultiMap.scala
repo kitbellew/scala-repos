@@ -42,10 +42,11 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (
     * Return a map that has the given value added to the mappings for the given key.
     */
   def inserted(key: T)(value: K[key.type]): TypedMultiMap[T, K] = {
-    val set = map.get(key) match {
-      case Some(s) ⇒ s
-      case None ⇒ Set.empty[Any]
-    }
+    val set =
+      map.get(key) match {
+        case Some(s) ⇒ s
+        case None ⇒ Set.empty[Any]
+      }
     new TypedMultiMap[T, K](map.updated(key, set + value))
   }
 

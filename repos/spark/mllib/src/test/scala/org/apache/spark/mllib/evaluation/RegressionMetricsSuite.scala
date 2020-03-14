@@ -51,8 +51,8 @@ class RegressionMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
         r2
         [1] 0.89968225
      */
-    val preds =
-      List(72.08, 91.88, 65.48, 52.28, 62.18, 81.98, 58.88, 78.68, 55.58)
+    val preds = List(72.08, 91.88, 65.48, 52.28, 62.18, 81.98, 58.88, 78.68,
+      55.58)
     val predictionAndObservations = sc.parallelize(preds.zip(obs), 2)
     val metrics = new RegressionMetrics(predictionAndObservations)
     assert(
@@ -97,8 +97,8 @@ class RegressionMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
         r2
         [1] 0.99185395
      */
-    val preds =
-      List(72.12, 99.17, 63.11, 45.08, 58.6, 85.65, 54.09, 81.14, 49.58)
+    val preds = List(72.12, 99.17, 63.11, 45.08, 58.6, 85.65, 54.09, 81.14,
+      49.58)
     val predictionAndObservations = sc.parallelize(preds.zip(obs), 2)
     val metrics = new RegressionMetrics(predictionAndObservations, true)
     assert(

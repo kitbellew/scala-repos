@@ -283,8 +283,9 @@ private[http] object RouteImplementation
     def addExtractions(valMap: T): Directive0 =
       transformExtractionMap(
         _.addAll(valMap.asInstanceOf[Map[RequestVal[_], Any]]))
-    val reduced: ScalaPathMatcher[ValMap] =
-      matchers.map(toScala).reduce(_.~(_)(AddToMapJoin))
+    val reduced: ScalaPathMatcher[ValMap] = matchers
+      .map(toScala)
+      .reduce(_.~(_)(AddToMapJoin))
     directive(reduced.asInstanceOf[PathMatcher1[T]]).flatMap(addExtractions)
   }
 

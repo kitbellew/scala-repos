@@ -14,16 +14,14 @@ import org.junit.Assert
   */
 class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
   def testParameterName() {
-    val before =
-      """
+    val before = """
       |object Dummy {
       |  class Foo
       |  def f(f<caret>)
       |}
       """
 
-    val after =
-      """
+    val after = """
         |object Dummy {
         |  class Foo
         |  def f(foo: Foo<caret>)
@@ -38,16 +36,14 @@ class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testValueName() {
-    val before =
-      """
+    val before = """
       |object Dummy {
       |  class Foo
       |  val f<caret>
       |}
       """
 
-    val after =
-      """
+    val after = """
         |object Dummy {
         |  class Foo
         |  val foo<caret>
@@ -62,14 +58,12 @@ class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testVariableName() {
-    val before =
-      """
+    val before = """
       |class Foo
       |var f<caret>
       """
 
-    val after =
-      """
+    val after = """
         |class Foo
         |var foo<caret>
       """
@@ -82,14 +76,12 @@ class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testPartialName() {
-    val before =
-      """
+    val before = """
         |class FooBarMoo
         |def f(ba<caret>)
       """
 
-    val after =
-      """
+    val after = """
         |class FooBarMoo
         |def f(barMoo: FooBarMoo<caret>)
       """
@@ -102,13 +94,11 @@ class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testImport() {
-    val before =
-      """
+    val before = """
         |def f(rectangle<caret>)
       """
 
-    val after =
-      """
+    val after = """
         |import java.awt.Rectangle
         |
         |def f(rectangle: Rectangle<caret>)

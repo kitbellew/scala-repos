@@ -84,10 +84,11 @@ object TypeDescriptorProviderImpl {
           (go(innerTpe, offset)._1, None)
         case tpe
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
-          val flattened = flattenOnce(tpe)
-            .scanLeft((offset, Option.empty[Int])) {
-              case ((off, _), t) => go(t, off)
-            }
+          val flattened =
+            flattenOnce(tpe)
+              .scanLeft((offset, Option.empty[Int])) {
+                case ((off, _), t) => go(t, off)
+              }
 
           val nextPos = flattened.last._1
           val ev = flattened.collectFirst {
@@ -335,8 +336,8 @@ object TypeDescriptorProviderImpl {
 
     val converter = TupleConverterImpl
       .caseClassTupleConverterCommonImpl[T](c, allowUnknownTypes)
-    val setter =
-      TupleSetterImpl.caseClassTupleSetterCommonImpl[T](c, allowUnknownTypes)
+    val setter = TupleSetterImpl
+      .caseClassTupleSetterCommonImpl[T](c, allowUnknownTypes)
 
     val namingScheme =
       if (isTuple[T](c))

@@ -46,8 +46,8 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     val parameterId = request.getParameter("id")
     require(parameterId != null && parameterId.nonEmpty, "Missing id parameter")
 
-    val content =
-      listener.synchronized { // make sure all parts in this page are consistent
+    val content = listener
+      .synchronized { // make sure all parts in this page are consistent
         val sessionStat = listener.getSession(parameterId).getOrElse(null)
         require(sessionStat != null, "Invalid sessionID[" + parameterId + "]")
 
@@ -94,81 +94,82 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     val executionList = listener.getExecutionList
       .filter(_.sessionId == sessionID)
     val numStatement = executionList.size
-    val table = if (numStatement > 0) {
-      val headerRow = Seq(
-        "User",
-        "JobID",
-        "GroupID",
-        "Start Time",
-        "Finish Time",
-        "Duration",
-        "Statement",
-        "State",
-        "Detail")
-      val dataRows = executionList.sortBy(_.startTimestamp).reverse
+    val table =
+      if (numStatement > 0) {
+        val headerRow = Seq(
+          "User",
+          "JobID",
+          "GroupID",
+          "Start Time",
+          "Finish Time",
+          "Duration",
+          "Statement",
+          "State",
+          "Detail")
+        val dataRows = executionList.sortBy(_.startTimestamp).reverse
 
-      def generateDataRow(info: ExecutionInfo): Seq[Node] = {
-        val jobLink = info.jobId.map { id: String =>
-          <a href={
-            "%s/jobs/job?id=%s".format(
-              UIUtils.prependBaseUri(parent.basePath),
-              id)
-          }>
+        def generateDataRow(info: ExecutionInfo): Seq[Node] = {
+          val jobLink = info.jobId.map { id: String =>
+            <a href={
+              "%s/jobs/job?id=%s".format(
+                UIUtils.prependBaseUri(parent.basePath),
+                id)
+            }>
             [{
-            id
-          }]
+              id
+            }]
           </a>
-        }
-        val detail =
-          if (info.state == ExecutionState.FAILED)
-            info.detail
-          else
-            info.executePlan
-        <tr>
+          }
+          val detail =
+            if (info.state == ExecutionState.FAILED)
+              info.detail
+            else
+              info.executePlan
+          <tr>
           <td>{
-          info.userName
-        }</td>
+            info.userName
+          }</td>
           <td>
             {
-          jobLink
-        }
+            jobLink
+          }
           </td>
           <td>{
-          info.groupId
-        }</td>
+            info.groupId
+          }</td>
           <td>{
-          formatDate(info.startTimestamp)
-        }</td>
+            formatDate(info.startTimestamp)
+          }</td>
           <td>{
-          formatDate(info.finishTimestamp)
-        }</td>
+            formatDate(info.finishTimestamp)
+          }</td>
           <td>{
-          formatDurationOption(Some(info.totalTime))
-        }</td>
+            formatDurationOption(Some(info.totalTime))
+          }</td>
           <td>{
-          info.statement
-        }</td>
+            info.statement
+          }</td>
           <td>{
-          info.state
-        }</td>
+            info.state
+          }</td>
           {
-          errorMessageCell(detail)
-        }
+            errorMessageCell(detail)
+          }
         </tr>
-      }
+        }
 
-      Some(
-        UIUtils.listingTable(
-          headerRow,
-          generateDataRow,
-          dataRows,
-          false,
-          None,
-          Seq(null),
-          false))
-    } else {
-      None
-    }
+        Some(
+          UIUtils.listingTable(
+            headerRow,
+            generateDataRow,
+            dataRows,
+            false,
+            None,
+            Seq(null),
+            false))
+      } else {
+        None
+      }
 
     val content =
       <h5>SQL Statistics</h5> ++
@@ -190,21 +191,22 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
     } else {
       errorMessage
     })
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val details =
+      if (isMultiline) {
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         + details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
         <pre>{
-          errorMessage
-        }</pre>
+            errorMessage
+          }</pre>
       </div>
-      // scalastyle:on
-    } else {
-      ""
-    }
+        // scalastyle:on
+      } else {
+        ""
+      }
     <td>{
       errorSummary
     }{
@@ -216,34 +218,35 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
   private def generateSessionStatsTable(): Seq[Node] = {
     val sessionList = listener.getSessionList
     val numBatches = sessionList.size
-    val table = if (numBatches > 0) {
-      val dataRows =
-        sessionList
-          .sortBy(_.startTimestamp)
-          .reverse
-          .map(session =>
-            Seq(
-              session.userName,
-              session.ip,
-              session.sessionId,
-              formatDate(session.startTimestamp),
-              formatDate(session.finishTimestamp),
-              formatDurationOption(Some(session.totalTime)),
-              session.totalExecution.toString
-            ))
-          .toSeq
-      val headerRow = Seq(
-        "User",
-        "IP",
-        "Session ID",
-        "Start Time",
-        "Finish Time",
-        "Duration",
-        "Total Execute")
-      Some(listingTable(headerRow, dataRows))
-    } else {
-      None
-    }
+    val table =
+      if (numBatches > 0) {
+        val dataRows =
+          sessionList
+            .sortBy(_.startTimestamp)
+            .reverse
+            .map(session =>
+              Seq(
+                session.userName,
+                session.ip,
+                session.sessionId,
+                formatDate(session.startTimestamp),
+                formatDate(session.finishTimestamp),
+                formatDurationOption(Some(session.totalTime)),
+                session.totalExecution.toString
+              ))
+            .toSeq
+        val headerRow = Seq(
+          "User",
+          "IP",
+          "Session ID",
+          "Start Time",
+          "Finish Time",
+          "Duration",
+          "Total Execute")
+        Some(listingTable(headerRow, dataRows))
+      } else {
+        None
+      }
 
     val content =
       <h5>Session Statistics</h5> ++

@@ -54,8 +54,11 @@ class LSMRTest extends FunSuite {
     val matrix = DenseMatrix.rand(100, 100, g)
     val b = DenseVector.rand(100, g)
     val bfgsSolved = lbfgsSolve(matrix, b, 2.0)
-    val lsmrSolved =
-      LSMR.solve(matrix, b, regularization = 2.0, tolerance = 1e-9)
+    val lsmrSolved = LSMR.solve(
+      matrix,
+      b,
+      regularization = 2.0,
+      tolerance = 1e-9)
 
     assert(norm(bfgsSolved - lsmrSolved) < 1e-2, s"$bfgsSolved $lsmrSolved")
   }
@@ -64,13 +67,14 @@ class LSMRTest extends FunSuite {
       mat: DenseMatrix[Double],
       target: DenseVector[Double],
       reg: Double = 0.0) = {
-    val obj = new DiffFunction[DenseVector[Double]] {
-      override def calculate(
-          x: DenseVector[Double]): (Double, DenseVector[Double]) = {
-        val y = target - mat * x
-        ((y dot y) + (x dot x * reg), -mat.t * y * 2.0 + (x * (2 * reg)))
+    val obj =
+      new DiffFunction[DenseVector[Double]] {
+        override def calculate(
+            x: DenseVector[Double]): (Double, DenseVector[Double]) = {
+          val y = target - mat * x
+          ((y dot y) + (x dot x * reg), -mat.t * y * 2.0 + (x * (2 * reg)))
+        }
       }
-    }
     GradientTester.test[Int, DenseVector[Double]](
       obj,
       DenseVector.rand[Double](mat.cols, gen),

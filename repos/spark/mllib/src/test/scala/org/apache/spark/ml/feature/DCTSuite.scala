@@ -36,16 +36,16 @@ class DCTSuite
     with DefaultReadWriteTest {
 
   test("forward transform of discrete cosine matches jTransforms result") {
-    val data =
-      Vectors.dense((0 until 128).map(_ => 2d * math.random - 1d).toArray)
+    val data = Vectors.dense(
+      (0 until 128).map(_ => 2d * math.random - 1d).toArray)
     val inverse = false
 
     testDCT(data, inverse)
   }
 
   test("inverse transform of discrete cosine matches jTransforms result") {
-    val data =
-      Vectors.dense((0 until 128).map(_ => 2d * math.random - 1d).toArray)
+    val data = Vectors.dense(
+      (0 until 128).map(_ => 2d * math.random - 1d).toArray)
     val inverse = true
 
     testDCT(data, inverse)

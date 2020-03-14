@@ -64,20 +64,22 @@ object PowerIterationClusteringExample {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("PowerIterationClusteringExample") {
-      head(
-        "PowerIterationClusteringExample: an example PIC app using concentric circles.")
-      opt[Int]('k', "k")
-        .text(s"number of circles (clusters), default: ${defaultParams.k}")
-        .action((x, c) => c.copy(k = x))
-      opt[Int]('n', "n")
-        .text(
-          s"number of points in smallest circle, default: ${defaultParams.numPoints}")
-        .action((x, c) => c.copy(numPoints = x))
-      opt[Int]("maxIterations")
-        .text(s"number of iterations, default: ${defaultParams.maxIterations}")
-        .action((x, c) => c.copy(maxIterations = x))
-    }
+    val parser =
+      new OptionParser[Params]("PowerIterationClusteringExample") {
+        head(
+          "PowerIterationClusteringExample: an example PIC app using concentric circles.")
+        opt[Int]('k', "k")
+          .text(s"number of circles (clusters), default: ${defaultParams.k}")
+          .action((x, c) => c.copy(k = x))
+        opt[Int]('n', "n")
+          .text(
+            s"number of points in smallest circle, default: ${defaultParams.numPoints}")
+          .action((x, c) => c.copy(numPoints = x))
+        opt[Int]("maxIterations")
+          .text(
+            s"number of iterations, default: ${defaultParams.maxIterations}")
+          .action((x, c) => c.copy(maxIterations = x))
+      }
 
     parser
       .parse(args, defaultParams)
@@ -105,8 +107,10 @@ object PowerIterationClusteringExample {
       .setInitializationMode("degree")
       .run(circlesRdd)
 
-    val clusters =
-      model.assignments.collect().groupBy(_.cluster).mapValues(_.map(_.id))
+    val clusters = model.assignments
+      .collect()
+      .groupBy(_.cluster)
+      .mapValues(_.map(_.id))
     val assignments = clusters.toList.sortBy {
       case (k, v) => v.length
     }
@@ -139,9 +143,10 @@ object PowerIterationClusteringExample {
       sc: SparkContext,
       nCircles: Int,
       nPoints: Int): RDD[(Long, Long, Double)] = {
-    val points = (1 to nCircles).flatMap { i =>
-      generateCircle(i, i * nPoints)
-    }.zipWithIndex
+    val points =
+      (1 to nCircles).flatMap { i =>
+        generateCircle(i, i * nPoints)
+      }.zipWithIndex
     val rdd = sc.parallelize(points)
     val distancesRdd = rdd.cartesian(rdd).flatMap {
       case (((x0, y0), i0), ((x1, y1), i1)) =>

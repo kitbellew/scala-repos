@@ -150,11 +150,12 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
             actorOf(Props(new Actor {
-              val nested = promiseIntercept(new Actor {
-                def receive = {
-                  case _ ⇒
-                }
-              })(result)
+              val nested =
+                promiseIntercept(new Actor {
+                  def receive = {
+                    case _ ⇒
+                  }
+                })(result)
               def receive = {
                 case _ ⇒
               }

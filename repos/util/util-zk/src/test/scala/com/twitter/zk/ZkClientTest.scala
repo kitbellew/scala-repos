@@ -28,10 +28,11 @@ class ZkClientTest extends WordSpec with MockitoSugar {
   class ZkClientHelper {
     val zk = mock[ZooKeeper]
     class TestZkClient extends ZkClient {
-      val connector = new Connector {
-        def apply() = Future(zk)
-        def release() = Future.Done
-      }
+      val connector =
+        new Connector {
+          def apply() = Future(zk)
+          def release() = Future.Done
+        }
     }
     def zkClient = new TestZkClient
 
@@ -422,8 +423,10 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       }
 
       "chained" in {
-        val transformed =
-          zkClient.withAcl(acl).withMode(mode).withRetryPolicy(retryPolicy)
+        val transformed = zkClient
+          .withAcl(acl)
+          .withMode(mode)
+          .withRetryPolicy(retryPolicy)
         try {
           transformed.asInstanceOf[ZkClient]
         } catch {
@@ -488,8 +491,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         "with a name and data" in {
           val data = "blah".getBytes
           create(childPath, data)(Future(childPath))
-          val znode =
-            Await.result(zkClient(path).create(data, child = Some("child")))
+          val znode = Await.result(
+            zkClient(path).create(data, child = Some("child")))
           assert(znode.path == childPath)
         }
 
@@ -684,8 +687,10 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       import h._
 
       val znode = zkClient("/parent")
-      val result =
-        ZNode.Children(znode, new Stat, "doe" :: "ray" :: "me" :: Nil)
+      val result = ZNode.Children(
+        znode,
+        new Stat,
+        "doe" :: "ray" :: "me" :: Nil)
 
       "apply" should {
         "ok" in {
@@ -866,40 +871,44 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         }
 
       // Lay out node updates for the tree: Add a 'z' node to all nodes named 'a'
-      val updateTree = treeChildren.collect {
-        case z @ ZNode.Children(p, s, c) if (p.endsWith("/c")) => {
-          val newChild = ZNode.Children(z("z"), new Stat, Nil)
-          val kids = c.filterNot {
-            _.path.endsWith("/")
-          } :+ newChild
-          ZNode.Children(ZNode.Exists(z, s), kids) :: newChild :: Nil
-        }
-      }.flatten
+      val updateTree =
+        treeChildren.collect {
+          case z @ ZNode.Children(p, s, c) if (p.endsWith("/c")) => {
+            val newChild = ZNode.Children(z("z"), new Stat, Nil)
+            val kids = c.filterNot {
+              _.path.endsWith("/")
+            } :+ newChild
+            ZNode.Children(ZNode.Exists(z, s), kids) :: newChild :: Nil
+          }
+        }.flatten
 
       // Initially, we should get a ZNode.TreeUpdate for each node in the tree with only added nodes
-      val expectedByPath = treeChildren.map { z =>
-        z.path -> ZNode.TreeUpdate(z, z.children.toSet)
-      }.toMap
+      val expectedByPath =
+        treeChildren.map { z =>
+          z.path -> ZNode.TreeUpdate(z, z.children.toSet)
+        }.toMap
 
-      val updatesByPath = updateTree.map { z =>
-        val prior: Set[ZNode] = expectedByPath
-          .get(z.path)
-          .map {
-            _.added
-          }
-          .getOrElse(Set.empty)
-        z.path -> ZNode.TreeUpdate(
-          z,
-          z.children.toSet -- prior,
-          prior -- z.children.toSet)
-      }.toMap
+      val updatesByPath =
+        updateTree.map { z =>
+          val prior: Set[ZNode] = expectedByPath
+            .get(z.path)
+            .map {
+              _.added
+            }
+            .getOrElse(Set.empty)
+          z.path -> ZNode.TreeUpdate(
+            z,
+            z.children.toSet -- prior,
+            prior -- z.children.toSet)
+        }.toMap
 
       def okUpdates(event: String => WatchedEvent) {
         // Create promises for each node in the tree -- satisfying a promise will fire a
         // ChildrenChanged event for its associated node.
-        val updatePromises = treeChildren.map {
-          _.path -> new Promise[WatchedEvent]
-        }.toMap
+        val updatePromises =
+          treeChildren.map {
+            _.path -> new Promise[WatchedEvent]
+          }.toMap
         treeChildren foreach { z =>
           watchChildren(z.path)(Future(z))(updatePromises(z.path))
         }

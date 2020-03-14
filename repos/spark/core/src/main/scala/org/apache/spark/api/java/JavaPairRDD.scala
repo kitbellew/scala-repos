@@ -957,8 +957,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     */
   def repartitionAndSortWithinPartitions(
       partitioner: Partitioner): JavaPairRDD[K, V] = {
-    val comp =
-      com.google.common.collect.Ordering.natural().asInstanceOf[Comparator[K]]
+    val comp = com.google.common.collect.Ordering
+      .natural()
+      .asInstanceOf[Comparator[K]]
     repartitionAndSortWithinPartitions(partitioner, comp)
   }
 
@@ -994,8 +995,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * order of the keys).
     */
   def sortByKey(ascending: Boolean): JavaPairRDD[K, V] = {
-    val comp =
-      com.google.common.collect.Ordering.natural().asInstanceOf[Comparator[K]]
+    val comp = com.google.common.collect.Ordering
+      .natural()
+      .asInstanceOf[Comparator[K]]
     sortByKey(comp, ascending)
   }
 
@@ -1006,8 +1008,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * order of the keys).
     */
   def sortByKey(ascending: Boolean, numPartitions: Int): JavaPairRDD[K, V] = {
-    val comp =
-      com.google.common.collect.Ordering.natural().asInstanceOf[Comparator[K]]
+    val comp = com.google.common.collect.Ordering
+      .natural()
+      .asInstanceOf[Comparator[K]]
     sortByKey(comp, ascending, numPartitions)
   }
 

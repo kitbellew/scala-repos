@@ -172,8 +172,8 @@ object Promise {
   private def initState[A]: State[A] = emptyState.asInstanceOf[State[A]]
   private val emptyState: State[Nothing] = Waiting(null, Nil)
   private val unsafe = Unsafe()
-  private val stateOff =
-    unsafe.objectFieldOffset(classOf[Promise[_]].getDeclaredField("state"))
+  private val stateOff = unsafe.objectFieldOffset(
+    classOf[Promise[_]].getDeclaredField("state"))
   private val AlwaysUnit: Any => Unit = scala.Function.const(()) _
 
   sealed trait Responder[A] { this: Future[A] =>
@@ -221,8 +221,7 @@ object Promise {
     def result(timeout: Duration)(implicit permit: Awaitable.CanAwait): A =
       parent.result(timeout)
 
-    def isReady(implicit permit: Awaitable.CanAwait): Boolean =
-      parent.isReady
+    def isReady(implicit permit: Awaitable.CanAwait): Boolean = parent.isReady
 
     def poll = parent.poll
 
@@ -598,10 +597,11 @@ class Promise[A]
             rest
           else
             first :: rest
-        val next = (waitq filterNot (_ eq k)) match {
-          case Nil          => initState[A]
-          case head :: tail => Waiting(head, tail)
-        }
+        val next =
+          (waitq filterNot (_ eq k)) match {
+            case Nil          => initState[A]
+            case head :: tail => Waiting(head, tail)
+          }
         if (!cas(s, next))
           detach(k)
         else
@@ -640,8 +640,7 @@ class Promise[A]
     theTry()
   }
 
-  def isReady(implicit permit: Awaitable.CanAwait): Boolean =
-    isDefined
+  def isReady(implicit permit: Awaitable.CanAwait): Boolean = isDefined
 
   /**
     * Returns this promise's interrupt if it is interrupted.

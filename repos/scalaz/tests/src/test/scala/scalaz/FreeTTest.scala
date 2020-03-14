@@ -32,8 +32,7 @@ object FreeTListOption {
       def plus[A](a: FreeTListOption[A], b: => FreeTListOption[A]) =
         FreeTListOption(Plus[FreeT[List, Option, ?]].plus(a.f, b.f))
 
-      def empty[A] =
-        FreeTListOption(PlusEmpty[FreeT[List, Option, ?]].empty[A])
+      def empty[A] = FreeTListOption(PlusEmpty[FreeT[List, Option, ?]].empty[A])
 
       def traverseImpl[G[_]: Applicative, A, B](fa: FreeTListOption[A])(
           f: A => G[B]) =

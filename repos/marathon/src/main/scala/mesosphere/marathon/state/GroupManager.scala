@@ -165,24 +165,26 @@ class GroupManager @Singleton @Inject() (
         }
       }
 
-      val deployment = for {
-        from <- rootGroup()
-        (toUnversioned, resolve) <- resolveStoreUrls(
-          assignDynamicServicePorts(from, change(from)))
-        to = GroupVersioningUtil.updateVersionInfoForChangedApps(
-          version,
-          from,
-          toUnversioned)
-        _ = validateOrThrow(to)(Group.validGroupWithConfig(config.maxApps.get))
-        plan = DeploymentPlan(from, to, resolve, version, toKill)
-        _ = validateOrThrow(plan)
-        _ = log.info(s"Computed new deployment plan:\n$plan")
-        _ <- scheduler.deploy(plan, force)
-        _ <- storeUpdatedApps(plan)
-        _ <- groupRepo.store(zkName, plan.target)
-        _ = log.info(
-          s"Updated groups/apps according to deployment plan ${plan.id}")
-      } yield plan
+      val deployment =
+        for {
+          from <- rootGroup()
+          (toUnversioned, resolve) <- resolveStoreUrls(
+            assignDynamicServicePorts(from, change(from)))
+          to = GroupVersioningUtil.updateVersionInfoForChangedApps(
+            version,
+            from,
+            toUnversioned)
+          _ = validateOrThrow(to)(
+            Group.validGroupWithConfig(config.maxApps.get))
+          plan = DeploymentPlan(from, to, resolve, version, toKill)
+          _ = validateOrThrow(plan)
+          _ = log.info(s"Computed new deployment plan:\n$plan")
+          _ <- scheduler.deploy(plan, force)
+          _ <- storeUpdatedApps(plan)
+          _ <- groupRepo.store(zkName, plan.target)
+          _ = log.info(
+            s"Updated groups/apps according to deployment plan ${plan.id}")
+        } yield plan
 
       deployment.onComplete {
         case Success(plan) =>
@@ -296,18 +298,19 @@ class GroupManager @Singleton @Inject() (
       }
 
       // defined only if there are port mappings
-      val newContainer: Option[Container] = for {
-        c <- app.container
-        d <- c.docker
-        pms <- d.portMappings
-      } yield {
-        val mappings = pms.zip(servicePorts).map {
-          case (pm, sp) => pm.copy(servicePort = sp)
+      val newContainer: Option[Container] =
+        for {
+          c <- app.container
+          d <- c.docker
+          pms <- d.portMappings
+        } yield {
+          val mappings = pms.zip(servicePorts).map {
+            case (pm, sp) => pm.copy(servicePort = sp)
+          }
+          c.copy(
+            docker = Some(d.copy(portMappings = Some(mappings)))
+          )
         }
-        c.copy(
-          docker = Some(d.copy(portMappings = Some(mappings)))
-        )
-      }
 
       app.copy(
         portDefinitions = mergeServicePortsAndPortDefinitions(
@@ -317,17 +320,16 @@ class GroupManager @Singleton @Inject() (
       )
     }
 
-    val dynamicApps: Set[AppDefinition] =
-      to.transitiveApps.map {
-        case app: AppDefinition if app.hasDynamicPort => assignPorts(app)
-        case app: AppDefinition                       =>
-          // Always set the ports to service ports, even if we do not have dynamic ports in our port mappings
-          app.copy(
-            portDefinitions = mergeServicePortsAndPortDefinitions(
-              app.portDefinitions,
-              app.servicePorts)
-          )
-      }
+    val dynamicApps: Set[AppDefinition] = to.transitiveApps.map {
+      case app: AppDefinition if app.hasDynamicPort => assignPorts(app)
+      case app: AppDefinition                       =>
+        // Always set the ports to service ports, even if we do not have dynamic ports in our port mappings
+        app.copy(
+          portDefinitions = mergeServicePortsAndPortDefinitions(
+            app.portDefinitions,
+            app.servicePorts)
+        )
+    }
 
     dynamicApps.foldLeft(to) { (group, app) =>
       group.updateApp(app.id, _ => app, app.version)

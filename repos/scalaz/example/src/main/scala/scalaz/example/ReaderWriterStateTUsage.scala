@@ -29,14 +29,15 @@ case object B extends Token
 object Token {
 
   implicit val euqalsRef: Equal[Token] = Equal.equalRef
-  implicit val showTok: Show[Token] = new Show[Token] {
-    override def show(t: Token) =
-      t match {
-        case A => Cord("A")
-        case B => Cord("B")
-        case C => Cord("C")
-      }
-  }
+  implicit val showTok: Show[Token] =
+    new Show[Token] {
+      override def show(t: Token) =
+        t match {
+          case A => Cord("A")
+          case B => Cord("B")
+          case C => Cord("C")
+        }
+    }
 }
 
 object CABRunLengthEncoder {
@@ -83,8 +84,12 @@ object CABRunLengthEncoder {
   import Token._
   import Free.Trampoline
 
-  type RunLength[A] =
-    ReaderWriterStateT[Trampoline, RunLengthConfig, Cord, RunLengthState, A]
+  type RunLength[A] = ReaderWriterStateT[
+    Trampoline,
+    RunLengthConfig,
+    Cord,
+    RunLengthState,
+    A]
 
   // At its essence the RWST monad transformer is a wrap around a function with the following shape:
   // (ReaderType, StateType) => Monad[WriterType, Result, StateType]

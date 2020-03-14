@@ -4,9 +4,10 @@ object test {
   }
 
   // Annotating `: Transformation` fixes the problem.
-  val zero1 = new Transformation {
-    def transform(x: Double) = 0d
-  }
+  val zero1 =
+    new Transformation {
+      def transform(x: Double) = 0d
+    }
 
   // commenting out the companion object fixes the resolve error!!
   object Transformation

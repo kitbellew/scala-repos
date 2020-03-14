@@ -33,9 +33,10 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
     // Pick two cipher suites that the provider knows about
     val sslContext = SSLContext.getInstance("TLSv1.2")
     sslContext.init(null, null, null)
-    val algorithms = sslContext.getServerSocketFactory.getDefaultCipherSuites
-      .take(2)
-      .toSet
+    val algorithms =
+      sslContext.getServerSocketFactory.getDefaultCipherSuites
+        .take(2)
+        .toSet
 
     val conf = new SparkConf
     conf.set("spark.ssl.enabled", "true")
@@ -82,8 +83,10 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
     conf.set("spark.ssl.protocol", "SSLv3")
 
     val defaultOpts = SSLOptions.parse(conf, "spark.ssl", defaults = None)
-    val opts =
-      SSLOptions.parse(conf, "spark.ui.ssl", defaults = Some(defaultOpts))
+    val opts = SSLOptions.parse(
+      conf,
+      "spark.ui.ssl",
+      defaults = Some(defaultOpts))
 
     assert(opts.enabled === true)
     assert(opts.trustStore.isDefined === true)
@@ -123,8 +126,10 @@ class SSLOptionsSuite extends SparkFunSuite with BeforeAndAfterAll {
     conf.set("spark.ssl.protocol", "SSLv3")
 
     val defaultOpts = SSLOptions.parse(conf, "spark.ssl", defaults = None)
-    val opts =
-      SSLOptions.parse(conf, "spark.ui.ssl", defaults = Some(defaultOpts))
+    val opts = SSLOptions.parse(
+      conf,
+      "spark.ui.ssl",
+      defaults = Some(defaultOpts))
 
     assert(opts.enabled === false)
     assert(opts.trustStore.isDefined === true)

@@ -157,13 +157,14 @@ class ShowImplicitParametersAction
       }
     } else {
       val offset = editor.getCaretModel.getOffset
-      val element: PsiElement = file.findElementAt(offset) match {
-        case w: PsiWhiteSpace
-            if w.getTextRange.getStartOffset == offset &&
-              w.getText.contains("\n") =>
-          file.findElementAt(offset - 1)
-        case p => p
-      }
+      val element: PsiElement =
+        file.findElementAt(offset) match {
+          case w: PsiWhiteSpace
+              if w.getTextRange.getStartOffset == offset &&
+                w.getText.contains("\n") =>
+            file.findElementAt(offset - 1)
+          case p => p
+        }
       def getExpressions: Array[PsiElement] = {
         val res = new ArrayBuffer[PsiElement]
         var parent = element
@@ -276,13 +277,14 @@ class ShowImplicitParametersAction
 
     val tree = new Tree()
     val structure = new ImplicitParametersTreeStructure(project, results)
-    val builder = new AbstractTreeBuilder(
-      tree,
-      new DefaultTreeModel(new DefaultMutableTreeNode),
-      structure,
-      null) {
-      override def isSmartExpand: Boolean = false
-    }
+    val builder =
+      new AbstractTreeBuilder(
+        tree,
+        new DefaultTreeModel(new DefaultMutableTreeNode),
+        structure,
+        null) {
+        override def isSmartExpand: Boolean = false
+      }
 
     val jTree = builder.getTree
 
@@ -302,17 +304,18 @@ class ShowImplicitParametersAction
         .getShortcuts
     val ENTER: Array[Shortcut] =
       CustomShortcutSet.fromString("ENTER").getShortcuts
-    val shortcutSet: CustomShortcutSet = new CustomShortcutSet(
-      ArrayUtil.mergeArrays(F4, ENTER): _*)
+    val shortcutSet: CustomShortcutSet =
+      new CustomShortcutSet(ArrayUtil.mergeArrays(F4, ENTER): _*)
 
-    val popup: JBPopup = JBPopupFactory
-      .getInstance()
-      .createComponentPopupBuilder(panel, jTree)
-      .setRequestFocus(true)
-      .setResizable(true)
-      .setTitle("Implicit parameters:")
-      .setMinSize(new Dimension(minSize.width + 500, minSize.height))
-      .createPopup
+    val popup: JBPopup =
+      JBPopupFactory
+        .getInstance()
+        .createComponentPopupBuilder(panel, jTree)
+        .setRequestFocus(true)
+        .setResizable(true)
+        .setTitle("Implicit parameters:")
+        .setMinSize(new Dimension(minSize.width + 500, minSize.height))
+        .createPopup
 
     new AnAction {
       def actionPerformed(e: AnActionEvent) {
@@ -413,26 +416,27 @@ class ImplicitParametersTreeStructure(
             case s: ScNamedElement =>
               val presentation = s.getPresentation
 
-              val presentationTextSuffix = implicitResult match {
-                case Some(OkResult) =>
-                  data.setTooltip("Implicit parameter is applicable")
-                  ": Applicable"
-                case Some(DivergedImplicitResult) =>
-                  data.setTooltip("Implicit is diverged")
-                  data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
-                  ": Diverging implicit"
-                case Some(CantInferTypeParameterResult) =>
-                  data.setTooltip(
-                    "Can't infer proper types for type parameters")
-                  data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
-                  ": Type Parameter"
-                case Some(ImplicitParameterNotFoundResult) =>
-                  data.setTooltip(
-                    "Can't find implicit parameter for this definition")
-                  data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
-                  ": Implicit Parameter"
-                case _ =>
-              }
+              val presentationTextSuffix =
+                implicitResult match {
+                  case Some(OkResult) =>
+                    data.setTooltip("Implicit parameter is applicable")
+                    ": Applicable"
+                  case Some(DivergedImplicitResult) =>
+                    data.setTooltip("Implicit is diverged")
+                    data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
+                    ": Diverging implicit"
+                  case Some(CantInferTypeParameterResult) =>
+                    data.setTooltip(
+                      "Can't infer proper types for type parameters")
+                    data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
+                    ": Type Parameter"
+                  case Some(ImplicitParameterNotFoundResult) =>
+                    data.setTooltip(
+                      "Can't find implicit parameter for this definition")
+                    data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
+                    ": Implicit Parameter"
+                  case _ =>
+                }
               data.setPresentableText(
                 presentation.getPresentableText + presentationTextSuffix)
             case _ => data.setPresentableText(text)

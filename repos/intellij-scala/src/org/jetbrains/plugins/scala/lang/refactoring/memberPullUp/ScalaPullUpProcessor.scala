@@ -53,11 +53,12 @@ class ScalaPullUpProcessor(
   def moveMembersToBase() {
     val manager = targetClass.getManager
     val extendsBlock = targetClass.extendsBlock
-    val templateBody = extendsBlock.templateBody match {
-      case Some(tb) => tb
-      case None =>
-        extendsBlock.add(ScalaPsiElementFactory.createTemplateBody(manager))
-    }
+    val templateBody =
+      extendsBlock.templateBody match {
+        case Some(tb) => tb
+        case None =>
+          extendsBlock.add(ScalaPsiElementFactory.createTemplateBody(manager))
+      }
     val anchor = templateBody.getLastChild
 
     val collectImportScope = memberInfos.collect {
@@ -77,8 +78,9 @@ class ScalaPullUpProcessor(
         templateBody.addBefore(
           ScalaPsiElementFactory.createNewLine(manager),
           anchor)
-        val added =
-          templateBody.addBefore(memberCopy, anchor).asInstanceOf[ScMember]
+        val added = templateBody
+          .addBefore(memberCopy, anchor)
+          .asInstanceOf[ScMember]
         if (info.isToAbstract)
           TypeAdjuster.markToAdjust(added)
         else
@@ -101,12 +103,12 @@ class ScalaPullUpProcessor(
   private def reformatAfter() {
     val documentManager = PsiDocumentManager.getInstance(project)
     val csManager = CodeStyleManager.getInstance(project)
-    val targetDocument =
-      documentManager.getDocument(targetClass.getContainingFile)
+    val targetDocument = documentManager.getDocument(
+      targetClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(targetDocument)
     csManager.reformat(targetClass)
-    val sourceDocument =
-      documentManager.getDocument(sourceClass.getContainingFile)
+    val sourceDocument = documentManager.getDocument(
+      sourceClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(sourceDocument)
     csManager.adjustLineIndent(
       sourceClass.getContainingFile,
@@ -146,10 +148,11 @@ class ScalaPullUpProcessor(
 
   private def declarationsText(m: ScMember): Seq[String] = {
     def textForBinding(b: ScBindingPattern) = {
-      val typeText = b.getType(TypingContext.empty) match {
-        case Success(t, _) => s": ${t.canonicalText}"
-        case _             => ""
-      }
+      val typeText =
+        b.getType(TypingContext.empty) match {
+          case Success(t, _) => s": ${t.canonicalText}"
+          case _             => ""
+        }
       s"${b.name}$typeText"
     }
     m match {

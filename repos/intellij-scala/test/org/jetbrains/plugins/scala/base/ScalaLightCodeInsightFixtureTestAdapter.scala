@@ -51,17 +51,17 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       surrounder: Surrounder,
       canSurround: Boolean) {
     myFixture.configureByText("dummy.scala", text)
-    val scaladocSurroundDescriptor = ScalaToolsFactory
-      .getInstance()
-      .createSurroundDescriptors()
-      .getSurroundDescriptors()(1)
+    val scaladocSurroundDescriptor =
+      ScalaToolsFactory
+        .getInstance()
+        .createSurroundDescriptors()
+        .getSurroundDescriptors()(1)
     val selectionModel = myFixture.getEditor.getSelectionModel
 
-    val elementsToSurround =
-      scaladocSurroundDescriptor.getElementsToSurround(
-        myFixture.getFile,
-        selectionModel.getSelectionStart,
-        selectionModel.getSelectionEnd)
+    val elementsToSurround = scaladocSurroundDescriptor.getElementsToSurround(
+      myFixture.getFile,
+      selectionModel.getSelectionStart,
+      selectionModel.getSelectionEnd)
 
     if (!canSurround) {
       assert(
@@ -103,13 +103,14 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
     myFixture.enableInspections(inspectionsEnabled: _*)
 
     val caretIndex = text.indexOf(CARET_MARKER)
-    val highlights: mutable.Buffer[HighlightInfo] = for {
-      info <- myFixture.doHighlighting()
-      if info.getDescription == annotation
-      if caretIndex == -1 || new TextRange(
-        info.getStartOffset,
-        info.getEndOffset).contains(caretIndex)
-    } yield info
+    val highlights: mutable.Buffer[HighlightInfo] =
+      for {
+        info <- myFixture.doHighlighting()
+        if info.getDescription == annotation
+        if caretIndex == -1 || new TextRange(
+          info.getStartOffset,
+          info.getEndOffset).contains(caretIndex)
+      } yield info
     val ranges = highlights.map(info => (info.startOffset, info.endOffset))
     assert(
       highlights.isEmpty,
@@ -207,8 +208,8 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       withRightDescription.nonEmpty,
       "No highlightings with such description: " + annotation)
 
-    val ranges =
-      withRightDescription.map(info => (info.getStartOffset, info.getEndOffset))
+    val ranges = withRightDescription.map(info =>
+      (info.getStartOffset, info.getEndOffset))
     val message = "Highlights with this description are at " + ranges.mkString(
       " ") + ", but has to be at " + (selectionStart, selectionEnd)
     assert(

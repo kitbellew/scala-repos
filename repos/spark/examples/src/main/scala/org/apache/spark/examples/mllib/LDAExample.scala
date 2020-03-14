@@ -64,54 +64,55 @@ object LDAExample {
   def main(args: Array[String]) {
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("LDAExample") {
-      head("LDAExample: an example LDA app for plain text data.")
-      opt[Int]("k")
-        .text(s"number of topics. default: ${defaultParams.k}")
-        .action((x, c) => c.copy(k = x))
-      opt[Int]("maxIterations")
-        .text(
-          s"number of iterations of learning. default: ${defaultParams.maxIterations}")
-        .action((x, c) => c.copy(maxIterations = x))
-      opt[Double]("docConcentration")
-        .text(s"amount of topic smoothing to use (> 1.0) (-1=auto)." +
-          s"  default: ${defaultParams.docConcentration}")
-        .action((x, c) => c.copy(docConcentration = x))
-      opt[Double]("topicConcentration")
-        .text(s"amount of term (word) smoothing to use (> 1.0) (-1=auto)." +
-          s"  default: ${defaultParams.topicConcentration}")
-        .action((x, c) => c.copy(topicConcentration = x))
-      opt[Int]("vocabSize")
-        .text(
-          s"number of distinct word types to use, chosen by frequency. (-1=all)" +
-            s"  default: ${defaultParams.vocabSize}")
-        .action((x, c) => c.copy(vocabSize = x))
-      opt[String]("stopwordFile")
-        .text(
-          s"filepath for a list of stopwords. Note: This must fit on a single machine." +
-            s"  default: ${defaultParams.stopwordFile}")
-        .action((x, c) => c.copy(stopwordFile = x))
-      opt[String]("algorithm")
-        .text(s"inference algorithm to use. em and online are supported." +
-          s" default: ${defaultParams.algorithm}")
-        .action((x, c) => c.copy(algorithm = x))
-      opt[String]("checkpointDir")
-        .text(s"Directory for checkpointing intermediate results." +
-          s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
-          s"  default: ${defaultParams.checkpointDir}")
-        .action((x, c) => c.copy(checkpointDir = Some(x)))
-      opt[Int]("checkpointInterval")
-        .text(
-          s"Iterations between each checkpoint.  Only used if checkpointDir is set." +
-            s" default: ${defaultParams.checkpointInterval}")
-        .action((x, c) => c.copy(checkpointInterval = x))
-      arg[String]("<input>...")
-        .text("input paths (directories) to plain text corpora." +
-          "  Each text file line should hold 1 document.")
-        .unbounded()
-        .required()
-        .action((x, c) => c.copy(input = c.input :+ x))
-    }
+    val parser =
+      new OptionParser[Params]("LDAExample") {
+        head("LDAExample: an example LDA app for plain text data.")
+        opt[Int]("k")
+          .text(s"number of topics. default: ${defaultParams.k}")
+          .action((x, c) => c.copy(k = x))
+        opt[Int]("maxIterations")
+          .text(
+            s"number of iterations of learning. default: ${defaultParams.maxIterations}")
+          .action((x, c) => c.copy(maxIterations = x))
+        opt[Double]("docConcentration")
+          .text(s"amount of topic smoothing to use (> 1.0) (-1=auto)." +
+            s"  default: ${defaultParams.docConcentration}")
+          .action((x, c) => c.copy(docConcentration = x))
+        opt[Double]("topicConcentration")
+          .text(s"amount of term (word) smoothing to use (> 1.0) (-1=auto)." +
+            s"  default: ${defaultParams.topicConcentration}")
+          .action((x, c) => c.copy(topicConcentration = x))
+        opt[Int]("vocabSize")
+          .text(
+            s"number of distinct word types to use, chosen by frequency. (-1=all)" +
+              s"  default: ${defaultParams.vocabSize}")
+          .action((x, c) => c.copy(vocabSize = x))
+        opt[String]("stopwordFile")
+          .text(
+            s"filepath for a list of stopwords. Note: This must fit on a single machine." +
+              s"  default: ${defaultParams.stopwordFile}")
+          .action((x, c) => c.copy(stopwordFile = x))
+        opt[String]("algorithm")
+          .text(s"inference algorithm to use. em and online are supported." +
+            s" default: ${defaultParams.algorithm}")
+          .action((x, c) => c.copy(algorithm = x))
+        opt[String]("checkpointDir")
+          .text(s"Directory for checkpointing intermediate results." +
+            s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
+            s"  default: ${defaultParams.checkpointDir}")
+          .action((x, c) => c.copy(checkpointDir = Some(x)))
+        opt[Int]("checkpointInterval")
+          .text(
+            s"Iterations between each checkpoint.  Only used if checkpointDir is set." +
+              s" default: ${defaultParams.checkpointInterval}")
+          .action((x, c) => c.copy(checkpointInterval = x))
+        arg[String]("<input>...")
+          .text("input paths (directories) to plain text corpora." +
+            "  Each text file line should hold 1 document.")
+          .unbounded()
+          .required()
+          .action((x, c) => c.copy(input = c.input :+ x))
+      }
 
     parser
       .parse(args, defaultParams)
@@ -132,8 +133,11 @@ object LDAExample {
 
     // Load documents, and prepare them for LDA.
     val preprocessStart = System.nanoTime()
-    val (corpus, vocabArray, actualNumTokens) =
-      preprocess(sc, params.input, params.vocabSize, params.stopwordFile)
+    val (corpus, vocabArray, actualNumTokens) = preprocess(
+      sc,
+      params.input,
+      params.vocabSize,
+      params.stopwordFile)
     corpus.cache()
     val actualCorpusSize = corpus.count()
     val actualVocabSize = vocabArray.length
@@ -150,16 +154,17 @@ object LDAExample {
     // Run LDA.
     val lda = new LDA()
 
-    val optimizer = params.algorithm.toLowerCase match {
-      case "em" => new EMLDAOptimizer
-      // add (1.0 / actualCorpusSize) to MiniBatchFraction be more robust on tiny datasets.
-      case "online" =>
-        new OnlineLDAOptimizer()
-          .setMiniBatchFraction(0.05 + 1.0 / actualCorpusSize)
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Only em, online are supported but got ${params.algorithm}.")
-    }
+    val optimizer =
+      params.algorithm.toLowerCase match {
+        case "em" => new EMLDAOptimizer
+        // add (1.0 / actualCorpusSize) to MiniBatchFraction be more robust on tiny datasets.
+        case "online" =>
+          new OnlineLDAOptimizer()
+            .setMiniBatchFraction(0.05 + 1.0 / actualCorpusSize)
+        case _ =>
+          throw new IllegalArgumentException(
+            s"Only em, online are supported but got ${params.algorithm}.")
+      }
 
     lda
       .setOptimizer(optimizer)
@@ -225,12 +230,13 @@ object LDAExample {
     // this can result in a large number of small partitions, which can degrade performance.
     // In this case, consider using coalesce() to create fewer, larger partitions.
     val df = sc.textFile(paths.mkString(",")).toDF("docs")
-    val customizedStopWords: Array[String] = if (stopwordFile.isEmpty) {
-      Array.empty[String]
-    } else {
-      val stopWordText = sc.textFile(stopwordFile).collect()
-      stopWordText.flatMap(_.stripMargin.split("\\s+"))
-    }
+    val customizedStopWords: Array[String] =
+      if (stopwordFile.isEmpty) {
+        Array.empty[String]
+      } else {
+        val stopWordText = sc.textFile(stopwordFile).collect()
+        stopWordText.flatMap(_.stripMargin.split("\\s+"))
+      }
     val tokenizer = new RegexTokenizer()
       .setInputCol("docs")
       .setOutputCol("rawTokens")

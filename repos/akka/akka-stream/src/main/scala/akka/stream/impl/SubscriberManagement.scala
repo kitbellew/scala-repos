@@ -89,10 +89,11 @@ private[akka] trait SubscriberManagement[T]
     */
   protected def createSubscription(subscriber: Subscriber[_ >: T]): S
 
-  private[this] val buffer = new ResizableMultiReaderRingBuffer[T](
-    initialBufferSize,
-    maxBufferSize,
-    this)
+  private[this] val buffer =
+    new ResizableMultiReaderRingBuffer[T](
+      initialBufferSize,
+      maxBufferSize,
+      this)
 
   protected def bufferDebug: String = buffer.toString
 
@@ -183,13 +184,14 @@ private[akka] trait SubscriberManagement[T]
           maxRequested(tail, math.max(head.totalDemand, result))
         case _ ⇒ result
       }
-    val desired = Math
-      .min(
-        Int.MaxValue,
-        Math.min(
-          maxRequested(subscriptions),
-          buffer.maxAvailable) - pendingFromUpstream)
-      .toInt
+    val desired =
+      Math
+        .min(
+          Int.MaxValue,
+          Math.min(
+            maxRequested(subscriptions),
+            buffer.maxAvailable) - pendingFromUpstream)
+        .toInt
     if (desired > 0) {
       pendingFromUpstream += desired
       requestFromUpstream(desired)

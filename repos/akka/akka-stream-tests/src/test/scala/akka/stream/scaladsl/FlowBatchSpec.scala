@@ -65,14 +65,15 @@ class FlowBatchSpec extends AkkaSpec {
     }
 
     "work on a variable rate chain" in {
-      val future = Source(1 to 1000)
-        .batch(max = 100, seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
-        .map { i ⇒
-          if (ThreadLocalRandom.current().nextBoolean())
-            Thread.sleep(10);
-          i
-        }
-        .runFold(0)(_ + _)
+      val future =
+        Source(1 to 1000)
+          .batch(max = 100, seed = i ⇒ i)(aggregate = (sum, i) ⇒ sum + i)
+          .map { i ⇒
+            if (ThreadLocalRandom.current().nextBoolean())
+              Thread.sleep(10);
+            i
+          }
+          .runFold(0)(_ + _)
       Await.result(future, 10.seconds) should be(500500)
     }
 
@@ -110,10 +111,11 @@ class FlowBatchSpec extends AkkaSpec {
     }
 
     "work with a buffer and fold" in {
-      val future = Source(1 to 50)
-        .batch(max = Long.MaxValue, seed = i ⇒ i)(aggregate = _ + _)
-        .buffer(50, OverflowStrategy.backpressure)
-        .runFold(0)(_ + _)
+      val future =
+        Source(1 to 50)
+          .batch(max = Long.MaxValue, seed = i ⇒ i)(aggregate = _ + _)
+          .buffer(50, OverflowStrategy.backpressure)
+          .runFold(0)(_ + _)
       Await.result(future, 3.seconds) should be((1 to 50).sum)
     }
 

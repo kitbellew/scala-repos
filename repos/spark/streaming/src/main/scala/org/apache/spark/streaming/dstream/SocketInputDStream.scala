@@ -114,8 +114,9 @@ private[streaming] object SocketReceiver {
     * to '\n' delimited strings and returns an iterator to access the strings.
     */
   def bytesToLines(inputStream: InputStream): Iterator[String] = {
-    val dataInputStream = new BufferedReader(
-      new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+    val dataInputStream =
+      new BufferedReader(
+        new InputStreamReader(inputStream, StandardCharsets.UTF_8))
     new NextIterator[String] {
       protected override def getNext() = {
         val nextValue = dataInputStream.readLine()

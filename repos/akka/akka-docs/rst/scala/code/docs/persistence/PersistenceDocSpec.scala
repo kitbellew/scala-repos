@@ -18,8 +18,7 @@ object PersistenceDocSpec {
 
   val persistentActor: ActorRef = ???
 
-  val config =
-    """
+  val config = """
       //#auto-update-interval
       akka.persistence.view.auto-update-interval = 5s
       //#auto-update-interval

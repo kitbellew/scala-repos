@@ -195,8 +195,9 @@ class ErrorFormatter(
       error: ParseError,
       input: ParserInput): JStringBuilder = {
     import error.position._
-    val (expandedCol, expandedLine) =
-      expandErrorLineTabs(input getLine line, column)
+    val (expandedCol, expandedLine) = expandErrorLineTabs(
+      input getLine line,
+      column)
     sb.append(expandedLine).append('\n')
     for (i ← 1 until expandedCol)
       sb.append(' ')
@@ -300,27 +301,28 @@ class ErrorFormatter(
       showFrameStartOffset: Boolean = showFrameStartOffset): String = {
     import RuleTrace._
     import CharUtils.escape
-    val keyString = nonTerminal.key match {
-      case Action ⇒ "<action>"
-      case Atomic ⇒ "atomic"
-      case AndPredicate ⇒ "&"
-      case Capture ⇒ "capture"
-      case Cut ⇒ "cut"
-      case FirstOf ⇒ "|"
-      case x: IgnoreCaseString ⇒ '"' + escape(x.string) + '"'
-      case x: MapMatch ⇒ x.map.toString()
-      case x: Named ⇒ x.name
-      case OneOrMore ⇒ "+"
-      case Optional ⇒ "?"
-      case Quiet ⇒ "quiet"
-      case RuleCall ⇒ "call"
-      case Run ⇒ "<run>"
-      case RunSubParser ⇒ "runSubParser"
-      case Sequence ⇒ "~"
-      case x: StringMatch ⇒ '"' + escape(x.string) + '"'
-      case x: Times ⇒ "times"
-      case ZeroOrMore ⇒ "*"
-    }
+    val keyString =
+      nonTerminal.key match {
+        case Action ⇒ "<action>"
+        case Atomic ⇒ "atomic"
+        case AndPredicate ⇒ "&"
+        case Capture ⇒ "capture"
+        case Cut ⇒ "cut"
+        case FirstOf ⇒ "|"
+        case x: IgnoreCaseString ⇒ '"' + escape(x.string) + '"'
+        case x: MapMatch ⇒ x.map.toString()
+        case x: Named ⇒ x.name
+        case OneOrMore ⇒ "+"
+        case Optional ⇒ "?"
+        case Quiet ⇒ "quiet"
+        case RuleCall ⇒ "call"
+        case Run ⇒ "<run>"
+        case RunSubParser ⇒ "runSubParser"
+        case Sequence ⇒ "~"
+        case x: StringMatch ⇒ '"' + escape(x.string) + '"'
+        case x: Times ⇒ "times"
+        case ZeroOrMore ⇒ "*"
+      }
     if (nonTerminal.offset != 0 && showFrameStartOffset)
       keyString + ':' + nonTerminal.offset
     else

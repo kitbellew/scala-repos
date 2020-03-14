@@ -3,8 +3,7 @@ package java.io
 class FilterInputStream protected (protected val in: InputStream)
     extends InputStream {
 
-  override def read(): Int =
-    in.read()
+  override def read(): Int = in.read()
 
   override def read(b: Array[Byte]): Int =
     read(b, 0, b.length) // this is spec! must not do in.read(b)

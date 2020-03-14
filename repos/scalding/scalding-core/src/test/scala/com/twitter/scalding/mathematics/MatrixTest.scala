@@ -47,10 +47,11 @@ class MatrixBlockProd(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val mat1 = Tsv("mat1", ('x1, 'y1, 'v1))
-    .mapToBlockMatrix(('x1, 'y1, 'v1)) { (rcv: (String, Int, Double)) =>
-      (rcv._1(0), rcv._1, rcv._2, rcv._3)
-    }
+  val mat1 =
+    Tsv("mat1", ('x1, 'y1, 'v1))
+      .mapToBlockMatrix(('x1, 'y1, 'v1)) { (rcv: (String, Int, Double)) =>
+        (rcv._1(0), rcv._1, rcv._2, rcv._3)
+      }
 
   val mat2 = Tsv("mat1", ('x1, 'y1, 'v1))
     .toMatrix[String, Int, Double]('x1, 'y1, 'v1)
@@ -64,14 +65,16 @@ class MatrixSum(args: Args) extends Job(args) {
 
   import Matrix._
 
-  val mat1 = Tsv("mat1", ('x1, 'y1, 'v1))
-    .mapToMatrix('x1, 'y1, 'v1) { rowColVal: (Int, Int, Double) =>
-      rowColVal
-    }
-  val mat2 = Tsv("mat2", ('x2, 'y2, 'v2))
-    .mapToMatrix('x2, 'y2, 'v2) { rowColVal: (Int, Int, Double) =>
-      rowColVal
-    }
+  val mat1 =
+    Tsv("mat1", ('x1, 'y1, 'v1))
+      .mapToMatrix('x1, 'y1, 'v1) { rowColVal: (Int, Int, Double) =>
+        rowColVal
+      }
+  val mat2 =
+    Tsv("mat2", ('x2, 'y2, 'v2))
+      .mapToMatrix('x2, 'y2, 'v2) { rowColVal: (Int, Int, Double) =>
+        rowColVal
+      }
 
   val sum = mat1 + mat2
   sum.pipe.write(Tsv("sum"))
@@ -1168,8 +1171,9 @@ class MatrixTest extends WordSpec with Matchers {
   "A Col Diagonal job" should {
     TUtil.printStack {
       "correctly compute the size of the diagonal matrix" in {
-        val col = new ColDiagonal(
-          Mode.putMode(new Test(Map.empty), new Args(Map.empty)))
+        val col =
+          new ColDiagonal(
+            Mode.putMode(new Test(Map.empty), new Args(Map.empty)))
         col.sizeHintTotal shouldBe 100L
       }
     }

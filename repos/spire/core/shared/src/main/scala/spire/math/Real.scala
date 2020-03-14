@@ -60,11 +60,9 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
       case y       => toRational.equals(y)
     }
 
-  def ===(y: Real): Boolean =
-    (x compare y) == 0
+  def ===(y: Real): Boolean = (x compare y) == 0
 
-  def =!=(y: Real): Boolean =
-    !(this === y)
+  def =!=(y: Real): Boolean = !(this === y)
 
   def compare(y: Real): Int =
     (x, y) match {
@@ -319,17 +317,19 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
     val b = Real.digitsToBits(d)
     val r = Rational(x(b) * SafeLong.ten.pow(d), SafeLong.two.pow(b))
     val m = roundUp(r)
-    val (sign, str) = m.signum match {
-      case -1 => ("-", m.abs.toString)
-      case 0  => ("", "0")
-      case 1  => ("", m.toString)
-    }
+    val (sign, str) =
+      m.signum match {
+        case -1 => ("-", m.abs.toString)
+        case 0  => ("", "0")
+        case 1  => ("", m.toString)
+      }
     val i = str.length - d
-    val s = if (i > 0) {
-      sign + str.substring(0, i) + "." + str.substring(i)
-    } else {
-      sign + "0." + ("0" * -i) + str
-    }
+    val s =
+      if (i > 0) {
+        sign + str.substring(0, i) + "." + str.substring(i)
+      } else {
+        sign + "0." + ("0" * -i) + str
+      }
     s.replaceAll("0+$", "").replaceAll("\\.$", "")
   }
 }
@@ -357,8 +357,7 @@ object Real extends RealInstances {
     Real(16) * atan(Real(Rational(1, 5))) - Real.four * atan(
       Real(Rational(1, 239)))
 
-  lazy val e: Real =
-    exp(Real.one)
+  lazy val e: Real = exp(Real.one)
 
   lazy val phi: Real =
     (Real.one + Real(5).sqrt) / Real.two
@@ -538,8 +537,7 @@ object Real extends RealInstances {
       else
         roundUp(Rational(x(p), SafeLong.two.pow(n))))
 
-  def mul2n(x: Real, n: Int): Real =
-    Real(p => x(p + n))
+  def mul2n(x: Real, n: Int): Real = Real(p => x(p + n))
 
   lazy val piBy2 = div2n(pi, 1)
 
@@ -591,8 +589,7 @@ object Real extends RealInstances {
     loop(Rational.one, SafeLong.one)
   }
 
-  def expDr(x: Real): Real =
-    powerSeries(accSeq((r, n) => r / n), n => n, x)
+  def expDr(x: Real): Real = powerSeries(accSeq((r, n) => r / n), n => n, x)
 
   def logDr(x: Real): Real = {
     val y = (x - Real.one) / x
@@ -720,8 +717,7 @@ trait RealIsFractional
   def toNumber(x: Real): Number = Number(x.toRational)
   def toString(x: Real): String = x.toString
 
-  def toType[B](x: Real)(implicit ev: ConvertableTo[B]): B =
-    ev.fromReal(x)
+  def toType[B](x: Real)(implicit ev: ConvertableTo[B]): B = ev.fromReal(x)
 
   def fromByte(n: Byte): Real = Real(n)
   def fromShort(n: Short): Real = Real(n)
@@ -733,6 +729,5 @@ trait RealIsFractional
   def fromAlgebraic(n: Algebraic): Real = n.evaluateWith[Real]
   def fromReal(n: Real): Real = n
 
-  def fromType[B](b: B)(implicit ev: ConvertableFrom[B]): Real =
-    ev.toReal(b)
+  def fromType[B](b: B)(implicit ev: ConvertableFrom[B]): Real = ev.toReal(b)
 }

@@ -102,11 +102,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       //#simple-holder
 
       //#complex-holder
-      val complexRequest: WSRequest =
-        request
-          .withHeaders("Accept" -> "application/json")
-          .withRequestTimeout(10000.millis)
-          .withQueryString("search" -> "play")
+      val complexRequest: WSRequest = request
+        .withHeaders("Accept" -> "application/json")
+        .withRequestTimeout(10000.millis)
+        .withQueryString("search" -> "play")
       //#complex-holder
 
       //#holder-get
@@ -308,8 +307,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       } { ws =>
         //#stream-count-bytes
         // Make the request
-        val futureResponse: Future[StreamedResponse] =
-          ws.url(url).withMethod("GET").stream()
+        val futureResponse
+            : Future[StreamedResponse] = ws.url(url).withMethod("GET").stream()
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
           // Count the number of bytes returned
@@ -328,8 +327,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         try {
           //#stream-to-file
           // Make the request
-          val futureResponse: Future[StreamedResponse] =
-            ws.url(url).withMethod("GET").stream()
+          val futureResponse: Future[StreamedResponse] = ws
+            .url(url)
+            .withMethod("GET")
+            .stream()
 
           val downloadedFile: Future[File] = futureResponse.flatMap { res =>
             val outputStream = new FileOutputStream(file)
@@ -404,8 +405,11 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         case ("PUT", "/") => Action(Ok.chunked(largeSource))
       } { ws =>
         //#stream-put
-        val futureResponse: Future[StreamedResponse] =
-          ws.url(url).withMethod("PUT").withBody("some body").stream()
+        val futureResponse: Future[StreamedResponse] = ws
+          .url(url)
+          .withMethod("PUT")
+          .withBody("some body")
+          .stream()
         //#stream-put
 
         val bytesReturned: Future[Long] = futureResponse.flatMap { res =>
@@ -448,11 +452,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val urlOne = s"http://localhost:$testServerPort/one"
       val exceptionUrl = s"http://localhost:$testServerPort/fallback"
       // #scalaws-forcomprehension
-      val futureResponse: Future[WSResponse] = for {
-        responseOne <- ws.url(urlOne).get()
-        responseTwo <- ws.url(responseOne.body).get()
-        responseThree <- ws.url(responseTwo.body).get()
-      } yield responseThree
+      val futureResponse: Future[WSResponse] =
+        for {
+          responseOne <- ws.url(urlOne).get()
+          responseTwo <- ws.url(responseOne.body).get()
+          responseThree <- ws.url(responseTwo.body).get()
+        } yield responseThree
 
       futureResponse.recover {
         case e: Exception =>
@@ -521,8 +526,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
     "allow programmatic configuration" in new WithApplication() {
 
       // If running in Play, environment should be injected
-      val environment =
-        Environment(new File("."), this.getClass.getClassLoader, Mode.Prod)
+      val environment = Environment(
+        new File("."),
+        this.getClass.getClassLoader,
+        Mode.Prod)
 
       //#ws-custom-client
       import com.typesafe.config.ConfigFactory
@@ -537,13 +544,14 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       val parser = new WSConfigParser(configuration, environment)
       val config = new AhcWSClientConfig(wsClientConfig = parser.parse())
       val builder = new AhcConfigBuilder(config)
-      val logging = new AsyncHttpClientConfig.AdditionalChannelInitializer() {
-        override def initChannel(channel: io.netty.channel.Channel): Unit = {
-          channel.pipeline.addFirst(
-            "log",
-            new io.netty.handler.logging.LoggingHandler("debug"))
+      val logging =
+        new AsyncHttpClientConfig.AdditionalChannelInitializer() {
+          override def initChannel(channel: io.netty.channel.Channel): Unit = {
+            channel.pipeline.addFirst(
+              "log",
+              new io.netty.handler.logging.LoggingHandler("debug"))
+          }
         }
-      }
       val ahcBuilder = builder.configure()
       ahcBuilder.setHttpAdditionalChannelInitializer(logging)
       val ahcConfig = ahcBuilder.build()

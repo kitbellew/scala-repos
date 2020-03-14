@@ -193,42 +193,43 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       lazy val prepare = UnifyStrDate
 
-      val mapper = CF2Array[String, M]("std::string::regexMatch") {
-        case (target: StrColumn, regex: StrColumn, range) => {
-          val table = new Array[Array[String]](range.length)
-          val defined = new BitSet(range.length)
+      val mapper =
+        CF2Array[String, M]("std::string::regexMatch") {
+          case (target: StrColumn, regex: StrColumn, range) => {
+            val table = new Array[Array[String]](range.length)
+            val defined = new BitSet(range.length)
 
-          RangeUtil.loop(range) { i =>
-            if (target.isDefinedAt(i) && regex.isDefinedAt(i)) {
-              val str = target(i)
+            RangeUtil.loop(range) { i =>
+              if (target.isDefinedAt(i) && regex.isDefinedAt(i)) {
+                val str = target(i)
 
-              try {
-                val reg = regex(i).r
+                try {
+                  val reg = regex(i).r
 
-                str match {
-                  case reg(capture @ _*) => {
-                    val capture2 = capture map { str =>
-                      if (str == null)
-                        ""
-                      else
-                        str
+                  str match {
+                    case reg(capture @ _*) => {
+                      val capture2 = capture map { str =>
+                        if (str == null)
+                          ""
+                        else
+                          str
+                      }
+
+                      table(i) = capture2.toArray
+                      defined.set(i)
                     }
 
-                    table(i) = capture2.toArray
-                    defined.set(i)
+                    case _ =>
                   }
-
-                  case _ =>
+                } catch {
+                  case _: java.util.regex.PatternSyntaxException => // yay, scala
                 }
-              } catch {
-                case _: java.util.regex.PatternSyntaxException => // yay, scala
               }
             }
-          }
 
-          (CString, table, defined)
+            (CString, table, defined)
+          }
         }
-      }
     }
 
     object concat extends Op2F2(StringNamespace, "concat") {
@@ -541,9 +542,10 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
       }
 
-    val UnifyStrDate = CF1P("builtin::str::unifyStrDate")({
-      case c: StrColumn  => c
-      case c: DateColumn => dateToStrCol(c)
-    })
+    val UnifyStrDate =
+      CF1P("builtin::str::unifyStrDate")({
+        case c: StrColumn  => c
+        case c: DateColumn => dateToStrCol(c)
+      })
   }
 }

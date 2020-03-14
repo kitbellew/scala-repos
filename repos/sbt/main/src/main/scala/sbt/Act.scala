@@ -108,10 +108,11 @@ object Act {
   def select(allKeys: Seq[Parser[ParsedKey]], data: Settings[Scope])(
       implicit show: Show[ScopedKey[_]]): Parser[ParsedKey] =
     seq(allKeys) flatMap { ss =>
-      val default = ss.headOption match {
-        case None    => noValidKeys
-        case Some(x) => success(x)
-      }
+      val default =
+        ss.headOption match {
+          case None    => noValidKeys
+          case Some(x) => success(x)
+        }
       selectFromValid(ss filter isValid(data), default)
     }
   def selectFromValid(ss: Seq[ParsedKey], default: Parser[ParsedKey])(
@@ -165,8 +166,7 @@ object Act {
   def examples(
       p: Parser[String],
       exs: Set[String],
-      label: String): Parser[String] =
-    p !!! ("Expected " + label) examples exs
+      label: String): Parser[String] = p !!! ("Expected " + label) examples exs
   def examplesStrict(
       p: Parser[String],
       exs: Set[String],
@@ -347,8 +347,8 @@ object Act {
       }
 
     val uris = index.buildURIs
-    val resolvedURI =
-      Uri(uris).map(uri => Scope.resolveBuild(currentBuild, uri))
+    val resolvedURI = Uri(uris).map(uri =>
+      Scope.resolveBuild(currentBuild, uri))
     val buildRef = token('{' ~> resolvedURI <~ '}').?
 
     buildRef flatMap {
@@ -380,13 +380,15 @@ object Act {
       val akp = aggregatedKeyParser(extracted)
       def evaluate(kvs: Seq[ScopedKey[_]]): Parser[() => State] = {
         val preparedPairs = anyKeyValues(structure, kvs)
-        val showConfig =
-          Aggregation.defaultShow(state, showTasks = action == ShowAction)
+        val showConfig = Aggregation.defaultShow(
+          state,
+          showTasks = action == ShowAction)
         evaluatingParser(state, structure, showConfig)(preparedPairs) map {
           evaluate => () =>
             {
-              val keyStrings =
-                preparedPairs.map(pp => showKey(pp.key)).mkString(", ")
+              val keyStrings = preparedPairs
+                .map(pp => showKey(pp.key))
+                .mkString(", ")
               state.log.debug("Evaluating tasks: " + keyStrings)
               evaluate()
             }

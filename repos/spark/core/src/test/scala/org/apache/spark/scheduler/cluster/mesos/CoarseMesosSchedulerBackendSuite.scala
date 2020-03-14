@@ -116,8 +116,9 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus =
-      backend.getResource(taskInfos.iterator().next().getResourcesList, "cpus")
+    val cpus = backend.getResource(
+      taskInfos.iterator().next().getResourcesList,
+      "cpus")
     assert(cpus == executorCores)
   }
 
@@ -131,8 +132,9 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus =
-      backend.getResource(taskInfos.iterator().next().getResourcesList, "cpus")
+    val cpus = backend.getResource(
+      taskInfos.iterator().next().getResourcesList,
+      "cpus")
     assert(cpus == offerCores)
   }
 
@@ -146,8 +148,9 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus =
-      backend.getResource(taskInfos.iterator().next().getResourcesList, "cpus")
+    val cpus = backend.getResource(
+      taskInfos.iterator().next().getResourcesList,
+      "cpus")
     assert(cpus == maxCores)
   }
 
@@ -230,27 +233,28 @@ class CoarseMesosSchedulerBackendSuite
     when(driver.start()).thenReturn(Protos.Status.DRIVER_RUNNING)
     val securityManager = mock[SecurityManager]
 
-    val backend = new CoarseMesosSchedulerBackend(
-      taskScheduler,
-      sc,
-      "master",
-      securityManager) {
-      override protected def createSchedulerDriver(
-          masterUrl: String,
-          scheduler: Scheduler,
-          sparkUser: String,
-          appName: String,
-          conf: SparkConf,
-          webuiUrl: Option[String] = None,
-          checkpoint: Option[Boolean] = None,
-          failoverTimeout: Option[Double] = None,
-          frameworkId: Option[String] = None): SchedulerDriver = {
-        markRegistered()
-        assert(webuiUrl.isDefined)
-        assert(webuiUrl.get.equals("http://webui"))
-        driver
+    val backend =
+      new CoarseMesosSchedulerBackend(
+        taskScheduler,
+        sc,
+        "master",
+        securityManager) {
+        override protected def createSchedulerDriver(
+            masterUrl: String,
+            scheduler: Scheduler,
+            sparkUser: String,
+            appName: String,
+            conf: SparkConf,
+            webuiUrl: Option[String] = None,
+            checkpoint: Option[Boolean] = None,
+            failoverTimeout: Option[Double] = None,
+            frameworkId: Option[String] = None): SchedulerDriver = {
+          markRegistered()
+          assert(webuiUrl.isDefined)
+          assert(webuiUrl.get.equals("http://webui"))
+          driver
+        }
       }
-    }
 
     backend.start()
   }
@@ -280,8 +284,8 @@ class CoarseMesosSchedulerBackendSuite
 
   private def verifyTaskLaunched(
       offerId: String): java.util.Collection[TaskInfo] = {
-    val captor =
-      ArgumentCaptor.forClass(classOf[java.util.Collection[TaskInfo]])
+    val captor = ArgumentCaptor.forClass(
+      classOf[java.util.Collection[TaskInfo]])
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(createOfferId(offerId))),
       captor.capture())
@@ -350,35 +354,37 @@ class CoarseMesosSchedulerBackendSuite
       endpoint: RpcEndpointRef): CoarseMesosSchedulerBackend = {
     val securityManager = mock[SecurityManager]
 
-    val backend = new CoarseMesosSchedulerBackend(
-      taskScheduler,
-      sc,
-      "master",
-      securityManager) {
-      override protected def createSchedulerDriver(
-          masterUrl: String,
-          scheduler: Scheduler,
-          sparkUser: String,
-          appName: String,
-          conf: SparkConf,
-          webuiUrl: Option[String] = None,
-          checkpoint: Option[Boolean] = None,
-          failoverTimeout: Option[Double] = None,
-          frameworkId: Option[String] = None): SchedulerDriver = driver
+    val backend =
+      new CoarseMesosSchedulerBackend(
+        taskScheduler,
+        sc,
+        "master",
+        securityManager) {
+        override protected def createSchedulerDriver(
+            masterUrl: String,
+            scheduler: Scheduler,
+            sparkUser: String,
+            appName: String,
+            conf: SparkConf,
+            webuiUrl: Option[String] = None,
+            checkpoint: Option[Boolean] = None,
+            failoverTimeout: Option[Double] = None,
+            frameworkId: Option[String] = None): SchedulerDriver = driver
 
-      override protected def getShuffleClient(): MesosExternalShuffleClient =
-        shuffleClient
+        override protected def getShuffleClient(): MesosExternalShuffleClient =
+          shuffleClient
 
-      override protected def createDriverEndpointRef(
-          properties: ArrayBuffer[(String, String)]): RpcEndpointRef = endpoint
+        override protected def createDriverEndpointRef(
+            properties: ArrayBuffer[(String, String)]): RpcEndpointRef =
+          endpoint
 
-      // override to avoid race condition with the driver thread on `mesosDriver`
-      override def startScheduler(newDriver: SchedulerDriver): Unit = {
-        mesosDriver = newDriver
+        // override to avoid race condition with the driver thread on `mesosDriver`
+        override def startScheduler(newDriver: SchedulerDriver): Unit = {
+          mesosDriver = newDriver
+        }
+
+        markRegistered()
       }
-
-      markRegistered()
-    }
     backend.start()
     backend
   }

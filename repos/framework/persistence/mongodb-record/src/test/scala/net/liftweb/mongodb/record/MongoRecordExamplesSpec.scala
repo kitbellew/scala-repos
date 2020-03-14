@@ -148,20 +148,19 @@ package mongotestrecords {
 
       override def setFromDBObject(
           dbo: DBObject): Box[List[Map[String, String]]] = {
-        val lst: List[Map[String, String]] =
-          dbo.keySet.toList
-            .map(k => {
-              dbo.get(k.toString) match {
-                case bdbo: BasicDBObject
-                    if (bdbo.containsField("name") && bdbo.containsField(
-                      "type")) =>
-                  Map(
-                    "name" -> bdbo.getString("name"),
-                    "type" -> bdbo.getString("type"))
-                case _ => null
-              }
-            })
-            .filter(_ != null)
+        val lst: List[Map[String, String]] = dbo.keySet.toList
+          .map(k => {
+            dbo.get(k.toString) match {
+              case bdbo: BasicDBObject
+                  if (bdbo.containsField("name") && bdbo.containsField(
+                    "type")) =>
+                Map(
+                  "name" -> bdbo.getString("name"),
+                  "type" -> bdbo.getString("type"))
+              case _ => null
+            }
+          })
+          .filter(_ != null)
         Full(set(lst))
       }
     }

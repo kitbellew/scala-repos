@@ -47,8 +47,7 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
   def matcher(input: CharSequence): Matcher =
     new Matcher(this, input, 0, input.length)
 
-  def split(input: CharSequence): Array[String] =
-    split(input, 0)
+  def split(input: CharSequence): Array[String] = split(input, 0)
 
   def split(input: CharSequence, limit: Int): Array[String] = {
     val lim =
@@ -126,8 +125,7 @@ object Pattern {
     new Pattern(jsRegExp, regex, flags1)
   }
 
-  def compile(regex: String): Pattern =
-    compile(regex, 0)
+  def compile(regex: String): Pattern = compile(regex, 0)
 
   def matches(regex: String, input: CharSequence): Boolean =
     compile(regex).matcher(input).matches()
@@ -165,16 +163,18 @@ object Pattern {
     val m = flagHackPat.exec(pat)
     if (m != null) {
       val newPat = pat.substring(m(0).get.length) // cut off the flag specifiers
-      val flags1 = m(1).fold(flags0) { chars =>
-        chars.foldLeft(flags0) { (f, c) =>
-          f | charToFlag(c)
+      val flags1 =
+        m(1).fold(flags0) { chars =>
+          chars.foldLeft(flags0) { (f, c) =>
+            f | charToFlag(c)
+          }
         }
-      }
-      val flags2 = m(2).fold(flags1) { chars =>
-        chars.foldLeft(flags1) { (f, c) =>
-          f & ~charToFlag(c)
+      val flags2 =
+        m(2).fold(flags1) { chars =>
+          chars.foldLeft(flags1) { (f, c) =>
+            f & ~charToFlag(c)
+          }
         }
-      }
       Some((newPat, flags2))
     } else
       None

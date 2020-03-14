@@ -68,8 +68,8 @@ object PcgXshRr64_32 extends GeneratorCompanion[PcgXshRr64_32, PcgSeed64] {
     fromSeed(PcgSeed64(longs(0), longs(1)))
   }
 
-  private[this] val streamUniquifier = new AtomicLong(
-    System.identityHashCode(PcgXshRr64_32))
+  private[this] val streamUniquifier =
+    new AtomicLong(System.identityHashCode(PcgXshRr64_32))
 
   @tailrec
   private[this] def nextStreamId(): Long = {

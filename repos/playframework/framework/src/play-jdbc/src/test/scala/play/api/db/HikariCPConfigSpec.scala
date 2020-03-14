@@ -236,8 +236,8 @@ trait Configs extends Scope {
     None,
     None,
     None)
-  val reference =
-    PlayConfig(Configuration.reference).get[PlayConfig]("play.db.prototype")
+  val reference = PlayConfig(Configuration.reference)
+    .get[PlayConfig]("play.db.prototype")
   def from(props: (String, String)*) =
     PlayConfig(
       Configuration(reference.underlying) ++ Configuration.from(props.toMap))

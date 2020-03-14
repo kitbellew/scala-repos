@@ -778,10 +778,11 @@ trait Trees extends api.Trees {
   def TypeTree(tp: Type): TypeTree = TypeTree() setType tp
   private def TypeTreeMemberType(sym: Symbol): TypeTree = {
     // Needed for pos/t4970*.scala. See SI-7853
-    val resType = (if (sym.isLocalToBlock)
-                     sym.tpe
-                   else
-                     (sym.owner.thisType memberType sym)).finalResultType
+    val resType =
+      (if (sym.isLocalToBlock)
+         sym.tpe
+       else
+         (sym.owner.thisType memberType sym)).finalResultType
     atPos(sym.pos.focus)(TypeTree(resType))
   }
 
@@ -835,16 +836,14 @@ trait Trees extends api.Trees {
         tree: Tree,
         parents: List[Tree],
         self: ValDef,
-        body: List[Tree]) =
-      new Template(parents, self, body).copyAttrs(tree)
+        body: List[Tree]) = new Template(parents, self, body).copyAttrs(tree)
     def Block(tree: Tree, stats: List[Tree], expr: Tree) =
       new Block(stats, expr).copyAttrs(tree)
     def CaseDef(tree: Tree, pat: Tree, guard: Tree, body: Tree) =
       new CaseDef(pat, guard, body).copyAttrs(tree)
     def Alternative(tree: Tree, trees: List[Tree]) =
       new Alternative(trees).copyAttrs(tree)
-    def Star(tree: Tree, elem: Tree) =
-      new Star(elem).copyAttrs(tree)
+    def Star(tree: Tree, elem: Tree) = new Star(elem).copyAttrs(tree)
     def Bind(tree: Tree, name: Name, body: Tree) =
       new Bind(name, body).copyAttrs(tree)
     def UnApply(tree: Tree, fun: Tree, args: List[Tree]) =
@@ -861,14 +860,11 @@ trait Trees extends api.Trees {
       new If(cond, thenp, elsep).copyAttrs(tree)
     def Match(tree: Tree, selector: Tree, cases: List[CaseDef]) =
       new Match(selector, cases).copyAttrs(tree)
-    def Return(tree: Tree, expr: Tree) =
-      new Return(expr).copyAttrs(tree)
+    def Return(tree: Tree, expr: Tree) = new Return(expr).copyAttrs(tree)
     def Try(tree: Tree, block: Tree, catches: List[CaseDef], finalizer: Tree) =
       new Try(block, catches, finalizer).copyAttrs(tree)
-    def Throw(tree: Tree, expr: Tree) =
-      new Throw(expr).copyAttrs(tree)
-    def New(tree: Tree, tpt: Tree) =
-      new New(tpt).copyAttrs(tree)
+    def Throw(tree: Tree, expr: Tree) = new Throw(expr).copyAttrs(tree)
+    def New(tree: Tree, tpt: Tree) = new New(tpt).copyAttrs(tree)
     def Typed(tree: Tree, expr: Tree, tpt: Tree) =
       new Typed(expr, tpt).copyAttrs(tree)
     def TypeApply(tree: Tree, fun: Tree, args: List[Tree]) =
@@ -885,20 +881,17 @@ trait Trees extends api.Trees {
       new ApplyDynamic(qual, args).copyAttrs(tree)
     def Super(tree: Tree, qual: Tree, mix: TypeName) =
       new Super(qual, mix).copyAttrs(tree)
-    def This(tree: Tree, qual: Name) =
-      new This(qual.toTypeName).copyAttrs(tree)
+    def This(tree: Tree, qual: Name) = new This(qual.toTypeName).copyAttrs(tree)
     def Select(tree: Tree, qualifier: Tree, selector: Name) =
       new Select(qualifier, selector).copyAttrs(tree)
-    def Ident(tree: Tree, name: Name) =
-      new Ident(name) copyAttrs tree
+    def Ident(tree: Tree, name: Name) = new Ident(name) copyAttrs tree
     def RefTree(tree: Tree, qualifier: Tree, selector: Name) =
       self.RefTree(qualifier, selector) copyAttrs tree
     def ReferenceToBoxed(tree: Tree, idt: Ident) =
       new ReferenceToBoxed(idt).copyAttrs(tree)
     def Literal(tree: Tree, value: Constant) =
       new Literal(value).copyAttrs(tree)
-    def TypeTree(tree: Tree) =
-      new TypeTree().copyAttrs(tree)
+    def TypeTree(tree: Tree) = new TypeTree().copyAttrs(tree)
     def Annotated(tree: Tree, annot: Tree, arg: Tree) =
       new Annotated(annot, arg).copyAttrs(tree)
     def SingletonTypeTree(tree: Tree, ref: Tree) =
@@ -1423,11 +1416,9 @@ trait Trees extends api.Trees {
     )
 
   /** casedef shorthand */
-  def CaseDef(pat: Tree, body: Tree): CaseDef =
-    CaseDef(pat, EmptyTree, body)
+  def CaseDef(pat: Tree, body: Tree): CaseDef = CaseDef(pat, EmptyTree, body)
 
-  def Bind(sym: Symbol, body: Tree): Bind =
-    Bind(sym.name, body) setSymbol sym
+  def Bind(sym: Symbol, body: Tree): Bind = Bind(sym.name, body) setSymbol sym
 
   def Try(body: Tree, cases: (Tree, Tree)*): Try =
     Try(
@@ -1437,11 +1428,9 @@ trait Trees extends api.Trees {
       },
       EmptyTree)
 
-  def Throw(tpe: Type, args: Tree*): Throw =
-    Throw(New(tpe, args: _*))
+  def Throw(tpe: Type, args: Tree*): Throw = Throw(New(tpe, args: _*))
 
-  def Apply(sym: Symbol, args: Tree*): Tree =
-    Apply(Ident(sym), args.toList)
+  def Apply(sym: Symbol, args: Tree*): Tree = Apply(Ident(sym), args.toList)
 
   /** Factory method for object creation `new tpt(args_1)...(args_n)`
     *  A `New(t, as)` is expanded to: `(new t).<init>(as)`
@@ -1458,21 +1447,17 @@ trait Trees extends api.Trees {
   def New(tpe: Type, args: Tree*): Tree =
     ApplyConstructor(TypeTree(tpe), args.toList)
 
-  def New(tpe: Type, argss: List[List[Tree]]): Tree =
-    New(TypeTree(tpe), argss)
+  def New(tpe: Type, argss: List[List[Tree]]): Tree = New(TypeTree(tpe), argss)
 
-  def New(sym: Symbol, args: Tree*): Tree =
-    New(sym.tpe, args: _*)
+  def New(sym: Symbol, args: Tree*): Tree = New(sym.tpe, args: _*)
 
-  def Super(sym: Symbol, mix: TypeName): Tree =
-    Super(This(sym), mix)
+  def Super(sym: Symbol, mix: TypeName): Tree = Super(This(sym), mix)
 
   /** Selection of a method in an arbitrary ancestor */
   def SuperSelect(clazz: Symbol, sym: Symbol): Tree =
     Select(Super(clazz, tpnme.EMPTY), sym)
 
-  def This(sym: Symbol): Tree =
-    This(sym.name.toTypeName) setSymbol sym
+  def This(sym: Symbol): Tree = This(sym.name.toTypeName) setSymbol sym
 
   def Select(qualifier: Tree, name: String): Select =
     Select(qualifier, newTermName(name))
@@ -1480,11 +1465,9 @@ trait Trees extends api.Trees {
   def Select(qualifier: Tree, sym: Symbol): Select =
     Select(qualifier, sym.name) setSymbol sym
 
-  def Ident(name: String): Ident =
-    Ident(newTermName(name))
+  def Ident(name: String): Ident = Ident(newTermName(name))
 
-  def Ident(sym: Symbol): Ident =
-    Ident(sym.name) setSymbol sym
+  def Ident(sym: Symbol): Ident = Ident(sym.name) setSymbol sym
 
   /** Block factory that flattens directly nested blocks.
     */
@@ -2366,29 +2349,29 @@ trait Trees extends api.Trees {
 
   implicit val AlternativeTag = ClassTag[Alternative](classOf[Alternative])
   implicit val AnnotatedTag = ClassTag[Annotated](classOf[Annotated])
-  implicit val AppliedTypeTreeTag =
-    ClassTag[AppliedTypeTree](classOf[AppliedTypeTree])
+  implicit val AppliedTypeTreeTag = ClassTag[AppliedTypeTree](
+    classOf[AppliedTypeTree])
   implicit val ApplyTag = ClassTag[Apply](classOf[Apply])
-  implicit val AssignOrNamedArgTag =
-    ClassTag[AssignOrNamedArg](classOf[AssignOrNamedArg])
+  implicit val AssignOrNamedArgTag = ClassTag[AssignOrNamedArg](
+    classOf[AssignOrNamedArg])
   implicit val AssignTag = ClassTag[Assign](classOf[Assign])
   implicit val BindTag = ClassTag[Bind](classOf[Bind])
   implicit val BlockTag = ClassTag[Block](classOf[Block])
   implicit val CaseDefTag = ClassTag[CaseDef](classOf[CaseDef])
   implicit val ClassDefTag = ClassTag[ClassDef](classOf[ClassDef])
-  implicit val CompoundTypeTreeTag =
-    ClassTag[CompoundTypeTree](classOf[CompoundTypeTree])
+  implicit val CompoundTypeTreeTag = ClassTag[CompoundTypeTree](
+    classOf[CompoundTypeTree])
   implicit val DefDefTag = ClassTag[DefDef](classOf[DefDef])
   implicit val DefTreeTag = ClassTag[DefTree](classOf[DefTree])
-  implicit val ExistentialTypeTreeTag =
-    ClassTag[ExistentialTypeTree](classOf[ExistentialTypeTree])
+  implicit val ExistentialTypeTreeTag = ClassTag[ExistentialTypeTree](
+    classOf[ExistentialTypeTree])
   implicit val FunctionTag = ClassTag[Function](classOf[Function])
   implicit val GenericApplyTag = ClassTag[GenericApply](classOf[GenericApply])
   implicit val IdentTag = ClassTag[Ident](classOf[Ident])
   implicit val IfTag = ClassTag[If](classOf[If])
   implicit val ImplDefTag = ClassTag[ImplDef](classOf[ImplDef])
-  implicit val ImportSelectorTag =
-    ClassTag[ImportSelector](classOf[ImportSelector])
+  implicit val ImportSelectorTag = ClassTag[ImportSelector](
+    classOf[ImportSelector])
   implicit val ImportTag = ClassTag[Import](classOf[Import])
   implicit val LabelDefTag = ClassTag[LabelDef](classOf[LabelDef])
   implicit val LiteralTag = ClassTag[Literal](classOf[Literal])
@@ -2398,15 +2381,15 @@ trait Trees extends api.Trees {
   implicit val NameTreeTag = ClassTag[NameTree](classOf[NameTree])
   implicit val NewTag = ClassTag[New](classOf[New])
   implicit val PackageDefTag = ClassTag[PackageDef](classOf[PackageDef])
-  implicit val ReferenceToBoxedTag =
-    ClassTag[ReferenceToBoxed](classOf[ReferenceToBoxed])
+  implicit val ReferenceToBoxedTag = ClassTag[ReferenceToBoxed](
+    classOf[ReferenceToBoxed])
   implicit val RefTreeTag = ClassTag[RefTree](classOf[RefTree])
   implicit val ReturnTag = ClassTag[Return](classOf[Return])
-  implicit val SelectFromTypeTreeTag =
-    ClassTag[SelectFromTypeTree](classOf[SelectFromTypeTree])
+  implicit val SelectFromTypeTreeTag = ClassTag[SelectFromTypeTree](
+    classOf[SelectFromTypeTree])
   implicit val SelectTag = ClassTag[Select](classOf[Select])
-  implicit val SingletonTypeTreeTag =
-    ClassTag[SingletonTypeTree](classOf[SingletonTypeTree])
+  implicit val SingletonTypeTreeTag = ClassTag[SingletonTypeTree](
+    classOf[SingletonTypeTree])
   implicit val StarTag = ClassTag[Star](classOf[Star])
   implicit val SuperTag = ClassTag[Super](classOf[Super])
   implicit val SymTreeTag = ClassTag[SymTree](classOf[SymTree])
@@ -2418,8 +2401,8 @@ trait Trees extends api.Trees {
   implicit val TryTag = ClassTag[Try](classOf[Try])
   implicit val TypTreeTag = ClassTag[TypTree](classOf[TypTree])
   implicit val TypeApplyTag = ClassTag[TypeApply](classOf[TypeApply])
-  implicit val TypeBoundsTreeTag =
-    ClassTag[TypeBoundsTree](classOf[TypeBoundsTree])
+  implicit val TypeBoundsTreeTag = ClassTag[TypeBoundsTree](
+    classOf[TypeBoundsTree])
   implicit val TypeDefTag = ClassTag[TypeDef](classOf[TypeDef])
   implicit val TypeTreeTag = ClassTag[TypeTree](classOf[TypeTree])
   implicit val TypedTag = ClassTag[Typed](classOf[Typed])
@@ -2432,6 +2415,7 @@ trait Trees extends api.Trees {
 
 object TreesStats {
   // statistics
-  val nodeByType = Statistics.newByClass("#created tree nodes by type")(
-    Statistics.newCounter(""))
+  val nodeByType =
+    Statistics.newByClass("#created tree nodes by type")(
+      Statistics.newCounter(""))
 }

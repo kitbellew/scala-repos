@@ -32,9 +32,10 @@ object Base64Long {
   /**
     * Enable re-use of the StringBuilder for toBase64(Long): String
     */
-  private[this] val threadLocalBuilder = new ThreadLocal[StringBuilder] {
-    override def initialValue = new StringBuilder
-  }
+  private[this] val threadLocalBuilder =
+    new ThreadLocal[StringBuilder] {
+      override def initialValue = new StringBuilder
+    }
 
   /**
     * Convert this Long to a base 64 String, using the standard base 64 alphabet.

@@ -101,10 +101,12 @@ object Modules {
       environment: Environment,
       configuration: Configuration): Seq[Any] = {
 
-    val includes =
-      configuration.getStringSeq("play.modules.enabled").getOrElse(Seq.empty)
-    val excludes =
-      configuration.getStringSeq("play.modules.disabled").getOrElse(Seq.empty)
+    val includes = configuration
+      .getStringSeq("play.modules.enabled")
+      .getOrElse(Seq.empty)
+    val excludes = configuration
+      .getStringSeq("play.modules.disabled")
+      .getOrElse(Seq.empty)
 
     val moduleClassNames = includes.toSet -- excludes
 

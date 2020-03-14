@@ -57,10 +57,11 @@ trait JsonOutput[T] extends ApiFormats with JsonMethods[T] {
         response.characterEncoding = Some(Codec.UTF8.name)
         val writer = response.writer
 
-        val jsonpCallback = for {
-          paramName <- jsonpCallbackParameterNames
-          callback <- params.get(paramName)
-        } yield callback
+        val jsonpCallback =
+          for {
+            paramName <- jsonpCallbackParameterNames
+            callback <- params.get(paramName)
+          } yield callback
 
         jsonpCallback match {
           case some :: _ =>

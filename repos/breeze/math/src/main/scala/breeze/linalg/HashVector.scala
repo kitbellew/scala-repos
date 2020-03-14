@@ -90,8 +90,8 @@ object HashVector
     new HashVector(new OpenAddressHashArray[V](size))
   }
   def apply[@spec(Double, Int, Float, Long) V: Zero](values: Array[V]) = {
-    implicit val man =
-      ClassTag[V](values.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      values.getClass.getComponentType.asInstanceOf[Class[V]])
     val oah = new OpenAddressHashArray[V](values.length)
     for ((v, i) <- values.zipWithIndex)
       oah(i) = v

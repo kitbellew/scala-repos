@@ -261,10 +261,11 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
         iter
       }
       .groupBy(identity)
-    val sid = x.dependencies.head
-      .asInstanceOf[ShuffleDependency[_, _, _]]
-      .shuffleHandle
-      .shuffleId
+    val sid =
+      x.dependencies.head
+        .asInstanceOf[ShuffleDependency[_, _, _]]
+        .shuffleHandle
+        .shuffleId
     val rdd = x.mapPartitionsWithIndex {
       case (i, iter) =>
         // Fail the first stage attempt. Here we use the task attempt ID to determine this.
@@ -298,10 +299,10 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
           fail("expected two attempts of the same shuffle map stage.")
         }
       }
-      val stageAccum1stAttempt =
-        findTestAccum(mapStageInfo1stAttempt.accumulables.values)
-      val stageAccum2ndAttempt =
-        findTestAccum(mapStageInfo2ndAttempt.accumulables.values)
+      val stageAccum1stAttempt = findTestAccum(
+        mapStageInfo1stAttempt.accumulables.values)
+      val stageAccum2ndAttempt = findTestAccum(
+        mapStageInfo2ndAttempt.accumulables.values)
       // Both map stages should have succeeded, since the fetch failure happened in the
       // result stage, not the map stage. This means we should get the accumulator updates
       // from all partitions.
@@ -338,11 +339,12 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     val internalAccums = InternalAccumulator.createAll()
     // We ran 2 stages, so we should have 2 sets of internal accumulators, 1 for each stage
     assert(Accumulators.originals.size === internalAccums.size * 2)
-    val accumsRegistered = sc.cleaner match {
-      case Some(cleaner: SaveAccumContextCleaner) =>
-        cleaner.accumsRegisteredForCleanup
-      case _ => Seq.empty[Long]
-    }
+    val accumsRegistered =
+      sc.cleaner match {
+        case Some(cleaner: SaveAccumContextCleaner) =>
+          cleaner.accumsRegisteredForCleanup
+        case _ => Seq.empty[Long]
+      }
     // Make sure the same set of accumulators is registered for cleanup
     assert(accumsRegistered.size === internalAccums.size * 2)
     assert(accumsRegistered.toSet === Accumulators.originals.keys.toSet)

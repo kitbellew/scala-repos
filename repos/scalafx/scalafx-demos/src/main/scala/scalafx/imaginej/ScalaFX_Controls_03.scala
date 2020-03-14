@@ -68,40 +68,45 @@ object ScalaFX_Controls_03 extends JFXApp {
     }
   }
 
-  val homeRadioButton = new RadioButton {
-    toggleGroup = theToggleGroup
-    userData = "Home"
-  }
+  val homeRadioButton =
+    new RadioButton {
+      toggleGroup = theToggleGroup
+      userData = "Home"
+    }
 
-  val calendarRadioButton = new RadioButton {
-    toggleGroup = theToggleGroup
-    userData = "Calendar"
-  }
+  val calendarRadioButton =
+    new RadioButton {
+      toggleGroup = theToggleGroup
+      userData = "Calendar"
+    }
 
-  val contactsRadioButton = new RadioButton {
-    toggleGroup = theToggleGroup
-    userData = "Contacts"
-  }
+  val contactsRadioButton =
+    new RadioButton {
+      toggleGroup = theToggleGroup
+      userData = "Contacts"
+    }
 
-  val vBox = new VBox {
-    spacing = 10
-    children = List(
-      homeRadioButton,
-      calendarRadioButton,
-      contactsRadioButton
-    )
-  }
+  val vBox =
+    new VBox {
+      spacing = 10
+      children = List(
+        homeRadioButton,
+        calendarRadioButton,
+        contactsRadioButton
+      )
+    }
 
   val iconImageView = new ImageView {}
 
-  val hBox = new HBox {
-    spacing = 50
-    padding = Insets(20, 10, 10, 20)
-    children = List(
-      vBox,
-      iconImageView
-    )
-  }
+  val hBox =
+    new HBox {
+      spacing = 50
+      padding = Insets(20, 10, 10, 20)
+      children = List(
+        vBox,
+        iconImageView
+      )
+    }
 
   stage = new PrimaryStage {
     title = "ScalaFX Controls 03"

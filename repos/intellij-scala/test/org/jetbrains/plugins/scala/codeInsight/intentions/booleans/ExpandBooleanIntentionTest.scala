@@ -11,16 +11,14 @@ class ExpandBooleanIntentionTest extends ScalaIntentionTestBase {
   val familyName = ExpandBooleanIntention.familyName
 
   def testExpandBoolean() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Int): Boolean = {
         |    retur<caret>n a > 0
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Int): Boolean = {
         |    <caret>if (a > 0) {
@@ -36,16 +34,14 @@ class ExpandBooleanIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testExpandBoolean2() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Int): Boolean = {
         |    retur<caret>n (a > 0)
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Int): Boolean = {
         |    <caret>if (a > 0) {
@@ -61,16 +57,14 @@ class ExpandBooleanIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testExpandBoolean3() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Int, b: Int): Boolean = {
         |    retur<caret>n (a > 0 || b < 7)
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Int, b: Int): Boolean = {
         |    <caret>if (a > 0 || b < 7) {
@@ -86,8 +80,7 @@ class ExpandBooleanIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testExpandBoolean4() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Int, b: Int): Boolean = {
         |    if (a > 0 || b < 7) {
@@ -98,8 +91,7 @@ class ExpandBooleanIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Int, b: Int): Boolean = {
         |    if (a > 0 || b < 7) {

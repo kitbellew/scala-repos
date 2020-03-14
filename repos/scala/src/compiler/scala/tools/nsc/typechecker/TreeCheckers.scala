@@ -40,14 +40,16 @@ abstract class TreeCheckers extends Analyzer {
     diffList(t1 filter (_ ne t1), t2 filter (_ ne t2))
 
   def diffTemplates(t1: Template, t2: Template): String = {
-    val parents = diffList(t1.parents, t2.parents).toString match {
-      case "" => ""
-      case s  => "parents " + s
-    }
-    val stats = diffList(t1.body, t2.body).toString match {
-      case "" => ""
-      case s  => "stats " + s
-    }
+    val parents =
+      diffList(t1.parents, t2.parents).toString match {
+        case "" => ""
+        case s  => "parents " + s
+      }
+    val stats =
+      diffList(t1.body, t2.body).toString match {
+        case "" => ""
+        case s  => "stats " + s
+      }
     oempty(parents, stats) mkString ", "
   }
 
@@ -298,10 +300,8 @@ abstract class TreeCheckers extends Analyzer {
         "types differ\n old: " + tp1 + "\n new: " + tp2 + "\n tree: " + tree)
 
     /** XXX Disabled reporting of position errors until there is less noise. */
-    private def noPos(t: Tree) =
-      () // errorFn("no pos: " + treestr(t))
-    private def noType(t: Tree) =
-      errorFn(t.pos, "no type: " + treestr(t))
+    private def noPos(t: Tree) = () // errorFn("no pos: " + treestr(t))
+    private def noType(t: Tree) = errorFn(t.pos, "no type: " + treestr(t))
 
     private def checkSym(t: Tree) =
       if (t.symbol == NoSymbol)

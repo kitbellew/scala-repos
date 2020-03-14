@@ -325,11 +325,12 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
           seed)
 
       case array: ArrayData =>
-        val elementType = dataType match {
-          case udt: UserDefinedType[_] =>
-            udt.sqlType.asInstanceOf[ArrayType].elementType
-          case ArrayType(et, _) => et
-        }
+        val elementType =
+          dataType match {
+            case udt: UserDefinedType[_] =>
+              udt.sqlType.asInstanceOf[ArrayType].elementType
+            case ArrayType(et, _) => et
+          }
         var result = seed
         var i = 0
         while (i < array.numElements()) {
@@ -339,12 +340,13 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
         result
 
       case map: MapData =>
-        val (kt, vt) = dataType match {
-          case udt: UserDefinedType[_] =>
-            val mapType = udt.sqlType.asInstanceOf[MapType]
-            mapType.keyType -> mapType.valueType
-          case MapType(kt, vt, _) => kt -> vt
-        }
+        val (kt, vt) =
+          dataType match {
+            case udt: UserDefinedType[_] =>
+              val mapType = udt.sqlType.asInstanceOf[MapType]
+              mapType.keyType -> mapType.valueType
+            case MapType(kt, vt, _) => kt -> vt
+          }
         val keys = map.keyArray()
         val values = map.valueArray()
         var result = seed
@@ -357,11 +359,12 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
         result
 
       case struct: InternalRow =>
-        val types: Array[DataType] = dataType match {
-          case udt: UserDefinedType[_] =>
-            udt.sqlType.asInstanceOf[StructType].map(_.dataType).toArray
-          case StructType(fields) => fields.map(_.dataType)
-        }
+        val types: Array[DataType] =
+          dataType match {
+            case udt: UserDefinedType[_] =>
+              udt.sqlType.asInstanceOf[StructType].map(_.dataType).toArray
+            case StructType(fields) => fields.map(_.dataType)
+          }
         var result = seed
         var i = 0
         val len = struct.numFields

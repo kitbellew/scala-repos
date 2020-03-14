@@ -285,9 +285,10 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
     // test for tupled encoders
     {
-      val schema = ExpressionEncoder
-        .tuple(ExpressionEncoder[Int], ExpressionEncoder[(String, Int)])
-        .schema
+      val schema =
+        ExpressionEncoder
+          .tuple(ExpressionEncoder[Int], ExpressionEncoder[(String, Int)])
+          .schema
       assert(schema(0).nullable === false)
       assert(schema(1).nullable === true)
       assert(schema(1).dataType.asInstanceOf[StructType](0).nullable === true)
@@ -325,35 +326,36 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
       val attr =
         AttributeReference("obj", ObjectType(encoder.clsTag.runtimeClass))()
       val inputPlan = LocalRelation(attr)
-      val plan =
-        Project(
-          Alias(encoder.fromRowExpression, "obj")() :: Nil,
-          Project(encoder.namedExpressions, inputPlan))
+      val plan = Project(
+        Alias(encoder.fromRowExpression, "obj")() :: Nil,
+        Project(encoder.namedExpressions, inputPlan))
       assertAnalysisSuccess(plan)
 
-      val isCorrect = (input, convertedBack) match {
-        case (b1: Array[Byte], b2: Array[Byte]) => Arrays.equals(b1, b2)
-        case (b1: Array[Int], b2: Array[Int])   => Arrays.equals(b1, b2)
-        case (b1: Array[Array[_]], b2: Array[Array[_]]) =>
-          Arrays.deepEquals(
-            b1.asInstanceOf[Array[AnyRef]],
-            b2.asInstanceOf[Array[AnyRef]])
-        case (b1: Array[_], b2: Array[_]) =>
-          Arrays.equals(
-            b1.asInstanceOf[Array[AnyRef]],
-            b2.asInstanceOf[Array[AnyRef]])
-        case _ => input == convertedBack
-      }
+      val isCorrect =
+        (input, convertedBack) match {
+          case (b1: Array[Byte], b2: Array[Byte]) => Arrays.equals(b1, b2)
+          case (b1: Array[Int], b2: Array[Int])   => Arrays.equals(b1, b2)
+          case (b1: Array[Array[_]], b2: Array[Array[_]]) =>
+            Arrays.deepEquals(
+              b1.asInstanceOf[Array[AnyRef]],
+              b2.asInstanceOf[Array[AnyRef]])
+          case (b1: Array[_], b2: Array[_]) =>
+            Arrays.equals(
+              b1.asInstanceOf[Array[AnyRef]],
+              b2.asInstanceOf[Array[AnyRef]])
+          case _ => input == convertedBack
+        }
 
       if (!isCorrect) {
-        val types = convertedBack match {
-          case c: Product =>
-            c.productIterator
-              .filter(_ != null)
-              .map(_.getClass.getName)
-              .mkString(",")
-          case other => other.getClass.getName
-        }
+        val types =
+          convertedBack match {
+            case c: Product =>
+              c.productIterator
+                .filter(_ != null)
+                .map(_.getClass.getName)
+                .mkString(",")
+            case other => other.getClass.getName
+          }
 
         val encodedData =
           try {

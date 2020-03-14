@@ -51,12 +51,14 @@ private[finagle] object StabilizingAddr {
       @volatile var nq = 0
       @volatile var healthStat = Healthy.id
 
-      val health = statsReceiver.addGauge("health") {
-        healthStat
-      }
-      val limbo = statsReceiver.addGauge("limbo") {
-        nq
-      }
+      val health =
+        statsReceiver.addGauge("health") {
+          healthStat
+        }
+      val limbo =
+        statsReceiver.addGauge("limbo") {
+          nq
+        }
       val stabilized = new Broker[Addr]
 
       /**
@@ -130,10 +132,11 @@ private[finagle] object StabilizingAddr {
           else {
             // We always bind if active is nonempty. Otherwise we
             // pass through the current active address.
-            val attrs = srcAddr match {
-              case Addr.Bound(_, attrs) => attrs
-              case _                    => Addr.Metadata.empty
-            }
+            val attrs =
+              srcAddr match {
+                case Addr.Bound(_, attrs) => attrs
+                case _                    => Addr.Metadata.empty
+              }
             val addr =
               if (active.nonEmpty)
                 Addr.Bound(active, attrs)

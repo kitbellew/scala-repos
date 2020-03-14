@@ -131,8 +131,9 @@ class ScalaCopyPastePostProcessor
           .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO)
       return
 
-    val file =
-      PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
+    val file = PsiDocumentManager
+      .getInstance(project)
+      .getPsiFile(editor.getDocument)
 
     if (!file.isInstanceOf[ScalaFile])
       return
@@ -145,9 +146,10 @@ class ScalaCopyPastePostProcessor
       if (ScalaApplicationSettings
             .getInstance()
             .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.ASK) {
-        val dialog = new RestoreReferencesDialog(
-          project,
-          bindingsToRestore.map(_.path.toOption.getOrElse("")).sorted.toArray)
+        val dialog =
+          new RestoreReferencesDialog(
+            project,
+            bindingsToRestore.map(_.path.toOption.getOrElse("")).sorted.toArray)
         dialog.show()
         val selectedPahts = dialog.getSelectedElements
         if (dialog.getExitCode == DialogWrapper.OK_EXIT_CODE)

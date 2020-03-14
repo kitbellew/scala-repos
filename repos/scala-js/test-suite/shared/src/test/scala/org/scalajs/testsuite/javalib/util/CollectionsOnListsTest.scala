@@ -102,9 +102,10 @@ object CollectionsOnListTest extends CollectionsTestBase {
       }
     }
 
-    val cmp = new ju.Comparator[T] {
-      override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
-    }
+    val cmp =
+      new ju.Comparator[T] {
+        override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
+      }
 
     list.addAll(range.map(toElem))
     ju.Collections.sort(list, cmp)
@@ -176,9 +177,10 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
     // Test: binarySearch[T](List[T], key: T, Comparator[T]))
     def test[T: ClassTag](toElem: Int => T, cmpFun: (T, T) => Int): Unit = {
       val list = factory.empty[T]
-      val cmp = new ju.Comparator[T] {
-        override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
-      }
+      val cmp =
+        new ju.Comparator[T] {
+          override def compare(o1: T, o2: T): Int = cmpFun(o1, o2)
+        }
 
       list.addAll(range.map(toElem).sortWith(cmpFun(_, _) < 0))
 

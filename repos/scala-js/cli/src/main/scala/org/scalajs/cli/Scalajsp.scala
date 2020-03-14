@@ -27,40 +27,41 @@ object Scalajsp {
       fileNames: Seq[String] = Seq.empty)
 
   def main(args: Array[String]): Unit = {
-    val parser = new scopt.OptionParser[Options]("scalajsp") {
-      head("scalajsp", ScalaJSVersions.current)
-      arg[String]("<file> ...")
-        .unbounded()
-        .action { (x, c) =>
-          c.copy(fileNames = c.fileNames :+ x)
-        }
-        .text("*.sjsir file to display content of")
-      opt[File]('j', "jar")
-        .valueName("<jar>")
-        .action { (x, c) =>
-          c.copy(jar = Some(x))
-        }
-        .text("Read *.sjsir file(s) from the given JAR.")
-      opt[Unit]('i', "infos")
-        .action { (_, c) =>
-          c.copy(infos = true)
-        }
-        .text("Show DCE infos instead of trees")
-      opt[Unit]('s', "supported")
-        .action { (_, _) =>
-          printSupported();
-          sys.exit()
-        }
-        .text("Show supported Scala.js IR versions")
-      version("version")
-        .abbr("v")
-        .text("Show scalajsp version")
-      help("help")
-        .abbr("h")
-        .text("prints this usage text")
+    val parser =
+      new scopt.OptionParser[Options]("scalajsp") {
+        head("scalajsp", ScalaJSVersions.current)
+        arg[String]("<file> ...")
+          .unbounded()
+          .action { (x, c) =>
+            c.copy(fileNames = c.fileNames :+ x)
+          }
+          .text("*.sjsir file to display content of")
+        opt[File]('j', "jar")
+          .valueName("<jar>")
+          .action { (x, c) =>
+            c.copy(jar = Some(x))
+          }
+          .text("Read *.sjsir file(s) from the given JAR.")
+        opt[Unit]('i', "infos")
+          .action { (_, c) =>
+            c.copy(infos = true)
+          }
+          .text("Show DCE infos instead of trees")
+        opt[Unit]('s', "supported")
+          .action { (_, _) =>
+            printSupported();
+            sys.exit()
+          }
+          .text("Show supported Scala.js IR versions")
+        version("version")
+          .abbr("v")
+          .text("Show scalajsp version")
+        help("help")
+          .abbr("h")
+          .text("prints this usage text")
 
-      override def showUsageOnError = true
-    }
+        override def showUsageOnError = true
+      }
 
     for {
       options <- parser.parse(args, Options())
@@ -123,8 +124,8 @@ object Scalajsp {
         fail(s"No such file in jar: $name")
       else {
         val name = jarFile.getName + "#" + entry.getName
-        val content =
-          IO.readInputStreamToByteArray(jarFile.getInputStream(entry))
+        val content = IO.readInputStreamToByteArray(
+          jarFile.getInputStream(entry))
         new MemVirtualSerializedScalaJSIRFile(name).withContent(content)
       }
     } finally {

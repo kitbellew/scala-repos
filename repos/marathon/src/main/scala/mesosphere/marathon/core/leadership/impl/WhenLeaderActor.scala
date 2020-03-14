@@ -38,20 +38,21 @@ private class WhenLeaderActor(childProps: => Props)
 
   override def receive: Receive = suspended
 
-  private[this] val suspended: Receive = LoggingReceive.withLabel("suspended") {
-    case PrepareForStart =>
-      val childRef = context.actorOf(childProps, leadershipCycle.toString)
-      leadershipCycle += 1
-      sender() ! Prepared(self)
-      context.become(active(childRef))
+  private[this] val suspended: Receive =
+    LoggingReceive.withLabel("suspended") {
+      case PrepareForStart =>
+        val childRef = context.actorOf(childProps, leadershipCycle.toString)
+        leadershipCycle += 1
+        sender() ! Prepared(self)
+        context.become(active(childRef))
 
-    case Stop => sender() ! Stopped
+      case Stop => sender() ! Stopped
 
-    case unhandled: Any =>
-      log.debug("unhandled message in suspend: {}", unhandled)
-      sender() ! Status.Failure(
-        new IllegalStateException(s"not currently active ($self)"))
-  }
+      case unhandled: Any =>
+        log.debug("unhandled message in suspend: {}", unhandled)
+        sender() ! Status.Failure(
+          new IllegalStateException(s"not currently active ($self)"))
+    }
 
   private[impl] def starting(
       coordinatorRef: ActorRef,

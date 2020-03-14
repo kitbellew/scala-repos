@@ -82,12 +82,13 @@ private[functor] sealed trait AlgebraInvariantInstances {
         }
     }
 
-  implicit val invariantMonoid: Invariant[Monoid] = new Invariant[Monoid] {
-    def imap[A, B](fa: Monoid[A])(f: A => B)(g: B => A): Monoid[B] =
-      new Monoid[B] {
-        val empty = f(fa.empty)
+  implicit val invariantMonoid: Invariant[Monoid] =
+    new Invariant[Monoid] {
+      def imap[A, B](fa: Monoid[A])(f: A => B)(g: B => A): Monoid[B] =
+        new Monoid[B] {
+          val empty = f(fa.empty)
 
-        def combine(x: B, y: B): B = f(fa.combine(g(x), g(y)))
-      }
-  }
+          def combine(x: B, y: B): B = f(fa.combine(g(x), g(y)))
+        }
+    }
 }

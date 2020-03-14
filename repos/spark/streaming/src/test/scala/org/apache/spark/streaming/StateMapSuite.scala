@@ -190,8 +190,9 @@ class StateMapSuite extends SparkFunSuite {
     val targetDeltaLength = 10
     val deltaChainThreshold = 5
 
-    var map = new OpenHashMapBasedStateMap[Int, Int](
-      deltaChainThreshold = deltaChainThreshold)
+    var map =
+      new OpenHashMapBasedStateMap[Int, Int](
+        deltaChainThreshold = deltaChainThreshold)
 
     // Make large delta chain with length more than deltaChainThreshold
     for (i <- 1 to targetDeltaLength) {
@@ -395,14 +396,13 @@ class StateMapSuite extends SparkFunSuite {
 
       // Assert that every time threshold returns the correct data
       for (t <- 0L to (time + 1)) {
-        val expectedRecords =
-          refMapToTestWith.iterator
-            .filter {
-              _._2._2 < t
-            }
-            .map { x =>
-              (x._1, x._2._1, x._2._2)
-            }
+        val expectedRecords = refMapToTestWith.iterator
+          .filter {
+            _._2._2 < t
+          }
+          .map { x =>
+            (x._1, x._2._1, x._2._2)
+          }
         assert(mapToTest.getByTime(t).toSet === expectedRecords.toSet)
       }
     }
@@ -434,10 +434,9 @@ class StateMapSuite extends SparkFunSuite {
     val map = new OpenHashMapBasedStateMap[KryoState, KryoState]()
     map.put(new KryoState("a"), new KryoState("b"), 1)
 
-    val record =
-      MapWithStateRDDRecord[KryoState, KryoState, KryoState](
-        map,
-        Seq(new KryoState("c")))
+    val record = MapWithStateRDDRecord[KryoState, KryoState, KryoState](
+      map,
+      Seq(new KryoState("c")))
     val deserRecord = serializeAndDeserialize(new KryoSerializer(conf), record)
     assert(!(record eq deserRecord))
     assert(

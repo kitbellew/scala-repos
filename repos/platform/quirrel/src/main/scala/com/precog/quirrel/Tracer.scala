@@ -32,11 +32,12 @@ trait Tracer extends parser.AST with typer.Binder {
       sigma: Sigma,
       expr: Expr,
       parentIdx: Option[Int]): Trace = {
-    val copied = if (trace.nodes.contains((sigma, expr))) {
-      trace
-    } else {
-      Trace.safeCopy(trace, (sigma, expr), BitSetUtil.create())
-    }
+    val copied =
+      if (trace.nodes.contains((sigma, expr))) {
+        trace
+      } else {
+        Trace.safeCopy(trace, (sigma, expr), BitSetUtil.create())
+      }
 
     parentIdx match {
       case Some(idx) => {

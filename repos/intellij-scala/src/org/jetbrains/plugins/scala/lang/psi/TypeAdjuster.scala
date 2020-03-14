@@ -64,8 +64,9 @@ object TypeAdjuster extends ApplicationAdapter {
   }
 
   private def adjustMarkedElements() = {
-    val elements =
-      markedElements.flatMap(_.getElement.toOption).filter(_.isValid)
+    val elements = markedElements
+      .flatMap(_.getElement.toOption)
+      .filter(_.isValid)
     markedElements.clear()
 
     adjustFor(elements)
@@ -96,8 +97,8 @@ object TypeAdjuster extends ApplicationAdapter {
       .map(shortenReference(_, useTypeAliases))
   }
 
-  private val toReplaceKey: Key[String] =
-    Key.create[String]("type.element.to.replace")
+  private val toReplaceKey: Key[String] = Key.create[String](
+    "type.element.to.replace")
 
   private def simplify(info: ReplacementInfo): Option[ReplacementInfo] = {
     def markToReplace(typeElem: ScTypeElement): Unit =
@@ -141,14 +142,15 @@ object TypeAdjuster extends ApplicationAdapter {
       def unapply(info: SimpleInfo): Option[ReplacementInfo] = {
         val dummyTypeElem = newTypeElem(info.replacement, info.origTypeElem)
         val replacementType = dummyTypeElem.calcType
-        val withoutAliases =
-          ScType.removeAliasDefinitions(replacementType, expandableOnly = true)
+        val withoutAliases = ScType.removeAliasDefinitions(
+          replacementType,
+          expandableOnly = true)
         if (replacementType.presentableText != withoutAliases.presentableText) {
           markToReplace(info.origTypeElem)
           val text = withoutAliases.canonicalText
           val newTypeEl = newTypeElem(text, info.origTypeElem)
-          val subTypeElems =
-            collectAdjustableTypeElements(newTypeEl).filter(_ != newTypeEl)
+          val subTypeElems = collectAdjustableTypeElements(newTypeEl).filter(
+            _ != newTypeEl)
           if (subTypeElems.isEmpty) {
             Some(
               ReplacementInfo
@@ -211,8 +213,8 @@ object TypeAdjuster extends ApplicationAdapter {
     object hasStableReplacement {
       def unapply(rInfo: SimpleInfo): Option[ReplacementInfo] = {
         rInfo.resolve.flatMap { resolved =>
-          val position =
-            findRef(rInfo.origTypeElem).getOrElse(info.origTypeElem)
+          val position = findRef(rInfo.origTypeElem)
+            .getOrElse(info.origTypeElem)
           val importAlias = ScalaPsiUtil.importAliasFor(resolved, position)
           resolved match {
             case _ if importAlias.isDefined =>
@@ -241,8 +243,8 @@ object TypeAdjuster extends ApplicationAdapter {
 
     info match {
       case cmp: CompoundInfo =>
-        cmp.copy(childInfos =
-          cmp.childInfos.map(shortenReference(_, useTypeAliases)))
+        cmp.copy(childInfos = cmp.childInfos.map(
+          shortenReference(_, useTypeAliases)))
       case hasStableReplacement(rInfo) => rInfo
       case _                           => info
     }
@@ -362,25 +364,27 @@ object TypeAdjuster extends ApplicationAdapter {
     def withNewText(s: String): SimpleInfo = copy(replacement = s)
 
     def updateTarget(target: PsiNamedElement): SimpleInfo = {
-      val (newText, pathToImport) = target match {
-        case clazz: PsiClass =>
-          val qName = clazz.qualifiedName
-          val needPrefix = ScalaCodeStyleSettings
-            .getInstance(origTypeElem.getProject)
-            .hasImportWithPrefix(qName)
-          if (needPrefix) {
-            val words = qName.split('.')
-            val withPrefix = words.takeRight(2).mkString(".")
-            val packageName = words.dropRight(1).mkString(".")
-            (withPrefix, Some(packageName))
-          } else
-            (clazz.name, Some(qName))
-        case _ => (target.name, ScalaNamesUtil.qualifiedName(target))
-      }
-      val replacementText = origTypeElem match {
-        case s: ScSimpleTypeElement if s.singleton => s"$newText.type"
-        case _                                     => newText
-      }
+      val (newText, pathToImport) =
+        target match {
+          case clazz: PsiClass =>
+            val qName = clazz.qualifiedName
+            val needPrefix = ScalaCodeStyleSettings
+              .getInstance(origTypeElem.getProject)
+              .hasImportWithPrefix(qName)
+            if (needPrefix) {
+              val words = qName.split('.')
+              val withPrefix = words.takeRight(2).mkString(".")
+              val packageName = words.dropRight(1).mkString(".")
+              (withPrefix, Some(packageName))
+            } else
+              (clazz.name, Some(qName))
+          case _ => (target.name, ScalaNamesUtil.qualifiedName(target))
+        }
+      val replacementText =
+        origTypeElem match {
+          case s: ScSimpleTypeElement if s.singleton => s"$newText.type"
+          case _                                     => newText
+        }
       val withoutImport = copy(
         replacement = replacementText,
         resolve = Some(target),

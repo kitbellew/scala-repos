@@ -14,8 +14,8 @@ import org.jetbrains.plugins.scala.codeInspection.{
 class ConvertibleToMethodValueInspectionTest
     extends ScalaLightInspectionFixtureTestAdapter {
   val annotation = InspectionBundle.message("convertible.to.method.value.name")
-  val hintAnon =
-    InspectionBundle.message("convertible.to.method.value.anonymous.hint")
+  val hintAnon = InspectionBundle.message(
+    "convertible.to.method.value.anonymous.hint")
   val hintEta = InspectionBundle.message("convertible.to.method.value.eta.hint")
 
   protected def classOfInspection: Class[_ <: LocalInspectionTool] =
@@ -185,8 +185,7 @@ class ConvertibleToMethodValueInspectionTest
   }
 
   def test_SCL6154() {
-    val text =
-      """class A {
+    val text = """class A {
         |def bar() = {
         |    val x = List(1, 2, 3)
         |    x.map(1 + _)
@@ -197,8 +196,7 @@ class ConvertibleToMethodValueInspectionTest
   }
 
   def test_SCL7428() {
-    val text =
-      """class InspectionTest1[T](translator: T => T = identity[T] _) {
+    val text = """class InspectionTest1[T](translator: T => T = identity[T] _) {
         |  def translate(t: T): T = translator(t)
         |}"""
     checkTextHasNoErrors(text)

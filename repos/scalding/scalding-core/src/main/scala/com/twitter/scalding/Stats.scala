@@ -75,8 +75,9 @@ private[scalding] case class HadoopFlowPCounterImpl(
     fp: HadoopFlowProcess,
     statKey: StatKey)
     extends CounterImpl {
-  private[this] val cntr =
-    fp.getReporter().getCounter(statKey.group, statKey.counter)
+  private[this] val cntr = fp
+    .getReporter()
+    .getCounter(statKey.group, statKey.counter)
   override def increment(amount: Long): Unit = cntr.increment(amount)
 }
 
@@ -85,8 +86,9 @@ object Stat {
   def apply(k: StatKey)(implicit uid: UniqueID): Stat =
     new Stat {
       // This is materialized on the mappers, and will throw an exception if users incBy before then
-      private[this] lazy val cntr =
-        CounterImpl(RuntimeStats.getFlowProcessForUniqueId(uid), k)
+      private[this] lazy val cntr = CounterImpl(
+        RuntimeStats.getFlowProcessForUniqueId(uid),
+        k)
 
       def incBy(amount: Long): Unit = cntr.increment(amount)
       def key: StatKey = k
@@ -106,10 +108,11 @@ object Stats {
   // Returns a map of all custom counter names and their counts.
   def getAllCustomCounters()(
       implicit cascadingStats: CascadingStats): Map[String, Long] = {
-    val counts = for {
-      counter <- cascadingStats.getCountersFor(ScaldingGroup).asScala
-      value = getCounterValue(counter)
-    } yield (counter, value)
+    val counts =
+      for {
+        counter <- cascadingStats.getCountersFor(ScaldingGroup).asScala
+        value = getCounterValue(counter)
+      } yield (counter, value)
     counts.toMap
   }
 }
@@ -148,8 +151,8 @@ object UniqueID {
   * Wrapper around a FlowProcess useful, for e.g. incrementing counters.
   */
 object RuntimeStats extends java.io.Serializable {
-  @transient private lazy val logger: Logger =
-    LoggerFactory.getLogger(this.getClass)
+  @transient private lazy val logger: Logger = LoggerFactory.getLogger(
+    this.getClass)
 
   private val flowMappingStore
       : mutable.Map[String, WeakReference[FlowProcess[_]]] = {
@@ -175,8 +178,9 @@ object RuntimeStats extends java.io.Serializable {
       val uniqueJobIdObj = fp.getProperty(UniqueID.UNIQUE_JOB_ID)
       if (uniqueJobIdObj != null) {
         // for speed concern, use a while loop instead of foreach here
-        var splitted =
-          StringUtility.fastSplit(uniqueJobIdObj.asInstanceOf[String], ",")
+        var splitted = StringUtility.fastSplit(
+          uniqueJobIdObj.asInstanceOf[String],
+          ",")
         while (!splitted.isEmpty) {
           val uniqueId = splitted.head
           splitted = splitted.tail

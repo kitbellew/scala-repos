@@ -16,9 +16,10 @@ class RequestSemaphoreFilterTest extends FunSuite {
       def apply(req: Int) = Future.never
     })
 
-    val stk: StackBuilder[ServiceFactory[Int, Int]] = new StackBuilder(
-      Stack.Leaf(Stack.Role("never"), neverFactory)
-    )
+    val stk: StackBuilder[ServiceFactory[Int, Int]] =
+      new StackBuilder(
+        Stack.Leaf(Stack.Role("never"), neverFactory)
+      )
 
     stk.push(RequestSemaphoreFilter.module[Int, Int])
 
@@ -45,9 +46,10 @@ class RequestSemaphoreFilterTest extends FunSuite {
   }
 
   test("mark dropped requests as rejected") {
-    val neverSvc = new Service[Int, Int] {
-      def apply(req: Int) = Future.never
-    }
+    val neverSvc =
+      new Service[Int, Int] {
+        def apply(req: Int) = Future.never
+      }
     val q = new AsyncSemaphore(1, 0)
     val svc = new RequestSemaphoreFilter(q) andThen neverSvc
     svc(1)
@@ -59,9 +61,10 @@ class RequestSemaphoreFilterTest extends FunSuite {
 
   test("service failures are not wrapped as rejected") {
     val exc = new Exception("app exc")
-    val neverSvc = new Service[Int, Int] {
-      def apply(req: Int) = Future.exception(exc)
-    }
+    val neverSvc =
+      new Service[Int, Int] {
+        def apply(req: Int) = Future.exception(exc)
+      }
     val q = new AsyncSemaphore(1, 0)
     val svc = new RequestSemaphoreFilter(q) andThen neverSvc
     svc(1)

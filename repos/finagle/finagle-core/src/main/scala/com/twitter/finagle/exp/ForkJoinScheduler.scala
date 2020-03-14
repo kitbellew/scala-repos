@@ -39,18 +39,20 @@ private class ForkJoinScheduler(
       }
     }
 
-  private[this] val exceptionHandler = new Thread.UncaughtExceptionHandler {
-    def uncaughtException(t: Thread, exc: Throwable) {
-      Monitor.handle(exc)
+  private[this] val exceptionHandler =
+    new Thread.UncaughtExceptionHandler {
+      def uncaughtException(t: Thread, exc: Throwable) {
+        Monitor.handle(exc)
+      }
     }
-  }
 
-  private[this] val pool = new ForkJoinPool(
-    nthreads,
-    threadFactory,
-    exceptionHandler,
-    true /*async mode*/
-  )
+  private[this] val pool =
+    new ForkJoinPool(
+      nthreads,
+      threadFactory,
+      exceptionHandler,
+      true /*async mode*/
+    )
 
   private[this] val gauges = Seq(
     // The number of currently active managed blocking operations.

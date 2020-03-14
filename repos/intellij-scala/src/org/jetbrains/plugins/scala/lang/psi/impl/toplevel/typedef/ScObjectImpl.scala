@@ -149,8 +149,9 @@ class ScObjectImpl protected (
       val newState = state.put(BaseProcessor.FROM_TYPE_KEY, null)
       val qual = qualifiedName
       val facade = JavaPsiFacade.getInstance(getProject)
-      val pack =
-        facade.findPackage(qual) //do not wrap into ScPackage to avoid SOE
+      val pack = facade.findPackage(
+        qual
+      ) //do not wrap into ScPackage to avoid SOE
       if (pack != null && !ResolveUtils.packageProcessDeclarations(
             pack,
             processor,
@@ -246,16 +247,17 @@ class ScObjectImpl protected (
           .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this))))
       None
     else {
-      val field: LightField = new LightField(
-        getManager,
-        JavaPsiFacade
-          .getInstance(getProject)
-          .getElementFactory
-          .createFieldFromText(
-            "public final static " + getQualifiedName + " MODULE$",
-            this
-          ),
-        this)
+      val field: LightField =
+        new LightField(
+          getManager,
+          JavaPsiFacade
+            .getInstance(getProject)
+            .getElementFactory
+            .createFieldFromText(
+              "public final static " + getQualifiedName + " MODULE$",
+              this
+            ),
+          this)
       field.setNavigationElement(this)
       Some(field)
     }
@@ -282,10 +284,11 @@ class ScObjectImpl protected (
     val res = new ArrayBuffer[PsiMethod]()
     res ++= getConstructors
     TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      val isInterface = node.info.namedElement match {
-        case t: ScTypedDefinition if t.isAbstractMember => true
-        case _                                          => false
-      }
+      val isInterface =
+        node.info.namedElement match {
+          case t: ScTypedDefinition if t.isAbstractMember => true
+          case _                                          => false
+        }
       this.processPsiMethodsForNode(
         node,
         isStatic = false,

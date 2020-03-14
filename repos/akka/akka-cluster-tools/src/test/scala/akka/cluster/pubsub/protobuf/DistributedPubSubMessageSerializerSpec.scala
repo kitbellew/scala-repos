@@ -13,8 +13,9 @@ import scala.collection.immutable.TreeMap
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class DistributedPubSubMessageSerializerSpec extends AkkaSpec {
 
-  val serializer = new DistributedPubSubMessageSerializer(
-    system.asInstanceOf[ExtendedActorSystem])
+  val serializer =
+    new DistributedPubSubMessageSerializer(
+      system.asInstanceOf[ExtendedActorSystem])
 
   def checkSerialization(obj: AnyRef): Unit = {
     val blob = serializer.toBinary(obj)

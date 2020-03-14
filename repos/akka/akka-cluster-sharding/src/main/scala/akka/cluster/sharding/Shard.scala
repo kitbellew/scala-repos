@@ -176,8 +176,7 @@ private[akka] class Shard(
       sum + entity._2.size
     }
 
-  def processChange[A](event: A)(handler: A ⇒ Unit): Unit =
-    handler(event)
+  def processChange[A](event: A)(handler: A ⇒ Unit): Unit = handler(event)
 
   def receive = receiveCommand
 

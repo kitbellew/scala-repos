@@ -42,11 +42,12 @@ object ReplicationUtils extends Logging {
       "Updated ISR for partition [%s,%d] to %s"
         .format(topic, partitionId, newLeaderAndIsr.isr.mkString(",")))
     val path = getTopicPartitionLeaderAndIsrPath(topic, partitionId)
-    val newLeaderData =
-      zkUtils.leaderAndIsrZkData(newLeaderAndIsr, controllerEpoch)
+    val newLeaderData = zkUtils.leaderAndIsrZkData(
+      newLeaderAndIsr,
+      controllerEpoch)
     // use the epoch of the controller that made the leadership decision, instead of the current controller epoch
-    val updatePersistentPath: (Boolean, Int) =
-      zkUtils.conditionalUpdatePersistentPath(
+    val updatePersistentPath: (Boolean, Int) = zkUtils
+      .conditionalUpdatePersistentPath(
         path,
         newLeaderData,
         zkVersion,
@@ -57,8 +58,8 @@ object ReplicationUtils extends Logging {
   def propagateIsrChanges(
       zkUtils: ZkUtils,
       isrChangeSet: Set[TopicAndPartition]): Unit = {
-    val isrChangeNotificationPath: String =
-      zkUtils.createSequentialPersistentPath(
+    val isrChangeNotificationPath: String = zkUtils
+      .createSequentialPersistentPath(
         ZkUtils.IsrChangeNotificationPath + "/" + IsrChangeNotificationPrefix,
         generateIsrChangeJson(isrChangeSet))
     debug("Added " + isrChangeNotificationPath + " for " + isrChangeSet)
@@ -72,8 +73,10 @@ object ReplicationUtils extends Logging {
       val writtenLeaderAndIsrInfo = zkUtils.readDataMaybeNull(path)
       val writtenLeaderOpt = writtenLeaderAndIsrInfo._1
       val writtenStat = writtenLeaderAndIsrInfo._2
-      val expectedLeader =
-        parseLeaderAndIsr(expectedLeaderAndIsrInfo, path, writtenStat)
+      val expectedLeader = parseLeaderAndIsr(
+        expectedLeaderAndIsrInfo,
+        path,
+        writtenStat)
       writtenLeaderOpt match {
         case Some(writtenData) =>
           val writtenLeader = parseLeaderAndIsr(writtenData, path, writtenStat)
@@ -108,11 +111,15 @@ object ReplicationUtils extends Logging {
     Json.parseFull(leaderAndIsrStr).flatMap { m =>
       val leaderIsrAndEpochInfo = m.asInstanceOf[Map[String, Any]]
       val leader = leaderIsrAndEpochInfo.get("leader").get.asInstanceOf[Int]
-      val epoch =
-        leaderIsrAndEpochInfo.get("leader_epoch").get.asInstanceOf[Int]
+      val epoch = leaderIsrAndEpochInfo
+        .get("leader_epoch")
+        .get
+        .asInstanceOf[Int]
       val isr = leaderIsrAndEpochInfo.get("isr").get.asInstanceOf[List[Int]]
-      val controllerEpoch =
-        leaderIsrAndEpochInfo.get("controller_epoch").get.asInstanceOf[Int]
+      val controllerEpoch = leaderIsrAndEpochInfo
+        .get("controller_epoch")
+        .get
+        .asInstanceOf[Int]
       val zkPathVersion = stat.getVersion
       debug(
         "Leader %d, Epoch %d, Isr %s, Zk path version %d for leaderAndIsrPath %s"
@@ -126,9 +133,10 @@ object ReplicationUtils extends Logging {
 
   private def generateIsrChangeJson(
       isrChanges: Set[TopicAndPartition]): String = {
-    val partitions = isrChanges
-      .map(tp => Map("topic" -> tp.topic, "partition" -> tp.partition))
-      .toArray
+    val partitions =
+      isrChanges
+        .map(tp => Map("topic" -> tp.topic, "partition" -> tp.partition))
+        .toArray
     Json.encode(
       Map(
         "version" -> IsrChangeNotificationListener.version,

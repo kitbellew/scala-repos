@@ -29,17 +29,14 @@ case class Term[@sp(Float, Double) C](coeff: C, exp: Int) { lhs =>
     else
       coeff
 
-  def isIndexZero: Boolean =
-    exp == 0
+  def isIndexZero: Boolean = exp == 0
 
   def isZero(implicit ring: Semiring[C], eq: Eq[C]): Boolean =
     coeff === ring.zero
 
-  def divideBy(x: C)(implicit f: Field[C]): Term[C] =
-    Term(coeff / x, exp)
+  def divideBy(x: C)(implicit f: Field[C]): Term[C] = Term(coeff / x, exp)
 
-  def der(implicit r: Ring[C]): Term[C] =
-    Term(coeff * r.fromInt(exp), exp - 1)
+  def der(implicit r: Ring[C]): Term[C] = Term(coeff * r.fromInt(exp), exp - 1)
 
   def int(implicit f: Field[C]): Term[C] =
     Term(coeff / f.fromInt(exp + 1), exp + 1)
@@ -85,8 +82,7 @@ object Term {
     Term(tpl._2, tpl._1)
   def zero[@sp(Float, Double) C](implicit r: Semiring[C]): Term[C] =
     Term(r.zero, 0)
-  def one[@sp(Float, Double) C](implicit r: Rig[C]): Term[C] =
-    Term(r.one, 0)
+  def one[@sp(Float, Double) C](implicit r: Rig[C]): Term[C] = Term(r.one, 0)
 
   private val IsZero = "0".r
   private val IsNegative = "-(.*)".r

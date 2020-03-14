@@ -71,9 +71,10 @@ private[sql] object DataSourceAnalysis extends Rule[LogicalPlan] {
         }
 
         val outputPath = t.location.paths.head
-        val inputPaths = query.collect {
-          case LogicalRelation(r: HadoopFsRelation, _, _) => r.location.paths
-        }.flatten
+        val inputPaths =
+          query.collect {
+            case LogicalRelation(r: HadoopFsRelation, _, _) => r.location.paths
+          }.flatten
 
         val mode =
           if (overwrite)
@@ -154,12 +155,12 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           t.partitionSchema.map(c => l.output.find(_.name == c.name).get))
 
         // Only pruning the partition keys
-        val partitionFilters =
-          filters.filter(_.references.subsetOf(partitionColumns))
+        val partitionFilters = filters.filter(
+          _.references.subsetOf(partitionColumns))
 
         // Only pushes down predicates that do not reference partition keys.
-        val pushedFilters =
-          filters.filter(_.references.intersect(partitionColumns).isEmpty)
+        val pushedFilters = filters.filter(
+          _.references.intersect(partitionColumns).isEmpty)
 
         // Predicates with both partition keys and attributes
         val partitionAndNormalColumnFilters =
@@ -222,9 +223,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         // See buildPartitionedTableScan for the reason that we need to create a shard
         // broadcast HadoopConf.
         val sharedHadoopConf = SparkHadoopUtil.get.conf
-        val confBroadcast =
-          t.sqlContext.sparkContext
-            .broadcast(new SerializableConfiguration(sharedHadoopConf))
+        val confBroadcast = t.sqlContext.sparkContext
+          .broadcast(new SerializableConfiguration(sharedHadoopConf))
 
         t.bucketSpec match {
           case Some(spec) if t.sqlContext.conf.bucketingEnabled =>
@@ -232,16 +232,15 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                 : (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
               (requiredColumns: Seq[Attribute], filters: Array[Filter]) =>
                 {
-                  val bucketed =
-                    t.location
-                      .allFiles()
-                      .filterNot(_.getPath.getName startsWith "_")
-                      .groupBy { f =>
-                        BucketingUtils
-                          .getBucketId(f.getPath.getName)
-                          .getOrElse(
-                            sys.error(s"Invalid bucket file ${f.getPath}"))
-                      }
+                  val bucketed = t.location
+                    .allFiles()
+                    .filterNot(_.getPath.getName startsWith "_")
+                    .groupBy { f =>
+                      BucketingUtils
+                        .getBucketId(f.getPath.getName)
+                        .getOrElse(
+                          sys.error(s"Invalid bucket file ${f.getPath}"))
+                    }
 
                   val bucketedDataMap = bucketed.mapValues { bucketFiles =>
                     t.fileFormat
@@ -257,13 +256,14 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                       .coalesce(1)
                   }
 
-                  val bucketedRDD = new UnionRDD(
-                    t.sqlContext.sparkContext,
-                    (0 until spec.numBuckets).map { bucketId =>
-                      bucketedDataMap.get(bucketId).getOrElse {
-                        t.sqlContext.emptyResult: RDD[InternalRow]
-                      }
-                    })
+                  val bucketedRDD =
+                    new UnionRDD(
+                      t.sqlContext.sparkContext,
+                      (0 until spec.numBuckets).map { bucketId =>
+                        bucketedDataMap.get(bucketId).getOrElse {
+                          t.sqlContext.emptyResult: RDD[InternalRow]
+                        }
+                      })
                   bucketedRDD
                 }
             }
@@ -318,9 +318,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // Because we are creating one RDD per partition, we need to have a shared HadoopConf.
     // Otherwise, the cost of broadcasting HadoopConf in every RDD will be high.
     val sharedHadoopConf = SparkHadoopUtil.get.conf
-    val confBroadcast =
-      relation.sqlContext.sparkContext
-        .broadcast(new SerializableConfiguration(sharedHadoopConf))
+    val confBroadcast = relation.sqlContext.sparkContext
+      .broadcast(new SerializableConfiguration(sharedHadoopConf))
     val partitionColumnNames = partitionColumns.fieldNames.toSet
 
     // Now, we create a scan builder, which will be used by pruneFilterProject. This scan builder
@@ -331,13 +330,12 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
           relation.bucketSpec match {
             case Some(spec) if relation.sqlContext.conf.bucketingEnabled =>
-              val requiredDataColumns =
-                requiredColumns.filterNot(c =>
-                  partitionColumnNames.contains(c.name))
+              val requiredDataColumns = requiredColumns.filterNot(c =>
+                partitionColumnNames.contains(c.name))
 
               // Builds RDD[Row]s for each selected partition.
-              val perPartitionRows: Seq[(Int, RDD[InternalRow])] =
-                partitions.flatMap {
+              val perPartitionRows: Seq[(Int, RDD[InternalRow])] = partitions
+                .flatMap {
                   case Partition(partitionValues, files) =>
                     val bucketed = files.groupBy { f =>
                       BucketingUtils
@@ -373,22 +371,22 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
               val bucketedDataMap: Map[Int, Seq[RDD[InternalRow]]] =
                 perPartitionRows.groupBy(_._1).mapValues(_.map(_._2))
 
-              val bucketed = new UnionRDD(
-                relation.sqlContext.sparkContext,
-                (0 until spec.numBuckets).map { bucketId =>
-                  bucketedDataMap
-                    .get(bucketId)
-                    .map(i => i.reduce(_ ++ _).coalesce(1))
-                    .getOrElse {
-                      relation.sqlContext.emptyResult: RDD[InternalRow]
-                    }
-                })
+              val bucketed =
+                new UnionRDD(
+                  relation.sqlContext.sparkContext,
+                  (0 until spec.numBuckets).map { bucketId =>
+                    bucketedDataMap
+                      .get(bucketId)
+                      .map(i => i.reduce(_ ++ _).coalesce(1))
+                      .getOrElse {
+                        relation.sqlContext.emptyResult: RDD[InternalRow]
+                      }
+                  })
               bucketed
 
             case _ =>
-              val requiredDataColumns =
-                requiredColumns.filterNot(c =>
-                  partitionColumnNames.contains(c.name))
+              val requiredDataColumns = requiredColumns.filterNot(c =>
+                partitionColumnNames.contains(c.name))
 
               // Builds RDD[Row]s for each selected partition.
               val perPartitionRows = partitions.map {
@@ -419,8 +417,11 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // Create the scan operator. If needed, add Filter and/or Project on top of the scan.
     // The added Filter/Project is on top of the unioned RDD. We do not want to create
     // one Filter/Project for every partition.
-    val sparkPlan =
-      pruneFilterProject(logicalRelation, projections, filters, scanBuilder)
+    val sparkPlan = pruneFilterProject(
+      logicalRelation,
+      projections,
+      filters,
+      scanBuilder)
 
     sparkPlan
   }
@@ -439,8 +440,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       dataColumns: Seq[Attribute],
       partitionColumnSchema: StructType,
       partitionValues: InternalRow): ColumnarBatch = {
-    val result =
-      ColumnarBatch.allocate(StructType.fromAttributes(requiredColumns))
+    val result = ColumnarBatch.allocate(
+      StructType.fromAttributes(requiredColumns))
     var resultIdx = 0
     var inputIdx = 0
 
@@ -499,10 +500,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           val mutableJoinedRow = new JoinedRow()
           val unsafePartitionValues =
             UnsafeProjection.create(partitionColumnSchema)(partitionValues)
-          val unsafeProjection =
-            UnsafeProjection.create(
-              requiredColumns,
-              dataColumns ++ partitionColumns)
+          val unsafeProjection = UnsafeProjection.create(
+            requiredColumns,
+            dataColumns ++ partitionColumns)
 
           // If we are returning batches directly, we need to augment them with the partitioning
           // columns. We want to do this without a row by row operation.
@@ -672,14 +672,15 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       }
     }
 
-    val (unhandledPredicates, pushedFilters) =
-      selectFilters(relation.relation, candidatePredicates)
+    val (unhandledPredicates, pushedFilters) = selectFilters(
+      relation.relation,
+      candidatePredicates)
 
     // A set of column attributes that are only referenced by pushed down filters.  We can eliminate
     // them from requested columns.
     val handledSet = {
-      val handledPredicates =
-        filterPredicates.filterNot(unhandledPredicates.contains)
+      val handledPredicates = filterPredicates.filterNot(
+        unhandledPredicates.contains)
       val unhandledSet = AttributeSet(unhandledPredicates.flatMap(_.references))
       AttributeSet(handledPredicates.flatMap(_.references)) --
         (projectSet ++ unhandledSet).map(relation.attributeMap)

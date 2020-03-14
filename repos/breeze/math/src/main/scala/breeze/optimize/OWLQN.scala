@@ -81,27 +81,29 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
 //      }
     }
 
-    val ff = new DiffFunction[Double] {
-      def calculate(alpha: Double) = {
-        val newX = takeStep(state, dir, alpha)
-        val (v, newG) = f.calculate(newX)
-        val (adjv, adjgrad) = adjust(newX, newG, v)
-        // TODO not sure if this is quite right...
+    val ff =
+      new DiffFunction[Double] {
+        def calculate(alpha: Double) = {
+          val newX = takeStep(state, dir, alpha)
+          val (v, newG) = f.calculate(newX)
+          val (adjv, adjgrad) = adjust(newX, newG, v)
+          // TODO not sure if this is quite right...
 
-        // Technically speaking, this is not quite right.
-        // dir should be (newX - state.x) according to the paper and the author.
-        // However, in practice, this seems fine.
-        // And interestingly the MSR reference implementation does the same thing (but they don't do wolfe condition checks.).
-        adjv -> (adjgrad dot dir)
+          // Technically speaking, this is not quite right.
+          // dir should be (newX - state.x) according to the paper and the author.
+          // However, in practice, this seems fine.
+          // And interestingly the MSR reference implementation does the same thing (but they don't do wolfe condition checks.).
+          adjv -> (adjgrad dot dir)
+        }
       }
-    }
-    val search = new BacktrackingLineSearch(
-      state.value,
-      shrinkStep =
-        if (iter < 1)
-          0.1
-        else
-          0.5)
+    val search =
+      new BacktrackingLineSearch(
+        state.value,
+        shrinkStep =
+          if (iter < 1)
+            0.1
+          else
+            0.5)
     val alpha = search.minimize(
       ff,
       if (iter < 1)

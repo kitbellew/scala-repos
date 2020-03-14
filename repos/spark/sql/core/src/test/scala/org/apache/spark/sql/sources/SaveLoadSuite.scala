@@ -119,9 +119,10 @@ class SaveLoadSuite
   test("save and save again") {
     df.write.json(path.toString)
 
-    val message = intercept[AnalysisException] {
-      df.write.json(path.toString)
-    }.getMessage
+    val message =
+      intercept[AnalysisException] {
+        df.write.json(path.toString)
+      }.getMessage
 
     assert(
       message.contains("already exists"),

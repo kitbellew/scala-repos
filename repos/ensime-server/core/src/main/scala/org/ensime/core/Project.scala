@@ -47,13 +47,14 @@ class Project(
   private val resolver = new SourceResolver(config)
   private val searchService = new SearchService(config, resolver)
   private val sourceWatcher = new SourceWatcher(config, resolver :: Nil)
-  private val reTypecheck = new FileChangeListener {
-    def reTypeCheck(): Unit = self ! AskReTypecheck
-    def fileAdded(f: FileObject): Unit = reTypeCheck()
-    def fileChanged(f: FileObject): Unit = reTypeCheck()
-    def fileRemoved(f: FileObject): Unit = reTypeCheck()
-    override def baseReCreated(f: FileObject): Unit = reTypeCheck()
-  }
+  private val reTypecheck =
+    new FileChangeListener {
+      def reTypeCheck(): Unit = self ! AskReTypecheck
+      def fileAdded(f: FileObject): Unit = reTypeCheck()
+      def fileChanged(f: FileObject): Unit = reTypeCheck()
+      def fileRemoved(f: FileObject): Unit = reTypeCheck()
+      override def baseReCreated(f: FileObject): Unit = reTypeCheck()
+    }
   private val classfileWatcher = context.actorOf(
     Props(new ClassfileWatcher(config, searchService :: reTypecheck :: Nil)),
     "classFileWatcher")
@@ -99,10 +100,12 @@ class Project(
         }
       }))
 
-      scalac =
-        context.actorOf(Analyzer(merger, indexer, searchService), "scalac")
-      javac =
-        context.actorOf(JavaAnalyzer(merger, indexer, searchService), "javac")
+      scalac = context.actorOf(
+        Analyzer(merger, indexer, searchService),
+        "scalac")
+      javac = context.actorOf(
+        JavaAnalyzer(merger, indexer, searchService),
+        "javac")
     } else {
       log.warning(
         "Detected a pure Java project. Scala queries are not available.")

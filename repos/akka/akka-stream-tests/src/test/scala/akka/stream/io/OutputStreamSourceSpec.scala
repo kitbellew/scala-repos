@@ -45,10 +45,11 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
   "OutputStreamSource" must {
     "read bytes from OutputStream" in assertAllStagesStopped {
-      val (outputStream, probe) = StreamConverters
-        .asOutputStream()
-        .toMat(TestSink.probe[ByteString])(Keep.both)
-        .run
+      val (outputStream, probe) =
+        StreamConverters
+          .asOutputStream()
+          .toMat(TestSink.probe[ByteString])(Keep.both)
+          .run
       val s = probe.expectSubscription()
 
       outputStream.write(bytesArray)
@@ -59,10 +60,11 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
     }
 
     "block flush call until send all buffer to downstream" in assertAllStagesStopped {
-      val (outputStream, probe) = StreamConverters
-        .asOutputStream()
-        .toMat(TestSink.probe[ByteString])(Keep.both)
-        .run
+      val (outputStream, probe) =
+        StreamConverters
+          .asOutputStream()
+          .toMat(TestSink.probe[ByteString])(Keep.both)
+          .run
       val s = probe.expectSubscription()
 
       outputStream.write(bytesArray)
@@ -80,10 +82,11 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
     }
 
     "not block flushes when buffer is empty" in assertAllStagesStopped {
-      val (outputStream, probe) = StreamConverters
-        .asOutputStream()
-        .toMat(TestSink.probe[ByteString])(Keep.both)
-        .run
+      val (outputStream, probe) =
+        StreamConverters
+          .asOutputStream()
+          .toMat(TestSink.probe[ByteString])(Keep.both)
+          .run
       val s = probe.expectSubscription()
 
       outputStream.write(bytesArray)
@@ -101,11 +104,12 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
     }
 
     "block writes when buffer is full" in assertAllStagesStopped {
-      val (outputStream, probe) = StreamConverters
-        .asOutputStream()
-        .toMat(TestSink.probe[ByteString])(Keep.both)
-        .withAttributes(Attributes.inputBuffer(16, 16))
-        .run
+      val (outputStream, probe) =
+        StreamConverters
+          .asOutputStream()
+          .toMat(TestSink.probe[ByteString])(Keep.both)
+          .withAttributes(Attributes.inputBuffer(16, 16))
+          .run
       val s = probe.expectSubscription()
 
       (1 to 16).foreach { _ ⇒
@@ -127,10 +131,11 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
     }
 
     "throw error when write after stream is closed" in assertAllStagesStopped {
-      val (outputStream, probe) = StreamConverters
-        .asOutputStream()
-        .toMat(TestSink.probe[ByteString])(Keep.both)
-        .run
+      val (outputStream, probe) =
+        StreamConverters
+          .asOutputStream()
+          .toMat(TestSink.probe[ByteString])(Keep.both)
+          .run
 
       probe.expectSubscription()
       outputStream.close()
@@ -151,9 +156,10 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
           .asInstanceOf[ActorMaterializerImpl]
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
-        val ref = expectMsgType[Children].children
-          .find(_.path.toString contains "outputStreamSource")
-          .get
+        val ref =
+          expectMsgType[Children].children
+            .find(_.path.toString contains "outputStreamSource")
+            .get
         assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
       } finally shutdown(sys)
 
@@ -196,10 +202,11 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
     }
 
     "not leave blocked threads" in {
-      val (outputStream, probe) = StreamConverters
-        .asOutputStream(timeout)
-        .toMat(TestSink.probe[ByteString])(Keep.both)
-        .run()(materializer)
+      val (outputStream, probe) =
+        StreamConverters
+          .asOutputStream(timeout)
+          .toMat(TestSink.probe[ByteString])(Keep.both)
+          .run()(materializer)
 
       val sub = probe.expectSubscription()
 

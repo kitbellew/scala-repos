@@ -161,8 +161,9 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       cur4.count must_== 10
 
       // limiting result set
-      val cur5 =
-        coll.find(new BasicDBObject("i", new BasicDBObject("$gt", 50))).limit(3)
+      val cur5 = coll
+        .find(new BasicDBObject("i", new BasicDBObject("$gt", 50)))
+        .limit(3)
 
       var cntr5 = 0
       while (cur5.hasNext) {
@@ -172,8 +173,9 @@ class MongoDirectSpec extends Specification with MongoTestKit {
       cntr5 must_== 3
 
       // skip
-      val cur6 =
-        coll.find(new BasicDBObject("i", new BasicDBObject("$gt", 50))).skip(10)
+      val cur6 = coll
+        .find(new BasicDBObject("i", new BasicDBObject("$gt", 50)))
+        .skip(10)
 
       var cntr6 = 0
       while (cur6.hasNext) {

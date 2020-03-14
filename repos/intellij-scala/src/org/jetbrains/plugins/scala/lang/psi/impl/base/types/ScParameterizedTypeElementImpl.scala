@@ -74,22 +74,23 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
           fun.returnTypeElement match {
             case Some(ret) =>
               val typeName = "Λ$"
-              val paramText = fun.paramTypeElement match {
-                case tuple: ScTupleTypeElement =>
-                  val paramList = tuple.components.map {
-                    case parameterized: ScParameterizedTypeElement =>
-                      convertParameterized(parameterized)
-                    case simple: ScSimpleTypeElement =>
-                      convertSimpleType(simple)
-                    case _ => return None //something went terribly wrong
-                  }
-                  paramList.mkString(sep = ", ")
-                case simple: ScSimpleTypeElement =>
-                  simple.getText.replaceAll("`", "")
-                case parameterized: ScParameterizedTypeElement =>
-                  convertParameterized(parameterized)
-                case _ => return None
-              }
+              val paramText =
+                fun.paramTypeElement match {
+                  case tuple: ScTupleTypeElement =>
+                    val paramList = tuple.components.map {
+                      case parameterized: ScParameterizedTypeElement =>
+                        convertParameterized(parameterized)
+                      case simple: ScSimpleTypeElement =>
+                        convertSimpleType(simple)
+                      case _ => return None //something went terribly wrong
+                    }
+                    paramList.mkString(sep = ", ")
+                  case simple: ScSimpleTypeElement =>
+                    simple.getText.replaceAll("`", "")
+                  case parameterized: ScParameterizedTypeElement =>
+                    convertParameterized(parameterized)
+                  case _ => return None
+                }
               val lambdaText =
                 s"({type $typeName[$paramText] = ${ret.getText}})#$typeName"
               val newTE = ScalaPsiElementFactory.createTypeElementFromText(
@@ -125,8 +126,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
             (Some(param.getText.replace("?", name)), name)
           case (a, _) => (None, a.getText)
         }.unzip
-      val paramText =
-        paramOpt.flatten.mkString(start = "[", sep = ", ", end = "]")
+      val paramText = paramOpt.flatten.mkString(
+        start = "[",
+        sep = ", ",
+        end = "]")
       val bodyText = body.mkString(start = "[", sep = ", ", end = "]")
 
       val typeName = "Λ$"

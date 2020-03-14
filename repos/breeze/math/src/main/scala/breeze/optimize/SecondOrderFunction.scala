@@ -56,11 +56,12 @@ object SecondOrderFunction {
       def calculate2(x: T): (Double, T, EmpiricalHessian[T]) = {
         val subset = Rand.subsetsOfSize(f.fullRange, batchSize).draw()
         val (v, grad) = f.calculate(x)
-        val newf = new DiffFunction[T] {
-          def calculate(x: T): (Double, T) = {
-            f.calculate(x, subset)
+        val newf =
+          new DiffFunction[T] {
+            def calculate(x: T): (Double, T) = {
+              f.calculate(x, subset)
+            }
           }
-        }
         val h = new EmpiricalHessian(newf, x, newf.gradientAt(x), eps)
         (v, grad, h)
       }

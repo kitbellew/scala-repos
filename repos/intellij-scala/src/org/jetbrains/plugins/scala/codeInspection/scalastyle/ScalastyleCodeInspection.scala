@@ -16,8 +16,9 @@ object ScalastyleCodeInspection {
     new mutable.HashMap[VirtualFile, TimestampedScalastyleConfiguration]()
 
   private object locations {
-    val possibleConfigFileNames =
-      Seq("scalastyle_config.xml", "scalastyle-config.xml")
+    val possibleConfigFileNames = Seq(
+      "scalastyle_config.xml",
+      "scalastyle-config.xml")
     val possibleLocations = Seq(".idea", "project")
 
     def findConfigFile(dir: VirtualFile) =
@@ -83,8 +84,9 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
         val result = new ScalastyleChecker(None).checkFiles(
           configuration,
           Seq(new SourceSpec(file.getName, file.getText)))
-        val document =
-          PsiDocumentManager.getInstance(file.getProject).getDocument(file)
+        val document = PsiDocumentManager
+          .getInstance(file.getProject)
+          .getDocument(file)
 
         def atPosition(
             e: PsiElement,

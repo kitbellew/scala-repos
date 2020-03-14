@@ -13,10 +13,11 @@ import org.rogach.scallop.ScallopConf
 class LeaderProxyFilterTest extends MarathonSpec {
 
   def httpConf(args: String*): HttpConf = {
-    val conf = new ScallopConf(args) with HttpConf {
-      // scallop will trigger sys exit
-      override protected def onError(e: Throwable): Unit = throw e
-    }
+    val conf =
+      new ScallopConf(args) with HttpConf {
+        // scallop will trigger sys exit
+        override protected def onError(e: Throwable): Unit = throw e
+      }
     conf.afterInit()
     conf
   }

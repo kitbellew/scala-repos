@@ -138,8 +138,10 @@ object ParquetReadSupportProvider {
       def matchPrimitiveField(converterType: Type): (Tree, Tree, Tree, Tree) = {
         val converterName = newTermName(ctx.fresh(s"fieldConverter"))
         val innerConverter: Tree = q"new $converterType()"
-        val converter: Tree =
-          fieldConverter(converterName, innerConverter, isPrimitive = true)
+        val converter: Tree = fieldConverter(
+          converterName,
+          innerConverter,
+          isPrimitive = true)
         createFieldMatchResult(converterName, converter)
       }
 

@@ -70,8 +70,9 @@ private[cluster] class ClusterMetricsCollector(publisher: ActorRef)
   /**
     * The metrics collector that samples data on the node.
     */
-  val collector: MetricsCollector =
-    MetricsCollector(context.system.asInstanceOf[ExtendedActorSystem], settings)
+  val collector: MetricsCollector = MetricsCollector(
+    context.system.asInstanceOf[ExtendedActorSystem],
+    settings)
 
   /**
     * Start periodic gossip to random nodes in cluster
@@ -853,29 +854,31 @@ class SigarMetricsCollector(
   private val decayFactorOption = Some(decayFactor)
 
   private val EmptyClassArray: Array[(Class[_])] = Array.empty[(Class[_])]
-  private val LoadAverage: Option[Method] =
-    createMethodFrom(sigar, "getLoadAverage")
+  private val LoadAverage: Option[Method] = createMethodFrom(
+    sigar,
+    "getLoadAverage")
   private val Cpu: Option[Method] = createMethodFrom(sigar, "getCpuPerc")
-  private val CombinedCpu: Option[Method] = Try(
-    Cpu.get.getReturnType.getMethod("getCombined")).toOption
+  private val CombinedCpu: Option[Method] =
+    Try(Cpu.get.getReturnType.getMethod("getCombined")).toOption
 
   // Do something initially, in constructor, to make sure that the native library can be loaded.
   // This will by design throw exception if sigar isn't usable
-  val pid: Long = createMethodFrom(sigar, "getPid") match {
-    case Some(method) ⇒
-      try method.invoke(sigar).asInstanceOf[Long]
-      catch {
-        case e: InvocationTargetException
-            if e.getCause.isInstanceOf[LinkageError] ⇒
-          // native libraries not in place
-          // don't throw fatal LinkageError, but something harmless
-          throw new IllegalArgumentException(e.getCause.toString)
-        case e: InvocationTargetException ⇒ throw e.getCause
-      }
-    case None ⇒
-      throw new IllegalArgumentException(
-        "Wrong version of Sigar, expected 'getPid' method")
-  }
+  val pid: Long =
+    createMethodFrom(sigar, "getPid") match {
+      case Some(method) ⇒
+        try method.invoke(sigar).asInstanceOf[Long]
+        catch {
+          case e: InvocationTargetException
+              if e.getCause.isInstanceOf[LinkageError] ⇒
+            // native libraries not in place
+            // don't throw fatal LinkageError, but something harmless
+            throw new IllegalArgumentException(e.getCause.toString)
+          case e: InvocationTargetException ⇒ throw e.getCause
+        }
+      case None ⇒
+        throw new IllegalArgumentException(
+          "Wrong version of Sigar, expected 'getPid' method")
+    }
 
   override def metrics: Set[Metric] = {
     super.metrics.filterNot(_.name == SystemLoadAverage) union Set(
@@ -913,8 +916,8 @@ class SigarMetricsCollector(
   def cpuCombined: Option[Metric] =
     Metric.create(
       name = CpuCombined,
-      value =
-        Try(CombinedCpu.get.invoke(Cpu.get.invoke(sigar)).asInstanceOf[Number]),
+      value = Try(
+        CombinedCpu.get.invoke(Cpu.get.invoke(sigar)).asInstanceOf[Number]),
       decayFactor = decayFactorOption)
 
   /**

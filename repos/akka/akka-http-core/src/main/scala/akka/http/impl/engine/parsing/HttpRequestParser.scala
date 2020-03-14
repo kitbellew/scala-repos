@@ -182,10 +182,11 @@ private[http] class HttpRequestParser(
 
       teh match {
         case None ⇒
-          val contentLength = clh match {
-            case Some(`Content-Length`(len)) ⇒ len
-            case None ⇒ 0
-          }
+          val contentLength =
+            clh match {
+              case Some(`Content-Length`(len)) ⇒ len
+              case None ⇒ 0
+            }
           if (contentLength == 0) {
             emitRequestStart(emptyEntity(cth))
             setCompletionHandling(HttpMessageParser.CompletionOk)
@@ -212,8 +213,9 @@ private[http] class HttpRequestParser(
             s"${method.name} requests must not have an entity")
 
         case Some(te) ⇒
-          val completedHeaders =
-            addTransferEncodingWithChunkedPeeled(headers, te)
+          val completedHeaders = addTransferEncodingWithChunkedPeeled(
+            headers,
+            te)
           if (te.isChunked) {
             if (clh.isEmpty) {
               emitRequestStart(chunkedEntity(cth), completedHeaders)

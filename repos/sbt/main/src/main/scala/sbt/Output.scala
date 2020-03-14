@@ -94,8 +94,9 @@ object Output {
       // is how things are expected to work now.
       // You can see where streams are injected using their own key scope in
       // EvaluateTask.injectStreams.
-      val streamScopedKey: ScopedKey[_] =
-        ScopedKey(Project.fillTaskAxis(key).scope, Keys.streams.key)
+      val streamScopedKey: ScopedKey[_] = ScopedKey(
+        Project.fillTaskAxis(key).scope,
+        Keys.streams.key)
       val tmp = s.readText(streamScopedKey, sid)
       IO.readLines(tmp)
     }

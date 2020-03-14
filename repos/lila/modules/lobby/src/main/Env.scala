@@ -16,20 +16,21 @@ final class Env(
     system: ActorSystem,
     scheduler: lila.common.Scheduler) {
 
-  private val settings = new {
-    val MessageTtl = config duration "message.ttl"
-    val NetDomain = config getString "net.domain"
-    val SocketName = config getString "socket.name"
-    val SocketUidTtl = config duration "socket.uid.ttl"
-    val OrphanHookTtl = config duration "orphan_hook.ttl"
-    val ActorName = config getString "actor.name"
-    val BroomPeriod = config duration "broom_period"
-    val ResyncIdsPeriod = config duration "resync_ids_period"
-    val CollectionSeek = config getString "collection.seek"
-    val CollectionSeekArchive = config getString "collection.seek_archive"
-    val SeekMaxPerPage = config getInt "seek.max_per_page"
-    val SeekMaxPerUser = config getInt "seek.max_per_user"
-  }
+  private val settings =
+    new {
+      val MessageTtl = config duration "message.ttl"
+      val NetDomain = config getString "net.domain"
+      val SocketName = config getString "socket.name"
+      val SocketUidTtl = config duration "socket.uid.ttl"
+      val OrphanHookTtl = config duration "orphan_hook.ttl"
+      val ActorName = config getString "actor.name"
+      val BroomPeriod = config duration "broom_period"
+      val ResyncIdsPeriod = config duration "resync_ids_period"
+      val CollectionSeek = config getString "collection.seek"
+      val CollectionSeekArchive = config getString "collection.seek_archive"
+      val SeekMaxPerPage = config getInt "seek.max_per_page"
+      val SeekMaxPerUser = config getInt "seek.max_per_user"
+    }
   import settings._
 
   private val socket = system.actorOf(
@@ -40,12 +41,13 @@ final class Env(
         uidTtl = SocketUidTtl)),
     name = SocketName)
 
-  lazy val seekApi = new SeekApi(
-    coll = db(CollectionSeek),
-    archiveColl = db(CollectionSeekArchive),
-    blocking = blocking,
-    maxPerPage = SeekMaxPerPage,
-    maxPerUser = SeekMaxPerUser)
+  lazy val seekApi =
+    new SeekApi(
+      coll = db(CollectionSeek),
+      archiveColl = db(CollectionSeekArchive),
+      blocking = blocking,
+      maxPerPage = SeekMaxPerPage,
+      maxPerUser = SeekMaxPerUser)
 
   val lobby = system.actorOf(
     Props(
@@ -61,11 +63,12 @@ final class Env(
     name = ActorName
   )
 
-  lazy val socketHandler = new SocketHandler(
-    hub = hub,
-    lobby = lobby,
-    socket = socket,
-    blocking = blocking)
+  lazy val socketHandler =
+    new SocketHandler(
+      hub = hub,
+      lobby = lobby,
+      socket = socket,
+      blocking = blocking)
 
   lazy val history = new History[actorApi.Messadata](ttl = MessageTtl)
 

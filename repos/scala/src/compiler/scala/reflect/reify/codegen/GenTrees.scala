@@ -41,13 +41,14 @@ trait GenTrees {
     // the first prototype of reification reified all types and symbols for all trees => this quickly became unyieldy
     // the second prototype reified external types, but avoided reifying ones local to the reifee => this created an ugly irregularity
     // current approach is uniform and compact
-    var rtree: Tree = tree match {
-      case FreeDef(_, _, _, _, _) => reifyNestedFreeDef(tree)
-      case FreeRef(_, _)          => reifyNestedFreeRef(tree)
-      case BoundTerm(tree)        => reifyBoundTerm(tree)
-      case BoundType(tree)        => reifyBoundType(tree)
-      case _                      => reifyTreeSyntactically(tree)
-    }
+    var rtree: Tree =
+      tree match {
+        case FreeDef(_, _, _, _, _) => reifyNestedFreeDef(tree)
+        case FreeRef(_, _)          => reifyNestedFreeRef(tree)
+        case BoundTerm(tree)        => reifyBoundTerm(tree)
+        case BoundType(tree)        => reifyBoundType(tree)
+        case _                      => reifyTreeSyntactically(tree)
+      }
 
     // usually we don't reify symbols/types, because they can be re-inferred during subsequent reflective compilation
     // however, reification of AnnotatedTypes is special. see `reifyType` to find out why.
@@ -127,8 +128,9 @@ trait GenTrees {
               state.symtab ++= inlinedSymtab
               rtree
             case tree =>
-              val migrated =
-                Apply(Select(splicee, nme.in), List(Ident(nme.MIRROR_SHORT)))
+              val migrated = Apply(
+                Select(splicee, nme.in),
+                List(Ident(nme.MIRROR_SHORT)))
               Select(migrated, nme.tree)
           }
         }

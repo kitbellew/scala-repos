@@ -118,14 +118,15 @@ class Netty4ClientChannelInitializerTest
 
   test("Netty4ClientChannelInitializer pipelines enforce read timeouts") {
     @volatile var observedExn: Throwable = null
-    val exnSnooper = new ChannelInboundHandlerAdapter {
-      override def exceptionCaught(
-          ctx: ChannelHandlerContext,
-          cause: Throwable): Unit = {
-        observedExn = cause
-        super.exceptionCaught(ctx, cause)
+    val exnSnooper =
+      new ChannelInboundHandlerAdapter {
+        override def exceptionCaught(
+            ctx: ChannelHandlerContext,
+            cause: Throwable): Unit = {
+          observedExn = cause
+          super.exceptionCaught(ctx, cause)
+        }
       }
-    }
     new Ctx {
       override def params =
         Params.empty + Transport.Liveness(
@@ -145,22 +146,23 @@ class Netty4ClientChannelInitializerTest
 
   test("Netty4ClientChannelInitializer pipelines enforce write timeouts") {
     @volatile var observedExn: Throwable = null
-    val exnSnooper = new ChannelInboundHandlerAdapter {
-      override def exceptionCaught(
-          ctx: ChannelHandlerContext,
-          cause: Throwable): Unit = {
-        observedExn = cause
-        super.exceptionCaught(ctx, cause)
+    val exnSnooper =
+      new ChannelInboundHandlerAdapter {
+        override def exceptionCaught(
+            ctx: ChannelHandlerContext,
+            cause: Throwable): Unit = {
+          observedExn = cause
+          super.exceptionCaught(ctx, cause)
+        }
       }
-    }
 
-    val writeSwallower = new ChannelOutboundHandlerAdapter {
-      override def write(
-          ctx: ChannelHandlerContext,
-          msg: scala.Any,
-          promise: ChannelPromise): Unit =
-        ()
-    }
+    val writeSwallower =
+      new ChannelOutboundHandlerAdapter {
+        override def write(
+            ctx: ChannelHandlerContext,
+            msg: scala.Any,
+            promise: ChannelPromise): Unit = ()
+      }
 
     new Ctx {
       override def params =
@@ -222,20 +224,21 @@ class Netty4ClientChannelInitializerTest
 
   test("raw channel initializer exposes netty pipeline") {
     val p = new Promise[Transport[ByteBuf, ByteBuf]]
-    val reverser = new ChannelOutboundHandlerAdapter {
-      override def write(
-          ctx: ChannelHandlerContext,
-          msg: scala.Any,
-          promise: ChannelPromise): Unit =
-        msg match {
-          case b: ByteBuf =>
-            val bytes = new Array[Byte](b.readableBytes)
-            b.readBytes(bytes)
-            val reversed = Unpooled.wrappedBuffer(bytes.reverse)
-            super.write(ctx, reversed, promise)
-          case _ => fail("expected ByteBuf message")
-        }
-    }
+    val reverser =
+      new ChannelOutboundHandlerAdapter {
+        override def write(
+            ctx: ChannelHandlerContext,
+            msg: scala.Any,
+            promise: ChannelPromise): Unit =
+          msg match {
+            case b: ByteBuf =>
+              val bytes = new Array[Byte](b.readableBytes)
+              b.readBytes(bytes)
+              val reversed = Unpooled.wrappedBuffer(bytes.reverse)
+              super.write(ctx, reversed, promise)
+            case _ => fail("expected ByteBuf message")
+          }
+      }
     val init =
       new RawNetty4ClientChannelInitializer[ByteBuf, ByteBuf](
         p,

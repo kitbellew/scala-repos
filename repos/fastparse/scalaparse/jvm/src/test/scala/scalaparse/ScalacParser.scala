@@ -33,26 +33,27 @@ object ScalacParser {
       var fail = false
       import global.syntaxAnalyzer.Offset
       val cu = new global.CompilationUnit(global.newSourceFile(input))
-      val parser = new global.syntaxAnalyzer.UnitParser(cu, Nil) {
-        override def newScanner() =
-          new global.syntaxAnalyzer.UnitScanner(cu, Nil) {
-            override def error(off: Offset, msg: String) = {
-              fail = true
+      val parser =
+        new global.syntaxAnalyzer.UnitParser(cu, Nil) {
+          override def newScanner() =
+            new global.syntaxAnalyzer.UnitScanner(cu, Nil) {
+              override def error(off: Offset, msg: String) = {
+                fail = true
+              }
+              override def syntaxError(off: Offset, msg: String) = {
+                fail = true
+              }
+              override def incompleteInputError(off: Offset, msg: String) = {
+                fail = true
+              }
             }
-            override def syntaxError(off: Offset, msg: String) = {
-              fail = true
-            }
-            override def incompleteInputError(off: Offset, msg: String) = {
-              fail = true
-            }
+          override def incompleteInputError(msg: String) = {
+            fail = true
           }
-        override def incompleteInputError(msg: String) = {
-          fail = true
+          override def syntaxError(offset: Offset, msg: String) = {
+            fail = true
+          }
         }
-        override def syntaxError(offset: Offset, msg: String) = {
-          fail = true
-        }
-      }
       parser.parse()
 //    println("Scalac Parser fail " + fail)
       fail

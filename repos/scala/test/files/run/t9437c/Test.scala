@@ -78,8 +78,8 @@ object Test extends DirectTest {
 
     val bytes = cw.toByteArray()
 
-    val fos = new FileOutputStream(
-      new File(s"${testOutput.path}/$className.class"))
+    val fos =
+      new FileOutputStream(new File(s"${testOutput.path}/$className.class"))
     try fos write bytes
     finally fos.close()
 

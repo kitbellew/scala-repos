@@ -83,16 +83,18 @@ class BlockStoreShuffleReaderSuite
 
     // Create a return function to use for the mocked wrapForCompression method that just returns
     // the original input stream.
-    val dummyCompressionFunction = new Answer[InputStream] {
-      override def answer(invocation: InvocationOnMock): InputStream =
-        invocation.getArguments()(1).asInstanceOf[InputStream]
-    }
+    val dummyCompressionFunction =
+      new Answer[InputStream] {
+        override def answer(invocation: InvocationOnMock): InputStream =
+          invocation.getArguments()(1).asInstanceOf[InputStream]
+      }
 
     // Create a buffer with some randomly generated key-value pairs to use as the shuffle data
     // from each mappers (all mappers return the same shuffle data).
     val byteOutputStream = new ByteArrayOutputStream()
-    val serializationStream =
-      serializer.newInstance().serializeStream(byteOutputStream)
+    val serializationStream = serializer
+      .newInstance()
+      .serializeStream(byteOutputStream)
     (0 until keyValuePairsPerMap).foreach { i =>
       serializationStream.writeKey(i)
       serializationStream.writeValue(2 * i)
@@ -142,13 +144,14 @@ class BlockStoreShuffleReaderSuite
       new BaseShuffleHandle(shuffleId, numMaps, dependency)
     }
 
-    val shuffleReader = new BlockStoreShuffleReader(
-      shuffleHandle,
-      reduceId,
-      reduceId + 1,
-      TaskContext.empty(),
-      blockManager,
-      mapOutputTracker)
+    val shuffleReader =
+      new BlockStoreShuffleReader(
+        shuffleHandle,
+        reduceId,
+        reduceId + 1,
+        TaskContext.empty(),
+        blockManager,
+        mapOutputTracker)
 
     assert(shuffleReader.read().length === keyValuePairsPerMap * numMaps)
 

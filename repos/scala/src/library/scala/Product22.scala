@@ -77,8 +77,7 @@ object Product22 {
     T19,
     T20,
     T21,
-    T22]] =
-    Some(x)
+    T22]] = Some(x)
 }
 
 /** Product22 is a cartesian product of 22 components.

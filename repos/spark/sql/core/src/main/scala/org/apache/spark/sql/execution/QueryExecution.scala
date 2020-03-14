@@ -35,25 +35,26 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
     try sqlContext.sessionState.analyzer.checkAnalysis(analyzed)
     catch {
       case e: AnalysisException =>
-        val ae = new AnalysisException(
-          e.message,
-          e.line,
-          e.startPosition,
-          Some(analyzed))
+        val ae =
+          new AnalysisException(
+            e.message,
+            e.line,
+            e.startPosition,
+            Some(analyzed))
         ae.setStackTrace(e.getStackTrace)
         throw ae
     }
 
-  lazy val analyzed: LogicalPlan =
-    sqlContext.sessionState.analyzer.execute(logical)
+  lazy val analyzed: LogicalPlan = sqlContext.sessionState.analyzer
+    .execute(logical)
 
   lazy val withCachedData: LogicalPlan = {
     assertAnalyzed()
     sqlContext.cacheManager.useCachedData(analyzed)
   }
 
-  lazy val optimizedPlan: LogicalPlan =
-    sqlContext.sessionState.optimizer.execute(withCachedData)
+  lazy val optimizedPlan: LogicalPlan = sqlContext.sessionState.optimizer
+    .execute(withCachedData)
 
   lazy val sparkPlan: SparkPlan = {
     SQLContext.setActive(sqlContext)
@@ -62,8 +63,8 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
 
   // executedPlan should not be used to initialize any SparkPlan. It should be
   // only used for execution.
-  lazy val executedPlan: SparkPlan =
-    sqlContext.sessionState.prepareForExecution.execute(sparkPlan)
+  lazy val executedPlan: SparkPlan = sqlContext.sessionState.prepareForExecution
+    .execute(sparkPlan)
 
   /** Internal version of the RDD. Avoids copies and has no schema */
   lazy val toRdd: RDD[InternalRow] = executedPlan.execute()

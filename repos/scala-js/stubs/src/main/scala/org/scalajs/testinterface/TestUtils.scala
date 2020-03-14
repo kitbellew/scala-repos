@@ -16,8 +16,7 @@ object TestUtils {
   import blackbox.Context
 
   def newInstance(name: String, loader: ClassLoader)(
-      args: Seq[AnyRef]): AnyRef =
-    macro newInstance_impl
+      args: Seq[AnyRef]): AnyRef = macro newInstance_impl
 
   def newInstance_impl(
       c: Context)(name: c.Expr[String], loader: c.Expr[ClassLoader])(

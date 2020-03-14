@@ -19,8 +19,7 @@ private[interval] object Tree {
     prefix & ((-1L << bit) << 1)
   }
 
-  @inline final def zeroAt(value: Long, bit: Byte) =
-    (value & (1L << bit)) == 0L
+  @inline final def zeroAt(value: Long, bit: Byte) = (value & (1L << bit)) == 0L
 
   @inline final def hasMatchAt(key: Long, prefix: Long, level: Byte) =
     maskAbove(key, level) == prefix

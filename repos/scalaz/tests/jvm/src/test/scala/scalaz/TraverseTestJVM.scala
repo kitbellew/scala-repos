@@ -9,10 +9,11 @@ object TraverseTestJVM extends SpecLite {
   "list" should {
     "sequenceS, traverseS, traversalS does not blow stack" in {
       val N = 100000
-      val F = new Traverse[List] {
-        def traverseImpl[G[_]: Applicative, A, B](fa: List[A])(f: A => G[B]) =
-          Traverse[List].traverseImpl(fa)(f)
-      }
+      val F =
+        new Traverse[List] {
+          def traverseImpl[G[_]: Applicative, A, B](fa: List[A])(f: A => G[B]) =
+            Traverse[List].traverseImpl(fa)(f)
+        }
       val s = List.fill(N)(modify((_: Int) + 1))
       F.sequenceS(s).exec(0) must_=== N
       F.traverseS(s)(x => x).exec(0) must_=== N
@@ -26,8 +27,8 @@ object TraverseTestJVM extends SpecLite {
       import scalaz.effect._
 
       val as = Stream.range(0, 100000)
-      val state: State[Int, IO[Stream[Int]]] =
-        as.traverseSTrampoline[IO, Int, Int](a =>
+      val state: State[Int, IO[Stream[Int]]] = as
+        .traverseSTrampoline[IO, Int, Int](a =>
           for {
             s <- State.get[Int]
             _ <- State.put(a)

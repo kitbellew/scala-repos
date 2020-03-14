@@ -15,10 +15,11 @@ final class Env(
     system: ActorSystem,
     lifecycle: play.api.inject.ApplicationLifecycle) {
 
-  private val settings = new {
-    val CollectionEntry = config getString "collection.entry"
-    val CollectionUserCache = config getString "collection.user_cache"
-  }
+  private val settings =
+    new {
+      val CollectionEntry = config getString "collection.entry"
+      val CollectionUserCache = config getString "collection.user_cache"
+    }
   import settings._
 
   private val db = new lila.db.Env(config getConfig "mongodb", lifecycle)
@@ -31,24 +32,26 @@ final class Env(
 
   private lazy val aggregationPipeline = new AggregationPipeline
 
-  private lazy val indexer = new Indexer(
-    storage = storage,
-    sequencer = system.actorOf(
-      Props(
-        classOf[lila.hub.Sequencer],
-        None,
-        None,
-        logger
-      )))
+  private lazy val indexer =
+    new Indexer(
+      storage = storage,
+      sequencer = system.actorOf(
+        Props(
+          classOf[lila.hub.Sequencer],
+          None,
+          None,
+          logger
+        )))
 
-  private lazy val userCacheApi = new UserCacheApi(
-    coll = db(CollectionUserCache))
+  private lazy val userCacheApi =
+    new UserCacheApi(coll = db(CollectionUserCache))
 
-  lazy val api = new InsightApi(
-    storage = storage,
-    userCacheApi = userCacheApi,
-    pipeline = aggregationPipeline,
-    indexer = indexer)
+  lazy val api =
+    new InsightApi(
+      storage = storage,
+      userCacheApi = userCacheApi,
+      pipeline = aggregationPipeline,
+      indexer = indexer)
 
   system.actorOf(Props(new Actor {
     system.lilaBus.subscribe(self, 'analysisReady)

@@ -159,8 +159,7 @@ trait ExecutionContext {
   /**
     * Synchronously execute the plan in the FlowDef
     */
-  final def waitFor: Try[JobStats] =
-    buildFlow.flatMap(Execution.waitFor(_))
+  final def waitFor: Try[JobStats] = buildFlow.flatMap(Execution.waitFor(_))
 }
 
 /*

@@ -117,9 +117,9 @@ object HookConfig extends BaseHumanConfig {
       days = d,
       mode = realMode,
       allowAnon = !membersOnly, // membersOnly
-      ratingRange = e
-        .filter(_ => useRatingRange)
-        .fold(RatingRange.default)(RatingRange.orDefault),
+      ratingRange =
+        e.filter(_ => useRatingRange)
+          .fold(RatingRange.default)(RatingRange.orDefault),
       color = Color(c) err "Invalid color " + c)
   }
 
@@ -138,31 +138,32 @@ object HookConfig extends BaseHumanConfig {
   import reactivemongo.bson._
   import lila.db.BSON
 
-  private[setup] implicit val hookConfigBSONHandler = new BSON[HookConfig] {
+  private[setup] implicit val hookConfigBSONHandler =
+    new BSON[HookConfig] {
 
-    def reads(r: BSON.Reader): HookConfig =
-      HookConfig(
-        variant = chess.variant.Variant orDefault (r int "v"),
-        timeMode = TimeMode orDefault (r int "tm"),
-        time = r double "t",
-        increment = r int "i",
-        days = r int "d",
-        mode = Mode orDefault (r int "m"),
-        allowAnon = r bool "a",
-        color = Color.Random,
-        ratingRange =
-          r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
-      )
+      def reads(r: BSON.Reader): HookConfig =
+        HookConfig(
+          variant = chess.variant.Variant orDefault (r int "v"),
+          timeMode = TimeMode orDefault (r int "tm"),
+          time = r double "t",
+          increment = r int "i",
+          days = r int "d",
+          mode = Mode orDefault (r int "m"),
+          allowAnon = r bool "a",
+          color = Color.Random,
+          ratingRange =
+            r strO "e" flatMap RatingRange.apply getOrElse RatingRange.default
+        )
 
-    def writes(w: BSON.Writer, o: HookConfig) =
-      BSONDocument(
-        "v" -> o.variant.id,
-        "tm" -> o.timeMode.id,
-        "t" -> o.time,
-        "i" -> o.increment,
-        "d" -> o.days,
-        "m" -> o.mode.id,
-        "a" -> o.allowAnon,
-        "e" -> o.ratingRange.toString)
-  }
+      def writes(w: BSON.Writer, o: HookConfig) =
+        BSONDocument(
+          "v" -> o.variant.id,
+          "tm" -> o.timeMode.id,
+          "t" -> o.time,
+          "i" -> o.increment,
+          "d" -> o.days,
+          "m" -> o.mode.id,
+          "a" -> o.allowAnon,
+          "e" -> o.ratingRange.toString)
+    }
 }

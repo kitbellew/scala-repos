@@ -141,9 +141,10 @@ trait BaseScaldingShell extends MainGenericRunner {
   private[scalding] def createReplCodeJar(): Option[File] = {
     scaldingREPL.map { repl =>
       val virtualDirectory = repl.virtualDirectory
-      val tempJar = new File(
-        Files.createTempDir(),
-        "scalding-repl-session-" + System.currentTimeMillis() + ".jar")
+      val tempJar =
+        new File(
+          Files.createTempDir(),
+          "scalding-repl-session-" + System.currentTimeMillis() + ".jar")
       createJar(virtualDirectory.asInstanceOf[VirtualDirectory], tempJar)
     }
   }

@@ -30,23 +30,25 @@ object ReaderWriterStateTTest extends SpecLite {
         Some((s, x => x, s))))
     ))
 
-  implicit val RWSOptIntEqual = new Equal[RWSOptInt[Int]] {
-    def equal(a1: RWSOptInt[Int], a2: RWSOptInt[Int]) =
-      a1.run(0, 0) == a2.run(0, 0)
-  }
+  implicit val RWSOptIntEqual =
+    new Equal[RWSOptInt[Int]] {
+      def equal(a1: RWSOptInt[Int], a2: RWSOptInt[Int]) =
+        a1.run(0, 0) == a2.run(0, 0)
+    }
 
   checkAll(bindRec.laws[RWSOptInt])
   checkAll(monadPlus.strongLaws[RWSOptInt])
 
   "ReaderWriterStateT can be trampolined without stack overflow" in {
     import scalaz.Free._
-    val result = (0 to 10000).toList
-      .map(ii =>
-        ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
-          Trampoline.done(("", i, ii))))
-      .foldLeft(
-        ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
-          Trampoline.done(("", i, i))))((a, b) => a.flatMap(_ => b))
+    val result =
+      (0 to 10000).toList
+        .map(ii =>
+          ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
+            Trampoline.done(("", i, ii))))
+        .foldLeft(
+          ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
+            Trampoline.done(("", i, i))))((a, b) => a.flatMap(_ => b))
     10000 must_=== result.run((), 0).run._3
   }
 

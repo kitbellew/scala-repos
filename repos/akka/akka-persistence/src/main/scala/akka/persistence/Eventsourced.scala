@@ -54,16 +54,17 @@ private[persistence] trait Eventsourced
   private val extension = Persistence(context.system)
 
   private[persistence] lazy val journal = extension.journalFor(journalPluginId)
-  private[persistence] lazy val snapshotStore =
-    extension.snapshotStoreFor(snapshotPluginId)
+  private[persistence] lazy val snapshotStore = extension.snapshotStoreFor(
+    snapshotPluginId)
 
   private val instanceId: Int = Eventsourced.instanceIdCounter.getAndIncrement()
   private val writerUuid = UUID.randomUUID.toString
 
   private var journalBatch = Vector.empty[PersistentEnvelope]
   // no longer used, but kept for binary compatibility
-  private val maxMessageBatchSize =
-    extension.journalConfigFor(journalPluginId).getInt("max-message-batch-size")
+  private val maxMessageBatchSize = extension
+    .journalConfigFor(journalPluginId)
+    .getInt("max-message-batch-size")
   private var writeInProgress = false
   private var sequenceNr: Long = 0L
   private var _lastSequenceNr: Long = 0L
@@ -74,9 +75,10 @@ private[persistence] trait Eventsourced
   // Used instead of iterating `pendingInvocations` in order to check if safe to revert to processing commands
   private var pendingStashingPersistInvocations: Long = 0
   // Holds user-supplied callbacks for persist/persistAsync calls
-  private val pendingInvocations = new java.util.LinkedList[
-    PendingHandlerInvocation
-  ]() // we only append / isEmpty / get(0) on it
+  private val pendingInvocations =
+    new java.util.LinkedList[
+      PendingHandlerInvocation
+    ]() // we only append / isEmpty / get(0) on it
   private var eventBatch: List[PersistentEnvelope] = Nil
 
   private val internalStash = createStash()
@@ -216,8 +218,7 @@ private[persistence] trait Eventsourced
   /** INTERNAL API. */
   override protected[akka] def aroundReceive(
       receive: Receive,
-      message: Any): Unit =
-    currentState.stateReceive(receive, message)
+      message: Any): Unit = currentState.stateReceive(receive, message)
 
   /** INTERNAL API. */
   override protected[akka] def aroundPreStart(): Unit = {
@@ -307,8 +308,7 @@ private[persistence] trait Eventsourced
     if (persistent.sequenceNr > _lastSequenceNr)
       _lastSequenceNr = persistent.sequenceNr
 
-  private def setLastSequenceNr(value: Long): Unit =
-    _lastSequenceNr = value
+  private def setLastSequenceNr(value: Long): Unit = _lastSequenceNr = value
 
   private def nextSequenceNr(): Long = {
     sequenceNr += 1L
@@ -719,68 +719,70 @@ private[persistence] trait Eventsourced
     * Command processing state. If event persistence is pending after processing a
     * command, event persistence is triggered and state changes to `persistingEvents`.
     */
-  private val processingCommands: State = new ProcessingState {
-    override def toString: String = "processing commands"
+  private val processingCommands: State =
+    new ProcessingState {
+      override def toString: String = "processing commands"
 
-    override def stateReceive(receive: Receive, message: Any) =
-      if (common.isDefinedAt(message))
-        common(message)
-      else
-        try {
-          Eventsourced.super.aroundReceive(receive, message)
-          aroundReceiveComplete(err = false)
-        } catch {
-          case NonFatal(e) ⇒
-            aroundReceiveComplete(err = true);
-            throw e
-        }
+      override def stateReceive(receive: Receive, message: Any) =
+        if (common.isDefinedAt(message))
+          common(message)
+        else
+          try {
+            Eventsourced.super.aroundReceive(receive, message)
+            aroundReceiveComplete(err = false)
+          } catch {
+            case NonFatal(e) ⇒
+              aroundReceiveComplete(err = true);
+              throw e
+          }
 
-    private def aroundReceiveComplete(err: Boolean): Unit = {
-      if (eventBatch.nonEmpty)
-        flushBatch()
+      private def aroundReceiveComplete(err: Boolean): Unit = {
+        if (eventBatch.nonEmpty)
+          flushBatch()
 
-      if (pendingStashingPersistInvocations > 0)
-        changeState(persistingEvents)
-      else
+        if (pendingStashingPersistInvocations > 0)
+          changeState(persistingEvents)
+        else
+          unstashInternally(all = err)
+      }
+
+      override def onWriteMessageComplete(err: Boolean): Unit = {
+        pendingInvocations.pop()
         unstashInternally(all = err)
+      }
     }
-
-    override def onWriteMessageComplete(err: Boolean): Unit = {
-      pendingInvocations.pop()
-      unstashInternally(all = err)
-    }
-  }
 
   /**
     * Event persisting state. Remains until pending events are persisted and then changes
     * state to `processingCommands`. Only events to be persisted are processed. All other
     * messages are stashed internally.
     */
-  private val persistingEvents: State = new ProcessingState {
-    override def toString: String = "persisting events"
+  private val persistingEvents: State =
+    new ProcessingState {
+      override def toString: String = "persisting events"
 
-    override def stateReceive(receive: Receive, message: Any) =
-      if (common.isDefinedAt(message))
-        common(message)
-      else
-        stashInternally(message)
+      override def stateReceive(receive: Receive, message: Any) =
+        if (common.isDefinedAt(message))
+          common(message)
+        else
+          stashInternally(message)
 
-    override def onWriteMessageComplete(err: Boolean): Unit = {
-      pendingInvocations.pop() match {
-        case _: StashingHandlerInvocation ⇒
-          // enables an early return to `processingCommands`, because if this counter hits `0`,
-          // we know the remaining pendingInvocations are all `persistAsync` created, which
-          // means we can go back to processing commands also - and these callbacks will be called as soon as possible
-          pendingStashingPersistInvocations -= 1
-        case _ ⇒ // do nothing
+      override def onWriteMessageComplete(err: Boolean): Unit = {
+        pendingInvocations.pop() match {
+          case _: StashingHandlerInvocation ⇒
+            // enables an early return to `processingCommands`, because if this counter hits `0`,
+            // we know the remaining pendingInvocations are all `persistAsync` created, which
+            // means we can go back to processing commands also - and these callbacks will be called as soon as possible
+            pendingStashingPersistInvocations -= 1
+          case _ ⇒ // do nothing
+        }
+
+        if (pendingStashingPersistInvocations == 0) {
+          changeState(processingCommands)
+          unstashInternally(all = err)
+        }
       }
 
-      if (pendingStashingPersistInvocations == 0) {
-        changeState(processingCommands)
-        unstashInternally(all = err)
-      }
     }
-
-  }
 
 }

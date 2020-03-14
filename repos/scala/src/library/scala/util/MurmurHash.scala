@@ -100,12 +100,10 @@ object MurmurHash {
   final private val seedArray = 0x3c074a61
 
   /** The first 23 magic integers from the first stream are stored here */
-  val storedMagicA =
-    Iterator.iterate(hiddenMagicA)(nextMagicA).take(23).toArray
+  val storedMagicA = Iterator.iterate(hiddenMagicA)(nextMagicA).take(23).toArray
 
   /** The first 23 magic integers from the second stream are stored here */
-  val storedMagicB =
-    Iterator.iterate(hiddenMagicB)(nextMagicB).take(23).toArray
+  val storedMagicB = Iterator.iterate(hiddenMagicB)(nextMagicB).take(23).toArray
 
   /** Begin a new hash with a seed value. */
   def startHash(seed: Int) = seed ^ visibleMagic

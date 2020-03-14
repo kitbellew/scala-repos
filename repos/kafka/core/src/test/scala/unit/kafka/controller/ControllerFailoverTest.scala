@@ -90,10 +90,11 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     // Replace channel manager with our mock manager
     controller.kafkaController.controllerContext.controllerChannelManager
       .shutdown()
-    val channelManager = new MockChannelManager(
-      controller.kafkaController.controllerContext,
-      controller.kafkaController.config,
-      metrics)
+    val channelManager =
+      new MockChannelManager(
+        controller.kafkaController.controllerContext,
+        controller.kafkaController.config,
+        metrics)
     channelManager.startup()
     controller.kafkaController.controllerContext.controllerChannelManager =
       channelManager
@@ -101,28 +102,29 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     channelManager.stopSendThread(0)
     // Spawn a new thread to block on the outgoing channel
     // queue
-    val thread = new Thread(new Runnable {
-      def run() {
-        try {
-          controller.kafkaController
-            .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
-          log.info(
-            "Queue state %d %d".format(
-              channelManager.queueCapacity(0),
-              channelManager.queueSize(0)))
-          controller.kafkaController
-            .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
-          log.info(
-            "Queue state %d %d".format(
-              channelManager.queueCapacity(0),
-              channelManager.queueSize(0)))
-        } catch {
-          case e: Exception => {
-            log.info("Thread interrupted")
+    val thread =
+      new Thread(new Runnable {
+        def run() {
+          try {
+            controller.kafkaController
+              .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
+            log.info(
+              "Queue state %d %d".format(
+                channelManager.queueCapacity(0),
+                channelManager.queueSize(0)))
+            controller.kafkaController
+              .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
+            log.info(
+              "Queue state %d %d".format(
+                channelManager.queueCapacity(0),
+                channelManager.queueSize(0)))
+          } catch {
+            case e: Exception => {
+              log.info("Thread interrupted")
+            }
           }
         }
-      }
-    })
+      })
     thread.setName("mythread")
     thread.start()
     while (thread.getState() != Thread.State.WAITING) {
@@ -138,15 +140,16 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     var counter = 0
     while (!found && counter < 10) {
       for (server <- this.servers) {
-        val previousEpoch = (epochMap get server.config.brokerId) match {
-          case Some(epoch) =>
-            epoch
-          case None =>
-            val msg = String.format(
-              "Missing element in epoch map %s",
-              epochMap.mkString(", "))
-            throw new IllegalStateException(msg)
-        }
+        val previousEpoch =
+          (epochMap get server.config.brokerId) match {
+            case Some(epoch) =>
+              epoch
+            case None =>
+              val msg = String.format(
+                "Missing element in epoch map %s",
+                epochMap.mkString(", "))
+              throw new IllegalStateException(msg)
+          }
 
         if (server.kafkaController.isActive
             && (previousEpoch) < server.kafkaController.epoch) {

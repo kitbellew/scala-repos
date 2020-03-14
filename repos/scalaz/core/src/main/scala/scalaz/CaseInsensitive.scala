@@ -63,7 +63,8 @@ trait FoldCase[A] {
 object FoldCase extends FoldCaseInstances
 
 sealed abstract class FoldCaseInstances {
-  implicit val StringFoldCase: FoldCase[String] = new FoldCase[String] {
-    def foldCase(s: String) = s.toLowerCase
-  }
+  implicit val StringFoldCase: FoldCase[String] =
+    new FoldCase[String] {
+      def foldCase(s: String) = s.toLowerCase
+    }
 }

@@ -14,8 +14,8 @@ abstract class Serializer[T](clazz: Class[T])
     with QueryProvider[T] {
   private val TypeField =
     new StringField("TYPE", clazz.getSimpleName, Store.YES)
-  private val TypeTerm = new TermQuery(
-    new Term(TypeField.name, TypeField.stringValue))
+  private val TypeTerm =
+    new TermQuery(new Term(TypeField.name, TypeField.stringValue))
 
   def id(t: T): String
 

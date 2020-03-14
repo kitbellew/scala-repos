@@ -33,10 +33,11 @@ object Test extends ScaladocModelTest {
   def scalaURL = "http://bog.us"
 
   override def scaladocSettings = {
-    val scalaLibUri = getClass.getClassLoader
-      .getResource("scala/Function1.class")
-      .getPath
-      .split("!")(0)
+    val scalaLibUri =
+      getClass.getClassLoader
+        .getResource("scala/Function1.class")
+        .getPath
+        .split("!")(0)
     val scalaLibPath = new URI(scalaLibUri).getPath
     val externalArg = s"$scalaLibPath#$scalaURL"
     "-no-link-warnings -doc-external-doc " + externalArg

@@ -17,11 +17,11 @@ class FixedPointCheck
     with Matchers
     with GeneratorDrivenPropertyChecks {
 
-  implicit val arbFixedScale: Arbitrary[FixedScale] =
-    Arbitrary(arbitrary[Int].map(_.abs).filter(_ > 0).map(FixedScale))
+  implicit val arbFixedScale: Arbitrary[FixedScale] = Arbitrary(
+    arbitrary[Int].map(_.abs).filter(_ > 0).map(FixedScale))
 
-  implicit val arbFixedPoint: Arbitrary[FixedPoint] =
-    Arbitrary(arbitrary[Long].map(new FixedPoint(_)))
+  implicit val arbFixedPoint: Arbitrary[FixedPoint] = Arbitrary(
+    arbitrary[Long].map(new FixedPoint(_)))
 
   property("FixedScale(r).toRational ~= r") {
     forAll { (s: FixedScale, r: Rational) =>
@@ -73,12 +73,13 @@ class FixedPointCheck
           val (fx, fy) = (new FixedPoint(x), new FixedPoint(y))
           val (ax, ay) = (Rational(x, s.denom), Rational(y, s.denom))
           val az = g(ax, ay)
-          val fz = Try(f(fx, fy, scale)) match {
-            case Success(fz) =>
-              BigInt(fz.long) shouldBe (az * s.denom).toBigInt
-            case _ =>
-              (az * s.denom < Long.MinValue || Long.MaxValue < az * s.denom) shouldBe true
-          }
+          val fz =
+            Try(f(fx, fy, scale)) match {
+              case Success(fz) =>
+                BigInt(fz.long) shouldBe (az * s.denom).toBigInt
+              case _ =>
+                (az * s.denom < Long.MinValue || Long.MaxValue < az * s.denom) shouldBe true
+            }
         }
       }
     }

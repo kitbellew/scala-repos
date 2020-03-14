@@ -77,14 +77,15 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   val presentClientIdEx = new IllegalStateException("unexpected client id")
 
   def servers(pf: TProtocolFactory): Seq[(String, Closable, Int)] = {
-    val iface = new BServiceImpl {
-      override def show_me_your_dtab(): Future[String] = {
-        ClientId.current.map(_.name) match {
-          case Some(name) => Future.value(name)
-          case _          => Future.exception(missingClientIdEx)
+    val iface =
+      new BServiceImpl {
+        override def show_me_your_dtab(): Future[String] = {
+          ClientId.current.map(_.name) match {
+            case Some(name) => Future.value(name)
+            case _          => Future.exception(missingClientIdEx)
+          }
         }
       }
-    }
 
     val builder = ServerBuilder()
       .name("server")
@@ -167,10 +168,11 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   test("Exceptions are treated as failures") {
     val protocolFactory = Protocols.binaryFactory()
 
-    val impl = new BServiceImpl {
-      override def add(a: Int, b: Int) =
-        Future.exception(new RuntimeException("lol"))
-    }
+    val impl =
+      new BServiceImpl {
+        override def add(a: Int, b: Int) =
+          Future.exception(new RuntimeException("lol"))
+      }
 
     val sr = new InMemoryStatsReceiver()
     val server = Thrift.server
@@ -268,14 +270,16 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       assert(ids.size == 1)
       val theId = ids.head
 
-      val traces: Seq[Record] = tracer
-        .filter(_.traceId == theId)
-        .filter {
-          // Skip spurious GC messages
-          case Record(_, _, Annotation.Message(msg), _) => !msg.startsWith("Gc")
-          case _                                        => true
-        }
-        .toSeq
+      val traces: Seq[Record] =
+        tracer
+          .filter(_.traceId == theId)
+          .filter {
+            // Skip spurious GC messages
+            case Record(_, _, Annotation.Message(msg), _) =>
+              !msg.startsWith("Gc")
+            case _ => true
+          }
+          .toSeq
 
       // Verify the count of the annotations. Order may change.
       // These are set twice - by client and server
@@ -419,13 +423,14 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   }
 
   private def serverForClassifier(): ListeningServer = {
-    val iface = new Echo.FutureIface {
-      def echo(x: String) =
-        if (x == "safe")
-          Future.value("safe")
-        else
-          Future.exception(new InvalidQueryException(x.length))
-    }
+    val iface =
+      new Echo.FutureIface {
+        def echo(x: String) =
+          if (x == "safe")
+            Future.value("safe")
+          else
+            Future.exception(new InvalidQueryException(x.length))
+      }
     val svc = new Echo.FinagledService(iface, Protocols.binaryFactory())
     Thrift.server
       .configured(Stats(NullStatsReceiver))
@@ -578,13 +583,15 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   } yield test(s"measures payload sizes: $s :: $c") {
     val sr = new InMemoryStatsReceiver
 
-    val fi = new Echo.FutureIface {
-      def echo(x: String) = Future.value(x + x)
-    }
+    val fi =
+      new Echo.FutureIface {
+        def echo(x: String) = Future.value(x + x)
+      }
 
     val ss = server(sr, fi)
-    val cc =
-      client(sr, Address(ss.boundAddress.asInstanceOf[InetSocketAddress]))
+    val cc = client(
+      sr,
+      Address(ss.boundAddress.asInstanceOf[InetSocketAddress]))
 
     Await.ready(cc.echo("." * 10))
 
@@ -600,14 +607,15 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
   test(
     "clientId is not sent and prep stats are not recorded when TTwitter upgrading is disabled") {
     val pf = Protocols.binaryFactory()
-    val iface = new BServiceImpl {
-      override def someway(): Future[Void] = {
-        ClientId.current.map(_.name) match {
-          case Some(name) => Future.exception(presentClientIdEx)
-          case _          => Future.Void
+    val iface =
+      new BServiceImpl {
+        override def someway(): Future[Void] = {
+          ClientId.current.map(_.name) match {
+            case Some(name) => Future.exception(presentClientIdEx)
+            case _          => Future.Void
+          }
         }
       }
-    }
     val server = Thrift.server
       .withProtocolFactory(pf)
       .serveIface(

@@ -65,15 +65,16 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     * The `uid` is needed to be able to distinguish different
     * incarnations of a member with same hostname and port.
     */
-  val selfUniqueAddress: UniqueAddress = system.provider match {
-    case c: ClusterActorRefProvider ⇒
-      UniqueAddress(
-        c.transport.defaultAddress,
-        AddressUidExtension(system).addressUid)
-    case other ⇒
-      throw new ConfigurationException(
-        s"ActorSystem [${system}] needs to have a 'ClusterActorRefProvider' enabled in the configuration, currently uses [${other.getClass.getName}]")
-  }
+  val selfUniqueAddress: UniqueAddress =
+    system.provider match {
+      case c: ClusterActorRefProvider ⇒
+        UniqueAddress(
+          c.transport.defaultAddress,
+          AddressUidExtension(system).addressUid)
+      case other ⇒
+        throw new ConfigurationException(
+          s"ActorSystem [${system}] needs to have a 'ClusterActorRefProvider' enabled in the configuration, currently uses [${other.getClass.getName}]")
+    }
 
   /**
     * The address of this cluster member.
@@ -128,11 +129,12 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         .parseString(
           s"akka.scheduler.tick-duration=${SchedulerTickDuration.toMillis}ms")
         .withFallback(system.settings.config)
-      val threadFactory = system.threadFactory match {
-        case tf: MonitorableThreadFactory ⇒
-          tf.withName(tf.name + "-cluster-scheduler")
-        case tf ⇒ tf
-      }
+      val threadFactory =
+        system.threadFactory match {
+          case tf: MonitorableThreadFactory ⇒
+            tf.withName(tf.name + "-cluster-scheduler")
+          case tf ⇒ tf
+        }
       system.dynamicAccess
         .createInstanceFor[Scheduler](
           system.settings.SchedulerClass,

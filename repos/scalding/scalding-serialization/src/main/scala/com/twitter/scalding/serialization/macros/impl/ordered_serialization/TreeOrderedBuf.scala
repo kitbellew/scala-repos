@@ -79,18 +79,19 @@ object TreeOrderedBuf {
     val innerLengthFn: Tree = {
       val element = freshT("element")
 
-      val fnBodyOpt = t.length(q"$element") match {
-        case _: NoLengthCalculationAvailable[_]  => None
-        case const: ConstantLengthCalculation[_] => None
-        case f: FastLengthCalculation[_] =>
-          Some(q"""
+      val fnBodyOpt =
+        t.length(q"$element") match {
+          case _: NoLengthCalculationAvailable[_]  => None
+          case const: ConstantLengthCalculation[_] => None
+          case f: FastLengthCalculation[_] =>
+            Some(q"""
         _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f
-            .asInstanceOf[FastLengthCalculation[c.type]]
-            .t})
+              .asInstanceOf[FastLengthCalculation[c.type]]
+              .t})
         """)
-        case m: MaybeLengthCalculation[_] =>
-          Some(m.asInstanceOf[MaybeLengthCalculation[c.type]].t)
-      }
+          case m: MaybeLengthCalculation[_] =>
+            Some(m.asInstanceOf[MaybeLengthCalculation[c.type]].t)
+        }
 
       fnBodyOpt
         .map { fnBody =>
@@ -108,9 +109,10 @@ object TreeOrderedBuf {
       val tempLen = freshT("tempLen")
       val lensLen = freshT("lensLen")
       val element = freshT("element")
-      val callDynamic = (
-        q"""override def staticSize: Option[Int] = None""",
-        q"""
+      val callDynamic =
+        (
+          q"""override def staticSize: Option[Int] = None""",
+          q"""
 
       override def dynamicSize($element: $typeName): Option[Int] = {
         if(skipLenCalc) None else {

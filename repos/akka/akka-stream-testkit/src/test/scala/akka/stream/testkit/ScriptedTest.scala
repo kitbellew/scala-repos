@@ -163,29 +163,31 @@ trait ScriptedTest extends Matchers {
     def mayRequestMore: Boolean = remainingDemand > 0
 
     def shakeIt(): Boolean = {
-      val u = upstream.receiveWhile(1.milliseconds) {
-        case RequestMore(_, n) ⇒
-          debugLog(s"operation requests $n")
-          pendingRequests += n
-          true
-        case _ ⇒ false // Ignore
-      }
-      val d = downstream.receiveWhile(1.milliseconds) {
-        case OnNext(elem: Out @unchecked) ⇒
-          debugLog(s"operation produces [$elem]")
-          if (outstandingDemand == 0)
-            fail("operation produced while there was no demand")
-          outstandingDemand -= 1
-          currentScript = currentScript.consumeOutput(elem)
-          true
-        case OnComplete ⇒
-          currentScript = currentScript.complete()
-          true
-        case OnError(e) ⇒
-          currentScript = currentScript.error(e)
-          true
-        case _ ⇒ false // Ignore
-      }
+      val u =
+        upstream.receiveWhile(1.milliseconds) {
+          case RequestMore(_, n) ⇒
+            debugLog(s"operation requests $n")
+            pendingRequests += n
+            true
+          case _ ⇒ false // Ignore
+        }
+      val d =
+        downstream.receiveWhile(1.milliseconds) {
+          case OnNext(elem: Out @unchecked) ⇒
+            debugLog(s"operation produces [$elem]")
+            if (outstandingDemand == 0)
+              fail("operation produced while there was no demand")
+            outstandingDemand -= 1
+            currentScript = currentScript.consumeOutput(elem)
+            true
+          case OnComplete ⇒
+            currentScript = currentScript.complete()
+            true
+          case OnError(e) ⇒
+            currentScript = currentScript.error(e)
+            true
+          case _ ⇒ false // Ignore
+        }
       (u ++ d) exists (x ⇒ x)
     }
 

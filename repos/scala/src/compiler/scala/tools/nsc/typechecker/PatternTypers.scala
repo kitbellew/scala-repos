@@ -87,8 +87,9 @@ trait PatternTypers {
       // do not update the symbol if the tree's symbol's type does not define an unapply member
       // (e.g. since it's some method that returns an object with an unapply member)
       val fun = inPlaceAdHocOverloadingResolution(fun0)(hasUnapplyMember)
-      val caseClass =
-        companionSymbolOf(fun.tpe.typeSymbol.sourceModule, context)
+      val caseClass = companionSymbolOf(
+        fun.tpe.typeSymbol.sourceModule,
+        context)
       val member = unapplyMember(fun.tpe)
       def resultType = (fun.tpe memberType member).finalResultType
       def isEmptyType = resultOfMatchingMethod(resultType, nme.isEmpty)()
@@ -157,16 +158,18 @@ trait PatternTypers {
     protected def typedStarInPattern(tree: Tree, mode: Mode, pt: Type) = {
       val Typed(expr, tpt) = tree
       val exprTyped = typed(expr, mode)
-      val baseClass = exprTyped.tpe.typeSymbol match {
-        case ArrayClass => ArrayClass
-        case _          => SeqClass
-      }
-      val starType = baseClass match {
-        case ArrayClass if isPrimitiveValueType(pt) || !isFullyDefined(pt) =>
-          arrayType(pt)
-        case ArrayClass => boundedArrayType(pt)
-        case _          => seqType(pt)
-      }
+      val baseClass =
+        exprTyped.tpe.typeSymbol match {
+          case ArrayClass => ArrayClass
+          case _          => SeqClass
+        }
+      val starType =
+        baseClass match {
+          case ArrayClass if isPrimitiveValueType(pt) || !isFullyDefined(pt) =>
+            arrayType(pt)
+          case ArrayClass => boundedArrayType(pt)
+          case _          => seqType(pt)
+        }
       val exprAdapted = adapt(exprTyped, mode, starType)
       exprAdapted.tpe baseType baseClass match {
         case TypeRef(_, _, elemtp :: Nil) =>
@@ -182,11 +185,12 @@ trait PatternTypers {
       val exprTyped = typed(expr, mode, tpe.deconst)
       val extractor = extractorForUncheckedType(tpt.pos, tpe)
 
-      val canRemedy = tpe match {
-        case RefinedType(_, decls) if !decls.isEmpty                 => false
-        case RefinedType(parents, _) if parents exists isUncheckable => false
-        case _                                                       => extractor.nonEmpty
-      }
+      val canRemedy =
+        tpe match {
+          case RefinedType(_, decls) if !decls.isEmpty                 => false
+          case RefinedType(parents, _) if parents exists isUncheckable => false
+          case _                                                       => extractor.nonEmpty
+        }
 
       val ownType = inferTypedPattern(tptTyped, tpe, pt, canRemedy)
       val treeTyped = treeCopy.Typed(tree, exprTyped, tptTyped) setType ownType
@@ -287,9 +291,10 @@ trait PatternTypers {
 
       // have to open up the existential and put the skolems in scope
       // can't simply package up pt in an ExistentialType, because that takes us back to square one (List[_ <: T] == List[T] due to covariance)
-      val ptSafe = logResult(
-        s"case constructor from (${tree.summaryString}, $caseClassType, $pt)")(
-        variantToSkolem(pt))
+      val ptSafe =
+        logResult(
+          s"case constructor from (${tree.summaryString}, $caseClassType, $pt)")(
+          variantToSkolem(pt))
       val freeVars = variantToSkolem.skolems
 
       // use "tree" for the context, not context.tree: don't make another CaseDef context,
@@ -392,17 +397,19 @@ trait PatternTypers {
         Ident(unapplyArg) updateAttachment SubpatternsAttachment(args)
 
       // clearing the type is necessary so that ref will be stabilized; see bug 881
-      val fun1 = typedPos(fun.pos)(
-        Apply(Select(fun.clearType(), unapplyMethod), unapplyArgTree :: Nil))
+      val fun1 =
+        typedPos(fun.pos)(
+          Apply(Select(fun.clearType(), unapplyMethod), unapplyArgTree :: Nil))
 
       def makeTypedUnapply() = {
         // the union of the expected type and the inferred type of the argument to unapply
         val glbType = glb(ensureFullyDefined(pt) :: unapplyArg.tpe_* :: Nil)
         val wrapInTypeTest =
           canRemedy && !(fun1.symbol.owner isNonBottomSubClass ClassTagClass)
-        val formals = patmat
-          .alignPatterns(context.asInstanceOf[analyzer.Context], fun1, args)
-          .unexpandedFormals
+        val formals =
+          patmat
+            .alignPatterns(context.asInstanceOf[analyzer.Context], fun1, args)
+            .unexpandedFormals
         val args1 = typedArgsForFormals(args, formals, mode)
         val result = UnApply(fun1, args1) setPos tree.pos setType glbType
 
@@ -469,16 +476,17 @@ trait PatternTypers {
         }
         // only look at top-level type, can't (reliably) do anything about unchecked type args (in general)
         // but at least make a proper type before passing it elsewhere
-        val pt1 = pt.dealiasWiden match {
-          case tr @ TypeRef(pre, sym, args) if args.nonEmpty =>
-            copyTypeRef(
-              tr,
-              pre,
-              sym,
-              sym.typeParams map (_.tpeHK)
-            ) // replace actual type args with dummies
-          case pt1 => pt1
-        }
+        val pt1 =
+          pt.dealiasWiden match {
+            case tr @ TypeRef(pre, sym, args) if args.nonEmpty =>
+              copyTypeRef(
+                tr,
+                pre,
+                sym,
+                sym.typeParams map (_.tpeHK)
+              ) // replace actual type args with dummies
+            case pt1 => pt1
+          }
         if (isCheckable(pt1))
           EmptyTree
         else

@@ -43,12 +43,12 @@ private[netty3] class ChannelConnector[In, Out](
     newTransport: Channel => Transport[In, Out],
     statsReceiver: StatsReceiver
 ) extends (SocketAddress => Future[Transport[In, Out]]) {
-  private[this] val connectLatencyStat =
-    statsReceiver.stat("connect_latency_ms")
-  private[this] val failedConnectLatencyStat =
-    statsReceiver.stat("failed_connect_latency_ms")
-  private[this] val cancelledConnects =
-    statsReceiver.counter("cancelled_connects")
+  private[this] val connectLatencyStat = statsReceiver.stat(
+    "connect_latency_ms")
+  private[this] val failedConnectLatencyStat = statsReceiver.stat(
+    "failed_connect_latency_ms")
+  private[this] val cancelledConnects = statsReceiver.counter(
+    "cancelled_connects")
 
   def apply(addr: SocketAddress): Future[Transport[In, Out]] = {
     require(addr != null)
@@ -106,13 +106,14 @@ object Netty3Transporter {
     "connectTimeoutMillis" -> (1000L: java.lang.Long)
   )
 
-  val channelFactory: NettyChannelFactory = new NioClientSocketChannelFactory(
-    Executor,
-    1 /*# boss threads*/,
-    WorkerPool,
-    DefaultTimer.netty) {
-    override def releaseExternalResources() = () // no-op; unreleasable
-  }
+  val channelFactory: NettyChannelFactory =
+    new NioClientSocketChannelFactory(
+      Executor,
+      1 /*# boss threads*/,
+      WorkerPool,
+      DefaultTimer.netty) {
+      override def releaseExternalResources() = () // no-op; unreleasable
+    }
 
   /**
     * A [[com.twitter.finagle.Stack.Param]] used to configure a netty3
@@ -151,25 +152,26 @@ object Netty3Transporter {
     // transport and transporter params
     val ChannelFactory(cf) = params[ChannelFactory]
     val TransportFactory(newTransport) = params[TransportFactory]
-    val Transporter.ConnectTimeout(connectTimeout) =
-      params[Transporter.ConnectTimeout]
-    val LatencyCompensation.Compensation(compensation) =
-      params[LatencyCompensation.Compensation]
+    val Transporter
+      .ConnectTimeout(connectTimeout) = params[Transporter.ConnectTimeout]
+    val LatencyCompensation
+      .Compensation(compensation) = params[LatencyCompensation.Compensation]
     val Transporter.TLSHostname(tlsHostname) = params[Transporter.TLSHostname]
-    val Transporter.HttpProxy(httpProxy, httpProxyCredentials) =
-      params[Transporter.HttpProxy]
-    val Transporter.SocksProxy(socksProxy, socksCredentials) =
-      params[Transporter.SocksProxy]
-    val Transport.BufferSizes(sendBufSize, recvBufSize) =
-      params[Transport.BufferSizes]
+    val Transporter.HttpProxy(httpProxy, httpProxyCredentials) = params[
+      Transporter.HttpProxy]
+    val Transporter
+      .SocksProxy(socksProxy, socksCredentials) = params[Transporter.SocksProxy]
+    val Transport
+      .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
     val Transport.TLSClientEngine(tls) = params[Transport.TLSClientEngine]
-    val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) =
-      params[Transport.Liveness]
-    val snooper = params[Transport.Verbose] match {
-      case Transport.Verbose(true) =>
-        Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
-      case _ => None
-    }
+    val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) = params[
+      Transport.Liveness]
+    val snooper =
+      params[Transport.Verbose] match {
+        case Transport.Verbose(true) =>
+          Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
+        case _ => None
+      }
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
 
     val opts = new mutable.HashMap[String, Object]()
@@ -247,12 +249,12 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
   override def operationComplete(future: ChannelFuture): Unit = {
     future.getChannel match {
       case nioChannel: NioSocketChannel =>
-        val channelClosed = new ChannelRunnableWrapper(
-          nioChannel,
-          new Runnable() {
-            override def run(): Unit =
-              Channels.fireChannelClosed(nioChannel)
-          })
+        val channelClosed =
+          new ChannelRunnableWrapper(
+            nioChannel,
+            new Runnable() {
+              override def run(): Unit = Channels.fireChannelClosed(nioChannel)
+            })
         nioChannel.getWorker
           .executeInIoThread(channelClosed, /* alwaysAsync */ true)
 
@@ -368,8 +370,9 @@ case class Netty3Transporter[In, Out](
       engine.self.setUseClientMode(true)
       engine.self.setEnableSessionCreation(true)
 
-      val verifier =
-        verifyHost.map(SslConnectHandler.sessionHostnameVerifier).getOrElse {
+      val verifier = verifyHost
+        .map(SslConnectHandler.sessionHostnameVerifier)
+        .getOrElse {
           Function.const(None) _
         }
 
@@ -399,11 +402,12 @@ case class Netty3Transporter[In, Out](
           if !inetSockAddr.isUnresolved =>
         val inetAddr = inetSockAddr.getAddress
         if (!inetAddr.isLoopbackAddress && !inetAddr.isLinkLocalAddress) {
-          val authentication = socksUsernameAndPassword match {
-            case (Some((username, password))) =>
-              UsernamePassAuthenticationSetting(username, password)
-            case _ => Unauthenticated
-          }
+          val authentication =
+            socksUsernameAndPassword match {
+              case (Some((username, password))) =>
+                UsernamePassAuthenticationSetting(username, password)
+              case _ => Unauthenticated
+            }
           SocksConnectHandler.addHandler(
             proxyAddr,
             inetSockAddr,
@@ -441,10 +445,11 @@ case class Netty3Transporter[In, Out](
   def apply(
       addr: SocketAddress,
       statsReceiver: StatsReceiver): Future[Transport[In, Out]] = {
-    val conn = new ChannelConnector[In, Out](
-      () => newConfiguredChannel(addr, statsReceiver),
-      newTransport,
-      statsReceiver)
+    val conn =
+      new ChannelConnector[In, Out](
+        () => newConfiguredChannel(addr, statsReceiver),
+        newTransport,
+        statsReceiver)
     conn(addr)
   }
 }

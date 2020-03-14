@@ -17,13 +17,15 @@ class CreateResultSetMapping extends Phase {
       val tpe = state.get(Phase.removeMappedTypes).get
       ClientSideOp
         .mapServerSide(n, keepType = false) { ch =>
-          val syms = ch.nodeType.structural match {
-            case StructType(defs) => defs.map(_._1)
-            case CollectionType(_, Type.Structural(StructType(defs))) =>
-              defs.map(_._1)
-            case t =>
-              throw new SlickException("No StructType found at top level: " + t)
-          }
+          val syms =
+            ch.nodeType.structural match {
+              case StructType(defs) => defs.map(_._1)
+              case CollectionType(_, Type.Structural(StructType(defs))) =>
+                defs.map(_._1)
+              case t =>
+                throw new SlickException(
+                  "No StructType found at top level: " + t)
+            }
           val gen = new AnonSymbol
           (tpe match {
             case CollectionType(cons, el) =>

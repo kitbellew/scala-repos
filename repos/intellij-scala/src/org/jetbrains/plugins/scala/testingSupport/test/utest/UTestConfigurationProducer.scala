@@ -77,10 +77,11 @@ with AbstractTestConfigurationProducer {
 
     if (element.isInstanceOf[PsiPackage] || element
           .isInstanceOf[PsiDirectory]) {
-      val name = element match {
-        case p: PsiPackage   => p.getName
-        case d: PsiDirectory => d.getName
-      }
+      val name =
+        element match {
+          case p: PsiPackage   => p.getName
+          case d: PsiDirectory => d.getName
+        }
       return Some(
         (
           element,
@@ -104,8 +105,8 @@ with AbstractTestConfigurationProducer {
            else
              ""),
         confFactory)
-    val runConfiguration =
-      settings.getConfiguration.asInstanceOf[UTestRunConfiguration]
+    val runConfiguration = settings.getConfiguration
+      .asInstanceOf[UTestRunConfiguration]
     runConfiguration.setTestClassPath(testClassPath)
     runConfiguration.initWorkingDir()
     if (testName != null)
@@ -147,12 +148,13 @@ with AbstractTestConfigurationProducer {
             val patterns = patternDef.pList.patterns
             if (patterns.size == 1 && patterns.head
                   .isInstanceOf[ScTuplePattern]) {
-              val index = tuple.exprs.zipWithIndex
-                .find {
-                  case (expr, _) => expr == testSuite
-                }
-                .map(_._2)
-                .get
+              val index =
+                tuple.exprs.zipWithIndex
+                  .find {
+                    case (expr, _) => expr == testSuite
+                  }
+                  .map(_._2)
+                  .get
               val bindings = patternDef.bindings
               if (bindings.size > index)
                 Some(bindings(index).getName)
@@ -211,8 +213,10 @@ with AbstractTestConfigurationProducer {
     val element = location.getPsiElement
     val fail = (null, null)
     //first, check that containing type definition is a uTest suite
-    var containingObject: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    var containingObject: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
     if (containingObject == null)
       return fail
     while (!containingObject

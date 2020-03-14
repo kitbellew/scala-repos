@@ -92,8 +92,8 @@ trait Task[R, +Tp] {
   */
 trait Tasks {
 
-  private[parallel] val debugMessages =
-    scala.collection.mutable.ArrayBuffer[String]()
+  private[parallel] val debugMessages = scala.collection.mutable
+    .ArrayBuffer[String]()
 
   private[parallel] def debuglog(s: String) =
     synchronized {
@@ -349,22 +349,23 @@ object ThreadPoolTasks {
 
   val tcount = new atomic.AtomicLong(0L)
 
-  val defaultThreadPool = new ThreadPoolExecutor(
-    numCores,
-    Int.MaxValue,
-    60L,
-    TimeUnit.MILLISECONDS,
-    new LinkedBlockingQueue[Runnable],
-    new ThreadFactory {
-      def newThread(r: Runnable) = {
-        val t = new Thread(r)
-        t.setName("pc-thread-" + tcount.incrementAndGet)
-        t.setDaemon(true)
-        t
-      }
-    },
-    new ThreadPoolExecutor.CallerRunsPolicy
-  )
+  val defaultThreadPool =
+    new ThreadPoolExecutor(
+      numCores,
+      Int.MaxValue,
+      60L,
+      TimeUnit.MILLISECONDS,
+      new LinkedBlockingQueue[Runnable],
+      new ThreadFactory {
+        def newThread(r: Runnable) = {
+          val t = new Thread(r)
+          t.setName("pc-thread-" + tcount.incrementAndGet)
+          t.setDaemon(true)
+          t
+        }
+      },
+      new ThreadPoolExecutor.CallerRunsPolicy
+    )
 }
 
 object FutureThreadPoolTasks {
@@ -543,9 +544,10 @@ private[parallel] final class FutureTasks(executor: ExecutionContext)
 
   def execute[R, Tp](task: Task[R, Tp]): () => R = {
     val future = exec(task)
-    val callback = () => {
-      Await.result(future, scala.concurrent.duration.Duration.Inf)
-    }
+    val callback =
+      () => {
+        Await.result(future, scala.concurrent.duration.Duration.Inf)
+      }
     callback
   }
 
@@ -576,14 +578,15 @@ trait ExecutionContextTasks extends Tasks {
     *  the driver is `ForkJoinTaskSupport` with the same pool, as an optimization.
     *  Otherwise, the driver will be a Scala `Future`-based implementation.
     */
-  private val driver: Tasks = executionContext match {
-    case eci: scala.concurrent.impl.ExecutionContextImpl =>
-      eci.executor match {
-        case fjp: ForkJoinPool => new ForkJoinTaskSupport(fjp)
-        case _                 => new FutureTasks(environment)
-      }
-    case _ => new FutureTasks(environment)
-  }
+  private val driver: Tasks =
+    executionContext match {
+      case eci: scala.concurrent.impl.ExecutionContextImpl =>
+        eci.executor match {
+          case fjp: ForkJoinPool => new ForkJoinTaskSupport(fjp)
+          case _                 => new FutureTasks(environment)
+        }
+      case _ => new FutureTasks(environment)
+    }
 
   def execute[R, Tp](task: Task[R, Tp]): () => R = driver execute task
 

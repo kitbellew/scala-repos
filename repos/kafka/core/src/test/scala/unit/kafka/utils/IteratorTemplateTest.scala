@@ -23,18 +23,19 @@ import org.junit.{Test, After, Before}
 class IteratorTemplateTest extends Assertions {
 
   val lst = (0 until 10)
-  val iterator = new IteratorTemplate[Int]() {
-    var i = 0
-    override def makeNext() = {
-      if (i >= lst.size) {
-        allDone()
-      } else {
-        val item = lst(i)
-        i += 1
-        item
+  val iterator =
+    new IteratorTemplate[Int]() {
+      var i = 0
+      override def makeNext() = {
+        if (i >= lst.size) {
+          allDone()
+        } else {
+          val item = lst(i)
+          i += 1
+          item
+        }
       }
     }
-  }
 
   @Test
   def testIterator() {

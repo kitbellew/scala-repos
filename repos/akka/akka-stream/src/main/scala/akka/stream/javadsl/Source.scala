@@ -117,12 +117,13 @@ object Source {
     // this adapter is not immutable if the underlying java.lang.Iterable is modified
     // but there is not anything we can do to prevent that from happening.
     // ConcurrentModificationException will be thrown in some cases.
-    val scalaIterable = new immutable.Iterable[O] {
+    val scalaIterable =
+      new immutable.Iterable[O] {
 
-      import collection.JavaConverters._
+        import collection.JavaConverters._
 
-      override def iterator: Iterator[O] = iterable.iterator().asScala
-    }
+        override def iterator: Iterator[O] = iterable.iterator().asScala
+      }
     new Source(scaladsl.Source(scalaIterable))
   }
 
@@ -465,8 +466,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def runWith[M](
       sink: Graph[SinkShape[Out], M],
-      materializer: Materializer): M =
-    delegate.runWith(sink)(materializer)
+      materializer: Materializer): M = delegate.runWith(sink)(materializer)
 
   /**
     * Shortcut for running this `Source` with a fold function.
@@ -855,8 +855,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
-      : Source[T, Mat @uncheckedVariance] =
-    new Source(delegate.recoverWith(pf))
+      : Source[T, Mat @uncheckedVariance] = new Source(delegate.recoverWith(pf))
 
   /**
     * Transform each input element into an `Iterable` of output elements that is
@@ -1174,8 +1173,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-      : javadsl.Source[Out, Mat] =
-    new Source(delegate.reduce(f.apply))
+      : javadsl.Source[Out, Mat] = new Source(delegate.reduce(f.apply))
 
   /**
     * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
@@ -1304,8 +1302,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     *
     * '''Cancels when''' downstream cancels
     */
-  def drop(n: Long): javadsl.Source[Out, Mat] =
-    new Source(delegate.drop(n))
+  def drop(n: Long): javadsl.Source[Out, Mat] = new Source(delegate.drop(n))
 
   /**
     * Discard the elements received within the given duration at beginning of the stream.
@@ -1375,8 +1372,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     *
     * '''Cancels when''' the defined number of elements has been taken or downstream cancels
     */
-  def take(n: Long): javadsl.Source[Out, Mat] =
-    new Source(delegate.take(n))
+  def take(n: Long): javadsl.Source[Out, Mat] = new Source(delegate.take(n))
 
   /**
     * Terminate processing (and cancel the upstream publisher) after the given
@@ -1769,8 +1765,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : Source[T, Mat] =
-    new Source(delegate.flatMapConcat[T, M](x ⇒ f(x)))
+      : Source[T, Mat] = new Source(delegate.flatMapConcat[T, M](x ⇒ f(x)))
 
   /**
     * Transform each input element into a `Source` of output elements that is
@@ -1788,8 +1783,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
   def flatMapMerge[T, M](
       breadth: Int,
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : Source[T, Mat] =
-    new Source(delegate.flatMapMerge(breadth, o ⇒ f(o)))
+      : Source[T, Mat] = new Source(delegate.flatMapMerge(breadth, o ⇒ f(o)))
 
   /**
     * If the first element has not passed through this stage before the provided timeout, the stream is failed
@@ -1990,8 +1984,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
   /**
     * Put an asynchronous boundary around this `Source`
     */
-  override def async: javadsl.Source[Out, Mat] =
-    new Source(delegate.async)
+  override def async: javadsl.Source[Out, Mat] = new Source(delegate.async)
 
   /**
     * Logs elements flowing through the stream as well as completion and erroring.

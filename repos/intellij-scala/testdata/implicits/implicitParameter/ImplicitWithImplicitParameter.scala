@@ -6,9 +6,10 @@ object Test {
     def buildFrom(x: From): To
   }
 
-  implicit val a2bBuilder = new Builder[A, B] {
-    override def buildFrom(x: A) = new B {}
-  }
+  implicit val a2bBuilder =
+    new Builder[A, B] {
+      override def buildFrom(x: A) = new B {}
+    }
 
   implicit def a2b[From, To >: B](x: From)(implicit bl: Builder[From, To]): To =
     bl.buildFrom(x)

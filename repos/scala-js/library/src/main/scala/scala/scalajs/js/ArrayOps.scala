@@ -39,8 +39,7 @@ final class ArrayOps[A](private[this] val array: Array[A])
   override protected[this] def toCollection(
       repr: Array[A]): mutable.IndexedSeq[A] = new WrappedArray(repr)
 
-  protected[this] def newBuilder: Builder[A, Array[A]] =
-    new ArrayOps[A]
+  protected[this] def newBuilder: Builder[A, Array[A]] = new ArrayOps[A]
 
   // Implementation of Builder
 
@@ -49,15 +48,13 @@ final class ArrayOps[A](private[this] val array: Array[A])
     this
   }
 
-  @inline def clear(): Unit =
-    array.length = 0
+  @inline def clear(): Unit = array.length = 0
 
   @inline def result(): Array[A] = array
 
   // Scala notation for a fast concat()
 
-  @inline def ++[B >: A](that: Array[_ <: B]): Array[B] =
-    concat(array, that)
+  @inline def ++[B >: A](that: Array[_ <: B]): Array[B] = concat(array, that)
 
   // Methods whose inherited implementations do not play nice with the optimizer
 

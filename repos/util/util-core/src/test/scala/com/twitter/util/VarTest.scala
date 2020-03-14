@@ -99,9 +99,10 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("flatMap") {
-    val us = Seq.fill(5) {
-      U(0)
-    }
+    val us =
+      Seq.fill(5) {
+        U(0)
+      }
     def short(us: Seq[Var[Int]]): Var[Int] =
       us match {
         case Seq(hd, tl @ _*) =>
@@ -202,13 +203,14 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
       closed = t
       p
     }
-    val v = Var.async(123) { v =>
-      called += 1
-      x.changes.register(Witness({
-        v() = _
-      }))
-      c
-    }
+    val v =
+      Var.async(123) { v =>
+        called += 1
+        x.changes.register(Witness({
+          v() = _
+        }))
+        c
+      }
 
     assert(called == 0)
     var vv: Int = 0

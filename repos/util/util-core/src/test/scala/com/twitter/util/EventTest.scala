@@ -137,16 +137,17 @@ class EventTest extends FunSuite {
   test("Event.mergeMap closes constituent witnesses") {
     @volatile var n = 0
 
-    val e1, e2 = new Event[Int] {
-      def register(w: Witness[Int]) = {
-        n += 1
-        w.notify(1)
-        Closable.make { _ =>
-          n -= 1;
-          Future.Done
+    val e1, e2 =
+      new Event[Int] {
+        def register(w: Witness[Int]) = {
+          n += 1
+          w.notify(1)
+          Closable.make { _ =>
+            n -= 1;
+            Future.Done
+          }
         }
       }
-    }
 
     val e12 = e1 mergeMap { _ =>
       e2
@@ -332,12 +333,13 @@ class EventTest extends FunSuite {
     val nThreads = 8
     val latch = new CountDownLatch(n)
     val ex = Executors.newFixedThreadPool(nThreads)
-    val addTask = new Runnable {
-      def run() = {
-        e.respond(_ => counter.incrementAndGet())
-        latch.countDown()
+    val addTask =
+      new Runnable {
+        def run() = {
+          e.respond(_ => counter.incrementAndGet())
+          latch.countDown()
+        }
       }
-    }
     for (_ <- 1 to n)
       ex.execute(addTask)
     latch.await()

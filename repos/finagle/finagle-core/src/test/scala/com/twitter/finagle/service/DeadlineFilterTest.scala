@@ -17,16 +17,18 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
   class DeadlineFilterHelper {
     val timer = new MockTimer
     val promise = new Promise[String]
-    val service = new Service[String, String] {
-      def apply(request: String) = promise
-    }
+    val service =
+      new Service[String, String] {
+        def apply(request: String) = promise
+      }
     val statsReceiver = new InMemoryStatsReceiver
-    val deadlineFilter = new DeadlineFilter[String, String](
-      10.seconds,
-      10.seconds,
-      0.2,
-      statsReceiver,
-      Stopwatch.timeMillis)
+    val deadlineFilter =
+      new DeadlineFilter[String, String](
+        10.seconds,
+        10.seconds,
+        0.2,
+        statsReceiver,
+        Stopwatch.timeMillis)
     val deadlineService = deadlineFilter.andThen(service)
   }
 
@@ -349,10 +351,9 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     val underlying = mock[ServiceFactory[String, String]]
     when(underlying()) thenReturn Future.value(underlyingService)
 
-    val s: Stack[ServiceFactory[String, String]] =
-      DeadlineFilter
-        .module[String, String]
-        .toStack(Stack.Leaf(Stack.Role("Service"), underlying))
+    val s: Stack[ServiceFactory[String, String]] = DeadlineFilter
+      .module[String, String]
+      .toStack(Stack.Leaf(Stack.Role("Service"), underlying))
 
     val ps: Stack.Params = Stack.Params.empty + param.Stats(h.statsReceiver)
 

@@ -39,8 +39,9 @@ object IntentionUtils {
   def addNameToArgumentsFix(
       element: PsiElement,
       onlyBoolean: Boolean): Option[() => Unit] = {
-    val argList: ScArgumentExprList =
-      PsiTreeUtil.getParentOfType(element, classOf[ScArgumentExprList])
+    val argList: ScArgumentExprList = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScArgumentExprList])
     if (argList == null || argList.isBraceArgs)
       return None
     val currentArg = argList.exprs.find { e =>
@@ -53,8 +54,8 @@ object IntentionUtils {
     }
 
     def matchedParamsAfter(): Seq[(ScExpression, Parameter)] = {
-      val sortedMatchedArgs =
-        argList.matchedParameters.sortBy(_._1.getTextOffset)
+      val sortedMatchedArgs = argList.matchedParameters.sortBy(
+        _._1.getTextOffset)
       sortedMatchedArgs.dropWhile {
         case (e, p) => !PsiTreeUtil.isAncestor(e, element, /*strict =*/ false)
         case _      => true
@@ -77,22 +78,24 @@ object IntentionUtils {
     if (hasRepeated || !allNamesDefined || hasUnderscore)
       None
     else {
-      val doIt = () => {
-        argsAndMatchedParams.foreach {
-          case (argExpr childOf (a: ScAssignStmt), param)
-              if a.getLExpression.getText == param.name =>
-          case (argExpr, param) =>
-            if (!onlyBoolean || (onlyBoolean && param.paramType == Boolean)) {
-              val newArgExpr = ScalaPsiElementFactory.createExpressionFromText(
-                param.name + " = " + argExpr.getText,
-                element.getManager)
-              inWriteAction {
-                argExpr.replace(newArgExpr)
+      val doIt =
+        () => {
+          argsAndMatchedParams.foreach {
+            case (argExpr childOf (a: ScAssignStmt), param)
+                if a.getLExpression.getText == param.name =>
+            case (argExpr, param) =>
+              if (!onlyBoolean || (onlyBoolean && param.paramType == Boolean)) {
+                val newArgExpr = ScalaPsiElementFactory
+                  .createExpressionFromText(
+                    param.name + " = " + argExpr.getText,
+                    element.getManager)
+                inWriteAction {
+                  argExpr.replace(newArgExpr)
+                }
               }
-            }
-          case _ =>
+            case _ =>
+          }
         }
-      }
       Some(doIt)
     }
   }
@@ -148,32 +151,37 @@ object IntentionUtils {
     if (parent != null && parent.isInstanceOf[ScPrefixExpr] &&
         parent.asInstanceOf[ScPrefixExpr].operation.getText == "!") {
 
-      val newExpr =
-        ScalaPsiElementFactory.createExpressionFromText(buf.toString(), manager)
+      val newExpr = ScalaPsiElementFactory.createExpressionFromText(
+        buf.toString(),
+        manager)
 
-      val size = newExpr match {
-        case infix: ScInfixExpr =>
-          infix.operation.nameId.getTextRange.getStartOffset -
-            newExpr.getTextRange.getStartOffset - 2
-        case _ => 0
-      }
+      val size =
+        newExpr match {
+          case infix: ScInfixExpr =>
+            infix.operation.nameId.getTextRange.getStartOffset -
+              newExpr.getTextRange.getStartOffset - 2
+          case _ => 0
+        }
 
       (parent.asInstanceOf[ScPrefixExpr], newExpr, size)
     } else {
       buf.insert(0, "!(").append(")")
-      val newExpr =
-        ScalaPsiElementFactory.createExpressionFromText(buf.toString(), manager)
+      val newExpr = ScalaPsiElementFactory.createExpressionFromText(
+        buf.toString(),
+        manager)
 
-      val children = newExpr
-        .asInstanceOf[ScPrefixExpr]
-        .getLastChild
-        .asInstanceOf[ScParenthesisedExpr]
-        .getChildren
-      val size = children(0) match {
-        case infix: ScInfixExpr =>
-          infix.operation.nameId.getTextRange.getStartOffset - newExpr.getTextRange.getStartOffset
-        case _ => 0
-      }
+      val children =
+        newExpr
+          .asInstanceOf[ScPrefixExpr]
+          .getLastChild
+          .asInstanceOf[ScParenthesisedExpr]
+          .getChildren
+      val size =
+        children(0) match {
+          case infix: ScInfixExpr =>
+            infix.operation.nameId.getTextRange.getStartOffset - newExpr.getTextRange.getStartOffset
+          case _ => 0
+        }
       (expr, newExpr, size)
     }
   }
@@ -313,36 +321,37 @@ object IntentionUtils {
     values += MakeExplicitAction.MAKE_EXPLICIT
     if (secondPart.contains(function))
       values += MakeExplicitAction.MAKE_EXPLICIT_STATICALLY
-    val base = new BaseListPopupStep[String](null, values.toArray: _*) {
-      override def getTextFor(value: String): String = value
+    val base =
+      new BaseListPopupStep[String](null, values.toArray: _*) {
+        override def getTextFor(value: String): String = value
 
-      override def onChosen(
-          selectedValue: String,
-          finalChoice: Boolean): PopupStep[_] = {
-        if (selectedValue == null)
-          return PopupStep.FINAL_CHOICE
-        if (finalChoice) {
-          PsiDocumentManager.getInstance(project).commitAllDocuments()
-          GoToImplicitConversionAction.getPopup.dispose()
-          if (selectedValue == MakeExplicitAction.MAKE_EXPLICIT)
-            IntentionUtils.replaceWithExplicit(
-              expr,
-              function,
-              project,
-              editor,
-              secondPart)
-          if (selectedValue == MakeExplicitAction.MAKE_EXPLICIT_STATICALLY)
-            IntentionUtils.replaceWithExplicitStatically(
-              expr,
-              function,
-              project,
-              editor,
-              secondPart)
-          return PopupStep.FINAL_CHOICE
+        override def onChosen(
+            selectedValue: String,
+            finalChoice: Boolean): PopupStep[_] = {
+          if (selectedValue == null)
+            return PopupStep.FINAL_CHOICE
+          if (finalChoice) {
+            PsiDocumentManager.getInstance(project).commitAllDocuments()
+            GoToImplicitConversionAction.getPopup.dispose()
+            if (selectedValue == MakeExplicitAction.MAKE_EXPLICIT)
+              IntentionUtils.replaceWithExplicit(
+                expr,
+                function,
+                project,
+                editor,
+                secondPart)
+            if (selectedValue == MakeExplicitAction.MAKE_EXPLICIT_STATICALLY)
+              IntentionUtils.replaceWithExplicitStatically(
+                expr,
+                function,
+                project,
+                editor,
+                secondPart)
+            return PopupStep.FINAL_CHOICE
+          }
+          super.onChosen(selectedValue, finalChoice)
         }
-        super.onChosen(selectedValue, finalChoice)
       }
-    }
 
     val popup = JBPopupFactory.getInstance.createListPopup(base)
     val bounds: Rectangle = getCurrentItemBounds()

@@ -36,18 +36,20 @@ import scalafx.scene.layout.{HBox, Priority, VBox}
 
 class EnsembleToggleButton extends EnsembleExample {
 
-  val toggleLabel = new Label {
-    text = ""
-    style = "-fx-font-size: 2em;"
-  }
+  val toggleLabel =
+    new Label {
+      text = ""
+      style = "-fx-font-size: 2em;"
+    }
 
   // Radio Button Toggle Group
-  val tog = new ToggleGroup {
-    selectedToggle.onChange((_, oldValue, newValue) => {
-      toggleLabel.text =
-        "You selected : " + newValue.asInstanceOf[JfxToggleBtn].getText
-    })
-  }
+  val tog =
+    new ToggleGroup {
+      selectedToggle.onChange((_, oldValue, newValue) => {
+        toggleLabel.text =
+          "You selected : " + newValue.asInstanceOf[JfxToggleBtn].getText
+      })
+    }
 
   def getContent = {
     new VBox {

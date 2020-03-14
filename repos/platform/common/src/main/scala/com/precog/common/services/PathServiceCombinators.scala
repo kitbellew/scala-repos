@@ -49,15 +49,17 @@ trait PathServiceCombinators
         prefix)) {
       new DelegatingService[A, B => Future[C], A, (B, Path) => Future[C]] {
         val delegate = next
-        val service = (request: HttpRequest[A]) => {
-          logger.debug("Handling dataPath request " + request.shows)
+        val service =
+          (request: HttpRequest[A]) => {
+            logger.debug("Handling dataPath request " + request.shows)
 
-          val path: Option[String] =
-            request.parameters.get('prefixPath).filter(_ != null)
-          next.service(request) map { f => (b: B) =>
-            f(b, Path(path.getOrElse("")))
+            val path: Option[String] = request.parameters
+              .get('prefixPath)
+              .filter(_ != null)
+            next.service(request) map { f => (b: B) =>
+              f(b, Path(path.getOrElse("")))
+            }
           }
-        }
 
         val metadata = AboutMetadata(
           PathPatternMetadata(prefix),

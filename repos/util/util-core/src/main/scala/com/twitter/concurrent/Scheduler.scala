@@ -108,9 +108,10 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
   // thread-safety provided by synchronizing on `activations`
   private[this] val activations = new mutable.WeakHashMap[Activation, Boolean]()
 
-  private[this] val local = new ThreadLocal[Activation] {
-    override def initialValue = null
-  }
+  private[this] val local =
+    new ThreadLocal[Activation] {
+      override def initialValue = null
+    }
 
   /**
     * A task-queueing, direct-dispatch scheduler
@@ -240,15 +241,17 @@ trait ExecutorScheduler { self: Scheduler =>
   protected val threadGroup: ThreadGroup = new ThreadGroup(name)
   @volatile private[this] var threads = Set[Thread]()
 
-  protected val threadFactory = new ThreadFactory {
-    private val n = new AtomicInteger(1)
+  protected val threadFactory =
+    new ThreadFactory {
+      private val n = new AtomicInteger(1)
 
-    def newThread(r: Runnable) = {
-      val thread = new Thread(threadGroup, r, name + "-" + n.getAndIncrement())
-      thread.setDaemon(true)
-      thread
+      def newThread(r: Runnable) = {
+        val thread =
+          new Thread(threadGroup, r, name + "-" + n.getAndIncrement())
+        thread.setDaemon(true)
+        thread
+      }
     }
-  }
 
   protected def threads(): Array[Thread] = {
     // We add 2x slop here because it's inherently racy to enumerate

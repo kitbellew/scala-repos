@@ -75,8 +75,8 @@ class ScClassParameterImpl private (
     val ccontainingClass = containingClass
     if (ccontainingClass == null)
       return this
-    val originalClass: PsiClass =
-      ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
+    val originalClass: PsiClass = ccontainingClass.getOriginalElement
+      .asInstanceOf[PsiClass]
     if (ccontainingClass eq originalClass)
       return this
     if (!originalClass.isInstanceOf[ScClass])

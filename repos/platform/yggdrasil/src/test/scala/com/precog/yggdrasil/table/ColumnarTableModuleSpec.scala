@@ -298,13 +298,14 @@ trait ColumnarTableModuleSpec[M[+_]]
       }
 
       "check utf-8 encoding" in check { str: String =>
-        val s = str.toList
-          .map((c: Char) =>
-            if (c < ' ')
-              ' '
-            else
-              c)
-          .mkString
+        val s =
+          str.toList
+            .map((c: Char) =>
+              if (c < ' ')
+                ' '
+              else
+                c)
+            .mkString
         testRenderJson(JString(s) :: Nil)
       }.set(
         minTestsOk -> 20000,
@@ -474,8 +475,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "delete elements according to a JType" in checkObjectDelete
       "delete only field in object without removing from array" in {
-        val JArray(elements) =
-          JParser.parseUnsafe("""[
+        val JArray(elements) = JParser.parseUnsafe(
+          """[
           {"foo": 4, "bar": 12},
           {"foo": 5},
           {"bar": 45},
@@ -767,10 +768,11 @@ object ColumnarTableModuleSpec
     }
 
   type YggConfig = IdSourceConfig with ColumnarTableModuleConfig
-  val yggConfig = new IdSourceConfig with ColumnarTableModuleConfig {
-    val maxSliceSize = 10
-    val smallSliceSize = 3
+  val yggConfig =
+    new IdSourceConfig with ColumnarTableModuleConfig {
+      val maxSliceSize = 10
+      val smallSliceSize = 3
 
-    val idSource = new FreshAtomicIdSource
-  }
+      val idSource = new FreshAtomicIdSource
+    }
 }

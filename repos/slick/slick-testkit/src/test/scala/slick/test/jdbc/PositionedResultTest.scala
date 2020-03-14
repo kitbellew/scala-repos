@@ -16,18 +16,20 @@ class PositionedResultTest {
   }
 
   def createFakePR(len: Int, limit: Int): PositionedResultIterator[Int] = {
-    val fakeRS = new DelegateResultSet(null) {
-      var count: Int = 0
-      override def next() = {
-        count += 1
-        count <= len
+    val fakeRS =
+      new DelegateResultSet(null) {
+        var count: Int = 0
+        override def next() = {
+          count += 1
+          count <= len
+        }
+        override def getInt(columnIndex: Int): Int = columnIndex
+        override def wasNull(): Boolean = false
       }
-      override def getInt(columnIndex: Int): Int = columnIndex
-      override def wasNull(): Boolean = false
-    }
-    val pr = new PositionedResult(fakeRS) {
-      def close() {}
-    }
+    val pr =
+      new PositionedResult(fakeRS) {
+        def close() {}
+      }
     new PositionedResultIterator[Int](pr, limit, true) {
       def extractValue(pr: PositionedResult) = pr.nextInt()
     }

@@ -12,8 +12,9 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
   import scala.collection.JavaConverters._
 
   class Fixture {
-    val appWithoutIpAddress =
-      AppDefinition(id = PathId("/foo/bar"), ipAddress = None)
+    val appWithoutIpAddress = AppDefinition(
+      id = PathId("/foo/bar"),
+      ipAddress = None)
     val appWithIpAddress = AppDefinition(
       id = PathId("/foo/bar"),
       portDefinitions = Seq.empty,
@@ -33,10 +34,12 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
       .setIpAddress(ipString2)
       .build()
 
-    val networkWithOneIp1 =
-      MesosProtos.NetworkInfo.newBuilder.addIpAddresses(ipAddress1).build()
-    val networkWithOneIp2 =
-      MesosProtos.NetworkInfo.newBuilder.addIpAddresses(ipAddress2).build()
+    val networkWithOneIp1 = MesosProtos.NetworkInfo.newBuilder
+      .addIpAddresses(ipAddress1)
+      .build()
+    val networkWithOneIp2 = MesosProtos.NetworkInfo.newBuilder
+      .addIpAddresses(ipAddress2)
+      .build()
 
     val networkWithMultipleIps = MesosProtos.NetworkInfo.newBuilder
       .addAllIpAddresses(Seq(ipAddress1, ipAddress2).asJava)
@@ -46,43 +49,35 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
 
     import MarathonTestHelper.Implicits._
 
-    val taskWithoutIp =
-      MarathonTestHelper
-        .runningTaskForApp(appWithoutIpAddress.id)
-        .withAgentInfo(_.copy(host = host))
+    val taskWithoutIp = MarathonTestHelper
+      .runningTaskForApp(appWithoutIpAddress.id)
+      .withAgentInfo(_.copy(host = host))
 
-    val taskWithOneIp =
-      MarathonTestHelper
-        .runningTaskForApp(appWithoutIpAddress.id)
-        .withAgentInfo(_.copy(host = host))
-        .withNetworking(Task.NetworkInfoList(networkWithOneIp1))
+    val taskWithOneIp = MarathonTestHelper
+      .runningTaskForApp(appWithoutIpAddress.id)
+      .withAgentInfo(_.copy(host = host))
+      .withNetworking(Task.NetworkInfoList(networkWithOneIp1))
 
-    val taskWithMultipleNetworksAndOneIp =
-      MarathonTestHelper
-        .runningTaskForApp(appWithoutIpAddress.id)
-        .withAgentInfo(_.copy(host = host))
-        .withNetworking(
-          Task.NetworkInfoList(networkWithoutIp, networkWithOneIp1))
+    val taskWithMultipleNetworksAndOneIp = MarathonTestHelper
+      .runningTaskForApp(appWithoutIpAddress.id)
+      .withAgentInfo(_.copy(host = host))
+      .withNetworking(Task.NetworkInfoList(networkWithoutIp, networkWithOneIp1))
 
-    val taskWithMultipleNetworkAndNoIp =
-      MarathonTestHelper
-        .runningTaskForApp(appWithoutIpAddress.id)
-        .withAgentInfo(_.copy(host = host))
-        .withNetworking(
-          Task.NetworkInfoList(networkWithoutIp, networkWithoutIp))
+    val taskWithMultipleNetworkAndNoIp = MarathonTestHelper
+      .runningTaskForApp(appWithoutIpAddress.id)
+      .withAgentInfo(_.copy(host = host))
+      .withNetworking(Task.NetworkInfoList(networkWithoutIp, networkWithoutIp))
 
-    val taskWithOneNetworkAndMultipleIPs =
-      MarathonTestHelper
-        .runningTaskForApp(appWithoutIpAddress.id)
-        .withAgentInfo(_.copy(host = host))
-        .withNetworking(Task.NetworkInfoList(networkWithMultipleIps))
+    val taskWithOneNetworkAndMultipleIPs = MarathonTestHelper
+      .runningTaskForApp(appWithoutIpAddress.id)
+      .withAgentInfo(_.copy(host = host))
+      .withNetworking(Task.NetworkInfoList(networkWithMultipleIps))
 
-    val taskWithMultipleNetworkAndMultipleIPs =
-      MarathonTestHelper
-        .runningTaskForApp(appWithoutIpAddress.id)
-        .withAgentInfo(_.copy(host = host))
-        .withNetworking(
-          Task.NetworkInfoList(networkWithOneIp1, networkWithOneIp2))
+    val taskWithMultipleNetworkAndMultipleIPs = MarathonTestHelper
+      .runningTaskForApp(appWithoutIpAddress.id)
+      .withAgentInfo(_.copy(host = host))
+      .withNetworking(
+        Task.NetworkInfoList(networkWithOneIp1, networkWithOneIp2))
   }
 
   test(

@@ -72,136 +72,139 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
               null: TextRange)
           }
         } else {
-          val annotator = new ScalaAnnotator {
-            override def isAdvancedHighlightingEnabled(
-                element: PsiElement): Boolean = true
-          }
-          val FakeAnnotation = new com.intellij.lang.annotation.Annotation(
-            0,
-            0,
-            HighlightSeverity.WEAK_WARNING,
-            "message",
-            "tooltip")
-          val annotationHolder = new AnnotationHolder {
-            override def createAnnotation(
-                severity: HighlightSeverity,
-                range: TextRange,
-                message: String,
-                htmlTooltip: String): Annotation = FakeAnnotation
-
-            def createAnnotation(
-                severity: HighlightSeverity,
-                range: TextRange,
-                str: String) = FakeAnnotation
-
-            def isBatchMode: Boolean = false
-
-            def createInfoAnnotation(
-                range: TextRange,
-                message: String): Annotation = FakeAnnotation
-
-            def createInfoAnnotation(
-                node: ASTNode,
-                message: String): Annotation = FakeAnnotation
-
-            def createInfoAnnotation(
-                elt: PsiElement,
-                message: String): Annotation = FakeAnnotation
-
-            def createInformationAnnotation(
-                range: TextRange,
-                message: String): Annotation = FakeAnnotation
-
-            def createInformationAnnotation(
-                node: ASTNode,
-                message: String): Annotation = FakeAnnotation
-
-            def createInformationAnnotation(
-                elt: PsiElement,
-                message: String): Annotation = FakeAnnotation
-
-            def createWarningAnnotation(
-                range: TextRange,
-                message: String): Annotation = {
-              holder.registerProblem(
-                element,
-                s"Warning: $message",
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-              FakeAnnotation
+          val annotator =
+            new ScalaAnnotator {
+              override def isAdvancedHighlightingEnabled(
+                  element: PsiElement): Boolean = true
             }
+          val FakeAnnotation =
+            new com.intellij.lang.annotation.Annotation(
+              0,
+              0,
+              HighlightSeverity.WEAK_WARNING,
+              "message",
+              "tooltip")
+          val annotationHolder =
+            new AnnotationHolder {
+              override def createAnnotation(
+                  severity: HighlightSeverity,
+                  range: TextRange,
+                  message: String,
+                  htmlTooltip: String): Annotation = FakeAnnotation
 
-            def createWarningAnnotation(
-                node: ASTNode,
-                message: String): Annotation = {
-              holder.registerProblem(
-                element,
-                s"Warning: $message",
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-              FakeAnnotation
-            }
+              def createAnnotation(
+                  severity: HighlightSeverity,
+                  range: TextRange,
+                  str: String) = FakeAnnotation
 
-            def createWarningAnnotation(
-                elt: PsiElement,
-                message: String): Annotation = {
-              holder.registerProblem(
-                element,
-                s"Warning: $message",
-                ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-              FakeAnnotation
-            }
+              def isBatchMode: Boolean = false
 
-            def createErrorAnnotation(
-                range: TextRange,
-                message: String): Annotation = {
-              if (message != null) {
+              def createInfoAnnotation(
+                  range: TextRange,
+                  message: String): Annotation = FakeAnnotation
+
+              def createInfoAnnotation(
+                  node: ASTNode,
+                  message: String): Annotation = FakeAnnotation
+
+              def createInfoAnnotation(
+                  elt: PsiElement,
+                  message: String): Annotation = FakeAnnotation
+
+              def createInformationAnnotation(
+                  range: TextRange,
+                  message: String): Annotation = FakeAnnotation
+
+              def createInformationAnnotation(
+                  node: ASTNode,
+                  message: String): Annotation = FakeAnnotation
+
+              def createInformationAnnotation(
+                  elt: PsiElement,
+                  message: String): Annotation = FakeAnnotation
+
+              def createWarningAnnotation(
+                  range: TextRange,
+                  message: String): Annotation = {
                 holder.registerProblem(
                   element,
-                  s"Error detected: $message",
-                  ProblemHighlightType.ERROR)
+                  s"Warning: $message",
+                  ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                FakeAnnotation
               }
-              FakeAnnotation
-            }
 
-            def createErrorAnnotation(
-                node: ASTNode,
-                message: String): Annotation = {
-              if (message != null) {
+              def createWarningAnnotation(
+                  node: ASTNode,
+                  message: String): Annotation = {
                 holder.registerProblem(
                   element,
-                  s"Error detected: $message",
-                  ProblemHighlightType.ERROR)
+                  s"Warning: $message",
+                  ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                FakeAnnotation
               }
-              FakeAnnotation
-            }
 
-            def createErrorAnnotation(
-                elt: PsiElement,
-                message: String): Annotation = {
-              if (message != null) {
+              def createWarningAnnotation(
+                  elt: PsiElement,
+                  message: String): Annotation = {
                 holder.registerProblem(
                   element,
-                  s"Error detected: $message",
-                  ProblemHighlightType.ERROR)
+                  s"Warning: $message",
+                  ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
+                FakeAnnotation
               }
-              FakeAnnotation
+
+              def createErrorAnnotation(
+                  range: TextRange,
+                  message: String): Annotation = {
+                if (message != null) {
+                  holder.registerProblem(
+                    element,
+                    s"Error detected: $message",
+                    ProblemHighlightType.ERROR)
+                }
+                FakeAnnotation
+              }
+
+              def createErrorAnnotation(
+                  node: ASTNode,
+                  message: String): Annotation = {
+                if (message != null) {
+                  holder.registerProblem(
+                    element,
+                    s"Error detected: $message",
+                    ProblemHighlightType.ERROR)
+                }
+                FakeAnnotation
+              }
+
+              def createErrorAnnotation(
+                  elt: PsiElement,
+                  message: String): Annotation = {
+                if (message != null) {
+                  holder.registerProblem(
+                    element,
+                    s"Error detected: $message",
+                    ProblemHighlightType.ERROR)
+                }
+                FakeAnnotation
+              }
+
+              def getCurrentAnnotationSession: AnnotationSession = {
+                new AnnotationSession(element.getContainingFile)
+              }
+
+              def createWeakWarningAnnotation(
+                  p1: TextRange,
+                  p2: String): Annotation = FakeAnnotation
+
+              def createWeakWarningAnnotation(
+                  p1: ASTNode,
+                  p2: String): Annotation = FakeAnnotation
+
+              def createWeakWarningAnnotation(
+                  p1: PsiElement,
+                  p2: String): Annotation = FakeAnnotation
             }
-
-            def getCurrentAnnotationSession: AnnotationSession = {
-              new AnnotationSession(element.getContainingFile)
-            }
-
-            def createWeakWarningAnnotation(
-                p1: TextRange,
-                p2: String): Annotation = FakeAnnotation
-
-            def createWeakWarningAnnotation(
-                p1: ASTNode,
-                p2: String): Annotation = FakeAnnotation
-
-            def createWeakWarningAnnotation(
-                p1: PsiElement,
-                p2: String): Annotation = FakeAnnotation
-          }
           annotator.annotate(element, annotationHolder)
         }
       }

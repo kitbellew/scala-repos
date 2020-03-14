@@ -92,10 +92,11 @@ object TaskTest {
       restrictions,
       (x: String) => System.err.println(x))
 
-    val x = new Execute[Task](
-      Execute.config(checkCycles),
-      Execute.noTriggers,
-      ExecuteProgress.empty[Task])(taskToNode(idK[Task]))
+    val x =
+      new Execute[Task](
+        Execute.config(checkCycles),
+        Execute.noTriggers,
+        ExecuteProgress.empty[Task])(taskToNode(idK[Task]))
     try {
       x.run(root)(service)
     } finally {

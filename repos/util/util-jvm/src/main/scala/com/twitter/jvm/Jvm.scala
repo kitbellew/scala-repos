@@ -224,14 +224,15 @@ trait Jvm {
     * invocations better.
     */
   def mainClassName: String = {
-    val mainClass = for {
-      (_, stack) <- Thread.getAllStackTraces().asScala.find {
-        case (t, s) => t.getName == "main"
-      }
-      frame <- stack.reverse.find { elem =>
-        !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))
-      }
-    } yield frame.getClassName
+    val mainClass =
+      for {
+        (_, stack) <- Thread.getAllStackTraces().asScala.find {
+          case (t, s) => t.getName == "main"
+        }
+        frame <- stack.reverse.find { elem =>
+          !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))
+        }
+      } yield frame.getClassName
 
     mainClass.getOrElse("unknown")
   }
@@ -259,10 +260,9 @@ object Jvm {
         None
     }
 
-  private lazy val executor =
-    Executors.newScheduledThreadPool(
-      1,
-      new NamedPoolThreadFactory("util-jvm-timer", true))
+  private lazy val executor = Executors.newScheduledThreadPool(
+    1,
+    new NamedPoolThreadFactory("util-jvm-timer", true))
 
   private lazy val _jvm =
     try new Hotspot
@@ -302,8 +302,7 @@ object Jvms {
   /**
     * Java compatibility for [[Jvm.ProcessId]].
     */
-  def processId(): Option[Int] =
-    Jvm.ProcessId
+  def processId(): Option[Int] = Jvm.ProcessId
 
   /**
     * Java compatibility for [[Jvm.apply()]].

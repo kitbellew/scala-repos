@@ -84,8 +84,8 @@ class VectorBuilderTest extends FunSuite with Checkers {
 @RunWith(classOf[JUnitRunner])
 class VectorBuilderOpsTest
     extends MutableModuleTestBase[VectorBuilder[Double], Double] {
-  val space: MutableModule[VectorBuilder[Double], Double] =
-    VectorBuilder.space[Double]
+  val space: MutableModule[VectorBuilder[Double], Double] = VectorBuilder
+    .space[Double]
 
   override val TOL: Double = 1e-4
 

@@ -56,10 +56,11 @@ class MacroExpandAction extends AnAction {
     val psiFile = PsiDocumentManager
       .getInstance(e.getProject)
       .getPsiFile(sourceEditor.getDocument)
-    val candidates = psiFile match {
-      case file: ScalaFile => findCandidatesInFile(file)
-      case _               => Seq.empty
-    }
+    val candidates =
+      psiFile match {
+        case file: ScalaFile => findCandidatesInFile(file)
+        case _               => Seq.empty
+      }
 
     suggestUsingCompilerFlag(e, psiFile)
 
@@ -67,8 +68,8 @@ class MacroExpandAction extends AnAction {
     val filtered = expansions.filter { exp =>
       psiFile.getVirtualFile.getPath == exp.place.sourceFile
     }
-    val ensugared =
-      filtered.map(e => MacroExpansion(e.place, ensugarExpansion(e.body)))
+    val ensugared = filtered.map(e =>
+      MacroExpansion(e.place, ensugarExpansion(e.body)))
     val resolved = tryResolveExpansionPlaces(ensugared)
 
     // if macro is under cursor, expand it, otherwise expand all macros in current file
@@ -103,14 +104,15 @@ class MacroExpandAction extends AnAction {
 
   def findCandidatesInFile(file: ScalaFile): Seq[ScalaPsiElement] = {
     val buffer = scala.collection.mutable.ListBuffer[ScalaPsiElement]()
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitAnnotation(annotation: ScAnnotation) = {
-        // TODO
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitAnnotation(annotation: ScAnnotation) = {
+          // TODO
+        }
+        override def visitMethodCallExpression(call: ScMethodCall) = {
+          // TODO
+        }
       }
-      override def visitMethodCallExpression(call: ScMethodCall) = {
-        // TODO
-      }
-    }
     file.accept(visitor)
     buffer.toSeq
   }
@@ -136,19 +138,20 @@ class MacroExpandAction extends AnAction {
   def reformatCode(psi: PsiElement): PsiElement = {
     val res = CodeStyleManager.getInstance(psi.getProject).reformat(psi)
     val tobeDeleted = new ArrayBuffer[PsiElement]
-    val v = new PsiElementVisitor {
-      override def visitElement(element: PsiElement) = {
-        if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
-          val file = element.getContainingFile
-          val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
-          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains(
-                "\n")) {
-            tobeDeleted += element
+    val v =
+      new PsiElementVisitor {
+        override def visitElement(element: PsiElement) = {
+          if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
+            val file = element.getContainingFile
+            val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
+            if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText
+                  .contains("\n")) {
+              tobeDeleted += element
+            }
           }
+          element.acceptChildren(this)
         }
-        element.acceptChildren(this)
       }
-    }
     v.visitElement(res)
     tobeDeleted.foreach(_.delete())
     res
@@ -182,8 +185,8 @@ class MacroExpandAction extends AnAction {
     place.getParent.getParent match {
       case holder: ScAnnotationsHolder =>
         val body = expansion.body
-        val newPsi =
-          ScalaPsiElementFactory.createBlockExpressionWithoutBracesFromText(
+        val newPsi = ScalaPsiElementFactory
+          .createBlockExpressionWithoutBracesFromText(
             body,
             PsiManager.getInstance(e.getProject))
         reformatCode(newPsi)
@@ -217,8 +220,8 @@ class MacroExpandAction extends AnAction {
 
   def expandMacroCall(call: ScMethodCall, expansion: MacroExpansion)(
       implicit e: AnActionEvent) = {
-    val blockImpl =
-      ScalaPsiElementFactory.createBlockExpressionWithoutBracesFromText(
+    val blockImpl = ScalaPsiElementFactory
+      .createBlockExpressionWithoutBracesFromText(
         expansion.body,
         PsiManager.getInstance(e.getProject))
     val element = call.getParent.addAfter(blockImpl, call)
@@ -263,8 +266,8 @@ class MacroExpandAction extends AnAction {
       // most likely it means given call is located inside another macro expansion
       case e: LeafPsiElement
           if expansion.place.macroApplication.matches("^[^\\)]+\\)$") =>
-        val pos =
-          e.getContainingFile.getText.indexOf(expansion.place.macroApplication)
+        val pos = e.getContainingFile.getText
+          .indexOf(expansion.place.macroApplication)
         if (pos != -1)
           Some(e.getContainingFile.findElementAt(pos))
         else
@@ -320,8 +323,9 @@ class MacroExpandAction extends AnAction {
 
   def deserializeExpansions(
       implicit event: AnActionEvent): Seq[MacroExpansion] = {
-    val file = new File(
-      PathManager.getSystemPath + s"/expansion-${event.getProject.getName}")
+    val file =
+      new File(
+        PathManager.getSystemPath + s"/expansion-${event.getProject.getName}")
     if (!file.exists())
       return Seq.empty
     val fs = new BufferedInputStream(new FileInputStream(file))

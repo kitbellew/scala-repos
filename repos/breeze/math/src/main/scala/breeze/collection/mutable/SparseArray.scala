@@ -472,12 +472,13 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
 
 object SparseArray {
   def apply[@specialized(Int, Float, Double) T: ClassTag: Zero](values: T*) = {
-    val rv = new SparseArray[T](
-      Array.range(0, values.length),
-      values.toArray,
-      values.length,
-      values.length,
-      implicitly[Zero[T]].zero)
+    val rv =
+      new SparseArray[T](
+        Array.range(0, values.length),
+        values.toArray,
+        values.length,
+        values.length,
+        implicitly[Zero[T]].zero)
     rv.compact()
     rv
   }

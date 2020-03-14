@@ -72,11 +72,12 @@ object IngestTest {
     import RunConfig.OutputFormat
 
     try {
-      val runner = new NIHDBPerfTestRunner(
-        SimpleTimer,
-        optimize = config.optimize,
-        apiKey = "dummyAPIKey",
-        _rootDir = config.rootDir)
+      val runner =
+        new NIHDBPerfTestRunner(
+          SimpleTimer,
+          optimize = config.optimize,
+          apiKey = "dummyAPIKey",
+          _rootDir = config.rootDir)
 
       runner.startup()
       try {

@@ -127,10 +127,10 @@ class PersistencePluginProxySpec
       probeA.expectMsg("a1")
       probeB.expectMsg("b1")
 
-      val recoveredAppA =
-        systemA.actorOf(Props(classOf[ExampleApp], probeA.ref))
-      val recoveredAppB =
-        systemB.actorOf(Props(classOf[ExampleApp], probeB.ref))
+      val recoveredAppA = systemA.actorOf(
+        Props(classOf[ExampleApp], probeA.ref))
+      val recoveredAppB = systemB.actorOf(
+        Props(classOf[ExampleApp], probeB.ref))
 
       recoveredAppA ! "a2"
       recoveredAppB ! "b2"

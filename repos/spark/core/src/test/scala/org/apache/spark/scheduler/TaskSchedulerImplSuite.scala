@@ -116,20 +116,22 @@ class TaskSchedulerImplSuite
     val taskScheduler = new TaskSchedulerImpl(sc)
     taskScheduler.initialize(new FakeSchedulerBackend)
     // Need to initialize a DAGScheduler for the taskScheduler to use for callbacks.
-    val dagScheduler = new DAGScheduler(sc, taskScheduler) {
-      override def taskStarted(task: Task[_], taskInfo: TaskInfo) {}
-      override def executorAdded(execId: String, host: String) {}
-    }
+    val dagScheduler =
+      new DAGScheduler(sc, taskScheduler) {
+        override def taskStarted(task: Task[_], taskInfo: TaskInfo) {}
+        override def executorAdded(execId: String, host: String) {}
+      }
     val numFreeCores = 1
     taskScheduler.setDAGScheduler(dagScheduler)
-    val taskSet = new TaskSet(
-      Array(
-        new NotSerializableFakeTask(1, 0),
-        new NotSerializableFakeTask(0, 1)),
-      0,
-      0,
-      0,
-      null)
+    val taskSet =
+      new TaskSet(
+        Array(
+          new NotSerializableFakeTask(1, 0),
+          new NotSerializableFakeTask(0, 1)),
+        0,
+        0,
+        0,
+        null)
     val multiCoreWorkerOffers = Seq(
       new WorkerOffer("executor0", "host0", taskCpus),
       new WorkerOffer("executor1", "host1", numFreeCores))
@@ -154,10 +156,11 @@ class TaskSchedulerImplSuite
     val taskScheduler = new TaskSchedulerImpl(sc)
     taskScheduler.initialize(new FakeSchedulerBackend)
     // Need to initialize a DAGScheduler for the taskScheduler to use for callbacks.
-    val dagScheduler = new DAGScheduler(sc, taskScheduler) {
-      override def taskStarted(task: Task[_], taskInfo: TaskInfo) {}
-      override def executorAdded(execId: String, host: String) {}
-    }
+    val dagScheduler =
+      new DAGScheduler(sc, taskScheduler) {
+        override def taskStarted(task: Task[_], taskInfo: TaskInfo) {}
+        override def executorAdded(execId: String, host: String) {}
+      }
     taskScheduler.setDAGScheduler(dagScheduler)
     val attempt1 = FakeTask.createTaskSet(1, 0)
     val attempt2 = FakeTask.createTaskSet(1, 1)
@@ -245,9 +248,10 @@ class TaskSchedulerImplSuite
     assert(10 === taskDescriptions.length)
 
     // now mark attempt 1 as a zombie
-    val mgr1 = taskScheduler
-      .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
-      .get
+    val mgr1 =
+      taskScheduler
+        .taskSetManagerForAttempt(attempt1.stageId, attempt1.stageAttemptId)
+        .get
     mgr1.isZombie = true
 
     // don't schedule anything on another resource offer

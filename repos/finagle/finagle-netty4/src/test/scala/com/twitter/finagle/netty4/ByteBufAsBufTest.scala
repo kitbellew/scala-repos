@@ -57,12 +57,13 @@ class ByteBufAsBufTest
   }
 
   test("ByteBufAsBuf.slice") {
-    val bufSplits = for {
-      b <- Arbitrary.arbitrary[Array[Byte]]
-      i <- Gen.choose(0, b.length)
-      j <- Gen.choose(i, b.length)
-      k <- Gen.choose(j, b.length)
-    } yield (b, i, j, k)
+    val bufSplits =
+      for {
+        b <- Arbitrary.arbitrary[Array[Byte]]
+        i <- Gen.choose(0, b.length)
+        j <- Gen.choose(i, b.length)
+        k <- Gen.choose(j, b.length)
+      } yield (b, i, j, k)
 
     forAll(bufSplits) {
       case (bytes, i, j, k) =>

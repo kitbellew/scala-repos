@@ -45,11 +45,9 @@ object Queue {
   def arrayBlocking[T](size: Int): Queue[T] =
     fromBlocking(new ArrayBlockingQueue(size))
 
-  def linkedBlocking[T]: Queue[T] =
-    fromBlocking(new LinkedBlockingQueue())
+  def linkedBlocking[T]: Queue[T] = fromBlocking(new LinkedBlockingQueue())
 
-  def linkedNonBlocking[T]: Queue[T] =
-    fromQueue(new ConcurrentLinkedQueue())
+  def linkedNonBlocking[T]: Queue[T] = fromQueue(new ConcurrentLinkedQueue())
 
   def fromBlocking[T](bq: BlockingQueue[T]): Queue[T] = {
     new Queue[T] {
@@ -97,10 +95,11 @@ abstract class Queue[T] {
 
   /** Returns the size immediately after the put */
   def putAll(items: TraversableOnce[T]): Int = {
-    val added = items.foldLeft(0) { (cnt, item) =>
-      add(item)
-      cnt + 1
-    }
+    val added =
+      items.foldLeft(0) { (cnt, item) =>
+        add(item)
+        cnt + 1
+      }
     count.addAndGet(added)
   }
 

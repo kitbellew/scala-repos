@@ -14,9 +14,10 @@ class BottleSerializer
       (
         {
           case json: JValue =>
-            val b = for {
-              of <- (json \ "of").extractOpt[String]
-            } yield (new Bottle(of))
+            val b =
+              for {
+                of <- (json \ "of").extractOpt[String]
+              } yield (new Bottle(of))
             b.get
         },
         {

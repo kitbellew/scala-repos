@@ -44,10 +44,11 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
     modificationCount = ModCount.getBlockModificationCount,
     this)
   def getUnderEqualsMethod: PsiMethod = {
-    val hasModifierProperty: String => Boolean = nameContext match {
-      case v: ScModifierListOwner => v.hasModifierProperty
-      case _                      => _ => false
-    }
+    val hasModifierProperty: String => Boolean =
+      nameContext match {
+        case v: ScModifierListOwner => v.hasModifierProperty
+        case _                      => _ => false
+      }
     val tType = getType(TypingContext.empty).getOrAny
     new FakePsiMethod(
       this,
@@ -62,10 +63,11 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
     modificationCount = ModCount.getBlockModificationCount,
     this)
   def getGetBeanMethod: PsiMethod = {
-    val hasModifierProperty: String => Boolean = nameContext match {
-      case v: ScModifierListOwner => v.hasModifierProperty
-      case _                      => _ => false
-    }
+    val hasModifierProperty: String => Boolean =
+      nameContext match {
+        case v: ScModifierListOwner => v.hasModifierProperty
+        case _                      => _ => false
+      }
     new FakePsiMethod(
       this,
       "get" + StringUtil.capitalize(this.name),
@@ -79,10 +81,11 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
     modificationCount = ModCount.getBlockModificationCount,
     this)
   def getSetBeanMethod: PsiMethod = {
-    val hasModifierProperty: String => Boolean = nameContext match {
-      case v: ScModifierListOwner => v.hasModifierProperty
-      case _                      => _ => false
-    }
+    val hasModifierProperty: String => Boolean =
+      nameContext match {
+        case v: ScModifierListOwner => v.hasModifierProperty
+        case _                      => _ => false
+      }
     val tType = getType(TypingContext.empty).getOrAny
     new FakePsiMethod(
       this,
@@ -97,10 +100,11 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
     modificationCount = ModCount.getBlockModificationCount,
     this)
   def getIsBeanMethod: PsiMethod = {
-    val hasModifierProperty: String => Boolean = nameContext match {
-      case v: ScModifierListOwner => v.hasModifierProperty
-      case _                      => _ => false
-    }
+    val hasModifierProperty: String => Boolean =
+      nameContext match {
+        case v: ScModifierListOwner => v.hasModifierProperty
+        case _                      => _ => false
+      }
     new FakePsiMethod(
       this,
       "is" + StringUtil.capitalize(this.name),

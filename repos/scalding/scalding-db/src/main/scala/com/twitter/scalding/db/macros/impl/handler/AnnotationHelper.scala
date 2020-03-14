@@ -52,12 +52,13 @@ private[handler] abstract class AnnotationHelper {
       case (tpe, _) => tpe =:= t
     }
 
-    val newHelper = new {
-      val ctx: this.ctx.type = this.ctx
-      val cfieldName = this.cfieldName
-      val cannotationInfo: List[(this.ctx.universe.Type, Option[Int])] =
-        remainingAnnotations
-    } with AnnotationHelper
+    val newHelper =
+      new {
+        val ctx: this.ctx.type = this.ctx
+        val cfieldName = this.cfieldName
+        val cannotationInfo: List[(this.ctx.universe.Type, Option[Int])] =
+          remainingAnnotations
+      } with AnnotationHelper
 
     matchedAnnotations match {
       case h :: Nil => Success((newHelper, fn(Some(h._2))))

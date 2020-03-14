@@ -79,12 +79,12 @@ class TaskStatsByVersionTest
 
       stats should be(
         TaskStatsByVersion(
-          maybeStartedAfterLastScaling =
-            TaskStats.forSomeTasks(now, afterLastScalingTasks, statuses),
-          maybeWithLatestConfig =
-            TaskStats.forSomeTasks(now, afterLastConfigChangeTasks, statuses),
-          maybeWithOutdatedConfig =
-            TaskStats.forSomeTasks(now, outdatedTasks, statuses),
+          maybeStartedAfterLastScaling = TaskStats
+            .forSomeTasks(now, afterLastScalingTasks, statuses),
+          maybeWithLatestConfig = TaskStats
+            .forSomeTasks(now, afterLastConfigChangeTasks, statuses),
+          maybeWithOutdatedConfig = TaskStats
+            .forSomeTasks(now, outdatedTasks, statuses),
           maybeTotalSummary = TaskStats.forSomeTasks(now, tasks, statuses)
         )
       )

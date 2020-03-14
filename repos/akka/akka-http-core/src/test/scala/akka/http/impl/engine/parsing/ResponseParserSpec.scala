@@ -165,16 +165,16 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     }
 
     "properly parse a chunked" - {
-      val start =
-        """HTTP/1.1 200 OK
+      val start = """HTTP/1.1 200 OK
           |Transfer-Encoding: chunked
           |Connection: lalelu
           |Content-Type: application/pdf
           |Server: spray-can
           |
           |"""
-      val baseResponse =
-        HttpResponse(headers = List(Connection("lalelu"), Server("spray-can")))
+      val baseResponse = HttpResponse(headers = List(
+        Connection("lalelu"),
+        Server("spray-can")))
 
       "response start" in new Test {
         Seq(start, "rest") should generalMultiParseTo(
@@ -256,8 +256,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           |""") should generalMultiParseTo(
           Right(
             HttpResponse(
-              headers =
-                List(`Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
+              headers = List(
+                `Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
               entity = HttpEntity.Chunked(`application/pdf`, source()))),
           Left(EntityStreamError(ErrorInfo("Entity stream truncation")))
         )
@@ -413,9 +413,10 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     protected def parserSettings: ParserSettings = ParserSettings(system)
 
     def newParserStage(requestMethod: HttpMethod = GET) = {
-      val parser = new HttpResponseParser(
-        parserSettings,
-        HttpHeaderParser(parserSettings)())
+      val parser =
+        new HttpResponseParser(
+          parserSettings,
+          HttpHeaderParser(parserSettings)())
       parser.setContextForNextResponse(
         HttpResponseParser.ResponseContext(requestMethod, None))
       parser.stage

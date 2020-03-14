@@ -213,8 +213,8 @@ class Dataset[T] private[sql] (
   unresolvedTEncoder.validate(logicalPlan.output)
 
   /** The encoder for this [[Dataset]] that has been resolved to its output schema. */
-  private[sql] val resolvedTEncoder: ExpressionEncoder[T] =
-    unresolvedTEncoder.resolve(logicalPlan.output, OuterScopes.outerScopes)
+  private[sql] val resolvedTEncoder: ExpressionEncoder[T] = unresolvedTEncoder
+    .resolve(logicalPlan.output, OuterScopes.outerScopes)
 
   /**
     * The encoder where the expressions used to construct an object from an input row have been
@@ -266,14 +266,15 @@ class Dataset[T] private[sql] (
       }
       .map { row =>
         row.toSeq.map { cell =>
-          val str = cell match {
-            case null => "null"
-            case binary: Array[Byte] =>
-              binary.map("%02X".format(_)).mkString("[", " ", "]")
-            case array: Array[_] => array.mkString("[", ", ", "]")
-            case seq: Seq[_]     => seq.mkString("[", ", ", "]")
-            case _               => cell.toString
-          }
+          val str =
+            cell match {
+              case null => "null"
+              case binary: Array[Byte] =>
+                binary.map("%02X".format(_)).mkString("[", " ", "]")
+              case array: Array[_] => array.mkString("[", ", ", "]")
+              case seq: Seq[_]     => seq.mkString("[", ", ", "]")
+              case _               => cell.toString
+            }
           if (truncate && str.length > 20)
             str.substring(0, 17) + "..."
           else
@@ -727,17 +728,20 @@ class Dataset[T] private[sql] (
     val leftOutput = joined.analyzed.output.take(left.output.length)
     val rightOutput = joined.analyzed.output.takeRight(right.output.length)
 
-    val leftData = this.unresolvedTEncoder match {
-      case e if e.flat => Alias(leftOutput.head, "_1")()
-      case _           => Alias(CreateStruct(leftOutput), "_1")()
-    }
-    val rightData = other.unresolvedTEncoder match {
-      case e if e.flat => Alias(rightOutput.head, "_2")()
-      case _           => Alias(CreateStruct(rightOutput), "_2")()
-    }
+    val leftData =
+      this.unresolvedTEncoder match {
+        case e if e.flat => Alias(leftOutput.head, "_1")()
+        case _           => Alias(CreateStruct(leftOutput), "_1")()
+      }
+    val rightData =
+      other.unresolvedTEncoder match {
+        case e if e.flat => Alias(rightOutput.head, "_2")()
+        case _           => Alias(CreateStruct(rightOutput), "_2")()
+      }
 
-    implicit val tuple2Encoder: Encoder[(T, U)] =
-      ExpressionEncoder.tuple(this.unresolvedTEncoder, other.unresolvedTEncoder)
+    implicit val tuple2Encoder: Encoder[(T, U)] = ExpressionEncoder.tuple(
+      this.unresolvedTEncoder,
+      other.unresolvedTEncoder)
     withTypedPlan[(T, U)](other, encoderFor[(T, U)]) { (left, right) =>
       Project(leftData :: rightData :: Nil, joined.analyzed)
     }
@@ -978,8 +982,8 @@ class Dataset[T] private[sql] (
     */
   protected def selectUntyped(columns: TypedColumn[_, _]*): Dataset[_] = {
     val encoders = columns.map(_.encoder)
-    val namedColumns =
-      columns.map(_.withInputType(resolvedTEncoder, logicalPlan.output).named)
+    val namedColumns = columns.map(
+      _.withInputType(resolvedTEncoder, logicalPlan.output).named)
     val execution =
       new QueryExecution(sqlContext, Project(namedColumns, logicalPlan))
 
@@ -1614,10 +1618,11 @@ class Dataset[T] private[sql] (
     val names = schema.toAttributes.map(_.name)
     val convert = CatalystTypeConverters.createToCatalystConverter(schema)
 
-    val rowFunction =
-      f.andThen(_.map(convert(_).asInstanceOf[InternalRow]))
-    val generator =
-      UserDefinedGenerator(elementTypes, rowFunction, input.map(_.expr))
+    val rowFunction = f.andThen(_.map(convert(_).asInstanceOf[InternalRow]))
+    val generator = UserDefinedGenerator(
+      elementTypes,
+      rowFunction,
+      input.map(_.expr))
 
     withPlan {
       Generate(
@@ -1768,10 +1773,9 @@ class Dataset[T] private[sql] (
   @scala.annotation.varargs
   def drop(colNames: String*): DataFrame = {
     val resolver = sqlContext.sessionState.analyzer.resolver
-    val remainingCols =
-      schema
-        .filter(f => colNames.forall(n => !resolver(f.name, n)))
-        .map(f => Column(f.name))
+    val remainingCols = schema
+      .filter(f => colNames.forall(n => !resolver(f.name, n)))
+      .map(f => Column(f.name))
     if (remainingCols.size == this.schema.size) {
       toDF()
     } else {
@@ -1789,13 +1793,14 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   def drop(col: Column): DataFrame = {
-    val expression = col match {
-      case Column(u: UnresolvedAttribute) =>
-        queryExecution.analyzed
-          .resolveQuoted(u.name, sqlContext.sessionState.analyzer.resolver)
-          .getOrElse(u)
-      case Column(expr: Expression) => expr
-    }
+    val expression =
+      col match {
+        case Column(u: UnresolvedAttribute) =>
+          queryExecution.analyzed
+            .resolveQuoted(u.name, sqlContext.sessionState.analyzer.resolver)
+            .getOrElse(u)
+        case Column(expr: Expression) => expr
+      }
     val attrs = this.logicalPlan.output
     val colsAfterDrop = attrs
       .filter { attr =>
@@ -1890,31 +1895,33 @@ class Dataset[T] private[sql] (
          else
            cols).toList
 
-      val ret: Seq[Row] = if (outputCols.nonEmpty) {
-        val aggExprs = statistics.flatMap {
-          case (_, colToAgg) =>
-            outputCols.map(c =>
-              Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
-        }
+      val ret: Seq[Row] =
+        if (outputCols.nonEmpty) {
+          val aggExprs = statistics.flatMap {
+            case (_, colToAgg) =>
+              outputCols.map(c =>
+                Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
+          }
 
-        val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
+          val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
 
-        // Pivot the data so each summary is one row
-        row.grouped(outputCols.size).toSeq.zip(statistics).map {
-          case (aggregation, (statistic, _)) =>
-            Row(statistic :: aggregation.toList: _*)
+          // Pivot the data so each summary is one row
+          row.grouped(outputCols.size).toSeq.zip(statistics).map {
+            case (aggregation, (statistic, _)) =>
+              Row(statistic :: aggregation.toList: _*)
+          }
+        } else {
+          // If there are no output columns, just output a single column that contains the stats.
+          statistics.map {
+            case (name, _) => Row(name)
+          }
         }
-      } else {
-        // If there are no output columns, just output a single column that contains the stats.
-        statistics.map {
-          case (name, _) => Row(name)
-        }
-      }
 
       // All columns are string type
-      val schema = StructType(
-        StructField("summary", StringType) :: outputCols.map(
-          StructField(_, StringType))).toAttributes
+      val schema =
+        StructType(
+          StructField("summary", StringType) :: outputCols.map(
+            StructField(_, StringType))).toAttributes
       LocalRelation.fromExternalRows(schema, ret)
     }
 
@@ -2373,8 +2380,9 @@ class Dataset[T] private[sql] (
     val rdd = queryExecution.toRdd.mapPartitions { iter =>
       val writer = new CharArrayWriter()
       // create the Generator without separator inserted between 2 records
-      val gen =
-        new JsonFactory().createGenerator(writer).setRootValueSeparator(null)
+      val gen = new JsonFactory()
+        .createGenerator(writer)
+        .setRootValueSeparator(null)
 
       new Iterator[String] {
         override def hasNext: Boolean = iter.hasNext
@@ -2406,12 +2414,13 @@ class Dataset[T] private[sql] (
     * @since 2.0.0
     */
   def inputFiles: Array[String] = {
-    val files: Seq[String] = logicalPlan.collect {
-      case LogicalRelation(fsBasedRelation: FileRelation, _, _) =>
-        fsBasedRelation.inputFiles
-      case fr: FileRelation =>
-        fr.inputFiles
-    }.flatten
+    val files: Seq[String] =
+      logicalPlan.collect {
+        case LogicalRelation(fsBasedRelation: FileRelation, _, _) =>
+          fsBasedRelation.inputFiles
+        case fr: FileRelation =>
+          fr.inputFiles
+      }.flatten
     files.toSet.toArray
   }
 

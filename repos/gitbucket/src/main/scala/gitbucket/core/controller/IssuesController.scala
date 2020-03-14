@@ -50,30 +50,35 @@ trait IssuesControllerBase extends ControllerBase {
   case class CommentForm(issueId: Int, content: String)
   case class IssueStateForm(issueId: Int, content: Option[String])
 
-  val issueCreateForm = mapping(
-    "title" -> trim(label("Title", text(required))),
-    "content" -> trim(optional(text())),
-    "assignedUserName" -> trim(optional(text())),
-    "milestoneId" -> trim(optional(number())),
-    "labelNames" -> trim(optional(text()))
-  )(IssueCreateForm.apply)
+  val issueCreateForm =
+    mapping(
+      "title" -> trim(label("Title", text(required))),
+      "content" -> trim(optional(text())),
+      "assignedUserName" -> trim(optional(text())),
+      "milestoneId" -> trim(optional(number())),
+      "labelNames" -> trim(optional(text()))
+    )(IssueCreateForm.apply)
 
-  val issueTitleEditForm = mapping(
-    "title" -> trim(label("Title", text(required)))
-  )(x => x)
-  val issueEditForm = mapping(
-    "content" -> trim(optional(text()))
-  )(x => x)
+  val issueTitleEditForm =
+    mapping(
+      "title" -> trim(label("Title", text(required)))
+    )(x => x)
+  val issueEditForm =
+    mapping(
+      "content" -> trim(optional(text()))
+    )(x => x)
 
-  val commentForm = mapping(
-    "issueId" -> label("Issue Id", number()),
-    "content" -> trim(label("Comment", text(required)))
-  )(CommentForm.apply)
+  val commentForm =
+    mapping(
+      "issueId" -> label("Issue Id", number()),
+      "content" -> trim(label("Comment", text(required)))
+    )(CommentForm.apply)
 
-  val issueStateForm = mapping(
-    "issueId" -> label("Issue Id", number()),
-    "content" -> trim(optional(text()))
-  )(IssueStateForm.apply)
+  val issueStateForm =
+    mapping(
+      "issueId" -> label("Issue Id", number()),
+      "content" -> trim(optional(text()))
+    )(IssueStateForm.apply)
 
   get("/:owner/:repository/issues")(referrersOnly { repository =>
     val q = request.getParameter("q")
@@ -335,8 +340,10 @@ trait IssuesControllerBase extends ControllerBase {
                     enableAnchor = true,
                     enableLineBreaks = true,
                     enableTaskList = true,
-                    hasWritePermission =
-                      isEditable(x.userName, x.repositoryName, x.openedUserName)
+                    hasWritePermission = isEditable(
+                      x.userName,
+                      x.repositoryName,
+                      x.openedUserName)
                   )
                 )
               )
@@ -520,8 +527,8 @@ trait IssuesControllerBase extends ControllerBase {
   })
 
   val assignedUserName = (key: String) => params.get(key) filter (_.trim != "")
-  val milestoneId: String => Option[Int] = (key: String) =>
-    params.get(key).flatMap(_.toIntOpt)
+  val milestoneId: String => Option[Int] =
+    (key: String) => params.get(key).flatMap(_.toIntOpt)
 
   private def isEditable(owner: String, repository: String, author: String)(
       implicit context: Context): Boolean =

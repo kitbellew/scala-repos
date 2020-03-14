@@ -31,8 +31,8 @@ class FreeApplicativeTests extends CatsSuite {
       }
     }
 
-  implicit val iso =
-    CartesianTests.Isomorphisms.invariant[FreeApplicative[Option, ?]]
+  implicit val iso = CartesianTests.Isomorphisms
+    .invariant[FreeApplicative[Option, ?]]
 
   checkAll(
     "FreeApplicative[Option, ?]",
@@ -88,9 +88,10 @@ class FreeApplicativeTests extends CatsSuite {
 
   test("FreeApplicative#analyze") {
     type G[A] = List[Int]
-    val countingNT = new NaturalTransformation[List, G] {
-      def apply[A](la: List[A]): G[A] = List(la.length)
-    }
+    val countingNT =
+      new NaturalTransformation[List, G] {
+        def apply[A](la: List[A]): G[A] = List(la.length)
+      }
 
     val fli1 = FreeApplicative.lift[List, Int](List(1, 3, 5, 7))
     fli1.analyze[G[Int]](countingNT) should ===(List(4))
@@ -110,12 +111,13 @@ class FreeApplicativeTests extends CatsSuite {
 
     type Tracked[A] = State[String, A]
 
-    val f: Foo ~> Tracked = new (Foo ~> Tracked) {
-      def apply[A](fa: Foo[A]): Tracked[A] =
-        State[String, A] { s0 =>
-          (s0 + fa.toString + ";", fa.getA)
-        }
-    }
+    val f: Foo ~> Tracked =
+      new (Foo ~> Tracked) {
+        def apply[A](fa: Foo[A]): Tracked[A] =
+          State[String, A] { s0 =>
+            (s0 + fa.toString + ";", fa.getA)
+          }
+      }
 
     val x: Dsl[Int] = FreeApplicative.lift(Bar(3))
     val y: Dsl[Long] = FreeApplicative.lift(Baz(5L))
@@ -134,9 +136,10 @@ class FreeApplicativeTests extends CatsSuite {
 
     val z = Apply[Dsl].map2(x, y)((_, _) => ())
 
-    val asString: Id ~> λ[α => String] = new (Id ~> λ[α => String]) {
-      def apply[A](a: A): String = a.toString
-    }
+    val asString: Id ~> λ[α => String] =
+      new (Id ~> λ[α => String]) {
+        def apply[A](a: A): String = a.toString
+      }
 
     z.analyze(asString) should ===("xy")
   }

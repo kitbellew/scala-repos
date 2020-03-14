@@ -19,32 +19,26 @@ trait RequestBuilding extends TransformerPipelineSupport {
   type RequestTransformer = HttpRequest ⇒ HttpRequest
 
   class RequestBuilder(val method: HttpMethod) {
-    def apply(): HttpRequest =
-      apply("/")
+    def apply(): HttpRequest = apply("/")
 
-    def apply(uri: String): HttpRequest =
-      apply(uri, HttpEntity.Empty)
+    def apply(uri: String): HttpRequest = apply(uri, HttpEntity.Empty)
 
     def apply[T](uri: String, content: T)(implicit
         m: ToEntityMarshaller[T],
-        ec: ExecutionContext): HttpRequest =
-      apply(uri, Some(content))
+        ec: ExecutionContext): HttpRequest = apply(uri, Some(content))
 
     def apply[T](uri: String, content: Option[T])(implicit
         m: ToEntityMarshaller[T],
-        ec: ExecutionContext): HttpRequest =
-      apply(Uri(uri), content)
+        ec: ExecutionContext): HttpRequest = apply(Uri(uri), content)
 
     def apply(uri: String, entity: RequestEntity): HttpRequest =
       apply(Uri(uri), entity)
 
-    def apply(uri: Uri): HttpRequest =
-      apply(uri, HttpEntity.Empty)
+    def apply(uri: Uri): HttpRequest = apply(uri, HttpEntity.Empty)
 
     def apply[T](uri: Uri, content: T)(implicit
         m: ToEntityMarshaller[T],
-        ec: ExecutionContext): HttpRequest =
-      apply(uri, Some(content))
+        ec: ExecutionContext): HttpRequest = apply(uri, Some(content))
 
     def apply[T](uri: Uri, content: Option[T])(implicit
         m: ToEntityMarshaller[T],
@@ -53,8 +47,9 @@ trait RequestBuilding extends TransformerPipelineSupport {
       content match {
         case None ⇒ apply(uri, HttpEntity.Empty)
         case Some(value) ⇒
-          val entity =
-            Await.result(Marshal(value).to[RequestEntity], timeout.duration)
+          val entity = Await.result(
+            Marshal(value).to[RequestEntity],
+            timeout.duration)
           apply(uri, entity)
       }
 

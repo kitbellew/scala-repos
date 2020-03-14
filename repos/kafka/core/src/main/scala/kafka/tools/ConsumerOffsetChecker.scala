@@ -32,8 +32,8 @@ import org.I0Itec.zkclient.exception.ZkNoNodeException
 
 object ConsumerOffsetChecker extends Logging {
 
-  private val consumerMap: mutable.Map[Int, Option[SimpleConsumer]] =
-    mutable.Map()
+  private val consumerMap: mutable.Map[Int, Option[SimpleConsumer]] = mutable
+    .Map()
   private val offsetMap: mutable.Map[TopicAndPartition, Long] = mutable.Map()
   private var topicPidMap: immutable.Map[String, Seq[Int]] = immutable.Map()
 
@@ -78,27 +78,29 @@ object ConsumerOffsetChecker extends Logging {
     val topicPartition = TopicAndPartition(topic, pid)
     val offsetOpt = offsetMap.get(topicPartition)
     val groupDirs = new ZKGroupTopicDirs(group, topic)
-    val owner = zkUtils
-      .readDataMaybeNull(groupDirs.consumerOwnerDir + "/%s".format(pid))
-      ._1
+    val owner =
+      zkUtils
+        .readDataMaybeNull(groupDirs.consumerOwnerDir + "/%s".format(pid))
+        ._1
     zkUtils.getLeaderForPartition(topic, pid) match {
       case Some(bid) =>
-        val consumerOpt =
-          consumerMap.getOrElseUpdate(bid, getConsumer(zkUtils, bid))
+        val consumerOpt = consumerMap.getOrElseUpdate(
+          bid,
+          getConsumer(zkUtils, bid))
         consumerOpt match {
           case Some(consumer) =>
             val topicAndPartition = TopicAndPartition(topic, pid)
-            val request =
-              OffsetRequest(
-                immutable.Map(
-                  topicAndPartition -> PartitionOffsetRequestInfo(
-                    OffsetRequest.LatestTime,
-                    1)))
-            val logSize = consumer
-              .getOffsetsBefore(request)
-              .partitionErrorAndOffsets(topicAndPartition)
-              .offsets
-              .head
+            val request = OffsetRequest(
+              immutable.Map(
+                topicAndPartition -> PartitionOffsetRequestInfo(
+                  OffsetRequest.LatestTime,
+                  1)))
+            val logSize =
+              consumer
+                .getOffsetsBefore(request)
+                .partitionErrorAndOffsets(topicAndPartition)
+                .offsets
+                .head
 
             val lagString = offsetOpt.map(o =>
               if (o == -1)
@@ -202,10 +204,12 @@ object ConsumerOffsetChecker extends Logging {
     val group = options.valueOf(groupOpt)
     val groupDirs = new ZKGroupDirs(group)
 
-    val channelSocketTimeoutMs =
-      options.valueOf(channelSocketTimeoutMsOpt).intValue()
-    val channelRetryBackoffMs =
-      options.valueOf(channelRetryBackoffMsOpt).intValue()
+    val channelSocketTimeoutMs = options
+      .valueOf(channelSocketTimeoutMsOpt)
+      .intValue()
+    val channelRetryBackoffMs = options
+      .valueOf(channelRetryBackoffMsOpt)
+      .intValue()
 
     val topics =
       if (options.has(topicsOpt))
@@ -216,21 +220,26 @@ object ConsumerOffsetChecker extends Logging {
     var zkUtils: ZkUtils = null
     var channel: BlockingChannel = null
     try {
-      zkUtils =
-        ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
+      zkUtils = ZkUtils(
+        zkConnect,
+        30000,
+        30000,
+        JaasUtils.isZkSecurityEnabled())
 
-      val topicList = topics match {
-        case Some(x) => x.split(",").view.toList
-        case None =>
-          zkUtils.getChildren(groupDirs.consumerGroupDir + "/owners").toList
-      }
+      val topicList =
+        topics match {
+          case Some(x) => x.split(",").view.toList
+          case None =>
+            zkUtils.getChildren(groupDirs.consumerGroupDir + "/owners").toList
+        }
 
-      topicPidMap =
-        immutable.Map(zkUtils.getPartitionsForTopics(topicList).toSeq: _*)
-      val topicPartitions = topicPidMap.flatMap {
-        case (topic, partitionSeq) =>
-          partitionSeq.map(TopicAndPartition(topic, _))
-      }.toSeq
+      topicPidMap = immutable.Map(
+        zkUtils.getPartitionsForTopics(topicList).toSeq: _*)
+      val topicPartitions =
+        topicPidMap.flatMap {
+          case (topic, partitionSeq) =>
+            partitionSeq.map(TopicAndPartition(topic, _))
+        }.toSeq
       val channel = ClientUtils.channelToOffsetManager(
         group,
         zkUtils,
@@ -241,8 +250,8 @@ object ConsumerOffsetChecker extends Logging {
         "Sending offset fetch request to coordinator %s:%d."
           .format(channel.host, channel.port))
       channel.send(OffsetFetchRequest(group, topicPartitions))
-      val offsetFetchResponse =
-        OffsetFetchResponse.readFrom(channel.receive().payload())
+      val offsetFetchResponse = OffsetFetchResponse.readFrom(
+        channel.receive().payload())
       debug("Received offset fetch response %s.".format(offsetFetchResponse))
 
       offsetFetchResponse.requestInfo.foreach {
@@ -252,12 +261,13 @@ object ConsumerOffsetChecker extends Logging {
             // this group may not have migrated off zookeeper for offsets storage (we don't expose the dual-commit option in this tool
             // (meaning the lag may be off until all the consumers in the group have the same setting for offsets storage)
             try {
-              val offset = zkUtils
-                .readData(
-                  topicDirs.consumerOffsetDir + "/%d".format(
-                    topicAndPartition.partition))
-                ._1
-                .toLong
+              val offset =
+                zkUtils
+                  .readData(
+                    topicDirs.consumerOffsetDir + "/%d".format(
+                      topicAndPartition.partition))
+                  ._1
+                  .toLong
               offsetMap.put(topicAndPartition, offset)
             } catch {
               case z: ZkNoNodeException =>

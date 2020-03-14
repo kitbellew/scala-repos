@@ -52,10 +52,12 @@ class EndToEndTest extends FunSuite {
 
   class WorkItContext() {
     val streamRequest = 1
-    val httpRequest = from(
-      StreamRequest(StreamRequest.Method.Get, "/")): HttpRequest
-    val info =
-      StreamResponse.Info(Version(1, 1), StreamResponse.Status(200), Nil)
+    val httpRequest =
+      from(StreamRequest(StreamRequest.Method.Get, "/")): HttpRequest
+    val info = StreamResponse.Info(
+      Version(1, 1),
+      StreamResponse.Status(200),
+      Nil)
     val messages = new Broker[Buf]
     val error = new Broker[Throwable]
     val serverRes = MyStreamResponse(info, messages.recv, error.recv)
@@ -144,10 +146,11 @@ class EndToEndTest extends FunSuite {
         // pipeline.
 
         val recvd = new Broker[ChannelEvent]
-        val bootstrap = new ClientBootstrap(
-          new NioClientSocketChannelFactory(
-            Executors.newCachedThreadPool(),
-            Executors.newCachedThreadPool()))
+        val bootstrap =
+          new ClientBootstrap(
+            new NioClientSocketChannelFactory(
+              Executors.newCachedThreadPool(),
+              Executors.newCachedThreadPool()))
         bootstrap.setPipelineFactory(new ChannelPipelineFactory {
           override def getPipeline() = {
             val pipeline = Channels.pipeline()
@@ -158,12 +161,13 @@ class EndToEndTest extends FunSuite {
                 override def handleUpstream(
                     ctx: ChannelHandlerContext,
                     e: ChannelEvent) {
-                  val keep = e match {
-                    case se: ChannelStateEvent =>
-                      se.getState == ChannelState.OPEN
-                    case _: WriteCompletionEvent => false
-                    case _                       => true
-                  }
+                  val keep =
+                    e match {
+                      case se: ChannelStateEvent =>
+                        se.getState == ChannelState.OPEN
+                      case _: WriteCompletionEvent => false
+                      case _                       => true
+                    }
                   if (keep)
                     recvd ! e
                 }
@@ -304,10 +308,11 @@ class EndToEndTest extends FunSuite {
       .buildFactory()
 
     val underlying = Await.result(factory())
-    val client = new ServiceProxy[Request, StreamResponse](underlying) {
-      override def close(deadline: Time) =
-        Closable.all(underlying, server, factory).close(deadline)
-    }
+    val client =
+      new ServiceProxy[Request, StreamResponse](underlying) {
+        override def close(deadline: Time) =
+          Closable.all(underlying, server, factory).close(deadline)
+      }
 
     (client, address)
   }
@@ -338,10 +343,11 @@ class EndToEndTest extends FunSuite {
       .buildFactory()
 
     val underlying = Await.result(factory())
-    val client = new ServiceProxy[Request, StreamResponse](underlying) {
-      override def close(deadline: Time) =
-        Closable.all(server, serverClient, proxy, factory).close(deadline)
-    }
+    val client =
+      new ServiceProxy[Request, StreamResponse](underlying) {
+        override def close(deadline: Time) =
+          Closable.all(server, serverClient, proxy, factory).close(deadline)
+      }
 
     (client, proxy.boundAddress)
   }

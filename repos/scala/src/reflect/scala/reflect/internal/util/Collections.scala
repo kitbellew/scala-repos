@@ -41,8 +41,7 @@ trait Collections {
     xss exists (_ exists p)
   final def mforall[A](xss: List[List[A]])(p: A => Boolean) =
     xss forall (_ forall p)
-  final def mmap[A, B](xss: List[List[A]])(f: A => B) =
-    xss map (_ map f)
+  final def mmap[A, B](xss: List[List[A]])(f: A => B) = xss map (_ map f)
   final def mfind[A](xss: List[List[A]])(p: A => Boolean): Option[A] = {
     var res: Option[A] = null
     mforeach(xss)(x =>

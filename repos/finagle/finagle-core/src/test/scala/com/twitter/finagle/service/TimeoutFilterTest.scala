@@ -14,15 +14,17 @@ private object TimeoutFilterTest {
 
   class TimeoutFilterHelper {
     val timer = new MockTimer
-    val promise = new Promise[String] {
-      @volatile var interrupted: Option[Throwable] = None
-      setInterruptHandler {
-        case exc => interrupted = Some(exc)
+    val promise =
+      new Promise[String] {
+        @volatile var interrupted: Option[Throwable] = None
+        setInterruptHandler {
+          case exc => interrupted = Some(exc)
+        }
       }
-    }
-    val service = new Service[String, String] {
-      def apply(request: String) = promise
-    }
+    val service =
+      new Service[String, String] {
+        def apply(request: String) = promise
+      }
     val timeout = 1.second
     val exception = new IndividualRequestTimeoutException(timeout)
     val timeoutFilter =
@@ -69,9 +71,10 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
   }
 
   class DeadlineCtx(val timeout: Duration) {
-    val service = new Service[Unit, Option[Deadline]] {
-      def apply(req: Unit) = Future.value(Deadline.current)
-    }
+    val service =
+      new Service[Unit, Option[Deadline]] {
+        def apply(req: Unit) = Future.value(Deadline.current)
+      }
 
     val timer = new MockTimer
     val exception = new IndividualRequestTimeoutException(timeout)
@@ -90,11 +93,12 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
           Deadline(Time.now, Time.now + 1.second)))
 
       // Adjust existing ones.
-      val f = Contexts.broadcast.let(
-        Deadline,
-        Deadline(Time.now - 1.second, Time.now + 200.milliseconds)) {
-        timeoutService((): Unit)
-      }
+      val f =
+        Contexts.broadcast.let(
+          Deadline,
+          Deadline(Time.now - 1.second, Time.now + 200.milliseconds)) {
+          timeoutService((): Unit)
+        }
       assert(
         Await.result(f) == Some(
           Deadline(Time.now, Time.now + 200.milliseconds)))
@@ -111,10 +115,11 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
           Deadline(Time.now, Time.Top)))
 
       // Adjust existing ones
-      val f = Contexts.broadcast
-        .let(Deadline, Deadline(Time.now - 1.second, Time.now + 1.second)) {
-          timeoutService((): Unit)
-        }
+      val f =
+        Contexts.broadcast
+          .let(Deadline, Deadline(Time.now - 1.second, Time.now + 1.second)) {
+            timeoutService((): Unit)
+          }
       assert(Await.result(f) == Some(Deadline(Time.now, Time.now + 1.second)))
     }
   }

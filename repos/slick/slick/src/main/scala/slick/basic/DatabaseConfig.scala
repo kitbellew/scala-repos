@@ -117,13 +117,12 @@ object DatabaseConfig {
         s"Configured profile $n does not conform to requested profile ${pClass.getName}")
     val root = config
     new DatabaseConfig[P] {
-      lazy val db: P#Backend#Database =
-        profile.backend.createDatabase(
-          root,
-          (if (path.isEmpty)
-             ""
-           else
-             path + ".") + "db")
+      lazy val db: P#Backend#Database = profile.backend.createDatabase(
+        root,
+        (if (path.isEmpty)
+           ""
+         else
+           path + ".") + "db")
       val profile: P = untypedP.asInstanceOf[P]
       val driver: P = untypedP.asInstanceOf[P]
       lazy val config: Config =

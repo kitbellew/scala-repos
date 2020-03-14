@@ -17,8 +17,7 @@ object TimeoutFilter {
     * [[com.twitter.finagle.service.TimeoutFilter]] module.
     */
   case class Param(timeout: Duration) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
     implicit val param = Stack.Param(Param(Duration.Top))
@@ -122,11 +121,12 @@ class TimeoutFilter[Req, Rep](
 
     // If there's a current deadline, we combine it with the one derived
     // from our timeout.
-    val deadline = Deadline.current match {
-      case Some(current) =>
-        Deadline.combined(timeoutDeadline, current)
-      case None => timeoutDeadline
-    }
+    val deadline =
+      Deadline.current match {
+        case Some(current) =>
+          Deadline.combined(timeoutDeadline, current)
+        case None => timeoutDeadline
+      }
 
     Contexts.broadcast.let(Deadline, deadline) {
       val res = service(request)

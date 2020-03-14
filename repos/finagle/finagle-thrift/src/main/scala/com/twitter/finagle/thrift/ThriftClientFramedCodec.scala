@@ -137,13 +137,14 @@ private[finagle] case class ThriftClientPreparer(
   def prepareService(params: Stack.Params)(
       service: Service[ThriftClientRequest, Array[Byte]]
   ): Future[Service[ThriftClientRequest, Array[Byte]]] = {
-    val payloadSize = new PayloadSizeFilter[ThriftClientRequest, Array[Byte]](
-      params[param.Stats].statsReceiver,
-      _.message.length,
-      _.length
-    )
-    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) =
-      params[Thrift.param.AttemptTTwitterUpgrade]
+    val payloadSize =
+      new PayloadSizeFilter[ThriftClientRequest, Array[Byte]](
+        params[param.Stats].statsReceiver,
+        _.message.length,
+        _.length
+      )
+    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) = params[
+      Thrift.param.AttemptTTwitterUpgrade]
     val payloadSizeService = payloadSize.andThen(service)
     val upgradedService =
       if (attemptUpgrade) {
@@ -162,8 +163,8 @@ private[finagle] case class ThriftClientPreparer(
       params: Stack.Params
   ): ServiceFactory[ThriftClientRequest, Array[Byte]] = {
     val param.Stats(stats) = params[param.Stats]
-    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) =
-      params[Thrift.param.AttemptTTwitterUpgrade]
+    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) = params[
+      Thrift.param.AttemptTTwitterUpgrade]
     val preparingFactory = underlying.flatMap(prepareService(params))
 
     if (attemptUpgrade) {
@@ -200,11 +201,12 @@ private[finagle] case class ThriftClientPreparer(
       val iprot = protocolFactory.getProtocol(memoryTransport)
       val reply = iprot.readMessageBegin()
 
-      val ttwitter = new TTwitterClientFilter(
-        serviceName,
-        reply.`type` != TMessageType.EXCEPTION,
-        clientId,
-        protocolFactory)
+      val ttwitter =
+        new TTwitterClientFilter(
+          serviceName,
+          reply.`type` != TMessageType.EXCEPTION,
+          clientId,
+          protocolFactory)
       // TODO: also apply this for Protocols.binaryFactory
 
       val seqIdFilter =

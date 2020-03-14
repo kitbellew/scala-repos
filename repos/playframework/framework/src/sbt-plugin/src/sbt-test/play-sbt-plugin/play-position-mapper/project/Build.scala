@@ -11,25 +11,26 @@ object ApplicationBuild extends Build {
   val appName = "play-position-mapper"
   val appVersion = "1.0-SNAPSHOT"
 
-  val bufferLogger = new AbstractLogger {
-    @volatile var messages = List.empty[String]
-    def getLevel = Level.Error
-    def setLevel(newLevel: Level.Value) = ()
-    def setTrace(flag: Int) = ()
-    def getTrace = 0
-    def successEnabled = false
-    def setSuccessEnabled(flag: Boolean) = ()
-    def control(event: ControlEvent.Value, message: => String) = ()
-    def logAll(events: Seq[LogEvent]) = events.foreach(log)
-    def trace(t: => Throwable) = ()
-    def success(message: => String) = ()
-    def log(level: Level.Value, message: => String) = {
-      if (level == Level.Error)
-        synchronized {
-          messages = message :: messages
-        }
+  val bufferLogger =
+    new AbstractLogger {
+      @volatile var messages = List.empty[String]
+      def getLevel = Level.Error
+      def setLevel(newLevel: Level.Value) = ()
+      def setTrace(flag: Int) = ()
+      def getTrace = 0
+      def successEnabled = false
+      def setSuccessEnabled(flag: Boolean) = ()
+      def control(event: ControlEvent.Value, message: => String) = ()
+      def logAll(events: Seq[LogEvent]) = events.foreach(log)
+      def trace(t: => Throwable) = ()
+      def success(message: => String) = ()
+      def log(level: Level.Value, message: => String) = {
+        if (level == Level.Error)
+          synchronized {
+            messages = message :: messages
+          }
+      }
     }
-  }
 
   import complete.DefaultParsers._
 

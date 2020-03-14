@@ -70,10 +70,11 @@ trait FunctionAnnotator {
             new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
         } else {
           recursiveReferences.filter(!_.isTailCall).foreach { ref =>
-            val target = ref.element.getParent match {
-              case call: ScMethodCall => call
-              case _                  => ref.element
-            }
+            val target =
+              ref.element.getParent match {
+                case call: ScMethodCall => call
+                case _                  => ref.element
+              }
             val annotation = holder.createErrorAnnotation(
               target,
               "Recursive call not in tail position (in @tailrec annotated method)")
@@ -115,8 +116,10 @@ trait FunctionAnnotator {
         val message = ScalaBundle.message(
           "function.must.define.type.explicitly",
           function.name)
-        val returnTypes =
-          function.returnUsages(withBooleanInfix = false).toSeq.collect {
+        val returnTypes = function
+          .returnUsages(withBooleanInfix = false)
+          .toSeq
+          .collect {
             case retStmt: ScReturnStmt =>
               retStmt.expr.flatMap(_.getType().toOption).getOrElse(AnyType)
             case expr: ScExpression => expr.getType().getOrAny
@@ -139,8 +142,9 @@ trait FunctionAnnotator {
 
       def typeMismatch() {
         if (typeAware) {
-          val (usageTypeText, functionTypeText) =
-            ScTypePresentation.different(usageType, functionType)
+          val (usageTypeText, functionTypeText) = ScTypePresentation.different(
+            usageType,
+            functionType)
           val message = ScalaBundle.message(
             "type.mismatch.found.required",
             usageTypeText,
@@ -150,19 +154,20 @@ trait FunctionAnnotator {
               usage.asInstanceOf[ScReturnStmt].expr
             else
               None
-          val expr = returnExpression.getOrElse(usage) match {
-            case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
-            case b: ScBlock =>
-              b.getParent match {
-                case t: ScTryBlock =>
-                  t.getRBrace match {
-                    case Some(brace) => brace.getPsi
-                    case _           => b
-                  }
-                case _ => b
-              }
-            case e => e
-          }
+          val expr =
+            returnExpression.getOrElse(usage) match {
+              case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
+              case b: ScBlock =>
+                b.getParent match {
+                  case t: ScTryBlock =>
+                    t.getRBrace match {
+                      case Some(brace) => brace.getPsi
+                      case _           => b
+                    }
+                  case _ => b
+                }
+              case e => e
+            }
           val annotation = holder.createErrorAnnotation(expr, message)
           annotation.registerFix(ReportHighlightingErrorQuickFix)
         }

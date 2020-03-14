@@ -98,8 +98,9 @@ object PlayImport {
   }
 
   object PlayKeys {
-    val playDefaultPort =
-      SettingKey[Int]("playDefaultPort", "The default port that Play runs on")
+    val playDefaultPort = SettingKey[Int](
+      "playDefaultPort",
+      "The default port that Play runs on")
     val playDefaultAddress = SettingKey[String](
       "playDefaultAddress",
       "The default address that Play runs on")

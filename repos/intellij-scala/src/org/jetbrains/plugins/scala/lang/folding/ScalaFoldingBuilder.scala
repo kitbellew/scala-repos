@@ -136,18 +136,22 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
       node.getPsi match {
         case TypeLambda(typeName, typeParamClause, aliasedType) =>
           val group = FoldingGroup.newGroup("typelambda")
-          val range1 = new TextRange(
-            nodeTextRange.getStartOffset,
-            typeParamClause.getTextRange.getStartOffset)
-          val d1 = new FoldingDescriptor(node, range1, group) {
-            override def getPlaceholderText = typeName
-          }
-          val range2 = new TextRange(
-            aliasedType.getTextRange.getEndOffset,
-            nodeTextRange.getEndOffset)
-          val d2 = new FoldingDescriptor(aliasedType.getNode, range2, group) {
-            override def getPlaceholderText = ""
-          }
+          val range1 =
+            new TextRange(
+              nodeTextRange.getStartOffset,
+              typeParamClause.getTextRange.getStartOffset)
+          val d1 =
+            new FoldingDescriptor(node, range1, group) {
+              override def getPlaceholderText = typeName
+            }
+          val range2 =
+            new TextRange(
+              aliasedType.getTextRange.getEndOffset,
+              nodeTextRange.getEndOffset)
+          val d2 =
+            new FoldingDescriptor(aliasedType.getNode, range2, group) {
+              override def getPlaceholderText = ""
+            }
           descriptors ++= mutable.Seq(d1, d2)
         case _ =>
       }
@@ -288,9 +292,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
             return "/.../"
           else {
             if (isTagRegionStart(node.getText)) {
-              val customText: String = node.getText
-                .replaceFirst(".*desc\\s*=\\s*\"(.*)\".*", "$1")
-                .trim
+              val customText: String =
+                node.getText
+                  .replaceFirst(".*desc\\s*=\\s*\"(.*)\".*", "$1")
+                  .trim
               return if (customText.isEmpty)
                 "..."
               else

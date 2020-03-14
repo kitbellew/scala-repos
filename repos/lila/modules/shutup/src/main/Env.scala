@@ -13,10 +13,11 @@ final class Env(
     system: ActorSystem,
     db: lila.db.Env) {
 
-  private val settings = new {
-    val CollectionShutup = config getString "collection.shutup"
-    val ActorName = config getString "actor.name"
-  }
+  private val settings =
+    new {
+      val CollectionShutup = config getString "collection.shutup"
+      val ActorName = config getString "actor.name"
+    }
   import settings._
 
   lazy val api =

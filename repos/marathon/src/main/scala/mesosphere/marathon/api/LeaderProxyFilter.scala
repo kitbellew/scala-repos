@@ -210,22 +210,23 @@ class JavaUrlConnectionRequestForwarder @Inject() (
       response: HttpServletResponse): Unit = {
 
     def hasProxyLoop: Boolean = {
-      val viaOpt =
-        Option(request.getHeaders(HEADER_VIA)).map(_.asScala.toVector)
+      val viaOpt = Option(request.getHeaders(HEADER_VIA))
+        .map(_.asScala.toVector)
       viaOpt.exists(_.contains(viaValue))
     }
 
     def createAndConfigureConnection(url: URL): HttpURLConnection = {
-      val connection = url.openConnection() match {
-        case httpsConnection: HttpsURLConnection =>
-          httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory)
-          httpsConnection
-        case httpConnection: HttpURLConnection =>
-          httpConnection
-        case connection: URLConnection =>
-          throw new scala.RuntimeException(
-            s"unexpected connection type: ${connection.getClass}")
-      }
+      val connection =
+        url.openConnection() match {
+          case httpsConnection: HttpsURLConnection =>
+            httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory)
+            httpsConnection
+          case httpConnection: HttpURLConnection =>
+            httpConnection
+          case connection: URLConnection =>
+            throw new scala.RuntimeException(
+              s"unexpected connection type: ${connection.getClass}")
+        }
 
       connection.setConnectTimeout(
         leaderProxyConf.leaderProxyConnectionTimeout())

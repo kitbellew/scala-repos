@@ -51,8 +51,7 @@ object FailFastFactory {
     *      for more details.
     */
   case class FailFast(enabled: Boolean) {
-    def mk(): (FailFast, Stack.Param[FailFast]) =
-      (this, FailFast.param)
+    def mk(): (FailFast, Stack.Param[FailFast]) = (this, FailFast.param)
   }
   object FailFast {
     implicit val param = Stack.Param(FailFast(enabled = true))
@@ -131,13 +130,14 @@ private[finagle] class FailFastFactory[Req, Rep](
     extends ServiceFactoryProxy(underlying) {
   import FailFastFactory._
 
-  private[this] val exc = new FailedFastException(
-    s"Endpoint $label is marked down. For more details see: $url")
+  private[this] val exc =
+    new FailedFastException(
+      s"Endpoint $label is marked down. For more details see: $url")
 
   private[this] val futureExc = Future.exception(exc)
 
-  private[this] val markedAvailableCounter =
-    statsReceiver.counter("marked_available")
+  private[this] val markedAvailableCounter = statsReceiver.counter(
+    "marked_available")
   private[this] val markedDeadCounter = statsReceiver.counter("marked_dead")
 
   private[this] val unhealthyForMsGauge =
@@ -165,74 +165,78 @@ private[finagle] class FailFastFactory[Req, Rep](
 
   @volatile private[this] var state: State = Ok
 
-  private[this] val update = new Updater[Observation.t] {
-    def preprocess(elems: Seq[Observation.t]) = elems
+  private[this] val update =
+    new Updater[Observation.t] {
+      def preprocess(elems: Seq[Observation.t]) = elems
 
-    def handle(o: Observation.t) =
-      o match {
-        case Observation.Success if state != Ok =>
-          val Retrying(_, task, _, _) = state
-          task.cancel()
-          markedAvailableCounter.incr()
-          state = Ok
+      def handle(o: Observation.t) =
+        o match {
+          case Observation.Success if state != Ok =>
+            val Retrying(_, task, _, _) = state
+            task.cancel()
+            markedAvailableCounter.incr()
+            state = Ok
 
-        case Observation.Fail if state == Ok =>
-          val (wait, rest) = getBackoffs() match {
-            case Stream.Empty  => (Duration.Zero, Stream.empty[Duration])
-            case wait #:: rest => (wait, rest)
-          }
-          val now = Time.now
-          val task = timer.schedule(now + wait) {
-            this.apply(Observation.Timeout)
-          }
-          markedDeadCounter.incr()
-
-          if (logger.isLoggable(Level.DEBUG))
-            logger.log(
-              Level.DEBUG,
-              s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
-
-          state = Retrying(now, task, 0, rest)
-
-        case Observation.Timeout if state != Ok =>
-          underlying(ClientConnection.nil).respond {
-            case Throw(_) => this.apply(Observation.TimeoutFail)
-            case Return(service) =>
-              this.apply(Observation.Success)
-              service.close()
-          }
-
-        case Observation.TimeoutFail if state != Ok =>
-          state match {
-            case Retrying(_, task, _, Stream.Empty) =>
-              task.cancel()
-              // Backoff schedule exhausted. Optimistically become available in
-              // order to continue trying.
-              state = Ok
-
-            case Retrying(since, task, ntries, wait #:: rest) =>
-              task.cancel()
-              val newTask = timer.schedule(Time.now + wait) {
+          case Observation.Fail if state == Ok =>
+            val (wait, rest) =
+              getBackoffs() match {
+                case Stream.Empty  => (Duration.Zero, Stream.empty[Duration])
+                case wait #:: rest => (wait, rest)
+              }
+            val now = Time.now
+            val task =
+              timer.schedule(now + wait) {
                 this.apply(Observation.Timeout)
               }
-              state = Retrying(since, newTask, ntries + 1, rest)
+            markedDeadCounter.incr()
 
-            case Ok => assert(false)
-          }
+            if (logger.isLoggable(Level.DEBUG))
+              logger.log(
+                Level.DEBUG,
+                s"""FailFastFactory marking connection to "$label" as dead. Remote Address: ${endpoint.toString}""")
 
-        case Observation.Close =>
-          val oldState = state
-          state = Ok
-          oldState match {
-            case Retrying(_, task, _, _) =>
-              task.cancel()
-            case _ =>
-          }
+            state = Retrying(now, task, 0, rest)
 
-        case _ => ()
+          case Observation.Timeout if state != Ok =>
+            underlying(ClientConnection.nil).respond {
+              case Throw(_) => this.apply(Observation.TimeoutFail)
+              case Return(service) =>
+                this.apply(Observation.Success)
+                service.close()
+            }
 
-      }
-  }
+          case Observation.TimeoutFail if state != Ok =>
+            state match {
+              case Retrying(_, task, _, Stream.Empty) =>
+                task.cancel()
+                // Backoff schedule exhausted. Optimistically become available in
+                // order to continue trying.
+                state = Ok
+
+              case Retrying(since, task, ntries, wait #:: rest) =>
+                task.cancel()
+                val newTask =
+                  timer.schedule(Time.now + wait) {
+                    this.apply(Observation.Timeout)
+                  }
+                state = Retrying(since, newTask, ntries + 1, rest)
+
+              case Ok => assert(false)
+            }
+
+          case Observation.Close =>
+            val oldState = state
+            state = Ok
+            oldState match {
+              case Retrying(_, task, _, _) =>
+                task.cancel()
+              case _ =>
+            }
+
+          case _ => ()
+
+        }
+    }
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {
     if (state != Ok)

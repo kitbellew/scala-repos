@@ -56,23 +56,24 @@ class SeqIdFilter extends SimpleFilter[ThriftClientRequest, Array[Byte]] {
     if (buf.length < 4)
       return badMsg("short header")
     val header = get32(buf, 0)
-    val off = if (header < 0) {
-      // [4]header
-      // [4]n
-      // [n]string
-      // [4]seqid
-      if ((header & VersionMask) != Version1)
-        return badMsg("bad version %d".format(header & VersionMask))
-      if (buf.length < 8)
-        return badMsg("short name size")
-      4 + 4 + get32(buf, 4)
-    } else {
-      // [4]n
-      // [n]name
-      // [1]type
-      // [4]seqid
-      4 + header + 1
-    }
+    val off =
+      if (header < 0) {
+        // [4]header
+        // [4]n
+        // [n]string
+        // [4]seqid
+        if ((header & VersionMask) != Version1)
+          return badMsg("bad version %d".format(header & VersionMask))
+        if (buf.length < 8)
+          return badMsg("short name size")
+        4 + 4 + get32(buf, 4)
+      } else {
+        // [4]n
+        // [n]name
+        // [1]type
+        // [4]seqid
+        4 + header + 1
+      }
 
     if (buf.length < off + 4)
       return badMsg("short buffer")
@@ -90,10 +91,11 @@ class SeqIdFilter extends SimpleFilter[ThriftClientRequest, Array[Byte]] {
     else {
       val reqBuf = req.message.clone()
       val id = rng.nextInt()
-      val givenId = getAndSetId(reqBuf, id) match {
-        case Return(id) => id
-        case Throw(exc) => return Future.exception(exc)
-      }
+      val givenId =
+        getAndSetId(reqBuf, id) match {
+          case Return(id) => id
+          case Throw(exc) => return Future.exception(exc)
+        }
       val newReq = new ThriftClientRequest(reqBuf, req.oneway)
 
       service(newReq) flatMap { resBuf =>

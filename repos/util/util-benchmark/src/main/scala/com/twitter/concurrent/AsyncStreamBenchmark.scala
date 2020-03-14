@@ -30,38 +30,28 @@ class AsyncStreamBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def baseline(): Seq[Int] =
-    Await.result(as.toSeq(), timeout)
+  def baseline(): Seq[Int] = Await.result(as.toSeq(), timeout)
 
-  private[this] val MapFn: Int => Int =
-    x => x + 1
+  private[this] val MapFn: Int => Int = x => x + 1
 
   @Benchmark
-  def map(): Seq[Int] =
-    Await.result(as.map(MapFn).toSeq())
+  def map(): Seq[Int] = Await.result(as.map(MapFn).toSeq())
 
-  private[this] val FlatMapFn: Int => AsyncStream[Int] =
-    x => AsyncStream(x)
+  private[this] val FlatMapFn: Int => AsyncStream[Int] = x => AsyncStream(x)
 
   @Benchmark
-  def flatMap(): Seq[Int] =
-    Await.result(as.flatMap(FlatMapFn).toSeq())
+  def flatMap(): Seq[Int] = Await.result(as.flatMap(FlatMapFn).toSeq())
 
-  private[this] val FilterFn: Int => Boolean =
-    x => x % 2 == 0
+  private[this] val FilterFn: Int => Boolean = x => x % 2 == 0
 
   @Benchmark
-  def filter(): Seq[Int] =
-    Await.result(as.filter(FilterFn).toSeq())
+  def filter(): Seq[Int] = Await.result(as.filter(FilterFn).toSeq())
 
-  private[this] val TakeWhileFn: Int => Boolean =
-    x => x < size / 2
+  private[this] val TakeWhileFn: Int => Boolean = x => x < size / 2
 
   @Benchmark
-  def takeWhile(): Seq[Int] =
-    Await.result(as.takeWhile(TakeWhileFn).toSeq())
+  def takeWhile(): Seq[Int] = Await.result(as.takeWhile(TakeWhileFn).toSeq())
 
   @Benchmark
-  def ++(): Int =
-    Await.result((longs ++ as).foldLeft(0)(_ + _))
+  def ++(): Int = Await.result((longs ++ as).foldLeft(0)(_ + _))
 }

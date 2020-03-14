@@ -20,91 +20,97 @@ import scala.sys.process.Process
 object Resolvers {
   type Resolver = BuildLoader.Resolver
 
-  val local: Resolver = (info: ResolveInfo) => {
-    val uri = info.uri
-    val from = new File(uri)
-    val to = uniqueSubdirectoryFor(uri, in = info.staging)
+  val local: Resolver =
+    (info: ResolveInfo) => {
+      val uri = info.uri
+      val from = new File(uri)
+      val to = uniqueSubdirectoryFor(uri, in = info.staging)
 
-    if (from.isDirectory)
+      if (from.isDirectory)
+        Some { () =>
+          if (from.canWrite)
+            from
+          else
+            creates(to) {
+              IO.copyDirectory(from, to)
+            }
+        }
+      else
+        None
+    }
+
+  val remote: Resolver =
+    (info: ResolveInfo) => {
+      val url = info.uri.toURL
+      val to = uniqueSubdirectoryFor(info.uri, in = info.staging)
+
       Some { () =>
-        if (from.canWrite)
-          from
-        else
-          creates(to) {
-            IO.copyDirectory(from, to)
+        creates(to) {
+          IO.unzipURL(url, to)
+        }
+      }
+    }
+
+  val subversion: Resolver =
+    (info: ResolveInfo) => {
+      def normalized(uri: URI) = uri.copy(scheme = "svn")
+
+      val uri = info.uri.withoutMarkerScheme
+      val localCopy = uniqueSubdirectoryFor(normalized(uri), in = info.staging)
+      val from = uri.withoutFragment.toASCIIString
+      val to = localCopy.getAbsolutePath
+
+      if (uri.hasFragment) {
+        val revision = uri.getFragment
+        Some { () =>
+          creates(localCopy) {
+            run("svn", "checkout", "-q", "-r", revision, from, to)
           }
-      }
-    else
-      None
-  }
-
-  val remote: Resolver = (info: ResolveInfo) => {
-    val url = info.uri.toURL
-    val to = uniqueSubdirectoryFor(info.uri, in = info.staging)
-
-    Some { () =>
-      creates(to) {
-        IO.unzipURL(url, to)
-      }
-    }
-  }
-
-  val subversion: Resolver = (info: ResolveInfo) => {
-    def normalized(uri: URI) = uri.copy(scheme = "svn")
-
-    val uri = info.uri.withoutMarkerScheme
-    val localCopy = uniqueSubdirectoryFor(normalized(uri), in = info.staging)
-    val from = uri.withoutFragment.toASCIIString
-    val to = localCopy.getAbsolutePath
-
-    if (uri.hasFragment) {
-      val revision = uri.getFragment
-      Some { () =>
-        creates(localCopy) {
-          run("svn", "checkout", "-q", "-r", revision, from, to)
         }
-      }
-    } else
-      Some { () =>
-        creates(localCopy) {
-          run("svn", "checkout", "-q", from, to)
+      } else
+        Some { () =>
+          creates(localCopy) {
+            run("svn", "checkout", "-q", from, to)
+          }
         }
-      }
-  }
-
-  val mercurial: Resolver = new DistributedVCS {
-    override val scheme = "hg"
-
-    override def clone(from: String, to: File): Unit = {
-      run("hg", "clone", "-q", from, to.getAbsolutePath)
     }
 
-    override def checkout(branch: String, in: File): Unit = {
-      run(Some(in), "hg", "checkout", "-q", branch)
+  val mercurial: Resolver =
+    new DistributedVCS {
+      override val scheme = "hg"
+
+      override def clone(from: String, to: File): Unit = {
+        run("hg", "clone", "-q", from, to.getAbsolutePath)
+      }
+
+      override def checkout(branch: String, in: File): Unit = {
+        run(Some(in), "hg", "checkout", "-q", branch)
+      }
+    }.toResolver
+
+  val git: Resolver =
+    (info: ResolveInfo) => {
+      val uri = info.uri.withoutMarkerScheme
+      val localCopy = uniqueSubdirectoryFor(
+        uri.copy(scheme = "git"),
+        in = info.staging)
+      val from = uri.withoutFragment.toASCIIString
+
+      if (uri.hasFragment) {
+        val branch = uri.getFragment
+        Some { () =>
+          creates(localCopy) {
+            run("git", "clone", from, localCopy.getAbsolutePath)
+            run(Some(localCopy), "git", "checkout", "-q", branch)
+          }
+        }
+      } else
+        Some { () =>
+          creates(localCopy) {
+            run("git", "clone", "--depth", "1", from, localCopy.getAbsolutePath)
+          }
+        }
     }
-  }.toResolver
-
-  val git: Resolver = (info: ResolveInfo) => {
-    val uri = info.uri.withoutMarkerScheme
-    val localCopy =
-      uniqueSubdirectoryFor(uri.copy(scheme = "git"), in = info.staging)
-    val from = uri.withoutFragment.toASCIIString
-
-    if (uri.hasFragment) {
-      val branch = uri.getFragment
-      Some { () =>
-        creates(localCopy) {
-          run("git", "clone", from, localCopy.getAbsolutePath)
-          run(Some(localCopy), "git", "checkout", "-q", branch)
-        }
-      }
-    } else
-      Some { () =>
-        creates(localCopy) {
-          run("git", "clone", "--depth", "1", from, localCopy.getAbsolutePath)
-        }
-      }
-  }
 
   abstract class DistributedVCS {
     val scheme: String
@@ -116,8 +122,9 @@ object Resolvers {
     def toResolver: Resolver =
       (info: ResolveInfo) => {
         val uri = info.uri.withoutMarkerScheme
-        val localCopy =
-          uniqueSubdirectoryFor(normalized(uri), in = info.staging)
+        val localCopy = uniqueSubdirectoryFor(
+          normalized(uri),
+          in = info.staging)
         val from = uri.withoutFragment.toASCIIString
 
         if (uri.hasFragment) {
@@ -150,17 +157,17 @@ object Resolvers {
     isWindows && !isCygwin
   }
 
-  def run(command: String*): Unit =
-    run(None, command: _*)
+  def run(command: String*): Unit = run(None, command: _*)
 
   def run(cwd: Option[File], command: String*): Unit = {
-    val result = Process(
-      if (onWindows)
-        "cmd" +: "/c" +: command
-      else
-        command,
-      cwd
-    ) !;
+    val result =
+      Process(
+        if (onWindows)
+          "cmd" +: "/c" +: command
+        else
+          command,
+        cwd
+      ) !;
     if (result != 0)
       sys.error("Nonzero exit code (" + result + "): " + command.mkString(" "))
   }
@@ -180,10 +187,11 @@ object Resolvers {
   def uniqueSubdirectoryFor(uri: URI, in: File) = {
     in.mkdirs()
     val base = new File(in, Hash.halfHashString(uri.normalize.toASCIIString))
-    val last = shortName(uri) match {
-      case Some(n) => normalizeDirectoryName(n);
-      case None    => "root"
-    }
+    val last =
+      shortName(uri) match {
+        case Some(n) => normalizeDirectoryName(n);
+        case None    => "root"
+      }
     new File(base, last)
   }
 

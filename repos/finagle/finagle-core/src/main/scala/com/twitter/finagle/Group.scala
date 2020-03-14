@@ -99,10 +99,11 @@ trait Group[T] { outer =>
 
   def +(other: Group[T]): Group[T] =
     new Group[T] {
-      protected[finagle] val set = for {
-        a <- outer.set;
-        b <- other.set
-      } yield a ++ b
+      protected[finagle] val set =
+        for {
+          a <- outer.set;
+          b <- other.set
+        } yield a ++ b
     }
 
   override def toString = "Group(%s)".format(this() mkString ", ")

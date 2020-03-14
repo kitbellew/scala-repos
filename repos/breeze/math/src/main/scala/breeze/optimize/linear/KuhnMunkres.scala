@@ -278,14 +278,15 @@ object KuhnMunkres extends BipartiteMatching {
     val rows = costs.length;
     val cols = costs(0).length;
     val n = rows max cols;
-    val ret = Array.tabulate(n, n) { (i, j) =>
-      if (i >= rows)
-        0.0;
-      else if (j >= costs(i).length)
-        0.0
-      else
-        costs(i)(j);
-    }
+    val ret =
+      Array.tabulate(n, n) { (i, j) =>
+        if (i >= rows)
+          0.0;
+        else if (j >= costs(i).length)
+          0.0
+        else
+          costs(i)(j);
+      }
 
     ret
   }

@@ -49,8 +49,10 @@ private[tracker] class TaskCreationHandlerAndUpdaterDelegate(
 
     import akka.pattern.ask
     val deadline = clock.now + timeout.duration
-    val op: ForwardTaskOp =
-      TaskTrackerActor.ForwardTaskOp(deadline, taskId, action)
+    val op: ForwardTaskOp = TaskTrackerActor.ForwardTaskOp(
+      deadline,
+      taskId,
+      action)
     (taskTrackerRef ? op).mapTo[Unit].recover {
       case NonFatal(e) =>
         throw new RuntimeException(

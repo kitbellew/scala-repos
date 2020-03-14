@@ -57,12 +57,13 @@ class ScalaModuleBuilder(
     private val javaStep = JavaModuleType.getModuleType
       .modifyProjectTypeStep(settingsStep, ScalaModuleBuilder.this)
 
-    private val libraryPanel = new LibraryOptionsPanel(
-      libraryDescription,
-      "",
-      FrameworkLibraryVersionFilter.ALL,
-      librariesContainer,
-      false)
+    private val libraryPanel =
+      new LibraryOptionsPanel(
+        libraryDescription,
+        "",
+        FrameworkLibraryVersionFilter.ALL,
+        librariesContainer,
+        false)
 
     settingsStep.addSettingsField(
       s"$languageName S\u001BDK:",

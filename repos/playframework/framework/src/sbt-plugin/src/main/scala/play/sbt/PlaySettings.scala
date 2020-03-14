@@ -253,9 +253,10 @@ object PlaySettings {
         val packageBinMappings = (mappings in packageBin).value
         val externalized = playExternalizedResources.value.map(_._1).toSet
         val copied = copyResources.value
-        val toExclude = copied.collect {
-          case (source, dest) if externalized(source) => dest
-        }.toSet
+        val toExclude =
+          copied.collect {
+            case (source, dest) if externalized(source) => dest
+          }.toSet
         packageBinMappings.filterNot {
           case (file, _) => toExclude(file)
         }

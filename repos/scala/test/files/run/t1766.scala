@@ -9,9 +9,10 @@ object Test extends App {
     def f = {
       val v: {
         def n: Int
-      } = new {
-        val n = 3
-      }
+      } =
+        new {
+          val n = 3
+        }
       v.n
     }
 

@@ -25,27 +25,23 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   }
 
   /** If this disjunction is right, return the given X value, otherwise, return the X value given to the return value. */
-  def :?>>[X](right: => X): Switching_\/[X] =
-    new Switching_\/(right)
+  def :?>>[X](right: => X): Switching_\/[X] = new Switching_\/(right)
 
   def fold[X](l: A => X, r: B => X)(implicit F: Functor[F]): F[X] =
     F.map(run)(_.fold(l, r))
 
   /** Return `true` if this disjunction is left. */
-  def isLeft(implicit F: Functor[F]): F[Boolean] =
-    F.map(run)(_.isLeft)
+  def isLeft(implicit F: Functor[F]): F[Boolean] = F.map(run)(_.isLeft)
 
   /** Return `true` if this disjunction is right. */
-  def isRight(implicit F: Functor[F]): F[Boolean] =
-    F.map(run)(_.isRight)
+  def isRight(implicit F: Functor[F]): F[Boolean] = F.map(run)(_.isRight)
 
   /** Flip the left/right values in this disjunction. Alias for `swap` */
   def swap(implicit F: Functor[F]): EitherT[F, B, A] =
     EitherT(F.map(run)(_.swap))
 
   /** Flip the left/right values in this disjunction. Alias for `unary_~` */
-  def unary_~(implicit F: Functor[F]): EitherT[F, B, A] =
-    swap
+  def unary_~(implicit F: Functor[F]): EitherT[F, B, A] = swap
 
   /** Run the given function on this swapped value. Alias for `~` */
   def swapped[AA, BB](k: (B \/ A) => (BB \/ AA))(
@@ -54,8 +50,7 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
 
   /** Run the given function on this swapped value. Alias for `swapped` */
   def ~[AA, BB](k: (B \/ A) => (BB \/ AA))(
-      implicit F: Functor[F]): EitherT[F, AA, BB] =
-    swapped(k)
+      implicit F: Functor[F]): EitherT[F, AA, BB] = swapped(k)
 
   /** Binary functor map on this disjunction. */
   def bimap[C, D](f: A => C, g: B => D)(
@@ -140,20 +135,17 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
     MaybeT(F.map(run)((_: (A \/ B)).toMaybe))
 
   /** Convert to a core `scala.Either` at your own peril. */
-  def toEither(implicit F: Functor[F]): F[Either[A, B]] =
-    F.map(run)(_.toEither)
+  def toEither(implicit F: Functor[F]): F[Either[A, B]] = F.map(run)(_.toEither)
 
   /** Return the right value of this disjunction or the given default if left. Alias for `|` */
   def getOrElse(default: => B)(implicit F: Functor[F]): F[B] =
     F.map(run)(_ getOrElse default)
 
   /** Return the right value of this disjunction or the given default if left. Alias for `getOrElse` */
-  def |(default: => B)(implicit F: Functor[F]): F[B] =
-    getOrElse(default)
+  def |(default: => B)(implicit F: Functor[F]): F[B] = getOrElse(default)
 
   /** Return the right value of this disjunction or run the given function on the left. */
-  def valueOr(x: A => B)(implicit F: Functor[F]): F[B] =
-    F.map(run)(_ valueOr x)
+  def valueOr(x: A => B)(implicit F: Functor[F]): F[B] = F.map(run)(_ valueOr x)
 
   /** Return this if it is a right, otherwise, return the given value. Alias for `|||` */
   def orElse(x: => EitherT[F, A, B])(implicit F: Monad[F]): EitherT[F, A, B] = {
@@ -180,8 +172,7 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   def +++(x: => EitherT[F, A, B])(implicit
       M1: Semigroup[B],
       M2: Semigroup[A],
-      F: Apply[F]): EitherT[F, A, B] =
-    EitherT(F.apply2(run, x.run)(_ +++ _))
+      F: Apply[F]): EitherT[F, A, B] = EitherT(F.apply2(run, x.run)(_ +++ _))
 
   /** Ensures that the right value of this disjunction satisfies the given predicate, or returns left with the given value. */
   def ensure(onLeft: => A)(f: B => Boolean)(
@@ -192,23 +183,20 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   def ===(x: EitherT[F, A, B])(implicit
       EA: Equal[A],
       EB: Equal[B],
-      F: Apply[F]): F[Boolean] =
-    F.apply2(run, x.run)(_ === _)
+      F: Apply[F]): F[Boolean] = F.apply2(run, x.run)(_ === _)
 
   /** Compare two disjunction values for ordering. */
   def compare(x: EitherT[F, A, B])(implicit
       EA: Order[A],
       EB: Order[B],
-      F: Apply[F]): F[Ordering] =
-    F.apply2(run, x.run)(_ compare _)
+      F: Apply[F]): F[Ordering] = F.apply2(run, x.run)(_ compare _)
 
   /** Show for a disjunction value. */
   def show(implicit SA: Show[A], SB: Show[B], F: Functor[F]): F[Cord] =
     F.map(run)(_.show[A, B])
 
   /** Cozip this disjunction on its functor. */
-  def cozip(implicit Z: Cozip[F]): (F[A] \/ F[B]) =
-    Z.cozip(run)
+  def cozip(implicit Z: Cozip[F]): (F[A] \/ F[B]) = Z.cozip(run)
 
   /** Convert to a validation. */
   def validation(implicit F: Functor[F]): F[Validation[A, B]] =
@@ -270,8 +258,7 @@ object EitherT extends EitherTInstances {
   def right[F[_], A, B](b: F[B])(implicit F: Functor[F]): EitherT[F, A, B] =
     apply(F.map(b)(\/.right))
 
-  def leftU[B]: EitherTLeft[B] =
-    new EitherTLeft[B](true)
+  def leftU[B]: EitherTLeft[B] = new EitherTLeft[B](true)
 
   /**
     * @example {{{
@@ -279,8 +266,7 @@ object EitherT extends EitherTInstances {
     * val b: EitherT[({type l[a] = String \/ a})#l, Boolean, Int] = EitherT.rightU[Boolean](a)
     * }}}
     */
-  def rightU[A]: EitherTRight[A] =
-    new EitherTRight[A](true)
+  def rightU[A]: EitherTRight[A] = new EitherTRight[A](true)
 
   private[scalaz] final class EitherTLeft[B](val dummy: Boolean)
       extends AnyVal {
@@ -548,14 +534,11 @@ private[scalaz] trait EitherTMonadTell[F[_], W, A]
 
   implicit def F = MT
 
-  def writer[B](w: W, v: B): EitherT[F, A, B] =
-    liftM[F, B](MT.writer(w, v))
+  def writer[B](w: W, v: B): EitherT[F, A, B] = liftM[F, B](MT.writer(w, v))
 
-  def left[B](v: => A): EitherT[F, A, B] =
-    EitherT.left[F, A, B](MT.point(v))
+  def left[B](v: => A): EitherT[F, A, B] = EitherT.left[F, A, B](MT.point(v))
 
-  def right[B](v: => B): EitherT[F, A, B] =
-    EitherT.right[F, A, B](MT.point(v))
+  def right[B](v: => B): EitherT[F, A, B] = EitherT.right[F, A, B](MT.point(v))
 }
 
 private[scalaz] trait EitherTMonadListen[F[_], W, A]
@@ -564,10 +547,11 @@ private[scalaz] trait EitherTMonadListen[F[_], W, A]
   implicit def MT: MonadListen[F, W]
 
   def listen[B](ma: EitherT[F, A, B]): EitherT[F, A, (B, W)] = {
-    val tmp = MT.bind[(A \/ B, W), A \/ (B, W)](MT.listen(ma.run)) {
-      case (-\/(a), _) => MT.point(-\/(a))
-      case (\/-(b), w) => MT.point(\/-((b, w)))
-    }
+    val tmp =
+      MT.bind[(A \/ B, W), A \/ (B, W)](MT.listen(ma.run)) {
+        case (-\/(a), _) => MT.point(-\/(a))
+        case (\/-(b), w) => MT.point(\/-((b, w)))
+      }
 
     EitherT[F, A, (B, W)](tmp)
   }

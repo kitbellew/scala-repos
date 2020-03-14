@@ -40,20 +40,21 @@ class ReassignPartitionsCommandTest
     val replicationFactor = 3
 
     // create a non rack aware assignment topic first
-    val createOpts = new kafka.admin.TopicCommand.TopicCommandOptions(
-      Array(
-        "--partitions",
-        numPartitions.toString,
-        "--replication-factor",
-        replicationFactor.toString,
-        "--disable-rack-aware",
-        "--topic",
-        "foo"))
+    val createOpts =
+      new kafka.admin.TopicCommand.TopicCommandOptions(
+        Array(
+          "--partitions",
+          numPartitions.toString,
+          "--replication-factor",
+          replicationFactor.toString,
+          "--disable-rack-aware",
+          "--topic",
+          "foo"))
     kafka.admin.TopicCommand.createTopic(zkUtils, createOpts)
 
     val topicJson = """{"topics": [{"topic": "foo"}], "version":1}"""
-    val (proposedAssignment, currentAssignment) =
-      ReassignPartitionsCommand.generateAssignment(
+    val (proposedAssignment, currentAssignment) = ReassignPartitionsCommand
+      .generateAssignment(
         zkUtils,
         rackInfo.keys.toSeq.sorted,
         topicJson,

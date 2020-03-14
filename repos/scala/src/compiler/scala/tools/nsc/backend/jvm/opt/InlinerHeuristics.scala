@@ -36,10 +36,11 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
     // classes on the classpath). The call graph may contain callsites of classes parsed from the
     // classpath. In order to get only the callsites being compiled, we start at the map of
     // compilingClasses in the byteCodeRepository.
-    val compilingMethods = for {
-      classNode <- byteCodeRepository.compilingClasses.valuesIterator
-      methodNode <- classNode.methods.iterator.asScala
-    } yield methodNode
+    val compilingMethods =
+      for {
+        classNode <- byteCodeRepository.compilingClasses.valuesIterator
+        methodNode <- classNode.methods.iterator.asScala
+      } yield methodNode
 
     compilingMethods
       .map(methodNode => {

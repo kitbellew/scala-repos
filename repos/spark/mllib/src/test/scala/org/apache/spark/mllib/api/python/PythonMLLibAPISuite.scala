@@ -76,8 +76,9 @@ class PythonMLLibAPISuite extends SparkFunSuite {
            Double.MaxValue,
            Double.MinValue,
            Double.NaN)) {
-      val deser =
-        SerDe.loads(SerDe.dumps(x.asInstanceOf[AnyRef])).asInstanceOf[Double]
+      val deser = SerDe
+        .loads(SerDe.dumps(x.asInstanceOf[AnyRef]))
+        .asInstanceOf[Double]
       // We use `equals` here for comparison because we cannot use `==` for NaN
       assert(x.equals(deser))
     }
@@ -95,22 +96,24 @@ class PythonMLLibAPISuite extends SparkFunSuite {
     val ne = SerDe.loads(SerDe.dumps(emptyMatrix)).asInstanceOf[DenseMatrix]
     assert(emptyMatrix == ne)
 
-    val sm = new SparseMatrix(
-      3,
-      2,
-      Array(0, 1, 3),
-      Array(1, 0, 2),
-      Array(0.9, 1.2, 3.4))
+    val sm =
+      new SparseMatrix(
+        3,
+        2,
+        Array(0, 1, 3),
+        Array(1, 0, 2),
+        Array(0.9, 1.2, 3.4))
     val nsm = SerDe.loads(SerDe.dumps(sm)).asInstanceOf[SparseMatrix]
     assert(sm.toArray === nsm.toArray)
 
-    val smt = new SparseMatrix(
-      3,
-      3,
-      Array(0, 2, 3, 5),
-      Array(0, 2, 1, 0, 2),
-      Array(0.9, 1.2, 3.4, 5.7, 8.9),
-      isTransposed = true)
+    val smt =
+      new SparseMatrix(
+        3,
+        3,
+        Array(0, 2, 3, 5),
+        Array(0, 2, 1, 0, 2),
+        Array(0.9, 1.2, 3.4, 5.7, 8.9),
+        isTransposed = true)
     val nsmt = SerDe.loads(SerDe.dumps(smt)).asInstanceOf[SparseMatrix]
     assert(smt.toArray === nsmt.toArray)
   }

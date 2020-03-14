@@ -211,13 +211,14 @@ class GroupBuilder(val groupFields: Fields)
     projectFields = projectFields.map {
       Fields.merge(_, fromFields)
     }
-    val ag = new MRMAggregator[T, X, U](
-      mapfn,
-      redfn,
-      mapfn2,
-      toFields,
-      startConv,
-      endSetter)
+    val ag =
+      new MRMAggregator[T, X, U](
+        mapfn,
+        redfn,
+        mapfn2,
+        toFields,
+        startConv,
+        endSetter)
     val ev = (pipe => new Every(pipe, fromFields, ag)): Pipe => Every
     assert(
       middleSetter.arity > 0,
@@ -226,17 +227,18 @@ class GroupBuilder(val groupFields: Fields)
     val middleFields = strFields(ScalaRange(0, middleSetter.arity).map { i =>
       getNextMiddlefield
     })
-    val mrmBy = new MRMBy[T, X, U](
-      fromFields,
-      middleFields,
-      toFields,
-      mapfn,
-      redfn,
-      mapfn2,
-      startConv,
-      middleSetter,
-      middleConv,
-      endSetter)
+    val mrmBy =
+      new MRMBy[T, X, U](
+        fromFields,
+        middleFields,
+        toFields,
+        mapfn,
+        redfn,
+        mapfn2,
+        startConv,
+        middleSetter,
+        middleConv,
+        endSetter)
     tryAggregateBy(mrmBy, ev)
     this
   }
@@ -267,12 +269,13 @@ class GroupBuilder(val groupFields: Fields)
     //Check arity
     conv.assertArityMatches(inFields)
     setter.assertArityMatches(outFields)
-    val b = new BufferOp[Unit, T, X](
-      (),
-      (u: Unit, it: Iterator[T]) => mapfn(it),
-      outFields,
-      conv,
-      setter)
+    val b =
+      new BufferOp[Unit, T, X](
+        (),
+        (u: Unit, it: Iterator[T]) => mapfn(it),
+        outFields,
+        conv,
+        setter)
     every(pipe =>
       new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
   }
@@ -306,14 +309,15 @@ class GroupBuilder(val groupFields: Fields)
     //Check arity
     conv.assertArityMatches(inFields)
     setter.assertArityMatches(outFields)
-    val b = new BufferOp[X, T, X](
-      init,
-      // On scala 2.8, there is no scanLeft
-      // On scala 2.9, their implementation creates an off-by-one bug with the unused fields
-      (i: X, it: Iterator[T]) => new ScanLeftIterator(it, i, fn),
-      outFields,
-      conv,
-      setter)
+    val b =
+      new BufferOp[X, T, X](
+        init,
+        // On scala 2.8, there is no scanLeft
+        // On scala 2.9, their implementation creates an off-by-one bug with the unused fields
+        (i: X, it: Iterator[T]) => new ScanLeftIterator(it, i, fn),
+        outFields,
+        conv,
+        setter)
     every(pipe =>
       new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
   }
@@ -333,10 +337,11 @@ class GroupBuilder(val groupFields: Fields)
     }
 
   protected def groupedPipeOf(name: String, in: Pipe): GroupBy = {
-    val gb: GroupBy = sortF match {
-      case None     => new GroupBy(name, in, groupFields)
-      case Some(sf) => new GroupBy(name, in, groupFields, sf, isReversed)
-    }
+    val gb: GroupBy =
+      sortF match {
+        case None     => new GroupBy(name, in, groupFields)
+        case Some(sf) => new GroupBy(name, in, groupFields, sf, isReversed)
+      }
     overrideReducers(gb)
     overrideDescription(gb)
     gb
@@ -364,14 +369,15 @@ class GroupBuilder(val groupFields: Fields)
       case AggregateByMode =>
         //There is some non-empty AggregateBy to do:
         val redlist = reds.get
-        val ag = new AggregateBy(
-          name,
-          maybeProjectedPipe,
-          groupFields,
-          spillThreshold.getOrElse(
-            0
-          ), // cascading considers 0 to be the default
-          redlist.reverse.toArray: _*)
+        val ag =
+          new AggregateBy(
+            name,
+            maybeProjectedPipe,
+            groupFields,
+            spillThreshold.getOrElse(
+              0
+            ), // cascading considers 0 to be the default
+            redlist.reverse.toArray: _*)
 
         overrideReducers(ag.getGroupBy())
         overrideDescription(ag.getGroupBy())
@@ -384,13 +390,14 @@ class GroupBuilder(val groupFields: Fields)
     */
   def sortBy(f: Fields): GroupBuilder = {
     reds = None
-    val sort = sortF match {
-      case None => f
-      case Some(sf) => {
-        sf.append(f)
-        sf
+    val sort =
+      sortF match {
+        case None => f
+        case Some(sf) => {
+          sf.append(f)
+          sf
+        }
       }
-    }
     sortF = Some(sort)
     // Update projectFields
     projectFields = projectFields.map {
@@ -435,18 +442,19 @@ class GroupBuilder(val groupFields: Fields)
         conv.assertArityMatches(inFields)
         setter.assertArityMatches(outFields)
 
-        val b = new SideEffectBufferOp[Unit, T, C, X](
-          (),
-          bf,
-          (u: Unit, c: C, it: Iterator[T]) => mapfn(c, it),
-          new Function1[C, Unit] with java.io.Serializable {
-            def apply(c: C) {
-              c.release()
-            }
-          },
-          outFields,
-          conv,
-          setter)
+        val b =
+          new SideEffectBufferOp[Unit, T, C, X](
+            (),
+            bf,
+            (u: Unit, c: C, it: Iterator[T]) => mapfn(c, it),
+            new Function1[C, Unit] with java.io.Serializable {
+              def apply(c: C) {
+                c.release()
+              }
+            },
+            outFields,
+            conv,
+            setter)
         every(pipe =>
           new Every(pipe, inFields, b, defaultMode(inFields, outFields)))
       }

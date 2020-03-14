@@ -109,8 +109,9 @@ object TestPurgatoryPerformance {
     val pct50 = options.valueOf(pct50Opt).doubleValue
     val verbose = options.valueOf(verboseOpt).booleanValue
 
-    val gcMXBeans =
-      ManagementFactory.getGarbageCollectorMXBeans().sortBy(_.getName)
+    val gcMXBeans = ManagementFactory
+      .getGarbageCollectorMXBeans()
+      .sortBy(_.getName)
     val osMXBean = ManagementFactory.getOperatingSystemMXBean
     val latencySamples = new LatencySamples(1000000, pct75, pct50)
     val intervalSamples = new IntervalSamples(1000000, requestRate)
@@ -129,31 +130,33 @@ object TestPurgatoryPerformance {
       "fakeKey%d".format(rand.nextInt(numPossibleKeys)))
     @volatile var requestArrivalTime = start
     @volatile var end = 0L
-    val generator = new Runnable {
-      def run(): Unit = {
-        var i = numRequests
-        while (i > 0) {
-          i -= 1
-          val requestArrivalInterval = intervalSamples.next()
-          val latencyToComplete = latencySamples.next()
-          val now = System.currentTimeMillis
-          requestArrivalTime = requestArrivalTime + requestArrivalInterval
+    val generator =
+      new Runnable {
+        def run(): Unit = {
+          var i = numRequests
+          while (i > 0) {
+            i -= 1
+            val requestArrivalInterval = intervalSamples.next()
+            val latencyToComplete = latencySamples.next()
+            val now = System.currentTimeMillis
+            requestArrivalTime = requestArrivalTime + requestArrivalInterval
 
-          if (requestArrivalTime > now)
-            Thread.sleep(requestArrivalTime - now)
+            if (requestArrivalTime > now)
+              Thread.sleep(requestArrivalTime - now)
 
-          val request = new FakeOperation(
-            timeout,
-            requestDataSize,
-            latencyToComplete,
-            latch)
-          if (latencyToComplete < timeout)
-            queue.add(request)
-          purgatory.tryCompleteElseWatch(request, keys)
+            val request =
+              new FakeOperation(
+                timeout,
+                requestDataSize,
+                latencyToComplete,
+                latch)
+            if (latencyToComplete < timeout)
+              queue.add(request)
+            purgatory.tryCompleteElseWatch(request, keys)
+          }
+          end = System.currentTimeMillis
         }
-        end = System.currentTimeMillis
       }
-    }
     val generatorThread = new Thread(generator)
 
     generatorThread.start()
@@ -319,16 +322,17 @@ object TestPurgatoryPerformance {
 
   private class CompletionQueue {
     private[this] val delayQueue = new DelayQueue[Scheduled]()
-    private[this] val thread = new ShutdownableThread(
-      name = "completion thread",
-      isInterruptible = false) {
-      override def doWork(): Unit = {
-        val scheduled = delayQueue.poll(100, TimeUnit.MILLISECONDS)
-        if (scheduled != null) {
-          scheduled.operation.forceComplete()
+    private[this] val thread =
+      new ShutdownableThread(
+        name = "completion thread",
+        isInterruptible = false) {
+        override def doWork(): Unit = {
+          val scheduled = delayQueue.poll(100, TimeUnit.MILLISECONDS)
+          if (scheduled != null) {
+            scheduled.operation.forceComplete()
+          }
         }
       }
-    }
     thread.start()
 
     def add(operation: FakeOperation): Unit = {

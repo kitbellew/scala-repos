@@ -19,8 +19,7 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
 
   /** Calls `run` using `Monoid[S].zero` as the initial state */
   def runZero[S <: S1](
-      r: R)(implicit F: Monad[F], S: Monoid[S]): F[(W, A, S2)] =
-    run(r, S.zero)
+      r: R)(implicit F: Monad[F], S: Monoid[S]): F[(W, A, S2)] = run(r, S.zero)
 
   /** Run, discard the final state, and return the final value in the context of `F` */
   def eval(r: R, s: S1)(implicit F: Monad[F]): F[(W, A)] =
@@ -194,8 +193,7 @@ private trait ReaderWriterStateTBind[F[_], R, W, S]
   implicit def W: Semigroup[W]
 
   override final def bind[A, B](fa: ReaderWriterStateT[F, R, W, S, A])(
-      f: A => ReaderWriterStateT[F, R, W, S, B]) =
-    fa flatMap f
+      f: A => ReaderWriterStateT[F, R, W, S, B]) = fa flatMap f
 }
 
 private trait ReaderWriterStateTBindRec[F[_], R, W, S]

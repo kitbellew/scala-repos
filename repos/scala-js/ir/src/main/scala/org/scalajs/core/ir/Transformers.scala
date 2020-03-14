@@ -13,11 +13,9 @@ import Trees._
 object Transformers {
 
   abstract class Transformer {
-    final def transformStat(tree: Tree): Tree =
-      transform(tree, isStat = true)
+    final def transformStat(tree: Tree): Tree = transform(tree, isStat = true)
 
-    final def transformExpr(tree: Tree): Tree =
-      transform(tree, isStat = false)
+    final def transformExpr(tree: Tree): Tree = transform(tree, isStat = false)
 
     def transform(tree: Tree, isStat: Boolean): Tree = {
       implicit val pos = tree.pos

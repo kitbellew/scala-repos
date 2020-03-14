@@ -230,10 +230,10 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
         logInfo("Doing the fetch; tracker endpoint = " + trackerEndpoint)
         // This try-finally prevents hangs due to timeouts:
         try {
-          val fetchedBytes =
-            askTracker[Array[Byte]](GetMapOutputStatuses(shuffleId))
-          fetchedStatuses =
-            MapOutputTracker.deserializeMapStatuses(fetchedBytes)
+          val fetchedBytes = askTracker[Array[Byte]](
+            GetMapOutputStatuses(shuffleId))
+          fetchedStatuses = MapOutputTracker.deserializeMapStatuses(
+            fetchedBytes)
           logInfo("Got the output locations")
           mapStatuses.put(shuffleId, fetchedStatuses)
         } finally {
@@ -302,8 +302,9 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
   private var cacheEpoch = epoch
 
   /** Whether to compute locality preferences for reduce tasks */
-  private val shuffleLocalityEnabled =
-    conf.getBoolean("spark.shuffle.reduceLocality.enabled", true)
+  private val shuffleLocalityEnabled = conf.getBoolean(
+    "spark.shuffle.reduceLocality.enabled",
+    true)
 
   // Number of map and reduce tasks above which we do not assign preferred locations based on map
   // output sizes. We limit the size of jobs for which assign preferred locations as computing the
@@ -542,8 +543,9 @@ private[spark] object MapOutputTracker extends Logging {
 
   // Opposite of serializeMapStatuses.
   def deserializeMapStatuses(bytes: Array[Byte]): Array[MapStatus] = {
-    val objIn = new ObjectInputStream(
-      new GZIPInputStream(new ByteArrayInputStream(bytes)))
+    val objIn =
+      new ObjectInputStream(
+        new GZIPInputStream(new ByteArrayInputStream(bytes)))
     Utils.tryWithSafeFinally {
       objIn.readObject().asInstanceOf[Array[MapStatus]]
     } {

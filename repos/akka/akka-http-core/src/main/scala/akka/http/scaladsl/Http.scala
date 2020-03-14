@@ -389,8 +389,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
       : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
-    val cps =
-      ConnectionPoolSetup(settings, ConnectionContext.noEncryption(), log)
+    val cps = ConnectionPoolSetup(
+      settings,
+      ConnectionContext.noEncryption(),
+      log)
     newHostConnectionPool(HostConnectionPoolSetup(host, port, cps))
   }
 
@@ -463,8 +465,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
       : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
-    val cps =
-      ConnectionPoolSetup(settings, ConnectionContext.noEncryption(), log)
+    val cps = ConnectionPoolSetup(
+      settings,
+      ConnectionContext.noEncryption(),
+      log)
     val setup = HostConnectionPoolSetup(host, port, cps)
     cachedHostConnectionPool(setup)
   }
@@ -554,8 +558,11 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       log: LoggingAdapter = system.log)(
       implicit fm: Materializer): Future[HttpResponse] =
     try {
-      val gatewayFuture =
-        cachedGateway(request, settings, connectionContext, log)
+      val gatewayFuture = cachedGateway(
+        request,
+        settings,
+        connectionContext,
+        log)
       gatewayFuture.flatMap(_(request))(fm.executionContext)
     } catch {
       case e: IllegalUriException ⇒ FastFuture.failed(e)
@@ -590,17 +597,18 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       uri.isAbsolute,
       s"WebSocket request URI must be absolute but was '$uri'")
 
-    val ctx = uri.scheme match {
-      case "ws" ⇒ ConnectionContext.noEncryption()
-      case "wss" if connectionContext.isSecure ⇒ connectionContext
-      case "wss" ⇒
-        throw new IllegalArgumentException(
-          "Provided connectionContext is not secure, yet request to secure `wss` endpoint detected!")
-      case scheme ⇒
-        throw new IllegalArgumentException(
-          s"Illegal URI scheme '$scheme' in '$uri' for WebSocket request. " +
-            s"WebSocket requests must use either 'ws' or 'wss'")
-    }
+    val ctx =
+      uri.scheme match {
+        case "ws" ⇒ ConnectionContext.noEncryption()
+        case "wss" if connectionContext.isSecure ⇒ connectionContext
+        case "wss" ⇒
+          throw new IllegalArgumentException(
+            "Provided connectionContext is not secure, yet request to secure `wss` endpoint detected!")
+        case scheme ⇒
+          throw new IllegalArgumentException(
+            s"Illegal URI scheme '$scheme' in '$uri' for WebSocket request. " +
+              s"WebSocket requests must use either 'ws' or 'wss'")
+      }
     val host = uri.authority.host.address
     val port = uri.effectivePort
 
@@ -764,10 +772,9 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     Flow[(HttpRequest, T)].mapAsyncUnordered(parallelism) {
       case (request, userContext) ⇒
         val (effectiveRequest, gatewayFuture) = f(request)
-        val result =
-          Promise[
-            (Try[HttpResponse], T)
-          ]() // TODO: simplify to `transformWith` when on Scala 2.12
+        val result = Promise[
+          (Try[HttpResponse], T)
+        ]() // TODO: simplify to `transformWith` when on Scala 2.12
         gatewayFuture
           .flatMap(_(effectiveRequest))(fm.executionContext)
           .onComplete(responseTry ⇒ result.success(responseTry -> userContext))(
@@ -803,8 +810,12 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     *                +------+
     * }}}
     */
-  type ServerLayer =
-    BidiFlow[HttpResponse, SslTlsOutbound, SslTlsInbound, HttpRequest, NotUsed]
+  type ServerLayer = BidiFlow[
+    HttpResponse,
+    SslTlsOutbound,
+    SslTlsInbound,
+    HttpRequest,
+    NotUsed]
   //#
 
   //#client-layer
@@ -820,8 +831,12 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     *                +------+
     * }}}
     */
-  type ClientLayer =
-    BidiFlow[HttpRequest, SslTlsOutbound, SslTlsInbound, HttpResponse, NotUsed]
+  type ClientLayer = BidiFlow[
+    HttpRequest,
+    SslTlsOutbound,
+    SslTlsInbound,
+    HttpResponse,
+    NotUsed]
   //#
 
   /**
@@ -953,21 +968,22 @@ trait DefaultSSLContextCreation {
     val mkLogger = new AkkaLoggerFactory(system)
 
     // initial ssl context!
-    val sslContext = if (sslConfig.config.default) {
-      log.debug(
-        "buildSSLContext: ssl-config.default is true, using default SSLContext")
-      sslConfig.validateDefaultTrustManager(config)
-      SSLContext.getDefault
-    } else {
-      // break out the static methods as much as we can...
-      val keyManagerFactory = sslConfig.buildKeyManagerFactory(config)
-      val trustManagerFactory = sslConfig.buildTrustManagerFactory(config)
-      new ConfigSSLContextBuilder(
-        mkLogger,
-        config,
-        keyManagerFactory,
-        trustManagerFactory).build()
-    }
+    val sslContext =
+      if (sslConfig.config.default) {
+        log.debug(
+          "buildSSLContext: ssl-config.default is true, using default SSLContext")
+        sslConfig.validateDefaultTrustManager(config)
+        SSLContext.getDefault
+      } else {
+        // break out the static methods as much as we can...
+        val keyManagerFactory = sslConfig.buildKeyManagerFactory(config)
+        val trustManagerFactory = sslConfig.buildTrustManagerFactory(config)
+        new ConfigSSLContextBuilder(
+          mkLogger,
+          config,
+          keyManagerFactory,
+          trustManagerFactory).build()
+      }
 
     // protocols!
     val defaultParams = sslContext.getDefaultSSLParameters
@@ -982,12 +998,13 @@ trait DefaultSSLContextCreation {
 
     // auth!
     import com.typesafe.sslconfig.ssl.{ClientAuth ⇒ SslClientAuth}
-    val clientAuth = config.sslParametersConfig.clientAuth match {
-      case SslClientAuth.Default ⇒ None
-      case SslClientAuth.Want ⇒ Some(TLSClientAuth.Want)
-      case SslClientAuth.Need ⇒ Some(TLSClientAuth.Need)
-      case SslClientAuth.None ⇒ Some(TLSClientAuth.None)
-    }
+    val clientAuth =
+      config.sslParametersConfig.clientAuth match {
+        case SslClientAuth.Default ⇒ None
+        case SslClientAuth.Want ⇒ Some(TLSClientAuth.Want)
+        case SslClientAuth.Need ⇒ Some(TLSClientAuth.Need)
+        case SslClientAuth.None ⇒ Some(TLSClientAuth.None)
+      }
     // hostname!
     defaultParams.setEndpointIdentificationAlgorithm("https")
 

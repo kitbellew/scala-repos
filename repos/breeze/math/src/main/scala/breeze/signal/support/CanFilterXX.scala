@@ -64,19 +64,20 @@ object CanFilterBPBS {
           overhang: OptOverhang,
           padding: OptPadding): DenseVector[Double] = {
 
-        val kernel: FIRKernel1D[Double] = kernelType match {
-          //case x: OptKernelType.OptDefault => KernelDesign.firwin( numtaps, DenseVector[Double](omega._1, omega._2), zeroPass = bandStop, nyquist = sampleRate/2d)
-          case OptDesignMethod.Firwin =>
-            designFilterFirwin[Double](
-              taps,
-              DenseVector[Double](omega._1, omega._2),
-              zeroPass = bandStop,
-              nyquist = sampleRate / 2d)
-          case x => {
-            require(false, "Cannot handle option value " + x)
-            new FIRKernel1D[Double](DenseVector[Double](), 1d, "null kernel!")
+        val kernel: FIRKernel1D[Double] =
+          kernelType match {
+            //case x: OptKernelType.OptDefault => KernelDesign.firwin( numtaps, DenseVector[Double](omega._1, omega._2), zeroPass = bandStop, nyquist = sampleRate/2d)
+            case OptDesignMethod.Firwin =>
+              designFilterFirwin[Double](
+                taps,
+                DenseVector[Double](omega._1, omega._2),
+                zeroPass = bandStop,
+                nyquist = sampleRate / 2d)
+            case x => {
+              require(false, "Cannot handle option value " + x)
+              new FIRKernel1D[Double](DenseVector[Double](), 1d, "null kernel!")
+            }
           }
-        }
 //        println(kernel)
 //        println(kernel.kernel)
 
@@ -105,19 +106,20 @@ object CanFilterLPHP {
           overhang: OptOverhang,
           padding: OptPadding): DenseVector[Double] = {
 
-        val kernel: FIRKernel1D[Double] = kernelType match {
-          //case x: OptKernelType.OptDefault => KernelDesign.firwin( numtaps, DenseVector[Double](omega._1, omega._2), zeroPass = bandStop, nyquist = sampleRate/2d)
-          case OptDesignMethod.Firwin =>
-            designFilterFirwin[Double](
-              taps,
-              DenseVector[Double](omega),
-              zeroPass = lowPass,
-              nyquist = sampleRate / 2d)
-          case x => {
-            require(false, "Cannot handle option value " + x)
-            new FIRKernel1D[Double](DenseVector[Double](), 1d, "null kernel!")
+        val kernel: FIRKernel1D[Double] =
+          kernelType match {
+            //case x: OptKernelType.OptDefault => KernelDesign.firwin( numtaps, DenseVector[Double](omega._1, omega._2), zeroPass = bandStop, nyquist = sampleRate/2d)
+            case OptDesignMethod.Firwin =>
+              designFilterFirwin[Double](
+                taps,
+                DenseVector[Double](omega),
+                zeroPass = lowPass,
+                nyquist = sampleRate / 2d)
+            case x => {
+              require(false, "Cannot handle option value " + x)
+              new FIRKernel1D[Double](DenseVector[Double](), 1d, "null kernel!")
+            }
           }
-        }
 
         filter(data, kernel, overhang, padding)
       }

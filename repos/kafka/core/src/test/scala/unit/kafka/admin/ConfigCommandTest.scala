@@ -26,15 +26,16 @@ class ConfigCommandTest extends ZooKeeperTestHarness with Logging {
   @Test
   def testArgumentParse() {
     // Should parse correctly
-    var createOpts = new ConfigCommandOptions(
-      Array(
-        "--zookeeper",
-        zkConnect,
-        "--entity-name",
-        "x",
-        "--entity-type",
-        "clients",
-        "--describe"))
+    var createOpts =
+      new ConfigCommandOptions(
+        Array(
+          "--zookeeper",
+          zkConnect,
+          "--entity-name",
+          "x",
+          "--entity-type",
+          "clients",
+          "--describe"))
     createOpts.checkArgs()
 
     // For --alter and added config

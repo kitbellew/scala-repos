@@ -98,8 +98,8 @@ trait ModelFactoryImplicitSupport {
     if (!(sym.isClass || sym.isTrait || sym == AnyRefClass) || sym == NothingClass || sym == NullClass)
       Nil
     else {
-      val context: global.analyzer.Context =
-        global.analyzer.rootContext(NoCompilationUnit)
+      val context: global.analyzer.Context = global.analyzer.rootContext(
+        NoCompilationUnit)
 
       val results =
         global.analyzer.allViewsFrom(sym.tpe_*, context, sym.typeParams) ++
@@ -132,8 +132,8 @@ trait ModelFactoryImplicitSupport {
             .valueClassFilter(sym.nameString, ic.conversionQualifiedName))
 
       // Put the visible conversions in front
-      val (ownConversions, commonConversions) =
-        conversions.partition(!_.isHiddenConversion)
+      val (ownConversions, commonConversions) = conversions.partition(
+        !_.isHiddenConversion)
 
       ownConversions ::: commonConversions
     }
@@ -198,9 +198,10 @@ trait ModelFactoryImplicitSupport {
 
       // type the view application so we get the exact type of the result (not the formal type)
       val viewTree = result.tree.setType(viewSimplifiedType)
-      val appliedTree = new ApplyImplicitView(
-        viewTree,
-        List(Ident("<argument>") setType viewTree.tpe.paramTypes.head))
+      val appliedTree =
+        new ApplyImplicitView(
+          viewTree,
+          List(Ident("<argument>") setType viewTree.tpe.paramTypes.head))
       val appliedTreeTyped: Tree = {
         val newContext = context.makeImplicit(context.ambiguousErrors)
         newContext.macrosEnabled = false
@@ -222,10 +223,15 @@ trait ModelFactoryImplicitSupport {
 
       try {
         // Transform bound constraints into scaladoc constraints
-        val implParamConstraints =
-          makeImplicitConstraints(viewImplicitTypes, sym, context, inTpl)
-        val boundsConstraints =
-          makeBoundedConstraints(sym.typeParams, constrs, inTpl)
+        val implParamConstraints = makeImplicitConstraints(
+          viewImplicitTypes,
+          sym,
+          context,
+          inTpl)
+        val boundsConstraints = makeBoundedConstraints(
+          sym.typeParams,
+          constrs,
+          inTpl)
         // TODO: no substitution constraints appear in the library and compiler scaladoc. Maybe they can be removed?
         val substConstraints = makeSubstitutionConstraints(result.subst, inTpl)
         val constraints =
@@ -281,8 +287,13 @@ trait ModelFactoryImplicitSupport {
           val silentContext = context
             .make(owner = sym.owner)
             .makeSilent(reportAmbiguousErrors = false)
-          val search =
-            inferImplicit(EmptyTree, tpe, false, false, silentContext, false)
+          val search = inferImplicit(
+            EmptyTree,
+            tpe,
+            false,
+            false,
+            silentContext,
+            false)
           available = Some(search.tree != EmptyTree)
         } catch {
           case _: TypeError =>
@@ -309,15 +320,17 @@ trait ModelFactoryImplicitSupport {
                     val typeParamName = targ.nameString
                     lazy val typeExplanation = explanation
                     lazy val typeClassEntity = makeTemplate(sym)
-                    lazy val implicitType: TypeEntity =
-                      makeType(implType, inTpl)
+                    lazy val implicitType: TypeEntity = makeType(
+                      implType,
+                      inTpl)
                   })
                 case None =>
                   List(new TypeClassConstraint {
                     val typeParamName = targ.nameString
                     lazy val typeClassEntity = makeTemplate(sym)
-                    lazy val implicitType: TypeEntity =
-                      makeType(implType, inTpl)
+                    lazy val implicitType: TypeEntity = makeType(
+                      implType,
+                      inTpl)
                   })
               }
             case _ =>
@@ -523,10 +536,11 @@ trait ModelFactoryImplicitSupport {
 
         // we finally have the shadowing info
         if (!shadowed.isEmpty || !ambiguous.isEmpty) {
-          val shadowing = new ImplicitMemberShadowing {
-            def shadowingMembers: List[MemberEntity] = shadowed
-            def ambiguatingMembers: List[MemberEntity] = ambiguous
-          }
+          val shadowing =
+            new ImplicitMemberShadowing {
+              def shadowingMembers: List[MemberEntity] = shadowed
+              def ambiguatingMembers: List[MemberEntity] = ambiguous
+            }
 
           shadowingTable += (member -> shadowing)
         }

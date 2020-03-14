@@ -358,8 +358,7 @@ trait BaseClient[T] {
     * Store a key. Override an existing values.
     * @return true
     */
-  def set(key: String, value: T): Future[Unit] =
-    set(key, 0, Time.epoch, value)
+  def set(key: String, value: T): Future[Unit] = set(key, 0, Time.epoch, value)
 
   /**
     * Store a key but only if it doesn't already exist on the server.
@@ -511,17 +510,19 @@ protected class ConnectedClient(
   import scala.collection.breakOut
 
   protected def rawGet(command: RetrievalCommand) = {
-    val keys: immutable.Set[String] = command.keys.map {
-      case Buf.Utf8(s) => s
-    }(breakOut)
+    val keys: immutable.Set[String] =
+      command.keys.map {
+        case Buf.Utf8(s) => s
+      }(breakOut)
 
     service(command).map {
       case Values(values) =>
-        val hits: Map[String, Value] = values.map {
-          case value =>
-            val Buf.Utf8(keyStr) = value.key
-            (keyStr, value)
-        }(breakOut)
+        val hits: Map[String, Value] =
+          values.map {
+            case value =>
+              val Buf.Utf8(keyStr) = value.key
+              (keyStr, value)
+          }(breakOut)
         val misses = util.NotFound(keys, hits.keySet)
         GetResult(hits, misses)
       case Error(e) => throw e
@@ -717,10 +718,11 @@ protected class ConnectedClient(
   }
 
   def stats(args: Option[String]): Future[Seq[String]] = {
-    val statArgs: Seq[Buf] = args match {
-      case None       => Seq(Buf.Empty)
-      case Some(args) => args.split(" ").map(nonEmptyStringToBuf).toSeq
-    }
+    val statArgs: Seq[Buf] =
+      args match {
+        case None       => Seq(Buf.Empty)
+        case Some(args) => args.split(" ").map(nonEmptyStringToBuf).toSeq
+      }
     service(Stats(statArgs)).flatMap {
       case InfoLines(lines) =>
         Future {
@@ -962,11 +964,10 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
       label,
       ClientStatsReceiver.scope("memcached_client"))
 
-  private[this] val failureAccrualEx =
-    Future.exception(
-      new FailureAccrualException("Endpoint is marked dead by failureAccrual") {
-        serviceName = label
-      })
+  private[this] val failureAccrualEx = Future.exception(
+    new FailureAccrualException("Endpoint is marked dead by failureAccrual") {
+      serviceName = label
+    })
 
   // exclude CancelledRequestException and CancelledConnectionException for cache client failure accrual
   override def isSuccess(reqRep: ReqRep): Boolean =
@@ -1053,12 +1054,12 @@ private[finagle] class KetamaPartitionedClient(
 
   // exposed for testing
   private[memcached] val ketamaNodeGrp
-      : Group[(KetamaClientKey, KetamaNode[Client])] =
-    cacheNodeGroup.map { node =>
+      : Group[(KetamaClientKey, KetamaNode[Client])] = cacheNodeGroup.map {
+    node =>
       val key = KetamaClientKey.fromCacheNode(node)
       val underlying = TwemcacheClient(newService(node))
       key -> KetamaNode(key.identifier, node.weight, underlying)
-    }
+  }
 
   @volatile private[this] var ketamaNodeSnap = ketamaNodeGrp()
   @volatile private[this] var nodes = mutable.Map[KetamaClientKey, Node]() ++ {
@@ -1077,26 +1078,28 @@ private[finagle] class KetamaPartitionedClient(
   @volatile private[this] var currentDistributor: Distributor[Client] =
     pristineDistributor
 
-  private[this] val liveNodeGauge = statsReceiver.addGauge("live_nodes") {
-    synchronized {
-      nodes count {
-        case (_, Node(_, state)) => state == NodeState.Live
+  private[this] val liveNodeGauge =
+    statsReceiver.addGauge("live_nodes") {
+      synchronized {
+        nodes count {
+          case (_, Node(_, state)) => state == NodeState.Live
+        }
       }
     }
-  }
-  private[this] val deadNodeGauge = statsReceiver.addGauge("dead_nodes") {
-    synchronized {
-      nodes count {
-        case (_, Node(_, state)) => state == NodeState.Ejected
+  private[this] val deadNodeGauge =
+    statsReceiver.addGauge("dead_nodes") {
+      synchronized {
+        nodes count {
+          case (_, Node(_, state)) => state == NodeState.Ejected
+        }
       }
     }
-  }
   private[this] val ejectionCount = statsReceiver.counter("ejections")
   private[this] val revivalCount = statsReceiver.counter("revivals")
   private[this] val nodeLeaveCount = statsReceiver.counter("leaves")
   private[this] val nodeJoinCount = statsReceiver.counter("joins")
-  private[this] val keyRingRedistributeCount =
-    statsReceiver.counter("redistributes")
+  private[this] val keyRingRedistributeCount = statsReceiver.counter(
+    "redistributes")
 
   private[this] def buildDistributor(nodes: Seq[KetamaNode[Client]]) =
     synchronized {
@@ -1120,9 +1123,7 @@ private[finagle] class KetamaPartitionedClient(
 
   private[this] def rebuildDistributor(): Unit =
     synchronized {
-      val liveNodes =
-        for ((_, Node(node, NodeState.Live)) <- nodes)
-          yield node
+      val liveNodes = for ((_, Node(node, NodeState.Live)) <- nodes) yield node
       currentDistributor = buildDistributor(liveNodes.toSeq)
       keyRingRedistributeCount.incr()
     }
@@ -1247,8 +1248,8 @@ case class KetamaClientBuilder private[memcached] (
 ) {
   import Memcached.Client.mkDestination
 
-  private lazy val localMemcachedName =
-    Resolver.eval("localhost:" + LocalMemcached.port)
+  private lazy val localMemcachedName = Resolver.eval(
+    "localhost:" + LocalMemcached.port)
 
   private def withLocalMemcached = {
     val Name.Bound(va) = localMemcachedName
@@ -1259,11 +1260,12 @@ case class KetamaClientBuilder private[memcached] (
       name: Name,
       useOnlyResolvedAddress: Boolean = false
   ): KetamaClientBuilder = {
-    val Name.Bound(va) = if (LocalMemcached.enabled) {
-      localMemcachedName
-    } else {
-      name
-    }
+    val Name.Bound(va) =
+      if (LocalMemcached.enabled) {
+        localMemcachedName
+      } else {
+        name
+      }
     copy(_group = CacheNodeGroup.fromVarAddr(va, useOnlyResolvedAddress))
   }
 
@@ -1314,12 +1316,10 @@ case class KetamaClientBuilder private[memcached] (
   def hashName(hashName: String): KetamaClientBuilder =
     copy(_hashName = Some(hashName))
 
-  def numReps(numReps: Int): KetamaClientBuilder =
-    copy(numReps = numReps)
+  def numReps(numReps: Int): KetamaClientBuilder = copy(numReps = numReps)
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
-      : KetamaClientBuilder =
-    copy(_clientBuilder = Some(clientBuilder))
+      : KetamaClientBuilder = copy(_clientBuilder = Some(clientBuilder))
 
   def failureAccrualParams(
       numFailures: Int,
@@ -1435,8 +1435,7 @@ case class RubyMemCacheClientBuilder(
     }.toSeq)
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
-      : RubyMemCacheClientBuilder =
-    copy(_clientBuilder = Some(clientBuilder))
+      : RubyMemCacheClientBuilder = copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {
     val builder = _clientBuilder getOrElse ClientBuilder()
@@ -1491,27 +1490,27 @@ case class PHPMemCacheClientBuilder(
     copy(_hashName = Some(hashName))
 
   def clientBuilder(clientBuilder: ClientBuilder[_, _, _, _, ClientConfig.Yes])
-      : PHPMemCacheClientBuilder =
-    copy(_clientBuilder = Some(clientBuilder))
+      : PHPMemCacheClientBuilder = copy(_clientBuilder = Some(clientBuilder))
 
   def build(): PartitionedClient = {
     val builder = _clientBuilder getOrElse ClientBuilder()
       .hostConnectionLimit(1)
       .daemon(true)
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("crc32-itu"))
-    val clients = _nodes
-      .map {
-        case (hostname, port, weight) =>
-          val client = Client(
-            builder
-              .hosts(hostname + ":" + port)
-              .codec(text.Memcached())
-              .build())
-          for (i <- (1 to weight))
-            yield client
-      }
-      .flatten
-      .toArray
+    val clients =
+      _nodes
+        .map {
+          case (hostname, port, weight) =>
+            val client = Client(
+              builder
+                .hosts(hostname + ":" + port)
+                .codec(text.Memcached())
+                .build())
+            for (i <- (1 to weight))
+              yield client
+        }
+        .flatten
+        .toArray
     new PHPMemCacheClient(clients, keyHasher)
   }
 }

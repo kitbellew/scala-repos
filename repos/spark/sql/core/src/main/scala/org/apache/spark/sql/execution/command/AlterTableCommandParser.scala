@@ -44,8 +44,8 @@ object AlterTableCommandParser {
     node.children match {
       case (tabName @ Token("TOK_TABNAME", _)) :: otherNodes =>
         val tableIdent = extractTableIdent(tabName)
-        val partSpec =
-          getClauseOption("TOK_PARTSPEC", node.children).map(parsePartitionSpec)
+        val partSpec = getClauseOption("TOK_PARTSPEC", node.children)
+          .map(parsePartitionSpec)
         matchAlterTableCommands(node, otherNodes, tableIdent, partSpec)
       case _ =>
         parseFailed("Could not parse ALTER TABLE command", node)
@@ -115,10 +115,11 @@ object AlterTableCommandParser {
             props.map {
               case Token("TOK_TABLEPROPERTY", key :: value :: Nil) =>
                 val k = cleanAndUnquoteString(key.text)
-                val v = value match {
-                  case Token("TOK_NULL", Nil) => null
-                  case _                      => cleanAndUnquoteString(value.text)
-                }
+                val v =
+                  value match {
+                    case Token("TOK_NULL", Nil) => null
+                    case _                      => cleanAndUnquoteString(value.text)
+                  }
                 (k, v)
             }
           case _ =>
@@ -184,10 +185,11 @@ object AlterTableCommandParser {
       case Token(
             "TOK_ALTERTABLE_CLUSTER_SORT",
             Token("TOK_ALTERTABLE_BUCKETS", b) :: Nil) :: _ =>
-        val clusterCols: Seq[String] = b.head match {
-          case Token("TOK_TABCOLNAME", children) => children.map(_.text)
-          case _                                 => parseFailed("Invalid ALTER TABLE command", node)
-        }
+        val clusterCols: Seq[String] =
+          b.head match {
+            case Token("TOK_TABCOLNAME", children) => children.map(_.text)
+            case _                                 => parseFailed("Invalid ALTER TABLE command", node)
+          }
         // If sort columns are specified, num buckets should be the third arg.
         // If sort columns are not specified, num buckets should be the second arg.
         // TODO: actually use `sortDirections` once we actually store that in the metastore
@@ -197,12 +199,15 @@ object AlterTableCommandParser {
           numBuckets: Int) = {
           b.tail match {
             case Token("TOK_TABCOLNAME", children) :: numBucketsNode :: Nil =>
-              val (cols, directions) = children.map {
-                case Token("TOK_TABSORTCOLNAMEASC", Token(col, Nil) :: Nil) =>
-                  (col, Ascending)
-                case Token("TOK_TABSORTCOLNAMEDESC", Token(col, Nil) :: Nil) =>
-                  (col, Descending)
-              }.unzip
+              val (cols, directions) =
+                children.map {
+                  case Token("TOK_TABSORTCOLNAMEASC", Token(col, Nil) :: Nil) =>
+                    (col, Ascending)
+                  case Token(
+                        "TOK_TABSORTCOLNAMEDESC",
+                        Token(col, Nil) :: Nil) =>
+                    (col, Descending)
+                }.unzip
               (cols, directions, numBucketsNode.text.toInt)
             case numBucketsNode :: Nil =>
               (Nil, Nil, numBucketsNode.text.toInt)
@@ -256,29 +261,31 @@ object AlterTableCommandParser {
         val names = colNames.map { n =>
           cleanAndUnquoteString(n.text)
         }
-        val values = colValues match {
-          case Token("TOK_TABCOLVALUE", vals) =>
-            Seq(vals.map { n =>
-              cleanAndUnquoteString(n.text)
-            })
-          case Token("TOK_TABCOLVALUE_PAIR", pairs) =>
-            pairs.map {
-              case Token(
-                    "TOK_TABCOLVALUES",
-                    Token("TOK_TABCOLVALUE", vals) :: Nil) =>
-                vals.map { n =>
-                  cleanAndUnquoteString(n.text)
-                }
-              case _ =>
-                parseFailed("Invalid ALTER TABLE command", node)
-            }
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
-        }
-        val storedAsDirs = rest match {
-          case Token("TOK_STOREDASDIRS", Nil) :: Nil => true
-          case _                                     => false
-        }
+        val values =
+          colValues match {
+            case Token("TOK_TABCOLVALUE", vals) =>
+              Seq(vals.map { n =>
+                cleanAndUnquoteString(n.text)
+              })
+            case Token("TOK_TABCOLVALUE_PAIR", pairs) =>
+              pairs.map {
+                case Token(
+                      "TOK_TABCOLVALUES",
+                      Token("TOK_TABCOLVALUE", vals) :: Nil) =>
+                  vals.map { n =>
+                    cleanAndUnquoteString(n.text)
+                  }
+                case _ =>
+                  parseFailed("Invalid ALTER TABLE command", node)
+              }
+            case _ =>
+              parseFailed("Invalid ALTER TABLE command", node)
+          }
+        val storedAsDirs =
+          rest match {
+            case Token("TOK_STOREDASDIRS", Nil) :: Nil => true
+            case _                                     => false
+          }
         AlterTableSkewed(tableIdent, names, values, storedAsDirs)(node.source)
 
       // ALTER TABLE table_name NOT SKEWED
@@ -313,35 +320,37 @@ object AlterTableCommandParser {
         //            :     :- 'col2'
         //            :     +- 'col3'
         //            +- 'loc2'
-        val skewedMaps = locationMaps.flatMap {
-          case Token("TOK_SKEWED_LOCATION_MAP", col :: loc :: Nil) =>
-            col match {
-              case Token(const, Nil) =>
-                Seq(
-                  (
-                    cleanAndUnquoteString(const),
-                    cleanAndUnquoteString(loc.text)))
-              case Token(
-                    "TOK_TABCOLVALUES",
-                    Token("TOK_TABCOLVALUE", keys) :: Nil) =>
-                keys.map { k =>
-                  (
-                    cleanAndUnquoteString(k.text),
-                    cleanAndUnquoteString(loc.text))
-                }
-            }
-          case _ =>
-            parseFailed("Invalid ALTER TABLE command", node)
-        }.toMap
+        val skewedMaps =
+          locationMaps.flatMap {
+            case Token("TOK_SKEWED_LOCATION_MAP", col :: loc :: Nil) =>
+              col match {
+                case Token(const, Nil) =>
+                  Seq(
+                    (
+                      cleanAndUnquoteString(const),
+                      cleanAndUnquoteString(loc.text)))
+                case Token(
+                      "TOK_TABCOLVALUES",
+                      Token("TOK_TABCOLVALUE", keys) :: Nil) =>
+                  keys.map { k =>
+                    (
+                      cleanAndUnquoteString(k.text),
+                      cleanAndUnquoteString(loc.text))
+                  }
+              }
+            case _ =>
+              parseFailed("Invalid ALTER TABLE command", node)
+          }.toMap
         AlterTableSkewedLocation(tableIdent, skewedMaps)(node.source)
 
       // ALTER TABLE table_name ADD [IF NOT EXISTS] PARTITION spec [LOCATION 'loc1']
       // spec [LOCATION 'loc2'] ...;
       case Token("TOK_ALTERTABLE_ADDPARTS", args) :: _ =>
-        val (ifNotExists, parts) = args.head match {
-          case Token("TOK_IFNOTEXISTS", Nil) => (true, args.tail)
-          case _                             => (false, args)
-        }
+        val (ifNotExists, parts) =
+          args.head match {
+            case Token("TOK_IFNOTEXISTS", Nil) => (true, args.tail)
+            case _                             => (false, args)
+          }
         // List of (spec, location) to describe partitions to add
         // Each partition spec may or may not be followed by a location
         val parsedParts = new ArrayBuffer[(TablePartitionSpec, Option[String])]
@@ -401,8 +410,9 @@ object AlterTableCommandParser {
 
       // ALTER TABLE table_name [PARTITION spec] SET FILEFORMAT file_format;
       case Token("TOK_ALTERTABLE_FILEFORMAT", args) :: _ =>
-        val Seq(fileFormat, genericFormat) =
-          getClauses(Seq("TOK_TABLEFILEFORMAT", "TOK_FILEFORMAT_GENERIC"), args)
+        val Seq(fileFormat, genericFormat) = getClauses(
+          Seq("TOK_TABLEFILEFORMAT", "TOK_FILEFORMAT_GENERIC"),
+          args)
         // Note: the AST doesn't contain information about which file format is being set here.
         // E.g. we can't differentiate between INPUTFORMAT and OUTPUTFORMAT if either is set.
         // Right now this just stores the values, but we should figure out how to get the keys.
@@ -451,14 +461,14 @@ object AlterTableCommandParser {
       case Token(
             "TOK_ALTERTABLE_RENAMECOL",
             oldName :: newName :: dataType :: args) :: _ =>
-        val afterColName: Option[String] =
-          getClauseOption("TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION", args).map {
-            ap =>
-              ap.children match {
-                case Token(col, Nil) :: Nil => col
-                case _                      => parseFailed("Invalid ALTER TABLE command", node)
-              }
+        val afterColName: Option[String] = getClauseOption(
+          "TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION",
+          args).map { ap =>
+          ap.children match {
+            case Token(col, Nil) :: Nil => col
+            case _                      => parseFailed("Invalid ALTER TABLE command", node)
           }
+        }
         val restrict = getClauseOption("TOK_RESTRICT", args).isDefined
         val cascade = getClauseOption("TOK_CASCADE", args).isDefined
         val comment = args.headOption.map {

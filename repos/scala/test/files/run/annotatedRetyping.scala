@@ -52,8 +52,8 @@ object Test extends DirectTest {
               println("typing " + stat)
               val statsOwner = impl.symbol orElse templTyper.context.owner
                 .newLocalDummy(impl.pos)
-              val tpr =
-                analyzer.newTyper(templTyper.context.make(stat, statsOwner))
+              val tpr = analyzer.newTyper(
+                templTyper.context.make(stat, statsOwner))
               tpr.typed(stat)
             }
 

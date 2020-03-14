@@ -30,8 +30,8 @@ class BigIntegerDivideTest {
   }
 
   @Test def testCase10(): Unit = {
-    val aBytes =
-      Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
+    val aBytes = Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8,
+      9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
     val aSign = -1
     val bSign = -1
@@ -329,8 +329,8 @@ class BigIntegerDivideTest {
 
   @Test def testCase5(): Unit = {
     val aBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127)
-    val bBytes =
-      Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 1, 2, 3, 4, 5)
+    val bBytes = Array[Byte](-127, 100, 56, 7, 98, -1, 39, -128, 127, 1, 2, 3,
+      4, 5)
     val aSign = -1
     val bSign = 1
     val rBytes = Array[Byte](0)
@@ -363,8 +363,8 @@ class BigIntegerDivideTest {
   }
 
   @Test def testCase7(): Unit = {
-    val aBytes =
-      Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
+    val aBytes = Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8,
+      9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
     val aSign = 1
     val bSign = 1
@@ -381,8 +381,8 @@ class BigIntegerDivideTest {
   }
 
   @Test def testCase8(): Unit = {
-    val aBytes =
-      Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
+    val aBytes = Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8,
+      9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
     val aSign = 1
     val bSign = -1
@@ -399,8 +399,8 @@ class BigIntegerDivideTest {
   }
 
   @Test def testCase9(): Unit = {
-    val aBytes =
-      Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8, 9)
+    val aBytes = Array[Byte](1, 100, 56, 7, 98, -1, 39, -128, 127, 5, 6, 7, 8,
+      9)
     val bBytes = Array[Byte](15, 48, -29, 7, 98, -1, 39, -128)
     val aSign = -1
     val bSign = 1
@@ -421,8 +421,8 @@ class BigIntegerDivideTest {
     val bBytes = Array[Byte](-3, -3, -3, -3)
     val aSign = 1
     val bSign = 1
-    val rBytes =
-      Array[Byte](0, -5, -12, -33, -96, -36, -105, -56, 92, 15, 48, -109)
+    val rBytes = Array[Byte](0, -5, -12, -33, -96, -36, -105, -56, 92, 15, 48,
+      -109)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.divide(bNumber)
@@ -435,8 +435,8 @@ class BigIntegerDivideTest {
   }
 
   @Test def testDivisionKnuthFirstDigitsEqual(): Unit = {
-    val aBytes =
-      Array[Byte](2, -3, -4, -5, -1, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5)
+    val aBytes = Array[Byte](2, -3, -4, -5, -1, -5, -4, -3, -2, -1, 0, 1, 2, 3,
+      4, 5)
     val bBytes = Array[Byte](2, -3, -4, -5, -1, -1, -1, -1)
     val aSign = -1
     val bSign = -1
@@ -453,8 +453,8 @@ class BigIntegerDivideTest {
   }
 
   @Test def testDivisionKnuthIsNormalized(): Unit = {
-    val aBytes =
-      Array[Byte](-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5)
+    val aBytes = Array[Byte](-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4,
+      5)
     val bBytes = Array[Byte](-1, -1, -1, -1, -1, -1, -1, -1)
     val aSign = -1
     val bSign = -1

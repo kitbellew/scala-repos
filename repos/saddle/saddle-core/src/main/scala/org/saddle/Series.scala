@@ -751,12 +751,12 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       for ((k, taker) <- grps) { // For each pivot label grouping,
         val gIdx = lft.take(taker) //   use group's (lft) row index labels
         val ixer = rix.join(gIdx) //   to compute map to final (rix) locations;
-        val vals =
-          values.take(taker) // Take values corresponding to current pivot label
-        val v =
-          ixer.rTake
-            .map(vals.take(_))
-            .getOrElse(vals) //   map values to be in correspondence to rix
+        val vals = values.take(
+          taker
+        ) // Take values corresponding to current pivot label
+        val v = ixer.rTake
+          .map(vals.take(_))
+          .getOrElse(vals) //   map values to be in correspondence to rix
         result(loc) = v //   and save resulting col vec in array.
         loc += 1 // Increment offset into result array
       }
@@ -912,17 +912,19 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     else {
       buf.append("[%d x 1]\n" format length)
 
-      val maxf = (a: List[Int], b: List[String]) =>
-        (a zip b).map(v => v._1.max(v._2.length))
+      val maxf =
+        (a: List[Int], b: List[String]) =>
+          (a zip b).map(v => v._1.max(v._2.length))
 
       val isca = index.scalarTag
       val vidx = index.toVec
       val idxHf = {
         vidx.head(half) concat vidx.tail(half)
       }
-      val ilens = idxHf
-        .map(isca.strList(_))
-        .foldLeft(isca.strList(vidx(0)).map(_.length))(maxf)
+      val ilens =
+        idxHf
+          .map(isca.strList(_))
+          .foldLeft(isca.strList(vidx(0)).map(_.length))(maxf)
 
       val vsca = values.scalarTag
       val vlHf = {
@@ -949,11 +951,12 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
           for ((i, l, v) <- enumZip(ilens, vls))
             yield {
               val fmt = "%" + l + "s"
-              val res = if (i == vls.length - 1 || prevRowLabels(i) != v) {
-                resetRowLabels(i + 1)
-                v.formatted(fmt)
-              } else
-                "".formatted(fmt)
+              val res =
+                if (i == vls.length - 1 || prevRowLabels(i) != v) {
+                  resetRowLabels(i + 1)
+                  v.formatted(fmt)
+                } else
+                  "".formatted(fmt)
               prevRowLabels(i) = v
               res
             }
@@ -984,8 +987,7 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     stream.write(stringify(len).getBytes)
   }
 
-  override def hashCode(): Int =
-    values.hashCode() * 31 + index.hashCode()
+  override def hashCode(): Int = values.hashCode() * 31 + index.hashCode()
 
   override def equals(other: Any): Boolean =
     other match {
@@ -1018,8 +1020,7 @@ object Series extends BinOpSeries {
     * @param s Series[_, T]
     */
   implicit def seriesToRollingStats[X: ST: ORD, T: Vec2RollingStats: ST](
-      s: Series[X, T]): SeriesRollingStats[X, T] =
-    SeriesRollingStats[X, T](s)
+      s: Series[X, T]): SeriesRollingStats[X, T] = SeriesRollingStats[X, T](s)
 
   /**
     * Enrich Series with expanding stats
@@ -1057,8 +1058,7 @@ object Series extends BinOpSeries {
     * @tparam X Type of keys
     * @tparam T Type of values
     */
-  def empty[X: ST: ORD, T: ST] =
-    new Series[X, T](Vec.empty[T], Index.empty[X])
+  def empty[X: ST: ORD, T: ST] = new Series[X, T](Vec.empty[T], Index.empty[X])
 
   /**
     * Factory method to create a Series from a Vec and an Index

@@ -62,17 +62,16 @@ private[http] object StreamUtils {
 
   def mapErrorTransformer(
       f: Throwable ⇒ Throwable): Flow[ByteString, ByteString, NotUsed] = {
-    val transformer = new PushStage[ByteString, ByteString] {
-      override def onPush(
-          element: ByteString,
-          ctx: Context[ByteString]): SyncDirective =
-        ctx.push(element)
+    val transformer =
+      new PushStage[ByteString, ByteString] {
+        override def onPush(
+            element: ByteString,
+            ctx: Context[ByteString]): SyncDirective = ctx.push(element)
 
-      override def onUpstreamFailure(
-          cause: Throwable,
-          ctx: Context[ByteString]): TerminationDirective =
-        ctx.fail(f(cause))
-    }
+        override def onUpstreamFailure(
+            cause: Throwable,
+            ctx: Context[ByteString]): TerminationDirective = ctx.fail(f(cause))
+      }
 
     Flow[ByteString].transform(() ⇒ transformer).named("transformError")
   }
@@ -80,65 +79,67 @@ private[http] object StreamUtils {
   def captureTermination[T, Mat](
       source: Source[T, Mat]): (Source[T, Mat], Future[Unit]) = {
     val promise = Promise[Unit]()
-    val transformer = new PushStage[T, T] {
-      def onPush(element: T, ctx: Context[T]) = ctx.push(element)
-      override def onUpstreamFinish(ctx: Context[T]) = {
-        promise.success(())
-        super.onUpstreamFinish(ctx)
+    val transformer =
+      new PushStage[T, T] {
+        def onPush(element: T, ctx: Context[T]) = ctx.push(element)
+        override def onUpstreamFinish(ctx: Context[T]) = {
+          promise.success(())
+          super.onUpstreamFinish(ctx)
+        }
+        override def onUpstreamFailure(cause: Throwable, ctx: Context[T]) = {
+          promise.failure(cause)
+          ctx.fail(cause)
+        }
       }
-      override def onUpstreamFailure(cause: Throwable, ctx: Context[T]) = {
-        promise.failure(cause)
-        ctx.fail(cause)
-      }
-    }
     source.transform(() ⇒ transformer) -> promise.future
   }
 
   def sliceBytesTransformer(
       start: Long,
       length: Long): Flow[ByteString, ByteString, NotUsed] = {
-    val transformer = new StatefulStage[ByteString, ByteString] {
+    val transformer =
+      new StatefulStage[ByteString, ByteString] {
 
-      def skipping =
-        new State {
-          var toSkip = start
+        def skipping =
+          new State {
+            var toSkip = start
 
-          override def onPush(
-              element: ByteString,
-              ctx: Context[ByteString]): SyncDirective =
-            if (element.length < toSkip) {
-              // keep skipping
-              toSkip -= element.length
-              ctx.pull()
-            } else {
-              become(taking(length))
-              // toSkip <= element.length <= Int.MaxValue
-              current.onPush(element.drop(toSkip.toInt), ctx)
-            }
-        }
-
-      def taking(initiallyRemaining: Long) =
-        new State {
-          var remaining: Long = initiallyRemaining
-
-          override def onPush(
-              element: ByteString,
-              ctx: Context[ByteString]): SyncDirective = {
-            val data = element.take(math.min(remaining, Int.MaxValue).toInt)
-            remaining -= data.size
-            if (remaining <= 0)
-              ctx.pushAndFinish(data)
-            else
-              ctx.push(data)
+            override def onPush(
+                element: ByteString,
+                ctx: Context[ByteString]): SyncDirective =
+              if (element.length < toSkip) {
+                // keep skipping
+                toSkip -= element.length
+                ctx.pull()
+              } else {
+                become(taking(length))
+                // toSkip <= element.length <= Int.MaxValue
+                current.onPush(element.drop(toSkip.toInt), ctx)
+              }
           }
-        }
 
-      override def initial: State =
-        if (start > 0)
-          skipping
-        else
-          taking(length)
-    }
+        def taking(initiallyRemaining: Long) =
+          new State {
+            var remaining: Long = initiallyRemaining
+
+            override def onPush(
+                element: ByteString,
+                ctx: Context[ByteString]): SyncDirective = {
+              val data = element.take(math.min(remaining, Int.MaxValue).toInt)
+              remaining -= data.size
+              if (remaining <= 0)
+                ctx.pushAndFinish(data)
+              else
+                ctx.push(data)
+            }
+          }
+
+        override def initial: State =
+          if (start > 0)
+            skipping
+          else
+            taking(length)
+      }
     Flow[ByteString].transform(() ⇒ transformer).named("sliceBytes")
   }
 
@@ -256,17 +257,18 @@ private[http] object StreamUtils {
 
     override def create(
         context: MaterializationContext): (Publisher[Out], Subscriber[Out]) = {
-      val processor = new Processor[Out, Out] {
-        @volatile private var subscriber: Subscriber[_ >: Out] = null
+      val processor =
+        new Processor[Out, Out] {
+          @volatile private var subscriber: Subscriber[_ >: Out] = null
 
-        override def subscribe(s: Subscriber[_ >: Out]): Unit = subscriber = s
+          override def subscribe(s: Subscriber[_ >: Out]): Unit = subscriber = s
 
-        override def onError(t: Throwable): Unit = subscriber.onError(t)
-        override def onSubscribe(s: Subscription): Unit =
-          subscriber.onSubscribe(s)
-        override def onComplete(): Unit = subscriber.onComplete()
-        override def onNext(t: Out): Unit = subscriber.onNext(t)
-      }
+          override def onError(t: Throwable): Unit = subscriber.onError(t)
+          override def onSubscribe(s: Subscription): Unit =
+            subscriber.onSubscribe(s)
+          override def onComplete(): Unit = subscriber.onComplete()
+          override def onNext(t: Out): Unit = subscriber.onNext(t)
+        }
       cell.setValue(processor)
 
       (processor, processor)
@@ -302,27 +304,28 @@ private[http] object StreamUtils {
   // TODO: remove after #16394 is cleared
   def recover[A, B >: A](
       pf: PartialFunction[Throwable, B]): () ⇒ PushPullStage[A, B] = {
-    val stage = new PushPullStage[A, B] {
-      var recovery: Option[B] = None
-      def onPush(elem: A, ctx: Context[B]): SyncDirective = ctx.push(elem)
-      def onPull(ctx: Context[B]): SyncDirective =
-        recovery match {
-          case None ⇒ ctx.pull()
-          case Some(x) ⇒ {
-            recovery = null;
-            ctx.push(x)
+    val stage =
+      new PushPullStage[A, B] {
+        var recovery: Option[B] = None
+        def onPush(elem: A, ctx: Context[B]): SyncDirective = ctx.push(elem)
+        def onPull(ctx: Context[B]): SyncDirective =
+          recovery match {
+            case None ⇒ ctx.pull()
+            case Some(x) ⇒ {
+              recovery = null;
+              ctx.push(x)
+            }
+            case null ⇒ ctx.finish()
           }
-          case null ⇒ ctx.finish()
-        }
-      override def onUpstreamFailure(
-          cause: Throwable,
-          ctx: Context[B]): TerminationDirective =
-        if (pf isDefinedAt cause) {
-          recovery = Some(pf(cause))
-          ctx.absorbTermination()
-        } else
-          super.onUpstreamFailure(cause, ctx)
-    }
+        override def onUpstreamFailure(
+            cause: Throwable,
+            ctx: Context[B]): TerminationDirective =
+          if (pf isDefinedAt cause) {
+            recovery = Some(pf(cause))
+            ctx.absorbTermination()
+          } else
+            super.onUpstreamFailure(cause, ctx)
+      }
     () ⇒ stage
   }
 
@@ -336,34 +339,36 @@ private[http] object StreamUtils {
     def newForeachStage(): (PushStage[T, T], Future[Unit]) = {
       val promise = Promise[Unit]()
 
-      val stage = new PushStage[T, T] {
-        override def onPush(elem: T, ctx: Context[T]): SyncDirective =
-          ctx.push(elem)
+      val stage =
+        new PushStage[T, T] {
+          override def onPush(elem: T, ctx: Context[T]): SyncDirective =
+            ctx.push(elem)
 
-        override def onUpstreamFailure(
-            cause: Throwable,
-            ctx: Context[T]): TerminationDirective = {
-          promise.failure(cause)
-          ctx.fail(cause)
-        }
+          override def onUpstreamFailure(
+              cause: Throwable,
+              ctx: Context[T]): TerminationDirective = {
+            promise.failure(cause)
+            ctx.fail(cause)
+          }
 
-        override def onUpstreamFinish(ctx: Context[T]): TerminationDirective = {
-          promise.success(())
-          ctx.finish()
-        }
+          override def onUpstreamFinish(
+              ctx: Context[T]): TerminationDirective = {
+            promise.success(())
+            ctx.finish()
+          }
 
-        override def onDownstreamFinish(
-            ctx: Context[T]): TerminationDirective = {
-          promise.success(())
-          ctx.finish()
-        }
+          override def onDownstreamFinish(
+              ctx: Context[T]): TerminationDirective = {
+            promise.success(())
+            ctx.finish()
+          }
 
-        override def decide(cause: Throwable): Supervision.Directive = {
-          // supervision will be implemented by #16916
-          promise.tryFailure(cause)
-          super.decide(cause)
+          override def decide(cause: Throwable): Supervision.Directive = {
+            // supervision will be implemented by #16916
+            promise.tryFailure(cause)
+            super.decide(cause)
+          }
         }
-      }
 
       (stage, promise.future)
     }
@@ -381,10 +386,9 @@ private[http] object StreamUtils {
     def apply(): OneTimeValve =
       new OneTimeValve {
         val promise = Promise[Unit]()
-        val _source =
-          Source
-            .fromFuture(promise.future)
-            .drop(1) // we are only interested in the completion event
+        val _source = Source
+          .fromFuture(promise.future)
+          .drop(1) // we are only interested in the completion event
 
         def source[T]: Source[T, NotUsed] =
           _source.asInstanceOf[
@@ -405,6 +409,5 @@ private[http] class EnhancedByteStringSource[Mat](
     byteStringStream.runFold(ByteString.empty)(_ ++ _)
   def utf8String(implicit
       materializer: Materializer,
-      ec: ExecutionContext): Future[String] =
-    join.map(_.utf8String)
+      ec: ExecutionContext): Future[String] = join.map(_.utf8String)
 }

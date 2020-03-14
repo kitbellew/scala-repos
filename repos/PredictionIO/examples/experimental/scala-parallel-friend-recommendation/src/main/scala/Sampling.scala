@@ -58,10 +58,11 @@ object Sampling {
     var g = graph
     var e = sortBySrc(g.edges.toArray)
     val targetVertexCount = (graph.vertices.count() * fraction).toInt
-    var seedVertices = graph.vertices
-      .sample(false, fraction, targetVertexCount)
-      .toArray
-      .iterator
+    var seedVertices =
+      graph.vertices
+        .sample(false, fraction, targetVertexCount)
+        .toArray
+        .iterator
     var sampledVertices: HashSet[VertexId] = HashSet()
     var burnQueue: Queue[VertexId] = Queue()
 
@@ -79,8 +80,10 @@ object Sampling {
             !sampledVertices.contains(e.dstId)
           })
         val burnFraction = numToSample.toDouble / burnCandidate.count.toDouble
-        val burnEdges =
-          burnCandidate.sample(false, burnFraction, Random.nextLong)
+        val burnEdges = burnCandidate.sample(
+          false,
+          burnFraction,
+          Random.nextLong)
         val neighborVertexIds = burnEdges.map((e: Edge[Int]) => e.dstId)
         sampledVertices = sampledVertices ++ neighborVertexIds.toArray
         burnQueue = burnQueue ++ neighborVertexIds.toArray

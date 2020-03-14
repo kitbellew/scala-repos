@@ -40,13 +40,11 @@ class SimplifyBooleanInspectionTest
   }
 
   def test_TrueEqualsA() {
-    val selectedText =
-      s"""val a = true
+    val selectedText = s"""val a = true
           |${s}true == a$e""".stripMargin
     check(selectedText)
 
-    val text =
-      """val a = true
+    val text = """val a = true
         |true == a""".stripMargin
     val result = """val a = true
                    |a""".stripMargin
@@ -55,13 +53,11 @@ class SimplifyBooleanInspectionTest
   }
 
   def test_TrueAndA() {
-    val selectedText =
-      s"""val a = true
+    val selectedText = s"""val a = true
           |${s}true && a$e""".stripMargin
     check(selectedText)
 
-    val text =
-      """val a = true
+    val text = """val a = true
           |true && a""".stripMargin
     val result = """val a = true
                     |a""".stripMargin
@@ -100,8 +96,7 @@ class SimplifyBooleanInspectionTest
   }
 
   def test_InternalExpression() {
-    val selectedText =
-      s"""
+    val selectedText = s"""
         |val a = true
         |true && ($s<caret>a || false$e)
       """.stripMargin
@@ -146,8 +141,7 @@ class SimplifyBooleanInspectionTest
   }
 
   def test_TrueAsAny() {
-    val text =
-      """
+    val text = """
         |def trueAsAny: Any = {
         |  true
         |}

@@ -46,8 +46,7 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
   def materializeImpl[F[_], D, T](implicit
       fTag: WeakTypeTag[F[_]],
       dTag: WeakTypeTag[D],
-      tTag: WeakTypeTag[T]): Tree =
-    materializeAux[F, D, T](false)
+      tTag: WeakTypeTag[T]): Tree = materializeAux[F, D, T](false)
 
   def materializeOrphanImpl[F[_], D, T](implicit
       fTag: WeakTypeTag[F[_]],
@@ -108,8 +107,7 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
         }
       }
 
-    val probe =
-      q"""
+    val probe = q"""
         ..$masks
         import $deriver._
         _root_.shapeless.the[$appTpe]
@@ -123,9 +121,10 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
         inst
       }
     } else {
-      val derived = checkedProbe match {
-        case b: Block => b.expr
-      }
+      val derived =
+        checkedProbe match {
+          case b: Block => b.expr
+        }
 
       if (derived.equalsStructure(inst))
         inst
@@ -135,12 +134,11 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
         val resTpeD = derived.symbol.asMethod.info.finalResultType
         val resTpeI = inst.symbol.asMethod.info.finalResultType
 
-        val useDerived =
-          resTpeD.typeArgs.zip(resTpeI.typeArgs).forall {
-            case (ad, ai) =>
-              ai.typeSymbol.isParameter ||
-                (!ad.typeSymbol.isParameter && !(ad <:< ai))
-          }
+        val useDerived = resTpeD.typeArgs.zip(resTpeI.typeArgs).forall {
+          case (ad, ai) =>
+            ai.typeSymbol.isParameter ||
+              (!ad.typeSymbol.isParameter && !(ad <:< ai))
+        }
 
         if (useDerived)
           derived

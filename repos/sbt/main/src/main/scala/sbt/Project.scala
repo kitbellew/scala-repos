@@ -603,8 +603,9 @@ object Project extends ProjectExtra {
     val history = get(historyPath) flatMap idFun
     val prompt = get(shellPrompt)
     val watched = get(watch)
-    val commandDefs =
-      allCommands.distinct.flatten[Command].map(_ tag (projectCommand, true))
+    val commandDefs = allCommands.distinct
+      .flatten[Command]
+      .map(_ tag (projectCommand, true))
     val newDefinedCommands = commandDefs ++ BasicCommands.removeTagged(
       s.definedCommands,
       projectCommand)
@@ -667,8 +668,7 @@ object Project extends ProjectExtra {
 
   def mapScope(f: Scope => Scope) =
     new (ScopedKey ~> ScopedKey) {
-      def apply[T](key: ScopedKey[T]) =
-        ScopedKey(f(key.scope), key.key)
+      def apply[T](key: ScopedKey[T]) = ScopedKey(f(key.scope), key.key)
     }
 
   def transform(
@@ -710,24 +710,29 @@ object Project extends ProjectExtra {
     } getOrElse {
       "No entry for key."
     }
-    val description = key.description match {
-      case Some(desc) => "Description:\n\t" + desc + "\n";
-      case None       => ""
-    }
+    val description =
+      key.description match {
+        case Some(desc) => "Description:\n\t" + desc + "\n";
+        case None       => ""
+      }
 
     val definingScope = structure.data.definingScope(scope, key)
-    val providedBy = definingScope match {
-      case Some(sc) => "Provided by:\n\t" + Scope.display(sc, key.label) + "\n"
-      case None     => ""
-    }
-    val definingScoped = definingScope match {
-      case Some(sc) => ScopedKey(sc, key);
-      case None     => scoped
-    }
-    val comp = Def.compiled(structure.settings, actual)(
-      structure.delegates,
-      structure.scopeLocal,
-      display)
+    val providedBy =
+      definingScope match {
+        case Some(sc) =>
+          "Provided by:\n\t" + Scope.display(sc, key.label) + "\n"
+        case None => ""
+      }
+    val definingScoped =
+      definingScope match {
+        case Some(sc) => ScopedKey(sc, key);
+        case None     => scoped
+      }
+    val comp =
+      Def.compiled(structure.settings, actual)(
+        structure.delegates,
+        structure.scopeLocal,
+        display)
     val definedAt = comp get definingScoped map { c =>
       Def.definedAtString(c.settings).capitalize
     } getOrElse ""
@@ -746,12 +751,13 @@ object Project extends ProjectExtra {
         .toList
         .flatten
 
-    val depends = cMap.get(scoped) match {
-      case Some(c) => c.dependencies.toSet;
-      case None    => Set.empty
-    }
-    val derivedDepends: Set[ScopedKey[_]] = derivedDependencies(
-      definingScoped).toSet
+    val depends =
+      cMap.get(scoped) match {
+        case Some(c) => c.dependencies.toSet;
+        case None    => Set.empty
+      }
+    val derivedDepends: Set[ScopedKey[_]] =
+      derivedDependencies(definingScoped).toSet
 
     val reverse = reverseDependencies(cMap, scoped)
     val derivedReverse =
@@ -762,10 +768,11 @@ object Project extends ProjectExtra {
         derivedLabel: String,
         scopes: Iterable[ScopedKey[_]],
         derived: Set[ScopedKey[_]]): String = {
-      val label = s"$baseLabel${if (derived.isEmpty)
-        ""
-      else
-        s" (D=$derivedLabel)"}"
+      val label =
+        s"$baseLabel${if (derived.isEmpty)
+          ""
+        else
+          s" (D=$derivedLabel)"}"
       val prefix: ScopedKey[_] => String =
         if (derived.isEmpty)
           const("")
@@ -855,8 +862,7 @@ object Project extends ProjectExtra {
       implicit display: Show[ScopedKey[_]]): String =
     showKeys(defs.map(scope => ScopedKey(scope, key)))
   def showUses(defs: Seq[ScopedKey[_]])(
-      implicit display: Show[ScopedKey[_]]): String =
-    showKeys(defs)
+      implicit display: Show[ScopedKey[_]]): String = showKeys(defs)
   private[this] def showKeys(s: Seq[ScopedKey[_]])(
       implicit display: Show[ScopedKey[_]]): String =
     s.map(display.apply).sorted.mkString("\n\t", "\n\t", "\n\n")

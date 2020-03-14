@@ -495,8 +495,7 @@ object ConstArray {
     else
       empty
 
-  def unsafeWrap[T](values: Array[Any]): ConstArray[T] =
-    new ConstArray(values)
+  def unsafeWrap[T](values: Array[Any]): ConstArray[T] = new ConstArray(values)
 
   //def unapplySeq[T](a: ConstArray[T]) = new ConstArrayExtract[T](a) // Requires Scala 2.11
   def unapplySeq[T](a: ConstArray[T]): Some[IndexedSeq[T]] = Some(a.toSeq)

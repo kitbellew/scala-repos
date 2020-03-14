@@ -9,26 +9,20 @@ import scala.tools.testing.AssertUtil._
 
 @RunWith(classOf[JUnit4])
 class PredefAutoboxingTest {
-  @Test def unboxNullByte() =
-    assertEquals(Predef.Byte2byte(null), 0.toByte)
+  @Test def unboxNullByte() = assertEquals(Predef.Byte2byte(null), 0.toByte)
 
-  @Test def unboxNullShort() =
-    assertEquals(Predef.Short2short(null), 0.toShort)
+  @Test def unboxNullShort() = assertEquals(Predef.Short2short(null), 0.toShort)
 
   @Test def unboxNullCharacter() =
     assertEquals(Predef.Character2char(null), 0.toChar)
 
-  @Test def unboxNullInteger() =
-    assertEquals(Predef.Integer2int(null), 0)
+  @Test def unboxNullInteger() = assertEquals(Predef.Integer2int(null), 0)
 
-  @Test def unboxNullLong() =
-    assertEquals(Predef.Long2long(null), 0L)
+  @Test def unboxNullLong() = assertEquals(Predef.Long2long(null), 0L)
 
-  @Test def unboxNullFloat() =
-    assertEquals(Predef.Float2float(null), 0f, 0f)
+  @Test def unboxNullFloat() = assertEquals(Predef.Float2float(null), 0f, 0f)
 
-  @Test def unboxNullDouble() =
-    assertEquals(Predef.Double2double(null), 0d, 0d)
+  @Test def unboxNullDouble() = assertEquals(Predef.Double2double(null), 0d, 0d)
 
   @Test def unboxNullBoolean() =
     assertEquals(Predef.Boolean2boolean(null), false)

@@ -226,8 +226,7 @@ object BaseCharsetTest {
 
   object OutPart {
     implicit def fromBuffer[BufferType <: Buffer](
-        buf: BufferType): BufferPart[BufferType] =
-      BufferPart(buf)
+        buf: BufferType): BufferPart[BufferType] = BufferPart(buf)
   }
 
   implicit class Interpolators(val sc: StringContext) extends AnyVal {
@@ -257,7 +256,6 @@ object BaseCharsetTest {
       ByteBuffer.wrap(buf.result())
     }
 
-    def cb(args: Any*): CharBuffer =
-      CharBuffer.wrap(sc.s(args: _*).toCharArray)
+    def cb(args: Any*): CharBuffer = CharBuffer.wrap(sc.s(args: _*).toCharArray)
   }
 }

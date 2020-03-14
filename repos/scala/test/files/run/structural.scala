@@ -2,12 +2,14 @@ import scala.language.{reflectiveCalls}
 
 object test1 {
 
-  val o1 = new Object {
-    override def toString = "ohone"
-  }
-  val o2 = new Object {
-    override def toString = "ohtwo"
-  }
+  val o1 =
+    new Object {
+      override def toString = "ohone"
+    }
+  val o2 =
+    new Object {
+      override def toString = "ohtwo"
+    }
 
   val t1 = new Tata("tieone")
   val t2 = new Tata("tietwo")
@@ -56,29 +58,30 @@ object test1 {
     def z(t: Tata) = ()
   }
 
-  type rt = Object {
-    val a: Int;
-    val c: String;
-    def d(x: AnyRef): AnyRef
-    def e(x: Tata): Tata
-    def f(x: Int): Int;
-    def h(x: Unit): AnyRef;
-    def i(x: Array[Int]): Int
-    def j(x: Array[AnyRef]): AnyRef
-    def k(x: Array[Char]): Char
-    def l(x: Array[Unit]): Unit
-    def m(x: Array[String]): String
-    def n(x: Array[Tata]): Tata
-    def o: Array[Int]
-    def p: Array[AnyRef]
-    def q: Array[Char]
-    def r: Array[Unit]
-    def s: Array[String]
-    def t: Array[Tata]
-    def u[T](f: T => T, v: T): T
-    var v: Int
-    val y: Tata
-  }
+  type rt =
+    Object {
+      val a: Int;
+      val c: String;
+      def d(x: AnyRef): AnyRef
+      def e(x: Tata): Tata
+      def f(x: Int): Int;
+      def h(x: Unit): AnyRef;
+      def i(x: Array[Int]): Int
+      def j(x: Array[AnyRef]): AnyRef
+      def k(x: Array[Char]): Char
+      def l(x: Array[Unit]): Unit
+      def m(x: Array[String]): String
+      def n(x: Array[Tata]): Tata
+      def o: Array[Int]
+      def p: Array[AnyRef]
+      def q: Array[Char]
+      def r: Array[Unit]
+      def s: Array[String]
+      def t: Array[Tata]
+      def u[T](f: T => T, v: T): T
+      var v: Int
+      val y: Tata
+    }
 
   def l(r: rt) {
     println(" 1. " + r.c)
@@ -163,18 +166,20 @@ object test2 {
   abstract class D extends {
     def f()
   }
-  val x2 = new D {
-    def f() {
-      println("2")
+  val x2 =
+    new D {
+      def f() {
+        println("2")
+      }
     }
-  }
   x2.f()
 
-  val x3 = new {
-    def f() {
-      println("3")
+  val x3 =
+    new {
+      def f() {
+        println("3")
+      }
     }
-  }
   def run(x: {
     def f()
   }) {
@@ -185,19 +190,21 @@ object test2 {
   type T = {
     def f()
   }
-  val x4 = new AnyRef {
-    def f() {
-      println("4")
-    }
-  } // ok!
+  val x4 =
+    new AnyRef {
+      def f() {
+        println("4")
+      }
+    } // ok!
   //val x4 = new T { def f() { println("4") } }        // error! (bug #1241)
   x4.f()
 
-  val x5: T = new {
-    def f() {
-      println("5")
+  val x5: T =
+    new {
+      def f() {
+        println("5")
+      }
     }
-  }
   x5.f()
 }
 

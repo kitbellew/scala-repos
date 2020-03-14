@@ -44,17 +44,19 @@ object ReflectiveAccess {
 
     def ensureEnabled =
       if (!isEnabled) {
-        val e = new ModuleNotAvailableException(
-          "Can't load the remoting module, make sure that akka-remote.jar is on the classpath")
+        val e =
+          new ModuleNotAvailableException(
+            "Can't load the remoting module, make sure that akka-remote.jar is on the classpath")
         EventHandler.debug(this, e.toString)
         throw e
       }
-    val remoteSupportClass = getClassFor[RemoteSupport](TRANSPORT) match {
-      case Right(value) => Some(value)
-      case Left(exception) =>
-        EventHandler.debug(this, exception.toString)
-        None
-    }
+    val remoteSupportClass =
+      getClassFor[RemoteSupport](TRANSPORT) match {
+        case Right(value) => Some(value)
+        case Left(exception) =>
+          EventHandler.debug(this, exception.toString)
+          None
+      }
 
     protected[akka] val defaultRemoteSupport: Option[() => RemoteSupport] =
       remoteSupportClass map { remoteClass => () =>
@@ -64,10 +66,11 @@ object ReflectiveAccess {
           Array[AnyRef]()) match {
           case Right(value) => value
           case Left(exception) =>
-            val e = new ModuleNotAvailableException(
-              "Can't instantiate [%s] - make sure that akka-remote.jar is on the classpath"
-                .format(remoteClass.getName),
-              exception)
+            val e =
+              new ModuleNotAvailableException(
+                "Can't instantiate [%s] - make sure that akka-remote.jar is on the classpath"
+                  .format(remoteClass.getName),
+                exception)
             EventHandler.debug(this, e.toString)
             throw e
         }

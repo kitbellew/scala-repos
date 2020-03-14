@@ -55,11 +55,12 @@ private[clustering] trait BisectingKMeansParams
 
   /** @group expertParam */
   @Since("2.0.0")
-  final val minDivisibleClusterSize = new Param[Double](
-    this,
-    "minDivisibleClusterSize",
-    "the minimum number of points (if >= 1.0) or the minimum proportion",
-    (value: Double) => value > 0)
+  final val minDivisibleClusterSize =
+    new Param[Double](
+      this,
+      "minDivisibleClusterSize",
+      "the minimum number of points (if >= 1.0) or the minimum proportion",
+      (value: Double) => value > 0)
 
   /** @group expertGetParam */
   @Since("2.0.0")

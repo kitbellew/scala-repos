@@ -142,8 +142,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       .option("inferSchema", "true")
       .load(testFile(boolFile))
 
-    val expectedSchema =
-      StructType(List(StructField("bool", BooleanType, nullable = true)))
+    val expectedSchema = StructType(
+      List(StructField("bool", BooleanType, nullable = true)))
     assert(result.schema === expectedSchema)
   }
 
@@ -366,11 +366,10 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       .load(testFile(commentsFile))
       .collect()
 
-    val expected =
-      Seq(
-        Seq("1", "2", "3", "4", "5.01", "2015-08-20 15:57:00"),
-        Seq("6", "7", "8", "9", "0", "2015-08-21 16:58:01"),
-        Seq("1", "2", "3", "4", "5", "2015-08-23 18:00:42"))
+    val expected = Seq(
+      Seq("1", "2", "3", "4", "5.01", "2015-08-20 15:57:00"),
+      Seq("6", "7", "8", "9", "0", "2015-08-21 16:58:01"),
+      Seq("1", "2", "3", "4", "5", "2015-08-23 18:00:42"))
 
     assert(results.toSeq.map(_.toSeq) === expected)
   }
@@ -383,12 +382,11 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       .load(testFile(commentsFile))
       .collect()
 
-    val expected =
-      Seq(
-        Seq(1, 2, 3, 4, 5.01d, Timestamp.valueOf("2015-08-20 15:57:00")),
-        Seq(6, 7, 8, 9, 0, Timestamp.valueOf("2015-08-21 16:58:01")),
-        Seq(1, 2, 3, 4, 5, Timestamp.valueOf("2015-08-23 18:00:42"))
-      )
+    val expected = Seq(
+      Seq(1, 2, 3, 4, 5.01d, Timestamp.valueOf("2015-08-20 15:57:00")),
+      Seq(6, 7, 8, 9, 0, Timestamp.valueOf("2015-08-21 16:58:01")),
+      Seq(1, 2, 3, 4, 5, Timestamp.valueOf("2015-08-23 18:00:42"))
+    )
 
     assert(results.toSeq.map(_.toSeq) === expected)
   }
@@ -400,8 +398,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       .load(testFile(disableCommentsFile))
       .collect()
 
-    val expected =
-      Seq(Seq("#1", "2", "3"), Seq("4", "5", "6"))
+    val expected = Seq(Seq("#1", "2", "3"), Seq("4", "5", "6"))
 
     assert(results.toSeq.map(_.toSeq) === expected)
   }

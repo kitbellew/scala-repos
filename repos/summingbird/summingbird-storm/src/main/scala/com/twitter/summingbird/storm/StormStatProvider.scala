@@ -23,8 +23,8 @@ private[summingbird] case class StormCounterIncrementor(metric: CountMetric)
 
 // StormStatProvider global object that contains counter information for the Storm job(s)
 private[summingbird] object StormStatProvider extends PlatformStatProvider {
-  @transient private val logger =
-    LoggerFactory.getLogger(StormStatProvider.getClass)
+  @transient private val logger = LoggerFactory.getLogger(
+    StormStatProvider.getClass)
 
   // Keep a HashMap of JobId->Promise Map[String, CountMetric] where String is the Counter name
   // Each metrics map will be initialized once (via Promise) and then referred to by other Bolts

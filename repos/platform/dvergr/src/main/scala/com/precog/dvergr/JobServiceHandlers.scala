@@ -57,20 +57,21 @@ class ListJobsHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    Success(request.parameters get 'apiKey map { apiKey =>
-      jobs.listJobs(apiKey) map { jobs =>
-        HttpResponse(
-          OK,
-          content = Some(JArray((jobs map (_.serialize)).toList)))
-      }
-    } getOrElse {
-      Future(
-        HttpResponse(
-          BadRequest,
-          content = Some(JString("Missing required parameter 'apiKey"))))
-    })
-  }
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      Success(request.parameters get 'apiKey map { apiKey =>
+        jobs.listJobs(apiKey) map { jobs =>
+          HttpResponse(
+            OK,
+            content = Some(JArray((jobs map (_.serialize)).toList)))
+        }
+      } getOrElse {
+        Future(
+          HttpResponse(
+            BadRequest,
+            content = Some(JString("Missing required parameter 'apiKey"))))
+      })
+    }
 
   val metadata = AboutMetadata(
     ParameterMetadata('apiKey, None),
@@ -85,58 +86,60 @@ class CreateJobHandler(
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    request.content map { contentM =>
-      Success(contentM flatMap { content =>
-        (content \ "name", content \ "type", content \? "data") match {
-          case (JString(name), JString(tpe), data) =>
-            request.parameters.get('apiKey) map { apiKey =>
-              auth.isValid(apiKey) flatMap {
-                case true =>
-                  jobs.createJob(apiKey, name, tpe, data, None) map { job =>
-                    HttpResponse[JValue](Created, content = Some(job.serialize))
-                  }
-                case false =>
-                  Future(HttpResponse[JValue](Forbidden))
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      request.content map { contentM =>
+        Success(contentM flatMap { content =>
+          (content \ "name", content \ "type", content \? "data") match {
+            case (JString(name), JString(tpe), data) =>
+              request.parameters.get('apiKey) map { apiKey =>
+                auth.isValid(apiKey) flatMap {
+                  case true =>
+                    jobs.createJob(apiKey, name, tpe, data, None) map { job =>
+                      HttpResponse[JValue](
+                        Created,
+                        content = Some(job.serialize))
+                    }
+                  case false =>
+                    Future(HttpResponse[JValue](Forbidden))
+                }
+
+              } getOrElse {
+                Future(HttpResponse[JValue](
+                  BadRequest,
+                  content = Some(JString("Missing required paramter 'apiKey"))))
               }
 
-            } getOrElse {
+            case (JUndefined, JUndefined, _) =>
               Future(
                 HttpResponse[JValue](
                   BadRequest,
-                  content = Some(JString("Missing required paramter 'apiKey"))))
-            }
+                  content = Some(
+                    JString("Missing both `name` and `type` of job."))))
 
-          case (JUndefined, JUndefined, _) =>
-            Future(
-              HttpResponse[JValue](
+            case (name, JUndefined, _) =>
+              Future(
+                HttpResponse[JValue](
+                  BadRequest,
+                  content = Some(JString("Missing `type` of job."))))
+
+            case (JUndefined, tpe, _) =>
+              Future(
+                HttpResponse[JValue](
+                  BadRequest,
+                  content = Some(JString("Missing `name` of job."))))
+
+            case (name, tpe, _) =>
+              Future(HttpResponse[JValue](
                 BadRequest,
-                content =
-                  Some(JString("Missing both `name` and `type` of job."))))
-
-          case (name, JUndefined, _) =>
-            Future(
-              HttpResponse[JValue](
-                BadRequest,
-                content = Some(JString("Missing `type` of job."))))
-
-          case (JUndefined, tpe, _) =>
-            Future(
-              HttpResponse[JValue](
-                BadRequest,
-                content = Some(JString("Missing `name` of job."))))
-
-          case (name, tpe, _) =>
-            Future(HttpResponse[JValue](
-              BadRequest,
-              content = Some(JString(
-                "Expected `name` and `type` to be strings, but found '%s' and '%s'." format (name, tpe)))))
-        }
-      })
-    } getOrElse {
-      Failure(DispatchError(BadRequest, "Missing request body (JSON)."))
+                content = Some(JString(
+                  "Expected `name` and `type` to be strings, but found '%s' and '%s'." format (name, tpe)))))
+          }
+        })
+      } getOrElse {
+        Failure(DispatchError(BadRequest, "Missing request body (JSON)."))
+      }
     }
-  }
 
   val metadata = AboutMetadata(
     ParameterMetadata('apiKey, None),
@@ -148,18 +151,19 @@ class GetJobHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    request.parameters.get('jobId) map { jobId =>
-      Success(jobs.findJob(jobId) map {
-        case Some(job) =>
-          HttpResponse[JValue](OK, content = Some(job.serialize))
-        case None =>
-          HttpResponse[JValue](NotFound)
-      })
-    } getOrElse {
-      Failure(DispatchError(BadRequest, "Missing 'jobId paramter."))
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      request.parameters.get('jobId) map { jobId =>
+        Success(jobs.findJob(jobId) map {
+          case Some(job) =>
+            HttpResponse[JValue](OK, content = Some(job.serialize))
+          case None =>
+            HttpResponse[JValue](NotFound)
+        })
+      } getOrElse {
+        Failure(DispatchError(BadRequest, "Missing 'jobId paramter."))
+      }
     }
-  }
 
   val metadata = AboutMetadata(
     ParameterMetadata('jobId, None),
@@ -172,22 +176,23 @@ class GetJobStatusHandler(jobs: JobManager[Future])(
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    request.parameters.get('jobId) map { jobId =>
-      Success(jobs.getStatus(jobId) map (_ map { status =>
-        HttpResponse[JValue](
-          OK,
-          content = Some(Status.toMessage(status).serialize))
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      request.parameters.get('jobId) map { jobId =>
+        Success(jobs.getStatus(jobId) map (_ map { status =>
+          HttpResponse[JValue](
+            OK,
+            content = Some(Status.toMessage(status).serialize))
+        } getOrElse {
+          HttpResponse[JValue](
+            NotFound,
+            content = Some(
+              JString("No status has been created for this job yet.")))
+        }))
       } getOrElse {
-        HttpResponse[JValue](
-          NotFound,
-          content =
-            Some(JString("No status has been created for this job yet.")))
-      }))
-    } getOrElse {
-      Failure(DispatchError(BadRequest, "Missing 'jobId paramter."))
+        Failure(DispatchError(BadRequest, "Missing 'jobId paramter."))
+      }
     }
-  }
 
   val metadata = AboutMetadata(
     ParameterMetadata('jobId, None),
@@ -200,54 +205,58 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    (for {
-      contentM <- request.content
-      jobId <- request.parameters get 'jobId
-    } yield {
-      Success(contentM flatMap { content =>
-        (content \ "message", content \ "progress", content \ "unit") match {
-          case (JString(msg), JNum(progress), JString(unit)) =>
-            val prevId = request.parameters.get('prevStatusId) match {
-              case Some(StatusId(id)) => Right(Some(id))
-              case Some(badId)        => Left("Invalid status ID '%s'." format badId)
-              case None               => Right(None)
-            }
-            val result = prevId.right map { prevId =>
-              jobs.updateStatus(
-                jobId,
-                prevId,
-                msg,
-                progress,
-                unit,
-                content \? "info")
-            } match {
-              case Right(resultM) => resultM
-              case Left(error)    => Future(Left(error))
-            }
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      (for {
+        contentM <- request.content
+        jobId <- request.parameters get 'jobId
+      } yield {
+        Success(contentM flatMap { content =>
+          (content \ "message", content \ "progress", content \ "unit") match {
+            case (JString(msg), JNum(progress), JString(unit)) =>
+              val prevId =
+                request.parameters.get('prevStatusId) match {
+                  case Some(StatusId(id)) => Right(Some(id))
+                  case Some(badId) =>
+                    Left("Invalid status ID '%s'." format badId)
+                  case None => Right(None)
+                }
+              val result =
+                prevId.right map { prevId =>
+                  jobs.updateStatus(
+                    jobId,
+                    prevId,
+                    msg,
+                    progress,
+                    unit,
+                    content \? "info")
+                } match {
+                  case Right(resultM) => resultM
+                  case Left(error)    => Future(Left(error))
+                }
 
-            result map {
-              case Right(status) =>
-                val msg = Status.toMessage(status)
-                HttpResponse[JValue](OK, content = Some(msg.serialize))
-              case Left(error) =>
-                HttpResponse[JValue](Conflict, content = Some(JString(error)))
-            }
+              result map {
+                case Right(status) =>
+                  val msg = Status.toMessage(status)
+                  HttpResponse[JValue](OK, content = Some(msg.serialize))
+                case Left(error) =>
+                  HttpResponse[JValue](Conflict, content = Some(JString(error)))
+              }
 
-          case (_, _, _) =>
-            Future(HttpResponse[JValue](
-              BadRequest,
-              content = Some(JString(
-                "Status update requires fields 'message', 'progress', 'unit'."))))
-        }
-      })
-    }) getOrElse {
-      Failure(
-        DispatchError(
-          BadRequest,
-          "Status updates require both a JSON content body and a 'jobId."))
+            case (_, _, _) =>
+              Future(HttpResponse[JValue](
+                BadRequest,
+                content = Some(JString(
+                  "Status update requires fields 'message', 'progress', 'unit'."))))
+          }
+        })
+      }) getOrElse {
+        Failure(
+          DispatchError(
+            BadRequest,
+            "Status updates require both a JSON content body and a 'jobId."))
+      }
     }
-  }
 
   val metadata = AboutMetadata(
     AndMetadata(
@@ -264,18 +273,19 @@ class ListChannelsHandler(jobs: JobManager[Future])(
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    Success(request.parameters get 'jobId map { jobId =>
-      jobs.listChannels(jobId) map { channels =>
-        HttpResponse(OK, content = Some(channels.serialize))
-      }
-    } getOrElse {
-      Future(
-        HttpResponse(
-          BadRequest,
-          content = Some(JString("Missing required paramter 'jobId"))))
-    })
-  }
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      Success(request.parameters get 'jobId map { jobId =>
+        jobs.listChannels(jobId) map { channels =>
+          HttpResponse(OK, content = Some(channels.serialize))
+        }
+      } getOrElse {
+        Future(
+          HttpResponse(
+            BadRequest,
+            content = Some(JString("Missing required paramter 'jobId"))))
+      })
+    }
 
   val metadata = AboutMetadata(
     ParameterMetadata('jobId, None),
@@ -289,24 +299,25 @@ class AddMessageHandler(jobs: JobManager[Future])(
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    (for {
-      jobId <- request.parameters get 'jobId
-      channel <- request.parameters get 'channel
-      contentM <- request.content
-    } yield {
-      Success(contentM flatMap { message =>
-        jobs.addMessage(jobId, channel, message) map { message =>
-          HttpResponse[JValue](Created, content = Some(message.serialize))
-        }
-      })
-    }) getOrElse {
-      Failure(
-        DispatchError(
-          BadRequest,
-          "Messages require a JSON body in the request."))
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      (for {
+        jobId <- request.parameters get 'jobId
+        channel <- request.parameters get 'channel
+        contentM <- request.content
+      } yield {
+        Success(contentM flatMap { message =>
+          jobs.addMessage(jobId, channel, message) map { message =>
+            HttpResponse[JValue](Created, content = Some(message.serialize))
+          }
+        })
+      }) getOrElse {
+        Failure(
+          DispatchError(
+            BadRequest,
+            "Messages require a JSON body in the request."))
+      }
     }
-  }
 
   val metadata = AboutMetadata(
     AndMetadata(
@@ -323,32 +334,38 @@ class ListMessagesHandler(jobs: JobManager[Future])(
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    (for {
-      jobId <- request.parameters get 'jobId
-      channel <- request.parameters get 'channel
-    } yield {
-      val prevId = request.parameters get 'after match {
-        case Some(MessageId(id)) => Right(Some(id))
-        case Some(badId) =>
-          Left("Invalid message ID in 'after '%s'." format badId)
-        case None => Right(None)
-      }
-
-      Success(prevId match {
-        case Right(prevId) =>
-          jobs.listMessages(jobId, channel, prevId) map { messages =>
-            HttpResponse[JValue](OK, content = Some(messages.toList.serialize))
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      (for {
+        jobId <- request.parameters get 'jobId
+        channel <- request.parameters get 'channel
+      } yield {
+        val prevId =
+          request.parameters get 'after match {
+            case Some(MessageId(id)) => Right(Some(id))
+            case Some(badId) =>
+              Left("Invalid message ID in 'after '%s'." format badId)
+            case None => Right(None)
           }
-        case Left(error) =>
-          Future(
-            HttpResponse[JValue](BadRequest, content = Some(JString(error))))
-      })
-    }) getOrElse {
-      Failure(
-        DispatchError(BadRequest, "Messages require a 'jobId and a 'channel."))
+
+        Success(prevId match {
+          case Right(prevId) =>
+            jobs.listMessages(jobId, channel, prevId) map { messages =>
+              HttpResponse[JValue](
+                OK,
+                content = Some(messages.toList.serialize))
+            }
+          case Left(error) =>
+            Future(
+              HttpResponse[JValue](BadRequest, content = Some(JString(error))))
+        })
+      }) getOrElse {
+        Failure(
+          DispatchError(
+            BadRequest,
+            "Messages require a 'jobId and a 'channel."))
+      }
     }
-  }
 
   val metadata = AboutMetadata(
     AndMetadata(
@@ -365,23 +382,24 @@ class GetJobStateHandler(jobs: JobManager[Future])(
     with Logging {
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    Success(request.parameters get 'jobId map { jobId =>
-      jobs.findJob(jobId) map {
-        case Some(job) =>
-          HttpResponse[JValue](OK, content = Some(job.state.serialize))
-        case None =>
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      Success(request.parameters get 'jobId map { jobId =>
+        jobs.findJob(jobId) map {
+          case Some(job) =>
+            HttpResponse[JValue](OK, content = Some(job.state.serialize))
+          case None =>
+            HttpResponse[JValue](
+              NotFound,
+              content = Some(JString("No job found with id " + jobId)))
+        }
+      } getOrElse {
+        Future(
           HttpResponse[JValue](
-            NotFound,
-            content = Some(JString("No job found with id " + jobId)))
-      }
-    } getOrElse {
-      Future(
-        HttpResponse[JValue](
-          BadRequest,
-          content = Some(JString("Missing required 'jobId"))))
-    })
-  }
+            BadRequest,
+            content = Some(JString("Missing required 'jobId"))))
+      })
+    }
 
   val metadata = AboutMetadata(
     ParameterMetadata('jobId, None),
@@ -399,22 +417,23 @@ class PutJobStateHandler(jobs: JobManager[Future])(
     import scalaz.syntax.traverse._
     import scalaz.std.option._
 
-    val result = for {
-      timestamp <- (obj \? "timestamp")
-        .map(_.validated[DateTime])
-        .sequence[
-          ({
-            type λ[α] = Validation[Error, α]
-          })#λ,
-          DateTime]
-      reason <- (obj \? "reason")
-        .map(_.validated[String])
-        .sequence[
-          ({
-            type λ[α] = Validation[Error, α]
-          })#λ,
-          String]
-    } yield (timestamp getOrElse (new DateTime), reason)
+    val result =
+      for {
+        timestamp <- (obj \? "timestamp")
+          .map(_.validated[DateTime])
+          .sequence[
+            ({
+              type λ[α] = Validation[Error, α]
+            })#λ,
+            DateTime]
+        reason <- (obj \? "reason")
+          .map(_.validated[String])
+          .sequence[
+            ({
+              type λ[α] = Validation[Error, α]
+            })#λ,
+            String]
+      } yield (timestamp getOrElse (new DateTime), reason)
 
     result match {
       case Success((timestamp, reason)) =>
@@ -434,85 +453,88 @@ class PutJobStateHandler(jobs: JobManager[Future])(
 
   val service: HttpRequest[Future[JValue]] => Validation[
     NotServed,
-    Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
-    Success((for {
-      jobId <- request.parameters get 'jobId
-      contentM <- request.content
-    } yield {
-      contentM flatMap {
-        obj =>
-          (obj \ "state") match {
-            case JString("started") =>
-              transition(obj) { (timestamp, _) =>
-                jobs.start(jobId, timestamp) map (Validation.fromEither(
-                  _)) map (_ map (_.state))
-              }
+    Future[HttpResponse[JValue]]] =
+    (request: HttpRequest[Future[JValue]]) => {
+      Success((for {
+        jobId <- request.parameters get 'jobId
+        contentM <- request.content
+      } yield {
+        contentM flatMap {
+          obj =>
+            (obj \ "state") match {
+              case JString("started") =>
+                transition(obj) { (timestamp, _) =>
+                  jobs.start(jobId, timestamp) map (Validation.fromEither(
+                    _)) map (_ map (_.state))
+                }
 
-            case JString("cancelled") =>
-              transition(obj) {
-                case (timestamp, Some(reason)) =>
-                  jobs.cancel(jobId, reason, timestamp) map (Validation
-                    .fromEither(_)) map (_ map (_.state))
-                case (_, _) =>
-                  Future(
-                    Failure("Missing required field 'reason' in request body."))
-              }
+              case JString("cancelled") =>
+                transition(obj) {
+                  case (timestamp, Some(reason)) =>
+                    jobs.cancel(jobId, reason, timestamp) map (Validation
+                      .fromEither(_)) map (_ map (_.state))
+                  case (_, _) =>
+                    Future(
+                      Failure(
+                        "Missing required field 'reason' in request body."))
+                }
 
-            case JString("finished") =>
-              transition(obj) { (timestamp, _) =>
-                jobs.finish(jobId, timestamp) map (Validation.fromEither(
-                  _)) map (_ map (_.state))
-              }
+              case JString("finished") =>
+                transition(obj) { (timestamp, _) =>
+                  jobs.finish(jobId, timestamp) map (Validation.fromEither(
+                    _)) map (_ map (_.state))
+                }
 
-            case JString("aborted") =>
-              transition(obj) {
-                case (timestamp, Some(reason)) =>
-                  jobs.abort(jobId, reason, timestamp) map (Validation
-                    .fromEither(_)) map (_ map (_.state))
-                case (_, _) =>
-                  Future(
-                    Failure("Missing required field 'reason' in request body."))
-              }
+              case JString("aborted") =>
+                transition(obj) {
+                  case (timestamp, Some(reason)) =>
+                    jobs.abort(jobId, reason, timestamp) map (Validation
+                      .fromEither(_)) map (_ map (_.state))
+                  case (_, _) =>
+                    Future(
+                      Failure(
+                        "Missing required field 'reason' in request body."))
+                }
 
-            case JString("expired") =>
-              transition(obj) { (timestamp, _) =>
-                jobs.expire(jobId, timestamp) map (Validation.fromEither(
-                  _)) map (_ map (_.state))
-              }
+              case JString("expired") =>
+                transition(obj) { (timestamp, _) =>
+                  jobs.expire(jobId, timestamp) map (Validation.fromEither(
+                    _)) map (_ map (_.state))
+                }
 
-            case JString(state) =>
-              Future(
-                HttpResponse[JValue](
-                  BadRequest,
-                  content = Some(JString(
-                    "Invalid 'state '%s'. Expected one of 'started', 'cancelled', 'finished', 'aborted' or 'expired'." format state
-                  ))))
-
-            case JUndefined =>
-              Future(
-                HttpResponse[JValue](
-                  BadRequest,
-                  content = Some(JString("No 'state given."))))
-
-            case other =>
-              Future(
-                HttpResponse[JValue](
-                  BadRequest,
-                  content = Some(
-                    JString(
-                      "Invalid 'state given: %s is not a string.".format(
-                        other.renderCompact)
+              case JString(state) =>
+                Future(
+                  HttpResponse[JValue](
+                    BadRequest,
+                    content = Some(JString(
+                      "Invalid 'state '%s'. Expected one of 'started', 'cancelled', 'finished', 'aborted' or 'expired'." format state
                     ))))
-          }
-      }
-    }) getOrElse {
-      Future(
-        HttpResponse[JValue](
-          BadRequest,
-          content = Some(JString(
-            "Both 'jobId parameter and JSON request body are required."))))
-    })
-  }
+
+              case JUndefined =>
+                Future(
+                  HttpResponse[JValue](
+                    BadRequest,
+                    content = Some(JString("No 'state given."))))
+
+              case other =>
+                Future(
+                  HttpResponse[JValue](
+                    BadRequest,
+                    content = Some(
+                      JString(
+                        "Invalid 'state given: %s is not a string.".format(
+                          other.renderCompact)
+                      ))))
+            }
+        }
+      }) getOrElse {
+        Future(
+          HttpResponse[JValue](
+            BadRequest,
+            content = Some(JString(
+              "Both 'jobId parameter and JSON request body are required."))))
+      })
+    }
 
   val metadata = AboutMetadata(
     ParameterMetadata('jobId, None),
@@ -527,31 +549,33 @@ class CreateResultHandler(jobs: JobManager[Future])(
 
   val service: HttpRequest[ByteChunk] => Validation[
     NotServed,
-    Future[HttpResponse[ByteChunk]]] = (request: HttpRequest[ByteChunk]) => {
-    Success((for {
-      jobId <- request.parameters get 'jobId
-      chunks <- request.content
-    } yield {
-      val mimeType = request.mimeTypes.headOption
-      val data = chunks.fold(_ :: StreamT.empty[Future, Array[Byte]], identity)
+    Future[HttpResponse[ByteChunk]]] =
+    (request: HttpRequest[ByteChunk]) => {
+      Success((for {
+        jobId <- request.parameters get 'jobId
+        chunks <- request.content
+      } yield {
+        val mimeType = request.mimeTypes.headOption
+        val data = chunks
+          .fold(_ :: StreamT.empty[Future, Array[Byte]], identity)
 
-      jobs.setResult(jobId, mimeType, data) map {
-        case Right(_) =>
-          HttpResponse[ByteChunk](OK)
-        case Left(error) =>
+        jobs.setResult(jobId, mimeType, data) map {
+          case Right(_) =>
+            HttpResponse[ByteChunk](OK)
+          case Left(error) =>
+            HttpResponse[ByteChunk](
+              NotFound,
+              content = Some(ByteChunk(error.getBytes("UTF-8"))))
+        }
+      }) getOrElse {
+        Future(
           HttpResponse[ByteChunk](
-            NotFound,
-            content = Some(ByteChunk(error.getBytes("UTF-8"))))
-      }
-    }) getOrElse {
-      Future(
-        HttpResponse[ByteChunk](
-          BadRequest,
-          content = Some(
-            ByteChunk("Missing required 'jobId parameter or request body."
-              .getBytes("UTF-8")))))
-    })
-  }
+            BadRequest,
+            content = Some(
+              ByteChunk("Missing required 'jobId parameter or request body."
+                .getBytes("UTF-8")))))
+      })
+    }
 
   val metadata = AboutMetadata(
     ParameterMetadata('jobId, None),
@@ -565,26 +589,28 @@ class GetResultHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
 
   val service: HttpRequest[ByteChunk] => Validation[
     NotServed,
-    Future[HttpResponse[ByteChunk]]] = (request: HttpRequest[ByteChunk]) => {
-    Success(request.parameters get 'jobId map { jobId =>
-      jobs.findJob(jobId) flatMap {
-        case None =>
-          Future(HttpResponse[ByteChunk](NotFound))
-        case Some(job) =>
-          jobs.getResult(jobId) map {
-            case Left(error) =>
-              HttpResponse[ByteChunk](NoContent)
-            case Right((mimeType, data)) =>
-              val headers = mimeType.foldLeft(HttpHeaders.Empty) {
-                (headers, mimeType) => headers + `Content-Type`(mimeType)
-              }
-              HttpResponse[ByteChunk](OK, headers, Some(Right(data)))
-          }
-      }
-    } getOrElse {
-      Future(HttpResponse[ByteChunk](BadRequest))
-    })
-  }
+    Future[HttpResponse[ByteChunk]]] =
+    (request: HttpRequest[ByteChunk]) => {
+      Success(request.parameters get 'jobId map { jobId =>
+        jobs.findJob(jobId) flatMap {
+          case None =>
+            Future(HttpResponse[ByteChunk](NotFound))
+          case Some(job) =>
+            jobs.getResult(jobId) map {
+              case Left(error) =>
+                HttpResponse[ByteChunk](NoContent)
+              case Right((mimeType, data)) =>
+                val headers =
+                  mimeType.foldLeft(HttpHeaders.Empty) { (headers, mimeType) =>
+                    headers + `Content-Type`(mimeType)
+                  }
+                HttpResponse[ByteChunk](OK, headers, Some(Right(data)))
+            }
+        }
+      } getOrElse {
+        Future(HttpResponse[ByteChunk](BadRequest))
+      })
+    }
 
   val metadata = AboutMetadata(
     ParameterMetadata('jobId, None),

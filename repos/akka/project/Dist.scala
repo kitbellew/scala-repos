@@ -30,8 +30,9 @@ object Dist {
   val distDirectory = SettingKey[File]("dist-directory")
   val distUnzipped = SettingKey[File]("dist-unzipped")
   val distFile = SettingKey[File]("dist-file")
-  val dist =
-    TaskKey[File]("dist", "Create a zipped distribution of everything.")
+  val dist = TaskKey[File](
+    "dist",
+    "Create a zipped distribution of everything.")
 
   lazy val settings: Seq[Setting[_]] = Seq(
     distExclude := Seq.empty,
@@ -85,8 +86,10 @@ object Dist {
       projectRef: ProjectRef,
       structure: Load.BuildStructure,
       exclude: Seq[String]): Seq[String] = {
-    val aggregate =
-      Project.getProject(projectRef, structure).toSeq.flatMap(_.aggregate)
+    val aggregate = Project
+      .getProject(projectRef, structure)
+      .toSeq
+      .flatMap(_.aggregate)
     aggregate flatMap { ref =>
       if (exclude contains ref.project)
         Seq.empty

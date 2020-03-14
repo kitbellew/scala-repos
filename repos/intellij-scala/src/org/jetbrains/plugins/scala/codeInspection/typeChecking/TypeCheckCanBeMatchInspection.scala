@@ -99,8 +99,10 @@ class TypeCheckCanBeMatchQuickFix(
     val ifSt = getSecondElement
     if (!ifSt.isValid || !isInstOf.isValid)
       return
-    val (matchStmtOption, renameData) =
-      buildMatchStmt(ifSt, isInstOf, onlyFirst = true)
+    val (matchStmtOption, renameData) = buildMatchStmt(
+      ifSt,
+      isInstOf,
+      onlyFirst = true)
     for (matchStmt <- matchStmtOption) {
       val newMatch = inWriteAction {
         ifSt
@@ -126,8 +128,10 @@ object TypeCheckToMatchUtil {
     baseExpr(isInstOfUnderFix) match {
       case Some(expr: ScExpression) =>
         val matchedExprText = expr.getText
-        val (caseClausesText, renameData) =
-          buildCaseClausesText(ifStmt, isInstOfUnderFix, onlyFirst)
+        val (caseClausesText, renameData) = buildCaseClausesText(
+          ifStmt,
+          isInstOfUnderFix,
+          onlyFirst)
         val matchStmtText =
           s"$matchedExprText match { \n " + caseClausesText + "}"
         val matchStmt = ScalaPsiElementFactory
@@ -334,8 +338,9 @@ object TypeCheckToMatchUtil {
 
     if (ifStmts != Nil) {
       val lastElse = ifStmts.last.elseBranch
-      val defaultText: Option[String] =
-        buildDefaultCaseClauseText(lastElse, ifStmt.getProject)
+      val defaultText: Option[String] = buildDefaultCaseClauseText(
+        lastElse,
+        ifStmt.getProject)
       defaultText.foreach(builder.append)
     }
 
@@ -379,35 +384,37 @@ object TypeCheckToMatchUtil {
     def equalTypes(
         firstCall: ScGenericCall,
         secondCall: ScGenericCall): Boolean = {
-      val option = for {
-        firstArgs <- firstCall.typeArgs
-        secondArgs <- secondCall.typeArgs
-        firstTypes = firstArgs.typeArgs
-        secondTypes = secondArgs.typeArgs
-        if firstTypes.size == 1 && secondTypes.size == 1
-      } yield {
-        val firstType = firstTypes.head.calcType
-        val secondType = secondTypes.head.calcType
-        firstType.equiv(secondType)
-      }
+      val option =
+        for {
+          firstArgs <- firstCall.typeArgs
+          secondArgs <- secondCall.typeArgs
+          firstTypes = firstArgs.typeArgs
+          secondTypes = secondArgs.typeArgs
+          if firstTypes.size == 1 && secondTypes.size == 1
+        } yield {
+          val firstType = firstTypes.head.calcType
+          val secondType = secondTypes.head.calcType
+          firstType.equiv(secondType)
+        }
       option.getOrElse(false)
     }
 
     val result = collection.mutable.ArrayBuffer[ScGenericCall]()
-    val visitor = new ScalaRecursiveElementVisitor() {
-      override def visitGenericCallExpression(call: ScGenericCall) {
-        for {
-          base1 <- baseExpr(isInstOfCall)
-          base2 <- baseExpr(call)
-          if isAsInstOfCall(call)
-          if equalTypes(call, isInstOfCall)
-          if equiv(base1, base2)
-        } {
-          result += call
+    val visitor =
+      new ScalaRecursiveElementVisitor() {
+        override def visitGenericCallExpression(call: ScGenericCall) {
+          for {
+            base1 <- baseExpr(isInstOfCall)
+            base2 <- baseExpr(call)
+            if isAsInstOfCall(call)
+            if equalTypes(call, isInstOfCall)
+            if equiv(base1, base2)
+          } {
+            result += call
+          }
+          super.visitGenericCallExpression(call)
         }
-        super.visitGenericCallExpression(call)
       }
-    }
 
     for (expr <- body)
       expr.accept(visitor)
@@ -429,26 +436,28 @@ object TypeCheckToMatchUtil {
       val dependents =
         mutable.SortedSet()(Ordering.by[ScalaPsiElement, Int](_.getTextOffset))
 
-      val patternVisitor = new ScalaRecursiveElementVisitor() {
-        override def visitPattern(pat: ScPattern) {
-          pat match {
-            case bp: ScBindingPattern if bp.name == name =>
-              primary += bp
-            case _ =>
+      val patternVisitor =
+        new ScalaRecursiveElementVisitor() {
+          override def visitPattern(pat: ScPattern) {
+            pat match {
+              case bp: ScBindingPattern if bp.name == name =>
+                primary += bp
+              case _ =>
+            }
+            super.visitPattern(pat)
           }
-          super.visitPattern(pat)
         }
-      }
 
-      val referenceVisitor = new ScalaRecursiveElementVisitor() {
-        override def visitReferenceExpression(ref: ScReferenceExpression) {
-          for (prim <- primary) {
-            if (ref.refName == name && ref.resolve() == prim)
-              dependents += ref
+      val referenceVisitor =
+        new ScalaRecursiveElementVisitor() {
+          override def visitReferenceExpression(ref: ScReferenceExpression) {
+            for (prim <- primary) {
+              if (ref.refName == name && ref.resolve() == prim)
+                dependents += ref
+            }
+            super.visitReferenceExpression(ref)
           }
-          super.visitReferenceExpression(ref)
         }
-      }
 
       caseClause.accept(patternVisitor)
       caseClause.accept(referenceVisitor)
@@ -470,10 +479,11 @@ object TypeCheckToMatchUtil {
     conditions match {
       case Nil => None
       case _ =>
-        val guardConditions: List[ScExpression] =
-          conditions.filterNot(equiv(_, isInstOfCall))
-        val guardConditionsText: String =
-          guardConditions.map(_.getText).mkString(" && ")
+        val guardConditions: List[ScExpression] = conditions.filterNot(
+          equiv(_, isInstOfCall))
+        val guardConditionsText: String = guardConditions
+          .map(_.getText)
+          .mkString(" && ")
         val guard = ScalaPsiElementFactory
           .createExpressionFromText(guardConditionsText, condition)
           .asInstanceOf[ScExpression]
@@ -483,22 +493,23 @@ object TypeCheckToMatchUtil {
   }
 
   def equiv(elem1: PsiElement, elem2: PsiElement): Boolean = {
-    val comparator = new Comparator[PsiElement]() {
-      def compare(element1: PsiElement, element2: PsiElement): Int = {
-        if (element1 == element2)
-          return 0
-        (element1, element2) match {
-          case (par1: ScParameter, par2: ScParameter) =>
-            val name1 = par1.name
-            val name2 = par2.name
-            if (name1 != null && name2 != null)
-              name1.compareTo(name2)
-            else
-              1
-          case _ => 1
+    val comparator =
+      new Comparator[PsiElement]() {
+        def compare(element1: PsiElement, element2: PsiElement): Int = {
+          if (element1 == element2)
+            return 0
+          (element1, element2) match {
+            case (par1: ScParameter, par2: ScParameter) =>
+              val name1 = par1.name
+              val name2 = par2.name
+              if (name1 != null && name2 != null)
+                name1.compareTo(name2)
+              else
+                1
+            case _ => 1
+          }
         }
       }
-    }
     PsiEquivalenceUtil.areElementsEquivalent(elem1, elem2, comparator, false)
   }
 

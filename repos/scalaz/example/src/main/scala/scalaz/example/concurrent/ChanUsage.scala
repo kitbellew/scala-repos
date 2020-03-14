@@ -16,8 +16,7 @@ object ChanUsage extends App {
       ()
     }
 
-  def calc(chan: Chan[Int], a: Int) =
-    chan.write((1 to a).sum)
+  def calc(chan: Chan[Int], a: Int) = chan.write((1 to a).sum)
 
   val io =
     for {

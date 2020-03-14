@@ -29,11 +29,12 @@ trait Cancellable {
 }
 
 object Cancellable {
-  val nil: Cancellable = new Cancellable {
-    def isCancelled = false
-    def cancel() {}
-    def linkTo(other: Cancellable) {}
-  }
+  val nil: Cancellable =
+    new Cancellable {
+      def isCancelled = false
+      def cancel() {}
+      def linkTo(other: Cancellable) {}
+    }
 }
 
 class CancellableSink(f: => Unit) extends Cancellable {

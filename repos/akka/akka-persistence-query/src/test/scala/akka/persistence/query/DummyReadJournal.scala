@@ -41,8 +41,7 @@ object DummyReadJournalProvider {
 
 class DummyReadJournalProvider extends ReadJournalProvider {
 
-  override val scaladslReadJournal: DummyReadJournal =
-    new DummyReadJournal
+  override val scaladslReadJournal: DummyReadJournal = new DummyReadJournal
 
   override val javadslReadJournal: DummyReadJournalForJava =
     new DummyReadJournalForJava(scaladslReadJournal)

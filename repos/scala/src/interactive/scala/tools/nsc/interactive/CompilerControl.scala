@@ -367,8 +367,7 @@ trait CompilerControl { self: Global =>
     def apply() = reload(sources, response)
     override def toString = "reload " + sources
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class FilesDeletedItem(
@@ -378,8 +377,7 @@ trait CompilerControl { self: Global =>
     def apply() = filesDeleted(sources, response)
     override def toString = "files deleted " + sources
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class AskTypeAtItem(pos: Position, response: Response[Tree])
@@ -387,8 +385,7 @@ trait CompilerControl { self: Global =>
     def apply() = self.getTypedTreeAt(pos, response)
     override def toString = "typeat " + pos.source + " " + pos.show
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class AskTypeItem(
@@ -399,8 +396,7 @@ trait CompilerControl { self: Global =>
     def apply() = self.getTypedTree(source, forceReload, response)
     override def toString = "typecheck"
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class AskTypeCompletionItem(
@@ -410,8 +406,7 @@ trait CompilerControl { self: Global =>
     def apply() = self.getTypeCompletion(pos, response)
     override def toString = "type completion " + pos.source + " " + pos.show
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class AskScopeCompletionItem(
@@ -421,8 +416,7 @@ trait CompilerControl { self: Global =>
     def apply() = self.getScopeCompletion(pos, response)
     override def toString = "scope completion " + pos.source + " " + pos.show
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   class AskToDoFirstItem(val source: SourceFile) extends WorkItem {
@@ -443,8 +437,7 @@ trait CompilerControl { self: Global =>
     def apply() = self.getLinkPos(sym, source, response)
     override def toString = "linkpos " + sym + " in " + source
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class AskDocCommentItem(
@@ -459,8 +452,7 @@ trait CompilerControl { self: Global =>
       "doc comment " + sym + " in " + source + " with fragments:" + fragments
         .mkString("(", ",", ")")
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class AskLoadedTypedItem(
@@ -472,8 +464,7 @@ trait CompilerControl { self: Global =>
       self.waitLoadedTyped(source, response, keepLoaded, this.onCompilerThread)
     override def toString = "wait loaded & typed " + source
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   case class AskParsedEnteredItem(
@@ -486,8 +477,7 @@ trait CompilerControl { self: Global =>
     override def toString =
       "getParsedEntered " + source + ", keepLoaded = " + keepLoaded
 
-    def raiseMissing() =
-      response raise new MissingResponse
+    def raiseMissing() = response raise new MissingResponse
   }
 
   /** A do-nothing work scheduler that responds immediately with MissingResponse.
@@ -514,10 +504,11 @@ trait CompilerControl { self: Global =>
     override def askDoQuickly[A](op: () => A): InterruptReq {
       type R = A
     } = {
-      val ir = new InterruptReq {
-        type R = A
-        val todo = () => throw new MissingResponse
-      }
+      val ir =
+        new InterruptReq {
+          type R = A
+          val todo = () => throw new MissingResponse
+        }
       ir.execute()
       ir
     }

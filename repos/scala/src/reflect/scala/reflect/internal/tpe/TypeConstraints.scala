@@ -62,8 +62,9 @@ private[internal] trait TypeConstraints {
     *  in every TypeConstraint, I lifted them out.
     */
   private lazy val numericLoBound = IntTpe
-  private lazy val numericHiBound =
-    intersectionType(List(ByteTpe, CharTpe), ScalaPackageClass)
+  private lazy val numericHiBound = intersectionType(
+    List(ByteTpe, CharTpe),
+    ScalaPackageClass)
 
   /** A class expressing upper and lower bounds constraints of type variables,
     * as well as their instantiations.
@@ -115,10 +116,11 @@ private[internal] trait TypeConstraints {
       // depends on these subtype tests being performed to make forward progress when
       // there are mutually recursive type vars.
       // See pos/t6367 and pos/t6499 for the competing test cases.
-      val mustConsider = tp.typeSymbol match {
-        case NothingClass => true
-        case _            => !(lobounds contains tp)
-      }
+      val mustConsider =
+        tp.typeSymbol match {
+          case NothingClass => true
+          case _            => !(lobounds contains tp)
+        }
       if (mustConsider) {
         if (isNumericBound && isNumericValueType(tp)) {
           if (numlo == NoType || isNumericSubType(numlo, tp))
@@ -143,10 +145,11 @@ private[internal] trait TypeConstraints {
     def addHiBound(tp: Type, isNumericBound: Boolean = false) {
       // My current test case only demonstrates the need to let Nothing through as
       // a lower bound, but I suspect the situation is symmetrical.
-      val mustConsider = tp.typeSymbol match {
-        case AnyClass => true
-        case _        => !(hibounds contains tp)
-      }
+      val mustConsider =
+        tp.typeSymbol match {
+          case AnyClass => true
+          case _        => !(hibounds contains tp)
+        }
       if (mustConsider) {
         checkWidening(tp)
         if (isNumericBound && isNumericValueType(tp)) {
@@ -182,16 +185,18 @@ private[internal] trait TypeConstraints {
 
     override def toString = {
       val boundsStr = {
-        val lo = loBounds filterNot typeIsNothing match {
-          case Nil       => ""
-          case tp :: Nil => " >: " + tp
-          case tps       => tps.mkString(" >: (", ", ", ")")
-        }
-        val hi = hiBounds filterNot typeIsAny match {
-          case Nil       => ""
-          case tp :: Nil => " <: " + tp
-          case tps       => tps.mkString(" <: (", ", ", ")")
-        }
+        val lo =
+          loBounds filterNot typeIsNothing match {
+            case Nil       => ""
+            case tp :: Nil => " >: " + tp
+            case tps       => tps.mkString(" >: (", ", ", ")")
+          }
+        val hi =
+          hiBounds filterNot typeIsAny match {
+            case Nil       => ""
+            case tp :: Nil => " <: " + tp
+            case tps       => tps.mkString(" <: (", ", ", ")")
+          }
         lo + hi
       }
       if (inst eq NoType)

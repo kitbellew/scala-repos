@@ -65,8 +65,8 @@ class GossipSpec extends WordSpec with Matchers {
     }
 
     "not reach convergence when unreachable" in {
-      val r1 =
-        Reachability.empty.unreachable(b1.uniqueAddress, a1.uniqueAddress)
+      val r1 = Reachability.empty
+        .unreachable(b1.uniqueAddress, a1.uniqueAddress)
       val g1 = (Gossip(
         members = SortedSet(a1, b1),
         overview = GossipOverview(reachability = r1)))
@@ -79,8 +79,8 @@ class GossipSpec extends WordSpec with Matchers {
 
     "reach convergence when downed node has observed unreachable" in {
       // e3 is Down
-      val r1 =
-        Reachability.empty.unreachable(e3.uniqueAddress, a1.uniqueAddress)
+      val r1 = Reachability.empty
+        .unreachable(e3.uniqueAddress, a1.uniqueAddress)
       val g1 = (Gossip(
         members = SortedSet(a1, b1, e3),
         overview = GossipOverview(reachability = r1)))
@@ -111,8 +111,8 @@ class GossipSpec extends WordSpec with Matchers {
       val g1 = Gossip(
         members = SortedSet(a1, b1, c1),
         overview = GossipOverview(reachability = r1))
-      val r2 =
-        Reachability.empty.unreachable(a1.uniqueAddress, d1.uniqueAddress)
+      val r2 = Reachability.empty
+        .unreachable(a1.uniqueAddress, d1.uniqueAddress)
       val g2 = Gossip(
         members = SortedSet(a1, b1, c1, d1),
         overview = GossipOverview(reachability = r2))
@@ -128,8 +128,8 @@ class GossipSpec extends WordSpec with Matchers {
 
     "merge members by removing removed members" in {
       // c3 removed
-      val r1 =
-        Reachability.empty.unreachable(b1.uniqueAddress, a1.uniqueAddress)
+      val r1 = Reachability.empty
+        .unreachable(b1.uniqueAddress, a1.uniqueAddress)
       val g1 = Gossip(
         members = SortedSet(a1, b1),
         overview = GossipOverview(reachability = r1))
@@ -159,8 +159,8 @@ class GossipSpec extends WordSpec with Matchers {
     }
 
     "have leader as first reachable member based on ordering" in {
-      val r1 =
-        Reachability.empty.unreachable(e2.uniqueAddress, c2.uniqueAddress)
+      val r1 = Reachability.empty
+        .unreachable(e2.uniqueAddress, c2.uniqueAddress)
       val g1 = Gossip(
         members = SortedSet(c2, e2),
         overview = GossipOverview(reachability = r1))
@@ -198,8 +198,8 @@ class GossipSpec extends WordSpec with Matchers {
       // a2 and e1 is Joining
       val g1 = Gossip(
         members = SortedSet(a2, b1.copyUp(3), e1),
-        overview = GossipOverview(reachability =
-          Reachability.empty.unreachable(a2.uniqueAddress, e1.uniqueAddress)))
+        overview = GossipOverview(reachability = Reachability.empty
+          .unreachable(a2.uniqueAddress, e1.uniqueAddress)))
       g1.youngestMember should ===(b1)
       val g2 = Gossip(
         members = SortedSet(a2, b1.copyUp(3), e1),

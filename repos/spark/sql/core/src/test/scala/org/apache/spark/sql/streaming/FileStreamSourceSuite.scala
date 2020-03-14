@@ -272,8 +272,10 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     val src = Utils.createTempDir("streaming.src")
     val tmp = Utils.createTempDir("streaming.tmp")
 
-    val textSource =
-      createFileStreamSource("json", src.getCanonicalPath, Some(valueSchema))
+    val textSource = createFileStreamSource(
+      "json",
+      src.getCanonicalPath,
+      Some(valueSchema))
     val filtered = textSource.toDF().filter($"value" contains "keep")
 
     testStream(filtered)(
@@ -334,8 +336,10 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     val src = Utils.createTempDir("streaming.src")
     val tmp = Utils.createTempDir("streaming.tmp")
 
-    val fileSource =
-      createFileStreamSource("parquet", src.getCanonicalPath, Some(valueSchema))
+    val fileSource = createFileStreamSource(
+      "parquet",
+      src.getCanonicalPath,
+      Some(valueSchema))
     val filtered = fileSource.toDF().filter($"value" contains "keep")
 
     testStream(filtered)(

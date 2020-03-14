@@ -438,37 +438,38 @@ class GraphStageDocSpec extends AkkaSpec {
       override def createLogicAndMaterializedValue(
           inheritedAttributes: Attributes): (GraphStageLogic, Future[A]) = {
         val promise = Promise[A]()
-        val logic = new GraphStageLogic(shape) {
+        val logic =
+          new GraphStageLogic(shape) {
 
-          setHandler(
-            in,
-            new InHandler {
-              override def onPush(): Unit = {
-                val elem = grab(in)
-                promise.success(elem)
-                push(out, elem)
+            setHandler(
+              in,
+              new InHandler {
+                override def onPush(): Unit = {
+                  val elem = grab(in)
+                  promise.success(elem)
+                  push(out, elem)
 
-                // replace handler with one just forwarding
-                setHandler(
-                  in,
-                  new InHandler {
-                    override def onPush(): Unit = {
-                      push(out, grab(in))
-                    }
-                  })
+                  // replace handler with one just forwarding
+                  setHandler(
+                    in,
+                    new InHandler {
+                      override def onPush(): Unit = {
+                        push(out, grab(in))
+                      }
+                    })
+                }
               }
-            }
-          )
+            )
 
-          setHandler(
-            out,
-            new OutHandler {
-              override def onPull(): Unit = {
-                pull(in)
-              }
-            })
+            setHandler(
+              out,
+              new OutHandler {
+                override def onPull(): Unit = {
+                  pull(in)
+                }
+              })
 
-        }
+          }
 
         (logic, promise.future)
       }
@@ -558,19 +559,19 @@ class GraphStageDocSpec extends AkkaSpec {
     //#detached
 
     // tests:
-    val result1 = Source(Vector(1, 2, 3))
-      .via(new TwoBuffer)
-      .runFold(Vector.empty[Int])((acc, n) => acc :+ n)
+    val result1 =
+      Source(Vector(1, 2, 3))
+        .via(new TwoBuffer)
+        .runFold(Vector.empty[Int])((acc, n) => acc :+ n)
 
     Await.result(result1, 3.seconds) should ===(Vector(1, 2, 3))
 
     val subscriber = TestSubscriber.manualProbe[Int]()
     val publisher = TestPublisher.probe[Int]()
-    val flow2 =
-      Source
-        .fromPublisher(publisher)
-        .via(new TwoBuffer)
-        .to(Sink.fromSubscriber(subscriber))
+    val flow2 = Source
+      .fromPublisher(publisher)
+      .via(new TwoBuffer)
+      .to(Sink.fromSubscriber(subscriber))
 
     val result2 = flow2.run()
 

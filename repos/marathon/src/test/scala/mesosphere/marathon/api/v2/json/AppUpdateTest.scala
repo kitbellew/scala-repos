@@ -152,8 +152,7 @@ class AppUpdateTest extends MarathonSpec {
 
   test("Serialization result of empty container") {
     val update2 = AppUpdate(container = None)
-    val json2 =
-      """
+    val json2 = """
       {
         "cmd": null,
         "user": null,
@@ -180,8 +179,7 @@ class AppUpdateTest extends MarathonSpec {
 
   test("Serialization result of empty ipAddress") {
     val update2 = AppUpdate(ipAddress = None)
-    val json2 =
-      """
+    val json2 = """
       {
         "cmd": null,
         "user": null,
@@ -271,8 +269,7 @@ class AppUpdateTest extends MarathonSpec {
   }
 
   test("update may not have both uris and fetch") {
-    val json =
-      """
+    val json = """
       {
         "id": "app-with-network-isolation",
         "uris": ["http://example.com/file1.tar.gz"],
@@ -288,8 +285,7 @@ class AppUpdateTest extends MarathonSpec {
   }
 
   test("update may not have both ports and portDefinitions") {
-    val json =
-      """
+    val json = """
       {
         "id": "app",
         "ports": [1],
@@ -305,8 +301,7 @@ class AppUpdateTest extends MarathonSpec {
   }
 
   test("update may not have duplicated ports") {
-    val json =
-      """
+    val json = """
       {
         "id": "app",
         "ports": [1, 1]

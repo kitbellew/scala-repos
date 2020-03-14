@@ -349,8 +349,10 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
                |LOCATION '$path'
              """.stripMargin)
 
-          val emptyDF =
-            Seq.empty[(Int, String)].toDF("key", "value").coalesce(1)
+          val emptyDF = Seq
+            .empty[(Int, String)]
+            .toDF("key", "value")
+            .coalesce(1)
           emptyDF.registerTempTable("empty")
 
           // This creates 1 empty ORC file with Hive ORC SerDe.  We are using this trick because
@@ -359,9 +361,10 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
                |SELECT key, value FROM empty
              """.stripMargin)
 
-          val errorMessage = intercept[AnalysisException] {
-            sqlContext.read.orc(path)
-          }.getMessage
+          val errorMessage =
+            intercept[AnalysisException] {
+              sqlContext.read.orc(path)
+            }.getMessage
 
           assert(errorMessage.contains("Unable to infer schema for ORC"))
 

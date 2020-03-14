@@ -103,9 +103,10 @@ class ScClsStubBuilder extends ClsStubBuilder {
     adj.setSourceFileName(source)
     adj.setVirtualFile(vFile)
 
-    val fType = LanguageParserDefinitions.INSTANCE
-      .forLanguage(ScalaFileType.SCALA_LANGUAGE)
-      .getFileNodeType
+    val fType =
+      LanguageParserDefinitions.INSTANCE
+        .forLanguage(ScalaFileType.SCALA_LANGUAGE)
+        .getFileNodeType
     val stub = fType
       .asInstanceOf[IStubFileElementType[PsiFileStub[PsiFile]]]
       .getBuilder

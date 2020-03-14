@@ -47,18 +47,19 @@ object Stress {
 
     val completedRequests = new AtomicInteger(0)
 
-    val requests = Future.parallel(concurrency) {
-      Future.times(totalRequests / concurrency) {
-        client(request) onSuccess { response =>
-          responses.incrementAndGet(response.status)
-        } handle {
-          case e =>
-            errors.incrementAndGet()
-        } ensure {
-          completedRequests.incrementAndGet()
+    val requests =
+      Future.parallel(concurrency) {
+        Future.times(totalRequests / concurrency) {
+          client(request) onSuccess { response =>
+            responses.incrementAndGet(response.status)
+          } handle {
+            case e =>
+              errors.incrementAndGet()
+          } ensure {
+            completedRequests.incrementAndGet()
+          }
         }
       }
-    }
 
     val elapsed = Stopwatch.start()
 

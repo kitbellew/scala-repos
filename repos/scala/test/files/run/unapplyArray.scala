@@ -23,9 +23,10 @@ object Test {
     Console.println("zs  aseq "+ Seq.unapplySeq(zs))
     Console.println("za  aseq "+ Seq.unapplySeq(za))
      */
-    val zl = zs match {
-      case Seq(xs @ _*) => xs.length
-    }
+    val zl =
+      zs match {
+        case Seq(xs @ _*) => xs.length
+      }
     assert(zl == 4)
   }
 }

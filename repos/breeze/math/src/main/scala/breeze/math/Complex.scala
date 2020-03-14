@@ -42,52 +42,38 @@ case class Complex(real: Double, imag: Double) {
     */
   def im() = imag
 
-  def +(that: Complex) =
-    Complex(this.real + that.real, this.imag + that.imag)
+  def +(that: Complex) = Complex(this.real + that.real, this.imag + that.imag)
 
-  def +(that: Int) =
-    Complex(this.real + that, this.imag)
+  def +(that: Int) = Complex(this.real + that, this.imag)
 
-  def +(that: Long) =
-    Complex(this.real + that, this.imag)
+  def +(that: Long) = Complex(this.real + that, this.imag)
 
-  def +(that: Float) =
-    Complex(this.real + that, this.imag)
+  def +(that: Float) = Complex(this.real + that, this.imag)
 
-  def +(that: Double) =
-    Complex(this.real + that, this.imag)
+  def +(that: Double) = Complex(this.real + that, this.imag)
 
-  def -(that: Complex) =
-    Complex(this.real - that.real, this.imag - that.imag)
+  def -(that: Complex) = Complex(this.real - that.real, this.imag - that.imag)
 
-  def -(that: Int) =
-    Complex(this.real - that, this.imag)
+  def -(that: Int) = Complex(this.real - that, this.imag)
 
-  def -(that: Long) =
-    Complex(this.real - that, this.imag)
+  def -(that: Long) = Complex(this.real - that, this.imag)
 
-  def -(that: Float) =
-    Complex(this.real - that, this.imag)
+  def -(that: Float) = Complex(this.real - that, this.imag)
 
-  def -(that: Double) =
-    Complex(this.real - that, this.imag)
+  def -(that: Double) = Complex(this.real - that, this.imag)
 
   def *(that: Complex) =
     Complex(
       this.real * that.real - this.imag * that.imag,
       this.real * that.imag + this.imag * that.real)
 
-  def *(that: Int) =
-    Complex(this.real * that, this.imag * that)
+  def *(that: Int) = Complex(this.real * that, this.imag * that)
 
-  def *(that: Long) =
-    Complex(this.real * that, this.imag * that)
+  def *(that: Long) = Complex(this.real * that, this.imag * that)
 
-  def *(that: Float) =
-    Complex(this.real * that, this.imag * that)
+  def *(that: Float) = Complex(this.real * that, this.imag * that)
 
-  def *(that: Double) =
-    Complex(this.real * that, this.imag * that)
+  def *(that: Double) = Complex(this.real * that, this.imag * that)
 
   def /(that: Complex) = {
     val denom = that.real * that.real + that.imag * that.imag
@@ -96,17 +82,13 @@ case class Complex(real: Double, imag: Double) {
       (this.imag * that.real - this.real * that.imag) / denom)
   }
 
-  def /(that: Int) =
-    Complex(this.real / that, this.imag / that)
+  def /(that: Int) = Complex(this.real / that, this.imag / that)
 
-  def /(that: Long) =
-    Complex(this.real / that, this.imag / that)
+  def /(that: Long) = Complex(this.real / that, this.imag / that)
 
-  def /(that: Float) =
-    Complex(this.real / that, this.imag / that)
+  def /(that: Float) = Complex(this.real / that, this.imag / that)
 
-  def /(that: Double) =
-    Complex(this.real / that, this.imag / that)
+  def /(that: Double) = Complex(this.real / that, this.imag / that)
 
   def %(that: Complex) = {
     val div = this./(that)
@@ -118,17 +100,13 @@ case class Complex(real: Double, imag: Double) {
   def %(that: Float): Complex = %(Complex(that, 0))
   def %(that: Double): Complex = %(Complex(that, 0))
 
-  def unary_- =
-    Complex(-real, -imag)
+  def unary_- = Complex(-real, -imag)
 
-  def abs =
-    math.sqrt(real * real + imag * imag)
+  def abs = math.sqrt(real * real + imag * imag)
 
-  def conjugate =
-    Complex(real, -imag)
+  def conjugate = Complex(real, -imag)
 
-  def log =
-    Complex(math.log(abs), math.atan2(imag, real))
+  def log = Complex(math.log(abs), math.atan2(imag, real))
 
   def exp = {
     val expreal = math.exp(real)
@@ -221,8 +199,7 @@ object Complex { outer =>
       throw new UnsupportedOperationException(
         "Cannot automatically convert complex numbers to doubles")
 
-    def isNaN(a: Complex) =
-      a.real.isNaN || a.imag.isNaN
+    def isNaN(a: Complex) = a.real.isNaN || a.imag.isNaN
 
     val manifest = implicitly[ClassTag[Complex]]
 

@@ -28,8 +28,10 @@ object ResourcesSpec extends Specification {
   lazy val tmpResourcesDir = createTempDir("test-bundle-", ".tmp", resourcesDir)
   lazy val fileBundle = File.createTempFile("file-", ".tmp", tmpResourcesDir)
   lazy val dirBundle = createTempDir("dir-", ".tmp", tmpResourcesDir)
-  lazy val spacesDirBundle =
-    createTempDir("dir spaces ", ".tmp", tmpResourcesDir)
+  lazy val spacesDirBundle = createTempDir(
+    "dir spaces ",
+    ".tmp",
+    tmpResourcesDir)
   lazy val classloader = app.classloader
   lazy val osgiClassloader =
     new OsgiClassLoaderSimulator(app.classloader, resourcesDir)
@@ -112,8 +114,8 @@ object ResourcesSpec extends Specification {
     }
 
     "return true for a directory resource URL that contains spaces with the 'bundle' protocol" in {
-      val relativeIndex =
-        spacesDirBundle.getAbsolutePath.indexOf("test-bundle-")
+      val relativeIndex = spacesDirBundle.getAbsolutePath.indexOf(
+        "test-bundle-")
       val dir = spacesDirBundle.getAbsolutePath.substring(relativeIndex)
       val url = new URL("bundle", "325.0", 25, dir, new BundleStreamHandler)
       isDirectory(osgiClassloader, url) must beTrue
@@ -133,22 +135,24 @@ object ResourcesSpec extends Specification {
     }
 
     "return true for a directory resource URL that contains spaces in the zip path with the 'zip' protocol" in {
-      val url = new URL(
-        "zip",
-        "",
-        0,
-        createZipUrl(spacesJar, dirRes),
-        EmptyURLStreamHandler)
+      val url =
+        new URL(
+          "zip",
+          "",
+          0,
+          createZipUrl(spacesJar, dirRes),
+          EmptyURLStreamHandler)
       isDirectory(classloader, url) must beTrue
     }
 
     "return true for a directory resource URL that contains spaces in the file path with the 'zip' protocol" in {
-      val url = new URL(
-        "zip",
-        "",
-        0,
-        createZipUrl(jar, dirSpacesRes),
-        EmptyURLStreamHandler)
+      val url =
+        new URL(
+          "zip",
+          "",
+          0,
+          createZipUrl(jar, dirSpacesRes),
+          EmptyURLStreamHandler)
       isDirectory(classloader, url) must beTrue
     }
 

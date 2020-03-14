@@ -88,13 +88,14 @@ class InteractiveStatusDisplay extends TopComponentDisplayable {
     val pi2 = Math.PI * 2
     val step = pi2 / steps
 
-    val i = new AnimatedIcon(
-      "Compiling...",
-      (for (i <- 0 to steps)
-        yield new RotatedIcon(icon1, step * i)).toArray[Icon],
-      icon2,
-      ICON_CYCLE_LENGTH
-    )
+    val i =
+      new AnimatedIcon(
+        "Compiling...",
+        (for (i <- 0 to steps)
+          yield new RotatedIcon(icon1, step * i)).toArray[Icon],
+        icon2,
+        ICON_CYCLE_LENGTH
+      )
     i.resume()
     i
   }

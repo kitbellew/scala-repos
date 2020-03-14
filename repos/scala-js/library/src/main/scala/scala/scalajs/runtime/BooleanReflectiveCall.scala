@@ -12,8 +12,7 @@ class BooleanReflectiveCall(value: Boolean) {
 
   def booleanValue(): Boolean = value
 
-  def compareTo(that: JBoolean): Int =
-    new JBoolean(value).compareTo(that)
+  def compareTo(that: JBoolean): Int = new JBoolean(value).compareTo(that)
   def compareTo(that: AnyRef): Int =
     new JBoolean(value).compareTo(that.asInstanceOf[JBoolean])
 

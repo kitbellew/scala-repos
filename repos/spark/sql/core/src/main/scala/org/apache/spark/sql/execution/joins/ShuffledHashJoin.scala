@@ -67,8 +67,9 @@ case class ShuffledHashJoin(
 
     streamedPlan.execute().zipPartitions(buildPlan.execute()) {
       (streamIter, buildIter) =>
-        val hashed =
-          HashedRelation(buildIter.map(_.copy()), buildSideKeyGenerator)
+        val hashed = HashedRelation(
+          buildIter.map(_.copy()),
+          buildSideKeyGenerator)
         val joinedRow = new JoinedRow
         joinType match {
           case Inner =>

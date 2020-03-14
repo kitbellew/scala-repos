@@ -29,21 +29,23 @@ object ConsoleProject {
     val checksums = Nil
     val ivyPaths =
       new IvyPaths(unit.unit.localBase, bootIvyHome(state.configuration))
-    val ivyConfiguration = new InlineIvyConfiguration(
-      ivyPaths,
-      Resolver.withDefaultResolvers(Nil),
-      Nil,
-      Nil,
-      localOnly,
-      lock,
-      checksums,
-      None,
-      log)
-    val compiler: AnalyzingCompiler = Compiler.compilers(
-      ClasspathOptions.repl,
-      ivyConfiguration)(state.configuration, log) match {
-      case IncrementalCompilerImpl.Compilers(scalac, _) => scalac
-    }
+    val ivyConfiguration =
+      new InlineIvyConfiguration(
+        ivyPaths,
+        Resolver.withDefaultResolvers(Nil),
+        Nil,
+        Nil,
+        localOnly,
+        lock,
+        checksums,
+        None,
+        log)
+    val compiler: AnalyzingCompiler =
+      Compiler.compilers(ClasspathOptions.repl, ivyConfiguration)(
+        state.configuration,
+        log) match {
+        case IncrementalCompilerImpl.Compilers(scalac, _) => scalac
+      }
     val imports =
       BuildUtil.getImports(unit.unit) ++ BuildUtil.importAll(bindings.map(_._1))
     val importString = imports.mkString("", ";\n", ";\n\n")

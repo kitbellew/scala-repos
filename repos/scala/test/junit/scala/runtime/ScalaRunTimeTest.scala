@@ -111,9 +111,10 @@ class ScalaRunTimeTest {
       s"""${parIterable.stringPrefix}(a, "")""",
       stringOf(parIterable, 2))
 
-    val traversable = new Traversable[Int] {
-      def foreach[U](f: Int => U): Unit = (0 to 3).foreach(f)
-    }
+    val traversable =
+      new Traversable[Int] {
+        def foreach[U](f: Int => U): Unit = (0 to 3).foreach(f)
+      }
     assertEquals(
       s"${traversable.stringPrefix}(0, 1, 2, 3)",
       stringOf(traversable))
@@ -131,9 +132,10 @@ class ScalaRunTimeTest {
     assertEquals("(0,1,2)", stringOf(tuple3))
     assertEquals("(0,1,2)", stringOf(tuple3, 0))
 
-    val x = new Object {
-      override def toString(): String = "this is the stringOf string"
-    }
+    val x =
+      new Object {
+        override def toString(): String = "this is the stringOf string"
+      }
     assertEquals(stringOf(x), "this is the stringOf string")
     assertEquals(stringOf(x, 2), "this is the stringOf string")
   }

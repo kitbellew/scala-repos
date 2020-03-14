@@ -185,8 +185,7 @@ private[persistence] final case class PersistentImpl(
     extends PersistentRepr
     with NoSerializationVerificationNeeded {
 
-  def withPayload(payload: Any): PersistentRepr =
-    copy(payload = payload)
+  def withPayload(payload: Any): PersistentRepr = copy(payload = payload)
 
   def withManifest(manifest: String): PersistentRepr =
     if (this.manifest == manifest)

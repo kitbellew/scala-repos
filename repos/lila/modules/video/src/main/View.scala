@@ -31,22 +31,23 @@ object View {
   import reactivemongo.bson._
   import lila.db.BSON
   import BSON.BSONJodaDateTimeHandler
-  implicit val viewBSONHandler = new BSON[View] {
+  implicit val viewBSONHandler =
+    new BSON[View] {
 
-    import BSONFields._
+      import BSONFields._
 
-    def reads(r: BSON.Reader): View =
-      View(
-        id = r str id,
-        videoId = r str videoId,
-        userId = r str userId,
-        date = r.get[DateTime](date))
+      def reads(r: BSON.Reader): View =
+        View(
+          id = r str id,
+          videoId = r str videoId,
+          userId = r str userId,
+          date = r.get[DateTime](date))
 
-    def writes(w: BSON.Writer, o: View) =
-      BSONDocument(
-        id -> o.id,
-        videoId -> o.videoId,
-        userId -> o.userId,
-        date -> o.date)
-  }
+      def writes(w: BSON.Writer, o: View) =
+        BSONDocument(
+          id -> o.id,
+          videoId -> o.videoId,
+          userId -> o.userId,
+          date -> o.date)
+    }
 }

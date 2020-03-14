@@ -58,19 +58,20 @@ final class Bus(system: ActorSystem) extends Extension with EventBus {
     // loginfo(msg)
   }
 
-  private val bus = new ActorEventBus with LookupClassification {
+  private val bus =
+    new ActorEventBus with LookupClassification {
 
-    type Event = Bus.Event
-    type Classifier = Symbol
+      type Event = Bus.Event
+      type Classifier = Symbol
 
-    override protected val mapSize = 2048
+      override protected val mapSize = 2048
 
-    def classify(event: Event): Symbol = event.channel
+      def classify(event: Event): Symbol = event.channel
 
-    def publish(event: Event, subscriber: ActorRef) = {
-      subscriber ! event.payload
+      def publish(event: Event, subscriber: ActorRef) = {
+        subscriber ! event.payload
+      }
     }
-  }
 }
 
 object Bus extends ExtensionId[Bus] with ExtensionIdProvider {

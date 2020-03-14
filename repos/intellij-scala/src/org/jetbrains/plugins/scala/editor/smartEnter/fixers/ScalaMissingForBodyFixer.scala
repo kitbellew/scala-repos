@@ -17,8 +17,10 @@ class ScalaMissingForBodyFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val forStatement =
-      PsiTreeUtil.getParentOfType(psiElement, classOf[ScForStatement], false)
+    val forStatement = PsiTreeUtil.getParentOfType(
+      psiElement,
+      classOf[ScForStatement],
+      false)
     if (forStatement == null)
       return NoOperation
 
@@ -26,12 +28,13 @@ class ScalaMissingForBodyFixer extends ScalaFixer {
 
     forStatement.body match {
       case None =>
-        val (eltToInsertAfter, text) = forStatement.getRightParenthesis match {
-          case None => (forStatement, ") {}")
-          case Some(parenth) =>
-            moveToEnd(editor, parenth)
-            (parenth, " {}")
-        }
+        val (eltToInsertAfter, text) =
+          forStatement.getRightParenthesis match {
+            case None => (forStatement, ") {}")
+            case Some(parenth) =>
+              moveToEnd(editor, parenth)
+              (parenth, " {}")
+          }
 
         doc.insertString(eltToInsertAfter.getTextRange.getEndOffset, text)
         WithEnter(text.length - 1)

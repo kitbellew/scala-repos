@@ -45,9 +45,10 @@ object Surround extends DispatchSnippet {
           in
 
       WithParamVar.doWith(Map()) {
-        lazy val mainParam = (
-          S.attr("at") openOr "main",
-          eatDiv(ctx.processSurroundAndInclude(PageName.get, kids)))
+        lazy val mainParam =
+          (
+            S.attr("at") openOr "main",
+            eatDiv(ctx.processSurroundAndInclude(PageName.get, kids)))
         lazy val paramsMap = {
           val q = mainParam // perform the side-effecting thing here
           WithParamVar.get + q // WithParamVar is the side effects of processing the template

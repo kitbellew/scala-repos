@@ -17,20 +17,21 @@ final class Env(
     isProd: Boolean,
     scheduler: lila.common.Scheduler) {
 
-  private val settings = new {
-    val CachedNbTtl = config duration "cached.nb.ttl"
-    val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
-    val CaptcherName = config getString "captcher.name"
-    val CaptcherDuration = config duration "captcher.duration"
-    val CollectionGame = config getString "collection.game"
-    val CollectionCrosstable = config getString "collection.crosstable"
-    val JsPathRaw = config getString "js_path.raw"
-    val JsPathCompiled = config getString "js_path.compiled"
-    val UciMemoTtl = config duration "uci_memo.ttl"
-    val netBaseUrl = config getString "net.base_url"
-    val PdfExecPath = config getString "pdf.exec_path"
-    val PngExecPath = config getString "png.exec_path"
-  }
+  private val settings =
+    new {
+      val CachedNbTtl = config duration "cached.nb.ttl"
+      val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
+      val CaptcherName = config getString "captcher.name"
+      val CaptcherDuration = config duration "captcher.duration"
+      val CollectionGame = config getString "collection.game"
+      val CollectionCrosstable = config getString "collection.crosstable"
+      val JsPathRaw = config getString "js_path.raw"
+      val JsPathCompiled = config getString "js_path.compiled"
+      val UciMemoTtl = config duration "uci_memo.ttl"
+      val netBaseUrl = config getString "net.base_url"
+      val PdfExecPath = config getString "pdf.exec_path"
+      val PngExecPath = config getString "png.exec_path"
+    }
   import settings._
 
   private[game] lazy val gameColl = db(CollectionGame)
@@ -57,8 +58,9 @@ final class Env(
   lazy val crosstableApi = new CrosstableApi(db(CollectionCrosstable))
 
   // load captcher actor
-  private val captcher =
-    system.actorOf(Props(new Captcher), name = CaptcherName)
+  private val captcher = system.actorOf(
+    Props(new Captcher),
+    name = CaptcherName)
 
   scheduler.message(CaptcherDuration) {
     captcher -> actorApi.NewCaptcha

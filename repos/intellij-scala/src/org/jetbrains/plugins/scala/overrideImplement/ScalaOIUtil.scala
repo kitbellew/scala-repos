@@ -103,13 +103,14 @@ object ScalaOIUtil {
     val selectedMembers = ListBuffer[ClassMember]()
     if (!ApplicationManager.getApplication.isUnitTestMode) {
 
-      val chooser = new ScalaMemberChooser[ClassMember](
-        classMembers.toArray,
-        false,
-        true,
-        isImplement,
-        true,
-        clazz)
+      val chooser =
+        new ScalaMemberChooser[ClassMember](
+          classMembers.toArray,
+          false,
+          true,
+          isImplement,
+          true,
+          clazz)
       chooser.setTitle(
         if (isImplement)
           ScalaBundle.message("select.method.implement")
@@ -319,10 +320,11 @@ object ScalaOIUtil {
         false
       case x @ (_: ScPatternDefinition | _: ScVariableDefinition)
           if x.asInstanceOf[ScMember].containingClass != clazz =>
-        val declaredElements = x match {
-          case v: ScValue    => v.declaredElements
-          case v: ScVariable => v.declaredElements
-        }
+        val declaredElements =
+          x match {
+            case v: ScValue    => v.declaredElements
+            case v: ScVariable => v.declaredElements
+          }
         var flag = false
         for (signe <- clazz.allMethods
              if signe.method.containingClass == clazz) {
@@ -372,10 +374,11 @@ object ScalaOIUtil {
   }
 
   def getAnchor(offset: Int, clazz: ScTemplateDefinition): Option[ScMember] = {
-    val body = clazz.extendsBlock.templateBody match {
-      case Some(x) => x
-      case None    => return None
-    }
+    val body =
+      clazz.extendsBlock.templateBody match {
+        case Some(x) => x
+        case None    => return None
+      }
     var element: PsiElement = body.getContainingFile.findElementAt(offset)
     while (element != null && element.getParent != body)
       element = element.getParent

@@ -133,14 +133,15 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
       method: HttpMethod,
       transformers: Seq[_root_.org.scalatra.RouteTransformer],
       action: => Any): Route = {
-    val newAction = () => {
-      try {
-        logRequest()
-      } catch {
-        case _: Throwable =>
+    val newAction =
+      () => {
+        try {
+          logRequest()
+        } catch {
+          case _: Throwable =>
+        }
+        action
       }
-      action
-    }
     val route = Route(
       transformers,
       newAction,

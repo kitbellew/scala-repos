@@ -49,13 +49,14 @@ class PerAccountThreadPooling(accountFinder: AccountFinder[Future]) {
     if (executorCache.contains(accountId)) {
       executorCache.get(accountId)
     } else {
-      val executor = new ThreadPoolExecutor(
-        16,
-        128,
-        60000,
-        TimeUnit.MILLISECONDS,
-        new LinkedBlockingQueue[Runnable](),
-        threadFactoryFor(accountId))
+      val executor =
+        new ThreadPoolExecutor(
+          16,
+          128,
+          60000,
+          TimeUnit.MILLISECONDS,
+          new LinkedBlockingQueue[Runnable](),
+          threadFactoryFor(accountId))
       val ec = ExecutionContext.fromExecutor(executor)
 
       // FIXME: Dummy pool for now

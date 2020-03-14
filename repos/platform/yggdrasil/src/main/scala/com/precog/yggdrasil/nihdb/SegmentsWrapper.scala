@@ -34,8 +34,8 @@ case class SegmentsWrapper(
     extends Slice {
   import TransSpecModule.paths
 
-  val logger =
-    LoggerFactory.getLogger("com.precog.yggdrasil.table.SegmentsWrapper")
+  val logger = LoggerFactory.getLogger(
+    "com.precog.yggdrasil.table.SegmentsWrapper")
 
   // FIXME: This should use an identity of Array[Long](projectionId,
   // blockId), but the evaluator will cry if we do that right now
@@ -48,15 +48,17 @@ case class SegmentsWrapper(
     val loId0 = (blockId & 0xFFFFFFFFL) << 32
     def loId(row: Int): Long = loId0 | row.toLong
 
-    val hoKey = new LongColumn {
-      def isDefinedAt(row: Int) = row >= 0 && row < length
-      def apply(row: Int) = hoId
-    }
+    val hoKey =
+      new LongColumn {
+        def isDefinedAt(row: Int) = row >= 0 && row < length
+        def apply(row: Int) = hoId
+      }
 
-    val loKey = new LongColumn {
-      def isDefinedAt(row: Int) = row >= 0 && row < length
-      def apply(row: Int) = loId(row)
-    }
+    val loKey =
+      new LongColumn {
+        def isDefinedAt(row: Int) = row >= 0 && row < length
+        def apply(row: Int) = loId(row)
+      }
 
     Set(
       (ColumnRef(CPath(paths.Key) \ 0 \ 0, CLong), loKey),

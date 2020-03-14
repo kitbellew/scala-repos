@@ -59,8 +59,9 @@ class RestartStrategySpec
           stopLatch.open()
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash
@@ -96,8 +97,9 @@ class RestartStrategySpec
           countDownLatch.countDown()
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       (1 to 100) foreach { _ ⇒
         slave ! Crash
@@ -144,8 +146,9 @@ class RestartStrategySpec
           }
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash
@@ -198,8 +201,9 @@ class RestartStrategySpec
           stopLatch.open()
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash
@@ -230,8 +234,9 @@ class RestartStrategySpec
       val countDownLatch = new TestLatch(2)
 
       val boss = system.actorOf(Props(new Actor {
-        override val supervisorStrategy = OneForOneStrategy(withinTimeRange =
-          1 second)(List(classOf[Throwable]))
+        override val supervisorStrategy =
+          OneForOneStrategy(withinTimeRange = 1 second)(
+            List(classOf[Throwable]))
         def receive = {
           case p: Props ⇒ sender() ! context.watch(context.actorOf(p))
           case t: Terminated ⇒ maxNoOfRestartsLatch.open()
@@ -253,8 +258,9 @@ class RestartStrategySpec
           stopLatch.open()
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash

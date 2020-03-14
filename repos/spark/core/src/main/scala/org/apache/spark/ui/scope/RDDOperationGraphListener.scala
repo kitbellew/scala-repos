@@ -43,10 +43,12 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
   private[ui] val stageIds = new mutable.ArrayBuffer[Int]
 
   // How many jobs or stages to retain graph metadata for
-  private val retainedJobs =
-    conf.getInt("spark.ui.retainedJobs", SparkUI.DEFAULT_RETAINED_JOBS)
-  private val retainedStages =
-    conf.getInt("spark.ui.retainedStages", SparkUI.DEFAULT_RETAINED_STAGES)
+  private val retainedJobs = conf.getInt(
+    "spark.ui.retainedJobs",
+    SparkUI.DEFAULT_RETAINED_JOBS)
+  private val retainedStages = conf.getInt(
+    "spark.ui.retainedStages",
+    SparkUI.DEFAULT_RETAINED_STAGES)
 
   /**
     * Return the graph metadata for all stages in the given job.
@@ -62,9 +64,10 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
         }
       // Mark any skipped stages as such
       graphs.foreach { g =>
-        val stageId = g.rootCluster.id
-          .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
-          .toInt
+        val stageId =
+          g.rootCluster.id
+            .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
+            .toInt
         if (skippedStageIds.contains(stageId) && !g.rootCluster.name.contains(
               "skipped")) {
           g.rootCluster.setName(g.rootCluster.name + " (skipped)")
@@ -92,8 +95,8 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
         val stageId = stageInfo.stageId
         stageIds += stageId
         stageIdToJobId(stageId) = jobId
-        stageIdToGraph(stageId) =
-          RDDOperationGraph.makeOperationGraph(stageInfo)
+        stageIdToGraph(stageId) = RDDOperationGraph.makeOperationGraph(
+          stageInfo)
         trimStagesIfNecessary()
       }
 

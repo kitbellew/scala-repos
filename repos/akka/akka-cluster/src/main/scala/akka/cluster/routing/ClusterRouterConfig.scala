@@ -32,8 +32,8 @@ import scala.collection.immutable
 object ClusterRouterGroupSettings {
   def fromConfig(config: Config): ClusterRouterGroupSettings =
     ClusterRouterGroupSettings(
-      totalInstances =
-        ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
+      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
+        config),
       routeesPaths = immutableSeq(config.getStringList("routees.paths")),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
       useRole = ClusterRouterSettingsBase.useRoleOption(
@@ -85,10 +85,10 @@ final case class ClusterRouterGroupSettings(
 object ClusterRouterPoolSettings {
   def fromConfig(config: Config): ClusterRouterPoolSettings =
     ClusterRouterPoolSettings(
-      totalInstances =
-        ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
-      maxInstancesPerNode =
-        config.getInt("cluster.max-nr-of-instances-per-node"),
+      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
+        config),
+      maxInstancesPerNode = config.getInt(
+        "cluster.max-nr-of-instances-per-node"),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
       useRole = ClusterRouterSettingsBase.useRoleOption(
         config.getString("cluster.use-role"))
@@ -368,12 +368,13 @@ private[akka] class ClusterRouterGroupActor(
     extends RouterActor
     with ClusterRouterActor {
 
-  val group = cell.routerConfig match {
-    case x: Group ⇒ x
-    case other ⇒
-      throw ActorInitializationException(
-        "ClusterRouterGroupActor can only be used with group, not " + other.getClass)
-  }
+  val group =
+    cell.routerConfig match {
+      case x: Group ⇒ x
+      case other ⇒
+        throw ActorInitializationException(
+          "ClusterRouterGroupActor can only be used with group, not " + other.getClass)
+    }
 
   override def receive = clusterReceive orElse super.receive
 
@@ -490,10 +491,11 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
     * Fills in self address for local ActorRef
     */
   def fullAddress(routee: Routee): Address = {
-    val a = routee match {
-      case ActorRefRoutee(ref) ⇒ ref.path.address
-      case ActorSelectionRoutee(sel) ⇒ sel.anchor.path.address
-    }
+    val a =
+      routee match {
+        case ActorRefRoutee(ref) ⇒ ref.path.address
+        case ActorSelectionRoutee(sel) ⇒ sel.anchor.path.address
+      }
     a match {
       case Address(_, _, None, None) ⇒ cluster.selfAddress
       case a ⇒ a

@@ -34,8 +34,9 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
     * Current internal cluster stats, updated periodically via event bus.
     */
   @volatile
-  private var _latestStats =
-    CurrentInternalStats(GossipStats(), VectorClockStats())
+  private var _latestStats = CurrentInternalStats(
+    GossipStats(),
+    VectorClockStats())
 
   /**
     * Current cluster metrics, updated periodically via event bus.
@@ -70,8 +71,8 @@ private[akka] class ClusterReadView(cluster: Cluster) extends Closeable {
                   _state = _state.copy(unreachable =
                     _state.unreachable - member + member)
                 case ReachableMember(member) ⇒
-                  _state =
-                    _state.copy(unreachable = _state.unreachable - member)
+                  _state = _state.copy(unreachable =
+                    _state.unreachable - member)
                 case event: MemberEvent ⇒
                   // replace current member with new member (might have different status, only address is used in equals)
                   val newUnreachable =

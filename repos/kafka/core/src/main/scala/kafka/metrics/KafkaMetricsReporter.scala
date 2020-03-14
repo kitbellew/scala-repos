@@ -53,8 +53,8 @@ object KafkaMetricsReporter {
         val metricsConfig = new KafkaMetricsConfig(verifiableProps)
         if (metricsConfig.reporters.size > 0) {
           metricsConfig.reporters.foreach(reporterType => {
-            val reporter =
-              CoreUtils.createObject[KafkaMetricsReporter](reporterType)
+            val reporter = CoreUtils.createObject[KafkaMetricsReporter](
+              reporterType)
             reporter.init(verifiableProps)
             if (reporter.isInstanceOf[KafkaMetricsReporterMBean])
               CoreUtils.registerMBean(

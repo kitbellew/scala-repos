@@ -63,9 +63,10 @@ class ActorSelectionSpec
 
   def identify(selection: ActorSelection): Option[ActorRef] = {
     selection.tell(Identify(selection), idProbe.ref)
-    val result = idProbe.expectMsgPF() {
-      case ActorIdentity(`selection`, ref) ⇒ ref
-    }
+    val result =
+      idProbe.expectMsgPF() {
+        case ActorIdentity(`selection`, ref) ⇒ ref
+      }
     val asked = Await.result(
       (selection ? Identify(selection)).mapTo[ActorIdentity],
       timeout.duration)
@@ -332,9 +333,10 @@ class ActorSelectionSpec
     "drop messages which cannot be delivered" in {
       implicit val sender = c2
       ActorSelection(c21, "../../*/c21") ! GetSender(testActor)
-      val actors = receiveWhile(messages = 2) {
-        case `c2` ⇒ lastSender
-      }
+      val actors =
+        receiveWhile(messages = 2) {
+          case `c2` ⇒ lastSender
+        }
       actors should ===(Seq(c21))
       expectNoMsg(1 second)
     }
@@ -413,10 +415,12 @@ class ActorSelectionSpec
       val creator = TestProbe()
       implicit def self = creator.ref
       val top = system.actorOf(p, "a")
-      val b1 =
-        Await.result((top ? Create("b1")).mapTo[ActorRef], timeout.duration)
-      val b2 =
-        Await.result((top ? Create("b2")).mapTo[ActorRef], timeout.duration)
+      val b1 = Await.result(
+        (top ? Create("b1")).mapTo[ActorRef],
+        timeout.duration)
+      val b2 = Await.result(
+        (top ? Create("b2")).mapTo[ActorRef],
+        timeout.duration)
       val c = Await.result((b2 ? Create("c")).mapTo[ActorRef], timeout.duration)
       val d = Await.result((c ? Create("d")).mapTo[ActorRef], timeout.duration)
 

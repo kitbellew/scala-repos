@@ -103,8 +103,8 @@ class PromiseTests extends MinimalScalaTest {
   "A failed Promise" should {
     "be completed" in {
       val message = "Expected Exception"
-      val promise =
-        Promise[String]().complete(Failure(new RuntimeException(message)))
+      val promise = Promise[String]()
+        .complete(Failure(new RuntimeException(message)))
       promise.isCompleted mustBe (true)
       futureWithException[RuntimeException](_(promise.future, message))
     }
@@ -130,17 +130,19 @@ class PromiseTests extends MinimalScalaTest {
 
   "An interrupted Promise" should {
     val message = "Boxed InterruptedException"
-    val future = Promise[String]()
-      .complete(Failure(new InterruptedException(message)))
-      .future
+    val future =
+      Promise[String]()
+        .complete(Failure(new InterruptedException(message)))
+        .future
     futureWithException[ExecutionException](_(future, message))
   }
 
   "A NonLocalReturnControl failed Promise" should {
     val result = "test value"
-    val future = Promise[String]()
-      .complete(Failure(new NonLocalReturnControl[String]("test", result)))
-      .future
+    val future =
+      Promise[String]()
+        .complete(Failure(new NonLocalReturnControl[String]("test", result)))
+        .future
     futureWithResult(_(future, result))
   }
 

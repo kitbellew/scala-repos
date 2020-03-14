@@ -134,18 +134,19 @@ class ScalaAttachSourcesNotificationProvider(
               return
             }
             panel.setText(each.getBusyText)
-            val onFinish: Runnable = new Runnable {
-              def run() {
-                SwingUtilities.invokeLater(new Runnable {
-                  def run() {
-                    panel.setText(
-                      ScalaBundle.message("library.sources.not.found"))
-                  }
-                })
+            val onFinish: Runnable =
+              new Runnable {
+                def run() {
+                  SwingUtilities.invokeLater(new Runnable {
+                    def run() {
+                      panel.setText(
+                        ScalaBundle.message("library.sources.not.found"))
+                    }
+                  })
+                }
               }
-            }
-            val callback: ActionCallback =
-              each.perform(findOrderEntriesContainingFile(file))
+            val callback: ActionCallback = each.perform(
+              findOrderEntriesContainingFile(file))
             callback.doWhenRejected(onFinish)
             callback.doWhenDone(onFinish)
           }

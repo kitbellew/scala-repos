@@ -16,10 +16,11 @@ class DataInputStream(in: InputStream)
   // These variables are used to special case on ArrayBufferInputStreams
   // They allow directly accessing the underlying ArrayBuffer rather than
   // creating byte arrays first
-  private val inArrayBufferStream = in match {
-    case in: ArrayBufferInputStream => in
-    case _                          => null
-  }
+  private val inArrayBufferStream =
+    in match {
+      case in: ArrayBufferInputStream => in
+      case _                          => null
+    }
   private val hasArrayBuffer = inArrayBufferStream != null
   private val bufDataView = {
     if (hasArrayBuffer) {

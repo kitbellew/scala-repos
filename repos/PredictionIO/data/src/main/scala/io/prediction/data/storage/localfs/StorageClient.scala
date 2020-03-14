@@ -25,8 +25,8 @@ class StorageClient(val config: StorageClientConfig)
     extends BaseStorageClient
     with Logging {
   override val prefix = "LocalFS"
-  val f = new File(
-    config.properties.getOrElse("PATH", config.properties("HOSTS")))
+  val f =
+    new File(config.properties.getOrElse("PATH", config.properties("HOSTS")))
   if (f.exists) {
     if (!f.isDirectory)
       throw new StorageClientException(

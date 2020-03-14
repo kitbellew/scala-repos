@@ -31,8 +31,8 @@ trait Placeholders { self: Quasiquotes =>
     }
 
     def appendHole(tree: Tree, rank: Rank) = {
-      val placeholderName =
-        c.freshName(TermName(nme.QUASIQUOTE_PREFIX + sessionSuffix))
+      val placeholderName = c.freshName(
+        TermName(nme.QUASIQUOTE_PREFIX + sessionSuffix))
       sb.append(placeholderName)
       val holeTree =
         if (method != nme.unapply)
@@ -42,11 +42,12 @@ trait Placeholders { self: Quasiquotes =>
       holeMap(placeholderName) = Hole(rank, holeTree)
     }
 
-    val iargs = method match {
-      case nme.apply   => args
-      case nme.unapply => internal.subpatterns(args.head).get
-      case _           => global.abort("unreachable")
-    }
+    val iargs =
+      method match {
+        case nme.apply   => args
+        case nme.unapply => internal.subpatterns(args.head).get
+        case _           => global.abort("unreachable")
+      }
 
     foreach2(iargs, parts.init) {
       case (tree, (p, pos)) =>
@@ -71,8 +72,7 @@ trait Placeholders { self: Quasiquotes =>
       accessed += skey
       value
     }
-    def update(key: Name, hole: Hole) =
-      underlying += key.toString -> hole
+    def update(key: Name, hole: Hole) = underlying += key.toString -> hole
     def get(key: Name): Option[Hole] = {
       val skey = key.toString
       underlying.get(skey).map { v =>
@@ -134,8 +134,7 @@ trait Placeholders { self: Quasiquotes =>
   }
 
   object TuplePlaceholder {
-    def apply(args: List[Tree]) =
-      Apply(Ident(nme.QUASIQUOTE_TUPLE), args)
+    def apply(args: List[Tree]) = Apply(Ident(nme.QUASIQUOTE_TUPLE), args)
     def unapply(tree: Tree): Option[List[Tree]] =
       tree match {
         case Apply(Ident(nme.QUASIQUOTE_TUPLE), args) => Some(args)

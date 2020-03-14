@@ -84,15 +84,15 @@ object Imports {
       "cached-translation-code-samples-report",
       "Generates a report on the translation code samples if not already generated",
       KeyRanks.CTask)
-    val playDocsValidationConfig =
-      settingKey[ValidationConfig]("Configuration for docs validation")
+    val playDocsValidationConfig = settingKey[ValidationConfig](
+      "Configuration for docs validation")
 
-    val javaManualSourceDirectories =
-      SettingKey[Seq[File]]("javaManualSourceDirectories")
-    val scalaManualSourceDirectories =
-      SettingKey[Seq[File]]("scalaManualSourceDirectories")
-    val commonManualSourceDirectories =
-      SettingKey[Seq[File]]("commonManualSourceDirectories")
+    val javaManualSourceDirectories = SettingKey[Seq[File]](
+      "javaManualSourceDirectories")
+    val scalaManualSourceDirectories = SettingKey[Seq[File]](
+      "scalaManualSourceDirectories")
+    val commonManualSourceDirectories = SettingKey[Seq[File]](
+      "commonManualSourceDirectories")
     val migrationManualSources = SettingKey[Seq[File]]("migrationManualSources")
     val javaTwirlSourceManaged = SettingKey[File]("javaRoutesSourceManaged")
     val scalaTwirlSourceManaged = SettingKey[File]("scalaRoutesSourceManaged")
@@ -215,8 +215,8 @@ object PlayDocsPlugin extends AutoPlugin {
       routesGenerator := InjectedRoutesGenerator,
       evaluateSbtFiles := {
         val unit = loadedBuild.value.units(thisProjectRef.value.build)
-        val (eval, structure) =
-          Load.defaultLoad(state.value, unit.localBase, state.value.log)
+        val (eval, structure) = Load
+          .defaultLoad(state.value, unit.localBase, state.value.log)
         val sbtFiles =
           ((unmanagedSourceDirectories in Test).value * "*.sbt").get
         val log = state.value.log
@@ -259,9 +259,10 @@ object PlayDocsPlugin extends AutoPlugin {
     )
 
   val docsJarFileSetting: Def.Initialize[Task[Option[File]]] = Def.task {
-    val jars = update.value
-      .matching(configurationFilter("docs") && artifactFilter(`type` = "jar"))
-      .toList
+    val jars =
+      update.value
+        .matching(configurationFilter("docs") && artifactFilter(`type` = "jar"))
+        .toList
     jars match {
       case Nil =>
         streams.value.log.error("No docs jar was resolved")
@@ -283,22 +284,23 @@ object PlayDocsPlugin extends AutoPlugin {
 
     // Get classloader
     val sbtLoader = this.getClass.getClassLoader
-    val classloader = new java.net.URLClassLoader(
-      classpath.map(_.data.toURI.toURL).toArray,
-      null /* important here, don't depend of the sbt classLoader! */ ) {
-      override def loadClass(name: String): Class[_] = {
-        if (play.core.Build.sharedClasses.contains(name)) {
-          sbtLoader.loadClass(name)
-        } else {
-          super.loadClass(name)
+    val classloader =
+      new java.net.URLClassLoader(
+        classpath.map(_.data.toURI.toURL).toArray,
+        null /* important here, don't depend of the sbt classLoader! */ ) {
+        override def loadClass(name: String): Class[_] = {
+          if (play.core.Build.sharedClasses.contains(name)) {
+            sbtLoader.loadClass(name)
+          } else {
+            super.loadClass(name)
+          }
         }
       }
-    }
 
     val allResources = PlayDocsKeys.resources.value
 
-    val docHandlerFactoryClass =
-      classloader.loadClass("play.docs.BuildDocHandlerFactory")
+    val docHandlerFactoryClass = classloader.loadClass(
+      "play.docs.BuildDocHandlerFactory")
     val fromResourcesMethod = docHandlerFactoryClass.getMethod(
       "fromResources",
       classOf[Array[java.io.File]],
@@ -324,26 +326,28 @@ object PlayDocsPlugin extends AutoPlugin {
       classOf[Callable[_]],
       classOf[java.lang.Integer])
 
-    val translationReport = new Callable[File] {
-      def call() =
-        Project
-          .runTask(cachedTranslationCodeSamplesReport, state.value)
-          .get
-          ._2
-          .toEither
-          .right
-          .get
-    }
-    val forceTranslationReport = new Callable[File] {
-      def call() =
-        Project
-          .runTask(translationCodeSamplesReport, state.value)
-          .get
-          ._2
-          .toEither
-          .right
-          .get
-    }
+    val translationReport =
+      new Callable[File] {
+        def call() =
+          Project
+            .runTask(cachedTranslationCodeSamplesReport, state.value)
+            .get
+            ._2
+            .toEither
+            .right
+            .get
+      }
+    val forceTranslationReport =
+      new Callable[File] {
+        def call() =
+          Project
+            .runTask(translationCodeSamplesReport, state.value)
+            .get
+            ._2
+            .toEither
+            .right
+            .get
+      }
     val docServerStart = constructor.newInstance()
     val server: ServerWithStop = startMethod
       .invoke(

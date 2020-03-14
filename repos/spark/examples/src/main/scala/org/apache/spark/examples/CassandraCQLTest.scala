@@ -130,8 +130,9 @@ object CassandraCQLTest {
 
     val casoutputCF = aggregatedRDD.map {
       case (productId, saleCount) => {
-        val outKey =
-          Collections.singletonMap("prod_id", ByteBufferUtil.bytes(productId))
+        val outKey = Collections.singletonMap(
+          "prod_id",
+          ByteBufferUtil.bytes(productId))
         val outVal = Collections.singletonList(ByteBufferUtil.bytes(saleCount))
         (outKey, outVal)
       }

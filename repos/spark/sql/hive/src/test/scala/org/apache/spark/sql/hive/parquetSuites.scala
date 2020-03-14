@@ -356,8 +356,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
           |  OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
         """.stripMargin)
 
-      val df =
-        sql("INSERT INTO TABLE test_insert_parquet SELECT a FROM jt_array")
+      val df = sql(
+        "INSERT INTO TABLE test_insert_parquet SELECT a FROM jt_array")
       df.queryExecution.sparkPlan match {
         case ExecutedCommand(_: InsertIntoHadoopFsRelation) => // OK
         case o =>
@@ -483,8 +483,9 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
         |  OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
       """.stripMargin)
 
-    var tableIdentifier =
-      _catalog.QualifiedTableName("default", "test_insert_parquet")
+    var tableIdentifier = _catalog.QualifiedTableName(
+      "default",
+      "test_insert_parquet")
 
     // First, make sure the converted test_parquet is not cached.
     assert(
@@ -695,14 +696,13 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
   }
 
   test("values in arrays and maps stored in parquet are always nullable") {
-    val df =
-      createDataFrame(Tuple2(Map(2 -> 3), Seq(4, 5, 6)) :: Nil).toDF("m", "a")
+    val df = createDataFrame(Tuple2(Map(2 -> 3), Seq(4, 5, 6)) :: Nil)
+      .toDF("m", "a")
     val mapType1 = MapType(IntegerType, IntegerType, valueContainsNull = false)
     val arrayType1 = ArrayType(IntegerType, containsNull = false)
-    val expectedSchema1 =
-      StructType(
-        StructField("m", mapType1, nullable = true) ::
-          StructField("a", arrayType1, nullable = true) :: Nil)
+    val expectedSchema1 = StructType(
+      StructField("m", mapType1, nullable = true) ::
+        StructField("a", arrayType1, nullable = true) :: Nil)
     assert(df.schema === expectedSchema1)
 
     withTable("alwaysNullable") {
@@ -710,10 +710,9 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
 
       val mapType2 = MapType(IntegerType, IntegerType, valueContainsNull = true)
       val arrayType2 = ArrayType(IntegerType, containsNull = true)
-      val expectedSchema2 =
-        StructType(
-          StructField("m", mapType2, nullable = true) ::
-            StructField("a", arrayType2, nullable = true) :: Nil)
+      val expectedSchema2 = StructType(
+        StructField("m", mapType2, nullable = true) ::
+          StructField("a", arrayType2, nullable = true) :: Nil)
 
       assert(table("alwaysNullable").schema === expectedSchema2)
 

@@ -222,16 +222,17 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     }
 
     "properly parse a chunked request" - {
-      val start =
-        """PATCH /data HTTP/1.1
+      val start = """PATCH /data HTTP/1.1
           |Transfer-Encoding: chunked
           |Connection: lalelu
           |Content-Type: application/pdf
           |Host: ping
           |
           |"""
-      val baseRequest =
-        HttpRequest(PATCH, "/data", List(Connection("lalelu"), Host("ping")))
+      val baseRequest = HttpRequest(
+        PATCH,
+        "/data",
+        List(Connection("lalelu"), Host("ping")))
 
       "request start" in new Test {
         Seq(start, "rest") should generalMultiParseTo(
@@ -313,8 +314,10 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         val parser = newParser
         val result = multiParse(newParser)(Seq(prep(start + manyChunks)))
         val HttpEntity.Chunked(_, chunks) = result.head.right.get.req.entity
-        val strictChunks =
-          chunks.limit(100000).runWith(Sink.seq).awaitResult(awaitAtMost)
+        val strictChunks = chunks
+          .limit(100000)
+          .runWith(Sink.seq)
+          .awaitResult(awaitAtMost)
         strictChunks.size shouldEqual numChunks
       }
     }
@@ -358,8 +361,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     }
 
     "reject a message chunk with" - {
-      val start =
-        """PATCH /data HTTP/1.1
+      val start = """PATCH /data HTTP/1.1
           |Transfer-Encoding: chunked
           |Connection: lalelu
           |Host: ping

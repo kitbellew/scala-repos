@@ -34,8 +34,7 @@ trait DecorateAsScala {
     *         `Iterator` view of the argument.
     */
   implicit def asScalaIteratorConverter[A](
-      i: ju.Iterator[A]): AsScala[Iterator[A]] =
-    new AsScala(asScalaIterator(i))
+      i: ju.Iterator[A]): AsScala[Iterator[A]] = new AsScala(asScalaIterator(i))
 
   /**
     * Adds an `asScala` method that implicitly converts a Java `Enumeration`
@@ -110,8 +109,7 @@ trait DecorateAsScala {
     *        `Buffer` view of the argument.
     */
   implicit def asScalaBufferConverter[A](
-      l: ju.List[A]): AsScala[mutable.Buffer[A]] =
-    new AsScala(asScalaBuffer(l))
+      l: ju.List[A]): AsScala[mutable.Buffer[A]] = new AsScala(asScalaBuffer(l))
 
   /**
     * Adds an `asScala` method that implicitly converts a Java `Set` to a

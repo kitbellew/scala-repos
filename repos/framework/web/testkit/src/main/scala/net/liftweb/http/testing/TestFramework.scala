@@ -413,8 +413,7 @@ trait GetPosterHelper {
     */
   def get(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    get(url, theHttpClient, Nil, params: _*)(capture)
+      : ResponseType = get(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
     * Perform an HTTP DELETE with a newly minted httpClient
@@ -424,8 +423,7 @@ trait GetPosterHelper {
     */
   def delete(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    delete(url, theHttpClient, Nil, params: _*)(capture)
+      : ResponseType = delete(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
     * Perform an HTTP POST with a newly minted httpClient
@@ -435,8 +433,7 @@ trait GetPosterHelper {
     */
   def post(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    post(url, theHttpClient, Nil, params: _*)(capture)
+      : ResponseType = post(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
     * Perform an HTTP POST with a newly minted httpClient
@@ -458,8 +455,7 @@ trait GetPosterHelper {
     */
   def post(url: String, body: Array[Byte], contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    post(url, theHttpClient, Nil, body, contentType)(capture)
+      : ResponseType = post(url, theHttpClient, Nil, body, contentType)(capture)
 
   /**
     * Perform an HTTP PUT with a newly minted httpClient
@@ -481,8 +477,7 @@ trait GetPosterHelper {
     */
   def put(url: String, body: Array[Byte], contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    put(url, theHttpClient, Nil, body, contentType)(capture)
+      : ResponseType = put(url, theHttpClient, Nil, body, contentType)(capture)
 
 }
 
@@ -517,8 +512,7 @@ trait ClientBuilder {
   /**
     * Create a new HTTP client that does not do any form of AUTH
     */
-  def buildNoAuthClient =
-    new HttpClient(new SimpleHttpConnectionManager(false))
+  def buildNoAuthClient = new HttpClient(new SimpleHttpConnectionManager(false))
 
   /**
     * Create a new HTTP client that does BASIC AUTH with username/pwd
@@ -570,11 +564,12 @@ trait TestFramework extends TestKit {
     val threads =
       for (t <- (1 to cnt).toList)
         yield {
-          val th = new Thread(new Runnable {
-            def run {
-              f(t)
-            }
-          })
+          val th =
+            new Thread(new Runnable {
+              def run {
+                f(t)
+              }
+            })
           th.start
           th
         }
@@ -604,8 +599,8 @@ object TestHelpers {
     * @return the name of the JSON function associated with the Comet actor
     */
   def jsonFuncForCometName(cometName: String, body: String): Box[String] = {
-    val p =
-      Pattern.compile("""JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
+    val p = Pattern.compile(
+      """JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
     val m = p.matcher(body)
     if (m.find)
       Full(m.group(1))
@@ -658,18 +653,19 @@ object TestHelpers {
   def getCookie(
       headers: List[(String, String)],
       respHeaders: Map[String, List[String]]): Box[String] = {
-    val ret = (headers
-      .filter {
-        case ("Cookie", _) => true;
-        case _             => false
+    val ret =
+      (headers
+        .filter {
+          case ("Cookie", _) => true;
+          case _             => false
+        }
+        .map(_._2) :::
+        respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {
+        case Nil       => Empty
+        case "" :: Nil => Empty
+        case "" :: xs  => Full(xs.mkString(","))
+        case xs        => Full(xs.mkString(","))
       }
-      .map(_._2) :::
-      respHeaders.get("Set-Cookie").toList.flatMap(x => x)) match {
-      case Nil       => Empty
-      case "" :: Nil => Empty
-      case "" :: xs  => Full(xs.mkString(","))
-      case xs        => Full(xs.mkString(","))
-    }
     ret
   }
 

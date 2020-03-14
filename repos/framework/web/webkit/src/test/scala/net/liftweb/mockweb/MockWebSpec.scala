@@ -175,10 +175,11 @@ object MockWebSpec extends Specification {
     "simplify shared sessions" in {
       object testVar extends SessionVar[String]("Empty")
 
-      val session = testS("http://foo.com/test") {
-        testVar("Foo!")
-        S.session // returns the current session
-      }
+      val session =
+        testS("http://foo.com/test") {
+          testVar("Foo!")
+          S.session // returns the current session
+        }
 
       // A second test
       testS("http://foo.com/test2", session) {

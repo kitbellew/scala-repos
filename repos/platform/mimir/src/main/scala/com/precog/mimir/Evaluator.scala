@@ -104,8 +104,8 @@ trait EvaluatorModule[M[+_]]
     import constants._
 
     private implicit val N = N0
-    private val evalLogger =
-      LoggerFactory.getLogger("com.precog.mimir.Evaluator")
+    private val evalLogger = LoggerFactory.getLogger(
+      "com.precog.mimir.Evaluator")
     private val transState = StateMonadTrans[EvaluatorState]
     private val monadState = stateTMonadState[EvaluatorState, N]
 
@@ -412,60 +412,64 @@ trait EvaluatorModule[M[+_]]
               val lTable = ptLeft.table.transform(liftToValues(ptLeft.trans))
               val rTable = ptRight.table.transform(liftToValues(ptRight.trans))
               val crossSpec = buildWrappedCrossSpec(spec)
-              val resultM = Table.cross(
-                lTable.compact(valueSpec),
-                rTable.compact(valueSpec),
-                hint)(crossSpec)
+              val resultM =
+                Table.cross(
+                  lTable.compact(valueSpec),
+                  rTable.compact(valueSpec),
+                  hint)(crossSpec)
 
               transState liftM mn(resultM map {
                 case (joinOrder, table) =>
-                  val sort = joinOrder match {
-                    case CrossLeft =>
-                      ptLeft.sort match {
-                        case IdentityOrder(ids) =>
-                          val rIds = ptRight.sort match {
-                            case IdentityOrder(rIds)
-                                if graph.uniqueIdentities =>
-                              rIds
-                            case _ => Vector.empty
-                          }
-                          IdentityOrder(
-                            ids ++ rIds.map(_ + left.identities.length))
+                  val sort =
+                    joinOrder match {
+                      case CrossLeft =>
+                        ptLeft.sort match {
+                          case IdentityOrder(ids) =>
+                            val rIds =
+                              ptRight.sort match {
+                                case IdentityOrder(rIds)
+                                    if graph.uniqueIdentities =>
+                                  rIds
+                                case _ => Vector.empty
+                              }
+                            IdentityOrder(
+                              ids ++ rIds.map(_ + left.identities.length))
 
-                        case otherSort => otherSort
-                      }
+                          case otherSort => otherSort
+                        }
 
-                    case CrossRight =>
-                      ptRight.sort match {
-                        case IdentityOrder(ids) =>
-                          val lIds = ptLeft.sort match {
-                            case IdentityOrder(lIds)
-                                if graph.uniqueIdentities =>
-                              lIds
-                            case _ => Vector.empty
-                          }
-                          IdentityOrder(
-                            ids.map(_ + left.identities.length) ++ lIds)
+                      case CrossRight =>
+                        ptRight.sort match {
+                          case IdentityOrder(ids) =>
+                            val lIds =
+                              ptLeft.sort match {
+                                case IdentityOrder(lIds)
+                                    if graph.uniqueIdentities =>
+                                  lIds
+                                case _ => Vector.empty
+                              }
+                            IdentityOrder(
+                              ids.map(_ + left.identities.length) ++ lIds)
 
-                        case valueOrder => valueOrder
-                      }
+                          case valueOrder => valueOrder
+                        }
 
-                    case CrossLeftRight => // Not actually hit yet. Soon!
-                      (ptLeft.sort, ptRight.sort) match {
-                        case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
-                          IdentityOrder(
-                            lIds ++ rIds.map(_ + left.identities.length))
-                        case (otherSort, _) => otherSort
-                      }
+                      case CrossLeftRight => // Not actually hit yet. Soon!
+                        (ptLeft.sort, ptRight.sort) match {
+                          case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
+                            IdentityOrder(
+                              lIds ++ rIds.map(_ + left.identities.length))
+                          case (otherSort, _) => otherSort
+                        }
 
-                    case CrossRightLeft => // Not actually hit yet. Soon!
-                      (ptLeft.sort, ptRight.sort) match {
-                        case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
-                          IdentityOrder(
-                            rIds.map(_ + left.identities.length) ++ lIds)
-                        case (otherSort, _) => otherSort
-                      }
-                  }
+                      case CrossRightLeft => // Not actually hit yet. Soon!
+                        (ptLeft.sort, ptRight.sort) match {
+                          case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
+                            IdentityOrder(
+                              rIds.map(_ + left.identities.length) ++ lIds)
+                          case (otherSort, _) => otherSort
+                        }
+                    }
 
                   PendingTable(table, graph, TransSpec1.Id, sort)
               })
@@ -513,15 +517,17 @@ trait EvaluatorModule[M[+_]]
           }
 
           val joinKey = joinSortToJoinKey(joinSort)
-          val (leftKeySpec, rightKeySpec) = joinKey match {
-            case IdentityJoin(ids) =>
-              val (lIds, rIds) = ids.unzip
-              (identityJoinSpec(lIds), identityJoinSpec(rIds))
-            case ValueJoin(id) =>
-              val valueKeySpec =
-                trans.DerefObjectStatic(Leaf(Source), CPathField("sort-" + id))
-              (valueKeySpec, valueKeySpec)
-          }
+          val (leftKeySpec, rightKeySpec) =
+            joinKey match {
+              case IdentityJoin(ids) =>
+                val (lIds, rIds) = ids.unzip
+                (identityJoinSpec(lIds), identityJoinSpec(rIds))
+              case ValueJoin(id) =>
+                val valueKeySpec = trans.DerefObjectStatic(
+                  Leaf(Source),
+                  CPathField("sort-" + id))
+                (valueKeySpec, valueKeySpec)
+            }
 
           def isSorted(sort: TableOrder): Boolean =
             (joinKey, sort) match {
@@ -553,37 +559,39 @@ trait EvaluatorModule[M[+_]]
               adjustTableOrder(pendingTableRight.sort)(idMatch.mapRightIndex)
 
             val joinSpec = buildWrappedJoinSpec(idMatch)(spec)
-            val resultM = (isSorted(leftSort), isSorted(rightSort)) match {
-              case (true, true) =>
-                M point (KeyOrder -> simpleJoin(leftResult, rightResult)(
-                  leftKeySpec,
-                  rightKeySpec,
-                  joinSpec))
-              case (lSorted, rSorted) =>
-                val hint = Some(
-                  if (lSorted)
-                    LeftOrder
-                  else if (rSorted)
-                    RightOrder
-                  else
-                    KeyOrder)
-                Table.join(leftResult, rightResult, hint)(
-                  leftKeySpec,
-                  rightKeySpec,
-                  joinSpec)
-            }
+            val resultM =
+              (isSorted(leftSort), isSorted(rightSort)) match {
+                case (true, true) =>
+                  M point (KeyOrder -> simpleJoin(leftResult, rightResult)(
+                    leftKeySpec,
+                    rightKeySpec,
+                    joinSpec))
+                case (lSorted, rSorted) =>
+                  val hint = Some(
+                    if (lSorted)
+                      LeftOrder
+                    else if (rSorted)
+                      RightOrder
+                    else
+                      KeyOrder)
+                  Table.join(leftResult, rightResult, hint)(
+                    leftKeySpec,
+                    rightKeySpec,
+                    joinSpec)
+              }
 
             resultM map {
               case (joinOrder, result) =>
-                val sort = (joinKey, joinOrder) match {
-                  case (ValueJoin(id), KeyOrder)  => ValueOrder(id)
-                  case (ValueJoin(_), LeftOrder)  => leftSort
-                  case (ValueJoin(_), RightOrder) => rightSort
-                  case (IdentityJoin(ids), KeyOrder) =>
-                    IdentityOrder(Vector.range(0, ids.size))
-                  case (IdentityJoin(ids), LeftOrder)  => leftSort
-                  case (IdentityJoin(ids), RightOrder) => rightSort
-                }
+                val sort =
+                  (joinKey, joinOrder) match {
+                    case (ValueJoin(id), KeyOrder)  => ValueOrder(id)
+                    case (ValueJoin(_), LeftOrder)  => leftSort
+                    case (ValueJoin(_), RightOrder) => rightSort
+                    case (IdentityJoin(ids), KeyOrder) =>
+                      IdentityOrder(Vector.range(0, ids.size))
+                    case (IdentityJoin(ids), LeftOrder)  => leftSort
+                    case (IdentityJoin(ids), RightOrder) => rightSort
+                  }
 
                 PendingTable(result, graph, TransSpec1.Id, sort)
             }
@@ -631,18 +639,21 @@ trait EvaluatorModule[M[+_]]
                     trans.DerefObjectStatic(TransSpec1.Id, paths.Value),
                     paths.Value.name)
 
-                  val keyTable =
-                    tableData.transform(keySpec).canonicalize(maxSliceSize)
-                  val valueTable =
-                    tableSamples.transform(valueSpec).canonicalize(maxSliceSize)
+                  val keyTable = tableData
+                    .transform(keySpec)
+                    .canonicalize(maxSliceSize)
+                  val valueTable = tableSamples
+                    .transform(valueSpec)
+                    .canonicalize(maxSliceSize)
 
                   transState liftM mn(keyTable.zip(valueTable))
                 }
               } yield {
-                val sort = pendingTableData.sort match {
-                  case ValueOrder(_) => IdentityOrder.empty
-                  case identityOrder => identityOrder
-                }
+                val sort =
+                  pendingTableData.sort match {
+                    case ValueOrder(_) => IdentityOrder.empty
+                    case identityOrder => identityOrder
+                  }
                 PendingTable(result, graph, TransSpec1.Id, sort)
               }
 
@@ -671,28 +682,29 @@ trait EvaluatorModule[M[+_]]
               }
 
             case Const(value) =>
-              val table = value match {
-                case CString(str) => Table.constString(Set(str))
+              val table =
+                value match {
+                  case CString(str) => Table.constString(Set(str))
 
-                case CLong(ln)  => Table.constLong(Set(ln))
-                case CDouble(d) => Table.constDouble(Set(d))
-                case CNum(n)    => Table.constDecimal(Set(n))
+                  case CLong(ln)  => Table.constLong(Set(ln))
+                  case CDouble(d) => Table.constDouble(Set(d))
+                  case CNum(n)    => Table.constDecimal(Set(n))
 
-                case CBoolean(b) => Table.constBoolean(Set(b))
+                  case CBoolean(b) => Table.constBoolean(Set(b))
 
-                case CNull => Table.constNull
+                  case CNull => Table.constNull
 
-                case CDate(d) => Table.constDate(Set(d))
+                  case CDate(d) => Table.constDate(Set(d))
 
-                case RObject.empty => Table.constEmptyObject
-                case RArray.empty  => Table.constEmptyArray
-                case CEmptyObject  => Table.constEmptyObject
-                case CEmptyArray   => Table.constEmptyArray
+                  case RObject.empty => Table.constEmptyObject
+                  case RArray.empty  => Table.constEmptyArray
+                  case CEmptyObject  => Table.constEmptyObject
+                  case CEmptyArray   => Table.constEmptyArray
 
-                case CUndefined => Table.empty
+                  case CUndefined => Table.empty
 
-                case rv => Table.fromRValues(Stream(rv))
-              }
+                  case rv => Table.fromRValues(Stream(rv))
+                }
 
               val spec = buildConstantWrapSpec(Leaf(Source))
               monadState point PendingTable(
@@ -856,15 +868,16 @@ trait EvaluatorModule[M[+_]]
                       Some(hint))(spec)).tupled
 
                   case MorphismAlignment.Custom(idPolicy, f) =>
-                    val pair = (prepareEval(left, splits) |@| prepareEval(
-                      right,
-                      splits)).tupled
+                    val pair =
+                      (prepareEval(left, splits) |@| prepareEval(
+                        right,
+                        splits)).tupled
                     pair flatMap {
                       case (ptLeft, ptRight) =>
-                        val leftTable =
-                          ptLeft.table.transform(liftToValues(ptLeft.trans))
-                        val rightTable =
-                          ptRight.table.transform(liftToValues(ptRight.trans))
+                        val leftTable = ptLeft.table.transform(
+                          liftToValues(ptLeft.trans))
+                        val rightTable = ptRight.table.transform(
+                          liftToValues(ptRight.trans))
                         def sort(policy: IdentityPolicy): TableOrder =
                           policy match {
                             case IdentityPolicy.Retain.Left  => ptLeft.sort
@@ -1007,30 +1020,36 @@ trait EvaluatorModule[M[+_]]
                   paths.Key -> trans.WrapArray(
                     Scan(Leaf(Source), freshIdScanner))))
 
-              val params = child.foldDown(true) {
-                case param: dag.SplitParam if param.parentId == id => Set(param)
-              }
+              val params =
+                child.foldDown(true) {
+                  case param: dag.SplitParam if param.parentId == id =>
+                    Set(param)
+                }
 
-              val table = for {
-                grouping <- resolveTopLevelGroup(spec, splits)
-                state <- monadState.gets(identity)
-                grouping2 <- transState liftM grouping
-                result <- transState liftM mn(Table.merge(grouping2) {
-                  (key, map) =>
-                    val splits2 = splits + (id -> (map andThen mn))
-                    val rewritten = params.foldLeft(child) {
-                      case (child, param) =>
-                        val subKey = key \ param.id.toString
-                        replaceNode(child, param, Const(subKey)(param.loc))
-                    }
+              val table =
+                for {
+                  grouping <- resolveTopLevelGroup(spec, splits)
+                  state <- monadState.gets(identity)
+                  grouping2 <- transState liftM grouping
+                  result <- transState liftM mn(Table.merge(grouping2) {
+                    (key, map) =>
+                      val splits2 = splits + (id -> (map andThen mn))
+                      val rewritten =
+                        params.foldLeft(child) {
+                          case (child, param) =>
+                            val subKey = key \ param.id.toString
+                            replaceNode(child, param, Const(subKey)(param.loc))
+                        }
 
-                    val back =
-                      fullEval(rewritten, splits2, id :: splits.keys.toList)
-                    back.eval(state)
-                })
-              } yield {
-                result.transform(idSpec)
-              }
+                      val back = fullEval(
+                        rewritten,
+                        splits2,
+                        id :: splits.keys.toList)
+                      back.eval(state)
+                  })
+                } yield {
+                  result.transform(idSpec)
+                }
 
               table map {
                 PendingTable(_, graph, TransSpec1.Id, IdentityOrder(graph))
@@ -1167,8 +1186,9 @@ trait EvaluatorModule[M[+_]]
                   table = pending.table.transform(liftToValues(pending.trans))
                   result = {
                     val wrappedSort = trans.WrapObject(sortSpec, "sort-" + id)
-                    val wrappedValue =
-                      trans.WrapObject(valueSpec, paths.Value.name)
+                    val wrappedValue = trans.WrapObject(
+                      valueSpec,
+                      paths.Value.name)
                     val oldSortFields = parent.valueKeys map { id0 =>
                       CPathField("sort-" + id0)
                     }
@@ -1261,8 +1281,10 @@ trait EvaluatorModule[M[+_]]
         } yield table
       }
 
-      val resultState: StateT[N, EvaluatorState, Table] =
-        fullEval(rewrittenDAG, Map(), Nil)
+      val resultState: StateT[N, EvaluatorState, Table] = fullEval(
+        rewrittenDAG,
+        Map(),
+        Nil)
 
       val resultTable: N[Table] = resultState.eval(EvaluatorState())
       resultTable map {
@@ -1290,14 +1312,15 @@ trait EvaluatorModule[M[+_]]
       * possibly its parents) with the value into the graph.
       */
     def inlineNodeValue(graph: DepGraph, from: DepGraph, result: RValue) = {
-      val replacements = graph.foldDown(true) {
-        case join @ Join(
-              DerefArray,
-              Cross(_),
-              Join(DerefArray, Cross(_), `from`, Const(CLong(index1))),
-              Const(CLong(index2))) =>
-          List((join, Const(result)(from.loc)))
-      }
+      val replacements =
+        graph.foldDown(true) {
+          case join @ Join(
+                DerefArray,
+                Cross(_),
+                Join(DerefArray, Cross(_), `from`, Const(CLong(index1))),
+                Const(CLong(index2))) =>
+            List((join, Const(result)(from.loc)))
+        }
 
       replacements.foldLeft(graph) {
         case (graph, (from, to)) => replaceNode(graph, from, to)
@@ -1340,47 +1363,50 @@ trait EvaluatorModule[M[+_]]
         val (graph, queue2) = queue.dequeue
 
         val (queue3, addend) = {
-          val queue3 = graph match {
-            case _: dag.SplitParam => queue2
-            case _: dag.SplitGroup => queue2
-            case _: dag.Root       => queue2
+          val queue3 =
+            graph match {
+              case _: dag.SplitParam => queue2
+              case _: dag.SplitGroup => queue2
+              case _: dag.Root       => queue2
 
-            case dag.New(parent) => queue2 enqueue parent
+              case dag.New(parent) => queue2 enqueue parent
 
-            case dag.Morph1(_, parent)      => queue2 enqueue parent
-            case dag.Morph2(_, left, right) => queue2 enqueue left enqueue right
+              case dag.Morph1(_, parent) => queue2 enqueue parent
+              case dag.Morph2(_, left, right) =>
+                queue2 enqueue left enqueue right
 
-            case dag.Distinct(parent) => queue2 enqueue parent
+              case dag.Distinct(parent) => queue2 enqueue parent
 
-            case dag.AbsoluteLoad(parent, _) => queue2 enqueue parent
-            case dag.RelativeLoad(parent, _) => queue2 enqueue parent
+              case dag.AbsoluteLoad(parent, _) => queue2 enqueue parent
+              case dag.RelativeLoad(parent, _) => queue2 enqueue parent
 
-            case dag.Operate(_, parent) => queue2 enqueue parent
+              case dag.Operate(_, parent) => queue2 enqueue parent
 
-            case dag.Reduce(_, parent)     => queue2 enqueue parent
-            case dag.MegaReduce(_, parent) => queue2 enqueue parent
+              case dag.Reduce(_, parent)     => queue2 enqueue parent
+              case dag.MegaReduce(_, parent) => queue2 enqueue parent
 
-            case dag.Split(specs, child, _) =>
-              queue2 enqueue child enqueue listParents(specs)
+              case dag.Split(specs, child, _) =>
+                queue2 enqueue child enqueue listParents(specs)
 
-            case dag.Assert(pred, child) => queue2 enqueue pred enqueue child
-            case dag.Cond(pred, left, _, right, _) =>
-              queue2 enqueue pred enqueue left enqueue right
+              case dag.Assert(pred, child) => queue2 enqueue pred enqueue child
+              case dag.Cond(pred, left, _, right, _) =>
+                queue2 enqueue pred enqueue left enqueue right
 
-            case dag.Observe(data, samples) =>
-              queue2 enqueue data enqueue samples
+              case dag.Observe(data, samples) =>
+                queue2 enqueue data enqueue samples
 
-            case dag.IUI(_, left, right) => queue2 enqueue left enqueue right
-            case dag.Diff(left, right)   => queue2 enqueue left enqueue right
+              case dag.IUI(_, left, right) => queue2 enqueue left enqueue right
+              case dag.Diff(left, right)   => queue2 enqueue left enqueue right
 
-            case dag.Join(_, _, left, right) =>
-              queue2 enqueue left enqueue right
-            case dag.Filter(_, left, right) => queue2 enqueue left enqueue right
+              case dag.Join(_, _, left, right) =>
+                queue2 enqueue left enqueue right
+              case dag.Filter(_, left, right) =>
+                queue2 enqueue left enqueue right
 
-            case dag.AddSortKey(parent, _, _, _) => queue2 enqueue parent
+              case dag.AddSortKey(parent, _, _, _) => queue2 enqueue parent
 
-            case dag.Memoize(parent, _) => queue2 enqueue parent
-          }
+              case dag.Memoize(parent, _) => queue2 enqueue parent
+            }
 
           val addend = Some(graph) collect {
             case fp: StagingPoint => fp
@@ -1401,10 +1427,11 @@ trait EvaluatorModule[M[+_]]
     // The rest of the referenced Splits must be in the the list.
     private def referencesOnlySplit(parentSplits: List[Identifier])(
         graph: DepGraph): Boolean = {
-      val referencedSplits = graph.foldDown(false) {
-        case s: dag.SplitParam => Set(s.parentId)
-        case s: dag.SplitGroup => Set(s.parentId)
-      }
+      val referencedSplits =
+        graph.foldDown(false) {
+          case s: dag.SplitParam => Set(s.parentId)
+          case s: dag.SplitGroup => Set(s.parentId)
+        }
 
       val currentIsReferenced = parentSplits.headOption
         .map(referencedSplits.contains(_))
@@ -1420,9 +1447,10 @@ trait EvaluatorModule[M[+_]]
       def bfs(kernels: Set[Kernel]): Set[DepGraph] = {
         // check for convergence
         val results = kernels flatMap { k =>
-          val results = kernels.foldLeft(k.nodes) {
-            _ & _.seen
-          }
+          val results =
+            kernels.foldLeft(k.nodes) {
+              _ & _.seen
+            }
 
           // TODO if the below isEmpty, then can drop results from all kernels
           nodes.foldLeft(results) { (results, node) =>
@@ -1591,10 +1619,11 @@ trait EvaluatorModule[M[+_]]
         rightKey: TransSpec1,
         spec: TransSpec2): Table = {
       val emptySpec = trans.ConstLiteral(CEmptyArray, Leaf(Source))
-      val result = left.cogroup(leftKey, rightKey, right)(
-        emptySpec,
-        emptySpec,
-        trans.WrapArray(spec))
+      val result =
+        left.cogroup(leftKey, rightKey, right)(
+          emptySpec,
+          emptySpec,
+          trans.WrapArray(spec))
 
       result.transform(trans.DerefArrayStatic(Leaf(Source), CPathIndex(0)))
     }

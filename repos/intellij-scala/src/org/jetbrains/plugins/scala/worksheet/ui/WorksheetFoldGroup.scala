@@ -84,9 +84,10 @@ class WorksheetFoldGroup(
     if (!viewerEditor.asInstanceOf[EditorImpl].getContentComponent.hasFocus)
       return false
 
-    val ((fromTo, offsetsSpaces), targetInfo) = traverseRegions(target) match {
-      case (all, info, _) => (all.unzip, info)
-    }
+    val ((fromTo, offsetsSpaces), targetInfo) =
+      traverseRegions(target) match {
+        case (all, info, _) => (all.unzip, info)
+      }
 
     if (targetInfo == null || targetInfo.expanded == expand)
       return false
@@ -116,15 +117,16 @@ class WorksheetFoldGroup(
             regionElem split ',' match {
               case Array(start, end, expanded, trueStart, spaces, lsLength) =>
                 try {
-                  val region = new WorksheetFoldRegionDelegate(
-                    viewerEditor,
-                    start.toInt,
-                    end.toInt,
-                    trueStart.toInt,
-                    spaces.toInt,
-                    WorksheetFoldGroup.this,
-                    lsLength.toInt
-                  )
+                  val region =
+                    new WorksheetFoldRegionDelegate(
+                      viewerEditor,
+                      start.toInt,
+                      end.toInt,
+                      trueStart.toInt,
+                      spaces.toInt,
+                      WorksheetFoldGroup.this,
+                      lsLength.toInt
+                    )
 
                   region.setExpanded(expanded.length == 4)
 
@@ -233,8 +235,9 @@ object WorksheetFoldGroup {
       project: Project,
       splitter: WorksheetDiffSplitters.SimpleWorksheetSplitter,
       file: PsiFile) {
-    val bytes =
-      FileAttributeUtilCache.readAttribute(WORKSHEET_PERSISTENT_FOLD_KEY, file)
+    val bytes = FileAttributeUtilCache.readAttribute(
+      WORKSHEET_PERSISTENT_FOLD_KEY,
+      file)
     if (bytes == null)
       return
 

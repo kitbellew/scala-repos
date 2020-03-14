@@ -369,15 +369,16 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
         }
 
       case elem: Elem =>
-        elem.copy(child =
-          toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
+        elem
+          .copy(child = toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
 
       case s: Seq[_] =>
         s.flatMap(e =>
           e match {
             case elem: Elem =>
-              elem.copy(child =
-                toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
+              elem.copy(child = toForm(
+                inst,
+                elem.child.flatMap(n => toForm(inst, n))))
 
             case x => x
           })

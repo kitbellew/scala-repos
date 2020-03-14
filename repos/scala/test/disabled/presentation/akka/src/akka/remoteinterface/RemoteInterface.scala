@@ -254,10 +254,11 @@ abstract class RemoteSupport
     createInstance[Actor](clazz, noParams, noArgs) match {
       case Right(actor) => actor
       case Left(exception) =>
-        val cause = exception match {
-          case i: InvocationTargetException => i.getTargetException
-          case _                            => exception
-        }
+        val cause =
+          exception match {
+            case i: InvocationTargetException => i.getTargetException
+            case _                            => exception
+          }
 
         throw new ActorInitializationException(
           "Could not instantiate Actor of " + clazz +

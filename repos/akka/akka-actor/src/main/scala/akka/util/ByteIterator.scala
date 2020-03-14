@@ -405,9 +405,10 @@ object ByteIterator {
       if (iterators.tail.isEmpty)
         iterators.head.toByteString
       else {
-        val result = iterators.foldLeft(ByteString.empty) {
-          _ ++ _.toByteString
-        }
+        val result =
+          iterators.foldLeft(ByteString.empty) {
+            _ ++ _.toByteString
+          }
         clear()
         result
       }
@@ -424,14 +425,15 @@ object ByteIterator {
       else {
         if (isEmpty)
           Iterator.empty.next
-        val nDone = if (current.len >= elemSize) {
-          val nCurrent = math.min(n, current.len / elemSize)
-          getMult(xs, offset, nCurrent)
-          nCurrent
-        } else {
-          xs(offset) = getSingle
-          1
-        }
+        val nDone =
+          if (current.len >= elemSize) {
+            val nCurrent = math.min(n, current.len / elemSize)
+            getMult(xs, offset, nCurrent)
+            nCurrent
+          } else {
+            xs(offset) = getSingle
+            1
+          }
         normalize()
         getToArray(xs, offset + nDone, n - nDone, elemSize)(getSingle)(getMult)
       }
@@ -484,9 +486,10 @@ object ByteIterator {
       }
 
     def copyToBuffer(buffer: ByteBuffer): Int = {
-      val n = iterators.foldLeft(0) {
-        _ + _.copyToBuffer(buffer)
-      }
+      val n =
+        iterators.foldLeft(0) {
+          _ + _.copyToBuffer(buffer)
+        }
       normalize()
       n
     }

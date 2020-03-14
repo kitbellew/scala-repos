@@ -64,61 +64,62 @@ private[sql] object JDBCRDD extends Logging {
       precision: Int,
       scale: Int,
       signed: Boolean): DataType = {
-    val answer = sqlType match {
-      // scalastyle:off
-      case java.sql.Types.ARRAY => null
-      case java.sql.Types.BIGINT =>
-        if (signed) {
-          LongType
-        } else {
-          DecimalType(20, 0)
-        }
-      case java.sql.Types.BINARY   => BinaryType
-      case java.sql.Types.BIT      => BooleanType // @see JdbcDialect for quirks
-      case java.sql.Types.BLOB     => BinaryType
-      case java.sql.Types.BOOLEAN  => BooleanType
-      case java.sql.Types.CHAR     => StringType
-      case java.sql.Types.CLOB     => StringType
-      case java.sql.Types.DATALINK => null
-      case java.sql.Types.DATE     => DateType
-      case java.sql.Types.DECIMAL if precision != 0 || scale != 0 =>
-        DecimalType.bounded(precision, scale)
-      case java.sql.Types.DECIMAL  => DecimalType.SYSTEM_DEFAULT
-      case java.sql.Types.DISTINCT => null
-      case java.sql.Types.DOUBLE   => DoubleType
-      case java.sql.Types.FLOAT    => FloatType
-      case java.sql.Types.INTEGER =>
-        if (signed) {
-          IntegerType
-        } else {
-          LongType
-        }
-      case java.sql.Types.JAVA_OBJECT   => null
-      case java.sql.Types.LONGNVARCHAR  => StringType
-      case java.sql.Types.LONGVARBINARY => BinaryType
-      case java.sql.Types.LONGVARCHAR   => StringType
-      case java.sql.Types.NCHAR         => StringType
-      case java.sql.Types.NCLOB         => StringType
-      case java.sql.Types.NULL          => null
-      case java.sql.Types.NUMERIC if precision != 0 || scale != 0 =>
-        DecimalType.bounded(precision, scale)
-      case java.sql.Types.NUMERIC   => DecimalType.SYSTEM_DEFAULT
-      case java.sql.Types.NVARCHAR  => StringType
-      case java.sql.Types.OTHER     => null
-      case java.sql.Types.REAL      => DoubleType
-      case java.sql.Types.REF       => StringType
-      case java.sql.Types.ROWID     => LongType
-      case java.sql.Types.SMALLINT  => IntegerType
-      case java.sql.Types.SQLXML    => StringType
-      case java.sql.Types.STRUCT    => StringType
-      case java.sql.Types.TIME      => TimestampType
-      case java.sql.Types.TIMESTAMP => TimestampType
-      case java.sql.Types.TINYINT   => IntegerType
-      case java.sql.Types.VARBINARY => BinaryType
-      case java.sql.Types.VARCHAR   => StringType
-      case _                        => null
-      // scalastyle:on
-    }
+    val answer =
+      sqlType match {
+        // scalastyle:off
+        case java.sql.Types.ARRAY => null
+        case java.sql.Types.BIGINT =>
+          if (signed) {
+            LongType
+          } else {
+            DecimalType(20, 0)
+          }
+        case java.sql.Types.BINARY   => BinaryType
+        case java.sql.Types.BIT      => BooleanType // @see JdbcDialect for quirks
+        case java.sql.Types.BLOB     => BinaryType
+        case java.sql.Types.BOOLEAN  => BooleanType
+        case java.sql.Types.CHAR     => StringType
+        case java.sql.Types.CLOB     => StringType
+        case java.sql.Types.DATALINK => null
+        case java.sql.Types.DATE     => DateType
+        case java.sql.Types.DECIMAL if precision != 0 || scale != 0 =>
+          DecimalType.bounded(precision, scale)
+        case java.sql.Types.DECIMAL  => DecimalType.SYSTEM_DEFAULT
+        case java.sql.Types.DISTINCT => null
+        case java.sql.Types.DOUBLE   => DoubleType
+        case java.sql.Types.FLOAT    => FloatType
+        case java.sql.Types.INTEGER =>
+          if (signed) {
+            IntegerType
+          } else {
+            LongType
+          }
+        case java.sql.Types.JAVA_OBJECT   => null
+        case java.sql.Types.LONGNVARCHAR  => StringType
+        case java.sql.Types.LONGVARBINARY => BinaryType
+        case java.sql.Types.LONGVARCHAR   => StringType
+        case java.sql.Types.NCHAR         => StringType
+        case java.sql.Types.NCLOB         => StringType
+        case java.sql.Types.NULL          => null
+        case java.sql.Types.NUMERIC if precision != 0 || scale != 0 =>
+          DecimalType.bounded(precision, scale)
+        case java.sql.Types.NUMERIC   => DecimalType.SYSTEM_DEFAULT
+        case java.sql.Types.NVARCHAR  => StringType
+        case java.sql.Types.OTHER     => null
+        case java.sql.Types.REAL      => DoubleType
+        case java.sql.Types.REF       => StringType
+        case java.sql.Types.ROWID     => LongType
+        case java.sql.Types.SMALLINT  => IntegerType
+        case java.sql.Types.SQLXML    => StringType
+        case java.sql.Types.STRUCT    => StringType
+        case java.sql.Types.TIME      => TimestampType
+        case java.sql.Types.TIMESTAMP => TimestampType
+        case java.sql.Types.TINYINT   => IntegerType
+        case java.sql.Types.VARBINARY => BinaryType
+        case java.sql.Types.VARCHAR   => StringType
+        case _                        => null
+        // scalastyle:on
+      }
 
     if (answer == null)
       throw new SQLException("Unsupported type " + sqlType)
@@ -164,13 +165,15 @@ private[sql] object JDBCRDD extends Logging {
             val metadata = new MetadataBuilder()
               .putString("name", columnName)
               .putLong("scale", fieldScale)
-            val columnType =
-              dialect
-                .getCatalystType(dataType, typeName, fieldSize, metadata)
-                .getOrElse(
-                  getCatalystType(dataType, fieldSize, fieldScale, isSigned))
-            fields(i) =
-              StructField(columnName, columnType, nullable, metadata.build())
+            val columnType = dialect
+              .getCatalystType(dataType, typeName, fieldSize, metadata)
+              .getOrElse(
+                getCatalystType(dataType, fieldSize, fieldScale, isSigned))
+            fields(i) = StructField(
+              columnName,
+              columnType,
+              nullable,
+              metadata.build())
             i = i + 1
           }
           return new StructType(fields)
@@ -287,8 +290,8 @@ private[sql] object JDBCRDD extends Logging {
       filters: Array[Filter],
       parts: Array[Partition]): RDD[InternalRow] = {
     val dialect = JdbcDialects.get(url)
-    val quotedColumns =
-      requiredColumns.map(colName => dialect.quoteIdentifier(colName))
+    val quotedColumns = requiredColumns.map(colName =>
+      dialect.quoteIdentifier(colName))
     new JDBCRDD(
       sc,
       JdbcUtils.createConnectionFactory(url, properties),
@@ -339,8 +342,9 @@ private[sql] class JDBCRDD(
   /**
     * `filters`, but as a WHERE clause suitable for injection into a SQL query.
     */
-  private val filterWhereClause: String =
-    filters.flatMap(JDBCRDD.compileFilter).mkString(" AND ")
+  private val filterWhereClause: String = filters
+    .flatMap(JDBCRDD.compileFilter)
+    .mkString(" AND ")
 
   /**
     * A WHERE clause representing both `filters`, if any, and the current partition.
@@ -444,8 +448,8 @@ private[sql] class JDBCRDD(
       val rs = stmt.executeQuery()
 
       val conversions = getConversions(schema)
-      val mutableRow = new SpecificMutableRow(
-        schema.fields.map(x => x.dataType))
+      val mutableRow =
+        new SpecificMutableRow(schema.fields.map(x => x.dataType))
 
       def getNext(): InternalRow = {
         if (rs.next()) {
@@ -506,37 +510,38 @@ private[sql] class JDBCRDD(
               case ArrayConversion(elementConversion) =>
                 val array = rs.getArray(pos).getArray
                 if (array != null) {
-                  val data = elementConversion match {
-                    case TimestampConversion =>
-                      array.asInstanceOf[Array[java.sql.Timestamp]].map {
-                        timestamp =>
-                          nullSafeConvert(
-                            timestamp,
-                            DateTimeUtils.fromJavaTimestamp)
-                      }
-                    case StringConversion =>
-                      array
-                        .asInstanceOf[Array[java.lang.String]]
-                        .map(UTF8String.fromString)
-                    case DateConversion =>
-                      array.asInstanceOf[Array[java.sql.Date]].map { date =>
-                        nullSafeConvert(date, DateTimeUtils.fromJavaDate)
-                      }
-                    case DecimalConversion(p, s) =>
-                      array.asInstanceOf[Array[java.math.BigDecimal]].map {
-                        decimal =>
-                          nullSafeConvert[java.math.BigDecimal](
-                            decimal,
-                            d => Decimal(d, p, s))
-                      }
-                    case BinaryLongConversion =>
-                      throw new IllegalArgumentException(
-                        s"Unsupported array element conversion $i")
-                    case _: ArrayConversion =>
-                      throw new IllegalArgumentException(
-                        "Nested arrays unsupported")
-                    case _ => array.asInstanceOf[Array[Any]]
-                  }
+                  val data =
+                    elementConversion match {
+                      case TimestampConversion =>
+                        array.asInstanceOf[Array[java.sql.Timestamp]].map {
+                          timestamp =>
+                            nullSafeConvert(
+                              timestamp,
+                              DateTimeUtils.fromJavaTimestamp)
+                        }
+                      case StringConversion =>
+                        array
+                          .asInstanceOf[Array[java.lang.String]]
+                          .map(UTF8String.fromString)
+                      case DateConversion =>
+                        array.asInstanceOf[Array[java.sql.Date]].map { date =>
+                          nullSafeConvert(date, DateTimeUtils.fromJavaDate)
+                        }
+                      case DecimalConversion(p, s) =>
+                        array.asInstanceOf[Array[java.math.BigDecimal]].map {
+                          decimal =>
+                            nullSafeConvert[java.math.BigDecimal](
+                              decimal,
+                              d => Decimal(d, p, s))
+                        }
+                      case BinaryLongConversion =>
+                        throw new IllegalArgumentException(
+                          s"Unsupported array element conversion $i")
+                      case _: ArrayConversion =>
+                        throw new IllegalArgumentException(
+                          "Nested arrays unsupported")
+                      case _ => array.asInstanceOf[Array[Any]]
+                    }
                   mutableRow.update(i, new GenericArrayData(data))
                 } else {
                   mutableRow.update(i, null)

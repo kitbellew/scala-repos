@@ -27,11 +27,11 @@ object DBTypeDescriptorImpl {
       )
 
     val columnDefn = ColumnDefinitionProviderImpl[T](c)
-    val converter =
-      TupleConverterImpl.caseClassTupleConverterWithUnknownImpl[T](c)
+    val converter = TupleConverterImpl
+      .caseClassTupleConverterWithUnknownImpl[T](c)
     val setter = TupleSetterImpl.caseClassTupleSetterWithUnknownImpl[T](c)
-    val jdbcSetter =
-      JdbcStatementSetterImpl.caseClassJdbcSetterCommonImpl[T](c, true)
+    val jdbcSetter = JdbcStatementSetterImpl
+      .caseClassJdbcSetterCommonImpl[T](c, true)
     val fields = FieldsProviderImpl.toFieldsWithUnknownNoPrefixImpl[T](c)
 
     val res = q"""

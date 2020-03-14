@@ -37,9 +37,10 @@ trait Generic1[F[_], FR[_[_]]] extends Serializable {
 }
 
 object Generic1 extends Generic10 {
-  type Aux[F[_], FR[_[_]], R0[_]] = Generic1[F, FR] {
-    type R[t] = R0[t]
-  }
+  type Aux[F[_], FR[_[_]], R0[_]] =
+    Generic1[F, FR] {
+      type R[t] = R0[t]
+    }
 
   implicit def apply[T[_], FR[_[_]]]: Generic1[T, FR] =
     macro Generic1Macros.mkGeneric1Impl[T, FR]
@@ -242,10 +243,11 @@ trait Split1[L[_], FO[_[_]], FI[_[_]]] extends Serializable {
 }
 
 object Split1 extends Split10 {
-  type Aux[L[_], FO[_[_]], FI[_[_]], O0[_], I0[_]] = Split1[L, FO, FI] {
-    type O[T] = O0[T];
-    type I[T] = I0[T]
-  }
+  type Aux[L[_], FO[_[_]], FI[_[_]], O0[_], I0[_]] =
+    Split1[L, FO, FI] {
+      type O[T] = O0[T];
+      type I[T] = I0[T]
+    }
 
   implicit def apply[L[_], FO[_[_]], FI[_[_]]]: Split1[L, FO, FI] =
     macro Split1Macros.mkSplit1Impl[L, FO, FI]

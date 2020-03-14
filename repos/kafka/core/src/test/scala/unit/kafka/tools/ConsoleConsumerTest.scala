@@ -35,12 +35,13 @@ class ConsoleConsumerTest extends JUnitSuite {
     val formatter = EasyMock.createNiceMock(classOf[MessageFormatter])
 
     //Stubs
-    val record = new BaseConsumerRecord(
-      topic = "foo",
-      partition = 1,
-      offset = 1,
-      key = Array[Byte](),
-      value = Array[Byte]())
+    val record =
+      new BaseConsumerRecord(
+        topic = "foo",
+        partition = 1,
+        offset = 1,
+        key = Array[Byte](),
+        value = Array[Byte]())
 
     //Expectations
     val messageLimit: Int = 10

@@ -135,26 +135,28 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
     }
   }
 
-  val urlGeneration = get("/url-generation") {
-    new AsyncResult {
-      val is = Future {
-        layoutTemplate("/urlGeneration.jade")
+  val urlGeneration =
+    get("/url-generation") {
+      new AsyncResult {
+        val is = Future {
+          layoutTemplate("/urlGeneration.jade")
+        }
       }
     }
-  }
 
-  val urlGenerationWithParams = get("/url-generation-with-params/:a/vs/:b") {
+  val urlGenerationWithParams =
+    get("/url-generation-with-params/:a/vs/:b") {
 
-    new AsyncResult {
-      val is = Future {
-        println("Rendering reverse routing template")
-        layoutTemplate(
-          "/urlGenerationWithParams.jade",
-          ("a" -> params("a")),
-          ("b" -> params("b")))
+      new AsyncResult {
+        val is = Future {
+          println("Rendering reverse routing template")
+          layoutTemplate(
+            "/urlGenerationWithParams.jade",
+            ("a" -> params("a")),
+            ("b" -> params("b")))
+        }
       }
     }
-  }
 
   get("/legacy-view-path") {
     new AsyncResult {
@@ -174,12 +176,11 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
 
   get("/bindings/*") {
     new AsyncResult {
-      val is =
-        Future {
-          flash.now("message") = "flash works"
-          session("message") = "session works"
-          jade(requestPath)
-        }
+      val is = Future {
+        flash.now("message") = "flash works"
+        session("message") = "session works"
+        jade(requestPath)
+      }
     }
   }
 
@@ -201,11 +202,10 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
 
   get("/template-attributes") {
     new AsyncResult {
-      val is =
-        Future {
-          templateAttributes("foo") = "from attributes"
-          scaml("params")
-        }
+      val is = Future {
+        templateAttributes("foo") = "from attributes"
+        scaml("params")
+      }
     }
   }
 

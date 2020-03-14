@@ -77,9 +77,10 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
     "serialize and de-serialize DaemonMsgCreate with Deploy and RouterConfig" in {
       verifySerialization {
         // Duration.Inf doesn't equal Duration.Inf, so we use another for test
-        val supervisorStrategy = OneForOneStrategy(3, 10 seconds) {
-          case _ ⇒ SupervisorStrategy.Escalate
-        }
+        val supervisorStrategy =
+          OneForOneStrategy(3, 10 seconds) {
+            case _ ⇒ SupervisorStrategy.Escalate
+          }
         val deploy1 = Deploy(
           path = "path1",
           config = ConfigFactory.parseString("a=1"),

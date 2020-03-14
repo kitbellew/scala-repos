@@ -334,8 +334,9 @@ object ConsoleProducer {
       .withRequiredArg
       .describedAs("config file")
       .ofType(classOf[String])
-    val useOldProducerOpt =
-      parser.accepts("old-producer", "Use the old producer implementation.")
+    val useOldProducerOpt = parser.accepts(
+      "old-producer",
+      "Use the old producer implementation.")
 
     val options = parser.parse(args: _*)
     if (args.length == 0)
@@ -371,10 +372,10 @@ object ConsoleProducer {
     val valueEncoderClass = options.valueOf(valueEncoderOpt)
     val readerClass = options.valueOf(messageReaderOpt)
     val socketBuffer = options.valueOf(socketBufferSizeOpt)
-    val cmdLineProps =
-      CommandLineUtils.parseKeyValueArgs(options.valuesOf(propertyOpt))
-    val extraProducerProps =
-      CommandLineUtils.parseKeyValueArgs(options.valuesOf(producerPropertyOpt))
+    val cmdLineProps = CommandLineUtils.parseKeyValueArgs(
+      options.valuesOf(propertyOpt))
+    val extraProducerProps = CommandLineUtils.parseKeyValueArgs(
+      options.valuesOf(producerPropertyOpt))
     /* new producer related configs */
     val maxMemoryBytes = options.valueOf(maxMemoryBytesOpt)
     val maxPartitionMemoryBytes = options.valueOf(maxPartitionMemoryBytesOpt)
@@ -393,13 +394,19 @@ object ConsoleProducer {
     override def init(inputStream: InputStream, props: Properties) {
       topic = props.getProperty("topic")
       if (props.containsKey("parse.key"))
-        parseKey =
-          props.getProperty("parse.key").trim.toLowerCase.equals("true")
+        parseKey = props
+          .getProperty("parse.key")
+          .trim
+          .toLowerCase
+          .equals("true")
       if (props.containsKey("key.separator"))
         keySeparator = props.getProperty("key.separator")
       if (props.containsKey("ignore.error"))
-        ignoreError =
-          props.getProperty("ignore.error").trim.toLowerCase.equals("true")
+        ignoreError = props
+          .getProperty("ignore.error")
+          .trim
+          .toLowerCase
+          .equals("true")
       reader = new BufferedReader(new InputStreamReader(inputStream))
     }
 
@@ -416,10 +423,11 @@ object ConsoleProducer {
                 throw new KafkaException(
                   s"No key found on line ${lineNumber}: $line")
             case n =>
-              val value = (if (n + keySeparator.size > line.size)
-                             ""
-                           else
-                             line.substring(n + keySeparator.size)).getBytes
+              val value =
+                (if (n + keySeparator.size > line.size)
+                   ""
+                 else
+                   line.substring(n + keySeparator.size)).getBytes
               new ProducerRecord(topic, line.substring(0, n).getBytes, value)
           }
         case (line, false) =>

@@ -53,8 +53,9 @@ class MapStatusSuite extends SparkFunSuite {
     for (numSizes <- Seq(1, 10, 100, 1000, 10000);
          mean <- Seq(0L, 100L, 10000L, Int.MaxValue.toLong);
          stddev <- Seq(0.0, 0.01, 0.5, 1.0)) {
-      val sizes = Array.fill[Long](numSizes)(
-        abs(round(Random.nextGaussian() * stddev)) + mean)
+      val sizes =
+        Array.fill[Long](numSizes)(
+          abs(round(Random.nextGaussian() * stddev)) + mean)
       val status = MapStatus(BlockManagerId("a", "b", 10), sizes)
       val status1 = compressAndDecompressMapStatus(status)
       for (i <- 0 until numSizes) {
@@ -80,9 +81,10 @@ class MapStatusSuite extends SparkFunSuite {
 
   test(
     "HighlyCompressedMapStatus: estimated size should be the average non-empty block size") {
-    val sizes = Array.tabulate[Long](3000) { i =>
-      i.toLong
-    }
+    val sizes =
+      Array.tabulate[Long](3000) { i =>
+        i.toLong
+      }
     val avg = sizes.sum / sizes.count(_ != 0)
     val loc = BlockManagerId("a", "b", 10)
     val status = MapStatus(loc, sizes)

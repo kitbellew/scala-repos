@@ -85,21 +85,22 @@ object FileWatchService {
       pollDelayMillis: Int,
       logger: LoggerProxy): FileWatchService =
     new FileWatchService {
-      lazy val delegate = os match {
-        // If Windows or Linux and JDK7, use JDK7 watch service
-        case (Windows | Linux) if Properties.isJavaAtLeast("1.7") =>
-          new JDK7FileWatchService(logger)
-        // If Windows, Linux or OSX, use JNotify but fall back to SBT
-        case (Windows | Linux | OSX) =>
-          JNotifyFileWatchService(targetDirectory).recover {
-            case e =>
-              logger.warn(
-                "Error loading JNotify watch service: " + e.getMessage)
-              logger.trace(e)
-              new PollingFileWatchService(pollDelayMillis)
-          }.get
-        case _ => new PollingFileWatchService(pollDelayMillis)
-      }
+      lazy val delegate =
+        os match {
+          // If Windows or Linux and JDK7, use JDK7 watch service
+          case (Windows | Linux) if Properties.isJavaAtLeast("1.7") =>
+            new JDK7FileWatchService(logger)
+          // If Windows, Linux or OSX, use JNotify but fall back to SBT
+          case (Windows | Linux | OSX) =>
+            JNotifyFileWatchService(targetDirectory).recover {
+              case e =>
+                logger.warn(
+                  "Error loading JNotify watch service: " + e.getMessage)
+                logger.trace(e)
+                new PollingFileWatchService(pollDelayMillis)
+            }.get
+          case _ => new PollingFileWatchService(pollDelayMillis)
+        }
 
       def watch(filesToWatch: Seq[File], onChange: () => Unit) =
         delegate.watch(filesToWatch, onChange)
@@ -138,22 +139,24 @@ private[play] class PollingFileWatchService(val pollDelayMillis: Int)
 
     @volatile var stopped = false
 
-    val thread = new Thread(
-      new Runnable {
-        def run() = {
-          var state = WatchState.empty
-          while (!stopped) {
-            val (triggered, newState) = SourceModificationWatch.watch(
-              distinctPathFinder(filesToWatch.***),
-              pollDelayMillis,
-              state)(stopped)
-            if (triggered)
-              onChange()
-            state = newState
+    val thread =
+      new Thread(
+        new Runnable {
+          def run() = {
+            var state = WatchState.empty
+            while (!stopped) {
+              val (triggered, newState) =
+                SourceModificationWatch.watch(
+                  distinctPathFinder(filesToWatch.***),
+                  pollDelayMillis,
+                  state)(stopped)
+              if (triggered)
+                onChange()
+              state = newState
+            }
           }
-        }
-      },
-      "sbt-play-watch-service")
+        },
+        "sbt-play-watch-service")
     thread.setDaemon(true)
     thread.start()
 
@@ -260,10 +263,11 @@ private object JNotifyFileWatchService {
                   (name: String) => name.startsWith("native_libraries"))
               }
 
-              val libs = new File(
-                nativeLibrariesDirectory,
-                System.getProperty(
-                  "sun.arch.data.model") + "bits").getAbsolutePath
+              val libs =
+                new File(
+                  nativeLibrariesDirectory,
+                  System.getProperty(
+                    "sun.arch.data.model") + "bits").getAbsolutePath
 
               // Hack to set java.library.path
               System.setProperty(
@@ -274,8 +278,8 @@ private object JNotifyFileWatchService {
                     }
                     .getOrElse(libs)
                 })
-              val fieldSysPath =
-                classOf[ClassLoader].getDeclaredField("sys_paths")
+              val fieldSysPath = classOf[ClassLoader].getDeclaredField(
+                "sys_paths")
               fieldSysPath.setAccessible(true)
               fieldSysPath.set(null, null)
 
@@ -288,24 +292,26 @@ private object JNotifyFileWatchService {
               loader
             }
 
-          val jnotifyClass =
-            classloader.loadClass("net.contentobjects.jnotify.JNotify")
-          val jnotifyListenerClass =
-            classloader.loadClass("net.contentobjects.jnotify.JNotifyListener")
+          val jnotifyClass = classloader.loadClass(
+            "net.contentobjects.jnotify.JNotify")
+          val jnotifyListenerClass = classloader.loadClass(
+            "net.contentobjects.jnotify.JNotifyListener")
           val addWatchMethod = jnotifyClass.getMethod(
             "addWatch",
             classOf[String],
             classOf[Int],
             classOf[Boolean],
             jnotifyListenerClass)
-          val removeWatchMethod =
-            jnotifyClass.getMethod("removeWatch", classOf[Int])
+          val removeWatchMethod = jnotifyClass.getMethod(
+            "removeWatch",
+            classOf[Int])
 
-          val d = new JNotifyDelegate(
-            classloader,
-            jnotifyListenerClass,
-            addWatchMethod,
-            removeWatchMethod)
+          val d =
+            new JNotifyDelegate(
+              classloader,
+              jnotifyListenerClass,
+              addWatchMethod,
+              removeWatchMethod)
 
           // Try it
           d.ensureLoaded()
@@ -358,43 +364,45 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
     val allDirsToWatch = allSubDirectories(dirsToWatch)
     allDirsToWatch.foreach(watchDir)
 
-    val thread = new Thread(
-      new Runnable {
-        def run() = {
-          try {
-            while (true) {
-              val watchKey = watcher.take()
+    val thread =
+      new Thread(
+        new Runnable {
+          def run() = {
+            try {
+              while (true) {
+                val watchKey = watcher.take()
 
-              val events = watchKey.pollEvents()
+                val events = watchKey.pollEvents()
 
-              import scala.collection.JavaConversions._
-              // If a directory has been created, we must watch it and its sub directories
-              events.foreach { event =>
-                if (event.kind == ENTRY_CREATE) {
-                  val file = watchKey.watchable
-                    .asInstanceOf[Path]
-                    .resolve(event.context.asInstanceOf[Path])
-                    .toFile
+                import scala.collection.JavaConversions._
+                // If a directory has been created, we must watch it and its sub directories
+                events.foreach { event =>
+                  if (event.kind == ENTRY_CREATE) {
+                    val file =
+                      watchKey.watchable
+                        .asInstanceOf[Path]
+                        .resolve(event.context.asInstanceOf[Path])
+                        .toFile
 
-                  if (file.isDirectory) {
-                    allSubDirectories(Seq(file)).foreach(watchDir)
+                    if (file.isDirectory) {
+                      allSubDirectories(Seq(file)).foreach(watchDir)
+                    }
                   }
                 }
+
+                onChange()
+
+                watchKey.reset()
               }
-
-              onChange()
-
-              watchKey.reset()
+            } catch {
+              case NonFatal(e) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
+            } finally {
+              // Just in case it wasn't closed.
+              watcher.close()
             }
-          } catch {
-            case NonFatal(e) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
-          } finally {
-            // Just in case it wasn't closed.
-            watcher.close()
           }
-        }
-      },
-      "sbt-play-watch-service")
+        },
+        "sbt-play-watch-service")
     thread.setDaemon(true)
     thread.start()
 
@@ -449,14 +457,15 @@ private[runsupport] object GlobalStaticVar {
     // Now we construct a MBean that exposes the AtomicReference.get method
     val getMethod = classOf[AtomicReference[_]].getMethod("get")
     val getInfo = new ModelMBeanOperationInfo("The value", getMethod)
-    val mmbi = new ModelMBeanInfoSupport(
-      "GlobalStaticVar",
-      "A global static variable",
-      null, // no attributes
-      null, // no constructors
-      Array(getInfo), // the operation
-      null
-    ); // no notifications
+    val mmbi =
+      new ModelMBeanInfoSupport(
+        "GlobalStaticVar",
+        "A global static variable",
+        null, // no attributes
+        null, // no constructors
+        Array(getInfo), // the operation
+        null
+      ); // no notifications
 
     val mmb = new RequiredModelMBean(mmbi)
     mmb.setManagedResource(reference, "ObjectReference")

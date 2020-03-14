@@ -25,8 +25,7 @@ private[bookmark] object BookmarkRepo {
       "g",
       BSONDocument("u" -> userId).some) map lila.db.BSON.asStringSet
 
-  def removeByGameId(gameId: String): Funit =
-    $remove(Json.obj("g" -> gameId))
+  def removeByGameId(gameId: String): Funit = $remove(Json.obj("g" -> gameId))
 
   def removeByGameIds(gameIds: List[String]): Funit =
     $remove(Json.obj("g" -> $in(gameIds)))

@@ -41,26 +41,28 @@ case class Form[T](
   /**
     * Constraints associated with this form, indexed by field name.
     */
-  val constraints: Map[String, Seq[(String, Seq[Any])]] = mapping.mappings
-    .map { m =>
-      m.key -> m.constraints.collect {
-        case Constraint(Some(name), args) => name -> args
+  val constraints: Map[String, Seq[(String, Seq[Any])]] =
+    mapping.mappings
+      .map { m =>
+        m.key -> m.constraints.collect {
+          case Constraint(Some(name), args) => name -> args
+        }
       }
-    }
-    .filterNot(_._2.isEmpty)
-    .toMap
+      .filterNot(_._2.isEmpty)
+      .toMap
 
   /**
     * Formats associated to this form, indexed by field name. *
     */
-  val formats: Map[String, (String, Seq[Any])] = mapping.mappings
-    .map { m =>
-      m.key -> m.format
-    }
-    .collect {
-      case (k, Some(f)) => k -> f
-    }
-    .toMap
+  val formats: Map[String, (String, Seq[Any])] =
+    mapping.mappings
+      .map { m =>
+        m.key -> m.format
+      }
+      .collect {
+        case (k, Some(f)) => k -> f
+      }
+      .toMap
 
   /**
     * Binds data to this form, i.e. handles form submission.
@@ -328,8 +330,8 @@ case class Field(
   /**
     * The field ID - the same as the field name but with '.' replaced by '_'.
     */
-  lazy val id: String =
-    name.replace('.', '_').replace('[', '_').replace("]", "")
+  lazy val id
+      : String = name.replace('.', '_').replace('[', '_').replace("]", "")
 
   /**
     * Returns the first error associated with this field, if it exists.
@@ -838,10 +840,11 @@ case class RepeatedMapping[T](
     */
   def unbindAndValidate(
       value: List[T]): (Map[String, String], Seq[FormError]) = {
-    val (datas, errors) = value.zipWithIndex.map {
-      case (t, i) =>
-        wrapped.withPrefix(key + "[" + i + "]").unbindAndValidate(t)
-    }.unzip
+    val (datas, errors) =
+      value.zipWithIndex.map {
+        case (t, i) =>
+          wrapped.withPrefix(key + "[" + i + "]").unbindAndValidate(t)
+      }.unzip
     (
       datas.foldLeft(Map.empty[String, String])(_ ++ _),
       errors.flatten ++ collectErrors(value))
@@ -1083,8 +1086,8 @@ trait ObjectMapping {
     */
   def merge(results: Either[Seq[FormError], Any]*)
       : Either[Seq[FormError], Seq[Any]] = {
-    val all: Seq[Either[Seq[FormError], Seq[Any]]] =
-      results.map(_.right.map(Seq(_)))
+    val all: Seq[Either[Seq[FormError], Seq[Any]]] = results.map(
+      _.right.map(Seq(_)))
     all.fold(Right(Nil)) { (s, i) =>
       merge2(s, i)
     }

@@ -32,9 +32,10 @@ sealed trait ResourceError {
 }
 
 object ResourceError {
-  implicit val semigroup = new Semigroup[ResourceError] {
-    def append(e1: ResourceError, e2: => ResourceError) = all(nels(e1, e2))
-  }
+  implicit val semigroup =
+    new Semigroup[ResourceError] {
+      def append(e1: ResourceError, e2: => ResourceError) = all(nels(e1, e2))
+    }
 
   implicit val show = Show.showFromToString[ResourceError]
 

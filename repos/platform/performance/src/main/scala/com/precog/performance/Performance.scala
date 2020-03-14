@@ -88,14 +88,15 @@ class Performance(
 
     def noop = ()
 
-    val overhead = if (parameters.calcOverhead) {
-      val baseline = benchmark(
-        noop,
-        BenchmarkResults(0, 10, 0, Vector.empty[Long], Vector.empty[Unit]))
-      baseline.meanRepTime()
-    } else {
-      0.0
-    }
+    val overhead =
+      if (parameters.calcOverhead) {
+        val baseline = benchmark(
+          noop,
+          BenchmarkResults(0, 10, 0, Vector.empty[Long], Vector.empty[Unit]))
+        baseline.meanRepTime()
+      } else {
+        0.0
+      }
 
     benchmark(
       test,
@@ -127,8 +128,12 @@ object Performance {
 
   val warmupDefaults = BenchmarkParameters(10, 1000)
   val benchmarkDefaults = BenchmarkParameters(200, 1000)
-  val profileDefaults =
-    BenchmarkParameters(Int.MaxValue, 1000, Some(500), false, false)
+  val profileDefaults = BenchmarkParameters(
+    Int.MaxValue,
+    1000,
+    Some(500),
+    false,
+    false)
 
   def apply(
       warmupDefaults: BenchmarkParameters = this.warmupDefaults,

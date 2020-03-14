@@ -16,8 +16,7 @@ sealed trait DslEntry {
 object DslEntry {
   implicit def fromSettingsDef(inc: SettingsDefinition): DslEntry =
     DslSetting(inc)
-  implicit def fromSettingsDef(inc: Seq[Setting[_]]): DslEntry =
-    DslSetting(inc)
+  implicit def fromSettingsDef(inc: Seq[Setting[_]]): DslEntry = DslSetting(inc)
 }
 
 /** Represents a DSL entry which adds settings to the current project. */

@@ -39,15 +39,16 @@ case class CollectLimit(limit: Int, child: SparkPlan) extends UnaryNode {
   override def output: Seq[Attribute] = child.output
   override def outputPartitioning: Partitioning = SinglePartition
   override def executeCollect(): Array[InternalRow] = child.executeTake(limit)
-  private val serializer: Serializer = new UnsafeRowSerializer(
-    child.output.size)
+  private val serializer: Serializer =
+    new UnsafeRowSerializer(child.output.size)
   protected override def doExecute(): RDD[InternalRow] = {
-    val shuffled = new ShuffledRowRDD(
-      ShuffleExchange.prepareShuffleDependency(
-        child.execute(),
-        child.output,
-        SinglePartition,
-        serializer))
+    val shuffled =
+      new ShuffledRowRDD(
+        ShuffleExchange.prepareShuffleDependency(
+          child.execute(),
+          child.output,
+          SinglePartition,
+          serializer))
     shuffled.mapPartitionsInternal(_.take(limit))
   }
 }
@@ -146,8 +147,8 @@ case class TakeOrderedAndProject(
     }
   }
 
-  private val serializer: Serializer = new UnsafeRowSerializer(
-    child.output.size)
+  private val serializer: Serializer =
+    new UnsafeRowSerializer(child.output.size)
 
   protected override def doExecute(): RDD[InternalRow] = {
     val ord = new LazilyGeneratedOrdering(sortOrder, child.output)
@@ -156,15 +157,17 @@ case class TakeOrderedAndProject(
         org.apache.spark.util.collection.Utils.takeOrdered(iter, limit)(ord)
       }
     }
-    val shuffled = new ShuffledRowRDD(
-      ShuffleExchange.prepareShuffleDependency(
-        localTopK,
-        child.output,
-        SinglePartition,
-        serializer))
+    val shuffled =
+      new ShuffledRowRDD(
+        ShuffleExchange.prepareShuffleDependency(
+          localTopK,
+          child.output,
+          SinglePartition,
+          serializer))
     shuffled.mapPartitions { iter =>
-      val topK = org.apache.spark.util.collection.Utils
-        .takeOrdered(iter.map(_.copy()), limit)(ord)
+      val topK =
+        org.apache.spark.util.collection.Utils
+          .takeOrdered(iter.map(_.copy()), limit)(ord)
       if (projectList.isDefined) {
         val proj = UnsafeProjection.create(projectList.get, child.output)
         topK.map(r => proj(r))

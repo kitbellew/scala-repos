@@ -34,8 +34,9 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
           .isIncludeBlockExpressions && exp.isInstanceOf[ScBlockExpr])
       return
 
-    val parameter =
-      ScalaPsiUtil.parameterOf(exp) //.orElse(conversionParameterOf(exp))
+    val parameter = ScalaPsiUtil.parameterOf(
+      exp
+    ) //.orElse(conversionParameterOf(exp))
 
     parameter.filter(_.isByName).foreach { p =>
       val attributes = new TextAttributes()
@@ -48,21 +49,22 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
           nonLiteralRangesIn(exp)
 
       ranges.foreach { r =>
-        val annotation =
-          holder.createInfoAnnotation(r, "Passed as by-name parameter")
+        val annotation = holder
+          .createInfoAnnotation(r, "Passed as by-name parameter")
         annotation.setEnforcedTextAttributes(attributes)
       }
     }
   }
 
   private def nonLiteralRangesIn(exp: ScExpression): Seq[TextRange] = {
-    val literalRanges = exp
-      .depthFirst(parent => !parent.isInstanceOf[ScLiteral])
-      .filterByType(classOf[ScLiteral])
-      .map(_.getTextRange)
-      .toList
-    val literalIndices =
-      literalRanges.flatMap(r => List(r.getStartOffset, r.getEndOffset))
+    val literalRanges =
+      exp
+        .depthFirst(parent => !parent.isInstanceOf[ScLiteral])
+        .filterByType(classOf[ScLiteral])
+        .map(_.getTextRange)
+        .toList
+    val literalIndices = literalRanges.flatMap(r =>
+      List(r.getStartOffset, r.getEndOffset))
     val allIndices =
       exp.getTextRange.getStartOffset :: literalIndices ::: exp.getTextRange.getEndOffset :: Nil
     allIndices

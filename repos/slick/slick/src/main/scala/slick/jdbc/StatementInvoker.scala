@@ -9,8 +9,9 @@ import scala.collection.mutable.ArrayBuffer
 private[jdbc] object StatementInvoker {
   val maxLogResults = 5
   lazy val tableDump = new TableDump(20)
-  lazy val resultLogger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[StatementInvoker[_]].getName + ".result"))
+  lazy val resultLogger =
+    new SlickLogger(
+      LoggerFactory.getLogger(classOf[StatementInvoker[_]].getName + ".result"))
 }
 
 /** An invoker which executes an SQL statement through JDBC. */
@@ -46,49 +47,52 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
       val doLogResult = StatementInvoker.resultLogger.isDebugEnabled
       if (st.execute) {
         val rs = st.getResultSet
-        val logHeader = if (doLogResult) {
-          val meta = rs.getMetaData
-          Vector(
-            1.to(meta.getColumnCount).map(_.toString),
-            1.to(meta.getColumnCount)
-              .map(idx => meta.getColumnLabel(idx))
-              .to[ArrayBuffer]
-          )
-        } else
-          null
+        val logHeader =
+          if (doLogResult) {
+            val meta = rs.getMetaData
+            Vector(
+              1.to(meta.getColumnCount).map(_.toString),
+              1.to(meta.getColumnCount)
+                .map(idx => meta.getColumnLabel(idx))
+                .to[ArrayBuffer]
+            )
+          } else
+            null
         val logBuffer =
           if (doLogResult)
             new ArrayBuffer[ArrayBuffer[Any]]
           else
             null
         var rowCount = 0
-        val pr = new PositionedResult(rs) {
-          def close() = {
-            st.close()
-            if (doLogResult) {
-              StatementInvoker
-                .tableDump(logHeader, logBuffer)
-                .foreach(s => StatementInvoker.resultLogger.debug(s))
-              val rest = rowCount - logBuffer.length
-              if (rest > 0)
-                StatementInvoker.resultLogger.debug(
-                  s"$rest more rows read ($rowCount total)")
+        val pr =
+          new PositionedResult(rs) {
+            def close() = {
+              st.close()
+              if (doLogResult) {
+                StatementInvoker
+                  .tableDump(logHeader, logBuffer)
+                  .foreach(s => StatementInvoker.resultLogger.debug(s))
+                val rest = rowCount - logBuffer.length
+                if (rest > 0)
+                  StatementInvoker.resultLogger.debug(
+                    s"$rest more rows read ($rowCount total)")
+              }
             }
           }
-        }
-        val pri = new PositionedResultIterator[R](pr, maxRows, autoClose) {
-          def extractValue(pr: PositionedResult) = {
-            if (doLogResult) {
-              if (logBuffer.length < StatementInvoker.maxLogResults)
-                logBuffer += 1
-                  .to(logHeader(0).length)
-                  .map(idx => rs.getObject(idx): Any)
-                  .to[ArrayBuffer]
-              rowCount += 1
+        val pri =
+          new PositionedResultIterator[R](pr, maxRows, autoClose) {
+            def extractValue(pr: PositionedResult) = {
+              if (doLogResult) {
+                if (logBuffer.length < StatementInvoker.maxLogResults)
+                  logBuffer += 1
+                    .to(logHeader(0).length)
+                    .map(idx => rs.getObject(idx): Any)
+                    .to[ArrayBuffer]
+                rowCount += 1
+              }
+              self.extractValue(pr)
             }
-            self.extractValue(pr)
           }
-        }
         doClose = false
         Right(pri)
       } else {

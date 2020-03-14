@@ -90,8 +90,11 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     assertEqual(model.latestModel().weights(1), 10.0, 0.1)
 
     // check accuracy of predictions
-    val validationData =
-      LinearDataGenerator.generateLinearInput(0.0, Array(10.0, 10.0), 100, 17)
+    val validationData = LinearDataGenerator.generateLinearInput(
+      0.0,
+      Array(10.0, 10.0),
+      100,
+      17)
     validatePrediction(
       validationData.map(row => model.latestModel().predict(row.features)),
       validationData)
@@ -172,12 +175,14 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
         model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
       })
     // collect the output as (true, estimated) tuples
-    val output: Seq[Seq[(Double, Double)]] =
-      runStreams(ssc, numBatches, numBatches)
+    val output: Seq[Seq[(Double, Double)]] = runStreams(
+      ssc,
+      numBatches,
+      numBatches)
 
     // compute the mean absolute error and check that it's always less than 0.1
-    val errors =
-      output.map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
+    val errors = output.map(batch =>
+      batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
     assert(errors.forall(x => x <= 0.1))
   }
 
@@ -208,13 +213,16 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
         model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
       })
 
-    val output: Seq[Seq[(Double, Double)]] =
-      runStreams(ssc, numBatches, numBatches)
+    val output: Seq[Seq[(Double, Double)]] = runStreams(
+      ssc,
+      numBatches,
+      numBatches)
 
     // assert that prediction error improves, ensuring that the updated model is being used
-    val error = output
-      .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
-      .toList
+    val error =
+      output
+        .map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
+        .toList
     assert((error.head - error.last) > 2)
   }
 
@@ -233,7 +241,9 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
         model.trainOn(inputDStream)
         model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
       })
-    val output: Seq[Seq[(Double, Double)]] =
-      runStreams(ssc, numBatches, numBatches)
+    val output: Seq[Seq[(Double, Double)]] = runStreams(
+      ssc,
+      numBatches,
+      numBatches)
   }
 }

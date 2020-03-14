@@ -6,8 +6,7 @@ object SCL3555 {
     */
   object CommandLineParser extends JavaTokenParsers {
     // any sequence of charaters not including whitespace or a quote
-    def noquoteparam: Parser[String] =
-      """[^"\s]+""".r
+    def noquoteparam: Parser[String] = """[^"\s]+""".r
 
     def command =
       /*start*/ command_spec ~ params_spec ^^ {

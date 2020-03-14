@@ -12,17 +12,18 @@ final class Live(roundMap: ActorRef) {
 
   def create = {
     val variant = chess.variant.Standard
-    val g = Game
-      .make(
-        game = chess.Game(variant),
-        whitePlayer = Player.white,
-        blackPlayer = Player.black,
-        mode = chess.Mode.Casual,
-        variant = variant,
-        source = Source.ImportLive,
-        pgnImport = none
-      )
-      .start
+    val g =
+      Game
+        .make(
+          game = chess.Game(variant),
+          whitePlayer = Player.white,
+          blackPlayer = Player.black,
+          mode = chess.Mode.Casual,
+          variant = variant,
+          source = Source.ImportLive,
+          pgnImport = none
+        )
+        .start
     GameRepo insertDenormalized g inject g
   }
 

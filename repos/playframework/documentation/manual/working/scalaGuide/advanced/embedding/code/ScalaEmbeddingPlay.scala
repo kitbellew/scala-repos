@@ -19,12 +19,13 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       import play.api.routing.sird._
       import play.api.mvc._
 
-      val server = NettyServer.fromRouter() {
-        case GET(p"/hello/$to") =>
-          Action {
-            Results.Ok(s"Hello $to")
-          }
-      }
+      val server =
+        NettyServer.fromRouter() {
+          case GET(p"/hello/$to") =>
+            Action {
+              Results.Ok(s"Hello $to")
+            }
+        }
       //#simple
 
       try {
@@ -42,16 +43,17 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       import play.api.routing.sird._
       import play.api.mvc._
 
-      val server = NettyServer.fromRouter(
-        ServerConfig(
-          port = Some(19000),
-          address = "127.0.0.1"
-        )) {
-        case GET(p"/hello/$to") =>
-          Action {
-            Results.Ok(s"Hello $to")
-          }
-      }
+      val server =
+        NettyServer.fromRouter(
+          ServerConfig(
+            port = Some(19000),
+            address = "127.0.0.1"
+          )) {
+          case GET(p"/hello/$to") =>
+            Action {
+              Results.Ok(s"Hello $to")
+            }
+        }
       //#config
 
       try {
@@ -71,28 +73,30 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       import play.api.http.DefaultHttpErrorHandler
       import scala.concurrent.Future
 
-      val components = new NettyServerComponents with BuiltInComponents {
+      val components =
+        new NettyServerComponents with BuiltInComponents {
 
-        lazy val router = Router.from {
-          case GET(p"/hello/$to") =>
-            Action {
-              Results.Ok(s"Hello $to")
+          lazy val router = Router.from {
+            case GET(p"/hello/$to") =>
+              Action {
+                Results.Ok(s"Hello $to")
+              }
+          }
+
+          override lazy val httpErrorHandler =
+            new DefaultHttpErrorHandler(
+              environment,
+              configuration,
+              sourceMapper,
+              Some(router)) {
+
+              override protected def onNotFound(
+                  request: RequestHeader,
+                  message: String) = {
+                Future.successful(Results.NotFound("Nothing was found!"))
+              }
             }
         }
-
-        override lazy val httpErrorHandler = new DefaultHttpErrorHandler(
-          environment,
-          configuration,
-          sourceMapper,
-          Some(router)) {
-
-          override protected def onNotFound(
-              request: RequestHeader,
-              message: String) = {
-            Future.successful(Results.NotFound("Nothing was found!"))
-          }
-        }
-      }
       val server = components.server
       //#components
 

@@ -26,8 +26,8 @@ class BasicAuthenticationFilter
     with AccountService
     with SystemSettingsService {
 
-  private val logger =
-    LoggerFactory.getLogger(classOf[BasicAuthenticationFilter])
+  private val logger = LoggerFactory.getLogger(
+    classOf[BasicAuthenticationFilter])
 
   def init(config: FilterConfig) = {}
 
@@ -40,9 +40,10 @@ class BasicAuthenticationFilter
     val request = req.asInstanceOf[HttpServletRequest]
     val response = res.asInstanceOf[HttpServletResponse]
 
-    val wrappedResponse = new HttpServletResponseWrapper(response) {
-      override def setCharacterEncoding(encoding: String) = {}
-    }
+    val wrappedResponse =
+      new HttpServletResponseWrapper(response) {
+        override def setCharacterEncoding(encoding: String) = {}
+      }
 
     val isUpdating = request.getRequestURI.endsWith(
       "/git-receive-pack") || "service=git-receive-pack".equals(
@@ -90,14 +91,15 @@ class BasicAuthenticationFilter
       filter: GitRepositoryFilter): Unit = {
     implicit val r = request
 
-    val account = for {
-      auth <- Option(request.getHeader("Authorization"))
-      Array(username, password) = decodeAuthHeader(auth).split(":", 2)
-      account <- authenticate(settings, username, password)
-    } yield {
-      request.setAttribute(Keys.Request.UserName, account.userName)
-      account
-    }
+    val account =
+      for {
+        auth <- Option(request.getHeader("Authorization"))
+        Array(username, password) = decodeAuthHeader(auth).split(":", 2)
+        account <- authenticate(settings, username, password)
+      } yield {
+        request.setAttribute(Keys.Request.UserName, account.userName)
+        account
+      }
 
     if (filter.filter(
           request.gitRepositoryPath,
@@ -127,24 +129,26 @@ class BasicAuthenticationFilter
             if (!isUpdating && !repository.repository.isPrivate && settings.allowAnonymousAccess) {
               chain.doFilter(request, response)
             } else {
-              val passed = for {
-                auth <- Option(request.getHeader("Authorization"))
-                Array(username, password) = decodeAuthHeader(auth).split(":", 2)
-                account <- authenticate(settings, username, password)
-              } yield
-                if (isUpdating || repository.repository.isPrivate) {
-                  if (hasWritePermission(
-                        repository.owner,
-                        repository.name,
-                        Some(account))) {
-                    request.setAttribute(
-                      Keys.Request.UserName,
-                      account.userName)
-                    true
+              val passed =
+                for {
+                  auth <- Option(request.getHeader("Authorization"))
+                  Array(username, password) = decodeAuthHeader(auth)
+                    .split(":", 2)
+                  account <- authenticate(settings, username, password)
+                } yield
+                  if (isUpdating || repository.repository.isPrivate) {
+                    if (hasWritePermission(
+                          repository.owner,
+                          repository.name,
+                          Some(account))) {
+                      request.setAttribute(
+                        Keys.Request.UserName,
+                        account.userName)
+                      true
+                    } else
+                      false
                   } else
-                    false
-                } else
-                  true
+                    true
 
               if (passed.getOrElse(false)) {
                 chain.doFilter(request, response)

@@ -112,10 +112,10 @@ object SecurityHeadersConfig {
       frameOptions = config.get[Option[String]]("frameOptions"),
       xssProtection = config.get[Option[String]]("xssProtection"),
       contentTypeOptions = config.get[Option[String]]("contentTypeOptions"),
-      permittedCrossDomainPolicies =
-        config.get[Option[String]]("permittedCrossDomainPolicies"),
-      contentSecurityPolicy =
-        config.get[Option[String]]("contentSecurityPolicy")
+      permittedCrossDomainPolicies = config.get[Option[String]](
+        "permittedCrossDomainPolicies"),
+      contentSecurityPolicy = config.get[Option[String]](
+        "contentSecurityPolicy")
     )
   }
 }
@@ -179,8 +179,8 @@ class SecurityHeadersModule extends Module {
 trait SecurityHeadersComponents {
   def configuration: Configuration
 
-  lazy val securityHeadersConfig: SecurityHeadersConfig =
-    SecurityHeadersConfig.fromConfiguration(configuration)
+  lazy val securityHeadersConfig: SecurityHeadersConfig = SecurityHeadersConfig
+    .fromConfiguration(configuration)
   lazy val securityHeadersFilter: SecurityHeadersFilter = SecurityHeadersFilter(
     securityHeadersConfig)
 }

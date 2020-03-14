@@ -14,15 +14,16 @@ final class Env(
     timeline: ActorSelection,
     system: ActorSystem) {
 
-  private val settings = new {
-    val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
-    val CachedNbTtl = config duration "cached.nb.ttl"
-    val OnlineTtl = config duration "online.ttl"
-    val CollectionUser = config getString "collection.user"
-    val CollectionNote = config getString "collection.note"
-    val CollectionTrophy = config getString "collection.trophy"
-    val CollectionRanking = config getString "collection.ranking"
-  }
+  private val settings =
+    new {
+      val PaginatorMaxPerPage = config getInt "paginator.max_per_page"
+      val CachedNbTtl = config duration "cached.nb.ttl"
+      val OnlineTtl = config duration "online.ttl"
+      val CollectionUser = config getString "collection.user"
+      val CollectionNote = config getString "collection.note"
+      val CollectionTrophy = config getString "collection.trophy"
+      val CollectionRanking = config getString "collection.ranking"
+    }
   import settings._
 
   lazy val userColl = db(CollectionUser)
@@ -81,11 +82,12 @@ final class Env(
     }
   }
 
-  lazy val cached = new Cached(
-    nbTtl = CachedNbTtl,
-    onlineUserIdMemo = onlineUserIdMemo,
-    mongoCache = mongoCache,
-    rankingApi = rankingApi)
+  lazy val cached =
+    new Cached(
+      nbTtl = CachedNbTtl,
+      onlineUserIdMemo = onlineUserIdMemo,
+      mongoCache = mongoCache,
+      rankingApi = rankingApi)
 }
 
 object Env {

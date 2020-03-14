@@ -213,10 +213,11 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           with DateExpression[Option[Timestamp]]
           with SquerylRecordNonNumericalExpression[Option[Timestamp]]
       case None => {
-        val date = f.get match {
-          case Some(calendar) => Some(new Timestamp(calendar.getTimeInMillis))
-          case None           => None
-        }
+        val date =
+          f.get match {
+            case Some(calendar) => Some(new Timestamp(calendar.getTimeInMillis))
+            case None           => None
+          }
         new ConstantExpressionNode[Option[Timestamp]](date)(
           createOutMapperTimestampTypeOption)
           with DateExpression[Option[Timestamp]]

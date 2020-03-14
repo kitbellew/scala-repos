@@ -271,11 +271,12 @@ case class ExecutorLostFailure(
     reason: Option[String])
     extends TaskFailedReason {
   override def toErrorString: String = {
-    val exitBehavior = if (exitCausedByApp) {
-      "caused by one of the running tasks"
-    } else {
-      "unrelated to the running tasks"
-    }
+    val exitBehavior =
+      if (exitCausedByApp) {
+        "caused by one of the running tasks"
+      } else {
+        "unrelated to the running tasks"
+      }
     s"ExecutorLostFailure (executor ${execId} exited ${exitBehavior})" +
       reason
         .map { r =>

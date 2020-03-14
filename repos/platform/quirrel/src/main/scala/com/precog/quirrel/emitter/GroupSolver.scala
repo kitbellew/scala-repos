@@ -77,10 +77,11 @@ trait GroupSolver
           val childErrors = loop(dispatches)(child)
 
           val sigma: Sigma = dispatches flatMap { dispatch =>
-            val (subs, letM) = dispatch.binding match {
-              case LetBinding(let) => (let.substitutions, Some(let))
-              case _               => (Map[Dispatch, Map[String, Expr]](), None)
-            }
+            val (subs, letM) =
+              dispatch.binding match {
+                case LetBinding(let) => (let.substitutions, Some(let))
+                case _               => (Map[Dispatch, Map[String, Expr]](), None)
+              }
 
             letM map { let =>
               subs(dispatch) map {
@@ -91,8 +92,9 @@ trait GroupSolver
             _ ++ _
           } getOrElse Map()
 
-          val (forestSpecM, forestErrors) =
-            solveForest(expr, findGroups(expr, dispatches))
+          val (forestSpecM, forestErrors) = solveForest(
+            expr,
+            findGroups(expr, dispatches))
 
           val filtered = constraints filter {
             case TicVar(_, _) => false
@@ -110,19 +112,20 @@ trait GroupSolver
 
           val specM = mergedM orElse forestSpecM orElse constrSpecM
 
-          val finalErrors = specM match {
-            case Some(forest) => {
-              val rem = expr.vars -- listSolvedVars(forest)
-              rem map UnableToSolveTicVariable map {
-                Error(expr, _)
+          val finalErrors =
+            specM match {
+              case Some(forest) => {
+                val rem = expr.vars -- listSolvedVars(forest)
+                rem map UnableToSolveTicVariable map {
+                  Error(expr, _)
+                }
               }
-            }
 
-            case None =>
-              expr.vars map UnableToSolveTicVariable map {
-                Error(expr, _)
-              }
-          }
+              case None =>
+                expr.vars map UnableToSolveTicVariable map {
+                  Error(expr, _)
+                }
+            }
 
           val specErrors = specM map { spec =>
             expr buckets_+= (dispatches -> spec)
@@ -130,13 +133,14 @@ trait GroupSolver
             loopSpec(dispatches)(spec)
           } getOrElse Set()
 
-          val forestErrors2 = if (finalErrors.isEmpty) {
-            forestErrors filter {
-              case Error(tpe) => tpe == ConstraintsWithinInnerSolve
+          val forestErrors2 =
+            if (finalErrors.isEmpty) {
+              forestErrors filter {
+                case Error(tpe) => tpe == ConstraintsWithinInnerSolve
+              }
+            } else {
+              forestErrors
             }
-          } else {
-            forestErrors
-          }
 
           childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++ finalErrors
         }
@@ -155,14 +159,16 @@ trait GroupSolver
         case TicVar(_, _) => Set()
 
         case d @ Dispatch(_, _, actuals) => {
-          val actualErrors = (actuals map loop(dispatches)).fold(Set[Error]()) {
-            _ ++ _
-          }
+          val actualErrors =
+            (actuals map loop(dispatches)).fold(Set[Error]()) {
+              _ ++ _
+            }
 
-          val originErrors = d.binding match {
-            case LetBinding(let) => loop(dispatches + d)(let.left)
-            case _               => Set()
-          }
+          val originErrors =
+            d.binding match {
+              case LetBinding(let) => loop(dispatches + d)(let.left)
+              case _               => Set()
+            }
 
           actualErrors ++ originErrors
         }
@@ -187,31 +193,41 @@ trait GroupSolver
 
         val orderedSigma = orderTopologically(sigma)
 
-        val resolvedLeftProv = orderedSigma.foldLeft(leftProv) {
-          case (prov, formal @ (id, let)) =>
-            substituteParam(id, let, prov, sigma(formal).provenance)
-        }
+        val resolvedLeftProv =
+          orderedSigma.foldLeft(leftProv) {
+            case (prov, formal @ (id, let)) =>
+              substituteParam(id, let, prov, sigma(formal).provenance)
+          }
 
-        val resolvedRightProv = orderedSigma.foldLeft(rightProv) {
-          case (prov, formal @ (id, let)) =>
-            substituteParam(id, let, prov, sigma(formal).provenance)
-        }
+        val resolvedRightProv =
+          orderedSigma.foldLeft(rightProv) {
+            case (prov, formal @ (id, let)) =>
+              substituteParam(id, let, prov, sigma(formal).provenance)
+          }
 
-        val fullyResolvedLeftProv = resolveUnifications(where.left.relations)(
-          resolvedLeftProv.makeCanonical)
-        val fullyResolvedRightProv = resolveUnifications(where.right.relations)(
-          resolvedRightProv.makeCanonical)
+        val fullyResolvedLeftProv =
+          resolveUnifications(where.left.relations)(
+            resolvedLeftProv.makeCanonical)
+        val fullyResolvedRightProv =
+          resolveUnifications(where.right.relations)(
+            resolvedRightProv.makeCanonical)
 
         if (fullyResolvedLeftProv == fullyResolvedRightProv) {
           // 1. make coffee
           // 2. attempt to solve where.right
 
-          val (groupM, errors) =
-            solveGroupCondition(solve, where.right, false, sigma, dtrace)
+          val (groupM, errors) = solveGroupCondition(
+            solve,
+            where.right,
+            false,
+            sigma,
+            dtrace)
 
           groupM map { group =>
-            val commonalityM =
-              findCommonality(solve, group.exprs + where.left, sigma)
+            val commonalityM = findCommonality(
+              solve,
+              group.exprs + where.left,
+              sigma)
 
             if (commonalityM.isDefined)
               (
@@ -251,8 +267,12 @@ trait GroupSolver
       constraint: Expr,
       sigma: Sigma,
       dtrace: List[Dispatch]): (Option[BucketSpec], Set[Error]) = {
-    val (result, errors) =
-      solveGroupCondition(b, constraint, true, sigma, dtrace)
+    val (result, errors) = solveGroupCondition(
+      b,
+      constraint,
+      true,
+      sigma,
+      dtrace)
 
     val orderedSigma = orderTopologically(sigma)
     val commonality = result map listSolutionExprs flatMap {
@@ -264,20 +284,21 @@ trait GroupSolver
            c <- commonality)
         yield Group(None, c, r, List())
 
-    val contribErrors = if (!back.isDefined) {
-      val vars = listTicVars(Some(b), constraint, sigma) map {
-        _._2
-      }
+    val contribErrors =
+      if (!back.isDefined) {
+        val vars = listTicVars(Some(b), constraint, sigma) map {
+          _._2
+        }
 
-      if (vars.isEmpty)
-        Set(Error(constraint, SolveLackingFreeVariables))
-      else if (vars.size == 1)
-        Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
-      else
-        Set(Error(constraint, InseparablePairedTicVariables(vars)))
-    } else {
-      Set()
-    }
+        if (vars.isEmpty)
+          Set(Error(constraint, SolveLackingFreeVariables))
+        else if (vars.size == 1)
+          Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
+        else
+          Set(Error(constraint, InseparablePairedTicVariables(vars)))
+      } else {
+        Set()
+      }
 
     (back, errors ++ contribErrors)
   }
@@ -290,9 +311,10 @@ trait GroupSolver
     }
 
     def bfs(vertices: Set[Formal]): List[Formal] = {
-      val vertices2 = edges filter {
-        case (_, targets) => !(vertices & targets).isEmpty
-      } keySet
+      val vertices2 =
+        edges filter {
+          case (_, targets) => !(vertices & targets).isEmpty
+        } keySet
 
       if (vertices2.isEmpty)
         vertices.toList
@@ -300,9 +322,10 @@ trait GroupSolver
         vertices.toList ::: bfs(vertices2)
     }
 
-    val leaves = edges filter {
-      case (_, targets) => targets.isEmpty
-    } keySet
+    val leaves =
+      edges filter {
+        case (_, targets) => targets.isEmpty
+      } keySet
 
     bfs(leaves).reverse
   }
@@ -315,10 +338,18 @@ trait GroupSolver
       dtrace: List[Dispatch]): (Option[BucketSpec], Set[Error]) =
     expr match {
       case And(_, left, right) => {
-        val (leftSpec, leftErrors) =
-          solveGroupCondition(b, left, free, sigma, dtrace)
-        val (rightSpec, rightErrors) =
-          solveGroupCondition(b, right, free, sigma, dtrace)
+        val (leftSpec, leftErrors) = solveGroupCondition(
+          b,
+          left,
+          free,
+          sigma,
+          dtrace)
+        val (rightSpec, rightErrors) = solveGroupCondition(
+          b,
+          right,
+          free,
+          sigma,
+          dtrace)
 
         val andSpec =
           for (ls <- leftSpec;
@@ -329,10 +360,18 @@ trait GroupSolver
       }
 
       case Or(_, left, right) => {
-        val (leftSpec, leftErrors) =
-          solveGroupCondition(b, left, free, sigma, dtrace)
-        val (rightSpec, rightErrors) =
-          solveGroupCondition(b, right, free, sigma, dtrace)
+        val (leftSpec, leftErrors) = solveGroupCondition(
+          b,
+          left,
+          free,
+          sigma,
+          dtrace)
+        val (rightSpec, rightErrors) = solveGroupCondition(
+          b,
+          right,
+          free,
+          sigma,
+          dtrace)
 
         val andSpec =
           for (ls <- leftSpec;
@@ -479,16 +518,17 @@ trait GroupSolver
   private def mergeSpecs(
       specs: TraversableOnce[(Option[BucketSpec], Set[Error])])
       : (Option[BucketSpec], Set[Error]) = {
-    val (back, errors) = specs.fold((None: Option[BucketSpec], Set[Error]())) {
-      case ((leftAcc, leftErrors), (rightAcc, rightErrors)) => {
-        val merged =
-          for (left <- leftAcc;
-               right <- rightAcc)
-            yield IntersectBucketSpec(left, right)
+    val (back, errors) =
+      specs.fold((None: Option[BucketSpec], Set[Error]())) {
+        case ((leftAcc, leftErrors), (rightAcc, rightErrors)) => {
+          val merged =
+            for (left <- leftAcc;
+                 right <- rightAcc)
+              yield IntersectBucketSpec(left, right)
 
-        (merged orElse leftAcc orElse rightAcc, leftErrors ++ rightErrors)
+          (merged orElse leftAcc orElse rightAcc, leftErrors ++ rightErrors)
+        }
       }
-    }
 
     if (back.isDefined && !(errors collect {
           case Error(tpe) => tpe
@@ -782,13 +822,14 @@ trait GroupSolver
       case TicVar(_, _) => Set()
 
       case d @ Dispatch(_, id, actuals) => {
-        val leftSet = d.binding match {
-          case LetBinding(b2) =>
-            listTicVars(b, b2.left, enterLet(sigma, b2, actuals))
+        val leftSet =
+          d.binding match {
+            case LetBinding(b2) =>
+              listTicVars(b, b2.left, enterLet(sigma, b2, actuals))
 
-          case FormalBinding(let) => listTicVars(b, sigma((id, let)), sigma)
-          case _                  => Set[(Option[Solve], TicId)]()
-        }
+            case FormalBinding(let) => listTicVars(b, sigma((id, let)), sigma)
+            case _                  => Set[(Option[Solve], TicId)]()
+          }
         (actuals map {
           listTicVars(b, _, sigma)
         }).fold(leftSet) {
@@ -841,9 +882,10 @@ trait GroupSolver
     def bfs(kernels: Set[Kernel]): Set[ExprWrapper] = {
       // check for convergence
       val results = kernels flatMap { k =>
-        val results = kernels.foldLeft(k.nodes) {
-          _ & _.seen
-        }
+        val results =
+          kernels.foldLeft(k.nodes) {
+            _ & _.seen
+          }
 
         // TODO if the below isEmpty, then can drop results from all kernels
         nodes.foldLeft(results) { (results, node) =>
@@ -857,9 +899,10 @@ trait GroupSolver
       // iterate
       if (results.isEmpty) {
         val kernels2 = kernels map { k =>
-          val (nodes2Unflatten, sigma2Unflatten) = k.nodes map {
-            _.expr
-          } map enumerateParents(k.sigma) unzip
+          val (nodes2Unflatten, sigma2Unflatten) =
+            k.nodes map {
+              _.expr
+            } map enumerateParents(k.sigma) unzip
 
           val nodes2 = nodes2Unflatten.flatten map ExprWrapper
           val sigma2: Sigma = Map(sigma2Unflatten.flatten.toSeq: _*)

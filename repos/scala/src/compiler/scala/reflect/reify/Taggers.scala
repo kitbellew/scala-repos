@@ -40,8 +40,9 @@ abstract class Taggers {
       tpe,
       tagModule, {
         val erasure = c.reifyRuntimeClass(tpe, concrete = true)
-        val factory =
-          TypeApply(Select(Ident(tagModule), nme.apply), List(TypeTree(tpe)))
+        val factory = TypeApply(
+          Select(Ident(tagModule), nme.apply),
+          List(TypeTree(tpe)))
         Apply(factory, List(erasure))
       }
     )
@@ -63,8 +64,10 @@ abstract class Taggers {
     // nor TypeRef(ApiUniverseClass.thisType, tagType, List(tpe)) won't fit here
     // scala> :type -v def foo: scala.reflect.api.Universe#TypeTag[Int] = ???
     // NullaryMethodType(TypeRef(pre = TypeRef(TypeSymbol(Universe)), TypeSymbol(TypeTag), args = List($tpe))))
-    val unaffiliatedTagTpe =
-      TypeRef(ApiUniverseClass.typeConstructor, tagType, List(tpe))
+    val unaffiliatedTagTpe = TypeRef(
+      ApiUniverseClass.typeConstructor,
+      tagType,
+      List(tpe))
     val unaffiliatedTag = c.inferImplicitValue(
       unaffiliatedTagTpe,
       silent = true,

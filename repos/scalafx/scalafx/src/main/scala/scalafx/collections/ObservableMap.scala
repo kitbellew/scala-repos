@@ -133,8 +133,8 @@ object ObservableMap extends MutableMapFactory[ObservableMap] {
     */
   def apply[K, V](originalMap: Map[K, V]): ObservableMap[K, V] =
     new ObservableMap[K, V] {
-      override val delegate =
-        jfxc.FXCollections.observableMap(mutableMapAsJavaMap(originalMap))
+      override val delegate = jfxc.FXCollections.observableMap(
+        mutableMapAsJavaMap(originalMap))
     }
 
   // CREATION METHODS - END
@@ -296,6 +296,6 @@ trait ObservableMap[K, V]
   *                 [[http://docs.oracle.com/javase/8/javafx/api/javafx/collections/FXCollections.html `FXCollections`]].
   */
 class ObservableHashMap[K, V](
-    override val delegate: jfxc.ObservableMap[K, V] =
-      jfxc.FXCollections.observableMap(new ju.HashMap[K, V]))
+    override val delegate: jfxc.ObservableMap[K, V] = jfxc.FXCollections
+      .observableMap(new ju.HashMap[K, V]))
     extends ObservableMap[K, V]

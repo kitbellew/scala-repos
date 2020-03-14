@@ -38,11 +38,12 @@ import org.apache.spark.storage.StorageLevel
 private[ml] trait OneVsRestParams extends PredictorParams {
 
   // scalastyle:off structural.type
-  type ClassifierType = Classifier[F, E, M] forSome {
-    type F
-    type M <: ClassificationModel[F, M]
-    type E <: Classifier[F, E, M]
-  }
+  type ClassifierType =
+    Classifier[F, E, M] forSome {
+      type F
+      type M <: ClassificationModel[F, M]
+      type E <: Classifier[F, E, M]
+    }
   // scalastyle:on structural.type
 
   /**
@@ -152,10 +153,11 @@ final class OneVsRestModel private[ml] (
 
   @Since("1.4.1")
   override def copy(extra: ParamMap): OneVsRestModel = {
-    val copied = new OneVsRestModel(
-      uid,
-      labelMetadata,
-      models.map(_.copy(extra).asInstanceOf[ClassificationModel[_, _]]))
+    val copied =
+      new OneVsRestModel(
+        uid,
+        labelMetadata,
+        models.map(_.copy(extra).asInstanceOf[ClassificationModel[_, _]]))
     copyValues(copied, extra).setParent(parent)
   }
 }
@@ -208,14 +210,16 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
   override def fit(dataset: DataFrame): OneVsRestModel = {
     // determine number of classes either from metadata if provided, or via computation.
     val labelSchema = dataset.schema($(labelCol))
-    val computeNumClasses: () => Int = () => {
-      val Row(maxLabelIndex: Double) = dataset.agg(max($(labelCol))).head()
-      // classes are assumed to be numbered from 0,...,maxLabelIndex
-      maxLabelIndex.toInt + 1
-    }
-    val numClasses = MetadataUtils
-      .getNumClasses(labelSchema)
-      .fold(computeNumClasses())(identity)
+    val computeNumClasses: () => Int =
+      () => {
+        val Row(maxLabelIndex: Double) = dataset.agg(max($(labelCol))).head()
+        // classes are assumed to be numbered from 0,...,maxLabelIndex
+        maxLabelIndex.toInt + 1
+      }
+    val numClasses =
+      MetadataUtils
+        .getNumClasses(labelSchema)
+        .fold(computeNumClasses())(identity)
 
     val multiclassLabeled = dataset.select($(labelCol), $(featuresCol))
 
@@ -229,8 +233,9 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     val models = Range(0, numClasses).par
       .map { index =>
         // generate new label metadata for the binary problem.
-        val newLabelMeta =
-          BinaryAttribute.defaultAttr.withName("label").toMetadata()
+        val newLabelMeta = BinaryAttribute.defaultAttr
+          .withName("label")
+          .toMetadata()
         val labelColName = "mc2b$" + index
         val trainingDataset = multiclassLabeled.withColumn(
           labelColName,
@@ -251,11 +256,14 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
 
     // extract label metadata from label column if present, or create a nominal attribute
     // to output the number of labels
-    val labelAttribute = Attribute.fromStructField(labelSchema) match {
-      case _: NumericAttribute | UnresolvedAttribute =>
-        NominalAttribute.defaultAttr.withName("label").withNumValues(numClasses)
-      case attr: Attribute => attr
-    }
+    val labelAttribute =
+      Attribute.fromStructField(labelSchema) match {
+        case _: NumericAttribute | UnresolvedAttribute =>
+          NominalAttribute.defaultAttr
+            .withName("label")
+            .withNumValues(numClasses)
+        case attr: Attribute => attr
+      }
     val model = new OneVsRestModel(uid, labelAttribute.toMetadata(), models)
       .setParent(this)
     copyValues(model)

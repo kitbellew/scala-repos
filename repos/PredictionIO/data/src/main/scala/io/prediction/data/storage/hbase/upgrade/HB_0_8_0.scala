@@ -173,10 +173,11 @@ object HB_0_8_0 {
       .map(DateTimeZone.forID(_))
       .getOrElse(EventValidation.defaultTimeZone)
 
-    val creationTime: DateTime = new DateTime(
-      getTimestamp("event"),
-      creationTimeZone
-    )
+    val creationTime: DateTime =
+      new DateTime(
+        getTimestamp("event"),
+        creationTimeZone
+      )
 
     Event(
       eventId = Some(RowKey(result.getRow()).toString),

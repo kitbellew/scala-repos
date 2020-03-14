@@ -40,8 +40,7 @@ abstract class ParamMap
   }
 
   // For Map/MapLike
-  override def empty: ParamMap =
-    EmptyParamMap
+  override def empty: ParamMap = EmptyParamMap
 
   // For Map/MapLike (ensures keys aren't repeated)
   override def keySet: Set[String] =
@@ -126,8 +125,7 @@ class MapParamMap(
       _.headOption
     }
 
-  def getAll(name: String): Iterable[String] =
-    underlying.getOrElse(name, Nil)
+  def getAll(name: String): Iterable[String] = underlying.getOrElse(name, Nil)
 
   def iterator: Iterator[(String, String)] = {
     for ((k, vs) <- underlying.iterator;
@@ -135,11 +133,9 @@ class MapParamMap(
       yield (k, v)
   }
 
-  override def keySet: Set[String] =
-    underlying.keySet
+  override def keySet: Set[String] = underlying.keySet
 
-  override def keysIterator: Iterator[String] =
-    underlying.keysIterator
+  override def keysIterator: Iterator[String] = underlying.keysIterator
 }
 
 object MapParamMap {
@@ -187,8 +183,8 @@ class RequestParamMap(val request: Request) extends ParamMap {
 
   private[this] var _isValid = true
 
-  private[this] val getParams: JMap[String, JList[String]] =
-    parseParams(request.uri)
+  private[this] val getParams: JMap[String, JList[String]] = parseParams(
+    request.uri)
 
   private[this] val postParams: JMap[String, JList[String]] = {
     if (request.method != Method.Trace &&
@@ -230,8 +226,7 @@ class RequestParamMap(val request: Request) extends ParamMap {
   override def keySet: Set[String] =
     (postParams.keySet.asScala.toSet ++ getParams.keySet.asScala.toSet)
 
-  override def keysIterator: Iterator[String] =
-    keySet.iterator
+  override def keysIterator: Iterator[String] = keySet.iterator
 
   // Get value from JMap, which might be null
   private def jget(
@@ -270,12 +265,10 @@ class RequestParamMap(val request: Request) extends ParamMap {
 object ParamMap {
 
   /** Create ParamMap from parameter list. */
-  def apply(params: Tuple2[String, String]*): ParamMap =
-    MapParamMap(params: _*)
+  def apply(params: Tuple2[String, String]*): ParamMap = MapParamMap(params: _*)
 
   /** Create ParamMap from a map. */
-  def apply(map: Map[String, String]): ParamMap =
-    MapParamMap(map)
+  def apply(map: Map[String, String]): ParamMap = MapParamMap(map)
 
   private[http] val EmptyJMap = new java.util.HashMap[String, JList[String]]
 }

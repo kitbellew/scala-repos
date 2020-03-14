@@ -132,15 +132,17 @@ object Main {
     classFile.annotation(SCALA_SIG_ANNOTATION) match {
       case None => ""
       case Some(Annotation(_, elements)) =>
-        val bytesElem = elements
-          .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
-          .get
-        val bytes = ((bytesElem.elementValue match {
-          case ConstValueIndex(index) => constantWrapped(index)
-        }).asInstanceOf[StringBytesPair].bytes)
+        val bytesElem =
+          elements
+            .find(elem => constant(elem.elementNameIndex) == BYTES_VALUE)
+            .get
+        val bytes =
+          ((bytesElem.elementValue match {
+            case ConstValueIndex(index) => constantWrapped(index)
+          }).asInstanceOf[StringBytesPair].bytes)
         val length = ByteCodecs.decode(bytes)
-        val scalaSig =
-          ScalaSigAttributeParsers.parse(ByteCode(bytes.take(length)))
+        val scalaSig = ScalaSigAttributeParsers.parse(
+          ByteCode(bytes.take(length)))
         parseScalaSignature(scalaSig, isPackageObject)
     }
   }

@@ -44,8 +44,8 @@ object WriterUsage extends App {
   mapValue.value.map(println)
 
   // with mapWritten you can map over the written side.
-  val mapWritten: Logger[Person] =
-    sherlockHolmes.mapWritten(_.map(entry => "[LOG] " + entry))
+  val mapWritten: Logger[Person] = sherlockHolmes.mapWritten(
+    _.map(entry => "[LOG] " + entry))
   mapWritten.written.map(println)
 
   // with mapValue you can map over both sides
@@ -66,8 +66,8 @@ object WriterUsage extends App {
   resultFappend.written.map(println)
 
   // <++: and <<++: work like :++>, :++>> only to prepend information
-  val resultPrepend: Logger[Person] =
-    sherlockHolmes.<++:(List("Starting to create a Person"))
+  val resultPrepend: Logger[Person] = sherlockHolmes.<++:(
+    List("Starting to create a Person"))
   resultPrepend.written.map(println)
 
   // reset your log to zero

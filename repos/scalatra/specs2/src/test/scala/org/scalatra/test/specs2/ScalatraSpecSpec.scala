@@ -5,8 +5,7 @@ package specs2
 import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
 
 class ScalatraSpecSpec extends ScalatraSpec {
-  def is =
-    s2"""
+  def is = s2"""
 get / should
   return 'Hello, world.' $e1
 """

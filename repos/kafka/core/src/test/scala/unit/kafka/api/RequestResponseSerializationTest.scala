@@ -39,14 +39,22 @@ object SerializationTestUtils {
   private val isr1 = List(0, 1, 2)
   private val leader2 = 0
   private val isr2 = List(0, 2, 3)
-  private val partitionDataFetchResponse0 = new FetchResponsePartitionData(
-    messages = new ByteBufferMessageSet(new Message("first message".getBytes)))
-  private val partitionDataFetchResponse1 = new FetchResponsePartitionData(
-    messages = new ByteBufferMessageSet(new Message("second message".getBytes)))
-  private val partitionDataFetchResponse2 = new FetchResponsePartitionData(
-    messages = new ByteBufferMessageSet(new Message("third message".getBytes)))
-  private val partitionDataFetchResponse3 = new FetchResponsePartitionData(
-    messages = new ByteBufferMessageSet(new Message("fourth message".getBytes)))
+  private val partitionDataFetchResponse0 =
+    new FetchResponsePartitionData(
+      messages = new ByteBufferMessageSet(
+        new Message("first message".getBytes)))
+  private val partitionDataFetchResponse1 =
+    new FetchResponsePartitionData(
+      messages = new ByteBufferMessageSet(
+        new Message("second message".getBytes)))
+  private val partitionDataFetchResponse2 =
+    new FetchResponsePartitionData(
+      messages = new ByteBufferMessageSet(
+        new Message("third message".getBytes)))
+  private val partitionDataFetchResponse3 =
+    new FetchResponsePartitionData(
+      messages = new ByteBufferMessageSet(
+        new Message("fourth message".getBytes)))
   private val partitionDataFetchResponseMap = Map(
     (0, partitionDataFetchResponse0),
     (1, partitionDataFetchResponse1),
@@ -60,14 +68,14 @@ object SerializationTestUtils {
     collection.immutable.Map(groupedData: _*)
   }
 
-  private val partitionDataMessage0 = new ByteBufferMessageSet(
-    new Message("first message".getBytes))
-  private val partitionDataMessage1 = new ByteBufferMessageSet(
-    new Message("second message".getBytes))
-  private val partitionDataMessage2 = new ByteBufferMessageSet(
-    new Message("third message".getBytes))
-  private val partitionDataMessage3 = new ByteBufferMessageSet(
-    new Message("fourth message".getBytes))
+  private val partitionDataMessage0 =
+    new ByteBufferMessageSet(new Message("first message".getBytes))
+  private val partitionDataMessage1 =
+    new ByteBufferMessageSet(new Message("second message".getBytes))
+  private val partitionDataMessage2 =
+    new ByteBufferMessageSet(new Message("third message".getBytes))
+  private val partitionDataMessage3 =
+    new ByteBufferMessageSet(new Message("fourth message".getBytes))
   private val partitionDataProducerRequestArray = Array(
     partitionDataMessage0,
     partitionDataMessage1,
@@ -117,33 +125,37 @@ object SerializationTestUtils {
           1013,
           SecurityProtocol.PLAINTEXT)))
   )
-  private val brokerEndpoints =
-    brokers.map(_.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
+  private val brokerEndpoints = brokers.map(
+    _.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
 
-  private val partitionMetaData0 = new PartitionMetadata(
-    0,
-    Some(brokerEndpoints.head),
-    replicas = brokerEndpoints,
-    isr = brokerEndpoints,
-    errorCode = 0)
-  private val partitionMetaData1 = new PartitionMetadata(
-    1,
-    Some(brokerEndpoints.head),
-    replicas = brokerEndpoints,
-    isr = brokerEndpoints.tail,
-    errorCode = 1)
-  private val partitionMetaData2 = new PartitionMetadata(
-    2,
-    Some(brokerEndpoints.head),
-    replicas = brokerEndpoints,
-    isr = brokerEndpoints,
-    errorCode = 2)
-  private val partitionMetaData3 = new PartitionMetadata(
-    3,
-    Some(brokerEndpoints.head),
-    replicas = brokerEndpoints,
-    isr = brokerEndpoints.tail.tail,
-    errorCode = 3)
+  private val partitionMetaData0 =
+    new PartitionMetadata(
+      0,
+      Some(brokerEndpoints.head),
+      replicas = brokerEndpoints,
+      isr = brokerEndpoints,
+      errorCode = 0)
+  private val partitionMetaData1 =
+    new PartitionMetadata(
+      1,
+      Some(brokerEndpoints.head),
+      replicas = brokerEndpoints,
+      isr = brokerEndpoints.tail,
+      errorCode = 1)
+  private val partitionMetaData2 =
+    new PartitionMetadata(
+      2,
+      Some(brokerEndpoints.head),
+      replicas = brokerEndpoints,
+      isr = brokerEndpoints,
+      errorCode = 2)
+  private val partitionMetaData3 =
+    new PartitionMetadata(
+      3,
+      Some(brokerEndpoints.head),
+      replicas = brokerEndpoints,
+      isr = brokerEndpoints.tail.tail,
+      errorCode = 3)
   private val partitionMetaDataSeq = Seq(
     partitionMetaData0,
     partitionMetaData1,
@@ -170,21 +182,25 @@ object SerializationTestUtils {
   private val leaderIsrAndControllerEpoch3 =
     new LeaderIsrAndControllerEpoch(leaderAndIsr3, controllerEpoch = 0)
 
-  private val partitionStateInfo0 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch0,
-    brokers.map(_.id).toSet)
-  private val partitionStateInfo1 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch1,
-    brokers.map(_.id).toSet)
-  private val partitionStateInfo2 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch2,
-    brokers.map(_.id).toSet)
-  private val partitionStateInfo3 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch3,
-    brokers.map(_.id).toSet)
+  private val partitionStateInfo0 =
+    new PartitionStateInfo(
+      leaderIsrAndControllerEpoch0,
+      brokers.map(_.id).toSet)
+  private val partitionStateInfo1 =
+    new PartitionStateInfo(
+      leaderIsrAndControllerEpoch1,
+      brokers.map(_.id).toSet)
+  private val partitionStateInfo2 =
+    new PartitionStateInfo(
+      leaderIsrAndControllerEpoch2,
+      brokers.map(_.id).toSet)
+  private val partitionStateInfo3 =
+    new PartitionStateInfo(
+      leaderIsrAndControllerEpoch3,
+      brokers.map(_.id).toSet)
 
-  private val updateMetadataRequestPartitionStateInfo =
-    collection.immutable.Map(
+  private val updateMetadataRequestPartitionStateInfo = collection.immutable
+    .Map(
       TopicAndPartition(topic1, 0) -> partitionStateInfo0,
       TopicAndPartition(topic1, 1) -> partitionStateInfo1,
       TopicAndPartition(topic1, 2) -> partitionStateInfo2,
@@ -345,30 +361,29 @@ class RequestResponseSerializationTest extends JUnitSuite {
   @Test
   def testSerializationAndDeserialization() {
 
-    val requestsAndResponses =
-      collection.immutable.Seq(
-        producerRequest,
-        producerResponse,
-        fetchRequest,
-        offsetRequest,
-        offsetResponse,
-        offsetCommitRequestV0,
-        offsetCommitRequestV1,
-        offsetCommitRequestV2,
-        offsetCommitResponse,
-        offsetFetchRequest,
-        offsetFetchResponse,
-        consumerMetadataRequest,
-        consumerMetadataResponse,
-        consumerMetadataResponseNoCoordinator
-      )
+    val requestsAndResponses = collection.immutable.Seq(
+      producerRequest,
+      producerResponse,
+      fetchRequest,
+      offsetRequest,
+      offsetResponse,
+      offsetCommitRequestV0,
+      offsetCommitRequestV1,
+      offsetCommitRequestV2,
+      offsetCommitResponse,
+      offsetFetchRequest,
+      offsetFetchResponse,
+      consumerMetadataRequest,
+      consumerMetadataResponse,
+      consumerMetadataResponseNoCoordinator
+    )
 
     requestsAndResponses.foreach { original =>
       val buffer = ByteBuffer.allocate(original.sizeInBytes)
       original.writeTo(buffer)
       buffer.rewind()
-      val deserializer =
-        original.getClass.getDeclaredMethod("readFrom", classOf[ByteBuffer])
+      val deserializer = original.getClass
+        .getDeclaredMethod("readFrom", classOf[ByteBuffer])
       val deserialized = deserializer.invoke(null, buffer)
       assertFalse(
         "All serialized bytes in " + original.getClass.getSimpleName + " should have been consumed",

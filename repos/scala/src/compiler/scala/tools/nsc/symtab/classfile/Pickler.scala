@@ -166,10 +166,11 @@ abstract class Pickler extends SubComponent {
         val sym1 = sym.deSkolemize
         log({
           val what0 = sym.defString
-          val what = sym1.defString match {
-            case `what0` => what0
-            case other   => what0 + "->" + other
-          }
+          val what =
+            sym1.defString match {
+              case `what0` => what0
+              case other   => what0 + "->" + other
+            }
           val where = sym.enclMethod.fullLocationString
           s"deskolemizing $what in $where"
         })
@@ -232,8 +233,7 @@ abstract class Pickler extends SubComponent {
       }
     }
 
-    private def putSymbols(syms: List[Symbol]) =
-      syms foreach putSymbol
+    private def putSymbols(syms: List[Symbol]) = syms foreach putSymbol
 
     /** Store type and everything it refers to in map index.
       */
@@ -597,14 +597,15 @@ abstract class Pickler extends SubComponent {
 
       // begin writeEntry
       // The picklerTag method can't determine if it's an external symbol reference
-      val tag = entry match {
-        case sym: Symbol if isExternalSymbol(sym) =>
-          if (sym.isModuleClass)
-            EXTMODCLASSref
-          else
-            EXTref
-        case _ => picklerTag(entry)
-      }
+      val tag =
+        entry match {
+          case sym: Symbol if isExternalSymbol(sym) =>
+            if (sym.isModuleClass)
+              EXTMODCLASSref
+            else
+              EXTref
+          case _ => picklerTag(entry)
+        }
       writeNat(tag)
       writeByte(0) // reserve a place to record the number of bytes written
       val start = writeIndex

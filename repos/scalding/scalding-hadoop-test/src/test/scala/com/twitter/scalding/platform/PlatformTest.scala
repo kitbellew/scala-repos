@@ -46,9 +46,10 @@ object TinyJoinAndMergeJob {
 class TinyJoinAndMergeJob(args: Args) extends Job(args) {
   import TinyJoinAndMergeJob._
 
-  val people = peopleInput.read.mapTo(0 -> 'id) { v: Int =>
-    v
-  }
+  val people =
+    peopleInput.read.mapTo(0 -> 'id) { v: Int =>
+      v
+    }
 
   val messages = messageInput.read
     .mapTo(0 -> 'id) { v: Int =>
@@ -130,12 +131,13 @@ class MultipleGroupByJob(args: Args) extends Job(args) {
   implicit val stringOrdSer = new StringOrderedSerialization()
   implicit val stringTup2OrdSer =
     new OrderedSerialization2(stringOrdSer, stringOrdSer)
-  val otherStream = TypedPipe
-    .from(data)
-    .map { k =>
-      (k, k)
-    }
-    .group
+  val otherStream =
+    TypedPipe
+      .from(data)
+      .map { k =>
+        (k, k)
+      }
+      .group
 
   TypedPipe
     .from(data)
@@ -212,8 +214,10 @@ class TypedPipeHashJoinWithForceToDiskFilterJob(args: Args) extends Job(args) {
   val y = TypedPipe.from[(Int, String)](List((1, "first")))
 
   //trivial transform and forceToDisk followed by filter on rhs
-  val yFilter =
-    y.map(p => (p._1, p._2.toUpperCase)).forceToDisk.filter(p => p._1 == 1)
+  val yFilter = y
+    .map(p => (p._1, p._2.toUpperCase))
+    .forceToDisk
+    .filter(p => p._1 == 1)
 
   x.hashJoin(yFilter)
     .withDescription("hashJoin")
@@ -277,9 +281,10 @@ class TypedPipeHashJoinWithGroupByJob(args: Args) extends Job(args) {
   val x = TypedPipe.from[(String, Int)](Tsv("input1", ('x1, 'y1)), Fields.ALL)
   val y = Tsv("input2", ('x2, 'y2))
 
-  val yGroup = y.groupBy('x2) { p =>
-    p
-  }
+  val yGroup =
+    y.groupBy('x2) { p =>
+      p
+    }
   val yTypedPipe = TypedPipe.from[(String, Int)](yGroup, Fields.ALL)
 
   x.hashJoin(yTypedPipe)
@@ -291,19 +296,22 @@ class TypedPipeHashJoinWithCoGroupJob(args: Args) extends Job(args) {
   PlatformTest.setAutoForceRight(mode, true)
 
   val x = TypedPipe.from[(Int, Int)](List((1, 1)))
-  val in0 = Tsv("input0").read.mapTo((0, 1) -> ('x0, 'a)) { input: (Int, Int) =>
-    input
-  }
-  val in1 = Tsv("input1").read.mapTo((0, 1) -> ('x1, 'b)) { input: (Int, Int) =>
-    input
-  }
+  val in0 =
+    Tsv("input0").read.mapTo((0, 1) -> ('x0, 'a)) { input: (Int, Int) =>
+      input
+    }
+  val in1 =
+    Tsv("input1").read.mapTo((0, 1) -> ('x1, 'b)) { input: (Int, Int) =>
+      input
+    }
 
-  val coGroupPipe = in0.coGroupBy('x0) {
-    _.coGroup('x1, in1, OuterJoinMode)
-  }
+  val coGroupPipe =
+    in0.coGroupBy('x0) {
+      _.coGroup('x1, in1, OuterJoinMode)
+    }
 
-  val coGroupTypedPipe =
-    TypedPipe.from[(Int, Int, Int)](coGroupPipe, Fields.ALL)
+  val coGroupTypedPipe = TypedPipe
+    .from[(Int, Int, Int)](coGroupPipe, Fields.ALL)
   val coGroupTuplePipe = coGroupTypedPipe.map {
     case (a, b, c) => (a, (b, c))
   }
@@ -316,11 +324,12 @@ class TypedPipeHashJoinWithEveryJob(args: Args) extends Job(args) {
   PlatformTest.setAutoForceRight(mode, true)
 
   val x = TypedPipe.from[(Int, String)](Tsv("input1", ('x1, 'y1)), Fields.ALL)
-  val y = Tsv("input2", ('x2, 'y2)).groupBy('x2) {
-    _.foldLeft('y2 -> 'y2)(0) { (b: Int, a: Int) =>
-      b + a
+  val y =
+    Tsv("input2", ('x2, 'y2)).groupBy('x2) {
+      _.foldLeft('y2 -> 'y2)(0) { (b: Int, a: Int) =>
+        b + a
+      }
     }
-  }
 
   val yTypedPipe = TypedPipe.from[(Int, Int)](y, Fields.ALL)
   x.hashJoin(yTypedPipe)
@@ -364,14 +373,15 @@ class ComplexJob(input: List[NestedCaseClass], args: Args) extends Job(args) {
     macro com.twitter.scalding.serialization.macros.impl
       .OrderedSerializationProviderImpl[T]
 
-  val ds1 = TypedPipe
-    .from(input)
-    .map(_ -> 1L)
-    .group
-    .sorted
-    .mapValueStream(_.map(_ * 2))
-    .toTypedPipe
-    .group
+  val ds1 =
+    TypedPipe
+      .from(input)
+      .map(_ -> 1L)
+      .group
+      .sorted
+      .mapValueStream(_.map(_ * 2))
+      .toTypedPipe
+      .group
 
   val ds2 = TypedPipe.from(input).map(_ -> 1L).distinct.group
 
@@ -423,17 +433,18 @@ class CheckForFlowProcessInFieldsJob(args: Args) extends Job(args) {
   val inA = Tsv("inputA", ('a, 'b))
   val inB = Tsv("inputB", ('x, 'y))
 
-  val p = inA.joinWithSmaller('a -> 'x, inB).map(('b, 'y) -> 'z) {
-    args: (String, String) =>
-      stat.inc
+  val p =
+    inA.joinWithSmaller('a -> 'x, inB).map(('b, 'y) -> 'z) {
+      args: (String, String) =>
+        stat.inc
 
-      val flowProcess = RuntimeStats.getFlowProcessForUniqueId(uniqueID)
-      if (flowProcess == null) {
-        throw new NullPointerException("No active FlowProcess was available.")
-      }
+        val flowProcess = RuntimeStats.getFlowProcessForUniqueId(uniqueID)
+        if (flowProcess == null) {
+          throw new NullPointerException("No active FlowProcess was available.")
+        }
 
-      s"${args._1},${args._2}"
-  }
+        s"${args._1},${args._2}"
+    }
 
   p.write(Tsv("output", ('b, 'y)))
 }

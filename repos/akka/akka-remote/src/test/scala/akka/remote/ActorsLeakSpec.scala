@@ -34,25 +34,26 @@ object ActorsLeakSpec {
   def collectLiveActors(root: ActorRef): immutable.Seq[ActorRef] = {
 
     def recurse(node: ActorRef): List[ActorRef] = {
-      val children: List[ActorRef] = node match {
-        case wc: ActorRefWithCell ⇒
-          val cell = wc.underlying
+      val children: List[ActorRef] =
+        node match {
+          case wc: ActorRefWithCell ⇒
+            val cell = wc.underlying
 
-          cell.childrenRefs match {
-            case ChildrenContainer.TerminatingChildrenContainer(
-                  _,
-                  toDie,
-                  reason) ⇒
-              Nil
-            case x @ (ChildrenContainer.TerminatedChildrenContainer |
-                ChildrenContainer.EmptyChildrenContainer) ⇒
-              Nil
-            case n: ChildrenContainer.NormalChildrenContainer ⇒
-              cell.childrenRefs.children.toList
-            case x ⇒ Nil
-          }
-        case _ ⇒ Nil
-      }
+            cell.childrenRefs match {
+              case ChildrenContainer.TerminatingChildrenContainer(
+                    _,
+                    toDie,
+                    reason) ⇒
+                Nil
+              case x @ (ChildrenContainer.TerminatedChildrenContainer |
+                  ChildrenContainer.EmptyChildrenContainer) ⇒
+                Nil
+              case n: ChildrenContainer.NormalChildrenContainer ⇒
+                cell.childrenRefs.children.toList
+              case x ⇒ Nil
+            }
+          case _ ⇒ Nil
+        }
 
       node :: children.flatMap(recurse)
     }

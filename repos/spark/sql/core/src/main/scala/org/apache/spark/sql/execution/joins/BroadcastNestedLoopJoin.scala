@@ -40,10 +40,11 @@ case class BroadcastNestedLoopJoin(
       .createLongMetric(sparkContext, "number of output rows"))
 
   /** BuildRight means the right relation <=> the broadcast relation. */
-  private val (streamed, broadcast) = buildSide match {
-    case BuildRight => (left, right)
-    case BuildLeft  => (right, left)
-  }
+  private val (streamed, broadcast) =
+    buildSide match {
+      case BuildRight => (left, right)
+      case BuildLeft  => (right, left)
+    }
 
   override def requiredChildDistribution: Seq[Distribution] =
     buildSide match {
@@ -232,9 +233,10 @@ case class BroadcastNestedLoopJoin(
       Seq(matched).toIterator
     }
 
-    val matchedBroadcastRows = matchedBuildRows.fold(
-      new BitSet(relation.value.length)
-    )(_ | _)
+    val matchedBroadcastRows =
+      matchedBuildRows.fold(
+        new BitSet(relation.value.length)
+      )(_ | _)
 
     if (joinType == LeftSemi) {
       assert(buildSide == BuildLeft)
@@ -300,22 +302,23 @@ case class BroadcastNestedLoopJoin(
   protected override def doExecute(): RDD[InternalRow] = {
     val broadcastedRelation = broadcast.executeBroadcast[Array[InternalRow]]()
 
-    val resultRdd = (joinType, buildSide) match {
-      case (Inner, _) =>
-        innerJoin(broadcastedRelation)
-      case (LeftOuter, BuildRight) | (RightOuter, BuildLeft) =>
-        outerJoin(broadcastedRelation)
-      case (LeftSemi, BuildRight) =>
-        leftSemiJoin(broadcastedRelation)
-      case _ =>
-        /**
-          * LeftOuter with BuildLeft
-          * RightOuter with BuildRight
-          * FullOuter
-          * LeftSemi with BuildLeft
-          */
-        defaultJoin(broadcastedRelation)
-    }
+    val resultRdd =
+      (joinType, buildSide) match {
+        case (Inner, _) =>
+          innerJoin(broadcastedRelation)
+        case (LeftOuter, BuildRight) | (RightOuter, BuildLeft) =>
+          outerJoin(broadcastedRelation)
+        case (LeftSemi, BuildRight) =>
+          leftSemiJoin(broadcastedRelation)
+        case _ =>
+          /**
+            * LeftOuter with BuildLeft
+            * RightOuter with BuildRight
+            * FullOuter
+            * LeftSemi with BuildLeft
+            */
+          defaultJoin(broadcastedRelation)
+      }
 
     val numOutputRows = longMetric("numOutputRows")
     resultRdd.mapPartitionsInternal { iter =>

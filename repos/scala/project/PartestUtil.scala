@@ -6,8 +6,9 @@ object PartestUtil {
       srcPath: String,
       globalBase: File,
       testBase: File) {
-    private val testCaseDir = new SimpleFileFilter(f =>
-      f.isDirectory && f.listFiles.nonEmpty && !(f.getParentFile / (f.name + ".res")).exists)
+    private val testCaseDir =
+      new SimpleFileFilter(f =>
+        f.isDirectory && f.listFiles.nonEmpty && !(f.getParentFile / (f.name + ".res")).exists)
     private val testCaseFilter =
       GlobFilter("*.scala") | GlobFilter("*.java") | GlobFilter(
         "*.res") || testCaseDir
@@ -99,8 +100,8 @@ object PartestUtil {
             val Pattern = ("(?i)" + x).r
             testFiles.allTestCases.filter {
               case (testFile, testPath) =>
-                val assocFiles =
-                  List(".check", ".flags").map(testFile.getParentFile / _)
+                val assocFiles = List(".check", ".flags").map(
+                  testFile.getParentFile / _)
                 val sourceFiles =
                   if (testFile.isFile)
                     List(testFile)

@@ -142,33 +142,35 @@ private[thrift] class RawZipkinTracer(
     */
   private[this] val encoder = BaseEncoding.base64()
   private class ReusableTransport {
-    private[this] val baos = new TByteArrayOutputStream(initialSizeInBytes) {
-      private[this] val writer = new CharArrayWriter(initialSizeInBytes) {
-        override def reset(): Unit = {
-          super.reset()
-          if (buf.length > maxSizeInBytes) {
-            buf = new Array[Char](initialSizeInBytes)
+    private[this] val baos =
+      new TByteArrayOutputStream(initialSizeInBytes) {
+        private[this] val writer =
+          new CharArrayWriter(initialSizeInBytes) {
+            override def reset(): Unit = {
+              super.reset()
+              if (buf.length > maxSizeInBytes) {
+                buf = new Array[Char](initialSizeInBytes)
+              }
+            }
           }
+        @volatile private[this] var outStream = encoder.encodingStream(writer)
+
+        override def reset(): Unit = {
+          writer.reset()
+          outStream = encoder.encodingStream(writer)
+          super.reset()
+        }
+
+        override def write(bytes: Array[Byte], off: Int, len: Int): Unit = {
+          outStream.write(bytes, off, len)
+        }
+
+        def toBase64Line(): String = {
+          outStream.close()
+          writer.write('\n')
+          writer.toString()
         }
       }
-      @volatile private[this] var outStream = encoder.encodingStream(writer)
-
-      override def reset(): Unit = {
-        writer.reset()
-        outStream = encoder.encodingStream(writer)
-        super.reset()
-      }
-
-      override def write(bytes: Array[Byte], off: Int, len: Int): Unit = {
-        outStream.write(bytes, off, len)
-      }
-
-      def toBase64Line(): String = {
-        outStream.close()
-        writer.write('\n')
-        writer.toString()
-      }
-    }
 
     private[this] val transport = new TReusableMemoryTransport(baos)
     val protocol = Protocols.binaryFactory().getProtocol(transport)

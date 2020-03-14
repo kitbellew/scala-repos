@@ -24,12 +24,13 @@ class SlickTreeException(
       parent)
 
 private[slick] object SlickTreeException {
-  val treePrinter = new TreePrinter(
-    prefix = DumpInfo.highlight(
-      if (GlobalConfig.unicodeDump)
-        "\u2503 "
-      else
-        "| "))
+  val treePrinter =
+    new TreePrinter(
+      prefix = DumpInfo.highlight(
+        if (GlobalConfig.unicodeDump)
+          "\u2503 "
+        else
+          "| "))
 
   def format(
       msg: String,

@@ -398,8 +398,8 @@ private[finagle] class PipelineFactory(
   private[this] val thriftMuxConnectionCount = new AtomicInteger
 
   private[this] val thriftmuxConnects = statsReceiver.counter("connects")
-  private[this] val downgradedConnects =
-    statsReceiver.counter("downgraded_connects")
+  private[this] val downgradedConnects = statsReceiver.counter(
+    "downgraded_connects")
   private[this] val downgradedConnectionGauge =
     statsReceiver.addGauge("downgraded_connections") {
       downgradedConnectionCount.get()

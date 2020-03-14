@@ -81,27 +81,28 @@ class OneHotEncoder(override val uid: String)
       s"Output column $outputColName already exists.")
 
     val inputAttr = Attribute.fromStructField(schema(inputColName))
-    val outputAttrNames: Option[Array[String]] = inputAttr match {
-      case nominal: NominalAttribute =>
-        if (nominal.values.isDefined) {
-          nominal.values
-        } else if (nominal.numValues.isDefined) {
-          nominal.numValues.map(n => Array.tabulate(n)(_.toString))
-        } else {
-          None
-        }
-      case binary: BinaryAttribute =>
-        if (binary.values.isDefined) {
-          binary.values
-        } else {
-          Some(Array.tabulate(2)(_.toString))
-        }
-      case _: NumericAttribute =>
-        throw new RuntimeException(
-          s"The input column $inputColName cannot be numeric.")
-      case _ =>
-        None // optimistic about unknown attributes
-    }
+    val outputAttrNames: Option[Array[String]] =
+      inputAttr match {
+        case nominal: NominalAttribute =>
+          if (nominal.values.isDefined) {
+            nominal.values
+          } else if (nominal.numValues.isDefined) {
+            nominal.numValues.map(n => Array.tabulate(n)(_.toString))
+          } else {
+            None
+          }
+        case binary: BinaryAttribute =>
+          if (binary.values.isDefined) {
+            binary.values
+          } else {
+            Some(Array.tabulate(2)(_.toString))
+          }
+        case _: NumericAttribute =>
+          throw new RuntimeException(
+            s"The input column $inputColName cannot be numeric.")
+        case _ =>
+          None // optimistic about unknown attributes
+      }
 
     val filteredOutputAttrNames = outputAttrNames.map { names =>
       if ($(dropLast)) {
@@ -114,14 +115,15 @@ class OneHotEncoder(override val uid: String)
       }
     }
 
-    val outputAttrGroup = if (filteredOutputAttrNames.isDefined) {
-      val attrs: Array[Attribute] = filteredOutputAttrNames.get.map { name =>
-        BinaryAttribute.defaultAttr.withName(name)
+    val outputAttrGroup =
+      if (filteredOutputAttrNames.isDefined) {
+        val attrs: Array[Attribute] = filteredOutputAttrNames.get.map { name =>
+          BinaryAttribute.defaultAttr.withName(name)
+        }
+        new AttributeGroup($(outputCol), attrs)
+      } else {
+        new AttributeGroup($(outputCol))
       }
-      new AttributeGroup($(outputCol), attrs)
-    } else {
-      new AttributeGroup($(outputCol))
-    }
 
     val outputFields = inputFields :+ outputAttrGroup.toStructField()
     StructType(outputFields)
@@ -161,8 +163,8 @@ class OneHotEncoder(override val uid: String)
           outputAttrNames.dropRight(1)
         else
           outputAttrNames
-      val outputAttrs: Array[Attribute] =
-        filtered.map(name => BinaryAttribute.defaultAttr.withName(name))
+      val outputAttrs: Array[Attribute] = filtered.map(name =>
+        BinaryAttribute.defaultAttr.withName(name))
       outputAttrGroup = new AttributeGroup(outputColName, outputAttrs)
     }
     val metadata = outputAttrGroup.toMetadata()

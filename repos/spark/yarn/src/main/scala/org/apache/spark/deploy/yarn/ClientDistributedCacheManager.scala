@@ -103,15 +103,15 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       env("SPARK_YARN_CACHE_FILES") = keys.reduceLeft[String] { (acc, n) =>
         acc + "," + n
       }
-      env("SPARK_YARN_CACHE_FILES_TIME_STAMPS") =
-        timeStamps.reduceLeft[String] { (acc, n) =>
+      env("SPARK_YARN_CACHE_FILES_TIME_STAMPS") = timeStamps
+        .reduceLeft[String] { (acc, n) =>
           acc + "," + n
         }
       env("SPARK_YARN_CACHE_FILES_FILE_SIZES") = sizes.reduceLeft[String] {
         (acc, n) => acc + "," + n
       }
-      env("SPARK_YARN_CACHE_FILES_VISIBILITIES") =
-        visibilities.reduceLeft[String] { (acc, n) =>
+      env("SPARK_YARN_CACHE_FILES_VISIBILITIES") = visibilities
+        .reduceLeft[String] { (acc, n) =>
           acc + "," + n
         }
     }
@@ -127,15 +127,15 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       env("SPARK_YARN_CACHE_ARCHIVES") = keys.reduceLeft[String] { (acc, n) =>
         acc + "," + n
       }
-      env("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS") =
-        timeStamps.reduceLeft[String] { (acc, n) =>
+      env("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS") = timeStamps
+        .reduceLeft[String] { (acc, n) =>
           acc + "," + n
         }
       env("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES") = sizes.reduceLeft[String] {
         (acc, n) => acc + "," + n
       }
-      env("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES") =
-        visibilities.reduceLeft[String] { (acc, n) =>
+      env("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES") = visibilities
+        .reduceLeft[String] { (acc, n) =>
           acc + "," + n
         }
     }
@@ -220,13 +220,14 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       fs: FileSystem,
       uri: URI,
       statCache: Map[URI, FileStatus]): FileStatus = {
-    val stat = statCache.get(uri) match {
-      case Some(existstat) => existstat
-      case None =>
-        val newStat = fs.getFileStatus(new Path(uri))
-        statCache.put(uri, newStat)
-        newStat
-    }
+    val stat =
+      statCache.get(uri) match {
+        case Some(existstat) => existstat
+        case None =>
+          val newStat = fs.getFileStatus(new Path(uri))
+          statCache.put(uri, newStat)
+          newStat
+      }
     stat
   }
 }

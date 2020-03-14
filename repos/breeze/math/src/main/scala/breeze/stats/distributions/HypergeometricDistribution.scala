@@ -30,10 +30,11 @@ class HypergeometricDistribution(
     numberOfSuccesses: Int,
     sampleSize: Int)
     extends ApacheDiscreteDistribution {
-  protected final val inner = new ApacheHypergeometricDistribution(
-    populationSize,
-    numberOfSuccesses,
-    sampleSize)
+  protected final val inner =
+    new ApacheHypergeometricDistribution(
+      populationSize,
+      numberOfSuccesses,
+      sampleSize)
 }
 
 object HypergeometricDistribution

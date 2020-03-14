@@ -149,11 +149,12 @@ class ConfigSSLContextBuilder(
       keyManagers: Seq[KeyManager],
       trustManagers: Seq[TrustManager],
       secureRandom: Option[SecureRandom]) = {
-    val builder = new SimpleSSLContextBuilder(
-      protocol,
-      keyManagers,
-      trustManagers,
-      secureRandom)
+    val builder =
+      new SimpleSSLContextBuilder(
+        protocol,
+        keyManagers,
+        trustManagers,
+        secureRandom)
     builder.build()
   }
 

@@ -126,8 +126,7 @@ class ThreadLocalRandom extends Random {
 
 object ThreadLocalRandom {
 
-  private val _current =
-    new ThreadLocalRandom()
+  private val _current = new ThreadLocalRandom()
 
   def current(): ThreadLocalRandom = _current
 

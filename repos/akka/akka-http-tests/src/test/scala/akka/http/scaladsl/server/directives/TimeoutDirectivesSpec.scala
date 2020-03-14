@@ -15,12 +15,13 @@ class TimeoutDirectivesSpec extends IntegrationRoutingSpec {
   "Request Timeout" should {
     "be configurable in routing layer" in {
 
-      val route = path("timeout") {
-        withRequestTimeout(3.seconds) {
-          val response: Future[String] = slowFuture() // very slow
-          complete(response)
+      val route =
+        path("timeout") {
+          withRequestTimeout(3.seconds) {
+            val response: Future[String] = slowFuture() // very slow
+            complete(response)
+          }
         }
-      }
 
       Get("/timeout") ~!> route ~!> { response ⇒
         import response._

@@ -48,10 +48,11 @@ class ProxyTest extends WordSpec {
     "generate a factory for an interface" in {
       var called = 0
 
-      val f1 = new ProxyFactory[TestInterface]({ m =>
-        called += 1;
-        m()
-      })
+      val f1 =
+        new ProxyFactory[TestInterface]({ m =>
+          called += 1;
+          m()
+        })
       val obj = new TestImpl
 
       val proxied = f1(obj)
@@ -65,10 +66,11 @@ class ProxyTest extends WordSpec {
     "generate a factory for a class with a default constructor" in {
       var called = 0
 
-      val f2 = new ProxyFactory[TestClass]({ m =>
-        called += 1;
-        m()
-      })
+      val f2 =
+        new ProxyFactory[TestClass]({ m =>
+          called += 1;
+          m()
+        })
       val obj = new TestClass
 
       val proxied = f2(obj)
@@ -91,11 +93,12 @@ class ProxyTest extends WordSpec {
     "MethodCall returnsUnit must be true for unit/void methods" in {
       var unitsCalled = 0
 
-      val pf = new ProxyFactory[TestImpl]({ call =>
-        if (call.returnsUnit)
-          unitsCalled += 1
-        call()
-      })
+      val pf =
+        new ProxyFactory[TestImpl]({ call =>
+          if (call.returnsUnit)
+            unitsCalled += 1
+          call()
+        })
 
       val proxied = pf(new TestImpl)
       proxied.foo
@@ -111,11 +114,12 @@ class ProxyTest extends WordSpec {
     "MethodCall returnsFuture must be true for methods that return a future or subclass" in {
       var futuresCalled = 0
 
-      val pf = new ProxyFactory[TestImpl]({ call =>
-        if (call.returnsFuture)
-          futuresCalled += 1
-        call()
-      })
+      val pf =
+        new ProxyFactory[TestImpl]({ call =>
+          if (call.returnsFuture)
+            futuresCalled += 1
+          call()
+        })
 
       val proxied = pf(new TestImpl)
 
@@ -139,9 +143,10 @@ class ProxyTest extends WordSpec {
     }
 
     "MethodCall can be invoked with alternate target" in {
-      val alt = new TestImpl {
-        override def foo = "alt foo"
-      }
+      val alt =
+        new TestImpl {
+          override def foo = "alt foo"
+        }
       val pf = new ProxyFactory[TestImpl](m => m(alt))
       val targetless = pf()
 
@@ -157,9 +162,10 @@ class ProxyTest extends WordSpec {
     }
 
     "MethodCall can be invoked with alternate target and arguments" in {
-      val alt = new TestImpl {
-        override def bar(i: Int) = Some(i.toLong * 10)
-      }
+      val alt =
+        new TestImpl {
+          override def bar(i: Int) = Some(i.toLong * 10)
+        }
       val pf =
         new ProxyFactory[TestImpl](m => m(alt, Array(3.asInstanceOf[AnyRef])))
       val targetless = pf()
@@ -180,9 +186,7 @@ class ProxyTest extends WordSpec {
         f
 
       // measure
-      val results =
-        for (i <- 1 to 7)
-          yield time(f)
+      val results = for (i <- 1 to 7) yield time(f)
       //println(results)
 
       // drop the top and bottom then average

@@ -158,33 +158,34 @@ abstract class DriverType(val name: String) {
 }
 
 object DriverType {
-  var calcDriver: Connection => DriverType = conn => {
-    val meta = conn.getMetaData
+  var calcDriver: Connection => DriverType =
+    conn => {
+      val meta = conn.getMetaData
 
-    (
-      meta.getDatabaseProductName,
-      meta.getDatabaseMajorVersion,
-      meta.getDatabaseMinorVersion) match {
-      case (DerbyDriver.name, _, _) => DerbyDriver
-      case (MySqlDriver.name, _, _) => MySqlDriver
-      case (PostgreSqlDriver.name, major, minor)
-          if ((major == 8 && minor >= 2) || major > 8) =>
-        PostgreSqlDriver
-      case (PostgreSqlDriver.name, _, _)                     => PostgreSqlOldDriver
-      case (H2Driver.name, _, _)                             => H2Driver
-      case (SqlServerDriver.name, major, _) if major >= 9    => SqlServerDriver
-      case (SqlServerDriver.name, _, _)                      => SqlServerPre2005Driver
-      case (SybaseSQLAnywhereDriver.name, _, _)              => SybaseSQLAnywhereDriver
-      case (SybaseASEDriver.name, _, _)                      => SybaseASEDriver
-      case (OracleDriver.name, _, _)                         => OracleDriver
-      case (MaxDbDriver.name, _, _)                          => MaxDbDriver
-      case (other, _, _) if other.startsWith(DB2Driver.name) => DB2Driver
-      case x =>
-        throw new Exception(
-          "Lift mapper does not support JDBC driver %s.\n".format(x) +
-            "See http://wiki.liftweb.net/index.php/Category:Database for a list of supported databases.")
+      (
+        meta.getDatabaseProductName,
+        meta.getDatabaseMajorVersion,
+        meta.getDatabaseMinorVersion) match {
+        case (DerbyDriver.name, _, _) => DerbyDriver
+        case (MySqlDriver.name, _, _) => MySqlDriver
+        case (PostgreSqlDriver.name, major, minor)
+            if ((major == 8 && minor >= 2) || major > 8) =>
+          PostgreSqlDriver
+        case (PostgreSqlDriver.name, _, _)                     => PostgreSqlOldDriver
+        case (H2Driver.name, _, _)                             => H2Driver
+        case (SqlServerDriver.name, major, _) if major >= 9    => SqlServerDriver
+        case (SqlServerDriver.name, _, _)                      => SqlServerPre2005Driver
+        case (SybaseSQLAnywhereDriver.name, _, _)              => SybaseSQLAnywhereDriver
+        case (SybaseASEDriver.name, _, _)                      => SybaseASEDriver
+        case (OracleDriver.name, _, _)                         => OracleDriver
+        case (MaxDbDriver.name, _, _)                          => MaxDbDriver
+        case (other, _, _) if other.startsWith(DB2Driver.name) => DB2Driver
+        case x =>
+          throw new Exception(
+            "Lift mapper does not support JDBC driver %s.\n".format(x) +
+              "See http://wiki.liftweb.net/index.php/Category:Database for a list of supported databases.")
+      }
     }
-  }
 }
 
 object DB2Driver extends DriverType("DB2") {

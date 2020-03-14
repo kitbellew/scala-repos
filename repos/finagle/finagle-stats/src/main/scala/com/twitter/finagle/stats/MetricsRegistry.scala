@@ -7,8 +7,7 @@ import scala.collection.mutable
 private object MetricsRegistry {
   case class StatEntryImpl(delta: Double, value: Double) extends StatEntry
 
-  def instantaneous(value: Double): StatEntry =
-    StatEntryImpl(value, value)
+  def instantaneous(value: Double): StatEntry = StatEntryImpl(value, value)
 
   def cumulative(delta: Double, value: Double): StatEntry =
     StatEntryImpl(delta, value)
@@ -36,10 +35,11 @@ private[twitter] trait MetricsRegistry extends StatsRegistry {
       for (entry <- registry.sampleCounters().entrySet) {
         val key = entry.getKey()
         val newValue = entry.getValue().doubleValue
-        val newMetric = metrics.get(key) match {
-          case Some(prev) => cumulative(newValue - prev.value, newValue)
-          case None       => cumulative(newValue, newValue)
-        }
+        val newMetric =
+          metrics.get(key) match {
+            case Some(prev) => cumulative(newValue - prev.value, newValue)
+            case None       => cumulative(newValue, newValue)
+          }
         metrics.put(key, newMetric)
       }
 

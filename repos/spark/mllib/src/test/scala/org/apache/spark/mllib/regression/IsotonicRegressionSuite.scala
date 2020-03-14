@@ -48,8 +48,9 @@ class IsotonicRegressionSuite
       labels: Seq[Double],
       weights: Seq[Double],
       isotonic: Boolean): IsotonicRegressionModel = {
-    val trainRDD =
-      sc.parallelize(generateIsotonicInput(labels, weights)).cache()
+    val trainRDD = sc
+      .parallelize(generateIsotonicInput(labels, weights))
+      .cache()
     new IsotonicRegression().setIsotonic(isotonic).run(trainRDD)
   }
 
@@ -158,24 +159,30 @@ class IsotonicRegressionSuite
   }
 
   test("weighted isotonic regression") {
-    val model =
-      runIsotonicRegression(Seq(1, 2, 3, 4, 2), Seq(1, 1, 1, 1, 2), true)
+    val model = runIsotonicRegression(
+      Seq(1, 2, 3, 4, 2),
+      Seq(1, 1, 1, 1, 2),
+      true)
 
     assert(model.boundaries === Array(0, 1, 2, 4))
     assert(model.predictions === Array(1, 2, 2.75, 2.75))
   }
 
   test("weighted isotonic regression with weights lower than 1") {
-    val model =
-      runIsotonicRegression(Seq(1, 2, 3, 2, 1), Seq(1, 1, 1, 0.1, 0.1), true)
+    val model = runIsotonicRegression(
+      Seq(1, 2, 3, 2, 1),
+      Seq(1, 1, 1, 0.1, 0.1),
+      true)
 
     assert(model.boundaries === Array(0, 1, 2, 4))
     assert(model.predictions.map(round) === Array(1, 2, 3.3 / 1.2, 3.3 / 1.2))
   }
 
   test("weighted isotonic regression with negative weights") {
-    val model =
-      runIsotonicRegression(Seq(1, 2, 3, 2, 1), Seq(-1, 1, -3, 1, -5), true)
+    val model = runIsotonicRegression(
+      Seq(1, 2, 3, 2, 1),
+      Seq(-1, 1, -3, 1, -5),
+      true)
 
     assert(model.boundaries === Array(0.0, 1.0, 4.0))
     assert(model.predictions === Array(1.0, 10.0 / 6, 10.0 / 6))
@@ -246,10 +253,14 @@ class IsotonicRegressionSuite
   test("isotonic regression RDD prediction") {
     val model = runIsotonicRegression(Seq(1, 2, 7, 1, 2), true)
 
-    val testRDD =
-      sc.parallelize(List(-2.0, -1.0, 0.5, 0.75, 1.0, 2.0, 9.0), 2).cache()
-    val predictions =
-      testRDD.map(x => (x, model.predict(x))).collect().sortBy(_._1).map(_._2)
+    val testRDD = sc
+      .parallelize(List(-2.0, -1.0, 0.5, 0.75, 1.0, 2.0, 9.0), 2)
+      .cache()
+    val predictions = testRDD
+      .map(x => (x, model.predict(x)))
+      .collect()
+      .sortBy(_._1)
+      .map(_._2)
     assert(predictions === Array(1, 1, 1.5, 1.75, 2, 10.0 / 3, 10.0 / 3))
   }
 
@@ -266,10 +277,11 @@ class IsotonicRegressionSuite
   }
 
   test("model construction") {
-    val model = new IsotonicRegressionModel(
-      Array(0.0, 1.0),
-      Array(1.0, 2.0),
-      isotonic = true)
+    val model =
+      new IsotonicRegressionModel(
+        Array(0.0, 1.0),
+        Array(1.0, 2.0),
+        isotonic = true)
     assert(model.predict(-0.5) === 1.0)
     assert(model.predict(0.0) === 1.0)
     assert(model.predict(0.5) ~== 1.5 absTol 1e-14)

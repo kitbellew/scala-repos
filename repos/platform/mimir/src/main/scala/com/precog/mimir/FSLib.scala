@@ -47,8 +47,8 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     object expandGlob extends Morphism1(FSNamespace, "expandGlob") {
       val tpe = UnaryOperationType(JTextT, JTextT)
 
-      val pattern =
-        Pattern.compile("""/?+((?:[a-zA-Z0-9\-\._~:?#@!$&'+=]+)|\*)""")
+      val pattern = Pattern.compile(
+        """/?+((?:[a-zA-Z0-9\-\._~:?#@!$&'+=]+)|\*)""")
 
       def expand_*(
           apiKey: APIKey,
@@ -97,11 +97,12 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
                   StreamT wrapEffect {
                     expanded.sequence map { pathSets =>
-                      val unprefixed: Stream[String] = for {
-                        paths <- pathSets
-                        path <- paths
-                        suffix <- (path - ctx.evalContext.basePath)
-                      } yield suffix.toString
+                      val unprefixed: Stream[String] =
+                        for {
+                          paths <- pathSets
+                          path <- paths
+                          suffix <- (path - ctx.evalContext.basePath)
+                        } yield suffix.toString
 
                       Table.constString(unprefixed.toSet).slices
                     }

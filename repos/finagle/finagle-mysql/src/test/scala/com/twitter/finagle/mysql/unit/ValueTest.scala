@@ -13,8 +13,8 @@ class TimestampValueTest extends FunSuite {
     new TimestampValue(TimeZone.getDefault, TimeZone.getDefault)
 
   test("encode timestamp") {
-    val RawValue(_, _, true, bytes) =
-      timestampValueLocal(Timestamp.valueOf("2014-10-09 08:27:53.123456789"))
+    val RawValue(_, _, true, bytes) = timestampValueLocal(
+      Timestamp.valueOf("2014-10-09 08:27:53.123456789"))
     val br = BufferReader(bytes)
 
     assert(br.readShort() == 2014)
@@ -37,24 +37,33 @@ class TimestampValueTest extends FunSuite {
       .writeByte(5)
       .writeInt(678901)
 
-    val timestampValueLocal(ts) =
-      RawValue(Type.Timestamp, Charset.Binary, true, bytes)
+    val timestampValueLocal(ts) = RawValue(
+      Type.Timestamp,
+      Charset.Binary,
+      true,
+      bytes)
     assert(ts == Timestamp.valueOf("2015-01-02 03:04:05.678901"))
   }
 
   test("decode text timestamp") {
     val str = "2015-01-02 03:04:05.67890"
 
-    val timestampValueLocal(ts) =
-      RawValue(Type.Timestamp, Charset.Binary, false, str.getBytes)
+    val timestampValueLocal(ts) = RawValue(
+      Type.Timestamp,
+      Charset.Binary,
+      false,
+      str.getBytes)
     assert(ts == Timestamp.valueOf("2015-01-02 03:04:05.6789"))
   }
 
   test("decode zero timestamp") {
     val str = "0000-00-00 00:00:00"
 
-    val timestampValueLocal(ts) =
-      RawValue(Type.Timestamp, Charset.Binary, false, str.getBytes)
+    val timestampValueLocal(ts) = RawValue(
+      Type.Timestamp,
+      Charset.Binary,
+      false,
+      str.getBytes)
     assert(ts == new Timestamp(0))
   }
 }

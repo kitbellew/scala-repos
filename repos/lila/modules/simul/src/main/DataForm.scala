@@ -23,8 +23,10 @@ final class DataForm {
   val clockExtraDefault = 0
 
   val colors = List("white", "random", "black")
-  val colorChoices =
-    List("white" -> "White", "random" -> "Random", "black" -> "Black")
+  val colorChoices = List(
+    "white" -> "White",
+    "random" -> "Random",
+    "black" -> "Black")
   val colorDefault = "white"
 
   def create =

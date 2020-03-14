@@ -54,8 +54,13 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
         Array(0.0))
 
     // generate random data for k-means
-    val (input, centers) =
-      StreamingKMeansDataGenerator(numPoints, numBatches, k, d, r, 42)
+    val (input, centers) = StreamingKMeansDataGenerator(
+      numPoints,
+      numBatches,
+      k,
+      d,
+      r,
+      42)
 
     // setup and run the model training
     ssc = setupStreams(
@@ -98,8 +103,13 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
         Array(5.0, 5.0))
 
     // generate random data for k-means
-    val (input, centers) =
-      StreamingKMeansDataGenerator(numPoints, numBatches, k, d, r, 42)
+    val (input, centers) = StreamingKMeansDataGenerator(
+      numPoints,
+      numBatches,
+      k,
+      d,
+      r,
+      42)
 
     // setup and run the model training
     ssc = setupStreams(
@@ -114,11 +124,12 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     // cluster ordering is arbitrary, so choose closest cluster
     val d0 = Vectors.sqdist(kMeans.latestModel().clusterCenters(0), centers(0))
     val d1 = Vectors.sqdist(kMeans.latestModel().clusterCenters(0), centers(1))
-    val (c0, c1) = if (d0 < d1) {
-      (centers(0), centers(1))
-    } else {
-      (centers(1), centers(0))
-    }
+    val (c0, c1) =
+      if (d0 < d1) {
+        (centers(0), centers(1))
+      } else {
+        (centers(1), centers(0))
+      }
     assert(c0 ~== kMeans.latestModel().clusterCenters(0) absTol 1e-1)
     assert(c1 ~== kMeans.latestModel().clusterCenters(1) absTol 1e-1)
   }
@@ -139,15 +150,14 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
         Array(1.0, 1.0))
 
     // new data are all around the first cluster 0.0
-    val (input, _) =
-      StreamingKMeansDataGenerator(
-        numPoints,
-        numBatches,
-        k,
-        d,
-        r,
-        42,
-        Array(Vectors.dense(0.0)))
+    val (input, _) = StreamingKMeansDataGenerator(
+      numPoints,
+      numBatches,
+      k,
+      d,
+      r,
+      42,
+      Array(Vectors.dense(0.0)))
 
     // setup and run the model training
     ssc = setupStreams(
@@ -189,11 +199,12 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
       initCenters: Array[Vector] = null)
       : (IndexedSeq[IndexedSeq[Vector]], Array[Vector]) = {
     val rand = new XORShiftRandom(seed)
-    val centers = initCenters match {
-      case null =>
-        Array.fill(k)(Vectors.dense(Array.fill(d)(rand.nextGaussian())))
-      case _ => initCenters
-    }
+    val centers =
+      initCenters match {
+        case null =>
+          Array.fill(k)(Vectors.dense(Array.fill(d)(rand.nextGaussian())))
+        case _ => initCenters
+      }
     val data = (0 until numBatches).map { i =>
       (0 until numPoints).map { idx =>
         val center = centers(idx % k)

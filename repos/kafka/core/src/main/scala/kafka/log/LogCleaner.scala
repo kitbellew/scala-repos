@@ -74,13 +74,14 @@ class LogCleaner(
   private[log] val cleanerManager = new LogCleanerManager(logDirs, logs)
 
   /* a throttle used to limit the I/O of all the cleaner threads to a user-specified maximum rate */
-  private val throttler = new Throttler(
-    desiredRatePerSec = config.maxIoBytesPerSecond,
-    checkIntervalMs = 300,
-    throttleDown = true,
-    "cleaner-io",
-    "bytes",
-    time = time)
+  private val throttler =
+    new Throttler(
+      desiredRatePerSec = config.maxIoBytesPerSecond,
+      checkIntervalMs = 300,
+      throttleDown = true,
+      "cleaner-io",
+      "bytes",
+      time = time)
 
   /* the threads */
   private val cleaners = (0 until config.numThreads).map(new CleanerThread(_))
@@ -211,19 +212,20 @@ class LogCleaner(
       warn(
         "Cannot use more than 2G of cleaner buffer space per cleaner thread, ignoring excess buffer space...")
 
-    val cleaner = new Cleaner(
-      id = threadId,
-      offsetMap = new SkimpyOffsetMap(
-        memory = math
-          .min(config.dedupeBufferSize / config.numThreads, Int.MaxValue)
-          .toInt,
-        hashAlgorithm = config.hashAlgorithm),
-      ioBufferSize = config.ioBufferSize / config.numThreads / 2,
-      maxIoBufferSize = config.maxMessageSize,
-      dupBufferLoadFactor = config.dedupeBufferLoadFactor,
-      throttler = throttler,
-      time = time,
-      checkDone = checkDone)
+    val cleaner =
+      new Cleaner(
+        id = threadId,
+        offsetMap = new SkimpyOffsetMap(
+          memory = math
+            .min(config.dedupeBufferSize / config.numThreads, Int.MaxValue)
+            .toInt,
+          hashAlgorithm = config.hashAlgorithm),
+        ioBufferSize = config.ioBufferSize / config.numThreads / 2,
+        maxIoBufferSize = config.maxMessageSize,
+        dupBufferLoadFactor = config.dedupeBufferLoadFactor,
+        throttler = throttler,
+        time = time,
+        checkDone = checkDone)
 
     @volatile var lastStats: CleanerStats = new CleanerStats()
     private val backOffWaitLatch = new CountDownLatch(1)
@@ -431,28 +433,31 @@ private[log] class Cleaner(
       map: OffsetMap,
       deleteHorizonMs: Long) {
     // create a new segment with the suffix .cleaned appended to both the log and index name
-    val logFile = new File(
-      segments.head.log.file.getPath + Log.CleanedFileSuffix)
+    val logFile =
+      new File(segments.head.log.file.getPath + Log.CleanedFileSuffix)
     logFile.delete()
-    val indexFile = new File(
-      segments.head.index.file.getPath + Log.CleanedFileSuffix)
+    val indexFile =
+      new File(segments.head.index.file.getPath + Log.CleanedFileSuffix)
     indexFile.delete()
-    val messages = new FileMessageSet(
-      logFile,
-      fileAlreadyExists = false,
-      initFileSize = log.initFileSize(),
-      preallocate = log.config.preallocate)
-    val index = new OffsetIndex(
-      indexFile,
-      segments.head.baseOffset,
-      segments.head.index.maxIndexSize)
-    val cleaned = new LogSegment(
-      messages,
-      index,
-      segments.head.baseOffset,
-      segments.head.indexIntervalBytes,
-      log.config.randomSegmentJitter,
-      time)
+    val messages =
+      new FileMessageSet(
+        logFile,
+        fileAlreadyExists = false,
+        initFileSize = log.initFileSize(),
+        preallocate = log.config.preallocate)
+    val index =
+      new OffsetIndex(
+        indexFile,
+        segments.head.baseOffset,
+        segments.head.index.maxIndexSize)
+    val cleaned =
+      new LogSegment(
+        messages,
+        index,
+        segments.head.baseOffset,
+        segments.head.indexIntervalBytes,
+        log.config.randomSegmentJitter,
+        time)
 
     try {
       // clean segments into the new destination segment
@@ -525,8 +530,8 @@ private[log] class Cleaner(
       // read a chunk of messages and copy any that are to be retained to the write buffer to be written out
       readBuffer.clear()
       writeBuffer.clear()
-      val messages = new ByteBufferMessageSet(
-        source.log.readInto(readBuffer, position))
+      val messages =
+        new ByteBufferMessageSet(source.log.readInto(readBuffer, position))
       throttler.maybeThrottle(messages.sizeInBytes)
       // check each message to see if it is to be retained
       var messagesRead = 0
@@ -535,8 +540,8 @@ private[log] class Cleaner(
         stats.readMessage(size)
         if (entry.message.compressionCodec == NoCompressionCodec) {
           if (shouldRetainMessage(source, map, retainDeletes, entry)) {
-            val convertedMessage =
-              entry.message.toFormatVersion(messageFormatVersion)
+            val convertedMessage = entry.message.toFormatVersion(
+              messageFormatVersion)
             ByteBufferMessageSet.writeMessage(
               writeBuffer,
               convertedMessage,
@@ -623,17 +628,19 @@ private[log] class Cleaner(
       val firstAbsoluteOffset = firstMessageOffset.offset
       var offset = -1L
       val timestampType = firstMessageOffset.message.timestampType
-      val messageWriter = new MessageWriter(
-        math.min(
-          math.max(MessageSet.messageSetSize(messages) / 2, 1024),
-          1 << 16))
+      val messageWriter =
+        new MessageWriter(
+          math.min(
+            math.max(MessageSet.messageSetSize(messages) / 2, 1024),
+            1 << 16))
       messageWriter.write(
         codec = compressionCodec,
         timestamp = magicAndTimestamp.timestamp,
         timestampType = timestampType,
         magicValue = messageFormatVersion) { outputStream =>
-        val output = new DataOutputStream(
-          CompressionFactory(compressionCodec, outputStream))
+        val output =
+          new DataOutputStream(
+            CompressionFactory(compressionCodec, outputStream))
         try {
           for (messageOffset <- messageAndOffsets) {
             val message = messageOffset.message
@@ -809,8 +816,8 @@ private[log] class Cleaner(
     while (position < segment.log.sizeInBytes) {
       checkDone(topicAndPartition)
       readBuffer.clear()
-      val messages = new ByteBufferMessageSet(
-        segment.log.readInto(readBuffer, position))
+      val messages =
+        new ByteBufferMessageSet(segment.log.readInto(readBuffer, position))
       throttler.maybeThrottle(messages.sizeInBytes)
       val startPosition = position
       for (entry <- messages) {
@@ -900,12 +907,13 @@ private case class LogToClean(
     firstDirtyOffset: Long)
     extends Ordered[LogToClean] {
   val cleanBytes = log.logSegments(-1, firstDirtyOffset).map(_.size).sum
-  val dirtyBytes = log
-    .logSegments(
-      firstDirtyOffset,
-      math.max(firstDirtyOffset, log.activeSegment.baseOffset))
-    .map(_.size)
-    .sum
+  val dirtyBytes =
+    log
+      .logSegments(
+        firstDirtyOffset,
+        math.max(firstDirtyOffset, log.activeSegment.baseOffset))
+      .map(_.size)
+      .sum
   val cleanableRatio = dirtyBytes / totalBytes.toDouble
   def totalBytes = cleanBytes + dirtyBytes
   override def compare(that: LogToClean): Int =

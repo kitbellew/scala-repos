@@ -256,16 +256,18 @@ object LoadService {
 
       val denied: Set[String] = loadServiceDenied()
 
-      val classNames = for {
-        info <- cache.getOrElseUpdate(loader, ClassPath.browse(loader))
-        if info.iface == ifaceName
-        className <- info.lines
-      } yield className
+      val classNames =
+        for {
+          info <- cache.getOrElseUpdate(loader, ClassPath.browse(loader))
+          if info.iface == ifaceName
+          className <- info.lines
+        } yield className
 
-      val classNamesFromResources = for {
-        rsc <- loader.getResources("META-INF/services/" + ifaceName).asScala
-        line <- ClassPath.readLines(Source.fromURL(rsc, "UTF-8"))
-      } yield line
+      val classNamesFromResources =
+        for {
+          rsc <- loader.getResources("META-INF/services/" + ifaceName).asScala
+          line <- ClassPath.readLines(Source.fromURL(rsc, "UTF-8"))
+        } yield line
 
       val buffer = mutable.ListBuffer.empty[String]
       val result = (classNames ++ classNamesFromResources).distinct

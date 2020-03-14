@@ -34,8 +34,8 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
         null
       else
         qual.substring(0, index)
-    val tuple: (ArrayBuffer[ScImportStmt], Long) =
-      position.getUserData(ScalaExplicitlyImportedWeigher.key)
+    val tuple: (ArrayBuffer[ScImportStmt], Long) = position.getUserData(
+      ScalaExplicitlyImportedWeigher.key)
     var buffer: ArrayBuffer[ScImportStmt] =
       if (tuple != null)
         tuple._1
@@ -124,10 +124,11 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
           case obj: ScObject =>
             val qualNoPoint = obj.qualifiedName
             if (qualNoPoint != null) {
-              val memberName = member match {
-                case named: ScNamedElement => named.name
-                case _                     => member.getName
-              }
+              val memberName =
+                member match {
+                  case named: ScNamedElement => named.name
+                  case _                     => member.getName
+                }
               val qual = qualNoPoint + "." + memberName
               applyQualifier(qual, position) match {
                 case Some(x) => return Some(x)
@@ -169,10 +170,11 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
         val clazz = member.containingClass
         if (clazz != null && clazz.qualifiedName != null) {
           val qualNoPoint = clazz.qualifiedName
-          val memberName = member match {
-            case named: ScNamedElement => named.name
-            case _                     => member.getName
-          }
+          val memberName =
+            member match {
+              case named: ScNamedElement => named.name
+              case _                     => member.getName
+            }
           val qual = qualNoPoint + "." + memberName
           applyQualifier(qual, position) match {
             case Some(x) => return x
@@ -200,6 +202,6 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
 }
 
 object ScalaExplicitlyImportedWeigher {
-  private[weighter] val key: Key[(ArrayBuffer[ScImportStmt], Long)] =
-    Key.create("scala.explicitly.imported.weigher.key")
+  private[weighter] val key: Key[(ArrayBuffer[ScImportStmt], Long)] = Key
+    .create("scala.explicitly.imported.weigher.key")
 }

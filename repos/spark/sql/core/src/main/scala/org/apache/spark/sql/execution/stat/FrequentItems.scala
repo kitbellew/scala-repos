@@ -91,34 +91,35 @@ private[sql] object FrequentItems extends Logging {
     val sizeOfMap = (1 / support).toInt
     val countMaps = Seq.tabulate(numCols)(i => new FreqItemCounter(sizeOfMap))
     val originalSchema = df.schema
-    val colInfo: Array[(String, DataType)] = cols.map { name =>
-      val index = originalSchema.fieldIndex(name)
-      (name, originalSchema.fields(index).dataType)
-    }.toArray
+    val colInfo: Array[(String, DataType)] =
+      cols.map { name =>
+        val index = originalSchema.fieldIndex(name)
+        (name, originalSchema.fields(index).dataType)
+      }.toArray
 
-    val freqItems = df
-      .select(cols.map(Column(_)): _*)
-      .rdd
-      .aggregate(countMaps)(
-        seqOp = (counts, row) => {
-          var i = 0
-          while (i < numCols) {
-            val thisMap = counts(i)
-            val key = row.get(i)
-            thisMap.add(key, 1L)
-            i += 1
+    val freqItems =
+      df.select(cols.map(Column(_)): _*)
+        .rdd
+        .aggregate(countMaps)(
+          seqOp = (counts, row) => {
+            var i = 0
+            while (i < numCols) {
+              val thisMap = counts(i)
+              val key = row.get(i)
+              thisMap.add(key, 1L)
+              i += 1
+            }
+            counts
+          },
+          combOp = (baseCounts, counts) => {
+            var i = 0
+            while (i < numCols) {
+              baseCounts(i).merge(counts(i))
+              i += 1
+            }
+            baseCounts
           }
-          counts
-        },
-        combOp = (baseCounts, counts) => {
-          var i = 0
-          while (i < numCols) {
-            baseCounts(i).merge(counts(i))
-            i += 1
-          }
-          baseCounts
-        }
-      )
+        )
     val justItems = freqItems.map(m => m.baseMap.keys.toArray)
     val resultRow = Row(justItems: _*)
     // append frequent Items to the column name for easy debugging

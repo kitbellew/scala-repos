@@ -87,8 +87,7 @@ class QueueingHandler(
   def this(handler: Handler, maxQueueSize: Int) =
     this(handler, maxQueueSize, false)
 
-  def this(handler: Handler) =
-    this(handler, Int.MaxValue)
+  def this(handler: Handler) = this(handler, Int.MaxValue)
 
   protected val dropLogNode: String = ""
   protected val log: Logger = Logger(dropLogNode)

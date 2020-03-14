@@ -44,8 +44,7 @@ object LoadBalancerFactory {
     * memory pressure.
     */
   case class HostStats(hostStatsReceiver: StatsReceiver) {
-    def mk(): (HostStats, Stack.Param[HostStats]) =
-      (this, HostStats.param)
+    def mk(): (HostStats, Stack.Param[HostStats]) = (this, HostStats.param)
   }
 
   object HostStats {
@@ -58,8 +57,7 @@ object LoadBalancerFactory {
     * of addrs to load balance.
     */
   case class Dest(va: Var[Addr]) {
-    def mk(): (Dest, Stack.Param[Dest]) =
-      (this, Dest.param)
+    def mk(): (Dest, Stack.Param[Dest]) = (this, Dest.param)
   }
 
   object Dest {
@@ -72,8 +70,7 @@ object LoadBalancerFactory {
     * for use in error messages.
     */
   case class ErrorLabel(label: String) {
-    def mk(): (ErrorLabel, Stack.Param[ErrorLabel]) =
-      (this, ErrorLabel.param)
+    def mk(): (ErrorLabel, Stack.Param[ErrorLabel]) = (this, ErrorLabel.param)
   }
 
   object ErrorLabel {
@@ -85,8 +82,7 @@ object LoadBalancerFactory {
     * [[com.twitter.finagle.loadbalancer.LoadBalancerFactory]].
     */
   case class Param(loadBalancerFactory: LoadBalancerFactory) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
 
   object Param {
@@ -125,10 +121,11 @@ object LoadBalancerFactory {
       val param.Monitor(monitor) = params[param.Monitor]
       val param.Reporter(reporter) = params[param.Reporter]
 
-      val rawStatsReceiver = statsReceiver match {
-        case sr: RollupStatsReceiver => sr.self
-        case sr                      => sr
-      }
+      val rawStatsReceiver =
+        statsReceiver match {
+          case sr: RollupStatsReceiver => sr.self
+          case sr                      => sr
+        }
 
       // Determine which stats receiver to use based on `perHostStats`
       // flag and the configured `HostStats` param. Report per-host stats
@@ -148,20 +145,22 @@ object LoadBalancerFactory {
           if (hostStatsReceiver.isNull)
             statsReceiver
           else {
-            val scope = addr match {
-              case Address.Inet(ia, _) =>
-                "%s:%d".format(ia.getHostName, ia.getPort)
-              case other => other.toString
-            }
+            val scope =
+              addr match {
+                case Address.Inet(ia, _) =>
+                  "%s:%d".format(ia.getHostName, ia.getPort)
+                case other => other.toString
+              }
             val host = hostStatsReceiver.scope(label).scope(scope)
             BroadcastStatsReceiver(Seq(host, statsReceiver))
           }
 
         val composite = {
-          val ia = addr match {
-            case Address.Inet(ia, _) => Some(ia)
-            case _                   => None
-          }
+          val ia =
+            addr match {
+              case Address.Inet(ia, _) => Some(ia)
+              case _                   => None
+            }
           reporter(label, ia).andThen(monitor)
         }
 

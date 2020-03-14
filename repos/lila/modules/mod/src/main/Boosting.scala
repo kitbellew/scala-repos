@@ -16,8 +16,8 @@ final class BoostingApi(
     ratioGamesToMark: Double) {
   import BoostingApi._
 
-  private implicit val boostingRecordBSONHandler =
-    Macros.handler[BoostingRecord]
+  private implicit val boostingRecordBSONHandler = Macros
+    .handler[BoostingRecord]
 
   private val variants = Set[variant.Variant](
     variant.Standard,
@@ -64,12 +64,13 @@ final class BoostingApi(
         }) {
       game.winnerColor match {
         case Some(a) => {
-          val result: GameResult = a match {
-            case Color.White =>
-              GameResult(winner = whiteUser, loser = blackUser)
-            case Color.Black =>
-              GameResult(winner = blackUser, loser = whiteUser)
-          }
+          val result: GameResult =
+            a match {
+              case Color.White =>
+                GameResult(winner = whiteUser, loser = blackUser)
+              case Color.Black =>
+                GameResult(winner = blackUser, loser = whiteUser)
+            }
           val id = boostingId(result.winner, result.loser)
           getBoostingRecord(id).flatMap {
             case Some(record) =>

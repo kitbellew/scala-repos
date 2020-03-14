@@ -196,8 +196,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       }
     )
 
-  def decr(key: String, delta: Long): Future[Option[JLong]] =
-    incr(key, -delta)
+  def decr(key: String, delta: Long): Future[Option[JLong]] = incr(key, -delta)
 
   def stats(args: Option[String]): Future[Seq[String]] = Future.Nil
 

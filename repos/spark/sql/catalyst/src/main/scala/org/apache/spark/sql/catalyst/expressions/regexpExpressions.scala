@@ -36,10 +36,11 @@ trait StringRegexExpression extends ImplicitCastInputTypes {
   override def inputTypes: Seq[DataType] = Seq(StringType, StringType)
 
   // try cache the pattern for Literal
-  private lazy val cache: Pattern = right match {
-    case x @ Literal(value: String, StringType) => compile(value)
-    case _                                      => null
-  }
+  private lazy val cache: Pattern =
+    right match {
+      case x @ Literal(value: String, StringType) => compile(value)
+      case _                                      => null
+    }
 
   protected def compile(str: String): Pattern =
     if (str == null) {
@@ -91,9 +92,8 @@ case class Like(left: Expression, right: Expression)
     if (right.foldable) {
       val rVal = right.eval()
       if (rVal != null) {
-        val regexStr =
-          StringEscapeUtils.escapeJava(
-            escape(rVal.asInstanceOf[UTF8String].toString()))
+        val regexStr = StringEscapeUtils.escapeJava(
+          escape(rVal.asInstanceOf[UTF8String].toString()))
         ctx.addMutableState(
           patternClass,
           pattern,
@@ -147,8 +147,8 @@ case class RLike(left: Expression, right: Expression)
     if (right.foldable) {
       val rVal = right.eval()
       if (rVal != null) {
-        val regexStr =
-          StringEscapeUtils.escapeJava(rVal.asInstanceOf[UTF8String].toString())
+        val regexStr = StringEscapeUtils.escapeJava(
+          rVal.asInstanceOf[UTF8String].toString())
         ctx.addMutableState(
           patternClass,
           pattern,
@@ -199,8 +199,9 @@ case class StringSplit(str: Expression, pattern: Expression)
   override def inputTypes: Seq[DataType] = Seq(StringType, StringType)
 
   override def nullSafeEval(string: Any, regex: Any): Any = {
-    val strings =
-      string.asInstanceOf[UTF8String].split(regex.asInstanceOf[UTF8String], -1)
+    val strings = string
+      .asInstanceOf[UTF8String]
+      .split(regex.asInstanceOf[UTF8String], -1)
     new GenericArrayData(strings.asInstanceOf[Array[Any]])
   }
 

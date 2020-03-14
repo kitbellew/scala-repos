@@ -178,9 +178,10 @@ private final class ExplorerIndexer(
         val fenTags = initialFen.?? { fen =>
           List(s"[FEN $fen]")
         }
-        val timeControl = game.clock.fold("-") { c =>
-          s"${c.limit}+${c.increment}"
-        }
+        val timeControl =
+          game.clock.fold("-") { c =>
+            s"${c.limit}+${c.increment}"
+          }
         val otherTags = List(
           s"[LichessID ${game.id}]",
           s"[Variant ${game.variant.name}]",

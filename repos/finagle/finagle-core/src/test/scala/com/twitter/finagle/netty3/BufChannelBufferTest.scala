@@ -1026,8 +1026,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     val wrapped = ChannelBuffers.wrappedBuffer(bytes)
     val bcb = new BufChannelBuffer(Buf.ByteArray.Owned(bytes))
     val valueContent = new Array[Byte](BLOCK_SIZE * 2)
-    val value =
-      ChannelBuffers.wrappedBuffer(ByteBuffer.allocate(BLOCK_SIZE * 2))
+    val value = ChannelBuffers.wrappedBuffer(
+      ByteBuffer.allocate(BLOCK_SIZE * 2))
     value.writerIndex(0)
     wrapped.writerIndex(0)
     0.until(CAPACITY - BLOCK_SIZE + 1, BLOCK_SIZE) foreach { i =>
@@ -1062,8 +1062,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     val wrapped = ChannelBuffers.wrappedBuffer(bytes)
     val bcb = new BufChannelBuffer(Buf.ByteArray.Owned(bytes))
     val valueContent = new Array[Byte](BLOCK_SIZE * 2)
-    val value =
-      ChannelBuffers.wrappedBuffer(ByteBuffer.allocate(BLOCK_SIZE * 2))
+    val value = ChannelBuffers.wrappedBuffer(
+      ByteBuffer.allocate(BLOCK_SIZE * 2))
     value.writerIndex(0)
     wrapped.writerIndex(0)
     0.until(CAPACITY - BLOCK_SIZE + 1, BLOCK_SIZE) foreach { i =>

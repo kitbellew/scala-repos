@@ -66,8 +66,9 @@ class BlockManagerSuite
   val shuffleManager = new HashShuffleManager(new SparkConf(false))
 
   // Reuse a serializer across tests to avoid creating a new thread-local buffer on each test
-  val serializer = new KryoSerializer(
-    new SparkConf(false).set("spark.kryoserializer.buffer", "1m"))
+  val serializer =
+    new KryoSerializer(
+      new SparkConf(false).set("spark.kryoserializer.buffer", "1m"))
 
   // Implicitly convert strings to BlockIds for test clarity.
   implicit def StringToBlockId(value: String): BlockId = new TestBlockId(value)
@@ -84,18 +85,19 @@ class BlockManagerSuite
       .getOrElse(new NettyBlockTransferService(conf, securityMgr, numCores = 1))
     val memManager =
       new StaticMemoryManager(conf, Long.MaxValue, maxMem, numCores = 1)
-    val blockManager = new BlockManager(
-      name,
-      rpcEnv,
-      master,
-      serializer,
-      conf,
-      memManager,
-      mapOutputTracker,
-      shuffleManager,
-      transfer,
-      securityMgr,
-      0)
+    val blockManager =
+      new BlockManager(
+        name,
+        rpcEnv,
+        master,
+        serializer,
+        conf,
+        memManager,
+        mapOutputTracker,
+        shuffleManager,
+        transfer,
+        securityMgr,
+        0)
     memManager.setMemoryStore(blockManager.memoryStore)
     blockManager.initialize("app-id")
     blockManager
@@ -183,14 +185,16 @@ class BlockManagerSuite
 
   test("BlockManagerId object caching") {
     val id1 = BlockManagerId("e1", "XXX", 1)
-    val id2 =
-      BlockManagerId(
-        "e1",
-        "XXX",
-        1
-      ) // this should return the same object as id1
-    val id3 =
-      BlockManagerId("e1", "XXX", 2) // this should return a different object
+    val id2 = BlockManagerId(
+      "e1",
+      "XXX",
+      1
+    ) // this should return the same object as id1
+    val id3 = BlockManagerId(
+      "e1",
+      "XXX",
+      2
+    ) // this should return a different object
     assert(id2 === id1, "id2 is not same as id1")
     assert(id2.eq(id1), "id2 is not the same object as id1")
     assert(id3 != id1, "id3 is same as id1")
@@ -465,8 +469,9 @@ class BlockManagerSuite
       master.getLocations("a1").size == 0,
       "a1 was not removed from master")
 
-    val reregister = !master.driverEndpoint
-      .askWithRetry[Boolean](BlockManagerHeartbeat(store.blockManagerId))
+    val reregister =
+      !master.driverEndpoint
+        .askWithRetry[Boolean](BlockManagerHeartbeat(store.blockManagerId))
     assert(reregister == true)
   }
 
@@ -500,25 +505,28 @@ class BlockManagerSuite
     // try many times to trigger any deadlocks
     for (i <- 1 to 100) {
       master.removeExecutor(store.blockManagerId.executorId)
-      val t1 = new Thread {
-        override def run() {
-          store.putIterator(
-            "a2",
-            a2.iterator,
-            StorageLevel.MEMORY_ONLY,
-            tellMaster = true)
+      val t1 =
+        new Thread {
+          override def run() {
+            store.putIterator(
+              "a2",
+              a2.iterator,
+              StorageLevel.MEMORY_ONLY,
+              tellMaster = true)
+          }
         }
-      }
-      val t2 = new Thread {
-        override def run() {
-          store.putSingle("a1", a1, StorageLevel.MEMORY_ONLY)
+      val t2 =
+        new Thread {
+          override def run() {
+            store.putSingle("a1", a1, StorageLevel.MEMORY_ONLY)
+          }
         }
-      }
-      val t3 = new Thread {
-        override def run() {
-          store.reregister()
+      val t3 =
+        new Thread {
+          override def run() {
+            store.reregister()
+          }
         }
-      }
 
       t1.start()
       t2.start()
@@ -540,8 +548,10 @@ class BlockManagerSuite
   test("correct BlockResult returned from get() calls") {
     store = makeBlockManager(12000)
     val list1 = List(new Array[Byte](2000), new Array[Byte](2000))
-    val list2 =
-      List(new Array[Byte](500), new Array[Byte](1000), new Array[Byte](1500))
+    val list2 = List(
+      new Array[Byte](500),
+      new Array[Byte](1000),
+      new Array[Byte](1500))
     val list1SizeEstimate = SizeEstimator.estimate(list1.iterator.toArray)
     val list2SizeEstimate = SizeEstimator.estimate(list2.iterator.toArray)
     store.putIterator(
@@ -892,8 +902,8 @@ class BlockManagerSuite
   }
 
   test("negative byte values in ByteBufferInputStream") {
-    val buffer =
-      ByteBuffer.wrap(Array[Int](254, 255, 0, 1, 2).map(_.toByte).toArray)
+    val buffer = ByteBuffer.wrap(
+      Array[Int](254, 255, 0, 1, 2).map(_.toByte).toArray)
     val stream = new ByteBufferInputStream(buffer)
     val temp = new Array[Byte](10)
     assert(stream.read() === 254, "unexpected byte read")
@@ -1013,11 +1023,12 @@ class BlockManagerSuite
     // Use Java serializer so we can create an unserializable error.
     val transfer =
       new NettyBlockTransferService(conf, securityMgr, numCores = 1)
-    val memoryManager = new StaticMemoryManager(
-      conf,
-      maxOnHeapExecutionMemory = Long.MaxValue,
-      maxStorageMemory = 1200,
-      numCores = 1)
+    val memoryManager =
+      new StaticMemoryManager(
+        conf,
+        maxOnHeapExecutionMemory = Long.MaxValue,
+        maxStorageMemory = 1200,
+        numCores = 1)
     store = new BlockManager(
       SparkContext.DRIVER_IDENTIFIER,
       rpcEnv,
@@ -1624,8 +1635,9 @@ class BlockManagerSuite
 
   test(
     "SPARK-13328: refresh block locations (fetch should succeed after location refresh)") {
-    val maxFailuresBeforeLocationRefresh =
-      conf.getInt("spark.block.failures.beforeLocationRefresh", 5)
+    val maxFailuresBeforeLocationRefresh = conf.getInt(
+      "spark.block.failures.beforeLocationRefresh",
+      5)
     val mockBlockManagerMaster = mock(classOf[BlockManagerMaster])
     val mockBlockTransferService =
       new MockBlockTransferService(maxFailuresBeforeLocationRefresh)

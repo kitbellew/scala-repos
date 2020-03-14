@@ -101,8 +101,8 @@ class ScalaLookupItem(
 
   def isNamedParameterOrAssignment = isNamedParameter || isAssignment
 
-  val containingClass =
-    containingClass0.getOrElse(ScalaPsiUtil.nameContext(element) match {
+  val containingClass = containingClass0.getOrElse(
+    ScalaPsiUtil.nameContext(element) match {
       case memb: PsiMember => memb.containingClass
       case _               => null
     })
@@ -120,26 +120,27 @@ class ScalaLookupItem(
   }
 
   override def renderElement(presentation: LookupElementPresentation) {
-    val tailText: String = element match {
-      case t: ScFun =>
-        if (t.typeParameters.nonEmpty)
-          t.typeParameters
-            .map(param => presentationString(param, substitutor))
+    val tailText: String =
+      element match {
+        case t: ScFun =>
+          if (t.typeParameters.nonEmpty)
+            t.typeParameters
+              .map(param => presentationString(param, substitutor))
+              .mkString("[", ", ", "]")
+          else
+            ""
+        case t: ScTypeParametersOwner =>
+          t.typeParametersClause match {
+            case Some(tp) => presentationString(tp, substitutor)
+            case None     => ""
+          }
+        case p: PsiTypeParameterListOwner if p.getTypeParameters.nonEmpty =>
+          p.getTypeParameters
+            .map(ptp => presentationString(ptp))
             .mkString("[", ", ", "]")
-        else
-          ""
-      case t: ScTypeParametersOwner =>
-        t.typeParametersClause match {
-          case Some(tp) => presentationString(tp, substitutor)
-          case None     => ""
-        }
-      case p: PsiTypeParameterListOwner if p.getTypeParameters.nonEmpty =>
-        p.getTypeParameters
-          .map(ptp => presentationString(ptp))
-          .mkString("[", ", ", "]")
-      case p: PsiPackage => s"    (${p.getQualifiedName})"
-      case _             => ""
-    }
+        case p: PsiPackage => s"    (${p.getQualifiedName})"
+        case _             => ""
+      }
     element match {
       //scala
       case fun: ScFunction =>
@@ -149,33 +150,36 @@ class ScalaLookupItem(
           else
             fun.getType(TypingContext.empty).getOrAny
         presentation.setTypeText(presentationString(scType, substitutor))
-        val tailText1 = if (isAssignment) {
-          " = " + presentationString(fun.paramClauses, substitutor)
-        } else {
-          tailText + (
-            if (!isOverloadedForClassName)
-              presentationString(fun.paramClauses, substitutor)
-            else
-              "(...)"
-          ) + (
-            if (shouldImport && isClassName && containingClass != null)
-              " " + containingClass.getPresentation.getLocationString
-            else if (isClassName && containingClass != null)
-              " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
-            else
-              ""
-          )
-        }
+        val tailText1 =
+          if (isAssignment) {
+            " = " + presentationString(fun.paramClauses, substitutor)
+          } else {
+            tailText + (
+              if (!isOverloadedForClassName)
+                presentationString(fun.paramClauses, substitutor)
+              else
+                "(...)"
+            ) + (
+              if (shouldImport && isClassName && containingClass != null)
+                " " + containingClass.getPresentation.getLocationString
+              else if (isClassName && containingClass != null)
+                " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
+              else
+                ""
+            )
+          }
         if (!etaExpanded)
           presentation.setTailText(tailText1)
         else
           presentation.setTailText(" _")
       case fun: ScFun =>
         presentation.setTypeText(presentationString(fun.retType, substitutor))
-        val paramClausesText = fun.paramClauses
-          .map(
-            _.map(presentationString(_, substitutor)).mkString("(", ", ", ")"))
-          .mkString
+        val paramClausesText =
+          fun.paramClauses
+            .map(
+              _.map(presentationString(_, substitutor))
+                .mkString("(", ", ", ")"))
+            .mkString
         presentation.setTailText(tailText + paramClausesText)
       case bind: ScBindingPattern =>
         presentation.setTypeText(
@@ -188,10 +192,9 @@ class ScalaLookupItem(
             f.getType(TypingContext.empty).getOrAny,
             substitutor))
       case param: ScParameter =>
-        val str: String =
-          presentationString(
-            param.getRealParameterType(TypingContext.empty).getOrAny,
-            substitutor)
+        val str: String = presentationString(
+          param.getRealParameterType(TypingContext.empty).getOrAny,
+          substitutor)
         if (isNamedParameter) {
           presentation.setTailText(" = " + str)
         } else {
@@ -345,34 +348,37 @@ class ScalaLookupItem(
                    case _       => true
                  }))
             ref = ref.getParent.asInstanceOf[ScReferenceElement]
-          val newRef = ref match {
-            case ref: ScReferenceExpression if prefixCompletion =>
-              val parts = cl.qualifiedName.split('.')
-              if (parts.length > 1) {
-                val newRefText = parts.takeRight(2).mkString(".")
-                ScalaPsiElementFactory
-                  .createExpressionFromText(newRefText, ref.getManager)
-                  .asInstanceOf[ScReferenceExpression]
-              } else {
+          val newRef =
+            ref match {
+              case ref: ScReferenceExpression if prefixCompletion =>
+                val parts = cl.qualifiedName.split('.')
+                if (parts.length > 1) {
+                  val newRefText = parts.takeRight(2).mkString(".")
+                  ScalaPsiElementFactory
+                    .createExpressionFromText(newRefText, ref.getManager)
+                    .asInstanceOf[ScReferenceExpression]
+                } else {
+                  ref.createReplacingElementWithClassName(
+                    useFullyQualifiedName,
+                    cl)
+                }
+              case ref: ScStableCodeReferenceElement if prefixCompletion =>
+                val parts = cl.qualifiedName.split('.')
+                if (parts.length > 1) {
+                  val newRefText = parts.takeRight(2).mkString(".")
+                  ScalaPsiElementFactory.createReferenceFromText(
+                    newRefText,
+                    ref.getManager)
+                } else {
+                  ref.createReplacingElementWithClassName(
+                    useFullyQualifiedName,
+                    cl)
+                }
+              case _ =>
                 ref.createReplacingElementWithClassName(
                   useFullyQualifiedName,
                   cl)
-              }
-            case ref: ScStableCodeReferenceElement if prefixCompletion =>
-              val parts = cl.qualifiedName.split('.')
-              if (parts.length > 1) {
-                val newRefText = parts.takeRight(2).mkString(".")
-                ScalaPsiElementFactory.createReferenceFromText(
-                  newRefText,
-                  ref.getManager)
-              } else {
-                ref.createReplacingElementWithClassName(
-                  useFullyQualifiedName,
-                  cl)
-              }
-            case _ =>
-              ref.createReplacingElementWithClassName(useFullyQualifiedName, cl)
-          }
+            }
           ref.getNode.getTreeParent.replaceChild(ref.getNode, newRef.getNode)
           newRef.bindToElement(cl.element)
           if (cl.element.isInstanceOf[ScObject] && isInStableCodeReference) {
@@ -392,12 +398,11 @@ class ScalaLookupItem(
         case p: PsiPackage if shouldImport =>
           simpleInsert(context)
           context.commitDocument()
-          val ref: ScReferenceElement =
-            PsiTreeUtil.findElementOfClassAtOffset(
-              context.getFile,
-              context.getStartOffset + shift,
-              classOf[ScReferenceElement],
-              false)
+          val ref: ScReferenceElement = PsiTreeUtil.findElementOfClassAtOffset(
+            context.getFile,
+            context.getStartOffset + shift,
+            classOf[ScReferenceElement],
+            false)
           if (ref == null)
             return
           ScalaImportTypeFix
@@ -412,8 +417,8 @@ class ScalaLookupItem(
               .commitDocument(document)
             context.getFile match {
               case scalaFile: ScalaFile =>
-                val elem =
-                  scalaFile.findElementAt(context.getStartOffset + shift)
+                val elem = scalaFile.findElementAt(
+                  context.getStartOffset + shift)
                 def qualifyReference(ref: ScReferenceExpression) {
                   val newRef = ScalaPsiElementFactory
                     .createExpressionFromText(

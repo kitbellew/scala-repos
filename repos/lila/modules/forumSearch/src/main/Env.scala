@@ -32,9 +32,10 @@ final class Env(
 
   import Query.jsonWriter
 
-  private lazy val paginatorBuilder = new lila.search.PaginatorBuilder(
-    searchApi = api,
-    maxPerPage = PaginatorMaxPerPage)
+  private lazy val paginatorBuilder =
+    new lila.search.PaginatorBuilder(
+      searchApi = api,
+      maxPerPage = PaginatorMaxPerPage)
 
   system.actorOf(
     Props(new Actor {

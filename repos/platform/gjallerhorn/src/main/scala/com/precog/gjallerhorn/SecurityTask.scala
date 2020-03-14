@@ -51,8 +51,8 @@ class SecurityTask(settings: Settings)
       (json \ "name").deserialize[String] must_== "MH Test Write"
       (json \ "description").deserialize[String] must_== "Foo"
       (json \ "apiKey").deserialize[String] must_!= apiKey
-      val perms =
-        (json \ "grants").children.flatMap(o => (o \ "permissions").children)
+      val perms = (json \ "grants").children.flatMap(o =>
+        (o \ "permissions").children)
       perms.map(_ \ "accessType") must_== List(JString("write"))
       perms.map(_ \ "path") must_== List(JString("%sfoo/" format rootPath))
     }
@@ -99,9 +99,10 @@ class SecurityTask(settings: Settings)
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
       listGrantsFor(apiKey, authApiKey = apiKey).jvalue must beLike {
         case JArray(List(obj)) =>
-          val perms = (obj \ "permissions").children.map { o =>
-            (o \ "path", o \ "ownerAccountIds", o \ "accessType")
-          }.toSet
+          val perms =
+            (obj \ "permissions").children.map { o =>
+              (o \ "path", o \ "ownerAccountIds", o \ "accessType")
+            }.toSet
 
           perms must_== Set(
             (JString("/"), JArray(List(JString(accountId))), JString("read")),
@@ -198,10 +199,11 @@ class SecurityTask(settings: Settings)
       addToGrant(apiKey2, apiKey1, grantId).complete()
 
       val p2 = p + text(4) + "/"
-      val child = createChildGrant(
-        apiKey2,
-        grantId,
-        ("read", p2, accountId1 :: Nil) :: Nil).jvalue
+      val child =
+        createChildGrant(
+          apiKey2,
+          grantId,
+          ("read", p2, accountId1 :: Nil) :: Nil).jvalue
       val childId = (child \ "grantId").deserialize[String]
 
       describeGrant(apiKey1, childId).jvalue must_== child

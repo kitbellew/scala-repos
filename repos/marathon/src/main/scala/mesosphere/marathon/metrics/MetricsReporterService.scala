@@ -55,13 +55,14 @@ class MetricsReporterService @Inject() (
   private[this] def startGraphiteReporter(
       graphUrl: String): GraphiteReporter = {
     val url = new URI(graphUrl)
-    val params = Option(url.getQuery)
-      .getOrElse("")
-      .split("&")
-      .collect {
-        case QueryParam(k, v) => k -> v
-      }
-      .toMap
+    val params =
+      Option(url.getQuery)
+        .getOrElse("")
+        .split("&")
+        .collect {
+          case QueryParam(k, v) => k -> v
+        }
+        .toMap
 
     val graphite = new Graphite(new InetSocketAddress(url.getHost, url.getPort))
     val builder = GraphiteReporter
@@ -101,29 +102,31 @@ class MetricsReporterService @Inject() (
     */
   private[this] def startDatadog(dataDog: String): DatadogReporter = {
     val url = new URI(dataDog)
-    val params = Option(url.getQuery)
-      .getOrElse("")
-      .split("&")
-      .collect {
-        case QueryParam(k, v) => k -> v
-      }
-      .toMap
+    val params =
+      Option(url.getQuery)
+        .getOrElse("")
+        .split("&")
+        .collect {
+          case QueryParam(k, v) => k -> v
+        }
+        .toMap
 
-    val transport = url.getScheme match {
-      case "http" | "https" =>
-        val transport = new HttpTransport.Builder()
-        params.get("apiKey").map(transport.withApiKey)
-        transport.build()
-      case "udp" =>
-        val transport = new UdpTransport.Builder()
-        transport.withStatsdHost(url.getHost)
-        if (url.getPort > 0)
-          transport.withPort(url.getPort)
-        transport.build()
-      case unknown: String =>
-        throw new WrongConfigurationException(
-          s"Datadog: Unknown protocol $unknown")
-    }
+    val transport =
+      url.getScheme match {
+        case "http" | "https" =>
+          val transport = new HttpTransport.Builder()
+          params.get("apiKey").map(transport.withApiKey)
+          transport.build()
+        case "udp" =>
+          val transport = new UdpTransport.Builder()
+          transport.withStatsdHost(url.getHost)
+          if (url.getPort > 0)
+            transport.withPort(url.getPort)
+          transport.build()
+        case unknown: String =>
+          throw new WrongConfigurationException(
+            s"Datadog: Unknown protocol $unknown")
+      }
 
     val expansions = params
       .get("expansions")
@@ -149,8 +152,10 @@ class MetricsReporterService @Inject() (
     val interval = params.get("interval").map(_.toLong).getOrElse(10L)
     val prefix = params.getOrElse("prefix", "marathon_test")
 
-    val tags =
-      params.get("tags").map(_.split(",").toSeq).getOrElse(Seq.empty[String])
+    val tags = params
+      .get("tags")
+      .map(_.split(",").toSeq)
+      .getOrElse(Seq.empty[String])
 
     val reporter = DatadogReporter
       .forRegistry(registry)

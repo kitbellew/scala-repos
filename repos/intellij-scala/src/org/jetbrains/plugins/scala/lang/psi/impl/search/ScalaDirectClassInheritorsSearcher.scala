@@ -38,17 +38,18 @@ class ScalaDirectClassInheritorsSearcher
     val clazz = queryParameters.getClassToProcess
 
     val scope = inReadAction {
-      val useScope = clazz.getUseScope match {
-        case _: LocalSearchScope =>
-          clazz.containingScalaFile match {
-            case Some(f) if f.getVirtualFile != null =>
-              clazz.containingScalaFile.map(GlobalSearchScope.fileScope)
-            case Some(f) => Some(GlobalSearchScope.allScope(f.getProject))
-            case None    => None
-          }
-        case global: GlobalSearchScope => Some(global)
-        case _                         => None
-      }
+      val useScope =
+        clazz.getUseScope match {
+          case _: LocalSearchScope =>
+            clazz.containingScalaFile match {
+              case Some(f) if f.getVirtualFile != null =>
+                clazz.containingScalaFile.map(GlobalSearchScope.fileScope)
+              case Some(f) => Some(GlobalSearchScope.allScope(f.getProject))
+              case None    => None
+            }
+          case global: GlobalSearchScope => Some(global)
+          case _                         => None
+        }
       ScalaPsiUtil.intersectScopes(queryParameters.getScope, useScope) match {
         case x: GlobalSearchScope => x
         case _                    => return true

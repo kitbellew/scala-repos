@@ -24,9 +24,10 @@ trait Catchable[F[_]] { self =>
   // derived functions
 
   ////
-  val catchableSyntax = new scalaz.syntax.CatchableSyntax[F] {
-    def F = Catchable.this
-  }
+  val catchableSyntax =
+    new scalaz.syntax.CatchableSyntax[F] {
+      def F = Catchable.this
+    }
 }
 
 object Catchable {

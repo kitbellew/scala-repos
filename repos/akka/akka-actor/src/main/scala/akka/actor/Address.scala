@@ -47,8 +47,8 @@ final case class Address private (
   def hasGlobalScope: Boolean = host.isDefined
 
   // store hashCode
-  @transient override lazy val hashCode: Int =
-    scala.util.hashing.MurmurHash3.productHash(this)
+  @transient override lazy val hashCode: Int = scala.util.hashing.MurmurHash3
+    .productHash(this)
 
   /**
     * Returns the canonical String representation of this Address formatted as:
@@ -57,8 +57,9 @@ final case class Address private (
     */
   @transient
   override lazy val toString: String = {
-    val sb =
-      (new java.lang.StringBuilder(protocol)).append("://").append(system)
+    val sb = (new java.lang.StringBuilder(protocol))
+      .append("://")
+      .append(system)
 
     if (host.isDefined)
       sb.append('@').append(host.get)

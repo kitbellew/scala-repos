@@ -162,18 +162,19 @@ class Settings {
       case _ => false
     }
 
-  override lazy val hashCode: Int = Seq[Any](
-    gBf,
-    uncheckedBf,
-    classpathBf,
-    sourcepathBf,
-    sourcedirBf,
-    bootclasspathBf,
-    extdirsBf,
-    dBf,
-    encodingBf,
-    targetBf,
-    optimiseBf,
-    extraParamsBf
-  ).##
+  override lazy val hashCode: Int =
+    Seq[Any](
+      gBf,
+      uncheckedBf,
+      classpathBf,
+      sourcepathBf,
+      sourcedirBf,
+      bootclasspathBf,
+      extdirsBf,
+      dBf,
+      encodingBf,
+      targetBf,
+      optimiseBf,
+      extraParamsBf
+    ).##
 }

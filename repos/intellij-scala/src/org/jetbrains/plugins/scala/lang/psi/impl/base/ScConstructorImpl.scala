@@ -150,52 +150,60 @@ class ScConstructorImpl(node: ASTNode)
         s: ScSimpleTypeElement,
         ref: ScStableCodeReferenceElement): TypeResult[ScType] = {
       val clazz = constr.containingClass
-      val tp = r.getActualElement match {
-        case ta: ScTypeAliasDefinition =>
-          subst.subst(ta.aliasedType.getOrElse(return FAILURE))
-        case _ =>
-          parameterize(
-            ScSimpleTypeElementImpl
-              .calculateReferenceType(ref, shapesOnly = true)
-              .getOrElse(return FAILURE),
-            clazz,
-            subst)
-      }
-      val res = constr match {
-        case fun: ScMethodLike =>
-          val methodType =
-            ScType.nested(fun.methodType(Some(tp)), i).getOrElse(return FAILURE)
-          subst.subst(methodType)
-        case method: PsiMethod =>
-          if (i > 0)
-            return Failure(
-              "Java constructors only have one parameter section",
-              Some(this))
-          ResolveUtils.javaMethodType(
-            method,
-            subst,
-            getResolveScope,
-            Some(subst.subst(tp)))
-      }
-      val typeParameters: Seq[TypeParameter] = r.getActualElement match {
-        case tp: ScTypeParametersOwner if tp.typeParameters.nonEmpty =>
-          tp.typeParameters.map(new TypeParameter(_))
-        case ptp: PsiTypeParameterListOwner if ptp.getTypeParameters.nonEmpty =>
-          ptp.getTypeParameters.toSeq.map(new TypeParameter(_))
-        case _ => return Success(res, Some(this))
-      }
+      val tp =
+        r.getActualElement match {
+          case ta: ScTypeAliasDefinition =>
+            subst.subst(ta.aliasedType.getOrElse(return FAILURE))
+          case _ =>
+            parameterize(
+              ScSimpleTypeElementImpl
+                .calculateReferenceType(ref, shapesOnly = true)
+                .getOrElse(return FAILURE),
+              clazz,
+              subst)
+        }
+      val res =
+        constr match {
+          case fun: ScMethodLike =>
+            val methodType = ScType
+              .nested(fun.methodType(Some(tp)), i)
+              .getOrElse(return FAILURE)
+            subst.subst(methodType)
+          case method: PsiMethod =>
+            if (i > 0)
+              return Failure(
+                "Java constructors only have one parameter section",
+                Some(this))
+            ResolveUtils.javaMethodType(
+              method,
+              subst,
+              getResolveScope,
+              Some(subst.subst(tp)))
+        }
+      val typeParameters: Seq[TypeParameter] =
+        r.getActualElement match {
+          case tp: ScTypeParametersOwner if tp.typeParameters.nonEmpty =>
+            tp.typeParameters.map(new TypeParameter(_))
+          case ptp: PsiTypeParameterListOwner
+              if ptp.getTypeParameters.nonEmpty =>
+            ptp.getTypeParameters.toSeq.map(new TypeParameter(_))
+          case _ => return Success(res, Some(this))
+        }
       s.getParent match {
         case p: ScParameterizedTypeElement =>
           val zipped = p.typeArgList.typeArgs.zip(typeParameters)
-          val appSubst = new ScSubstitutor(
-            new HashMap[(String, PsiElement), ScType] ++ zipped.map {
-              case (arg, typeParam) =>
-                (
-                  (typeParam.name, ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
-                  arg.getType(TypingContext.empty).getOrAny)
-            },
-            Map.empty,
-            None)
+          val appSubst =
+            new ScSubstitutor(
+              new HashMap[(String, PsiElement), ScType] ++ zipped.map {
+                case (arg, typeParam) =>
+                  (
+                    (
+                      typeParam.name,
+                      ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
+                    arg.getType(TypingContext.empty).getOrAny)
+              },
+              Map.empty,
+              None)
           Success(appSubst.subst(res), Some(this))
         case _ =>
           var nonValueType = ScTypePolymorphicType(res, typeParameters)
@@ -298,15 +306,16 @@ class ScConstructorImpl(node: ASTNode)
 
   @Cached(true, ModCount.getBlockModificationCount, this)
   def matchedParameters: Seq[(ScExpression, Parameter)] = {
-    val paramClauses = this.reference.flatMap(r => Option(r.resolve())) match {
-      case Some(pc: ScPrimaryConstructor) =>
-        pc.parameterList.clauses.map(_.parameters)
-      case Some(fun: ScFunction) if fun.isConstructor =>
-        fun.parameterList.clauses.map(_.parameters)
-      case Some(m: PsiMethod) if m.isConstructor =>
-        Seq(m.getParameterList.getParameters.toSeq)
-      case _ => Seq.empty
-    }
+    val paramClauses =
+      this.reference.flatMap(r => Option(r.resolve())) match {
+        case Some(pc: ScPrimaryConstructor) =>
+          pc.parameterList.clauses.map(_.parameters)
+        case Some(fun: ScFunction) if fun.isConstructor =>
+          fun.parameterList.clauses.map(_.parameters)
+        case Some(m: PsiMethod) if m.isConstructor =>
+          Seq(m.getParameterList.getParameters.toSeq)
+        case _ => Seq.empty
+      }
     (for {
       (paramClause, argList) <- paramClauses.zip(arguments)
       (arg, idx) <- argList.exprs.zipWithIndex

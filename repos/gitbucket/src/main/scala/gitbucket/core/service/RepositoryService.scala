@@ -62,41 +62,50 @@ trait RepositoryService { self: AccountService =>
 
         val webHooks =
           WebHooks.filter(_.byRepository(oldUserName, oldRepositoryName)).list
-        val webHookEvents = WebHookEvents
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
+        val webHookEvents =
+          WebHookEvents
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
         val milestones =
           Milestones.filter(_.byRepository(oldUserName, oldRepositoryName)).list
         val issueId =
           IssueId.filter(_.byRepository(oldUserName, oldRepositoryName)).list
         val issues =
           Issues.filter(_.byRepository(oldUserName, oldRepositoryName)).list
-        val pullRequests = PullRequests
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
+        val pullRequests =
+          PullRequests
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
         val labels =
           Labels.filter(_.byRepository(oldUserName, oldRepositoryName)).list
-        val issueComments = IssueComments
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
-        val issueLabels = IssueLabels
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
-        val commitComments = CommitComments
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
-        val commitStatuses = CommitStatuses
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
-        val collaborators = Collaborators
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
-        val protectedBranches = ProtectedBranches
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
-        val protectedBranchContexts = ProtectedBranchContexts
-          .filter(_.byRepository(oldUserName, oldRepositoryName))
-          .list
+        val issueComments =
+          IssueComments
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
+        val issueLabels =
+          IssueLabels
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
+        val commitComments =
+          CommitComments
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
+        val commitStatuses =
+          CommitStatuses
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
+        val collaborators =
+          Collaborators
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
+        val protectedBranches =
+          ProtectedBranches
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
+        val protectedBranchContexts =
+          ProtectedBranchContexts
+            .filter(_.byRepository(oldUserName, oldRepositoryName))
+            .list
 
         Repositories
           .filter { t =>
@@ -211,11 +220,12 @@ trait RepositoryService { self: AccountService =>
 
         // Convert labelId
         val oldLabelMap = labels.map(x => (x.labelId, x.labelName)).toMap
-        val newLabelMap = Labels
-          .filter(_.byRepository(newUserName, newRepositoryName))
-          .map(x => (x.labelName, x.labelId))
-          .list
-          .toMap
+        val newLabelMap =
+          Labels
+            .filter(_.byRepository(newUserName, newRepositoryName))
+            .map(x => (x.labelName, x.labelId))
+            .list
+            .toMap
         IssueLabels.insertAll(
           issueLabels.map(x =>
             x.copy(
@@ -351,14 +361,15 @@ trait RepositoryService { self: AccountService =>
       t.byRepository(userName, repositoryName)
     } firstOption) map { repository =>
       // for getting issue count and pull request count
-      val issues = Issues
-        .filter { t =>
-          t.byRepository(
-            repository.userName,
-            repository.repositoryName) && (t.closed === false.bind)
-        }
-        .map(_.pullRequest)
-        .list
+      val issues =
+        Issues
+          .filter { t =>
+            t.byRepository(
+              repository.userName,
+              repository.repositoryName) && (t.closed === false.bind)
+          }
+          .map(_.pullRequest)
+          .list
 
       new RepositoryInfo(
         JGitUtil

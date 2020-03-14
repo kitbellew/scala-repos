@@ -67,28 +67,31 @@ class ScalaLineBreakpointType
       return false
 
     var result: Boolean = false
-    val processor: Processor[PsiElement] = new Processor[PsiElement] {
-      override def process(e: PsiElement): Boolean =
-        e match {
-          case ElementType(
-                ScalaTokenTypes.kPACKAGE | ScalaTokenTypes.kIMPORT) =>
-            false
-          case ws: PsiWhiteSpace => true
-          case _
-              if PsiTreeUtil.getParentOfType(e, classOf[PsiComment]) != null =>
-            true
-          case _
-              if PsiTreeUtil.getParentOfType(
-                e,
-                classOf[ScExpression],
-                classOf[ScConstructorPattern],
-                classOf[ScInfixPattern],
-                classOf[ScClass]) != null =>
-            result = true
-            false
-          case _ => true
-        }
-    }
+    val processor: Processor[PsiElement] =
+      new Processor[PsiElement] {
+        override def process(e: PsiElement): Boolean =
+          e match {
+            case ElementType(
+                  ScalaTokenTypes.kPACKAGE | ScalaTokenTypes.kIMPORT) =>
+              false
+            case ws: PsiWhiteSpace => true
+            case _
+                if PsiTreeUtil.getParentOfType(
+                  e,
+                  classOf[PsiComment]) != null =>
+              true
+            case _
+                if PsiTreeUtil.getParentOfType(
+                  e,
+                  classOf[ScExpression],
+                  classOf[ScConstructorPattern],
+                  classOf[ScInfixPattern],
+                  classOf[ScClass]) != null =>
+              result = true
+              false
+            case _ => true
+          }
+      }
     XDebuggerUtil.getInstance.iterateLine(project, document, line, processor)
     result
   }
@@ -98,8 +101,8 @@ class ScalaLineBreakpointType
       @NotNull project: Project,
       @NotNull position: XSourcePosition)
       : JList[JavaLineBreakpointType#JavaBreakpointVariant] = {
-    val emptyList =
-      Collections.emptyList[JavaLineBreakpointType#JavaBreakpointVariant]
+    val emptyList = Collections
+      .emptyList[JavaLineBreakpointType#JavaBreakpointVariant]
 
     val dumbService = DumbService.getInstance(project)
     if (dumbService.isDumb)
@@ -166,8 +169,9 @@ class ScalaLineBreakpointType
       return null
 
     val ordinal = lambdaOrdinal(breakpoint)
-    val lambdas =
-      ScalaPositionManager.lambdasOnLine(position.getFile, position.getLine)
+    val lambdas = ScalaPositionManager.lambdasOnLine(
+      position.getFile,
+      position.getLine)
     if (ordinal == null || ordinal == -1 || ordinal > lambdas.size - 1)
       DebuggerUtil.getContainingMethod(position.getElementAt).orNull
     else
@@ -246,8 +250,9 @@ class ScalaLineBreakpointType
         element match {
           case c: ScClass => s"constructor of ${c.name}"
           case ed: ScEarlyDefinitions =>
-            val clazz =
-              PsiTreeUtil.getParentOfType(ed, classOf[ScTypeDefinition])
+            val clazz = PsiTreeUtil.getParentOfType(
+              ed,
+              classOf[ScTypeDefinition])
             if (clazz != null)
               s"early definitions of ${clazz.name}"
             else

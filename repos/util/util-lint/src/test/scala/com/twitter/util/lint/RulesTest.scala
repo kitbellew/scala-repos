@@ -9,20 +9,23 @@ class RulesTest extends FunSuite {
 
   private var flag = false
 
-  private val maybeRule = Rule.apply(Category.Performance, "R1", "Maybe") {
-    if (flag)
-      Seq(Issue("welp"))
-    else
+  private val maybeRule =
+    Rule.apply(Category.Performance, "R1", "Maybe") {
+      if (flag)
+        Seq(Issue("welp"))
+      else
+        Nil
+    }
+
+  private val neverRule =
+    Rule.apply(Category.Performance, "R2", "Good") {
       Nil
-  }
+    }
 
-  private val neverRule = Rule.apply(Category.Performance, "R2", "Good") {
-    Nil
-  }
-
-  private val alwaysRule = Rule.apply(Category.Performance, "R3", "Nope") {
-    Seq(Issue("lol"))
-  }
+  private val alwaysRule =
+    Rule.apply(Category.Performance, "R3", "Nope") {
+      Seq(Issue("lol"))
+    }
 
   test("empty") {
     val rs = new RulesImpl()

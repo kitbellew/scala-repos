@@ -18,8 +18,8 @@ private[pickling] trait PicklingMacros
   import c.universe._
   val symbols = new IrScalaSymbols[c.universe.type, c.type](c.universe, tools)
   // TODO - We should have more customization than this
-  val handleCaseClassSubclasses = !configOption(
-    typeOf[IsIgnoreCaseClassSubclasses])
+  val handleCaseClassSubclasses =
+    !configOption(typeOf[IsIgnoreCaseClassSubclasses])
   val generator =
     if (isStaticOnly) {
       // TODO - should we consider externalizable "safe" or "static only" since we know it's externalizable at compile time?

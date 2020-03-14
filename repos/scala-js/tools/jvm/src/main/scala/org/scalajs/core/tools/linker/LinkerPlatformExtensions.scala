@@ -38,12 +38,13 @@ trait LinkerPlatformExtensions { this: Linker.type =>
         Some(IncOptimizer.factory)
     }
 
-    val frontend = new LinkerFrontend(
-      semantics,
-      outputMode.esLevel,
-      withSourceMap,
-      frontendConfig,
-      optOptimizerFactory)
+    val frontend =
+      new LinkerFrontend(
+        semantics,
+        outputMode.esLevel,
+        withSourceMap,
+        frontendConfig,
+        optOptimizerFactory)
 
     val backend = {
       if (useClosureCompiler) {

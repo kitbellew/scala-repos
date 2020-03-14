@@ -8,13 +8,14 @@ object GenProductTypes {
     val prefix = "structure"
     def typeName(i: Int): String = (64 + i).toChar.toString
     val types = (1 to arity) map (typeName(_)) mkString ", "
-    val specTypes = if (arity == 2) {
-      (1 to arity) map { i =>
-        spec + typeName(i)
-      } mkString ","
-    } else {
-      types
-    }
+    val specTypes =
+      if (arity == 2) {
+        (1 to arity) map { i =>
+          spec + typeName(i)
+        } mkString ","
+      } else {
+        types
+      }
     val name = structure + "Product" + arity
   }
 
@@ -174,8 +175,9 @@ object ProductTypes {
   val monoid = Definition("Monoid", Some("Semigroup"))(const("id") :: Nil)
   val group = Definition("Group", Some("Monoid"))(unary("inverse") :: Nil)
   val abGroup = Definition("AbGroup", Some("Group"))(Nil)
-  val semiring = Definition("Semiring")(
-    const("zero") :: binary("plus") :: binary("times") :: pow :: Nil)
+  val semiring =
+    Definition("Semiring")(
+      const("zero") :: binary("plus") :: binary("times") :: pow :: Nil)
   val rng = Definition("Rng", Some("Semiring"))(unary("negate") :: Nil)
   val rig = Definition("Rig", Some("Semiring"))(const("one") :: Nil)
   val ring = Definition("Ring", Some("Rng"))(fromInt :: const("one") :: Nil)
@@ -219,8 +221,17 @@ object ProductTypes {
   val eq = Definition("Eq")(eqv :: Nil)
   val order = Definition("Order", Some("Eq"))(compare :: overrideEqv :: Nil)
 
-  val algebra =
-    List(semigroup, monoid, group, abGroup, semiring, rng, rig, ring, eq, order)
+  val algebra = List(
+    semigroup,
+    monoid,
+    group,
+    abGroup,
+    semiring,
+    rng,
+    rig,
+    ring,
+    eq,
+    order)
 
   def algebraProductTypes: String =
     renderAll("spire.std", "spire.algebra._" :: Nil, 2, 22)(algebra)

@@ -163,10 +163,9 @@ class TaskStartActorTest
     val app = AppDefinition("/myApp".toPath, instances = 5)
 
     when(launchQueue.get(app.id)).thenReturn(None)
-    val task =
-      MarathonTestHelper.startingTaskForApp(
-        app.id,
-        appVersion = Timestamp(1024))
+    val task = MarathonTestHelper.startingTaskForApp(
+      app.id,
+      appVersion = Timestamp(1024))
     taskCreationHandler.created(task).futureValue
 
     val ref = TestActorRef(
@@ -380,8 +379,9 @@ class TaskStartActorTest
     val app = AppDefinition("/myApp".toPath, instances = 5)
     when(launchQueue.get(app.id)).thenReturn(None)
 
-    val outdatedTask =
-      MarathonTestHelper.stagedTaskForApp(app.id, appVersion = Timestamp(1024))
+    val outdatedTask = MarathonTestHelper.stagedTaskForApp(
+      app.id,
+      appVersion = Timestamp(1024))
     val taskId = outdatedTask.taskId
     taskCreationHandler.created(outdatedTask).futureValue
 

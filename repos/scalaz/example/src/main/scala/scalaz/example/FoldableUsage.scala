@@ -17,8 +17,8 @@ object FoldableUsage extends App {
   // we cannot use foldRight from the standard library with an
   // infinite stream, as it attempts to reverse the stream, causing a
   // Stack Overflow
-  val so =
-    \/.fromTryCatchThrowable[Boolean, Throwable](trues.foldRight(false)(_ || _))
+  val so = \/.fromTryCatchThrowable[Boolean, Throwable](
+    trues.foldRight(false)(_ || _))
   assert(so.fold(_.toString, _.toString) === "java.lang.StackOverflowError")
 
   // however, the Foldable typeclass has an implementation named foldr
@@ -50,8 +50,12 @@ object FoldableUsage extends App {
   // Foldables can be composed:
   val FoldListOfOptions = Foldable[List] compose Foldable[Option]
 
-  val listOfOptions: List[Option[Int]] =
-    List(1.some, 2.some, none[Int], 3.some, 4.some)
+  val listOfOptions: List[Option[Int]] = List(
+    1.some,
+    2.some,
+    none[Int],
+    3.some,
+    4.some)
   assert(FoldListOfOptions.fold(listOfOptions) === 10)
 
   // with this you get a collapse function which is perhaps like the

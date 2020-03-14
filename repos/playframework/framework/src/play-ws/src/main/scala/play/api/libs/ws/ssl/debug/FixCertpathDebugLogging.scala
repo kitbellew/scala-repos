@@ -115,10 +115,11 @@ object FixCertpathDebugLogging {
   def apply(newOptions: String, debugOption: Option[Debug] = None) {
     logger.trace(s"apply: newOptions = $newOptions, debugOption = $debugOption")
     try {
-      val newDebug = debugOption match {
-        case Some(d) => d
-        case None    => new Debug()
-      }
+      val newDebug =
+        debugOption match {
+          case Some(d) => d
+          case None    => new Debug()
+        }
       val action =
         new MonkeyPatchSunSecurityUtilDebugAction(newDebug, newOptions)
       AccessController.doPrivileged(action)

@@ -28,8 +28,9 @@ class GenericRunnerCommand(
   // change CompilerCommand behavior
   override def shouldProcessArguments: Boolean = false
 
-  private lazy val (_ok, targetAndArguments) =
-    settings.processArguments(args, processAll = false)
+  private lazy val (_ok, targetAndArguments) = settings.processArguments(
+    args,
+    processAll = false)
   override def ok = _ok
   private def guessHowToRun(target: String): GenericRunnerCommand.HowToRun = {
     if (!ok)
@@ -55,12 +56,13 @@ class GenericRunnerCommand(
   /** Arguments to thingToRun. */
   def arguments = targetAndArguments drop 1
 
-  val howToRun = targetAndArguments match {
-    case Nil => AsRepl
-    case hd :: _ =>
-      waysToRun find (_.name == settings.howtorun.value) getOrElse guessHowToRun(
-        hd)
-  }
+  val howToRun =
+    targetAndArguments match {
+      case Nil => AsRepl
+      case hd :: _ =>
+        waysToRun find (_.name == settings.howtorun.value) getOrElse guessHowToRun(
+          hd)
+    }
 
   def shortUsageMsg =
     s"""|Usage: $cmdName <options> [<script|class|object|jar> <arguments>]

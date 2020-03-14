@@ -97,11 +97,12 @@ class ServiceDiscovererTest
   test("New observation do not cause reads; entries are cached") {
     implicit val timer = new MockTimer
     val watchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
-    val sd = new ServiceDiscoverer(
-      Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
-      NullStatsReceiver,
-      ForeverEpoch,
-      timer)
+    val sd =
+      new ServiceDiscoverer(
+        Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
+        NullStatsReceiver,
+        ForeverEpoch,
+        timer)
 
     val f1 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
 
@@ -130,9 +131,10 @@ class ServiceDiscovererTest
   test("Removed entries are removed from cache") {
     implicit val timer = new MockTimer
     val watchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
-    val sd = new ServiceDiscovererWithExposedCache(
-      Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
-      NullStatsReceiver)
+    val sd =
+      new ServiceDiscovererWithExposedCache(
+        Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
+        NullStatsReceiver)
 
     val f1 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
     val cache = sd.cache
@@ -191,10 +193,11 @@ class ServiceDiscovererTest
   test("If all reads fail the serverset is in Failed state") {
     implicit val timer = new MockTimer
     val watchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
-    val sd = new ServiceDiscovererWithExposedCache(
-      Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
-      NullStatsReceiver,
-      timer)
+    val sd =
+      new ServiceDiscovererWithExposedCache(
+        Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
+        NullStatsReceiver,
+        timer)
 
     val f1 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
     val cache = sd.cache
@@ -226,10 +229,11 @@ class ServiceDiscovererTest
     Time.withCurrentTimeFrozen { timeControl =>
       implicit val timer = new MockTimer
       val watchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
-      val sd = new ServiceDiscovererWithExposedCache(
-        Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
-        NullStatsReceiver,
-        timer)
+      val sd =
+        new ServiceDiscovererWithExposedCache(
+          Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
+          NullStatsReceiver,
+          timer)
 
       val currentValue =
         new AtomicReference[Activity.State[Seq[(Entry, Double)]]]
@@ -286,11 +290,12 @@ class ServiceDiscovererTest
   test("Consecutive observations do not cause reads; entries are cached") {
     implicit val timer = new MockTimer
     val watchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
-    val sd = new ServiceDiscoverer(
-      Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
-      NullStatsReceiver,
-      ForeverEpoch,
-      timer)
+    val sd =
+      new ServiceDiscoverer(
+        Var.value(new ZkSession(retryStream, watchedZk, NullStatsReceiver)),
+        NullStatsReceiver,
+        ForeverEpoch,
+        timer)
 
     val f1 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
     val f2 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
@@ -322,13 +327,15 @@ class ServiceDiscovererTest
     implicit val timer = new MockTimer
     val fakeWatchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
     val watchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
-    val watchedZkVar = new ReadWriteVar(
-      new ZkSession(retryStream, fakeWatchedZk, NullStatsReceiver))
-    val sd = new ServiceDiscoverer(
-      watchedZkVar,
-      NullStatsReceiver,
-      ForeverEpoch,
-      timer)
+    val watchedZkVar =
+      new ReadWriteVar(
+        new ZkSession(retryStream, fakeWatchedZk, NullStatsReceiver))
+    val sd =
+      new ServiceDiscoverer(
+        watchedZkVar,
+        NullStatsReceiver,
+        ForeverEpoch,
+        timer)
 
     val f1 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
     val f2 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
@@ -374,11 +381,12 @@ class ServiceDiscovererTest
       val varZkSession = Var[ZkSession](ZkSession.nil, zkSession)
       val period = 1.second
       implicit val timer = new MockTimer
-      val sd = new ServiceDiscoverer(
-        varZkSession,
-        NullStatsReceiver,
-        Epoch(period)(timer),
-        timer)
+      val sd =
+        new ServiceDiscoverer(
+          varZkSession,
+          NullStatsReceiver,
+          Epoch(period)(timer),
+          timer)
 
       val stabilizedHealth =
         new AtomicReference[ClientHealth](ClientHealth.Healthy)
@@ -414,11 +422,12 @@ class ServiceDiscovererTest
   test("ServiceDiscoverer rawHealth is reported correctly") {
     val zkSession = Event[ZkSession]()
     val varZkSession = Var[ZkSession](ZkSession.nil, zkSession)
-    val sd = new ServiceDiscoverer(
-      varZkSession,
-      NullStatsReceiver,
-      ForeverEpoch,
-      DefaultTimer.twitter)
+    val sd =
+      new ServiceDiscoverer(
+        varZkSession,
+        NullStatsReceiver,
+        ForeverEpoch,
+        DefaultTimer.twitter)
 
     val health = new AtomicReference[ClientHealth](ClientHealth.Healthy)
     sd.rawHealth.changes.register(Witness {

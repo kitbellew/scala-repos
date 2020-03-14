@@ -52,8 +52,8 @@ class ScalaArrangementVisitor(
 
   private val arrangementEntries = mutable.Stack[ScalaArrangementEntry]()
 
-  private val splitBodyByExpressions =
-    groupingRules.contains(SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
+  private val splitBodyByExpressions = groupingRules.contains(
+    SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
 
   private val unseparableRanges = mutable.HashMap[
     ScalaArrangementEntry /*parent*/,
@@ -239,19 +239,22 @@ class ScalaArrangementVisitor(
     } else {
 
       val currentEntry = getCurrentEntry
-      val newRange = if (canArrange && document != null) {
-        ArrangementUtil.expandToLineIfPossible(range, document)
-      } else {
-        range
-      }
+      val newRange =
+        if (canArrange && document != null) {
+          ArrangementUtil.expandToLineIfPossible(range, document)
+        } else {
+          range
+        }
       //we only arrange elements in ScTypeDefinitions and top-level elements
-      val newEntry = new ScalaArrangementEntry(
-        currentEntry,
-        newRange,
-        tokenType,
-        name,
-        canArrange &&
-          (parent.isInstanceOf[ScTemplateBody] || parent.isInstanceOf[PsiFile]))
+      val newEntry =
+        new ScalaArrangementEntry(
+          currentEntry,
+          newRange,
+          tokenType,
+          name,
+          canArrange &&
+            (parent.isInstanceOf[ScTemplateBody] || parent
+              .isInstanceOf[PsiFile]))
 
       if (currentEntry == null) {
         parseInfo.addEntry(newEntry)
@@ -306,8 +309,9 @@ class ScalaArrangementVisitor(
       entry: ScalaArrangementEntry) {
     genUnseparableRanges(psiRoot, entry)
     val top = arrangementEntries.top
-    val queue =
-      unseparableRanges.getOrElse(entry, mutable.Queue[ScalaArrangementEntry]())
+    val queue = unseparableRanges.getOrElse(
+      entry,
+      mutable.Queue[ScalaArrangementEntry]())
     //    var unseparable =
     def next() =
       if (queue.isEmpty)
@@ -382,27 +386,28 @@ class ScalaArrangementVisitor(
         range.union(semicolon.getTextRange)
       case _ => range
     }
-    val res = currentNode.getNextSibling match {
-      case sibling: PsiWhiteSpace =>
-        if (!sibling.getText.contains("\n")) {
-          sibling.getNextSibling match {
-            case comment: PsiComment =>
-              range.union(sibling.getTextRange).union(comment.getTextRange)
-            case nonComment: ScalaPsiElement =>
-              val next = nonComment.getFirstChild
-              if (next != null && next.isInstanceOf[PsiComment]) {
-                range.union(sibling.getTextRange).union(next.getTextRange)
-              } else {
-                range
-              }
-            case _ => range
+    val res =
+      currentNode.getNextSibling match {
+        case sibling: PsiWhiteSpace =>
+          if (!sibling.getText.contains("\n")) {
+            sibling.getNextSibling match {
+              case comment: PsiComment =>
+                range.union(sibling.getTextRange).union(comment.getTextRange)
+              case nonComment: ScalaPsiElement =>
+                val next = nonComment.getFirstChild
+                if (next != null && next.isInstanceOf[PsiComment]) {
+                  range.union(sibling.getTextRange).union(next.getTextRange)
+                } else {
+                  range
+                }
+              case _ => range
+            }
+          } else {
+            range
           }
-        } else {
-          range
-        }
-      case comment: PsiComment => range.union(comment.getTextRange)
-      case _                   => range
-    }
+        case comment: PsiComment => range.union(comment.getTextRange)
+        case _                   => range
+      }
     res
   }
 

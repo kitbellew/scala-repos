@@ -19,20 +19,21 @@ case class Entry(
 
   def similarTo(other: Entry) = typ == other.typ && data == other.data
 
-  lazy val decode: Option[Atom] = (typ match {
-    case "follow"       => Json.fromJson[Follow](data)
-    case "team-join"    => Json.fromJson[TeamJoin](data)
-    case "team-create"  => Json.fromJson[TeamCreate](data)
-    case "forum-post"   => Json.fromJson[ForumPost](data)
-    case "note-create"  => Json.fromJson[NoteCreate](data)
-    case "tour-join"    => Json.fromJson[TourJoin](data)
-    case "qa-question"  => Json.fromJson[QaQuestion](data)
-    case "qa-answer"    => Json.fromJson[QaAnswer](data)
-    case "qa-comment"   => Json.fromJson[QaComment](data)
-    case "game-end"     => Json.fromJson[GameEnd](data)
-    case "simul-create" => Json.fromJson[SimulCreate](data)
-    case "simul-join"   => Json.fromJson[SimulJoin](data)
-  }).asOpt
+  lazy val decode: Option[Atom] =
+    (typ match {
+      case "follow"       => Json.fromJson[Follow](data)
+      case "team-join"    => Json.fromJson[TeamJoin](data)
+      case "team-create"  => Json.fromJson[TeamCreate](data)
+      case "forum-post"   => Json.fromJson[ForumPost](data)
+      case "note-create"  => Json.fromJson[NoteCreate](data)
+      case "tour-join"    => Json.fromJson[TourJoin](data)
+      case "qa-question"  => Json.fromJson[QaQuestion](data)
+      case "qa-answer"    => Json.fromJson[QaAnswer](data)
+      case "qa-comment"   => Json.fromJson[QaComment](data)
+      case "game-end"     => Json.fromJson[GameEnd](data)
+      case "simul-create" => Json.fromJson[SimulCreate](data)
+      case "simul-join"   => Json.fromJson[SimulJoin](data)
+    }).asOpt
 
   def okForKid = decode ?? (_.okForKid)
 }

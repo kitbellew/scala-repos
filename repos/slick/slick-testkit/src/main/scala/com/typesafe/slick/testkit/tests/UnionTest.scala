@@ -28,14 +28,16 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
   lazy val employees = TableQuery[Employees]
 
   def testBasicUnions = {
-    val q1 = for (m <- managers filter {
-                    _.department === "IT"
-                  })
-      yield (m.id, m.name)
-    val q2 = for (e <- employees filter {
-                    _.departmentIs("IT")
-                  })
-      yield (e.id, e.name)
+    val q1 =
+      for (m <- managers filter {
+             _.department === "IT"
+           })
+        yield (m.id, m.name)
+    val q2 =
+      for (e <- employees filter {
+             _.departmentIs("IT")
+           })
+        yield (e.id, e.name)
     val q3 = (q1 union q2).sortBy(_._2.asc)
     val q4 = managers.map(_.id)
     val q4b = q4 union q4
@@ -111,14 +113,16 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
     val coffees = TableQuery(new Drinks(_, "Coffee"))
     val teas = TableQuery(new Drinks(_, "Tea"))
 
-    val q1 = for {
-      coffee <- coffees
-      tea <- teas if coffee.pkCup === tea.pkCup
-    } yield (coffee.pk, coffee.pkCup)
-    val q2 = for {
-      coffee <- coffees
-      tea <- teas if coffee.pkCup === tea.pkCup
-    } yield (tea.pk, tea.pkCup)
+    val q1 =
+      for {
+        coffee <- coffees
+        tea <- teas if coffee.pkCup === tea.pkCup
+      } yield (coffee.pk, coffee.pkCup)
+    val q2 =
+      for {
+        coffee <- coffees
+        tea <- teas if coffee.pkCup === tea.pkCup
+      } yield (tea.pk, tea.pkCup)
     val q3 = q1 union q2
 
     seq(
@@ -190,8 +194,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
         }
     }
 
-    val query =
-      leftSide.union(rightSide).length
+    val query = leftSide.union(rightSide).length
 
     DBIO.seq(
       TableQuery[Deliveries].schema.create,
@@ -219,8 +222,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       TableQuery[Deliveries].filter(_.sentAt < 1400000000L)
     }
 
-    val query =
-      leftSide.union(rightSide).sortBy(_.id.desc).length
+    val query = leftSide.union(rightSide).sortBy(_.id.desc).length
 
     DBIO.seq(
       TableQuery[Deliveries].schema.create,

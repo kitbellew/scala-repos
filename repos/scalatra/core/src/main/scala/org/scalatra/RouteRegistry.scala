@@ -60,24 +60,26 @@ class RouteRegistry {
   def matchingMethodsExcept(
       method: HttpMethod,
       requestPath: String): Set[HttpMethod] = {
-    val p: HttpMethod => Boolean = method match {
-      case Get | Head => { m =>
-        m == Get || m == Head
+    val p: HttpMethod => Boolean =
+      method match {
+        case Get | Head => { m =>
+          m == Get || m == Head
+        }
+        case _ => {
+          _ == method
+        }
       }
-      case _ => {
-        _ == method
-      }
-    }
     matchingMethodsExcept(requestPath)(p)
   }
 
   private def matchingMethodsExcept(requestPath: String)(
       p: HttpMethod => Boolean) = {
-    var methods = (_methodRoutes filter { kv =>
-      val method = kv._1
-      val routes = kv._2
-      !p(method) && (routes exists (_.apply(requestPath).isDefined))
-    }).keys.toSet
+    var methods =
+      (_methodRoutes filter { kv =>
+        val method = kv._1
+        val routes = kv._2
+        !p(method) && (routes exists (_.apply(requestPath).isDefined))
+      }).keys.toSet
     if (methods.contains(Get))
       methods += Head
     methods

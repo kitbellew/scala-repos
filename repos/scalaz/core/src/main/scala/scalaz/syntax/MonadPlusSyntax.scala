@@ -8,11 +8,9 @@ final class MonadPlusOps[F[_], A] private[syntax] (val self: F[A])(
   ////
   import Leibniz.===
 
-  def filter(f: A => Boolean) =
-    F.filter(self)(f)
+  def filter(f: A => Boolean) = F.filter(self)(f)
 
-  def withFilter(f: A => Boolean) =
-    filter(f)
+  def withFilter(f: A => Boolean) = filter(f)
 
   final def uniteU[T](implicit T: Unapply[Foldable, A]): F[T.A] =
     F.uniteU(self)(T)
@@ -24,8 +22,7 @@ final class MonadPlusOps[F[_], A] private[syntax] (val self: F[A])(
 
   final def separate[G[_, _], B, C](implicit
       ev: A === G[B, C],
-      G: Bifoldable[G]): (F[B], F[C]) =
-    F.separate(ev.subst(self))
+      G: Bifoldable[G]): (F[B], F[C]) = F.separate(ev.subst(self))
 
   ////
 }

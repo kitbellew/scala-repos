@@ -86,8 +86,9 @@ class MetadataTask(settings: Settings)
         _ / account.bareRootPath / "")
 
       EventuallyResults.eventually(10, 1.second) {
-        val json = metadataFor(account.apiKey, Some("structure"), Some("a"))(
-          _ / account.bareRootPath / "")
+        val json =
+          metadataFor(account.apiKey, Some("structure"), Some("a"))(
+            _ / account.bareRootPath / "")
         val types = json \ "structure" \ "types"
         (types \ "Number").deserialize[Long] must_== 5L
       }

@@ -47,10 +47,11 @@ class Form extends Component {}
 class Main extends Serializable {
   var pass = "pass"
   def main(args: Array[String]): Unit = {
-    val f = new Form {
-      val p = new Printer(new VarModel(pass, s => pass = s))
-      p.print
-    }
+    val f =
+      new Form {
+        val p = new Printer(new VarModel(pass, s => pass = s))
+        p.print
+      }
     ()
   }
 }

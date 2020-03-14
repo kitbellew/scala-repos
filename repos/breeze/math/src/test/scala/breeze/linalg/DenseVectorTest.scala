@@ -20,8 +20,7 @@ class DenseVectorTest extends FunSuite with Checkers {
 
   val TOLERANCE = 1e-4
 
-  def assertClose(a: Double, b: Double) =
-    assert(math.abs(a - b) < TOLERANCE)
+  def assertClose(a: Double, b: Double) = assert(math.abs(a - b) < TOLERANCE)
 
   def assertClose(a: Complex, b: Complex) =
     assert(
@@ -73,8 +72,11 @@ class DenseVectorTest extends FunSuite with Checkers {
   }
 
   test("Can raise ComplexVector by Complex") {
-    val v =
-      DenseVector(Complex(0, 0), Complex(1, 1), Complex(2, 2), Complex(-1, -1))
+    val v = DenseVector(
+      Complex(0, 0),
+      Complex(1, 1),
+      Complex(2, 2),
+      Complex(-1, -1))
     val w = v :^ Complex(2, 0)
     assertClose(w(0), Complex(0, 0))
     assertClose(w(1), Complex(0, 2))
@@ -343,9 +345,7 @@ class DenseVectorTest extends FunSuite with Checkers {
 //    assert(s === 1 + 2)
 
     // map
-    val b1: DenseVector[Int] =
-      for (v <- a)
-        yield v * 2
+    val b1: DenseVector[Int] = for (v <- a) yield v * 2
     assert(b1 === DenseVector(2, 4, 6, 8, 10))
 
 //    map with filter
@@ -436,10 +436,11 @@ class DenseVectorTest extends FunSuite with Checkers {
     assert(util.Arrays.equals(a(0 until 3 by 2).toArray, Array(1, 3)))
     assert(util.Arrays.equals(a(1 until 3 by 1).toArray, Array(2, 3)))
 
-    val b = DenseVector(
-      1d * breeze.math.i,
-      0d * breeze.math.i,
-      2d * breeze.math.i).toArray
+    val b =
+      DenseVector(
+        1d * breeze.math.i,
+        0d * breeze.math.i,
+        2d * breeze.math.i).toArray
     //assert( util.Arrays.equals( b.toArray, Array(1d*breeze.math.i, 0d, 2d)) )
     assert(b(0) == Complex(0, 1))
     assert(b(1) == Complex(0, 0))

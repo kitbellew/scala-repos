@@ -50,10 +50,11 @@ private[csv] object CSVInferSchema {
 
     val structFields = header.zip(rootTypes).map {
       case (thisHeader, rootType) =>
-        val dType = rootType match {
-          case _: NullType => StringType
-          case other       => other
-        }
+        val dType =
+          rootType match {
+            case _: NullType => StringType
+            case other       => other
+          }
         StructField(thisHeader, dType, nullable = true)
     }
 

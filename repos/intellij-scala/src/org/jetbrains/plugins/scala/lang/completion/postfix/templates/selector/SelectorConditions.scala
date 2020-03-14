@@ -22,9 +22,10 @@ object SelectorConditions {
 
   val BOOLEAN_EXPR = typedCondition(BooleanType)
 
-  val ANY_EXPR = new Condition[PsiElement] {
-    override def value(t: PsiElement): Boolean = t.isInstanceOf[ScExpression]
-  }
+  val ANY_EXPR =
+    new Condition[PsiElement] {
+      override def value(t: PsiElement): Boolean = t.isInstanceOf[ScExpression]
+    }
 
   val THROWABLE = isDescendantCondition("java.lang.Throwable")
 

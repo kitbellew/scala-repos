@@ -180,18 +180,21 @@ abstract class NodePrinters {
     }
     def printModifiers(tree: MemberDef) {
       // SI-5885: by default this won't print annotations of not yet initialized symbols
-      val annots0 = tree.symbol.annotations match {
-        case Nil => tree.mods.annotations
-        case xs  => xs map annotationInfoToString
-      }
-      val annots = annots0 match {
-        case Nil => ""
-        case xs  => " " + xs.mkString("@{ ", ", ", " }")
-      }
-      val flagString = showFlags(tree) match {
-        case "" => "0"
-        case s  => s
-      }
+      val annots0 =
+        tree.symbol.annotations match {
+          case Nil => tree.mods.annotations
+          case xs  => xs map annotationInfoToString
+        }
+      val annots =
+        annots0 match {
+          case Nil => ""
+          case xs  => " " + xs.mkString("@{ ", ", ", " }")
+        }
+      val flagString =
+        showFlags(tree) match {
+          case "" => "0"
+          case s  => s
+        }
       println(flagString + annots)
     }
 

@@ -45,22 +45,26 @@ object RemoteInfo {
       downstreamId: Option[ClientId],
       traceId: TraceId)
       extends RemoteInfo {
-    private[this] val upstreamAddrStr = upstreamAddr match {
-      case Some(addr) => addr.toString
-      case None       => "Not Available"
-    }
-    private[this] val upstreamIdStr = upstreamId match {
-      case Some(clientId) => clientId.name
-      case None           => "Not Available"
-    }
-    private[this] val downstreamAddrStr = downstreamAddr match {
-      case Some(addr) => addr.toString
-      case None       => "Not Available"
-    }
-    private[this] val downstreamIdStr = downstreamId match {
-      case Some(clientId) => clientId.name
-      case None           => "Not Available"
-    }
+    private[this] val upstreamAddrStr =
+      upstreamAddr match {
+        case Some(addr) => addr.toString
+        case None       => "Not Available"
+      }
+    private[this] val upstreamIdStr =
+      upstreamId match {
+        case Some(clientId) => clientId.name
+        case None           => "Not Available"
+      }
+    private[this] val downstreamAddrStr =
+      downstreamAddr match {
+        case Some(addr) => addr.toString
+        case None       => "Not Available"
+      }
+    private[this] val downstreamIdStr =
+      downstreamId match {
+        case Some(clientId) => clientId.name
+        case None           => "Not Available"
+      }
 
     override def toString(): String =
       s"Upstream Address: $upstreamAddrStr, Upstream Client Id: $upstreamIdStr, " +

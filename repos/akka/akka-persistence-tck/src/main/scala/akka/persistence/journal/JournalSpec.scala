@@ -16,8 +16,8 @@ import akka.testkit._
 import com.typesafe.config._
 
 object JournalSpec {
-  val config =
-    ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString(
+    """
     akka.persistence.publish-plugin-commands = on
     """)
 }
@@ -40,8 +40,9 @@ abstract class JournalSpec(config: Config)
     with OptionalTests
     with JournalCapabilityFlags {
 
-  implicit lazy val system: ActorSystem =
-    ActorSystem("JournalSpec", config.withFallback(JournalSpec.config))
+  implicit lazy val system: ActorSystem = ActorSystem(
+    "JournalSpec",
+    config.withFallback(JournalSpec.config))
 
   private var senderProbe: TestProbe = _
   private var receiverProbe: TestProbe = _
@@ -67,8 +68,7 @@ abstract class JournalSpec(config: Config)
     */
   def supportsAtomicPersistAllOfSeveralEvents: Boolean = true
 
-  def journal: ActorRef =
-    extension.journalFor(null)
+  def journal: ActorRef = extension.journalFor(null)
 
   def replayedMessage(
       snr: Long,
@@ -293,9 +293,10 @@ abstract class JournalSpec(config: Config)
       "reject non-serializable events" in EventFilter[
         java.io.NotSerializableException]().intercept {
         // there is no chance that a journal could create a data representation for type of event
-        val notSerializableEvent = new Object {
-          override def toString = "not serializable"
-        }
+        val notSerializableEvent =
+          new Object {
+            override def toString = "not serializable"
+          }
         val msgs = (6 to 8).map { i ⇒
           val event =
             if (i == 7)

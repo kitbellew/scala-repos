@@ -239,34 +239,38 @@ class FileMessageSetTest extends BaseMessageSetTestCases {
         Message.NoTimestamp,
         Message.MagicValue_V0)
     )
-    val messageSetV0 = new ByteBufferMessageSet(
-      compressionCodec = NoCompressionCodec,
-      offsetSeq = offsets,
-      messages = messagesV0: _*)
-    val compressedMessageSetV0 = new ByteBufferMessageSet(
-      compressionCodec = DefaultCompressionCodec,
-      offsetSeq = offsets,
-      messages = messagesV0: _*)
+    val messageSetV0 =
+      new ByteBufferMessageSet(
+        compressionCodec = NoCompressionCodec,
+        offsetSeq = offsets,
+        messages = messagesV0: _*)
+    val compressedMessageSetV0 =
+      new ByteBufferMessageSet(
+        compressionCodec = DefaultCompressionCodec,
+        offsetSeq = offsets,
+        messages = messagesV0: _*)
 
     val messagesV1 = Seq(
       new Message("hello".getBytes, "k1".getBytes, 1L, Message.MagicValue_V1),
       new Message("goodbye".getBytes, "k2".getBytes, 2L, Message.MagicValue_V1))
-    val messageSetV1 = new ByteBufferMessageSet(
-      compressionCodec = NoCompressionCodec,
-      offsetSeq = offsets,
-      messages = messagesV1: _*)
-    val compressedMessageSetV1 = new ByteBufferMessageSet(
-      compressionCodec = DefaultCompressionCodec,
-      offsetSeq = offsets,
-      messages = messagesV1: _*)
+    val messageSetV1 =
+      new ByteBufferMessageSet(
+        compressionCodec = NoCompressionCodec,
+        offsetSeq = offsets,
+        messages = messagesV1: _*)
+    val compressedMessageSetV1 =
+      new ByteBufferMessageSet(
+        compressionCodec = DefaultCompressionCodec,
+        offsetSeq = offsets,
+        messages = messagesV1: _*)
 
     // Down conversion
     // down conversion for non-compressed messages
     var fileMessageSet = new FileMessageSet(tempFile())
     fileMessageSet.append(messageSetV1)
     fileMessageSet.flush()
-    var convertedMessageSet =
-      fileMessageSet.toMessageFormat(Message.MagicValue_V0)
+    var convertedMessageSet = fileMessageSet.toMessageFormat(
+      Message.MagicValue_V0)
     verifyConvertedMessageSet(convertedMessageSet, Message.MagicValue_V0)
 
     // down conversion for compressed messages

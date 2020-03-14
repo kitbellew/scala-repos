@@ -14,11 +14,9 @@ class CounterDeltasTest extends FunSuite {
 
     val cd = new CounterDeltas()
 
-    def counterDelta: Int =
-      cd.deltas("counter").intValue()
+    def counterDelta: Int = cd.deltas("counter").intValue()
 
-    def assertNoDelta(): Unit =
-      assert(!cd.deltas.contains("counter"))
+    def assertNoDelta(): Unit = assert(!cd.deltas.contains("counter"))
 
     // starting empty
     assert(cd.deltas.isEmpty)

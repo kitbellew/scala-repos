@@ -10,18 +10,15 @@ import org.hamcrest.Matcher
 
 object Assume {
 
-  def assumeTrue(b: Boolean): Unit =
-    assumeThat(b, is(true))
+  def assumeTrue(b: Boolean): Unit = assumeThat(b, is(true))
 
-  def assumeFalse(b: Boolean): Unit =
-    assumeTrue(!b)
+  def assumeFalse(b: Boolean): Unit = assumeTrue(!b)
 
   def assumeTrue(message: String, b: Boolean): Unit =
     if (!b)
       throw new AssumptionViolatedException(message)
 
-  def assumeFalse(message: String, b: Boolean): Unit =
-    assumeTrue(message, !b)
+  def assumeFalse(message: String, b: Boolean): Unit = assumeTrue(message, !b)
 
   def assumeNotNull(objects: AnyRef*): Unit =
     objects.foreach(assumeThat(_, notNullValue()))
@@ -36,8 +33,7 @@ object Assume {
       throw new AssumptionViolatedException(message, actual, matcher)
   }
 
-  def assumeNoException(e: Throwable): Unit =
-    assumeThat(e, nullValue())
+  def assumeNoException(e: Throwable): Unit = assumeThat(e, nullValue())
 
   def assumeNoException(message: String, e: Throwable): Unit =
     assumeThat(message, e, nullValue())

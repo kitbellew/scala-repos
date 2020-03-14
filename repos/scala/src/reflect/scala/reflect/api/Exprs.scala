@@ -169,8 +169,9 @@ trait Exprs { self: Universe =>
       |this means there is a cross-stage evaluation involved, and it needs to be invoked explicitly.
       |if you're sure this is not an oversight, add scala-compiler.jar to the classpath,
       |import `scala.tools.reflect.Eval` and call `<your expr>.eval` instead.""".trim.stripMargin)
-    lazy val value: T = throw new UnsupportedOperationException(
-      """
+    lazy val value: T =
+      throw new UnsupportedOperationException(
+        """
       |the value you're calling is only meant to be used in cross-stage path-dependent types.
       |if you want to splice the underlying expression, use `<your expr>.splice`.
       |if you want to get a value of the underlying expression, add scala-compiler.jar to the classpath,

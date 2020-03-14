@@ -132,8 +132,7 @@ class SurroundWithWikiSyntaxTest
   }
 
   def testCannotSurroundCrossTags() {
-    val text =
-      s"""
+    val text = s"""
          |/**
          |  * aa${s}aa__sahdkljahskdhasd
          |  * dajs${e}kjhd__kas
@@ -143,8 +142,7 @@ class SurroundWithWikiSyntaxTest
   }
 
   def testCannotSurroundMultilineWhitespace() {
-    val text =
-      s"""
+    val text = s"""
          |/**
          |  * b${s}lah blah
          |  *
@@ -155,8 +153,7 @@ class SurroundWithWikiSyntaxTest
   }
 
   def testCannotSurroundTagName() {
-    val text =
-      s"""
+    val text = s"""
          |/**
          |  * bla${s}h blah blah
          |  * @see   some${e}thing
@@ -166,8 +163,7 @@ class SurroundWithWikiSyntaxTest
   }
 
   def testCannotSurroundCrossTag2() {
-    val text =
-      s"""
+    val text = s"""
          |/**
          |  * blah${s}__blah${e}blah__
          |  */""".stripMargin.replace("\r", "")
@@ -176,8 +172,7 @@ class SurroundWithWikiSyntaxTest
   }
 
   def testCannotSurroundCrossTagWithWSAndSyntax() {
-    val text =
-      s"""
+    val text = s"""
          |/**
          |  * blah blah ${s}__blah blah
          |  *     blah bl${e}ah blah __
@@ -188,9 +183,10 @@ class SurroundWithWikiSyntaxTest
 }
 
 object SurroundWithWikiSyntaxTest {
-  val surrounders = ScalaToolsFactory
-    .getInstance()
-    .createSurroundDescriptors()
-    .getSurroundDescriptors()(1)
-    .getSurrounders
+  val surrounders =
+    ScalaToolsFactory
+      .getInstance()
+      .createSurroundDescriptors()
+      .getSurroundDescriptors()(1)
+      .getSurrounders
 }

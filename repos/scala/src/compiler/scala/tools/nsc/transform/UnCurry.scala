@@ -184,8 +184,10 @@ abstract class UnCurry
         val ex = meth.newValue(nme.ex, body.pos) setInfo extpe
         val argType =
           restpe withAnnotation (AnnotationInfo marker UncheckedClass.tpe)
-        val pat =
-          gen.mkBindForCase(ex, NonLocalReturnControlClass, List(argType))
+        val pat = gen.mkBindForCase(
+          ex,
+          NonLocalReturnControlClass,
+          List(argType))
         val rhs = (
           IF((ex DOT nme.key)() OBJ_EQ Ident(key))
             THEN ((ex DOT nme.value)())
@@ -296,12 +298,13 @@ abstract class UnCurry
               additionalFlags = ARTIFACT)
 
             // new function whose body is just a call to the lifted method
-            val newFun = deriveFunction(fun)(_ =>
-              typedFunPos(
-                gen.mkForwarder(
-                  gen.mkAttributedRef(liftedMethod.symbol),
-                  funParams :: Nil)
-              ))
+            val newFun =
+              deriveFunction(fun)(_ =>
+                typedFunPos(
+                  gen.mkForwarder(
+                    gen.mkAttributedRef(liftedMethod.symbol),
+                    funParams :: Nil)
+                ))
             typedFunPos(Block(liftedMethod, super.transform(newFun)))
           }
       }
@@ -394,9 +397,10 @@ abstract class UnCurry
                 fun.tpe.params.last.tpe,
                 ObjectClass)) {
             // The array isn't statically known to be a reference array, so call ScalaRuntime.toObjectArray.
-            suffix = localTyper.typedPos(pos) {
-              gen.mkRuntimeCall(nme.toObjectArray, List(suffix))
-            }
+            suffix =
+              localTyper.typedPos(pos) {
+                gen.mkRuntimeCall(nme.toObjectArray, List(suffix))
+              }
           }
         }
         args.take(formals.length - 1) :+ (suffix setType formals.last)
@@ -489,8 +493,9 @@ abstract class UnCurry
       /* Transform tree `t` to { def f = t; f } where `f` is a fresh name */
       def liftTree(tree: Tree) = {
         debuglog("lifting tree at: " + (tree.pos))
-        val sym =
-          currentOwner.newMethod(unit.freshTermName("liftedTree"), tree.pos)
+        val sym = currentOwner.newMethod(
+          unit.freshTermName("liftedTree"),
+          tree.pos)
         sym.setInfo(MethodType(List(), tree.tpe))
         tree.changeOwner(currentOwner -> sym)
         localTyper.typedPos(tree.pos)(
@@ -533,23 +538,24 @@ abstract class UnCurry
                 withNeedLift(needLift = false) {
                   if (dd.symbol.isClassConstructor) {
                     atOwner(sym) {
-                      val rhs1 = (rhs: @unchecked) match {
-                        case Block(stats, expr) =>
-                          def transformInConstructor(stat: Tree) =
-                            withInConstructorFlag(INCONSTRUCTOR) {
-                              transform(stat)
-                            }
-                          val presupers = treeInfo.preSuperFields(
-                            stats) map transformInConstructor
-                          val rest = stats drop presupers.length
-                          val supercalls =
-                            rest take 1 map transformInConstructor
-                          val others = rest drop 1 map transform
-                          treeCopy.Block(
-                            rhs,
-                            presupers ::: supercalls ::: others,
-                            transform(expr))
-                      }
+                      val rhs1 =
+                        (rhs: @unchecked) match {
+                          case Block(stats, expr) =>
+                            def transformInConstructor(stat: Tree) =
+                              withInConstructorFlag(INCONSTRUCTOR) {
+                                transform(stat)
+                              }
+                            val presupers = treeInfo.preSuperFields(
+                              stats) map transformInConstructor
+                            val rest = stats drop presupers.length
+                            val supercalls =
+                              rest take 1 map transformInConstructor
+                            val others = rest drop 1 map transform
+                            treeCopy.Block(
+                              rhs,
+                              presupers ::: supercalls ::: others,
+                              transform(expr))
+                        }
                       treeCopy.DefDef(
                         dd,
                         mods,
@@ -702,10 +708,11 @@ abstract class UnCurry
               if (dependentParamTypeErasure isDependent dd)
                 dependentParamTypeErasure erase dd
               else {
-                val vparamss1 = vparamss0 match {
-                  case _ :: Nil => vparamss0
-                  case _        => vparamss0.flatten :: Nil
-                }
+                val vparamss1 =
+                  vparamss0 match {
+                    case _ :: Nil => vparamss0
+                    case _        => vparamss0.flatten :: Nil
+                  }
                 (vparamss1, rhs0)
               }
 
@@ -723,15 +730,16 @@ abstract class UnCurry
               } else
                 newRhs
 
-            val flatdd = copyDefDef(dd)(
-              vparamss = newParamss,
-              rhs = nonLocalReturnKeys get ddSym match {
-                case Some(k) =>
-                  atPos(newRhs.pos)(
-                    nonLocalReturnTry(literalRhsIfConst, k, ddSym))
-                case None => literalRhsIfConst
-              }
-            )
+            val flatdd =
+              copyDefDef(dd)(
+                vparamss = newParamss,
+                rhs = nonLocalReturnKeys get ddSym match {
+                  case Some(k) =>
+                    atPos(newRhs.pos)(
+                      nonLocalReturnTry(literalRhsIfConst, k, ddSym))
+                  case None => literalRhsIfConst
+                }
+              )
             addJavaVarargsForwarders(dd, flatdd)
 
           case tree: Try =>
@@ -881,9 +889,10 @@ abstract class UnCurry
           }
 
         val allParams = paramTransforms map (_.param)
-        val (packedParams, tempVals) = paramTransforms.collect {
-          case Packed(param, tempVal) => (param, tempVal)
-        }.unzip
+        val (packedParams, tempVals) =
+          paramTransforms.collect {
+            case Packed(param, tempVal) => (param, tempVal)
+          }.unzip
 
         val rhs1 =
           if (rhs == EmptyTree || tempVals.isEmpty)
@@ -909,8 +918,9 @@ abstract class UnCurry
           dd.symbol.pos,
           "A constructor cannot be annotated with a `varargs` annotation.")
       else {
-        val hasRepeated = mexists(dd.symbol.paramss)(sym =>
-          definitions.isRepeatedParamType(sym.tpe))
+        val hasRepeated =
+          mexists(dd.symbol.paramss)(sym =>
+            definitions.isRepeatedParamType(sym.tpe))
         if (!hasRepeated)
           reporter.error(
             dd.symbol.pos,
@@ -948,20 +958,23 @@ abstract class UnCurry
         definitions.isRepeatedParamType(sym.tpe)))
 
       // create the type
-      val forwformals = map2(flatparams, isRepeated) {
-        case (p, true)  => toArrayType(p.tpe)
-        case (p, false) => p.tpe
-      }
+      val forwformals =
+        map2(flatparams, isRepeated) {
+          case (p, true)  => toArrayType(p.tpe)
+          case (p, false) => p.tpe
+        }
       val forwresult = dd.symbol.tpe_*.finalResultType
-      val forwformsyms = map2(forwformals, flatparams)((tp, oldparam) =>
-        currentClass
-          .newValueParameter(oldparam.name.toTermName, oldparam.pos)
-          .setInfo(tp))
+      val forwformsyms =
+        map2(forwformals, flatparams)((tp, oldparam) =>
+          currentClass
+            .newValueParameter(oldparam.name.toTermName, oldparam.pos)
+            .setInfo(tp))
       def mono = MethodType(forwformsyms, forwresult)
-      val forwtype = dd.symbol.tpe match {
-        case MethodType(_, _) => mono
-        case PolyType(tps, _) => PolyType(tps, mono)
-      }
+      val forwtype =
+        dd.symbol.tpe match {
+          case MethodType(_, _) => mono
+          case PolyType(tps, _) => PolyType(tps, mono)
+        }
 
       // create the symbol
       val forwsym = currentClass.newMethod(
@@ -971,33 +984,37 @@ abstract class UnCurry
       def forwParams = forwsym.info.paramss.flatten
 
       // create the tree
-      val forwtree = theTyper.typedPos(dd.pos) {
-        val locals = map3(forwParams, flatparams, isRepeated) {
-          case (_, fp, false) => null
-          case (argsym, fp, true) =>
-            Block(
-              Nil,
-              gen.mkCast(
-                gen.mkWrapArray(
-                  Ident(argsym),
-                  elementType(ArrayClass, argsym.tpe)),
-                seqType(elementType(SeqClass, fp.tpe))
-              ))
-        }
-        val seqargs = map2(locals, forwParams) {
-          case (null, argsym) => Ident(argsym)
-          case (l, _)         => l
-        }
-        val end =
-          if (forwsym.isConstructor)
-            List(UNIT)
-          else
-            Nil
+      val forwtree =
+        theTyper.typedPos(dd.pos) {
+          val locals =
+            map3(forwParams, flatparams, isRepeated) {
+              case (_, fp, false) => null
+              case (argsym, fp, true) =>
+                Block(
+                  Nil,
+                  gen.mkCast(
+                    gen.mkWrapArray(
+                      Ident(argsym),
+                      elementType(ArrayClass, argsym.tpe)),
+                    seqType(elementType(SeqClass, fp.tpe))
+                  ))
+            }
+          val seqargs =
+            map2(locals, forwParams) {
+              case (null, argsym) => Ident(argsym)
+              case (l, _)         => l
+            }
+          val end =
+            if (forwsym.isConstructor)
+              List(UNIT)
+            else
+              Nil
 
-        DefDef(
-          forwsym,
-          BLOCK(Apply(gen.mkAttributedRef(flatdd.symbol), seqargs) :: end: _*))
-      }
+          DefDef(
+            forwsym,
+            BLOCK(
+              Apply(gen.mkAttributedRef(flatdd.symbol), seqargs) :: end: _*))
+        }
 
       // check if the method with that name and those arguments already exists in the template
       currentClass.info

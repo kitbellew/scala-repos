@@ -51,9 +51,10 @@ object ClusterClientSettings {
     * the default configuration `akka.cluster.client`.
     */
   def apply(config: Config): ClusterClientSettings = {
-    val initialContacts = immutableSeq(config.getStringList("initial-contacts"))
-      .map(ActorPath.fromString)
-      .toSet
+    val initialContacts =
+      immutableSeq(config.getStringList("initial-contacts"))
+        .map(ActorPath.fromString)
+        .toSet
     new ClusterClientSettings(
       initialContacts,
       establishingGetContactsInterval = config
@@ -462,12 +463,13 @@ object ClusterClientReceptionist
 final class ClusterClientReceptionist(system: ExtendedActorSystem)
     extends Extension {
 
-  private val config =
-    system.settings.config.getConfig("akka.cluster.client.receptionist")
-  private val role: Option[String] = config.getString("role") match {
-    case "" ⇒ None
-    case r ⇒ Some(r)
-  }
+  private val config = system.settings.config
+    .getConfig("akka.cluster.client.receptionist")
+  private val role: Option[String] =
+    config.getString("role") match {
+      case "" ⇒ None
+      case r ⇒ Some(r)
+    }
 
   /**
     * Returns true if this member is not tagged with the role configured for the
@@ -522,10 +524,11 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
       system.deadLetters
     else {
       val name = config.getString("name")
-      val dispatcher = config.getString("use-dispatcher") match {
-        case "" ⇒ Dispatchers.DefaultDispatcherId
-        case id ⇒ id
-      }
+      val dispatcher =
+        config.getString("use-dispatcher") match {
+          case "" ⇒ Dispatchers.DefaultDispatcherId
+          case id ⇒ id
+        }
       // important to use val mediator here to activate it outside of ClusterReceptionist constructor
       val mediator = pubSubMediator
       system.systemActorOf(
@@ -731,8 +734,8 @@ final class ClusterReceptionist(
           throw new IllegalStateException(
             s"Unexpected address without host/port: [$node]")
       }
-    implicit val ringOrdering: Ordering[Address] =
-      Ordering.fromLessThan[Address] { (a, b) ⇒
+    implicit val ringOrdering: Ordering[Address] = Ordering
+      .fromLessThan[Address] { (a, b) ⇒
         val ha = hashFor(a)
         val hb = hashFor(b)
         ha < hb || (ha == hb && Member.addressOrdering.compare(a, b) < 0)
@@ -740,8 +743,9 @@ final class ClusterReceptionist(
     immutable.SortedSet()
   }
   val virtualNodesFactor = 10
-  var consistentHash: ConsistentHash[Address] =
-    ConsistentHash(nodes, virtualNodesFactor)
+  var consistentHash: ConsistentHash[Address] = ConsistentHash(
+    nodes,
+    virtualNodesFactor)
 
   override def preStart(): Unit = {
     super.preStart()

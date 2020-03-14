@@ -88,11 +88,12 @@ object EnumerateesSpec
 
     "transform each input" in {
       mustExecute(2) { mapEC =>
-        val eee = Enumeratee.mapInputFlatten[Int][Int] {
-          case Input.El(x) => Enumerator(x * 2)
-          case Input.Empty => Enumerator.empty
-          case Input.EOF   => Enumerator.empty
-        }(mapEC)
+        val eee =
+          Enumeratee.mapInputFlatten[Int][Int] {
+            case Input.El(x) => Enumerator(x * 2)
+            case Input.Empty => Enumerator.empty
+            case Input.EOF   => Enumerator.empty
+          }(mapEC)
         mustTransformTo(1, 2)(2, 4)(eee compose Enumeratee.take(2))
       }
     }
@@ -177,10 +178,11 @@ object EnumerateesSpec
     "not execute callback on take 0" in {
       mustExecute(0, 0) { (generateEC, foldEC) =>
         var triggered = false
-        val enumerator = Enumerator.generateM {
-          triggered = true
-          Future(Some(1))(dec)
-        }(generateEC)
+        val enumerator =
+          Enumerator.generateM {
+            triggered = true
+            Future(Some(1))(dec)
+          }(generateEC)
         Await.result(
           enumerator &> Enumeratee.take(0) |>>> Iteratee.fold(0)(
             (_: Int) + (_: Int))(foldEC),

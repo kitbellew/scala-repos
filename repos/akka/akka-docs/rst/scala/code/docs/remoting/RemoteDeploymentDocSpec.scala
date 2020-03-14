@@ -32,11 +32,12 @@ class RemoteDeploymentDocSpec
   import RemoteDeploymentDocSpec._
 
   val other = ActorSystem("remote", system.settings.config)
-  val address = other
-    .asInstanceOf[ExtendedActorSystem]
-    .provider
-    .getExternalAddressFor(Address("akka.tcp", "s", "host", 1))
-    .get
+  val address =
+    other
+      .asInstanceOf[ExtendedActorSystem]
+      .provider
+      .getExternalAddressFor(Address("akka.tcp", "s", "host", 1))
+      .get
 
   override def afterTermination() {
     shutdown(other)

@@ -70,21 +70,23 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
         presentation: LookupElementPresentation) = {
       element.getDelegate.renderElement(presentation)
 
-      val (resultText, tailText) = member match {
-        case mm: ScMethodMember =>
-          (mm.text + " = {...}", mm.scType.presentableText)
-        case mVal: ScValueMember =>
-          (mVal.getText, mVal.scType.presentableText)
-        case mVar: ScVariableMember =>
-          (mVar.getText, mVar.scType.presentableText)
-        case ta: ScAliasMember =>
-          val aliasType = ta.getElement match {
-            case tad: ScTypeAliasDefinition =>
-              tad.aliasedTypeElement.calcType.presentableText
-            case _ => ""
-          }
-          (ta.getText, aliasType)
-      }
+      val (resultText, tailText) =
+        member match {
+          case mm: ScMethodMember =>
+            (mm.text + " = {...}", mm.scType.presentableText)
+          case mVal: ScValueMember =>
+            (mVal.getText, mVal.scType.presentableText)
+          case mVar: ScVariableMember =>
+            (mVar.getText, mVar.scType.presentableText)
+          case ta: ScAliasMember =>
+            val aliasType =
+              ta.getElement match {
+                case tad: ScTypeAliasDefinition =>
+                  tad.aliasedTypeElement.calcType.presentableText
+                case _ => ""
+              }
+            (ta.getText, aliasType)
+        }
 
       presentation.setTypeText(tailText)
       presentation.setItemText(resultText)
@@ -103,8 +105,9 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     if (clazz == null)
       return
 
-    val classMembers =
-      ScalaOIUtil.getMembersToOverride(clazz, withSelfType = true)
+    val classMembers = ScalaOIUtil.getMembersToOverride(
+      clazz,
+      withSelfType = true)
     if (classMembers.isEmpty)
       return
 
@@ -135,8 +138,9 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     else if (mlo.isDefined && !mlo.get.hasModifierProperty("override"))
       return
 
-    val classMembers =
-      ScalaOIUtil.getMembersToOverride(clazz, withSelfType = true)
+    val classMembers = ScalaOIUtil.getMembersToOverride(
+      clazz,
+      withSelfType = true)
     if (classMembers.isEmpty)
       return
 
@@ -187,49 +191,52 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       td: ScTemplateDefinition,
       full: Boolean = false): String = {
     val needsInferType = ScalaGenerationInfo.needsInferType
-    val text: String = classMember match {
-      case mm: ScMethodMember =>
-        val mBody =
-          ScalaGenerationInfo.getMethodBody(mm, td, isImplement = false)
-        val fun =
-          if (full)
-            ScalaPsiElementFactory.createOverrideImplementMethod(
-              mm.sign,
-              mm.getElement.getManager,
-              needsOverrideModifier = false,
-              needsInferType = needsInferType: Boolean,
-              mBody)
-          else
-            ScalaPsiElementFactory.createMethodFromSignature(
-              mm.sign,
-              mm.getElement.getManager,
-              needsInferType = needsInferType,
-              mBody)
-        fun.getText
-      case tm: ScAliasMember =>
-        ScalaPsiElementFactory.getOverrideImplementTypeSign(
-          tm.getElement,
-          tm.substitutor,
-          "this.type",
-          needsOverride = false)
-      case value: ScValueMember =>
-        ScalaPsiElementFactory.getOverrideImplementVariableSign(
-          value.element,
-          value.substitutor,
-          "_",
-          needsOverride = false,
-          isVal = true,
-          needsInferType = needsInferType)
-      case variable: ScVariableMember =>
-        ScalaPsiElementFactory.getOverrideImplementVariableSign(
-          variable.element,
-          variable.substitutor,
-          "_",
-          needsOverride = false,
-          isVal = false,
-          needsInferType = needsInferType)
-      case _ => " "
-    }
+    val text: String =
+      classMember match {
+        case mm: ScMethodMember =>
+          val mBody = ScalaGenerationInfo.getMethodBody(
+            mm,
+            td,
+            isImplement = false)
+          val fun =
+            if (full)
+              ScalaPsiElementFactory.createOverrideImplementMethod(
+                mm.sign,
+                mm.getElement.getManager,
+                needsOverrideModifier = false,
+                needsInferType = needsInferType: Boolean,
+                mBody)
+            else
+              ScalaPsiElementFactory.createMethodFromSignature(
+                mm.sign,
+                mm.getElement.getManager,
+                needsInferType = needsInferType,
+                mBody)
+          fun.getText
+        case tm: ScAliasMember =>
+          ScalaPsiElementFactory.getOverrideImplementTypeSign(
+            tm.getElement,
+            tm.substitutor,
+            "this.type",
+            needsOverride = false)
+        case value: ScValueMember =>
+          ScalaPsiElementFactory.getOverrideImplementVariableSign(
+            value.element,
+            value.substitutor,
+            "_",
+            needsOverride = false,
+            isVal = true,
+            needsInferType = needsInferType)
+        case variable: ScVariableMember =>
+          ScalaPsiElementFactory.getOverrideImplementVariableSign(
+            variable.element,
+            variable.substitutor,
+            "_",
+            needsOverride = false,
+            isVal = false,
+            needsInferType = needsInferType)
+        case _ => " "
+      }
 
     if (!full)
       text.indexOf(" ", 1) match { //remove val, var, def or type

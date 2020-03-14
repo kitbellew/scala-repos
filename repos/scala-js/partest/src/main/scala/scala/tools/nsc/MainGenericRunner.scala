@@ -102,8 +102,7 @@ class MainGenericRunner {
   }
 
   private def loadIR(classpathURLs: Seq[URL]) = {
-    val irContainers =
-      IRContainer.fromClasspath(classpathURLs.map(urlToFile))
+    val irContainers = IRContainer.fromClasspath(classpathURLs.map(urlToFile))
     val cache = (new IRFileCache).newCache
     cache.cached(irContainers)
   }

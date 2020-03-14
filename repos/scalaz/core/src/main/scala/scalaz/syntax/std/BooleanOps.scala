@@ -43,8 +43,7 @@ final class BooleanOps(self: Boolean) {
     * 1 1  1
     * }}}
     */
-  final def /\(q: => Boolean) =
-    ∧(q)
+  final def /\(q: => Boolean) = ∧(q)
 
   /**
     * Disjunction. (OR)

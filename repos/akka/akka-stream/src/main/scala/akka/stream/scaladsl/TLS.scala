@@ -107,15 +107,15 @@ object TLSPlacebo {
     ByteString,
     ByteString,
     SessionBytes,
-    NotUsed] =
-    scaladsl.BidiFlow.fromGraph(scaladsl.GraphDSL.create() { implicit b ⇒
+    NotUsed] = scaladsl.BidiFlow.fromGraph(scaladsl.GraphDSL.create() {
+    implicit b ⇒
       val top = b.add(scaladsl.Flow[SslTlsOutbound].collect {
         case SendBytes(bytes) ⇒ bytes
       })
-      val bottom =
-        b.add(scaladsl.Flow[ByteString].map(SessionBytes(dummySession, _)))
+      val bottom = b.add(
+        scaladsl.Flow[ByteString].map(SessionBytes(dummySession, _)))
       BidiShape.fromFlows(top, bottom)
-    })
+  })
 }
 
 import java.security.Principal

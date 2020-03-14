@@ -151,9 +151,10 @@ class LRUMap[K, V](
   def update(key: K, value: V) {
     localMap.get(key) match {
       case null =>
-        val what = new LinkedListElem[K, V] {
-          def value1 = key
-        }
+        val what =
+          new LinkedListElem[K, V] {
+            def value1 = key
+          }
         what.value2 = value
         addAtHead(what)
         localMap.put(key, what)

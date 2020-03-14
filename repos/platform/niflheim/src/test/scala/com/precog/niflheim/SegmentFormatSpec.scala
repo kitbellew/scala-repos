@@ -139,8 +139,12 @@ trait SegmentFormatSpec
       surviveRoundTrip(segment)
     }
     "roundtrip undefined boolean segment" in {
-      val segment =
-        BooleanSegment(1234L, CPath("a.b.c"), EmptyBitSet, EmptyBitSet, 10)
+      val segment = BooleanSegment(
+        1234L,
+        CPath("a.b.c"),
+        EmptyBitSet,
+        EmptyBitSet,
+        10)
       surviveRoundTrip(segment)
     }
     "roundtrip simple array segment" in {

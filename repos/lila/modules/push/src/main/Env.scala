@@ -26,17 +26,19 @@ final class Env(
   def registerDevice = deviceApi.register _
   def unregisterDevices = deviceApi.unregister _
 
-  private lazy val googlePush = new GooglePush(
-    deviceApi.findLastByUserId("android") _,
-    url = GooglePushUrl,
-    key = GooglePushKey)
+  private lazy val googlePush =
+    new GooglePush(
+      deviceApi.findLastByUserId("android") _,
+      url = GooglePushUrl,
+      key = GooglePushKey)
 
-  private lazy val applePush = new ApplePush(
-    deviceApi.findLastByUserId("ios") _,
-    system = system,
-    certificate = appleCertificate(ApplePushCertPath),
-    password = ApplePushPassword,
-    enabled = ApplePushEnabled)
+  private lazy val applePush =
+    new ApplePush(
+      deviceApi.findLastByUserId("ios") _,
+      system = system,
+      certificate = appleCertificate(ApplePushCertPath),
+      password = ApplePushPassword,
+      enabled = ApplePushEnabled)
 
   private lazy val pushApi =
     new PushApi(googlePush, applePush, getLightUser, roundSocketHub)

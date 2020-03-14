@@ -20,8 +20,7 @@ class BaseResultConverter[
     v
   }
   def update(value: T, pr: ResultSet) = ti.updateValue(value, pr, idx)
-  def set(value: T, pp: PreparedStatement) =
-    ti.setValue(value, pp, idx)
+  def set(value: T, pp: PreparedStatement) = ti.setValue(value, pp, idx)
   override def getDumpInfo =
     super.getDumpInfo
       .copy(mainInfo = s"idx=$idx, name=$name", attrInfo = ": " + ti)

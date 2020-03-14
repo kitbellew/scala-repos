@@ -369,12 +369,13 @@ class MavenResolutionSpec extends BaseIvySpecification {
       )
     }
     val baseLocalMavenDir: java.io.File = Resolver.publishMavenLocal.rootFile
-    val allFiles: Seq[java.io.File] = sbt.io
-      .PathFinder(new java.io.File(baseLocalMavenDir, "com/example/test-it"))
-      .allPaths
-      .get
-    val metadataFiles =
-      allFiles.filter(_.getName contains "maven-metadata-local")
+    val allFiles: Seq[java.io.File] =
+      sbt.io
+        .PathFinder(new java.io.File(baseLocalMavenDir, "com/example/test-it"))
+        .allPaths
+        .get
+    val metadataFiles = allFiles.filter(
+      _.getName contains "maven-metadata-local")
     // TODO - maybe we check INSIDE the metadata, or make sure we can get a publication date on resolve...
     // We end up with 4 files, two mavne-metadata files, and 2 maven-metadata-local files.
     metadataFiles should have size 2

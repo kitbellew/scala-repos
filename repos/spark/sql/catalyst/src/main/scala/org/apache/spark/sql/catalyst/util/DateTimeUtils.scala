@@ -62,32 +62,36 @@ object DateTimeUtils {
   @transient lazy val defaultTimeZone = TimeZone.getDefault
 
   // Reuse the Calendar object in each thread as it is expensive to create in each method call.
-  private val threadLocalGmtCalendar = new ThreadLocal[Calendar] {
-    override protected def initialValue: Calendar = {
-      Calendar.getInstance(TimeZoneGMT)
+  private val threadLocalGmtCalendar =
+    new ThreadLocal[Calendar] {
+      override protected def initialValue: Calendar = {
+        Calendar.getInstance(TimeZoneGMT)
+      }
     }
-  }
 
   // Java TimeZone has no mention of thread safety. Use thread local instance to be safe.
-  private val threadLocalLocalTimeZone = new ThreadLocal[TimeZone] {
-    override protected def initialValue: TimeZone = {
-      Calendar.getInstance.getTimeZone
+  private val threadLocalLocalTimeZone =
+    new ThreadLocal[TimeZone] {
+      override protected def initialValue: TimeZone = {
+        Calendar.getInstance.getTimeZone
+      }
     }
-  }
 
   // `SimpleDateFormat` is not thread-safe.
-  private val threadLocalTimestampFormat = new ThreadLocal[DateFormat] {
-    override def initialValue(): SimpleDateFormat = {
-      new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+  private val threadLocalTimestampFormat =
+    new ThreadLocal[DateFormat] {
+      override def initialValue(): SimpleDateFormat = {
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+      }
     }
-  }
 
   // `SimpleDateFormat` is not thread-safe.
-  private val threadLocalDateFormat = new ThreadLocal[DateFormat] {
-    override def initialValue(): SimpleDateFormat = {
-      new SimpleDateFormat("yyyy-MM-dd")
+  private val threadLocalDateFormat =
+    new ThreadLocal[DateFormat] {
+      override def initialValue(): SimpleDateFormat = {
+        new SimpleDateFormat("yyyy-MM-dd")
+      }
     }
-  }
 
   // we should use the exact day as Int, for example, (year, month, day) -> day
   def millisToDays(millisUtc: Long): SQLDate = {
@@ -354,13 +358,14 @@ object DateTimeUtils {
       return None
     }
 
-    val c = if (timeZone.isEmpty) {
-      Calendar.getInstance()
-    } else {
-      Calendar.getInstance(
-        TimeZone.getTimeZone(
-          f"GMT${timeZone.get.toChar}${segments(7)}%02d:${segments(8)}%02d"))
-    }
+    val c =
+      if (timeZone.isEmpty) {
+        Calendar.getInstance()
+      } else {
+        Calendar.getInstance(
+          TimeZone.getTimeZone(
+            f"GMT${timeZone.get.toChar}${segments(7)}%02d:${segments(8)}%02d"))
+      }
     c.set(Calendar.MILLISECOND, 0)
 
     if (justTime) {

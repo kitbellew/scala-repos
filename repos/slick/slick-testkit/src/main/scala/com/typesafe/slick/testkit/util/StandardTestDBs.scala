@@ -16,63 +16,71 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext}
 
 object StandardTestDBs {
-  lazy val H2Mem = new H2TestDB("h2mem", false) {
-    val url = "jdbc:h2:mem:test1"
-    override def isPersistent = false
-  }
+  lazy val H2Mem =
+    new H2TestDB("h2mem", false) {
+      val url = "jdbc:h2:mem:test1"
+      override def isPersistent = false
+    }
 
   /** A modified H2Mem that tests the `removeTakeDrop` phase (which is not used by any of the
     * standard profiles). */
-  lazy val H2Rownum = new H2TestDB("h2rownum", false) {
-    val url = "jdbc:h2:mem:test_rownum"
-    override def isPersistent = false
-    override val profile = new H2Profile {
-      override protected def computeQueryCompiler =
-        super.computeQueryCompiler
-          .addAfter(Phase.removeTakeDrop, Phase.expandSums)
+  lazy val H2Rownum =
+    new H2TestDB("h2rownum", false) {
+      val url = "jdbc:h2:mem:test_rownum"
+      override def isPersistent = false
+      override val profile =
+        new H2Profile {
+          override protected def computeQueryCompiler =
+            super.computeQueryCompiler
+              .addAfter(Phase.removeTakeDrop, Phase.expandSums)
+        }
     }
-  }
 
-  lazy val H2MemKeepAlive = new H2TestDB("h2mem", true) {
-    val url = "jdbc:h2:mem:test1"
-  }
-
-  lazy val H2Disk = new H2TestDB("h2disk", false) {
-    val dbName = "h2-" + confName
-    val url = "jdbc:h2:" + TestkitConfig.testDBPath + "/" + dbName
-    override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
-    // Recreating the DB is faster than dropping everything individually
-    override def dropUserArtifacts(
-        implicit session: profile.Backend#Session) = {
-      session.close()
-      cleanUpBefore()
+  lazy val H2MemKeepAlive =
+    new H2TestDB("h2mem", true) {
+      val url = "jdbc:h2:mem:test1"
     }
-  }
 
-  lazy val HsqldbMem = new HsqlDB("hsqldbmem") {
-    val dbName = "test1"
-    val url = "jdbc:hsqldb:mem:" + dbName + ";user=SA;password=;shutdown=true"
-    override def isPersistent = false
-  }
-
-  lazy val HsqldbDisk = new HsqlDB("hsqldbdisk") {
-    val dbName = "hsqldb-" + confName
-    val url =
-      "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
-    override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
-    // Recreating the DB is faster than dropping everything individually
-    override def dropUserArtifacts(
-        implicit session: profile.Backend#Session) = {
-      session.close()
-      cleanUpBefore()
+  lazy val H2Disk =
+    new H2TestDB("h2disk", false) {
+      val dbName = "h2-" + confName
+      val url = "jdbc:h2:" + TestkitConfig.testDBPath + "/" + dbName
+      override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
+      // Recreating the DB is faster than dropping everything individually
+      override def dropUserArtifacts(
+          implicit session: profile.Backend#Session) = {
+        session.close()
+        cleanUpBefore()
+      }
     }
-  }
 
-  lazy val SQLiteMem = new SQLiteTestDB(
-    "jdbc:sqlite:file:slick_test?mode=memory&cache=shared",
-    "sqlitemem") {
-    override def isPersistent = false
-  }
+  lazy val HsqldbMem =
+    new HsqlDB("hsqldbmem") {
+      val dbName = "test1"
+      val url = "jdbc:hsqldb:mem:" + dbName + ";user=SA;password=;shutdown=true"
+      override def isPersistent = false
+    }
+
+  lazy val HsqldbDisk =
+    new HsqlDB("hsqldbdisk") {
+      val dbName = "hsqldb-" + confName
+      val url =
+        "jdbc:hsqldb:file:" + TestkitConfig.testDBPath + "/" + dbName + ";user=SA;password=;shutdown=true;hsqldb.applog=0"
+      override def cleanUpBefore() = TestDB.deleteDBFiles(dbName)
+      // Recreating the DB is faster than dropping everything individually
+      override def dropUserArtifacts(
+          implicit session: profile.Backend#Session) = {
+        session.close()
+        cleanUpBefore()
+      }
+    }
+
+  lazy val SQLiteMem =
+    new SQLiteTestDB(
+      "jdbc:sqlite:file:slick_test?mode=memory&cache=shared",
+      "sqlitemem") {
+      override def isPersistent = false
+    }
 
   lazy val SQLiteDisk = {
     val confName = "sqlitedisk"
@@ -84,137 +92,143 @@ object StandardTestDBs {
     }
   }
 
-  lazy val DerbyMem = new DerbyDB("derbymem") {
-    val dbName = "test1"
-    val url = "jdbc:derby:memory:" + dbName + ";create=true"
-    override def cleanUpBefore() = {
-      val dropUrl = "jdbc:derby:memory:" + dbName + ";drop=true"
-      try {
-        await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
-            .run(SimpleJdbcAction(_.connection)))
-      } catch {
-        case e: SQLException =>
-      }
-    }
-  }
-
-  lazy val DerbyDisk = new DerbyDB("derbydisk") {
-    val dbName = "derby-" + confName
-    val url =
-      "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";create=true"
-    override def cleanUpBefore() = {
-      val dropUrl =
-        "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
-      try {
-        await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
-            .run(SimpleJdbcAction(_.connection)))
-      } catch {
-        case e: SQLException =>
-      }
-      TestDB.deleteDBFiles(dbName)
-    }
-  }
-
-  lazy val Postgres = new ExternalJdbcTestDB("postgres") {
-    val profile = PostgresProfile
-    override def localTables(
-        implicit ec: ExecutionContext): DBIO[Vector[String]] =
-      ResultSetAction[(String, String, String, String)](
-        _.conn.getMetaData().getTables("", "public", null, null)).map { ts =>
-        ts.filter(_._4.toUpperCase == "TABLE").map(_._3).sorted
-      }
-    override def localSequences(
-        implicit ec: ExecutionContext): DBIO[Vector[String]] =
-      ResultSetAction[(String, String, String, String)](
-        _.conn.getMetaData().getTables("", "public", null, null)).map { ts =>
-        ts.filter(_._4.toUpperCase == "SEQUENCE").map(_._3).sorted
-      }
-    override def capabilities =
-      super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions
-  }
-
-  lazy val MySQL = new ExternalJdbcTestDB("mysql") {
-    val profile = MySQLProfile
-    // Recreating the DB is faster than dropping everything individually
-    override def dropUserArtifacts(
-        implicit session: profile.Backend#Session) = {
-      session.close()
-      cleanUpBefore()
-    }
-  }
-
-  lazy val Heap = new RelationalTestDB {
-    type Profile = MemoryProfile
-    val profile: Profile = MemoryProfile
-    val confName: String = "heap"
-    def createDB: profile.Backend#Database =
-      profile.backend.Database(ExecutionContext.global)
-    def dropUserArtifacts(implicit session: profile.Backend#Session) {
-      val db = session.database
-      db.getTables.foreach(t => db.dropTable(t.name))
-    }
-    def assertTablesExist(tables: String*) =
-      profile.api.SimpleDBIO { ctx =>
-        val all = ctx.session.database.getTables.map(_.name).toSet
-        for (t <- tables) {
-          if (!all.contains(t))
-            Assert.fail("Table " + t + " should exist")
+  lazy val DerbyMem =
+    new DerbyDB("derbymem") {
+      val dbName = "test1"
+      val url = "jdbc:derby:memory:" + dbName + ";create=true"
+      override def cleanUpBefore() = {
+        val dropUrl = "jdbc:derby:memory:" + dbName + ";drop=true"
+        try {
+          await(
+            profile.backend.Database
+              .forURL(dropUrl, driver = jdbcDriver)
+              .run(SimpleJdbcAction(_.connection)))
+        } catch {
+          case e: SQLException =>
         }
       }
-    def assertNotTablesExist(tables: String*) =
-      profile.api.SimpleDBIO { ctx =>
-        val all = ctx.session.database.getTables.map(_.name).toSet
-        for (t <- tables) {
-          if (all.contains(t))
-            Assert.fail("Table " + t + " should not exist")
+    }
+
+  lazy val DerbyDisk =
+    new DerbyDB("derbydisk") {
+      val dbName = "derby-" + confName
+      val url =
+        "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";create=true"
+      override def cleanUpBefore() = {
+        val dropUrl =
+          "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
+        try {
+          await(
+            profile.backend.Database
+              .forURL(dropUrl, driver = jdbcDriver)
+              .run(SimpleJdbcAction(_.connection)))
+        } catch {
+          case e: SQLException =>
         }
+        TestDB.deleteDBFiles(dbName)
       }
-  }
-
-  lazy val DB2 = new ExternalJdbcTestDB("db2") {
-    val profile = DB2Profile
-    import profile.api.actionBasedSQLInterpolation
-
-    override def canGetLocalTables = false
-
-    lazy val schema = config.getString("schema")
-
-    def dropSchema: DBIO[Unit] = {
-      import ExecutionContext.Implicits.global
-      for {
-        schema <- sql"select schemaname from syscat.schemata where schemaname = '#$schema'"
-          .as[String]
-          .headOption
-        _ <- if (schema.isDefined) {
-          println(s"[Dropping DB2 schema '$schema']")
-          sqlu"call sysproc.admin_drop_schema($schema, null, ${"ERRORSCHEMA"}, ${"ERRORTABLE"})"
-        } else
-          DBIO.successful(())
-      } yield ()
     }
 
-    override def cleanUpBefore(): Unit = {
-      import ExecutionContext.Implicits.global
-      await(databaseFor("testConn").run(for {
-        _ <- dropSchema
-        _ = println(s"[Creating DB2 schema '$schema']")
-        _ <- sqlu"create schema #$schema"
-      } yield ()))
+  lazy val Postgres =
+    new ExternalJdbcTestDB("postgres") {
+      val profile = PostgresProfile
+      override def localTables(
+          implicit ec: ExecutionContext): DBIO[Vector[String]] =
+        ResultSetAction[(String, String, String, String)](
+          _.conn.getMetaData().getTables("", "public", null, null)).map { ts =>
+          ts.filter(_._4.toUpperCase == "TABLE").map(_._3).sorted
+        }
+      override def localSequences(
+          implicit ec: ExecutionContext): DBIO[Vector[String]] =
+        ResultSetAction[(String, String, String, String)](
+          _.conn.getMetaData().getTables("", "public", null, null)).map { ts =>
+          ts.filter(_._4.toUpperCase == "SEQUENCE").map(_._3).sorted
+        }
+      override def capabilities =
+        super.capabilities - TestDB.capabilities.jdbcMetaGetFunctions
     }
 
-    override def cleanUpAfter(): Unit =
-      await(databaseFor("adminConn").run(dropSchema))
-
-    override def dropUserArtifacts(
-        implicit session: profile.Backend#Session) = {
-      session.close()
-      cleanUpBefore()
+  lazy val MySQL =
+    new ExternalJdbcTestDB("mysql") {
+      val profile = MySQLProfile
+      // Recreating the DB is faster than dropping everything individually
+      override def dropUserArtifacts(
+          implicit session: profile.Backend#Session) = {
+        session.close()
+        cleanUpBefore()
+      }
     }
-  }
+
+  lazy val Heap =
+    new RelationalTestDB {
+      type Profile = MemoryProfile
+      val profile: Profile = MemoryProfile
+      val confName: String = "heap"
+      def createDB: profile.Backend#Database =
+        profile.backend.Database(ExecutionContext.global)
+      def dropUserArtifacts(implicit session: profile.Backend#Session) {
+        val db = session.database
+        db.getTables.foreach(t => db.dropTable(t.name))
+      }
+      def assertTablesExist(tables: String*) =
+        profile.api.SimpleDBIO { ctx =>
+          val all = ctx.session.database.getTables.map(_.name).toSet
+          for (t <- tables) {
+            if (!all.contains(t))
+              Assert.fail("Table " + t + " should exist")
+          }
+        }
+      def assertNotTablesExist(tables: String*) =
+        profile.api.SimpleDBIO { ctx =>
+          val all = ctx.session.database.getTables.map(_.name).toSet
+          for (t <- tables) {
+            if (all.contains(t))
+              Assert.fail("Table " + t + " should not exist")
+          }
+        }
+    }
+
+  lazy val DB2 =
+    new ExternalJdbcTestDB("db2") {
+      val profile = DB2Profile
+      import profile.api.actionBasedSQLInterpolation
+
+      override def canGetLocalTables = false
+
+      lazy val schema = config.getString("schema")
+
+      def dropSchema: DBIO[Unit] = {
+        import ExecutionContext.Implicits.global
+        for {
+          schema <- sql"select schemaname from syscat.schemata where schemaname = '#$schema'"
+            .as[String]
+            .headOption
+          _ <- if (schema.isDefined) {
+            println(s"[Dropping DB2 schema '$schema']")
+            sqlu"call sysproc.admin_drop_schema($schema, null, ${"ERRORSCHEMA"}, ${"ERRORTABLE"})"
+          } else
+            DBIO.successful(())
+        } yield ()
+      }
+
+      override def cleanUpBefore(): Unit = {
+        import ExecutionContext.Implicits.global
+        await(databaseFor("testConn").run(for {
+          _ <- dropSchema
+          _ = println(s"[Creating DB2 schema '$schema']")
+          _ <- sqlu"create schema #$schema"
+        } yield ()))
+      }
+
+      override def cleanUpAfter(): Unit =
+        await(databaseFor("adminConn").run(dropSchema))
+
+      override def dropUserArtifacts(
+          implicit session: profile.Backend#Session) = {
+        session.close()
+        cleanUpBefore()
+      }
+    }
 
   class SQLServerDB(confName: String) extends ExternalJdbcTestDB(confName) {
     val profile = SQLServerProfile
@@ -248,33 +262,36 @@ object StandardTestDBs {
       }
   }
 
-  lazy val SQLServerJTDS = new SQLServerDB("sqlserver-jtds") {
-    override def capabilities =
-      super.capabilities - TestDB.capabilities.plainSql
-  }
-  lazy val SQLServerSQLJDBC = new SQLServerDB("sqlserver-sqljdbc") {
-    override def capabilities =
-      profile.capabilities - JdbcCapabilities.createModel
-  }
-
-  lazy val Oracle = new ExternalJdbcTestDB("oracle") {
-    val profile = OracleProfile
-    import profile.api.actionBasedSQLInterpolation
-
-    override def canGetLocalTables = false
-    override def capabilities =
-      super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo - TestDB.capabilities.transactionIsolation
-
-    /* Only drop and recreate the user. This is much faster than dropping
-     * the tablespace. */
-    override def dropUserArtifacts(
-        implicit session: profile.Backend#Session) = {
-      session.close()
-      val a =
-        DBIO.sequence(Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
-      await(databaseFor("adminConn").run(a))
+  lazy val SQLServerJTDS =
+    new SQLServerDB("sqlserver-jtds") {
+      override def capabilities =
+        super.capabilities - TestDB.capabilities.plainSql
     }
-  }
+  lazy val SQLServerSQLJDBC =
+    new SQLServerDB("sqlserver-sqljdbc") {
+      override def capabilities =
+        profile.capabilities - JdbcCapabilities.createModel
+    }
+
+  lazy val Oracle =
+    new ExternalJdbcTestDB("oracle") {
+      val profile = OracleProfile
+      import profile.api.actionBasedSQLInterpolation
+
+      override def canGetLocalTables = false
+      override def capabilities =
+        super.capabilities - TestDB.capabilities.jdbcMetaGetIndexInfo - TestDB.capabilities.transactionIsolation
+
+      /* Only drop and recreate the user. This is much faster than dropping
+       * the tablespace. */
+      override def dropUserArtifacts(
+          implicit session: profile.Backend#Session) = {
+        session.close()
+        val a = DBIO.sequence(
+          Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
+        await(databaseFor("adminConn").run(a))
+      }
+    }
 }
 
 abstract class H2TestDB(confName: String, keepAlive: Boolean)
@@ -356,9 +373,10 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
 }
 
 object DerbyDB {
-  val DEV_NULL = new java.io.OutputStream {
-    def write(b: Int) {}
-  };
+  val DEV_NULL =
+    new java.io.OutputStream {
+      def write(b: Int) {}
+    };
 }
 
 abstract class HsqlDB(confName: String) extends InternalJdbcTestDB(confName) {

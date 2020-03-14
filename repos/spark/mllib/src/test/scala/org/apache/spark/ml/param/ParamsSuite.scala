@@ -30,11 +30,12 @@ import org.apache.spark.mllib.linalg.{Vector, Vectors}
 class ParamsSuite extends SparkFunSuite {
 
   test("json encode/decode") {
-    val dummy = new Params {
-      override def copy(extra: ParamMap): Params = defaultCopy(extra)
+    val dummy =
+      new Params {
+        override def copy(extra: ParamMap): Params = defaultCopy(extra)
 
-      override val uid: String = "dummy"
-    }
+        override val uid: String = "dummy"
+      }
 
     { // BooleanParam
       val param = new BooleanParam(dummy, "name", "doc")
@@ -132,8 +133,10 @@ class ParamsSuite extends SparkFunSuite {
 
     { // IntArrayParam
       val param = new IntArrayParam(dummy, "name", "doc")
-      val values: Seq[Array[Int]] =
-        Seq(Array(), Array(1), Array(Int.MinValue, 0, Int.MaxValue))
+      val values: Seq[Array[Int]] = Seq(
+        Array(),
+        Array(1),
+        Array(Int.MinValue, 0, Int.MaxValue))
       for (value <- values) {
         val json = param.jsonEncode(value)
         assert(param.jsonDecode(json) === value)
@@ -173,8 +176,10 @@ class ParamsSuite extends SparkFunSuite {
 
     { // StringArrayParam
       val param = new StringArrayParam(dummy, "name", "doc")
-      val values: Seq[Array[String]] =
-        Seq(Array(), Array(""), Array("", "1", "abc", "quote\"", "newline\n"))
+      val values: Seq[Array[String]] = Seq(
+        Array(),
+        Array(""),
+        Array("", "1", "abc", "quote\"", "newline\n"))
       for (value <- values) {
         val json = param.jsonEncode(value)
         assert(param.jsonDecode(json) === value)
@@ -355,9 +360,8 @@ class ParamsSuite extends SparkFunSuite {
       inRange02IntInclusive(0) && inRange02IntInclusive(
         1) && inRange02IntInclusive(2) &&
         !inRange02IntInclusive(-1) && !inRange02IntInclusive(3))
-    val inRange02IntExclusive =
-      ParamValidators
-        .inRange[Int](0, 2, lowerInclusive = false, upperInclusive = false)
+    val inRange02IntExclusive = ParamValidators
+      .inRange[Int](0, 2, lowerInclusive = false, upperInclusive = false)
     assert(
       !inRange02IntExclusive(0) && inRange02IntExclusive(
         1) && !inRange02IntExclusive(2))
@@ -367,9 +371,8 @@ class ParamsSuite extends SparkFunSuite {
       inRange02DoubleInclusive(0) && inRange02DoubleInclusive(1) &&
         inRange02DoubleInclusive(2) &&
         !inRange02DoubleInclusive(-0.1) && !inRange02DoubleInclusive(2.1))
-    val inRange02DoubleExclusive =
-      ParamValidators
-        .inRange[Double](0, 2, lowerInclusive = false, upperInclusive = false)
+    val inRange02DoubleExclusive = ParamValidators
+      .inRange[Double](0, 2, lowerInclusive = false, upperInclusive = false)
     assert(
       !inRange02DoubleExclusive(0) && inRange02DoubleExclusive(1) &&
         !inRange02DoubleExclusive(2))

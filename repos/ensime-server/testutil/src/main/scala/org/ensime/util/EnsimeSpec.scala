@@ -29,12 +29,14 @@ trait EnsimeSpec
   SLF4JBridgeHandler.install()
   val log = LoggerFactory.getLogger(this.getClass)
 
-  private val akkaTimeout: Duration = ConfigFactory
+  private val akkaTimeout: Duration =
+    ConfigFactory
+      .load()
+      .getDuration("akka.test.default-timeout", TimeUnit.MILLISECONDS)
+      .milliseconds
+  override val spanScaleFactor: Double = ConfigFactory
     .load()
-    .getDuration("akka.test.default-timeout", TimeUnit.MILLISECONDS)
-    .milliseconds
-  override val spanScaleFactor: Double =
-    ConfigFactory.load().getDouble("akka.test.timefactor")
+    .getDouble("akka.test.timefactor")
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(akkaTimeout),
     interval = scaled(Span(5, Millis))

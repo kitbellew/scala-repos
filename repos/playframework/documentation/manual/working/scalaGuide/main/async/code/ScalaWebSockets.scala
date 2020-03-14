@@ -61,9 +61,10 @@ object ScalaWebSockets extends PlaySpecification {
 
       "allow cleaning up" in new WithApplication() {
         val closed = Promise[Unit]()
-        val someResource = new Closeable() {
-          def close() = closed.success(())
-        }
+        val someResource =
+          new Closeable() {
+            def close() = closed.success(())
+          }
         class MyActor extends Actor {
           def receive = PartialFunction.empty
 
@@ -277,8 +278,8 @@ object Samples {
     //#actor-json-frames
     import play.api.mvc.WebSocket.FrameFormatter
 
-    implicit val messageFlowTransformer =
-      MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
+    implicit val messageFlowTransformer = MessageFlowTransformer
+      .jsonMessageFlowTransformer[InEvent, OutEvent]
     //#actor-json-frames
 
     //#actor-json-in-out

@@ -46,39 +46,40 @@ class ScLiteralImpl(node: ASTNode)
 
   protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
     val child = getFirstChild.getNode
-    val inner = child.getElementType match {
-      case ScalaTokenTypes.kNULL => Null
-      case ScalaTokenTypes.tINTEGER =>
-        if (child.getText.endsWith('l') || child.getText.endsWith('L'))
-          Long
-        else
-          Int //but a conversion exists to narrower types in case range fits
-      case ScalaTokenTypes.tFLOAT =>
-        if (child.getText.endsWith('f') || child.getText.endsWith('F'))
-          Float
-        else
-          Double
-      case ScalaTokenTypes.tCHAR => Char
-      case ScalaTokenTypes.tSYMBOL =>
-        val sym = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(
-            "scala.Symbol",
-            getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE)
-        if (sym != null)
-          ScType.designator(sym)
-        else
-          Nothing
-      case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tWRONG_STRING |
-          ScalaTokenTypes.tMULTILINE_STRING =>
-        val str = ScalaPsiManager
-          .instance(getProject)
-          .getCachedClass(getResolveScope, "java.lang.String")
-        str.map(ScType.designator(_)).getOrElse(Nothing)
-      case ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE => Boolean
-      case _                                              => return Failure("Wrong Psi to get Literal type", Some(this))
-    }
+    val inner =
+      child.getElementType match {
+        case ScalaTokenTypes.kNULL => Null
+        case ScalaTokenTypes.tINTEGER =>
+          if (child.getText.endsWith('l') || child.getText.endsWith('L'))
+            Long
+          else
+            Int //but a conversion exists to narrower types in case range fits
+        case ScalaTokenTypes.tFLOAT =>
+          if (child.getText.endsWith('f') || child.getText.endsWith('F'))
+            Float
+          else
+            Double
+        case ScalaTokenTypes.tCHAR => Char
+        case ScalaTokenTypes.tSYMBOL =>
+          val sym = ScalaPsiManager
+            .instance(getProject)
+            .getCachedClass(
+              "scala.Symbol",
+              getResolveScope,
+              ScalaPsiManager.ClassCategory.TYPE)
+          if (sym != null)
+            ScType.designator(sym)
+          else
+            Nothing
+        case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tWRONG_STRING |
+            ScalaTokenTypes.tMULTILINE_STRING =>
+          val str = ScalaPsiManager
+            .instance(getProject)
+            .getCachedClass(getResolveScope, "java.lang.String")
+          str.map(ScType.designator(_)).getOrElse(Nothing)
+        case ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE => Boolean
+        case _                                              => return Failure("Wrong Psi to get Literal type", Some(this))
+      }
     Success(inner, Some(this))
   }
 
@@ -118,8 +119,10 @@ class ScLiteralImpl(node: ASTNode)
           text = text.substring(1, textLength)
         }
         val chars: StringBuilder = new StringBuilder
-        val success: Boolean =
-          PsiLiteralExpressionImpl.parseStringCharacters(text, chars, null)
+        val success: Boolean = PsiLiteralExpressionImpl.parseStringCharacters(
+          text,
+          chars,
+          null)
         if (!success)
           return null
         if (chars.length != 1)
@@ -133,12 +136,13 @@ class ScLiteralImpl(node: ASTNode)
             text.substring(0, text.length - 1)
           else
             text
-        val (number, base) = text match {
-          case t if t.startsWith("0x") || t.startsWith("0X") =>
-            (t.substring(2), 16)
-          case t if t.startsWith("0") && t.length >= 2 => (t.substring(0), 8)
-          case t                                       => (t, 10)
-        }
+        val (number, base) =
+          text match {
+            case t if t.startsWith("0x") || t.startsWith("0X") =>
+              (t.substring(2), 16)
+            case t if t.startsWith("0") && t.length >= 2 => (t.substring(0), 8)
+            case t                                       => (t, 10)
+          }
         val limit =
           if (endsWithL)
             java.lang.Long.MAX_VALUE
@@ -236,11 +240,12 @@ class ScLiteralImpl(node: ASTNode)
           "\"\"\""
         else
           "\""
-      val prefix = this match {
-        case intrp: ScInterpolatedStringLiteral =>
-          intrp.reference.fold("")(_.refName)
-        case _ => ""
-      }
+      val prefix =
+        this match {
+          case intrp: ScInterpolatedStringLiteral =>
+            intrp.reference.fold("")(_.refName)
+          case _ => ""
+        }
       new TextRange(
         range.getStartOffset + prefix.length + quote.length,
         range.getEndOffset - quote.length)
@@ -306,8 +311,8 @@ class ScLiteralImpl(node: ASTNode)
       : Option[PsiAnnotationOwner with PsiElement] = None
   private[this] var expirationTime = 0L
 
-  private val expTimeLengthGenerator: Random = new Random(
-    System.currentTimeMillis())
+  private val expTimeLengthGenerator: Random =
+    new Random(System.currentTimeMillis())
 
   def getAnnotationOwner(
       annotationOwnerLookUp: ScLiteral => Option[

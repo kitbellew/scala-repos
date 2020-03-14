@@ -75,11 +75,10 @@ class ScReferencePatternImpl private (
   override def getNavigationElement =
     getContainingFile match {
       case sf: ScalaFile if sf.isCompiled => {
-        val parent =
-          PsiTreeUtil.getParentOfType(
-            this,
-            classOf[ScMember]
-          ) // there is no complicated pattern-based declarations in decompiled files
+        val parent = PsiTreeUtil.getParentOfType(
+          this,
+          classOf[ScMember]
+        ) // there is no complicated pattern-based declarations in decompiled files
         if (parent != null) {
           val navElem = parent.getNavigationElement
           navElem match {
@@ -113,24 +112,26 @@ class ScReferencePatternImpl private (
         context.getContext.deleteChildRange(context, context)
       case pList: ScPatternList
           if pList.allPatternsSimple && pList.patterns.startsWith(Seq(this)) =>
-        val end = this.nextSiblings
-          .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
-          .get
-          .getNextSiblingNotWhitespace
-          .getPrevSibling
+        val end =
+          this.nextSiblings
+            .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
+            .get
+            .getNextSiblingNotWhitespace
+            .getPrevSibling
         pList.deleteChildRange(this, end)
       case pList: ScPatternList if pList.allPatternsSimple =>
-        val start = this.prevSiblings
-          .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
-          .get
-          .getPrevSiblingNotWhitespace
-          .getNextSibling
+        val start =
+          this.prevSiblings
+            .find(_.getNode.getElementType == ScalaTokenTypes.tCOMMA)
+            .get
+            .getPrevSiblingNotWhitespace
+            .getNextSibling
         pList.deleteChildRange(start, this)
       case x =>
         // val (a, b) = t
         // val (_, b) = t
-        val anonymousRefPattern =
-          ScalaPsiElementFactory.createWildcardPattern(getManager)
+        val anonymousRefPattern = ScalaPsiElementFactory.createWildcardPattern(
+          getManager)
         replace(anonymousRefPattern)
     }
   }

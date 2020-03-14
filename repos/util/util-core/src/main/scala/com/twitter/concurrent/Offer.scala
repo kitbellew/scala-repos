@@ -210,9 +210,10 @@ object Offer {
   /**
     * An offer that never synchronizes.
     */
-  val never: Offer[Nothing] = new Offer[Nothing] {
-    def prepare() = Future.never
-  }
+  val never: Offer[Nothing] =
+    new Offer[Nothing] {
+      def prepare() = Future.never
+    }
 
   private[this] val rng = Some(new Random(Time.now.inNanoseconds))
 
@@ -324,9 +325,10 @@ object Offer {
           FutureTxUnit
         else {
           val p = new Promise[Tx[Unit]]
-          val task = timer.schedule(deadline) {
-            p.setValue(Tx.Unit)
-          }
+          val task =
+            timer.schedule(deadline) {
+              p.setValue(Tx.Unit)
+            }
           p.setInterruptHandler {
             case _cause => task.cancel()
           }

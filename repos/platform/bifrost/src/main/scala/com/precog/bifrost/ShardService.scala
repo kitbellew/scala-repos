@@ -160,10 +160,11 @@ trait ShardService
   }
 
   private def syncHandler(state: ShardState) = {
-    val queryService = new SyncQueryServiceHandler(
-      state.platform.synchronous,
-      state.jobManager,
-      SyncResultFormat.Simple)
+    val queryService =
+      new SyncQueryServiceHandler(
+        state.platform.synchronous,
+        state.jobManager,
+        SyncResultFormat.Simple)
     jsonp {
       jsonAPIKey(state.apiKeyFinder) {
         requireAccount(state.accountFinder) {
@@ -300,29 +301,31 @@ trait ShardService
     }
   }
 
-  lazy val analyticsService = this.service("analytics", "2.0") {
-    requestLogging(timeout) {
-      healthMonitor("/health", timeout, List(eternity)) { monitor => context =>
-        startup {
-          logger.info("Starting bifrost with config:\n" + context.config)
-          configureShardState(context.config)
-        } ->
-          request { state =>
-            import CORSHeaderHandler.allowOrigin
-            allowOrigin("*", executionContext) {
-              asyncHandler(state) ~ syncHandler(state) ~ analysisHandler(
-                state) ~
-                ifRequest { _: HttpRequest[ByteChunk] =>
-                  state.scheduler.enabled
-                } {
-                  scheduledHandler(state)
+  lazy val analyticsService =
+    this.service("analytics", "2.0") {
+      requestLogging(timeout) {
+        healthMonitor("/health", timeout, List(eternity)) {
+          monitor => context =>
+            startup {
+              logger.info("Starting bifrost with config:\n" + context.config)
+              configureShardState(context.config)
+            } ->
+              request { state =>
+                import CORSHeaderHandler.allowOrigin
+                allowOrigin("*", executionContext) {
+                  asyncHandler(state) ~ syncHandler(state) ~ analysisHandler(
+                    state) ~
+                    ifRequest { _: HttpRequest[ByteChunk] =>
+                      state.scheduler.enabled
+                    } {
+                      scheduledHandler(state)
+                    }
                 }
-            }
-          } ->
-          stop { state: ShardState =>
-            state.stoppable
-          }
+              } ->
+              stop { state: ShardState =>
+                state.stoppable
+              }
+        }
       }
     }
-  }
 }

@@ -66,10 +66,10 @@ class PartitionedDelimitedTest extends WordSpec with Matchers {
         })
         .toSet shouldBe Set("A", "B")
 
-      val aSource =
-        ScalaSource.fromFile(new File(directory, "A/part-00000-00000"))
-      val bSource =
-        ScalaSource.fromFile(new File(directory, "B/part-00000-00001"))
+      val aSource = ScalaSource.fromFile(
+        new File(directory, "A/part-00000-00000"))
+      val bSource = ScalaSource.fromFile(
+        new File(directory, "B/part-00000-00001"))
 
       aSource.getLines.toList shouldBe Seq("X,1", "Y,2")
       bSource.getLines.toList shouldBe Seq("Z,3")

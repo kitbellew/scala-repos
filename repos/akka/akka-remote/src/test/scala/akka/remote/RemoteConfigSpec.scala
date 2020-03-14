@@ -136,8 +136,9 @@ class RemoteConfigSpec
     }
 
     "contain correct ssl configuration values in reference.conf" in {
-      val sslSettings = new SSLSettings(
-        system.settings.config.getConfig("akka.remote.netty.ssl.security"))
+      val sslSettings =
+        new SSLSettings(
+          system.settings.config.getConfig("akka.remote.netty.ssl.security"))
       sslSettings.SSLKeyStore should ===(Some("keystore"))
       sslSettings.SSLKeyStorePassword should ===(Some("changeme"))
       sslSettings.SSLKeyPassword should ===(Some("changeme"))

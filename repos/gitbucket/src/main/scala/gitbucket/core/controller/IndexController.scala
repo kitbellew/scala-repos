@@ -42,16 +42,18 @@ trait IndexControllerBase extends ControllerBase {
 
   case class SignInForm(userName: String, password: String)
 
-  val signinForm = mapping(
-    "userName" -> trim(label("Username", text(required))),
-    "password" -> trim(label("Password", text(required)))
-  )(SignInForm.apply)
+  val signinForm =
+    mapping(
+      "userName" -> trim(label("Username", text(required))),
+      "password" -> trim(label("Password", text(required)))
+    )(SignInForm.apply)
 
-  val searchForm = mapping(
-    "query" -> trim(text(required)),
-    "owner" -> trim(text(required)),
-    "repository" -> trim(text(required))
-  )(SearchForm.apply)
+  val searchForm =
+    mapping(
+      "query" -> trim(text(required)),
+      "owner" -> trim(text(required)),
+      "repository" -> trim(text(required))
+    )(SearchForm.apply)
 
   case class SearchForm(query: String, owner: String, repository: String)
 

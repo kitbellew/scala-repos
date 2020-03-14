@@ -75,19 +75,22 @@ class VertexPartitionSuite extends SparkFunSuite {
       }
     val vp2b = VertexPartition(vp2a.iterator)
     // leftJoin with same index
-    val join1 = vp.leftJoin(vp2a) { (vid, a, bOpt) =>
-      bOpt.getOrElse(a)
-    }
+    val join1 =
+      vp.leftJoin(vp2a) { (vid, a, bOpt) =>
+        bOpt.getOrElse(a)
+      }
     assert(join1.iterator.toSet === Set((0L, 2), (1L, 2), (2L, 1)))
     // leftJoin with different indexes
-    val join2 = vp.leftJoin(vp2b) { (vid, a, bOpt) =>
-      bOpt.getOrElse(a)
-    }
+    val join2 =
+      vp.leftJoin(vp2b) { (vid, a, bOpt) =>
+        bOpt.getOrElse(a)
+      }
     assert(join2.iterator.toSet === Set((0L, 2), (1L, 2), (2L, 1)))
     // leftJoin an iterator
-    val join3 = vp.leftJoin(vp2a.iterator) { (vid, a, bOpt) =>
-      bOpt.getOrElse(a)
-    }
+    val join3 =
+      vp.leftJoin(vp2a.iterator) { (vid, a, bOpt) =>
+        bOpt.getOrElse(a)
+      }
     assert(join3.iterator.toSet === Set((0L, 2), (1L, 2), (2L, 1)))
   }
 
@@ -102,19 +105,22 @@ class VertexPartitionSuite extends SparkFunSuite {
       }
     val vp2b = VertexPartition(vp2a.iterator)
     // innerJoin with same index
-    val join1 = vp.innerJoin(vp2a) { (vid, a, b) =>
-      b
-    }
+    val join1 =
+      vp.innerJoin(vp2a) { (vid, a, b) =>
+        b
+      }
     assert(join1.iterator.toSet === Set((0L, 2), (1L, 2)))
     // innerJoin with different indexes
-    val join2 = vp.innerJoin(vp2b) { (vid, a, b) =>
-      b
-    }
+    val join2 =
+      vp.innerJoin(vp2b) { (vid, a, b) =>
+        b
+      }
     assert(join2.iterator.toSet === Set((0L, 2), (1L, 2)))
     // innerJoin an iterator
-    val join3 = vp.innerJoin(vp2a.iterator) { (vid, a, b) =>
-      b
-    }
+    val join3 =
+      vp.innerJoin(vp2a.iterator) { (vid, a, b) =>
+        b
+      }
     assert(join3.iterator.toSet === Set((0L, 2), (1L, 2)))
   }
 

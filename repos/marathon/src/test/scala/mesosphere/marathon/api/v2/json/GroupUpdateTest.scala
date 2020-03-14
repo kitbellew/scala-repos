@@ -26,8 +26,10 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
             AppDefinition(
               "app1".toPath,
               Some("foo"),
-              dependencies =
-                Set("d1".toPath, "../test/foo".toPath, "/test".toPath)))
+              dependencies = Set(
+                "d1".toPath,
+                "../test/foo".toPath,
+                "/test".toPath)))
         )
       )
     )
@@ -79,8 +81,10 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
             AppDefinition(
               "app1".toPath,
               Some("foo"),
-              dependencies =
-                Set("d1".toPath, "../test/foo".toPath, "/test".toPath)))
+              dependencies = Set(
+                "d1".toPath,
+                "../test/foo".toPath,
+                "/test".toPath)))
         )
       )
     )

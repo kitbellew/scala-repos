@@ -100,11 +100,12 @@ class ProtectedBranchServiceSpec
           val rp = new ReceivePack(git.getRepository) <| {
             _.setAllowNonFastForwards(true)
           }
-          val rc = new ReceiveCommand(
-            ObjectId.fromString(sha),
-            ObjectId.fromString(sha2),
-            "refs/heads/branch",
-            ReceiveCommand.Type.UPDATE_NONFASTFORWARD)
+          val rc =
+            new ReceiveCommand(
+              ObjectId.fromString(sha),
+              ObjectId.fromString(sha2),
+              "refs/heads/branch",
+              ReceiveCommand.Type.UPDATE_NONFASTFORWARD)
           generateNewUserWithDBRepository("user1", "repo1")
           assert(
             receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == None)
@@ -121,11 +122,12 @@ class ProtectedBranchServiceSpec
           val rp = new ReceivePack(git.getRepository) <| {
             _.setAllowNonFastForwards(true)
           }
-          val rc = new ReceiveCommand(
-            ObjectId.fromString(sha),
-            ObjectId.fromString(sha2),
-            "refs/heads/branch",
-            ReceiveCommand.Type.UPDATE_NONFASTFORWARD)
+          val rc =
+            new ReceiveCommand(
+              ObjectId.fromString(sha),
+              ObjectId.fromString(sha2),
+              "refs/heads/branch",
+              ReceiveCommand.Type.UPDATE_NONFASTFORWARD)
           generateNewUserWithDBRepository("user1", "repo1")
           assert(
             receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == None)
@@ -142,11 +144,12 @@ class ProtectedBranchServiceSpec
           val rp = new ReceivePack(git.getRepository) <| {
             _.setAllowNonFastForwards(false)
           }
-          val rc = new ReceiveCommand(
-            ObjectId.fromString(sha),
-            ObjectId.fromString(sha2),
-            "refs/heads/branch",
-            ReceiveCommand.Type.UPDATE)
+          val rc =
+            new ReceiveCommand(
+              ObjectId.fromString(sha),
+              ObjectId.fromString(sha2),
+              "refs/heads/branch",
+              ReceiveCommand.Type.UPDATE)
           val user1 = generateNewUserWithDBRepository("user1", "repo1")
           assert(
             receiveHook.preReceive("user1", "repo1", rp, rc, "user2") == None)
@@ -210,11 +213,12 @@ class ProtectedBranchServiceSpec
           val rp = new ReceivePack(git.getRepository) <| {
             _.setAllowNonFastForwards(false)
           }
-          val rc = new ReceiveCommand(
-            ObjectId.fromString(sha),
-            ObjectId.fromString(sha2),
-            "refs/heads/branch",
-            ReceiveCommand.Type.UPDATE)
+          val rc =
+            new ReceiveCommand(
+              ObjectId.fromString(sha),
+              ObjectId.fromString(sha2),
+              "refs/heads/branch",
+              ReceiveCommand.Type.UPDATE)
           val user1 = generateNewUserWithDBRepository("user1", "repo1")
           assert(
             receiveHook.preReceive("user1", "repo1", rp, rc, "user1") == None)

@@ -89,11 +89,12 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         // provided by the same view, remember that
         // view for later display to user.
         val byView = members.groupBy(_.viaView)
-        val viaView = if (byView.size == 1) {
-          byView.keys.headOption.filter(_ != NoSymbol)
-        } else {
-          None
-        }
+        val viaView =
+          if (byView.size == 1) {
+            byView.keys.headOption.filter(_ != NoSymbol)
+          } else {
+            None
+          }
 
         // Do one top level sort by name on members, before
         // subdividing into kinds of members.
@@ -192,12 +193,13 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         typ: Type,
         needPos: PosNeeded = PosNeededNo,
         members: Iterable[EntityInfo] = List.empty): TypeInfo = {
-      val tpe = typ match {
-        // TODO: Instead of throwing away this information, would be better to
-        // alert the user that the type is existentially quantified.
-        case et: ExistentialType => et.underlying
-        case t                   => t
-      }
+      val tpe =
+        typ match {
+          // TODO: Instead of throwing away this information, would be better to
+          // alert the user that the type is existentially quantified.
+          case et: ExistentialType => et.underlying
+          case t                   => t
+        }
       def basicTypeInfo(tpe: Type): BasicTypeInfo = {
         val typeSym = tpe.typeSymbol
         val symbolToLocate =
@@ -249,10 +251,11 @@ trait ModelBuilders { self: RichPresentationCompiler =>
   object SymbolInfo {
 
     def apply(sym: Symbol): SymbolInfo = {
-      val tpe = askOption(sym.tpe) match {
-        case None    => NoType
-        case Some(t) => t
-      }
+      val tpe =
+        askOption(sym.tpe) match {
+          case None    => NoType
+          case Some(t) => t
+        }
       val nameString = sym.nameString
       val (name, localName) =
         if (sym.isClass || sym.isTrait || sym.isModule ||
@@ -261,10 +264,11 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         } else {
           (nameString, nameString)
         }
-      val ownerTpe = if (sym.owner != NoSymbol && sym.owner.tpe != NoType) {
-        Some(sym.owner.tpe)
-      } else
-        None
+      val ownerTpe =
+        if (sym.owner != NoSymbol && sym.owner.tpe != NoType) {
+          Some(sym.owner.tpe)
+        } else
+          None
       new SymbolInfo(
         name,
         localName,

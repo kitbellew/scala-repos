@@ -37,8 +37,9 @@ private[spark] class DiskBlockManager(
     deleteFilesOnStop: Boolean)
     extends Logging {
 
-  private[spark] val subDirsPerLocalDir =
-    conf.getInt("spark.diskStore.subDirectories", 64)
+  private[spark] val subDirsPerLocalDir = conf.getInt(
+    "spark.diskStore.subDirectories",
+    64)
 
   /* Create one local directory for each path mentioned in spark.local.dir; then, inside this
    * directory, create multiple subdirectories that we will hash files into, in order to avoid

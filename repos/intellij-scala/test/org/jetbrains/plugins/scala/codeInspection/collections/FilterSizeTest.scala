@@ -36,13 +36,11 @@ class FilterSizeTest extends OperationsOnCollectionInspectionTest {
   def test_4() {
     val selected = s"List().${START}filter {x => true}.size$END"
     check(selected)
-    val text =
-      """List().filter {
+    val text = """List().filter {
         |  x => true
         |}.size
         |""".stripMargin
-    val result =
-      """List().count {
+    val result = """List().count {
         |  x => true
         |}
         |""".stripMargin

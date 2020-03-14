@@ -42,23 +42,24 @@ class ConvertToTypedPatternIntention extends PsiElementBaseIntentionAction {
     val codeRef = element.getParent.asInstanceOf[ScStableCodeReferenceElement]
     val constrPattern = codeRef.getParent.asInstanceOf[ScConstructorPattern]
     val manager = codeRef.getManager
-    val name = codeRef.bind() match {
-      case Some(result @ ScalaResolveResult(fun: ScFunctionDefinition, _))
-          if fun.name == "unapply" =>
-        // TODO follow aliases
-        result.parentElement match {
-          case Some(obj: ScObject) =>
-            ScalaPsiUtil.getCompanionModule(obj) match {
-              case Some(cls: ScClass) =>
-                val tpe = ScType.designator(cls)
-                val names = NameSuggester.suggestNamesByType(tpe)
-                names.head
-              case _ => "value"
-            }
-          case _ => "value"
-        }
-      case _ => "value"
-    }
+    val name =
+      codeRef.bind() match {
+        case Some(result @ ScalaResolveResult(fun: ScFunctionDefinition, _))
+            if fun.name == "unapply" =>
+          // TODO follow aliases
+          result.parentElement match {
+            case Some(obj: ScObject) =>
+              ScalaPsiUtil.getCompanionModule(obj) match {
+                case Some(cls: ScClass) =>
+                  val tpe = ScType.designator(cls)
+                  val names = NameSuggester.suggestNamesByType(tpe)
+                  names.head
+                case _ => "value"
+              }
+            case _ => "value"
+          }
+        case _ => "value"
+      }
     // TODO replace references to the constructor pattern params with "value.param"
     val newPattern = ScalaPsiElementFactory.createPatternFromText(
       "%s: %s".format(name, codeRef.getText),

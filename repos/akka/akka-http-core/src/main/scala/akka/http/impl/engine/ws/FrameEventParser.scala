@@ -77,15 +77,14 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
               None
 
           def isFlagSet(mask: Int): Boolean = (flags & mask) != 0
-          val header =
-            FrameHeader(
-              Opcode.forCode(op.toByte),
-              mask,
-              length,
-              fin = isFlagSet(FIN_MASK),
-              rsv1 = isFlagSet(RSV1_MASK),
-              rsv2 = isFlagSet(RSV2_MASK),
-              rsv3 = isFlagSet(RSV3_MASK))
+          val header = FrameHeader(
+            Opcode.forCode(op.toByte),
+            mask,
+            length,
+            fin = isFlagSet(FIN_MASK),
+            rsv1 = isFlagSet(RSV1_MASK),
+            rsv2 = isFlagSet(RSV2_MASK),
+            rsv3 = isFlagSet(RSV3_MASK))
 
           val takeNow = (header.length min reader.remainingSize).toInt
           val thisFrameData = reader.take(takeNow)
@@ -134,8 +133,10 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
       if (offset >= bytes.length)
         mask
       else {
-        val newMask =
-          Integer.rotateLeft(mask, 8) // we cycle through the mask in BE order
+        val newMask = Integer.rotateLeft(
+          mask,
+          8
+        ) // we cycle through the mask in BE order
         bytes(offset) = (bytes(offset) ^ (newMask & 0xff)).toByte
         rec(bytes, offset + 1, newMask)
       }

@@ -88,9 +88,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "method-example" in {
-    val route = method(HttpMethods.PUT) {
-      complete("This is a PUT request.")
-    }
+    val route =
+      method(HttpMethods.PUT) {
+        complete("This is a PUT request.")
+      }
 
     // tests:
     Put("/", "put content") ~> route ~> check {

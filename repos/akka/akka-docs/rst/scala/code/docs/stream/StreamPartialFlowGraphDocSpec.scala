@@ -19,15 +19,16 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
 
   "build with open ports" in {
     //#simple-partial-flow-graph
-    val pickMaxOfThree = GraphDSL.create() { implicit b =>
-      import GraphDSL.Implicits._
+    val pickMaxOfThree =
+      GraphDSL.create() { implicit b =>
+        import GraphDSL.Implicits._
 
-      val zip1 = b.add(ZipWith[Int, Int, Int](math.max _))
-      val zip2 = b.add(ZipWith[Int, Int, Int](math.max _))
-      zip1.out ~> zip2.in0
+        val zip1 = b.add(ZipWith[Int, Int, Int](math.max _))
+        val zip2 = b.add(ZipWith[Int, Int, Int](math.max _))
+        zip1.out ~> zip2.in0
 
-      UniformFanInShape(zip2.out, zip1.in0, zip1.in1, zip2.in1)
-    }
+        UniformFanInShape(zip2.out, zip1.in0, zip1.in1, zip2.in1)
+      }
 
     val resultSink = Sink.head[Int]
 
@@ -74,21 +75,20 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
 
   "build flow from partial flow graph" in {
     //#flow-from-partial-flow-graph
-    val pairUpWithToString =
-      Flow.fromGraph(GraphDSL.create() { implicit b =>
-        import GraphDSL.Implicits._
+    val pairUpWithToString = Flow.fromGraph(GraphDSL.create() { implicit b =>
+      import GraphDSL.Implicits._
 
-        // prepare graph elements
-        val broadcast = b.add(Broadcast[Int](2))
-        val zip = b.add(Zip[Int, String]())
+      // prepare graph elements
+      val broadcast = b.add(Broadcast[Int](2))
+      val zip = b.add(Zip[Int, String]())
 
-        // connect the graph
-        broadcast.out(0).map(identity) ~> zip.in0
-        broadcast.out(1).map(_.toString) ~> zip.in1
+      // connect the graph
+      broadcast.out(0).map(identity) ~> zip.in0
+      broadcast.out(1).map(_.toString) ~> zip.in1
 
-        // expose ports
-        FlowShape(broadcast.in, zip.out)
-      })
+      // expose ports
+      FlowShape(broadcast.in, zip.out)
+    })
 
     //#flow-from-partial-flow-graph
 

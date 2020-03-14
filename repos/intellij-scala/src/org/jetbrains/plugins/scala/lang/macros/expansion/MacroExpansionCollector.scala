@@ -11,18 +11,20 @@ import com.intellij.openapi.project.Project
 class MacroExpansionCollector(private val project: Project)
     extends ProjectComponent {
 
-  private val compilationStatusListener = new CompilationStatusListener {
-    override def fileGenerated(outputRoot: String, relativePath: String): Unit =
-      ???
+  private val compilationStatusListener =
+    new CompilationStatusListener {
+      override def fileGenerated(
+          outputRoot: String,
+          relativePath: String): Unit = ???
 
-    override def compilationFinished(
-        aborted: Boolean,
-        errors: Int,
-        warnings: Int,
-        compileContext: CompileContext) = {
-      println(compileContext)
+      override def compilationFinished(
+          aborted: Boolean,
+          errors: Int,
+          warnings: Int,
+          compileContext: CompileContext) = {
+        println(compileContext)
+      }
     }
-  }
 
   override def projectOpened() = {
     CompilerManager

@@ -66,11 +66,9 @@ trait Diffable[CC[_]] {
 object Diffable {
   private case class SetDiff[T](add: Set[T], remove: Set[T])
       extends Diff[Set, T] {
-    def patch(coll: Set[T]): Set[T] =
-      coll ++ add -- remove
+    def patch(coll: Set[T]): Set[T] = coll ++ add -- remove
 
-    def map[U](f: T => U): SetDiff[U] =
-      SetDiff(add.map(f), remove.map(f))
+    def map[U](f: T => U): SetDiff[U] = SetDiff(add.map(f), remove.map(f))
 
     override def toString = s"Diff(+$add, -$remove)"
   }
@@ -87,36 +85,37 @@ object Diffable {
       out.toSeq.asInstanceOf[Seq[T]]
     }
 
-    def map[U](f: T => U): SeqDiff[U] =
-      SeqDiff(limit, insert.mapValues(f))
+    def map[U](f: T => U): SeqDiff[U] = SeqDiff(limit, insert.mapValues(f))
   }
 
-  implicit val ofSet: Diffable[Set] = new Diffable[Set] {
-    def diff[T](left: Set[T], right: Set[T]) =
-      SetDiff(right -- left, left -- right)
-    def empty[T] = Set.empty
-  }
+  implicit val ofSet: Diffable[Set] =
+    new Diffable[Set] {
+      def diff[T](left: Set[T], right: Set[T]) =
+        SetDiff(right -- left, left -- right)
+      def empty[T] = Set.empty
+    }
 
-  implicit val ofSeq: Diffable[Seq] = new Diffable[Seq] {
-    def diff[T](left: Seq[T], right: Seq[T]): SeqDiff[T] =
-      if (left.length < right.length) {
-        val SeqDiff(_, insert) = diff(left, right.take(left.length))
-        SeqDiff(
-          right.length,
-          insert ++ ((left.length until right.length) map { i =>
-            (i -> right(i))
-          }))
-      } else if (left.length > right.length) {
-        diff(left.take(right.length), right)
-      } else {
-        val insert =
-          for (((x, y), i) <- left.zip(right).zipWithIndex if x != y)
-            yield (i -> y)
-        SeqDiff(left.length, insert.toMap)
-      }
+  implicit val ofSeq: Diffable[Seq] =
+    new Diffable[Seq] {
+      def diff[T](left: Seq[T], right: Seq[T]): SeqDiff[T] =
+        if (left.length < right.length) {
+          val SeqDiff(_, insert) = diff(left, right.take(left.length))
+          SeqDiff(
+            right.length,
+            insert ++ ((left.length until right.length) map { i =>
+              (i -> right(i))
+            }))
+        } else if (left.length > right.length) {
+          diff(left.take(right.length), right)
+        } else {
+          val insert =
+            for (((x, y), i) <- left.zip(right).zipWithIndex if x != y)
+              yield (i -> y)
+          SeqDiff(left.length, insert.toMap)
+        }
 
-    def empty[T] = Seq.empty
-  }
+      def empty[T] = Seq.empty
+    }
 
   /**
     * Compute a [[Diff]] that may later be used to bring two
@@ -132,6 +131,5 @@ object Diffable {
   /**
     * The identity collection CC[T].
     */
-  def empty[CC[_]: Diffable, T]: CC[T] =
-    implicitly[Diffable[CC]].empty
+  def empty[CC[_]: Diffable, T]: CC[T] = implicitly[Diffable[CC]].empty
 }

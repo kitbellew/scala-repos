@@ -17,15 +17,17 @@ case class ExtractMethodParameter(
     tp: ScType,
     passAsParameter: Boolean) {
 
-  val isEmptyParamFunction = fromElement match {
-    case fun: ScFunction => fun.parameters.length == 0
-    case _               => false
-  }
-  val isCallByNameParameter = ScalaPsiUtil.nameContext(fromElement) match {
-    case v: ScValue if v.hasModifierProperty("lazy") => true
-    case p: ScParameter if p.isCallByNameParameter   => true
-    case _                                           => false
-  }
+  val isEmptyParamFunction =
+    fromElement match {
+      case fun: ScFunction => fun.parameters.length == 0
+      case _               => false
+    }
+  val isCallByNameParameter =
+    ScalaPsiUtil.nameContext(fromElement) match {
+      case v: ScValue if v.hasModifierProperty("lazy") => true
+      case p: ScParameter if p.isCallByNameParameter   => true
+      case _                                           => false
+    }
   val isFunction = fromElement.isInstanceOf[ScFunction]
 }
 

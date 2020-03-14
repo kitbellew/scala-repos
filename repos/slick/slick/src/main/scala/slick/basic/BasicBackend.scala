@@ -27,10 +27,12 @@ import slick.util._
   * Concrete backends like `JdbcBackend` extend this type and provide concrete
   * types for `Database`, `DatabaseFactory` and `Session`. */
 trait BasicBackend { self =>
-  protected lazy val actionLogger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[BasicBackend].getName + ".action"))
-  protected lazy val streamLogger = new SlickLogger(
-    LoggerFactory.getLogger(classOf[BasicBackend].getName + ".stream"))
+  protected lazy val actionLogger =
+    new SlickLogger(
+      LoggerFactory.getLogger(classOf[BasicBackend].getName + ".action"))
+  protected lazy val streamLogger =
+    new SlickLogger(
+      LoggerFactory.getLogger(classOf[BasicBackend].getName + ".stream"))
 
   type This >: this.type <: BasicBackend
 
@@ -481,13 +483,14 @@ trait BasicBackend { self =>
             ""
           else
             "[fused] "
-        val dump = new TreePrinter(
-          prefix = "    ",
-          firstPrefix = aPrefix,
-          narrow = {
-            case a: DBIOAction[_, _, _] => a.nonFusedEquivalentAction
-            case o                      => o
-          }).get(logA)
+        val dump =
+          new TreePrinter(
+            prefix = "    ",
+            firstPrefix = aPrefix,
+            narrow = {
+              case a: DBIOAction[_, _, _] => a.nonFusedEquivalentAction
+              case o                      => o
+            }).get(logA)
         val msg = DumpInfo.highlight("#" + ctx.sequenceCounter) + ": " + dump
           .substring(0, dump.length - 1)
         actionLogger.debug(msg)

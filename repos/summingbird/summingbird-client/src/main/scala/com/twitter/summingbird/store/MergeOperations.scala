@@ -97,12 +97,13 @@ object MergeOperations {
       offlineReturn: Option[BatchID],
       nowBatch: BatchID,
       batchesToKeep: Int): Iterable[BatchID] = {
-    val initBatch = Semigroup
-      .plus(
-        Some(nowBatch - (batchesToKeep - 1)),
-        offlineReturn
-      )
-      .get // This will never throw, as this option can never be None
+    val initBatch =
+      Semigroup
+        .plus(
+          Some(nowBatch - (batchesToKeep - 1)),
+          offlineReturn
+        )
+        .get // This will never throw, as this option can never be None
     // (because we included an explicit "Some" inside)
     BatchID.range(initBatch, nowBatch)
   }

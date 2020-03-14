@@ -40,8 +40,8 @@ class AppMock(appId: String, version: String, url: String)
     if (request.getMethod == "GET" && request.getPathInfo == "/ping") {
       response.setStatus(200)
       baseRequest.setHandled(true)
-      val marathonId =
-        sys.env.getOrElse("MARATHON_APP_ID", "NO_MARATHON_APP_ID_SET")
+      val marathonId = sys.env
+        .getOrElse("MARATHON_APP_ID", "NO_MARATHON_APP_ID_SET")
       response.getWriter.println(s"Pong $marathonId")
     } else {
       val res = result(pipeline(Get(url)), waitTime)

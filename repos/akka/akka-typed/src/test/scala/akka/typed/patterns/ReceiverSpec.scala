@@ -71,10 +71,11 @@ class ReceiverSpec extends TypedSpec {
           EffectfulActorContext[Msg],
           Inbox.SyncInbox[Replies[Msg]]) ⇒ Unit): Unit =
     for (Setup(description, behv, messages, effects) ← startingPoints) {
-      val ctx = new EffectfulActorContext(
-        "ctx",
-        Props(ScalaDSL.ContextAware(behv)),
-        system)
+      val ctx =
+        new EffectfulActorContext(
+          "ctx",
+          Props(ScalaDSL.ContextAware(behv)),
+          system)
       withClue(
         s"[running for starting point '$description' (${ctx.currentBehavior})]: ") {
         dummyInbox.receiveAll() should have size messages
@@ -220,9 +221,10 @@ class ReceiverSpec extends TypedSpec {
         ext.run(Msg(1))
         ext.run(Msg(2))
         int.run(GetAll(1.second)(inbox.ref))
-        val msg = int.getAllEffects() match {
-          case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
-        }
+        val msg =
+          int.getAllEffects() match {
+            case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
+          }
         int.run(msg)
         inbox.receiveAll() should be(
           GetAllResult(int.self, List(Msg(1), Msg(2))) :: Nil)
@@ -235,9 +237,10 @@ class ReceiverSpec extends TypedSpec {
         ext.run(Msg(1))
         ext.run(Msg(2))
         int.run(GetAll(1.second)(inbox.ref))
-        val msg = int.getAllEffects() match {
-          case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
-        }
+        val msg =
+          int.getAllEffects() match {
+            case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
+          }
         inbox.hasMessages should be(false)
         ext.run(Msg(3))
         int.run(msg)
@@ -249,9 +252,10 @@ class ReceiverSpec extends TypedSpec {
     def `must reply to GetAll with messages which arrived later`(): Unit =
       setup("getAllLater") { (int, ext, inbox) ⇒
         int.run(GetAll(1.second)(inbox.ref))
-        val msg = int.getAllEffects() match {
-          case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
-        }
+        val msg =
+          int.getAllEffects() match {
+            case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
+          }
         ext.run(Msg(1))
         ext.run(Msg(2))
         inbox.hasMessages should be(false)
@@ -283,10 +287,11 @@ class ReceiverSpec extends TypedSpec {
         }
         inbox.hasMessages should be(false)
         int.run(GetAll(1.nano)(inbox.ref))
-        val msg = int.getAllEffects() match {
-          case (s: Scheduled[_]) :: ReceiveTimeoutSet(_) :: Nil ⇒
-            assertScheduled(s, int.self)
-        }
+        val msg =
+          int.getAllEffects() match {
+            case (s: Scheduled[_]) :: ReceiveTimeoutSet(_) :: Nil ⇒
+              assertScheduled(s, int.self)
+          }
         inbox.receiveAll() should be(Nil)
         int.run(msg)
         inbox.receiveAll() should be(GetAllResult(int.self, Nil) :: Nil)

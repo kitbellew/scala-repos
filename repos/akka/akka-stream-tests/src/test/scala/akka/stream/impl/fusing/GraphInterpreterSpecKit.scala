@@ -41,8 +41,8 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
     class AssemblyBuilder(
         stages: Seq[GraphStageWithMaterializedValue[_ <: Shape, _]]) {
       var upstreams = Vector.empty[(UpstreamBoundaryStageLogic[_], Inlet[_])]
-      var downstreams =
-        Vector.empty[(Outlet[_], DownstreamBoundaryStageLogic[_])]
+      var downstreams = Vector
+        .empty[(Outlet[_], DownstreamBoundaryStageLogic[_])]
       var connections = Vector.empty[(Outlet[_], Inlet[_])]
 
       def connect[T](
@@ -86,12 +86,11 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       def init(): Unit = {
         val assembly = buildAssembly()
 
-        val (inHandlers, outHandlers, logics) =
-          assembly.materialize(
-            Attributes.none,
-            assembly.stages.map(_.module),
-            new java.util.HashMap,
-            _ ⇒ ())
+        val (inHandlers, outHandlers, logics) = assembly.materialize(
+          Attributes.none,
+          assembly.stages.map(_.module),
+          new java.util.HashMap,
+          _ ⇒ ())
         _interpreter = new GraphInterpreter(
           assembly,
           NoMaterializer,
@@ -118,12 +117,11 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
     }
 
     def manualInit(assembly: GraphAssembly): Unit = {
-      val (inHandlers, outHandlers, logics) =
-        assembly.materialize(
-          Attributes.none,
-          assembly.stages.map(_.module),
-          new java.util.HashMap,
-          _ ⇒ ())
+      val (inHandlers, outHandlers, logics) = assembly.materialize(
+        Attributes.none,
+        assembly.stages.map(_.module),
+        new java.util.HashMap,
+        _ ⇒ ())
       _interpreter = new GraphInterpreter(
         assembly,
         NoMaterializer,
@@ -282,13 +280,14 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       )
     }
 
-    private val assembly = new GraphAssembly(
-      stages = Array.empty,
-      originalAttributes = Array.empty,
-      ins = Array(null),
-      inOwners = Array(-1),
-      outs = Array(null),
-      outOwners = Array(-1))
+    private val assembly =
+      new GraphAssembly(
+        stages = Array.empty,
+        originalAttributes = Array.empty,
+        ins = Array(null),
+        inOwners = Array(-1),
+        outs = Array(null),
+        outOwners = Array(-1))
 
     manualInit(assembly)
     interpreter.attachDownstreamBoundary(0, in)
@@ -316,48 +315,50 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
 
     // Must be lazy because I turned this stage "inside-out" therefore changing initialization order
     // to make tests a bit more readable
-    lazy val stage: GraphStageLogic = new GraphStageLogic(stageshape) {
-      private def mayFail(task: ⇒ Unit): Unit = {
-        if (!_failOnNextEvent)
-          task
-        else {
-          _failOnNextEvent = false
-          throw testException
+    lazy val stage: GraphStageLogic =
+      new GraphStageLogic(stageshape) {
+        private def mayFail(task: ⇒ Unit): Unit = {
+          if (!_failOnNextEvent)
+            task
+          else {
+            _failOnNextEvent = false
+            throw testException
+          }
         }
+
+        setHandler(
+          stagein,
+          new InHandler {
+            override def onPush(): Unit = mayFail(push(stageout, grab(stagein)))
+            override def onUpstreamFinish(): Unit = mayFail(completeStage())
+            override def onUpstreamFailure(ex: Throwable): Unit =
+              mayFail(failStage(ex))
+          }
+        )
+
+        setHandler(
+          stageout,
+          new OutHandler {
+            override def onPull(): Unit = mayFail(pull(stagein))
+            override def onDownstreamFinish(): Unit = mayFail(completeStage())
+          })
+
+        override def preStart(): Unit = mayFail(lastEvent += PreStart(stage))
+        override def postStop(): Unit =
+          if (!_failOnPostStop)
+            lastEvent += PostStop(stage)
+          else
+            throw testException
+
+        override def toString = "stage"
       }
 
-      setHandler(
-        stagein,
-        new InHandler {
-          override def onPush(): Unit = mayFail(push(stageout, grab(stagein)))
-          override def onUpstreamFinish(): Unit = mayFail(completeStage())
-          override def onUpstreamFailure(ex: Throwable): Unit =
-            mayFail(failStage(ex))
-        }
-      )
-
-      setHandler(
-        stageout,
-        new OutHandler {
-          override def onPull(): Unit = mayFail(pull(stagein))
-          override def onDownstreamFinish(): Unit = mayFail(completeStage())
-        })
-
-      override def preStart(): Unit = mayFail(lastEvent += PreStart(stage))
-      override def postStop(): Unit =
-        if (!_failOnPostStop)
-          lastEvent += PostStop(stage)
-        else
-          throw testException
-
-      override def toString = "stage"
-    }
-
-    private val sandwitchStage = new GraphStage[FlowShape[Int, Int]] {
-      override def shape = stageshape
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic = stage
-    }
+    private val sandwitchStage =
+      new GraphStage[FlowShape[Int, Int]] {
+        override def shape = stageshape
+        override def createLogic(
+            inheritedAttributes: Attributes): GraphStageLogic = stage
+      }
 
     class UpstreamPortProbe[T] extends UpstreamProbe[T]("upstreamPort") {
       def push(elem: T): Unit = push(out, elem)

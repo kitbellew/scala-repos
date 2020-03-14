@@ -25,17 +25,18 @@ class ElseFilter extends ElementFilter {
       var parent = leaf.getParent
       if (parent.isInstanceOf[ScExpression] && parent.getPrevSibling != null &&
           parent.getPrevSibling.getPrevSibling != null) {
-        val ifStmt = parent.getPrevSibling match {
-          case x: ScIfStmt => x
-          case x
-              if x.isInstanceOf[
-                PsiWhiteSpace] || x.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
-            x.getPrevSibling match {
-              case x: ScIfStmt => x
-              case _           => null
-            }
-          case _ => null
-        }
+        val ifStmt =
+          parent.getPrevSibling match {
+            case x: ScIfStmt => x
+            case x
+                if x.isInstanceOf[
+                  PsiWhiteSpace] || x.getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE =>
+              x.getPrevSibling match {
+                case x: ScIfStmt => x
+                case _           => null
+              }
+            case _ => null
+          }
         var text = ""
         if (ifStmt == null) {
           while (parent != null && !parent.isInstanceOf[ScIfStmt])

@@ -35,15 +35,17 @@ object ActorSystem {
 
   val Version: String = akka.Version.current // generated file
 
-  val EnvHome: Option[String] = System.getenv("AKKA_HOME") match {
-    case null | "" | "." ⇒ None
-    case value ⇒ Some(value)
-  }
+  val EnvHome: Option[String] =
+    System.getenv("AKKA_HOME") match {
+      case null | "" | "." ⇒ None
+      case value ⇒ Some(value)
+    }
 
-  val SystemHome: Option[String] = System.getProperty("akka.home") match {
-    case null | "" ⇒ None
-    case value ⇒ Some(value)
-  }
+  val SystemHome: Option[String] =
+    System.getProperty("akka.home") match {
+      case null | "" ⇒ None
+      case value ⇒ Some(value)
+    }
 
   val GlobalHome: Option[String] = SystemHome orElse EnvHome
 
@@ -220,16 +222,16 @@ object ActorSystem {
     final val LoggingFilter: String = getString("akka.logging-filter")
     final val LoggerStartTimeout: Timeout = Timeout(
       config.getMillisDuration("akka.logger-startup-timeout"))
-    final val LogConfigOnStart: Boolean =
-      config.getBoolean("akka.log-config-on-start")
+    final val LogConfigOnStart: Boolean = config.getBoolean(
+      "akka.log-config-on-start")
     final val LogDeadLetters: Int =
       config.getString("akka.log-dead-letters").toLowerCase(Locale.ROOT) match {
         case "off" | "false" ⇒ 0
         case "on" | "true" ⇒ Int.MaxValue
         case _ ⇒ config.getInt("akka.log-dead-letters")
       }
-    final val LogDeadLettersDuringShutdown: Boolean =
-      config.getBoolean("akka.log-dead-letters-during-shutdown")
+    final val LogDeadLettersDuringShutdown: Boolean = config.getBoolean(
+      "akka.log-dead-letters-during-shutdown")
 
     final val AddLoggingReceive: Boolean = getBoolean(
       "akka.actor.debug.receive")
@@ -244,10 +246,11 @@ object ActorSystem {
     final val DebugRouterMisconfiguration: Boolean = getBoolean(
       "akka.actor.debug.router-misconfiguration")
 
-    final val Home: Option[String] = config.getString("akka.home") match {
-      case "" ⇒ None
-      case x ⇒ Some(x)
-    }
+    final val Home: Option[String] =
+      config.getString("akka.home") match {
+        case "" ⇒ None
+        case x ⇒ Some(x)
+      }
 
     final val SchedulerClass: String = getString(
       "akka.scheduler.implementation")
@@ -634,12 +637,11 @@ private[akka] class ActorSystemImpl(
       }
     }
 
-  final val threadFactory: MonitorableThreadFactory =
-    MonitorableThreadFactory(
-      name,
-      settings.Daemonicity,
-      Option(classLoader),
-      uncaughtExceptionHandler)
+  final val threadFactory: MonitorableThreadFactory = MonitorableThreadFactory(
+    name,
+    settings.Daemonicity,
+    Option(classLoader),
+    uncaughtExceptionHandler)
 
   /**
     * This is an extension point: by overriding this method, subclasses can
@@ -690,16 +692,18 @@ private[akka] class ActorSystemImpl(
   eventStream.startStdoutLogger(settings)
 
   val logFilter: LoggingFilter = {
-    val arguments =
-      Vector(classOf[Settings] -> settings, classOf[EventStream] -> eventStream)
+    val arguments = Vector(
+      classOf[Settings] -> settings,
+      classOf[EventStream] -> eventStream)
     dynamicAccess.createInstanceFor[LoggingFilter](LoggingFilter, arguments).get
   }
 
-  val log: LoggingAdapter = new BusLogging(
-    eventStream,
-    getClass.getName + "(" + name + ")",
-    this.getClass,
-    logFilter)
+  val log: LoggingAdapter =
+    new BusLogging(
+      eventStream,
+      getClass.getName + "(" + name + ")",
+      this.getClass,
+      logFilter)
 
   val scheduler: Scheduler = createScheduler()
 
@@ -725,33 +729,33 @@ private[akka] class ActorSystemImpl(
   val mailboxes: Mailboxes =
     new Mailboxes(settings, eventStream, dynamicAccess, deadLetters)
 
-  val dispatchers: Dispatchers = new Dispatchers(
-    settings,
-    DefaultDispatcherPrerequisites(
-      threadFactory,
-      eventStream,
-      scheduler,
-      dynamicAccess,
+  val dispatchers: Dispatchers =
+    new Dispatchers(
       settings,
-      mailboxes,
-      defaultExecutionContext))
+      DefaultDispatcherPrerequisites(
+        threadFactory,
+        eventStream,
+        scheduler,
+        dynamicAccess,
+        settings,
+        mailboxes,
+        defaultExecutionContext))
 
   val dispatcher: ExecutionContextExecutor = dispatchers.defaultGlobalDispatcher
 
-  val internalCallingThreadExecutionContext: ExecutionContext =
-    dynamicAccess
-      .getObjectFor[ExecutionContext](
-        "scala.concurrent.Future$InternalCallbackExecutor$")
-      .getOrElse(new ExecutionContext with BatchingExecutor {
-        override protected def unbatchedExecute(r: Runnable): Unit = r.run()
-        override protected def resubmitOnBlock: Boolean =
-          false // Since we execute inline, no gain in resubmitting
-        override def reportFailure(t: Throwable): Unit =
-          dispatcher reportFailure t
-      })
+  val internalCallingThreadExecutionContext: ExecutionContext = dynamicAccess
+    .getObjectFor[ExecutionContext](
+      "scala.concurrent.Future$InternalCallbackExecutor$")
+    .getOrElse(new ExecutionContext with BatchingExecutor {
+      override protected def unbatchedExecute(r: Runnable): Unit = r.run()
+      override protected def resubmitOnBlock: Boolean =
+        false // Since we execute inline, no gain in resubmitting
+      override def reportFailure(t: Throwable): Unit =
+        dispatcher reportFailure t
+    })
 
-  private[this] final val terminationCallbacks = new TerminationCallbacks(
-    provider.terminationFuture)(dispatcher)
+  private[this] final val terminationCallbacks =
+    new TerminationCallbacks(provider.terminationFuture)(dispatcher)
 
   override def whenTerminated: Future[Terminated] =
     terminationCallbacks.terminationFuture

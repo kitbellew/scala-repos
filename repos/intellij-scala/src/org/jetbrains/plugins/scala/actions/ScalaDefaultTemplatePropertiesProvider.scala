@@ -24,10 +24,11 @@ class ScalaDefaultTemplatePropertiesProvider
         case _            => return
       }
 
-    val (packageQualifier, packageSimpleName) = attributePackageName match {
-      case QualifiedPackagePattern(prefix, suffix) => (prefix, suffix)
-      case name                                    => ("", name)
-    }
+    val (packageQualifier, packageSimpleName) =
+      attributePackageName match {
+        case QualifiedPackagePattern(prefix, suffix) => (prefix, suffix)
+        case name                                    => ("", name)
+      }
 
     props.put("PACKAGE_QUALIFIER", packageQualifier)
     props.put("PACKAGE_SIMPLE_NAME", packageSimpleName)

@@ -99,22 +99,25 @@ class ScalaPatternParameterInfoHandler
             val methodName = sign.method.name
 
             val subst = sign.substitutor
-            val returnType = sign.method match {
-              case function: ScFunction =>
-                subst.subst(function.returnType.getOrAny)
-              case method: PsiMethod =>
-                subst.subst(
-                  ScType.create(method.getReturnType, method.getProject))
-            }
+            val returnType =
+              sign.method match {
+                case function: ScFunction =>
+                  subst.subst(function.returnType.getOrAny)
+                case method: PsiMethod =>
+                  subst.subst(
+                    ScType.create(method.getReturnType, method.getProject))
+              }
 
-            val oneArgCaseClassMethod: Boolean = sign.method match {
-              case function: ScFunction =>
-                ScPattern.isOneArgCaseClassMethod(function)
-              case _ => false
-            }
-            val params = ScPattern
-              .extractorParameters(returnType, args, oneArgCaseClassMethod)
-              .zipWithIndex
+            val oneArgCaseClassMethod: Boolean =
+              sign.method match {
+                case function: ScFunction =>
+                  ScPattern.isOneArgCaseClassMethod(function)
+                case _ => false
+              }
+            val params =
+              ScPattern
+                .extractorParameters(returnType, args, oneArgCaseClassMethod)
+                .zipWithIndex
 
             if (params.length == 0)
               buffer.append(
@@ -193,15 +196,15 @@ class ScalaPatternParameterInfoHandler
       sign.method match {
         case fun: ScFunction
             if fun.parameters.headOption.exists(_.name == "x$0") =>
-          val companionClass: Option[ScClass] = Option(
-            fun.containingClass) match {
-            case Some(x: ScObject) =>
-              ScalaPsiUtil.getCompanionModule(x) match {
-                case Some(x: ScClass) => Some(x)
-                case _                => None
-              }
-            case _ => None
-          }
+          val companionClass: Option[ScClass] =
+            Option(fun.containingClass) match {
+              case Some(x: ScObject) =>
+                ScalaPsiUtil.getCompanionModule(x) match {
+                  case Some(x: ScClass) => Some(x)
+                  case _                => None
+                }
+              case _ => None
+            }
 
           companionClass match {
             case Some(cls) =>
@@ -264,8 +267,9 @@ class ScalaPatternParameterInfoHandler
     val element = file.findElementAt(offset)
     if (element == null)
       return null
-    val args: ScPatternArgumentList =
-      PsiTreeUtil.getParentOfType(element, getArgumentListClass)
+    val args: ScPatternArgumentList = PsiTreeUtil.getParentOfType(
+      element,
+      getArgumentListClass)
     if (args != null) {
       context match {
         case context: CreateParameterInfoContext =>
@@ -299,8 +303,9 @@ class ScalaPatternParameterInfoHandler
                                 s.bindT(
                                   (p.name, ScalaPsiUtil.getPsiElementId(p)),
                                   p.upperBound.getOrAny))
-                          val result =
-                            fun.parameters(0).getType(TypingContext.empty)
+                          val result = fun
+                            .parameters(0)
+                            .getType(TypingContext.empty)
                           if (result.isEmpty)
                             substitutor
                           else {
@@ -309,8 +314,9 @@ class ScalaPatternParameterInfoHandler
                               case Some(tp) =>
                                 val t = Conformance.conforms(tp, funType)
                                 if (t) {
-                                  val undefSubst =
-                                    Conformance.undefinedSubst(tp, funType)
+                                  val undefSubst = Conformance.undefinedSubst(
+                                    tp,
+                                    funType)
                                   undefSubst.getSubstitutor match {
                                     case Some(newSubst) =>
                                       newSubst.followed(substitutor)

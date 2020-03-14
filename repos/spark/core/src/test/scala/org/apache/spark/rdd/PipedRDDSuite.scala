@@ -52,16 +52,16 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("failure in iterating over pipe input") {
     if (testCommandAvailable("cat")) {
-      val nums =
-        sc.makeRDD(Array(1, 2, 3, 4), 2)
-          .mapPartitionsWithIndex((index, iterator) => {
-            new Iterator[Int] {
-              def hasNext = true
-              def next() = {
-                throw new SparkException("Exception to simulate bad scenario")
-              }
+      val nums = sc
+        .makeRDD(Array(1, 2, 3, 4), 2)
+        .mapPartitionsWithIndex((index, iterator) => {
+          new Iterator[Int] {
+            def hasNext = true
+            def next() = {
+              throw new SparkException("Exception to simulate bad scenario")
             }
-          })
+          }
+        })
 
       val piped = nums.pipe(Seq("cat"))
 
@@ -192,24 +192,25 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   def testExportInputFile(varName: String) {
     if (testCommandAvailable("printenv")) {
-      val nums = new HadoopRDD(
-        sc,
-        new JobConf(),
-        classOf[TextInputFormat],
-        classOf[LongWritable],
-        classOf[Text],
-        2) {
-        override def getPartitions: Array[Partition] =
-          Array(generateFakeHadoopPartition())
+      val nums =
+        new HadoopRDD(
+          sc,
+          new JobConf(),
+          classOf[TextInputFormat],
+          classOf[LongWritable],
+          classOf[Text],
+          2) {
+          override def getPartitions: Array[Partition] =
+            Array(generateFakeHadoopPartition())
 
-        override val getDependencies = List[Dependency[_]]()
+          override val getDependencies = List[Dependency[_]]()
 
-        override def compute(theSplit: Partition, context: TaskContext) = {
-          new InterruptibleIterator[(LongWritable, Text)](
-            context,
-            Iterator((new LongWritable(1), new Text("b"))))
+          override def compute(theSplit: Partition, context: TaskContext) = {
+            new InterruptibleIterator[(LongWritable, Text)](
+              context,
+              Iterator((new LongWritable(1), new Text("b"))))
+          }
         }
-      }
       val hadoopPart1 = generateFakeHadoopPartition()
       val pipedRdd = new PipedRDD(nums, "printenv " + varName)
       val tContext = TaskContext.empty()
@@ -222,11 +223,12 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   def generateFakeHadoopPartition(): HadoopPartition = {
-    val split = new FileSplit(
-      new Path("/some/path"),
-      0,
-      1,
-      Array[String]("loc1", "loc2", "loc3", "loc4", "loc5"))
+    val split =
+      new FileSplit(
+        new Path("/some/path"),
+        0,
+        1,
+        Array[String]("loc1", "loc2", "loc3", "loc4", "loc5"))
     new HadoopPartition(sc.newRddId(), 1, split)
   }
 

@@ -35,9 +35,10 @@ final class HashedSlice private (
     rowMap: scala.collection.Map[Int, IntList]) {
   def mapRowsFrom(slice1: Slice): Int => (Int => Unit) => Unit = {
     val hasher = new SliceHasher(slice1)
-    val rowComparator: RowComparator = Slice.rowComparatorFor(slice1, slice0) {
-      _.columns.keys map (_.selector)
-    }
+    val rowComparator: RowComparator =
+      Slice.rowComparatorFor(slice1, slice0) {
+        _.columns.keys map (_.selector)
+      }
 
     {
       (lrow: Int) =>

@@ -90,8 +90,8 @@ class VectorAssembler(override val uid: String)
           } else {
             // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
             // from metadata, check the first row.
-            val numAttrs =
-              group.numAttributes.getOrElse(first.getAs[Vector](index).size)
+            val numAttrs = group.numAttributes.getOrElse(
+              first.getAs[Vector](index).size)
             Array.tabulate(numAttrs)(i =>
               NumericAttribute.defaultAttr.withName(c + "_" + i))
           }

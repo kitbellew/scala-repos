@@ -20,17 +20,18 @@ trait HeaderDirectives {
     * with a [[akka.http.scaladsl.server.MalformedHeaderRejection]].
     */
   def headerValue[T](f: HttpHeader ⇒ Option[T]): Directive1[T] = {
-    val protectedF: HttpHeader ⇒ Option[Either[Rejection, T]] = header ⇒
-      try f(header).map(Right.apply)
-      catch {
-        case NonFatal(e) ⇒
-          Some(
-            Left(
-              MalformedHeaderRejection(
-                header.name,
-                e.getMessage.nullAsEmpty,
-                Some(e))))
-      }
+    val protectedF: HttpHeader ⇒ Option[Either[Rejection, T]] =
+      header ⇒
+        try f(header).map(Right.apply)
+        catch {
+          case NonFatal(e) ⇒
+            Some(
+              Left(
+                MalformedHeaderRejection(
+                  header.name,
+                  e.getMessage.nullAsEmpty,
+                  Some(e))))
+        }
 
     extract(_.request.headers.collectFirst(Function.unlift(protectedF)))
       .flatMap {

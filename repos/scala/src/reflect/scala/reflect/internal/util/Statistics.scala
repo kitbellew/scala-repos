@@ -140,10 +140,11 @@ object Statistics {
     */
   trait Quantity {
     if (enabled && prefix.nonEmpty) {
-      val key = s"${if (underlying != this)
-        underlying.prefix
-      else
-        ""}/$prefix"
+      val key =
+        s"${if (underlying != this)
+          underlying.prefix
+        else
+          ""}/$prefix"
       qs(key) = this
     }
     val prefix: String

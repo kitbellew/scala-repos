@@ -63,17 +63,19 @@ object VCardParser extends Parsers {
     }).+ ^^ {
     case list => list.mkString
   }
-  lazy val props = ((((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
-    case a ~ b => (a, b)
-  }) | ((elem(';') ~> key) ^^ {
-    case a => (a, "")
-  })) *
+  lazy val props =
+    ((((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
+      case a ~ b => (a, b)
+    }) | ((elem(';') ~> key) ^^ {
+      case a => (a, "")
+    })) *
   lazy val left = (key ~ props) ^^ {
     case k ~ l => VCardKey(k, l)
   }
-  lazy val expr = (((spaces ~> left ~! elem(':')) ~ repsep(value, ';')) ^^ {
-    case a ~ _ ~ b => VCardEntry(a, b)
-  }) +
+  lazy val expr =
+    (((spaces ~> left ~! elem(':')) ~ repsep(value, ';')) ^^ {
+      case a ~ _ ~ b => VCardEntry(a, b)
+    }) +
 
   def parse(in: String): Either[List[VCardEntry], String] =
     expr(in) match {

@@ -72,39 +72,40 @@ abstract class SbtImportNotificationProvider(
     projectSettings.setUseOurOwnAutoImport(true)
     projectSettings.setExternalProjectPath(externalProjectPath)
 
-    val callback = new ExternalProjectRefreshCallback() {
-      def onFailure(errorMessage: String, errorDetails: String) {}
+    val callback =
+      new ExternalProjectRefreshCallback() {
+        def onFailure(errorMessage: String, errorDetails: String) {}
 
-      def onSuccess(externalProject: DataNode[ProjectData]) {
-        if (externalProject == null)
-          return
+        def onSuccess(externalProject: DataNode[ProjectData]) {
+          if (externalProject == null)
+            return
 
-        val sbtSystemSettings = SbtSystemSettings.getInstance(project)
+          val sbtSystemSettings = SbtSystemSettings.getInstance(project)
 
-        val projects = ContainerUtilRt.newHashSet(
-          sbtSystemSettings.getLinkedProjectsSettings)
-        projects.add(projectSettings)
-        sbtSystemSettings.setLinkedProjectsSettings(projects)
+          val projects = ContainerUtilRt.newHashSet(
+            sbtSystemSettings.getLinkedProjectsSettings)
+          projects.add(projectSettings)
+          sbtSystemSettings.setLinkedProjectsSettings(projects)
 
-        ExternalSystemApiUtil.executeProjectChangeAction(
-          new DisposeAwareProjectChange(project) {
-            def execute() {
-              ProjectRootManagerEx
-                .getInstanceEx(project)
-                .mergeRootsChangesDuring(new Runnable {
-                  def run() {
-                    val dataManager: ProjectDataManager =
-                      ServiceManager.getService(classOf[ProjectDataManager])
-                    dataManager.importData[ProjectData](
-                      Collections.singleton(externalProject),
-                      project,
-                      false)
-                  }
-                })
-            }
-          })
+          ExternalSystemApiUtil.executeProjectChangeAction(
+            new DisposeAwareProjectChange(project) {
+              def execute() {
+                ProjectRootManagerEx
+                  .getInstanceEx(project)
+                  .mergeRootsChangesDuring(new Runnable {
+                    def run() {
+                      val dataManager: ProjectDataManager = ServiceManager
+                        .getService(classOf[ProjectDataManager])
+                      dataManager.importData[ProjectData](
+                        Collections.singleton(externalProject),
+                        project,
+                        false)
+                    }
+                  })
+              }
+            })
+        }
       }
-    }
 
     FileDocumentManager.getInstance.saveAllDocuments()
     ExternalSystemUtil.refreshProject(

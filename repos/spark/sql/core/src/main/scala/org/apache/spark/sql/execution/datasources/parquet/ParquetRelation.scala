@@ -73,19 +73,18 @@ private[sql] class DefaultSource
     val conf = ContextUtil.getConfiguration(job)
 
     // SPARK-9849 DirectParquetOutputCommitter qualified name should be backward compatible
-    val committerClassName =
-      conf.get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
+    val committerClassName = conf.get(
+      SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
     if (committerClassName == "org.apache.spark.sql.parquet.DirectParquetOutputCommitter") {
       conf.set(
         SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key,
         classOf[DirectParquetOutputCommitter].getCanonicalName)
     }
 
-    val committerClass =
-      conf.getClass(
-        SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key,
-        classOf[ParquetOutputCommitter],
-        classOf[ParquetOutputCommitter])
+    val committerClass = conf.getClass(
+      SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key,
+      classOf[ParquetOutputCommitter],
+      classOf[ParquetOutputCommitter])
 
     if (conf.get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key) == null) {
       logInfo(
@@ -104,8 +103,8 @@ private[sql] class DefaultSource
           ParquetRelation.shortParquetCompressionCodecNames
         if (!shortParquetCompressionCodecNames.contains(
               codecName.toLowerCase)) {
-          val availableCodecs =
-            shortParquetCompressionCodecNames.keys.map(_.toLowerCase)
+          val availableCodecs = shortParquetCompressionCodecNames.keys.map(
+            _.toLowerCase)
           throw new IllegalArgumentException(s"Codec [$codecName] " +
             s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
         }
@@ -173,15 +172,14 @@ private[sql] class DefaultSource
       parameters: Map[String, String],
       files: Seq[FileStatus]): Option[StructType] = {
     // Should we merge schemas from all Parquet part-files?
-    val shouldMergeSchemas =
-      parameters
-        .get(ParquetRelation.MERGE_SCHEMA)
-        .map(_.toBoolean)
-        .getOrElse(
-          sqlContext.conf.getConf(SQLConf.PARQUET_SCHEMA_MERGING_ENABLED))
+    val shouldMergeSchemas = parameters
+      .get(ParquetRelation.MERGE_SCHEMA)
+      .map(_.toBoolean)
+      .getOrElse(
+        sqlContext.conf.getConf(SQLConf.PARQUET_SCHEMA_MERGING_ENABLED))
 
-    val mergeRespectSummaries =
-      sqlContext.conf.getConf(SQLConf.PARQUET_SCHEMA_RESPECT_SUMMARIES)
+    val mergeRespectSummaries = sqlContext.conf.getConf(
+      SQLConf.PARQUET_SCHEMA_RESPECT_SUMMARIES)
 
     val filesByType = splitFiles(files)
 
@@ -303,8 +301,8 @@ private[sql] class DefaultSource
     // Parquet row group size. We will use this value as the value for
     // mapreduce.input.fileinputformat.split.minsize and mapred.min.split.size if the value
     // of these flags are smaller than the parquet row group size.
-    val parquetBlockSize =
-      ParquetOutputFormat.getLongBlockSize(broadcastedConf.value.value)
+    val parquetBlockSize = ParquetOutputFormat.getLongBlockSize(
+      broadcastedConf.value.value)
 
     // Create the function to set variable Parquet confs at both driver and executor side.
     val initLocalJobFuncOpt =
@@ -337,23 +335,24 @@ private[sql] class DefaultSource
 
         val cacheMetadata = useMetadataCache
 
-        @transient val cachedStatuses = inputFiles.map { f =>
-          // In order to encode the authority of a Path containing special characters such as '/'
-          // (which does happen in some S3N credentials), we need to use the string returned by the
-          // URI of the path to create a new Path.
-          val pathWithEscapedAuthority = escapePathUserInfo(f.getPath)
-          new FileStatus(
-            f.getLen,
-            f.isDirectory,
-            f.getReplication,
-            f.getBlockSize,
-            f.getModificationTime,
-            f.getAccessTime,
-            f.getPermission,
-            f.getOwner,
-            f.getGroup,
-            pathWithEscapedAuthority)
-        }.toSeq
+        @transient val cachedStatuses =
+          inputFiles.map { f =>
+            // In order to encode the authority of a Path containing special characters such as '/'
+            // (which does happen in some S3N credentials), we need to use the string returned by the
+            // URI of the path to create a new Path.
+            val pathWithEscapedAuthority = escapePathUserInfo(f.getPath)
+            new FileStatus(
+              f.getLen,
+              f.isDirectory,
+              f.getReplication,
+              f.getBlockSize,
+              f.getModificationTime,
+              f.getAccessTime,
+              f.getPermission,
+              f.getOwner,
+              f.getGroup,
+              pathWithEscapedAuthority)
+          }.toSeq
 
         private def escapePathUserInfo(path: Path): Path = {
           val uri = path.toUri
@@ -370,15 +369,16 @@ private[sql] class DefaultSource
 
         // Overridden so we can inject our own cached files statuses.
         override def getPartitions: Array[SparkPartition] = {
-          val inputFormat = new ParquetInputFormat[InternalRow] {
-            override def listStatus(
-                jobContext: JobContext): JList[FileStatus] = {
-              if (cacheMetadata)
-                cachedStatuses.asJava
-              else
-                super.listStatus(jobContext)
+          val inputFormat =
+            new ParquetInputFormat[InternalRow] {
+              override def listStatus(
+                  jobContext: JobContext): JList[FileStatus] = {
+                if (cacheMetadata)
+                  cachedStatuses.asJava
+                else
+                  super.listStatus(jobContext)
+              }
             }
-          }
 
           val jobContext =
             new JobContextImpl(getConf(isDriverSide = true), jobId)
@@ -419,12 +419,13 @@ private[sql] class ParquetOutputWriter(
             context: TaskAttemptContext,
             extension: String): Path = {
           val configuration = context.getConfiguration
-          val uniqueWriteJobId =
-            configuration.get("spark.sql.sources.writeJobUUID")
+          val uniqueWriteJobId = configuration.get(
+            "spark.sql.sources.writeJobUUID")
           val taskAttemptId = context.getTaskAttemptID
           val split = taskAttemptId.getTaskID.getId
-          val bucketString =
-            bucketId.map(BucketingUtils.bucketIdToString).getOrElse("")
+          val bucketString = bucketId
+            .map(BucketingUtils.bucketIdToString)
+            .getOrElse("")
           // It has the `.parquet` extension at the end because (de)compression tools
           // such as gunzip would not be able to decompress this as the compression
           // is not applied on this whole file but on each "page" in Parquet format.
@@ -468,10 +469,9 @@ private[sql] object ParquetRelation extends Logging {
   private def overrideMinSplitSize(
       parquetBlockSize: Long,
       conf: Configuration): Unit = {
-    val minSplitSize =
-      math.max(
-        conf.getLong("mapred.min.split.size", 0L),
-        conf.getLong("mapreduce.input.fileinputformat.split.minsize", 0L))
+    val minSplitSize = math.max(
+      conf.getLong("mapred.min.split.size", 0L),
+      conf.getLong("mapreduce.input.fileinputformat.split.minsize", 0L))
     if (parquetBlockSize > minSplitSize) {
       val message =
         s"Parquet's block size (row group size) is larger than " +
@@ -554,10 +554,11 @@ private[sql] object ParquetRelation extends Logging {
       sqlContext: SQLContext): Option[StructType] = {
 
     def parseParquetSchema(schema: MessageType): StructType = {
-      val converter = new CatalystSchemaConverter(
-        sqlContext.conf.isParquetBinaryAsString,
-        sqlContext.conf.isParquetBinaryAsString,
-        sqlContext.conf.writeLegacyParquetFormat)
+      val converter =
+        new CatalystSchemaConverter(
+          sqlContext.conf.isParquetBinaryAsString,
+          sqlContext.conf.isParquetBinaryAsString,
+          sqlContext.conf.writeLegacyParquetFormat)
 
       converter.convert(schema)
     }
@@ -632,16 +633,18 @@ private[sql] object ParquetRelation extends Logging {
          |${parquetSchema.prettyJson}
        """.stripMargin
 
-    val mergedParquetSchema =
-      mergeMissingNullableFields(metastoreSchema, parquetSchema)
+    val mergedParquetSchema = mergeMissingNullableFields(
+      metastoreSchema,
+      parquetSchema)
 
     assert(
       metastoreSchema.size <= mergedParquetSchema.size,
       schemaConflictMessage)
 
-    val ordinalMap = metastoreSchema.zipWithIndex.map {
-      case (field, index) => field.name.toLowerCase -> index
-    }.toMap
+    val ordinalMap =
+      metastoreSchema.zipWithIndex.map {
+        case (field, index) => field.name.toLowerCase -> index
+      }.toMap
 
     val reorderedParquetSchema = mergedParquetSchema.sortBy(f =>
       ordinalMap.getOrElse(f.name.toLowerCase, metastoreSchema.size + 1))
@@ -701,8 +704,8 @@ private[sql] object ParquetRelation extends Logging {
     val assumeBinaryIsString = sqlContext.conf.isParquetBinaryAsString
     val assumeInt96IsTimestamp = sqlContext.conf.isParquetINT96AsTimestamp
     val writeLegacyParquetFormat = sqlContext.conf.writeLegacyParquetFormat
-    val serializedConf = new SerializableConfiguration(
-      sqlContext.sparkContext.hadoopConfiguration)
+    val serializedConf =
+      new SerializableConfiguration(sqlContext.sparkContext.hadoopConfiguration)
 
     // !! HACK ALERT !!
     //
@@ -715,16 +718,16 @@ private[sql] object ParquetRelation extends Logging {
     // Since Parquet only relies on path and length information of those `FileStatus`es to read
     // footers, here we just extract them (which can be easily serialized), send them to executor
     // side, and resemble fake `FileStatus`es there.
-    val partialFileStatusInfo =
-      filesToTouch.map(f => (f.getPath.toString, f.getLen))
+    val partialFileStatusInfo = filesToTouch.map(f =>
+      (f.getPath.toString, f.getLen))
 
     // Issues a Spark job to read Parquet schema in parallel.
-    val partiallyMergedSchemas =
-      sqlContext.sparkContext
-        .parallelize(partialFileStatusInfo)
-        .mapPartitions { iterator =>
-          // Resembles fake `FileStatus`es with serialized path and length information.
-          val fakeFileStatuses = iterator.map {
+    val partiallyMergedSchemas = sqlContext.sparkContext
+      .parallelize(partialFileStatusInfo)
+      .mapPartitions { iterator =>
+        // Resembles fake `FileStatus`es with serialized path and length information.
+        val fakeFileStatuses =
+          iterator.map {
             case (path, length) =>
               new FileStatus(
                 length,
@@ -739,46 +742,46 @@ private[sql] object ParquetRelation extends Logging {
                 new Path(path))
           }.toSeq
 
-          // Skips row group information since we only need the schema
-          val skipRowGroups = true
+        // Skips row group information since we only need the schema
+        val skipRowGroups = true
 
-          // Reads footers in multi-threaded manner within each task
-          val footers =
-            ParquetFileReader
-              .readAllFootersInParallel(
-                serializedConf.value,
-                fakeFileStatuses.asJava,
-                skipRowGroups)
-              .asScala
+        // Reads footers in multi-threaded manner within each task
+        val footers =
+          ParquetFileReader
+            .readAllFootersInParallel(
+              serializedConf.value,
+              fakeFileStatuses.asJava,
+              skipRowGroups)
+            .asScala
 
-          // Converter used to convert Parquet `MessageType` to Spark SQL `StructType`
-          val converter =
-            new CatalystSchemaConverter(
-              assumeBinaryIsString = assumeBinaryIsString,
-              assumeInt96IsTimestamp = assumeInt96IsTimestamp,
-              writeLegacyParquetFormat = writeLegacyParquetFormat)
+        // Converter used to convert Parquet `MessageType` to Spark SQL `StructType`
+        val converter =
+          new CatalystSchemaConverter(
+            assumeBinaryIsString = assumeBinaryIsString,
+            assumeInt96IsTimestamp = assumeInt96IsTimestamp,
+            writeLegacyParquetFormat = writeLegacyParquetFormat)
 
-          if (footers.isEmpty) {
-            Iterator.empty
-          } else {
-            var mergedSchema =
-              ParquetRelation.readSchemaFromFooter(footers.head, converter)
-            footers.tail.foreach { footer =>
-              val schema =
-                ParquetRelation.readSchemaFromFooter(footer, converter)
-              try {
-                mergedSchema = mergedSchema.merge(schema)
-              } catch {
-                case cause: SparkException =>
-                  throw new SparkException(
-                    s"Failed merging schema of file ${footer.getFile}:\n${schema.treeString}",
-                    cause)
-              }
+        if (footers.isEmpty) {
+          Iterator.empty
+        } else {
+          var mergedSchema = ParquetRelation.readSchemaFromFooter(
+            footers.head,
+            converter)
+          footers.tail.foreach { footer =>
+            val schema = ParquetRelation.readSchemaFromFooter(footer, converter)
+            try {
+              mergedSchema = mergedSchema.merge(schema)
+            } catch {
+              case cause: SparkException =>
+                throw new SparkException(
+                  s"Failed merging schema of file ${footer.getFile}:\n${schema.treeString}",
+                  cause)
             }
-            Iterator.single(mergedSchema)
           }
+          Iterator.single(mergedSchema)
         }
-        .collect()
+      }
+      .collect()
 
     if (partiallyMergedSchemas.isEmpty) {
       None
@@ -839,8 +842,8 @@ private[sql] object ParquetRelation extends Logging {
   // JUL loggers must be held by a strong reference, otherwise they may get destroyed by GC.
   // However, the root JUL logger used by Parquet isn't properly referenced.  Here we keep
   // references to loggers in both parquet-mr <= 1.6 and >= 1.7
-  val apacheParquetLogger: JLogger =
-    JLogger.getLogger(classOf[ApacheParquetLog].getPackage.getName)
+  val apacheParquetLogger: JLogger = JLogger.getLogger(
+    classOf[ApacheParquetLog].getPackage.getName)
   val parquetLogger: JLogger = JLogger.getLogger("parquet")
 
   // Parquet initializes its own JUL logger in a static block which always prints to stdout.  Here

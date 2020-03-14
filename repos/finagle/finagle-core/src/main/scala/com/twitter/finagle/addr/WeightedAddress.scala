@@ -34,8 +34,7 @@ object WeightedAddress {
     * will always match, even if weight metadata is not present (in which
     * case it returns the default weight 1.0).
     */
-  def unapply(addr: Address): Option[(Address, Double)] =
-    Some(extract(addr))
+  def unapply(addr: Address): Option[(Address, Double)] = Some(extract(addr))
 
   /**
     * Extracts weight from metadata and returns an unweighted copy of

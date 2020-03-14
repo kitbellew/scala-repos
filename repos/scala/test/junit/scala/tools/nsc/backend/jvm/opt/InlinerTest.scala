@@ -114,8 +114,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def simpleInlineOK(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def f = 1
         |  def g = f + f
         |}
@@ -159,8 +158,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def nothingTypedOK(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def f: Nothing = ???
         |  def g: Int = { f; 1 }
         |}
@@ -199,8 +197,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def synchronizedNoInline(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def f: Int = 0
         |  def g: Int = f
         |}
@@ -217,8 +214,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def tryCatchOK(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def f: Int = try { 1 } catch { case _: Exception => 2 }
         |  def g = f + 1
         |}
@@ -231,8 +227,7 @@ class InlinerTest extends ClearAfterClass {
   def tryCatchNoInline(): Unit = {
     // cannot inline f: there's a value on g's stack. if f throws and enters the handler, all values
     // on the stack are removed, including the one of g's stack that we still need.
-    val code =
-      """class C {
+    val code = """class C {
         |  def f: Int = try { 1 } catch { case _: Exception => 2 }
         |  def g = println(f)
         |}
@@ -245,8 +240,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def illegalAccessNoInline(): Unit = {
-    val code =
-      """package a {
+    val code = """package a {
         |  class C {
         |    private def f: Int = 0
         |    def g: Int = f
@@ -268,8 +262,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineSimpleAtInline(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  @inline final def f = 0
         |  final def g = 1
         |
@@ -284,8 +277,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def cyclicInline(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  @inline final def f: Int = g
         |  @inline final def g: Int = f
         |}
@@ -313,8 +305,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def cyclicInline2(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  @inline final def h: Int = f
         |  @inline final def f: Int = g + g
         |  @inline final def g: Int = h
@@ -323,8 +314,8 @@ class InlinerTest extends ClearAfterClass {
     val List(c) = compile(code)
     val methods @ List(f, g, h) =
       c.methods.asScala.filter(_.name.length == 1).sortBy(_.name).toList
-    val List(fIns, gIns, hIns) =
-      methods.map(instructionsFromMethod(_).dropNonOp)
+    val List(fIns, gIns, hIns) = methods.map(
+      instructionsFromMethod(_).dropNonOp)
     val invokeG = Invoke(INVOKEVIRTUAL, "C", "g", "()I", false)
     assert(
       fIns.count(_ == invokeG) == 2,
@@ -374,8 +365,7 @@ class InlinerTest extends ClearAfterClass {
     // This used to crash when building the call graph. The `owner` field of the MethodInsnNode
     // for the invocation of `clone` is not an internal name, but a full array descriptor
     // [Ljava.lang.Object; - the documentation in the ASM library didn't mention that possibility.
-    val code =
-      """class C {
+    val code = """class C {
         |  def f(a: Array[Object]) = {
         |    a.clone()
         |  }
@@ -389,8 +379,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def atInlineInTrait(): Unit = {
-    val code =
-      """trait T {
+    val code = """trait T {
         |  @inline final def f = 0
         |}
         |class C {
@@ -418,8 +407,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineStaticCall(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def f = Integer.lowestOneBit(103)
         |}
       """.stripMargin
@@ -446,8 +434,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def maxLocalsMaxStackAfterInline(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  @inline final def f1(x: Int): Int = {
         |    val a = x + 1
         |    math.max(a, math.min(10, a - 1))
@@ -496,14 +483,12 @@ class InlinerTest extends ClearAfterClass {
     // the bytecode of the invoked method. In mixed compilation, there's no classfile available for
     // A, so `flop` cannot be inlined, we cannot check if it's safe.
 
-    val javaCode =
-      """public class A {
+    val javaCode = """public class A {
         |  public static final int bar() { return 100; }
         |}
       """.stripMargin
 
-    val scalaCode =
-      """class B {
+    val scalaCode = """class B {
         |  @inline final def flop = A.bar
         |  def g = flop
         |}
@@ -531,8 +516,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineFromTraits(): Unit = {
-    val code =
-      """trait T {
+    val code = """trait T {
         |  @inline final def f = g
         |  @inline final def g = 1
         |}
@@ -550,8 +534,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineMixinMethods(): Unit = {
-    val code =
-      """trait T {
+    val code = """trait T {
         |  @inline final def f = 1
         |}
         |class C extends T
@@ -563,8 +546,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineTraitInherited(): Unit = {
-    val code =
-      """trait T {
+    val code = """trait T {
         |  @inline final def f = 1
         |}
         |trait U extends T {
@@ -582,8 +564,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def virtualTraitNoInline(): Unit = {
-    val code =
-      """trait T {
+    val code = """trait T {
         |  @inline def f = 1
         |}
         |class C extends T {
@@ -610,8 +591,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def sealedTraitInline(): Unit = {
-    val code =
-      """sealed trait T {
+    val code = """sealed trait T {
         |  @inline def f = 1
         |}
         |class C {
@@ -809,8 +789,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineFromNestedClasses(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  trait T { @inline final def f = 1 }
         |  class D extends T {
         |    def m(t: T) = t.f
@@ -825,8 +804,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineTraitCastReceiverToSelf(): Unit = {
-    val code =
-      """class C { def foo(x: Int) = x }
+    val code = """class C { def foo(x: Int) = x }
         |trait T { self: C =>
         |  @inline final def f(x: Int) = foo(x)
         |  def t1 = f(1)
@@ -843,8 +821,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def abstractMethodWarning(): Unit = {
-    val code =
-      """abstract class C {
+    val code = """abstract class C {
         |  @inline def foo: Int
         |}
         |class T {
@@ -865,8 +842,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def abstractFinalMethodError(): Unit = {
-    val code =
-      """abstract class C {
+    val code = """abstract class C {
         |  @inline final def foo: Int
         |}
         |trait T {
@@ -959,8 +935,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def mixedNoCrashSI9111(): Unit = {
-    val javaCode =
-      """public final class A {
+    val javaCode = """public final class A {
         |  public static final class T { }
         |  public static final class Inner {
         |    public static final class T { }
@@ -969,8 +944,7 @@ class InlinerTest extends ClearAfterClass {
         |}
       """.stripMargin
 
-    val scalaCode =
-      """class C {
+    val scalaCode = """class C {
         |  val i = new A.Inner()
         |}
       """.stripMargin
@@ -1056,14 +1030,14 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def dontInlineNative(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t = System.arraycopy(null, 0, null, 0, 0)
         |}
       """.stripMargin
-    val List(c) = compileClasses(
-      newCompiler(extraArgs =
-        InlinerTest.args + " -Yopt-inline-heuristics:everything"))(code)
+    val List(c) =
+      compileClasses(
+        newCompiler(extraArgs =
+          InlinerTest.args + " -Yopt-inline-heuristics:everything"))(code)
     assertInvoke(getSingleMethod(c, "t"), "java/lang/System", "arraycopy")
   }
 
@@ -1111,8 +1085,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineIndyLambda(): Unit = {
-    val code =
-      """object M {
+    val code = """object M {
         |  @inline def m(s: String) = {
         |    val f = (x: String) => x.trim
         |    f(s)
@@ -1148,8 +1121,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlinePostRequests(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  final def f = 10
         |  final def g = f + 19
         |  final def h = g + 29
@@ -1171,8 +1143,8 @@ class InlinerTest extends ClearAfterClass {
     inliner.inline(
       InlineRequest(
         hCall,
-        post =
-          List(InlineRequest(gCall, post = List(InlineRequest(fCall, Nil))))))
+        post = List(
+          InlineRequest(gCall, post = List(InlineRequest(fCall, Nil))))))
     assertNoInvoke(
       convertMethod(iMeth)
     ) // no invoke in i: first h is inlined, then the inlined call to g is also inlined, etc for f
@@ -1185,8 +1157,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def postRequestSkipAlreadyInlined(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  final def a = 10
         |  final def b = a + 20
         |  final def c = b + 30
@@ -1212,8 +1183,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineAnnotatedCallsite(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  final def a(x: Int, f: Int => Int): Int = f(x)
         |  final def b(x: Int) = x
         |  final def c = 1
@@ -1281,8 +1251,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineHigherOrder(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  final def h(f: Int => Int): Int = f(0)
         |  def t1 = h(x => x + 1)
         |  def t2 = {
@@ -1663,8 +1632,7 @@ class InlinerTest extends ClearAfterClass {
 
   @Test
   def inlineFromSealed(): Unit = {
-    val code =
-      """sealed abstract class Foo {
+    val code = """sealed abstract class Foo {
         |  @inline def bar(x: Int) = x + 1
         |}
         |object Foo {

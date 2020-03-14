@@ -88,17 +88,14 @@ final case class SimpleList[T](underlying: List[T]) extends JavaList[T] {
   def subList(from: Int, to: Int): JavaList[T] =
     SimpleList(underlying.drop(from).take(to - from))
 
-  def listIterator(): ListIterator[T] =
-    (new ArrayList(this)).listIterator()
+  def listIterator(): ListIterator[T] = (new ArrayList(this)).listIterator()
 
   def listIterator(pos: Int): ListIterator[T] =
     (new ArrayList(this)).listIterator(pos)
 
-  def indexOf(obj: Object): Int =
-    underlying.indexOf(obj)
+  def indexOf(obj: Object): Int = underlying.indexOf(obj)
 
-  def lastIndexOf(obj: Object): Int =
-    underlying.lastIndexOf(obj)
+  def lastIndexOf(obj: Object): Int = underlying.lastIndexOf(obj)
 
   def add(x: T): Boolean = throw new UnsupportedOperationException()
 
@@ -249,17 +246,14 @@ final case class SimpleVector[T](underlying: Vector[T]) extends JavaList[T] {
   def subList(from: Int, to: Int): JavaList[T] =
     SimpleVector(underlying.drop(from).take(to - from))
 
-  def listIterator(): ListIterator[T] =
-    (new ArrayList(this)).listIterator()
+  def listIterator(): ListIterator[T] = (new ArrayList(this)).listIterator()
 
   def listIterator(pos: Int): ListIterator[T] =
     (new ArrayList(this)).listIterator(pos)
 
-  def indexOf(obj: Object): Int =
-    underlying.indexOf(obj)
+  def indexOf(obj: Object): Int = underlying.indexOf(obj)
 
-  def lastIndexOf(obj: Object): Int =
-    underlying.lastIndexOf(obj)
+  def lastIndexOf(obj: Object): Int = underlying.lastIndexOf(obj)
 
   def add(x: T): Boolean = throw new UnsupportedOperationException()
 

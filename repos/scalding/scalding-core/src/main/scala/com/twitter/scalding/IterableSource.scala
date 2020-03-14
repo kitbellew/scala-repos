@@ -53,9 +53,10 @@ case class IterableSource[+T](
   override def converter[U >: T] = TupleConverter.asSuperConverter[T, U](conv)
 
   @transient
-  private val asBuffer: Buffer[Tuple] = iter.map {
-    set(_)
-  }.toBuffer
+  private val asBuffer: Buffer[Tuple] =
+    iter.map {
+      set(_)
+    }.toBuffer
 
   private lazy val hdfsTap: Tap[_, _, _] =
     new MemorySourceTap(asBuffer.asJava, fields)
@@ -86,8 +87,7 @@ case class IterableSource[+T](
     * Don't use the whole string of the iterable, which can be huge.
     * We take the first 10 items + the identityHashCode of the iter.
     */
-  override val sourceId: String =
-    "IterableSource(%s)-%d".format(
-      iter.take(10).toString,
-      System.identityHashCode(iter))
+  override val sourceId: String = "IterableSource(%s)-%d".format(
+    iter.take(10).toString,
+    System.identityHashCode(iter))
 }

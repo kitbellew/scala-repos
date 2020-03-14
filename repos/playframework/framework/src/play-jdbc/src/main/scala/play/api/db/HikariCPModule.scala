@@ -33,8 +33,8 @@ class HikariCPModule extends Module {
 trait HikariCPComponents {
   def environment: Environment
 
-  lazy val connectionPool: ConnectionPool = new HikariCPConnectionPool(
-    environment)
+  lazy val connectionPool: ConnectionPool =
+    new HikariCPConnectionPool(environment)
 }
 
 @Singleton

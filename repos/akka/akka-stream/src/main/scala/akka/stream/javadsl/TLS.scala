@@ -130,6 +130,5 @@ object TLSPlacebo {
     ByteString,
     ByteString,
     SessionBytes,
-    NotUsed] =
-    new javadsl.BidiFlow(scaladsl.TLSPlacebo())
+    NotUsed] = new javadsl.BidiFlow(scaladsl.TLSPlacebo())
 }

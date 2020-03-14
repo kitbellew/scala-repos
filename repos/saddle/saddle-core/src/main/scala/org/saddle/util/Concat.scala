@@ -130,41 +130,48 @@ object Concat extends LowPriorityConcatImplicits {
 
   // byte promoting
 
-  implicit val promoteYC: Byte => Char = (y: Byte) =>
-    if (sy.isMissing(y))
-      sc.missing
-    else
-      y.toChar
-  implicit val promoteYS: Byte => Short = (y: Byte) =>
-    if (sy.isMissing(y))
-      ss.missing
-    else
-      y.toShort
-  implicit val promoteYI: Byte => Int = (y: Byte) =>
-    if (sy.isMissing(y))
-      si.missing
-    else
-      y.toInt
-  implicit val promoteYL: Byte => Long = (y: Byte) =>
-    if (sy.isMissing(y))
-      sl.missing
-    else
-      y.toLong
-  implicit val promoteYF: Byte => Float = (y: Byte) =>
-    if (sy.isMissing(y))
-      sf.missing
-    else
-      y.toFloat
-  implicit val promoteYD: Byte => Double = (y: Byte) =>
-    if (sy.isMissing(y))
-      sd.missing
-    else
-      y.toDouble
-  implicit val promoteYR: Byte => AnyRef = (y: Byte) =>
-    if (sy.isMissing(y))
-      sr.missing
-    else
-      Byte.box(y)
+  implicit val promoteYC: Byte => Char =
+    (y: Byte) =>
+      if (sy.isMissing(y))
+        sc.missing
+      else
+        y.toChar
+  implicit val promoteYS: Byte => Short =
+    (y: Byte) =>
+      if (sy.isMissing(y))
+        ss.missing
+      else
+        y.toShort
+  implicit val promoteYI: Byte => Int =
+    (y: Byte) =>
+      if (sy.isMissing(y))
+        si.missing
+      else
+        y.toInt
+  implicit val promoteYL: Byte => Long =
+    (y: Byte) =>
+      if (sy.isMissing(y))
+        sl.missing
+      else
+        y.toLong
+  implicit val promoteYF: Byte => Float =
+    (y: Byte) =>
+      if (sy.isMissing(y))
+        sf.missing
+      else
+        y.toFloat
+  implicit val promoteYD: Byte => Double =
+    (y: Byte) =>
+      if (sy.isMissing(y))
+        sd.missing
+      else
+        y.toDouble
+  implicit val promoteYR: Byte => AnyRef =
+    (y: Byte) =>
+      if (sy.isMissing(y))
+        sr.missing
+      else
+        Byte.box(y)
 
   implicit object wyy extends Promoter[Byte, Byte, Byte](id, id)
 
@@ -191,36 +198,42 @@ object Concat extends LowPriorityConcatImplicits {
 
   // char promoting
 
-  implicit val promoteCS: Char => Short = (y: Char) =>
-    if (sc.isMissing(y))
-      ss.missing
-    else
-      y.toShort
-  implicit val promoteCI: Char => Int = (y: Char) =>
-    if (sc.isMissing(y))
-      si.missing
-    else
-      y.toInt
-  implicit val promoteCL: Char => Long = (y: Char) =>
-    if (sc.isMissing(y))
-      sl.missing
-    else
-      y.toLong
-  implicit val promoteCF: Char => Float = (y: Char) =>
-    if (sc.isMissing(y))
-      sf.missing
-    else
-      y.toFloat
-  implicit val promoteCD: Char => Double = (y: Char) =>
-    if (sc.isMissing(y))
-      sd.missing
-    else
-      y.toDouble
-  implicit val promoteCR: Char => AnyRef = (y: Char) =>
-    if (sc.isMissing(y))
-      sr.missing
-    else
-      Char.box(y)
+  implicit val promoteCS: Char => Short =
+    (y: Char) =>
+      if (sc.isMissing(y))
+        ss.missing
+      else
+        y.toShort
+  implicit val promoteCI: Char => Int =
+    (y: Char) =>
+      if (sc.isMissing(y))
+        si.missing
+      else
+        y.toInt
+  implicit val promoteCL: Char => Long =
+    (y: Char) =>
+      if (sc.isMissing(y))
+        sl.missing
+      else
+        y.toLong
+  implicit val promoteCF: Char => Float =
+    (y: Char) =>
+      if (sc.isMissing(y))
+        sf.missing
+      else
+        y.toFloat
+  implicit val promoteCD: Char => Double =
+    (y: Char) =>
+      if (sc.isMissing(y))
+        sd.missing
+      else
+        y.toDouble
+  implicit val promoteCR: Char => AnyRef =
+    (y: Char) =>
+      if (sc.isMissing(y))
+        sr.missing
+      else
+        Char.box(y)
 
   implicit object wcc extends Promoter[Char, Char, Char](id, id)
 
@@ -244,31 +257,36 @@ object Concat extends LowPriorityConcatImplicits {
 
   // short promoting
 
-  implicit val promoteSI: Short => Int = (y: Short) =>
-    if (ss.isMissing(y))
-      si.missing
-    else
-      y.toInt
-  implicit val promoteSL: Short => Long = (y: Short) =>
-    if (ss.isMissing(y))
-      sl.missing
-    else
-      y.toLong
-  implicit val promoteSF: Short => Float = (y: Short) =>
-    if (ss.isMissing(y))
-      sf.missing
-    else
-      y.toFloat
-  implicit val promoteSD: Short => Double = (y: Short) =>
-    if (ss.isMissing(y))
-      sd.missing
-    else
-      y.toDouble
-  implicit val promoteSR: Short => AnyRef = (y: Short) =>
-    if (ss.isMissing(y))
-      sr.missing
-    else
-      Short.box(y)
+  implicit val promoteSI: Short => Int =
+    (y: Short) =>
+      if (ss.isMissing(y))
+        si.missing
+      else
+        y.toInt
+  implicit val promoteSL: Short => Long =
+    (y: Short) =>
+      if (ss.isMissing(y))
+        sl.missing
+      else
+        y.toLong
+  implicit val promoteSF: Short => Float =
+    (y: Short) =>
+      if (ss.isMissing(y))
+        sf.missing
+      else
+        y.toFloat
+  implicit val promoteSD: Short => Double =
+    (y: Short) =>
+      if (ss.isMissing(y))
+        sd.missing
+      else
+        y.toDouble
+  implicit val promoteSR: Short => AnyRef =
+    (y: Short) =>
+      if (ss.isMissing(y))
+        sr.missing
+      else
+        Short.box(y)
 
   implicit object wss extends Promoter[Short, Short, Short](id, id)
 
@@ -289,26 +307,30 @@ object Concat extends LowPriorityConcatImplicits {
 
   // int promoting
 
-  implicit val promoteIL: Int => Long = (i: Int) =>
-    if (si.isMissing(i))
-      sl.missing
-    else
-      i.toLong
-  implicit val promoteIF: Int => Float = (i: Int) =>
-    if (si.isMissing(i))
-      sf.missing
-    else
-      i.toFloat
-  implicit val promoteID: Int => Double = (i: Int) =>
-    if (si.isMissing(i))
-      sd.missing
-    else
-      i.toDouble
-  implicit val promoteIR: Int => AnyRef = (i: Int) =>
-    if (si.isMissing(i))
-      sr.missing
-    else
-      Int.box(i)
+  implicit val promoteIL: Int => Long =
+    (i: Int) =>
+      if (si.isMissing(i))
+        sl.missing
+      else
+        i.toLong
+  implicit val promoteIF: Int => Float =
+    (i: Int) =>
+      if (si.isMissing(i))
+        sf.missing
+      else
+        i.toFloat
+  implicit val promoteID: Int => Double =
+    (i: Int) =>
+      if (si.isMissing(i))
+        sd.missing
+      else
+        i.toDouble
+  implicit val promoteIR: Int => AnyRef =
+    (i: Int) =>
+      if (si.isMissing(i))
+        sr.missing
+      else
+        Int.box(i)
 
   implicit object wii extends Promoter[Int, Int, Int](id, id)
 
@@ -326,16 +348,18 @@ object Concat extends LowPriorityConcatImplicits {
 
   // float promoting
 
-  implicit val promoteFD: Float => Double = (i: Float) =>
-    if (sf.isMissing(i))
-      sd.missing
-    else
-      i.toDouble
-  implicit val promoteFR: Float => AnyRef = (i: Float) =>
-    if (sf.isMissing(i))
-      sr.missing
-    else
-      Float.box(i)
+  implicit val promoteFD: Float => Double =
+    (i: Float) =>
+      if (sf.isMissing(i))
+        sd.missing
+      else
+        i.toDouble
+  implicit val promoteFR: Float => AnyRef =
+    (i: Float) =>
+      if (sf.isMissing(i))
+        sr.missing
+      else
+        Float.box(i)
 
   implicit object wff extends Promoter[Float, Float, Float](id, id)
 
@@ -347,16 +371,18 @@ object Concat extends LowPriorityConcatImplicits {
 
   // long promoting
 
-  implicit val promoteLD: Long => Double = (l: Long) =>
-    if (sl.isMissing(l))
-      sd.missing
-    else
-      l.toDouble
-  implicit val promoteLR: Long => AnyRef = (l: Long) =>
-    if (sl.isMissing(l))
-      sr.missing
-    else
-      Long.box(l)
+  implicit val promoteLD: Long => Double =
+    (l: Long) =>
+      if (sl.isMissing(l))
+        sd.missing
+      else
+        l.toDouble
+  implicit val promoteLR: Long => AnyRef =
+    (l: Long) =>
+      if (sl.isMissing(l))
+        sr.missing
+      else
+        Long.box(l)
 
   implicit object wll extends Promoter[Long, Long, Long](id, id)
   implicit object wdl extends Promoter[Long, Double, Double](promoteLD, id)
@@ -366,11 +392,12 @@ object Concat extends LowPriorityConcatImplicits {
 
   // double promoting
 
-  implicit val promoteDR: Double => AnyRef = (d: Double) =>
-    if (sd.isMissing(d))
-      sr.missing
-    else
-      Double.box(d)
+  implicit val promoteDR: Double => AnyRef =
+    (d: Double) =>
+      if (sd.isMissing(d))
+        sr.missing
+      else
+        Double.box(d)
 
   implicit object wdd extends Promoter[Double, Double, Double](id, id)
   implicit object wrd extends Promoter[Double, AnyRef, AnyRef](promoteDR, id)

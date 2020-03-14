@@ -171,11 +171,9 @@ object ArrayDequeFactory {
 }
 
 class ArrayDequeFactory extends AbstractCollectionFactory with DequeFactory {
-  override def implementationName: String =
-    "java.util.ArrayDeque"
+  override def implementationName: String = "java.util.ArrayDeque"
 
-  override def empty[E: ClassTag]: ju.ArrayDeque[E] =
-    new ju.ArrayDeque[E]
+  override def empty[E: ClassTag]: ju.ArrayDeque[E] = new ju.ArrayDeque[E]
 
   def from[E](coll: ju.Collection[E]): ju.ArrayDeque[E] =
     new ju.ArrayDeque[E](coll)

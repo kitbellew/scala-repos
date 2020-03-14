@@ -94,24 +94,25 @@ object BarChartWithTableViewDemo extends JFXApp {
 
   private def showAsTable(name: String, data: ObservableBuffer[Position]) {
 
-    val tableView = new TableView[Position](data) {
-      columns ++= List(
-        new TableColumn[Position, String] {
-          text = "Position"
-          cellValueFactory = {
-            _.value.name
+    val tableView =
+      new TableView[Position](data) {
+        columns ++= List(
+          new TableColumn[Position, String] {
+            text = "Position"
+            cellValueFactory = {
+              _.value.name
+            }
+            prefWidth = 180
+          },
+          new TableColumn[Position, Int] {
+            text = "Value"
+            cellValueFactory = {
+              _.value.value
+            }
+            prefWidth = 180
           }
-          prefWidth = 180
-        },
-        new TableColumn[Position, Int] {
-          text = "Value"
-          cellValueFactory = {
-            _.value.value
-          }
-          prefWidth = 180
-        }
-      )
-    }
+        )
+      }
 
     // Show as modal dialog
     new Stage {

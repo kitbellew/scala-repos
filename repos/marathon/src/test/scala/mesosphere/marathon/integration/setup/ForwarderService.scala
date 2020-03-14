@@ -42,13 +42,14 @@ object ForwarderService {
 
     override def configure(): Unit = {
       val electedAlias = elected
-      val leaderInfo = new LeaderInfo {
-        override def elected: Boolean = electedAlias
-        override def currentLeaderHostPort(): Option[String] = leaderHostPort
+      val leaderInfo =
+        new LeaderInfo {
+          override def elected: Boolean = electedAlias
+          override def currentLeaderHostPort(): Option[String] = leaderHostPort
 
-        override def subscribe(self: ActorRef): Unit = ???
-        override def unsubscribe(self: ActorRef): Unit = ???
-      }
+          override def subscribe(self: ActorRef): Unit = ???
+          override def unsubscribe(self: ActorRef): Unit = ???
+        }
 
       bind(classOf[LeaderInfo]).toInstance(leaderInfo)
     }
@@ -105,12 +106,13 @@ object ForwarderService {
   }
 
   def main(args: Array[String]) {
-    val service = args(0) match {
-      case "helloApp" =>
-        createHelloApp(args.tail: _*)
-      case "forwarder" =>
-        createForwarder(forwardToPort = args(1).toInt, args.drop(2): _*)
-    }
+    val service =
+      args(0) match {
+        case "helloApp" =>
+          createHelloApp(args.tail: _*)
+        case "forwarder" =>
+          createForwarder(forwardToPort = args(1).toInt, args.drop(2): _*)
+      }
     service.startAsync().awaitRunning()
     service.awaitTerminated()
   }
@@ -133,8 +135,9 @@ object ForwarderService {
   }
 
   private[this] def createConf(args: String*): ForwarderConf = {
-    val conf = new ForwarderConf(
-      Array[String]("--assets_path", "/tmp") ++ args.map(_.toString))
+    val conf =
+      new ForwarderConf(
+        Array[String]("--assets_path", "/tmp") ++ args.map(_.toString))
     conf.afterInit()
     conf
   }

@@ -28,25 +28,26 @@ object HashEqualsArrayWrapper {
   def wrapByClassFn[T](
       clazz: Class[Array[T]]): Array[T] => HashEqualsArrayWrapper[T] = {
 
-    val fn = clazz match {
-      case c if classOf[Array[Long]].equals(c) =>
-        a: Array[Long] => new HashEqualsLongArrayWrapper(a)
-      case c if classOf[Array[Int]].equals(c) =>
-        a: Array[Int] => new HashEqualsIntArrayWrapper(a)
-      case c if classOf[Array[Short]].equals(c) =>
-        a: Array[Short] => new HashEqualsShortArrayWrapper(a)
-      case c if classOf[Array[Char]].equals(c) =>
-        a: Array[Char] => new HashEqualsCharArrayWrapper(a)
-      case c if classOf[Array[Byte]].equals(c) =>
-        a: Array[Byte] => new HashEqualsByteArrayWrapper(a)
-      case c if classOf[Array[Boolean]].equals(c) =>
-        a: Array[Boolean] => new HashEqualsBooleanArrayWrapper(a)
-      case c if classOf[Array[Float]].equals(c) =>
-        a: Array[Float] => new HashEqualsFloatArrayWrapper(a)
-      case c if classOf[Array[Double]].equals(c) =>
-        a: Array[Double] => new HashEqualsDoubleArrayWrapper(a)
-      case c => a: Array[T] => new HashEqualsObjectArrayWrapper(a)
-    }
+    val fn =
+      clazz match {
+        case c if classOf[Array[Long]].equals(c) =>
+          a: Array[Long] => new HashEqualsLongArrayWrapper(a)
+        case c if classOf[Array[Int]].equals(c) =>
+          a: Array[Int] => new HashEqualsIntArrayWrapper(a)
+        case c if classOf[Array[Short]].equals(c) =>
+          a: Array[Short] => new HashEqualsShortArrayWrapper(a)
+        case c if classOf[Array[Char]].equals(c) =>
+          a: Array[Char] => new HashEqualsCharArrayWrapper(a)
+        case c if classOf[Array[Byte]].equals(c) =>
+          a: Array[Byte] => new HashEqualsByteArrayWrapper(a)
+        case c if classOf[Array[Boolean]].equals(c) =>
+          a: Array[Boolean] => new HashEqualsBooleanArrayWrapper(a)
+        case c if classOf[Array[Float]].equals(c) =>
+          a: Array[Float] => new HashEqualsFloatArrayWrapper(a)
+        case c if classOf[Array[Double]].equals(c) =>
+          a: Array[Double] => new HashEqualsDoubleArrayWrapper(a)
+        case c => a: Array[T] => new HashEqualsObjectArrayWrapper(a)
+      }
 
     fn.asInstanceOf[(Array[T] => HashEqualsArrayWrapper[T])]
   }
@@ -60,47 +61,49 @@ object HashEqualsArrayWrapper {
   def wrapByClassTagFn[T: ClassTag]: Array[T] => HashEqualsArrayWrapper[T] =
     wrapByClassFn(classForTag(implicitly[ClassTag[T]].wrap))
 
-  implicit val longArrayOrd: Ordering[Array[Long]] = new Ordering[Array[Long]] {
-    override def compare(x: Array[Long], y: Array[Long]): Int = {
-      val lenCmp = java.lang.Integer.compare(x.length, y.length)
+  implicit val longArrayOrd: Ordering[Array[Long]] =
+    new Ordering[Array[Long]] {
+      override def compare(x: Array[Long], y: Array[Long]): Int = {
+        val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
-        lenCmp
-      } else if (x.length == 0) {
-        0
-      } else {
-        val len = x.length
-        var i = 1
-        var cmp = java.lang.Long.compare(x(0), y(0))
-        while (i < len && cmp == 0) {
-          cmp = java.lang.Long.compare(x(i), y(i))
-          i = i + 1
+        if (lenCmp != 0) {
+          lenCmp
+        } else if (x.length == 0) {
+          0
+        } else {
+          val len = x.length
+          var i = 1
+          var cmp = java.lang.Long.compare(x(0), y(0))
+          while (i < len && cmp == 0) {
+            cmp = java.lang.Long.compare(x(i), y(i))
+            i = i + 1
+          }
+          cmp
         }
-        cmp
       }
     }
-  }
 
-  implicit val intArrayOrd: Ordering[Array[Int]] = new Ordering[Array[Int]] {
-    override def compare(x: Array[Int], y: Array[Int]): Int = {
-      val lenCmp = java.lang.Integer.compare(x.length, y.length)
+  implicit val intArrayOrd: Ordering[Array[Int]] =
+    new Ordering[Array[Int]] {
+      override def compare(x: Array[Int], y: Array[Int]): Int = {
+        val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
-        lenCmp
-      } else if (x.length == 0) {
-        0
-      } else {
-        val len = x.length
-        var i = 1
-        var cmp = java.lang.Integer.compare(x(0), y(0))
-        while (i < len && cmp == 0) {
-          cmp = java.lang.Integer.compare(x(i), y(i))
-          i = i + 1
+        if (lenCmp != 0) {
+          lenCmp
+        } else if (x.length == 0) {
+          0
+        } else {
+          val len = x.length
+          var i = 1
+          var cmp = java.lang.Integer.compare(x(0), y(0))
+          while (i < len && cmp == 0) {
+            cmp = java.lang.Integer.compare(x(i), y(i))
+            i = i + 1
+          }
+          cmp
         }
-        cmp
       }
     }
-  }
 
   implicit val shortArrayOrd: Ordering[Array[Short]] =
     new Ordering[Array[Short]] {
@@ -124,47 +127,49 @@ object HashEqualsArrayWrapper {
       }
     }
 
-  implicit val charArrayOrd: Ordering[Array[Char]] = new Ordering[Array[Char]] {
-    override def compare(x: Array[Char], y: Array[Char]): Int = {
-      val lenCmp = java.lang.Integer.compare(x.length, y.length)
+  implicit val charArrayOrd: Ordering[Array[Char]] =
+    new Ordering[Array[Char]] {
+      override def compare(x: Array[Char], y: Array[Char]): Int = {
+        val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
-        lenCmp
-      } else if (x.length == 0) {
-        0
-      } else {
-        val len = x.length
-        var i = 1
-        var cmp = java.lang.Character.compare(x(0), y(0))
-        while (i < len && cmp == 0) {
-          cmp = java.lang.Character.compare(x(i), y(i))
-          i = i + 1
+        if (lenCmp != 0) {
+          lenCmp
+        } else if (x.length == 0) {
+          0
+        } else {
+          val len = x.length
+          var i = 1
+          var cmp = java.lang.Character.compare(x(0), y(0))
+          while (i < len && cmp == 0) {
+            cmp = java.lang.Character.compare(x(i), y(i))
+            i = i + 1
+          }
+          cmp
         }
-        cmp
       }
     }
-  }
 
-  implicit val byteArrayOrd: Ordering[Array[Byte]] = new Ordering[Array[Byte]] {
-    override def compare(x: Array[Byte], y: Array[Byte]): Int = {
-      val lenCmp = java.lang.Integer.compare(x.length, y.length)
+  implicit val byteArrayOrd: Ordering[Array[Byte]] =
+    new Ordering[Array[Byte]] {
+      override def compare(x: Array[Byte], y: Array[Byte]): Int = {
+        val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
-        lenCmp
-      } else if (x.length == 0) {
-        0
-      } else {
-        val len = x.length
-        var i = 1
-        var cmp = java.lang.Byte.compare(x(0), y(0))
-        while (i < len && cmp == 0) {
-          cmp = java.lang.Byte.compare(x(i), y(i))
-          i = i + 1
+        if (lenCmp != 0) {
+          lenCmp
+        } else if (x.length == 0) {
+          0
+        } else {
+          val len = x.length
+          var i = 1
+          var cmp = java.lang.Byte.compare(x(0), y(0))
+          while (i < len && cmp == 0) {
+            cmp = java.lang.Byte.compare(x(i), y(i))
+            i = i + 1
+          }
+          cmp
         }
-        cmp
       }
     }
-  }
 
   implicit val booleanArrayOrd: Ordering[Array[Boolean]] =
     new Ordering[Array[Boolean]] {

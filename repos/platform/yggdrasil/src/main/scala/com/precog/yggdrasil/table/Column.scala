@@ -254,8 +254,7 @@ trait DoubleColumn extends Column with (Int => Double) {
 trait NumColumn extends Column with (Int => BigDecimal) {
   def apply(row: Int): BigDecimal
   def rowEq(row1: Int, row2: Int): Boolean = apply(row1) == apply(row2)
-  def rowCompare(row1: Int, row2: Int): Int =
-    apply(row1) compare apply(row2)
+  def rowCompare(row1: Int, row2: Int): Int = apply(row1) compare apply(row2)
 
   override val tpe = CNum
   override def jValue(row: Int) = JNum(this(row))
@@ -267,8 +266,7 @@ trait NumColumn extends Column with (Int => BigDecimal) {
 trait StrColumn extends Column with (Int => String) {
   def apply(row: Int): String
   def rowEq(row1: Int, row2: Int): Boolean = apply(row1) == apply(row2)
-  def rowCompare(row1: Int, row2: Int): Int =
-    apply(row1) compareTo apply(row2)
+  def rowCompare(row1: Int, row2: Int): Int = apply(row1) compareTo apply(row2)
 
   override val tpe = CString
   override def jValue(row: Int) = JString(this(row))
@@ -280,8 +278,7 @@ trait StrColumn extends Column with (Int => String) {
 trait DateColumn extends Column with (Int => DateTime) {
   def apply(row: Int): DateTime
   def rowEq(row1: Int, row2: Int): Boolean = apply(row1) == apply(row2)
-  def rowCompare(row1: Int, row2: Int): Int =
-    apply(row1) compareTo apply(row2)
+  def rowCompare(row1: Int, row2: Int): Int = apply(row1) compareTo apply(row2)
 
   override val tpe = CDate
   override def jValue(row: Int) = JString(this(row).toString)
@@ -363,19 +360,20 @@ object UndefinedColumn {
         sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
     }
 
-  val raw = new Column {
-    def rowEq(row1: Int, row2: Int): Boolean =
-      sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
-    def rowCompare(row1: Int, row2: Int): Int =
-      sys.error("Cannot compare undefined values.")
-    def isDefinedAt(row: Int) = false
-    val tpe = CUndefined
-    def jValue(row: Int) =
-      sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
-    def cValue(row: Int) = CUndefined
-    def strValue(row: Int) =
-      sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
-  }
+  val raw =
+    new Column {
+      def rowEq(row1: Int, row2: Int): Boolean =
+        sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
+      def rowCompare(row1: Int, row2: Int): Int =
+        sys.error("Cannot compare undefined values.")
+      def isDefinedAt(row: Int) = false
+      val tpe = CUndefined
+      def jValue(row: Int) =
+        sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
+      def cValue(row: Int) = CUndefined
+      def strValue(row: Int) =
+        sys.error("Values in undefined columns SHOULD NOT BE ACCESSED")
+    }
 }
 
 case class MmixPrng(_seed: Long) {
@@ -434,28 +432,29 @@ object Column {
     }
 
   @inline def uniformDistribution(init: MmixPrng): (Column, MmixPrng) = {
-    val col = new InfiniteColumn with DoubleColumn {
-      var memo = scala.collection.mutable.ArrayBuffer.empty[Double]
+    val col =
+      new InfiniteColumn with DoubleColumn {
+        var memo = scala.collection.mutable.ArrayBuffer.empty[Double]
 
-      def apply(row: Int) = {
-        val maxRowComputed = memo.length
+        def apply(row: Int) = {
+          val maxRowComputed = memo.length
 
-        if (row < maxRowComputed) {
-          memo(row)
-        } else {
-          var i = maxRowComputed
-          var res = 0d
+          if (row < maxRowComputed) {
+            memo(row)
+          } else {
+            var i = maxRowComputed
+            var res = 0d
 
-          while (i <= row) {
-            res = init.nextDouble()
-            memo += res
-            i += 1
+            while (i <= row) {
+              res = init.nextDouble()
+              memo += res
+              i += 1
+            }
+
+            res
           }
-
-          res
         }
       }
-    }
     (col, init)
   }
 

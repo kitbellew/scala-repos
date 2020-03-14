@@ -22,24 +22,27 @@ package scalac.util {
   object test {
     val b: B {
       type Y = Int
-    } = new B {
-      type Y = Int;
-      val y1, y2 = 1;
-    }
+    } =
+      new B {
+        type Y = Int;
+        val y1, y2 = 1;
+      }
     val a: A {
       type X1 = Int;
       type X2 = Int
     } = b;
-    val a1 = new A {
-      type X1 = Int;
-      type X2 = String;
-      val x1 = 1;
-      val x2 = "hello"
-    }
-    val b1 = new B {
-      type Y = Any;
-      val y1 = 1;
-      val y2 = "hello";
-    }
+    val a1 =
+      new A {
+        type X1 = Int;
+        type X2 = String;
+        val x1 = 1;
+        val x2 = "hello"
+      }
+    val b1 =
+      new B {
+        type Y = Any;
+        val y1 = 1;
+        val y2 = "hello";
+      }
   }
 }

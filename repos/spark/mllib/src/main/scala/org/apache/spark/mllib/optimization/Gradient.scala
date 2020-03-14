@@ -195,38 +195,41 @@ class LogisticGradient(numClasses: Int) extends Gradient {
         /**
           * For Multinomial Logistic Regression.
           */
-        val weightsArray = weights match {
-          case dv: DenseVector => dv.values
-          case _ =>
-            throw new IllegalArgumentException(
-              s"weights only supports dense vector but got type ${weights.getClass}.")
-        }
-        val cumGradientArray = cumGradient match {
-          case dv: DenseVector => dv.values
-          case _ =>
-            throw new IllegalArgumentException(
-              s"cumGradient only supports dense vector but got type ${cumGradient.getClass}.")
-        }
+        val weightsArray =
+          weights match {
+            case dv: DenseVector => dv.values
+            case _ =>
+              throw new IllegalArgumentException(
+                s"weights only supports dense vector but got type ${weights.getClass}.")
+          }
+        val cumGradientArray =
+          cumGradient match {
+            case dv: DenseVector => dv.values
+            case _ =>
+              throw new IllegalArgumentException(
+                s"cumGradient only supports dense vector but got type ${cumGradient.getClass}.")
+          }
 
         // marginY is margins(label - 1) in the formula.
         var marginY = 0.0
         var maxMargin = Double.NegativeInfinity
         var maxMarginIndex = 0
 
-        val margins = Array.tabulate(numClasses - 1) { i =>
-          var margin = 0.0
-          data.foreachActive { (index, value) =>
-            if (value != 0.0)
-              margin += value * weightsArray((i * dataSize) + index)
+        val margins =
+          Array.tabulate(numClasses - 1) { i =>
+            var margin = 0.0
+            data.foreachActive { (index, value) =>
+              if (value != 0.0)
+                margin += value * weightsArray((i * dataSize) + index)
+            }
+            if (i == label.toInt - 1)
+              marginY = margin
+            if (margin > maxMargin) {
+              maxMargin = margin
+              maxMarginIndex = i
+            }
+            margin
           }
-          if (i == label.toInt - 1)
-            marginY = margin
-          if (margin > maxMargin) {
-            maxMargin = margin
-            maxMarginIndex = i
-          }
-          margin
-        }
 
         /**
           * When maxMargin > 0, the original formula will cause overflow as we discuss

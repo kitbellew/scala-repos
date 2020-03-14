@@ -725,10 +725,11 @@ trait TypeDiagnostics {
           )) // it's okay to jump to matchEnd (or another case) with an argument of type nothing
 
       private def treeOK(tree: Tree) = {
-        val isLabelDef = tree match {
-          case _: LabelDef => true;
-          case _           => false
-        }
+        val isLabelDef =
+          tree match {
+            case _: LabelDef => true;
+            case _           => false
+          }
         tree.tpe != null && tree.tpe.typeSymbol == NothingClass && !isLabelDef
       }
 
@@ -827,10 +828,11 @@ trait TypeDiagnostics {
             // see comments to TypeSigError for an explanation of this special case
             throw ex
           } else {
-            val pos = info.tree match {
-              case Import(expr, _) => expr.pos
-              case _               => ex.pos
-            }
+            val pos =
+              info.tree match {
+                case Import(expr, _) => expr.pos
+                case _               => ex.pos
+              }
             context0.error(
               pos,
               cyclicReferenceMessage(sym, info.tree) getOrElse ex.getMessage())

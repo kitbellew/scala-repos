@@ -90,8 +90,7 @@ class Duration(override val delegate: jfxu.Duration)
     *
     * @param millis The length of the $D in milliseconds
     */
-  def this(millis: Double) =
-    this(jfxu.Duration.millis(millis))
+  def this(millis: Double) = this(jfxu.Duration.millis(millis))
 
   def +(d: jfxu.Duration) = new Duration(delegate.add(d))
   def -(d: jfxu.Duration) = new Duration(delegate.subtract(d))

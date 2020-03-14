@@ -87,26 +87,27 @@ trait DefaultActorPool extends ActorPool { this: Actor =>
 
   private def resizeIfAppropriate() {
     val requestedCapacity = capacity(_delegates)
-    val newDelegates = requestedCapacity match {
-      case qty if qty > 0 =>
-        _delegates ++ {
-          for (i ← 0 until requestedCapacity)
-            yield {
-              val delegate = instance()
-              self startLink delegate
-              delegate
-            }
-        }
-      case qty if qty < 0 =>
-        _delegates.splitAt(_delegates.length + requestedCapacity) match {
-          case (keep, abandon) =>
-            abandon foreach {
-              _ ! PoisonPill
-            }
-            keep
-        }
-      case _ => _delegates //No change
-    }
+    val newDelegates =
+      requestedCapacity match {
+        case qty if qty > 0 =>
+          _delegates ++ {
+            for (i ← 0 until requestedCapacity)
+              yield {
+                val delegate = instance()
+                self startLink delegate
+                delegate
+              }
+          }
+        case qty if qty < 0 =>
+          _delegates.splitAt(_delegates.length + requestedCapacity) match {
+            case (keep, abandon) =>
+              abandon foreach {
+                _ ! PoisonPill
+              }
+              keep
+          }
+        case _ => _delegates //No change
+      }
 
     _lastCapacityChange = requestedCapacity
     _delegates = newDelegates

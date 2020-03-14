@@ -371,12 +371,13 @@ object Codec {
         }
 
       var n = sn
-      val lo = if (sn < 0) {
-        n = ~sn
-        n & 0x3FL | 0x40L
-      } else {
-        n & 0x3FL
-      }
+      val lo =
+        if (sn < 0) {
+          n = ~sn
+          n & 0x3FL | 0x40L
+        } else {
+          n & 0x3FL
+        }
 
       if ((~0x3FL & n) != 0) {
         buf.put((lo | 0x80L).toByte)
@@ -415,8 +416,8 @@ object Codec {
     }
   }
 
-  implicit val DateCodec =
-    Codec[Long].as[DateTime](_.getMillis, new DateTime(_))
+  implicit val DateCodec = Codec[Long]
+    .as[DateTime](_.getMillis, new DateTime(_))
 
   implicit val PeriodCodec = Codec[Long].as[Period](_.getMillis, new Period(_))
 
@@ -556,9 +557,10 @@ object Codec {
       } + 5
 
     def encodedSize(as: IndexedSeq[A]): Int = {
-      val size = as.foldLeft(0) { (acc, a) =>
-        acc + elemCodec.encodedSize(a)
-      }
+      val size =
+        as.foldLeft(0) { (acc, a) =>
+          acc + elemCodec.encodedSize(a)
+        }
       size + sizePackedInt(as.size)
     }
 

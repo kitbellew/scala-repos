@@ -325,8 +325,9 @@ object Messages {
       case s => Comment(s)
     }
 
-    val messageKey =
-      namedError("""^[a-zA-Z0-9_.-]+""".r, "Message key expected")
+    val messageKey = namedError(
+      """^[a-zA-Z0-9_.-]+""".r,
+      "Message key expected")
 
     val messagePattern = namedError(
       rep(
@@ -528,18 +529,19 @@ class DefaultMessagesApi @Inject() (
 
   import java.text._
 
-  protected val messagesPrefix =
-    config.getDeprecated[Option[String]]("play.i18n.path", "messages.path")
+  protected val messagesPrefix = config
+    .getDeprecated[Option[String]]("play.i18n.path", "messages.path")
   val messages: Map[String, Map[String, String]] = loadAllMessages
 
   def preferred(candidates: Seq[Lang]) =
     Messages(langs.preferred(candidates), this)
 
   def preferred(request: RequestHeader) = {
-    val maybeLangFromCookie =
-      request.cookies.get(langCookieName).flatMap(c => Lang.get(c.value))
-    val lang =
-      langs.preferred(maybeLangFromCookie.toSeq ++ request.acceptLanguages)
+    val maybeLangFromCookie = request.cookies
+      .get(langCookieName)
+      .flatMap(c => Lang.get(c.value))
+    val lang = langs.preferred(
+      maybeLangFromCookie.toSeq ++ request.acceptLanguages)
     Messages(lang, this)
   }
 
@@ -634,16 +636,14 @@ class DefaultMessagesApi @Inject() (
       .+("default.play" -> loadMessages("messages.default"))
   }
 
-  lazy val langCookieName =
-    config.getDeprecated[String](
-      "play.i18n.langCookieName",
-      "application.lang.cookie")
+  lazy val langCookieName = config.getDeprecated[String](
+    "play.i18n.langCookieName",
+    "application.lang.cookie")
 
-  lazy val langCookieSecure =
-    config.get[Boolean]("play.i18n.langCookieSecure")
+  lazy val langCookieSecure = config.get[Boolean]("play.i18n.langCookieSecure")
 
-  lazy val langCookieHttpOnly =
-    config.get[Boolean]("play.i18n.langCookieHttpOnly")
+  lazy val langCookieHttpOnly = config.get[Boolean](
+    "play.i18n.langCookieHttpOnly")
 
 }
 

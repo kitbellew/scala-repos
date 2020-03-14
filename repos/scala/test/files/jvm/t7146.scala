@@ -12,15 +12,16 @@ object Test {
     else
       println(s"!! ExecutionContext.global == $ec")
 
-    val u = ExecutionContext.global
-      .asInstanceOf[{
-        def executor: Executor
-      }]
-      .executor
-      .asInstanceOf[{
-        def getUncaughtExceptionHandler: Thread.UncaughtExceptionHandler
-      }]
-      .getUncaughtExceptionHandler
+    val u =
+      ExecutionContext.global
+        .asInstanceOf[{
+          def executor: Executor
+        }]
+        .executor
+        .asInstanceOf[{
+          def getUncaughtExceptionHandler: Thread.UncaughtExceptionHandler
+        }]
+        .getUncaughtExceptionHandler
     println(s"should have non-null UncaughtExceptionHandler == ${u ne null}")
     if (u.toString startsWith "scala.concurrent.impl.ExecutionContextImpl")
       println(

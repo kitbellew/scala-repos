@@ -226,8 +226,10 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def typeParamsDepth(typeParams: Array[TypeParameter]): Int = {
     typeParams.map {
       case typeParam =>
-        val boundsDepth =
-          typeParam.lowerType().typeDepth.max(typeParam.upperType().typeDepth)
+        val boundsDepth = typeParam
+          .lowerType()
+          .typeDepth
+          .max(typeParam.upperType().typeDepth)
         if (typeParam.typeParams.nonEmpty) {
           (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
         } else
@@ -331,8 +333,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case None         => None
         }
       case std @ StdType(_, _) =>
-        val asClass =
-          std.asClass(project.getOrElse(DecompilerUtil.obtainProject))
+        val asClass = std.asClass(
+          project.getOrElse(DecompilerUtil.obtainProject))
         if (asClass.isEmpty)
           return None
         Some((asClass.get, ScSubstitutor.empty))
@@ -559,19 +561,20 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         StdType.QualNameToType
           .getOrElse(td.qualifiedName, new ScDesignatorType(element))
       case _ =>
-        val clazzOpt = element match {
-          case p: ScClassParameter => Option(p.containingClass)
-          case _ =>
-            element.getContext match {
-              case _: ScTemplateBody | _: ScEarlyDefinitions =>
-                Option(
-                  ScalaPsiUtil.contextOfType(
-                    element,
-                    strict = true,
-                    classOf[ScTemplateDefinition]))
-              case _ => None
-            }
-        }
+        val clazzOpt =
+          element match {
+            case p: ScClassParameter => Option(p.containingClass)
+            case _ =>
+              element.getContext match {
+                case _: ScTemplateBody | _: ScEarlyDefinitions =>
+                  Option(
+                    ScalaPsiUtil.contextOfType(
+                      element,
+                      strict = true,
+                      classOf[ScTemplateDefinition]))
+                case _ => None
+              }
+          }
 
         clazzOpt match {
           case Some(clazz) =>
@@ -584,24 +587,25 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def ofNamedElement(
       named: PsiElement,
       s: ScSubstitutor = ScSubstitutor.empty): Option[ScType] = {
-    val baseType = named match {
-      case p: ScPrimaryConstructor          => None
-      case e: ScFunction if e.isConstructor => None
-      case e: ScFunction                    => e.returnType.toOption
-      case e: ScBindingPattern              => e.getType(TypingContext.empty).toOption
-      case e: ScFieldId                     => e.getType(TypingContext.empty).toOption
-      case e: ScParameter =>
-        e.getRealParameterType(TypingContext.empty).toOption
-      case e: PsiMethod if e.isConstructor => None
-      case e: PsiMethod =>
-        create(
-          e.getReturnType,
-          named.getProject,
-          named.getResolveScope).toOption
-      case e: PsiVariable =>
-        create(e.getType, named.getProject, named.getResolveScope).toOption
-      case _ => None
-    }
+    val baseType =
+      named match {
+        case p: ScPrimaryConstructor          => None
+        case e: ScFunction if e.isConstructor => None
+        case e: ScFunction                    => e.returnType.toOption
+        case e: ScBindingPattern              => e.getType(TypingContext.empty).toOption
+        case e: ScFieldId                     => e.getType(TypingContext.empty).toOption
+        case e: ScParameter =>
+          e.getRealParameterType(TypingContext.empty).toOption
+        case e: PsiMethod if e.isConstructor => None
+        case e: PsiMethod =>
+          create(
+            e.getReturnType,
+            named.getProject,
+            named.getResolveScope).toOption
+        case e: PsiVariable =>
+          create(e.getType, named.getProject, named.getResolveScope).toOption
+        case _ => None
+      }
     baseType.map(s.subst)
   }
 

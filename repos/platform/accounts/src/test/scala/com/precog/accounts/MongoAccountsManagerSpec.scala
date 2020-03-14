@@ -102,11 +102,12 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
     }
 
     "succeed in deleting a previously deleted Account" in new AccountManager {
-      type Results = (
-          Option[Account],
-          Option[Account],
-          Option[Account],
-          Option[Account]) //, Option[Account])
+      type Results =
+        (
+            Option[Account],
+            Option[Account],
+            Option[Account],
+            Option[Account]) //, Option[Account])
 
       (for {
         before <- accountManager.findAccountById(account.accountId)
@@ -194,41 +195,45 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
 
   val dbInstance = new AtomicInteger
 
-  val defaultSettings = new MongoAccountManagerSettings {
-    def accounts: String = "accounts"
-    def deletedAccounts: String = "deleted_accounts"
-    def timeout: Timeout = new Timeout(30000)
+  val defaultSettings =
+    new MongoAccountManagerSettings {
+      def accounts: String = "accounts"
+      def deletedAccounts: String = "deleted_accounts"
+      def timeout: Timeout = new Timeout(30000)
 
-    def resetTokens: String = "reset_tokens"
-    def resetTokenExpirationMinutes: Int = 30
-  }
+      def resetTokens: String = "reset_tokens"
+      def resetTokenExpirationMinutes: Int = 30
+    }
 
   class AccountManager extends After {
     val defaultActorSystem = ActorSystem("AccountManagerTest")
-    implicit val execContext =
-      ExecutionContext.defaultExecutionContext(defaultActorSystem)
+    implicit val execContext = ExecutionContext.defaultExecutionContext(
+      defaultActorSystem)
     implicit val M =
       new UnsafeFutureComonad(execContext, Duration(60, "seconds"))
 
-    val accountManager = new MongoAccountManager(
-      mongo,
-      mongo.database("test_v1_" + dbInstance.getAndIncrement),
-      defaultSettings) {
-      def newAccountId = M.point("test%04d".format(dbInstance.getAndIncrement))
-    }
+    val accountManager =
+      new MongoAccountManager(
+        mongo,
+        mongo.database("test_v1_" + dbInstance.getAndIncrement),
+        defaultSettings) {
+        def newAccountId =
+          M.point("test%04d".format(dbInstance.getAndIncrement))
+      }
 
     val notFoundAccountId = "NOT-GOING-TO-FIND"
     val origPassword = "test password"
 
-    val account = (accountManager
-      .createAccount(
-        "test@precog.com",
-        origPassword,
-        new DateTime,
-        AccountPlan.Free) { _ =>
-        M.point("testapikey")
-      })
-      .copoint
+    val account =
+      (accountManager
+        .createAccount(
+          "test@precog.com",
+          origPassword,
+          new DateTime,
+          AccountPlan.Free) { _ =>
+          M.point("testapikey")
+        })
+        .copoint
 
     def after = {
       defaultActorSystem.shutdown

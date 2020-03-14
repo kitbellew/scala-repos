@@ -58,8 +58,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Functor[Arbitrary].map(arb[BigInt])(_.bigInteger)
 
   implicit val BigIntegerMultiplicationArbitrary
-      : Arbitrary[BigInteger @@ Multiplication] =
-    Tag.subst[BigInteger, Arbitrary, Multiplication](arb[BigInteger])
+      : Arbitrary[BigInteger @@ Multiplication] = Tag
+    .subst[BigInteger, Arbitrary, Multiplication](arb[BigInteger])
 
   implicit val BigIntMultiplicationArbitrary
       : Arbitrary[BigInt @@ Multiplication] = Tag.subst(arb[BigInt])
@@ -129,21 +129,22 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
         Stream.fill(size)(Gen.choose(1, size))
       )
       .flatMap { s =>
-        val ns = Traverse[Stream]
-          .traverseS(s) { n =>
-            for {
-              sum <- State.get[Int]
-              r <- if (sum >= size) {
-                State.state[Int, Option[Int]](None)
-              } else if ((sum + n) > size) {
-                State((s: Int) => (s + n) -> Option(size - sum))
-              } else {
-                State((s: Int) => (s + n) -> Option(n))
-              }
-            } yield r
-          }
-          .eval(0)
-          .flatten
+        val ns =
+          Traverse[Stream]
+            .traverseS(s) { n =>
+              for {
+                sum <- State.get[Int]
+                r <- if (sum >= size) {
+                  State.state[Int, Option[Int]](None)
+                } else if ((sum + n) > size) {
+                  State((s: Int) => (s + n) -> Option(size - sum))
+                } else {
+                  State((s: Int) => (s + n) -> Option(n))
+                }
+              } yield r
+            }
+            .eval(0)
+            .flatten
 
         Applicative[Gen].sequence(ns.map(f))
       }

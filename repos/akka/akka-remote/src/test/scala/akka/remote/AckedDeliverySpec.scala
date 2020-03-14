@@ -230,11 +230,12 @@ class AckedDeliverySpec extends AkkaSpec {
       val msg1 = msg(1)
       val msg2 = msg(2)
 
-      val (buf2, _, _) = buf
-        .receive(msg0)
-        .receive(msg1)
-        .receive(msg2)
-        .extractDeliverable
+      val (buf2, _, _) =
+        buf
+          .receive(msg0)
+          .receive(msg1)
+          .receive(msg2)
+          .extractDeliverable
 
       val buf3 = buf2
         .receive(msg0)
@@ -298,12 +299,13 @@ class AckedDeliverySpec extends AkkaSpec {
       def senderSteps(steps: Int, p: Double = 1.0) = {
         val resends = (sndBuf.nacked ++ sndBuf.nonAcked).take(steps)
 
-        val sends = if (steps - resends.size > 0) {
-          val tmp = toSend.take(steps - resends.size)
-          toSend = toSend.drop(steps - resends.size)
-          tmp
-        } else
-          Seq.empty[Sequenced]
+        val sends =
+          if (steps - resends.size > 0) {
+            val tmp = toSend.take(steps - resends.size)
+            toSend = toSend.drop(steps - resends.size)
+            tmp
+          } else
+            Seq.empty[Sequenced]
 
         (resends ++ sends) foreach { msg ⇒
           if (sends.contains(msg))

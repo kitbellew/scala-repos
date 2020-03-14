@@ -63,8 +63,8 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
     val shuffledRdd =
       new ShuffledRDD[Int, Int, Int](rdd, new HashPartitioner(4))
         .setSerializer(new KryoSerializer(conf))
-    val shuffleDep =
-      shuffledRdd.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
+    val shuffleDep = shuffledRdd.dependencies.head
+      .asInstanceOf[ShuffleDependency[_, _, _]]
     assert(SortShuffleManager.canUseSerializedShuffle(shuffleDep))
     ensureFilesAreCleanedUp(shuffledRdd)
   }
@@ -77,8 +77,8 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
     val shuffledRdd =
       new ShuffledRDD[Int, Int, Int](rdd, new HashPartitioner(4))
         .setSerializer(new JavaSerializer(conf))
-    val shuffleDep =
-      shuffledRdd.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
+    val shuffleDep = shuffledRdd.dependencies.head
+      .asInstanceOf[ShuffleDependency[_, _, _]]
     assert(!SortShuffleManager.canUseSerializedShuffle(shuffleDep))
     ensureFilesAreCleanedUp(shuffledRdd)
   }

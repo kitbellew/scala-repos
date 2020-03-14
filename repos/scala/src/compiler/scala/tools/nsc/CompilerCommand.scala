@@ -53,10 +53,11 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     def format(s: String) = ("%-" + width + "s") format s
     def helpStr(s: Setting) = {
       val str = format(s.helpSyntax) + "  " + s.helpDescription
-      val suffix = s.deprecationMessage match {
-        case Some(msg) => "\n" + format("") + "      deprecated: " + msg
-        case _         => ""
-      }
+      val suffix =
+        s.deprecationMessage match {
+          case Some(msg) => "\n" + format("") + "      deprecated: " + msg
+          case _         => ""
+        }
       str + suffix
     }
     val debugs = baseList filter (_.isForDebug)

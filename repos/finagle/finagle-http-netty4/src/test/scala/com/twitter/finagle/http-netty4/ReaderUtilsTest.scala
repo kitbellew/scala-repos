@@ -23,8 +23,8 @@ class ReaderUtilsTest extends FunSuite {
 
   test("readChunk: returned bufs have same content as http chunk") {
     val input = Array[Byte](1, 2, 3)
-    val output =
-      readChunk(new DefaultHttpContent(Unpooled.wrappedBuffer(input)))
+    val output = readChunk(
+      new DefaultHttpContent(Unpooled.wrappedBuffer(input)))
     assert(Await.result(output, 2.seconds) == Some(Buf.ByteArray.Owned(input)))
   }
 
@@ -54,8 +54,9 @@ class ReaderUtilsTest extends FunSuite {
 
     streamChunks(tr, rw)
 
-    val chunk =
-      Await.result(chunk1F, 2.seconds).asInstanceOf[NettyHttp.HttpContent]
+    val chunk = Await
+      .result(chunk1F, 2.seconds)
+      .asInstanceOf[NettyHttp.HttpContent]
 
     assert(chunk.content.toString(UTF_8) == "msg1")
 
@@ -63,35 +64,38 @@ class ReaderUtilsTest extends FunSuite {
 
     rw.write(Buf.Utf8("msg2"))
 
-    val chunk2 =
-      Await.result(chunk2F, 2.seconds).asInstanceOf[NettyHttp.HttpContent]
+    val chunk2 = Await
+      .result(chunk2F, 2.seconds)
+      .asInstanceOf[NettyHttp.HttpContent]
     assert(chunk2.content.toString(UTF_8) == "msg2")
 
     Await.ready(rw.close(), 2.seconds)
 
-    val lastChunk =
-      Await.result(write.poll(), 2.seconds).asInstanceOf[NettyHttp.HttpContent]
+    val lastChunk = Await
+      .result(write.poll(), 2.seconds)
+      .asInstanceOf[NettyHttp.HttpContent]
 
     assert(lastChunk.isInstanceOf[NettyHttp.LastHttpContent])
   }
 
-  val failingT = new Transport[Any, Any] {
-    def write(req: Any): Future[Unit] = Future.exception(new Exception("nop"))
+  val failingT =
+    new Transport[Any, Any] {
+      def write(req: Any): Future[Unit] = Future.exception(new Exception("nop"))
 
-    def remoteAddress: SocketAddress = ???
+      def remoteAddress: SocketAddress = ???
 
-    def peerCertificate: Option[Certificate] = ???
+      def peerCertificate: Option[Certificate] = ???
 
-    def localAddress: SocketAddress = ???
+      def localAddress: SocketAddress = ???
 
-    def status: Status = ???
+      def status: Status = ???
 
-    def read(): Future[Any] = ???
+      def read(): Future[Any] = ???
 
-    val onClose: Future[Throwable] = Future.exception(new Exception)
+      val onClose: Future[Throwable] = Future.exception(new Exception)
 
-    def close(deadline: Time): Future[Unit] = ???
-  }
+      def close(deadline: Time): Future[Unit] = ???
+    }
 
   test("streamChunks: discard reader on transport write failure") {
     val rw = Reader.writable()

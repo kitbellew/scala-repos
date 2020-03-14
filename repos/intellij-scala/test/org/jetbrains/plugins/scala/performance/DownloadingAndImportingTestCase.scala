@@ -84,8 +84,8 @@ abstract class DownloadingAndImportingTestCase
     Assert.assertTrue(
       "Project dir does not exist. Download or unpack failed!",
       projectDir.exists())
-    myProjectRoot =
-      LocalFileSystem.getInstance.refreshAndFindFileByIoFile(projectDir)
+    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
+      projectDir)
     setUpSbtLauncherAndStructure(myProject)
     extensions.inWriteAction {
       val internalSdk =
@@ -119,25 +119,27 @@ abstract class DownloadingAndImportingTestCase
           JavaFileType.INSTANCE),
         myProject)
 
-    val files: util.Collection[VirtualFile] =
-      FileTypeIndex.getFiles(ScalaFileType.SCALA_FILE_TYPE, searchScope)
-    val file = files.filter(_.getName == filename).toList match {
-      case vf :: Nil => vf
-      case Nil => //is this a filepath?
-        files.find(_.getCanonicalPath == s"$projectDirPath/$filename") match {
-          case Some(vf) => vf
-          case _ =>
-            Assert.assertTrue(
-              s"Could not find file: $filename.\nConsider providing relative path from project root",
-              false)
-            null
-        }
-      case list =>
-        Assert.assertTrue(
-          s"There are ${list.size} files with name $filename.\nProvide full path from project root",
-          false)
-        null
-    }
+    val files: util.Collection[VirtualFile] = FileTypeIndex.getFiles(
+      ScalaFileType.SCALA_FILE_TYPE,
+      searchScope)
+    val file =
+      files.filter(_.getName == filename).toList match {
+        case vf :: Nil => vf
+        case Nil => //is this a filepath?
+          files.find(_.getCanonicalPath == s"$projectDirPath/$filename") match {
+            case Some(vf) => vf
+            case _ =>
+              Assert.assertTrue(
+                s"Could not find file: $filename.\nConsider providing relative path from project root",
+                false)
+              null
+          }
+        case list =>
+          Assert.assertTrue(
+            s"There are ${list.size} files with name $filename.\nProvide full path from project root",
+            false)
+          null
+      }
     LocalFileSystem.getInstance().refreshFiles(files)
     file
   }

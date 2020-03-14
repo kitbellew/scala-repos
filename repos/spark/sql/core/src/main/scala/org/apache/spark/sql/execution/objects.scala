@@ -35,8 +35,9 @@ trait ObjectOperator extends SparkPlan {
   def generateToObject(
       objExpr: Expression,
       inputSchema: Seq[Attribute]): InternalRow => Any = {
-    val objectProjection =
-      GenerateSafeProjection.generate(objExpr :: Nil, inputSchema)
+    val objectProjection = GenerateSafeProjection.generate(
+      objExpr :: Nil,
+      inputSchema)
     (i: InternalRow) => objectProjection(i).get(0, objExpr.dataType)
   }
 
@@ -47,9 +48,10 @@ trait ObjectOperator extends SparkPlan {
       } else {
         GenerateUnsafeProjection.generate(serializer)
       }
-    val inputType = serializer.head.collect {
-      case b: BoundReference => b.dataType
-    }.head
+    val inputType =
+      serializer.head.collect {
+        case b: BoundReference => b.dataType
+      }.head
     val outputRow = new SpecificMutableRow(inputType :: Nil)
     (o: Any) => {
       outputRow(0) = o
@@ -98,8 +100,8 @@ case class AppendColumns(
   override protected def doExecute(): RDD[InternalRow] = {
     child.execute().mapPartitionsInternal { iter =>
       val getObject = generateToObject(deserializer, child.output)
-      val combiner =
-        GenerateUnsafeRowJoiner.create(child.schema, newColumnSchema)
+      val combiner = GenerateUnsafeRowJoiner
+        .create(child.schema, newColumnSchema)
       val outputObject = generateToRow(serializer)
 
       iter.map { row =>

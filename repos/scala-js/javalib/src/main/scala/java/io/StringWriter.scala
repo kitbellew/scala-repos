@@ -6,14 +6,12 @@ class StringWriter extends Writer {
 
   def this(initialSize: Int) = this()
 
-  override def write(c: Int): Unit =
-    buf.append(c.toChar)
+  override def write(c: Int): Unit = buf.append(c.toChar)
 
   def write(cbuf: Array[Char], off: Int, len: Int): Unit =
     buf.append(cbuf, off, len)
 
-  override def write(str: String): Unit =
-    buf.append(str)
+  override def write(str: String): Unit = buf.append(str)
 
   override def write(str: String, off: Int, len: Int): Unit =
     buf.append(str, off, off + len) // Third param is 'end', not 'len'

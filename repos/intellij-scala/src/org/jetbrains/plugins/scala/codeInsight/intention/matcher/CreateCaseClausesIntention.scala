@@ -85,8 +85,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     val enumConsts: Array[PsiEnumConstant] = cls.getFields.collect {
       case enumConstant: PsiEnumConstant => enumConstant
     }
-    val caseClauseTexts =
-      enumConsts.map(ec => "case %s.%s =>".format(cls.name, ec.name))
+    val caseClauseTexts = enumConsts.map(ec =>
+      "case %s.%s =>".format(cls.name, ec.name))
     val newMatchStmt = ScalaPsiElementFactory.createMatch(
       expr.getText,
       caseClauseTexts,
@@ -152,23 +152,26 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
   private def caseClauseText(
       td: ScTypeDefinition): (String, PsiNamedElement) = {
     val refText = td.name
-    val (pattern, bindTo) = td match {
-      case obj: ScObject => (refText, obj)
-      case cls: ScClass if cls.isCase =>
-        val companionObj = ScalaPsiUtil.getCompanionModule(cls).get
-        val text = cls.constructor match {
-          case Some(primaryConstructor) =>
-            val parameters = primaryConstructor.effectiveFirstParameterSection
-            val bindings = parameters.map(_.name).mkString("( ", ", ", ")")
-            refText + bindings
-          case None =>
-            refText + "()"
-        }
-        (text, companionObj)
-      case _ =>
-        val text = "_ : " + refText
-        (text, td)
-    }
+    val (pattern, bindTo) =
+      td match {
+        case obj: ScObject => (refText, obj)
+        case cls: ScClass if cls.isCase =>
+          val companionObj = ScalaPsiUtil.getCompanionModule(cls).get
+          val text =
+            cls.constructor match {
+              case Some(primaryConstructor) =>
+                val parameters =
+                  primaryConstructor.effectiveFirstParameterSection
+                val bindings = parameters.map(_.name).mkString("( ", ", ", ")")
+                refText + bindings
+              case None =>
+                refText + "()"
+            }
+          (text, companionObj)
+        case _ =>
+          val text = "_ : " + refText
+          (text, td)
+      }
     val text = "case %s =>".format(pattern)
     (text, bindTo)
   }

@@ -21,34 +21,36 @@ class TaskFailureTest extends MarathonSpec with Matchers {
   }
 
   test("ConstructFromProto") {
-    val proto = Protos.TaskFailure.newBuilder
-      .setAppId(taskFailure.appId.toString)
-      .setTaskId(taskFailure.taskId)
-      .setState(taskFailure.state)
-      .setMessage(taskFailure.message)
-      .setHost(taskFailure.host)
-      .setVersion(taskFailure.version.toString)
-      .setTimestamp(taskFailure.timestamp.toString)
-      .build
+    val proto =
+      Protos.TaskFailure.newBuilder
+        .setAppId(taskFailure.appId.toString)
+        .setTaskId(taskFailure.taskId)
+        .setState(taskFailure.state)
+        .setMessage(taskFailure.message)
+        .setHost(taskFailure.host)
+        .setVersion(taskFailure.version.toString)
+        .setTimestamp(taskFailure.timestamp.toString)
+        .build
 
     val taskFailureFromProto = TaskFailure(proto)
     assert(taskFailureFromProto == taskFailure)
   }
 
   test("ConstructFromProto with SlaveID") {
-    val taskFailureFixture =
-      taskFailure.copy(slaveId = Some(slaveIDToProto(SlaveID("slave id"))))
+    val taskFailureFixture = taskFailure
+      .copy(slaveId = Some(slaveIDToProto(SlaveID("slave id"))))
 
-    val proto = Protos.TaskFailure.newBuilder
-      .setAppId(taskFailureFixture.appId.toString)
-      .setTaskId(taskFailureFixture.taskId)
-      .setState(taskFailureFixture.state)
-      .setMessage(taskFailureFixture.message)
-      .setHost(taskFailureFixture.host)
-      .setVersion(taskFailureFixture.version.toString)
-      .setTimestamp(taskFailureFixture.timestamp.toString)
-      .setSlaveId(taskFailureFixture.slaveId.get)
-      .build
+    val proto =
+      Protos.TaskFailure.newBuilder
+        .setAppId(taskFailureFixture.appId.toString)
+        .setTaskId(taskFailureFixture.taskId)
+        .setState(taskFailureFixture.state)
+        .setMessage(taskFailureFixture.message)
+        .setHost(taskFailureFixture.host)
+        .setVersion(taskFailureFixture.version.toString)
+        .setTimestamp(taskFailureFixture.timestamp.toString)
+        .setSlaveId(taskFailureFixture.slaveId.get)
+        .build
 
     val taskFailureFromProto = TaskFailure(proto)
     assert(taskFailureFromProto == taskFailureFixture)

@@ -151,11 +151,12 @@ object StackTrace {
     i = 0
     while (i < mappedTrace.length) {
       val jsSte = mappedTrace(i)
-      val ste = new StackTraceElement(
-        jsSte.declaringClass,
-        jsSte.methodName,
-        jsSte.fileName,
-        jsSte.lineNumber)
+      val ste =
+        new StackTraceElement(
+          jsSte.declaringClass,
+          jsSte.methodName,
+          jsSte.fileName,
+          jsSte.lineNumber)
       jsSte.columnNumber.foreach(ste.setColumnNumber)
       result(i) = ste
       i += 1
@@ -228,27 +229,28 @@ object StackTrace {
         encodedName.substring(1)
       else
         encodedName
-    val base = if (decompressedClasses.contains(encoded)) {
-      decompressedClasses(encoded)
-    } else {
-      @tailrec
-      def loop(i: Int): String = {
-        if (i < compressedPrefixes.length) {
-          val prefix = compressedPrefixes(i)
-          if (encoded.startsWith(prefix))
-            decompressedPrefixes(prefix) + encoded.substring(prefix.length)
-          else
-            loop(i + 1)
-        } else {
-          // no prefix matches
-          if (encoded.startsWith("L"))
-            encoded.substring(1)
-          else
-            encoded // just in case
+    val base =
+      if (decompressedClasses.contains(encoded)) {
+        decompressedClasses(encoded)
+      } else {
+        @tailrec
+        def loop(i: Int): String = {
+          if (i < compressedPrefixes.length) {
+            val prefix = compressedPrefixes(i)
+            if (encoded.startsWith(prefix))
+              decompressedPrefixes(prefix) + encoded.substring(prefix.length)
+            else
+              loop(i + 1)
+          } else {
+            // no prefix matches
+            if (encoded.startsWith("L"))
+              encoded.substring(1)
+            else
+              encoded // just in case
+          }
         }
+        loop(0)
       }
-      loop(0)
-    }
     base.replace("_", ".").replace("$und", "_")
   }
 
@@ -295,8 +297,8 @@ object StackTrace {
     )
     .asInstanceOf[js.Dictionary[String]]
 
-  private lazy val compressedPrefixes =
-    js.Object.keys(decompressedPrefixes.asInstanceOf[js.Object])
+  private lazy val compressedPrefixes = js.Object.keys(
+    decompressedPrefixes.asInstanceOf[js.Object])
 
   // end of decodeClassName ----------------------------------------------------
 
@@ -484,8 +486,8 @@ object StackTrace {
   private def extractOpera10a(e: js.Dynamic): js.Array[String] = {
     // "  Line 27 of linked script file://localhost/G:/js/stacktrace.js\n"
     // "  Line 11 of inline#1 script in file://localhost/G:/js/test/functional/testcase1.html: In function foo\n"
-    val lineRE =
-      """Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$""".re("i")
+    val lineRE = """Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$"""
+      .re("i")
     val lines = (e.stacktrace.asInstanceOf[String]).jsSplit("\n")
     val result = new js.Array[String]
 

@@ -27,15 +27,16 @@ import org.apache.spark.tags.DockerTest
 
 @DockerTest
 class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
-  override val db = new DatabaseOnDocker {
-    override val imageName = "postgres:9.4.5"
-    override val env = Map(
-      "POSTGRES_PASSWORD" -> "rootpass"
-    )
-    override val jdbcPort = 5432
-    override def getJdbcUrl(ip: String, port: Int): String =
-      s"jdbc:postgresql://$ip:$port/postgres?user=postgres&password=rootpass"
-  }
+  override val db =
+    new DatabaseOnDocker {
+      override val imageName = "postgres:9.4.5"
+      override val env = Map(
+        "POSTGRES_PASSWORD" -> "rootpass"
+      )
+      override val jdbcPort = 5432
+      override def getJdbcUrl(ip: String, port: Int): String =
+        s"jdbc:postgresql://$ip:$port/postgres?user=postgres&password=rootpass"
+    }
 
   override def dataPreparation(conn: Connection): Unit = {
     conn.prepareStatement("CREATE DATABASE foo").executeUpdate()

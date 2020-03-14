@@ -13,8 +13,8 @@ import akka.http.javadsl.server.{Unmarshaller, Marshaller}
 import akka.http.impl.server.{UnmarshallerImpl, MarshallerImpl}
 
 object Jackson {
-  private val objectMapper: ObjectMapper =
-    new ObjectMapper().enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
+  private val objectMapper: ObjectMapper = new ObjectMapper()
+    .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
   def json[T <: AnyRef]: Marshaller[T] =
     jsonMarshaller(objectMapper).asInstanceOf[Marshaller[T]]
   def json[T <: AnyRef](objectMapper: ObjectMapper): Marshaller[T] =

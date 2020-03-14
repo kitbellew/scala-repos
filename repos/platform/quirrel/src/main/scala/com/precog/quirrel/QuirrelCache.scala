@@ -243,26 +243,30 @@ trait QuirrelCache extends AST { parser: Parser =>
       bindings: IndexedSeq[Binding],
       slots: Map[String, Slot]): Option[Expr] = {
     val index = buildBindingIndex(expr)
-    val sortedBindings = bindings.zipWithIndex
-      .map {
-        case (b, i) =>
-          (b, index(i))
-      }
-      .sortBy(_._2)
-      .map(_._1)
-      .toList
+    val sortedBindings =
+      bindings.zipWithIndex
+        .map {
+          case (b, i) =>
+            (b, index(i))
+        }
+        .sortBy(_._2)
+        .map(_._1)
+        .toList
 
-    val result =
-      replaceLiteralsS(expr, sortedBindings, locUpdates(bindings, slots))
+    val result = replaceLiteralsS(
+      expr,
+      sortedBindings,
+      locUpdates(bindings, slots))
     result
   }
 
   def locUpdates(
       bindings: IndexedSeq[Binding],
       slots: Map[String, Slot]): LineStream => LineStream = {
-    val widths: Map[String, Int] = bindings.map { b =>
-      (b.name, b.rawValue.length)
-    }.toMap
+    val widths: Map[String, Int] =
+      bindings.map { b =>
+        (b.name, b.rawValue.length)
+      }.toMap
 
     val deltas: Map[Int, List[(Int, Int)]] = slots.toList
       .map {
@@ -507,19 +511,20 @@ trait QuirrelCache extends AST { parser: Parser =>
           repl(expr) map (Paren(updateLoc(loc), _))
       }
 
-    val result = for {
-      expr <- repl(expr0)
-      _ <- StateT { s: List[Binding] =>
-        s.isEmpty.option((Nil, ()))
-      }: BindingS[Unit]
-    } yield expr
+    val result =
+      for {
+        expr <- repl(expr0)
+        _ <- StateT { s: List[Binding] =>
+          s.isEmpty.option((Nil, ()))
+        }: BindingS[Unit]
+      } yield expr
 
     result.eval(bindings)
   }
 
   class ParseCache(maxSize: Long) {
-    private val cache: mutable.Map[CacheKey, CacheValue] =
-      Cache.simple(Cache.MaxSize(maxSize))
+    private val cache: mutable.Map[CacheKey, CacheValue] = Cache.simple(
+      Cache.MaxSize(maxSize))
 
     def getOrElseUpdate(query: LineStream)(
         f: LineStream => Set[Expr]): Set[Expr] = {

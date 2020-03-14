@@ -69,15 +69,16 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
       case Some(extensionId) ⇒
         extensionId(system)
       case None ⇒
-        val extensionId = new ExtensionId[PluginHolder] {
-          override def createExtension(
-              system: ExtendedActorSystem): PluginHolder = {
-            val provider = createPlugin(configPath)
-            PluginHolder(
-              provider.scaladslReadJournal(),
-              provider.javadslReadJournal())
+        val extensionId =
+          new ExtensionId[PluginHolder] {
+            override def createExtension(
+                system: ExtendedActorSystem): PluginHolder = {
+              val provider = createPlugin(configPath)
+              PluginHolder(
+                provider.scaladslReadJournal(),
+                provider.javadslReadJournal())
+            }
           }
-        }
         readJournalPluginExtensionIds.compareAndSet(
           extensionIdMap,
           extensionIdMap.updated(configPath, extensionId))

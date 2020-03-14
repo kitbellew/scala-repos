@@ -16,8 +16,8 @@ class AkkaSupportServlet extends ScalatraServlet with FutureSupport {
   protected implicit val executor = system.dispatcher
   override def asyncTimeout = 2 seconds
 
-  private val futureEC =
-    ExecutionContext.fromExecutor(Executors.newFixedThreadPool(1))
+  private val futureEC = ExecutionContext.fromExecutor(
+    Executors.newFixedThreadPool(1))
 
   get("/redirect") {
     new AsyncResult {
@@ -40,10 +40,11 @@ class AkkaSupportServlet extends ScalatraServlet with FutureSupport {
     request.setAttribute("sessionId", params("mockSessionId"))
     val handlingReq = request
     new AsyncResult {
-      val is = Future {
-        Thread.sleep(200)
-        Ok(body = request.getAttribute("sessionId"))
-      }(futureEC)
+      val is =
+        Future {
+          Thread.sleep(200)
+          Ok(body = request.getAttribute("sessionId"))
+        }(futureEC)
     }
   }
 
@@ -166,14 +167,15 @@ class AkkaSupportSpec extends MutableScalatraSpec {
     }
 
     "should not leak attributes between requests" in {
-      implicit val multiClentEc =
-        ExecutionContext.fromExecutor(Executors.newFixedThreadPool(50))
+      implicit val multiClentEc = ExecutionContext.fromExecutor(
+        Executors.newFixedThreadPool(50))
       val ids = (1 to 50).map(_ => scala.util.Random.nextInt())
       val serverBaseUrl = baseUrl
       val idsToResponseFs = ids.map { id =>
-        val client = new HttpComponentsClient {
-          override val baseUrl: String = serverBaseUrl
-        }
+        val client =
+          new HttpComponentsClient {
+            override val baseUrl: String = serverBaseUrl
+          }
         Future {
           blocking {
             id.toString -> client.get(s"/async-attributes/$id") {

@@ -105,9 +105,7 @@ class MatCheck extends Specification with ScalaCheck {
         forAll(idx) { i =>
           val res = m.takeRows(i: _*)
           res.numRows must_== i.size
-          val exp =
-            for (j <- i)
-              yield m.row(j)
+          val exp = for (j <- i) yield m.row(j)
           res must_== Mat(exp: _*).T
         }
       }
@@ -119,9 +117,7 @@ class MatCheck extends Specification with ScalaCheck {
         forAll(idx) { i =>
           val res = m.takeCols(i: _*)
           res.numCols must_== i.size
-          val exp =
-            for (j <- i)
-              yield m.col(j)
+          val exp = for (j <- i) yield m.col(j)
           res must_== Mat(exp: _*)
         }
       }

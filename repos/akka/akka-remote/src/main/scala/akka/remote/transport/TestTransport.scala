@@ -55,8 +55,9 @@ class TestTransport(
     registry.transportFor(remoteAddress) match {
 
       case Some((remoteTransport, remoteListenerFuture)) ⇒
-        val (localHandle, remoteHandle) =
-          createHandlePair(remoteTransport, remoteAddress)
+        val (localHandle, remoteHandle) = createHandlePair(
+          remoteTransport,
+          remoteAddress)
         localHandle.writable = false
         remoteHandle.writable = false
 
@@ -95,16 +96,18 @@ class TestTransport(
       remoteTransport: TestTransport,
       remoteAddress: Address)
       : (TestAssociationHandle, TestAssociationHandle) = {
-    val localHandle = new TestAssociationHandle(
-      localAddress,
-      remoteAddress,
-      this,
-      inbound = false)
-    val remoteHandle = new TestAssociationHandle(
-      remoteAddress,
-      localAddress,
-      remoteTransport,
-      inbound = true)
+    val localHandle =
+      new TestAssociationHandle(
+        localAddress,
+        remoteAddress,
+        this,
+        inbound = false)
+    val remoteHandle =
+      new TestAssociationHandle(
+        remoteAddress,
+        localAddress,
+        remoteTransport,
+        inbound = true)
 
     (localHandle, remoteHandle)
   }
@@ -114,11 +117,12 @@ class TestTransport(
   /**
     * The [[akka.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the listen() method.
     */
-  val listenBehavior = new SwitchableLoggedBehavior[
-    Unit,
-    (Address, Promise[AssociationEventListener])](
-    (_) ⇒ defaultListen,
-    (_) ⇒ registry.logActivity(ListenAttempt(localAddress)))
+  val listenBehavior =
+    new SwitchableLoggedBehavior[
+      Unit,
+      (Address, Promise[AssociationEventListener])](
+      (_) ⇒ defaultListen,
+      (_) ⇒ registry.logActivity(ListenAttempt(localAddress)))
 
   /**
     * The [[akka.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the associate() method.
@@ -132,9 +136,10 @@ class TestTransport(
   /**
     * The [[akka.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the shutdown() method.
     */
-  val shutdownBehavior = new SwitchableLoggedBehavior[Unit, Boolean](
-    (_) ⇒ defaultShutdown,
-    (_) ⇒ registry.logActivity(ShutdownAttempt(localAddress)))
+  val shutdownBehavior =
+    new SwitchableLoggedBehavior[Unit, Boolean](
+      (_) ⇒ defaultShutdown,
+      (_) ⇒ registry.logActivity(ShutdownAttempt(localAddress)))
 
   override def listen: Future[(Address, Promise[AssociationEventListener])] =
     listenBehavior(())
@@ -342,12 +347,14 @@ object TestTransport {
   class AssociationRegistry {
 
     private val activityLog = new CopyOnWriteArrayList[Activity]()
-    private val transportTable = new ConcurrentHashMap[
-      Address,
-      (TestTransport, Future[AssociationEventListener])]()
-    private val listenersTable = new ConcurrentHashMap[
-      (Address, Address),
-      (HandleEventListener, HandleEventListener)]()
+    private val transportTable =
+      new ConcurrentHashMap[
+        Address,
+        (TestTransport, Future[AssociationEventListener])]()
+    private val listenersTable =
+      new ConcurrentHashMap[
+        (Address, Address),
+        (HandleEventListener, HandleEventListener)]()
 
     /**
       * Returns the remote endpoint for a pair of endpoints relative to the owner of the supplied handle.
@@ -515,8 +522,8 @@ object TestTransport {
  strongly recommended to use long, randomly generated strings to key the registry to avoid interference between tests.
  */
 object AssociationRegistry {
-  private final val registries =
-    scala.collection.mutable.Map[String, AssociationRegistry]()
+  private final val registries = scala.collection.mutable
+    .Map[String, AssociationRegistry]()
 
   def get(key: String): AssociationRegistry =
     this.synchronized {

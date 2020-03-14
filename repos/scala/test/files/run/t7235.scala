@@ -6,9 +6,10 @@ import scala.tools.reflect.ToolBox
 class C
 
 object Test extends App {
-  val Block(List(ValDef(_, _, tpt: CompoundTypeTree, _)), _) = reify {
-    val x: C {} = ???
-  }.tree
+  val Block(List(ValDef(_, _, tpt: CompoundTypeTree, _)), _) =
+    reify {
+      val x: C {} = ???
+    }.tree
   println(tpt)
   println(tpt.templ.parents)
   println(tpt.templ.self)

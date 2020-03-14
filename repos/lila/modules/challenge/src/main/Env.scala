@@ -19,14 +19,15 @@ final class Env(
     db: lila.db.Env,
     scheduler: lila.common.Scheduler) {
 
-  private val settings = new {
-    val CollectionChallenge = config getString "collection.challenge"
-    val MaxPerUser = config getInt "max_per_user"
-    val HistoryMessageTtl = config duration "history.message.ttl"
-    val UidTimeout = config duration "uid.timeout"
-    val SocketTimeout = config duration "socket.timeout"
-    val SocketName = config getString "socket.name"
-  }
+  private val settings =
+    new {
+      val CollectionChallenge = config getString "collection.challenge"
+      val MaxPerUser = config getInt "max_per_user"
+      val HistoryMessageTtl = config duration "history.message.ttl"
+      val UidTimeout = config duration "uid.timeout"
+      val SocketTimeout = config duration "socket.timeout"
+      val SocketName = config getString "socket.name"
+    }
   import settings._
 
   private val socketHub = system.actorOf(
@@ -45,18 +46,20 @@ final class Env(
   def version(challengeId: Challenge.ID): Fu[Int] =
     socketHub ? Ask(challengeId, GetVersion) mapTo manifest[Int]
 
-  lazy val socketHandler = new SocketHandler(
-    hub = hub,
-    socketHub = socketHub,
-    pingChallenge = api.ping)
+  lazy val socketHandler =
+    new SocketHandler(
+      hub = hub,
+      socketHub = socketHub,
+      pingChallenge = api.ping)
 
-  lazy val api = new ChallengeApi(
-    repo = repo,
-    joiner = new Joiner(onStart = onStart),
-    jsonView = jsonView,
-    socketHub = socketHub,
-    userRegister = hub.actor.userRegister,
-    lilaBus = system.lilaBus)
+  lazy val api =
+    new ChallengeApi(
+      repo = repo,
+      joiner = new Joiner(onStart = onStart),
+      jsonView = jsonView,
+      socketHub = socketHub,
+      userRegister = hub.actor.userRegister,
+      lilaBus = system.lilaBus)
 
   private lazy val repo =
     new ChallengeRepo(coll = db(CollectionChallenge), maxPerUser = MaxPerUser)

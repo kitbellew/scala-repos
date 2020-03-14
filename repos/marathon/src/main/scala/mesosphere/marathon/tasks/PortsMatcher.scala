@@ -20,8 +20,8 @@ case class PortsMatch(hostPortsWithRole: Seq[PortWithRole]) {
     * The resulting port resources which should be consumed from the offer. If no matching port ranges could
     * be generated from the offer, return `None`.
     */
-  lazy val resources: Seq[MesosProtos.Resource] =
-    PortWithRole.createPortsResources(hostPortsWithRole)
+  lazy val resources: Seq[MesosProtos.Resource] = PortWithRole
+    .createPortsResources(hostPortsWithRole)
 
   def hostPorts: Seq[Int] = hostPortsWithRole.map(_.port)
 }
@@ -32,8 +32,9 @@ case class PortsMatch(hostPortsWithRole: Seq[PortWithRole]) {
 class PortsMatcher(
     app: AppDefinition,
     offer: MesosProtos.Offer,
-    resourceSelector: ResourceSelector =
-      ResourceSelector(Set("*"), reserved = false),
+    resourceSelector: ResourceSelector = ResourceSelector(
+      Set("*"),
+      reserved = false),
     random: Random = Random)
     extends Logging {
 
@@ -161,19 +162,20 @@ class PortsMatcher(
   }
 
   private[this] lazy val offeredPortRanges: Seq[PortRange] = {
-    val portRangeIter = for {
-      resource <- offer.getResourcesList.asScala.iterator
-      if resourceSelector(resource) && resource.getName == Resource.PORTS
-      rangeInResource <- resource.getRanges.getRangeList.asScala
-      reservation = if (resource.hasReservation)
-        Option(resource.getReservation)
-      else
-        None
-    } yield PortRange(
-      resource.getRole,
-      rangeInResource.getBegin.toInt,
-      rangeInResource.getEnd.toInt,
-      reservation)
+    val portRangeIter =
+      for {
+        resource <- offer.getResourcesList.asScala.iterator
+        if resourceSelector(resource) && resource.getName == Resource.PORTS
+        rangeInResource <- resource.getRanges.getRangeList.asScala
+        reservation = if (resource.hasReservation)
+          Option(resource.getReservation)
+        else
+          None
+      } yield PortRange(
+        resource.getRole,
+        rangeInResource.getBegin.toInt,
+        rangeInResource.getEnd.toInt,
+        reservation)
     portRangeIter.to[Seq]
   }
 
@@ -243,10 +245,11 @@ object PortsMatcher {
               port => port.role == role && port.reservation == reservation
             }
             import mesosphere.mesos.protos.Implicits._
-            val resourceBuilder = RangesResource(
-              name = Resource.PORTS,
-              createRanges(portsForResource),
-              role = role).toBuilder
+            val resourceBuilder =
+              RangesResource(
+                name = Resource.PORTS,
+                createRanges(portsForResource),
+                role = role).toBuilder
             reservation.foreach(resourceBuilder.setReservation(_))
             builder += resourceBuilder.build()
             process(resources.drop(portsForResource.size))

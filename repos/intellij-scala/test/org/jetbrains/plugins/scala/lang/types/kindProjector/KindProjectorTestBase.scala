@@ -54,8 +54,8 @@ abstract class KindProjectorTestBase
       endOffset != -1,
       "Not specified end marker in test case. Use /*end*/ in scala file for this.")
 
-    val expr: ScParameterizedTypeElement =
-      PsiTreeUtil.findElementOfClassAtRange(
+    val expr: ScParameterizedTypeElement = PsiTreeUtil
+      .findElementOfClassAtRange(
         scalaFile,
         startOffset,
         endOffset,
@@ -68,13 +68,17 @@ abstract class KindProjectorTestBase
         val res = tp.getText
         val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
         val text = lastPsi.getText
-        val output = lastPsi.getNode.getElementType match {
-          case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
-          case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
-            text.substring(2, text.length - 2).trim
-          case _ =>
-            assertTrue("Test result must be in last comment statement.", false)
-        }
+        val output =
+          lastPsi.getNode.getElementType match {
+            case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+            case ScalaTokenTypes.tBLOCK_COMMENT |
+                ScalaTokenTypes.tDOC_COMMENT =>
+              text.substring(2, text.length - 2).trim
+            case _ =>
+              assertTrue(
+                "Test result must be in last comment statement.",
+                false)
+          }
         assertEquals(output, res)
       case _ =>
         assert(

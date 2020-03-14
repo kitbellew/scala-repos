@@ -1,9 +1,10 @@
 object Sessions {
   trait Session[This] {
     type Dual
-    type HasDual[D] = Session[This] {
-      type Dual = D
-    }
+    type HasDual[D] =
+      Session[This] {
+        type Dual = D
+      }
     def run(p: This, dp: Dual): Unit
   }
 
@@ -17,16 +18,14 @@ object Sessions {
     new Session[In[A, B]] {
       type Dual = Out[A, sessionDIn.Dual]
 
-      def run(p: In[A, B], dp: Dual): Unit =
-        sessionDIn.run(p.func(dp.x), dp.y)
+      def run(p: In[A, B], dp: Dual): Unit = sessionDIn.run(p.func(dp.x), dp.y)
     }
 
   implicit def OutDual[A, B](implicit sessionDOut: Session[B]) =
     new Session[Out[A, B]] {
       type Dual = In[A, sessionDOut.Dual]
 
-      def run(p: Out[A, B], dp: Dual): Unit =
-        sessionDOut.run(p.y, dp.func(p.x))
+      def run(p: Out[A, B], dp: Dual): Unit = sessionDOut.run(p.y, dp.func(p.x))
     }
 
   sealed case class Stop()

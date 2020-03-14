@@ -112,13 +112,14 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           fields
             .map {
               case (name, childType) =>
-                val newPaths = if (current.nonEmpty) {
-                  current.map { s =>
-                    s + "." + name
+                val newPaths =
+                  if (current.nonEmpty) {
+                    current.map { s =>
+                      s + "." + name
+                    }
+                  } else {
+                    Set(name)
                   }
-                } else {
-                  Set(name)
-                }
                 jTypeToProperties(childType, newPaths)
             }
             .toSet
@@ -209,10 +210,11 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                       }
                       slice <- safeOp("Invalid result in query") {
                         logger.trace("Getting data from " + coll)
-                        val selector = jTypeToProperties(tpe, Set())
-                          .foldLeft(new BasicDBObject()) {
-                            case (obj, path) => obj.append(path, 1)
-                          }
+                        val selector =
+                          jTypeToProperties(tpe, Set())
+                            .foldLeft(new BasicDBObject()) {
+                              case (obj, path) => obj.append(path, 1)
+                            }
 
                         val cursorGen =
                           () => coll.find(new BasicDBObject(), selector)
@@ -257,25 +259,30 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
       val (hasMore, size0, columns0) = buildColumns(objects)
 
-      val slice = new Slice {
-        val size = size0
-        val columns = if (includeIdField) {
-          columns0 get ColumnRef(Key \ 0, CString) map { idCol =>
-            columns0 + (ColumnRef(Value \ CPathField("_id"), CString) -> idCol)
-          } getOrElse columns0
-        } else
-          columns0
-      }
+      val slice =
+        new Slice {
+          val size = size0
+          val columns =
+            if (includeIdField) {
+              columns0 get ColumnRef(Key \ 0, CString) map { idCol =>
+                columns0 + (ColumnRef(
+                  Value \ CPathField("_id"),
+                  CString) -> idCol)
+              } getOrElse columns0
+            } else
+              columns0
+        }
 
       // FIXME: If cursor is empty the generated columns won't satisfy
       // sampleData.schema. This will cause the subsumption test in Slice#typed
       // to fail unless it allows for vacuous success
 
-      val nextSkip = if (hasMore) {
-        Some(skip + slice.size)
-      } else {
-        None
-      }
+      val nextSkip =
+        if (hasMore) {
+          Some(skip + slice.size)
+        } else {
+          None
+        }
 
       (slice, nextSkip)
     }

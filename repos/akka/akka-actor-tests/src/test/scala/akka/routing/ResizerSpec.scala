@@ -58,8 +58,8 @@ class ResizerSpec
 
   "Resizer fromConfig" must {
     def parseCfg(cfgString: String): Config = {
-      val referenceCfg =
-        ConfigFactory.defaultReference(ActorSystem.findClassLoader())
+      val referenceCfg = ConfigFactory.defaultReference(
+        ActorSystem.findClassLoader())
       ConfigFactory
         .parseString(cfgString)
         .withFallback(referenceCfg.getConfig("akka.actor.deployment.default"))
@@ -118,8 +118,10 @@ class ResizerSpec
     }
 
     "use settings to evaluate rampUp" in {
-      val resizer =
-        DefaultResizer(lowerBound = 2, upperBound = 10, rampupRate = 0.2)
+      val resizer = DefaultResizer(
+        lowerBound = 2,
+        upperBound = 10,
+        rampupRate = 0.2)
 
       resizer.rampup(pressure = 9, capacity = 10) should ===(0)
       resizer.rampup(pressure = 5, capacity = 5) should ===(1)

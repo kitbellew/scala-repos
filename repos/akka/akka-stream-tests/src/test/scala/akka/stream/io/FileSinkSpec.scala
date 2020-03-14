@@ -124,9 +124,10 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
             .asInstanceOf[ActorMaterializerImpl]
             .supervisor
             .tell(StreamSupervisor.GetChildren, testActor)
-          val ref = expectMsgType[Children].children
-            .find(_.path.toString contains "fileSource")
-            .get
+          val ref =
+            expectMsgType[Children].children
+              .find(_.path.toString contains "fileSource")
+              .get
           assertDispatcher(ref, "akka.stream.default-blocking-io-dispatcher")
         } finally shutdown(sys)
       }
@@ -152,9 +153,10 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
             .asInstanceOf[ActorMaterializerImpl]
             .supervisor
             .tell(StreamSupervisor.GetChildren, testActor)
-          val ref = expectMsgType[Children].children
-            .find(_.path.toString contains "File")
-            .get
+          val ref =
+            expectMsgType[Children].children
+              .find(_.path.toString contains "File")
+              .get
           assertDispatcher(ref, "akka.actor.default-dispatcher")
         } finally shutdown(sys)
       }

@@ -5,10 +5,11 @@ trait InvariantFunctor[F[_]] {
 object InvariantFunctor {
   import Endo._
 
-  implicit val EndoInvariantFunctor = new InvariantFunctor[Endo] {
-    def xmap[A, B](ma: Endo[A], f: A => B, g: B => A): Endo[B] =
-      (b: B) => f(ma(g(b)))
-  }
+  implicit val EndoInvariantFunctor =
+    new InvariantFunctor[Endo] {
+      def xmap[A, B](ma: Endo[A], f: A => B, g: B => A): Endo[B] =
+        (b: B) => f(ma(g(b)))
+    }
 
   // The definition about fails with:
   // anon-type.scala:9: error: not found: value b

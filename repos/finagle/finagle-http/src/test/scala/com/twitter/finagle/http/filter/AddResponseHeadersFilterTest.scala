@@ -10,13 +10,14 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class AddResponseHeadersFilterTest extends FunSuite {
   test("add headers") {
-    val service = new Service[Request, Response] {
-      def apply(request: Request): Future[Response] =
-        if (request.uri == "/object")
-          Future(request.response)
-        else
-          throw new Exception("Invalid test request")
-    }
+    val service =
+      new Service[Request, Response] {
+        def apply(request: Request): Future[Response] =
+          if (request.uri == "/object")
+            Future(request.response)
+          else
+            throw new Exception("Invalid test request")
+      }
 
     val request = Request("/object")
     val filter = new AddResponseHeadersFilter(Map("X-Money" -> "cash"))

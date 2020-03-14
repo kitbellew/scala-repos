@@ -75,8 +75,9 @@ trait KafkaIngestActorProjectionSystemConfig extends ShardConfig {
           bufferSize = config[Int]("buffer_size", 1024 * 1024),
           maxParallel = config[Int]("max_parallel", 5),
           batchTimeout = config[Int]("timeout", 120) seconds,
-          maxConsecutiveFailures =
-            config[Int]("ingest.max_consecutive_failures", 3),
+          maxConsecutiveFailures = config[Int](
+            "ingest.max_consecutive_failures",
+            3),
           failureLogRoot = failureLogRoot
         )
       }
@@ -114,11 +115,12 @@ trait KafkaIngestActorProjectionSystem extends ShardSystemActorModule {
       checkpointCoordination: CheckpointCoordination,
       permissionsFinder: PermissionsFinder[Future]) = {
     yggConfig.ingestConfig map { conf =>
-      val consumer = new SimpleConsumer(
-        yggConfig.kafkaHost,
-        yggConfig.kafkaPort,
-        yggConfig.kafkaSocketTimeout.toMillis.toInt,
-        yggConfig.kafkaBufferSize)
+      val consumer =
+        new SimpleConsumer(
+          yggConfig.kafkaHost,
+          yggConfig.kafkaPort,
+          yggConfig.kafkaSocketTimeout.toMillis.toInt,
+          yggConfig.kafkaBufferSize)
 
       actorSystem.actorOf(
         Props(
@@ -129,16 +131,18 @@ trait KafkaIngestActorProjectionSystem extends ShardSystemActorModule {
             topic = yggConfig.kafkaTopic,
             permissionsFinder = permissionsFinder,
             routingActor = routingActor,
-            ingestFailureLog =
-              ingestFailureLog(checkpoint, conf.failureLogRoot),
+            ingestFailureLog = ingestFailureLog(
+              checkpoint,
+              conf.failureLogRoot),
             fetchBufferSize = conf.bufferSize,
             idleDelay = yggConfig.batchStoreDelay,
             ingestTimeout = conf.batchTimeout,
             maxCacheSize = conf.maxParallel,
             maxConsecutiveFailures = conf.maxConsecutiveFailures) {
 
-            implicit val M = new FutureMonad(
-              ExecutionContext.defaultExecutionContext(actorSystem))
+            implicit val M =
+              new FutureMonad(
+                ExecutionContext.defaultExecutionContext(actorSystem))
 
             def handleBatchComplete(ck: YggCheckpoint) {
               logger.debug("Complete up to " + ck)

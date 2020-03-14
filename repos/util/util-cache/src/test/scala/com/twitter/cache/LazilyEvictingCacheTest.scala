@@ -59,26 +59,29 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
 
   test(
     "LazilyEvictingCache getOrElseUpdate doesn't mutate previously set values") {
-    val cache = new LoadingFutureCache(
-      CacheBuilder
-        .newBuilder()
-        .build(explodingCacheLoader)
-    )
+    val cache =
+      new LoadingFutureCache(
+        CacheBuilder
+          .newBuilder()
+          .build(explodingCacheLoader)
+      )
     val fCache = new LazilyEvictingCache(cache)
 
     fCache.set("key", Future.value("value"))
-    val res = fCache.getOrElseUpdate("key") {
-      throw new RuntimeException("unexpected set")
-    }
+    val res =
+      fCache.getOrElseUpdate("key") {
+        throw new RuntimeException("unexpected set")
+      }
     assert(Await.result(res) == "value")
   }
 
   test("LazilyEvictingCache getOrElseUpdate computes a future") {
-    val cache = new LoadingFutureCache(
-      CacheBuilder
-        .newBuilder()
-        .build(explodingCacheLoader)
-    )
+    val cache =
+      new LoadingFutureCache(
+        CacheBuilder
+          .newBuilder()
+          .build(explodingCacheLoader)
+      )
     val fCache = new LazilyEvictingCache(cache)
 
     val p = Promise[String]
@@ -95,18 +98,19 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
     val p = Promise[Int]
 
     var loadCount = 0
-    val cache = new LoadingFutureCache(
-      CacheBuilder
-        .newBuilder()
-        .build(
-          new CacheLoader[String, Future[Int]] {
-            override def load(k: String): Future[Int] = {
-              loadCount += 1
-              Future.value(loadCount)
+    val cache =
+      new LoadingFutureCache(
+        CacheBuilder
+          .newBuilder()
+          .build(
+            new CacheLoader[String, Future[Int]] {
+              override def load(k: String): Future[Int] = {
+                loadCount += 1
+                Future.value(loadCount)
+              }
             }
-          }
-        )
-    )
+          )
+      )
     val fCache = new LazilyEvictingCache(cache)
 
     assert(fCache.getOrElseUpdate("key")(p).poll == p.poll)
@@ -132,18 +136,19 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
     val p = Promise[Int]
 
     var loadCount = 0
-    val cache = new LoadingFutureCache(
-      CacheBuilder
-        .newBuilder()
-        .build(
-          new CacheLoader[String, Future[Int]] {
-            override def load(k: String): Future[Int] = {
-              loadCount += 1
-              Future.value(loadCount)
+    val cache =
+      new LoadingFutureCache(
+        CacheBuilder
+          .newBuilder()
+          .build(
+            new CacheLoader[String, Future[Int]] {
+              override def load(k: String): Future[Int] = {
+                loadCount += 1
+                Future.value(loadCount)
+              }
             }
-          }
-        )
-    )
+          )
+      )
     val fCache = new LazilyEvictingCache(cache)
 
     assert(fCache.getOrElseUpdate("key")(p).poll == p.poll)

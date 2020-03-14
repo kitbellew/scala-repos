@@ -157,13 +157,13 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
       // scalastyle:off classforname
       val bean = ManagementFactory.getOperatingSystemMXBean()
       if (ibmVendor) {
-        val beanClass =
-          Class.forName("com.ibm.lang.management.OperatingSystemMXBean")
+        val beanClass = Class.forName(
+          "com.ibm.lang.management.OperatingSystemMXBean")
         val method = beanClass.getDeclaredMethod("getTotalPhysicalMemory")
         totalMb = (method.invoke(bean).asInstanceOf[Long] / 1024 / 1024).toInt
       } else {
-        val beanClass =
-          Class.forName("com.sun.management.OperatingSystemMXBean")
+        val beanClass = Class.forName(
+          "com.sun.management.OperatingSystemMXBean")
         val method = beanClass.getDeclaredMethod("getTotalPhysicalMemorySize")
         totalMb = (method.invoke(bean).asInstanceOf[Long] / 1024 / 1024).toInt
       }

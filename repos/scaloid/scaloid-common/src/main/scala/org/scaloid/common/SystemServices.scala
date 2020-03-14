@@ -162,11 +162,12 @@ trait SystemServices {
 
   def onCallForwardingIndicatorChanged(
       fun: Boolean => Any)(implicit ctx: Context, reg: Registerable) {
-    val callStateListener = new PhoneStateListener() {
-      override def onCallForwardingIndicatorChanged(cfi: Boolean) {
-        fun(cfi)
+    val callStateListener =
+      new PhoneStateListener() {
+        override def onCallForwardingIndicatorChanged(cfi: Boolean) {
+          fun(cfi)
+        }
       }
-    }
     reg.onRegister {
       telephonyManager.listen(
         callStateListener,
@@ -179,11 +180,12 @@ trait SystemServices {
 
   def onCallStateChanged(
       fun: (Int, String) => Any)(implicit ctx: Context, reg: Registerable) {
-    val callStateListener = new PhoneStateListener() {
-      override def onCallStateChanged(state: Int, incomingNumber: String) {
-        fun(state, incomingNumber)
+    val callStateListener =
+      new PhoneStateListener() {
+        override def onCallStateChanged(state: Int, incomingNumber: String) {
+          fun(state, incomingNumber)
+        }
       }
-    }
     reg.onRegister {
       telephonyManager.listen(
         callStateListener,
@@ -196,11 +198,12 @@ trait SystemServices {
 
   def onCellLocationChanged(
       fun: CellLocation => Any)(implicit ctx: Context, reg: Registerable) {
-    val callStateListener = new PhoneStateListener() {
-      override def onCellLocationChanged(cellLocation: CellLocation) {
-        fun(cellLocation)
+    val callStateListener =
+      new PhoneStateListener() {
+        override def onCellLocationChanged(cellLocation: CellLocation) {
+          fun(cellLocation)
+        }
       }
-    }
     reg.onRegister {
       telephonyManager.listen(
         callStateListener,

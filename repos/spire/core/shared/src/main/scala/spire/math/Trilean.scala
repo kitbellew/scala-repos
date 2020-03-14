@@ -56,11 +56,9 @@ class Trilean(val value: Int) extends AnyVal { lhs =>
     else
       f(value == -1)
 
-  def assumeTrue: Boolean =
-    value != 0
+  def assumeTrue: Boolean = value != 0
 
-  def assumeFalse: Boolean =
-    value == -1
+  def assumeFalse: Boolean = value == -1
 
   def assume(b: Boolean): Boolean =
     if (value == 1)
@@ -110,15 +108,13 @@ class Trilean(val value: Int) extends AnyVal { lhs =>
   // T T U F
   // U U U F
   // F F F F
-  def &(rhs: Trilean): Trilean =
-    new Trilean(lhs.value & rhs.value)
+  def &(rhs: Trilean): Trilean = new Trilean(lhs.value & rhs.value)
 
   //   T U F
   // T T T T
   // U T U U
   // F T U F
-  def |(rhs: Trilean): Trilean =
-    new Trilean(lhs.value | rhs.value)
+  def |(rhs: Trilean): Trilean = new Trilean(lhs.value | rhs.value)
 
   //   T U F
   // T F U T
@@ -136,14 +132,11 @@ class Trilean(val value: Int) extends AnyVal { lhs =>
   // T T U F
   // U T U U
   // F T T T
-  def imp(rhs: Trilean): Trilean =
-    (!lhs) | rhs
+  def imp(rhs: Trilean): Trilean = (!lhs) | rhs
 
-  def nand(rhs: Trilean): Trilean =
-    !(lhs & rhs)
+  def nand(rhs: Trilean): Trilean = !(lhs & rhs)
 
-  def nor(rhs: Trilean): Trilean =
-    !(lhs | rhs)
+  def nor(rhs: Trilean): Trilean = !(lhs | rhs)
 
   //   T U F
   // T T U F

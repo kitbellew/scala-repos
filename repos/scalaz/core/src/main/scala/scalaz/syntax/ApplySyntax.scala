@@ -57,12 +57,10 @@ trait ToApplyOps extends ToApplyOps0 with ToFunctorOps {
   ////
 
   def ^[F[_], A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C)(
-      implicit F: Apply[F]): F[C] =
-    F.apply2(fa, fb)(f)
+      implicit F: Apply[F]): F[C] = F.apply2(fa, fb)(f)
 
   def ^^[F[_], A, B, C, D](fa: => F[A], fb: => F[B], fc: => F[C])(
-      f: (A, B, C) => D)(implicit F: Apply[F]): F[D] =
-    F.apply3(fa, fb, fc)(f)
+      f: (A, B, C) => D)(implicit F: Apply[F]): F[D] = F.apply3(fa, fb, fc)(f)
 
   def ^^^[F[_], A, B, C, D, E](
       fa: => F[A],
@@ -111,12 +109,10 @@ trait ApplySyntax[F[_]] extends FunctorSyntax[F] {
     F.apply2(fa, fb)(f)
 
   def ^^[A, B, C, D](fa: => F[A], fb: => F[B], fc: => F[C])(
-      f: (A, B, C) => D): F[D] =
-    F.apply3(fa, fb, fc)(f)
+      f: (A, B, C) => D): F[D] = F.apply3(fa, fb, fc)(f)
 
   def ^^^[A, B, C, D, E](fa: => F[A], fb: => F[B], fc: => F[C], fd: => F[D])(
-      f: (A, B, C, D) => E): F[E] =
-    F.apply4(fa, fb, fc, fd)(f)
+      f: (A, B, C, D) => E): F[E] = F.apply4(fa, fb, fc, fd)(f)
 
   def ^^^^[A, B, C, D, E, I](
       fa: => F[A],

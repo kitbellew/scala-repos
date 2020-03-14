@@ -36,8 +36,7 @@ import com.codecommit.util.UniversalCharSet
 trait Parser extends RegexParsers with Filters with AST {
   import ast._
 
-  def parse(str: String): Set[Expr] =
-    parse(LineStream(str))
+  def parse(str: String): Set[Expr] = parse(LineStream(str))
 
   def parse(input: LineStream): Set[Expr] = {
     val results = expr(input)
@@ -353,26 +352,25 @@ trait Parser extends RegexParsers with Filters with AST {
   override val whitespace = """([;\s]+|--.*|\(-([^\-]|-+[^)\-])*-+\))+""".r
   override val skipWhitespace = true
 
-  private val precedence =
-    prec(
-      (Descent, MetaDescent),
-      Deref,
-      Comp,
-      Neg,
-      Pow,
-      (Mul, Div, Mod),
-      (Add, Sub),
-      (Lt, LtEq, Gt, GtEq),
-      (Eq, NotEq),
-      (And, Or),
-      (Union, Intersect, Difference),
-      Cond,
-      With,
-      New,
-      Where,
-      Observe,
-      (Relate, Let, Solve, Import, Assert)
-    )
+  private val precedence = prec(
+    (Descent, MetaDescent),
+    Deref,
+    Comp,
+    Neg,
+    Pow,
+    (Mul, Div, Mod),
+    (Add, Sub),
+    (Lt, LtEq, Gt, GtEq),
+    (Eq, NotEq),
+    (And, Or),
+    (Union, Intersect, Difference),
+    Cond,
+    With,
+    New,
+    Where,
+    Observe,
+    (Relate, Let, Solve, Import, Assert)
+  )
 
   private def arrayDefDeref =
     new com.codecommit.gll.ast.Filter[Node] {
@@ -417,18 +415,19 @@ trait Parser extends RegexParsers with Filters with AST {
   }
 
   private[quirrel] def canonicalizeStr(str: String): String = {
-    val (back, _) = str.foldLeft(("", false)) {
-      case ((acc, false), '\\') => (acc, true)
-      case ((acc, false), c)    => (acc + c, false)
+    val (back, _) =
+      str.foldLeft(("", false)) {
+        case ((acc, false), '\\') => (acc, true)
+        case ((acc, false), c)    => (acc + c, false)
 
-      case ((acc, true), 'n')  => (acc + '\n', false)
-      case ((acc, true), 'r')  => (acc + '\r', false)
-      case ((acc, true), 'f')  => (acc + '\f', false)
-      case ((acc, true), 't')  => (acc + '\t', false)
-      case ((acc, true), '0')  => (acc + '\0', false)
-      case ((acc, true), '\\') => (acc + '\\', false)
-      case ((acc, true), c)    => (acc + c, false)
-    }
+        case ((acc, true), 'n')  => (acc + '\n', false)
+        case ((acc, true), 'r')  => (acc + '\r', false)
+        case ((acc, true), 'f')  => (acc + '\f', false)
+        case ((acc, true), 't')  => (acc + '\t', false)
+        case ((acc, true), '0')  => (acc + '\0', false)
+        case ((acc, true), '\\') => (acc + '\\', false)
+        case ((acc, true), c)    => (acc + c, false)
+      }
 
     back.substring(1, back.length - 1)
   }
@@ -441,10 +440,11 @@ trait Parser extends RegexParsers with Filters with AST {
     str substring 2
 
   private def canonicalizePropertyName(str: String): String = {
-    val (back, _) = str.substring(1, str.length - 1).foldLeft(("", false)) {
-      case ((acc, false), '\\') => (acc, true)
-      case ((acc, _), c)        => (acc + c, false)
-    }
+    val (back, _) =
+      str.substring(1, str.length - 1).foldLeft(("", false)) {
+        case ((acc, false), '\\') => (acc, true)
+        case ((acc, _), c)        => (acc + c, false)
+      }
 
     back
   }
@@ -514,12 +514,13 @@ trait Parser extends RegexParsers with Filters with AST {
         } toSeq: _*)
       }
 
-      val expectedCounts = expectedCountPS.fold(Map()) { (left, right) =>
-        right.foldLeft(left) {
-          case (acc, (str, count)) =>
-            acc.updated(str, acc get str map (count +) getOrElse count)
+      val expectedCounts =
+        expectedCountPS.fold(Map()) { (left, right) =>
+          right.foldLeft(left) {
+            case (acc, (str, count)) =>
+              acc.updated(str, acc get str map (count +) getOrElse count)
+          }
         }
-      }
 
       val pairs = expectedCounts.toList.sortWith {
         case ((_, a), (_, b)) => a > b
@@ -527,9 +528,10 @@ trait Parser extends RegexParsers with Filters with AST {
 
       val expectation = pairs.headOption flatMap {
         case (_, headCount) => {
-          val (possibilities, _) = (pairs takeWhile {
-            case (_, c) => headCount == c
-          }).unzip
+          val (possibilities, _) =
+            (pairs takeWhile {
+              case (_, c) => headCount == c
+            }).unzip
 
           if (possibilities.isEmpty)
             None

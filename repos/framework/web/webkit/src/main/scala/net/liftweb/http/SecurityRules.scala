@@ -260,28 +260,26 @@ final case class ContentSecurityPolicy(
     * expected by the `Content-Security-Policy` header.
     */
   def contentSecurityPolicyString = {
-    val allRestrictions =
-      List(
-        "default-src" -> defaultSources,
-        "connect-src" -> connectSources,
-        "font-src" -> fontSources,
-        "frame-src" -> frameSources,
-        "img-src" -> imageSources,
-        "media-src" -> mediaSources,
-        "object-src" -> objectSources,
-        "script-src" -> scriptSources,
-        "style-src" -> styleSources
-      )
+    val allRestrictions = List(
+      "default-src" -> defaultSources,
+      "connect-src" -> connectSources,
+      "font-src" -> fontSources,
+      "frame-src" -> frameSources,
+      "img-src" -> imageSources,
+      "media-src" -> mediaSources,
+      "object-src" -> objectSources,
+      "script-src" -> scriptSources,
+      "style-src" -> styleSources
+    )
 
-    val restrictionString =
-      allRestrictions
-        .collect {
-          case (category, restrictions) if restrictions.nonEmpty =>
-            category +
-              " " +
-              restrictions.map(_.sourceRestrictionString).mkString(" ")
-        }
-        .mkString("; ")
+    val restrictionString = allRestrictions
+      .collect {
+        case (category, restrictions) if restrictions.nonEmpty =>
+          category +
+            " " +
+            restrictions.map(_.sourceRestrictionString).mkString(" ")
+      }
+      .mkString("; ")
 
     reportUri.map { uri =>
       s"$restrictionString; report-uri $uri"

@@ -104,8 +104,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
 
   override def deserializeStream(in: InputStream): DeserializationStream = {
     new DeserializationStream {
-      private[this] val dIn: DataInputStream = new DataInputStream(
-        new BufferedInputStream(in))
+      private[this] val dIn: DataInputStream =
+        new DataInputStream(new BufferedInputStream(in))
       // 1024 is a default buffer size; this buffer will grow to accommodate larger rows
       private[this] var rowBuffer: Array[Byte] = new Array[Byte](1024)
       private[this] var row: UnsafeRow = new UnsafeRow(numFields)
@@ -189,6 +189,5 @@ private class UnsafeRowSerializerInstance(numFields: Int)
     throw new UnsupportedOperationException
   override def deserialize[T: ClassTag](
       bytes: ByteBuffer,
-      loader: ClassLoader): T =
-    throw new UnsupportedOperationException
+      loader: ClassLoader): T = throw new UnsupportedOperationException
 }

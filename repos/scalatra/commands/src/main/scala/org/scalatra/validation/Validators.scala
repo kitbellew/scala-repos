@@ -218,14 +218,15 @@ object Validators {
       allowLocalHost: Boolean,
       messageFormat: String = "%s must be a valid url.",
       schemes: Seq[String]): Validator[String] = {
-    val validator = (url: String) ⇒ {
-      (allCatch opt {
-        val u = URI.create(url).normalize()
-        !absolute || u.isAbsolute
-      }).isDefined && (allowLocalHost || UrlValidator
-        .getInstance()
-        .isValid(url))
-    }
+    val validator =
+      (url: String) ⇒ {
+        (allCatch opt {
+          val u = URI.create(url).normalize()
+          !absolute || u.isAbsolute
+        }).isDefined && (allowLocalHost || UrlValidator
+          .getInstance()
+          .isValid(url))
+      }
     new PredicateValidator[String](fieldName, validator, messageFormat)
   }
 

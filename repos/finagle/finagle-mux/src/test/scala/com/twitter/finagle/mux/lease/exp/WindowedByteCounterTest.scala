@@ -15,8 +15,9 @@ class WindowedByteCounterTest
     with IntegrationPatience {
 
   trait ByteCounterHelper {
-    val fakePool = new FakeMemoryPool(
-      new FakeMemoryUsage(StorageUnit.zero, StorageUnit.zero))
+    val fakePool =
+      new FakeMemoryPool(
+        new FakeMemoryUsage(StorageUnit.zero, StorageUnit.zero))
     val fakeBean = new FakeGarbageCollectorMXBean(0, 0)
     val nfo = new JvmInfo(fakePool, fakeBean)
   }

@@ -160,8 +160,7 @@ object Trees {
       extends Tree {
     val tpe = stats.last.tpe
 
-    override def toString(): String =
-      stats.mkString("Block(", ",", ")")
+    override def toString(): String = stats.mkString("Block(", ",", ")")
   }
 
   object Block {
@@ -178,8 +177,7 @@ object Trees {
       }
     }
 
-    def apply(stats: Tree*)(implicit pos: Position): Tree =
-      apply(stats.toList)
+    def apply(stats: Tree*)(implicit pos: Position): Tree = apply(stats.toList)
 
     def unapply(block: Block): Some[List[Tree]] = Some(block.stats)
   }
@@ -217,10 +215,11 @@ object Trees {
       implicit val pos: Position)
       extends Tree {
     // cannot be in expression position, unless it is infinite
-    val tpe = cond match {
-      case BooleanLiteral(true) => NothingType
-      case _                    => NoType
-    }
+    val tpe =
+      cond match {
+        case BooleanLiteral(true) => NothingType
+        case _                    => NoType
+      }
   }
 
   case class DoWhile(body: Tree, cond: Tree, label: Option[Ident] = None)(
@@ -304,13 +303,14 @@ object Trees {
   case class UnaryOp(op: UnaryOp.Code, lhs: Tree)(implicit val pos: Position)
       extends Tree {
     import UnaryOp._
-    val tpe = (op: @switch) match {
-      case LongToInt | DoubleToInt  => IntType
-      case IntToLong | DoubleToLong => LongType
-      case DoubleToFloat            => FloatType
-      case LongToDouble             => DoubleType
-      case Boolean_!                => BooleanType
-    }
+    val tpe =
+      (op: @switch) match {
+        case LongToInt | DoubleToInt  => IntType
+        case IntToLong | DoubleToLong => LongType
+        case DoubleToFloat            => FloatType
+        case LongToDouble             => DoubleType
+        case Boolean_!                => BooleanType
+      }
   }
 
   object UnaryOp {
@@ -333,24 +333,25 @@ object Trees {
       implicit val pos: Position)
       extends Tree {
     import BinaryOp._
-    val tpe = (op: @switch) match {
-      case === | !== | Num_== | Num_!= | Num_< | Num_<= | Num_> | Num_>= |
-          Long_== | Long_!= | Long_< | Long_<= | Long_> | Long_>= | Boolean_== |
-          Boolean_!= | Boolean_| | Boolean_& =>
-        BooleanType
-      case String_+ =>
-        StringType
-      case Int_+ | Int_- | Int_* | Int_/ | Int_% | Int_| | Int_& | Int_^ |
-          Int_<< | Int_>>> | Int_>> =>
-        IntType
-      case Float_+ | Float_- | Float_* | Float_/ | Float_% =>
-        FloatType
-      case Double_+ | Double_- | Double_* | Double_/ | Double_% =>
-        DoubleType
-      case Long_+ | Long_- | Long_* | Long_/ | Long_% | Long_| | Long_& |
-          Long_^ | Long_<< | Long_>>> | Long_>> =>
-        LongType
-    }
+    val tpe =
+      (op: @switch) match {
+        case === | !== | Num_== | Num_!= | Num_< | Num_<= | Num_> | Num_>= |
+            Long_== | Long_!= | Long_< | Long_<= | Long_> | Long_>= |
+            Boolean_== | Boolean_!= | Boolean_| | Boolean_& =>
+          BooleanType
+        case String_+ =>
+          StringType
+        case Int_+ | Int_- | Int_* | Int_/ | Int_% | Int_| | Int_& | Int_^ |
+            Int_<< | Int_>>> | Int_>> =>
+          IntType
+        case Float_+ | Float_- | Float_* | Float_/ | Float_% =>
+          FloatType
+        case Double_+ | Double_- | Double_* | Double_/ | Double_% =>
+          DoubleType
+        case Long_+ | Long_- | Long_* | Long_/ | Long_% | Long_| | Long_& |
+            Long_^ | Long_<< | Long_>>> | Long_>> =>
+          LongType
+      }
   }
 
   object BinaryOp {
@@ -452,22 +453,24 @@ object Trees {
   case class AsInstanceOf(expr: Tree, cls: ReferenceType)(
       implicit val pos: Position)
       extends Tree {
-    val tpe = cls match {
-      case ClassType(Definitions.RuntimeNullClass)    => NullType
-      case ClassType(Definitions.RuntimeNothingClass) => NothingType
-      case _                                          => cls.asInstanceOf[Type]
-    }
+    val tpe =
+      cls match {
+        case ClassType(Definitions.RuntimeNullClass)    => NullType
+        case ClassType(Definitions.RuntimeNothingClass) => NothingType
+        case _                                          => cls.asInstanceOf[Type]
+      }
   }
 
   case class Unbox(expr: Tree, charCode: Char)(implicit val pos: Position)
       extends Tree {
-    val tpe = (charCode: @switch) match {
-      case 'Z'             => BooleanType
-      case 'B' | 'S' | 'I' => IntType
-      case 'J'             => LongType
-      case 'F'             => FloatType
-      case 'D'             => DoubleType
-    }
+    val tpe =
+      (charCode: @switch) match {
+        case 'Z'             => BooleanType
+        case 'B' | 'S' | 'I' => IntType
+        case 'J'             => LongType
+        case 'F'             => FloatType
+        case 'D'             => DoubleType
+      }
   }
 
   case class GetClass(expr: Tree)(implicit val pos: Position) extends Tree {
@@ -945,8 +948,7 @@ object Trees {
       else
         new OptimizerHints(bits & ~NoinlineMask)
 
-    override def toString(): String =
-      s"OptimizerHints($bits)"
+    override def toString(): String = s"OptimizerHints($bits)"
   }
 
   object OptimizerHints {
@@ -956,8 +958,7 @@ object Trees {
     final val NoinlineShift = 1
     final val NoinlineMask = 1 << NoinlineShift
 
-    final val empty: OptimizerHints =
-      new OptimizerHints(0)
+    final val empty: OptimizerHints = new OptimizerHints(0)
   }
 
   /** A hash of a tree (usually a MethodDef). Contains two SHA-1 hashes */

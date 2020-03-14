@@ -120,20 +120,21 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
   def tag = FastTypeTag[(Any, Any)]
 
   def pickleField(name: String, value: Any, builder: PBuilder): Unit = {
-    val (tag1, pickler1) = if (value == null) {
-      (
-        FastTypeTag.Null.asInstanceOf[FastTypeTag[Any]],
-        Defaults.nullPickler.asInstanceOf[Pickler[Any]])
-    } else {
-      val clazz = value.getClass
-      val tag = FastTypeTag
-        .mkRaw(clazz, reflectRuntime.currentMirror)
-        .asInstanceOf[FastTypeTag[Any]]
-      val pickler = scala.pickling.internal.currentRuntime.picklers
-        .genPickler(clazz.getClassLoader, clazz, tag)
-        .asInstanceOf[Pickler[Any]]
-      (tag, pickler)
-    }
+    val (tag1, pickler1) =
+      if (value == null) {
+        (
+          FastTypeTag.Null.asInstanceOf[FastTypeTag[Any]],
+          Defaults.nullPickler.asInstanceOf[Pickler[Any]])
+      } else {
+        val clazz = value.getClass
+        val tag = FastTypeTag
+          .mkRaw(clazz, reflectRuntime.currentMirror)
+          .asInstanceOf[FastTypeTag[Any]]
+        val pickler = scala.pickling.internal.currentRuntime.picklers
+          .genPickler(clazz.getClassLoader, clazz, tag)
+          .asInstanceOf[Pickler[Any]]
+        (tag, pickler)
+      }
 
     builder.putField(
       name,

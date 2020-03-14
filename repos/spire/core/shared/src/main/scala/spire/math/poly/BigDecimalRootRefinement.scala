@@ -381,10 +381,7 @@ object BigDecimalRootRefinement {
         y5: JBigDecimal
     ): Approximation = {
       val dy = y0.subtract(y5)
-      val k = y0
-        .divide(dy, 1, RoundingMode.HALF_UP)
-        .unscaledValue
-        .intValue
+      val k = y0.divide(dy, 1, RoundingMode.HALF_UP).unscaledValue.intValue
       val eps = x5.subtract(x0).divide(new JBigDecimal(5))
       def eval(k: Int): (JBigDecimal, JBigDecimal) = {
         val x = new JBigDecimal(k).multiply(eps).add(x0)

@@ -65,8 +65,9 @@ trait FindMembers {
 
     // SLS 5.1.3 First, a concrete definition always overrides an abstract definition
     private def searchConcreteThenDeferred: T = {
-      val deferredSeen =
-        walkBaseClasses(requiredFlags, excludedFlags | DEFERRED)
+      val deferredSeen = walkBaseClasses(
+        requiredFlags,
+        excludedFlags | DEFERRED)
       if (deferredSeen) // OPT: the `if` avoids a second pass if the first pass didn't spot any candidates.
         walkBaseClasses(
           requiredFlags | DEFERRED,

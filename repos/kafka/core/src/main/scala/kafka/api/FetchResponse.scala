@@ -149,10 +149,11 @@ class TopicDataSend(val dest: String, val topicData: TopicData) extends Send {
   buffer.putInt(topicData.partitionData.size)
   buffer.rewind()
 
-  private val sends = new MultiSend(
-    dest,
-    JavaConversions.seqAsJavaList(topicData.partitionData.toList.map(d =>
-      new PartitionDataSend(d._1, d._2))))
+  private val sends =
+    new MultiSend(
+      dest,
+      JavaConversions.seqAsJavaList(topicData.partitionData.toList.map(d =>
+        new PartitionDataSend(d._1, d._2))))
 
   override def writeTo(channel: GatheringByteChannel): Long = {
     if (completed)
@@ -243,8 +244,9 @@ case class FetchResponse(
     case (topicAndPartition, fetchData) => topicAndPartition.topic
   }
   val headerSizeInBytes = FetchResponse.headerSize(requestVersion)
-  lazy val sizeInBytes =
-    FetchResponse.responseSize(dataGroupedByTopic, requestVersion)
+  lazy val sizeInBytes = FetchResponse.responseSize(
+    dataGroupedByTopic,
+    requestVersion)
 
   /*
    * Writes the header of the FetchResponse to the input buffer
@@ -313,24 +315,26 @@ class FetchResponseSend(val dest: String, val fetchResponse: FetchResponse)
   override def destination = dest
 
   // The throttleTimeSize will be 0 if the request was made from a client sending a V0 style request
-  private val buffer =
-    ByteBuffer.allocate(4 /* for size */ + fetchResponse.headerSizeInBytes)
+  private val buffer = ByteBuffer.allocate(
+    4 /* for size */ + fetchResponse.headerSizeInBytes)
   fetchResponse.writeHeaderTo(buffer)
   buffer.rewind()
 
-  private val sends = new MultiSend(
-    dest,
-    JavaConversions.seqAsJavaList(fetchResponse.dataGroupedByTopic.toList.map {
-      case (topic, data) =>
-        new TopicDataSend(
-          dest,
-          TopicData(
-            topic,
-            data.map {
-              case (topicAndPartition, message) =>
-                (topicAndPartition.partition, message)
-            }))
-    }))
+  private val sends =
+    new MultiSend(
+      dest,
+      JavaConversions.seqAsJavaList(
+        fetchResponse.dataGroupedByTopic.toList.map {
+          case (topic, data) =>
+            new TopicDataSend(
+              dest,
+              TopicData(
+                topic,
+                data.map {
+                  case (topicAndPartition, message) =>
+                    (topicAndPartition.partition, message)
+                }))
+        }))
 
   override def writeTo(channel: GatheringByteChannel): Long = {
     if (completed)

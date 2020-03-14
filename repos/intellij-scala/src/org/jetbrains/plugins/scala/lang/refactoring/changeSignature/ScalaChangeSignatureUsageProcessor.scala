@@ -61,24 +61,26 @@ class ScalaChangeSignatureUsageProcessor
         val method = jInfo.getMethod
         findMethodRefUsages(method, results, searchInJava = false)
 
-        val synthetics = method match {
-          case ScPrimaryConstructor.ofClass(clazz) if clazz.isCase =>
-            val inExistingClasses =
-              (clazz +: ScalaPsiUtil.getBaseCompanionModule(clazz).toSeq)
-                .flatMap(_.allSynthetics)
-            val inFakeCompanion =
-              clazz.fakeCompanionModule.toSeq.flatMap(_.members)
-            inExistingClasses ++ inFakeCompanion
-          case _ => Nil
-        }
+        val synthetics =
+          method match {
+            case ScPrimaryConstructor.ofClass(clazz) if clazz.isCase =>
+              val inExistingClasses =
+                (clazz +: ScalaPsiUtil.getBaseCompanionModule(clazz).toSeq)
+                  .flatMap(_.allSynthetics)
+              val inFakeCompanion = clazz.fakeCompanionModule.toSeq
+                .flatMap(_.members)
+              inExistingClasses ++ inFakeCompanion
+            case _ => Nil
+          }
 
         val overriders =
           OverridingMethodsSearch.search(method).findAll.asScala.toSeq ++
             ScalaOverridingMemberSearcher.search(method).toSeq
-        val methods = (method +: overriders ++: synthetics).map {
-          case isWrapper(m) => m
-          case other        => other
-        }.distinct
+        val methods =
+          (method +: overriders ++: synthetics).map {
+            case isWrapper(m) => m
+            case other        => other
+          }.distinct
 
         if (info.isParameterSetOrOrderChanged || info.isParameterNamesChanged) {
           methods.foreach {
@@ -159,10 +161,11 @@ class ScalaChangeSignatureUsageProcessor
 
     //need to add arguments from previous clauses as parameters to default argument function
     def addArgumentsToDefaultParamInJava(): Unit = {
-      val newParams = changeInfo match {
-        case sc: ScalaChangeInfo => sc.newParams
-        case _                   => return
-      }
+      val newParams =
+        changeInfo match {
+          case sc: ScalaChangeInfo => sc.newParams
+          case _                   => return
+        }
 
       if (newParams.size <= 1)
         return
@@ -345,19 +348,20 @@ class ScalaChangeSignatureUsageProcessor
       newName: String,
       results: ArrayBuffer[UsageInfo]) {
     val scope: SearchScope = param.getUseScope
-    val process = (ref: PsiReference) => {
-      ref.getElement match {
-        case refElem: ScReferenceElement =>
-          results += ParameterUsageInfo(oldIndex, newName, refElem)
-        case refElem: PsiReferenceExpression =>
-          results += new ChangeSignatureParameterUsageInfo(
-            refElem,
-            param.name,
-            newName)
-        case _ =>
+    val process =
+      (ref: PsiReference) => {
+        ref.getElement match {
+          case refElem: ScReferenceElement =>
+            results += ParameterUsageInfo(oldIndex, newName, refElem)
+          case refElem: PsiReferenceExpression =>
+            results += new ChangeSignatureParameterUsageInfo(
+              refElem,
+              param.name,
+              newName)
+          case _ =>
+        }
+        true
       }
-      true
-    }
     ReferencesSearch.search(param, scope, false).forEach(process)
   }
 }

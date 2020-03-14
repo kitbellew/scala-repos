@@ -14,12 +14,13 @@ class MysqlBuilderTest extends FunSuite with IntegrationClient {
   test("clients have granular tracing") {
     Trace.enable()
     var annotations: List[Annotation] = Nil
-    val mockTracer = new Tracer {
-      def record(record: Record) = {
-        annotations ::= record.annotation
+    val mockTracer =
+      new Tracer {
+        def record(record: Record) = {
+          annotations ::= record.annotation
+        }
+        def sampleTrace(traceId: TraceId): Option[Boolean] = Some(true)
       }
-      def sampleTrace(traceId: TraceId): Option[Boolean] = Some(true)
-    }
 
     // if we have a local instance of mysql running.
     if (isAvailable) {

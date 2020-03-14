@@ -119,10 +119,11 @@ class MarathonHealthCheckManager @Inject() (
       appVersion: Timestamp,
       healthCheck: HealthCheck): Unit =
     appHealthChecks.writeLock { ahcs =>
-      val healthChecksForVersion: Set[ActiveHealthCheck] =
-        listActive(appId, appVersion)
-      val toRemove: Set[ActiveHealthCheck] =
-        healthChecksForVersion.filter(_.healthCheck == healthCheck)
+      val healthChecksForVersion: Set[ActiveHealthCheck] = listActive(
+        appId,
+        appVersion)
+      val toRemove: Set[ActiveHealthCheck] = healthChecksForVersion.filter(
+        _.healthCheck == healthCheck)
       for (ahc <- toRemove) {
         log.info(
           s"Removing health check for app [$appId] and version [$appVersion]: [$healthCheck]")
@@ -131,11 +132,12 @@ class MarathonHealthCheckManager @Inject() (
       }
       val newHealthChecksForVersion = healthChecksForVersion -- toRemove
       val currentHealthChecksForApp = ahcs(appId)
-      val newHealthChecksForApp = if (newHealthChecksForVersion.isEmpty) {
-        currentHealthChecksForApp - appVersion
-      } else {
-        currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
-      }
+      val newHealthChecksForApp =
+        if (newHealthChecksForVersion.isEmpty) {
+          currentHealthChecksForApp - appVersion
+        } else {
+          currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
+        }
 
       if (newHealthChecksForApp.isEmpty)
         ahcs -= appId
@@ -230,8 +232,8 @@ class MarathonHealthCheckManager @Inject() (
       val appId = Task.Id(taskStatus.getTaskId).appId
 
       // collect health check actors for the associated app's command checks.
-      val healthCheckActors: Iterable[ActorRef] =
-        listActive(appId, version).collect {
+      val healthCheckActors: Iterable[ActorRef] = listActive(appId, version)
+        .collect {
           case ActiveHealthCheck(hc, ref) if hc.protocol == Protocol.COMMAND =>
             ref
         }
@@ -251,9 +253,10 @@ class MarathonHealthCheckManager @Inject() (
     import mesosphere.marathon.health.HealthCheckActor.GetTaskHealth
     implicit val timeout: Timeout = Timeout(2, SECONDS)
 
-    val futureAppVersion: Future[Option[Timestamp]] = for {
-      maybeTaskState <- taskTracker.task(taskId)
-    } yield maybeTaskState.flatMap(_.launched).map(_.appVersion)
+    val futureAppVersion: Future[Option[Timestamp]] =
+      for {
+        maybeTaskState <- taskTracker.task(taskId)
+      } yield maybeTaskState.flatMap(_.launched).map(_.appVersion)
 
     futureAppVersion.flatMap {
       case None => Future.successful(Nil)
@@ -272,10 +275,11 @@ class MarathonHealthCheckManager @Inject() (
   override def statuses(appId: PathId): Future[Map[Task.Id, Seq[Health]]] =
     appHealthChecks.readLock { ahcs =>
       implicit val timeout: Timeout = Timeout(2, SECONDS)
-      val futureHealths = for {
-        ActiveHealthCheck(_, actor) <- ahcs(
-          appId).values.iterator.flatten.toVector
-      } yield (actor ? GetAppHealth).mapTo[AppHealth]
+      val futureHealths =
+        for {
+          ActiveHealthCheck(_, actor) <- ahcs(
+            appId).values.iterator.flatten.toVector
+        } yield (actor ? GetAppHealth).mapTo[AppHealth]
 
       Future.sequence(futureHealths) flatMap { healths =>
         val groupedHealth = healths.flatMap(_.health).groupBy(_.taskId)

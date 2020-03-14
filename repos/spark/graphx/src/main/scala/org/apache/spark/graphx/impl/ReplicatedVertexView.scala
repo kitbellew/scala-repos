@@ -64,13 +64,12 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
     val shipSrc = includeSrc && !hasSrcId
     val shipDst = includeDst && !hasDstId
     if (shipSrc || shipDst) {
-      val shippedVerts: RDD[(Int, VertexAttributeBlock[VD])] =
-        vertices
-          .shipVertexAttributes(shipSrc, shipDst)
-          .setName(
-            "ReplicatedVertexView.upgrade(%s, %s) - shippedVerts %s %s (broadcast)"
-              .format(includeSrc, includeDst, shipSrc, shipDst))
-          .partitionBy(edges.partitioner.get)
+      val shippedVerts: RDD[(Int, VertexAttributeBlock[VD])] = vertices
+        .shipVertexAttributes(shipSrc, shipDst)
+        .setName(
+          "ReplicatedVertexView.upgrade(%s, %s) - shippedVerts %s %s (broadcast)"
+            .format(includeSrc, includeDst, shipSrc, shipDst))
+        .partitionBy(edges.partitioner.get)
       val newEdges = edges.withPartitionsRDD(
         edges.partitionsRDD.zipPartitions(shippedVerts) {
           (ePartIter, shippedVertsIter) =>
@@ -127,8 +126,8 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
           .format(hasSrcId, hasDstId))
       .partitionBy(edges.partitioner.get)
 
-    val newEdges =
-      edges.withPartitionsRDD(edges.partitionsRDD.zipPartitions(shippedVerts) {
+    val newEdges = edges.withPartitionsRDD(
+      edges.partitionsRDD.zipPartitions(shippedVerts) {
         (ePartIter, shippedVertsIter) =>
           ePartIter.map {
             case (pid, edgePartition) =>

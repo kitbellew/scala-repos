@@ -28,13 +28,16 @@ import org.apache.spark.mllib.util.LinearDataGenerator
 class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
 
   test("logistic regression PMML export") {
-    val linearInput =
-      LinearDataGenerator.generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
+    val linearInput = LinearDataGenerator.generateLinearInput(
+      3.0,
+      Array(10.0, 10.0),
+      1,
+      17)
     val logisticRegressionModel =
       new LogisticRegressionModel(linearInput(0).features, linearInput(0).label)
 
-    val logisticModelExport =
-      PMMLModelExportFactory.createPMMLModelExport(logisticRegressionModel)
+    val logisticModelExport = PMMLModelExportFactory.createPMMLModelExport(
+      logisticRegressionModel)
 
     // assert that the PMML format is as expected
     assert(logisticModelExport.isInstanceOf[PMMLModelExport])
@@ -46,8 +49,9 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     // This verify that there is a model attached to the pmml object and the model is a regression
     // one.  It also verifies that the pmml model has a regression table (for target category 1)
     // with the same number of predictors of the model weights.
-    val pmmlRegressionModel =
-      pmml.getModels.get(0).asInstanceOf[RegressionModel]
+    val pmmlRegressionModel = pmml.getModels
+      .get(0)
+      .asInstanceOf[RegressionModel]
     assert(
       pmmlRegressionModel.getRegressionTables.get(0).getTargetCategory === "1")
     assert(
@@ -68,8 +72,11 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
   }
 
   test("linear SVM PMML export") {
-    val linearInput =
-      LinearDataGenerator.generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
+    val linearInput = LinearDataGenerator.generateLinearInput(
+      3.0,
+      Array(10.0, 10.0),
+      1,
+      17)
     val svmModel = new SVMModel(linearInput(0).features, linearInput(0).label)
 
     val svmModelExport = PMMLModelExportFactory.createPMMLModelExport(svmModel)
@@ -86,8 +93,9 @@ class BinaryClassificationPMMLModelExportSuite extends SparkFunSuite {
     // This verify that there is a model attached to the pmml object and the model is a regression
     // one.  It also verifies that the pmml model has a regression table (for target category 1)
     // with the same number of predictors of the model weights.
-    val pmmlRegressionModel =
-      pmml.getModels.get(0).asInstanceOf[RegressionModel]
+    val pmmlRegressionModel = pmml.getModels
+      .get(0)
+      .asInstanceOf[RegressionModel]
     assert(
       pmmlRegressionModel.getRegressionTables.get(0).getTargetCategory === "1")
     assert(

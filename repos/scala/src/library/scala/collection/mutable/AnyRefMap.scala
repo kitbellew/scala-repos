@@ -499,12 +499,13 @@ object AnyRefMap {
   private final val VacantBit = 0x40000000
   private final val MissVacant = 0xC0000000
 
-  private val exceptionDefault = (k: Any) =>
-    throw new NoSuchElementException(
-      if (k == null)
-        "(null)"
-      else
-        k.toString)
+  private val exceptionDefault =
+    (k: Any) =>
+      throw new NoSuchElementException(
+        if (k == null)
+          "(null)"
+        else
+          k.toString)
 
   implicit def canBuildFrom[K <: AnyRef, V, J <: AnyRef, U]
       : CanBuildFrom[AnyRefMap[K, V], (J, U), AnyRefMap[J, U]] =

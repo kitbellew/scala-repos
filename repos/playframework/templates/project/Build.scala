@@ -95,9 +95,8 @@ object Templates {
 
       val mappings: Seq[(File, File)] = templateSourcesList.flatMap {
         case templateSources: TemplateSources =>
-          val relativeMappings: Seq[(File, String)] =
-            templateSources.sourceDirs.flatMap(dir =>
-              dir.***.filter(fileFilter(_)) x relativeTo(dir))
+          val relativeMappings: Seq[(File, String)] = templateSources.sourceDirs
+            .flatMap(dir => dir.***.filter(fileFilter(_)) x relativeTo(dir))
           // Rebase the files onto the target directory, also filtering out ignored files
           relativeMappings.collect {
             case (orig, targ) if !ignore.contains(orig.getName) =>
@@ -135,9 +134,10 @@ object Templates {
 
           // Read the file and replace the parameters
           val contents = IO.read(original)
-          val newContents = allParams.foldLeft(contents) { (str, param) =>
-            str.replace("%" + param._1 + "%", param._2)
-          }
+          val newContents =
+            allParams.foldLeft(contents) { (str, param) =>
+              str.replace("%" + param._1 + "%", param._2)
+            }
           if (newContents != contents) {
             IO.write(file, newContents)
           }
@@ -210,8 +210,8 @@ object Templates {
         sys.error("Could not find credentials for host: " + host)
       }
       val upload = S3.upload.value // Ignore result
-      val uploaded =
-        (mappings in S3.upload).value.map(m => m._1.getName -> m._2)
+      val uploaded = (mappings in S3.upload).value.map(m =>
+        m._1.getName -> m._2)
       val logger = streams.value.log
 
       logger.info("Publishing templates...")
@@ -248,37 +248,38 @@ object Templates {
         def waitUntilNotPending(
             uuid: String,
             statusUrl: String): Future[Either[String, String]] = {
-          val status: Future[TemplateStatus] = for {
-            _ <- timeout(2.seconds)
-            resp <- clientCall(statusUrl)
-              .withHeaders("Accept" -> "application/json,text/html;q=0.9")
-              .get()
-          } yield {
-            resp.header("Content-Type") match {
-              case Some(json) if json.startsWith("application/json") =>
-                val js = resp.json
-                (js \ "status").as[String] match {
-                  case "pending"   => TemplatePending(uuid)
-                  case "validated" => TemplateValidated(uuid)
-                  case "failed" =>
-                    TemplateFailed(uuid, (js \ "errors").as[Seq[String]])
-                }
-              case _ =>
-                val body = resp.body
-                body match {
-                  case pending
-                      if body.contains("This template is being processed.") =>
-                    TemplatePending(uuid)
-                  case validated
-                      if body.contains(
-                        "This template was published successfully!") =>
-                    TemplateValidated(uuid)
-                  case failed
-                      if body.contains("This template failed to publish.") =>
-                    TemplateFailed(uuid, extractErrors(body))
-                }
+          val status: Future[TemplateStatus] =
+            for {
+              _ <- timeout(2.seconds)
+              resp <- clientCall(statusUrl)
+                .withHeaders("Accept" -> "application/json,text/html;q=0.9")
+                .get()
+            } yield {
+              resp.header("Content-Type") match {
+                case Some(json) if json.startsWith("application/json") =>
+                  val js = resp.json
+                  (js \ "status").as[String] match {
+                    case "pending"   => TemplatePending(uuid)
+                    case "validated" => TemplateValidated(uuid)
+                    case "failed" =>
+                      TemplateFailed(uuid, (js \ "errors").as[Seq[String]])
+                  }
+                case _ =>
+                  val body = resp.body
+                  body match {
+                    case pending
+                        if body.contains("This template is being processed.") =>
+                      TemplatePending(uuid)
+                    case validated
+                        if body.contains(
+                          "This template was published successfully!") =>
+                      TemplateValidated(uuid)
+                    case failed
+                        if body.contains("This template failed to publish.") =>
+                      TemplateFailed(uuid, extractErrors(body))
+                  }
+              }
             }
-          }
 
           status.flatMap {
             case TemplatePending(uuid) => waitUntilNotPending(uuid, statusUrl)
@@ -303,12 +304,14 @@ object Templates {
                     }
                     val js = resp.json
                     val uuid = (js \ "uuid").as[String]
-                    val statusUrl = (for {
-                      links <- (js \ "_links").asOpt[JsObject]
-                      status <- (links \ "activator/templates/status")
-                        .asOpt[JsObject]
-                      url <- (status \ "href").asOpt[String]
-                    } yield url).getOrElse(s"/activator/template/status/$uuid")
+                    val statusUrl =
+                      (for {
+                        links <- (js \ "_links").asOpt[JsObject]
+                        status <- (links \ "activator/templates/status")
+                          .asOpt[JsObject]
+                        url <- (status \ "href").asOpt[String]
+                      } yield url)
+                        .getOrElse(s"/activator/template/status/$uuid")
                     waitUntilNotPending(uuid, statusUrl)
                 }
                 .map(result => (name, key, result))
@@ -351,40 +354,42 @@ object Templates {
     commands += templatesCommand
   )
 
-  val templatesCommand = Command(
-    "templates",
-    Help.more(
+  val templatesCommand =
+    Command(
       "templates",
-      "Execute the given command for the given templates"))(templatesParser) {
-    (state, args) =>
-      val (templateDirs, command) = args
-      val extracted = Project.extract(state)
+      Help.more(
+        "templates",
+        "Execute the given command for the given templates"))(templatesParser) {
+      (state, args) =>
+        val (templateDirs, command) = args
+        val extracted = Project.extract(state)
 
-      def createSetCommand(dirs: Seq[TemplateSources]): String = {
-        dirs
-          .map("file(\"" + _.mainDir.getAbsolutePath + "\")")
-          .mkString(
-            "set play.sbt.activator.Templates.templates := Seq(",
-            ",",
-            ")")
-      }
+        def createSetCommand(dirs: Seq[TemplateSources]): String = {
+          dirs
+            .map("file(\"" + _.mainDir.getAbsolutePath + "\")")
+            .mkString(
+              "set play.sbt.activator.Templates.templates := Seq(",
+              ",",
+              ")")
+        }
 
-      val setCommand = createSetCommand(templateDirs)
-      val setBack =
-        templates in extracted.currentRef get extracted.structure.data map createSetCommand toList
+        val setCommand = createSetCommand(templateDirs)
+        val setBack =
+          templates in extracted.currentRef get extracted.structure.data map createSetCommand toList
 
-      if (command == "")
-        setCommand :: state
-      else
-        setCommand :: command :: setBack ::: state
-  }
+        if (command == "")
+          setCommand :: state
+        else
+          setCommand :: command :: setBack ::: state
+    }
 
   private def templatesParser(
       state: State): Parser[(Seq[TemplateSources], String)] = {
     import Parser._
     import Parsers._
-    val templateSourcesList: Seq[TemplateSources] =
-      Project.extract(state).get(Templates.templates)
+    val templateSourcesList: Seq[TemplateSources] = Project
+      .extract(state)
+      .get(Templates.templates)
     val templateParser = Parsers.OpOrID
       .examples(templateSourcesList.map(_.name): _*)
       .flatMap { name =>

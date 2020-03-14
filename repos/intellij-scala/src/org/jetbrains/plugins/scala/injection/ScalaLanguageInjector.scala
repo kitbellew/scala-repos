@@ -80,16 +80,17 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       case _ =>
     }
 
-    val expressions = host
-      .depthFirst {
-        case injectedExpr: ScExpression
-            if injectedExpr.getParent
-              .isInstanceOf[ScInterpolatedStringLiteral] =>
-          false
-        case _ => true
-      }
-      .filter(_.isInstanceOf[ScExpression])
-      .toList
+    val expressions =
+      host
+        .depthFirst {
+          case injectedExpr: ScExpression
+              if injectedExpr.getParent
+                .isInstanceOf[ScInterpolatedStringLiteral] =>
+            false
+          case _ => true
+        }
+        .filter(_.isInstanceOf[ScExpression])
+        .toList
 
     val suitable = expressions forall {
       case l: ScLiteral if l.isString                   => true
@@ -121,13 +122,14 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
     val expression = host.asInstanceOf[ScExpression]
     // TODO implicit conversion checking (SCL-2599), disabled (performance reasons)
-    val annotationOwner = expression match {
-      case lit: ScLiteral => lit getAnnotationOwner (annotationOwnerFor(_))
-      case _ =>
-        annotationOwnerFor(
-          expression
-        ) //.orElse(implicitAnnotationOwnerFor(literal))
-    }
+    val annotationOwner =
+      expression match {
+        case lit: ScLiteral => lit getAnnotationOwner (annotationOwnerFor(_))
+        case _ =>
+          annotationOwnerFor(
+            expression
+          ) //.orElse(implicitAnnotationOwnerFor(literal))
+      }
 
     val annotation = annotationOwner flatMap {
       _.getAnnotations find {
@@ -282,9 +284,10 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     hostElement match {
       case host: PsiLanguageInjectionHost =>
         ScalaLanguageInjector withInjectionSupport { support =>
-          val mapping = ScalaProjectSettings
-            .getInstance(host.getProject)
-            .getIntInjectionMapping
+          val mapping =
+            ScalaProjectSettings
+              .getInstance(host.getProject)
+              .getIntInjectionMapping
           val allInjections =
             new util.HashMap[
               InjectedLanguage,
@@ -302,8 +305,11 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
             case literal: ScInterpolatedStringLiteral =>
               val languageId = mapping get literal.reference.get.getText
               val injectedLanguage = InjectedLanguage create languageId
-              val list = new util.ArrayList[
-                Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
+              val list =
+                new util.ArrayList[Trinity[
+                  PsiLanguageInjectionHost,
+                  InjectedLanguage,
+                  TextRange]]
 
               if (injectedLanguage != null) {
                 ScalaLanguageInjector handleInjectionImpl (literal, injectedLanguage, new BaseInjection(
@@ -463,8 +469,9 @@ object ScalaLanguageInjector {
       host: PsiElement,
       registrar: MultiHostRegistrar,
       support: LanguageInjectionSupport) {
-    val list = new util.ArrayList[
-      Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
+    val list =
+      new util.ArrayList[
+        Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
 
     literals foreach (ScalaLanguageInjector
       .handleInjectionImpl(_, injectedLanguage, injection, list))

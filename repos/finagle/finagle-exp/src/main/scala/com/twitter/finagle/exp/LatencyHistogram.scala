@@ -59,9 +59,10 @@ private[finagle] class LatencyHistogram(
   private[this] val numBuckets: Int = (clipDuration / width).toInt + 1
 
   private[this] val n = WindowedAdder(history, slices, now)
-  private[this] val tab = Array.fill(numBuckets) {
-    WindowedAdder(history, slices, now)
-  }
+  private[this] val tab =
+    Array.fill(numBuckets) {
+      WindowedAdder(history, slices, now)
+    }
 
   /**
     * Compute the quantile `which` from the underlying

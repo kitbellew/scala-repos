@@ -223,11 +223,12 @@ class ZookeeperSystemCoordinationSpec extends Specification {
       extends AroundOutside[ClientFactory] {
 
     private val clients = ListBuffer[ZkClient]()
-    private val factory = () => {
-      val client = new ZkClient(zkHosts, 1000)
-      clients += client
-      client
-    }
+    private val factory =
+      () => {
+        val client = new ZkClient(zkHosts, 1000)
+        clients += client
+        client
+      }
 
     private def zookeeperAvailable(): Boolean = {
       try {

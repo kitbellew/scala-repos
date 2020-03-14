@@ -71,11 +71,12 @@ object SupervisorSpec {
   }
 
   class Creator(target: ActorRef) extends Actor {
-    override val supervisorStrategy = OneForOneStrategy() {
-      case ex ⇒
-        target ! ((self, sender(), ex))
-        SupervisorStrategy.Stop
-    }
+    override val supervisorStrategy =
+      OneForOneStrategy() {
+        case ex ⇒
+          target ! ((self, sender(), ex))
+          SupervisorStrategy.Stop
+      }
     def receive = {
       case p: Props ⇒ sender() ! context.actorOf(p)
     }
@@ -95,12 +96,11 @@ object SupervisorSpec {
       extends MailboxType {
     override def create(
         owner: Option[ActorRef],
-        system: Option[ActorSystem]): MessageQueue =
-      throw failure
+        system: Option[ActorSystem]): MessageQueue = throw failure
   }
 
-  val config =
-    ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString(
+    """
 akka.actor.serialize-messages = off
 error-mailbox {
   mailbox-type = "akka.actor.SupervisorSpec$Mailbox"
@@ -161,8 +161,8 @@ class SupervisorSpec
       Props(new Supervisor(
         AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
           List(classOf[Exception])))))
-    val pingpong1, pingpong2, pingpong3 =
-      child(supervisor, Props(new PingPongActor(testActor)))
+    val pingpong1, pingpong2,
+        pingpong3 = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong1, pingpong2, pingpong3, supervisor)
   }
@@ -172,8 +172,8 @@ class SupervisorSpec
       Props(new Supervisor(
         OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
           List(classOf[Exception])))))
-    val pingpong1, pingpong2, pingpong3 =
-      child(supervisor, Props(new PingPongActor(testActor)))
+    val pingpong1, pingpong2,
+        pingpong3 = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong1, pingpong2, pingpong3, supervisor)
   }
@@ -190,8 +190,8 @@ class SupervisorSpec
       Props(new Supervisor(
         AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
           Nil))))
-    val pingpong2, pingpong3 =
-      child(middleSupervisor, Props(new PingPongActor(testActor)))
+    val pingpong2,
+        pingpong3 = child(middleSupervisor, Props(new PingPongActor(testActor)))
 
     (pingpong1, pingpong2, pingpong3, topSupervisor)
   }
@@ -230,35 +230,36 @@ class SupervisorSpec
 
     "restart properly when same instance is returned" in {
       val restarts = 3 //max number of restarts
-      lazy val childInstance = new Actor {
-        var preRestarts = 0
-        var postRestarts = 0
-        var preStarts = 0
-        var postStops = 0
-        override def preRestart(reason: Throwable, message: Option[Any]) {
-          preRestarts += 1;
-          testActor ! ("preRestart" + preRestarts)
-        }
-        override def postRestart(reason: Throwable) {
-          postRestarts += 1;
-          testActor ! ("postRestart" + postRestarts)
-        }
-        override def preStart() {
-          preStarts += 1;
-          testActor ! ("preStart" + preStarts)
-        }
-        override def postStop() {
-          postStops += 1;
-          testActor ! ("postStop" + postStops)
-        }
-        def receive = {
-          case "crash" ⇒ {
-            testActor ! "crashed";
-            throw new RuntimeException("Expected")
+      lazy val childInstance =
+        new Actor {
+          var preRestarts = 0
+          var postRestarts = 0
+          var preStarts = 0
+          var postStops = 0
+          override def preRestart(reason: Throwable, message: Option[Any]) {
+            preRestarts += 1;
+            testActor ! ("preRestart" + preRestarts)
           }
-          case "ping" ⇒ sender() ! "pong"
+          override def postRestart(reason: Throwable) {
+            postRestarts += 1;
+            testActor ! ("postRestart" + postRestarts)
+          }
+          override def preStart() {
+            preStarts += 1;
+            testActor ! ("preStart" + preStarts)
+          }
+          override def postStop() {
+            postStops += 1;
+            testActor ! ("postStop" + postStops)
+          }
+          def receive = {
+            case "crash" ⇒ {
+              testActor ! "crashed";
+              throw new RuntimeException("Expected")
+            }
+            case "ping" ⇒ sender() ! "pong"
+          }
         }
-      }
       val master = system.actorOf(Props(new Actor {
         override val supervisorStrategy =
           OneForOneStrategy(maxNrOfRetries = restarts)(List(classOf[Exception]))
@@ -471,10 +472,11 @@ class SupervisorSpec
 
     "not lose system messages when a NonFatal exception occurs when processing a system message" in {
       val parent = system.actorOf(Props(new Actor {
-        override val supervisorStrategy = OneForOneStrategy()({
-          case e: IllegalStateException if e.getMessage == "OHNOES" ⇒ throw e
-          case _ ⇒ SupervisorStrategy.Restart
-        })
+        override val supervisorStrategy =
+          OneForOneStrategy()({
+            case e: IllegalStateException if e.getMessage == "OHNOES" ⇒ throw e
+            case _ ⇒ SupervisorStrategy.Restart
+          })
         val child = context.watch(
           context.actorOf(
             Props(new Actor {

@@ -284,13 +284,14 @@ class ChannelException(underlying: Throwable, val remoteAddress: SocketAddress)
   def this(underlying: Throwable) = this(underlying, null)
   def this() = this(null, null)
   override def exceptionMessage = {
-    val message = (underlying, remoteAddress) match {
-      case (_, null) => super.exceptionMessage
-      case (null, _) =>
-        s"ChannelException at remote address: ${remoteAddress.toString}"
-      case (_, _) =>
-        s"${underlying.getMessage} at remote address: ${remoteAddress.toString}"
-    }
+    val message =
+      (underlying, remoteAddress) match {
+        case (_, null) => super.exceptionMessage
+        case (null, _) =>
+          s"ChannelException at remote address: ${remoteAddress.toString}"
+        case (_, _) =>
+          s"${underlying.getMessage} at remote address: ${remoteAddress.toString}"
+      }
 
     if (serviceName == SourcedException.UnspecifiedServiceName)
       message

@@ -92,67 +92,71 @@ private[ui] class StageTableBase(
   private def makeDescription(s: StageInfo): Seq[Node] = {
     val basePathUri = UIUtils.prependBaseUri(basePath)
 
-    val killLink = if (killEnabled) {
-      val confirm =
-        s"if (window.confirm('Are you sure you want to kill stage ${s.stageId} ?')) " +
-          "{ this.parentNode.submit(); return true; } else { return false; }"
-      // SPARK-6846 this should be POST-only but YARN AM won't proxy POST
-      /*
+    val killLink =
+      if (killEnabled) {
+        val confirm =
+          s"if (window.confirm('Are you sure you want to kill stage ${s.stageId} ?')) " +
+            "{ this.parentNode.submit(); return true; } else { return false; }"
+        // SPARK-6846 this should be POST-only but YARN AM won't proxy POST
+        /*
       val killLinkUri = s"$basePathUri/stages/stage/kill/"
       <form action={killLinkUri} method="POST" style="display:inline">
         <input type="hidden" name="id" value={s.stageId.toString}/>
         <input type="hidden" name="terminate" value="true"/>
         <a href="#" onclick={confirm} class="kill-link">(kill)</a>
       </form>
-       */
-      val killLinkUri =
-        s"$basePathUri/stages/stage/kill/?id=${s.stageId}&terminate=true"
-      <a href={
-        killLinkUri
-      } onclick={
-        confirm
-      } class="kill-link">(kill)</a>
-    }
+         */
+        val killLinkUri =
+          s"$basePathUri/stages/stage/kill/?id=${s.stageId}&terminate=true"
+        <a href={
+          killLinkUri
+        } onclick={
+          confirm
+        } class="kill-link">(kill)</a>
+      }
 
     val nameLinkUri =
       s"$basePathUri/stages/stage?id=${s.stageId}&attempt=${s.attemptId}"
-    val nameLink = <a href={
-      nameLinkUri
-    } class="name-link">{
-      s.name
-    }</a>
+    val nameLink =
+      <a href={
+        nameLinkUri
+      } class="name-link">{
+        s.name
+      }</a>
 
     val cachedRddInfos = s.rddInfos.filter(_.numCachedPartitions > 0)
-    val details = if (s.details.nonEmpty) {
-      <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
+    val details =
+      if (s.details.nonEmpty) {
+        <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stage-details collapsed">
+          <div class="stage-details collapsed">
         {
-          if (cachedRddInfos.nonEmpty) {
-            Text("RDD: ") ++
-              cachedRddInfos.map { i =>
-                <a href={
-                  s"$basePathUri/storage/rdd?id=${i.id}"
-                }>{
-                  i.name
-                }</a>
-              }
+            if (cachedRddInfos.nonEmpty) {
+              Text("RDD: ") ++
+                cachedRddInfos.map { i =>
+                  <a href={
+                    s"$basePathUri/storage/rdd?id=${i.id}"
+                  }>{
+                    i.name
+                  }</a>
+                }
+            }
           }
-        }
         <pre>{
-          s.details
-        }</pre>
+            s.details
+          }</pre>
       </div>
-    }
+      }
 
-    val stageDesc = for {
-      stageData <- listener.stageIdToData.get((s.stageId, s.attemptId))
-      desc <- stageData.description
-    } yield {
-      UIUtils.makeDescription(desc, basePathUri)
-    }
+    val stageDesc =
+      for {
+        stageData <- listener.stageIdToData.get((s.stageId, s.attemptId))
+        desc <- stageData.description
+      } yield {
+        UIUtils.makeDescription(desc, basePathUri)
+      }
     <div>{
       stageDesc.getOrElse("")
     } {
@@ -190,16 +194,18 @@ private[ui] class StageTableBase(
     }
 
     val stageData = stageDataOption.get
-    val submissionTime = s.submissionTime match {
-      case Some(t) => UIUtils.formatDate(new Date(t))
-      case None    => "Unknown"
-    }
+    val submissionTime =
+      s.submissionTime match {
+        case Some(t) => UIUtils.formatDate(new Date(t))
+        case None    => "Unknown"
+      }
     val finishTime = s.completionTime.getOrElse(System.currentTimeMillis)
 
     // The submission time for a stage is misleading because it counts the time
     // the stage waits to be launched. (SPARK-10930)
-    val taskLaunchTimes =
-      stageData.taskData.values.map(_.taskInfo.launchTime).filter(_ > 0)
+    val taskLaunchTimes = stageData.taskData.values
+      .map(_.taskInfo.launchTime)
+      .filter(_ > 0)
     val duration: Option[Long] =
       if (taskLaunchTimes.nonEmpty) {
         val startTime = taskLaunchTimes.min
@@ -211,8 +217,9 @@ private[ui] class StageTableBase(
       } else {
         None
       }
-    val formattedDuration =
-      duration.map(d => UIUtils.formatDuration(d)).getOrElse("Unknown")
+    val formattedDuration = duration
+      .map(d => UIUtils.formatDuration(d))
+      .getOrElse("Unknown")
 
     val inputRead = stageData.inputBytes
     val inputReadWithUnit =
@@ -348,26 +355,28 @@ private[ui] class FailedStageTable(
     } else {
       failureReason
     })
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val details =
+      if (isMultiline) {
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{
-          failureReason
-        }</pre>
+            failureReason
+          }</pre>
         </div>
-      // scalastyle:on
-    } else {
-      ""
-    }
-    val failureReasonHtml = <td valign="middle">{
-      failureReasonSummary
-    }{
-      details
-    }</td>
+        // scalastyle:on
+      } else {
+        ""
+      }
+    val failureReasonHtml =
+      <td valign="middle">{
+        failureReasonSummary
+      }{
+        details
+      }</td>
     basicColumns ++ failureReasonHtml
   }
 }

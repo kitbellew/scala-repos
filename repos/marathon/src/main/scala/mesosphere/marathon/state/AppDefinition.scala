@@ -450,8 +450,11 @@ object AppDefinition {
   }
 
   val RandomPortValue: Int = 0
-  val RandomPortDefinition: PortDefinition =
-    PortDefinition(RandomPortValue, "tcp", None, Map.empty[String, String])
+  val RandomPortDefinition: PortDefinition = PortDefinition(
+    RandomPortValue,
+    "tcp",
+    None,
+    Map.empty[String, String])
 
   // App defaults
   val DefaultId: PathId = PathId.empty

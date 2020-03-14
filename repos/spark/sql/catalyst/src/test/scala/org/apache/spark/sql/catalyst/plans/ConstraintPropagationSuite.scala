@@ -92,11 +92,11 @@ class ConstraintPropagationSuite extends SparkFunSuite {
 
     assert(tr.analyze.constraints.isEmpty)
 
-    val aliasedRelation = tr
-      .where('c.attr > 10 && 'a.attr < 5)
-      .groupBy('a, 'c, 'b)('a, 'c.as("c1"), count('a).as("a3"))
-      .select('c1, 'a)
-      .analyze
+    val aliasedRelation =
+      tr.where('c.attr > 10 && 'a.attr < 5)
+        .groupBy('a, 'c, 'b)('a, 'c.as("c1"), count('a).as("a3"))
+        .select('c1, 'a)
+        .analyze
 
     verifyConstraints(
       aliasedRelation.analyze.constraints,
@@ -120,8 +120,9 @@ class ConstraintPropagationSuite extends SparkFunSuite {
         .constraints
         .isEmpty)
 
-    val aliasedRelation =
-      tr.where('a.attr > 10).select('a.as('x), 'b, 'b.as('y), 'a.as('z))
+    val aliasedRelation = tr
+      .where('a.attr > 10)
+      .select('a.as('x), 'b, 'b.as('y), 'a.as('z))
 
     verifyConstraints(
       aliasedRelation.analyze.constraints,

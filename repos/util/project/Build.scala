@@ -5,8 +5,8 @@ import sbtunidoc.Plugin.unidocSettings
 import scoverage.ScoverageSbtPlugin
 
 object Util extends Build {
-  val branch = Process(
-    "git" :: "rev-parse" :: "--abbrev-ref" :: "HEAD" :: Nil).!!.trim
+  val branch =
+    Process("git" :: "rev-parse" :: "--abbrev-ref" :: "HEAD" :: Nil).!!.trim
   val suffix =
     if (branch == "master")
       ""

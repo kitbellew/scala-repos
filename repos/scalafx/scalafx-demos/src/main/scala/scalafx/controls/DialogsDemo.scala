@@ -128,20 +128,22 @@ object DialogsDemo extends JFXApp {
       sw.toString
     }
     val label = new Label("The exception stacktrace was:")
-    val textArea = new TextArea {
-      text = exceptionText
-      editable = false
-      wrapText = true
-      maxWidth = Double.MaxValue
-      maxHeight = Double.MaxValue
-      vgrow = Priority.Always
-      hgrow = Priority.Always
-    }
-    val expContent = new GridPane {
-      maxWidth = Double.MaxValue
-      add(label, 0, 0)
-      add(textArea, 0, 1)
-    }
+    val textArea =
+      new TextArea {
+        text = exceptionText
+        editable = false
+        wrapText = true
+        maxWidth = Double.MaxValue
+        maxHeight = Double.MaxValue
+        vgrow = Priority.Always
+        hgrow = Priority.Always
+      }
+    val expContent =
+      new GridPane {
+        maxWidth = Double.MaxValue
+        add(label, 0, 0)
+        add(textArea, 0, 1)
+      }
 
     new Alert(AlertType.Error) {
       initOwner(stage)
@@ -154,12 +156,13 @@ object DialogsDemo extends JFXApp {
   }
 
   def confirmationDialog(): Unit = {
-    val alert = new Alert(AlertType.Confirmation) {
-      initOwner(stage)
-      title = "Confirmation Dialog"
-      headerText = "Look, a Confirmation Dialog."
-      contentText = "Are you ok with this?"
-    }
+    val alert =
+      new Alert(AlertType.Confirmation) {
+        initOwner(stage)
+        title = "Confirmation Dialog"
+        headerText = "Look, a Confirmation Dialog."
+        contentText = "Are you ok with this?"
+      }
 
     val result = alert.showAndWait()
 
@@ -174,16 +177,20 @@ object DialogsDemo extends JFXApp {
     val ButtonTypeTwo = new ButtonType("Two")
     val ButtonTypeThree = new ButtonType("Three")
 
-    val alert = new Alert(AlertType.Confirmation) {
-      initOwner(stage)
-      title = "Confirmation Dialog with Custom Actions"
-      headerText = "Look, a Confirmation Dialog with Custom Actions."
-      contentText = "Choose your option."
-      // Note that we override here default dialog buttons, OK and Cancel, with new ones.
-      // We could also just add to existing button using `++=`.
-      buttonTypes =
-        Seq(ButtonTypeOne, ButtonTypeTwo, ButtonTypeThree, ButtonType.Cancel)
-    }
+    val alert =
+      new Alert(AlertType.Confirmation) {
+        initOwner(stage)
+        title = "Confirmation Dialog with Custom Actions"
+        headerText = "Look, a Confirmation Dialog with Custom Actions."
+        contentText = "Choose your option."
+        // Note that we override here default dialog buttons, OK and Cancel, with new ones.
+        // We could also just add to existing button using `++=`.
+        buttonTypes = Seq(
+          ButtonTypeOne,
+          ButtonTypeTwo,
+          ButtonTypeThree,
+          ButtonType.Cancel)
+      }
 
     val result = alert.showAndWait()
 
@@ -196,12 +203,13 @@ object DialogsDemo extends JFXApp {
   }
 
   def textInputDialog(): Unit = {
-    val dialog = new TextInputDialog(defaultValue = "walter") {
-      initOwner(stage)
-      title = "Text Input Dialog"
-      headerText = "Look, a Text Input Dialog."
-      contentText = "Please enter your name:"
-    }
+    val dialog =
+      new TextInputDialog(defaultValue = "walter") {
+        initOwner(stage)
+        title = "Text Input Dialog"
+        headerText = "Look, a Text Input Dialog."
+        contentText = "Please enter your name:"
+      }
 
     val result = dialog.showAndWait()
     result match {
@@ -214,12 +222,13 @@ object DialogsDemo extends JFXApp {
 
     val choices = Seq("a", "b", "c")
 
-    val dialog = new ChoiceDialog(defaultChoice = "b", choices = choices) {
-      initOwner(stage)
-      title = "Choice Dialog"
-      headerText = "Look, a Choice Dialog."
-      contentText = "Choose your letter:"
-    }
+    val dialog =
+      new ChoiceDialog(defaultChoice = "b", choices = choices) {
+        initOwner(stage)
+        title = "Choice Dialog"
+        headerText = "Look, a Choice Dialog."
+        contentText = "Choose your letter:"
+      }
 
     val result = dialog.showAndWait()
 

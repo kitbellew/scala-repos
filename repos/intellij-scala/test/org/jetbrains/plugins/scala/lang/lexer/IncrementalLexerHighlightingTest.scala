@@ -47,19 +47,21 @@ class IncrementalLexerHighlightingTest
       case a => myFixture.`type`(a)
     }
 
-    val incSegments = myFixture.getEditor
-      .asInstanceOf[EditorImpl]
-      .getHighlighter
-      .asInstanceOf[LexerEditorHighlighter]
-      .getSegments
+    val incSegments =
+      myFixture.getEditor
+        .asInstanceOf[EditorImpl]
+        .getHighlighter
+        .asInstanceOf[LexerEditorHighlighter]
+        .getSegments
 
     val secondText = myFixture.getFile.getText
     myFixture.configureByText("dummy.scala", secondText)
-    val segments = myFixture.getEditor
-      .asInstanceOf[EditorImpl]
-      .getHighlighter
-      .asInstanceOf[LexerEditorHighlighter]
-      .getSegments
+    val segments =
+      myFixture.getEditor
+        .asInstanceOf[EditorImpl]
+        .getHighlighter
+        .asInstanceOf[LexerEditorHighlighter]
+        .getSegments
 
     assert(
       incSegments.getSegmentCount == segments.getSegmentCount,
@@ -88,8 +90,7 @@ class IncrementalLexerHighlightingTest
   }
 
   def testSimple() {
-    val text =
-      s"""
+    val text = s"""
          |object dummy {
          | val a = 1
          | val b = "ololo"$CARET_MARKER
@@ -108,8 +109,7 @@ class IncrementalLexerHighlightingTest
   }
 
   def testNestedStrings() {
-    val text =
-      s"""
+    val text = s"""
          |object ololo {
          | val x = s"aaa $${val y = s"ccc $${val z = s"eee $CARET_MARKER fff"} ddd"} bbb"
          |}
@@ -119,8 +119,7 @@ class IncrementalLexerHighlightingTest
   }
 
   def testDiffNestedString() {
-    val text =
-      s"""
+    val text = s"""
          |fooboo(
          | s${"\"\"\""}
          | $${val yy = s"aaa $${
@@ -140,8 +139,7 @@ class IncrementalLexerHighlightingTest
     * [[org.jetbrains.plugins.scala.lang.lexer.ScalaLexer#previousToken]]
     */
   def testScl8958() {
-    val before =
-      s"""
+    val before = s"""
         |class Test {
         |  val test1 = <div></div>
         |}
@@ -149,8 +147,7 @@ class IncrementalLexerHighlightingTest
         |class Test2 {$CARET_MARKER}
       """.stripMargin
 
-    val after =
-      s"""
+    val after = s"""
         |class Test {
         |  val test1 = <div></div>
         |}
@@ -170,8 +167,7 @@ class IncrementalLexerHighlightingTest
   }
 
   def testBig() {
-    val text =
-      s"""package es.fcc.bibl.bd
+    val text = s"""package es.fcc.bibl.bd
 
 import javax.xml.parsers.DocumentBuilderFactory
 

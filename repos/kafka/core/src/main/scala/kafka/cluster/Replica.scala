@@ -48,8 +48,8 @@ class Replica(
     }
   }
 
-  private[this] val lastCaughtUpTimeMsUnderlying = new AtomicLong(
-    time.milliseconds)
+  private[this] val lastCaughtUpTimeMsUnderlying =
+    new AtomicLong(time.milliseconds)
 
   def lastCaughtUpTimeMs = lastCaughtUpTimeMsUnderlying.get()
 
@@ -101,8 +101,8 @@ class Replica(
 
   def convertHWToLocalOffsetMetadata() = {
     if (isLocal) {
-      highWatermarkMetadata =
-        log.get.convertToOffsetMetadata(highWatermarkMetadata.messageOffset)
+      highWatermarkMetadata = log.get.convertToOffsetMetadata(
+        highWatermarkMetadata.messageOffset)
     } else {
       throw new KafkaException(
         "Should not construct complete high watermark on partition [%s,%d]'s non-local replica %d"

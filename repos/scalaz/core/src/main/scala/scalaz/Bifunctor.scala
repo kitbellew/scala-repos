@@ -33,8 +33,7 @@ trait Bifunctor[F[_, _]] { self =>
       val F = self
     }
 
-  def leftMap[A, B, C](fab: F[A, B])(f: A => C): F[C, B] =
-    bimap(fab)(f, z => z)
+  def leftMap[A, B, C](fab: F[A, B])(f: A => C): F[C, B] = bimap(fab)(f, z => z)
 
   /** Extract the Functor on the second param. */
   def rightFunctor[X]: Functor[F[X, ?]] =
@@ -51,8 +50,7 @@ trait Bifunctor[F[_, _]] { self =>
   def rightMap[A, B, D](fab: F[A, B])(g: B => D): F[A, D] =
     bimap(fab)(z => z, g)
 
-  def umap[A, B](faa: F[A, A])(f: A => B): F[B, B] =
-    bimap(faa)(f, f)
+  def umap[A, B](faa: F[A, A])(f: A => B): F[B, B] = bimap(faa)(f, f)
 
   /** Embed two Functors , one on each side */
   def embed[G[_], H[_]](implicit
@@ -79,9 +77,10 @@ trait Bifunctor[F[_, _]] { self =>
     bimap(fab)(identity[C], identity[D])
 
   ////
-  val bifunctorSyntax = new scalaz.syntax.BifunctorSyntax[F] {
-    def F = Bifunctor.this
-  }
+  val bifunctorSyntax =
+    new scalaz.syntax.BifunctorSyntax[F] {
+      def F = Bifunctor.this
+    }
 }
 
 object Bifunctor {

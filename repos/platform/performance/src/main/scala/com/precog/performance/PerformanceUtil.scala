@@ -80,11 +80,12 @@ class PerformanceUtil(apiEndpoint: String, apiKey: String, path: String) {
     val content = resultsToJson(results)
 
     val client = new HttpClientXLightWeb
-    val result = client
-      .path(baseUrl)
-      .query("apiKey", apiKey)
-      .contentType(application / MimeTypes.json)
-      .post[JValue](testId)(content)
+    val result =
+      client
+        .path(baseUrl)
+        .query("apiKey", apiKey)
+        .contentType(application / MimeTypes.json)
+        .post[JValue](testId)(content)
 
     val r = Await.result(result, Duration(100, "seconds"))
   }
@@ -98,13 +99,15 @@ class PerformanceUtil(apiEndpoint: String, apiKey: String, path: String) {
 }
 
 object PerformanceUtil {
-  val matheson = new PerformanceUtil(
-    "http://beta2012v1.precog.io/v1/",
-    "D45C1ABE-6B4C-4651-85D1-4FFD783CE1EC",
-    "/matheson/beta/perf/")
-  val precog_test = new PerformanceUtil(
-    "http://beta2012v1.precog.io/v1/",
-    "C79AAFEA-C9A5-4451-92CE-EF49E5BB5113",
-    "/perf_results/beta/v1/")
+  val matheson =
+    new PerformanceUtil(
+      "http://beta2012v1.precog.io/v1/",
+      "D45C1ABE-6B4C-4651-85D1-4FFD783CE1EC",
+      "/matheson/beta/perf/")
+  val precog_test =
+    new PerformanceUtil(
+      "http://beta2012v1.precog.io/v1/",
+      "C79AAFEA-C9A5-4451-92CE-EF49E5BB5113",
+      "/perf_results/beta/v1/")
   val default = precog_test
 }

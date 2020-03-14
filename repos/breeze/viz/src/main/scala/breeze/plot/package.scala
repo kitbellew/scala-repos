@@ -81,24 +81,26 @@ package object plot {
         //      renderer.setSeriesShape(0, defaultStroke(0))
         renderer.setSeriesOutlineStroke(0, defaultStroke(0))
 
-        val tooltipGenerator = new org.jfree.chart.labels.XYToolTipGenerator() {
-          override def generateToolTip(
-              dataset: org.jfree.data.xy.XYDataset,
-              series: Int,
-              item: Int): String = {
-            dataset.asInstanceOf[XYDataset[_]].getTip(series, item)
+        val tooltipGenerator =
+          new org.jfree.chart.labels.XYToolTipGenerator() {
+            override def generateToolTip(
+                dataset: org.jfree.data.xy.XYDataset,
+                series: Int,
+                item: Int): String = {
+              dataset.asInstanceOf[XYDataset[_]].getTip(series, item)
+            }
           }
-        }
         renderer.setSeriesToolTipGenerator(0, tooltipGenerator)
 
-        val labelGenerator = new org.jfree.chart.labels.XYItemLabelGenerator() {
-          override def generateLabel(
-              dataset: org.jfree.data.xy.XYDataset,
-              series: Int,
-              item: Int): String = {
-            dataset.asInstanceOf[XYDataset[_]].getLabel(series, item)
+        val labelGenerator =
+          new org.jfree.chart.labels.XYItemLabelGenerator() {
+            override def generateLabel(
+                dataset: org.jfree.data.xy.XYDataset,
+                series: Int,
+                item: Int): String = {
+              dataset.asInstanceOf[XYDataset[_]].getLabel(series, item)
+            }
           }
-        }
         renderer.setSeriesItemLabelGenerator(0, labelGenerator)
         renderer.setSeriesItemLabelsVisible(0, labels != null)
 
@@ -196,22 +198,23 @@ package object plot {
 
         // initialize the series renderer
         import org.jfree.chart.renderer.xy.XYBubbleRenderer
-        val renderer = new XYBubbleRenderer(
-          XYBubbleRenderer.SCALE_ON_DOMAIN_AXIS) {
-          val stroke = new java.awt.BasicStroke(0f)
-          override def getItemPaint(series: Int, item: Int): java.awt.Paint =
-            paintScale(items(item))
-          override def getItemStroke(series: Int, item: Int) = stroke
-        }
-
-        val tooltipGenerator = new org.jfree.chart.labels.XYToolTipGenerator() {
-          override def generateToolTip(
-              dataset: org.jfree.data.xy.XYDataset,
-              series: Int,
-              item: Int): String = {
-            dataset.asInstanceOf[XYZDataset[_]].getTip(0, item)
+        val renderer =
+          new XYBubbleRenderer(XYBubbleRenderer.SCALE_ON_DOMAIN_AXIS) {
+            val stroke = new java.awt.BasicStroke(0f)
+            override def getItemPaint(series: Int, item: Int): java.awt.Paint =
+              paintScale(items(item))
+            override def getItemStroke(series: Int, item: Int) = stroke
           }
-        }
+
+        val tooltipGenerator =
+          new org.jfree.chart.labels.XYToolTipGenerator() {
+            override def generateToolTip(
+                dataset: org.jfree.data.xy.XYDataset,
+                series: Int,
+                item: Int): String = {
+              dataset.asInstanceOf[XYZDataset[_]].getTip(0, item)
+            }
+          }
         renderer.setSeriesToolTipGenerator(0, tooltipGenerator)
 
         val labelGenerator =
@@ -238,44 +241,47 @@ package object plot {
     new Series {
       val values = xv.domain(data).map(xv(data, _)).map(vv)
       val (min, max) = (values.min, values.max)
-      val binner: StaticHistogramBins = bins match {
-        case static: StaticHistogramBins => static
-        case dynamic: DynamicHistogramBins =>
-          dynamic(min, max)
-      }
+      val binner: StaticHistogramBins =
+        bins match {
+          case static: StaticHistogramBins => static
+          case dynamic: DynamicHistogramBins =>
+            dynamic(min, max)
+        }
 
       val counts = new Array[Int](binner.splits.length + 1)
       for (value <- values) {
         counts(binner.bin(value)) += 1
       }
 
-      val width = (binner.splits.iterator zip binner.splits.iterator.drop(1))
-        .map(tup => tup._2 - tup._1)
-        .min
+      val width =
+        (binner.splits.iterator zip binner.splits.iterator.drop(1))
+          .map(tup => tup._2 - tup._1)
+          .min
 
       def getChartStuff(
           defaultName: (Int) => String,
           defaultColor: (Int) => Paint,
           defaultStroke: (Int) => Stroke): (xy.XYDataset, XYItemRenderer) = {
-        val dataset = new org.jfree.data.xy.XYBarDataset(
-          XYDataset(
-            name =
-              if (name == null)
-                defaultName(0)
-              else
-                name,
-            items = IndexedSeq.range(0, counts.length),
-            x = (i: Int) =>
-              if (i == binner.splits.length) {
-                binner.splits(i - 1) + width / 2.0
-              } else {
-                binner.splits(i) - width / 2.0
-              },
-            y = (i: Int) => counts(i),
-            label = (i: Int) => null,
-            tip = (i: Int) => null
-          ),
-          width)
+        val dataset =
+          new org.jfree.data.xy.XYBarDataset(
+            XYDataset(
+              name =
+                if (name == null)
+                  defaultName(0)
+                else
+                  name,
+              items = IndexedSeq.range(0, counts.length),
+              x = (i: Int) =>
+                if (i == binner.splits.length) {
+                  binner.splits(i - 1) + width / 2.0
+                } else {
+                  binner.splits(i) - width / 2.0
+                },
+              y = (i: Int) => counts(i),
+              label = (i: Int) => null,
+              tip = (i: Int) => null
+            ),
+            width)
 
         val renderer = new org.jfree.chart.renderer.xy.XYBarRenderer
         renderer.setSeriesPaint(0, defaultColor(0))
@@ -308,10 +314,10 @@ package object plot {
       scale: GradientPaintScale[Double] = null,
       name: String = null,
       offset: (Int, Int) = (0, 0),
-      labels: PartialFunction[(Int, Int), String] =
-        null.asInstanceOf[PartialFunction[(Int, Int), String]],
-      tips: PartialFunction[(Int, Int), String] =
-        null.asInstanceOf[PartialFunction[(Int, Int), String]]): Series =
+      labels: PartialFunction[(Int, Int), String] = null
+        .asInstanceOf[PartialFunction[(Int, Int), String]],
+      tips: PartialFunction[(Int, Int), String] = null
+        .asInstanceOf[PartialFunction[(Int, Int), String]]): Series =
     new Series {
 
       val mt = img
@@ -358,24 +364,26 @@ package object plot {
         renderer.setSeriesOutlinePaint(0, defaultColor(0))
         renderer.setSeriesOutlineStroke(0, defaultStroke(0))
 
-        val tooltipGenerator = new org.jfree.chart.labels.XYToolTipGenerator() {
-          override def generateToolTip(
-              dataset: org.jfree.data.xy.XYDataset,
-              series: Int,
-              item: Int): String = {
-            dataset.asInstanceOf[XYZDataset[_]].getTip(series, item)
+        val tooltipGenerator =
+          new org.jfree.chart.labels.XYToolTipGenerator() {
+            override def generateToolTip(
+                dataset: org.jfree.data.xy.XYDataset,
+                series: Int,
+                item: Int): String = {
+              dataset.asInstanceOf[XYZDataset[_]].getTip(series, item)
+            }
           }
-        }
         renderer.setSeriesToolTipGenerator(0, tooltipGenerator)
 
-        val labelGenerator = new org.jfree.chart.labels.XYItemLabelGenerator() {
-          override def generateLabel(
-              dataset: org.jfree.data.xy.XYDataset,
-              series: Int,
-              item: Int): String = {
-            dataset.asInstanceOf[XYZDataset[_]].getLabel(series, item)
+        val labelGenerator =
+          new org.jfree.chart.labels.XYItemLabelGenerator() {
+            override def generateLabel(
+                dataset: org.jfree.data.xy.XYDataset,
+                series: Int,
+                item: Int): String = {
+              dataset.asInstanceOf[XYZDataset[_]].getLabel(series, item)
+            }
           }
-        }
         renderer.setSeriesItemLabelGenerator(0, labelGenerator)
         renderer.setSeriesItemLabelsVisible(0, labels != null)
 
@@ -388,12 +396,12 @@ package object plot {
             scale
         }
 
-        val paintScale = new org.jfree.chart.renderer.PaintScale {
-          override def getLowerBound = staticScale.lower
-          override def getUpperBound = staticScale.upper
-          override def getPaint(value: Double) =
-            staticScale(value)
-        }
+        val paintScale =
+          new org.jfree.chart.renderer.PaintScale {
+            override def getLowerBound = staticScale.lower
+            override def getUpperBound = staticScale.upper
+            override def getPaint(value: Double) = staticScale(value)
+          }
 
         renderer.setPaintScale(paintScale)
         renderer.setBlockAnchor(org.jfree.ui.RectangleAnchor.BOTTOM_LEFT)

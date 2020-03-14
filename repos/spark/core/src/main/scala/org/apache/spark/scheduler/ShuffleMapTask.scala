@@ -90,8 +90,8 @@ private[spark] class ShuffleMapTask(
     var writer: ShuffleWriter[Any, Any] = null
     try {
       val manager = SparkEnv.get.shuffleManager
-      writer =
-        manager.getWriter[Any, Any](dep.shuffleHandle, partitionId, context)
+      writer = manager
+        .getWriter[Any, Any](dep.shuffleHandle, partitionId, context)
       writer.write(
         rdd
           .iterator(partition, context)

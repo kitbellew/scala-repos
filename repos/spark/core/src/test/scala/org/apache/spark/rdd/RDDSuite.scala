@@ -103,9 +103,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       math.abs(est - size) / size.toDouble
 
     val size = 1000
-    val uniformDistro =
-      for (i <- 1 to 5000)
-        yield i % size
+    val uniformDistro = for (i <- 1 to 5000) yield i % size
     val simpleRdd = sc.makeRDD(uniformDistro, 10)
     assert(error(simpleRdd.countApproxDistinct(8, 0), size) < 0.2)
     assert(error(simpleRdd.countApproxDistinct(12, 0), size) < 0.1)
@@ -126,8 +124,9 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test(
     "SparkContext.union creates UnionRDD if at least one RDD has no partitioner") {
-    val rddWithPartitioner =
-      sc.parallelize(Seq(1 -> true)).partitionBy(new HashPartitioner(1))
+    val rddWithPartitioner = sc
+      .parallelize(Seq(1 -> true))
+      .partitionBy(new HashPartitioner(1))
     val rddWithNoPartitioner = sc.parallelize(Seq(2 -> true))
     val unionRdd = sc.union(rddWithNoPartitioner, rddWithPartitioner)
     assert(unionRdd.isInstanceOf[UnionRDD[_]])
@@ -135,16 +134,18 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test(
     "SparkContext.union creates PartitionAwareUnionRDD if all RDDs have partitioners") {
-    val rddWithPartitioner =
-      sc.parallelize(Seq(1 -> true)).partitionBy(new HashPartitioner(1))
+    val rddWithPartitioner = sc
+      .parallelize(Seq(1 -> true))
+      .partitionBy(new HashPartitioner(1))
     val unionRdd = sc.union(rddWithPartitioner, rddWithPartitioner)
     assert(unionRdd.isInstanceOf[PartitionerAwareUnionRDD[_]])
   }
 
   test(
     "PartitionAwareUnionRDD raises exception if at least one RDD has no partitioner") {
-    val rddWithPartitioner =
-      sc.parallelize(Seq(1 -> true)).partitionBy(new HashPartitioner(1))
+    val rddWithPartitioner = sc
+      .parallelize(Seq(1 -> true))
+      .partitionBy(new HashPartitioner(1))
     val rddWithNoPartitioner = sc.parallelize(Seq(2 -> true))
     intercept[IllegalArgumentException] {
       new PartitionerAwareUnionRDD(
@@ -195,22 +196,25 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("aggregate") {
-    val pairs =
-      sc.makeRDD(Array(("a", 1), ("b", 2), ("a", 2), ("c", 5), ("a", 3)))
+    val pairs = sc.makeRDD(
+      Array(("a", 1), ("b", 2), ("a", 2), ("c", 5), ("a", 3)))
     type StringMap = HashMap[String, Int]
-    val emptyMap = new StringMap {
-      override def default(key: String): Int = 0
-    }
-    val mergeElement: (StringMap, (String, Int)) => StringMap = (map, pair) => {
-      map(pair._1) += pair._2
-      map
-    }
-    val mergeMaps: (StringMap, StringMap) => StringMap = (map1, map2) => {
-      for ((key, value) <- map2) {
-        map1(key) += value
+    val emptyMap =
+      new StringMap {
+        override def default(key: String): Int = 0
       }
-      map1
-    }
+    val mergeElement: (StringMap, (String, Int)) => StringMap =
+      (map, pair) => {
+        map(pair._1) += pair._2
+        map
+      }
+    val mergeMaps: (StringMap, StringMap) => StringMap =
+      (map1, map2) => {
+        for ((key, value) <- map2) {
+          map1(key) += value
+        }
+        map1
+      }
     val result = pairs.aggregate(emptyMap)(mergeElement, mergeMaps)
     assert(result.toSet === Set(("a", 6), ("b", 2), ("c", 5)))
   }
@@ -241,19 +245,21 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("caching with failures") {
-    val onlySplit = new Partition {
-      override def index: Int = 0
-    }
-    var shouldFail = true
-    val rdd = new RDD[Int](sc, Nil) {
-      override def getPartitions: Array[Partition] = Array(onlySplit)
-      override val getDependencies = List[Dependency[_]]()
-      override def compute(
-          split: Partition,
-          context: TaskContext): Iterator[Int] = {
-        throw new Exception("injected failure")
+    val onlySplit =
+      new Partition {
+        override def index: Int = 0
       }
-    }.cache()
+    var shouldFail = true
+    val rdd =
+      new RDD[Int](sc, Nil) {
+        override def getPartitions: Array[Partition] = Array(onlySplit)
+        override val getDependencies = List[Dependency[_]]()
+        override def compute(
+            split: Partition,
+            context: TaskContext): Iterator[Int] = {
+          throw new Exception("injected failure")
+        }
+      }.cache()
     val thrown = intercept[Exception] {
       rdd.collect()
     }
@@ -457,29 +463,32 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       val coalesced2 = data2.coalesce(numMachines * 2)
 
       // test that you get over 90% locality in each group
-      val minLocality = coalesced2.partitions
-        .map(part => part.asInstanceOf[CoalescedRDDPartition].localFraction)
-        .foldLeft(1.0)((perc, loc) => math.min(perc, loc))
+      val minLocality =
+        coalesced2.partitions
+          .map(part => part.asInstanceOf[CoalescedRDDPartition].localFraction)
+          .foldLeft(1.0)((perc, loc) => math.min(perc, loc))
       assert(
         minLocality >= 0.90,
         "Expected 90% locality but got " +
           (minLocality * 100.0).toInt + "%")
 
       // test that the groups are load balanced with 100 +/- 20 elements in each
-      val maxImbalance = coalesced2.partitions
-        .map(part => part.asInstanceOf[CoalescedRDDPartition].parents.size)
-        .foldLeft(0)((dev, curr) => math.max(math.abs(100 - curr), dev))
+      val maxImbalance =
+        coalesced2.partitions
+          .map(part => part.asInstanceOf[CoalescedRDDPartition].parents.size)
+          .foldLeft(0)((dev, curr) => math.max(math.abs(100 - curr), dev))
       assert(
         maxImbalance <= 20,
         "Expected 100 +/- 20 per partition, but got " + maxImbalance)
 
-      val data3 =
-        sc.makeRDD(blocks)
-          .map(i => i * 2) // derived RDD to test *current* pref locs
+      val data3 = sc
+        .makeRDD(blocks)
+        .map(i => i * 2) // derived RDD to test *current* pref locs
       val coalesced3 = data3.coalesce(numMachines * 2)
-      val minLocality2 = coalesced3.partitions
-        .map(part => part.asInstanceOf[CoalescedRDDPartition].localFraction)
-        .foldLeft(1.0)((perc, loc) => math.min(perc, loc))
+      val minLocality2 =
+        coalesced3.partitions
+          .map(part => part.asInstanceOf[CoalescedRDDPartition].localFraction)
+          .foldLeft(1.0)((perc, loc) => math.min(perc, loc))
       assert(
         minLocality2 >= 0.90,
         "Expected 90% locality for derived RDD but got " +
@@ -787,10 +796,11 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       "Karen|Williams|60",
       "Thomas|Williams|30")
 
-    val parse = (s: String) => {
-      val split = s.split("\\|")
-      Person(split(0), split(1), split(2).toInt)
-    }
+    val parse =
+      (s: String) => {
+        val split = s.split("\\|")
+        Person(split(0), split(1), split(2).toInt)
+      }
 
     import scala.reflect.classTag
     assert(
@@ -804,13 +814,15 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("repartitionAndSortWithinPartitions") {
-    val data =
-      sc.parallelize(Seq((0, 5), (3, 8), (2, 6), (0, 8), (3, 8), (1, 3)), 2)
+    val data = sc.parallelize(
+      Seq((0, 5), (3, 8), (2, 6), (0, 8), (3, 8), (1, 3)),
+      2)
 
-    val partitioner = new Partitioner {
-      def numPartitions: Int = 2
-      def getPartition(key: Any): Int = key.asInstanceOf[Int] % 2
-    }
+    val partitioner =
+      new Partitioner {
+        def numPartitions: Int = 2
+        def getPartition(key: Any): Int = key.asInstanceOf[Int] % 2
+      }
 
     val repartitioned = data.repartitionAndSortWithinPartitions(partitioner)
     val partitions = repartitioned.glom().collect()
@@ -856,8 +868,11 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("zipWithIndex chained with other RDDs (SPARK-4433)") {
-    val count =
-      sc.parallelize(0 until 10, 2).zipWithIndex().repartition(4).count()
+    val count = sc
+      .parallelize(0 until 10, 2)
+      .zipWithIndex()
+      .repartition(4)
+      .count()
     assert(count === 10)
   }
 

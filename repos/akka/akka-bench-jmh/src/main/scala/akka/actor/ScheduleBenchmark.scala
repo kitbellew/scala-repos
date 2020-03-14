@@ -76,11 +76,12 @@ class ScheduleBenchmark {
   @Benchmark
   def oneSchedule(): Unit = {
     val aIdx = new AtomicInteger(1)
-    val tryWithNext = scheduler.schedule(0.millis, interval) {
-      val idx = aIdx.getAndIncrement
-      if (idx <= to)
-        op(idx)
-    }
+    val tryWithNext =
+      scheduler.schedule(0.millis, interval) {
+        val idx = aIdx.getAndIncrement
+        if (idx <= to)
+          op(idx)
+      }
     promise.future.onComplete {
       case _ ⇒
         tryWithNext.cancel()
@@ -90,16 +91,17 @@ class ScheduleBenchmark {
 
   @Benchmark
   def multipleScheduleOnce(): Unit = {
-    val tryWithNext = (1 to to)
-      .foldLeft(0.millis -> List[Cancellable]()) {
-        case ((interv, c), idx) ⇒
-          (
-            interv + interval,
-            scheduler.scheduleOnce(interv) {
-              op(idx)
-            } :: c)
-      }
-      ._2
+    val tryWithNext =
+      (1 to to)
+        .foldLeft(0.millis -> List[Cancellable]()) {
+          case ((interv, c), idx) ⇒
+            (
+              interv + interval,
+              scheduler.scheduleOnce(interv) {
+                op(idx)
+              } :: c)
+        }
+        ._2
     promise.future.onComplete {
       case _ ⇒
         tryWithNext.foreach(_.cancel())

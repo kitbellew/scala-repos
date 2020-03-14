@@ -50,8 +50,8 @@ class DecisionTreeClassifierSuite
 
   override def beforeAll() {
     super.beforeAll()
-    categoricalDataPointsRDD =
-      sc.parallelize(OldDecisionTreeSuite.generateCategoricalDataPoints())
+    categoricalDataPointsRDD = sc.parallelize(
+      OldDecisionTreeSuite.generateCategoricalDataPoints())
     orderedLabeledPointsWithLabel0RDD = sc.parallelize(
       OldDecisionTreeSuite.generateOrderedLabeledPointsWithLabel0())
     orderedLabeledPointsWithLabel1RDD = sc.parallelize(
@@ -67,11 +67,12 @@ class DecisionTreeClassifierSuite
 
   test("params") {
     ParamsSuite.checkParams(new DecisionTreeClassifier)
-    val model = new DecisionTreeClassificationModel(
-      "dtc",
-      new LeafNode(0.0, 0.0, null),
-      1,
-      2)
+    val model =
+      new DecisionTreeClassificationModel(
+        "dtc",
+        new LeafNode(0.0, 0.0, null),
+        1,
+        2)
     ParamsSuite.checkParams(model)
   }
 
@@ -271,8 +272,10 @@ class DecisionTreeClassifierSuite
     val categoricalFeatures = Map(0 -> 3)
     val numClasses = 3
 
-    val newData: DataFrame =
-      TreeTests.setMetadata(rdd, categoricalFeatures, numClasses)
+    val newData: DataFrame = TreeTests.setMetadata(
+      rdd,
+      categoricalFeatures,
+      numClasses)
     val newTree = dt.fit(newData)
 
     // copied model must have the same parent.
@@ -395,8 +398,10 @@ class DecisionTreeClassifierSuite
       TreeTests.allParamSettings ++ Map("impurity" -> "entropy")
 
     // Categorical splits with tree depth 2
-    val categoricalData: DataFrame =
-      TreeTests.setMetadata(rdd, Map(0 -> 2, 1 -> 3), numClasses = 2)
+    val categoricalData: DataFrame = TreeTests.setMetadata(
+      rdd,
+      Map(0 -> 2, 1 -> 3),
+      numClasses = 2)
     testEstimatorAndModelReadWrite(
       dt,
       categoricalData,
@@ -404,8 +409,10 @@ class DecisionTreeClassifierSuite
       checkModelData)
 
     // Continuous splits with tree depth 2
-    val continuousData: DataFrame =
-      TreeTests.setMetadata(rdd, Map.empty[Int, Int], numClasses = 2)
+    val continuousData: DataFrame = TreeTests.setMetadata(
+      rdd,
+      Map.empty[Int, Int],
+      numClasses = 2)
     testEstimatorAndModelReadWrite(
       dt,
       continuousData,
@@ -435,8 +442,10 @@ private[ml] object DecisionTreeClassifierSuite extends SparkFunSuite {
     val numFeatures = data.first().features.size
     val oldStrategy = dt.getOldStrategy(categoricalFeatures, numClasses)
     val oldTree = OldDecisionTree.train(data, oldStrategy)
-    val newData: DataFrame =
-      TreeTests.setMetadata(data, categoricalFeatures, numClasses)
+    val newData: DataFrame = TreeTests.setMetadata(
+      data,
+      categoricalFeatures,
+      numClasses)
     val newTree = dt.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldTreeAsNew = DecisionTreeClassificationModel.fromOld(

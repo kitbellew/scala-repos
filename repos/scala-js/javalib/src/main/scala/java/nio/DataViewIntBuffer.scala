@@ -21,32 +21,26 @@ private[nio] final class DataViewIntBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): IntBuffer =
-    GenDataViewBuffer(this).generic_slice()
+  def slice(): IntBuffer = GenDataViewBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): IntBuffer =
-    GenDataViewBuffer(this).generic_duplicate()
+  def duplicate(): IntBuffer = GenDataViewBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): IntBuffer =
     GenDataViewBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Int =
-    GenBuffer(this).generic_get()
+  def get(): Int = GenBuffer(this).generic_get()
 
   @noinline
-  def put(i: Int): IntBuffer =
-    GenBuffer(this).generic_put(i)
+  def put(i: Int): IntBuffer = GenBuffer(this).generic_put(i)
 
   @noinline
-  def get(index: Int): Int =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Int = GenBuffer(this).generic_get(index)
 
   @noinline
-  def put(index: Int, i: Int): IntBuffer =
-    GenBuffer(this).generic_put(index, i)
+  def put(index: Int, i: Int): IntBuffer = GenBuffer(this).generic_put(index, i)
 
   @noinline
   override def get(dst: Array[Int], offset: Int, length: Int): IntBuffer =
@@ -57,11 +51,9 @@ private[nio] final class DataViewIntBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): IntBuffer =
-    GenDataViewBuffer(this).generic_compact()
+  def compact(): IntBuffer = GenDataViewBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    GenDataViewBuffer(this).generic_order()
+  def order(): ByteOrder = GenDataViewBuffer(this).generic_order()
 
   // Internal API
 

@@ -55,13 +55,12 @@ class JavaApiSpec extends FreeSpec with MustMatchers {
           .asScala must contain allOf ("name" -> "blub", "age" -> "28")
       }
       "access parameters" in {
-        val Seq(param1, param2, param3) =
-          Uri
-            .create("/abc?name=blub&age=28&name=blub2")
-            .query()
-            .toList
-            .asScala
-            .map(_.toScala)
+        val Seq(param1, param2, param3) = Uri
+          .create("/abc?name=blub&age=28&name=blub2")
+          .query()
+          .toList
+          .asScala
+          .map(_.toScala)
 
         param1 must be("name" -> "blub")
         param2 must be("age" -> "28")

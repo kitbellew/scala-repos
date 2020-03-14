@@ -68,8 +68,9 @@ class RetryFilter[Req, Rep](
 
   private[this] val retriesStat = statsReceiver.stat("retries")
 
-  private[this] val budgetExhausted =
-    statsReceiver.scope("retries").counter("budget_exhausted")
+  private[this] val budgetExhausted = statsReceiver
+    .scope("retries")
+    .counter("budget_exhausted")
 
   @inline
   private[this] def schedule(d: Duration)(f: => Future[Rep]) = {

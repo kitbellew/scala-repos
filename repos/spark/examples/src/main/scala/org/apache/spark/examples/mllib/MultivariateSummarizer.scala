@@ -43,22 +43,23 @@ object MultivariateSummarizer {
 
     val defaultParams = Params()
 
-    val parser = new OptionParser[Params]("MultivariateSummarizer") {
-      head(
-        "MultivariateSummarizer: an example app for MultivariateOnlineSummarizer")
-      opt[String]("input")
-        .text(
-          s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
-        .action((x, c) => c.copy(input = x))
-      note(
-        """
+    val parser =
+      new OptionParser[Params]("MultivariateSummarizer") {
+        head(
+          "MultivariateSummarizer: an example app for MultivariateOnlineSummarizer")
+        opt[String]("input")
+          .text(
+            s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
+          .action((x, c) => c.copy(input = x))
+        note(
+          """
         |For example, the following command runs this app on a synthetic dataset:
         |
         | bin/spark-submit --class org.apache.spark.examples.mllib.MultivariateSummarizer \
         |  examples/target/scala-*/spark-examples-*.jar \
         |  --input data/mllib/sample_linear_regression_data.txt
         """.stripMargin)
-    }
+      }
 
     parser.parse(args, defaultParams).map { params =>
       run(params)
@@ -68,8 +69,8 @@ object MultivariateSummarizer {
   }
 
   def run(params: Params) {
-    val conf =
-      new SparkConf().setAppName(s"MultivariateSummarizer with $params")
+    val conf = new SparkConf()
+      .setAppName(s"MultivariateSummarizer with $params")
     val sc = new SparkContext(conf)
 
     val examples = MLUtils.loadLibSVMFile(sc, params.input).cache()
@@ -78,14 +79,16 @@ object MultivariateSummarizer {
     println(s"${examples.count()} data points")
 
     // Summarize labels
-    val labelSummary = examples.aggregate(new MultivariateOnlineSummarizer())(
-      (summary, lp) => summary.add(Vectors.dense(lp.label)),
-      (sum1, sum2) => sum1.merge(sum2))
+    val labelSummary =
+      examples.aggregate(new MultivariateOnlineSummarizer())(
+        (summary, lp) => summary.add(Vectors.dense(lp.label)),
+        (sum1, sum2) => sum1.merge(sum2))
 
     // Summarize features
-    val featureSummary = examples.aggregate(new MultivariateOnlineSummarizer())(
-      (summary, lp) => summary.add(lp.features),
-      (sum1, sum2) => sum1.merge(sum2))
+    val featureSummary =
+      examples.aggregate(new MultivariateOnlineSummarizer())(
+        (summary, lp) => summary.add(lp.features),
+        (sum1, sum2) => sum1.merge(sum2))
 
     println()
     println(s"Summary statistics")

@@ -38,9 +38,10 @@ import scala.collection.mutable
   * @since 7/17/12
   */
 object ScalaI18nUtil {
-  final val NULL: IProperty = new PropertyImpl(
-    new PropertyStubImpl(null, null),
-    PropertiesElementTypes.PROPERTY)
+  final val NULL: IProperty =
+    new PropertyImpl(
+      new PropertyStubImpl(null, null),
+      PropertiesElementTypes.PROPERTY)
   private final val FOLD_MAX_LENGTH: Int = 50
   private final val CACHE: Key[IProperty] = Key.create("i18n.property.cache")
   private final val TOP_LEVEL_EXPRESSION
@@ -294,8 +295,9 @@ object ScalaI18nUtil {
         .findPropertiesByKey(expression.getProject, key)
         .isEmpty
     } else {
-      val propertiesFiles =
-        propertiesFilesByBundleName(resourceBundleName, expression)
+      val propertiesFiles = propertiesFilesByBundleName(
+        resourceBundleName,
+        expression)
       var containedInPropertiesFile: Boolean = false
       import scala.collection.JavaConversions._
       for (propertiesFile <- propertiesFiles) {
@@ -324,8 +326,8 @@ object ScalaI18nUtil {
         .getFileIndex
         .getModuleForFile(virtualFile)
       if (module != null) {
-        val refManager: PropertiesReferenceManager =
-          PropertiesReferenceManager.getInstance(project)
+        val refManager: PropertiesReferenceManager = PropertiesReferenceManager
+          .getInstance(project)
         return refManager.findPropertiesFiles(module, resourceBundleName)
       }
     }
@@ -442,8 +444,9 @@ object ScalaI18nUtil {
       val count: Int = getPropertyValueParamsMaxCount(
         args(0).asInstanceOf[ScLiteral])
       if (args.length == 1 + count) {
-        var text: String =
-          getI18nMessage(project, args(0).asInstanceOf[ScLiteral])
+        var text: String = getI18nMessage(
+          project,
+          args(0).asInstanceOf[ScLiteral])
         var i: Int = 1
         var flag = true
         while (i < count + 1 && flag) {
@@ -513,8 +516,8 @@ object ScalaI18nUtil {
       value: String) {
     import scala.collection.JavaConversions._
     for (file <- propertiesFiles) {
-      val documentManager: PsiDocumentManager =
-        PsiDocumentManager.getInstance(project)
+      val documentManager: PsiDocumentManager = PsiDocumentManager.getInstance(
+        project)
       documentManager.commitDocument(
         documentManager.getDocument(file.getContainingFile))
       val existingProperty: IProperty = file.findPropertyByKey(key)
@@ -535,8 +538,8 @@ object ScalaI18nUtil {
         editor.getSelectionModel.getSelectionStart,
         editor.getSelectionModel.getSelectionEnd)
     }
-    val psiElement: PsiElement =
-      psiFile.findElementAt(editor.getCaretModel.getOffset)
+    val psiElement: PsiElement = psiFile.findElementAt(
+      editor.getCaretModel.getOffset)
     if (psiElement == null || psiElement.isInstanceOf[PsiWhiteSpace])
       return null
     psiElement.getTextRange

@@ -94,20 +94,21 @@ object MongoPlatformSpecEngine extends Logging {
       logger.debug("Mongo released, refcount = " + refcount)
     }
 
-  private val checkUnused = new Runnable {
-    def run =
-      lock.synchronized {
-        logger.debug(
-          "Checking for unused MongoPlatformSpecEngine. Count = " + refcount)
-        if (refcount == 0) {
-          logger.debug("Running shutdown after final Mongo release")
-          val current = engine
-          engine = null
-          current.shutdown()
-          logger.debug("Mongo shutdown complete")
+  private val checkUnused =
+    new Runnable {
+      def run =
+        lock.synchronized {
+          logger.debug(
+            "Checking for unused MongoPlatformSpecEngine. Count = " + refcount)
+          if (refcount == 0) {
+            logger.debug("Running shutdown after final Mongo release")
+            val current = engine
+            engine = null
+            current.shutdown()
+            logger.debug("Mongo shutdown complete")
+          }
         }
-      }
-  }
+    }
 
   def runLoads(): Unit = {
     logger.debug("Starting load")
@@ -140,11 +141,12 @@ object MongoPlatformSpecEngine extends Logging {
             val collection = db.getCollection(collectionName)
             JParser.parseManyFromFile(file) match {
               case Success(data) =>
-                val objs = data.map { jv =>
-                  JsonToMongo
-                    .apply(jv.asInstanceOf[JObject])
-                    .fold(e => throw new Exception(e.toString), s => s)
-                }.toArray
+                val objs =
+                  data.map { jv =>
+                    JsonToMongo
+                      .apply(jv.asInstanceOf[JObject])
+                      .fold(e => throw new Exception(e.toString), s => s)
+                  }.toArray
                 collection.insert(objs, WriteConcern.FSYNC_SAFE)
 
                 // Verify that things did actually make it to disk
@@ -196,12 +198,13 @@ trait MongoPlatformSpecs
       asyncContext,
       yggConfig.maxEvalDuration)
 
-  val report = new LoggingQueryLogger[Future, instructions.Line]
-    with ExceptionQueryLogger[Future, instructions.Line]
-    with TimingQueryLogger[Future, instructions.Line] {
+  val report =
+    new LoggingQueryLogger[Future, instructions.Line]
+      with ExceptionQueryLogger[Future, instructions.Line]
+      with TimingQueryLogger[Future, instructions.Line] {
 
-    implicit def M = self.M
-  }
+      implicit def M = self.M
+    }
 
   trait TableCompanion extends MongoColumnarTableCompanion
 
@@ -257,12 +260,13 @@ trait MongoPlatformSpecs
   def Evaluator[N[+_]](
       N0: Monad[N])(implicit mn: Future ~> N, nm: N ~> Future) =
     new Evaluator[N](N0)(mn, nm) {
-      val report = new LoggingQueryLogger[N, instructions.Line]
-        with ExceptionQueryLogger[N, instructions.Line]
-        with TimingQueryLogger[N, instructions.Line] {
+      val report =
+        new LoggingQueryLogger[N, instructions.Line]
+          with ExceptionQueryLogger[N, instructions.Line]
+          with TimingQueryLogger[N, instructions.Line] {
 
-        val M = N0
-      }
+          val M = N0
+        }
       class YggConfig extends EvaluatorConfig {
         val idSource = new FreshAtomicIdSource
         val maxSliceSize =

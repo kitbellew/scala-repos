@@ -24,20 +24,22 @@ class ScalaWithWhileSurrounder extends ScalaExpressionSurrounder {
   override def getTemplateDescription = "while"
 
   override def getSurroundSelectionRange(withWhileNode: ASTNode): TextRange = {
-    val element: PsiElement = withWhileNode.getPsi match {
-      case x: ScParenthesisedExpr =>
-        x.expr match {
-          case Some(y) => y
-          case _       => return x.getTextRange
-        }
-      case x => x
-    }
+    val element: PsiElement =
+      withWhileNode.getPsi match {
+        case x: ScParenthesisedExpr =>
+          x.expr match {
+            case Some(y) => y
+            case _       => return x.getTextRange
+          }
+        case x => x
+      }
 
     val whileStmt = element.asInstanceOf[ScWhileStmtImpl]
 
-    val conditionNode: ASTNode = (whileStmt.condition: @unchecked) match {
-      case Some(c) => c.getNode
-    }
+    val conditionNode: ASTNode =
+      (whileStmt.condition: @unchecked) match {
+        case Some(c) => c.getNode
+      }
 
     val startOffset = conditionNode.getTextRange.getStartOffset
     val endOffset = conditionNode.getTextRange.getEndOffset

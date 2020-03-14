@@ -317,14 +317,15 @@ class ReviveOffersActorTest
 
   class Fixture(val repetitions: Int = 1) {
     lazy val conf: ReviveOffersConfig = {
-      val conf = new ReviveOffersConfig {
-        override lazy val reviveOffersRepetitions = opt[Int](
-          "revive_offers_repetitions",
-          descr =
-            "Repeat every reviveOffer request this many times, delayed by the --min_revive_offers_interval.",
-          default = Some(repetitions)
-        )
-      }
+      val conf =
+        new ReviveOffersConfig {
+          override lazy val reviveOffersRepetitions = opt[Int](
+            "revive_offers_repetitions",
+            descr =
+              "Repeat every reviveOffer request this many times, delayed by the --min_revive_offers_interval.",
+            default = Some(repetitions)
+          )
+        }
       conf.afterInit()
       conf
     }

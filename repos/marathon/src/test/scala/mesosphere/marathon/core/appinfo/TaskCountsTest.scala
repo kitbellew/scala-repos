@@ -37,8 +37,9 @@ class TaskCountsTest
       MarathonTestHelper.stagedTask("task1")
     )
     When("getting counts")
-    val counts =
-      TaskCounts(appTasks = oneStagedTask, healthStatuses = Map.empty)
+    val counts = TaskCounts(
+      appTasks = oneStagedTask,
+      healthStatuses = Map.empty)
     Then("all counts are 0 except staged")
     counts should be(TaskCounts.zero.copy(tasksStaged = 1))
   }
@@ -49,8 +50,9 @@ class TaskCountsTest
       MarathonTestHelper.runningTask("task1")
     )
     When("getting counts")
-    val counts =
-      TaskCounts(appTasks = oneRunningTask, healthStatuses = Map.empty)
+    val counts = TaskCounts(
+      appTasks = oneRunningTask,
+      healthStatuses = Map.empty)
     Then("all counts are 0 except running")
     counts should be(TaskCounts.zero.copy(tasksRunning = 1))
   }

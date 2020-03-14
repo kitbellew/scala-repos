@@ -69,9 +69,10 @@ object LayerTest extends JFXApp {
   // Create Choice Box
   val layer1Title = "Layer 1 is Green"
   val layer2Title = "Layer 2 is Blue"
-  private val cb = new ChoiceBox[String] {
-    items = ObservableBuffer(layer1Title, layer2Title)
-  }
+  private val cb =
+    new ChoiceBox[String] {
+      items = ObservableBuffer(layer1Title, layer2Title)
+    }
   val selectionModel: SelectionModel[String] = cb.selectionModel.get
   selectionModel.selectedItem.onChange(
     (ov: Any, olaValue: Any, newValue: Any) => {

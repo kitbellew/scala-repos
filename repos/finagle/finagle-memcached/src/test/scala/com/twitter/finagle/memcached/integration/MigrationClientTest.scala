@@ -65,9 +65,10 @@ class MigrationClientTest
       new InetSocketAddress(loopback, zookeeperServerPort))
 
     // set-up old pool
-    val oldPoolCluster = new ZookeeperServerSetCluster(
-      ServerSets
-        .create(zookeeperClient, ZooKeeperUtils.OPEN_ACL_UNSAFE, oldPoolPath))
+    val oldPoolCluster =
+      new ZookeeperServerSetCluster(
+        ServerSets
+          .create(zookeeperClient, ZooKeeperUtils.OPEN_ACL_UNSAFE, oldPoolPath))
     (0 to 1) foreach { _ =>
       TestMemcachedServer.start() match {
         case Some(server) =>
@@ -78,9 +79,10 @@ class MigrationClientTest
     }
 
     // set-up new pool
-    val newPoolCluster = new ZookeeperServerSetCluster(
-      ServerSets
-        .create(zookeeperClient, ZooKeeperUtils.OPEN_ACL_UNSAFE, newPoolPath))
+    val newPoolCluster =
+      new ZookeeperServerSetCluster(
+        ServerSets
+          .create(zookeeperClient, ZooKeeperUtils.OPEN_ACL_UNSAFE, newPoolPath))
     (0 to 1) foreach { _ =>
       TestMemcachedServer.start() match {
         case Some(server) =>
@@ -91,15 +93,17 @@ class MigrationClientTest
     }
 
     // set config data
-    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(
-      cachePoolSize = 2)
+    val cachePoolConfig: CachePoolConfig =
+      new CachePoolConfig(cachePoolSize = 2)
     val output: ByteArrayOutputStream = new ByteArrayOutputStream
     CachePoolConfig.jsonCodec.serialize(cachePoolConfig, output)
     zookeeperClient.get().setData(oldPoolPath, output.toByteArray, -1)
     zookeeperClient.get().setData(newPoolPath, output.toByteArray, -1)
 
-    val migrationConfig =
-      MigrationConstants.MigrationConfig("Pending", false, false)
+    val migrationConfig = MigrationConstants.MigrationConfig(
+      "Pending",
+      false,
+      false)
     val migrationDataArray = MigrationConstants.jsonMapper
       .writeValueAsString(migrationConfig)
       .getBytes()
@@ -148,10 +152,12 @@ class MigrationClientTest
 
   if (!sys.props.contains("SKIP_FLAKY")) {
     test("sending dark traffic") {
-      val migrationConfig =
-        MigrationConstants.MigrationConfig("Warming", false, false)
-      val migrationDataArray =
-        MigrationConstants.jsonMapper.writeValueAsString(migrationConfig)
+      val migrationConfig = MigrationConstants.MigrationConfig(
+        "Warming",
+        false,
+        false)
+      val migrationDataArray = MigrationConstants.jsonMapper.writeValueAsString(
+        migrationConfig)
       zookeeperClient.get().setData(basePath, migrationDataArray, -1)
 
       val client1 = Memcached.client.newRichClient(
@@ -186,10 +192,12 @@ class MigrationClientTest
 
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("dark read w/ read repair") {
-      val migrationConfig =
-        MigrationConstants.MigrationConfig("Warming", true, false)
-      val migrationDataArray =
-        MigrationConstants.jsonMapper.writeValueAsString(migrationConfig)
+      val migrationConfig = MigrationConstants.MigrationConfig(
+        "Warming",
+        true,
+        false)
+      val migrationDataArray = MigrationConstants.jsonMapper.writeValueAsString(
+        migrationConfig)
       zookeeperClient.get().setData(basePath, migrationDataArray, -1)
 
       val client1 = Memcached.client.newRichClient(
@@ -226,10 +234,12 @@ class MigrationClientTest
 
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("use new pool with fallback to old pool") {
-      val migrationConfig =
-        MigrationConstants.MigrationConfig("Verifying", false, false)
-      val migrationDataArray =
-        MigrationConstants.jsonMapper.writeValueAsString(migrationConfig)
+      val migrationConfig = MigrationConstants.MigrationConfig(
+        "Verifying",
+        false,
+        false)
+      val migrationDataArray = MigrationConstants.jsonMapper.writeValueAsString(
+        migrationConfig)
       zookeeperClient.get().setData(basePath, migrationDataArray, -1)
 
       val client1 = Memcached.client.newRichClient(
@@ -263,10 +273,12 @@ class MigrationClientTest
 
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("use new pool with fallback to old pool and readrepair") {
-      val migrationConfig =
-        MigrationConstants.MigrationConfig("Verifying", false, true)
-      val migrationDataArray =
-        MigrationConstants.jsonMapper.writeValueAsString(migrationConfig)
+      val migrationConfig = MigrationConstants.MigrationConfig(
+        "Verifying",
+        false,
+        true)
+      val migrationDataArray = MigrationConstants.jsonMapper.writeValueAsString(
+        migrationConfig)
       zookeeperClient.get().setData(basePath, migrationDataArray, -1)
 
       val client1 = Memcached.client.newRichClient(

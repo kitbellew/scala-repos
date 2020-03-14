@@ -131,9 +131,10 @@ private[sql] trait ParquetTest extends SQLTestUtils {
         s"$k=$valueString"
     }
 
-    val partDir = partNames.foldLeft(basePath) { (parent, child) =>
-      new File(parent, child)
-    }
+    val partDir =
+      partNames.foldLeft(basePath) { (parent, child) =>
+        new File(parent, child)
+      }
 
     assert(partDir.mkdirs(), s"Couldn't create directory $partDir")
     partDir
@@ -144,8 +145,8 @@ private[sql] trait ParquetTest extends SQLTestUtils {
       path: Path,
       configuration: Configuration): Unit = {
     val parquetSchema = new CatalystSchemaConverter().convert(schema)
-    val extraMetadata = Map(
-      CatalystReadSupport.SPARK_METADATA_KEY -> schema.json).asJava
+    val extraMetadata =
+      Map(CatalystReadSupport.SPARK_METADATA_KEY -> schema.json).asJava
     val createdBy = s"Apache Spark ${org.apache.spark.SPARK_VERSION}"
     val fileMetadata = new FileMetaData(parquetSchema, extraMetadata, createdBy)
     val parquetMetadata =

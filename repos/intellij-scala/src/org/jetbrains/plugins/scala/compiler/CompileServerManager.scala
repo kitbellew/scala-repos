@@ -136,8 +136,8 @@ class CompileServerManager(project: Project) extends ProjectComponent {
   private def toggleList(e: MouseEvent) {
     val mnemonics = JBPopupFactory.ActionSelectionAid.MNEMONICS
 
-    val addActions =
-      ServerWidgetEP.getAllWidgetEps.flatMap(_.getAdditionalActions(project))
+    val addActions = ServerWidgetEP.getAllWidgetEps.flatMap(
+      _.getAdditionalActions(project))
     val baseActions = Seq(Start, Stop, Separator.getInstance, Configure)
     val actions =
       if (addActions.nonEmpty)

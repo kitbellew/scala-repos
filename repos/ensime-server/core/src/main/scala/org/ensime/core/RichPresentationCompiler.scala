@@ -191,8 +191,7 @@ trait RichCompilerControl
 
   def loadedFiles: List[SourceFile] = activeUnits().map(_.source)
 
-  def askReloadExistingFiles() =
-    askReloadFiles(loadedFiles)
+  def askReloadExistingFiles() = askReloadFiles(loadedFiles)
 
   def askInspectTypeAt(p: Position): Option[TypeInspectInfo] =
     askOption(inspectTypeAt(p)).flatten
@@ -366,13 +365,14 @@ class RichPresentationCompiler(
         inherited: Boolean,
         viaView: Symbol): Unit = {
       try {
-        val m = new TypeMember(
-          sym,
-          sym.tpe,
-          sym.isPublic,
-          inherited,
-          viaView
-        )
+        val m =
+          new TypeMember(
+            sym,
+            sym.tpe,
+            sym.isPublic,
+            inherited,
+            viaView
+          )
         members(sym) = m
       } catch {
         case e: Throwable =>
@@ -442,18 +442,19 @@ class RichPresentationCompiler(
   }
 
   private def typeOfTree(t: Tree): Option[Type] = {
-    val tree = t match {
-      case Select(qualifier, name) if t.tpe == ErrorType =>
-        qualifier
-      case t: ImplDef if t.impl != null =>
-        t.impl
-      case t: ValOrDefDef if t.tpt != null =>
-        t.tpt
-      case t: ValOrDefDef if t.rhs != null =>
-        t.rhs
-      case otherTree =>
-        otherTree
-    }
+    val tree =
+      t match {
+        case Select(qualifier, name) if t.tpe == ErrorType =>
+          qualifier
+        case t: ImplDef if t.impl != null =>
+          t.impl
+        case t: ValOrDefDef if t.tpt != null =>
+          t.tpt
+        case t: ValOrDefDef if t.rhs != null =>
+          t.rhs
+        case otherTree =>
+          otherTree
+      }
 
     Option(tree.tpe)
   }
@@ -650,8 +651,7 @@ class RichPresentationCompiler(
     result.get.fold(o => o, handle)
   }
 
-  def wrapReloadPosition(p: Position): Unit =
-    wrapReloadSource(p.source)
+  def wrapReloadPosition(p: Position): Unit = wrapReloadSource(p.source)
 
   def wrapReloadSource(source: SourceFile): Unit =
     wrapReloadSources(List(source))

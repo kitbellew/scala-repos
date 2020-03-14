@@ -20,12 +20,13 @@ package org.apache.spark
 import java.io.File
 
 object SSLSampleConfigs {
-  val keyStorePath = new File(
-    this.getClass.getResource("/keystore").toURI).getAbsolutePath
-  val untrustedKeyStorePath = new File(
-    this.getClass.getResource("/untrusted-keystore").toURI).getAbsolutePath
-  val trustStorePath = new File(
-    this.getClass.getResource("/truststore").toURI).getAbsolutePath
+  val keyStorePath =
+    new File(this.getClass.getResource("/keystore").toURI).getAbsolutePath
+  val untrustedKeyStorePath =
+    new File(
+      this.getClass.getResource("/untrusted-keystore").toURI).getAbsolutePath
+  val trustStorePath =
+    new File(this.getClass.getResource("/truststore").toURI).getAbsolutePath
 
   val enabledAlgorithms =
     // A reasonable set of TLSv1.2 Oracle security provider suites

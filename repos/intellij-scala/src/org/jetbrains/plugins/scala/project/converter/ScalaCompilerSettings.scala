@@ -88,9 +88,10 @@ object ScalaCompilerSettings {
     new FacetProperties(new Element("empty")))
 
   def from(properties: FacetProperties): ScalaCompilerSettings = {
-    val debuggingLevel = properties
-      .option("debuggingInfoLevel")
-      .fold(DefaultDebuggingLevel)(DebugginInfoLevels)
+    val debuggingLevel =
+      properties
+        .option("debuggingInfoLevel")
+        .fold(DefaultDebuggingLevel)(DebugginInfoLevels)
 
     new ScalaCompilerSettings(
       compileOrder = properties.string("compileOrder", DefaultComipileOrder),

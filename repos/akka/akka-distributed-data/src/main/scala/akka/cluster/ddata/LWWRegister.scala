@@ -19,10 +19,11 @@ object LWWRegister {
     def apply(currentTimestamp: Long, value: A): Long
   }
 
-  private val _defaultClock: Clock[Any] = new Clock[Any] {
-    override def apply(currentTimestamp: Long, value: Any): Long =
-      math.max(System.currentTimeMillis(), currentTimestamp + 1)
-  }
+  private val _defaultClock: Clock[Any] =
+    new Clock[Any] {
+      override def apply(currentTimestamp: Long, value: Any): Long =
+        math.max(System.currentTimeMillis(), currentTimestamp + 1)
+    }
 
   /**
     * The default [[LWWRegister.Clock]] is using max value of `System.currentTimeMillis()`
@@ -30,10 +31,11 @@ object LWWRegister {
     */
   def defaultClock[A]: Clock[A] = _defaultClock.asInstanceOf[Clock[A]]
 
-  private val _reverseClock = new Clock[Any] {
-    override def apply(currentTimestamp: Long, value: Any): Long =
-      math.min(-System.currentTimeMillis(), currentTimestamp - 1)
-  }
+  private val _reverseClock =
+    new Clock[Any] {
+      override def apply(currentTimestamp: Long, value: Any): Long =
+        math.min(-System.currentTimeMillis(), currentTimestamp - 1)
+    }
 
   /**
     * This [[LWWRegister.Clock]] can be used for first-write-wins semantics. It is using min value of
@@ -67,8 +69,7 @@ object LWWRegister {
   def create[A](
       node: Cluster,
       initialValue: A,
-      clock: Clock[A]): LWWRegister[A] =
-    apply(initialValue)(node, clock)
+      clock: Clock[A]): LWWRegister[A] = apply(initialValue)(node, clock)
 
   /**
     * Extract the [[LWWRegister#value]].

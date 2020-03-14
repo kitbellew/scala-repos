@@ -13,8 +13,8 @@ class RecipeFlattenSeq extends RecipeSpec {
 
     "work" in {
 
-      val someDataSource =
-        Source(List(List("1"), List("2"), List("3", "4", "5"), List("6", "7")))
+      val someDataSource = Source(
+        List(List("1"), List("2"), List("3", "4", "5"), List("6", "7")))
 
       //#flattening-seqs
       val myData: Source[List[Message], NotUsed] = someDataSource

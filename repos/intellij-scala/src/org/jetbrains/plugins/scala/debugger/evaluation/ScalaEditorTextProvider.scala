@@ -37,8 +37,8 @@ class ScalaEditorTextProvider extends EditorTextProvider {
       case None => null
       case Some(elem) =>
         Try {
-          val expressionCopy =
-            ScalaPsiElementFactory.createExpressionWithContextFromText(
+          val expressionCopy = ScalaPsiElementFactory
+            .createExpressionWithContextFromText(
               elem.getText,
               elem.getContext,
               elem)

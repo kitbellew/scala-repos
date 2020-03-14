@@ -141,10 +141,11 @@ class SeriesCheck extends Specification with ScalaCheck {
           s(i: _*) must_== s.take(i.toArray)
         }
 
-        val locs = for {
-          i <- Gen.choose(0, s.length - 1)
-          j <- Gen.choose(i, s.length - 1)
-        } yield (i, j)
+        val locs =
+          for {
+            i <- Gen.choose(0, s.length - 1)
+            j <- Gen.choose(i, s.length - 1)
+          } yield (i, j)
 
         forAll(locs) {
           case (i, j) =>

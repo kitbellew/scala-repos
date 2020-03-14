@@ -63,8 +63,8 @@ private class ThresholdFailureDetector(
   @volatile private[this] var timestampNs: Long = 0L
 
   // start as busy, and become open after receiving the first ping response
-  private[this] val state: AtomicReference[Status] = new AtomicReference(
-    Status.Busy)
+  private[this] val state: AtomicReference[Status] =
+    new AtomicReference(Status.Busy)
 
   private[this] val onBusyTimeout: Throwable => Unit =
     x =>

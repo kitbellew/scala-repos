@@ -322,8 +322,10 @@ trait Memoizer extends DAG {
         updateMap(findForcingRefs(parent, OpSide.Center(graph)), graph, force)
 
       case graph @ Split(spec, child, _) => {
-        val childRefs =
-          findForcingRefs(child, OpSide.Center(graph)) // TODO is this right?
+        val childRefs = findForcingRefs(
+          child,
+          OpSide.Center(graph)
+        ) // TODO is this right?
         val specRefs = findForcingRefsInSpec(spec, graph)
 
         updateMap(childRefs |+| specRefs, graph, force)

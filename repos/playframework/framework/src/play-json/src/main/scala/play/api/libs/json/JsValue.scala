@@ -56,8 +56,7 @@ case class JsArray(value: Seq[JsValue] = List()) extends JsValue {
   /**
     * Concatenates this array with the elements of an other array.
     */
-  def ++(other: JsArray): JsArray =
-    JsArray(value ++ other.value)
+  def ++(other: JsArray): JsArray = JsArray(value ++ other.value)
 
   /**
     * Append an element to this array.
@@ -87,10 +86,11 @@ case class JsObject(private val underlying: Map[String, JsValue])
   /**
     * The value of this JsObject as an immutable map.
     */
-  lazy val value: Map[String, JsValue] = underlying match {
-    case m: immutable.Map[String, JsValue] => m
-    case m                                 => m.toMap
-  }
+  lazy val value: Map[String, JsValue] =
+    underlying match {
+      case m: immutable.Map[String, JsValue] => m
+      case m                                 => m.toMap
+    }
 
   /**
     * Return all fields as a set
@@ -132,10 +132,11 @@ case class JsObject(private val underlying: Map[String, JsValue])
         case (otherKey, otherValue) =>
           val maybeExistingValue = existingObject.underlying.get(otherKey)
 
-          val newValue = (maybeExistingValue, otherValue) match {
-            case (Some(e: JsObject), o: JsObject) => merge(e, o)
-            case _                                => otherValue
-          }
+          val newValue =
+            (maybeExistingValue, otherValue) match {
+              case (Some(e: JsObject), o: JsObject) => merge(e, o)
+              case _                                => otherValue
+            }
           otherKey -> newValue
       }
       JsObject(result)

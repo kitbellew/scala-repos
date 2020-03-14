@@ -69,14 +69,13 @@ object HiveTypeCoercion {
 
   // See https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types.
   // The conversion for integral and floating point types have a linear widening hierarchy:
-  private[sql] val numericPrecedence =
-    IndexedSeq(
-      ByteType,
-      ShortType,
-      IntegerType,
-      LongType,
-      FloatType,
-      DoubleType)
+  private[sql] val numericPrecedence = IndexedSeq(
+    ByteType,
+    ShortType,
+    IntegerType,
+    LongType,
+    FloatType,
+    DoubleType)
 
   /**
     * Case 1 type widening (see the classdoc comment above for HiveTypeCoercion).
@@ -244,8 +243,8 @@ object HiveTypeCoercion {
         case s @ SetOperation(left, right)
             if s.childrenResolved &&
               left.output.length == right.output.length && !s.resolved =>
-          val newChildren: Seq[LogicalPlan] =
-            buildNewChildrenWithWiderTypes(left :: right :: Nil)
+          val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(
+            left :: right :: Nil)
           assert(newChildren.length == 2)
           s.makeCopy(Array(newChildren.head, newChildren.last))
 
@@ -253,8 +252,8 @@ object HiveTypeCoercion {
             if s.childrenResolved &&
               s.children.forall(
                 _.output.length == s.children.head.output.length) && !s.resolved =>
-          val newChildren: Seq[LogicalPlan] =
-            buildNewChildrenWithWiderTypes(s.children)
+          val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(
+            s.children)
           s.makeCopy(Array(newChildren))
       }
 
@@ -265,8 +264,10 @@ object HiveTypeCoercion {
 
       // Get a sequence of data types, each of which is the widest type of this specific attribute
       // in all the children
-      val targetTypes: Seq[DataType] =
-        getWidestTypes(children, attrIndex = 0, mutable.Queue[DataType]())
+      val targetTypes: Seq[DataType] = getWidestTypes(
+        children,
+        attrIndex = 0,
+        mutable.Queue[DataType]())
 
       if (targetTypes.nonEmpty) {
         // Add an extra Project if the targetTypes are different from the original types.
@@ -742,49 +743,50 @@ object HiveTypeCoercion {
 
       // Note that ret is nullable to avoid typing a lot of Some(...) in this local scope.
       // We wrap immediately an Option after this.
-      @Nullable val ret: Expression = (inType, expectedType) match {
+      @Nullable val ret: Expression =
+        (inType, expectedType) match {
 
-        // If the expected type is already a parent of the input type, no need to cast.
-        case _ if expectedType.acceptsType(inType) => e
+          // If the expected type is already a parent of the input type, no need to cast.
+          case _ if expectedType.acceptsType(inType) => e
 
-        // Cast null type (usually from null literals) into target types
-        case (NullType, target) => Cast(e, target.defaultConcreteType)
+          // Cast null type (usually from null literals) into target types
+          case (NullType, target) => Cast(e, target.defaultConcreteType)
 
-        // If the function accepts any numeric type and the input is a string, we follow the hive
-        // convention and cast that input into a double
-        case (StringType, NumericType) =>
-          Cast(e, NumericType.defaultConcreteType)
+          // If the function accepts any numeric type and the input is a string, we follow the hive
+          // convention and cast that input into a double
+          case (StringType, NumericType) =>
+            Cast(e, NumericType.defaultConcreteType)
 
-        // Implicit cast among numeric types. When we reach here, input type is not acceptable.
+          // Implicit cast among numeric types. When we reach here, input type is not acceptable.
 
-        // If input is a numeric type but not decimal, and we expect a decimal type,
-        // cast the input to decimal.
-        case (d: NumericType, DecimalType) => Cast(e, DecimalType.forType(d))
-        // For any other numeric types, implicitly cast to each other, e.g. long -> int, int -> long
-        case (_: NumericType, target: NumericType) => Cast(e, target)
+          // If input is a numeric type but not decimal, and we expect a decimal type,
+          // cast the input to decimal.
+          case (d: NumericType, DecimalType) => Cast(e, DecimalType.forType(d))
+          // For any other numeric types, implicitly cast to each other, e.g. long -> int, int -> long
+          case (_: NumericType, target: NumericType) => Cast(e, target)
 
-        // Implicit cast between date time types
-        case (DateType, TimestampType) => Cast(e, TimestampType)
-        case (TimestampType, DateType) => Cast(e, DateType)
+          // Implicit cast between date time types
+          case (DateType, TimestampType) => Cast(e, TimestampType)
+          case (TimestampType, DateType) => Cast(e, DateType)
 
-        // Implicit cast from/to string
-        case (StringType, DecimalType)         => Cast(e, DecimalType.SYSTEM_DEFAULT)
-        case (StringType, target: NumericType) => Cast(e, target)
-        case (StringType, DateType)            => Cast(e, DateType)
-        case (StringType, TimestampType)       => Cast(e, TimestampType)
-        case (StringType, BinaryType)          => Cast(e, BinaryType)
-        // Cast any atomic type to string.
-        case (any: AtomicType, StringType) if any != StringType =>
-          Cast(e, StringType)
+          // Implicit cast from/to string
+          case (StringType, DecimalType)         => Cast(e, DecimalType.SYSTEM_DEFAULT)
+          case (StringType, target: NumericType) => Cast(e, target)
+          case (StringType, DateType)            => Cast(e, DateType)
+          case (StringType, TimestampType)       => Cast(e, TimestampType)
+          case (StringType, BinaryType)          => Cast(e, BinaryType)
+          // Cast any atomic type to string.
+          case (any: AtomicType, StringType) if any != StringType =>
+            Cast(e, StringType)
 
-        // When we reach here, input type is not acceptable for any types in this type collection,
-        // try to find the first one we can implicitly cast.
-        case (_, TypeCollection(types)) =>
-          types.flatMap(implicitCast(e, _)).headOption.orNull
+          // When we reach here, input type is not acceptable for any types in this type collection,
+          // try to find the first one we can implicitly cast.
+          case (_, TypeCollection(types)) =>
+            types.flatMap(implicitCast(e, _)).headOption.orNull
 
-        // Else, just return the same input expression
-        case _ => null
-      }
+          // Else, just return the same input expression
+          case _ => null
+        }
       Option(ret)
     }
   }

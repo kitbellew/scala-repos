@@ -28,22 +28,23 @@ class DuplicatePattern(
 
   def collectDefinitions(): Seq[ScTypedDefinition] = {
     val buffer = ListBuffer[ScTypedDefinition]()
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitFunctionDefinition(fun: ScFunctionDefinition) = {
-        buffer += fun
-        super.visitFunctionDefinition(fun)
-      }
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitFunctionDefinition(fun: ScFunctionDefinition) = {
+          buffer += fun
+          super.visitFunctionDefinition(fun)
+        }
 
-      override def visitPatternDefinition(pat: ScPatternDefinition) = {
-        pat.bindings.foreach(buffer += _)
-        super.visitPatternDefinition(pat)
-      }
+        override def visitPatternDefinition(pat: ScPatternDefinition) = {
+          pat.bindings.foreach(buffer += _)
+          super.visitPatternDefinition(pat)
+        }
 
-      override def visitVariableDefinition(varr: ScVariableDefinition) = {
-        varr.bindings.foreach(buffer += _)
-        super.visitVariableDefinition(varr)
+        override def visitVariableDefinition(varr: ScVariableDefinition) = {
+          varr.bindings.foreach(buffer += _)
+          super.visitVariableDefinition(varr)
+        }
       }
-    }
     elements.foreach(_.accept(visitor))
     buffer.toSeq
   }
@@ -51,14 +52,15 @@ class DuplicatePattern(
   def collectParamOccurences()
       : Map[ScReferenceExpression, ExtractMethodParameter] = {
     val buffer = mutable.Map[ScReferenceExpression, ExtractMethodParameter]()
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitReferenceExpression(ref: ScReferenceExpression) = {
-        parameters
-          .find(_.fromElement == ref.resolve)
-          .foreach(p => buffer += (ref -> p))
-        super.visitReferenceExpression(ref)
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitReferenceExpression(ref: ScReferenceExpression) = {
+          parameters
+            .find(_.fromElement == ref.resolve)
+            .foreach(p => buffer += (ref -> p))
+          super.visitReferenceExpression(ref)
+        }
       }
-    }
     elements.foreach(_.accept(visitor))
     buffer.toMap
   }
@@ -82,18 +84,19 @@ class DuplicatePattern(
   def findDuplicates(scope: PsiElement): Seq[DuplicateMatch] = {
     val result = ListBuffer[DuplicateMatch]()
     val seen = mutable.Set[PsiElement]()
-    val visitor = new ScalaRecursiveElementVisitor {
-      override def visitElement(element: ScalaPsiElement) = {
-        if (isSignificant(element)) {
-          isDuplicateStart(element) match {
-            case Some(mtch) if !seen(mtch.candidates(0)) =>
-              result += mtch
-              seen += mtch.candidates(0)
-            case _ => super.visitElement(element)
+    val visitor =
+      new ScalaRecursiveElementVisitor {
+        override def visitElement(element: ScalaPsiElement) = {
+          if (isSignificant(element)) {
+            isDuplicateStart(element) match {
+              case Some(mtch) if !seen(mtch.candidates(0)) =>
+                result += mtch
+                seen += mtch.candidates(0)
+              case _ => super.visitElement(element)
+            }
           }
         }
       }
-    }
     scope.acceptChildren(visitor)
     result.toSeq
   }

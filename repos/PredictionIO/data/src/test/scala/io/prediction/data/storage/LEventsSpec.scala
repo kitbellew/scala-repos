@@ -176,8 +176,9 @@ class LEventsSpec extends Specification with TestEvents {
 
   def aggregateUserProperties(eventClient: LEvents) = {
 
-    val result: Map[String, PropertyMap] =
-      eventClient.aggregateProperties(appId = appId, entityType = "user")
+    val result: Map[String, PropertyMap] = eventClient.aggregateProperties(
+      appId = appId,
+      entityType = "user")
 
     val expected = Map(
       "u1" -> PropertyMap(u1, u1BaseTime, u1LastTime),

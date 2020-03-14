@@ -153,8 +153,9 @@ class BisectingKMeans private (
     val d = input.map(_.size).first()
     logInfo(s"Feature dimension: $d.")
     // Compute and cache vector norms for fast distance computation.
-    val norms =
-      input.map(v => Vectors.norm(v, 2.0)).persist(StorageLevel.MEMORY_AND_DISK)
+    val norms = input
+      .map(v => Vectors.norm(v, 2.0))
+      .persist(StorageLevel.MEMORY_AND_DISK)
     val vectors = input.zip(norms).map {
       case (x, norm) => new VectorWithNorm(x, norm)
     }
@@ -164,11 +165,12 @@ class BisectingKMeans private (
     val n = rootSummary.size
     logInfo(s"Number of points: $n.")
     logInfo(s"Initial cost: ${rootSummary.cost}.")
-    val minSize = if (minDivisibleClusterSize >= 1.0) {
-      math.ceil(minDivisibleClusterSize).toLong
-    } else {
-      math.ceil(minDivisibleClusterSize * n).toLong
-    }
+    val minSize =
+      if (minDivisibleClusterSize >= 1.0) {
+        math.ceil(minDivisibleClusterSize).toLong
+      } else {
+        math.ceil(minDivisibleClusterSize * n).toLong
+      }
     logInfo(s"The minimum number of points of a divisible cluster is $minSize.")
     var inactiveClusters = mutable.Seq.empty[(Long, ClusterSummary)]
     val random = new Random(seed)
@@ -207,12 +209,14 @@ class BisectingKMeans private (
         var newClusters: Map[Long, ClusterSummary] = null
         var newAssignments: RDD[(Long, VectorWithNorm)] = null
         for (iter <- 0 until maxIterations) {
-          newAssignments =
-            updateAssignments(assignments, divisibleIndices, newClusterCenters)
-              .filter {
-                case (index, _) =>
-                  divisibleIndices.contains(parentIndex(index))
-              }
+          newAssignments = updateAssignments(
+            assignments,
+            divisibleIndices,
+            newClusterCenters)
+            .filter {
+              case (index, _) =>
+                divisibleIndices.contains(parentIndex(index))
+            }
           newClusters = summarize(d, newAssignments)
           newClusterCenters = newClusters.mapValues(_.center).map(identity)
         }

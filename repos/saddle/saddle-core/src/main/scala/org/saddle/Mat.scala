@@ -437,10 +437,11 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     implicit val st = scalarTag
 
     val maxStrLen = (a: Int, b: String) => a.max(b.length)
-    val maxColLen = (c: Vec[A]) =>
-      (c.head(halfr) concat c.tail(halfr))
-        .map(scalarTag.show(_))
-        .foldLeft(0)(maxStrLen)
+    val maxColLen =
+      (c: Vec[A]) =>
+        (c.head(halfr) concat c.tail(halfr))
+          .map(scalarTag.show(_))
+          .foldLeft(0)(maxStrLen)
     val colIdx = util.grab(Range(0, numCols), halfc)
     val lenSeq = colIdx.map { c =>
       c -> maxColLen(col(c))
@@ -450,15 +451,16 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
     // function to build a row
     def createRow(r: Int) = {
       val buf = new StringBuilder()
-      val strFn = (col: Int) => {
-        val l = lenMap(col)
-        "%" + {
-          if (l > 0)
-            l
-          else
-            1
-        } + "s " format scalarTag.show(apply(r, col))
-      }
+      val strFn =
+        (col: Int) => {
+          val l = lenMap(col)
+          "%" + {
+            if (l > 0)
+              l
+            else
+              1
+          } + "s " format scalarTag.show(apply(r, col))
+        }
       buf.append(util.buildStr(ncols, numCols, strFn))
       buf.append("\n")
       buf.toString()

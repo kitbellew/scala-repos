@@ -547,17 +547,18 @@ abstract class ExplicitOuter
 
         case Apply(sel @ Select(qual, nme.CONSTRUCTOR), args)
             if isInner(sel.symbol.owner) =>
-          val outerVal = atPos(tree.pos)(qual match {
-            // it's a call between constructors of same class
-            case _: This =>
-              assert(outerParam != NoSymbol, tree)
-              outerValue
-            case _ =>
-              gen.mkAttributedQualifier(qual.tpe.prefix match {
-                case NoPrefix => sym.owner.outerClass.thisType
-                case x        => x
-              })
-          })
+          val outerVal =
+            atPos(tree.pos)(qual match {
+              // it's a call between constructors of same class
+              case _: This =>
+                assert(outerParam != NoSymbol, tree)
+                outerValue
+              case _ =>
+                gen.mkAttributedQualifier(qual.tpe.prefix match {
+                  case NoPrefix => sym.owner.outerClass.thisType
+                  case x        => x
+                })
+            })
           super.transform(treeCopy.Apply(tree, sel, outerVal :: args))
 
         // for the new pattern matcher
@@ -608,8 +609,7 @@ abstract class ExplicitOuter
     }
   }
 
-  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase =
-    new Phase(prev)
+  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new Phase(prev)
 
   class Phase(prev: scala.tools.nsc.Phase) extends super.Phase(prev) {
     override val checkable = false

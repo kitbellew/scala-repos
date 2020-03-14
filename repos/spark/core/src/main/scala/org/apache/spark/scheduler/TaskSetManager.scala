@@ -65,13 +65,15 @@ private[spark] class TaskSetManager(
    * this temporarily prevents a task from re-launching on an executor where
    * it just failed.
    */
-  private val EXECUTOR_TASK_BLACKLIST_TIMEOUT =
-    conf.getLong("spark.scheduler.executorTaskBlacklistTime", 0L)
+  private val EXECUTOR_TASK_BLACKLIST_TIMEOUT = conf.getLong(
+    "spark.scheduler.executorTaskBlacklistTime",
+    0L)
 
   // Quantile of tasks at which to start speculation
   val SPECULATION_QUANTILE = conf.getDouble("spark.speculation.quantile", 0.75)
-  val SPECULATION_MULTIPLIER =
-    conf.getDouble("spark.speculation.multiplier", 1.5)
+  val SPECULATION_MULTIPLIER = conf.getDouble(
+    "spark.speculation.multiplier",
+    1.5)
 
   // Limit of bytes for total size of results (default is 1GB)
   val maxResultSize = Utils.getMaxResultSize(conf)
@@ -147,8 +149,9 @@ private[spark] class TaskSetManager(
   val taskInfos = new HashMap[Long, TaskInfo]
 
   // How frequently to reprint duplicate exceptions in full, in milliseconds
-  val EXCEPTION_PRINT_INTERVAL =
-    conf.getLong("spark.logging.exceptionPrintInterval", 10000)
+  val EXCEPTION_PRINT_INTERVAL = conf.getLong(
+    "spark.logging.exceptionPrintInterval",
+    10000)
 
   // Map of recent exceptions (identified by string representation and top stack frame) to
   // duplicate count (how many times the same exception has appeared) and time the full exception
@@ -170,16 +173,17 @@ private[spark] class TaskSetManager(
 
   // Figure out which locality levels we have in our TaskSet, so we can do delay scheduling
   var myLocalityLevels = computeValidLocalityLevels()
-  var localityWaits =
-    myLocalityLevels.map(getLocalityWait) // Time to wait at each level
+  var localityWaits = myLocalityLevels.map(
+    getLocalityWait
+  ) // Time to wait at each level
 
   // Delay scheduling variables: we keep track of our current locality level and the time we
   // last launched a task at that level, and move up a level when localityWaits[curLevel] expires.
   // We then move down if we manage to launch a "more local" task.
   var currentLocalityIndex =
     0 // Index of our current locality level in validLocalityLevels
-  var lastLaunchTime =
-    clock.getTimeMillis() // Time we last launched a task at this level
+  var lastLaunchTime = clock
+    .getTimeMillis() // Time we last launched a task at this level
 
   override def schedulableQueue: ConcurrentLinkedQueue[Schedulable] = null
 
@@ -468,15 +472,16 @@ private[spark] class TaskSetManager(
           // Do various bookkeeping
           copiesRunning(index) += 1
           val attemptNum = taskAttempts(index).size
-          val info = new TaskInfo(
-            taskId,
-            index,
-            attemptNum,
-            curTime,
-            execId,
-            host,
-            taskLocality,
-            speculative)
+          val info =
+            new TaskInfo(
+              taskId,
+              index,
+              attemptNum,
+              curTime,
+              execId,
+              host,
+              taskLocality,
+              speculative)
           taskInfos(taskId) = info
           taskAttempts(index) = info :: taskAttempts(index)
           // Update our locality level for delay scheduling
@@ -585,13 +590,14 @@ private[spark] class TaskSetManager(
     }
 
     while (currentLocalityIndex < myLocalityLevels.length - 1) {
-      val moreTasks = myLocalityLevels(currentLocalityIndex) match {
-        case TaskLocality.PROCESS_LOCAL =>
-          moreTasksToRunIn(pendingTasksForExecutor)
-        case TaskLocality.NODE_LOCAL => moreTasksToRunIn(pendingTasksForHost)
-        case TaskLocality.NO_PREF    => pendingTasksWithNoPrefs.nonEmpty
-        case TaskLocality.RACK_LOCAL => moreTasksToRunIn(pendingTasksForRack)
-      }
+      val moreTasks =
+        myLocalityLevels(currentLocalityIndex) match {
+          case TaskLocality.PROCESS_LOCAL =>
+            moreTasksToRunIn(pendingTasksForExecutor)
+          case TaskLocality.NODE_LOCAL => moreTasksToRunIn(pendingTasksForHost)
+          case TaskLocality.NO_PREF    => pendingTasksWithNoPrefs.nonEmpty
+          case TaskLocality.RACK_LOCAL => moreTasksToRunIn(pendingTasksForRack)
+        }
       if (!moreTasks) {
         // This is a performance optimization: if there are no more tasks that can
         // be scheduled at a particular locality level, there is no point in waiting
@@ -721,71 +727,72 @@ private[spark] class TaskSetManager(
     val failureReason =
       s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid, ${info.host}): " +
         reason.asInstanceOf[TaskFailedReason].toErrorString
-    val failureException: Option[Throwable] = reason match {
-      case fetchFailed: FetchFailed =>
-        logWarning(failureReason)
-        if (!successful(index)) {
-          successful(index) = true
-          tasksSuccessful += 1
-        }
-        // Not adding to failed executors for FetchFailed.
-        isZombie = true
-        None
+    val failureException: Option[Throwable] =
+      reason match {
+        case fetchFailed: FetchFailed =>
+          logWarning(failureReason)
+          if (!successful(index)) {
+            successful(index) = true
+            tasksSuccessful += 1
+          }
+          // Not adding to failed executors for FetchFailed.
+          isZombie = true
+          None
 
-      case ef: ExceptionFailure =>
-        // ExceptionFailure's might have accumulator updates
-        accumUpdates = ef.accumUpdates
-        if (ef.className == classOf[NotSerializableException].getName) {
-          // If the task result wasn't serializable, there's no point in trying to re-execute it.
-          logError(
-            "Task %s in stage %s (TID %d) had a not serializable result: %s; not retrying"
-              .format(info.id, taskSet.id, tid, ef.description))
-          abort(
-            "Task %s in stage %s (TID %d) had a not serializable result: %s"
-              .format(info.id, taskSet.id, tid, ef.description))
-          return
-        }
-        val key = ef.description
-        val now = clock.getTimeMillis()
-        val (printFull, dupCount) = {
-          if (recentExceptions.contains(key)) {
-            val (dupCount, printTime) = recentExceptions(key)
-            if (now - printTime > EXCEPTION_PRINT_INTERVAL) {
+        case ef: ExceptionFailure =>
+          // ExceptionFailure's might have accumulator updates
+          accumUpdates = ef.accumUpdates
+          if (ef.className == classOf[NotSerializableException].getName) {
+            // If the task result wasn't serializable, there's no point in trying to re-execute it.
+            logError(
+              "Task %s in stage %s (TID %d) had a not serializable result: %s; not retrying"
+                .format(info.id, taskSet.id, tid, ef.description))
+            abort(
+              "Task %s in stage %s (TID %d) had a not serializable result: %s"
+                .format(info.id, taskSet.id, tid, ef.description))
+            return
+          }
+          val key = ef.description
+          val now = clock.getTimeMillis()
+          val (printFull, dupCount) = {
+            if (recentExceptions.contains(key)) {
+              val (dupCount, printTime) = recentExceptions(key)
+              if (now - printTime > EXCEPTION_PRINT_INTERVAL) {
+                recentExceptions(key) = (0, now)
+                (true, 0)
+              } else {
+                recentExceptions(key) = (dupCount + 1, printTime)
+                (false, dupCount + 1)
+              }
+            } else {
               recentExceptions(key) = (0, now)
               (true, 0)
-            } else {
-              recentExceptions(key) = (dupCount + 1, printTime)
-              (false, dupCount + 1)
             }
-          } else {
-            recentExceptions(key) = (0, now)
-            (true, 0)
           }
-        }
-        if (printFull) {
-          logWarning(failureReason)
-        } else {
+          if (printFull) {
+            logWarning(failureReason)
+          } else {
+            logInfo(
+              s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid) on executor ${info.host}: " +
+                s"${ef.className} (${ef.description}) [duplicate $dupCount]")
+          }
+          ef.exception
+
+        case e: ExecutorLostFailure if !e.exitCausedByApp =>
           logInfo(
-            s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid) on executor ${info.host}: " +
-              s"${ef.className} (${ef.description}) [duplicate $dupCount]")
-        }
-        ef.exception
+            s"Task $tid failed because while it was being computed, its executor " +
+              "exited for a reason unrelated to the task. Not counting this failure towards the " +
+              "maximum number of failures for the task.")
+          None
 
-      case e: ExecutorLostFailure if !e.exitCausedByApp =>
-        logInfo(
-          s"Task $tid failed because while it was being computed, its executor " +
-            "exited for a reason unrelated to the task. Not counting this failure towards the " +
-            "maximum number of failures for the task.")
-        None
+        case e: TaskFailedReason => // TaskResultLost, TaskKilled, and others
+          logWarning(failureReason)
+          None
 
-      case e: TaskFailedReason => // TaskResultLost, TaskKilled, and others
-        logWarning(failureReason)
-        None
-
-      case e: TaskEndReason =>
-        logError("Unknown TaskEndReason: " + e)
-        None
-    }
+        case e: TaskEndReason =>
+          logError("Unknown TaskEndReason: " + e)
+          None
+      }
     // always add to failed executors
     failedExecutors
       .getOrElseUpdate(index, new HashMap[String, Long]())
@@ -882,11 +889,12 @@ private[spark] class TaskSetManager(
     }
     for ((tid, info) <- taskInfos
          if info.running && info.executorId == execId) {
-      val exitCausedByApp: Boolean = reason match {
-        case exited: ExecutorExited => exited.exitCausedByApp
-        case ExecutorKilled         => false
-        case _                      => true
-      }
+      val exitCausedByApp: Boolean =
+        reason match {
+          case exited: ExecutorExited => exited.exitCausedByApp
+          case ExecutorKilled         => false
+          case _                      => true
+        }
       handleFailedTask(
         tid,
         TaskState.FAILED,
@@ -946,12 +954,13 @@ private[spark] class TaskSetManager(
 
   private def getLocalityWait(level: TaskLocality.TaskLocality): Long = {
     val defaultWait = conf.get("spark.locality.wait", "3s")
-    val localityWaitKey = level match {
-      case TaskLocality.PROCESS_LOCAL => "spark.locality.wait.process"
-      case TaskLocality.NODE_LOCAL    => "spark.locality.wait.node"
-      case TaskLocality.RACK_LOCAL    => "spark.locality.wait.rack"
-      case _                          => null
-    }
+    val localityWaitKey =
+      level match {
+        case TaskLocality.PROCESS_LOCAL => "spark.locality.wait.process"
+        case TaskLocality.NODE_LOCAL    => "spark.locality.wait.node"
+        case TaskLocality.RACK_LOCAL    => "spark.locality.wait.rack"
+        case _                          => null
+      }
 
     if (localityWaitKey != null) {
       conf.getTimeAsMs(localityWaitKey, defaultWait)

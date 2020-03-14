@@ -33,10 +33,11 @@ abstract class ScFunctionImpl protected (
   override def isStable = false
 
   def nameId: PsiElement = {
-    val n = getNode.findChildByType(ScalaTokenTypes.tIDENTIFIER) match {
-      case null    => getNode.findChildByType(ScalaTokenTypes.kTHIS)
-      case notNull => notNull
-    }
+    val n =
+      getNode.findChildByType(ScalaTokenTypes.tIDENTIFIER) match {
+        case null    => getNode.findChildByType(ScalaTokenTypes.kTHIS)
+        case notNull => notNull
+      }
     if (n == null) {
       return ScalaPsiElementFactory
         .createIdentifier(

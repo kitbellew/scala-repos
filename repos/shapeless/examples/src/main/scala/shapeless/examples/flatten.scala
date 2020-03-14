@@ -32,8 +32,7 @@ object FlattenExample {
   }
   object flatten extends LowPriorityFlatten {
     implicit def caseTuple[P <: Product](
-        implicit lfm: Lazy[FlatMapper[P, flatten.type]]) =
-      at[P](lfm.value(_))
+        implicit lfm: Lazy[FlatMapper[P, flatten.type]]) = at[P](lfm.value(_))
   }
 
   val t1 = (1, ((2, 3), 4))
@@ -53,9 +52,8 @@ object FlattenExample {
   typed[List[Double]](l2)
 
   val t3 = (23, ((true, 2.0, "foo"), "bar"), (13, false))
-  val f3 =
-    flatten(
-      t3
-    ) // Inferred type is (Int, Boolean, Double, String, String, Int, Boolean)
+  val f3 = flatten(
+    t3
+  ) // Inferred type is (Int, Boolean, Double, String, String, Int, Boolean)
   typed[(Int, Boolean, Double, String, String, Int, Boolean)](f3)
 }

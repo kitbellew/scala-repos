@@ -608,8 +608,7 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable { outer =>
   final class To[C[_]] private[PositionedResult] () {
     def apply[R](gr: GetResult[R])(implicit
         session: JdbcBackend#Session,
-        canBuildFrom: CanBuildFrom[Nothing, R, C[R]]) =
-      build[C, R](gr)
+        canBuildFrom: CanBuildFrom[Nothing, R, C[R]]) = build[C, R](gr)
   }
 }
 

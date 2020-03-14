@@ -12,11 +12,12 @@ final class Env(config: Config, db: lila.db.Env, bus: lila.common.Bus) {
 
   def forms = DataForm
 
-  lazy val api = new DonationApi(
-    db(CollectionDonation),
-    WeeklyGoal,
-    serverDonors = ServerDonors,
-    bus = bus)
+  lazy val api =
+    new DonationApi(
+      db(CollectionDonation),
+      WeeklyGoal,
+      serverDonors = ServerDonors,
+      bus = bus)
 
   val isDonor = api isDonor _
 }

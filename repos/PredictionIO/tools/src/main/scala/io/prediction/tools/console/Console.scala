@@ -125,524 +125,526 @@ case class UpgradeArgs(
 
 object Console extends Logging {
   def main(args: Array[String]): Unit = {
-    val parser = new scopt.OptionParser[ConsoleArgs]("pio") {
-      override def showUsageOnError: Boolean = false
-      head("PredictionIO Command Line Interface Console", BuildInfo.version)
-      help("")
-      note("Note that it is possible to supply pass-through arguments at\n" +
-        "the end of the command by using a '--' separator, e.g.\n\n" +
-        "pio train --params-path params -- --master spark://mycluster:7077\n" +
-        "\nIn the example above, the '--master' argument will be passed to\n" +
-        "underlying spark-submit command. Please refer to the usage section\n" +
-        "for each command for more information.\n\n" +
-        "The following options are common to all commands:\n")
-      opt[String]("pio-home") action { (x, c) =>
-        c.copy(common = c.common.copy(pioHome = Some(x)))
-      } text ("Root directory of a PredictionIO installation.\n" +
-        "        Specify this if automatic discovery fail.")
-      opt[String]("spark-home") action { (x, c) =>
-        c.copy(common = c.common.copy(sparkHome = Some(x)))
-      } text ("Root directory of an Apache Spark installation.\n" +
-        "        If not specified, will try to use the SPARK_HOME\n" +
-        "        environmental variable. If this fails as well, default to\n" +
-        "        current directory.")
-      opt[String]("engine-id") abbr ("ei") action { (x, c) =>
-        c.copy(common = c.common.copy(engineId = Some(x)))
-      } text ("Specify an engine ID. Usually used by distributed deployment.")
-      opt[String]("engine-version") abbr ("ev") action { (x, c) =>
-        c.copy(common = c.common.copy(engineVersion = Some(x)))
-      } text ("Specify an engine version. Usually used by distributed " +
-        "deployment.")
-      opt[File]("variant") abbr ("v") action { (x, c) =>
-        c.copy(common = c.common.copy(variantJson = x))
-      }
-      opt[File]("manifest") abbr ("m") action { (x, c) =>
-        c.copy(common = c.common.copy(manifestJson = x))
-      }
-      opt[File]("sbt") action { (x, c) =>
-        c.copy(build = c.build.copy(sbt = Some(x)))
-      } validate { x =>
-        if (x.exists) {
-          success
-        } else {
-          failure(s"${x.getCanonicalPath} does not exist.")
+    val parser =
+      new scopt.OptionParser[ConsoleArgs]("pio") {
+        override def showUsageOnError: Boolean = false
+        head("PredictionIO Command Line Interface Console", BuildInfo.version)
+        help("")
+        note("Note that it is possible to supply pass-through arguments at\n" +
+          "the end of the command by using a '--' separator, e.g.\n\n" +
+          "pio train --params-path params -- --master spark://mycluster:7077\n" +
+          "\nIn the example above, the '--master' argument will be passed to\n" +
+          "underlying spark-submit command. Please refer to the usage section\n" +
+          "for each command for more information.\n\n" +
+          "The following options are common to all commands:\n")
+        opt[String]("pio-home") action { (x, c) =>
+          c.copy(common = c.common.copy(pioHome = Some(x)))
+        } text ("Root directory of a PredictionIO installation.\n" +
+          "        Specify this if automatic discovery fail.")
+        opt[String]("spark-home") action { (x, c) =>
+          c.copy(common = c.common.copy(sparkHome = Some(x)))
+        } text ("Root directory of an Apache Spark installation.\n" +
+          "        If not specified, will try to use the SPARK_HOME\n" +
+          "        environmental variable. If this fails as well, default to\n" +
+          "        current directory.")
+        opt[String]("engine-id") abbr ("ei") action { (x, c) =>
+          c.copy(common = c.common.copy(engineId = Some(x)))
+        } text ("Specify an engine ID. Usually used by distributed deployment.")
+        opt[String]("engine-version") abbr ("ev") action { (x, c) =>
+          c.copy(common = c.common.copy(engineVersion = Some(x)))
+        } text ("Specify an engine version. Usually used by distributed " +
+          "deployment.")
+        opt[File]("variant") abbr ("v") action { (x, c) =>
+          c.copy(common = c.common.copy(variantJson = x))
         }
-      } text ("Path to sbt. Default: sbt")
-      opt[Unit]("verbose") action { (x, c) =>
-        c.copy(common = c.common.copy(verbose = true))
-      }
-      opt[Unit]("spark-kryo") abbr ("sk") action { (x, c) =>
-        c.copy(common = c.common.copy(sparkKryo = true))
-      }
-      opt[String]("scratch-uri") action { (x, c) =>
-        c.copy(common = c.common.copy(scratchUri = Some(new URI(x))))
-      }
-      note("")
-      cmd("version")
-        .text("Displays the version of this command line console.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "version")
+        opt[File]("manifest") abbr ("m") action { (x, c) =>
+          c.copy(common = c.common.copy(manifestJson = x))
         }
-      note("")
-      cmd("help").action { (_, c) =>
-        c.copy(commands = c.commands :+ "help")
-      } children (
-        arg[String]("<command>") optional ()
-          action { (x, c) =>
-            c.copy(commands = c.commands :+ x)
-          }
-      )
-      note("")
-      cmd("build").text("Build an engine at the current directory.").action {
-        (_, c) => c.copy(commands = c.commands :+ "build")
-      } children (
-        opt[String]("sbt-extra") action { (x, c) =>
-          c.copy(build = c.build.copy(sbtExtra = Some(x)))
-        } text ("Extra command to pass to SBT when it builds your engine."),
-        opt[Unit]("clean") action { (x, c) =>
-          c.copy(build = c.build.copy(sbtClean = true))
-        } text ("Clean build."),
-        opt[Unit]("no-asm") action { (x, c) =>
-          c.copy(build = c.build.copy(sbtAssemblyPackageDependency = false))
-        } text ("Skip building external dependencies assembly."),
-        opt[Unit]("uber-jar") action { (x, c) =>
-          c.copy(build = c.build.copy(uberJar = true))
-        },
-        opt[Unit]("generate-pio-sbt") action { (x, c) =>
-          c.copy(build = c.build.copy(forceGeneratePIOSbt = true))
-        }
-      )
-      note("")
-      cmd("unregister")
-        .text("Unregister an engine at the current directory.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "unregister")
-        }
-      note("")
-      cmd("train")
-        .text(
-          "Kick off a training using an engine. This will produce an\n" +
-            "engine instance. This command will pass all pass-through\n" +
-            "arguments to its underlying spark-submit command.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "train")
-        } children (
-        opt[String]("batch") action { (x, c) =>
-          c.copy(common = c.common.copy(batch = x))
-        } text ("Batch label of the run."),
-        opt[String]("params-path") action { (x, c) =>
-          c.copy(paramsPath = x)
-        } text ("Directory to lookup parameters JSON files. Default: params"),
-        opt[String]("metrics-params") abbr ("mp") action { (x, c) =>
-          c.copy(metricsParamsJsonPath = Some(x))
-        } text ("Metrics parameters JSON file. Will try to use\n" +
-          "        metrics.json in the base path."),
-        opt[Unit]("skip-sanity-check") abbr ("ssc") action { (x, c) =>
-          c.copy(common = c.common.copy(skipSanityCheck = true))
-        },
-        opt[Unit]("stop-after-read") abbr ("sar") action { (x, c) =>
-          c.copy(common = c.common.copy(stopAfterRead = true))
-        },
-        opt[Unit]("stop-after-prepare") abbr ("sap") action { (x, c) =>
-          c.copy(common = c.common.copy(stopAfterPrepare = true))
-        },
-        opt[Unit]("uber-jar") action { (x, c) =>
-          c.copy(build = c.build.copy(uberJar = true))
-        },
-        opt[Int]("verbosity") action { (x, c) =>
-          c.copy(common = c.common.copy(verbosity = x))
-        },
-        opt[String]("engine-factory") action { (x, c) =>
-          c.copy(common = c.common.copy(engineFactory = Some(x)))
-        },
-        opt[String]("engine-params-key") action { (x, c) =>
-          c.copy(common = c.common.copy(engineParamsKey = Some(x)))
-        },
-        opt[String]("json-extractor") action { (x, c) =>
-          c.copy(common =
-            c.common.copy(jsonExtractor = JsonExtractorOption.withName(x)))
+        opt[File]("sbt") action { (x, c) =>
+          c.copy(build = c.build.copy(sbt = Some(x)))
         } validate { x =>
-          if (JsonExtractorOption.values.map(_.toString).contains(x)) {
+          if (x.exists) {
             success
           } else {
-            val validOptions = JsonExtractorOption.values.mkString("|")
-            failure(s"$x is not a valid json-extractor option [$validOptions]")
+            failure(s"${x.getCanonicalPath} does not exist.")
           }
+        } text ("Path to sbt. Default: sbt")
+        opt[Unit]("verbose") action { (x, c) =>
+          c.copy(common = c.common.copy(verbose = true))
         }
-      )
-      note("")
-      cmd("eval")
-        .text(
-          "Kick off an evaluation using an engine. This will produce an\n" +
-            "engine instance. This command will pass all pass-through\n" +
-            "arguments to its underlying spark-submit command.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "eval")
+        opt[Unit]("spark-kryo") abbr ("sk") action { (x, c) =>
+          c.copy(common = c.common.copy(sparkKryo = true))
+        }
+        opt[String]("scratch-uri") action { (x, c) =>
+          c.copy(common = c.common.copy(scratchUri = Some(new URI(x))))
+        }
+        note("")
+        cmd("version")
+          .text("Displays the version of this command line console.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "version")
+          }
+        note("")
+        cmd("help").action { (_, c) =>
+          c.copy(commands = c.commands :+ "help")
         } children (
-        arg[String]("<evaluation-class>") action { (x, c) =>
-          c.copy(common = c.common.copy(evaluation = Some(x)))
-        },
-        arg[String](
-          "[<engine-parameters-generator-class>]") optional () action {
-          (x, c) =>
-            c.copy(common = c.common.copy(engineParamsGenerator = Some(x)))
-        } text ("Optional engine parameters generator class, overriding the first argument"),
-        opt[String]("batch") action { (x, c) =>
-          c.copy(common = c.common.copy(batch = x))
-        } text ("Batch label of the run."),
-        opt[String]("json-extractor") action { (x, c) =>
-          c.copy(common =
-            c.common.copy(jsonExtractor = JsonExtractorOption.withName(x)))
-        } validate { x =>
-          if (JsonExtractorOption.values.map(_.toString).contains(x)) {
-            success
-          } else {
-            val validOptions = JsonExtractorOption.values.mkString("|")
-            failure(s"$x is not a valid json-extractor option [$validOptions]")
+          arg[String]("<command>") optional ()
+            action { (x, c) =>
+              c.copy(commands = c.commands :+ x)
+            }
+        )
+        note("")
+        cmd("build").text("Build an engine at the current directory.").action {
+          (_, c) => c.copy(commands = c.commands :+ "build")
+        } children (
+          opt[String]("sbt-extra") action { (x, c) =>
+            c.copy(build = c.build.copy(sbtExtra = Some(x)))
+          } text ("Extra command to pass to SBT when it builds your engine."),
+          opt[Unit]("clean") action { (x, c) =>
+            c.copy(build = c.build.copy(sbtClean = true))
+          } text ("Clean build."),
+          opt[Unit]("no-asm") action { (x, c) =>
+            c.copy(build = c.build.copy(sbtAssemblyPackageDependency = false))
+          } text ("Skip building external dependencies assembly."),
+          opt[Unit]("uber-jar") action { (x, c) =>
+            c.copy(build = c.build.copy(uberJar = true))
+          },
+          opt[Unit]("generate-pio-sbt") action { (x, c) =>
+            c.copy(build = c.build.copy(forceGeneratePIOSbt = true))
           }
-        }
-      )
-      note("")
-      cmd("deploy")
-        .text(
-          "Deploy an engine instance as a prediction server. This\n" +
+        )
+        note("")
+        cmd("unregister")
+          .text("Unregister an engine at the current directory.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "unregister")
+          }
+        note("")
+        cmd("train")
+          .text(
+            "Kick off a training using an engine. This will produce an\n" +
+              "engine instance. This command will pass all pass-through\n" +
+              "arguments to its underlying spark-submit command.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "train")
+          } children (
+          opt[String]("batch") action { (x, c) =>
+            c.copy(common = c.common.copy(batch = x))
+          } text ("Batch label of the run."),
+          opt[String]("params-path") action { (x, c) =>
+            c.copy(paramsPath = x)
+          } text ("Directory to lookup parameters JSON files. Default: params"),
+          opt[String]("metrics-params") abbr ("mp") action { (x, c) =>
+            c.copy(metricsParamsJsonPath = Some(x))
+          } text ("Metrics parameters JSON file. Will try to use\n" +
+            "        metrics.json in the base path."),
+          opt[Unit]("skip-sanity-check") abbr ("ssc") action { (x, c) =>
+            c.copy(common = c.common.copy(skipSanityCheck = true))
+          },
+          opt[Unit]("stop-after-read") abbr ("sar") action { (x, c) =>
+            c.copy(common = c.common.copy(stopAfterRead = true))
+          },
+          opt[Unit]("stop-after-prepare") abbr ("sap") action { (x, c) =>
+            c.copy(common = c.common.copy(stopAfterPrepare = true))
+          },
+          opt[Unit]("uber-jar") action { (x, c) =>
+            c.copy(build = c.build.copy(uberJar = true))
+          },
+          opt[Int]("verbosity") action { (x, c) =>
+            c.copy(common = c.common.copy(verbosity = x))
+          },
+          opt[String]("engine-factory") action { (x, c) =>
+            c.copy(common = c.common.copy(engineFactory = Some(x)))
+          },
+          opt[String]("engine-params-key") action { (x, c) =>
+            c.copy(common = c.common.copy(engineParamsKey = Some(x)))
+          },
+          opt[String]("json-extractor") action { (x, c) =>
+            c.copy(common = c.common
+              .copy(jsonExtractor = JsonExtractorOption.withName(x)))
+          } validate { x =>
+            if (JsonExtractorOption.values.map(_.toString).contains(x)) {
+              success
+            } else {
+              val validOptions = JsonExtractorOption.values.mkString("|")
+              failure(
+                s"$x is not a valid json-extractor option [$validOptions]")
+            }
+          }
+        )
+        note("")
+        cmd("eval")
+          .text(
+            "Kick off an evaluation using an engine. This will produce an\n" +
+              "engine instance. This command will pass all pass-through\n" +
+              "arguments to its underlying spark-submit command.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "eval")
+          } children (
+          arg[String]("<evaluation-class>") action { (x, c) =>
+            c.copy(common = c.common.copy(evaluation = Some(x)))
+          },
+          arg[String](
+            "[<engine-parameters-generator-class>]") optional () action {
+            (x, c) =>
+              c.copy(common = c.common.copy(engineParamsGenerator = Some(x)))
+          } text ("Optional engine parameters generator class, overriding the first argument"),
+          opt[String]("batch") action { (x, c) =>
+            c.copy(common = c.common.copy(batch = x))
+          } text ("Batch label of the run."),
+          opt[String]("json-extractor") action { (x, c) =>
+            c.copy(common = c.common
+              .copy(jsonExtractor = JsonExtractorOption.withName(x)))
+          } validate { x =>
+            if (JsonExtractorOption.values.map(_.toString).contains(x)) {
+              success
+            } else {
+              val validOptions = JsonExtractorOption.values.mkString("|")
+              failure(
+                s"$x is not a valid json-extractor option [$validOptions]")
+            }
+          }
+        )
+        note("")
+        cmd("deploy")
+          .text("Deploy an engine instance as a prediction server. This\n" +
             "command will pass all pass-through arguments to its underlying\n" +
             "spark-submit command.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "deploy")
-        } children (
-        opt[String]("batch") action { (x, c) =>
-          c.copy(common = c.common.copy(batch = x))
-        } text ("Batch label of the deployment."),
-        opt[String]("engine-instance-id") action { (x, c) =>
-          c.copy(engineInstanceId = Some(x))
-        } text ("Engine instance ID."),
-        opt[String]("ip") action { (x, c) =>
-          c.copy(deploy = c.deploy.copy(ip = x))
-        },
-        opt[Int]("port") action { (x, c) =>
-          c.copy(deploy = c.deploy.copy(port = x))
-        } text ("Port to bind to. Default: 8000"),
-        opt[Unit]("feedback") action { (_, c) =>
-          c.copy(eventServer = c.eventServer.copy(enabled = true))
-        } text ("Enable feedback loop to event server."),
-        opt[String]("event-server-ip") action { (x, c) =>
-          c.copy(eventServer = c.eventServer.copy(ip = x))
-        },
-        opt[Int]("event-server-port") action { (x, c) =>
-          c.copy(eventServer = c.eventServer.copy(port = x))
-        } text ("Event server port. Default: 7070"),
-        opt[Int]("admin-server-port") action { (x, c) =>
-          c.copy(adminServer = c.adminServer.copy(port = x))
-        } text ("Admin server port. Default: 7071"),
-        opt[String]("admin-server-port") action { (x, c) =>
-          c.copy(adminServer = c.adminServer.copy(ip = x))
-        } text ("Admin server IP. Default: localhost"),
-        opt[String]("accesskey") action { (x, c) =>
-          c.copy(accessKey = c.accessKey.copy(accessKey = x))
-        } text ("Access key of the App where feedback data will be stored."),
-        opt[Unit]("uber-jar") action { (x, c) =>
-          c.copy(build = c.build.copy(uberJar = true))
-        },
-        opt[String]("log-url") action { (x, c) =>
-          c.copy(deploy = c.deploy.copy(logUrl = Some(x)))
-        },
-        opt[String]("log-prefix") action { (x, c) =>
-          c.copy(deploy = c.deploy.copy(logPrefix = Some(x)))
-        },
-        opt[String]("json-extractor") action { (x, c) =>
-          c.copy(common =
-            c.common.copy(jsonExtractor = JsonExtractorOption.withName(x)))
-        } validate { x =>
-          if (JsonExtractorOption.values.map(_.toString).contains(x)) {
-            success
-          } else {
-            val validOptions = JsonExtractorOption.values.mkString("|")
-            failure(s"$x is not a valid json-extractor option [$validOptions]")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "deploy")
+          } children (
+          opt[String]("batch") action { (x, c) =>
+            c.copy(common = c.common.copy(batch = x))
+          } text ("Batch label of the deployment."),
+          opt[String]("engine-instance-id") action { (x, c) =>
+            c.copy(engineInstanceId = Some(x))
+          } text ("Engine instance ID."),
+          opt[String]("ip") action { (x, c) =>
+            c.copy(deploy = c.deploy.copy(ip = x))
+          },
+          opt[Int]("port") action { (x, c) =>
+            c.copy(deploy = c.deploy.copy(port = x))
+          } text ("Port to bind to. Default: 8000"),
+          opt[Unit]("feedback") action { (_, c) =>
+            c.copy(eventServer = c.eventServer.copy(enabled = true))
+          } text ("Enable feedback loop to event server."),
+          opt[String]("event-server-ip") action { (x, c) =>
+            c.copy(eventServer = c.eventServer.copy(ip = x))
+          },
+          opt[Int]("event-server-port") action { (x, c) =>
+            c.copy(eventServer = c.eventServer.copy(port = x))
+          } text ("Event server port. Default: 7070"),
+          opt[Int]("admin-server-port") action { (x, c) =>
+            c.copy(adminServer = c.adminServer.copy(port = x))
+          } text ("Admin server port. Default: 7071"),
+          opt[String]("admin-server-port") action { (x, c) =>
+            c.copy(adminServer = c.adminServer.copy(ip = x))
+          } text ("Admin server IP. Default: localhost"),
+          opt[String]("accesskey") action { (x, c) =>
+            c.copy(accessKey = c.accessKey.copy(accessKey = x))
+          } text ("Access key of the App where feedback data will be stored."),
+          opt[Unit]("uber-jar") action { (x, c) =>
+            c.copy(build = c.build.copy(uberJar = true))
+          },
+          opt[String]("log-url") action { (x, c) =>
+            c.copy(deploy = c.deploy.copy(logUrl = Some(x)))
+          },
+          opt[String]("log-prefix") action { (x, c) =>
+            c.copy(deploy = c.deploy.copy(logPrefix = Some(x)))
+          },
+          opt[String]("json-extractor") action { (x, c) =>
+            c.copy(common = c.common
+              .copy(jsonExtractor = JsonExtractorOption.withName(x)))
+          } validate { x =>
+            if (JsonExtractorOption.values.map(_.toString).contains(x)) {
+              success
+            } else {
+              val validOptions = JsonExtractorOption.values.mkString("|")
+              failure(
+                s"$x is not a valid json-extractor option [$validOptions]")
+            }
           }
-        }
-      )
-      note("")
-      cmd("undeploy")
-        .text("Undeploy an engine instance as a prediction server.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "undeploy")
-        } children (
-        opt[String]("ip") action { (x, c) =>
-          c.copy(deploy = c.deploy.copy(ip = x))
-        },
-        opt[Int]("port") action { (x, c) =>
-          c.copy(deploy = c.deploy.copy(port = x))
-        } text ("Port to unbind from. Default: 8000")
-      )
-      note("")
-      cmd("dashboard")
-        .text("Launch a dashboard at the specific IP and port.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "dashboard")
-        } children (
-        opt[String]("ip") action { (x, c) =>
-          c.copy(dashboard = c.dashboard.copy(ip = x))
-        },
-        opt[Int]("port") action { (x, c) =>
-          c.copy(dashboard = c.dashboard.copy(port = x))
-        } text ("Port to bind to. Default: 9000")
-      )
-      note("")
-      cmd("eventserver")
-        .text("Launch an Event Server at the specific IP and port.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "eventserver")
-        } children (
-        opt[String]("ip") action { (x, c) =>
-          c.copy(eventServer = c.eventServer.copy(ip = x))
-        },
-        opt[Int]("port") action { (x, c) =>
-          c.copy(eventServer = c.eventServer.copy(port = x))
-        } text ("Port to bind to. Default: 7070"),
-        opt[Unit]("stats") action { (x, c) =>
-          c.copy(eventServer = c.eventServer.copy(stats = true))
-        }
-      )
-      cmd("adminserver")
-        .text("Launch an Admin Server at the specific IP and port.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "adminserver")
-        } children (
-        opt[String]("ip") action { (x, c) =>
-          c.copy(adminServer = c.adminServer.copy(ip = x))
-        } text ("IP to bind to. Default: localhost"),
-        opt[Int]("port") action { (x, c) =>
-          c.copy(adminServer = c.adminServer.copy(port = x))
-        } text ("Port to bind to. Default: 7071")
-      )
-      note("")
-      cmd("run")
-        .text(
-          "Launch a driver program. This command will pass all\n" +
+        )
+        note("")
+        cmd("undeploy")
+          .text("Undeploy an engine instance as a prediction server.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "undeploy")
+          } children (
+          opt[String]("ip") action { (x, c) =>
+            c.copy(deploy = c.deploy.copy(ip = x))
+          },
+          opt[Int]("port") action { (x, c) =>
+            c.copy(deploy = c.deploy.copy(port = x))
+          } text ("Port to unbind from. Default: 8000")
+        )
+        note("")
+        cmd("dashboard")
+          .text("Launch a dashboard at the specific IP and port.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "dashboard")
+          } children (
+          opt[String]("ip") action { (x, c) =>
+            c.copy(dashboard = c.dashboard.copy(ip = x))
+          },
+          opt[Int]("port") action { (x, c) =>
+            c.copy(dashboard = c.dashboard.copy(port = x))
+          } text ("Port to bind to. Default: 9000")
+        )
+        note("")
+        cmd("eventserver")
+          .text("Launch an Event Server at the specific IP and port.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "eventserver")
+          } children (
+          opt[String]("ip") action { (x, c) =>
+            c.copy(eventServer = c.eventServer.copy(ip = x))
+          },
+          opt[Int]("port") action { (x, c) =>
+            c.copy(eventServer = c.eventServer.copy(port = x))
+          } text ("Port to bind to. Default: 7070"),
+          opt[Unit]("stats") action { (x, c) =>
+            c.copy(eventServer = c.eventServer.copy(stats = true))
+          }
+        )
+        cmd("adminserver")
+          .text("Launch an Admin Server at the specific IP and port.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "adminserver")
+          } children (
+          opt[String]("ip") action { (x, c) =>
+            c.copy(adminServer = c.adminServer.copy(ip = x))
+          } text ("IP to bind to. Default: localhost"),
+          opt[Int]("port") action { (x, c) =>
+            c.copy(adminServer = c.adminServer.copy(port = x))
+          } text ("Port to bind to. Default: 7071")
+        )
+        note("")
+        cmd("run")
+          .text("Launch a driver program. This command will pass all\n" +
             "pass-through arguments to its underlying spark-submit command.\n" +
             "In addition, it also supports a second level of pass-through\n" +
             "arguments to the driver program, e.g.\n" +
             "pio run -- --master spark://localhost:7077 -- --driver-arg foo")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "run")
-        } children (
-        arg[String]("<main class>") action { (x, c) =>
-          c.copy(mainClass = Some(x))
-        } text ("Main class name of the driver program."),
-        opt[String]("sbt-extra") action { (x, c) =>
-          c.copy(build = c.build.copy(sbtExtra = Some(x)))
-        } text ("Extra command to pass to SBT when it builds your engine."),
-        opt[Unit]("clean") action { (x, c) =>
-          c.copy(build = c.build.copy(sbtClean = true))
-        } text ("Clean build."),
-        opt[Unit]("no-asm") action { (x, c) =>
-          c.copy(build = c.build.copy(sbtAssemblyPackageDependency = false))
-        } text ("Skip building external dependencies assembly.")
-      )
-      note("")
-      cmd("status")
-        .text("Displays status information about the PredictionIO system.")
-        .action { (_, c) =>
-          c.copy(commands = c.commands :+ "status")
-        }
-      note("")
-      cmd("upgrade").text("Upgrade tool").action { (_, c) =>
-        c.copy(commands = c.commands :+ "upgrade")
-      } children (
-        arg[String]("<from version>") action { (x, c) =>
-          c.copy(upgrade = c.upgrade.copy(from = x))
-        } text ("The version upgraded from."),
-        arg[String]("<to version>") action { (x, c) =>
-          c.copy(upgrade = c.upgrade.copy(to = x))
-        } text ("The version upgraded to."),
-        arg[Int]("<old App ID>") action { (x, c) =>
-          c.copy(upgrade = c.upgrade.copy(oldAppId = x))
-        } text ("Old App ID."),
-        arg[Int]("<new App ID>") action { (x, c) =>
-          c.copy(upgrade = c.upgrade.copy(newAppId = x))
-        } text ("New App ID.")
-      )
-      note("")
-      cmd("app").text("Manage apps.\n").action { (_, c) =>
-        c.copy(commands = c.commands :+ "app")
-      } children (
-        cmd("new").text("Create a new app key to app ID mapping.").action {
-          (_, c) => c.copy(commands = c.commands :+ "new")
-        } children (
-          opt[Int]("id") action { (x, c) =>
-            c.copy(app = c.app.copy(id = Some(x)))
-          },
-          opt[String]("description") action { (x, c) =>
-            c.copy(app = c.app.copy(description = Some(x)))
-          },
-          opt[String]("access-key") action { (x, c) =>
-            c.copy(accessKey = c.accessKey.copy(accessKey = x))
-          },
-          arg[String]("<name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          }
-        ),
-        note(""),
-        cmd("list").text("List all apps.").action { (_, c) =>
-          c.copy(commands = c.commands :+ "list")
-        },
-        note(""),
-        cmd("show").text("Show details of an app.").action { (_, c) =>
-          c.copy(commands = c.commands :+ "show")
-        } children (
-          arg[String]("<name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("Name of the app to be shown.")
-        ),
-        note(""),
-        cmd("delete").text("Delete an app.").action { (_, c) =>
-          c.copy(commands = c.commands :+ "delete")
-        } children (
-          arg[String]("<name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("Name of the app to be deleted."),
-          opt[Unit]("force") abbr ("f") action { (x, c) =>
-            c.copy(app = c.app.copy(force = true))
-          } text ("Delete an app without prompting for confirmation")
-        ),
-        note(""),
-        cmd("data-delete").text("Delete data of an app").action { (_, c) =>
-          c.copy(commands = c.commands :+ "data-delete")
-        } children (
-          arg[String]("<name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("Name of the app whose data to be deleted."),
-          opt[String]("channel") action { (x, c) =>
-            c.copy(app = c.app.copy(dataDeleteChannel = Some(x)))
-          } text ("Name of channel whose data to be deleted."),
-          opt[Unit]("all") action { (x, c) =>
-            c.copy(app = c.app.copy(all = true))
-          } text ("Delete data of all channels including default"),
-          opt[Unit]("force") abbr ("f") action { (x, c) =>
-            c.copy(app = c.app.copy(force = true))
-          } text ("Delete data of an app without prompting for confirmation")
-        ),
-        note(""),
-        cmd("channel-new").text("Create a new channel for the app.").action {
-          (_, c) => c.copy(commands = c.commands :+ "channel-new")
-        } children (
-          arg[String]("<name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("App name."),
-          arg[String]("<channel>") action { (x, c) =>
-            c.copy(app = c.app.copy(channel = x))
-          } text ("Channel name to be created.")
-        ),
-        note(""),
-        cmd("channel-delete").text("Delete a channel of the app.").action {
-          (_, c) => c.copy(commands = c.commands :+ "channel-delete")
-        } children (
-          arg[String]("<name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("App name."),
-          arg[String]("<channel>") action { (x, c) =>
-            c.copy(app = c.app.copy(channel = x))
-          } text ("Channel name to be deleted."),
-          opt[Unit]("force") abbr ("f") action { (x, c) =>
-            c.copy(app = c.app.copy(force = true))
-          } text ("Delete a channel of the app without prompting for confirmation")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "run")
+          } children (
+          arg[String]("<main class>") action { (x, c) =>
+            c.copy(mainClass = Some(x))
+          } text ("Main class name of the driver program."),
+          opt[String]("sbt-extra") action { (x, c) =>
+            c.copy(build = c.build.copy(sbtExtra = Some(x)))
+          } text ("Extra command to pass to SBT when it builds your engine."),
+          opt[Unit]("clean") action { (x, c) =>
+            c.copy(build = c.build.copy(sbtClean = true))
+          } text ("Clean build."),
+          opt[Unit]("no-asm") action { (x, c) =>
+            c.copy(build = c.build.copy(sbtAssemblyPackageDependency = false))
+          } text ("Skip building external dependencies assembly.")
         )
-      )
-      note("")
-      cmd("accesskey").text("Manage app access keys.\n").action { (_, c) =>
-        c.copy(commands = c.commands :+ "accesskey")
-      } children (
-        cmd("new").text("Add allowed event(s) to an access key.").action {
-          (_, c) => c.copy(commands = c.commands :+ "new")
+        note("")
+        cmd("status")
+          .text("Displays status information about the PredictionIO system.")
+          .action { (_, c) =>
+            c.copy(commands = c.commands :+ "status")
+          }
+        note("")
+        cmd("upgrade").text("Upgrade tool").action { (_, c) =>
+          c.copy(commands = c.commands :+ "upgrade")
         } children (
-          opt[String]("key") action { (x, c) =>
-            c.copy(accessKey = c.accessKey.copy(accessKey = x))
-          },
-          arg[String]("<app name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          },
-          arg[String]("[<event1> <event2> ...]") unbounded () optional ()
-            action { (x, c) =>
-              c.copy(accessKey =
-                c.accessKey.copy(events = c.accessKey.events :+ x))
+          arg[String]("<from version>") action { (x, c) =>
+            c.copy(upgrade = c.upgrade.copy(from = x))
+          } text ("The version upgraded from."),
+          arg[String]("<to version>") action { (x, c) =>
+            c.copy(upgrade = c.upgrade.copy(to = x))
+          } text ("The version upgraded to."),
+          arg[Int]("<old App ID>") action { (x, c) =>
+            c.copy(upgrade = c.upgrade.copy(oldAppId = x))
+          } text ("Old App ID."),
+          arg[Int]("<new App ID>") action { (x, c) =>
+            c.copy(upgrade = c.upgrade.copy(newAppId = x))
+          } text ("New App ID.")
+        )
+        note("")
+        cmd("app").text("Manage apps.\n").action { (_, c) =>
+          c.copy(commands = c.commands :+ "app")
+        } children (
+          cmd("new").text("Create a new app key to app ID mapping.").action {
+            (_, c) => c.copy(commands = c.commands :+ "new")
+          } children (
+            opt[Int]("id") action { (x, c) =>
+              c.copy(app = c.app.copy(id = Some(x)))
+            },
+            opt[String]("description") action { (x, c) =>
+              c.copy(app = c.app.copy(description = Some(x)))
+            },
+            opt[String]("access-key") action { (x, c) =>
+              c.copy(accessKey = c.accessKey.copy(accessKey = x))
+            },
+            arg[String]("<name>") action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
             }
-        ),
-        cmd("list").text("List all access keys of an app.").action { (_, c) =>
-          c.copy(commands = c.commands :+ "list")
-        } children (
-          arg[String]("<app name>") optional () action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("App name.")
-        ),
-        note(""),
-        cmd("delete").text("Delete an access key.").action { (_, c) =>
-          c.copy(commands = c.commands :+ "delete")
-        } children (
-          arg[String]("<access key>") action { (x, c) =>
-            c.copy(accessKey = c.accessKey.copy(accessKey = x))
-          } text ("The access key to be deleted.")
+          ),
+          note(""),
+          cmd("list").text("List all apps.").action { (_, c) =>
+            c.copy(commands = c.commands :+ "list")
+          },
+          note(""),
+          cmd("show").text("Show details of an app.").action { (_, c) =>
+            c.copy(commands = c.commands :+ "show")
+          } children (
+            arg[String]("<name>") action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
+            } text ("Name of the app to be shown.")
+          ),
+          note(""),
+          cmd("delete").text("Delete an app.").action { (_, c) =>
+            c.copy(commands = c.commands :+ "delete")
+          } children (
+            arg[String]("<name>") action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
+            } text ("Name of the app to be deleted."),
+            opt[Unit]("force") abbr ("f") action { (x, c) =>
+              c.copy(app = c.app.copy(force = true))
+            } text ("Delete an app without prompting for confirmation")
+          ),
+          note(""),
+          cmd("data-delete").text("Delete data of an app").action { (_, c) =>
+            c.copy(commands = c.commands :+ "data-delete")
+          } children (
+            arg[String]("<name>") action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
+            } text ("Name of the app whose data to be deleted."),
+            opt[String]("channel") action { (x, c) =>
+              c.copy(app = c.app.copy(dataDeleteChannel = Some(x)))
+            } text ("Name of channel whose data to be deleted."),
+            opt[Unit]("all") action { (x, c) =>
+              c.copy(app = c.app.copy(all = true))
+            } text ("Delete data of all channels including default"),
+            opt[Unit]("force") abbr ("f") action { (x, c) =>
+              c.copy(app = c.app.copy(force = true))
+            } text ("Delete data of an app without prompting for confirmation")
+          ),
+          note(""),
+          cmd("channel-new").text("Create a new channel for the app.").action {
+            (_, c) => c.copy(commands = c.commands :+ "channel-new")
+          } children (
+            arg[String]("<name>") action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
+            } text ("App name."),
+            arg[String]("<channel>") action { (x, c) =>
+              c.copy(app = c.app.copy(channel = x))
+            } text ("Channel name to be created.")
+          ),
+          note(""),
+          cmd("channel-delete").text("Delete a channel of the app.").action {
+            (_, c) => c.copy(commands = c.commands :+ "channel-delete")
+          } children (
+            arg[String]("<name>") action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
+            } text ("App name."),
+            arg[String]("<channel>") action { (x, c) =>
+              c.copy(app = c.app.copy(channel = x))
+            } text ("Channel name to be deleted."),
+            opt[Unit]("force") abbr ("f") action { (x, c) =>
+              c.copy(app = c.app.copy(force = true))
+            } text ("Delete a channel of the app without prompting for confirmation")
+          )
         )
-      )
-      cmd("template").action { (_, c) =>
-        c.copy(commands = c.commands :+ "template")
-      } children (
-        cmd("get").action { (_, c) =>
-          c.copy(commands = c.commands :+ "get")
+        note("")
+        cmd("accesskey").text("Manage app access keys.\n").action { (_, c) =>
+          c.copy(commands = c.commands :+ "accesskey")
         } children (
-          arg[String]("<template ID>") required () action { (x, c) =>
-            c.copy(template = c.template.copy(repository = x))
-          },
-          arg[String]("<new engine directory>") action { (x, c) =>
-            c.copy(template = c.template.copy(directory = x))
-          },
-          opt[String]("version") action { (x, c) =>
-            c.copy(template = c.template.copy(version = Some(x)))
-          },
-          opt[String]("name") action { (x, c) =>
-            c.copy(template = c.template.copy(name = Some(x)))
-          },
-          opt[String]("package") action { (x, c) =>
-            c.copy(template = c.template.copy(packageName = Some(x)))
-          },
-          opt[String]("email") action { (x, c) =>
-            c.copy(template = c.template.copy(email = Some(x)))
+          cmd("new").text("Add allowed event(s) to an access key.").action {
+            (_, c) => c.copy(commands = c.commands :+ "new")
+          } children (
+            opt[String]("key") action { (x, c) =>
+              c.copy(accessKey = c.accessKey.copy(accessKey = x))
+            },
+            arg[String]("<app name>") action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
+            },
+            arg[String]("[<event1> <event2> ...]") unbounded () optional ()
+              action { (x, c) =>
+                c.copy(accessKey = c.accessKey.copy(
+                  events = c.accessKey.events :+ x))
+              }
+          ),
+          cmd("list").text("List all access keys of an app.").action { (_, c) =>
+            c.copy(commands = c.commands :+ "list")
+          } children (
+            arg[String]("<app name>") optional () action { (x, c) =>
+              c.copy(app = c.app.copy(name = x))
+            } text ("App name.")
+          ),
+          note(""),
+          cmd("delete").text("Delete an access key.").action { (_, c) =>
+            c.copy(commands = c.commands :+ "delete")
+          } children (
+            arg[String]("<access key>") action { (x, c) =>
+              c.copy(accessKey = c.accessKey.copy(accessKey = x))
+            } text ("The access key to be deleted.")
+          )
+        )
+        cmd("template").action { (_, c) =>
+          c.copy(commands = c.commands :+ "template")
+        } children (
+          cmd("get").action { (_, c) =>
+            c.copy(commands = c.commands :+ "get")
+          } children (
+            arg[String]("<template ID>") required () action { (x, c) =>
+              c.copy(template = c.template.copy(repository = x))
+            },
+            arg[String]("<new engine directory>") action { (x, c) =>
+              c.copy(template = c.template.copy(directory = x))
+            },
+            opt[String]("version") action { (x, c) =>
+              c.copy(template = c.template.copy(version = Some(x)))
+            },
+            opt[String]("name") action { (x, c) =>
+              c.copy(template = c.template.copy(name = Some(x)))
+            },
+            opt[String]("package") action { (x, c) =>
+              c.copy(template = c.template.copy(packageName = Some(x)))
+            },
+            opt[String]("email") action { (x, c) =>
+              c.copy(template = c.template.copy(email = Some(x)))
+            }
+          ),
+          cmd("list").action { (_, c) =>
+            c.copy(commands = c.commands :+ "list")
           }
-        ),
-        cmd("list").action { (_, c) =>
-          c.copy(commands = c.commands :+ "list")
-        }
-      )
-      cmd("export").action { (_, c) =>
-        c.copy(commands = c.commands :+ "export")
-      } children (
-        opt[Int]("appid") required () action { (x, c) =>
-          c.copy(export = c.export.copy(appId = x))
-        },
-        opt[String]("output") required () action { (x, c) =>
-          c.copy(export = c.export.copy(outputPath = x))
-        },
-        opt[String]("format") action { (x, c) =>
-          c.copy(export = c.export.copy(format = x))
-        },
-        opt[String]("channel") action { (x, c) =>
-          c.copy(export = c.export.copy(channel = Some(x)))
-        }
-      )
-      cmd("import").action { (_, c) =>
-        c.copy(commands = c.commands :+ "import")
-      } children (
-        opt[Int]("appid") required () action { (x, c) =>
-          c.copy(imprt = c.imprt.copy(appId = x))
-        },
-        opt[String]("input") required () action { (x, c) =>
-          c.copy(imprt = c.imprt.copy(inputPath = x))
-        },
-        opt[String]("channel") action { (x, c) =>
-          c.copy(imprt = c.imprt.copy(channel = Some(x)))
-        }
-      )
-    }
+        )
+        cmd("export").action { (_, c) =>
+          c.copy(commands = c.commands :+ "export")
+        } children (
+          opt[Int]("appid") required () action { (x, c) =>
+            c.copy(export = c.export.copy(appId = x))
+          },
+          opt[String]("output") required () action { (x, c) =>
+            c.copy(export = c.export.copy(outputPath = x))
+          },
+          opt[String]("format") action { (x, c) =>
+            c.copy(export = c.export.copy(format = x))
+          },
+          opt[String]("channel") action { (x, c) =>
+            c.copy(export = c.export.copy(channel = Some(x)))
+          }
+        )
+        cmd("import").action { (_, c) =>
+          c.copy(commands = c.commands :+ "import")
+        } children (
+          opt[Int]("appid") required () action { (x, c) =>
+            c.copy(imprt = c.imprt.copy(appId = x))
+          },
+          opt[String]("input") required () action { (x, c) =>
+            c.copy(imprt = c.imprt.copy(inputPath = x))
+          },
+          opt[String]("channel") action { (x, c) =>
+            c.copy(imprt = c.imprt.copy(channel = Some(x)))
+          }
+        )
+      }
 
     val separatorIndex = args.indexWhere(_ == "--")
     val (consoleArgs, theRest) =
@@ -666,78 +668,79 @@ object Console extends Logging {
         sparkPassThrough = sparkPassThroughArgs,
         driverPassThrough = driverPassThroughArgs))
       WorkflowUtils.modifyLogging(ca.common.verbose)
-      val rv: Int = ca.commands match {
-        case Seq("") =>
-          System.err.println(help())
-          1
-        case Seq("version") =>
-          version(ca)
-          0
-        case Seq("build") =>
-          regenerateManifestJson(ca.common.manifestJson)
-          build(ca)
-        case Seq("unregister") =>
-          unregister(ca)
-          0
-        case Seq("train") =>
-          regenerateManifestJson(ca.common.manifestJson)
-          train(ca)
-        case Seq("eval") =>
-          regenerateManifestJson(ca.common.manifestJson)
-          train(ca)
-        case Seq("deploy") =>
-          deploy(ca)
-        case Seq("undeploy") =>
-          undeploy(ca)
-        case Seq("dashboard") =>
-          dashboard(ca)
-          0
-        case Seq("eventserver") =>
-          eventserver(ca)
-          0
-        case Seq("adminserver") =>
-          adminserver(ca)
-          0
-        case Seq("run") =>
-          generateManifestJson(ca.common.manifestJson)
-          run(ca)
-        case Seq("status") =>
-          status(ca)
-        case Seq("upgrade") =>
-          upgrade(ca)
-          0
-        case Seq("app", "new") =>
-          App.create(ca)
-        case Seq("app", "list") =>
-          App.list(ca)
-        case Seq("app", "show") =>
-          App.show(ca)
-        case Seq("app", "delete") =>
-          App.delete(ca)
-        case Seq("app", "data-delete") =>
-          App.dataDelete(ca)
-        case Seq("app", "channel-new") =>
-          App.channelNew(ca)
-        case Seq("app", "channel-delete") =>
-          App.channelDelete(ca)
-        case Seq("accesskey", "new") =>
-          AccessKey.create(ca)
-        case Seq("accesskey", "list") =>
-          AccessKey.list(ca)
-        case Seq("accesskey", "delete") =>
-          AccessKey.delete(ca)
-        case Seq("template", "get") =>
-          Template.get(ca)
-        case Seq("template", "list") =>
-          Template.list(ca)
-        case Seq("export") =>
-          Export.eventsToFile(ca)
-        case Seq("import") =>
-          Import.fileToEvents(ca)
-        case _ =>
-          System.err.println(help(ca.commands))
-          1
-      }
+      val rv: Int =
+        ca.commands match {
+          case Seq("") =>
+            System.err.println(help())
+            1
+          case Seq("version") =>
+            version(ca)
+            0
+          case Seq("build") =>
+            regenerateManifestJson(ca.common.manifestJson)
+            build(ca)
+          case Seq("unregister") =>
+            unregister(ca)
+            0
+          case Seq("train") =>
+            regenerateManifestJson(ca.common.manifestJson)
+            train(ca)
+          case Seq("eval") =>
+            regenerateManifestJson(ca.common.manifestJson)
+            train(ca)
+          case Seq("deploy") =>
+            deploy(ca)
+          case Seq("undeploy") =>
+            undeploy(ca)
+          case Seq("dashboard") =>
+            dashboard(ca)
+            0
+          case Seq("eventserver") =>
+            eventserver(ca)
+            0
+          case Seq("adminserver") =>
+            adminserver(ca)
+            0
+          case Seq("run") =>
+            generateManifestJson(ca.common.manifestJson)
+            run(ca)
+          case Seq("status") =>
+            status(ca)
+          case Seq("upgrade") =>
+            upgrade(ca)
+            0
+          case Seq("app", "new") =>
+            App.create(ca)
+          case Seq("app", "list") =>
+            App.list(ca)
+          case Seq("app", "show") =>
+            App.show(ca)
+          case Seq("app", "delete") =>
+            App.delete(ca)
+          case Seq("app", "data-delete") =>
+            App.dataDelete(ca)
+          case Seq("app", "channel-new") =>
+            App.channelNew(ca)
+          case Seq("app", "channel-delete") =>
+            App.channelDelete(ca)
+          case Seq("accesskey", "new") =>
+            AccessKey.create(ca)
+          case Seq("accesskey", "list") =>
+            AccessKey.list(ca)
+          case Seq("accesskey", "delete") =>
+            AccessKey.delete(ca)
+          case Seq("template", "get") =>
+            Template.get(ca)
+          case Seq("template", "list") =>
+            Template.list(ca)
+          case Seq("export") =>
+            Export.eventsToFile(ca)
+          case Seq("import") =>
+            Import.fileToEvents(ca)
+          case _ =>
+            System.err.println(help(ca.commands))
+            1
+        }
       sys.exit(rv)
     } getOrElse {
       val command = args.toSeq.filterNot(_.startsWith("--")).head
@@ -821,14 +824,15 @@ object Console extends Logging {
       ca.common.engineId,
       ca.common.engineVersion) { em =>
       val variantJson = parse(Source.fromFile(ca.common.variantJson).mkString)
-      val variantId = variantJson \ "id" match {
-        case JString(s) => s
-        case _ =>
-          error(
-            "Unable to read engine variant ID from " +
-              s"${ca.common.variantJson.getCanonicalPath}. Aborting.")
-          return 1
-      }
+      val variantId =
+        variantJson \ "id" match {
+          case JString(s) => s
+          case _ =>
+            error(
+              "Unable to read engine variant ID from " +
+                s"${ca.common.variantJson.getCanonicalPath}. Aborting.")
+            return 1
+        }
       val engineInstances = storage.Storage.getMetaDataEngineInstances
       val engineInstance = ca.engineInstanceId map { eid =>
         engineInstances.get(eid)
@@ -1046,8 +1050,10 @@ object Console extends Logging {
       val sparkMinVersion = "1.3.0"
       val sparkReleaseFile = new File(s"$sparkHome/RELEASE")
       if (sparkReleaseFile.exists) {
-        val sparkReleaseStrings =
-          Source.fromFile(sparkReleaseFile).mkString.split(' ')
+        val sparkReleaseStrings = Source
+          .fromFile(sparkReleaseFile)
+          .mkString
+          .split(' ')
         if (sparkReleaseStrings.length < 2) {
           warn(stripMarginAndNewlines(
             s"""|Apache Spark version information cannot be found (RELEASE file
@@ -1146,11 +1152,12 @@ object Console extends Logging {
 
   def regenerateManifestJson(json: File): Unit = {
     val cwd = sys.props("user.dir")
-    val ha = java.security.MessageDigest
-      .getInstance("SHA-1")
-      .digest(cwd.getBytes)
-      .map("%02x".format(_))
-      .mkString
+    val ha =
+      java.security.MessageDigest
+        .getInstance("SHA-1")
+        .digest(cwd.getBytes)
+        .map("%02x".format(_))
+        .mkString
     if (json.exists) {
       val em = readManifestJson(json)
       if (em.description == Some(manifestAutogenTag) && ha != em.version) {
@@ -1174,11 +1181,12 @@ object Console extends Logging {
     implicit val formats = Utils.json4sDefaultFormats +
       new EngineManifestSerializer
     val rand = Random.alphanumeric.take(32).mkString
-    val ha = java.security.MessageDigest
-      .getInstance("SHA-1")
-      .digest(cwd.getBytes)
-      .map("%02x".format(_))
-      .mkString
+    val ha =
+      java.security.MessageDigest
+        .getInstance("SHA-1")
+        .digest(cwd.getBytes)
+        .map("%02x".format(_))
+        .mkString
     val em = EngineManifest(
       id = rand,
       version = ha,
@@ -1270,9 +1278,10 @@ object Console extends Logging {
 
   def versionNoPatch(fullVersion: String): String = {
     val v = """^(\d+\.\d+)""".r
-    val versionNoPatch = for {
-      v(np) <- v findFirstIn fullVersion
-    } yield np
+    val versionNoPatch =
+      for {
+        v(np) <- v findFirstIn fullVersion
+      } yield np
     versionNoPatch.getOrElse(fullVersion)
   }
 
@@ -1282,8 +1291,9 @@ object Console extends Logging {
     ca.build.sbt map {
       _.getCanonicalPath
     } getOrElse {
-      val f = new File(
-        Seq(ca.common.pioHome.get, "sbt", "sbt").mkString(File.separator))
+      val f =
+        new File(
+          Seq(ca.common.pioHome.get, "sbt", "sbt").mkString(File.separator))
       if (f.exists)
         f.getCanonicalPath
       else

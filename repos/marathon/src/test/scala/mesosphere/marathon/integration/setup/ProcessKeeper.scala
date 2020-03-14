@@ -35,9 +35,10 @@ object ProcessKeeper {
   def startHttpService(port: Int, assetPath: String) = {
     startService {
       log.info(s"Start Http Service on port $port")
-      val conf = new ScallopConf(
-        Array("--http_port", port.toString, "--assets_path", assetPath))
-        with HttpConf
+      val conf =
+        new ScallopConf(
+          Array("--http_port", port.toString, "--assets_path", assetPath))
+          with HttpConf
       conf.afterInit()
       val injector = Guice.createInjector(
         new MetricsModule,
@@ -205,31 +206,34 @@ object ProcessKeeper {
     case object ProcessExited extends ProcessState
 
     val up = Promise[ProcessIsUp.type]()
-    val logger = new ProcessLogger {
-      def checkUp(out: String) = {
-        log.info(s"$name: $out")
-        if (!up.isCompleted && upWhen(out))
-          up.trySuccess(ProcessIsUp)
+    val logger =
+      new ProcessLogger {
+        def checkUp(out: String) = {
+          log.info(s"$name: $out")
+          if (!up.isCompleted && upWhen(out))
+            up.trySuccess(ProcessIsUp)
+        }
+        override def buffer[T](f: => T): T = f
+        override def out(s: => String) = checkUp(s)
+        override def err(s: => String) = checkUp(s)
       }
-      override def buffer[T](f: => T): T = f
-      override def out(s: => String) = checkUp(s)
-      override def err(s: => String) = checkUp(s)
-    }
     val process = processBuilder.run(logger)
-    val processExitCode: Future[ProcessExited.type] = Future {
-      val exitCode = scala.concurrent.blocking {
-        process.exitValue()
-      }
-      log.info(s"Process $name finished with exit code $exitCode")
+    val processExitCode: Future[ProcessExited.type] =
+      Future {
+        val exitCode = scala.concurrent.blocking {
+          process.exitValue()
+        }
+        log.info(s"Process $name finished with exit code $exitCode")
 
-      // Sometimes this finishes before the other future finishes parsing the output
-      // and we incorrectly report ProcessExited instead of ProcessIsUp as the result of upOrExited.
-      Await.result(up.future, 1.second)
+        // Sometimes this finishes before the other future finishes parsing the output
+        // and we incorrectly report ProcessExited instead of ProcessIsUp as the result of upOrExited.
+        Await.result(up.future, 1.second)
 
-      ProcessExited
-    }(ExecutionContext.fromExecutor(Executors.newCachedThreadPool()))
-    val upOrExited = Future.firstCompletedOf(Seq(up.future, processExitCode))(
-      ExecutionContext.global)
+        ProcessExited
+      }(ExecutionContext.fromExecutor(Executors.newCachedThreadPool()))
+    val upOrExited =
+      Future.firstCompletedOf(Seq(up.future, processExitCode))(
+        ExecutionContext.global)
     Try(Await.result(upOrExited, timeout)) match {
       case Success(result) =>
         result match {
