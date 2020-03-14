@@ -238,11 +238,11 @@ trait Namers extends MethodSynthesis {
         (!oldS.isSourceMethod
           || nme.isSetterName(newS.name)
           || newS.isTopLevel) &&
-          !(// @M: allow repeated use of `_` for higher-order type params
-          (newS.owner.isTypeParameter || newS.owner.isAbstractType)
-          // FIXME: name comparisons not successful, are these underscores
-          // sometimes nme.WILDCARD and sometimes tpnme.WILDCARD?
-            && (newS.name string_== nme.WILDCARD))
+          !( // @M: allow repeated use of `_` for higher-order type params
+            (newS.owner.isTypeParameter || newS.owner.isAbstractType)
+            // FIXME: name comparisons not successful, are these underscores
+            // sometimes nme.WILDCARD and sometimes tpnme.WILDCARD?
+              && (newS.name string_== nme.WILDCARD))
       )
 
     private def allowsOverload(sym: Symbol) =

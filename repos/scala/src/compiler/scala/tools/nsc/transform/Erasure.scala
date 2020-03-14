@@ -667,8 +667,7 @@ abstract class Erasure
         // TODO: should we do this for user-defined unapplies as well?
         // does the first argument list have exactly one argument -- for user-defined unapplies we can't be sure
         def maybeWrap(bridgingCall: Tree): Tree = {
-          val guardExtractor =
-            (// can't statically know which member is going to be selected, so don't let this depend on member.isSynthetic
+          val guardExtractor = ( // can't statically know which member is going to be selected, so don't let this depend on member.isSynthetic
             (member.name == nme.unapply || member.name == nme.unapplySeq)
               && !exitingErasure(
                 (member.tpe <:< other.tpe)
